@@ -1,29 +1,24 @@
 package org.jboss.forge.rest.producer;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import javax.annotation.PreDestroy;
-import javax.ws.rs.Produces;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
 
 import org.jboss.forge.addon.ui.command.CommandFactory;
-import org.jboss.forge.addon.ui.command.UICommand;
 import org.jboss.forge.addon.ui.controller.CommandControllerFactory;
-import org.jboss.forge.addon.ui.metadata.UICommandMetadata;
 import org.jboss.forge.furnace.Furnace;
 import org.jboss.forge.furnace.addons.AddonRegistry;
 import org.jboss.forge.furnace.repositories.AddonRepositoryMode;
 import org.jboss.forge.furnace.se.FurnaceFactory;
 
+@ApplicationScoped
 public class FurnaceProducer {
-	private Furnace furnace;
 
-	private Map<String, List<String>> availableCommands;
+	private Furnace furnace;
 
 	private CommandFactory commandFactory;
 
@@ -42,22 +37,8 @@ public class FurnaceProducer {
 			throw new RuntimeException("Furnace failed to start.", e);
 		}
 
-		availableCommands = new HashMap<>();
-
 		AddonRegistry addonRegistry = furnace.getAddonRegistry();
 		commandFactory = addonRegistry.getServices(CommandFactory.class).get();
-		IDEUIContext context = new IDEUIContext();
-		for (UICommand cmd : commandFactory.getCommands()) {
-			UICommandMetadata metadata = cmd.getMetadata(context);
-			if (!availableCommands
-					.containsKey(metadata.getCategory().getName())) {
-				availableCommands.put(metadata.getCategory().getName(),
-						new ArrayList<String>());
-			}
-			availableCommands.get(metadata.getCategory().getName()).add(
-					metadata.getName());
-		}
-
 		controllerFactory = (CommandControllerFactory) addonRegistry
 				.getServices(CommandControllerFactory.class.getName()).get();
 	}
@@ -65,11 +46,6 @@ public class FurnaceProducer {
 	@Produces
 	public Furnace getFurnace() {
 		return furnace;
-	}
-
-	@Produces
-	public Map<String, List<String>> getAvailableCommands() {
-		return availableCommands;
 	}
 
 	@Produces
