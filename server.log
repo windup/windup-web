@@ -1,253 +1,732 @@
-22:48:46,068 INFO  [org.jboss.as.connector.deployment] (MSC service thread 1-1) JBAS010410: Unbound JCA ConnectionFactory [java:/JmsXA]
-22:48:46,068 INFO  [org.apache.catalina.core] (MSC service thread 1-3) JBWEB001079: Container org.apache.catalina.core.ContainerBase.[jboss.web].[default-host].[/] has not been started
-22:48:46,068 INFO  [org.jboss.as.connector.subsystems.datasources] (MSC service thread 1-13) JBAS010409: Unbound data source [java:jboss/datasources/ExampleDS]
-22:48:46,069 INFO  [org.apache.coyote.http11.Http11Protocol] (MSC service thread 1-9) JBWEB003075: Coyote HTTP/1.1 pausing on: http-localhost/127.0.0.1:8080
-22:48:46,069 INFO  [org.apache.coyote.http11.Http11Protocol] (MSC service thread 1-9) JBWEB003077: Coyote HTTP/1.1 stopping on : http-localhost/127.0.0.1:8080
-22:48:46,069 INFO  [org.jboss.jaxr] (MSC service thread 1-12) JBAS014002: UnBinding JAXR ConnectionFactory: java:jboss/jaxr/ConnectionFactory
-22:48:46,070 INFO  [org.jboss.as.messaging] (ServerService Thread Pool -- 62) JBAS011605: Unbound messaging object to jndi name java:/ConnectionFactory
-22:48:46,072 INFO  [org.jboss.as.messaging] (ServerService Thread Pool -- 65) JBAS011605: Unbound messaging object to jndi name java:/jms/queue/ExpiryQueue
-22:48:46,074 INFO  [org.jboss.as.messaging] (ServerService Thread Pool -- 63) JBAS011605: Unbound messaging object to jndi name java:jboss/exported/jms/RemoteConnectionFactory
-22:48:46,087 INFO  [org.hornetq.ra] (ServerService Thread Pool -- 66) HQ151003: HornetQ resource adaptor stopped
-22:48:46,099 INFO  [org.hornetq.core.server] (ServerService Thread Pool -- 66) HQ221002: HornetQ Server version 2.3.20.Final (2.3.20, 123) [b486b6c9-c058-11e4-8b58-a1242e90b955] stopped
-22:48:46,104 INFO  [org.jboss.as] (MSC service thread 1-8) JBAS015950: JBoss EAP 6.3.0.GA (AS 7.4.0.Final-redhat-19) stopped in 26ms
-22:53:37,034 INFO  [org.jboss.modules] (main) JBoss Modules version 1.3.3.Final-redhat-1
-22:53:37,350 INFO  [org.jboss.msc] (main) JBoss MSC version 1.1.5.Final-redhat-1
-22:53:37,496 INFO  [org.jboss.as] (MSC service thread 1-6) JBAS015899: JBoss EAP 6.3.0.GA (AS 7.4.0.Final-redhat-19) starting
-22:53:37,507 DEBUG [org.jboss.as.config] (MSC service thread 1-6) Configured system properties:
-	[Standalone] = 
-	awt.toolkit = sun.lwawt.macosx.LWCToolkit
-	file.encoding = UTF-8
-	file.encoding.pkg = sun.io
-	file.separator = /
-	ftp.nonProxyHosts = local|*.local|169.254/16|*.169.254/16
-	gopherProxySet = false
-	http.nonProxyHosts = local|*.local|169.254/16|*.169.254/16
-	java.awt.graphicsenv = sun.awt.CGraphicsEnvironment
-	java.awt.headless = true
-	java.awt.printerjob = sun.lwawt.macosx.CPrinterJob
-	java.class.path = /opt/jboss/jboss-eap-6.3/jboss-modules.jar
-	java.class.version = 51.0
-	java.endorsed.dirs = /Library/Java/JavaVirtualMachines/jdk1.7.0_71.jdk/Contents/Home/jre/lib/endorsed
-	java.ext.dirs = /Users/Marc/Library/Java/Extensions:/Library/Java/JavaVirtualMachines/jdk1.7.0_71.jdk/Contents/Home/jre/lib/ext:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java
-	java.home = /Library/Java/JavaVirtualMachines/jdk1.7.0_71.jdk/Contents/Home/jre
-	java.io.tmpdir = /var/folders/7p/2p23wcq95536cg5nm7wsmcd00000gn/T/
-	java.library.path = /Users/Marc/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:.
-	java.net.preferIPv4Stack = true
-	java.runtime.name = Java(TM) SE Runtime Environment
-	java.runtime.version = 1.7.0_71-b14
-	java.specification.name = Java Platform API Specification
-	java.specification.vendor = Oracle Corporation
-	java.specification.version = 1.7
-	java.util.logging.manager = org.jboss.logmanager.LogManager
-	java.vendor = Oracle Corporation
-	java.vendor.url = http://java.oracle.com/
-	java.vendor.url.bug = http://bugreport.sun.com/bugreport/
-	java.version = 1.7.0_71
-	java.vm.info = mixed mode
-	java.vm.name = Java HotSpot(TM) 64-Bit Server VM
-	java.vm.specification.name = Java Virtual Machine Specification
-	java.vm.specification.vendor = Oracle Corporation
-	java.vm.specification.version = 1.7
-	java.vm.vendor = Oracle Corporation
-	java.vm.version = 24.71-b01
-	javax.management.builder.initial = org.jboss.as.jmx.PluggableMBeanServerBuilder
-	javax.xml.datatype.DatatypeFactory = __redirected.__DatatypeFactory
-	javax.xml.parsers.DocumentBuilderFactory = __redirected.__DocumentBuilderFactory
-	javax.xml.parsers.SAXParserFactory = __redirected.__SAXParserFactory
-	javax.xml.stream.XMLEventFactory = __redirected.__XMLEventFactory
-	javax.xml.stream.XMLInputFactory = __redirected.__XMLInputFactory
-	javax.xml.stream.XMLOutputFactory = __redirected.__XMLOutputFactory
-	javax.xml.transform.TransformerFactory = __redirected.__TransformerFactory
-	javax.xml.validation.SchemaFactory:http://www.w3.org/2001/XMLSchema = __redirected.__SchemaFactory
-	javax.xml.xpath.XPathFactory:http://java.sun.com/jaxp/xpath/dom = __redirected.__XPathFactory
-	jboss.home.dir = /opt/jboss/jboss-eap-6.3
-	jboss.host.name = redbook
-	jboss.modules.dir = /opt/jboss/jboss-eap-6.3/modules
-	jboss.modules.policy-permissions = true
-	jboss.modules.system.pkgs = org.jboss.byteman
-	jboss.node.name = redbook
-	jboss.qualified.host.name = redbook.fritz.box
-	jboss.server.base.dir = /opt/jboss/jboss-eap-6.3/standalone
-	jboss.server.config.dir = /opt/jboss/jboss-eap-6.3/standalone/configuration
-	jboss.server.data.dir = /opt/jboss/jboss-eap-6.3/standalone/data
-	jboss.server.deploy.dir = /opt/jboss/jboss-eap-6.3/standalone/data/content
-	jboss.server.log.dir = /opt/jboss/jboss-eap-6.3/standalone/log
-	jboss.server.name = redbook
-	jboss.server.persist.config = true
-	jboss.server.temp.dir = /opt/jboss/jboss-eap-6.3/standalone/tmp
-	line.separator = 
+Java HotSpot(TM) 64-Bit Server VM warning: ignoring option MaxPermSize=256m; support was removed in 8.0
+Java HotSpot(TM) 64-Bit Server VM warning: ignoring option MaxPermSize=256m; support was removed in 8.0
+13:21:13,029 INFO  [org.jboss.modules] (main) JBoss Modules version 1.3.0.Final-redhat-2
+13:21:13,187 INFO  [org.jboss.msc] (main) JBoss MSC version 1.0.4.GA-redhat-1
+13:21:13,251 INFO  [org.jboss.as] (MSC service thread 1-6) JBAS015899: JBoss EAP 6.2.0.GA (AS 7.3.0.Final-redhat-14) starting
+13:21:14,374 INFO  [org.jboss.as.server.deployment.scanner] (DeploymentScanner-threads - 1) JBAS015003: Found windup-web.war in deployment directory. To trigger deployment create a file called windup-web.war.dodeploy
+13:21:14,395 INFO  [org.xnio] (MSC service thread 1-9) XNIO Version 3.0.7.GA-redhat-1
+13:21:14,400 INFO  [org.jboss.as.server] (Controller Boot Thread) JBAS015888: Creating http management service using socket-binding (management-http)
+13:21:14,402 INFO  [org.xnio.nio] (MSC service thread 1-9) XNIO NIO Implementation Version 3.0.7.GA-redhat-1
+13:21:14,409 INFO  [org.jboss.remoting] (MSC service thread 1-9) JBoss Remoting version 3.2.18.GA-redhat-1
+13:21:14,447 INFO  [org.jboss.as.clustering.infinispan] (ServerService Thread Pool -- 31) JBAS010280: Activating Infinispan subsystem.
+13:21:14,460 INFO  [org.jboss.as.clustering.jgroups] (ServerService Thread Pool -- 35) JBAS010260: Activating JGroups subsystem.
+13:21:14,471 INFO  [org.jboss.as.jsf] (ServerService Thread Pool -- 38) JBAS012605: Activated the following JSF Implementations: [main, 1.2]
+13:21:14,478 INFO  [org.jboss.as.naming] (ServerService Thread Pool -- 41) JBAS011800: Activating Naming Subsystem
+13:21:14,484 INFO  [org.jboss.as.security] (ServerService Thread Pool -- 46) JBAS013171: Activating Security Subsystem
+13:21:14,494 INFO  [org.jboss.as.security] (MSC service thread 1-9) JBAS013170: Current PicketBox version=4.0.19.SP2-redhat-1
+13:21:14,530 INFO  [org.jboss.as.webservices] (ServerService Thread Pool -- 50) JBAS015537: Activating WebServices Extension
+13:21:14,539 INFO  [org.jboss.as.connector.logging] (MSC service thread 1-4) JBAS010408: Starting JCA Subsystem (IronJacamar 1.0.23.Final-redhat-1)
+13:21:14,575 INFO  [org.jboss.as.naming] (MSC service thread 1-1) JBAS011802: Starting Naming Service
+13:21:14,579 INFO  [org.jboss.as.mail.extension] (MSC service thread 1-10) JBAS015400: Bound mail session [java:jboss/mail/Default]
+13:21:14,705 INFO  [org.jboss.as.connector.subsystems.datasources] (ServerService Thread Pool -- 27) JBAS010403: Deploying JDBC-compliant driver class org.h2.Driver (version 1.3)
+13:21:15,022 INFO  [org.apache.coyote.http11] (MSC service thread 1-4) JBWEB003001: Coyote HTTP/1.1 initializing on : http-localhost/192.168.1.6:8080
+13:21:15,022 INFO  [org.apache.coyote.http11] (MSC service thread 1-5) JBWEB003001: Coyote HTTP/1.1 initializing on : http-localhost/192.168.1.6:8443
+13:21:15,022 INFO  [org.apache.coyote.ajp] (MSC service thread 1-8) JBWEB003046: Starting Coyote AJP/1.3 on ajp-localhost/192.168.1.6:8009
+13:21:15,024 INFO  [org.apache.coyote.http11] (MSC service thread 1-4) JBWEB003000: Coyote HTTP/1.1 starting on: http-localhost/192.168.1.6:8080
+13:21:15,025 INFO  [org.apache.coyote.http11] (MSC service thread 1-5) JBWEB003000: Coyote HTTP/1.1 starting on: http-localhost/192.168.1.6:8443
+13:21:15,090 INFO  [org.jboss.modcluster] (ServerService Thread Pool -- 52) MODCLUSTER000001: Initializing mod_cluster ${project.version}
+13:21:15,116 INFO  [org.jboss.modcluster] (ServerService Thread Pool -- 52) MODCLUSTER000032: Listening to proxy advertisements on /224.0.1.105:23364
+13:21:15,188 INFO  [org.jboss.ws.common.management] (MSC service thread 1-11) JBWS022052: Starting JBoss Web Services - Stack CXF Server 4.2.3.Final-redhat-1
+13:21:15,205 INFO  [org.infinispan.configuration.cache.EvictionConfigurationBuilder] (ServerService Thread Pool -- 31) ISPN000152: Passivation configured without an eviction policy being selected. Only manually evicted entities will be passivated.
+13:21:15,217 INFO  [org.infinispan.configuration.cache.EvictionConfigurationBuilder] (ServerService Thread Pool -- 31) ISPN000152: Passivation configured without an eviction policy being selected. Only manually evicted entities will be passivated.
+13:21:15,223 INFO  [org.infinispan.configuration.cache.EvictionConfigurationBuilder] (ServerService Thread Pool -- 31) ISPN000152: Passivation configured without an eviction policy being selected. Only manually evicted entities will be passivated.
+13:21:15,229 INFO  [org.infinispan.configuration.cache.EvictionConfigurationBuilder] (ServerService Thread Pool -- 31) ISPN000152: Passivation configured without an eviction policy being selected. Only manually evicted entities will be passivated.
+13:21:15,250 INFO  [org.jboss.as.connector.subsystems.datasources] (MSC service thread 1-13) JBAS010400: Bound data source [java:jboss/datasources/ExampleDS]
+13:21:15,271 INFO  [org.jboss.as.server.deployment.scanner] (MSC service thread 1-6) JBAS015012: Started FileSystemDeploymentService for directory /Users/lb3/lib/jboss-eap-6.2/standalone/deployments
+13:21:15,274 INFO  [org.jboss.as.server.deployment] (MSC service thread 1-5) JBAS015876: Starting deployment of "windup-web.war" (runtime-name: "windup-web.war")
+13:21:15,289 INFO  [org.jboss.as.remoting] (MSC service thread 1-7) JBAS017100: Listening on 192.168.1.6:9999
+13:21:15,290 INFO  [org.jboss.as.remoting] (MSC service thread 1-12) JBAS017100: Listening on 192.168.1.6:4447
+13:21:16,623 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-13) JBAS015960: Class Path entry lib/jgraph.jar in /Users/lb3/lib/jboss-eap-6.2/standalone/deployments/windup-web.war/WEB-INF/lib/jgrapht-0.8.3.jar  does not point to a valid jar for a Class-Path reference.
+13:21:19,697 INFO  [org.jboss.weld.deployer] (MSC service thread 1-1) JBAS016002: Processing weld deployment windup-web.war
+13:21:19,726 INFO  [org.jboss.as.ejb3.deployment.processors.EjbJndiBindingsDeploymentUnitProcessor] (MSC service thread 1-1) JNDI bindings for session bean named WindupService in deployment unit deployment "windup-web.war" are as follows:
 
-	logging.configuration = file:/opt/jboss/jboss-eap-6.3/standalone/configuration/logging.properties
-	module.path = /opt/jboss/jboss-eap-6.3/modules
-	org.jboss.boot.log.file = /opt/jboss/jboss-eap-6.3/standalone/log/server.log
-	org.jboss.resolver.warning = true
-	org.xml.sax.driver = __redirected.__XMLReaderFactory
-	os.arch = x86_64
-	os.name = Mac OS X
-	os.version = 10.10.2
-	path.separator = :
-	socksNonProxyHosts = local|*.local|169.254/16|*.169.254/16
-	sun.arch.data.model = 64
-	sun.boot.class.path = /Library/Java/JavaVirtualMachines/jdk1.7.0_71.jdk/Contents/Home/jre/lib/resources.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_71.jdk/Contents/Home/jre/lib/rt.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_71.jdk/Contents/Home/jre/lib/sunrsasign.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_71.jdk/Contents/Home/jre/lib/jsse.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_71.jdk/Contents/Home/jre/lib/jce.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_71.jdk/Contents/Home/jre/lib/charsets.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_71.jdk/Contents/Home/jre/lib/jfr.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_71.jdk/Contents/Home/jre/classes
-	sun.boot.library.path = /Library/Java/JavaVirtualMachines/jdk1.7.0_71.jdk/Contents/Home/jre/lib
-	sun.cpu.endian = little
-	sun.cpu.isalist = 
-	sun.io.unicode.encoding = UnicodeBig
-	sun.java.command = /opt/jboss/jboss-eap-6.3/jboss-modules.jar -mp /opt/jboss/jboss-eap-6.3/modules -jaxpmodule javax.xml.jaxp-provider org.jboss.as.standalone -Djboss.home.dir=/opt/jboss/jboss-eap-6.3 -Djboss.server.base.dir=/opt/jboss/jboss-eap-6.3/standalone -c standalone-full.xml
-	sun.java.launcher = SUN_STANDARD
-	sun.jnu.encoding = UTF-8
-	sun.management.compiler = HotSpot 64-Bit Tiered Compilers
-	sun.os.patch.level = unknown
-	user.country = US
-	user.country.format = DE
-	user.dir = /opt/jboss/jboss-eap-6.3/bin
-	user.home = /Users/Marc
-	user.language = en
-	user.name = Marc
-	user.timezone = Europe/Berlin
-22:53:37,510 DEBUG [org.jboss.as.config] (MSC service thread 1-6) VM Arguments: -D[Standalone] -XX:+UseCompressedOops -verbose:gc -Xloggc:/opt/jboss/jboss-eap-6.3/standalone/log/gc.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=5 -XX:GCLogFileSize=3M -XX:-TraceClassUnloading -Xms1303m -Xmx1303m -XX:MaxPermSize=256m -Djava.net.preferIPv4Stack=true -Djboss.modules.system.pkgs=org.jboss.byteman -Djava.awt.headless=true -Djboss.modules.policy-permissions=true -Dorg.jboss.boot.log.file=/opt/jboss/jboss-eap-6.3/standalone/log/server.log -Dlogging.configuration=file:/opt/jboss/jboss-eap-6.3/standalone/configuration/logging.properties 
-22:53:38,886 INFO  [org.xnio] (MSC service thread 1-3) XNIO Version 3.0.10.GA-redhat-1
-22:53:38,887 INFO  [org.jboss.as.server] (Controller Boot Thread) JBAS015888: Creating http management service using socket-binding (management-http)
-22:53:38,894 INFO  [org.xnio.nio] (MSC service thread 1-3) XNIO NIO Implementation Version 3.0.10.GA-redhat-1
-22:53:38,922 INFO  [org.jboss.remoting] (MSC service thread 1-3) JBoss Remoting version (unknown)
-22:53:38,947 WARN  [org.jboss.as.txn] (ServerService Thread Pool -- 54) JBAS010153: Node identifier property is set to the default value. Please make sure it is unique.
-22:53:38,953 INFO  [org.jboss.as.clustering.infinispan] (ServerService Thread Pool -- 35) JBAS010280: Activating Infinispan subsystem.
-22:53:38,962 INFO  [org.jboss.as.security] (ServerService Thread Pool -- 52) JBAS013171: Activating Security Subsystem
-22:53:38,979 INFO  [org.jboss.as.naming] (ServerService Thread Pool -- 47) JBAS011800: Activating Naming Subsystem
-22:53:38,985 INFO  [org.jboss.as.jsf] (ServerService Thread Pool -- 43) JBAS012605: Activated the following JSF Implementations: [main, 1.2]
-22:53:38,990 INFO  [org.jboss.as.security] (MSC service thread 1-13) JBAS013170: Current PicketBox version=4.0.19.SP8-redhat-1
-22:53:39,020 INFO  [org.jboss.as.jacorb] (ServerService Thread Pool -- 36) JBAS016300: Activating JacORB Subsystem
-22:53:39,060 INFO  [org.jboss.as.webservices] (ServerService Thread Pool -- 56) JBAS015537: Activating WebServices Extension
-22:53:39,101 INFO  [org.jboss.as.connector.logging] (MSC service thread 1-10) JBAS010408: Starting JCA Subsystem (IronJacamar 1.0.26.Final-redhat-1)
-22:53:39,155 INFO  [org.jboss.as.naming] (MSC service thread 1-6) JBAS011802: Starting Naming Service
-22:53:39,156 INFO  [org.jboss.as.mail.extension] (MSC service thread 1-10) JBAS015400: Bound mail session [java:jboss/mail/Default]
-22:53:39,188 INFO  [org.jboss.jaxr] (MSC service thread 1-15) JBAS014000: Started JAXR subsystem, binding JAXR connection factory into JNDI as: java:jboss/jaxr/ConnectionFactory
-22:53:39,215 INFO  [org.jboss.as.connector.subsystems.datasources] (ServerService Thread Pool -- 31) JBAS010403: Deploying JDBC-compliant driver class org.h2.Driver (version 1.3)
-22:53:39,653 INFO  [org.apache.coyote.http11.Http11Protocol] (MSC service thread 1-5) JBWEB003001: Coyote HTTP/1.1 initializing on : http-/127.0.0.1:8080
-22:53:39,665 INFO  [org.apache.coyote.http11.Http11Protocol] (MSC service thread 1-5) JBWEB003000: Coyote HTTP/1.1 starting on: http-/127.0.0.1:8080
-22:53:39,692 INFO  [org.jboss.as.jacorb] (MSC service thread 1-12) JBAS016330: CORBA ORB Service started
-22:53:39,876 INFO  [org.jboss.as.jacorb] (MSC service thread 1-12) JBAS016328: CORBA Naming Service started
-22:53:39,892 INFO  [org.jboss.ws.common.management] (MSC service thread 1-13) JBWS022052: Starting JBoss Web Services - Stack CXF Server 4.3.0.Final-redhat-3
-22:53:39,894 INFO  [org.jboss.as.connector.subsystems.datasources] (MSC service thread 1-1) JBAS010400: Bound data source [java:jboss/datasources/ExampleDS]
-22:53:39,936 INFO  [org.hornetq.core.server] (ServerService Thread Pool -- 58) HQ221000: live server is starting with configuration HornetQ Configuration (clustered=false,backup=false,sharedStore=true,journalDirectory=/opt/jboss/jboss-eap-6.3/standalone/data/messagingjournal,bindingsDirectory=/opt/jboss/jboss-eap-6.3/standalone/data/messagingbindings,largeMessagesDirectory=/opt/jboss/jboss-eap-6.3/standalone/data/messaginglargemessages,pagingDirectory=/opt/jboss/jboss-eap-6.3/standalone/data/messagingpaging)
-22:53:39,938 INFO  [org.hornetq.core.server] (ServerService Thread Pool -- 58) HQ221006: Waiting to obtain live lock
-22:53:39,970 INFO  [org.hornetq.core.server] (ServerService Thread Pool -- 58) HQ221013: Using NIO Journal
-22:53:40,015 INFO  [org.jboss.as.server.deployment.scanner] (MSC service thread 1-15) JBAS015012: Started FileSystemDeploymentService for directory /opt/jboss/jboss-eap-6.3/standalone/deployments
-22:53:40,039 INFO  [org.jboss.as.remoting] (MSC service thread 1-14) JBAS017100: Listening on 127.0.0.1:4447
-22:53:40,041 INFO  [org.jboss.as.remoting] (MSC service thread 1-12) JBAS017100: Listening on 127.0.0.1:9999
-22:53:40,063 INFO  [org.hornetq.core.server] (ServerService Thread Pool -- 58) HQ221034: Waiting to obtain live lock
-22:53:40,064 INFO  [org.hornetq.core.server] (ServerService Thread Pool -- 58) HQ221035: Live Server Obtained live lock
-22:53:40,576 INFO  [org.hornetq.core.server] (ServerService Thread Pool -- 58) HQ221020: Started Netty Acceptor version 3.6.9.Final-redhat-1-4cc400c 127.0.0.1:5455 for CORE protocol
-22:53:40,578 INFO  [org.hornetq.core.server] (ServerService Thread Pool -- 58) HQ221020: Started Netty Acceptor version 3.6.9.Final-redhat-1-4cc400c 127.0.0.1:5445 for CORE protocol
-22:53:40,580 INFO  [org.hornetq.core.server] (ServerService Thread Pool -- 58) HQ221007: Server is now live
-22:53:40,580 INFO  [org.hornetq.core.server] (ServerService Thread Pool -- 58) HQ221001: HornetQ Server version 2.3.20.Final (2.3.20, 123) [b486b6c9-c058-11e4-8b58-a1242e90b955] 
-22:53:40,604 INFO  [org.jboss.as.messaging] (ServerService Thread Pool -- 58) JBAS011601: Bound messaging object to jndi name java:/ConnectionFactory
-22:53:40,606 INFO  [org.hornetq.core.server] (ServerService Thread Pool -- 60) HQ221003: trying to deploy queue jms.queue.DLQ
-22:53:40,613 INFO  [org.jboss.as.messaging] (ServerService Thread Pool -- 60) JBAS011601: Bound messaging object to jndi name java:/jms/queue/DLQ
-22:53:40,614 INFO  [org.hornetq.core.server] (ServerService Thread Pool -- 61) HQ221003: trying to deploy queue jms.queue.ExpiryQueue
-22:53:40,615 INFO  [org.jboss.as.messaging] (ServerService Thread Pool -- 61) JBAS011601: Bound messaging object to jndi name java:/jms/queue/ExpiryQueue
-22:53:40,616 INFO  [org.jboss.as.messaging] (ServerService Thread Pool -- 59) JBAS011601: Bound messaging object to jndi name java:jboss/exported/jms/RemoteConnectionFactory
-22:53:40,665 INFO  [org.jboss.as.connector.deployment] (MSC service thread 1-16) JBAS010406: Registered connection factory java:/JmsXA
-22:53:40,703 INFO  [org.hornetq.ra] (MSC service thread 1-16) HornetQ resource adaptor started
-22:53:40,703 INFO  [org.jboss.as.connector.services.resourceadapters.ResourceAdapterActivatorService$ResourceAdapterActivator] (MSC service thread 1-16) IJ020002: Deployed: file://RaActivatorhornetq-ra
-22:53:40,705 INFO  [org.jboss.as.connector.deployment] (MSC service thread 1-4) JBAS010401: Bound JCA ConnectionFactory [java:/JmsXA]
-22:53:40,740 INFO  [org.jboss.as] (Controller Boot Thread) JBAS015961: Http management interface listening on http://127.0.0.1:9990/management
-22:53:40,740 INFO  [org.jboss.as] (Controller Boot Thread) JBAS015951: Admin console listening on http://127.0.0.1:9990
-22:53:40,741 INFO  [org.jboss.as] (Controller Boot Thread) JBAS015874: JBoss EAP 6.3.0.GA (AS 7.4.0.Final-redhat-19) started in 4218ms - Started 190 of 227 services (67 services are lazy, passive or on-demand)
-22:54:05,088 INFO  [org.jboss.as.server.deployment] (MSC service thread 1-1) JBAS015876: Starting deployment of "forge-rest-service.war" (runtime-name: "forge-rest-service.war")
-22:54:07,761 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-16) JBAS015960: Class Path entry lib/jgraph.jar in /content/forge-rest-service.war/WEB-INF/lib/jgrapht-0.8.3.jar  does not point to a valid jar for a Class-Path reference.
-22:54:13,592 INFO  [org.jboss.weld.deployer] (MSC service thread 1-7) JBAS016002: Processing weld deployment forge-rest-service.war
-22:54:13,676 INFO  [org.jboss.weld.deployer] (MSC service thread 1-1) JBAS016005: Starting Services for CDI deployment: forge-rest-service.war
-22:54:13,750 INFO  [org.jboss.weld.Version] (MSC service thread 1-1) WELD-000900 1.1.23 (redhat)
-22:54:13,781 INFO  [org.jboss.weld.deployer] (MSC service thread 1-15) JBAS016008: Starting weld service for deployment forge-rest-service.war
-22:54:14,171 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.query.Query$3 because of underlying class loading error
-22:54:14,183 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.phase.DiscoverProjectStructure because of underlying class loading error
-22:54:14,184 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.phase.ReportGeneration because of underlying class loading error
-22:54:14,185 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.phase.PreReportGeneration because of underlying class loading error
-22:54:14,189 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.phase.ClassifyFileTypes because of underlying class loading error
-22:54:14,193 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.operation.IterationProgress because of underlying class loading error
-22:54:14,193 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.operation.ruleelement.AbstractIterationOperation because of underlying class loading error
-22:54:14,196 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.phase.PostMigrationRules because of underlying class loading error
-22:54:14,197 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.phase.InitialAnalysis because of underlying class loading error
-22:54:14,202 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.query.Query because of underlying class loading error
-22:54:14,205 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.operation.Iteration because of underlying class loading error
-22:54:14,209 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.phase.PostReportGeneration because of underlying class loading error
-22:54:14,210 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.builder.WindupRuleProviderBuilder because of underlying class loading error
-22:54:14,212 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.condition.NoopEvaluationStrategy because of underlying class loading error
-22:54:14,223 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.condition.EvaluationStrategy because of underlying class loading error
-22:54:14,225 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.parameters.ParameterizedGraphCondition because of underlying class loading error
-22:54:14,226 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.RuleSubset because of underlying class loading error
-22:54:14,227 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.phase.RulePhase because of underlying class loading error
-22:54:14,228 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.loader.WindupRuleLoader because of underlying class loading error
-22:54:14,229 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.parameters.ParameterizedIterationOperation because of underlying class loading error
-22:54:14,232 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.phase.Finalize because of underlying class loading error
-22:54:14,233 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.operation.iteration.TypedNamedIterationPayloadManager because of underlying class loading error
-22:54:14,235 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.phase.MigrationRules because of underlying class loading error
-22:54:14,236 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.phase.Initialization because of underlying class loading error
-22:54:14,237 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.operation.iteration.IterationPayloadManager because of underlying class loading error
-22:54:14,239 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.GraphRewrite because of underlying class loading error
-22:54:14,239 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.IteratingRuleProvider because of underlying class loading error
-22:54:14,241 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.phase.ArchiveExtraction because of underlying class loading error
-22:54:14,243 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.phase.Decompilation because of underlying class loading error
-22:54:14,249 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.phase.PostReportRendering because of underlying class loading error
-22:54:14,254 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.phase.ArchiveMetadataExtraction because of underlying class loading error
-22:54:14,255 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.Variables because of underlying class loading error
-22:54:14,256 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.phase.Discovery because of underlying class loading error
-22:54:14,259 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.operation.ruleelement.AbstractIterationFilter because of underlying class loading error
-22:54:14,262 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.phase.Implicit because of underlying class loading error
-22:54:14,264 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.loader.WindupRuleProviderLoader because of underlying class loading error
-22:54:14,265 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.phase.ReportRendering because of underlying class loading error
-22:54:14,265 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.phase.PostFinalize because of underlying class loading error
-22:54:14,267 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.graph.TypeOperation because of underlying class loading error
-22:54:14,268 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.config.operation.iteration.NamedIterationPayloadManager because of underlying class loading error
-22:54:14,513 INFO  [org.jboss.weld.ClassLoading] (MSC service thread 1-8) WELD-000119 Not generating any bean definitions from org.jboss.windup.exec.configuration.WindupConfiguration because of underlying class loading error
-22:54:14,724 ERROR [org.jboss.msc.service.fail] (MSC service thread 1-8) MSC000001: Failed to start service jboss.deployment.unit."forge-rest-service.war".WeldStartService: org.jboss.msc.service.StartException in service jboss.deployment.unit."forge-rest-service.war".WeldStartService: Failed to start service
-	at org.jboss.msc.service.ServiceControllerImpl$StartTask.run(ServiceControllerImpl.java:1936) [jboss-msc-1.1.5.Final-redhat-1.jar:1.1.5.Final-redhat-1]
-	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145) [rt.jar:1.7.0_71]
-	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615) [rt.jar:1.7.0_71]
-	at java.lang.Thread.run(Thread.java:745) [rt.jar:1.7.0_71]
-Caused by: org.jboss.weld.exceptions.DeploymentException: WELD-001408 Unsatisfied dependencies for type [AddonRegistry] with qualifiers [@Default] at injection point [[parameter 3] of [method] public org.jboss.windup.config.furnace.FurnaceHolder.setFurnace(PostStartup, Furnace, AddonRegistry)]
-	at org.jboss.weld.bootstrap.Validator.validateInjectionPoint(Validator.java:315)
-	at org.jboss.weld.bootstrap.Validator.validateInjectionPoint(Validator.java:284)
-	at org.jboss.weld.bootstrap.Validator.validateObserverMethods(Validator.java:560)
-	at org.jboss.weld.bootstrap.Validator.validateDeployment(Validator.java:376)
-	at org.jboss.weld.bootstrap.WeldBootstrap.validateBeans(WeldBootstrap.java:379)
-	at org.jboss.as.weld.WeldStartService.start(WeldStartService.java:64)
-	at org.jboss.msc.service.ServiceControllerImpl$StartTask.startService(ServiceControllerImpl.java:1980) [jboss-msc-1.1.5.Final-redhat-1.jar:1.1.5.Final-redhat-1]
-	at org.jboss.msc.service.ServiceControllerImpl$StartTask.run(ServiceControllerImpl.java:1913) [jboss-msc-1.1.5.Final-redhat-1.jar:1.1.5.Final-redhat-1]
-	... 3 more
+	java:global/windup-web/WindupService!org.jboss.windup.rest.WindupService
+	java:app/windup-web/WindupService!org.jboss.windup.rest.WindupService
+	java:module/WindupService!org.jboss.windup.rest.WindupService
+	java:global/windup-web/WindupService
+	java:app/windup-web/WindupService
+	java:module/WindupService
 
-22:54:14,734 ERROR [org.jboss.as.server] (DeploymentScanner-threads - 2) JBAS015870: Deploy of deployment "forge-rest-service.war" was rolled back with the following failure message: 
-{"JBAS014671: Failed services" => {"jboss.deployment.unit.\"forge-rest-service.war\".WeldStartService" => "org.jboss.msc.service.StartException in service jboss.deployment.unit.\"forge-rest-service.war\".WeldStartService: Failed to start service
-    Caused by: org.jboss.weld.exceptions.DeploymentException: WELD-001408 Unsatisfied dependencies for type [AddonRegistry] with qualifiers [@Default] at injection point [[parameter 3] of [method] public org.jboss.windup.config.furnace.FurnaceHolder.setFurnace(PostStartup, Furnace, AddonRegistry)]"}}
-22:54:14,738 INFO  [org.jboss.weld.deployer] (MSC service thread 1-16) JBAS016009: Stopping weld service for deployment forge-rest-service.war
-22:54:14,846 INFO  [org.jboss.as.server.deployment] (MSC service thread 1-2) JBAS015877: Stopped deployment forge-rest-service.war (runtime-name: forge-rest-service.war) in 113ms
-22:54:14,852 INFO  [org.jboss.as.controller] (DeploymentScanner-threads - 2) JBAS014774: Service status report
-JBAS014775:    New missing/unsatisfied dependencies:
-      service jboss.deployment.unit."forge-rest-service.war".WeldBootstrapService (missing) dependents: [service jboss.web.deployment.default-host./forge-rest-service, service jboss.deployment.unit."forge-rest-service.war".component."javax.faces.webapp.FacetTag".WeldInstantiator, service jboss.deployment.unit."forge-rest-service.war".component."com.sun.faces.config.ConfigureListener".WeldInstantiator] 
-      service jboss.deployment.unit."forge-rest-service.war".WeldStartService (missing) dependents: [service jboss.deployment.unit."forge-rest-service.war".component."org.jboss.as.weld.webtier.jsp.JspInitializationListener".WeldInstantiator, service jboss.deployment.unit."forge-rest-service.war".component."javax.faces.webapp.FacetTag".WeldInstantiator, service jboss.deployment.unit."forge-rest-service.war".component."org.apache.jasper.servlet.JspServlet".WeldInstantiator, service jboss.deployment.unit."forge-rest-service.war".component."org.apache.catalina.servlets.DefaultServlet".WeldInstantiator, JBAS014799: ... and 4 more ] 
-      service jboss.deployment.unit."forge-rest-service.war".component."com.sun.faces.config.ConfigureListener".CREATE (missing) dependents: [service jboss.deployment.unit."forge-rest-service.war".component."com.sun.faces.config.ConfigureListener".START] 
-      service jboss.deployment.unit."forge-rest-service.war".component."com.sun.faces.config.ConfigureListener".START (missing) dependents: [service jboss.deployment.unit."forge-rest-service.war".deploymentCompleteService, service jboss.web.deployment.default-host./forge-rest-service] 
-      service jboss.deployment.unit."forge-rest-service.war".component."javax.faces.webapp.FacetTag".CREATE (missing) dependents: [service jboss.deployment.unit."forge-rest-service.war".component."javax.faces.webapp.FacetTag".START] 
-      service jboss.deployment.unit."forge-rest-service.war".component."javax.faces.webapp.FacetTag".START (missing) dependents: [service jboss.deployment.unit."forge-rest-service.war".deploymentCompleteService, service jboss.web.deployment.default-host./forge-rest-service] 
-      service jboss.deployment.unit."forge-rest-service.war".component."javax.faces.webapp.FacetTag".WeldInstantiator (missing) dependents: [service jboss.deployment.unit."forge-rest-service.war".component."javax.faces.webapp.FacetTag".START] 
-      service jboss.deployment.unit."forge-rest-service.war".component."javax.servlet.jsp.jstl.tlv.PermittedTaglibsTLV".CREATE (missing) dependents: [service jboss.deployment.unit."forge-rest-service.war".component."javax.servlet.jsp.jstl.tlv.PermittedTaglibsTLV".START] 
-      service jboss.deployment.unit."forge-rest-service.war".component."javax.servlet.jsp.jstl.tlv.PermittedTaglibsTLV".START (missing) dependents: [service jboss.deployment.unit."forge-rest-service.war".deploymentCompleteService, service jboss.web.deployment.default-host./forge-rest-service] 
-      service jboss.deployment.unit."forge-rest-service.war".component."javax.servlet.jsp.jstl.tlv.PermittedTaglibsTLV".WeldInstantiator (missing) dependents: [service jboss.deployment.unit."forge-rest-service.war".component."javax.servlet.jsp.jstl.tlv.PermittedTaglibsTLV".START] 
-      service jboss.deployment.unit."forge-rest-service.war".component."javax.servlet.jsp.jstl.tlv.ScriptFreeTLV".CREATE (missing) dependents: [service jboss.deployment.unit."forge-rest-service.war".component."javax.servlet.jsp.jstl.tlv.ScriptFreeTLV".START] 
-      service jboss.deployment.unit."forge-rest-service.war".component."javax.servlet.jsp.jstl.tlv.ScriptFreeTLV".START (missing) dependents: [service jboss.deployment.unit."forge-rest-service.war".deploymentCompleteService, service jboss.web.deployment.default-host./forge-rest-service] 
-      service jboss.deployment.unit."forge-rest-service.war".component."javax.servlet.jsp.jstl.tlv.ScriptFreeTLV".WeldInstantiator (missing) dependents: [service jboss.deployment.unit."forge-rest-service.war".component."javax.servlet.jsp.jstl.tlv.ScriptFreeTLV".START] 
-      service jboss.deployment.unit."forge-rest-service.war".component."org.apache.catalina.servlets.DefaultServlet".CREATE (missing) dependents: [service jboss.deployment.unit."forge-rest-service.war".component."org.apache.catalina.servlets.DefaultServlet".START] 
-      service jboss.deployment.unit."forge-rest-service.war".component."org.apache.catalina.servlets.DefaultServlet".START (missing) dependents: [service jboss.deployment.unit."forge-rest-service.war".deploymentCompleteService, service jboss.web.deployment.default-host./forge-rest-service] 
-      service jboss.deployment.unit."forge-rest-service.war".component."org.apache.catalina.servlets.DefaultServlet".WeldInstantiator (missing) dependents: [service jboss.deployment.unit."forge-rest-service.war".component."org.apache.catalina.servlets.DefaultServlet".START] 
-      service jboss.deployment.unit."forge-rest-service.war".component."org.apache.jasper.servlet.JspServlet".CREATE (missing) dependents: [service jboss.deployment.unit."forge-rest-service.war".component."org.apache.jasper.servlet.JspServlet".START] 
-      service jboss.deployment.unit."forge-rest-service.war".component."org.apache.jasper.servlet.JspServlet".START (missing) dependents: [service jboss.deployment.unit."forge-rest-service.war".deploymentCompleteService, service jboss.web.deployment.default-host./forge-rest-service] 
-      service jboss.deployment.unit."forge-rest-service.war".component."org.apache.jasper.servlet.JspServlet".WeldInstantiator (missing) dependents: [service jboss.deployment.unit."forge-rest-service.war".component."org.apache.jasper.servlet.JspServlet".START] 
-      service jboss.deployment.unit."forge-rest-service.war".component."org.jboss.as.weld.webtier.jsp.JspInitializationListener".CREATE (missing) dependents: [service jboss.deployment.unit."forge-rest-service.war".component."org.jboss.as.weld.webtier.jsp.JspInitializationListener".START] 
-      service jboss.deployment.unit."forge-rest-service.war".component."org.jboss.as.weld.webtier.jsp.JspInitializationListener".START (missing) dependents: [service jboss.deployment.unit."forge-rest-service.war".deploymentCompleteService, service jboss.web.deployment.default-host./forge-rest-service] 
-      service jboss.deployment.unit."forge-rest-service.war".component."org.jboss.as.weld.webtier.jsp.JspInitializationListener".WeldInstantiator (missing) dependents: [service jboss.deployment.unit."forge-rest-service.war".component."org.jboss.as.weld.webtier.jsp.JspInitializationListener".START] 
-      service jboss.deployment.unit."forge-rest-service.war".jndiDependencyService (missing) dependents: [service jboss.deployment.unit."forge-rest-service.war".component."javax.servlet.jsp.jstl.tlv.ScriptFreeTLV".START, service jboss.deployment.unit."forge-rest-service.war".component."org.jboss.as.weld.webtier.jsp.JspInitializationListener".START, service jboss.deployment.unit."forge-rest-service.war".component."javax.faces.webapp.FacetTag".START, service jboss.web.deployment.default-host./forge-rest-service, JBAS014799: ... and 2 more ] 
-      service jboss.web.deployment.default-host./forge-rest-service (missing) dependents: [service jboss.deployment.unit."forge-rest-service.war".deploymentCompleteService] 
-      service jboss.web.deployment.default-host./forge-rest-service.realm (missing) dependents: [service jboss.deployment.unit."forge-rest-service.war".deploymentCompleteService, service jboss.web.deployment.default-host./forge-rest-service] 
-JBAS014777:   Services which failed to start:      service jboss.deployment.unit."forge-rest-service.war".WeldStartService
+13:21:19,860 INFO  [org.jboss.weld.deployer] (MSC service thread 1-6) JBAS016005: Starting Services for CDI deployment: windup-web.war
+13:21:19,923 INFO  [org.jboss.weld.Version] (MSC service thread 1-6) WELD-000900 1.1.16 (redhat)
+13:21:19,979 INFO  [org.jboss.weld.deployer] (MSC service thread 1-1) JBAS016008: Starting weld service for deployment windup-web.war
+13:21:20,894 INFO  [org.jboss.web] (ServerService Thread Pool -- 53) JBAS018210: Register web context: /windup-web
+13:21:21,044 INFO  [org.jboss.forge.furnace.impl.FurnaceImpl] (Furnace Container ) Furnace [2.14.0.Final] starting.
+13:21:21,262 INFO  [org.jboss.forge.furnace.impl.addons.AddonLifecycleManager] (Furnace Container ) 
+ ------------ VIEW [ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3 - -1280812356]------------ 
+0: org.jboss.forge.furnace.container:simple:2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+1: org.jboss.windup.utils:utils:2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.furnace.container:simple:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+2: org.jboss.windup.decompiler:decompiler-api:2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.windup.utils:utils:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+3: org.jboss.windup.decompiler:decompiler-procyon:2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.decompiler:decompiler-api:[] -> 2.2.0-SNAPSHOT (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.windup.utils:utils:[] -> 2.2.0-SNAPSHOT (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+4: org.jboss.forge.furnace.container:cdi:2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+5: org.jboss.windup.graph:windup-graph:2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.utils:utils:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.furnace.container:cdi:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+6: org.jboss.forge.addon:convert:2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.furnace.container:cdi:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+7: org.jboss.forge.addon:environment:2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.furnace.container:simple:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+8: org.jboss.forge.addon:facets:2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.furnace.container:simple:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+9: org.jboss.forge.addon:ui-spi:2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.forge.addon:facets:[] -> 2.14.0.Final (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.addon:environment:[] -> 2.14.0.Final (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+10: org.jboss.forge.addon:resources:2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.forge.addon:facets:[] -> 2.14.0.Final (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.forge.addon:ui-spi:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.forge.furnace.container:cdi:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.addon:convert:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+11: org.jboss.forge.addon:dependencies:2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.forge.furnace.container:simple:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.forge.addon:resources:[] -> 2.14.0.Final (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.addon:convert:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+12: org.jboss.windup.config:windup-config:2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.utils:utils:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.graph:windup-graph:[] -> 2.2.0-SNAPSHOT (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.furnace.container:cdi:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+13: org.jboss.windup.config:windup-config-groovy:2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.utils:utils:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.config:windup-config:[] -> 2.2.0-SNAPSHOT (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.furnace.container:cdi:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+14: org.jboss.windup.config:windup-config-xml:2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.utils:utils:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.config:windup-config:[] -> 2.2.0-SNAPSHOT (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.furnace.container:cdi:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+15: org.jboss.windup.rules.apps:windup-rules-base:2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.utils:utils:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.config:windup-config:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.config:windup-config-xml:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.furnace.container:cdi:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+16: org.jboss.windup.reporting:windup-reporting:2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.utils:utils:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.rules.apps:windup-rules-base:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.config:windup-config:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.config:windup-config-xml:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.furnace.container:cdi:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+17: org.jboss.windup.rules.apps:windup-rules-java-archives:2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.utils:utils:[] -> 2.2.0-SNAPSHOT (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.reporting:windup-reporting:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.config:windup-config-groovy:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.config:windup-config:[] -> 2.2.0-SNAPSHOT (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.graph:windup-graph:[] -> 2.2.0-SNAPSHOT (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.forge.addon:dependencies:[] -> 2.14.0.Final (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.furnace.container:cdi:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+18: org.jboss.windup.rules.apps:windup-rules-xml:2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.utils:utils:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.reporting:windup-reporting:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.rules.apps:windup-rules-base:[] -> 2.2.0-SNAPSHOT (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.config:windup-config:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.config:windup-config-xml:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.furnace.container:cdi:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+19: org.jboss.windup.rules.apps:windup-rules-java:2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.decompiler:decompiler-procyon:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.utils:utils:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.reporting:windup-reporting:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.rules.apps:windup-rules-xml:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.config:windup-config-groovy:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.rules.apps:windup-rules-base:[] -> 2.2.0-SNAPSHOT (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.config:windup-config:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.config:windup-config-xml:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.rules.apps:windup-rules-java-archives:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.graph:windup-graph:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.furnace.container:cdi:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+20: org.jboss.forge.addon:ui:2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.forge.addon:facets:[] -> 2.14.0.Final (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.forge.addon:ui-spi:[] -> 2.14.0.Final (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.forge.furnace.container:cdi:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.addon:convert:[] -> 2.14.0.Final (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+21: org.jboss.windup.exec:windup-exec:2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.utils:utils:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.config:windup-config:[] -> 2.2.0-SNAPSHOT (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.graph:windup-graph:[] -> 2.2.0-SNAPSHOT (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.furnace.container:cdi:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+22: org.jboss.windup.ui:windup-ui:2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.utils:utils:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.exec:windup-exec:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.forge.addon:resources:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.forge.addon:ui:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.furnace.container:cdi:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+23: org.jboss.windup.rules.apps:windup-rules-java-project:2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.utils:utils:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.rules.apps:windup-rules-java:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.reporting:windup-reporting:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.config:windup-config:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.config:windup-config-xml:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.graph:windup-graph:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.furnace.container:cdi:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+24: org.jboss.windup.rules.apps:windup-rules-java-ee:2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.utils:utils:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.rules.apps:windup-rules-java:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.reporting:windup-reporting:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.rules.apps:windup-rules-xml:[] -> 2.2.0-SNAPSHOT (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.config:windup-config:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.furnace.container:cdi:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+ ------------ END [ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3 - -1280812356]------------ 
+13:21:22,444 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.forge.furnace.container:simple,2.14.0.Final) > Starting container [org.jboss.forge.furnace.container:simple,2.14.0.Final] [/Users/lb3/projects/jboss-migration/windup-web/target/windup-web/WEB-INF/addon-repository]
+13:21:22,446 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.windup.decompiler:decompiler-api,2.2.0-SNAPSHOT) > Starting container [org.jboss.windup.decompiler:decompiler-api,2.2.0-SNAPSHOT] [/Users/lb3/projects/jboss-migration/windup-web/target/windup-web/WEB-INF/addon-repository]
+13:21:22,445 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.windup.utils:utils,2.2.0-SNAPSHOT) > Starting container [org.jboss.windup.utils:utils,2.2.0-SNAPSHOT] [/Users/lb3/projects/jboss-migration/windup-web/target/windup-web/WEB-INF/addon-repository]
+13:21:22,446 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.windup.decompiler:decompiler-procyon,2.2.0-SNAPSHOT) > Starting container [org.jboss.windup.decompiler:decompiler-procyon,2.2.0-SNAPSHOT] [/Users/lb3/projects/jboss-migration/windup-web/target/windup-web/WEB-INF/addon-repository]
+13:21:22,447 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.forge.furnace.container:cdi,2.14.0.Final) > Starting container [org.jboss.forge.furnace.container:cdi,2.14.0.Final] [/Users/lb3/projects/jboss-migration/windup-web/target/windup-web/WEB-INF/addon-repository]
+13:21:22,447 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.windup.graph:windup-graph,2.2.0-SNAPSHOT) > Starting container [org.jboss.windup.graph:windup-graph,2.2.0-SNAPSHOT] [/Users/lb3/projects/jboss-migration/windup-web/target/windup-web/WEB-INF/addon-repository]
+13:21:22,447 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.forge.addon:convert,2.14.0.Final) > Starting container [org.jboss.forge.addon:convert,2.14.0.Final] [/Users/lb3/projects/jboss-migration/windup-web/target/windup-web/WEB-INF/addon-repository]
+13:21:22,447 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.forge.addon:ui-spi,2.14.0.Final) > Starting container [org.jboss.forge.addon:ui-spi,2.14.0.Final] [/Users/lb3/projects/jboss-migration/windup-web/target/windup-web/WEB-INF/addon-repository]
+13:21:22,447 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.forge.addon:environment,2.14.0.Final) > Starting container [org.jboss.forge.addon:environment,2.14.0.Final] [/Users/lb3/projects/jboss-migration/windup-web/target/windup-web/WEB-INF/addon-repository]
+13:21:22,448 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.forge.addon:dependencies,2.14.0.Final) > Starting container [org.jboss.forge.addon:dependencies,2.14.0.Final] [/Users/lb3/projects/jboss-migration/windup-web/target/windup-web/WEB-INF/addon-repository]
+13:21:22,448 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.windup.config:windup-config,2.2.0-SNAPSHOT) > Starting container [org.jboss.windup.config:windup-config,2.2.0-SNAPSHOT] [/Users/lb3/projects/jboss-migration/windup-web/target/windup-web/WEB-INF/addon-repository]
+13:21:22,447 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.forge.addon:facets,2.14.0.Final) > Starting container [org.jboss.forge.addon:facets,2.14.0.Final] [/Users/lb3/projects/jboss-migration/windup-web/target/windup-web/WEB-INF/addon-repository]
+13:21:22,447 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.forge.addon:resources,2.14.0.Final) > Starting container [org.jboss.forge.addon:resources,2.14.0.Final] [/Users/lb3/projects/jboss-migration/windup-web/target/windup-web/WEB-INF/addon-repository]
+13:21:22,448 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.windup.config:windup-config-groovy,2.2.0-SNAPSHOT) > Starting container [org.jboss.windup.config:windup-config-groovy,2.2.0-SNAPSHOT] [/Users/lb3/projects/jboss-migration/windup-web/target/windup-web/WEB-INF/addon-repository]
+13:21:22,449 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.windup.rules.apps:windup-rules-base,2.2.0-SNAPSHOT) > Starting container [org.jboss.windup.rules.apps:windup-rules-base,2.2.0-SNAPSHOT] [/Users/lb3/projects/jboss-migration/windup-web/target/windup-web/WEB-INF/addon-repository]
+13:21:22,449 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.windup.reporting:windup-reporting,2.2.0-SNAPSHOT) > Starting container [org.jboss.windup.reporting:windup-reporting,2.2.0-SNAPSHOT] [/Users/lb3/projects/jboss-migration/windup-web/target/windup-web/WEB-INF/addon-repository]
+13:21:22,449 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.windup.config:windup-config-xml,2.2.0-SNAPSHOT) > Starting container [org.jboss.windup.config:windup-config-xml,2.2.0-SNAPSHOT] [/Users/lb3/projects/jboss-migration/windup-web/target/windup-web/WEB-INF/addon-repository]
+13:21:22,450 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.windup.rules.apps:windup-rules-java-archives,2.2.0-SNAPSHOT) > Starting container [org.jboss.windup.rules.apps:windup-rules-java-archives,2.2.0-SNAPSHOT] [/Users/lb3/projects/jboss-migration/windup-web/target/windup-web/WEB-INF/addon-repository]
+13:21:22,450 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.windup.rules.apps:windup-rules-java,2.2.0-SNAPSHOT) > Starting container [org.jboss.windup.rules.apps:windup-rules-java,2.2.0-SNAPSHOT] [/Users/lb3/projects/jboss-migration/windup-web/target/windup-web/WEB-INF/addon-repository]
+13:21:22,450 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.forge.addon:ui,2.14.0.Final) > Starting container [org.jboss.forge.addon:ui,2.14.0.Final] [/Users/lb3/projects/jboss-migration/windup-web/target/windup-web/WEB-INF/addon-repository]
+13:21:22,450 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.windup.rules.apps:windup-rules-xml,2.2.0-SNAPSHOT) > Starting container [org.jboss.windup.rules.apps:windup-rules-xml,2.2.0-SNAPSHOT] [/Users/lb3/projects/jboss-migration/windup-web/target/windup-web/WEB-INF/addon-repository]
+13:21:22,450 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.windup.exec:windup-exec,2.2.0-SNAPSHOT) > Starting container [org.jboss.windup.exec:windup-exec,2.2.0-SNAPSHOT] [/Users/lb3/projects/jboss-migration/windup-web/target/windup-web/WEB-INF/addon-repository]
+13:21:22,450 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.windup.rules.apps:windup-rules-java-project,2.2.0-SNAPSHOT) > Starting container [org.jboss.windup.rules.apps:windup-rules-java-project,2.2.0-SNAPSHOT] [/Users/lb3/projects/jboss-migration/windup-web/target/windup-web/WEB-INF/addon-repository]
+13:21:22,450 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.windup.ui:windup-ui,2.2.0-SNAPSHOT) > Starting container [org.jboss.windup.ui:windup-ui,2.2.0-SNAPSHOT] [/Users/lb3/projects/jboss-migration/windup-web/target/windup-web/WEB-INF/addon-repository]
+13:21:22,451 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.windup.rules.apps:windup-rules-java-ee,2.2.0-SNAPSHOT) > Starting container [org.jboss.windup.rules.apps:windup-rules-java-ee,2.2.0-SNAPSHOT] [/Users/lb3/projects/jboss-migration/windup-web/target/windup-web/WEB-INF/addon-repository]
+13:21:22,479 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.forge.furnace.container:cdi,2.14.0.Final) >> Started container [org.jboss.forge.furnace.container:cdi,2.14.0.Final] - 32ms
+13:21:22,480 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.windup.decompiler:decompiler-procyon,2.2.0-SNAPSHOT) >> Started container [org.jboss.windup.decompiler:decompiler-procyon,2.2.0-SNAPSHOT] - 32ms
+13:21:22,480 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.forge.furnace.container:simple,2.14.0.Final) >> Started container [org.jboss.forge.furnace.container:simple,2.14.0.Final] - 34ms
+13:21:22,480 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.windup.decompiler:decompiler-api,2.2.0-SNAPSHOT) >> Started container [org.jboss.windup.decompiler:decompiler-api,2.2.0-SNAPSHOT] - 34ms
+13:21:22,485 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.forge.addon:ui-spi,2.14.0.Final) >> Started container [org.jboss.forge.addon:ui-spi,2.14.0.Final] - 37ms
+13:21:22,528 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.forge.addon:facets,2.14.0.Final) >> Started container [org.jboss.forge.addon:facets,2.14.0.Final] - 80ms
+13:21:22,530 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.forge.addon:environment,2.14.0.Final) >> Started container [org.jboss.forge.addon:environment,2.14.0.Final] - 82ms
+13:21:22,532 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.windup.utils:utils,2.2.0-SNAPSHOT) >> Started container [org.jboss.windup.utils:utils,2.2.0-SNAPSHOT] - 86ms
+13:21:22,589 INFO  [org.jboss.weld.Version] (org.jboss.windup.reporting:windup-reporting,2.2.0-SNAPSHOT) WELD-000900: 2.2.1 (Final)
+13:21:22,886 INFO  [org.jboss.weld.Bootstrap] (org.jboss.windup.rules.apps:windup-rules-java,2.2.0-SNAPSHOT) WELD-000101: Transactional services not available. Injection of @Inject UserTransaction not available. Transactional observers will be invoked synchronously.
+13:21:22,886 INFO  [org.jboss.weld.Bootstrap] (org.jboss.windup.config:windup-config-groovy,2.2.0-SNAPSHOT) WELD-000101: Transactional services not available. Injection of @Inject UserTransaction not available. Transactional observers will be invoked synchronously.
+13:21:22,886 INFO  [org.jboss.weld.Bootstrap] (org.jboss.forge.addon:resources,2.14.0.Final) WELD-000101: Transactional services not available. Injection of @Inject UserTransaction not available. Transactional observers will be invoked synchronously.
+13:21:22,886 INFO  [org.jboss.weld.Bootstrap] (org.jboss.windup.config:windup-config,2.2.0-SNAPSHOT) WELD-000101: Transactional services not available. Injection of @Inject UserTransaction not available. Transactional observers will be invoked synchronously.
+13:21:22,886 INFO  [org.jboss.weld.Bootstrap] (org.jboss.windup.rules.apps:windup-rules-java-ee,2.2.0-SNAPSHOT) WELD-000101: Transactional services not available. Injection of @Inject UserTransaction not available. Transactional observers will be invoked synchronously.
+13:21:22,887 INFO  [org.jboss.weld.Bootstrap] (org.jboss.windup.rules.apps:windup-rules-java-archives,2.2.0-SNAPSHOT) WELD-000101: Transactional services not available. Injection of @Inject UserTransaction not available. Transactional observers will be invoked synchronously.
+13:21:22,887 INFO  [org.jboss.weld.Bootstrap] (org.jboss.windup.rules.apps:windup-rules-xml,2.2.0-SNAPSHOT) WELD-000101: Transactional services not available. Injection of @Inject UserTransaction not available. Transactional observers will be invoked synchronously.
+13:21:22,887 INFO  [org.jboss.weld.Bootstrap] (org.jboss.forge.addon:convert,2.14.0.Final) WELD-000101: Transactional services not available. Injection of @Inject UserTransaction not available. Transactional observers will be invoked synchronously.
+13:21:22,887 INFO  [org.jboss.weld.Bootstrap] (org.jboss.forge.addon:ui,2.14.0.Final) WELD-000101: Transactional services not available. Injection of @Inject UserTransaction not available. Transactional observers will be invoked synchronously.
+13:21:22,886 INFO  [org.jboss.weld.Bootstrap] (org.jboss.windup.reporting:windup-reporting,2.2.0-SNAPSHOT) WELD-000101: Transactional services not available. Injection of @Inject UserTransaction not available. Transactional observers will be invoked synchronously.
+13:21:22,887 INFO  [org.jboss.weld.Bootstrap] (org.jboss.windup.ui:windup-ui,2.2.0-SNAPSHOT) WELD-000101: Transactional services not available. Injection of @Inject UserTransaction not available. Transactional observers will be invoked synchronously.
+13:21:22,887 INFO  [org.jboss.weld.Bootstrap] (org.jboss.windup.graph:windup-graph,2.2.0-SNAPSHOT) WELD-000101: Transactional services not available. Injection of @Inject UserTransaction not available. Transactional observers will be invoked synchronously.
+13:21:22,887 INFO  [org.jboss.weld.Bootstrap] (org.jboss.windup.rules.apps:windup-rules-java-project,2.2.0-SNAPSHOT) WELD-000101: Transactional services not available. Injection of @Inject UserTransaction not available. Transactional observers will be invoked synchronously.
+13:21:22,887 INFO  [org.jboss.weld.Bootstrap] (org.jboss.windup.exec:windup-exec,2.2.0-SNAPSHOT) WELD-000101: Transactional services not available. Injection of @Inject UserTransaction not available. Transactional observers will be invoked synchronously.
+13:21:22,887 INFO  [org.jboss.weld.Bootstrap] (org.jboss.windup.config:windup-config-xml,2.2.0-SNAPSHOT) WELD-000101: Transactional services not available. Injection of @Inject UserTransaction not available. Transactional observers will be invoked synchronously.
+13:21:22,891 INFO  [org.jboss.weld.Bootstrap] (org.jboss.windup.rules.apps:windup-rules-base,2.2.0-SNAPSHOT) WELD-000101: Transactional services not available. Injection of @Inject UserTransaction not available. Transactional observers will be invoked synchronously.
+13:21:23,226 WARN  [org.jboss.weld.Interceptor] (org.jboss.windup.rules.apps:windup-rules-xml,2.2.0-SNAPSHOT) WELD-001700: Interceptor annotation class javax.ejb.PostActivate not found, interception based on it is not enabled
+13:21:23,227 WARN  [org.jboss.weld.Interceptor] (org.jboss.windup.rules.apps:windup-rules-xml,2.2.0-SNAPSHOT) WELD-001700: Interceptor annotation class javax.ejb.PrePassivate not found, interception based on it is not enabled
+13:21:23,629 WARN  [org.jboss.weld.Event] (org.jboss.windup.config:windup-config,2.2.0-SNAPSHOT) WELD-000411: Observer method [BackedAnnotatedMethod] public org.jboss.forge.furnace.container.cdi.impl.ContainerServiceExtension.processRemoteServiceTypes(@Observes ProcessAnnotatedType<Object>) receives events for all annotated types. Consider restricting events using @WithAnnotations or a generic type with bounds.
+13:21:23,629 WARN  [org.jboss.weld.Event] (org.jboss.windup.reporting:windup-reporting,2.2.0-SNAPSHOT) WELD-000411: Observer method [BackedAnnotatedMethod] public org.jboss.forge.furnace.container.cdi.impl.ContainerServiceExtension.processRemoteServiceTypes(@Observes ProcessAnnotatedType<Object>) receives events for all annotated types. Consider restricting events using @WithAnnotations or a generic type with bounds.
+13:21:23,633 WARN  [org.jboss.weld.Event] (org.jboss.forge.addon:ui,2.14.0.Final) WELD-000411: Observer method [BackedAnnotatedMethod] public org.jboss.forge.addon.ui.impl.extension.AnnotatedCommandExtension.observeAnnotationMethods(@Observes ProcessAnnotatedType<Object>, BeanManager) receives events for all annotated types. Consider restricting events using @WithAnnotations or a generic type with bounds.
+13:21:23,630 WARN  [org.jboss.weld.Event] (org.jboss.windup.rules.apps:windup-rules-base,2.2.0-SNAPSHOT) WELD-000411: Observer method [BackedAnnotatedMethod] public org.jboss.forge.furnace.container.cdi.impl.ContainerServiceExtension.processRemoteServiceTypes(@Observes ProcessAnnotatedType<Object>) receives events for all annotated types. Consider restricting events using @WithAnnotations or a generic type with bounds.
+13:21:23,629 WARN  [org.jboss.weld.Event] (org.jboss.windup.rules.apps:windup-rules-java-project,2.2.0-SNAPSHOT) WELD-000411: Observer method [BackedAnnotatedMethod] public org.jboss.forge.furnace.container.cdi.impl.ContainerServiceExtension.processRemoteServiceTypes(@Observes ProcessAnnotatedType<Object>) receives events for all annotated types. Consider restricting events using @WithAnnotations or a generic type with bounds.
+13:21:23,635 WARN  [org.jboss.weld.Event] (org.jboss.windup.rules.apps:windup-rules-java-archives,2.2.0-SNAPSHOT) WELD-000411: Observer method [BackedAnnotatedMethod] public org.jboss.forge.furnace.container.cdi.impl.ContainerServiceExtension.processRemoteServiceTypes(@Observes ProcessAnnotatedType<Object>) receives events for all annotated types. Consider restricting events using @WithAnnotations or a generic type with bounds.
+13:21:23,636 WARN  [org.jboss.weld.Event] (org.jboss.windup.graph:windup-graph,2.2.0-SNAPSHOT) WELD-000411: Observer method [BackedAnnotatedMethod] public org.jboss.forge.furnace.container.cdi.impl.ContainerServiceExtension.processRemoteServiceTypes(@Observes ProcessAnnotatedType<Object>) receives events for all annotated types. Consider restricting events using @WithAnnotations or a generic type with bounds.
+13:21:23,636 WARN  [org.jboss.weld.Event] (org.jboss.windup.config:windup-config-groovy,2.2.0-SNAPSHOT) WELD-000411: Observer method [BackedAnnotatedMethod] public org.jboss.forge.furnace.container.cdi.impl.ContainerServiceExtension.processRemoteServiceTypes(@Observes ProcessAnnotatedType<Object>) receives events for all annotated types. Consider restricting events using @WithAnnotations or a generic type with bounds.
+13:21:23,629 WARN  [org.jboss.weld.Event] (org.jboss.windup.exec:windup-exec,2.2.0-SNAPSHOT) WELD-000411: Observer method [BackedAnnotatedMethod] public org.jboss.forge.furnace.container.cdi.impl.ContainerServiceExtension.processRemoteServiceTypes(@Observes ProcessAnnotatedType<Object>) receives events for all annotated types. Consider restricting events using @WithAnnotations or a generic type with bounds.
+13:21:23,632 WARN  [org.jboss.weld.Event] (org.jboss.windup.ui:windup-ui,2.2.0-SNAPSHOT) WELD-000411: Observer method [BackedAnnotatedMethod] public org.jboss.forge.addon.ui.impl.extension.AnnotatedCommandExtension.observeAnnotationMethods(@Observes ProcessAnnotatedType<Object>, BeanManager) receives events for all annotated types. Consider restricting events using @WithAnnotations or a generic type with bounds.
+13:21:23,639 WARN  [org.jboss.weld.Event] (org.jboss.forge.addon:convert,2.14.0.Final) WELD-000411: Observer method [BackedAnnotatedMethod] public org.jboss.forge.furnace.container.cdi.impl.ContainerServiceExtension.processRemoteServiceTypes(@Observes ProcessAnnotatedType<Object>) receives events for all annotated types. Consider restricting events using @WithAnnotations or a generic type with bounds.
+13:21:23,639 WARN  [org.jboss.weld.Event] (org.jboss.windup.rules.apps:windup-rules-java,2.2.0-SNAPSHOT) WELD-000411: Observer method [BackedAnnotatedMethod] public org.jboss.forge.furnace.container.cdi.impl.ContainerServiceExtension.processRemoteServiceTypes(@Observes ProcessAnnotatedType<Object>) receives events for all annotated types. Consider restricting events using @WithAnnotations or a generic type with bounds.
+13:21:23,639 WARN  [org.jboss.weld.Event] (org.jboss.forge.addon:resources,2.14.0.Final) WELD-000411: Observer method [BackedAnnotatedMethod] public org.jboss.forge.furnace.container.cdi.impl.ContainerServiceExtension.processRemoteServiceTypes(@Observes ProcessAnnotatedType<Object>) receives events for all annotated types. Consider restricting events using @WithAnnotations or a generic type with bounds.
+13:21:23,641 WARN  [org.jboss.weld.Event] (org.jboss.windup.rules.apps:windup-rules-java-ee,2.2.0-SNAPSHOT) WELD-000411: Observer method [BackedAnnotatedMethod] public org.jboss.forge.furnace.container.cdi.impl.ContainerServiceExtension.processRemoteServiceTypes(@Observes ProcessAnnotatedType<Object>) receives events for all annotated types. Consider restricting events using @WithAnnotations or a generic type with bounds.
+13:21:23,641 WARN  [org.jboss.weld.Event] (org.jboss.windup.rules.apps:windup-rules-xml,2.2.0-SNAPSHOT) WELD-000411: Observer method [BackedAnnotatedMethod] public org.jboss.forge.furnace.container.cdi.impl.ContainerServiceExtension.processRemoteServiceTypes(@Observes ProcessAnnotatedType<Object>) receives events for all annotated types. Consider restricting events using @WithAnnotations or a generic type with bounds.
+13:21:23,643 WARN  [org.jboss.weld.Event] (org.jboss.windup.config:windup-config-xml,2.2.0-SNAPSHOT) WELD-000411: Observer method [BackedAnnotatedMethod] public org.jboss.forge.furnace.container.cdi.impl.ContainerServiceExtension.processRemoteServiceTypes(@Observes ProcessAnnotatedType<Object>) receives events for all annotated types. Consider restricting events using @WithAnnotations or a generic type with bounds.
+13:21:23,647 WARN  [org.jboss.weld.Event] (org.jboss.windup.ui:windup-ui,2.2.0-SNAPSHOT) WELD-000411: Observer method [BackedAnnotatedMethod] public org.jboss.forge.furnace.container.cdi.impl.ContainerServiceExtension.processRemoteServiceTypes(@Observes ProcessAnnotatedType<Object>) receives events for all annotated types. Consider restricting events using @WithAnnotations or a generic type with bounds.
+13:21:23,649 WARN  [org.jboss.weld.Event] (org.jboss.forge.addon:ui,2.14.0.Final) WELD-000411: Observer method [BackedAnnotatedMethod] public org.jboss.forge.furnace.container.cdi.impl.ContainerServiceExtension.processRemoteServiceTypes(@Observes ProcessAnnotatedType<Object>) receives events for all annotated types. Consider restricting events using @WithAnnotations or a generic type with bounds.
+13:21:25,032 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.windup.graph:windup-graph,2.2.0-SNAPSHOT) >> Started container [org.jboss.windup.graph:windup-graph,2.2.0-SNAPSHOT] - 2585ms
+13:21:25,034 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.forge.addon:convert,2.14.0.Final) >> Started container [org.jboss.forge.addon:convert,2.14.0.Final] - 2587ms
+13:21:25,055 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.windup.config:windup-config,2.2.0-SNAPSHOT) >> Started container [org.jboss.windup.config:windup-config,2.2.0-SNAPSHOT] - 2607ms
+13:21:25,056 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.forge.addon:resources,2.14.0.Final) >> Started container [org.jboss.forge.addon:resources,2.14.0.Final] - 2607ms
+13:21:25,064 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.forge.addon:ui,2.14.0.Final) >> Started container [org.jboss.forge.addon:ui,2.14.0.Final] - 2614ms
+13:21:25,088 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.forge.addon:dependencies,2.14.0.Final) >> Started container [org.jboss.forge.addon:dependencies,2.14.0.Final] - 2640ms
+13:21:25,089 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.windup.exec:windup-exec,2.2.0-SNAPSHOT) >> Started container [org.jboss.windup.exec:windup-exec,2.2.0-SNAPSHOT] - 2638ms
+13:21:25,090 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.windup.config:windup-config-groovy,2.2.0-SNAPSHOT) >> Started container [org.jboss.windup.config:windup-config-groovy,2.2.0-SNAPSHOT] - 2641ms
+13:21:25,093 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.windup.config:windup-config-xml,2.2.0-SNAPSHOT) >> Started container [org.jboss.windup.config:windup-config-xml,2.2.0-SNAPSHOT] - 2643ms
+13:21:25,161 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.windup.ui:windup-ui,2.2.0-SNAPSHOT) >> Started container [org.jboss.windup.ui:windup-ui,2.2.0-SNAPSHOT] - 2710ms
+13:21:25,164 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.windup.rules.apps:windup-rules-base,2.2.0-SNAPSHOT) >> Started container [org.jboss.windup.rules.apps:windup-rules-base,2.2.0-SNAPSHOT] - 2715ms
+13:21:25,195 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.windup.reporting:windup-reporting,2.2.0-SNAPSHOT) >> Started container [org.jboss.windup.reporting:windup-reporting,2.2.0-SNAPSHOT] - 2746ms
+13:21:25,220 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.windup.rules.apps:windup-rules-xml,2.2.0-SNAPSHOT) >> Started container [org.jboss.windup.rules.apps:windup-rules-xml,2.2.0-SNAPSHOT] - 2769ms
+13:21:25,220 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.windup.rules.apps:windup-rules-java-archives,2.2.0-SNAPSHOT) >> Started container [org.jboss.windup.rules.apps:windup-rules-java-archives,2.2.0-SNAPSHOT] - 2769ms
+13:21:25,283 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.windup.rules.apps:windup-rules-java,2.2.0-SNAPSHOT) >> Started container [org.jboss.windup.rules.apps:windup-rules-java,2.2.0-SNAPSHOT] - 2833ms
+13:21:25,312 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.windup.rules.apps:windup-rules-java-ee,2.2.0-SNAPSHOT) >> Started container [org.jboss.windup.rules.apps:windup-rules-java-ee,2.2.0-SNAPSHOT] - 2861ms
+13:21:25,313 INFO  [org.jboss.forge.furnace.impl.addons.AddonRunnable] (org.jboss.windup.rules.apps:windup-rules-java-project,2.2.0-SNAPSHOT) >> Started container [org.jboss.windup.rules.apps:windup-rules-java-project,2.2.0-SNAPSHOT] - 2862ms
+13:21:25,338 INFO  [org.jboss.forge.furnace.impl.FurnaceImpl] (Furnace Container ) Detected changes in repository [/Users/lb3/projects/jboss-migration/windup-web/target/windup-web/WEB-INF/addon-repository (Immutable)].
+13:21:25,436 INFO  [org.jboss.forge.furnace.impl.addons.AddonLifecycleManager] (Furnace Container ) 
+ ------------ VIEW [ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3 - -1280812356]------------ 
+0: org.jboss.forge.furnace.container:simple:2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+1: org.jboss.windup.utils:utils:2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.furnace.container:simple:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+2: org.jboss.windup.decompiler:decompiler-api:2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.windup.utils:utils:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+3: org.jboss.windup.decompiler:decompiler-procyon:2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.decompiler:decompiler-api:[] -> 2.2.0-SNAPSHOT (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.windup.utils:utils:[] -> 2.2.0-SNAPSHOT (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+4: org.jboss.forge.furnace.container:cdi:2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+5: org.jboss.windup.graph:windup-graph:2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.utils:utils:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.furnace.container:cdi:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+6: org.jboss.forge.addon:convert:2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.furnace.container:cdi:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+7: org.jboss.forge.addon:environment:2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.furnace.container:simple:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+8: org.jboss.forge.addon:facets:2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.furnace.container:simple:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+9: org.jboss.forge.addon:ui-spi:2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.forge.addon:facets:[] -> 2.14.0.Final (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.addon:environment:[] -> 2.14.0.Final (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+10: org.jboss.forge.addon:resources:2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.forge.addon:facets:[] -> 2.14.0.Final (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.forge.addon:ui-spi:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.forge.furnace.container:cdi:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.addon:convert:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+11: org.jboss.forge.addon:dependencies:2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.forge.furnace.container:simple:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.forge.addon:resources:[] -> 2.14.0.Final (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.addon:convert:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+12: org.jboss.windup.config:windup-config:2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.utils:utils:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.graph:windup-graph:[] -> 2.2.0-SNAPSHOT (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.furnace.container:cdi:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+13: org.jboss.windup.config:windup-config-groovy:2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.utils:utils:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.config:windup-config:[] -> 2.2.0-SNAPSHOT (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.furnace.container:cdi:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+14: org.jboss.windup.config:windup-config-xml:2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.utils:utils:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.config:windup-config:[] -> 2.2.0-SNAPSHOT (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.furnace.container:cdi:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+15: org.jboss.windup.rules.apps:windup-rules-base:2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.utils:utils:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.config:windup-config:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.config:windup-config-xml:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.furnace.container:cdi:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+16: org.jboss.windup.reporting:windup-reporting:2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.utils:utils:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.rules.apps:windup-rules-base:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.config:windup-config:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.config:windup-config-xml:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.furnace.container:cdi:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+17: org.jboss.windup.rules.apps:windup-rules-java-archives:2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.utils:utils:[] -> 2.2.0-SNAPSHOT (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.reporting:windup-reporting:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.config:windup-config-groovy:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.config:windup-config:[] -> 2.2.0-SNAPSHOT (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.graph:windup-graph:[] -> 2.2.0-SNAPSHOT (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.forge.addon:dependencies:[] -> 2.14.0.Final (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.furnace.container:cdi:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+18: org.jboss.windup.rules.apps:windup-rules-xml:2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.utils:utils:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.reporting:windup-reporting:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.rules.apps:windup-rules-base:[] -> 2.2.0-SNAPSHOT (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.config:windup-config:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.config:windup-config-xml:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.furnace.container:cdi:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+19: org.jboss.windup.rules.apps:windup-rules-java:2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.decompiler:decompiler-procyon:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.utils:utils:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.reporting:windup-reporting:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.rules.apps:windup-rules-xml:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.config:windup-config-groovy:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.rules.apps:windup-rules-base:[] -> 2.2.0-SNAPSHOT (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.config:windup-config:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.config:windup-config-xml:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.rules.apps:windup-rules-java-archives:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.graph:windup-graph:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.furnace.container:cdi:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+20: org.jboss.forge.addon:ui:2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.forge.addon:facets:[] -> 2.14.0.Final (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.forge.addon:ui-spi:[] -> 2.14.0.Final (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.forge.furnace.container:cdi:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.addon:convert:[] -> 2.14.0.Final (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+21: org.jboss.windup.exec:windup-exec:2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.utils:utils:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.config:windup-config:[] -> 2.2.0-SNAPSHOT (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.graph:windup-graph:[] -> 2.2.0-SNAPSHOT (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.furnace.container:cdi:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+22: org.jboss.windup.ui:windup-ui:2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.utils:utils:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.exec:windup-exec:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.forge.addon:resources:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.forge.addon:ui:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.furnace.container:cdi:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+23: org.jboss.windup.rules.apps:windup-rules-java-project:2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.utils:utils:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.rules.apps:windup-rules-java:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.reporting:windup-reporting:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.config:windup-config:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.config:windup-config-xml:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.graph:windup-graph:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.furnace.container:cdi:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+
+24: org.jboss.windup.rules.apps:windup-rules-java-ee:2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.utils:utils:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.rules.apps:windup-rules-java:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.reporting:windup-reporting:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.rules.apps:windup-rules-xml:[] -> 2.2.0-SNAPSHOT (E) - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  +- org.jboss.windup.config:windup-config:[] -> 2.2.0-SNAPSHOT - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+  \- org.jboss.forge.furnace.container:cdi:[] -> 2.14.0.Final - Views[ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3] 
+ ------------ END [ROOT_131950be-c0b9-4f98-9d1f-4c2c46cc70c3 - -1280812356]------------ 
+13:21:25,558 INFO  [org.jboss.as.server] (ServerService Thread Pool -- 28) JBAS018559: Deployed "windup-web.war" (runtime-name : "windup-web.war")
+13:21:25,567 INFO  [org.jboss.as] (Controller Boot Thread) JBAS015961: Http management interface listening on http://192.168.1.6:9990/management
+13:21:25,568 INFO  [org.jboss.as] (Controller Boot Thread) JBAS015951: Admin console listening on http://192.168.1.6:9990
+13:21:25,568 INFO  [org.jboss.as] (Controller Boot Thread) JBAS015874: JBoss EAP 6.2.0.GA (AS 7.3.0.Final-redhat-14) started in 12886ms - Started 207 of 336 services (128 services are passive or on-demand)
+13:21:38,944 INFO  [org.jboss.resteasy.cdi.CdiInjectorFactory] (http-localhost/192.168.1.6:8080-1) Found BeanManager at java:comp/BeanManager
+13:21:39,128 INFO  [org.hibernate.validator.internal.util.Version] (http-localhost/192.168.1.6:8080-1) HV000001: Hibernate Validator 4.3.1.Final-redhat-1
+13:21:39,259 INFO  [org.jboss.resteasy.spi.ResteasyDeployment] (http-localhost/192.168.1.6:8080-1) Deploying javax.ws.rs.core.Application: class org.jboss.windup.rest.RestApplication$Proxy$_$$_WeldClientProxy
+13:21:39,452 INFO  [org.jboss.windup.graph.GraphTypeRegistry] (http-localhost/192.168.1.6:8080-1) Looking for *Model classes...
+13:21:39,535 INFO  [org.jboss.windup.graph.GraphTypeRegistry] (http-localhost/192.168.1.6:8080-1) Loaded [66] WindupVertexFrame sub-types [
+org.jboss.windup.graph.model.ApplicationArchiveModel
+org.jboss.windup.graph.model.ApplicationModel
+org.jboss.windup.graph.model.ArchiveModel
+org.jboss.windup.graph.model.ProjectDependencyModel
+org.jboss.windup.graph.model.ProjectModel
+org.jboss.windup.graph.model.WindupConfigurationModel
+org.jboss.windup.graph.model.performance.RulePhaseExecutionStatisticsModel
+org.jboss.windup.graph.model.performance.RuleProviderExecutionStatisticsModel
+org.jboss.windup.graph.model.report.IgnoredFileRegexModel
+org.jboss.windup.graph.model.resource.FileModel
+org.jboss.windup.graph.model.resource.IgnoredFileModel
+org.jboss.windup.graph.model.resource.SourceFileModel
+org.jboss.windup.reporting.model.ApplicationReportIndexModel
+org.jboss.windup.reporting.model.ApplicationReportModel
+org.jboss.windup.reporting.model.ClassificationModel
+org.jboss.windup.reporting.model.FreeMarkerSourceReportModel
+org.jboss.windup.reporting.model.IgnoredFilesReportModel
+org.jboss.windup.reporting.model.InlineHintModel
+org.jboss.windup.reporting.model.LinkModel
+org.jboss.windup.reporting.model.OverviewReportLineMessageModel
+org.jboss.windup.reporting.model.ReportFileModel
+org.jboss.windup.reporting.model.ReportModel
+org.jboss.windup.reporting.model.TechnologyTagModel
+org.jboss.windup.reporting.model.WindupVertexListModel
+org.jboss.windup.reporting.model.source.SourceReportModel
+org.jboss.windup.rules.apps.java.archives.model.ArchiveCoordinateModel
+org.jboss.windup.rules.apps.java.archives.model.IdentifiedArchiveModel
+org.jboss.windup.rules.apps.java.archives.model.IgnoredArchiveModel
+org.jboss.windup.rules.apps.java.ip.StaticIPLocationModel
+org.jboss.windup.rules.apps.java.model.AmbiguousJavaClassModel
+org.jboss.windup.rules.apps.java.model.AmbiguousReferenceModel
+org.jboss.windup.rules.apps.java.model.EarArchiveModel
+org.jboss.windup.rules.apps.java.model.JarArchiveModel
+org.jboss.windup.rules.apps.java.model.JarManifestModel
+org.jboss.windup.rules.apps.java.model.JavaClassFileModel
+org.jboss.windup.rules.apps.java.model.JavaClassModel
+org.jboss.windup.rules.apps.java.model.JavaMethodModel
+org.jboss.windup.rules.apps.java.model.JavaParameterModel
+org.jboss.windup.rules.apps.java.model.JavaSourceFileModel
+org.jboss.windup.rules.apps.java.model.PackageModel
+org.jboss.windup.rules.apps.java.model.PropertiesModel
+org.jboss.windup.rules.apps.java.model.WarArchiveModel
+org.jboss.windup.rules.apps.java.model.WindupJavaConfigurationModel
+org.jboss.windup.rules.apps.java.model.project.MavenProjectModel
+org.jboss.windup.rules.apps.java.scan.ast.JavaAnnotationTypeReferenceModel
+org.jboss.windup.rules.apps.java.scan.ast.JavaTypeReferenceModel
+org.jboss.windup.rules.apps.javaee.model.EjbBeanBaseModel
+org.jboss.windup.rules.apps.javaee.model.EjbDeploymentDescriptorModel
+org.jboss.windup.rules.apps.javaee.model.EjbEntityBeanModel
+org.jboss.windup.rules.apps.javaee.model.EjbMessageDrivenModel
+org.jboss.windup.rules.apps.javaee.model.EjbSessionBeanModel
+org.jboss.windup.rules.apps.javaee.model.EnvironmentReferenceModel
+org.jboss.windup.rules.apps.javaee.model.HibernateConfigurationFileModel
+org.jboss.windup.rules.apps.javaee.model.HibernateEntityModel
+org.jboss.windup.rules.apps.javaee.model.HibernateMappingFileModel
+org.jboss.windup.rules.apps.javaee.model.HibernateSessionFactoryModel
+org.jboss.windup.rules.apps.javaee.model.SpringBeanModel
+org.jboss.windup.rules.apps.javaee.model.SpringConfigurationFileModel
+org.jboss.windup.rules.apps.javaee.model.WebXmlModel
+org.jboss.windup.rules.apps.xml.model.DoctypeMetaModel
+org.jboss.windup.rules.apps.xml.model.NamespaceMetaModel
+org.jboss.windup.rules.apps.xml.model.XmlFileModel
+org.jboss.windup.rules.apps.xml.model.XmlTypeReferenceModel
+org.jboss.windup.rules.apps.xml.model.XsltTransformationModel
+org.jboss.windup.rules.files.model.FileLocationModel
+org.jboss.windup.rules.files.model.FileReferenceModel
+]
+13:21:39,622 INFO  [org.reflections.Reflections] (http-localhost/192.168.1.6:8080-1) Reflections took 44 ms to scan 1 urls, producing 0 keys and 0 values 
+13:21:40,029 INFO  [com.thinkaurelius.titan.graphdb.configuration.GraphDatabaseConfiguration] (http-localhost/192.168.1.6:8080-1) Enabled partitioning
+13:21:40,039 INFO  [com.thinkaurelius.titan.graphdb.configuration.GraphDatabaseConfiguration] (http-localhost/192.168.1.6:8080-1) Set default timestamp provider Timestamps[?s]
+13:21:40,093 INFO  [com.thinkaurelius.titan.graphdb.configuration.GraphDatabaseConfiguration] (http-localhost/192.168.1.6:8080-1) Generated unique-instance-id=7f0000013290-localhost1
+13:21:40,128 INFO  [com.thinkaurelius.titan.diskstorage.Backend] (http-localhost/192.168.1.6:8080-1) Configuring index [search]
+13:21:40,151 INFO  [com.thinkaurelius.titan.diskstorage.Backend] (http-localhost/192.168.1.6:8080-1) Initiated backend operations thread pool of size 16
+13:21:40,159 INFO  [com.thinkaurelius.titan.diskstorage.Backend] (http-localhost/192.168.1.6:8080-1) Configuring total store cache size: 43411376
+13:21:40,208 INFO  [com.thinkaurelius.titan.diskstorage.log.kcvs.KCVSLog] (http-localhost/192.168.1.6:8080-1) Loaded unidentified ReadMarker start time Timepoint[1425320500208000 ?s] into com.thinkaurelius.titan.diskstorage.log.kcvs.KCVSLog$MessagePuller@1d7d5442
+13:21:41,903 INFO  [stdout] (http-localhost/192.168.1.6:8080-1) Properties: {storage.directory=/var/folders/qp/tx3m3_49487d60x3b429p8g40000gn/T/Windup/windupgraph_0A5cgh/titangraph, index.search.directory=/var/folders/qp/tx3m3_49487d60x3b429p8g40000gn/T/Windup/windupgraph_0A5cgh/graphsearch, cache.db-cache=true, storage.backend=berkeleyje, storage.berkeleydb.cache-percentage=1, cache.db-cache-size=0.05, cache.db-cache-clean-wait=0, cache.db-cache-time=0, index.search.backend=lucene}
+13:21:43,250 INFO  [org.jboss.windup.config.loader.WindupRuleLoaderImpl] (http-localhost/192.168.1.6:8080-1) Rule Phases: [
+Phase: DependentPhase
+Phase: InitializationPhase
+Phase: DiscoveryPhase
+Phase: ArchiveExtractionPhase
+Phase: ArchiveMetadataExtractionPhase
+Phase: ClassifyFileTypesPhase
+Phase: DiscoverProjectStructurePhase
+Phase: DecompilationPhase
+Phase: InitialAnalysisPhase
+Phase: MigrationRulesPhase
+Phase: PostMigrationRulesPhase
+Phase: PreReportGenerationPhase
+Phase: ReportGenerationPhase
+Phase: PostReportGenerationPhase
+Phase: ReportRenderingPhase
+Phase: PostReportRenderingPhase
+Phase: FinalizePhase
+Phase: PostFinalizePhase
+]
+13:21:43,282 INFO  [org.jboss.windup.config.loader.WindupRuleLoaderImpl] (http-localhost/192.168.1.6:8080-1) Loaded [60] org.jboss.windup.config.WindupRuleProvider [
+org.jboss.windup.config.phase.DependentPhase
+org.jboss.windup.config.phase.InitializationPhase
+org.jboss.windup.rules.apps.java.scan.provider.JavaFileMappingRuleProvider
+org.jboss.windup.rules.apps.java.archives.config.ArchiveIdentificationConfigLoadingRuleProvider
+org.jboss.windup.rules.apps.java.config.CopyJavaConfigToGraphRuleProvider
+org.jboss.windup.rules.apps.java.archives.config.IgnoredArchivesConfigLoadingRuleProvider
+org.jboss.windup.rules.apps.java.config.GatherIgnoredFileNamesRuleProvider
+org.jboss.windup.config.phase.DiscoveryPhase
+org.jboss.windup.rules.apps.java.scan.provider.DiscoverFilesAndTypesRuleProvider
+org.jboss.windup.config.phase.ArchiveExtractionPhase
+org.jboss.windup.rules.apps.java.scan.provider.UnzipArchivesToOutputRuleProvider
+org.jboss.windup.config.phase.ArchiveMetadataExtractionPhase
+org.jboss.windup.rules.apps.java.scan.provider.DiscoverArchiveManifestFilesRuleProvider
+org.jboss.windup.rules.apps.java.scan.provider.DiscoverArchiveTypesRuleProvider
+org.jboss.windup.config.phase.ClassifyFileTypesPhase
+org.jboss.windup.rules.apps.java.scan.provider.IndexJavaClassFilesRuleProvider
+org.jboss.windup.rules.apps.java.scan.provider.IndexJavaSourceFilesRuleProvider
+org.jboss.windup.rules.apps.java.scan.provider.DiscoverPropertiesFilesRuleProvider
+org.jboss.windup.rules.apps.xml.DiscoverXmlFilesRuleProvider
+org.jboss.windup.config.phase.DiscoverProjectStructurePhase
+org.jboss.windup.rules.apps.java.scan.provider.DiscoverMavenProjectsRuleProvider
+org.jboss.windup.rules.apps.java.scan.provider.DiscoverNonMavenArchiveProjectsRuleProvider
+org.jboss.windup.rules.apps.java.scan.provider.DiscoverMavenHierarchyRuleProvider
+org.jboss.windup.rules.apps.java.scan.provider.DiscoverNonMavenSourceProjectsRuleProvider
+org.jboss.windup.config.phase.DecompilationPhase
+org.jboss.windup.rules.apps.java.decompiler.DecompileArchivesRuleProvider
+org.jboss.windup.config.phase.InitialAnalysisPhase
+org.jboss.windup.rules.apps.javaee.rules.DiscoverHibernateConfigurationRuleProvider
+org.jboss.windup.rules.apps.javaee.rules.DiscoverWebXmlRuleProvider
+org.jboss.windup.rules.apps.java.scan.provider.AnalyzeJavaFilesRuleProvider
+org.jboss.windup.rules.apps.javaee.rules.DiscoverHibernateMappingRuleProvider
+org.jboss.windup.rules.apps.javaee.rules.DiscoverEjbConfigurationXmlRuleProvider
+org.jboss.windup.rules.apps.javaee.rules.DiscoverSpringConfigurationFilesRuleProvider
+org.jboss.windup.rules.apps.javaee.rules.DiscoverEjbAnnotationsRuleProvider
+org.jboss.windup.config.phase.MigrationRulesPhase
+org.jboss.windup.rules.apps.java.ip.DiscoverStaticIPAddressRuleProvider
+org.jboss.windup.config.phase.PostMigrationRulesPhase
+org.jboss.windup.config.phase.PreReportGenerationPhase
+org.jboss.windup.reporting.rules.CreateApplicationReportIndexRuleProvider
+org.jboss.windup.config.phase.ReportGenerationPhase
+org.jboss.windup.rules.apps.javaee.rules.CreateEJBReportRuleProvider
+org.jboss.windup.rules.apps.java.reporting.rules.CreateJavaIgnoredFilesReportRuleProvider
+org.jboss.windup.rules.apps.javaee.rules.CreateSpringBeanReportRuleProvider
+org.jboss.windup.rules.apps.javaee.rules.CreateHibernateReportRuleProvider
+org.jboss.windup.rules.apps.java.reporting.rules.CreateJavaNonClassifiedFileReportRuleProvider
+org.jboss.windup.rules.apps.java.ip.CreateStaticIPAddressReportRuleProvider
+org.jboss.windup.rules.apps.java.reporting.rules.CreateJavaApplicationOverviewReportRuleProvider
+org.jboss.windup.reporting.rules.generation.CreateFreeMarkerMethodReportRuleProvider
+org.jboss.windup.config.phase.PostReportGenerationPhase
+org.jboss.windup.reporting.rules.generation.CreateSourceReportRuleProvider
+org.jboss.windup.reporting.rules.AttachApplicationReportsToIndexRuleProvider
+org.jboss.windup.config.phase.ReportRenderingPhase
+org.jboss.windup.reporting.rules.rendering.CssJsResourceRenderingRuleProvider
+org.jboss.windup.reporting.rules.rendering.RenderOverviewPageRuleProvider
+org.jboss.windup.reporting.rules.rendering.RenderReportRuleProvider
+org.jboss.windup.config.phase.PostReportRenderingPhase
+org.jboss.windup.config.phase.FinalizePhase
+org.jboss.windup.config.phase.PostFinalizePhase
+org.jboss.windup.reporting.rules.rendering.ExecutionTimeReportRuleProvider
+org.jboss.windup.reporting.rules.rendering.RenderRuleProviderReportRuleProvider
+]
+13:21:43,290 INFO  [org.ocpsoft.rewrite.param.DefaultParameterStore] (http-localhost/192.168.1.6:8080-1) Loaded [1] org.ocpsoft.rewrite.spi.GlobalParameterProvider [org.ocpsoft.rewrite.instance.WildcardParameterProvider<0>]
+13:21:43,443 INFO  [org.jboss.windup.rules.files.FileMapping] (http-localhost/192.168.1.6:8080-1) Added org.jboss.windup.rules.files.FileMapping.from(.*\.java$).to([interface org.jboss.windup.rules.apps.java.model.JavaSourceFileModel])
+13:21:43,447 INFO  [org.jboss.windup.rules.files.FileMapping] (http-localhost/192.168.1.6:8080-1) Added org.jboss.windup.rules.files.FileMapping.from(.*\.class$).to([interface org.jboss.windup.rules.apps.java.model.JavaClassFileModel])
+13:21:43,450 INFO  [org.jboss.windup.rules.files.FileMapping] (http-localhost/192.168.1.6:8080-1) Added org.jboss.windup.rules.files.FileMapping.from(.*\.xml$).to([interface org.jboss.windup.rules.apps.xml.model.XmlFileModel])
+13:21:43,459 INFO  [org.ocpsoft.rewrite.param.DefaultParameterValueStore] (http-localhost/192.168.1.6:8080-1) Loaded [1] org.ocpsoft.rewrite.spi.GlobalParameterProvider [org.ocpsoft.rewrite.instance.WildcardParameterProvider<0>]
+13:21:43,461 INFO  [ArchiveIdentificationLifecycleListener] (http-localhost/192.168.1.6:8080-1) Registered ArchiveIdentificationGraphChangedListener - archives will be identified automatically.
+13:21:43,461 INFO  [FileMappingLifecycleListener] (http-localhost/192.168.1.6:8080-1) Registered FileMappingGraphChangedListener- Mapped file types will be added to the graph automatically.
+13:21:43,466 INFO  [org.jboss.windup.config.RuleSubset] (http-localhost/192.168.1.6:8080-1) Rule [org.jboss.windup.rules.apps.java.scan.provider.JavaFileMappingRuleProvider@2450198a] matched and will be performed.
+13:21:43,510 INFO  [org.jboss.windup.config.RuleSubset] (http-localhost/192.168.1.6:8080-1) Rule [org.jboss.windup.rules.apps.java.scan.provider.JavaFileMappingRuleProvider@2450198a] matched and will be performed.
+13:21:43,535 INFO  [org.jboss.windup.config.RuleSubset] (http-localhost/192.168.1.6:8080-1) Rule [org.jboss.windup.rules.apps.java.archives.config.ArchiveIdentificationConfigLoadingRuleProvider@aa0eb382] matched and will be performed.
+13:21:43,537 WARNING [org.jboss.windup.util.WindupPathUtil] (http-localhost/192.168.1.6:8080-1) $WINDUP_HOME not set, using [] instead.
+13:21:43,553 INFO  [org.jboss.windup.config.RuleSubset] (http-localhost/192.168.1.6:8080-1) Rule [org.jboss.windup.rules.apps.java.config.CopyJavaConfigToGraphRuleProvider@8f05cc94] matched and will be performed.
+13:21:43,563 WARNING [org.jboss.windup.util.WindupPathUtil] (http-localhost/192.168.1.6:8080-1) $WINDUP_HOME not set, using [] instead.
+13:21:43,603 INFO  [org.jboss.windup.config.RuleSubset] (http-localhost/192.168.1.6:8080-1) Rule [org.jboss.windup.rules.apps.java.archives.config.IgnoredArchivesConfigLoadingRuleProvider@3929280f] matched and will be performed.
+13:21:43,604 WARNING [org.jboss.windup.util.WindupPathUtil] (http-localhost/192.168.1.6:8080-1) $WINDUP_HOME not set, using [] instead.
+13:21:43,618 INFO  [org.jboss.windup.config.RuleSubset] (http-localhost/192.168.1.6:8080-1) Rule [org.jboss.windup.rules.apps.java.config.GatherIgnoredFileNamesRuleProvider@cc870375] matched and will be performed.
+13:21:43,650 INFO  [org.jboss.windup.config.RuleSubset] (http-localhost/192.168.1.6:8080-1) Rule [org.jboss.windup.rules.apps.java.scan.provider.DiscoverFilesAndTypesRuleProvider@3f8b76aa] matched and will be performed.
+13:21:43,686 INFO  [org.jboss.windup.rules.apps.java.archives.listener.ArchiveIdentificationGraphChangedListener] (http-localhost/192.168.1.6:8080-1) Archive not identified: /Users/lb3/projects/jboss-migration/windup/test-files/jee-example-app-1.0.0.ear
+13:21:43,707 INFO  [org.jboss.windup.config.RuleSubset] (http-localhost/192.168.1.6:8080-1) Rule [org.jboss.windup.rules.apps.java.scan.provider.UnzipArchivesToOutputRuleProvider@5320e88f] matched and will be performed.
+13:21:43,724 INFO  [org.jboss.windup.rules.apps.java.scan.operation.UnzipArchiveToOutputFolder] (http-localhost/192.168.1.6:8080-1) Unzipping archive: [v[512]={fileName: jee-example-app-1.0.0.ear, w:vertextype: [FileResource, ArchiveModel:, ApplicationArchive, ApplicationModel], md5Hash: 9d9fbdf00fe6f766c72588856c015e86, ArchiveModel:archiveName: jee-example-app-1.0.0.ear, filePath: /Users/lb3/projects/jboss-migration/windup/test-files/jee-example-app-1.0.0.ear, sha1Hash: a24b9823cef34ed92025bc89c941c38cd44dcea5, applicationName: jee-example-app-1.0.0.ear, isDirectory: false}]
+13:21:43,731 INFO  [org.jboss.windup.rules.apps.java.scan.operation.UnzipArchiveToOutputFolder] (http-localhost/192.168.1.6:8080-1) Unzipping /Users/lb3/projects/jboss-migration/windup/test-files/jee-example-app-1.0.0.ear to /Users/lb3/Desktop/windup-web-report/archives/jee-example-app-1.0.0.ear
+13:21:43,763 INFO  [org.jboss.windup.rules.apps.java.archives.listener.ArchiveIdentificationGraphChangedListener] (http-localhost/192.168.1.6:8080-1) Archive not identified: /Users/lb3/Desktop/windup-web-report/archives/jee-example-app-1.0.0.ear/jee-example-services.jar
+13:21:43,767 INFO  [org.jboss.windup.rules.apps.java.scan.operation.UnzipArchiveToOutputFolder] (http-localhost/192.168.1.6:8080-1) Unzipping /Users/lb3/Desktop/windup-web-report/archives/jee-example-app-1.0.0.ear/jee-example-services.jar to /Users/lb3/Desktop/windup-web-report/archives/jee-example-services.jar
+13:21:43,883 INFO  [org.jboss.windup.rules.apps.java.archives.listener.ArchiveIdentificationGraphChangedListener] (http-localhost/192.168.1.6:8080-1) Archive not identified: /Users/lb3/Desktop/windup-web-report/archives/jee-example-app-1.0.0.ear/jee-example-web.war
+13:21:43,884 INFO  [org.jboss.windup.rules.apps.java.scan.operation.UnzipArchiveToOutputFolder] (http-localhost/192.168.1.6:8080-1) Unzipping /Users/lb3/Desktop/windup-web-report/archives/jee-example-app-1.0.0.ear/jee-example-web.war to /Users/lb3/Desktop/windup-web-report/archives/jee-example-web.war
+13:21:43,943 INFO  [org.jboss.windup.rules.apps.java.archives.listener.ArchiveIdentificationGraphChangedListener] (http-localhost/192.168.1.6:8080-1) Archive not identified: /Users/lb3/Desktop/windup-web-report/archives/jee-example-web.war/WEB-INF/lib/commons-lang-2.5.jar
+13:21:43,944 INFO  [org.jboss.windup.rules.apps.java.scan.operation.UnzipArchiveToOutputFolder] (http-localhost/192.168.1.6:8080-1) Unzipping /Users/lb3/Desktop/windup-web-report/archives/jee-example-web.war/WEB-INF/lib/commons-lang-2.5.jar to /Users/lb3/Desktop/windup-web-report/archives/commons-lang-2.5.jar
+13:21:44,262 INFO  [org.jboss.windup.rules.apps.java.archives.listener.ArchiveIdentificationGraphChangedListener] (http-localhost/192.168.1.6:8080-1) Archive not identified: /Users/lb3/Desktop/windup-web-report/archives/jee-example-web.war/WEB-INF/lib/log4j-1.2.6.jar
+13:21:44,263 INFO  [org.jboss.windup.rules.apps.java.scan.operation.UnzipArchiveToOutputFolder] (http-localhost/192.168.1.6:8080-1) Unzipping /Users/lb3/Desktop/windup-web-report/archives/jee-example-web.war/WEB-INF/lib/log4j-1.2.6.jar to /Users/lb3/Desktop/windup-web-report/archives/log4j-1.2.6.jar
+13:21:44,713 INFO  [org.jboss.windup.rules.apps.java.archives.listener.ArchiveIdentificationGraphChangedListener] (http-localhost/192.168.1.6:8080-1) Archive not identified: /Users/lb3/Desktop/windup-web-report/archives/jee-example-web.war/WEB-INF/lib/migration-support-1.0.0.jar
+13:21:44,714 INFO  [org.jboss.windup.rules.apps.java.scan.operation.UnzipArchiveToOutputFolder] (http-localhost/192.168.1.6:8080-1) Unzipping /Users/lb3/Desktop/windup-web-report/archives/jee-example-web.war/WEB-INF/lib/migration-support-1.0.0.jar to /Users/lb3/Desktop/windup-web-report/archives/migration-support-1.0.0.jar
+13:21:44,823 INFO  [org.jboss.windup.rules.apps.java.archives.listener.ArchiveIdentificationGraphChangedListener] (http-localhost/192.168.1.6:8080-1) Archive not identified: /Users/lb3/Desktop/windup-web-report/archives/jee-example-app-1.0.0.ear/log4j-1.2.6.jar
+13:21:44,824 INFO  [org.jboss.windup.rules.apps.java.scan.operation.UnzipArchiveToOutputFolder] (http-localhost/192.168.1.6:8080-1) Unzipping /Users/lb3/Desktop/windup-web-report/archives/jee-example-app-1.0.0.ear/log4j-1.2.6.jar to /Users/lb3/Desktop/windup-web-report/archives/log4j-1.2.6.jar.1
+13:21:45,185 INFO  [org.jboss.windup.rules.apps.java.archives.listener.ArchiveIdentificationGraphChangedListener] (http-localhost/192.168.1.6:8080-1) Archive not identified: /Users/lb3/Desktop/windup-web-report/archives/jee-example-app-1.0.0.ear/migration-support-1.0.0.jar
+13:21:45,186 INFO  [org.jboss.windup.rules.apps.java.scan.operation.UnzipArchiveToOutputFolder] (http-localhost/192.168.1.6:8080-1) Unzipping /Users/lb3/Desktop/windup-web-report/archives/jee-example-app-1.0.0.ear/migration-support-1.0.0.jar to /Users/lb3/Desktop/windup-web-report/archives/migration-support-1.0.0.jar.1
+13:21:45,308 INFO  [org.jboss.windup.config.operation.IterationProgress] (http-localhost/192.168.1.6:8080-1) Unzipped archive: 1 / 1
+13:21:45,816 INFO  [org.jboss.windup.config.RuleSubset] (http-localhost/192.168.1.6:8080-1) Rule [org.jboss.windup.rules.apps.java.scan.provider.DiscoverArchiveManifestFilesRuleProvider@d212f90f] matched and will be performed.
+13:21:45,903 INFO  [org.jboss.windup.config.RuleSubset] (http-localhost/192.168.1.6:8080-1) Rule [org.jboss.windup.rules.apps.java.scan.provider.DiscoverArchiveTypesRuleProvider@bed84880] matched and will be performed.
+13:21:46,012 INFO  [org.jboss.windup.config.RuleSubset] (http-localhost/192.168.1.6:8080-1) Rule [org.jboss.windup.rules.apps.java.scan.provider.IndexJavaClassFilesRuleProvider@5a6d9f6d] matched and will be performed.
+13:21:52,920 INFO  [org.jboss.windup.config.RuleSubset] (http-localhost/192.168.1.6:8080-1) Rule [org.jboss.windup.rules.apps.java.scan.provider.DiscoverPropertiesFilesRuleProvider@de86bdb5] matched and will be performed.
+13:21:52,941 INFO  [org.jboss.windup.config.RuleSubset] (http-localhost/192.168.1.6:8080-1) Rule [org.jboss.windup.rules.apps.xml.DiscoverXmlFilesRuleProvider@6ff6f406] matched and will be performed.
+13:21:52,951 INFO  [org.jboss.windup.config.RuleSubset] (http-localhost/192.168.1.6:8080-1) Rule [org.jboss.windup.rules.apps.xml.DiscoverXmlFilesRuleProvider@6ff6f406] matched and will be performed.
+13:21:53,176 INFO  [org.jboss.windup.config.RuleSubset] (http-localhost/192.168.1.6:8080-1) Rule [org.jboss.windup.rules.apps.java.scan.provider.DiscoverMavenProjectsRuleProvider@da3c4356] matched and will be performed.
+13:21:53,519 INFO  [org.jboss.windup.config.RuleSubset] (http-localhost/192.168.1.6:8080-1) Rule [org.jboss.windup.rules.apps.java.scan.provider.DiscoverNonMavenArchiveProjectsRuleProvider@9a64ce6f] matched and will be performed.
+13:21:53,585 INFO  [org.jboss.windup.config.operation.IterationProgress] (http-localhost/192.168.1.6:8080-1) Checking for non-Maven archive: 1 / 8
+13:21:53,644 INFO  [org.jboss.windup.config.operation.IterationProgress] (http-localhost/192.168.1.6:8080-1) Checking for non-Maven archive: 2 / 8
+13:21:53,677 INFO  [org.jboss.windup.config.RuleSubset] (http-localhost/192.168.1.6:8080-1) Rule [org.jboss.windup.rules.apps.java.scan.provider.DiscoverMavenHierarchyRuleProvider@6c6e2113] matched and will be performed.
+13:21:53,679 INFO  [org.jboss.windup.rules.apps.java.scan.provider.DiscoverMavenProjectsRuleProvider] (http-localhost/192.168.1.6:8080-1) Setting parent project for: org.windup.example:jee-example-web:1.0.0 to: /Users/lb3/projects/jboss-migration/windup/test-files/jee-example-app-1.0.0.ear
+13:21:53,681 INFO  [org.jboss.windup.rules.apps.java.scan.provider.DiscoverMavenProjectsRuleProvider] (http-localhost/192.168.1.6:8080-1) Setting parent project for: org.windup.example:jee-example-services:1.0.0 to: /Users/lb3/projects/jboss-migration/windup/test-files/jee-example-app-1.0.0.ear
+13:21:53,682 INFO  [org.jboss.windup.rules.apps.java.scan.provider.DiscoverMavenProjectsRuleProvider] (http-localhost/192.168.1.6:8080-1) Setting parent project for: commons-lang:commons-lang:2.5 to: /Users/lb3/Desktop/windup-web-report/archives/jee-example-app-1.0.0.ear/jee-example-web.war
+13:21:53,683 INFO  [org.jboss.windup.rules.apps.java.scan.provider.DiscoverMavenProjectsRuleProvider] (http-localhost/192.168.1.6:8080-1) Setting parent project for: org.migration.support:migration-support:1.0.0 to: /Users/lb3/projects/jboss-migration/windup/test-files/jee-example-app-1.0.0.ear
+13:21:53,689 INFO  [org.jboss.windup.config.RuleSubset] (http-localhost/192.168.1.6:8080-1) Rule [AddProjectInformation] matched and will be performed.
+13:21:53,707 INFO  [org.jboss.windup.config.RuleSubset] (http-localhost/192.168.1.6:8080-1) Rule [org.jboss.windup.rules.apps.java.decompiler.DecompileArchivesRuleProvider@716b763d] matched and will be performed.
+13:21:53,719 INFO  [org.jboss.windup.rules.apps.java.decompiler.ProcyonDecompilerOperation] (http-localhost/192.168.1.6:8080-1) Decompiling with 8 threads
+13:21:53,720 INFO  [org.jboss.windup.decompiler.procyon.ProcyonDecompiler] (http-localhost/192.168.1.6:8080-1) Decompiling archive '/Users/lb3/Desktop/windup-web-report/archives/jee-example-web.war/WEB-INF/lib/commons-lang-2.5.jar' to '/Users/lb3/Desktop/windup-web-report/archives/commons-lang-2.5.jar'
+13:21:57,642 INFO  [org.jboss.windup.decompiler.procyon.ProcyonDecompiler] (pool-31-thread-8) Decompiling 50 / 132
+13:22:00,703 INFO  [org.jboss.windup.decompiler.procyon.ProcyonDecompiler] (pool-31-thread-1) Decompiling 100 / 132
+13:22:02,959 INFO  [org.jboss.windup.rules.apps.java.decompiler.ProcyonDecompilerOperation] (pool-32-thread-1) Performing final commit for archive vertex: 19200
+13:22:02,995 INFO  [org.jboss.windup.config.operation.IterationProgress] (http-localhost/192.168.1.6:8080-1) Decompiled archive: 1 / 7
+13:22:02,996 INFO  [org.jboss.windup.rules.apps.java.decompiler.ProcyonDecompilerOperation] (http-localhost/192.168.1.6:8080-1) Decompiling with 8 threads
+13:22:02,997 INFO  [org.jboss.windup.decompiler.procyon.ProcyonDecompiler] (http-localhost/192.168.1.6:8080-1) Decompiling archive '/Users/lb3/Desktop/windup-web-report/archives/jee-example-web.war/WEB-INF/lib/log4j-1.2.6.jar' to '/Users/lb3/Desktop/windup-web-report/archives/log4j-1.2.6.jar'
+13:22:05,355 INFO  [org.jboss.windup.decompiler.procyon.ProcyonDecompiler] (pool-34-thread-2) Decompiling 50 / 242
+13:22:08,417 INFO  [org.jboss.windup.decompiler.procyon.ProcyonDecompiler] (pool-34-thread-2) Decompiling 100 / 242
+13:22:11,623 INFO  [org.jboss.windup.decompiler.procyon.ProcyonDecompiler] (pool-34-thread-6) Decompiling 150 / 242
+13:22:15,313 INFO  [org.jboss.windup.rules.apps.java.decompiler.ProcyonDecompilerOperation] (pool-35-thread-1) Performing periodic commit (100) for archive vertex: 59136
+13:22:16,606 INFO  [org.jboss.windup.decompiler.procyon.ProcyonDecompiler] (pool-34-thread-7) Decompiling 200 / 242
+13:22:18,733 INFO  [org.jboss.windup.rules.apps.java.decompiler.ProcyonDecompilerOperation] (pool-35-thread-1) Performing final commit for archive vertex: 59136
+13:22:18,765 INFO  [org.jboss.windup.config.operation.IterationProgress] (http-localhost/192.168.1.6:8080-1) Decompiled archive: 2 / 7
+13:22:18,767 INFO  [org.jboss.windup.rules.apps.java.decompiler.ProcyonDecompilerOperation] (http-localhost/192.168.1.6:8080-1) Decompiling with 8 threads
+13:22:18,768 INFO  [org.jboss.windup.decompiler.procyon.ProcyonDecompiler] (http-localhost/192.168.1.6:8080-1) Decompiling archive '/Users/lb3/Desktop/windup-web-report/archives/jee-example-app-1.0.0.ear/jee-example-services.jar' to '/Users/lb3/Desktop/windup-web-report/archives/jee-example-services.jar'
+13:22:19,595 INFO  [org.jboss.windup.rules.apps.java.decompiler.ProcyonDecompilerOperation] (pool-38-thread-1) Performing final commit for archive vertex: 4864
+13:22:19,604 INFO  [org.jboss.windup.config.operation.IterationProgress] (http-localhost/192.168.1.6:8080-1) Decompiled archive: 3 / 7
+13:22:19,604 INFO  [org.jboss.windup.rules.apps.java.decompiler.ProcyonDecompilerOperation] (http-localhost/192.168.1.6:8080-1) Decompiling with 8 threads
+13:22:19,612 INFO  [org.jboss.windup.decompiler.procyon.ProcyonDecompiler] (http-localhost/192.168.1.6:8080-1) Decompiling archive '/Users/lb3/Desktop/windup-web-report/archives/jee-example-app-1.0.0.ear/jee-example-web.war' to '/Users/lb3/Desktop/windup-web-report/archives/jee-example-web.war/WEB-INF/classes'
+13:22:19,763 INFO  [org.jboss.windup.rules.apps.java.decompiler.ProcyonDecompilerOperation] (pool-41-thread-1) Performing final commit for archive vertex: 14336
+13:22:19,766 INFO  [org.jboss.windup.config.operation.IterationProgress] (http-localhost/192.168.1.6:8080-1) Decompiled archive: 4 / 7
+13:22:19,768 INFO  [org.jboss.windup.rules.apps.java.decompiler.ProcyonDecompilerOperation] (http-localhost/192.168.1.6:8080-1) Decompiling with 8 threads
+13:22:19,768 INFO  [org.jboss.windup.decompiler.procyon.ProcyonDecompiler] (http-localhost/192.168.1.6:8080-1) Decompiling archive '/Users/lb3/Desktop/windup-web-report/archives/jee-example-web.war/WEB-INF/lib/migration-support-1.0.0.jar' to '/Users/lb3/Desktop/windup-web-report/archives/migration-support-1.0.0.jar'
+13:22:20,249 INFO  [org.jboss.windup.rules.apps.java.decompiler.ProcyonDecompilerOperation] (pool-44-thread-1) Performing final commit for archive vertex: 129024
+13:22:20,266 INFO  [org.jboss.windup.config.operation.IterationProgress] (http-localhost/192.168.1.6:8080-1) Decompiled archive: 5 / 7
+13:22:20,266 INFO  [org.jboss.windup.rules.apps.java.decompiler.ProcyonDecompilerOperation] (http-localhost/192.168.1.6:8080-1) Decompiling with 8 threads
+13:22:20,267 INFO  [org.jboss.windup.decompiler.procyon.ProcyonDecompiler] (http-localhost/192.168.1.6:8080-1) Decompiling archive '/Users/lb3/Desktop/windup-web-report/archives/jee-example-app-1.0.0.ear/log4j-1.2.6.jar' to '/Users/lb3/Desktop/windup-web-report/archives/log4j-1.2.6.jar.1'
+13:22:22,712 INFO  [org.jboss.windup.decompiler.procyon.ProcyonDecompiler] (pool-46-thread-6) Decompiling 50 / 242
+13:22:25,162 INFO  [org.jboss.windup.decompiler.procyon.ProcyonDecompiler] (pool-46-thread-1) Decompiling 100 / 242
+13:22:28,568 INFO  [org.jboss.windup.decompiler.procyon.ProcyonDecompiler] (pool-46-thread-7) Decompiling 150 / 242
+13:22:31,400 INFO  [org.jboss.windup.rules.apps.java.decompiler.ProcyonDecompilerOperation] (pool-47-thread-1) Performing periodic commit (100) for archive vertex: 144640
+13:22:32,870 INFO  [org.jboss.windup.decompiler.procyon.ProcyonDecompiler] (pool-46-thread-6) Decompiling 200 / 242
+13:22:34,430 INFO  [org.jboss.windup.rules.apps.java.decompiler.ProcyonDecompilerOperation] (pool-47-thread-1) Performing final commit for archive vertex: 144640
+13:22:34,471 INFO  [org.jboss.windup.config.operation.IterationProgress] (http-localhost/192.168.1.6:8080-1) Decompiled archive: 6 / 7
+13:22:34,474 INFO  [org.jboss.windup.rules.apps.java.decompiler.ProcyonDecompilerOperation] (http-localhost/192.168.1.6:8080-1) Decompiling with 8 threads
+13:22:34,475 INFO  [org.jboss.windup.decompiler.procyon.ProcyonDecompiler] (http-localhost/192.168.1.6:8080-1) Decompiling archive '/Users/lb3/Desktop/windup-web-report/archives/jee-example-app-1.0.0.ear/migration-support-1.0.0.jar' to '/Users/lb3/Desktop/windup-web-report/archives/migration-support-1.0.0.jar.1'
+13:22:34,780 INFO  [org.jboss.windup.rules.apps.java.decompiler.ProcyonDecompilerOperation] (pool-50-thread-1) Performing final commit for archive vertex: 217088
+13:22:34,795 INFO  [org.jboss.windup.config.operation.IterationProgress] (http-localhost/192.168.1.6:8080-1) Decompiled archive: 7 / 7
+13:22:34,820 INFO  [org.jboss.windup.config.RuleSubset] (http-localhost/192.168.1.6:8080-1) Rule [org.jboss.windup.rules.apps.javaee.rules.DiscoverWebXmlRuleProvider@6728bc35] matched and will be performed.
+13:22:34,876 INFO  [org.jboss.windup.config.RuleSubset] (http-localhost/192.168.1.6:8080-1) Rule [org.jboss.windup.rules.apps.java.scan.provider.AnalyzeJavaFilesRuleProvider@cb1f7aa9] matched and will be performed.
+13:22:37,438 INFO  [org.jboss.windup.config.operation.IterationProgress] (http-localhost/192.168.1.6:8080-1) Analyzed Java File: 250 / 500
+13:22:38,645 INFO  [org.jboss.windup.config.operation.IterationProgress] (http-localhost/192.168.1.6:8080-1) Analyzed Java File: 500 / 500
+13:22:38,694 INFO  [org.jboss.windup.config.RuleSubset] (http-localhost/192.168.1.6:8080-1) Rule [org.jboss.windup.rules.apps.javaee.rules.DiscoverEjbConfigurationXmlRuleProvider@5d799ea6] matched and will be performed.
+13:22:39,252 INFO  [org.jboss.windup.config.RuleSubset] (http-localhost/192.168.1.6:8080-1) Rule [org.jboss.windup.reporting.rules.CreateApplicationReportIndexRuleProvider@d9a5934b] matched and will be performed.
+13:22:39,264 INFO  [org.jboss.windup.config.RuleSubset] (http-localhost/192.168.1.6:8080-1) Rule [org.jboss.windup.rules.apps.javaee.rules.CreateEJBReportRuleProvider@fe67e3e6] matched and will be performed.
+13:22:39,307 INFO  [org.jboss.windup.config.RuleSubset] (http-localhost/192.168.1.6:8080-1) Rule [org.jboss.windup.rules.apps.java.reporting.rules.CreateJavaNonClassifiedFileReportRuleProvider@f4cc84ac] matched and will be performed.
+13:22:39,321 INFO  [org.jboss.windup.config.RuleSubset] (http-localhost/192.168.1.6:8080-1) Rule [org.jboss.windup.rules.apps.java.reporting.rules.CreateJavaApplicationOverviewReportRuleProvider@5d41c39] matched and will be performed.
+13:22:39,326 INFO  [org.jboss.windup.config.RuleSubset] (http-localhost/192.168.1.6:8080-1) Rule [org.jboss.windup.reporting.rules.generation.CreateFreeMarkerMethodReportRuleProvider@c692998] matched and will be performed.
+13:22:39,824 INFO  [org.jboss.windup.config.RuleSubset] (http-localhost/192.168.1.6:8080-1) Rule [org.jboss.windup.reporting.rules.generation.CreateSourceReportRuleProvider@f54a526c] matched and will be performed.
+13:22:39,992 INFO  [org.jboss.windup.config.RuleSubset] (http-localhost/192.168.1.6:8080-1) Rule [org.jboss.windup.reporting.rules.AttachApplicationReportsToIndexRuleProvider@598a9abc] matched and will be performed.
+13:22:39,996 INFO  [org.jboss.windup.config.RuleSubset] (http-localhost/192.168.1.6:8080-1) Rule [org.jboss.windup.reporting.rules.rendering.CssJsResourceRenderingRuleProvider@a4556a73] matched and will be performed.
+13:22:40,084 INFO  [org.jboss.windup.config.RuleSubset] (http-localhost/192.168.1.6:8080-1) Rule [org.jboss.windup.reporting.rules.rendering.RenderOverviewPageRuleProvider@3358cdff] matched and will be performed.
+13:22:40,086 INFO  [org.jboss.windup.reporting.freemarker.FreeMarkerOperation] (http-localhost/192.168.1.6:8080-1) Reporting: Writing template "/reports/templates/index.ftl" to output file "/Users/lb3/Desktop/windup-web-report/reports/../index.html"
+13:22:40,376 INFO  [org.jboss.windup.config.RuleSubset] (http-localhost/192.168.1.6:8080-1) Rule [org.jboss.windup.reporting.rules.rendering.RenderReportRuleProvider@6ea2790b] matched and will be performed.
+13:22:40,377 INFO  [org.jboss.windup.reporting.freemarker.FreeMarkerIterationOperation] (http-localhost/192.168.1.6:8080-1) Reporting: Writing template "/reports/templates/source.ftl" to output file "/Users/lb3/Desktop/windup-web-report/reports/ejb_jar_xml.html"
+13:22:41,158 INFO  [org.jboss.windup.reporting.freemarker.FreeMarkerIterationOperation] (http-localhost/192.168.1.6:8080-1) Reporting: Writing template "/reports/templates/windupfreemarkerfunctions.ftl" to output file "/Users/lb3/Desktop/windup-web-report/reports/windup_freemarkerfunctions.html"
+13:22:41,168 INFO  [org.jboss.windup.reporting.freemarker.FreeMarkerIterationOperation] (http-localhost/192.168.1.6:8080-1) Reporting: Writing template "/reports/templates/ejb.ftl" to output file "/Users/lb3/Desktop/windup-web-report/reports/ejbreport_JEE_Example_App__org_windup_example_jee_example_app_1_0_0_.html"
+13:22:41,225 INFO  [org.jboss.windup.reporting.freemarker.FreeMarkerIterationOperation] (http-localhost/192.168.1.6:8080-1) Reporting: Writing template "/reports/templates/non_classified_files.ftl" to output file "/Users/lb3/Desktop/windup-web-report/reports/nonclassifiedfiles_JEE_Example_App__org_windup_example_jee_example_app_1_0_0_.html"
+13:22:42,299 INFO  [org.jboss.windup.reporting.freemarker.FreeMarkerIterationOperation] (http-localhost/192.168.1.6:8080-1) Reporting: Writing template "/reports/templates/java_application.ftl" to output file "/Users/lb3/Desktop/windup-web-report/reports/JEE_Example_App__org_windup_example_jee_example_app_1_0_0_.html"
+13:22:43,159 INFO  [org.jboss.windup.reporting.freemarker.FreeMarkerIterationOperation] (http-localhost/192.168.1.6:8080-1) Reporting: Writing template "/reports/templates/source.ftl" to output file "/Users/lb3/Desktop/windup-web-report/reports/MANIFEST_MF.html"
+13:22:43,183 INFO  [org.jboss.windup.reporting.freemarker.FreeMarkerIterationOperation] (http-localhost/192.168.1.6:8080-1) Reporting: Writing template "/reports/templates/source.ftl" to output file "/Users/lb3/Desktop/windup-web-report/reports/pom_properties.html"
+13:22:43,205 INFO  [org.jboss.windup.reporting.freemarker.FreeMarkerIterationOperation] (http-localhost/192.168.1.6:8080-1) Reporting: Writing template "/reports/templates/source.ftl" to output file "/Users/lb3/Desktop/windup-web-report/reports/MANIFEST_MF.1.html"
+13:22:43,227 INFO  [org.jboss.windup.reporting.freemarker.FreeMarkerIterationOperation] (http-localhost/192.168.1.6:8080-1) Reporting: Writing template "/reports/templates/source.ftl" to output file "/Users/lb3/Desktop/windup-web-report/reports/MANIFEST_MF.2.html"
+13:22:43,243 INFO  [org.jboss.windup.reporting.freemarker.FreeMarkerIterationOperation] (http-localhost/192.168.1.6:8080-1) Reporting: Writing template "/reports/templates/source.ftl" to output file "/Users/lb3/Desktop/windup-web-report/reports/pom_properties.1.html"
+13:22:43,259 INFO  [org.jboss.windup.reporting.freemarker.FreeMarkerIterationOperation] (http-localhost/192.168.1.6:8080-1) Reporting: Writing template "/reports/templates/source.ftl" to output file "/Users/lb3/Desktop/windup-web-report/reports/MANIFEST_MF.3.html"
+13:22:43,275 INFO  [org.jboss.windup.reporting.freemarker.FreeMarkerIterationOperation] (http-localhost/192.168.1.6:8080-1) Reporting: Writing template "/reports/templates/source.ftl" to output file "/Users/lb3/Desktop/windup-web-report/reports/pom_properties.2.html"
+13:22:43,291 INFO  [org.jboss.windup.reporting.freemarker.FreeMarkerIterationOperation] (http-localhost/192.168.1.6:8080-1) Reporting: Writing template "/reports/templates/source.ftl" to output file "/Users/lb3/Desktop/windup-web-report/reports/defaultconfig_properties.html"
+13:22:43,308 INFO  [org.jboss.windup.reporting.freemarker.FreeMarkerIterationOperation] (http-localhost/192.168.1.6:8080-1) Reporting: Writing template "/reports/templates/source.ftl" to output file "/Users/lb3/Desktop/windup-web-report/reports/MANIFEST_MF.4.html"
+13:22:43,336 INFO  [org.jboss.windup.reporting.freemarker.FreeMarkerIterationOperation] (http-localhost/192.168.1.6:8080-1) Reporting: Writing template "/reports/templates/source.ftl" to output file "/Users/lb3/Desktop/windup-web-report/reports/pom_properties.3.html"
+13:22:43,359 INFO  [org.jboss.windup.reporting.freemarker.FreeMarkerIterationOperation] (http-localhost/192.168.1.6:8080-1) Reporting: Writing template "/reports/templates/source.ftl" to output file "/Users/lb3/Desktop/windup-web-report/reports/web_xml.html"
+13:22:43,376 INFO  [org.jboss.windup.reporting.freemarker.FreeMarkerIterationOperation] (http-localhost/192.168.1.6:8080-1) Reporting: Writing template "/reports/templates/source.ftl" to output file "/Users/lb3/Desktop/windup-web-report/reports/MANIFEST_MF.5.html"
+13:22:43,392 INFO  [org.jboss.windup.reporting.freemarker.FreeMarkerIterationOperation] (http-localhost/192.168.1.6:8080-1) Reporting: Writing template "/reports/templates/source.ftl" to output file "/Users/lb3/Desktop/windup-web-report/reports/defaultconfig_properties.1.html"
+13:22:43,406 INFO  [org.jboss.windup.reporting.freemarker.FreeMarkerIterationOperation] (http-localhost/192.168.1.6:8080-1) Reporting: Writing template "/reports/templates/source.ftl" to output file "/Users/lb3/Desktop/windup-web-report/reports/MANIFEST_MF.6.html"
+13:22:43,421 INFO  [org.jboss.windup.reporting.freemarker.FreeMarkerIterationOperation] (http-localhost/192.168.1.6:8080-1) Reporting: Writing template "/reports/templates/source.ftl" to output file "/Users/lb3/Desktop/windup-web-report/reports/pom_properties.4.html"
+13:22:43,437 INFO  [org.jboss.windup.reporting.freemarker.FreeMarkerIterationOperation] (http-localhost/192.168.1.6:8080-1) Reporting: Writing template "/reports/templates/source.ftl" to output file "/Users/lb3/Desktop/windup-web-report/reports/MANIFEST_MF.7.html"
+13:22:43,452 INFO  [org.jboss.windup.reporting.freemarker.FreeMarkerIterationOperation] (http-localhost/192.168.1.6:8080-1) Reporting: Writing template "/reports/templates/source.ftl" to output file "/Users/lb3/Desktop/windup-web-report/reports/pom_properties.5.html"
+13:22:43,469 INFO  [org.jboss.windup.reporting.freemarker.FreeMarkerIterationOperation] (http-localhost/192.168.1.6:8080-1) Reporting: Writing template "/reports/templates/source.ftl" to output file "/Users/lb3/Desktop/windup-web-report/reports/ItemLookupHome_java.html"
+13:22:43,485 INFO  [org.jboss.windup.reporting.freemarker.FreeMarkerIterationOperation] (http-localhost/192.168.1.6:8080-1) Reporting: Writing template "/reports/templates/source.ftl" to output file "/Users/lb3/Desktop/windup-web-report/reports/ItemLookup_java.html"
+13:22:43,503 INFO  [org.jboss.windup.reporting.freemarker.FreeMarkerIterationOperation] (http-localhost/192.168.1.6:8080-1) Reporting: Writing template "/reports/templates/source.ftl" to output file "/Users/lb3/Desktop/windup-web-report/reports/ItemLookupLocal_java.html"
+13:22:43,520 INFO  [org.jboss.windup.reporting.freemarker.FreeMarkerIterationOperation] (http-localhost/192.168.1.6:8080-1) Reporting: Writing template "/reports/templates/source.ftl" to output file "/Users/lb3/Desktop/windup-web-report/reports/ItemLookupLocalHome_java.html"
+13:22:43,536 INFO  [org.jboss.windup.reporting.freemarker.FreeMarkerIterationOperation] (http-localhost/192.168.1.6:8080-1) Reporting: Writing template "/reports/templates/source.ftl" to output file "/Users/lb3/Desktop/windup-web-report/reports/ProductCatalog_java.html"
+13:22:43,552 INFO  [org.jboss.windup.reporting.freemarker.FreeMarkerIterationOperation] (http-localhost/192.168.1.6:8080-1) Reporting: Writing template "/reports/templates/source.ftl" to output file "/Users/lb3/Desktop/windup-web-report/reports/ProductCatalogHome_java.html"
+13:22:43,568 INFO  [org.jboss.windup.reporting.freemarker.FreeMarkerIterationOperation] (http-localhost/192.168.1.6:8080-1) Reporting: Writing template "/reports/templates/source.ftl" to output file "/Users/lb3/Desktop/windup-web-report/reports/ProductCatalogLocal_java.html"
+13:22:43,584 INFO  [org.jboss.windup.reporting.freemarker.FreeMarkerIterationOperation] (http-localhost/192.168.1.6:8080-1) Reporting: Writing template "/reports/templates/source.ftl" to output file "/Users/lb3/Desktop/windup-web-report/reports/ProductCatalogLocalHome_java.html"
+13:22:43,603 INFO  [org.jboss.windup.reporting.freemarker.FreeMarkerIterationOperation] (http-localhost/192.168.1.6:8080-1) Reporting: Writing template "/reports/templates/source.ftl" to output file "/Users/lb3/Desktop/windup-web-report/reports/ProductCatalogBean_java.html"
+13:22:43,622 INFO  [org.jboss.windup.reporting.freemarker.FreeMarkerIterationOperation] (http-localhost/192.168.1.6:8080-1) Reporting: Writing template "/reports/templates/source.ftl" to output file "/Users/lb3/Desktop/windup-web-report/reports/ItemLookupBean_java.html"
+13:22:43,645 INFO  [org.jboss.windup.reporting.freemarker.FreeMarkerIterationOperation] (http-localhost/192.168.1.6:8080-1) Reporting: Writing template "/reports/templates/source.ftl" to output file "/Users/lb3/Desktop/windup-web-report/reports/LogEventSubscriber_java.html"
+13:22:43,687 INFO  [org.jboss.windup.config.RuleSubset] (http-localhost/192.168.1.6:8080-1) Rule [org.jboss.windup.reporting.rules.rendering.ExecutionTimeReportRuleProvider@f3728c52] matched and will be performed.
+13:22:43,722 INFO  [org.jboss.windup.config.RuleSubset] (http-localhost/192.168.1.6:8080-1) Rule [org.jboss.windup.reporting.rules.rendering.RenderRuleProviderReportRuleProvider@d46f81f8] matched and will be performed.
+13:22:43,722 INFO  [org.jboss.windup.reporting.freemarker.FreeMarkerOperation] (http-localhost/192.168.1.6:8080-1) Reporting: Writing template "/reports/templates/ruleprovidersummary.ftl" to output file "/Users/lb3/Desktop/windup-web-report/reports/windup_ruleproviders.html"
+13:22:43,923 INFO  [org.jboss.windup.exec.WindupProcessorImpl] (http-localhost/192.168.1.6:8080-1) Windup execution took 62 seconds to execute on input: /Users/lb3/projects/jboss-migration/windup/test-files/jee-example-app-1.0.0.ear!
 
