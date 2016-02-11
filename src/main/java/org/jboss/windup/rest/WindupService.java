@@ -36,7 +36,7 @@ public class WindupService
         {
             WindupConfiguration configuration = new WindupConfiguration()
                         .setGraphContext(context)
-                        .setInputPath(Paths.get(inputPath))
+                        .addInputPath(Paths.get(inputPath))
                         .setOutputDirectory(Paths.get(outputPath));
 
             processor.execute(configuration);

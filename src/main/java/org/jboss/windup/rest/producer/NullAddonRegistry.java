@@ -6,11 +6,18 @@ import org.jboss.forge.furnace.addons.Addon;
 import org.jboss.forge.furnace.addons.AddonFilter;
 import org.jboss.forge.furnace.addons.AddonId;
 import org.jboss.forge.furnace.addons.AddonRegistry;
+import org.jboss.forge.furnace.event.EventManager;
 import org.jboss.forge.furnace.repositories.AddonRepository;
 import org.jboss.forge.furnace.services.Imported;
 
 public class NullAddonRegistry implements AddonRegistry
 {
+
+    @Override
+    public EventManager getEventManager()
+    {
+        return null;
+    }
 
     @Override
     public String getName()

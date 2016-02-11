@@ -12,8 +12,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.target>1.7</maven.compiler.target>
 
-        <version.furnace>2.14.0.Final</version.furnace>
-        <version.windup>2.2.0-SNAPSHOT</version.windup>
+        <version.forge>2.20.2.Final</version.forge>
+        <version.furnace>2.22.10.Final</version.furnace>
+        <version.windup>2.5.0-SNAPSHOT</version.windup>
     </properties>
 
     <dependencyManagement>
@@ -21,7 +22,7 @@
             <dependency>
                 <groupId>org.jboss.forge</groupId>
                 <artifactId>forge-bom</artifactId>
-                <version>${version.furnace}</version>
+                <version>${version.forge}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -62,11 +63,6 @@
 
         <!-- Windup APIs -->
         <dependency>
-            <groupId>org.jboss.windup.config</groupId>
-            <artifactId>windup-config-api</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>org.jboss.windup.graph</groupId>
             <artifactId>windup-graph-api</artifactId>
             <scope>compile</scope>
@@ -78,7 +74,7 @@
         </dependency>
         <dependency>
             <groupId>org.jboss.windup.utils</groupId>
-            <artifactId>utils</artifactId>
+            <artifactId>windup-utils</artifactId>
             <classifier>forge-addon</classifier>
             <scope>compile</scope>
         </dependency>

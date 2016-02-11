@@ -31,7 +31,8 @@ public class StartupListener implements ServletContextListener
          */
         File addonRepository = new File(sce.getServletContext().getRealPath("/WEB-INF/addon-repository"));
         if (!addonRepository.exists())
-            addonRepository = new File("/Users/lb3/projects/jboss-migration/windup-web/target/windup-web/WEB-INF/addon-repository");
+            addonRepository = new File(
+                        "/home/jsightler/project/migration/software/windup-distribution/target/windup-distribution-2.5.0-SNAPSHOT/addons/");
         if (!addonRepository.exists())
             throw new IllegalStateException("Cannot load addon repository: " + addonRepository);
         furnaceProducer.get().setup(addonRepository);
