@@ -1,0 +1,27 @@
+import {Component, OnInit} from 'angular2/core';
+import {WindupService} from "../services/windup.service";
+import {RegisteredApplicationModel} from "../models/registered.application.model";
+import {RegisteredApplicationService} from "../services/registeredapplication.service";
+
+@Component({
+    selector: 'application-list',
+    templateUrl: 'app/templates/applicationlist.component.html',
+    providers: [ RegisteredApplicationService ]
+})
+export class ApplicationListComponent implements OnInit {
+    applications:RegisteredApplicationModel[];
+    errorMessage:String;
+
+    constructor(private _registeredApplicationService:RegisteredApplicationService) {}
+
+    ngOnInit():any {
+        this.getApplications();
+    }
+
+    getApplications() {
+        return this._registeredApplicationService.getApplications().subscribe(
+            applications => this.applications = applications,
+            error => this.errorMessage = <any>error
+        );
+    }
+}

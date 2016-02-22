@@ -1,0 +1,44 @@
+{
+  "name": "example-library-js",
+  "version": "3.0.0-SNAPSHOT",
+  "scripts": {
+    "start": "concurrent \"npm run tsc:w\" \"npm run lite\" ",
+    "tsc": "tsc",
+    "tsc:w": "tsc -w",
+    "lite": "lite-server",
+    "typings": "typings",
+    "postinstall": "typings install"
+  },
+  "dependencies": {
+    "patternfly": "^3.0.0",
+    "bootstrap": "3.3.5",
+    "patternfly-bootstrap-combobox": "1.0.0",
+    "bootstrap-datepicker": "1.4.0",
+    "bootstrap-select": "1.7.3",
+    "bootstrap-switch": "3.3.2",
+    "bootstrap-touchspin": "3.1.1",
+    "bootstrap-treeview": "1.2.0",
+    "c3": "0.4.10",
+    "jquery": "2.1.4",
+    "datatables": "1.10.9",
+    "datatables-colreorder": "1.2.0",
+    "drmonty-datatables-colvis": "1.1.2",
+    "font-awesome": "4.3.0",
+    "google-code-prettify": "1.0.1",
+    "jquery-match-height": "0.7.0",
+
+    "angular2": "2.0.0-beta.7",
+    "systemjs": "0.19.22",
+    "es6-promise": "^3.0.2",
+    "es6-shim": "^0.33.3",
+    "reflect-metadata": "0.1.2",
+    "rxjs": "5.0.0-beta.2",
+    "zone.js": "0.5.15"
+  },
+  "devDependencies": {
+    "concurrently": "^2.0.0",
+    "lite-server": "^2.1.0",
+    "typescript": "^1.8.2",
+    "typings":"^0.6.8"
+  }
+}

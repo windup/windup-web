@@ -1,0 +1,30 @@
+<h1>Application List</h1>
+
+<table class="datatable table table-striped table-bordered">
+    <thead>
+    <tr>
+        <th>Application</th>
+        <th>Processing Status</th>
+        <th>Technologies</th>
+        <th>Incident Count</th>
+        <th>Total Effort Points</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="#app of applications">
+        <td>{{app.fileName}}</td>
+        <td>N/A</td>
+        <td>
+            N/A
+        </td>
+        <td>N/A</td>
+        <td>N/A</td>
+    </tr>
+    </tbody>
+</table>
+<script>
+    // Initialize Datatables
+    $(document).ready(function () {
+        $('.datatable').dataTable();
+    });
+</script>
