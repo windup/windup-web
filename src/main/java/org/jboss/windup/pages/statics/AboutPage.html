@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>JBoss ESSC Team Portal</title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="ESSC team portal" />
+</head>
+    
+<body>
+<!-- start header  margin-left: -0.75em -->
+<div id="header">
+	<div id="logo">
+		<h1><a href="http://essc-ondra.rhcloud.com/">ESSC Team</a><span style="font-size: 56%; position: relative; left: 0.75em">portal</span> </h1>
+		<p><a href="http://essc-ondra.rhcloud.com/">Why is it so hard to find product builds?</a></p>
+	</div>
+	<div id="menu">
+		<ul>
+			<li class="active"><a href="#">Products</a></li>
+			<li><a href="#">What's this</a></li>
+		</ul>
+	</div>
+</div>
+<!-- end header -->
+
+<!-- start page -->
+<div id="page">
+    
+    <!-- start content -->
+    <div id="content">
+        <wicket:extend>
+        
+            <!-- About ESSC portal -->
+            <div class="box clanky">
+                <h1 class="title">About ESSC Portal</h1>
+                <div class="entry">
+                    <p>
+                    <strong>The ESSC Portal</strong> aggregates information about product builds and releases in one central place.<br />
+                    It's goal is to provide all relevant information about every product going through ESSC team's hands.
+                    </p><p>
+                    <strong>The ESSC Portal</strong> is easily editable by anyone.
+                    Yet it gathers some information automatically.
+                    </p><p>
+                    If you have any suggestion on how to make ESSC Portal better, let us know.
+                    </p><p>
+                    This webapp was built <wicket:message key="buildTimestamp"/>.
+                    </p>
+                </div>
+            </div>
+
+            <!-- About ESSC -->
+            <div class="box clanky">
+                <h1 class="title">About ESSC</h1>
+                <div class="entry">
+                <p>
+                    <strong>The ESSC team</strong> is a joint point between JBoss development, productization and QA.<br />
+                    Our goal is to ensure that productization team gets a stable and testable project as an input.
+                    Also, our goal is to catalyze communication of needs and intends between teams.
+                </p><p>
+                    <strong>ESSC team's members</strong> are:
+                    <ul> <li>Shelly McGowan
+                    </li><li>Ondřej Žižka
+                    </li><li>Farah Juma
+                    </li><li>Cheng Fang
+                    </li></ul>
+                    <ul><li>and we also cooperate with
+                    </li><li>Paul Gier
+                    </li><li>Vladimír Dosoudil
+                    </li><li>Václav Tunka
+                    </li><li>Jan Brázdil
+                    </li><li>Jakub Senko
+                    </li></ul>
+                </p>
+
+                </div>
+                <p class="meta">
+                    <a href="https://docspace.corp.redhat.com/docs/DOC-70000" class="more">More about ESSC on docspace...</a>
+                </p>
+                <p class="meta">
+                    <a href="https://docspace.corp.redhat.com/docs/DOC-109000" class="more">More about ESSC product portal on docspace...</a>
+                </p>
+            </div>
+
+        </wicket:extend>
+
+    </div>
+    <!-- end content -->
+    
+</div>
+<!-- end page -->
+
+<div id="footer">
+	<p>&copy;2012 Red Hat&nbsp;&bull;&nbsp; Runs on JBoss AS, in OpenShift.</p>
+</div>
+</body>
+</html>

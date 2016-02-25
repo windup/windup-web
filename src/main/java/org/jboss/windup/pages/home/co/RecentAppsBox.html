@@ -1,0 +1,33 @@
+<wicket:panel>
+
+            <!-- Recent releases -->
+            <div class="box app">
+                <h2 class="title">Applications</h2>
+                <div class="entry">
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Application</th>
+                            <th>Added</th>
+                            <th>Status</th>
+                            <th>Technologies found</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr wicket:id="rows">
+                            <td wicket:id="name"></td>
+                            <td wicket:id="added">Added</td>
+                            <td wicket:id="status">Status</td>
+                            <td class="technologies">
+                                <span wicket:id="tag" class="tag"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+
+                </div>
+            </div>
+
+</wicket:panel>
