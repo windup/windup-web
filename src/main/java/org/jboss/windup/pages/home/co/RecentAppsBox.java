@@ -1,9 +1,11 @@
-package org.jboss.essc.web.pages.home.co;
+package org.jboss.windup.pages.home.co;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import javax.inject.Inject;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
@@ -38,10 +40,19 @@ public class RecentAppsBox extends Panel {
             @Override
             protected void populateItem( final ListItem<Application> item) {
                 Application pr = item.getModelObject();
-                item.add( new Label("name", pr.getName()));
+                item.add( new Label("path", pr.getPath()));
                 Date date = pr.getAdded();
                 item.add( new Label("added", (date == null) ? "" : DF.format( date )));
                 item.add( new Label("status", pr.getStatus().getStatusString()) );
+                item.add( new ListView<String>("tags", Arrays.asList("WebLogic JSF TopLink".split(" ")))
+                {
+                    @Override
+                    protected void populateItem(ListItem<String> item)
+                    {
+                        String tag = item.getModelObject();
+                        item.add(new Label("tag", tag));
+                    }
+                });
             }
         });
     }

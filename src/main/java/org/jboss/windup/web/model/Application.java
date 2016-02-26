@@ -26,6 +26,9 @@ public class Application implements Serializable
 
     private String name;
 
+    @Column(nullable = false, unique = true)
+    private String path;
+
     @Temporal(TemporalType.DATE)
     @Column(columnDefinition="TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP", insertable=false, updatable=false)
     private Date added = new Date();
@@ -35,32 +38,28 @@ public class Application implements Serializable
     private String note;
 
 
-    // External ID of this product - Jira and Bugzilla.
-    private String extIdJira;
-    private String extIdBugzilla;
-
-
-
-
 
     public Application() {
     }
 
-    public Application(Long id, String name) {
-        this.id = id;
-        this.name= name;
+    public Application(String path) {
+        this.path = path;
     }
 
 
     //<editor-fold defaultstate="collapsed" desc="Get/set">
     public Long getId() {        return id;    }
     public void setId(Long id) { this.id = id;    }
+
     public String getName() { return name; }
     public void setName( String name ) { this.name = name; }
 
+    public String getPath() { return path; }
+    public void setPath(String path) { this.path = path; }
 
     public String getNote() {        return note;    }
     public Application setNote(String note) { this.note = note; return this; }
+
     public Status getStatus() {        return status;    }
     public void setStatus(Status status) { this.status = status;    }
 
@@ -72,7 +71,7 @@ public class Application implements Serializable
 
     @Override
     public String toString() {
-        return String.format("App #%d", id);
+        return String.format("App %s", path);
     }
 
 
@@ -81,10 +80,9 @@ public class Application implements Serializable
     public int hashCode()
     {
         int hash = 7;
-        hash = 43 * hash + Objects.hashCode(this.id);
+        hash = 29 * hash + Objects.hashCode(this.path);
         return hash;
     }
-
 
     @Override
     public boolean equals(Object obj)
@@ -94,7 +92,7 @@ public class Application implements Serializable
         if (getClass() != obj.getClass())
             return false;
         final Application other = (Application) obj;
-        if (!Objects.equals(this.id, other.id))
+        if (!Objects.equals(this.path, other.path))
             return false;
         return true;
     }

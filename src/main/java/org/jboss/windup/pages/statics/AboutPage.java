@@ -1,4 +1,4 @@
-package org.jboss.windup.web.pages.statics;
+package org.jboss.windup.pages.statics;
 
 import org.jboss.windup.pages.BaseLayoutPage;
 

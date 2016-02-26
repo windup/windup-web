@@ -1,34 +1,72 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:wicket="shttp://git-wip-us.apache.org/repos/asf/wicket/repo?p=wicket.git;a=blob_plain;f=wicket-core/src/main/resources/META-INF/wicket-1.5.xsd;hb=master">
 <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>JBoss ESSC Team Portal</title>
-    <meta name="keywords" content="" />
-    <meta name="description" content="ESSC team portal" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>Windup - JBoss Migration</title>
+    <meta name="description" content="Windup - JBoss migration service"/>
+    <link rel="stylesheet" href="../windup-web-general.css"/>
 </head>
 <body>
 <div id="page">
-    
+    <div class="header">
+        <h1>Windup - JBoss Migration</h1>
+    </div>
+
     <!-- start content -->
     <div id="content">
 
         <wicket:extend>
-	
-            <!-- About box -->
-            <div wicket:id="aboutBox"/>
 
-            <!-- Recent releases -->
-            <div wicket:id="recentReleases"/>
+            <!-- Recent apps -->
+            <div wicket:id="recentApps" id="recentApps"/>
 
-            <!-- Recent changes -->
-            <div wicket:id="recentChanges"/>
+            <!-- Add a new app
+            -->
+            <div id="addApp">
+                <div wicket:id="feedback"></div>
 
+                <form wicket:id="registerAppForm">
+                    <h2>Register an application</h2>
+                    <table>
+                        <tr>
+                            <td>Path to the application:</td>
+                            <td><input wicket:id="path" type="text" value="/path/to/app"/></td>
+                        </tr>
+                        <tr>
+                            <td>Analyze regularly</td>
+                            <td>every <input xwicket:id="interval" type="number" value="24"/> hours</td>
+                        </tr>
+                        <tr>
+                            <td>Offline mode</td>
+                            <td><input xwicket:id="offlineMode" type="checkbox" checked="checked"/></td>
+                        </tr>
+                        <tr>
+                            <td>Analyze classes missing on classpath</td>
+                            <td><input xwicket:id="missingClasses" type="checkbox" checked="checked"/></td>
+                        </tr>
+                        <tr>
+                            <td>Enable Tattletale report</td>
+                            <td><input xwicket:id="tattletale" type="checkbox" checked="checked"/></td>
+                        </tr>
+                        <tr>
+                            <td>Source mode</td>
+                            <td><input xwicket:id="sourceMode" type="checkbox" checked="checked"/></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <input type="submit" value="Register and analyze"/>
+                            </td>
+                        </tr>
+                    </table>
+
+                </form>
+            </div>
         </wicket:extend>
-        
+
     </div>
     <!-- end content -->
-    
-</div>
 
+</div>
 </body>
 </html>

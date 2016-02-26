@@ -1,14 +1,14 @@
 <wicket:panel>
 
-            <!-- Recent releases -->
-            <div class="box app">
-                <h2 class="title">Applications</h2>
-                <div class="entry">
+        <!-- Recent releases -->
+        <div class="box app">
+            <h2 class="title">Applications</h2>
+            <div class="entry">
 
-                <table>
+                <table class="list">
                     <thead>
                         <tr>
-                            <th>Application</th>
+                            <th>Application path</th>
                             <th>Added</th>
                             <th>Status</th>
                             <th>Technologies found</th>
@@ -16,18 +16,19 @@
                     </thead>
                     <tbody>
                         <tr wicket:id="rows">
-                            <td wicket:id="name"></td>
-                            <td wicket:id="added">Added</td>
-                            <td wicket:id="status">Status</td>
+                            <td wicket:id="path">/foo/bar</td>
+                            <td wicket:id="added">2 days ago</td>
+                            <td wicket:id="status">Status.FOO</td>
                             <td class="technologies">
-                                <span wicket:id="tag" class="tag"></span>
+                                <wicket:container wicket:id="tags">
+                                    <span wicket:id="tag" class="tag">WebLogic</span>
+                                </wicket:container>
                             </td>
                         </tr>
                     </tbody>
                 </table>
 
-
-                </div>
             </div>
+        </div>
 
 </wicket:panel>

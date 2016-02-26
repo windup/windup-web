@@ -13,7 +13,7 @@ import org.apache.wicket.markup.html.PackageResourceGuard;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.component.IRequestableComponent;
 import org.jboss.windup.pages.home.HomePage;
-import org.jboss.windup.web.pages.statics.AboutPage;
+import org.jboss.windup.pages.statics.AboutPage;
 
 
 /**
@@ -44,13 +44,13 @@ public class WicketJavaEEApplication extends WebApplication {
         // Configure CDI, disabling Conversations as we aren't using them
         new CdiConfiguration(bm).setPropagation(ConversationPropagation.NONE).configure(this);
 
+        // Wicket Settings
         // This would prevent Ajax components throwing an exception after session expiration.
         //this.getPageSettings().setRecreateMountedPagesAfterExpiry(false);
-
+        //this.getPageSettings().setVersionPagesByDefault(false);
         //this.getApplicationSettings().setPageExpiredErrorPage(ErrorPage.class);
         this.getMarkupSettings().setStripWicketTags(true);
-        //this.getResourceSettings().setThrowExceptionOnMissingResource( false ); // Fix: http://localhost:8080/essc-portal/release/EAP/HomePage.html?0
-        //this.getPageSettings().setVersionPagesByDefault(false);
+        //this.getResourceSettings().setThrowExceptionOnMissingResource( false );
 
 
         // Mounts
@@ -62,7 +62,7 @@ public class WicketJavaEEApplication extends WebApplication {
         initResources();
 
         // Register the authorization strategy
-        getSecuritySettings().setAuthorizationStrategy( new EsscAuthStrategy() );
+        getSecuritySettings().setAuthorizationStrategy( new WindupAuthStrategy() );
 
     }
 
@@ -71,8 +71,6 @@ public class WicketJavaEEApplication extends WebApplication {
      *  Initialize resources. Mostly registers images as shared resources.
      */
     void initResources(){
-
-        //ResourceReference ref1 = new PackageResourceReference( BaseLayoutPage.class, "images/btn/AddApp.png");
 
         IPackageResourceGuard guard =
         new IPackageResourceGuard() {
@@ -107,7 +105,7 @@ public class WicketJavaEEApplication extends WebApplication {
  *  Authorize instantiation of SecuredPage-marked only for logged users.
  *  @author ondra
  */
-class EsscAuthStrategy implements IAuthorizationStrategy {
+class WindupAuthStrategy implements IAuthorizationStrategy {
 
     public boolean isActionAuthorized( Component component, Action action ) {
         // authorize everything

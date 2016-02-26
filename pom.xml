@@ -12,8 +12,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
 
         <version.forge>2.20.2.Final</version.forge>
         <version.furnace>2.22.10.Final</version.furnace>
@@ -288,21 +288,15 @@
                 </configuration>
             </plugin>
 
-            <!-- JBoss AS plugin to deploy the war. -->
+            <!-- WildFly plug-in to deploy the WAR -->
             <plugin>
-                <groupId>org.jboss.as.plugins</groupId>
-                <artifactId>jboss-as-maven-plugin</artifactId>
-                <version>7.7.Final</version>
-                <configuration>
-                    <hostname>${jboss-as.deploy.hostname}</hostname>
-                    <fileNames>
-                        <fileName>target/${plugin.war.warName}.war</fileName>
-                    </fileNames>
-                </configuration>
+                <groupId>org.wildfly.plugins</groupId>
+                <artifactId>wildfly-maven-plugin</artifactId>
+                <version>1.0.2.Final</version>
             </plugin>
 
-
-            <!-- Bundle Windup binaries into the .war. -->
+            <!-- Bundle Windup binaries into the .war.
+            -->
             <plugin>
                 <groupId>org.jboss.forge.furnace</groupId>
                 <artifactId>furnace-maven-plugin</artifactId>
