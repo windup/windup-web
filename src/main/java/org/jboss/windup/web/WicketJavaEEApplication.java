@@ -12,6 +12,7 @@ import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.component.IRequestableComponent;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.request.resource.IResource;
+import org.jboss.windup.pages.app.AppPage;
 import org.jboss.windup.pages.home.HomePage;
 import org.jboss.windup.pages.statics.AboutPage;
 
@@ -56,8 +57,8 @@ public class WicketJavaEEApplication extends WebApplication {
         // Mounts
         mountPage("/about", AboutPage.class);
 
-        //mountPage("/app/${id}", AppPage.class);
-        //mountPage("/app/${id}/${run}", RunPage.class);
+        mountPage("/app/${path}", AppPage.class);
+        //mountPage("/app/${path}/${run}", RunPage.class);
 
         // Register the authorization strategy
         getSecuritySettings().setAuthorizationStrategy( new WindupAuthStrategy() );
@@ -76,7 +77,6 @@ public class WicketJavaEEApplication extends WebApplication {
 
 /**
  *  Authorize instantiation of SecuredPage-marked only for logged users.
- *  @author ondra
  */
 class WindupAuthStrategy implements IAuthorizationStrategy
 {

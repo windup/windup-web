@@ -4,6 +4,7 @@ import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
@@ -51,7 +52,8 @@ public class AppPage extends BaseLayoutPage
     {
         setDefaultModel( new PropertyModel( this, "app") );
 
-        add( new Label("path", this.app.getPath()));
+        add(new Label("path", this.app.getPath()));
+        add(new BookmarkablePageLink("backLink", HomePage.class).add(new Label("label", "Back to the home page")));
     }
 
 
