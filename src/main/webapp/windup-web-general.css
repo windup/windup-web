@@ -61,7 +61,9 @@ table.list th {
 }
 
 .tag {
-    display: inline-block;
-    background-color: #fe7878;
-    border-radius: 4px;
+	display: inline-block;
+	background-color: #a8daf6;
+	border-radius: 4px;
+	padding: 2px 0.5em;
+	font-size: 80%;
 }

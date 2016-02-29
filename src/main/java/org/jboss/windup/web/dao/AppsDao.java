@@ -36,17 +36,16 @@ public class AppsDao {
      * Get Application by name.
      * @throws  NoResultException if no such product found.
      */
-    public Application getApplicationByName( String name ) {
+    public Application getApplicationByPath( String path ) {
         return this.em.createQuery(
-                "SELECT a FROM Application a "
-                + "WHERE a.name = ?1", Application.class).setParameter(1, name).getSingleResult();
+            "SELECT a FROM Application a WHERE a.path = ?1", Application.class).setParameter(1, path).getSingleResult();
     }
     /**
      * Find Application by name.
      * @returns null if not found.
      */
-    public Application findApplicationByName( String name ) {
-        List<Application> list = this.em.createQuery("SELECT a FROM Application a WHERE a.name = ?1", Application.class).setParameter(1, name).getResultList();
+    public Application findApplicationByPath( String path ) {
+        List<Application> list = this.em.createQuery("SELECT a FROM Application a WHERE a.path = ?1", Application.class).setParameter(1, path).getResultList();
         if( list.isEmpty() )  return null;
         return list.get(0);
     }
