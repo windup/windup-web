@@ -7,14 +7,38 @@
     <version>1.0.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
+    <name>Windup Web</name>
+
+
     <properties>
-        <maven.compiler.source>1.7</maven.compiler.source>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.target>1.7</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
 
         <version.forge>2.20.2.Final</version.forge>
         <version.furnace>2.22.10.Final</version.furnace>
         <version.windup>2.5.0-SNAPSHOT</version.windup>
+
+        <!-- Parametrization - controlled from cmdline. -->
+        <windup.hbm2ddl.auto>update</windup.hbm2ddl.auto> <!-- validate | update | create | create-drop -->
+
+        <!-- Local vs. OpenShift vs. production. Controlled in profiles. -->
+        <windup.dataSource>windupDS</windup.dataSource>
+        <wicket.mode>development</wicket.mode>
+        <jboss-as.deploy.hostname>localhost</jboss-as.deploy.hostname>  <!-- Where to deploy. -->
+        <jboss-as.deploy.user>jboss-as.deploy.user is not defined (try settings.xml).</jboss-as.deploy.user>
+        <jboss-as.deploy.pass>jboss-as.deploy.pass is not defined (try settings.xml).</jboss-as.deploy.pass>
+        <plugin.war.warName>${project.build.finalName}</plugin.war.warName>  <!-- To change to ROOT for "prod", to go to / context. -->
+
+        <!-- Define the version of JBoss' Java EE 6 APIs we want to import. -->
+        <version.jboss.javaee7.spec>1.0.3.Final</version.jboss.javaee7.spec>
+        <version.wicket>7.2.0</version.wicket>
+        <version.wicket.cdi>1.2</version.wicket.cdi>
+        <version.wildfly.maven.plugin>1.0.2.Final</version.wildfly.maven.plugin>
+
+        <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
+        <buildTimestamp>${maven.build.timestamp}</buildTimestamp>
+
     </properties>
 
     <dependencyManagement>
@@ -39,6 +63,39 @@
                 <version>7.0</version>
                 <scope>provided</scope>
             </dependency>
+
+
+            <dependency>
+                <groupId>org.jboss.spec</groupId>
+                <artifactId>jboss-javaee-7.0</artifactId>
+                <version>${version.jboss.javaee7.spec}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Wicket -->
+            <dependency>
+                <groupId>org.apache.wicket</groupId>
+                <artifactId>wicket-core</artifactId>
+                <version>${version.wicket}</version>
+            </dependency>
+
+            <!-- Wicket Java EE integration. -->
+            <dependency>
+                <groupId>org.apache.wicket</groupId>
+                <artifactId>wicket-cdi-1.1</artifactId>
+                <version>${version.wicket}</version>
+            </dependency>
+
+            <!-- Arquillian bill of materials, used to configure Arquillian versions -->
+            <dependency>
+                <groupId>org.jboss.arquillian</groupId>
+                <artifactId>arquillian-bom</artifactId>
+                <version>1.1.10.Final</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -78,21 +135,157 @@
             <classifier>forge-addon</classifier>
             <scope>compile</scope>
         </dependency>
+
+
+
+        <!-- "provided" scope used for API's included in JBoss AS 7. -->
+
+        <!-- Import the CDI API. -->
+        <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Import the Common Annotations API (JSR-250). -->
+        <dependency>
+            <groupId>org.jboss.spec.javax.annotation</groupId>
+            <artifactId>jboss-annotations-api_1.2_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Import the EJB API. -->
+        <dependency>
+            <groupId>org.jboss.spec.javax.ejb</groupId>
+            <artifactId>jboss-ejb-api_3.2_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Import the JPA API. -->
+        <dependency>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.1-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Hibernate, to have the sources available in IDE. -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>4.2.21.Final</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Import the logging API. -->
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
+            <version>3.1.4.GA</version>
+            <scope>provided</scope>
+        </dependency>
+
+
+        <!-- Wicket -->
+        <dependency>
+            <groupId>org.apache.wicket</groupId>
+            <artifactId>wicket-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.wicket</groupId>
+            <artifactId>wicket-extensions</artifactId>
+            <version>${version.wicket}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.wicket</groupId>
+            <artifactId>wicket-datetime</artifactId>
+            <version>${version.wicket}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.wicket</groupId>
+            <artifactId>wicket-devutils</artifactId>
+            <version>${version.wicket}</version>
+        </dependency>
+
+        <!-- Wicket CDI integration. -->
+        <dependency>
+            <groupId>org.apache.wicket</groupId>
+            <artifactId>wicket-cdi-1.1</artifactId>
+        </dependency>
+
+
     </dependencies>
 
     <build>
-        <finalName>windup-web</finalName>
+        <!-- Set the name of the war, used as the context root when the app is deployed. -->
+        <finalName>${project.artifactId}</finalName>
+
+        <!-- Wicket convention is to have the .html pages next to classes. -->
+        <resources>
+            <!-- Maven's default + filtering -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+            <!-- For persistence.xml, and to keep src/main/java non-filtered. -->
+            <resource>
+                <directory>src/main/java/META-INF</directory>
+                <targetPath>META-INF</targetPath>
+                <filtering>true</filtering>
+            </resource>
+            <!-- Allow packaging the html files alongside the java sources. -->
+            <resource>
+                <directory>src/main/java</directory>
+                <filtering>true</filtering>
+                <includes><include>**</include></includes>
+                <excludes><exclude>**/*.java</exclude></excludes>
+            </resource>
+        </resources>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>false</filtering>
+            </testResource>
+            <testResource>
+                <directory>src/test/java</directory>
+                <filtering>false</filtering>
+                <includes><include>**</include></includes>
+                <excludes><exclude>**/*.java</exclude></excludes>
+            </testResource>
+        </testResources>
+
         <plugins>
             <plugin>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.4</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <!-- Enable filtering of web.xml - For wicket.mode DEVELOPMENT|PRODUCTION -->
+                    <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
+                    <warName>${plugin.war.warName}</warName>
+                    <webResources>
+                        <resource>
+                            <directory>${basedir}/src/main/webapp/WEB-INF</directory>
+                            <targetPath>WEB-INF</targetPath>
+                            <includes><include>**/*</include></includes>
+                            <filtering>true</filtering>
+                        </resource>
+                    </webResources>
                 </configuration>
             </plugin>
+
+            <!-- WildFly plug-in to deploy the WAR -->
+            <plugin>
+                <groupId>org.wildfly.plugins</groupId>
+                <artifactId>wildfly-maven-plugin</artifactId>
+                <version>1.0.2.Final</version>
+            </plugin>
+
+            <!-- Bundle Windup binaries into the .war.
+            -->
             <plugin>
                 <groupId>org.jboss.forge.furnace</groupId>
                 <artifactId>furnace-maven-plugin</artifactId>
+                <version>2.23.0.Final</version>
                 <executions>
                     <execution>
                         <id>deploy-addons</id>
@@ -115,4 +308,39 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <!-- OpenShift. -->
+        <profile>
+            <id>openshift</id>
+            <properties>
+                <windup.dataSource>MysqlDS</windup.dataSource>
+            </properties>
+            <build>
+                <finalName>test</finalName>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <version>2.6</version>
+                        <configuration>
+                            <outputDirectory>deployments</outputDirectory>
+                            <warName>ROOT</warName>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+
+        <!-- Debug. -->
+        <profile>
+            <id>debug</id>
+            <activation><property><name>debug</name></property></activation>
+            <properties>
+                <jvm.args.debug>-Xrunjdwp:transport=dt_socket,address=4000,server=y,suspend=y</jvm.args.debug>
+            </properties>
+        </profile>
+
+    </profiles>
+
 </project>

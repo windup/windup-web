@@ -1,3 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" />
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+
+
+    <display-name>Windup Web</display-name>
+
+    <!-- Enable Wicket -->
+    <filter>
+        <filter-name>Wicket</filter-name>
+        <filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
+        <!-- Specify the "entry point" for Wicket to configure itself from. -->
+        <init-param>
+            <param-name>applicationClassName</param-name>
+            <param-value>org.jboss.windup.web.WicketJavaEEApplication</param-value>
+        </init-param>
+        <init-param>
+            <param-name>ignorePaths</param-name>
+            <param-value>rest/</param-value>
+        </init-param>
+    </filter>
+
+    <!-- Wicket mode -->
+    <context-param>
+        <param-name>configuration</param-name>
+        <param-value>${wicket.mode}</param-value>
+    </context-param>
+
+    <!-- Have wicket manage the context root -->
+    <filter-mapping>
+        <filter-name>Wicket</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <!-- <dispatcher>ERROR</dispatcher>  Let 404 etc go through Wicket. -->
+    </filter-mapping>
+
+    <!--
+    <error-page>
+            <error-code>404</error-code>
+            <location>/404</location>
+    </error-page>
+    -->
+
+
+    <!-- Two days -->
+    <session-config>
+        <session-timeout>2880</session-timeout>
+    </session-config>
+
+</web-app>
+

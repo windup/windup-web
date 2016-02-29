@@ -3,7 +3,31 @@
 <title>Windup</title>
 </head>
 <body>
-<h1>Content Goes Here</h1>
+    <h1>Windup</h1>
+
+    <div id="apps">
+        <h2>Applications</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Application</th>
+                    <th>Added</th>
+                    <th>Status</th>
+                    <th>Technologies found</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr wicket:id="appRow">
+                    <td wicket:id="name"></td>
+                    <td wicket:id="added">Added</td>
+                    <td wicket:id="status">Status</td>
+                    <td class="technologies">
+                        <span wicket:id="tag" class="tag"></span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>
 
