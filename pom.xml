@@ -32,8 +32,9 @@
 
         <!-- Define the version of JBoss' Java EE 6 APIs we want to import. -->
         <version.jboss.javaee7.spec>1.0.3.Final</version.jboss.javaee7.spec>
-        <version.wicket>1.5.14</version.wicket>
+        <version.wicket>7.2.0</version.wicket>
         <version.wicket.cdi>1.2</version.wicket.cdi>
+        <version.wildfly.maven.plugin>1.0.2.Final</version.wildfly.maven.plugin>
 
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
         <buildTimestamp>${maven.build.timestamp}</buildTimestamp>
@@ -81,9 +82,9 @@
 
             <!-- Wicket Java EE integration. -->
             <dependency>
-                <groupId>net.ftlines.wicket-cdi</groupId>
-                <artifactId>wicket-cdi</artifactId>
-                <version>${version.wicket.cdi}</version>
+                <groupId>org.apache.wicket</groupId>
+                <artifactId>wicket-cdi-1.1</artifactId>
+                <version>${version.wicket}</version>
             </dependency>
 
             <!-- Arquillian bill of materials, used to configure Arquillian versions -->
@@ -93,13 +94,6 @@
                 <version>1.1.10.Final</version>
                 <scope>import</scope>
                 <type>pom</type>
-            </dependency>
-
-            <!-- Force version needed by RestEasy. -->
-            <dependency>
-                <groupId>commons-httpclient</groupId>
-                <artifactId>commons-httpclient</artifactId>
-                <version>3.1</version>
             </dependency>
 
         </dependencies>
@@ -156,25 +150,22 @@
         <!-- Import the Common Annotations API (JSR-250). -->
         <dependency>
             <groupId>org.jboss.spec.javax.annotation</groupId>
-            <artifactId>jboss-annotations-api_1.1_spec</artifactId>
+            <artifactId>jboss-annotations-api_1.2_spec</artifactId>
             <scope>provided</scope>
-            <version>1.0.1.Final</version>
         </dependency>
 
         <!-- Import the EJB API. -->
         <dependency>
             <groupId>org.jboss.spec.javax.ejb</groupId>
-            <artifactId>jboss-ejb-api_3.1_spec</artifactId>
+            <artifactId>jboss-ejb-api_3.2_spec</artifactId>
             <scope>provided</scope>
-            <version>1.0.1.Final</version>
         </dependency>
 
         <!-- Import the JPA API. -->
         <dependency>
             <groupId>org.hibernate.javax.persistence</groupId>
-            <artifactId>hibernate-jpa-2.0-api</artifactId>
+            <artifactId>hibernate-jpa-2.1-api</artifactId>
             <scope>provided</scope>
-            <version>1.0.1.Final</version>
         </dependency>
 
         <!-- Hibernate, to have the sources available in IDE. -->
@@ -214,17 +205,11 @@
             <artifactId>wicket-devutils</artifactId>
             <version>${version.wicket}</version>
         </dependency>
-        <!-- Security - instead of PicketBox. -->
-        <dependency>
-            <groupId>org.apache.wicket</groupId>
-            <artifactId>wicket-auth-roles</artifactId>
-            <version>${version.wicket}</version>
-        </dependency>
 
         <!-- Wicket CDI integration. -->
         <dependency>
-            <groupId>net.ftlines.wicket-cdi</groupId>
-            <artifactId>wicket-cdi</artifactId>
+            <groupId>org.apache.wicket</groupId>
+            <artifactId>wicket-cdi-1.1</artifactId>
         </dependency>
 
 
