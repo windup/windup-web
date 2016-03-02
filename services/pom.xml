@@ -134,6 +134,7 @@
             <plugin>
                 <groupId>org.jboss.forge.furnace</groupId>
                 <artifactId>furnace-maven-plugin</artifactId>
+                <version>${version.furnace}</version>
                 <executions>
                     <execution>
                         <id>deploy-addons</id>
