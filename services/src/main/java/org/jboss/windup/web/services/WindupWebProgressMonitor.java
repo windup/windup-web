@@ -15,6 +15,12 @@ public class WindupWebProgressMonitor implements WindupProgressMonitor
     private int totalWork;
     private int currentWork;
     private boolean cancelled;
+    private boolean done;
+
+    public boolean isDone()
+    {
+        return done;
+    }
 
     public String getCurrentTask()
     {
@@ -78,5 +84,6 @@ public class WindupWebProgressMonitor implements WindupProgressMonitor
     @Override
     public void done()
     {
+        this.done = true;
     }
 }

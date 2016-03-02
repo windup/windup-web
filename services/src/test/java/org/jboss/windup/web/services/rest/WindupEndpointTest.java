@@ -10,12 +10,15 @@ import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.windup.web.services.AbstractTest;
+import org.jboss.windup.web.services.dto.ProgressStatusDto;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.net.URL;
+import java.nio.file.Paths;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -27,7 +30,7 @@ public class WindupEndpointTest extends AbstractTest
     @ArquillianResource
     private URL contextPath;
 
-    private RegisteredApplicationEndpoint registeredApplicationEndpoint;
+    private WindupEndpoint windupEndpoint;
 
     @BeforeClass
     public static void setUpClass()
@@ -42,12 +45,31 @@ public class WindupEndpointTest extends AbstractTest
         ResteasyClient client = new ResteasyClientBuilder().build();
         ResteasyWebTarget target = client.target(contextPath + "rest");
 
-        this.registeredApplicationEndpoint = target.proxy(RegisteredApplicationEndpoint.class);
+        this.windupEndpoint = target.proxy(WindupEndpoint.class);
     }
 
     @Test
     @RunAsClient
-    public void testExecution()
+    public void testExecution() throws Exception
     {
+        String inputPath = Paths.get("src/main/java").toAbsolutePath().normalize().toString();
+        String outputPath = Paths.get("target/testExecution.report").toAbsolutePath().normalize().toString();
+
+        this.windupEndpoint.executeWindup(inputPath, outputPath);
+
+        ProgressStatusDto status = this.windupEndpoint.getStatus(inputPath);
+        int loops = 0;
+        do {
+            loops++;
+            Thread.sleep(25);
+            System.out.println("Status: " + status);
+
+            status = this.windupEndpoint.getStatus(inputPath);
+        } while (!status.isCompleted());
+
+        Assert.assertTrue(status.isCompleted());
+        Assert.assertTrue(loops > 1);
+        Assert.assertTrue(status.getTotalWork() > 10);
+        Assert.assertTrue(status.getWorkCompleted() > 9);
     }
 }
