@@ -18,6 +18,7 @@
         <version.forge>2.20.2.Final</version.forge>
         <version.furnace>2.22.10.Final</version.furnace>
         <version.windup>2.5.0-SNAPSHOT</version.windup>
+        <version.wildfly>10.0.0.Final</version.wildfly>
 
         <!-- Parametrization - controlled from cmdline. -->
         <windup.hbm2ddl.auto>update</windup.hbm2ddl.auto> <!-- validate | update | create | create-drop -->
@@ -215,12 +216,35 @@
 
         <!-- Tests -->
         <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-container</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.arquillian</groupId>
+            <artifactId>wildfly-arquillian-container-managed</artifactId>
+            <version>1.1.0.Beta1</version>
+            <scope>test</scope>
+        </dependency>
+        <!--
+        <dependency>
+            <groupId>org.jboss.arquillian.protocol</groupId>
+            <artifactId>arquillian-protocol-servlet</artifactId>
+            <scope>test</scope>
+        </dependency>
+        -->
+        <dependency>
             <groupId>net.sourceforge.htmlunit</groupId>
             <artifactId>htmlunit</artifactId>
             <version>2.19</version>
             <scope>test</scope>
         </dependency>
-
 
     </dependencies>
 
@@ -286,7 +310,7 @@
             <plugin>
                 <groupId>org.wildfly.plugins</groupId>
                 <artifactId>wildfly-maven-plugin</artifactId>
-                <version>1.0.2.Final</version>
+                <version>${version.wildfly.maven.plugin}</version>
             </plugin>
 
             <!-- Bundle Windup binaries into the .war.
@@ -348,6 +372,70 @@
             <properties>
                 <jvm.args.debug>-Xrunjdwp:transport=dt_socket,address=4000,server=y,suspend=y</jvm.args.debug>
             </properties>
+        </profile>
+
+        <!-- Test with embedded WildFly-->
+        <profile>
+            <id>test</id>
+            <activation> <activeByDefault>true</activeByDefault> </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.wildfly</groupId>
+                    <artifactId>wildfly-dist</artifactId>
+                    <type>zip</type>
+                    <version>${version.wildfly}</version>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+
+                    <!-- You need the maven dependency plugin to download locally a zip with the server, unless you provide your own, it will download under the /target directory -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>2.10</version>
+                        <executions>
+                            <execution>
+                                <id>unpack</id>
+                                <phase>process-test-classes</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.wildfly</groupId>
+                                            <artifactId>wildfly-dist</artifactId>
+                                            <version>${version.wildfly}</version>
+                                            <type>zip</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>target</outputDirectory>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.19.1</version>
+                        <configuration>
+                            <!-- Fork every test because it will launch a separate AS instance -->
+                            <forkMode>always</forkMode>
+                            <systemPropertyVariables>
+                                <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+                                <!-- the maven dependency plugin will have already downloaded the server on /target -->
+                                <jboss.home>${project.basedir}/target/wildfly-${version.wildfly}</jboss.home>
+                                <!-- This causes "IllegalStateException: Duplicate layer 'base'"
+                                <module.path>${project.basedir}/target/wildfly-${version.wildfly}/modules</module.path>
+                                -->
+                            </systemPropertyVariables>
+                            <redirectTestOutputToFile>false</redirectTestOutputToFile>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
 
     </profiles>
