@@ -1,6 +1,8 @@
 package org.jboss.windup.web.services.rest;
 
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import javax.annotation.Resource;
@@ -21,6 +23,8 @@ import org.jboss.windup.exec.WindupProcessor;
 import org.jboss.windup.exec.configuration.WindupConfiguration;
 import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.GraphContextFactory;
+import org.jboss.windup.web.services.WindupWebProgressMonitor;
+import org.jboss.windup.web.services.dto.ProgressStatusDto;
 
 @Stateless
 @Path("windup")
@@ -33,10 +37,13 @@ public class WindupEndpoint
     @Resource
     private ManagedExecutorService managedExecutorService;
 
-    @POST
-    public void registerApplication(@QueryParam("inputPath") String inputPath)
-    {
+    private Map<String, WindupWebProgressMonitor> progressMonitors = new HashMap<>();
 
+    @GET
+    public ProgressStatusDto getStatus(@QueryParam("inputPath") String inputPath)
+    {
+        WindupWebProgressMonitor progressMonitor = progressMonitors.get(inputPath);
+        return new ProgressStatusDto(progressMonitor.getTotalWork(), progressMonitor.getCurrentWork(), progressMonitor.getCurrentTask());
     }
 
     @GET
@@ -47,6 +54,9 @@ public class WindupEndpoint
             Imported<GraphContextFactory> importedFactory = furnace.getAddonRegistry().getServices(GraphContextFactory.class);
             WindupProcessor processor = importedProcessor.get();
             GraphContextFactory factory = importedFactory.get();
+
+            WindupWebProgressMonitor progressMonitor = new WindupWebProgressMonitor();
+            progressMonitors.put(inputPath, progressMonitor);
 
             try (GraphContext context = factory.create(getDefaultPath()))
             {
