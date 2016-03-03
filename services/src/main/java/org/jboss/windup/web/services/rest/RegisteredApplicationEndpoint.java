@@ -4,6 +4,7 @@ import org.jboss.forge.furnace.util.Sets;
 import org.jboss.windup.web.addons.websupport.dto.RegisteredApplicationDto;
 import org.jboss.windup.web.addons.websupport.model.RegisteredApplicationModel;
 
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -24,5 +25,5 @@ public interface RegisteredApplicationEndpoint
 
     @POST
     @Path("register")
-    RegisteredApplicationDto registerApplication(@QueryParam("path") String path);
+    RegisteredApplicationDto registerApplication(@FormParam("path") String path);
 }

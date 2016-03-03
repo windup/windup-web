@@ -8,6 +8,7 @@ import {REST_BASE} from "../constants";
 @Injectable()
 export class RegisteredApplicationService {
     private GET_APPLICATIONS_URL = "/registeredApplications/list";
+    private REGISTER_APPLICATION_URL = "/registeredApplications/register";
 
     constructor (private _http: Http, @Inject(REST_BASE) private _restPath: string) {}
 
@@ -17,7 +18,7 @@ export class RegisteredApplicationService {
         headers.append('Content-Type', 'application/x-www-form-urlencoded');
         var body = "path=" + path;
 
-        return this._http.post(this._restPath + this.GET_APPLICATIONS_URL, body, options)
+        return this._http.post(this._restPath + this.REGISTER_APPLICATION_URL, body, options)
             .map(res => <RegisteredApplicationModel> res.json())
             .catch(this.handleError);
     }

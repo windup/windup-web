@@ -54,14 +54,14 @@ public class WebProperties implements ServletContextListener
         if (addonRepository == null)
         {
             addonRepository = Paths.get(sce.getServletContext().getRealPath("/WEB-INF/addon-repository"));
-            if (!Files.isRegularFile(addonRepository))
+            if (!Files.isDirectory(addonRepository))
                 throw new IllegalStateException("Cannot load addon repository: " + addonRepository);
         }
 
         if (rulesRepository == null)
         {
             rulesRepository = Paths.get(sce.getServletContext().getRealPath("/WEB-INF/rules"));
-            if (!Files.isRegularFile(rulesRepository))
+            if (!Files.isDirectory(rulesRepository))
                 throw new IllegalStateException("Cannot load rules repository: " + rulesRepository);
         }
     }
