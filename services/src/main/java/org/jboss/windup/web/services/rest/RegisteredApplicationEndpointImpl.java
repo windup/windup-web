@@ -39,7 +39,7 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
     }
 
     @Override
-    public RegisteredApplicationDto registerApplication(@QueryParam("path") String path)
+    public RegisteredApplicationDto registerApplication(String path)
     {
         return new RegisteredApplicationDto(registeredApplicationService.create(path));
     }

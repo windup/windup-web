@@ -1,4 +1,6 @@
-import {Component, OnInit} from 'angular2/core';
+import {Component, OnInit} from "angular2/core";
+import {Router} from "angular2/router";
+
 import {WindupService} from "../services/windup.service";
 import {RegisteredApplicationModel} from "../models/registered.application.model";
 import {RegisteredApplicationService} from "../services/registeredapplication.service";
@@ -12,7 +14,7 @@ export class ApplicationListComponent implements OnInit {
     applications:RegisteredApplicationModel[];
     errorMessage:String;
 
-    constructor(private _registeredApplicationService:RegisteredApplicationService) {}
+    constructor(private _router:Router, private _registeredApplicationService:RegisteredApplicationService) {}
 
     ngOnInit():any {
         this.getApplications();
@@ -23,5 +25,10 @@ export class ApplicationListComponent implements OnInit {
             applications => this.applications = applications,
             error => this.errorMessage = <any>error
         );
+    }
+
+    registerApplication() {
+        console.log("Should forward to app registration now");
+        this._router.navigate(['RegisterApplicationForm'])
     }
 }
