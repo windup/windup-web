@@ -1,0 +1,40 @@
+<h1>
+    Application List
+    <button (click)="registerApplication()" class="btn btn-primary" type="button">Register Application</button>
+</h1>
+<table class="datatable table table-striped table-bordered">
+    <thead>
+    <tr>
+        <th>Execute</th>
+        <th>Application</th>
+        <th>Processing Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="#app of applications">
+        <td>
+            <button (click)="executeAnalysis(app)" *ngIf="!status(app).started" class="glyphicon glyphicon-play"></button>
+        </td>
+        <td>{{app.fileName}}</td>
+        <td>
+            <span *ngIf="!status(app).started">
+                Not Started
+            </span>
+            <span *ngIf="status(app).completed">
+                Done!
+            </span>
+
+            <span *ngIf="status(app).started && !status(app).completed">
+            {{status(app).currentTask}}
+            ({{status(app).workCompleted}}/{{status(app).totalWork}})
+            </span>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<script>
+    // Initialize Datatables
+    $(document).ready(function () {
+        $('.datatable').dataTable();
+    });
+</script>

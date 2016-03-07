@@ -1,31 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-    xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.jboss.windup</groupId>
-    <artifactId>windup-web</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-    <packaging>war</packaging>
+
+    <parent>
+        <groupId>org.jboss</groupId>
+        <artifactId>jboss-parent</artifactId>
+        <version>19</version>
+    </parent>
+
+    <groupId>org.jboss.windup.web</groupId>
+    <artifactId>windup-web-parent</artifactId>
+    <version>3.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>Windup Web - Parent</name>
+    <description>Migration Tools Web Interface</description>
 
     <properties>
-        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.source>1.8</maven.compiler.source>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.target>1.7</maven.compiler.target>
+        <maven.compiler.target>1.8</maven.compiler.target>
 
         <version.forge>2.20.2.Final</version.forge>
         <version.furnace>2.22.10.Final</version.furnace>
         <version.windup>2.5.0-SNAPSHOT</version.windup>
+
+        <windup.web.scm.connection>scm:git:https://github.com/windup/windup-web.git</windup.web.scm.connection>
+        <windup.web.developer.connection>scm:git:git@github.com:windup/windup-web.git</windup.web.developer.connection>
+        <windup.web.scm.url>http://github.com/windup/windup-web</windup.web.scm.url>
     </properties>
+
+    <scm>
+        <tag>master</tag>
+        <connection>${windup.web.scm.connection}</connection>
+        <developerConnection>${windup.web.developer.connection}</developerConnection>
+        <url>${windup.web.scm.url}</url>
+    </scm>
+
+    <issueManagement>
+        <system>JBoss Jira</system>
+        <url>https://issues.jboss.org/browse/WINDUP</url>
+    </issueManagement>
+    <mailingLists>
+        <mailingList>
+            <name>Windup Usage and Rules Development</name>
+            <post>windup-users@lists.jboss.org</post>
+            <archive>http://lists.jboss.org/pipermail/windup-users/</archive>
+        </mailingList>
+        <mailingList>
+            <name>Windup Core Development</name>
+            <post>windup-dev@lists.jboss.org</post>
+            <archive>http://lists.jboss.org/pipermail/windup-dev/</archive>
+        </mailingList>
+    </mailingLists>
+
+    <modules>
+        <module>addons</module>
+        <module>services</module>
+        <module>ui</module>
+    </modules>
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.jboss.forge</groupId>
-                <artifactId>forge-bom</artifactId>
-                <version>${version.forge}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
             <dependency>
                 <groupId>org.jboss.windup</groupId>
                 <artifactId>windup-bom</artifactId>
@@ -34,85 +70,96 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>javax</groupId>
-                <artifactId>javaee-api</artifactId>
-                <version>7.0</version>
-                <scope>provided</scope>
+                <groupId>org.jboss.spec</groupId>
+                <artifactId>jboss-javaee-7.0</artifactId>
+                <version>1.0.3.Final</version>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian</groupId>
+                <artifactId>arquillian-bom</artifactId>
+                <version>1.1.11.Final</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian.extension</groupId>
+                <artifactId>arquillian-warp</artifactId>
+                <version>1.0.0.Alpha4</version>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian.extension</groupId>
+                <artifactId>arquillian-rest-warp-bom</artifactId>
+                <version>1.0.0.Alpha4</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-client</artifactId>
+                <version>3.0.11.Final</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-jsapi</artifactId>
+                <version>3.0.11.Final</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-jaxb-provider</artifactId>
+                <version>3.0.11.Final</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-jackson2-provider</artifactId>
+                <version>3.0.11.Final</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
 
     <dependencies>
-        <!-- Java EE -->
         <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- Furnace Runtime -->
-        <dependency>
-            <groupId>org.jboss.forge.furnace</groupId>
-            <artifactId>furnace</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.forge.furnace</groupId>
-            <artifactId>furnace-se</artifactId>
-        </dependency>
-
-
-        <!-- Windup APIs -->
-        <dependency>
-            <groupId>org.jboss.windup.graph</groupId>
-            <artifactId>windup-graph-api</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.windup.exec</groupId>
-            <artifactId>windup-exec-api</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.windup.utils</groupId>
-            <artifactId>windup-utils</artifactId>
-            <classifier>forge-addon</classifier>
-            <scope>compile</scope>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
+
     <build>
-        <finalName>windup-web</finalName>
         <plugins>
             <plugin>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>2.4</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <argLine>-Xms512m -Xmx2048m -XX:MaxPermSize=768m -XX:ReservedCodeCacheSize=128m</argLine>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.jboss.forge.furnace</groupId>
-                <artifactId>furnace-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>deploy-addons</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>addon-install</goal>
-                        </goals>
-                        <inherited>false</inherited>
-                        <configuration>
-                            <addonRepository>${project.build.directory}/${project.artifactId}/WEB-INF/addon-repository</addonRepository>
-                            <addonIds>
-                                <addonId>org.jboss.windup.ui:windup-ui,${version.windup}</addonId>
-                                <addonId>org.jboss.windup.rules.apps:windup-rules-java,${version.windup}</addonId>
-                                <addonId>org.jboss.windup.rules.apps:windup-rules-java-project,${version.windup}</addonId>
-                                <addonId>org.jboss.windup.rules.apps:windup-rules-java-ee,${version.windup}</addonId>
-                            </addonIds>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.2</version>
+                    <configuration>
+                        <compilerVersion>${maven.compiler.target}</compilerVersion>
+                        <source>${maven.compiler.target}</source>
+                        <target>${maven.compiler.target}</target>
+                        <encoding>UTF-8</encoding>
+                        <meminitial>128m</meminitial>
+                        <maxmem>512m</maxmem>
+                        <fork>true</fork>
+                        <compilerArgs>
+                            <arg>-J-Xss4m</arg>
+                        </compilerArgs>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
     </build>
 </project>
