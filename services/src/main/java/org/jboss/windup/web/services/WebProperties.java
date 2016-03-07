@@ -1,5 +1,13 @@
 package org.jboss.windup.web.services;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Initialized;
+import javax.enterprise.event.Observes;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
@@ -13,8 +21,9 @@ import java.util.Properties;
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
-@WebListener
-public class WebProperties implements ServletContextListener
+@Singleton
+@Startup
+public class WebProperties
 {
     public static final String FURNACE_PROPERTIES = "/windupweb.properties";
     public static final String ADDON_REPOSITORY = "addon.repository";
@@ -24,19 +33,22 @@ public class WebProperties implements ServletContextListener
     private static Path addonRepository;
     private static Path rulesRepository;
 
-    public static Path getAddonRepository()
+    @Resource
+    ServletContext servletContext;
+
+    public Path getAddonRepository()
     {
         return addonRepository;
     }
 
-    public static Path getRulesRepository()
+    public Path getRulesRepository()
     {
         return rulesRepository;
     }
 
-    @Override
-    public void contextInitialized(ServletContextEvent sce)
-    {
+
+    @PostConstruct
+    public void init () {
         try (InputStream is = getClass().getResourceAsStream(FURNACE_PROPERTIES))
         {
             if (is != null)
@@ -53,22 +65,16 @@ public class WebProperties implements ServletContextListener
 
         if (addonRepository == null)
         {
-            addonRepository = Paths.get(sce.getServletContext().getRealPath("/WEB-INF/addon-repository"));
+            addonRepository = Paths.get(servletContext.getRealPath("/WEB-INF/addon-repository"));
             if (!Files.isDirectory(addonRepository))
                 throw new IllegalStateException("Cannot load addon repository: " + addonRepository);
         }
 
         if (rulesRepository == null)
         {
-            rulesRepository = Paths.get(sce.getServletContext().getRealPath("/WEB-INF/rules"));
+            rulesRepository = Paths.get(servletContext.getRealPath("/WEB-INF/rules"));
             if (!Files.isDirectory(rulesRepository))
                 throw new IllegalStateException("Cannot load rules repository: " + rulesRepository);
         }
-    }
-
-    @Override
-    public void contextDestroyed(ServletContextEvent sce)
-    {
-
     }
 }

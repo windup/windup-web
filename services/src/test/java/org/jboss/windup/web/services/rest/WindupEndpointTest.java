@@ -73,6 +73,7 @@ public class WindupEndpointTest extends AbstractTest
             }
         } while (!status.isCompleted());
 
+        Assert.assertFalse(status.isFailed());
         Assert.assertTrue(status.isCompleted());
         Assert.assertTrue(loops > 1);
         Assert.assertTrue(status.getTotalWork() > 10);

@@ -3,6 +3,7 @@ package org.jboss.windup.web.services.rest;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
@@ -28,20 +29,24 @@ public class WindupEndpointImpl implements WindupEndpoint
     @Inject
     private Furnace furnace;
 
+    @Inject
+    private WebProperties webProperties;
+
     @Resource
     private ManagedExecutorService managedExecutorService;
 
-    private Map<String, WindupWebProgressMonitor> progressMonitors = new HashMap<>();
+    private static Map<String, WindupWebProgressMonitor> progressMonitors = new ConcurrentHashMap<>();
 
     public ProgressStatusDto getStatus(String inputPath)
     {
         WindupWebProgressMonitor progressMonitor = progressMonitors.get(inputPath);
         if (progressMonitor == null)
-            return new ProgressStatusDto(0, 0, "Not Started", false, false);
+            return new ProgressStatusDto(0, 0, "Not Started", false, false, false);
         else
         {
-            boolean done = progressMonitor.isCancelled() || progressMonitor.isDone();
-            return new ProgressStatusDto(progressMonitor.getTotalWork(), progressMonitor.getCurrentWork(), progressMonitor.getCurrentTask(), true, done);
+            boolean failed = progressMonitor.isFailed();
+            boolean done = failed || progressMonitor.isCancelled() || progressMonitor.isDone();
+            return new ProgressStatusDto(progressMonitor.getTotalWork(), progressMonitor.getCurrentWork(), progressMonitor.getCurrentTask(), true, done, failed);
         }
     }
 
@@ -61,7 +66,7 @@ public class WindupEndpointImpl implements WindupEndpoint
                 WindupConfiguration configuration = new WindupConfiguration()
                             .setGraphContext(context)
                             .setProgressMonitor(progressMonitor)
-                            .addDefaultUserRulesDirectory(WebProperties.getRulesRepository())
+                            .addDefaultUserRulesDirectory(webProperties.getRulesRepository())
                             .addInputPath(Paths.get(inputPath))
                             .setOutputDirectory(Paths.get(outputPath));
 
@@ -69,6 +74,7 @@ public class WindupEndpointImpl implements WindupEndpoint
             }
             catch (Exception e)
             {
+                progressMonitor.setFailed(true);
                 throw new RuntimeException(e);
             }
         };

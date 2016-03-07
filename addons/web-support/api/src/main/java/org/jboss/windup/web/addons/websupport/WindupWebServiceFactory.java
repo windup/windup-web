@@ -11,4 +11,5 @@ public interface WindupWebServiceFactory {
 
     GraphContext getGlobalGraphContext();
 
+    void destroy();
 }

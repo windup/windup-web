@@ -5,6 +5,7 @@ import org.jboss.windup.graph.GraphContextFactory;
 import org.jboss.windup.web.addons.websupport.WindupWebServiceFactory;
 import org.jboss.windup.web.addons.websupport.service.RegisteredApplicationService;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.nio.file.Path;
@@ -27,6 +28,19 @@ public class WindupWebServiceFactoryImpl implements WindupWebServiceFactory
     public RegisteredApplicationService getRegisteredApplicationService()
     {
         return new RegisteredApplicationServiceImpl(getGlobalGraphContext());
+    }
+
+    @Override
+    public void destroy()
+    {
+        try
+        {
+            getGlobalGraphContext().close();
+        }
+        catch (Throwable t)
+        {
+            // ignore for now
+        }
     }
 
     public GraphContext getGlobalGraphContext()

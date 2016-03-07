@@ -4,4 +4,5 @@ export class ProgressStatusModel {
     currentTask:string;
     started:boolean;
     completed:boolean;
+    failed:boolean;
 }

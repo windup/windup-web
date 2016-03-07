@@ -6,7 +6,10 @@ import org.jboss.windup.web.addons.websupport.WindupWebServiceFactory;
 import org.jboss.windup.web.addons.websupport.service.RegisteredApplicationService;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.ejb.DependsOn;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
@@ -27,11 +30,20 @@ public class WindupServicesProducer
         graphContextFactory = furnace.getAddonRegistry().getServices(GraphContextFactory.class).get();
     }
 
+    public void destroy(@Observes FurnaceShutdownEvent shutdownEvent)
+    {
+        this.getWindupWebServiceFactory().destroy();
+    }
+
     @Produces
     public RegisteredApplicationService getRegisteredApplicationService()
     {
-        WindupWebServiceFactory factory = furnace.getAddonRegistry().getServices(WindupWebServiceFactory.class).get();
-        return factory.getRegisteredApplicationService();
+        return getWindupWebServiceFactory().getRegisteredApplicationService();
+    }
+
+    private WindupWebServiceFactory getWindupWebServiceFactory()
+    {
+        return furnace.getAddonRegistry().getServices(WindupWebServiceFactory.class).get();
     }
 
     @Produces
