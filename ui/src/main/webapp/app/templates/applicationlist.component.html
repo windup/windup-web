@@ -5,22 +5,30 @@
 <table class="datatable table table-striped table-bordered">
     <thead>
     <tr>
+        <th>Execute</th>
         <th>Application</th>
         <th>Processing Status</th>
-        <th>Technologies</th>
-        <th>Incident Count</th>
-        <th>Total Effort Points</th>
     </tr>
     </thead>
     <tbody>
     <tr *ngFor="#app of applications">
-        <td>{{app.fileName}}</td>
-        <td>N/A</td>
         <td>
-            N/A
+            <button (click)="executeAnalysis(app)" *ngIf="!status(app).started" class="glyphicon glyphicon-play"></button>
         </td>
-        <td>N/A</td>
-        <td>N/A</td>
+        <td>{{app.fileName}}</td>
+        <td>
+            <span *ngIf="!status(app).started">
+                Not Started
+            </span>
+            <span *ngIf="status(app).completed">
+                Done!
+            </span>
+
+            <span *ngIf="status(app).started && !status(app).completed">
+            {{status(app).currentTask}}
+            ({{status(app).workCompleted}}/{{status(app).totalWork}})
+            </span>
+        </td>
     </tr>
     </tbody>
 </table>

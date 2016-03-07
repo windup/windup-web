@@ -12,7 +12,7 @@ export class RegisteredApplicationService {
 
     constructor (private _http: Http, @Inject(REST_BASE) private _restPath: string) {}
 
-    registerApplication(path: String) {
+    registerApplication(path:string) {
         var headers = new Headers();
         var options = new RequestOptions({ headers: headers });
         headers.append('Content-Type', 'application/x-www-form-urlencoded');

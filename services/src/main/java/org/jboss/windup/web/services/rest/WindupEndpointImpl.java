@@ -36,8 +36,13 @@ public class WindupEndpointImpl implements WindupEndpoint
     public ProgressStatusDto getStatus(String inputPath)
     {
         WindupWebProgressMonitor progressMonitor = progressMonitors.get(inputPath);
-        boolean done = progressMonitor.isCancelled() || progressMonitor.isDone();
-        return new ProgressStatusDto(progressMonitor.getTotalWork(), progressMonitor.getCurrentWork(), progressMonitor.getCurrentTask(), done);
+        if (progressMonitor == null)
+            return new ProgressStatusDto(0, 0, "Not Started", false, false);
+        else
+        {
+            boolean done = progressMonitor.isCancelled() || progressMonitor.isDone();
+            return new ProgressStatusDto(progressMonitor.getTotalWork(), progressMonitor.getCurrentWork(), progressMonitor.getCurrentTask(), true, done);
+        }
     }
 
     public void executeWindup(String inputPath, String outputPath)

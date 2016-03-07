@@ -59,12 +59,18 @@ public class WindupEndpointTest extends AbstractTest
 
         ProgressStatusDto status = this.windupEndpoint.getStatus(inputPath);
         int loops = 0;
+        long beginTime = System.currentTimeMillis();
         do {
             loops++;
             Thread.sleep(25);
-            System.out.println("Status: " + status);
 
             status = this.windupEndpoint.getStatus(inputPath);
+            System.out.println("Status: " + status);
+
+            if ((System.currentTimeMillis() - beginTime) > (1000L * 240L)) {
+                // taking too long... fail
+                Assert.fail("Processing never completed. Current status: " + status);
+            }
         } while (!status.isCompleted());
 
         Assert.assertTrue(status.isCompleted());

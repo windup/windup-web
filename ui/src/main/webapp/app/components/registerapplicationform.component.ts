@@ -11,7 +11,7 @@ import {RegisteredApplicationService} from "../services/registeredapplication.se
 })
 export class RegisterApplicationFormComponent {
     model = new RegisteredApplicationModel();
-    errorMessage:String;
+    errorMessage:string;
 
     constructor(private _router:Router, private _registeredApplicationService:RegisteredApplicationService) {}
 
