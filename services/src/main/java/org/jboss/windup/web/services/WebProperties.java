@@ -4,13 +4,8 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Initialized;
-import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.annotation.WebListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -30,25 +25,28 @@ public class WebProperties
     public static final String RULES_REPOSITORY = "rules.repository";
 
     private Properties properties = new Properties();
-    private static Path addonRepository;
-    private static Path rulesRepository;
+    private Path addonRepository;
+    private Path rulesRepository;
 
-    @Resource
+    @Inject
     ServletContext servletContext;
 
     public Path getAddonRepository()
     {
+        init();
         return addonRepository;
     }
 
     public Path getRulesRepository()
     {
+        init();
         return rulesRepository;
     }
 
-
-    @PostConstruct
     public void init () {
+        if (addonRepository != null)
+            return;
+
         try (InputStream is = getClass().getResourceAsStream(FURNACE_PROPERTIES))
         {
             if (is != null)

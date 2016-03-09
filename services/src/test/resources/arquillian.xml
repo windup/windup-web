@@ -12,7 +12,7 @@
         <configuration>
             <property name="jbossHome">target/wildfly-10.0.0.Final</property>
             <property name="javaVmArguments">-Xms64m -Xmx2048m -Dorg.jboss.resolver.warning=true</property>
-            <!-- <property name="javaVmArguments">-agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=y</property> -->
+            <!--<property name="javaVmArguments">-Xms64m -Xmx2048m -Dorg.jboss.resolver.warning=true -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=y</property>-->
         </configuration>
     </container>
 </arquillian>

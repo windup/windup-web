@@ -1,17 +1,10 @@
 package org.jboss.windup.web.services.rest;
 
-import org.jboss.forge.furnace.util.Sets;
-import org.jboss.windup.web.addons.websupport.dto.RegisteredApplicationDto;
 import org.jboss.windup.web.addons.websupport.model.RegisteredApplicationModel;
 import org.jboss.windup.web.addons.websupport.service.RegisteredApplicationService;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -28,19 +21,19 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
     private RegisteredApplicationService registeredApplicationService;
 
     @Override
-    public Collection<RegisteredApplicationDto> getRegisteredApplications()
+    public Collection<RegisteredApplicationModel> getRegisteredApplications()
     {
-        List<RegisteredApplicationDto> results = new ArrayList<>();
+        List<RegisteredApplicationModel> results = new ArrayList<>();
         for (RegisteredApplicationModel model : registeredApplicationService.getAllRegisteredApplications())
         {
-            results.add(new RegisteredApplicationDto(model));
+            results.add(model);
         }
         return results;
     }
 
     @Override
-    public RegisteredApplicationDto registerApplication(String path)
+    public RegisteredApplicationModel registerApplication(String path)
     {
-        return new RegisteredApplicationDto(registeredApplicationService.create(path));
+        return registeredApplicationService.create(path);
     }
 }
