@@ -1,5 +1,5 @@
 import {bootstrap}    from 'angular2/platform/browser'
-import {provide} from 'angular2/core';
+import {NgZone, provide} from 'angular2/core';
 import {HTTP_PROVIDERS} from 'angular2/http';
 import {ROUTER_PROVIDERS} from 'angular2/router';
 import {AppComponent} from './components/app.component'
@@ -13,4 +13,13 @@ bootstrap(AppComponent,
         ROUTER_PROVIDERS,
         provide(REST_BASE, {useValue: REST_BASE.toString()})
     ]
-);
+).then(app => {
+    window["app"]= app;
+    window["MainNgZone"] = app.injector.get(NgZone);
+    if (window["windupAppInitialized"] != null)
+        window["windupAppInitialized"](app, window["MainNgZone"]);
+}, err => {
+    console.log(err);
+    if (window["windupAppInitialized"] != null)
+        window["windupAppInitialized"]();
+});
