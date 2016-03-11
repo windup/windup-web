@@ -3,6 +3,7 @@ package org.jboss.windup.web.services;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.forge.furnace.Furnace;
+import org.jboss.forge.furnace.util.OperatingSystemUtils;
 import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
@@ -39,7 +40,7 @@ public class FurnaceProducerTest extends AbstractTest
             Assert.assertNotNull(context);
 
             FileService fileService = new FileService(context);
-            FileModel fileModel = fileService.createByFilePath("/home/jsightler/tmp/");
+            FileModel fileModel = fileService.createByFilePath(OperatingSystemUtils.getTempDirectory().toString());
             Assert.assertNotNull(fileModel);
             Assert.assertTrue(fileModel.isDirectory());
         }
