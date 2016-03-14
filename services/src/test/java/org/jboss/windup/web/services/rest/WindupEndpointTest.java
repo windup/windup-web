@@ -1,7 +1,9 @@
 package org.jboss.windup.web.services.rest;
 
+import org.apache.commons.io.FileUtils;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.arquillian.warp.WarpTest;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
@@ -9,6 +11,9 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
+import org.jboss.windup.web.addons.websupport.WebPathUtil;
+import org.jboss.windup.web.addons.websupport.model.RegisteredApplicationModel;
+import org.jboss.windup.web.addons.websupport.service.RegisteredApplicationService;
 import org.jboss.windup.web.services.AbstractTest;
 import org.jboss.windup.web.services.dto.ProgressStatusDto;
 import org.junit.Assert;
@@ -30,10 +35,12 @@ public class WindupEndpointTest extends AbstractTest
     @ArquillianResource
     private URL contextPath;
 
+    private RegisteredApplicationEndpoint registeredApplicationEndpoint;
+
     private WindupEndpoint windupEndpoint;
 
     @BeforeClass
-    public static void setUpClass()
+    public static void setUpClass() throws Exception
     {
         // initializes the rest easy client framework
         RegisterBuiltin.register(ResteasyProviderFactory.getInstance());
@@ -42,9 +49,10 @@ public class WindupEndpointTest extends AbstractTest
     @Before
     public void setUp()
     {
-        ResteasyClient client = new ResteasyClientBuilder().build();
+        ResteasyClient client = new ResteasyClientBuilder().register(FrameUnmarshaller.class).build();
         ResteasyWebTarget target = client.target(contextPath + "rest");
 
+        this.registeredApplicationEndpoint = target.proxy(RegisteredApplicationEndpoint.class);
         this.windupEndpoint = target.proxy(WindupEndpoint.class);
     }
 
@@ -53,18 +61,20 @@ public class WindupEndpointTest extends AbstractTest
     public void testExecution() throws Exception
     {
         String inputPath = Paths.get("src/main/java").toAbsolutePath().normalize().toString();
-        String outputPath = Paths.get("target/testExecution.report").toAbsolutePath().normalize().toString();
 
-        this.windupEndpoint.executeWindup(inputPath, outputPath);
+        RegisteredApplicationModel registeredApplication = this.registeredApplicationEndpoint.registerApplication(inputPath);
+        System.out.println("Registered application: " + registeredApplication);
 
-        ProgressStatusDto status = this.windupEndpoint.getStatus(inputPath);
+        this.windupEndpoint.executeWindup(registeredApplication);
+
+        ProgressStatusDto status = this.windupEndpoint.getStatus(registeredApplication);
         int loops = 0;
         long beginTime = System.currentTimeMillis();
         do {
             loops++;
             Thread.sleep(25);
 
-            status = this.windupEndpoint.getStatus(inputPath);
+            status = this.windupEndpoint.getStatus(registeredApplication);
             System.out.println("Status: " + status);
 
             if ((System.currentTimeMillis() - beginTime) > (1000L * 240L)) {

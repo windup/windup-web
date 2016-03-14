@@ -16,7 +16,6 @@ import java.util.List;
 @Stateless
 public class RegisteredApplicationEndpointImpl implements RegisteredApplicationEndpoint
 {
-
     @Inject
     private RegisteredApplicationService registeredApplicationService;
 
@@ -32,8 +31,8 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
     }
 
     @Override
-    public RegisteredApplicationModel registerApplication(String path)
+    public RegisteredApplicationModel registerApplication(String inputPath)
     {
-        return registeredApplicationService.create(path);
+        return registeredApplicationService.getOrCreate(inputPath);
     }
 }

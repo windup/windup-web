@@ -3,6 +3,7 @@ package org.jboss.windup.web.services;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
@@ -25,6 +26,7 @@ public class AbstractTest
         war.addPackages(true, PACKAGE);
         war.addPackages(true, AbstractTest.class.getPackage());
         war.merge(ShrinkWrap.create(ExplodedImporter.class).importDirectory("src/test/resources/WEB-INF").as(GenericArchive.class), "/WEB-INF");
+        war.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
 
         return war;
     }

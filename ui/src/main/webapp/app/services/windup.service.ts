@@ -13,22 +13,22 @@ export class WindupService {
 
     constructor (private _http: Http, @Inject(REST_BASE) private _restPath: string) {}
 
-    public getStatus(path:string) {
+    public getStatus(application:RegisteredApplicationModel) {
         var headers = new Headers();
         var options = new RequestOptions({ headers: headers });
-        headers.append('Content-Type', 'application/x-www-form-urlencoded');
-        var body = "path=" + path;
+        headers.append('Content-Type', 'application/json');
+        var body = JSON.stringify(application);
 
         return this._http.post(this._restPath + this.GET_STATUS_PATH, body, options)
             .map(res => <ProgressStatusModel> res.json())
             .catch(this.handleError);
     }
 
-    public executeWindup(path:string) {
+    public executeWindup(application:RegisteredApplicationModel) {
         var headers = new Headers();
         var options = new RequestOptions({ headers: headers });
-        headers.append('Content-Type', 'application/x-www-form-urlencoded');
-        var body = "inputPath=" + path + "&outputPath=" + "/home/jsightler/tmp/webreport";
+        headers.append('Content-Type', 'application/json');
+        var body = JSON.stringify(application);
 
         return this._http.post(this._restPath + this.EXECUTE_PATH, body, options)
             .catch(this.handleError);
