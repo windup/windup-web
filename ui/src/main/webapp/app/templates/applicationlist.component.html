@@ -15,7 +15,7 @@
         <td>
             <button (click)="executeAnalysis(app)" *ngIf="!status(app).started" class="glyphicon glyphicon-play"></button>
         </td>
-        <td>{{app.fileName}}</td>
+        <td>{{app.inputFilename}}</td>
         <td>
             <span *ngIf="!status(app).started">
                 Not Started

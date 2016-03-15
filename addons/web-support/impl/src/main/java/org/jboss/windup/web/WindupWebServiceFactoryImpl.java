@@ -1,15 +1,16 @@
 package org.jboss.windup.web;
 
-import org.jboss.windup.graph.GraphContext;
-import org.jboss.windup.graph.GraphContextFactory;
-import org.jboss.windup.web.addons.websupport.WindupWebServiceFactory;
-import org.jboss.windup.web.addons.websupport.service.RegisteredApplicationService;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
-import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+
+import org.jboss.windup.graph.GraphContext;
+import org.jboss.windup.graph.GraphContextFactory;
+import org.jboss.windup.web.addons.websupport.WebPathUtil;
+import org.jboss.windup.web.addons.websupport.WindupWebServiceFactory;
+import org.jboss.windup.web.addons.websupport.service.RegisteredApplicationService;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -17,8 +18,7 @@ import java.nio.file.Paths;
 @ApplicationScoped
 public class WindupWebServiceFactoryImpl implements WindupWebServiceFactory
 {
-    private static final String PROPERTY_DATA_DIR = "jboss.server.data.dir";
-    private static final String DIR_NAME = "windup";
+    private static String GRAPH_PATH = "graph";
 
     @Inject
     private GraphContextFactory graphContextFactory;
@@ -51,8 +51,12 @@ public class WindupWebServiceFactoryImpl implements WindupWebServiceFactory
             {
                 if (graphContext == null)
                 {
-                    Path windupGraphDir = Paths.get(System.getProperty(PROPERTY_DATA_DIR)).resolve(DIR_NAME);
-                    graphContext = graphContextFactory.create(windupGraphDir);
+                    Path globalWindupPath = WebPathUtil.getGlobalWindupDataPath();
+                    Path globalGraphPath = globalWindupPath.resolve(GRAPH_PATH);
+                    if (Files.exists(globalGraphPath))
+                        graphContext = graphContextFactory.load(globalGraphPath);
+                    else
+                        graphContext = graphContextFactory.create(globalGraphPath);
                 }
             }
         }

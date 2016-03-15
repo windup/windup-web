@@ -15,10 +15,11 @@ export class RegisteredApplicationService {
     registerApplication(path:string) {
         var headers = new Headers();
         var options = new RequestOptions({ headers: headers });
-        headers.append('Content-Type', 'application/x-www-form-urlencoded');
-        var body = "path=" + path;
+        headers.append('Content-Type', 'application/json');
 
-        return this._http.post(this._restPath + this.REGISTER_APPLICATION_URL, body, options)
+        var body = path;
+
+        return this._http.put(this._restPath + this.REGISTER_APPLICATION_URL, body, options)
             .map(res => <RegisteredApplicationModel> res.json())
             .catch(this.handleError);
     }

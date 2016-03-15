@@ -1,4 +1,5 @@
 export class RegisteredApplicationModel {
-    fileName:string;
-    filePath:string;
+    inputPath:string;
+    inputFilename:string;
+    outputPath:string;
 }

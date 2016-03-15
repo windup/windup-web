@@ -16,8 +16,8 @@ export class RegisterApplicationFormComponent {
     constructor(private _router:Router, private _registeredApplicationService:RegisteredApplicationService) {}
 
     register() {
-        console.log("Should register application: " + this.model.filePath);
-        this._registeredApplicationService.registerApplication(this.model.filePath).subscribe(
+        console.log("Should register application: " + this.model.inputPath);
+        this._registeredApplicationService.registerApplication(this.model.inputPath).subscribe(
             application => this.rerouteToApplicationList(),
             error => this.errorMessage = <any>error
         );

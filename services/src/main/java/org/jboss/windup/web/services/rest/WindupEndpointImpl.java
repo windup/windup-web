@@ -1,7 +1,6 @@
 package org.jboss.windup.web.services.rest;
 
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -9,7 +8,6 @@ import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.inject.Inject;
-import javax.ws.rs.QueryParam;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.jboss.forge.furnace.Furnace;
@@ -19,6 +17,8 @@ import org.jboss.windup.exec.WindupProcessor;
 import org.jboss.windup.exec.configuration.WindupConfiguration;
 import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.GraphContextFactory;
+import org.jboss.windup.web.addons.websupport.model.RegisteredApplicationModel;
+import org.jboss.windup.web.addons.websupport.service.RegisteredApplicationService;
 import org.jboss.windup.web.services.WebProperties;
 import org.jboss.windup.web.services.WindupWebProgressMonitor;
 import org.jboss.windup.web.services.dto.ProgressStatusDto;
@@ -26,32 +26,40 @@ import org.jboss.windup.web.services.dto.ProgressStatusDto;
 @Stateless
 public class WindupEndpointImpl implements WindupEndpoint
 {
+    private static Map<RegisteredApplicationModel, WindupWebProgressMonitor> progressMonitors = new ConcurrentHashMap<>();
     @Inject
     private Furnace furnace;
-
     @Inject
     private WebProperties webProperties;
-
+    @Inject
+    private RegisteredApplicationService registeredApplicationService;
     @Resource
     private ManagedExecutorService managedExecutorService;
 
-    private static Map<String, WindupWebProgressMonitor> progressMonitors = new ConcurrentHashMap<>();
-
-    public ProgressStatusDto getStatus(String inputPath)
+    @Override
+    public ProgressStatusDto getStatus(RegisteredApplicationModel registeredApplicationModel)
     {
-        WindupWebProgressMonitor progressMonitor = progressMonitors.get(inputPath);
+        registeredApplicationModel = refreshModel(registeredApplicationModel.getInputPath());
+        WindupWebProgressMonitor progressMonitor = registeredApplicationModel == null ? null : progressMonitors.get(registeredApplicationModel);
         if (progressMonitor == null)
             return new ProgressStatusDto(0, 0, "Not Started", false, false, false);
         else
         {
             boolean failed = progressMonitor.isFailed();
             boolean done = failed || progressMonitor.isCancelled() || progressMonitor.isDone();
-            return new ProgressStatusDto(progressMonitor.getTotalWork(), progressMonitor.getCurrentWork(), progressMonitor.getCurrentTask(), true, done, failed);
+            return new ProgressStatusDto(progressMonitor.getTotalWork(), progressMonitor.getCurrentWork(), progressMonitor.getCurrentTask(), true,
+                        done, failed);
         }
     }
 
-    public void executeWindup(String inputPath, String outputPath)
+    @Override
+    public void executeWindup(RegisteredApplicationModel originalRegisteredModel)
     {
+        final String inputPath = originalRegisteredModel.getInputPath();
+
+        // make sure we have the latest instance from the graph
+        final RegisteredApplicationModel registeredApplicationModel = refreshModel(inputPath);
+
         Runnable windupProcess = () -> {
             Imported<WindupProcessor> importedProcessor = furnace.getAddonRegistry().getServices(WindupProcessor.class);
             Imported<GraphContextFactory> importedFactory = furnace.getAddonRegistry().getServices(GraphContextFactory.class);
@@ -59,7 +67,7 @@ public class WindupEndpointImpl implements WindupEndpoint
             GraphContextFactory factory = importedFactory.get();
 
             WindupWebProgressMonitor progressMonitor = new WindupWebProgressMonitor();
-            progressMonitors.put(inputPath, progressMonitor);
+            progressMonitors.put(registeredApplicationModel, progressMonitor);
 
             try (GraphContext context = factory.create(getDefaultPath()))
             {
@@ -68,7 +76,7 @@ public class WindupEndpointImpl implements WindupEndpoint
                             .setProgressMonitor(progressMonitor)
                             .addDefaultUserRulesDirectory(webProperties.getRulesRepository())
                             .addInputPath(Paths.get(inputPath))
-                            .setOutputDirectory(Paths.get(outputPath));
+                            .setOutputDirectory(Paths.get(registeredApplicationModel.getOutputPath()));
 
                 processor.execute(configuration);
             }
@@ -79,6 +87,11 @@ public class WindupEndpointImpl implements WindupEndpoint
             }
         };
         managedExecutorService.execute(windupProcess);
+    }
+
+    private RegisteredApplicationModel refreshModel(String inputPath)
+    {
+        return registeredApplicationService.getByInputPath(inputPath);
     }
 
     private java.nio.file.Path getDefaultPath()

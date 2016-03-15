@@ -30,7 +30,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     }
 
     status(application:RegisteredApplicationModel):ProgressStatusModel {
-        let status:ProgressStatusModel = this.processingStatus.get(application.filePath);
+        let status:ProgressStatusModel = this.processingStatus.get(application.inputPath);
 
         if (status == null) {
             status = new ProgressStatusModel();
@@ -48,8 +48,8 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
 
     applicationsLoaded(applications:RegisteredApplicationModel[]) {
         applications.forEach(application => {
-            this._windupService.getStatus(application.filePath).subscribe(
-                status => this.processingStatus.set(application.filePath, status),
+            this._windupService.getStatus(application).subscribe(
+                status => this.processingStatus.set(application.inputPath, status),
                 error => this.errorMessage = <any>error
             );
         });
@@ -57,7 +57,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     }
 
     executeAnalysis(application:RegisteredApplicationModel) {
-        this._windupService.executeWindup(application.filePath).subscribe(
+        this._windupService.executeWindup(application).subscribe(
             () => console.log("Execution started"),
             error => this.errorMessage = <any>error
         );

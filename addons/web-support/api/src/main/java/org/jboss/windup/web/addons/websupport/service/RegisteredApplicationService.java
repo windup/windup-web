@@ -1,10 +1,5 @@
 package org.jboss.windup.web.addons.websupport.service;
 
-import com.tinkerpop.frames.structures.FramedVertexIterable;
-import org.jboss.windup.graph.GraphContext;
-import org.jboss.windup.graph.model.resource.FileModel;
-import org.jboss.windup.graph.service.FileService;
-import org.jboss.windup.graph.service.GraphService;
 import org.jboss.windup.web.addons.websupport.model.RegisteredApplicationModel;
 
 /**
@@ -12,6 +7,8 @@ import org.jboss.windup.web.addons.websupport.model.RegisteredApplicationModel;
  */
 public interface RegisteredApplicationService
 {
-    RegisteredApplicationModel create(String filepath);
+    RegisteredApplicationModel getOrCreate(String filepath);
     Iterable<RegisteredApplicationModel> getAllRegisteredApplications();
+    RegisteredApplicationModel getByInputPath(String inputPath);
+    void deleteAll();
 }
