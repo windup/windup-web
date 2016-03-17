@@ -3,6 +3,8 @@ package org.jboss.windup.web.services.rest;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
@@ -26,6 +28,8 @@ import org.jboss.windup.web.services.dto.ProgressStatusDto;
 @Stateless
 public class WindupEndpointImpl implements WindupEndpoint
 {
+    private static Logger LOG = Logger.getLogger(WindupEndpointImpl.class.getSimpleName());
+
     private static Map<RegisteredApplicationModel, WindupWebProgressMonitor> progressMonitors = new ConcurrentHashMap<>();
     @Inject
     private Furnace furnace;
@@ -83,6 +87,7 @@ public class WindupEndpointImpl implements WindupEndpoint
             catch (Exception e)
             {
                 progressMonitor.setFailed(true);
+                LOG.log(Level.WARNING, "Processing of " + inputPath + " failed due to: " + e.getMessage(), e);
                 throw new RuntimeException(e);
             }
         };

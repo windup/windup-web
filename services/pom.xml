@@ -42,6 +42,11 @@
 
         <!-- Windup APIs -->
         <dependency>
+            <groupId>org.jboss.windup.config</groupId>
+            <artifactId>windup-config-api</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>org.jboss.windup.graph</groupId>
             <artifactId>windup-graph-api</artifactId>
             <scope>compile</scope>
