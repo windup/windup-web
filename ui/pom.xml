@@ -120,7 +120,6 @@
             <plugin>
                 <groupId>org.wildfly.plugins</groupId>
                 <artifactId>wildfly-maven-plugin</artifactId>
-                <version>1.1.0.Alpha7</version>
                 <executions>
                     <execution>
                         <id>deploy-to-wildfly</id>
@@ -135,7 +134,6 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>1.4.0</version>
                 <executions>
                     <execution>
                         <id>npm-install</id>

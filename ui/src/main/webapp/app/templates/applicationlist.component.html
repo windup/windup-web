@@ -21,7 +21,7 @@
                 Not Started
             </span>
             <span *ngIf="status(app).completed">
-                Done!
+                Done - <a href="file://{{app.outputPath}}/index.html">see the report</a>.
             </span>
 
             <span *ngIf="status(app).started && !status(app).completed">

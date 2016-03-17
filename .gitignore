@@ -19,3 +19,7 @@ atlassian-ide-plugin.xml
 node_modules/
 typings
 
+/nb-configuration.xml
+/services/nb-configuration.xml
+/ui/nb-configuration.xml
+/ui/nbactions.xml
