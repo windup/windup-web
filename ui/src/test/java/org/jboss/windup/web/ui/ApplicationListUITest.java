@@ -38,6 +38,6 @@ public class ApplicationListUITest extends AbstractUITest
     public void testInitialLoad() throws Exception
     {
         Assert.assertNotNull(registerButton);
-        System.out.println("Button: " + registerButton.getText());
+        LOG.info("Button: " + registerButton.getText());
     }
 }

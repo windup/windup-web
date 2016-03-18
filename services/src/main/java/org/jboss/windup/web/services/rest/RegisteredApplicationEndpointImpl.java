@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -16,6 +17,8 @@ import java.util.List;
 @Stateless
 public class RegisteredApplicationEndpointImpl implements RegisteredApplicationEndpoint
 {
+    private static Logger LOG = Logger.getLogger(RegisteredApplicationEndpointImpl.class.getSimpleName());
+
     @Inject
     private RegisteredApplicationService registeredApplicationService;
 
@@ -33,6 +36,7 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
     @Override
     public RegisteredApplicationModel registerApplication(String inputPath)
     {
+        LOG.info("Registering an application at: " + inputPath);
         return registeredApplicationService.getOrCreate(inputPath);
     }
 }
