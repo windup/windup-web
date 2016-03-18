@@ -7,6 +7,7 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import org.jboss.forge.furnace.Furnace;
+import org.jboss.windup.config.metadata.RuleProviderRegistryCache;
 import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.GraphContextFactory;
 import org.jboss.windup.web.addons.websupport.WindupWebServiceFactory;
@@ -32,6 +33,12 @@ public class WindupServicesProducer
     public void destroy(@Observes FurnaceShutdownEvent shutdownEvent)
     {
         this.getWindupWebServiceFactory().destroy();
+    }
+
+    @Produces
+    public RuleProviderRegistryCache getRuleProviderRegistryCache()
+    {
+        return furnace.getAddonRegistry().getServices(RuleProviderRegistryCache.class).get();
     }
 
     @Produces
