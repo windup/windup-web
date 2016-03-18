@@ -12,9 +12,9 @@ public interface RegisteredApplicationModel extends WindupWebSupportVertexFrame
 {
     String TYPE = TYPE_PREFIX + "RegisteredApplicationModel";
 
-    String INPUT_PATH = "inputPath";
-    String INPUT_FILENAME = "inputFilename";
-    String OUTPUT_PATH = "outputPath";
+    String INPUT_PATH = TYPE + ".inputPath";
+    String INPUT_FILENAME = TYPE + "inputFilename";
+    String OUTPUT_PATH = TYPE + "outputPath";
 
     @Indexed
     @Property(INPUT_PATH)
