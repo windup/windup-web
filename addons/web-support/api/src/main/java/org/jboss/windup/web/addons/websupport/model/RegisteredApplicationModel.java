@@ -2,6 +2,7 @@ package org.jboss.windup.web.addons.websupport.model;
 
 import com.tinkerpop.frames.Property;
 import com.tinkerpop.frames.modules.typedgraph.TypeValue;
+import org.jboss.windup.graph.Indexed;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -15,6 +16,7 @@ public interface RegisteredApplicationModel extends WindupWebSupportVertexFrame
     String INPUT_FILENAME = "inputFilename";
     String OUTPUT_PATH = "outputPath";
 
+    @Indexed
     @Property(INPUT_PATH)
     String getInputPath();
 
