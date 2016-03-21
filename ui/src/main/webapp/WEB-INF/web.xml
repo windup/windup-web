@@ -14,7 +14,7 @@
             <param-value>/app/;/node_modules/</param-value>
         </init-param>
     </filter>
-    
+
     <filter-mapping>
         <filter-name>PathFilter</filter-name>
         <url-pattern>/*</url-pattern>

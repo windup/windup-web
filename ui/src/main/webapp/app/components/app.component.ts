@@ -12,7 +12,7 @@ import {RegisterApplicationFormComponent} from "./registerapplicationform.compon
 })
 @RouteConfig([
     {path:"/application-list", name: "ApplicationList", component: ApplicationListComponent, useAsDefault: true},
-    {path:"/register-application", name: "RegisterApplicationForm", component: RegisterApplicationFormComponent}
+    {path:"/register-application", name: "RegisterApplicationForm", component: RegisterApplicationFormComponent},
 ])
 export class AppComponent {
 }

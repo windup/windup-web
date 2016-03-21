@@ -2,6 +2,7 @@
     Application List
     <button (click)="registerApplication()" class="btn btn-primary" type="button">Register Application</button>
 </h1>
+<h3 *ngIf="errorMessage != null">{{errorMessage}}</h3>
 <table class="datatable table table-striped table-bordered">
     <thead>
     <tr>
@@ -21,7 +22,8 @@
                 Not Started
             </span>
             <span *ngIf="status(app).completed">
-                Done - <a href="file://{{app.outputPath}}/index.html">see the report</a>.
+                Done -
+                <a target="_blank" href="{{_reportsPath}}/{{lastPathComponent(app.outputPath)}}/index.html">see the report</a>.
             </span>
 
             <span *ngIf="status(app).started && !status(app).completed">

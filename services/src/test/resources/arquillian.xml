@@ -3,16 +3,19 @@
     xsi:schemaLocation="
         http://jboss.org/schema/arquillian
         http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
-    
+
     <engine>
         <property name="deploymentExportExploded">target/deployments</property>
     </engine>
-    
+
     <container qualifier="jbossas-managed" default="true">
         <configuration>
             <property name="jbossHome">target/wildfly-10.0.0.Final</property>
             <property name="javaVmArguments">-Xms64m -Xmx2048m -Dorg.jboss.resolver.warning=true -Djboss.socket.binding.port-offset=100</property>
-            <!--<property name="javaVmArguments">-Xms64m -Xmx2048m -Dorg.jboss.resolver.warning=true -Djboss.socket.binding.port-offset=100 -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=y</property>-->
+            <!--
+            <property name="javaVmArguments">-Xms64m -Xmx2048m -Dorg.jboss.resolver.warning=true -Djboss.socket.binding.port-offset=100</property>
+            <property name="javaVmArguments">-Xms64m -Xmx2048m -Dorg.jboss.resolver.warning=true -Djboss.socket.binding.port-offset=100 -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=y</property>
+            -->
             <property name="managementPort">10090</property>
         </configuration>
     </container>
