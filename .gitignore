@@ -23,3 +23,4 @@ typings
 /services/nb-configuration.xml
 /ui/nb-configuration.xml
 /ui/nbactions.xml
+/services/nbactions.xml

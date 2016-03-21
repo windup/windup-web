@@ -54,7 +54,6 @@ public class FileServletTest
     private static final String TESTFILE_PREFIX = "FileServletTest-";
 
 
-    //@Ignore("Not sure what's going on here.")
     @Test
     public void testFileServlet() throws Exception
     {
