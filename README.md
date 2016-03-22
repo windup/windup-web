@@ -1,18 +1,38 @@
 
 Setting up the development environment
 ======================================
+
+Requirements
+-------------
  
+0) Git.
+
 1) JDK 8
  
-2) Maven 3.3.9+
- 
-3) Javascript UI libraries, managed by NodeJS
+2) Maven 3.2.5+, 3.3.x recommended
 
-    sudo apt-get install nodejs npm
-    sudo npm install -g patternfly
-    sudo npm install -g grunt-cli
-    sudo npm install -g bower
-    sudo npm install -g tsc
-    sudo npm install -g typescript
+Environment setup
+-----------------
  
+3) [Install NodeJS Package Manager (npm)](https://nodejs.org/en/download/package-manager/)
+    * For example, on Debian-based systems, use `sudo apt-get install npm`
+
+3) [Install Bower using NPM](http://bower.io/#install-bower)
+    * For example, on Debian-based systems, use `sudo npm install -g bower`
+
+4) Install the Javascript UI libraries, using `npm`
+
+    cd windup-web/ui
+    npm install
+    cd -
+    
+   Alternatively, these parts may be installed 'manually':
+   
+    sudo npm install -g patternfly # JBoss PatternFly, a UI components library
+    sudo npm install -g grunt-cli  # Grunt
+    sudo npm install -g tsc        # TypeScript compiler
+    sudo npm install -g typescript # TypeScript
+    
+    This list is not complete, feel free to add the missing items.
+  
  
