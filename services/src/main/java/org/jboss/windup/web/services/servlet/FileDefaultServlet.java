@@ -15,7 +15,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.windup.web.fileservlet;
+package org.jboss.windup.web.services.servlet;
 
 import io.undertow.Undertow;
 import java.util.logging.Logger;
@@ -38,6 +38,7 @@ import io.undertow.util.Headers;
 import io.undertow.util.Methods;
 import io.undertow.util.StatusCodes;
 
+import javax.inject.Inject;
 import javax.servlet.DispatcherType;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -103,6 +104,8 @@ public class FileDefaultServlet extends HttpServlet
     private String basePath;
     private FileResourceManager fileResourceManager;
 
+    @Inject
+    private WebPathUtil webPathUtil;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -155,7 +158,7 @@ public class FileDefaultServlet extends HttpServlet
     {
         // Get base path (path to get all resources from) as init parameter.
         this.basePath = getInitParameter(BASE_PATH);
-        this.basePath = WebPathUtil.expandVariables(this.basePath);
+        this.basePath = webPathUtil.expandVariables(this.basePath);
 
         // Validate base path.
         if (this.basePath == null) {
@@ -188,6 +191,7 @@ public class FileDefaultServlet extends HttpServlet
             //if the separator char is not / we want to replace it with a / and canonicalise
             path = CanonicalPathUtils.canonicalize(path.replace(File.separatorChar, '/'));
         }
+
 
         File requestedFile = new File(basePath, URLDecoder.decode(path, "UTF-8"));
 

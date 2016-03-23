@@ -12,23 +12,12 @@ import java.util.TreeSet;
  *
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
-public class WebPathUtil
+public interface WebPathUtil
 {
-    private static final String PROPERTY_DATA_DIR = "jboss.server.data.dir";
-    private static final String DIR_NAME = "windup";
-
     /**
      * Gets the path that should be used for storage of the global graph and other windup artifacts (for example, reports).
      */
-    public static Path getGlobalWindupDataPath()
-    {
-        String dataDir = System.getProperty(PROPERTY_DATA_DIR);
-        if (StringUtils.isBlank(dataDir))
-            throw new RuntimeException("Data directory not found via system property: " + PROPERTY_DATA_DIR);
-
-        return Paths.get(dataDir).resolve(DIR_NAME);
-    }
-
+    Path getGlobalWindupDataPath();
 
     /**
      * Replaces the variables within the string with their value. Meant primarily for these:
@@ -42,21 +31,5 @@ public class WebPathUtil
 
      * @see https://docs.jboss.org/author/display/WFLY8/Command+line+parameters
      */
-    public static String expandVariables(String basePath)
-    {
-        // Longer strings first
-        SortedSet<String> namesByLength = new TreeSet<>((String o1, String o2) ->
-        {
-            int lenDiff = o2.length() - o1.length();
-            return lenDiff != 0 ? lenDiff : o2.compareTo(o1);
-        });
-        namesByLength.addAll(System.getProperties().stringPropertyNames());
-
-        for (String propertyName : namesByLength)
-        {
-            basePath = basePath.replace("${" + propertyName + "}", System.getProperty(propertyName));
-        }
-
-        return basePath;
-    }
+    String expandVariables(String basePath);
 }

@@ -1,6 +1,5 @@
-package org.jboss.windup.web.fileservlet;
+package org.jboss.windup.web.services.servlet;
 
-import java.io.File;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -9,50 +8,34 @@ import java.util.logging.Logger;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.windup.web.services.AbstractTest;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.shrinkwrap.api.GenericArchive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
-import org.junit.Ignore;
+
+import javax.inject.Inject;
 
 @RunWith(Arquillian.class)
-public class FileServletTest
+public class FileDefaultServletTest extends AbstractTest
 {
-    private static final Logger log = Logger.getLogger( FileServletTest.class.getName() );
+    private static final Logger log = Logger.getLogger(FileDefaultServletTest.class.getName());
 
     @ArquillianResource
     private URL baseURL;
 
-    @Deployment
-    public static WebArchive createDeployment()
-    {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "windup-web-services-servlet.war");
-        File[] files = Maven.resolver().loadPomFromFile("pom.xml").importRuntimeDependencies().resolve().withTransitivity().asFile();
-        war.addAsLibraries(files);
-        war.addPackages(true, WebPathUtil.class.getPackage().toString());
-        war.addClass(WebPathUtil.class);
-        war.addClass(FileServlet.class);
-        //war.merge(ShrinkWrap.create(ExplodedImporter.class).importDirectory("src/main/webapp/WEB-INF/").as(GenericArchive.class), "/WEB-INF");
-        war.addAsWebInfResource(new File("src/main/webapp/WEB-INF/web.xml"));
-        return war;
-    }
+    @Inject
+    private WebPathUtil webPathUtil;
 
     @Test
     public void testExpandVariables() throws Exception
     {
-        Assert.assertEquals("Foo/"+System.getProperty("jboss.server.data.dir")+"/Baz", WebPathUtil.expandVariables("Foo/${jboss.server.data.dir}/Baz"));
+        Assert.assertEquals("Foo/"+System.getProperty("jboss.server.data.dir")+"/Baz", webPathUtil.expandVariables("Foo/${jboss.server.data.dir}/Baz"));
     }
 
     private static final String TESTFILE_PREFIX = "FileServletTest-";
-
 
     @Test
     public void testFileServlet() throws Exception

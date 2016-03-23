@@ -1,0 +1,47 @@
+package org.jboss.windup.web;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import org.apache.commons.lang.StringUtils;
+import org.jboss.windup.web.addons.websupport.WebPathUtil;
+
+/**
+ * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
+ */
+public class WebPathUtilImpl implements WebPathUtil
+{
+    private static final String PROPERTY_DATA_DIR = "jboss.server.data.dir";
+    private static final String DIR_NAME = "windup";
+
+    @Override
+    public Path getGlobalWindupDataPath()
+    {
+        String dataDir = System.getProperty(PROPERTY_DATA_DIR);
+        if (StringUtils.isBlank(dataDir))
+            throw new RuntimeException("Data directory not found via system property: " + PROPERTY_DATA_DIR);
+
+        return Paths.get(dataDir).resolve(DIR_NAME);
+    }
+
+    @Override
+    public String expandVariables(String basePath)
+    {
+        // Longer strings first
+        SortedSet<String> namesByLength = new TreeSet<>((String o1, String o2) ->
+        {
+            int lenDiff = o2.length() - o1.length();
+            return lenDiff != 0 ? lenDiff : o2.compareTo(o1);
+        });
+        namesByLength.addAll(System.getProperties().stringPropertyNames());
+
+        for (String propertyName : namesByLength)
+        {
+            basePath = basePath.replace("${" + propertyName + "}", System.getProperty(propertyName));
+        }
+
+        return basePath;
+    }
+}

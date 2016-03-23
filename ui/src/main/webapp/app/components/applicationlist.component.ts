@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from "angular2/core";
-import {Inject, Injectable} from 'angular2/core';
+import {Inject} from 'angular2/core';
 import {Router} from "angular2/router";
 
 import {WindupService} from "../services/windup.service";
@@ -8,7 +8,6 @@ import {RegisteredApplicationService} from "../services/registeredapplication.se
 import {ProgressStatusModel} from "../models/progressstatus.model";
 import {STATIC_REPORTS_BASE} from "../constants";
 
-@Injectable()
 @Component({
     selector: 'application-list',
     templateUrl: 'app/templates/applicationlist.component.html',
@@ -24,12 +23,12 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
         private _router:Router,
         private _registeredApplicationService:RegisteredApplicationService,
         private _windupService:WindupService,
-        @Inject(STATIC_REPORTS_BASE) private _reportsPath: string
+        @Inject(STATIC_REPORTS_BASE) private _reportPathBase:string
     ) {}
 
     ngOnInit():any {
         this.getApplications();
-        //this._refreshIntervalID = setInterval(() => this.getApplications(), 250000);
+        this._refreshIntervalID = setInterval(() => this.getApplications(), 3000);
     }
 
     ngOnDestroy():any {
@@ -75,8 +74,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
         this._router.navigate(['RegisterApplicationForm'])
     }
 
-
-    lastPathComponent(path:string) : string {
-        return path.substr(path.lastIndexOf('/') + 1);
+    reportURL(path:string) : string {
+        return this._reportPathBase + "/" + path.substr(path.lastIndexOf('/') + 1) + "/index.html";
     }
 }

@@ -3,6 +3,7 @@ package org.jboss.windup.web.services;
 import java.nio.file.Path;
 import java.util.logging.Logger;
 
+import javax.inject.Inject;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
@@ -17,6 +18,9 @@ import org.jboss.windup.web.addons.websupport.WebPathUtil;
 public class ServerCleanupOnStartup implements ServletContextListener
 {
     private static Logger LOG = Logger.getLogger(ServerCleanupOnStartup.class.getSimpleName());
+
+    @Inject
+    private WebPathUtil webPathUtil;
 
     public ServerCleanupOnStartup()
     {
@@ -35,7 +39,7 @@ public class ServerCleanupOnStartup implements ServletContextListener
 
     private void clearData()
     {
-        Path globalWindupDir = WebPathUtil.getGlobalWindupDataPath();
+        Path globalWindupDir = webPathUtil.getGlobalWindupDataPath();
         LOG.info("Clearing windup data from: " + globalWindupDir);
         try
         {
@@ -43,7 +47,7 @@ public class ServerCleanupOnStartup implements ServletContextListener
         }
         catch (Exception e)
         {
-            LOG.warning("Failed to delete: " + WebPathUtil.getGlobalWindupDataPath() + " due to: " + e.getMessage());
+            LOG.warning("Failed to delete: " + webPathUtil.getGlobalWindupDataPath() + " due to: " + e.getMessage());
         }
     }
 }

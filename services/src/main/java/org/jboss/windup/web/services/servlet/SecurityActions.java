@@ -15,7 +15,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.windup.web.fileservlet;
+package org.jboss.windup.web.services.servlet;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;

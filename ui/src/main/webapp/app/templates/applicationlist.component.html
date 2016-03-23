@@ -23,7 +23,7 @@
             </span>
             <span *ngIf="status(app).completed">
                 Done -
-                <a target="_blank" href="{{_reportsPath}}/{{lastPathComponent(app.outputPath)}}/index.html">see the report</a>.
+                <a target="_blank" href="{{reportURL(app.outputPath)}}">Report</a>
             </span>
 
             <span *ngIf="status(app).started && !status(app).completed">

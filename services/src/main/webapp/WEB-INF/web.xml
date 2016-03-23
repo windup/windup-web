@@ -6,7 +6,7 @@
         <servlet-name>FileServlet</servlet-name>
         <description>Serves static files.</description>
         <async-supported>true</async-supported>
-        <servlet-class>org.jboss.windup.web.fileservlet.FileDefaultServlet</servlet-class>
+        <servlet-class>org.jboss.windup.web.services.servlet.FileDefaultServlet</servlet-class>
         <init-param>
             <param-name>base-path</param-name>
             <param-value>${jboss.server.data.dir}/windup/reports/</param-value>

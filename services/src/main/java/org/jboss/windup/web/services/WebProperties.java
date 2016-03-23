@@ -29,7 +29,7 @@ public class WebProperties
     private Path rulesRepository;
 
     @Inject
-    ServletContext servletContext;
+    private ServletContext servletContext;
 
     public Path getAddonRepository()
     {
