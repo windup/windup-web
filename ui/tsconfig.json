@@ -9,7 +9,8 @@
     "removeComments": false,
     "noImplicitAny": false,
     "rootDir": "src/main/webapp",
-    "outDir": "target/windup-web"
+    "outDir": "target/windup-web",
+    "sourceRoot": "/windup-web/"
   },
   "exclude": [
     "node_modules",

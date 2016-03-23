@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <title>Ng App Unit Tests</title>
+
+    <link rel="stylesheet" href="../node_modules/jasmine-core/lib/jasmine-core/jasmine.css">
+    <script src="../node_modules/jasmine-core/lib/jasmine-core/jasmine.js"></script>
+    <script src="../node_modules/jasmine-core/lib/jasmine-core/jasmine-html.js"></script>
+    <script src="../node_modules/jasmine-core/lib/jasmine-core/boot.js"></script>
+
+    <!-- Load and Configure SystemJS -->
+    <script src="../node_modules/systemjs/dist/system-polyfills.js"></script>
+    <script src="../node_modules/systemjs/dist/system.js"></script>
+    <script>
+        System.config({
+            defaultJSExtensions: true,
+            paths: {
+                '*': '../node_modules/*',
+                'app/*': 'app/*'
+            },
+            packageConfigPaths: ['node_modules/*/package.json']
+        });
+    </script>
+
+    <!-- Load Angular 2 -->
+    <script src="../node_modules/es6-shim/es6-shim.min.js"></script>
+    <script src="../node_modules/reflect-metadata/Reflect.js"></script>
+    <script src="../node_modules/rxjs/bundles/Rx.min.js"></script>
+    <script src="../node_modules/angular2/bundles/angular2.dev.js"></script>
+    <script src="../node_modules/angular2/bundles/http.dev.js"></script>
+
+    <script>
+        Promise.all([
+                    System.import('app/registeredapplication.model.spec'),
+                    System.import('app/registeredapplication.service.spec')
+        ]).then(window.onload)
+          .catch(console.error.bind(console));
+    </script>
+</head>
+<body>
+</body>
+</html>

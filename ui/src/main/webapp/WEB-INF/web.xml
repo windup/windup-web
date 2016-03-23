@@ -11,7 +11,7 @@
         </init-param>
         <init-param>
             <param-name>ExcludedPathPrefixes </param-name>
-            <param-value>/app/;/node_modules/</param-value>
+            <param-value>/app/;/node_modules/;/tests/</param-value>
         </init-param>
     </filter>
 

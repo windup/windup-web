@@ -68,6 +68,8 @@ public abstract class AbstractUITest
             builder.append("\t").append(entry.getLevel()).append(": ").append(entry.getMessage()).append(System.lineSeparator());
         });
         LOG.info(builder.toString());
+
+        getDriver().close();
     }
 
     WebDriver getDriver()
@@ -119,7 +121,7 @@ public abstract class AbstractUITest
             JavascriptExecutor executor = (JavascriptExecutor) driver;
             executor.executeAsyncScript(
                         "var callback = arguments[arguments.length - 1]; " +
-                                    "var appInitialized = false;" +
+                                    "if (!window['mainApp']) callback();" +
                                     "window['windupAppInitialized'] = function(app, ngzone) {" +
                                     "MainNgZone.overrideOnEventDone(function () { console.log('on event done received'); callback(); });" +
                                     "};");
