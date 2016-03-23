@@ -1,8 +1,12 @@
 package org.jboss.windup.web.services.rest;
 
 import org.jboss.windup.web.addons.websupport.model.RegisteredApplicationModel;
+import org.jboss.windup.web.services.dto.RegisteredApplicationDto;
+import org.jboss.windup.web.services.validators.FileExistsConstraint;
 
+import javax.validation.Valid;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -19,9 +23,13 @@ public interface RegisteredApplicationEndpoint
 {
     @GET
     @Path("list")
-    Collection<RegisteredApplicationModel> getRegisteredApplications();
+    Collection<RegisteredApplicationDto> getRegisteredApplications();
 
     @PUT
     @Path("register")
-    RegisteredApplicationModel registerApplication(String inputPath);
+    RegisteredApplicationDto registerApplication(@Valid RegisteredApplicationDto applicationDto);
+
+    @DELETE
+    @Path("unregister")
+    void unregisterApplication(RegisteredApplicationDto application);
 }

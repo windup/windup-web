@@ -12,12 +12,13 @@ export class RegisteredApplicationService {
 
     constructor (private _http: Http, @Inject(REST_BASE) private _restPath: string) {}
 
-    registerApplication(path:string) {
-        var headers = new Headers();
-        var options = new RequestOptions({ headers: headers });
+    registerApplication(application:RegisteredApplicationModel) {
+        let headers = new Headers();
+        let options = new RequestOptions({ headers: headers });
         headers.append('Content-Type', 'application/json');
+        headers.append('Accept', 'application/json');
 
-        var body = path;
+        let body = JSON.stringify(application);
 
         return this._http.put(this._restPath + this.REGISTER_APPLICATION_URL, body, options)
             .map(res => <RegisteredApplicationModel> res.json())
@@ -33,7 +34,8 @@ export class RegisteredApplicationService {
     private handleError(error: Response) {
         // in a real world app, we may send the error to some remote logging infrastructure
         // instead of just logging it to the console
-        console.error(error);
-        return Observable.throw(error.json().error || 'Server error');
+        console.error("Service error: " + error);
+        console.error("Service error (json): " + JSON.stringify(error.json()));
+        return Observable.throw(error.json());
     }
 }
