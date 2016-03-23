@@ -23,11 +23,9 @@ public class AbstractTest
         WebArchive war = ShrinkWrap.create(WebArchive.class, "windup-web-services.war");
         File[] files = Maven.resolver().loadPomFromFile("pom.xml").importRuntimeDependencies().resolve().withTransitivity().asFile();
         war.addAsLibraries(files);
-        war.addPackages(true, PACKAGE);
         war.addPackages(true, AbstractTest.class.getPackage());
+        war.merge(ShrinkWrap.create(ExplodedImporter.class).importDirectory("src/main/webapp").as(GenericArchive.class), "/");
         war.merge(ShrinkWrap.create(ExplodedImporter.class).importDirectory("src/test/resources/WEB-INF").as(GenericArchive.class), "/WEB-INF");
-        war.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-
         return war;
     }
 }

@@ -1,4 +1,4 @@
-package org.jboss.windup.web;
+package org.jboss.windup.web.service;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -13,6 +13,8 @@ import org.jboss.windup.web.addons.websupport.service.RegisteredApplicationServi
 
 import com.tinkerpop.frames.structures.FramedVertexIterable;
 
+import javax.inject.Inject;
+
 /**
  * Provides methods for creating and managed {@link RegisteredApplicationModel} vertices.
  *
@@ -22,9 +24,12 @@ public class RegisteredApplicationServiceImpl extends GraphService<RegisteredApp
 {
     private static final String REPORT_DIR = "reports";
 
-    public RegisteredApplicationServiceImpl(GraphContext context)
+    private final WebPathUtil webPathUtil;
+
+    public RegisteredApplicationServiceImpl(GraphContext context, WebPathUtil webPathUtil)
     {
         super(context, RegisteredApplicationModel.class);
+        this.webPathUtil = webPathUtil;
     }
 
     @Override
@@ -62,7 +67,7 @@ public class RegisteredApplicationServiceImpl extends GraphService<RegisteredApp
 
     private String getDefaultOutputPath(String inputPath)
     {
-        Path reportBasePath = WebPathUtil.getGlobalWindupDataPath().resolve(REPORT_DIR);
+        Path reportBasePath = webPathUtil.getGlobalWindupDataPath().resolve(REPORT_DIR);
         String dirName = Paths.get(inputPath).getFileName().toString() + "." + RandomStringUtils.randomAlphabetic(12) + ".report";
 
         Path outputPath = reportBasePath.resolve(dirName);

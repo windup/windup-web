@@ -10,6 +10,7 @@ import org.jboss.forge.furnace.Furnace;
 import org.jboss.windup.config.metadata.RuleProviderRegistryCache;
 import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.GraphContextFactory;
+import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.addons.websupport.WindupWebServiceFactory;
 import org.jboss.windup.web.addons.websupport.service.RegisteredApplicationService;
 
@@ -33,6 +34,12 @@ public class WindupServicesProducer
     public void destroy(@Observes FurnaceShutdownEvent shutdownEvent)
     {
         this.getWindupWebServiceFactory().destroy();
+    }
+
+    @Produces
+    public WebPathUtil getWebPathUtil()
+    {
+        return furnace.getAddonRegistry().getServices(WebPathUtil.class).get();
     }
 
     @Produces
