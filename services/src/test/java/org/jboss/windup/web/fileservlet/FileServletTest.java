@@ -15,13 +15,10 @@ import org.junit.runner.RunWith;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
-import org.junit.Ignore;
 
 @RunWith(Arquillian.class)
 public class FileServletTest
@@ -39,7 +36,9 @@ public class FileServletTest
         war.addAsLibraries(files);
         war.addPackages(true, WebPathUtil.class.getPackage().toString());
         war.addClass(WebPathUtil.class);
-        war.addClass(FileServlet.class);
+        war.addClass(DefaultServlet.class);
+        war.addClass(FileDefaultServlet.class);
+        war.addClass(SecurityActions.class);
         //war.merge(ShrinkWrap.create(ExplodedImporter.class).importDirectory("src/main/webapp/WEB-INF/").as(GenericArchive.class), "/WEB-INF");
         war.addAsWebInfResource(new File("src/main/webapp/WEB-INF/web.xml"));
         return war;
