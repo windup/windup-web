@@ -11,3 +11,4 @@ class WindupOpaqueToken extends OpaqueToken {
 }
 
 export let REST_BASE = new WindupOpaqueToken("/windup-web-services/rest");
+export let STATIC_REPORTS_BASE = new WindupOpaqueToken("/windup-web-services/staticReport");

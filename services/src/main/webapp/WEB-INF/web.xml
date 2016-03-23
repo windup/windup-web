@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+
+    <servlet>
+        <servlet-name>FileServlet</servlet-name>
+        <description>Serves static files.</description>
+        <async-supported>true</async-supported>
+        <servlet-class>org.jboss.windup.web.fileservlet.FileDefaultServlet</servlet-class>
+        <init-param>
+            <param-name>base-path</param-name>
+            <param-value>${jboss.server.data.dir}/windup/reports/</param-value>
+        </init-param>
+    </servlet>
+
+    <servlet-mapping>
+        <url-pattern>/staticReport/*</url-pattern>
+        <servlet-name>FileServlet</servlet-name>
+    </servlet-mapping>
+
+</web-app>
