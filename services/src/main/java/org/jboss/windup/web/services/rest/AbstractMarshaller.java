@@ -60,7 +60,7 @@ public abstract class AbstractMarshaller
         if (type == null)
             return false;
 
-        boolean result = WindupVertexFrame.class.isAssignableFrom(type);
+        boolean result = type.isInterface() && WindupVertexFrame.class.isAssignableFrom(type);
         boolean isCollection = Collection.class.isAssignableFrom(type);
         if (!result && isCollection && genericType instanceof ParameterizedType)
         {
@@ -76,7 +76,7 @@ public abstract class AbstractMarshaller
         if (parameterizedType.getActualTypeArguments().length > 0)
         {
             Type parameterType = parameterizedType.getActualTypeArguments()[0];
-            if (parameterType instanceof Class && WindupVertexFrame.class.isAssignableFrom((Class<?>) parameterType))
+            if (parameterType instanceof Class && ((Class<?>)parameterType).isInterface() && WindupVertexFrame.class.isAssignableFrom((Class<?>) parameterType))
                 return (Class<? extends WindupVertexFrame>) parameterType;
             else
                 return null;

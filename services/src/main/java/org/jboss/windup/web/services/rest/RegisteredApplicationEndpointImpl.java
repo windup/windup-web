@@ -1,14 +1,16 @@
 package org.jboss.windup.web.services.rest;
 
-import org.jboss.windup.web.addons.websupport.model.RegisteredApplicationModel;
-import org.jboss.windup.web.addons.websupport.service.RegisteredApplicationService;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import org.jboss.windup.web.addons.websupport.model.RegisteredApplicationModel;
+import org.jboss.windup.web.addons.websupport.service.RegisteredApplicationService;
+import org.jboss.windup.web.services.dto.RegisteredApplicationDto;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -23,20 +25,27 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
     private RegisteredApplicationService registeredApplicationService;
 
     @Override
-    public Collection<RegisteredApplicationModel> getRegisteredApplications()
+    public Collection<RegisteredApplicationDto> getRegisteredApplications()
     {
-        List<RegisteredApplicationModel> results = new ArrayList<>();
+        List<RegisteredApplicationDto> results = new ArrayList<>();
         for (RegisteredApplicationModel model : registeredApplicationService.getAllRegisteredApplications())
         {
-            results.add(model);
+            results.add(new RegisteredApplicationDto(model));
         }
         return results;
     }
 
     @Override
-    public RegisteredApplicationModel registerApplication(String inputPath)
+    public RegisteredApplicationDto registerApplication(RegisteredApplicationDto application)
     {
-        LOG.info("Registering an application at: " + inputPath);
-        return registeredApplicationService.getOrCreate(inputPath);
+        LOG.info("Registering an application at: " + application.getInputPath());
+        return new RegisteredApplicationDto(registeredApplicationService.getOrCreate(application.getInputPath()));
+    }
+
+    @Override
+    public void unregisterApplication(RegisteredApplicationDto application)
+    {
+        RegisteredApplicationModel model = registeredApplicationService.getByInputPath(application.getInputPath());
+        registeredApplicationService.delete(model);
     }
 }

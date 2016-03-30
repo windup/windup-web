@@ -8,6 +8,7 @@ import org.jboss.windup.web.addons.websupport.model.RegisteredApplicationModel;
 public interface RegisteredApplicationService
 {
     RegisteredApplicationModel getOrCreate(String filepath);
+    void delete(RegisteredApplicationModel application);
     Iterable<RegisteredApplicationModel> getAllRegisteredApplications();
     RegisteredApplicationModel getByInputPath(String inputPath);
     void deleteAll();

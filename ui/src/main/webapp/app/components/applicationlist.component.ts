@@ -54,9 +54,14 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     }
 
     applicationsLoaded(applications:RegisteredApplicationModel[]) {
+        this.errorMessage = "";
+
         applications.forEach(application => {
             this._windupService.getStatus(application).subscribe(
-                status => this.processingStatus.set(application.inputPath, status),
+                status => {
+                    this.processingStatus.set(application.inputPath, status);
+                    this.errorMessage = "";
+                },
                 error => this.errorMessage = <any>error
             );
         });

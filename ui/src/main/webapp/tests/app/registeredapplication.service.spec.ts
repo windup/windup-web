@@ -14,21 +14,11 @@ import {
 
 import 'rxjs/Rx';
 
-import {setBaseTestProviders} from 'angular2/testing';
-import {
-    TEST_BROWSER_PLATFORM_PROVIDERS,
-    TEST_BROWSER_APPLICATION_PROVIDERS
-} from 'angular2/platform/testing/browser';
-
 import {REST_BASE} from '../../app/constants';
 
-setBaseTestProviders(TEST_BROWSER_PLATFORM_PROVIDERS,
-    TEST_BROWSER_APPLICATION_PROVIDERS);
 
 import {RegisteredApplicationModel} from "../../app/models/registered.application.model";
 import {RegisteredApplicationService} from "../../app/services/registeredapplication.service";
-
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 50000;
 
 describe("Registered Application Service Test", () => {
     beforeEachProviders(() => [
@@ -37,14 +27,15 @@ describe("Registered Application Service Test", () => {
         RegisteredApplicationService
     ]);
 
-
     it('register app call', injectAsync([RegisteredApplicationService], (service:RegisteredApplicationService) => {
-        return service.registerApplication("/fakepath").toPromise()
+        let inputApp = new RegisteredApplicationModel();
+        inputApp.inputPath = "src/main/java";
+        return service.registerApplication(inputApp).toPromise()
             .then(application => {
-                console.log("Registered application: " + JSON.stringify(application) + "; " + application.inputPath);
-                expect(application.inputPath).toEqual("/fakepath");
+                console.log("Registered application: " + JSON.stringify(application) + "; " + application.inputFilename);
+                expect(application.inputFilename).toEqual("java");
             }, error => {
-                expect(false).toBeTruthy();
+                expect(false).toBeTruthy("Service call failed due to: " + error);
             });
     }));
 });

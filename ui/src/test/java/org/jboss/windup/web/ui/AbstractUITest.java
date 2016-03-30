@@ -123,7 +123,7 @@ public abstract class AbstractUITest
                         "var callback = arguments[arguments.length - 1]; " +
                                     "if (!window['mainApp']) callback();" +
                                     "window['windupAppInitialized'] = function(app, ngzone) {" +
-                                    "MainNgZone.overrideOnEventDone(function () { console.log('on event done received'); callback(); });" +
+                                    "ngzone.onStable.subscribe(function () { console.log('on event done received'); callback(); });" +
                                     "};");
         }
     }

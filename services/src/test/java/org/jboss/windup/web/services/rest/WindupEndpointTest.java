@@ -12,6 +12,7 @@ import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.windup.web.addons.websupport.model.RegisteredApplicationModel;
 import org.jboss.windup.web.services.AbstractTest;
 import org.jboss.windup.web.services.dto.ProgressStatusDto;
+import org.jboss.windup.web.services.dto.RegisteredApplicationDto;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -58,7 +59,8 @@ public class WindupEndpointTest extends AbstractTest
     {
         String inputPath = Paths.get("src/main/java").toAbsolutePath().normalize().toString();
 
-        RegisteredApplicationModel registeredApplication = this.registeredApplicationEndpoint.registerApplication(inputPath);
+        RegisteredApplicationDto inputDto = new RegisteredApplicationDto(inputPath);
+        RegisteredApplicationDto registeredApplication = this.registeredApplicationEndpoint.registerApplication(inputDto);
         System.out.println("Registered application: " + registeredApplication);
 
         this.windupEndpoint.executeWindup(registeredApplication);

@@ -27,13 +27,13 @@
     "google-code-prettify": "1.0.1",
     "jquery-match-height": "0.7.0",
 
-    "angular2": "2.0.0-beta.7",
+    "angular2": "2.0.0-beta.12",
     "systemjs": "0.19.22",
     "es6-promise": "^3.0.2",
-    "es6-shim": "^0.33.3",
+    "es6-shim": "^0.35.0",
     "reflect-metadata": "0.1.2",
     "rxjs": "5.0.0-beta.2",
-    "zone.js": "0.5.15"
+    "zone.js": "0.6.6"
   },
   "devDependencies": {
     "concurrently": "^2.0.0",

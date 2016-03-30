@@ -2,6 +2,7 @@ package org.jboss.windup.web.services.rest;
 
 import org.jboss.windup.web.addons.websupport.model.RegisteredApplicationModel;
 import org.jboss.windup.web.services.dto.ProgressStatusDto;
+import org.jboss.windup.web.services.dto.RegisteredApplicationDto;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -18,9 +19,9 @@ public interface WindupEndpoint
 {
     @POST
     @Path("status")
-    ProgressStatusDto getStatus(RegisteredApplicationModel registeredApplicationModel);
+    ProgressStatusDto getStatus(RegisteredApplicationDto registeredApplication);
 
     @POST
     @Path("execute")
-    void executeWindup(RegisteredApplicationModel registeredApplicationModel);
+    void executeWindup(RegisteredApplicationDto registeredApplication);
 }

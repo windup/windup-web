@@ -32,6 +32,8 @@
 
     <script>
         Promise.all([
+                    System.import('app/servicesetup'),
+                    System.import('app/file.service.spec'),
                     System.import('app/registeredapplication.model.spec'),
                     System.import('app/registeredapplication.service.spec')
         ]).then(window.onload)

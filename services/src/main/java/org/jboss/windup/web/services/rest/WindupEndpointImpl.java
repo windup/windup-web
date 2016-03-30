@@ -24,6 +24,7 @@ import org.jboss.windup.web.addons.websupport.service.RegisteredApplicationServi
 import org.jboss.windup.web.services.WebProperties;
 import org.jboss.windup.web.services.WindupWebProgressMonitor;
 import org.jboss.windup.web.services.dto.ProgressStatusDto;
+import org.jboss.windup.web.services.dto.RegisteredApplicationDto;
 
 @Stateless
 public class WindupEndpointImpl implements WindupEndpoint
@@ -41,9 +42,9 @@ public class WindupEndpointImpl implements WindupEndpoint
     private ManagedExecutorService managedExecutorService;
 
     @Override
-    public ProgressStatusDto getStatus(RegisteredApplicationModel registeredApplicationModel)
+    public ProgressStatusDto getStatus(RegisteredApplicationDto registeredApplication)
     {
-        registeredApplicationModel = refreshModel(registeredApplicationModel.getInputPath());
+        RegisteredApplicationModel registeredApplicationModel = refreshModel(registeredApplication.getInputPath());
         WindupWebProgressMonitor progressMonitor = registeredApplicationModel == null ? null : progressMonitors.get(registeredApplicationModel);
         if (progressMonitor == null)
             return new ProgressStatusDto(0, 0, "Not Started", false, false, false);
@@ -57,9 +58,9 @@ public class WindupEndpointImpl implements WindupEndpoint
     }
 
     @Override
-    public void executeWindup(RegisteredApplicationModel originalRegisteredModel)
+    public void executeWindup(RegisteredApplicationDto originalRegisteredDto)
     {
-        final String inputPath = originalRegisteredModel.getInputPath();
+        final String inputPath = originalRegisteredDto.getInputPath();
 
         // make sure we have the latest instance from the graph
         final RegisteredApplicationModel registeredApplicationModel = refreshModel(inputPath);

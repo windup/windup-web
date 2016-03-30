@@ -3,7 +3,6 @@ package org.jboss.windup.web.service;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import com.tinkerpop.blueprints.GraphQuery;
 import org.apache.commons.lang.RandomStringUtils;
 import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.service.GraphService;
@@ -11,10 +10,9 @@ import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.addons.websupport.model.RegisteredApplicationModel;
 import org.jboss.windup.web.addons.websupport.service.RegisteredApplicationService;
 
+import com.tinkerpop.blueprints.GraphQuery;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.frames.structures.FramedVertexIterable;
-
-import javax.inject.Inject;
 
 /**
  * Provides methods for creating and managed {@link RegisteredApplicationModel} vertices.
@@ -69,6 +67,13 @@ public class RegisteredApplicationServiceImpl extends GraphService<RegisteredApp
         {
             v.remove();
         }
+    }
+
+    @Override
+    public void delete(RegisteredApplicationModel application)
+    {
+        // refresh based on the input path and delete it
+        getByInputPath(application.getInputPath()).asVertex().remove();
     }
 
     private String getDefaultOutputPath(String inputPath)
