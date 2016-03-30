@@ -6,30 +6,37 @@
 <table class="datatable table table-striped table-bordered">
     <thead>
     <tr>
-        <th>Execute</th>
         <th>Application</th>
         <th>Processing Status</th>
+        <th></th>
     </tr>
     </thead>
     <tbody>
     <tr *ngFor="#app of applications">
-        <td>
-            <button (click)="executeAnalysis(app)" *ngIf="!status(app).started" class="glyphicon glyphicon-play"></button>
+
+        <td style="width: 20%">{{app.inputFilename}}</td>
+        <td style="width: 40%">
+            <div class="col-fixed-240">
+                <span *ngIf="!status(app).started">
+                    Not Started
+                </span>
+                <span *ngIf="status(app).completed">
+                    Done
+                </span>
+                <div *ngIf="status(app).started && !status(app).completed">
+                    <progress-bar
+                            [taskName]="status(app).currentTask"
+                            [currentValue]="status(app).workCompleted"
+                            [minValue]="0"
+                            [maxValue]="status(app).totalWork"></progress-bar>
+                </div>
+            </div>
         </td>
-        <td>{{app.inputFilename}}</td>
         <td>
-            <span *ngIf="!status(app).started">
-                Not Started
-            </span>
             <span *ngIf="status(app).completed">
-                Done -
                 <a target="_blank" href="{{reportURL(app.outputPath)}}">Report</a>
             </span>
-
-            <span *ngIf="status(app).started && !status(app).completed">
-            {{status(app).currentTask}}
-            ({{status(app).workCompleted}}/{{status(app).totalWork}})
-            </span>
+            <button (click)="executeAnalysis(app)" *ngIf="!status(app).started" class="glyphicon glyphicon-play" aria-label="Execute Windup">Execute</button>
         </td>
     </tr>
     </tbody>

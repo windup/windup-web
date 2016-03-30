@@ -7,10 +7,12 @@ import {RegisteredApplicationModel} from "../models/registered.application.model
 import {RegisteredApplicationService} from "../services/registeredapplication.service";
 import {ProgressStatusModel} from "../models/progressstatus.model";
 import {STATIC_REPORTS_BASE} from "../constants";
+import {ProgressBarComponent} from "./progressbar.component";
 
 @Component({
     selector: 'application-list',
     templateUrl: 'app/templates/applicationlist.component.html',
+    directives: [ ProgressBarComponent ],
     providers: [ RegisteredApplicationService, WindupService ]
 })
 export class ApplicationListComponent implements OnInit, OnDestroy {
