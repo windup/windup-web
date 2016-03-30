@@ -33,10 +33,14 @@
             </div>
         </td>
         <td class="col-md-2">
-            <span *ngIf="status(app).completed">
-                <a target="_blank" href="{{reportURL(app.outputPath)}}">Report</a>
-            </span>
-            <button (click)="executeAnalysis(app)" *ngIf="!status(app).started || status(app).completed" class="glyphicon glyphicon-play" aria-label="Execute Windup">Execute</button>
+            <button class="btn btn-default btn-md" (click)="executeAnalysis(app)" *ngIf="!status(app).started || status(app).completed" aria-label="Execute Windup">
+                <span class="glyphicon glyphicon-play"></span>
+                Execute
+            </button>
+            <a *ngIf="status(app).completed" class="btn btn-default btn-md" target="_blank" href="{{reportURL(app.outputPath)}}">
+                <span class="glyphicon glyphicon-file"></span>
+                View Report
+            </a>
         </td>
     </tr>
     </tbody>
