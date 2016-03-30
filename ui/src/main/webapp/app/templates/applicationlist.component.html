@@ -14,8 +14,8 @@
     <tbody>
     <tr *ngFor="#app of applications">
 
-        <td style="width: 20%">{{app.inputFilename}}</td>
-        <td style="width: 40%">
+        <td class="col-md-3">{{app.inputFilename}}</td>
+        <td class="col-md-7">
             <div class="col-fixed-240">
                 <span *ngIf="!status(app).started">
                     Not Started
@@ -32,11 +32,11 @@
                 </div>
             </div>
         </td>
-        <td>
+        <td class="col-md-2">
             <span *ngIf="status(app).completed">
                 <a target="_blank" href="{{reportURL(app.outputPath)}}">Report</a>
             </span>
-            <button (click)="executeAnalysis(app)" *ngIf="!status(app).started" class="glyphicon glyphicon-play" aria-label="Execute Windup">Execute</button>
+            <button (click)="executeAnalysis(app)" *ngIf="!status(app).started || status(app).completed" class="glyphicon glyphicon-play" aria-label="Execute Windup">Execute</button>
         </td>
     </tr>
     </tbody>
