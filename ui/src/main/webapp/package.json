@@ -27,7 +27,7 @@
     "google-code-prettify": "1.0.1",
     "jquery-match-height": "0.7.0",
 
-    "angular2": "2.0.0-beta.12",
+    "angular2": "2.0.0-beta.13",
     "systemjs": "0.19.22",
     "es6-promise": "^3.0.2",
     "es6-shim": "^0.35.0",

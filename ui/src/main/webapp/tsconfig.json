@@ -8,8 +8,8 @@
     "experimentalDecorators": true,
     "removeComments": false,
     "noImplicitAny": false,
-    "rootDir": "src/main/webapp",
-    "outDir": "target/windup-web",
+    "rootDir": ".",
+    "outDir": "../../../target/windup-web",
     "sourceRoot": "/windup-web/"
   },
   "exclude": [
