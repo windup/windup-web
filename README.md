@@ -16,9 +16,12 @@ Environment setup
  
 3) [Install NodeJS Package Manager (npm)](https://nodejs.org/en/download/package-manager/)
     * For example, on Debian-based systems, use `sudo apt-get install npm`
+    * On RHEL 7
+        * Install [EPEL](https://fedoraproject.org/wiki/EPEL)
+        * sudo yum install npm
 
 3) [Install Bower using NPM](http://bower.io/#install-bower)
-    * For example, on Debian-based systems, use `sudo npm install -g bower`
+    * `sudo npm install -g bower`
 
 4) Install the Javascript UI libraries, using `npm`
 
@@ -35,4 +38,4 @@ Environment setup
     
     This list is not complete, feel free to add the missing items.
   
- 
+ 5) In order to run tests, you will need a locally installed copy of [PhantomJS](http://phantomjs.org/)
