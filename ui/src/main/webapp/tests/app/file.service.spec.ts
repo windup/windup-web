@@ -3,13 +3,13 @@
 import {provide} from 'angular2/core';
 import {HTTP_PROVIDERS} from 'angular2/http';
 import {
+    async,
     beforeEach,
     beforeEachProviders,
     describe,
     expect,
     it,
-    inject,
-    injectAsync
+    inject
 } from 'angular2/testing';
 
 import 'rxjs/Rx';
@@ -26,12 +26,12 @@ describe("File Service", () => {
         FileService
     ]);
 
-    it('file exists call', injectAsync([FileService], (service:FileService) => {
+    it('file exists call', async(inject([FileService], (service:FileService) => {
         return service.pathExists("src/main/java").toPromise()
             .then(result => {
                 expect(result).toEqual(true);
             }, error => {
                 expect(false).toBeTruthy("Service call failed due to: " + error);
             });
-    }));
+    })));
 });
