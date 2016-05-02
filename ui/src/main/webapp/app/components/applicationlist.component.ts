@@ -6,7 +6,7 @@ import {WindupService} from "../services/windup.service";
 import {RegisteredApplicationModel} from "../models/registered.application.model";
 import {RegisteredApplicationService} from "../services/registeredapplication.service";
 import {ProgressStatusModel} from "../models/progressstatus.model";
-import {STATIC_REPORTS_BASE} from "../constants";
+import {Constants} from "../constants";
 import {ProgressBarComponent} from "./progressbar.component";
 
 @Component({
@@ -25,7 +25,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
         private _router:Router,
         private _registeredApplicationService:RegisteredApplicationService,
         private _windupService:WindupService,
-        @Inject(STATIC_REPORTS_BASE) private _reportPathBase:string
+        private _constants:Constants
     ) {}
 
     ngOnInit():any {
@@ -82,6 +82,6 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     }
 
     reportURL(path:string) : string {
-        return this._reportPathBase + "/" + path.substr(path.lastIndexOf('/') + 1) + "/index.html";
+        return this._constants.REST_BASE + "/" + path.substr(path.lastIndexOf('/') + 1) + "/index.html";
     }
 }

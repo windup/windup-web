@@ -162,7 +162,7 @@
                         </goals>
                         <configuration>
                             <workingDirectory>src/main/webapp</workingDirectory>
-                            <executable>src/main/webapp/node_modules/.bin/tsc</executable>
+                            <executable>node_modules/.bin/tsc</executable>
                         </configuration>
                     </execution>
                 </executions>

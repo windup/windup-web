@@ -6,7 +6,6 @@ import {WindupService} from "../services/windup.service";
 import {RegisteredApplicationModel} from "../models/registered.application.model";
 import {RegisteredApplicationService} from "../services/registeredapplication.service";
 import {ProgressStatusModel} from "../models/progressstatus.model";
-import {STATIC_REPORTS_BASE} from "../constants";
 
 @Component({
     selector: 'progress-bar',
