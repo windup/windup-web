@@ -82,6 +82,6 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     }
 
     reportURL(path:string) : string {
-        return this._constants.REST_BASE + "/" + path.substr(path.lastIndexOf('/') + 1) + "/index.html";
+        return this._constants.STATIC_REPORTS_BASE + "/" + path.substr(path.lastIndexOf('/') + 1) + "/index.html";
     }
 }
