@@ -1,4 +1,4 @@
-/// <reference path="../../../../../node_modules/angular2/ts/typings/jasmine/jasmine.d.ts" />
+/// <reference path="../../node_modules/angular2/ts/typings/jasmine/jasmine.d.ts" />
 
 import {
     beforeEach,
@@ -16,8 +16,6 @@ import {
     TEST_BROWSER_PLATFORM_PROVIDERS,
     TEST_BROWSER_APPLICATION_PROVIDERS
 } from 'angular2/platform/testing/browser';
-
-import {REST_BASE} from '../../app/constants';
 
 setBaseTestProviders(TEST_BROWSER_PLATFORM_PROVIDERS,
     TEST_BROWSER_APPLICATION_PROVIDERS);

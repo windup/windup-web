@@ -1,4 +1,4 @@
-/// <reference path="../../../../../node_modules/angular2/ts/typings/jasmine/jasmine.d.ts" />
+/// <reference path="../../node_modules/angular2/ts/typings/jasmine/jasmine.d.ts" />
 
 import {provide} from 'angular2/core';
 import {HTTP_PROVIDERS} from 'angular2/http';
@@ -14,7 +14,7 @@ import {
 
 import 'rxjs/Rx';
 
-import {REST_BASE} from '../../app/constants';
+import {Constants} from '../../app/constants';
 
 import {FileService} from "../../app/services/file.service";
 
@@ -22,7 +22,7 @@ import {FileService} from "../../app/services/file.service";
 describe("File Service", () => {
     beforeEachProviders(() => [
         HTTP_PROVIDERS,
-        provide(REST_BASE, {useValue: REST_BASE.toString()}),
+        Constants,
         FileService
     ]);
 

@@ -1,4 +1,4 @@
-/// <reference path="../../../../../node_modules/angular2/ts/typings/jasmine/jasmine.d.ts" />
+/// <reference path="../../node_modules/angular2/ts/typings/jasmine/jasmine.d.ts" />
 
 import {provide} from 'angular2/core';
 import {HTTP_PROVIDERS} from 'angular2/http';
@@ -14,7 +14,7 @@ import {
 
 import 'rxjs/Rx';
 
-import {REST_BASE} from '../../app/constants';
+import {Constants} from '../../app/constants';
 
 
 import {RegisteredApplicationModel} from "../../app/models/registered.application.model";
@@ -23,7 +23,7 @@ import {RegisteredApplicationService} from "../../app/services/registeredapplica
 describe("Registered Application Service Test", () => {
     beforeEachProviders(() => [
         HTTP_PROVIDERS,
-        provide(REST_BASE, {useValue: REST_BASE.toString()}),
+        Constants,
         RegisteredApplicationService
     ]);
 

@@ -3,14 +3,14 @@ import {Headers, Http, RequestOptions, Response} from 'angular2/http';
 import {Observable} from 'rxjs/Observable';
 
 import {RegisteredApplicationModel} from '../models/registered.application.model';
-import {REST_BASE} from "../constants";
+import {Constants} from "../constants";
 
 @Injectable()
 export class RegisteredApplicationService {
     private GET_APPLICATIONS_URL = "/registeredApplications/list";
     private REGISTER_APPLICATION_URL = "/registeredApplications/register";
 
-    constructor (private _http: Http, @Inject(REST_BASE) private _restPath: string) {}
+    constructor (private _http: Http, private _constants: Constants) {}
 
     registerApplication(application:RegisteredApplicationModel) {
         let headers = new Headers();
@@ -20,13 +20,13 @@ export class RegisteredApplicationService {
 
         let body = JSON.stringify(application);
 
-        return this._http.put(this._restPath + this.REGISTER_APPLICATION_URL, body, options)
+        return this._http.put(this._constants.REST_BASE + this.REGISTER_APPLICATION_URL, body, options)
             .map(res => <RegisteredApplicationModel> res.json())
             .catch(this.handleError);
     }
 
     getApplications() {
-        return this._http.get(this._restPath + this.GET_APPLICATIONS_URL)
+        return this._http.get(this._constants.REST_BASE + this.GET_APPLICATIONS_URL)
             .map(res => <RegisteredApplicationModel[]> res.json())
             .catch(this.handleError);
     }

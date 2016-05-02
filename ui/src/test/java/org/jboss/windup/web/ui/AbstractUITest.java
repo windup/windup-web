@@ -29,7 +29,6 @@ public abstract class AbstractUITest
     private static final String PACKAGE = "org.jboss.windup.web.ui";
     private static final String WEBAPP_SRC = "src/main/webapp";
     private static final String COMPILED_WEBAPP_SRC = "target/windup-web/";
-    private static final String NODE_MODULES = "node_modules";
     private static Logger LOG = Logger.getLogger(AbstractUITest.class.getSimpleName());
     @Drone
     private WebDriver browser;
@@ -48,15 +47,11 @@ public abstract class AbstractUITest
     public static WebArchive createDeployment()
     {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "windup-web.war");
-        // File[] files = Maven.resolver().loadPomFromFile("pom.xml").importRuntimeDependencies().resolve().withTransitivity().asFile();
-        // war.addAsLibraries(files);
         war.addPackages(true, PACKAGE);
         war.addPackages(true, AbstractUITest.class.getPackage());
         war.merge(ShrinkWrap.create(GenericArchive.class).as(ExplodedImporter.class).importDirectory(WEBAPP_SRC).as(GenericArchive.class), "/");
         war.merge(ShrinkWrap.create(GenericArchive.class).as(ExplodedImporter.class).importDirectory(COMPILED_WEBAPP_SRC).as(GenericArchive.class),
                     "/");
-        war.merge(ShrinkWrap.create(GenericArchive.class).as(ExplodedImporter.class).importDirectory(NODE_MODULES).as(GenericArchive.class),
-                    "/" + NODE_MODULES);
         return war;
     }
 

@@ -105,7 +105,7 @@
                 <configuration>
                     <filesets>
                         <fileset>
-                            <directory>typings/</directory>
+                            <directory>src/main/webapp/typings/</directory>
                             <followSymlinks>false</followSymlinks>
                         </fileset>
                     </filesets>
@@ -117,14 +117,6 @@
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                     <!-- warSourceExcludes>app/**/*.ts</warSourceExcludes -->
-
-                    <webResources>
-                        <resource>
-                            <directory>node_modules</directory>
-                            <targetPath>node_modules</targetPath>
-                            <filtering>false</filtering>
-                        </resource>
-                    </webResources>
                 </configuration>
             </plugin>
 
@@ -155,6 +147,7 @@
 
                         <configuration>
                             <executable>npm</executable>
+                            <workingDirectory>src/main/webapp</workingDirectory>
                             <arguments>
                                 <argument>install</argument>
                             </arguments>
@@ -168,7 +161,8 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
-                            <executable>./node_modules/.bin/tsc</executable>
+                            <workingDirectory>src/main/webapp</workingDirectory>
+                            <executable>node_modules/.bin/tsc</executable>
                         </configuration>
                     </execution>
                 </executions>
