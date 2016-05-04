@@ -53,31 +53,20 @@
     <!-- Angular Application? You May Want to Consider Pulling Angular-PatternFly And Angular-UI Bootstrap instead of bootstrap.js -->
     <!-- See https://github.com/patternfly/angular-patternfly for more information -->
 
-
-    <script src="node_modules/systemjs/dist/system-polyfills.js"></script>
-    <script src="node_modules/angular2/bundles/angular2-polyfills.js"></script>
     <script src="node_modules/es6-shim/es6-shim.min.js"></script>
+
+    <script src="node_modules/zone.js/dist/zone.min.js"></script>
+    <script src="node_modules/reflect-metadata/Reflect.js"></script>
+
     <script src="node_modules/systemjs/dist/system.js"></script>
+    <script src="systemjs.config.js"></script>
+
+    <!-- 2. Configure SystemJS -->
     <script>
         // this is here so that AbstractUITest can tell we are loading the actual app
         window['mainApp'] = true;
 
-        System.config({
-            defaultJSExtensions: true,
-            paths: {
-                '*': 'node_modules/*',
-                'app/*': 'app/*'
-            },
-            packageConfigPaths: ['node_modules/*/package.json']
-        });
-    </script>
-    <script src="node_modules/rxjs/bundles/Rx.min.js"></script>
-    <script src="node_modules/angular2/bundles/angular2.dev.js"></script>
-    <script src="node_modules/angular2/bundles/http.dev.js"></script>
-
-    <!-- 2. Configure SystemJS -->
-    <script>
-        System.import('app/main').then(null, console.error.bind(console));
+        System.import('app').then(null, console.error.bind(console));
     </script>
 
 </head>

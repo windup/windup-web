@@ -11,7 +11,7 @@
         </init-param>
         <init-param>
             <param-name>ExcludedPathPrefixes </param-name>
-            <param-value>/app/;/node_modules/;/tests/;/css/</param-value>
+            <param-value>/systemjs.config.js;/app/;/node_modules/;/tests/;/css/</param-value>
         </init-param>
     </filter>
 

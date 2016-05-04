@@ -23,7 +23,7 @@
 
         <version.forge>2.20.2.Final</version.forge>
         <version.furnace>2.22.10.Final</version.furnace>
-        <version.windup>2.5.0-SNAPSHOT</version.windup>
+        <version.windup>2.6.0-SNAPSHOT</version.windup>
 
         <windup.web.scm.connection>scm:git:https://github.com/windup/windup-web.git</windup.web.scm.connection>
         <windup.web.developer.connection>scm:git:git@github.com:windup/windup-web.git</windup.web.developer.connection>

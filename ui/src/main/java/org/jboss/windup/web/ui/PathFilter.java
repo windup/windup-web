@@ -42,6 +42,7 @@ public class PathFilter implements Filter
 
         HttpServletRequest servletRequest = (HttpServletRequest) request;
         String path = servletRequest.getServletPath();
+        LOG.info("Received request for: " + path);
 
         if (path.equals(this.defaultPath))
         {

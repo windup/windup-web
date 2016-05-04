@@ -18,9 +18,7 @@ atlassian-ide-plugin.xml
 .externalToolBuilders
 node_modules/
 typings
+npm-debug.log
 
-/nb-configuration.xml
-/services/nb-configuration.xml
-/ui/nb-configuration.xml
-/ui/nbactions.xml
-/services/nbactions.xml
+nb-configuration.xml
+nbactions.xml

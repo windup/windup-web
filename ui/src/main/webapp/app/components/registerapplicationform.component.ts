@@ -1,6 +1,6 @@
-import {ControlGroup, FormBuilder, NgClass, NgControlName, Validators} from "angular2/common";
-import {Component, Input, OnInit} from "angular2/core";
-import {Router} from "angular2/router";
+import {ControlGroup, FormBuilder, NgClass, NgControlName, Validators} from "@angular/common";
+import {Component, Input, OnInit} from "@angular/core";
+import {Router} from "@angular/router-deprecated";
 
 import {RegisteredApplicationModel} from "../models/registered.application.model";
 import {RegisteredApplicationService} from "../services/registeredapplication.service";

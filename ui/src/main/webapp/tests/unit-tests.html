@@ -10,40 +10,25 @@
     <script src="../node_modules/jasmine-core/lib/jasmine-core/boot.js"></script>
 
     <!-- Load and Configure SystemJS -->
-    <script src="../node_modules/systemjs/dist/system-polyfills.js"></script>
+    <script src="../node_modules/es6-shim/es6-shim.min.js"></script>
     <script src="../node_modules/systemjs/dist/system.js"></script>
-    <script>
-        System.config({
-            defaultJSExtensions: true,
-            paths: {
-                '*': '../node_modules/*',
-                'app/*': 'app/*'
-            },
-            packageConfigPaths: ['node_modules/*/package.json']
-        });
-    </script>
+    <script src="../systemjs.config.js"></script>
 
     <!-- Load Angular 2 -->
-    <script src="../node_modules/es6-shim/es6-shim.min.js"></script>
-    <script src="../node_modules/reflect-metadata/Reflect.js"></script>
-    <script src="../node_modules/rxjs/bundles/Rx.min.js"></script>
 
-    <script src="../node_modules/angular2/bundles/angular2.dev.js"></script>
-    <script src="../node_modules/angular2/bundles/http.dev.js"></script>
+    <script src="../node_modules/reflect-metadata/Reflect.js"></script>
 
     <!-- Needed for tests -->
-    <script src="../node_modules/zone.js/dist/zone.js"></script>
+    <script src="../node_modules/zone.js/dist/zone.min.js"></script>
     <script src="../node_modules/zone.js/dist/async-test.js"></script>
     <script src="../node_modules/zone.js/dist/fake-async-test.js"></script>
 
-    <script src="../node_modules/angular2/bundles/testing.dev.js"></script>
-
     <script>
         Promise.all([
-                    System.import('app/servicesetup'),
-                    System.import('app/file.service.spec'),
-                    System.import('app/registeredapplication.model.spec'),
-                    System.import('app/registeredapplication.service.spec')
+                    System.import('tests/app/servicesetup'),
+                    System.import('tests/app/file.service.spec'),
+                    System.import('tests/app/registeredapplication.model.spec'),
+                    System.import('tests/app/registeredapplication.service.spec')
         ]).then(window.onload)
           .catch(console.error.bind(console));
     </script>
