@@ -1,6 +1,6 @@
-import {Component, OnDestroy, OnInit} from "angular2/core";
-import {Inject, Input} from 'angular2/core';
-import {Router} from "angular2/router";
+import {Component, OnDestroy, OnInit} from "@angular/core";
+import {Inject, Input} from '@angular/core';
+import {Router} from "@angular/router-deprecated";
 
 import {WindupService} from "../services/windup.service";
 import {RegisteredApplicationModel} from "../models/registered.application.model";

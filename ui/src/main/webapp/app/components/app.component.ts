@@ -1,8 +1,8 @@
-import {Component} from 'angular2/core';
+import {Component} from '@angular/core';
 import {NavbarComponent} from './navbar.component';
 import {BreadCrumbsComponent} from './breadcrumbs.component';
 import {ApplicationListComponent} from './applicationlist.component';
-import {RouteConfig, RouterOutlet} from 'angular2/router';
+import {RouteConfig, RouterOutlet} from '@angular/router-deprecated';
 import {RegisterApplicationFormComponent} from "./registerapplicationform.component";
 
 @Component({

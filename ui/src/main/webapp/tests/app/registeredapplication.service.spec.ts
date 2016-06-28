@@ -1,7 +1,7 @@
-/// <reference path="../../node_modules/angular2/ts/typings/jasmine/jasmine.d.ts" />
+/// <reference path="../../typings/browser/ambient/jasmine/index.d.ts" />
 
-import {provide} from 'angular2/core';
-import {HTTP_PROVIDERS} from 'angular2/http';
+import {provide} from '@angular/core';
+import {HTTP_PROVIDERS} from '@angular/http';
 import {
     beforeEach,
     beforeEachProviders,
@@ -10,7 +10,7 @@ import {
     it,
     inject,
     injectAsync
-} from 'angular2/testing';
+} from '@angular/core/testing';
 
 import 'rxjs/Rx';
 

@@ -1,5 +1,5 @@
-import {Inject, Injectable} from 'angular2/core';
-import {Headers, Http, RequestOptions, Response} from 'angular2/http';
+import {Inject, Injectable} from '@angular/core';
+import {Headers, Http, RequestOptions, Response} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 
 import {Constants} from "../constants";

@@ -1,7 +1,7 @@
-import {bootstrap}    from 'angular2/platform/browser'
-import {NgZone, provide} from 'angular2/core';
-import {HTTP_PROVIDERS} from 'angular2/http';
-import {ROUTER_PROVIDERS} from 'angular2/router';
+import {bootstrap}    from '@angular/platform-browser-dynamic'
+import {NgZone, provide} from '@angular/core';
+import {HTTP_PROVIDERS} from '@angular/http';
+import {ROUTER_PROVIDERS} from '@angular/router-deprecated';
 import {AppComponent} from './components/app.component'
 import {Constants} from './constants';
 

@@ -1,3 +1,5 @@
+/// <reference path="../../typings/browser/ambient/jasmine/index.d.ts" />
+
 import {RegisteredApplicationModel} from "../../app/models/registered.application.model";
 
 describe('registered application model tests', () => {
