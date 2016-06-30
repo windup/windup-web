@@ -64,8 +64,6 @@ public class FrameUnmarshaller extends AbstractMarshaller implements MessageBody
         if (genericClass == null)
             throw new UnsupportedOperationException("Unsupported demarshalling as generic type could not be determined!");
 
-
-
         for (Object value : deserializedValues)
         {
             if (!(value instanceof Map))
@@ -100,8 +98,9 @@ public class FrameUnmarshaller extends AbstractMarshaller implements MessageBody
         }
 
         Class<?>[] resolvedTypes = new Class<?>[] { VertexFrame.class, InMemoryVertexFrame.class, genericClass };
+        Object id = valueMap.get(AbstractMarshaller.KEY_ID);
         WindupVertexFrame frame = (WindupVertexFrame) Proxy.newProxyInstance(genericClass.getClassLoader(), resolvedTypes,
-                    new FramedElementInMemory<>(genericClass));
+                    new FramedElementInMemory<>(genericClass, id));
 
         for (Map.Entry<?, ?> entry : valueMap.entrySet())
         {

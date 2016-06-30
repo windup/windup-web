@@ -10,11 +10,16 @@ import org.jboss.forge.furnace.Furnace;
 import org.jboss.windup.config.metadata.RuleProviderRegistryCache;
 import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.GraphContextFactory;
+import org.jboss.windup.graph.model.WindupVertexFrame;
+import org.jboss.windup.graph.service.Service;
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.addons.websupport.WindupWebServiceFactory;
 import org.jboss.windup.web.addons.websupport.service.RegisteredApplicationService;
 
 /**
+ * Provides CDI Producer methods that take services from Furnace and allow them to be injected via CDI
+ * as if they were provided by the web container itself.
+ *
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
 @ApplicationScoped
@@ -34,6 +39,11 @@ public class WindupServicesProducer
     public void destroy(@Observes FurnaceShutdownEvent shutdownEvent)
     {
         this.getWindupWebServiceFactory().destroy();
+    }
+
+    public <T extends WindupVertexFrame> Service<T> getService(Class<T> frameType)
+    {
+        return getGlobalGraphContext().service(frameType);
     }
 
     @Produces

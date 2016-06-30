@@ -10,9 +10,9 @@ import org.jboss.windup.graph.Indexed;
 @TypeValue(RegisteredApplicationModel.TYPE)
 public interface RegisteredApplicationModel extends WindupWebSupportVertexFrame
 {
-    String TYPE = TYPE_PREFIX + "RegisteredApplicationModel";
+    String TYPE = TYPE_PREFIX + "RegisteredApplicationModel/";
 
-    String INPUT_PATH = TYPE + ".inputPath";
+    String INPUT_PATH = TYPE + "inputPath";
     String INPUT_FILENAME = TYPE + "inputFilename";
     String OUTPUT_PATH = TYPE + "outputPath";
 

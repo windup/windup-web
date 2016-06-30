@@ -24,6 +24,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public abstract class AbstractMarshaller
 {
+    static final String KEY_ID = "FrameMarshaller.vertexID";
+
     ObjectMapper getMapper()
     {
         MappingJsonFactory jsonFactory = new MappingJsonFactory();
@@ -61,6 +63,9 @@ public abstract class AbstractMarshaller
             return false;
 
         boolean result = type.isInterface() && WindupVertexFrame.class.isAssignableFrom(type);
+        if (!result && genericType instanceof Class)
+            result = ((Class)genericType).isInterface() && WindupVertexFrame.class.isAssignableFrom((Class)genericType);
+
         boolean isCollection = Collection.class.isAssignableFrom(type);
         if (!result && isCollection && genericType instanceof ParameterizedType)
         {

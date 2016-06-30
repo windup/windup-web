@@ -8,8 +8,10 @@ import javax.inject.Inject;
 
 import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.GraphContextFactory;
+import org.jboss.windup.graph.service.Service;
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.addons.websupport.WindupWebServiceFactory;
+import org.jboss.windup.web.addons.websupport.model.WindupWebSupportVertexFrame;
 import org.jboss.windup.web.addons.websupport.service.RegisteredApplicationService;
 import org.jboss.windup.web.service.RegisteredApplicationServiceImpl;
 
