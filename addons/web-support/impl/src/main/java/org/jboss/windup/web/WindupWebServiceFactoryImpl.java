@@ -11,6 +11,8 @@ import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.GraphContextFactory;
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.addons.websupport.WindupWebServiceFactory;
+import org.jboss.windup.web.addons.websupport.service.MigrationProjectService;
+import org.jboss.windup.web.service.MigrationProjectServiceImpl;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -27,6 +29,11 @@ public class WindupWebServiceFactoryImpl implements WindupWebServiceFactory
     private WebPathUtil webPathUtil;
 
     private GraphContext graphContext;
+
+    public MigrationProjectService getMigrationProjectService()
+    {
+        return new MigrationProjectServiceImpl(getGlobalGraphContext());
+    }
 
     @Override
     public void destroy()

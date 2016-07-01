@@ -81,6 +81,10 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
         this._router.navigate(['RegisterApplicationForm'])
     }
 
+    createMigrationProject() {
+        this._router.navigate(['MigrationProjectForm'])
+    }
+
     reportURL(path:string) : string {
         return this._constants.STATIC_REPORTS_BASE + "/" + path.substr(path.lastIndexOf('/') + 1) + "/index.html";
     }
