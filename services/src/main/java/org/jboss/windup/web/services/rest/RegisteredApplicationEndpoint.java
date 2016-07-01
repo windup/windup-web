@@ -1,8 +1,6 @@
 package org.jboss.windup.web.services.rest;
 
-import org.jboss.windup.web.addons.websupport.model.RegisteredApplicationModel;
 import org.jboss.windup.web.services.dto.RegisteredApplicationDto;
-import org.jboss.windup.web.services.validators.FileExistsConstraint;
 
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
