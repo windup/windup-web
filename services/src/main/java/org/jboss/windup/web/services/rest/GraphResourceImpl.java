@@ -1,13 +1,19 @@
 package org.jboss.windup.web.services.rest;
 
+import com.thinkaurelius.titan.core.TitanProperty;
+import com.thinkaurelius.titan.graphdb.vertices.StandardVertex;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
 import org.apache.commons.lang3.StringUtils;
+import org.jboss.forge.furnace.proxy.Proxies;
 import org.jboss.windup.graph.GraphContext;
+import org.jboss.windup.graph.GraphTypeManager;
+import org.jboss.windup.graph.model.WindupFrame;
 import org.jboss.windup.web.services.producer.WindupServicesProducer;
 
 import javax.inject.Inject;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -110,7 +116,19 @@ public class GraphResourceImpl implements GraphResource
                 linkEdges(graphContext, vertex, entry.getKey(), (Map<String, Object>)value);
             } else
             {
-                vertex.setProperty(entry.getKey(), entry.getValue());
+                if (entry.getKey().equals(WindupFrame.TYPE_PROP))
+                {
+                    for (Method method : graphContext.getGraphTypeManager().getClass().getMethods())
+                    {
+                        System.out.println("Method: " + method.getName());
+                    }
+
+                    for (String type : (List<String>)entry.getValue())
+                        graphContext.getGraphTypeManager().addTypeToElement(type, vertex);
+                } else
+                {
+                    vertex.setProperty(entry.getKey(), entry.getValue());
+                }
             }
         }
         return vertex;

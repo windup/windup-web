@@ -9,6 +9,8 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
+import org.jboss.windup.graph.model.WindupFrame;
+import org.jboss.windup.web.addons.websupport.model.RegisteredApplicationModel;
 import org.jboss.windup.web.services.AbstractTest;
 import org.junit.Assert;
 import org.junit.Before;
@@ -58,13 +60,17 @@ public class GraphResourceTest extends AbstractTest
         data.put("string1", "value1");
         data.put("integer1", 1);
         data.put("boolean1", true);
+        data.put(WindupFrame.TYPE_PROP, Collections.singletonList(RegisteredApplicationModel.TYPE));
 
         Map<String, Object> created = graphResource.create(GraphResource.GLOBAL_GRAPH, data);
-        Assert.assertEquals(4, created.size());
+        Assert.assertEquals(5, created.size());
         Assert.assertEquals("value1", created.get("string1"));
         Assert.assertEquals(1, created.get("integer1"));
         Assert.assertEquals(true, created.get("boolean1"));
         Assert.assertTrue(created.get(GraphResource.KEY_ID) instanceof Integer);
+
+        List<String> types = (List<String>)created.get(WindupFrame.TYPE_PROP);
+        Assert.assertTrue(types.contains(RegisteredApplicationModel.TYPE));
     }
 
     @Test
