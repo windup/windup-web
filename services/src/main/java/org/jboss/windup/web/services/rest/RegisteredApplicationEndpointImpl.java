@@ -15,7 +15,6 @@ import org.jboss.windup.web.services.dto.RegisteredApplicationDto;
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
-
 @Stateless
 public class RegisteredApplicationEndpointImpl implements RegisteredApplicationEndpoint
 {

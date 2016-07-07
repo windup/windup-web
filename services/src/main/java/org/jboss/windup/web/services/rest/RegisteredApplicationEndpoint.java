@@ -14,6 +14,8 @@ import javax.ws.rs.Produces;
 import java.util.Collection;
 
 /**
+ * Defines methods for managing {@link RegisteredApplicationModel}s via the {@link RegisteredApplicationDto} DTO.
+ *
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
 @Path("registeredApplications")
@@ -21,14 +23,23 @@ import java.util.Collection;
 @Produces("application/json")
 public interface RegisteredApplicationEndpoint
 {
+    /**
+     * Returns a list of all {@link RegisteredApplicationDto}s registered in the system.
+     */
     @GET
     @Path("list")
     Collection<RegisteredApplicationDto> getRegisteredApplications();
 
+    /**
+     * Register a new application and validate it during registration.
+     */
     @PUT
     @Path("register")
     RegisteredApplicationDto registerApplication(@Valid RegisteredApplicationDto applicationDto);
 
+    /**
+     * Unregister the given application.
+     */
     @DELETE
     @Path("unregister")
     void unregisterApplication(RegisteredApplicationDto application);

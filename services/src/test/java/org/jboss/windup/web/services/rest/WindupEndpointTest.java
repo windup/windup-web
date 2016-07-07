@@ -9,7 +9,6 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
-import org.jboss.windup.web.addons.websupport.model.RegisteredApplicationModel;
 import org.jboss.windup.web.services.AbstractTest;
 import org.jboss.windup.web.services.dto.ProgressStatusDto;
 import org.jboss.windup.web.services.dto.RegisteredApplicationDto;

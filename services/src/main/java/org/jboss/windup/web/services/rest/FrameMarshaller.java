@@ -23,6 +23,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
+import com.tinkerpop.frames.VertexFrame;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.windup.graph.model.WindupVertexFrame;
 
@@ -89,6 +90,8 @@ public class FrameMarshaller extends AbstractMarshaller implements MessageBodyWr
         try
         {
             Map<String, Object> value = new HashMap<>();
+            if (o instanceof VertexFrame)
+                value.put(AbstractMarshaller.KEY_ID, ((VertexFrame)o).asVertex().getId());
 
             for (PropertyDescriptor propertyDescriptor : getPropertyDescriptors(type).values())
             {
