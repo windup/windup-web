@@ -3,6 +3,7 @@ package org.jboss.windup.web.furnaceserviceprovider;
 import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.logging.Logger;
 
 import javax.enterprise.inject.spi.BeanManager;
 
@@ -14,6 +15,8 @@ import org.jboss.forge.furnace.spi.ContainerLifecycleListener;
 
 public class FurnaceProducer
 {
+    private static Logger LOG = Logger.getLogger(FurnaceProducer.class.getName());
+
     private Furnace furnace;
 
     public Furnace getFurnace()
@@ -23,7 +26,7 @@ public class FurnaceProducer
 
     public void setup(Path repoDir)
     {
-        System.out.println("Starting with repo: " + repoDir);
+        LOG.info("Starting with repo: " + repoDir);
         Furnace furnace = FurnaceFactory.getInstance(Thread.currentThread()
                     .getContextClassLoader(), Thread.currentThread()
                                 .getContextClassLoader());
@@ -44,7 +47,7 @@ public class FurnaceProducer
 
     public void destroy(BeanManager beanManager)
     {
-        System.out.println("Shutting down forge!");
+        LOG.info("Shutting down furnace!");
         beanManager.fireEvent(new FurnaceShutdownEvent());
 
         if (furnace != null)

@@ -56,6 +56,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
+import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 
 /**
  * Default servlet responsible for serving up resources. This is both a handler and a servlet. If no filters
@@ -104,7 +105,7 @@ public class FileDefaultServlet extends HttpServlet
     private String basePath;
     private FileResourceManager fileResourceManager;
 
-    @Inject
+    @Inject @FromFurnace
     private WebPathUtil webPathUtil;
 
     @Override

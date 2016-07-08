@@ -6,8 +6,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 /**
+ * Implements tools for finding the addon and rules directories.
+ *
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
 public class WebProperties
@@ -16,41 +19,38 @@ public class WebProperties
     public static final String ADDON_REPOSITORY = "addon.repository";
     public static final String RULES_REPOSITORY = "rules.repository";
 
-    private static WebProperties instance;
+    private static Logger LOG = Logger.getLogger(WebProperties.class.getName());
+
+    private static class LazyHolder
+    {
+        private static final WebProperties INSTANCE = new WebProperties();
+    }
+
     private Properties properties = new Properties();
     private Path addonRepository;
     private Path rulesRepository;
 
     public static WebProperties getInstance()
     {
-        if (instance == null)
-        {
-            synchronized (WebProperties.class)
-            {
-                if (instance == null)
-                    instance = new WebProperties();
-            }
-        }
-        return instance;
+        return LazyHolder.INSTANCE;
     }
 
     private WebProperties()
     {
+        init();
     }
 
     public Path getAddonRepository()
     {
-        init();
         return addonRepository;
     }
 
     public Path getRulesRepository()
     {
-        init();
         return rulesRepository;
     }
 
-    public void init()
+    private void init()
     {
         if (addonRepository != null)
             return;
@@ -97,7 +97,7 @@ public class WebProperties
         try
         {
             String pathString = FurnaceExtension.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
-            System.out.println("Path String: " + pathString);
+            LOG.info("Path String: " + pathString);
             Path path = Paths.get(pathString);
             if (!Files.isRegularFile(path))
                 return null;
