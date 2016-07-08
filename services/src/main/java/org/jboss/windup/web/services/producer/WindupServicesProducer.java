@@ -13,6 +13,7 @@ import org.jboss.windup.graph.GraphContextFactory;
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.addons.websupport.WindupWebServiceFactory;
 import org.jboss.windup.web.addons.websupport.service.RegisteredApplicationService;
+import org.jboss.windup.web.furnaceserviceprovider.FurnaceShutdownEvent;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -37,21 +38,9 @@ public class WindupServicesProducer
     }
 
     @Produces
-    public WebPathUtil getWebPathUtil()
-    {
-        return furnace.getAddonRegistry().getServices(WebPathUtil.class).get();
-    }
-
-    @Produces
     public RuleProviderRegistryCache getRuleProviderRegistryCache()
     {
         return furnace.getAddonRegistry().getServices(RuleProviderRegistryCache.class).get();
-    }
-
-    @Produces
-    public RegisteredApplicationService getRegisteredApplicationService()
-    {
-        return getWindupWebServiceFactory().getRegisteredApplicationService();
     }
 
     /**

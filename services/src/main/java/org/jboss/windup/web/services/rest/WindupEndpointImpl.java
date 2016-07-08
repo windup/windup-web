@@ -21,7 +21,7 @@ import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.GraphContextFactory;
 import org.jboss.windup.web.addons.websupport.model.RegisteredApplicationModel;
 import org.jboss.windup.web.addons.websupport.service.RegisteredApplicationService;
-import org.jboss.windup.web.services.WebProperties;
+import org.jboss.windup.web.furnaceserviceprovider.WebProperties;
 import org.jboss.windup.web.services.WindupWebProgressMonitor;
 import org.jboss.windup.web.services.dto.ProgressStatusDto;
 import org.jboss.windup.web.services.dto.RegisteredApplicationDto;
@@ -34,8 +34,9 @@ public class WindupEndpointImpl implements WindupEndpoint
     private static Map<RegisteredApplicationModel, WindupWebProgressMonitor> progressMonitors = new ConcurrentHashMap<>();
     @Inject
     private Furnace furnace;
-    @Inject
-    private WebProperties webProperties;
+
+    private WebProperties webProperties = WebProperties.getInstance();
+
     @Inject
     private RegisteredApplicationService registeredApplicationService;
     @Resource

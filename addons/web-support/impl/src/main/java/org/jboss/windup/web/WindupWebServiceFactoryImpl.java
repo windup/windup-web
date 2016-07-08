@@ -4,6 +4,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import org.jboss.windup.graph.GraphContext;
@@ -29,6 +30,7 @@ public class WindupWebServiceFactoryImpl implements WindupWebServiceFactory
 
     private GraphContext graphContext;
 
+    @Produces
     public RegisteredApplicationService getRegisteredApplicationService()
     {
         return new RegisteredApplicationServiceImpl(getGlobalGraphContext(), webPathUtil);
