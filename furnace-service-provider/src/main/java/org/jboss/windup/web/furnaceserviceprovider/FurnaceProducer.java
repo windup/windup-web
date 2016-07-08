@@ -1,39 +1,32 @@
-package org.jboss.windup.web.services.producer;
+package org.jboss.windup.web.furnaceserviceprovider;
 
 import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.logging.Logger;
 
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Destroyed;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
 
 import org.jboss.forge.furnace.Furnace;
 import org.jboss.forge.furnace.exception.ContainerException;
 import org.jboss.forge.furnace.repositories.AddonRepositoryMode;
 import org.jboss.forge.furnace.se.FurnaceFactory;
 import org.jboss.forge.furnace.spi.ContainerLifecycleListener;
-import org.jboss.windup.web.services.WebProperties;
 
-@ApplicationScoped
 public class FurnaceProducer
 {
-    @Inject
-    private WebProperties webProperties;
+    private static Logger LOG = Logger.getLogger(FurnaceProducer.class.getName());
 
-    @Inject
-    private BeanManager beanManager;
-
-    private boolean destroyed = false;
     private Furnace furnace;
 
-    private void setup(Path repoDir)
+    public Furnace getFurnace()
     {
-        System.out.println("Starting with repo: " + repoDir);
+        return furnace;
+    }
+
+    public void setup(Path repoDir)
+    {
+        LOG.info("Starting with repo: " + repoDir);
         Furnace furnace = FurnaceFactory.getInstance(Thread.currentThread()
                     .getContextClassLoader(), Thread.currentThread()
                                 .getContextClassLoader());
@@ -52,29 +45,11 @@ public class FurnaceProducer
         this.furnace = furnace;
     }
 
-    @Produces
-    public Furnace getFurnace()
+    public void destroy(BeanManager beanManager)
     {
-        if (!destroyed && furnace == null)
-        {
-            synchronized (this)
-            {
-                if (furnace == null)
-                {
-                    setup(webProperties.getAddonRepository());
-                }
-            }
-        }
-
-        return furnace;
-    }
-
-    @PreDestroy
-    public void destroy(@Observes @Destroyed(ApplicationScoped.class) Object applicationScoped)
-    {
+        LOG.info("Shutting down furnace!");
         beanManager.fireEvent(new FurnaceShutdownEvent());
 
-        this.destroyed = true;
         if (furnace != null)
         {
             FurnaceProducerFurnaceShutdownListener listener = new FurnaceProducerFurnaceShutdownListener();

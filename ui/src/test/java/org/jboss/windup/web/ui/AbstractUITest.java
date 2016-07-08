@@ -40,6 +40,7 @@ public abstract class AbstractUITest
         WebArchive war = ShrinkWrap.create(WebArchive.class, "windup-web-services.war");
         File servicesWarFile = Maven.resolver().resolve("org.jboss.windup.web:windup-web-services:war:3.0.0-SNAPSHOT").withoutTransitivity().asSingleFile();
         war.merge(ShrinkWrap.create(GenericArchive.class).as(ZipImporter.class).importFrom(servicesWarFile).as(GenericArchive.class));
+        war.merge(ShrinkWrap.create(ExplodedImporter.class).importDirectory("src/test/resources/WEB-INF").as(GenericArchive.class), "/WEB-INF");
         return war;
     }
 

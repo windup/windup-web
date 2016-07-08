@@ -10,6 +10,7 @@ import javax.inject.Inject;
 
 import org.jboss.windup.web.addons.websupport.model.RegisteredApplicationModel;
 import org.jboss.windup.web.addons.websupport.service.RegisteredApplicationService;
+import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.dto.RegisteredApplicationDto;
 
 /**
@@ -21,7 +22,7 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
 {
     private static Logger LOG = Logger.getLogger(RegisteredApplicationEndpointImpl.class.getSimpleName());
 
-    @Inject
+    @Inject @FromFurnace
     private RegisteredApplicationService registeredApplicationService;
 
     @Override

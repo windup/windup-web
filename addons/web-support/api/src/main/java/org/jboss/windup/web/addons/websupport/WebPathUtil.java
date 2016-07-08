@@ -1,11 +1,6 @@
 package org.jboss.windup.web.addons.websupport;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 /**
  * Gets global paths (for example a global shared data directory).

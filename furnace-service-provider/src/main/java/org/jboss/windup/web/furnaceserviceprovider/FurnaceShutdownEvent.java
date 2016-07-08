@@ -1,4 +1,4 @@
-package org.jboss.windup.web.services.producer;
+package org.jboss.windup.web.furnaceserviceprovider;
 
 /**
  * Indicates that Furnace is about to be shut down. Beans listening to this should insure that

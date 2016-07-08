@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.AbstractTest;
 import org.junit.Assert;
 import org.junit.Test;
@@ -26,7 +27,7 @@ public class FileDefaultServletTest extends AbstractTest
     @ArquillianResource
     private URL baseURL;
 
-    @Inject
+    @Inject @FromFurnace
     private WebPathUtil webPathUtil;
 
     @Test

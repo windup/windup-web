@@ -10,6 +10,7 @@ import javax.servlet.annotation.WebListener;
 
 import org.apache.commons.io.FileUtils;
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
+import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -19,7 +20,7 @@ public class ServerCleanupOnStartup implements ServletContextListener
 {
     private static Logger LOG = Logger.getLogger(ServerCleanupOnStartup.class.getSimpleName());
 
-    @Inject
+    @Inject @FromFurnace
     private WebPathUtil webPathUtil;
 
     public ServerCleanupOnStartup()

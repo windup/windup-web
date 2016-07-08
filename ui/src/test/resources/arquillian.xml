@@ -5,7 +5,8 @@
         http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
     
     <engine>
-        <property name="deploymentExportExploded">target/deployments</property>
+        <property name="deploymentExportPath">target/export</property>
+        <property name="deploymentExportExploded">true</property>
     </engine>
 
     <extension qualifier="webdriver">

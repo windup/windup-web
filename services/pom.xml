@@ -38,6 +38,13 @@
             <artifactId>furnace-se</artifactId>
         </dependency>
 
+        <!-- Furnace -> Java EE CDI Bridge -->
+        <dependency>
+            <groupId>org.jboss.windup.web</groupId>
+            <artifactId>furnace-service-provider</artifactId>
+            <version>3.0.0-SNAPSHOT</version>
+        </dependency>
+
         <!-- Windup Web Addons -->
         <dependency>
             <groupId>org.jboss.windup.web.addons</groupId>

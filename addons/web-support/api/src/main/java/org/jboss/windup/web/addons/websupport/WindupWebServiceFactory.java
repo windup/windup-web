@@ -6,7 +6,8 @@ import org.jboss.windup.web.addons.websupport.service.RegisteredApplicationServi
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
-public interface WindupWebServiceFactory {
+public interface WindupWebServiceFactory
+{
     RegisteredApplicationService getRegisteredApplicationService();
 
     GraphContext getGlobalGraphContext();
