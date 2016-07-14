@@ -35,8 +35,17 @@ export class MigrationProjectService
     private handleError(error: Response) {
         // in a real world app, we may send the error to some remote logging infrastructure
         // instead of just logging it to the console
-        console.error("Service error: " + error);
-        console.error("Service error (json): " + JSON.stringify(error.json()));
-        return Observable.throw(error.json());
+        console.error("Service error: (" + typeof error + ") " + error);
+        if (typeof error === 'object')
+            console.error(JSON.stringify(error));
+        var json;
+        try {
+            json = error.json();
+            console.error("Service error - JSON: " + JSON.stringify(json));
+        }
+        catch (ex) {
+            console.error("Service error - can't JSON: " + (<SyntaxError>ex).message);
+        }
+        return Observable.throw(json);
     }
 }

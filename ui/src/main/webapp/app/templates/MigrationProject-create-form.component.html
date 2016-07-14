@@ -1,28 +1,21 @@
 <h1>
     Create Migration Project
 </h1>
-<form [ngFormModel]="registrationForm" (ngSubmit)="register()"  class="form-horizontal">
+<form [ngFormModel]="registrationForm" (ngSubmit)="create()"  class="form-horizontal">
     <div *ngIf="errorMessage" class="row form-errors alert alert-danger">
-        <div class="col-md-2">&nbsp;</div>
-        <div class="col-md-10">
-            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-            {{errorMessage}}
-        </div>
+        <span class="glyphicon glyphicon-exclamation-sign"></span> {{errorMessage}}
     </div>
     <div class="row">
-        <div class="form-group" [ngClass]="{'has-error': hasError(id)}">
-            <label class="col-md-2 control-label" for="textInput">Migration Project Title</label>
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="idTitle">Migration Project Title</label>
             <div class="col-md-6">
-                <input #inputPath="ngForm" [(ngModel)]="model.inputPath" ngControl="title" type="text" id="textInput" class="form-control">
-                <span [class.hidden]="!hasError(inputPath)" class="help-block">
-                    The input path must exist on the server.
-                </span>
+                <input #title="ngForm" [(ngModel)]="model.title" ngControl="title" type="text" id="idTitle" class="form-control">
             </div>
         </div>
         <div class="form-group">
             <div class="col-md-10 col-md-offset-2">
-                <button class="btn btn-primary" type="submit">Register</button>
-                <button (click)="cancelRegistration()" type="button" class="btn btn-default">Cancel</button>
+                <button class="btn btn-primary" type="submit">Create</button>
+                <button (click)="cancel()" type="button" class="btn btn-default">Cancel</button>
             </div>
         </div>
     </div>

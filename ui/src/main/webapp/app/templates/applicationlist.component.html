@@ -1,6 +1,7 @@
 <h1>
     Application List
     <button (click)="registerApplication()" class="btn btn-primary" type="button">Register Application</button>
+    <button (click)="registerApplication()" class="btn btn-primary" type="button">Create Migration Project</button>
     <button (click)="createMigrationProject()" class="btn btn-primary" type="button">Create Migration Project</button>
 </h1>
 <h3 *ngIf="errorMessage != null">{{errorMessage}}</h3>
@@ -13,7 +14,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="#app of applications">
+    <tr *ngFor="let app of applications">
 
         <td class="col-md-3">{{app.inputFilename}}</td>
         <td class="col-md-7">
