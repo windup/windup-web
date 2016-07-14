@@ -8,7 +8,7 @@ import {FileExistsValidator} from "../validators/FileExistsValidator";
 import {FileService} from "../services/file.service";
 
 @Component({
-    selector: 'register-application-form',
+    selector: 'register-application-form', /// TODO: Not used anywhere?
     templateUrl: 'app/templates/registerapplicationform.component.html',
     directives: [ NgClass ],
     providers: [ FileService, RegisteredApplicationService ]
@@ -27,7 +27,7 @@ export class RegisterApplicationFormComponent {
         private _formBuilder: FormBuilder
     ) {
         this.registrationForm = _formBuilder.group({
-            inputPath: ["", Validators.compose([Validators.required, Validators.minLength(4)]), FileExistsValidator.fileExists(this._fileService)]
+            inputPath: ["", Validators.compose([Validators.required, Validators.minLength(4)]), FileExistsValidator.create(this._fileService)]
         });
         this.error = true;
     }
