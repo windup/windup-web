@@ -5,6 +5,8 @@ import {Router} from "@angular/router-deprecated";
 import {WindupService} from "../services/windup.service";
 import {RegisteredApplicationModel} from "../models/registered.application.model";
 import {RegisteredApplicationService} from "../services/registeredapplication.service";
+import {MigrationProjectModel} from "../models/MigrationProject.model";
+import {MigrationProjectService} from "../services/migrationproject.service";
 import {ProgressStatusModel} from "../models/progressstatus.model";
 import {Constants} from "../constants";
 import {ProgressBarComponent} from "./progressbar.component";
@@ -13,7 +15,7 @@ import {ProgressBarComponent} from "./progressbar.component";
     selector: 'application-list',
     templateUrl: 'app/templates/applicationlist.component.html',
     directives: [ ProgressBarComponent ],
-    providers: [ RegisteredApplicationService, WindupService ]
+    providers: [ MigrationProjectService, RegisteredApplicationService, WindupService ]
 })
 export class ApplicationListComponent implements OnInit, OnDestroy {
     applications:RegisteredApplicationModel[];
@@ -22,10 +24,10 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     private _refreshIntervalID:number;
 
     constructor(
-        private _router:Router,
-        private _registeredApplicationService:RegisteredApplicationService,
-        private _windupService:WindupService,
-        private _constants:Constants
+        private _router: Router,
+        private _registeredApplicationService: RegisteredApplicationService,
+        private _windupService: WindupService,
+        private _constants: Constants
     ) {}
 
     ngOnInit():any {
@@ -79,6 +81,11 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
 
     registerApplication() {
         this._router.navigate(['RegisterApplicationForm'])
+    }
+
+    createMigrationProject() {
+        console.info("AAAAAAA");///
+        this._router.navigate(['MigrationProjectForm']);
     }
 
     reportURL(path:string) : string {

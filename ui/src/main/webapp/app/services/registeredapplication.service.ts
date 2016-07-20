@@ -12,7 +12,7 @@ export class RegisteredApplicationService {
 
     constructor (private _http: Http, private _constants: Constants) {}
 
-    registerApplication(application:RegisteredApplicationModel) {
+    registerApplication(application: RegisteredApplicationModel) {
         let headers = new Headers();
         let options = new RequestOptions({ headers: headers });
         headers.append('Content-Type', 'application/json');

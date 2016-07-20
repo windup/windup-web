@@ -1,0 +1,22 @@
+<h1>
+    Create Migration Project
+</h1>
+<form [ngFormModel]="registrationForm" (ngSubmit)="create()"  class="form-horizontal">
+    <div *ngIf="errorMessage" class="row form-errors alert alert-danger">
+        <span class="glyphicon glyphicon-exclamation-sign"></span> {{errorMessage}}
+    </div>
+    <div class="row">
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="idTitle">Migration Project Title</label>
+            <div class="col-md-6">
+                <input #title="ngForm" [(ngModel)]="model.title" ngControl="title" type="text" id="idTitle" class="form-control">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-10 col-md-offset-2">
+                <button class="btn btn-primary" type="submit">Create</button>
+                <button (click)="cancel()" type="button" class="btn btn-default">Cancel</button>
+            </div>
+        </div>
+    </div>
+</form>

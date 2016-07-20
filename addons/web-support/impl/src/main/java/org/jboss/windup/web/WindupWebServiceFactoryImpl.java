@@ -11,7 +11,9 @@ import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.GraphContextFactory;
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.addons.websupport.WindupWebServiceFactory;
+import org.jboss.windup.web.addons.websupport.service.MigrationProjectService;
 import org.jboss.windup.web.addons.websupport.service.RegisteredApplicationService;
+import org.jboss.windup.web.service.MigrationProjectServiceImpl;
 import org.jboss.windup.web.service.RegisteredApplicationServiceImpl;
 
 /**
@@ -34,6 +36,11 @@ public class WindupWebServiceFactoryImpl implements WindupWebServiceFactory
     public RegisteredApplicationService getRegisteredApplicationService()
     {
         return new RegisteredApplicationServiceImpl(getGlobalGraphContext(), webPathUtil);
+    }
+
+    public MigrationProjectService getMigrationProjectService()
+    {
+        return new MigrationProjectServiceImpl(getGlobalGraphContext());
     }
 
     @Override
