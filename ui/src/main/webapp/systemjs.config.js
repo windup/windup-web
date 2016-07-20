@@ -1,14 +1,20 @@
 (function(global) {
     //map tells the System loader where to look for things
     var  map = {
-        'app':                        'app'
+        'app':                        'app',
+        'unmarshaller':               'unmarshaller',
     };
 
     //packages tells the System loader how to load when no filename and/or no extension
     var packages = {
         'app':                        { main: 'main.js',  defaultExtension: 'js' },
+        'unmarshaller':               { main: 'main.js',  defaultExtension: 'js' },
+        'tests/unmarshaller':               { main: 'main.js',  defaultExtension: 'js' },
+        'unmarshallerTest':           { main: 'GraphJSONtoTsModelsService.js',  defaultExtension: 'js' },
         '../../app':                  { main: 'main.js',  defaultExtension: 'js' },
         '../app':                     { main: 'main.js',  defaultExtension: 'js' },
+        '../../unmarshaller':                  { main: 'main.js',  defaultExtension: 'js' },
+        '../unmarshaller':                     { main: 'main.js',  defaultExtension: 'js' },
         'rxjs':                       { defaultExtension: 'js' },
         'angular2-in-memory-web-api': { defaultExtension: 'js' },
     };
@@ -26,13 +32,10 @@
         'symbol-observable'
     ];
 
-    // add map entries for angular packages in the form '@angular/common': 'https://npmcdn.com/@angular/common@0.0.0-3?main=browser'
     packageNames.forEach(function(pkgName) {
+        // add map entries for angular packages in the form '@angular/common': 'https://npmcdn.com/@angular/common@0.0.0-3?main=browser'
         map[pkgName] = pkgName;
-    });
-
-    // add package entries for angular packages in the form '@angular/common': { main: 'index.js', defaultExtension: 'js' }
-    packageNames.forEach(function(pkgName) {
+        // add package entries for angular packages in the form '@angular/common': { main: 'index.js', defaultExtension: 'js' }
         packages[pkgName] = { main: 'index.js', defaultExtension: 'js' };
     });
 
@@ -40,7 +43,10 @@
         map: map,
         paths: {
             'app': '',
+            'unmarshallerTest': 'app/services/graph',
+            // These are for unit-tests.html
             'tests/app/*': "app/*",
+            'tests/unmarshaller/*': "unmarshaller/*",
             '*': '/windup-web/node_modules/*'
         },
         packages: packages

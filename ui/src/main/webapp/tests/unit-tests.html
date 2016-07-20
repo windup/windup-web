@@ -25,14 +25,18 @@
 
     <script>
         Promise.all([
-                    System.import('@angular/platform-browser/src/browser/browser_adapter').then(function(browser_adapter) {
-                        browser_adapter.BrowserDomAdapter.makeCurrent();
-                    }),
+            System.import('@angular/platform-browser/src/browser/browser_adapter').then(function(browser_adapter) {
+                browser_adapter.BrowserDomAdapter.makeCurrent();
+            }),
 
-                    System.import('tests/app/servicesetup'),
-                    System.import('tests/app/file.service.spec'),
-                    System.import('tests/app/registeredapplication.model.spec'),
-                    System.import('tests/app/registeredapplication.service.spec')
+            System.import('tests/app/servicesetup'),
+            //System.import('tests/app/file.service.spec'),
+            //System.import('tests/unmarshaller/file.service.spec'), // Can't get this work.
+            //System.import('tests/unmarshaller/file.service.spec.js'), // Works.
+            System.import('tests/app/registeredapplication.model.spec'),
+            //System.import('tests/app/registeredapplication.service.spec'),
+            //System.import('tests/unmarshaller/UnmarshallerTest.spec'), // Doesn't work
+            System.import('tests/unmarshaller/UnmarshallerTest.spec.js'),
         ]).then(window.onload)
           .catch(console.error.bind(console));
     </script>
