@@ -17,8 +17,8 @@ import 'rxjs/Rx';
 import {Constants} from '../../app/constants';
 
 
-import {RegisteredApplicationModel} from "../../app/models/registered.application.model";
 import {RegisteredApplicationService} from "../../app/services/registeredapplication.service";
+import {RegisteredApplication} from "windup-services";
 
 describe("Registered Application Service Test", () => {
     beforeEachProviders(() => [
@@ -28,7 +28,7 @@ describe("Registered Application Service Test", () => {
     ]);
 
     it('register app call', injectAsync([RegisteredApplicationService], (service:RegisteredApplicationService) => {
-        let inputApp = new RegisteredApplicationModel();
+        let inputApp = <RegisteredApplication>{};
         inputApp.inputPath = "src/main/java";
         return service.registerApplication(inputApp).toPromise()
             .then(application => {

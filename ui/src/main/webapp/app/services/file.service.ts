@@ -2,7 +2,6 @@ import {Inject, Injectable} from '@angular/core';
 import {Headers, Http, RequestOptions, Response} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 
-import {RegisteredApplicationModel} from '../models/registered.application.model';
 import {Constants} from "../constants";
 
 @Injectable()

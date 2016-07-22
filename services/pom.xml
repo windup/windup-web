@@ -233,6 +233,30 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>cz.habarta.typescript-generator</groupId>
+                <artifactId>typescript-generator-maven-plugin</artifactId>
+                <version>1.10.212</version>
+                <executions>
+                    <execution>
+                        <id>generate</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <jsonLibrary>jackson2</jsonLibrary>
+                            <classPatterns>
+                                <pattern>org.jboss.windup.web.services.model.**</pattern>
+                            </classPatterns>
+                            <excludeClasses>
+                                <class>java.io.Serializable</class>
+                            </excludeClasses>
+                            <outputFile>target/windup-services.d.ts</outputFile>
+                            <outputKind>module</outputKind>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
                 <executions>

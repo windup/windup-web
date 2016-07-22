@@ -2,7 +2,7 @@ import {ControlGroup, FormBuilder, NgClass, NgControlName, Validators} from "@an
 import {Component, Input, OnInit} from "@angular/core";
 import {Router} from "@angular/router-deprecated";
 
-import {RegisteredApplicationModel} from "../models/registered.application.model";
+import {RegisteredApplication} from "windup-services";
 import {RegisteredApplicationService} from "../services/registeredapplication.service";
 import {FileExistsValidator} from "../validators/FileExistsValidator";
 import {FileService} from "../services/file.service";
@@ -16,7 +16,7 @@ import {FileService} from "../services/file.service";
 export class RegisterApplicationFormComponent {
     registrationForm: ControlGroup;
 
-    model = new RegisteredApplicationModel();
+    model = <RegisteredApplication>{};
     errorMessage:string;
     error:boolean;
 

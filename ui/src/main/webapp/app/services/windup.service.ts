@@ -2,9 +2,9 @@ import {Inject, Injectable} from '@angular/core';
 import {Headers, Http, RequestOptions, Response} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 
-import {RegisteredApplicationModel} from '../models/registered.application.model';
 import {Constants} from "../constants";
 import {ProgressStatusModel} from "../models/progressstatus.model";
+import {RegisteredApplication} from "windup-services";
 
 @Injectable()
 export class WindupService {
@@ -13,7 +13,7 @@ export class WindupService {
 
     constructor (private _http: Http, private _constants: Constants) {}
 
-    public getStatus(application:RegisteredApplicationModel) {
+    public getStatus(application:RegisteredApplication) {
         var headers = new Headers();
         var options = new RequestOptions({ headers: headers });
         headers.append('Content-Type', 'application/json');
@@ -24,7 +24,7 @@ export class WindupService {
             .catch(this.handleError);
     }
 
-    public executeWindup(application:RegisteredApplicationModel) {
+    public executeWindup(application:RegisteredApplication) {
         var headers = new Headers();
         var options = new RequestOptions({ headers: headers });
         headers.append('Content-Type', 'application/json');

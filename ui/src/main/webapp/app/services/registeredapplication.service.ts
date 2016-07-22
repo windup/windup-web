@@ -2,8 +2,8 @@ import {Inject, Injectable} from '@angular/core';
 import {Headers, Http, RequestOptions, Response} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 
-import {RegisteredApplicationModel} from '../models/registered.application.model';
 import {Constants} from "../constants";
+import {RegisteredApplication} from "windup-services";
 
 @Injectable()
 export class RegisteredApplicationService {
@@ -12,7 +12,7 @@ export class RegisteredApplicationService {
 
     constructor (private _http: Http, private _constants: Constants) {}
 
-    registerApplication(application:RegisteredApplicationModel) {
+    registerApplication(application:RegisteredApplication) {
         let headers = new Headers();
         let options = new RequestOptions({ headers: headers });
         headers.append('Content-Type', 'application/json');
@@ -21,13 +21,13 @@ export class RegisteredApplicationService {
         let body = JSON.stringify(application);
 
         return this._http.put(this._constants.REST_BASE + this.REGISTER_APPLICATION_URL, body, options)
-            .map(res => <RegisteredApplicationModel> res.json())
+            .map(res => <RegisteredApplication> res.json())
             .catch(this.handleError);
     }
 
     getApplications() {
         return this._http.get(this._constants.REST_BASE + this.GET_APPLICATIONS_URL)
-            .map(res => <RegisteredApplicationModel[]> res.json())
+            .map(res => <RegisteredApplication[]> res.json())
             .catch(this.handleError);
     }
 
