@@ -16,9 +16,8 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
-import org.jboss.windup.web.addons.websupport.model.RegisteredApplicationModel;
+import org.jboss.windup.web.services.model.RegisteredApplication;
 import org.jboss.windup.web.services.AbstractTest;
-import org.jboss.windup.web.services.dto.RegisteredApplicationDto;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -58,29 +57,29 @@ public class RegisteredApplicationEndpointTest extends AbstractTest
     @RunAsClient
     public void testRegisterApp() throws Exception
     {
-        BeanInfo beanInfo = Introspector.getBeanInfo(RegisteredApplicationModel.class);
+        BeanInfo beanInfo = Introspector.getBeanInfo(RegisteredApplication.class);
         for (PropertyDescriptor propertyDescriptor : beanInfo.getPropertyDescriptors())
         {
             System.out.println("Property name: " + propertyDescriptor.getName());
         }
 
-        Collection<RegisteredApplicationDto> existingApps = registeredApplicationEndpoint.getRegisteredApplications();
+        Collection<RegisteredApplication> existingApps = registeredApplicationEndpoint.getRegisteredApplications();
         Assert.assertEquals(0, existingApps.size());
 
         File tempFile1 = File.createTempFile(RegisteredApplicationEndpointTest.class.getSimpleName() + ".1", ".ear");
         File tempFile2 = File.createTempFile(RegisteredApplicationEndpointTest.class.getSimpleName() + ".2", ".ear");
 
-        RegisteredApplicationDto dto1 = new RegisteredApplicationDto(tempFile1.getAbsolutePath());
-        RegisteredApplicationDto dto2 = new RegisteredApplicationDto(tempFile2.getAbsolutePath());
+        RegisteredApplication dto1 = new RegisteredApplication(tempFile1.getAbsolutePath());
+        RegisteredApplication dto2 = new RegisteredApplication(tempFile2.getAbsolutePath());
         this.registeredApplicationEndpoint.registerApplication(dto1);
         this.registeredApplicationEndpoint.registerApplication(dto2);
 
-        Collection<RegisteredApplicationDto> apps = registeredApplicationEndpoint.getRegisteredApplications();
+        Collection<RegisteredApplication> apps = registeredApplicationEndpoint.getRegisteredApplications();
         Assert.assertEquals(2, apps.size());
         boolean foundPath1 = false;
         boolean foundPath2 = false;
 
-        for (RegisteredApplicationDto app : apps)
+        for (RegisteredApplication app : apps)
         {
             if (app.getInputPath().equals(tempFile1.getAbsolutePath()))
                 foundPath1 = true;

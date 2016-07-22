@@ -5,6 +5,7 @@ import java.nio.file.Paths;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
 
@@ -15,6 +16,15 @@ public class WebPathUtilImpl implements WebPathUtil
 {
     private static final String PROPERTY_DATA_DIR = "jboss.server.data.dir";
     private static final String DIR_NAME = "windup";
+    private static final String REPORT_DIR = "reports";
+
+    @Override
+    public Path createWindupReportOutputPath(String name)
+    {
+        Path reportBasePath = getGlobalWindupDataPath().resolve(REPORT_DIR);
+        String dirName = name + "." + RandomStringUtils.randomAlphabetic(12) + ".report";
+        return reportBasePath.resolve(dirName);
+    }
 
     @Override
     public Path getGlobalWindupDataPath()
