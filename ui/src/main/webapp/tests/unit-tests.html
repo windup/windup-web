@@ -25,6 +25,10 @@
 
     <script>
         Promise.all([
+                    System.import('@angular/platform-browser/src/browser/browser_adapter').then(function(browser_adapter) {
+                        browser_adapter.BrowserDomAdapter.makeCurrent();
+                    }),
+
                     System.import('tests/app/servicesetup'),
                     System.import('tests/app/file.service.spec'),
                     System.import('tests/app/registeredapplication.model.spec'),
