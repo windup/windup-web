@@ -11,8 +11,6 @@ import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.GraphContextFactory;
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.addons.websupport.WindupWebServiceFactory;
-import org.jboss.windup.web.addons.websupport.service.RegisteredApplicationService;
-import org.jboss.windup.web.service.RegisteredApplicationServiceImpl;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -29,12 +27,6 @@ public class WindupWebServiceFactoryImpl implements WindupWebServiceFactory
     private WebPathUtil webPathUtil;
 
     private GraphContext graphContext;
-
-    @Produces
-    public RegisteredApplicationService getRegisteredApplicationService()
-    {
-        return new RegisteredApplicationServiceImpl(getGlobalGraphContext(), webPathUtil);
-    }
 
     @Override
     public void destroy()

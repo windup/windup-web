@@ -3,7 +3,6 @@ import {Inject, Input} from '@angular/core';
 import {Router} from "@angular/router-deprecated";
 
 import {WindupService} from "../services/windup.service";
-import {RegisteredApplicationModel} from "../models/registered.application.model";
 import {RegisteredApplicationService} from "../services/registeredapplication.service";
 import {ProgressStatusModel} from "../models/progressstatus.model";
 

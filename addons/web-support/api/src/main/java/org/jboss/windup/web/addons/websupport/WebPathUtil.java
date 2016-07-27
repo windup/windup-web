@@ -10,6 +10,11 @@ import java.nio.file.Path;
 public interface WebPathUtil
 {
     /**
+     * Gets a randomly generated path for the results of a Windup analysis run.
+     */
+    Path createWindupReportOutputPath(String name);
+
+    /**
      * Gets the path that should be used for storage of the global graph and other windup artifacts (for example, reports).
      */
     Path getGlobalWindupDataPath();

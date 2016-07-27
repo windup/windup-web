@@ -3,11 +3,11 @@ import {Inject} from '@angular/core';
 import {Router} from "@angular/router-deprecated";
 
 import {WindupService} from "../services/windup.service";
-import {RegisteredApplicationModel} from "../models/registered.application.model";
 import {RegisteredApplicationService} from "../services/registeredapplication.service";
 import {ProgressStatusModel} from "../models/progressstatus.model";
 import {Constants} from "../constants";
 import {ProgressBarComponent} from "./progressbar.component";
+import {RegisteredApplication} from "windup-services";
 
 @Component({
     selector: 'application-list',
@@ -16,7 +16,7 @@ import {ProgressBarComponent} from "./progressbar.component";
     providers: [ RegisteredApplicationService, WindupService ]
 })
 export class ApplicationListComponent implements OnInit, OnDestroy {
-    applications:RegisteredApplicationModel[];
+    applications:RegisteredApplication[];
     processingStatus:Map<string, ProgressStatusModel> = new Map<string, ProgressStatusModel>();
     errorMessage:string;
     private _refreshIntervalID:number;
@@ -38,7 +38,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
             clearInterval(this._refreshIntervalID);
     }
 
-    status(application:RegisteredApplicationModel):ProgressStatusModel {
+    status(application:RegisteredApplication):ProgressStatusModel {
         let status:ProgressStatusModel = this.processingStatus.get(application.inputPath);
 
         if (status == null) {
@@ -55,7 +55,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
         );
     }
 
-    applicationsLoaded(applications:RegisteredApplicationModel[]) {
+    applicationsLoaded(applications:RegisteredApplication[]) {
         this.errorMessage = "";
 
         applications.forEach(application => {
@@ -70,7 +70,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
         this.applications = applications;
     }
 
-    executeAnalysis(application:RegisteredApplicationModel) {
+    executeAnalysis(application:RegisteredApplication) {
         this._windupService.executeWindup(application).subscribe(
             () => console.log("Execution started"),
             error => this.errorMessage = <any>error

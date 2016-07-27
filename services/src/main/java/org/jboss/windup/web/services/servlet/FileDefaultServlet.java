@@ -79,7 +79,7 @@ import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
  */
 public class FileDefaultServlet extends HttpServlet
 {
-    private static final Logger log = Logger.getLogger(FileDefaultServlet.class.getName() );
+    private static final Logger LOG = Logger.getLogger(FileDefaultServlet.class.getName() );
 
     public static final String DIRECTORY_LISTING = "directory-listing";
     public static final String DEFAULT_ALLOWED = "default-allowed";

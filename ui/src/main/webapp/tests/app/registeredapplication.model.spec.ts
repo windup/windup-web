@@ -1,10 +1,10 @@
 /// <reference path="../../typings/browser/ambient/jasmine/index.d.ts" />
 
-import {RegisteredApplicationModel} from "../../app/models/registered.application.model";
+import {RegisteredApplication} from "windup-services";
 
 describe('registered application model tests', () => {
     it ('has input path', () => {
-        let model = new RegisteredApplicationModel();
+        let model = <RegisteredApplication>{};
         model.inputPath = "testpath";
         expect(model.inputPath).toEqual("testpath");
     });

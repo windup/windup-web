@@ -1,17 +1,19 @@
 package org.jboss.windup.web.services.rest;
 
-import java.util.ArrayList;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.List;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
-import org.jboss.windup.web.addons.websupport.model.RegisteredApplicationModel;
-import org.jboss.windup.web.addons.websupport.service.RegisteredApplicationService;
+import org.apache.commons.lang.RandomStringUtils;
+import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
-import org.jboss.windup.web.services.dto.RegisteredApplicationDto;
+import org.jboss.windup.web.services.model.RegisteredApplication;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -23,30 +25,33 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
     private static Logger LOG = Logger.getLogger(RegisteredApplicationEndpointImpl.class.getSimpleName());
 
     @Inject @FromFurnace
-    private RegisteredApplicationService registeredApplicationService;
+    private WebPathUtil webPathUtil;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
-    public Collection<RegisteredApplicationDto> getRegisteredApplications()
+    @SuppressWarnings("unchecked")
+    public Collection<RegisteredApplication> getRegisteredApplications()
     {
-        List<RegisteredApplicationDto> results = new ArrayList<>();
-        for (RegisteredApplicationModel model : registeredApplicationService.getAllRegisteredApplications())
-        {
-            results.add(new RegisteredApplicationDto(model));
-        }
-        return results;
+        return entityManager.createQuery("select app from " + RegisteredApplication.class.getSimpleName() + " app").getResultList();
     }
 
     @Override
-    public RegisteredApplicationDto registerApplication(RegisteredApplicationDto application)
+    public RegisteredApplication registerApplication(RegisteredApplication application)
     {
-        LOG.info("Registering an application at: " + application.getInputPath());
-        return new RegisteredApplicationDto(registeredApplicationService.getOrCreate(application.getInputPath()));
+        String filename = Paths.get(application.getInputPath()).getFileName().toString();
+        Path outputPath = webPathUtil.createWindupReportOutputPath(filename);
+        application.setOutputPath(outputPath.toAbsolutePath().toString());
+        LOG.info("Registering an application at: " + application.getInputPath() + " with output directory: " + outputPath);
+
+        entityManager.persist(application);
+        return application;
     }
 
     @Override
-    public void unregisterApplication(RegisteredApplicationDto application)
+    public void unregisterApplication(RegisteredApplication application)
     {
-        RegisteredApplicationModel model = registeredApplicationService.getByInputPath(application.getInputPath());
-        registeredApplicationService.delete(model);
+        entityManager.remove(application);
     }
 }
