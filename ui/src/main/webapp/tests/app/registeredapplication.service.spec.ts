@@ -1,16 +1,9 @@
-/// <reference path="../../typings/browser/ambient/jasmine/index.d.ts" />
-
+import {bootstrap} from '@angular/platform-browser-dynamic';
 import {provide} from '@angular/core';
 import {HTTP_PROVIDERS} from '@angular/http';
-import {
-    beforeEach,
-    beforeEachProviders,
-    describe,
-    expect,
-    it,
-    inject,
-    injectAsync
-} from '@angular/core/testing';
+
+import {addProviders, async, inject} from '@angular/core/testing';
+
 
 import 'rxjs/Rx';
 
@@ -21,13 +14,15 @@ import {RegisteredApplicationService} from "../../app/services/registeredapplica
 import {RegisteredApplication} from "windup-services";
 
 describe("Registered Application Service Test", () => {
-    beforeEachProviders(() => [
-        HTTP_PROVIDERS,
-        Constants,
-        RegisteredApplicationService
-    ]);
+    beforeEach(() => {
+        addProviders([
+            HTTP_PROVIDERS,
+            Constants,
+            RegisteredApplicationService
+        ]);
+    });
 
-    it('register app call', injectAsync([RegisteredApplicationService], (service:RegisteredApplicationService) => {
+    it('register app call', async(inject([RegisteredApplicationService], (service:RegisteredApplicationService) => {
         let inputApp = <RegisteredApplication>{};
         inputApp.inputPath = "src/main/java";
         return service.registerApplication(inputApp).toPromise()
@@ -37,5 +32,5 @@ describe("Registered Application Service Test", () => {
             }, error => {
                 expect(false).toBeTruthy("Service call failed due to: " + error);
             });
-    }));
+    })));
 });
