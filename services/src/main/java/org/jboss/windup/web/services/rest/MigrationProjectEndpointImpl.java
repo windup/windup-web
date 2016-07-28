@@ -1,16 +1,13 @@
 package org.jboss.windup.web.services.rest;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
-import org.jboss.windup.web.addons.websupport.model.MigrationProjectModel;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
-import org.jboss.windup.web.addons.websupport.service.MigrationProjectService;
-import org.jboss.windup.web.services.dto.MigrationProjectDto;
+import org.jboss.windup.web.services.model.MigrationProject;
 
 /**
  * @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
@@ -20,30 +17,32 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
 {
     private static Logger LOG = Logger.getLogger(MigrationProjectEndpointImpl.class.getSimpleName());
 
-    @Inject
-    private MigrationProjectService migrationProjectService;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
-    public Collection<MigrationProjectDto> getMigrationProjects()
+    public Collection<MigrationProject> getMigrationProjects()
     {
-        List<MigrationProjectDto> results = new ArrayList<>();
-        for (MigrationProjectModel model : migrationProjectService.getAllMigrationProjects()) {
-            results.add(new MigrationProjectDto(model));
-        }
-        return results;
+        return entityManager.createQuery("select mp from " + MigrationProject.class.getSimpleName() + " mp").getResultList();
     }
 
     @Override
-    public MigrationProjectDto createMigrationProject(MigrationProjectDto migrationProject)
+    public MigrationProject createMigrationProject(MigrationProject migrationProject)
     {
         LOG.info("Creating a migration project: " + migrationProject.getId());
-        return new MigrationProjectDto(migrationProjectService.getOrCreate(migrationProject.getId()));
+        entityManager.persist(migrationProject);
+        return migrationProject;
     }
 
     @Override
-    public void deleteProject(MigrationProjectDto migration)
+    public MigrationProject updateMigrationProject(MigrationProject migrationProject)
     {
-        MigrationProjectModel migrationProject = migrationProjectService.getById(migration.getId());
-        migrationProjectService.delete(migrationProject);
+        return entityManager.merge(migrationProject);
+    }
+
+    @Override
+    public void deleteProject(MigrationProject migrationProject)
+    {
+        entityManager.remove(migrationProject);
     }
 }

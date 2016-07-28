@@ -4,8 +4,6 @@ import {Router} from "@angular/router-deprecated";
 
 import {WindupService} from "../services/windup.service";
 import {RegisteredApplicationService} from "../services/registeredapplication.service";
-import {MigrationProjectModel} from "../models/MigrationProject.model";
-import {MigrationProjectService} from "../services/migrationproject.service";
 import {ProgressStatusModel} from "../models/progressstatus.model";
 import {Constants} from "../constants";
 import {ProgressBarComponent} from "./progressbar.component";
@@ -13,9 +11,9 @@ import {RegisteredApplication} from "windup-services";
 
 @Component({
     selector: 'application-list',
-    templateUrl: 'app/templates/applicationlist.component.html',
+    templateUrl: 'app/components/applicationlist.component.html',
     directives: [ ProgressBarComponent ],
-    providers: [ MigrationProjectService, RegisteredApplicationService, WindupService ]
+    providers: [ RegisteredApplicationService, WindupService ]
 })
 export class ApplicationListComponent implements OnInit, OnDestroy {
     applications:RegisteredApplication[];
@@ -84,7 +82,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     }
 
     createMigrationProject() {
-        console.info("AAAAAAA");///
+        console.info("AAAAAAA");
         this._router.navigate(['MigrationProjectForm']);
     }
 

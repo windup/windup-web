@@ -2,8 +2,12 @@
     Create Migration Project
 </h1>
 <form [ngFormModel]="registrationForm" (ngSubmit)="create()"  class="form-horizontal">
-    <div *ngIf="errorMessage" class="row form-errors alert alert-danger">
-        <span class="glyphicon glyphicon-exclamation-sign"></span> {{errorMessage}}
+    <div *ngFor="let errorMessage of errorMessages" class="row form-errors alert alert-danger">
+        <div class="col-md-2">&nbsp;</div>
+        <div class="col-md-10">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            {{errorMessage}}
+        </div>
     </div>
     <div class="row">
         <div class="form-group">
@@ -11,6 +15,9 @@
             <div class="col-md-6">
                 <input #title="ngForm" [(ngModel)]="model.title" ngControl="title" type="text" id="idTitle" class="form-control">
             </div>
+            <span [class.hidden]="!hasError(title)" class="help-block">
+                The title must be greater than 3 characters long and fewer than 128 characters.
+            </span>
         </div>
         <div class="form-group">
             <div class="col-md-10 col-md-offset-2">

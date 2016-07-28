@@ -10,7 +10,6 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.apache.commons.lang.RandomStringUtils;
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.model.RegisteredApplication;
@@ -18,7 +17,6 @@ import org.jboss.windup.web.services.model.RegisteredApplication;
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
-
 @Stateless
 public class RegisteredApplicationEndpointImpl implements RegisteredApplicationEndpoint
 {

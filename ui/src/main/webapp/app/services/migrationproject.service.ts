@@ -2,8 +2,8 @@ import {Inject, Injectable} from '@angular/core';
 import {Headers, Http, RequestOptions, Response} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 
-import {MigrationProjectModel} from '../models/MigrationProject.model';
 import {Constants} from "../constants";
+import {MigrationProject} from "windup-services";
 
 @Injectable()
 export class MigrationProjectService
@@ -13,7 +13,7 @@ export class MigrationProjectService
 
     constructor (private _http: Http, private _constants: Constants) {}
 
-    createMigrationProject(migrationProject: MigrationProjectModel) {
+    createMigrationProject(migrationProject: MigrationProject) {
         let headers = new Headers();
         let options = new RequestOptions({ headers: headers });
         headers.append('Content-Type', 'application/json');
@@ -22,13 +22,13 @@ export class MigrationProjectService
         let body = JSON.stringify(migrationProject);
 
         return this._http.put(this._constants.REST_BASE + this.CREATE_MIGRATION_PROJECT_URL, body, options)
-            .map(res => <MigrationProjectModel> res.json())
+            .map(res => <MigrationProject> res.json())
             .catch(this.handleError);
     }
 
     getMigrationProjects() {
         return this._http.get(this._constants.REST_BASE + this.GET_MIGRATION_PROJECTS_URL)
-            .map(res => <MigrationProjectModel[]> res.json())
+            .map(res => <MigrationProject[]> res.json())
             .catch(this.handleError);
     }
 

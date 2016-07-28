@@ -11,7 +11,6 @@ import org.jboss.windup.config.metadata.RuleProviderRegistryCache;
 import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.GraphContextFactory;
 import org.jboss.windup.web.addons.websupport.WindupWebServiceFactory;
-import org.jboss.windup.web.addons.websupport.service.MigrationProjectService;
 import org.jboss.windup.web.furnaceserviceprovider.FurnaceShutdownEvent;
 
 /**
