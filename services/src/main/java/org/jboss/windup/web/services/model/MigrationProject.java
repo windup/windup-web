@@ -1,12 +1,15 @@
 package org.jboss.windup.web.services.model;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -35,6 +38,9 @@ public class MigrationProject implements Serializable
     @NotNull
     private String title;
 
+    @OneToMany(fetch = FetchType.EAGER)
+    private Set<ApplicationGroup> groups;
+
     public Long getId()
     {
         return this.id;
@@ -55,14 +61,36 @@ public class MigrationProject implements Serializable
         this.version = version;
     }
 
+    /**
+     * Contains a title for the project.
+     */
     public String getTitle()
     {
         return title;
     }
 
+    /**
+     * Contains a title for the project.
+     */
     public void setTitle(String title)
     {
         this.title = title;
+    }
+
+    /**
+     * Contains the {@link ApplicationGroup}s associated with this project.
+     */
+    public Set<ApplicationGroup> getGroups()
+    {
+        return groups;
+    }
+
+    /**
+     * Contains the {@link ApplicationGroup}s associated with this project.
+     */
+    public void setGroups(Set<ApplicationGroup> groups)
+    {
+        this.groups = groups;
     }
 
     @Override

@@ -11,6 +11,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.windup.web.services.AbstractTest;
+import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.MigrationProject;
 import org.junit.Assert;
 import org.junit.Before;
@@ -19,18 +20,18 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.net.URL;
-import java.util.Collection;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
 @WarpTest
 @RunWith(Arquillian.class)
-public class MigrationProjectEndpointTest extends AbstractTest
+public class ApplicationGroupTest extends AbstractTest
 {
     @ArquillianResource
     private URL contextPath;
 
+    private ApplicationGroupEndpoint applicationGroupEndpoint;
     private MigrationProjectEndpoint migrationProjectEndpoint;
 
     @BeforeClass
@@ -46,26 +47,31 @@ public class MigrationProjectEndpointTest extends AbstractTest
         ResteasyClient client = new ResteasyClientBuilder().build();
         ResteasyWebTarget target = client.target(contextPath + "rest");
 
+        this.applicationGroupEndpoint = target.proxy(ApplicationGroupEndpoint.class);
         this.migrationProjectEndpoint = target.proxy(MigrationProjectEndpoint.class);
     }
 
     @Test
     @RunAsClient
-    public void testCreateMigrationProject() throws Exception
+    public void createApplicationGroup()
     {
-        Collection<MigrationProject> existingApps = migrationProjectEndpoint.getMigrationProjects();
-        Assert.assertEquals(0, existingApps.size());
-
-        String title = "Test Migration Project" + RandomStringUtils.randomAlphabetic(5);
+        String projectTitle = "Project " + RandomStringUtils.randomAlphabetic(5);
+        String groupTitle = "Group " + RandomStringUtils.randomAlphabetic(5);
 
         MigrationProject migrationProject = new MigrationProject();
-        migrationProject.setTitle(title);
+        migrationProject.setTitle(projectTitle);
 
-        this.migrationProjectEndpoint.createMigrationProject(migrationProject);
+        migrationProject = migrationProjectEndpoint.createMigrationProject(migrationProject);
 
-        Collection<MigrationProject> apps = migrationProjectEndpoint.getMigrationProjects();
-        Assert.assertEquals(1, apps.size());
-        Assert.assertNotNull(apps.iterator().next());
-        Assert.assertEquals(title, apps.iterator().next().getTitle());
+        ApplicationGroup applicationGroup = new ApplicationGroup();
+        applicationGroup.setMigrationProject(migrationProject);
+        applicationGroup.setTitle(groupTitle);
+
+        applicationGroup = applicationGroupEndpoint.create(applicationGroup);
+        Assert.assertEquals(groupTitle, applicationGroup.getTitle());
+
+        ApplicationGroup retrievedGroup = applicationGroupEndpoint.getApplicationGroups().iterator().next();
+        Assert.assertEquals(applicationGroup.getId(), retrievedGroup.getId());
+        Assert.assertEquals(applicationGroup.getTitle(), retrievedGroup.getTitle());
     }
 }

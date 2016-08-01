@@ -5,6 +5,7 @@ import {ApplicationListComponent} from './applicationlist.component';
 import {RouteConfig, RouterOutlet} from '@angular/router-deprecated';
 import {RegisterApplicationFormComponent} from "./registerapplicationform.component";
 import {MigrationProjectFormComponent} from "./migrationprojectform.component";
+import {ProjectListComponent} from "./projectlist.component";
 
 @Component({
     selector: 'windup-app',
@@ -12,6 +13,7 @@ import {MigrationProjectFormComponent} from "./migrationprojectform.component";
     directives: [NavbarComponent, BreadCrumbsComponent, RouterOutlet]
 })
 @RouteConfig([
+    {path:"/project-list", name: "ProjectList", component: ProjectListComponent},
     {path:"/application-list", name: "ApplicationList", component: ApplicationListComponent, useAsDefault: true},
     {path:"/register-application", name: "RegisterApplicationForm", component: RegisterApplicationFormComponent},
     {path:"/migration-project-form", name: "MigrationProjectForm", component: MigrationProjectFormComponent},
