@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.ws.rs.NotFoundException;
 
 import org.jboss.windup.web.services.model.MigrationProject;
 
@@ -24,6 +25,15 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
     public Collection<MigrationProject> getMigrationProjects()
     {
         return entityManager.createQuery("select mp from " + MigrationProject.class.getSimpleName() + " mp").getResultList();
+    }
+
+    @Override
+    public MigrationProject getMigrationProject(Long id)
+    {
+        MigrationProject result = entityManager.find(MigrationProject.class, id);
+        if (result == null)
+            throw new NotFoundException("MigrationProject with id: " + id + " not found!");
+        return result;
     }
 
     @Override

@@ -13,10 +13,10 @@ import {ProjectListComponent} from "./projectlist.component";
     directives: [NavbarComponent, BreadCrumbsComponent, RouterOutlet]
 })
 @RouteConfig([
-    {path:"/project-list", name: "ProjectList", component: ProjectListComponent},
-    {path:"/application-list", name: "ApplicationList", component: ApplicationListComponent, useAsDefault: true},
-    {path:"/register-application", name: "RegisterApplicationForm", component: RegisterApplicationFormComponent},
-    {path:"/migration-project-form", name: "MigrationProjectForm", component: MigrationProjectFormComponent},
+    {path:"/project-list", name: "ProjectList", component: ProjectListComponent, data: {displayName: "Project List"}},
+    {path:"/application-list", name: "ApplicationList", component: ApplicationListComponent, useAsDefault: true, data: {displayName: "Application List"}},
+    {path:"/register-application", name: "RegisterApplicationForm", component: RegisterApplicationFormComponent, data: {displayName: "Application Registration"}},
+    {path:"/migration-project-form", name: "MigrationProjectForm", component: MigrationProjectFormComponent, data: {displayName: "Edit Project"}},
 ])
 export class AppComponent {
 }

@@ -7,13 +7,18 @@
     <thead>
     <tr>
         <th>Project</th>
+        <th>Actions</th>
     </tr>
     </thead>
     <tbody>
     <tr *ngFor="let project of projects">
-        <td class="col-md-3" (click)="viewProject(project)">
-            {{project.title}}
+        <td class="col-md-1">
+            <a href="#" (click)="viewProject(project)">{{project.title}}</a>
         </td>
+        <td class="col-md-1">
+            <a href="#" (click)="editProject(project, $event)">Edit</a>
+        </td>
+        <td></td>
     </tr>
     </tbody>
 </table>
