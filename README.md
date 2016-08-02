@@ -42,3 +42,10 @@ Environment setup
     This list is not complete, feel free to add the missing items.
 
  5) In order to run tests, you will need a locally installed copy of [PhantomJS](http://phantomjs.org/)
+
+Running the webapp
+------------------
+
+- Build: `mvn clean install -DskipTests`
+- Deploy to EAP7: from both 'services' and 'ui', run `mvn wildfly:deploy-only`
+- Access the webapp: `http://localhost:8080/windup-web/`
