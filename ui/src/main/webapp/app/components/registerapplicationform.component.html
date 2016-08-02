@@ -2,7 +2,7 @@
     Register Application
 </h1>
 <form [ngFormModel]="registrationForm" (ngSubmit)="register()"  class="form-horizontal">
-    <div *ngIf="errorMessage" class="row form-errors alert alert-danger">
+    <div *ngFor="let errorMessage of errorMessages" class="row form-errors alert alert-danger">
         <div class="col-md-2">&nbsp;</div>
         <div class="col-md-10">
             <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>

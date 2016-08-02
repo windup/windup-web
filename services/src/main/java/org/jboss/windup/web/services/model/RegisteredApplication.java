@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.jboss.windup.web.services.validators.FileExistsConstraint;
@@ -19,8 +20,8 @@ import org.jboss.windup.web.services.validators.FileExistsConstraint;
 @Entity
 public class RegisteredApplication implements Serializable
 {
-
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", updatable = false, nullable = false)
@@ -33,6 +34,7 @@ public class RegisteredApplication implements Serializable
     @Column(length = 2048)
     @Size(min = 1, max = 2048)
     @FileExistsConstraint
+    @NotNull
     private String inputPath;
 
     @Column(length = 2048)
