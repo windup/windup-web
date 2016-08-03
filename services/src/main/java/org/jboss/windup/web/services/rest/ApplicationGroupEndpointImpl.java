@@ -27,6 +27,12 @@ public class ApplicationGroupEndpointImpl implements ApplicationGroupEndpoint
     }
 
     @Override
+    public ApplicationGroup getApplicationGroup(Long id)
+    {
+        return entityManager.find(ApplicationGroup.class, id);
+    }
+
+    @Override
     public ApplicationGroup create(@Valid ApplicationGroup applicationGroup)
     {
         entityManager.persist(applicationGroup);

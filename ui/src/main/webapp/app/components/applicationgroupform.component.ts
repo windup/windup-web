@@ -2,20 +2,21 @@ import {ControlGroup, FormBuilder, NgClass, NgControlName, Validators} from "@an
 import {Component, Input, OnInit} from "@angular/core";
 import {Router, RouteParams} from "@angular/router-deprecated";
 
-import {MigrationProjectService} from "../services/migrationproject.service";
 import {MigrationProject} from "windup-services";
+import {ApplicationGroupService} from "../services/applicationgroup.service";
+import {ApplicationGroup} from "windup-services";
 
 @Component({
-    selector: 'create-migration-project-form',
-    templateUrl: 'app/components/migrationprojectform.component.html',
+    selector: 'create-group-form',
+    templateUrl: 'app/components/applicationgroupform.component.html',
     directives: [ NgClass ],
-    providers: [ MigrationProjectService ]
+    providers: [ ApplicationGroupService ]
 })
-export class MigrationProjectFormComponent implements OnInit
+export class ApplicationGroupForm implements OnInit
 {
     registrationForm: ControlGroup;
 
-    model:MigrationProject = <MigrationProject>{};
+    model:ApplicationGroup = <ApplicationGroup>{};
 
     editMode:boolean = false;
     loading:boolean = false;
@@ -25,7 +26,7 @@ export class MigrationProjectFormComponent implements OnInit
     constructor(
         private _router: Router,
         private _routeParams: RouteParams,
-        private _migrationProjectService: MigrationProjectService,
+        private _applicationGroupService: ApplicationGroupService,
         private _formBuilder: FormBuilder
     ) {
         this.registrationForm = this._formBuilder.group({
@@ -34,11 +35,11 @@ export class MigrationProjectFormComponent implements OnInit
     }
 
     ngOnInit() {
-        let id:number = parseInt(this._routeParams.get("projectID"));
+        let id:number = parseInt(this._routeParams.get("groupID"));
         if (!isNaN(id)) {
             this.editMode = true;
             this.loading = true;
-            this._migrationProjectService.getMigrationProject(id).subscribe(
+            this._applicationGroupService.get(id).subscribe(
                 model => { this.model = model; this.loading = false },
                 error => this.handleError(<any> error)
             );
@@ -47,15 +48,15 @@ export class MigrationProjectFormComponent implements OnInit
 
     save() {
         if (this.editMode) {
-            console.log("Updating migration project: " + this.model.title);
-            this._migrationProjectService.updateMigrationProject(this.model).subscribe(
-                migrationProject => this.rerouteToApplicationList(),
+            console.log("Updating group: " + this.model.title);
+            this._applicationGroupService.update(this.model).subscribe(
+                migrationProject => this.rerouteToGroupList(),
                 error => this.handleError(<any> error)
             );
         } else {
-            console.log("Creating migration project: " + this.model.title);
-            this._migrationProjectService.createMigrationProject(this.model).subscribe(
-                migrationProject => this.rerouteToApplicationList(),
+            console.log("Creating group: " + this.model.title);
+            this._applicationGroupService.create(this.model).subscribe(
+                migrationProject => this.rerouteToGroupList(),
                 error => this.handleError(<any> error)
             );
         }
@@ -86,11 +87,11 @@ export class MigrationProjectFormComponent implements OnInit
         }
     }
 
-    rerouteToApplicationList() {
-        this._router.navigate(['ProjectList']);
+    rerouteToGroupList() {
+        this._router.navigate(['GroupList']);
     }
 
     cancel() {
-        this.rerouteToApplicationList();
+        this.rerouteToGroupList();
     }
 }

@@ -53,7 +53,8 @@ export class ProjectListComponent implements OnInit, OnDestroy {
         this._router.navigate(['MigrationProjectForm', { projectID: project.id }])
     }
 
-    viewProject(project:MigrationProject) {
+    viewProject(project:MigrationProject, event:Event) {
+        event.preventDefault();
         console.log(JSON.stringify(project));
         this._router.navigate(['GroupList', { projectID: project.id }]);
     }

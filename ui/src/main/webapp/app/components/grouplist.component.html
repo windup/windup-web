@@ -7,11 +7,19 @@
     <thead>
     <tr>
         <th>Group</th>
-        <th>Processing Status</th>
-        <th></th>
+        <th>Actions</th>
     </tr>
     </thead>
     <tbody>
+    <tr *ngFor="let group of groups">
+        <td class="col-md-1">
+            {{group.title}}
+        </td>
+        <td class="col-md-1">
+            <a href="#" (click)="editGroup(group, $event)">Edit</a>
+        </td>
+        <td></td>
+    </tr>
     </tbody>
 </table>
 <script>
