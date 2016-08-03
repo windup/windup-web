@@ -1,0 +1,30 @@
+<h1>
+    Project List
+    <button (click)="createMigrationProject()" class="btn btn-primary" type="button">Create Migration Project</button>
+</h1>
+<h3 *ngIf="errorMessage != null">{{errorMessage}}</h3>
+<table class="datatable table table-striped table-bordered">
+    <thead>
+    <tr>
+        <th>Project</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let project of projects">
+        <td class="col-md-1">
+            <a href="#" (click)="viewProject(project, $event)">{{project.title}}</a>
+        </td>
+        <td class="col-md-1">
+            <a href="#" (click)="editProject(project, $event)">Edit</a>
+        </td>
+        <td></td>
+    </tr>
+    </tbody>
+</table>
+<script>
+    // Initialize Datatables
+    $(document).ready(function () {
+        $('.datatable').dataTable();
+    });
+</script>

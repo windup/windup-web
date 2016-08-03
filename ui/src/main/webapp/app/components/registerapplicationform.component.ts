@@ -8,8 +8,8 @@ import {FileExistsValidator} from "../validators/FileExistsValidator";
 import {FileService} from "../services/file.service";
 
 @Component({
-    selector: 'register-application-form',
-    templateUrl: 'app/templates/registerapplicationform.component.html',
+    selector: 'register-application-form', /// TODO: Not used anywhere?
+    templateUrl: 'app/components/registerapplicationform.component.html',
     directives: [ NgClass ],
     providers: [ FileService, RegisteredApplicationService ]
 })
@@ -17,8 +17,7 @@ export class RegisterApplicationFormComponent {
     registrationForm: ControlGroup;
 
     model = <RegisteredApplication>{};
-    errorMessage:string;
-    error:boolean;
+    errorMessages:string[];
 
     constructor(
         private _router:Router,
@@ -27,9 +26,8 @@ export class RegisterApplicationFormComponent {
         private _formBuilder: FormBuilder
     ) {
         this.registrationForm = _formBuilder.group({
-            inputPath: ["", Validators.compose([Validators.required, Validators.minLength(4)]), FileExistsValidator.fileExists(this._fileService)]
+            inputPath: ["", Validators.compose([Validators.required, Validators.minLength(4)]), FileExistsValidator.create(this._fileService)]
         });
-        this.error = true;
     }
 
     /**
@@ -52,11 +50,16 @@ export class RegisterApplicationFormComponent {
     }
 
     private handleRegistrationError(error:any) {
+        this.errorMessages = [];
         if (error.parameterViolations) {
             error.parameterViolations.forEach(violation =>
             {
                 console.log("Violation: " + JSON.stringify(violation));
+                this.errorMessages.push(violation.message);
             });
+        } else
+        {
+            this.errorMessages.push("Error: " + error);
         }
     }
 

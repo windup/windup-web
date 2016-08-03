@@ -1,0 +1,30 @@
+<h1>
+    Groups
+    <button (click)="createGroup()" class="btn btn-primary" type="button">Create Group</button>
+</h1>
+<h3 *ngIf="errorMessage != null">{{errorMessage}}</h3>
+<table class="datatable table table-striped table-bordered">
+    <thead>
+    <tr>
+        <th>Group</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let group of groups">
+        <td class="col-md-1">
+            {{group.title}}
+        </td>
+        <td class="col-md-1">
+            <a href="#" (click)="editGroup(group, $event)">Edit</a>
+        </td>
+        <td></td>
+    </tr>
+    </tbody>
+</table>
+<script>
+    // Initialize Datatables
+    $(document).ready(function () {
+        $('.datatable').dataTable();
+    });
+</script>

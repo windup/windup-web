@@ -1,0 +1,29 @@
+<h1>
+    Create Application Group
+</h1>
+<form [ngFormModel]="registrationForm" (ngSubmit)="save()" #groupForm="ngForm" class="form-horizontal">
+    <div *ngFor="let errorMessage of errorMessages" class="row form-errors alert alert-danger">
+        <div class="col-md-2">&nbsp;</div>
+        <div class="col-md-10">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            {{errorMessage}}
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="idTitle">Group Title</label>
+            <div class="col-md-6">
+                <input #title="ngForm" [(ngModel)]="model.title" ngControl="title" [disabled]="loading" type="text" id="idTitle" class="form-control">
+            </div>
+            <span [class.hidden]="!hasError(title)" class="help-block">
+                The title must be greater than 3 characters long and fewer than 128 characters.
+            </span>
+        </div>
+        <div class="form-group">
+            <div class="col-md-10 col-md-offset-2">
+                <button class="btn btn-primary" type="submit" [disabled]="!groupForm.form.valid || loading">Save</button>
+                <button (click)="cancel()" type="button" class="btn btn-default">Cancel</button>
+            </div>
+        </div>
+    </div>
+</form>
