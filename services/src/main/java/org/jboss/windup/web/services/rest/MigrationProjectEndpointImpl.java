@@ -1,6 +1,7 @@
 package org.jboss.windup.web.services.rest;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
@@ -8,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.NotFoundException;
 
+import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.MigrationProject;
 
 /**
@@ -40,6 +42,11 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
     public MigrationProject createMigrationProject(MigrationProject migrationProject)
     {
         LOG.info("Creating a migration project: " + migrationProject.getId());
+        ApplicationGroup defaultGroup = new ApplicationGroup();
+        defaultGroup.setTitle(ApplicationGroup.DEFAULT_NAME);
+        migrationProject.setGroups(Collections.singleton(defaultGroup));
+        entityManager.persist(defaultGroup);
+
         entityManager.persist(migrationProject);
         return migrationProject;
     }

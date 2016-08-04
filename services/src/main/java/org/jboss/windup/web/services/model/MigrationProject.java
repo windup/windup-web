@@ -1,5 +1,8 @@
 package org.jboss.windup.web.services.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import java.io.Serializable;
 import java.util.Set;
 
@@ -20,6 +23,7 @@ import javax.validation.constraints.Size;
  * @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
  */
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class MigrationProject implements Serializable
 {
     private static final long serialVersionUID = 1L;

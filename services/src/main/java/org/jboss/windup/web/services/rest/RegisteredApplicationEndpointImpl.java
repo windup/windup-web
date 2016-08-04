@@ -44,6 +44,14 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
         LOG.info("Registering an application at: " + application.getInputPath() + " with output directory: " + outputPath);
 
         entityManager.persist(application);
+
+        if (application.getApplicationGroup() != null)
+        {
+            if (!application.getApplicationGroup().getApplications().contains(application))
+                application.getApplicationGroup().getApplications().add(application);
+
+            entityManager.merge(application.getApplicationGroup());
+        }
         return application;
     }
 

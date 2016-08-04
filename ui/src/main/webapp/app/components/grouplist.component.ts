@@ -34,7 +34,7 @@ export class GroupListComponent implements OnInit, OnDestroy {
 
     getGroups() {
         return this._applicationGroupService.getAll().subscribe(
-            applications => this.groupsLoaded(applications),
+            groups => this.groupsLoaded(groups),
             error => this.errorMessage = <any>error
         );
     }
@@ -51,6 +51,10 @@ export class GroupListComponent implements OnInit, OnDestroy {
 
     editGroup(applicationGroup:ApplicationGroup, event:Event) {
         event.preventDefault();
-        this._router.navigate(['ApplicationGroupForm', { groupID: applicationGroup.id }])
+        this._router.navigate(['ApplicationGroupForm', { groupID: applicationGroup.id }]);
+    }
+
+    registerApplication(applicationGroup:ApplicationGroup) {
+        this._router.navigate(['RegisterApplicationForm', { groupID: applicationGroup.id }]);
     }
 }
