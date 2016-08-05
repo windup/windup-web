@@ -20,6 +20,6 @@ atlassian-ide-plugin.xml
 node_modules/
 typings
 npm-debug.log
-
+log.txt
 nb-configuration.xml
 nbactions.xml
