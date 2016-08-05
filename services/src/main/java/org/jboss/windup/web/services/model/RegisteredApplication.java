@@ -21,7 +21,7 @@ import org.jboss.windup.web.services.validators.FileExistsConstraint;
  * Contains an application that has been registered into Windup.
  */
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = RegisteredApplication.class)
 public class RegisteredApplication implements Serializable
 {
     private static final long serialVersionUID = 1L;

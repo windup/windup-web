@@ -25,7 +25,7 @@ import javax.validation.constraints.Size;
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = ApplicationGroup.class)
 public class ApplicationGroup implements Serializable
 {
     public static final String DEFAULT_NAME = "Default Group";
