@@ -47,5 +47,5 @@ Running the webapp
 ------------------
 
 - Build: `mvn clean install -DskipTests`
-- Deploy to EAP7: from both 'services' and 'ui', run `mvn wildfly:deploy-only`
+- Deploy the exploded `services/target/windup-web-services` and `ui/target/web-services` to EAP 7.
 - Access the webapp: `http://localhost:8080/windup-web/`
