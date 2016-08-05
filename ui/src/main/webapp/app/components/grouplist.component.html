@@ -1,0 +1,22 @@
+<h1>
+    Groups
+    <button (click)="createGroup()" class="btn btn-primary" type="button">Create Group</button>
+</h1>
+<h3 *ngIf="errorMessage != null">{{errorMessage}}</h3>
+<table class="datatable table table-striped table-bordered">
+    <thead>
+    <tr>
+        <th>Group</th>
+        <th>Processing Status</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+<script>
+    // Initialize Datatables
+    $(document).ready(function () {
+        $('.datatable').dataTable();
+    });
+</script>

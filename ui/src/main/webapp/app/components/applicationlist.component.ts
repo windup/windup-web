@@ -11,7 +11,7 @@ import {RegisteredApplication} from "windup-services";
 
 @Component({
     selector: 'application-list',
-    templateUrl: 'app/templates/applicationlist.component.html',
+    templateUrl: 'app/components/applicationlist.component.html',
     directives: [ ProgressBarComponent ],
     providers: [ RegisteredApplicationService, WindupService ]
 })
@@ -22,10 +22,10 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     private _refreshIntervalID:number;
 
     constructor(
-        private _router:Router,
-        private _registeredApplicationService:RegisteredApplicationService,
-        private _windupService:WindupService,
-        private _constants:Constants
+        private _router: Router,
+        private _registeredApplicationService: RegisteredApplicationService,
+        private _windupService: WindupService,
+        private _constants: Constants
     ) {}
 
     ngOnInit():any {
@@ -79,6 +79,11 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
 
     registerApplication() {
         this._router.navigate(['RegisterApplicationForm'])
+    }
+
+    createMigrationProject() {
+        console.info("AAAAAAA");
+        this._router.navigate(['MigrationProjectForm']);
     }
 
     reportURL(path:string) : string {
