@@ -15,7 +15,7 @@ export class MigrationProjectService
 
     constructor (private _http: Http, private _constants: Constants) {}
 
-    createMigrationProject(migrationProject: MigrationProject) {
+    create(migrationProject: MigrationProject) {
         let headers = new Headers();
         let options = new RequestOptions({ headers: headers });
         headers.append('Content-Type', 'application/json');
@@ -28,7 +28,7 @@ export class MigrationProjectService
             .catch(this.handleError);
     }
 
-    updateMigrationProject(migrationProject: MigrationProject) {
+    update(migrationProject: MigrationProject) {
         let headers = new Headers();
         let options = new RequestOptions({ headers: headers });
         headers.append('Content-Type', 'application/json');
@@ -41,13 +41,13 @@ export class MigrationProjectService
             .catch(this.handleError);
     }
 
-    getMigrationProject(id:number) {
+    get(id:number) {
         return this._http.get(this._constants.REST_BASE + this.GET_MIGRATION_PROJECT_URL + "/" + id)
             .map(res => <MigrationProject> res.json())
             .catch(this.handleError);
     }
 
-    getMigrationProjects() {
+    getAll() {
         return this._http.get(this._constants.REST_BASE + this.GET_MIGRATION_PROJECTS_URL)
             .map(res => <MigrationProject[]> res.json())
             .catch(this.handleError);

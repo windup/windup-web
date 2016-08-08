@@ -44,7 +44,7 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
         LOG.info("Creating a migration project: " + migrationProject.getId());
         ApplicationGroup defaultGroup = new ApplicationGroup();
         defaultGroup.setTitle(ApplicationGroup.DEFAULT_NAME);
-        migrationProject.setGroups(Collections.singleton(defaultGroup));
+        defaultGroup.setMigrationProject(migrationProject);
         entityManager.persist(defaultGroup);
 
         entityManager.persist(migrationProject);

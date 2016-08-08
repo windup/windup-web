@@ -32,7 +32,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     }
 
     getMigrationProjects() {
-        return this._migrationProjectService.getMigrationProjects().subscribe(
+        return this._migrationProjectService.getAll().subscribe(
             applications => this.projectsLoaded(applications),
             error => this.errorMessage = <any>error
         );

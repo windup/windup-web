@@ -84,7 +84,7 @@ export class RegisterApplicationFormComponent implements OnInit {
     }
 
     rerouteToApplicationList() {
-        this._router.navigate(['GroupList', { groupID: this.applicationGroup.id }]);
+        this._router.navigate(['GroupList', { projectID: this.applicationGroup.migrationProject.id }]);
     }
 
     cancelRegistration() {

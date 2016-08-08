@@ -1,11 +1,14 @@
 package org.jboss.windup.web.services.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import java.io.Serializable;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -46,7 +49,7 @@ public class ApplicationGroup implements Serializable
     @NotNull
     private String title;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private MigrationProject migrationProject;
 
     @OneToMany(fetch = FetchType.EAGER)

@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {Inject} from '@angular/core';
-import {Router} from "@angular/router-deprecated";
+import {Router, RouteParams} from "@angular/router-deprecated";
 
 import {MigrationProject} from "windup-services";
 import {ApplicationGroup} from "windup-services";
@@ -12,17 +12,20 @@ import {ApplicationGroupService} from "../services/applicationgroup.service";
     providers: [ ApplicationGroupService ]
 })
 export class GroupListComponent implements OnInit, OnDestroy {
+    projectID:number;
     groups:ApplicationGroup[];
 
     errorMessage:string;
     private _refreshIntervalID:number;
 
     constructor(
+        private _routeParams: RouteParams,
         private _router: Router,
         private _applicationGroupService: ApplicationGroupService
     ) {}
 
     ngOnInit():any {
+        this.projectID = parseInt(this._routeParams.get("projectID"));
         this.getGroups();
         this._refreshIntervalID = setInterval(() => this.getGroups(), 3000);
     }
@@ -33,7 +36,8 @@ export class GroupListComponent implements OnInit, OnDestroy {
     }
 
     getGroups() {
-        return this._applicationGroupService.getAll().subscribe(
+        return this._applicationGroupService.getByProjectID(this.projectID).subscribe(
+        //return this._applicationGroupService.getAll().subscribe(
             groups => this.groupsLoaded(groups),
             error => this.errorMessage = <any>error
         );
@@ -46,12 +50,12 @@ export class GroupListComponent implements OnInit, OnDestroy {
     }
 
     createGroup() {
-        this._router.navigate(['ApplicationGroupForm']);
+        this._router.navigate(['ApplicationGroupForm', { projectID: this.projectID }]);
     }
 
     editGroup(applicationGroup:ApplicationGroup, event:Event) {
         event.preventDefault();
-        this._router.navigate(['ApplicationGroupForm', { groupID: applicationGroup.id }]);
+        this._router.navigate(['ApplicationGroupForm', { projectID: this.projectID, groupID: applicationGroup.id }]);
     }
 
     registerApplication(applicationGroup:ApplicationGroup) {

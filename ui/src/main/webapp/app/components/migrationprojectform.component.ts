@@ -38,7 +38,7 @@ export class MigrationProjectFormComponent implements OnInit
         if (!isNaN(id)) {
             this.editMode = true;
             this.loading = true;
-            this._migrationProjectService.getMigrationProject(id).subscribe(
+            this._migrationProjectService.get(id).subscribe(
                 model => { this.model = model; this.loading = false },
                 error => this.handleError(<any> error)
             );
@@ -48,13 +48,13 @@ export class MigrationProjectFormComponent implements OnInit
     save() {
         if (this.editMode) {
             console.log("Updating migration project: " + this.model.title);
-            this._migrationProjectService.updateMigrationProject(this.model).subscribe(
+            this._migrationProjectService.update(this.model).subscribe(
                 migrationProject => this.rerouteToApplicationList(),
                 error => this.handleError(<any> error)
             );
         } else {
             console.log("Creating migration project: " + this.model.title);
-            this._migrationProjectService.createMigrationProject(this.model).subscribe(
+            this._migrationProjectService.create(this.model).subscribe(
                 migrationProject => this.rerouteToApplicationList(),
                 error => this.handleError(<any> error)
             );

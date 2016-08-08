@@ -9,6 +9,7 @@ import {ApplicationGroup} from "windup-services";
 export class ApplicationGroupService
 {
     private GET_ALL_URL = "/applicationGroups/list";
+    private GET_BY_PROJECT_URL = "/applicationGroups/by-project/";
     private GET_BY_ID_URL = "/applicationGroups/get";
     private CREATE_URL = "/applicationGroups/create";
     private UPDATE_URL = "/applicationGroups/update";
@@ -44,6 +45,12 @@ export class ApplicationGroupService
     get(id:number) {
         return this._http.get(this._constants.REST_BASE + this.GET_BY_ID_URL + "/" + id)
             .map(res => <ApplicationGroup> res.json())
+            .catch(this.handleError);
+    }
+
+    getByProjectID(projectID:number) {
+        return this._http.get(this._constants.REST_BASE + this.GET_BY_PROJECT_URL + projectID)
+            .map(res => <ApplicationGroup[]> res.json())
             .catch(this.handleError);
     }
 

@@ -31,6 +31,13 @@ public interface ApplicationGroupEndpoint
     Collection<ApplicationGroup> getApplicationGroups();
 
     /**
+     * List {@link ApplicationGroup}s by @{link MigrationProject} id.
+     */
+    @GET
+    @Path("by-project/{projectID}")
+    Collection<ApplicationGroup> getApplicationGroups(@PathParam("projectID") Long projectID);
+
+    /**
      * Gets a {@link ApplicationGroup} by id.
      */
     @GET
