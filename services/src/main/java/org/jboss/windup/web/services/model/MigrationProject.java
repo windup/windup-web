@@ -1,5 +1,9 @@
 package org.jboss.windup.web.services.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import java.io.Serializable;
 import java.util.Set;
 
@@ -20,6 +24,7 @@ import javax.validation.constraints.Size;
  * @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
  */
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = MigrationProject.class)
 public class MigrationProject implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -38,7 +43,7 @@ public class MigrationProject implements Serializable
     @NotNull
     private String title;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "migrationProject")
     private Set<ApplicationGroup> groups;
 
     public Long getId()
@@ -80,6 +85,7 @@ public class MigrationProject implements Serializable
     /**
      * Contains the {@link ApplicationGroup}s associated with this project.
      */
+    @JsonIgnore
     public Set<ApplicationGroup> getGroups()
     {
         return groups;
@@ -88,6 +94,7 @@ public class MigrationProject implements Serializable
     /**
      * Contains the {@link ApplicationGroup}s associated with this project.
      */
+    @JsonIgnore
     public void setGroups(Set<ApplicationGroup> groups)
     {
         this.groups = groups;

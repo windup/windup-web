@@ -9,6 +9,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import java.util.Collection;
 
@@ -28,6 +29,20 @@ public interface ApplicationGroupEndpoint
     @GET
     @Path("list")
     Collection<ApplicationGroup> getApplicationGroups();
+
+    /**
+     * List {@link ApplicationGroup}s by @{link MigrationProject} id.
+     */
+    @GET
+    @Path("by-project/{projectID}")
+    Collection<ApplicationGroup> getApplicationGroups(@PathParam("projectID") Long projectID);
+
+    /**
+     * Gets a {@link ApplicationGroup} by id.
+     */
+    @GET
+    @Path("get/{id}")
+    ApplicationGroup getApplicationGroup(@PathParam("id") Long id);
 
     /**
      * Create a new {@link ApplicationGroup}.

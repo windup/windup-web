@@ -3,20 +3,31 @@
     <button (click)="createGroup()" class="btn btn-primary" type="button">Create Group</button>
 </h1>
 <h3 *ngIf="errorMessage != null">{{errorMessage}}</h3>
-<table class="datatable table table-striped table-bordered">
-    <thead>
-    <tr>
-        <th>Group</th>
-        <th>Processing Status</th>
-        <th></th>
-    </tr>
-    </thead>
-    <tbody>
-    </tbody>
-</table>
-<script>
-    // Initialize Datatables
-    $(document).ready(function () {
-        $('.datatable').dataTable();
-    });
-</script>
+
+<div *ngFor="let group of groups" class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            {{group.title}}
+            <a href="#" (click)="editGroup(group, $event)">
+                <span class="glyphicon glyphicon-pencil"></span>
+            </a>
+        </h3>
+    </div>
+    <div class="panel-body">
+        <table class="datatable table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Application</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let app of group.applications">
+                    <td>
+                        {{app.inputFilename}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <button (click)="registerApplication(group)" class="btn btn-primary" type="button">Register Application</button>
+    </div>
+</div>

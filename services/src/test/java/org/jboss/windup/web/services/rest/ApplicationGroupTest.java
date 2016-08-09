@@ -70,7 +70,17 @@ public class ApplicationGroupTest extends AbstractTest
         applicationGroup = applicationGroupEndpoint.create(applicationGroup);
         Assert.assertEquals(groupTitle, applicationGroup.getTitle());
 
-        ApplicationGroup retrievedGroup = applicationGroupEndpoint.getApplicationGroups().iterator().next();
+        ApplicationGroup retrievedGroup = null;
+        for (ApplicationGroup possibleMatch : applicationGroupEndpoint.getApplicationGroups())
+        {
+            if (possibleMatch.getTitle().equals(groupTitle))
+            {
+                retrievedGroup = possibleMatch;
+                break;
+            }
+        }
+
+        Assert.assertNotNull(retrievedGroup);
         Assert.assertEquals(applicationGroup.getId(), retrievedGroup.getId());
         Assert.assertEquals(applicationGroup.getTitle(), retrievedGroup.getTitle());
     }

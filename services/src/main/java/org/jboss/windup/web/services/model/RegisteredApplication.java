@@ -8,16 +8,20 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.jboss.windup.web.services.validators.FileExistsConstraint;
 
 /**
  * Contains an application that has been registered into Windup.
  */
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = RegisteredApplication.class)
 public class RegisteredApplication implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -44,6 +48,9 @@ public class RegisteredApplication implements Serializable
     @Column(length = 2048)
     @Size(min = 1, max = 2048)
     private String outputPath;
+
+    @ManyToOne()
+    private ApplicationGroup applicationGroup;
 
     public RegisteredApplication()
     {
@@ -107,6 +114,22 @@ public class RegisteredApplication implements Serializable
     public void setOutputPath(String outputPath)
     {
         this.outputPath = outputPath;
+    }
+
+    /**
+     * References the {@link ApplicationGroup} that contains this application.
+     */
+    public ApplicationGroup getApplicationGroup()
+    {
+        return applicationGroup;
+    }
+
+    /**
+     * References the {@link ApplicationGroup} that contains this application.
+     */
+    public void setApplicationGroup(ApplicationGroup applicationGroup)
+    {
+        this.applicationGroup = applicationGroup;
     }
 
     @Override

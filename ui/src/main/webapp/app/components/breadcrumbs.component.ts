@@ -1,10 +1,11 @@
 import {Component} from '@angular/core';
 
-import {Router, RouteParams} from "@angular/router-deprecated";
+import {ROUTER_DIRECTIVES, Router, RouteParams} from "@angular/router-deprecated";
 
 @Component({
     selector: 'breadcrumbs',
-    templateUrl: 'app/components/breadcrumbs.component.html'
+    templateUrl: 'app/components/breadcrumbs.component.html',
+    directives: [ROUTER_DIRECTIVES]
 })
 export class BreadCrumbsComponent {
     public breadcrumbsCollection: Array<any> = [];
