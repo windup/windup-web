@@ -8,6 +8,7 @@ import {MigrationProjectFormComponent} from "./migrationprojectform.component";
 import {ProjectListComponent} from "./projectlist.component";
 import {GroupListComponent} from "./grouplist.component";
 import {ApplicationGroupForm} from "./applicationgroupform.component";
+import {AnalysisContextFormComponent} from "./analysiscontextform.component";
 
 @Component({
     selector: 'windup-app',
@@ -21,6 +22,7 @@ import {ApplicationGroupForm} from "./applicationgroupform.component";
     {path:"/register-application", name: "RegisterApplicationForm", component: RegisterApplicationFormComponent, data: {displayName: "Application Registration"}},
     {path:"/migration-project-form", name: "MigrationProjectForm", component: MigrationProjectFormComponent, data: {displayName: "Edit Project"}},
     {path:"/application-group-form", name: "ApplicationGroupForm", component: ApplicationGroupForm, data: {displayName: "Edit Application Group"}},
+    {path:"/analysis-context-form", name: "AnalysisContextForm", component: AnalysisContextFormComponent, data: {displayName: "Edit Analysis Context"}},
 ])
 export class AppComponent {
 }

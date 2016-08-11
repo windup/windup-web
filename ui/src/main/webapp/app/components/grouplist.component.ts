@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {Inject} from '@angular/core';
-import {Router, RouteParams} from "@angular/router-deprecated";
+import {Router, RouteParams, ROUTER_DIRECTIVES} from "@angular/router-deprecated";
 
 import {MigrationProject} from "windup-services";
 import {ApplicationGroup} from "windup-services";
@@ -9,6 +9,7 @@ import {ApplicationGroupService} from "../services/applicationgroup.service";
 @Component({
     selector: 'application-list',
     templateUrl: 'app/components/grouplist.component.html',
+    directives: [ ROUTER_DIRECTIVES ],
     providers: [ ApplicationGroupService ]
 })
 export class GroupListComponent implements OnInit, OnDestroy {

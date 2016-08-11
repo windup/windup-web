@@ -17,6 +17,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -51,6 +52,9 @@ public class ApplicationGroup implements Serializable
 
     @ManyToOne(fetch = FetchType.EAGER)
     private MigrationProject migrationProject;
+
+    @OneToOne(mappedBy = "applicationGroup")
+    private AnalysisContext analysisContext;
 
     @OneToMany(fetch = FetchType.EAGER)
     private Set<RegisteredApplication> applications;
@@ -105,6 +109,22 @@ public class ApplicationGroup implements Serializable
     public void setMigrationProject(MigrationProject migrationProject)
     {
         this.migrationProject = migrationProject;
+    }
+
+    /**
+     * Contains the analysis configuration for this group.
+     */
+    public AnalysisContext getAnalysisContext()
+    {
+        return analysisContext;
+    }
+
+    /**
+     * Contains the analysis configuration for this group.
+     */
+    public void setAnalysisContext(AnalysisContext analysisContext)
+    {
+        this.analysisContext = analysisContext;
     }
 
     /**

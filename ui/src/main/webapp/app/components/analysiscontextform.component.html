@@ -1,0 +1,75 @@
+<h1>
+    Analysis Context
+</h1>
+<form #analysisContextForm="ngForm" (ngSubmit)="save()"  class="form-horizontal">
+    <div *ngFor="let errorMessage of errorMessages" class="row form-errors alert alert-danger">
+        <div class="col-md-2">&nbsp;</div>
+        <div class="col-md-10">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            {{errorMessage}}
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="migrationPath">Migration Path</label>
+            <div class="col-md-6">
+                <select
+                        #migrationPath="ngForm"
+                        [(ngModel)]="analysisContext.migrationPath.id"
+                        ngControl="migrationPath"
+                        [ngClass]="{'has-error': hasError(migrationPath)}"
+                        required
+                        id="migrationPath"
+                        class="form-control"
+                >
+                    <option *ngFor="let migrationPath of migrationPaths | async" [value]="migrationPath.id">{{migrationPath.name}}</option>
+                </select>
+                <span [class.hidden]="!hasError(migrationPath)" class="help-block">
+                    A migration path must be specified.
+                </span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="includePackageID">Include Packages:</label>
+            <div class="col-md-6">
+                <div *ngFor="let includePackage of packages">
+                    <span>
+                        <input #includePackageControl="ngForm"
+                            [(ngModel)]="includePackage.prefix"
+                            ngControl="includePackageControl"
+                            maxlength="200"
+                            type="text"
+                            id="includePackageID"
+                            class="form-control">
+                    </span>
+                </div>
+
+                <button (click)="addScanPackage()" class="btn btn-default" type="button">+</button>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="excludePackageID">Exclude Package</label>
+            <div class="col-md-6">
+                <div *ngFor="let excludePackage of excludePackages">
+                    <span>
+                        <input #excludePackageControl="ngForm"
+                               [(ngModel)]="excludePackage.prefix"
+                               ngControl="excludePackageControl"
+                               maxlength="200"
+                               type="text"
+                               id="excludePackageID"
+                               class="form-control">
+                    </span>
+                </div>
+
+                <button (click)="addExcludePackage()" class="btn btn-default" type="button">+</button>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-10 col-md-offset-2">
+                <button [disabled]="!analysisContextForm.form.valid" class="btn btn-primary" type="submit">Save</button>
+                <button [disabled]="loading" (click)="cancel()" type="button" class="btn btn-default">Cancel</button>
+            </div>
+        </div>
+    </div>
+</form>

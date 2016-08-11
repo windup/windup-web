@@ -25,8 +25,10 @@ public interface AnalysisContextEndpoint
     AnalysisContext get(@PathParam("id") Long id);
 
     @PUT
+    @Path("/create")
     AnalysisContext create(@Valid AnalysisContext analysisContext);
 
     @PUT
+    @Path("/update")
     AnalysisContext update(@Valid AnalysisContext analysisContext);
 }
