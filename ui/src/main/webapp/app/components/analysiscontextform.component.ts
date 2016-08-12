@@ -100,8 +100,16 @@ export class AnalysisContextFormComponent extends FormComponent
         this.packages.push({prefix: ""});
     }
 
+    removeScanPackage(index:number) {
+        this.packages.splice(index, 1);
+    }
+
     addExcludePackage() {
         this.excludePackages.push({prefix: ""});
+    }
+
+    removeExcludePackage(index:number) {
+        this.excludePackages.splice(index, 1);
     }
 
     save() {
