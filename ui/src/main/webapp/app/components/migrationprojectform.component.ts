@@ -4,6 +4,7 @@ import {Router, RouteParams} from "@angular/router-deprecated";
 
 import {MigrationProjectService} from "../services/migrationproject.service";
 import {MigrationProject} from "windup-services";
+import {FormComponent} from "./formcomponent.component";
 
 @Component({
     selector: 'create-migration-project-form',
@@ -11,7 +12,7 @@ import {MigrationProject} from "windup-services";
     directives: [ NgClass ],
     providers: [ MigrationProjectService ]
 })
-export class MigrationProjectFormComponent implements OnInit
+export class MigrationProjectFormComponent extends FormComponent implements OnInit
 {
     registrationForm: ControlGroup;
 
@@ -28,6 +29,7 @@ export class MigrationProjectFormComponent implements OnInit
         private _migrationProjectService: MigrationProjectService,
         private _formBuilder: FormBuilder
     ) {
+        super();
         this.registrationForm = this._formBuilder.group({
             title: ["", Validators.compose([Validators.required, Validators.minLength(4), Validators.maxLength(128)])]
         });
@@ -58,31 +60,6 @@ export class MigrationProjectFormComponent implements OnInit
                 migrationProject => this.rerouteToApplicationList(),
                 error => this.handleError(<any> error)
             );
-        }
-    }
-
-    /**
-     * This works simplifies the process of checking for an error state on the control.
-     *
-     * It makes sure that the control is not-pristine (don't show errors on fields the user hasn't touched yet)
-     * and that the control is already rendered.
-     */
-    hasError(control:NgControlName) {
-        let touched = control.touched == null ? false : control.touched;
-        return !control.valid && touched && control.control != null;
-    }
-
-    private handleError(error: any) {
-        this.errorMessages = [];
-        if (error.parameterViolations) {
-            error.parameterViolations.forEach(violation =>
-            {
-                console.log("Violation: " + JSON.stringify(violation));
-                this.errorMessages.push(violation.message);
-            });
-        } else
-        {
-            this.errorMessages.push("Error: " + error);
         }
     }
 

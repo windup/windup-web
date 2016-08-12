@@ -24,6 +24,7 @@ public class AbstractTest
         war.addAsLibraries(files);
         war.addPackages(true, AbstractTest.class.getPackage());
         war.merge(ShrinkWrap.create(ExplodedImporter.class).importDirectory("src/main/resources/META-INF").as(GenericArchive.class), "/WEB-INF/classes/META-INF");
+        war.merge(ShrinkWrap.create(ExplodedImporter.class).importDirectory("src/main/resources/migration-paths").as(GenericArchive.class), "/WEB-INF/classes/migration-paths");
         war.merge(ShrinkWrap.create(ExplodedImporter.class).importDirectory("src/main/webapp").as(GenericArchive.class), "/");
         war.merge(ShrinkWrap.create(ExplodedImporter.class).importDirectory("src/test/resources/WEB-INF").as(GenericArchive.class), "/WEB-INF");
         return war;

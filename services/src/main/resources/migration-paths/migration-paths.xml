@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<migration-paths>
+    <path id="100">
+        <name>Anything to EAP 6</name>
+        <target id="eap" version-range="[6]"/>
+    </path>
+    <path id="101">
+        <name>Anything to EAP 7</name>
+        <target id="eap" version-range="[7]"/>
+    </path>
+
+    <path id="200">
+        <name>WebLogic to EAP 6</name>
+        <source id="weblogic"/>
+        <target id="eap" version-range="[6]"/>
+    </path>
+    <path id="201">
+        <name>WebLogic to EAP 7</name>
+        <source id="weblogic"/>
+        <target id="eap" version-range="[7]"/>
+    </path>
+
+    <path id="300">
+        <name>WebSphere to EAP 6</name>
+        <source id="websphere"/>
+        <target id="eap" version-range="[6]"/>
+    </path>
+    <path id="301">
+        <name>WebSphere to EAP 7</name>
+        <source id="websphere"/>
+        <target id="eap" version-range="[7]"/>
+    </path>
+</migration-paths>
