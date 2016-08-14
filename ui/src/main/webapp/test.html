@@ -1,0 +1,26 @@
+<html>
+<head>
+    <title>TypeScript tests</title>
+    <base href="/windup-web/">
+
+    <!-- jQuery -->
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+
+    <script src="node_modules/es6-shim/es6-shim.min.js"></script>
+    <script src="node_modules/zone.js/dist/zone.min.js"></script>
+    <script src="node_modules/reflect-metadata/Reflect.js"></script>
+    <script src="node_modules/systemjs/dist/system.js"></script>
+    <script src="systemjs.config.js"></script>
+
+    <!-- 2. Configure SystemJS -->
+    <script>
+        // this is here so that AbstractUITest can tell we are loading the actual app
+        window['mainApp'] = true;
+        System.import('unmarshallerTest').then(null, console.error.bind(console));
+    </script>
+</head>
+
+<body>
+</body>
+
+</html>
