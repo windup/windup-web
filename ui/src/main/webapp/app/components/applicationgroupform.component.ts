@@ -1,6 +1,7 @@
-import {ControlGroup, FormBuilder, NgClass, NgControlName, Validators} from "@angular/common";
+import {NgClass} from "@angular/common";
 import {Component, Input, OnInit} from "@angular/core";
-import {Router, RouteParams} from "@angular/router-deprecated";
+import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {ActivatedRoute, Router} from "@angular/router";
 
 import {ApplicationGroup, MigrationProject} from "windup-services";
 import {ApplicationGroupService} from "../services/applicationgroup.service";
@@ -15,8 +16,6 @@ import {FormComponent} from "./formcomponent.component";
 })
 export class ApplicationGroupForm extends FormComponent implements OnInit
 {
-    registrationForm: ControlGroup;
-
     project:MigrationProject;
     model:ApplicationGroup = <ApplicationGroup>{};
 
@@ -31,42 +30,39 @@ export class ApplicationGroupForm extends FormComponent implements OnInit
 
     constructor(
         private _router: Router,
-        private _routeParams: RouteParams,
+        private _activatedRoute: ActivatedRoute,
         private _migrationProjectService: MigrationProjectService,
-        private _applicationGroupService: ApplicationGroupService,
-        private _formBuilder: FormBuilder
+        private _applicationGroupService: ApplicationGroupService
     ) {
         super();
-        this.registrationForm = this._formBuilder.group({
-            title: ["", Validators.compose([Validators.required, Validators.minLength(4), Validators.maxLength(128)])]
-        });
     }
 
     ngOnInit() {
-        let projectID = parseInt(this._routeParams.get("projectID"));
+        this._activatedRoute.params.subscribe(params => {
+            let projectID = parseInt(params["projectID"]);
+            if (!isNaN(projectID)) {
+                this.loadingProject = true;
+                this._migrationProjectService.get(projectID).subscribe(
+                    model => { this.project = model; this.loadingProject = false },
+                    error => this.handleError(<any> error)
+                );
+            }
 
-        if (!isNaN(projectID)) {
-            this.loadingProject = true;
-            this._migrationProjectService.get(projectID).subscribe(
-                model => { this.project = model; this.loadingProject = false },
-                error => this.handleError(<any> error)
-            );
-        }
-
-        let groupID = parseInt(this._routeParams.get("groupID"));
-        if (!isNaN(groupID)) {
-            this.editMode = true;
-            this.loadingGroup = true;
-            this._applicationGroupService.get(groupID).subscribe(
-                model => {
-                    this.model = model;
-                    if (this.project == null)
-                        this.project = this.model.migrationProject;
-                    this.loadingGroup = false
-                },
-                error => this.handleError(<any> error)
-            );
-        }
+            let groupID = parseInt(params["groupID"]);
+            if (!isNaN(groupID)) {
+                this.editMode = true;
+                this.loadingGroup = true;
+                this._applicationGroupService.get(groupID).subscribe(
+                    model => {
+                        this.model = model;
+                        if (this.project == null)
+                            this.project = this.model.migrationProject;
+                        this.loadingGroup = false
+                    },
+                    error => this.handleError(<any> error)
+                );
+            }
+        });
     }
 
     save() {
@@ -89,7 +85,7 @@ export class ApplicationGroupForm extends FormComponent implements OnInit
     }
 
     rerouteToGroupList() {
-        this._router.navigate(['GroupList', {projectID: this.project.id}]);
+        this._router.navigate(['/group-list', {projectID: this.project.id}]);
     }
 
     cancel() {

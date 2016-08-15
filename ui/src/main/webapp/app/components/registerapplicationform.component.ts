@@ -1,6 +1,7 @@
-import {ControlGroup, FormBuilder, NgClass, NgControlName, Validators} from "@angular/common";
+import {NgClass} from "@angular/common";
 import {Component, Input, OnInit} from "@angular/core";
-import {Router, RouteParams} from "@angular/router-deprecated";
+import {REACTIVE_FORM_DIRECTIVES, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {ActivatedRoute, Router} from "@angular/router";
 
 import {RegisteredApplication} from "windup-services";
 import {RegisteredApplicationService} from "../services/registeredapplication.service";
@@ -12,11 +13,11 @@ import {FormComponent} from "./formcomponent.component";
 
 @Component({
     templateUrl: 'app/components/registerapplicationform.component.html',
-    directives: [ NgClass ],
+    directives: [ REACTIVE_FORM_DIRECTIVES, NgClass ],
     providers: [ FileService, RegisteredApplicationService, ApplicationGroupService ]
 })
 export class RegisterApplicationFormComponent extends FormComponent implements OnInit {
-    registrationForm: ControlGroup;
+    registrationForm: FormGroup;
 
     applicationGroup:ApplicationGroup;
     model = <RegisteredApplication>{};
@@ -25,28 +26,31 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
 
     constructor(
         private _router:Router,
-        private _routeParams: RouteParams,
+        private _activatedRoute: ActivatedRoute,
         private _fileService:FileService,
         private _registeredApplicationService:RegisteredApplicationService,
         private _applicationGroupService:ApplicationGroupService,
         private _formBuilder: FormBuilder
     ) {
         super();
-        this.registrationForm = _formBuilder.group({
-            inputPath: ["", Validators.compose([Validators.required, Validators.minLength(4)]), FileExistsValidator.create(this._fileService)]
-        });
     }
 
     ngOnInit():any {
-        let id:number = parseInt(this._routeParams.get("groupID"));
-        if (!isNaN(id)) {
-            this.loading = true;
-            this._applicationGroupService.get(id).subscribe(
-                group => { this.applicationGroup = group; this.loading = false }
-            );
-        } else {
-            this.loading = false;
-        }
+        this.registrationForm = this._formBuilder.group({
+            inputPath: ["", Validators.compose([Validators.required, Validators.minLength(4)]), FileExistsValidator.create(this._fileService)]
+        });
+
+        this._activatedRoute.params.subscribe(params => {
+            let id:number = parseInt(params["groupID"]);
+            if (!isNaN(id)) {
+                this.loading = true;
+                this._applicationGroupService.get(id).subscribe(
+                    group => { this.applicationGroup = group; this.loading = false }
+                );
+            } else {
+                this.loading = false;
+            }
+        });
     }
 
     register() {
@@ -61,7 +65,10 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     }
 
     rerouteToApplicationList() {
-        this._router.navigate(['GroupList', { projectID: this.applicationGroup.migrationProject.id }]);
+        if (this.applicationGroup != null)
+            this._router.navigate(['/group-list', { projectID: this.applicationGroup.migrationProject.id }]);
+        else
+            this._router.navigate(['/application-list']);
     }
 
     cancelRegistration() {

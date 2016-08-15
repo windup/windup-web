@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {Inject} from '@angular/core';
-import {Router} from "@angular/router-deprecated";
+import {Router} from "@angular/router";
 
 import {MigrationProjectService} from "../services/migrationproject.service";
 import {MigrationProject} from "windup-services";
@@ -45,17 +45,17 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     }
 
     createMigrationProject() {
-        this._router.navigate(['MigrationProjectForm']);
+        this._router.navigate(['/migration-project-form']);
     }
 
     editProject(project:MigrationProject, event:Event) {
         event.preventDefault();
-        this._router.navigate(['MigrationProjectForm', { projectID: project.id }])
+        this._router.navigate(['/migration-project-form', { projectID: project.id }])
     }
 
     viewProject(project:MigrationProject, event:Event) {
         event.preventDefault();
         console.log(JSON.stringify(project));
-        this._router.navigate(['GroupList', { projectID: project.id }]);
+        this._router.navigate(['/group-list', { projectID: project.id }]);
     }
 }

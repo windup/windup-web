@@ -1,7 +1,7 @@
 <h1>
     Register Application
 </h1>
-<form [ngFormModel]="registrationForm" (ngSubmit)="register()"  class="form-horizontal">
+<form [formGroup]="registrationForm" (ngSubmit)="register()"  class="form-horizontal">
     <div *ngFor="let errorMessage of errorMessages" class="row form-errors alert alert-danger">
         <div class="col-md-2">&nbsp;</div>
         <div class="col-md-10">
@@ -10,11 +10,16 @@
         </div>
     </div>
     <div class="row">
-        <div class="form-group" [ngClass]="{'has-error': hasError(inputPath)}">
+        <div class="form-group" [ngClass]="{'has-error': hasError(registrationForm.get('inputPath'))}">
             <label class="col-md-2 control-label" for="textInput">Application Path</label>
             <div class="col-md-6">
-                <input #inputPath="ngForm" [(ngModel)]="model.inputPath" ngControl="inputPath" type="text" id="textInput" class="form-control">
-                <span [class.hidden]="!hasError(inputPath)" class="help-block">
+                <input
+                        [(ngModel)]="model.inputPath"
+                        formControlName="inputPath"
+                        type="text"
+                        id="textInput"
+                        class="form-control">
+                <span [class.hidden]="!hasError(registrationForm.get('inputPath'))" class="help-block">
                     The input path must exist on the server.
                 </span>
             </div>

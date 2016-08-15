@@ -1,8 +1,8 @@
 import {bootstrap} from '@angular/platform-browser-dynamic';
 import {provide} from '@angular/core';
-import {HTTP_PROVIDERS} from '@angular/http';
+import {HttpModule} from '@angular/http';
 
-import {addProviders, async, inject} from '@angular/core/testing';
+import {TestBed, async, inject} from '@angular/core/testing';
 
 
 import 'rxjs/Rx';
@@ -15,11 +15,13 @@ import {RegisteredApplication} from "windup-services";
 
 describe("Registered Application Service Test", () => {
     beforeEach(() => {
-        addProviders([
-            HTTP_PROVIDERS,
-            Constants,
-            RegisteredApplicationService
-        ]);
+        TestBed.configureTestingModule(
+            {
+                imports: [HttpModule],
+                providers: [Constants, RegisteredApplicationService]
+            }
+        );
+        TestBed.compileComponents().catch(error => console.error(error));
     });
 
     it('register app call', async(inject([RegisteredApplicationService], (service:RegisteredApplicationService) => {

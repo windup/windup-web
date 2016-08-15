@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {Inject} from '@angular/core';
-import {Router} from "@angular/router-deprecated";
+import {Router} from '@angular/router';
 
 import {WindupService} from "../services/windup.service";
 import {RegisteredApplicationService} from "../services/registeredapplication.service";
@@ -78,12 +78,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     }
 
     registerApplication() {
-        this._router.navigate(['RegisterApplicationForm'])
-    }
-
-    createMigrationProject() {
-        console.info("AAAAAAA");
-        this._router.navigate(['MigrationProjectForm']);
+        this._router.navigate(['/register-application'])
     }
 
     reportURL(path:string) : string {

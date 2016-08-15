@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {Inject} from '@angular/core';
-import {Router, RouteParams, ROUTER_DIRECTIVES} from "@angular/router-deprecated";
+import {ActivatedRoute, Router} from "@angular/router";
 
 import {MigrationProject} from "windup-services";
 import {ApplicationGroup} from "windup-services";
@@ -9,7 +9,6 @@ import {ApplicationGroupService} from "../services/applicationgroup.service";
 @Component({
     selector: 'application-list',
     templateUrl: 'app/components/grouplist.component.html',
-    directives: [ ROUTER_DIRECTIVES ],
     providers: [ ApplicationGroupService ]
 })
 export class GroupListComponent implements OnInit, OnDestroy {
@@ -20,15 +19,17 @@ export class GroupListComponent implements OnInit, OnDestroy {
     private _refreshIntervalID:number;
 
     constructor(
-        private _routeParams: RouteParams,
+        private _activatedRoute: ActivatedRoute,
         private _router: Router,
         private _applicationGroupService: ApplicationGroupService
     ) {}
 
     ngOnInit():any {
-        this.projectID = parseInt(this._routeParams.get("projectID"));
-        this.getGroups();
-        this._refreshIntervalID = setInterval(() => this.getGroups(), 3000);
+        this._activatedRoute.params.subscribe(params => {
+            this.projectID = parseInt(params["projectID"]);
+            this.getGroups();
+            this._refreshIntervalID = setInterval(() => this.getGroups(), 3000);
+        });
     }
 
     ngOnDestroy():any {
@@ -38,7 +39,6 @@ export class GroupListComponent implements OnInit, OnDestroy {
 
     getGroups() {
         return this._applicationGroupService.getByProjectID(this.projectID).subscribe(
-        //return this._applicationGroupService.getAll().subscribe(
             groups => this.groupsLoaded(groups),
             error => this.errorMessage = <any>error
         );
@@ -51,15 +51,15 @@ export class GroupListComponent implements OnInit, OnDestroy {
     }
 
     createGroup() {
-        this._router.navigate(['ApplicationGroupForm', { projectID: this.projectID }]);
+        this._router.navigate(['/application-group-form', { projectID: this.projectID }]);
     }
 
     editGroup(applicationGroup:ApplicationGroup, event:Event) {
         event.preventDefault();
-        this._router.navigate(['ApplicationGroupForm', { projectID: this.projectID, groupID: applicationGroup.id }]);
+        this._router.navigate(['/application-group-form', { projectID: this.projectID, groupID: applicationGroup.id }]);
     }
 
     registerApplication(applicationGroup:ApplicationGroup) {
-        this._router.navigate(['RegisterApplicationForm', { groupID: applicationGroup.id }]);
+        this._router.navigate(['/register-application', { groupID: applicationGroup.id }]);
     }
 }
