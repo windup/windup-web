@@ -2,6 +2,8 @@ package org.jboss.windup.web.services.rest;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,10 +26,14 @@ import org.jboss.forge.furnace.services.Imported;
 import org.jboss.forge.furnace.util.OperatingSystemUtils;
 import org.jboss.windup.exec.WindupProcessor;
 import org.jboss.windup.exec.configuration.WindupConfiguration;
+import org.jboss.windup.exec.configuration.options.SourceOption;
+import org.jboss.windup.exec.configuration.options.TargetOption;
 import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.GraphContextFactory;
 import org.jboss.windup.web.furnaceserviceprovider.WebProperties;
+import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.ApplicationGroup;
+import org.jboss.windup.web.services.model.MigrationPath;
 import org.jboss.windup.web.services.model.RegisteredApplication;
 import org.jboss.windup.web.services.model.RegisteredApplication_;
 import org.jboss.windup.web.services.WindupWebProgressMonitor;
@@ -127,6 +133,8 @@ public class WindupEndpointImpl implements WindupEndpoint
         ApplicationGroup group = entityManager.find(ApplicationGroup.class, groupID);
         group.setExecutionTime(new GregorianCalendar());
 
+        AnalysisContext analysisContext = group.getAnalysisContext();
+
         Runnable windupProcess = () -> {
             Imported<WindupProcessor> importedProcessor = furnace.getAddonRegistry().getServices(WindupProcessor.class);
             Imported<GraphContextFactory> importedFactory = furnace.getAddonRegistry().getServices(GraphContextFactory.class);
@@ -149,6 +157,25 @@ public class WindupEndpointImpl implements WindupEndpoint
                     configuration.addInputPath(inputPath);
                 }
                 configuration.setOutputDirectory(Paths.get(group.getOutputPath()));
+
+                if (analysisContext != null)
+                {
+                    if (analysisContext.getPackages() != null)
+                        configuration.setOptionValue("packages", new ArrayList<>(analysisContext.getPackages()));
+
+                    if (analysisContext.getExcludePackages() != null)
+                        configuration.setOptionValue("excludePackages", new ArrayList<>(analysisContext.getExcludePackages()));
+
+                    MigrationPath migrationPath = analysisContext.getMigrationPath();
+                    if (migrationPath != null)
+                    {
+                        String source = migrationPath.getSource().toString();
+                        String target = migrationPath.getTarget().toString();
+
+                        configuration.setOptionValue(SourceOption.NAME, Collections.singletonList(source));
+                        configuration.setOptionValue(TargetOption.NAME, Collections.singletonList(target));
+                    }
+                }
 
                 processor.execute(configuration);
             }

@@ -8,7 +8,7 @@ import {ApplicationGroupForm} from "./components/applicationgroupform.component"
 import {AnalysisContextFormComponent} from "./components/analysiscontextform.component";
 
 const appRoutes: Routes = [
-    {path:"", redirectTo: "/application-list", pathMatch: "full"},
+    {path:"", redirectTo: "/project-list", pathMatch: "full"},
     {path:"application-list", component: ApplicationListComponent, data: {displayName: "Application List"}},
     {path:"project-list", component: ProjectListComponent, data: { displayName: "Project List" }},
     {path:"group-list", component: GroupListComponent, data: {displayName: "Group List"}},

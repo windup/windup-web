@@ -1,5 +1,7 @@
 package org.jboss.windup.web.services.model;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.Serializable;
 
 import javax.persistence.Column;
@@ -101,5 +103,13 @@ public class Technology implements Serializable
     public int hashCode()
     {
         return id != null ? id.hashCode() : 0;
+    }
+
+    @Override
+    public String toString()
+    {
+        String versionRangeSuffix = StringUtils.isNotBlank(this.versionRange) ? ":" + this.versionRange : "";
+
+        return this.name + versionRangeSuffix;
     }
 }

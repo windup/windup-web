@@ -5,10 +5,13 @@ import java.util.Collections;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.NotFoundException;
 
+import org.jboss.windup.web.addons.websupport.WebPathUtil;
+import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.MigrationProject;
 
@@ -22,6 +25,9 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    @Inject @FromFurnace
+    private WebPathUtil webPathUtil;
 
     @Override
     public Collection<MigrationProject> getMigrationProjects()
@@ -45,6 +51,8 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
         ApplicationGroup defaultGroup = new ApplicationGroup();
         defaultGroup.setTitle(ApplicationGroup.DEFAULT_NAME);
         defaultGroup.setMigrationProject(migrationProject);
+        defaultGroup.setReadOnly(true);
+        defaultGroup.setOutputPath(webPathUtil.createWindupReportOutputPath(ApplicationGroup.DEFAULT_NAME).toString());
         entityManager.persist(defaultGroup);
 
         entityManager.persist(migrationProject);

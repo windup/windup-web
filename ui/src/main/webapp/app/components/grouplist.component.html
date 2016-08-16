@@ -8,11 +8,26 @@
     <div class="panel-heading">
         <h3 class="panel-title">
             {{group.title}}
-            <a href="#" (click)="editGroup(group, $event)">
+            <a *ngIf="!group.readOnly" href="#" (click)="editGroup(group, $event)">
                 <span class="glyphicon glyphicon-pencil"></span>
             </a>
         </h3>
         <a [routerLink]="['/analysis-context-form', { groupID: group.id }]">Edit Analysis Configuration</a>
+        <span *ngIf="group.applications.length > 0">
+            |
+            <a (click)="runWindup($event, group)" href="#">Run Windup</a>
+        </span>
+
+        <div>
+            <div *ngIf="status(group).started && !status(group).completed">
+                <progress-bar
+                        [taskName]="status(group).currentTask"
+                        [currentValue]="status(group).workCompleted"
+                        [minValue]="0"
+                        [maxValue]="status(group).totalWork"></progress-bar>
+            </div>
+        </div>
+
     </div>
     <div class="panel-body">
         <table class="datatable table table-striped table-bordered">
