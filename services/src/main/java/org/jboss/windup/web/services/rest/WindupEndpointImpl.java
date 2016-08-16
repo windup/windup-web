@@ -1,6 +1,8 @@
 package org.jboss.windup.web.services.rest;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.GregorianCalendar;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -25,6 +27,7 @@ import org.jboss.windup.exec.configuration.WindupConfiguration;
 import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.GraphContextFactory;
 import org.jboss.windup.web.furnaceserviceprovider.WebProperties;
+import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.RegisteredApplication;
 import org.jboss.windup.web.services.model.RegisteredApplication_;
 import org.jboss.windup.web.services.WindupWebProgressMonitor;
@@ -35,7 +38,7 @@ public class WindupEndpointImpl implements WindupEndpoint
 {
     private static Logger LOG = Logger.getLogger(WindupEndpointImpl.class.getSimpleName());
 
-    private static Map<RegisteredApplication, WindupWebProgressMonitor> progressMonitors = new ConcurrentHashMap<>();
+    private static Map<String, WindupWebProgressMonitor> progressMonitors = new ConcurrentHashMap<>();
 
     @Inject
     private Furnace furnace;
@@ -51,7 +54,8 @@ public class WindupEndpointImpl implements WindupEndpoint
     @Override
     public ProgressStatusDto getStatus(RegisteredApplication registeredApplication)
     {
-        WindupWebProgressMonitor progressMonitor = registeredApplication == null ? null : progressMonitors.get(registeredApplication);
+        String statusKey = getStatusKey(registeredApplication);
+        WindupWebProgressMonitor progressMonitor = registeredApplication == null ? null : progressMonitors.get(statusKey);
         if (progressMonitor == null)
             return new ProgressStatusDto(0, 0, "Not Started", false, false, false);
         else
@@ -78,7 +82,7 @@ public class WindupEndpointImpl implements WindupEndpoint
             GraphContextFactory factory = importedFactory.get();
 
             WindupWebProgressMonitor progressMonitor = new WindupWebProgressMonitor();
-            progressMonitors.put(registeredApplication, progressMonitor);
+            progressMonitors.put(getStatusKey(registeredApplication), progressMonitor);
 
             try (GraphContext context = factory.create(getDefaultPath()))
             {
@@ -101,6 +105,63 @@ public class WindupEndpointImpl implements WindupEndpoint
         managedExecutorService.execute(windupProcess);
     }
 
+    @Override
+    public ProgressStatusDto getStatus(Long groupID)
+    {
+        String statusKey = getStatusKeyGroup(groupID);
+        WindupWebProgressMonitor progressMonitor = groupID == null ? null : progressMonitors.get(statusKey);
+        if (progressMonitor == null)
+            return new ProgressStatusDto(0, 0, "Not Started", false, false, false);
+        else
+        {
+            boolean failed = progressMonitor.isFailed();
+            boolean done = failed || progressMonitor.isCancelled() || progressMonitor.isDone();
+            return new ProgressStatusDto(progressMonitor.getTotalWork(), progressMonitor.getCurrentWork(), progressMonitor.getCurrentTask(), true,
+                    done, failed);
+        }
+    }
+
+    @Override
+    public void executeGroup(Long groupID)
+    {
+        ApplicationGroup group = entityManager.find(ApplicationGroup.class, groupID);
+        group.setExecutionTime(new GregorianCalendar());
+
+        Runnable windupProcess = () -> {
+            Imported<WindupProcessor> importedProcessor = furnace.getAddonRegistry().getServices(WindupProcessor.class);
+            Imported<GraphContextFactory> importedFactory = furnace.getAddonRegistry().getServices(GraphContextFactory.class);
+            WindupProcessor processor = importedProcessor.get();
+            GraphContextFactory factory = importedFactory.get();
+
+            WindupWebProgressMonitor progressMonitor = new WindupWebProgressMonitor();
+            progressMonitors.put(getStatusKeyGroup(groupID), progressMonitor);
+
+            try (GraphContext context = factory.create(getDefaultPath()))
+            {
+                WindupConfiguration configuration = new WindupConfiguration()
+                        .setGraphContext(context)
+                        .setProgressMonitor(progressMonitor)
+                        .addDefaultUserRulesDirectory(webProperties.getRulesRepository());
+
+                for (RegisteredApplication application : group.getApplications())
+                {
+                    Path inputPath = Paths.get(application.getInputPath());
+                    configuration.addInputPath(inputPath);
+                }
+                configuration.setOutputDirectory(Paths.get(group.getOutputPath()));
+
+                processor.execute(configuration);
+            }
+            catch (Exception e)
+            {
+                progressMonitor.setFailed(true);
+                LOG.log(Level.WARNING, "Processing of " + group + " failed due to: " + e.getMessage(), e);
+                throw new RuntimeException(e);
+            }
+        };
+        managedExecutorService.execute(windupProcess);
+    }
+
     private RegisteredApplication refreshModel(String inputPath)
     {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
@@ -108,6 +169,16 @@ public class WindupEndpointImpl implements WindupEndpoint
         Root<RegisteredApplication> root = criteriaQuery.from(RegisteredApplication.class);
         criteriaQuery.where(builder.equal(root.get(RegisteredApplication_.inputPath), inputPath));
         return entityManager.createQuery(criteriaQuery).getSingleResult();
+    }
+
+    private String getStatusKey(RegisteredApplication registeredApplication)
+    {
+        return "RegisteredApp_" + registeredApplication.getId();
+    }
+
+    private String getStatusKeyGroup(Long groupID)
+    {
+        return "Group_" + groupID;
     }
 
     private java.nio.file.Path getDefaultPath()

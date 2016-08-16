@@ -1,13 +1,17 @@
 package org.jboss.windup.web.services.rest;
 
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.Valid;
 
+import org.jboss.windup.web.addons.websupport.WebPathUtil;
+import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.MigrationProject;
 
@@ -23,6 +27,9 @@ public class ApplicationGroupEndpointImpl implements ApplicationGroupEndpoint
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    @Inject @FromFurnace
+    private WebPathUtil webPathUtil;
 
     @Override
     public Collection<ApplicationGroup> getApplicationGroups()
@@ -54,6 +61,9 @@ public class ApplicationGroupEndpointImpl implements ApplicationGroupEndpoint
     public ApplicationGroup create(@Valid ApplicationGroup applicationGroup)
     {
         LOG.info("Creating group: " + applicationGroup + " with project: " + applicationGroup.getMigrationProject());
+        Path outputPath = webPathUtil.createWindupReportOutputPath("group_report");
+        applicationGroup.setOutputPath(outputPath.toAbsolutePath().toString());
+
         entityManager.persist(applicationGroup);
         return entityManager.find(ApplicationGroup.class, applicationGroup.getId());
     }
