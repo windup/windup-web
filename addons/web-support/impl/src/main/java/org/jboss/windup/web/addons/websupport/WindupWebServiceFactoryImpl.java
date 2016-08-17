@@ -1,4 +1,4 @@
-package org.jboss.windup.web;
+package org.jboss.windup.web.addons.websupport;
 
 import java.nio.file.Files;
 import java.nio.file.Path;

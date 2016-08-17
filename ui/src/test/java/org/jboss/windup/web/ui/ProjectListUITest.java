@@ -18,28 +18,26 @@ import org.openqa.selenium.support.FindBy;
  */
 @RunWith(Arquillian.class)
 @RunAsClient
-public class ApplicationListUITest extends AbstractUITest
+public class ProjectListUITest extends AbstractUITest
 {
-    private static Logger LOG = Logger.getLogger(ApplicationListUITest.class.getSimpleName());
-
-    private static final String APPLICATION_LIST_PATH = "/application-list";
+    private static Logger LOG = Logger.getLogger(ProjectListUITest.class.getSimpleName());
 
     @ArquillianResource
     URL contextRoot;
 
-    @FindBy(xpath = "//button[contains(@class, 'btn-primary') and text() = 'Register Application']")
-    private WebElement registerButton;
+    @FindBy(xpath = "//button[contains(@class, 'btn-primary') and text() = 'Create Migration Project']")
+    private WebElement createProjectButton;
 
     @Before
     public void loadPage()
     {
-        getDriver().navigate().to(contextRoot + APPLICATION_LIST_PATH);
+        getDriver().navigate().to(contextRoot);
     }
 
     @Test
     public void testInitialLoad() throws Exception
     {
-        Assert.assertNotNull(registerButton);
-        LOG.info("Button: " + registerButton.getText());
+        Assert.assertNotNull(createProjectButton);
+        LOG.info("Button: " + createProjectButton.getText());
     }
 }

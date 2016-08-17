@@ -34,12 +34,19 @@
             <thead>
                 <tr>
                     <th>Application</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let app of group.applications">
                     <td>
                         {{app.inputFilename}}
+                    </td>
+                    <td>
+                        <a *ngIf="app.reportIndexPath != null" class="btn btn-default btn-md" target="_blank" href="{{reportURL(app)}}">
+                            <span class="glyphicon glyphicon-file"></span>
+                            View Report
+                        </a>
                     </td>
                 </tr>
             </tbody>

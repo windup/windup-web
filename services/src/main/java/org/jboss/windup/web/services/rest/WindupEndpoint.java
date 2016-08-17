@@ -22,21 +22,6 @@ import javax.ws.rs.Produces;
 public interface WindupEndpoint
 {
     /**
-     * Gets the status of an execution for a particular {@link RegisteredApplication}. This will only work
-     * for executions that were triggered at the application level.
-     */
-    @POST
-    @Path("status")
-    ProgressStatusDto getStatus(RegisteredApplication registeredApplication);
-
-    /**
-     * Execute Windup analysis on the provided application.
-     */
-    @POST
-    @Path("execute")
-    void executeWindup(RegisteredApplication registeredApplication);
-
-    /**
      * Gets the status of an execution for a particular group.
      */
     @GET

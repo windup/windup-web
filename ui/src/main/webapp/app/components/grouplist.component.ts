@@ -7,6 +7,8 @@ import {ApplicationGroup} from "windup-services";
 import {ApplicationGroupService} from "../services/applicationgroup.service";
 import {WindupService} from "../services/windup.service";
 import {ProgressStatusModel} from "../models/progressstatus.model";
+import {Constants} from "../constants";
+import {RegisteredApplication} from "windup-services";
 
 @Component({
     selector: 'application-list',
@@ -20,6 +22,7 @@ export class GroupListComponent implements OnInit, OnDestroy {
     errorMessage:string;
 
     constructor(
+        private _constants: Constants,
         private _activatedRoute: ActivatedRoute,
         private _router: Router,
         private _applicationGroupService: ApplicationGroupService,
@@ -71,8 +74,10 @@ export class GroupListComponent implements OnInit, OnDestroy {
                         status => {
                             this.processingStatus.set(group.id, status);
                             this.errorMessage = "";
-                            if (status.completed)
+                            if (status.completed) {
                                 clearInterval(intervalID);
+                                this.getGroups();
+                            }
                         },
                         error => this.errorMessage = <any>error
                     );
@@ -80,6 +85,10 @@ export class GroupListComponent implements OnInit, OnDestroy {
             },
             error => this.errorMessage = <any>error
         );
+    }
+
+    reportURL(app:RegisteredApplication) : string {
+        return this._constants.STATIC_REPORTS_BASE + "/" + app.reportIndexPath;
     }
 
     createGroup() {

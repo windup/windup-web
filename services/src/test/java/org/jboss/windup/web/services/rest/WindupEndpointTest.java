@@ -58,43 +58,6 @@ public class WindupEndpointTest extends AbstractTest
 
     @Test
     @RunAsClient
-    public void testExecution() throws Exception
-    {
-        String inputPath = Paths.get("src/main/java").toAbsolutePath().normalize().toString();
-
-        RegisteredApplication input = new RegisteredApplication();
-        input.setInputPath(inputPath);
-
-        RegisteredApplication registeredApplication = this.registeredApplicationEndpoint.registerApplication(input);
-        System.out.println("Registered application: " + registeredApplication);
-
-        this.windupEndpoint.executeWindup(registeredApplication);
-
-        ProgressStatusDto status = this.windupEndpoint.getStatus(registeredApplication);
-        int loops = 0;
-        long beginTime = System.currentTimeMillis();
-        do {
-            loops++;
-            Thread.sleep(25);
-
-            status = this.windupEndpoint.getStatus(registeredApplication);
-            System.out.println("Status: " + status);
-
-            if ((System.currentTimeMillis() - beginTime) > (1000L * 240L)) {
-                // taking too long... fail
-                Assert.fail("Processing never completed. Current status: " + status);
-            }
-        } while (!status.isCompleted());
-
-        Assert.assertFalse(status.isFailed());
-        Assert.assertTrue(status.isCompleted());
-        Assert.assertTrue(loops > 1);
-        Assert.assertTrue(status.getTotalWork() > 10);
-        Assert.assertTrue(status.getWorkCompleted() > 9);
-    }
-
-    @Test
-    @RunAsClient
     public void testExecutionGroup() throws Exception
     {
         String inputPath = Paths.get("src/main/java").toAbsolutePath().normalize().toString();
