@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -18,6 +19,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -45,10 +48,20 @@ public class ApplicationGroup implements Serializable
     @Column(name = "version")
     private int version;
 
+    @Column
+    private boolean readOnly;
+
     @Column(length = 256)
     @Size(min = 1, max = 256)
     @NotNull
     private String title;
+
+    @Column(length = 2048)
+    @Size(min = 1, max = 2048)
+    private String outputPath;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Calendar executionTime;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private MigrationProject migrationProject;
@@ -80,6 +93,26 @@ public class ApplicationGroup implements Serializable
     }
 
     /**
+     * Indicates whether or not the client should consider the properties associated with this group to be "readonly".
+     *
+     * This would be used with system generated groups to indicate that the name should be a constant.
+     */
+    public boolean isReadOnly()
+    {
+        return readOnly;
+    }
+
+    /**
+     * Indicates whether or not the client should consider the properties associated with this group to be "readonly".
+     *
+     * This would be used with system generated groups to indicate that the name should be a constant.
+     */
+    public void setReadOnly(boolean readOnly)
+    {
+        this.readOnly = readOnly;
+    }
+
+    /**
      * Contains the title for the current group.
      */
     public String getTitle()
@@ -93,6 +126,38 @@ public class ApplicationGroup implements Serializable
     public void setTitle(String title)
     {
         this.title = title;
+    }
+
+    /**
+     * Contains the directory in which Windup will generate graph data and reports.
+     */
+    public String getOutputPath()
+    {
+        return outputPath;
+    }
+
+    /**
+     * Contains the directory in which Windup will generate graph data and reports.
+     */
+    public void setOutputPath(String outputPath)
+    {
+        this.outputPath = outputPath;
+    }
+
+    /**
+     * Contains the date of the most recent time that execution was started for this group.
+     */
+    public Calendar getExecutionTime()
+    {
+        return executionTime;
+    }
+
+    /**
+     * Contains the date of the most recent time that execution was started for this group.
+     */
+    public void setExecutionTime(Calendar executionTime)
+    {
+        this.executionTime = executionTime;
     }
 
     /**

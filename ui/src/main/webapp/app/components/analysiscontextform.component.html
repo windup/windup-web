@@ -14,7 +14,8 @@
             <label class="col-md-2 control-label" for="migrationPath">Migration Path</label>
             <div class="col-md-6">
                 <select
-                        #migrationPath="ngForm"
+                        #migrationPath="ngModel"
+                        name="migrationPath"
                         [(ngModel)]="analysisContext.migrationPath.id"
                         ngControl="migrationPath"
                         [ngClass]="{'has-error': hasError(migrationPath)}"
@@ -33,7 +34,8 @@
             <label class="col-md-2 control-label" for="includePackageID">Include Packages:</label>
             <div class="col-md-4">
                 <div *ngFor="let includePackage of packages; let i = index;" class="input-group">
-                    <input #includePackageControl="ngForm"
+                    <input #includePackageControl="ngModel"
+                        [ngModelOptions]="{standalone: true}"
                         [(ngModel)]="includePackage.prefix"
                         ngControl="includePackageControl"
                         maxlength="200"
@@ -54,7 +56,8 @@
             <label class="col-md-2 control-label" for="excludePackageID">Exclude Package</label>
             <div class="col-md-3">
                 <div *ngFor="let excludePackage of excludePackages; let i = index;" class="input-group">
-                    <input #excludePackageControl="ngForm"
+                    <input #excludePackageControl="ngModel"
+                           [ngModelOptions]="{standalone: true}"
                            [(ngModel)]="excludePackage.prefix"
                            ngControl="excludePackageControl"
                            maxlength="200"

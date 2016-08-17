@@ -1,6 +1,6 @@
-import {ControlGroup, FormBuilder, NgClass, NgControlName, Validators} from "@angular/common";
+import {NgClass} from "@angular/common";
 import {Component, Input, OnInit} from "@angular/core";
-import {Router, RouteParams} from "@angular/router-deprecated";
+import {ActivatedRoute, Router} from "@angular/router";
 
 import {MigrationProjectService} from "../services/migrationproject.service";
 import {MigrationProject} from "windup-services";
@@ -14,8 +14,6 @@ import {FormComponent} from "./formcomponent.component";
 })
 export class MigrationProjectFormComponent extends FormComponent implements OnInit
 {
-    registrationForm: ControlGroup;
-
     model:MigrationProject = <MigrationProject>{};
 
     editMode:boolean = false;
@@ -25,49 +23,47 @@ export class MigrationProjectFormComponent extends FormComponent implements OnIn
 
     constructor(
         private _router: Router,
-        private _routeParams: RouteParams,
-        private _migrationProjectService: MigrationProjectService,
-        private _formBuilder: FormBuilder
+        private _activatedRoute: ActivatedRoute,
+        private _migrationProjectService: MigrationProjectService
     ) {
         super();
-        this.registrationForm = this._formBuilder.group({
-            title: ["", Validators.compose([Validators.required, Validators.minLength(4), Validators.maxLength(128)])]
-        });
     }
 
     ngOnInit() {
-        let id:number = parseInt(this._routeParams.get("projectID"));
-        if (!isNaN(id)) {
-            this.editMode = true;
-            this.loading = true;
-            this._migrationProjectService.get(id).subscribe(
-                model => { this.model = model; this.loading = false },
-                error => this.handleError(<any> error)
-            );
-        }
+        this._activatedRoute.params.subscribe(params => {
+            let id:number = parseInt(params["projectID"]);
+            if (!isNaN(id)) {
+                this.editMode = true;
+                this.loading = true;
+                this._migrationProjectService.get(id).subscribe(
+                    model => { this.model = model; this.loading = false },
+                    error => this.handleError(<any> error)
+                );
+            }
+        });
     }
 
     save() {
         if (this.editMode) {
             console.log("Updating migration project: " + this.model.title);
             this._migrationProjectService.update(this.model).subscribe(
-                migrationProject => this.rerouteToApplicationList(),
+                migrationProject => this.rerouteToProjectList(),
                 error => this.handleError(<any> error)
             );
         } else {
             console.log("Creating migration project: " + this.model.title);
             this._migrationProjectService.create(this.model).subscribe(
-                migrationProject => this.rerouteToApplicationList(),
+                migrationProject => this.rerouteToProjectList(),
                 error => this.handleError(<any> error)
             );
         }
     }
 
-    rerouteToApplicationList() {
-        this._router.navigate(['ProjectList']);
+    rerouteToProjectList() {
+        this._router.navigate(['/project-list']);
     }
 
     cancel() {
-        this.rerouteToApplicationList();
+        this.rerouteToProjectList();
     }
 }

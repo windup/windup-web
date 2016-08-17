@@ -1,34 +1,34 @@
 import {Component} from '@angular/core';
 
-import {ROUTER_DIRECTIVES, Router, RouteParams} from "@angular/router-deprecated";
+import {Router} from '@angular/router';
 
 @Component({
     selector: 'breadcrumbs',
     templateUrl: 'app/components/breadcrumbs.component.html',
-    directives: [ROUTER_DIRECTIVES]
 })
 export class BreadCrumbsComponent {
     public breadcrumbsCollection: Array<any> = [];
 
     constructor(private _router: Router) {
-        this._router.subscribe(routeData => {
-            let instructions = [];
+        this._router.events.subscribe(routeData => {
+            console.log("Routing data: " + routeData);
+            //let instructions = [];
 
-            this._router.recognize(routeData.instruction.urlPath).then(instruction => {
-                instructions.push(instruction);
-
-                while (instruction.child) {
-                    instruction = instruction.child;
-
-                    instructions.push(instruction);
-                }
-                this.breadcrumbsCollection = instructions
-                    .map((inst, index) => {
-                        return {
-                            displayName: inst.component.routeData.get('displayName')
-                        }
-                    });
-            });
+            //this._router.recognize(routeData.instruction.urlPath).then(instruction => {
+            //    instructions.push(instruction);
+            //
+            //    while (instruction.child) {
+            //        instruction = instruction.child;
+            //
+            //        instructions.push(instruction);
+            //    }
+            //    this.breadcrumbsCollection = instructions
+            //        .map((inst, index) => {
+            //            return {
+            //                displayName: inst.component.routeData.get('displayName')
+            //            }
+            //        });
+            //});
         });
     }
 }

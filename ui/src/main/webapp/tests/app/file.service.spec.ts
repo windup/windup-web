@@ -1,7 +1,7 @@
 import {provide} from '@angular/core';
-import {HTTP_PROVIDERS} from '@angular/http';
+import {HttpModule} from '@angular/http';
 
-import {addProviders, async, inject} from '@angular/core/testing';
+import {TestBed, async, inject} from '@angular/core/testing';
 
 import 'rxjs/Rx';
 
@@ -12,11 +12,13 @@ import {FileService} from "../../app/services/file.service";
 
 describe("File Service", () => {
     beforeEach(() => {
-        addProviders([
-            HTTP_PROVIDERS,
-            Constants,
-            FileService
-        ]);
+        TestBed.configureTestingModule(
+            {
+                imports: [HttpModule],
+                providers: [Constants, FileService]
+            }
+        );
+        TestBed.compileComponents().catch(error => console.error(error));
     });
 
     it('file exists call', async(inject([FileService], (service:FileService) => {

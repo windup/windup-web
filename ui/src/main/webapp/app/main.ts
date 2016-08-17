@@ -1,19 +1,10 @@
-import {bootstrap}    from '@angular/platform-browser-dynamic';
-import {NgZone, provide} from '@angular/core';
-import {HTTP_PROVIDERS} from '@angular/http';
-import {ROUTER_PROVIDERS} from '@angular/router-deprecated';
-import {AppComponent} from './components/app.component'
-import {Constants} from './constants';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import {NgZone} from '@angular/core';
 
-import 'rxjs/Rx';
+import { AppModule } from './app.module';
 
-bootstrap(AppComponent,
-    [
-        HTTP_PROVIDERS,
-        ROUTER_PROVIDERS,
-        Constants,
-    ]
-).then(app => {
+platformBrowserDynamic().bootstrapModule(AppModule).then(app => {
+    // this is just here to make some data easier to retrieve from tests
     window["app"]= app;
     window["MainNgZone"] = app.injector.get(NgZone);
     if (window["windupAppInitialized"] != null)

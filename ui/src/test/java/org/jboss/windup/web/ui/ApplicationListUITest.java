@@ -22,6 +22,8 @@ public class ApplicationListUITest extends AbstractUITest
 {
     private static Logger LOG = Logger.getLogger(ApplicationListUITest.class.getSimpleName());
 
+    private static final String APPLICATION_LIST_PATH = "/application-list";
+
     @ArquillianResource
     URL contextRoot;
 
@@ -31,7 +33,7 @@ public class ApplicationListUITest extends AbstractUITest
     @Before
     public void loadPage()
     {
-        getDriver().navigate().to(contextRoot);
+        getDriver().navigate().to(contextRoot + APPLICATION_LIST_PATH);
     }
 
     @Test

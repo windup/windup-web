@@ -13,6 +13,10 @@ export class FormComponent {
      * and that the control is already rendered.
      */
     hasError(control:NgControlName) {
+        console.log("Control: " + control);
+        if (control == null)
+            return false;
+
         let touched = control.touched == null ? false : control.touched;
         return !control.valid && touched;
     }

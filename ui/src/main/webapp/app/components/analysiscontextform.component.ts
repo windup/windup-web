@@ -1,6 +1,6 @@
-import {ControlGroup, FormBuilder, NgClass, NgControlName, Validators} from "@angular/common";
+import {ControlGroup, NgClass, NgControlName, Validators} from "@angular/common";
 import {Component, Input, OnInit} from "@angular/core";
-import {Router, RouteParams} from "@angular/router-deprecated";
+import {ActivatedRoute, Router} from "@angular/router";
 import {Observable} from 'rxjs/Observable';
 
 import {AnalysisContext} from "windup-services";
@@ -37,11 +37,10 @@ export class AnalysisContextFormComponent extends FormComponent
     private _migrationPathsObservable:Observable<MigrationPath>;
 
     constructor(private _router:Router,
-                private _routeParams: RouteParams,
+                private _activatedRoute: ActivatedRoute,
                 private _applicationGroupService:ApplicationGroupService,
                 private _migrationPathService:MigrationPathService,
-                private _analysisContextService:AnalysisContextService,
-                private _formBuilder: FormBuilder) {
+                private _analysisContextService:AnalysisContextService) {
         super();
         this.analysisContext.migrationPath = <MigrationPath>{};
         this.packages = [ {prefix: ""} ];
@@ -56,44 +55,46 @@ export class AnalysisContextFormComponent extends FormComponent
     }
 
     ngOnInit() {
-        let id:number = parseInt(this._routeParams.get("groupID"));
-        if (!isNaN(id)) {
-            this.loading = true;
-            this._applicationGroupService.get(id).subscribe(
-                group => {
-                    this.applicationGroup = group;
-                    this.analysisContext = group.analysisContext;
-                    console.log("Loaded analysis context: " + JSON.stringify(this.analysisContext));
+        this._activatedRoute.params.subscribe(params => {
+            let id:number = parseInt(params["groupID"]);
+            if (!isNaN(id)) {
+                this.loading = true;
+                this._applicationGroupService.get(id).subscribe(
+                    group => {
+                        this.applicationGroup = group;
+                        this.analysisContext = group.analysisContext;
+                        console.log("Loaded analysis context: " + JSON.stringify(this.analysisContext));
 
-                    if (this.analysisContext == null) {
-                        this.analysisContext = <AnalysisContext>{};
-                        this.analysisContext.migrationPath = <MigrationPath>{};
-                        this.packages = [ {prefix: ""} ];
-                        this.excludePackages = [ {prefix: ""} ];
-                    } else {
-                        // for migration path, store the id only
-                        this.analysisContext.migrationPath = <MigrationPath>{ id: this.analysisContext.migrationPath.id };
-                        if (this.analysisContext.packages == null || this.analysisContext.packages.length == 0)
+                        if (this.analysisContext == null) {
+                            this.analysisContext = <AnalysisContext>{};
+                            this.analysisContext.migrationPath = <MigrationPath>{};
                             this.packages = [ {prefix: ""} ];
-                        else
-                            this.packages = <[{prefix:string}]>this.analysisContext.packages.map(it => { return { prefix: it }});
-
-                        if (this.analysisContext.excludePackages == null || this.analysisContext.excludePackages.length == 0)
                             this.excludePackages = [ {prefix: ""} ];
-                        else
-                            this.excludePackages = <[{prefix:string}]>this.analysisContext.excludePackages.map(it => { return { prefix: it }});
+                        } else {
+                            // for migration path, store the id only
+                            this.analysisContext.migrationPath = <MigrationPath>{ id: this.analysisContext.migrationPath.id };
+                            if (this.analysisContext.packages == null || this.analysisContext.packages.length == 0)
+                                this.packages = [ {prefix: ""} ];
+                            else
+                                this.packages = <[{prefix:string}]>this.analysisContext.packages.map(it => { return { prefix: it }});
+
+                            if (this.analysisContext.excludePackages == null || this.analysisContext.excludePackages.length == 0)
+                                this.excludePackages = [ {prefix: ""} ];
+                            else
+                                this.excludePackages = <[{prefix:string}]>this.analysisContext.excludePackages.map(it => { return { prefix: it }});
+                        }
+
+                        // Just use the ID here
+                        this.analysisContext.applicationGroup = <ApplicationGroup>{ id: group.id };
+
+                        this.loading = false;
                     }
-
-                    // Just use the ID here
-                    this.analysisContext.applicationGroup = <ApplicationGroup>{ id: group.id };
-
-                    this.loading = false;
-                }
-            );
-        } else {
-            this.loading = false;
-            this.errorMessages.push("groupID parameter was not specified!");
-        }
+                );
+            } else {
+                this.loading = false;
+                this.errorMessages.push("groupID parameter was not specified!");
+            }
+        });
     }
 
     addScanPackage() {
@@ -137,6 +138,6 @@ export class AnalysisContextFormComponent extends FormComponent
     }
 
     routeToGroupList() {
-        this._router.navigate(['GroupList', {projectID: this.applicationGroup.migrationProject.id}]);
+        this._router.navigate(['/group-list', {projectID: this.applicationGroup.migrationProject.id}]);
     }
 }
