@@ -1,15 +1,12 @@
 package org.jboss.windup.web.services.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import java.io.Serializable;
-import java.util.Calendar;
+import java.util.Collection;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -19,8 +16,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -60,9 +55,6 @@ public class ApplicationGroup implements Serializable
     @Size(min = 1, max = 2048)
     private String outputPath;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Calendar executionTime;
-
     @ManyToOne(fetch = FetchType.EAGER)
     private MigrationProject migrationProject;
 
@@ -71,6 +63,9 @@ public class ApplicationGroup implements Serializable
 
     @OneToMany(fetch = FetchType.EAGER)
     private Set<RegisteredApplication> applications;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "group")
+    private Collection<WindupExecution> executions;
 
     public Long getId()
     {
@@ -145,22 +140,6 @@ public class ApplicationGroup implements Serializable
     }
 
     /**
-     * Contains the date of the most recent time that execution was started for this group.
-     */
-    public Calendar getExecutionTime()
-    {
-        return executionTime;
-    }
-
-    /**
-     * Contains the date of the most recent time that execution was started for this group.
-     */
-    public void setExecutionTime(Calendar executionTime)
-    {
-        this.executionTime = executionTime;
-    }
-
-    /**
      * Contains the {@link MigrationProject} associated with this group.
      */
     public MigrationProject getMigrationProject()
@@ -206,6 +185,22 @@ public class ApplicationGroup implements Serializable
     public void setApplications(Set<RegisteredApplication> applications)
     {
         this.applications = applications;
+    }
+
+    /**
+     * Contains a collection of {@link WindupExecution}s.
+     */
+    public Collection<WindupExecution> getExecutions()
+    {
+        return executions;
+    }
+
+    /**
+     * Contains a collection of {@link WindupExecution}s.
+     */
+    public void setExecutions(Collection<WindupExecution> executions)
+    {
+        this.executions = executions;
     }
 
     @Override

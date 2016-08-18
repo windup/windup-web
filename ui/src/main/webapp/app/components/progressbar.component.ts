@@ -1,10 +1,6 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {Inject, Input} from '@angular/core';
 
-import {WindupService} from "../services/windup.service";
-import {RegisteredApplicationService} from "../services/registeredapplication.service";
-import {ProgressStatusModel} from "../models/progressstatus.model";
-
 @Component({
     selector: 'progress-bar',
     template: `
@@ -36,6 +32,4 @@ export class ProgressBarComponent {
     currentValue:number;
 
     constructor() {}
-
-
 }

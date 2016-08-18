@@ -10,9 +10,10 @@ import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.windup.web.services.model.ApplicationGroup;
+import org.jboss.windup.web.services.model.ExecutionStatus;
 import org.jboss.windup.web.services.model.RegisteredApplication;
 import org.jboss.windup.web.services.AbstractTest;
-import org.jboss.windup.web.services.dto.ProgressStatusDto;
+import org.jboss.windup.web.services.model.WindupExecution;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -73,26 +74,27 @@ public class WindupEndpointTest extends AbstractTest
         group.setApplications(Collections.singleton(input));
         group = applicationGroupEndpoint.create(group);
 
-        this.windupEndpoint.executeGroup(group.getId());
+        WindupExecution initialExecution = this.windupEndpoint.executeGroup(group.getId());
 
-        ProgressStatusDto status = this.windupEndpoint.getStatus(group.getId());
+        WindupExecution status = this.windupEndpoint.getStatus(initialExecution.getId());
         int loops = 0;
         long beginTime = System.currentTimeMillis();
-        do {
+        do
+        {
             loops++;
-            Thread.sleep(25);
+            Thread.sleep(1000L);
 
-            status = this.windupEndpoint.getStatus(group.getId());
+            status = this.windupEndpoint.getStatus(status.getId());
             System.out.println("Status: " + status);
 
-            if ((System.currentTimeMillis() - beginTime) > (1000L * 240L)) {
+            if ((System.currentTimeMillis() - beginTime) > (1000L * 240L))
+            {
                 // taking too long... fail
                 Assert.fail("Processing never completed. Current status: " + status);
             }
-        } while (!status.isCompleted());
+        } while (status.getStatus() == ExecutionStatus.STARTED);
 
-        Assert.assertFalse(status.isFailed());
-        Assert.assertTrue(status.isCompleted());
+        Assert.assertEquals(ExecutionStatus.COMPLETED, status.getStatus());
         Assert.assertTrue(loops > 1);
         Assert.assertTrue(status.getTotalWork() > 10);
         Assert.assertTrue(status.getWorkCompleted() > 9);

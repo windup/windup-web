@@ -13,13 +13,19 @@
             </a>
         </h3>
         <a [routerLink]="['/analysis-context-form', { groupID: group.id }]">Edit Analysis Configuration</a>
+        <span *ngIf="groupReportURL(group) != null">
+            |
+            <a target="_blank" href="{{groupReportURL(group)}}">
+                View Report
+            </a>
+        </span>
         <span *ngIf="group.applications.length > 0">
             |
             <a (click)="runWindup($event, group)" href="#">Run Windup</a>
         </span>
 
         <div>
-            <div *ngIf="status(group).started && !status(group).completed">
+            <div *ngIf="status(group).status == 'STARTED'">
                 <progress-bar
                         [taskName]="status(group).currentTask"
                         [currentValue]="status(group).workCompleted"

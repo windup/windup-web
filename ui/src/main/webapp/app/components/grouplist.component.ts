@@ -6,9 +6,9 @@ import {MigrationProject} from "windup-services";
 import {ApplicationGroup} from "windup-services";
 import {ApplicationGroupService} from "../services/applicationgroup.service";
 import {WindupService} from "../services/windup.service";
-import {ProgressStatusModel} from "../models/progressstatus.model";
 import {Constants} from "../constants";
 import {RegisteredApplication} from "windup-services";
+import {WindupExecution} from "windup-services";
 
 @Component({
     selector: 'application-list',
@@ -18,7 +18,10 @@ import {RegisteredApplication} from "windup-services";
 export class GroupListComponent implements OnInit, OnDestroy {
     projectID:number;
     groups:ApplicationGroup[];
-    processingStatus:Map<number, ProgressStatusModel> = new Map<number, ProgressStatusModel>();
+
+    processingStatus:Map<number, WindupExecution> = new Map<number, WindupExecution>();
+    processMonitoringInterval:number;
+
     errorMessage:string;
 
     constructor(
@@ -34,9 +37,26 @@ export class GroupListComponent implements OnInit, OnDestroy {
             this.projectID = parseInt(params["projectID"]);
             this.getGroups();
         });
+
+        this.processMonitoringInterval = setInterval(() => {
+            this.processingStatus.forEach( (previousExecution:WindupExecution, groupID:number, map:Map<number, WindupExecution>) => {
+                if (previousExecution.status == "STARTED") {
+                    this._windupService.getStatusGroup(previousExecution.id).subscribe(
+                        execution => {
+                            this.processingStatus.set(groupID, execution);
+                            this.errorMessage = "";
+                        },
+                        error => this.errorMessage = <any>error
+                    );
+                }
+            });
+            this.getGroups();
+        }, 3000);
     }
 
     ngOnDestroy():any {
+        if (this.processMonitoringInterval)
+            clearInterval(this.processMonitoringInterval);
     }
 
     getGroups() {
@@ -50,13 +70,28 @@ export class GroupListComponent implements OnInit, OnDestroy {
         this.errorMessage = "";
 
         this.groups = groups;
+
+        // On the first run, check for any existing executions
+        console.log("this.processingstatus.size == " + this.processingStatus.size);
+        if (this.processingStatus.size == 0) {
+            groups.forEach((group:ApplicationGroup) => {
+                group.executions.forEach((execution:WindupExecution) => {
+                    console.log("group and status == " + group.title + " id: " + group.title + " status: " + execution.status);
+                    let previousExecution = this.processingStatus.get(group.id);
+
+                    if (previousExecution == null || execution.status == "STARTED" || execution.timeStarted > previousExecution.timeStarted)
+                        this.processingStatus.set(group.id, execution);
+                });
+            });
+        }
     }
 
-    status(group:ApplicationGroup):ProgressStatusModel {
-        let status:ProgressStatusModel = this.processingStatus.get(group.id);
+    status(group:ApplicationGroup):WindupExecution {
+        let status:WindupExecution = this.processingStatus.get(group.id);
 
-        if (status == null) {
-            status = new ProgressStatusModel();
+        if (status == null)
+        {
+            status = <WindupExecution>{};
             status.currentTask = "...";
         }
         return status;
@@ -67,27 +102,24 @@ export class GroupListComponent implements OnInit, OnDestroy {
         event.preventDefault();
 
         this._windupService.executeWindupGroup(group.id).subscribe(
-            () => {
-                console.log("Execution started for group: " + group.title);
-                let intervalID = setInterval(() => {
-                    this._windupService.getStatusGroup(group.id).subscribe(
-                        status => {
-                            this.processingStatus.set(group.id, status);
-                            this.errorMessage = "";
-                            if (status.completed) {
-                                clearInterval(intervalID);
-                                this.getGroups();
-                            }
-                        },
-                        error => this.errorMessage = <any>error
-                    );
-                }, 1000);
+            (execution:WindupExecution) => {
+                console.log("Execution started for group: " + JSON.stringify(execution));
+                this.processingStatus.set(group.id, execution);
             },
             error => this.errorMessage = <any>error
         );
     }
 
-    reportURL(app:RegisteredApplication) : string {
+    groupReportURL(group:ApplicationGroup):string {
+        let execution:WindupExecution = this.processingStatus.get(group.id);
+
+        if (execution == null || execution.applicationListRelativePath == null || execution.status != "COMPLETED")
+            return null;
+
+        return this._constants.STATIC_REPORTS_BASE + "/" + execution.applicationListRelativePath;
+    }
+
+    reportURL(app:RegisteredApplication):string {
         return this._constants.STATIC_REPORTS_BASE + "/" + app.reportIndexPath;
     }
 

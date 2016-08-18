@@ -13,7 +13,6 @@ export class FormComponent {
      * and that the control is already rendered.
      */
     hasError(control:NgControlName) {
-        console.log("Control: " + control);
         if (control == null)
             return false;
 

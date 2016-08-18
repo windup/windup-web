@@ -3,8 +3,8 @@ import {Headers, Http, RequestOptions, Response} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 
 import {Constants} from "../constants";
-import {ProgressStatusModel} from "../models/progressstatus.model";
 import {RegisteredApplication} from "windup-services";
+import {WindupExecution} from "windup-services";
 
 @Injectable()
 export class WindupService {
@@ -13,21 +13,22 @@ export class WindupService {
 
     constructor (private _http: Http, private _constants: Constants) {}
 
-    public getStatusGroup(groupID:number) {
-        let url = this._constants.REST_BASE + this.GET_STATUS_GROUP_PATH + groupID;
+    public getStatusGroup(executionID:number):Observable<WindupExecution> {
+        let url = this._constants.REST_BASE + this.GET_STATUS_GROUP_PATH + executionID;
 
         return this._http.get(url)
-            .map(res => <ProgressStatusModel> res.json())
+            .map(res => <WindupExecution> res.json())
             .catch(this.handleError);
     }
 
-    public executeWindupGroup(groupID:number) {
+    public executeWindupGroup(groupID:number):Observable<WindupExecution> {
         var headers = new Headers();
         var options = new RequestOptions({ headers: headers });
         headers.append('Content-Type', 'application/json');
         var body = JSON.stringify(groupID);
 
         return this._http.post(this._constants.REST_BASE + this.EXECUTE_GROUP_PATH, body, options)
+            .map(res => <WindupExecution> res.json())
             .catch(this.handleError);
     }
 

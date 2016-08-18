@@ -1,8 +1,6 @@
 package org.jboss.windup.web.services.rest;
 
-import org.jboss.windup.web.services.model.ApplicationGroup;
-import org.jboss.windup.web.services.model.RegisteredApplication;
-import org.jboss.windup.web.services.dto.ProgressStatusDto;
+import org.jboss.windup.web.services.model.WindupExecution;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -22,16 +20,16 @@ import javax.ws.rs.Produces;
 public interface WindupEndpoint
 {
     /**
-     * Gets the status of an execution for a particular group.
+     * Gets the status of an execution based upon the execution ID.
      */
     @GET
-    @Path("statusGroup/{groupID}")
-    ProgressStatusDto getStatus(@PathParam("groupID") Long groupID);
+    @Path("statusGroup/{executionID}")
+    WindupExecution getStatus(@PathParam("executionID") Long executionID);
 
     /**
      * Initiates a Windup execution for a particular group.
      */
     @POST
     @Path("executeGroup")
-    void executeGroup(Long groupID);
+    WindupExecution executeGroup(Long groupID);
 }
