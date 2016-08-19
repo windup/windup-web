@@ -40,7 +40,7 @@ public class AnalysisContext implements Serializable
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> excludePackages;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private MigrationPath migrationPath;
 
     @OneToOne

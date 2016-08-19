@@ -30,6 +30,7 @@ import java.util.List;
 public class MigrationPathService
 {
     public static final String CONFIG_XML_PATH = "/migration-paths/migration-paths.xml";
+
     @PersistenceContext
     private EntityManager entityManager;
 

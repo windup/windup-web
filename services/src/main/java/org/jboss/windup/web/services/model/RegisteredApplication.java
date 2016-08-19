@@ -49,6 +49,9 @@ public class RegisteredApplication implements Serializable
     @Size(min = 1, max = 2048)
     private String outputPath;
 
+    @Column(length = 2048)
+    private String reportIndexPath;
+
     @ManyToOne()
     private ApplicationGroup applicationGroup;
 
@@ -106,14 +109,38 @@ public class RegisteredApplication implements Serializable
         setInputFilename(Paths.get(getInputPath()).getFileName().toString());
     }
 
+    /**
+     * Contains the path to the report and graph directories. This is only relevant when the application is being analyzed
+     * individually rather than as a group.
+     */
     public String getOutputPath()
     {
         return outputPath;
     }
 
+    /**
+     * Contains the path to the report and graph directories. This is only relevant when the application is being analyzed
+     * individually rather than as a group.
+     */
     public void setOutputPath(String outputPath)
     {
         this.outputPath = outputPath;
+    }
+
+    /**
+     * Contains the path to the primary report for this particular application.
+     */
+    public String getReportIndexPath()
+    {
+        return reportIndexPath;
+    }
+
+    /**
+     * Contains the path to the primary report for this particular application.
+     */
+    public void setReportIndexPath(String reportIndexPath)
+    {
+        this.reportIndexPath = reportIndexPath;
     }
 
     /**

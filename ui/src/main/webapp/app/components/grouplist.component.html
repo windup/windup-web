@@ -13,13 +13,19 @@
             </a>
         </h3>
         <a [routerLink]="['/analysis-context-form', { groupID: group.id }]">Edit Analysis Configuration</a>
+        <span *ngIf="groupReportURL(group) != null">
+            |
+            <a target="_blank" href="{{groupReportURL(group)}}">
+                View Report
+            </a>
+        </span>
         <span *ngIf="group.applications.length > 0">
             |
             <a (click)="runWindup($event, group)" href="#">Run Windup</a>
         </span>
 
         <div>
-            <div *ngIf="status(group).started && !status(group).completed">
+            <div *ngIf="status(group).status == 'STARTED'">
                 <progress-bar
                         [taskName]="status(group).currentTask"
                         [currentValue]="status(group).workCompleted"
@@ -34,12 +40,19 @@
             <thead>
                 <tr>
                     <th>Application</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let app of group.applications">
                     <td>
                         {{app.inputFilename}}
+                    </td>
+                    <td>
+                        <a *ngIf="app.reportIndexPath != null" class="btn btn-default btn-md" target="_blank" href="{{reportURL(app)}}">
+                            <span class="glyphicon glyphicon-file"></span>
+                            View Report
+                        </a>
                     </td>
                 </tr>
             </tbody>

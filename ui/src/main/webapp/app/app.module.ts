@@ -9,13 +9,15 @@ import { Constants } from './constants';
 import { routing, appRoutingProviders } from './app.routing';
 
 import 'rxjs/Rx';
-import {ApplicationListComponent} from "./components/applicationlist.component";
 import {ProjectListComponent} from "./components/projectlist.component";
 import {AnalysisContextFormComponent} from "./components/analysiscontextform.component";
 import {ApplicationGroupForm} from "./components/applicationgroupform.component";
 import {GroupListComponent} from "./components/grouplist.component";
 import {MigrationProjectFormComponent} from "./components/migrationprojectform.component";
 import {RegisterApplicationFormComponent} from "./components/registerapplicationform.component";
+import {ProgressBarComponent} from "./components/progressbar.component";
+import {NavbarComponent} from "./components/navbar.component";
+import {BreadCrumbsComponent} from "./components/breadcrumbs.component";
 
 @NgModule({
     imports: [
@@ -29,11 +31,14 @@ import {RegisterApplicationFormComponent} from "./components/registerapplication
         AppComponent,
         AnalysisContextFormComponent,
         ApplicationGroupForm,
-        ApplicationListComponent,
         GroupListComponent,
         MigrationProjectFormComponent,
         ProjectListComponent,
-        RegisterApplicationFormComponent
+        RegisterApplicationFormComponent,
+
+        BreadCrumbsComponent,
+        NavbarComponent,
+        ProgressBarComponent,
     ],
     providers:    [ Constants, appRoutingProviders ],
     bootstrap:    [ AppComponent ]

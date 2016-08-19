@@ -1,8 +1,20 @@
 package org.jboss.windup.web.services;
 
-import org.jboss.windup.exec.WindupProgressMonitor;
-
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.annotation.Resource;
+import javax.enterprise.concurrent.ManagedExecutorService;
+import javax.naming.InitialContext;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.UserTransaction;
+
+import org.jboss.windup.exec.WindupProgressMonitor;
+import org.jboss.windup.web.services.model.ExecutionStatus;
+import org.jboss.windup.web.services.model.WindupExecution;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -11,90 +23,151 @@ public class WindupWebProgressMonitor implements WindupProgressMonitor
 {
     private static final Logger LOG = Logger.getLogger(WindupWebProgressMonitor.class.getName());
 
-    private String currentTask;
-    private int totalWork;
-    private int currentWork;
-    private boolean cancelled;
-    private boolean done;
-    private boolean failed;
+    @PersistenceContext
+    private EntityManager entityManager;
 
-    public boolean isFailed()
+    @Resource
+    private ManagedExecutorService executorService;
+
+    private boolean done = false;
+    private Long executionID;
+    private Queue<Runnable> statusUpdateTasks = new ConcurrentLinkedQueue<>();
+
+    /**
+     * Contains an Entity that keeps the current execution information in storage.
+     */
+    public void setExecution(WindupExecution execution)
     {
-        return failed;
+        this.executionID = execution.getId();
+        executorService.execute(() -> {
+            while (!done || !statusUpdateTasks.isEmpty())
+            {
+                try
+                {
+                    if (!statusUpdateTasks.isEmpty())
+                    {
+                        Runnable task = statusUpdateTasks.remove();
+                        task.run();
+                    }
+                    else
+                    {
+                        Thread.sleep(100L);
+                    }
+                }
+                catch (Throwable t)
+                {
+                    t.printStackTrace();
+                }
+            }
+        });
     }
 
-    public void setFailed(boolean failed)
+    public void setFailed()
     {
-        this.failed = failed;
-    }
-
-    public boolean isDone()
-    {
-        return done;
-    }
-
-    public String getCurrentTask()
-    {
-        return currentTask;
-    }
-
-    public int getTotalWork()
-    {
-        return totalWork;
-    }
-
-    public int getCurrentWork()
-    {
-        return currentWork;
+        statusUpdateTasks.add(() -> {
+            WindupExecution execution = this.entityManager.find(WindupExecution.class, executionID);
+            execution.setStatus(ExecutionStatus.FAILED);
+            mergeAndCommit(execution);
+        });
+        this.done = true;
     }
 
     @Override
     public void beginTask(String name, int totalWork)
     {
-        this.totalWork = totalWork;
-        this.currentTask = name;
+        statusUpdateTasks.add(() -> {
+            WindupExecution execution = this.entityManager.find(WindupExecution.class, executionID);
+            execution.setTotalWork(totalWork);
+            execution.setCurrentTask(name);
+            mergeAndCommit(execution);
+        });
 
-        String message = String.format("[%d/%d] %s", currentWork, totalWork, name);
+        WindupExecution execution = this.entityManager.find(WindupExecution.class, executionID);
+        String message = String.format("[%d/%d] %s", execution.getWorkCompleted(), totalWork, name);
         LOG.info(message);
     }
 
     @Override
     public boolean isCancelled()
     {
-        return cancelled;
+        WindupExecution execution = this.entityManager.find(WindupExecution.class, executionID);
+        return execution.getStatus() == ExecutionStatus.CANCELLED;
     }
 
     @Override
     public void setCancelled(boolean cancelled)
     {
-        this.cancelled = cancelled;
+        statusUpdateTasks.add(() -> {
+            WindupExecution execution = this.entityManager.find(WindupExecution.class, executionID);
+            execution.setStatus(ExecutionStatus.CANCELLED);
+            mergeAndCommit(execution);
+        });
     }
 
     @Override
     public void setTaskName(String name)
     {
-        this.currentTask = name;
-        String message = String.format("[%d/%d] \t", currentWork, totalWork, name);
+        statusUpdateTasks.add(() -> {
+            WindupExecution execution = this.entityManager.find(WindupExecution.class, executionID);
+            execution.setCurrentTask(name);
+            mergeAndCommit(execution);
+        });
+
+        WindupExecution execution = this.entityManager.find(WindupExecution.class, executionID);
+        String message = String.format("[%d/%d] %s", execution.getWorkCompleted(), execution.getTotalWork(), name);
         LOG.info(message);
     }
 
     @Override
     public void subTask(String subTask)
     {
-        this.currentTask = subTask;
-        String message = String.format("[%d/%d] %s", currentWork, totalWork, subTask);
+        statusUpdateTasks.add(() -> {
+            WindupExecution execution = this.entityManager.find(WindupExecution.class, executionID);
+            execution.setCurrentTask(subTask);
+            mergeAndCommit(execution);
+        });
+
+        WindupExecution execution = this.entityManager.find(WindupExecution.class, executionID);
+        String message = String.format("[%d/%d] %s", execution.getWorkCompleted(), execution.getTotalWork(), subTask);
         LOG.info(message);
     }
 
     @Override
     public void worked(int work)
     {
-        this.currentWork += work;
+        statusUpdateTasks.add(() -> {
+            WindupExecution execution = this.entityManager.find(WindupExecution.class, executionID);
+            execution.setWorkCompleted(execution.getWorkCompleted() + work);
+            mergeAndCommit(execution);
+        });
     }
 
     @Override
     public void done()
     {
+        statusUpdateTasks.add(() -> {
+            WindupExecution execution = this.entityManager.find(WindupExecution.class, executionID);
+            execution.setStatus(ExecutionStatus.COMPLETED);
+            mergeAndCommit(execution);
+        });
         this.done = true;
+    }
+
+    private void mergeAndCommit(WindupExecution execution)
+    {
+        try
+        {
+            InitialContext ic = new InitialContext();
+            UserTransaction userTransaction = (UserTransaction) ic.lookup("java:comp/UserTransaction");
+
+            userTransaction.begin();
+            this.entityManager.merge(execution);
+            userTransaction.commit();
+        }
+        catch (Throwable t)
+        {
+            LOG.log(Level.SEVERE, "Could not commit transaction due to: " + t.getMessage(), t);
+            throw new RuntimeException("Could not commit transaction due to: " + t.getMessage(), t);
+        }
     }
 }
