@@ -24,12 +24,13 @@ import javax.persistence.NamedQuery;
 )
 public class MigrationPath implements Serializable
 {
-    public static final String FIND_ALL = "MigrationPath.findAll";
-
     private static final long serialVersionUID = 1L;
 
+    public static final String FIND_ALL = "MigrationPath.findAll";
+    public static final String MIGRATION_PATH_ID = "migration_path_id";
+
     @Id
-    @Column(name = "id", updatable = false, nullable = false)
+    @Column(name = MIGRATION_PATH_ID, updatable = false, nullable = false)
     private Long id;
 
     @Column(length = 255)

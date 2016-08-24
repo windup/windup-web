@@ -22,6 +22,11 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>org.jboss.windup.config</groupId>
+            <artifactId>windup-config-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.jboss.windup.graph</groupId>
             <artifactId>windup-graph</artifactId>
             <classifier>forge-addon</classifier>
@@ -35,6 +40,12 @@
         <dependency>
             <groupId>org.jboss.windup.rules.apps</groupId>
             <artifactId>windup-rules-java-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.windup.utils</groupId>
+            <artifactId>windup-utils</artifactId>
+            <classifier>forge-addon</classifier>
             <scope>provided</scope>
         </dependency>
 

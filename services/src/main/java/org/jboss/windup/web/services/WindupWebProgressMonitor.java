@@ -13,7 +13,7 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.UserTransaction;
 
 import org.jboss.windup.exec.WindupProgressMonitor;
-import org.jboss.windup.web.services.model.ExecutionStatus;
+import org.jboss.windup.web.services.model.ExecutionState;
 import org.jboss.windup.web.services.model.WindupExecution;
 
 /**
@@ -66,7 +66,7 @@ public class WindupWebProgressMonitor implements WindupProgressMonitor
     {
         statusUpdateTasks.add(() -> {
             WindupExecution execution = this.entityManager.find(WindupExecution.class, executionID);
-            execution.setStatus(ExecutionStatus.FAILED);
+            execution.setState(ExecutionState.FAILED);
             mergeAndCommit(execution);
         });
         this.done = true;
@@ -91,7 +91,7 @@ public class WindupWebProgressMonitor implements WindupProgressMonitor
     public boolean isCancelled()
     {
         WindupExecution execution = this.entityManager.find(WindupExecution.class, executionID);
-        return execution.getStatus() == ExecutionStatus.CANCELLED;
+        return execution.getState() == ExecutionState.CANCELLED;
     }
 
     @Override
@@ -99,7 +99,7 @@ public class WindupWebProgressMonitor implements WindupProgressMonitor
     {
         statusUpdateTasks.add(() -> {
             WindupExecution execution = this.entityManager.find(WindupExecution.class, executionID);
-            execution.setStatus(ExecutionStatus.CANCELLED);
+            execution.setState(ExecutionState.CANCELLED);
             mergeAndCommit(execution);
         });
     }
@@ -147,7 +147,7 @@ public class WindupWebProgressMonitor implements WindupProgressMonitor
     {
         statusUpdateTasks.add(() -> {
             WindupExecution execution = this.entityManager.find(WindupExecution.class, executionID);
-            execution.setStatus(ExecutionStatus.COMPLETED);
+            execution.setState(ExecutionState.COMPLETED);
             mergeAndCommit(execution);
         });
         this.done = true;

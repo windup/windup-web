@@ -21,9 +21,11 @@ public class Technology implements Serializable
 {
     private static final long serialVersionUID = 1L;
 
+    public static final String TECHNOLOGY_ID = "technology_id";
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", updatable = false, nullable = false)
+    @Column(name = TECHNOLOGY_ID, updatable = false, nullable = false)
     private Long id;
 
     @Version
