@@ -30,13 +30,15 @@ import javax.validation.constraints.Size;
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = ApplicationGroup.class)
 public class ApplicationGroup implements Serializable
 {
-    public static final String DEFAULT_NAME = "Default Group";
-
     private static final long serialVersionUID = 1L;
+
+    public static final String APPLICATION_GROUP_ID = "application_group_id";
+
+    public static final String DEFAULT_NAME = "Default Group";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", updatable = false, nullable = false)
+    @Column(name = APPLICATION_GROUP_ID, updatable = false, nullable = false)
     private Long id;
 
     @Version

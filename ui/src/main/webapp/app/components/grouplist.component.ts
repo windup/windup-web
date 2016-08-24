@@ -40,7 +40,7 @@ export class GroupListComponent implements OnInit, OnDestroy {
 
         this.processMonitoringInterval = setInterval(() => {
             this.processingStatus.forEach( (previousExecution:WindupExecution, groupID:number, map:Map<number, WindupExecution>) => {
-                if (previousExecution.status == "STARTED") {
+                if (previousExecution.state == "STARTED" || previousExecution.state == "QUEUED") {
                     this._windupService.getStatusGroup(previousExecution.id).subscribe(
                         execution => {
                             this.processingStatus.set(groupID, execution);
@@ -76,10 +76,10 @@ export class GroupListComponent implements OnInit, OnDestroy {
         if (this.processingStatus.size == 0) {
             groups.forEach((group:ApplicationGroup) => {
                 group.executions.forEach((execution:WindupExecution) => {
-                    console.log("group and status == " + group.title + " id: " + group.title + " status: " + execution.status);
+                    console.log("group and status == " + group.title + " id: " + group.title + " status: " + execution.state);
                     let previousExecution = this.processingStatus.get(group.id);
 
-                    if (previousExecution == null || execution.status == "STARTED" || execution.timeStarted > previousExecution.timeStarted)
+                    if (previousExecution == null || execution.state == "STARTED" || execution.timeStarted > previousExecution.timeStarted)
                         this.processingStatus.set(group.id, execution);
                 });
             });
@@ -113,7 +113,7 @@ export class GroupListComponent implements OnInit, OnDestroy {
     groupReportURL(group:ApplicationGroup):string {
         let execution:WindupExecution = this.processingStatus.get(group.id);
 
-        if (execution == null || execution.applicationListRelativePath == null || execution.status != "COMPLETED")
+        if (execution == null || execution.applicationListRelativePath == null || execution.state != "COMPLETED")
             return null;
 
         return this._constants.STATIC_REPORTS_BASE + "/" + execution.applicationListRelativePath;

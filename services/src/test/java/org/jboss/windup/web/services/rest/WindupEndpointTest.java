@@ -10,7 +10,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.windup.web.services.model.ApplicationGroup;
-import org.jboss.windup.web.services.model.ExecutionStatus;
+import org.jboss.windup.web.services.model.ExecutionState;
 import org.jboss.windup.web.services.model.RegisteredApplication;
 import org.jboss.windup.web.services.AbstractTest;
 import org.jboss.windup.web.services.model.WindupExecution;
@@ -92,9 +92,9 @@ public class WindupEndpointTest extends AbstractTest
                 // taking too long... fail
                 Assert.fail("Processing never completed. Current status: " + status);
             }
-        } while (status.getStatus() == ExecutionStatus.STARTED);
+        } while (status.getState() == ExecutionState.STARTED);
 
-        Assert.assertEquals(ExecutionStatus.COMPLETED, status.getStatus());
+        Assert.assertEquals(ExecutionState.COMPLETED, status.getState());
         Assert.assertTrue(loops > 1);
         Assert.assertTrue(status.getTotalWork() > 10);
         Assert.assertTrue(status.getWorkCompleted() > 9);

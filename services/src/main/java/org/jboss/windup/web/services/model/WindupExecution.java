@@ -1,8 +1,10 @@
 package org.jboss.windup.web.services.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import java.io.Serializable;
 import java.nio.file.Paths;
 import java.util.Calendar;
 
@@ -22,11 +24,16 @@ import javax.persistence.Version;
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
 @Entity
-public class WindupExecution
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = WindupExecution.class)
+public class WindupExecution implements Serializable
 {
+    private static final long serialVersionUID = 1L;
+
+    public static final String WINDUP_EXECUTION_ID = "windup_execution_id";
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", updatable = false, nullable = false)
+    @Column(name = WINDUP_EXECUTION_ID, updatable = false, nullable = false)
     private Long id;
 
     @Version
@@ -58,7 +65,7 @@ public class WindupExecution
     private String currentTask;
 
     @Column(name = "status")
-    private ExecutionStatus status;
+    private ExecutionState state;
 
     public Long getId()
     {
@@ -234,16 +241,16 @@ public class WindupExecution
     /**
      * Contains the status of execution (currently being executed or completed, etc).
      */
-    public ExecutionStatus getStatus()
+    public ExecutionState getState()
     {
-        return status;
+        return state;
     }
 
     /**
      * Contains the status of execution (currently being executed or completed, etc).
      */
-    public void setStatus(ExecutionStatus status)
+    public void setState(ExecutionState status)
     {
-        this.status = status;
+        this.state = status;
     }
 }

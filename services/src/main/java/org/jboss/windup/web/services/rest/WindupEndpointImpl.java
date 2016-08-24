@@ -2,9 +2,6 @@ package org.jboss.windup.web.services.rest;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.GregorianCalendar;
 import java.util.logging.Logger;
 
@@ -21,7 +18,7 @@ import org.jboss.forge.furnace.Furnace;
 import org.jboss.windup.web.addons.websupport.services.WindupExecutorService;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.model.ApplicationGroup;
-import org.jboss.windup.web.services.model.ExecutionStatus;
+import org.jboss.windup.web.services.model.ExecutionState;
 import org.jboss.windup.web.services.model.WindupExecution;
 import org.jboss.windup.web.services.model.RegisteredApplication;
 import org.jboss.windup.web.services.service.WindupExecutionTask;
@@ -74,7 +71,7 @@ public class WindupEndpointImpl implements WindupEndpoint
         WindupExecution execution = new WindupExecution();
         execution.setGroup(group);
         execution.setTimeStarted(new GregorianCalendar());
-        execution.setStatus(ExecutionStatus.STARTED);
+        execution.setState(ExecutionState.STARTED);
         execution.setOutputPath(group.getOutputPath());
         entityManager.persist(execution);
 

@@ -25,7 +25,7 @@
         </span>
 
         <div>
-            <div *ngIf="status(group).status == 'STARTED'">
+            <div *ngIf="status(group).state == 'STARTED'">
                 <progress-bar
                         [taskName]="status(group).currentTask"
                         [currentValue]="status(group).workCompleted"
