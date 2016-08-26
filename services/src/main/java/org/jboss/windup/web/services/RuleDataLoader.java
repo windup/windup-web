@@ -1,9 +1,24 @@
 package org.jboss.windup.web.services;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.FileTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.GregorianCalendar;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -19,23 +34,11 @@ import org.jboss.windup.web.furnaceserviceprovider.WebProperties;
 import org.jboss.windup.web.services.model.Configuration;
 import org.jboss.windup.web.services.model.RuleEntity;
 import org.jboss.windup.web.services.model.RuleProviderEntity;
+import org.jboss.windup.web.services.model.RulesPath;
 import org.jboss.windup.web.services.model.Technology;
 import org.jboss.windup.web.services.service.ConfigurationService;
 import org.jboss.windup.web.services.service.TechnologyService;
 import org.ocpsoft.rewrite.config.Rule;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.attribute.FileTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -55,7 +58,8 @@ public class RuleDataLoader
     @Inject
     private TechnologyService technologyService;
 
-    @Inject @FromFurnace
+    @Inject
+    @FromFurnace
     private RuleProviderService ruleProviderService;
 
     @PostConstruct
@@ -70,26 +74,28 @@ public class RuleDataLoader
         reloadRuleData();
     }
 
+    public void listenToPayload(@Observes Configuration configuration) {
+        LOG.info("Reloading rule data due to configuration update!");
+        reloadRuleData();
+    }
+
     public void reloadRuleData()
     {
-
-        List<Path> userRulePaths = new ArrayList<>();
-        userRulePaths.add(WebProperties.getInstance().getRulesRepository());
+        final List<RulesPath> rulePaths = new ArrayList<>();
 
         Configuration webConfiguration = configurationService.getConfiguration();
-        if (webConfiguration != null)
+        if (webConfiguration != null && webConfiguration.getRulesPaths() != null)
         {
-            for (String userRulesPath : webConfiguration.getUserRulePaths())
-            {
-                userRulePaths.add(Paths.get(userRulesPath));
-            }
+            rulePaths.addAll(
+                        webConfiguration.getRulesPaths().stream()
+                                    .collect(Collectors.toList()));
         }
 
-        RuleProviderRegistry providerRegistry = ruleProviderService.loadRuleProviderRegistry(userRulePaths);
+        RuleProviderRegistry providerRegistry = ruleProviderService.loadRuleProviderRegistry(
+                    rulePaths.stream().map((rulePath) -> Paths.get(rulePath.getPath())).collect(Collectors.toSet()));
 
         try
         {
-
             // Delete the previous ones
             entityManager.createNamedQuery(RuleProviderEntity.DELETE_ALL).executeUpdate();
 
@@ -105,19 +111,7 @@ public class RuleDataLoader
                 ruleProviderEntity.setOrigin(origin);
                 entityManager.persist(ruleProviderEntity);
 
-                try
-                {
-                    if (Files.isRegularFile(Paths.get(origin)))
-                    {
-                        FileTime lastModifiedTime = Files.getLastModifiedTime(Paths.get(origin));
-                        GregorianCalendar lastModifiedCalendar = new GregorianCalendar();
-                        lastModifiedCalendar.setTimeInMillis(lastModifiedTime.toMillis());
-                        ruleProviderEntity.setDateModified(lastModifiedCalendar);
-                    }
-                } catch (Exception e)
-                {
-                    // not a file path... ignore
-                }
+                setFileMetaData(rulePaths, ruleProviderEntity);
 
                 ruleProviderEntity.setSources(technologyReferencesToTechnologyList(provider.getMetadata().getSourceTechnologies()));
                 ruleProviderEntity.setTargets(technologyReferencesToTechnologyList(provider.getMetadata().getTargetTechnologies()));
@@ -127,6 +121,8 @@ public class RuleDataLoader
                     phase = provider.getMetadata().getPhase().getSimpleName().toUpperCase();
 
                 ruleProviderEntity.setPhase(phase);
+
+                ruleProviderEntity.setRuleProviderType(getProviderType(origin));
 
                 List<RuleEntity> ruleEntities = new ArrayList<>();
                 for (Rule rule : provider.getConfiguration(null).getRules())
@@ -144,7 +140,8 @@ public class RuleDataLoader
 
                 entityManager.persist(ruleProviderEntity);
             }
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             LOG.log(Level.SEVERE, "Could not load rule information due to: " + e.getMessage(), e);
         }
@@ -160,5 +157,60 @@ public class RuleDataLoader
         }
 
         return results;
+    }
+
+    private void setFileMetaData(Collection<RulesPath> rulesPaths, RuleProviderEntity ruleProviderEntity)
+    {
+        if (ruleProviderEntity.getOrigin() == null)
+            return;
+
+        try
+        {
+            String filePathString = ruleProviderEntity.getOrigin();
+
+            if (filePathString.startsWith("file:"))
+                filePathString = filePathString.substring(5);
+
+            Path filePath = Paths.get(filePathString);
+            if (!Files.isRegularFile(filePath))
+                return;
+
+                FileTime lastModifiedTime = Files.getLastModifiedTime(Paths.get(filePathString));
+                GregorianCalendar lastModifiedCalendar = new GregorianCalendar();
+                lastModifiedCalendar.setTimeInMillis(lastModifiedTime.toMillis());
+                ruleProviderEntity.setDateModified(lastModifiedCalendar);
+
+                // Now also find it in the user defined paths
+                for (RulesPath rulesPath : rulesPaths)
+                {
+                    if (filePathString.startsWith(rulesPath.getPath()))
+                    {
+                        ruleProviderEntity.setRulesPath(rulesPath);
+                        break;
+                    }
+                }
+
+                if (ruleProviderEntity.getRulesPath() != null)
+                {
+                    filePath = Paths.get(ruleProviderEntity.getRulesPath().getPath()).relativize(Paths.get(filePathString));
+                    ruleProviderEntity.setOrigin(filePath.toString());
+                }
+        }
+        catch (Exception e)
+        {
+            // not a file path... ignore
+        }
+    }
+
+    private RuleProviderEntity.RuleProviderType getProviderType(String origin)
+    {
+        if (origin == null)
+            return RuleProviderEntity.RuleProviderType.JAVA;
+        else if (origin.startsWith("file:") && origin.endsWith(".windup.xml"))
+            return RuleProviderEntity.RuleProviderType.XML;
+        else if (origin.startsWith("file:") && origin.endsWith(".windup.groovy"))
+            return RuleProviderEntity.RuleProviderType.GROOVY;
+        else
+            return RuleProviderEntity.RuleProviderType.JAVA;
     }
 }

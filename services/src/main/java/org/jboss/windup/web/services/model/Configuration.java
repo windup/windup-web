@@ -3,12 +3,14 @@ package org.jboss.windup.web.services.model;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Version;
 
 /**
@@ -32,8 +34,8 @@ public class Configuration implements Serializable
     @Column(name = "version")
     private int version;
 
-    @ElementCollection
-    private List<String> userRulePaths;
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<RulesPath> rulesPaths;
 
     public Long getId()
     {
@@ -58,16 +60,16 @@ public class Configuration implements Serializable
     /**
      * Contains paths to user provided rules.
      */
-    public List<String> getUserRulePaths()
+    public List<RulesPath> getRulesPaths()
     {
-        return userRulePaths;
+        return rulesPaths;
     }
 
     /**
      * Contains paths to user provided rules.
      */
-    public void setUserRulePaths(List<String> userRulePaths)
+    public void setRulesPaths(List<RulesPath> rulesPaths)
     {
-        this.userRulePaths = userRulePaths;
+        this.rulesPaths = rulesPaths;
     }
 }

@@ -2,6 +2,7 @@ package org.jboss.windup.web.addons.websupport.services;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,16 +35,19 @@ public class WindupExecutorServiceImpl implements WindupExecutorService
     private GraphContextFactory factory;
 
     @Override
-    public void execute(WindupProgressMonitor progressMonitor, Path rulesDirectory, List<Path> inputPaths, Path outputPath, List<String> packages,
-                List<String> excludePackages, String source, String target)
+    public void execute(WindupProgressMonitor progressMonitor, Collection<Path> rulesPaths, List<Path> inputPaths, Path outputPath, List<String> packages,
+                        List<String> excludePackages, String source, String target)
     {
         Path graphPath = outputPath.resolve(GraphContextFactory.DEFAULT_GRAPH_SUBDIRECTORY);
         try (GraphContext context = factory.create(graphPath))
         {
             WindupConfiguration configuration = new WindupConfiguration()
                         .setGraphContext(context)
-                        .setProgressMonitor(progressMonitor)
-                        .addDefaultUserRulesDirectory(rulesDirectory);
+                        .setProgressMonitor(progressMonitor);
+
+            for (Path rulesPath : rulesPaths)
+                configuration.addDefaultUserRulesDirectory(rulesPath);
+
 
             inputPaths.forEach(configuration::addInputPath);
 

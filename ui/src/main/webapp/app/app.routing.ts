@@ -5,9 +5,11 @@ import {RegisterApplicationFormComponent} from "./components/registerapplication
 import {MigrationProjectFormComponent} from "./components/migrationprojectform.component";
 import {ApplicationGroupForm} from "./components/applicationgroupform.component";
 import {AnalysisContextFormComponent} from "./components/analysiscontextform.component";
+import {ConfigurationComponent} from "./components/configuration.component";
 
 const appRoutes: Routes = [
     {path:"", redirectTo: "/project-list", pathMatch: "full"},
+    {path:"configuration", component: ConfigurationComponent, data: { displayName: "Windup Configuration" }},
     {path:"project-list", component: ProjectListComponent, data: { displayName: "Project List" }},
     {path:"group-list", component: GroupListComponent, data: {displayName: "Group List"}},
     {path:"register-application", component: RegisterApplicationFormComponent, data: {displayName: "Application Registration"}},

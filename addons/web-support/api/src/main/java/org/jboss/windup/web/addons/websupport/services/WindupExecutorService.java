@@ -3,6 +3,7 @@ package org.jboss.windup.web.addons.websupport.services;
 import org.jboss.windup.exec.WindupProgressMonitor;
 
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -26,7 +27,7 @@ public interface WindupExecutorService
      */
     void execute(
             WindupProgressMonitor progressMonitor,
-            Path rulesDirectory,
+            Collection<Path> rulesPaths,
             List<Path> inputPaths,
             Path outputPath,
             List<String> packages,

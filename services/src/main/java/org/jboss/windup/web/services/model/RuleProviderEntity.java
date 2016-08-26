@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -37,7 +38,8 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = RuleProviderEntity.class)
 @NamedQueries({
             @NamedQuery(name = RuleProviderEntity.FIND_ALL, query = "select rpe from RuleProviderEntity rpe"),
-            @NamedQuery(name = RuleProviderEntity.DELETE_ALL, query = "delete from RuleProviderEntity")
+            @NamedQuery(
+                    name = RuleProviderEntity.DELETE_ALL, query = "delete from RuleProviderEntity")
 })
 public class RuleProviderEntity implements Serializable
 {
@@ -45,6 +47,12 @@ public class RuleProviderEntity implements Serializable
     public static final String DELETE_ALL = "RuleProviderEntity.deleteAll";
 
     public static final String RULE_PROVIDER_ENTITY_ID = "rule_provider_entity_id";
+
+    public enum RuleProviderType {
+        JAVA,
+        XML,
+        GROOVY
+    }
 
     private static final long serialVersionUID = 1L;
 
@@ -78,24 +86,22 @@ public class RuleProviderEntity implements Serializable
     private Calendar dateModified;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "ruleproviderentity_technology_source",
-            joinColumns = @JoinColumn(name = RULE_PROVIDER_ENTITY_ID, referencedColumnName = RULE_PROVIDER_ENTITY_ID),
-            inverseJoinColumns = @JoinColumn(name = Technology.TECHNOLOGY_ID, referencedColumnName = Technology.TECHNOLOGY_ID)
-    )
+    @JoinTable(name = "ruleproviderentity_technology_source", joinColumns = @JoinColumn(name = RULE_PROVIDER_ENTITY_ID, referencedColumnName = RULE_PROVIDER_ENTITY_ID), inverseJoinColumns = @JoinColumn(name = Technology.TECHNOLOGY_ID, referencedColumnName = Technology.TECHNOLOGY_ID))
     private Set<Technology> sources;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "ruleproviderentity_technology_target",
-            joinColumns = @JoinColumn(name = RULE_PROVIDER_ENTITY_ID, referencedColumnName = RULE_PROVIDER_ENTITY_ID),
-            inverseJoinColumns = @JoinColumn(name = Technology.TECHNOLOGY_ID, referencedColumnName = Technology.TECHNOLOGY_ID)
-    )
+    @JoinTable(name = "ruleproviderentity_technology_target", joinColumns = @JoinColumn(name = RULE_PROVIDER_ENTITY_ID, referencedColumnName = RULE_PROVIDER_ENTITY_ID), inverseJoinColumns = @JoinColumn(name = Technology.TECHNOLOGY_ID, referencedColumnName = Technology.TECHNOLOGY_ID))
     private Set<Technology> targets;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @OrderColumn(name = RuleEntity.RULE_SEQUENCE)
     private List<RuleEntity> rules;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    private RulesPath rulesPath;
+
+    @Column
+    private RuleProviderType ruleProviderType;
 
     /**
      * Contains the primary key.
@@ -210,8 +216,7 @@ public class RuleProviderEntity implements Serializable
     }
 
     /**
-     * Contains the time that this rule's metadata was last modified on disk. This may be null if no modification date
-     * could be determined.
+     * Contains the time that this rule's metadata was last modified on disk. This may be null if no modification date could be determined.
      */
     public Calendar getDateModified()
     {
@@ -219,8 +224,7 @@ public class RuleProviderEntity implements Serializable
     }
 
     /**
-     * Contains the time that this rule's metadata was last modified on disk. This may be null if no modification date
-     * could be determined.
+     * Contains the time that this rule's metadata was last modified on disk. This may be null if no modification date could be determined.
      */
     public void setDateModified(Calendar dateModified)
     {
@@ -273,5 +277,37 @@ public class RuleProviderEntity implements Serializable
     public void setRules(List<RuleEntity> rules)
     {
         this.rules = rules;
+    }
+
+    /**
+     * Contains the path in which this provider was found.
+     */
+    public RulesPath getRulesPath()
+    {
+        return rulesPath;
+    }
+
+    /**
+     * Contains the path in which this provider was found.
+     */
+    public void setRulesPath(RulesPath rulesPath)
+    {
+        this.rulesPath = rulesPath;
+    }
+
+    /**
+     * Contains the type of provider (for example, Java vs Groovy).
+     */
+    public RuleProviderType getRuleProviderType()
+    {
+        return ruleProviderType;
+    }
+
+    /**
+     * Contains the type of provider (for example, Java vs Groovy).
+     */
+    public void setRuleProviderType(RuleProviderType ruleProviderType)
+    {
+        this.ruleProviderType = ruleProviderType;
     }
 }

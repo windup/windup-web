@@ -22,13 +22,15 @@ export class FormComponent {
 
     handleError(error:any) {
         this.errorMessages = [];
-        if (error.parameterViolations) {
+        if (error && error.parameterViolations) {
             error.parameterViolations.forEach(violation => {
                 console.log("Violation: " + JSON.stringify(violation));
                 this.errorMessages.push(violation.message);
             });
-        } else {
+        } else if (error) {
             this.errorMessages.push("Error: " + error);
+        } else {
+            this.errorMessages.push("Server call failed!");
         }
     }
 }

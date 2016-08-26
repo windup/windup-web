@@ -13,8 +13,7 @@ import {FormComponent} from "./formcomponent.component";
 
 @Component({
     templateUrl: 'app/components/registerapplicationform.component.html',
-    directives: [ REACTIVE_FORM_DIRECTIVES, NgClass ],
-    providers: [ FileService, RegisteredApplicationService, ApplicationGroupService ]
+    directives: [ REACTIVE_FORM_DIRECTIVES, NgClass ]
 })
 export class RegisterApplicationFormComponent extends FormComponent implements OnInit {
     registrationForm: FormGroup;
@@ -22,7 +21,6 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     applicationGroup:ApplicationGroup;
     model = <RegisteredApplication>{};
     loading:boolean = true;
-    errorMessages:string[];
 
     constructor(
         private _router:Router,

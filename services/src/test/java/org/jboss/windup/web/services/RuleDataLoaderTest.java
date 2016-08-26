@@ -34,12 +34,20 @@ public class RuleDataLoaderTest extends AbstractTest
         Assert.assertTrue(ruleProviderEntities.size() > 10);
 
         int rulesFound = 0;
+        int pathsFound = 0;
         for (RuleProviderEntity ruleProviderEntity : ruleProviderEntities)
         {
             rulesFound += ruleProviderEntity.getRules().size();
+            if (ruleProviderEntity.getRulesPath() != null)
+            {
+                pathsFound++;
+                System.out.println("Rule provider path: " + ruleProviderEntity.getRulesPath());
+            }
         }
 
         System.out.println("Rules found: " + rulesFound);
+        // arbitrary numbers... basically just high enough to insure that we did find some
         Assert.assertTrue(rulesFound > 100);
+        Assert.assertTrue(pathsFound > 10);
     }
 }

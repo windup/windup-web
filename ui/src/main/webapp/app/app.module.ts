@@ -1,14 +1,14 @@
 import { NgModule }      from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgZone, provide } from '@angular/core';
 import { HttpModule } from '@angular/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
+
+import 'rxjs/Rx';
 
 import { AppComponent }  from './components/app.component';
 import { Constants } from './constants';
 import { routing, appRoutingProviders } from './app.routing';
 
-import 'rxjs/Rx';
 import {ProjectListComponent} from "./components/projectlist.component";
 import {AnalysisContextFormComponent} from "./components/analysiscontextform.component";
 import {ApplicationGroupForm} from "./components/applicationgroupform.component";
@@ -18,6 +18,19 @@ import {RegisterApplicationFormComponent} from "./components/registerapplication
 import {ProgressBarComponent} from "./components/progressbar.component";
 import {NavbarComponent} from "./components/navbar.component";
 import {BreadCrumbsComponent} from "./components/breadcrumbs.component";
+import {ConfigurationService} from "./services/configuration.service";
+import {AnalysisContextService} from "./services/analysiscontext.service";
+import {ApplicationGroupService} from "./services/applicationgroup.service";
+import {FileService} from "./services/file.service";
+import {MigrationPathService} from "./services/migrationpath.service";
+import {MigrationProjectService} from "./services/migrationproject.service";
+import {RegisteredApplicationService} from "./services/registeredapplication.service";
+import {WindupService} from "./services/windup.service";
+import {RuleService} from "./services/rule.service";
+import {ConfigurationComponent} from "./components/configuration.component";
+import {TechnologyComponent} from "./components/technology.component";
+import {RulesModalComponent} from "./components/rules-modal.component";
+import {AddRulesPathModalComponent} from "./components/add-rules-path-modal.component";
 
 @NgModule({
     imports: [
@@ -31,16 +44,32 @@ import {BreadCrumbsComponent} from "./components/breadcrumbs.component";
         AppComponent,
         AnalysisContextFormComponent,
         ApplicationGroupForm,
+        ConfigurationComponent,
         GroupListComponent,
         MigrationProjectFormComponent,
         ProjectListComponent,
         RegisterApplicationFormComponent,
 
+        AddRulesPathModalComponent,
         BreadCrumbsComponent,
         NavbarComponent,
         ProgressBarComponent,
+        RulesModalComponent,
+        TechnologyComponent
     ],
-    providers:    [ Constants, appRoutingProviders ],
+    providers: [
+        appRoutingProviders,
+        Constants,
+        AnalysisContextService,
+        ApplicationGroupService,
+        ConfigurationService,
+        FileService,
+        MigrationPathService,
+        MigrationProjectService,
+        RegisteredApplicationService,
+        RuleService,
+        WindupService
+    ],
     bootstrap:    [ AppComponent ]
 })
 export class AppModule { }

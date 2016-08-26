@@ -7,6 +7,7 @@ import org.ocpsoft.rewrite.config.Rule;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import java.util.List;
 
@@ -26,4 +27,8 @@ public interface RuleEndpoint
     @GET
     @Path("/allProviders")
     List<RuleProviderEntity> getAllProviders();
+
+    @GET
+    @Path("/by-rules-path/{id}")
+    List<RuleProviderEntity> getByRulesPath(@PathParam("id") Long rulesPathID);
 }
