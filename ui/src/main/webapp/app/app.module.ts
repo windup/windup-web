@@ -31,6 +31,7 @@ import {ConfigurationComponent} from "./components/configuration.component";
 import {TechnologyComponent} from "./components/technology.component";
 import {RulesModalComponent} from "./components/rules-modal.component";
 import {AddRulesPathModalComponent} from "./components/add-rules-path-modal.component";
+import {ConfirmationModalComponent} from "./components/confirmation-modal.component";
 
 @NgModule({
     imports: [
@@ -52,6 +53,7 @@ import {AddRulesPathModalComponent} from "./components/add-rules-path-modal.comp
 
         AddRulesPathModalComponent,
         BreadCrumbsComponent,
+        ConfirmationModalComponent,
         NavbarComponent,
         ProgressBarComponent,
         RulesModalComponent,

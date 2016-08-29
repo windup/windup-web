@@ -3,65 +3,82 @@
 
     <button class="btn btn-primary" (click)="displayAddRulesPathForm()">
         <span class="glyphicon glyphicon-plus"></span>
-        Add Custom Rule Path
+        Register Custom Rule Path
     </button>
 </h1>
 
 <template [ngIf]="configuration != null && configuration.rulesPaths != null && configuration.rulesPaths.length > 0">
-    <div *ngFor="let rulePath of configuration.rulesPaths">
-        <h2>
-            Rules: {{rulePath.rulesPathType == "SYSTEM_PROVIDED" ? "&lt;System Rules&gt;" : rulePath.path}}
+    <div class="panel-group">
+        <div *ngFor="let rulePath of configuration.rulesPaths" id="rulePathPanel_{{rulePath.id}}" class="panel panel-default">
+            <div class="panel-heading">
+                <h2 class="panel-title">
+                    <a class="collapsed" data-toggle="collapse" [attr.data-parent]="'#rulePathPanel_' + rulePath.id" href="#collapse_{{rulePath.id}}">
+                        Rules: {{rulePath.rulesPathType == "SYSTEM_PROVIDED" ? "&lt;System Rules&gt;" : rulePath.path}}
+                    </a>
+                </h2>
+            </div>
 
-            <button class="btn btn-primary" (click)="removeRulesPath(rulePath)" *ngIf="rulePath.rulesPathType != 'SYSTEM_PROVIDED'">
-                <span class="glyphicon glyphicon-trash"></span>
-                Delete Rules Path
-            </button>
-        </h2>
+            <div id="collapse_{{rulePath.id}}" class="panel-body panel-collapse collapse">
+                <a (click)="removeRulesConfirmationModal.show($event)" *ngIf="rulePath.rulesPathType != 'SYSTEM_PROVIDED'" href="#">
+                    <span class="glyphicon glyphicon-trash"></span>
+                    Unregister Rules
+                </a>
 
-        <div *ngIf="!hasFileBasedProviders(rulePath)">
-            <h3>This path contains no rules!</h3>
+                <confirmation-modal
+                        #removeRulesConfirmationModal
+                        id="deleteRulesConfirmation_{{rulePath.id}}"
+                        title="Unregister Rules?"
+                        body="Unregister rules from Windup?"
+                        (confirmed)="removeRulesPath(rulePath)"
+                >
+                </confirmation-modal>
+
+                <div *ngIf="!hasFileBasedProviders(rulePath)">
+                    <h3>This path contains no rules!</h3>
+                </div>
+
+                <table class="datatable table table-striped table-bordered" *ngIf="hasFileBasedProviders(rulePath)">
+                    <thead>
+                    <tr>
+                        <th>Provider ID</th>
+                        <th>Provider Location</th>
+                        <th>Sources</th>
+                        <th>Targets</th>
+                        <th>Rule Count</th>
+                        <th>Details</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <template ngFor let-ruleProvider [ngForOf]="ruleProvidersByPath.get(rulePath)">
+                        <tr *ngIf="isFileBasedProvider(ruleProvider)">
+                            <td>
+                                {{ruleProvider.providerID}}
+                            </td>
+                            <td>
+                                {{ruleProvider.origin}}
+                            </td>
+                            <td>
+                                <div *ngFor="let source of ruleProvider.sources">
+                                    <technology [technology]="source"></technology>
+                                </div>
+                            </td>
+                            <td>
+                                <div *ngFor="let target of ruleProvider.targets">
+                                    <technology [technology]="target"></technology>
+                                </div>
+                            </td>
+                            <td>
+                                {{ruleProvider.rules ? ruleProvider.rules.length : 0}}
+                            </td>
+                            <td>
+                                <a href="#" (click)="displayRules(ruleProvider, $event)">Rules</a>
+                            </td>
+                        </tr>
+                    </template>
+                    </tbody>
+                </table>
+            </div>
         </div>
-
-        <table class="datatable table table-striped table-bordered" *ngIf="hasFileBasedProviders(rulePath)">
-            <thead>
-            <tr>
-                <th>Provider ID</th>
-                <th>Provider Location</th>
-                <th>Sources</th>
-                <th>Targets</th>
-                <th>Rule Count</th>
-                <th>Details</th>
-            </tr>
-            </thead>
-            <tbody>
-            <template ngFor let-ruleProvider [ngForOf]="ruleProvidersByPath.get(rulePath)">
-                <tr *ngIf="isFileBasedProvider(ruleProvider)">
-                    <td>
-                        {{ruleProvider.providerID}}
-                    </td>
-                    <td>
-                        {{ruleProvider.origin}}
-                    </td>
-                    <td>
-                        <div *ngFor="let source of ruleProvider.sources">
-                            <technology [technology]="source"></technology>
-                        </div>
-                    </td>
-                    <td>
-                        <div *ngFor="let target of ruleProvider.targets">
-                            <technology [technology]="target"></technology>
-                        </div>
-                    </td>
-                    <td>
-                        {{ruleProvider.rules ? ruleProvider.rules.length : 0}}
-                    </td>
-                    <td>
-                        <a href="#" (click)="displayRules(ruleProvider, $event)">Rules</a>
-                    </td>
-                </tr>
-            </template>
-            </tbody>
-        </table>
     </div>
 </template>
 
