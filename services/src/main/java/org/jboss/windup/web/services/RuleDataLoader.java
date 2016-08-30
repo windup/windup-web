@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
@@ -74,76 +75,78 @@ public class RuleDataLoader
         reloadRuleData();
     }
 
-    public void listenToPayload(@Observes Configuration configuration) {
+    public void configurationUpdated(@Observes Configuration configuration) {
         LOG.info("Reloading rule data due to configuration update!");
         reloadRuleData();
     }
 
     public void reloadRuleData()
     {
-        final List<RulesPath> rulePaths = new ArrayList<>();
-
         Configuration webConfiguration = configurationService.getConfiguration();
-        if (webConfiguration != null && webConfiguration.getRulesPaths() != null)
-        {
-            rulePaths.addAll(
-                        webConfiguration.getRulesPaths().stream()
-                                    .collect(Collectors.toList()));
-        }
+        if (webConfiguration.getRulesPaths() == null || webConfiguration.getRulesPaths().isEmpty())
+            return;
 
-        RuleProviderRegistry providerRegistry = ruleProviderService.loadRuleProviderRegistry(
-                    rulePaths.stream().map((rulePath) -> Paths.get(rulePath.getPath())).collect(Collectors.toSet()));
-
-        try
+        for (RulesPath rulesPath : webConfiguration.getRulesPaths())
         {
             // Delete the previous ones
-            entityManager.createNamedQuery(RuleProviderEntity.DELETE_ALL).executeUpdate();
+            entityManager
+                    .createNamedQuery(RuleProviderEntity.DELETE_BY_RULES_PATH)
+                    .setParameter(RuleProviderEntity.RULES_PATH_PARAM, rulesPath)
+                    .executeUpdate();
 
-            for (RuleProvider provider : providerRegistry.getProviders())
+            rulesPath.setLoadError(null);
+            try
             {
-                String providerID = provider.getMetadata().getID();
-                String origin = provider.getMetadata().getOrigin();
+                Path path = Paths.get(rulesPath.getPath());
+                RuleProviderRegistry providerRegistry = ruleProviderService.loadRuleProviderRegistry(Collections.singleton(path));
 
-                RuleProviderEntity ruleProviderEntity = new RuleProviderEntity();
-                ruleProviderEntity.setProviderID(providerID);
-                ruleProviderEntity.setDateLoaded(new GregorianCalendar());
-                ruleProviderEntity.setDescription(provider.getMetadata().getDescription());
-                ruleProviderEntity.setOrigin(origin);
-                entityManager.persist(ruleProviderEntity);
-
-                setFileMetaData(rulePaths, ruleProviderEntity);
-
-                ruleProviderEntity.setSources(technologyReferencesToTechnologyList(provider.getMetadata().getSourceTechnologies()));
-                ruleProviderEntity.setTargets(technologyReferencesToTechnologyList(provider.getMetadata().getTargetTechnologies()));
-
-                String phase = MigrationRulesPhase.class.getSimpleName().toUpperCase();
-                if (provider.getMetadata().getPhase() != null)
-                    phase = provider.getMetadata().getPhase().getSimpleName().toUpperCase();
-
-                ruleProviderEntity.setPhase(phase);
-
-                ruleProviderEntity.setRuleProviderType(getProviderType(origin));
-
-                List<RuleEntity> ruleEntities = new ArrayList<>();
-                for (Rule rule : provider.getConfiguration(null).getRules())
+                for (RuleProvider provider : providerRegistry.getProviders())
                 {
-                    String ruleID = rule.getId();
-                    String ruleString = RuleUtils.ruleToRuleContentsString(rule, 0);
+                    String providerID = provider.getMetadata().getID();
+                    String origin = provider.getMetadata().getOrigin();
 
-                    RuleEntity ruleEntity = new RuleEntity();
-                    ruleEntity.setRuleID(ruleID);
-                    ruleEntity.setRuleContents(ruleString);
-                    ruleEntities.add(ruleEntity);
+                    RuleProviderEntity ruleProviderEntity = new RuleProviderEntity();
+                    ruleProviderEntity.setProviderID(providerID);
+                    ruleProviderEntity.setDateLoaded(new GregorianCalendar());
+                    ruleProviderEntity.setDescription(provider.getMetadata().getDescription());
+                    ruleProviderEntity.setOrigin(origin);
+                    entityManager.persist(ruleProviderEntity);
+
+                    setFileMetaData(rulesPath, ruleProviderEntity);
+
+                    ruleProviderEntity.setSources(technologyReferencesToTechnologyList(provider.getMetadata().getSourceTechnologies()));
+                    ruleProviderEntity.setTargets(technologyReferencesToTechnologyList(provider.getMetadata().getTargetTechnologies()));
+
+                    String phase = MigrationRulesPhase.class.getSimpleName().toUpperCase();
+                    if (provider.getMetadata().getPhase() != null)
+                        phase = provider.getMetadata().getPhase().getSimpleName().toUpperCase();
+
+                    ruleProviderEntity.setPhase(phase);
+
+                    ruleProviderEntity.setRuleProviderType(getProviderType(origin));
+
+                    List<RuleEntity> ruleEntities = new ArrayList<>();
+                    for (Rule rule : provider.getConfiguration(null).getRules())
+                    {
+                        String ruleID = rule.getId();
+                        String ruleString = RuleUtils.ruleToRuleContentsString(rule, 0);
+
+                        RuleEntity ruleEntity = new RuleEntity();
+                        ruleEntity.setRuleID(ruleID);
+                        ruleEntity.setRuleContents(ruleString);
+                        ruleEntities.add(ruleEntity);
+                    }
+
+                    ruleProviderEntity.setRules(ruleEntities);
+
+                    entityManager.persist(ruleProviderEntity);
                 }
-
-                ruleProviderEntity.setRules(ruleEntities);
-
-                entityManager.persist(ruleProviderEntity);
             }
-        }
-        catch (Exception e)
-        {
-            LOG.log(Level.SEVERE, "Could not load rule information due to: " + e.getMessage(), e);
+            catch (Exception e)
+            {
+                rulesPath.setLoadError("Failed to load rules due to: " + e.getMessage());
+                LOG.log(Level.SEVERE, "Could not load rule information due to: " + e.getMessage(), e);
+            }
         }
     }
 
@@ -159,7 +162,7 @@ public class RuleDataLoader
         return results;
     }
 
-    private void setFileMetaData(Collection<RulesPath> rulesPaths, RuleProviderEntity ruleProviderEntity)
+    private void setFileMetaData(RulesPath rulesPath, RuleProviderEntity ruleProviderEntity)
     {
         if (ruleProviderEntity.getOrigin() == null)
             return;
@@ -181,14 +184,7 @@ public class RuleDataLoader
                 ruleProviderEntity.setDateModified(lastModifiedCalendar);
 
                 // Now also find it in the user defined paths
-                for (RulesPath rulesPath : rulesPaths)
-                {
-                    if (filePathString.startsWith(rulesPath.getPath()))
-                    {
-                        ruleProviderEntity.setRulesPath(rulesPath);
-                        break;
-                    }
-                }
+                ruleProviderEntity.setRulesPath(rulesPath);
 
                 if (ruleProviderEntity.getRulesPath() != null)
                 {

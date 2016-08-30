@@ -2,6 +2,7 @@ package org.jboss.windup.web.services.model;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Version;
+import javax.validation.Valid;
 
 /**
  * Contains the configuration for the Windup server.
@@ -34,8 +36,9 @@ public class Configuration implements Serializable
     @Column(name = "version")
     private int version;
 
+    @Valid
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<RulesPath> rulesPaths;
+    private Set<RulesPath> rulesPaths;
 
     public Long getId()
     {
@@ -60,7 +63,7 @@ public class Configuration implements Serializable
     /**
      * Contains paths to user provided rules.
      */
-    public List<RulesPath> getRulesPaths()
+    public Set<RulesPath> getRulesPaths()
     {
         return rulesPaths;
     }
@@ -68,7 +71,7 @@ public class Configuration implements Serializable
     /**
      * Contains paths to user provided rules.
      */
-    public void setRulesPaths(List<RulesPath> rulesPaths)
+    public void setRulesPaths(Set<RulesPath> rulesPaths)
     {
         this.rulesPaths = rulesPaths;
     }

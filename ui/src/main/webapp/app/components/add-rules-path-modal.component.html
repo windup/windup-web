@@ -16,7 +16,7 @@
                         {{errorMessage}}
                     </div>
                     <div class="form-group" [ngClass]="{'has-error': hasError(addRulesPathForm.get('inputPathControl'))}">
-                        <label class="control-label" for="addRulesPathInput">Application Path</label>
+                        <label class="control-label" for="addRulesPathInput">Rules Path (file or directory):</label>
                         <input
                                 [(ngModel)]="inputPath"
                                 formControlName="inputPathControl"

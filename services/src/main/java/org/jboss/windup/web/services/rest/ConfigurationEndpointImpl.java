@@ -3,8 +3,6 @@ package org.jboss.windup.web.services.rest;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 import org.jboss.windup.web.services.model.Configuration;
 import org.jboss.windup.web.services.service.ConfigurationService;
@@ -15,9 +13,6 @@ import org.jboss.windup.web.services.service.ConfigurationService;
 @Stateless
 public class ConfigurationEndpointImpl implements ConfigurationEndpoint
 {
-    @PersistenceContext
-    private EntityManager entityManager;
-
     @Inject
     private ConfigurationService configurationService;
 
@@ -33,7 +28,7 @@ public class ConfigurationEndpointImpl implements ConfigurationEndpoint
     @Override
     public Configuration saveConfiguration(Configuration configuration)
     {
-        Configuration saved = entityManager.merge(configuration);
+        Configuration saved = configurationService.saveConfiguration(configuration);
         configurationEvent.fire(saved);
         return saved;
     }

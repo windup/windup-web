@@ -38,6 +38,8 @@ export class AddRulesPathModalComponent extends FormComponent implements OnInit 
 
     show():void {
         this.errorMessages = [];
+        if (this.addRulesPathForm)
+            this.addRulesPathForm.reset();
 
         (<any>$('#addRulesPathModal')).modal('show');
     }

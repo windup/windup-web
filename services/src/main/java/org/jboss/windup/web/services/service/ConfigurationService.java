@@ -15,8 +15,10 @@ import org.jboss.windup.web.services.model.RulesPath;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Contains the global configuration for Windup server.
@@ -31,10 +33,17 @@ public class ConfigurationService
     private EntityManager entityManager;
 
     @PostConstruct
-    public void updateConfiguration()
+    public void initConfiguration()
     {
         Configuration configuration = getConfiguration();
         updateSystemRulesPath(configuration);
+    }
+
+    /**
+     * Persists the provided {@link Configuration} object.
+     */
+    public Configuration saveConfiguration(Configuration configuration) {
+        return entityManager.merge(configuration);
     }
 
     /**
@@ -66,7 +75,7 @@ public class ConfigurationService
         Path newSystemRulesPath = WebProperties.getInstance().getRulesRepository().toAbsolutePath().normalize();
 
         // make a list of existing rules path
-        List<RulesPath> dbPaths = new ArrayList<>();
+        Set<RulesPath> dbPaths = new HashSet<>();
         if (configuration.getRulesPaths() != null)
             dbPaths = configuration.getRulesPaths();
 

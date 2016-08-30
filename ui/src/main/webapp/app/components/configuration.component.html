@@ -37,6 +37,10 @@
                     <h3>This path contains no rules!</h3>
                 </div>
 
+                <div *ngIf="rulePath.loadError">
+                    <h3>{{rulePath.loadError}}</h3>
+                </div>
+
                 <table class="datatable table table-striped table-bordered" *ngIf="hasFileBasedProviders(rulePath)">
                     <thead>
                     <tr>

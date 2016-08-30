@@ -58,12 +58,12 @@ public class ConfigurationEndpointTest extends AbstractTest
 
         RulesPath rulesPath = new RulesPath();
         rulesPath.setPath(FAKE_PATH);
-        configuration.setRulesPaths(Collections.singletonList(rulesPath));
+        configuration.setRulesPaths(Collections.singleton(rulesPath));
 
         configuration = configurationEndpoint.saveConfiguration(configuration);
 
         Assert.assertNotNull(configuration.getRulesPaths());
         Assert.assertEquals(1, configuration.getRulesPaths().size());
-        Assert.assertEquals(FAKE_PATH, configuration.getRulesPaths().get(0).getPath());
+        Assert.assertEquals(FAKE_PATH, configuration.getRulesPaths().iterator().next().getPath());
     }
 }

@@ -74,7 +74,7 @@ public class RuleEndpointTest extends AbstractTest
     @RunAsClient
     public void testByRulePathWithRules() {
         Configuration configuration = configurationEndpoint.getConfiguration();
-        RulesPath systemRulesPath = configuration.getRulesPaths().get(0);
+        RulesPath systemRulesPath = configuration.getRulesPaths().iterator().next();
 
         configuration.getRulesPaths().add(new RulesPath(FAKE_PATH, RulesPath.RulesPathType.USER_PROVIDED));
         configurationEndpoint.saveConfiguration(configuration);

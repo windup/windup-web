@@ -37,14 +37,18 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = RuleProviderEntity.class)
 @NamedQueries({
-            @NamedQuery(name = RuleProviderEntity.FIND_ALL, query = "select rpe from RuleProviderEntity rpe"),
-            @NamedQuery(
-                    name = RuleProviderEntity.DELETE_ALL, query = "delete from RuleProviderEntity")
+    @NamedQuery(name = RuleProviderEntity.FIND_ALL, query = "select rpe from RuleProviderEntity rpe"),
+    @NamedQuery(name = RuleProviderEntity.DELETE_ALL, query = "delete from RuleProviderEntity"),
+    @NamedQuery(
+            name = RuleProviderEntity.DELETE_BY_RULES_PATH,
+            query = "delete from RuleProviderEntity rpe where rpe.rulesPath = :" + RuleProviderEntity.RULES_PATH_PARAM)
 })
 public class RuleProviderEntity implements Serializable
 {
     public static final String FIND_ALL = "RuleProviderEntity.findAll";
     public static final String DELETE_ALL = "RuleProviderEntity.deleteAll";
+    public static final String DELETE_BY_RULES_PATH = "RuleProviderEntity.deleteByRulesPath";
+    public static final String RULES_PATH_PARAM = "rulesPath";
 
     public static final String RULE_PROVIDER_ENTITY_ID = "rule_provider_entity_id";
 
