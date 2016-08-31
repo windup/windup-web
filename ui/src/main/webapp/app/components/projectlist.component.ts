@@ -33,7 +33,12 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     getMigrationProjects() {
         return this._migrationProjectService.getAll().subscribe(
             applications => this.projectsLoaded(applications),
-            error => this.errorMessage = <any>error
+            error => {
+                if (error instanceof ProgressEvent)
+                    this.errorMessage = "ERROR: Server disconnected";
+                else
+                    this.errorMessage = <any>error
+            }
         );
     }
 

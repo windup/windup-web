@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -53,6 +54,17 @@ public class RuleEndpointTest extends AbstractTest
         this.ruleEndpoint = target.proxy(RuleEndpoint.class);
     }
 
+    private Optional<RulesPath> getSystemRulesPath(Configuration configuration) {
+        if (configuration.getRulesPaths() == null || configuration.getRulesPaths().isEmpty())
+            return Optional.empty();
+
+        return configuration
+                .getRulesPaths()
+                .stream()
+                .filter((rulesPath) -> rulesPath.getRulesPathType() == RulesPath.RulesPathType.SYSTEM_PROVIDED)
+                .findFirst();
+    }
+
     @Test
     @RunAsClient
     public void testLoadAllRules() {
@@ -74,7 +86,8 @@ public class RuleEndpointTest extends AbstractTest
     @RunAsClient
     public void testByRulePathWithRules() {
         Configuration configuration = configurationEndpoint.getConfiguration();
-        RulesPath systemRulesPath = configuration.getRulesPaths().iterator().next();
+        RulesPath systemRulesPath = getSystemRulesPath(configuration).get();
+        System.out.println("System rules path: " + systemRulesPath);
 
         configuration.getRulesPaths().add(new RulesPath(FAKE_PATH, RulesPath.RulesPathType.USER_PROVIDED));
         configurationEndpoint.saveConfiguration(configuration);

@@ -40,14 +40,6 @@ public class ApplicationGroupEndpointImpl implements ApplicationGroupEndpoint
     @Override
     public Collection<ApplicationGroup> getApplicationGroups(Long projectID)
     {
-        for (ApplicationGroup group : getApplicationGroups())
-        {
-            if (group.getMigrationProject() == null)
-                LOG.info("Group: " + group + " project: null");
-            else
-                LOG.info("Group: " + group + " project: " + group.getMigrationProject().getId());
-        }
-
         return entityManager.find(MigrationProject.class, projectID).getGroups();
     }
 

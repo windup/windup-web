@@ -1,0 +1,2 @@
+jms-queue add --queue-address=executorQueue --entries=queues/executorQueue
+jms-queue add --queue-address=statusUpdateQueue --entries=queues/statusUpdateQueue

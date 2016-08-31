@@ -61,7 +61,12 @@ export class GroupListComponent implements OnInit, OnDestroy {
     getGroups() {
         return this._applicationGroupService.getByProjectID(this.projectID).subscribe(
             groups => this.groupsLoaded(groups),
-            error => this.errorMessage = <any>error
+            error => {
+                if (error instanceof ProgressEvent)
+                    this.errorMessage = "ERROR: Server disconnected";
+                else
+                    this.errorMessage = <any>error;
+            }
         );
     }
 
