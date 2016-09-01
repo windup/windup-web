@@ -11,8 +11,7 @@ import {FormComponent} from "./formcomponent.component";
 @Component({
     selector: 'create-group-form',
     templateUrl: 'app/components/applicationgroupform.component.html',
-    directives: [ NgClass ],
-    providers: [ ApplicationGroupService, MigrationProjectService ]
+    directives: [ NgClass ]
 })
 export class ApplicationGroupForm extends FormComponent implements OnInit
 {

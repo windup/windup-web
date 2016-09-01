@@ -3,6 +3,7 @@ package org.jboss.windup.web.services.service;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -29,6 +30,7 @@ import org.jboss.windup.web.furnaceserviceprovider.WebProperties;
 import org.jboss.windup.web.services.WindupWebProgressMonitor;
 import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.ApplicationGroup;
+import org.jboss.windup.web.services.model.Configuration;
 import org.jboss.windup.web.services.model.MigrationPath;
 import org.jboss.windup.web.services.model.RegisteredApplication;
 import org.jboss.windup.web.services.model.WindupExecution;
@@ -49,17 +51,20 @@ public class WindupExecutionTask implements Runnable
     @FromFurnace
     private WindupExecutorService windupExecutorService;
 
+
     @Inject
     private Instance<WindupWebProgressMonitor> progressMonitorInstance;
 
+    private Configuration configuration;
     private WindupExecution execution;
     private ApplicationGroup group;
 
     /**
      * The {@link ApplicationGroup} to execute.
      */
-    public void init(WindupExecution execution, ApplicationGroup group)
+    public void init(WindupExecution execution, Configuration configuration, ApplicationGroup group)
     {
+        this.configuration = configuration;
         this.execution = execution;
         this.group = group;
     }
@@ -76,7 +81,10 @@ public class WindupExecutionTask implements Runnable
         AnalysisContext analysisContext = group.getAnalysisContext();
         try
         {
-            Path rulesDirectory = WebProperties.getInstance().getRulesRepository();
+            Collection<Path> rulesPaths = this.configuration.getRulesPaths().stream()
+                    .map((rulesPath) -> Paths.get(rulesPath.getPath()))
+                    .collect(Collectors.toList());
+
 
             List<Path> inputPaths = group
                         .getApplications()
@@ -110,7 +118,7 @@ public class WindupExecutionTask implements Runnable
 
             windupExecutorService.execute(
                         progressMonitor,
-                        rulesDirectory,
+                        rulesPaths,
                         inputPaths,
                         Paths.get(group.getOutputPath()),
                         packages,

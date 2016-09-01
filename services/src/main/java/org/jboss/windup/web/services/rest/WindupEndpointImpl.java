@@ -21,6 +21,7 @@ import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.ExecutionState;
 import org.jboss.windup.web.services.model.WindupExecution;
 import org.jboss.windup.web.services.model.RegisteredApplication;
+import org.jboss.windup.web.services.service.ConfigurationService;
 import org.jboss.windup.web.services.service.WindupExecutionTask;
 
 @Stateless
@@ -42,6 +43,9 @@ public class WindupEndpointImpl implements WindupEndpoint
 
     @Inject
     private Instance<WindupExecutionTask> windupExecutionTaskInstance;
+
+    @Inject
+    private ConfigurationService configurationService;
 
     @Override
     public WindupExecution getStatus(Long executionID)
@@ -76,7 +80,7 @@ public class WindupEndpointImpl implements WindupEndpoint
         entityManager.persist(execution);
 
         WindupExecutionTask executionTask = windupExecutionTaskInstance.get();
-        executionTask.init(execution, group);
+        executionTask.init(execution, configurationService.getConfiguration(), group);
         managedExecutorService.execute(executionTask);
         return execution;
     }

@@ -12,6 +12,9 @@
     </div>
     <div class="collapse navbar-collapse navbar-collapse-1">
         <ul class="nav navbar-nav navbar-utility">
+            <li [class.active]="isActive(settingsLink)">
+                <a #settingsLink routerLink="/configuration">Settings</a>
+            </li>
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                     <span class="pficon pficon-user"></span>
@@ -25,8 +28,8 @@
             </li>
         </ul>
         <ul class="nav navbar-nav navbar-primary">
-            <li class="active">
-                <a routerLink="/project-list" class="active">Home</a>
+            <li [class.active]="isActive(projectListLink)">
+                <a #projectListLink routerLink="/project-list">Home</a>
             </li>
         </ul>
     </div>

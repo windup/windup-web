@@ -1,22 +1,50 @@
 package org.jboss.windup.web.services.service;
 
+import javax.annotation.PostConstruct;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
+import org.jboss.windup.web.furnaceserviceprovider.WebProperties;
 import org.jboss.windup.web.services.model.Configuration;
+import org.jboss.windup.web.services.model.RulesPath;
+
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * Contains the global configuration for Windup server.
  *
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
-@Stateless
+@Singleton
+@Startup
 public class ConfigurationService
 {
     @PersistenceContext
     private EntityManager entityManager;
+
+    @PostConstruct
+    public void initConfiguration()
+    {
+        Configuration configuration = getConfiguration();
+        updateSystemRulesPath(configuration);
+    }
+
+    /**
+     * Persists the provided {@link Configuration} object.
+     */
+    public Configuration saveConfiguration(Configuration configuration) {
+        return entityManager.merge(configuration);
+    }
 
     /**
      * Gets the global configuration for Windup.
@@ -25,11 +53,50 @@ public class ConfigurationService
     {
         try
         {
-            return (Configuration) entityManager.createQuery("select configuration from Configuration configuration").getSingleResult();
+            return (Configuration)entityManager.createQuery("select configuration from Configuration configuration").getSingleResult();
         }
         catch (NoResultException t)
         {
-            return null;
+            return createDefaultConfiguration();
         }
+    }
+
+    private Configuration createDefaultConfiguration()
+    {
+        Configuration configuration = new Configuration();
+
+        entityManager.persist(configuration);
+        return configuration;
+    }
+
+    private void updateSystemRulesPath(Configuration configuration)
+    {
+        // Get the updated system rules path from the system
+        Path newSystemRulesPath = WebProperties.getInstance().getRulesRepository().toAbsolutePath().normalize();
+
+        // make a list of existing rules path
+        Set<RulesPath> dbPaths = new HashSet<>();
+        if (configuration.getRulesPaths() != null)
+            dbPaths = configuration.getRulesPaths();
+
+        // Find the existing system rules path
+        Optional<RulesPath> existingSystemRulesPath = dbPaths.stream()
+                     .filter((rulesPath) -> rulesPath.getRulesPathType() == RulesPath.RulesPathType.SYSTEM_PROVIDED)
+                     .findFirst();
+
+        // Update it if present
+        if (existingSystemRulesPath.isPresent())
+        {
+            existingSystemRulesPath.get().setPath(newSystemRulesPath.toString());
+        }
+        else
+        {
+            // Otherwise, create a new one
+            RulesPath newRulesPath = new RulesPath(newSystemRulesPath.toString(), RulesPath.RulesPathType.SYSTEM_PROVIDED);
+            dbPaths.add(newRulesPath);
+        }
+
+        // finally, set the new values on the configuration
+        configuration.setRulesPaths(dbPaths);
     }
 }

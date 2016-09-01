@@ -11,7 +11,9 @@ export class BreadCrumbsComponent {
 
     constructor(private _router: Router) {
         this._router.events.subscribe(routeData => {
-            console.log("Routing data: " + routeData);
+            // TODO - Reimplement with new router and current design document
+            //
+            //console.log("Routing data: " + routeData);
             //let instructions = [];
 
             //this._router.recognize(routeData.instruction.urlPath).then(instruction => {

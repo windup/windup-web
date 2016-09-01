@@ -9,8 +9,7 @@ import {FormComponent} from "./formcomponent.component";
 @Component({
     selector: 'create-migration-project-form',
     templateUrl: 'app/components/migrationprojectform.component.html',
-    directives: [ NgClass ],
-    providers: [ MigrationProjectService ]
+    directives: [ NgClass ]
 })
 export class MigrationProjectFormComponent extends FormComponent implements OnInit
 {

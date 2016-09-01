@@ -12,8 +12,7 @@ import {WindupExecution} from "windup-services";
 
 @Component({
     selector: 'application-list',
-    templateUrl: 'app/components/grouplist.component.html',
-    providers: [ ApplicationGroupService, WindupService ]
+    templateUrl: 'app/components/grouplist.component.html'
 })
 export class GroupListComponent implements OnInit, OnDestroy {
     projectID:number;
