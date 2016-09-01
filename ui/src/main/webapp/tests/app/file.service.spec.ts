@@ -1,4 +1,3 @@
-import {provide} from '@angular/core';
 import {HttpModule} from '@angular/http';
 
 import {TestBed, async, inject} from '@angular/core/testing';

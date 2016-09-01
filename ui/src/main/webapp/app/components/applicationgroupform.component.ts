@@ -1,4 +1,3 @@
-import {NgClass} from "@angular/common";
 import {Component, Input, OnInit} from "@angular/core";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -11,7 +10,6 @@ import {FormComponent} from "./formcomponent.component";
 @Component({
     selector: 'create-group-form',
     templateUrl: 'app/components/applicationgroupform.component.html',
-    directives: [ NgClass ]
 })
 export class ApplicationGroupForm extends FormComponent implements OnInit
 {
