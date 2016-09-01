@@ -1,4 +1,3 @@
-import {NgClass} from "@angular/common";
 import {Component, Input, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 
@@ -8,8 +7,7 @@ import {FormComponent} from "./formcomponent.component";
 
 @Component({
     selector: 'create-migration-project-form',
-    templateUrl: 'app/components/migrationprojectform.component.html',
-    directives: [ NgClass ]
+    templateUrl: 'app/components/migrationprojectform.component.html'
 })
 export class MigrationProjectFormComponent extends FormComponent implements OnInit
 {

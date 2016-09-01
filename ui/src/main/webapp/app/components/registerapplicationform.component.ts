@@ -1,19 +1,17 @@
-import {NgClass} from "@angular/common";
 import {Component, Input, OnInit} from "@angular/core";
-import {REACTIVE_FORM_DIRECTIVES, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 
 import {RegisteredApplication} from "windup-services";
 import {RegisteredApplicationService} from "../services/registeredapplication.service";
-import {FileExistsValidator} from "../validators/FileExistsValidator";
+import {FileExistsValidator} from "../validators/file-exists.validator";
 import {FileService} from "../services/file.service";
 import {ApplicationGroupService} from "../services/applicationgroup.service";
 import {ApplicationGroup} from "windup-services";
 import {FormComponent} from "./formcomponent.component";
 
 @Component({
-    templateUrl: 'app/components/registerapplicationform.component.html',
-    directives: [ REACTIVE_FORM_DIRECTIVES, NgClass ]
+    templateUrl: 'app/components/registerapplicationform.component.html'
 })
 export class RegisterApplicationFormComponent extends FormComponent implements OnInit {
     registrationForm: FormGroup;

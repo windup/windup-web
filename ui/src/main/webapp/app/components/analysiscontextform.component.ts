@@ -1,4 +1,3 @@
-import {ControlGroup, NgClass, NgControlName, Validators} from "@angular/common";
 import {Component, Input, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Observable} from 'rxjs/Observable';
@@ -13,7 +12,6 @@ import {AnalysisContextService} from "../services/analysiscontext.service";
 
 @Component({
     templateUrl: 'app/components/analysiscontextform.component.html',
-    directives: [ NgClass ],
     providers: [ AnalysisContextService, ApplicationGroupService, MigrationPathService ]
 })
 export class AnalysisContextFormComponent extends FormComponent
@@ -34,7 +32,7 @@ export class AnalysisContextFormComponent extends FormComponent
     packages:[{prefix:string}];
     excludePackages:[{prefix:string}];
 
-    private _migrationPathsObservable:Observable<MigrationPath>;
+    private _migrationPathsObservable:Observable<MigrationPath[]>;
 
     constructor(private _router:Router,
                 private _activatedRoute: ActivatedRoute,
