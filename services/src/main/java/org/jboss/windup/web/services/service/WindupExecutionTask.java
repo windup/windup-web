@@ -13,26 +13,13 @@ import java.util.stream.Collectors;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.HeuristicMixedException;
-import javax.transaction.HeuristicRollbackException;
-import javax.transaction.NotSupportedException;
-import javax.transaction.RollbackException;
-import javax.transaction.SystemException;
-import javax.transaction.UserTransaction;
 
 import org.jboss.windup.web.addons.websupport.services.WindupExecutorService;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
-import org.jboss.windup.web.furnaceserviceprovider.WebProperties;
 import org.jboss.windup.web.services.WindupWebProgressMonitor;
 import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.ApplicationGroup;
-import org.jboss.windup.web.services.model.Configuration;
 import org.jboss.windup.web.services.model.MigrationPath;
-import org.jboss.windup.web.services.model.RegisteredApplication;
 import org.jboss.windup.web.services.model.WindupExecution;
 
 /**
@@ -44,9 +31,6 @@ public class WindupExecutionTask implements Runnable
 {
     private static Logger LOG = Logger.getLogger(WindupExecutionTask.class.getName());
 
-    @PersistenceContext
-    private EntityManager entityManager;
-
     @Inject
     @FromFurnace
     private WindupExecutorService windupExecutorService;
@@ -55,16 +39,14 @@ public class WindupExecutionTask implements Runnable
     @Inject
     private Instance<WindupWebProgressMonitor> progressMonitorInstance;
 
-    private Configuration configuration;
     private WindupExecution execution;
     private ApplicationGroup group;
 
     /**
      * The {@link ApplicationGroup} to execute.
      */
-    public void init(WindupExecution execution, Configuration configuration, ApplicationGroup group)
+    public void init(WindupExecution execution, ApplicationGroup group)
     {
-        this.configuration = configuration;
         this.execution = execution;
         this.group = group;
     }
@@ -81,7 +63,7 @@ public class WindupExecutionTask implements Runnable
         AnalysisContext analysisContext = group.getAnalysisContext();
         try
         {
-            Collection<Path> rulesPaths = this.configuration.getRulesPaths().stream()
+            Collection<Path> rulesPaths = analysisContext.getRulesPaths().stream()
                     .map((rulesPath) -> Paths.get(rulesPath.getPath()))
                     .collect(Collectors.toList());
 
@@ -127,10 +109,7 @@ public class WindupExecutionTask implements Runnable
                         target);
 
             // reload the current state
-            execution = entityManager.find(WindupExecution.class, execution.getId());
-            execution.setTimeCompleted(new GregorianCalendar());
-
-            setReportIndexPath(execution);
+            progressMonitor.done();
         }
         catch (Exception e)
         {
@@ -141,32 +120,5 @@ public class WindupExecutionTask implements Runnable
         }
     }
 
-    private void setReportIndexPath(WindupExecution execution)
-                throws HeuristicMixedException, HeuristicRollbackException, NamingException, NotSupportedException, RollbackException, SystemException
-    {
-        InitialContext ic = new InitialContext();
-        UserTransaction userTransaction = (UserTransaction) ic.lookup("java:comp/UserTransaction");
 
-        userTransaction.begin();
-
-        ApplicationGroup group = execution.getGroup();
-        Path reportDirectory = Paths.get(group.getOutputPath());
-        for (RegisteredApplication application : group.getApplications())
-        {
-            Path applicationPath = Paths.get(application.getInputPath());
-
-            /*
-             * FIXME - This is a little bit of a hack to just get the relative path for the web client.
-             *
-             * Could potentially be moved into a service inside of the Windup Furnace API?
-             */
-            String reportDirectoryName = reportDirectory.getFileName().toString();
-            String reportIndexFilename = windupExecutorService.getReportIndexPath(reportDirectory, applicationPath);
-
-            application.setReportIndexPath(reportDirectoryName + "/reports/" + reportIndexFilename);
-            entityManager.merge(application);
-            // END FIXME
-        }
-        userTransaction.commit();
-    }
 }

@@ -23,7 +23,7 @@ public class FileExistsValidator implements ConstraintValidator<FileExistsConstr
     public boolean isValid(String value, ConstraintValidatorContext context)
     {
         if (value != null)
-            LOG.info("Validating input path: " + Paths.get(value).toAbsolutePath().normalize().toString());
+            LOG.info("Validating path: " + Paths.get(value).toAbsolutePath().normalize().toString());
         return value != null && Files.exists(Paths.get(value));
     }
 }

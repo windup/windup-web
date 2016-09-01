@@ -5,7 +5,7 @@ import {Inject, Input} from '@angular/core';
     selector: 'progress-bar',
     template: `
         <div class="progress-description">
-            <div class="spinner spinner-xs spinner-inline"></div> <strong>Task:</strong> {{taskName}}
+            <div class="spinner spinner-xs spinner-inline"></div> <strong>Task:</strong> {{taskName ? taskName : "Starting..."}}
         </div>
         <div class="progress progress-label-top-right">
             <div
@@ -15,7 +15,7 @@ import {Inject, Input} from '@angular/core';
                     [attr.aria-valuemax]="maxValue"
                     [style.width]="(currentValue/maxValue)*100 + '%'">
                 <span>
-                    {{currentValue}}/{{maxValue}}
+                    {{currentValue ? currentValue : "?"}}/{{maxValue ? maxValue : "?"}}
                 </span>
             </div>
         </div>`

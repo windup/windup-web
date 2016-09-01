@@ -26,6 +26,7 @@ import org.openqa.selenium.support.events.EventFiringWebDriver;
 @RunWith(Arquillian.class)
 public abstract class AbstractUITest
 {
+    private static final String SERVICES_WAR_ARTIFACT_ID = "org.jboss.windup.web:windup-web-services:war:3.0.0-SNAPSHOT";
     private static final String PACKAGE = "org.jboss.windup.web.ui";
     private static final String WEBAPP_SRC = "src/main/webapp";
     private static final String COMPILED_WEBAPP_SRC = "target/windup-web/";
@@ -38,7 +39,7 @@ public abstract class AbstractUITest
     public static WebArchive createServicesDeployment()
     {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "windup-web-services.war");
-        File servicesWarFile = Maven.resolver().resolve("org.jboss.windup.web:windup-web-services:war:3.0.0-SNAPSHOT").withoutTransitivity().asSingleFile();
+        File servicesWarFile = Maven.resolver().resolve(SERVICES_WAR_ARTIFACT_ID).withoutTransitivity().asSingleFile();
         war.merge(ShrinkWrap.create(GenericArchive.class).as(ZipImporter.class).importFrom(servicesWarFile).as(GenericArchive.class));
         war.merge(ShrinkWrap.create(ExplodedImporter.class).importDirectory("src/test/resources/WEB-INF").as(GenericArchive.class), "/WEB-INF");
         return war;

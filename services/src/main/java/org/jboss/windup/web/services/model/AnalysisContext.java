@@ -3,6 +3,7 @@ package org.jboss.windup.web.services.model;
 import java.io.Serializable;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -11,8 +12,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Version;
+import javax.validation.Valid;
 
 /**
  * Contains information about how Windup analysis should be configured. For example, this might include the package list to scan or the target
@@ -45,6 +48,10 @@ public class AnalysisContext implements Serializable
 
     @OneToOne
     private ApplicationGroup applicationGroup;
+
+    @Valid
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<RulesPath> rulesPaths;
 
     public Long getId()
     {
@@ -114,14 +121,36 @@ public class AnalysisContext implements Serializable
         this.migrationPath = migrationPath;
     }
 
+    /**
+     * Contains the group being analyzed.
+     */
     public ApplicationGroup getApplicationGroup()
     {
         return applicationGroup;
     }
 
+    /**
+     * Contains the group being analyzed.
+     */
     public void setApplicationGroup(ApplicationGroup applicationGroup)
     {
         this.applicationGroup = applicationGroup;
+    }
+
+    /**
+     * Contains the rules paths to be analyzed.
+     */
+    public Set<RulesPath> getRulesPaths()
+    {
+        return rulesPaths;
+    }
+
+    /**
+     * Contains the rules paths to be analyzed.
+     */
+    public void setRulesPaths(Set<RulesPath> rulesPaths)
+    {
+        this.rulesPaths = rulesPaths;
     }
 
     @Override

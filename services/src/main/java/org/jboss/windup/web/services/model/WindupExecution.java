@@ -64,6 +64,10 @@ public class WindupExecution implements Serializable
     @Column(name = "current_task")
     private String currentTask;
 
+    @Column(name = "last_modified")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Calendar lastModified;
+
     @Column(name = "status")
     private ExecutionState state;
 
@@ -239,6 +243,22 @@ public class WindupExecution implements Serializable
     }
 
     /**
+     * Contains the last date that this entry was modified.
+     */
+    public Calendar getLastModified()
+    {
+        return lastModified;
+    }
+
+    /**
+     * Contains the last date that this entry was modified.
+     */
+    public void setLastModified(Calendar lastUpdate)
+    {
+        this.lastModified = lastUpdate;
+    }
+
+    /**
      * Contains the status of execution (currently being executed or completed, etc).
      */
     public ExecutionState getState()
@@ -252,5 +272,20 @@ public class WindupExecution implements Serializable
     public void setState(ExecutionState status)
     {
         this.state = status;
+    }
+
+    @Override
+    public String toString() {
+        return "WindupExecution{" +
+                "outputPath='" + outputPath + '\'' +
+                ", totalWork=" + totalWork +
+                ", workCompleted=" + workCompleted +
+                ", currentTask='" + currentTask + '\'' +
+                ", lastModified=" + lastModified +
+                ", state=" + state +
+                ", version=" + version +
+                ", timeCompleted=" + timeCompleted +
+                ", timeStarted=" + timeStarted +
+                '}';
     }
 }
