@@ -32,6 +32,7 @@ import {TechnologyComponent} from "./components/technology.component";
 import {RulesModalComponent} from "./components/rules-modal.component";
 import {AddRulesPathModalComponent} from "./components/add-rules-path-modal.component";
 import {ConfirmationModalComponent} from "./components/confirmation-modal.component";
+import {KeycloakService} from "./services/keycloak.service";
 
 @NgModule({
     imports: [
@@ -61,7 +62,7 @@ import {ConfirmationModalComponent} from "./components/confirmation-modal.compon
     ],
     providers: [
         appRoutingProviders,
-        Constants,
+        KeycloakService,
         AnalysisContextService,
         ApplicationGroupService,
         ConfigurationService,

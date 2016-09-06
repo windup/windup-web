@@ -11,7 +11,7 @@
         </init-param>
         <init-param>
             <param-name>ExcludedPathPrefixes</param-name>
-            <param-value>/systemjs.config.js;/app/;/node_modules/;/tests/;/css/</param-value>
+            <param-value>/authenticated.jsp;/not_loggedin.html;/index.html;/keycloak.json;/systemjs.config.js;/app/;/node_modules/;/tests/;/css/</param-value>
         </init-param>
     </filter>
 
@@ -20,10 +20,41 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
+    <servlet>
+        <servlet-name>Freemarker</servlet-name>
+        <servlet-class>org.jboss.windup.web.ui.FreemarkerServlet</servlet-class>
+        <init-param>
+            <param-name>TemplatePath</param-name>
+            <param-value>/</param-value>
+        </init-param>
+        <init-param>
+            <param-name>ExceptionOnMissingTemplate</param-name>
+            <!-- true => HTTP 500 on missing template, instead of HTTP 404. -->
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>incompatible_improvements</param-name>
+            <param-value>2.3.25</param-value>
+            <!--
+              Recommended to set to a high value.
+              See: http://freemarker.org/docs/pgui_config_incompatible_improvements.html
+            -->
+        </init-param>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Freemarker</servlet-name>
+        <url-pattern>*.ftl</url-pattern>
+        <url-pattern>/index.html</url-pattern>
+        <url-pattern>/not_loggedin.html</url-pattern>
+        <url-pattern>/keycloak.json</url-pattern>
+    </servlet-mapping>
+
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>secured</web-resource-name>
-            <url-pattern>/</url-pattern>
+            <url-pattern>/authenticated.jsp</url-pattern>
+            <url-pattern>/app/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
             <role-name>user</role-name>

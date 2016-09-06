@@ -1,3 +1,6 @@
+<#if !userPrincipal??>
+    ${response.sendRedirect("not_loggedin.html")}
+</#if>
 <html>
 <head>
     <title>Windup 3.0</title>
@@ -60,6 +63,8 @@
 
     <script src="node_modules/systemjs/dist/system.js"></script>
     <script src="systemjs.config.js"></script>
+
+    <script src="${keycloak.serverUrl}/js/keycloak.js"></script>
 
     <!-- 2. Configure SystemJS -->
     <script>

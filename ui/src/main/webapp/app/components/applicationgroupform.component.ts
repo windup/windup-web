@@ -1,5 +1,4 @@
-import {Component, Input, OnInit} from "@angular/core";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 
 import {ApplicationGroup, MigrationProject} from "windup-services";
@@ -54,7 +53,7 @@ export class ApplicationGroupForm extends FormComponent implements OnInit
                         this.model = model;
                         if (this.project == null)
                             this.project = this.model.migrationProject;
-                        this.loadingGroup = false
+                        this.loadingGroup = false;
                     },
                     error => this.handleError(<any> error)
                 );

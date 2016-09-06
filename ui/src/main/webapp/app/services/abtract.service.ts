@@ -1,16 +1,26 @@
 import {Injectable} from '@angular/core';
-import {Http, Response} from '@angular/http';
+import {Headers, Http, RequestOptions, Response} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 
 import {Constants} from "../constants";
+import {KeycloakService} from "./keycloak.service";
 
 @Injectable()
 export class AbstractService {
-    constructor(private _http:Http, private _constants:Constants) {
-    }
-
-    private handleError(error:Response) {
-        console.error("Service error: " + error);
-        return Observable.throw(error.json());
+    protected handleError(error:Response) {
+        // in a real world app, we may send the error to some remote logging infrastructure
+        // instead of just logging it to the console
+        console.error("Service error: (" + typeof error + ") " + error);
+        if (typeof error === 'object')
+            console.error(JSON.stringify(error));
+        var json;
+        try {
+            json = error.json();
+            console.error("Service error - JSON: " + JSON.stringify(json));
+        }
+        catch (ex) {
+            console.error("Service error - can't JSON: " + (<SyntaxError>ex).message);
+        }
+        return Observable.throw(json);
     }
 }

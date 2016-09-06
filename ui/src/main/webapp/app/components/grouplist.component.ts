@@ -24,7 +24,6 @@ export class GroupListComponent implements OnInit, OnDestroy {
     errorMessage:string;
 
     constructor(
-        private _constants: Constants,
         private _activatedRoute: ActivatedRoute,
         private _router: Router,
         private _applicationGroupService: ApplicationGroupService,
@@ -76,7 +75,6 @@ export class GroupListComponent implements OnInit, OnDestroy {
         this.groups = groups;
 
         // On the first run, check for any existing executions
-        console.log("this.processingstatus.size == " + this.processingStatus.size);
         if (this.processingStatus.size == 0) {
             groups.forEach((group:ApplicationGroup) => {
                 group.executions.forEach((execution:WindupExecution) => {
@@ -120,11 +118,11 @@ export class GroupListComponent implements OnInit, OnDestroy {
         if (execution == null || execution.applicationListRelativePath == null || execution.state != "COMPLETED")
             return null;
 
-        return this._constants.STATIC_REPORTS_BASE + "/" + execution.applicationListRelativePath;
+        return Constants.STATIC_REPORTS_BASE + "/" + execution.applicationListRelativePath;
     }
 
     reportURL(app:RegisteredApplication):string {
-        return this._constants.STATIC_REPORTS_BASE + "/" + app.reportIndexPath;
+        return Constants.STATIC_REPORTS_BASE + "/" + app.reportIndexPath;
     }
 
     createGroup() {
