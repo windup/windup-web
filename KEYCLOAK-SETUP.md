@@ -19,7 +19,7 @@ https://access.redhat.com/documentation/en/red-hat-single-sign-on/7.0/single/get
 
 
 
- - Install the EAP 7 Adapter
+ - Install the EAP 7 Adapter into the EAP instance that will run Windup Web
 	- Download the RH-SSO-7.0.0-eap7-adapter.zip and unzip it into the root directory of your EAP 7 installation
 	- Run the installer: 
 		- cd bin

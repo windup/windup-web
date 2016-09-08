@@ -44,7 +44,7 @@ public class ConfigurationEndpointTest extends AbstractTest
     @Before
     public void setUp()
     {
-        ResteasyClient client = new ResteasyClientBuilder().build();
+        ResteasyClient client = getResteasyClient();
         ResteasyWebTarget target = client.target(contextPath + "rest");
 
         this.configurationEndpoint = target.proxy(ConfigurationEndpoint.class);

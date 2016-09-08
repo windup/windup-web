@@ -5,8 +5,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.logging.Logger;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.GetMethod;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.HttpClients;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.AbstractTest;
@@ -45,9 +48,10 @@ public class FileDefaultServletTest extends AbstractTest
         Files.createDirectories(reportsDir);
         Path tempFile = Files.createTempFile(reportsDir, TESTFILE_PREFIX, ".file");
 
-        HttpClient httpClient = new HttpClient();
+        HttpClient httpClient = HttpClients.createDefault();
         final String testFileUrl = baseURL.toURI().toString() + "staticReport/" + tempFile.getFileName();
-        int exec = httpClient.executeMethod(new GetMethod(testFileUrl));
+        HttpResponse response = httpClient.execute(new HttpGet(testFileUrl));
+        int exec = response.getStatusLine().getStatusCode();
         log.info("FileServlet returned HTTP code: " + exec);
 
         Assert.assertNotEquals("Test file not found at: " + testFileUrl, 403L, exec);
