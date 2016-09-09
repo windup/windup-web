@@ -22,7 +22,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
 
     ngOnInit():any {
         this.getMigrationProjects();
-        this._refreshIntervalID = setInterval(() => this.getMigrationProjects(), 3000);
+        this._refreshIntervalID = setInterval(() => this.getMigrationProjects(), 30000);
     }
 
     ngOnDestroy():any {

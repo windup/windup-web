@@ -1,6 +1,7 @@
 package org.jboss.windup.web.ui;
 
 import java.net.URL;
+import java.util.logging.Logger;
 
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -23,15 +24,14 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 @RunAsClient
 public class JasmineTest extends AbstractUITest
 {
-    private static final String TESTS_PATH = "tests/unit-tests.html";
+    private static Logger LOG = Logger.getLogger(JasmineTest.class.getName());
 
-    @ArquillianResource
-    URL contextRoot;
+    private static final String TESTS_PATH = "tests/unit-tests.html";
 
     @Before
     public void loadPage()
     {
-        getDriver().navigate().to(contextRoot + "/" + TESTS_PATH);
+        getDriver().navigate().to(getContextRoot() + "/" + TESTS_PATH);
     }
 
     private WebElement getTestSummaryElement()
@@ -43,22 +43,19 @@ public class JasmineTest extends AbstractUITest
     @Test
     public void checkJasmineResults() throws Exception
     {
-        ExpectedCondition<Boolean> e = new ExpectedCondition<Boolean>()
-        {
-            public Boolean apply(WebDriver d)
-            {
-                WebElement durationElement = d.findElement(By.className("jasmine-duration"));
-                boolean durationDisplayed = durationElement.isDisplayed();
-                boolean finishedTextAvailable = durationElement.getText().contains("finished in");
-                boolean testSummaryDisplayed = getTestSummaryElement().isDisplayed();
-                boolean testsNotSkipped = !getTestSummaryElement().getAttribute("class").contains("jasmine-skipped");
-                System.out.println("Status: " + durationDisplayed + "," + finishedTextAvailable + "," + testSummaryDisplayed + "," + testsNotSkipped);
+        ExpectedCondition<Boolean> e = (webDriver) -> {
+            WebElement durationElement = webDriver.findElement(By.className("jasmine-duration"));
+            boolean durationDisplayed = durationElement.isDisplayed();
+            boolean finishedTextAvailable = durationElement.getText().contains("finished in");
+            boolean testSummaryDisplayed = getTestSummaryElement().isDisplayed();
+            boolean testsNotSkipped = !getTestSummaryElement().getAttribute("class").contains("jasmine-skipped");
+            LOG.info("Check Jasmine Status: " + durationDisplayed + "," + finishedTextAvailable + "," + testSummaryDisplayed + "," + testsNotSkipped);
 
-                return durationDisplayed && finishedTextAvailable && testSummaryDisplayed && testsNotSkipped;
-            }
+            return durationDisplayed && finishedTextAvailable && testSummaryDisplayed && testsNotSkipped;
         };
         Wait<WebDriver> w = new WebDriverWait(getDriver(), 60);
         w.until(e);
+        takeScreenshot(getDriver());
 
         WebElement testSummary = getTestSummaryElement();
         Assert.assertNotNull("Test Summary Element Missing", testSummary);

@@ -1,7 +1,7 @@
 <h1>
     Create Migration Project
 </h1>
-<form (ngSubmit)="save()" #projectForm="ngForm" class="form-horizontal">
+<form #projectForm="ngForm" (ngSubmit)="save()" class="form-horizontal">
     <div *ngFor="let errorMessage of errorMessages" class="row form-errors alert alert-danger">
         <div class="col-md-2">&nbsp;</div>
         <div class="col-md-10">
@@ -11,20 +11,20 @@
     </div>
     <div class="row">
         <div class="form-group">
-            <label class="col-md-2 control-label" for="idTitle">Migration Project Title</label>
+            <label class="col-md-2 control-label" for="idProjectTitle">Migration Project Title</label>
             <div class="col-md-6">
-                <input #titleControl="ngModel"
+                <input #projectTitleControl="ngModel"
+                       name="projectTitle"
                        [(ngModel)]="model.title"
-                       name="title"
                        [disabled]="loading"
+                       required
                        minlength="4"
                        maxlength="128"
-                       required
                        type="text"
-                       id="idTitle"
+                       id="idProjectTitle"
                        class="form-control">
             </div>
-            <span [class.hidden]="!hasError(titleControl)" class="help-block">
+            <span [class.hidden]="!hasError(projectTitleControl)" class="help-block">
                 The title must be greater than 3 characters long and fewer than 128 characters.
             </span>
         </div>

@@ -46,7 +46,7 @@ public class AnalysisContextEndpointTest extends AbstractTest
     @Before
     public void setUp()
     {
-        ResteasyClient client = new ResteasyClientBuilder().build();
+        ResteasyClient client = getResteasyClient();
         ResteasyWebTarget target = client.target(contextPath + "rest");
 
         this.applicationGroupEndpoint = target.proxy(ApplicationGroupEndpoint.class);

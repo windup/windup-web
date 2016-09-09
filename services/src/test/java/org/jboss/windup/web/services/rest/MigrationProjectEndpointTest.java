@@ -43,7 +43,7 @@ public class MigrationProjectEndpointTest extends AbstractTest
     @Before
     public void setUp()
     {
-        ResteasyClient client = new ResteasyClientBuilder().build();
+        ResteasyClient client = getResteasyClient();
         ResteasyWebTarget target = client.target(contextPath + "rest");
 
         this.migrationProjectEndpoint = target.proxy(MigrationProjectEndpoint.class);

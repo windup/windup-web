@@ -50,4 +50,5 @@ Running the webapp
 - Execute the CLI script at: scripts/eap-setup.cli on EAP 7
 - Deploy the exploded `services/target/windup-web-services` and `ui/target/web-services` to EAP 7.
     - NOTE: EAP 7 must be run in standalone-full.xml as JMS is required
+- Follow the steps for deploying keycloak in [Keycloak Setup](./KEYCLOAK-SETUP.md)
 - Access the webapp: `http://localhost:8080/windup-web/`

@@ -12,7 +12,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.arquillian.warp.WarpTest;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
-import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
@@ -22,6 +21,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -44,13 +44,12 @@ public class FileEndpointTest extends AbstractTest
     }
 
     @Before
-    public void setUp()
+    public void setUp() throws Exception
     {
-        ResteasyClient client = new ResteasyClientBuilder().register(FrameUnmarshaller.class).build();
+        ResteasyClient client = getResteasyClient();
         ResteasyWebTarget target = client.target(contextPath + "rest");
 
         this.fileEndpoint = target.proxy(FileEndpoint.class);
-
     }
 
     @Test

@@ -24,7 +24,7 @@
         <version.forge>3.3.0.Final</version.forge>
         <version.furnace>2.23.8.Final</version.furnace>
         <version.windup>3.0.0-SNAPSHOT</version.windup>
-
+        <version.keycloak>2.1.0.Final</version.keycloak>
         <version.resteasy>3.0.19.Final</version.resteasy>
 
         <windup.web.scm.connection>scm:git:https://github.com/windup/windup-web.git</windup.web.scm.connection>
@@ -59,6 +59,7 @@
     <modules>
         <module>addons</module>
         <module>furnace-service-provider</module>
+        <module>tests</module>
         <module>services</module>
         <module>ui</module>
     </modules>

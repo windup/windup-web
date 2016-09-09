@@ -22,21 +22,19 @@ public class ProjectListUITest extends AbstractUITest
 {
     private static Logger LOG = Logger.getLogger(ProjectListUITest.class.getSimpleName());
 
-    @ArquillianResource
-    URL contextRoot;
-
     @FindBy(xpath = "//button[contains(@class, 'btn-primary') and text() = 'Create Migration Project']")
     private WebElement createProjectButton;
 
     @Before
     public void loadPage()
     {
-        getDriver().navigate().to(contextRoot);
+        getDriver().navigate().to(getContextRoot());
     }
 
     @Test
     public void testInitialLoad() throws Exception
     {
+        takeScreenshot(getDriver());
         Assert.assertNotNull(createProjectButton);
         LOG.info("Button: " + createProjectButton.getText());
     }

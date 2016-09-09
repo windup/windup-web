@@ -7,6 +7,7 @@ import 'rxjs/Rx';
 import {Constants} from '../../app/constants';
 
 import {FileService} from "../../app/services/file.service";
+import {KeycloakService} from "../../app/services/keycloak.service";
 
 
 describe("File Service", () => {
@@ -14,7 +15,7 @@ describe("File Service", () => {
         TestBed.configureTestingModule(
             {
                 imports: [HttpModule],
-                providers: [Constants, FileService]
+                providers: [Constants, FileService, KeycloakService]
             }
         );
         TestBed.compileComponents().catch(error => console.error(error));

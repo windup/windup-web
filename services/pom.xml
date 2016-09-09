@@ -66,6 +66,10 @@
                     <groupId>dom4j</groupId>
                     <artifactId>dom4j</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>commons-httpclient</groupId>
+                    <artifactId>commons-httpclient</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -90,6 +94,12 @@
 
         <!-- Test Dependencies -->
         <dependency>
+            <groupId>org.jboss.windup.web</groupId>
+            <artifactId>test-authentication-client</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
@@ -110,6 +120,12 @@
             <artifactId>arquillian-warp</artifactId>
             <scope>test</scope>
             <type>pom</type>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpcore</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.jboss.arquillian.extension</groupId>
@@ -126,7 +142,6 @@
             <artifactId>resteasy-jsapi</artifactId>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-jaxb-provider</artifactId>
@@ -390,10 +405,10 @@
                                 <configuration>
                                     <artifactItems>
                                         <artifactItem>
-                                            <groupId>org.wildfly</groupId>
-                                            <artifactId>wildfly-dist</artifactId>
-                                            <version>10.0.0.Final</version>
-                                            <type>zip</type>
+                                            <groupId>org.jboss.windup.web</groupId>
+                                            <artifactId>windup-web-tests-wildfly-dist</artifactId>
+                                            <version>${project.version}</version>
+                                            <type>jar</type>
                                             <overWrite>false</overWrite>
                                             <outputDirectory>target</outputDirectory>
                                         </artifactItem>
@@ -411,7 +426,6 @@
                             </systemPropertyVariables>
                         </configuration>
                     </plugin>
-
                 </plugins>
             </build>
         </profile>

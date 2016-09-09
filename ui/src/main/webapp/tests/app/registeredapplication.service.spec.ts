@@ -10,13 +10,15 @@ import {Constants} from '../../app/constants';
 
 import {RegisteredApplicationService} from "../../app/services/registeredapplication.service";
 import {RegisteredApplication} from "windup-services";
+import {KeycloakService} from "../../app/services/keycloak.service";
+import {FileService} from "../../app/services/file.service";
 
 describe("Registered Application Service Test", () => {
     beforeEach(() => {
         TestBed.configureTestingModule(
             {
                 imports: [HttpModule],
-                providers: [Constants, RegisteredApplicationService]
+                providers: [Constants, FileService, RegisteredApplicationService, KeycloakService]
             }
         );
         TestBed.compileComponents().catch(error => console.error(error));

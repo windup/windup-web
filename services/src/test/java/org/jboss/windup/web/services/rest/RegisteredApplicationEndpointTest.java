@@ -47,7 +47,7 @@ public class RegisteredApplicationEndpointTest extends AbstractTest
     @Before
     public void setUp()
     {
-        ResteasyClient client = new ResteasyClientBuilder().register(FrameUnmarshaller.class).build();
+        ResteasyClient client = getResteasyClient();
         ResteasyWebTarget target = client.target(contextPath + "rest");
 
         this.registeredApplicationEndpoint = target.proxy(RegisteredApplicationEndpoint.class);

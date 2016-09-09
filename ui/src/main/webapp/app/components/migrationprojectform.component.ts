@@ -1,12 +1,11 @@
-import {Component, Input, OnInit} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 
-import {MigrationProjectService} from "../services/migrationproject.service";
 import {MigrationProject} from "windup-services";
+import {MigrationProjectService} from "../services/migrationproject.service";
 import {FormComponent} from "./formcomponent.component";
 
 @Component({
-    selector: 'create-migration-project-form',
     templateUrl: 'app/components/migrationprojectform.component.html'
 })
 export class MigrationProjectFormComponent extends FormComponent implements OnInit
@@ -33,7 +32,10 @@ export class MigrationProjectFormComponent extends FormComponent implements OnIn
                 this.editMode = true;
                 this.loading = true;
                 this._migrationProjectService.get(id).subscribe(
-                    model => { this.model = model; this.loading = false },
+                    model => {
+                        this.model = model;
+                        this.loading = false;
+                    },
                     error => this.handleError(<any> error)
                 );
             }

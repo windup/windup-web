@@ -1,0 +1,12 @@
+{
+  "realm": "windup",
+  "auth-server-url": "http://localhost:8180/auth",
+  "resource": "windup-web-services",
+  "credentials": {
+    "client-id": "windup-web-services",
+    "secret": "public",
+    "realm-public-key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwYo69uB9aD28Eg/UUfsMaQDRnEbKfUTnfe6H/yS0IQQ29nzV0w3054kaKrKpoyF/oGvcLOnRMoWLl/kyLrhJES9YJbZjpsPquUSzFjb/t1bVwBgU93mulQWW/vnVhZk0hRyS2j+Ito/z54sHViJuaaBf8RNkCUCkN7ly+eBUYpZROcEta6GkPBqKptTNQR+EtKIGzFx9Qsig6lJk4PCSUwtCdrYtHwlToeW3N9QJoILIj3UlXCdqnO2nVJKfQgE37WwA8xtLHsrMiUDCzvZVPH5aw9wD+UR7nXodPOZP44+r1WRLYpyXIEFEsEiq7ucoXUs0qatdiTe60Aiv4UYk1wIDAQAB",
+    "ssl-required": "external",
+    "public-client": true
+  }
+}

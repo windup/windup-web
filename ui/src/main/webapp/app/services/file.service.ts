@@ -3,27 +3,25 @@ import {Headers, Http, RequestOptions, Response} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 
 import {Constants} from "../constants";
+import {AbstractService} from "./abtract.service";
+import {KeycloakService} from "./keycloak.service";
 
 @Injectable()
-export class FileService {
+export class FileService extends AbstractService {
     private PATH_EXISTS_URL = "/file/pathExists";
 
-    constructor (private _http: Http, private _constants: Constants) {}
+    constructor (private _keycloakService:KeycloakService, private _http: Http) {
+        super();
+    }
 
     pathExists(path:string) {
-        let headers = new Headers();
+        let headers = this._keycloakService.defaultHeaders;
         let options = new RequestOptions({ headers: headers });
         headers.append('Content-Type', 'application/json');
         headers.append('Accept', 'application/json');
 
-        return this._http.post(this._constants.REST_BASE + this.PATH_EXISTS_URL, path, options)
+        return this._http.post(Constants.REST_BASE + this.PATH_EXISTS_URL, path, options)
             .map(res => <boolean> res.json())
             .catch(this.handleError);
-    }
-
-
-    private handleError(error: Response) {
-        console.error("Service error: " + error);
-        return Observable.throw(error.json());
     }
 }
