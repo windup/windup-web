@@ -10,7 +10,7 @@
 
     <artifactId>windup-web-tests-wildfly-dist</artifactId>
     <name>Windup Web - Wildfly Distribution</name>
-    <description>This module creates a distribution of Wildfly that is preconfigured for the deployment of Wildfly Web. Keycloak is configured and setup with test users.</description>
+    <description>This module creates a distribution of Wildfly that is preconfigured for the deployment of Windup Web. Keycloak is configured and setup with test users.</description>
     <packaging>jar</packaging>
 
     <build>
