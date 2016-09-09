@@ -26,8 +26,12 @@ export class KeycloakService {
         }
     }
 
-    static init() : Promise<any>{
-        let keycloakAuth : any = new Keycloak('keycloak.json');
+    static init() : Promise<any> {
+        return KeycloakService.initWithKeycloakJSONPath('keycloak.json');
+    }
+
+    static initWithKeycloakJSONPath(path:string) {
+        let keycloakAuth : any = new Keycloak(path);
         KeycloakService.auth.loggedIn = false;
 
         return new Promise((resolve,reject)=>{

@@ -48,6 +48,7 @@
         <url-pattern>/index.html</url-pattern>
         <url-pattern>/not_loggedin.html</url-pattern>
         <url-pattern>/keycloak.json</url-pattern>
+        <url-pattern>/tests/unit-tests.html</url-pattern>
     </servlet-mapping>
 
     <security-constraint>

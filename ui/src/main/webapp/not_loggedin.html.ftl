@@ -27,6 +27,8 @@
                     $('#loading').hide();
                     $('#loginRequired').show();
                 }
+            }).error(function(error) {
+                console.log("Error checking authentication due to: " + error);
             });
 
             $('#btnLogin').click(function () {

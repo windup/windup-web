@@ -28,6 +28,8 @@
     <script src="../node_modules/zone.js/dist/async-test.js"></script>
     <script src="../node_modules/zone.js/dist/fake-async-test.js"></script>
 
+    <script src="${keycloak.serverUrl}/js/keycloak.js"></script>
+
     <script>
         var SPEC_FILES = [
             'tests/app/file.service.spec',
@@ -41,6 +43,9 @@
         }
 
         System.import('../systemjs.config.js')
+                .then(function () {
+                    return System.import('tests/app/servicesetup');
+                })
                 .then(function () {
                     return Promise.all([
                         System.import('@angular/core/testing'),

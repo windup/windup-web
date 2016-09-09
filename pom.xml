@@ -59,9 +59,9 @@
     <modules>
         <module>addons</module>
         <module>furnace-service-provider</module>
+        <module>tests</module>
         <module>services</module>
         <module>ui</module>
-        <module>tests</module>
     </modules>
 
     <dependencyManagement>
