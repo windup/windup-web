@@ -19,7 +19,7 @@ public class FileModelResourceImpl extends AbstractGraphResource implements File
     @Override
     public List<Map<String, Object>> get(Long executionID, String filename)
     {
-        try (GraphContext context = getGraph(executionID))
+        try (GraphContext context = getGraphContext(executionID))
         {
             FileService fileService = new FileService(context);
             Iterable<FileModel> models = fileService.findByFilenameRegex(filename);

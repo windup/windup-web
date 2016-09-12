@@ -1,0 +1,12 @@
+spawn /home/ondra/sw/prog/gremlin/2.6.0/bin/gremlin.sh
+expect ">"
+send "import com.thinkaurelius.titan.core.TitanFactory;
+"
+expect ">"
+send "g = TitanFactory.open('/tmp/windup/testRunReport/graph/TitanConfiguration.properties');
+"
+expect ">"
+send "
+"
+# turn it back over to interactive user
+interact

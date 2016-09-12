@@ -15,6 +15,7 @@ import javax.inject.Singleton;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
+ * @author <a href="mailto:zizka@seznam.cz">Ondrej Zizka</a>
  */
 @Singleton
 public class GraphResourceImpl extends AbstractGraphResource implements GraphResource
@@ -22,7 +23,7 @@ public class GraphResourceImpl extends AbstractGraphResource implements GraphRes
     @Override
     public List<Map<String, Object>> getEdges(Long executionID, Integer vertexID, String edgeDirection, String edgeLabel)
     {
-        GraphContext graphContext = getGraph(executionID);
+        GraphContext graphContext = getGraphContext(executionID);
         if (vertexID == null)
             throw new IllegalArgumentException("ID not specified");
 
@@ -41,7 +42,7 @@ public class GraphResourceImpl extends AbstractGraphResource implements GraphRes
     @Override
     public List<Map<String, Object>> getByType(Long executionID, String vertexType, Integer depth)
     {
-        GraphContext graphContext = getGraph(executionID);
+        GraphContext graphContext = getGraphContext(executionID);
         List<Map<String, Object>> vertices = new ArrayList<>();
         for (Vertex v : graphContext.getFramed().getVertices(WindupVertexFrame.TYPE_PROP, vertexType))
         {
@@ -53,7 +54,7 @@ public class GraphResourceImpl extends AbstractGraphResource implements GraphRes
     @Override
     public List<Map<String, Object>> getByType(Long executionID, String vertexType, String propertyName, String propertyValue, Integer depth)
     {
-        GraphContext graphContext = getGraph(executionID);
+        GraphContext graphContext = getGraphContext(executionID);
         List<Map<String, Object>> vertices = new ArrayList<>();
         Query query = graphContext.getFramed().query().has(WindupVertexFrame.TYPE_PROP, vertexType).has(propertyName, propertyValue);
         for (Vertex vertex : query.vertices())
@@ -62,15 +63,33 @@ public class GraphResourceImpl extends AbstractGraphResource implements GraphRes
         }
         return vertices;
     }
+    
+    @Override
+    public List<Map<String, Object>> getByType(String vertexType, Integer depth){
+        return getByType(null, vertexType, depth);
+    }
 
     @Override
     public Map<String, Object> get(Long executionID, Integer id, Integer depth)
     {
-        GraphContext graphContext = getGraph(executionID);
+        GraphContext graphContext = getGraphContext(executionID);
         if (id == null)
-            throw new IllegalArgumentException("ID not specified");
+            throw new IllegalArgumentException("Execution ID not specified");
 
         Vertex vertex = graphContext.getFramed().getVertex(id);
+        if (vertex == null)
+            throw new IllegalArgumentException("Non-existent vertex ID " + id + " in execution " + executionID);
         return convertToMap(executionID, vertex, depth);
+    }
+    
+    
+    @Override
+    public String getTestVertex(){
+        return "[{\"w:winduptype\":[\"FileResource\",\"ArchiveModel:\",\"WarArchiveModel\"],\"fileName\":\"jee-example-web.war\","
+        + "\"md5Hash\":\"e71dfca0743df75c0de70bddc5a2686b\","
+        + "\"unzippedDirectory\":\"/home/ondra/sw/AS/wildfly-10.1.0.Final/standalone/data/windup/reports/Default Group.briOxXRQGwdE.report/archives/jee-example-web.war\","
+        + "\"filePath\":\"/home/ondra/sw/AS/wildfly-10.1.0.Final/standalone/data/windup/reports/Default Group.briOxXRQGwdE.report/archives/jee-example-app-1.0.0.ear/jee-example-web.war\",\"windupGenerated\":false,"
+        + "\"ArchiveModel:archiveName\":\"jee-example-web.war\",\"sha1Hash\":\"8a72a375ca7feba49ea5cab492e52e64cee41dc6\",\"_id\":3584,\"isDirectory\":false}]"
+        ;
     }
 }

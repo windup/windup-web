@@ -7,6 +7,7 @@
         paths: {
             // paths serve as alias
             'npm:': '/windup-web/node_modules/',
+            'models:': '/windup-web/tests/unmarshaller/tsModels/',
             'tests/app/*': "app/*"
         },
         // map tells the System loader where to look for things
@@ -33,6 +34,8 @@
             '@angular/forms/testing': 'npm:@angular/forms/bundles/forms-testing.umd.js',
             // other libraries
             'rxjs':                       'npm:rxjs',
+            'jquery':                     'npm:jquery/dist/jquery.min.js',
+            'd3':                         'npm:d3/dist/d3.min.js',
             'angular2-in-memory-web-api': 'npm:angular2-in-memory-web-api',
             'ng2-file-upload': 'npm:ng2-file-upload',
             'angular2-tree-component': 'npm:angular2-tree-component',

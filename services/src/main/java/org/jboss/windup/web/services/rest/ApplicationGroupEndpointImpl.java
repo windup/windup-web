@@ -47,13 +47,9 @@ public class ApplicationGroupEndpointImpl implements ApplicationGroupEndpoint
     @Override
     public Collection<ApplicationGroup> getApplicationGroups(Long projectID)
     {
-        MigrationProject project = entityManager.find(MigrationProject.class, projectID);
-
+        final MigrationProject project = entityManager.find(MigrationProject.class, projectID);
         if (project == null)
-        {
-            throw new NotFoundException("MigrationProject not found");
-        }
-
+            throw new IllegalArgumentException("MigrationProject not found, ID:  " + projectID);
         return project.getGroups();
     }
 

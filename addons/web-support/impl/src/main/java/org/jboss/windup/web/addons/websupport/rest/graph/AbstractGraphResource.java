@@ -9,6 +9,7 @@ import java.util.Map;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
+import java.util.logging.Logger;
 import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.model.WindupVertexFrame;
 import org.jboss.windup.web.addons.websupport.rest.FurnaceRESTGraphAPI;
@@ -17,12 +18,29 @@ import org.jboss.windup.web.addons.websupport.rest.GraphPathLookup;
 import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.UriInfo;
+import javax.persistence.TypedQuery;
+import org.jboss.windup.util.Logging;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
+ * @author <a href="mailto:zizka@seznam.cz">Ondrej Zizka</a>
  */
 public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
 {
+    private static final Logger LOG = Logging.get(AbstractGraphResource.class);
+    
+    public static final String KEY_ID = "_id";
+    public static final String TYPE = "_type";
+    public static final String TYPE_VERTEX = "vertex";
+    public static final String TYPE_LINK = "link";
+    public static final String LINK = "link";
+
+    public static final String DIRECTION = "direction";
+    public static final String VERTICES = "vertices";
+    public static final String VERTICES_OUT = "vertices_out";
+    public static final String VERTICES_IN = "vertices_in";
+
+    @Context
     private UriInfo uri;
 
     @Inject
@@ -48,6 +66,9 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
         return uri.getBaseUri() + GraphResource.GRAPH_RESOURCE_URL + params;
     }
 
+    /**
+     * Stores given vertex as a Map, putting properties/values as keys/values of the Map.
+     */
     protected Map<String, Object> convertToMap(long executionID, Vertex vertex, Integer depth)
     {
         if (depth == null)
@@ -123,11 +144,52 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
         return result;
     }
 
-    protected GraphContext getGraph(Long executionID)
+    /**
+     * Opens a graph for given execution.
+     */
+    protected GraphContext getGraphContext(Long executionID)
     {
-        Path graphPath = graphPathLookup.getByExecutionID(executionID);
-        if (graphPath == null)
-            throw new NotFoundException("Execution not found: " + executionID);
-        return graphCache.getGraph(graphPath);
+        WindupExecution execution;
+        if (executionID == null || executionID == 0)
+            execution = getAnyExecution(); // Development purposes.
+        else
+            execution = entityManager.find(WindupExecution.class, executionID);
+        if (null == execution)
+            throw new IllegalArgumentException("Windup execution not found, ID: " + executionID);
+
+        return openGraph(execution);
     }
+    
+    /**
+     * Dev/test purposes.
+     */
+    private WindupExecution getAnyExecution() throws IllegalStateException {
+        List<WindupExecution> executions = getExecutions();
+        if (executions.size() == 0)
+            throw new IllegalStateException("No executions found.");
+        return executions.get(0);
+    }
+    
+
+    protected GraphContext openGraph(WindupExecution execution) throws IllegalStateException {
+        try
+        {
+            Path graphPath = Paths.get(execution.getGroup().getOutputPath()).resolve(GraphContextFactory.DEFAULT_GRAPH_SUBDIRECTORY);
+            LOG.info("Opening graph at: " + graphPath);
+
+            ///GraphContextFactory graphContextFactory = servicesProducer.getGraphContextFactory();
+            ///return graphContextFactory.load(graphPath);
+            return graphCache.getGraph(graphPath);            
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalStateException("Can't load graph for execution " + execution.getId() + ":\n\t" + ex.getMessage(), ex);
+        }
+    }
+    
+    protected List<WindupExecution> getExecutions()
+    {
+        TypedQuery<WindupExecution> queryExecutions = entityManager.createQuery("FROM WindupExecution AS ex", WindupExecution.class);
+        return queryExecutions.getResultList();
+    }    
 }

@@ -15,6 +15,8 @@ import freemarker.template.SimpleHash;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
+import freemarker.template.utility.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Overridden Freemarker Servlet that includes the following Map in the template model: - keycloak - publicKey - serverUrl
@@ -78,6 +80,8 @@ public class FreemarkerServlet extends freemarker.ext.servlet.FreemarkerServlet
 
             hashModel.put(KEYCLOAK, keycloakProperties);
         }
+        
+        deriveResponseContentType(request, response);
         return templateModel;
     }
 
@@ -93,5 +97,22 @@ public class FreemarkerServlet extends freemarker.ext.servlet.FreemarkerServlet
         }
         LOG.info("Resolved freemarker path to: " + superPath);
         return superPath;
+    }
+
+    
+    private void deriveResponseContentType(HttpServletRequest request, HttpServletResponse response)
+    {
+        Map<String, String> suffixToMimeType = new HashMap();
+        suffixToMimeType.put("html", "text/html");
+        suffixToMimeType.put("xml", "text/xml");
+        suffixToMimeType.put("json", "application/json");
+        suffixToMimeType.put("js", "application/javascript");
+        suffixToMimeType.put("ts", "application/x-typescript");
+        
+        String suffix = StringUtils.removeEnd(request.getPathInfo(), ".ftl");
+        suffix = StringUtils.substringAfterLast(suffix, ".");
+        String mimeType = suffixToMimeType.get(suffix);
+        if (mimeType != null)
+            response.setContentType(mimeType + ";charset=UTF-8");
     }
 }
