@@ -40,6 +40,7 @@ https://access.redhat.com/documentation/en/red-hat-single-sign-on/7.0/single/get
 	- With the server off, open up standalone-full.xml and paste this text into the "urn:jboss:domain:keycloak:1.1" subsystem element
 	- Change the "WAR MODULE NAME.war" section to the war name (windup-web.war)
     - Add the following system properties being sure to replace the key with the one from the copied section:
+
         ```
         <system-properties>
             <property name="keycloak.realm.public.key" value="[ INSERT KEY HERE ]"/>
