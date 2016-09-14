@@ -5,9 +5,9 @@ https://access.redhat.com/documentation/en/red-hat-single-sign-on/7.0/single/get
 
  - Download and setup SSO 7.0
 	- Startup with offset 200 to avoid conflicts with your local EAP and arquillian instances:
-		- ./standalone.sh -Djboss.socket.binding.port-offset=200
+		- `./standalone.sh -Djboss.socket.binding.port-offset=200`
 	- Navigate to setup console:
-		- http://localhost:8280/auth/
+		- [http://localhost:8280/auth/](http://localhost:8280/auth/)
 			- Setup an admin user and password here
 	- Navigate to Keycloak admin:
 		- http://localhost:8280/auth/admin/
@@ -22,16 +22,16 @@ https://access.redhat.com/documentation/en/red-hat-single-sign-on/7.0/single/get
  - Install the EAP 7 Adapter into the EAP instance that will run Windup Web
 	- Download the RH-SSO-7.0.0-eap7-adapter.zip and unzip it into the root directory of your EAP 7 installation
 	- Run the installer: 
-		- cd bin
-		- Modify adapter-install-offline.cli to point to standalone-full.xml (instead of standalone.xml)
-		- ./jboss-cli.sh --file=adapter-install-offline.cli
+		- `cd bin`
+		- Modify `adapter-install-offline.cli` to point to `standalone-full.xml` (instead of `standalone.xml`)
+		- `./jboss-cli.sh --file=adapter-install-offline.cli`
 
  - Register the client in Keycloak for windup-web
-	- Go back to the Keycloak admin console (http://localhost:8280/auth/admin/)
+	- Go back to the Keycloak admin console [http://localhost:8280/auth/admin/](http://localhost:8280/auth/admin/)
 	- Click clients in the left
 	- Click "Create"
 		- Client ID: "windup-web"
-		- Root URL: http://localhost:8080/windup-web/
+		- Root URL: [http://localhost:8080/windup-web/](http://localhost:8080/windup-web/)
 		- Click "Save"
     - On the settings page, make sure that both of the following URLs are listed as Valid Redirect URIs (add the one that is missing):
         - http://localhost:8080/windup-web-services/*
