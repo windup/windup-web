@@ -47,6 +47,7 @@ https://access.redhat.com/documentation/en/red-hat-single-sign-on/7.0/single/get
         </system-properties>
         ```
     - Replace the realm-public-key and auth-server-url elements in the extension configuration with the following text:
+    
         ```
             <realm-public-key>${keycloak.realm.public.key}</realm-public-key>
             <auth-server-url>${keycloak.server.url}</auth-server-url>
