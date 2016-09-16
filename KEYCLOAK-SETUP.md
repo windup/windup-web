@@ -58,7 +58,8 @@ https://access.redhat.com/documentation/en/red-hat-single-sign-on/7.0/single/get
   * Create a new Role called "user"
     * Add this new role to the "Default Roles"
     * Create a new test user(s) for this realm. Assign the user role to it.
-  * Create a new client with ID `windup-web`, root URL: [http://localhost:8080/windup-web/](http://localhost:8080/windup-web/) (note that you'll create the `windup-web-services` client respectively)
+
+* Create a new client with ID `windup-web`, root URL: [http://localhost:8080/windup-web/](http://localhost:8080/windup-web/) (note that you'll create the `windup-web-services` client respectively)
     * On the settings page, make sure that both of the following URLs are listed as Valid Redirect URIs (add the one that is missing):
       * `http://localhost:8080/windup-web/*`
       * `http://localhost:8080/windup-web-services/*`
@@ -82,8 +83,8 @@ https://access.redhat.com/documentation/en/red-hat-single-sign-on/7.0/single/get
             <auth-server-url>${keycloak.server.url}</auth-server-url>
         ```
 
-* Now **repeat the "Common steps" for `windup-web-services`** - create another Keycloak client.
-  * Follow the same steps, except use the name "windup-web-services" instead of "windup-web".
+* Now **create another Keycloak client the  for `windup-web-services`**.
+  * Repeat the same steps, except use the name "windup-web-services" instead of "windup-web".
   * The `<realm-public-key>` will be the same, no need for another system property.
 
 
