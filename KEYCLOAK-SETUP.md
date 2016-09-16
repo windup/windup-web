@@ -57,34 +57,34 @@ https://access.redhat.com/documentation/en/red-hat-single-sign-on/7.0/single/get
 		- `./jboss-cli.sh --file=adapter-install-offline.cli`
 
 ##  Register the client in Keycloak for windup-web
-	- Go back to the Keycloak admin console [http://localhost:8280/auth/admin/](http://localhost:8280/auth/admin/)
-	- Click clients in the left
-	- Click "Create"
-		- Client ID: "windup-web"
-		- Root URL: [http://localhost:8080/windup-web/](http://localhost:8080/windup-web/)
-		- Click "Save"
-    - On the settings page, make sure that both of the following URLs are listed as Valid Redirect URIs (add the one that is missing):
-        - http://localhost:8080/windup-web-services/*
-        - http://localhost:8080/windup-web/*
-	- Click on the "Installation" tab, and select the "Keycloak OIDC JBoss Subsystem XML" format option
-	- With the server off, open up standalone-full.xml and paste this text into the "urn:jboss:domain:keycloak:1.1" subsystem element
-	- Change the "WAR MODULE NAME.war" section to the war name (windup-web.war)
-    - Add the following system properties being sure to replace the key with the one from the copied section:
 
+* Go back to the Keycloak admin console [http://localhost:8280/auth/admin/](http://localhost:8280/auth/admin/)
+* Click clients in the left
+* Click "Create"
+  * Client ID: "windup-web"
+  * Root URL: [http://localhost:8080/windup-web/](http://localhost:8080/windup-web/)
+  * Click "Save"
+  * On the settings page, make sure that both of the following URLs are listed as Valid Redirect URIs (add the one that is missing):
+        * http://localhost:8080/windup-web-services/*
+        * http://localhost:8080/windup-web/*
+	* Click on the "Installation" tab, and select the "Keycloak OIDC JBoss Subsystem XML" format option
+	* With the server off, open up standalone-full.xml and paste this text into the "urn:jboss:domain:keycloak:1.1" subsystem element
+	* Change the "WAR MODULE NAME.war" section to the war name (windup-web.war)
+    * Add the following system properties being sure to replace the key with the one from the copied section:
         ```
         <system-properties>
             <property name="keycloak.realm.public.key" value="[ INSERT KEY HERE ]"/>
             <property name="keycloak.server.url" value="http://localhost:8280/auth"/>
         </system-properties>
         ```
-    - Replace the realm-public-key and auth-server-url elements in the extension configuration with the following text:
+    * Replace the realm-public-key and auth-server-url elements in the extension configuration with the following text:
     
         ```
             <realm-public-key>${keycloak.realm.public.key}</realm-public-key>
             <auth-server-url>${keycloak.server.url}</auth-server-url>
         ```
 
- - Register the client in Keycloak for windup-web-services
-	- Follow the same steps, except use the name "windup-web-services" instead of "windup-web"
+* Register the client in Keycloak for windup-web-services
+  * Follow the same steps, except use the name "windup-web-services" instead of "windup-web"
 
 
