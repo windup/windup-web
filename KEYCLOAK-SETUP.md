@@ -57,17 +57,19 @@ https://access.redhat.com/documentation/en/red-hat-single-sign-on/7.0/single/get
 * Set up a new realm called "windup"
   * Create a new Role called "user"
   * Add this new role to the "Default Roles"
+  * Create a new test user(s) for this realm. Assign the user role to it.
   * Create a new client with ID `windup-web`, root URL: [http://localhost:8080/windup-web/](http://localhost:8080/windup-web/)
-  * On the settings page, make sure that both of the following URLs are listed as Valid Redirect URIs (add the one that is missing):
+    * On the settings page, make sure that both of the following URLs are listed as Valid Redirect URIs (add the one that is missing):
       * `http://localhost:8080/windup-web/*`
       * `http://localhost:8080/windup-web-services/*`
-  * While in Keycloak, create a new user for this realm
-  * Click on the "Installation" tab, and select the "Keycloak OIDC JBoss Subsystem XML" format option
-  * With the server off, open up `standalone-full.xml` and paste this text into the`urn:jboss:domain:keycloak:1.1` subsystem element
-  * Change the `WAR MODULE NAME.war` section to the war name (`windup-web.war`)
+  
+    * Click on the "Installation" tab, and select the "Keycloak OIDC JBoss Subsystem XML" format option
+    * With the server off, open up `standalone-full.xml` and paste this text into the`urn:jboss:domain:keycloak:1.1` subsystem element
+    * Change the `WAR MODULE NAME.war` section to the war name (`windup-web.war`)
   * Add the following system properties being sure to replace the key with the one from the copied section:
   
         ```
+        ...</extensions>
         <system-properties>
             <property name="keycloak.realm.public.key" value="[ INSERT KEY HERE ]"/>
             <property name="keycloak.server.url" value="http://localhost:8280/auth"/>
