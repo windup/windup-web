@@ -13,14 +13,13 @@ There are two options - install Red Hat SSO 7 as a standalone server, or Keycloa
 
 * Edit  `<wildfly>/bin/keycloak-install.cli` and change `standalone.xml` to `standalone-full.xml` on first line
 * Run  `<path_to_widlfly_server>/bin/jboss-cli.sh --file=bin/keycloak-install.cli` (it uses the `embed-server` so it doesn't need a running server to apply the CLI script)
-* Start the server with full profile as: `bin/standalone.sh -c standalone-full.xml`
 * To create keycloak Admin user run  `<path_to_widlfly_server>/bin/add-user-keycloack.sh -u <username>`
 
 	This command creates file below with your username:
 	`<path_to_widlfly_server>/standalone/configuration/keycloak-add-user.json`
-	(This is an alternative to do it manually at http://localhost/auth/admin)
+	(This is an alternative to doing it via the web at http://localhost/auth/admin)
 
-* Restart the server.
+* Start the server with full profile as: `bin/standalone.sh -c standalone-full.xml`
 * After restart check <http://localhost:8080/auth> if keycloak login page is shown you can use keycloak admin user you created in previous steps.
 
 #### Client adapter
