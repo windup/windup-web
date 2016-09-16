@@ -50,13 +50,8 @@ https://access.redhat.com/documentation/en/red-hat-single-sign-on/7.0/single/get
 
 
 ##  Common steps: Register the client in Keycloak for windup-web
-	- 
-	- 
-	- 
-	- 
 
-
-* Go back to the Keycloak admin console [http://localhost:8280/auth/admin/](http://localhost:8280/auth/admin/) (or at [8080](http://localhost:8080/auth/admin/) for embedded)
+* Go to the Keycloak admin console [http://localhost:8280/auth/admin/](http://localhost:8280/auth/admin/) (or at [8080](http://localhost:8080/auth/admin/) for embedded)
 * Setup an admin user and password here
 * Then navigate to [Keycloak admin](http://localhost:8280/auth/admin/) and log in
 * Set up a new realm called "windup"
