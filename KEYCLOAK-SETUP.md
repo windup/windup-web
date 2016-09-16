@@ -5,6 +5,7 @@
 There are two options - install Red Hat SSO 7 as a standalone server, or Keycloak community as an overlay applied to WildFly 10 or EAP 7. For both, you'll also need to add the client adapter.
 
 ## A) Keycloack installation
+* _Refer to [Keycloak installation guide](https://keycloak.gitbooks.io/server-installation-and-configuration/content/v/2.2/topics/installation.html) for details._
 
 * Download https://downloads.jboss.org/keycloak/2.1.0.Final/keycloak-overlay-2.1.0.Final.tar.gz
 
