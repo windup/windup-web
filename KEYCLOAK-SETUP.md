@@ -24,7 +24,11 @@ There are two options - install Red Hat SSO 7 as a standalone server, or Keycloa
 * After restart check <http://localhost:8080/auth> if keycloak login page is shown you can use keycloak admin user you created in previous steps.
 
 #### Client adapter
-* [Download the Keycloak client adapter for WildFly 10](http://www.keycloak.org/downloads.html) and unzip it to WildFly root directory.
+* _Refer to [Keycloak client adapter installation guide](https://keycloak.gitbooks.io/getting-started-tutorials/content/topics/secure-jboss-app/install-client-adapter.html) for the details._
+* [Download the Keycloak client adapter for WildFly 10](http://www.keycloak.org/downloads.html) and unzip
+  it to the WildFly root directory.
+* Edit the `adapter-install-offline.cli` - replace `standalone.xml` with `standalone-full.xml` on the first line.
+* Run `bin/jboss-cli.sh --file=bin/adapter-install-offline.cli`
 
 
 ## B) Red Hat SSO installation
