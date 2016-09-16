@@ -47,8 +47,11 @@ Running the webapp
 ------------------
 
 - Build: `mvn clean install -DskipTests`
-- Execute the CLI script at: scripts/eap-setup.cli on EAP 7
+- Execute the CLI script at: scripts/eap-setup.cli on Wildfly/EAP 7
+
+    `bin/jboss-cli,sh --file=<path-to-windup-web>/scripts/eap-setup.cli`
+
 - Deploy the exploded `services/target/windup-web-services` and `ui/target/web-services` to EAP 7.
-    - NOTE: EAP 7 must be run in standalone-full.xml as JMS is required
+    - NOTE: Wildfly/EAP 7 must be run in standalone-full.xml as JMS is required
 - Follow the steps for deploying keycloak in [Keycloak Setup](./KEYCLOAK-SETUP.md)
-- Access the webapp: `http://localhost:8080/windup-web/`
+- Access the webapp: <http://localhost:8080/windup-web>

@@ -1,4 +1,42 @@
-Steps to setup Red Hat SSO:
+# Manual steps to install Keycloak (or Red Hat SSO) on development server
+
+> Note: (not recommended for a production usage)
+
+## Keycloack installation
+
+* Download <https://downloads.jboss.org/keycloak/2.1.0.Final/keycloak-overlay-2.1.0.Final.tar.gz>
+
+* Extract it into wildfly-10.1.0.Final installation path
+
+* Edit
+
+ `<$path_to_widlfly_server>/bin/keycloak-install.cli` and change _standalone.xml_ to _standalone-full.xml_ on first line
+
+* Start the server with full profile as:
+
+	`bin/standalone.sh -c standalone-full.xml`
+
+* Run 
+
+`<path_to_widlfly_server>/bin/jboss-cli.sh --file=bin/keycloak-install.cli`
+
+* Restart the server
+
+* To create keycloak Admin user run 
+
+  `<path_to_widlfly_server>/bin/add-user-keycloack.sh -u <username>`
+
+	This command creates file below with your username:
+	`<path_to_widlfly_server>/standalone/configuration/keycloak-add-user.json`
+
+	This is an alternative to do it manually on <http://localhost/auth/admin> 
+
+* And finally restart the server. 
+
+* After restart check <http://localhost:8080/auth> if keycloak login page is shown you can use keycloak admin user you created in previous steps.
+
+
+## Red Hat SSO installation
 
 SSO Instructions:
 https://access.redhat.com/documentation/en/red-hat-single-sign-on/7.0/single/getting-started-guide/#installing_distribution_files
