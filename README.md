@@ -16,12 +16,8 @@ Environment setup
 
 3) [Install NodeJS Package Manager (npm)](https://nodejs.org/en/download/package-manager/)
    * For example, on Debian-based systems, use `sudo apt-get install npm`
-   * On RHEL 7
-      * Install [EPEL](https://fedoraproject.org/wiki/EPEL)
-      * sudo yum install npm
-
-   * NOTE: If npm is version is less than 3.8.8, try the following to force an update:
-        * sudo npm install -g npm
+   * On RHEL 7: 1) Install [EPEL](https://fedoraproject.org/wiki/EPEL)  2) `sudo yum install npm`
+   * NOTE: If npm is version is less than 3.8.8, try the following to force an update: `sudo npm install -g npm`
 
 3) [Install Bower using NPM](http://bower.io/#install-bower)
     * `sudo npm install -g bower`
