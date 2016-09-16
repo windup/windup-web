@@ -82,7 +82,8 @@ https://access.redhat.com/documentation/en/red-hat-single-sign-on/7.0/single/get
             <auth-server-url>${keycloak.server.url}</auth-server-url>
         ```
 
-* Register the client in Keycloak for windup-web-services
-  * Follow the same steps, except use the name "windup-web-services" instead of "windup-web"
+* Now **repeat the "Common steps" for `windup-web-services`** - create another Keycloak client.
+  * Follow the same steps, except use the name "windup-web-services" instead of "windup-web".
+  * The `<realm-public-key>` will be the same, no need for another system property.
 
 
