@@ -1,11 +1,9 @@
-import {Inject, Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Headers, Http, RequestOptions, Response} from '@angular/http';
-import {Observable} from 'rxjs/Observable';
 
 import {Constants} from "../constants";
 import {ApplicationGroup} from "windup-services";
 import {AbstractService} from "./abtract.service";
-import {KeycloakService} from "./keycloak.service";
 
 @Injectable()
 export class ApplicationGroupService extends AbstractService {
@@ -15,12 +13,12 @@ export class ApplicationGroupService extends AbstractService {
     private CREATE_URL = "/applicationGroups/create";
     private UPDATE_URL = "/applicationGroups/update";
 
-    constructor (private _keycloakService:KeycloakService, private _http: Http) {
+    constructor (private _http: Http) {
         super();
     }
 
     create(applicationGroup: ApplicationGroup) {
-        let headers = this._keycloakService.defaultHeaders;
+        let headers = new Headers();
         let options = new RequestOptions({ headers: headers });
         headers.append('Content-Type', 'application/json');
         headers.append('Accept', 'application/json');
@@ -33,7 +31,7 @@ export class ApplicationGroupService extends AbstractService {
     }
 
     update(applicationGroup: ApplicationGroup) {
-        let headers = this._keycloakService.defaultHeaders;
+        let headers = new Headers();
         let options = new RequestOptions({ headers: headers });
         headers.append('Content-Type', 'application/json');
         headers.append('Accept', 'application/json');
@@ -46,7 +44,7 @@ export class ApplicationGroupService extends AbstractService {
     }
 
     get(id:number) {
-        let headers = this._keycloakService.defaultHeaders;
+        let headers = new Headers();
         let options = new RequestOptions({ headers: headers });
         return this._http.get(Constants.REST_BASE + this.GET_BY_ID_URL + "/" + id, options)
             .map(res => <ApplicationGroup> res.json())
@@ -54,7 +52,7 @@ export class ApplicationGroupService extends AbstractService {
     }
 
     getByProjectID(projectID:number) {
-        let headers = this._keycloakService.defaultHeaders;
+        let headers = new Headers();
         let options = new RequestOptions({ headers: headers });
 
         return this._http.get(Constants.REST_BASE + this.GET_BY_PROJECT_URL + projectID, options)
@@ -63,7 +61,7 @@ export class ApplicationGroupService extends AbstractService {
     }
 
     getAll() {
-        let headers = this._keycloakService.defaultHeaders;
+        let headers = new Headers();
         let options = new RequestOptions({ headers: headers });
 
         return this._http.get(Constants.REST_BASE + this.GET_ALL_URL, options)

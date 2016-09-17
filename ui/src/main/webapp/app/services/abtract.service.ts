@@ -1,9 +1,6 @@
 import {Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions, Response} from '@angular/http';
+import {Response} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
-
-import {Constants} from "../constants";
-import {KeycloakService} from "./keycloak.service";
 
 @Injectable()
 export class AbstractService {

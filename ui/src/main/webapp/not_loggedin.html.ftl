@@ -18,12 +18,23 @@
     <script src="${keycloak.serverUrl}/js/keycloak.js"></script>
 
     <script>
+        // Append a script tag pointing to a javascript file that requires authentication. Now that we have
+        // a token, this will succeed and we will have an authentication session in the webapp as well.
+        function appendAuthenticatedScript() {
+            var s = document.createElement("script");
+            s.src = "authenticated.jsp";
+            document.body.appendChild(s);
+        }
+
         $(function() {
             var keycloak = new Keycloak('keycloak.json');
             keycloak.init({ onLoad: 'check-sso' }).success(function(authenticated) {
                 if (authenticated) {
-                    window.location.href = "authenticated.jsp";
+                    console.log("User is logged in: " + keycloak.token);
+
+                    appendAuthenticatedScript();
                 } else {
+                    console.log("User is not logged in");
                     $('#loading').hide();
                     $('#loginRequired').show();
                 }
@@ -33,8 +44,9 @@
 
             $('#btnLogin').click(function () {
                 keycloak.init({ onLoad: 'login-required' }).success(function(authenticated) {
-                    if (authenticated)
-                        window.location.href = "authenticated.jsp";
+                    if (authenticated) {
+                        appendAuthenticatedScript();
+                    }
                 });
             });
         });

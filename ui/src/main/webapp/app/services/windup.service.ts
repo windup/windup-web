@@ -1,24 +1,22 @@
-import {Inject, Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions, Response} from '@angular/http';
+import {Injectable} from '@angular/core';
+import {Headers, Http, RequestOptions} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 
 import {Constants} from "../constants";
-import {RegisteredApplication} from "windup-services";
 import {WindupExecution} from "windup-services";
 import {AbstractService} from "./abtract.service";
-import {KeycloakService} from "./keycloak.service";
 
 @Injectable()
 export class WindupService extends AbstractService {
     private EXECUTE_GROUP_PATH = "/windup/executeGroup";
     private GET_STATUS_GROUP_PATH = "/windup/statusGroup/";
 
-    constructor (private _keycloakService:KeycloakService, private _http: Http) {
+    constructor (private _http: Http) {
         super();
     }
 
     public getStatusGroup(executionID:number):Observable<WindupExecution> {
-        let headers = this._keycloakService.defaultHeaders;
+        let headers = new Headers();
         let options = new RequestOptions({ headers: headers });
 
         let url = Constants.REST_BASE + this.GET_STATUS_GROUP_PATH + executionID;
@@ -29,7 +27,7 @@ export class WindupService extends AbstractService {
     }
 
     public executeWindupGroup(groupID:number):Observable<WindupExecution> {
-        let headers = this._keycloakService.defaultHeaders;
+        let headers = new Headers();
         let options = new RequestOptions({ headers: headers });
 
         headers.append('Content-Type', 'application/json');

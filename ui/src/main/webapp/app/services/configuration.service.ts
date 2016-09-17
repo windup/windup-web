@@ -1,10 +1,9 @@
 import {Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions, Response} from '@angular/http';
+import {Headers, Http, RequestOptions} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 
 import {Constants} from "../constants";
 import {Configuration} from "windup-services";
-import {KeycloakService} from "./keycloak.service";
 import {AbstractService} from "./abtract.service";
 
 @Injectable()
@@ -12,12 +11,12 @@ export class ConfigurationService extends AbstractService {
     private GET_URL = "/configuration";
     private SAVE_URL = "/configuration";
 
-    constructor (private _keycloakService:KeycloakService, private _http: Http) {
+    constructor (private _http: Http) {
         super();
     }
 
     save(configuration: Configuration):Observable<Configuration> {
-        let headers = this._keycloakService.defaultHeaders;
+        let headers = new Headers();
         let options = new RequestOptions({ headers: headers });
         headers.append('Content-Type', 'application/json');
         headers.append('Accept', 'application/json');
@@ -30,7 +29,7 @@ export class ConfigurationService extends AbstractService {
     }
 
     get() {
-        let headers = this._keycloakService.defaultHeaders;
+        let headers = new Headers();
         let options = new RequestOptions({ headers: headers });
 
         return this._http.get(Constants.REST_BASE + this.GET_URL, options)

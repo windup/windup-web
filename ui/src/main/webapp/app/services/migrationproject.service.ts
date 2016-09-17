@@ -1,11 +1,9 @@
-import {Inject, Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions, Response} from '@angular/http';
-import {Observable} from 'rxjs/Observable';
+import {Injectable} from '@angular/core';
+import {Headers, Http, RequestOptions} from '@angular/http';
 
 import {Constants} from "../constants";
 import {MigrationProject} from "windup-services";
 import {AbstractService} from "./abtract.service";
-import {KeycloakService} from "./keycloak.service";
 
 @Injectable()
 export class MigrationProjectService extends AbstractService {
@@ -14,12 +12,12 @@ export class MigrationProjectService extends AbstractService {
     private CREATE_MIGRATION_PROJECT_URL = "/migrationProjects/create";
     private UPDATE_MIGRATION_PROJECT_URL = "/migrationProjects/update";
 
-    constructor (private _keycloakService:KeycloakService, private _http: Http) {
+    constructor (private _http: Http) {
         super();
     }
 
     create(migrationProject: MigrationProject) {
-        let headers = this._keycloakService.defaultHeaders;
+        let headers = new Headers();
         let options = new RequestOptions({ headers: headers });
         headers.append('Content-Type', 'application/json');
         headers.append('Accept', 'application/json');
@@ -32,7 +30,7 @@ export class MigrationProjectService extends AbstractService {
     }
 
     update(migrationProject: MigrationProject) {
-        let headers = this._keycloakService.defaultHeaders;
+        let headers = new Headers();
         let options = new RequestOptions({ headers: headers });
         headers.append('Content-Type', 'application/json');
         headers.append('Accept', 'application/json');
@@ -45,7 +43,7 @@ export class MigrationProjectService extends AbstractService {
     }
 
     get(id:number) {
-        let headers = this._keycloakService.defaultHeaders;
+        let headers = new Headers();
         let options = new RequestOptions({ headers: headers });
 
         return this._http.get(Constants.REST_BASE + this.GET_MIGRATION_PROJECT_URL + "/" + id, options)
@@ -54,7 +52,7 @@ export class MigrationProjectService extends AbstractService {
     }
 
     getAll() {
-        let headers = this._keycloakService.defaultHeaders;
+        let headers = new Headers();
         let options = new RequestOptions({ headers: headers });
 
         return this._http.get(Constants.REST_BASE + this.GET_MIGRATION_PROJECTS_URL, options)
