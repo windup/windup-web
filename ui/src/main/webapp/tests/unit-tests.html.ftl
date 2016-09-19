@@ -34,7 +34,8 @@
         var SPEC_FILES = [
             'tests/app/file.service.spec',
             'tests/app/registeredapplication.model.spec',
-            'tests/app/registeredapplication.service.spec'
+            'tests/app/registeredapplication.service.spec',
+            'tests/app/unmarshaller.spec',
         ];
 
         function success () {

@@ -1,6 +1,7 @@
 package org.jboss.windup.web.ui;
 
 import java.net.URL;
+import java.util.logging.Logger;
 
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -23,15 +24,13 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 @RunAsClient
 public class JasmineTest extends AbstractUITest
 {
+    private static Logger LOG = Logger.getLogger(JasmineTest.class.getName());
     private static final String TESTS_PATH = "tests/unit-tests.html";
-
-    @ArquillianResource
-    URL contextRoot;
 
     @Before
     public void loadPage()
     {
-        final String url = contextRoot + "/" + TESTS_PATH;
+        final String url = getContextRoot() + "/" + TESTS_PATH;
         System.out.println("Jasmine test page URL: " + url);
         getDriver().navigate().to(url);
     }

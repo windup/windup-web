@@ -15,7 +15,7 @@ export class TestGraphData
             ]
         },
         "otherEdgeLabel": { }
-    }
+    };
 
     static TEST_GRAPH_MODEL_DATA = {
         "_id": 456,
@@ -35,8 +35,8 @@ export class TestGraphData
             "vertices": [
                 { "_id": 213, "w:winduptype": ["TestPlanet"],  "name": "Mars" },
                 { "_id": 214, "w:winduptype": ["TestPlanet"],  "name": "Venus" },
-                { "_mode": "link", "link": "by-id=215" },
+                //{ "_mode": "link", "link": "by-id=215" },
             ]
         },
-    }
+    };
 }
