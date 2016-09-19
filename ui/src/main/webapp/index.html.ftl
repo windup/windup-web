@@ -1,5 +1,5 @@
 <#if !userPrincipal??>
-    ${response.sendRedirect("not_loggedin.html")}
+    ${dispatchRequest("/not_loggedin.html")!}
 </#if>
 <html>
 <head>

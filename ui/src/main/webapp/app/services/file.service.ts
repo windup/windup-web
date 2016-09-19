@@ -1,21 +1,19 @@
-import {Inject, Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions, Response} from '@angular/http';
-import {Observable} from 'rxjs/Observable';
+import {Injectable} from '@angular/core';
+import {Headers, Http, RequestOptions} from '@angular/http';
 
 import {Constants} from "../constants";
 import {AbstractService} from "./abtract.service";
-import {KeycloakService} from "./keycloak.service";
 
 @Injectable()
 export class FileService extends AbstractService {
     private PATH_EXISTS_URL = "/file/pathExists";
 
-    constructor (private _keycloakService:KeycloakService, private _http: Http) {
+    constructor (private _http: Http) {
         super();
     }
 
     pathExists(path:string) {
-        let headers = this._keycloakService.defaultHeaders;
+        let headers = new Headers();
         let options = new RequestOptions({ headers: headers });
         headers.append('Content-Type', 'application/json');
         headers.append('Accept', 'application/json');

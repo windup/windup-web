@@ -1,6 +1,6 @@
 import { NgModule }      from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpModule } from '@angular/http';
+import {HttpModule, RequestOptions, XHRBackend, Http} from '@angular/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 
 import 'rxjs/Rx';
@@ -33,6 +33,7 @@ import {RulesModalComponent} from "./components/rules-modal.component";
 import {AddRulesPathModalComponent} from "./components/add-rules-path-modal.component";
 import {ConfirmationModalComponent} from "./components/confirmation-modal.component";
 import {KeycloakService} from "./services/keycloak.service";
+import {WindupHttpService} from "./services/windup.http.service";
 
 @NgModule({
     imports: [
@@ -71,7 +72,18 @@ import {KeycloakService} from "./services/keycloak.service";
         MigrationProjectService,
         RegisteredApplicationService,
         RuleService,
-        WindupService
+        WindupService,
+
+        {
+            provide: Http,
+            useFactory:
+                (
+                    backend: XHRBackend,
+                    defaultOptions: RequestOptions,
+                    keycloakService: KeycloakService
+                ) => new WindupHttpService(backend, defaultOptions, keycloakService),
+            deps: [XHRBackend, RequestOptions, KeycloakService]
+        }
     ],
     bootstrap:    [ AppComponent ]
 })

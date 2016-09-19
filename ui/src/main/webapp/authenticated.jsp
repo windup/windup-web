@@ -1,3 +1,1 @@
-<%
-    response.sendRedirect("index.html");
-%>
+window.location.reload();
