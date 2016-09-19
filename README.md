@@ -24,7 +24,7 @@ Environment setup
 
 4) Install the Javascript UI libraries, using `npm`
 
-    cd windup-web/ui/src/main/webapp
+    cd ui/src/main/webapp
     npm install
     cd -
 
