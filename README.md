@@ -32,17 +32,7 @@ Environment setup
     cd -
     ```
 
-   Alternatively, these parts may be installed 'manually':
-    ```
-    npm install -g patternfly # JBoss PatternFly, a UI components library
-    npm install -g grunt-cli  # Grunt
-    npm install -g tsc        # TypeScript compiler
-    npm install -g typescript # TypeScript
-    ```
-
-    This list is not complete, feel free to add the missing items.
-
- 5. In order to run tests, you will need a locally installed copy of [PhantomJS](http://phantomjs.org/)
+ 5. In order to run tests, you will need a locally installed copy of [PhantomJS](http://phantomjs.org/). This needs to be available and on your path.
 
 Running the webapp
 ------------------
@@ -50,7 +40,7 @@ Running the webapp
 - Build: `mvn clean install -DskipTests`
 - Execute the CLI script at: scripts/eap-setup.cli on Wildfly/EAP 7
 
-    `bin/jboss-cli.sh --file=<path-to-windup-web>/scripts/eap-setup.cli`
+    `bin/jboss-cli.sh -c --file=<path-to-windup-web>/scripts/eap-setup.cli`
 
 - Deploy the exploded `services/target/windup-web-services` and `ui/target/web-services` to EAP 7.
 

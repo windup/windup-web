@@ -43,10 +43,10 @@
                         id="includePackageID"
                         class="form-control">
                     <span *ngIf="i != (packages.length - 1)" class="input-group-btn">
-                        <button (click)="removeScanPackage(i)" class="btn " type="button">-</button>
+                        <button *ngIf="packages.length > 1" (click)="removeScanPackage(i)" class="btn " type="button">-</button>
                     </span>
                     <span *ngIf="i == (packages.length - 1)" class="input-group-btn">
-                        <button (click)="removeScanPackage(i)" class="btn " type="button">-</button>
+                        <button *ngIf="packages.length > 1" (click)="removeScanPackage(i)" class="btn " type="button">-</button>
                         <button (click)="addScanPackage()" class="btn " type="button">+</button>
                     </span>
                 </div>
@@ -65,10 +65,10 @@
                            id="excludePackageID"
                            class="form-control">
                     <span *ngIf="i != (excludePackages.length - 1)" class="input-group-btn">
-                        <button (click)="removeExcludePackage(i)" class="btn " type="button">-</button>
+                        <button *ngIf="excludePackages.length > 1" (click)="removeExcludePackage(i)" class="btn " type="button">-</button>
                     </span>
                     <span *ngIf="i == (excludePackages.length - 1)" class="input-group-btn">
-                        <button (click)="removeExcludePackage(i)" class="btn " type="button">-</button>
+                        <button *ngIf="excludePackages.length > 1" (click)="removeExcludePackage(i)" class="btn " type="button">-</button>
                         <button (click)="addExcludePackage()" class="btn " type="button">+</button>
                     </span>
                 </div>
