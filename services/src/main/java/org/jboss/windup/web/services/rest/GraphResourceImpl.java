@@ -1,19 +1,21 @@
 package org.jboss.windup.web.services.rest;
 
-import com.thinkaurelius.titan.core.TitanProperty;
-import com.thinkaurelius.titan.graphdb.vertices.StandardVertex;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
-import org.apache.commons.lang3.StringUtils;
-import org.jboss.forge.furnace.proxy.Proxies;
 import org.jboss.windup.graph.GraphContext;
-import org.jboss.windup.graph.GraphTypeManager;
+import org.jboss.windup.graph.GraphContextFactory;
 import org.jboss.windup.graph.model.WindupFrame;
+import org.jboss.windup.graph.model.WindupVertexFrame;
+import org.jboss.windup.web.services.model.WindupExecution;
 import org.jboss.windup.web.services.producer.WindupServicesProducer;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.lang.reflect.Method;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,13 +28,29 @@ public class GraphResourceImpl implements GraphResource
 {
     public static final String DIRECTION = "direction";
     public static final String VERTICES = "vertices";
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
     @Inject
-    WindupServicesProducer servicesProducer;
+    private WindupServicesProducer servicesProducer;
 
     @Override
-    public Map<String, Object> get(String graphName, Integer id, Integer depth)
+    public List<Map<String, Object>> getByType(Long executionID, String vertexType, Integer depth)
     {
-        GraphContext graphContext = getGraph(graphName);
+        GraphContext graphContext = getGraph(executionID);
+        List<Map<String, Object>> vertices = new ArrayList<>();
+        for (Vertex v : graphContext.getFramed().getVertices(WindupVertexFrame.TYPE_PROP, vertexType))
+        {
+            vertices.add(convertToMap(v, depth));
+        }
+        return vertices;
+    }
+
+    @Override
+    public Map<String, Object> get(Long executionID, Integer id, Integer depth)
+    {
+        GraphContext graphContext = getGraph(executionID);
         if (id == null)
             throw new IllegalArgumentException("ID not specified");
 
@@ -41,9 +59,9 @@ public class GraphResourceImpl implements GraphResource
     }
 
     @Override
-    public Map<String, Object> create(String graphName, Map<String, Object> object)
+    public Map<String, Object> create(Long executionID, Map<String, Object> object)
     {
-        GraphContext graphContext = getGraph(graphName);
+        GraphContext graphContext = getGraph(executionID);
         if (object.containsKey(KEY_ID))
             throw new IllegalArgumentException("Object to be created cannot already have an ID");
 
@@ -55,9 +73,9 @@ public class GraphResourceImpl implements GraphResource
     }
 
     @Override
-    public Map<String, Object> update(String graphName, Integer id, Map<String, Object> object)
+    public Map<String, Object> update(Long executionID, Integer id, Map<String, Object> object)
     {
-        GraphContext graphContext = getGraph(graphName);
+        GraphContext graphContext = getGraph(executionID);
         if (id == null)
             throw new IllegalArgumentException("ID not specified");
 
@@ -69,9 +87,9 @@ public class GraphResourceImpl implements GraphResource
     }
 
     @Override
-    public void delete(String graphName, Integer id)
+    public void delete(Long executionID, Integer id)
     {
-        GraphContext graphContext = getGraph(graphName);
+        GraphContext graphContext = getGraph(executionID);
 
         if (id == null)
             throw new IllegalArgumentException("ID not specified");
@@ -194,11 +212,12 @@ public class GraphResourceImpl implements GraphResource
         }
     }
 
-    private GraphContext getGraph(String graphName)
+    private GraphContext getGraph(Long executionID)
     {
-        if (!StringUtils.equals(GLOBAL_GRAPH, graphName))
-            throw new IllegalArgumentException("Unrecognized graph name: " + graphName);
-        else
-            return servicesProducer.getGlobalGraphContext();
+        GraphContextFactory graphContextFactory = servicesProducer.getGraphContextFactory();
+        WindupExecution execution = entityManager.find(WindupExecution.class, executionID);
+        Path graphPath = Paths.get(execution.getGroup().getOutputPath()).resolve(GraphContextFactory.DEFAULT_GRAPH_SUBDIRECTORY);
+
+        return graphContextFactory.load(graphPath);
     }
 }

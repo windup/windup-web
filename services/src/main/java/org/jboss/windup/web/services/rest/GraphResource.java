@@ -9,6 +9,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,18 +24,22 @@ public interface GraphResource
     String KEY_ID = "_id";
 
     @GET
-    @Path("/{graph}/{id}")
-    Map<String, Object> get(@PathParam("graph") String graphName, @PathParam("id") Integer id, @QueryParam("depth") Integer depth);
+    @Path("/{executionID}/{id}")
+    Map<String, Object> get(@PathParam("executionID") Long executionID, @PathParam("id") Integer id, @QueryParam("depth") Integer depth);
+
+    @GET()
+    @Path("/{executionID}/by-type/{vertexType}")
+    List<Map<String, Object>> getByType(@PathParam("executionID") Long executionID, @PathParam("vertexType") String vertexType, @QueryParam("depth") Integer depth);
 
     @POST
-    @Path("/{graph}")
-    Map<String, Object> create(@PathParam("graph") String graphName, Map<String, Object> value);
+    @Path("/{executionID}")
+    Map<String, Object> create(@PathParam("executionID") Long executionID, Map<String, Object> value);
 
     @PUT
-    @Path("/{graph}/{id}")
-    Map<String, Object> update(@PathParam("graph") String graphName, @PathParam("id") Integer id, Map<String, Object> value);
+    @Path("/{executionID}/{id}")
+    Map<String, Object> update(@PathParam("executionID") Long executionID, @PathParam("id") Integer id, Map<String, Object> value);
 
     @DELETE
-    @Path("/{graph}/{id}")
-    void delete(@PathParam("graph") String graphName, @PathParam("id") Integer id);
+    @Path("/{executionID}/{id}")
+    void delete(@PathParam("executionID") Long executionID, @PathParam("id") Integer id);
 }

@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.jboss.windup.config.KeepWorkDirsOption;
 import org.jboss.windup.exec.WindupProcessor;
 import org.jboss.windup.exec.WindupProgressMonitor;
 import org.jboss.windup.exec.configuration.WindupConfiguration;
@@ -48,7 +49,6 @@ public class WindupExecutorServiceImpl implements WindupExecutorService
             for (Path rulesPath : rulesPaths)
                 configuration.addDefaultUserRulesDirectory(rulesPath);
 
-
             inputPaths.forEach(configuration::addInputPath);
 
             configuration.setOutputDirectory(outputPath);
@@ -66,6 +66,8 @@ public class WindupExecutorServiceImpl implements WindupExecutorService
                 configuration.setOptionValue(TargetOption.NAME, Collections.singletonList(target));
 
             configuration.setOptionValue(OverwriteOption.NAME, true);
+
+            configuration.setOptionValue(KeepWorkDirsOption.NAME, true);
 
             processor.execute(configuration);
         }
