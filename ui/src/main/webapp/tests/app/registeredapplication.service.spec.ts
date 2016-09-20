@@ -29,7 +29,7 @@ describe("Registered Application Service Test", () => {
         inputApp.inputPath = "src/main/java";
         return service.registerApplication(inputApp).toPromise()
             .then(application => {
-                console.log("Registered application: " + JSON.stringify(application) + "; " + application.inputFilename);
+                console.log("Registered application: " + application.inputFilename);
                 expect(application.inputFilename).toEqual("java");
             }, error => {
                 expect(false).toBeTruthy("Service call failed due to: " + error);
