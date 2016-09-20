@@ -25,13 +25,14 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 public class JasmineTest extends AbstractUITest
 {
     private static Logger LOG = Logger.getLogger(JasmineTest.class.getName());
-
     private static final String TESTS_PATH = "tests/unit-tests.html";
 
     @Before
     public void loadPage()
     {
-        getDriver().navigate().to(getContextRoot() + "/" + TESTS_PATH);
+        final String url = getContextRoot() + "/" + TESTS_PATH;
+        System.out.println("Jasmine test page URL: " + url);
+        getDriver().navigate().to(url);
     }
 
     private WebElement getTestSummaryElement()
