@@ -13,7 +13,8 @@ Requirements
 
 Environment setup
 -----------------
-
+3. Set your local Maven setting.xml by copying file `settings.xml` from checked out sources into `$HOME/.m2/` or use it while calling maven with option `-s settings.xml`
+ 
 3. [Install NodeJS Package Manager (npm)](https://nodejs.org/en/download/package-manager/)
    * For example, on Debian-based systems, use `sudo apt-get install npm`
    * On RHEL 7: 1) Install [EPEL](https://fedoraproject.org/wiki/EPEL)  2) `sudo yum install npm`
