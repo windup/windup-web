@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Schedule;
@@ -31,7 +30,6 @@ import org.jboss.windup.config.metadata.TechnologyReference;
 import org.jboss.windup.config.phase.MigrationRulesPhase;
 import org.jboss.windup.web.addons.websupport.services.RuleProviderService;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
-import org.jboss.windup.web.furnaceserviceprovider.WebProperties;
 import org.jboss.windup.web.services.model.Configuration;
 import org.jboss.windup.web.services.model.RuleEntity;
 import org.jboss.windup.web.services.model.RuleProviderEntity;
