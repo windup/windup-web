@@ -8,8 +8,6 @@ import javax.inject.Inject;
 
 import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.GraphContextFactory;
-import org.jboss.windup.web.addons.websupport.WebPathUtil;
-import org.jboss.windup.web.addons.websupport.WindupWebServiceFactory;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -17,7 +15,6 @@ import org.jboss.windup.web.addons.websupport.WindupWebServiceFactory;
 @ApplicationScoped
 public class WindupWebServiceFactoryImpl implements WindupWebServiceFactory
 {
-    private static String GRAPH_PATH = "graph";
 
     @Inject
     private GraphContextFactory graphContextFactory;
@@ -49,7 +46,7 @@ public class WindupWebServiceFactoryImpl implements WindupWebServiceFactory
                 if (graphContext == null)
                 {
                     Path globalWindupPath = webPathUtil.getGlobalWindupDataPath();
-                    Path globalGraphPath = globalWindupPath.resolve(GRAPH_PATH);
+                    Path globalGraphPath = globalWindupPath.resolve(GraphContextFactory.DEFAULT_GRAPH_SUBDIRECTORY);
                     if (Files.exists(globalGraphPath))
                         graphContext = graphContextFactory.load(globalGraphPath);
                     else
