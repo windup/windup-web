@@ -13,9 +13,9 @@ Requirements
 
 Environment setup
 -----------------
-3. Set your local Maven setting.xml by copying file `settings.xml` from checked out sources into `$HOME/.m2/` or use it while calling maven with option `-s settings.xml`
+1. Set your local Maven setting.xml by copying file `settings.xml` from checked out sources into `$HOME/.m2/` or use it while calling maven with option `-s settings.xml`
  
-3. [Install NodeJS Package Manager (npm)](https://nodejs.org/en/download/package-manager/)
+2. [Install NodeJS Package Manager (npm)](https://nodejs.org/en/download/package-manager/)
    * For example, on Debian-based systems, use `sudo apt-get install npm`
    * On RHEL 7: 1) Install [EPEL](https://fedoraproject.org/wiki/EPEL)  2) `sudo yum install npm`
    > NOTE: If npm is version is less than 3.8.8, try the following to force an update: `npm install -g npm`
@@ -33,7 +33,7 @@ Environment setup
     cd -
     ```
 
- 5. In order to run tests, you will need a locally installed copy of [PhantomJS](http://phantomjs.org/). This needs to be available and on your path.
+5. In order to run tests, you will need a locally installed copy of [PhantomJS](http://phantomjs.org/). This needs to be available and on your path.
 
 Running the webapp
 ------------------
