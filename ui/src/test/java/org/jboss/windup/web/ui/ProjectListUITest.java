@@ -34,7 +34,7 @@ public class ProjectListUITest extends AbstractUITest
     @Test
     public void testInitialLoad() throws Exception
     {
-        takeScreenshot(getDriver());
+        takeScreenshot("ProjectListUITest", getDriver());
         Assert.assertNotNull(createProjectButton);
         LOG.info("Button: " + createProjectButton.getText());
     }

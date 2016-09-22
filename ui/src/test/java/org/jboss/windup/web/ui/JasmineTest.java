@@ -54,16 +54,20 @@ public class JasmineTest extends AbstractUITest
 
             return durationDisplayed && finishedTextAvailable && testSummaryDisplayed && testsNotSkipped;
         };
-        Wait<WebDriver> w = new WebDriverWait(getDriver(), 60);
-        w.until(e);
-        takeScreenshot(getDriver());
+        try {
+            Wait<WebDriver> w = new WebDriverWait(getDriver(), 60);
+            w.until(e);
+            takeScreenshot("JasmineTest_afterwait", getDriver());
 
-        WebElement testSummary = getTestSummaryElement();
-        Assert.assertNotNull("Test Summary Element Missing", testSummary);
-        Assert.assertTrue("Tests Failed: " + testSummary.getText(), testSummary.getText().contains(" 0 failures"));
+            WebElement testSummary = getTestSummaryElement();
+            Assert.assertNotNull("Test Summary Element Missing", testSummary);
+            Assert.assertTrue("Tests Failed: " + testSummary.getText(), testSummary.getText().contains(" 0 failures"));
 
-        WebElement testFailures = getDriver().findElement(By.className("jasmine-failures"));
-        Assert.assertNotNull("Test Failures Element Missing");
-        Assert.assertTrue("Failures Found: " + testFailures.getText(), testFailures.getText().trim().equals(""));
+            WebElement testFailures = getDriver().findElement(By.className("jasmine-failures"));
+            Assert.assertNotNull("Test Failures Element Missing");
+            Assert.assertTrue("Failures Found: " + testFailures.getText(), testFailures.getText().trim().equals(""));
+        } finally {
+            takeScreenshot("JasmineTest_finally", getDriver());
+        }
     }
 }

@@ -83,14 +83,14 @@ public abstract class AbstractUITest
         return war;
     }
 
-    protected static void takeScreenshot(WebDriver driver)
+    protected static void takeScreenshot(String testName, WebDriver driver)
     {
         if (driver instanceof TakesScreenshot)
         {
             File tempFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
             try
             {
-                File outputFile = new File("target/screenshots/" + "shot_" + System.currentTimeMillis() + ".png");
+                File outputFile = new File("target/screenshots/" + testName + "_shot_" + System.currentTimeMillis() + ".png");
                 System.err.println("Copying file: " + tempFile + " to " + outputFile);
                 FileUtils.copyFile(tempFile, outputFile);
             }
