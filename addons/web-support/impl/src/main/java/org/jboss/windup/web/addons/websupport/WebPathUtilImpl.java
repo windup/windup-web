@@ -17,6 +17,7 @@ public class WebPathUtilImpl implements WebPathUtil
     private static final String PROPERTY_DATA_DIR = "jboss.server.data.dir";
     private static final String DIR_NAME = "windup";
     private static final String REPORT_DIR = "reports";
+    private static final String APPS_DIR = "apps";
 
     @Override
     public Path createWindupReportOutputPath(String name)
@@ -34,6 +35,12 @@ public class WebPathUtilImpl implements WebPathUtil
             throw new RuntimeException("Data directory not found via system property: " + PROPERTY_DATA_DIR);
 
         return Paths.get(dataDir).resolve(DIR_NAME);
+    }
+
+    @Override
+    public Path getAppPath()
+    {
+        return this.getGlobalWindupDataPath().resolve(APPS_DIR);
     }
 
     @Override
