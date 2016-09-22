@@ -34,15 +34,14 @@
         var SPEC_FILES = [
             'tests/app/file.service.spec',
             'tests/app/registeredapplication.model.spec',
-            'tests/app/registeredapplication.service.spec',
-            'tests/app/unmarshaller.spec',
+            'tests/app/registeredapplication.service.spec'
         ];
 
         function success () {
             console.log('Spec files loaded; starting Jasmine testrunner');
             window.onload();
         }
-
+            
         function getQueryParams(qs) {
             if (qs === void 0)
                 qs = document.location.search;
@@ -59,47 +58,43 @@
             
         var params = getQueryParams();
         // .../unit-tests.html?specs=
-        var runSpecs = (!params["specs"]) ? null : runSpecs = params.split(",");
+        var runSpecs = (!params["specs"]) ? null : runSpecs = params["specs"].split(",");
         if (runSpecs != null) {
 	    var specsRegex = new RegExp(runSpecs.map(escapeRegExp).join("|"));
-	    SPEC_FILES = SPEC_FILES.filter(function(spec){
-	    return specsRegex.test(spec);
-	    })
+	    SPEC_FILES = SPEC_FILES.filter(specsRegex.test);
 	}
 
         System.import('../systemjs.config.js')
-            .then(function () {
-                return System.import('tests/app/servicesetup');
-            })
-            .then(function () {
-                return Promise.all([
-                    System.import('@angular/core/testing'),
-                    System.import('@angular/platform-browser-dynamic/testing')
-                ])
-            })
+                .then(function () {
+                    return System.import('tests/app/servicesetup');
+                })
+                .then(function () {
+                    return Promise.all([
+                        System.import('@angular/core/testing'),
+                        System.import('@angular/platform-browser-dynamic/testing')
+                    ])
+                })
 
-            .then(function (providers) {
-                var testing = providers[0];
-                var testingBrowser = providers[1];
+                .then(function (providers) {
+                    var testing = providers[0];
+                    var testingBrowser = providers[1];
 
-                testing.TestBed.initTestEnvironment(
-                        testingBrowser.BrowserDynamicTestingModule,
-                        testingBrowser.platformBrowserDynamicTesting());
-            })
+                    testing.TestBed.initTestEnvironment(
+                            testingBrowser.BrowserDynamicTestingModule,
+                            testingBrowser.platformBrowserDynamicTesting());
+                })
 
-            // Import the spec files defined in the html (__spec_files__)
-            .then(function () {
-                console.log('Loading test spec files: '+SPEC_FILES.join(', '));
-                return Promise.all(
-                    SPEC_FILES.map(function(spec) {
-                        return System.import(spec);
-                    })
-                );
-            })
+                // Import the spec files defined in the html (__spec_files__)
+                .then(function () {
+                    console.log('Loading test spec files: '+SPEC_FILES.join(', '));
+                    return Promise.all(
+                        SPEC_FILES.map(System.import)
+                    );
+                })
 
-            //  After all imports load,  re-execute `window.onload` which
-            //  triggers the Jasmine test-runner start or explain what went wrong
-            .then(success, console.error.bind(console));
+                //  After all imports load,  re-execute `window.onload` which
+                //  triggers the Jasmine test-runner start or explain what went wrong
+                .then(success, console.error.bind(console));
     </script>
 </head>
 <body>
