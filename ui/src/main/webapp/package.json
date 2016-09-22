@@ -33,6 +33,7 @@
     "google-code-prettify": "1.0.1",
     "jquery": "2.1.4",
     "jquery-match-height": "0.7.0",
+    "ng2-file-upload": "^1.1.0",
     "patternfly": "^3.0.0",
     "patternfly-bootstrap-combobox": "1.0.0",
     "reflect-metadata": "0.1.3",
