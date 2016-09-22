@@ -1,14 +1,11 @@
 package org.jboss.windup.web.services.rest;
 
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.windup.web.services.model.RegisteredApplication;
 
 import javax.validation.Valid;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import java.util.Collection;
 
 /**
@@ -28,12 +25,27 @@ public interface RegisteredApplicationEndpoint
     @Path("list")
     Collection<RegisteredApplication> getRegisteredApplications();
 
+    @Path("{id}")
+    @GET
+    RegisteredApplication getApplication(@PathParam("id") int id);
+
     /**
      * Registers a new application with Windup.
      */
-    @PUT
-    @Path("register")
-    RegisteredApplication registerApplication(@Valid RegisteredApplication applicationDto);
+    @Path("appGroup/{appGroupId}")
+    @POST
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces("application/json")
+    RegisteredApplication registerApplication(MultipartFormDataInput data, @PathParam("appGroupId") long appGroupId);
+
+    /**
+     * Registers a multiple applications with Windup.
+     */
+    @Path("appGroup/{appGroupId}/multiple")
+    @POST
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces("application/json")
+    Collection<RegisteredApplication> registerMultipleApplications(MultipartFormDataInput data, @PathParam("appGroupId") long appGroupId);
 
     /**
      * Removes a application from Windup.

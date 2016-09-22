@@ -26,6 +26,14 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- Multipart provider for file upload -->
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-multipart-provider</artifactId>
+            <version>3.0.19.Final</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- Furnace Runtime -->
         <dependency>
             <groupId>org.jboss.forge.furnace</groupId>
