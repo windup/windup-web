@@ -34,7 +34,8 @@
         var SPEC_FILES = [
             'tests/app/file.service.spec',
             'tests/app/registeredapplication.model.spec',
-            'tests/app/registeredapplication.service.spec'
+            'tests/app/registeredapplication.service.spec',
+            'tests/app/unmarshaller.spec',
         ];
 
         function success () {
@@ -61,7 +62,9 @@
         var runSpecs = (!params["specs"]) ? null : runSpecs = params["specs"].split(",");
         if (runSpecs != null) {
 	    var specsRegex = new RegExp(runSpecs.map(escapeRegExp).join("|"));
-	    SPEC_FILES = SPEC_FILES.filter(specsRegex.test);
+	    SPEC_FILES = SPEC_FILES.filter(function(spec){
+                return specsRegex.test(spec);
+	    })
 	}
 
         System.import('../systemjs.config.js')
@@ -88,7 +91,9 @@
                 .then(function () {
                     console.log('Loading test spec files: '+SPEC_FILES.join(', '));
                     return Promise.all(
-                        SPEC_FILES.map(System.import)
+                        SPEC_FILES.map(function(spec) {
+                            return System.import(spec);
+                        })
                     );
                 })
 
