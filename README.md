@@ -48,15 +48,29 @@ Running the webapp
     - windup-web-services
 
         ```
-        cp -r services/target/windup-web-services ~/apps/wildfly-10.1.0.Final/standalone/deployments/windup-web-services.war;touch ~/apps/wildfly-10.1.0.Final/standalone/deployments/windup-web-services.war.dodeploy
+        cp -r services/target/windup-web-services ~/apps/wildfly-10.1.0.Final/standalone/deployments/windup-web-services.war
+        touch ~/apps/wildfly-10.1.0.Final/standalone/deployments/windup-web-services.war.dodeploy
         ```
 
     - windup-web:
 
         ```
-        cp -r ui/target/windup-web ~/apps/wildfly-10.1.0.Final/standalone/deployments/windup-web.war; touch ~/apps/wildfly-10.1.0.Final/standalone/deployments/windup-web.war.dodeploy
+        cp -r ui/target/windup-web ~/apps/wildfly-10.1.0.Final/standalone/deployments/windup-web.war
+        touch ~/apps/wildfly-10.1.0.Final/standalone/deployments/windup-web.war.dodeploy
         ```
+- Alternatively, add this to `standalone-full.xml` under `<server>`:
 
+        ```
+        <deployments>
+            <deployment name="windup-web-services" runtime-name="windup-web-services.war">
+                <fs-exploded path="/home/ondra/work/Migration/windup-web/services/target/windup-web-services"/>
+            </deployment>
+            <deployment name="windup-web" runtime-name="windup-web.war">
+                <fs-exploded path="/home/ondra/work/Migration/windup-web/ui/target/windup-web"/>
+            </deployment>
+        </deployments>
+        ```
+        
     > NOTE: Wildfly/EAP 7 must be run in standalone-full.xml as JMS is required
 - Follow the steps for deploying keycloak in [Keycloak Setup](./KEYCLOAK-SETUP.md)
 - Access the webapp: <http://localhost:8080/windup-web>
