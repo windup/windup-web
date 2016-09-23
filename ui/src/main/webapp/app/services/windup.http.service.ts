@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {Http, Request, ConnectionBackend, RequestOptions, RequestOptionsArgs, Response} from "@angular/http";
+import {Http, Request, ConnectionBackend, RequestOptions, RequestOptionsArgs, Response, Headers} from "@angular/http";
 
 import {KeycloakService} from "./keycloak.service";
 import {Observable} from 'rxjs/Observable';
@@ -16,10 +16,16 @@ export class WindupHttpService extends Http {
             return;
         }
 
-        options.headers.set('Authorization', 'Bearer ' + KeycloakService.auth.authz.token);
+        if (!options.hasOwnProperty('headers')) {
+            options.headers = new Headers();
+        }
+
+        if (!options.headers.has('Authorization')) {
+            options.headers.set('Authorization', 'Bearer ' + KeycloakService.auth.authz.token);
+        }
     }
 
-    private configureRequest(f:Function, url:string | Request, options:RequestOptionsArgs, body?: any):Observable<Response> {
+    private configureRequest(f:Function, url:string | Request, options:RequestOptionsArgs = {}, body?: any):Observable<Response> {
         let tokenObservable:Observable<string> = this._keycloakService.getToken();
         let tokenUpdateObservable:Observable<any> = Observable.create((observer) => {
             this.setToken(options);
