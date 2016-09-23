@@ -15,9 +15,9 @@ import javax.persistence.PersistenceContext;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MultivaluedMap;
 import java.io.*;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,7 +49,7 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
     }
 
     @Override
-    public RegisteredApplication getApplication(int id)
+    public RegisteredApplication getApplication(long id)
     {
         RegisteredApplication application = this.entityManager.find(RegisteredApplication.class, id);
 
@@ -78,7 +78,51 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
             throw new BadRequestException("Please provide a file");
         }
 
-        return this.createApplicationFromInputPart(inputParts.get(0), appGroupId);
+        ApplicationGroup appGroup = this.getApplicationGroup(appGroupId);
+        RegisteredApplication application = this.createApplication();
+        appGroup.addApplication(application);
+
+        this.uploadApplicationFile(inputParts.get(0), application, false);
+        this.entityManager.merge(application);
+        this.entityManager.merge(appGroup);
+
+        return application;
+    }
+
+    private RegisteredApplication createApplication()
+    {
+        RegisteredApplication application = new RegisteredApplication();
+
+        // need to get ID, set dummy title and path, it will be replaced
+        application.setTitle("dummy-title");
+        application.setInputPath("dummy-path");
+        this.entityManager.persist(application);
+
+        return application;
+    }
+
+    @Override
+    public RegisteredApplication updateApplication(MultipartFormDataInput data, long appId)
+    {
+        RegisteredApplication application = this.getApplication(appId);
+
+        Map<String, List<InputPart>> uploadForm = data.getFormDataMap();
+        List<InputPart> inputParts = uploadForm.get("file");
+
+        int uploadedFiles = inputParts.size();
+
+        if (uploadedFiles > 1)
+        {
+            throw new BadRequestException("Application can have only one file");
+        }
+        else if (uploadedFiles == 0)
+        {
+            throw new BadRequestException("Please provide a file");
+        }
+
+        this.uploadApplicationFile(inputParts.get(0), application, true);
+
+        return application;
     }
 
     @Override
@@ -87,25 +131,33 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
         Map<String, List<InputPart>> uploadForm = data.getFormDataMap();
         List<InputPart> inputParts = uploadForm.get("file");
 
+        if (inputParts.size() == 0)
+        {
+            throw new BadRequestException("Please provide files for applications");
+        }
+
         List<RegisteredApplication> registeredApplications = new ArrayList<>();
+
+        ApplicationGroup appGroup = this.getApplicationGroup(appGroupId);
 
         for (InputPart inputPart : inputParts)
         {
-            RegisteredApplication application = this.createApplicationFromInputPart(inputPart, appGroupId);
+            RegisteredApplication application = this.createApplication();
+            appGroup.addApplication(application);
+
+            this.uploadApplicationFile(inputPart, application, false);
+            this.entityManager.merge(application);
             registeredApplications.add(application);
         }
+
+        this.entityManager.merge(appGroup);
 
         return registeredApplications;
     }
 
-    protected RegisteredApplication createApplicationFromInputPart(InputPart inputPart, long appGroupId)
+    protected RegisteredApplication uploadApplicationFile(InputPart inputPart, RegisteredApplication application, boolean rewrite)
     {
-        ApplicationGroup group = this.entityManager.find(ApplicationGroup.class, appGroupId);
-
-        if (group == null)
-        {
-            throw new BadRequestException("Application group not found");
-        }
+        ApplicationGroup group = application.getApplicationGroup();
 
         try
         {
@@ -117,12 +169,6 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
 
             MigrationProject project = group.getMigrationProject();
 
-            RegisteredApplication application = new RegisteredApplication();
-            application.setTitle(fileName);
-            application.setInputPath(fileName);
-
-            this.entityManager.persist(application); // need to get ID
-
             String filePath = Paths.get(
                         this.webPathUtil.getAppPath().toString(),
                         project.getId().toString(),
@@ -133,19 +179,21 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
 
             if (file.exists())
             {
-                LOG.warning("File in path: " + filePath + " already exists, but it should not");
-                throw new BadRequestException("File with given name already exists");
+                if (!rewrite)
+                {
+                    LOG.warning("File in path: " + filePath + " already exists, but it should not");
+                    throw new BadRequestException("File with given name already exists");
+                }
+                else
+                {
+                    file.delete();
+                }
             }
 
             this.saveFileTo(inputStream, filePath);
 
             application.setTitle(fileName);
             application.setInputPath(filePath);
-
-            group.addApplication(application);
-
-            this.entityManager.merge(application);
-            this.entityManager.merge(group);
 
             return application;
         }
@@ -154,6 +202,18 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
             Logger.getLogger(FileEndpointImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new InternalServerErrorException("Error during file upload");
         }
+    }
+
+    private ApplicationGroup getApplicationGroup(long appGroupId)
+    {
+        ApplicationGroup group = this.entityManager.find(ApplicationGroup.class, appGroupId);
+
+        if (group == null)
+        {
+            throw new BadRequestException("Application group not found");
+        }
+
+        return group;
     }
 
     protected String getFileName(MultivaluedMap<String, String> header)

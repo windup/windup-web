@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.Valid;
+import javax.ws.rs.NotFoundException;
 
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
@@ -28,7 +29,8 @@ public class ApplicationGroupEndpointImpl implements ApplicationGroupEndpoint
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Inject @FromFurnace
+    @Inject
+    @FromFurnace
     private WebPathUtil webPathUtil;
 
     @Override
@@ -40,7 +42,14 @@ public class ApplicationGroupEndpointImpl implements ApplicationGroupEndpoint
     @Override
     public Collection<ApplicationGroup> getApplicationGroups(Long projectID)
     {
-        return entityManager.find(MigrationProject.class, projectID).getGroups();
+        MigrationProject project = entityManager.find(MigrationProject.class, projectID);
+
+        if (project == null)
+        {
+            throw new NotFoundException("MigrationProject not found");
+        }
+
+        return project.getGroups();
     }
 
     @Override

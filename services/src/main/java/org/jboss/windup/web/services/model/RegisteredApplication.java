@@ -209,12 +209,10 @@ public class RegisteredApplication implements Serializable
         RegisteredApplication other = (RegisteredApplication) obj;
         if (id != null)
         {
-            if (!id.equals(other.id))
-            {
-                return false;
-            }
+            return id.equals(other.id);
         }
-        return true;
+
+        return false;
     }
 
     @Override

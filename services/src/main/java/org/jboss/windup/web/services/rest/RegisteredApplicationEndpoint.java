@@ -27,7 +27,7 @@ public interface RegisteredApplicationEndpoint
 
     @Path("{id}")
     @GET
-    RegisteredApplication getApplication(@PathParam("id") int id);
+    RegisteredApplication getApplication(@PathParam("id") long id);
 
     /**
      * Registers a new application with Windup.
@@ -37,6 +37,14 @@ public interface RegisteredApplicationEndpoint
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces("application/json")
     RegisteredApplication registerApplication(MultipartFormDataInput data, @PathParam("appGroupId") long appGroupId);
+
+    /**
+     * Updates existing application
+     */
+    @Path("/{id}")
+    @PUT
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    RegisteredApplication updateApplication(MultipartFormDataInput data, @PathParam("id") long appId);
 
     /**
      * Registers a multiple applications with Windup.
