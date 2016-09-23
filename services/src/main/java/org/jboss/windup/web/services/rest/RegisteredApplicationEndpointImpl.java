@@ -33,7 +33,8 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
 {
     private static Logger LOG = Logger.getLogger(RegisteredApplicationEndpointImpl.class.getSimpleName());
 
-    @Inject @FromFurnace
+    @Inject
+    @FromFurnace
     private WebPathUtil webPathUtil;
 
     @PersistenceContext
@@ -47,10 +48,12 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
     }
 
     @Override
-    public RegisteredApplication getApplication(int id) {
+    public RegisteredApplication getApplication(int id)
+    {
         RegisteredApplication application = this.entityManager.find(RegisteredApplication.class, id);
 
-        if (application == null) {
+        if (application == null)
+        {
             throw new NotFoundException();
         }
 
@@ -58,15 +61,19 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
     }
 
     @Override
-    public RegisteredApplication registerApplication(MultipartFormDataInput data, long appGroupId) {
+    public RegisteredApplication registerApplication(MultipartFormDataInput data, long appGroupId)
+    {
         Map<String, List<InputPart>> uploadForm = data.getFormDataMap();
         List<InputPart> inputParts = uploadForm.get("file");
 
         int uploadedFiles = inputParts.size();
 
-        if (uploadedFiles > 1) {
+        if (uploadedFiles > 1)
+        {
             throw new BadRequestException("Use endpoint /multiple to register multiple applications");
-        } else if (uploadedFiles== 0) {
+        }
+        else if (uploadedFiles == 0)
+        {
             throw new BadRequestException("Please provide a file");
         }
 
@@ -81,7 +88,8 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
 
         List<RegisteredApplication> registeredApplications = new ArrayList<>();
 
-        for (InputPart inputPart : inputParts) {
+        for (InputPart inputPart : inputParts)
+        {
             RegisteredApplication application = this.createApplicationFromInputPart(inputPart, appGroupId);
             registeredApplications.add(application);
         }
@@ -89,21 +97,24 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
         return registeredApplications;
     }
 
-    protected RegisteredApplication createApplicationFromInputPart(InputPart inputPart, long appGroupId) {
+    protected RegisteredApplication createApplicationFromInputPart(InputPart inputPart, long appGroupId)
+    {
         ApplicationGroup group = this.entityManager.find(ApplicationGroup.class, appGroupId);
 
-        if (group == null) {
+        if (group == null)
+        {
             throw new BadRequestException("Application group not found");
         }
 
-        try {
+        try
+        {
             RegisteredApplication application = new RegisteredApplication();
 
             MultivaluedMap<String, String> header = inputPart.getHeaders();
             String fileName = this.getFileName(header);
 
-            //convert the uploaded file to inputstream
-            InputStream inputStream = inputPart.getBody(InputStream.class,null);
+            // convert the uploaded file to inputstream
+            InputStream inputStream = inputPart.getBody(InputStream.class, null);
 
             String filePath = Paths.get(this.webPathUtil.getAppPath().toString(), fileName).toString();
 
@@ -118,19 +129,22 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
             this.entityManager.merge(group);
 
             return application;
-        } catch (IOException ex) {
+        }
+        catch (IOException ex)
+        {
             Logger.getLogger(FileEndpointImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new InternalServerErrorException("Error during file upload");
         }
     }
 
-
     protected String getFileName(MultivaluedMap<String, String> header)
     {
         String[] contentDisposition = header.getFirst("Content-Disposition").split(";");
 
-        for (String filename : contentDisposition) {
-            if ((filename.trim().startsWith("filename"))) {
+        for (String filename : contentDisposition)
+        {
+            if ((filename.trim().startsWith("filename")))
+            {
 
                 String[] name = filename.split("=");
 
@@ -150,7 +164,8 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
         OutputStream os = new FileOutputStream(file);
         byte[] buffer = new byte[256];
         int bytes = 0;
-        while ((bytes = inputStream.read(buffer)) != -1) {
+        while ((bytes = inputStream.read(buffer)) != -1)
+        {
             os.write(buffer, 0, bytes);
         }
     }
