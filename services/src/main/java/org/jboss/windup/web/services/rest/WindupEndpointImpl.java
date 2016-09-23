@@ -77,6 +77,7 @@ public class WindupEndpointImpl implements WindupEndpoint
             entityManager.persist(defaultAnalysisContext);
             group.setAnalysisContext(defaultAnalysisContext);
         }
+        // TODO fixme for filtered custom rulesPath selected
         group.getAnalysisContext().setRulesPaths(new HashSet<>(configurationService.getConfiguration().getRulesPaths()));
         entityManager.persist(execution);
 

@@ -7,7 +7,7 @@ import {FormComponent} from "./formcomponent.component";
 import {ApplicationGroup} from "windup-services";
 import {ApplicationGroupService} from "../services/applicationgroup.service";
 import {MigrationPathService} from "../services/migrationpath.service";
-import {MigrationPath} from "windup-services";
+import {MigrationPath, RulesPath} from "windup-services";
 import {AnalysisContextService} from "../services/analysiscontext.service";
 import {ConfigurationOption} from "../model/configuration-option.model";
 import {ConfigurationOptionsService} from "../services/configuration-options.service";
@@ -15,7 +15,7 @@ import {ModalDialogComponent} from "./modal-dialog.component";
 
 @Component({
     templateUrl: 'app/components/analysiscontextform.component.html',
-    providers: [ AnalysisContextService, ApplicationGroupService, MigrationPathService ]
+    providers: [ AnalysisContextService, ApplicationGroupService, MigrationPathService  ]
 })
 export class AnalysisContextFormComponent extends FormComponent implements OnInit
 {
@@ -57,6 +57,16 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
         }
         return this._migrationPathsObservable;
     }
+
+    change(options) {
+        /*this.selectedRulesets = Array.apply(null,options)
+                                .filter(option => option.selected)
+                                .map(option => option.value);*/
+   }
+
+   getCustomRules(): RulesPath[] {
+    return RULE_PATHS;
+   }
 
     ngOnInit() {
         this._activatedRoute.params.subscribe(params => {
@@ -128,6 +138,7 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
     save() {
         this.analysisContext.packages = this.packages.filter(it => { return it.prefix != null && it.prefix.trim() != "" }).map(it => { return it.prefix; });
         this.analysisContext.excludePackages = this.excludePackages.filter(it => { return it.prefix != null && it.prefix.trim() != "" }).map(it => { return it.prefix; });
+        this.analysisContext.rulesPaths = this.selectedRulesets;
         console.log("Should save with packages: " + JSON.stringify(this.analysisContext.packages) + " filtered from: " + JSON.stringify(this.packages));
 
         if (this.analysisContext.id != null) {
@@ -158,3 +169,12 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
         this._router.navigate(['/group-list', {projectID: this.applicationGroup.migrationProject.id}]);
     }
 }
+
+/*
+ * just for quick prototyping
+ */
+export const RULE_PATHS: RulesPath[] = [
+                                        { id: 1, version: 1, path:"test1.windup.xml", loadError: "", rulesPathType: "USER_PROVIDED"},
+                                        { id: 2, version: 1, path:"test2.windup.xml", loadError: "", rulesPathType: "USER_PROVIDED"},
+                                        { id: 3, version: 1, path:"test3.windup.xml", loadError: "", rulesPathType: "USER_PROVIDED"},
+                                        ]; 
