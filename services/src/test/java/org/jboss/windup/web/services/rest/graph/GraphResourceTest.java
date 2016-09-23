@@ -1,9 +1,6 @@
-package org.jboss.windup.web.services.rest;
+package org.jboss.windup.web.services.rest.graph;
 
 import java.net.URL;
-import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,10 +14,11 @@ import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.windup.graph.model.resource.FileModel;
 import org.jboss.windup.web.services.AbstractTest;
-import org.jboss.windup.web.services.model.ApplicationGroup;
-import org.jboss.windup.web.services.model.ExecutionState;
-import org.jboss.windup.web.services.model.RegisteredApplication;
+import org.jboss.windup.web.services.WindupData;
 import org.jboss.windup.web.services.model.WindupExecution;
+import org.jboss.windup.web.services.rest.ApplicationGroupEndpoint;
+import org.jboss.windup.web.services.rest.RegisteredApplicationEndpoint;
+import org.jboss.windup.web.services.rest.WindupEndpoint;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -37,11 +35,11 @@ public class GraphResourceTest extends AbstractTest
     @ArquillianResource
     private URL contextPath;
 
-    private ApplicationGroupEndpoint applicationGroupEndpoint;
-    private RegisteredApplicationEndpoint registeredApplicationEndpoint;
-    private WindupEndpoint windupEndpoint;
-    private GraphResource graphResource;
-    private WindupExecution execution;
+    ApplicationGroupEndpoint applicationGroupEndpoint;
+    RegisteredApplicationEndpoint registeredApplicationEndpoint;
+    WindupEndpoint windupEndpoint;
+    GraphResource graphResource;
+    WindupExecution execution;
 
     @BeforeClass
     public static void setUpClass() throws Exception
@@ -61,7 +59,11 @@ public class GraphResourceTest extends AbstractTest
         this.windupEndpoint = target.proxy(WindupEndpoint.class);
         this.graphResource = target.proxy(GraphResource.class);
 
-        this.execution = executeWindup();
+        if (this.execution == null)
+        {
+            WindupData windupData = new WindupData(registeredApplicationEndpoint, applicationGroupEndpoint, windupEndpoint);
+            this.execution = windupData.executeWindup();
+        }
     }
 
     @Test
@@ -78,41 +80,17 @@ public class GraphResourceTest extends AbstractTest
         }
     }
 
-    private WindupExecution executeWindup() throws Exception
+    @Test
+    @RunAsClient
+    public void testQueryByTypeAndProperty()
     {
-        String inputPath = Paths.get("src/main/java").toAbsolutePath().normalize().toString();
+        List<Map<String, Object>> fileModels = graphResource.getByType(execution.getId(), FileModel.TYPE, FileModel.FILE_NAME, "java", 1);
+        Assert.assertNotNull(fileModels);
+        Assert.assertTrue(fileModels.size() == 1);
 
-        RegisteredApplication input = new RegisteredApplication();
-        input.setInputPath(inputPath);
-
-        input = this.registeredApplicationEndpoint.registerApplication(input);
-        System.out.println("Setup Graph test... registered application: " + input);
-
-        ApplicationGroup group = new ApplicationGroup();
-        group.setTitle("Group");
-        group.setApplications(Collections.singleton(input));
-        group = applicationGroupEndpoint.create(group);
-
-        WindupExecution initialExecution = this.windupEndpoint.executeGroup(group.getId());
-
-        WindupExecution status = this.windupEndpoint.getStatus(initialExecution.getId());
-        long beginTime = System.currentTimeMillis();
-        do
+        for (Map<String, Object> fileModel : fileModels)
         {
-            Thread.sleep(1000L);
-
-            status = this.windupEndpoint.getStatus(status.getId());
-            System.out.println("Status: " + status);
-
-            if ((System.currentTimeMillis() - beginTime) > (1000L * 240L))
-            {
-                // taking too long... fail
-                Assert.fail("Processing never completed. Current status: " + status);
-            }
+            System.out.println("FileModel: " + fileModel);
         }
-        while (status.getState() == ExecutionState.STARTED);
-
-        Assert.assertEquals(ExecutionState.COMPLETED, status.getState());
-        return status;
     }
 }
