@@ -16,6 +16,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.windup.web.services.AbstractTest;
+import org.jboss.windup.web.services.data.ServiceConstants;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -47,7 +48,7 @@ public class FileEndpointTest extends AbstractTest
     public void setUp() throws Exception
     {
         ResteasyClient client = getResteasyClient();
-        ResteasyWebTarget target = client.target(contextPath + "rest");
+        ResteasyWebTarget target = client.target(contextPath + ServiceConstants.REST_BASE);
 
         this.fileEndpoint = target.proxy(FileEndpoint.class);
     }
