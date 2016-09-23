@@ -126,6 +126,22 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
     }
 
     @Override
+    public void deleteApplication(long appId)
+    {
+        RegisteredApplication application = this.getApplication(appId);
+        application.getApplicationGroup().removeApplication(application);
+
+        File file = new File(application.getInputPath());
+
+        if (file.exists())
+        {
+            file.delete();
+        }
+
+        this.entityManager.remove(application);
+    }
+
+    @Override
     public Collection<RegisteredApplication> registerMultipleApplications(MultipartFormDataInput data, long appGroupId)
     {
         Map<String, List<InputPart>> uploadForm = data.getFormDataMap();
@@ -259,11 +275,5 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
         {
             os.write(buffer, 0, bytes);
         }
-    }
-
-    @Override
-    public void unregisterApplication(RegisteredApplication application)
-    {
-        entityManager.remove(application);
     }
 }

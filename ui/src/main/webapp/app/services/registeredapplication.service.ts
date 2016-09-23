@@ -12,6 +12,7 @@ import {KeycloakService} from "./keycloak.service";
 export class RegisteredApplicationService extends AbstractService {
     private GET_APPLICATIONS_URL = "/registeredApplications/list";
     private REGISTER_APPLICATION_URL = "/registeredApplications/appgroup";
+    private REGISTERED_APPLICATIONS_URL = '/registeredApplications';
     private UPLOAD_URL = '/file';
     private _uploader: FileUploader;
     private _multipartUploader: FileUploader;
@@ -71,6 +72,12 @@ export class RegisteredApplicationService extends AbstractService {
         let options = new RequestOptions({ headers: headers });
         return this._http.get(Constants.REST_BASE + this.GET_APPLICATIONS_URL, options)
             .map(res => <RegisteredApplication[]> res.json())
+            .catch(this.handleError);
+    }
+
+    deleteApplication(application: RegisteredApplication) {
+        let url = `${Constants.REST_BASE + this.REGISTERED_APPLICATIONS_URL}/${application.id}`;
+        return this._http.delete(url)
             .catch(this.handleError);
     }
 }

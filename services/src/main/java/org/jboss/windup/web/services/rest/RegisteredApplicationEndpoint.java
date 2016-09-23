@@ -41,10 +41,14 @@ public interface RegisteredApplicationEndpoint
     /**
      * Updates existing application
      */
-    @Path("/{id}")
+    @Path("{id}")
     @PUT
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     RegisteredApplication updateApplication(MultipartFormDataInput data, @PathParam("id") long appId);
+
+    @Path("{id}")
+    @DELETE
+    void deleteApplication(@PathParam("id") long appId);
 
     /**
      * Registers a multiple applications with Windup.
@@ -54,11 +58,4 @@ public interface RegisteredApplicationEndpoint
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces("application/json")
     Collection<RegisteredApplication> registerMultipleApplications(MultipartFormDataInput data, @PathParam("appGroupId") long appGroupId);
-
-    /**
-     * Removes a application from Windup.
-     */
-    @DELETE
-    @Path("unregister")
-    void unregisterApplication(RegisteredApplication application);
 }
