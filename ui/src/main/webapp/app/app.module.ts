@@ -5,6 +5,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 
 import 'rxjs/Rx';
 
+import { FileSelectDirective, FileDropDirective } from 'ng2-file-upload/ng2-file-upload';
+//import {FileSelectDirective} from "./components/file-upload/file-select.directive";
+//import {FileDropDirective} from "./components/file-upload/file-drop.directive";
+
 import { AppComponent }  from './components/app.component';
 import { Constants } from './constants';
 import { routing, appRoutingProviders } from './app.routing';
@@ -59,7 +63,10 @@ import {WindupHttpService} from "./services/windup.http.service";
         NavbarComponent,
         ProgressBarComponent,
         RulesModalComponent,
-        TechnologyComponent
+        TechnologyComponent,
+        
+        FileSelectDirective,
+        FileDropDirective
     ],
     providers: [
         appRoutingProviders,

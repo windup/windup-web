@@ -190,6 +190,38 @@ public class ApplicationGroup implements Serializable
     }
 
     /**
+     * Adds application to application group
+     * 
+     * @param application Application
+     */
+    public void addApplication(RegisteredApplication application)
+    {
+        if (this.getApplications().contains(application))
+        {
+            throw new RuntimeException("Application already in this group");
+        }
+
+        this.getApplications().add(application);
+        application.setApplicationGroup(this);
+    }
+
+    /**
+     * Removes application from application group
+     * 
+     * @param application Application
+     */
+    public void removeApplication(RegisteredApplication application)
+    {
+        if (!this.getApplications().contains(application))
+        {
+            throw new RuntimeException("Application not found");
+        }
+
+        this.getApplications().remove(application);
+        application.setApplicationGroup(null);
+    }
+
+    /**
      * Contains a collection of {@link WindupExecution}s.
      */
     public Collection<WindupExecution> getExecutions()

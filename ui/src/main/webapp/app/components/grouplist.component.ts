@@ -9,6 +9,7 @@ import {WindupService} from "../services/windup.service";
 import {Constants} from "../constants";
 import {RegisteredApplication} from "windup-services";
 import {WindupExecution} from "windup-services";
+import {RegisteredApplicationService} from "../services/registeredapplication.service";
 
 @Component({
     selector: 'application-list',
@@ -27,7 +28,8 @@ export class GroupListComponent implements OnInit, OnDestroy {
         private _activatedRoute: ActivatedRoute,
         private _router: Router,
         private _applicationGroupService: ApplicationGroupService,
-        private _windupService: WindupService
+        private _windupService: WindupService,
+        private _registeredApplicationsService: RegisteredApplicationService
     ) {}
 
     ngOnInit():any {
@@ -136,5 +138,9 @@ export class GroupListComponent implements OnInit, OnDestroy {
 
     registerApplication(applicationGroup:ApplicationGroup) {
         this._router.navigate(['/register-application', { groupID: applicationGroup.id }]);
+    }
+
+    deleteApplication(application: RegisteredApplication) {
+        this._registeredApplicationsService.deleteApplication(application);
     }
 }

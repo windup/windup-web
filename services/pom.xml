@@ -26,6 +26,14 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- Multipart provider for file upload -->
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-multipart-provider</artifactId>
+            <version>3.0.19.Final</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- Furnace Runtime -->
         <dependency>
             <groupId>org.jboss.forge.furnace</groupId>
@@ -103,6 +111,12 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>1.10.19</version>
             <scope>test</scope>
         </dependency>
         <dependency>

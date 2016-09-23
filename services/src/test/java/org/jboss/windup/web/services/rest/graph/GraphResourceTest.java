@@ -1,6 +1,9 @@
-package org.jboss.windup.web.services.rest.graph;
+package org.jboss.windup.web.services.rest;
 
 import java.net.URL;
+import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,11 +17,10 @@ import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.windup.graph.model.resource.FileModel;
 import org.jboss.windup.web.services.AbstractTest;
-import org.jboss.windup.web.services.WindupData;
+import org.jboss.windup.web.services.model.ApplicationGroup;
+import org.jboss.windup.web.services.model.ExecutionState;
+import org.jboss.windup.web.services.model.RegisteredApplication;
 import org.jboss.windup.web.services.model.WindupExecution;
-import org.jboss.windup.web.services.rest.ApplicationGroupEndpoint;
-import org.jboss.windup.web.services.rest.RegisteredApplicationEndpoint;
-import org.jboss.windup.web.services.rest.WindupEndpoint;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
