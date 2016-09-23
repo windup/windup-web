@@ -37,6 +37,11 @@ public class RegisteredApplication implements Serializable
     @Column(name = "version")
     private int version;
 
+    @Column(length = 256)
+    @Size(min = 1, max = 256)
+    @NotNull
+    private String title;
+
     @Column(length = 2048)
     @Size(min = 1, max = 2048)
     @FileExistsConstraint
@@ -112,8 +117,8 @@ public class RegisteredApplication implements Serializable
     }
 
     /**
-     * Contains the path to the report and graph directories. This is only relevant when the application is being analyzed
-     * individually rather than as a group.
+     * Contains the path to the report and graph directories. This is only relevant when the application is being analyzed individually rather than as
+     * a group.
      */
     public String getOutputPath()
     {
@@ -121,8 +126,8 @@ public class RegisteredApplication implements Serializable
     }
 
     /**
-     * Contains the path to the report and graph directories. This is only relevant when the application is being analyzed
-     * individually rather than as a group.
+     * Contains the path to the report and graph directories. This is only relevant when the application is being analyzed individually rather than as
+     * a group.
      */
     public void setOutputPath(String outputPath)
     {
@@ -159,6 +164,26 @@ public class RegisteredApplication implements Serializable
     public void setApplicationGroup(ApplicationGroup applicationGroup)
     {
         this.applicationGroup = applicationGroup;
+    }
+
+    /**
+     * Gets application title
+     * 
+     * @return Title
+     */
+    public String getTitle()
+    {
+        return title;
+    }
+
+    /**
+     * Sets application title
+     * 
+     * @param title Title
+     */
+    public void setTitle(String title)
+    {
+        this.title = title;
     }
 
     @Override

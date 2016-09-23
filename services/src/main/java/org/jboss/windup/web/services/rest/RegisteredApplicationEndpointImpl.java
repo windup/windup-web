@@ -5,6 +5,7 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.model.ApplicationGroup;
+import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.model.RegisteredApplication;
 
 import javax.ejb.Stateless;
@@ -108,24 +109,42 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
 
         try
         {
-            RegisteredApplication application = new RegisteredApplication();
-
             MultivaluedMap<String, String> header = inputPart.getHeaders();
             String fileName = this.getFileName(header);
 
             // convert the uploaded file to inputstream
             InputStream inputStream = inputPart.getBody(InputStream.class, null);
 
-            String filePath = Paths.get(this.webPathUtil.getAppPath().toString(), fileName).toString();
+            MigrationProject project = group.getMigrationProject();
+
+            RegisteredApplication application = new RegisteredApplication();
+            application.setTitle(fileName);
+            application.setInputPath(fileName);
+
+            this.entityManager.persist(application); // need to get ID
+
+            String filePath = Paths.get(
+                        this.webPathUtil.getAppPath().toString(),
+                        project.getId().toString(),
+                        group.getId().toString(),
+                        application.getId().toString().concat(this.getExtension(fileName))).toString();
+
+            File file = new File(filePath);
+
+            if (file.exists())
+            {
+                LOG.warning("File in path: " + filePath + " already exists, but it should not");
+                throw new BadRequestException("File with given name already exists");
+            }
 
             this.saveFileTo(inputStream, filePath);
 
-            application.setInputFilename(fileName);
+            application.setTitle(fileName);
             application.setInputPath(filePath);
 
-            group.getApplications().add(application);
+            group.addApplication(application);
 
-            this.entityManager.persist(application);
+            this.entityManager.merge(application);
             this.entityManager.merge(group);
 
             return application;
@@ -153,6 +172,18 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
         }
 
         throw new BadRequestException("Missing file name");
+    }
+
+    protected String getExtension(String fileName)
+    {
+        int extBeginsAt = fileName.lastIndexOf(".");
+
+        if (extBeginsAt == -1)
+        {
+            return "";
+        }
+
+        return fileName.substring(extBeginsAt);
     }
 
     protected void saveFileTo(InputStream inputStream, String filePath) throws IOException

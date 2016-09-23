@@ -46,7 +46,7 @@
             <tbody>
                 <tr *ngFor="let app of group.applications">
                     <td>
-                        {{app.inputFilename}}
+                        {{app.title}}
                     </td>
                     <td>
                         <a *ngIf="app.reportIndexPath != null" class="btn btn-default btn-md" target="_blank" href="{{reportURL(app)}}">
