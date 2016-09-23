@@ -63,10 +63,10 @@ Running the webapp
         ```
         <deployments>
             <deployment name="windup-web-services" runtime-name="windup-web-services.war">
-                <fs-exploded path="/home/ondra/work/Migration/windup-web/services/target/windup-web-services"/>
+                <fs-exploded path=".../windup-web/services/target/windup-web-services"/>
             </deployment>
             <deployment name="windup-web" runtime-name="windup-web.war">
-                <fs-exploded path="/home/ondra/work/Migration/windup-web/ui/target/windup-web"/>
+                <fs-exploded path=".../windup-web/ui/target/windup-web"/>
             </deployment>
         </deployments>
         ```
