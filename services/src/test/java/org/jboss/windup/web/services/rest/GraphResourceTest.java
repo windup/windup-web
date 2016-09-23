@@ -61,7 +61,7 @@ public class GraphResourceTest extends AbstractTest
         this.windupEndpoint = target.proxy(WindupEndpoint.class);
         this.graphResource = target.proxy(GraphResource.class);
 
-        this.execution = executeWindup();
+      //  this.execution = executeWindup();
     }
 
     @Test
@@ -77,7 +77,7 @@ public class GraphResourceTest extends AbstractTest
             System.out.println("FileModel: " + fileModel);
         }
     }
-
+/*
     private WindupExecution executeWindup() throws Exception
     {
         String inputPath = Paths.get("src/main/java").toAbsolutePath().normalize().toString();
@@ -115,4 +115,5 @@ public class GraphResourceTest extends AbstractTest
         Assert.assertEquals(ExecutionState.COMPLETED, status.getState());
         return status;
     }
+    */
 }
