@@ -12,6 +12,8 @@ import org.jboss.windup.web.services.rest.MigrationProjectEndpoint;
  */
 public class DataProvider
 {
+    public static final String TINY_SAMPLE_PATH = "/sample/sample-tiny.war";
+
     private MigrationProjectEndpoint migrationProjectEndpoint;
     private ApplicationGroupEndpoint applicationGroupEndpoint;
 

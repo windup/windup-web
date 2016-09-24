@@ -10,6 +10,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.windup.web.services.AbstractTest;
+import org.jboss.windup.web.services.data.ServiceConstants;
 import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.MigrationPath;
@@ -47,7 +48,7 @@ public class AnalysisContextEndpointTest extends AbstractTest
     public void setUp()
     {
         ResteasyClient client = getResteasyClient();
-        ResteasyWebTarget target = client.target(contextPath + "rest");
+        ResteasyWebTarget target = client.target(contextPath + ServiceConstants.REST_BASE);
 
         this.applicationGroupEndpoint = target.proxy(ApplicationGroupEndpoint.class);
         this.migrationPathEndpoint = target.proxy(MigrationPathEndpoint.class);

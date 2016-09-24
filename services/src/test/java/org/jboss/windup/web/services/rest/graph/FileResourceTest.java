@@ -1,21 +1,17 @@
-package org.jboss.windup.web.services.rest;
+package org.jboss.windup.web.services.rest.graph;
 
-/**
- * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
- */
-
-import java.io.File;
 import java.net.URL;
+import java.util.List;
+import java.util.Map;
 
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.arquillian.warp.WarpTest;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
-import org.jboss.windup.web.services.AbstractTest;
+import org.jboss.windup.graph.model.resource.FileModel;
 import org.jboss.windup.web.services.data.ServiceConstants;
 import org.junit.Assert;
 import org.junit.Before;
@@ -23,19 +19,17 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
-@WarpTest
 @RunWith(Arquillian.class)
-public class FileEndpointTest extends AbstractTest
+public class FileResourceTest extends GraphResourceTest
 {
 
     @ArquillianResource
     private URL contextPath;
 
-    private FileEndpoint fileEndpoint;
+    private FileModelResource fileModelResource;
 
     @BeforeClass
     public static void setUpClass() throws Exception
@@ -50,23 +44,23 @@ public class FileEndpointTest extends AbstractTest
         ResteasyClient client = getResteasyClient();
         ResteasyWebTarget target = client.target(contextPath + ServiceConstants.REST_BASE);
 
-        this.fileEndpoint = target.proxy(FileEndpoint.class);
+        super.setUp();
+        this.fileModelResource = target.proxy(FileModelResource.class);
     }
 
     @Test
     @RunAsClient
-    public void testFileExists() throws Exception
+    public void testFileByName()
     {
-        File file = File.createTempFile(FileEndpointTest.class.getSimpleName(), "testfile");
-        try
-        {
-            Assert.assertTrue(fileEndpoint.pathExists(file.toString()));
+        Long executionID = this.execution.getId();
+        List<Map<String, Object>> results = this.fileModelResource.get(executionID, "windup-src-example");
 
-            Assert.assertFalse(fileEndpoint.pathExists("filedoesntexist.notthere"));
-        }
-        finally
+        Assert.assertTrue(results.size() == 1);
+        for (Map<String, Object> result : results)
         {
-            file.delete();
+            Assert.assertEquals(true, result.get(FileModel.IS_DIRECTORY));
+            Assert.assertEquals("windup-src-example", result.get(FileModel.FILE_NAME));
+            Assert.assertNotNull(result.get(FileModel.PARENT_FILE));
         }
     }
 }

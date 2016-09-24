@@ -3,7 +3,6 @@ package org.jboss.windup.web.services.rest;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.windup.web.services.model.RegisteredApplication;
 
-import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.Collection;
@@ -13,11 +12,13 @@ import java.util.Collection;
  *
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
-@Path("registeredApplications")
+@Path(RegisteredApplicationEndpoint.REGISTERED_APPLICATIONS)
 @Consumes("application/json")
 @Produces("application/json")
 public interface RegisteredApplicationEndpoint
 {
+    String REGISTERED_APPLICATIONS = "/registeredApplications";
+
     /**
      * Gets the list of all registered applications.
      */

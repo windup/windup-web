@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import java.io.Serializable;
 import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import javax.persistence.Column;
@@ -281,11 +283,19 @@ public class WindupExecution implements Serializable
                 ", totalWork=" + totalWork +
                 ", workCompleted=" + workCompleted +
                 ", currentTask='" + currentTask + '\'' +
-                ", lastModified=" + lastModified +
+                ", lastModified=" + formatCalendar(lastModified) +
                 ", state=" + state +
                 ", version=" + version +
-                ", timeCompleted=" + timeCompleted +
-                ", timeStarted=" + timeStarted +
+                ", timeCompleted=" + formatCalendar(timeCompleted) +
+                ", timeStarted=" + formatCalendar(timeStarted) +
                 '}';
+    }
+    
+    private static final DateFormat FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private String formatCalendar(Calendar cal) {
+        if (cal == null)
+            return "null";
+        FORMATTER.setTimeZone(cal.getTimeZone());
+        return FORMATTER.format(cal.getTime());
     }
 }

@@ -15,7 +15,6 @@ import javax.persistence.PersistenceContext;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotFoundException;
-import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MultivaluedMap;
 import java.io.*;
 import java.nio.file.Paths;

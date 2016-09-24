@@ -45,23 +45,25 @@ Running the webapp
 
 - Deploy the exploded `services/target/windup-web-services` and `ui/target/web-services` to EAP 7.
 
-    - windup-web-services
-
         ```
         cp -r services/target/windup-web-services ~/apps/wildfly-10.1.0.Final/standalone/deployments/windup-web-services.war
         touch ~/apps/wildfly-10.1.0.Final/standalone/deployments/windup-web-services.war.dodeploy
-        ```
 
-    - windup-web:
-
-        ```
         cp -r ui/target/windup-web ~/apps/wildfly-10.1.0.Final/standalone/deployments/windup-web.war
         touch ~/apps/wildfly-10.1.0.Final/standalone/deployments/windup-web.war.dodeploy
         ```
-- Alternatively, add this to `standalone-full.xml` under `<server>`:
+        
+    - Alternatively, you can deploy the `target` dir directly - see [WildFly docs](https://docs.jboss.org/author/display/WFLY10/Application+deployment#Applicationdeployment-UnmanagedDeployments):
 
         ```
-        <deployments>
+        deploy .../windup-web/services/target/windup-web-services --unmanaged
+        deploy .../windup-web/ui/target/windup-web --unmanaged
+        ```
+
+    - Or add this to `standalone-full.xml` under `<server>`:
+
+         ```xml
+         <deployments>
             <deployment name="windup-web-services" runtime-name="windup-web-services.war">
                 <fs-exploded path=".../windup-web/services/target/windup-web-services"/>
             </deployment>
@@ -70,7 +72,7 @@ Running the webapp
             </deployment>
         </deployments>
         ```
-        
+
     > NOTE: Wildfly/EAP 7 must be run in standalone-full.xml as JMS is required
 - Follow the steps for deploying keycloak in [Keycloak Setup](./KEYCLOAK-SETUP.md)
 - Access the webapp: <http://localhost:8080/windup-web>
