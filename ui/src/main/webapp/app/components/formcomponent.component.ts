@@ -1,4 +1,4 @@
-import {NgControl} from "@angular/forms";
+import {AbstractControlDirective, AbstractControl} from "@angular/forms";
 
 export class FormComponent {
     errorMessages:string[];
@@ -12,7 +12,7 @@ export class FormComponent {
      * It makes sure that the control is not-pristine (don't show errors on fields the user hasn't touched yet)
      * and that the control is already rendered.
      */
-    hasError(control:NgControl) {
+    hasError(control:AbstractControlDirective | AbstractControl) {
         if (control == null)
             return false;
 

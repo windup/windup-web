@@ -11,7 +11,7 @@ import {MigrationPath} from "windup-services";
 import {AnalysisContextService} from "../services/analysiscontext.service";
 
 @Component({
-    templateUrl: 'app/components/analysiscontextform.component.html',
+    templateUrl: './analysiscontextform.component.html',
     providers: [ AnalysisContextService, ApplicationGroupService, MigrationPathService ]
 })
 export class AnalysisContextFormComponent extends FormComponent

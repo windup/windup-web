@@ -8,7 +8,7 @@ import {FormComponent} from "./formcomponent.component";
 
 @Component({
     selector: 'create-group-form',
-    templateUrl: 'app/components/applicationgroupform.component.html',
+    templateUrl: './applicationgroupform.component.html',
 })
 export class ApplicationGroupForm extends FormComponent implements OnInit
 {

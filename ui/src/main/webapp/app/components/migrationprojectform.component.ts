@@ -6,7 +6,7 @@ import {MigrationProjectService} from "../services/migrationproject.service";
 import {FormComponent} from "./formcomponent.component";
 
 @Component({
-    templateUrl: 'app/components/migrationprojectform.component.html'
+    templateUrl: './migrationprojectform.component.html'
 })
 export class MigrationProjectFormComponent extends FormComponent implements OnInit
 {

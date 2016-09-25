@@ -4,7 +4,7 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'breadcrumbs',
-    templateUrl: 'app/components/breadcrumbs.component.html',
+    templateUrl: './breadcrumbs.component.html',
 })
 export class BreadCrumbsComponent {
     public breadcrumbsCollection: Array<any> = [];

@@ -7,7 +7,7 @@ import {MigrationProject} from "windup-services";
 
 @Component({
     selector: 'application-list',
-    templateUrl: 'app/components/projectlist.component.html'
+    templateUrl: './projectlist.component.html'
 })
 export class ProjectListComponent implements OnInit, OnDestroy {
     projects:MigrationProject[];

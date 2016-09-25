@@ -9,7 +9,7 @@ import {AddRulesPathModalComponent, ConfigurationEvent} from "./add-rules-path-m
 
 @Component({
     selector: 'application-list',
-    templateUrl: 'app/components/configuration.component.html'
+    templateUrl: './configuration.component.html'
 })
 export class ConfigurationComponent implements OnInit {
 

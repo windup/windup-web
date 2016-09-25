@@ -1,8 +1,6 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
-import {Inject} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 
-import {MigrationProject} from "windup-services";
 import {ApplicationGroup} from "windup-services";
 import {ApplicationGroupService} from "../services/applicationgroup.service";
 import {WindupService} from "../services/windup.service";
@@ -12,7 +10,7 @@ import {WindupExecution} from "windup-services";
 
 @Component({
     selector: 'application-list',
-    templateUrl: 'app/components/grouplist.component.html'
+    templateUrl: './grouplist.component.html'
 })
 export class GroupListComponent implements OnInit, OnDestroy {
     projectID:number;
