@@ -75,6 +75,40 @@ export class RegisteredApplicationService extends AbstractService {
             .catch(this.handleError);
     }
 
+    get(id: number): Observable<RegisteredApplication> {
+        let url = `${Constants.REST_BASE + this.REGISTERED_APPLICATIONS_URL}/${id}`;
+        return this._http.get(url)
+            .map(response => response.json())
+            .catch(this.handleError);
+    }
+
+    update(application: RegisteredApplication) {
+        let responses = [];
+        let errors = [];
+
+        let promise = new Promise((resolve, reject) => {
+            this._multipartUploader.onCompleteItem = (item, response, status, headers) => {
+                if (status == 200) {
+                    responses.push(JSON.parse(response));
+                } else {
+                    errors.push(JSON.parse(response));
+                }
+            };
+
+            this._multipartUploader.onCompleteAll = () => {
+                resolve(responses);
+            };
+
+            this._multipartUploader.onErrorItem  = (item, response, status, headers) => {
+                reject(JSON.parse(response));
+            };
+        });
+
+        this._multipartUploader.uploadAll();
+
+        return Observable.fromPromise(promise);
+    }
+
     deleteApplication(application: RegisteredApplication) {
         let url = `${Constants.REST_BASE + this.REGISTERED_APPLICATIONS_URL}/${application.id}`;
         return this._http.delete(url)

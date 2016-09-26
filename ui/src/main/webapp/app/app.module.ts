@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 
 import 'rxjs/Rx';
 
-import { FileSelectDirective, FileDropDirective } from 'ng2-file-upload/ng2-file-upload';
+import {FileSelectDirective, FileDropDirective, FileUploader} from 'ng2-file-upload/ng2-file-upload';
 //import {FileSelectDirective} from "./components/file-upload/file-select.directive";
 //import {FileDropDirective} from "./components/file-upload/file-drop.directive";
 
@@ -38,6 +38,7 @@ import {AddRulesPathModalComponent} from "./components/add-rules-path-modal.comp
 import {ConfirmationModalComponent} from "./components/confirmation-modal.component";
 import {KeycloakService} from "./services/keycloak.service";
 import {WindupHttpService} from "./services/windup.http.service";
+import {EditApplicationFormComponent} from "./components/edit-application-form.component";
 
 @NgModule({
     imports: [
@@ -56,6 +57,7 @@ import {WindupHttpService} from "./services/windup.http.service";
         MigrationProjectFormComponent,
         ProjectListComponent,
         RegisterApplicationFormComponent,
+        EditApplicationFormComponent,
 
         AddRulesPathModalComponent,
         BreadCrumbsComponent,

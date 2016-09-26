@@ -140,7 +140,14 @@ export class GroupListComponent implements OnInit, OnDestroy {
         this._router.navigate(['/register-application', { groupID: applicationGroup.id }]);
     }
 
+    editApplication(application: RegisteredApplication) {
+        this._router.navigate(['/edit-application', application.id]);
+    }
+
     deleteApplication(application: RegisteredApplication) {
-        this._registeredApplicationsService.deleteApplication(application);
+        this._registeredApplicationsService.deleteApplication(application)
+            .subscribe(result => {
+                console.log(result);
+            });
     }
 }
