@@ -28,6 +28,12 @@
         </auth-constraint>
     </security-constraint>
 
+    <!-- windup-web-services/resteasy/registry - See https://issues.jboss.org/browse/JBEAP-3669 -->
+    <context-param>
+        <param-name>resteasy.resources</param-name>
+        <param-value>org.jboss.resteasy.plugins.stats.RegistryStatsResource</param-value>
+    </context-param>
+
     <login-config>
         <auth-method>KEYCLOAK</auth-method>
     </login-config>
