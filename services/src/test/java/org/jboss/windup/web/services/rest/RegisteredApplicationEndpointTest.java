@@ -5,6 +5,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -15,6 +16,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.windup.web.services.data.DataProvider;
 import org.jboss.windup.web.services.data.ServiceConstants;
@@ -28,8 +30,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.*;
 
 import static org.mockito.Mockito.*;
 
@@ -43,10 +45,10 @@ public class RegisteredApplicationEndpointTest extends AbstractTest
 
     @ArquillianResource
     private URL contextPath;
-
+    private ResteasyClient client;
+    private ResteasyWebTarget target;
     private RegisteredApplicationEndpoint registeredApplicationEndpoint;
     private DataProvider dataProvider;
-
 
     @BeforeClass
     public static void setUpClass() throws Exception
@@ -58,16 +60,13 @@ public class RegisteredApplicationEndpointTest extends AbstractTest
     @Before
     public void setUp()
     {
-        ResteasyClient client = getResteasyClient();
-        ResteasyWebTarget target = client.target(contextPath + ServiceConstants.REST_BASE);
+        this.client = getResteasyClient();
+        this.target = client.target(contextPath + ServiceConstants.REST_BASE);
         this.dataProvider = new DataProvider(target);
 
         this.registeredApplicationEndpoint = target.proxy(RegisteredApplicationEndpoint.class);
     }
 
-    /*
-     * Preconditions: We have a user, project and application group.
-     */
     @Test
     @RunAsClient
     public void testRegisterApp() throws Exception
@@ -75,43 +74,46 @@ public class RegisteredApplicationEndpointTest extends AbstractTest
         Collection<RegisteredApplication> existingApps = registeredApplicationEndpoint.getRegisteredApplications();
         Assert.assertEquals(0, existingApps.size());
 
-        String fileContent = "upload test";
-
-        MultipartFormDataInput form  = this.mockMultipartFormData(
-                "a.txt",
-                new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8))
-        );
-
         MigrationProject dummyProject = this.dataProvider.getMigrationProject();
         ApplicationGroup group = this.dataProvider.getApplicationGroup(dummyProject);
 
-        RegisteredApplication app = this.registeredApplicationEndpoint.registerApplication(form, group.getId());
+        MultipartFormDataOutput uploadData = new MultipartFormDataOutput();
+        try (InputStream sampleIS = getClass().getResourceAsStream(DataProvider.TINY_SAMPLE_PATH))
+        {
+            uploadData.addFormData("file", sampleIS, MediaType.APPLICATION_OCTET_STREAM_TYPE, "sample-tiny.war");
 
-        Collection<RegisteredApplication> apps = registeredApplicationEndpoint.getRegisteredApplications();
-        Assert.assertEquals(1, apps.size());
+            GenericEntity<MultipartFormDataOutput> entity = new GenericEntity<MultipartFormDataOutput>(uploadData){};
+            String registeredAppTargetUri = this.target.getUri() + ServiceConstants.REGISTERED_APP_ENDPOINT + "/appGroup/" + group.getId();
+            ResteasyWebTarget registeredAppTarget = this.client.target(registeredAppTargetUri);
 
-        File file = new File(app.getInputPath());
-        String readContent = IOUtils.toString(new FileInputStream(file), StandardCharsets.UTF_8);
+            try
+            {
+                Response response = registeredAppTarget.request().post(Entity.entity(entity, MediaType.MULTIPART_FORM_DATA_TYPE));
+                RegisteredApplication application = (RegisteredApplication) response.readEntity(RegisteredApplication.class);// response.getEntity();
+                response.close();
 
-        Assert.assertTrue(file.exists());
-        Assert.assertEquals(fileContent, readContent);
+                Collection<RegisteredApplication> apps = registeredApplicationEndpoint.getRegisteredApplications();
+                Assert.assertEquals(1, apps.size());
+
+                this.assertFileContents(getClass().getResourceAsStream(
+                    DataProvider.TINY_SAMPLE_PATH),
+                    new FileInputStream(application.getInputPath())
+                );
+
+            }
+            catch (Throwable t)
+            {
+                t.printStackTrace();
+                throw new RuntimeException("Failed to post application due to: " + t.getMessage() + " exception: " + t.getClass().getName());
+            }
+        }
     }
 
-    private MultipartFormDataInput mockMultipartFormData(String fileName, InputStream stream) throws IOException {
-        MultipartFormDataInput form = mock(MultipartFormDataInput.class);
-        InputPart part =  mock(InputPart.class);
+    private void assertFileContents(InputStream expected, InputStream actual) throws IOException
+    {
+        String expectedMd5 = DigestUtils.md5Hex(expected);
+        String actualMd5 = DigestUtils.md5Hex(actual);
 
-        Map<String, List<InputPart>> paramsMap = new HashMap<>();
-        paramsMap.put("file", Arrays.asList(part));
-
-        when(form.getFormDataMap()).thenReturn(paramsMap);
-
-        MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
-        headers.putSingle("Content-Disposition", "form-data; name=\"file\"; filename=\"" + fileName + "\"");
-
-        when(part.getHeaders()).thenReturn(headers);
-        when(part.getBody(InputStream.class, null)).thenReturn(stream);
-
-        return form;
+        Assert.assertEquals("File contents differ!", expectedMd5, actualMd5);
     }
 }
