@@ -48,7 +48,6 @@ Running the webapp
         ```
         cp -r services/target/windup-web-services ~/apps/wildfly-10.1.0.Final/standalone/deployments/windup-web-services.war
         touch ~/apps/wildfly-10.1.0.Final/standalone/deployments/windup-web-services.war.dodeploy
-
         cp -r ui/target/windup-web ~/apps/wildfly-10.1.0.Final/standalone/deployments/windup-web.war
         touch ~/apps/wildfly-10.1.0.Final/standalone/deployments/windup-web.war.dodeploy
         ```
