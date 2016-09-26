@@ -119,9 +119,20 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
             throw new BadRequestException("Please provide a file");
         }
 
+        this.deleteApplicationFile(application);
         this.uploadApplicationFile(inputParts.get(0), application, true);
 
         return application;
+    }
+
+    private void deleteApplicationFile(RegisteredApplication application)
+    {
+        File file = new File(application.getInputPath());
+
+        if (file.exists())
+        {
+            file.delete();
+        }
     }
 
     @Override
@@ -129,14 +140,7 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
     {
         RegisteredApplication application = this.getApplication(appId);
         application.getApplicationGroup().removeApplication(application);
-
-        File file = new File(application.getInputPath());
-
-        if (file.exists())
-        {
-            file.delete();
-        }
-
+        this.deleteApplicationFile(application);
         this.entityManager.remove(application);
     }
 
@@ -192,17 +196,9 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
 
             File file = new File(filePath);
 
-            if (file.exists())
+            if (file.exists() && !rewrite)
             {
-                if (!rewrite)
-                {
-                    LOG.warning("File in path: " + filePath + " already exists, but it should not");
-                    throw new BadRequestException("File with given name already exists");
-                }
-                else
-                {
-                    file.delete();
-                }
+                LOG.warning("File in path: " + filePath + " already exists, but it should not");
             }
 
             this.saveFileTo(inputStream, filePath);
