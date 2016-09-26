@@ -60,7 +60,7 @@ Running the webapp
         deploy .../windup-web/ui/target/windup-web --unmanaged
         ```
 
-    - Or add this to `standalone-full.xml` under `<server>`:
+    - Or add this to `standalone-full.xml` under `<server>`, at the end (see XSD):
 
          ```xml
          <deployments>
