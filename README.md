@@ -73,5 +73,9 @@ Running the webapp
         ```
 
     > NOTE: Wildfly/EAP 7 must be run in standalone-full.xml as JMS is required
+    > Also, top up the Metaspace limit. In `standalone.conf`, change the `MaxMetaspaceSize`:
+    
+          JAVA_OPTS="-Xms64m -Xmx512m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=2048m -Djava.net.preferIPv4Stack=true"
+      
 - Follow the steps for deploying keycloak in [Keycloak Setup](./KEYCLOAK-SETUP.md)
 - Access the webapp: <http://localhost:8080/windup-web>
