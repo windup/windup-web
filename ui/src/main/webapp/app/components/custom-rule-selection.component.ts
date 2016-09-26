@@ -1,6 +1,6 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, Output} from '@angular/core';
 
-import { RuleProviderEntity, RulesPath } from 'windup-services';
+import { RulesPath } from 'windup-services';
 
 import {ConfigurationService} from "../services/configuration.service";
 import {Configuration} from "windup-services";
@@ -13,24 +13,48 @@ import {Configuration} from "windup-services";
 export class CustomRuleSelectionComponent implements OnInit {
     @Input()
     configuration:Configuration;
+
+    rulesPaths:RulesPath[] = RULE_PATHS;
     
     constructor(private _configurationService: ConfigurationService)    {
 
     }
 
-    selectedRulesets: RulesPath[] = <RulesPath>{};
+    private _selectedRulePaths:RulesPath[];
+
+    @Input() @Output()
+    set selectedRulePaths(selectedRulesPaths:RulesPath[]) {
+        this._selectedRulePaths = selectedRulesPaths;
+        this._selectedIDs = this._selectedRulePaths.map((rulesPath:RulesPath) => rulesPath.id);
+    };
+
+    get selectedRulePaths():RulesPath[] {
+        return this._selectedRulePaths;
+    }
+
+    private _selectedIDs:number[];
+
+    get selectedRulePathIDs():number[] {
+        return this._selectedIDs;
+    }
+
+    set selectedRulePathIDs(ruleIDs:number[]) {
+        this._selectedIDs = ruleIDs;
+        this._selectedRulePaths = this.rulesPaths.filter((rulesPath:RulesPath) => ruleIDs.indexOf(rulesPath.id) != -1);
+    }
+
     customRegisteredRulesets: RulesPath[] = RULE_PATHS;
 
 
     ngOnInit() {
-                  this.selectedRulesets = RULE_PATHS.slice(); 
+        this._selectedRulePaths = RULE_PATHS.slice();
     }
 
     change(options) {
         if (options.length == 0)
             return;
         console.log("Selected values" + options);
-        this.selectedRulesets = Array.apply(null, options)
+        this._selectedRulePaths = Array.apply(null, options)
             .filter(option => option.selected)
             .map(option => option.value);
     }

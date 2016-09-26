@@ -36,6 +36,7 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
     excludePackages:[{prefix:string}];
 
     configurationOptions:ConfigurationOption[] = [];
+    selectedRulesets: RulesPath[] = [];
 
     private _migrationPathsObservable:Observable<MigrationPath[]>;
 
@@ -170,11 +171,3 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
     }
 }
 
-/*
- * just for quick prototyping
- */
-export const RULE_PATHS: RulesPath[] = [
-                                        { id: 1, version: 1, path:"test1.windup.xml", loadError: "", rulesPathType: "USER_PROVIDED"},
-                                        { id: 2, version: 1, path:"test2.windup.xml", loadError: "", rulesPathType: "USER_PROVIDED"},
-                                        { id: 3, version: 1, path:"test3.windup.xml", loadError: "", rulesPathType: "USER_PROVIDED"},
-                                        ]; 
