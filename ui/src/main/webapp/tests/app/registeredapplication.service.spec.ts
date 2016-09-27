@@ -12,7 +12,6 @@ import {RegisteredApplicationService} from "../../app/services/registeredapplica
 import {RegisteredApplication} from "windup-services";
 import {KeycloakService} from "../../app/services/keycloak.service";
 import {FileService} from "../../app/services/file.service";
-import {FileUploader} from "ng2-file-upload";
 
 describe("Registered Application Service Test", () => {
     beforeEach(() => {
@@ -20,17 +19,14 @@ describe("Registered Application Service Test", () => {
             {
                 imports: [HttpModule],
                 providers: [
-                    Constants, FileService, RegisteredApplicationService, KeycloakService, {
-                        provide: FileUploader, useValue: jasmine.createSpyObj('fileUploader', [
-
-                        ])
-                    }
+                    Constants, FileService, RegisteredApplicationService, KeycloakService, {}
                 ]
             }
         );
         TestBed.compileComponents().catch(error => console.error(error));
     });
 /*
+TODO: Fix this test - add mock of file upload
     it('register app call', async(inject([RegisteredApplicationService], (service:RegisteredApplicationService) => {
         let inputApp = <RegisteredApplication>{};
         inputApp.inputPath = "src/main/java";
