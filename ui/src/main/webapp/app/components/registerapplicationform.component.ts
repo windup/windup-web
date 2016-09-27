@@ -11,7 +11,6 @@ import {ApplicationGroupService} from "../services/applicationgroup.service";
 import {ApplicationGroup} from "windup-services";
 import {FormComponent} from "./formcomponent.component";
 import {Constants} from "../constants";
-import {KeycloakService} from "../services/keycloak.service";
 
 @Component({
     templateUrl: 'app/components/registerapplicationform.component.html'
@@ -22,8 +21,13 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     applicationGroup:ApplicationGroup;
     application: RegisteredApplication;
     loading:boolean = true;
-    uploader: FileUploader;
     multipartUploader: FileUploader;
+    mode:string = "UPLOADED";
+    fileInputPath:string;
+
+    modeChanged(newMode:string) {
+        this.mode = newMode;
+    }
 
     protected labels = {
         heading: 'Register Application',
@@ -39,7 +43,6 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
         protected _formBuilder: FormBuilder
     ) {
         super();
-        this.uploader = _registeredApplicationService.getUploader();
         this.multipartUploader = _registeredApplicationService.getMultipartUploader();
     }
 
@@ -57,11 +60,10 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
                         this.applicationGroup = group;
                         this.loading = false;
                         this.multipartUploader.setOptions({
-                            url: Constants.REST_BASE + "/registeredApplications/appGroup" + "/" + group.id,
-                            authToken: 'Bearer ' + KeycloakService.auth.authz.token,
+                            url: Constants.REST_BASE + RegisteredApplicationService.REGISTER_APPLICATION_URL + group.id,
+                            method: 'POST',
                             disableMultipart: false
                         });
-
                     }
                 );
             } else {
@@ -70,17 +72,29 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
         });
     }
 
-    register() {
-        if (this.multipartUploader.getNotUploadedItems().length > 0) {
-            this._registeredApplicationService.registerApplication(this.applicationGroup.id).subscribe(
-                application => this.rerouteToApplicationList(),
-                error => this.handleError(<any>error)
-            );
-        } else {
-            this.handleError("Please select file first");
-        }
+    registerByPath() {
+        console.log("Registering path: " + this.fileInputPath);
+        this._registeredApplicationService.registerByPath(this.applicationGroup.id, this.fileInputPath).subscribe(
+            application => this.rerouteToApplicationList(),
+            error => this.handleError(<any>error)
+        )
+    }
 
-        return false;
+    register() {
+        if (this.mode == "PATH") {
+            this.registerByPath();
+        } else {
+            if (this.multipartUploader.getNotUploadedItems().length > 0) {
+                this._registeredApplicationService.registerApplication(this.applicationGroup.id).subscribe(
+                    application => this.rerouteToApplicationList(),
+                    error => this.handleError(<any>error)
+                );
+            } else {
+                this.handleError("Please select file first");
+            }
+
+            return false;
+        }
     }
 
     rerouteToApplicationList() {

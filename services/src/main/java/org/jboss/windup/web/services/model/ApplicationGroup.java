@@ -63,7 +63,7 @@ public class ApplicationGroup implements Serializable
     @OneToOne(mappedBy = "applicationGroup")
     private AnalysisContext analysisContext;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "applicationGroup")
     private Set<RegisteredApplication> applications;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "group")

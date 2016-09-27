@@ -10,57 +10,98 @@ import {KeycloakService} from "./keycloak.service";
 
 @Injectable()
 export class RegisteredApplicationService extends AbstractService {
+    public static REGISTERED_APPLICATION_SERVICE_NAME = "/registeredApplications/";
+    public static REGISTER_APPLICATION_URL = "/registeredApplications/appGroup/";
+
     private GET_APPLICATIONS_URL = "/registeredApplications/list";
-    private REGISTER_APPLICATION_URL = "/registeredApplications/appgroup";
+    private UNREGISTER_URL = "/registeredApplications/unregister";
+    private UPDATE_APPLICATION_URL = "/registeredApplications/update-application";
     private REGISTERED_APPLICATIONS_URL = '/registeredApplications';
+    private REGISTER_PATH_URL = "/registeredApplications/register-path/";
+
     private UPLOAD_URL = '/file';
-    private _uploader: FileUploader;
     private _multipartUploader: FileUploader;
 
-    constructor (private _http: Http) {
+    constructor (private _http: Http, private _keycloakService:KeycloakService) {
         super();
-        this._uploader = new FileUploader({
-            url: Constants.REST_BASE + this.UPLOAD_URL,
-            authToken: 'Bearer ' + KeycloakService.auth.authz.token,
-            disableMultipart: true
-        });
-
         this._multipartUploader = new FileUploader({
             url: Constants.REST_BASE + this.UPLOAD_URL + '/multipart',
-            authToken: 'Bearer ' + KeycloakService.auth.authz.token,
             disableMultipart: false
         });
     }
 
-    registerApplication(applicationGroupId: number) {
-        let responses = [];
-        let errors = [];
+    private updateTitle(application:RegisteredApplication) {
+        let path = application.inputPath;
 
-        let promise = new Promise((resolve, reject) => {
-            this._multipartUploader.onCompleteItem = (item, response, status, headers) => {
-                if (status == 200) {
-                    responses.push(JSON.parse(response));
-                } else {
-                    errors.push(JSON.parse(response));
-                }
-            };
+        // remove trailing slash if present
+        if (path.endsWith("/") || path.endsWith("\\"))
+        {
+            path = path.substring(0, path.length-1);
+        }
 
-            this._multipartUploader.onCompleteAll = () => {
-                resolve(responses);
-            };
+        if (path.lastIndexOf("/") != -1) {
+            application.title = path.substring(path.lastIndexOf("/") + 1);
+        } else if (path.lastIndexOf("\\") != -1) {
+            application.title = path.substring(path.lastIndexOf("\\") + 1);
+        }
 
-            this._multipartUploader.onErrorItem  = (item, response, status, headers) => {
-                reject(JSON.parse(response));
-            };
-        });
-
-        this._multipartUploader.uploadAll();
-
-        return Observable.fromPromise(promise);
+        application.inputPath = path;
     }
 
-    getUploader() {
-        return this._uploader;
+    registerByPath(applicationGroupId:number, path:string):Observable<RegisteredApplication> {
+        let headers = new Headers();
+        let options = new RequestOptions({ headers: headers });
+        headers.append('Content-Type', 'application/json');
+        headers.append('Accept', 'application/json');
+
+        let application = <RegisteredApplication>{};
+        application.inputPath = path;
+
+        this.updateTitle(application);
+
+        let body = JSON.stringify(application);
+
+        let url = Constants.REST_BASE + this.REGISTER_PATH_URL + applicationGroupId;
+        return this._http.post(url, body, options)
+            .map(res => <RegisteredApplication> res.json())
+            .catch(this.handleError);
+    }
+
+    registerApplication(applicationGroupId: number) {
+        return this._keycloakService
+            .getToken()
+            .flatMap((token:string, index:number) =>
+            {
+                this._multipartUploader.setOptions({
+                    authToken: 'Bearer ' + token,
+                    method: 'POST'
+                });
+
+                let responses = [];
+                let errors = [];
+
+                let promise = new Promise((resolve, reject) => {
+                    this._multipartUploader.onCompleteItem = (item, response, status, headers) => {
+                        if (status == 200) {
+                            responses.push(JSON.parse(response));
+                        } else {
+                            errors.push(JSON.parse(response));
+                        }
+                    };
+
+                    this._multipartUploader.onCompleteAll = () => {
+                        resolve(responses);
+                    };
+
+                    this._multipartUploader.onErrorItem = (item, response, status, headers) => {
+                        reject(JSON.parse(response));
+                    };
+                });
+
+                this._multipartUploader.uploadAll();
+
+                return Observable.fromPromise(promise);
+            });
     }
 
     getMultipartUploader() {
@@ -83,30 +124,61 @@ export class RegisteredApplicationService extends AbstractService {
     }
 
     update(application: RegisteredApplication) {
-        let responses = [];
-        let errors = [];
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        headers.append('Accept', 'application/json');
+        let options = new RequestOptions({ headers: headers });
 
-        let promise = new Promise((resolve, reject) => {
-            this._multipartUploader.onCompleteItem = (item, response, status, headers) => {
-                if (status == 200) {
-                    responses.push(JSON.parse(response));
-                } else {
-                    errors.push(JSON.parse(response));
-                }
-            };
+        this.updateTitle(application);
 
-            this._multipartUploader.onCompleteAll = () => {
-                resolve(responses);
-            };
+        let body = JSON.stringify(application);
 
-            this._multipartUploader.onErrorItem  = (item, response, status, headers) => {
-                reject(JSON.parse(response));
-            };
-        });
+        let url = Constants.REST_BASE + this.UPDATE_APPLICATION_URL;
+        return this._http.put(url, body, options)
+            .map(res => <RegisteredApplication> res.json())
+            .catch(this.handleError);
+    }
 
-        this._multipartUploader.uploadAll();
+    updateByUpload(application: RegisteredApplication) {
+        return this._keycloakService
+            .getToken()
+            .flatMap((token:string, index:number) => {
+                this._multipartUploader.setOptions({
+                    authToken: 'Bearer ' + token,
+                    method: 'PUT'
+                });
 
-        return Observable.fromPromise(promise);
+                let responses = [];
+                let errors = [];
+
+                let promise = new Promise((resolve, reject) => {
+                    this._multipartUploader.onCompleteItem = (item, response, status, headers) => {
+                        if (status == 200) {
+                            responses.push(JSON.parse(response));
+                        } else {
+                            errors.push(JSON.parse(response));
+                        }
+                    };
+
+                    this._multipartUploader.onCompleteAll = () => {
+                        resolve(responses);
+                    };
+
+                    this._multipartUploader.onErrorItem = (item, response, status, headers) => {
+                        reject(JSON.parse(response));
+                    };
+                });
+
+                this._multipartUploader.uploadAll();
+
+                return Observable.fromPromise(promise);
+            });
+    }
+
+    unregister(application:RegisteredApplication) {
+        let url = `${Constants.REST_BASE + this.UNREGISTER_URL}/${application.id}`;
+        return this._http.delete(url)
+            .catch(this.handleError);
     }
 
     deleteApplication(application: RegisteredApplication) {

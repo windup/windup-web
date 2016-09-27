@@ -3,6 +3,7 @@ package org.jboss.windup.web.services.rest;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.windup.web.services.model.RegisteredApplication;
 
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.Collection;
@@ -38,6 +39,27 @@ public interface RegisteredApplicationEndpoint
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces("application/json")
     RegisteredApplication registerApplication(MultipartFormDataInput data, @PathParam("appGroupId") long appGroupId);
+
+    /**
+     * Registers a new application with Windup by its path on the server.
+     */
+    @POST
+    @Path("register-path/{appGroupId}")
+    RegisteredApplication registerApplicationByPath(@PathParam("appGroupId") long appGroupId, @Valid RegisteredApplication application);
+
+    /**
+     * Updates an existing application.
+     */
+    @PUT
+    @Path("update-application")
+    RegisteredApplication update(@Valid RegisteredApplication application);
+
+    /**
+     * Removes the registration entry for an application.
+     */
+    @DELETE
+    @Path("unregister/{id}")
+    void unregister(@PathParam("id") long applicationID);
 
     /**
      * Updates existing application

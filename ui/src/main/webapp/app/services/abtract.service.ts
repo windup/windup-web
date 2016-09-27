@@ -8,8 +8,6 @@ export class AbstractService {
         // in a real world app, we may send the error to some remote logging infrastructure
         // instead of just logging it to the console
         console.error("Service error: (" + typeof error + ") " + error);
-        if (typeof error === 'object')
-            console.error(JSON.stringify(error));
         var json;
         try {
             json = error.json();
@@ -17,7 +15,10 @@ export class AbstractService {
         }
         catch (ex) {
             console.error("Service error - can't JSON: " + (<SyntaxError>ex).message);
+            if (typeof error === 'object')
+                console.error(JSON.stringify(error));
         }
+
         return Observable.throw(json);
     }
 }

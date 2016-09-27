@@ -51,7 +51,7 @@ export class GroupListComponent implements OnInit, OnDestroy {
                 }
             });
             this.getGroups();
-        }, 3000);
+        }, 30000);
     }
 
     ngOnDestroy():any {
@@ -145,9 +145,18 @@ export class GroupListComponent implements OnInit, OnDestroy {
     }
 
     deleteApplication(application: RegisteredApplication) {
-        this._registeredApplicationsService.deleteApplication(application)
-            .subscribe(result => {
-                console.log(result);
-            });
+        if (application.registrationType == "PATH") {
+            this._registeredApplicationsService.unregister(application)
+                .subscribe(result => {
+                    console.log(result);
+                    this.getGroups();
+                });
+        } else {
+            this._registeredApplicationsService.deleteApplication(application)
+                .subscribe(result => {
+                    console.log(result);
+                    this.getGroups();
+                });
+        }
     }
 }

@@ -1,46 +1,42 @@
 package org.jboss.windup.web.services.rest;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Collection;
 
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.io.IOUtils;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.GenericEntity;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
 import org.apache.http.HttpStatus;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.arquillian.warp.WarpTest;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
-import org.jboss.resteasy.plugins.providers.multipart.InputPart;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
+import org.jboss.windup.web.services.AbstractTest;
 import org.jboss.windup.web.services.data.DataProvider;
 import org.jboss.windup.web.services.data.ServiceConstants;
 import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.model.RegisteredApplication;
-import org.jboss.windup.web.services.AbstractTest;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.annotation.security.RunAs;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.*;
-
-import static org.mockito.Mockito.*;
-
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
-@WarpTest
 @RunWith(Arquillian.class)
 public class RegisteredApplicationEndpointTest extends AbstractTest
 {
@@ -76,7 +72,52 @@ public class RegisteredApplicationEndpointTest extends AbstractTest
 
     @Test
     @RunAsClient
-    public void testRegisterApp() throws Exception
+    public void testRegisterAppByPath() throws Exception
+    {
+        Collection<RegisteredApplication> existingApps = registeredApplicationEndpoint.getRegisteredApplications();
+        Assert.assertEquals(0, existingApps.size());
+
+        File tempFile1 = File.createTempFile(RegisteredApplicationEndpointTest.class.getSimpleName() + ".1", ".ear");
+        File tempFile2 = File.createTempFile(RegisteredApplicationEndpointTest.class.getSimpleName() + ".2", ".ear");
+
+        MigrationProject project = this.dataProvider.getMigrationProject();
+        ApplicationGroup group = this.dataProvider.getApplicationGroup(project);
+
+        RegisteredApplication dto1 = new RegisteredApplication(tempFile1.getAbsolutePath());
+        RegisteredApplication dto2 = new RegisteredApplication(tempFile2.getAbsolutePath());
+        this.registeredApplicationEndpoint.registerApplicationByPath(group.getId(), dto1);
+        this.registeredApplicationEndpoint.registerApplicationByPath(group.getId(), dto2);
+
+        try
+        {
+            Collection<RegisteredApplication> apps = registeredApplicationEndpoint.getRegisteredApplications();
+            Assert.assertEquals(2, apps.size());
+            boolean foundPath1 = false;
+            boolean foundPath2 = false;
+
+            for (RegisteredApplication app : apps)
+            {
+                if (app.getInputPath().equals(tempFile1.getAbsolutePath()))
+                    foundPath1 = true;
+                else if (app.getInputPath().equals(tempFile2.getAbsolutePath()))
+                    foundPath2 = true;
+            }
+
+            Assert.assertTrue(foundPath1);
+            Assert.assertTrue(foundPath2);
+        }
+        finally
+        {
+            for (RegisteredApplication application : registeredApplicationEndpoint.getRegisteredApplications())
+            {
+                registeredApplicationEndpoint.unregister(application.getId());
+            }
+        }
+    }
+
+    @Test
+    @RunAsClient
+    public void testRegisterAppUpload() throws Exception
     {
         Collection<RegisteredApplication> existingApps = registeredApplicationEndpoint.getRegisteredApplications();
         Assert.assertEquals(0, existingApps.size());
@@ -108,6 +149,13 @@ public class RegisteredApplicationEndpointTest extends AbstractTest
             {
                 t.printStackTrace();
                 throw new RuntimeException("Failed to post application due to: " + t.getMessage() + " exception: " + t.getClass().getName());
+            }
+            finally
+            {
+                for (RegisteredApplication application : registeredApplicationEndpoint.getRegisteredApplications())
+                {
+                    registeredApplicationEndpoint.unregister(application.getId());
+                }
             }
         }
     }
@@ -142,6 +190,13 @@ public class RegisteredApplicationEndpointTest extends AbstractTest
             this.assertFileContentsAreEqual(sampleIs, new FileInputStream(updatedApp.getInputPath()));
 
             Assert.assertEquals(newFileName, updatedApp.getTitle());
+        }
+        finally
+        {
+            for (RegisteredApplication application : registeredApplicationEndpoint.getRegisteredApplications())
+            {
+                registeredApplicationEndpoint.unregister(application.getId());
+            }
         }
     }
 

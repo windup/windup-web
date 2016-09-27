@@ -54,10 +54,10 @@
                             View Report
                         </a>
                         <button class="btn btn-default" (click)="editApplication(app)">
-                            EDIT
+                            Edit
                         </button>
                         <button class="btn btn-danger" (click)="deleteApplication(app)">
-                            DELETE
+                            {{app.registrationType == "UPLOADED" ? "Delete" : "Remove"}}
                         </button>
                     </td>
                 </tr>

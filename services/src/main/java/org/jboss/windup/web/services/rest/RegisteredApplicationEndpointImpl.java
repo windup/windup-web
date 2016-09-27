@@ -12,10 +12,13 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.validation.Valid;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 import java.io.*;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -61,6 +64,26 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
     }
 
     @Override
+    public void unregister(long applicationID)
+    {
+        RegisteredApplication application = this.entityManager.find(RegisteredApplication.class, applicationID);
+        if (application == null)
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+
+        if (application.getApplicationGroup() != null)
+        {
+            ApplicationGroup group = application.getApplicationGroup();
+            application.setApplicationGroup(null);
+            group.removeApplication(application);
+            application = this.entityManager.merge(application);
+
+            this.entityManager.persist(group);
+        }
+
+        this.entityManager.remove(application);
+    }
+
+    @Override
     public RegisteredApplication registerApplication(MultipartFormDataInput data, long appGroupId)
     {
         Map<String, List<InputPart>> uploadForm = data.getFormDataMap();
@@ -79,6 +102,7 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
 
         ApplicationGroup appGroup = this.getApplicationGroup(appGroupId);
         RegisteredApplication application = this.createApplication();
+        application.setRegistrationType(RegisteredApplication.RegistrationType.UPLOADED);
         appGroup.addApplication(application);
 
         this.uploadApplicationFile(inputParts.get(0), application, false);
@@ -86,6 +110,35 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
         this.entityManager.merge(appGroup);
 
         return application;
+    }
+
+    @Override
+    public RegisteredApplication registerApplicationByPath(long appGroupId, @Valid RegisteredApplication application)
+    {
+        LOG.info("Registering an application at: " + application.getInputPath());
+
+        ApplicationGroup appGroup = appGroupId == 0 ? null : this.getApplicationGroup(appGroupId);
+
+        if (appGroup != null)
+        {
+            for (RegisteredApplication alreadyRegistered : appGroup.getApplications())
+            {
+                if (alreadyRegistered.getInputPath() != null && alreadyRegistered.getInputPath().equals(application.getInputPath()))
+                    return alreadyRegistered;
+            }
+            appGroup.getApplications().add(application);
+            application.setApplicationGroup(appGroup);
+        }
+
+        application.setRegistrationType(RegisteredApplication.RegistrationType.PATH);
+        entityManager.persist(application);
+        return application;
+    }
+
+    @Override
+    public RegisteredApplication update(@Valid RegisteredApplication application)
+    {
+        return this.entityManager.merge(application);
     }
 
     private RegisteredApplication createApplication()
@@ -162,6 +215,7 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
         for (InputPart inputPart : inputParts)
         {
             RegisteredApplication application = this.createApplication();
+            application.setRegistrationType(RegisteredApplication.RegistrationType.UPLOADED);
             appGroup.addApplication(application);
 
             this.uploadApplicationFile(inputPart, application, false);

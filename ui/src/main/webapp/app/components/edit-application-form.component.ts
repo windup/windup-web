@@ -17,7 +17,6 @@ import {RegisterApplicationFormComponent} from "./registerapplicationform.compon
 export class EditApplicationFormComponent extends RegisterApplicationFormComponent implements OnInit {
     application: RegisteredApplication;
     loading:boolean = true;
-    uploader: FileUploader;
     multipartUploader: FileUploader;
 
     constructor(
@@ -29,7 +28,6 @@ export class EditApplicationFormComponent extends RegisterApplicationFormCompone
         _formBuilder: FormBuilder
     ) {
         super(_router, _activatedRoute, _fileService, _registeredApplicationService, _applicationGroupService, _formBuilder);
-        this.uploader = _registeredApplicationService.getUploader();
         this.multipartUploader = _registeredApplicationService.getMultipartUploader();
     }
 
@@ -50,15 +48,15 @@ export class EditApplicationFormComponent extends RegisterApplicationFormCompone
                 this._registeredApplicationService.get(id).subscribe(
                     application => {
                         this.application = application;
+                        this.mode = application.registrationType;
+                        this.fileInputPath = application.inputPath;
                         this.applicationGroup = application.applicationGroup;
                         this.loading = false;
                         this.multipartUploader.setOptions({
-                            url: Constants.REST_BASE + "/registeredApplications/" + application.id,
-                            authToken: 'Bearer ' + KeycloakService.auth.authz.token,
+                            url: Constants.REST_BASE + RegisteredApplicationService.REGISTERED_APPLICATION_SERVICE_NAME + application.id,
                             disableMultipart: false,
                             method: 'PUT'
                         });
-
                     }
                 );
             } else {
@@ -68,15 +66,22 @@ export class EditApplicationFormComponent extends RegisterApplicationFormCompone
     }
 
     register() {
-        if (this.multipartUploader.getNotUploadedItems().length > 0) {
+        if (this.mode == "PATH") {
+            this.application.inputPath = this.fileInputPath;
             this._registeredApplicationService.update(this.application).subscribe(
                 application => this.rerouteToApplicationList(),
                 error => this.handleError(<any>error)
             );
         } else {
-            this.handleError("Please select file first");
+            if (this.multipartUploader.getNotUploadedItems().length > 0) {
+                this._registeredApplicationService.updateByUpload(this.application).subscribe(
+                    application => this.rerouteToApplicationList(),
+                    error => this.handleError(<any>error)
+                );
+            } else {
+                this.handleError("Please select file first");
+            }
         }
-
         return false;
     }
 }

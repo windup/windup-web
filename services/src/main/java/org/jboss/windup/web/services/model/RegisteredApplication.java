@@ -24,6 +24,11 @@ import org.jboss.windup.web.services.validators.FileExistsConstraint;
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = RegisteredApplication.class)
 public class RegisteredApplication implements Serializable
 {
+    public enum RegistrationType {
+        UPLOADED,
+        PATH
+    }
+
     private static final long serialVersionUID = 1L;
 
     public static final String REGISTERED_APPLICATION_ID = "registered_application_id";
@@ -37,6 +42,9 @@ public class RegisteredApplication implements Serializable
     @Column(name = "version")
     private int version;
 
+    @Column
+    private RegistrationType registrationType;
+
     @Column(length = 256)
     @Size(min = 1, max = 256)
     @NotNull
@@ -47,14 +55,6 @@ public class RegisteredApplication implements Serializable
     @FileExistsConstraint
     @NotNull
     private String inputPath;
-
-    @Column(length = 2048)
-    @Size(min = 1, max = 2048)
-    private String inputFilename;
-
-    @Column(length = 2048)
-    @Size(min = 1, max = 2048)
-    private String outputPath;
 
     @Column(length = 2048)
     private String reportIndexPath;
@@ -69,6 +69,7 @@ public class RegisteredApplication implements Serializable
     public RegisteredApplication(String inputPath)
     {
         this.inputPath = inputPath;
+        this.title = Paths.get(inputPath).getFileName().toString();
     }
 
     public Long getId()
@@ -91,6 +92,22 @@ public class RegisteredApplication implements Serializable
         this.version = version;
     }
 
+    /**
+     * Contains an indication as to the type of file (uploaded vs registered directly as a path on the server).
+     */
+    public RegistrationType getRegistrationType()
+    {
+        return registrationType;
+    }
+
+    /**
+     * Contains an indication as to the type of file (uploaded vs registered directly as a path on the server).
+     */
+    public void setRegistrationType(RegistrationType registrationType)
+    {
+        this.registrationType = registrationType;
+    }
+
     public String getInputPath()
     {
         return inputPath;
@@ -98,12 +115,15 @@ public class RegisteredApplication implements Serializable
 
     public String getInputFilename()
     {
-        return this.inputFilename;
+        if (this.getInputPath() == null)
+            return null;
+        else
+            return Paths.get(getInputPath()).getFileName().toString();
     }
 
     public void setInputFilename(String inputFilename)
     {
-        this.inputFilename = inputFilename;
+        // noop
     }
 
     public void setInputPath(String inputPath)
@@ -114,24 +134,6 @@ public class RegisteredApplication implements Serializable
             setInputFilename("");
 
         setInputFilename(Paths.get(getInputPath()).getFileName().toString());
-    }
-
-    /**
-     * Contains the path to the report and graph directories. This is only relevant when the application is being analyzed individually rather than as
-     * a group.
-     */
-    public String getOutputPath()
-    {
-        return outputPath;
-    }
-
-    /**
-     * Contains the path to the report and graph directories. This is only relevant when the application is being analyzed individually rather than as
-     * a group.
-     */
-    public void setOutputPath(String outputPath)
-    {
-        this.outputPath = outputPath;
     }
 
     /**
