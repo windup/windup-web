@@ -58,14 +58,15 @@ public class ConfigurationEndpointTest extends AbstractTest
         Assert.assertEquals(FAKE_PATH, configuration.getRulesPaths().iterator().next().getPath());
     }
 
-    final static String CUSTOM_RULESPATH = "target/classes/custom-ruleset-windup.xml";
+    final static String CUSTOM_RULESPATH = "target/test-classes/custom-rulesets-data/custom-ruleset.windup.xml";
     
     @Test
     @RunAsClient
     public void testCustomRulesetEndpoint()
     {
         Configuration configuration = configurationEndpoint.getConfiguration();
-
+        Assert.assertNotNull(configuration);
+        
         RulesPath rulesPath = new RulesPath();
         rulesPath.setPath(CUSTOM_RULESPATH);
         rulesPath.setRulesPathType(RulesPathType.USER_PROVIDED);
