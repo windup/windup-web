@@ -18,16 +18,17 @@ describe("Registered Application Service Test", () => {
         TestBed.configureTestingModule(
             {
                 imports: [HttpModule],
-                providers: [Constants, FileService, RegisteredApplicationService, KeycloakService]
+                providers: [
+                    Constants, FileService, RegisteredApplicationService, KeycloakService
+                ]
             }
         );
         TestBed.compileComponents().catch(error => console.error(error));
     });
 
     it('register app call', async(inject([RegisteredApplicationService], (service:RegisteredApplicationService) => {
-        let inputApp = <RegisteredApplication>{};
-        inputApp.inputPath = "src/main/java";
-        return service.registerApplication(inputApp).toPromise()
+        let inputPath = "src/main/java/";
+        return service.registerByPath(0, inputPath).toPromise()
             .then(application => {
                 console.log("Registered application: " + application.inputFilename);
                 expect(application.inputFilename).toEqual("java");

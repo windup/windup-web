@@ -10,6 +10,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.windup.web.services.AbstractTest;
+import org.jboss.windup.web.services.data.ServiceConstants;
 import org.jboss.windup.web.services.model.Configuration;
 import org.jboss.windup.web.services.model.RuleProviderEntity;
 import org.jboss.windup.web.services.model.RulesPath;
@@ -48,7 +49,7 @@ public class RuleEndpointTest extends AbstractTest
     public void setUp()
     {
         ResteasyClient client = getResteasyClient();
-        ResteasyWebTarget target = client.target(contextPath + "rest");
+        ResteasyWebTarget target = client.target(contextPath + ServiceConstants.REST_BASE);
 
         this.configurationEndpoint = target.proxy(ConfigurationEndpoint.class);
         this.ruleEndpoint = target.proxy(RuleEndpoint.class);

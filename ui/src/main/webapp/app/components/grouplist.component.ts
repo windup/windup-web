@@ -9,6 +9,7 @@ import {WindupService} from "../services/windup.service";
 import {Constants} from "../constants";
 import {RegisteredApplication} from "windup-services";
 import {WindupExecution} from "windup-services";
+import {RegisteredApplicationService} from "../services/registeredapplication.service";
 
 @Component({
     selector: 'application-list',
@@ -27,7 +28,8 @@ export class GroupListComponent implements OnInit, OnDestroy {
         private _activatedRoute: ActivatedRoute,
         private _router: Router,
         private _applicationGroupService: ApplicationGroupService,
-        private _windupService: WindupService
+        private _windupService: WindupService,
+        private _registeredApplicationsService: RegisteredApplicationService
     ) {}
 
     ngOnInit():any {
@@ -49,7 +51,7 @@ export class GroupListComponent implements OnInit, OnDestroy {
                 }
             });
             this.getGroups();
-        }, 3000);
+        }, 30000);
     }
 
     ngOnDestroy():any {
@@ -136,5 +138,25 @@ export class GroupListComponent implements OnInit, OnDestroy {
 
     registerApplication(applicationGroup:ApplicationGroup) {
         this._router.navigate(['/register-application', { groupID: applicationGroup.id }]);
+    }
+
+    editApplication(application: RegisteredApplication) {
+        this._router.navigate(['/edit-application', application.id]);
+    }
+
+    deleteApplication(application: RegisteredApplication) {
+        if (application.registrationType == "PATH") {
+            this._registeredApplicationsService.unregister(application)
+                .subscribe(result => {
+                    console.log(result);
+                    this.getGroups();
+                });
+        } else {
+            this._registeredApplicationsService.deleteApplication(application)
+                .subscribe(result => {
+                    console.log(result);
+                    this.getGroups();
+                });
+        }
     }
 }

@@ -8,6 +8,8 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
+import org.jboss.windup.web.services.data.ServiceConstants;
+import org.jboss.windup.web.services.data.WindupExecutionUtil;
 import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.ExecutionState;
 import org.jboss.windup.web.services.model.RegisteredApplication;
@@ -26,17 +28,14 @@ import java.util.Collections;
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
-@WarpTest
 @RunWith(Arquillian.class)
 public class WindupEndpointTest extends AbstractTest
 {
     @ArquillianResource
     private URL contextPath;
 
-    private ApplicationGroupEndpoint applicationGroupEndpoint;
-    private RegisteredApplicationEndpoint registeredApplicationEndpoint;
-
-    private WindupEndpoint windupEndpoint;
+    private ResteasyClient client;
+    private ResteasyWebTarget target;
 
     @BeforeClass
     public static void setUpClass() throws Exception
@@ -48,53 +47,19 @@ public class WindupEndpointTest extends AbstractTest
     @Before
     public void setUp()
     {
-        ResteasyClient client = getResteasyClient();
-        ResteasyWebTarget target = client.target(contextPath + "rest");
+        this.client = getResteasyClient();
+        this.target = client.target(contextPath + ServiceConstants.REST_BASE);
 
-        this.applicationGroupEndpoint = target.proxy(ApplicationGroupEndpoint.class);
-        this.registeredApplicationEndpoint = target.proxy(RegisteredApplicationEndpoint.class);
-        this.windupEndpoint = target.proxy(WindupEndpoint.class);
     }
 
     @Test
     @RunAsClient
     public void testExecutionGroup() throws Exception
     {
-        String inputPath = Paths.get("src/main/java").toAbsolutePath().normalize().toString();
-
-        RegisteredApplication input = new RegisteredApplication();
-        input.setInputPath(inputPath);
-
-        input = this.registeredApplicationEndpoint.registerApplication(input);
-        System.out.println("Registered application: " + input);
-
-        ApplicationGroup group = new ApplicationGroup();
-        group.setTitle("Group");
-        group.setApplications(Collections.singleton(input));
-        group = applicationGroupEndpoint.create(group);
-
-        WindupExecution initialExecution = this.windupEndpoint.executeGroup(group.getId());
-
-        WindupExecution status = this.windupEndpoint.getStatus(initialExecution.getId());
-        int loops = 0;
-        long beginTime = System.currentTimeMillis();
-        do
-        {
-            loops++;
-            Thread.sleep(1000L);
-
-            status = this.windupEndpoint.getStatus(status.getId());
-            System.out.println("Status: " + status);
-
-            if ((System.currentTimeMillis() - beginTime) > (1000L * 240L))
-            {
-                // taking too long... fail
-                Assert.fail("Processing never completed. Current status: " + status);
-            }
-        } while (status.getState() == ExecutionState.STARTED);
+        WindupExecutionUtil util = new WindupExecutionUtil(client, target);
+        WindupExecution status = util.executeWindup();
 
         Assert.assertEquals(ExecutionState.COMPLETED, status.getState());
-        Assert.assertTrue(loops > 1);
         Assert.assertTrue(status.getTotalWork() > 10);
         Assert.assertTrue(status.getWorkCompleted() > 9);
     }

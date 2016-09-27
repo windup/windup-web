@@ -20,6 +20,12 @@ public interface WebPathUtil
     Path getGlobalWindupDataPath();
 
     /**
+     * Gets the path where user uploaded applications are stored
+     * @return Path
+     */
+    Path getAppPath();
+
+    /**
      * Replaces the variables within the string with their value. Meant primarily for these:
      *
         jboss.server.base.dir     The base directory for server content. 	jboss.home.dir/standalone

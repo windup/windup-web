@@ -63,7 +63,7 @@ public class ApplicationGroup implements Serializable
     @OneToOne(mappedBy = "applicationGroup")
     private AnalysisContext analysisContext;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "applicationGroup")
     private Set<RegisteredApplication> applications;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "group")
@@ -187,6 +187,38 @@ public class ApplicationGroup implements Serializable
     public void setApplications(Set<RegisteredApplication> applications)
     {
         this.applications = applications;
+    }
+
+    /**
+     * Adds application to application group
+     * 
+     * @param application Application
+     */
+    public void addApplication(RegisteredApplication application)
+    {
+        if (this.getApplications().contains(application))
+        {
+            throw new RuntimeException("Application already in this group");
+        }
+
+        this.getApplications().add(application);
+        application.setApplicationGroup(this);
+    }
+
+    /**
+     * Removes application from application group
+     * 
+     * @param application Application
+     */
+    public void removeApplication(RegisteredApplication application)
+    {
+        if (!this.getApplications().contains(application))
+        {
+            throw new RuntimeException("Application not found");
+        }
+
+        this.getApplications().remove(application);
+        application.setApplicationGroup(null);
     }
 
     /**

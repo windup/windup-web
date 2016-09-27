@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from "@angular/core";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
+import {FileUploader} from 'ng2-file-upload/ng2-file-upload';
 
 import {RegisteredApplication} from "windup-services";
 import {RegisteredApplicationService} from "../services/registeredapplication.service";
@@ -9,6 +10,7 @@ import {FileService} from "../services/file.service";
 import {ApplicationGroupService} from "../services/applicationgroup.service";
 import {ApplicationGroup} from "windup-services";
 import {FormComponent} from "./formcomponent.component";
+import {Constants} from "../constants";
 
 @Component({
     templateUrl: 'app/components/registerapplicationform.component.html'
@@ -17,18 +19,31 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     registrationForm: FormGroup;
 
     applicationGroup:ApplicationGroup;
-    model = <RegisteredApplication>{};
+    application: RegisteredApplication;
     loading:boolean = true;
+    multipartUploader: FileUploader;
+    mode:string = "UPLOADED";
+    fileInputPath:string;
+
+    modeChanged(newMode:string) {
+        this.mode = newMode;
+    }
+
+    protected labels = {
+        heading: 'Register Application',
+        submitButton: 'Register'
+    };
 
     constructor(
-        private _router:Router,
-        private _activatedRoute: ActivatedRoute,
-        private _fileService:FileService,
-        private _registeredApplicationService:RegisteredApplicationService,
-        private _applicationGroupService:ApplicationGroupService,
-        private _formBuilder: FormBuilder
+        protected _router:Router,
+        protected _activatedRoute: ActivatedRoute,
+        protected _fileService:FileService,
+        protected _registeredApplicationService:RegisteredApplicationService,
+        protected _applicationGroupService:ApplicationGroupService,
+        protected _formBuilder: FormBuilder
     ) {
         super();
+        this.multipartUploader = _registeredApplicationService.getMultipartUploader();
     }
 
     ngOnInit():any {
@@ -41,7 +56,15 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
             if (!isNaN(id)) {
                 this.loading = true;
                 this._applicationGroupService.get(id).subscribe(
-                    group => { this.applicationGroup = group; this.loading = false }
+                    group => {
+                        this.applicationGroup = group;
+                        this.loading = false;
+                        this.multipartUploader.setOptions({
+                            url: Constants.REST_BASE + RegisteredApplicationService.REGISTER_APPLICATION_URL + group.id,
+                            method: 'POST',
+                            disableMultipart: false
+                        });
+                    }
                 );
             } else {
                 this.loading = false;
@@ -49,15 +72,29 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
         });
     }
 
-    register() {
-        console.log("Registering application: " + this.model.inputPath);
-
-        this.model.applicationGroup = this.applicationGroup;
-
-        this._registeredApplicationService.registerApplication(this.model).subscribe(
+    registerByPath() {
+        console.log("Registering path: " + this.fileInputPath);
+        this._registeredApplicationService.registerByPath(this.applicationGroup.id, this.fileInputPath).subscribe(
             application => this.rerouteToApplicationList(),
             error => this.handleError(<any>error)
-        );
+        )
+    }
+
+    register() {
+        if (this.mode == "PATH") {
+            this.registerByPath();
+        } else {
+            if (this.multipartUploader.getNotUploadedItems().length > 0) {
+                this._registeredApplicationService.registerApplication(this.applicationGroup.id).subscribe(
+                    application => this.rerouteToApplicationList(),
+                    error => this.handleError(<any>error)
+                );
+            } else {
+                this.handleError("Please select file first");
+            }
+
+            return false;
+        }
     }
 
     rerouteToApplicationList() {
