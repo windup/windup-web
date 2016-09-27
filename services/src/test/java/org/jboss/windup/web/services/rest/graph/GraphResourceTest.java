@@ -7,18 +7,15 @@ import java.util.Map;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.arquillian.warp.WarpTest;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.windup.graph.model.resource.FileModel;
 import org.jboss.windup.web.services.AbstractTest;
-import org.jboss.windup.web.services.WindupData;
+import org.jboss.windup.web.services.data.ServiceConstants;
+import org.jboss.windup.web.services.data.WindupExecutionUtil;
 import org.jboss.windup.web.services.model.WindupExecution;
-import org.jboss.windup.web.services.rest.ApplicationGroupEndpoint;
-import org.jboss.windup.web.services.rest.RegisteredApplicationEndpoint;
-import org.jboss.windup.web.services.rest.WindupEndpoint;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -28,16 +25,12 @@ import org.junit.runner.RunWith;
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
-@WarpTest
 @RunWith(Arquillian.class)
 public class GraphResourceTest extends AbstractTest
 {
     @ArquillianResource
     private URL contextPath;
 
-    ApplicationGroupEndpoint applicationGroupEndpoint;
-    RegisteredApplicationEndpoint registeredApplicationEndpoint;
-    WindupEndpoint windupEndpoint;
     GraphResource graphResource;
     WindupExecution execution;
 
@@ -52,17 +45,14 @@ public class GraphResourceTest extends AbstractTest
     public void setUp() throws Exception
     {
         ResteasyClient client = getResteasyClient();
-        ResteasyWebTarget target = client.target(contextPath + "rest");
+        ResteasyWebTarget target = client.target(contextPath + ServiceConstants.REST_BASE);
 
-        this.applicationGroupEndpoint = target.proxy(ApplicationGroupEndpoint.class);
-        this.registeredApplicationEndpoint = target.proxy(RegisteredApplicationEndpoint.class);
-        this.windupEndpoint = target.proxy(WindupEndpoint.class);
         this.graphResource = target.proxy(GraphResource.class);
 
         if (this.execution == null)
         {
-            WindupData windupData = new WindupData(registeredApplicationEndpoint, applicationGroupEndpoint, windupEndpoint);
-            this.execution = windupData.executeWindup();
+            WindupExecutionUtil windupExecutionUtil = new WindupExecutionUtil(client, target);
+            this.execution = windupExecutionUtil.executeWindup();
         }
     }
 
@@ -84,7 +74,7 @@ public class GraphResourceTest extends AbstractTest
     @RunAsClient
     public void testQueryByTypeAndProperty()
     {
-        List<Map<String, Object>> fileModels = graphResource.getByType(execution.getId(), FileModel.TYPE, FileModel.FILE_NAME, "java", 1);
+        List<Map<String, Object>> fileModels = graphResource.getByType(execution.getId(), FileModel.TYPE, FileModel.FILE_NAME, "windup-src-example", 1);
         Assert.assertNotNull(fileModels);
         Assert.assertTrue(fileModels.size() == 1);
 
