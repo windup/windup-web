@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -17,6 +19,7 @@ import javax.inject.Inject;
 import org.jboss.windup.web.addons.websupport.services.WindupExecutorService;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.WindupWebProgressMonitor;
+import org.jboss.windup.web.services.model.AdvancedOption;
 import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.MigrationPath;
@@ -34,7 +37,6 @@ public class WindupExecutionTask implements Runnable
     @Inject
     @FromFurnace
     private WindupExecutorService windupExecutorService;
-
 
     @Inject
     private Instance<WindupWebProgressMonitor> progressMonitorInstance;
@@ -64,9 +66,8 @@ public class WindupExecutionTask implements Runnable
         try
         {
             Collection<Path> rulesPaths = analysisContext.getRulesPaths().stream()
-                    .map((rulesPath) -> Paths.get(rulesPath.getPath()))
-                    .collect(Collectors.toList());
-
+                        .map((rulesPath) -> Paths.get(rulesPath.getPath()))
+                        .collect(Collectors.toList());
 
             List<Path> inputPaths = group
                         .getApplications()
@@ -79,22 +80,44 @@ public class WindupExecutionTask implements Runnable
             String source = null;
             String target = null;
 
-            if (analysisContext != null)
+            if (analysisContext.getPackages() != null)
+                packages = new ArrayList<>(analysisContext.getPackages());
+
+            if (analysisContext.getExcludePackages() != null)
+                excludePackages = new ArrayList<>(analysisContext.getExcludePackages());
+
+            MigrationPath migrationPath = analysisContext.getMigrationPath();
+            if (migrationPath != null)
             {
-                if (analysisContext.getPackages() != null)
-                    packages = new ArrayList<>(analysisContext.getPackages());
+                if (migrationPath.getSource() != null)
+                    source = migrationPath.getSource().toString();
 
-                if (analysisContext.getExcludePackages() != null)
-                    excludePackages = new ArrayList<>(analysisContext.getExcludePackages());
+                if (migrationPath.getTarget() != null)
+                    target = migrationPath.getTarget().toString();
+            }
 
-                MigrationPath migrationPath = analysisContext.getMigrationPath();
-                if (migrationPath != null)
+            Map<String, Object> otherOptions = new HashMap<>();
+            if (analysisContext.getAdvancedOptions() != null)
+            {
+                for (AdvancedOption advancedOption : analysisContext.getAdvancedOptions())
                 {
-                    if (migrationPath.getSource() != null)
-                        source = migrationPath.getSource().toString();
+                    String name = advancedOption.getName();
+                    Object value = advancedOption.getValue();
 
-                    if (migrationPath.getTarget() != null)
-                        target = migrationPath.getTarget().toString();
+                    Object previousValue = otherOptions.get(name);
+                    if (previousValue != null)
+                    {
+                        if (!(previousValue instanceof List))
+                        {
+                            previousValue = new ArrayList<>(Collections.singleton(previousValue));
+                            otherOptions.put(name, previousValue);
+                        }
+                        ((List<Object>) previousValue).add(value);
+                    }
+                    else
+                    {
+                        otherOptions.put(name, value);
+                    }
                 }
             }
 
@@ -106,7 +129,8 @@ public class WindupExecutionTask implements Runnable
                         packages,
                         excludePackages,
                         source,
-                        target);
+                        target,
+                        otherOptions);
 
             // reload the current state
             progressMonitor.done();
@@ -119,6 +143,5 @@ public class WindupExecutionTask implements Runnable
             throw new RuntimeException(e);
         }
     }
-
 
 }

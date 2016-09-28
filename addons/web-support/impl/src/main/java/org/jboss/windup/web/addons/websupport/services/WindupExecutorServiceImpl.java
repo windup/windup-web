@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -37,7 +38,7 @@ public class WindupExecutorServiceImpl implements WindupExecutorService
 
     @Override
     public void execute(WindupProgressMonitor progressMonitor, Collection<Path> rulesPaths, List<Path> inputPaths, Path outputPath, List<String> packages,
-                        List<String> excludePackages, String source, String target)
+                        List<String> excludePackages, String source, String target, Map<String, Object> otherOptions)
     {
         Path graphPath = outputPath.resolve(GraphContextFactory.DEFAULT_GRAPH_SUBDIRECTORY);
         try (GraphContext context = factory.create(graphPath))
@@ -66,8 +67,12 @@ public class WindupExecutorServiceImpl implements WindupExecutorService
                 configuration.setOptionValue(TargetOption.NAME, Collections.singletonList(target));
 
             configuration.setOptionValue(OverwriteOption.NAME, true);
-
             configuration.setOptionValue(KeepWorkDirsOption.NAME, true);
+
+            for (Map.Entry<String, Object> optionEntry : otherOptions.entrySet())
+            {
+                configuration.setOptionValue(optionEntry.getKey(), optionEntry.getValue());
+            }
 
             processor.execute(configuration);
         }

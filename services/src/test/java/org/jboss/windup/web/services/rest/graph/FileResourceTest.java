@@ -9,13 +9,10 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
-import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.windup.graph.model.resource.FileModel;
 import org.jboss.windup.web.services.data.ServiceConstants;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -30,13 +27,6 @@ public class FileResourceTest extends GraphResourceTest
     private URL contextPath;
 
     private FileModelResource fileModelResource;
-
-    @BeforeClass
-    public static void setUpClass() throws Exception
-    {
-        // initializes the rest easy client framework
-        RegisterBuiltin.register(ResteasyProviderFactory.getInstance());
-    }
 
     @Before
     public void setUp() throws Exception

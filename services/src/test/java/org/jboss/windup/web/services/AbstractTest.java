@@ -4,6 +4,8 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
+import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
+import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
@@ -12,6 +14,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 import org.jboss.windup.web.tests.authentication.KeycloakAuthenticationHelper;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientRequestFilter;
@@ -42,6 +45,14 @@ public class AbstractTest
         war.merge(ShrinkWrap.create(ExplodedImporter.class).importDirectory("src/test/resources/WEB-INF").as(GenericArchive.class), "/WEB-INF");
         return war;
     }
+
+    @BeforeClass
+    public static void setUpClass() throws Exception
+    {
+        // initializes the rest easy client framework
+        RegisterBuiltin.register(ResteasyProviderFactory.getInstance());
+    }
+
 
     protected ResteasyClient getResteasyClient()
     {

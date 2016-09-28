@@ -4,18 +4,13 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.arquillian.warp.WarpTest;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
-import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
-import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.windup.web.services.AbstractTest;
 import org.jboss.windup.web.services.data.ServiceConstants;
 import org.jboss.windup.web.services.model.MigrationProject;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -25,7 +20,6 @@ import java.util.Collection;
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
-@WarpTest
 @RunWith(Arquillian.class)
 public class MigrationProjectEndpointTest extends AbstractTest
 {
@@ -33,13 +27,6 @@ public class MigrationProjectEndpointTest extends AbstractTest
     private URL contextPath;
 
     private MigrationProjectEndpoint migrationProjectEndpoint;
-
-    @BeforeClass
-    public static void setUpClass() throws Exception
-    {
-        // initializes the rest easy client framework
-        RegisterBuiltin.register(ResteasyProviderFactory.getInstance());
-    }
 
     @Before
     public void setUp()

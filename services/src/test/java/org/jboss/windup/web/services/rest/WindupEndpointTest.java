@@ -3,27 +3,19 @@ package org.jboss.windup.web.services.rest;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.arquillian.warp.WarpTest;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
-import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.windup.web.services.data.ServiceConstants;
 import org.jboss.windup.web.services.data.WindupExecutionUtil;
-import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.ExecutionState;
-import org.jboss.windup.web.services.model.RegisteredApplication;
 import org.jboss.windup.web.services.AbstractTest;
 import org.jboss.windup.web.services.model.WindupExecution;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.net.URL;
-import java.nio.file.Paths;
-import java.util.Collections;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -36,13 +28,6 @@ public class WindupEndpointTest extends AbstractTest
 
     private ResteasyClient client;
     private ResteasyWebTarget target;
-
-    @BeforeClass
-    public static void setUpClass() throws Exception
-    {
-        // initializes the rest easy client framework
-        RegisterBuiltin.register(ResteasyProviderFactory.getInstance());
-    }
 
     @Before
     public void setUp()
