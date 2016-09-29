@@ -1,15 +1,15 @@
 <div class="form-group">
-    <label class="col-md-2 control-label" for="selection">Custom Ruleset selection</label>
+    <label class="col-md-2 control-label" for="customRulesetPaths">Custom Ruleset selection</label>
     <div class="col-md-6">
-        <select #select="ngModel" multiple
+        <select multiple
                 name="customRulesetPaths"
-                [(ngModel)]="selectedRulePathIDs"
-                ngControl="customRulesetPaths"
+                [(ngModel)]="selectedRulePaths"
+                (ngModelChange)="updateSelection()"
                 id="customRulesetPaths"
                 class="form-control"
                 >
             <option *ngFor="let ruleset of rulesPaths"
-             [value]="ruleset.id"
+             [ngValue]="ruleset"
              >
                 {{ruleset.path}}
             </option>
