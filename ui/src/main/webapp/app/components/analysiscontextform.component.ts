@@ -12,6 +12,7 @@ import {AnalysisContextService} from "../services/analysiscontext.service";
 import {ConfigurationOption} from "../model/configuration-option.model";
 import {ConfigurationOptionsService} from "../services/configuration-options.service";
 import {ModalDialogComponent} from "./modal-dialog.component";
+import {ConfigurationService} from "../services/configuration.service";
 
 @Component({
     templateUrl: 'app/components/analysiscontextform.component.html',
@@ -45,7 +46,8 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
                 private _applicationGroupService:ApplicationGroupService,
                 private _migrationPathService:MigrationPathService,
                 private _analysisContextService:AnalysisContextService,
-                private _configurationOptionsService:ConfigurationOptionsService) {
+                private _configurationOptionsService:ConfigurationOptionsService,
+                private _configuratioService:ConfigurationService) {
         super();
         this.analysisContext.migrationPath = <MigrationPath>{};
         this.packages = [ {prefix: ""} ];
@@ -58,16 +60,6 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
         }
         return this._migrationPathsObservable;
     }
-
-    change(options) {
-        /*this.selectedRulesets = Array.apply(null,options)
-                                .filter(option => option.selected)
-                                .map(option => option.value);*/
-   }
-
-   getCustomRules(): RulesPath[] {
-    return RULE_PATHS;
-   }
 
     ngOnInit() {
         this._activatedRoute.params.subscribe(params => {
@@ -93,6 +85,10 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
                             this.analysisContext.advancedOptions = [];
                             this.packages = [ {prefix: ""} ];
                             this.excludePackages = [ {prefix: ""} ];
+                            this._configuratioService.getCustomRulesetPaths().subscribe(
+                                rulesets => this.selectedRulesets = rulesets,
+                                err => { this.handleError(err)}
+                            );
                         } else {
                             // for migration path, store the id only
                             this.analysisContext.migrationPath = <MigrationPath>{ id: this.analysisContext.migrationPath.id };
@@ -105,6 +101,14 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
                                 this.excludePackages = [ {prefix: ""} ];
                             else
                                 this.excludePackages = <[{prefix:string}]>this.analysisContext.excludePackages.map(it => { return { prefix: it }});
+
+                            if (this.analysisContext.rulesPaths == null || this.analysisContext.rulesPaths.length == 0)
+                                this._configuratioService.getCustomRulesetPaths().subscribe(
+                                    rulesets => this.selectedRulesets = rulesets,
+                                    err => { this.handleError(err)}
+                                );
+                            else
+                                this.selectedRulesets = this.analysisContext.rulesPaths;
                         }
 
                         // Just use the ID here

@@ -11,34 +11,32 @@ import {Configuration} from "windup-services";
     templateUrl: 'app/components/custom-rule-selection.component.html'
 })
 export class CustomRuleSelectionComponent implements OnInit {
-    @Input()
-    configuration:Configuration;
-
     @Input() selectedRulePaths: RulesPath[];
     @Output() selectedRulePathsChange = new EventEmitter<RulesPath[]>();
 
-    customRegisteredRulesets: RulesPath[] = RULE_PATHS;
+    rulesPaths: RulesPath[] = [];
 
-    rulesPaths:RulesPath[] = RULE_PATHS;
-    
-    constructor(private _configurationService: ConfigurationService)    {
+    constructor(private _configurationService: ConfigurationService) {
 
     }
 
+
     ngOnInit() {
-        this.selectedRulePaths = RULE_PATHS.slice();
+        this._configurationService.getCustomRulesetPaths().subscribe(
+            rulesets => this.rulesPaths = rulesets,
+            err => { console.log(err) }
+        );
     }
 
     updateSelection() {
         this.selectedRulePathsChange.emit(this.selectedRulePaths);
     }
-}
 
-/*
- * just for quick prototypign
- */
-const RULE_PATHS: RulesPath[] = [
-    { id: 1, version: 1, path: "test1.windup.xml", loadError: "", rulesPathType: "USER_PROVIDED" },
-    { id: 2, version: 1, path: "test2.windup.xml", loadError: "", rulesPathType: "USER_PROVIDED" },
-    { id: 3, version: 1, path: "test3.windup.xml", loadError: "", rulesPathType: "USER_PROVIDED" },
-]; 
+    clearSelection() {
+        this.selectedRulePaths = [];
+    }
+
+    selectAll() {
+        this.selectedRulePaths = this.rulesPaths.slice();
+    }
+}
