@@ -20,11 +20,10 @@ export class RegisteredApplicationService extends AbstractService {
     private REGISTER_PATH_URL = "/registeredApplications/register-path/";
 
     private UPLOAD_URL = '/file';
-    private _multipartUploader: FileUploader;
 
-    constructor (private _http: Http, private _keycloakService:KeycloakService) {
+    constructor (private _http: Http, private _keycloakService:KeycloakService, private _multipartUploader: FileUploader) {
         super();
-        this._multipartUploader = new FileUploader({
+        this._multipartUploader.setOptions({
             url: Constants.REST_BASE + this.UPLOAD_URL + '/multipart',
             disableMultipart: false
         });

@@ -93,6 +93,10 @@ import {UploadProgressbarComponent} from "./components/upload/upload-progressbar
                     keycloakService: KeycloakService
                 ) => new WindupHttpService(backend, defaultOptions, keycloakService),
             deps: [XHRBackend, RequestOptions, KeycloakService]
+        },
+        {
+            provide: FileUploader,
+            useValue: new FileUploader({})
         }
     ],
     bootstrap:    [ AppComponent ]
