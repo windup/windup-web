@@ -24,6 +24,7 @@ import java.util.Collections;
 public class ConfigurationEndpointTest extends AbstractTest
 {
     public static final String FAKE_PATH = "./target/classes/";
+
     @ArquillianResource
     private URL contextPath;
 

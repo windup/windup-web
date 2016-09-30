@@ -10,13 +10,21 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.windup.config.ConfigurationOption;
+import org.jboss.windup.config.ValidationResult;
+import org.jboss.windup.exec.configuration.options.TargetOption;
+import org.jboss.windup.exec.configuration.options.UserIgnorePathOption;
+import org.jboss.windup.exec.configuration.options.UserRulesDirectoryOption;
+import org.jboss.windup.rules.apps.java.config.SourceModeOption;
 import org.jboss.windup.web.services.AbstractTest;
 import org.jboss.windup.web.services.data.ServiceConstants;
+import org.jboss.windup.web.services.model.AdvancedOption;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
@@ -51,5 +59,49 @@ public class ConfigurationOptionsEndpointTest extends AbstractTest
                 Assert.fail("Options are not listed in priority order");
         }
         response.close();
+    }
+
+    @Test
+    @RunAsClient
+    public void testValidationOkBoolean() throws Exception
+    {
+        Assert.assertTrue(validateOption(SourceModeOption.NAME, "true"));
+    }
+
+    @Test
+    @RunAsClient
+    public void testValidationBadPath() throws Exception
+    {
+        Assert.assertFalse(validateOption(UserIgnorePathOption.NAME, "/not/really/here"));
+    }
+
+    @Test
+    @RunAsClient
+    public void testValidationOkPath() throws Exception
+    {
+        Assert.assertTrue(validateOption(UserIgnorePathOption.NAME, "src/main/java"));
+    }
+
+    private boolean validateOption(String name, String value) {
+        ResteasyClient client = getResteasyClient();
+        String uri = contextPath + "rest/" + ConfigurationOptionsEndpoint.CONFIGURATION_OPTIONS_PATH + "/" + ConfigurationOptionsEndpoint.VALIDATE_OPTION;
+        ResteasyWebTarget target = client.target(uri);
+
+        AdvancedOption option = new AdvancedOption();
+        option.setName(name);
+        option.setValue(value);
+
+        Response response = target.request().post(Entity.entity(option, MediaType.APPLICATION_JSON_TYPE));
+        Assert.assertEquals(200, response.getStatus());
+
+        Map<String, Object> optionMap = response.readEntity(Map.class);
+        switch ((String)optionMap.get("level"))
+        {
+            case "SUCCESS":
+            case "WARNING":
+                return true;
+            default:
+                return false;
+        }
     }
 }

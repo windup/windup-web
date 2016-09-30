@@ -9,12 +9,15 @@ import {ApplicationGroupService} from "../services/applicationgroup.service";
 import {MigrationPathService} from "../services/migrationpath.service";
 import {MigrationPath} from "windup-services";
 import {AnalysisContextService} from "../services/analysiscontext.service";
+import {ConfigurationOption} from "../model/configuration-option.model";
+import {ConfigurationOptionsService} from "../services/configuration-options.service";
+import {ModalDialogComponent} from "./modal-dialog.component";
 
 @Component({
     templateUrl: 'app/components/analysiscontextform.component.html',
     providers: [ AnalysisContextService, ApplicationGroupService, MigrationPathService ]
 })
-export class AnalysisContextFormComponent extends FormComponent
+export class AnalysisContextFormComponent extends FormComponent implements OnInit
 {
     loading:boolean = true;
     applicationGroup:ApplicationGroup = null;
@@ -32,13 +35,16 @@ export class AnalysisContextFormComponent extends FormComponent
     packages:[{prefix:string}];
     excludePackages:[{prefix:string}];
 
+    configurationOptions:ConfigurationOption[] = [];
+
     private _migrationPathsObservable:Observable<MigrationPath[]>;
 
     constructor(private _router:Router,
                 private _activatedRoute: ActivatedRoute,
                 private _applicationGroupService:ApplicationGroupService,
                 private _migrationPathService:MigrationPathService,
-                private _analysisContextService:AnalysisContextService) {
+                private _analysisContextService:AnalysisContextService,
+                private _configurationOptionsService:ConfigurationOptionsService) {
         super();
         this.analysisContext.migrationPath = <MigrationPath>{};
         this.packages = [ {prefix: ""} ];
@@ -57,6 +63,13 @@ export class AnalysisContextFormComponent extends FormComponent
             let id:number = parseInt(params["groupID"]);
             if (!isNaN(id)) {
                 this.loading = true;
+
+                this._configurationOptionsService.getAll().subscribe(
+                    (options:ConfigurationOption[]) => {
+                        this.configurationOptions = options;
+                    }
+                );
+
                 this._applicationGroupService.get(id).subscribe(
                     group => {
                         this.applicationGroup = group;
@@ -129,6 +142,11 @@ export class AnalysisContextFormComponent extends FormComponent
                 error => this.handleError(<any> error)
             );
         }
+    }
+
+    viewAdvancedOptions(advancedOptionsModal:ModalDialogComponent) {
+        advancedOptionsModal.show();
+        return false;
     }
 
     cancel() {
