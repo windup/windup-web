@@ -2,6 +2,8 @@ import {Component, Input, Output, ViewChild} from "@angular/core";
 import {ConfigurationOption} from "../model/configuration-option.model";
 import {AdvancedOption} from "windup-services";
 import {ModalDialogComponent} from "./modal-dialog.component";
+import {ConfigurationOptionsService} from "../services/configuration-options.service";
+import {ValidationResult} from "../model/validation-result.model";
 
 @Component({
     selector: 'analysis-context-advanced-options',
@@ -35,15 +37,16 @@ import {ModalDialogComponent} from "./modal-dialog.component";
                         </tr>
                         <tr *ngIf="newOption">
                             <td>
-                                <select class="form-control" name="newOptionTypeSelection" [(ngModel)]="newOption.name">
+                                <select class="form-control" name="newOptionTypeSelection" [(ngModel)]="newOption.name" (change)="newOptionTypeChanged()">
                                     <option *ngFor="let option of availableOptions" value="{{option.name}}">{{option.name}}</option>
                                 </select>
                             </td>
-                            <td>
+                            <td [class.bg-danger]="newOptionError">
+                                <span class="text-danger">{{newOptionError}}</span>
                                 <div [ngSwitch]="currentOptionType">
                                     <input *ngSwitchCase="'text'" type="text" name="currentOptionInput" class="form-control" [(ngModel)]="newOption.value">
                                     <input *ngSwitchCase="'checkbox'" type="checkbox" class="form-control" name="currentOptionInput" [(ngModel)]="newOption.value">
-                                    <select *ngSwitchCase="'select'" class="form-control">
+                                    <select *ngSwitchCase="'select'" class="form-control" name="newOptionSelect" [(ngModel)]="newOption.value">
                                         <option *ngFor="let option of currentSelectedOptionDefinition.availableValues" value="{{option}}">{{option}}</option>
                                     </select>
                                 </div>
@@ -59,8 +62,7 @@ import {ModalDialogComponent} from "./modal-dialog.component";
             </form>
         </div>
         <div footer>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Save changes</button>
+            <button type="button" class="btn btn-primary" (click)="hide()">Done</button>
         </div>
     </modal-dialog>
 `
@@ -76,6 +78,7 @@ export class AnalysisContextAdvancedOptionsModalComponent {
     private modalDialog:ModalDialogComponent;
 
     private newOption:AdvancedOption;
+    private newOptionError:string;
 
     private get currentSelectedOptionDefinition():ConfigurationOption {
         return this.configurationOptions.find((option:ConfigurationOption) => {
@@ -100,7 +103,7 @@ export class AnalysisContextAdvancedOptionsModalComponent {
         }
     }
 
-    constructor() {
+    constructor(private _configurationOptionsService:ConfigurationOptionsService) {
         this.resetCurrentOption();
     }
 
@@ -136,18 +139,46 @@ export class AnalysisContextAdvancedOptionsModalComponent {
     }
 
     private addAdvancedOption() {
-        if (this.selectedOptions == null)
-            this.selectedOptions = [];
+        this.newOptionError = "";
+        // Only accept null for a checkbox (with a checkbox "null" == false).
+        if (this.currentOptionType != 'checkbox' && (this.newOption.value == null || this.newOption.value == "")) {
+            this.newOptionError = "Value must be specified";
+            return;
+        }
 
-        if (this.currentOptionType == "checkbox" && !this.newOption.value)
-            this.newOption.value = "false";
+        this._configurationOptionsService.validate(this.newOption)
+            .subscribe((validationResult:ValidationResult) => {
+                if (validationResult.level != "SUCCESS") {
+                    // handle validation error
+                    this.newOptionError = validationResult.message;
+                    return;
+                }
 
-        this.selectedOptions.push(this.newOption);
+                if (this.selectedOptions == null)
+                    this.selectedOptions = [];
 
-        this.resetCurrentOption();
+                if (this.currentOptionType == "checkbox" && !this.newOption.value)
+                    this.newOption.value = "false";
+
+                this.selectedOptions.push(this.newOption);
+
+                this.resetCurrentOption();
+            },
+            (error:any) => {
+                this.newOptionError = "Error validating option";
+            });
+    }
+
+    newOptionTypeChanged() {
+        if (this.newOption)
+            this.newOption.value = "";
     }
 
     show() {
         this.modalDialog.show();
+    }
+
+    hide() {
+        this.modalDialog.hide();
     }
 }

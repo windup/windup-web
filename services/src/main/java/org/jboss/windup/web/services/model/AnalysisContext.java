@@ -5,6 +5,7 @@ import org.hibernate.annotations.FetchMode;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -51,7 +52,7 @@ public class AnalysisContext implements Serializable
     @ManyToOne(fetch = FetchType.EAGER)
     private MigrationPath migrationPath;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     private Collection<AdvancedOption> advancedOptions;
 

@@ -10,7 +10,7 @@ export class MigrationProjectService extends AbstractService {
     private GET_MIGRATION_PROJECTS_URL = "/migrationProjects/list";
     private GET_MIGRATION_PROJECT_URL = "/migrationProjects/get";
     private CREATE_MIGRATION_PROJECT_URL = "/migrationProjects/create";
-    private UPDATE_MIGRATION_PROJECT_URL = "/migrationProjects/updateByUpload";
+    private UPDATE_MIGRATION_PROJECT_URL = "/migrationProjects/update";
 
     constructor (private _http: Http) {
         super();

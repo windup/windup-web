@@ -79,6 +79,7 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
                         if (this.analysisContext == null) {
                             this.analysisContext = <AnalysisContext>{};
                             this.analysisContext.migrationPath = <MigrationPath>{};
+                            this.analysisContext.advancedOptions = [];
                             this.packages = [ {prefix: ""} ];
                             this.excludePackages = [ {prefix: ""} ];
                         } else {

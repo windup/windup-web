@@ -8,8 +8,6 @@ import java.util.logging.Logger;
 
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
-import javax.enterprise.concurrent.ManagedExecutorService;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.jms.JMSContext;
 import javax.jms.Queue;
@@ -27,7 +25,6 @@ import org.jboss.windup.web.services.model.ExecutionState;
 import org.jboss.windup.web.services.model.WindupExecution;
 import org.jboss.windup.web.services.model.RegisteredApplication;
 import org.jboss.windup.web.services.service.ConfigurationService;
-import org.jboss.windup.web.services.service.WindupExecutionTask;
 
 @Stateless
 public class WindupEndpointImpl implements WindupEndpoint
@@ -62,15 +59,6 @@ public class WindupEndpointImpl implements WindupEndpoint
     public WindupExecution executeGroup(Long groupID)
     {
         ApplicationGroup group = entityManager.find(ApplicationGroup.class, groupID);
-
-        // Clean out the output directory first
-        try
-        {
-            FileUtils.deleteDirectory(new File(group.getOutputPath()));
-        } catch (IOException e)
-        {
-            LOG.warning("Failed to delete output directory: " + group.getOutputPath() + ", due to: " + e.getMessage());
-        }
 
         for (RegisteredApplication application : group.getApplications())
         {

@@ -1,5 +1,7 @@
-package org.jboss.windup.web.services.service;
+package org.jboss.windup.web.services.messaging;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -16,6 +18,8 @@ import java.util.stream.Collectors;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.apache.commons.io.FileUtils;
+import org.jboss.windup.config.ConfigurationOption;
 import org.jboss.windup.web.addons.websupport.services.WindupExecutorService;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.WindupWebProgressMonitor;
@@ -24,6 +28,7 @@ import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.MigrationPath;
 import org.jboss.windup.web.services.model.WindupExecution;
+import org.jboss.windup.web.services.service.ConfigurationOptionsService;
 
 /**
  * Contains code for executing Windup and managing the status information from the process.
@@ -40,6 +45,9 @@ public class WindupExecutionTask implements Runnable
 
     @Inject
     private Instance<WindupWebProgressMonitor> progressMonitorInstance;
+
+    @Inject
+    private ConfigurationOptionsService configurationOptionsService;
 
     private WindupExecution execution;
     private ApplicationGroup group;
@@ -65,6 +73,16 @@ public class WindupExecutionTask implements Runnable
         AnalysisContext analysisContext = group.getAnalysisContext();
         try
         {
+            // Clean out the output directory first
+            try
+            {
+                FileUtils.deleteDirectory(new File(group.getOutputPath()));
+            } catch (IOException e)
+            {
+                LOG.warning("Failed to delete output directory: " + group.getOutputPath() + ", due to: " + e.getMessage());
+            }
+
+
             Collection<Path> rulesPaths = analysisContext.getRulesPaths().stream()
                         .map((rulesPath) -> Paths.get(rulesPath.getPath()))
                         .collect(Collectors.toList());
@@ -96,30 +114,7 @@ public class WindupExecutionTask implements Runnable
                     target = migrationPath.getTarget().toString();
             }
 
-            Map<String, Object> otherOptions = new HashMap<>();
-            if (analysisContext.getAdvancedOptions() != null)
-            {
-                for (AdvancedOption advancedOption : analysisContext.getAdvancedOptions())
-                {
-                    String name = advancedOption.getName();
-                    Object value = advancedOption.getValue();
-
-                    Object previousValue = otherOptions.get(name);
-                    if (previousValue != null)
-                    {
-                        if (!(previousValue instanceof List))
-                        {
-                            previousValue = new ArrayList<>(Collections.singleton(previousValue));
-                            otherOptions.put(name, previousValue);
-                        }
-                        ((List<Object>) previousValue).add(value);
-                    }
-                    else
-                    {
-                        otherOptions.put(name, value);
-                    }
-                }
-            }
+            Map<String, Object> otherOptions = getOtherOptions(analysisContext);
 
             windupExecutorService.execute(
                         progressMonitor,
@@ -142,6 +137,63 @@ public class WindupExecutionTask implements Runnable
             LOG.log(Level.WARNING, "Processing of " + group + " failed due to: " + e.getMessage(), e);
             throw new RuntimeException(e);
         }
+    }
+
+    private Map<String, Object> getOtherOptions(AnalysisContext analysisContext)
+    {
+        if (analysisContext == null || analysisContext.getAdvancedOptions() == null)
+            return Collections.emptyMap();
+
+        Map<String, Object> result = new HashMap<>();
+        for (AdvancedOption advancedOption : analysisContext.getAdvancedOptions())
+        {
+            String name = advancedOption.getName();
+            ConfigurationOption configurationOption = this.configurationOptionsService.findConfigurationOption(name);
+            if (configurationOption == null)
+            {
+                LOG.warning("Ignoring unrecognized advanced option: " + name);
+                continue;
+            }
+
+            /*
+             * This item could be either a single item or an iterable (with a single item).
+             */
+            Object value = this.configurationOptionsService.convertType(configurationOption, advancedOption.getValue());
+
+            Object previousValue = result.get(name);
+            if (previousValue != null)
+            {
+                /*
+                 * We have seen an item of this value before, so it must be switched to a list now.
+                 */
+                if (!(previousValue instanceof List))
+                {
+                    List<Object> list = new ArrayList<>();
+                    list.add(previousValue);
+                    result.put(name, list);
+                }
+
+                /*
+                 * The new item is also a list, so add all of them to the previous one.
+                 */
+                if (value instanceof Iterable)
+                {
+                    for (Object iterableItem : (Iterable)value)
+                    {
+                        ((List<Object>) previousValue).add(iterableItem);
+                    }
+                } else
+                {
+                    // Single item to add to previous list.
+                    ((List<Object>) previousValue).add(value);
+                }
+            }
+            else
+            {
+                result.put(name, value);
+            }
+        }
+        return result;
     }
 
 }

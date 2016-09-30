@@ -35,10 +35,10 @@ export class ModalDialogComponent {
     constructor() {}
 
     show():void {
-        (<any>$(`#${this.id}`)).modal();
+        (<any>$(`#${this.id}`)).modal('show');
     }
 
     hide():void {
-        (<any>$(`#${this.id}`)).hide();
+        (<any>$(`#${this.id}`)).modal('hide');
     }
 }

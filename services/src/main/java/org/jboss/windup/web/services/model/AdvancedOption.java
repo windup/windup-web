@@ -1,6 +1,13 @@
 package org.jboss.windup.web.services.model;
 
+import org.jboss.windup.config.ConfigurationOption;
+import org.jboss.windup.config.InputType;
+
+import java.io.File;
 import java.io.Serializable;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collections;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

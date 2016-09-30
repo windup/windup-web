@@ -28,7 +28,7 @@ public interface ConfigurationOptionsEndpoint
      * Gets a list of options available from the server.
      */
     @GET
-    List<ConfigurationOption> getAdvancedOptions();
+    List<ConfigurationOption> getAllOptions();
 
     /**
      * Validates the provided option and returns the result.

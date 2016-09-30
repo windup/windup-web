@@ -11,7 +11,7 @@ export class ApplicationGroupService extends AbstractService {
     private GET_BY_PROJECT_URL = "/applicationGroups/by-project/";
     private GET_BY_ID_URL = "/applicationGroups/get";
     private CREATE_URL = "/applicationGroups/create";
-    private UPDATE_URL = "/applicationGroups/updateByUpload";
+    private UPDATE_URL = "/applicationGroups/update";
 
     constructor (private _http: Http) {
         super();
