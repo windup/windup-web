@@ -75,6 +75,12 @@
             </div>
         </div>
         <div class="form-group">
+            <label class="col-md-2 control-label" for="excludePackageID">Advanced Options</label>
+            <div class="col-md-3">
+                <button class="btn btn-default" (click)="viewAdvancedOptions(advancedOptionsModal)">View Advanced Options</button>
+            </div>
+        </div>
+        <div class="form-group">
             <div class="col-md-10 col-md-offset-2">
                 <button [disabled]="!analysisContextForm.form.valid" class="btn btn-primary" type="submit">Save</button>
                 <button [disabled]="loading" (click)="cancel()" type="button" class="btn btn-default">Cancel</button>
@@ -82,3 +88,5 @@
         </div>
     </div>
 </form>
+
+<analysis-context-advanced-options [(selectedOptions)]="analysisContext.advancedOptions" [configurationOptions]="configurationOptions" #advancedOptionsModal></analysis-context-advanced-options>

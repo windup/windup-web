@@ -10,7 +10,7 @@ export class AnalysisContextService extends AbstractService
 {
     private GET_URL = "/analysis-context/get";
     private CREATE_URL = "/analysis-context/create";
-    private UPDATE_URL = "/analysis-context/updateByUpload";
+    private UPDATE_URL = "/analysis-context/update";
 
     constructor (private _http: Http) {
         super();

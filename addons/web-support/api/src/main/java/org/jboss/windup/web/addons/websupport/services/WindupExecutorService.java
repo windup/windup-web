@@ -5,6 +5,7 @@ import org.jboss.windup.exec.WindupProgressMonitor;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This exists to provide the Web API with access to Windup services through a simplified API.
@@ -33,7 +34,8 @@ public interface WindupExecutorService
             List<String> packages,
             List<String> excludePackages,
             String source,
-            String target);
+            String target,
+            Map<String, Object> otherOptions);
 
     /**
      * Gets the filesystem path to the report for a given application.

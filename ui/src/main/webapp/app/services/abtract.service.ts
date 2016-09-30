@@ -15,8 +15,6 @@ export class AbstractService {
         }
         catch (ex) {
             console.error("Service error - can't JSON: " + (<SyntaxError>ex).message);
-            if (typeof error === 'object')
-                console.error(JSON.stringify(error));
         }
 
         return Observable.throw(json);

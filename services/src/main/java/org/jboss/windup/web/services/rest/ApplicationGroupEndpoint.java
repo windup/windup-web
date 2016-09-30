@@ -1,7 +1,6 @@
 package org.jboss.windup.web.services.rest;
 
 import org.jboss.windup.web.services.model.ApplicationGroup;
-import org.jboss.windup.web.services.model.MigrationProject;
 
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;

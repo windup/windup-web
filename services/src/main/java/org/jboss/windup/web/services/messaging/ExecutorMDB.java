@@ -1,6 +1,5 @@
 package org.jboss.windup.web.services.messaging;
 
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,7 +14,6 @@ import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 
 import org.jboss.windup.web.services.model.WindupExecution;
-import org.jboss.windup.web.services.service.WindupExecutionTask;
 
 /**
  * This receives requests to run Windup and executes them.

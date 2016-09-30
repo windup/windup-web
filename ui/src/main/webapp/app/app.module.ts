@@ -38,6 +38,9 @@ import {WindupHttpService} from "./services/windup.http.service";
 import {EditApplicationFormComponent} from "./components/edit-application-form.component";
 import {UploadQueueComponent} from "./components/upload/upload-queue.component";
 import {UploadProgressbarComponent} from "./components/upload/upload-progressbar.component";
+import {AnalysisContextAdvancedOptionsModalComponent} from "./components/analysis-context-advanced-options-modal.component";
+import {ConfigurationOptionsService} from "./services/configuration-options.service";
+import {ModalDialogComponent} from "./components/modal-dialog.component";
 
 @NgModule({
     imports: [
@@ -59,8 +62,10 @@ import {UploadProgressbarComponent} from "./components/upload/upload-progressbar
         EditApplicationFormComponent,
 
         AddRulesPathModalComponent,
+        AnalysisContextAdvancedOptionsModalComponent,
         BreadCrumbsComponent,
         ConfirmationModalComponent,
+        ModalDialogComponent,
         NavbarComponent,
         ProgressBarComponent,
         RulesModalComponent,
@@ -77,6 +82,7 @@ import {UploadProgressbarComponent} from "./components/upload/upload-progressbar
         AnalysisContextService,
         ApplicationGroupService,
         ConfigurationService,
+        ConfigurationOptionsService,
         FileService,
         MigrationPathService,
         MigrationProjectService,

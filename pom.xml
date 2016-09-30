@@ -26,6 +26,7 @@
         <version.windup>3.0.0-SNAPSHOT</version.windup>
         <version.keycloak>2.1.0.Final</version.keycloak>
         <version.resteasy>3.0.19.Final</version.resteasy>
+        <version.jboss.javaee>1.0.3.Final</version.jboss.javaee>
 
         <windup.web.scm.connection>scm:git:https://github.com/windup/windup-web.git</windup.web.scm.connection>
         <windup.web.developer.connection>scm:git:git@github.com:windup/windup-web.git</windup.web.developer.connection>
@@ -76,8 +77,9 @@
             <dependency>
                 <groupId>org.jboss.spec</groupId>
                 <artifactId>jboss-javaee-7.0</artifactId>
-                <version>1.0.3.Final</version>
+                <version>${version.jboss.javaee}</version>
                 <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.jboss.arquillian</groupId>

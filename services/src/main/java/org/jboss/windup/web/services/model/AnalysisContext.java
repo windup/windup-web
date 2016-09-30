@@ -1,6 +1,11 @@
 package org.jboss.windup.web.services.model;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -46,6 +51,10 @@ public class AnalysisContext implements Serializable
 
     @ManyToOne(fetch = FetchType.EAGER)
     private MigrationPath migrationPath;
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
+    private Collection<AdvancedOption> advancedOptions;
 
     @OneToOne
     private ApplicationGroup applicationGroup;
@@ -152,6 +161,22 @@ public class AnalysisContext implements Serializable
     public void setRulesPaths(Set<RulesPath> rulesPaths)
     {
         this.rulesPaths = rulesPaths;
+    }
+
+    /**
+     * Contains advanced configuration options (eg, csv export).
+     */
+    public Collection<AdvancedOption> getAdvancedOptions()
+    {
+        return advancedOptions;
+    }
+
+    /**
+     * Contains advanced configuration options (eg, csv export).
+     */
+    public void setAdvancedOptions(Collection<AdvancedOption> advancedOptions)
+    {
+        this.advancedOptions = advancedOptions;
     }
 
     @Override
