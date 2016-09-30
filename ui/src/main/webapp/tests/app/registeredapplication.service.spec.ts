@@ -9,9 +9,9 @@ import {Constants} from '../../app/constants';
 
 
 import {RegisteredApplicationService} from "../../app/services/registeredapplication.service";
-import {RegisteredApplication} from "windup-services";
 import {KeycloakService} from "../../app/services/keycloak.service";
 import {FileService} from "../../app/services/file.service";
+import {FileUploader, FileUploaderOptions} from "ng2-file-upload/ng2-file-upload";
 
 describe("Registered Application Service Test", () => {
     beforeEach(() => {
@@ -19,7 +19,16 @@ describe("Registered Application Service Test", () => {
             {
                 imports: [HttpModule],
                 providers: [
-                    Constants, FileService, RegisteredApplicationService, KeycloakService
+                    Constants, FileService, RegisteredApplicationService, KeycloakService,
+                    {
+                        provide: FileUploader,
+                        /*
+                         * Just a Mock/fake object as it isn't really used by the test here
+                         */
+                        useFactory: () => {
+                            return new FileUploader({});
+                        },
+                    }
                 ]
             }
         );

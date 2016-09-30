@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, OnInit, Renderer, NgZone} from "@angular/core";
 import {FormBuilder, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FileUploader} from "ng2-file-upload/ng2-file-upload";
@@ -32,6 +32,8 @@ export class EditApplicationFormComponent extends RegisterApplicationFormCompone
     }
 
     ngOnInit():any {
+        this.isMultiple = false;
+
         this.labels = {
             heading: 'Update application',
             submitButton: 'Update'

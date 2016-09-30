@@ -1,14 +1,11 @@
 import { NgModule }      from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import {HttpModule, RequestOptions, XHRBackend, Http} from '@angular/http';
+import { HttpModule, RequestOptions, XHRBackend, Http } from '@angular/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 
 import 'rxjs/Rx';
 
 import {FileSelectDirective, FileDropDirective, FileUploader} from 'ng2-file-upload/ng2-file-upload';
-//import {FileSelectDirective} from "./components/file-upload/file-select.directive";
-//import {FileDropDirective} from "./components/file-upload/file-drop.directive";
-
 import { AppComponent }  from './components/app.component';
 import { Constants } from './constants';
 import { routing, appRoutingProviders } from './app.routing';
@@ -39,6 +36,8 @@ import {ConfirmationModalComponent} from "./components/confirmation-modal.compon
 import {KeycloakService} from "./services/keycloak.service";
 import {WindupHttpService} from "./services/windup.http.service";
 import {EditApplicationFormComponent} from "./components/edit-application-form.component";
+import {UploadQueueComponent} from "./components/upload/upload-queue.component";
+import {UploadProgressbarComponent} from "./components/upload/upload-progressbar.component";
 
 @NgModule({
     imports: [
@@ -68,7 +67,9 @@ import {EditApplicationFormComponent} from "./components/edit-application-form.c
         TechnologyComponent,
         
         FileSelectDirective,
-        FileDropDirective
+        FileDropDirective,
+        UploadQueueComponent,
+        UploadProgressbarComponent
     ],
     providers: [
         appRoutingProviders,
@@ -92,6 +93,10 @@ import {EditApplicationFormComponent} from "./components/edit-application-form.c
                     keycloakService: KeycloakService
                 ) => new WindupHttpService(backend, defaultOptions, keycloakService),
             deps: [XHRBackend, RequestOptions, KeycloakService]
+        },
+        {
+            provide: FileUploader,
+            useValue: new FileUploader({})
         }
     ],
     bootstrap:    [ AppComponent ]

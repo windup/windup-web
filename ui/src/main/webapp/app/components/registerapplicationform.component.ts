@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from "@angular/core";
+import {Component, Input, OnInit, ElementRef, Renderer, NgZone} from "@angular/core";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FileUploader} from 'ng2-file-upload/ng2-file-upload';
@@ -24,6 +24,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     multipartUploader: FileUploader;
     mode:string = "UPLOADED";
     fileInputPath:string;
+    isMultiple: boolean = true;
 
     modeChanged(newMode:string) {
         this.mode = newMode;
@@ -98,6 +99,8 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     }
 
     rerouteToApplicationList() {
+        this.multipartUploader.clearQueue();
+
         if (this.applicationGroup != null)
             this._router.navigate(['/group-list', { projectID: this.applicationGroup.migrationProject.id }]);
         else

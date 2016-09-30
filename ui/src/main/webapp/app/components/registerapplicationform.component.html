@@ -1,5 +1,5 @@
 <h1>{{labels.heading}}</h1>
-<form [formGroup]="registrationForm" (ngSubmit)="register()"  class="form-horizontal">
+<form [formGroup]="registrationForm" (ngSubmit)="register()"  class="form-horizontal" ng2FileDrop [uploader]="multipartUploader">
     <div *ngFor="let errorMessage of errorMessages" class="row form-errors alert alert-danger">
         <div class="col-md-2">&nbsp;</div>
         <div class="col-md-10">
@@ -35,9 +35,18 @@
         <div *ngSwitchCase="'UPLOADED'" class="form-group" [ngClass]="{'has-error': hasError(registrationForm.get('fileUpload'))}">
             <label class="col-md-2 control-label" for="fileUpload">Upload Application</label>
             <div class="col-md-6">
-                <input id="fileUpload" type="file" multiple="multiple" ng2FileSelect [uploader]="multipartUploader" class="form-control" name="files" />
+                <input id="fileUpload" type="file" [attr.multiple]="isMultiple ? true : null" ng2FileSelect [uploader]="multipartUploader" class="form-control" name="files" />
+                <div ng2FileDrop [uploader]="multipartUploader" style="border: dotted 3px lightgray;" class="well">
+                    <strong>Drop files here</strong>
+                </div>
             </div>
         </div>
+
+        <div *ngSwitchCase="'UPLOADED'"  class="col-md-6 col-md-offset-2">
+            <app-upload-queue *ngIf="isMultiple" [uploader]="multipartUploader"></app-upload-queue>
+            <app-upload-progressbar [uploader]="multipartUploader"></app-upload-progressbar>
+        </div>
+
         <div class="form-group">
             <div class="col-md-10 col-md-offset-2">
                 <button class="btn btn-primary" type="submit">{{labels.submitButton}}</button>
