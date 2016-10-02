@@ -1,6 +1,6 @@
 package org.jboss.windup.web.services.rest;
 
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.ejb.Stateless;
@@ -33,6 +33,26 @@ public class AnalysisContextEndpointImpl implements AnalysisContextEndpoint
         
         if (rulesPaths != null && rulesPaths.size() > 0)
         {
+            Set<RulesPath> foundRulesPathEnt = new HashSet<RulesPath>();
+            for (RulesPath rulesPath : rulesPaths)
+            {
+                // FIXME: remove this when it goes to merge
+                System.out.println("RulesPath " + rulesPath.toString());
+                if (rulesPath.getId() == null) {
+                    
+                    entityManager.persist(rulesPath);
+                    foundRulesPathEnt.add(rulesPath);
+                } else {
+                    RulesPath entRulesPath ;
+                    if (!entityManager.contains(rulesPath)){
+                        entRulesPath = entityManager.merge(rulesPath);
+                    } else {
+                        entRulesPath = entityManager.find(RulesPath.class, rulesPath.getId());
+                    }
+                    foundRulesPathEnt.add(entRulesPath);
+                }
+            }
+            analysisContext.setRulesPaths(foundRulesPathEnt);
             analysisContext = entityManager.merge(analysisContext);
         } else {
             entityManager.persist(analysisContext);
