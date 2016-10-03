@@ -1,7 +1,6 @@
 package org.jboss.windup.web.services.model;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;

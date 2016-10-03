@@ -9,6 +9,7 @@ import org.jboss.windup.web.services.AbstractTest;
 import org.jboss.windup.web.services.data.ServiceConstants;
 import org.jboss.windup.web.services.model.Configuration;
 import org.jboss.windup.web.services.model.RulesPath;
+import org.jboss.windup.web.services.model.RulesPath.RulesPathType;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,6 +17,7 @@ import org.junit.runner.RunWith;
 
 import java.net.URL;
 import java.util.Collections;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -54,5 +56,29 @@ public class ConfigurationEndpointTest extends AbstractTest
         Assert.assertNotNull(configuration.getRulesPaths());
         Assert.assertEquals(1, configuration.getRulesPaths().size());
         Assert.assertEquals(FAKE_PATH, configuration.getRulesPaths().iterator().next().getPath());
+    }
+
+    final static String CUSTOM_RULESPATH = "target/test-classes/custom-rulesets-data/custom-ruleset.windup.xml";
+    
+    @Test
+    @RunAsClient
+    public void testCustomRulesetEndpoint()
+    {
+        Configuration configuration = configurationEndpoint.getConfiguration();
+        Assert.assertNotNull(configuration);
+        
+        RulesPath rulesPath = new RulesPath();
+        rulesPath.setPath(CUSTOM_RULESPATH);
+        rulesPath.setRulesPathType(RulesPathType.USER_PROVIDED);
+        configuration.setRulesPaths(Collections.singleton(rulesPath));
+
+        configuration = configurationEndpoint.saveConfiguration(configuration);
+        Set<RulesPath> rulesetPaths = configurationEndpoint.getCustomRulesetPaths();
+
+        Assert.assertNotNull(configuration.getRulesPaths());
+        Assert.assertNotNull(rulesetPaths);
+        Assert.assertEquals(1, configuration.getRulesPaths().size());
+        Assert.assertEquals(1, rulesetPaths.size());
+        Assert.assertEquals(CUSTOM_RULESPATH, configuration.getRulesPaths().iterator().next().getPath());
     }
 }

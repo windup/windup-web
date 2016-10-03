@@ -9,19 +9,19 @@
     </context-param>
 
     <servlet>
-        <servlet-name>FileServlet</servlet-name>
         <description>Serves static files.</description>
-        <async-supported>true</async-supported>
+        <servlet-name>FileServlet</servlet-name>
         <servlet-class>org.jboss.windup.web.services.servlet.FileDefaultServlet</servlet-class>
         <init-param>
             <param-name>base-path</param-name>
             <param-value>${jboss.server.data.dir}/windup/reports/</param-value>
         </init-param>
+        <async-supported>true</async-supported>
     </servlet>
 
     <servlet-mapping>
-        <url-pattern>/staticReport/*</url-pattern>
         <servlet-name>FileServlet</servlet-name>
+        <url-pattern>/staticReport/*</url-pattern>
     </servlet-mapping>
 
     <security-constraint>

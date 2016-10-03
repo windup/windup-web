@@ -1,5 +1,8 @@
 package org.jboss.windup.web.services.rest;
 
+import java.net.URL;
+import java.util.Collections;
+
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -9,14 +12,14 @@ import org.jboss.windup.web.services.AbstractTest;
 import org.jboss.windup.web.services.data.ServiceConstants;
 import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.ApplicationGroup;
+import org.jboss.windup.web.services.model.Configuration;
 import org.jboss.windup.web.services.model.MigrationPath;
+import org.jboss.windup.web.services.model.RulesPath;
+import org.jboss.windup.web.services.model.RulesPath.RulesPathType;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.net.URL;
-import java.util.Collections;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -30,6 +33,7 @@ public class AnalysisContextEndpointTest extends AbstractTest
     private ApplicationGroupEndpoint applicationGroupEndpoint;
     private MigrationPathEndpoint migrationPathEndpoint;
     private AnalysisContextEndpoint analysisContextEndpoint;
+    private ConfigurationEndpoint configurationEndpoint;
 
     @Before
     public void setUp()
@@ -40,26 +44,34 @@ public class AnalysisContextEndpointTest extends AbstractTest
         this.applicationGroupEndpoint = target.proxy(ApplicationGroupEndpoint.class);
         this.migrationPathEndpoint = target.proxy(MigrationPathEndpoint.class);
         this.analysisContextEndpoint = target.proxy(AnalysisContextEndpoint.class);
+        this.configurationEndpoint = target.proxy(ConfigurationEndpoint.class);
     }
 
     @Test
     @RunAsClient
-    public void testEndpoint()
+    public void testEndpointWithExistingCustomRules()
     {
         ApplicationGroup group = createGroup();
 
         // Just grab the first one (this is completely arbitrary)
         MigrationPath path = migrationPathEndpoint.getAvailablePaths().iterator().next();
 
+        Configuration configuration = configurationEndpoint.getConfiguration();
+        configuration.setRulesPaths(Collections.singleton(new RulesPath(ConfigurationEndpointTest.CUSTOM_RULESPATH, RulesPathType.USER_PROVIDED)));
+        configurationEndpoint.saveConfiguration(configuration);
+        
         AnalysisContext analysisContext = new AnalysisContext();
         analysisContext.setApplicationGroup(group);
         analysisContext.setMigrationPath(path);
         analysisContext.setPackages(Collections.singleton("include"));
         analysisContext.setExcludePackages(Collections.singleton("exclude"));
+        analysisContext.setRulesPaths(configurationEndpoint.getConfiguration().getRulesPaths());
 
         analysisContext = analysisContextEndpoint.create(analysisContext);
-
+        
         AnalysisContext loaded = analysisContextEndpoint.get(analysisContext.getId());
+        Assert.assertNotNull(loaded);
+        
         Assert.assertEquals(analysisContext.getId(), loaded.getId());
 
         Assert.assertEquals(1, loaded.getPackages().size());
@@ -71,6 +83,7 @@ public class AnalysisContextEndpointTest extends AbstractTest
         Assert.assertEquals(path, loaded.getMigrationPath());
 
         Assert.assertEquals(group, loaded.getApplicationGroup());
+        Assert.assertEquals(1, loaded.getRulesPaths().size());
     }
 
     private ApplicationGroup createGroup()

@@ -1,6 +1,9 @@
 package org.jboss.windup.web.services.rest;
 
 import org.jboss.windup.web.services.model.Configuration;
+import org.jboss.windup.web.services.model.RulesPath;
+
+import java.util.Set;
 
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -30,4 +33,13 @@ public interface ConfigurationEndpoint
      */
     @PUT
     Configuration saveConfiguration(@Valid Configuration configuration);
+
+    /**
+     * Returns only rulespath collection for custom registered ruleset paths
+     * 
+     * @return
+     */
+    @GET
+    @Path("custom-rulesets")
+    Set<RulesPath> getCustomRulesetPaths();
 }

@@ -1,10 +1,13 @@
 package org.jboss.windup.web.services.rest;
 
+import java.util.Set;
+
 import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.jboss.windup.web.services.model.Configuration;
+import org.jboss.windup.web.services.model.RulesPath;
 import org.jboss.windup.web.services.service.ConfigurationService;
 
 /**
@@ -31,5 +34,11 @@ public class ConfigurationEndpointImpl implements ConfigurationEndpoint
         Configuration saved = configurationService.saveConfiguration(configuration);
         configurationEvent.fire(saved);
         return saved;
+    }
+
+    @Override
+    public Set<RulesPath> getCustomRulesetPaths()
+    {
+        return configurationService.getCustomRulesPath();
     }
 }

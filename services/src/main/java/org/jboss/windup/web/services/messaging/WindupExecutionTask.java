@@ -27,6 +27,7 @@ import org.jboss.windup.web.services.model.AdvancedOption;
 import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.MigrationPath;
+import org.jboss.windup.web.services.model.RulesPath;
 import org.jboss.windup.web.services.model.WindupExecution;
 import org.jboss.windup.web.services.service.ConfigurationOptionsService;
 
@@ -81,7 +82,6 @@ public class WindupExecutionTask implements Runnable
             {
                 LOG.warning("Failed to delete output directory: " + group.getOutputPath() + ", due to: " + e.getMessage());
             }
-
 
             Collection<Path> rulesPaths = analysisContext.getRulesPaths().stream()
                         .map((rulesPath) -> Paths.get(rulesPath.getPath()))

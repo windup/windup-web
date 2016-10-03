@@ -3,7 +3,6 @@ package org.jboss.windup.web.services.service;
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
-import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -11,12 +10,11 @@ import javax.persistence.PersistenceContext;
 import org.jboss.windup.web.furnaceserviceprovider.WebProperties;
 import org.jboss.windup.web.services.model.Configuration;
 import org.jboss.windup.web.services.model.RulesPath;
+import org.jboss.windup.web.services.model.RulesPath.RulesPathType;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Optional;
 import java.util.Set;
 
@@ -67,6 +65,22 @@ public class ConfigurationService
 
         entityManager.persist(configuration);
         return configuration;
+    }
+
+    public Set<RulesPath> getCustomRulesPath()
+    {
+        Set<RulesPath> customRulesPaths = new HashSet<>();
+        Set<RulesPath> rulesets = getConfiguration().getRulesPaths();
+
+        for (Iterator<RulesPath> iterator = rulesets.iterator(); iterator.hasNext();)
+        {
+            RulesPath rulesPath = (RulesPath) iterator.next();
+            if (rulesPath.getRulesPathType() == RulesPathType.USER_PROVIDED)
+            {
+                customRulesPaths.add(rulesPath);
+            }
+        }
+        return customRulesPaths;
     }
 
     private void updateSystemRulesPath(Configuration configuration)

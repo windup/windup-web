@@ -60,7 +60,7 @@ public class AnalysisContext implements Serializable
     private ApplicationGroup applicationGroup;
 
     @Valid
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<RulesPath> rulesPaths;
 
     public Long getId()

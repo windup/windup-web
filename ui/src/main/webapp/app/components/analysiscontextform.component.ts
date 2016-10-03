@@ -12,10 +12,10 @@ import {AnalysisContextService} from "../services/analysiscontext.service";
 import {ConfigurationOption} from "../model/configuration-option.model";
 import {ConfigurationOptionsService} from "../services/configuration-options.service";
 import {ModalDialogComponent} from "./modal-dialog.component";
+import {RulesPath} from "windup-services";
 
 @Component({
-    templateUrl: 'app/components/analysiscontextform.component.html',
-    providers: [ AnalysisContextService, ApplicationGroupService, MigrationPathService ]
+    templateUrl: 'app/components/analysiscontextform.component.html'
 })
 export class AnalysisContextFormComponent extends FormComponent implements OnInit
 {
@@ -82,6 +82,7 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
                             this.analysisContext.advancedOptions = [];
                             this.packages = [ {prefix: ""} ];
                             this.excludePackages = [ {prefix: ""} ];
+                            this.analysisContext.rulesPaths = [];
                         } else {
                             // for migration path, store the id only
                             this.analysisContext.migrationPath = <MigrationPath>{ id: this.analysisContext.migrationPath.id };
@@ -94,6 +95,9 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
                                 this.excludePackages = [ {prefix: ""} ];
                             else
                                 this.excludePackages = <[{prefix:string}]>this.analysisContext.excludePackages.map(it => { return { prefix: it }});
+
+                            if (this.analysisContext.rulesPaths == null)
+                                this.analysisContext.rulesPaths = [];
                         }
 
                         // Just use the ID here
@@ -128,7 +132,7 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
     save() {
         this.analysisContext.packages = this.packages.filter(it => { return it.prefix != null && it.prefix.trim() != "" }).map(it => { return it.prefix; });
         this.analysisContext.excludePackages = this.excludePackages.filter(it => { return it.prefix != null && it.prefix.trim() != "" }).map(it => { return it.prefix; });
-        console.log("Should save with packages: " + JSON.stringify(this.analysisContext.packages) + " filtered from: " + JSON.stringify(this.packages));
+        console.log("Should save with packages: " + JSON.stringify(this.analysisContext.packages) + " filtered from: " + JSON.stringify(this.packages) + " Rules paths: " + JSON.stringify(this.analysisContext.rulesPaths));
 
         if (this.analysisContext.id != null) {
             console.log("Updating analysis context: " + this.analysisContext.migrationPath.id);
@@ -145,6 +149,10 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
         }
     }
 
+    rulesPathsChanged(rulesPaths:RulesPath[]) {
+        this.analysisContext.rulesPaths = rulesPaths;
+    }
+
     viewAdvancedOptions(advancedOptionsModal:ModalDialogComponent) {
         advancedOptionsModal.show();
         return false;
@@ -158,3 +166,4 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
         this._router.navigate(['/group-list', {projectID: this.applicationGroup.migrationProject.id}]);
     }
 }
+
