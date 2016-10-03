@@ -8,7 +8,7 @@
         </div>
     </div>
 
-    <div class="row" [ngSwitch]="mode">
+    <div [ngSwitch]="mode">
         <div class="form-group">
             <label class="col-md-2 control-label" for="fileUpload">Mode</label>
             <div class="col-md-6">
@@ -30,6 +30,19 @@
                 <span [class.hidden]="!hasError(registrationForm.get('inputPath'))" class="help-block">
                     The input path must exist on the server.
                 </span>
+            </div>
+        </div>
+        <div class="form-group"  *ngIf="isMultiple && mode === 'PATH'">
+            <div class="col-sm-offset-2 col-sm-10">
+                <div class="checkbox">
+                    <label>
+                        <input
+                                [(ngModel)]="isDirectory"
+                                formControlName="isDirectory"
+                                type="checkbox">
+                        Create new applications from files in directory
+                    </label>
+                </div>
             </div>
         </div>
         <div *ngSwitchCase="'UPLOADED'" class="form-group" [ngClass]="{'has-error': hasError(registrationForm.get('fileUpload'))}">

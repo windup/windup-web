@@ -25,6 +25,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     mode:string = "UPLOADED";
     fileInputPath:string;
     isMultiple: boolean = true;
+    isDirectory: boolean = false;
 
     modeChanged(newMode:string) {
         this.mode = newMode;
@@ -49,7 +50,8 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
 
     ngOnInit():any {
         this.registrationForm = this._formBuilder.group({
-            inputPath: ["", Validators.compose([Validators.required, Validators.minLength(4)]), FileExistsValidator.create(this._fileService)]
+            inputPath: ["", Validators.compose([Validators.required, Validators.minLength(4)]), FileExistsValidator.create(this._fileService)],
+            isDirectory: []
         });
 
         this._activatedRoute.params.subscribe(params => {
@@ -75,10 +77,19 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
 
     registerByPath() {
         console.log("Registering path: " + this.fileInputPath);
-        this._registeredApplicationService.registerByPath(this.applicationGroup.id, this.fileInputPath).subscribe(
-            application => this.rerouteToApplicationList(),
-            error => this.handleError(<any>error)
-        )
+
+        if (this.isDirectory) {
+            this._registeredApplicationService.registerApplicationInDirectoryByPath(this.applicationGroup.id, this.fileInputPath)
+                .subscribe(
+                    application => this.rerouteToApplicationList(),
+                    error => this.handleError(error)
+                );
+        } else {
+            this._registeredApplicationService.registerByPath(this.applicationGroup.id, this.fileInputPath).subscribe(
+                application => this.rerouteToApplicationList(),
+                error => this.handleError(<any>error)
+            )
+        }
     }
 
     register() {

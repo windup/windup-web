@@ -18,6 +18,7 @@ export class RegisteredApplicationService extends AbstractService {
     private UPDATE_APPLICATION_URL = "/registeredApplications/update-application";
     private REGISTERED_APPLICATIONS_URL = '/registeredApplications';
     private REGISTER_PATH_URL = "/registeredApplications/register-path/";
+    private REGISTER_DIRECTORY_URL = '/registeredApplications/register-directory-path';
 
     private UPLOAD_URL = '/file';
 
@@ -63,6 +64,20 @@ export class RegisteredApplicationService extends AbstractService {
         let url = Constants.REST_BASE + this.REGISTER_PATH_URL + applicationGroupId;
         return this._http.post(url, body, options)
             .map(res => <RegisteredApplication> res.json())
+            .catch(this.handleError);
+    }
+
+    registerApplicationInDirectoryByPath(applicationGroupId: number, path: string): Observable<RegisteredApplication[]> {
+        let headers = new Headers();
+        let options = new RequestOptions({ headers: headers });
+        headers.append('Content-Type', 'application/json');
+        headers.append('Accept', 'application/json');
+
+        let body = path;
+        let url = Constants.REST_BASE + this.REGISTER_DIRECTORY_URL + "/" + applicationGroupId;
+
+        return this._http.post(url, body, options)
+            .map(res => <RegisteredApplication[]> res.json())
             .catch(this.handleError);
     }
 

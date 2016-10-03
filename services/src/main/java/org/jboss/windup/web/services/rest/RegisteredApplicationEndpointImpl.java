@@ -1,5 +1,6 @@
 package org.jboss.windup.web.services.rest;
 
+import org.apache.commons.io.filefilter.NameFileFilter;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
@@ -17,9 +18,11 @@ import javax.ws.rs.BadRequestException;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -110,6 +113,51 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
         this.entityManager.merge(appGroup);
 
         return application;
+    }
+
+    @Override
+    public Collection<RegisteredApplication> registerApplicationsInDirectoryByPath(long appGroupId, String path)
+    {
+        File directory = new File(path);
+
+        if (!directory.exists())
+        {
+            throw new BadRequestException("Path not found!");
+        }
+        else if (!directory.isDirectory())
+        {
+            throw new BadRequestException("Expecting directory, got file path");
+        }
+
+        ApplicationGroup group = this.getApplicationGroup(appGroupId);
+
+        String[] allowedExtensions = new String[] { ".jar", ".war", ".ear" };
+
+        List<RegisteredApplication> registeredApplicationList = new ArrayList<>();
+
+        for (File file : directory.listFiles((dir, name) -> {
+            for (String ext : allowedExtensions)
+            {
+                if (name.endsWith(ext))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }))
+        {
+            RegisteredApplication application = new RegisteredApplication(file.getPath());
+            application.setTitle(file.getName());
+            group.addApplication(application);
+
+            this.entityManager.persist(application);
+            registeredApplicationList.add(application);
+        }
+
+        this.entityManager.merge(group);
+
+        return registeredApplicationList;
     }
 
     @Override
