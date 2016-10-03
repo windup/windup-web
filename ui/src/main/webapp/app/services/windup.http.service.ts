@@ -40,10 +40,11 @@ export class WindupHttpService extends Http {
                 result = f.apply(this, [url, options]);
             }
 
-            result.subscribe((response) => {
-                observer.next(response);
-                observer.complete();
-            });
+            result.subscribe(
+                response => observer.next(response),
+                error => observer.error(error),
+                complete => observer.complete()
+            );
         });
 
         return <Observable<Response>>Observable

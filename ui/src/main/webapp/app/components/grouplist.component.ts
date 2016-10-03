@@ -10,6 +10,8 @@ import {Constants} from "../constants";
 import {RegisteredApplication} from "windup-services";
 import {WindupExecution} from "windup-services";
 import {RegisteredApplicationService} from "../services/registeredapplication.service";
+import {NotificationService} from "../services/notification.service";
+import {MigrationProjectService} from "../services/migrationproject.service";
 
 @Component({
     selector: 'application-list',
@@ -29,12 +31,26 @@ export class GroupListComponent implements OnInit, OnDestroy {
         private _router: Router,
         private _applicationGroupService: ApplicationGroupService,
         private _windupService: WindupService,
-        private _registeredApplicationsService: RegisteredApplicationService
+        private _registeredApplicationsService: RegisteredApplicationService,
+        private _notificationService: NotificationService,
+        private _migrationProjectService: MigrationProjectService
     ) {}
 
     ngOnInit():any {
         this._activatedRoute.params.subscribe(params => {
             this.projectID = parseInt(params["projectID"]);
+
+            this._migrationProjectService.get(this.projectID)
+                .subscribe(
+                    project => {
+                        console.log('success');
+                    },
+                    error => {
+                        this._notificationService.error(this.getErrorMessage(error.error));
+                        this._router.navigate(['']);
+                    }
+                );
+
             this.getGroups();
         });
 
@@ -54,6 +70,18 @@ export class GroupListComponent implements OnInit, OnDestroy {
         }, 30000);
     }
 
+    getErrorMessage(error: any): string {
+        if (error instanceof ProgressEvent) {
+            return "ERROR: Server disconnected";
+        } else if (typeof error == 'string') {
+            return error;
+        } else if (typeof error == 'object' && error.hasOwnProperty('message')) {
+            return error.message;
+        } else {
+            return 'Unknown error'
+        }
+    }
+
     ngOnDestroy():any {
         if (this.processMonitoringInterval)
             clearInterval(this.processMonitoringInterval);
@@ -63,10 +91,12 @@ export class GroupListComponent implements OnInit, OnDestroy {
         return this._applicationGroupService.getByProjectID(this.projectID).subscribe(
             groups => this.groupsLoaded(groups),
             error => {
-                if (error instanceof ProgressEvent)
+                if (error instanceof ProgressEvent) {
                     this.errorMessage = "ERROR: Server disconnected";
-                else
-                    this.errorMessage = <any>error;
+                } else {
+                    this._notificationService.error(this.getErrorMessage(error));
+                    this._router.navigate(['']);
+                }
             }
         );
     }
