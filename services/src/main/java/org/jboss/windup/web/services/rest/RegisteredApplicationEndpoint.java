@@ -48,6 +48,13 @@ public interface RegisteredApplicationEndpoint
     RegisteredApplication registerApplicationByPath(@PathParam("appGroupId") long appGroupId, @Valid RegisteredApplication application);
 
     /**
+     * Registers all applications found in directory path on the server.
+     */
+    @POST
+    @Path("register-directory-path/{appGroupId}")
+    Collection<RegisteredApplication> registerApplicationsInDirectoryByPath(@PathParam("appGroupId") long appGroupId, String directoryPath);
+
+    /**
      * Updates an existing application.
      */
     @PUT
