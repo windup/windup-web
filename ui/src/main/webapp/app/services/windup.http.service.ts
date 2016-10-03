@@ -28,6 +28,11 @@ export class WindupHttpService extends Http {
     private configureRequest(f:Function, url:string | Request, options:RequestOptionsArgs = {}, body?: any):Observable<Response> {
         let tokenObservable:Observable<string> = this._keycloakService.getToken();
         let tokenUpdateObservable:Observable<any> = Observable.create((observer) => {
+            if (options == null) {
+                let headers = new Headers();
+                options = new RequestOptions({ headers: headers });
+            }
+
             this.setToken(options);
             observer.next();
             observer.complete();
