@@ -41,6 +41,8 @@ import {UploadProgressbarComponent} from "./components/upload/upload-progressbar
 import {AnalysisContextAdvancedOptionsModalComponent} from "./components/analysis-context-advanced-options-modal.component";
 import {ConfigurationOptionsService} from "./services/configuration-options.service";
 import {ModalDialogComponent} from "./components/modal-dialog.component";
+import {NotificationService} from "./services/notification.service";
+import {NotificationComponent} from "./components/notification.component";
 
 @NgModule({
     imports: [
@@ -74,7 +76,8 @@ import {ModalDialogComponent} from "./components/modal-dialog.component";
         FileSelectDirective,
         FileDropDirective,
         UploadQueueComponent,
-        UploadProgressbarComponent
+        UploadProgressbarComponent,
+        NotificationComponent
     ],
     providers: [
         appRoutingProviders,
@@ -89,6 +92,7 @@ import {ModalDialogComponent} from "./components/modal-dialog.component";
         RegisteredApplicationService,
         RuleService,
         WindupService,
+        NotificationService,
 
         {
             provide: Http,

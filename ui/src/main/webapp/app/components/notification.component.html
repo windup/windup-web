@@ -1,0 +1,7 @@
+<div [ngClass]="getClass(notification)" class="alert alert-dismissable" *ngFor="let notification of notificationsStack">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true" (click)="closeNotification(notification)">
+        <span class="pficon pficon-close"></span>
+    </button>
+    <span  [ngClass]="getIcon(notification)" class="pficon"></span>
+    <strong>Hey there is a problem!</strong> {{notification.message}}.
+</div>
