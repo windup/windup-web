@@ -69,7 +69,7 @@ public class ConfigurationService
 
     public Set<RulesPath> getCustomRulesPath()
     {
-        Set<RulesPath> customRulesPaths = new HashSet<RulesPath>();
+        Set<RulesPath> customRulesPaths = new HashSet<>();
         Set<RulesPath> rulesets = getConfiguration().getRulesPaths();
 
         for (Iterator<RulesPath> iterator = rulesets.iterator(); iterator.hasNext();)

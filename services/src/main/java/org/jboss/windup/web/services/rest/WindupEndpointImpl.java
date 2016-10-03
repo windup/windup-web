@@ -24,6 +24,7 @@ import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.ExecutionState;
 import org.jboss.windup.web.services.model.WindupExecution;
 import org.jboss.windup.web.services.model.RegisteredApplication;
+import org.jboss.windup.web.services.service.AnalysisContextService;
 import org.jboss.windup.web.services.service.ConfigurationService;
 
 @Stateless
@@ -42,6 +43,9 @@ public class WindupEndpointImpl implements WindupEndpoint
 
     @Inject
     private ConfigurationService configurationService;
+
+    @Inject
+    private AnalysisContextService analysisContextService;
 
     @Inject
     private JMSContext messaging;
@@ -73,12 +77,8 @@ public class WindupEndpointImpl implements WindupEndpoint
 
         if (group.getAnalysisContext() == null)
         {
-            AnalysisContext defaultAnalysisContext = new AnalysisContext();
-            entityManager.persist(defaultAnalysisContext);
-            group.setAnalysisContext(defaultAnalysisContext);
+            group.setAnalysisContext(analysisContextService.createDefaultAnalysisContext());
         }
-        // TODO fixme for filtered custom rulesPath selected
-        group.getAnalysisContext().setRulesPaths(new HashSet<>(configurationService.getConfiguration().getRulesPaths()));
         entityManager.persist(execution);
 
         messaging.createProducer().send(executorQueue, execution);

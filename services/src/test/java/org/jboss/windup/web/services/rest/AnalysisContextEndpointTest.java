@@ -86,39 +86,6 @@ public class AnalysisContextEndpointTest extends AbstractTest
         Assert.assertEquals(1, loaded.getRulesPaths().size());
     }
 
-    @Test
-    @RunAsClient
-    public void testEndpoint()
-    {
-        ApplicationGroup group = createGroup();
-
-        // Just grab the first one (this is completely arbitrary)
-        MigrationPath path = migrationPathEndpoint.getAvailablePaths().iterator().next();
-
-        AnalysisContext analysisContext = new AnalysisContext();
-        analysisContext.setApplicationGroup(group);
-        analysisContext.setMigrationPath(path);
-        analysisContext.setPackages(Collections.singleton("include"));
-        analysisContext.setExcludePackages(Collections.singleton("exclude"));
-        analysisContext.setRulesPaths(Collections.singleton(new RulesPath(ConfigurationEndpointTest.CUSTOM_RULESPATH, RulesPathType.USER_PROVIDED)));
-
-        analysisContext = analysisContextEndpoint.create(analysisContext);
-
-        AnalysisContext loaded = analysisContextEndpoint.get(analysisContext.getId());
-        Assert.assertNotNull(loaded);
-        Assert.assertEquals(analysisContext.getId(), loaded.getId());
-
-        Assert.assertEquals(1, loaded.getPackages().size());
-        Assert.assertEquals("include", loaded.getPackages().iterator().next());
-
-        Assert.assertEquals(1, loaded.getExcludePackages().size());
-        Assert.assertEquals("exclude", loaded.getExcludePackages().iterator().next());
-
-        Assert.assertEquals(path, loaded.getMigrationPath());
-
-        Assert.assertEquals(group, loaded.getApplicationGroup());
-        Assert.assertEquals(1, loaded.getRulesPaths().size());
-    }
     private ApplicationGroup createGroup()
     {
         ApplicationGroup group = new ApplicationGroup();

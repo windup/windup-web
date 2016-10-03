@@ -7,16 +7,15 @@ import {FormComponent} from "./formcomponent.component";
 import {ApplicationGroup} from "windup-services";
 import {ApplicationGroupService} from "../services/applicationgroup.service";
 import {MigrationPathService} from "../services/migrationpath.service";
-import {MigrationPath, RulesPath} from "windup-services";
+import {MigrationPath} from "windup-services";
 import {AnalysisContextService} from "../services/analysiscontext.service";
 import {ConfigurationOption} from "../model/configuration-option.model";
 import {ConfigurationOptionsService} from "../services/configuration-options.service";
 import {ModalDialogComponent} from "./modal-dialog.component";
-import {ConfigurationService} from "../services/configuration.service";
+import {RulesPath} from "windup-services";
 
 @Component({
-    templateUrl: 'app/components/analysiscontextform.component.html',
-    providers: [ AnalysisContextService, ApplicationGroupService, MigrationPathService  ]
+    templateUrl: 'app/components/analysiscontextform.component.html'
 })
 export class AnalysisContextFormComponent extends FormComponent implements OnInit
 {
@@ -37,7 +36,6 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
     excludePackages:[{prefix:string}];
 
     configurationOptions:ConfigurationOption[] = [];
-    selectedRulesets: RulesPath[] = [];
 
     private _migrationPathsObservable:Observable<MigrationPath[]>;
 
@@ -46,8 +44,7 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
                 private _applicationGroupService:ApplicationGroupService,
                 private _migrationPathService:MigrationPathService,
                 private _analysisContextService:AnalysisContextService,
-                private _configurationOptionsService:ConfigurationOptionsService,
-                private _configuratioService:ConfigurationService) {
+                private _configurationOptionsService:ConfigurationOptionsService) {
         super();
         this.analysisContext.migrationPath = <MigrationPath>{};
         this.packages = [ {prefix: ""} ];
@@ -85,10 +82,7 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
                             this.analysisContext.advancedOptions = [];
                             this.packages = [ {prefix: ""} ];
                             this.excludePackages = [ {prefix: ""} ];
-                            this._configuratioService.getCustomRulesetPaths().subscribe(
-                                rulesets => this.selectedRulesets = rulesets,
-                                err => { this.handleError(err)}
-                            );
+                            this.analysisContext.rulesPaths = [];
                         } else {
                             // for migration path, store the id only
                             this.analysisContext.migrationPath = <MigrationPath>{ id: this.analysisContext.migrationPath.id };
@@ -102,13 +96,8 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
                             else
                                 this.excludePackages = <[{prefix:string}]>this.analysisContext.excludePackages.map(it => { return { prefix: it }});
 
-                            if (this.analysisContext.rulesPaths == null || this.analysisContext.rulesPaths.length == 0)
-                                this._configuratioService.getCustomRulesetPaths().subscribe(
-                                    rulesets => this.selectedRulesets = rulesets,
-                                    err => { this.handleError(err)}
-                                );
-                            else
-                                this.selectedRulesets = this.analysisContext.rulesPaths;
+                            if (this.analysisContext.rulesPaths == null)
+                                this.analysisContext.rulesPaths = [];
                         }
 
                         // Just use the ID here
@@ -143,8 +132,7 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
     save() {
         this.analysisContext.packages = this.packages.filter(it => { return it.prefix != null && it.prefix.trim() != "" }).map(it => { return it.prefix; });
         this.analysisContext.excludePackages = this.excludePackages.filter(it => { return it.prefix != null && it.prefix.trim() != "" }).map(it => { return it.prefix; });
-        this.analysisContext.rulesPaths = this.selectedRulesets;
-        console.log("Should save with packages: " + JSON.stringify(this.analysisContext.packages) + " filtered from: " + JSON.stringify(this.packages));
+        console.log("Should save with packages: " + JSON.stringify(this.analysisContext.packages) + " filtered from: " + JSON.stringify(this.packages) + " Rules paths: " + JSON.stringify(this.analysisContext.rulesPaths));
 
         if (this.analysisContext.id != null) {
             console.log("Updating analysis context: " + this.analysisContext.migrationPath.id);
@@ -159,6 +147,10 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
                 error => this.handleError(<any> error)
             );
         }
+    }
+
+    rulesPathsChanged(rulesPaths:RulesPath[]) {
+        this.analysisContext.rulesPaths = rulesPaths;
     }
 
     viewAdvancedOptions(advancedOptionsModal:ModalDialogComponent) {

@@ -73,6 +73,9 @@ public class WindupExecution implements Serializable
     @Column(name = "status")
     private ExecutionState state;
 
+    @ManyToOne
+    private AnalysisContext analysisContext;
+
     public Long getId()
     {
         return id;
@@ -274,6 +277,22 @@ public class WindupExecution implements Serializable
     public void setState(ExecutionState status)
     {
         this.state = status;
+    }
+
+    /**
+     * Contains the configuration to use for this execution.
+     */
+    public AnalysisContext getAnalysisContext()
+    {
+        return analysisContext;
+    }
+
+    /**
+     * Contains the configuration to use for this execution.
+     */
+    public void setAnalysisContext(AnalysisContext analysisContext)
+    {
+        this.analysisContext = analysisContext;
     }
 
     @Override
