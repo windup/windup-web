@@ -92,12 +92,7 @@ import {ModalDialogComponent} from "./components/modal-dialog.component";
 
         {
             provide: Http,
-            useFactory:
-                (
-                    backend: XHRBackend,
-                    defaultOptions: RequestOptions,
-                    keycloakService: KeycloakService
-                ) => new WindupHttpService(backend, defaultOptions, keycloakService),
+            useFactory: httpProvider,
             deps: [XHRBackend, RequestOptions, KeycloakService]
         },
         {
@@ -108,3 +103,8 @@ import {ModalDialogComponent} from "./components/modal-dialog.component";
     bootstrap:    [ AppComponent ]
 })
 export class AppModule { }
+
+export function httpProvider(backend: XHRBackend, defaultOptions: RequestOptions, keycloakService: KeycloakService) {
+    console.log("Should create windup http service: " + backend + ", " + defaultOptions + ", keycloak: " + keycloakService);
+    return new WindupHttpService(backend, defaultOptions, keycloakService);
+}

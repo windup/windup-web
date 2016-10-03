@@ -14,7 +14,7 @@ import {ConfigurationOptionsService} from "../services/configuration-options.ser
 import {ModalDialogComponent} from "./modal-dialog.component";
 
 @Component({
-    templateUrl: 'app/components/analysiscontextform.component.html',
+    templateUrl: './analysiscontextform.component.html',
     providers: [ AnalysisContextService, ApplicationGroupService, MigrationPathService ]
 })
 export class AnalysisContextFormComponent extends FormComponent implements OnInit

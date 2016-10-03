@@ -6,6 +6,6 @@
     "keycloak": "https://raw.githubusercontent.com/hawtio/hawtio/master/hawtio-web/src/main/d.ts/keycloak.d.ts"
   },
   "dependencies": {
-    "windup-services": "file:../../../../services/target/windup-services.d.ts"
+    "windup-services": "file:../../../services/target/windup-services.d.ts"
   }
 }

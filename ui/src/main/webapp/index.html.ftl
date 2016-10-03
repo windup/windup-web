@@ -61,9 +61,6 @@
     <script src="node_modules/zone.js/dist/zone.min.js"></script>
     <script src="node_modules/reflect-metadata/Reflect.js"></script>
 
-    <script src="node_modules/systemjs/dist/system.js"></script>
-    <script src="systemjs.config.js"></script>
-
     <script src="${keycloak.serverUrl}/js/keycloak.js"></script>
 
     <!-- 2. Configure SystemJS -->
@@ -71,7 +68,6 @@
         // this is here so that AbstractUITest can tell we are loading the actual app
         window['mainApp'] = true;
 
-        System.import('app').then(null, console.error.bind(console));
     </script>
 
 </head>
@@ -79,5 +75,5 @@
 <body>
 <windup-app></windup-app>
 </body>
-
+<script src="dist/build.js"></script>
 </html>
