@@ -32,7 +32,6 @@ export class CustomRuleSelectionComponent implements OnInit {
 
     private _selectedRuleIDs;
     private get selectedRuleIDs():number[] {
-        console.log("Fooo get ids: " + JSON.stringify(this.selectedRulePaths));
         return this._selectedRuleIDs;
     }
 
@@ -57,13 +56,11 @@ export class CustomRuleSelectionComponent implements OnInit {
 
     clearSelection() {
         this.selectedRulePaths = [];
-        console.log("Clearing... selected: " + JSON.stringify(this.selectedRulePaths));
         return false;
     }
 
     selectAll() {
         this.selectedRulePaths = this.rulesPaths;
-        console.log("Selecting all... selected: " + JSON.stringify(this.selectedRulePaths));
         return false;
     }
 }
