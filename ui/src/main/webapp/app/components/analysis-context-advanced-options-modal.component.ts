@@ -1,4 +1,4 @@
-import {Component, Input, Output, ViewChild} from "@angular/core";
+import {Component, Input, Output, ViewChild, EventEmitter} from "@angular/core";
 import {ConfigurationOption} from "../model/configuration-option.model";
 import {AdvancedOption} from "windup-services";
 import {ModalDialogComponent} from "./modal-dialog.component";
@@ -72,7 +72,10 @@ export class AnalysisContextAdvancedOptionsModalComponent {
     configurationOptions:ConfigurationOption[] = [];
 
     @Input() @Output()
-    selectedOptions:AdvancedOption[];
+    selectedOptions:AdvancedOption[] = [];
+
+    @Output()
+    advancedOptionsChanged:EventEmitter<AdvancedOption[]> = new EventEmitter<AdvancedOption[]>();
 
     @ViewChild(ModalDialogComponent)
     private modalDialog:ModalDialogComponent;
@@ -130,6 +133,7 @@ export class AnalysisContextAdvancedOptionsModalComponent {
 
     private removeAdvancedOption(index:number) {
         this.selectedOptions.splice(index, 1);
+        this.advancedOptionsChanged.emit(this.selectedOptions);
         return false;
     }
 
@@ -161,6 +165,7 @@ export class AnalysisContextAdvancedOptionsModalComponent {
                     this.newOption.value = "false";
 
                 this.selectedOptions.push(this.newOption);
+                this.advancedOptionsChanged.emit(this.selectedOptions);
 
                 this.resetCurrentOption();
             },

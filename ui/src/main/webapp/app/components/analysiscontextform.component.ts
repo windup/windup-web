@@ -1,6 +1,6 @@
-import {Component, Input, OnInit} from "@angular/core";
+import {Component, OnInit, ViewChild} from "@angular/core";
+import {NgForm} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
-import {Observable} from 'rxjs/Observable';
 
 import {AnalysisContext} from "windup-services";
 import {FormComponent} from "./formcomponent.component";
@@ -13,12 +13,18 @@ import {ConfigurationOption} from "../model/configuration-option.model";
 import {ConfigurationOptionsService} from "../services/configuration-options.service";
 import {ModalDialogComponent} from "./modal-dialog.component";
 import {RulesPath} from "windup-services";
+import {IsDirty} from "../is-dirty.interface";
+import {Observable} from "rxjs/Observable";
+import {AdvancedOption} from "windup-services";
 
 @Component({
     templateUrl: 'app/components/analysiscontextform.component.html'
 })
-export class AnalysisContextFormComponent extends FormComponent implements OnInit
+export class AnalysisContextFormComponent extends FormComponent implements OnInit, IsDirty
 {
+    @ViewChild(NgForm)
+    private analysisContextForm:NgForm;
+
     loading:boolean = true;
     applicationGroup:ApplicationGroup = null;
 
@@ -56,6 +62,22 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
             this._migrationPathsObservable = this._migrationPathService.getAll();
         }
         return this._migrationPathsObservable;
+    }
+
+    private _dirty:boolean = null;
+    get dirty():boolean {
+        if (this._dirty != null) {
+            console.log("Returning locally set dirty: " + this._dirty);
+            return this._dirty;
+        }
+
+        return this.analysisContextForm.dirty;
+    }
+
+    advancedOptionsChanged(advancedOptions:AdvancedOption[]) {
+        console.log("1Advanced options changed... dirty: " + this.dirty);
+        this._dirty = true;
+        console.log("2Advanced options changed... dirty: " + this.dirty);
     }
 
     ngOnInit() {
@@ -137,13 +159,19 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
         if (this.analysisContext.id != null) {
             console.log("Updating analysis context: " + this.analysisContext.migrationPath.id);
             this._analysisContextService.update(this.analysisContext).subscribe(
-                migrationProject => this.routeToGroupList(),
+                migrationProject => {
+                    this._dirty = false;
+                    this.routeToGroupList()
+                },
                 error => this.handleError(<any> error)
             );
         } else {
             console.log("Creating analysis context: " + this.analysisContext.migrationPath.id);
             this._analysisContextService.create(this.analysisContext).subscribe(
-                migrationProject => this.routeToGroupList(),
+                migrationProject => {
+                    this._dirty = false;
+                    this.routeToGroupList()
+                },
                 error => this.handleError(<any> error)
             );
         }
