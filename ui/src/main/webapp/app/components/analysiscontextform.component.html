@@ -35,7 +35,7 @@
             <div class="col-md-4">
                 <div *ngFor="let includePackage of packages; let i = index;" class="input-group">
                     <input #includePackageControl="ngModel"
-                        [ngModelOptions]="{standalone: true}"
+                        name="includePackagesInput_{{i}}"
                         [(ngModel)]="includePackage.prefix"
                         ngControl="includePackageControl"
                         maxlength="200"
@@ -57,7 +57,7 @@
             <div class="col-md-3">
                 <div *ngFor="let excludePackage of excludePackages; let i = index;" class="input-group">
                     <input #excludePackageControl="ngModel"
-                           [ngModelOptions]="{standalone: true}"
+                           name="excludePackagesInput_{{i}}"
                            [(ngModel)]="excludePackage.prefix"
                            ngControl="excludePackageControl"
                            maxlength="200"
@@ -91,4 +91,4 @@
     </div>
 </form>
 
-<analysis-context-advanced-options [(selectedOptions)]="analysisContext.advancedOptions" [configurationOptions]="configurationOptions" #advancedOptionsModal></analysis-context-advanced-options>
+<analysis-context-advanced-options [(selectedOptions)]="analysisContext.advancedOptions" (advancedOptionsChanged)="advancedOptionsChanged($event)" [configurationOptions]="configurationOptions" #advancedOptionsModal></analysis-context-advanced-options>

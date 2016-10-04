@@ -45,6 +45,7 @@ import {ConfigurationOptionsService} from "./services/configuration-options.serv
 import {ModalDialogComponent} from "./components/modal-dialog.component";
 import {NotificationService} from "./services/notification.service";
 import {NotificationComponent} from "./components/notification.component";
+import {ConfirmDeactivateGuard} from "./confirm-deactivate.guard";
 
 @NgModule({
     imports: [
@@ -89,6 +90,7 @@ import {NotificationComponent} from "./components/notification.component";
         ApplicationGroupService,
         ConfigurationService,
         ConfigurationOptionsService,
+        ConfirmDeactivateGuard,
         FileService,
         MigrationPathService,
         MigrationProjectService,
