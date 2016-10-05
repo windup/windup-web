@@ -46,6 +46,7 @@ import {ModalDialogComponent} from "./components/modal-dialog.component";
 import {NotificationService} from "./services/notification.service";
 import {NotificationComponent} from "./components/notification.component";
 import {ConfirmDeactivateGuard} from "./confirm-deactivate.guard";
+import {PopoverComponent} from "./components/popover.component";
 
 @NgModule({
     imports: [
@@ -81,7 +82,8 @@ import {ConfirmDeactivateGuard} from "./confirm-deactivate.guard";
         UploadQueueComponent,
         UploadProgressbarComponent,
         CustomRuleSelectionComponent,
-        NotificationComponent
+        NotificationComponent,
+        PopoverComponent
     ],
     providers: [
         appRoutingProviders,

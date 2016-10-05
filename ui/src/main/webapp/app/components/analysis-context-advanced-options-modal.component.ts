@@ -18,9 +18,9 @@ import {ValidationResult} from "../model/validation-result.model";
                 <table class="datatable table table-striped table-bordered">
                     <thead>
                         <tr>
-                            <th>Option</th>
-                            <th>Value</th>
-                            <th>Actions</th>
+                            <th width="33%">Option</th>
+                            <th width="50%">Value</th>
+                            <th width="17%">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -36,12 +36,13 @@ import {ValidationResult} from "../model/validation-result.model";
                             </td>
                         </tr>
                         <tr *ngIf="newOption">
-                            <td>
+                            <td class="input-group">
                                 <select class="form-control" name="newOptionTypeSelection" [(ngModel)]="newOption.name" (change)="newOptionTypeChanged()">
                                     <option *ngFor="let option of availableOptions" value="{{option.name}}">{{option.name}}</option>
                                 </select>
+                                <w-popover class="input-group-addon" *ngIf="currentSelectedOptionDefinition?.description" [content]="currentSelectedOptionDefinition?.description"></w-popover>
                             </td>
-                            <td [class.bg-danger]="newOptionError">
+                            <td [class.bg-danger]="newOptionError" align="right">
                                 <span class="text-danger">{{newOptionError}}</span>
                                 <div [ngSwitch]="currentOptionType">
                                     <input *ngSwitchCase="'text'" type="text" name="currentOptionInput" class="form-control" [(ngModel)]="newOption.value">
