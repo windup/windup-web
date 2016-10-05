@@ -8,6 +8,7 @@ import {AnalysisContextFormComponent} from "./components/analysiscontextform.com
 import {ConfigurationComponent} from "./components/configuration.component";
 import {EditApplicationFormComponent} from "./components/edit-application-form.component";
 import {ConfirmDeactivateGuard} from "./confirm-deactivate.guard";
+import {TechnologiesReport} from "./components/reports/technologies/technologies.report";
 
 const appRoutes: Routes = [
     {path:"", redirectTo: "/project-list", pathMatch: "full"},
@@ -19,6 +20,9 @@ const appRoutes: Routes = [
     {path:"migration-project-form", component: MigrationProjectFormComponent, data: {displayName: "Edit Project"}},
     {path:"application-group-form", component: ApplicationGroupForm, data: {displayName: "Edit Application Group"}},
     {path:"analysis-context-form", component: AnalysisContextFormComponent, data: {displayName: "Edit Analysis Context"}, canDeactivate: [ConfirmDeactivateGuard]},
+
+    // Reports
+    {path:"technology-report", component: TechnologiesReport, data: {displayName: "Technology Report"}}
 ];
 
 export const appRoutingProviders: any[] = [
