@@ -1,7 +1,9 @@
 package org.jboss.windup.web.services.rest;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
@@ -15,6 +17,9 @@ import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.MigrationProject;
+import org.jboss.windup.web.services.model.Package;
+import org.jboss.windup.web.services.model.RegisteredApplication;
+import org.jboss.windup.web.services.service.PackageService;
 
 /**
  * Implementation of {@link ApplicationGroupEndpoint}.
@@ -28,6 +33,9 @@ public class ApplicationGroupEndpointImpl implements ApplicationGroupEndpoint
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    @Inject
+    private PackageService packageServiceNew;
 
     @Inject
     @FromFurnace
@@ -79,5 +87,20 @@ public class ApplicationGroupEndpointImpl implements ApplicationGroupEndpoint
     public void delete(ApplicationGroup applicationGroup)
     {
         entityManager.remove(applicationGroup);
+    }
+
+    @Override
+    public Collection<Package> getPackages(long id)
+    {
+        List<Package> packages = new ArrayList<>();
+
+        ApplicationGroup group = this.getApplicationGroup(id);
+
+        for (RegisteredApplication application : group.getApplications())
+        {
+            this.packageServiceNew.discoverPackages(application);
+        }
+
+        return packages;
     }
 }

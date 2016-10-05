@@ -2,6 +2,7 @@ package org.jboss.windup.web.services.model;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -44,17 +45,30 @@ public class Package implements Serializable
 
     public Package()
     {
-
+        this.childs = new HashSet<>();
     }
 
     /**
      * Constructor.
-     * 
+     *
      * @param name Name of package
      */
     public Package(String name)
     {
         this.name = name;
+        this.childs = new HashSet<>();
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param partialName Name of package
+     * @param fullName Fully qualified name of package
+     */
+    public Package(String partialName, String fullName)
+    {
+        this.name = partialName;
+        this.fullName = fullName;
     }
 
     public Long getId()
@@ -155,7 +169,7 @@ public class Package implements Serializable
      */
     public void addChild(Package child)
     {
-
+        this.childs.add(child);
     }
 
     /**
@@ -165,6 +179,6 @@ public class Package implements Serializable
      */
     public void removeChild(Package child)
     {
-
+        this.childs.remove(child);
     }
 }
