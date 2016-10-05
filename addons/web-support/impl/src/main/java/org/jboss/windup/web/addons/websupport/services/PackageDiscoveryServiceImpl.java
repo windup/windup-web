@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+import org.jboss.forge.furnace.Furnace;
 import org.jboss.windup.rules.apps.java.scan.operation.packagemapping.PackageNameMappingRegistry;
 import org.jboss.windup.util.*;
 import org.ocpsoft.logging.Logger;
@@ -14,7 +15,7 @@ import org.ocpsoft.logging.Logger;
 /**
  * @author <a href="mailto:dklingenberg@gmail.com">David Klingenberg</a>
  */
-public class PackageDiscoveryServiceImpl implements PackageDiscoveryService, Runnable
+public class PackageDiscoveryServiceImpl implements PackageDiscoveryService
 {
     protected PackageNameMappingRegistry packageNameMappingRegistry;
 
@@ -23,10 +24,9 @@ public class PackageDiscoveryServiceImpl implements PackageDiscoveryService, Run
     protected Map<String, Integer> knownPackages;
     protected Map<String, Integer> unknownPackages;
 
-    public PackageDiscoveryServiceImpl(PackageNameMappingRegistry packageNameMappingRegistry, String inputPath)
+    public PackageDiscoveryServiceImpl(Furnace furnace)
     {
-        this.packageNameMappingRegistry = packageNameMappingRegistry;
-        this.inputPath = inputPath;
+        this.packageNameMappingRegistry = furnace.getAddonRegistry().getServices(PackageNameMappingRegistry.class).get();
     }
 
     @Override
@@ -42,8 +42,10 @@ public class PackageDiscoveryServiceImpl implements PackageDiscoveryService, Run
     }
 
     @Override
-    public void run()
+    public void execute(String inputPath)
     {
+        this.inputPath = inputPath;
+
         final Map<String, Integer> classes = findClasses(Paths.get(this.inputPath));
         packageNameMappingRegistry.loadPackageMappings();
 

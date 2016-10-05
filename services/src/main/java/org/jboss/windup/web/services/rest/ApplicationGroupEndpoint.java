@@ -1,6 +1,7 @@
 package org.jboss.windup.web.services.rest;
 
 import org.jboss.windup.web.services.model.ApplicationGroup;
+import org.jboss.windup.web.services.model.Package;
 
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -63,4 +64,8 @@ public interface ApplicationGroupEndpoint
     @DELETE
     @Path("delete")
     void delete(ApplicationGroup applicationGroup);
+
+    @GET
+    @Path("{id}/packages")
+    Collection<Package> getPackages(@PathParam("id") long id);
 }

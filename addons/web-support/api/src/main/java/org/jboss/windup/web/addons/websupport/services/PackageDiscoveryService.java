@@ -9,4 +9,5 @@ public interface PackageDiscoveryService
 {
     public Map<String, Integer> getKnownPackages();
     public Map<String, Integer> getUnknownPackages();
+    public void execute(String inputPath);
 }
