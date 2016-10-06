@@ -30,6 +30,7 @@ public class PackageServiceNew
     private Furnace furnace;
 
     @Inject
+    @FromFurnace
     private PackageDiscoveryService packageDiscoveryService;
 /*
     //private PackageNameMappingRegistry packageNameMappingRegistry = null;
