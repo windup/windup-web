@@ -5,20 +5,20 @@ Setting up the development environment
 Requirements
 -------------
 
-0. Git.
-
 1. JDK 8
-
-2. Maven 3.2.5+, 3.3.x recommended
+2. Maven 3.2.5+ (3.3.x recommended)
 
 Environment setup
 -----------------
-1. Set your local Maven setting.xml by copying file `settings.xml` from checked out sources into `$HOME/.m2/` or use it while calling maven with option `-s settings.xml`
+1. Set your local Maven `setting.xml` by copying file `settings.xml` from checked out sources into `$HOME/.m2/` or use it directly while calling maven with option `-s settings.xml`
  
 2. [Install NodeJS Package Manager (npm)](https://nodejs.org/en/download/package-manager/)
-   * For example, on Debian-based systems, use `sudo apt-get install npm`
-   * On RHEL 7: 1) Install [EPEL](https://fedoraproject.org/wiki/EPEL)  2) `sudo yum install npm`
-   > NOTE: If npm is version is less than 3.8.8, try the following to force an update: `npm install -g npm`
+   * _Debian/Ubuntu_: `sudo apt-get install npm`
+   * _RHEL 7_: 1) Install [EPEL](https://fedoraproject.org/wiki/EPEL/FAQ#How_can_I_install_the_packages_from_the_EPEL_software_repository.3F)  2) `sudo yum install npm`
+
+   > NOTE: If npm is version is less than 3.8.8, try the following to force an update:
+   >
+   >     npm install -g npm
 
 
 3. [Install Bower using NPM](http://bower.io/#install-bower)
@@ -26,43 +26,50 @@ Environment setup
     * If you run into problems with permissions (typically **EACCES** error), use [this guide](https://docs.npmjs.com/getting-started/fixing-npm-permissions) 
       to fix it. 
 
-4. Install the Javascript UI libraries, using `npm`
-    ```
-    cd ui/src/main/webapp
-    npm install
-    cd -
-    ```
+4. For development purpose and regular redeployment, raise the Metaspace limit.
+    In `wildfly-10.1.0.Final/bin/standalone.conf`, change the `MaxMetaspaceSize` value to 2048:
 
-5. In order to run tests, you will need a locally installed copy of [PhantomJS](http://phantomjs.org/). This needs to be available and on your path.
+    ```
+    JAVA_OPTS="-Xms64m -Xmx512m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=2048m -Djava.net.preferIPv4Stack=true"
+    ```
 
 Running the webapp
 ------------------
 
 - Build: `mvn clean install -DskipTests`
+- Wildfly/EAP 7 must be run with `-c standalone-full.xml` as Messaging subsystem is required.
 - Execute the CLI script at: scripts/eap-setup.cli on Wildfly/EAP 7
 
-    `bin/jboss-cli.sh -c --file=<path-to-windup-web>/scripts/eap-setup.cli`
+    `bin/jboss-cli.sh -c --file=scripts/eap-setup.cli`
 
 - Deploy the exploded `services/target/windup-web-services` and `ui/target/web-services` to EAP 7.
+    
+    There are 3 possible ways how to do it.
 
+    - Manual copying:
+    
         ```
-        cp -r services/target/windup-web-services ~/apps/wildfly-10.1.0.Final/standalone/deployments/windup-web-services.war
-        touch ~/apps/wildfly-10.1.0.Final/standalone/deployments/windup-web-services.war.dodeploy
-        cp -r ui/target/windup-web ~/apps/wildfly-10.1.0.Final/standalone/deployments/windup-web.war
-        touch ~/apps/wildfly-10.1.0.Final/standalone/deployments/windup-web.war.dodeploy
-        ```
-        
-    - Alternatively, you can deploy the `target` dir directly - see [WildFly docs](https://docs.jboss.org/author/display/WFLY10/Application+deployment#Applicationdeployment-UnmanagedDeployments):
-
-        ```
-        deploy .../windup-web/services/target/windup-web-services --unmanaged
-        deploy .../windup-web/ui/target/windup-web --unmanaged
+        cp -r services/target/windup-web-services ~/apps/wildfly-10.1.0.Final/standalone/deployments/windup-web-services.war;
+        touch ~/apps/wildfly-10.1.0.Final/standalone/deployments/windup-web-services.war.dodeploy;
+        cp -r ui/target/windup-web ~/apps/wildfly-10.1.0.Final/standalone/deployments/windup-web.war;
+        touch ~/apps/wildfly-10.1.0.Final/standalone/deployments/windup-web.war.dodeploy;
         ```
 
-    - Or add this to `standalone-full.xml` under `<server>`, at the end (see XSD):
+        or
 
-         ```xml
-         <deployments>
+    - JBoss CLI deployment, deploy the `target` directory directly - see [WildFly docs](https://docs.jboss.org/author/display/WFLY10/Application+deployment#Applicationdeployment-UnmanagedDeployments):
+
+        ```
+        deploy services/target/windup-web-services --unmanaged;
+        deploy ui/target/windup-web --unmanaged;
+        ```
+
+        or
+
+    - Editing profile configuration and adding the following block to `standalone-full.xml` under `<server>`, at the end of the file:
+  
+        ```xml
+        <deployments>
             <deployment name="windup-web-services" runtime-name="windup-web-services.war">
                 <fs-exploded path=".../windup-web/services/target/windup-web-services"/>
             </deployment>
@@ -71,11 +78,7 @@ Running the webapp
             </deployment>
         </deployments>
         ```
+    > Note: Replace ... with real absolute path on your local environment.
 
-    > NOTE: Wildfly/EAP 7 must be run in standalone-full.xml as JMS is required.  
-    > Also, top up the Metaspace limit. In `standalone.conf`, change the `MaxMetaspaceSize`:
-    
-          JAVA_OPTS="-Xms64m -Xmx512m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=2048m -Djava.net.preferIPv4Stack=true"
-      
 - Follow the steps for deploying keycloak in [Keycloak Setup](./KEYCLOAK-SETUP.md)
 - Access the webapp: <http://localhost:8080/windup-web>

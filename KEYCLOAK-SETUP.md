@@ -68,22 +68,24 @@ https://access.redhat.com/documentation/en/red-hat-single-sign-on/7.0/single/get
     * Change the `WAR MODULE NAME.war` section to the war name (`windup-web.war`)
   * Add the following system properties being sure to replace the key with the one from the copied section:
   
-        ```
-        ...</extensions>
-        <system-properties>
-            <property name="keycloak.realm.public.key" value="[ INSERT KEY HERE ]"/>
-            <property name="keycloak.server.url" value="http://localhost:8280/auth"/>
-        </system-properties>
-        ```
+      ```xml
+      ...
+      </extensions>
+      <system-properties>
+          <property name="keycloak.realm.public.key" value="[ INSERT KEY HERE ]"/>
+          <property name="keycloak.server.url" value="http://localhost:8280/auth"/>
+      </system-properties>
+      ```
+
   * Replace the realm-public-key and auth-server-url elements in the extension configuration with the following text:
     
-        ```
-            <realm-public-key>${keycloak.realm.public.key}</realm-public-key>
-            <auth-server-url>${keycloak.server.url}</auth-server-url>
-        ```
+      ```xml
+      <realm-public-key>${keycloak.realm.public.key}</realm-public-key>
+      <auth-server-url>${keycloak.server.url}</auth-server-url>
+      ```
 
 * Now **create another Keycloak client the  for `windup-web-services`**.
-  * Repeat the same steps, except use the name "windup-web-services" instead of "windup-web".
+  * Repeat the same steps, except use the name **windup-web-services** instead of **windup-web**.
   * The `<realm-public-key>` will be the same, no need for another system property.
 
 
