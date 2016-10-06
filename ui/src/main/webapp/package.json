@@ -33,13 +33,16 @@
     "google-code-prettify": "1.0.1",
     "jquery": "2.1.4",
     "jquery-match-height": "0.7.0",
+    "jstree": "^3.3.2",
+    "lodash": "^4.16.3",
     "ng2-file-upload": "^1.1.0",
     "patternfly": "^3.0.0",
     "patternfly-bootstrap-combobox": "1.0.0",
     "reflect-metadata": "0.1.8",
     "rxjs": "5.0.0-beta.12",
     "systemjs": "0.19.39",
-    "zone.js": "0.6.25"
+    "zone.js": "0.6.25",
+    "@types/jstree": "^3.3.32"
   },
   "devDependencies": {
     "typescript": "2.0.3",
