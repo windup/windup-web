@@ -10,6 +10,7 @@
 <style>
     .technologyItems {
         font-size: 0;
+        width: 100%;
     }
 
     .technologyItem {
@@ -22,6 +23,10 @@
         border-bottom: 3px solid #734d00;
         display: inline-block;
     }
+
+    .technologies-table {
+        margin-top: 10px;
+    }
 </style>
 
 <div class="row technologyItems">
@@ -31,4 +36,207 @@
     <div class="technologyItem">HTML xx%</div>
     <div class="technologyItem">CSS xx%</div>
     <div class="technologyItem">Other xx%</div>
+</div>
+
+<div class="container-fluid container-cards-pf">
+    <div class="row row-cards-pf">
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <div class="card-pf card-pf-view card-pf-view-select card-pf-view-single-select">
+                <div class="card-pf-body">
+                    <div class="card-pf-top-element">
+                        <h2>Services (exposed/consumed)</h2>
+                    </div>
+                    <div class="card-pf-items text-center">
+                        <table class="datatable table table-striped table-bordered technologies-table">
+                            <thead>
+                                <tr>
+                                    <th>EJB</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Stateless</td>
+                                    <td>55</td>
+                                </tr>
+                                <tr>
+                                    <td>Stateful</td>
+                                    <td>380</td>
+                                </tr>
+                                <tr>
+                                    <td>Message Driven</td>
+                                    <td>1</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="datatable table table-striped table-bordered technologies-table">
+                            <thead>
+                                <tr>
+                                    <th>HTTP</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>JAX-RS Services</td>
+                                    <td>2</td>
+                                </tr>
+                                <tr>
+                                    <td>JAX-WS Services</td>
+                                    <td>43</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="datatable table table-striped table-bordered technologies-table">
+                            <thead>
+                                <tr>
+                                    <th>Other</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Persistence units</td>
+                                    <td>4</td>
+                                </tr>
+                                <tr>
+                                    <td>JPA Named Queries</td>
+                                    <td>32</td>
+                                </tr>
+                                <tr>
+                                    <td>JPA Entities</td>
+                                    <td>4</td>
+                                </tr>
+                                <tr>
+                                    <td>JPA Entities</td>
+                                    <td>4</td>
+                                </tr>
+                                <tr>
+                                    <td>RMI</td>
+                                    <td>23</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-pf-view-checkbox">
+                    <input type="checkbox">
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <div class="card-pf card-pf-view card-pf-view-select card-pf-view-single-select">
+                <div class="card-pf-body">
+                    <div class="card-pf-top-element">
+                        <h2>Server resources - Java EE</h2>
+                    </div>
+                    <div class="card-pf-items text-center">
+                        <table class="datatable table table-striped table-bordered technologies-table">
+                            <thead>
+                                <tr>
+                                    <th>Database</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>JDBC datasources</td>
+                                    <td>5</td>
+                                </tr>
+                                <tr>
+                                    <td>XA JDBC datasources</td>
+                                    <td>3</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="datatable table table-striped table-bordered technologies-table">
+                            <thead>
+                                <tr>
+                                    <th>Messaging</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>JMS Queues</td>
+                                    <td>3</td>
+                                </tr>
+                                <tr>
+                                    <td>JMS Topics</td>
+                                    <td>4</td>
+                                </tr>
+                                <tr>
+                                    <td>JMS Connection Factories</td>
+                                    <td>1</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="datatable table table-striped table-bordered technologies-table">
+                            <thead>
+                                <tr>
+                                    <th>Other</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Security Realms</td>
+                                    <td>0</td>
+                                </tr>
+                                <tr>
+                                    <td>Other JNDI entries</td>
+                                    <td>13</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <div class="card-pf card-pf-view card-pf-view-select card-pf-view-single-select">
+                <div class="card-pf-body">
+                    <div class="card-pf-top-element">
+                        <h2>Miscellaneous Data</h2>
+                    </div>
+                    <div class="card-pf-items text-center">
+                        <table class="datatable table table-striped table-bordered technologies-table">
+                            <thead>
+                                <tr>
+                                    <th>Sizing</th>
+                                    <th>Classes</th>
+                                    <th>Embedded</th>
+                                    <th>Size</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Self-written</td>
+                                    <td>340</td>
+                                    <td>23 jars</td>
+                                    <td>3.5MB</td>
+                                </tr>
+                                <tr>
+                                    <td>Total</td>
+                                    <td>5342</td>
+                                    <td>50 jars</td>
+                                    <td>20MB</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="majorIncludedTechnologies">
+                            <div class="card-pf-view-checkbox">
+                                <input type="checkbox">
+                            </div>
+                            <div>
+                                Foo
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
