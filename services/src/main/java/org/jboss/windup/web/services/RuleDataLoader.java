@@ -61,12 +61,6 @@ public class RuleDataLoader
     @FromFurnace
     private RuleProviderService ruleProviderService;
 
-    @PostConstruct
-    public void loadOnStartup()
-    {
-        reloadRuleData();
-    }
-
     @Schedule(hour = "*", minute = "12")
     public void loadPeriodically()
     {

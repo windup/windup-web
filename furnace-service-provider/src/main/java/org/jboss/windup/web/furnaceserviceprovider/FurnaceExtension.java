@@ -36,6 +36,9 @@ public class FurnaceExtension implements Extension
 
     private FurnaceProducer furnaceProducer;
 
+    public FurnaceExtension() {
+    }
+
     private FurnaceProducer getFurnaceProducer()
     {
         if (furnaceProducer == null)
