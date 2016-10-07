@@ -1,7 +1,6 @@
 package org.jboss.windup.web.services.rest;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
@@ -14,6 +13,7 @@ import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.MigrationProject;
+import org.jboss.windup.web.services.model.PackageMetadata;
 
 /**
  * @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
@@ -26,7 +26,8 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Inject @FromFurnace
+    @Inject
+    @FromFurnace
     private WebPathUtil webPathUtil;
 
     @Override
@@ -53,9 +54,15 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
         defaultGroup.setMigrationProject(migrationProject);
         defaultGroup.setReadOnly(true);
         defaultGroup.setOutputPath(webPathUtil.createWindupReportOutputPath(ApplicationGroup.DEFAULT_NAME).toString());
+
+        PackageMetadata packageMetadata = new PackageMetadata();
+        entityManager.persist(packageMetadata);
+
+        defaultGroup.setPackageMetadata(packageMetadata);
         entityManager.persist(defaultGroup);
 
         entityManager.persist(migrationProject);
+
         return migrationProject;
     }
 

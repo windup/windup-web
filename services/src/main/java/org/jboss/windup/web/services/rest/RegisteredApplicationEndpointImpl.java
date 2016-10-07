@@ -1,28 +1,6 @@
 package org.jboss.windup.web.services.rest;
 
-import org.apache.commons.io.filefilter.NameFileFilter;
-import org.jboss.resteasy.plugins.providers.multipart.InputPart;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
-import org.jboss.windup.web.addons.websupport.WebPathUtil;
-import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
-import org.jboss.windup.web.services.model.ApplicationGroup;
-import org.jboss.windup.web.services.model.MigrationProject;
-import org.jboss.windup.web.services.model.RegisteredApplication;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.validation.Valid;
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.InternalServerErrorException;
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
 import java.io.*;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,6 +8,31 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.annotation.Resource;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.jms.JMSContext;
+import javax.jms.Queue;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.validation.Valid;
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.NotFoundException;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
+
+import org.jboss.resteasy.plugins.providers.multipart.InputPart;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+import org.jboss.windup.web.addons.websupport.WebPathUtil;
+import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
+import org.jboss.windup.web.services.messaging.MessagingConstants;
+import org.jboss.windup.web.services.model.ApplicationGroup;
+import org.jboss.windup.web.services.model.MigrationProject;
+import org.jboss.windup.web.services.model.PackageMetadata;
+import org.jboss.windup.web.services.model.RegisteredApplication;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -45,6 +48,12 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    @Inject
+    private JMSContext messaging;
+
+    @Resource(lookup = "java:/queues/" + MessagingConstants.PACKAGE_DISCOVERY_QUEUE)
+    private Queue packageDiscoveryQueue;
 
     @Override
     @SuppressWarnings("unchecked")
@@ -147,7 +156,8 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
             return false;
         }))
         {
-            RegisteredApplication application = new RegisteredApplication(file.getPath());
+            RegisteredApplication application = this.createApplication();
+            application.setInputPath(file.getPath());
             application.setTitle(file.getName());
             group.addApplication(application);
 
@@ -179,7 +189,12 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
         }
 
         application.setRegistrationType(RegisteredApplication.RegistrationType.PATH);
+
+        PackageMetadata packageMetadata = new PackageMetadata();
+        entityManager.persist(packageMetadata);
+        application.setPackageMetadata(packageMetadata);
         entityManager.persist(application);
+
         return application;
     }
 
@@ -196,6 +211,11 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
         // need to get ID, set dummy title and path, it will be replaced
         application.setTitle("dummy-title");
         application.setInputPath("dummy-path");
+
+        PackageMetadata packageMetadata = new PackageMetadata();
+        application.setPackageMetadata(packageMetadata);
+
+        this.entityManager.persist(packageMetadata);
         this.entityManager.persist(application);
 
         return application;
@@ -306,7 +326,7 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
             this.saveFileTo(inputStream, filePath);
 
             application.setTitle(fileName);
-            application.setInputPath(filePath);
+            this.updateApplicationInputPath(application, filePath);
 
             return application;
         }
@@ -315,6 +335,18 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
             Logger.getLogger(FileEndpointImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new InternalServerErrorException("Error during file upload");
         }
+    }
+
+    /**
+     * Updates application inputPath and enqueues application for package discovery
+     *
+     * @param application Application
+     * @param newInputPath New input path
+     */
+    private void updateApplicationInputPath(RegisteredApplication application, String newInputPath)
+    {
+        application.setInputPath(newInputPath);
+        this.enqueuePackageDiscovery(application);
     }
 
     private ApplicationGroup getApplicationGroup(long appGroupId)
@@ -372,5 +404,10 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
         {
             os.write(buffer, 0, bytes);
         }
+    }
+
+    protected void enqueuePackageDiscovery(RegisteredApplication application)
+    {
+        this.messaging.createProducer().send(this.packageDiscoveryQueue, application);
     }
 }

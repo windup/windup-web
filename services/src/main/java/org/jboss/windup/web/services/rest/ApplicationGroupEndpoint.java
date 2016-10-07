@@ -1,17 +1,12 @@
 package org.jboss.windup.web.services.rest;
 
-import org.jboss.windup.web.services.model.ApplicationGroup;
-import org.jboss.windup.web.services.model.Package;
+import java.util.Collection;
 
 import javax.validation.Valid;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import java.util.Collection;
+import javax.ws.rs.*;
+
+import org.jboss.windup.web.services.model.ApplicationGroup;
+import org.jboss.windup.web.services.model.PackageMetadata;
 
 /**
  * Contains methods for managing {@link ApplicationGroup}s.
@@ -67,5 +62,5 @@ public interface ApplicationGroupEndpoint
 
     @GET
     @Path("{id}/packages")
-    Collection<Package> getPackages(@PathParam("id") long id);
+    PackageMetadata getPackages(@PathParam("id") long id);
 }

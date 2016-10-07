@@ -2,6 +2,7 @@ package org.jboss.windup.web.services.model;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -24,11 +25,6 @@ public class PackageMetadata
 
     public static final String PACKAGE_METADATA_ID = "package_metadata_id";
 
-    public PackageMetadata()
-    {
-        this.discoveredDate = new Date();
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = PACKAGE_METADATA_ID, updatable = false, nullable = false)
@@ -40,8 +36,15 @@ public class PackageMetadata
     @Column()
     private ScanStatus scanStatus;
 
-    @OneToMany()
+    @ManyToMany()
     private Set<Package> packages;
+
+    public PackageMetadata()
+    {
+        this.discoveredDate = new Date();
+        this.scanStatus = ScanStatus.QUEUED;
+        this.packages = new HashSet<>();
+    }
 
     public Long getId()
     {
@@ -61,7 +64,7 @@ public class PackageMetadata
     /**
      * Sets date when package discovery was run
      *
-     * @param discoveredDate  Date when package discovery was run
+     * @param discoveredDate Date when package discovery was run
      */
     public void setDiscoveredDate(Date discoveredDate)
     {
@@ -81,7 +84,7 @@ public class PackageMetadata
     /**
      * Sets status of the package discovery
      *
-     * @param scanStatus  Status of package discovery
+     * @param scanStatus Status of package discovery
      */
     public void setScanStatus(ScanStatus scanStatus)
     {

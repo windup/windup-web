@@ -11,6 +11,7 @@ import javax.persistence.PersistenceContext;
 import org.jboss.forge.furnace.Furnace;
 import org.jboss.windup.web.addons.websupport.services.PackageDiscoveryService;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
+import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.Package;
 import org.jboss.windup.web.services.model.PackageMetadata;
 import org.jboss.windup.web.services.model.RegisteredApplication;
@@ -44,6 +45,11 @@ public class PackageService
         metadata.setScanStatus(PackageMetadata.ScanStatus.IN_PROGRESS);
         this.entityManager.merge(metadata);
 
+        ApplicationGroup appGroup = application.getApplicationGroup();
+        PackageMetadata appGroupMetadata = appGroup.getPackageMetadata();
+        appGroupMetadata.setScanStatus(PackageMetadata.ScanStatus.IN_PROGRESS);
+        this.entityManager.merge(appGroupMetadata);
+
         String inputPath = application.getInputPath();
         PackageDiscoveryService.PackageDiscoveryResult result = this.packageDiscoveryService.execute(inputPath);
 
@@ -52,8 +58,19 @@ public class PackageService
         this.addPackagesToPackageMetadata(metadata, result.getKnownPackages(), packageMap);
         this.addPackagesToPackageMetadata(metadata, result.getUnknownPackages(), packageMap);
 
+        this.addPackagesToPackageMetadata(appGroupMetadata, result.getKnownPackages(), packageMap);
+        this.addPackagesToPackageMetadata(appGroupMetadata, result.getUnknownPackages(), packageMap);
+
         metadata.setScanStatus(PackageMetadata.ScanStatus.COMPLETE);
         this.entityManager.merge(metadata);
+
+        PackageMetadata.ScanStatus finalStatus = appGroup.getApplications().stream()
+                    .map(app -> app.getPackageMetadata().getScanStatus())
+                    .reduce(PackageMetadata.ScanStatus.COMPLETE,
+                                (a, b) -> a == b ? PackageMetadata.ScanStatus.COMPLETE : PackageMetadata.ScanStatus.IN_PROGRESS);
+
+        appGroupMetadata.setScanStatus(finalStatus);
+        this.entityManager.merge(appGroupMetadata);
 
         return metadata.getPackages();
     }
