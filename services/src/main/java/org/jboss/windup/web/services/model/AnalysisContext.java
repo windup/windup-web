@@ -6,8 +6,8 @@ import org.hibernate.annotations.FetchMode;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.*;
 import javax.validation.Valid;
