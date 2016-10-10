@@ -7,7 +7,6 @@ import 'rxjs/Rx';
 
 import {FileSelectDirective, FileDropDirective, FileUploader} from 'ng2-file-upload/ng2-file-upload';
 import { AppComponent }  from './components/app.component';
-import { Constants } from './constants';
 import { routing, appRoutingProviders } from './app.routing';
 
 import {ProjectListComponent} from "./components/projectlist.component";
@@ -47,6 +46,8 @@ import {NotificationService} from "./services/notification.service";
 import {NotificationComponent} from "./components/notification.component";
 import {ConfirmDeactivateGuard} from "./confirm-deactivate.guard";
 import {PopoverComponent} from "./components/popover.component";
+import {TechnologiesReport} from "./components/reports/technologies/technologies.report";
+
 
 @NgModule({
     imports: [
@@ -57,6 +58,7 @@ import {PopoverComponent} from "./components/popover.component";
         routing
     ],
     declarations: [
+        // pages
         AppComponent,
         AnalysisContextFormComponent,
         ApplicationGroupForm,
@@ -67,6 +69,10 @@ import {PopoverComponent} from "./components/popover.component";
         RegisterApplicationFormComponent,
         EditApplicationFormComponent,
 
+        // Reports
+        TechnologiesReport,
+
+        // Components
         AddRulesPathModalComponent,
         AnalysisContextAdvancedOptionsModalComponent,
         BreadCrumbsComponent,
