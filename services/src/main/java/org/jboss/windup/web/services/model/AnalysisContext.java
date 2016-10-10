@@ -7,20 +7,9 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
+import java.util.HashSet;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Version;
+import javax.persistence.*;
 import javax.validation.Valid;
 
 /**
@@ -30,8 +19,7 @@ import javax.validation.Valid;
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
 @Entity
-public class AnalysisContext implements Serializable
-{
+public class AnalysisContext implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -57,12 +45,19 @@ public class AnalysisContext implements Serializable
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<RulesPath> rulesPaths;
 
-    @OneToMany
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "analysis_context_include_packages")
     private Set<Package> includePackages;
 
-    @OneToMany
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "analysis_context_exclude_packages")
     private Set<Package> excludePackages;
 
+    public AnalysisContext()
+    {
+        this.includePackages = new HashSet<>();
+        this.excludePackages = new HashSet<>();
+    }
 
     public Long getId()
     {
