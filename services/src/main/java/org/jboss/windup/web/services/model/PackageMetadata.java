@@ -1,9 +1,14 @@
 package org.jboss.windup.web.services.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.*;
 
@@ -13,7 +18,7 @@ import javax.persistence.*;
  * @author <a href="mailto:dklingenberg@gmail.com">David Klingenberg</a>
  */
 @Entity
-public class PackageMetadata
+public class PackageMetadata implements Serializable
 {
     /**
      * Status of package discovery
@@ -36,7 +41,8 @@ public class PackageMetadata
     @Column()
     private ScanStatus scanStatus;
 
-    @ManyToMany()
+    // TODO: I don't really want it to be eager, I just need to fix error for now
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Package> packages;
 
     public PackageMetadata()
@@ -96,9 +102,23 @@ public class PackageMetadata
      *
      * @return Discovered packages
      */
+    @JsonIgnore
     public Collection<Package> getPackages()
     {
         return packages;
+    }
+
+    /**
+     * Gets root packages
+     *
+     * @return Root packages
+     */
+    @JsonProperty("packageTree")
+    public Collection<Package> getRootPackages()
+    {
+        return this.packages.stream()
+                .filter(item -> item.getLevel() == 0)
+                .collect(Collectors.toList());
     }
 
     /**

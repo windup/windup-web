@@ -1,5 +1,7 @@
 package org.jboss.windup.web.services.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
@@ -38,6 +40,7 @@ public class Package implements Serializable
     private int countClasses;
 
     @ManyToOne()
+    @JsonIgnore
     private Package parent;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "parent")
@@ -69,6 +72,7 @@ public class Package implements Serializable
     {
         this.name = partialName;
         this.fullName = fullName;
+        this.childs = new HashSet<>();
     }
 
     public Long getId()
@@ -180,5 +184,15 @@ public class Package implements Serializable
     public void removeChild(Package child)
     {
         this.childs.remove(child);
+    }
+
+
+    public int getLevel()
+    {
+        if (this.parent == null) {
+            return 0;
+        } else {
+            return this.parent.getLevel() + 1;
+        }
     }
 }
