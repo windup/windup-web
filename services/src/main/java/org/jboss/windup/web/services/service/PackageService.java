@@ -69,9 +69,11 @@ public class PackageService
         PackageMetadata.ScanStatus finalStatus = appGroup.getApplications().stream()
                     .map(app -> app.getPackageMetadata().getScanStatus())
                     .reduce(PackageMetadata.ScanStatus.COMPLETE,
-                                (currentStatus, accumulator) -> currentStatus == PackageMetadata.ScanStatus.COMPLETE ?
+                                (currentStatus, accumulator) ->
+                                        currentStatus == PackageMetadata.ScanStatus.COMPLETE && currentStatus == accumulator ?
                                         PackageMetadata.ScanStatus.COMPLETE :
-                                        PackageMetadata.ScanStatus.IN_PROGRESS);
+                                        PackageMetadata.ScanStatus.IN_PROGRESS
+                    );
 
         appGroupMetadata.setScanStatus(finalStatus);
         this.entityManager.merge(appGroupMetadata);
