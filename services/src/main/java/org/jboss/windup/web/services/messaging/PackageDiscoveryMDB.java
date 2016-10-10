@@ -14,7 +14,6 @@ import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 
 import org.jboss.windup.web.services.model.RegisteredApplication;
-import org.jboss.windup.web.services.model.WindupExecution;
 
 /**
  * @author <a href="mailto:dklingenberg@gmail.com">David Klingenberg</a>
@@ -36,7 +35,7 @@ public class PackageDiscoveryMDB extends AbstractMDB implements MessageListener
     @Override
     public void onMessage(Message message)
     {
-        if (!validatePayload(WindupExecution.class, message))
+        if (!validatePayload(RegisteredApplication.class, message))
             return;
 
         try

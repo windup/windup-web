@@ -7,6 +7,7 @@ import java.util.TreeMap;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 
 import org.jboss.forge.furnace.Furnace;
 import org.jboss.windup.web.addons.websupport.services.PackageDiscoveryService;
@@ -39,6 +40,7 @@ public class PackageService
      * @param application Application to discover packages in
      * @return Collection of discovered packages
      */
+    @Transactional
     public Collection<Package> discoverPackages(RegisteredApplication application)
     {
         PackageMetadata metadata = application.getPackageMetadata();
@@ -67,7 +69,9 @@ public class PackageService
         PackageMetadata.ScanStatus finalStatus = appGroup.getApplications().stream()
                     .map(app -> app.getPackageMetadata().getScanStatus())
                     .reduce(PackageMetadata.ScanStatus.COMPLETE,
-                                (a, b) -> a == b ? PackageMetadata.ScanStatus.COMPLETE : PackageMetadata.ScanStatus.IN_PROGRESS);
+                                (currentStatus, accumulator) -> currentStatus == PackageMetadata.ScanStatus.COMPLETE ?
+                                        PackageMetadata.ScanStatus.COMPLETE :
+                                        PackageMetadata.ScanStatus.IN_PROGRESS);
 
         appGroupMetadata.setScanStatus(finalStatus);
         this.entityManager.merge(appGroupMetadata);
@@ -79,12 +83,22 @@ public class PackageService
     {
         for (String packageName : discoveredPackages.keySet())
         {
-            Package aPackage = this.createPackage(packageName, discoveredPackages, packageMap);
+            Package aPackage = this.createPackageHierarchy(packageName, discoveredPackages, packageMap);
             metadata.addPackage(aPackage);
         }
     }
 
-    Package createPackage(String fullPackageName, Map<String, Integer> packageClassCount, Map<String, Package> packageMap)
+    /**
+     * Creates package class for whole package hierarchy (including all parents) and returns last child
+     * Example: org.jboss.windup will create root org, child jboss, child windup and return windup
+     *
+     *
+     * @param fullPackageName Fully qualified package name
+     * @param packageClassCount Map with package name as key and class count as value
+     * @param packageMap Map with package name as key and package class as value
+     * @return Package
+     */
+    Package createPackageHierarchy(String fullPackageName, Map<String, Integer> packageClassCount, Map<String, Package> packageMap)
     {
         Package parent = null;
 
