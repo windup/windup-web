@@ -56,6 +56,7 @@ public class PackageService
         PackageDiscoveryService.PackageDiscoveryResult result = this.packageDiscoveryService.execute(inputPath);
 
         Map<String, Package> packageMap = new TreeMap<>();
+        appGroupMetadata.getPackages().forEach(aPackage -> packageMap.put(aPackage.getFullName(), aPackage));
 
         this.addPackagesToPackageMetadata(metadata, result.getKnownPackages(), packageMap);
         this.addPackagesToPackageMetadata(metadata, result.getUnknownPackages(), packageMap);
