@@ -70,7 +70,8 @@ public class ApplicationGroupEndpointImpl implements ApplicationGroupEndpoint
         Path outputPath = webPathUtil.createWindupReportOutputPath("group_report");
         applicationGroup.setOutputPath(outputPath.toAbsolutePath().toString());
 
-        if (applicationGroup.getPackageMetadata() == null) {
+        if (applicationGroup.getPackageMetadata() == null)
+        {
             applicationGroup.setPackageMetadata(new PackageMetadata());
         }
 

@@ -162,6 +162,8 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
             group.addApplication(application);
 
             this.entityManager.persist(application);
+            this.enqueuePackageDiscovery(application);
+
             registeredApplicationList.add(application);
         }
 
@@ -195,13 +197,16 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
         application.setPackageMetadata(packageMetadata);
         entityManager.persist(application);
 
+        this.enqueuePackageDiscovery(application);
         return application;
     }
 
     @Override
     public RegisteredApplication update(@Valid RegisteredApplication application)
     {
-        return this.entityManager.merge(application);
+        application = this.entityManager.merge(application);
+        this.enqueuePackageDiscovery(application);
+        return application;
     }
 
     private RegisteredApplication createApplication()
