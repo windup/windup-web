@@ -61,7 +61,12 @@ public class FurnaceExtension implements Extension
         HashSet<String> duplicateCheck = new HashSet<>();
         for (Addon addon : furnaceProducer.getFurnace().getAddonRegistry().getAddons())
         {
-            if (addon.getId() != null && addon.getStatus() == AddonStatus.STARTED && addon.getId().toString().contains(WINDUP_WEB_SUPPORT))
+            if (addon.getId() == null || !addon.getId().toString().contains(WINDUP_WEB_SUPPORT))
+                continue;
+
+            awaitAddonStart(addon);
+
+            if (addon.getStatus() == AddonStatus.STARTED)
             {
                 for (Class<?> exportedType : addon.getServiceRegistry().getExportedTypes())
                 {
@@ -69,6 +74,30 @@ public class FurnaceExtension implements Extension
                 }
             }
         }
+    }
+
+    private void awaitAddonStart(Addon addon) {
+        long timeStarted = System.currentTimeMillis();
+        while (isStarting(addon))
+        {
+            long timeDiff = System.currentTimeMillis() - timeStarted;
+            if (timeDiff > 60000L)
+                break;
+
+            try
+            {
+                Thread.sleep(100L);
+            } catch (InterruptedException e)
+            {
+                // Ignore the exception and move on
+                break;
+            }
+        }
+    }
+
+    private boolean isStarting(Addon addon)
+    {
+        return addon.getStatus() == AddonStatus.LOADED || addon.getStatus() == AddonStatus.NEW;
     }
 
     private <T> void addService(final Set<String> duplicateCheck, final AfterBeanDiscovery abd, final BeanManager beanManager, final Class<T> incomingType)
