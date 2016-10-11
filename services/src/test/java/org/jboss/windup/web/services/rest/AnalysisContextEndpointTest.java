@@ -61,11 +61,6 @@ public class AnalysisContextEndpointTest extends AbstractTest
         analysisContext.setApplicationGroup(group);
         analysisContext.setMigrationPath(path);
 
-        org.jboss.windup.web.services.model.Package includePackage = new Package("include");
-        Package excludePackage = new Package("exclude");
-
-        analysisContext.setIncludePackages(Collections.singleton(includePackage));
-        analysisContext.setExcludePackages(Collections.singleton(excludePackage));
         analysisContext.setRulesPaths(configurationEndpoint.getConfiguration().getRulesPaths());
 
         analysisContext = analysisContextEndpoint.create(analysisContext);
@@ -74,12 +69,6 @@ public class AnalysisContextEndpointTest extends AbstractTest
         Assert.assertNotNull(loaded);
         
         Assert.assertEquals(analysisContext.getId(), loaded.getId());
-
-        Assert.assertEquals(1, loaded.getIncludePackages().size());
-        Assert.assertEquals(includePackage, loaded.getIncludePackages().iterator().next());
-
-        Assert.assertEquals(1, loaded.getExcludePackages().size());
-        Assert.assertEquals(excludePackage, loaded.getExcludePackages().iterator().next());
 
         Assert.assertEquals(path, loaded.getMigrationPath());
 
