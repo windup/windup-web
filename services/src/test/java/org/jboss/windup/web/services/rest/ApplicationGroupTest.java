@@ -5,6 +5,7 @@ import org.apache.http.HttpStatus;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.dmr.JSONParser;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.windup.web.services.AbstractTest;
@@ -12,14 +13,20 @@ import org.jboss.windup.web.services.data.DataProvider;
 import org.jboss.windup.web.services.data.ServiceConstants;
 import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.MigrationProject;
+import org.jboss.windup.web.services.model.PackageMetadata;
 import org.jboss.windup.web.services.model.RegisteredApplication;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.json.stream.JsonParser;
 import javax.ws.rs.core.Response;
 import java.net.URL;
+import javax.json.Json;
+import javax.json.JsonObject;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -83,6 +90,12 @@ public class ApplicationGroupTest extends AbstractTest
         Assert.assertEquals(applicationGroup.getTitle(), retrievedGroup.getTitle());
     }
 
+    /**
+     * TODO: Write some meaningful test.
+     * Problem is how. Result of this endpoint depends on JMS queue processing.
+     *
+     * @throws Exception
+     */
     @Test
     @RunAsClient
     public void testGetPackages() throws Exception
@@ -91,13 +104,36 @@ public class ApplicationGroupTest extends AbstractTest
         ApplicationGroup dummyGroup = this.dataProvider.getApplicationGroup(dummyProject);
         RegisteredApplication dummyApp = this.dataProvider.getApplication(dummyGroup);
 
-        String registeredAppTargetUri = this.target.getUri() + "/app" + dummyGroup.getId() + "/packages";
+        String registeredAppTargetUri = this.target.getUri() + "/applicationGroups/" + dummyGroup.getId() + "/packages";
         ResteasyWebTarget registeredAppTarget = this.client.target(registeredAppTargetUri);
 
-        Response response = registeredAppTarget.request().delete();
-        response.close();
+        PackageMetadata packageMetadata;
+        Response response;
+        JSONObject json;
 
-        Assert.assertEquals(HttpStatus.SC_NO_CONTENT, response.getStatus());
-        this.assertFileDoesNotExist(dummyApp.getInputPath());
+        long beginTime = System.currentTimeMillis();
+        do {
+            Thread.sleep(1000L);
+
+            response = registeredAppTarget.request().get();
+            response.bufferEntity();
+            packageMetadata = response.readEntity(PackageMetadata.class);
+            String string = response.readEntity(String.class);
+            json = new JSONObject(string);
+
+            response.close();
+
+            if ((System.currentTimeMillis() - beginTime) > (1000L * 240L))
+            {
+                // taking too long... fail
+                Assert.fail("Processing never completed. Current status: " + packageMetadata.getScanStatus());
+            }
+
+        } while (packageMetadata.getScanStatus() != PackageMetadata.ScanStatus.COMPLETE);
+
+        JSONArray packageTree = json.getJSONArray("packageTree");
+
+        Assert.assertEquals(1, packageTree.length());
+        Assert.assertEquals(HttpStatus.SC_OK, response.getStatus());
     }
 }

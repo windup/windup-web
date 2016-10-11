@@ -61,7 +61,7 @@ public class ApplicationGroup implements Serializable
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "group")
     private Collection<WindupExecution> executions;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private PackageMetadata packageMetadata;
 
     public ApplicationGroup()

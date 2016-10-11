@@ -1,6 +1,7 @@
 package org.jboss.windup.web.services.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -17,6 +18,7 @@ import javax.validation.constraints.Size;
  * @author <a href="mailto:dklingenberg@gmail.com">David Klingenberg</a>
  */
 @Entity
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Package implements Serializable
 {
     public static final String PACKAGE_ID = "package_id";
