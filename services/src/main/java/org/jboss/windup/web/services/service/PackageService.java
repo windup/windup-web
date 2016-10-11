@@ -32,7 +32,7 @@ public class PackageService
 
     @Inject
     @FromFurnace
-    private PackageDiscoveryService packageDiscoveryService;
+    PackageDiscoveryService packageDiscoveryService;
 
     /**
      * Discovers packages in application

@@ -2,6 +2,7 @@ package org.jboss.windup.web.services.model;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -62,6 +63,11 @@ public class ApplicationGroup implements Serializable
 
     @ManyToOne
     private PackageMetadata packageMetadata;
+
+    public ApplicationGroup()
+    {
+        this.applications = new HashSet<>();
+    }
 
     public Long getId()
     {
