@@ -45,7 +45,7 @@ public class PackageServiceTest
         this.packageService.entityManager = mock(EntityManager.class);
         this.packageService.packageDiscoveryService = mock(PackageDiscoveryService.class);
 
-        when(this.packageService.packageDiscoveryService.execute(this.sampleAppPath))
+        when(this.packageService.packageDiscoveryService.execute(null, this.sampleAppPath))
                     .thenReturn(
                                 new PackageDiscoveryService.PackageDiscoveryResult(
                                             this.getKnownPackagesMap(),

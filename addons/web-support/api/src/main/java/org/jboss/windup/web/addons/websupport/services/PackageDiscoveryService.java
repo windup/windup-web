@@ -12,15 +12,16 @@ public interface PackageDiscoveryService
 {
     /**
      * Executes the package discovery service
+     * @param rulesPath Path to the main windup rules (system rules)
      * @param inputPath Input path to java archive or directory
      * @return Package discovery result object with discovered packages
      */
-    public PackageDiscoveryResult execute(String inputPath);
+    PackageDiscoveryResult execute(String rulesPath, String inputPath);
 
     /**
      * Package discovery result object
      */
-    public static class PackageDiscoveryResult
+    class PackageDiscoveryResult
     {
         protected Map<String, Integer> knownPackages;
         protected Map<String, Integer> unknownPackages;

@@ -10,8 +10,10 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 import org.jboss.forge.furnace.Furnace;
+import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.addons.websupport.services.PackageDiscoveryService;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
+import org.jboss.windup.web.furnaceserviceprovider.WebProperties;
 import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.Package;
 import org.jboss.windup.web.services.model.PackageMetadata;
@@ -52,8 +54,9 @@ public class PackageService
         appGroupMetadata.setScanStatus(PackageMetadata.ScanStatus.IN_PROGRESS);
         this.entityManager.merge(appGroupMetadata);
 
+        String rulesPath = WebProperties.getInstance().getRulesRepository().toString();
         String inputPath = application.getInputPath();
-        PackageDiscoveryService.PackageDiscoveryResult result = this.packageDiscoveryService.execute(inputPath);
+        PackageDiscoveryService.PackageDiscoveryResult result = this.packageDiscoveryService.execute(rulesPath, inputPath);
 
         Map<String, Package> packageMap = new TreeMap<>();
         appGroupMetadata.getPackages().forEach(aPackage -> packageMap.put(aPackage.getFullName(), aPackage));

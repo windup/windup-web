@@ -5,13 +5,21 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.inject.Inject;
 
-import org.jboss.forge.furnace.Furnace;
 import org.jboss.windup.rules.apps.java.scan.operation.packagemapping.PackageNameMappingRegistry;
-import org.jboss.windup.util.*;
+import org.jboss.windup.util.ClassNameUtil;
+import org.jboss.windup.util.PackageComparator;
+import org.jboss.windup.util.PackageFrequencyTrie;
+import org.jboss.windup.util.PathUtil;
+import org.jboss.windup.util.ZipUtil;
+import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.ocpsoft.logging.Logger;
 
 /**
@@ -19,19 +27,17 @@ import org.ocpsoft.logging.Logger;
  */
 public class PackageDiscoveryServiceImpl implements PackageDiscoveryService
 {
-    protected PackageNameMappingRegistry packageNameMappingRegistry;
+    @Inject
+    private WebPathUtil webPathUtil;
 
     @Inject
-    public PackageDiscoveryServiceImpl(Furnace furnace)
-    {
-        this.packageNameMappingRegistry = furnace.getAddonRegistry().getServices(PackageNameMappingRegistry.class).get();
-    }
+    private PackageNameMappingRegistry packageNameMappingRegistry;
 
     @Override
-    public PackageDiscoveryResult execute(String inputPath)
+    public PackageDiscoveryResult execute(String rulesPath, String inputPath)
     {
         final Map<String, Integer> classes = findClasses(Paths.get(inputPath));
-        packageNameMappingRegistry.loadPackageMappings();
+        packageNameMappingRegistry.loadPackageMappings(Paths.get(rulesPath));
 
         Map<String, String> knownPackages = new TreeMap<>(new PackageComparator());
         PackageFrequencyTrie frequencyTrie = new PackageFrequencyTrie();
