@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.jboss.windup.web.plugin.it</groupId>
+  <artifactId>sample-project</artifactId>
+  <version>1.0-SNAPSHOT</version>
+
+  <description>A simple IT verifying the basic use case.</description>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      <windup.version>3.0.0-SNAPSHOT</windup.version>
+      <forge.version>3.2.2.Final</forge.version>
+      <inputDirectory></inputDirectory>
+      <outputDirectory>${project.build.directory}/tsModels</outputDirectory>
+  </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jboss.windup.web.plugin</groupId>
+                <artifactId>windup-tsmodelsgen-maven-plugin</artifactId>
+                <version>3.0.0-SNAPSHOT</version>
+                <configuration>
+                    <packages>
+                        <package>org.apache</package>
+                        <package>com.acme</package>
+                    </packages>
+                    <inputDirectory>${inputDirectory}</inputDirectory>
+                    <outputDirectory>${outputDirectory}</outputDirectory>
+                    <overwrite>false</overwrite>
+                    <windupVersion>${windup.version}</windupVersion>
+                    <forgeVersion>${forge.version}</forgeVersion>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
