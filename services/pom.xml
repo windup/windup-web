@@ -252,9 +252,6 @@
                         <configuration>
                             <addonRepository>${project.build.directory}/${project.artifactId}/WEB-INF/addon-repository</addonRepository>
                             <addonIds>
-                                <addonId>org.jboss.forge.addon:addon-manager,${version.forge}</addonId>
-                                <addonId>org.jboss.forge.addon:maven,${version.forge}</addonId>
-                                <addonId>org.jboss.forge.addon:projects,${version.forge}</addonId>
                                 <addonId>org.jboss.forge.furnace.container:cdi,${version.furnace}</addonId>
                                 <addonId>org.jboss.forge.furnace.container:simple,${version.furnace}</addonId>
                                 <addonId>org.jboss.windup.ui:windup-ui,${version.windup}</addonId>
