@@ -43,12 +43,6 @@ public class AnalysisContext implements Serializable
     @Column(name = "version")
     private int version;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    private Set<String> packages;
-
-    @ElementCollection(fetch = FetchType.EAGER)
-    private Set<String> excludePackages;
-
     @ManyToOne(fetch = FetchType.EAGER)
     private MigrationPath migrationPath;
 
@@ -62,6 +56,13 @@ public class AnalysisContext implements Serializable
     @Valid
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<RulesPath> rulesPaths;
+
+    @OneToMany
+    private Set<Package> includePackages;
+
+    @OneToMany
+    private Set<Package> excludePackages;
+
 
     public Long getId()
     {
@@ -86,23 +87,23 @@ public class AnalysisContext implements Serializable
     /**
      * Contains the package prefixes to analyze.
      */
-    public Set<String> getPackages()
+    public Set<Package> getIncludePackages()
     {
-        return packages;
+        return includePackages;
     }
 
     /**
      * Contains the package prefixes to analyze.
      */
-    public void setPackages(Set<String> packages)
+    public void setIncludePackages(Set<Package> packages)
     {
-        this.packages = packages;
+        this.includePackages = packages;
     }
 
     /**
      * Contains the package prefixes to skip.
      */
-    public Set<String> getExcludePackages()
+    public Set<Package> getExcludePackages()
     {
         return excludePackages;
     }
@@ -110,7 +111,7 @@ public class AnalysisContext implements Serializable
     /**
      * Contains the package prefixes to skip.
      */
-    public void setExcludePackages(Set<String> excludePackages)
+    public void setExcludePackages(Set<Package> excludePackages)
     {
         this.excludePackages = excludePackages;
     }

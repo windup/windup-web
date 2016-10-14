@@ -16,6 +16,7 @@ import {RulesPath} from "windup-services";
 import {IsDirty} from "../is-dirty.interface";
 import {Observable} from "rxjs/Observable";
 import {AdvancedOption} from "windup-services";
+import {Package} from "windup-services";
 
 @Component({
     templateUrl: 'app/components/analysiscontextform.component.html'
@@ -38,8 +39,8 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
      *
      * See also: http://stackoverflow.com/questions/33346677/angular2-ngmodel-against-ngfor-variables
      */
-    packages:[{prefix:string}];
-    excludePackages:[{prefix:string}];
+    includePackages: Package[];
+    excludePackages: Package[];
 
     configurationOptions:ConfigurationOption[] = [];
 
@@ -53,8 +54,8 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
                 private _configurationOptionsService:ConfigurationOptionsService) {
         super();
         this.analysisContext.migrationPath = <MigrationPath>{};
-        this.packages = [ {prefix: ""} ];
-        this.excludePackages = [ {prefix: ""} ];
+        this.includePackages = [];
+        this.excludePackages = [];
     }
 
     get migrationPaths() {
@@ -102,21 +103,21 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
                             this.analysisContext = <AnalysisContext>{};
                             this.analysisContext.migrationPath = <MigrationPath>{};
                             this.analysisContext.advancedOptions = [];
-                            this.packages = [ {prefix: ""} ];
-                            this.excludePackages = [ {prefix: ""} ];
+                            this.includePackages = [];
+                            this.excludePackages = [];
                             this.analysisContext.rulesPaths = [];
                         } else {
                             // for migration path, store the id only
                             this.analysisContext.migrationPath = <MigrationPath>{ id: this.analysisContext.migrationPath.id };
-                            if (this.analysisContext.packages == null || this.analysisContext.packages.length == 0)
-                                this.packages = [ {prefix: ""} ];
+                            if (this.analysisContext.includePackages == null || this.analysisContext.includePackages.length == 0)
+                                this.includePackages = [];
                             else
-                                this.packages = <[{prefix:string}]>this.analysisContext.packages.map(it => { return { prefix: it }});
+                                //this.includePackages = <[{prefix:string}]>this.analysisContext.includePackages.map(it => { return { prefix: it }});
 
                             if (this.analysisContext.excludePackages == null || this.analysisContext.excludePackages.length == 0)
-                                this.excludePackages = [ {prefix: ""} ];
+                                this.excludePackages = [];
                             else
-                                this.excludePackages = <[{prefix:string}]>this.analysisContext.excludePackages.map(it => { return { prefix: it }});
+                                //this.excludePackages = <[{prefix:string}]>this.analysisContext.excludePackages.map(it => { return { prefix: it }});
 
                             if (this.analysisContext.rulesPaths == null)
                                 this.analysisContext.rulesPaths = [];
@@ -136,15 +137,15 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
     }
 
     addScanPackage() {
-        this.packages.push({prefix: ""});
+        // this.packages.push();
     }
 
     removeScanPackage(index:number) {
-        this.packages.splice(index, 1);
+        this.includePackages.splice(index, 1);
     }
 
     addExcludePackage() {
-        this.excludePackages.push({prefix: ""});
+        // this.excludePackages.push();
     }
 
     removeExcludePackage(index:number) {
@@ -152,9 +153,9 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
     }
 
     save() {
-        this.analysisContext.packages = this.packages.filter(it => { return it.prefix != null && it.prefix.trim() != "" }).map(it => { return it.prefix; });
-        this.analysisContext.excludePackages = this.excludePackages.filter(it => { return it.prefix != null && it.prefix.trim() != "" }).map(it => { return it.prefix; });
-        console.log("Should save with packages: " + JSON.stringify(this.analysisContext.packages) + " filtered from: " + JSON.stringify(this.packages) + " Rules paths: " + JSON.stringify(this.analysisContext.rulesPaths));
+//        this.analysisContext.includePackages = this.includePackages.filter(it => { return it.prefix != null && it.prefix.trim() != "" }).map(it => { return it.prefix; });
+//        this.analysisContext.excludePackages = this.excludePackages.filter(it => { return it.prefix != null && it.prefix.trim() != "" }).map(it => { return it.prefix; });
+//        console.log("Should save with packages: " + JSON.stringify(this.analysisContext.packages) + " filtered from: " + JSON.stringify(this.includePackages) + " Rules paths: " + JSON.stringify(this.analysisContext.rulesPaths));
 
         if (this.analysisContext.id != null) {
             console.log("Updating analysis context: " + this.analysisContext.migrationPath.id);
@@ -194,4 +195,3 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
         this._router.navigate(['/group-list', {projectID: this.applicationGroup.migrationProject.id}]);
     }
 }
-

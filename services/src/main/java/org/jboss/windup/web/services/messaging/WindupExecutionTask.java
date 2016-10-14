@@ -4,13 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -23,12 +17,8 @@ import org.jboss.windup.config.ConfigurationOption;
 import org.jboss.windup.web.addons.websupport.services.WindupExecutorService;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.WindupWebProgressMonitor;
-import org.jboss.windup.web.services.model.AdvancedOption;
-import org.jboss.windup.web.services.model.AnalysisContext;
-import org.jboss.windup.web.services.model.ApplicationGroup;
-import org.jboss.windup.web.services.model.MigrationPath;
-import org.jboss.windup.web.services.model.RulesPath;
-import org.jboss.windup.web.services.model.WindupExecution;
+import org.jboss.windup.web.services.model.*;
+import org.jboss.windup.web.services.model.Package;
 import org.jboss.windup.web.services.service.ConfigurationOptionsService;
 
 /**
@@ -93,16 +83,18 @@ public class WindupExecutionTask implements Runnable
                         .map(application -> Paths.get(application.getInputPath()))
                         .collect(Collectors.toList());
 
-            List<String> packages = Collections.emptyList();
+            List<String> includePackages = Collections.emptyList();
             List<String> excludePackages = Collections.emptyList();
             String source = null;
             String target = null;
 
-            if (analysisContext.getPackages() != null)
-                packages = new ArrayList<>(analysisContext.getPackages());
+            if (analysisContext.getIncludePackages() != null) {
+                includePackages = this.getPackagesAsString(analysisContext.getIncludePackages());
+            }
 
-            if (analysisContext.getExcludePackages() != null)
-                excludePackages = new ArrayList<>(analysisContext.getExcludePackages());
+            if (analysisContext.getExcludePackages() != null) {
+                excludePackages = this.getPackagesAsString(analysisContext.getExcludePackages());
+            }
 
             MigrationPath migrationPath = analysisContext.getMigrationPath();
             if (migrationPath != null)
@@ -121,7 +113,7 @@ public class WindupExecutionTask implements Runnable
                         rulesPaths,
                         inputPaths,
                         Paths.get(group.getOutputPath()),
-                        packages,
+                        includePackages,
                         excludePackages,
                         source,
                         target,
@@ -137,6 +129,11 @@ public class WindupExecutionTask implements Runnable
             LOG.log(Level.WARNING, "Processing of " + group + " failed due to: " + e.getMessage(), e);
             throw new RuntimeException(e);
         }
+    }
+
+    private List<String> getPackagesAsString(Collection<Package> packages) {
+        return packages.stream().map(Package::getFullName)
+                .collect(Collectors.toList());
     }
 
     private Map<String, Object> getOtherOptions(AnalysisContext analysisContext)
