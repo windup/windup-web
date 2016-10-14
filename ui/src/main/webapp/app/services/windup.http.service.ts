@@ -53,7 +53,8 @@ export class WindupHttpService extends Http {
         });
 
         return <Observable<Response>>Observable
-            .merge(tokenObservable, tokenUpdateObservable, requestObservable)
+            // Use concurrency 1, to prevent concurrency between token update and use
+            .merge(tokenObservable, tokenUpdateObservable, requestObservable, 1)
             .filter((response) => response instanceof Response);
     }
 
