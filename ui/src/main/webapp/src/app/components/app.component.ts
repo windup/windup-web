@@ -3,7 +3,7 @@ import '../rxjs-operators';
 
 @Component({
     selector: 'windup-app',
-    templateUrl: 'app/components/app.component.html'
+    templateUrl: 'app.component.html'
 })
 export class AppComponent {
 }

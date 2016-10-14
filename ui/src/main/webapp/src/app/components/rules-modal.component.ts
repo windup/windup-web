@@ -4,7 +4,7 @@ import $ from 'jquery';
 
 @Component({
     selector: 'rules-modal',
-    templateUrl: 'app/components/rules-modal.component.html'
+    templateUrl: 'rules-modal.component.html'
 })
 export class RulesModalComponent {
     @Input()

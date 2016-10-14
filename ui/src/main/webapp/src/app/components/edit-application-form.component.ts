@@ -12,7 +12,7 @@ import {KeycloakService} from "../services/keycloak.service";
 import {RegisterApplicationFormComponent} from "./registerapplicationform.component";
 
 @Component({
-    templateUrl: 'app/components/registerapplicationform.component.html'
+    templateUrl: 'registerapplicationform.component.html'
 })
 export class EditApplicationFormComponent extends RegisterApplicationFormComponent implements OnInit {
     application: RegisteredApplication;
