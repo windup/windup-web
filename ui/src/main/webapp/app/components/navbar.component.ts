@@ -17,7 +17,7 @@ export class NavbarComponent {
 
     logout(event:Event):void {
         event.preventDefault();
-        this._keycloak.logout();
+        KeycloakService.logout();
     }
 
     isActive(link:HTMLAnchorElement):boolean {

@@ -32,6 +32,14 @@ export class KeycloakService {
                     KeycloakService.auth.loggedIn = true;
                     KeycloakService.auth.authz = keycloakAuth;
                     KeycloakService.auth.logoutUrl = keycloakAuth.authServerUrl + "/realms/windup/tokens/logout?redirect_uri=http://localhost:8080/windup-web";
+                    keycloakAuth.onAuthLogout = function () {
+                        console.log("Logout event received!");
+                        KeycloakService.logout();
+                    };
+                    keycloakAuth.onAuthRefreshError = function () {
+                        console.log("Auth refresh error!");
+                        KeycloakService.logout();
+                    };
                     resolve(null);
                 })
                 .error(()=> {
@@ -40,14 +48,14 @@ export class KeycloakService {
         });
     }
 
-    logout(){
+    static logout() {
         console.log('*** LOGOUT');
         KeycloakService.auth.authz.logout();
         KeycloakService.auth.loggedIn = false;
         KeycloakService.auth.authz = null;
     }
 
-    getToken(): Observable<string>{
+    getToken(): Observable<string> {
         let promise:Promise<string> = new Promise<string>((resolve,reject)=>{
             if (KeycloakService.auth.authz.token) {
                 KeycloakService.auth.authz.updateToken(5).success(function() {
