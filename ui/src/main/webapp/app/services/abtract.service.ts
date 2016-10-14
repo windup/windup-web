@@ -10,8 +10,8 @@ export class AbstractService {
         console.error("Service error: (" + typeof error + ") " + error);
         var json;
         try {
-            json = error.json();
-            console.error("Service error - JSON: " + JSON.stringify(json));
+            json = JSON.stringify(error);
+            console.error("Error contents: " + json);
         }
         catch (ex) {
             console.error("Service error - can't JSON: " + (<SyntaxError>ex).message);
