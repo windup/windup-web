@@ -3,7 +3,7 @@ import {FileUploader} from "ng2-file-upload/ng2-file-upload";
 
 @Component({
     selector: 'app-upload-progressbar',
-    templateUrl: 'app/components/upload/upload-progressbar.component.html'
+    templateUrl: 'upload-progressbar.component.html'
 })
 export class UploadProgressbarComponent {
     @Input()

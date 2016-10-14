@@ -1,10 +1,10 @@
-import {Component, ElementRef} from '@angular/core';
+import {Component} from '@angular/core';
 import {Router} from "@angular/router";
 import {KeycloakService} from "../services/keycloak.service";
 
 @Component({
     selector: 'navbar',
-    templateUrl: 'app/components/navbar.component.html'
+    templateUrl: 'navbar.component.html'
 })
 export class NavbarComponent {
     constructor(private _keycloak:KeycloakService, private _router:Router) {

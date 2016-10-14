@@ -1,5 +1,4 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
-import {Inject} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 
 import {MigrationProject} from "windup-services";
@@ -15,7 +14,7 @@ import {MigrationProjectService} from "../services/migrationproject.service";
 
 @Component({
     selector: 'application-list',
-    templateUrl: 'app/components/grouplist.component.html'
+    templateUrl: 'grouplist.component.html'
 })
 export class GroupListComponent implements OnInit, OnDestroy {
     projectID:number;
@@ -23,7 +22,7 @@ export class GroupListComponent implements OnInit, OnDestroy {
     groups:ApplicationGroup[];
 
     processingStatus:Map<number, WindupExecution> = new Map<number, WindupExecution>();
-    processMonitoringInterval:number;
+    processMonitoringInterval;
 
     errorMessage:string;
 

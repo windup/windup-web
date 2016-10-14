@@ -5,7 +5,7 @@ import {Notification, NotificationLevel} from "../services/notification";
 
 @Component({
     selector: 'ap-notification',
-    templateUrl: 'app/components/notification.component.html'
+    templateUrl: 'notification.component.html'
 })
 export class NotificationComponent implements OnInit, OnDestroy {
     @Input()

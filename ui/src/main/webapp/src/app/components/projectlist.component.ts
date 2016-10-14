@@ -1,5 +1,4 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
-import {Inject} from '@angular/core';
 import {Router} from "@angular/router";
 
 import {MigrationProjectService} from "../services/migrationproject.service";
@@ -7,13 +6,13 @@ import {MigrationProject} from "windup-services";
 
 @Component({
     selector: 'application-list',
-    templateUrl: 'app/components/projectlist.component.html'
+    templateUrl: 'projectlist.component.html'
 })
 export class ProjectListComponent implements OnInit, OnDestroy {
     projects:MigrationProject[];
 
     errorMessage:string;
-    private _refreshIntervalID:number;
+    private _refreshIntervalID;
 
     constructor(
         private _router: Router,

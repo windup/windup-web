@@ -20,7 +20,7 @@ import {Package} from "windup-services";
 import {PackageRegistryService} from "../services/package-registry.service";
 
 @Component({
-    templateUrl: 'app/components/analysiscontextform.component.html'
+    templateUrl: 'analysiscontextform.component.html'
 })
 export class AnalysisContextFormComponent extends FormComponent implements OnInit, IsDirty
 {

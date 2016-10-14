@@ -3,7 +3,7 @@ import {FileUploader} from 'ng2-file-upload/ng2-file-upload';
 
 @Component({
     selector: 'app-upload-queue',
-    templateUrl: 'app/components/upload/upload-queue.component.html'
+    templateUrl: 'upload-queue.component.html'
 })
 export class UploadQueueComponent implements OnInit {
     @Input()
