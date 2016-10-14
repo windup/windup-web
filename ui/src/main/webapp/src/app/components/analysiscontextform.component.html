@@ -1,0 +1,69 @@
+<h1>
+    Analysis Context
+</h1>
+<form #analysisContextForm="ngForm" (ngSubmit)="save()"  class="form-horizontal">
+    <div *ngFor="let errorMessage of errorMessages" class="row form-errors alert alert-danger">
+        <div class="col-md-2">&nbsp;</div>
+        <div class="col-md-10">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            {{errorMessage}}
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="migrationPath">Migration Path</label>
+            <div class="col-md-6">
+                <select
+                        #migrationPath="ngModel"
+                        name="migrationPath"
+                        [(ngModel)]="analysisContext.migrationPath.id"
+                        ngControl="migrationPath"
+                        [ngClass]="{'has-error': hasError(migrationPath)}"
+                        required
+                        id="migrationPath"
+                        class="form-control"
+                >
+                    <option *ngFor="let migrationPath of migrationPaths | async" [value]="migrationPath.id">{{migrationPath.name}}</option>
+                </select>
+                <span [class.hidden]="!hasError(migrationPath)" class="help-block">
+                    A migration path must be specified.
+                </span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label">Include Packages</label>
+            <div class="col-md-4">
+                <app-js-tree-wrapper
+                        [treeNodes]="packageTree"
+                        [(selectedNodes)]="analysisContext.includePackages"
+                >
+                </app-js-tree-wrapper>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label">Exclude Package</label>
+            <div class="col-md-3">
+                <app-js-tree-wrapper
+                        [treeNodes]="packageTree"
+                        [(selectedNodes)]="analysisContext.excludePackages">
+                </app-js-tree-wrapper>
+            </div>
+        </div>
+        <custom-rule-selection [selectedRulePaths]="analysisContext.rulesPaths" (selectedRulePathsChanged)="rulesPathsChanged($event)"></custom-rule-selection>
+        <div class="form-group">
+            <label class="col-md-2 control-label">Advanced Options</label>
+            <div class="col-md-3">
+                <button class="btn btn-default" (click)="viewAdvancedOptions(advancedOptionsModal)">View Advanced Options</button>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-10 col-md-offset-2">
+                <button [disabled]="!analysisContextForm.form.valid" class="btn btn-primary" type="submit">Save</button>
+                <button [disabled]="loading" (click)="cancel()" type="button" class="btn btn-default">Cancel</button>
+            </div>
+        </div>
+
+    </div>
+</form>
+
+<analysis-context-advanced-options [(selectedOptions)]="analysisContext.advancedOptions" (advancedOptionsChanged)="advancedOptionsChanged($event)" [configurationOptions]="configurationOptions" #advancedOptionsModal></analysis-context-advanced-options>
