@@ -5,9 +5,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.jboss.windup.web.services.model.AnalysisContext;
+import org.jboss.windup.web.services.model.Package;
 import org.jboss.windup.web.services.model.RulesPath;
 
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Provides tools for creating default analysis context instances, as well as providing default configuration data.
@@ -39,8 +43,25 @@ public class AnalysisContextService
     public AnalysisContext create(AnalysisContext analysisContext)
     {
         this.ensureSystemRulesPathsPresent(analysisContext);
+        this.loadPackagesToAnalysisContext(analysisContext);
         entityManager.persist(analysisContext);
+
         return analysisContext;
+    }
+
+    protected void loadPackagesToAnalysisContext(AnalysisContext analysisContext)
+    {
+        analysisContext.setIncludePackages(this.loadPackagesFromPersistenceContext(analysisContext.getIncludePackages()));
+        analysisContext.setExcludePackages(this.loadPackagesFromPersistenceContext(analysisContext.getExcludePackages()));
+    }
+
+    protected Set<Package> loadPackagesFromPersistenceContext(Collection<Package> detachedPackages)
+    {
+        return detachedPackages.stream()
+                .filter(aPackage -> aPackage.getId() != null && aPackage.getId() != 0)
+                .map(aPackage -> this.entityManager.find(Package.class, aPackage.getId()))
+                .filter(aPackage -> aPackage != null)
+                .collect(Collectors.toSet());
     }
 
     /**
@@ -49,6 +70,8 @@ public class AnalysisContextService
     public AnalysisContext update(AnalysisContext analysisContext)
     {
         this.ensureSystemRulesPathsPresent(analysisContext);
+        this.loadPackagesToAnalysisContext(analysisContext);
+
         return entityManager.merge(analysisContext);
     }
 

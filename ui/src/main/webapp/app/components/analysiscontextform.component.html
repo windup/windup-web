@@ -33,7 +33,7 @@
         <div class="form-group">
             <label class="col-md-2 control-label" for="includePackageID">Include Packages</label>
             <div class="col-md-4">
-                <div *ngFor="let includePackage of packages; let i = index;" class="input-group">
+                <div *ngFor="let includePackage of includePackages; let i = index;" class="input-group">
                     <input #includePackageControl="ngModel"
                         name="includePackagesInput_{{i}}"
                         [(ngModel)]="includePackage.prefix"
@@ -42,11 +42,11 @@
                         type="text"
                         id="includePackageID"
                         class="form-control">
-                    <span *ngIf="i != (packages.length - 1)" class="input-group-btn">
-                        <button *ngIf="packages.length > 1" (click)="removeScanPackage(i)" class="btn " type="button">-</button>
+                    <span *ngIf="i != (includePackages.length - 1)" class="input-group-btn">
+                        <button *ngIf="includePackages.length > 1" (click)="removeScanPackage(i)" class="btn " type="button">-</button>
                     </span>
-                    <span *ngIf="i == (packages.length - 1)" class="input-group-btn">
-                        <button *ngIf="packages.length > 1" (click)="removeScanPackage(i)" class="btn " type="button">-</button>
+                    <span *ngIf="i == (includePackages.length - 1)" class="input-group-btn">
+                        <button *ngIf="includePackages.length > 1" (click)="removeScanPackage(i)" class="btn " type="button">-</button>
                         <button (click)="addScanPackage()" class="btn " type="button">+</button>
                     </span>
                 </div>

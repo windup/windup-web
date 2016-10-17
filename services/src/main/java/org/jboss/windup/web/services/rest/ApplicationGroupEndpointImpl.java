@@ -15,6 +15,8 @@ import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.MigrationProject;
+import org.jboss.windup.web.services.model.PackageMetadata;
+import org.jboss.windup.web.services.service.PackageService;
 
 /**
  * Implementation of {@link ApplicationGroupEndpoint}.
@@ -28,6 +30,9 @@ public class ApplicationGroupEndpointImpl implements ApplicationGroupEndpoint
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    @Inject
+    private PackageService packageServiceNew;
 
     @Inject
     @FromFurnace
@@ -65,6 +70,11 @@ public class ApplicationGroupEndpointImpl implements ApplicationGroupEndpoint
         Path outputPath = webPathUtil.createWindupReportOutputPath("group_report");
         applicationGroup.setOutputPath(outputPath.toAbsolutePath().toString());
 
+        if (applicationGroup.getPackageMetadata() == null)
+        {
+            applicationGroup.setPackageMetadata(new PackageMetadata());
+        }
+
         entityManager.persist(applicationGroup);
         return entityManager.find(ApplicationGroup.class, applicationGroup.getId());
     }
@@ -79,5 +89,13 @@ public class ApplicationGroupEndpointImpl implements ApplicationGroupEndpoint
     public void delete(ApplicationGroup applicationGroup)
     {
         entityManager.remove(applicationGroup);
+    }
+
+    @Override
+    public PackageMetadata getPackages(long id)
+    {
+        ApplicationGroup group = this.getApplicationGroup(id);
+
+        return group.getPackageMetadata();
     }
 }

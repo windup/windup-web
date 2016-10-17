@@ -3,13 +3,7 @@ package org.jboss.windup.web.services.model;
 import java.io.Serializable;
 import java.nio.file.Paths;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Version;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -61,6 +55,9 @@ public class RegisteredApplication implements Serializable
 
     @ManyToOne()
     private ApplicationGroup applicationGroup;
+
+    @OneToOne()
+    private PackageMetadata packageMetadata;
 
     public RegisteredApplication()
     {
@@ -186,6 +183,26 @@ public class RegisteredApplication implements Serializable
     public void setTitle(String title)
     {
         this.title = title;
+    }
+
+    /**
+     * Gets package metadata
+     *
+     * @return Package metadata
+     */
+    public PackageMetadata getPackageMetadata()
+    {
+        return packageMetadata;
+    }
+
+    /**
+     * Sets package metadata
+     *
+     * @param packageMetadata New package metadata
+     */
+    public void setPackageMetadata(PackageMetadata packageMetadata)
+    {
+        this.packageMetadata = packageMetadata;
     }
 
     @Override

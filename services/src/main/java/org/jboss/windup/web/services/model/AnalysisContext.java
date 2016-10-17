@@ -6,21 +6,10 @@ import org.hibernate.annotations.FetchMode;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Version;
+import javax.persistence.*;
 import javax.validation.Valid;
 
 /**
@@ -43,12 +32,6 @@ public class AnalysisContext implements Serializable
     @Column(name = "version")
     private int version;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    private Set<String> packages;
-
-    @ElementCollection(fetch = FetchType.EAGER)
-    private Set<String> excludePackages;
-
     @ManyToOne(fetch = FetchType.EAGER)
     private MigrationPath migrationPath;
 
@@ -62,6 +45,20 @@ public class AnalysisContext implements Serializable
     @Valid
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<RulesPath> rulesPaths;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "analysis_context_include_packages")
+    private Set<Package> includePackages;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "analysis_context_exclude_packages")
+    private Set<Package> excludePackages;
+
+    public AnalysisContext()
+    {
+        this.includePackages = new HashSet<>();
+        this.excludePackages = new HashSet<>();
+    }
 
     public Long getId()
     {
@@ -86,23 +83,23 @@ public class AnalysisContext implements Serializable
     /**
      * Contains the package prefixes to analyze.
      */
-    public Set<String> getPackages()
+    public Set<Package> getIncludePackages()
     {
-        return packages;
+        return includePackages;
     }
 
     /**
      * Contains the package prefixes to analyze.
      */
-    public void setPackages(Set<String> packages)
+    public void setIncludePackages(Set<Package> packages)
     {
-        this.packages = packages;
+        this.includePackages = packages;
     }
 
     /**
      * Contains the package prefixes to skip.
      */
-    public Set<String> getExcludePackages()
+    public Set<Package> getExcludePackages()
     {
         return excludePackages;
     }
@@ -110,7 +107,7 @@ public class AnalysisContext implements Serializable
     /**
      * Contains the package prefixes to skip.
      */
-    public void setExcludePackages(Set<String> excludePackages)
+    public void setExcludePackages(Set<Package> excludePackages)
     {
         this.excludePackages = excludePackages;
     }
