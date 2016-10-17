@@ -1,24 +1,16 @@
 package org.jboss.windup.web.services.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Version;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 /**
  * An {@link ApplicationGroup} represents a set of applications within a particular {@link MigrationProject}. Each group may have its own analysis
@@ -68,6 +60,14 @@ public class ApplicationGroup implements Serializable
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "group")
     private Collection<WindupExecution> executions;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    private PackageMetadata packageMetadata;
+
+    public ApplicationGroup()
+    {
+        this.applications = new HashSet<>();
+    }
 
     public Long getId()
     {
@@ -219,6 +219,26 @@ public class ApplicationGroup implements Serializable
 
         this.getApplications().remove(application);
         application.setApplicationGroup(null);
+    }
+
+    /**
+     * Gets package metadata
+     *
+     * @return Package metadata
+     */
+    public PackageMetadata getPackageMetadata()
+    {
+        return packageMetadata;
+    }
+
+    /**
+     * Sets package metadata
+     *
+     * @param packageMetadata Package metadata
+     */
+    public void setPackageMetadata(PackageMetadata packageMetadata)
+    {
+        this.packageMetadata = packageMetadata;
     }
 
     /**

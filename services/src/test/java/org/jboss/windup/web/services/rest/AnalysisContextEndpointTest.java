@@ -10,11 +10,8 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.windup.web.services.AbstractTest;
 import org.jboss.windup.web.services.data.ServiceConstants;
-import org.jboss.windup.web.services.model.AnalysisContext;
-import org.jboss.windup.web.services.model.ApplicationGroup;
-import org.jboss.windup.web.services.model.Configuration;
-import org.jboss.windup.web.services.model.MigrationPath;
-import org.jboss.windup.web.services.model.RulesPath;
+import org.jboss.windup.web.services.model.*;
+import org.jboss.windup.web.services.model.Package;
 import org.jboss.windup.web.services.model.RulesPath.RulesPathType;
 import org.junit.Assert;
 import org.junit.Before;
@@ -63,8 +60,7 @@ public class AnalysisContextEndpointTest extends AbstractTest
         AnalysisContext analysisContext = new AnalysisContext();
         analysisContext.setApplicationGroup(group);
         analysisContext.setMigrationPath(path);
-        analysisContext.setPackages(Collections.singleton("include"));
-        analysisContext.setExcludePackages(Collections.singleton("exclude"));
+
         analysisContext.setRulesPaths(configurationEndpoint.getConfiguration().getRulesPaths());
 
         analysisContext = analysisContextEndpoint.create(analysisContext);
@@ -73,12 +69,6 @@ public class AnalysisContextEndpointTest extends AbstractTest
         Assert.assertNotNull(loaded);
         
         Assert.assertEquals(analysisContext.getId(), loaded.getId());
-
-        Assert.assertEquals(1, loaded.getPackages().size());
-        Assert.assertEquals("include", loaded.getPackages().iterator().next());
-
-        Assert.assertEquals(1, loaded.getExcludePackages().size());
-        Assert.assertEquals("exclude", loaded.getExcludePackages().iterator().next());
 
         Assert.assertEquals(path, loaded.getMigrationPath());
 
