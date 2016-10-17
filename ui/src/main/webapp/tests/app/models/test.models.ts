@@ -16,16 +16,16 @@ export class TestGeneratorModel extends BaseModel
     get rank():string { return null; };
 
     @GraphAdjacency("colonizes", "OUT")
-    get colonizedPlanet(): Observable<TestPlanetModel[]> { return null; }; // edge label 'colonizes'
+    get colonizedPlanet(): Observable<TestPlanetModel[]> { return null; };
 
     @GraphAdjacency("commands", "OUT", false)
-    get ship(): Observable<TestShipModel> { return null; }; // edge label 'commands'
+    get ship(): Observable<TestShipModel> { return null; };
 
     @GraphAdjacency("shuttles", "OUT", true)
-    get shuttles(): Observable<TestShipModel[]> { return null; }; // edge label 'commands'
+    get shuttles(): Observable<TestShipModel[]> { return null; };
 
     @GraphAdjacency("fighter", "OUT", false)
-    get fighter(): Observable<TestShipModel> { return null; }; // edge label 'commands'
+    get fighter(): Observable<TestShipModel> { return null; };
 }
 
 export class TestPlanetModel extends BaseModel

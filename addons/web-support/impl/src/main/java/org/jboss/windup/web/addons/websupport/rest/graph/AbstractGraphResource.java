@@ -156,22 +156,21 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
             execution = entityManager.find(WindupExecution.class, executionID);
         if (null == execution)
             throw new IllegalArgumentException("Windup execution not found, ID: " + executionID);
-
-        return openGraph(execution);
+        return getGraphForExecution(execution);
     }
     
     /**
      * Dev/test purposes.
      */
-    private WindupExecution getAnyExecution() throws IllegalStateException {
+    protected WindupExecution getAnyExecution() throws IllegalStateException {
         List<WindupExecution> executions = getExecutions();
-        if (executions.size() == 0)
+        if (executions.isEmpty())
             throw new IllegalStateException("No executions found.");
         return executions.get(0);
     }
     
 
-    protected GraphContext openGraph(WindupExecution execution) throws IllegalStateException {
+    protected GraphContext getGraphForExecution(WindupExecution execution) throws IllegalStateException {
         try
         {
             Path graphPath = Paths.get(execution.getGroup().getOutputPath()).resolve(GraphContextFactory.DEFAULT_GRAPH_SUBDIRECTORY);

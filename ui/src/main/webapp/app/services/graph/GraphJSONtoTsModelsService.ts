@@ -1,11 +1,9 @@
 //import {Inject, Injectable} from '@angular/core';
 //import {Headers, Http, RequestOptions, Response} from '@angular/http';
-//import {Observable} from 'rxjs/Observable';
 
-import {DiscriminatorMapping, getParentClass} from './DiscriminatorMapping';
-import {FrameModel} from './FrameModel';
-import {TestGraphData} from './test/TestGraphData';
-import {TestGeneratorModel} from './test/models/TestGeneratorModel';
+import {DiscriminatorMapping, getParentClass} from './DiscriminatorMappingBFM';
+import {BaseFrameModel as BaseFrameModel} from './BaseFrameModel';
+import {Observable} from "rxjs/Observable";
 
 /**
  * Converts the JSON Graph representation to TypeScript models.
@@ -28,7 +26,7 @@ import {TestGeneratorModel} from './test/models/TestGeneratorModel';
     }
  */
 //@Injectable()
-export class GraphJSONtoTsModelsService<T extends FrameModel>
+export class GraphJSONtoTsModelsService<T extends BaseFrameModel>
 {
     static MODE = "_mode";
     static DISCRIMINATOR = "w:winduptype";
@@ -41,7 +39,7 @@ export class GraphJSONtoTsModelsService<T extends FrameModel>
     }
 
 
-    public getTypeScriptClassByDiscriminator(discriminator: string): typeof FrameModel {
+    public getTypeScriptClassByDiscriminator(discriminator: string): typeof BaseFrameModel {
         return this.discriminatorMappingData.getModelClassByDiscriminator(discriminator);
     }
 
@@ -50,9 +48,9 @@ export class GraphJSONtoTsModelsService<T extends FrameModel>
      * Unmarshalls the JSON graph data representation into TypeScript objects.
      * Accepts a single JSON object or a JSON array, returns an object or an array, respectively.
      */
-    public fromJSON(input: Object, clazz?: typeof FrameModel): T | T[]
+    public fromJSON (input: Object, clazz?: typeof BaseFrameModel): T | T[]
     {
-        console.log("Called fromJSON() with " + input); ///
+        //console.log("Called fromJSON() with " + input); ///
         const service_this = this;
         
         if (Array.isArray(input)) {
@@ -66,12 +64,13 @@ export class GraphJSONtoTsModelsService<T extends FrameModel>
         
         if (clazz === void 0){
             var disc = input[GraphJSONtoTsModelsService.DISCRIMINATOR];
-            console.log("  The DISCR is: " + disc);
+            
             if (disc instanceof Array)
                 disc = disc[0];
             if (disc === void 0)
                 throw new Error(`Given object doesn't specify "${GraphJSONtoTsModelsService.DISCRIMINATOR}" and no target class given: ` + JSON.stringify(input));
             clazz = this.getTypeScriptClassByDiscriminator(disc);
+            console.log("  Discr " + disc + " => " + clazz.name);///
         }
 
         if (clazz == null){
@@ -79,11 +78,13 @@ export class GraphJSONtoTsModelsService<T extends FrameModel>
             throw new Error(`No class found for discriminator ${disc}: ` + JSON.stringify(input));
         }
 
-        let result = new FrameModel(input["_id"]);
+        //let result = new clazz(input[GraphJSONtoTsModelsService.DISCRIMINATOR], input["_id"], input);
+        let result = new BaseFrameModel(input[GraphJSONtoTsModelsService.DISCRIMINATOR], input["_id"], input);
+        Object.getPrototypeOf(result).constructor = clazz;
+        
         //result.setVertexId(input["_id"]);
-        console.log("We have a frame now: " + result); ///
+        //console.log("We have a frame now: " + result); ///
 
-        //for (let name in Object.getOwnPropertyNames(input) ){
         let propNames = Object.getOwnPropertyNames(input);
         for (let i = 0; i < propNames.length; i++) {
             let name = propNames[i];
@@ -124,7 +125,7 @@ export class GraphJSONtoTsModelsService<T extends FrameModel>
         return <T> result;
     }
 
-    public fromLink <T extends FrameModel> (link: string):  T
+    public fromLink<T extends BaseFrameModel>(link: string):  Observable<T>
     {
         return null;
         // TODO - This should store some kind of metadata to allow the vertices to be loaded lazily.

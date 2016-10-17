@@ -49,7 +49,7 @@ public class ApplicationGroupEndpointImpl implements ApplicationGroupEndpoint
     {
         final MigrationProject project = entityManager.find(MigrationProject.class, projectID);
         if (project == null)
-            throw new IllegalArgumentException("MigrationProject not found, ID:  " + projectID);
+            throw new NotFoundException("MigrationProject not found, ID:  " + projectID);
         return project.getGroups();
     }
 

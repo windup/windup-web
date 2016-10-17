@@ -1,15 +1,13 @@
-let foo = "../../app/tsModels/"
-
 import {GraphJSONtoTsModelsService, RelationInfo} from '../../app/services/graph/GraphJSONtoTsModelsService';
 //import {TestGeneratorModel, TestShipModel, TestPlanetModel} from '../../app/services/graph/test/models/TestGeneratorModel';
 import {WarArchiveModel} from '../../app/tsModels/WarArchiveModel';
-import {FrameModel} from '../../app/services/graph/FrameModel';
+import {BaseFrameModel} from '../../app/services/graph/BaseFrameModel';
 import {TestGraphData} from '../../app/services/graph/test/TestGraphData';
 
 import {DiscriminatorMapping, getParentClass} from '../../app/services/graph/DiscriminatorMapping';
 import {DiscriminatorMappingData} from '../../app/tsModels/DiscriminatorMappingData';
 
-import {UnmarshallerClass} from './UnmarshallerClass';
+import {UnmarshallerTry2} from './UnmarshallerTry2';
 
 
 function getData0() { return TEST_JSON_DATA_0; }
@@ -29,9 +27,12 @@ function tryUnmarshaller()
     console.log("Got frame: " + frame + " fileName: " + frame.fileName);
     for (let i in frame)
         console.log(`${i}: ${frame[i]}`);
+};
     
     
-    $(document).ready(function(){ new UnmarshallerClass().fetchSomeData(); });
+function tryUnmarshaller2()
+{  
+    $(document).ready(function(){ new UnmarshallerTry2().getStatsFromGraph(); });
 };
 
 
@@ -208,4 +209,4 @@ const TEST_JSON_DATA_1 = [{
 }];
 
 
-tryUnmarshaller();
+tryUnmarshaller2();

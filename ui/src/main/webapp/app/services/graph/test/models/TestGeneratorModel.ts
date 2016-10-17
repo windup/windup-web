@@ -1,8 +1,8 @@
-import {FrameModel} from '../../FrameModel';
+import {BaseFrameModel} from '../../BaseFrameModel';
 //import {TestPlanetModel} from './TestPlanetModel';
 //import {TestShipModel} from './TestShipModel';
 
-export class TestGeneratorModel extends FrameModel
+export class TestGeneratorModel extends BaseFrameModel
 {
     static discriminator: string = 'TestGenerator';
 
@@ -26,7 +26,7 @@ export class TestGeneratorModel extends FrameModel
     public ship: TestShipModel; // edge label 'commands'
 }
 
-export class TestPlanetModel extends FrameModel
+export class TestPlanetModel extends BaseFrameModel
 {
     static discriminator: string = 'TestPlanet';
 
@@ -40,7 +40,7 @@ export class TestPlanetModel extends FrameModel
     name: string;
 }
 
-export class TestShipModel extends FrameModel
+export class TestShipModel extends BaseFrameModel
 {
     static discriminator: string = 'TestShip';
 

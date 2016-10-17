@@ -48,10 +48,12 @@
             app: { main: './main.js', defaultExtension: 'js' },
             '../../app':                  { main: 'main.js',  defaultExtension: 'js' },
             '../app':                     { main: 'main.js',  defaultExtension: 'js' },
-            rxjs: { defaultExtension: 'js' },
+            rxjs:                         { defaultExtension: 'js' },
             'ng2-file-upload': { defaultExtension: 'js' },
             'angular2-tree-component'   : { main: 'dist/angular2-tree-component.js', defaultExtension: 'js' },
-            'lodash'                    : { main: 'lodash.js', defaultExtension: 'js' }
+            'lodash'                    : { main: 'lodash.js', defaultExtension: 'js' },
+            'jquery':                     { main: 'dist/jquery.js', defaultExtension: 'js' },
+            './':                         { defaultExtension: 'js' },
         }
     });
 })(this);

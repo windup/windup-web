@@ -1,20 +1,19 @@
-
 /**
  * Things common to all Frames models on the Typescript side.
  */
-export class FrameModel
+export class BaseFrameModel
 {
     // Model metadata
     static discriminator: string;
     static graphPropertyMapping: { [key:string]:string; };
     static graphRelationMapping: { [key:string]:string; };
 
-    constructor(vertexId: number){
-        this.vertexId = vertexId;
-    }
-
-    // Object
-    private vertexId;
+    
+    constructor(
+        public vertexId: number,
+        private discriminator: string[],
+        public data: any
+    ){ }
 
     public getVertexId(): number {
         return this.vertexId;
@@ -26,6 +25,6 @@ export class FrameModel
     public toString() {
         var classOfThis = Object.getPrototypeOf(this).constructor;
         //return `class: ${classOfThis.name }`;
-        return `FrameModel<${classOfThis.name}>#${this.vertexId}`;
+        return `BaseFrameModel<${classOfThis.name}>#${this.vertexId}`;
     }
 }

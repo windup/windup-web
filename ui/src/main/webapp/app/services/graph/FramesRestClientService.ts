@@ -2,7 +2,14 @@ import {Inject, Injectable} from '@angular/core';
 import {Headers, Http, RequestOptions, Response} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 
-import {FrameProxy} from './FrameProxy';
+import 'rxjs/add/observable/dom/ajax'; // Observable.ajax
+import 'rxjs/add/operator/map';
+
+import {DiscriminatorMappingData} from '../../tsModels/DiscriminatorMappingData';
+import {DiscriminatorMapping} from './DiscriminatorMappingBFM';
+import {GraphJSONtoTsModelsService, RelationInfo} from '../../services/graph/GraphJSONtoTsModelsService';
+import {BaseFrameModel} from './BaseFrameModel';
+import {Constants} from "../../constants";
 
 /**
  * Facilitates the data flow between a generic REST endpoint for the graph and the calling methods.
@@ -12,120 +19,24 @@ import {FrameProxy} from './FrameProxy';
 @Injectable()
 export class FramesRestClientService
 {
-    private endpointUrl: string;
-
     constructor (private http: Http) {}
 
-    /**
-     * A generic query for adjacent frames.
-     * @param initialFrames  A set of frames whose adjacent frames we ask for.
-     * @param edgeLabel      The edge label to follow.
-     * @param directionOut   The direction to query for.
-     * @param query          A query string filtering the returned adjacent frames. The query syntax is TODO.
-     * @param idsOnly        Whether we ask for fully materialized frames or frames with vertex IDs only.
-     * @param limit          Maximum number of items to return. This implies a need for sorting.
-     * @param offset         The offset to start the returned list at. This assumes sorting.
-     */
-    public queryAdjacent<T extends FrameProxy>(
-            initialFrames: FrameProxy | FrameProxy[] | number[],
-            edgeLabel: string,
-            directionOut: boolean,
-            query?: string,
-            idsOnly?: boolean,
-            limit?: number,
-            offset?: number
-    ):
-        Observable<QueryResults<T>>
-        //FrameProxy[]
-    {
-        var initialIDs: number[];
-        if (initialFrames instanceof FrameProxy)
-            initialIDs = [(<FrameProxy>initialFrames).getVertexId()];
-        else if (initialFrames instanceof Array)
-            // string[] of ID's
-            initialIDs = (<FrameProxy[]>initialFrames).map((frame) => frame.getVertexId());
-        else
-            initialIDs = <number[]> initialFrames;
-
-        var url = this.endpointUrl + `/queryAdjacent/${initialIDs.join(",")}/${edgeLabel}`
-            + `/${directionOut ? 'out' : 'in'}/${query}/${idsOnly}/${limit}/${offset}`;
-
-        var responseObservable = this.http.put(url, "")
-            .map(res => <QueryResults<T>> res.json())
-            .catch(this.handleError);
-
-        return responseObservable;
-
-        /*var data: QueryResults;
-        var complete = false;
-        var timeout = 100;
-        responseObservable.subscribe(function(value: QueryResults){data = value}, null, function(){complete = true;});
-        while (timeout-- > 0 && !complete) setTimeout(100);
-        return data.frames;
-        /**/
-    }
-
-
-
+    static WINDUP_REST_URL = Constants.REST_BASE; //"http://localhost:8080/windup-web-services/rest";
+    
 
     /**
-     * Adds the adjacent vertex; if there's already one, it is removed.
-     * This assumes that the frame already exists and only references it by vertexId. TODO: Support creating the frame.
+     * This simply returns the data from the graph service.
      */
-    public setAdjacent(thisFrame: FrameProxy, adjacentFrame: FrameProxy | number, edgeLabel: string, directionOut: boolean)
+    //public getObjectsFromGraph <T extends BaseFrameModel> (clazz: { new () : T })  : Observable<T>
+    public getObjectsFromGraph <T extends BaseFrameModel> (discr: string, depth: number = 0)  : Observable<T[]>
     {
-        this.requestToAdjacent("set", thisFrame, adjacentFrame, edgeLabel, directionOut);
+        //let discr =  DiscriminatorMappingData.getDiscriminatorByModelClass(clazz);
+        
+        let GRAPH_ENDPOINT_URL  = `${FramesRestClientService.WINDUP_REST_URL}/graph/by-type/${discr}?depth=${depth}`;
+        let service = new GraphJSONtoTsModelsService(DiscriminatorMapping);
+        return Observable.ajax.getJSON(GRAPH_ENDPOINT_URL)
+            .map(data => <T[]> service.fromJSON(data))
+            .catch(({ xhr }) => { console.log(xhr.response.message); return Observable.of(null); } );
     }
-
-    /**
-     * Adds the adjacent vertex.
-     * This assumes that the frame already exists and only references it by vertexId. TODO: Support creating the frame.
-     */
-    public addAdjacent(thisFrame: FrameProxy, adjacentFrame: FrameProxy | number, edgeLabel: string, directionOut: boolean)
-    {
-        this.requestToAdjacent("add", thisFrame, adjacentFrame, edgeLabel, directionOut);
-    }
-
-    /**
-     * Removes the adjacent vertex.
-     */
-    public removeAdjacent(thisFrame: FrameProxy, adjacentFrame: FrameProxy | number, edgeLabel: string, directionOut: boolean)
-    {
-        this.requestToAdjacent("remove", thisFrame, adjacentFrame, edgeLabel, directionOut);
-    }
-
-    private requestToAdjacent(mode: string, thisFrame: FrameProxy, adjacentFrame: FrameProxy | number, edgeLabel: string, directionOut: boolean)
-    {
-        var id = FramesRestClientService.getVertexId(adjacentFrame);
-        var body = adjacentFrame instanceof FrameProxy ? JSON.stringify(adjacentFrame) : "";
-
-        if (mode === "remove" && id == null)
-            throw new Error("Frame to remove has no ID: " + body);
-
-        var url = this.endpointUrl + `/${mode}Adjacent/${thisFrame.getVertexId()}/${edgeLabel}`
-            + `/${directionOut ? 'out' : 'in'}/${id}/`
-
-        return this.http.put(url, body)
-            .map(res => res)
-            .catch(this.handleError);
-    }
-
-
-
-    static getVertexId(frameOrId: FrameProxy | number){
-        return <number> ((frameOrId instanceof FrameProxy) ? (<FrameProxy>frameOrId).getVertexId() : frameOrId);
-    }
-
-    private handleError(error: Response) {
-        console.error("Service error: " + error);
-        console.error("Service error (json): " + JSON.stringify(error.json()));
-        return Observable.throw(error.json());
-    }
-}
-
-
-export class QueryResults<T extends FrameProxy>
-{
-    status: string;
-    frames: T[];
+    
 }

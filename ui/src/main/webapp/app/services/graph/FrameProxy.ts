@@ -1,13 +1,13 @@
-import {FramesRestClientService} from './FramesRestClientService';
-import {FrameModel} from './FrameModel';
+import {FramesRestProxiedClientService} from './FramesRestProxiedClientService';
+import {BaseFrameModel} from './BaseFrameModel';
 
 /**
  * Provides methods to handle basic CRUD operations form the Frame models' getters, setters, adders and removers.
  */
-export class FrameProxy extends FrameModel
+export class FrameProxy extends BaseFrameModel
 {
     //@Inject
-    private graphClient: FramesRestClientService;
+    private graphClient: FramesRestProxiedClientService;
 
     private set(item: FrameProxy, edgeLabel?: string, directionOut?: boolean)
     {

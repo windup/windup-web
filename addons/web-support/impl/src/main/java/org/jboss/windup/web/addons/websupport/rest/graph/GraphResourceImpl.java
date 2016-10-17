@@ -66,15 +66,17 @@ public class GraphResourceImpl extends AbstractGraphResource implements GraphRes
     
     @Override
     public List<Map<String, Object>> getByType(String vertexType, Integer depth){
-        return getByType(null, vertexType, depth);
+        return getByType(getAnyExecution().getId(), vertexType, depth);
     }
 
     @Override
     public Map<String, Object> get(Long executionID, Integer id, Integer depth)
     {
         GraphContext graphContext = getGraphContext(executionID);
+        if (executionID == null)
+            throw new IllegalArgumentException("Execution ID not specified.");
         if (id == null)
-            throw new IllegalArgumentException("Execution ID not specified");
+            throw new IllegalArgumentException("Vertex ID not specified.");
 
         Vertex vertex = graphContext.getFramed().getVertex(id);
         if (vertex == null)

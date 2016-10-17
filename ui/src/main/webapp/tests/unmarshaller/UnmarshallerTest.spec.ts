@@ -2,12 +2,12 @@ import {GraphJSONtoTsModelsService, RelationInfo} from '../../app/services/graph
 import {DiscriminatorMapping, getParentClass} from '../../app/services/graph/DiscriminatorMapping';
 import {DiscriminatorMappingTestData} from '../../app/services/graph/DiscriminatorMappingTestData';
 import {TestGeneratorModel, TestShipModel, TestPlanetModel} from '../../app/services/graph/test/models/TestGeneratorModel';
-import {FrameModel} from '../../app/services/graph/FrameModel';
+import {BaseFrameModel} from '../../app/services/graph/BaseFrameModel';
 import {TestGraphData} from '../../app/services/graph/test/TestGraphData';
 
 describe('Unmarshaller tests', () => {
     it("getParentClass()", function() {
-        expect(getParentClass(TestPlanetModel).name).toBe("FrameModel");
+        expect(getParentClass(TestPlanetModel).name).toBe("BaseFrameModel");
     });
 
     it ('mapping test - getModelClassByDiscriminator()', () => {
@@ -23,7 +23,7 @@ describe('Unmarshaller tests', () => {
     });
 
     it ('unmarshaller test - fromJSON()', () => {
-        let frame = new GraphJSONtoTsModelsService(DiscriminatorMappingTestData).fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA);
+        let frame: BaseFrameModel = <BaseFrameModel> new GraphJSONtoTsModelsService(DiscriminatorMappingTestData).fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA);
         expect(frame).toBeDefined();
         expect(frame.getVertexId()).toEqual(456);
         let model = <TestGeneratorModel> frame;

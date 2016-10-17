@@ -2,6 +2,7 @@
     .technologyItems {
         font-size: 0;
         width: 100%;
+        clear: both;
     }
 
     .technologyItem {
@@ -18,6 +19,10 @@
     .technologies-table {
         margin-top: 10px;
     }
+    
+    .technologiesStats td {
+        text-transform: capitalize;
+    }
 </style>
 
 <div class="container-fluid">
@@ -25,22 +30,32 @@
         Technologies &gt;
         All Projects &gt;
         <select class="form-input">
-            <option value="foo1">Group 1</option>
-            <option value="foo1">Group 2</option>
+            <option *ngFor="let group of appGroups" value="{{group.id}}">{{group.title}}</option>
         </select>
     </h1>
+
     <div class="technologyItems">
-        <div class="technologyItem col-lg-2">Java xx%</div>
-        <div class="technologyItem col-lg-2">JavaScript xx%</div>
-        <div class="technologyItem col-lg-2">FreeMarker xx%</div>
-        <div class="technologyItem col-lg-2">HTML xx%</div>
-        <div class="technologyItem col-lg-2">CSS xx%</div>
-        <div class="technologyItem col-lg-2">Other xx%</div>
+        <div class="technologyItem col-lg-2">
+             Java {{(technologiesStats.statsFilesByTypeJavaPercent | async)?.quantity}} %
+        </div>
+        <div class="technologyItem col-lg-2">
+             XML {{technologiesStats?.statsFilesByTypeXmlPercent?.quantity}} %
+        </div>
+        <div class="technologyItem col-lg-2">
+             HTML {{technologiesStats?.statsFilesByTypeHtmlPercent?.quantity}} %
+        </div>
+        <div class="technologyItem col-lg-2">
+             CSS {{technologiesStats?.statsFilesByTypeCssPercent?.quantity}} %
+        </div>
+        <div class="technologyItem col-lg-2">
+             JavaScript {{technologiesStats?.statsFilesByTypeJsPercent?.quantity}} %
+        </div>
     </div>
+
 </div>
 
 <div class="container-fluid container-cards-pf">
-    <div class="row row-cards-pf">
+    <div class="row row-cards-pf technologiesStats">
         <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
             <div class="card-pf card-pf-view card-pf-view-select card-pf-view-single-select">
                 <div class="card-pf-body">
@@ -50,78 +65,36 @@
                     <div class="card-pf-items text-center">
                         <table class="datatable table table-striped table-bordered technologies-table">
                             <thead>
-                                <tr>
-                                    <th>EJB</th>
-                                    <th>Amount</th>
-                                </tr>
+                                <tr> <th>EJB</th> <th>Amount</th> </tr>
                             </thead>
+
                             <tbody>
-                                <tr>
-                                    <td>Stateless</td>
-                                    <td>55</td>
-                                </tr>
-                                <tr>
-                                    <td>Stateful</td>
-                                    <td>380</td>
-                                </tr>
-                                <tr>
-                                    <td>Message Driven</td>
-                                    <td>1</td>
-                                </tr>
+                                <tr> <td>stateless</td> <td>{{(technologiesStats?.statsServicesEjbStateless | async)?.quantity}}</td> </tr>
+                                <tr> <td>stateful</td> <td>{{technologiesStats?.statsServicesEjbStateful?.quantity}}</td> </tr>
+                                <tr> <td>message driven</td> <td>{{technologiesStats?.statsServicesEjbMessageDriven?.quantity}}</td> </tr>
                             </tbody>
                         </table>
                         <table class="datatable table table-striped table-bordered technologies-table">
                             <thead>
-                                <tr>
-                                    <th>HTTP</th>
-                                    <th>Amount</th>
-                                </tr>
+                                <tr> <th>HTTP</th> <th>Amount</th> </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>JAX-RS Services</td>
-                                    <td>2</td>
-                                </tr>
-                                <tr>
-                                    <td>JAX-WS Services</td>
-                                    <td>43</td>
-                                </tr>
+                                <tr> <td>JAX-RS services</td> <td>{{technologiesStats?.statsServicesHttpJaxRs?.quantity}}</td> </tr>
+                                <tr> <td>JAX-WS services</td> <td>{{technologiesStats?.statsServicesHttpJaxWs?.quantity}}</td> </tr>
                             </tbody>
                         </table>
                         <table class="datatable table table-striped table-bordered technologies-table">
                             <thead>
-                                <tr>
-                                    <th>Other</th>
-                                    <th>Amount</th>
-                                </tr>
+                                <tr> <th>Other</th> <th>Amount</th> </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>Persistence units</td>
-                                    <td>4</td>
-                                </tr>
-                                <tr>
-                                    <td>JPA Named Queries</td>
-                                    <td>32</td>
-                                </tr>
-                                <tr>
-                                    <td>JPA Entities</td>
-                                    <td>4</td>
-                                </tr>
-                                <tr>
-                                    <td>JPA Entities</td>
-                                    <td>4</td>
-                                </tr>
-                                <tr>
-                                    <td>RMI</td>
-                                    <td>23</td>
-                                </tr>
+                                <tr> <td>JPA entities</td> <td>{{technologiesStats?.statsServicesJpaEntitites?.quantity}}</td> </tr>
+                                <tr> <td>JPA persistence units</td> <td>{{technologiesStats?.statsServicesJpaPersistenceUnits?.quantity}}</td> </tr>
+                                <tr> <td>JPA named queries</td> <td>{{technologiesStats?.statsServicesJpaNamedQueries?.quantity}}</td> </tr>
+                                <tr> <td>RMI services</td> <td>{{technologiesStats?.statsServicesRmiServices?.quantity}}</td> </tr>
                             </tbody>
                         </table>
                     </div>
-                </div>
-                <div class="card-pf-view-checkbox">
-                    <input type="checkbox">
                 </div>
             </div>
         </div>
@@ -134,60 +107,30 @@
                     <div class="card-pf-items text-center">
                         <table class="datatable table table-striped table-bordered technologies-table">
                             <thead>
-                                <tr>
-                                    <th>Database</th>
-                                    <th>Amount</th>
-                                </tr>
+                                <tr> <th>Database</th> <th>Amount</th> </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>JDBC datasources</td>
-                                    <td>5</td>
-                                </tr>
-                                <tr>
-                                    <td>XA JDBC datasources</td>
-                                    <td>3</td>
-                                </tr>
+                                <tr> <td>JDBC datasources</td> <td>{{technologiesStats?.statsServerResourcesDbJdbcDatasources?.quantity}}</td> </tr>
+                                <tr> <td>XA JDBC datasources</td> <td>{{technologiesStats?.statsServerResourcesDbXaJdbcDatasources?.quantity}}</td> </tr>
                             </tbody>
                         </table>
                         <table class="datatable table table-striped table-bordered technologies-table">
                             <thead>
-                                <tr>
-                                    <th>Messaging</th>
-                                    <th>Amount</th>
-                                </tr>
+                                <tr> <th>Messaging</th> <th>Amount</th> </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>JMS Queues</td>
-                                    <td>3</td>
-                                </tr>
-                                <tr>
-                                    <td>JMS Topics</td>
-                                    <td>4</td>
-                                </tr>
-                                <tr>
-                                    <td>JMS Connection Factories</td>
-                                    <td>1</td>
-                                </tr>
+                                <tr> <td>JMS queues</td> <td>{{technologiesStats?.statsServerResourcesMsgJmsQueues?.quantity}}</td> </tr>
+                                <tr> <td>JMS topics</td> <td>{{technologiesStats?.statsServerResourcesMsgJmsTopics?.quantity}}</td> </tr>
+                                <tr> <td>JMS connection factories</td> <td>{{technologiesStats?.statsServerResourcesMsgJmsConnectionFactories?.quantity}}</td> </tr>
                             </tbody>
                         </table>
                         <table class="datatable table table-striped table-bordered technologies-table">
                             <thead>
-                                <tr>
-                                    <th>Other</th>
-                                    <th>Amount</th>
-                                </tr>
+                                <tr> <th>Other</th> <th>Amount</th> </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>Security Realms</td>
-                                    <td>0</td>
-                                </tr>
-                                <tr>
-                                    <td>Other JNDI entries</td>
-                                    <td>13</td>
-                                </tr>
+                                <tr> <td>security realms</td> <td>{{technologiesStats?.statsServerResourcesSecurityRealms?.quantity}}</td> </tr>
+                                <tr> <td>total JNDI entries</td> <td>{{technologiesStats?.statsServerResourcesJndiTotalEntries?.quantity}}</td> </tr>
                             </tbody>
                         </table>
                     </div>
@@ -202,26 +145,21 @@
                     </div>
                     <div class="card-pf-items text-center">
                         <table class="datatable table table-striped table-bordered technologies-table">
+                            <!--
                             <thead>
-                                <tr>
-                                    <th>Sizing</th>
-                                    <th>Classes</th>
-                                    <th>Embedded</th>
-                                    <th>Size</th>
-                                </tr>
+                                <tr> <th>Sizing</th> <th>Classes</th> <th>Embedded</th> </tr>
                             </thead>
+                            -->
                             <tbody>
                                 <tr>
-                                    <td>Self-written</td>
-                                    <td>340</td>
-                                    <td>23 jars</td>
-                                    <td>3.5MB</td>
+                                    <td>Self-written</td> 
+                                    <td>{{technologiesStats?.statsJavaClassesOriginal?.quantity || 0}} classes</td>
+                                    <td>{{technologiesStats?.statsJavaJarsOriginal?.quantity || 0}} jars</td> 
                                 </tr>
                                 <tr>
                                     <td>Total</td>
-                                    <td>5342</td>
-                                    <td>50 jars</td>
-                                    <td>20MB</td>
+                                    <td>{{technologiesStats?.statsJavaClassesTotal?.quantity || 0}} classes</td>
+                                    <td>{{technologiesStats?.statsJavaJarsTotal?.quantity || 0}} jars</td>
                                 </tr>
                             </tbody>
                         </table>
