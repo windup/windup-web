@@ -36,7 +36,9 @@
             'angular2-in-memory-web-api': 'npm:angular2-in-memory-web-api',
             'ng2-file-upload': 'npm:ng2-file-upload',
             'angular2-tree-component': 'npm:angular2-tree-component',
-            'lodash': 'npm:lodash'
+            'lodash': 'npm:lodash',
+            'jquery': 'npm:jquery',
+            'jstree': 'npm:jstree/dist/jstree.js'
         },
         // packages tells the System loader how to load when no filename and/or no extension
         packages: {
@@ -46,7 +48,8 @@
             rxjs: { defaultExtension: 'js' },
             'ng2-file-upload': { defaultExtension: 'js' },
             'angular2-tree-component'   : { main: 'dist/angular2-tree-component.js', defaultExtension: 'js' },
-            'lodash'                    : { main: 'lodash.js', defaultExtension: 'js' }
+            'lodash'                    : { main: 'lodash.js', defaultExtension: 'js' },
+            'jquery': { main: 'dist/jquery.js', defaultExtension: 'js' }
         }
     });
 })(this);

@@ -17,7 +17,6 @@
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
 
     <!-- jsTree -->
-    <script src="node_modules/jstree/dist/jstree.min.js"></script>
     <link rel="stylesheet" href="node_modules/jstree/dist/themes/default/style.min.css">
 
     <!-- Bootstrap JS -->

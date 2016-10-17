@@ -1,5 +1,7 @@
 import {Component, OnInit, Input, ElementRef, SimpleChange, Output, EventEmitter, NgZone} from "@angular/core";
 import {Package} from "windup-services";
+import $ from 'jquery';
+import 'jstree';
 
 @Component({
     templateUrl: 'app/components/js-tree-angular-wrapper.component.html',
@@ -21,27 +23,32 @@ export class JsTreeAngularWrapperComponent implements OnInit {
 
     protected element;
 
+    protected changeStack = 0;
+
     public constructor(element: ElementRef, private _zone: NgZone) {
         this.element = element.nativeElement;
     }
 
     ngOnChanges(changes: {[treeNodes: string]: SimpleChange}): any {
-        if (changes.hasOwnProperty('treeNodes')) {
-            let newTreeNodes: Package[] = changes['treeNodes'].currentValue;
-            this.jsTree = newTreeNodes.map((node) => this.transformTreeNode(node));
+        let jsTree = $(this.element).jstree(true);
 
-            let jsTree = $(this.element).jstree(true);
+        this.changeStack++;
 
-            if (jsTree) {
+        if (jsTree) {
+            if (changes.hasOwnProperty('treeNodes')) {
+                let newTreeNodes: Package[] = changes['treeNodes'].currentValue;
+                this.jsTree = newTreeNodes.map((node) => this.transformTreeNode(node));
                 (jsTree as any).settings.core.data = this.jsTree;
                 jsTree.redraw(true);
                 jsTree.refresh(true, false);
             }
+
+            if (changes.hasOwnProperty('selectedNodes')) {
+                this.redrawSelection();
+            }
         }
 
-        if (changes.hasOwnProperty('selectedNodes')) {
-
-        }
+        this.changeStack--;
     }
 
     transformTreeNode(node: any): any {
@@ -85,12 +92,24 @@ export class JsTreeAngularWrapperComponent implements OnInit {
         $(this.element).on('check_node.jstree uncheck_node.jstree', (event, data) => {
             let jsTree = $(this.element).jstree(true);
 
-            if (jsTree) {
+            if (jsTree && this.changeStack == 0) {
+                console.log("Current changestack: " + this.changeStack);
                 this._zone.run(() => {
                     this.selectedNodes = jsTree.get_checked(false).map((id) => this.treeNodesMap[id]);
                     this.selectedNodesChange.emit(this.selectedNodes);
                 });
             }
         });
+
+        $(this.element).on('changed.jstree loaded.jstree', (event, data) => this.redrawSelection());
+    }
+
+    redrawSelection() {
+        let jsTree = $(this.element).jstree(true);
+
+        if (jsTree) {
+            let selectionIds = this.selectedNodes.map(node => node.id);
+            jsTree.check_node(selectionIds, null);
+        }
     }
 }
