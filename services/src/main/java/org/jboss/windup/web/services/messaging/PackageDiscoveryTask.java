@@ -6,6 +6,8 @@ import org.jboss.windup.web.services.model.RegisteredApplication;
 import org.jboss.windup.web.services.service.PackageService;
 
 /**
+ * Performs the task of discovering packages and caching the resulting data in the database.
+ *
  * @author <a href="mailto:dklingenberg@gmail.com">David Klingenberg</a>
  */
 public class PackageDiscoveryTask implements Runnable
@@ -15,6 +17,9 @@ public class PackageDiscoveryTask implements Runnable
 
     private RegisteredApplication application;
 
+    /**
+     * Sets the application to run discovery on.
+     */
     public void setApplication(RegisteredApplication application)
     {
         this.application = application;

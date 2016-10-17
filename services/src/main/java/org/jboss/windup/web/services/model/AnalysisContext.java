@@ -19,7 +19,8 @@ import javax.validation.Valid;
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
 @Entity
-public class AnalysisContext implements Serializable {
+public class AnalysisContext implements Serializable
+{
     private static final long serialVersionUID = 1L;
 
     @Id
