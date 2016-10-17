@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -17,7 +18,6 @@ import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.Package;
 import org.jboss.windup.web.services.model.PackageMetadata;
 import org.jboss.windup.web.services.model.RegisteredApplication;
-import org.jboss.windup.web.services.rest.FrameUnmarshaller;
 
 /**
  * Service for manipulation with packages
@@ -38,6 +38,14 @@ public class PackageService
     @FromFurnace
     PackageDiscoveryService packageDiscoveryService;
 
+    WebProperties webProperties;
+
+    @PostConstruct
+    protected void init()
+    {
+        this.webProperties = WebProperties.getInstance();
+    }
+
     /**
      * Discovers packages in application
      *
@@ -56,7 +64,7 @@ public class PackageService
         appGroupMetadata.setScanStatus(PackageMetadata.ScanStatus.IN_PROGRESS);
         this.entityManager.merge(appGroupMetadata);
 
-        String rulesPath = WebProperties.getInstance().getRulesRepository().toString();
+        String rulesPath = this.webProperties.getRulesRepository().toString();
         String inputPath = application.getInputPath();
         PackageDiscoveryService.PackageDiscoveryResult result = this.packageDiscoveryService.execute(rulesPath, inputPath);
 

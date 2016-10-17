@@ -3,11 +3,13 @@ package org.jboss.windup.web.services.service;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.nio.file.Path;
 import java.util.*;
 
 import javax.persistence.EntityManager;
 
 import org.jboss.windup.web.addons.websupport.services.PackageDiscoveryService;
+import org.jboss.windup.web.furnaceserviceprovider.WebProperties;
 import org.jboss.windup.web.services.data.DataProvider;
 import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.Package;
@@ -44,6 +46,11 @@ public class PackageServiceTest
         this.packageService = new PackageService();
         this.packageService.entityManager = mock(EntityManager.class);
         this.packageService.packageDiscoveryService = mock(PackageDiscoveryService.class);
+        this.packageService.webProperties = mock(WebProperties.class);
+
+        Path pathMock = mock(Path.class);
+        when(this.packageService.webProperties.getRulesRepository()).thenReturn(pathMock);
+        when(pathMock.toString()).thenReturn(null);
 
         when(this.packageService.packageDiscoveryService.execute(null, this.sampleAppPath))
                     .thenReturn(
@@ -74,8 +81,7 @@ public class PackageServiceTest
     }
 
     /**
-     * This test tests creating package hierarchy from string.
-     * It tests if all parents of package are correctly created.
+     * This test tests creating package hierarchy from string. It tests if all parents of package are correctly created.
      */
     @Test
     public void testCreatePackageHierarchy()
@@ -114,8 +120,7 @@ public class PackageServiceTest
     }
 
     /**
-     * Tests package discovery for application group with single app.
-     * Tests results and status changes.
+     * Tests package discovery for application group with single app. Tests results and status changes.
      */
     @Test
     public void testDiscoverPackagesSingleApp()
@@ -144,8 +149,8 @@ public class PackageServiceTest
     }
 
     /**
-     * Tests only status changes of PackageMetadata for RegisteredApplications and ApplicationGroup.
-     * ApplicationGroup has 2 applications, only 1 is scanned.
+     * Tests only status changes of PackageMetadata for RegisteredApplications and ApplicationGroup. ApplicationGroup has 2 applications, only 1 is
+     * scanned.
      */
     @Test
     public void testDiscoverPackagesMultipleAppsPartialStatusChanges()
@@ -213,10 +218,13 @@ public class PackageServiceTest
     protected Collection<Package> getDuplicatePackages(Collection<Package> discoveredPackages)
     {
         final List<Package> duplicatedPackages = new ArrayList<Package>();
-        Map<String, Package> map = new HashMap<String, Package>() {
+        Map<String, Package> map = new HashMap<String, Package>()
+        {
             @Override
-            public Package put(String key, Package value) {
-                if (this.containsKey(key)) {
+            public Package put(String key, Package value)
+            {
+                if (this.containsKey(key))
+                {
                     duplicatedPackages.add(value);
                 }
                 return super.put(key, value);
