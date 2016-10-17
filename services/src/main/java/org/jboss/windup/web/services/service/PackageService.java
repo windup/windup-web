@@ -10,7 +10,6 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 import org.jboss.forge.furnace.Furnace;
-import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.addons.websupport.services.PackageDiscoveryService;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.furnaceserviceprovider.WebProperties;
@@ -18,6 +17,7 @@ import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.Package;
 import org.jboss.windup.web.services.model.PackageMetadata;
 import org.jboss.windup.web.services.model.RegisteredApplication;
+import org.jboss.windup.web.services.rest.FrameUnmarshaller;
 
 /**
  * Service for manipulation with packages
@@ -26,6 +26,8 @@ import org.jboss.windup.web.services.model.RegisteredApplication;
  */
 public class PackageService
 {
+    private static java.util.logging.Logger LOG = java.util.logging.Logger.getLogger(PackageService.class.getSimpleName());
+
     @PersistenceContext
     EntityManager entityManager;
 
@@ -73,11 +75,8 @@ public class PackageService
         PackageMetadata.ScanStatus finalStatus = appGroup.getApplications().stream()
                     .map(app -> app.getPackageMetadata().getScanStatus())
                     .reduce(PackageMetadata.ScanStatus.COMPLETE,
-                                (currentStatus, accumulator) ->
-                                        currentStatus == PackageMetadata.ScanStatus.COMPLETE && currentStatus == accumulator ?
-                                        PackageMetadata.ScanStatus.COMPLETE :
-                                        PackageMetadata.ScanStatus.IN_PROGRESS
-                    );
+                                (currentStatus, accumulator) -> currentStatus == PackageMetadata.ScanStatus.COMPLETE && currentStatus == accumulator
+                                            ? PackageMetadata.ScanStatus.COMPLETE : PackageMetadata.ScanStatus.IN_PROGRESS);
 
         appGroupMetadata.setScanStatus(finalStatus);
         this.entityManager.merge(appGroupMetadata);
@@ -95,8 +94,8 @@ public class PackageService
     }
 
     /**
-     * Creates package class for whole package hierarchy (including all parents) and returns last child
-     * Example: org.jboss.windup will create root org, child jboss, child windup and return windup
+     * Creates package class for whole package hierarchy (including all parents) and returns last child Example: org.jboss.windup will create root
+     * org, child jboss, child windup and return windup
      *
      *
      * @param fullPackageName Fully qualified package name
@@ -120,7 +119,15 @@ public class PackageService
             if (!packageMap.containsKey(currentPackageNameString))
             {
                 Package pkage = new Package(singlePartName, currentPackageNameString);
-                pkage.setCountClasses(packageClassCount.get(currentPackageNameString));
+
+                if (packageClassCount.containsKey(currentPackageNameString))
+                {
+                    pkage.setCountClasses(packageClassCount.get(currentPackageNameString));
+                }
+                else
+                {
+                    pkage.setCountClasses(0);
+                }
 
                 pkage.setParent(parent);
                 this.entityManager.persist(pkage);
