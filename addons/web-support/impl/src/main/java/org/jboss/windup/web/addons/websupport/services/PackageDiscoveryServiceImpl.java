@@ -5,16 +5,11 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 import javax.inject.Inject;
 
 import org.jboss.windup.rules.apps.java.scan.operation.packagemapping.PackageNameMappingRegistry;
-import org.jboss.windup.util.ClassNameUtil;
 import org.jboss.windup.util.PackageComparator;
 import org.jboss.windup.util.PackageFrequencyTrie;
 import org.jboss.windup.util.PathUtil;
@@ -28,35 +23,33 @@ import org.ocpsoft.logging.Logger;
 public class PackageDiscoveryServiceImpl implements PackageDiscoveryService
 {
     @Inject
-    private WebPathUtil webPathUtil;
+    protected WebPathUtil webPathUtil;
 
     @Inject
-    private PackageNameMappingRegistry packageNameMappingRegistry;
+    protected PackageNameMappingRegistry packageNameMappingRegistry;
+
+    @Override
+    public PackageDiscoveryResult execute(String inputPath)
+    {
+        return this.execute(PathUtil.getWindupRulesDir().toString(), inputPath);
+    }
 
     @Override
     public PackageDiscoveryResult execute(String rulesPath, String inputPath)
     {
-        final Map<String, Integer> classes = findClasses(Paths.get(inputPath));
+        final Map<String, Integer> classes = findClasses(Paths.get(inputPath), Paths.get(inputPath));
         packageNameMappingRegistry.loadPackageMappings(Paths.get(rulesPath));
 
-        Map<String, String> knownPackages = new TreeMap<>(new PackageComparator());
         PackageFrequencyTrie frequencyTrie = new PackageFrequencyTrie();
 
         for (String qualifiedName : classes.keySet())
         {
-            String packageName = ClassNameUtil.getPackageName(qualifiedName);
-            String organization = packageNameMappingRegistry.getOrganizationForPackage(packageName);
-
             frequencyTrie.addClass(qualifiedName);
-
-            if (organization != null)
-            {
-                knownPackages.put(packageName, organization);
-            }
         }
 
         Map<String, Integer> knownPackagesAndClassCount = new TreeMap<>(new PackageComparator());
         Map<String, Integer> unknownPackagesAndClassCount = new TreeMap<>(new PackageComparator());
+        Map<String, String> knownPackages = new TreeMap<>(new PackageComparator());
 
         this.qualifyDiscoveredPackages(knownPackages, frequencyTrie, knownPackagesAndClassCount, unknownPackagesAndClassCount);
 
@@ -82,21 +75,25 @@ public class PackageDiscoveryServiceImpl implements PackageDiscoveryService
 
             Map<String, Integer> resultingMap = null;
 
-            if (knownPackages.containsKey(packageName))
+            String organization = packageNameMappingRegistry.getOrganizationForPackage(packageName);
+
+            if (organization != null)
             {
                 resultingMap = knownPackagesAndClassCount;
+                knownPackages.put(packageName, organization);
             }
             else
             {
                 resultingMap = unknownPackagesAndClassCount;
             }
 
-            if (depth == 1 || (depth > 1 && recursiveClassCount > 100))
+            if (depth > 0)
             {
                 resultingMap.put(packageName, recursiveClassCount);
             }
             else if (depth == 0 && nonRecursiveClassCount > 0)
             {
+                // default package
                 resultingMap.put(packageName, nonRecursiveClassCount);
             }
         });
@@ -105,15 +102,25 @@ public class PackageDiscoveryServiceImpl implements PackageDiscoveryService
     /**
      * Recursively scan the provided path and return a list of all Java packages contained therein.
      */
-    private static Map<String, Integer> findClasses(Path path)
+    private static Map<String, Integer> findClasses(Path currentPath, Path sourceRoot)
     {
-        List<String> paths = findPaths(path, true);
+        String sourceRootPath = sourceRoot.toString();
+
+        List<String> paths = findPaths(currentPath, true);
         Map<String, Integer> results = new HashMap<>();
+
         for (String subPath : paths)
         {
             if (subPath.endsWith(".java") || subPath.endsWith(".class"))
             {
-                String qualifiedName = PathUtil.classFilePathToClassname(subPath);
+                String relativePath = subPath;
+
+                if (subPath.contains(sourceRootPath))
+                {
+                    relativePath = subPath.substring(sourceRoot.toString().length());
+                }
+
+                String qualifiedName = PathUtil.classFilePathToClassname(relativePath);
                 addClassToMap(results, qualifiedName);
             }
         }

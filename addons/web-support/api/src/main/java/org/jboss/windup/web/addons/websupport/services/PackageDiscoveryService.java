@@ -19,6 +19,15 @@ public interface PackageDiscoveryService
     PackageDiscoveryResult execute(String rulesPath, String inputPath);
 
     /**
+     * Executes the package discovery service
+     *
+     * @param inputPath Input path to java archive or directory
+     * @return Package discovery result object with discovered packages
+     */
+    PackageDiscoveryResult execute(String inputPath);
+
+
+    /**
      * Package discovery result object
      */
     class PackageDiscoveryResult
