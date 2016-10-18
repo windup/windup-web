@@ -2,12 +2,11 @@ import {Injectable} from '@angular/core';
 import {Headers, Http, RequestOptions} from '@angular/http';
 
 import {Constants} from "../constants";
-import {AnalysisContext} from "windup-services";
+import {AnalysisContext} from "../windup-services";
 import {AbstractService} from "./abtract.service";
 
 @Injectable()
-export class AnalysisContextService extends AbstractService
-{
+export class AnalysisContextService extends AbstractService {
     private GET_URL = "/analysis-context/get";
     private CREATE_URL = "/analysis-context/create";
     private UPDATE_URL = "/analysis-context/update";
@@ -43,7 +42,7 @@ export class AnalysisContextService extends AbstractService
             .catch(this.handleError);
     }
 
-    get(id:number) {
+    get(id: number) {
         let headers = new Headers();
         let options = new RequestOptions({ headers: headers });
 

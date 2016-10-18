@@ -4,7 +4,7 @@ import {Observable} from 'rxjs/Observable';
 
 @Injectable()
 export class AbstractService {
-    protected handleError(error:Response) {
+    protected handleError(error: Response) {
         // in a real world app, we may send the error to some remote logging infrastructure
         // instead of just logging it to the console
         console.error("Service error: (" + typeof error + ") " + error);

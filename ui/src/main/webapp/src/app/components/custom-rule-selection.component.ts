@@ -1,6 +1,6 @@
 import {Component, Input, OnInit, Output, EventEmitter} from '@angular/core';
 
-import {RulesPath} from 'windup-services';
+import {RulesPath} from '../windup-services';
 
 import {ConfigurationService} from "../services/configuration.service";
 
