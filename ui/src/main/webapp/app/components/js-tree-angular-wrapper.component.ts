@@ -1,4 +1,7 @@
-import {Component, OnInit, Input, ElementRef, SimpleChange, Output, EventEmitter, NgZone} from "@angular/core";
+import {
+    Component, OnInit, Input, ElementRef, SimpleChange, Output, EventEmitter, NgZone,
+    OnChanges
+} from "@angular/core";
 import {Package} from "windup-services";
 import $ from 'jquery';
 import 'jstree';
@@ -7,7 +10,7 @@ import 'jstree';
     templateUrl: 'app/components/js-tree-angular-wrapper.component.html',
     selector: 'app-js-tree-wrapper'
 })
-export class JsTreeAngularWrapperComponent implements OnInit {
+export class JsTreeAngularWrapperComponent implements OnInit, OnChanges {
     @Input()
     treeNodes: Package[];
 
@@ -23,7 +26,8 @@ export class JsTreeAngularWrapperComponent implements OnInit {
 
     protected element;
 
-    protected changeStack = 0;
+    protected updateSelectionCallback: Function = () => {};
+    protected static EMPTY_CALLBACK = () => {};
 
     public constructor(element: ElementRef, private _zone: NgZone) {
         this.element = element.nativeElement;
@@ -32,7 +36,8 @@ export class JsTreeAngularWrapperComponent implements OnInit {
     ngOnChanges(changes: {[treeNodes: string]: SimpleChange}): any {
         let jsTree = $(this.element).jstree(true);
 
-        this.changeStack++;
+        // This is ugly workaround to prevent recursively calling ngOnChanges from change handler
+        this.updateSelectionCallback = JsTreeAngularWrapperComponent.EMPTY_CALLBACK;
 
         if (jsTree) {
             if (changes.hasOwnProperty('treeNodes')) {
@@ -44,11 +49,13 @@ export class JsTreeAngularWrapperComponent implements OnInit {
             }
 
             if (changes.hasOwnProperty('selectedNodes')) {
-                this.redrawSelection();
+                // Another ugly workaround, now to give enough time to initialize jsTree first
+                setTimeout(() => this.redrawSelection(), 100);
             }
         }
 
-        this.changeStack--;
+        // This is ugly workaround to prevent recursively calling ngOnChanges from change handler
+        this.updateSelectionCallback = this.updateSelectedNodes;
     }
 
     transformTreeNode(node: any): any {
@@ -78,7 +85,7 @@ export class JsTreeAngularWrapperComponent implements OnInit {
         }
 
         $(this.element).jstree({
-            'plugins': ['checkbox'],
+            'plugins': ['checkbox', 'sort'],
             'core': {
                 data: this.jsTree
             },
@@ -89,25 +96,25 @@ export class JsTreeAngularWrapperComponent implements OnInit {
             }
         });
 
-        $(this.element).on('check_node.jstree uncheck_node.jstree', (event, data) => {
-            let jsTree = $(this.element).jstree(true);
-
-            if (jsTree && this.changeStack == 0) {
-                console.log("Current changestack: " + this.changeStack);
-                this._zone.run(() => {
-                    this.selectedNodes = jsTree.get_checked(false).map((id) => this.treeNodesMap[id]);
-                    this.selectedNodesChange.emit(this.selectedNodes);
-                });
-            }
-        });
-
+        $(this.element).on('check_node.jstree uncheck_node.jstree', (event, data) => this.updateSelectionCallback(event, data));
         $(this.element).on('changed.jstree loaded.jstree', (event, data) => this.redrawSelection());
+    }
+
+    updateSelectedNodes(event, data) {
+        let jsTree = $(this.element).jstree(true);
+
+        if (jsTree) {
+            this._zone.run(() => {
+                this.selectedNodes = jsTree.get_checked(false).map((id) => this.treeNodesMap[id]);
+                this.selectedNodesChange.emit(this.selectedNodes);
+            });
+        }
     }
 
     redrawSelection() {
         let jsTree = $(this.element).jstree(true);
 
-        if (jsTree) {
+        if (jsTree && this.selectedNodes) {
             let selectionIds = this.selectedNodes.map(node => node.id);
             jsTree.check_node(selectionIds, null);
         }
