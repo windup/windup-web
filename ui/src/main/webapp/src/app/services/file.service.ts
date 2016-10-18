@@ -12,7 +12,7 @@ export class FileService extends AbstractService {
         super();
     }
 
-    pathExists(path:string) {
+    pathExists(path: string) {
         let headers = new Headers();
         let options = new RequestOptions({ headers: headers });
         headers.append('Content-Type', 'application/json');

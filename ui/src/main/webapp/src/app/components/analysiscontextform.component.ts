@@ -2,7 +2,7 @@ import {Component, OnInit, ViewChild} from "@angular/core";
 import {NgForm} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 
-import {AnalysisContext} from "windup-services";
+import {AnalysisContext, ApplicationGroup, AdvancedOption, RulesPath, MigrationPath} from "../windup-services";
 import {FormComponent} from "./formcomponent.component";
 import {ApplicationGroup} from "windup-services";
 import {ApplicationGroupService} from "../services/applicationgroup.service";
@@ -124,6 +124,10 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
                         } else {
                             // for migration path, store the id only
                             this.analysisContext.migrationPath = <MigrationPath>{ id: this.analysisContext.migrationPath.id };
+                            if (this.analysisContext.packages == null || this.analysisContext.packages.length == 0)
+                                this.packages = [ {prefix: ""} ];
+                            else
+                                this.packages = <[{prefix:string}]>this.analysisContext.packages.map(it => { return { prefix: it }});
 
                             if (this.analysisContext.includePackages == null || this.analysisContext.includePackages.length == 0) {
                                 this.analysisContext.includePackages = [];
@@ -156,6 +160,7 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
             }
         });
     }
+
 
     save() {
         if (this.analysisContext.id != null) {
@@ -196,3 +201,4 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
         this._router.navigate(['/group-list', {projectID: this.applicationGroup.migrationProject.id}]);
     }
 }
+
