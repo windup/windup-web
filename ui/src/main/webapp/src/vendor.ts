@@ -43,3 +43,4 @@ require('../node_modules/patternfly/dist/css/patternfly.min.css');
 require('../node_modules/patternfly/dist/css/patternfly-additions.min.css');
 
 
+require('./keycloak.json');

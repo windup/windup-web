@@ -1,8 +1,7 @@
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import {NgZone} from '@angular/core';
-
-import { KeycloakService } from './services/keycloak.service';
-import { AppModule } from './app.module';
+import {platformBrowserDynamic} from "@angular/platform-browser-dynamic";
+import {NgZone} from "@angular/core";
+import {KeycloakService} from "./app/services/keycloak.service";
+import {AppModule} from "./app/app.module";
 
 KeycloakService.init().then(
     success => {

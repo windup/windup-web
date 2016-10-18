@@ -26,7 +26,8 @@ export class KeycloakService {
             keycloakAuth.init({ onLoad: 'check-sso' })
                 .success( (auth) => {
                     if (!auth) {
-                        window.location.href = Constants.UNAUTHENTICATED_PAGE;
+                        console.log('window.location.href');
+                        //window.location.href = Constants.UNAUTHENTICATED_PAGE;
                         return;
                     }
                     KeycloakService.auth.loggedIn = true;
