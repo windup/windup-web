@@ -4,6 +4,7 @@ require('zone.js/dist/zone');
 
 import 'ts-helpers';
 
+declare var process: any;
 
 if (process.env.ENV === 'build') {
   // Production
@@ -13,4 +14,3 @@ if (process.env.ENV === 'build') {
 
   require('zone.js/dist/long-stack-trace-zone');
 }
-

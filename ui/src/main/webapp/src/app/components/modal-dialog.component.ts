@@ -1,5 +1,6 @@
 import {Component, Input} from "@angular/core";
-import $ from 'jquery';
+import * as $ from "jquery";
+window['jQuery'] = $; // ugly hack, bootstrap cannot consume jQuery as dependency
 import 'bootstrap';
 
 var modalID = 0;

@@ -5,12 +5,12 @@ import {TestBed, async, inject} from '@angular/core/testing';
 
 import 'rxjs/Rx';
 
-import {Constants} from '../../app/constants';
+import {Constants} from '../../src/app/constants';
 
 
-import {RegisteredApplicationService} from "../../app/services/registeredapplication.service";
-import {KeycloakService} from "../../app/services/keycloak.service";
-import {FileService} from "../../app/services/file.service";
+import {RegisteredApplicationService} from "../../src/app/services/registeredapplication.service";
+import {KeycloakService} from "../../src/app/services/keycloak.service";
+import {FileService} from "../../src/app/services/file.service";
 import {FileUploader, FileUploaderOptions} from "ng2-file-upload/ng2-file-upload";
 
 describe("Registered Application Service Test", () => {

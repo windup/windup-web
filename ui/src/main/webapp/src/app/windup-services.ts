@@ -1,4 +1,4 @@
-// Generated using typescript-generator version 1.10.212 on 2016-10-14 14:03:09.
+// Generated using typescript-generator version 1.10.212 on 2016-10-21 15:23:16.
 
 export interface AdvancedOption {
     id: number;
@@ -13,12 +13,12 @@ export interface AdvancedOption_ {
 export interface AnalysisContext {
     id: number;
     version: number;
-    packages: string[];
-    excludePackages: string[];
     migrationPath: MigrationPath;
     advancedOptions: AdvancedOption[];
     applicationGroup: ApplicationGroup;
     rulesPaths: RulesPath[];
+    includePackages: Package[];
+    excludePackages: Package[];
 }
 
 export interface AnalysisContext_ {
@@ -34,6 +34,7 @@ export interface ApplicationGroup {
     analysisContext: AnalysisContext;
     applications: RegisteredApplication[];
     executions: WindupExecution[];
+    packageMetadata: PackageMetadata;
 }
 
 export interface ApplicationGroup_ {
@@ -67,6 +68,28 @@ export interface MigrationProject {
 export interface MigrationProject_ {
 }
 
+export interface Package {
+    id: number;
+    name: string;
+    fullName: string;
+    countClasses: number;
+    childs: Package[];
+    level: number;
+}
+
+export interface PackageMetadata {
+    id: number;
+    discoveredDate: Date;
+    scanStatus: ScanStatus;
+    packageTree: Package[];
+}
+
+export interface PackageMetadata_ {
+}
+
+export interface Package_ {
+}
+
 export interface RegisteredApplication {
     id: number;
     version: number;
@@ -75,6 +98,7 @@ export interface RegisteredApplication {
     inputPath: string;
     reportIndexPath: string;
     applicationGroup: ApplicationGroup;
+    packageMetadata: PackageMetadata;
     inputFilename: string;
 }
 
@@ -143,8 +167,8 @@ export interface WindupExecution {
     lastModified: Calendar;
     state: ExecutionState;
     analysisContext: AnalysisContext;
-    applicationListRelativePath: string;
     outputDirectoryName: string;
+    applicationListRelativePath: string;
 }
 
 export interface WindupExecution_ {
@@ -160,6 +184,8 @@ export interface Comparable<T> {
 }
 
 export type ExecutionState = "QUEUED" | "STARTED" | "COMPLETED" | "FAILED" | "CANCELLED";
+
+export type ScanStatus = "QUEUED" | "IN_PROGRESS" | "COMPLETE";
 
 export type RegistrationType = "UPLOADED" | "PATH";
 

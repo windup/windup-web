@@ -37,7 +37,6 @@
             'ng2-file-upload': 'npm:ng2-file-upload',
             'angular2-tree-component': 'npm:angular2-tree-component',
             'lodash': 'npm:lodash',
-            'jquery': 'npm:jquery',
             'jstree': 'npm:jstree/dist/jstree.js',
             'bootstrap': 'npm:bootstrap/dist/js/bootstrap.js'
         },
@@ -49,8 +48,7 @@
             rxjs: { defaultExtension: 'js' },
             'ng2-file-upload': { defaultExtension: 'js' },
             'angular2-tree-component'   : { main: 'dist/angular2-tree-component.js', defaultExtension: 'js' },
-            'lodash'                    : { main: 'lodash.js', defaultExtension: 'js' },
-            'jquery': { main: 'dist/jquery.js', defaultExtension: 'js' }
+            'lodash'                    : { main: 'lodash.js', defaultExtension: 'js' }
         }
     });
 })(this);
