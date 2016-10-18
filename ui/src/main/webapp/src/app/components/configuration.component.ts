@@ -1,10 +1,8 @@
 import {Component, OnInit, ViewChild} from "@angular/core";
 import {ConfigurationService} from "../services/configuration.service";
-import {Configuration} from "windup-services";
+import {Configuration, RuleProviderEntity, RulesPath} from "../windup-services";
 import {RuleService} from "../services/rule.service";
-import {RuleProviderEntity} from "windup-services";
 import {RulesModalComponent} from "./rules-modal.component";
-import {RulesPath} from "windup-services";
 import {AddRulesPathModalComponent, ConfigurationEvent} from "./add-rules-path-modal.component";
 
 @Component({

@@ -6,7 +6,7 @@ import {AbstractService} from "./abtract.service";
 import {ConfigurationOption} from "../model/configuration-option.model";
 import {Observable} from "rxjs/Observable";
 import {ValidationResult} from "../model/validation-result.model";
-import {AdvancedOption} from "windup-services";
+import {AdvancedOption} from "../windup-services";
 
 @Injectable()
 export class ConfigurationOptionsService extends AbstractService {

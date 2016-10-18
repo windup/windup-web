@@ -16,7 +16,8 @@ KeycloakService.init().then(
             console.log(err);
             if (window["windupAppInitialized"] != null)
                 window["windupAppInitialized"]();
-        })},
+        });
+    },
     x => {
         window.location.reload();
     }

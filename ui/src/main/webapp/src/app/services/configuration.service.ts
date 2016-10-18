@@ -3,7 +3,7 @@ import {Headers, Http, RequestOptions} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 
 import {Constants} from "../constants";
-import {Configuration, RulesPath} from "windup-services";
+import {Configuration, RulesPath} from "../windup-services";
 import {AbstractService} from "./abtract.service";
 
 @Injectable()
@@ -15,7 +15,7 @@ export class ConfigurationService extends AbstractService {
         super();
     }
 
-    save(configuration: Configuration):Observable<Configuration> {
+    save(configuration: Configuration): Observable<Configuration> {
         let headers = new Headers();
         let options = new RequestOptions({ headers: headers });
         headers.append('Content-Type', 'application/json');

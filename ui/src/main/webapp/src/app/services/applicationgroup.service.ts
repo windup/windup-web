@@ -52,7 +52,7 @@ export class ApplicationGroupService extends AbstractService {
             .catch(this.handleError);
     }
 
-    getByProjectID(projectID:number) {
+    getByProjectID(projectID: number) {
         let headers = new Headers();
         let options = new RequestOptions({ headers: headers });
 
