@@ -14,7 +14,6 @@ import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.GraphContextFactory;
 import org.jboss.windup.graph.model.WindupVertexFrame;
 import org.jboss.windup.web.services.model.WindupExecution;
-import org.jboss.windup.web.services.producer.WindupServicesProducer;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -33,7 +32,7 @@ public class AbstractGraphResource
     private EntityManager entityManager;
 
     @Inject
-    private WindupServicesProducer servicesProducer;
+    private GraphCache graphCache;
 
     protected Map<String, Object> convertToMap(Vertex vertex, Integer depth)
     {
@@ -99,10 +98,10 @@ public class AbstractGraphResource
 
     protected GraphContext getGraph(Long executionID)
     {
-        GraphContextFactory graphContextFactory = servicesProducer.getGraphContextFactory();
+
         WindupExecution execution = entityManager.find(WindupExecution.class, executionID);
         Path graphPath = Paths.get(execution.getGroup().getOutputPath()).resolve(GraphContextFactory.DEFAULT_GRAPH_SUBDIRECTORY);
 
-        return graphContextFactory.load(graphPath);
+        return graphCache.getGraph(graphPath);
     }
 }
