@@ -10,7 +10,7 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 var DashboardPlugin = require('webpack-dashboard/plugin');
 var ForkCheckerPlugin = require('awesome-typescript-loader').ForkCheckerPlugin;
-
+var ProvidePlugin = webpack.ProvidePlugin;
 /**
  * Env
  * Get npm lifecycle event to identify the environment
@@ -70,7 +70,7 @@ module.exports = function makeWebpackConfig() {
    */
   config.resolve = {
     // only discover files that have those extensions
-    extensions: ['.ts', '.js', '.json', '.css', '.scss', '.html'],
+    extensions: ['.ts', '.js', '.json', '.css', '.scss', '.html']
   };
 
   var atlOptions = '';
@@ -109,7 +109,7 @@ module.exports = function makeWebpackConfig() {
       {
         test: /\.css$/,
         exclude: root('src', 'app'),
-        loader: isTest ? 'null' : ExtractTextPlugin.extract({ fallbackLoader: 'style-loader', loader: ['css', 'postcss']})
+        loader: isTest ? 'null' : ExtractTextPlugin.extract({ fallbackLoader: 'style-loader', loader: ['css-loader', 'postcss']})
       },
       // all css required in src/app files will be merged in js files
       {test: /\.css$/, include: root('src', 'app'), loader: 'raw!postcss'},
@@ -203,7 +203,15 @@ module.exports = function makeWebpackConfig() {
           })
         ]
       }
-    })
+    }),
+      new ProvidePlugin({
+        $: 'jquery',
+        jquery: "jquery",
+        jQuery:"jquery",
+        'window.jquery': 'jquery',
+        "windows.jQuery": "jquery",
+        "window.jQuery": "jquery"
+      })
   ];
 
   if (!isTest && !isProd) {
@@ -227,11 +235,15 @@ module.exports = function makeWebpackConfig() {
         template: './src/public/index.html',
         chunksSortMode: 'dependency'
       }),
-
+      new HtmlWebpackPlugin({
+          filename: 'not_loggedin.html',
+          template: './src/public/not_loggedin.html',
+          chunksSortMode: 'dependency'
+        }),
       // Extract css files
       // Reference: https://github.com/webpack/extract-text-webpack-plugin
       // Disabled when in test mode or not in build mode
-      new ExtractTextPlugin({filename: 'css/[name].[hash].css', disable: !isProd})
+      new ExtractTextPlugin({filename: 'css/[name].[hash].css'})
     );
   }
 
@@ -278,4 +290,3 @@ function root(args) {
   args = Array.prototype.slice.call(arguments, 0);
   return path.join.apply(path, [__dirname].concat(args));
 }
-
