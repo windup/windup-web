@@ -6,6 +6,7 @@ import {FileService} from "../services/file.service";
 import {ConfigurationService} from "../services/configuration.service";
 import {Configuration} from "windup-services";
 import {RulesPath} from "windup-services";
+import $ from 'jquery';
 
 @Component({
     selector: 'add-rules-path-modal',
