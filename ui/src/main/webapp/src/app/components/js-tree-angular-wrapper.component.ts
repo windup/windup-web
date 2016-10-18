@@ -2,12 +2,12 @@ import {
     Component, OnInit, Input, ElementRef, SimpleChange, Output, EventEmitter, NgZone,
     OnChanges
 } from "@angular/core";
-import {Package} from "windup-services";
-import $ from 'jquery';
+import {Package} from "../windup-services";
+import * as $ from "jquery";
 import 'jstree';
 
 @Component({
-    templateUrl: 'app/components/js-tree-angular-wrapper.component.html',
+    templateUrl: 'js-tree-angular-wrapper.component.html',
     selector: 'app-js-tree-wrapper'
 })
 export class JsTreeAngularWrapperComponent implements OnInit, OnChanges {

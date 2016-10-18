@@ -23,15 +23,16 @@ export class KeycloakService {
         KeycloakService.auth.loggedIn = false;
 
         return new Promise((resolve,reject) => {
-            keycloakAuth.init({ onLoad: 'check-sso' })
+            keycloakAuth.init({ onLoad: 'login-required' })
                 .success( (auth) => {
                     if (!auth) {
-                        window.location.href = Constants.UNAUTHENTICATED_PAGE;
+                        console.log('window.location.href');
+                        //window.location.href = Constants.UNAUTHENTICATED_PAGE;
                         return;
                     }
                     KeycloakService.auth.loggedIn = true;
                     KeycloakService.auth.authz = keycloakAuth;
-                    KeycloakService.auth.logoutUrl = keycloakAuth.authServerUrl + "/realms/windup/tokens/logout?redirect_uri=http://localhost:8080/windup-web";
+                    KeycloakService.auth.logoutUrl = keycloakAuth.authServerUrl + "/realms/windup/tokens/logout?redirect_uri=" + Constants.AUTH_REDIRECT_URL;
                     resolve(null);
                 })
                 .error(() => {
@@ -40,7 +41,7 @@ export class KeycloakService {
         });
     }
 
-    logout() {
+    static logout() {
         console.log('*** LOGOUT');
         KeycloakService.auth.authz.logout();
         KeycloakService.auth.loggedIn = false;

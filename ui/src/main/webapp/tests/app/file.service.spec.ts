@@ -4,10 +4,10 @@ import {TestBed, async, inject} from '@angular/core/testing';
 
 import 'rxjs/Rx';
 
-import {Constants} from '../../app/constants';
+import {Constants} from '../../src/app/constants';
 
-import {FileService} from "../../app/services/file.service";
-import {KeycloakService} from "../../app/services/keycloak.service";
+import {FileService} from "../../src/app/services/file.service";
+import {KeycloakService} from "../../src/app/services/keycloak.service";
 
 
 describe("File Service", () => {

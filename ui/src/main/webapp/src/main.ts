@@ -1,24 +1,31 @@
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import {NgZone} from '@angular/core';
+import {platformBrowserDynamic} from "@angular/platform-browser-dynamic";
+import {NgZone, enableProdMode} from "@angular/core";
+import {KeycloakService} from "./app/services/keycloak.service";
+import {AppModule} from "./app/app.module";
 
-import { KeycloakService } from './services/keycloak.service';
-import { AppModule } from './app.module';
+require('./keycloak.json.ftl');
+require('../css/windup-web.css');
+
+if (process.env.ENV === 'production') {
+    enableProdMode();
+}
 
 KeycloakService.init().then(
-    o => {
+    success => {
         platformBrowserDynamic().bootstrapModule(AppModule).then(app => {
             // this is just here to make some data easier to retrieve from tests
             window["app"]= app;
             window["MainNgZone"] = app.injector.get(NgZone);
             if (window["windupAppInitialized"] != null)
                 window["windupAppInitialized"](app, window["MainNgZone"]);
-        }, err => {
+        })
+        .catch(err => {
             console.log(err);
             if (window["windupAppInitialized"] != null)
                 window["windupAppInitialized"]();
         });
-    },
-    x => {
-        window.location.reload();
     }
-);
+).catch(error => {
+    console.log('reload');
+    // window.location.reload();
+});

@@ -1,6 +1,6 @@
 import {Component, Input} from "@angular/core";
-import {RuleProviderEntity} from "windup-services";
-import $ from 'jquery';
+import {RuleProviderEntity} from "../windup-services";
+import * as $ from "jquery";
 
 @Component({
     selector: 'rules-modal',

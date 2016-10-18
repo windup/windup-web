@@ -256,8 +256,8 @@
                 </plugins>
             </build>
         </profile>
-        
-        
+
+
         <profile>
             <id>arquillian-wildfly-10-managed</id>
             <activation>

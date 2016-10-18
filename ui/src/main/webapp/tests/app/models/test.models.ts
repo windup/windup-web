@@ -1,7 +1,7 @@
-import {BaseModel} from '../../../app/services/graph/base.model';
-import {GraphProperty} from "../../../app/services/graph/graph-property.decorator";
-import {DiscriminatorMapping} from "../../../app/services/graph/discriminator-mapping";
-import {GraphAdjacency} from "../../../app/services/graph/graph-adjacency.decorator";
+import {BaseModel} from '../../../src/app/services/graph/base.model';
+import {GraphProperty} from "../../../src/app/services/graph/graph-property.decorator";
+import {DiscriminatorMapping} from "../../../src/app/services/graph/discriminator-mapping";
+import {GraphAdjacency} from "../../../src/app/services/graph/graph-adjacency.decorator";
 
 import {Observable} from "rxjs/Observable";
 
