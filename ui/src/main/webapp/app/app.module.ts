@@ -46,6 +46,8 @@ import {NotificationService} from "./services/notification.service";
 import {NotificationComponent} from "./components/notification.component";
 import {ConfirmDeactivateGuard} from "./confirm-deactivate.guard";
 import {PopoverComponent} from "./components/popover.component";
+import {JsTreeAngularWrapperComponent} from "./components/js-tree-angular-wrapper.component";
+import {PackageRegistryService} from "./services/package-registry.service";
 import {TechnologiesReport} from "./components/reports/technologies/technologies.report";
 
 
@@ -89,7 +91,8 @@ import {TechnologiesReport} from "./components/reports/technologies/technologies
         UploadProgressbarComponent,
         CustomRuleSelectionComponent,
         NotificationComponent,
-        PopoverComponent
+        PopoverComponent,
+        JsTreeAngularWrapperComponent
     ],
     providers: [
         appRoutingProviders,
@@ -106,7 +109,7 @@ import {TechnologiesReport} from "./components/reports/technologies/technologies
         RuleService,
         WindupService,
         NotificationService,
-
+        PackageRegistryService,
         {
             provide: Http,
             useFactory:

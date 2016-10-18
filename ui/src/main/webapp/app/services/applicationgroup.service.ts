@@ -4,6 +4,7 @@ import {Headers, Http, RequestOptions, Response} from '@angular/http';
 import {Constants} from "../constants";
 import {ApplicationGroup} from "windup-services";
 import {AbstractService} from "./abtract.service";
+import {Observable} from "rxjs";
 
 @Injectable()
 export class ApplicationGroupService extends AbstractService {
@@ -43,7 +44,7 @@ export class ApplicationGroupService extends AbstractService {
             .catch(this.handleError);
     }
 
-    get(id:number) {
+    get(id:number): Observable<ApplicationGroup> {
         let headers = new Headers();
         let options = new RequestOptions({ headers: headers });
         return this._http.get(Constants.REST_BASE + this.GET_BY_ID_URL + "/" + id, options)

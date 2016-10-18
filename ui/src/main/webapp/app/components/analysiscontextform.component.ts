@@ -17,6 +17,7 @@ import {IsDirty} from "../is-dirty.interface";
 import {Observable} from "rxjs/Observable";
 import {AdvancedOption} from "windup-services";
 import {Package} from "windup-services";
+import {PackageRegistryService} from "../services/package-registry.service";
 
 @Component({
     templateUrl: 'app/components/analysiscontextform.component.html'
@@ -30,6 +31,7 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
     applicationGroup:ApplicationGroup = null;
 
     analysisContext:AnalysisContext = <AnalysisContext>{};
+    packageTree: Package[] = [];
 
     /**
      * These two variables exist because we need for the item in the array not to just be a literal.
@@ -51,7 +53,8 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
                 private _applicationGroupService:ApplicationGroupService,
                 private _migrationPathService:MigrationPathService,
                 private _analysisContextService:AnalysisContextService,
-                private _configurationOptionsService:ConfigurationOptionsService) {
+                private _configurationOptionsService:ConfigurationOptionsService,
+                private _packageRegistryService: PackageRegistryService) {
         super();
         this.analysisContext.migrationPath = <MigrationPath>{};
         this.includePackages = [];
@@ -81,6 +84,10 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
         console.log("2Advanced options changed... dirty: " + this.dirty);
     }
 
+    onNodesChanged(event) {
+        console.log(event);
+    }
+
     ngOnInit() {
         this._activatedRoute.params.subscribe(params => {
             let id:number = parseInt(params["groupID"]);
@@ -96,6 +103,14 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
                 this._applicationGroupService.get(id).subscribe(
                     group => {
                         this.applicationGroup = group;
+
+                        if (this.applicationGroup.packageMetadata.scanStatus === "COMPLETE") {
+                            this.applicationGroup.packageMetadata.packageTree.forEach(node => {
+                                this._packageRegistryService.putHierarchy(node);
+                            });
+                        }
+
+                        this.packageTree = group.packageMetadata.packageTree;
                         this.analysisContext = group.analysisContext;
                         console.log("Loaded analysis context: " + JSON.stringify(this.analysisContext));
 
@@ -103,25 +118,31 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
                             this.analysisContext = <AnalysisContext>{};
                             this.analysisContext.migrationPath = <MigrationPath>{};
                             this.analysisContext.advancedOptions = [];
-                            this.includePackages = [];
-                            this.excludePackages = [];
+                            this.analysisContext.includePackages = [];
+                            this.analysisContext.excludePackages = [];
                             this.analysisContext.rulesPaths = [];
                         } else {
                             // for migration path, store the id only
                             this.analysisContext.migrationPath = <MigrationPath>{ id: this.analysisContext.migrationPath.id };
-                            if (this.analysisContext.includePackages == null || this.analysisContext.includePackages.length == 0)
-                                this.includePackages = [];
-                            else
-                                //this.includePackages = <[{prefix:string}]>this.analysisContext.includePackages.map(it => { return { prefix: it }});
 
-                            if (this.analysisContext.excludePackages == null || this.analysisContext.excludePackages.length == 0)
-                                this.excludePackages = [];
-                            else
-                                //this.excludePackages = <[{prefix:string}]>this.analysisContext.excludePackages.map(it => { return { prefix: it }});
+                            if (this.analysisContext.includePackages == null || this.analysisContext.includePackages.length == 0) {
+                                this.analysisContext.includePackages = [];
+                            } else {
+                                this.analysisContext.includePackages = this.analysisContext.includePackages.map(node => this._packageRegistryService.get(node.id));
+                            }
+
+                            if (this.analysisContext.excludePackages == null || this.analysisContext.excludePackages.length == 0) {
+                                this.analysisContext.excludePackages = [];
+                            } else {
+                                this.analysisContext.excludePackages = this.analysisContext.excludePackages.map(node => this._packageRegistryService.get(node.id));
+                            }
 
                             if (this.analysisContext.rulesPaths == null)
                                 this.analysisContext.rulesPaths = [];
                         }
+
+                        this.includePackages = this.analysisContext.includePackages;
+                        this.excludePackages = this.analysisContext.excludePackages;
 
                         // Just use the ID here
                         this.analysisContext.applicationGroup = <ApplicationGroup>{ id: group.id };
@@ -136,27 +157,7 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
         });
     }
 
-    addScanPackage() {
-        // this.packages.push();
-    }
-
-    removeScanPackage(index:number) {
-        this.includePackages.splice(index, 1);
-    }
-
-    addExcludePackage() {
-        // this.excludePackages.push();
-    }
-
-    removeExcludePackage(index:number) {
-        this.excludePackages.splice(index, 1);
-    }
-
     save() {
-//        this.analysisContext.includePackages = this.includePackages.filter(it => { return it.prefix != null && it.prefix.trim() != "" }).map(it => { return it.prefix; });
-//        this.analysisContext.excludePackages = this.excludePackages.filter(it => { return it.prefix != null && it.prefix.trim() != "" }).map(it => { return it.prefix; });
-//        console.log("Should save with packages: " + JSON.stringify(this.analysisContext.packages) + " filtered from: " + JSON.stringify(this.includePackages) + " Rules paths: " + JSON.stringify(this.analysisContext.rulesPaths));
-
         if (this.analysisContext.id != null) {
             console.log("Updating analysis context: " + this.analysisContext.migrationPath.id);
             this._analysisContextService.update(this.analysisContext).subscribe(

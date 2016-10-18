@@ -31,52 +31,27 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="col-md-2 control-label" for="includePackageID">Include Packages</label>
+            <label class="col-md-2 control-label">Include Packages</label>
             <div class="col-md-4">
-                <div *ngFor="let includePackage of includePackages; let i = index;" class="input-group">
-                    <input #includePackageControl="ngModel"
-                        name="includePackagesInput_{{i}}"
-                        [(ngModel)]="includePackage.prefix"
-                        ngControl="includePackageControl"
-                        maxlength="200"
-                        type="text"
-                        id="includePackageID"
-                        class="form-control">
-                    <span *ngIf="i != (includePackages.length - 1)" class="input-group-btn">
-                        <button *ngIf="includePackages.length > 1" (click)="removeScanPackage(i)" class="btn " type="button">-</button>
-                    </span>
-                    <span *ngIf="i == (includePackages.length - 1)" class="input-group-btn">
-                        <button *ngIf="includePackages.length > 1" (click)="removeScanPackage(i)" class="btn " type="button">-</button>
-                        <button (click)="addScanPackage()" class="btn " type="button">+</button>
-                    </span>
-                </div>
+                <app-js-tree-wrapper
+                        [treeNodes]="packageTree"
+                        [(selectedNodes)]="analysisContext.includePackages"
+                >
+                </app-js-tree-wrapper>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-md-2 control-label" for="excludePackageID">Exclude Package</label>
+            <label class="col-md-2 control-label">Exclude Package</label>
             <div class="col-md-3">
-                <div *ngFor="let excludePackage of excludePackages; let i = index;" class="input-group">
-                    <input #excludePackageControl="ngModel"
-                           name="excludePackagesInput_{{i}}"
-                           [(ngModel)]="excludePackage.prefix"
-                           ngControl="excludePackageControl"
-                           maxlength="200"
-                           type="text"
-                           id="excludePackageID"
-                           class="form-control">
-                    <span *ngIf="i != (excludePackages.length - 1)" class="input-group-btn">
-                        <button *ngIf="excludePackages.length > 1" (click)="removeExcludePackage(i)" class="btn " type="button">-</button>
-                    </span>
-                    <span *ngIf="i == (excludePackages.length - 1)" class="input-group-btn">
-                        <button *ngIf="excludePackages.length > 1" (click)="removeExcludePackage(i)" class="btn " type="button">-</button>
-                        <button (click)="addExcludePackage()" class="btn " type="button">+</button>
-                    </span>
-                </div>
+                <app-js-tree-wrapper
+                        [treeNodes]="packageTree"
+                        [(selectedNodes)]="analysisContext.excludePackages">
+                </app-js-tree-wrapper>
             </div>
         </div>
         <custom-rule-selection [selectedRulePaths]="analysisContext.rulesPaths" (selectedRulePathsChanged)="rulesPathsChanged($event)"></custom-rule-selection>
         <div class="form-group">
-            <label class="col-md-2 control-label" for="excludePackageID">Advanced Options</label>
+            <label class="col-md-2 control-label">Advanced Options</label>
             <div class="col-md-3">
                 <button class="btn btn-default" (click)="viewAdvancedOptions(advancedOptionsModal)">View Advanced Options</button>
             </div>

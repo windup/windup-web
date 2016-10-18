@@ -1,4 +1,5 @@
 import {Component, EventEmitter, Inject, Input, Output} from "@angular/core";
+import $ from 'jquery';
 
 @Component({
     selector: 'confirmation-modal',
