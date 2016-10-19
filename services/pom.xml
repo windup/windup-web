@@ -119,12 +119,6 @@
             <version>${version.windup}</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.jboss.windup.rules</groupId>
-            <artifactId>windup-rulesets</artifactId>
-            <version>${version.windup}</version>
-            <scope>provided</scope>
-        </dependency>
 
         <!-- Test Dependencies -->
         <dependency>
@@ -238,6 +232,30 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack-windup-dist</id>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.jboss.windup</groupId>
+                                    <artifactId>windup-distribution</artifactId>
+                                    <version>${version.windup}</version>
+                                    <classifier>offline</classifier>
+                                    <type>zip</type>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${project.build.directory}/${project.artifactId}/WEB-INF/</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.jboss.forge.furnace</groupId>
                 <artifactId>furnace-maven-plugin</artifactId>
                 <version>${version.furnace}</version>
@@ -250,14 +268,9 @@
                         </goals>
                         <inherited>false</inherited>
                         <configuration>
-                            <addonRepository>${project.build.directory}/${project.artifactId}/WEB-INF/addon-repository</addonRepository>
+                            <overwrite>false</overwrite>
+                            <addonRepository>${project.build.directory}/${project.artifactId}/WEB-INF/windup-distribution-${version.windup}/addons</addonRepository>
                             <addonIds>
-                                <addonId>org.jboss.forge.furnace.container:cdi,${version.furnace}</addonId>
-                                <addonId>org.jboss.forge.furnace.container:simple,${version.furnace}</addonId>
-                                <addonId>org.jboss.windup.ui:windup-ui,${version.windup}</addonId>
-                                <addonId>org.jboss.windup.rules.apps:windup-rules-java,${version.windup}</addonId>
-                                <addonId>org.jboss.windup.rules.apps:windup-rules-java-project,${version.windup}</addonId>
-                                <addonId>org.jboss.windup.rules.apps:windup-rules-java-ee,${version.windup}</addonId>
                                 <addonId>org.jboss.windup.web.addons:windup-web-support,${project.version}</addonId>
                             </addonIds>
                         </configuration>
@@ -265,26 +278,18 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.10</version>
+                <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>unpack-rules</id>
+                        <id>rename-windup-dist</id>
                         <phase>test-compile</phase>
                         <goals>
-                            <goal>unpack</goal>
+                            <goal>run</goal>
                         </goals>
                         <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.jboss.windup.rules</groupId>
-                                    <artifactId>windup-rulesets</artifactId>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>${project.build.directory}/${project.artifactId}/WEB-INF/rules</outputDirectory>
-                                </artifactItem>
-                            </artifactItems>
-                            <excludes>**/tests/**</excludes>
+                            <tasks>
+                                <move file="${project.build.directory}/${project.artifactId}/WEB-INF/windup-distribution-${version.windup}" tofile="${project.build.directory}/${project.artifactId}/WEB-INF/windup-distribution" />
+                            </tasks>
                         </configuration>
                     </execution>
                 </executions>
@@ -406,24 +411,6 @@
                     <plugin>
                         <artifactId>maven-dependency-plugin</artifactId>
                         <executions>
-                            <execution>
-                                <id>unpack-rules</id>
-                                <phase>test-compile</phase>
-                                <goals>
-                                    <goal>unpack</goal>
-                                </goals>
-                                <configuration>
-                                    <artifactItems>
-                                        <artifactItem>
-                                            <groupId>org.jboss.windup.rules</groupId>
-                                            <artifactId>windup-rulesets</artifactId>
-                                            <overWrite>true</overWrite>
-                                            <outputDirectory>${project.build.directory}/${project.artifactId}/WEB-INF/rules</outputDirectory>
-                                        </artifactItem>
-                                    </artifactItems>
-                                    <excludes>**/tests/**</excludes>
-                                </configuration>
-                            </execution>
                             <execution>
                                 <id>unpack</id>
                                 <phase>process-test-classes</phase>
