@@ -9,6 +9,16 @@ import "@angular/router";
 import "rxjs";
 import "@angularclass/hmr";
 
+// Stupid workaround for jQuery
+// Some jQuery modules require jQuery to be global variable
+// But some of them (and jQuery itself) already support UMD
+// So jQuery must be manually registered as global variable and webpack must be forced to load those modules
+// into global scope in webpack config
+import * as $ from 'jquery';
+
+window['jQuery'] = $;
+window['$'] = $;
+
 // Other vendors for example jQuery, Lodash or Bootstrap
 // You can import js, ts, css, sass, ...
 
@@ -16,8 +26,12 @@ import "@angularclass/hmr";
 require('../node_modules/jquery/dist/jquery');
 require('../node_modules/bootstrap/dist/js/bootstrap');
 
-require('../node_modules/datatables/media/js/jquery.dataTables.min.js');
-require('../node_modules/drmonty-datatables-colvis/js/dataTables.colVis.min.js');
+require('../node_modules/datatables/media/js/jquery.dataTables');
+require('../node_modules/datatables/media/css/jquery.dataTables.min.css');
+
+//require('../node_modules/datatables/media/js/jquery.dataTables.min.js');
+//require('../node_modules/drmonty-datatables-colvis/js/dataTables.colVis.min.js');
+require('../node_modules/drmonty-datatables-colvis/js/dataTables.colVis');
 require('../node_modules/datatables-colreorder/js/dataTables.colReorder.js');
 
 require('../node_modules/patternfly/dist/js/patternfly.min');
@@ -33,14 +47,6 @@ require('../node_modules/bootstrap-treeview/dist/bootstrap-treeview.min.js');
 require('../node_modules/google-code-prettify/bin/prettify.min.js');
 require('../node_modules/jquery-match-height/dist/jquery.matchHeight-min.js');
 
-require('../node_modules/core-js/client/shim.min.js');
-require('../node_modules/reflect-metadata/Reflect.js');
-
-
 // css
-require('../css/windup-web.css');
 require('../node_modules/patternfly/dist/css/patternfly.min.css');
 require('../node_modules/patternfly/dist/css/patternfly-additions.min.css');
-
-
-require('./keycloak.json');
