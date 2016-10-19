@@ -23,7 +23,7 @@ export class KeycloakService {
         KeycloakService.auth.loggedIn = false;
 
         return new Promise((resolve,reject) => {
-            keycloakAuth.init({ onLoad: 'check-sso' })
+            keycloakAuth.init({ onLoad: 'login-required' })
                 .success( (auth) => {
                     if (!auth) {
                         console.log('window.location.href');
