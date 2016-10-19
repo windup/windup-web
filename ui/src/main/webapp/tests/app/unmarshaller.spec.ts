@@ -1,7 +1,7 @@
 import {async} from '@angular/core/testing';
 
-import {GraphJSONToModelService, RelationInfo} from '../../app/services/graph/graph-json-to-model.service';
-import {DiscriminatorMapping, getParentClass} from '../../app/services/graph/discriminator-mapping';
+import {GraphJSONToModelService, RelationInfo} from '../../src/app/services/graph/graph-json-to-model.service';
+import {DiscriminatorMapping, getParentClass} from '../../src/app/services/graph/discriminator-mapping';
 import {TestGeneratorModel, TestPlanetModel, TestShipModel} from './models/test.models';
 import {TestGraphData} from './models/test-graph-data';
 
