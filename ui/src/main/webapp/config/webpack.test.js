@@ -1,17 +1,12 @@
-var webpack = require('webpack');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var helpers = require('./helpers');
+var webpack = require('webpack');
+var ContextReplacementPlugin = webpack.ContextReplacementPlugin;
 
 module.exports = {
-    entry: {
-        'polyfills': './src/polyfills.ts',
-        'vendor': './src/vendor.ts',
-        'app': './src/main.ts'
-    },
+    devtool: 'inline-source-map',
 
     resolve: {
-        extensions: ['', '.js', '.ts']
+        extensions: ['.ts', '.js']
     },
 
     module: {
@@ -23,15 +18,16 @@ module.exports = {
             {
                 test: /\.html$/,
                 loader: 'html'
+
             },
             {
                 test: /\.(png|jpe?g|gif|svg|woff|woff2|ttf|eot|ico)$/,
-                loader: 'file?name=assets/[name].[hash].[ext]'
+                loader: 'null'
             },
             {
                 test: /\.css$/,
                 exclude: helpers.root('src', 'app'),
-                loader: ExtractTextPlugin.extract({ fallbackLoader: 'style', loader: ['css?sourceMap'] })
+                loader: 'null'
             },
             {
                 test: /\.css$/,
@@ -40,14 +36,14 @@ module.exports = {
             }
         ]
     },
-
     plugins: [
-        new webpack.optimize.CommonsChunkPlugin({
-            name: ['app', 'vendor', 'polyfills']
-        }),
-
-        new HtmlWebpackPlugin({
-            template: 'src/index.html'
-        })
+        // This is needed to suppress warning caused by some angular issue
+        // see https://github.com/angular/angular/issues/11580
+        new ContextReplacementPlugin(
+            // The (\\|\/) piece accounts for path separators in *nix and Windows
+            /angular(\\|\/)core(\\|\/)(esm(\\|\/)src|src)(\\|\/)linker/,
+            helpers.root('./src'), // location of your src
+            {} // a map of your routes
+        )
     ]
 };
