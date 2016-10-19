@@ -104,12 +104,26 @@ public class TsGenUtils
     }
 
 
-    static String removePrefixAndSetMethodPresence(String name, String prefix, EnumSet<ModelRelation.BeanMethodType> methodsPresent, ModelRelation.BeanMethodType flagToSetIfPrefixFound)
+    static String removePrefixAndSetMethodPresence(String name, String prefix, EnumSet<ModelMember.BeanMethodType> methodsPresent, ModelRelation.BeanMethodType flagToSetIfPrefixFound)
     {
         String name2 = StringUtils.removeStart(name, prefix);
         if (!name2.equals(name))
             methodsPresent.add(flagToSetIfPrefixFound);
         return name2;
+    }
+
+    static void quoteIfNotNull(StringBuilder sb, String val)
+    {
+        if (val == null)
+            sb.append("null");
+        else
+            sb.append("'").append(val).append("'");
+    }
+
+
+    static String quoteIfNotNull(String val)
+    {
+        return (val == null) ? "null" : new StringBuilder().append("'").append(val).append("'").toString();
     }
 
 }

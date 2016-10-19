@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Http, Response} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
-import {BaseModel} from "./base.model";
+import {BaseFrameModel} from "./BaseFrameModel";
 
 /**
  * Facilitates the data flow between a generic REST endpoint for the graph and the calling methods.
@@ -25,8 +25,8 @@ export class FramesRestClientService
      * @param limit          Maximum number of items to return. This implies a need for sorting.
      * @param offset         The offset to start the returned list at. This assumes sorting.
      */
-    public queryAdjacent<T extends BaseModel>(
-            initialFrames: BaseModel | BaseModel[] | number[],
+    public queryAdjacent<T extends BaseFrameModel>(
+            initialFrames: BaseFrameModel | BaseFrameModel[] | number[],
             edgeLabel: string,
             directionOut: boolean,
             query?: string,
@@ -35,14 +35,14 @@ export class FramesRestClientService
             offset?: number
     ):
         Observable<QueryResults<T>>
-        //BaseModel[]
+        //BaseFrameModel[]
     {
         var initialIDs: number[];
-        if (initialFrames instanceof BaseModel)
-            initialIDs = [(<BaseModel>initialFrames).vertexId];
+        if (initialFrames instanceof BaseFrameModel)
+            initialIDs = [(<BaseFrameModel>initialFrames).vertexId];
         else if (initialFrames instanceof Array)
             // string[] of ID's
-            initialIDs = (<BaseModel[]>initialFrames).map((frame) => frame.vertexId);
+            initialIDs = (<BaseFrameModel[]>initialFrames).map((frame) => frame.vertexId);
         else
             initialIDs = <number[]> initialFrames;
 
@@ -71,7 +71,7 @@ export class FramesRestClientService
      * Adds the adjacent vertex; if there's already one, it is removed.
      * This assumes that the frame already exists and only references it by vertexId. TODO: Support creating the frame.
      */
-    public setAdjacent(thisFrame: BaseModel, adjacentFrame: BaseModel | number, edgeLabel: string, directionOut: boolean)
+    public setAdjacent(thisFrame: BaseFrameModel, adjacentFrame: BaseFrameModel | number, edgeLabel: string, directionOut: boolean)
     {
         this.requestToAdjacent("set", thisFrame, adjacentFrame, edgeLabel, directionOut);
     }
@@ -80,7 +80,7 @@ export class FramesRestClientService
      * Adds the adjacent vertex.
      * This assumes that the frame already exists and only references it by vertexId. TODO: Support creating the frame.
      */
-    public addAdjacent(thisFrame: BaseModel, adjacentFrame: BaseModel | number, edgeLabel: string, directionOut: boolean)
+    public addAdjacent(thisFrame: BaseFrameModel, adjacentFrame: BaseFrameModel | number, edgeLabel: string, directionOut: boolean)
     {
         this.requestToAdjacent("add", thisFrame, adjacentFrame, edgeLabel, directionOut);
     }
@@ -88,15 +88,15 @@ export class FramesRestClientService
     /**
      * Removes the adjacent vertex.
      */
-    public removeAdjacent(thisFrame: BaseModel, adjacentFrame: BaseModel | number, edgeLabel: string, directionOut: boolean)
+    public removeAdjacent(thisFrame: BaseFrameModel, adjacentFrame: BaseFrameModel | number, edgeLabel: string, directionOut: boolean)
     {
         this.requestToAdjacent("remove", thisFrame, adjacentFrame, edgeLabel, directionOut);
     }
 
-    private requestToAdjacent(mode: string, thisFrame: BaseModel, adjacentFrame: BaseModel | number, edgeLabel: string, directionOut: boolean)
+    private requestToAdjacent(mode: string, thisFrame: BaseFrameModel, adjacentFrame: BaseFrameModel | number, edgeLabel: string, directionOut: boolean)
     {
         var id = FramesRestClientService.getVertexId(adjacentFrame);
-        var body = adjacentFrame instanceof BaseModel ? JSON.stringify(adjacentFrame) : "";
+        var body = adjacentFrame instanceof BaseFrameModel ? JSON.stringify(adjacentFrame) : "";
 
         if (mode === "remove" && id == null)
             throw new Error("Frame to remove has no ID: " + body);
@@ -111,8 +111,8 @@ export class FramesRestClientService
 
 
 
-    static getVertexId(frameOrId: BaseModel | number){
-        return <number> ((frameOrId instanceof BaseModel) ? (<BaseModel>frameOrId).vertexId : frameOrId);
+    static getVertexId(frameOrId: BaseFrameModel | number){
+        return <number> ((frameOrId instanceof BaseFrameModel) ? (<BaseFrameModel>frameOrId).vertexId : frameOrId);
     }
 
     private handleError(error: Response) {
@@ -123,7 +123,7 @@ export class FramesRestClientService
 }
 
 
-export class QueryResults<T extends BaseModel>
+export class QueryResults<T extends BaseFrameModel>
 {
     status: string;
     frames: T[];

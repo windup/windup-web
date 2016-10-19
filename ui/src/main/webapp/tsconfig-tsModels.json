@@ -8,13 +8,12 @@
     "experimentalDecorators": true,
     "removeComments": false,
     "noImplicitAny": false,
-    "rootDir": ".",
-    "outDir": "../../../target/windup-web",
+    "rootDirs": [".", "../../src/main/webapp/"],
+    "outDir": "../windup-web/app/tsModels",
     "sourceRoot": "/windup-web/"
   },
+  // Only compile the models
   "exclude": [
-    "node_modules",
-    "typings/main",
-    "typings/main.d.ts"
+    "../../src/main/webapp/**"
   ]
 }

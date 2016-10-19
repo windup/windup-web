@@ -120,6 +120,10 @@
                             <directory>src/main/webapp/typings/</directory>
                             <followSymlinks>false</followSymlinks>
                         </fileset>
+                        <fileset>
+                            <directory>src/main/webapp/app/tsModels/</directory>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
                     </filesets>
                 </configuration>
             </plugin>
@@ -175,6 +179,12 @@
                         <configuration>
                             <workingDirectory>src/main/webapp</workingDirectory>
                             <executable>node_modules/.bin/tsc</executable>
+                            <!--
+                            <arguments>
+                                <argument>- -rootDir</argument>
+                                <argument>src/main/webapp</argument>
+                            </arguments>
+                            -->
                         </configuration>
                     </execution>
                 </executions>
@@ -183,6 +193,97 @@
     </build>
 
     <profiles>
+        <!-- Extract TS models from an artifact. -->
+        <profile>
+            <properties>
+                <dirToPlaceTsModelsDirTo>src/main/webapp/app/</dirToPlaceTsModelsDirTo>
+            </properties>
+            <id>extractTypescriptModels</id>
+            <activation> <activeByDefault>true</activeByDefault> </activation>
+            <build>
+                <plugins>
+                    <!-- Extract TS models -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>2.10</version>
+                        <executions>
+                            <execution>
+                                <id>unpack-tsModels</id>
+                                <phase>initialize</phase>
+                                <goals> <goal>unpack</goal> </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.jboss.windup.web.ui</groupId>
+                                            <artifactId>windup-web-ui-tsmodels</artifactId>
+                                            <version>${project.version}</version>
+                                            <overWrite>true</overWrite>
+                                            <outputDirectory>${dirToPlaceTsModelsDirTo}</outputDirectory>
+                                            <includes>**/*.ts</includes>
+                                            <excludes>META-INF/**</excludes>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <!-- Copy the TS config and compile models if they are outside of webapp/ . -->
+        <profile>
+            <properties>
+                <dirToPlaceTsModelsDirTo>${project.basedir}/target/</dirToPlaceTsModelsDirTo>
+            </properties>
+            <id>compileModels</id>
+            <activation>  <property> <name>modelsToTarget</name> </property>  </activation>
+            <build>
+                <plugins>
+                    <!-- Copy the tsconfig.json to the target dir. -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.8</version>
+                        <executions>
+                            <execution>
+                                <id>copy-tsconfig-tsModels.json</id>
+                                <phase>initialize</phase>
+                                <goals> <goal>run</goal> </goals>
+                                <configuration>
+                                    <target>
+                                        <copy file="${project.basedir}/src/main/webapp/tsconfig-tsModels.json"
+                                              tofile="${project.basedir}/target/tsModels/tsconfig.json"/>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Compile the models. -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>compile-tsModels</id>
+                                <phase>compile</phase>
+                                <goals> <goal>exec</goal> </goals>
+                                <configuration>
+                                    <workingDirectory>${project.basedir}</workingDirectory>
+                                    <executable>src/main/webapp/node_modules/.bin/tsc</executable>
+                                    <arguments>
+                                        <argument>-p</argument>
+                                        <argument>${project.build.directory}/tsModels/</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
+        
         <profile>
             <id>arquillian-wildfly-10-managed</id>
             <activation>

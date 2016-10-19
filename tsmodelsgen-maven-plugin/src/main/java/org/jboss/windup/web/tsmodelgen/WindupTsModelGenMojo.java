@@ -9,7 +9,9 @@ package org.jboss.windup.web.tsmodelgen;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -34,11 +36,12 @@ import org.jboss.forge.furnace.se.FurnaceFactory;
 import org.jboss.forge.furnace.versions.SingleVersion;
 import org.jboss.forge.furnace.versions.Version;
 import org.jboss.forge.furnace.versions.Versions;
-import org.jboss.windup.exec.configuration.WindupConfiguration;
-import org.jboss.windup.exec.configuration.options.OverwriteOption;
 import org.jboss.windup.util.PathUtil;
 import org.jboss.windup.util.exception.WindupException;
-import org.jboss.windup.web.addons.tsmodelsgen.TypescriptModelsGeneratingService;
+import org.jboss.windup.web.addons.tsmodelsgen.TypeScriptModelsGeneratingService;
+import org.jboss.windup.web.addons.tsmodelsgen.TypeScriptModelsGeneratorConfig;
+import org.jboss.windup.web.addons.tsmodelsgen.TypeScriptModelsGeneratorConfig.AdjacencyMode;
+import org.jboss.windup.web.addons.tsmodelsgen.TypeScriptModelsGeneratorConfig.FileNamingStyle;
 
 /**
  * Generates the Typescript models for Windup web.
@@ -46,7 +49,7 @@ import org.jboss.windup.web.addons.tsmodelsgen.TypescriptModelsGeneratingService
  * 
  * @author <a href="mailto:zizka@seznam.cz">Ondrej Zizka</a>
  */
-@Mojo(name = "tsmodelgen", requiresDependencyResolution = ResolutionScope.COMPILE, aggregator = true)
+@Mojo(name = "tsmodelgen", requiresDependencyResolution = ResolutionScope.COMPILE, aggregator = false)
 @Execute(phase = LifecyclePhase.GENERATE_SOURCES)
 public class WindupTsModelGenMojo extends AbstractMojo
 {
@@ -63,28 +66,44 @@ public class WindupTsModelGenMojo extends AbstractMojo
     private String outputDirectory;
 
     /**
-     * Location of the input file application.
+     * Path the webapp/ dir which will be used for the imports in the generated models.
+     * I.e. <code>import {...} from '$importPathToWebapp';</code>
+     * Needs to be the relative path from the final TS models dir to the graph package dir.
      */
-    @Parameter( alias = "inputDir",  property = "inputDir", required = false, defaultValue = "" )
-    private String inputDirectory;
+    @Parameter( alias = "importPathToWebapp",  property = "importPathToWebapp", required = false, defaultValue = "" )
+    private String importPathToWebapp;
 
     /**
-     * 
+     * How adjacency is handled - plain arrays ('MATERIALIZED') or proxied methods ('PROXIED').
      */
     @Parameter( alias = "adjacencyMode", property = "adjacencyMode", required = false, defaultValue = "MATERIALIZED")
     private String adjacencyMode;
 
+    /**
+     * How the file names look like:
+     * <pre>
+     * CAMELCASE        FooModel.ts
+     * LOWERCASE_DASHES foo-model.ts
+     * LOWERCASE_DOTS   foo.model.ts
+     * </pre>
+     * Currently only CAMELCASE is supported.
+     */
+    @Parameter( alias = "fileNamingStyle", property = "fileNamingStyle", required = false, defaultValue = "CAMELCASE")
+    private String fileNamingStyle;
+
+    /**
+     * Fails if false and the output dir exists (regardless of the content).
+     */
     @Parameter( alias = "overwrite",     property = "overwrite", required = false, defaultValue = "true" )
     private Boolean overwrite;
 
+    /**
+     * Windup version to use to generate the models from. If not set, default are loaded from within the plugin.
+     */
     @Parameter( alias = "windupVersion", property = "windupVersion", required = false )
     private String windupVersion;
 
     
-
-    private static final String WINDUP_RULES_GROUP_ID = "org.jboss.windup.rules";
-    private static final String WINDUP_RULES_ARTIFACT_ID = "windup-rulesets";
-
 
     public void execute() throws MojoExecutionException
     {
@@ -101,6 +120,48 @@ public class WindupTsModelGenMojo extends AbstractMojo
             throw new MojoExecutionException(msg, ex);
         }
 
+        TypeScriptModelsGeneratorConfig config = new TypeScriptModelsGeneratorConfig();
+        config.setImportPathToWebapp(Paths.get(importPathToWebapp));
+        
+        // Options validation
+        try
+        {
+            Path outputDirectory_ = Paths.get(outputDirectory);
+            if (outputDirectory_.toFile().exists() && !overwrite)
+                throw new MojoExecutionException("Output path exists and overwriting not set: " + outputDirectory_);
+            outputDirectory_.toFile().mkdirs();
+            config.setOutputPath(outputDirectory_);
+        
+            try {
+                AdjacencyMode adjacencyMode_ = AdjacencyMode.valueOf(adjacencyMode.trim().toUpperCase());
+                config.setAdjacencyMode(adjacencyMode_);
+            }
+            catch (Exception ex)
+            {
+                throw new MojoExecutionException("Invalid adjacencyMode value: " + adjacencyMode
+                        + "\nMust be one of: " + Arrays.asList(AdjacencyMode.values())
+                        + "\n    " + ex.getMessage());
+            }
+            
+            try {
+                FileNamingStyle fileNamingStyle_ = FileNamingStyle.valueOf(fileNamingStyle.trim().toUpperCase());
+                config.setFileNamingStyle(fileNamingStyle_);
+            }
+            catch (Exception ex)
+            {
+                throw new MojoExecutionException("Invalid fileNamingStyle value: " + fileNamingStyle
+                        + "\nMust be one of: " + Arrays.asList(FileNamingStyle.values())
+                        + "\n    " + ex.getMessage());
+            }
+            
+            
+        }
+        catch (Exception ex)
+        {
+            throw new MojoExecutionException("Invalid input:\n    " + ex.getMessage(), ex);
+        }
+
+        
         final String furnaceVersion = versions.getProperty("version.furnace");
         if(furnaceVersion == null)
             throw new MojoExecutionException("Version of Furnace was not defined in 'version.furnace'.");
@@ -127,13 +188,16 @@ public class WindupTsModelGenMojo extends AbstractMojo
 
 
             AddonRegistry addonRegistry = furnace.getAddonRegistry();
-            TypescriptModelsGeneratingService generatingService = addonRegistry.getServices(TypescriptModelsGeneratingService.class).get();
-            generatingService.generate(Paths.get(outputDirectory));
+            TypeScriptModelsGeneratingService generatingService = addonRegistry.getServices(TypeScriptModelsGeneratingService.class).get();
+            
+            generatingService.generate(config);
             
             getLog().info(
                 "\n\n=========================================================================================================================="
-              + "\n\n    Windup TypeScript models created in " + outputDirectory + ""
+              + "\n\n    Windup TypeScript models created in " + config.getOutputPath().toFile().getAbsolutePath() + ""
               + "\n\n==========================================================================================================================\n");
+            
+            furnace.stop();
         }
         catch (Exception e) {
             e.printStackTrace();

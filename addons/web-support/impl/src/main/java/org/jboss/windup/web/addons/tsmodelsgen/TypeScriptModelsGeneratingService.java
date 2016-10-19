@@ -11,21 +11,30 @@ import org.jboss.windup.graph.model.WindupFrame;
  * 
  * @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
  */
-public class TypescriptModelsGeneratingService {
+public class TypeScriptModelsGeneratingService
+{
 
     @Inject GraphTypeManager graphTypeManager;
     
-    public void generate(Path destDirPath){
+    public void generate(TypeScriptModelsGeneratorConfig config)
+    {
         Set<Class<? extends WindupFrame<?>>> modelTypes = graphTypeManager.getRegisteredTypes();
         try
         {
-            destDirPath.toFile().mkdirs();
-            new TypeScriptModelsGenerator(destDirPath).generate(modelTypes, TypeScriptModelsGenerator.AdjacentMode.MATERIALIZED);
+            new TypeScriptModelsGenerator(config).generate(modelTypes);
         }
         catch (Exception ex)
         {
             throw new RuntimeException("Failed generating TypeScript models:\n\t" + ex.getMessage(), ex);
         }
+    }
+    
+    /**
+     * Returns an instance usable as configuration for the models generator.
+     */
+    public TypeScriptModelsGeneratorConfig createConfig()
+    {
+        return new TypeScriptModelsGeneratorConfig();
     }
     
 }

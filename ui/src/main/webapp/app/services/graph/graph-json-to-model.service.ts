@@ -1,8 +1,8 @@
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs/Observable";
 
-import {DiscriminatorMapping, getParentClass} from './discriminator-mapping';
-import {BaseModel} from './base.model';
+import {DiscriminatorMapping, getParentClass} from './DiscriminatorMapping';
+import {BaseFrameModel} from './BaseFrameModel';
 import {Http} from "@angular/http";
 
 /**
@@ -26,28 +26,28 @@ import {Http} from "@angular/http";
     }
  */
 @Injectable()
-export class GraphJSONToModelService<T extends BaseModel>
+export class GraphJSONToModelService<T extends BaseFrameModel>
 {
     static MODE = "_mode";
     static DISCRIMINATOR = "w:winduptype";
 
-    public getTypeScriptClassByDiscriminator(discriminator: string): typeof BaseModel {
+    public getTypeScriptClassByDiscriminator(discriminator: string): typeof BaseFrameModel {
         return DiscriminatorMapping.getModelClassByDiscriminator(discriminator);
     }
 
 
-    public fromJSON(input: Object, http:Http, clazz?: typeof BaseModel): T
+    public fromJSON(input: Object, http:Http, clazz?: typeof BaseFrameModel): T
     {
         let discriminator:string[] = input[GraphJSONToModelService.DISCRIMINATOR];
         clazz = this.getClass(input, clazz);
-        let frameModel:BaseModel = Object.create(clazz.prototype);
+        let frameModel:BaseFrameModel = Object.create(clazz.prototype);
         frameModel.constructor.apply(frameModel, [discriminator, input["_id"], input]);
         console.log("Setting http on object: " + frameModel + " to: " + http);
         frameModel.http = http;
         return <T>frameModel;
     }
 
-    private getClass(input: Object, clazz?: typeof BaseModel):typeof BaseModel {
+    private getClass(input: Object, clazz?: typeof BaseFrameModel):typeof BaseFrameModel {
         if (!clazz) {
             var disc = input[GraphJSONToModelService.DISCRIMINATOR];
             if (disc instanceof Array)

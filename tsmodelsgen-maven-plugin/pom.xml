@@ -178,17 +178,44 @@
                         <configuration>
                             <outputDir>target/tsModels</outputDir>
                             <adjacencyMode>MATERIALIZE</adjacencyMode>
+                            <!-- For import {...} from '../../src/main/webapp/'
+                            TODO: This is not yet added to the plugin.
+                            <pathToWebapp>../../src/main/webapp/</pathToWebapp>
+                            When using the tsconfig-tsModels.json for compilation, it can actually be this:
+                            <pathToWebapp>./</pathToWebapp>
+                            -->
                         </configuration>
                         <executions>
                             <execution>
                                 <id>generateTSmodels</id>
                                 <phase>generate-sources</phase>
-                                <goals>
-                                    <goal>tsmodelgen</goal>
-                                </goals>
+                                <goals> <goal>tsmodelgen</goal> </goals>
                             </execution>
                         </executions>
                     </plugin>
+                    <!-- Development purposes, to see how the archive is created.
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <version>3.0.2</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals> <goal>jar</goal> </goals>
+                                <configuration>
+                                    <classesDirectory>target</classesDirectory>
+                                    <classifier>models</classifier>
+                                    <archive>
+                                        <addMavenDescriptor>false</addMavenDescriptor>
+                                    </archive>
+                                    <includes>
+                                        <include>tsModels/**</include>
+                                    </includes>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    -->
                 </plugins>
             </build>
         </profile>
