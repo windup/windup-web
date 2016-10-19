@@ -11,8 +11,7 @@ module.exports = {
     entry: {
         'polyfills': './src/polyfills.ts',
         'vendor': './src/vendor.ts',
-        'app': './src/main.ts',
-        'vendor-global': './src/vendor-global.ts'
+        'app': './src/main.ts'
     },
 
     resolve: {
@@ -23,6 +22,7 @@ module.exports = {
         loaders: [
             {
                 test: /\.ts$/,
+                exclude: /jquery*\.js/,
                 loaders: ['awesome-typescript-loader', 'angular2-template-loader']
             },
             {
@@ -30,7 +30,7 @@ module.exports = {
                 loader: 'html'
             },
             {
-                test: /\.json$/,
+                test: /\.(json|ftl)$/,
                 loader: 'file?name=[name].[ext]'
             },
             {
@@ -47,13 +47,19 @@ module.exports = {
                 include: helpers.root('src', 'app'),
                 loader: 'raw'
             },
+            // All the sh*t for jQuery and other global plugins
             // jQuery needs to be exposed in window.jQuery and window.$ because of plugins dependencies
+            // I'm not even sure if this helped, I had to expose jQuery manually anyway
             {
-                test: require.resolve("jquery"),
+                test: '/jquery/',
+                exclude: /\.css/,
                 loader: 'expose?$!expose?jQuery'
             },
+            // Force those plugins to be loaded into global scope
+            // They can load using AMD or CommonJS, but it doesn't work properly
+            // They depend on global jQuery variable
             {
-                test: /dataTables*\.js|jquery*\.js|colVis*\.js/,
+                test: /dataTables*\.js|jquery*\.js|colVis*\.js|colReorder*\.js/,
                 loader: "imports?define=>false!imports?exports=>false"
             }
         ]
@@ -68,16 +74,6 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: 'src/index.html'
         }),
-        new ProvidePlugin({
-            $: 'jquery',
-            jquery: "jquery",
-            jQuery:"jquery",
-            'window.jquery': 'jquery',
-            "windows.jQuery": "jquery",
-            "window.jQuery": "jquery"
-//            DataTables: 'datatables',
-//            datatables: 'datatables'
-        }),
         // This is needed to suppress warning caused by some angular issue
         // see https://github.com/angular/angular/issues/11580
         new ContextReplacementPlugin(
@@ -86,5 +82,10 @@ module.exports = {
             helpers.root('./src'), // location of your src
             {} // a map of your routes
         )
-    ]
+    ],
+    // TODO: Find out if it helps,
+    // tried this to get jquery externally loaded into global scope using <script> tag
+    externals: {
+        'jquery': 'jQuery'
+    }
 };
