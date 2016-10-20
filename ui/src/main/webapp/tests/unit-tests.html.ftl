@@ -36,6 +36,7 @@
             'tests/app/registeredapplication.model.spec',
             'tests/app/registeredapplication.service.spec',
             'tests/app/unmarshaller.spec',
+            'app/components/modal-dialog.component.spec'
         ];
 
         function success () {
