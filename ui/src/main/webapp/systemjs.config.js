@@ -38,7 +38,8 @@
             'angular2-tree-component': 'npm:angular2-tree-component',
             'lodash': 'npm:lodash',
             'jquery': 'npm:jquery',
-            'jstree': 'npm:jstree/dist/jstree.js'
+            'jstree': 'npm:jstree/dist/jstree.js',
+            'bootstrap': 'npm:bootstrap/dist/js/bootstrap.js'
         },
         // packages tells the System loader how to load when no filename and/or no extension
         packages: {
