@@ -51,6 +51,9 @@ import {PackageRegistryService} from "./services/package-registry.service";
 import {TechnologiesReport} from "./components/reports/technologies/technologies.report";
 import {LoginComponent} from "./components/login.component";
 import {LoggedInGuard} from "./services/logged-in.guard";
+import {MigrationIssuesComponent} from "./components/reports/migration-issues/migration-issues.component";
+import {MigrationIssuesTableComponent} from "./components/reports/migration-issues/migration-issues-table.component";
+import {MigrationIssuesService} from "./components/reports/migration-issues/migration-issues.service";
 import {TechReportService} from "./components/reports/technologies/tech-report.service";
 import {FramesRestClientService} from './services/graph/frames-rest-client.service';
 
@@ -97,7 +100,10 @@ import {FramesRestClientService} from './services/graph/frames-rest-client.servi
         NotificationComponent,
         PopoverComponent,
         JsTreeAngularWrapperComponent,
-        LoginComponent
+        LoginComponent,
+        JsTreeAngularWrapperComponent,
+        MigrationIssuesComponent,
+        MigrationIssuesTableComponent
     ],
     providers: [
         appRoutingProviders,
@@ -116,9 +122,9 @@ import {FramesRestClientService} from './services/graph/frames-rest-client.servi
         NotificationService,
         PackageRegistryService,
         LoggedInGuard,
+        MigrationIssuesService,
         TechReportService,
         FramesRestClientService,
-
         {
             provide: Http,
             useFactory:
