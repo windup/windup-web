@@ -19,6 +19,7 @@ import {MigrationProjectService} from "../services/migrationproject.service";
 })
 export class GroupListComponent implements OnInit, OnDestroy {
     projectID:number;
+    project:MigrationProject;
     groups:ApplicationGroup[];
 
     processingStatus:Map<number, WindupExecution> = new Map<number, WindupExecution>();
@@ -43,6 +44,7 @@ export class GroupListComponent implements OnInit, OnDestroy {
             this._migrationProjectService.get(this.projectID)
                 .subscribe(
                     project => {
+                        this.project = project;
                         console.log('success');
                     },
                     error => {

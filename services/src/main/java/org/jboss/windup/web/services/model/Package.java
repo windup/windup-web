@@ -29,12 +29,12 @@ public class Package implements Serializable
     private Long id;
 
     @Column(length = 256)
-    @Size(min = 1, max = 256)
+    @Size(min = 0, max = 256)
     @NotNull
     private String name;
 
     @Column(length = 256)
-    @Size(min = 1, max = 256)
+    @Size(min = 0, max = 256)
     @NotNull
     private String fullName;
 

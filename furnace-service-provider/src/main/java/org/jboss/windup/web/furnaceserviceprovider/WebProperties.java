@@ -78,7 +78,7 @@ public class WebProperties
 
         if (addonRepository == null)
         {
-            addonRepository = servletContextPath.resolve("WEB-INF").resolve("addon-repository");
+            addonRepository = servletContextPath.resolve("WEB-INF").resolve("windup-distribution").resolve("addons");
 
             if (!Files.isDirectory(addonRepository))
                 throw new IllegalStateException("Cannot load addon repository: " + addonRepository);
@@ -86,10 +86,13 @@ public class WebProperties
 
         if (rulesRepository == null)
         {
-            rulesRepository = servletContextPath.resolve("WEB-INF").resolve("rules");
+            rulesRepository = servletContextPath.resolve("WEB-INF").resolve("windup-distribution").resolve("rules");
             if (!Files.isDirectory(rulesRepository))
                 throw new IllegalStateException("Cannot load rules repository: " + rulesRepository);
         }
+
+        if (System.getProperty("windup.home") == null)
+            System.setProperty("windup.home", rulesRepository.getParent().toAbsolutePath().toString());
     }
 
     private Path getServletContextPhysicalPath()

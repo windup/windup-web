@@ -296,7 +296,8 @@ public class WindupExecution implements Serializable
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "WindupExecution{" +
                 "outputPath='" + outputPath + '\'' +
                 ", totalWork=" + totalWork +
@@ -311,7 +312,8 @@ public class WindupExecution implements Serializable
     }
     
     private static final DateFormat FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private String formatCalendar(Calendar cal) {
+    private String formatCalendar(Calendar cal)
+    {
         if (cal == null)
             return "null";
         FORMATTER.setTimeZone(cal.getTimeZone());

@@ -4,8 +4,11 @@ import java.util.GregorianCalendar;
 import java.util.logging.Logger;
 
 import javax.annotation.Resource;
+import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.inject.Inject;
 import javax.jms.JMSContext;
+import javax.transaction.Status;
+import javax.transaction.UserTransaction;
 
 import org.jboss.windup.exec.WindupProgressMonitor;
 import org.jboss.windup.web.services.messaging.MessagingConstants;
@@ -13,24 +16,73 @@ import org.jboss.windup.web.services.model.ExecutionState;
 import org.jboss.windup.web.services.model.WindupExecution;
 
 /**
+ * This passes status updates from the Windup engine over JMS so that the core Windup service can monitor progress.
+ *
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
 public class WindupWebProgressMonitor implements WindupProgressMonitor
 {
     private static final Logger LOG = Logger.getLogger(WindupWebProgressMonitor.class.getName());
 
-    @Inject
-    private JMSContext messaging;
-
-
-    @Resource(lookup = "java:/queues/" + MessagingConstants.STATUS_UPDATE_QUEUE)
-    private javax.jms.Queue statusUpdateQueue;
+    @Resource
+    private ManagedExecutorService managedExecutorService;
 
     private WindupExecution execution;
 
+    // Keeps track of the last status update JMS message sent.
+    private long lastSendTime = 0L;
+
     private void sendUpdate(WindupExecution execution)
     {
-        messaging.createProducer().send(statusUpdateQueue, execution);
+        /*
+         * If execution is not done and we have sent an update very recently, then don't send another one right now.
+         *
+         * This prevents overloading the JMS queue with unnecessary updates that slow down processing.
+         */
+        if (!execution.getState().isDone() && (System.currentTimeMillis() - lastSendTime) < 1000L)
+        {
+            return;
+        }
+
+        managedExecutorService.submit(() -> {
+            UserTransaction userTransaction = ServiceUtil.getUserTransaction();
+
+            boolean manualTransactions = false;
+            try
+            {
+                if (userTransaction.getStatus() == Status.STATUS_NO_TRANSACTION)
+                {
+                    manualTransactions = true;
+                    userTransaction.begin();
+                }
+
+                lastSendTime = System.currentTimeMillis();
+                JMSContext messaging = ServiceUtil.getJMSContext();
+                try
+                {
+                    javax.jms.Queue statusUpdateQueue = ServiceUtil.getJMSQueue("java:/queues/" + MessagingConstants.STATUS_UPDATE_QUEUE);
+
+                    messaging.createProducer().send(statusUpdateQueue, execution);
+                } finally
+                {
+                    messaging.close();
+                }
+
+                if (manualTransactions)
+                    userTransaction.commit();
+            } catch (Exception e)
+            {
+                LOG.warning("Could not send JMS update message due to: " + e.getMessage());
+                try
+                {
+                    if (manualTransactions)
+                        userTransaction.rollback();
+                } catch (Throwable t)
+                {
+                    LOG.warning("Could not rollback transaction due to: " + t.getMessage());
+                }
+            }
+        });
     }
 
     /**

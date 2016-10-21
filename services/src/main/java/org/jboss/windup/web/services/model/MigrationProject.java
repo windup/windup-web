@@ -41,7 +41,7 @@ public class MigrationProject implements Serializable
     private int version;
 
     @Column(length = 256)
-    @Size(min = 4, max = 256)
+    @Size(min = 1, max = 256)
     @NotNull
     private String title;
 
