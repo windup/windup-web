@@ -6,6 +6,10 @@ import {TestGeneratorModel, TestPlanetModel, TestShipModel} from './models/test.
 import {TestGraphData} from './models/test-graph-data';
 
 import 'rxjs/Rx';
+import {Observable} from "rxjs/Observable";
+import 'rxjs/add/operator/toPromise';
+
+import {Http} from "@angular/http";
 
 describe('Unmarshaller tests', () => {
 
@@ -26,7 +30,7 @@ describe('Unmarshaller tests', () => {
     });
 
     it ('unmarshaller test - fromJSON() - basic properties', () => {
-        let modelObject = new GraphJSONToModelService().fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA);
+        let modelObject = new GraphJSONToModelService().fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA, null);
         expect(modelObject).toBeDefined();
         expect(modelObject.vertexId).toEqual(456);
         let model = <TestGeneratorModel> modelObject;
@@ -36,7 +40,7 @@ describe('Unmarshaller tests', () => {
     });
 
     it ('unmarshaller test - fromJSON() - ship', async(() => {
-        let modelObject = new GraphJSONToModelService<TestGeneratorModel>().fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA);
+        let modelObject = new GraphJSONToModelService<TestGeneratorModel>().fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA, null);
 
         return modelObject.ship.toPromise()
             .then((ship:TestShipModel) => {
@@ -49,8 +53,57 @@ describe('Unmarshaller tests', () => {
             });
     }));
 
+    it ('unmarshaller test - fromJSON() - shuttles', async(() => {
+        let http = <Http>{
+            get(url:string) {
+                console.log("Should call get to: " + url + " now");
+                return Observable.create(function(observer) {
+                    let value: any = JSON.parse(`[{ "_id": 1001, "w:winduptype": ["TestShip"], "name": "Shuttle 1"}]`);
+                    observer.next(value);
+                    observer.complete();
+                });
+            }
+        };
+
+        let modelObject = new GraphJSONToModelService<TestGeneratorModel>().fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA, http);
+
+        return modelObject.shuttles.toPromise()
+            .then((shuttles:TestShipModel[]) => {
+                expect(shuttles).toBeDefined();
+                expect(shuttles instanceof Array).toBeTruthy();
+                expect(shuttles.length).toEqual(1);
+                expect(shuttles[0].name).toEqual("Shuttle 1")
+            }, error => {
+                expect(false).toBeTruthy("Getting ship data failed due to: " + error);
+            });
+    }));
+
+    it ('unmarshaller test - fromJSON() - fighter', async(() => {
+        let http = <Http>{
+            get(url:string) {
+                console.log("Should call get to: " + url + " now");
+                return Observable.create(function(observer) {
+                    let value: any = JSON.parse(`[{ "_id": 1001, "w:winduptype": ["TestShip"], "name": "Fighter"}]`);
+                    observer.next(value);
+                    observer.complete();
+                });
+            }
+        };
+
+        let modelObject = new GraphJSONToModelService<TestGeneratorModel>().fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA, http);
+
+        return modelObject.fighter.toPromise()
+            .then((fighter:TestShipModel) => {
+                expect(fighter).toBeDefined();
+                expect(fighter instanceof Array).toBeFalsy();
+                expect(fighter.name).toEqual("Fighter")
+            }, error => {
+                expect(false).toBeTruthy("Getting ship data failed due to: " + error);
+            });
+    }));
+
     it ('unmarshaller test - fromJSON() - planets', async(() => {
-        let modelObject = new GraphJSONToModelService<TestGeneratorModel>().fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA);
+        let modelObject = new GraphJSONToModelService<TestGeneratorModel>().fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA, null);
 
         return modelObject.colonizedPlanet.toPromise()
             .then((planets:TestPlanetModel[]) => {

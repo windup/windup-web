@@ -50,7 +50,9 @@ public class FileResourceTest extends GraphResourceTest
         {
             Assert.assertEquals(true, result.get(FileModel.IS_DIRECTORY));
             Assert.assertEquals("windup-src-example", result.get(FileModel.FILE_NAME));
-            Assert.assertNotNull(result.get(FileModel.PARENT_FILE));
+
+            Object parentFile = ((Map<String, Object>)result.get(AbstractGraphResource.VERTICES_OUT)).get(FileModel.PARENT_FILE);
+            Assert.assertNotNull(parentFile);
         }
     }
 }

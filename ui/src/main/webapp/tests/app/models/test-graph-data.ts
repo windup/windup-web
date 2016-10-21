@@ -7,12 +7,12 @@ export class TestGraphData
         "fetchRemoteResources": false,
         "csv": false,
         "keepWorkDirs": true,
-        "edgeLabel": {
-            "direction": "out", //|'in'|'both',
-            "vertices": [
-                { "_type": "vertex", }, // Normal vertex
-                { "_type": "link", "link": "http://localhost/rest/graph/by-id/{id}" } // A link to a vertex
-            ]
+        "vertices_out": {
+            "edgeLabel": {
+                "direction": "OUT", //|'IN'
+                "_type": "link",
+                "link": "http://localhost/rest/graph/by-id/256" // A link to a set of vertices
+            },
         },
         "otherEdgeLabel": { }
     };
@@ -24,19 +24,31 @@ export class TestGraphData
 
         "bar": "bar123", "name": "Blake Ross", "rank": "capitain",
 
-        // -> ship
-        "commands": {
-            "vertices": [
-                { "_id": 123, "w:winduptype": ["TestShip"], "name": "USS Firefox"},
-            ]
-        },
-        // -> colonizedPlanet
-        "colonizes": {
-            "vertices": [
-                { "_id": 213, "w:winduptype": ["TestPlanet"],  "name": "Mars" },
-                { "_id": 214, "w:winduptype": ["TestPlanet"],  "name": "Venus" },
-                //{ "_mode": "link", "link": "by-id=215" },
-            ]
+        "vertices_out": {
+            // -> ship
+            "commands": {
+                "vertices": [
+                    { "_id": 123, "w:winduptype": ["TestShip"], "name": "USS Firefox"},
+                ]
+            },
+            // -> colonizedPlanet
+            "colonizes": {
+                "vertices": [
+                    { "_id": 213, "w:winduptype": ["TestPlanet"],  "name": "Mars" },
+                    { "_id": 214, "w:winduptype": ["TestPlanet"],  "name": "Venus" },
+                    //{ "_mode": "link", "link": "by-id=215" },
+                ]
+            },
+            "shuttles": {
+                "direction": "OUT", //|'IN'
+                "_type": "link",
+                "link": "http://localhost/rest/graph/by-id/456" // A link to a set of vertices
+            },
+            "fighter": {
+                "direction": "OUT", //|'IN'
+                "_type": "link",
+                "link": "http://localhost/rest/graph/by-id/456" // A link to a set of vertices
+            },
         },
     };
 }

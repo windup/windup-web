@@ -1,10 +1,9 @@
-//import {Inject, Injectable} from '@angular/core';
-//import {Headers, Http, RequestOptions, Response} from '@angular/http';
-//import {Observable} from 'rxjs/Observable';
+import {Injectable} from "@angular/core";
+import {Observable} from "rxjs/Observable";
 
 import {DiscriminatorMapping, getParentClass} from './discriminator-mapping';
 import {BaseModel} from './base.model';
-import {Observable} from "rxjs/Observable";
+import {Http} from "@angular/http";
 
 /**
  * Converts the JSON Graph representation to TypeScript models.
@@ -26,31 +25,26 @@ import {Observable} from "rxjs/Observable";
         "otherEdgeLabel": { }
     }
  */
-//@Injectable()
+@Injectable()
 export class GraphJSONToModelService<T extends BaseModel>
 {
     static MODE = "_mode";
     static DISCRIMINATOR = "w:winduptype";
-
 
     public getTypeScriptClassByDiscriminator(discriminator: string): typeof BaseModel {
         return DiscriminatorMapping.getModelClassByDiscriminator(discriminator);
     }
 
 
-    public fromJSON(input: Object, clazz?: typeof BaseModel): T
+    public fromJSON(input: Object, http:Http, clazz?: typeof BaseModel): T
     {
         let discriminator:string[] = input[GraphJSONToModelService.DISCRIMINATOR];
         clazz = this.getClass(input, clazz);
         let frameModel:BaseModel = Object.create(clazz.prototype);
         frameModel.constructor.apply(frameModel, [discriminator, input["_id"], input]);
+        console.log("Setting http on object: " + frameModel + " to: " + http);
+        frameModel.http = http;
         return <T>frameModel;
-    }
-
-    public fromLink <T extends BaseModel> (link: string):  Observable<T>
-    {
-        // TODO - This should store some kind of metadata to allow the vertices to be loaded lazily.
-        return null;
     }
 
     private getClass(input: Object, clazz?: typeof BaseModel):typeof BaseModel {

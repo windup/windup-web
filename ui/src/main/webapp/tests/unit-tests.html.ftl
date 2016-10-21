@@ -23,8 +23,6 @@
     <script src="../node_modules/zone.js/dist/proxy.js"></script>
     <script src="../node_modules/zone.js/dist/sync-test.js"></script>
     <script src="../node_modules/zone.js/dist/jasmine-patch.js"></script>
-    <script src="../node_modules/zone.js/dist/"></script>
-    <script src="../node_modules/zone.js/dist/"></script>
     <script src="../node_modules/zone.js/dist/async-test.js"></script>
     <script src="../node_modules/zone.js/dist/fake-async-test.js"></script>
 

@@ -15,11 +15,17 @@ export class TestGeneratorModel extends BaseModel
     @GraphProperty("rank")
     get rank():string { return null; };
 
-    @GraphAdjacency("colonizes")
+    @GraphAdjacency("colonizes", "OUT")
     get colonizedPlanet(): Observable<TestPlanetModel[]> { return null; }; // edge label 'colonizes'
 
-    @GraphAdjacency("commands", false)
+    @GraphAdjacency("commands", "OUT", false)
     get ship(): Observable<TestShipModel> { return null; }; // edge label 'commands'
+
+    @GraphAdjacency("shuttles", "OUT", true)
+    get shuttles(): Observable<TestShipModel[]> { return null; }; // edge label 'commands'
+
+    @GraphAdjacency("fighter", "OUT", false)
+    get fighter(): Observable<TestShipModel> { return null; }; // edge label 'commands'
 }
 
 export class TestPlanetModel extends BaseModel
