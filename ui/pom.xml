@@ -112,18 +112,6 @@
         </testResources>
         <plugins>
             <plugin>
-                <artifactId>maven-clean-plugin</artifactId>
-                <version>3.0.0</version>
-                <configuration>
-                    <filesets>
-                        <fileset>
-                            <directory>src/main/webapp/typings/</directory>
-                            <followSymlinks>false</followSymlinks>
-                        </fileset>
-                    </filesets>
-                </configuration>
-            </plugin>
-            <plugin>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.4</version>
                 <configuration>
@@ -166,17 +154,6 @@
                         </configuration>
                     </execution>
 
-                    <execution>
-                        <id>tsc</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <workingDirectory>src/main/webapp</workingDirectory>
-                            <executable>node_modules/.bin/tsc</executable>
-                        </configuration>
-                    </execution>
                 </executions>
             </plugin>
         </plugins>

@@ -8,7 +8,7 @@ module.exports = webpackMerge(commonConfig, {
     devtool: 'source-map', //devtool: 'cheap-module-eval-source-map',
 
     output: {
-        path: helpers.root('dist'), // ../target/windup-web
+        path: helpers.root('../../../target/windup-web'), //
         //publicPath: 'http://localhost:8080/windup-web/',
         filename: 'js/[name].js',
         chunkFilename: 'js/[id].chunk.js'
