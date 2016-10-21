@@ -1,5 +1,6 @@
 import {Component, Input} from "@angular/core";
 import $ from 'jquery';
+import 'bootstrap';
 
 var modalID = 0;
 
@@ -35,11 +36,11 @@ export class ModalDialogComponent {
 
     constructor() {}
 
-    show():void {
-        (<any>$(`#${this.id}`)).modal('show');
+    show(): void {
+        $(`#${this.id}`).modal('show');
     }
 
-    hide():void {
-        (<any>$(`#${this.id}`)).modal('hide');
+    hide(): void {
+        $(`#${this.id}`).modal('hide');
     }
 }
