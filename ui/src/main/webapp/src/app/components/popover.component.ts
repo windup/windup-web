@@ -1,5 +1,5 @@
 import {Component, OnInit, Input, ElementRef, ViewChild, QueryList, AfterViewInit} from "@angular/core";
-import $ from 'jquery';
+import * as $ from "jquery";
 
 @Component({
     selector: "w-popover",

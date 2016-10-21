@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Headers, Http, RequestOptions, Response} from '@angular/http';
 
 import {Constants} from "../constants";
-import {ApplicationGroup} from "windup-services";
+import {ApplicationGroup} from "../windup-services";
 import {AbstractService} from "./abtract.service";
 import {Observable} from "rxjs";
 

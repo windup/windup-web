@@ -2,22 +2,17 @@ import {Component, OnInit, ViewChild} from "@angular/core";
 import {NgForm} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 
-import {AnalysisContext, ApplicationGroup, AdvancedOption, RulesPath, MigrationPath} from "../windup-services";
 import {FormComponent} from "./formcomponent.component";
-import {ApplicationGroup} from "windup-services";
 import {ApplicationGroupService} from "../services/applicationgroup.service";
 import {MigrationPathService} from "../services/migrationpath.service";
-import {MigrationPath} from "windup-services";
 import {AnalysisContextService} from "../services/analysiscontext.service";
 import {ConfigurationOption} from "../model/configuration-option.model";
 import {ConfigurationOptionsService} from "../services/configuration-options.service";
 import {ModalDialogComponent} from "./modal-dialog.component";
-import {RulesPath} from "windup-services";
 import {IsDirty} from "../is-dirty.interface";
 import {Observable} from "rxjs/Observable";
-import {AdvancedOption} from "windup-services";
-import {Package} from "windup-services";
 import {PackageRegistryService} from "../services/package-registry.service";
+import {ApplicationGroup, AnalysisContext, Package, MigrationPath, AdvancedOption, RulesPath} from "../windup-services";
 
 @Component({
     templateUrl: 'analysiscontextform.component.html'
@@ -124,15 +119,10 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
                         } else {
                             // for migration path, store the id only
                             this.analysisContext.migrationPath = <MigrationPath>{ id: this.analysisContext.migrationPath.id };
-                            if (this.analysisContext.packages == null || this.analysisContext.packages.length == 0)
-                                this.packages = [ {prefix: ""} ];
-                            else
-                                this.packages = <[{prefix:string}]>this.analysisContext.packages.map(it => { return { prefix: it }});
-
                             if (this.analysisContext.includePackages == null || this.analysisContext.includePackages.length == 0) {
-                                this.analysisContext.includePackages = [];
+                                this.includePackages = [];
                             } else {
-                                this.analysisContext.includePackages = this.analysisContext.includePackages.map(node => this._packageRegistryService.get(node.id));
+                                this.includePackages = this.analysisContext.includePackages.map(node => this._packageRegistryService.get(node.id));
                             }
 
                             if (this.analysisContext.excludePackages == null || this.analysisContext.excludePackages.length == 0) {
