@@ -62,6 +62,33 @@ public class GraphResourceTest extends AbstractTest
 
     @Test
     @RunAsClient
+    public void testEdgeQuery()
+    {
+        List<Map<String, Object>> fileModels = graphResource.getByType(execution.getId(), FileModel.TYPE, FileModel.FILE_NAME, "windup-src-example", 0);
+        Assert.assertNotNull(fileModels);
+        Assert.assertTrue(fileModels.size() == 1);
+
+        for (Map<String, Object> fileModel : fileModels)
+        {
+            Map<String, Object> verticesOut = (Map<String, Object>)fileModel.get(AbstractGraphResource.VERTICES_OUT);
+            Assert.assertNotNull(verticesOut);
+
+            Map<String, Object> parentFileLinkDetails = (Map<String, Object>)verticesOut.get(FileModel.PARENT_FILE);
+            Assert.assertEquals(AbstractGraphResource.TYPE_LINK, parentFileLinkDetails.get(AbstractGraphResource.TYPE));
+
+            String edgesUri = (String)parentFileLinkDetails.get(AbstractGraphResource.LINK);
+            Assert.assertNotNull(edgesUri);
+
+            Object vertexID = fileModel.get(AbstractGraphResource.KEY_ID);
+            List<Map<String, Object>> edges = graphResource.getEdges(execution.getId(), (Integer)vertexID, "OUT", FileModel.PARENT_FILE);
+            Assert.assertNotNull(edges);
+            Assert.assertEquals(1, edges.size());
+            Assert.assertNotNull(edges.get(0));
+        }
+    }
+
+    @Test
+    @RunAsClient
     public void testQueryByTypeAndProperty()
     {
         List<Map<String, Object>> fileModels = graphResource.getByType(execution.getId(), FileModel.TYPE, FileModel.FILE_NAME, "windup-src-example", 1);
@@ -71,6 +98,22 @@ public class GraphResourceTest extends AbstractTest
         for (Map<String, Object> fileModel : fileModels)
         {
             System.out.println("FileModel: " + fileModel);
+            System.out.println("File Path: " + fileModel.get(FileModel.FILE_PATH));
+
+            Map<String, Object> verticesOut = (Map<String, Object>)fileModel.get(AbstractGraphResource.VERTICES_OUT);
+            Assert.assertNotNull(verticesOut);
+
+            Map<String, Object> parentFileInfo = (Map<String, Object>)verticesOut.get(FileModel.PARENT_FILE);
+            Assert.assertNotNull(parentFileInfo);
+            List<Object> parentFiles = (List<Object>)parentFileInfo.get(AbstractGraphResource.VERTICES);
+            Assert.assertEquals(1, parentFiles.size());
+
+            Map<String, Object> verticesIn = (Map<String, Object>)fileModel.get(AbstractGraphResource.VERTICES_IN);
+            Map<String, Object> childFiles = (Map<String, Object>)verticesIn.get(FileModel.PARENT_FILE);
+            Assert.assertNotNull(childFiles);
+
+            List<Object> vertices = (List)childFiles.get(AbstractGraphResource.VERTICES);
+            Assert.assertTrue(vertices.size() > 0);
         }
     }
 }

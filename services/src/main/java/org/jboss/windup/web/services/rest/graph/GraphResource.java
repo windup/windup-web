@@ -12,14 +12,20 @@ import java.util.Map;
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
-@Path("/graph")
+@Path(GraphResource.GRAPH_RESOURCE_URL)
 @Consumes("application/json")
 @Produces("application/json")
 public interface GraphResource
 {
+    String GRAPH_RESOURCE_URL = "graph";
+
     @GET
     @Path("/{executionID}/{id}")
-    Map<String, Object> get(@PathParam("executionID") Long executionID, @PathParam("id") Integer id, @QueryParam("depth") Integer depth);
+    Map<String, Object> get(@PathParam("executionID") Long executionID, @PathParam("id") Integer vertexID, @QueryParam("depth") Integer depth);
+
+    @GET()
+    @Path("/{executionID}/edges/{vertexID}/{edgeDirection}/{edgeLabel}")
+    List<Map<String, Object>> getEdges(@PathParam("executionID") Long executionID, @PathParam("vertexID") Integer vertexID, @PathParam("edgeDirection") String edgeDirection, @PathParam("edgeLabel") String edgeLabel);
 
     @GET()
     @Path("/{executionID}/by-type/{vertexType}")

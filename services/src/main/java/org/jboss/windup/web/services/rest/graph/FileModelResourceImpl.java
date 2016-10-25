@@ -21,7 +21,7 @@ public class FileModelResourceImpl extends AbstractGraphResource implements File
         {
             FileService fileService = new FileService(context);
             Iterable<FileModel> models = fileService.findByFilenameRegex(filename);
-            return frameIterableToResult(models, 1);
+            return frameIterableToResult(executionID, models, 1);
         }
         catch (IOException e)
         {
