@@ -13,6 +13,12 @@
 
     <dependencies>
         <!-- Local Dependencies -->
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxrs</artifactId>
+            <version>${version.resteasy}</version>
+            <scope>provided</scope>
+        </dependency>
 
 
         <!-- Addon Dependencies -->
