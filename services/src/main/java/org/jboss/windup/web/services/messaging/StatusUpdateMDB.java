@@ -31,6 +31,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * This receives updates from the Windup execution backend processes and persists the current state to the database.
+ *
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
 @MessageDriven(activationConfig = {
@@ -53,6 +55,7 @@ public class StatusUpdateMDB extends AbstractMDB implements MessageListener
     @Override
     public void onMessage(Message message)
     {
+        // Make sure that we are receiving the correct type of message
         if (!validatePayload(WindupExecution.class, message))
             return;
 
@@ -61,6 +64,7 @@ public class StatusUpdateMDB extends AbstractMDB implements MessageListener
             WindupExecution execution = (WindupExecution)((ObjectMessage) message).getObject();
             LOG.info("Received execution update event: " + execution);
 
+            // Update the DB with this information
             WindupExecution fromDB = entityManager.find(WindupExecution.class, execution.getId());
 
             if (fromDB == null)
@@ -78,6 +82,7 @@ public class StatusUpdateMDB extends AbstractMDB implements MessageListener
             fromDB.setOutputPath(execution.getOutputPath());
             fromDB.setState(execution.getState());
 
+            // Once the run is complete, make sure that we have the correct path information in the execution.
             if (fromDB.getState() == ExecutionState.COMPLETED)
                 setReportIndexPath(fromDB);
         }

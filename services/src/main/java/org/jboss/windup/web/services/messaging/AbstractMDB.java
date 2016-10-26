@@ -1,7 +1,5 @@
 package org.jboss.windup.web.services.messaging;
 
-import org.jboss.windup.web.services.model.WindupExecution;
-
 import javax.jms.Message;
 import javax.jms.ObjectMessage;
 import java.util.logging.Logger;
