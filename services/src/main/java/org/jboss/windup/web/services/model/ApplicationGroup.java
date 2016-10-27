@@ -11,6 +11,8 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 /**
  * An {@link ApplicationGroup} represents a set of applications within a particular {@link MigrationProject}. Each group may have its own analysis
@@ -56,9 +58,11 @@ public class ApplicationGroup implements Serializable
     private AnalysisContext analysisContext;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "applicationGroup")
+    @Fetch(FetchMode.SELECT)
     private Set<RegisteredApplication> applications;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "group")
+    @Fetch(FetchMode.SELECT)
     private Collection<WindupExecution> executions;
 
     @ManyToOne(cascade = CascadeType.ALL)
