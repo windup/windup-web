@@ -4,7 +4,7 @@
 
 There are two options - install Red Hat SSO 7 as a standalone server, or Keycloak community as an overlay applied to WildFly 10 or EAP 7. For both, you'll also need to add the client adapter.
 
-## A) Keycloack installation
+## A) Keycloak installation
 * _Refer to [Keycloak installation guide](https://keycloak.gitbooks.io/server-installation-and-configuration/content/v/2.2/topics/installation.html) for details._
 
 * Download https://downloads.jboss.org/keycloak/2.1.0.Final/keycloak-overlay-2.1.0.Final.tar.gz
@@ -12,11 +12,11 @@ There are two options - install Red Hat SSO 7 as a standalone server, or Keycloa
 * Extract it into wildfly-10.1.0.Final installation path
 
 * Edit  `<wildfly>/bin/keycloak-install.cli` and change `standalone.xml` to `standalone-full.xml` on first line
-* Run  `<path_to_widlfly_server>/bin/jboss-cli.sh --file=bin/keycloak-install.cli` (it uses the `embed-server` so it doesn't need a running server to apply the CLI script)
-* To create keycloak Admin user run  `<path_to_widlfly_server>/bin/add-user-keycloack.sh -u <username>`
+* Run  `<path_to_wildfly_server>/bin/jboss-cli.sh --file=bin/keycloak-install.cli` (it uses the `embed-server` so it doesn't need a running server to apply the CLI script)
+* To create keycloak Admin user run  `<path_to_wildfly_server>/bin/add-user-keycloak.sh -u <username>`
 
 	This command creates file below with your username:
-	`<path_to_widlfly_server>/standalone/configuration/keycloak-add-user.json`
+	`<path_to_wildfly_server>/standalone/configuration/keycloak-add-user.json`
 	(This is an alternative to doing it via the web at http://localhost/auth/admin)
 
 * Start the server with full profile as: `bin/standalone.sh -c standalone-full.xml`
