@@ -1,4 +1,4 @@
-package org.jboss.windup.web.services.rest.graph;
+package org.jboss.windup.web.addons.websupport.rest.graph;
 
 import java.util.ArrayList;
 import java.util.List;

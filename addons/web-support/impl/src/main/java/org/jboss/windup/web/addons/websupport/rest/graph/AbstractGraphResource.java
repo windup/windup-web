@@ -1,7 +1,6 @@
-package org.jboss.windup.web.services.rest.graph;
+package org.jboss.windup.web.addons.websupport.rest.graph;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,40 +10,40 @@ import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
 import org.jboss.windup.graph.GraphContext;
-import org.jboss.windup.graph.GraphContextFactory;
 import org.jboss.windup.graph.model.WindupVertexFrame;
-import org.jboss.windup.web.services.model.WindupExecution;
+import org.jboss.windup.web.addons.websupport.rest.FurnaceRESTGraphAPI;
+import org.jboss.windup.web.addons.websupport.rest.GraphPathLookup;
 
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.NotFoundException;
+import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
-public class AbstractGraphResource
+public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
 {
-    public static final String KEY_ID = "_id";
-    public static final String TYPE = "_type";
-    public static final String TYPE_VERTEX = "vertex";
-    public static final String TYPE_LINK = "link";
-    public static final String LINK = "link";
-
-    public static final String DIRECTION = "direction";
-    public static final String VERTICES = "vertices";
-    public static final String VERTICES_OUT = "vertices_out";
-    public static final String VERTICES_IN = "vertices_in";
-
-    @Context
     private UriInfo uri;
-
-    @PersistenceContext
-    private EntityManager entityManager;
 
     @Inject
     private GraphCache graphCache;
+
+    private GraphPathLookup graphPathLookup;
+
+    @Override
+    public void setUriInfo(UriInfo uriInfo)
+    {
+        this.uri = uriInfo;
+    }
+
+    @Override
+    public void setGraphPathLookup(GraphPathLookup graphPathLookup)
+    {
+        this.graphPathLookup = graphPathLookup;
+    }
 
     private String getLink(long executionID, Vertex vertex, String direction, String label)
     {
@@ -59,18 +58,18 @@ public class AbstractGraphResource
 
         Map<String, Object> result = new HashMap<>();
 
-        result.put(TYPE, TYPE_VERTEX);
+        result.put(GraphResource.TYPE, GraphResource.TYPE_VERTEX);
         for (String key : vertex.getPropertyKeys())
         {
             result.put(key, vertex.getProperty(key));
         }
-        result.put(KEY_ID, vertex.getId());
+        result.put(GraphResource.KEY_ID, vertex.getId());
 
         Map<String, Object> outVertices = new HashMap<>();
-        result.put(VERTICES_OUT, outVertices);
+        result.put(GraphResource.VERTICES_OUT, outVertices);
         addEdges(executionID, outVertices, vertex, depth, Direction.OUT);
         Map<String, Object> inVertices = new HashMap<>();
-        result.put(VERTICES_IN, inVertices);
+        result.put(GraphResource.VERTICES_IN, inVertices);
         addEdges(executionID, inVertices, vertex, depth, Direction.IN);
 
         return result;
@@ -91,24 +90,24 @@ public class AbstractGraphResource
             if (edgeDetails == null)
             {
                 edgeDetails = new HashMap<>();
-                edgeDetails.put(DIRECTION, direction.toString());
+                edgeDetails.put(GraphResource.DIRECTION, direction.toString());
                 result.put(label, edgeDetails);
 
                 // If we aren't serializing any further, then just provide a link
                 if (remainingDepth == null || remainingDepth == 0)
                 {
-                    edgeDetails.put(TYPE, TYPE_LINK);
+                    edgeDetails.put(GraphResource.TYPE, GraphResource.TYPE_LINK);
                     String linkUri = getLink(executionID, vertex, direction.toString(), label);
-                    edgeDetails.put(LINK, linkUri);
+                    edgeDetails.put(GraphResource.LINK, linkUri);
                     return;
                 }
 
                 linkedVertices = new ArrayList<>();
-                edgeDetails.put(VERTICES, linkedVertices);
+                edgeDetails.put(GraphResource.VERTICES, linkedVertices);
             }
             else
             {
-                linkedVertices = (List<Map<String, Object>>) edgeDetails.get(VERTICES);
+                linkedVertices = (List<Map<String, Object>>) edgeDetails.get(GraphResource.VERTICES);
             }
 
             Vertex otherVertex = edge.getVertex(opposite);
@@ -129,8 +128,9 @@ public class AbstractGraphResource
 
     protected GraphContext getGraph(Long executionID)
     {
-        WindupExecution execution = entityManager.find(WindupExecution.class, executionID);
-        Path graphPath = Paths.get(execution.getGroup().getOutputPath()).resolve(GraphContextFactory.DEFAULT_GRAPH_SUBDIRECTORY);
+        Path graphPath = graphPathLookup.getByExecutionID(executionID);
+        if (graphPath == null)
+            throw new NotFoundException("Execution not found: " + executionID);
         return graphCache.getGraph(graphPath);
     }
 }

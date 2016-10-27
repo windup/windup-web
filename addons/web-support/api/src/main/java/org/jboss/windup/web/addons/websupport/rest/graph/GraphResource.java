@@ -1,4 +1,6 @@
-package org.jboss.windup.web.services.rest.graph;
+package org.jboss.windup.web.addons.websupport.rest.graph;
+
+import org.jboss.windup.web.addons.websupport.rest.FurnaceRESTGraphAPI;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -6,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 import java.util.List;
 import java.util.Map;
 
@@ -13,11 +16,22 @@ import java.util.Map;
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
 @Path(GraphResource.GRAPH_RESOURCE_URL)
-@Consumes("application/json")
-@Produces("application/json")
-public interface GraphResource
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+public interface GraphResource extends FurnaceRESTGraphAPI
 {
     String GRAPH_RESOURCE_URL = "graph";
+
+    String KEY_ID = "_id";
+    String TYPE = "_type";
+    String TYPE_VERTEX = "vertex";
+    String TYPE_LINK = "link";
+    String LINK = "link";
+
+    String DIRECTION = "direction";
+    String VERTICES = "vertices";
+    String VERTICES_OUT = "vertices_out";
+    String VERTICES_IN = "vertices_in";
 
     @GET
     @Path("/{executionID}/{id}")

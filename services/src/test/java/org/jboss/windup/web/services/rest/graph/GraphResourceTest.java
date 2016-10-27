@@ -10,6 +10,8 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.windup.graph.model.resource.FileModel;
+import org.jboss.windup.web.addons.websupport.rest.GraphPathLookup;
+import org.jboss.windup.web.addons.websupport.rest.graph.GraphResource;
 import org.jboss.windup.web.services.AbstractTest;
 import org.jboss.windup.web.services.data.ServiceConstants;
 import org.jboss.windup.web.services.data.WindupExecutionUtil;
@@ -18,6 +20,13 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriInfo;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -36,14 +45,33 @@ public class GraphResourceTest extends AbstractTest
     {
         ResteasyClient client = getResteasyClient();
         ResteasyWebTarget target = client.target(contextPath + ServiceConstants.REST_BASE);
+        ResteasyWebTarget furnaceRestTarget = client.target(contextPath + ServiceConstants.FURNACE_REST_BASE);
 
-        this.graphResource = target.proxy(GraphResource.class);
+        this.graphResource = furnaceRestTarget.proxy(GraphResourceSubInterface.class);
 
         if (this.execution == null)
         {
             WindupExecutionUtil windupExecutionUtil = new WindupExecutionUtil(client, target);
             this.execution = windupExecutionUtil.executeWindup();
         }
+    }
+
+    /**
+     * This exists solely to work around RESTEASY-798. Without it, the client proxy will fail to be generated when it
+     * hits the unannotated methods.
+     */
+    @Path(GraphResource.GRAPH_RESOURCE_URL)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public interface GraphResourceSubInterface extends GraphResource
+    {
+        @Override
+        @POST
+        void setUriInfo(UriInfo uriInfo);
+
+        @Override
+        @POST
+        void setGraphPathLookup(GraphPathLookup graphPathLookup);
     }
 
     @Test
@@ -70,16 +98,16 @@ public class GraphResourceTest extends AbstractTest
 
         for (Map<String, Object> fileModel : fileModels)
         {
-            Map<String, Object> verticesOut = (Map<String, Object>)fileModel.get(AbstractGraphResource.VERTICES_OUT);
+            Map<String, Object> verticesOut = (Map<String, Object>)fileModel.get(GraphResource.VERTICES_OUT);
             Assert.assertNotNull(verticesOut);
 
             Map<String, Object> parentFileLinkDetails = (Map<String, Object>)verticesOut.get(FileModel.PARENT_FILE);
-            Assert.assertEquals(AbstractGraphResource.TYPE_LINK, parentFileLinkDetails.get(AbstractGraphResource.TYPE));
+            Assert.assertEquals(GraphResource.TYPE_LINK, parentFileLinkDetails.get(GraphResource.TYPE));
 
-            String edgesUri = (String)parentFileLinkDetails.get(AbstractGraphResource.LINK);
+            String edgesUri = (String)parentFileLinkDetails.get(GraphResource.LINK);
             Assert.assertNotNull(edgesUri);
 
-            Object vertexID = fileModel.get(AbstractGraphResource.KEY_ID);
+            Object vertexID = fileModel.get(GraphResource.KEY_ID);
             List<Map<String, Object>> edges = graphResource.getEdges(execution.getId(), (Integer)vertexID, "OUT", FileModel.PARENT_FILE);
             Assert.assertNotNull(edges);
             Assert.assertEquals(1, edges.size());
@@ -100,19 +128,19 @@ public class GraphResourceTest extends AbstractTest
             System.out.println("FileModel: " + fileModel);
             System.out.println("File Path: " + fileModel.get(FileModel.FILE_PATH));
 
-            Map<String, Object> verticesOut = (Map<String, Object>)fileModel.get(AbstractGraphResource.VERTICES_OUT);
+            Map<String, Object> verticesOut = (Map<String, Object>)fileModel.get(GraphResource.VERTICES_OUT);
             Assert.assertNotNull(verticesOut);
 
             Map<String, Object> parentFileInfo = (Map<String, Object>)verticesOut.get(FileModel.PARENT_FILE);
             Assert.assertNotNull(parentFileInfo);
-            List<Object> parentFiles = (List<Object>)parentFileInfo.get(AbstractGraphResource.VERTICES);
+            List<Object> parentFiles = (List<Object>)parentFileInfo.get(GraphResource.VERTICES);
             Assert.assertEquals(1, parentFiles.size());
 
-            Map<String, Object> verticesIn = (Map<String, Object>)fileModel.get(AbstractGraphResource.VERTICES_IN);
+            Map<String, Object> verticesIn = (Map<String, Object>)fileModel.get(GraphResource.VERTICES_IN);
             Map<String, Object> childFiles = (Map<String, Object>)verticesIn.get(FileModel.PARENT_FILE);
             Assert.assertNotNull(childFiles);
 
-            List<Object> vertices = (List)childFiles.get(AbstractGraphResource.VERTICES);
+            List<Object> vertices = (List)childFiles.get(GraphResource.VERTICES);
             Assert.assertTrue(vertices.size() > 0);
         }
     }

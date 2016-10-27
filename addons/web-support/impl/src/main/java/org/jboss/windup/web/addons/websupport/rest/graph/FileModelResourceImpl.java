@@ -1,4 +1,4 @@
-package org.jboss.windup.web.services.rest.graph;
+package org.jboss.windup.web.addons.websupport.rest.graph;
 
 import java.io.IOException;
 import java.util.List;
@@ -13,7 +13,6 @@ import org.jboss.windup.graph.service.FileService;
  */
 public class FileModelResourceImpl extends AbstractGraphResource implements FileModelResource
 {
-
     @Override
     public List<Map<String, Object>> get(Long executionID, String filename)
     {

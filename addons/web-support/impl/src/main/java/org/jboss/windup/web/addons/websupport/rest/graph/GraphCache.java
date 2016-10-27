@@ -1,4 +1,4 @@
-package org.jboss.windup.web.services.rest.graph;
+package org.jboss.windup.web.addons.websupport.rest.graph;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -7,15 +7,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import javax.ejb.Lock;
-import javax.ejb.LockType;
-import javax.ejb.Schedule;
-import javax.ejb.Singleton;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.GraphContextFactory;
-import org.jboss.windup.web.services.producer.WindupServicesProducer;
 
 /**
  * Contains a cache for connecting to the graph efficiently from multiple threads. This will keep a connection open
@@ -31,7 +27,7 @@ public class GraphCache
     protected static final long MAX_AGE = 1000L * 60L * 10L;
 
     @Inject
-    protected WindupServicesProducer servicesProducer;
+    protected GraphContextFactory graphContextFactory;
 
     protected Map<Path, GraphCacheEntry> graphCacheEntryMap = new ConcurrentHashMap<>();
 
@@ -39,7 +35,6 @@ public class GraphCache
      * Gets the graph at the given {@link Path}. This will be from the cache if possible. If a cached entry is not
      * available, then a new one will be loaded.
      */
-    @Lock(LockType.READ) // Allow concurrent reads
     public GraphContext getGraph(Path graphPath)
     {
         GraphCacheEntry graphCacheEntry = graphCacheEntryMap.get(graphPath);
@@ -61,7 +56,6 @@ public class GraphCache
     /**
      * Loads the graph, and puts the new value into the Cache. This requires a write lock, for concurrency reasons.
      */
-    @Lock(LockType.WRITE) // Disallow concurrency during cache modification
     public void loadGraphEntry(Path graphPath)
     {
         // If it is already cached, we don't need to proceed further.
@@ -69,14 +63,11 @@ public class GraphCache
             return;
 
         LOG.info("Creating cached graph for: " + graphPath);
-        GraphContextFactory graphContextFactory = servicesProducer.getGraphContextFactory();
         GraphContext graphContext = graphContextFactory.load(graphPath);
         GraphCacheEntry graphCacheEntry = new GraphCacheEntry(graphContext);
         this.graphCacheEntryMap.put(graphPath, graphCacheEntry);
     }
 
-    @Schedule(hour = "*", minute = "43")
-    @Lock(LockType.WRITE) // Disallow concurrency during graph modification
     public void purgeOldCachedGraphs()
     {
         long minAge = System.currentTimeMillis() - MAX_AGE;
