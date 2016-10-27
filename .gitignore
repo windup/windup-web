@@ -24,3 +24,4 @@ log.txt
 nb-configuration.xml
 nbactions.xml
 services/lib
+ui/src/main/webapp/app/tsModels/
