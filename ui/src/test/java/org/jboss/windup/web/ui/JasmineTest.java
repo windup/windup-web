@@ -1,6 +1,7 @@
 package org.jboss.windup.web.ui;
 
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.logging.Logger;
 
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -43,7 +44,7 @@ public class JasmineTest extends AbstractUITest
     @Test
     public void checkJasmineResults() throws Exception
     {
-        ExpectedCondition<Boolean> e = (webDriver) -> {
+        ExpectedCondition<Boolean> condition = (webDriver) -> {
             WebElement durationElement = webDriver.findElement(By.className("jasmine-duration"));
             boolean durationDisplayed = durationElement.isDisplayed();
             boolean finishedTextAvailable = durationElement.getText().contains("finished in");
@@ -55,16 +56,17 @@ public class JasmineTest extends AbstractUITest
         };
         try {
             Wait<WebDriver> w = new WebDriverWait(getDriver(), 60);
-            w.until(e);
-            takeScreenshot("JasmineTest_afterwait", getDriver());
+            w.until(condition);
+            Path screen = takeScreenshot("JasmineTest_afterwait", getDriver());
+            String screenMsg = "\n    Screenshot at: " + screen.toAbsolutePath().toString();
 
             WebElement testSummary = getTestSummaryElement();
             Assert.assertNotNull("Test Summary Element Missing", testSummary);
-            Assert.assertTrue("Tests Failed: " + testSummary.getText(), testSummary.getText().contains(" 0 failures"));
+            Assert.assertTrue("Tests Failed: " + testSummary.getText() + screenMsg, testSummary.getText().contains(" 0 failures"));
 
             WebElement testFailures = getDriver().findElement(By.className("jasmine-failures"));
             Assert.assertNotNull("Test Failures Element Missing", testFailures);
-            Assert.assertTrue("Failures Found: " + testFailures.getText(), testFailures.getText().trim().equals(""));
+            Assert.assertTrue("Failures Found: " + testFailures.getText() + screenMsg, testFailures.getText().trim().equals(""));
         } finally {
             takeScreenshot("JasmineTest_finally", getDriver());
         }
