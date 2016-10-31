@@ -13,7 +13,6 @@ import {FileModel} from "../../app/tsModels/FileModel";
 
 describe('Generated TS Files', () => {
 
-
     it ('filemodels - fromJSON() - basic properties', () => {
         let modelObject = new GraphJSONToModelService().fromJSON(TestGraphData.TEST_FILE_MODELS[0], null);
         expect(modelObject).toBeDefined();

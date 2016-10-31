@@ -1,5 +1,6 @@
 package org.jboss.windup.web.addons.websupport.tsmodelgen;
 
+import java.lang.reflect.Method;
 import java.util.EnumSet;
 import org.apache.commons.lang3.StringUtils;
 import static org.jboss.windup.web.addons.websupport.tsmodelgen.TsGenUtils.quoteIfNotNull;
@@ -93,6 +94,33 @@ class ModelRelation extends ModelMember
         }
         return sb.toString();
     }
+
+
+    /**
+     * Derives the property beanPropertyName from the given method, assuming it's a getter, setter, adder or remover.
+     * The returned ModelRelation has the beanPropertyName, the methodsPresent and the isIterable set.
+     */
+    static ModelRelation infoFromMethod(Method method)
+    {
+        // Relying on conventions here. Might need some additional data in the Frames models.
+        String name = method.getName();
+        ModelRelation info = new ModelRelation();
+        name = TsGenUtils.removePrefixAndSetMethodPresence(name, "getAll", info.methodsPresent, ModelRelation.BeanMethodType.GET);
+        name = TsGenUtils.removePrefixAndSetMethodPresence(name, "get", info.methodsPresent, ModelRelation.BeanMethodType.GET);
+        name = TsGenUtils.removePrefixAndSetMethodPresence(name, "is", info.methodsPresent, ModelRelation.BeanMethodType.GET);
+        name = TsGenUtils.removePrefixAndSetMethodPresence(name, "set", info.methodsPresent, ModelRelation.BeanMethodType.SET);
+        name = TsGenUtils.removePrefixAndSetMethodPresence(name, "add", info.methodsPresent, ModelRelation.BeanMethodType.ADD);
+        name = TsGenUtils.removePrefixAndSetMethodPresence(name, "remove", info.methodsPresent, ModelRelation.BeanMethodType.REMOVE);
+        name = StringUtils.uncapitalize(name);
+        //name = StringUtils.removeEnd(modelClassName, "s"); // Better to have addItems(item: Item) than getItem(): Item[]
+        info.beanPropertyName = name;
+        if (Iterable.class.isAssignableFrom(method.getReturnType()))
+            info.isIterable = true;
+        else if (method.getParameterCount() > 0 && Iterable.class.isAssignableFrom(method.getParameterTypes()[0]))
+            info.isIterable = true;
+        return info;
+    }
+
 
     @Override
     public String toString() {

@@ -7,14 +7,13 @@ import org.jboss.windup.graph.model.WindupFrame;
 
 /**
  * The service to generate the typescript models.
- * 
+ *
  * @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
  */
 public class TypeScriptModelsGeneratingServiceImpl implements TypeScriptModelsGeneratingService
 {
-
     @Inject GraphTypeManager graphTypeManager;
-    
+
     public void generate(TypeScriptModelsGeneratorConfig config)
     {
         Set<Class<? extends WindupFrame<?>>> modelTypes = graphTypeManager.getRegisteredTypes();
@@ -27,7 +26,7 @@ public class TypeScriptModelsGeneratingServiceImpl implements TypeScriptModelsGe
             throw new RuntimeException("Failed generating TypeScript models:\n\t" + ex.getMessage(), ex);
         }
     }
-    
+
     /**
      * Returns an instance usable as configuration for the models generator.
      */
@@ -35,5 +34,5 @@ public class TypeScriptModelsGeneratingServiceImpl implements TypeScriptModelsGe
     {
         return new TypeScriptModelsGeneratorConfig();
     }
-    
+
 }

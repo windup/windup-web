@@ -16,7 +16,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class TsGenUtils
 {
-    private static final Logger LOG = Logger.getLogger( TsGenUtils.class.getName() );
+    private static final Logger LOG = Logger.getLogger(TsGenUtils.class.getName());
 
 
     /**
@@ -123,7 +123,7 @@ public class TsGenUtils
 
     static String quoteIfNotNull(String val)
     {
-        return (val == null) ? "null" : new StringBuilder().append("'").append(val).append("'").toString();
+        return (val == null) ? "null" : new StringBuilder("'").append(val).append("'").toString();
     }
 
     static String escapeJSandQuote(String str) {

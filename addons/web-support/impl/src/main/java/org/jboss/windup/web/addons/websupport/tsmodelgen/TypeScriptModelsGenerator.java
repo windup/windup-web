@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -34,7 +35,7 @@ import org.jboss.windup.web.addons.websupport.tsmodelgen.TypeScriptModelsGenerat
  * Creates the TypeScript models which could accomodate the Frames models instances.
  * Also creates a mapping between discriminators (@TypeValue's) and the TS model classes.
  * In TypeScript it's not reliably possible to scan for all models.
- * 
+ *
  * @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
  */
 public class TypeScriptModelsGenerator
@@ -44,27 +45,26 @@ public class TypeScriptModelsGenerator
     private static final String DiscriminatorMapping = "DiscriminatorMapping";
     private String BaseModel = "BaseModel";
     private static final String TS_SUFFIX = ".ts";
-    private static final Pattern pat = Pattern.compile("\\p{javaUpperCase}");
-    
+
     /**
      * Path the webapp/ dir which will be used for the imports in the generated models.
      * I.e. <code>import {...} from '$importPathToWebapp';</code>
      * Needs to be the relative path from the final TS models dir to the graph package dir.
      */
     private static final String PATH_TO_GRAPH_PKG = "app/services/graph";
-    
+
     //private final Path modelFilesDir;
-    
+
     private TypeScriptModelsGeneratorConfig config;
 
-    
-    
+
+
     public TypeScriptModelsGenerator(TypeScriptModelsGeneratorConfig config)
     {
         this.config = config;
     }
 
-    
+
 
     /**
      * Generates the TypeScript files for models, copying the structure of WindupVertexModel's.
@@ -73,10 +73,10 @@ public class TypeScriptModelsGenerator
     public void generate(Set<Class<? extends WindupFrame<?>>> modelTypes)
     {
         validateConfig();
-        
+
         if (config.getAdjacencyMode().equals(AdjacencyMode.MATERIALIZED))
             BaseModel = "BaseModel";
-                
+
         try {
             Files.createDirectories(this.config.getOutputPath());
             LOG.info("Creating TypeScript models in " + this.config.getOutputPath().toAbsolutePath());
@@ -92,23 +92,24 @@ public class TypeScriptModelsGenerator
             if (!(WindupVertexFrame.class.isAssignableFrom(frameClass)))
                 continue;
 
+            @SuppressWarnings("unchecked")
             final Class<? extends WindupVertexFrame> frameClass2 = (Class<? extends WindupVertexFrame>) frameClass;
             ModelDescriptor modelDescriptor = createModelDescriptor(frameClass2);
             classesMapping.put(modelDescriptor.discriminator, modelDescriptor);
         }
-        
+
         addClassesThatAreSkippedForSomeReason(classesMapping);
-        
+
         for (ModelDescriptor modelDescriptor : classesMapping.values())
         {
             writeTypeScriptModelClass(modelDescriptor, this.config.getAdjacencyMode());
         }
-        
+
         writeTypeScriptClassesMapping(classesMapping);
         writeTypeScriptBarrel(classesMapping);
     }
 
-    
+
     private void validateConfig()
     {
         if (this.config.getImportPathToWebapp() == null)
@@ -117,7 +118,7 @@ public class TypeScriptModelsGenerator
             this.config.setImportPathToWebapp(Paths.get(""));
         }
     }
-    
+
     private void addClassesThatAreSkippedForSomeReason(Map<String, ModelDescriptor> classesMapping)
     {
         List<String> artificiallyAddedModels = new ArrayList<>();
@@ -149,7 +150,7 @@ public class TypeScriptModelsGenerator
         modelDescriptor.discriminator = typeValueAnn.value();
 
         modelDescriptor.modelClassName = frameClass.getSimpleName();
-        
+
         if (frameClass.getInterfaces().length != 1)
             LOG.warning("Model extends more than 1 model. Current TS unmarshaller doesn't support that (yet).");
         modelDescriptor.extendedModels = Arrays.asList(frameClass.getInterfaces()).stream()
@@ -174,7 +175,7 @@ public class TypeScriptModelsGenerator
                     break prop;
 
 
-                final ModelRelation methodInfo = infoFromMethod(method);
+                final ModelRelation methodInfo = ModelRelation.infoFromMethod(method);
                 final String graphPropName = propAnn.value();
                 final ModelProperty existing = modelDescriptor.properties.get(graphPropName);
 
@@ -207,7 +208,7 @@ public class TypeScriptModelsGenerator
                 if (theOtherType == null)
                     break adj;
 
-                final ModelRelation methodInfo = infoFromMethod(method);
+                final ModelRelation methodInfo = ModelRelation.infoFromMethod(method);
                 //final boolean alreadySeen = methodNameVsEdgeLabel.containsKey(methodInfo.beanPropertyName);
                 final ModelRelation existing = modelDescriptor.relations.get(adjAnn.label());
 
@@ -274,34 +275,6 @@ public class TypeScriptModelsGenerator
 
 
     /**
-     * Derives the property beanPropertyName from the given method, assuming it's a getter, setter, adder or remover.
-     * The returned ModelRelation has the beanPropertyName, the methodsPresent and the isIterable set.
-     */
-    private static ModelRelation infoFromMethod(Method method)
-    {
-        // Relying on conventions here. Might need some additional data in the Frames models.
-        String name = method.getName();
-        ModelRelation info = new ModelRelation();
-        name = TsGenUtils.removePrefixAndSetMethodPresence(name, "getAll", info.methodsPresent, ModelRelation.BeanMethodType.GET);
-        name = TsGenUtils.removePrefixAndSetMethodPresence(name, "get",    info.methodsPresent, ModelRelation.BeanMethodType.GET);
-        name = TsGenUtils.removePrefixAndSetMethodPresence(name, "is",     info.methodsPresent, ModelRelation.BeanMethodType.GET);
-        name = TsGenUtils.removePrefixAndSetMethodPresence(name, "set",    info.methodsPresent, ModelRelation.BeanMethodType.SET);
-        name = TsGenUtils.removePrefixAndSetMethodPresence(name, "add",    info.methodsPresent, ModelRelation.BeanMethodType.ADD);
-        name = TsGenUtils.removePrefixAndSetMethodPresence(name, "remove", info.methodsPresent, ModelRelation.BeanMethodType.REMOVE);
-        name = StringUtils.uncapitalize(name);
-        //name = StringUtils.removeEnd(modelClassName, "s"); // Better to have addItems(item: Item) than getItem(): Item[]
-        info.beanPropertyName = name;
-
-        if (Iterable.class.isAssignableFrom(method.getReturnType()))
-            info.isIterable = true;
-        else if (method.getParameterCount() > 0 && Iterable.class.isAssignableFrom(method.getParameterTypes()[0]))
-            info.isIterable = true;
-
-        return info;
-    }
-
-
-    /**
      * Writes a TypeScript class 'DiscriminatorMapping.ts' with the mapping
      * from the discriminator value (@TypeValue) to TypeScript model class.
      */
@@ -315,12 +288,12 @@ public class TypeScriptModelsGenerator
             final Path path = this.config.getImportPathToWebapp().resolve(PATH_TO_GRAPH_PKG).resolve(BaseModel);
             mappingWriter.write("import {" + BaseModel + "} from '" + path + "';\n");
             imported.add(BaseModel);
-            
+
             final Path path2 = this.config.getImportPathToWebapp().resolve(PATH_TO_GRAPH_PKG).resolve(DiscriminatorMapping);
             mappingWriter.write("import {" + DiscriminatorMapping + "} from '" + path2 + "';\n\n");
             imported.add(DiscriminatorMapping);
 
-            
+
             for (Map.Entry<String, ModelDescriptor> entry : discriminatorToClassMapping.entrySet())
             {
                 String importedClass = entry.getValue().modelClassName;
@@ -336,12 +309,12 @@ public class TypeScriptModelsGenerator
                 "    public static getMapping(): { [key: string]: typeof " + BaseModel + " } {\n" +
                 "        return this.mapping;\n" +
                 "    }\n\n" +
-                    
+
                 "    static mapping: { [key: string]: typeof " + BaseModel + " } = {\n");
-            
+
             for (Map.Entry<String, ModelDescriptor> entry : discriminatorToClassMapping.entrySet())
             {
-                
+
                 mappingWriter.write("        \"" + entry.getKey() + "\": " + entry.getValue().modelClassName + ",\n");
             }
             mappingWriter.write("    };\n\n");
@@ -356,7 +329,7 @@ public class TypeScriptModelsGenerator
 
     /**
      * Generates a TS barrel, see https://angular.io/docs/ts/latest/glossary.html#B
-     * @param discriminatorToClassMapping 
+     * @param discriminatorToClassMapping
      */
     private void writeTypeScriptBarrel(Map<String, ModelDescriptor> discriminatorToClassMapping)
     {
@@ -366,7 +339,7 @@ public class TypeScriptModelsGenerator
             final Path path = this.config.getImportPathToWebapp().resolve(PATH_TO_GRAPH_PKG).resolve(BaseModel);
             mappingWriter.write("import {" + BaseModel + "} from '" + path + "';\n");
             mappingWriter.write("import {" + DiscriminatorMappingData + "} from './" + DiscriminatorMappingData + "';\n\n");
-            
+
             for (Map.Entry<String, ModelDescriptor> entry : discriminatorToClassMapping.entrySet())
             {
                 mappingWriter.write(String.format("export {%1$s} from './%1$s';\n", entry.getValue().modelClassName));
@@ -388,7 +361,7 @@ public class TypeScriptModelsGenerator
      */
     private void writeTypeScriptModelClass(ModelDescriptor modelDescriptor, AdjacencyMode mode)
     {
-        final File tsFile = this.config.getOutputPath().resolve(modelDescriptor.modelClassName + TS_SUFFIX).toFile();
+        final File tsFile = this.config.getOutputPath().resolve(formatClassFileName(modelDescriptor.modelClassName, true)).toFile();
         try (FileWriter tsWriter = new FileWriter(tsFile))
         {
             final Path graphPkg = this.config.getImportPathToWebapp().resolve(PATH_TO_GRAPH_PKG);
@@ -396,10 +369,10 @@ public class TypeScriptModelsGenerator
             tsWriter.write("import {GraphAdjacency} from '" + graphPkg.resolve("graph-adjacency.decorator") + "';\n");
             tsWriter.write("import {GraphProperty} from '" + graphPkg.resolve("graph-property.decorator") + "';\n\n");
             tsWriter.write("import {Observable} from 'rxjs/Observable';\n\n");
-            
+
             Set<String> imported = new HashSet<>();
             imported.add(BaseModel);
-            
+
             // Import property and relation types.
             for (ModelRelation relation : modelDescriptor.relations.values())
             {
@@ -408,7 +381,8 @@ public class TypeScriptModelsGenerator
                 if (typeScriptTypeName.equals(modelDescriptor.modelClassName))
                     continue;
                 if (imported.add(typeScriptTypeName))
-                    tsWriter.write(String.format("import {%1$s} from './%1$s';\n", typeScriptTypeName));
+                    tsWriter.write(String.format("import {%1$s} from './%1$s';\n",
+                            typeScriptTypeName, formatClassFileName(typeScriptTypeName, false)));
             }
 
             List<String> extendedModels = modelDescriptor.extendedModels;
@@ -426,7 +400,7 @@ public class TypeScriptModelsGenerator
             //tsWriter.write("    private vertexId: number;\n\n");
             tsWriter.write("    static discriminator: string = '" + modelDescriptor.discriminator + "';\n\n");
 
-            
+
             // Data for mapping from the graph JSON object to Frame-based models.
             if (!AdjacencyMode.DECORATED.equals(mode))
             {
@@ -482,24 +456,39 @@ public class TypeScriptModelsGenerator
             LOG.log(Level.SEVERE, "Failed creating TypeScript model for " + modelDescriptor.toString() + ":\n\t" + ex.getMessage(), ex);
         }
     }
-    
-    
-    private static String formatClassFileName(ModelDescriptor modelDescriptor, TypeScriptModelsGeneratorConfig config)
+
+
+    /**
+     * We really should not try to generate filenames, otherwise it will lead to names like
+     * "e-j-b-statefull-bean.ts" or "x-m-l-http-request",
+     * or, alternatively, "eJB-statefull" and "xmlhttp-request".
+     *
+     * @param className
+     * @param includeSuffix
+     * @return
+     */
+    private String formatClassFileName(String className, boolean includeSuffix)
     {
+        if (null == className)
+            throw new IllegalArgumentException("className is null");
+
+        String suffix = includeSuffix ? TS_SUFFIX : "";
         String separ = ".";
-        switch (config.getFileNamingStyle())
+        switch (this.config.getFileNamingStyle())
         {
             case LOWERCASE_DASHES:
                 separ = "-";
             case LOWERCASE_DOTS:
             {
-                //return modelDescriptor.modelClassName.replaceAll(separ, separ) + ".ts";
-                Matcher mat = pat.matcher(modelDescriptor.modelClassName);
-                return StringUtils.removeStart(mat.replaceAll(separ + "$1"), separ) + TS_SUFFIX;
+                // Replace uppercase letters with $separ + lowercase.
+                Matcher mat = UPPERCASE_LETTER.matcher(className);
+                return mat.replaceAll("$1" + separ + "$2").toLowerCase(Locale.ENGLISH) + suffix;
             }
             default:
             case CAMELCASE:
-                return modelDescriptor.modelClassName + TS_SUFFIX;
+                return className + suffix;
         }
     }
+
+    private static final Pattern UPPERCASE_LETTER = Pattern.compile("(.)(\\p{javaUpperCase})");
 }
