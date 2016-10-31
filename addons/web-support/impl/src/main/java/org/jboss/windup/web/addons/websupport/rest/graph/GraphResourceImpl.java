@@ -11,9 +11,12 @@ import org.jboss.windup.graph.model.WindupVertexFrame;
 
 import com.tinkerpop.blueprints.Vertex;
 
+import javax.inject.Singleton;
+
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
+@Singleton
 public class GraphResourceImpl extends AbstractGraphResource implements GraphResource
 {
     @Override

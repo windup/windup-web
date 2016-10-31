@@ -32,29 +32,8 @@ import javax.ws.rs.core.UriInfo;
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
 @RunWith(Arquillian.class)
-public class GraphResourceTest extends AbstractTest
+public class GraphResourceTest extends AbstractGraphResourceTest
 {
-    @ArquillianResource
-    private URL contextPath;
-
-    GraphResource graphResource;
-    WindupExecution execution;
-
-    @Before
-    public void setUp() throws Exception
-    {
-        ResteasyClient client = getResteasyClient();
-        ResteasyWebTarget target = client.target(contextPath + ServiceConstants.REST_BASE);
-        ResteasyWebTarget furnaceRestTarget = client.target(contextPath + ServiceConstants.FURNACE_REST_BASE);
-
-        this.graphResource = furnaceRestTarget.proxy(GraphResourceSubInterface.class);
-
-        if (this.execution == null)
-        {
-            WindupExecutionUtil windupExecutionUtil = new WindupExecutionUtil(client, target);
-            this.execution = windupExecutionUtil.executeWindup();
-        }
-    }
 
     /**
      * This exists solely to work around RESTEASY-798. Without it, the client proxy will fail to be generated when it

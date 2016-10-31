@@ -1,7 +1,6 @@
 package org.jboss.windup.web.services.rest;
 
 import org.jboss.windup.web.addons.websupport.rest.FurnaceRESTGraphAPI;
-import org.jboss.windup.web.addons.websupport.rest.MyRESTAPI;
 import org.jboss.windup.web.services.service.DefaultGraphPathLookup;
 import org.jboss.windup.web.addons.websupport.rest.graph.FileModelResource;
 import org.jboss.windup.web.addons.websupport.rest.graph.GraphResource;
@@ -26,9 +25,6 @@ public class RestApplicationFurnace extends Application {
     public static final String REST_BASE = "/rest-furnace";
 
     @Inject @FromFurnace
-    private MyRESTAPI myRESTAPI;
-
-    @Inject @FromFurnace
     private GraphResource graphResource;
 
     @Inject @FromFurnace
@@ -41,7 +37,6 @@ public class RestApplicationFurnace extends Application {
     public Set<Object> getSingletons()
     {
         Set<Object> singletons = new HashSet<>(super.getSingletons());
-        addService(singletons, myRESTAPI);
         addService(singletons, graphResource);
         addService(singletons, fileModelResource);
         return singletons;

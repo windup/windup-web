@@ -30,7 +30,7 @@ import javax.ws.rs.core.UriInfo;
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
 @RunWith(Arquillian.class)
-public class FileModelResourceTest extends GraphResourceTest
+public class FileModelResourceTest extends AbstractGraphResourceTest
 {
 
     @ArquillianResource

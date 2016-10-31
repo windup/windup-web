@@ -8,9 +8,12 @@ import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.model.resource.FileModel;
 import org.jboss.windup.graph.service.FileService;
 
+import javax.inject.Singleton;
+
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
+@Singleton
 public class FileModelResourceImpl extends AbstractGraphResource implements FileModelResource
 {
     @Override
