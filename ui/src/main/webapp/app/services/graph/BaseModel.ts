@@ -2,7 +2,7 @@ import {Http} from "@angular/http";
 /**
  * Things common to all models on the Typescript side.
  */
-export class BaseFrameModel
+export class BaseModel
 {
     // Model metadata
     static discriminator: string;

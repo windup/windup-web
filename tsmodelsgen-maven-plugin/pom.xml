@@ -108,7 +108,7 @@
         <!-- TypescriptModelsGeneratingService -->
         <dependency>
             <groupId>org.jboss.windup.web.addons</groupId>
-            <artifactId>windup-web-support-impl</artifactId>
+            <artifactId>windup-web-support-api</artifactId>
             <version>${version.windup}</version>
         </dependency>
 

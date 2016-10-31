@@ -1,6 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
+<!--
+    This module invokes the Windup TypeScript Models Generator Maven Plugin
+    and creates an artifact with those models in tsModels/ .
+-->
     <parent>
         <groupId>org.jboss</groupId>
         <artifactId>jboss-parent</artifactId>
@@ -72,7 +75,8 @@
                             <!-- "../../" if it goes to app/tsModels/ -->
                             <!-- "" if it goes to target/tsModels and compiled 
                                  using tsconfig-tsModels.json: `tsc -p target/tsModels/` -->
-                            <importPathToWebapp>../../</importPathToWebapp>
+                            <!-- Or a Maven token to be replaced using maven-resources-plugin. -->
+                            <importPathToWebapp>$MAVEN_TOKEN{windup.tsmodelgen.importPathToWebapp}</importPathToWebapp>
                             <overwrite>true</overwrite>
                             <fileNamingStyle>CAMELCASE</fileNamingStyle>
                         </configuration>

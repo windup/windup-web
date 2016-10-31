@@ -129,7 +129,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>2.4</version>
+                <version>2.6</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                     <!-- warSourceExcludes>app/**/*.ts</warSourceExcludes -->
@@ -197,6 +197,7 @@
         <profile>
             <properties>
                 <dirToPlaceTsModelsDirTo>src/main/webapp/app/</dirToPlaceTsModelsDirTo>
+                <windup.tsmodelgen.importPathToWebapp>../..</windup.tsmodelgen.importPathToWebapp>
             </properties>
             <id>extractTypescriptModels</id>
             <activation> <activeByDefault>true</activeByDefault> </activation>
@@ -219,7 +220,7 @@
                                             <artifactId>windup-web-ui-tsmodels</artifactId>
                                             <version>${project.version}</version>
                                             <overWrite>true</overWrite>
-                                            <outputDirectory>${dirToPlaceTsModelsDirTo}</outputDirectory>
+                                            <outputDirectory>target/tsModels-tmp</outputDirectory>
                                             <includes>**/*.ts</includes>
                                             <excludes>META-INF/**</excludes>
                                         </artifactItem>
@@ -228,53 +229,26 @@
                             </execution>
                         </executions>
                     </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <!-- Copy the TS config and compile models if they are outside of webapp/ . -->
-        <profile>
-            <properties>
-                <dirToPlaceTsModelsDirTo>${project.basedir}/target/</dirToPlaceTsModelsDirTo>
-            </properties>
-            <id>compileModels</id>
-            <activation>  <property> <name>modelsToTarget</name> </property>  </activation>
-            <build>
-                <plugins>
-                    <!-- Copy the tsconfig.json to the target dir. -->
+                    <!-- Process the TS models with the resource plugin to replace the tokens. -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                        <version>1.8</version>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <version>3.0.1</version>
                         <executions>
                             <execution>
-                                <id>copy-tsconfig-tsModels.json</id>
+                                <id>process-tsModels</id>
                                 <phase>initialize</phase>
-                                <goals> <goal>run</goal> </goals>
+                                <goals> <goal>copy-resources</goal> </goals>
                                 <configuration>
-                                    <target>
-                                        <copy file="${project.basedir}/src/main/webapp/tsconfig-tsModels.json"
-                                              tofile="${project.basedir}/target/tsModels/tsconfig.json"/>
-                                    </target>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <!-- Compile the models. -->
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>compile-tsModels</id>
-                                <phase>compile</phase>
-                                <goals> <goal>exec</goal> </goals>
-                                <configuration>
-                                    <workingDirectory>${project.basedir}</workingDirectory>
-                                    <executable>src/main/webapp/node_modules/.bin/tsc</executable>
-                                    <arguments>
-                                        <argument>-p</argument>
-                                        <argument>${project.build.directory}/tsModels/</argument>
-                                    </arguments>
+                                    <resources><resource>
+                                        <directory>target/tsModels-tmp</directory>
+                                        <includes> <include>**/*.ts</include> </includes>
+                                        <filtering>true</filtering>
+                                    </resource></resources>
+                                    <delimiters>
+                                        <delimiter>$MAVEN_TOKEN{*}</delimiter>
+                                    </delimiters>
+                                    <outputDirectory>${dirToPlaceTsModelsDirTo}</outputDirectory>
                                 </configuration>
                             </execution>
                         </executions>

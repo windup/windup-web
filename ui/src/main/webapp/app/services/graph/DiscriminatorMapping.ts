@@ -1,22 +1,22 @@
-import {BaseFrameModel} from './BaseFrameModel';
+import {BaseModel} from './BaseModel';
 
 /**
  * Mapping between discriminator and model classes.
  */
 export class DiscriminatorMapping
 {
-    static mapping: { [key: string]: typeof BaseFrameModel } = {};
+    static mapping: { [key: string]: typeof BaseModel } = {};
 
-    public static getModelClassByDiscriminator(discriminator: string): typeof BaseFrameModel
+    public static getModelClassByDiscriminator(discriminator: string): typeof BaseModel
     {
         return this.mapping[discriminator];
     }
 
-    public static addModelClass(clazz: typeof BaseFrameModel) {
+    public static addModelClass(clazz: typeof BaseModel) {
         this.mapping[clazz.discriminator] = clazz;
     }
 
-    public static getDiscriminatorByModelClass(clazz: typeof BaseFrameModel)
+    public static getDiscriminatorByModelClass(clazz: typeof BaseModel)
     {
         // It should be in the class' static data.
         if(clazz.discriminator)

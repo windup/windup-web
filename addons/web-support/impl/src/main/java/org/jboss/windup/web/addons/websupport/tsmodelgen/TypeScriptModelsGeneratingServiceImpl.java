@@ -1,6 +1,5 @@
-package org.jboss.windup.web.addons.tsmodelsgen;
+package org.jboss.windup.web.addons.websupport.tsmodelgen;
 
-import java.nio.file.Path;
 import java.util.Set;
 import javax.inject.Inject;
 import org.jboss.windup.graph.GraphTypeManager;
@@ -11,7 +10,7 @@ import org.jboss.windup.graph.model.WindupFrame;
  * 
  * @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
  */
-public class TypeScriptModelsGeneratingService
+public class TypeScriptModelsGeneratingServiceImpl implements TypeScriptModelsGeneratingService
 {
 
     @Inject GraphTypeManager graphTypeManager;
@@ -32,7 +31,7 @@ public class TypeScriptModelsGeneratingService
     /**
      * Returns an instance usable as configuration for the models generator.
      */
-    public TypeScriptModelsGeneratorConfig createConfig()
+    public static TypeScriptModelsGeneratorConfig createConfig()
     {
         return new TypeScriptModelsGeneratorConfig();
     }

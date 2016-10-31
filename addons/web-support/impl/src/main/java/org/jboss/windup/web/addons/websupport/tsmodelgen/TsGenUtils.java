@@ -1,14 +1,13 @@
-package org.jboss.windup.web.addons.tsmodelsgen;
+package org.jboss.windup.web.addons.websupport.tsmodelgen;
 
 
-import java.lang.reflect.AnnotatedType;
-import java.lang.reflect.GenericDeclaration;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.EnumSet;
 import java.util.logging.Logger;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -17,7 +16,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class TsGenUtils
 {
-    private static final Logger log = Logger.getLogger( TsGenUtils.class.getName() );
+    private static final Logger LOG = Logger.getLogger( TsGenUtils.class.getName() );
 
 
     /**
@@ -37,16 +36,16 @@ public class TsGenUtils
             setter = true;
             if (method.getParameterCount() != 1)
             {
-                TypeScriptModelsGenerator.LOG.severe("Expected setter/adder/remover to have 1 parameter: " + method.toString());
+                LOG.severe("Expected setter/adder/remover to have 1 parameter: " + method.toString());
             }
             if (method.getParameterCount() == 0)
-                TypeScriptModelsGenerator.LOG.severe("Setter/adder/remover has no parameters: " + method.toString());
+                LOG.severe("Setter/adder/remover has no parameters: " + method.toString());
             else
             {
                 final Class<?>[] parameterTypes = method.getParameterTypes();
                 if (parameterTypes.length == 0)
                 {
-                    TypeScriptModelsGenerator.LOG.severe("Setter/adder/remover has no parameters: " + method.toString());
+                    LOG.severe("Setter/adder/remover has no parameters: " + method.toString());
                     return null;
                 }
                 type = parameterTypes[0];
@@ -54,7 +53,7 @@ public class TsGenUtils
         }
         if (type == null)
         {
-            TypeScriptModelsGenerator.LOG.severe("Unknown kind of method (not get/set/add/remove): " + method.toString());
+            LOG.severe("Unknown kind of method (not get/set/add/remove): " + method.toString());
             return null;
         }
         if (Iterable.class.isAssignableFrom(type))
@@ -65,7 +64,7 @@ public class TsGenUtils
 
 
     /**
-     * Assuming the given method returns or takes an Iterable<T>, this determines the type T.
+     * Assuming the given method returns or takes an <code>Iterable&lt;T></code>, this determines the type T.
      * T may or may not extend WindupVertexFrame.
      */
     private static Class typeOfIterable(Method method, boolean setter)
@@ -90,14 +89,15 @@ public class TsGenUtils
         final Type[] actualArgs = pType.getActualTypeArguments();
         if (actualArgs.length == 0)
             throw new IllegalArgumentException("Given method's 1st param type is not parametrized generic: " + method);
+        
         Type t = actualArgs[0];
         if (t instanceof Class)
             return (Class<?>) t;
         if (t instanceof TypeVariable)
         {
             TypeVariable tv = (TypeVariable) actualArgs[0];
-            AnnotatedType[] annotatedBounds = tv.getAnnotatedBounds(); ///
-            GenericDeclaration genericDeclaration = tv.getGenericDeclaration(); ///
+            //AnnotatedType[] annotatedBounds = tv.getAnnotatedBounds();
+            //GenericDeclaration genericDeclaration = tv.getGenericDeclaration();
             return (Class) tv.getAnnotatedBounds()[0].getType();
         }
         throw new IllegalArgumentException("Unknown kind of type: " + t.getTypeName());
@@ -124,6 +124,10 @@ public class TsGenUtils
     static String quoteIfNotNull(String val)
     {
         return (val == null) ? "null" : new StringBuilder().append("'").append(val).append("'").toString();
+    }
+
+    static String escapeJSandQuote(String str) {
+        return String.format("'%s'", StringEscapeUtils.escapeEcmaScript(str));
     }
 
 }

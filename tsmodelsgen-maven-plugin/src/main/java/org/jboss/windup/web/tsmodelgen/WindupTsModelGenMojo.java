@@ -38,10 +38,10 @@ import org.jboss.forge.furnace.versions.Version;
 import org.jboss.forge.furnace.versions.Versions;
 import org.jboss.windup.util.PathUtil;
 import org.jboss.windup.util.exception.WindupException;
-import org.jboss.windup.web.addons.tsmodelsgen.TypeScriptModelsGeneratingService;
-import org.jboss.windup.web.addons.tsmodelsgen.TypeScriptModelsGeneratorConfig;
-import org.jboss.windup.web.addons.tsmodelsgen.TypeScriptModelsGeneratorConfig.AdjacencyMode;
-import org.jboss.windup.web.addons.tsmodelsgen.TypeScriptModelsGeneratorConfig.FileNamingStyle;
+import org.jboss.windup.web.addons.websupport.tsmodelgen.TypeScriptModelsGeneratingService;
+import org.jboss.windup.web.addons.websupport.tsmodelgen.TypeScriptModelsGeneratorConfig;
+import org.jboss.windup.web.addons.websupport.tsmodelgen.TypeScriptModelsGeneratorConfig.AdjacencyMode;
+import org.jboss.windup.web.addons.websupport.tsmodelgen.TypeScriptModelsGeneratorConfig.FileNamingStyle;
 
 /**
  * Generates the Typescript models for Windup web.

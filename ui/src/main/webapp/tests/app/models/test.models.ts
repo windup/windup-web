@@ -1,11 +1,11 @@
-import {BaseFrameModel} from '../../../app/services/graph/BaseFrameModel';
+import {BaseModel} from '../../../app/services/graph/BaseModel';
 import {GraphProperty} from "../../../app/services/graph/graph-property.decorator";
 import {DiscriminatorMapping} from "../../../app/services/graph/DiscriminatorMapping";
 import {GraphAdjacency} from "../../../app/services/graph/graph-adjacency.decorator";
 
 import {Observable} from "rxjs/Observable";
 
-export class TestGeneratorModel extends BaseFrameModel
+export class TestGeneratorModel extends BaseModel
 {
     static discriminator: string = 'TestGenerator';
 
@@ -28,7 +28,7 @@ export class TestGeneratorModel extends BaseFrameModel
     get fighter(): Observable<TestShipModel> { return null; }; // edge label 'commands'
 }
 
-export class TestPlanetModel extends BaseFrameModel
+export class TestPlanetModel extends BaseModel
 {
     static discriminator: string = 'TestPlanet';
 
@@ -36,7 +36,7 @@ export class TestPlanetModel extends BaseFrameModel
     get name():string { return null; };
 }
 
-export class TestShipModel extends BaseFrameModel
+export class TestShipModel extends BaseModel
 {
     static discriminator: string = 'TestShip';
 

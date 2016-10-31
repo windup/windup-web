@@ -51,4 +51,63 @@ export class TestGraphData
             },
         },
     };
+    
+    
+    static TEST_FILE_MODELS = [
+        {
+            "w:winduptype": [
+                "FileResource"
+            ],
+            "fileName": "nonxa",
+            "vertices_in": {
+                "parentFile": {
+                    "_type": "link",
+                    "link": "http://localhost:8080/windup-web-services/rest/graph/2854/edges/16384/IN/parentFile",
+                    "direction": "IN"
+                }
+            },
+            "filePath": "/path/to/nonxa",
+            "windupGenerated": false,
+            "_type": "vertex",
+            "vertices_out": {
+                "parentFile": {
+                    "_type": "link",
+                    "link": "http://localhost:8080/windup-web-services/rest/graph/2854/edges/16384/OUT/parentFile",
+                    "direction": "OUT"
+                }
+            },
+            "_id": 16384,
+            "isDirectory": true
+        },
+        {
+            "fileName": "NonXAResource.class",
+            "vertices_in": {
+                "projectModelToFile": {
+                    "_type": "link",
+                    "link": "http://localhost:8080/windup-web-services/rest/graph/2854/edges/16640/IN/projectModelToFile",
+                    "direction": "IN"
+                }
+            },
+            "filePath": "/path/to/nonxa/NonXAResource.class",
+            "_type": "vertex",
+            "skipDecompilation": true,
+            "majorVersion": 49,
+            "w:winduptype": [
+                "FileResource",
+                "JavaClassFileModel"
+            ],
+            "windupGenerated": false,
+            "vertices_out": {
+                "parentFile": {
+                    "_type": "link",
+                    "link": "http://localhost:8080/windup-web-services/rest/graph/2854/edges/16640/OUT/parentFile",
+                    "direction": "OUT"
+                }
+            },
+            "packageName": "weblogic.transaction.nonxa",
+            "_id": 16640,
+            "minorVersion": 0,
+            "isDirectory": false
+        }
+    ];    
 }

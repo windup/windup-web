@@ -1,4 +1,4 @@
-package org.jboss.windup.web.addons.tsmodelsgen;
+package org.jboss.windup.web.addons.websupport.tsmodelgen;
 
 import com.tinkerpop.frames.Adjacency;
 import com.tinkerpop.frames.Property;
@@ -13,8 +13,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -27,13 +25,10 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.BidiMap;
 import org.apache.commons.collections4.bidimap.DualHashBidiMap;
-import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.windup.graph.model.WindupFrame;
 import org.jboss.windup.graph.model.WindupVertexFrame;
-import org.jboss.windup.web.addons.tsmodelsgen.TypeScriptModelsGeneratorConfig.AdjacencyMode;
-import static org.jboss.windup.web.addons.tsmodelsgen.TsGenUtils.quoteIfNotNull;
+import org.jboss.windup.web.addons.websupport.tsmodelgen.TypeScriptModelsGeneratorConfig.AdjacencyMode;
 
 /**
  * Creates the TypeScript models which could accomodate the Frames models instances.
@@ -48,6 +43,8 @@ public class TypeScriptModelsGenerator
     private static final String DiscriminatorMappingData = "DiscriminatorMappingData";
     private static final String DiscriminatorMapping = "DiscriminatorMapping";
     private String BaseModel = "BaseModel";
+    private static final String TS_SUFFIX = ".ts";
+    private static final Pattern pat = Pattern.compile("\\p{javaUpperCase}");
     
     /**
      * Path the webapp/ dir which will be used for the imports in the generated models.
@@ -60,14 +57,14 @@ public class TypeScriptModelsGenerator
     
     private TypeScriptModelsGeneratorConfig config;
 
+    
+    
     public TypeScriptModelsGenerator(TypeScriptModelsGeneratorConfig config)
     {
         this.config = config;
     }
 
     
-
-
 
     /**
      * Generates the TypeScript files for models, copying the structure of WindupVertexModel's.
@@ -78,7 +75,7 @@ public class TypeScriptModelsGenerator
         validateConfig();
         
         if (config.getAdjacencyMode().equals(AdjacencyMode.MATERIALIZED))
-            BaseModel = "BaseFrameModel";
+            BaseModel = "BaseModel";
                 
         try {
             Files.createDirectories(this.config.getOutputPath());
@@ -166,8 +163,8 @@ public class TypeScriptModelsGenerator
         for (Method method : frameClass.getDeclaredMethods())
         {
             // Get the properties - @Property
-            prop: {
-
+            prop:
+            {
                 Property propAnn = method.getAnnotation(Property.class);
                 if (propAnn == null)
                     break prop;
@@ -199,8 +196,8 @@ public class TypeScriptModelsGenerator
             }
 
             // Get the relations - @Adjacent
-            adj: {
-
+            adj:
+            {
                 Adjacency adjAnn = method.getAnnotation(Adjacency.class);
                 if (adjAnn == null)
                     break adj;
@@ -223,7 +220,7 @@ public class TypeScriptModelsGenerator
                 if (existing != null) {
                     existing.isIterable |= methodInfo.isIterable;
                     existing.methodsPresent.addAll(methodInfo.getMethodsPresent());
-                    // We want the plural, which is assumably with methods working with Iterable.
+                    // We want the plural, which is presumably with methods working with Iterable.
                     if (methodInfo.isIterable)
                         existing.beanPropertyName = methodInfo.beanPropertyName;
                     continue;
@@ -436,7 +433,7 @@ public class TypeScriptModelsGenerator
                 tsWriter.write("    static graphPropertyMapping: { [key:string]:string; } = {\n");
                 for (ModelProperty property : modelDescriptor.properties.values())
                 {
-                    tsWriter.write(String.format("        %s: '%s',\n", escapeJSandQuote(property.graphPropertyName), property.beanPropertyName));
+                    tsWriter.write(String.format("        %s: '%s',\n", TsGenUtils.escapeJSandQuote(property.graphPropertyName), property.beanPropertyName));
                 }
                 tsWriter.write("    };\n\n");
                 tsWriter.write("    static graphRelationMapping: { [key:string]:string; } = {\n");
@@ -448,7 +445,7 @@ public class TypeScriptModelsGenerator
                         // has no clue what type is coming or what types should it send back to the server.
                         // While it's coming in the "w:winduptype" value, this may contain several values,
                         // and the models unmarshaller needs to know which one to unmarshall to.
-                        tsWriter.write("        " + escapeJSandQuote(relation.edgeLabel) + ": '" + relation.beanPropertyName
+                        tsWriter.write("        " + TsGenUtils.escapeJSandQuote(relation.edgeLabel) + ": '" + relation.beanPropertyName
                             + (relation.isIterable ? "[" : "|")
                             + (relation.type instanceof FrameType ? ((FrameType)relation.type).getFrameDiscriminator() : "") + "',\n");
 
@@ -486,15 +483,11 @@ public class TypeScriptModelsGenerator
         }
     }
     
-    String escapeJSandQuote(String str)
-    {
-        return String.format("'%s'", StringEscapeUtils.escapeEcmaScript(str));
-    }
     
-    private String formatClassFileName(ModelDescriptor modelDescriptor)
+    private static String formatClassFileName(ModelDescriptor modelDescriptor, TypeScriptModelsGeneratorConfig config)
     {
         String separ = ".";
-        switch (this.config.getFileNamingStyle())
+        switch (config.getFileNamingStyle())
         {
             case LOWERCASE_DASHES:
                 separ = "-";
@@ -509,271 +502,4 @@ public class TypeScriptModelsGenerator
                 return modelDescriptor.modelClassName + TS_SUFFIX;
         }
     }
-    private static final String TS_SUFFIX = ".ts";
-    
-    private static final Pattern pat = Pattern.compile("\\p{javaUpperCase}");
-}
-
-/**
- * Info about the type class from which the TypeScript model can be created.
- * @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
- */
-class ModelDescriptor
-{
-    /** Model class name. */
-    String modelClassName;
-    /** Currently we only support 1 "parent" Model. For Models with more, a warning is printed. */
-    List<String> extendedModels;
-    /** Frames model class discriminator - determines the type. */
-    String discriminator;
-    Map<String, ModelProperty> properties = new HashMap<>();
-    Map<String, ModelRelation> relations = new HashMap<>();
-
-    @Override
-    public String toString() {
-        return "ModelDescriptor{modelClass=" + modelClassName + ", disc=" + discriminator + '}';
-    }
-}
-
-
-/**
- * Handles String, boolean, byte, char, short, int, long, float, and double.
- * @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
- */
-enum PrimitiveType implements ModelType
-{
-    STRING("string"), NUMBER("number"), BOOLEAN("boolean"), ENUM("string"), ANY("any");
-
-    static PrimitiveType from(Class type)
-    {
-        if (Iterable.class.isAssignableFrom(type))
-            throw new IllegalArgumentException("Given type is Iterable (not a primitive type): " + type.getName());
-        if (String.class.isAssignableFrom(type))
-            return STRING;
-        if (Number.class.isAssignableFrom(type) || type.equals(Integer.TYPE) || type.equals(Long.TYPE) || type.equals(Double.TYPE) || type.equals(Short.TYPE) || type.equals(Float.TYPE) || type.equals(Byte.TYPE) || type.equals(Character.TYPE) || type.equals(Byte.TYPE))
-            return NUMBER;
-        if (Boolean.class.isAssignableFrom(type) || type.equals(Boolean.TYPE))
-            return BOOLEAN;
-        if (Enum.class.isAssignableFrom(type))
-            return ENUM;
-        //TypeScriptModelsGenerator.LOG.warning("Not a primitive type: " + type.getTypeName());
-        return ANY;
-    }
-
-    private String typeScriptTypeName;
-
-    PrimitiveType(String tsType){
-        this.typeScriptTypeName = tsType;
-    }
-
-    @Override
-    public String getTypeScriptTypeName()
-    {
-        return typeScriptTypeName;
-    }
-}
-
-/**
- * Handles WindupVertexFrame's.
- * @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
- */
-class FrameType implements ModelType
-{
-    private Class<? extends WindupVertexFrame> frameType;
-
-
-    public FrameType(Class<? extends WindupVertexFrame> frameType)
-    {
-        this.frameType = frameType;
-    }
-
-    static FrameType from(Class cls){
-        if (WindupVertexFrame.class.isAssignableFrom(cls))
-            return new FrameType(cls);
-        return null;
-    }
-
-
-    public String getFrameDiscriminator()
-    {
-        if(frameType.getAnnotation(TypeValue.class) == null)
-            throw new IllegalStateException("Missing @"+TypeValue.class.getSimpleName()+": " + frameType.getName());
-        return frameType.getAnnotation(TypeValue.class).value();
-    }
-
-    @Override
-    public String getTypeScriptTypeName()
-    {
-        return frameType.getSimpleName();
-    }
-}
-
-interface ModelType {
-    String getTypeScriptTypeName();
-
-    static ModelType from(Class cls) {
-        return ObjectUtils.defaultIfNull(FrameType.from(cls), PrimitiveType.from(cls));
-    }
-}
-
-/**
- * Common for properties and relations.
- * @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
- */
-abstract class ModelMember
-{
-    String beanPropertyName;
-    ModelType type;
-    boolean isIterable;
-    EnumSet<BeanMethodType> methodsPresent = EnumSet.noneOf(BeanMethodType.class);
-
-    public static enum BeanMethodType { GET, SET, ADD, REMOVE; }
-}
-
-
-/**
- * A property - annotated with @Property in the original model.
- * Can be a {@link java.io.Serializable} too, but in Windup models, it's only primitive types IIRC.
- * @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
- */
-class ModelProperty extends ModelMember
-{
-    String graphPropertyName;
-    boolean hasSetter;
-    boolean hasGetter;
-
-    public ModelProperty(String beanPropertyName, String graphPropertyName, PrimitiveType type)
-    {
-        this.beanPropertyName = beanPropertyName;
-        this.graphPropertyName = graphPropertyName;
-        this.type = type;
-    }
-
-    String toTypeScript(AdjacencyMode mode) {
-        StringBuilder sb = new StringBuilder();
-        if (AdjacencyMode.DECORATED.equals(mode))
-            sb.append(String.format("    @GraphProperty(%s)\n", quoteIfNotNull(this.graphPropertyName)));
-        sb.append(String.format("    get %s(): %s { return null };\n", this.beanPropertyName, this.type.getTypeScriptTypeName()));
-        return sb.toString();
-    }
-}
-
-
-/**
- * A relation between WinudpVertexFrame's.
- * @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
- */
-class ModelRelation extends ModelMember
-{
-    String edgeLabel;
-    String query;
-    boolean directionOut;
-
-    public ModelRelation(String name, String edgeLabel, boolean directionOut, ModelType type, boolean iterable)
-    {
-        this.beanPropertyName = name;
-        this.edgeLabel = edgeLabel;
-        this.directionOut = directionOut;
-        this.type = type;
-        this.isIterable = iterable;
-    }
-
-
-    ModelRelation()
-    {
-    }
-
-    /**
-     * Query that is passed to the REST API to limit the set of returned objects.
-     */
-    public ModelRelation setQuery(String query)
-    {
-        this.query = query;
-        return this;
-    }
-
-    public EnumSet<BeanMethodType> getMethodsPresent()
-    {
-        return methodsPresent;
-    }
-
-
-    public ModelType getType()
-    {
-        return type;
-    }
-
-
-
-
-    String toTypeScript(AdjacencyMode mode)
-    {
-        switch(mode){
-            case PROXIED:      return toTypeScriptProxy();
-            case MATERIALIZED: return toTypeScriptMaterialized();
-            case DECORATED:    return toTypeScriptDecorated();
-            default: throw new UnsupportedOperationException();
-        }
-    }
-
-    String toTypeScriptMaterialized()
-    {
-        String brackets = this.isIterable ? "[]" : "";
-        return "    public " + this.beanPropertyName + ": " + this.type.getTypeScriptTypeName() + brackets + "; // edge label '"+ this.edgeLabel +"'\n";
-    }
-
-    String toTypeScriptDecorated()
-    {
-        String brackets = this.isIterable ? "[]" : "";
-        StringBuilder sb = new StringBuilder();
-        String direction = this.directionOut ? "'OUT'" : "'IN'";
-        sb.append(String.format("    @GraphAdjacency(%s, %s, %b)\n", quoteIfNotNull(this.edgeLabel), direction, this.isIterable));
-        sb.append(String.format("    get %s(): Observable<%s%s> { return null };\n",
-                this.beanPropertyName, this.type.getTypeScriptTypeName(), brackets));
-        return sb.toString();
-    }
-
-
-    String toTypeScriptProxy()
-    {
-        String brackets = this.isIterable ? "[]" : "";
-
-        // A method calling a service to get the adjacent items.
-        StringBuilder sb = new StringBuilder();
-        sb.append("    function get").append(StringUtils.capitalize(this.beanPropertyName)).append("(): ").append(this.type.getTypeScriptTypeName()).append(brackets).append(" {\n");
-        sb.append("        return this.queryAdjacent('").append(this.edgeLabel).append("', ");
-        quoteIfNotNull(sb, this.query);
-        sb.append(");\n");
-        sb.append("    }\n\n");
-
-        // A method calling a service to set the given adjacent item.
-        sb.append("    function set").append(StringUtils.capitalize(this.beanPropertyName)).append("(item: ").append(this.type.getTypeScriptTypeName()).append(brackets).append(") {\n");
-        sb.append("        return this.set('").append(this.edgeLabel).append("', item);\n");
-        sb.append("    }\n\n");
-
-        if (this.isIterable)
-        {
-            // A method calling a service to add the adjacent items.
-            sb.append("    function add").append(StringUtils.capitalize(this.beanPropertyName)).append("(item: ").append(this.type.getTypeScriptTypeName()).append(") {\n");
-            sb.append("        return this.add('").append(this.edgeLabel).append("', item);\n");
-            sb.append("    }\n\n");
-
-            // A method calling a service to remove the adjacent items.
-            sb.append("    function remove").append(StringUtils.capitalize(this.beanPropertyName)).append("(item: ").append(this.type.getTypeScriptTypeName()).append(") {\n");
-            sb.append("        return this.remove('").append(this.edgeLabel).append("', item);\n");
-            sb.append("    }\n\n");
-        }
-
-        return sb.toString();
-    }
-
-
-
-    @Override
-    public String toString()
-    {
-        return "Relation{" + "edge: " + edgeLabel + ", name: " + beanPropertyName +
-            ", type: " + (type == null ? "null" : type.getTypeScriptTypeName()) + (this.isIterable ? "[]" : "") + '}';
-    }
-
 }

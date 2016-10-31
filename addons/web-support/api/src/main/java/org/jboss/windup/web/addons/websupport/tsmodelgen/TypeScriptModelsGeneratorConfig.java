@@ -1,4 +1,4 @@
-package org.jboss.windup.web.addons.tsmodelsgen;
+package org.jboss.windup.web.addons.websupport.tsmodelgen;
 
 import java.nio.file.Path;
 
@@ -20,14 +20,16 @@ public class TypeScriptModelsGeneratorConfig
     /**
      * Location of the generated report files.
      */
-    public Path getOutputPath() {
+    public Path getOutputPath()
+    {
         return outputPath;
     }
 
     /**
      * Location of the generated report files.
      */
-    public void setOutputPath(Path outputPath) {
+    public void setOutputPath(Path outputPath)
+    {
         this.outputPath = outputPath;
     }
 
@@ -35,7 +37,8 @@ public class TypeScriptModelsGeneratorConfig
      * Path the webapp/ dir which will be used for the generated TS models imports.
      * E.g. <code>import {...} from '$importPathToWebapp';</code>
      */
-    public Path getImportPathToWebapp() {
+    public Path getImportPathToWebapp()
+    {
         return importPathToWebapp;
     }
 
@@ -43,37 +46,41 @@ public class TypeScriptModelsGeneratorConfig
      * Path the webapp/ dir which will be used for the generated TS models imports.
      * E.g. <code>import {...} from '$importPathToWebapp';</code>
      */
-    public void setImportPathToWebapp(Path importPathToWebapp) {
+    public void setImportPathToWebapp(Path importPathToWebapp)
+    {
         this.importPathToWebapp = importPathToWebapp;
     }
 
     /**
      * How adjacency is handled - plain arrays ('MATERIALIZED') or proxied methods ('PROXIED').
      */
-    public AdjacencyMode getAdjacencyMode() {
+    public AdjacencyMode getAdjacencyMode()
+    {
         return adjacencyMode;
     }
 
     /**
      * How adjacency is handled - plain arrays ('MATERIALIZED') or proxied methods ('PROXIED').
      */
-    public void setAdjacencyMode(AdjacencyMode adjacencyMode) {
+    public void setAdjacencyMode(AdjacencyMode adjacencyMode)
+    {
         this.adjacencyMode = adjacencyMode;
     }
 
     /**
      * FooModel.ts vs foo.model.ts vs foo-model.ts.
      */
-    public FileNamingStyle getFileNamingStyle() {
+    public FileNamingStyle getFileNamingStyle()
+    {
         return fileNamingStyle;
     }
 
     /**
      * FooModel.ts vs foo.model.ts vs foo-model.ts.
      */
-    public void setFileNamingStyle(FileNamingStyle fileNamingStyle) {
+    public void setFileNamingStyle(FileNamingStyle fileNamingStyle)
+    {
         this.fileNamingStyle = fileNamingStyle;
     }
-    
     
 }
