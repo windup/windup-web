@@ -52,7 +52,7 @@ public class MigrationPathEndpointTest extends AbstractTest
         Assert.assertTrue(paths.size() > 2);
 
         boolean foundAnythingToEAP6 = false;
-        boolean foundWebSphereToEAP7 = false;
+        boolean foundWebSphereToEAP6 = false;
         for (MigrationPath migrationPath : paths)
         {
             if (migrationPath.getName().equals("Anything to EAP 6")) {
@@ -62,19 +62,19 @@ public class MigrationPathEndpointTest extends AbstractTest
                 Assert.assertEquals("[6]", migrationPath.getTarget().getVersionRange());
 
                 foundAnythingToEAP6 = true;
-            } else if (migrationPath.getName().equals("WebSphere to EAP 7"))
+            } else if (migrationPath.getName().equals("WebSphere to EAP 6"))
             {
-                Assert.assertEquals(301L, (long)migrationPath.getId());
+                Assert.assertEquals(300L, (long)migrationPath.getId());
                 Assert.assertEquals("websphere", migrationPath.getSource().getName());
                 Assert.assertNull(migrationPath.getSource().getVersionRange());
 
                 Assert.assertEquals("eap", migrationPath.getTarget().getName());
-                Assert.assertEquals("[7]", migrationPath.getTarget().getVersionRange());
+                Assert.assertEquals("[6]", migrationPath.getTarget().getVersionRange());
 
-                foundWebSphereToEAP7 = true;
+                foundWebSphereToEAP6 = true;
             }
         }
         Assert.assertTrue(foundAnythingToEAP6);
-        Assert.assertTrue(foundWebSphereToEAP7);
+        Assert.assertTrue(foundWebSphereToEAP6);
     }
 }
