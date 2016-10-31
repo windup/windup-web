@@ -1,6 +1,7 @@
 package org.jboss.windup.web.services.rest;
 
 import org.jboss.windup.web.addons.websupport.rest.FurnaceRESTGraphAPI;
+import org.jboss.windup.web.addons.websupport.rest.MigrationIssuesEndpoint;
 import org.jboss.windup.web.services.service.DefaultGraphPathLookup;
 import org.jboss.windup.web.addons.websupport.rest.graph.FileModelResource;
 import org.jboss.windup.web.addons.websupport.rest.graph.GraphResource;
@@ -30,6 +31,9 @@ public class RestApplicationFurnace extends Application {
     @Inject @FromFurnace
     private FileModelResource fileModelResource;
 
+    @Inject @FromFurnace
+    private MigrationIssuesEndpoint migrationIssuesEndpoint;
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -39,6 +43,7 @@ public class RestApplicationFurnace extends Application {
         Set<Object> singletons = new HashSet<>(super.getSingletons());
         addService(singletons, graphResource);
         addService(singletons, fileModelResource);
+        addService(singletons, migrationIssuesEndpoint);
         return singletons;
     }
 

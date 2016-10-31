@@ -1,7 +1,6 @@
 package org.jboss.windup.web.services.model;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -63,7 +62,7 @@ public class ApplicationGroup implements Serializable
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "group")
     @Fetch(FetchMode.SELECT)
-    private Collection<WindupExecution> executions;
+    private Set<WindupExecution> executions;
 
     @ManyToOne(cascade = CascadeType.ALL)
     private PackageMetadata packageMetadata;
@@ -248,7 +247,7 @@ public class ApplicationGroup implements Serializable
     /**
      * Contains a collection of {@link WindupExecution}s.
      */
-    public Collection<WindupExecution> getExecutions()
+    public Set<WindupExecution> getExecutions()
     {
         return executions;
     }
@@ -256,7 +255,7 @@ public class ApplicationGroup implements Serializable
     /**
      * Contains a collection of {@link WindupExecution}s.
      */
-    public void setExecutions(Collection<WindupExecution> executions)
+    public void setExecutions(Set<WindupExecution> executions)
     {
         this.executions = executions;
     }
