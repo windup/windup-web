@@ -19,6 +19,11 @@ export function GraphAdjacency (name:string, direction:string, array:boolean = t
                         observer.complete();
                     });
 
+                // .graphService and .http are stored by the initial call of fromJSON().
+                if (this.graphService == null)
+                    console.warn("@GraphAdjacency() sees no graphService on target (should not happen?), will instantiate a default one: ", this);
+                let graphService: GraphJSONToModelService<any> = this.graphService || new GraphJSONToModelService();
+
                 // If data is a link, so return a result of a service call
                 if (this.data[verticesLabel][name]["_type"] == "link") {
                     // make an HTTP Call
@@ -26,17 +31,17 @@ export function GraphAdjacency (name:string, direction:string, array:boolean = t
                     if (array) {
                         return this.http.get(url).map((vertices:any) => {
                             return vertices.map((vertice:any) => {
-                                return new GraphJSONToModelService().fromJSON(vertice, target.http);
+                                return graphService.fromJSON(vertice, target.http);
                             });
                         });
                     } else {
                         console.log("Should return a single item for: " + name);
                         return this.http.get(url).map((vertices:any) => {
-                            return new GraphJSONToModelService().fromJSON(vertices[0], target.http);
+                            return graphService.fromJSON(vertices[0], target.http);
                         });
                     }
                 }
-                
+
 
                 // Data is not null, so return a valid value
                 var vertices = this.data[verticesLabel][name].vertices;
@@ -45,10 +50,10 @@ export function GraphAdjacency (name:string, direction:string, array:boolean = t
                     let value:any;
                     if (array)
                         value = vertices.map((vertice:any) => {
-                            return new GraphJSONToModelService().fromJSON(vertice, target.http);
+                            return graphService.fromJSON(vertice, target.http);
                         });
                     else
-                        value = new GraphJSONToModelService().fromJSON(vertices[0], target.http);
+                        value = graphService.fromJSON(vertices[0], target.http);
 
                     observer.next(value);
                     observer.complete();

@@ -47,7 +47,9 @@ export class GraphJSONToModelService<T extends BaseModel>
         frameModel.constructor.apply(frameModel, [discriminator, input["_id"], input]);
         ///console.log("Setting http on object: " + frameModel + " to: " + http);
         frameModel.http = http;
-        frameModel.mapping = this.mapping;
+        // Store this service to use when resolving Observable's in fields.
+        // Http could be in the service.
+        frameModel.graphService = this;
         return <T>frameModel;
     }
 
