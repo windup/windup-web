@@ -1,9 +1,10 @@
 import {Injectable} from "@angular/core";
+import {Http}       from "@angular/http";
 import {Observable} from "rxjs/Observable";
 
-import {DiscriminatorMapping, getParentClass} from './DiscriminatorMapping';
+import {DiscriminatorMapping}     from '../../../app/services/graph/DiscriminatorMapping';
+import {DiscriminatorMappingData} from '../../../app/tsModels/DiscriminatorMappingData';
 import {BaseModel} from './BaseModel';
-import {Http} from "@angular/http";
 
 /**
  * Converts the JSON Graph representation to TypeScript models.
@@ -31,8 +32,10 @@ export class GraphJSONToModelService<T extends BaseModel>
     static MODE = "_mode";
     static DISCRIMINATOR = "w:winduptype";
 
+    constructor(private mapping: typeof DiscriminatorMapping = DiscriminatorMappingData){ }
+
     public getTypeScriptClassByDiscriminator(discriminator: string): typeof BaseModel {
-        return DiscriminatorMapping.getModelClassByDiscriminator(discriminator);
+        return this.mapping.getModelClassByDiscriminator(discriminator);
     }
 
 
@@ -42,8 +45,9 @@ export class GraphJSONToModelService<T extends BaseModel>
         clazz = this.getClass(input, clazz);
         let frameModel:BaseModel = Object.create(clazz.prototype);
         frameModel.constructor.apply(frameModel, [discriminator, input["_id"], input]);
-        console.log("Setting http on object: " + frameModel + " to: " + http);
+        ///console.log("Setting http on object: " + frameModel + " to: " + http);
         frameModel.http = http;
+        frameModel.mapping = this.mapping;
         return <T>frameModel;
     }
 
@@ -53,7 +57,8 @@ export class GraphJSONToModelService<T extends BaseModel>
             if (disc instanceof Array)
                 disc = disc[0];
             if (!disc)
-                throw new Error(`Given object doesn't specify "${GraphJSONToModelService.DISCRIMINATOR}" and no target class given: ` + JSON.stringify(input));
+                throw new Error(`Given object doesn't specify "${GraphJSONToModelService.DISCRIMINATOR}" and no target class given:\n`
+                    + JSON.stringify(input));
             clazz = this.getTypeScriptClassByDiscriminator(disc);
         }
 
