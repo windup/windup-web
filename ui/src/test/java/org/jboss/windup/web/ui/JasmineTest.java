@@ -63,7 +63,7 @@ public class JasmineTest extends AbstractUITest
             Assert.assertTrue("Tests Failed: " + testSummary.getText(), testSummary.getText().contains(" 0 failures"));
 
             WebElement testFailures = getDriver().findElement(By.className("jasmine-failures"));
-            Assert.assertNotNull("Test Failures Element Missing");
+            Assert.assertNotNull("Test Failures Element Missing", testFailures);
             Assert.assertTrue("Failures Found: " + testFailures.getText(), testFailures.getText().trim().equals(""));
         } finally {
             takeScreenshot("JasmineTest_finally", getDriver());
