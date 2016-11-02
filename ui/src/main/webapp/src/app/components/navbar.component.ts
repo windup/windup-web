@@ -23,7 +23,7 @@ export class NavbarComponent implements OnInit {
 
     logout(event:Event):void {
         event.preventDefault();
-        KeycloakService.logout();
+        this._keycloak.logout();
     }
 
     isActive(link:HTMLAnchorElement):boolean {

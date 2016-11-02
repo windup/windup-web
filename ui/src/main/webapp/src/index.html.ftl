@@ -13,7 +13,13 @@
 </head>
 
 <body>
-<windup-app></windup-app>
+<windup-app>
+    <div id="loading" class="blank-slate-pf">
+        <h1>
+            Loading...
+        </h1>
+    </div>
+</windup-app>
 </body>
 
 </html>
