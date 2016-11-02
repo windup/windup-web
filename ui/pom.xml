@@ -26,7 +26,7 @@
             <type>pom</type>
             <scope>provided</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
