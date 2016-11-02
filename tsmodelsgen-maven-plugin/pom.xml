@@ -22,11 +22,11 @@
             <url>http://www.eclipse.org/legal/epl-v10.html</url>
         </license>
     </licenses>
-    
+
     <prerequisites>
         <maven>3.2</maven>
     </prerequisites>
-   
+
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -104,7 +104,7 @@
             <groupId>org.jboss.windup</groupId>
             <artifactId>windup-bootstrap</artifactId>
         </dependency>
-        
+
         <!-- TypescriptModelsGeneratingService -->
         <dependency>
             <groupId>org.jboss.windup.web.addons</groupId>
@@ -170,19 +170,16 @@
             <id>runPlugin</id>
             <build>
                 <plugins>
-                    <!-- Run the Windup TS Models Generator plugin -->
+                    <!-- Run the Windup TS Models Generator plugin. Needs to run after this project is built first. -->
                     <plugin>
                         <groupId>org.jboss.windup.web.plugin</groupId>
                         <artifactId>windup-tsmodelsgen-maven-plugin</artifactId>
                         <version>${project.version}</version>
                         <configuration>
                             <outputDir>target/tsModels</outputDir>
-                            <adjacencyMode>MATERIALIZE</adjacencyMode>
+                            <adjacencyMode>DECORATED</adjacencyMode>
                             <!-- For import {...} from '../../src/main/webapp/'
-                            TODO: This is not yet added to the plugin.
-                            <pathToWebapp>../../src/main/webapp/</pathToWebapp>
-                            When using the tsconfig-tsModels.json for compilation, it can actually be this:
-                            <pathToWebapp>./</pathToWebapp>
+                            <importPathToWebapp>../..</importPathToWebapp>
                             -->
                         </configuration>
                         <executions>

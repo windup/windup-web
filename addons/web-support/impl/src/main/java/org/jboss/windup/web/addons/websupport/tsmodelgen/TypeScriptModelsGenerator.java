@@ -1,5 +1,6 @@
 package org.jboss.windup.web.addons.websupport.tsmodelgen;
 
+import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.frames.Adjacency;
 import com.tinkerpop.frames.Property;
 import com.tinkerpop.frames.modules.typedgraph.TypeValue;
@@ -26,9 +27,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.BidiMap;
 import org.apache.commons.collections4.bidimap.DualHashBidiMap;
-import org.apache.commons.lang3.StringUtils;
 import org.jboss.windup.graph.model.WindupFrame;
 import org.jboss.windup.graph.model.WindupVertexFrame;
+import org.jboss.windup.graph.model.resource.FileModel;
 import org.jboss.windup.web.addons.websupport.tsmodelgen.TypeScriptModelsGeneratorConfig.AdjacencyMode;
 
 /**
@@ -144,6 +145,10 @@ public class TypeScriptModelsGenerator
     private ModelDescriptor createModelDescriptor(Class<? extends WindupVertexFrame> frameClass)
     {
         ModelDescriptor modelDescriptor = new ModelDescriptor();
+        LOG.info("\n    * Examining frame " + frameClass.getSimpleName());
+
+        if (FileModel.class.getSimpleName().equals(frameClass.getSimpleName()))
+            LOG.info("DEBUG STOP");
 
         // Get the type discriminator string
         TypeValue typeValueAnn = frameClass.getAnnotation(TypeValue.class);
@@ -152,12 +157,12 @@ public class TypeScriptModelsGenerator
         modelDescriptor.modelClassName = frameClass.getSimpleName();
 
         if (frameClass.getInterfaces().length != 1)
-            LOG.warning("Model extends more than 1 model. Current TS unmarshaller doesn't support that (yet).");
+            LOG.warning("Model " + frameClass.getSimpleName() + " extends more than 1 model. Current TS unmarshaller doesn't support that (yet).");
         modelDescriptor.extendedModels = Arrays.asList(frameClass.getInterfaces()).stream()
             .filter((x) -> WindupVertexFrame.class.isAssignableFrom(x) && ! WindupVertexFrame.class.equals(x))
             .map(Class::getSimpleName).collect(Collectors.toList());
 
-        // These could be part of the ModelDescriptor.
+        // TODO: These could be part of the ModelDescriptor.
         BidiMap<String, String> methodNameVsPropName = new DualHashBidiMap<>();
         BidiMap<String, String> methodNameVsEdgeLabel = new DualHashBidiMap<>();
 
@@ -169,6 +174,7 @@ public class TypeScriptModelsGenerator
                 Property propAnn = method.getAnnotation(Property.class);
                 if (propAnn == null)
                     break prop;
+                LOG.info("        * Examining @Property " + method.getName());
 
                 final Class propertyType = TsGenUtils.getPropertyTypeFromMethod(method);
                 if (propertyType == null)
@@ -179,11 +185,9 @@ public class TypeScriptModelsGenerator
                 final String graphPropName = propAnn.value();
                 final ModelProperty existing = modelDescriptor.properties.get(graphPropName);
 
-                if (!checkMethodNameVsPropNameConsistency(methodNameVsPropName, methodInfo.beanPropertyName, graphPropName, method,
-                        "Property name '%s' of method '%s' doesn't fit previously seen property name '%s' of other method for '%s'."
-                        + "\nCheck the Frames model %s"))
-                    // Names don't fit, warning printed.
-                    continue;
+                checkMethodNameVsPropNameConsistency(methodNameVsPropName, methodInfo.beanPropertyName, graphPropName, method,
+                    "Property name '%s' of method '%s' doesn't fit previously seen property name '%s' of other method for '%s'."
+                    + "\nCheck the Frames model %s");
 
                 // Method base beanPropertyName already seen.
                 if (existing != null)
@@ -202,6 +206,7 @@ public class TypeScriptModelsGenerator
                 Adjacency adjAnn = method.getAnnotation(Adjacency.class);
                 if (adjAnn == null)
                     break adj;
+                LOG.info("    * Examining @Adjacency " + method.getName());
 
                 // Model class of the other end.
                 final Class theOtherType = TsGenUtils.getPropertyTypeFromMethod(method);
@@ -209,19 +214,18 @@ public class TypeScriptModelsGenerator
                     break adj;
 
                 final ModelRelation methodInfo = ModelRelation.infoFromMethod(method);
-                //final boolean alreadySeen = methodNameVsEdgeLabel.containsKey(methodInfo.beanPropertyName);
-                final ModelRelation existing = modelDescriptor.relations.get(adjAnn.label());
+                final ModelRelation existing = modelDescriptor.getRelation(adjAnn.label(), Direction.OUT.equals(adjAnn.direction()));
 
-                if (!checkMethodNameVsPropNameConsistency(methodNameVsEdgeLabel, methodInfo.beanPropertyName, adjAnn.label(), method,
-                        "Edge label '%s' of method '%s' doesn't fit previously seen edge label '%s' of other method for '%s'."
-                        + "\nCheck the Frames model %s"))
-                    continue;
+                checkMethodNameVsPropNameConsistency(methodNameVsEdgeLabel, methodInfo.beanPropertyName, adjAnn.label(), method,
+                    "Edge label '%s' of method '%s' doesn't fit previously seen edge label '%s' of other method for '%s'."
+                    + "\nCheck the Frames model %s");
 
                 // Method base beanPropertyName already seen. Override some traits.
                 if (existing != null) {
                     existing.isIterable |= methodInfo.isIterable;
                     existing.methodsPresent.addAll(methodInfo.getMethodsPresent());
-                    // We want the plural, which is presumably with methods working with Iterable.
+                    // We want the plural, which is presumably on methods working with Iterable.
+                    // Also, this filters out things like addFileToDirectory() next to getFilesInDirectory().
                     if (methodInfo.isIterable)
                         existing.beanPropertyName = methodInfo.beanPropertyName;
                     continue;
@@ -233,9 +237,10 @@ public class TypeScriptModelsGenerator
                         adjAnn.label(),
                         adjAnn.direction().OUT.equals(adjAnn.direction()),
                         adjType,
-                        methodInfo.isIterable /// Also for add/remove? (these don't take Iterable)
+                        methodInfo.isIterable // Also add/remove? That prefix suggests it's a collection.
                 );
-                modelDescriptor.relations.put(modelRelation.edgeLabel, modelRelation);
+                modelRelation.methodsPresent.addAll(methodInfo.methodsPresent);
+                modelDescriptor.addRelation(modelRelation);
             }
         }
         return modelDescriptor;
@@ -253,7 +258,7 @@ public class TypeScriptModelsGenerator
          to a graph property beanPropertyName or an edge label, and the examined method beanPropertyName doesn't fit that.
          true otherwise (No pre-existing mapping or the names fit.)
      */
-    private boolean checkMethodNameVsPropNameConsistency(
+    private static boolean checkMethodNameVsPropNameConsistency(
             Map<String, String> methodNameVsPropName, final String methodPropName,
             final String graphPropName, Method method, String messageFormat)
     {
@@ -374,7 +379,7 @@ public class TypeScriptModelsGenerator
             imported.add(BaseModel);
 
             // Import property and relation types.
-            for (ModelRelation relation : modelDescriptor.relations.values())
+            for (ModelRelation relation : modelDescriptor.getRelations())
             {
                 final String typeScriptTypeName = relation.type.getTypeScriptTypeName();
                 // Don't import this class
@@ -411,7 +416,7 @@ public class TypeScriptModelsGenerator
                 }
                 tsWriter.write("    };\n\n");
                 tsWriter.write("    static graphRelationMapping: { [key:string]:string; } = {\n");
-                for (ModelRelation relation : modelDescriptor.relations.values())
+                for (ModelRelation relation : modelDescriptor.getRelations())
                 {
                     try {
                         // edgeLabel: 'propName[TypeValue'
@@ -443,7 +448,7 @@ public class TypeScriptModelsGenerator
 
             tsWriter.write("\n");
 
-            for (ModelRelation relation : modelDescriptor.relations.values())
+            for (ModelRelation relation : modelDescriptor.getRelations())
             {
                 tsWriter.write(relation.toTypeScript(mode));
                 tsWriter.write("\n");
