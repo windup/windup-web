@@ -49,6 +49,8 @@ import {PopoverComponent} from "./components/popover.component";
 import {JsTreeAngularWrapperComponent} from "./components/js-tree-angular-wrapper.component";
 import {PackageRegistryService} from "./services/package-registry.service";
 import {TechnologiesReport} from "./components/reports/technologies/technologies.report";
+import {LoginComponent} from "./components/login.component";
+import {LoggedInGuard} from "./services/logged-in.guard";
 
 
 @NgModule({
@@ -92,7 +94,8 @@ import {TechnologiesReport} from "./components/reports/technologies/technologies
         CustomRuleSelectionComponent,
         NotificationComponent,
         PopoverComponent,
-        JsTreeAngularWrapperComponent
+        JsTreeAngularWrapperComponent,
+        LoginComponent
     ],
     providers: [
         appRoutingProviders,
@@ -110,6 +113,7 @@ import {TechnologiesReport} from "./components/reports/technologies/technologies
         WindupService,
         NotificationService,
         PackageRegistryService,
+        LoggedInGuard,
         {
             provide: Http,
             useFactory:

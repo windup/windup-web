@@ -10,52 +10,46 @@ export class WindupHttpService extends Http {
         super(_backend, _defaultOptions);
     }
 
-    private setToken(options: RequestOptionsArgs) {
-        if (options == null || KeycloakService.auth == null || KeycloakService.auth.authz == null || KeycloakService.auth.authz.token == null) {
-            console.log("Need a token, but no token is available, not setting bearer token.");
-            return;
-        }
+    private setToken(options: RequestOptionsArgs): Observable<RequestOptionsArgs> {
+        return new Observable<RequestOptionsArgs>(observer => {
+            this._keycloakService.getToken().subscribe(
+                token => {
+                    if (!options.hasOwnProperty('headers')) {
+                        options.headers = new Headers();
+                    }
 
-        if (!options.hasOwnProperty('headers')) {
-            options.headers = new Headers();
-        }
+                    if (!options.headers.has('Authorization')) {
+                        options.headers.set('Authorization', 'Bearer ' + token);
+                    }
 
-        if (!options.headers.has('Authorization')) {
-            options.headers.set('Authorization', 'Bearer ' + KeycloakService.auth.authz.token);
-        }
+                    observer.next(options);
+                    observer.complete();
+                },
+                error => {
+                    console.log("Need a token, but no token is available, not setting bearer token.");
+                    observer.error(error);
+                }
+            )
+        });
     }
 
-    private configureRequest(f:Function, url:string | Request, options:RequestOptionsArgs = {}, body?: any):Observable<Response> {
-        let tokenObservable:Observable<string> = this._keycloakService.getToken();
-        let tokenUpdateObservable:Observable<any> = Observable.create((observer) => {
-            if (options == null) {
-                let headers = new Headers();
-                options = new RequestOptions({ headers: headers });
-            }
+    private configureRequest(f:Function, url:string | Request, options:RequestOptionsArgs = {}, body?: any): Observable<Response> {
+        return (this.setToken(options) as Observable<Response>).flatMap(options => {
+            return new Observable<Response>((observer) => {
+                let result;
+                if (body) {
+                    result = f.apply(this, [url, body, options]);
+                } else {
+                    result = f.apply(this, [url, options]);
+                }
 
-            this.setToken(options);
-            observer.next();
-            observer.complete();
+                result.subscribe(
+                    response => observer.next(response),
+                    error => observer.error(error),
+                    complete => observer.complete()
+                );
+            });
         });
-        let requestObservable:Observable<Response> = Observable.create((observer) => {
-            let result;
-            if (body) {
-                result = f.apply(this, [url, body, options]);
-            } else {
-                result = f.apply(this, [url, options]);
-            }
-
-            result.subscribe(
-                response => observer.next(response),
-                error => observer.error(error),
-                complete => observer.complete()
-            );
-        });
-
-        return <Observable<Response>>Observable
-            // Use concurrency 1, to prevent concurrency between token update and use
-            .merge(tokenObservable, tokenUpdateObservable, requestObservable, 1)
-            .filter((response) => response instanceof Response);
     }
 
     /**
