@@ -40,7 +40,12 @@ module.exports = function (config) {
         logLevel: config.LOG_INFO,
         autoWatch: false,
         browsers: ['PhantomJS'],
-        singleRun: true
+        singleRun: true,
+
+        junitReporter: {
+            outputFile: 'test-results.xml',
+            useBrowserName: false
+        }
     };
 
     config.set(_config);

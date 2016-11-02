@@ -132,7 +132,7 @@
                 <version>2.6</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
-                    <!-- warSourceExcludes>app/**/*.ts</warSourceExcludes -->
+                    <warSourceExcludes>app,config,src,tests,typings,node_modules,.gitignore,*.js,*.json,*.html</warSourceExcludes>
                 </configuration>
             </plugin>
 
@@ -171,24 +171,54 @@
                     </execution>
 
                     <execution>
-                        <id>tsc</id>
+                        <id>webpack-build</id>
                         <phase>compile</phase>
                         <goals>
                             <goal>exec</goal>
                         </goals>
+
                         <configuration>
+                            <executable>./node_modules/.bin/webpack</executable>
                             <workingDirectory>src/main/webapp</workingDirectory>
-                            <executable>node_modules/.bin/tsc</executable>
-                            <!--
                             <arguments>
-                                <argument>- -rootDir</argument>
-                                <argument>src/main/webapp</argument>
+                                <argument>--progress</argument>
+                                <argument>--profile</argument>
+                                <argument>--bail</argument>
                             </arguments>
-                            -->
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>com.kelveden</groupId>
+                <artifactId>maven-karma-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>start</goal>
+                        </goals>
+                        <configuration>
+                            <workingDirectory>src/main/webapp</workingDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <karmaExecutable>node_modules/.bin/karma</karmaExecutable>
+                    <configFile>src/main/webapp/karma.conf.js</configFile>
+                    <junitReportFile>src/main/webapp/test-results.xml</junitReportFile>
+                    <reportsDirectory>${project.build.directory}/karma-reports</reportsDirectory>
+                    <browsers>PhantomJS</browsers>
+                    <autoWatch>false</autoWatch>
+                    <singleRun>true</singleRun>
+                    <colors>true</colors>
+                    <karmaFailureIgnore>false</karmaFailureIgnore>
+                    <reporters>progress,junit</reporters>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 
@@ -249,63 +279,6 @@
                                         <delimiter>$MAVEN_TOKEN{*}</delimiter>
                                     </delimiters>
                                     <outputDirectory>${dirToPlaceTsModelsDirTo}</outputDirectory>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-
-        <profile>
-            <id>arquillian-wildfly-10-managed</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.spec</groupId>
-                    <artifactId>jboss-javaee-7.0</artifactId>
-                    <version>${version.jboss.javaee}</version>
-                    <type>pom</type>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.wildfly.arquillian</groupId>
-                    <artifactId>wildfly-arquillian-container-managed</artifactId>
-                    <version>1.0.2.Final</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.jboss.arquillian.protocol</groupId>
-                    <artifactId>arquillian-protocol-servlet</artifactId>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>unpack</id>
-                                <phase>process-test-classes</phase>
-                                <goals>
-                                    <goal>unpack</goal>
-                                </goals>
-                                <configuration>
-                                    <artifactItems>
-                                        <artifactItem>
-                                            <groupId>org.jboss.windup.web</groupId>
-                                            <artifactId>windup-web-tests-wildfly-dist</artifactId>
-                                            <version>${project.version}</version>
-                                            <type>jar</type>
-                                            <overWrite>false</overWrite>
-                                            <outputDirectory>target</outputDirectory>
-                                        </artifactItem>
-                                    </artifactItems>
                                 </configuration>
                             </execution>
                         </executions>
