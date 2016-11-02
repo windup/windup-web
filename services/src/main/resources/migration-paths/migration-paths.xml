@@ -30,4 +30,16 @@
         <source id="websphere"/>
         <target id="eap" version-range="[7]"/>
     </path>-->
+
+    <path id="400">
+        <name>EAP 5 to EAP 7</name>
+        <source id="eap" version-range="[5]"/>
+        <target id="eap" version-range="[7]"/>
+    </path>
+
+    <path id="500">
+        <name>EAP 6 to EAP 7</name>
+        <source id="eap" version-range="[6]"/>
+        <target id="eap" version-range="[7]"/>
+    </path>
 </migration-paths>
