@@ -1,6 +1,9 @@
 package org.jboss.windup.web.addons.websupport.rest;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.model.ProjectModel;
@@ -38,5 +41,16 @@ public class MigrationIssuesEndpointImpl extends AbstractGraphResource implement
                     excludeTags);
 
         return categorizedProblems;
+    }
+
+    @Override
+    public Object getIssueFiles(Long executionId, String issueId)
+    {
+        Map<Severity, List<ProblemSummary>> categorizedProblems = this.getAggregatedIssues(executionId);
+
+        /*
+         * Collection<ProblemSummary> problemSummaries = categorizedProblems.entrySet().stream() .map(Map.Entry::getValue);
+         */
+        return null;
     }
 }
