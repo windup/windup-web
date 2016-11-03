@@ -29,7 +29,7 @@ import org.jboss.windup.util.Logging;
 public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
 {
     private static final Logger LOG = Logging.get(AbstractGraphResource.class);
-    
+
     public static final String KEY_ID = "_id";
     public static final String TYPE = "_type";
     public static final String TYPE_VERTEX = "vertex";
@@ -156,12 +156,12 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
         else
             execution = entityManager.find(WindupExecution.class, executionID);
         if (null == execution) {
-            String availExecs = getExecutions().stream().map(ex -> "" + ex.getId()).collect(Collectors.joining(" "));
+            String availExecs = getExecutions().stream().map(we -> "" + we.getId()).collect(Collectors.joining(" "));
             throw new IllegalArgumentException("Windup execution not found, ID: " + executionID + "\n    Existing: [" + availExecs + "]");
         }
         return getGraphForExecution(execution);
     }
-    
+
     /**
      * Dev/test purposes.
      */
@@ -171,7 +171,7 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
             throw new IllegalStateException("No executions found.");
         return executions.get(0);
     }
-    
+
 
     protected GraphContext getGraphForExecution(WindupExecution execution) throws IllegalStateException {
         try
@@ -181,17 +181,17 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
 
             ///GraphContextFactory graphContextFactory = servicesProducer.getGraphContextFactory();
             ///return graphContextFactory.load(graphPath);
-            return graphCache.getGraph(graphPath);            
+            return graphCache.getGraph(graphPath);
         }
         catch (Exception ex)
         {
             throw new IllegalStateException("Can't load graph for execution " + execution.getId() + ":\n\t" + ex.getMessage(), ex);
         }
     }
-    
+
     protected List<WindupExecution> getExecutions()
     {
         TypedQuery<WindupExecution> queryExecutions = entityManager.createQuery("FROM WindupExecution AS ex", WindupExecution.class);
         return queryExecutions.getResultList();
-    }    
+    }
 }
