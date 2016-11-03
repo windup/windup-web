@@ -39,16 +39,16 @@
              Java {{(technologiesStats.statsFilesByTypeJavaPercent | async)?.quantity}} %
         </div>
         <div class="technologyItem col-lg-2">
-             XML {{technologiesStats?.statsFilesByTypeXmlPercent?.quantity}} %
+             XML {{(technologiesStats?.statsFilesByTypeXmlPercent | async)?.quantity}} %
         </div>
         <div class="technologyItem col-lg-2">
-             HTML {{technologiesStats?.statsFilesByTypeHtmlPercent?.quantity}} %
+             HTML {{(technologiesStats?.statsFilesByTypeHtmlPercent | async)?.quantity}} %
         </div>
         <div class="technologyItem col-lg-2">
-             CSS {{technologiesStats?.statsFilesByTypeCssPercent?.quantity}} %
+             CSS {{(technologiesStats?.statsFilesByTypeCssPercent | async)?.quantity}} %
         </div>
         <div class="technologyItem col-lg-2">
-             JavaScript {{technologiesStats?.statsFilesByTypeJsPercent?.quantity}} %
+             JavaScript {{(technologiesStats?.statsFilesByTypeJsPercent | async)?.quantity}} %
         </div>
     </div>
 
@@ -70,8 +70,8 @@
 
                             <tbody>
                                 <tr> <td>stateless</td> <td>{{(technologiesStats?.statsServicesEjbStateless | async)?.quantity}}</td> </tr>
-                                <tr> <td>stateful</td> <td>{{technologiesStats?.statsServicesEjbStateful?.quantity}}</td> </tr>
-                                <tr> <td>message driven</td> <td>{{technologiesStats?.statsServicesEjbMessageDriven?.quantity}}</td> </tr>
+                                <tr> <td>stateful</td> <td>{{(technologiesStats?.statsServicesEjbStateful | async)?.quantity}}</td> </tr>
+                                <tr> <td>message driven</td> <td>{{(technologiesStats?.statsServicesEjbMessageDriven | async)?.quantity}}</td> </tr>
                             </tbody>
                         </table>
                         <table class="datatable table table-striped table-bordered technologies-table">
@@ -79,8 +79,8 @@
                                 <tr> <th>HTTP</th> <th>Amount</th> </tr>
                             </thead>
                             <tbody>
-                                <tr> <td>JAX-RS services</td> <td>{{technologiesStats?.statsServicesHttpJaxRs?.quantity}}</td> </tr>
-                                <tr> <td>JAX-WS services</td> <td>{{technologiesStats?.statsServicesHttpJaxWs?.quantity}}</td> </tr>
+                                <tr> <td>JAX-RS services</td> <td>{{(technologiesStats?.statsServicesHttpJaxRs | async)?.quantity}}</td> </tr>
+                                <tr> <td>JAX-WS services</td> <td>{{(technologiesStats?.statsServicesHttpJaxWs | async)?.quantity}}</td> </tr>
                             </tbody>
                         </table>
                         <table class="datatable table table-striped table-bordered technologies-table">
@@ -88,10 +88,10 @@
                                 <tr> <th>Other</th> <th>Amount</th> </tr>
                             </thead>
                             <tbody>
-                                <tr> <td>JPA entities</td> <td>{{technologiesStats?.statsServicesJpaEntitites?.quantity}}</td> </tr>
-                                <tr> <td>JPA persistence units</td> <td>{{technologiesStats?.statsServicesJpaPersistenceUnits?.quantity}}</td> </tr>
-                                <tr> <td>JPA named queries</td> <td>{{technologiesStats?.statsServicesJpaNamedQueries?.quantity}}</td> </tr>
-                                <tr> <td>RMI services</td> <td>{{technologiesStats?.statsServicesRmiServices?.quantity}}</td> </tr>
+                                <tr> <td>JPA entities</td> <td>{{(technologiesStats?.statsServicesJpaEntitites | async)?.quantity}}</td> </tr>
+                                <tr> <td>JPA persistence units</td> <td>{{(technologiesStats?.statsServicesJpaPersistenceUnits | async)?.quantity}}</td> </tr>
+                                <tr> <td>JPA named queries</td> <td>{{(technologiesStats?.statsServicesJpaNamedQueries | async)?.quantity}}</td> </tr>
+                                <tr> <td>RMI services</td> <td>{{(technologiesStats?.statsServicesRmiServices | async)?.quantity}}</td> </tr>
                             </tbody>
                         </table>
                     </div>
@@ -110,8 +110,8 @@
                                 <tr> <th>Database</th> <th>Amount</th> </tr>
                             </thead>
                             <tbody>
-                                <tr> <td>JDBC datasources</td> <td>{{technologiesStats?.statsServerResourcesDbJdbcDatasources?.quantity}}</td> </tr>
-                                <tr> <td>XA JDBC datasources</td> <td>{{technologiesStats?.statsServerResourcesDbXaJdbcDatasources?.quantity}}</td> </tr>
+                                <tr> <td>JDBC datasources</td> <td>{{(technologiesStats?.statsServerResourcesDbJdbcDatasources | async)?.quantity}}</td> </tr>
+                                <tr> <td>XA JDBC datasources</td> <td>{{(technologiesStats?.statsServerResourcesDbXaJdbcDatasources | async)?.quantity}}</td> </tr>
                             </tbody>
                         </table>
                         <table class="datatable table table-striped table-bordered technologies-table">
@@ -119,9 +119,9 @@
                                 <tr> <th>Messaging</th> <th>Amount</th> </tr>
                             </thead>
                             <tbody>
-                                <tr> <td>JMS queues</td> <td>{{technologiesStats?.statsServerResourcesMsgJmsQueues?.quantity}}</td> </tr>
-                                <tr> <td>JMS topics</td> <td>{{technologiesStats?.statsServerResourcesMsgJmsTopics?.quantity}}</td> </tr>
-                                <tr> <td>JMS connection factories</td> <td>{{technologiesStats?.statsServerResourcesMsgJmsConnectionFactories?.quantity}}</td> </tr>
+                                <tr> <td>JMS queues</td> <td>{{(technologiesStats?.statsServerResourcesMsgJmsQueues | async)?.quantity}}</td> </tr>
+                                <tr> <td>JMS topics</td> <td>{{(technologiesStats?.statsServerResourcesMsgJmsTopics | async)?.quantity}}</td> </tr>
+                                <tr> <td>JMS connection factories</td> <td>{{(technologiesStats?.statsServerResourcesMsgJmsConnectionFactories | async)?.quantity}}</td> </tr>
                             </tbody>
                         </table>
                         <table class="datatable table table-striped table-bordered technologies-table">
@@ -129,8 +129,8 @@
                                 <tr> <th>Other</th> <th>Amount</th> </tr>
                             </thead>
                             <tbody>
-                                <tr> <td>security realms</td> <td>{{technologiesStats?.statsServerResourcesSecurityRealms?.quantity}}</td> </tr>
-                                <tr> <td>total JNDI entries</td> <td>{{technologiesStats?.statsServerResourcesJndiTotalEntries?.quantity}}</td> </tr>
+                                <tr> <td>security realms</td> <td>{{(technologiesStats?.statsServerResourcesSecurityRealms | async)?.quantity}}</td> </tr>
+                                <tr> <td>total JNDI entries</td> <td>{{(technologiesStats?.statsServerResourcesJndiTotalEntries | async)?.quantity}}</td> </tr>
                             </tbody>
                         </table>
                     </div>
@@ -152,14 +152,14 @@
                             -->
                             <tbody>
                                 <tr>
-                                    <td>Self-written</td> 
-                                    <td>{{technologiesStats?.statsJavaClassesOriginal?.quantity || 0}} classes</td>
-                                    <td>{{technologiesStats?.statsJavaJarsOriginal?.quantity || 0}} jars</td> 
+                                    <td>Self-written</td>
+                                    <td>{{(technologiesStats?.statsJavaClassesOriginal | async)?.quantity || 0}} classes</td>
+                                    <td>{{(technologiesStats?.statsJavaJarsOriginal | async)?.quantity || 0}} jars</td>
                                 </tr>
                                 <tr>
                                     <td>Total</td>
-                                    <td>{{technologiesStats?.statsJavaClassesTotal?.quantity || 0}} classes</td>
-                                    <td>{{technologiesStats?.statsJavaJarsTotal?.quantity || 0}} jars</td>
+                                    <td>{{(technologiesStats?.statsJavaClassesTotal | async)?.quantity || 0}} classes</td>
+                                    <td>{{(technologiesStats?.statsJavaJarsTotal | async)?.quantity || 0}} jars</td>
                                 </tr>
                             </tbody>
                         </table>

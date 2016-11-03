@@ -22,7 +22,6 @@ export class DiscriminatorMapping
         if(clazz.discriminator)
             return clazz.discriminator;
 
-
         return null;
     }
 }

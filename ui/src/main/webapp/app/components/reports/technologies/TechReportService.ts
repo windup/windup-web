@@ -29,7 +29,7 @@ import {TechnologiesStatsModel} from '../../../tsModels/TechnologiesStatsModel';
 export class TechReportService extends AbstractService
 {
     constructor(
-        private http: Http,
+        private http: Http
         ///private graphClient: FramesRestClientService
     ) { super(); }
     
@@ -43,9 +43,16 @@ export class TechReportService extends AbstractService
     {
         ///let service = new GraphJSONtoTsModelsService(DiscriminatorMappingData);
         let service = new GraphJSONToModelService();
-        return this.http.get(TechReportService.GRAPH_TECHSTATS_URL + "&exec=" + execID)
-            .map((res:Response) => res.json())
-            .map((data:TechnologiesStatsModel[]) => <TechnologiesStatsModel><any>service.fromJSON(data[0], this.http))
+        let url = TechReportService.GRAPH_TECHSTATS_URL + "&exec=" + execID;
+        return this.http.get(url)
+            .map((res:Response) => (console.log("Got response... ///"), res.json()))
+            .map((data:TechnologiesStatsModel[]) => {
+                console.log("Data items: ", data);///
+                if (!Array.isArray(data) || data.length == 0) {
+                    throw new Error("No items returned, URL: " + url);
+                }
+                return <TechnologiesStatsModel><any>service.fromJSON(data[0], this.http);
+            })
             .catch(this.handleError);
     }
 }
