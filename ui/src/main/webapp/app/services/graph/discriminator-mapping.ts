@@ -1,4 +1,4 @@
-import {BaseModel} from './BaseModel';
+import {BaseModel} from './base.model';
 
 /**
  * Mapping between discriminator and model classes.

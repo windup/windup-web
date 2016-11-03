@@ -1,10 +1,9 @@
 import {Injectable} from "@angular/core";
 import {Http}       from "@angular/http";
-import {Observable} from "rxjs/Observable";
 
-import {DiscriminatorMapping}     from '../../../app/services/graph/DiscriminatorMapping';
-import {DiscriminatorMappingData} from '../../../app/tsModels/DiscriminatorMappingData';
-import {BaseModel} from './BaseModel';
+import {DiscriminatorMapping}     from './discriminator-mapping';
+import {DiscriminatorMappingData} from '../../../app/tsModels/discriminator-mapping-data';
+import {BaseModel} from './base.model';
 
 /**
  * Converts the JSON Graph representation to TypeScript models.

@@ -14,8 +14,8 @@ abstract class ModelMember
     boolean isIterable;
     EnumSet<BeanMethodType> methodsPresent = EnumSet.noneOf(BeanMethodType.class);
 
-    public static enum BeanMethodType {
+    public enum BeanMethodType
+    {
         GET, SET, ADD, REMOVE
     }
 }
-

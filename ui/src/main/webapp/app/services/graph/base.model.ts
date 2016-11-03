@@ -1,5 +1,5 @@
 import {Http} from "@angular/http";
-import {DiscriminatorMapping} from "../../../app/services/graph/DiscriminatorMapping";
+import {DiscriminatorMapping} from "./discriminator-mapping";
 import {GraphJSONToModelService} from "../../../app/services/graph/graph-json-to-model.service";
 
 /**

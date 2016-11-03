@@ -1,29 +1,26 @@
 package org.jboss.windup.web.addons.websupport.tsmodelgen;
 
-
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.EnumSet;
 import java.util.logging.Logger;
+
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
  *
- *  @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
+ * @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
  */
 public class TsGenUtils
 {
     private static final Logger LOG = Logger.getLogger(TsGenUtils.class.getName());
 
-
     /**
-     * Returns the in or out type of given method, assumably implementing a bean property.
-     * For getters, returns the return type.
-     * For setters, returns the single (first) parameter.
-     * If the type is an Iterable&lt;T&gt;, returns T.
+     * Returns the in or out type of given method, assumably implementing a bean property. For getters, returns the return type. For setters, returns
+     * the single (first) parameter. If the type is an Iterable&lt;T&gt;, returns T.
      */
     static Class getPropertyTypeFromMethod(Method method)
     {
@@ -62,10 +59,9 @@ public class TsGenUtils
             return type;
     }
 
-
     /**
-     * Assuming the given method returns or takes an <code>Iterable&lt;T></code>, this determines the type T.
-     * T may or may not extend WindupVertexFrame.
+     * Assuming the given method returns or takes an <code>Iterable&lt;T></code>, this determines the type T. T may or may not extend
+     * WindupVertexFrame.
      */
     private static Class typeOfIterable(Method method, boolean setter)
     {
@@ -89,22 +85,22 @@ public class TsGenUtils
         final Type[] actualArgs = pType.getActualTypeArguments();
         if (actualArgs.length == 0)
             throw new IllegalArgumentException("Given method's 1st param type is not parametrized generic: " + method);
-        
+
         Type t = actualArgs[0];
         if (t instanceof Class)
             return (Class<?>) t;
         if (t instanceof TypeVariable)
         {
             TypeVariable tv = (TypeVariable) actualArgs[0];
-            //AnnotatedType[] annotatedBounds = tv.getAnnotatedBounds();
-            //GenericDeclaration genericDeclaration = tv.getGenericDeclaration();
+            // AnnotatedType[] annotatedBounds = tv.getAnnotatedBounds();
+            // GenericDeclaration genericDeclaration = tv.getGenericDeclaration();
             return (Class) tv.getAnnotatedBounds()[0].getType();
         }
         throw new IllegalArgumentException("Unknown kind of type: " + t.getTypeName());
     }
 
-
-    static String removePrefixAndSetMethodPresence(String name, String prefix, EnumSet<ModelMember.BeanMethodType> methodsPresent, ModelRelation.BeanMethodType flagToSetIfPrefixFound)
+    static String removePrefixAndSetMethodPresence(String name, String prefix, EnumSet<ModelMember.BeanMethodType> methodsPresent,
+                ModelRelation.BeanMethodType flagToSetIfPrefixFound)
     {
         String name2 = StringUtils.removeStart(name, prefix);
         if (!name2.equals(name))
@@ -120,13 +116,13 @@ public class TsGenUtils
             sb.append("'").append(val).append("'");
     }
 
-
     static String quoteIfNotNull(String val)
     {
         return (val == null) ? "null" : new StringBuilder("'").append(val).append("'").toString();
     }
 
-    static String escapeJSandQuote(String str) {
+    static String escapeJSandQuote(String str)
+    {
         return String.format("'%s'", StringEscapeUtils.escapeEcmaScript(str));
     }
 

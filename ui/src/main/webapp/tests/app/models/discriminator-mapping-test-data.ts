@@ -1,5 +1,5 @@
-import {DiscriminatorMapping} from '../../../app/services/graph/DiscriminatorMapping';
-import {BaseModel} from '../../../app/services/graph/BaseModel';
+import {DiscriminatorMapping} from '../../../app/services/graph/discriminator-mapping';
+import {BaseModel} from '../../../app/services/graph/base.model';
 
 import {TestGeneratorModel, TestPlanetModel, TestShipModel} from '../models/test.models';
 import {WindupConfigurationModel} from '../../../app/tsModels/WindupConfigurationModel';

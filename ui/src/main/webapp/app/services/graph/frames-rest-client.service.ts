@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Http, Response} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
-import {BaseModel} from "./BaseModel";
+import {BaseModel} from "./base.model";
 
 /**
  * Facilitates the data flow between a generic REST endpoint for the graph and the calling methods.

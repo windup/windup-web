@@ -1,7 +1,9 @@
 package org.jboss.windup.web.addons.websupport.tsmodelgen;
 
 import java.util.Set;
+
 import javax.inject.Inject;
+
 import org.jboss.windup.graph.GraphTypeManager;
 import org.jboss.windup.graph.model.WindupFrame;
 
@@ -12,7 +14,16 @@ import org.jboss.windup.graph.model.WindupFrame;
  */
 public class TypeScriptModelsGeneratingServiceImpl implements TypeScriptModelsGeneratingService
 {
-    @Inject GraphTypeManager graphTypeManager;
+    @Inject
+    GraphTypeManager graphTypeManager;
+
+    /**
+     * Returns an instance usable as configuration for the models generator.
+     */
+    public static TypeScriptModelsGeneratorConfig createConfig()
+    {
+        return new TypeScriptModelsGeneratorConfig();
+    }
 
     public void generate(TypeScriptModelsGeneratorConfig config)
     {
@@ -25,14 +36,6 @@ public class TypeScriptModelsGeneratingServiceImpl implements TypeScriptModelsGe
         {
             throw new RuntimeException("Failed generating TypeScript models:\n\t" + ex.getMessage(), ex);
         }
-    }
-
-    /**
-     * Returns an instance usable as configuration for the models generator.
-     */
-    public static TypeScriptModelsGeneratorConfig createConfig()
-    {
-        return new TypeScriptModelsGeneratorConfig();
     }
 
 }

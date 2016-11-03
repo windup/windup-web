@@ -7,9 +7,10 @@ import org.apache.commons.lang3.ObjectUtils;
  */
 interface ModelType
 {
-    String getTypeScriptTypeName();
-
-    static ModelType from(Class cls) {
+    static ModelType from(Class cls)
+    {
         return ObjectUtils.defaultIfNull(FrameType.from(cls), PrimitiveType.from(cls));
     }
+
+    String getTypeScriptTypeName();
 }

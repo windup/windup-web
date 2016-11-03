@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Info about the type class from which the TypeScript model can be created.
@@ -26,6 +25,11 @@ class ModelDescriptor
 
     private Map<String, ModelRelation> relations = new HashMap<>();
 
+    private static String formatRelationsMapKey(String edgeLabel, boolean out)
+    {
+        return edgeLabel + (out ? "/o" : "/i");
+    }
+
     ModelRelation getRelation(String edgeLabel, boolean out)
     {
         return relations.get(formatRelationsMapKey(edgeLabel, out));
@@ -42,14 +46,9 @@ class ModelDescriptor
         return this.relations.values();
     }
 
-    private static String formatRelationsMapKey(String edgeLabel, boolean out)
-    {
-        return edgeLabel + (out ? "/o" : "/i");
-    }
-
-
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "ModelDescriptor{modelClass=" + modelClassName + ", disc=" + discriminator + '}';
     }
 

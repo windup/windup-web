@@ -1,6 +1,6 @@
-import {BaseModel} from '../../../app/services/graph/BaseModel';
+import {BaseModel} from '../../../app/services/graph/base.model';
 import {GraphProperty} from "../../../app/services/graph/graph-property.decorator";
-import {DiscriminatorMapping} from "../../../app/services/graph/DiscriminatorMapping";
+import {DiscriminatorMapping} from "../../../app/services/graph/discriminator-mapping";
 import {GraphAdjacency} from "../../../app/services/graph/graph-adjacency.decorator";
 
 import {Observable} from "rxjs/Observable";
