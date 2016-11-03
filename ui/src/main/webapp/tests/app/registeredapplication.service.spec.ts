@@ -42,6 +42,7 @@ describe("Registered Application Service Test", () => {
                 console.log("Registered application: " + application.inputFilename);
                 expect(application.inputFilename).toEqual("java");
             }, error => {
+                if (error)
                 expect(false).toBeTruthy("Service call failed due to: " + error);
             });
     })));

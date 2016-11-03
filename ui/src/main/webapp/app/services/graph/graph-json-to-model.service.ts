@@ -1,9 +1,9 @@
 import {Injectable} from "@angular/core";
-import {Observable} from "rxjs/Observable";
+import {Http}       from "@angular/http";
 
-import {DiscriminatorMapping, getParentClass} from './discriminator-mapping';
+import {DiscriminatorMapping}     from './discriminator-mapping';
+import {DiscriminatorMappingData} from '../../../app/tsModels/discriminator-mapping-data';
 import {BaseModel} from './base.model';
-import {Http} from "@angular/http";
 
 /**
  * Converts the JSON Graph representation to TypeScript models.
@@ -31,8 +31,10 @@ export class GraphJSONToModelService<T extends BaseModel>
     static MODE = "_mode";
     static DISCRIMINATOR = "w:winduptype";
 
+    constructor(private mapping: typeof DiscriminatorMapping = DiscriminatorMappingData){ }
+
     public getTypeScriptClassByDiscriminator(discriminator: string): typeof BaseModel {
-        return DiscriminatorMapping.getModelClassByDiscriminator(discriminator);
+        return this.mapping.getModelClassByDiscriminator(discriminator);
     }
 
 
@@ -42,8 +44,11 @@ export class GraphJSONToModelService<T extends BaseModel>
         clazz = this.getClass(input, clazz);
         let frameModel:BaseModel = Object.create(clazz.prototype);
         frameModel.constructor.apply(frameModel, [discriminator, input["_id"], input]);
-        console.log("Setting http on object: " + frameModel + " to: " + http);
+        ///console.log("Setting http on object: " + frameModel + " to: " + http);
         frameModel.http = http;
+        // Store this service to use when resolving Observable's in fields.
+        // Http could be in the service.
+        frameModel.graphService = this;
         return <T>frameModel;
     }
 
@@ -53,7 +58,8 @@ export class GraphJSONToModelService<T extends BaseModel>
             if (disc instanceof Array)
                 disc = disc[0];
             if (!disc)
-                throw new Error(`Given object doesn't specify "${GraphJSONToModelService.DISCRIMINATOR}" and no target class given: ` + JSON.stringify(input));
+                throw new Error(`Given object doesn't specify "${GraphJSONToModelService.DISCRIMINATOR}" and no target class given:\n`
+                    + JSON.stringify(input));
             clazz = this.getTypeScriptClassByDiscriminator(disc);
         }
 

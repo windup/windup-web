@@ -1,0 +1,46 @@
+=  Windup Web TypeScript Models Generator Maven Plugin
+
+== Overview
+
+This `tsmodelsgen-maven-plugin` scans the Windup Frame models (graph database models)
+and generates their TypeScript counterpart classes to be used in the Windup Web UI (written in Angular2/TypeScript).
+
+The TypeScript classes are then used by the OGM functionality within the Windup Web UI.
+
+The plugin is intended to run as a part of the Windup Web build process
+and the classes are supposed to be copied to `windup-web/ui/target/generated-sources`,
+and eventually bundled as resources into the Windup Web application.
+
+== Prerequisites
+
+To run properly, this plugin relies on Maven version 3.3.x or later.
+
+== Example configuration
+
+```xml
+    <build>
+        <plugins>
+            <!-- Run the Windup TS Models Generator plugin -->
+            <plugin>
+                <groupId>org.jboss.windup.web.plugin</groupId>
+                <artifactId>windup-tsmodelsgen-maven-plugin</artifactId>
+                <version>${project.version}</version>
+                <configuration>
+                    <outputDir>target/tsModels</outputDir>
+                    <adjacencyMode>MATERIALIZE</adjacencyMode>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>generateTSmodels</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>tsmodelgen</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+```
+
+

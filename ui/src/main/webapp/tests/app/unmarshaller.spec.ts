@@ -2,6 +2,8 @@ import {async} from '@angular/core/testing';
 
 import {GraphJSONToModelService, RelationInfo} from '../../app/services/graph/graph-json-to-model.service';
 import {DiscriminatorMapping, getParentClass} from '../../app/services/graph/discriminator-mapping';
+//import {DiscriminatorMappingData} from '../../app/tsModels/DiscriminatorMappingData';
+import {DiscriminatorMappingTestData} from './models/discriminator-mapping-test-data';
 import {TestGeneratorModel, TestPlanetModel, TestShipModel} from './models/test.models';
 import {TestGraphData} from './models/test-graph-data';
 
@@ -18,19 +20,19 @@ describe('Unmarshaller tests', () => {
     });
 
     it ('mapping test - getModelClassByDiscriminator()', () => {
-        var clazz = DiscriminatorMapping.getModelClassByDiscriminator("TestPlanet");
+        var clazz = DiscriminatorMappingTestData.getModelClassByDiscriminator("TestPlanet");
         expect(clazz).toEqual(TestPlanetModel);
-        var clazz = DiscriminatorMapping.getModelClassByDiscriminator("TestGenerator");
+        var clazz = DiscriminatorMappingTestData.getModelClassByDiscriminator("TestGenerator");
         expect(clazz).toEqual(TestGeneratorModel);
     });
 
     it ('mapping test - getDiscriminatorByModelClass()', () => {
-        var discriminator = DiscriminatorMapping.getDiscriminatorByModelClass(TestPlanetModel);
+        var discriminator = DiscriminatorMappingTestData.getDiscriminatorByModelClass(TestPlanetModel);
         expect(discriminator).toEqual("TestPlanet");
     });
 
     it ('unmarshaller test - fromJSON() - basic properties', () => {
-        let modelObject = new GraphJSONToModelService().fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA, null);
+        let modelObject = new GraphJSONToModelService(DiscriminatorMappingTestData).fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA, null);
         expect(modelObject).toBeDefined();
         expect(modelObject.vertexId).toEqual(456);
         let model = <TestGeneratorModel> modelObject;
@@ -40,7 +42,7 @@ describe('Unmarshaller tests', () => {
     });
 
     it ('unmarshaller test - fromJSON() - ship', async(() => {
-        let modelObject = new GraphJSONToModelService<TestGeneratorModel>().fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA, null);
+        let modelObject = new GraphJSONToModelService<TestGeneratorModel>(DiscriminatorMappingTestData).fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA, null);
 
         return modelObject.ship.toPromise()
             .then((ship:TestShipModel) => {
@@ -65,7 +67,7 @@ describe('Unmarshaller tests', () => {
             }
         };
 
-        let modelObject = new GraphJSONToModelService<TestGeneratorModel>().fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA, http);
+        let modelObject = new GraphJSONToModelService<TestGeneratorModel>(DiscriminatorMappingTestData).fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA, http);
 
         return modelObject.shuttles.toPromise()
             .then((shuttles:TestShipModel[]) => {
@@ -90,7 +92,7 @@ describe('Unmarshaller tests', () => {
             }
         };
 
-        let modelObject = new GraphJSONToModelService<TestGeneratorModel>().fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA, http);
+        let modelObject = new GraphJSONToModelService<TestGeneratorModel>(DiscriminatorMappingTestData).fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA, http);
 
         return modelObject.fighter.toPromise()
             .then((fighter:TestShipModel) => {
@@ -103,7 +105,7 @@ describe('Unmarshaller tests', () => {
     }));
 
     it ('unmarshaller test - fromJSON() - planets', async(() => {
-        let modelObject = new GraphJSONToModelService<TestGeneratorModel>().fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA, null);
+        let modelObject = new GraphJSONToModelService<TestGeneratorModel>(DiscriminatorMappingTestData).fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA, null);
 
         return modelObject.colonizedPlanet.toPromise()
             .then((planets:TestPlanetModel[]) => {

@@ -5,7 +5,7 @@ import {BaseModel} from './base.model';
  */
 export class DiscriminatorMapping
 {
-    private static mapping: { [key: string]: typeof BaseModel } = {};
+    static mapping: { [key: string]: typeof BaseModel } = {};
 
     public static getModelClassByDiscriminator(discriminator: string): typeof BaseModel
     {

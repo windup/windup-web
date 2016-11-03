@@ -34,6 +34,7 @@
             'tests/app/registeredapplication.model.spec',
             'tests/app/registeredapplication.service.spec',
             'tests/app/unmarshaller.spec',
+            'tests/app/generated-ts-files.spec',
             'app/components/modal-dialog.component.spec'
         ];
 

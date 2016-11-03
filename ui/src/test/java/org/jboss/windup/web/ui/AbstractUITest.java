@@ -35,6 +35,7 @@ import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.google.common.base.Predicate;
+import java.nio.file.Path;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -83,7 +84,7 @@ public abstract class AbstractUITest
         return war;
     }
 
-    protected static void takeScreenshot(String testName, WebDriver driver)
+    protected static Path takeScreenshot(String testName, WebDriver driver)
     {
         if (driver instanceof TakesScreenshot)
         {
@@ -93,12 +94,14 @@ public abstract class AbstractUITest
                 File outputFile = new File("target/screenshots/" + testName + "_shot_" + System.currentTimeMillis() + ".png");
                 System.err.println("Copying file: " + tempFile + " to " + outputFile);
                 FileUtils.copyFile(tempFile, outputFile);
+                return outputFile.toPath();
             }
             catch (IOException e)
             {
                 e.printStackTrace();
             }
         }
+        return null;
     }
 
     public URL getContextRoot()

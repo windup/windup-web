@@ -60,6 +60,8 @@
     <modules>
         <module>addons</module>
         <module>furnace-service-provider</module>
+        <module>tsmodelsgen-maven-plugin</module>
+        <module>tsmodelsgen-invocation</module>
         <module>tests</module>
         <module>services</module>
         <module>ui</module>
