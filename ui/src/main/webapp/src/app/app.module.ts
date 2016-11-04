@@ -52,7 +52,7 @@ import {TechnologiesReport} from "./components/reports/technologies/technologies
 import {LoginComponent} from "./components/login.component";
 import {LoggedInGuard} from "./services/logged-in.guard";
 import {TechReportService} from "./components/reports/technologies/TechReportService";
-import {FramesRestClientService} from './services/graph/FramesRestClientService';
+import {FramesRestClientService} from './services/graph/frames-rest-client.service';
 
 
 @NgModule({
@@ -88,7 +88,7 @@ import {FramesRestClientService} from './services/graph/FramesRestClientService'
         ProgressBarComponent,
         RulesModalComponent,
         TechnologyComponent,
-        
+
         FileSelectDirective,
         FileDropDirective,
         UploadQueueComponent,
