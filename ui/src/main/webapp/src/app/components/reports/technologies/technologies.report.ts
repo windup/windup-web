@@ -3,11 +3,11 @@ import {ActivatedRoute, Params}   from '@angular/router';
 
 import {TechReportService, StatsItem} from "./TechReportService";
 
-import {ApplicationGroup} from "windup-services";
+import {ApplicationGroup} from "../../../../app/windup-services";
 import {ApplicationGroupService} from '../../../services/applicationgroup.service';
 import {GraphJSONToModelService} from '../../../services/graph/graph-json-to-model.service';
-import {DiscriminatorMappingData} from '../../../tsModels/discriminator-mapping-data';
-import {TechnologiesStatsModel} from '../../../tsModels/TechnologiesStatsModel';
+import {DiscriminatorMappingData} from '../../../generated/tsModels/discriminator-mapping-data';
+import {TechnologiesStatsModel} from '../../../generated/tsModels/TechnologiesStatsModel';
 import {FramesRestClientService} from '../../../services/graph/frames-rest-client.service';
 import {Observable} from 'rxjs/Observable';
 

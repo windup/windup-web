@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
 import {Headers, Http, RequestOptions, Response} from '@angular/http';
 
-import {Constants} from "../../../constants";
-import {ApplicationGroup} from "windup-services";
-import {AbstractService} from "../../../services/abtract.service";
+import {Constants} from "../../../../app/constants";
+import {ApplicationGroup} from "../../../../app/windup-services";
+import {AbstractService} from "../../../../app/services/abtract.service";
 
 import {Observable} from 'rxjs/Observable';
 
@@ -12,7 +12,7 @@ import {Observable} from 'rxjs/Observable';
 //import {FramesRestClientService}  from '../../../services/graph/FramesRestClientService';
 //import {DiscriminatorMappingData} from '../../../tsModels/DiscriminatorMappingData';
 
-import {GraphJSONToModelService} from '../../../services/graph/graph-json-to-model.service';
+import {GraphJSONToModelService} from '../../../../app/services/graph/graph-json-to-model.service';
 /*
 import {BaseModel}            from '../../../services/graph/BaseModel';
 import {GraphProperty}        from "../../../services/graph/graph-property.decorator";
@@ -21,7 +21,7 @@ import {DiscriminatorMapping} from "../../../services/graph/discriminator-mappin
 */
 
 // Models
-import {TechnologiesStatsModel} from '../../../tsModels/TechnologiesStatsModel';
+import {TechnologiesStatsModel} from '../../../../app/generated/tsModels/TechnologiesStatsModel';
 
 
 
@@ -32,14 +32,14 @@ export class TechReportService extends AbstractService
         private http: Http
         ///private graphClient: FramesRestClientService
     ) { super(); }
-    
+
     static WINDUP_REST_URL =     "http://localhost:8080/windup-web-services/rest";
     static DISCR_TECH_STATS =    TechnologiesStatsModel.discriminator; //"TechnologiesStats";
     static INVOKER_URL =         `${TechReportService.WINDUP_REST_URL}/technologyStats/create?exec=`;
     static GRAPH_TECHSTATS_URL = `${TechReportService.WINDUP_REST_URL}/graph/by-type/${TechReportService.DISCR_TECH_STATS}?depth=1`;
-    
-    
-    getStats(execID: number): Observable<TechnologiesStatsModel> 
+
+
+    getStats(execID: number): Observable<TechnologiesStatsModel>
     {
         ///let service = new GraphJSONtoTsModelsService(DiscriminatorMappingData);
         let service = new GraphJSONToModelService();

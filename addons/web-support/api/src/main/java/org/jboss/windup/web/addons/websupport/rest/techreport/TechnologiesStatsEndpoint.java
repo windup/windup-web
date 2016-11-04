@@ -1,4 +1,4 @@
-package org.jboss.windup.web.services.rest;
+package org.jboss.windup.web.addons.websupport.rest.techreport;
 
 import javax.ws.rs.*;
 

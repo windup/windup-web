@@ -47,10 +47,10 @@ public interface GraphResource extends FurnaceRESTGraphAPI
 
     /**
      * Dev/test purposes.
-     */
     @GET()
     @Path("/by-type/{vertexType}")
     List<Map<String, Object>> getByType(@PathParam("vertexType") String vertexType, @QueryParam("depth") Integer depth);
+     */
 
     @GET()
     @Path("/{executionID}/by-type/{vertexType}/{propertyName}={propertyValue}")

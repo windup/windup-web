@@ -23,7 +23,7 @@ public class GraphResourceImpl extends AbstractGraphResource implements GraphRes
     @Override
     public List<Map<String, Object>> getEdges(Long executionID, Integer vertexID, String edgeDirection, String edgeLabel)
     {
-        GraphContext graphContext = getGraphContext(executionID);
+        GraphContext graphContext = getGraph(executionID);
         if (vertexID == null)
             throw new IllegalArgumentException("ID not specified");
 
@@ -42,7 +42,7 @@ public class GraphResourceImpl extends AbstractGraphResource implements GraphRes
     @Override
     public List<Map<String, Object>> getByType(Long executionID, String vertexType, Integer depth)
     {
-        GraphContext graphContext = getGraphContext(executionID);
+        GraphContext graphContext = getGraph(executionID);
         List<Map<String, Object>> vertices = new ArrayList<>();
         for (Vertex v : graphContext.getFramed().getVertices(WindupVertexFrame.TYPE_PROP, vertexType))
         {
@@ -54,7 +54,7 @@ public class GraphResourceImpl extends AbstractGraphResource implements GraphRes
     @Override
     public List<Map<String, Object>> getByType(Long executionID, String vertexType, String propertyName, String propertyValue, Integer depth)
     {
-        GraphContext graphContext = getGraphContext(executionID);
+        GraphContext graphContext = getGraph(executionID);
         List<Map<String, Object>> vertices = new ArrayList<>();
         Query query = graphContext.getFramed().query().has(WindupVertexFrame.TYPE_PROP, vertexType).has(propertyName, propertyValue);
         for (Vertex vertex : query.vertices())
@@ -63,16 +63,19 @@ public class GraphResourceImpl extends AbstractGraphResource implements GraphRes
         }
         return vertices;
     }
-    
+
+    /*
     @Override
     public List<Map<String, Object>> getByType(String vertexType, Integer depth){
         return getByType(getAnyExecution().getId(), vertexType, depth);
     }
+    */
+    // TODO: Get a list of existing executions.
 
     @Override
     public Map<String, Object> get(Long executionID, Integer id, Integer depth)
     {
-        GraphContext graphContext = getGraphContext(executionID);
+        GraphContext graphContext = getGraph(executionID);
         if (executionID == null)
             throw new IllegalArgumentException("Execution ID not specified.");
         if (id == null)
@@ -83,8 +86,8 @@ public class GraphResourceImpl extends AbstractGraphResource implements GraphRes
             throw new IllegalArgumentException("Non-existent vertex ID " + id + " in execution " + executionID);
         return convertToMap(executionID, vertex, depth);
     }
-    
-    
+
+
     @Override
     public String getTestVertex(){
         return "[{\"w:winduptype\":[\"FileResource\",\"ArchiveModel:\",\"WarArchiveModel\"],\"fileName\":\"jee-example-web.war\","
