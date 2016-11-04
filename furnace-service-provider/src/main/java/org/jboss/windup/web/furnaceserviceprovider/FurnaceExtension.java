@@ -161,8 +161,7 @@ public class FurnaceExtension implements Extension
                     @Override
                     public T produce(CreationalContext<T> ctx)
                     {
-                        T object = furnaceProducer.getFurnace().getAddonRegistry().getServices(type).get();
-                        return object;
+                        return furnaceProducer.getFurnace().getAddonRegistry().getServices(type).iterator().next();
                     }
 
                     @Override

@@ -3,4 +3,4 @@
  *
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
-package org.jboss.windup.web.services.rest.graph;
+package org.jboss.windup.web.addons.websupport.rest.graph;

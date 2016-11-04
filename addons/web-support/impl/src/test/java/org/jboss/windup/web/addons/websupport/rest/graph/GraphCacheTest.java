@@ -1,4 +1,4 @@
-package org.jboss.windup.web.services.rest.graph;
+package org.jboss.windup.web.addons.websupport.rest.graph;
 
 import java.nio.file.Paths;
 
@@ -6,7 +6,6 @@ import static org.mockito.Mockito.*;
 
 import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.GraphContextFactory;
-import org.jboss.windup.web.services.producer.WindupServicesProducer;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -46,14 +45,11 @@ public class GraphCacheTest
     {
         GraphCache graphCache = new GraphCache();
 
-        WindupServicesProducer windupServicesProducer = mock(WindupServicesProducer.class);
         GraphContextFactory graphContextFactory = getGraphContextFactory();
-        when(windupServicesProducer.getGraphContextFactory()).thenReturn(graphContextFactory);
+        graphCache.graphContextFactory = graphContextFactory;
 
         when(graphContextFactory.load(Paths.get("/path1"))).thenReturn(getGraphContext1());
         when(graphContextFactory.load(Paths.get("/path2"))).thenReturn(getGraphContext2());
-
-        graphCache.servicesProducer = windupServicesProducer;
 
         return graphCache;
     }
