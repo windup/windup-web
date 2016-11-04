@@ -1,6 +1,6 @@
 import {async} from '@angular/core/testing';
 
-import {GraphJSONToModelService} from '../../app/services/graph/graph-json-to-model.service';
+import {GraphJSONToModelService} from '../../src/app/services/graph/graph-json-to-model.service';
 //import {DiscriminatorMapping, getParentClass} from '../../app/services/graph/DiscriminatorMapping';
 import {DiscriminatorMappingTestData} from './models/discriminator-mapping-test-data';
 import {TestGraphData} from './models/test-graph-data';
@@ -10,7 +10,7 @@ import {Observable} from "rxjs/Observable";
 import 'rxjs/add/operator/toPromise';
 
 import {Http} from "@angular/http";
-import {FileModel} from "../../app/tsModels/FileModel";
+import {FileModel} from "../../src/app/generated/tsModels/FileModel";
 
 describe('Generated TS Files', () => {
 

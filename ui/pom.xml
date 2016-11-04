@@ -226,8 +226,8 @@
         <!-- Extract TS models from an artifact. -->
         <profile>
             <properties>
-                <dirToPlaceTsModelsDirTo>src/main/webapp/app/</dirToPlaceTsModelsDirTo>
-                <windup.tsmodelgen.importPathToWebapp>../..</windup.tsmodelgen.importPathToWebapp>
+                <dirToPlaceTsModelsDirTo>src/main/webapp/src/app/generated</dirToPlaceTsModelsDirTo>
+                <windup.tsmodelgen.importPathToWebapp>../../..</windup.tsmodelgen.importPathToWebapp>
             </properties>
             <id>extractTypescriptModels</id>
             <activation> <activeByDefault>true</activeByDefault> </activation>
