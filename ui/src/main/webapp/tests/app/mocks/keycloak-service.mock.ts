@@ -6,7 +6,6 @@ export class KeyCloakServiceMock /* extends KeycloakService */ {
         // super(null);
     }
 
-
     get username(): String {
         return 'username';
     }

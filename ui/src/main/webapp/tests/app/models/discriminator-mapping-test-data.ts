@@ -1,12 +1,10 @@
-import {DiscriminatorMapping} from '../../../app/services/graph/discriminator-mapping';
-import {BaseModel} from '../../../app/services/graph/base.model';
+import {DiscriminatorMapping} from '../../../src/app/services/graph/discriminator-mapping';
+import {BaseModel} from '../../../src/app/services/graph/base.model';
 
 import {TestGeneratorModel, TestPlanetModel, TestShipModel} from '../models/test.models';
-import {WindupConfigurationModel} from '../../../app/tsModels/WindupConfigurationModel';
-import {FileModel} from '../../../app/tsModels/FileModel';
-import {JavaClassFileModel} from '../../../app/tsModels/JavaClassFileModel';
-
-
+import {WindupConfigurationModel} from '../../../src/app/generated/tsModels/WindupConfigurationModel';
+import {FileModel} from '../../../src/app/generated/tsModels/FileModel';
+import {JavaClassFileModel} from '../../../src/app/generated/tsModels/JavaClassFileModel';
 
 
 export class DiscriminatorMappingTestData extends DiscriminatorMapping
@@ -22,5 +20,3 @@ export class DiscriminatorMappingTestData extends DiscriminatorMapping
     
     constructor() { super(); };
 }
-
-

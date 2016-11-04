@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import {Http}       from "@angular/http";
 
 import {DiscriminatorMapping}     from './discriminator-mapping';
-import {DiscriminatorMappingData} from '../../../app/tsModels/discriminator-mapping-data';
+import {DiscriminatorMappingData} from "../../generated/tsModels/discriminator-mapping-data";
 import {BaseModel} from './base.model';
 
 /**

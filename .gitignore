@@ -17,13 +17,9 @@ docs/reference/src/main/docbook/en-US/version_info.xml
 .factorypath
 atlassian-ide-plugin.xml
 .externalToolBuilders
-node_modules/
-typings
 npm-debug.log
 log.txt
 nb-configuration.xml
 nbactions.xml
 services/lib
-test-results.xml
 /ui/src/test/javascript/
-/ui/src/main/webapp/app/tsModels/
