@@ -77,6 +77,11 @@ public class FreemarkerServlet extends freemarker.ext.servlet.FreemarkerServlet
             keycloakProperties.put(SERVER_URL, System.getProperty("keycloak.server.url"));
 
             hashModel.put(KEYCLOAK, keycloakProperties);
+
+            String serverURI = request.getRequestURI();
+            String serverAddress = request.getRequestURL().toString().replace(serverURI, "");
+
+            hashModel.put("serverUrl", serverAddress);
         }
         return templateModel;
     }

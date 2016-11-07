@@ -1,6 +1,7 @@
 var helpers = require('./helpers');
 var webpack = require('webpack');
 var ContextReplacementPlugin = webpack.ContextReplacementPlugin;
+var DefinePlugin = webpack.DefinePlugin;
 
 module.exports = {
     devtool: 'inline-source-map',
@@ -44,6 +45,11 @@ module.exports = {
             /angular(\\|\/)core(\\|\/)(esm(\\|\/)src|src)(\\|\/)linker/,
             helpers.root('./src'), // location of your src
             {} // a map of your routes
-        )
+        ),
+        new DefinePlugin({
+            'process.env': {
+                ENV: JSON.stringify('test')
+            }
+        })
     ]
 };
