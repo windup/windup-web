@@ -8,17 +8,7 @@ import {AbstractService} from "../../../../app/services/abtract.service";
 import {Observable} from 'rxjs/Observable';
 
 // Windup
-//import {GraphJSONtoTsModelsService, RelationInfo} from '../../../services/graph/GraphJSONtoTsModelsService';
-//import {FramesRestClientService}  from '../../../services/graph/FramesRestClientService';
-//import {DiscriminatorMappingData} from '../../../tsModels/DiscriminatorMappingData';
-
 import {GraphJSONToModelService} from '../../../../app/services/graph/graph-json-to-model.service';
-/*
-import {BaseModel}            from '../../../services/graph/BaseModel';
-import {GraphProperty}        from "../../../services/graph/graph-property.decorator";
-import {GraphAdjacency}       from "../../../services/graph/graph-adjacency.decorator";
-import {DiscriminatorMapping} from "../../../services/graph/discriminator-mapping";
-*/
 
 // Models
 import {TechnologiesStatsModel} from '../../../../app/generated/tsModels/TechnologiesStatsModel';
@@ -33,29 +23,30 @@ export class TechReportService extends AbstractService
         ///private graphClient: FramesRestClientService
     ) { super(); }
 
-    static WINDUP_REST_URL =     "http://localhost:8080/windup-web-services/rest";
+    static WINDUP_REST_URL = Constants.REST_SERVER + "/windup-web-services/rest-furnace"; //"http://localhost:8080/
     static DISCR_TECH_STATS =    TechnologiesStatsModel.discriminator; //"TechnologiesStats";
     static INVOKER_URL =         `${TechReportService.WINDUP_REST_URL}/technologyStats/create?exec=`;
-    static GRAPH_TECHSTATS_URL = `${TechReportService.WINDUP_REST_URL}/graph/by-type/${TechReportService.DISCR_TECH_STATS}?depth=1`;
+    static GRAPH_TECHSTATS_URL = `${TechReportService.WINDUP_REST_URL}/graph/#{execID}/by-type/${TechReportService.DISCR_TECH_STATS}?depth=1`;
 
 
     getStats(execID: number): Observable<TechnologiesStatsModel>
     {
-        ///let service = new GraphJSONtoTsModelsService(DiscriminatorMappingData);
         let service = new GraphJSONToModelService();
-        let url = TechReportService.GRAPH_TECHSTATS_URL + "&exec=" + execID;
+        let url = TechReportService.GRAPH_TECHSTATS_URL.replace(/#\{execID\}/, ""+execID);
         return this.http.get(url)
-            .map((res:Response) => (console.log("Got response... ///"), res.json()))
-            .map((data:TechnologiesStatsModel[]) => {
+            .map((res:Response) => (console.log("Got response for: " + url), res.json()))
+            .map((data:any) => {
                 console.log("Data items: ", data);///
                 if (!Array.isArray(data) || data.length == 0) {
                     throw new Error("No items returned, URL: " + url);
                 }
-                return <TechnologiesStatsModel><any>service.fromJSON(data[0], this.http);
+                let statsModel:TechnologiesStatsModel = <TechnologiesStatsModel>service.fromJSON(data[0], this.http);
+                return statsModel;
             })
-            .catch(this.handleError);
+            // This breaks the return type.
+            .catch( (error, caught) => Observable.throw(error));
     }
-}
+ }
 
 export class StatsItem {
     key: string;

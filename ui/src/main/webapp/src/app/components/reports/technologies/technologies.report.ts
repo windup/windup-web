@@ -10,7 +10,11 @@ import {DiscriminatorMappingData} from '../../../generated/tsModels/discriminato
 import {TechnologiesStatsModel} from '../../../generated/tsModels/TechnologiesStatsModel';
 import {FramesRestClientService} from '../../../services/graph/frames-rest-client.service';
 import {Observable} from 'rxjs/Observable';
-
+//import {Map} from 'rxjs/util/Map'
+//import {Map} from 'rxjs/src/util/Map'
+//import {Map} from 'core-js/modules/es6.map';
+//import 'core-js';
+//import 'es6-shim';
 
 @Component({
     selector: 'wu-technologies-report',
