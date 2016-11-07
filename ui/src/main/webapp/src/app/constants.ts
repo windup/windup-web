@@ -1,3 +1,9 @@
+if (process.env.ENV === 'test') {
+    window['windupConstants'] = {
+        'SERVER': 'http://localhost:8080' // just for tests, mock backend will be used anyway
+    };
+}
+
 export class Constants {
     public static SERVER: string = window['windupConstants']['SERVER'];
     public static REST_SERVER: string = window['windupConstants']['SERVER'];
