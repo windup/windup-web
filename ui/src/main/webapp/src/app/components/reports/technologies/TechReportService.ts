@@ -20,7 +20,6 @@ export class TechReportService extends AbstractService
 {
     constructor(
         private http: Http
-        ///private graphClient: FramesRestClientService
     ) { super(); }
 
     static WINDUP_REST_URL = Constants.REST_SERVER + "/windup-web-services/rest-furnace"; //"http://localhost:8080/
@@ -40,8 +39,7 @@ export class TechReportService extends AbstractService
                 if (!Array.isArray(data) || data.length == 0) {
                     throw new Error("No items returned, URL: " + url);
                 }
-                let statsModel:TechnologiesStatsModel = <TechnologiesStatsModel>service.fromJSON(data[0], this.http);
-                return statsModel;
+                return <TechnologiesStatsModel>service.fromJSON(data[0], this.http);
             })
             // This breaks the return type.
             .catch( (error, caught) => Observable.throw(error));

@@ -19,6 +19,6 @@ public interface TechnologiesStatsEndpoint
      */
     @GET
     @Path("compute/{execId}")
-    boolean computeTechStats(@PathParam("execId") long executionId); //, @QueryParam("onlyIfNotExists") boolean onlyIfNotExists
+    boolean computeTechStats(@PathParam("execId") long executionId);
 
 }

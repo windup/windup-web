@@ -5,16 +5,7 @@ import {TechReportService, StatsItem} from "./TechReportService";
 
 import {ApplicationGroup} from "../../../../app/windup-services";
 import {ApplicationGroupService} from '../../../services/applicationgroup.service';
-import {GraphJSONToModelService} from '../../../services/graph/graph-json-to-model.service';
-import {DiscriminatorMappingData} from '../../../generated/tsModels/discriminator-mapping-data';
 import {TechnologiesStatsModel} from '../../../generated/tsModels/TechnologiesStatsModel';
-import {FramesRestClientService} from '../../../services/graph/frames-rest-client.service';
-import {Observable} from 'rxjs/Observable';
-//import {Map} from 'rxjs/util/Map'
-//import {Map} from 'rxjs/src/util/Map'
-//import {Map} from 'core-js/modules/es6.map';
-//import 'core-js';
-//import 'es6-shim';
 
 @Component({
     selector: 'wu-technologies-report',
@@ -29,8 +20,7 @@ export class TechnologiesReport implements OnInit {
     constructor(
         private route: ActivatedRoute,
         private techReportService: TechReportService,
-        private appGrpService: ApplicationGroupService,
-        private frameService: FramesRestClientService
+        private appGrpService: ApplicationGroupService
     ){}
 
     ngOnInit(): void {

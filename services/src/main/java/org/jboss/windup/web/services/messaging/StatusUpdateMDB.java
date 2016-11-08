@@ -62,7 +62,7 @@ public class StatusUpdateMDB extends AbstractMDB implements MessageListener
         try
         {
             WindupExecution execution = (WindupExecution)((ObjectMessage) message).getObject();
-            LOG.fine("Received execution update event: " + execution);
+            LOG.info("Received execution update event: " + execution);
 
             // Update the DB with this information
             WindupExecution fromDB = entityManager.find(WindupExecution.class, execution.getId());

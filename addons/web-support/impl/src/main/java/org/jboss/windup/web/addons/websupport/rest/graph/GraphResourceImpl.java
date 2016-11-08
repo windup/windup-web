@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.tinkerpop.blueprints.Direction;
-import com.tinkerpop.blueprints.Query;
+import javax.inject.Singleton;
+import javax.ws.rs.NotFoundException;
+
 import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.model.WindupVertexFrame;
 
+import com.tinkerpop.blueprints.Direction;
+import com.tinkerpop.blueprints.Query;
 import com.tinkerpop.blueprints.Vertex;
-
-import javax.inject.Singleton;
-import javax.ws.rs.NotFoundException;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -65,14 +65,6 @@ public class GraphResourceImpl extends AbstractGraphResource implements GraphRes
         return vertices;
     }
 
-    /*
-    @Override
-    public List<Map<String, Object>> getByType(String vertexType, Integer depth){
-        return getByType(getAnyExecution().getId(), vertexType, depth);
-    }
-    */
-    // TODO: Get a list of existing executions.
-
     @Override
     public Map<String, Object> get(Long executionID, Integer id, Integer depth)
     {
@@ -86,16 +78,5 @@ public class GraphResourceImpl extends AbstractGraphResource implements GraphRes
         if (vertex == null)
             throw new NotFoundException("Non-existent vertex ID " + id + " in execution " + executionID);
         return convertToMap(executionID, vertex, depth);
-    }
-
-
-    @Override
-    public String getTestVertex(){
-        return "[{\"w:winduptype\":[\"FileResource\",\"ArchiveModel:\",\"WarArchiveModel\"],\"fileName\":\"jee-example-web.war\","
-        + "\"md5Hash\":\"e71dfca0743df75c0de70bddc5a2686b\","
-        + "\"unzippedDirectory\":\"/home/ondra/sw/AS/wildfly-10.1.0.Final/standalone/data/windup/reports/Default Group.briOxXRQGwdE.report/archives/jee-example-web.war\","
-        + "\"filePath\":\"/home/ondra/sw/AS/wildfly-10.1.0.Final/standalone/data/windup/reports/Default Group.briOxXRQGwdE.report/archives/jee-example-app-1.0.0.ear/jee-example-web.war\",\"windupGenerated\":false,"
-        + "\"ArchiveModel:archiveName\":\"jee-example-web.war\",\"sha1Hash\":\"8a72a375ca7feba49ea5cab492e52e64cee41dc6\",\"_id\":3584,\"isDirectory\":false}]"
-        ;
     }
 }

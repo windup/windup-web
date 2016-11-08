@@ -120,20 +120,6 @@
             <version>${version.windup}</version>
             <scope>provided</scope>
         </dependency>
-        <!-- TechnologiesStats*
-        -->
-        <dependency>
-            <groupId>org.jboss.windup.rules.apps</groupId>
-            <artifactId>windup-rules-java-ee</artifactId>
-            <classifier>forge-addon</classifier>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.windup.rules</groupId>
-            <artifactId>windup-rulesets</artifactId>
-            <version>${version.windup}</version>
-            <scope>provided</scope>
-        </dependency>
 
         <!-- Test Dependencies -->
         <dependency>
