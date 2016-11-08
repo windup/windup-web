@@ -36,7 +36,6 @@ describe('MigrationissuesTableComponent', () => {
                         'getAggregatedIssues',
                         'getIssuesPerFile'
                     ])
-                    //useValue: MigrationIssuesServiceMock
                 },
                 NotificationService
             ]
@@ -151,33 +150,32 @@ describe('MigrationissuesTableComponent', () => {
             el = de.nativeElement;
 
             de.triggerEventHandler('click', null);
-            el.click();
             fixture.detectChanges();
         });
 
         it('should use migration issues service to get file issue data', () => {
-            expect(migrationIssueService.getAggregatedIssues).toHaveBeenCalledWith(1, migrationIssues[0]);
+            expect(migrationIssueService.getIssuesPerFile).toHaveBeenCalledWith(1, migrationIssues[0]);
         });
 
         it('should display file issues table', () => {
 
         });
-    });
 
-    describe('after clicking on migration issue title again', () => {
-        beforeEach(() => {
-            de = fixture.debugElement.query(By.css('a.issue-title'));
-            el = de.nativeElement;
+        describe('after clicking on migration issue title again', () => {
+            beforeEach(() => {
+                de = fixture.debugElement.query(By.css('a.issue-title'));
+                el = de.nativeElement;
 
-            el.click();
-            fixture.detectChanges();
+                el.click();
+                fixture.detectChanges();
 
-            el.click();
-            fixture.detectChanges();
-        });
+                el.click();
+                fixture.detectChanges();
+            });
 
-        it('should hide file issues table', () => {
+            it('should hide file issues table', () => {
 
+            });
         });
     });
 });
