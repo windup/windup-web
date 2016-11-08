@@ -25,8 +25,6 @@ public class TechnologiesStatsEndpointImpl extends AbstractGraphResource impleme
     @Override
     public boolean computeTechStats(long executionId) {
         final GraphContext graphContext = this.getGraph(executionId);
-        if (graphContext == null)
-            throw new IllegalArgumentException("Non-existent Windup execution, ID: " + executionId);
         TechnologiesStatsService technologiesStatsService = new TechnologiesStatsService(graphContext);
         TechnologiesStatsModel stats = technologiesStatsService.computeStats();
         return true;

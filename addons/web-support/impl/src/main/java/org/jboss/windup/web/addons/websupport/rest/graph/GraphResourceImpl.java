@@ -12,6 +12,7 @@ import org.jboss.windup.graph.model.WindupVertexFrame;
 import com.tinkerpop.blueprints.Vertex;
 
 import javax.inject.Singleton;
+import javax.ws.rs.NotFoundException;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -83,7 +84,7 @@ public class GraphResourceImpl extends AbstractGraphResource implements GraphRes
 
         Vertex vertex = graphContext.getFramed().getVertex(id);
         if (vertex == null)
-            throw new IllegalArgumentException("Non-existent vertex ID " + id + " in execution " + executionID);
+            throw new NotFoundException("Non-existent vertex ID " + id + " in execution " + executionID);
         return convertToMap(executionID, vertex, depth);
     }
 
