@@ -10,12 +10,10 @@ export class KeycloakService {
     protected auth: any = {};
     protected keyCloak: IKeycloak;
 
-    protected refreshInterval;
-
     protected initObservable: Observable<boolean>;
 
     protected static KEYCLOAK_FILE = 'keycloak.json';
-    protected static TOKEN_MIN_VALIDITY_SECONDS = 60;
+    protected static TOKEN_MIN_VALIDITY_MINUTES = 5;
 
     public constructor(private _router: Router) {
         console.log('KeycloakService constructor called');
@@ -62,8 +60,8 @@ export class KeycloakService {
         let keyCloakPromise = this.keyCloak.init(options);
         let realPromise = this.transformKeycloakPromise(keyCloakPromise);
 
-        realPromise.then(success => console.log('Real promise suceees', success))
-            .catch(error => console.error('real promise error'));
+        realPromise.then(success => console.log('Keycloak promise success', success))
+            .catch(error => console.error('Keycloak promise error'));
 
         this.initObservable = Observable.fromPromise(realPromise);
 
@@ -83,6 +81,15 @@ export class KeycloakService {
             this.auth.loggedIn = true;
             this.auth.authz = this.keyCloak;
             this.auth.logoutUrl =  this.keyCloak.authServerUrl + "/realms/windup/tokens/logout?redirect_uri=" + Constants.AUTH_REDIRECT_URL;
+
+            this.keyCloak.onAuthLogout = function () {
+                console.log("Logout event received!");
+                this.logout();
+            };
+            this.keyCloak.onAuthRefreshError = function () {
+                console.log("Auth refresh error!");
+                this.logout();
+            };
         }
 
         return isLoggedIn;
@@ -117,7 +124,7 @@ export class KeycloakService {
         let promise: Promise<string> = new Promise<string>((resolve, reject) => {
             this.isLoggedIn().subscribe(isLoggedIn => {
                     if (isLoggedIn) {
-                        this.keyCloak.updateToken(KeycloakService.TOKEN_MIN_VALIDITY_SECONDS)
+                        this.keyCloak.updateToken(KeycloakService.TOKEN_MIN_VALIDITY_MINUTES)
                             .success(() => resolve(this.auth.authz.token))
                             .error(error => reject(error));
                     } else {
