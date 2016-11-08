@@ -51,6 +51,8 @@ import {PackageRegistryService} from "./services/package-registry.service";
 import {TechnologiesReport} from "./components/reports/technologies/technologies.report";
 import {LoginComponent} from "./components/login.component";
 import {LoggedInGuard} from "./services/logged-in.guard";
+import {TechReportService} from "./components/reports/technologies/TechReportService";
+import {FramesRestClientService} from './services/graph/frames-rest-client.service';
 
 
 @NgModule({
@@ -86,7 +88,7 @@ import {LoggedInGuard} from "./services/logged-in.guard";
         ProgressBarComponent,
         RulesModalComponent,
         TechnologyComponent,
-        
+
         FileSelectDirective,
         FileDropDirective,
         UploadQueueComponent,
@@ -114,6 +116,9 @@ import {LoggedInGuard} from "./services/logged-in.guard";
         NotificationService,
         PackageRegistryService,
         LoggedInGuard,
+        TechReportService,
+        FramesRestClientService,
+
         {
             provide: Http,
             useFactory:

@@ -5,8 +5,6 @@ import java.util.List;
 import org.jboss.windup.web.services.model.RuleProviderEntity;
 import org.jboss.windup.web.services.model.RuleProviderEntity_;
 import org.jboss.windup.web.services.model.RulesPath;
-import org.jboss.windup.web.services.model.Technology;
-import org.jboss.windup.web.services.model.Technology_;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;

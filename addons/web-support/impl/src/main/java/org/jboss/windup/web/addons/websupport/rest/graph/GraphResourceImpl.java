@@ -4,17 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.tinkerpop.blueprints.Direction;
-import com.tinkerpop.blueprints.Query;
+import javax.inject.Singleton;
+import javax.ws.rs.NotFoundException;
+
 import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.model.WindupVertexFrame;
 
+import com.tinkerpop.blueprints.Direction;
+import com.tinkerpop.blueprints.Query;
 import com.tinkerpop.blueprints.Vertex;
-
-import javax.inject.Singleton;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
+ * @author <a href="mailto:zizka@seznam.cz">Ondrej Zizka</a>
  */
 @Singleton
 public class GraphResourceImpl extends AbstractGraphResource implements GraphResource
@@ -67,10 +69,14 @@ public class GraphResourceImpl extends AbstractGraphResource implements GraphRes
     public Map<String, Object> get(Long executionID, Integer id, Integer depth)
     {
         GraphContext graphContext = getGraph(executionID);
+        if (executionID == null)
+            throw new IllegalArgumentException("Execution ID not specified.");
         if (id == null)
-            throw new IllegalArgumentException("ID not specified");
+            throw new IllegalArgumentException("Vertex ID not specified.");
 
         Vertex vertex = graphContext.getFramed().getVertex(id);
+        if (vertex == null)
+            throw new NotFoundException("Non-existent vertex ID " + id + " in execution " + executionID);
         return convertToMap(executionID, vertex, depth);
     }
 }

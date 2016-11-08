@@ -24,3 +24,7 @@ nbactions.xml
 services/lib
 /ui/src/test/javascript/
 /ui/src/main/webapp/typings
+/ui/src/main/webapp/tests/unmarshaller/typescriptModels/
+/ui/src/main/webapp/src/app/tsModels/
+/ui/src/main/webapp/src/app/generated/
+

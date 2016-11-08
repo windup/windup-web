@@ -1,14 +1,19 @@
 <html>
 <head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
     <title>TypeScript tests</title>
+    <!--
     <base href="/windup-web/">
+    -->
 
     <!-- jQuery -->
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
 
     <script src="node_modules/es6-shim/es6-shim.min.js"></script>
+    <!--
     <script src="node_modules/zone.js/dist/zone.min.js"></script>
     <script src="node_modules/reflect-metadata/Reflect.js"></script>
+    -->
     <script src="node_modules/systemjs/dist/system.js"></script>
     <script src="systemjs.config.js"></script>
 
@@ -16,11 +21,22 @@
     <script>
         // this is here so that AbstractUITest can tell we are loading the actual app
         window['mainApp'] = true;
-        System.import('unmarshallerTest').then(null, console.error.bind(console));
+
+        function handleError(e)
+        {
+            //console.log("e.originalErr: " + e.originalErr);
+            if (e.originalErr)
+                throw e.originalErr;
+            throw e;
+        }
+
+        System.import("tests/unmarshaller/UnmarshallerTry.js").then(null, handleError);
     </script>
 </head>
 
 <body>
+    <div id="header"></div>
+    <div id="response"></div>
 </body>
 
 </html>

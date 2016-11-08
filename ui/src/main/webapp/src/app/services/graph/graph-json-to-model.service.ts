@@ -31,6 +31,9 @@ export class GraphJSONToModelService<T extends BaseModel>
     static MODE = "_mode";
     static DISCRIMINATOR = "w:winduptype";
 
+    /**
+     * @param mapping  Maps the @TypeValue strings to TS model classes.
+     */
     constructor(private mapping: typeof DiscriminatorMapping = DiscriminatorMappingData){ }
 
     public getTypeScriptClassByDiscriminator(discriminator: string): typeof BaseModel {
@@ -38,29 +41,44 @@ export class GraphJSONToModelService<T extends BaseModel>
     }
 
 
+    /**
+     * Unmarshalls the JSON graph data representation into TypeScript objects.
+     * Accepts a single JSON object or a JSON array, returns an object or an array, respectively.
+     */
     public fromJSON(input: Object, http:Http, clazz?: typeof BaseModel): T
     {
         let discriminator:string[] = input[GraphJSONToModelService.DISCRIMINATOR];
-        clazz = this.getClass(input, clazz);
+        clazz = this.getModelClassForJsonObject(input, clazz);
         let frameModel:BaseModel = Object.create(clazz.prototype);
         frameModel.constructor.apply(frameModel, [discriminator, input["_id"], input]);
-        ///console.log("Setting http on object: " + frameModel + " to: " + http);
         frameModel.http = http;
         // Store this service to use when resolving Observable's in fields.
-        // Http could be in the service.
+        // TODO: Http could be in the service.
         frameModel.graphService = this;
         return <T>frameModel;
     }
 
-    private getClass(input: Object, clazz?: typeof BaseModel):typeof BaseModel {
+
+    /**
+     * Returns a model class that the given JSON object should be unmarshalled to.
+     * Tries to use the most specialized class.
+     */
+    private getModelClassForJsonObject(input: Object, clazz?: typeof BaseModel): typeof BaseModel
+    {
         if (!clazz) {
             var disc = input[GraphJSONToModelService.DISCRIMINATOR];
-            if (disc instanceof Array)
-                disc = disc[0];
             if (!disc)
                 throw new Error(`Given object doesn't specify "${GraphJSONToModelService.DISCRIMINATOR}" and no target class given:\n`
                     + JSON.stringify(input));
-            clazz = this.getTypeScriptClassByDiscriminator(disc);
+            if (Array.isArray(disc)) {
+                //disc = disc[0];
+                let classes: Array<typeof BaseModel> =
+                    (<Array<string>>disc).map(disc => clazz = this.getTypeScriptClassByDiscriminator(disc));
+                clazz = classes[0];
+            }
+            else {
+                clazz = this.getTypeScriptClassByDiscriminator(disc);
+            }
         }
 
         if (clazz == null) {
@@ -104,3 +122,56 @@ export class RelationInfo {
         return info;
     }
 }
+
+
+
+type AnyClass = { new (): any };
+
+/**
+ * Sorts given classes  by the number of extends from Object.
+ * Usage:
+ *
+       class A { }
+       class B extends A { }
+       class C extends B { }
+       class D extends B { }
+       let classes : Object[] = sortClassesBySpeciality([A, B, C, D]);
+ * Will return [D,C,B,A] and give a warning about D and C being at the same level.
+ * This could be a bit smarter and actually build the inheritance tree...
+ */
+export function sortClassesBySpeciality(classes: Array<AnyClass>) : Array<AnyClass>
+{
+    let classesLevels: AnyClass[][] = [];
+    for (let i = 0; i < classes.length; i++){
+        console.log("Next class");
+        let clazz = classes[i], parent;
+        let proto = Object.getPrototypeOf(new (<typeof Object>clazz)()); // The only way to get to the actual function.
+        let protoOrig = proto;
+        for (var depth = 0; ; depth++){
+            //console.log(`  Proto: ${proto}`);
+            console.log(`  Depth: ${depth} Proto: ${proto.constructor.name}`);
+            parent = Object.getPrototypeOf(proto);
+            if (!parent) {
+                console.log("No parent, break;")
+                break;
+            }
+            proto = parent;
+        }
+
+        if (classesLevels[depth] === void 0)
+            classesLevels[depth] = [];
+        else
+        {
+            console.warn("Classes at the same level of inheritance, means they are from different inheritance branches: "
+                //+ `proto: ${proto}\n`
+                //+ `proto.constructor: ${proto.constructor}\n`
+                //+ `proto.constructor.name: ${proto.constructor.name}\n`);
+                + `proto.constructor.name: ${protoOrig.constructor.name} vs. ${classesLevels[depth].join()}\n`);
+        }
+        classesLevels[depth].push(clazz);
+    }
+    let sortedClasses: Array<AnyClass> = [];
+    classesLevels.forEach( (level)=>level.forEach( (cls)=>sortedClasses.push(cls) ) );
+    return sortedClasses;
+}
+
