@@ -1,7 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute, Params}   from '@angular/router';
 
-import {TechReportService, StatsItem} from "./TechReportService";
+import {TechReportService, StatsItem} from "./tech-report.service";
 
 import {ApplicationGroup} from "../../../../app/windup-services";
 import {ApplicationGroupService} from '../../../services/applicationgroup.service';

@@ -14,7 +14,7 @@
     <artifactId>windup-web-ui-tsmodels</artifactId>
     <version>3.0.0-SNAPSHOT</version>
 
-    <name>Windup Web TS Models</name>
+    <name>Windup Web - Generate TS Models</name>
 
     <licenses>
         <license>

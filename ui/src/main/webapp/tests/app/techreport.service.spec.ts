@@ -9,7 +9,7 @@ import 'rxjs/Rx';
 
 import {Constants} from '../../src/app/constants';
 import {KeyCloakServiceMock} from "./mocks/keycloak-service.mock";
-import {TechReportService} from "../../src/app/components/reports/technologies/TechReportService";
+import {TechReportService} from "../../src/app/components/reports/technologies/tech-report.service";
 import {KeycloakService} from "../../src/app/services/keycloak.service";
 import {FileService} from "../../src/app/services/file.service";
 import {FileUploader, FileUploaderOptions} from "ng2-file-upload/ng2-file-upload";
@@ -39,8 +39,6 @@ describe("Registered Tech Report Service Test", () => {
 
     it('Should make a GET request on backend', async(inject([TechReportService, MockBackend],
         (service: TechReportService, mockBackend: MockBackend) => {
-
-            let inputPath = "src/main/java";
 
             mockBackend.connections.subscribe((connection: MockConnection) => {
                 expect(connection.request.url).toEqual(Constants.REST_FURNACE + '/graph/14/by-type/TechnologiesStats?depth=1');

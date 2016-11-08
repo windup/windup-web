@@ -51,7 +51,7 @@ import {PackageRegistryService} from "./services/package-registry.service";
 import {TechnologiesReport} from "./components/reports/technologies/technologies.report";
 import {LoginComponent} from "./components/login.component";
 import {LoggedInGuard} from "./services/logged-in.guard";
-import {TechReportService} from "./components/reports/technologies/TechReportService";
+import {TechReportService} from "./components/reports/technologies/tech-report.service";
 import {FramesRestClientService} from './services/graph/frames-rest-client.service';
 
 
