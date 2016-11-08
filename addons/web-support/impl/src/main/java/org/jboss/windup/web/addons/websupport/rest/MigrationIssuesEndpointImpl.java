@@ -1,7 +1,6 @@
 package org.jboss.windup.web.addons.websupport.rest;
 
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -11,7 +10,6 @@ import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.model.ProjectModel;
 import org.jboss.windup.graph.model.resource.FileModel;
 import org.jboss.windup.graph.service.WindupConfigurationService;
-import org.jboss.windup.reporting.freemarker.problemsummary.ProblemFileSummary;
 import org.jboss.windup.reporting.freemarker.problemsummary.ProblemSummary;
 import org.jboss.windup.reporting.freemarker.problemsummary.ProblemSummaryService;
 import org.jboss.windup.reporting.model.Severity;
@@ -28,8 +26,6 @@ public class MigrationIssuesEndpointImpl extends AbstractGraphResource implement
     {
         GraphContext graphContext = this.getGraph(reportId);
 
-        ProblemSummaryService problemSummaryService = new ProblemSummaryService();
-
         Set<ProjectModel> projectModels = new HashSet<>();
 
         for (FileModel inputPath : WindupConfigurationService.getConfigurationModel(graphContext).getInputPaths())
@@ -40,7 +36,10 @@ public class MigrationIssuesEndpointImpl extends AbstractGraphResource implement
         Set<String> includeTags = new HashSet<>();
         Set<String> excludeTags = new HashSet<>();
 
-        Map<Severity, List<ProblemSummary>> categorizedProblems = ProblemSummaryService.getProblemSummaries(graphContext, projectModels, includeTags,
+        Map<Severity, List<ProblemSummary>> categorizedProblems = ProblemSummaryService.getProblemSummaries(
+                    graphContext,
+                    projectModels,
+                    includeTags,
                     excludeTags);
 
         return categorizedProblems;
@@ -48,6 +47,24 @@ public class MigrationIssuesEndpointImpl extends AbstractGraphResource implement
 
     @Override
     public Object getIssueFiles(Long executionId, String issueId)
+    {
+        ProblemSummary summary = getProblemSummary(executionId, issueId);
+        List<ProblemFileSummaryWrapper> fileSummariesList = getFileSummaries(executionId, summary);
+
+        return fileSummariesList;
+    }
+
+    private List<ProblemFileSummaryWrapper> getFileSummaries(Long executionId, ProblemSummary summary)
+    {
+        return StreamSupport.stream(summary.getDescriptions().spliterator(), false)
+                    .flatMap(description -> StreamSupport.stream(summary.getFilesForDescription(description).spliterator(), false))
+                    .map(fileSummary -> new ProblemFileSummaryWrapper(
+                                this.convertToMap(executionId, fileSummary.getFile().asVertex(), 0),
+                                fileSummary.getOccurrences()))
+                    .collect(Collectors.toList());
+    }
+
+    private ProblemSummary getProblemSummary(Long executionId, String issueId)
     {
         Map<Severity, List<ProblemSummary>> categorizedProblems = this.getAggregatedIssues(executionId);
 
@@ -63,21 +80,7 @@ public class MigrationIssuesEndpointImpl extends AbstractGraphResource implement
             throw new NotFoundException();
         }
 
-        ProblemSummary summary = problemSummaries.get(0);
-
-        String firstDescription = StreamSupport.stream(summary.getDescriptions().spliterator(), false)
-                    .findFirst()
-                    .orElseThrow((Supplier<RuntimeException>) NotFoundException::new);
-
-        Iterable<ProblemFileSummary> fileSummaries = summary.getFilesForDescription(firstDescription);
-
-        List<ProblemFileSummaryWrapper> fileSummariesList = StreamSupport.stream(fileSummaries.spliterator(), false)
-                    .map(item -> new ProblemFileSummaryWrapper(
-                                this.convertToMap(executionId, item.getFile().asVertex(), 0),
-                                item.getOccurrences()))
-                    .collect(Collectors.toList());
-
-        return fileSummariesList;
+        return problemSummaries.get(0);
     }
 
     static class ProblemFileSummaryWrapper
