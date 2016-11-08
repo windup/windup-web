@@ -17,6 +17,7 @@ import org.jboss.windup.web.addons.websupport.rest.GraphPathLookup;
 import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.NotFoundException;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
