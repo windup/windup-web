@@ -38,7 +38,7 @@ public class MigrationIssuesEndpointImpl extends AbstractGraphResource implement
 
         Map<Severity, List<ProblemSummary>> categorizedProblems = ProblemSummaryService.getProblemSummaries(
                     graphContext,
-                    projectModels,
+                    null, // projectModels,
                     includeTags,
                     excludeTags);
 
