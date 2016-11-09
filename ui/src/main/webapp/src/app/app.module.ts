@@ -57,6 +57,7 @@ import {MigrationIssuesTableComponent} from "./components/reports/migration-issu
 import {MigrationIssuesService} from "./components/reports/migration-issues/migration-issues.service";
 import {TechReportService} from "./components/reports/technologies/tech-report.service";
 import {FramesRestClientService} from './services/graph/frames-rest-client.service';
+import {ContextMenuComponent} from "./components/navigation/context-menu.component";
 
 
 @NgModule({
@@ -106,6 +107,8 @@ import {FramesRestClientService} from './services/graph/frames-rest-client.servi
         JsTreeAngularWrapperComponent,
         MigrationIssuesComponent,
         MigrationIssuesTableComponent
+        LoginComponent,
+        ContextMenuComponent
     ],
     providers: [
         appRoutingProviders,
