@@ -1,0 +1,10 @@
+<div class="nav-pf-vertical nav-pf-vertical-with-sub-menus">
+    <ul class="list-group">
+        <li class="list-group-item" *ngFor="let item of enabledItems">
+            <a (click)="click(item)">
+                <span class="fa" ngClass="{{item.icon}}" data-toggle="tooltip" title="" data-original-title="Dashboard"></span>
+                <span class="list-group-item-value">{{item.label}}</span>
+            </a>
+        </li>
+    </ul>
+</div>
