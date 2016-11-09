@@ -9,7 +9,8 @@
         // this is here so that AbstractUITest can tell we are loading the actual app
         window['mainApp'] = true;
         window['windupConstants'] = {
-            'SERVER': '${serverUrl}'
+            'SERVER': '${serverUrl}',
+            'SSO_MODE': 'check-sso'
         };
     </script>
 

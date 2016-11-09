@@ -20,7 +20,7 @@ export class KeycloakService {
     public constructor(private _router: Router) {
         console.log('KeycloakService constructor called');
         this.keyCloak = new Keycloak(KeycloakService.KEYCLOAK_FILE);
-        this.init({ onLoad: 'check-sso' })
+        this.init({ onLoad: Constants.SSO_MODE })
             .subscribe((isLoggedIn) => {
                 this.onLoginSuccess(isLoggedIn);
                 console.log('subscribe success', isLoggedIn);
@@ -83,7 +83,6 @@ export class KeycloakService {
             this.auth.loggedIn = true;
             this.auth.authz = this.keyCloak;
             this.auth.logoutUrl =  this.keyCloak.authServerUrl + "/realms/windup/tokens/logout?redirect_uri=" + Constants.AUTH_REDIRECT_URL;
-            this.createRefreshInterval();
         }
 
         return isLoggedIn;
@@ -118,13 +117,9 @@ export class KeycloakService {
         let promise: Promise<string> = new Promise<string>((resolve, reject) => {
             this.isLoggedIn().subscribe(isLoggedIn => {
                     if (isLoggedIn) {
-                        if (this.keyCloak.isTokenExpired(KeycloakService.TOKEN_MIN_VALIDITY_SECONDS)) {
-                            this.keyCloak.updateToken(KeycloakService.TOKEN_MIN_VALIDITY_SECONDS)
-                                .success(() => resolve(this.auth.authz.token))
-                                .error(error => reject(error));
-                        } else {
-                            resolve(this.auth.authz.token);
-                        }
+                        this.keyCloak.updateToken(KeycloakService.TOKEN_MIN_VALIDITY_SECONDS)
+                            .success(() => resolve(this.auth.authz.token))
+                            .error(error => reject(error));
                     } else {
                         reject('User is not authenticated, token is not set');
                     }
@@ -134,19 +129,5 @@ export class KeycloakService {
         });
 
         return Observable.fromPromise(promise);
-    }
-
-    protected createRefreshInterval() {
-        let timeout = 60 * 1000; // 60 seconds in ms
-
-        this.refreshInterval = setInterval(() => {
-            this.auth.authz.updateToken(KeycloakService.TOKEN_MIN_VALIDITY_SECONDS)
-                .success(() => {
-
-                })
-                .error(() => {
-                    console.log('Token refresh error');
-                });
-        }, timeout);
     }
 }

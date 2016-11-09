@@ -7,6 +7,7 @@ if (process.env.ENV === 'test') {
 export class Constants {
     public static SERVER: string = window['windupConstants']['SERVER'];
     public static REST_SERVER: string = window['windupConstants']['SERVER'];
+    public static SSO_MODE: string = window['windupConstants']['SSO_MODE'];
     public static SERVER_BASE: string = '/';
     public static REST_BASE: string = Constants.REST_SERVER + "/windup-web-services/rest";
     public static REST_FURNACE: string = Constants.REST_SERVER + "/windup-web-services/rest-furnace";
