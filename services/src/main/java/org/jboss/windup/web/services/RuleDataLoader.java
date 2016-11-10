@@ -25,6 +25,7 @@ import javax.persistence.PersistenceContext;
 
 import org.jboss.windup.config.RuleProvider;
 import org.jboss.windup.config.RuleUtils;
+import org.jboss.windup.config.loader.RuleLoaderContext;
 import org.jboss.windup.config.metadata.RuleProviderRegistry;
 import org.jboss.windup.config.metadata.TechnologyReference;
 import org.jboss.windup.config.phase.MigrationRulesPhase;
@@ -37,6 +38,7 @@ import org.jboss.windup.web.services.model.RulesPath;
 import org.jboss.windup.web.services.model.Technology;
 import org.jboss.windup.web.services.service.ConfigurationService;
 import org.jboss.windup.web.services.service.TechnologyService;
+import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.config.Rule;
 
 /**
@@ -90,6 +92,7 @@ public class RuleDataLoader
             try
             {
                 Path path = Paths.get(rulesPath.getPath());
+                RuleLoaderContext ruleLoaderContext = new RuleLoaderContext(Collections.singleton(path), null);
                 RuleProviderRegistry providerRegistry = ruleProviderService.loadRuleProviderRegistry(Collections.singleton(path));
 
                 for (RuleProvider provider : providerRegistry.getProviders())
@@ -118,7 +121,8 @@ public class RuleDataLoader
                     ruleProviderEntity.setRuleProviderType(getProviderType(origin));
 
                     List<RuleEntity> ruleEntities = new ArrayList<>();
-                    for (Rule rule : provider.getConfiguration(null).getRules())
+
+                    for (Rule rule : provider.getConfiguration(ruleLoaderContext).getRules())
                     {
                         String ruleID = rule.getId();
                         String ruleString = RuleUtils.ruleToRuleContentsString(rule, 0);

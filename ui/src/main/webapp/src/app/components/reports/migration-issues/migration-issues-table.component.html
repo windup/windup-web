@@ -16,15 +16,7 @@
         </tr>
     </thead>
     <tbody>
-    <!--
-        <tr *ngFor="let issue of migrationIssues">
-            <td>{{issue.issueName}}</td>
-            <td>{{issue.numberFound}}</td>
-            <td>{{issue.effortPerIncident}}</td>
-            <td></td>
-            <td>{{issue.numberFound * issue.effortPerIncident}}</td>
-        </tr>
-    -->
+
         <template let-issue ngFor [ngForOf]="migrationIssues">
             <tr class="migration-issue-row">
                 <td><a class="issue-title" (click)="toggleFiles(issue)">{{issue.issueName}}</a></td>

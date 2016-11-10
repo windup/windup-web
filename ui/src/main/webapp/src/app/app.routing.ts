@@ -28,8 +28,8 @@ const appRoutes: Routes = [
 
     // Reports
     // :exec refers to the execution ID so that we can use the right graph db.
-    {path:"technology-report/:exec", component: TechnologiesReport, data: {displayName: "Technology Report"},  canActivate: [LoggedInGuard]},
-    {path: 'reports/:id/migration-issues', component: MigrationIssuesComponent }
+    {path:"technology-report/:exec", component: TechnologiesReport, data: {displayName: "Technology Report"}, canActivate: [LoggedInGuard]},
+    {path: 'reports/:id/migration-issues', component: MigrationIssuesComponent, canActivate: [LoggedInGuard] }
 ];
 
 export const appRoutingProviders: any[] = [
