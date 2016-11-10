@@ -11,6 +11,7 @@ import {ConfirmDeactivateGuard} from "./confirm-deactivate.guard";
 import {TechnologiesReport} from "./components/reports/technologies/technologies.report";
 import {LoginComponent} from "./components/login.component";
 import {LoggedInGuard} from "./services/logged-in.guard";
+import {MigrationIssuesComponent} from "./components/reports/migration-issues/migration-issues.component";
 
 const appRoutes: Routes = [
     {path:"", redirectTo: "/project-list", pathMatch: "full", canActivate: [LoggedInGuard]},
@@ -27,7 +28,8 @@ const appRoutes: Routes = [
 
     // Reports
     // :exec refers to the execution ID so that we can use the right graph db.
-    {path:"technology-report/:exec", component: TechnologiesReport, data: {displayName: "Technology Report"},  canActivate: [LoggedInGuard]}
+    {path:"technology-report/:exec", component: TechnologiesReport, data: {displayName: "Technology Report"},  canActivate: [LoggedInGuard]},
+    {path: 'reports/:id/migration-issues', component: MigrationIssuesComponent }
 ];
 
 export const appRoutingProviders: any[] = [

@@ -10,4 +10,15 @@
             <password>sa</password>
         </security>
     </datasource>
+    <datasource jndi-name="java:jboss/datasources/WindupServicesDSPermanent" pool-name="WindupServicesPool">
+        <connection-url>jdbc:h2:${jboss.server.data.dir}${/}h2${/}windup-web</connection-url>
+        <driver>h2</driver>
+        <pool>
+            <max-pool-size>30</max-pool-size>
+        </pool>
+        <security>
+            <user-name>sa</user-name>
+            <password>sa</password>
+        </security>
+    </datasource>
 </datasources>
