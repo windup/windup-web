@@ -41,7 +41,7 @@ describe("Registered Tech Report Service Test", () => {
         (service: TechReportService, mockBackend: MockBackend) => {
 
             mockBackend.connections.subscribe((connection: MockConnection) => {
-                expect(connection.request.url).toEqual(Constants.REST_FURNACE + '/graph/14/by-type/TechnologiesStats?depth=1');
+                expect(connection.request.url).toEqual(Constants.GRAPH_REST_BASE + '/graph/14/by-type/TechnologiesStats?depth=1');
                 expect(connection.request.method).toEqual(RequestMethod.Get);
 
                 connection.mockRespond(new Response(new ResponseOptions({

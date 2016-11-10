@@ -1,0 +1,65 @@
+<table class="table table-bordered table-condensed tablesorter migration-issues-table tablesorter-default">
+    <thead>
+        <tr>
+            <th>Issue by Category</th>
+            <th>Incidents Found</th>
+            <th>Story Points per Incident</th>
+            <th>Level of Effort</th>
+            <th>Total Story Points</th>
+        </tr>
+        <tr class="summary-row">
+            <th>Sum</th>
+            <th class="migration-issues-count">{{getSum('numberFound')}}</th>
+            <th></th>
+            <th></th>
+            <th class="migration-issues-story-points">{{getIssuesStoryPoints()}}</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        <template let-issue ngFor [ngForOf]="migrationIssues">
+            <tr class="migration-issue-row">
+                <td><a class="issue-title" (click)="toggleFiles(issue)">{{issue.issueName}}</a></td>
+                <td>{{issue.numberFound}}</td>
+                <td>{{issue.effortPerIncident}}</td>
+                <td></td>
+                <td>{{issue.numberFound * issue.effortPerIncident}}</td>
+            </tr>
+            <tr *ngIf="filesVisible(issue)">
+                <td colspan="5">
+                    <table class="table table-condensed">
+                        <thead>
+                            <tr>
+                                <th style="width: 628px;">File</th>
+                                <th style="width: 302px;">Incidents Found</th>
+                                <th>Hint</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let incident of getProblemSummaryFiles(issue); let isFirst = first">
+                                <td>{{incident.file.fileName}}</td>
+                                <td>{{incident.occurrences}}</td>
+                                <td *ngIf="isFirst" [attr.rowspan]="getProblemSummaryFiles(issue)?.length">
+                                    <div class="panel panel-default hint-detail-panel">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title pull-left">Issue Detail: {{issue.issueName}}</h4>
+                                            <div class="pull-right">
+                                                <a class="sh_url" title="{{issue.ruleID}}" href="windup_ruleproviders.html#{{issue.ruleID}}">Show Rule</a>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                        </div>
+                                        <div class="panel-body">
+                                            <p *ngFor="let description of issue.descriptions">{{description}}</p>
+                                        </div>
+
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </template>
+
+    </tbody>
+</table>
