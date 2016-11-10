@@ -10,18 +10,21 @@ import {RegisteredApplication} from "../windup-services";
 import {WindupExecution} from "../windup-services";
 import {RegisteredApplicationService} from "../services/registered-application.service";
 import {NotificationService} from "../services/notification.service";
-import {MigrationProjectService} from "../services/migration-project.service";
+import {MigrationProjectService} from "../services/migrationproject.service";
+import {utils} from "../utils";
 
 @Component({
     selector: 'application-list',
     templateUrl: 'group-list.component.html'
 })
 export class GroupListComponent implements OnInit, OnDestroy {
-    projectID:number;
-    project:MigrationProject;
-    groups:ApplicationGroup[];
+    inProjectID: number;
+    project: MigrationProject;
+    inGroupID: number;
+    groupSelected: ApplicationGroup;
+    groups: ApplicationGroup[];
 
-    processingStatus:Map<number, WindupExecution> = new Map<number, WindupExecution>();
+    processingStatus: Map<number, WindupExecution> = new Map<number, WindupExecution>();
     processMonitoringInterval;
 
     errorMessage:string;
@@ -38,16 +41,17 @@ export class GroupListComponent implements OnInit, OnDestroy {
 
     ngOnInit():any {
         this._activatedRoute.params.subscribe(params => {
-            this.projectID = parseInt(params["projectID"]);
+            this.inProjectID = parseInt(params["projectID"]);
+            this.inGroupID   = parseInt(params["groupID"]);
 
-            this._migrationProjectService.get(this.projectID)
+            this._migrationProjectService.get(this.inProjectID)
                 .subscribe(
                     project => {
                         this.project = project;
                         console.log('success');
                     },
                     error => {
-                        this._notificationService.error(this.getErrorMessage(error.error));
+                        this._notificationService.error(utils.getErrorMessage(error.error));
                         this._router.navigate(['']);
                     }
                 );
@@ -57,7 +61,7 @@ export class GroupListComponent implements OnInit, OnDestroy {
 
         this.processMonitoringInterval = setInterval(() => {
             this.processingStatus.forEach( (previousExecution:WindupExecution, groupID:number, map:Map<number, WindupExecution>) => {
-                if (previousExecution.state == "STARTED" || previousExecution.state == "QUEUED") {
+                if (["STARTED", "QUEUED"].includes(previousExecution.state)) {
                     this._windupService.getStatusGroup(previousExecution.id).subscribe(
                         execution => {
                             this.processingStatus.set(groupID, execution);
@@ -71,31 +75,19 @@ export class GroupListComponent implements OnInit, OnDestroy {
         }, 30000);
     }
 
-    getErrorMessage(error: any): string {
-        if (error instanceof ProgressEvent) {
-            return "ERROR: Server disconnected";
-        } else if (typeof error == 'string') {
-            return error;
-        } else if (typeof error == 'object' && error.hasOwnProperty('message')) {
-            return error.message;
-        } else {
-            return 'Unknown error'
-        }
-    }
-
     ngOnDestroy():any {
         if (this.processMonitoringInterval)
             clearInterval(this.processMonitoringInterval);
     }
 
     getGroups() {
-        return this._applicationGroupService.getByProjectID(this.projectID).subscribe(
+        return this._applicationGroupService.getByProjectID(this.inProjectID).subscribe(
             groups => this.groupsLoaded(groups),
             error => {
                 if (error instanceof ProgressEvent) {
                     this.errorMessage = "ERROR: Server disconnected";
                 } else {
-                    this._notificationService.error(this.getErrorMessage(error));
+                    this._notificationService.error(utils.getErrorMessage(error));
                     this._router.navigate(['']);
                 }
             }
@@ -111,8 +103,11 @@ export class GroupListComponent implements OnInit, OnDestroy {
         if (this.processingStatus.size == 0) {
             groups.forEach((group:ApplicationGroup) => {
                 group.executions.forEach((execution:WindupExecution) => {
-                    console.log("group and status == " + group.title + " id: " + group.title + " status: " + execution.state);
+                    console.log("Group #" + group.id + " " + group.title + ", status: " + execution.state);
                     let previousExecution = this.processingStatus.get(group.id);
+
+                    if (group.id == this.inGroupID)
+                        this.groupSelected = group;
 
                     if (previousExecution == null || execution.state == "STARTED" || execution.timeStarted > previousExecution.timeStarted)
                         this.processingStatus.set(group.id, execution);
@@ -158,13 +153,18 @@ export class GroupListComponent implements OnInit, OnDestroy {
         return Constants.STATIC_REPORTS_BASE + "/" + app.reportIndexPath;
     }
 
+    onClickGroup(group: ApplicationGroup) {
+        this.groupSelected = group;
+        this._router.navigate(['/group-list', { projectID: this.inProjectID, groupId: group.id }]);
+    }
+
     createGroup() {
-        this._router.navigate(['/application-group-form', { projectID: this.projectID }]);
+        this._router.navigate(['/application-group-form', { projectID: this.inProjectID }]);
     }
 
     editGroup(applicationGroup:ApplicationGroup, event:Event) {
         event.preventDefault();
-        this._router.navigate(['/application-group-form', { projectID: this.projectID, groupID: applicationGroup.id }]);
+        this._router.navigate(['/application-group-form', { projectID: this.inProjectID, groupID: applicationGroup.id }]);
     }
 
     registerApplication(applicationGroup:ApplicationGroup) {

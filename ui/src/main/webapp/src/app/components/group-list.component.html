@@ -2,67 +2,63 @@
     {{project?.title}} - Groups
     <button (click)="createGroup()" class="btn btn-primary" type="button">Create Group</button>
 </h1>
-<h3 *ngIf="errorMessage != null">{{errorMessage}}</h3>
+<p *ngIf="errorMessage != null">{{errorMessage}}</p>
 
-<div *ngFor="let group of groups" class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title">
-            {{group.title}}
+<table>
+<thead><tr>
+    <td>Group name</td>
+    <td>Applications</td>
+    <td>Actions</td>
+</tr></thead>
+<tbody>
+    <tr *ngFor="let group of groups" class="group" (click)="onClickGroup(group)">
+        <td class="title">{{group.title}}
             <a *ngIf="!group.readOnly" href="#" (click)="editGroup(group, $event)">
                 <span class="glyphicon glyphicon-pencil"></span>
             </a>
-        </h3>
-        <a [routerLink]="['/analysis-context-form', { groupID: group.id }]">Edit Analysis Configuration</a>
-        <span *ngIf="groupReportURL(group) != null">
-            |
-            <a target="_blank" href="{{groupReportURL(group)}}">
-                View Report
-            </a>
-        </span>
-        <span *ngIf="group.applications.length > 0">
-            |
-            <a (click)="runWindup($event, group)" href="#">Run Windup</a>
-        </span>
-
-        <div>
-            <div *ngIf="status(group).state == 'STARTED'">
-                <progress-bar
-                        [taskName]="status(group).currentTask"
-                        [currentValue]="status(group).workCompleted"
-                        [minValue]="0"
-                        [maxValue]="status(group).totalWork"></progress-bar>
+        </td>
+        <td class="apps">
+            <span *ngFor="let app of group.applications">
+                <span>{{app.title}}</span>,
+                    <!--
+                    <a *ngIf="app.reportIndexPath != null" target="_blank" href="{{reportURL(app)}}">
+                        <span class="glyphicon glyphicon-file"></span>
+                    </a>
+                    <button class="btn btn-default" (click)="editApplication(app)"> Edit </button>
+                    <button class="btn btn-danger" (click)="deleteApplication(app)">
+                        {{app.registrationType == "UPLOADED" ? "Delete" : "Remove"}}
+                    </button>
+                    -->
+            </span>
+        </td>
+        <td class="actions">
+            <a [routerLink]="['/analysis-context-form', { groupID: group.id }]">Edit Analysis Configuration</a>
+            <span *ngIf="groupReportURL(group) != null">
+                |
+                <a target="_blank" href="{{groupReportURL(group)}}">
+                    View Report
+                </a>
+            </span>
+            <span *ngIf="group.applications.length > 0">
+                |
+                <a (click)="runWindup($event, group)" href="#">Run Windup</a>
+            </span>
+            <div>
+                <div *ngIf="status(group).state == 'STARTED'">
+                    <progress-bar
+                            [taskName]="status(group).currentTask"
+                            [currentValue]="status(group).workCompleted"
+                            [minValue]="0"
+                            [maxValue]="status(group).totalWork"></progress-bar>
+                </div>
             </div>
-        </div>
+        </td>
+    </tr>
 
-    </div>
-    <div class="panel-body">
-        <table class="datatable table table-striped table-bordered">
-            <thead>
-                <tr>
-                    <th>Application</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let app of group.applications">
-                    <td>
-                        {{app.title}}
-                    </td>
-                    <td>
-                        <a *ngIf="app.reportIndexPath != null" class="btn btn-default btn-md" target="_blank" href="{{reportURL(app)}}">
-                            <span class="glyphicon glyphicon-file"></span>
-                            View Report
-                        </a>
-                        <button class="btn btn-default" (click)="editApplication(app)">
-                            Edit
-                        </button>
-                        <button class="btn btn-danger" (click)="deleteApplication(app)">
-                            {{app.registrationType == "UPLOADED" ? "Delete" : "Remove"}}
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <button (click)="registerApplication(group)" class="btn btn-primary" type="button">Register Application</button>
-    </div>
-</div>
+    groupSelected: {{groupSelected}}
+    <!--
+    <wu-group *ngIf="groupSelected" [group]="groupSelected">
+    </wu-group>
+    -->
+</tbody>
+</table>
