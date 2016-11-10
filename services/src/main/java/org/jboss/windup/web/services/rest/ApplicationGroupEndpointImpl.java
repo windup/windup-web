@@ -56,7 +56,14 @@ public class ApplicationGroupEndpointImpl implements ApplicationGroupEndpoint
     @Override
     public ApplicationGroup getApplicationGroup(Long id)
     {
-        return entityManager.find(ApplicationGroup.class, id);
+        ApplicationGroup applicationGroup = entityManager.find(ApplicationGroup.class, id);
+
+        if (applicationGroup == null)
+        {
+            throw new NotFoundException("ApplicationGroup with id: " + id + " not found");
+        }
+
+        return applicationGroup;
     }
 
     @Override

@@ -5,6 +5,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.Valid;
+import javax.ws.rs.NotFoundException;
 
 import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.service.AnalysisContextService;
@@ -24,7 +25,14 @@ public class AnalysisContextEndpointImpl implements AnalysisContextEndpoint
     @Override
     public AnalysisContext get(Long id)
     {
-        return entityManager.find(AnalysisContext.class, id);
+        AnalysisContext context = entityManager.find(AnalysisContext.class, id);
+
+        if (context == null)
+        {
+            throw new NotFoundException("AnalysisContext with id" + id + "not found");
+        }
+
+        return context;
     }
 
     @Override

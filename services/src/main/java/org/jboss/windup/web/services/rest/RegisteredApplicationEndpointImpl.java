@@ -69,7 +69,7 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
 
         if (application == null)
         {
-            throw new NotFoundException();
+            throw new NotFoundException("RegisteredApplication with id " + id + "not found");
         }
 
         return application;
@@ -78,9 +78,7 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
     @Override
     public void unregister(long applicationID)
     {
-        RegisteredApplication application = this.entityManager.find(RegisteredApplication.class, applicationID);
-        if (application == null)
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        RegisteredApplication application = this.getApplication(applicationID);
 
         if (application.getApplicationGroup() != null)
         {
