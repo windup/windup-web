@@ -10,9 +10,11 @@
             <tr *ngFor="let app of group.applications">
                 <td> {{app.title}} </td>
                 <td>
+                    <!--
                     <a *ngIf="app.reportIndexPath != null" class="btn btn-default btn-md" target="_blank" href="{{reportURL(app)}}">
                         <span class="glyphicon glyphicon-file"></span> View Report
                     </a>
+                    -->
                     <button class="btn btn-default" (click)="editApplication(app)"> Edit </button>
                     <button class="btn btn-danger" (click)="deleteApplication(app)">
                         {{app.registrationType == "UPLOADED" ? "Delete" : "Remove"}}

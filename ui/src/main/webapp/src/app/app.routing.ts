@@ -23,16 +23,8 @@ const appRoutes: Routes = [
     {path:"migration-project-form", component: MigrationProjectFormComponent,    data: {displayName: "Edit Project"}, canActivate: [LoggedInGuard]},
     {path:"application-group-form", component: ApplicationGroupForm,             data: {displayName: "Edit Application Group"}, canActivate: [LoggedInGuard]},
     {path:"analysis-context-form",  component: AnalysisContextFormComponent,     data: {displayName: "Edit Analysis Context"}, canActivate: [LoggedInGuard], canDeactivate: [ConfirmDeactivateGuard]},
-    {path:"configuration", component: ConfigurationComponent, data: { displayName: "Windup Configuration" }, canActivate: [LoggedInGuard]},
-    {path:"project-list", component: ProjectListComponent, data: { displayName: "Project List" }, canActivate: [LoggedInGuard]},
-    {path:"group-list", component: GroupListComponent, data: {displayName: "Group List"}, canActivate: [LoggedInGuard]},
-    {path:"group-list/:groupID", component: GroupListComponent, data: {displayName: "Group List"}, canActivate: [LoggedInGuard]},
-    {path:"register-application", component: RegisterApplicationFormComponent, data: {displayName: "Application Registration"}, canActivate: [LoggedInGuard]},
-    {path:"edit-application/:id", component: EditApplicationFormComponent, data: {displayName: "Update application"}, canActivate: [LoggedInGuard]},
-    {path:"migration-project-form", component: MigrationProjectFormComponent, data: {displayName: "Edit Project"}, canActivate: [LoggedInGuard]},
-    {path:"application-group-form", component: ApplicationGroupForm, data: {displayName: "Edit Application Group"}, canActivate: [LoggedInGuard]},
-    {path:"analysis-context-form", component: AnalysisContextFormComponent, data: {displayName: "Edit Analysis Context"}, canActivate: [LoggedInGuard], canDeactivate: [ConfirmDeactivateGuard]},
-
+    {path:"group-list/:groupID",    component: GroupListComponent, data: {displayName: "Group List"}, canActivate: [LoggedInGuard]},
+    {path:"group-list",             component: GroupListComponent, data: {displayName: "Group List"}, canActivate: [LoggedInGuard]},
     {path: "login", component: LoginComponent},
 
     // Reports

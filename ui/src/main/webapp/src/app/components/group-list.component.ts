@@ -40,15 +40,17 @@ export class GroupListComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit():any {
+        console.log('ngOnInit() called');
         this._activatedRoute.params.subscribe(params => {
             this.inProjectID = parseInt(params["projectID"]);
             this.inGroupID   = parseInt(params["groupID"]);
+            //console.log('ngOnInit(), );
 
             this._migrationProjectService.get(this.inProjectID)
                 .subscribe(
                     project => {
                         this.project = project;
-                        console.log('success');
+                        console.log('ngOnInit success, inProjectID: ', this.inProjectID, ", this.inGroupID: ", this.inGroupID);
                     },
                     error => {
                         this._notificationService.error(utils.getErrorMessage(error.error));
@@ -81,6 +83,7 @@ export class GroupListComponent implements OnInit, OnDestroy {
     }
 
     getGroups() {
+        console.log("getGroups()");
         return this._applicationGroupService.getByProjectID(this.inProjectID).subscribe(
             groups => this.groupsLoaded(groups),
             error => {
@@ -95,12 +98,13 @@ export class GroupListComponent implements OnInit, OnDestroy {
     }
 
     groupsLoaded(groups:ApplicationGroup[]) {
+        console.log("groupsLoaded()" +         " this.inGroupID: " + this.inGroupID);
         this.errorMessage = "";
-
         this.groups = groups;
 
         // On the first run, check for any existing executions
         if (this.processingStatus.size == 0) {
+            console.log("aaa");
             groups.forEach((group:ApplicationGroup) => {
                 group.executions.forEach((execution:WindupExecution) => {
                     console.log("Group #" + group.id + " " + group.title + ", status: " + execution.state);
@@ -149,13 +153,13 @@ export class GroupListComponent implements OnInit, OnDestroy {
         return Constants.STATIC_REPORTS_BASE + "/" + execution.applicationListRelativePath;
     }
 
-    reportURL(app:RegisteredApplication):string {
+    static reportURL(app:RegisteredApplication):string {
         return Constants.STATIC_REPORTS_BASE + "/" + app.reportIndexPath;
     }
 
     onClickGroup(group: ApplicationGroup) {
         this.groupSelected = group;
-        this._router.navigate(['/group-list', { projectID: this.inProjectID, groupId: group.id }]);
+        this._router.navigate(['/group-list', { projectID: this.inProjectID, groupID: group.id }]);
     }
 
     createGroup() {
@@ -167,27 +171,4 @@ export class GroupListComponent implements OnInit, OnDestroy {
         this._router.navigate(['/application-group-form', { projectID: this.inProjectID, groupID: applicationGroup.id }]);
     }
 
-    registerApplication(applicationGroup:ApplicationGroup) {
-        this._router.navigate(['/register-application', { groupID: applicationGroup.id }]);
-    }
-
-    editApplication(application: RegisteredApplication) {
-        this._router.navigate(['/edit-application', application.id]);
-    }
-
-    deleteApplication(application: RegisteredApplication) {
-        if (application.registrationType == "PATH") {
-            this._registeredApplicationsService.unregister(application)
-                .subscribe(result => {
-                    console.log(result);
-                    this.getGroups();
-                });
-        } else {
-            this._registeredApplicationsService.deleteApplication(application)
-                .subscribe(result => {
-                    console.log(result);
-                    this.getGroups();
-                });
-        }
-    }
 }

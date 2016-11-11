@@ -4,7 +4,7 @@
 </h1>
 <p *ngIf="errorMessage != null">{{errorMessage}}</p>
 
-<table>
+<table class="table table-condensed table-hover">
 <thead><tr>
     <td>Group name</td>
     <td>Applications</td>
@@ -55,10 +55,10 @@
         </td>
     </tr>
 
-    groupSelected: {{groupSelected}}
-    <!--
-    <wu-group *ngIf="groupSelected" [group]="groupSelected">
-    </wu-group>
-    -->
 </tbody>
 </table>
+
+<div *ngIf="groupSelected">
+    <h3>{{groupSelected.title}}</h3>
+    <wu-group *ngIf="groupSelected" [group]="groupSelected"></wu-group>
+</div>
