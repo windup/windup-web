@@ -7,7 +7,7 @@ import 'rxjs/Rx';
 
 import {FileSelectDirective, FileDropDirective, FileUploader} from 'ng2-file-upload/ng2-file-upload';
 import { AppComponent }  from './components/app.component';
-import { routing, appRoutingProviders } from './app.routing';
+import {routing, appRoutingProviders, appRoutes} from './app.routing';
 
 import {ProjectListComponent} from "./components/projectlist.component";
 import {AnalysisContextFormComponent} from "./components/analysiscontextform.component";
@@ -48,7 +48,7 @@ import {ConfirmDeactivateGuard} from "./confirm-deactivate.guard";
 import {PopoverComponent} from "./components/popover.component";
 import {JsTreeAngularWrapperComponent} from "./components/js-tree-angular-wrapper.component";
 import {PackageRegistryService} from "./services/package-registry.service";
-import {TechnologiesReport} from "./components/reports/technologies/technologies.report";
+import {TechnologiesReportComponent} from "./components/reports/technologies/technologies.report";
 import {LoginComponent} from "./components/login.component";
 import {LoggedInGuard} from "./services/logged-in.guard";
 import {MigrationIssuesComponent} from "./components/reports/migration-issues/migration-issues.component";
@@ -57,6 +57,11 @@ import {MigrationIssuesService} from "./components/reports/migration-issues/migr
 import {TechReportService} from "./components/reports/technologies/tech-report.service";
 import {FramesRestClientService} from './services/graph/frames-rest-client.service';
 import {ContextMenuComponent} from "./components/navigation/context-menu.component";
+import {GroupLayoutComponent} from "./components/layout/group-layout.component";
+import {DefaultLayoutComponent} from "./components/layout/default-layout.component";
+import {ApplicationGroupResolve} from "./components/group/application-group.resolve";
+import {RouteLinkProviderService} from "./services/route-link-provider-service";
+import {ProjectResolve} from "./services/project.resolve";
 
 
 @NgModule({
@@ -80,7 +85,7 @@ import {ContextMenuComponent} from "./components/navigation/context-menu.compone
         EditApplicationFormComponent,
 
         // Reports
-        TechnologiesReport,
+        TechnologiesReportComponent,
 
         // Components
         AddRulesPathModalComponent,
@@ -104,9 +109,11 @@ import {ContextMenuComponent} from "./components/navigation/context-menu.compone
         LoginComponent,
         JsTreeAngularWrapperComponent,
         MigrationIssuesComponent,
-        MigrationIssuesTableComponent
+        MigrationIssuesTableComponent,
         LoginComponent,
-        ContextMenuComponent
+        ContextMenuComponent,
+        GroupLayoutComponent,
+        DefaultLayoutComponent
     ],
     providers: [
         appRoutingProviders,
@@ -128,6 +135,14 @@ import {ContextMenuComponent} from "./components/navigation/context-menu.compone
         MigrationIssuesService,
         TechReportService,
         FramesRestClientService,
+        ApplicationGroupResolve,
+        ProjectResolve,
+        {
+            provide: RouteLinkProviderService,
+            useFactory: () => {
+                return new RouteLinkProviderService(appRoutes);
+            }
+        },
         {
             provide: Http,
             useFactory:
