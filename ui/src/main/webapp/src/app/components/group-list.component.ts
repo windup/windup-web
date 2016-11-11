@@ -3,18 +3,18 @@ import {ActivatedRoute, Router} from "@angular/router";
 
 import {MigrationProject} from "../windup-services";
 import {ApplicationGroup} from "../windup-services";
-import {ApplicationGroupService} from "../services/applicationgroup.service";
+import {ApplicationGroupService} from "../services/application-group.service";
 import {WindupService} from "../services/windup.service";
 import {Constants} from "../constants";
 import {RegisteredApplication} from "../windup-services";
 import {WindupExecution} from "../windup-services";
-import {RegisteredApplicationService} from "../services/registeredapplication.service";
+import {RegisteredApplicationService} from "../services/registered-application.service";
 import {NotificationService} from "../services/notification.service";
-import {MigrationProjectService} from "../services/migrationproject.service";
+import {MigrationProjectService} from "../services/migration-project.service";
 
 @Component({
     selector: 'application-list',
-    templateUrl: 'grouplist.component.html'
+    templateUrl: 'group-list.component.html'
 })
 export class GroupListComponent implements OnInit, OnDestroy {
     projectID:number;

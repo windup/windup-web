@@ -1,12 +1,12 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {Router} from "@angular/router";
 
-import {MigrationProjectService} from "../services/migrationproject.service";
+import {MigrationProjectService} from "../services/migration-project.service";
 import {MigrationProject} from "../windup-services";
 
 @Component({
     selector: 'application-list',
-    templateUrl: 'projectlist.component.html'
+    templateUrl: 'project-list.component.html'
 })
 export class ProjectListComponent implements OnInit, OnDestroy {
     projects:MigrationProject[];

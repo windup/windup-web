@@ -4,16 +4,16 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {FileUploader} from 'ng2-file-upload/ng2-file-upload';
 
 import {RegisteredApplication} from "../windup-services";
-import {RegisteredApplicationService} from "../services/registeredapplication.service";
+import {RegisteredApplicationService} from "../services/registered-application.service";
 import {FileExistsValidator} from "../validators/file-exists.validator";
 import {FileService} from "../services/file.service";
-import {ApplicationGroupService} from "../services/applicationgroup.service";
+import {ApplicationGroupService} from "../services/application-group.service";
 import {ApplicationGroup} from "../windup-services";
-import {FormComponent} from "./formcomponent.component";
+import {FormComponent} from "./form.component";
 import {Constants} from "../constants";
 
 @Component({
-    templateUrl: 'registerapplicationform.component.html'
+    templateUrl: 'register-application-form.component.html'
 })
 export class RegisterApplicationFormComponent extends FormComponent implements OnInit {
     registrationForm: FormGroup;
