@@ -23,6 +23,7 @@ export const appRoutes: Routes = [
     {
         path: '',
         canActivate: [LoggedInGuard],
+        canActivateChild: [LoggedInGuard],
         children: [
             {
                 path: '',
