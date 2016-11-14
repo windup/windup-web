@@ -2,13 +2,13 @@ import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 
 import {ApplicationGroup, MigrationProject} from "../windup-services";
-import {ApplicationGroupService} from "../services/applicationgroup.service";
-import {MigrationProjectService} from "../services/migrationproject.service";
-import {FormComponent} from "./formcomponent.component";
+import {ApplicationGroupService} from "../services/application-group.service";
+import {MigrationProjectService} from "../services/migration-project.service";
+import {FormComponent} from "./form.component";
 
 @Component({
     selector: 'create-group-form',
-    templateUrl: 'applicationgroupform.component.html',
+    templateUrl: 'application-group-form.component.html',
 })
 export class ApplicationGroupForm extends FormComponent implements OnInit
 {

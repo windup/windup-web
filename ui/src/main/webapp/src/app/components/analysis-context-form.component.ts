@@ -2,10 +2,10 @@ import {Component, OnInit, ViewChild} from "@angular/core";
 import {NgForm} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 
-import {FormComponent} from "./formcomponent.component";
-import {ApplicationGroupService} from "../services/applicationgroup.service";
-import {MigrationPathService} from "../services/migrationpath.service";
-import {AnalysisContextService} from "../services/analysiscontext.service";
+import {FormComponent} from "./form.component";
+import {ApplicationGroupService} from "../services/application-group.service";
+import {MigrationPathService} from "../services/migration-path.service";
+import {AnalysisContextService} from "../services/analysis-context.service";
 import {ConfigurationOption} from "../model/configuration-option.model";
 import {ConfigurationOptionsService} from "../services/configuration-options.service";
 import {ModalDialogComponent} from "./modal-dialog.component";
@@ -15,7 +15,7 @@ import {PackageRegistryService} from "../services/package-registry.service";
 import {ApplicationGroup, AnalysisContext, Package, MigrationPath, AdvancedOption, RulesPath} from "../windup-services";
 
 @Component({
-    templateUrl: 'analysiscontextform.component.html'
+    templateUrl: 'analysis-context-form.component.html'
 })
 export class AnalysisContextFormComponent extends FormComponent implements OnInit, IsDirty
 {

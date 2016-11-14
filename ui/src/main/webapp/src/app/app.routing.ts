@@ -1,10 +1,10 @@
 import { Routes, RouterModule } from '@angular/router';
-import {ProjectListComponent} from "./components/projectlist.component";
-import {GroupListComponent} from "./components/grouplist.component";
+import {ProjectListComponent} from "./components/project-list.component";
+import {GroupListComponent} from "./components/group-list.component";
 import {RegisterApplicationFormComponent} from "./components/registerapplicationform.component";
-import {MigrationProjectFormComponent} from "./components/migrationprojectform.component";
-import {ApplicationGroupForm} from "./components/applicationgroupform.component";
-import {AnalysisContextFormComponent} from "./components/analysiscontextform.component";
+import {MigrationProjectFormComponent} from "./components/migration-project-form.component";
+import {ApplicationGroupForm} from "./components/application-group-form.component";
+import {AnalysisContextFormComponent} from "./components/analysis-context-form.component";
 import {ConfigurationComponent} from "./components/configuration.component";
 import {EditApplicationFormComponent} from "./components/edit-application-form.component";
 import {ConfirmDeactivateGuard} from "./confirm-deactivate.guard";
