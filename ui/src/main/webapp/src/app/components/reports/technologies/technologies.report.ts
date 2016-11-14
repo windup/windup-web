@@ -4,7 +4,7 @@ import {ActivatedRoute, Params}   from '@angular/router';
 import {TechReportService, StatsItem} from "./tech-report.service";
 
 import {ApplicationGroup} from "../../../../app/windup-services";
-import {ApplicationGroupService} from '../../../services/applicationgroup.service';
+import {ApplicationGroupService} from '../../../group/applicationgroup.service';
 import {TechnologiesStatsModel} from '../../../generated/tsModels/TechnologiesStatsModel';
 
 @Component({

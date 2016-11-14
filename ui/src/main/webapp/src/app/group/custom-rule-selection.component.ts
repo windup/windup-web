@@ -2,7 +2,7 @@ import {Component, Input, OnInit, Output, EventEmitter} from '@angular/core';
 
 import {RulesPath} from '../windup-services';
 
-import {ConfigurationService} from "../services/configuration.service";
+import {ConfigurationService} from "./configuration.service";
 
 
 @Component({

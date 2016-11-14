@@ -11,7 +11,7 @@ import {Constants} from '../../src/app/constants';
 import {KeyCloakServiceMock} from "./mocks/keycloak-service.mock";
 import {TechReportService} from "../../src/app/components/reports/technologies/tech-report.service";
 import {KeycloakService} from "../../src/app/authentication/keycloak.service";
-import {FileService} from "../../src/app/services/file.service";
+import {FileService} from "../../src/app/group/file.service";
 import {FileUploader, FileUploaderOptions} from "ng2-file-upload/ng2-file-upload";
 import {MockBackend, MockConnection} from "@angular/http/testing";
 import {GeneralStatsItemModel} from "../../src/app/generated/tsModels/GeneralStatsItemModel"

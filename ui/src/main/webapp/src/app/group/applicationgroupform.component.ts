@@ -2,7 +2,7 @@ import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 
 import {ApplicationGroup, MigrationProject} from "../windup-services";
-import {ApplicationGroupService} from "../services/applicationgroup.service";
+import {ApplicationGroupService} from "./applicationgroup.service";
 import {MigrationProjectService} from "../project/migrationproject.service";
 import {FormComponent} from "../shared/formcomponent.component";
 

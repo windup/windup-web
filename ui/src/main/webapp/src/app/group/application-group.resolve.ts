@@ -1,8 +1,8 @@
 import {Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Router} from "@angular/router";
 import {Observable} from "rxjs";
-import {ApplicationGroup} from "../../windup-services";
-import {ApplicationGroupService} from "../../services/applicationgroup.service";
-import {NotificationService} from "../../notification/notification.service";
+import {ApplicationGroup} from "../windup-services";
+import {ApplicationGroupService} from "./applicationgroup.service";
+import {NotificationService} from "../notification/notification.service";
 import {Injectable} from "@angular/core";
 
 @Injectable()

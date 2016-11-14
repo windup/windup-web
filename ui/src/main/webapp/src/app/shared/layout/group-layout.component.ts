@@ -4,7 +4,7 @@ import {ApplicationGroup} from "../../windup-services";
 import {RouteLinkProviderService} from "../route-link-provider-service";
 import {MigrationIssuesComponent} from "../reports/migration-issues/migration-issues.component";
 import {TechnologiesReportComponent} from "../reports/technologies/technologies.report";
-import {WindupService} from "../../services/windup.service";
+import {WindupService} from "../../group/windup.service";
 import {ReportMenuItem} from "../navigation/context-menu-item.class";
 import {Observable} from "rxjs";
 

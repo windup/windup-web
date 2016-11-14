@@ -3,12 +3,12 @@ import {ActivatedRoute, Router} from "@angular/router";
 
 import {MigrationProject} from "../windup-services";
 import {ApplicationGroup} from "../windup-services";
-import {ApplicationGroupService} from "../services/applicationgroup.service";
-import {WindupService} from "../services/windup.service";
+import {ApplicationGroupService} from "./applicationgroup.service";
+import {WindupService} from "./windup.service";
 import {Constants} from "../constants";
 import {RegisteredApplication} from "../windup-services";
 import {WindupExecution} from "../windup-services";
-import {RegisteredApplicationService} from "../services/registeredapplication.service";
+import {RegisteredApplicationService} from "./registeredapplication.service";
 import {NotificationService} from "../notification/notification.service";
 import {MigrationProjectService} from "../project/migrationproject.service";
 

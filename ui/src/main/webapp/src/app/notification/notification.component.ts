@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit, Input} from "@angular/core";
-import {NotificationService} from "../services/notification.service";
+import {NotificationService} from "./notification.service";
 import {Subscription} from "rxjs/Subscription";
 import {Notification, NotificationLevel} from "./notification";
 

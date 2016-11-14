@@ -11,9 +11,9 @@ import 'rxjs/Rx';
 import {Constants} from '../../src/app/constants';
 
 import {KeyCloakServiceMock} from "./mocks/keycloak-service.mock";
-import {RegisteredApplicationService} from "../../src/app/services/registeredapplication.service";
+import {RegisteredApplicationService} from "../../src/app/group/registeredapplication.service";
 import {KeycloakService} from "../../src/app/authentication/keycloak.service";
-import {FileService} from "../../src/app/services/file.service";
+import {FileService} from "../../src/app/group/file.service";
 import {FileUploader, FileUploaderOptions} from "ng2-file-upload/ng2-file-upload";
 import {MockBackend, MockConnection} from "@angular/http/testing";
 

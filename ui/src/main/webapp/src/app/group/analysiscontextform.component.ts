@@ -3,11 +3,11 @@ import {NgForm} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 
 import {FormComponent} from "../shared/formcomponent.component";
-import {ApplicationGroupService} from "../services/applicationgroup.service";
+import {ApplicationGroupService} from "./applicationgroup.service";
 import {MigrationPathService} from "../services/migrationpath.service";
-import {AnalysisContextService} from "../services/analysiscontext.service";
+import {AnalysisContextService} from "./analysiscontext.service";
 import {ConfigurationOption} from "../model/configuration-option.model";
-import {ConfigurationOptionsService} from "../services/configuration-options.service";
+import {ConfigurationOptionsService} from "./configuration-options.service";
 import {ModalDialogComponent} from "../shared/modal-dialog.component";
 import {IsDirty} from "../shared/is-dirty.interface";
 import {Observable} from "rxjs/Observable";

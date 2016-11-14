@@ -1,19 +1,19 @@
 import { Routes, RouterModule } from '@angular/router';
 import {ProjectListComponent} from "./project/projectlist.component";
-import {GroupListComponent} from "./components/grouplist.component";
-import {RegisterApplicationFormComponent} from "./components/registerapplicationform.component";
+import {GroupListComponent} from "./group/grouplist.component";
+import {RegisterApplicationFormComponent} from "./group/registerapplicationform.component";
 import {MigrationProjectFormComponent} from "./project/migrationprojectform.component";
-import {ApplicationGroupForm} from "./components/applicationgroupform.component";
-import {AnalysisContextFormComponent} from "./components/analysiscontextform.component";
-import {ConfigurationComponent} from "./components/configuration.component";
-import {EditApplicationFormComponent} from "./components/edit-application-form.component";
+import {ApplicationGroupForm} from "./group/applicationgroupform.component";
+import {AnalysisContextFormComponent} from "./group/analysiscontextform.component";
+import {ConfigurationComponent} from "./group/configuration.component";
+import {EditApplicationFormComponent} from "./group/edit-application-form.component";
 import {ConfirmDeactivateGuard} from "./shared/confirm-deactivate.guard";
 import {TechnologiesReportComponent} from "./components/reports/technologies/technologies.report";
 import {LoginComponent} from "./authentication/login.component";
 import {LoggedInGuard} from "./authentication/logged-in.guard";
 import {GroupLayoutComponent} from "./components/layout/group-layout.component";
 import {DefaultLayoutComponent} from "./components/layout/default-layout.component";
-import {ApplicationGroupResolve} from "./components/group/application-group.resolve";
+import {ApplicationGroupResolve} from "./group/application-group.resolve";
 import {MigrationIssuesComponent} from "./components/reports/migration-issues/migration-issues.component";
 import {ProjectResolve} from "./services/project.resolve";
 
