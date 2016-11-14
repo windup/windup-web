@@ -1,7 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
-import {ApplicationGroup} from "windup-services";
-import {RouteLinkProviderService} from "../../services/route-link-provider-service";
+import {ApplicationGroup} from "../../windup-services";
+import {RouteLinkProviderService} from "../route-link-provider-service";
 import {MigrationIssuesComponent} from "../reports/migration-issues/migration-issues.component";
 import {TechnologiesReportComponent} from "../reports/technologies/technologies.report";
 import {WindupService} from "../../services/windup.service";

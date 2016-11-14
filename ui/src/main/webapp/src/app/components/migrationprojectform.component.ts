@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 
 import {MigrationProject} from "../windup-services";
 import {MigrationProjectService} from "../services/migrationproject.service";
-import {FormComponent} from "./formcomponent.component";
+import {FormComponent} from "../shared/formcomponent.component";
 
 @Component({
     templateUrl: 'migrationprojectform.component.html'

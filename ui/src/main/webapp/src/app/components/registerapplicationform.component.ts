@@ -9,7 +9,7 @@ import {FileExistsValidator} from "../validators/file-exists.validator";
 import {FileService} from "../services/file.service";
 import {ApplicationGroupService} from "../services/applicationgroup.service";
 import {ApplicationGroup} from "../windup-services";
-import {FormComponent} from "./formcomponent.component";
+import {FormComponent} from "../shared/formcomponent.component";
 import {Constants} from "../constants";
 
 @Component({

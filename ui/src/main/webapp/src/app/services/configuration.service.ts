@@ -4,7 +4,7 @@ import {Observable} from 'rxjs/Observable';
 
 import {Constants} from "../constants";
 import {Configuration, RulesPath} from "../windup-services";
-import {AbstractService} from "./abtract.service";
+import {AbstractService} from "../shared/abtract.service";
 
 @Injectable()
 export class ConfigurationService extends AbstractService {

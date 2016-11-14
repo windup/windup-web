@@ -7,7 +7,7 @@ import {ApplicationGroupForm} from "./components/applicationgroupform.component"
 import {AnalysisContextFormComponent} from "./components/analysiscontextform.component";
 import {ConfigurationComponent} from "./components/configuration.component";
 import {EditApplicationFormComponent} from "./components/edit-application-form.component";
-import {ConfirmDeactivateGuard} from "./confirm-deactivate.guard";
+import {ConfirmDeactivateGuard} from "./shared/confirm-deactivate.guard";
 import {TechnologiesReportComponent} from "./components/reports/technologies/technologies.report";
 import {LoginComponent} from "./authentication/login.component";
 import {LoggedInGuard} from "./authentication/logged-in.guard";

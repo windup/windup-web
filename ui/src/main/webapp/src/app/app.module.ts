@@ -15,8 +15,8 @@ import {ApplicationGroupForm} from "./components/applicationgroupform.component"
 import {GroupListComponent} from "./components/grouplist.component";
 import {MigrationProjectFormComponent} from "./components/migrationprojectform.component";
 import {RegisterApplicationFormComponent} from "./components/registerapplicationform.component";
-import {ProgressBarComponent} from "./components/progressbar.component";
-import {NavbarComponent} from "./components/navbar.component";
+import {ProgressBarComponent} from "./shared/progressbar.component";
+import {NavbarComponent} from "./shared/navbar.component";
 import {BreadCrumbsComponent} from "./components/breadcrumbs.component";
 import {ConfigurationService} from "./services/configuration.service";
 import {AnalysisContextService} from "./services/analysiscontext.service";
@@ -31,7 +31,7 @@ import {ConfigurationComponent} from "./components/configuration.component";
 import {TechnologyComponent} from "./components/technology.component";
 import {RulesModalComponent} from "./components/rules-modal.component";
 import {AddRulesPathModalComponent} from "./components/add-rules-path-modal.component";
-import {ConfirmationModalComponent} from "./components/confirmation-modal.component";
+import {ConfirmationModalComponent} from "./shared/confirmation-modal.component";
 import {CustomRuleSelectionComponent} from "./components/custom-rule-selection.component";
 
 import {KeycloakService} from "./authentication/keycloak.service";
@@ -41,12 +41,12 @@ import {UploadQueueComponent} from "./components/upload/upload-queue.component";
 import {UploadProgressbarComponent} from "./components/upload/upload-progressbar.component";
 import {AnalysisContextAdvancedOptionsModalComponent} from "./components/analysis-context-advanced-options-modal.component";
 import {ConfigurationOptionsService} from "./services/configuration-options.service";
-import {ModalDialogComponent} from "./components/modal-dialog.component";
+import {ModalDialogComponent} from "./shared/modal-dialog.component";
 import {NotificationService} from "./notification/notification.service";
 import {NotificationComponent} from "./notification/notification.component";
-import {ConfirmDeactivateGuard} from "./confirm-deactivate.guard";
-import {PopoverComponent} from "./components/popover.component";
-import {JsTreeAngularWrapperComponent} from "./components/js-tree-angular-wrapper.component";
+import {ConfirmDeactivateGuard} from "./shared/confirm-deactivate.guard";
+import {PopoverComponent} from "./shared/popover.component";
+import {JsTreeAngularWrapperComponent} from "./shared/js-tree-angular-wrapper.component";
 import {PackageRegistryService} from "./services/package-registry.service";
 import {TechnologiesReportComponent} from "./components/reports/technologies/technologies.report";
 import {LoginComponent} from "./authentication/login.component";
@@ -60,7 +60,7 @@ import {ContextMenuComponent} from "./components/navigation/context-menu.compone
 import {GroupLayoutComponent} from "./components/layout/group-layout.component";
 import {DefaultLayoutComponent} from "./components/layout/default-layout.component";
 import {ApplicationGroupResolve} from "./components/group/application-group.resolve";
-import {RouteLinkProviderService} from "./services/route-link-provider-service";
+import {RouteLinkProviderService} from "./shared/route-link-provider-service";
 import {ProjectResolve} from "./services/project.resolve";
 
 

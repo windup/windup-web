@@ -1,5 +1,5 @@
 import {Component, OnInit, Input, Output, EventEmitter} from "@angular/core";
-import {FormComponent} from "./formcomponent.component";
+import {FormComponent} from "../shared/formcomponent.component";
 import {FormGroup, FormBuilder, Validators} from "@angular/forms";
 import {FileExistsValidator} from "../validators/file-exists.validator";
 import {FileService} from "../services/file.service";

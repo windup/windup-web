@@ -3,7 +3,7 @@ import {Headers, Http, RequestOptions} from '@angular/http';
 
 import {Constants} from "../constants";
 import {MigrationPath} from "../windup-services";
-import {AbstractService} from "./abtract.service";
+import {AbstractService} from "../shared/abtract.service";
 
 @Injectable()
 export class MigrationPathService extends AbstractService {

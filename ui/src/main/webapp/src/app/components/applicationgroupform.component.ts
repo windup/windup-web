@@ -4,7 +4,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {ApplicationGroup, MigrationProject} from "../windup-services";
 import {ApplicationGroupService} from "../services/applicationgroup.service";
 import {MigrationProjectService} from "../services/migrationproject.service";
-import {FormComponent} from "./formcomponent.component";
+import {FormComponent} from "../shared/formcomponent.component";
 
 @Component({
     selector: 'create-group-form',

@@ -3,7 +3,7 @@ import {Headers, Http, RequestOptions, Response} from '@angular/http';
 
 import {Constants} from "../../../../app/constants";
 import {ApplicationGroup} from "../../../../app/windup-services";
-import {AbstractService} from "../../../../app/services/abtract.service";
+import {AbstractService} from "../../../shared/abtract.service";
 
 import {Observable} from 'rxjs/Observable';
 
