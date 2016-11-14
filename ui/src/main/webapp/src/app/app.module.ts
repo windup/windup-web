@@ -28,7 +28,7 @@ import {RegisteredApplicationService} from "./group/registeredapplication.servic
 import {WindupService} from "./group/windup.service";
 import {RuleService} from "./group/rule.service";
 import {ConfigurationComponent} from "./group/configuration.component";
-import {TechnologyComponent} from "./components/technology.component";
+import {TechnologyComponent} from "./reports/technology.component";
 import {RulesModalComponent} from "./group/rules-modal.component";
 import {AddRulesPathModalComponent} from "./group/add-rules-path-modal.component";
 import {ConfirmationModalComponent} from "./shared/confirmation-modal.component";
