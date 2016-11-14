@@ -1,8 +1,8 @@
 import {Component, OnInit, Input, Output, EventEmitter} from "@angular/core";
 import {FormComponent} from "../shared/formcomponent.component";
 import {FormGroup, FormBuilder, Validators} from "@angular/forms";
-import {FileExistsValidator} from "../validators/file-exists.validator";
-import {FileService} from "./file.service";
+import {FileExistsValidator} from "./application/file-exists.validator";
+import {FileService} from "./application/file.service";
 import {ConfigurationService} from "./configuration.service";
 import {Configuration, RulesPath} from "../windup-services";
 

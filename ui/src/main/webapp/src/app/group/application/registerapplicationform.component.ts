@@ -3,14 +3,14 @@ import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FileUploader} from 'ng2-file-upload/ng2-file-upload';
 
-import {RegisteredApplication} from "../windup-services";
+import {RegisteredApplication} from "../../windup-services";
 import {RegisteredApplicationService} from "./registeredapplication.service";
-import {FileExistsValidator} from "../validators/file-exists.validator";
+import {FileExistsValidator} from "./file-exists.validator";
 import {FileService} from "./file.service";
-import {ApplicationGroupService} from "./applicationgroup.service";
-import {ApplicationGroup} from "../windup-services";
-import {FormComponent} from "../shared/formcomponent.component";
-import {Constants} from "../constants";
+import {ApplicationGroupService} from "../applicationgroup.service";
+import {ApplicationGroup} from "../../windup-services";
+import {FormComponent} from "../../shared/formcomponent.component";
+import {Constants} from "../../constants";
 
 @Component({
     templateUrl: 'registerapplicationform.component.html'

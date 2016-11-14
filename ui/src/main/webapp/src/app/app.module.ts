@@ -14,17 +14,17 @@ import {AnalysisContextFormComponent} from "./group/analysiscontextform.componen
 import {ApplicationGroupForm} from "./group/applicationgroupform.component";
 import {GroupListComponent} from "./group/grouplist.component";
 import {MigrationProjectFormComponent} from "./project/migrationprojectform.component";
-import {RegisterApplicationFormComponent} from "./group/registerapplicationform.component";
+import {RegisterApplicationFormComponent} from "./group/application/registerapplicationform.component";
 import {ProgressBarComponent} from "./shared/progressbar.component";
 import {NavbarComponent} from "./shared/navbar.component";
 import {BreadCrumbsComponent} from "./shared/navigation/breadcrumbs.component";
 import {ConfigurationService} from "./group/configuration.service";
 import {AnalysisContextService} from "./group/analysiscontext.service";
 import {ApplicationGroupService} from "./group/applicationgroup.service";
-import {FileService} from "./group/file.service";
+import {FileService} from "./group/application/file.service";
 import {MigrationPathService} from "./services/migrationpath.service";
 import {MigrationProjectService} from "./project/migrationproject.service";
-import {RegisteredApplicationService} from "./group/registeredapplication.service";
+import {RegisteredApplicationService} from "./group/application/registeredapplication.service";
 import {WindupService} from "./group/windup.service";
 import {RuleService} from "./group/rule.service";
 import {ConfigurationComponent} from "./group/configuration.component";
@@ -36,7 +36,7 @@ import {CustomRuleSelectionComponent} from "./group/custom-rule-selection.compon
 
 import {KeycloakService} from "./authentication/keycloak.service";
 import {WindupHttpService} from "./authentication/windup.http.service";
-import {EditApplicationFormComponent} from "./group/edit-application-form.component";
+import {EditApplicationFormComponent} from "./group/application/edit-application-form.component";
 import {UploadQueueComponent} from "./components/upload/upload-queue.component";
 import {UploadProgressbarComponent} from "./components/upload/upload-progressbar.component";
 import {AnalysisContextAdvancedOptionsModalComponent} from "./group/analysis-context-advanced-options-modal.component";

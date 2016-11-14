@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {Headers, Http, RequestOptions} from '@angular/http';
 
-import {Constants} from "../constants";
-import {AbstractService} from "../shared/abtract.service";
+import {Constants} from "../../constants";
+import {AbstractService} from "../../shared/abtract.service";
 
 @Injectable()
 export class FileService extends AbstractService {

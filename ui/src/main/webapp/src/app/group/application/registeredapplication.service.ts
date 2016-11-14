@@ -3,10 +3,10 @@ import {Headers, Http, RequestOptions} from '@angular/http';
 import {FileUploader} from 'ng2-file-upload/ng2-file-upload';
 import {Observable} from 'rxjs/Observable';
 
-import {Constants} from "../constants";
-import {RegisteredApplication} from "../windup-services";
-import {AbstractService} from "../shared/abtract.service";
-import {KeycloakService} from "../authentication/keycloak.service";
+import {Constants} from "../../constants";
+import {RegisteredApplication} from "../../windup-services";
+import {AbstractService} from "../../shared/abtract.service";
+import {KeycloakService} from "../../authentication/keycloak.service";
 
 @Injectable()
 export class RegisteredApplicationService extends AbstractService {

@@ -2,13 +2,13 @@ import {Component, OnInit, Renderer, NgZone} from "@angular/core";
 import {FormBuilder, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FileUploader} from "ng2-file-upload/ng2-file-upload";
-import {RegisteredApplication} from "../windup-services";
+import {RegisteredApplication} from "../../windup-services";
 import {RegisteredApplicationService} from "./registeredapplication.service";
-import {FileExistsValidator} from "../validators/file-exists.validator";
+import {FileExistsValidator} from "./file-exists.validator";
 import {FileService} from "./file.service";
-import {ApplicationGroupService} from "./applicationgroup.service";
-import {Constants} from "../constants";
-import {KeycloakService} from "../authentication/keycloak.service";
+import {ApplicationGroupService} from "../applicationgroup.service";
+import {Constants} from "../../constants";
+import {KeycloakService} from "../../authentication/keycloak.service";
 import {RegisterApplicationFormComponent} from "./registerapplicationform.component";
 
 @Component({
