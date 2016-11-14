@@ -1,5 +1,5 @@
 import {Observable} from "rxjs/Observable";
-import {KeycloakService} from "../../../src/app/services/keycloak.service";
+import {KeycloakService} from "../../../src/app/authentication/keycloak.service";
 
 export class KeyCloakServiceMock /* extends KeycloakService */ {
     public constructor() {

@@ -6,7 +6,7 @@ import {Observable} from 'rxjs/Observable';
 import {Constants} from "../constants";
 import {RegisteredApplication} from "../windup-services";
 import {AbstractService} from "./abtract.service";
-import {KeycloakService} from "./keycloak.service";
+import {KeycloakService} from "../authentication/keycloak.service";
 
 @Injectable()
 export class RegisteredApplicationService extends AbstractService {

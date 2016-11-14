@@ -26,6 +26,7 @@ export class ApplicationGroupResolve implements Resolve<ApplicationGroup> {
                     observer.complete();
                 },
                 error => {
+                    console.log('ApplicationGroupResolve: Error');
                     this._notificationService.error(error);
                     this._router.navigate(['/']);
                     observer.next(false);

@@ -6,6 +6,7 @@ import {MigrationIssuesComponent} from "../reports/migration-issues/migration-is
 import {TechnologiesReportComponent} from "../reports/technologies/technologies.report";
 import {WindupService} from "../../services/windup.service";
 import {ReportMenuItem} from "../navigation/context-menu-item.class";
+import {Observable} from "rxjs";
 
 @Component({
     templateUrl: './group-layout.component.html',

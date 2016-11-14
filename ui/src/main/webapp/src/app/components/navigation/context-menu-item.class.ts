@@ -63,7 +63,7 @@ export class ReportMenuItem extends ContextMenuItem {
 
     get isEnabled(): boolean {
         let execution = this.getLastCompletedExecution();
-        return <boolean>(this.applicationGroup && this.applicationGroup.id && execution && execution.id);
+        return <boolean><any>(this.applicationGroup && this.applicationGroup.id && execution && execution.id);
     }
 
     protected getLastCompletedExecution() {

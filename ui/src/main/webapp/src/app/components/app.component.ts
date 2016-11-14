@@ -1,5 +1,6 @@
 import {Component} from "@angular/core";
 import {Router} from "@angular/router";
+import 'rxjs/add/operator/pairwise';
 
 @Component({
     selector: 'windup-app',
@@ -14,5 +15,14 @@ export class AppComponent {
      * When extension is fixed, this can be safely removed
      */
     constructor(private router: Router) {
+        router.events.subscribe((event) => {
+            console.log('App component event');
+            console.log(event);
+        });
+
+        router.events.pairwise().subscribe((e) => {
+            console.log('App component event pariwise');
+            console.log(e);
+        });
     }
 }

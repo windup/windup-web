@@ -34,8 +34,8 @@ import {AddRulesPathModalComponent} from "./components/add-rules-path-modal.comp
 import {ConfirmationModalComponent} from "./components/confirmation-modal.component";
 import {CustomRuleSelectionComponent} from "./components/custom-rule-selection.component";
 
-import {KeycloakService} from "./services/keycloak.service";
-import {WindupHttpService} from "./services/windup.http.service";
+import {KeycloakService} from "./authentication/keycloak.service";
+import {WindupHttpService} from "./authentication/windup.http.service";
 import {EditApplicationFormComponent} from "./components/edit-application-form.component";
 import {UploadQueueComponent} from "./components/upload/upload-queue.component";
 import {UploadProgressbarComponent} from "./components/upload/upload-progressbar.component";
@@ -49,8 +49,8 @@ import {PopoverComponent} from "./components/popover.component";
 import {JsTreeAngularWrapperComponent} from "./components/js-tree-angular-wrapper.component";
 import {PackageRegistryService} from "./services/package-registry.service";
 import {TechnologiesReportComponent} from "./components/reports/technologies/technologies.report";
-import {LoginComponent} from "./components/login.component";
-import {LoggedInGuard} from "./services/logged-in.guard";
+import {LoginComponent} from "./authentication/login.component";
+import {LoggedInGuard} from "./authentication/logged-in.guard";
 import {MigrationIssuesComponent} from "./components/reports/migration-issues/migration-issues.component";
 import {MigrationIssuesTableComponent} from "./components/reports/migration-issues/migration-issues-table.component";
 import {MigrationIssuesService} from "./components/reports/migration-issues/migration-issues.service";
