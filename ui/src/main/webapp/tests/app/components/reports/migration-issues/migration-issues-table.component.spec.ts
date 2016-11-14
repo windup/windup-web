@@ -4,7 +4,7 @@ import {DebugElement} from "@angular/core";
 import {By} from "@angular/platform-browser";
 import {ActivatedRoute} from "@angular/router";
 import {MigrationIssuesService} from "../../../../../src/app/components/reports/migration-issues/migration-issues.service";
-import {NotificationService} from "../../../../../src/app/services/notification.service";
+import {NotificationService} from "../../../../../src/app/notification/notification.service";
 import {RouterTestingModule} from "@angular/router/testing";
 import {ActivatedRouteMock} from "../../../mocks/activated-route.mock";
 import {Observable} from "rxjs";

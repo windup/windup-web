@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit, Input} from "@angular/core";
 import {NotificationService} from "../services/notification.service";
 import {Subscription} from "rxjs/Subscription";
-import {Notification, NotificationLevel} from "../services/notification";
+import {Notification, NotificationLevel} from "./notification";
 
 @Component({
     selector: 'ap-notification',

@@ -9,7 +9,7 @@ import {Constants} from "../constants";
 import {RegisteredApplication} from "../windup-services";
 import {WindupExecution} from "../windup-services";
 import {RegisteredApplicationService} from "../services/registeredapplication.service";
-import {NotificationService} from "../services/notification.service";
+import {NotificationService} from "../notification/notification.service";
 import {MigrationProjectService} from "../services/migrationproject.service";
 
 @Component({
