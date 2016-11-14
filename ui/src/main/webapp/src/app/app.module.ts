@@ -17,7 +17,7 @@ import {MigrationProjectFormComponent} from "./project/migrationprojectform.comp
 import {RegisterApplicationFormComponent} from "./components/registerapplicationform.component";
 import {ProgressBarComponent} from "./shared/progressbar.component";
 import {NavbarComponent} from "./shared/navbar.component";
-import {BreadCrumbsComponent} from "./components/breadcrumbs.component";
+import {BreadCrumbsComponent} from "./shared/navigation/breadcrumbs.component";
 import {ConfigurationService} from "./services/configuration.service";
 import {AnalysisContextService} from "./services/analysiscontext.service";
 import {ApplicationGroupService} from "./services/applicationgroup.service";
