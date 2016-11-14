@@ -1,9 +1,9 @@
 import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
 import {ApplicationGroup} from "../../windup-services";
-import {RouteLinkProviderService} from "../route-link-provider-service";
-import {MigrationIssuesComponent} from "../reports/migration-issues/migration-issues.component";
-import {TechnologiesReportComponent} from "../reports/technologies/technologies.report";
+import {RouteLinkProviderService} from "../../core/route-link-provider-service";
+import {MigrationIssuesComponent} from "../../reports/migration-issues/migration-issues.component";
+import {TechnologiesReportComponent} from "../../reports/technologies/technologies.report";
 import {WindupService} from "../../group/windup.service";
 import {ReportMenuItem} from "../navigation/context-menu-item.class";
 import {Observable} from "rxjs";
@@ -35,7 +35,7 @@ export class GroupLayoutComponent implements OnInit {
     }
 
     protected createContextMenuItems() {
-        this.menuItems = [
+/*        this.menuItems = [
             {
                 label: 'Config',
                 link: 'configuration',
@@ -76,6 +76,6 @@ export class GroupLayoutComponent implements OnInit {
                 icon: 'fa-code-fork',
                 isEnabled: true
             }
-        ];
+        ];*/
     }
 }

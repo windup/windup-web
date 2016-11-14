@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from "@angular/core";
 import {Router, ActivatedRoute} from "@angular/router";
 import {MigrationIssuesService} from "./migration-issues.service";
-import {NotificationService} from "../../../services/notification.service";
+import {NotificationService} from "../../core/notification/notification.service";
 
 @Component({
     selector: 'wu-migration-issues-table',

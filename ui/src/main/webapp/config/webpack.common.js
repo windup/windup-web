@@ -23,7 +23,7 @@ module.exports = {
             {
                 test: /\.ts$/,
                 exclude: /jquery*\.js/,
-                loaders: ['awesome-typescript-loader', 'angular2-template-loader']
+                loaders: ['awesome-typescript-loader', 'angular2-template-loader', 'angular2-router-loader']
             },
             {
                 test: /\.html$/,

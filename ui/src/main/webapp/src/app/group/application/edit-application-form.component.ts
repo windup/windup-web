@@ -8,7 +8,6 @@ import {FileExistsValidator} from "./file-exists.validator";
 import {FileService} from "./file.service";
 import {ApplicationGroupService} from "../applicationgroup.service";
 import {Constants} from "../../constants";
-import {KeycloakService} from "../../authentication/keycloak.service";
 import {RegisterApplicationFormComponent} from "./registerapplicationform.component";
 
 @Component({

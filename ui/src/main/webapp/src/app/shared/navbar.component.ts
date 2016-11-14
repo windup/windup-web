@@ -1,8 +1,8 @@
 import {Component, OnInit, ElementRef} from '@angular/core';
 import {Router} from "@angular/router";
-import {KeycloakService} from "../authentication/keycloak.service";
 import * as $ from 'jquery';
 import 'bootstrap';
+import {KeycloakService} from "../core/authentication/keycloak.service";
 
 @Component({
     selector: 'navbar',

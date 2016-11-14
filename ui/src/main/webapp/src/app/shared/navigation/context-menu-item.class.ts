@@ -1,5 +1,5 @@
 import {ApplicationGroup} from "../../windup-services";
-import {RouteLinkProviderService} from "../route-link-provider-service";
+import {RouteLinkProviderService} from "../../core/route-link-provider-service";
 
 export interface ContextMenuItemInterface {
     label: string;

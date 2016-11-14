@@ -1,17 +1,17 @@
 import {Injectable} from '@angular/core';
 import {Headers, Http, RequestOptions, Response} from '@angular/http';
 
-import {Constants} from "../../../../app/constants";
-import {ApplicationGroup} from "../../../../app/windup-services";
-import {AbstractService} from "../../../shared/abtract.service";
+import {Constants} from "../../constants";
+import {ApplicationGroup} from "../../windup-services";
+import {AbstractService} from "../../shared/abtract.service";
 
 import {Observable} from 'rxjs/Observable';
 
 // Windup
-import {GraphJSONToModelService} from '../../../../app/services/graph/graph-json-to-model.service';
+import {GraphJSONToModelService} from '../../../app/services/graph/graph-json-to-model.service';
 
 // Models
-import {TechnologiesStatsModel} from '../../../../app/generated/tsModels/TechnologiesStatsModel';
+import {TechnologiesStatsModel} from '../../../app/generated/tsModels/TechnologiesStatsModel';
 
 
 

@@ -1,8 +1,8 @@
 import {Injectable} from "@angular/core";
 import {Http} from "@angular/http";
 import {Observable} from "rxjs";
-import {AbstractService} from "../../../shared/abtract.service";
-import {Constants} from "../../../constants";
+import {AbstractService} from "../../shared/abtract.service";
+import {Constants} from "../../constants";
 
 @Injectable()
 export class MigrationIssuesService extends AbstractService {
