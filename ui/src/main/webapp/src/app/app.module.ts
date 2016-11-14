@@ -61,7 +61,7 @@ import {GroupLayoutComponent} from "./components/layout/group-layout.component";
 import {DefaultLayoutComponent} from "./components/layout/default-layout.component";
 import {ApplicationGroupResolve} from "./group/application-group.resolve";
 import {RouteLinkProviderService} from "./shared/route-link-provider-service";
-import {ProjectResolve} from "./services/project.resolve";
+import {ProjectResolve} from "./project/project.resolve";
 
 
 @NgModule({

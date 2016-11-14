@@ -15,7 +15,7 @@ import {GroupLayoutComponent} from "./components/layout/group-layout.component";
 import {DefaultLayoutComponent} from "./components/layout/default-layout.component";
 import {ApplicationGroupResolve} from "./group/application-group.resolve";
 import {MigrationIssuesComponent} from "./components/reports/migration-issues/migration-issues.component";
-import {ProjectResolve} from "./services/project.resolve";
+import {ProjectResolve} from "./project/project.resolve";
 
 export const appRoutes: Routes = [
     {path: "login", component: LoginComponent},
