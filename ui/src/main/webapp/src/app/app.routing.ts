@@ -41,6 +41,7 @@ export const appRoutes: Routes = [
             },
             {
                 path: 'projects',
+                component: DefaultLayoutComponent,
                 children: [
                     {path: '', component: ProjectListComponent, data: {displayName: "Project List"}},
                     {
