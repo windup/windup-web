@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {Router} from "@angular/router";
 
-import {MigrationProjectService} from "../services/migrationproject.service";
+import {MigrationProjectService} from "./migrationproject.service";
 import {MigrationProject} from "../windup-services";
 
 @Component({

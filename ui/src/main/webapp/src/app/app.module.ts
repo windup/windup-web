@@ -9,11 +9,11 @@ import {FileSelectDirective, FileDropDirective, FileUploader} from 'ng2-file-upl
 import { AppComponent }  from './components/app.component';
 import {routing, appRoutingProviders, appRoutes} from './app.routing';
 
-import {ProjectListComponent} from "./components/projectlist.component";
+import {ProjectListComponent} from "./project/projectlist.component";
 import {AnalysisContextFormComponent} from "./components/analysiscontextform.component";
 import {ApplicationGroupForm} from "./components/applicationgroupform.component";
 import {GroupListComponent} from "./components/grouplist.component";
-import {MigrationProjectFormComponent} from "./components/migrationprojectform.component";
+import {MigrationProjectFormComponent} from "./project/migrationprojectform.component";
 import {RegisterApplicationFormComponent} from "./components/registerapplicationform.component";
 import {ProgressBarComponent} from "./shared/progressbar.component";
 import {NavbarComponent} from "./shared/navbar.component";
@@ -23,7 +23,7 @@ import {AnalysisContextService} from "./services/analysiscontext.service";
 import {ApplicationGroupService} from "./services/applicationgroup.service";
 import {FileService} from "./services/file.service";
 import {MigrationPathService} from "./services/migrationpath.service";
-import {MigrationProjectService} from "./services/migrationproject.service";
+import {MigrationProjectService} from "./project/migrationproject.service";
 import {RegisteredApplicationService} from "./services/registeredapplication.service";
 import {WindupService} from "./services/windup.service";
 import {RuleService} from "./services/rule.service";
