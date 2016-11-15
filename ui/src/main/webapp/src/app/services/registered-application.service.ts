@@ -13,12 +13,12 @@ export class RegisteredApplicationService extends AbstractService {
     public static REGISTERED_APPLICATION_SERVICE_NAME = "/registeredApplications/";
     public static REGISTER_APPLICATION_URL = "/registeredApplications/appGroup/";
 
-    private GET_APPLICATIONS_URL = "/registeredApplications/list";
-    private UNREGISTER_URL = "/registeredApplications/unregister";
-    private UPDATE_APPLICATION_URL = "/registeredApplications/update-application";
+    private GET_APPLICATIONS_URL        = "/registeredApplications/list";
+    private UNREGISTER_URL              = "/registeredApplications/unregister";
+    private UPDATE_APPLICATION_URL      = "/registeredApplications/update-application";
     private REGISTERED_APPLICATIONS_URL = '/registeredApplications';
-    private REGISTER_PATH_URL = "/registeredApplications/register-path/";
-    private REGISTER_DIRECTORY_URL = '/registeredApplications/register-directory-path';
+    private REGISTER_PATH_URL           = "/registeredApplications/register-path/";
+    private REGISTER_DIRECTORY_URL      = '/registeredApplications/register-directory-path';
 
     private UPLOAD_URL = '/file';
 

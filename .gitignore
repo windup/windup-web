@@ -27,4 +27,5 @@ services/lib
 /ui/src/main/webapp/tests/unmarshaller/typescriptModels/
 /ui/src/main/webapp/src/app/tsModels/
 /ui/src/main/webapp/src/app/generated/
+.vscode
 
