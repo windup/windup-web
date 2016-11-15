@@ -10,7 +10,7 @@ import {RegisteredApplication} from "../windup-services";
 import {WindupExecution} from "../windup-services";
 import {RegisteredApplicationService} from "../services/registered-application.service";
 import {NotificationService} from "../services/notification.service";
-import {MigrationProjectService} from "../services/migrationproject.service";
+import {MigrationProjectService} from "../services/migration-project.service";
 import {utils} from "../utils";
 
 @Component({
