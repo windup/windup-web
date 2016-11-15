@@ -85,7 +85,7 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
 
     ngOnInit() {
         this._activatedRoute.params.subscribe(params => {
-            let id:number = parseInt(params["groupID"]);
+            let id:number = parseInt(params["groupId"]);
             if (!isNaN(id)) {
                 this.loading = true;
 

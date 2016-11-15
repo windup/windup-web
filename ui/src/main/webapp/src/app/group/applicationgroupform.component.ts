@@ -35,7 +35,7 @@ export class ApplicationGroupForm extends FormComponent implements OnInit
 
     ngOnInit() {
         this._activatedRoute.params.subscribe(params => {
-            let projectID = parseInt(params["projectID"]);
+            let projectID = parseInt(params["projectId"]);
             if (!isNaN(projectID)) {
                 this.loadingProject = true;
                 this._migrationProjectService.get(projectID).subscribe(
@@ -44,7 +44,7 @@ export class ApplicationGroupForm extends FormComponent implements OnInit
                 );
             }
 
-            let groupID = parseInt(params["groupID"]);
+            let groupID = parseInt(params["groupId"]);
             if (!isNaN(groupID)) {
                 this.editMode = true;
                 this.loadingGroup = true;
@@ -81,7 +81,7 @@ export class ApplicationGroupForm extends FormComponent implements OnInit
     }
 
     rerouteToGroupList() {
-        this._router.navigate(['/group-list', {projectID: this.project.id}]);
+        this._router.navigate([`/projects/${this.project.id}`]);
     }
 
     cancel() {

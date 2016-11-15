@@ -12,7 +12,7 @@
                 <span class="glyphicon glyphicon-pencil"></span>
             </a>
         </h3>
-        <a [routerLink]="['/analysis-context-form', { groupID: group.id }]">Edit Analysis Configuration</a>
+        <a [routerLink]="['/groups/' + group.id + '/analysis-context']">Edit Analysis Configuration</a>
         <span *ngIf="groupReportURL(group) != null">
             |
             <a target="_blank" href="{{groupReportURL(group)}}">

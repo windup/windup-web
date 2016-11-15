@@ -5,7 +5,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import "rxjs/Rx";
 
-import {appRoutes, AppRoutingModule} from "./app.routing";
+import {AppRoutingModule} from "./app.routing";
 import {CoreModule} from "./core/core.module";
 import {AppComponent} from "./components/app.component";
 import {RouteLinkProviderService} from "./core/route-link-provider-service";
@@ -26,12 +26,7 @@ import {SharedModule} from "./shared/shared.module";
         AppComponent
     ],
     providers: [
-        {
-            provide: RouteLinkProviderService,
-            useFactory: () => {
-                return new RouteLinkProviderService(appRoutes);
-            }
-        }
+        RouteLinkProviderService
     ],
     bootstrap: [AppComponent]
 })

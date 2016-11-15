@@ -1,5 +1,6 @@
-import {Routes, Route} from "@angular/router";
+import {Routes, Route, Router} from "@angular/router";
 import {Injectable} from "@angular/core";
+import {RouterConfigLoader} from "@angular/router/src/router_config_loader";
 
 @Injectable()
 export class RouteLinkProviderService {
@@ -7,9 +8,9 @@ export class RouteLinkProviderService {
 
     protected routesByComponents = new Map<any, any>();
 
-    constructor(routes: Routes) {
-        this.routes = routes;
-        let componentRoutes = this.getComponentRoutes(routes);
+    constructor(private _router: Router) {
+        this.routes = _router.config;
+        let componentRoutes = this.getComponentRoutes(this.routes);
         console.log(componentRoutes);
         this.routesByComponents = this.getComponentRouteMap(componentRoutes);
     }
@@ -18,17 +19,24 @@ export class RouteLinkProviderService {
         let finalRoutes = [];
 
         routes.forEach((route: Route) => {
-            if (route.component && (!route.children || route.children.length === 0)) {
+            if (this.isTopLevelRoute(route)) {
                 finalRoutes.push(this.createRoutingEntry(route, predecessors));
             } else if (route.children) {
                 let currentPredecessors = predecessors.slice().concat([route]);
                 let nestedRoutes = this.getComponentRoutes(route.children, currentPredecessors);
 
                 nestedRoutes.forEach(item => finalRoutes.push(item));
+            } else if (route.loadChildren) {
+                console.log("What now?");
+                console.log(route);
             }
         });
 
         return finalRoutes;
+    }
+
+    protected isTopLevelRoute(route: Route) {
+        return (!route.children || route.children.length === 0) && !route.loadChildren && route.component;
     }
 
     protected getComponentRouteMap(routingEntries: any[]) {

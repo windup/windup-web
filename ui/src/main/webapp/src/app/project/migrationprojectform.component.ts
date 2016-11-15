@@ -27,7 +27,7 @@ export class MigrationProjectFormComponent extends FormComponent implements OnIn
 
     ngOnInit() {
         this._activatedRoute.params.subscribe(params => {
-            let id:number = parseInt(params["projectID"]);
+            let id: number = parseInt(params["projectId"]);
             if (!isNaN(id)) {
                 this.editMode = true;
                 this.loading = true;
@@ -59,7 +59,7 @@ export class MigrationProjectFormComponent extends FormComponent implements OnIn
     }
 
     rerouteToProjectList() {
-        this._router.navigate(['/project-list']);
+        this._router.navigate(['/projects']);
     }
 
     cancel() {

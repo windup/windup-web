@@ -37,21 +37,9 @@ export class GroupListComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit():any {
-        this._activatedRoute.params.subscribe(params => {
-            this.projectID = parseInt(params["projectID"]);
-
-            this._migrationProjectService.get(this.projectID)
-                .subscribe(
-                    project => {
-                        this.project = project;
-                        console.log('success');
-                    },
-                    error => {
-                        this._notificationService.error(this.getErrorMessage(error.error));
-                        this._router.navigate(['']);
-                    }
-                );
-
+        this._activatedRoute.data.subscribe((data: {project: MigrationProject}) => {
+            this.project = data.project;
+            this.projectID = this.project.id;
             this.getGroups();
         });
 
@@ -159,12 +147,12 @@ export class GroupListComponent implements OnInit, OnDestroy {
     }
 
     createGroup() {
-        this._router.navigate(['/application-group-form', { projectID: this.projectID }]);
+        this._router.navigate([`/projects/${this.project.id}/groups/create`]);
     }
 
     editGroup(applicationGroup:ApplicationGroup, event:Event) {
         event.preventDefault();
-        this._router.navigate(['/application-group-form', { projectID: this.projectID, groupID: applicationGroup.id }]);
+        this._router.navigate([`/groups/${applicationGroup.id}/edit`, { projectID: this.projectID}]);
     }
 
     registerApplication(applicationGroup:ApplicationGroup) {

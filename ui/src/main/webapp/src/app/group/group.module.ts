@@ -28,6 +28,9 @@ import {SharedModule} from "../shared/shared.module";
 import {ReportsModule} from "../reports/reports.module";
 import {TechnologyComponent} from "./technology.component";
 import {FileUploadModule, FileUploader} from "ng2-file-upload";
+import {MigrationPathService} from "../services/migrationpath.service";
+import {ConfigurationOptionsService} from "./configuration-options.service";
+import {PackageRegistryService} from "../services/package-registry.service";
 
 
 
@@ -65,6 +68,9 @@ import {FileUploadModule, FileUploader} from "ng2-file-upload";
         ConfigurationService,
         RuleService,
         WindupService,
+        MigrationPathService,
+        ConfigurationOptionsService,
+        PackageRegistryService,
         {
             provide: FileUploader,
             useValue: new FileUploader({})

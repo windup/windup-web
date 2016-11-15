@@ -12,6 +12,7 @@ import {ApplicationGroupForm} from "../group/applicationgroupform.component";
 @NgModule({
     imports: [RouterModule.forChild([
         {path: '', component: ProjectListComponent, data: {displayName: "Project List"}},
+        {path: 'create', component: MigrationProjectFormComponent, data: {displayName: 'Create Project'}},
         {
             path: ':projectId',
             resolve: {
@@ -23,8 +24,7 @@ import {ApplicationGroupForm} from "../group/applicationgroupform.component";
                 {path: 'edit', component: MigrationProjectFormComponent, data: {displayName: 'Edit Project'}},
                 {path: 'groups/create', component: ApplicationGroupForm, data: {displayName: 'Create Application Group'}},
             ]
-        },
-        {path: 'create', component: MigrationProjectFormComponent, data: {displayName: 'Create Project'}}
+        }
     ])],
     exports: [RouterModule]
 })

@@ -35,7 +35,7 @@ export class GroupLayoutComponent implements OnInit {
     }
 
     protected createContextMenuItems() {
-/*        this.menuItems = [
+        this.menuItems = [
             {
                 label: 'Config',
                 link: 'configuration',
@@ -56,7 +56,7 @@ export class GroupLayoutComponent implements OnInit {
                 icon: 'fa-tachometer',
                 isEnabled: true
             },
-            new ReportMenuItem(
+/*            new ReportMenuItem(
                 'Issues',
                 'fa-exclamation-triangle',
                 this.applicationGroup,
@@ -70,12 +70,12 @@ export class GroupLayoutComponent implements OnInit {
                 TechnologiesReportComponent,
                 this._routeLinkProviderService,
             ),
-            {
+*/            {
                 label: 'Dependencies',
                 link: '',
                 icon: 'fa-code-fork',
                 isEnabled: true
             }
-        ];*/
+        ];
     }
 }

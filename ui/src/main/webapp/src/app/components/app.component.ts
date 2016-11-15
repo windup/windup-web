@@ -1,6 +1,7 @@
 import {Component} from "@angular/core";
 import {Router} from "@angular/router";
 import 'rxjs/add/operator/pairwise';
+import {RouteLinkProviderService} from "../core/route-link-provider-service";
 
 @Component({
     selector: 'windup-app',
@@ -15,6 +16,15 @@ export class AppComponent {
      * When extension is fixed, this can be safely removed
      */
     constructor(private router: Router) {
+        (router.config[2].children[1].loadChildren as Function)().then(result => {
+            console.log(result);
+            console.log(result.fileName);
+
+        });
+
+        //routerVar.config[1].children[1].loadChildren().then(result => console.log(result), error => console.error(error));
+
+
         router.events.subscribe((event) => {
             console.log('App component event');
             console.log(event);

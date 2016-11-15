@@ -48,17 +48,17 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     }
 
     createMigrationProject() {
-        this._router.navigate(['/migration-project-form']);
+        this._router.navigate(['/projects/create']);
     }
 
     editProject(project:MigrationProject, event:Event) {
         event.preventDefault();
-        this._router.navigate(['/migration-project-form', { projectID: project.id }])
+        this._router.navigate([`./${project.id}/edit`])
     }
 
     viewProject(project:MigrationProject, event:Event) {
         event.preventDefault();
         console.log(JSON.stringify(project));
-        this._router.navigate(['/group-list', { projectID: project.id }]);
+        this._router.navigate(['/projects', project.id]);
     }
 }

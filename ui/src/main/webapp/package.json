@@ -55,7 +55,6 @@
     "patternfly-bootstrap-combobox": "1.0.0",
     "reflect-metadata": "^0.1.3",
     "rxjs": "5.0.0-beta.12",
-    "text-loader": "^0.0.1",
     "webpack-merge": "^0.15.0",
     "zone.js": "^0.6.21"
   },
@@ -68,6 +67,8 @@
     "@types/jstree": "^3.3.32",
     "@types/node": "^6.0.38",
     "angular2-template-loader": "^0.4.0",
+    "angular2-router-loader": "^0.3.4",
+    "text-loader": "^0.0.1",
     "autoprefixer": "^6.3.2",
     "awesome-typescript-loader": "^2.2.4",
     "codelyzer": "0.0.26",
@@ -109,7 +110,7 @@
     "typescript": "2.0.2",
     "typings": "1.4.0",
     "url-loader": "^0.5.6",
-    "webpack": "^2.1.0-beta.25",
+    "webpack": "2.1.0-beta.25",
     "webpack-dev-server": "2.1.0-beta.9"
   }
 }
