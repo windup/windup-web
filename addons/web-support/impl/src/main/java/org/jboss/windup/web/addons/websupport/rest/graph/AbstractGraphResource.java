@@ -129,7 +129,7 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
         if (graphPath == null)
             throw new NotFoundException("Execution not found, ID: " + executionID);
 
-        GraphContext graph = graphCache.getGraph(graphPath);
+        GraphContext graph = graphCache.getGraph(graphPath, false);
         if (graph == null)
             throw new IllegalStateException("GraphContext obtaining failed for exec. ID " + executionID + ", path: " + graphPath);
         return graph;
