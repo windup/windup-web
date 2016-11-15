@@ -14,6 +14,8 @@ import {AnalysisContextFormComponent} from "./components/analysis-context-form.c
 import {ApplicationGroupForm} from "./components/application-group-form.component";
 import {GroupListComponent} from "./components/group-list.component";
 import {MigrationProjectFormComponent} from "./components/migration-project-form.component";
+import {GroupPageComponent} from "./components/group.page.component";
+import {GroupComponent} from "./components/group.component";
 import {RegisterApplicationFormComponent} from "./components/registerapplicationform.component";
 import {ProgressBarComponent} from "./components/progress-bar.component";
 import {NavbarComponent} from "./components/navbar.component";
@@ -73,6 +75,8 @@ import {FramesRestClientService} from './services/graph/frames-rest-client.servi
         ApplicationGroupForm,
         ConfigurationComponent,
         GroupListComponent,
+        GroupPageComponent,
+        GroupComponent,
         MigrationProjectFormComponent,
         ProjectListComponent,
         RegisterApplicationFormComponent,

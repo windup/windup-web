@@ -1,0 +1,140 @@
+import {Component, OnDestroy, OnInit, Input} from "@angular/core";
+import {ActivatedRoute, Router} from "@angular/router";
+
+import {MigrationProject} from "../windup-services";
+import {ApplicationGroup} from "../windup-services";
+import {ApplicationGroupService} from "../services/applicationgroup.service";
+import {WindupService} from "../services/windup.service";
+import {Constants} from "../constants";
+import {RegisteredApplication} from "../windup-services";
+import {WindupExecution} from "../windup-services";
+import {RegisteredApplicationService} from "../services/registeredapplication.service";
+import {NotificationService} from "../services/notification.service";
+import {MigrationProjectService} from "../services/migrationproject.service";
+import {utils} from "../utils";
+
+@Component({
+    selector: 'wu-group',
+    templateUrl: 'group.component.html'
+})
+export class GroupComponent implements OnInit, OnDestroy
+{
+    projectID: number;
+    inGroupID: number;
+    project: MigrationProject;
+    @Input()
+    group: ApplicationGroup;
+    apps: RegisteredApplication[];
+
+    processingStatus: Map<number, WindupExecution> = new Map<number, WindupExecution>();
+    processMonitoringInterval;
+
+    errorMessage: string;
+
+    constructor(
+        private _activatedRoute: ActivatedRoute,
+        private _router: Router,
+        private _applicationGroupService: ApplicationGroupService,
+        private _windupService: WindupService,
+        private _registeredApplicationsService: RegisteredApplicationService,
+        private _notificationService: NotificationService,
+        private _migrationProjectService: MigrationProjectService
+    ) {}
+
+    ngOnInit(): any {
+        //if (!this.inGroupID)
+        /*this._activatedRoute.params.subscribe(params => {
+            this.inGroupID = parseInt(params["groupID"]);
+            console.log("groupID: ", this.inGroupID);
+
+            this._applicationGroupService.get(this.inGroupID).subscribe(
+                group => {
+                    this.group = group;
+                    console.log('Group loaded: ', this.inGroupID);
+                },
+                error => {
+                    this._notificationService.error(utils.getErrorMessage(error.error));
+                    this._router.navigate(['']);
+                }
+            );
+
+            this.getApps();
+        });*/
+
+        this.processMonitoringInterval = setInterval(() => {
+            this.processingStatus.forEach( (previousExecution:WindupExecution, groupID:number, map:Map<number, WindupExecution>) => {
+                if (["STARTED", "QUEUED"].includes(previousExecution.state)) {
+                    this._windupService.getStatusGroup(previousExecution.id).subscribe(
+                        execution => {
+                            this.processingStatus.set(groupID, execution);
+                            this.errorMessage = "";
+                        },
+                        error => this.errorMessage = <any>error
+                    );
+                }
+            });
+            this.getApps();
+        }, 30000);
+    }
+
+    ngOnDestroy(): any {
+        if (this.processMonitoringInterval)
+            clearInterval(this.processMonitoringInterval);
+    }
+
+
+    getApps() {
+        return this._registeredApplicationsService.getApplications(/*this.groupID*/).subscribe(
+            apps => this.appsLoaded(apps),
+            error => {
+                if (error instanceof ProgressEvent) {
+                    this.errorMessage = "ERROR: Server disconnected";
+                } else {
+                    this._notificationService.error(utils.getErrorMessage(error));
+                    this._router.navigate(['']);
+                }
+            }
+        );
+    }
+
+    appsLoaded(apps: RegisteredApplication[]) {
+        this.errorMessage = "";
+        this.apps = apps;
+
+        // On the first run, check for any existing executions
+        if (this.processingStatus.size == 0) {
+            this.group.executions.forEach((execution:WindupExecution) => {
+                console.log("group and status == " + this.group.title + " id: " + this.group.title + " status: " + execution.state);
+                let previousExecution = this.processingStatus.get(this.group.id);
+
+                if (previousExecution == null || execution.state == "STARTED" || execution.timeStarted > previousExecution.timeStarted)
+                    this.processingStatus.set(this.group.id, execution);
+            });
+        }
+    }
+
+    registerApplication(applicationGroup:ApplicationGroup) {
+        this._router.navigate(['/register-application', { groupID: applicationGroup.id }]);
+    }
+
+    editApplication(application: RegisteredApplication) {
+        this._router.navigate(['/edit-application', application.id]);
+    }
+
+    deleteApplication(application: RegisteredApplication) {
+        if (application.registrationType == "PATH") {
+            this._registeredApplicationsService.unregister(application)
+                .subscribe(result => {
+                    console.log(result);
+                    this.getApps();
+                });
+        } else {
+            this._registeredApplicationsService.deleteApplication(application)
+                .subscribe(result => {
+                    console.log(result);
+                    this.getApps();
+                });
+        }
+    }
+
+}
