@@ -1,6 +1,7 @@
-import { Routes, RouterModule } from '@angular/router';
+import {Routes, RouterModule} from '@angular/router';
 import {ProjectListComponent} from "./components/project-list.component";
 import {GroupListComponent} from "./components/group-list.component";
+import {GroupPageComponent} from "./components/group.page.component";
 import {RegisterApplicationFormComponent} from "./components/registerapplicationform.component";
 import {MigrationProjectFormComponent} from "./components/migration-project-form.component";
 import {ApplicationGroupForm} from "./components/application-group-form.component";
@@ -23,7 +24,8 @@ const appRoutes: Routes = [
     {path:"migration-project-form", component: MigrationProjectFormComponent,    data: {displayName: "Edit Project"}, canActivate: [LoggedInGuard]},
     {path:"application-group-form", component: ApplicationGroupForm,             data: {displayName: "Edit Application Group"}, canActivate: [LoggedInGuard]},
     {path:"analysis-context-form",  component: AnalysisContextFormComponent,     data: {displayName: "Edit Analysis Context"}, canActivate: [LoggedInGuard], canDeactivate: [ConfirmDeactivateGuard]},
-    {path:"group-list/:groupID",    component: GroupListComponent, data: {displayName: "Group List"}, canActivate: [LoggedInGuard]},
+//    {path:"group-list/:groupID",    component: GroupListComponent, data: {displayName: "Group List"}, canActivate: [LoggedInGuard]},
+    {path:"group/:groupID",         component: GroupPageComponent, data: {displayName: "Group"}, canActivate: [LoggedInGuard]},
     {path:"group-list",             component: GroupListComponent, data: {displayName: "Group List"}, canActivate: [LoggedInGuard]},
     {path: "login", component: LoginComponent},
 
@@ -32,6 +34,10 @@ const appRoutes: Routes = [
     {path:"technology-report/:exec", component: TechnologiesReport, data: {displayName: "Technology Report"}, canActivate: [LoggedInGuard]},
     {path: 'reports/:id/migration-issues', component: MigrationIssuesComponent, canActivate: [LoggedInGuard] }
 ];
+
+/*for (let route of appRoutes){
+    route.canActivate = [LoggedInGuard];
+}*/
 
 export const appRoutingProviders: any[] = [
 

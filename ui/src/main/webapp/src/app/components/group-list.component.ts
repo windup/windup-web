@@ -104,7 +104,6 @@ export class GroupListComponent implements OnInit, OnDestroy {
 
         // On the first run, check for any existing executions
         if (this.processingStatus.size == 0) {
-            console.log("aaa");
             groups.forEach((group:ApplicationGroup) => {
                 group.executions.forEach((execution:WindupExecution) => {
                     console.log("Group #" + group.id + " " + group.title + ", status: " + execution.state);
@@ -159,7 +158,9 @@ export class GroupListComponent implements OnInit, OnDestroy {
 
     onClickGroup(group: ApplicationGroup) {
         this.groupSelected = group;
-        this._router.navigate(['/group-list', { projectID: this.inProjectID, groupID: group.id }]);
+        //this._router.navigate(['/group-list', { projectID: this.inProjectID, groupID: group.id }]);
+        console.log('onClickGroup(), navigating to /group/' + +group.id);
+        this._router.navigate(['/group/' + +group.id]);
     }
 
     createGroup() {
