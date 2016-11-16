@@ -24,6 +24,7 @@ import org.jboss.windup.reporting.model.ApplicationReportModel;
 import org.jboss.windup.reporting.service.ApplicationReportService;
 import org.jboss.windup.rules.apps.java.config.ExcludePackagesOption;
 import org.jboss.windup.rules.apps.java.config.ScanPackagesOption;
+import org.jboss.windup.web.addons.websupport.rest.graph.GraphCache;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -34,73 +35,66 @@ public class WindupExecutorServiceImpl implements WindupExecutorService
     private WindupProcessor processor;
 
     @Inject
-    private GraphContextFactory factory;
+    private GraphCache graphCache;
 
     @Override
     public void execute(WindupProgressMonitor progressMonitor, Collection<Path> rulesPaths, List<Path> inputPaths, Path outputPath, List<String> packages,
                         List<String> excludePackages, String source, String target, Map<String, Object> otherOptions)
     {
         Path graphPath = outputPath.resolve(GraphContextFactory.DEFAULT_GRAPH_SUBDIRECTORY);
-        try (GraphContext context = factory.create(graphPath))
+        graphCache.closeGraph(graphPath);
+
+        // As this is from the cache, we don't have to manually close it
+        GraphContext context = graphCache.getGraph(graphPath, true);
+
+        WindupConfiguration configuration = new WindupConfiguration()
+                    .setGraphContext(context)
+                    .setProgressMonitor(progressMonitor);
+
+        for (Path rulesPath : rulesPaths)
+            configuration.addDefaultUserRulesDirectory(rulesPath);
+
+        inputPaths.forEach(configuration::addInputPath);
+
+        configuration.setOutputDirectory(outputPath);
+
+        if (packages != null)
+            configuration.setOptionValue(ScanPackagesOption.NAME, packages);
+
+        if (excludePackages != null)
+            configuration.setOptionValue(ExcludePackagesOption.NAME, excludePackages);
+
+        if (source != null)
+            configuration.setOptionValue(SourceOption.NAME, Collections.singletonList(source));
+
+        if (target != null)
+            configuration.setOptionValue(TargetOption.NAME, Collections.singletonList(target));
+
+        configuration.setOptionValue(OverwriteOption.NAME, true);
+        configuration.setOptionValue(KeepWorkDirsOption.NAME, true);
+
+        for (Map.Entry<String, Object> optionEntry : otherOptions.entrySet())
         {
-            WindupConfiguration configuration = new WindupConfiguration()
-                        .setGraphContext(context)
-                        .setProgressMonitor(progressMonitor);
-
-            for (Path rulesPath : rulesPaths)
-                configuration.addDefaultUserRulesDirectory(rulesPath);
-
-            inputPaths.forEach(configuration::addInputPath);
-
-            configuration.setOutputDirectory(outputPath);
-
-            if (packages != null)
-                configuration.setOptionValue(ScanPackagesOption.NAME, packages);
-
-            if (excludePackages != null)
-                configuration.setOptionValue(ExcludePackagesOption.NAME, excludePackages);
-
-            if (source != null)
-                configuration.setOptionValue(SourceOption.NAME, Collections.singletonList(source));
-
-            if (target != null)
-                configuration.setOptionValue(TargetOption.NAME, Collections.singletonList(target));
-
-            configuration.setOptionValue(OverwriteOption.NAME, true);
-            configuration.setOptionValue(KeepWorkDirsOption.NAME, true);
-
-            for (Map.Entry<String, Object> optionEntry : otherOptions.entrySet())
-            {
-                configuration.setOptionValue(optionEntry.getKey(), optionEntry.getValue());
-            }
-
-            processor.execute(configuration);
+            configuration.setOptionValue(optionEntry.getKey(), optionEntry.getValue());
         }
-        catch (IOException e)
-        {
-            throw new RuntimeException("Failed to create graph due to: " + e.getMessage(), e);
-        }
+
+        processor.execute(configuration);
     }
 
     @Override
     public String getReportIndexPath(Path outputPath, Path applicationPath)
     {
         Path graphPath = outputPath.resolve(GraphContextFactory.DEFAULT_GRAPH_SUBDIRECTORY);
-        try (GraphContext context = factory.load(graphPath))
-        {
-            FileModel applicationFileModel = new FileService(context).findByPath(applicationPath.toString());
+        GraphContext context = graphCache.getGraph(graphPath, false);
+        FileModel applicationFileModel = new FileService(context).findByPath(applicationPath.toString());
 
-            ApplicationReportService service = new ApplicationReportService(context);
-            ApplicationReportModel reportModel = service.getMainApplicationReportForFile(applicationFileModel);
+        ApplicationReportService service = new ApplicationReportService(context);
+        ApplicationReportModel reportModel = service.getMainApplicationReportForFile(applicationFileModel);
 
-            if (reportModel == null)
-                return null;
+        if (reportModel == null)
+            return null;
 
-            return reportModel.getReportFilename();
-        }
-        catch (IOException e)
-        {
-            throw new RuntimeException("Failed to load graph due to: " + e.getMessage(), e);
-        }
+        return reportModel.getReportFilename();
+
     }
 }

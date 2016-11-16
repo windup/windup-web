@@ -7,45 +7,70 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.jboss.forge.furnace.Furnace;
 import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.GraphContextFactory;
 
+import com.tinkerpop.blueprints.Edge;
+import com.tinkerpop.blueprints.Vertex;
+import com.tinkerpop.blueprints.util.wrappers.event.listener.GraphChangedListener;
+
 /**
- * Contains a cache for connecting to the graph efficiently from multiple threads. This will keep a connection open
- * for {@link GraphCache#MAX_AGE} millis after the last usage.
+ * Contains a cache for connecting to the graph efficiently from multiple threads. This will keep a connection open for {@link GraphCache#MAX_AGE}
+ * millis after the last usage.
  *
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
 @Singleton
 public class GraphCache
 {
-    private static Logger LOG = Logger.getLogger(GraphCache.class.getName());
-
     protected static final long MAX_AGE = 1000L * 60L * 10L;
+    private static Logger LOG = Logger.getLogger(GraphCache.class.getName());
 
     @Inject
     protected GraphContextFactory graphContextFactory;
-
     protected Map<Path, GraphCacheEntry> graphCacheEntryMap = new ConcurrentHashMap<>();
 
+    @Inject
+    private Furnace furnace;
+
+    @PreDestroy
+    public void preDestroy()
+    {
+        LOG.info("Furnace is shutting down, closing existing graph connections.");
+        // Close each one and remove it from the list
+        graphCacheEntryMap.entrySet().forEach((entry) -> {
+            Path path = entry.getKey();
+            try
+            {
+                LOG.info("Purging connnection from the cache for graph path: " + path);
+                entry.getValue().graphContext.close();
+            }
+            catch (Throwable t)
+            {
+                LOG.warning("Failed to close graph at: " + path + " due to: " + t.getMessage());
+            }
+        });
+        graphCacheEntryMap.clear();
+    }
+
     /**
-     * Gets the graph at the given {@link Path}. This will be from the cache if possible. If a cached entry is not
-     * available, then a new one will be loaded.
+     * Gets the graph at the given {@link Path}. This will be from the cache if possible. If a cached entry is not available, then a new one will be
+     * loaded.
      */
-    public GraphContext getGraph(Path graphPath)
+    public GraphContext getGraph(Path graphPath, boolean create)
     {
         GraphCacheEntry graphCacheEntry = graphCacheEntryMap.get(graphPath);
         if (graphCacheEntry == null)
         {
-            /*
-             * In this case, call a separate method with a WRITE lock, as we will be altering the cache
-             */
-            loadGraphEntry(graphPath);
+            loadGraphEntry(graphPath, create);
             graphCacheEntry = graphCacheEntryMap.get(graphPath);
-        } else
+        }
+        else
         {
             LOG.info("Retrieving cached graph for: " + graphPath);
         }
@@ -54,16 +79,36 @@ public class GraphCache
     }
 
     /**
-     * Loads the graph, and puts the new value into the Cache. This requires a write lock, for concurrency reasons.
+     * If a graph is open for this path, insure that it is closed.
      */
-    public void loadGraphEntry(Path graphPath)
+    public void closeGraph(Path graphPath)
+    {
+        GraphCacheEntry cacheEntry = graphCacheEntryMap.get(graphPath);
+        if (cacheEntry == null)
+            return;
+
+        try
+        {
+            cacheEntry.graphContext.close();
+        }
+        catch (Exception e)
+        {
+            LOG.warning("Failed to close graph at: " + graphPath + " due to: " + e.getMessage());
+        }
+        graphCacheEntryMap.remove(graphPath);
+    }
+
+    /**
+     * Loads the graph, and puts the new value into the Cache.
+     */
+    public void loadGraphEntry(Path graphPath, boolean create)
     {
         // If it is already cached, we don't need to proceed further.
         if (graphCacheEntryMap.containsKey(graphPath))
             return;
 
         LOG.info("Creating cached graph for: " + graphPath);
-        GraphContext graphContext = graphContextFactory.load(graphPath);
+        GraphContext graphContext = create ? graphContextFactory.create(graphPath) : graphContextFactory.load(graphPath);
         GraphCacheEntry graphCacheEntry = new GraphCacheEntry(graphContext);
         this.graphCacheEntryMap.put(graphPath, graphCacheEntry);
     }
@@ -74,9 +119,9 @@ public class GraphCache
 
         // Gets the list of GraphContexts that have not been used recently
         List<Path> pathsToRemove = this.graphCacheEntryMap.entrySet().stream()
-                .filter((entry) -> entry.getValue().lastUsageTime < minAge)
-                .map((entry) -> entry.getKey())
-                .collect(Collectors.toList());
+                    .filter((entry) -> entry.getValue().lastUsageTime < minAge)
+                    .map((entry) -> entry.getKey())
+                    .collect(Collectors.toList());
 
         // Close each one and remove it from the list
         pathsToRemove.forEach((path) -> {
@@ -85,7 +130,8 @@ public class GraphCache
             {
                 LOG.info("Purging connnection from the cache for graph path: " + path);
                 entry.graphContext.close();
-            } catch (Throwable t)
+            }
+            catch (Throwable t)
             {
                 LOG.warning("Failed to close graph at: " + path + " due to: " + t.getMessage());
             }
@@ -101,6 +147,56 @@ public class GraphCache
         {
             this.lastUsageTime = System.currentTimeMillis();
             this.graphContext = graphContext;
+            graphContext.getGraph().addListener(new GraphChangedListener()
+            {
+                @Override
+                public void vertexAdded(Vertex vertex)
+                {
+                    updateLastUsageTime();
+                }
+
+                @Override
+                public void vertexPropertyChanged(Vertex vertex, String key, Object oldValue, Object setValue)
+                {
+                    updateLastUsageTime();
+                }
+
+                @Override
+                public void vertexPropertyRemoved(Vertex vertex, String key, Object removedValue)
+                {
+                    updateLastUsageTime();
+                }
+
+                @Override
+                public void vertexRemoved(Vertex vertex, Map<String, Object> props)
+                {
+                    updateLastUsageTime();
+                }
+
+                @Override
+                public void edgeAdded(Edge edge)
+                {
+                    updateLastUsageTime();
+                }
+
+                @Override
+                public void edgePropertyChanged(Edge edge, String key, Object oldValue, Object setValue)
+                {
+                    updateLastUsageTime();
+                }
+
+                @Override
+                public void edgePropertyRemoved(Edge edge, String key, Object removedValue)
+                {
+                    updateLastUsageTime();
+                }
+
+                @Override
+                public void edgeRemoved(Edge edge, Map<String, Object> props)
+                {
+                    updateLastUsageTime();
+                }
+            });
         }
 
         public void updateLastUsageTime()
