@@ -3,10 +3,11 @@ package org.jboss.windup.web.services.rest;
 import java.util.Collection;
 import java.util.logging.Logger;
 
-import javax.ejb.Stateless;
+import javax.ejb.Stateful;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
 import javax.ws.rs.NotFoundException;
 
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
@@ -18,12 +19,12 @@ import org.jboss.windup.web.services.model.PackageMetadata;
 /**
  * @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
  */
-@Stateless
+@Stateful
 public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
 {
     private static Logger LOG = Logger.getLogger(MigrationProjectEndpointImpl.class.getSimpleName());
 
-    @PersistenceContext
+    @PersistenceContext(type = PersistenceContextType.EXTENDED)
     private EntityManager entityManager;
 
     @Inject
