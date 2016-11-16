@@ -22,6 +22,8 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
     @ViewChild(NgForm)
     private analysisContextForm:NgForm;
 
+    private _dirty: boolean = null;
+
     loading:boolean = true;
     applicationGroup:ApplicationGroup = null;
 
@@ -54,33 +56,6 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
         this.analysisContext.migrationPath = <MigrationPath>{};
         this.includePackages = [];
         this.excludePackages = [];
-    }
-
-    get migrationPaths() {
-        if (this._migrationPathsObservable == null) {
-            this._migrationPathsObservable = this._migrationPathService.getAll();
-        }
-        return this._migrationPathsObservable;
-    }
-
-    private _dirty:boolean = null;
-    get dirty():boolean {
-        if (this._dirty != null) {
-            console.log("Returning locally set dirty: " + this._dirty);
-            return this._dirty;
-        }
-
-        return this.analysisContextForm.dirty;
-    }
-
-    advancedOptionsChanged(advancedOptions:AdvancedOption[]) {
-        console.log("1Advanced options changed... dirty: " + this.dirty);
-        this._dirty = true;
-        console.log("2Advanced options changed... dirty: " + this.dirty);
-    }
-
-    onNodesChanged(event) {
-        console.log(event);
     }
 
     ngOnInit() {
@@ -151,6 +126,31 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
         });
     }
 
+    get migrationPaths() {
+        if (this._migrationPathsObservable == null) {
+            this._migrationPathsObservable = this._migrationPathService.getAll();
+        }
+        return this._migrationPathsObservable;
+    }
+
+    get dirty(): boolean {
+        if (this._dirty != null) {
+            console.log("Returning locally set dirty: " + this._dirty);
+            return this._dirty;
+        }
+
+        return this.analysisContextForm.dirty;
+    }
+
+    advancedOptionsChanged(advancedOptions:AdvancedOption[]) {
+        console.log("1Advanced options changed... dirty: " + this.dirty);
+        this._dirty = true;
+        console.log("2Advanced options changed... dirty: " + this.dirty);
+    }
+
+    onNodesChanged(event) {
+        console.log(event);
+    }
 
     save() {
         if (this.analysisContext.id != null) {
