@@ -24,7 +24,6 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
 
     private _dirty: boolean = null;
 
-    loading: boolean = true;
     applicationGroup: ApplicationGroup = null;
 
     analysisContext:AnalysisContext = <AnalysisContext>{};
@@ -62,10 +61,8 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
         this._activatedRoute.parent.data.subscribe((data: {applicationGroup: ApplicationGroup}) => {
             this.applicationGroup = data.applicationGroup;
 
-            this.loading = true;
-
             this._configurationOptionsService.getAll().subscribe((options:ConfigurationOption[]) => {
-                    this.configurationOptions = options;
+                this.configurationOptions = options;
             });
 
             if (this.applicationGroup.packageMetadata.scanStatus === "COMPLETE") {
@@ -80,10 +77,9 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
             console.log("Loaded analysis context: " + JSON.stringify(this.analysisContext));
 
             this.initializeAnalysisContext();
-            this.loading = false;
         });
     }
-    
+
     initializeAnalysisContext() {
         if (this.analysisContext == null) {
             this.analysisContext = <AnalysisContext>{};
