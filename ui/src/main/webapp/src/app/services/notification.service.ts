@@ -16,22 +16,22 @@ export class NotificationService {
     }
 
     public warning(message: string) {
-        this._notifications.next(new Notification(message, NotificationLevel.ERROR));
+        this._notifications.next(new Notification(message, NotificationLevel.WARNING));
 
     }
 
     public info(message: string) {
-        this._notifications.next(new Notification(message, NotificationLevel.ERROR));
+        this._notifications.next(new Notification(message, NotificationLevel.INFO));
 
     }
 
     public notice(message: string) {
-        this._notifications.next(new Notification(message, NotificationLevel.ERROR));
+        this._notifications.next(new Notification(message, NotificationLevel.INFO));
 
     }
 
     public success(message: string) {
-        this._notifications.next(new Notification(message, NotificationLevel.ERROR));
+        this._notifications.next(new Notification(message, NotificationLevel.SUCCESS));
 
     }
 

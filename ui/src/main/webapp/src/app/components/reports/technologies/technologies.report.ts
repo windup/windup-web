@@ -11,7 +11,7 @@ import {TechnologiesStatsModel} from '../../../generated/tsModels/TechnologiesSt
     selector: 'wu-technologies-report',
     templateUrl: 'technologies.report.html'
 })
-export class TechnologiesReport implements OnInit {
+export class TechnologiesReportComponent implements OnInit {
 
     private execID: number;
     private technologiesStats: TechnologiesStatsModel = <TechnologiesStatsModel> {};
@@ -25,7 +25,7 @@ export class TechnologiesReport implements OnInit {
 
     ngOnInit(): void {
         this.route.params.forEach((params: Params) => {
-            this.execID = +params['exec'];
+            this.execID = +params['executionId'];
         });
 
         this.appGrpService.getAll().toPromise().then(appGroups => this.appGroups = appGroups);
