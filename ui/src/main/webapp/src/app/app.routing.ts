@@ -74,8 +74,10 @@ export const appRoutes: Routes = [
                             { path: 'edit', component: RegisterApplicationFormComponent, data: {displayName: "Edit Application"}},
                         ]}
                     ]},
-                    {path: 'reports/:exec/technology-report', component: TechnologiesReport, data: {displayName: 'Technology Report'}},
-                    {path: 'reports/:id/migration-issues', component: MigrationIssuesComponent}
+                    { path: 'reports/:executionId', children: [
+                        {path: 'technology-report', component: TechnologiesReport, data: {displayName: 'Technology Report'}},
+                        {path: 'migration-issues', component: MigrationIssuesComponent}
+                    ]}
                 ]
             },
         ]

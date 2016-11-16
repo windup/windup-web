@@ -67,7 +67,7 @@ describe('MigrationissuesComponent', () => {
                 })
             );
 
-            activatedRouteMock.testParams = {id: 0};
+            activatedRouteMock.testParams = {executionId: 0};
             fixture.detectChanges();
         })));
 
@@ -93,7 +93,7 @@ describe('MigrationissuesComponent', () => {
                 })
             );
 
-            activatedRouteMock.testParams = {id: 1};
+            activatedRouteMock.testParams = {executionId: 1};
             fixture.detectChanges();
         })));
 
@@ -129,7 +129,7 @@ describe('MigrationissuesComponent', () => {
                 })
             );
 
-            activatedRouteMock.testParams = {id: 1};
+            activatedRouteMock.testParams = {executionId: 1};
             fixture.detectChanges();
         })));
 

@@ -24,7 +24,7 @@ export class MigrationIssuesComponent implements OnInit {
 
     ngOnInit(): void {
         this._activatedRoute.params.subscribe(params => {
-            let executionId = parseInt(params['id']);
+            let executionId = parseInt(params['executionId']);
 
             this._migrationIssuesService.getAggregatedIssues(executionId).subscribe(
                 result => {
