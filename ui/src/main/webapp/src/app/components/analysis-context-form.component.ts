@@ -79,40 +79,43 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
 
             console.log("Loaded analysis context: " + JSON.stringify(this.analysisContext));
 
-            if (this.analysisContext == null) {
-                this.analysisContext = <AnalysisContext>{};
-                this.analysisContext.migrationPath = <MigrationPath>{};
-                this.analysisContext.advancedOptions = [];
-                this.analysisContext.includePackages = [];
-                this.analysisContext.excludePackages = [];
-                this.analysisContext.rulesPaths = [];
-            } else {
-                // for migration path, store the id only
-                this.analysisContext.migrationPath = <MigrationPath>{ id: this.analysisContext.migrationPath.id };
-                if (this.analysisContext.includePackages == null || this.analysisContext.includePackages.length == 0) {
-                    this.includePackages = [];
-                } else {
-                    this.includePackages = this.analysisContext.includePackages.map(node => this._packageRegistryService.get(node.id));
-                }
-
-                if (this.analysisContext.excludePackages == null || this.analysisContext.excludePackages.length == 0) {
-                    this.analysisContext.excludePackages = [];
-                } else {
-                    this.analysisContext.excludePackages = this.analysisContext.excludePackages.map(node => this._packageRegistryService.get(node.id));
-                }
-
-                if (this.analysisContext.rulesPaths == null)
-                    this.analysisContext.rulesPaths = [];
-            }
-
-            // Just use the ID here
-            this.analysisContext.applicationGroup = <ApplicationGroup>{ id: this.applicationGroup.id };
-
-            this.includePackages = this.analysisContext.includePackages;
-            this.excludePackages = this.analysisContext.excludePackages;
-
+            this.initializeAnalysisContext();
             this.loading = false;
         });
+    }
+    
+    initializeAnalysisContext() {
+        if (this.analysisContext == null) {
+            this.analysisContext = <AnalysisContext>{};
+            this.analysisContext.migrationPath = <MigrationPath>{};
+            this.analysisContext.advancedOptions = [];
+            this.analysisContext.includePackages = [];
+            this.analysisContext.excludePackages = [];
+            this.analysisContext.rulesPaths = [];
+        } else {
+            // for migration path, store the id only
+            this.analysisContext.migrationPath = <MigrationPath>{id: this.analysisContext.migrationPath.id};
+            if (this.analysisContext.includePackages == null || this.analysisContext.includePackages.length == 0) {
+                this.includePackages = [];
+            } else {
+                this.includePackages = this.analysisContext.includePackages.map(node => this._packageRegistryService.get(node.id));
+            }
+
+            if (this.analysisContext.excludePackages == null || this.analysisContext.excludePackages.length == 0) {
+                this.analysisContext.excludePackages = [];
+            } else {
+                this.analysisContext.excludePackages = this.analysisContext.excludePackages.map(node => this._packageRegistryService.get(node.id));
+            }
+
+            if (this.analysisContext.rulesPaths == null)
+                this.analysisContext.rulesPaths = [];
+        }
+
+        // Just use the ID here
+        this.analysisContext.applicationGroup = <ApplicationGroup>{id: this.applicationGroup.id};
+
+        this.includePackages = this.analysisContext.includePackages;
+        this.excludePackages = this.analysisContext.excludePackages;
     }
 
     get migrationPaths() {
