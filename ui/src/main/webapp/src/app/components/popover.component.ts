@@ -4,10 +4,10 @@ import * as $ from "jquery";
 @Component({
     selector: "w-popover",
     template: `<a   #popoverElement
-                    tabindex="0" 
-                    role="button" 
-                    data-toggle="popover" 
-                    data-trigger="focus" 
+                    tabindex="0"
+                    role="button"
+                    data-toggle="popover"
+                    data-trigger="focus"
                     data-html="true"
                     data-placement="top"
                     [attr.data-content]="content"

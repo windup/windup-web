@@ -36,7 +36,7 @@ public interface ConfigurationEndpoint
 
     /**
      * Returns only rulespath collection for custom registered ruleset paths
-     * 
+     *
      * @return
      */
     @GET

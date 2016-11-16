@@ -4,7 +4,7 @@ import javax.ws.rs.*;
 
 /**
  * Contains methods for managing technologies statistics.
- * 
+ *
  * @author <a href="mailto:zizka@seznam.cz">Ondrej Zizka</a>
  */
 @Path(TechnologiesStatsEndpoint.PATH_TECH_STATS)

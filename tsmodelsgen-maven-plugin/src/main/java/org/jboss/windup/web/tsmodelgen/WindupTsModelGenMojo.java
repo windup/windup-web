@@ -79,13 +79,13 @@ public class WindupTsModelGenMojo extends AbstractMojo
 
     /**
      * How the file names look like:
-     * 
+     *
      * <pre>
      * CAMELCASE        FooModel.ts
      * LOWERCASE_DASHES foo-model.ts
      * LOWERCASE_DOTS   foo.model.ts
      * </pre>
-     * 
+     *
      * Currently only CAMELCASE is supported.
      */
     @Parameter(alias = "fileNamingStyle", property = "fileNamingStyle", required = false, defaultValue = "CAMELCASE")

@@ -11,7 +11,7 @@ Requirements
 Environment setup
 -----------------
 1. Set your local Maven `setting.xml` by copying file `settings.xml` from checked out sources into `$HOME/.m2/` or use it directly while calling maven with option `-s settings.xml`
- 
+
 2. [Install NodeJS Package Manager (npm)](https://nodejs.org/en/download/package-manager/)
    * _Debian/Ubuntu_: `sudo apt-get install npm`
    * _RHEL 7_: 1) Install [EPEL](https://fedoraproject.org/wiki/EPEL/FAQ#How_can_I_install_the_packages_from_the_EPEL_software_repository.3F)  2) `sudo yum install npm`
@@ -23,8 +23,8 @@ Environment setup
 
 3. [Install Bower using NPM](http://bower.io/#install-bower)
     * `npm install -g bower`
-    * If you run into problems with permissions (typically **EACCES** error), use [this guide](https://docs.npmjs.com/getting-started/fixing-npm-permissions) 
-      to fix it. 
+    * If you run into problems with permissions (typically **EACCES** error), use [this guide](https://docs.npmjs.com/getting-started/fixing-npm-permissions)
+      to fix it.
 
 4. For development purpose and regular redeployment, raise the Metaspace limit.
     In `wildfly-10.1.0.Final/bin/standalone.conf`, change the `MaxMetaspaceSize` value to 2048:
@@ -43,11 +43,11 @@ Running the webapp
     `bin/jboss-cli.sh -c --file=scripts/eap-setup.cli`
 
 - Deploy the exploded `services/target/windup-web-services` and `ui/target/web-services` to EAP 7.
-    
+
     There are 3 possible ways how to do it.
 
     - Manual copying:
-    
+
         ```
         cp -r services/target/windup-web-services ~/apps/wildfly-10.1.0.Final/standalone/deployments/windup-web-services.war;
         touch ~/apps/wildfly-10.1.0.Final/standalone/deployments/windup-web-services.war.dodeploy;
@@ -67,7 +67,7 @@ Running the webapp
         or
 
     - Editing profile configuration and adding the following block to `standalone-full.xml` under `<server>`, at the end of the file:
-  
+
         ```xml
         <deployments>
             <deployment name="windup-web-services" runtime-name="windup-web-services.war">

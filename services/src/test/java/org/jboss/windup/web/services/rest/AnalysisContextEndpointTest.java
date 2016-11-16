@@ -56,7 +56,7 @@ public class AnalysisContextEndpointTest extends AbstractTest
         Configuration configuration = configurationEndpoint.getConfiguration();
         configuration.setRulesPaths(Collections.singleton(new RulesPath(ConfigurationEndpointTest.CUSTOM_RULESPATH, RulesPathType.USER_PROVIDED)));
         configurationEndpoint.saveConfiguration(configuration);
-        
+
         AnalysisContext analysisContext = new AnalysisContext();
         analysisContext.setApplicationGroup(group);
         analysisContext.setMigrationPath(path);
@@ -64,10 +64,10 @@ public class AnalysisContextEndpointTest extends AbstractTest
         analysisContext.setRulesPaths(configurationEndpoint.getConfiguration().getRulesPaths());
 
         analysisContext = analysisContextEndpoint.create(analysisContext);
-        
+
         AnalysisContext loaded = analysisContextEndpoint.get(analysisContext.getId());
         Assert.assertNotNull(loaded);
-        
+
         Assert.assertEquals(analysisContext.getId(), loaded.getId());
 
         Assert.assertEquals(path, loaded.getMigrationPath());

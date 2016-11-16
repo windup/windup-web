@@ -167,7 +167,7 @@ public class RegisteredApplication implements Serializable
 
     /**
      * Gets application title
-     * 
+     *
      * @return Title
      */
     public String getTitle()
@@ -177,7 +177,7 @@ public class RegisteredApplication implements Serializable
 
     /**
      * Sets application title
-     * 
+     *
      * @param title Title
      */
     public void setTitle(String title)

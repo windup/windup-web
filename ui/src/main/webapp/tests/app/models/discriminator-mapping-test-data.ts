@@ -17,6 +17,6 @@ export class DiscriminatorMappingTestData extends DiscriminatorMapping
         "FileResource": FileModel,
         "JavaClassFileModel": JavaClassFileModel,
     };
-    
+
     constructor() { super(); };
 }

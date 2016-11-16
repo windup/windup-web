@@ -4,7 +4,7 @@ import java.util.EnumSet;
 
 /**
  * Common for properties and relations.
- * 
+ *
  * @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
  */
 abstract class ModelMember
