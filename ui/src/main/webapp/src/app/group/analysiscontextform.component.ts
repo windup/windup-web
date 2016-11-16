@@ -13,6 +13,7 @@ import {IsDirty} from "../shared/is-dirty.interface";
 import {Observable} from "rxjs/Observable";
 import {PackageRegistryService} from "../services/package-registry.service";
 import {ApplicationGroup, AnalysisContext, Package, MigrationPath, AdvancedOption, RulesPath} from "../windup-services";
+import {RouteFlattenerService} from "../core/route-flattenner.service";
 
 @Component({
     templateUrl: 'analysiscontextform.component.html'
@@ -49,7 +50,9 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
                 private _migrationPathService:MigrationPathService,
                 private _analysisContextService:AnalysisContextService,
                 private _configurationOptionsService:ConfigurationOptionsService,
-                private _packageRegistryService: PackageRegistryService) {
+                private _packageRegistryService: PackageRegistryService,
+                private _routeFlattennerService: RouteFlattenerService
+    ) {
         super();
         this.analysisContext.migrationPath = <MigrationPath>{};
         this.includePackages = [];
@@ -85,7 +88,10 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
 
     ngOnInit() {
         this._activatedRoute.params.subscribe(params => {
-            let id:number = parseInt(params["groupId"]);
+            let routeSnapshot = this._routeFlattennerService.getFlatRoute(this._activatedRoute.snapshot);
+
+            let id: number = parseInt(routeSnapshot.params['groupId']);
+
             if (!isNaN(id)) {
                 this.loading = true;
 

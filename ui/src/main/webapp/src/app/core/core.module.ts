@@ -11,6 +11,7 @@ import {NotificationService} from "./notification/notification.service";
 import {LoginComponent} from "./authentication/login.component";
 import {LoggedInGuard} from "./authentication/logged-in.guard";
 import {CoreRoutingModule} from "./core-routing.module";
+import {RouteFlattenerService} from "./route-flattenner.service";
 
 
 @NgModule({
@@ -28,6 +29,7 @@ import {CoreRoutingModule} from "./core-routing.module";
         KeycloakService,
         NotificationService,
         LoggedInGuard,
+        RouteFlattenerService,
         {
             provide: Http,
             useFactory: (backend: XHRBackend,
