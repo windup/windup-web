@@ -24,8 +24,8 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
 
     private _dirty: boolean = null;
 
-    loading:boolean = true;
-    applicationGroup:ApplicationGroup = null;
+    loading: boolean = true;
+    applicationGroup: ApplicationGroup = null;
 
     analysisContext:AnalysisContext = <AnalysisContext>{};
     packageTree: Package[] = [];
@@ -59,70 +59,59 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
     }
 
     ngOnInit() {
-        this._activatedRoute.parent.params.subscribe(params => {
-            let id:number = parseInt(params["groupId"]);
-            if (!isNaN(id)) {
-                this.loading = true;
+        this._activatedRoute.parent.data.subscribe((data: {applicationGroup: ApplicationGroup}) => {
+            this.applicationGroup = data.applicationGroup;
 
-                this._configurationOptionsService.getAll().subscribe(
-                    (options:ConfigurationOption[]) => {
-                        this.configurationOptions = options;
-                    }
-                );
+            this.loading = true;
 
-                this._applicationGroupService.get(id).subscribe(
-                    group => {
-                        this.applicationGroup = group;
+            this._configurationOptionsService.getAll().subscribe((options:ConfigurationOption[]) => {
+                    this.configurationOptions = options;
+            });
 
-                        if (this.applicationGroup.packageMetadata.scanStatus === "COMPLETE") {
-                            this.applicationGroup.packageMetadata.packageTree.forEach(node => {
-                                this._packageRegistryService.putHierarchy(node);
-                            });
-                        }
-
-                        this.packageTree = group.packageMetadata.packageTree;
-                        this.analysisContext = group.analysisContext;
-                        console.log("Loaded analysis context: " + JSON.stringify(this.analysisContext));
-
-                        if (this.analysisContext == null) {
-                            this.analysisContext = <AnalysisContext>{};
-                            this.analysisContext.migrationPath = <MigrationPath>{};
-                            this.analysisContext.advancedOptions = [];
-                            this.analysisContext.includePackages = [];
-                            this.analysisContext.excludePackages = [];
-                            this.analysisContext.rulesPaths = [];
-                        } else {
-                            // for migration path, store the id only
-                            this.analysisContext.migrationPath = <MigrationPath>{ id: this.analysisContext.migrationPath.id };
-                            if (this.analysisContext.includePackages == null || this.analysisContext.includePackages.length == 0) {
-                                this.includePackages = [];
-                            } else {
-                                this.includePackages = this.analysisContext.includePackages.map(node => this._packageRegistryService.get(node.id));
-                            }
-
-                            if (this.analysisContext.excludePackages == null || this.analysisContext.excludePackages.length == 0) {
-                                this.analysisContext.excludePackages = [];
-                            } else {
-                                this.analysisContext.excludePackages = this.analysisContext.excludePackages.map(node => this._packageRegistryService.get(node.id));
-                            }
-
-                            if (this.analysisContext.rulesPaths == null)
-                                this.analysisContext.rulesPaths = [];
-                        }
-
-                        this.includePackages = this.analysisContext.includePackages;
-                        this.excludePackages = this.analysisContext.excludePackages;
-
-                        // Just use the ID here
-                        this.analysisContext.applicationGroup = <ApplicationGroup>{ id: group.id };
-
-                        this.loading = false;
-                    }
-                );
-            } else {
-                this.loading = false;
-                this.errorMessages.push("groupID parameter was not specified!");
+            if (this.applicationGroup.packageMetadata.scanStatus === "COMPLETE") {
+                this.applicationGroup.packageMetadata.packageTree.forEach(node => {
+                    this._packageRegistryService.putHierarchy(node);
+                });
             }
+
+            this.packageTree = this.applicationGroup.packageMetadata.packageTree;
+            this.analysisContext = this.applicationGroup.analysisContext;
+
+            console.log("Loaded analysis context: " + JSON.stringify(this.analysisContext));
+
+            if (this.analysisContext == null) {
+                this.analysisContext = <AnalysisContext>{};
+                this.analysisContext.migrationPath = <MigrationPath>{};
+                this.analysisContext.advancedOptions = [];
+                this.analysisContext.includePackages = [];
+                this.analysisContext.excludePackages = [];
+                this.analysisContext.rulesPaths = [];
+            } else {
+                // for migration path, store the id only
+                this.analysisContext.migrationPath = <MigrationPath>{ id: this.analysisContext.migrationPath.id };
+                if (this.analysisContext.includePackages == null || this.analysisContext.includePackages.length == 0) {
+                    this.includePackages = [];
+                } else {
+                    this.includePackages = this.analysisContext.includePackages.map(node => this._packageRegistryService.get(node.id));
+                }
+
+                if (this.analysisContext.excludePackages == null || this.analysisContext.excludePackages.length == 0) {
+                    this.analysisContext.excludePackages = [];
+                } else {
+                    this.analysisContext.excludePackages = this.analysisContext.excludePackages.map(node => this._packageRegistryService.get(node.id));
+                }
+
+                if (this.analysisContext.rulesPaths == null)
+                    this.analysisContext.rulesPaths = [];
+            }
+
+            // Just use the ID here
+            this.analysisContext.applicationGroup = <ApplicationGroup>{ id: this.applicationGroup.id };
+
+            this.includePackages = this.analysisContext.includePackages;
+            this.excludePackages = this.analysisContext.excludePackages;
+
+            this.loading = false;
         });
     }
 
