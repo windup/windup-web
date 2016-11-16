@@ -177,7 +177,7 @@
                         </goals>
 
                         <configuration>
-                            <executable>npm</executable>
+                            <executable>yarn</executable>
                             <workingDirectory>src/main/webapp</workingDirectory>
                             <arguments>
                                 <argument>install</argument>
