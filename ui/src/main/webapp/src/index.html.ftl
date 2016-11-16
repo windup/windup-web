@@ -1,4 +1,4 @@
-<html>
+<html class="layout-pf layout-pf-fixed transitions">
 <head>
     <title>Windup 3.0</title>
     <base href="/windup-web/">

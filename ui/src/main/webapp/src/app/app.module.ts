@@ -7,7 +7,7 @@ import 'rxjs/Rx';
 
 import {FileSelectDirective, FileDropDirective, FileUploader} from 'ng2-file-upload/ng2-file-upload';
 import { AppComponent }  from './components/app.component';
-import { routing, appRoutingProviders } from './app.routing';
+import {routing, appRoutingProviders} from './app.routing';
 
 import {ProjectListComponent} from "./components/project-list.component";
 import {AnalysisContextFormComponent} from "./components/analysis-context-form.component";
@@ -58,6 +58,8 @@ import {MigrationIssuesService} from "./components/reports/migration-issues/migr
 import {TechReportService} from "./components/reports/technologies/tech-report.service";
 import {FramesRestClientService} from './services/graph/frames-rest-client.service';
 import {ContextMenuComponent} from "./components/navigation/context-menu.component";
+import {GroupLayoutComponent} from "./components/layout/group-layout.component";
+import {DefaultLayoutComponent} from "./components/layout/default-layout.component";
 
 
 @NgModule({
@@ -106,9 +108,11 @@ import {ContextMenuComponent} from "./components/navigation/context-menu.compone
         LoginComponent,
         JsTreeAngularWrapperComponent,
         MigrationIssuesComponent,
-        MigrationIssuesTableComponent
+        MigrationIssuesTableComponent,
         LoginComponent,
-        ContextMenuComponent
+        ContextMenuComponent,
+        GroupLayoutComponent,
+        DefaultLayoutComponent
     ],
     providers: [
         appRoutingProviders,
