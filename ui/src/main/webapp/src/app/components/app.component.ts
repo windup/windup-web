@@ -1,20 +1,18 @@
-import {Component, OnInit} from '@angular/core';
-import '../rxjs-operators';
-import {KeycloakService} from "../services/keycloak.service";
+import {Component} from "@angular/core";
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'windup-app',
     templateUrl: 'app.component.html'
 })
-export class AppComponent implements OnInit {
-    isUserLoggedIn: boolean;
+export class AppComponent {
 
-    constructor(private _keycloakService: KeycloakService) {
-
-    }
-
-
-    ngOnInit(): void {
-        this._keycloakService.isLoggedIn().subscribe(isLoggedIn => this.isUserLoggedIn = isLoggedIn);
+    /*
+     * This is for Augury Chrome extension to display router tree
+     * See https://github.com/rangle/augury/issues/715
+     *
+     * When extension is fixed, this can be safely removed
+     */
+    constructor(private router: Router) {
     }
 }
