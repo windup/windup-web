@@ -14,7 +14,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.annotation.PostConstruct;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
@@ -38,7 +37,6 @@ import org.jboss.windup.web.services.model.RulesPath;
 import org.jboss.windup.web.services.model.Technology;
 import org.jboss.windup.web.services.service.ConfigurationService;
 import org.jboss.windup.web.services.service.TechnologyService;
-import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.config.Rule;
 
 /**
@@ -76,12 +74,14 @@ public class RuleDataLoader
 
     public void reloadRuleData()
     {
+        LOG.info("Loading all rule data...");
         Configuration webConfiguration = configurationService.getConfiguration();
         if (webConfiguration.getRulesPaths() == null || webConfiguration.getRulesPaths().isEmpty())
             return;
 
         for (RulesPath rulesPath : webConfiguration.getRulesPaths())
         {
+            LOG.info("Purging existing rule data for: " + rulesPath);
             // Delete the previous ones
             entityManager
                     .createNamedQuery(RuleProviderEntity.DELETE_BY_RULES_PATH)

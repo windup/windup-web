@@ -6,6 +6,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
@@ -38,9 +39,13 @@ public class TechnologyService
         CriteriaQuery<Technology> criteriaQuery = builder.createQuery(Technology.class);
         Root<Technology> root = criteriaQuery.from(Technology.class);
 
-        criteriaQuery.where(builder.equal(root.get(Technology_.name), name));
+        Predicate namePredicate = builder.equal(root.get(Technology_.name), name);
+        Predicate versionPredicate;
         if (StringUtils.isNotBlank(versionRange))
-            criteriaQuery.where(builder.equal(root.get(Technology_.versionRange), versionRange));
+            versionPredicate = builder.equal(root.get(Technology_.versionRange), versionRange);
+        else
+            versionPredicate = builder.and(builder.isNull(root.get(Technology_.versionRange)));
+        criteriaQuery.where(builder.and(namePredicate, versionPredicate));
 
         try
         {
@@ -50,7 +55,8 @@ public class TechnologyService
         {
             Technology technology = new Technology();
             technology.setName(name);
-            technology.setVersionRange(versionRange);
+            if (StringUtils.isNotBlank(versionRange))
+                technology.setVersionRange(versionRange);
             entityManager.persist(technology);
             return technology;
         }
