@@ -1,7 +1,11 @@
 import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
 import {ApplicationGroup} from "windup-services";
+import {RouteLinkProviderService} from "../../services/route-link-provider-service";
+import {MigrationIssuesComponent} from "../reports/migration-issues/migration-issues.component";
+import {TechnologiesReport} from "../reports/technologies/technologies.report";
 import {WindupService} from "../../services/windup.service";
+import {ReportMenuItem} from "../navigation/context-menu-item.class";
 
 @Component({
     templateUrl: './group-layout.component.html',
@@ -16,13 +20,17 @@ export class GroupLayoutComponent implements OnInit {
 
     constructor(
         private _activatedRoute: ActivatedRoute,
+        private _routeLinkProviderService: RouteLinkProviderService,
         private _windupService: WindupService
     ) {
 
     }
 
     ngOnInit(): void {
-
+        this._activatedRoute.data.forEach((data: {applicationGroup: ApplicationGroup}) => {
+            this.applicationGroup = data.applicationGroup;
+            this.createContextMenuItems();
+        });
     }
 
     protected createContextMenuItems() {
@@ -35,7 +43,9 @@ export class GroupLayoutComponent implements OnInit {
             },
             {
                 label: 'Run Windup',
-                link: '',
+                action: () => {
+                    this._windupService.executeWindupGroup(this.applicationGroup.id);
+                },
                 icon: 'fa-rocket',
                 isEnabled: true
             },
@@ -45,18 +55,20 @@ export class GroupLayoutComponent implements OnInit {
                 icon: 'fa-tachometer',
                 isEnabled: true
             },
-            {
-                label: 'Issues',
-                link: '',
-                icon: 'fa-exclamation-triangle',
-                isEnabled: true
-            },
-            {
-                label: 'Technologies',
-                link: '',
-                icon: 'fa-cubes',
-                isEnabled: true
-            },
+            new ReportMenuItem(
+                'Issues',
+                'fa-exclamation-triangle',
+                this.applicationGroup,
+                MigrationIssuesComponent,
+                this._routeLinkProviderService,
+            ),
+            new ReportMenuItem(
+                'Technologies',
+                'fa-cubes',
+                this.applicationGroup,
+                TechnologiesReport,
+                this._routeLinkProviderService,
+            ),
             {
                 label: 'Dependencies',
                 link: '',

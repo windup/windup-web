@@ -7,7 +7,7 @@ import 'rxjs/Rx';
 
 import {FileSelectDirective, FileDropDirective, FileUploader} from 'ng2-file-upload/ng2-file-upload';
 import { AppComponent }  from './components/app.component';
-import {routing, appRoutingProviders} from './app.routing';
+import {routing, appRoutingProviders, appRoutes} from './app.routing';
 
 import {ProjectListComponent} from "./components/project-list.component";
 import {AnalysisContextFormComponent} from "./components/analysis-context-form.component";
@@ -60,6 +60,8 @@ import {FramesRestClientService} from './services/graph/frames-rest-client.servi
 import {ContextMenuComponent} from "./components/navigation/context-menu.component";
 import {GroupLayoutComponent} from "./components/layout/group-layout.component";
 import {DefaultLayoutComponent} from "./components/layout/default-layout.component";
+import {ApplicationGroupResolve} from "./components/group/application-group.resolve";
+import {RouteLinkProviderService} from "./services/route-link-provider-service";
 
 
 @NgModule({
@@ -134,6 +136,13 @@ import {DefaultLayoutComponent} from "./components/layout/default-layout.compone
         MigrationIssuesService,
         TechReportService,
         FramesRestClientService,
+        ApplicationGroupResolve,
+        {
+            provide: RouteLinkProviderService,
+            useFactory: () => {
+                return new RouteLinkProviderService(appRoutes);
+            }
+        },
         {
             provide: Http,
             useFactory:

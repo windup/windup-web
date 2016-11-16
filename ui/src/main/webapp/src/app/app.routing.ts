@@ -14,6 +14,7 @@ import {LoginComponent} from "./components/login.component";
 import {LoggedInGuard} from "./services/logged-in.guard";
 import {GroupLayoutComponent} from "./components/layout/group-layout.component";
 import {DefaultLayoutComponent} from "./components/layout/default-layout.component";
+import {ApplicationGroupResolve} from "./components/group/application-group.resolve";
 import {MigrationIssuesComponent} from "./components/reports/migration-issues/migration-issues.component";
 
 export const appRoutes: Routes = [
@@ -60,6 +61,9 @@ export const appRoutes: Routes = [
             {
                 path: 'groups/:groupId',
                 component: GroupLayoutComponent,
+                resolve: {
+                    applicationGroup: ApplicationGroupResolve
+                },
                 children: [
                     { path: '', component: GroupPageComponent },
                     { path: 'edit', component: ApplicationGroupForm, data: {displayName: 'Edit Application Group'}},
