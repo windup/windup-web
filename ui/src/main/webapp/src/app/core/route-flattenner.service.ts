@@ -1,5 +1,6 @@
 import {Injectable} from "@angular/core";
-import {ActivatedRouteSnapshot} from "@angular/router";
+import {ActivatedRouteSnapshot, ActivatedRoute} from "@angular/router";
+import {Observable} from "rxjs";
 
 @Injectable()
 export class RouteFlattenerService {
@@ -13,5 +14,32 @@ export class RouteFlattenerService {
         }
 
         return flatRoute;
+    }
+
+    getFlatRouteObservable(route: ActivatedRoute): Observable<any> {
+        let result = {
+            data: {},
+            params: {}
+        };
+
+        let parentObservable;
+
+        if (route.parent) {
+            parentObservable = this.getFlatRouteObservable(route.parent);
+        } else {
+            parentObservable = Observable.of({data: {}, params: {}});
+        }
+
+        let currentObservable = Observable.forkJoin(route.params, route.data).map(data => {
+            return {
+                params: data[0],
+                data: data[1]
+            };
+        });
+
+        return Observable.forkJoin(parentObservable, currentObservable).map(data => {
+            let result = Object.assign({}, data[0], data[1]);
+            return result;
+        });
     }
 }
