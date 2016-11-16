@@ -51,8 +51,8 @@ export class TestGraphData
             },
         },
     };
-    
-    
+
+
     static TEST_FILE_MODELS = [
         {
             "w:winduptype": [
@@ -109,5 +109,5 @@ export class TestGraphData
             "minorVersion": 0,
             "isDirectory": false
         }
-    ];    
+    ];
 }

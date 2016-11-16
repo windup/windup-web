@@ -9,8 +9,8 @@ public class TypeScriptModelsGeneratorConfig
 {
     public static enum AdjacencyMode { PROXIED, MATERIALIZED, MIXED, DECORATED; }
     public static enum FileNamingStyle { CAMELCASE, LOWERCASE_DASHES, LOWERCASE_DOTS; }
-    
-    
+
+
     private Path outputPath;
     private Path importPathToWebapp;
     private AdjacencyMode adjacencyMode;
@@ -82,5 +82,5 @@ public class TypeScriptModelsGeneratorConfig
     {
         this.fileNamingStyle = fileNamingStyle;
     }
-    
+
 }

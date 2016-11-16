@@ -2,7 +2,7 @@ package org.jboss.windup.web.addons.websupport.tsmodelgen;
 
 /**
  * Handles String, boolean, byte, char, short, int, long, float, and double.
- * 
+ *
  * @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
  */
 enum PrimitiveType implements ModelType

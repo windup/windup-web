@@ -6,7 +6,7 @@ import com.tinkerpop.frames.modules.typedgraph.TypeValue;
 
 /**
  * Handles WindupVertexFrame's.
- * 
+ *
  * @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
  */
 class FrameType implements ModelType

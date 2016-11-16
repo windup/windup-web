@@ -194,7 +194,7 @@ public class ApplicationGroup implements Serializable
 
     /**
      * Adds application to application group
-     * 
+     *
      * @param application Application
      */
     public void addApplication(RegisteredApplication application)
@@ -210,7 +210,7 @@ public class ApplicationGroup implements Serializable
 
     /**
      * Removes application from application group
-     * 
+     *
      * @param application Application
      */
     public void removeApplication(RegisteredApplication application)

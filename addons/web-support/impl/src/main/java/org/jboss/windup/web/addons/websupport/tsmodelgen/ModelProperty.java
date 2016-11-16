@@ -5,7 +5,7 @@ import static org.jboss.windup.web.addons.websupport.tsmodelgen.TsGenUtils.quote
 /**
  * A property - annotated with @Property in the original model. Can be a {@link java.io.Serializable} too, but in Windup models, it's only primitive
  * types IIRC.
- * 
+ *
  * @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
  */
 class ModelProperty extends ModelMember

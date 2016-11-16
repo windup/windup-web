@@ -41,11 +41,11 @@ https://access.redhat.com/documentation/en/red-hat-single-sign-on/7.0/single/get
 
  * Install the EAP 7 Adapter into the EAP instance that will run Windup Web
    * Download the RH-SSO-7.0.0-eap7-adapter.zip and unzip it into the root directory of your EAP 7 installation
-   * Run the installer: 
+   * Run the installer:
      * `cd bin`
      * Modify `adapter-install-offline.cli` to point to `standalone-full.xml` (instead of `standalone.xml`)
      * `./jboss-cli.sh --file=adapter-install-offline.cli`
-      
+
 
 
 ##  Common steps: Register the client in Keycloak for windup-web
@@ -62,13 +62,13 @@ https://access.redhat.com/documentation/en/red-hat-single-sign-on/7.0/single/get
     * On the settings page, make sure that both of the following URLs are listed as Valid Redirect URIs (add the one that is missing):
       * `http://localhost:8080/windup-web/*`
       * `http://localhost:8080/windup-web-services/*`
-  
+
     * Click on the "Installation" tab, and select the "Keycloak OIDC JBoss Subsystem XML" format option
     * With the Windup's server off, open up `standalone-full.xml` and paste this text into the`urn:jboss:domain:keycloak:1.1` subsystem element
     * Change the `WAR MODULE NAME.war` section to the war name (`windup-web.war`)
-  * Now we are going to move the Keycloak key and URL to system properties, so they are accessible from the app.  
+  * Now we are going to move the Keycloak key and URL to system properties, so they are accessible from the app.
     Add the following system properties being sure to replace the key with the one from the copied section:
-  
+
       ```xml
       ...
       </extensions>
@@ -80,7 +80,7 @@ https://access.redhat.com/documentation/en/red-hat-single-sign-on/7.0/single/get
       ```
 
   * Replace the realm-public-key and auth-server-url elements in the extension configuration with the following text:
-    
+
       ```xml
       <realm-public-key>${keycloak.realm.public.key}</realm-public-key>
       <auth-server-url>${keycloak.server.url}</auth-server-url>

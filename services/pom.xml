@@ -113,7 +113,7 @@
         </dependency>
 
         <!-- Rules -->
-        
+
         <dependency>
             <groupId>org.jboss.windup.rules.apps</groupId>
             <artifactId>windup-rules-java-api</artifactId>

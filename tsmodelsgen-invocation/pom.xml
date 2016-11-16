@@ -22,11 +22,11 @@
             <url>http://www.eclipse.org/legal/epl-v10.html</url>
         </license>
     </licenses>
-    
+
     <prerequisites>
         <maven>3.2</maven>
     </prerequisites>
-   
+
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -71,9 +71,9 @@
                         <configuration>
                             <outputDir>${project.build.directory}/tsModels</outputDir>
                             <!-- MATERIALIZED, DECORATED -->
-                            <adjacencyMode>DECORATED</adjacencyMode> 
+                            <adjacencyMode>DECORATED</adjacencyMode>
                             <!-- "../../" if it goes to app/tsModels/ -->
-                            <!-- "" if it goes to target/tsModels and compiled 
+                            <!-- "" if it goes to target/tsModels and compiled
                                  using tsconfig-tsModels.json: `tsc -p target/tsModels/` -->
                             <!-- Or a Maven token to be replaced using maven-resources-plugin. -->
                             <importPathToWebapp>$MAVEN_TOKEN{windup.tsmodelgen.importPathToWebapp}</importPathToWebapp>
@@ -119,7 +119,7 @@
                             </execution>
                         </executions>
                         -->
-                    </plugin>                    
+                    </plugin>
                 </plugins>
             </build>
         </profile>

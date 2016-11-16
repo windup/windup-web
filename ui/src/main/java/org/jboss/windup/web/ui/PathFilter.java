@@ -14,7 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * Redirects requests to default path (for example, /index.html)
  * except for those which match the excuded paths.
- * 
+ *
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
 public class PathFilter implements Filter
