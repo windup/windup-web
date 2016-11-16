@@ -60,7 +60,7 @@ export const appRoutes: Routes = [
                 path: 'groups/:groupId',
                 component: GroupLayoutComponent,
                 children: [
-                    { path: '' },
+                    { path: '', component: GroupPageComponent },
                     { path: 'edit', component: ApplicationGroupForm, data: {displayName: 'Edit Application Group'}},
                     { path: 'analysis-context', component: AnalysisContextFormComponent, data: {displayName: "Edit Analysis Context"}, canDeactivate: [ConfirmDeactivateGuard]},
                     { path: 'applications', children: [
