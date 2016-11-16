@@ -1,6 +1,7 @@
 import {Routes, RouterModule} from '@angular/router';
 import {ProjectListComponent} from "./components/project-list.component";
 import {GroupListComponent} from "./components/group-list.component";
+import {GroupPageComponent} from "./components/group.page.component";
 import {RegisterApplicationFormComponent} from "./components/registerapplicationform.component";
 import {MigrationProjectFormComponent} from "./components/migration-project-form.component";
 import {ApplicationGroupForm} from "./components/application-group-form.component";
@@ -8,12 +9,14 @@ import {AnalysisContextFormComponent} from "./components/analysis-context-form.c
 import {ConfigurationComponent} from "./components/configuration.component";
 import {EditApplicationFormComponent} from "./components/edit-application-form.component";
 import {ConfirmDeactivateGuard} from "./confirm-deactivate.guard";
-import {TechnologiesReport} from "./components/reports/technologies/technologies.report";
+import {TechnologiesReportComponent} from "./components/reports/technologies/technologies.report";
 import {LoginComponent} from "./components/login.component";
 import {LoggedInGuard} from "./services/logged-in.guard";
 import {GroupLayoutComponent} from "./components/layout/group-layout.component";
 import {DefaultLayoutComponent} from "./components/layout/default-layout.component";
+import {ApplicationGroupResolve} from "./components/group/application-group.resolve";
 import {MigrationIssuesComponent} from "./components/reports/migration-issues/migration-issues.component";
+import {ProjectResolve} from "./services/project.resolve";
 
 export const appRoutes: Routes = [
     {path: "login", component: LoginComponent},
@@ -46,6 +49,9 @@ export const appRoutes: Routes = [
                     {path: '', component: ProjectListComponent, data: {displayName: "Project List"}},
                     {
                         path: ':projectId',
+                        resolve: {
+                            project: ProjectResolve
+                        },
                         data: {displayName: 'Group List'},
                         children: [
                             {path: '', component: GroupListComponent, data: {displayName: 'Group List'}},
@@ -59,6 +65,9 @@ export const appRoutes: Routes = [
             {
                 path: 'groups/:groupId',
                 component: GroupLayoutComponent,
+                resolve: {
+                    applicationGroup: ApplicationGroupResolve
+                },
                 children: [
                     { path: '', component: GroupPageComponent },
                     { path: 'edit', component: ApplicationGroupForm, data: {displayName: 'Edit Application Group'}},
@@ -69,8 +78,8 @@ export const appRoutes: Routes = [
                             { path: 'edit', component: RegisterApplicationFormComponent, data: {displayName: "Edit Application"}},
                         ]}
                     ]},
-                    { path: 'reports/:exec', children: [
-                        {path: 'technology-report', component: TechnologiesReport, data: {displayName: 'Technology Report'}},
+                    { path: 'reports/:executionId', children: [
+                        {path: 'technology-report', component: TechnologiesReportComponent, data: {displayName: 'Technology Report'}},
                         {path: 'migration-issues', component: MigrationIssuesComponent}
                     ]}
                 ]

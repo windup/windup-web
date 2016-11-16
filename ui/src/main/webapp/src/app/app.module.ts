@@ -7,7 +7,7 @@ import 'rxjs/Rx';
 
 import {FileSelectDirective, FileDropDirective, FileUploader} from 'ng2-file-upload/ng2-file-upload';
 import { AppComponent }  from './components/app.component';
-import {routing, appRoutingProviders} from './app.routing';
+import {routing, appRoutingProviders, appRoutes} from './app.routing';
 
 import {ProjectListComponent} from "./components/project-list.component";
 import {AnalysisContextFormComponent} from "./components/analysis-context-form.component";
@@ -50,7 +50,7 @@ import {ConfirmDeactivateGuard} from "./confirm-deactivate.guard";
 import {PopoverComponent} from "./components/popover.component";
 import {JsTreeAngularWrapperComponent} from "./components/js-tree-angular-wrapper.component";
 import {PackageRegistryService} from "./services/package-registry.service";
-import {TechnologiesReport} from "./components/reports/technologies/technologies.report";
+import {TechnologiesReportComponent} from "./components/reports/technologies/technologies.report";
 import {LoginComponent} from "./components/login.component";
 import {LoggedInGuard} from "./services/logged-in.guard";
 import {MigrationIssuesComponent} from "./components/reports/migration-issues/migration-issues.component";
@@ -61,6 +61,9 @@ import {FramesRestClientService} from './services/graph/frames-rest-client.servi
 import {ContextMenuComponent} from "./components/navigation/context-menu.component";
 import {GroupLayoutComponent} from "./components/layout/group-layout.component";
 import {DefaultLayoutComponent} from "./components/layout/default-layout.component";
+import {ApplicationGroupResolve} from "./components/group/application-group.resolve";
+import {RouteLinkProviderService} from "./services/route-link-provider-service";
+import {ProjectResolve} from "./services/project.resolve";
 
 
 @NgModule({
@@ -86,7 +89,7 @@ import {DefaultLayoutComponent} from "./components/layout/default-layout.compone
         EditApplicationFormComponent,
 
         // Reports
-        TechnologiesReport,
+        TechnologiesReportComponent,
 
         // Components
         AddRulesPathModalComponent,
@@ -136,6 +139,14 @@ import {DefaultLayoutComponent} from "./components/layout/default-layout.compone
         MigrationIssuesService,
         TechReportService,
         FramesRestClientService,
+        ApplicationGroupResolve,
+        ProjectResolve,
+        {
+            provide: RouteLinkProviderService,
+            useFactory: () => {
+                return new RouteLinkProviderService(appRoutes);
+            }
+        },
         {
             provide: Http,
             useFactory:
