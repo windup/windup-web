@@ -1,11 +1,12 @@
 import {Component, OnInit} from "@angular/core";
-import {ActivatedRoute, Params}   from '@angular/router';
+import {ActivatedRoute, Params, Router}   from '@angular/router';
 
 import {TechReportService, StatsItem} from "./tech-report.service";
 
 import {ApplicationGroup} from "../../../../app/windup-services";
 import {ApplicationGroupService} from '../../../services/application-group.service';
 import {TechnologiesStatsModel} from '../../../generated/tsModels/TechnologiesStatsModel';
+import {NotificationService} from "../../../services/notification.service";
 
 @Component({
     selector: 'wu-technologies-report',
@@ -20,7 +21,9 @@ export class TechnologiesReportComponent implements OnInit {
     constructor(
         private route: ActivatedRoute,
         private techReportService: TechReportService,
-        private appGrpService: ApplicationGroupService
+        private appGrpService: ApplicationGroupService,
+        private _notificationService: NotificationService,
+        private _router: Router
     ){}
 
     ngOnInit(): void {
@@ -33,10 +36,16 @@ export class TechnologiesReportComponent implements OnInit {
     }
 
     fetchTechnologiesStats(): void {
-        this.techReportService.getStats(this.execID).subscribe(stats => {
-            console.log("Stats: ", stats);
-            this.technologiesStats = stats; // [0]
-        });
+        this.techReportService.getStats(this.execID).subscribe(
+            stats => {
+                console.log("Stats: ", stats);
+                this.technologiesStats = stats; // [0]
+            },
+            error => {
+                this._notificationService.error(error);
+                this._router.navigate(['']);
+            }
+        );
     }
 
 
