@@ -45,7 +45,7 @@ public class MigrationProject implements Serializable
     @NotNull
     private String title;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "migrationProject")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "migrationProject")
     private Set<ApplicationGroup> groups;
 
     public Long getId()

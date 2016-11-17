@@ -4,10 +4,11 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.logging.Logger;
 
-import javax.ejb.Stateless;
+import javax.ejb.Stateful;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
 import javax.validation.Valid;
 import javax.ws.rs.NotFoundException;
 
@@ -23,12 +24,12 @@ import org.jboss.windup.web.services.service.PackageService;
  *
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
-@Stateless
+@Stateful
 public class ApplicationGroupEndpointImpl implements ApplicationGroupEndpoint
 {
     private static Logger LOG = Logger.getLogger(ApplicationGroupEndpointImpl.class.getName());
 
-    @PersistenceContext
+    @PersistenceContext(type = PersistenceContextType.EXTENDED)
     private EntityManager entityManager;
 
     @Inject
