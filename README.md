@@ -1,3 +1,10 @@
+Trying out Windup Web
+=====================
+
+If you just want to run Windup Web, not build or modify it, the simplest way is to use the docker image at https://hub.docker.com/r/windup3/windup-web_nightly/.
+
+If you want to build Windup Web yourself and run it without setting up a WildFly server and Keycloak, you can build [windup-web-distribution](https://github.com/windup/windup-web-distribution) after building windup-web to create a self-contained distribution.
+
 
 Setting up the development environment
 ======================================
