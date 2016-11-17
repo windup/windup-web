@@ -20,18 +20,7 @@
             </a>
         </td>
         <td class="apps">
-            <span *ngFor="let app of group.applications">
-                <span>{{app.title}}</span>,
-                    <!--
-                    <a *ngIf="app.reportIndexPath != null" target="_blank" href="{{reportURL(app)}}">
-                        <span class="glyphicon glyphicon-file"></span>
-                    </a>
-                    <button class="btn btn-default" (click)="editApplication(app)"> Edit </button>
-                    <button class="btn btn-danger" (click)="deleteApplication(app)">
-                        {{app.registrationType == "UPLOADED" ? "Delete" : "Remove"}}
-                    </button>
-                    -->
-            </span>
+            <span *ngFor="let app of group.applications; let i = index;">{{i > 0 ? "," : ""}} {{app.title}}</span>
         </td>
         <td class="actions">
             <a [routerLink]="['/analysis-context-form', { groupID: group.id }]">Edit Analysis Configuration</a>
