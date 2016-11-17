@@ -11,8 +11,10 @@
     <td>Actions</td>
 </tr></thead>
 <tbody>
-    <tr *ngFor="let group of groups" class="group" (click)="onClickGroup(group)">
-        <td class="title">{{group.title}}
+    <tr *ngFor="let group of groups" class="group">
+        <td class="title">
+            <a href="#" (click)="onClickGroup(group)">{{group.title}}</a>
+
             <a *ngIf="!group.readOnly" href="#" (click)="editGroup(group, $event)">
                 <span class="glyphicon glyphicon-pencil"></span>
             </a>

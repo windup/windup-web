@@ -161,6 +161,7 @@ export class GroupListComponent implements OnInit, OnDestroy {
         //this._router.navigate(['/group-list', { projectID: this.inProjectID, groupID: group.id }]);
         console.log('onClickGroup(), navigating to /group/' + +group.id);
         this._router.navigate(['/group/' + +group.id]);
+        return false;
     }
 
     createGroup() {
