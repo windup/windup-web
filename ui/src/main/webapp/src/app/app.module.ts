@@ -15,8 +15,7 @@ import {ApplicationGroupForm} from "./components/application-group-form.componen
 import {GroupListComponent} from "./components/group-list.component";
 import {MigrationProjectFormComponent} from "./components/migration-project-form.component";
 import {GroupPageComponent} from "./components/group.page.component";
-import {GroupComponent} from "./components/group.component";
-import {RegisterApplicationFormComponent} from "./components/registerapplicationform.component";
+import {RegisterApplicationFormComponent} from "./components/register-application-form.component";
 import {ProgressBarComponent} from "./components/progress-bar.component";
 import {NavbarComponent} from "./components/navbar.component";
 import {BreadCrumbsComponent} from "./components/breadcrumbs.component";
@@ -76,7 +75,6 @@ import {FramesRestClientService} from './services/graph/frames-rest-client.servi
         ConfigurationComponent,
         GroupListComponent,
         GroupPageComponent,
-        GroupComponent,
         MigrationProjectFormComponent,
         ProjectListComponent,
         RegisterApplicationFormComponent,

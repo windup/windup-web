@@ -113,7 +113,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
         this.multipartUploader.clearQueue();
 
         if (this.applicationGroup != null)
-            this._router.navigate(['/group-list', { projectID: this.applicationGroup.migrationProject.id }]);
+            this._router.navigate(['/group', this.applicationGroup.id ]);
         else
             this._router.navigate(['/application-list']);
     }

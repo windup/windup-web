@@ -20,9 +20,7 @@ import javax.validation.Valid;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotFoundException;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
@@ -202,6 +200,11 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
     @Override
     public RegisteredApplication update(@Valid RegisteredApplication application)
     {
+        RegisteredApplication previousApplication = getApplication(application.getId());
+        if (previousApplication != null && previousApplication.getRegistrationType() == RegisteredApplication.RegistrationType.UPLOADED)
+            this.deleteApplicationFile(previousApplication);
+
+        application.setRegistrationType(RegisteredApplication.RegistrationType.PATH);
         application = this.entityManager.merge(application);
         this.enqueuePackageDiscovery(application);
         return application;
@@ -243,7 +246,10 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
             throw new BadRequestException("Please provide a file");
         }
 
-        this.deleteApplicationFile(application);
+        if (application.getRegistrationType() == RegisteredApplication.RegistrationType.UPLOADED)
+            this.deleteApplicationFile(application);
+
+        application.setRegistrationType(RegisteredApplication.RegistrationType.UPLOADED);
         this.uploadApplicationFile(inputParts.get(0), application, true);
 
         return application;
