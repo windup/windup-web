@@ -9,7 +9,6 @@ import {RegisteredApplication} from "../windup-services";
 import {WindupExecution} from "../windup-services";
 import {RegisteredApplicationService} from "../services/registered-application.service";
 import {NotificationService} from "../services/notification.service";
-import {MigrationProjectService} from "../services/migration-project.service";
 import {utils} from "../utils";
 
 @Component({
@@ -34,8 +33,7 @@ export class GroupPageComponent implements OnInit, OnDestroy
         private _applicationGroupService: ApplicationGroupService,
         private _windupService: WindupService,
         private _registeredApplicationsService: RegisteredApplicationService,
-        private _notificationService: NotificationService,
-        private _migrationProjectService: MigrationProjectService
+        private _notificationService: NotificationService
     ) {}
 
     ngOnInit(): any {
@@ -115,13 +113,13 @@ export class GroupPageComponent implements OnInit, OnDestroy
             this._registeredApplicationsService.unregister(application)
                 .subscribe(result => {
                     console.log(result);
-                    //this.loadGroup();
+                    this.loadGroup(this.inGroupID);
                 });
         } else {
             this._registeredApplicationsService.deleteApplication(application)
                 .subscribe(result => {
                     console.log(result);
-                    //this.loadGroup();
+                    this.loadGroup(this.inGroupID);
                 });
         }
     }
