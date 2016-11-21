@@ -44,6 +44,12 @@ export class GroupLayoutComponent implements OnInit {
                 isEnabled: true
             },
             {
+                label: 'Applications',
+                link: '/groups/' + this.applicationGroup.id,
+                icon: 'fa-cubes',
+                isEnabled: true
+            },
+            {
                 label: 'Config',
                 link: this._routeLinkProviderService.getRouteForComponent(AnalysisContextFormComponent, {
                     groupId: this.applicationGroup.id
@@ -61,7 +67,7 @@ export class GroupLayoutComponent implements OnInit {
             },
             {
                 label: 'Dashboard',
-                link: '',
+                link: '/groups/' + this.applicationGroup.id,
                 icon: 'fa-tachometer',
                 isEnabled: true
             },
