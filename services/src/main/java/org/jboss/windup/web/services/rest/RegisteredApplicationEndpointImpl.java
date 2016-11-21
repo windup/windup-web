@@ -83,16 +83,17 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
     {
         RegisteredApplication application = this.getApplication(applicationID);
 
-        if (application.getApplicationGroup() != null)
+        ApplicationGroup group = application.getApplicationGroup();
+        if (group != null)
         {
-            ApplicationGroup group = application.getApplicationGroup();
             application.setApplicationGroup(null);
             group.removeApplication(application);
             application = this.entityManager.merge(application);
 
-            this.entityManager.persist(group);
+            this.entityManager.merge(group);
         }
 
+        this.deleteApplicationFile(application);
         this.entityManager.remove(application);
     }
 
@@ -273,10 +274,7 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
     @Override
     public void deleteApplication(long appId)
     {
-        RegisteredApplication application = this.getApplication(appId);
-        application.getApplicationGroup().removeApplication(application);
-        this.deleteApplicationFile(application);
-        this.entityManager.remove(application);
+        this.unregister(appId);
     }
 
     @Override
