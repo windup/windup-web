@@ -5,6 +5,13 @@ import {ApplicationGroupService} from "../../services/application-group.service"
 import {NotificationService} from "../../services/notification.service";
 import {Injectable} from "@angular/core";
 
+/**
+ * Gets ApplicationGroup object for groupId route parameter.
+ *
+ * Uses ApplicationGroupService.get method to load ApplicationGroup object.
+ * On success it returns Observable<ApplicationGroup> and navigation continues.
+ * On failure, it creates new error notification using NotificationService and navigates to homepage.
+ */
 @Injectable()
 export class ApplicationGroupResolve implements Resolve<ApplicationGroup> {
 
@@ -29,6 +36,7 @@ export class ApplicationGroupResolve implements Resolve<ApplicationGroup> {
                     this._notificationService.error(error);
                     this._router.navigate(['/']);
                     observer.next(false);
+                    observer.complete();
                 }
             );
         });
