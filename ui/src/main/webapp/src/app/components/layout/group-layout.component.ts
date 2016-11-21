@@ -6,6 +6,7 @@ import {MigrationIssuesComponent} from "../reports/migration-issues/migration-is
 import {TechnologiesReport} from "../reports/technologies/technologies.report";
 import {WindupService} from "../../services/windup.service";
 import {ReportMenuItem} from "../navigation/context-menu-item.class";
+import {AnalysisContextFormComponent} from "../analysis-context-form.component";
 
 @Component({
     templateUrl: './group-layout.component.html',
@@ -36,8 +37,17 @@ export class GroupLayoutComponent implements OnInit {
     protected createContextMenuItems() {
         this.menuItems = [
             {
+                label: 'View Project',
+                link: '/group-list',
+                data: { projectID: this.applicationGroup.migrationProject.id },
+                icon: 'fa-tachometer',
+                isEnabled: true
+            },
+            {
                 label: 'Config',
-                link: 'configuration',
+                link: this._routeLinkProviderService.getRouteForComponent(AnalysisContextFormComponent, {
+                    groupId: this.applicationGroup.id
+                }),
                 icon: 'fa-cogs',
                 isEnabled: true,
             },
