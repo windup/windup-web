@@ -93,7 +93,7 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
             this.entityManager.merge(group);
         }
 
-        this.deleteApplicationFile(application);
+        this.deleteApplicationFileIfUploaded(application);
         this.entityManager.remove(application);
     }
 
@@ -207,8 +207,8 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
     public RegisteredApplication update(@Valid RegisteredApplication application)
     {
         RegisteredApplication previousApplication = getApplication(application.getId());
-        if (previousApplication != null && previousApplication.getRegistrationType() == RegisteredApplication.RegistrationType.UPLOADED)
-            this.deleteApplicationFile(previousApplication);
+        if (previousApplication != null)
+            this.deleteApplicationFileIfUploaded(previousApplication);
 
         application.setRegistrationType(RegisteredApplication.RegistrationType.PATH);
         application = this.entityManager.merge(application);
@@ -252,8 +252,7 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
             throw new BadRequestException("Please provide a file");
         }
 
-        if (application.getRegistrationType() == RegisteredApplication.RegistrationType.UPLOADED)
-            this.deleteApplicationFile(application);
+        this.deleteApplicationFileIfUploaded(application);
 
         application.setRegistrationType(RegisteredApplication.RegistrationType.UPLOADED);
         this.uploadApplicationFile(inputParts.get(0), application, true);
@@ -261,8 +260,12 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
         return application;
     }
 
-    private void deleteApplicationFile(RegisteredApplication application)
+    private void deleteApplicationFileIfUploaded(RegisteredApplication application)
     {
+        if (application.getRegistrationType() != RegisteredApplication.RegistrationType.UPLOADED) {
+            return;
+        }
+
         File file = new File(application.getInputPath());
 
         if (file.exists())
