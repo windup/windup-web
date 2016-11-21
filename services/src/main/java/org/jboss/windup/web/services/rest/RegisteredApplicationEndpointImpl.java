@@ -25,6 +25,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
+import org.jboss.windup.web.addons.websupport.services.FileNameSanitizer;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.messaging.MessagingConstants;
 import org.jboss.windup.web.services.model.ApplicationGroup;
@@ -43,6 +44,10 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
     @Inject
     @FromFurnace
     private WebPathUtil webPathUtil;
+
+    @Inject
+    @FromFurnace
+    private FileNameSanitizer fileNameSanitizer;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -78,16 +83,17 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
     {
         RegisteredApplication application = this.getApplication(applicationID);
 
-        if (application.getApplicationGroup() != null)
+        ApplicationGroup group = application.getApplicationGroup();
+        if (group != null)
         {
-            ApplicationGroup group = application.getApplicationGroup();
             application.setApplicationGroup(null);
             group.removeApplication(application);
             application = this.entityManager.merge(application);
 
-            this.entityManager.persist(group);
+            this.entityManager.merge(group);
         }
 
+        this.deleteApplicationFile(application);
         this.entityManager.remove(application);
     }
 
@@ -268,10 +274,7 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
     @Override
     public void deleteApplication(long appId)
     {
-        RegisteredApplication application = this.getApplication(appId);
-        application.getApplicationGroup().removeApplication(application);
-        this.deleteApplicationFile(application);
-        this.entityManager.remove(application);
+        this.unregister(appId);
     }
 
     @Override
@@ -312,7 +315,8 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
         try
         {
             MultivaluedMap<String, String> header = inputPart.getHeaders();
-            String fileName = this.getFileName(header);
+            String fileName = this.fileNameSanitizer.cleanFileName(this.getFileName(header));
+            fileName = this.fileNameSanitizer.shortenFileName(fileName, 255);
 
             // convert the uploaded file to inputstream
             InputStream inputStream = inputPart.getBody(InputStream.class, null);
@@ -323,13 +327,14 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
                         this.webPathUtil.getAppPath().toString(),
                         project.getId().toString(),
                         group.getId().toString(),
-                        application.getId().toString().concat(this.getExtension(fileName))).toString();
+                        fileName).toString();
 
             File file = new File(filePath);
 
             if (file.exists() && !rewrite)
             {
                 LOG.warning("File in path: " + filePath + " already exists, but it should not");
+                throw new BadRequestException("File with name: '" + fileName + "' already exists");
             }
 
             this.saveFileTo(inputStream, filePath);
@@ -386,18 +391,6 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
         }
 
         throw new BadRequestException("Missing file name");
-    }
-
-    protected String getExtension(String fileName)
-    {
-        int extBeginsAt = fileName.lastIndexOf(".");
-
-        if (extBeginsAt == -1)
-        {
-            return "";
-        }
-
-        return fileName.substring(extBeginsAt);
     }
 
     protected void saveFileTo(InputStream inputStream, String filePath) throws IOException
