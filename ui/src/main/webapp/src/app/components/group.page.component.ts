@@ -39,7 +39,7 @@ export class GroupPageComponent implements OnInit, OnDestroy
     ngOnInit(): any {
         // Get groupID from params.
         this._activatedRoute.params.subscribe(params => {
-            this.inGroupID = parseInt(params["groupID"]);
+            this.inGroupID = parseInt(params["groupId"]);
             console.log("ngOnInit(), groupID: ", this.inGroupID);
             this.loadGroup(this.inGroupID);
         });

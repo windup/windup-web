@@ -25,7 +25,7 @@ export class NotificationComponent implements OnInit, OnDestroy {
 
     }
 
-    ngOnInit():any {
+    ngOnInit(): any {
         this.subscription = this._notificationService.notifications.subscribe(notification => this.onNotification(notification))
     }
 
@@ -77,7 +77,20 @@ export class NotificationComponent implements OnInit, OnDestroy {
         }
     }
 
-    ngOnDestroy():any {
+    getInfoMessage(notification: Notification): string {
+        switch (notification.level) {
+            default:
+            case NotificationLevel.SUCCESS:
+            case NotificationLevel.INFO:
+                return 'Info';
+            case NotificationLevel.ERROR:
+                return 'Error';
+            case NotificationLevel.WARNING:
+                return 'Warning';
+        }
+    }
+
+    ngOnDestroy(): any {
         this.subscription.unsubscribe();
     }
 }

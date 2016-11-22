@@ -43,7 +43,7 @@ export class GroupListComponent implements OnInit, OnDestroy {
         console.log('ngOnInit() called');
         this._activatedRoute.params.subscribe(params => {
             this.inProjectID = parseInt(params["projectID"]);
-            this.inGroupID   = parseInt(params["groupID"]);
+            this.inGroupID   = parseInt(params["groupId"]);
             //console.log('ngOnInit(), );
 
             this._migrationProjectService.get(this.inProjectID)
@@ -160,8 +160,7 @@ export class GroupListComponent implements OnInit, OnDestroy {
         this.groupSelected = group;
         //this._router.navigate(['/group-list', { projectID: this.inProjectID, groupID: group.id }]);
         console.log('onClickGroup(), navigating to /group/' + +group.id);
-        this._router.navigate(['/group/' + +group.id]);
-        return false;
+        this._router.navigate(['/groups', group.id]);
     }
 
     createGroup() {

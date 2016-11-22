@@ -7,7 +7,7 @@ import 'rxjs/Rx';
 
 import {FileSelectDirective, FileDropDirective, FileUploader} from 'ng2-file-upload/ng2-file-upload';
 import { AppComponent }  from './components/app.component';
-import { routing, appRoutingProviders } from './app.routing';
+import {routing, appRoutingProviders, appRoutes} from './app.routing';
 
 import {ProjectListComponent} from "./components/project-list.component";
 import {AnalysisContextFormComponent} from "./components/analysis-context-form.component";
@@ -57,6 +57,11 @@ import {MigrationIssuesTableComponent} from "./components/reports/migration-issu
 import {MigrationIssuesService} from "./components/reports/migration-issues/migration-issues.service";
 import {TechReportService} from "./components/reports/technologies/tech-report.service";
 import {FramesRestClientService} from './services/graph/frames-rest-client.service';
+import {ContextMenuComponent} from "./components/navigation/context-menu.component";
+import {GroupLayoutComponent} from "./components/layout/group-layout.component";
+import {DefaultLayoutComponent} from "./components/layout/default-layout.component";
+import {ApplicationGroupResolve} from "./components/group/application-group.resolve";
+import {RouteLinkProviderService} from "./services/route-link-provider-service";
 
 
 @NgModule({
@@ -105,7 +110,11 @@ import {FramesRestClientService} from './services/graph/frames-rest-client.servi
         LoginComponent,
         JsTreeAngularWrapperComponent,
         MigrationIssuesComponent,
-        MigrationIssuesTableComponent
+        MigrationIssuesTableComponent,
+        LoginComponent,
+        ContextMenuComponent,
+        GroupLayoutComponent,
+        DefaultLayoutComponent
     ],
     providers: [
         appRoutingProviders,
@@ -127,6 +136,13 @@ import {FramesRestClientService} from './services/graph/frames-rest-client.servi
         MigrationIssuesService,
         TechReportService,
         FramesRestClientService,
+        ApplicationGroupResolve,
+        {
+            provide: RouteLinkProviderService,
+            useFactory: () => {
+                return new RouteLinkProviderService(appRoutes);
+            }
+        },
         {
             provide: Http,
             useFactory:
