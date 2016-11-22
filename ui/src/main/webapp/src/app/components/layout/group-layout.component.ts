@@ -7,12 +7,12 @@ import {TechnologiesReport} from "../reports/technologies/technologies.report";
 import {WindupService} from "../../services/windup.service";
 import {ReportMenuItem} from "../navigation/context-menu-item.class";
 import {AnalysisContextFormComponent} from "../analysis-context-form.component";
+import {NotificationService} from "../../services/notification.service";
 
 @Component({
     templateUrl: './group-layout.component.html',
     styles: [
-        `:host /deep/ .nav-pf-vertical { top: 82px; }`,
-//        `:host /deep/ .container-pf-nav-pf-vertical { margin-left: 200px; }`,
+        `:host /deep/ .nav-pf-vertical { top: 82px; }`
     ]
 })
 export class GroupLayoutComponent implements OnInit {
@@ -22,7 +22,8 @@ export class GroupLayoutComponent implements OnInit {
     constructor(
         private _activatedRoute: ActivatedRoute,
         private _routeLinkProviderService: RouteLinkProviderService,
-        private _windupService: WindupService
+        private _windupService: WindupService,
+        private _notificationService: NotificationService
     ) {
 
     }
@@ -60,17 +61,26 @@ export class GroupLayoutComponent implements OnInit {
             {
                 label: 'Run Windup',
                 action: () => {
-                    this._windupService.executeWindupGroup(this.applicationGroup.id);
+                    this._windupService.executeWindupGroup(this.applicationGroup.id).subscribe(
+                        success => {
+                            this._notificationService.info('Windup execution has started');
+                        },
+                        error => {
+                            this._notificationService.error(error.error);
+                        }
+                    );
                 },
                 icon: 'fa-rocket',
                 isEnabled: true
             },
+            /*
             {
                 label: 'Dashboard',
                 link: '/groups/' + this.applicationGroup.id,
                 icon: 'fa-tachometer',
                 isEnabled: true
             },
+            */
             new ReportMenuItem(
                 'Issues',
                 'fa-exclamation-triangle',
@@ -85,12 +95,14 @@ export class GroupLayoutComponent implements OnInit {
                 TechnologiesReport,
                 this._routeLinkProviderService,
             ),
+            /*
             {
                 label: 'Dependencies',
                 link: '',
                 icon: 'fa-code-fork',
                 isEnabled: true
             }
+            */
         ];
     }
 }
