@@ -16,7 +16,7 @@
 
 </head>
 
-<body>
+<body class="cards-pf">
 <windup-app>
     <div id="loading" class="blank-slate-pf">
         <h1>
