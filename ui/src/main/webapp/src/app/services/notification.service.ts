@@ -1,14 +1,14 @@
 import {Injectable} from "@angular/core";
 import {Notification, NotificationLevel} from "./notification";
-import {Subject} from "rxjs/Subject";
 import {Observable} from 'rxjs/Observable';
+import {ReplaySubject} from "rxjs";
 
 @Injectable()
 export class NotificationService {
-    private _notifications: Subject<Notification>;
+    private _notifications: ReplaySubject<Notification>;
 
     constructor() {
-        this._notifications = new Subject<Notification>();
+        this._notifications = new ReplaySubject<Notification>(1);
     }
 
     public error(message: string) {
@@ -21,8 +21,7 @@ export class NotificationService {
     }
 
     public info(message: string) {
-        this._notifications.next(new Notification(message, NotificationLevel.ERROR));
-
+        this.notification(new Notification(message, NotificationLevel.INFO));
     }
 
     public notice(message: string) {

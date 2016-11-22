@@ -3,5 +3,5 @@
         <span class="pficon pficon-close"></span>
     </button>
     <span [ngClass]="getIcon(notification)" class="pficon"></span>
-    <strong>Error: </strong> {{notification.message}}.
+    <strong>{{getInfoMessage(notification)}}: </strong> {{notification.message}}.
 </div>
