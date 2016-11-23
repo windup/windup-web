@@ -18,7 +18,6 @@ import {utils} from "../utils";
     templateUrl: 'group-list.component.html'
 })
 export class GroupListComponent implements OnInit, OnDestroy {
-    inProjectID: number;
     project: MigrationProject;
     inGroupID: number;
     groupSelected: ApplicationGroup;
@@ -68,7 +67,7 @@ export class GroupListComponent implements OnInit, OnDestroy {
 
     getGroups() {
         console.log("getGroups()");
-        return this._applicationGroupService.getByProjectID(this.inProjectID).subscribe(
+        return this._applicationGroupService.getByProjectID(this.project.id).subscribe(
             groups => this.groupsLoaded(groups),
             error => {
                 if (error instanceof ProgressEvent) {
@@ -148,12 +147,12 @@ export class GroupListComponent implements OnInit, OnDestroy {
     }
 
     createGroup() {
-        this._router.navigate(['/application-group-form', { projectID: this.inProjectID }]);
+        this._router.navigate(['/application-group-form', { projectID: this.project.id }]);
     }
 
     editGroup(applicationGroup:ApplicationGroup, event:Event) {
         event.preventDefault();
-        this._router.navigate(['/application-group-form', { projectID: this.inProjectID, groupID: applicationGroup.id }]);
+        this._router.navigate(['/application-group-form', { projectID: this.project.id, groupID: applicationGroup.id }]);
     }
 
 }

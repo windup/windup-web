@@ -63,6 +63,7 @@ import {DefaultLayoutComponent} from "./components/layout/default-layout.compone
 import {ApplicationGroupResolve} from "./components/group/application-group.resolve";
 import {RouteLinkProviderService} from "./services/route-link-provider-service";
 import {ConfigurationResolve} from "./services/configuration.resolve";
+import {ProjectResolve} from "./services/project.resolve";
 
 
 @NgModule({
@@ -139,6 +140,7 @@ import {ConfigurationResolve} from "./services/configuration.resolve";
         FramesRestClientService,
         ApplicationGroupResolve,
         ConfigurationResolve,
+        ProjectResolve,
         {
             provide: RouteLinkProviderService,
             useFactory: () => {
