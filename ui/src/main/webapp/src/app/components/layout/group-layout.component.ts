@@ -5,7 +5,7 @@ import {RouteLinkProviderService} from "../../services/route-link-provider-servi
 import {MigrationIssuesComponent} from "../reports/migration-issues/migration-issues.component";
 import {TechnologiesReportComponent} from "../reports/technologies/technologies-report.component";
 import {WindupService} from "../../services/windup.service";
-import {ReportMenuItem} from "../navigation/context-menu-item.class";
+import {ReportMenuItem, ContextMenuItem} from "../navigation/context-menu-item.class";
 import {AnalysisContextFormComponent} from "../analysis-context-form.component";
 import {NotificationService} from "../../services/notification.service";
 import {GroupListComponent} from "../group-list.component";
@@ -62,9 +62,12 @@ export class GroupLayoutComponent implements OnInit {
                 icon: 'fa-cogs',
                 isEnabled: true,
             },
-            {
-                label: 'Run Windup',
-                action: () => {
+            new ContextMenuItem(
+                'Run Windup',
+                'fa-rocket',
+                () => { return this.applicationGroup.applications.length > 0; },
+                null,
+                () => {
                     this._windupService.executeWindupGroup(this.applicationGroup.id).subscribe(
                         success => {
                             this._notificationService.info('Windup execution has started');
@@ -73,10 +76,8 @@ export class GroupLayoutComponent implements OnInit {
                             this._notificationService.error(utils.getErrorMessage(error));
                         }
                     );
-                },
-                icon: 'fa-rocket',
-                isEnabled: true
-            },
+                }
+            ),
             /*
             {
                 label: 'Dashboard',

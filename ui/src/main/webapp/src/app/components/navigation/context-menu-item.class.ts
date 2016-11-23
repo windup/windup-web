@@ -15,13 +15,17 @@ export class ContextMenuItem implements ContextMenuItemInterface {
     protected _label: string;
     protected _link: string;
     protected _icon: string;
-    protected _isEnabled: boolean;
+    protected _isEnabled: boolean | Function;
+    protected _action?: Function;
+    protected _data?: any;
 
-    constructor(label: string, icon: string, isEnabled?: boolean, link?: string) {
+    constructor(label: string, icon: string, isEnabled?: boolean | Function, link?: string, action?:Function, data?: any) {
         this._label = label;
         this._link = link;
         this._icon = icon;
         this._isEnabled = isEnabled;
+        this._action = action;
+        this._data = data;
     }
 
     get label(): string {
@@ -37,7 +41,19 @@ export class ContextMenuItem implements ContextMenuItemInterface {
     }
 
     get isEnabled(): boolean {
-        return this._isEnabled;
+        console.log("Is function? " + (this._isEnabled instanceof Function));
+        if (this._isEnabled instanceof Function)
+            return <boolean>this._isEnabled();
+        else
+            return <boolean>this._isEnabled;
+    }
+
+    get action(): Function {
+        return this._action;
+    }
+
+    get data():any {
+        return this._data;
     }
 }
 

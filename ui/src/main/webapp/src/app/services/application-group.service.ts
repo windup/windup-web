@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Headers, Http, RequestOptions, Response} from '@angular/http';
 
 import {Constants} from "../constants";
-import {ApplicationGroup} from "../windup-services";
+import {ApplicationGroup, PackageMetadata} from "../windup-services";
 import {AbstractService} from "./abtract.service";
 import {Observable} from "rxjs";
 
@@ -11,6 +11,7 @@ export class ApplicationGroupService extends AbstractService {
     private GET_ALL_URL = "/applicationGroups/list";
     private GET_BY_PROJECT_URL = "/applicationGroups/by-project/";
     private GET_BY_ID_URL = "/applicationGroups/get";
+    private PACKAGE_METADATA = "/applicationGroups/#{groupID}/packages";
     private CREATE_URL = "/applicationGroups/create";
     private UPDATE_URL = "/applicationGroups/update";
 
@@ -48,6 +49,17 @@ export class ApplicationGroupService extends AbstractService {
         let headers = new Headers();
         let options = new RequestOptions({ headers: headers });
         return this._http.get(Constants.REST_BASE + this.GET_BY_ID_URL + "/" + id, options)
+            .map(res => <ApplicationGroup> res.json())
+            .catch(this.handleError);
+    }
+
+    getPackageMetadata(id:number): Observable<PackageMetadata> {
+        let headers = new Headers();
+        let options = new RequestOptions({ headers: headers });
+
+        let url = this.PACKAGE_METADATA.replace("#{groupID}", id.toString());
+
+        return this._http.get(Constants.REST_BASE + url, options)
             .map(res => <ApplicationGroup> res.json())
             .catch(this.handleError);
     }

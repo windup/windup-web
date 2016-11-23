@@ -55,6 +55,11 @@ public class PackageService
     @Transactional
     public Collection<Package> discoverPackages(RegisteredApplication application)
     {
+        // Reload it to insure that any lazy loaded fields are still available.
+        // Don't reload if the id is null (can happen in tests or with detached instances)
+        if (application.getId() != null)
+            application = this.entityManager.find(RegisteredApplication.class, application.getId());
+
         PackageMetadata metadata = application.getPackageMetadata();
         metadata.setScanStatus(PackageMetadata.ScanStatus.IN_PROGRESS);
         this.entityManager.merge(metadata);

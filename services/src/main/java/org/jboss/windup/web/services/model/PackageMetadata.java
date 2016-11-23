@@ -1,6 +1,8 @@
 package org.jboss.windup.web.services.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
@@ -18,6 +20,7 @@ import javax.persistence.*;
  * @author <a href="mailto:dklingenberg@gmail.com">David Klingenberg</a>
  */
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class PackageMetadata implements Serializable
 {
     /**

@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -64,7 +65,7 @@ public class ApplicationGroup implements Serializable
     @Fetch(FetchMode.SELECT)
     private Set<WindupExecution> executions;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private PackageMetadata packageMetadata;
 
     public ApplicationGroup()
@@ -229,6 +230,7 @@ public class ApplicationGroup implements Serializable
      *
      * @return Package metadata
      */
+    @JsonIgnore
     public PackageMetadata getPackageMetadata()
     {
         return packageMetadata;

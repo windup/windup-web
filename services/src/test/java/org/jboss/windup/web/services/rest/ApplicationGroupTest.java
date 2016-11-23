@@ -5,7 +5,6 @@ import org.apache.http.HttpStatus;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.dmr.JSONParser;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.windup.web.services.AbstractTest;
@@ -22,11 +21,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.json.stream.JsonParser;
 import javax.ws.rs.core.Response;
 import java.net.URL;
-import javax.json.Json;
-import javax.json.JsonObject;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
