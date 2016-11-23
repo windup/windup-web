@@ -3,7 +3,7 @@ import {ActivatedRoute} from "@angular/router";
 import {ApplicationGroup} from "windup-services";
 import {RouteLinkProviderService} from "../../services/route-link-provider-service";
 import {MigrationIssuesComponent} from "../reports/migration-issues/migration-issues.component";
-import {TechnologiesReport} from "../reports/technologies/technologies.report";
+import {TechnologiesReportComponent} from "../reports/technologies/technologies-report.component";
 import {WindupService} from "../../services/windup.service";
 import {ReportMenuItem} from "../navigation/context-menu-item.class";
 import {AnalysisContextFormComponent} from "../analysis-context-form.component";
@@ -92,7 +92,7 @@ export class GroupLayoutComponent implements OnInit {
                 'Technologies',
                 'fa-cubes',
                 this.applicationGroup,
-                TechnologiesReport,
+                TechnologiesReportComponent,
                 this._routeLinkProviderService,
             ),
             /*

@@ -49,7 +49,7 @@ import {ConfirmDeactivateGuard} from "./confirm-deactivate.guard";
 import {PopoverComponent} from "./components/popover.component";
 import {JsTreeAngularWrapperComponent} from "./components/js-tree-angular-wrapper.component";
 import {PackageRegistryService} from "./services/package-registry.service";
-import {TechnologiesReport} from "./components/reports/technologies/technologies.report";
+import {TechnologiesReportComponent} from "./components/reports/technologies/technologies-report.component";
 import {LoginComponent} from "./components/login.component";
 import {LoggedInGuard} from "./services/logged-in.guard";
 import {MigrationIssuesComponent} from "./components/reports/migration-issues/migration-issues.component";
@@ -86,7 +86,7 @@ import {RouteLinkProviderService} from "./services/route-link-provider-service";
         EditApplicationFormComponent,
 
         // Reports
-        TechnologiesReport,
+        TechnologiesReportComponent,
 
         // Components
         AddRulesPathModalComponent,

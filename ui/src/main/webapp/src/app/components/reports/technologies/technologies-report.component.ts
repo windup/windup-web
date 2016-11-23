@@ -9,9 +9,9 @@ import {TechnologiesStatsModel} from '../../../generated/tsModels/TechnologiesSt
 
 @Component({
     selector: 'wu-technologies-report',
-    templateUrl: 'technologies.report.html'
+    templateUrl: 'technologies-report.component.html'
 })
-export class TechnologiesReport implements OnInit {
+export class TechnologiesReportComponent implements OnInit {
 
     private execID: number;
     private technologiesStats: TechnologiesStatsModel = <TechnologiesStatsModel> {};

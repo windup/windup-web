@@ -8,9 +8,10 @@ export class AbstractService {
         // in a real world app, we may send the error to some remote logging infrastructure
         // instead of just logging it to the console
         console.error("Service error: (" + typeof error + ") " + error);
-        var json;
+        let json;
+
         try {
-            json = JSON.stringify(error);
+            json = error.json();
             console.error("Error contents: " + json);
         }
         catch (ex) {
