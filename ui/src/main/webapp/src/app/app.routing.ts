@@ -82,9 +82,7 @@ export const appRoutes: Routes = [
                     { path: 'analysis-context', component: AnalysisContextFormComponent, data: {displayName: "Edit Analysis Context"}, canDeactivate: [ConfirmDeactivateGuard]},
                     { path: 'applications', children: [
                         { path: 'register', component: RegisterApplicationFormComponent, data: {displayName: "Application Registration"}},
-                        { path: ':applicationId', children: [
-                            { path: 'edit', component: RegisterApplicationFormComponent, data: {displayName: "Edit Application"}},
-                        ]}
+                        { path: ':applicationId/edit', component: RegisterApplicationFormComponent, data: {displayName: "Edit Application"}},
                     ]},
                     { path: 'reports/:executionId', children: [
                         {path: 'technology-report', component: TechnologiesReportComponent, data: {displayName: 'Technology Report'}},

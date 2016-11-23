@@ -53,6 +53,9 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
             isDirectory: []
         });
 
+        /*
+         * parent.parent is workaround for this issue: https://github.com/angular/angular/issues/12767
+         */
         this._activatedRoute.parent.parent.data.subscribe((data: {applicationGroup: ApplicationGroup}) => {
             this.applicationGroup = data.applicationGroup;
             this.multipartUploader.setOptions({
