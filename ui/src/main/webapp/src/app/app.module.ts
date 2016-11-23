@@ -65,6 +65,8 @@ import {RouteLinkProviderService} from "./services/route-link-provider-service";
 import {ConfigurationResolve} from "./services/configuration.resolve";
 import {ProjectResolve} from "./services/project.resolve";
 import {ApplicationResolve} from "./services/application.resolve";
+import {BreadCrumbsComponent as BreadCrumbsNavigationComponent} from "./components/navigation/breadcrumbs.component";
+import {BreadCrumbsService} from "./components/navigation/breadcrumbs.service";
 
 
 @NgModule({
@@ -118,6 +120,8 @@ import {ApplicationResolve} from "./services/application.resolve";
         ContextMenuComponent,
         GroupLayoutComponent,
         DefaultLayoutComponent
+        MigrationIssuesTableComponent,
+        BreadCrumbsNavigationComponent
     ],
     providers: [
         appRoutingProviders,
@@ -149,6 +153,7 @@ import {ApplicationResolve} from "./services/application.resolve";
                 return new RouteLinkProviderService(appRoutes);
             }
         },
+        BreadCrumbsService,
         {
             provide: Http,
             useFactory:
