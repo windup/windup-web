@@ -51,9 +51,9 @@ export class ProjectListComponent implements OnInit, OnDestroy {
         this._router.navigate(['/migration-project-form']);
     }
 
-    editProject(project:MigrationProject, event:Event) {
+    editProject(project: MigrationProject, event: Event) {
         event.preventDefault();
-        this._router.navigate(['/migration-project-form', { projectID: project.id }])
+        this._router.navigate([`/projects/${project.id}/edit`]);
     }
 
     viewProject(project:MigrationProject, event:Event) {

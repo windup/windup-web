@@ -29,6 +29,7 @@ export class ProjectResolve implements Resolve<MigrationProject> {
                     this._notificationService.error(error);
                     this._router.navigate(['/']);
                     observer.next(false);
+                    observer.complete();
                 }
             );
         });

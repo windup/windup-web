@@ -13,7 +13,6 @@ export class MigrationProjectFormComponent extends FormComponent implements OnIn
     model:MigrationProject = <MigrationProject>{};
 
     editMode:boolean = false;
-    loading:boolean = false;
 
     errorMessages: string[];
 
@@ -26,18 +25,10 @@ export class MigrationProjectFormComponent extends FormComponent implements OnIn
     }
 
     ngOnInit() {
-        this._activatedRoute.params.subscribe(params => {
-            let id:number = parseInt(params["projectID"]);
-            if (!isNaN(id)) {
+        this._activatedRoute.data.subscribe((data: {project: MigrationProject}) => {
+            if (data.project) {
                 this.editMode = true;
-                this.loading = true;
-                this._migrationProjectService.get(id).subscribe(
-                    model => {
-                        this.model = model;
-                        this.loading = false;
-                    },
-                    error => this.handleError(<any> error)
-                );
+                this.model = data.project;
             }
         });
     }
