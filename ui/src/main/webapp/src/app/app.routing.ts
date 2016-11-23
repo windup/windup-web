@@ -45,7 +45,6 @@ export const appRoutes: Routes = [
                         }
                     },
                     {path: "project-list",           component: ProjectListComponent,   data: {displayName: "Project List"}},
-                    {path: "migration-project-form", component: MigrationProjectFormComponent,    data: {displayName: "Edit Project"}},
                     {path: "application-group-form", component: ApplicationGroupForm,             data: {displayName: "Edit Application Group"}},
                     {path: "analysis-context-form",  component: AnalysisContextFormComponent,     data: {displayName: "Edit Analysis Context"}, canDeactivate: [ConfirmDeactivateGuard]},
                 ]
