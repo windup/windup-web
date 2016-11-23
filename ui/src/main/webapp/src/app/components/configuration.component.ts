@@ -4,6 +4,7 @@ import {Configuration, RuleProviderEntity, RulesPath} from "../windup-services";
 import {RuleService} from "../services/rule.service";
 import {RulesModalComponent} from "./rules-modal.component";
 import {AddRulesPathModalComponent, ConfigurationEvent} from "./add-rules-path-modal.component";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
     selector: 'application-list',
@@ -23,18 +24,18 @@ export class ConfigurationComponent implements OnInit {
     addRulesModalComponent:AddRulesPathModalComponent;
 
     constructor(
+        private _activatedRoute: ActivatedRoute,
         private _configurationService:ConfigurationService,
         private _ruleService:RuleService
-    ) {}
+    ) {
+
+    }
 
     ngOnInit(): void {
-        this._configurationService.get().subscribe(
-            (configuration:Configuration) => {
-                this.configuration = configuration;
-                this.loadProviders();
-            },
-            error => this.errorMessage = <any>error
-        );
+        this._activatedRoute.data.subscribe((data: {configuration: Configuration}) => {
+            this.configuration = data.configuration;
+            this.loadProviders();
+        });
     }
 
     loadProviders() {

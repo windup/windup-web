@@ -17,6 +17,7 @@ import {DefaultLayoutComponent} from "./components/layout/default-layout.compone
 import {ApplicationGroupResolve} from "./components/group/application-group.resolve";
 import {MigrationIssuesComponent} from "./components/reports/migration-issues/migration-issues.component";
 import {ProjectResolve} from "./services/project.resolve";
+import {ConfigurationResolve} from "./services/configuration.resolve";
 
 export const appRoutes: Routes = [
     {path: "login", component: LoginComponent},
@@ -32,7 +33,16 @@ export const appRoutes: Routes = [
                 component: DefaultLayoutComponent,
                 children: [
                     {path: '', redirectTo: "/project-list", pathMatch: "full"},
-                    {path: "configuration",          component: ConfigurationComponent, data: {displayName: "Windup Configuration"}},
+                    {
+                        path: "configuration",
+                        resolve: {
+                            configuration: ConfigurationResolve
+                        },
+                        component: ConfigurationComponent,
+                        data: {
+                            displayName: "Windup Configuration"
+                        }
+                    },
                     {path: "project-list",           component: ProjectListComponent,   data: {displayName: "Project List"}},
                     {path: "group-list",             component: GroupListComponent,     data: {displayName: "Group List"}},
                     {path: "register-application",   component: RegisterApplicationFormComponent, data: {displayName: "Application Registration"}},
