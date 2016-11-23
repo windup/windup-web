@@ -18,9 +18,8 @@ import {Constants} from "../constants";
 export class RegisterApplicationFormComponent extends FormComponent implements OnInit {
     registrationForm: FormGroup;
 
-    applicationGroup:ApplicationGroup;
+    applicationGroup: ApplicationGroup;
     application: RegisteredApplication;
-    loading:boolean = true;
     multipartUploader: FileUploader;
     mode:string = "UPLOADED";
     fileInputPath:string;
@@ -54,24 +53,13 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
             isDirectory: []
         });
 
-        this._activatedRoute.params.subscribe(params => {
-            let id:number = parseInt(params["groupID"]);
-            if (!isNaN(id)) {
-                this.loading = true;
-                this._applicationGroupService.get(id).subscribe(
-                    group => {
-                        this.applicationGroup = group;
-                        this.loading = false;
-                        this.multipartUploader.setOptions({
-                            url: Constants.REST_BASE + RegisteredApplicationService.REGISTER_APPLICATION_URL + group.id,
-                            method: 'POST',
-                            disableMultipart: false
-                        });
-                    }
-                );
-            } else {
-                this.loading = false;
-            }
+        this._activatedRoute.parent.parent.data.subscribe((data: {applicationGroup: ApplicationGroup}) => {
+            this.applicationGroup = data.applicationGroup;
+            this.multipartUploader.setOptions({
+                url: Constants.REST_BASE + RegisteredApplicationService.REGISTER_APPLICATION_URL + this.applicationGroup.id,
+                method: 'POST',
+                disableMultipart: false
+            });
         });
     }
 
@@ -111,7 +99,6 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
 
     rerouteToApplicationList() {
         this.multipartUploader.clearQueue();
-
         this._router.navigate(['/groups', this.applicationGroup.id ]);
     }
 

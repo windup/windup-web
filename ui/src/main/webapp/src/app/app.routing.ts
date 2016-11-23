@@ -44,7 +44,6 @@ export const appRoutes: Routes = [
                         }
                     },
                     {path: "project-list",           component: ProjectListComponent,   data: {displayName: "Project List"}},
-                    {path: "register-application",   component: RegisterApplicationFormComponent, data: {displayName: "Application Registration"}},
                     {path: "edit-application/:id",   component: EditApplicationFormComponent,     data: {displayName: "Update application"}},
                     {path: "migration-project-form", component: MigrationProjectFormComponent,    data: {displayName: "Edit Project"}},
                     {path: "application-group-form", component: ApplicationGroupForm,             data: {displayName: "Edit Application Group"}},
