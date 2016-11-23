@@ -43,7 +43,6 @@ export class GroupLayoutComponent implements OnInit {
                 link: this._routeLinkProviderService.getRouteForComponent(GroupListComponent, {
                     projectId: this.applicationGroup.migrationProject.id
                 }),
-                data: { projectID: this.applicationGroup.migrationProject.id },
                 icon: 'fa-tachometer',
                 isEnabled: true
             },
