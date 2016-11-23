@@ -112,10 +112,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     rerouteToApplicationList() {
         this.multipartUploader.clearQueue();
 
-        if (this.applicationGroup != null)
-            this._router.navigate(['/group', this.applicationGroup.id ]);
-        else
-            this._router.navigate(['/application-list']);
+        this._router.navigate(['/groups', this.applicationGroup.id ]);
     }
 
     cancelRegistration() {
