@@ -91,6 +91,10 @@
                                 <tr> <td>JPA entities</td> <td>{{(technologiesStats?.statsServicesJpaEntitites | async)?.quantity}}</td> </tr>
                                 <tr> <td>JPA persistence units</td> <td>{{(technologiesStats?.statsServicesJpaPersistenceUnits | async)?.quantity}}</td> </tr>
                                 <tr> <td>JPA named queries</td> <td>{{(technologiesStats?.statsServicesJpaNamedQueries | async)?.quantity}}</td> </tr>
+                                <tr> <td>Hibernate configuration files</td> <td>{{(technologiesStats?.statsServicesHibernateConfigurationFiles | async)?.quantity}}</td> </tr>
+                                <tr> <td>Hibernate entities</td> <td>{{(technologiesStats?.statsServicesHibernateEntities | async)?.quantity}}</td> </tr>
+                                <tr> <td>Hibernate mapping files</td> <td>{{(technologiesStats?.statsServicesHibernateMappingFiles | async)?.quantity}}</td> </tr>
+                                <tr> <td>Hibernate session factories</td> <td>{{(technologiesStats?.statsServicesHibernateSessionFactories | async)?.quantity}}</td> </tr>
                                 <tr> <td>RMI services</td> <td>{{(technologiesStats?.statsServicesRmiServices | async)?.quantity}}</td> </tr>
                             </tbody>
                         </table>
