@@ -81,7 +81,7 @@ export class ApplicationGroupForm extends FormComponent implements OnInit
     }
 
     rerouteToGroupList() {
-        this._router.navigate(['/group-list', {projectID: this.project.id}]);
+        this._router.navigate(['/projects', this.project.id]);
     }
 
     cancel() {

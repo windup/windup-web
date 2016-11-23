@@ -176,7 +176,7 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
     }
 
     routeToGroupList() {
-        this._router.navigate(['/group-list', {projectID: this.applicationGroup.migrationProject.id}]);
+        this._router.navigate(['/projects', this.applicationGroup.migrationProject.id]);
     }
 }
 
