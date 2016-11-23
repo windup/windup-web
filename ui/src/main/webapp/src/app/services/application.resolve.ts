@@ -1,0 +1,38 @@
+import {Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Router} from "@angular/router";
+import {Observable} from "rxjs";
+import {Injectable} from "@angular/core";
+import {MigrationProject} from "windup-services";
+import {NotificationService} from "./notification.service";
+import {RegisteredApplicationService} from "./registered-application.service";
+import {RegisteredApplication} from "windup-services";
+
+@Injectable()
+export class ApplicationResolve implements Resolve<RegisteredApplication> {
+
+    public constructor(
+        private _registeredApplicationService: RegisteredApplicationService,
+        private _notificationService: NotificationService,
+        private _router: Router
+    ) {
+
+    }
+
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<MigrationProject|boolean> {
+        let id = +route.params['applicationId'];
+
+        return new Observable<MigrationProject>(observer => {
+            this._registeredApplicationService.get(id).subscribe(
+                application => {
+                    observer.next(application);
+                    observer.complete();
+                },
+                error => {
+                    this._notificationService.error(error);
+                    this._router.navigate(['/']);
+                    observer.next(false);
+                    observer.complete();
+                }
+            );
+        });
+    }
+}

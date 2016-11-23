@@ -18,6 +18,7 @@ import {ApplicationGroupResolve} from "./components/group/application-group.reso
 import {MigrationIssuesComponent} from "./components/reports/migration-issues/migration-issues.component";
 import {ProjectResolve} from "./services/project.resolve";
 import {ConfigurationResolve} from "./services/configuration.resolve";
+import {ApplicationResolve} from "./services/application.resolve";
 
 export const appRoutes: Routes = [
     {path: "login", component: LoginComponent},
@@ -44,7 +45,6 @@ export const appRoutes: Routes = [
                         }
                     },
                     {path: "project-list",           component: ProjectListComponent,   data: {displayName: "Project List"}},
-                    {path: "edit-application/:id",   component: EditApplicationFormComponent,     data: {displayName: "Update application"}},
                     {path: "migration-project-form", component: MigrationProjectFormComponent,    data: {displayName: "Edit Project"}},
                     {path: "application-group-form", component: ApplicationGroupForm,             data: {displayName: "Edit Application Group"}},
                     {path: "analysis-context-form",  component: AnalysisContextFormComponent,     data: {displayName: "Edit Analysis Context"}, canDeactivate: [ConfirmDeactivateGuard]},
@@ -82,7 +82,14 @@ export const appRoutes: Routes = [
                     { path: 'analysis-context', component: AnalysisContextFormComponent, data: {displayName: "Edit Analysis Context"}, canDeactivate: [ConfirmDeactivateGuard]},
                     { path: 'applications', children: [
                         { path: 'register', component: RegisterApplicationFormComponent, data: {displayName: "Application Registration"}},
-                        { path: ':applicationId/edit', component: RegisterApplicationFormComponent, data: {displayName: "Edit Application"}},
+                        {
+                            path: ':applicationId/edit',
+                            component: EditApplicationFormComponent,
+                            resolve: {
+                                application: ApplicationResolve
+                            },
+                            data: {displayName: "Edit Application"}
+                        },
                     ]},
                     { path: 'reports/:executionId', children: [
                         {path: 'technology-report', component: TechnologiesReportComponent, data: {displayName: 'Technology Report'}},

@@ -64,6 +64,7 @@ import {ApplicationGroupResolve} from "./components/group/application-group.reso
 import {RouteLinkProviderService} from "./services/route-link-provider-service";
 import {ConfigurationResolve} from "./services/configuration.resolve";
 import {ProjectResolve} from "./services/project.resolve";
+import {ApplicationResolve} from "./services/application.resolve";
 
 
 @NgModule({
@@ -141,6 +142,7 @@ import {ProjectResolve} from "./services/project.resolve";
         ApplicationGroupResolve,
         ConfigurationResolve,
         ProjectResolve,
+        ApplicationResolve,
         {
             provide: RouteLinkProviderService,
             useFactory: () => {

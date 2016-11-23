@@ -15,7 +15,6 @@ import {RegisterApplicationFormComponent} from "./register-application-form.comp
 })
 export class EditApplicationFormComponent extends RegisterApplicationFormComponent implements OnInit {
     application: RegisteredApplication;
-    loading:boolean = true;
     multipartUploader: FileUploader;
 
     constructor(
@@ -42,27 +41,16 @@ export class EditApplicationFormComponent extends RegisterApplicationFormCompone
             inputPath: ["", Validators.compose([Validators.required, Validators.minLength(4)]), FileExistsValidator.create(this._fileService)]
         });
 
-        this._activatedRoute.params.subscribe(params => {
-            if (params.hasOwnProperty('id') && !isNaN(params['id'])) {
-                let id = parseInt(params["id"]);
-                this.loading = true;
-                this._registeredApplicationService.get(id).subscribe(
-                    application => {
-                        this.application = application;
-                        this.mode = application.registrationType;
-                        this.fileInputPath = application.inputPath;
-                        this.applicationGroup = application.applicationGroup;
-                        this.loading = false;
-                        this.multipartUploader.setOptions({
-                            url: Constants.REST_BASE + RegisteredApplicationService.REGISTERED_APPLICATION_SERVICE_NAME + application.id,
-                            disableMultipart: false,
-                            method: 'PUT'
-                        });
-                    }
-                );
-            } else {
-                this.loading = false;
-            }
+        this._activatedRoute.data.subscribe((data: {application: RegisteredApplication}) => {
+            this.application = data.application;
+            this.mode = this.application.registrationType;
+            this.fileInputPath = this.application.inputPath;
+            this.applicationGroup = this.application.applicationGroup;
+            this.multipartUploader.setOptions({
+                url: Constants.REST_BASE + RegisteredApplicationService.REGISTERED_APPLICATION_SERVICE_NAME + this.application.id,
+                disableMultipart: false,
+                method: 'PUT'
+            });
         });
     }
 
