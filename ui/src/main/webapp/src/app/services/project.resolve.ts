@@ -4,6 +4,7 @@ import {Injectable} from "@angular/core";
 import {MigrationProject} from "windup-services";
 import {MigrationProjectService} from "./migration-project.service";
 import {NotificationService} from "./notification.service";
+import {utils} from '../utils';
 
 @Injectable()
 export class ProjectResolve implements Resolve<MigrationProject> {
@@ -26,7 +27,7 @@ export class ProjectResolve implements Resolve<MigrationProject> {
                     observer.complete();
                 },
                 error => {
-                    this._notificationService.error(error);
+                    this._notificationService.error(utils.getErrorMessage(error));
                     this._router.navigate(['/']);
                     observer.next(false);
                     observer.complete();

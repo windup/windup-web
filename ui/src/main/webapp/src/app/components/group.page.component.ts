@@ -73,7 +73,7 @@ export class GroupPageComponent implements OnInit, OnDestroy
                 console.log('Group loaded: ', inGroupID);
             },
             error => {
-                this._notificationService.error(utils.getErrorMessage(error.error));
+                this._notificationService.error(utils.getErrorMessage(error));
                 this._router.navigate(['']);
             }
         );

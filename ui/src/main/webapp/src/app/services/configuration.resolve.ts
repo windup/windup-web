@@ -5,6 +5,7 @@ import {MigrationProject} from "windup-services";
 import {NotificationService} from "./notification.service";
 import {Configuration} from "../windup-services";
 import {ConfigurationService} from "./configuration.service";
+import {utils} from '../utils';
 
 @Injectable()
 export class ConfigurationResolve implements Resolve<Configuration> {
@@ -25,7 +26,7 @@ export class ConfigurationResolve implements Resolve<Configuration> {
                     observer.complete();
                 },
                 error => {
-                    this._notificationService.error(error);
+                    this._notificationService.error(utils.getErrorMessage(error));
                     this._router.navigate(['/']);
                     observer.next(false);
                     observer.complete();

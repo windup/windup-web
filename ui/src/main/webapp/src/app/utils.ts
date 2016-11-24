@@ -10,6 +10,8 @@ export module utils {
             return error;
         } else if (typeof error == 'object' && error.hasOwnProperty('message')) {
             return error.message;
+        } else if (typeof error == 'object' && error.hasOwnProperty('error')) {
+            return error.error;
         } else {
             return 'Unknown error: ' + error;
         }

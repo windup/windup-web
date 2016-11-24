@@ -7,6 +7,7 @@ import {ApplicationGroup} from "../../../../app/windup-services";
 import {ApplicationGroupService} from '../../../services/application-group.service';
 import {TechnologiesStatsModel} from '../../../generated/tsModels/TechnologiesStatsModel';
 import {NotificationService} from "../../../services/notification.service";
+import {utils} from '../../../utils';
 
 @Component({
     selector: 'wu-technologies-report',
@@ -42,7 +43,7 @@ export class TechnologiesReportComponent implements OnInit {
                 this.technologiesStats = stats; // [0]
             },
             error => {
-                this._notificationService.error(error);
+                this._notificationService.error(utils.getErrorMessage(error));
                 this._router.navigate(['']);
             }
         );

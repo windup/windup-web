@@ -8,7 +8,7 @@ export class NotificationService {
     private _notifications: ReplaySubject<Notification>;
 
     constructor() {
-        this._notifications = new ReplaySubject<Notification>(1);
+        this._notifications = new ReplaySubject<Notification>(1, 100);
     }
 
     public error(message: string) {

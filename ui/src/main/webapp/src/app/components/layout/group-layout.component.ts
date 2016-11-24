@@ -9,6 +9,8 @@ import {ReportMenuItem} from "../navigation/context-menu-item.class";
 import {AnalysisContextFormComponent} from "../analysis-context-form.component";
 import {NotificationService} from "../../services/notification.service";
 import {GroupListComponent} from "../group-list.component";
+import {utils} from '../../utils';
+
 
 @Component({
     templateUrl: './group-layout.component.html',
@@ -68,7 +70,7 @@ export class GroupLayoutComponent implements OnInit {
                             this._notificationService.info('Windup execution has started');
                         },
                         error => {
-                            this._notificationService.error(error.error);
+                            this._notificationService.error(utils.getErrorMessage(error));
                         }
                     );
                 },
