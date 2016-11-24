@@ -20,7 +20,7 @@ describe('MigrationissuesTableComponent', () => {
 
     beforeEach(() => {
         activatedRouteMock = new ActivatedRouteMock();
-        activatedRouteMock.testParams = {id: 1};
+        activatedRouteMock.testParams = {executionId: 1};
 
         TestBed.configureTestingModule({
             imports: [ RouterTestingModule ],

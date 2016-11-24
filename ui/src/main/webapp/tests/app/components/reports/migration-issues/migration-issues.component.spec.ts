@@ -77,7 +77,7 @@ describe('MigrationissuesComponent', () => {
 
         it('should create error message in notification service', async(inject([NotificationService], (notificationService: NotificationService) => {
             expect(notificationService.error).toHaveBeenCalled();
-            expect(notificationService.error).toHaveBeenCalledWith({error: 'Report not found'});
+            expect(notificationService.error).toHaveBeenCalledWith('Report not found');
         })));
     });
 
