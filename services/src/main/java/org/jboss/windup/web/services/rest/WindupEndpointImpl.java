@@ -1,5 +1,6 @@
 package org.jboss.windup.web.services.rest;
 
+import java.util.Collection;
 import java.nio.file.Path;
 import java.util.GregorianCalendar;
 import java.util.logging.Logger;
@@ -117,4 +118,9 @@ public class WindupEndpointImpl implements WindupEndpoint
         return applicationGroup;
     }
 
+    @Override
+    public Collection<WindupExecution> getAllExecutions()
+    {
+        return this.entityManager.createQuery("SELECT ex from " + WindupExecution.class.getSimpleName() + " ex").getResultList();
+    }
 }

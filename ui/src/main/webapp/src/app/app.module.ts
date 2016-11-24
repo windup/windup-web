@@ -68,6 +68,7 @@ import {ApplicationResolve} from "./services/application.resolve";
 import {BreadCrumbsComponent as BreadCrumbsNavigationComponent} from "./components/navigation/breadcrumbs.component";
 import {BreadCrumbsService} from "./components/navigation/breadcrumbs.service";
 import {RouteFlattenerService} from "./services/route-flattener.service";
+import {ExecutionsListComponent} from "./components/executions/executions-list.component";
 
 
 @NgModule({
@@ -121,7 +122,9 @@ import {RouteFlattenerService} from "./services/route-flattener.service";
         ContextMenuComponent,
         GroupLayoutComponent,
         DefaultLayoutComponent,
-        BreadCrumbsNavigationComponent
+        BreadCrumbsNavigationComponent,
+        DefaultLayoutComponent,
+        ExecutionsListComponent
     ],
     providers: [
         appRoutingProviders,
