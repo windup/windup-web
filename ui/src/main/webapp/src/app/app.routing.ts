@@ -20,6 +20,7 @@ import {ProjectResolve} from "./services/project.resolve";
 import {ConfigurationResolve} from "./services/configuration.resolve";
 import {ApplicationResolve} from "./services/application.resolve";
 import {FullFlattenedRoute} from "./services/route-flattener.service";
+import {ExecutionsListComponent} from "./components/executions/executions-list.component";
 
 export const appRoutes: Routes = [
     {path: "login", component: LoginComponent},
@@ -46,7 +47,8 @@ export const appRoutes: Routes = [
                         }
                     },
                     {path: "project-list",           component: ProjectListComponent,   data: {displayName: "Project List"}},
-                    {path: "application-group-form", component: ApplicationGroupForm,   data: {displayName: "Edit Application Group"}}
+                    {path: "application-group-form", component: ApplicationGroupForm,             data: {displayName: "Edit Application Group"}},
+                    {path: 'executions', component: ExecutionsListComponent}
                 ]
             },
             {
