@@ -50,7 +50,7 @@ export const appRoutes: Routes = [
                     },
                     {path: "project-list",           component: ProjectListComponent,   data: {displayName: "Project List"}},
                     {path: "application-group-form", component: ApplicationGroupForm,             data: {displayName: "Edit Application Group"}},
-                    {path: 'executions', component: ExecutionsListComponent}
+                    {path: 'executions', component: AllExecutionsComponent}
                 ]
             },
             {
