@@ -1,4 +1,4 @@
-import {Component, OnInit, ElementRef} from "@angular/core";
+import {Component, OnInit, ElementRef, Input} from "@angular/core";
 import {WindupService} from "../../services/windup.service";
 import {WindupExecution} from "windup-services";
 import {NotificationService} from "../../services/notification.service";
@@ -9,6 +9,7 @@ import {utils} from '../../utils';
     templateUrl: './executions-list.component.html'
 })
 export class ExecutionsListComponent implements OnInit {
+    @Input()
     protected executions: WindupExecution[];
     protected element;
 
@@ -21,14 +22,6 @@ export class ExecutionsListComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this._windupService.getAllExecutions().subscribe(
-            executions => {
-                this.executions = executions;
-            },
-            error => {
-                this._notificationService.error(utils.getErrorMessage(error))
-            }
-        );
     }
 
     canCancel(execution: WindupExecution): boolean {

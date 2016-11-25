@@ -69,6 +69,8 @@ import {BreadCrumbsComponent as BreadCrumbsNavigationComponent} from "./componen
 import {BreadCrumbsService} from "./components/navigation/breadcrumbs.service";
 import {RouteFlattenerService} from "./services/route-flattener.service";
 import {ExecutionsListComponent} from "./components/executions/executions-list.component";
+import {AllExecutionsComponent} from "./components/executions/all-executions.component";
+import {GroupExecutionsComponent} from "./components/executions/group-executions.component";
 
 
 @NgModule({
@@ -124,7 +126,9 @@ import {ExecutionsListComponent} from "./components/executions/executions-list.c
         DefaultLayoutComponent,
         BreadCrumbsNavigationComponent,
         DefaultLayoutComponent,
-        ExecutionsListComponent
+        ExecutionsListComponent,
+        AllExecutionsComponent,
+        GroupExecutionsComponent
     ],
     providers: [
         appRoutingProviders,
