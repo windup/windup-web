@@ -1,6 +1,6 @@
 import {Component, OnInit, ElementRef, Input} from "@angular/core";
 import {WindupService} from "../../services/windup.service";
-import {WindupExecution} from "windup-services";
+import {WindupExecution} from "../../windup-services";
 import {NotificationService} from "../../services/notification.service";
 import {utils} from '../../utils';
 
@@ -10,7 +10,8 @@ import {utils} from '../../utils';
 })
 export class ExecutionsListComponent implements OnInit {
     @Input()
-    protected executions: WindupExecution[];
+    executions: WindupExecution[];
+
     protected element;
 
     constructor(
@@ -25,7 +26,7 @@ export class ExecutionsListComponent implements OnInit {
     }
 
     canCancel(execution: WindupExecution): boolean {
-        return execution.state === 'QUEUED' || execution.state === 'STARTED';
+        return execution.state === 'QUEUED'; // || execution.state === 'STARTED';
     }
 
     cancelExecution(execution: WindupExecution) {
