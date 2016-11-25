@@ -1,5 +1,6 @@
 package org.jboss.windup.web.addons.websupport.rest.graph;
 
+import com.thinkaurelius.titan.diskstorage.PermanentBackendException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,11 @@ import org.jboss.windup.graph.model.WindupVertexFrame;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Query;
 import com.tinkerpop.blueprints.Vertex;
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.ServerErrorException;
+import javax.ws.rs.core.Response;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -74,12 +80,29 @@ public class GraphResourceImpl extends AbstractGraphResource implements GraphRes
         if (id == null)
             throw new IllegalArgumentException("Vertex ID not specified.");
 
-        GraphContext graphContext = getGraph(executionID);
-        Vertex vertex = graphContext.getFramed().getVertex(id);
-
-        if (vertex == null)
-            throw new NotFoundException("Non-existent vertex ID " + id + " in execution " + executionID);
-
-        return convertToMap(executionID, vertex, depth);
+        try {
+            GraphContext graphContext = getGraph(executionID);
+            Vertex vertex = graphContext.getFramed().getVertex(id);
+            if (vertex == null)
+                throw new NotFoundException("Non-existent vertex ID " + id + " in execution " + executionID);
+            return convertToMap(executionID, vertex, depth);
+        }
+        catch (IllegalStateException ex)
+        {
+            String what = "no partition bits".equals(ex.getMessage()) ? "Illegal" : "Error loading";
+            String msg = what + " vertex ID " + id + " in execution " + executionID + "; " + ex.getMessage();
+            final String body = "{ \"error\": \"" + StringEscapeUtils.escapeJson(msg) + "\" }";
+            final Response response = Response.status(Response.Status.BAD_REQUEST).entity(body).header("X-Windup-Error", msg).build();
+            throw new BadRequestException(msg, response, ex);
+        }
+        catch (Exception ex)
+        {
+            String msg = "Backend database error: ";
+            Throwable cause = ex;
+            while (null != (cause = cause.getCause()))
+                if (cause instanceof PermanentBackendException)
+                    msg = "Backend database permanent error: ";
+            throw new ServerErrorException(msg + ex.getMessage(), Response.Status.INTERNAL_SERVER_ERROR, ex);
+        }
     }
 }
