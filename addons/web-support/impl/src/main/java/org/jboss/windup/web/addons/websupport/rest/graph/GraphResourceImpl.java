@@ -17,8 +17,7 @@ import com.tinkerpop.blueprints.Vertex;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.core.Response;
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.jboss.windup.web.addons.websupport.rest.RestUtil;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -84,14 +83,18 @@ public class GraphResourceImpl extends AbstractGraphResource implements GraphRes
             GraphContext graphContext = getGraph(executionID);
             Vertex vertex = graphContext.getFramed().getVertex(id);
             if (vertex == null)
-                throw new NotFoundException("Non-existent vertex ID " + id + " in execution " + executionID);
+            {
+                final String msg = "Non-existent vertex ID " + id + " in execution " + executionID;
+                final Response response = RestUtil.createErrorResponse(Response.Status.NOT_FOUND, msg);
+                throw new NotFoundException(msg, response);
+            }
             return convertToMap(executionID, vertex, depth);
         }
         catch (IllegalStateException ex)
         {
             String what = "no partition bits".equals(ex.getMessage()) ? "Illegal" : "Error loading";
             String msg = what + " vertex ID " + id + " in execution " + executionID + "; " + ex.getMessage();
-            final String body = "{ \"error\": \"" + StringEscapeUtils.escapeJson(msg) + "\" }";
+            final String body = RestUtil.formatErrorJson(msg);
             final Response response = Response.status(Response.Status.BAD_REQUEST).entity(body).header("X-Windup-Error", msg).build();
             throw new BadRequestException(msg, response, ex);
         }
@@ -105,4 +108,5 @@ public class GraphResourceImpl extends AbstractGraphResource implements GraphRes
             throw new ServerErrorException(msg + ex.getMessage(), Response.Status.INTERNAL_SERVER_ERROR, ex);
         }
     }
+
 }
