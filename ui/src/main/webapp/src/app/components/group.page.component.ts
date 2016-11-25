@@ -73,7 +73,7 @@ export class GroupPageComponent implements OnInit, OnDestroy
                 console.log('Group loaded: ', inGroupID);
             },
             error => {
-                this._notificationService.error(utils.getErrorMessage(error.error));
+                this._notificationService.error(utils.getErrorMessage(error));
                 this._router.navigate(['']);
             }
         );
@@ -101,11 +101,11 @@ export class GroupPageComponent implements OnInit, OnDestroy
     }
 
     registerApplication(applicationGroup:ApplicationGroup) {
-        this._router.navigate(['/register-application', { groupID: applicationGroup.id }]);
+        this._router.navigate([`/groups/${applicationGroup.id}/applications/register`]);
     }
 
     editApplication(application: RegisteredApplication) {
-        this._router.navigate(['/edit-application', application.id]);
+        this._router.navigate([`/groups/${this.inGroupID}/applications/${application.id}/edit`]);
     }
 
     deleteApplication(application: RegisteredApplication) {
@@ -123,5 +123,4 @@ export class GroupPageComponent implements OnInit, OnDestroy
                 });
         }
     }
-
 }

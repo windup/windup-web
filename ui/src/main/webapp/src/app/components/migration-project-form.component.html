@@ -16,7 +16,6 @@
                 <input #projectTitleControl="ngModel"
                        name="projectTitle"
                        [(ngModel)]="model.title"
-                       [disabled]="loading"
                        required
                        minlength="1"
                        maxlength="128"
@@ -30,7 +29,7 @@
         </div>
         <div class="form-group">
             <div class="col-md-10 col-md-offset-2">
-                <button class="btn btn-primary" type="submit" [disabled]="!projectForm.form.valid || loading">Save</button>
+                <button class="btn btn-primary" type="submit" [disabled]="!projectForm.form.valid">Save</button>
                 <button (click)="cancel()" type="button" class="btn btn-default">Cancel</button>
             </div>
         </div>

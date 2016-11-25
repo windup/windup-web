@@ -8,6 +8,9 @@ import {WindupService} from "../../services/windup.service";
 import {ReportMenuItem} from "../navigation/context-menu-item.class";
 import {AnalysisContextFormComponent} from "../analysis-context-form.component";
 import {NotificationService} from "../../services/notification.service";
+import {GroupListComponent} from "../group-list.component";
+import {utils} from '../../utils';
+
 
 @Component({
     templateUrl: './group-layout.component.html',
@@ -39,8 +42,9 @@ export class GroupLayoutComponent implements OnInit {
         this.menuItems = [
             {
                 label: 'View Project',
-                link: '/group-list',
-                data: { projectID: this.applicationGroup.migrationProject.id },
+                link: this._routeLinkProviderService.getRouteForComponent(GroupListComponent, {
+                    projectId: this.applicationGroup.migrationProject.id
+                }),
                 icon: 'fa-tachometer',
                 isEnabled: true
             },
@@ -66,7 +70,7 @@ export class GroupLayoutComponent implements OnInit {
                             this._notificationService.info('Windup execution has started');
                         },
                         error => {
-                            this._notificationService.error(error.error);
+                            this._notificationService.error(utils.getErrorMessage(error));
                         }
                     );
                 },

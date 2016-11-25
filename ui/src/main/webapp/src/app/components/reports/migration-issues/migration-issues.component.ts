@@ -2,6 +2,7 @@ import {Component, OnInit} from "@angular/core";
 import {Router, ActivatedRoute} from "@angular/router";
 import {NotificationService} from "../../../services/notification.service";
 import {MigrationIssuesService} from "./migration-issues.service";
+import {utils} from '../../../utils';
 
 @Component({
     selector: 'wu-migration-issues',
@@ -32,7 +33,7 @@ export class MigrationIssuesComponent implements OnInit {
                     this.categories = Object.keys(result);
                 },
                 error => {
-                    this._notificationService.error(error);
+                    this._notificationService.error(utils.getErrorMessage(error));
                     this._router.navigate(['']);
                 });
         });

@@ -2,15 +2,16 @@ import {Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Router} from "@ang
 import {Observable} from "rxjs";
 import {Injectable} from "@angular/core";
 import {MigrationProject} from "windup-services";
-import {MigrationProjectService} from "./migration-project.service";
 import {NotificationService} from "./notification.service";
+import {RegisteredApplicationService} from "./registered-application.service";
+import {RegisteredApplication} from "windup-services";
 import {utils} from '../utils';
 
 @Injectable()
-export class ProjectResolve implements Resolve<MigrationProject> {
+export class ApplicationResolve implements Resolve<RegisteredApplication> {
 
     public constructor(
-        private _migrationProjectService: MigrationProjectService,
+        private _registeredApplicationService: RegisteredApplicationService,
         private _notificationService: NotificationService,
         private _router: Router
     ) {
@@ -18,12 +19,12 @@ export class ProjectResolve implements Resolve<MigrationProject> {
     }
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<MigrationProject|boolean> {
-        let id = +route.params['projectId'];
+        let id = +route.params['applicationId'];
 
         return new Observable<MigrationProject>(observer => {
-            this._migrationProjectService.get(id).subscribe(
-                project => {
-                    observer.next(project);
+            this._registeredApplicationService.get(id).subscribe(
+                application => {
+                    observer.next(application);
                     observer.complete();
                 },
                 error => {

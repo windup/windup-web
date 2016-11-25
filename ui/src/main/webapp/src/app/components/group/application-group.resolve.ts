@@ -4,6 +4,7 @@ import {ApplicationGroup} from "../../windup-services";
 import {ApplicationGroupService} from "../../services/application-group.service";
 import {NotificationService} from "../../services/notification.service";
 import {Injectable} from "@angular/core";
+import {utils} from '../../utils';
 
 /**
  * Gets ApplicationGroup object for groupId route parameter.
@@ -33,7 +34,7 @@ export class ApplicationGroupResolve implements Resolve<ApplicationGroup> {
                     observer.complete();
                 },
                 error => {
-                    this._notificationService.error(error);
+                    this._notificationService.error(utils.getErrorMessage(error));
                     this._router.navigate(['/']);
                     observer.next(false);
                     observer.complete();

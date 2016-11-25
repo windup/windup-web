@@ -62,6 +62,9 @@ import {GroupLayoutComponent} from "./components/layout/group-layout.component";
 import {DefaultLayoutComponent} from "./components/layout/default-layout.component";
 import {ApplicationGroupResolve} from "./components/group/application-group.resolve";
 import {RouteLinkProviderService} from "./services/route-link-provider-service";
+import {ConfigurationResolve} from "./services/configuration.resolve";
+import {ProjectResolve} from "./services/project.resolve";
+import {ApplicationResolve} from "./services/application.resolve";
 
 
 @NgModule({
@@ -137,6 +140,9 @@ import {RouteLinkProviderService} from "./services/route-link-provider-service";
         TechReportService,
         FramesRestClientService,
         ApplicationGroupResolve,
+        ConfigurationResolve,
+        ProjectResolve,
+        ApplicationResolve,
         {
             provide: RouteLinkProviderService,
             useFactory: () => {

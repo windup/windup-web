@@ -18,7 +18,6 @@ import {utils} from "../utils";
     templateUrl: 'group-list.component.html'
 })
 export class GroupListComponent implements OnInit, OnDestroy {
-    inProjectID: number;
     project: MigrationProject;
     inGroupID: number;
     groupSelected: ApplicationGroup;
@@ -27,7 +26,7 @@ export class GroupListComponent implements OnInit, OnDestroy {
     processingStatus: Map<number, WindupExecution> = new Map<number, WindupExecution>();
     processMonitoringInterval;
 
-    errorMessage:string;
+    errorMessage: string;
 
     constructor(
         private _activatedRoute: ActivatedRoute,
@@ -40,24 +39,8 @@ export class GroupListComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit():any {
-        console.log('ngOnInit() called');
-        this._activatedRoute.params.subscribe(params => {
-            this.inProjectID = parseInt(params["projectID"]);
-            this.inGroupID   = parseInt(params["groupId"]);
-            //console.log('ngOnInit(), );
-
-            this._migrationProjectService.get(this.inProjectID)
-                .subscribe(
-                    project => {
-                        this.project = project;
-                        console.log('ngOnInit success, inProjectID: ', this.inProjectID, ", this.inGroupID: ", this.inGroupID);
-                    },
-                    error => {
-                        this._notificationService.error(utils.getErrorMessage(error.error));
-                        this._router.navigate(['']);
-                    }
-                );
-
+        this._activatedRoute.data.subscribe((data: {project: MigrationProject}) => {
+            this.project = data.project;
             this.getGroups();
         });
 
@@ -84,7 +67,7 @@ export class GroupListComponent implements OnInit, OnDestroy {
 
     getGroups() {
         console.log("getGroups()");
-        return this._applicationGroupService.getByProjectID(this.inProjectID).subscribe(
+        return this._applicationGroupService.getByProjectID(this.project.id).subscribe(
             groups => this.groupsLoaded(groups),
             error => {
                 if (error instanceof ProgressEvent) {
@@ -164,12 +147,12 @@ export class GroupListComponent implements OnInit, OnDestroy {
     }
 
     createGroup() {
-        this._router.navigate(['/application-group-form', { projectID: this.inProjectID }]);
+        this._router.navigate(['/application-group-form', { projectID: this.project.id }]);
     }
 
     editGroup(applicationGroup:ApplicationGroup, event:Event) {
         event.preventDefault();
-        this._router.navigate(['/application-group-form', { projectID: this.inProjectID, groupID: applicationGroup.id }]);
+        this._router.navigate(['/application-group-form', { projectID: this.project.id, groupID: applicationGroup.id }]);
     }
 
 }
