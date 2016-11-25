@@ -36,7 +36,10 @@ export class ExecutionsListComponent implements OnInit {
     }
 
     cancelExecution(execution: WindupExecution) {
-
+        this._windupService.cancelExecution(execution).subscribe(
+            success => this._notificationService.success('Execution was successfully cancelled.'),
+            error => this._notificationService.error(utils.getErrorMessage(error))
+        );
     }
 
     getClass(execution: WindupExecution): string {
