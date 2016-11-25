@@ -54,7 +54,10 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
         defaultGroup.setTitle(ApplicationGroup.DEFAULT_NAME);
         defaultGroup.setMigrationProject(migrationProject);
         defaultGroup.setReadOnly(true);
-        defaultGroup.setOutputPath(webPathUtil.createWindupReportOutputPath(ApplicationGroup.DEFAULT_NAME).toString());
+        defaultGroup.setOutputPath(webPathUtil.createWindupReportOutputPath(
+                    migrationProject.getId().toString(),
+                    defaultGroup.getId().toString(),
+                    ApplicationGroup.DEFAULT_NAME).toString());
 
         PackageMetadata packageMetadata = new PackageMetadata();
         entityManager.persist(packageMetadata);

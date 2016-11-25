@@ -14,6 +14,8 @@ public interface WebPathUtil
      */
     Path createWindupReportOutputPath(String name);
 
+    Path createWindupReportOutputPath(String projectPath, String applicationGroupPath, String name);
+
     /**
      * Gets the path that should be used for storage of the global graph and other windup artifacts (for example, reports).
      */

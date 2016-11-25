@@ -7,7 +7,6 @@ import java.util.TreeSet;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
-import org.jboss.windup.web.addons.websupport.WebPathUtil;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -25,6 +24,18 @@ public class WebPathUtilImpl implements WebPathUtil
         Path reportBasePath = getGlobalWindupDataPath().resolve(REPORT_DIR);
         String dirName = name + "." + RandomStringUtils.randomAlphabetic(12) + ".report";
         return reportBasePath.resolve(dirName);
+    }
+
+    @Override
+    public Path createWindupReportOutputPath(String projectPath, String applicationGroupPath, String name)
+    {
+        String dirName = name + "." + RandomStringUtils.randomAlphabetic(12) + ".report";
+
+        return Paths.get(
+                    this.getGlobalWindupDataPath().toString(),
+                    projectPath,
+                    applicationGroupPath,
+                    dirName);
     }
 
     @Override
@@ -47,8 +58,7 @@ public class WebPathUtilImpl implements WebPathUtil
     public String expandVariables(String basePath)
     {
         // Longer strings first
-        SortedSet<String> namesByLength = new TreeSet<>((String o1, String o2) ->
-        {
+        SortedSet<String> namesByLength = new TreeSet<>((String o1, String o2) -> {
             int lenDiff = o2.length() - o1.length();
             return lenDiff != 0 ? lenDiff : o2.compareTo(o1);
         });
