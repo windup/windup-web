@@ -82,7 +82,7 @@ public class WindupExecutionUtil
                 Assert.fail("Processing never completed. Current status: " + status);
             }
         }
-        while (status.getState() == ExecutionState.STARTED);
+        while (status.getState() == ExecutionState.STARTED || status.getState() == ExecutionState.QUEUED);
 
         Assert.assertEquals(ExecutionState.COMPLETED, status.getState());
         return status;

@@ -84,7 +84,7 @@ public class WindupEndpointImpl implements WindupEndpoint
         WindupExecution execution = new WindupExecution();
         execution.setGroup(group);
         execution.setTimeStarted(new GregorianCalendar());
-        execution.setState(ExecutionState.STARTED);
+        execution.setState(ExecutionState.QUEUED);
 
         entityManager.persist(execution);
 
