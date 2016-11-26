@@ -199,7 +199,7 @@
             <plugin>
                 <groupId>com.kelveden</groupId>
                 <artifactId>maven-karma-plugin</artifactId>
-                <version>1.6</version>
+                <version>1.8</version>
                 <executions>
                     <execution>
                         <phase>test</phase>
@@ -224,7 +224,24 @@
                     <reporters>progress,junit</reporters>
                 </configuration>
             </plugin>
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>copy-karma-report</id>
+                        <phase>test</phase>
+                        <goals> <goal>run</goal> </goals>
+                        <configuration>
+                            <target name="copy swf files to web project">
+                                <copy file="${project.build.directory}/karma-reports/test-results.xml"
+                                    tofile="${project.build.directory}/surefire-reports/TEST-karma.xml" />
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
