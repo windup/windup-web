@@ -15,6 +15,15 @@
 
     <properties>
         <browser>phantomjs</browser>
+
+        <!--
+            This property gives Jenkins a hint as to where to find Karma test results. This is needed since the Jenkins
+            Maven plugin does not currently automatically find this folder (as of Jenkins Maven 2.14 on November 28, 2016).
+
+           
+            Documention is here: https://wiki.jenkins-ci.org/display/JENKINS/Building+a+maven2+project
+        -->
+        <jenkins.karmaTests.reportsDirectory>target/karma-reports</jenkins.karmaTests.reportsDirectory>
     </properties>
 
     <dependencies>
@@ -202,6 +211,7 @@
                 <version>1.8</version>
                 <executions>
                     <execution>
+                        <id>karmaTests</id>
                         <phase>test</phase>
                         <goals>
                             <goal>start</goal>
