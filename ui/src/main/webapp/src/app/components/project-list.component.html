@@ -13,10 +13,10 @@
     <tbody>
     <tr *ngFor="let project of projects">
         <td class="col-md-1">
-            <a href="#" (click)="viewProject(project, $event)">{{project.title}}</a>
+            <a (click)="viewProject(project)">{{project.title}}</a>
         </td>
         <td class="col-md-1">
-            <a href="#" (click)="editProject(project, $event)">Edit</a>
+            <a (click)="editProject(project)">Edit</a>
         </td>
         <td class="col-md-1">
             <a (click)="deleteProject(project)">Delete</a>
@@ -24,6 +24,14 @@
     </tr>
     </tbody>
 </table>
+<confirmation-modal
+        #deleteProjectModal
+        id="delete_project"
+        title="Delete project?"
+        body="Delete project?"
+        (confirmed)="doDeleteProject(project)"
+>
+</confirmation-modal>
 <script>
     // Initialize Datatables
     $(document).ready(function () {

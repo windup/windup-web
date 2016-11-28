@@ -19,8 +19,8 @@ import * as $ from "jquery";
                 {{body}}
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" (click)="no($event)">No</button>
-                <button type="button" class="btn btn-default" (click)="yes($event)">Yes</button>
+                <button type="button" class="btn btn-default" (click)="no()">No</button>
+                <button type="button" class="btn btn-default" (click)="yes()">Yes</button>
             </div>
         </div>
     </div>
@@ -37,6 +37,9 @@ export class ConfirmationModalComponent {
     @Input()
     body:string;
 
+    @Input()
+    public data: any;
+
     @Output()
     confirmed = new EventEmitter();
 
@@ -45,23 +48,21 @@ export class ConfirmationModalComponent {
 
     constructor() {}
 
-    show(event:Event):void {
-        event.preventDefault();
+    show():void {
         (<any>$('#' + this.id)).modal('show');
     }
 
-    hide(event:Event):void {
-        event.preventDefault();
+    hide():void {
         (<any>$('#' + this.id)).modal('hide');
     }
 
-    yes(event:Event):void {
-        this.confirmed.emit({});
-        this.hide(event);
+    yes():void {
+        this.confirmed.emit({data: this.data});
+        this.hide();
     }
 
-    no(event:Event):void {
-        this.cancelled.emit({});
-        this.hide(event);
+    no():void {
+        this.cancelled.emit({data: this.data});
+        this.hide();
     }
 }
