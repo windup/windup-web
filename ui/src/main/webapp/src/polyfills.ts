@@ -4,6 +4,10 @@ require('zone.js/dist/zone');
 
 import 'ts-helpers';
 
+// Intl API required for PhantomJS and some browsers
+import 'intl';
+import 'intl/locale-data/jsonp/en';
+
 declare var process: any;
 
 if (process.env.ENV === 'build') {
