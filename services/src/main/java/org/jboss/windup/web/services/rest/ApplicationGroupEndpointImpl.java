@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
 import javax.validation.Valid;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
@@ -67,10 +68,26 @@ public class ApplicationGroupEndpointImpl implements ApplicationGroupEndpoint
         return applicationGroup;
     }
 
+    protected MigrationProject getMigrationProject(ApplicationGroup applicationGroup)
+    {
+        MigrationProject project = applicationGroup.getMigrationProject();
+
+        if (project != null && project.getId() != null) {
+            MigrationProject persistentProject = this.entityManager.find(MigrationProject.class, project.getId());
+            return persistentProject;
+        } else {
+            return null;
+        }
+    }
+
     @Override
     public ApplicationGroup create(@Valid ApplicationGroup applicationGroup)
     {
         LOG.info("Creating group: " + applicationGroup + " with project: " + applicationGroup.getMigrationProject());
+
+        if (this.getMigrationProject(applicationGroup) == null) {
+            throw new BadRequestException("Invalid MigrationProject");
+        }
 
         entityManager.persist(applicationGroup);
 
