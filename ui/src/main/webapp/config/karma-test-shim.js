@@ -11,6 +11,9 @@ require('zone.js/dist/jasmine-patch');
 require('zone.js/dist/async-test');
 require('zone.js/dist/fake-async-test');
 
+require('intl');
+require('intl/locale-data/jsonp/en');
+
 var testContext = require.context('../tests', true, /\.spec\.ts/);
 testContext.keys().forEach(testContext);
 
