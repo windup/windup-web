@@ -14,7 +14,7 @@ export class WindupHttpService extends Http {
         return new Observable<RequestOptionsArgs>(observer => {
             this._keycloakService.getToken().subscribe(
                 token => {
-                    if (!options.hasOwnProperty('headers')) {
+                    if (!options.hasOwnProperty('headers') || options.headers == null) {
                         options.headers = new Headers();
                     }
 

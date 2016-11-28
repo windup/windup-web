@@ -19,6 +19,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
+import javax.persistence.CascadeType;
 
 /**
  * Contains the current execution status for a Windup run.
@@ -73,7 +74,7 @@ public class WindupExecution implements Serializable
     @Column(name = "status")
     private ExecutionState state;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     private AnalysisContext analysisContext;
 
     public Long getId()

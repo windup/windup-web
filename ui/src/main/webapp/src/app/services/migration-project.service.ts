@@ -11,6 +11,8 @@ export class MigrationProjectService extends AbstractService {
     private GET_MIGRATION_PROJECT_URL = "/migrationProjects/get";
     private CREATE_MIGRATION_PROJECT_URL = "/migrationProjects/create";
     private UPDATE_MIGRATION_PROJECT_URL = "/migrationProjects/update";
+    private DELETE_MIGRATION_PROJECT_URL = '/migrationProjects/delete'
+
 
     constructor (private _http: Http) {
         super();
@@ -39,6 +41,22 @@ export class MigrationProjectService extends AbstractService {
 
         return this._http.put(Constants.REST_BASE + this.UPDATE_MIGRATION_PROJECT_URL, body, options)
             .map(res => <MigrationProject> res.json())
+            .catch(this.handleError);
+    }
+
+    delete(migrationProject: MigrationProject) {
+        let body = JSON.stringify(migrationProject);
+
+        let options = new RequestOptions({
+            body: body,
+            headers: new Headers()
+        });
+
+        options.headers.append('Content-Type', 'application/json');
+        options.headers.append('Accept', 'application/json');
+
+        return this._http.delete(Constants.REST_BASE + this.DELETE_MIGRATION_PROJECT_URL, options)
+            .map(res => res.json())
             .catch(this.handleError);
     }
 

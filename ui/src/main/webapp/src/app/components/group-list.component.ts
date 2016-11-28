@@ -155,4 +155,14 @@ export class GroupListComponent implements OnInit, OnDestroy {
         this._router.navigate(['/application-group-form', { projectID: this.project.id, groupID: applicationGroup.id }]);
     }
 
+    deleteGroup(applicationGroup: ApplicationGroup) {
+        this._applicationGroupService.delete(applicationGroup).subscribe(
+            success => {
+                console.log(success);
+            },
+            error => {
+                this._notificationService.error(utils.getErrorMessage(error));
+            }
+        );
+    }
 }

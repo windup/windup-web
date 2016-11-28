@@ -117,7 +117,8 @@ public class ApplicationGroupEndpointImpl implements ApplicationGroupEndpoint
     @Override
     public void delete(ApplicationGroup applicationGroup)
     {
-        entityManager.remove(applicationGroup);
+        ApplicationGroup group = this.getApplicationGroup(applicationGroup.getId());
+        entityManager.remove(group);
     }
 
     @Override

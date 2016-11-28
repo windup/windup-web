@@ -3,6 +3,8 @@ import {Router} from "@angular/router";
 
 import {MigrationProjectService} from "../services/migration-project.service";
 import {MigrationProject} from "../windup-services";
+import {NotificationService} from "../services/notification.service";
+import {utils} from "../utils";
 
 @Component({
     selector: 'application-list',
@@ -16,7 +18,8 @@ export class ProjectListComponent implements OnInit, OnDestroy {
 
     constructor(
         private _router: Router,
-        private _migrationProjectService: MigrationProjectService
+        private _migrationProjectService: MigrationProjectService,
+        private _notificationService: NotificationService
     ) {}
 
     ngOnInit():any {
@@ -60,5 +63,16 @@ export class ProjectListComponent implements OnInit, OnDestroy {
         event.preventDefault();
         console.log(JSON.stringify(project));
         this._router.navigate(['/projects', project.id]);
+    }
+
+    deleteProject(project: MigrationProject) {
+       this._migrationProjectService.delete(project).subscribe(
+           success => {
+                console.log(success);
+           },
+           error => {
+               this._notificationService.error(utils.getErrorMessage(error));
+           }
+       );
     }
 }

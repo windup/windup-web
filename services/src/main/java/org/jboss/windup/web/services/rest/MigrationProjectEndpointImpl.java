@@ -88,6 +88,7 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
     @Override
     public void deleteProject(MigrationProject migrationProject)
     {
-        entityManager.remove(migrationProject);
+        MigrationProject project = this.getMigrationProject(migrationProject.getId());
+        entityManager.remove(project);
     }
 }

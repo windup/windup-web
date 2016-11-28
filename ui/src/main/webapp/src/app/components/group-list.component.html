@@ -18,6 +18,9 @@
             <a *ngIf="!group.readOnly" href="#" (click)="editGroup(group, $event)">
                 <span class="glyphicon glyphicon-pencil"></span>
             </a>
+            <a *ngIf="!group.readOnly" (click)="deleteGroup(group)">
+                Delete
+            </a>
         </td>
         <td class="apps">
             <span *ngFor="let app of group.applications; let i = index;">{{i > 0 ? "," : ""}} {{app.title}}</span>
