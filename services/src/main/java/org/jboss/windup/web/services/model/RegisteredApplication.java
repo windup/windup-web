@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.jboss.windup.web.services.validators.FileExistsConstraint;
 
@@ -56,7 +57,7 @@ public class RegisteredApplication implements Serializable
     @ManyToOne()
     private ApplicationGroup applicationGroup;
 
-    @OneToOne()
+    @OneToOne(fetch = FetchType.LAZY)
     private PackageMetadata packageMetadata;
 
     public RegisteredApplication()
@@ -190,6 +191,7 @@ public class RegisteredApplication implements Serializable
      *
      * @return Package metadata
      */
+    @JsonIgnore
     public PackageMetadata getPackageMetadata()
     {
         return packageMetadata;

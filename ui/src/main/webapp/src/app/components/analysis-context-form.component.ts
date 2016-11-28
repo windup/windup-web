@@ -12,7 +12,10 @@ import {ModalDialogComponent} from "./modal-dialog.component";
 import {IsDirty} from "../is-dirty.interface";
 import {Observable} from "rxjs/Observable";
 import {PackageRegistryService} from "../services/package-registry.service";
-import {ApplicationGroup, AnalysisContext, Package, MigrationPath, AdvancedOption, RulesPath} from "../windup-services";
+import {
+    ApplicationGroup, AnalysisContext, Package, MigrationPath, AdvancedOption, RulesPath,
+    PackageMetadata
+} from "../windup-services";
 
 @Component({
     templateUrl: 'analysis-context-form.component.html'
@@ -23,7 +26,7 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
     private analysisContextForm:NgForm;
 
     private _dirty: boolean = null;
-
+    loading:boolean = true;
     applicationGroup: ApplicationGroup = null;
 
     analysisContext:AnalysisContext = <AnalysisContext>{};
@@ -57,63 +60,6 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
         this.excludePackages = [];
     }
 
-    ngOnInit() {
-        this._activatedRoute.parent.data.subscribe((data: {applicationGroup: ApplicationGroup}) => {
-            this.applicationGroup = data.applicationGroup;
-
-            this._configurationOptionsService.getAll().subscribe((options:ConfigurationOption[]) => {
-                this.configurationOptions = options;
-            });
-
-            if (this.applicationGroup.packageMetadata.scanStatus === "COMPLETE") {
-                this.applicationGroup.packageMetadata.packageTree.forEach(node => {
-                    this._packageRegistryService.putHierarchy(node);
-                });
-            }
-
-            this.packageTree = this.applicationGroup.packageMetadata.packageTree;
-            this.analysisContext = this.applicationGroup.analysisContext;
-
-            console.log("Loaded analysis context: " + JSON.stringify(this.analysisContext));
-
-            this.initializeAnalysisContext();
-        });
-    }
-
-    initializeAnalysisContext() {
-        if (this.analysisContext == null) {
-            this.analysisContext = <AnalysisContext>{};
-            this.analysisContext.migrationPath = <MigrationPath>{};
-            this.analysisContext.advancedOptions = [];
-            this.analysisContext.includePackages = [];
-            this.analysisContext.excludePackages = [];
-            this.analysisContext.rulesPaths = [];
-        } else {
-            // for migration path, store the id only
-            this.analysisContext.migrationPath = <MigrationPath>{id: this.analysisContext.migrationPath.id};
-            if (this.analysisContext.includePackages == null || this.analysisContext.includePackages.length == 0) {
-                this.includePackages = [];
-            } else {
-                this.includePackages = this.analysisContext.includePackages.map(node => this._packageRegistryService.get(node.id));
-            }
-
-            if (this.analysisContext.excludePackages == null || this.analysisContext.excludePackages.length == 0) {
-                this.analysisContext.excludePackages = [];
-            } else {
-                this.analysisContext.excludePackages = this.analysisContext.excludePackages.map(node => this._packageRegistryService.get(node.id));
-            }
-
-            if (this.analysisContext.rulesPaths == null)
-                this.analysisContext.rulesPaths = [];
-        }
-
-        // Just use the ID here
-        this.analysisContext.applicationGroup = <ApplicationGroup>{id: this.applicationGroup.id};
-
-        this.includePackages = this.analysisContext.includePackages;
-        this.excludePackages = this.analysisContext.excludePackages;
-    }
-
     get migrationPaths() {
         if (this._migrationPathsObservable == null) {
             this._migrationPathsObservable = this._migrationPathService.getAll();
@@ -123,7 +69,6 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
 
     get dirty(): boolean {
         if (this._dirty != null) {
-            console.log("Returning locally set dirty: " + this._dirty);
             return this._dirty;
         }
 
@@ -131,13 +76,92 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
     }
 
     advancedOptionsChanged(advancedOptions:AdvancedOption[]) {
-        console.log("1Advanced options changed... dirty: " + this.dirty);
         this._dirty = true;
-        console.log("2Advanced options changed... dirty: " + this.dirty);
     }
 
     onNodesChanged(event) {
         console.log(event);
+    }
+
+    ngOnInit() {
+        this._activatedRoute.parent.params.subscribe(params => {
+            let id:number = parseInt(params["groupId"]);
+            if (!isNaN(id)) {
+                this.loading = true;
+
+                this._configurationOptionsService.getAll().subscribe(
+                    (options:ConfigurationOption[]) => {
+                        this.configurationOptions = options;
+                    }
+                );
+
+                this._applicationGroupService.get(id).subscribe(
+                    group => {
+                        this.applicationGroup = group;
+
+                        this.loadPackageMetadata();
+
+                        this.analysisContext = group.analysisContext;
+                        console.log("Loaded analysis context: " + JSON.stringify(this.analysisContext));
+
+                        if (this.analysisContext == null) {
+                            this.analysisContext = <AnalysisContext>{};
+                            this.analysisContext.migrationPath = <MigrationPath>{};
+                            this.analysisContext.advancedOptions = [];
+                            this.analysisContext.includePackages = [];
+                            this.analysisContext.excludePackages = [];
+                            this.analysisContext.rulesPaths = [];
+                        } else {
+                            // for migration path, store the id only
+                            this.analysisContext.migrationPath = <MigrationPath>{ id: this.analysisContext.migrationPath.id };
+
+                            if (this.analysisContext.rulesPaths == null)
+                                this.analysisContext.rulesPaths = [];
+                        }
+
+
+                        // Just use the ID here
+                        this.analysisContext.applicationGroup = <ApplicationGroup>{ id: group.id };
+
+                        this.loading = false;
+                    }
+                );
+            } else {
+                this.loading = false;
+                this.errorMessages.push("groupID parameter was not specified!");
+            }
+        });
+    }
+
+    private loadPackageMetadata() {
+        this._applicationGroupService.getPackageMetadata(this.applicationGroup.id).subscribe(
+            (packageMetadata:PackageMetadata) => {
+                if (packageMetadata.scanStatus === "COMPLETE") {
+                    packageMetadata.packageTree.forEach(node => {
+                        this._packageRegistryService.putHierarchy(node);
+                    });
+                }
+
+                this.packageTree = packageMetadata.packageTree;
+
+                if (this.analysisContext != null) {
+                    if (this.analysisContext.includePackages == null || this.analysisContext.includePackages.length == 0) {
+                        this.includePackages = [];
+                    } else {
+                        this.includePackages = this.analysisContext.includePackages.map(node => this._packageRegistryService.get(node.id));
+                    }
+
+                    if (this.analysisContext.excludePackages == null || this.analysisContext.excludePackages.length == 0) {
+                        this.analysisContext.excludePackages = [];
+                    } else {
+                        this.analysisContext.excludePackages = this.analysisContext.excludePackages.map(node => this._packageRegistryService.get(node.id));
+                    }
+                }
+
+                this.includePackages = this.analysisContext.includePackages;
+                this.excludePackages = this.analysisContext.excludePackages;
+            }
+        );
     }
 
     save() {
@@ -176,7 +200,7 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
     }
 
     routeToGroupList() {
-        this._router.navigate(['/projects', this.applicationGroup.migrationProject.id]);
+        this._router.navigate(['/groups', this.applicationGroup.id]);
     }
 }
 

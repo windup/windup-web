@@ -12,6 +12,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.Provider;
 
+import org.hibernate.proxy.pojo.javassist.JavassistLazyInitializer;
 import org.jboss.forge.furnace.proxy.ClassLoaderAdapterCallback;
 import org.jboss.forge.furnace.proxy.ClassLoaderInterceptor;
 import org.jboss.forge.furnace.proxy.Proxies;
@@ -36,6 +37,7 @@ public class ForgeProxyMarshaller extends JacksonJsonProvider
     {
         ObjectMapper mapper = locateMapper(type, mediaType);
         // Suppress handler properties in JSON output
+        mapper.addMixIn(JavassistLazyInitializer.class, CLACMixin.class);
         mapper.addMixIn(ClassLoaderAdapterCallback.class, CLACMixin.class);
         mapper.addMixIn(ClassLoaderInterceptor.class, CLACMixin.class);
 
