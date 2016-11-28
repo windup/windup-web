@@ -32,6 +32,6 @@ public class DefaultGraphPathLookup implements GraphPathLookup
             return null;
         else if (execution.getOutputPath() == null)
             return null;
-        return Paths.get(execution.getGroup().getOutputPath()).resolve(GraphContextFactory.DEFAULT_GRAPH_SUBDIRECTORY);
+        return Paths.get(execution.getOutputPath()).resolve(GraphContextFactory.DEFAULT_GRAPH_SUBDIRECTORY);
     }
 }

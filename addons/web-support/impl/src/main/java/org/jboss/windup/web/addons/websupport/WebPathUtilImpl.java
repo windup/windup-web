@@ -27,15 +27,11 @@ public class WebPathUtilImpl implements WebPathUtil
     }
 
     @Override
-    public Path createWindupReportOutputPath(String projectPath, String applicationGroupPath, String name)
+    public Path createWindupReportOutputPath(String projectPath, String applicationGroupPath, String reportPath)
     {
-        String dirName = name + "." + RandomStringUtils.randomAlphabetic(12) + ".report";
-
-        return Paths.get(
-                    this.getGlobalWindupDataPath().toString(),
-                    projectPath,
-                    applicationGroupPath,
-                    dirName);
+        return this.createApplicationGroupPath(projectPath, applicationGroupPath)
+                .resolve("reports")
+                .resolve(reportPath);
     }
 
     @Override
@@ -70,5 +66,17 @@ public class WebPathUtilImpl implements WebPathUtil
         }
 
         return basePath;
+    }
+
+    @Override
+    public Path createMigrationProjectPath(String projectPath)
+    {
+        return Paths.get(this.getGlobalWindupDataPath().toString(), projectPath);
+    }
+
+    @Override
+    public Path createApplicationGroupPath(String projectPath, String applicationGroupPath)
+    {
+        return this.createMigrationProjectPath(projectPath).resolve(applicationGroupPath);
     }
 }

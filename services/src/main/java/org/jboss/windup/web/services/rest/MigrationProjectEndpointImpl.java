@@ -64,10 +64,9 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
 
         entityManager.persist(defaultGroup);
 
-        defaultGroup.setOutputPath(webPathUtil.createWindupReportOutputPath(
+        defaultGroup.setOutputPath(webPathUtil.createApplicationGroupPath(
                     migrationProject.getId().toString(),
-                    defaultGroup.getId().toString(),
-                    ApplicationGroup.DEFAULT_NAME).toString());
+                    defaultGroup.getId().toString()).toString());
 
         PackageMetadata packageMetadata = new PackageMetadata();
         entityManager.persist(packageMetadata);

@@ -71,7 +71,13 @@ public class ApplicationGroupEndpointImpl implements ApplicationGroupEndpoint
     public ApplicationGroup create(@Valid ApplicationGroup applicationGroup)
     {
         LOG.info("Creating group: " + applicationGroup + " with project: " + applicationGroup.getMigrationProject());
-        Path outputPath = webPathUtil.createWindupReportOutputPath("group_report");
+
+        entityManager.persist(applicationGroup);
+
+        Path outputPath = webPathUtil.createApplicationGroupPath(
+                applicationGroup.getMigrationProject().getId().toString(),
+                applicationGroup.getId().toString()
+        );
         applicationGroup.setOutputPath(outputPath.toAbsolutePath().toString());
 
         if (applicationGroup.getPackageMetadata() == null)
@@ -79,7 +85,7 @@ public class ApplicationGroupEndpointImpl implements ApplicationGroupEndpoint
             applicationGroup.setPackageMetadata(new PackageMetadata());
         }
 
-        entityManager.persist(applicationGroup);
+        entityManager.merge(applicationGroup);
         return entityManager.find(ApplicationGroup.class, applicationGroup.getId());
     }
 
