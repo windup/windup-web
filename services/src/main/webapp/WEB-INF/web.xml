@@ -14,7 +14,7 @@
         <servlet-class>org.jboss.windup.web.services.servlet.FileDefaultServlet</servlet-class>
         <init-param>
             <param-name>base-path</param-name>
-            <param-value>${jboss.server.data.dir}/windup/reports/</param-value>
+            <param-value>${jboss.server.data.dir}/windup/</param-value>
         </init-param>
         <async-supported>true</async-supported>
     </servlet>
