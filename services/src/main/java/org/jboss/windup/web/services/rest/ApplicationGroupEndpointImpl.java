@@ -3,6 +3,7 @@ package org.jboss.windup.web.services.rest;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.logging.Logger;
+import java.io.File;
 
 import javax.ejb.Stateful;
 import javax.inject.Inject;
@@ -119,6 +120,12 @@ public class ApplicationGroupEndpointImpl implements ApplicationGroupEndpoint
     {
         ApplicationGroup group = this.getApplicationGroup(applicationGroup.getId());
         entityManager.remove(group);
+
+        File groupDir = new File(group.getOutputPath());
+
+        if (groupDir.exists()) {
+            groupDir.delete();
+        }
     }
 
     @Override

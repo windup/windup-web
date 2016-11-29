@@ -1,5 +1,6 @@
 package org.jboss.windup.web.services.rest;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.logging.Logger;
 
@@ -90,5 +91,11 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
     {
         MigrationProject project = this.getMigrationProject(migrationProject.getId());
         entityManager.remove(project);
+
+        File projectDir = new File(this.webPathUtil.createMigrationProjectPath(project.getId().toString()).toString());
+
+        if (projectDir.exists()) {
+            projectDir.delete();
+        }
     }
 }
