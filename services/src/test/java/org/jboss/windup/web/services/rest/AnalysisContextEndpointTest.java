@@ -9,6 +9,7 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.windup.web.services.AbstractTest;
+import org.jboss.windup.web.services.data.DataProvider;
 import org.jboss.windup.web.services.data.ServiceConstants;
 import org.jboss.windup.web.services.model.*;
 import org.jboss.windup.web.services.model.Package;
@@ -31,12 +32,16 @@ public class AnalysisContextEndpointTest extends AbstractTest
     private MigrationPathEndpoint migrationPathEndpoint;
     private AnalysisContextEndpoint analysisContextEndpoint;
     private ConfigurationEndpoint configurationEndpoint;
-
+    private DataProvider dataProvider;
+    private ResteasyClient client;
+    private ResteasyWebTarget target;
+    
     @Before
     public void setUp()
     {
-        ResteasyClient client = getResteasyClient();
-        ResteasyWebTarget target = client.target(contextPath + ServiceConstants.REST_BASE);
+        this.client = getResteasyClient();
+        this.target = client.target(contextPath + ServiceConstants.REST_BASE);
+        this.dataProvider = new DataProvider(target);
 
         this.applicationGroupEndpoint = target.proxy(ApplicationGroupEndpoint.class);
         this.migrationPathEndpoint = target.proxy(MigrationPathEndpoint.class);
@@ -78,8 +83,7 @@ public class AnalysisContextEndpointTest extends AbstractTest
 
     private ApplicationGroup createGroup()
     {
-        ApplicationGroup group = new ApplicationGroup();
-        group.setTitle("Group 1");
-        return applicationGroupEndpoint.create(group);
+        MigrationProject dummyProject = this.dataProvider.getMigrationProject();
+        return this.dataProvider.getApplicationGroup(dummyProject);
     }
 }

@@ -1,5 +1,6 @@
 package org.jboss.windup.web.services.rest;
 
+import java.nio.file.Path;
 import java.util.GregorianCalendar;
 import java.util.logging.Logger;
 
@@ -13,6 +14,7 @@ import javax.persistence.PersistenceContext;
 import javax.ws.rs.NotFoundException;
 
 import org.jboss.forge.furnace.Furnace;
+import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.addons.websupport.services.WindupExecutorService;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.messaging.MessagingConstants;
@@ -47,6 +49,10 @@ public class WindupEndpointImpl implements WindupEndpoint
     @Inject
     private JMSContext messaging;
 
+    @Inject
+    @FromFurnace
+    private WebPathUtil webPathUtil;
+
     @Resource(lookup = "java:/queues/" + MessagingConstants.EXECUTOR_QUEUE)
     private Queue executorQueue;
 
@@ -77,13 +83,22 @@ public class WindupEndpointImpl implements WindupEndpoint
         execution.setGroup(group);
         execution.setTimeStarted(new GregorianCalendar());
         execution.setState(ExecutionState.STARTED);
-        execution.setOutputPath(group.getOutputPath());
+
+        entityManager.persist(execution);
+
+        Path reportOutputPath = this.webPathUtil.createWindupReportOutputPath(
+                execution.getGroup().getMigrationProject().getId().toString(),
+                execution.getGroup().getId().toString(),
+                execution.getId().toString()
+        );
+
+        execution.setOutputPath(reportOutputPath.toString());
 
         if (group.getAnalysisContext() == null)
         {
             group.setAnalysisContext(analysisContextService.createDefaultAnalysisContext());
         }
-        entityManager.persist(execution);
+        entityManager.merge(execution);
 
         messaging.createProducer().send(executorQueue, execution);
 

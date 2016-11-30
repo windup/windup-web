@@ -18,6 +18,8 @@
 package org.jboss.windup.web.services.servlet;
 
 import io.undertow.Undertow;
+
+import java.nio.file.Paths;
 import java.util.logging.Logger;
 import io.undertow.io.IoCallback;
 import io.undertow.io.Sender;
@@ -46,6 +48,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.NotFoundException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -57,6 +61,8 @@ import java.util.HashSet;
 import java.util.Set;
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
+import org.jboss.windup.web.services.model.WindupExecution;
+import org.jboss.windup.web.services.service.WindupExecutionService;
 
 /**
  * Default servlet responsible for serving up resources. This is both a handler and a servlet. If no filters
@@ -107,6 +113,9 @@ public class FileDefaultServlet extends HttpServlet
 
     @Inject @FromFurnace
     private WebPathUtil webPathUtil;
+
+    @Inject
+    private WindupExecutionService windupExecutionService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -182,12 +191,23 @@ public class FileDefaultServlet extends HttpServlet
     @Override
     protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
 
+        String path = "";
 
-        String path = getPath(req);
+        try {
+            path = getPath(req);
+        } catch (NotFoundException e) {
+            resp.sendError(StatusCodes.NOT_FOUND, e.getMessage());
+            return;
+        } catch (BadRequestException e) {
+            resp.sendError(StatusCodes.BAD_REQUEST, e.getMessage());
+            return;
+        }
+
         if (!isAllowed(path, req.getDispatcherType())) {
             resp.sendError(StatusCodes.NOT_FOUND);
             return;
         }
+
         if(File.separatorChar != '/') {
             //if the separator char is not / we want to replace it with a / and canonicalise
             path = CanonicalPathUtils.canonicalize(path.replace(File.separatorChar, '/'));
@@ -456,7 +476,9 @@ public class FileDefaultServlet extends HttpServlet
             pathInfo = request.getPathInfo();
             servletPath = request.getServletPath();
         }
+
         String result = pathInfo;
+
         if (result == null) {
             result = servletPath;
         } else if(resolveAgainstContextRoot) {
@@ -464,11 +486,23 @@ public class FileDefaultServlet extends HttpServlet
         } else {
             result = CanonicalPathUtils.canonicalize(result);
         }
+
         if ((result == null) || (result.equals(""))) {
             result = "/";
         }
-        return result;
 
+        String[] pathParts = result.split("/");
+
+        try {
+            Long executionId = Long.parseLong(pathParts[1]); // {id}
+            String directoryPath = result.substring(result.indexOf("/", result.indexOf("/") + 1));
+
+            WindupExecution execution = this.windupExecutionService.get(executionId);
+
+            return Paths.get(execution.getOutputPath().replace(this.basePath, ""), directoryPath).toString();
+        } catch (NumberFormatException e) {
+            throw new BadRequestException("Invalid executionId value: '" + pathParts[1] + "'");
+        }
     }
 
     private boolean isAllowed(String path, DispatcherType dispatcherType) {

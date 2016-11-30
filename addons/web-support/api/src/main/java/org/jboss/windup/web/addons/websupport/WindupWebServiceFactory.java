@@ -7,7 +7,5 @@ import org.jboss.windup.graph.GraphContext;
  */
 public interface WindupWebServiceFactory
 {
-    GraphContext getGlobalGraphContext();
-
     void destroy();
 }

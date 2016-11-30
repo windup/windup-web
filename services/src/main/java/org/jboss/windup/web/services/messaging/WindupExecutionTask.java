@@ -14,6 +14,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.io.FileUtils;
 import org.jboss.windup.config.ConfigurationOption;
+import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.addons.websupport.services.WindupExecutorService;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.WindupWebProgressMonitor;
@@ -36,6 +37,10 @@ public class WindupExecutionTask implements Runnable
 
     @Inject
     private Instance<WindupWebProgressMonitor> progressMonitorInstance;
+
+    @Inject
+    @FromFurnace
+    private WebPathUtil webPathUtil;
 
     @Inject
     private ConfigurationOptionsService configurationOptionsService;
@@ -64,13 +69,15 @@ public class WindupExecutionTask implements Runnable
         AnalysisContext analysisContext = group.getAnalysisContext();
         try
         {
+            Path reportOutputPath = Paths.get(this.execution.getOutputPath());
+
             // Clean out the output directory first
             try
             {
-                FileUtils.deleteDirectory(new File(group.getOutputPath()));
+                FileUtils.deleteDirectory(new File(this.execution.getOutputPath()));
             } catch (IOException e)
             {
-                LOG.warning("Failed to delete output directory: " + group.getOutputPath() + ", due to: " + e.getMessage());
+                LOG.warning("Failed to delete output directory: " + this.execution.getOutputPath() + ", due to: " + e.getMessage());
             }
 
             Collection<Path> rulesPaths = analysisContext.getRulesPaths().stream()
@@ -112,7 +119,7 @@ public class WindupExecutionTask implements Runnable
                         progressMonitor,
                         rulesPaths,
                         inputPaths,
-                        Paths.get(group.getOutputPath()),
+                        reportOutputPath,
                         includePackages,
                         excludePackages,
                         source,

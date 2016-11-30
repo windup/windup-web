@@ -8,7 +8,6 @@ import javax.inject.Inject;
 
 import org.jboss.forge.furnace.Furnace;
 import org.jboss.windup.config.metadata.RuleProviderRegistryCache;
-import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.GraphContextFactory;
 import org.jboss.windup.web.addons.websupport.WindupWebServiceFactory;
 import org.jboss.windup.web.furnaceserviceprovider.FurnaceShutdownEvent;
@@ -39,14 +38,6 @@ public class WindupServicesProducer
     public RuleProviderRegistryCache getRuleProviderRegistryCache()
     {
         return furnace.getAddonRegistry().getServices(RuleProviderRegistryCache.class).get();
-    }
-
-    /**
-     * Returns the graph used for the main windup UI (for example, maintaining a list of registered applications.
-     */
-    public GraphContext getGlobalGraphContext()
-    {
-        return getWindupWebServiceFactory().getGlobalGraphContext();
     }
 
     private WindupWebServiceFactory getWindupWebServiceFactory()

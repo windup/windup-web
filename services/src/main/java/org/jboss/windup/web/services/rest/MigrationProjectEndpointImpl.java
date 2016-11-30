@@ -49,20 +49,32 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
     @Override
     public MigrationProject createMigrationProject(MigrationProject migrationProject)
     {
+        if (migrationProject.getId() != null)
+        {
+            migrationProject.setId(null); // creating new project, should not have id set
+        }
+
+        entityManager.persist(migrationProject);
+
         LOG.info("Creating a migration project: " + migrationProject.getId());
         ApplicationGroup defaultGroup = new ApplicationGroup();
         defaultGroup.setTitle(ApplicationGroup.DEFAULT_NAME);
         defaultGroup.setMigrationProject(migrationProject);
         defaultGroup.setReadOnly(true);
-        defaultGroup.setOutputPath(webPathUtil.createWindupReportOutputPath(ApplicationGroup.DEFAULT_NAME).toString());
+
+        entityManager.persist(defaultGroup);
+
+        defaultGroup.setOutputPath(webPathUtil.createApplicationGroupPath(
+                    migrationProject.getId().toString(),
+                    defaultGroup.getId().toString()).toString());
 
         PackageMetadata packageMetadata = new PackageMetadata();
         entityManager.persist(packageMetadata);
 
         defaultGroup.setPackageMetadata(packageMetadata);
-        entityManager.persist(defaultGroup);
+        entityManager.merge(defaultGroup);
 
-        entityManager.persist(migrationProject);
+        entityManager.merge(migrationProject);
 
         return migrationProject;
     }

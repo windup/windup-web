@@ -96,7 +96,7 @@ public class StatusUpdateMDB extends AbstractMDB implements MessageListener
             throws HeuristicMixedException, HeuristicRollbackException, NamingException, NotSupportedException, RollbackException, SystemException
     {
         ApplicationGroup group = execution.getGroup();
-        Path reportDirectory = Paths.get(group.getOutputPath());
+        Path reportDirectory = Paths.get(execution.getOutputPath());
         for (RegisteredApplication application : group.getApplications())
         {
             Path applicationPath = Paths.get(application.getInputPath());

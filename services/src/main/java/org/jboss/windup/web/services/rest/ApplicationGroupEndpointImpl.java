@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
 import javax.validation.Valid;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
@@ -67,11 +68,35 @@ public class ApplicationGroupEndpointImpl implements ApplicationGroupEndpoint
         return applicationGroup;
     }
 
+    protected MigrationProject getMigrationProject(ApplicationGroup applicationGroup)
+    {
+        MigrationProject project = applicationGroup.getMigrationProject();
+
+        if (project != null && project.getId() != null)
+        {
+            return this.entityManager.find(MigrationProject.class, project.getId());
+        }
+        else
+        {
+            return null;
+        }
+    }
+
     @Override
     public ApplicationGroup create(@Valid ApplicationGroup applicationGroup)
     {
         LOG.info("Creating group: " + applicationGroup + " with project: " + applicationGroup.getMigrationProject());
-        Path outputPath = webPathUtil.createWindupReportOutputPath("group_report");
+
+        if (this.getMigrationProject(applicationGroup) == null)
+        {
+            throw new BadRequestException("Invalid MigrationProject");
+        }
+
+        entityManager.persist(applicationGroup);
+
+        Path outputPath = webPathUtil.createApplicationGroupPath(
+                    applicationGroup.getMigrationProject().getId().toString(),
+                    applicationGroup.getId().toString());
         applicationGroup.setOutputPath(outputPath.toAbsolutePath().toString());
 
         if (applicationGroup.getPackageMetadata() == null)
@@ -79,7 +104,7 @@ public class ApplicationGroupEndpointImpl implements ApplicationGroupEndpoint
             applicationGroup.setPackageMetadata(new PackageMetadata());
         }
 
-        entityManager.persist(applicationGroup);
+        entityManager.merge(applicationGroup);
         return entityManager.find(ApplicationGroup.class, applicationGroup.getId());
     }
 

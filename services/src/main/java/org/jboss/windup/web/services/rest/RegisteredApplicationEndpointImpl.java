@@ -327,9 +327,10 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
             MigrationProject project = group.getMigrationProject();
 
             String filePath = Paths.get(
-                        this.webPathUtil.getAppPath().toString(),
+                        this.webPathUtil.getGlobalWindupDataPath().toString(),
                         project.getId().toString(),
                         group.getId().toString(),
+                        "apps",
                         fileName).toString();
 
             File file = new File(filePath);
