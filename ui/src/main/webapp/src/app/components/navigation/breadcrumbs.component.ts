@@ -1,6 +1,6 @@
 import {Component, OnInit, OnDestroy} from "@angular/core";
 import {BreadCrumbsService, BreadCrumbLink} from "./breadcrumbs.service";
-import {Router, NavigationEnd, ActivatedRoute, ActivatedRouteSnapshot, UrlSegment} from "@angular/router";
+import {Router, NavigationEnd, ActivatedRoute, ActivatedRouteSnapshot, UrlSegment, Route} from "@angular/router";
 import {Subscription} from "rxjs";
 import {RouteFlattenerService, FlattenedRouteData} from "../../services/route-flattener.service";
 
@@ -103,7 +103,7 @@ export class BreadCrumbsComponent implements OnInit, OnDestroy {
                 snapshot: current.snapshot
             };
 
-            if (current.snapshot.component) {
+            if (this.canReachToComponentRoute(current.snapshot.routeConfig)) {
                 links.push(sum);
             }
 
@@ -111,6 +111,16 @@ export class BreadCrumbsComponent implements OnInit, OnDestroy {
         }, {name: '', route: '', snapshot: null});
 
         console.log(links);
+    }
+
+    protected canReachToComponentRoute(route: Route) {
+        if (route.component) {
+            return true;
+        } else {
+            return route.children.filter(child => child.path === '' || child.path === '**')
+                .map(child => this.canReachToComponentRoute(child))
+                .reduce((previous, current) => previous || current, false);
+        }
     }
 
     protected getName(route: ActivatedRouteSnapshot, flattenedRouteData: FlattenedRouteData) {

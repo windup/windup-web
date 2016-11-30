@@ -51,56 +51,63 @@ export const appRoutes: Routes = [
             },
             {
                 path: 'projects',
-                component: DefaultLayoutComponent,
                 children: [
-                    {path: '', component: ProjectListComponent, data: {displayName: "Project List"}},
-                    {path: 'create', component: MigrationProjectFormComponent, data: {displayName: 'Create Project'}},
+                    {path: '', component: DefaultLayoutComponent, children: [
+                        {path: '', component: ProjectListComponent, data: {displayName: "Project List"}},
+                        {path: 'create', component: MigrationProjectFormComponent, data: {displayName: 'Create Project'}},
+                    ]},
                     {
                         path: ':projectId',
-                        data: {displayName: 'Group List'},
+                        data: {
+                            breadcrumbTitle: (route: FullFlattenedRoute) => {
+                                return `Project ${route.data['project'].title}`;
+                            }
+                        },
                         resolve: {
                             project: ProjectResolve
                         },
                         children: [
-                            {path: '', component: GroupListComponent, data: {displayName: 'Group List'}},
-                            {path: 'edit', component: MigrationProjectFormComponent, data: {displayName: 'Edit Project'}},
-                            {path: 'groups/create', component: ApplicationGroupForm, data: {displayName: 'Create Application Group'}},
+                            { path: '', component: DefaultLayoutComponent, children: [
+                                {path: '', component: GroupListComponent, data: {displayName: 'Group List'}},
+                                {path: 'edit', component: MigrationProjectFormComponent, data: {displayName: 'Edit Project'}},
+                                {path: 'groups/create', component: ApplicationGroupForm, data: {displayName: 'Create Application Group'}},
+                            ]},
+                            {
+                                path: 'groups/:groupId',
+                                component: GroupLayoutComponent,
+                                resolve: {
+                                    applicationGroup: ApplicationGroupResolve
+                                },
+                                data: {
+                                    breadcrumbTitle: (route: FullFlattenedRoute) => {
+                                        return `Group ${route.data['applicationGroup'].title}`;
+                                    }
+                                },
+                                children: [
+                                    { path: '', component: GroupPageComponent },
+                                    { path: 'edit', component: ApplicationGroupForm, data: {displayName: 'Edit Application Group'}},
+                                    { path: 'analysis-context', component: AnalysisContextFormComponent, data: {displayName: "Edit Analysis Context"}, canDeactivate: [ConfirmDeactivateGuard]},
+                                    { path: 'applications', children: [
+                                        { path: 'register', component: RegisterApplicationFormComponent, data: {displayName: "Application Registration"}},
+                                        {
+                                            path: ':applicationId/edit',
+                                            component: EditApplicationFormComponent,
+                                            resolve: {
+                                                application: ApplicationResolve
+                                            },
+                                            data: {displayName: "Edit Application"}
+                                        },
+                                    ]},
+                                    { path: 'reports/:executionId', children: [
+                                        {path: 'technology-report', component: TechnologiesReportComponent, data: {displayName: 'Technology Report'}},
+                                        {path: 'migration-issues', component: MigrationIssuesComponent, data: {displayName: 'Migration Issues'}}
+                                    ]}
+                                ]
+                            },
                         ]
                     }
                 ]
-            },
-            {
-                path: 'groups/:groupId',
-                component: GroupLayoutComponent,
-                resolve: {
-                    applicationGroup: ApplicationGroupResolve
-                },
-                data: {
-                    breadcrumbTitle: (route: FullFlattenedRoute) => {
-                        return `Group ${route.data['applicationGroup'].title}`;
-                    }
-                },
-                children: [
-                    { path: '', component: GroupPageComponent },
-                    { path: 'edit', component: ApplicationGroupForm, data: {displayName: 'Edit Application Group'}},
-                    { path: 'analysis-context', component: AnalysisContextFormComponent, data: {displayName: "Edit Analysis Context"}, canDeactivate: [ConfirmDeactivateGuard]},
-                    { path: 'applications', children: [
-                        { path: 'register', component: RegisterApplicationFormComponent, data: {displayName: "Application Registration"}},
-                        {
-                            path: ':applicationId/edit',
-                            component: EditApplicationFormComponent,
-                            resolve: {
-                                application: ApplicationResolve
-                            },
-                            data: {displayName: "Edit Application"}
-                        },
-                    ]},
-                    { path: 'reports/:executionId', children: [
-                        {path: 'technology-report', component: TechnologiesReportComponent, data: {displayName: 'Technology Report'}},
-                        {path: 'migration-issues', component: MigrationIssuesComponent, data: {displayName: 'Migration Issues'}}
-                    ]}
-                ]
-            },
+            }
         ]
     }
 ];

@@ -74,7 +74,8 @@ export class ReportMenuItem extends ContextMenuItem {
 
         return this._routeLinkProviderService.getRouteForComponent(this.component, {
             groupId: this.applicationGroup.id,
-            executionId: execution.id
+            executionId: execution.id,
+            projectId: this.applicationGroup.migrationProject.id,
         });
     }
 

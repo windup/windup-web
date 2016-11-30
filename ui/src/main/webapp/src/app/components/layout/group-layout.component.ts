@@ -10,6 +10,7 @@ import {AnalysisContextFormComponent} from "../analysis-context-form.component";
 import {NotificationService} from "../../services/notification.service";
 import {GroupListComponent} from "../group-list.component";
 import {utils} from '../../utils';
+import {GroupPageComponent} from "../group.page.component";
 
 
 @Component({
@@ -50,13 +51,17 @@ export class GroupLayoutComponent implements OnInit {
             },
             {
                 label: 'Applications',
-                link: '/groups/' + this.applicationGroup.id,
+                link: this._routeLinkProviderService.getRouteForComponent(GroupPageComponent, {
+                    projectId: this.applicationGroup.migrationProject.id,
+                    groupId: this.applicationGroup.id
+                }),
                 icon: 'fa-cubes',
                 isEnabled: true
             },
             {
                 label: 'Config',
                 link: this._routeLinkProviderService.getRouteForComponent(AnalysisContextFormComponent, {
+                    projectId: this.applicationGroup.migrationProject.id,
                     groupId: this.applicationGroup.id
                 }),
                 icon: 'fa-cogs',
