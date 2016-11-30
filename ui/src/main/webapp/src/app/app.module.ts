@@ -67,6 +67,7 @@ import {ProjectResolve} from "./services/project.resolve";
 import {ApplicationResolve} from "./services/application.resolve";
 import {BreadCrumbsComponent as BreadCrumbsNavigationComponent} from "./components/navigation/breadcrumbs.component";
 import {BreadCrumbsService} from "./components/navigation/breadcrumbs.service";
+import {RouteFlattenerService} from "./services/route-flattener.service";
 
 
 @NgModule({
@@ -146,6 +147,7 @@ import {BreadCrumbsService} from "./components/navigation/breadcrumbs.service";
         ConfigurationResolve,
         ProjectResolve,
         ApplicationResolve,
+        RouteFlattenerService,
         {
             provide: RouteLinkProviderService,
             useFactory: () => {
