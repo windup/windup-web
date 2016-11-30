@@ -119,8 +119,7 @@ import {BreadCrumbsService} from "./components/navigation/breadcrumbs.service";
         LoginComponent,
         ContextMenuComponent,
         GroupLayoutComponent,
-        DefaultLayoutComponent
-        MigrationIssuesTableComponent,
+        DefaultLayoutComponent,
         BreadCrumbsNavigationComponent
     ],
     providers: [
