@@ -44,6 +44,7 @@ public class AbstractTest
         war.merge(ShrinkWrap.create(ExplodedImporter.class).importDirectory("src/main/webapp").as(GenericArchive.class), "/");
         war.merge(ShrinkWrap.create(ExplodedImporter.class).importDirectory("src/test/resources/WEB-INF").as(GenericArchive.class), "/WEB-INF");
         war.merge(ShrinkWrap.create(ExplodedImporter.class).importDirectory("src/test/resources/META-INF").as(GenericArchive.class), "/WEB-INF/classes/META-INF");
+        war.addAsResource("META-INF/persistence-inmemory.xml", "/WEB-INF/classes/META-INF/persistence.xml");
         return war;
     }
 
