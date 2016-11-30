@@ -19,6 +19,7 @@ import {MigrationIssuesComponent} from "./components/reports/migration-issues/mi
 import {ProjectResolve} from "./services/project.resolve";
 import {ConfigurationResolve} from "./services/configuration.resolve";
 import {ApplicationResolve} from "./services/application.resolve";
+import {FullFlattenedRoute} from "./services/route-flattener.service";
 
 export const appRoutes: Routes = [
     {path: "login", component: LoginComponent},
@@ -75,7 +76,9 @@ export const appRoutes: Routes = [
                     applicationGroup: ApplicationGroupResolve
                 },
                 data: {
-                    breadcrumbTitle: 'Group {applicationGroup.title}'
+                    breadcrumbTitle: (route: FullFlattenedRoute) => {
+                        return `Group ${route.data['applicationGroup'].title}`;
+                    }
                 },
                 children: [
                     { path: '', component: GroupPageComponent },

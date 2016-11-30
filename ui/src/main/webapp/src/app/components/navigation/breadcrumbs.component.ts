@@ -98,7 +98,7 @@ export class BreadCrumbsComponent implements OnInit, OnDestroy {
 
         snapshotData.reduce((previous, current) => {
             let sum = {
-                name: this.getName(current.snapshot),
+                name: this.getName(current.snapshot, route),
                 route: previous.route + current.route,
                 snapshot: current.snapshot
             };
@@ -113,11 +113,13 @@ export class BreadCrumbsComponent implements OnInit, OnDestroy {
         console.log(links);
     }
 
-    protected getName(route: ActivatedRouteSnapshot) {
+    protected getName(route: ActivatedRouteSnapshot, flattenedRouteData: FlattenedRouteData) {
         if (route.data && route.data.hasOwnProperty('breadcrumbTitle')) {
-            //let placeholders = route.data.breadcrumbTitle._lastCasesMatched
-
-            return route.data['breadcrumbTitle'];
+            if (typeof route.data['breadcrumbTitle'] === 'function') {
+                return route.data['breadcrumbTitle'](flattenedRouteData);
+            } else {
+                return route.data['breadcrumbTitle'];
+            }
         } else if (route.data && route.data.hasOwnProperty('displayName')) {
             return route.data['displayName'];
         } else {
