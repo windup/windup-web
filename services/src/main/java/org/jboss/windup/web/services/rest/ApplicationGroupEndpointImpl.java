@@ -72,10 +72,12 @@ public class ApplicationGroupEndpointImpl implements ApplicationGroupEndpoint
     {
         MigrationProject project = applicationGroup.getMigrationProject();
 
-        if (project != null && project.getId() != null) {
-            MigrationProject persistentProject = this.entityManager.find(MigrationProject.class, project.getId());
-            return persistentProject;
-        } else {
+        if (project != null && project.getId() != null)
+        {
+            return this.entityManager.find(MigrationProject.class, project.getId());
+        }
+        else
+        {
             return null;
         }
     }
@@ -85,16 +87,16 @@ public class ApplicationGroupEndpointImpl implements ApplicationGroupEndpoint
     {
         LOG.info("Creating group: " + applicationGroup + " with project: " + applicationGroup.getMigrationProject());
 
-        if (this.getMigrationProject(applicationGroup) == null) {
+        if (this.getMigrationProject(applicationGroup) == null)
+        {
             throw new BadRequestException("Invalid MigrationProject");
         }
 
         entityManager.persist(applicationGroup);
 
         Path outputPath = webPathUtil.createApplicationGroupPath(
-                applicationGroup.getMigrationProject().getId().toString(),
-                applicationGroup.getId().toString()
-        );
+                    applicationGroup.getMigrationProject().getId().toString(),
+                    applicationGroup.getId().toString());
         applicationGroup.setOutputPath(outputPath.toAbsolutePath().toString());
 
         if (applicationGroup.getPackageMetadata() == null)

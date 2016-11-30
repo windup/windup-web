@@ -42,6 +42,7 @@ public class WindupExecutorServiceImpl implements WindupExecutorService
                         List<String> excludePackages, String source, String target, Map<String, Object> otherOptions)
     {
         Path graphPath = outputPath.resolve(GraphContextFactory.DEFAULT_GRAPH_SUBDIRECTORY);
+        // Close it here, since we will be deleting the old one and rewriting
         graphCache.closeGraph(graphPath);
 
         // As this is from the cache, we don't have to manually close it
