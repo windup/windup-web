@@ -1,6 +1,6 @@
 import {Component, OnInit, OnDestroy} from "@angular/core";
 import {BreadCrumbsService, BreadCrumbLink} from "./breadcrumbs.service";
-import {Router, NavigationEnd, ActivatedRoute, ActivatedRouteSnapshot, UrlSegment, Route} from "@angular/router";
+import {Router, NavigationEnd, ActivatedRoute, ActivatedRouteSnapshot, UrlSegment, Route, Data} from "@angular/router";
 import {Subscription} from "rxjs";
 import {RouteFlattenerService, FlattenedRouteData} from "../../services/route-flattener.service";
 
@@ -12,8 +12,6 @@ export class BreadCrumbsComponent implements OnInit, OnDestroy {
 
     breadCrumbLinks: BreadCrumbLink[] = [];
     subscription: Subscription;
-    routeParentMap: Map<string, FlattenedRouteData>;
-
 
     constructor(
         private _router: Router,
@@ -21,49 +19,24 @@ export class BreadCrumbsComponent implements OnInit, OnDestroy {
         private _breadCrumbsService: BreadCrumbsService,
         private _routeFlattener: RouteFlattenerService
     ) {
-        this.routeParentMap = new Map<string, FlattenedRouteData>();
-       /*
-        this.routeParentMap.set('groups/:groupId', {
-
-        });
-        */
     }
 
     ngOnInit(): void {
         this.subscription = this._router.events.filter(event => event instanceof NavigationEnd).subscribe(_ => {
             let flattenedRouteData = this._routeFlattener.getFlattenedRouteData(this._activatedRoute.snapshot);
-            this.getBreadCrumbParts(flattenedRouteData);
+            this.breadCrumbLinks = this.getBreadCrumbLinks(flattenedRouteData);
         });
+    }
 
-        /*
-            let hierarchy = { name: 'Project List', children: [
-                { name: 'Project',  children: [
-                    { name: 'Group', children: [
-                        { name: 'Application', children: [
-                            { name: 'Add' },
-                            { name: 'Edit' }
-                        ]},
-                        { name: 'Analysis Configuration' },
-                        { name: 'Executions', children: [
-                            { name: 'Execution' }
-                        ]},
-                        { name: 'Reports (Dashboard)', children: [
-                            { name: 'Technologies' },
-                            { name: 'Issues' },
-                            { name: 'Dependencies' }
-                        ]}
-                    ]}
-                ]}
-            ]};
-        */
-/*
+    protected getBreadCrumbLinks(route: FlattenedRouteData): BreadCrumbLink[] {
+        let breadCrumbParts = this.getBreadCrumbParts(route);
 
-        this.breadCrumbLinks = [
-            {name: 'Project List', route: ['/project-list']},
-            {name: 'Project: Test Project', route: ['/group-list', {projectID: 9}]},
-            {name: 'Group: Default Group', route: ['/groups', 8]}
-        ];
-        */
+        return breadCrumbParts.map(part => {
+            return {
+                name: part.name,
+                route: [part.route],
+            };
+        })
     }
 
     /**
@@ -97,8 +70,10 @@ export class BreadCrumbsComponent implements OnInit, OnDestroy {
         let links = [];
 
         snapshotData.reduce((previous, current) => {
+            let endRoute = this.getEndRoute(current.snapshot.routeConfig);
+
             let sum = {
-                name: this.getName(current.snapshot, route),
+                name: this.getName(current.snapshot, endRoute, route),
                 route: previous.route + current.route,
                 snapshot: current.snapshot
             };
@@ -110,7 +85,21 @@ export class BreadCrumbsComponent implements OnInit, OnDestroy {
             return sum;
         }, {name: '', route: '', snapshot: null});
 
-        console.log(links);
+        return links;
+    }
+
+    protected getEndRoute(route: Route) {
+        let children = [];
+
+        if (route.children) {
+            children = route.children.filter(child => child.path === '' || child.path === '**');
+        }
+
+        if (children.length == 0) {
+            return route; // Do we care if it has component?
+        } else {
+            return this.getEndRoute(children[0]);
+        }
     }
 
     protected canReachToComponentRoute(route: Route) {
@@ -123,22 +112,30 @@ export class BreadCrumbsComponent implements OnInit, OnDestroy {
         }
     }
 
-    protected getName(route: ActivatedRouteSnapshot, flattenedRouteData: FlattenedRouteData) {
-        if (route.data && route.data.hasOwnProperty('breadcrumbTitle')) {
-            if (typeof route.data['breadcrumbTitle'] === 'function') {
-                return route.data['breadcrumbTitle'](flattenedRouteData);
-            } else {
-                return route.data['breadcrumbTitle'];
-            }
-        } else if (route.data && route.data.hasOwnProperty('displayName')) {
-            return route.data['displayName'];
+    protected getName(snapshot: ActivatedRouteSnapshot, route: Route, flattenedRouteData: FlattenedRouteData) {
+        if (snapshot.data && (snapshot.data.hasOwnProperty('breadcrumbTitle') || snapshot.data.hasOwnProperty('displayName'))) {
+            return this.getNameFromData(snapshot.data, flattenedRouteData);
         } else {
-            return '';
+            return this.getNameFromData(route.data, flattenedRouteData);
         }
     }
 
-    protected getHiddenParent(route: FlattenedRouteData) {
+    protected getNameFromData(data: Data, flattenedRouteData: FlattenedRouteData) {
+        if (!data) {
+            return '';
+        }
 
+        if (data.hasOwnProperty('breadcrumbTitle')) {
+            if (typeof data['breadcrumbTitle'] === 'function') {
+                return data['breadcrumbTitle'](flattenedRouteData);
+            } else {
+                return data['breadcrumbTitle'];
+            }
+        } else if (data.hasOwnProperty('displayName')) {
+            return data['displayName'];
+        } else {
+            return '';
+        }
     }
 
     ngOnDestroy(): void {
