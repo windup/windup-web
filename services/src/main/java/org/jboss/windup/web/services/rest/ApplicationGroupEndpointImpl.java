@@ -123,7 +123,8 @@ public class ApplicationGroupEndpointImpl implements ApplicationGroupEndpoint
 
         File groupDir = new File(group.getOutputPath());
 
-        if (groupDir.exists()) {
+        if (groupDir.exists())
+        {
             groupDir.delete();
         }
     }

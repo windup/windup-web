@@ -15,7 +15,10 @@ import {utils} from "../utils";
 
 @Component({
     selector: 'application-list',
-    templateUrl: 'group-list.component.html'
+    templateUrl: 'group-list.component.html',
+    styles: [
+        `a { cursor: pointer; }`
+    ]
 })
 export class GroupListComponent implements OnInit, OnDestroy {
     project: MigrationProject;

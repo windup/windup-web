@@ -4,7 +4,7 @@
 </h1>
 <p *ngIf="errorMessage != null">{{errorMessage}}</p>
 
-<table class="table table-condensed table-hover">
+<table class="datatable table table-striped table-bordered">
 <thead><tr>
     <td>Group name</td>
     <td>Applications</td>
@@ -19,7 +19,7 @@
                 <span class="glyphicon glyphicon-pencil"></span>
             </a>
             <a *ngIf="!group.readOnly" (click)="deleteGroup(group)">
-                Delete
+                <span class="glyphicon glyphicon-trash"></span>
             </a>
         </td>
         <td class="apps">

@@ -5,12 +5,14 @@ import {MigrationProjectService} from "../services/migration-project.service";
 import {MigrationProject} from "../windup-services";
 import {NotificationService} from "../services/notification.service";
 import {utils} from "../utils";
-import {ModalDialogComponent} from "./modal-dialog.component";
 import {ConfirmationModalComponent} from "./confirmation-modal.component";
 
 @Component({
     selector: 'application-list',
-    templateUrl: 'project-list.component.html'
+    templateUrl: 'project-list.component.html',
+    styles: [
+        `a { cursor: pointer; }`
+    ]
 })
 export class ProjectListComponent implements OnInit, OnDestroy {
     projects:MigrationProject[];
