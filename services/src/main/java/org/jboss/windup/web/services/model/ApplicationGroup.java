@@ -4,15 +4,26 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 /**
  * An {@link ApplicationGroup} represents a set of applications within a particular {@link MigrationProject}. Each group may have its own analysis
@@ -69,10 +80,14 @@ public class ApplicationGroup implements Serializable
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private PackageMetadata packageMetadata;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private ReportFilter reportFilter;
+
     public ApplicationGroup()
     {
         this.applications = new HashSet<>();
         this.executions = new HashSet<>();
+        this.reportFilter = new ReportFilter(this);
     }
 
     public ApplicationGroup(MigrationProject project)
@@ -268,6 +283,16 @@ public class ApplicationGroup implements Serializable
     public void setExecutions(Set<WindupExecution> executions)
     {
         this.executions = executions;
+    }
+
+    public ReportFilter getReportFilter()
+    {
+        return reportFilter;
+    }
+
+    public void setReportFilter(ReportFilter reportFilter)
+    {
+        this.reportFilter = reportFilter;
     }
 
     @Override
