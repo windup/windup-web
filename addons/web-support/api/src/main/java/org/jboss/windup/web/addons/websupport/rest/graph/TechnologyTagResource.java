@@ -2,6 +2,7 @@ package org.jboss.windup.web.addons.websupport.rest.graph;
 
 import org.jboss.windup.graph.model.resource.FileModel;
 import org.jboss.windup.reporting.model.TechnologyTagModel;
+import org.jboss.windup.web.addons.websupport.rest.FurnaceRESTGraphAPI;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -18,7 +19,7 @@ import java.util.Map;
 @Path(TechnologyTagResource.BASE_URL)
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public interface TechnologyTagResource
+public interface TechnologyTagResource extends FurnaceRESTGraphAPI
 {
     String BASE_URL = "/graph/technology-tag";
 

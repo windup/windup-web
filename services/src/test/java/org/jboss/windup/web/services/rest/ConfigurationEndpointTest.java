@@ -27,6 +27,7 @@ import java.util.Set;
 public class ConfigurationEndpointTest extends AbstractTest
 {
     public static final String FAKE_PATH = "./target/classes/";
+    public static final String CUSTOM_RULESPATH = "target/test-classes/custom-rulesets-data/custom-ruleset.windup.xml";
 
     @ArquillianResource
     private URL contextPath;
@@ -58,8 +59,6 @@ public class ConfigurationEndpointTest extends AbstractTest
         Assert.assertEquals(1, configuration.getRulesPaths().size());
         Assert.assertEquals(FAKE_PATH, configuration.getRulesPaths().iterator().next().getPath());
     }
-
-    final static String CUSTOM_RULESPATH = "target/test-classes/custom-rulesets-data/custom-ruleset.windup.xml";
 
     @Test
     @RunAsClient

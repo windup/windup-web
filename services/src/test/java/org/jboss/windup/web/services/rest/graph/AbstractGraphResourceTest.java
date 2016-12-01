@@ -9,6 +9,9 @@ import org.jboss.windup.web.addons.websupport.rest.GraphPathLookup;
 import org.jboss.windup.web.addons.websupport.rest.graph.ClassificationResource;
 import org.jboss.windup.web.addons.websupport.rest.graph.FileModelResource;
 import org.jboss.windup.web.addons.websupport.rest.graph.GraphResource;
+import org.jboss.windup.web.addons.websupport.rest.graph.HintResource;
+import org.jboss.windup.web.addons.websupport.rest.graph.LinkResource;
+import org.jboss.windup.web.addons.websupport.rest.graph.TechnologyTagResource;
 import org.jboss.windup.web.services.AbstractTest;
 import org.jboss.windup.web.services.ServiceTestUtil;
 import org.jboss.windup.web.services.data.ServiceConstants;
@@ -92,6 +95,16 @@ public abstract class AbstractGraphResourceTest
         }
     }
 
+    protected LinkResource getLinkResource(ResteasyWebTarget target)
+    {
+        return target.proxy(LinkResourceSubclass.class);
+    }
+
+    protected TechnologyTagResource getTechnologyTagResource(ResteasyWebTarget target)
+    {
+        return target.proxy(TechnologyTagResourceSubclass.class);
+    }
+
     protected FileModelResource getFileResource(ResteasyWebTarget target)
     {
         return target.proxy(FileModelResourceSubclass.class);
@@ -100,6 +113,11 @@ public abstract class AbstractGraphResourceTest
     protected ClassificationResource getClassificationResource(ResteasyWebTarget target)
     {
         return target.proxy(ClassificationResourceSubclass.class);
+    }
+
+    protected HintResource getHintResource(ResteasyWebTarget target)
+    {
+        return target.proxy(HintResourceSubclass.class);
     }
 
     private void printDebugging(Collection<ApplicationGroup> groups)
@@ -141,6 +159,60 @@ public abstract class AbstractGraphResourceTest
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public interface FileModelResourceSubclass extends FileModelResource
+    {
+        @Override
+        @POST
+        void setUriInfo(UriInfo uriInfo);
+
+        @Override
+        @POST
+        void setGraphPathLookup(GraphPathLookup graphPathLookup);
+    }
+
+    /**
+     * This exists solely to work around RESTEASY-798. Without it, the client proxy will fail to be generated when it
+     * hits the unannotated methods.
+     */
+    @Path(HintResource.BASE_URL)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public interface HintResourceSubclass extends HintResource
+    {
+        @Override
+        @POST
+        void setUriInfo(UriInfo uriInfo);
+
+        @Override
+        @POST
+        void setGraphPathLookup(GraphPathLookup graphPathLookup);
+    }
+
+    /**
+     * This exists solely to work around RESTEASY-798. Without it, the client proxy will fail to be generated when it
+     * hits the unannotated methods.
+     */
+    @Path(TechnologyTagResource.BASE_URL)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public interface TechnologyTagResourceSubclass extends TechnologyTagResource
+    {
+        @Override
+        @POST
+        void setUriInfo(UriInfo uriInfo);
+
+        @Override
+        @POST
+        void setGraphPathLookup(GraphPathLookup graphPathLookup);
+    }
+
+    /**
+     * This exists solely to work around RESTEASY-798. Without it, the client proxy will fail to be generated when it
+     * hits the unannotated methods.
+     */
+    @Path(LinkResource.BASE_URL)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public interface LinkResourceSubclass extends LinkResource
     {
         @Override
         @POST

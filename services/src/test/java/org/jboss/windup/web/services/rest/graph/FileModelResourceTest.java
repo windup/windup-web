@@ -69,7 +69,7 @@ public class FileModelResourceTest extends AbstractGraphResourceTest
 
     @Test
     @RunAsClient
-    public void testGetSource()
+    public void testGetClassifications()
     {
         Long executionID = this.execution.getId();
         List<Map<String, Object>> results = this.fileModelResource.get(executionID, "pom.xml");
