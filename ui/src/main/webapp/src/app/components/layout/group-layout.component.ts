@@ -16,7 +16,7 @@ import {GroupPageComponent} from "../group.page.component";
 @Component({
     templateUrl: './group-layout.component.html',
     styles: [
-        `:host /deep/ .nav-pf-vertical { top: 82px; }`
+        `:host /deep/ .nav-pf-vertical { top: 139px; }`
     ]
 })
 export class GroupLayoutComponent implements OnInit {

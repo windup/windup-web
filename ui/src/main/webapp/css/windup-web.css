@@ -1,3 +1,16 @@
 .form-errors {
     margin-bottom: 10px;
 }
+
+.layout-pf.layout-pf-fixed body {
+    padding-top: unset;
+}
+
+.container-fluid {
+    padding-top: 140px;
+}
+
+
+table.datatable, table.dataTable {
+    height: unset;
+}
