@@ -6,6 +6,7 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.windup.web.services.AbstractTest;
+import org.jboss.windup.web.services.ServiceTestUtil;
 import org.jboss.windup.web.services.data.ServiceConstants;
 import org.jboss.windup.web.services.model.MigrationPath;
 import org.junit.Assert;
@@ -30,7 +31,7 @@ public class MigrationPathEndpointTest extends AbstractTest
     @Before
     public void setUp()
     {
-        ResteasyClient client = getResteasyClient();
+        ResteasyClient client = ServiceTestUtil.getResteasyClient();
         ResteasyWebTarget target = client.target(contextPath + ServiceConstants.REST_BASE);
 
         this.migrationPathEndpoint = target.proxy(MigrationPathEndpoint.class);

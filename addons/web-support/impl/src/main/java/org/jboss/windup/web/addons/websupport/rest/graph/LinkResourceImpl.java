@@ -1,6 +1,5 @@
 package org.jboss.windup.web.addons.websupport.rest.graph;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -17,20 +16,14 @@ public class LinkResourceImpl extends AbstractGraphResource implements LinkResou
     @Override
     public List<Map<String, Object>> getLinksToTransformedFiles(Long executionID, Integer fileModelID)
     {
-        try (GraphContext context = getGraph(executionID))
-        {
-            FileService fileService = new FileService(context);
-            FileModel fileModel = fileService.getById(fileModelID);
+        GraphContext context = getGraph(executionID);
+        FileService fileService = new FileService(context);
+        FileModel fileModel = fileService.getById(fileModelID);
 
-            if (!(fileModel instanceof SourceFileModel))
-                throw new IllegalArgumentException("File must be of type: " + SourceFileModel.class.getSimpleName());
+        if (!(fileModel instanceof SourceFileModel))
+            throw new IllegalArgumentException("File must be of type: " + SourceFileModel.class.getSimpleName());
 
-            SourceFileModel sourceFileModel = (SourceFileModel)fileModel;
-            return super.frameIterableToResult(executionID, sourceFileModel.getLinksToTransformedFiles(), 0);
-        }
-        catch (IOException e)
-        {
-            throw new RuntimeException("Failed to load graph due to: " + e.getMessage());
-        }
+        SourceFileModel sourceFileModel = (SourceFileModel) fileModel;
+        return super.frameIterableToResult(executionID, sourceFileModel.getLinksToTransformedFiles(), 0);
     }
 }

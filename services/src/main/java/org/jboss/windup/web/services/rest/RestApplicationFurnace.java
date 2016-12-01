@@ -2,6 +2,10 @@ package org.jboss.windup.web.services.rest;
 
 import org.jboss.windup.web.addons.websupport.rest.FurnaceRESTGraphAPI;
 import org.jboss.windup.web.addons.websupport.rest.MigrationIssuesEndpoint;
+import org.jboss.windup.web.addons.websupport.rest.graph.ClassificationResource;
+import org.jboss.windup.web.addons.websupport.rest.graph.HintResource;
+import org.jboss.windup.web.addons.websupport.rest.graph.LinkResource;
+import org.jboss.windup.web.addons.websupport.rest.graph.TechnologyTagResource;
 import org.jboss.windup.web.services.service.DefaultGraphPathLookup;
 import org.jboss.windup.web.addons.websupport.rest.graph.FileModelResource;
 import org.jboss.windup.web.addons.websupport.rest.graph.GraphResource;
@@ -34,6 +38,18 @@ public class RestApplicationFurnace extends Application {
     @Inject @FromFurnace
     private MigrationIssuesEndpoint migrationIssuesEndpoint;
 
+    @Inject @FromFurnace
+    private ClassificationResource classificationResource;
+
+    @Inject @FromFurnace
+    private HintResource hintResource;
+
+    @Inject @FromFurnace
+    private TechnologyTagResource technologyTagResource;
+
+    @Inject @FromFurnace
+    private LinkResource linkResource;
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -44,6 +60,10 @@ public class RestApplicationFurnace extends Application {
         addService(singletons, graphResource);
         addService(singletons, fileModelResource);
         addService(singletons, migrationIssuesEndpoint);
+        addService(singletons, classificationResource);
+        addService(singletons, hintResource);
+        addService(singletons, technologyTagResource);
+        addService(singletons, linkResource);
         return singletons;
     }
 

@@ -1,16 +1,11 @@
 package org.jboss.windup.web.services.rest.graph;
 
-import java.net.URL;
-import java.util.List;
-import java.util.Map;
-
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import org.jboss.windup.graph.model.resource.FileModel;
-import org.jboss.windup.web.addons.websupport.rest.GraphPathLookup;
+import org.jboss.windup.web.addons.websupport.rest.graph.ClassificationResource;
 import org.jboss.windup.web.addons.websupport.rest.graph.FileModelResource;
 import org.jboss.windup.web.addons.websupport.rest.graph.GraphResource;
 import org.jboss.windup.web.services.ServiceTestUtil;
@@ -20,24 +15,21 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.UriInfo;
+import java.net.URL;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
 @RunWith(Arquillian.class)
-public class FileModelResourceTest extends AbstractGraphResourceTest
+public class ClassificationResourceTest extends AbstractGraphResourceTest
 {
-
     @ArquillianResource
     private URL contextPath;
 
     private FileModelResource fileModelResource;
+    private ClassificationResource classificationResource;
 
     @Before
     public void setUp() throws Exception
@@ -47,29 +39,12 @@ public class FileModelResourceTest extends AbstractGraphResourceTest
 
         super.setUp();
         this.fileModelResource = getFileResource(target);
+        this.classificationResource = getClassificationResource(target);
     }
 
     @Test
     @RunAsClient
-    public void testFileByName()
-    {
-        Long executionID = this.execution.getId();
-        List<Map<String, Object>> results = this.fileModelResource.get(executionID, "windup-src-example");
-
-        Assert.assertTrue(results.size() == 1);
-        for (Map<String, Object> result : results)
-        {
-            Assert.assertEquals(true, result.get(FileModel.IS_DIRECTORY));
-            Assert.assertEquals("windup-src-example", result.get(FileModel.FILE_NAME));
-
-            Object parentFile = ((Map<String, Object>)result.get(GraphResource.VERTICES_OUT)).get(FileModel.PARENT_FILE);
-            Assert.assertNotNull(parentFile);
-        }
-    }
-
-    @Test
-    @RunAsClient
-    public void testGetSource()
+    public void testGetClassifications()
     {
         Long executionID = this.execution.getId();
         List<Map<String, Object>> results = this.fileModelResource.get(executionID, "pom.xml");
@@ -78,9 +53,18 @@ public class FileModelResourceTest extends AbstractGraphResourceTest
         for (Map<String, Object> result : results)
         {
             Integer id = (Integer)result.get(GraphResource.KEY_ID);
-            String source = this.fileModelResource.getSource(executionID, id);
-            Assert.assertNotNull(source);
-            Assert.assertTrue(source.length() > 512);
+            List<Map<String, Object>> classifications = this.classificationResource.getClassifications(executionID, id);
+            Assert.assertNotNull(classifications);
+            Assert.assertTrue(!classifications.isEmpty());
+
+            boolean foundPOMClassification = false;
+            for (Map<String, Object> classification : classifications)
+            {
+                String title = (String)classification.get("ClassificationModel:classification");
+                if (title != null && title.equals("Maven POM"))
+                    foundPOMClassification = true;
+            }
+            Assert.assertTrue(foundPOMClassification);
 
             break;
         }

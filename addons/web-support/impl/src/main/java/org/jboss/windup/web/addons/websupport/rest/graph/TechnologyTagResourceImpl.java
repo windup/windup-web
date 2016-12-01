@@ -6,7 +6,6 @@ import org.jboss.windup.graph.service.FileService;
 import org.jboss.windup.reporting.model.TechnologyTagModel;
 import org.jboss.windup.reporting.service.TechnologyTagService;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -18,18 +17,12 @@ public class TechnologyTagResourceImpl extends AbstractGraphResource implements 
     @Override
     public List<Map<String, Object>> getTechnologyTags(Long executionID, Integer fileModelID)
     {
-        try (GraphContext context = getGraph(executionID))
-        {
-            FileService fileService = new FileService(context);
-            FileModel fileModel = fileService.getById(fileModelID);
+        GraphContext context = getGraph(executionID);
+        FileService fileService = new FileService(context);
+        FileModel fileModel = fileService.getById(fileModelID);
 
-            TechnologyTagService technologyTagService = new TechnologyTagService(context);
-            Iterable<TechnologyTagModel> technologyTagModels= technologyTagService.findTechnologyTagsForFile(fileModel);
-            return super.frameIterableToResult(executionID, technologyTagModels, 0);
-        }
-        catch (IOException e)
-        {
-            throw new RuntimeException("Failed to load graph due to: " + e.getMessage());
-        }
+        TechnologyTagService technologyTagService = new TechnologyTagService(context);
+        Iterable<TechnologyTagModel> technologyTagModels= technologyTagService.findTechnologyTagsForFile(fileModel);
+        return super.frameIterableToResult(executionID, technologyTagModels, 0);
     }
 }

@@ -22,23 +22,18 @@ public class FileModelResourceImpl extends AbstractGraphResource implements File
     @Override
     public List<Map<String, Object>> get(Long executionID, String filename)
     {
-        try (GraphContext context = getGraph(executionID))
-        {
-            FileService fileService = new FileService(context);
-            Iterable<FileModel> models = fileService.findByFilenameRegex(filename);
-            return frameIterableToResult(executionID, models, 1);
-        }
-        catch (IOException e)
-        {
-            throw new RuntimeException("Failed to load graph due to: " + e.getMessage());
-        }
+        GraphContext context = getGraph(executionID);
+        FileService fileService = new FileService(context);
+        Iterable<FileModel> models = fileService.findByFilenameRegex(filename);
+        return frameIterableToResult(executionID, models, 1);
     }
 
     @Override
     public String getSource(Long executionID, Integer vertexID)
     {
-        try (GraphContext context = getGraph(executionID))
+        try
         {
+            GraphContext context = getGraph(executionID);
             FileService fileService = new FileService(context);
             FileModel fileModel = fileService.getById(vertexID);
 
