@@ -54,14 +54,14 @@ public class ApplicationGroup implements Serializable
     @ManyToOne(fetch = FetchType.EAGER)
     private MigrationProject migrationProject;
 
-    @OneToOne(mappedBy = "applicationGroup")
+    @OneToOne(mappedBy = "applicationGroup", cascade = CascadeType.REMOVE)
     private AnalysisContext analysisContext;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "applicationGroup")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "applicationGroup", cascade = CascadeType.REMOVE)
     @Fetch(FetchMode.SELECT)
     private Set<RegisteredApplication> applications;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "group")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "group", cascade = CascadeType.REMOVE)
     @Fetch(FetchMode.SELECT)
     private Set<WindupExecution> executions;
 

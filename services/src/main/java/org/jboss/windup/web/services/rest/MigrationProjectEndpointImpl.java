@@ -1,5 +1,6 @@
 package org.jboss.windup.web.services.rest;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.logging.Logger;
 
@@ -88,6 +89,13 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
     @Override
     public void deleteProject(MigrationProject migrationProject)
     {
-        entityManager.remove(migrationProject);
+        MigrationProject project = this.getMigrationProject(migrationProject.getId());
+        entityManager.remove(project);
+
+        File projectDir = new File(this.webPathUtil.createMigrationProjectPath(project.getId().toString()).toString());
+
+        if (projectDir.exists()) {
+            projectDir.delete();
+        }
     }
 }

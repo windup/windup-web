@@ -15,6 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Version;
+import javax.persistence.CascadeType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -45,7 +46,7 @@ public class MigrationProject implements Serializable
     @NotNull
     private String title;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "migrationProject")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "migrationProject", cascade = CascadeType.REMOVE)
     private Set<ApplicationGroup> groups;
 
     public Long getId()

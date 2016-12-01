@@ -14,6 +14,7 @@ export class ApplicationGroupService extends AbstractService {
     private PACKAGE_METADATA = "/applicationGroups/#{groupID}/packages";
     private CREATE_URL = "/applicationGroups/create";
     private UPDATE_URL = "/applicationGroups/update";
+    private DELETE_URL = '/applicationGroups/delete';
 
     constructor (private _http: Http) {
         super();
@@ -42,6 +43,22 @@ export class ApplicationGroupService extends AbstractService {
 
         return this._http.put(Constants.REST_BASE + this.UPDATE_URL, body, options)
             .map(res => <ApplicationGroup> res.json())
+            .catch(this.handleError);
+    }
+
+    delete(applicationGroup: ApplicationGroup) {
+        let body = JSON.stringify(applicationGroup);
+
+        let options = new RequestOptions({
+            body: body,
+            headers: new Headers()
+        });
+
+        options.headers.append('Content-Type', 'application/json');
+        options.headers.append('Accept', 'application/json');
+
+        return this._http.delete(Constants.REST_BASE + this.DELETE_URL, options)
+            .map(res => res.json())
             .catch(this.handleError);
     }
 
