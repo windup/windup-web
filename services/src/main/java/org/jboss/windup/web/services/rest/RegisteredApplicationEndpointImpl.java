@@ -32,6 +32,7 @@ import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.model.PackageMetadata;
 import org.jboss.windup.web.services.model.RegisteredApplication;
+import org.jboss.windup.web.services.service.ApplicationGroupService;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -48,6 +49,9 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
     @Inject
     @FromFurnace
     private FileNameSanitizer fileNameSanitizer;
+
+    @Inject
+    private ApplicationGroupService applicationGroupService;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -114,7 +118,7 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
             throw new BadRequestException("Please provide a file");
         }
 
-        ApplicationGroup appGroup = this.getApplicationGroup(appGroupId);
+        ApplicationGroup appGroup = this.applicationGroupService.getApplicationGroup(appGroupId);
         RegisteredApplication application = this.createApplication();
         application.setRegistrationType(RegisteredApplication.RegistrationType.UPLOADED);
         appGroup.addApplication(application);
@@ -140,7 +144,7 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
             throw new BadRequestException("Expecting directory, got file path");
         }
 
-        ApplicationGroup group = this.getApplicationGroup(appGroupId);
+        ApplicationGroup group = this.applicationGroupService.getApplicationGroup(appGroupId);
 
         String[] allowedExtensions = new String[] { ".jar", ".war", ".ear" };
 
@@ -179,7 +183,7 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
     {
         LOG.info("Registering an application at: " + application.getInputPath());
 
-        ApplicationGroup appGroup = appGroupId == 0 ? null : this.getApplicationGroup(appGroupId);
+        ApplicationGroup appGroup = appGroupId == 0 ? null : this.applicationGroupService.getApplicationGroup(appGroupId);
 
         if (appGroup != null)
         {
@@ -293,7 +297,7 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
 
         List<RegisteredApplication> registeredApplications = new ArrayList<>();
 
-        ApplicationGroup appGroup = this.getApplicationGroup(appGroupId);
+        ApplicationGroup appGroup = this.applicationGroupService.getApplicationGroup(appGroupId);
 
         for (InputPart inputPart : inputParts)
         {
@@ -365,18 +369,6 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
     {
         application.setInputPath(newInputPath);
         this.enqueuePackageDiscovery(application);
-    }
-
-    private ApplicationGroup getApplicationGroup(long appGroupId)
-    {
-        ApplicationGroup group = this.entityManager.find(ApplicationGroup.class, appGroupId);
-
-        if (group == null)
-        {
-            throw new BadRequestException("Application group not found");
-        }
-
-        return group;
     }
 
     protected String getFileName(MultivaluedMap<String, String> header)
