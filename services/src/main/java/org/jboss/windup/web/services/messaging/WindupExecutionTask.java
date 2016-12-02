@@ -56,10 +56,10 @@ public class WindupExecutionTask implements Runnable
     /**
      * The {@link ApplicationGroup} to execute.
      */
-    public void init(WindupExecution execution, ApplicationGroup group)
+    public void init(Long executionId)
     {
         this.execution = this.entityManager.find(WindupExecution.class, execution.getId());
-        this.group = this.entityManager.find(ApplicationGroup.class, group.getId());
+        this.group = this.execution.getGroup();
     }
 
     @Override
@@ -71,6 +71,9 @@ public class WindupExecutionTask implements Runnable
 
         if (this.group == null)
             throw new IllegalArgumentException("The group must be initialized by calling setGroup() with a non-null value first!");
+
+        this.execution.setState(ExecutionState.STARTED);
+        this.entityManager.merge(this.execution);
 
         WindupWebProgressMonitor progressMonitor = progressMonitorInstance.get();
         progressMonitor.setExecution(this.execution);
