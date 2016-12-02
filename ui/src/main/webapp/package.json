@@ -48,6 +48,7 @@
     "google-code-prettify": "1.0.1",
     "intl": "^1.2.5",
     "jquery": "2.1.4",
+    "jquery-migrate": "1.4.1",
     "jquery-match-height": "0.7.0",
     "jstree": "^3.3.2",
     "karma-junit-reporter": "^1.1.0",
