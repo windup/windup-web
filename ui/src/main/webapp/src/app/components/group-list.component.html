@@ -13,7 +13,7 @@
 <tbody>
     <tr *ngFor="let group of groups" class="group">
         <td class="title">
-            <a [routerLink]="['/groups', group.id]">{{group.title}}</a>
+            <a [routerLink]="['/projects/' + project.id + '/groups', group.id]">{{group.title}}</a>
 
             <a *ngIf="!group.readOnly" href="#" (click)="editGroup(group, $event)">
                 <span class="glyphicon glyphicon-pencil"></span>
@@ -26,7 +26,7 @@
             <span *ngFor="let app of group.applications; let i = index;">{{i > 0 ? "," : ""}} {{app.title}}</span>
         </td>
         <td class="actions">
-            <a [routerLink]="['/groups/' + group.id + '/analysis-context']">Edit Analysis Configuration</a>
+            <a [routerLink]="['/projects/' + project.id + '/groups/' + group.id + '/analysis-context']">Edit Analysis Configuration</a>
             <span *ngIf="groupReportURL(group) != null">
                 |
                 <a target="_blank" href="{{groupReportURL(group)}}">
