@@ -5,9 +5,11 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.Valid;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 
 import org.jboss.windup.web.services.model.AnalysisContext;
+import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.service.AnalysisContextService;
 
 /**
@@ -35,9 +37,24 @@ public class AnalysisContextEndpointImpl implements AnalysisContextEndpoint
         return context;
     }
 
+    protected boolean validateApplicationGroup(ApplicationGroup applicationGroup)
+    {
+        if (applicationGroup == null || applicationGroup.getId() == null) {
+            return false;
+        }
+
+        ApplicationGroup persistedAppGroup = this.entityManager.find(ApplicationGroup.class, applicationGroup.getId());
+
+        return persistedAppGroup != null;
+    }
+
     @Override
     public AnalysisContext create(@Valid AnalysisContext analysisContext)
     {
+        if (!this.validateApplicationGroup(analysisContext.getApplicationGroup())) {
+            throw new BadRequestException("Invalid application group");
+        }
+
         return analysisContextService.create(analysisContext);
     }
 

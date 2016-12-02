@@ -16,9 +16,11 @@ import javax.ws.rs.NotFoundException;
 
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
+import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.model.PackageMetadata;
+import org.jboss.windup.web.services.service.AnalysisContextService;
 import org.jboss.windup.web.services.service.PackageService;
 
 /**
@@ -36,6 +38,9 @@ public class ApplicationGroupEndpointImpl implements ApplicationGroupEndpoint
 
     @Inject
     private PackageService packageServiceNew;
+
+    @Inject
+    private AnalysisContextService analysisContextService;
 
     @Inject
     @FromFurnace
@@ -94,6 +99,9 @@ public class ApplicationGroupEndpointImpl implements ApplicationGroupEndpoint
         }
 
         entityManager.persist(applicationGroup);
+
+        AnalysisContext analysisContext = this.analysisContextService.createDefaultAnalysisContext(applicationGroup);
+        applicationGroup.setAnalysisContext(analysisContext);
 
         Path outputPath = webPathUtil.createApplicationGroupPath(
                     applicationGroup.getMigrationProject().getId().toString(),

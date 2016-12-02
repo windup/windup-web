@@ -5,6 +5,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.jboss.windup.web.services.model.AnalysisContext;
+import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.Package;
 import org.jboss.windup.web.services.model.RulesPath;
 
@@ -29,9 +30,9 @@ public class AnalysisContextService
     /**
      * Creates a default instance.
      */
-    public AnalysisContext createDefaultAnalysisContext()
+    public AnalysisContext createDefaultAnalysisContext(ApplicationGroup group)
     {
-        AnalysisContext defaultAnalysisContext = new AnalysisContext();
+        AnalysisContext defaultAnalysisContext = new AnalysisContext(group);
         ensureSystemRulesPathsPresent(defaultAnalysisContext);
         entityManager.persist(defaultAnalysisContext);
         return defaultAnalysisContext;

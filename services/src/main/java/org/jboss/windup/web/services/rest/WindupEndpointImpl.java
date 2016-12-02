@@ -96,7 +96,7 @@ public class WindupEndpointImpl implements WindupEndpoint
 
         if (group.getAnalysisContext() == null)
         {
-            group.setAnalysisContext(analysisContextService.createDefaultAnalysisContext());
+            group.setAnalysisContext(analysisContextService.createDefaultAnalysisContext(group));
         }
         entityManager.merge(execution);
 
