@@ -1,7 +1,6 @@
 import {Component, OnDestroy, OnInit, Input} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 
-import {MigrationProject} from "../windup-services";
 import {ApplicationGroup} from "../windup-services";
 import {ApplicationGroupService} from "../services/application-group.service";
 import {WindupService} from "../services/windup.service";
@@ -18,7 +17,6 @@ export class GroupPageComponent implements OnInit, OnDestroy
 {
     projectID: number;
     inGroupID: number;
-    project: MigrationProject;
     group: ApplicationGroup;
     apps: RegisteredApplication[];
 
@@ -101,11 +99,11 @@ export class GroupPageComponent implements OnInit, OnDestroy
     }
 
     registerApplication(applicationGroup:ApplicationGroup) {
-        this._router.navigate([`/groups/${applicationGroup.id}/applications/register`]);
+        this._router.navigate([`/projects/${this.group.migrationProject.id}/groups/${applicationGroup.id}/applications/register`]);
     }
 
     editApplication(application: RegisteredApplication) {
-        this._router.navigate([`/groups/${this.inGroupID}/applications/${application.id}/edit`]);
+        this._router.navigate([`/projects/${this.group.migrationProject.id}/groups/${this.inGroupID}/applications/${application.id}/edit`]);
     }
 
     deleteApplication(application: RegisteredApplication) {
