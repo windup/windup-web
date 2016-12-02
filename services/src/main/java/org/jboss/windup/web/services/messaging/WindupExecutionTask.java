@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import org.apache.commons.io.FileUtils;
 import org.jboss.windup.config.ConfigurationOption;
@@ -45,6 +47,9 @@ public class WindupExecutionTask implements Runnable
     @Inject
     private ConfigurationOptionsService configurationOptionsService;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     private WindupExecution execution;
     private ApplicationGroup group;
 
@@ -53,8 +58,8 @@ public class WindupExecutionTask implements Runnable
      */
     public void init(WindupExecution execution, ApplicationGroup group)
     {
-        this.execution = execution;
-        this.group = group;
+        this.execution = this.entityManager.find(WindupExecution.class, execution.getId());
+        this.group = this.entityManager.find(ApplicationGroup.class, group.getId());
     }
 
     @Override
