@@ -54,7 +54,8 @@ public class ApplicationGroup implements Serializable
     @ManyToOne(fetch = FetchType.EAGER)
     private MigrationProject migrationProject;
 
-    @OneToOne(mappedBy = "applicationGroup", cascade = CascadeType.REMOVE)
+    @OneToOne(mappedBy = "applicationGroup", cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
     private AnalysisContext analysisContext;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "applicationGroup", cascade = CascadeType.REMOVE)
@@ -71,6 +72,13 @@ public class ApplicationGroup implements Serializable
     public ApplicationGroup()
     {
         this.applications = new HashSet<>();
+        this.executions = new HashSet<>();
+    }
+
+    public ApplicationGroup(MigrationProject project)
+    {
+        this();
+        this.migrationProject = project;
     }
 
     public Long getId()

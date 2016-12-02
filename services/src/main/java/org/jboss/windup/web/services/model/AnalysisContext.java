@@ -20,6 +20,10 @@ import javax.persistence.OneToOne;
 import javax.persistence.Version;
 import javax.validation.Valid;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -30,6 +34,7 @@ import org.hibernate.annotations.FetchMode;
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = AnalysisContext.class)
 public class AnalysisContext implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -50,6 +55,7 @@ public class AnalysisContext implements Serializable
     @Fetch(FetchMode.SELECT)
     private Collection<AdvancedOption> advancedOptions;
 
+//    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToOne
     private ApplicationGroup applicationGroup;
 
@@ -65,10 +71,16 @@ public class AnalysisContext implements Serializable
     @JoinTable(name = "analysis_context_exclude_packages")
     private Set<Package> excludePackages;
 
-    public AnalysisContext()
+    protected AnalysisContext()
     {
         this.includePackages = new HashSet<>();
         this.excludePackages = new HashSet<>();
+    }
+
+    public AnalysisContext(ApplicationGroup applicationGroup)
+    {
+        this();
+        this.applicationGroup = applicationGroup;
     }
 
     public Long getId()
