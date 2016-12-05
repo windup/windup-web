@@ -119,7 +119,7 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
         }
 
         ApplicationGroup appGroup = this.applicationGroupService.getApplicationGroup(appGroupId);
-        RegisteredApplication application = this.createApplication();
+        RegisteredApplication application = this.createApplication(appGroup);
         application.setRegistrationType(RegisteredApplication.RegistrationType.UPLOADED);
         appGroup.addApplication(application);
 
@@ -162,7 +162,7 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
             return false;
         }))
         {
-            RegisteredApplication application = this.createApplication();
+            RegisteredApplication application = this.createApplication(group);
             application.setInputPath(file.getPath());
             application.setTitle(file.getName());
             group.addApplication(application);
@@ -220,9 +220,9 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
         return application;
     }
 
-    private RegisteredApplication createApplication()
+    private RegisteredApplication createApplication(ApplicationGroup group)
     {
-        RegisteredApplication application = new RegisteredApplication();
+        RegisteredApplication application = new RegisteredApplication(group);
 
         // need to get ID, set dummy title and path, it will be replaced
         application.setTitle("dummy-title");
@@ -301,7 +301,7 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
 
         for (InputPart inputPart : inputParts)
         {
-            RegisteredApplication application = this.createApplication();
+            RegisteredApplication application = this.createApplication(appGroup);
             application.setRegistrationType(RegisteredApplication.RegistrationType.UPLOADED);
             appGroup.addApplication(application);
 

@@ -62,7 +62,7 @@ public class ApplicationGroup implements Serializable
     @Size(min = 1, max = 2048)
     private String outputPath;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private MigrationProject migrationProject;
 
     @OneToOne(mappedBy = "applicationGroup", cascade = CascadeType.ALL)
@@ -80,7 +80,7 @@ public class ApplicationGroup implements Serializable
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private PackageMetadata packageMetadata;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "applicationGroup")
     private ReportFilter reportFilter;
 
     public ApplicationGroup()
