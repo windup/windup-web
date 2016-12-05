@@ -11,6 +11,7 @@ import {NotificationService} from "../../services/notification.service";
 import {GroupListComponent} from "../group-list.component";
 import {utils} from '../../utils';
 import {GroupPageComponent} from "../group.page.component";
+import {GroupExecutionsComponent} from "../executions/group-executions.component";
 
 
 @Component({
@@ -60,7 +61,10 @@ export class GroupLayoutComponent implements OnInit {
             },
             {
                 label: 'Executions',
-                link: '/groups/' + this.applicationGroup.id + '/executions',
+                link: this._routeLinkProviderService.getRouteForComponent(GroupExecutionsComponent, {
+                    projectId: this.applicationGroup.migrationProject.id,
+                    groupId: this.applicationGroup.id
+                }),
                 icon: 'fa-flask',
                 isEnabled: true
             },

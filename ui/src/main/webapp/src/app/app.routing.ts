@@ -106,7 +106,7 @@ export const appRoutes: Routes = [
                                         {path: 'technology-report', component: TechnologiesReportComponent, data: {displayName: 'Technology Report'}},
                                         {path: 'migration-issues', component: MigrationIssuesComponent, data: {displayName: 'Migration Issues'}}
                                     ]},
-                                    { path: 'executions', component: GroupExecutionsComponent }
+                                    { path: 'executions', component: GroupExecutionsComponent, data: {displayName: 'Executions list'} }
                                 ]
                             },
                         ]
