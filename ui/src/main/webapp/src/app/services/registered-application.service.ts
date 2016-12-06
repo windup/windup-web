@@ -16,6 +16,7 @@ export class RegisteredApplicationService extends AbstractService {
     private GET_APPLICATIONS_URL        = "/registeredApplications/list";
     private UNREGISTER_URL              = "/registeredApplications/unregister";
     private UPDATE_APPLICATION_URL      = "/registeredApplications/update-application";
+    private REGISTERED_APP_BY_ID_URL    = '/registeredApplications/id';
     private REGISTERED_APPLICATIONS_URL = '/registeredApplications';
     private REGISTER_PATH_URL           = "/registeredApplications/register-path/";
     private REGISTER_DIRECTORY_URL      = '/registeredApplications/register-directory-path';
@@ -131,7 +132,7 @@ export class RegisteredApplicationService extends AbstractService {
     }
 
     get(id: number): Observable<RegisteredApplication> {
-        let url = `${Constants.REST_BASE + this.REGISTERED_APPLICATIONS_URL}/${id}`;
+        let url = `${Constants.REST_BASE + this.REGISTERED_APP_BY_ID_URL}/${id}`;
         return this._http.get(url)
             .map(response => response.json())
             .catch(this.handleError);
