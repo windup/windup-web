@@ -4,22 +4,41 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import javax.annotation.Resource;
+import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Status;
+import javax.transaction.UserTransaction;
 
 import org.apache.commons.io.FileUtils;
 import org.jboss.windup.config.ConfigurationOption;
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.addons.websupport.services.WindupExecutorService;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
+import org.jboss.windup.web.services.ServiceUtil;
 import org.jboss.windup.web.services.WindupWebProgressMonitor;
-import org.jboss.windup.web.services.model.*;
+import org.jboss.windup.web.services.model.AdvancedOption;
+import org.jboss.windup.web.services.model.AnalysisContext;
+import org.jboss.windup.web.services.model.ApplicationGroup;
+import org.jboss.windup.web.services.model.ExecutionState;
+import org.jboss.windup.web.services.model.MigrationPath;
 import org.jboss.windup.web.services.model.Package;
+import org.jboss.windup.web.services.model.WindupExecution;
 import org.jboss.windup.web.services.service.ConfigurationOptionsService;
 
 /**
@@ -45,23 +64,77 @@ public class WindupExecutionTask implements Runnable
     @Inject
     private ConfigurationOptionsService configurationOptionsService;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Resource
+    private ManagedExecutorService managedExecutorService;
+
     private WindupExecution execution;
     private ApplicationGroup group;
 
     /**
      * The {@link ApplicationGroup} to execute.
      */
-    public void init(WindupExecution execution, ApplicationGroup group)
+    public void init(Long executionId)
     {
-        this.execution = execution;
-        this.group = group;
+        this.execution = this.entityManager.find(WindupExecution.class, executionId);
+
+        if (this.execution == null)
+        {
+            throw new EntityNotFoundException("WindupExecution with id " + executionId + " was not found");
+        }
+
+        this.group = this.execution.getGroup();
+    }
+
+    protected void updateState(WindupExecution execution, ExecutionState state)
+    {
+        managedExecutorService.submit(() -> {
+            UserTransaction userTransaction = ServiceUtil.getUserTransaction();
+
+            boolean manualTransactions = false;
+            try
+            {
+                if (userTransaction.getStatus() == Status.STATUS_NO_TRANSACTION)
+                {
+                    manualTransactions = true;
+                    userTransaction.begin();
+                }
+
+                this.execution.setState(state);
+                this.entityManager.merge(this.execution);
+
+                if (manualTransactions)
+                    userTransaction.commit();
+            }
+            catch (Exception e)
+            {
+                LOG.warning("Could not send JMS update message due to: " + e.getMessage());
+                try
+                {
+                    if (manualTransactions)
+                        userTransaction.rollback();
+                }
+                catch (Throwable t)
+                {
+                    LOG.warning("Could not rollback transaction due to: " + t.getMessage());
+                }
+            }
+        });
     }
 
     @Override
     public void run()
     {
+        if (this.execution.getState() == ExecutionState.CANCELLED) {
+            return;
+        }
+
         if (this.group == null)
             throw new IllegalArgumentException("The group must be initialized by calling setGroup() with a non-null value first!");
+
+        this.updateState(this.execution, ExecutionState.STARTED);
 
         WindupWebProgressMonitor progressMonitor = progressMonitorInstance.get();
         progressMonitor.setExecution(this.execution);

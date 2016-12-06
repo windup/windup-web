@@ -1,0 +1,26 @@
+<h1>
+    Executions List
+</h1>
+<table class="datatable table table-striped table-bordered executions-list-table">
+    <thead>
+    <tr>
+        <th>Execution</th>
+        <th>State</th>
+        <th>Date Started</th>
+        <th>Date Completed</th>
+        <th>Duration</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let execution of executions" [class]="getClass(execution)" class="execution-row">
+        <td>{{execution.id}}</td>
+        <td>{{execution.state}}</td>
+        <td>{{execution.timeStarted | date: 'short'}}</td>
+        <td>{{execution.timeCompleted | date: 'short'}}</td>
+        <td *ngIf="execution.timeCompleted">{{ execution.timeCompleted - execution.timeStarted }}</td>
+        <td *ngIf="!execution.timeCompleted"></td>
+        <td><a class="link" *ngIf="canCancel(execution)" (click)="cancelExecution(execution)">Cancel</a></td>
+    </tr>
+    </tbody>
+</table>

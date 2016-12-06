@@ -37,15 +37,15 @@ public class ExecutorMDB extends AbstractMDB implements MessageListener
     @Override
     public void onMessage(Message message)
     {
-        if (!validatePayload(WindupExecution.class, message))
+        if (!validatePayload(Long.class, message))
             return;
 
         try
         {
-            WindupExecution execution = (WindupExecution)((ObjectMessage) message).getObject();
+            Long executionId = (Long)((ObjectMessage) message).getObject();
 
             WindupExecutionTask executionTask = windupExecutionTaskInstance.get();
-            executionTask.init(execution, execution.getGroup());
+            executionTask.init(executionId);
             executionTask.run();
         }
         catch (Throwable e)

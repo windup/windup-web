@@ -1,5 +1,6 @@
 package org.jboss.windup.web.services.rest;
 
+import java.util.Collection;
 import java.nio.file.Path;
 import java.util.GregorianCalendar;
 import java.util.logging.Logger;
@@ -11,6 +12,7 @@ import javax.jms.JMSContext;
 import javax.jms.Queue;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 
 import org.jboss.forge.furnace.Furnace;
@@ -82,7 +84,7 @@ public class WindupEndpointImpl implements WindupEndpoint
         WindupExecution execution = new WindupExecution();
         execution.setGroup(group);
         execution.setTimeStarted(new GregorianCalendar());
-        execution.setState(ExecutionState.STARTED);
+        execution.setState(ExecutionState.QUEUED);
 
         entityManager.persist(execution);
 
@@ -100,7 +102,7 @@ public class WindupEndpointImpl implements WindupEndpoint
         }
         entityManager.merge(execution);
 
-        messaging.createProducer().send(executorQueue, execution);
+        messaging.createProducer().send(executorQueue, execution.getId());
 
         return execution;
     }
@@ -117,4 +119,38 @@ public class WindupEndpointImpl implements WindupEndpoint
         return applicationGroup;
     }
 
+    @Override
+    public Collection<WindupExecution> getAllExecutions()
+    {
+        return this.entityManager.createQuery("SELECT ex from " + WindupExecution.class.getSimpleName() + " ex").getResultList();
+    }
+
+    protected WindupExecution getExecution(Long executionId)
+    {
+        WindupExecution execution = this.entityManager.find(WindupExecution.class, executionId);
+
+        if (execution == null)
+        {
+            throw new NotFoundException("WindupExecution with id: " + executionId + " not found");
+        }
+
+        return execution;
+    }
+
+    @Override
+    public void cancelExecution(Long executionID)
+    {
+        WindupExecution execution = this.getExecution(executionID);
+
+        if (execution.getState() != ExecutionState.QUEUED)
+        {
+            throw new BadRequestException("WindupExecution with id: " + executionID + " cannot be cancelled. \n" +
+                        " It is in state: " + execution.getState() + " which doesn't allow cancelling.");
+        }
+
+
+        // TODO: Cancel execution here
+        execution.setState(ExecutionState.CANCELLED);
+        this.entityManager.merge(execution);
+    }
 }
