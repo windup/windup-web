@@ -120,20 +120,30 @@ import "prismjs/components/prism-yaml";
 import "prismjs/plugins/keep-markup/prism-keep-markup";
 import {FileModelService} from "../../../services/graph/file-model.service";
 import {FileModel} from "../../../generated/tsModels/FileModel";
+import {ClassificationService} from "../../../services/graph/classification.service";
+import {ClassificationModel} from "../../../generated/tsModels/ClassificationModel";
+import {InlineHintModel} from "../../../generated/tsModels/InlineHintModel";
+import {HintService} from "../../../services/graph/hint.service";
 
 @Component({
     templateUrl: '/source-report.component.html',
     styleUrls: [ '/source-report.component.css' ]
 })
-export class SourceReportComponent implements OnInit {
+export class SourceReportComponent implements OnInit, AfterViewChecked {
     private execID: number;
     private fileID: number;
+    private fileSource: string = "Loading...";
+    private fileLines: string[];
     private fileModel: FileModel;
-    private fileSource: string;
-    fileLines: string[];
+    private classifications: ClassificationModel[];
+    private hints: InlineHintModel[];
+    private rendered: boolean = false;
 
-    constructor(private route:ActivatedRoute, private fileModelService:FileModelService) {
-    }
+    constructor(private route:ActivatedRoute,
+                private fileModelService:FileModelService,
+                private classificationService:ClassificationService,
+                private hintService:HintService
+    ) { }
 
     ngOnInit(): void {
         this.route.params.forEach((params: Params) => {
@@ -145,16 +155,52 @@ export class SourceReportComponent implements OnInit {
                     this.fileModel = fileModel;
                 });
 
+            this.classificationService.getClassificationsForFile(this.execID, this.fileID)
+                .subscribe((classifications) => this.classifications = classifications);
+
+            this.hintService.getHintsForFile(this.execID, this.fileID)
+                .subscribe((hints) => this.hints = hints);
+
             this.fileModelService.getSource(this.execID, this.fileID)
                 .subscribe((fileSource) => {
                     this.fileSource = fileSource;
                     this.fileLines = fileSource.split(/[\r\n]/).map((line) => line + "\n");
-                    this.setupHighlights();
                 });
         });
     }
 
-    setupHighlights(): void {
+    noteReferences(line:string, lineNumber:number): string {
+        if (!this.hints)
+            return "";
+
+        return this.hints
+            .filter((hint) => hint.data["lineNumber"] == lineNumber)
+            .map((hint) => "note-" + hint.vertexId)
+            .join(", ");
+    }
+
+    lineClass(line:string, lineNumber:number): string {
+        if (!this.hints)
+            return "";
+
+        let styleClasses = this.hints
+            .filter((hint) => hint.data["lineNumber"] == lineNumber)
+            .map((hint) => "note-" + hint.vertexId)
+            .join(", ");
+
+        if (styleClasses)
+            styleClasses = "note-placeholder box box-bg " + styleClasses;
+
+        return styleClasses;
+    }
+
+    ngAfterViewChecked(): void {
+        if (this.rendered)
+            return;
+
+        if (!this.fileSource || this.hints == null || this.classifications == null)
+            return;
+
         Prism.hooks.add('after-highlight', function () {
             [].forEach.call(document.querySelectorAll('.has-notes .note-placeholder'), function (placeholder) {
                 var id = placeholder.getAttribute('data-note');
@@ -167,6 +213,7 @@ export class SourceReportComponent implements OnInit {
         setTimeout(() => {
             Prism.highlightAll(false);
         }, 50);
+        this.rendered = true;
         console.log("Rendered!");
     }
 }

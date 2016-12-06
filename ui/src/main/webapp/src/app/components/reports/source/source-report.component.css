@@ -221,14 +221,14 @@ div.inline-comment-body p:last-child, ul:last-child, ol.last-child {
     margin-bottom:0;
 }
 
-div.box {
+li.box {
     border: none;
     padding-bottom: 5px;
     border: 1px solid #80775d !important;
     margin-right: 10px;
 }
 
-div.box-bg {
+li.box-bg {
     background-color: rgb(255, 238, 185);
 }
 
@@ -272,7 +272,7 @@ li.box + li.box {
 
 .snippet-num li {
     list-style: decimal-leading-zero outside none;
-    padding: 0 0 0 1.5em;
+    padding: 0 0 1.0em 1.5em;
     margin: 0;
     line-height: 1em;
     font-family : "Lucida Grand", Verdana, Arial, Helvetica, sans-serif;

@@ -6,6 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import 'rxjs/Rx';
 
 import {FileSelectDirective, FileDropDirective, FileUploader} from 'ng2-file-upload/ng2-file-upload';
+import { MarkdownModule } from 'angular2-markdown';
 import { AppComponent }  from './components/app.component';
 import {routing, appRoutingProviders, appRoutes} from './app.routing';
 
@@ -73,6 +74,8 @@ import {AllExecutionsComponent} from "./components/executions/all-executions.com
 import {GroupExecutionsComponent} from "./components/executions/group-executions.component";
 import {SourceReportComponent} from "./components/reports/source/source-report.component";
 import {FileModelService} from "./services/graph/file-model.service";
+import {ClassificationService} from "./services/graph/classification.service";
+import {HintService} from "./services/graph/hint.service";
 
 @NgModule({
     imports: [
@@ -80,7 +83,8 @@ import {FileModelService} from "./services/graph/file-model.service";
         FormsModule,
         ReactiveFormsModule,
         HttpModule,
-        routing
+        routing,
+        MarkdownModule
     ],
     declarations: [
         // pages
@@ -152,6 +156,8 @@ import {FileModelService} from "./services/graph/file-model.service";
         MigrationIssuesService,
         TechReportService,
         FileModelService,
+        ClassificationService,
+        HintService,
         FramesRestClientService,
         ApplicationGroupResolve,
         ConfigurationResolve,
