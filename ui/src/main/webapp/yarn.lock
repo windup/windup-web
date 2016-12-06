@@ -70,6 +70,10 @@
   version "6.0.47"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-6.0.47.tgz#07dd004f05d0b74344ebf943b559659bd7f445b1"
 
+Base64@~0.2.0:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/Base64/-/Base64-0.2.1.tgz#ba3a4230708e186705065e66babdd4c35cf60028"
+
 abbrev@1, abbrev@1.0.x:
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.0.9.tgz#91b4792588a7738c25f35dd6f63752a2f8776135"

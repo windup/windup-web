@@ -11,8 +11,6 @@ module.exports = {
     entry: {
         'polyfills': './src/polyfills.ts',
         'vendor': './src/vendor.ts',
-        'jquerymigrate': './js/snippet/jquery-migrate-1.4.1.min.js',
-        'snippet': './js/snippet/jquery.snippet.min.js',
         'app': './src/main.ts'
     },
 

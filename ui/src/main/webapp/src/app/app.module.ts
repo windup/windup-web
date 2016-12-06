@@ -72,6 +72,7 @@ import {ExecutionsListComponent} from "./components/executions/executions-list.c
 import {AllExecutionsComponent} from "./components/executions/all-executions.component";
 import {GroupExecutionsComponent} from "./components/executions/group-executions.component";
 import {SourceReportComponent} from "./components/reports/source/source-report.component";
+import {FileModelService} from "./services/graph/file-model.service";
 
 @NgModule({
     imports: [
@@ -150,6 +151,7 @@ import {SourceReportComponent} from "./components/reports/source/source-report.c
         LoggedInGuard,
         MigrationIssuesService,
         TechReportService,
+        FileModelService,
         FramesRestClientService,
         ApplicationGroupResolve,
         ConfigurationResolve,

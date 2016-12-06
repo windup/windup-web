@@ -1,0 +1,33 @@
+import {Injectable} from "@angular/core";
+import {Http} from "@angular/http";
+import {Observable} from "rxjs";
+import {AbstractService} from "../abtract.service";
+import {Constants} from "../../constants";
+import {FileModel} from "../../generated/tsModels/FileModel";
+import {GraphJSONToModelService} from "./graph-json-to-model.service";
+
+@Injectable()
+export class FileModelService extends AbstractService {
+
+    constructor(private _http: Http) {
+        super();
+    }
+
+    getFileModel(executionId: number, vertexID: number): Observable<FileModel> {
+        let url = `${Constants.GRAPH_REST_BASE}/graph/${executionId}/${vertexID}`;
+        let service = new GraphJSONToModelService();
+
+        return this._http.get(url)
+            .map(res => res.json())
+            .map(res => <FileModel>service.fromJSON(res, this._http))
+            .catch(this.handleError);
+    }
+
+    getSource(executionId: number, vertexID: number): Observable<string> {
+        let url = `${Constants.GRAPH_REST_BASE}/graph/filemodel/${executionId}/source/${vertexID}`;
+
+        return this._http.get(url)
+            .map(res => res.text())
+            .catch(this.handleError);
+    }
+}

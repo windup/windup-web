@@ -1,4 +1,5 @@
-<h1>SOURCE STUFF GOES HERE!!!!</h1>
-
 <h2>Exec ID: {{execID}}</h2>
 <h2>File ID: {{fileID}}</h2>
+<h2>File: {{fileModel?.fileName}}</h2>
+
+<pre class="has-notes"><code class="language-java"><ol class="snippet-num"><li *ngFor="let line of fileLines">{{line}}</li></ol></code></pre>
