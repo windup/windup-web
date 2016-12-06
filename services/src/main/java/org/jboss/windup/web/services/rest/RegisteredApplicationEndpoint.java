@@ -23,11 +23,11 @@ public interface RegisteredApplicationEndpoint
     /**
      * Gets the list of all registered applications.
      */
-    @GET
     @Path("list")
+    @GET
     Collection<RegisteredApplication> getRegisteredApplications();
 
-    @Path("{id}")
+    @Path("id/{id}")
     @GET
     RegisteredApplication getApplication(@PathParam("id") long id);
 
@@ -43,29 +43,29 @@ public interface RegisteredApplicationEndpoint
     /**
      * Registers a new application with Windup by its path on the server.
      */
-    @POST
     @Path("register-path/{appGroupId}")
+    @POST
     RegisteredApplication registerApplicationByPath(@PathParam("appGroupId") long appGroupId, @Valid RegisteredApplication application);
 
     /**
      * Registers all applications found in directory path on the server.
      */
-    @POST
     @Path("register-directory-path/{appGroupId}")
+    @POST
     Collection<RegisteredApplication> registerApplicationsInDirectoryByPath(@PathParam("appGroupId") long appGroupId, String directoryPath);
 
     /**
      * Updates an existing application.
      */
-    @PUT
     @Path("update-application")
+    @PUT
     RegisteredApplication update(@Valid RegisteredApplication application);
 
     /**
      * Removes the registration entry for an application.
      */
-    @DELETE
     @Path("unregister/{id}")
+    @DELETE
     void unregister(@PathParam("id") long applicationID);
 
     /**
