@@ -8,6 +8,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import java.util.Collection;
 
 /**
  * Contains methods for executing Windup and querying the current status of an execution run.
@@ -32,4 +33,12 @@ public interface WindupEndpoint
     @POST
     @Path("executeGroup")
     WindupExecution executeGroup(Long groupID);
+
+    @GET
+    @Path("executions")
+    Collection<WindupExecution> getAllExecutions();
+
+    @POST
+    @Path("executions/{executionId}/cancel")
+    void cancelExecution(@PathParam("executionId") Long executionID);
 }

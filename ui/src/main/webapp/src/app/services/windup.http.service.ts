@@ -37,10 +37,10 @@ export class WindupHttpService extends Http {
         return (this.setToken(options) as Observable<Response>).flatMap(options => {
             return new Observable<Response>((observer) => {
                 let result;
-                if (body) {
-                    result = f.apply(this, [url, body, options]);
-                } else {
+                if (typeof body === 'undefined') {
                     result = f.apply(this, [url, options]);
+                } else {
+                    result = f.apply(this, [url, body, options]);
                 }
 
                 result.subscribe(

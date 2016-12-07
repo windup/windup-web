@@ -31,6 +31,9 @@
             <li [class.active]="isActive(projectListLink)">
                 <a #projectListLink routerLink="/project-list">Home</a>
             </li>
+            <li [class.active]="isActive(executionsListLink)">
+                <a #executionsListLink routerLink="/executions">Executions</a>
+            </li>
         </ul>
     </div>
     <wu-breadcrumbs></wu-breadcrumbs>

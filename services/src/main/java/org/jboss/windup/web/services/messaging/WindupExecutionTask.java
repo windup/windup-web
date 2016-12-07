@@ -60,6 +60,10 @@ public class WindupExecutionTask implements Runnable
     @Override
     public void run()
     {
+        if (this.execution.getState() == ExecutionState.CANCELLED) {
+            return;
+        }
+
         if (this.group == null)
             throw new IllegalArgumentException("The group must be initialized by calling setGroup() with a non-null value first!");
 
