@@ -1,4 +1,5 @@
 import {NgControl} from "@angular/forms";
+import {utils} from "../utils";
 
 export class FormComponent {
     errorMessages:string[];
@@ -33,7 +34,7 @@ export class FormComponent {
             if (error instanceof ProgressEvent)
                 this.errorMessages.push("Server connection failed!");
             else
-                this.errorMessages.push("Error: " + error);
+                this.errorMessages.push("Error: " + utils.getErrorMessage(error));
         }
     }
 }

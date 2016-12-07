@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ElementRef, Renderer, NgZone} from "@angular/core";
+import {Component, Input, OnInit, ElementRef, Renderer, NgZone, OnDestroy} from "@angular/core";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FileUploader} from 'ng2-file-upload/ng2-file-upload';
@@ -15,7 +15,7 @@ import {Constants} from "../constants";
 @Component({
     templateUrl: 'register-application-form.component.html'
 })
-export class RegisterApplicationFormComponent extends FormComponent implements OnInit {
+export class RegisterApplicationFormComponent extends FormComponent implements OnInit, OnDestroy {
     registrationForm: FormGroup;
 
     applicationGroup: ApplicationGroup;
@@ -64,6 +64,10 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
                 disableMultipart: false
             });
         });
+    }
+
+    ngOnDestroy(): void {
+        this.multipartUploader.clearQueue();
     }
 
     registerByPath() {
