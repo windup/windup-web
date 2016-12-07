@@ -1,16 +1,16 @@
-import {Component, OnInit} from "@angular/core";
-import {ActivatedRoute, Router} from "@angular/router";
+import {Component, OnInit, OnDestroy} from "@angular/core";
+import {ActivatedRoute, Router, NavigationEnd} from "@angular/router";
 
 import {ApplicationGroup, MigrationProject} from "../windup-services";
 import {ApplicationGroupService} from "../services/application-group.service";
-import {MigrationProjectService} from "../services/migration-project.service";
 import {FormComponent} from "./form.component";
+import {RouteFlattenerService} from "../services/route-flattener.service";
 
 @Component({
     selector: 'create-group-form',
     templateUrl: 'application-group-form.component.html',
 })
-export class ApplicationGroupForm extends FormComponent implements OnInit
+export class ApplicationGroupForm extends FormComponent implements OnInit, OnDestroy
 {
     project:MigrationProject;
     model:ApplicationGroup = <ApplicationGroup>{};
@@ -19,6 +19,9 @@ export class ApplicationGroupForm extends FormComponent implements OnInit
 
     loadingProject:boolean = false;
     loadingGroup:boolean = false;
+    title: string = 'Create Application Group';
+
+    private routerSubscription;
 
     get loading():boolean {
         return this.loadingProject || this.loadingGroup;
@@ -27,38 +30,28 @@ export class ApplicationGroupForm extends FormComponent implements OnInit
     constructor(
         private _router: Router,
         private _activatedRoute: ActivatedRoute,
-        private _migrationProjectService: MigrationProjectService,
-        private _applicationGroupService: ApplicationGroupService
+        private _applicationGroupService: ApplicationGroupService,
+        private _routeFlattener: RouteFlattenerService
     ) {
         super();
     }
 
     ngOnInit() {
-        this._activatedRoute.params.subscribe(params => {
-            let projectID = parseInt(params["projectID"]);
-            if (!isNaN(projectID)) {
-                this.loadingProject = true;
-                this._migrationProjectService.get(projectID).subscribe(
-                    model => { this.project = model; this.loadingProject = false },
-                    error => this.handleError(<any> error)
-                );
-            }
+        this.routerSubscription = this._router.events.filter(event => event instanceof NavigationEnd).subscribe(_ => {
+            let flatRouteData = this._routeFlattener.getFlattenedRouteData(this._activatedRoute.snapshot);
+            this.title = flatRouteData.data['displayName'];
+            this.project = flatRouteData.data['project'];
 
-            let groupID = parseInt(params["groupID"]);
-            if (!isNaN(groupID)) {
+            if (flatRouteData.data['applicationGroup']) {
                 this.editMode = true;
-                this.loadingGroup = true;
-                this._applicationGroupService.get(groupID).subscribe(
-                    model => {
-                        this.model = model;
-                        if (this.project == null)
-                            this.project = this.model.migrationProject;
-                        this.loadingGroup = false;
-                    },
-                    error => this.handleError(<any> error)
-                );
+                this.model = flatRouteData.data['applicationGroup'];
             }
         });
+    }
+
+
+    ngOnDestroy(): void {
+        this.routerSubscription.unsubscribe();
     }
 
     save() {
