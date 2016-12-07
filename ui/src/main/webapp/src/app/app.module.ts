@@ -6,7 +6,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import 'rxjs/Rx';
 
 import {FileSelectDirective, FileDropDirective, FileUploader} from 'ng2-file-upload/ng2-file-upload';
-import { MarkdownModule } from 'angular2-markdown';
 import { AppComponent }  from './components/app.component';
 import {routing, appRoutingProviders, appRoutes} from './app.routing';
 
@@ -83,8 +82,7 @@ import {HintService} from "./services/graph/hint.service";
         FormsModule,
         ReactiveFormsModule,
         HttpModule,
-        routing,
-        MarkdownModule
+        routing
     ],
     declarations: [
         // pages

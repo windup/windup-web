@@ -118,12 +118,19 @@ import "prismjs/components/prism-yaml";
 //import "prismjs/components/prism-objectivec"
 
 import "prismjs/plugins/keep-markup/prism-keep-markup";
+
+import * as showdown from "showdown";
+
 import {FileModelService} from "../../../services/graph/file-model.service";
 import {FileModel} from "../../../generated/tsModels/FileModel";
 import {ClassificationService} from "../../../services/graph/classification.service";
 import {ClassificationModel} from "../../../generated/tsModels/ClassificationModel";
 import {InlineHintModel} from "../../../generated/tsModels/InlineHintModel";
 import {HintService} from "../../../services/graph/hint.service";
+import {LinkModel} from "../../../generated/tsModels/LinkModel";
+import {SourceFileModel} from "../../../generated/tsModels/SourceFileModel";
+import {GraphJSONToModelService} from "../../../services/graph/graph-json-to-model.service";
+import {Http} from "@angular/http";
 
 @Component({
     templateUrl: '/source-report.component.html',
@@ -134,7 +141,11 @@ export class SourceReportComponent implements OnInit, AfterViewChecked {
     private fileID: number;
     private fileSource: string = "Loading...";
     private fileLines: string[];
+
     private fileModel: FileModel;
+    private sourceFileModel: SourceFileModel;
+    private transformedLinks: LinkModel[];
+
     private classifications: ClassificationModel[];
     private hints: InlineHintModel[];
     private rendered: boolean = false;
@@ -142,7 +153,8 @@ export class SourceReportComponent implements OnInit, AfterViewChecked {
     constructor(private route:ActivatedRoute,
                 private fileModelService:FileModelService,
                 private classificationService:ClassificationService,
-                private hintService:HintService
+                private hintService:HintService,
+                private http:Http
     ) { }
 
     ngOnInit(): void {
@@ -153,6 +165,11 @@ export class SourceReportComponent implements OnInit, AfterViewChecked {
             this.fileModelService.getFileModel(this.execID, this.fileID)
                 .subscribe((fileModel) => {
                     this.fileModel = fileModel;
+
+                    // Assume this is a source file model and deserialize it as one... if it is not, this will have a lot of null
+                    //   properties
+                    this.sourceFileModel = <SourceFileModel>new GraphJSONToModelService().fromJSON(this.fileModel.data, this.http, SourceFileModel);
+                    this.sourceFileModel.linksToTransformedFiles.subscribe((links) => this.transformedLinks = links);
                 });
 
             this.classificationService.getClassificationsForFile(this.execID, this.fileID)
@@ -169,12 +186,22 @@ export class SourceReportComponent implements OnInit, AfterViewChecked {
         });
     }
 
+    private hintMatches(hint:InlineHintModel, lineNumber:number):boolean {
+        let hintLine = hint.data["lineNumber"];
+
+        // workaround an odd edge case
+        if (hintLine <= 0)
+            hintLine = 1;
+
+        return hintLine == (lineNumber+1)
+    }
+
     noteReferences(line:string, lineNumber:number): string {
         if (!this.hints)
             return "";
 
         return this.hints
-            .filter((hint) => hint.data["lineNumber"] == lineNumber)
+            .filter((hint) => this.hintMatches(hint, lineNumber))
             .map((hint) => "note-" + hint.vertexId)
             .join(", ");
     }
@@ -184,7 +211,7 @@ export class SourceReportComponent implements OnInit, AfterViewChecked {
             return "";
 
         let styleClasses = this.hints
-            .filter((hint) => hint.data["lineNumber"] == lineNumber)
+            .filter((hint) => this.hintMatches(hint, lineNumber))
             .map((hint) => "note-" + hint.vertexId)
             .join(", ");
 
@@ -194,18 +221,36 @@ export class SourceReportComponent implements OnInit, AfterViewChecked {
         return styleClasses;
     }
 
+    filetype():string {
+        if (!this.fileModel)
+            return "";
+
+        let lastDotIndex = this.fileModel.fileName.lastIndexOf(".");
+        if (lastDotIndex == -1 || lastDotIndex == this.fileModel.fileName.length)
+            return "";
+
+        return this.fileModel.fileName.substring(lastDotIndex + 1);
+    }
+
+    markdown(input:string):string {
+        return new showdown.Converter().makeHtml(input);
+    }
+
     ngAfterViewChecked(): void {
         if (this.rendered)
             return;
 
-        if (!this.fileSource || this.hints == null || this.classifications == null)
+        if (!this.fileSource || !this.fileModel || this.hints == null || this.classifications == null)
             return;
 
         Prism.hooks.add('after-highlight', function () {
             [].forEach.call(document.querySelectorAll('.has-notes .note-placeholder'), function (placeholder) {
-                var id = placeholder.getAttribute('data-note');
-                var note = document.getElementById(id);
-                placeholder.appendChild(note);
+                var idList = placeholder.getAttribute('data-note').split(",");
+                idList.forEach((id) => {
+                    id = id.trim();
+                    var note = document.getElementById(id);
+                    placeholder.appendChild(note);
+                });
             });
         });
 

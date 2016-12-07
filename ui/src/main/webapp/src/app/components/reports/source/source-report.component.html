@@ -1,6 +1,6 @@
 <div class="panel panel-primary">
     <div class="panel-heading">
-        <h3 class="panel-title">Information: {{fileModel?.fileName}}</h3>
+        <h3 class="panel-title">File: {{fileModel?.fileName}}</h3>
     </div>
     <div class="panel-body" style="overflow: auto;">
         <div class="points" style="text-align: center; color: #00254b; padding-bottom: 1ex;">
@@ -14,20 +14,31 @@
                 <span class="label label-info" title="INFORMATIONAL">Decompiled Java File</span>
             </div>
 
+            <ul class="classifications">
+                <li *ngFor="let classificationModel of classifications">
+                    <div class="title">
+                        <em>{{classificationModel.classification}}</em>
+                        <a title="View Rule: {{classificationModel.ruleID}}" href="#"><span class="glyphicon glyphicon-link rule-link"></span></a>
+                    </div>
+                    <div class="desc">{{classificationModel.description}}</div>
+                </li>
+            </ul>
+
+            <h4>Automatically Translated Files</h4>
+            <ul>
+                <li *ngFor="let linkModel of transformedLinks">
+                    <a href="{{linkModel.link}}">{{linkModel.description}}</a>
+                </li>
+            </ul>
+
             <!-- Snaps under the height keeper. Yes, the same effect could be achieved by a table. -->
             <div style="clear: both;">
             </div><!-- .info -->
         </div>
+
+        <pre class="has-notes"><code class="language-{{filetype()}}"><ol class="snippet-num"><li *ngFor="let line of fileLines; let i = index;" class="{{lineClass(line, i)}}" [attr.data-note]="noteReferences(line, i)">{{line}}</li></ol></code></pre>
     </div>
 </div>
-<h2>Exec ID: {{execID}}</h2>
-<h2>File ID: {{fileID}}</h2>
-<h2>File: {{fileModel?.fileName}}</h2>
-<h2 *ngFor="let classificationModel of classifications">
-    Classification: {{ classificationModel.classification }}
-</h2>
-
-<pre class="has-notes"><code class="language-java"><ol class="snippet-num"><li *ngFor="let line of fileLines; let i = index;" class="{{lineClass(line, i)}}" [attr.data-note]="noteReferences(line, i)">{{line}}</li></ol></code></pre>
 
 <div *ngFor="let hintModel of hints" id="note-{{hintModel.vertexId}}" class="inline-source-hint-group">
     <a name="{{hintModel.vertexId}}" class="windup-file-location sh_url"></a>
@@ -35,13 +46,11 @@
         <div class="inline-comment">
             <div class="inline-comment-heading">
                 <strong class="notification warning">{{hintModel.title}}</strong>
-                <a title="View Rule: weblogic-services-02000" href="windup_ruleproviders.html#weblogic-services-02000" class="sh_url">
+                <a title="View Rule: {{hintModel.ruleID}}" href="#" class="sh_url">
                     <span class="glyphicon glyphicon-link rule-link floatRight"></span>
                 </a>
             </div>
-            <div class="inline-comment-body" Markdown>
-                {{hintModel.hint}}
-            </div>
+            <div class="inline-comment-body" [innerHTML]="markdown(hintModel.hint)"></div>
         </div>
     </div>
 </div>

@@ -30,7 +30,7 @@ export function GraphAdjacency (name:string, direction:string, array:boolean = t
                     let url = this.data[verticesLabel][name]["link"];
                     if (array) {
                         return this.http.get(url).map((vertices:any) => {
-                            return vertices.map((vertice:any) => {
+                            return vertices.json().map((vertice:any) => {
                                 return graphService.fromJSON(vertice, target.http);
                             });
                         });

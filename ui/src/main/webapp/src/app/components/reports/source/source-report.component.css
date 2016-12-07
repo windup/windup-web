@@ -1,3 +1,70 @@
+.panel .panel-body .points {
+    color: #00254b;
+    float: left;
+    text-align: center;
+}
+
+.panel .panel-body .points .number {
+    font-size: 50pt;
+    width: 1.5em;
+}
+
+.panel .panel-body .info h4 {
+    font-size: 11pt;
+    font-weight: bold;
+    margin: 6pt 0 4pt;
+}
+
+.label {
+    border-radius: 4px;
+    display: block;
+    float: left;
+    font-weight: bold;
+    margin: 2px;
+    padding: 4px;
+}
+.label-info {
+    background-color: #696969;
+}
+
+.label-default {
+    background-color: #999999;
+}
+.label-default[href]:hover, .label-default[href]:focus {
+    background-color: #808080;
+}
+.label-primary {
+    background-color: #008cba;
+}
+.label-primary[href]:hover, .label-primary[href]:focus {
+    background-color: #006687;
+}
+.label-success {
+    background-color: #43ac6a;
+}
+.label-success[href]:hover, .label-success[href]:focus {
+    background-color: #358753;
+}
+.label-info {
+    background-color: #5bc0de;
+}
+.label-info[href]:hover, .label-info[href]:focus {
+    background-color: #31b0d5;
+}
+.label-warning {
+    background-color: #e99002;
+}
+.label-warning[href]:hover, .label-warning[href]:focus {
+    background-color: #b67102;
+}
+.label-danger {
+    background-color: #f04124;
+}
+.label-danger[href]:hover, .label-danger[href]:focus {
+    background-color: #d32a0e;
+}
+
+.classifications .desc { padding-left: 3ex; }
 
 pre#source {
     background: #F9F9F9;

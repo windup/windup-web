@@ -103,7 +103,7 @@ export const appRoutes: Routes = [
                                         ]},
                                         { path: 'reports/:executionId', children: [
                                             {path: 'technology-report', component: TechnologiesReportComponent, data: {displayName: 'Technology Report'}},
-                                            {path: 'migration-issues', component: MigrationIssuesComponent, data: {displayName: 'Migration Issues'}}
+                                            {path: 'migration-issues', component: MigrationIssuesComponent, data: {displayName: 'Migration Issues'}},
                                             {path: 'source/:fileId', component: SourceReportComponent, data: {displayName: 'Source Report'}}
                                         ]},
                                         { path: '', children: [
