@@ -12,10 +12,8 @@ import {ModalDialogComponent} from "./modal-dialog.component";
 import {IsDirty} from "../is-dirty.interface";
 import {Observable} from "rxjs/Observable";
 import {PackageRegistryService} from "../services/package-registry.service";
-import {
-    ApplicationGroup, AnalysisContext, Package, MigrationPath, AdvancedOption, RulesPath,
-    PackageMetadata
-} from "../windup-services";
+import {ApplicationGroup, AnalysisContext, Package, MigrationPath, AdvancedOption, RulesPath} from "../windup-services";
+import {PackageMetadata} from "windup-services";
 
 @Component({
     templateUrl: 'analysis-context-form.component.html'
@@ -26,10 +24,10 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
     private analysisContextForm:NgForm;
 
     private _dirty: boolean = null;
-    loading:boolean = true;
+
     applicationGroup: ApplicationGroup = null;
 
-    analysisContext:AnalysisContext = <AnalysisContext>{};
+    analysisContext:AnalysisContext;
     packageTree: Package[] = [];
 
     /**
@@ -55,87 +53,63 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
                 private _configurationOptionsService:ConfigurationOptionsService,
                 private _packageRegistryService: PackageRegistryService) {
         super();
-        this.analysisContext.migrationPath = <MigrationPath>{};
         this.includePackages = [];
         this.excludePackages = [];
     }
 
-    get migrationPaths() {
-        if (this._migrationPathsObservable == null) {
-            this._migrationPathsObservable = this._migrationPathService.getAll();
-        }
-        return this._migrationPathsObservable;
-    }
-
-    get dirty(): boolean {
-        if (this._dirty != null) {
-            return this._dirty;
-        }
-
-        return this.analysisContextForm.dirty;
-    }
-
-    advancedOptionsChanged(advancedOptions:AdvancedOption[]) {
-        this._dirty = true;
-    }
-
-    onNodesChanged(event) {
-        console.log(event);
-    }
-
     ngOnInit() {
-        this._activatedRoute.parent.params.subscribe(params => {
-            let id:number = parseInt(params["groupId"]);
-            if (!isNaN(id)) {
-                this.loading = true;
+        this._activatedRoute.parent.parent.data.subscribe((data: {applicationGroup: ApplicationGroup}) => {
+            this.applicationGroup = data.applicationGroup;
 
-                this._configurationOptionsService.getAll().subscribe(
-                    (options:ConfigurationOption[]) => {
-                        this.configurationOptions = options;
-                    }
-                );
+            this._configurationOptionsService.getAll().subscribe((options:ConfigurationOption[]) => {
+                this.configurationOptions = options;
+            });
 
-                this._applicationGroupService.get(id).subscribe(
-                    group => {
-                        this.applicationGroup = group;
+            this.initializeAnalysisContext();
+            this.loadPackageMetadata();
 
-                        this.loadPackageMetadata();
-
-                        this.analysisContext = group.analysisContext;
-                        console.log("Loaded analysis context: " + JSON.stringify(this.analysisContext));
-
-                        if (this.analysisContext == null) {
-                            this.analysisContext = <AnalysisContext>{};
-                            this.analysisContext.migrationPath = <MigrationPath>{};
-                            this.analysisContext.advancedOptions = [];
-                            this.analysisContext.includePackages = [];
-                            this.analysisContext.excludePackages = [];
-                            this.analysisContext.rulesPaths = [];
-                        } else {
-                            // for migration path, store the id only
-                            this.analysisContext.migrationPath = <MigrationPath>{ id: this.analysisContext.migrationPath.id };
-
-                            if (this.analysisContext.rulesPaths == null)
-                                this.analysisContext.rulesPaths = [];
-                        }
-
-
-                        // Just use the ID here
-                        this.analysisContext.applicationGroup = <ApplicationGroup>{ id: group.id };
-
-                        this.loading = false;
-                    }
-                );
-            } else {
-                this.loading = false;
-                this.errorMessages.push("groupID parameter was not specified!");
-            }
+            console.log("Loaded analysis context: " + JSON.stringify(this.analysisContext));
         });
+    }
+
+    getDefaultAnalysisContext() {
+        let analysisContext = <AnalysisContext>{};
+        analysisContext.migrationPath = <MigrationPath>{id: 0};
+        analysisContext.advancedOptions = [];
+        analysisContext.includePackages = [];
+        analysisContext.excludePackages = [];
+        analysisContext.rulesPaths = [];
+        analysisContext.applicationGroup = <ApplicationGroup>{id: 0};
+
+        return analysisContext;
+    }
+
+    initializeAnalysisContext() {
+        let analysisContext = this.applicationGroup.analysisContext;
+
+        if (analysisContext == null) {
+            analysisContext = this.getDefaultAnalysisContext();
+        } else {
+            // for migration path, store the id only
+            if (analysisContext.migrationPath) {
+                analysisContext.migrationPath = <MigrationPath>{id: this.analysisContext.migrationPath.id};
+            } else {
+                analysisContext.migrationPath = <MigrationPath>{id: 0};
+            }
+
+            if (analysisContext.rulesPaths == null)
+                analysisContext.rulesPaths = [];
+        }
+
+        // Just use the ID here
+        analysisContext.applicationGroup = <ApplicationGroup>{id: this.applicationGroup.id};
+
+        this.analysisContext = analysisContext;
     }
 
     private loadPackageMetadata() {
         this._applicationGroupService.getPackageMetadata(this.applicationGroup.id).subscribe(
-            (packageMetadata:PackageMetadata) => {
+            (packageMetadata: PackageMetadata) => {
                 if (packageMetadata.scanStatus === "COMPLETE") {
                     packageMetadata.packageTree.forEach(node => {
                         this._packageRegistryService.putHierarchy(node);
@@ -162,6 +136,29 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
                 this.excludePackages = this.analysisContext.excludePackages;
             }
         );
+    }
+
+    get migrationPaths() {
+        if (this._migrationPathsObservable == null) {
+            this._migrationPathsObservable = this._migrationPathService.getAll();
+        }
+        return this._migrationPathsObservable;
+    }
+
+    get dirty(): boolean {
+        if (this._dirty != null) {
+            return this._dirty;
+        }
+
+        return this.analysisContextForm.dirty;
+    }
+
+    advancedOptionsChanged(advancedOptions:AdvancedOption[]) {
+        this._dirty = true;
+    }
+
+    onNodesChanged(event) {
+        console.log(event);
     }
 
     save() {
@@ -200,7 +197,7 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
     }
 
     routeToGroupList() {
-        this._router.navigate(['/groups', this.applicationGroup.id]);
+        this._router.navigate(['/projects', this.applicationGroup.migrationProject.id]);
     }
 }
 
