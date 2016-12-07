@@ -150,12 +150,12 @@ export class GroupListComponent implements OnInit, OnDestroy {
     }
 
     createGroup() {
-        this._router.navigate(['/application-group-form', { projectID: this.project.id }]);
+        this._router.navigate([`/projects/${this.project.id}/groups/create`]);
     }
 
     editGroup(applicationGroup:ApplicationGroup, event:Event) {
         event.preventDefault();
-        this._router.navigate(['/application-group-form', { projectID: this.project.id, groupID: applicationGroup.id }]);
+        this._router.navigate([`/projects/${this.project.id}/groups/${applicationGroup.id}/edit`]);
     }
 
     doDeleteGroup(applicationGroup: ApplicationGroup) {
