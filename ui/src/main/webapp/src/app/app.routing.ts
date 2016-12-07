@@ -49,7 +49,6 @@ export const appRoutes: Routes = [
                         }
                     },
                     {path: "project-list",           component: ProjectListComponent,   data: {displayName: "Project List"}},
-                    // {path: "application-group-form", component: ApplicationGroupForm,   data: {displayName: "Edit Application Group"}}
                     {path: 'executions', component: AllExecutionsComponent}
                 ]
             },
@@ -104,13 +103,12 @@ export const appRoutes: Routes = [
                                         { path: 'reports/:executionId', children: [
                                             {path: 'technology-report', component: TechnologiesReportComponent, data: {displayName: 'Technology Report'}},
                                             {path: 'migration-issues', component: MigrationIssuesComponent, data: {displayName: 'Migration Issues'}}
-                                        ]}
-                                    ]},
-                                    { path: 'reports/:executionId', children: [
-                                        {path: 'technology-report', component: TechnologiesReportComponent, data: {displayName: 'Technology Report'}},
-                                        {path: 'migration-issues', component: MigrationIssuesComponent, data: {displayName: 'Migration Issues'}}
+                                        ]},
+                                        { path: '', children: [
+                                            { path: 'edit', component: ApplicationGroupForm, data: {displayName: "Edit Application Group"} }
+                                        ]},
+                                        { path: 'executions', component: GroupExecutionsComponent, data: {displayName: 'Executions list'} }
                                     ]}
-                                    { path: 'executions', component: GroupExecutionsComponent, data: {displayName: 'Executions list'} }
                                 ]
                             },
                         ]
