@@ -47,7 +47,6 @@ export class WindupService extends AbstractService {
 
     public cancelExecution(execution: WindupExecution): Observable<any> {
         return this._http.post(Constants.REST_BASE + this.EXECUTIONS_PATH + '/' + execution.id + '/cancel' , null)
-            .map(res => res.json())
             .catch(this.handleError);
     }
 }
