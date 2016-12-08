@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,6 +26,7 @@ import javax.persistence.PersistenceContext;
 import org.jboss.windup.config.RuleProvider;
 import org.jboss.windup.config.RuleUtils;
 import org.jboss.windup.config.loader.RuleLoaderContext;
+import org.jboss.windup.config.metadata.RuleProviderMetadata;
 import org.jboss.windup.config.metadata.RuleProviderRegistry;
 import org.jboss.windup.config.metadata.TechnologyReference;
 import org.jboss.windup.config.phase.MigrationRulesPhase;
@@ -34,6 +36,7 @@ import org.jboss.windup.web.services.model.Configuration;
 import org.jboss.windup.web.services.model.RuleEntity;
 import org.jboss.windup.web.services.model.RuleProviderEntity;
 import org.jboss.windup.web.services.model.RulesPath;
+import org.jboss.windup.web.services.model.Tag;
 import org.jboss.windup.web.services.model.Technology;
 import org.jboss.windup.web.services.service.ConfigurationService;
 import org.jboss.windup.web.services.service.TechnologyService;
@@ -84,9 +87,9 @@ public class RuleDataLoader
             LOG.info("Purging existing rule data for: " + rulesPath);
             // Delete the previous ones
             entityManager
-                    .createNamedQuery(RuleProviderEntity.DELETE_BY_RULES_PATH)
-                    .setParameter(RuleProviderEntity.RULES_PATH_PARAM, rulesPath)
-                    .executeUpdate();
+                        .createNamedQuery(RuleProviderEntity.DELETE_BY_RULES_PATH)
+                        .setParameter(RuleProviderEntity.RULES_PATH_PARAM, rulesPath)
+                        .executeUpdate();
 
             rulesPath.setLoadError(null);
             try
@@ -95,26 +98,31 @@ public class RuleDataLoader
                 RuleLoaderContext ruleLoaderContext = new RuleLoaderContext(Collections.singleton(path), null);
                 RuleProviderRegistry providerRegistry = ruleProviderService.loadRuleProviderRegistry(Collections.singleton(path));
 
+                HashMap<String, Tag> tagHashMap = new HashMap<>();
+
                 for (RuleProvider provider : providerRegistry.getProviders())
                 {
-                    String providerID = provider.getMetadata().getID();
-                    String origin = provider.getMetadata().getOrigin();
+                    RuleProviderMetadata ruleProviderMetadata = provider.getMetadata();
+
+                    String providerID = ruleProviderMetadata.getID();
+                    String origin = ruleProviderMetadata.getOrigin();
 
                     RuleProviderEntity ruleProviderEntity = new RuleProviderEntity();
                     ruleProviderEntity.setProviderID(providerID);
                     ruleProviderEntity.setDateLoaded(new GregorianCalendar());
-                    ruleProviderEntity.setDescription(provider.getMetadata().getDescription());
+                    ruleProviderEntity.setDescription(ruleProviderMetadata.getDescription());
                     ruleProviderEntity.setOrigin(origin);
+                    ruleProviderEntity.setTags(this.getTags(ruleProviderMetadata.getTags(), tagHashMap));
                     entityManager.persist(ruleProviderEntity);
 
                     setFileMetaData(rulesPath, ruleProviderEntity);
 
-                    ruleProviderEntity.setSources(technologyReferencesToTechnologyList(provider.getMetadata().getSourceTechnologies()));
-                    ruleProviderEntity.setTargets(technologyReferencesToTechnologyList(provider.getMetadata().getTargetTechnologies()));
+                    ruleProviderEntity.setSources(technologyReferencesToTechnologyList(ruleProviderMetadata.getSourceTechnologies()));
+                    ruleProviderEntity.setTargets(technologyReferencesToTechnologyList(ruleProviderMetadata.getTargetTechnologies()));
 
                     String phase = MigrationRulesPhase.class.getSimpleName().toUpperCase();
-                    if (provider.getMetadata().getPhase() != null)
-                        phase = provider.getMetadata().getPhase().getSimpleName().toUpperCase();
+                    if (ruleProviderMetadata.getPhase() != null)
+                        phase = ruleProviderMetadata.getPhase().getSimpleName().toUpperCase();
 
                     ruleProviderEntity.setPhase(phase);
 
@@ -144,6 +152,26 @@ public class RuleDataLoader
                 LOG.log(Level.SEVERE, "Could not load rule information due to: " + e.getMessage(), e);
             }
         }
+    }
+
+    private Set<Tag> getTags(Collection<String> stringTags, HashMap<String, Tag> tagHashMap)
+    {
+        Set<Tag> resultTags = new HashSet<>();
+
+        for (String tag : stringTags)
+        {
+            if (!tagHashMap.containsKey(tag))
+            {
+                Tag tagEntity = new Tag(tag);
+                tagHashMap.put(tag, tagEntity);
+
+                this.entityManager.persist(tagEntity);
+            }
+
+            resultTags.add(tagHashMap.get(tag));
+        }
+
+        return resultTags;
     }
 
     private Set<Technology> technologyReferencesToTechnologyList(Collection<TechnologyReference> technologyReferences)
