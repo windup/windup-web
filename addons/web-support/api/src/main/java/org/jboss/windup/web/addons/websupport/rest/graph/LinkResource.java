@@ -25,7 +25,9 @@ public interface LinkResource extends FurnaceRESTGraphAPI
     String BASE_URL = "/graph/links";
 
     /**
-     * Returns a list of {@link LinkModel}s for the given {@link FileModel}.
+     * Returns a list of {@link LinkModel}s for the given {@link FileModel}. These models specifically provide
+     * links to files that have been transformed by Windup. For example, these might be transformations from
+     * an application server specific file format to one that is suitable for use in JBoss.
      */
     @GET
     @Path("/{executionID}/links-to-transformed-files/{fileModelID}")
