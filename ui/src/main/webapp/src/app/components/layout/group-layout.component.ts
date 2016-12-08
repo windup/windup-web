@@ -12,6 +12,7 @@ import {GroupListComponent} from "../group-list.component";
 import {utils} from '../../utils';
 import {GroupPageComponent} from "../group.page.component";
 import {GroupExecutionsComponent} from "../executions/group-executions.component";
+import {ReportFilterComponent} from "../reports/filter/report-filter.component";
 
 
 @Component({
@@ -76,6 +77,17 @@ export class GroupLayoutComponent implements OnInit {
                 }),
                 icon: 'fa-cogs',
                 isEnabled: true,
+            },
+            {
+                label: 'Report Filter',
+/*                link: this._routeLinkProviderService.getRouteForComponent(ReportFilterComponent, {
+                    projectId: this.applicationGroup.migrationProject.id,
+                    groupId: this.applicationGroup.id
+                }),
+*/
+                link: `/projects/${this.applicationGroup.migrationProject.id}/groups/${this.applicationGroup.id}/reports/filter`,
+                icon: 'fa-filter',
+                isEnabled: true
             },
             new ContextMenuItem(
                 'Run Windup',

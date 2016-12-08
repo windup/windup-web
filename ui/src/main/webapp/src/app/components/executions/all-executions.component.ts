@@ -1,8 +1,8 @@
 import {Component, OnInit, Input} from "@angular/core";
 import {WindupService} from "../../services/windup.service";
-import {WindupExecution} from "windup-services";
 import {NotificationService} from "../../services/notification.service";
 import {utils} from '../../utils';
+import {WindupExecution} from "../../windup-services";
 
 @Component({
     template: '<wu-executions-list [executions]="executions"></wu-executions-list>'
