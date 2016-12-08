@@ -8,6 +8,8 @@ import {NotificationService} from "../../../../../src/app/services/notification.
 import {RouterTestingModule} from "@angular/router/testing";
 import {ActivatedRouteMock} from "../../../mocks/activated-route.mock";
 import {Observable} from "rxjs";
+import {BaseRequestOptions, Http, ConnectionBackend} from "@angular/http";
+import {MockBackend} from "@angular/http/testing";
 
 let comp:    MigrationIssuesTableComponent;
 let fixture: ComponentFixture<MigrationIssuesTableComponent>;
@@ -29,6 +31,15 @@ describe('MigrationissuesTableComponent', () => {
                 {
                     provide: ActivatedRoute,
                     useValue: activatedRouteMock
+                },
+                MockBackend,
+                BaseRequestOptions,
+                {
+                    provide: Http,
+                    useFactory: (backend: ConnectionBackend, defaultOptions: BaseRequestOptions) => {
+                        return new Http(backend, defaultOptions);
+                    },
+                    deps: [MockBackend, BaseRequestOptions]
                 },
                 {
                     provide: MigrationIssuesService,

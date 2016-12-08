@@ -1,8 +1,7 @@
 import {async} from '@angular/core/testing';
 
 import {GraphJSONToModelService, RelationInfo} from '../../src/app/services/graph/graph-json-to-model.service';
-import {DiscriminatorMapping, getParentClass} from '../../src/app/services/graph/discriminator-mapping';
-//import {DiscriminatorMappingData} from '../../app/tsModels/DiscriminatorMappingData';
+import {getParentClass} from '../../src/app/services/graph/discriminator-mapping';
 import {DiscriminatorMappingTestData} from './models/discriminator-mapping-test-data';
 import {TestGeneratorModel, TestPlanetModel, TestShipModel} from './models/test.models';
 import {TestGraphData} from './models/test-graph-data';
@@ -60,7 +59,11 @@ describe('Unmarshaller tests', () => {
             get(url:string) {
                 console.log("Should call get to: " + url + " now");
                 return Observable.create(function(observer) {
-                    let value: any = JSON.parse(`[{ "_id": 1001, "w:winduptype": ["TestShip"], "name": "Shuttle 1"}]`);
+                    let value: any = {
+                        json: function () {
+                            return [{"_id": 1001, "w:winduptype": ["TestShip"], "name": "Shuttle 1"}];
+                        }
+                    };
                     observer.next(value);
                     observer.complete();
                 });

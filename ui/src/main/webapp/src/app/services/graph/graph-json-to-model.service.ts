@@ -56,8 +56,9 @@ export class GraphJSONToModelService<T extends BaseModel>
     public fromJSON(input: Object, http:Http, clazz?: typeof BaseModel): T
     {
         let discriminator:string[] = input[GraphJSONToModelService.DISCRIMINATOR];
-        if (!clazz)
+        if (!clazz) {
             clazz = this.getModelClassForJsonObject(input, clazz);
+        }
         let frameModel:BaseModel = Object.create(clazz.prototype);
         frameModel.constructor.apply(frameModel, [discriminator, input["_id"], input]);
         frameModel.http = http;

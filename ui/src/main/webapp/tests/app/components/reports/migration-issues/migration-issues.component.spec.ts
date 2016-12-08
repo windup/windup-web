@@ -9,6 +9,8 @@ import {Observable} from "rxjs";
 import {MigrationIssuesComponent} from "../../../../../src/app/components/reports/migration-issues/migration-issues.component";
 import {MigrationIssuesTableComponent} from "../../../../../src/app/components/reports/migration-issues/migration-issues-table.component";
 import {By} from "@angular/platform-browser";
+import {HttpModule, BaseRequestOptions, Http, ConnectionBackend} from "@angular/http";
+import {MockBackend} from "@angular/http/testing";
 
 let comp:    MigrationIssuesComponent;
 let fixture: ComponentFixture<MigrationIssuesComponent>;
@@ -22,7 +24,7 @@ describe('MigrationissuesComponent', () => {
         activatedRouteMock = new ActivatedRouteMock();
 
         TestBed.configureTestingModule({
-            imports: [ RouterTestingModule ],
+            imports: [ RouterTestingModule, HttpModule ],
             declarations: [ MigrationIssuesComponent, MigrationIssuesTableComponent ],
             providers: [
                 {
@@ -34,6 +36,15 @@ describe('MigrationissuesComponent', () => {
                 {
                     provide: ActivatedRoute,
                     useValue: activatedRouteMock
+                },
+                MockBackend,
+                BaseRequestOptions,
+                {
+                    provide: Http,
+                    useFactory: (backend: ConnectionBackend, defaultOptions: BaseRequestOptions) => {
+                        return new Http(backend, defaultOptions);
+                    },
+                    deps: [MockBackend, BaseRequestOptions]
                 },
                 {
                     provide: MigrationIssuesService,
@@ -59,7 +70,7 @@ describe('MigrationissuesComponent', () => {
     });
 
     describe('when navigate to non-existing report id', () => {
-        beforeEach(async(inject([MigrationIssuesService, Router], (migrationIssuesService: any) => {
+        beforeEach(async(inject([MigrationIssuesService, MockBackend, Router], (migrationIssuesService: any) => {
             migrationIssuesService.getAggregatedIssues.and.returnValue(
                 new Observable<any>(observer => {
                     observer.error({error: 'Report not found'});
@@ -84,7 +95,7 @@ describe('MigrationissuesComponent', () => {
     describe('when navigate to correct report id', () => {
         let migrationIssuesServiceSpy;
 
-        beforeEach(async(inject([MigrationIssuesService], (migrationIssuesService: any) => {
+        beforeEach(async(inject([MigrationIssuesService, MockBackend], (migrationIssuesService: any) => {
             migrationIssuesServiceSpy = migrationIssuesService;
             migrationIssuesService.getAggregatedIssues.and.returnValue(
                 new Observable<any>(observer => {
@@ -117,7 +128,7 @@ describe('MigrationissuesComponent', () => {
     });
 
     describe('when navigate to report without any issues', () => {
-        beforeEach(async(inject([MigrationIssuesService], (migrationIssuesService: any) => {
+        beforeEach(async(inject([MigrationIssuesService, MockBackend], (migrationIssuesService: any) => {
             migrationIssuesService.getAggregatedIssues.and.returnValue(
                 new Observable<any>(observer => {
                     let value = {
