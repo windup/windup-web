@@ -158,6 +158,7 @@ public class RegisteredApplication implements Serializable
     /**
      * References the {@link ApplicationGroup} that contains this application.
      */
+    @JsonIgnore
     public ApplicationGroup getApplicationGroup()
     {
         return applicationGroup;
