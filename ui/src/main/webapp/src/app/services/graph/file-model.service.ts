@@ -14,7 +14,7 @@ export class FileModelService extends AbstractService {
     }
 
     getFileModel(executionId: number, vertexID: number): Observable<FileModel> {
-        let url = `${Constants.GRAPH_REST_BASE}/graph/${executionId}/${vertexID}`;
+        let url = `${Constants.GRAPH_REST_BASE}/graph/${executionId}/${vertexID}?depth=1`;
         let service = new GraphJSONToModelService();
 
         return this._http.get(url)

@@ -23,6 +23,6 @@ public class ClassificationResourceImpl extends AbstractGraphResource implements
 
         ClassificationService classificationService = new ClassificationService(context);
         Iterable<ClassificationModel> classificationModels = classificationService.getClassifications(fileModel);
-        return super.frameIterableToResult(executionID, classificationModels, 0);
+        return super.frameIterableToResult(executionID, classificationModels, 1);
     }
 }

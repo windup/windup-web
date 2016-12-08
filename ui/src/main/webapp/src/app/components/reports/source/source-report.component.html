@@ -21,10 +21,15 @@
                         <a title="View Rule: {{classificationModel.ruleID}}" href="#"><span class="glyphicon glyphicon-link rule-link"></span></a>
                     </div>
                     <div class="desc">{{classificationModel.description}}</div>
+                    <ul>
+                        <li *ngFor="let link of (getClassificationLinks(classificationModel) | async)">
+                            <a href="{{link.link}}" target="_blank">{{link.description}}</a>
+                        </li>
+                    </ul>
                 </li>
             </ul>
 
-            <h4>Automatically Translated Files</h4>
+            <h4 *ngIf="transformedLinks && transformedLinks.length > 0">Automatically Translated Files</h4>
             <ul>
                 <li *ngFor="let linkModel of transformedLinks">
                     <a href="{{linkModel.link}}">{{linkModel.description}}</a>
@@ -50,7 +55,14 @@
                     <span class="glyphicon glyphicon-link rule-link floatRight"></span>
                 </a>
             </div>
-            <div class="inline-comment-body" [innerHTML]="markdown(hintModel.hint)"></div>
+            <div class="inline-comment-body">
+                <span [outerHTML]="markdown(hintModel.hint)"></span>
+                <ul>
+                    <li *ngFor="let link of (hintModel.links | async)">
+                        <a href="{{link.link}}" target="_blank">{{link.description}}</a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 </div>

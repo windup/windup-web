@@ -23,6 +23,6 @@ public class HintResourceImpl extends AbstractGraphResource implements HintResou
 
         InlineHintService hintService = new InlineHintService(context);
         Iterable<InlineHintModel> hintModels = hintService.getHintsForFile(fileModel);
-        return super.frameIterableToResult(executionID, hintModels, 0);
+        return super.frameIterableToResult(executionID, hintModels, 1);
     }
 }

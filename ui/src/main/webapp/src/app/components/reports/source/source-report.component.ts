@@ -131,6 +131,8 @@ import {LinkModel} from "../../../generated/tsModels/LinkModel";
 import {SourceFileModel} from "../../../generated/tsModels/SourceFileModel";
 import {GraphJSONToModelService} from "../../../services/graph/graph-json-to-model.service";
 import {Http} from "@angular/http";
+import {LinkableModel} from "../../../generated/tsModels/LinkableModel";
+import {Observable} from "rxjs";
 
 @Component({
     templateUrl: '/source-report.component.html',
@@ -147,6 +149,7 @@ export class SourceReportComponent implements OnInit, AfterViewChecked {
     private transformedLinks: LinkModel[];
 
     private classifications: ClassificationModel[];
+    private classificationLinks: Map<ClassificationModel, LinkModel[]> = new Map<ClassificationModel, LinkModel[]>();
     private hints: InlineHintModel[];
     private rendered: boolean = false;
 
@@ -173,7 +176,7 @@ export class SourceReportComponent implements OnInit, AfterViewChecked {
                 });
 
             this.classificationService.getClassificationsForFile(this.execID, this.fileID)
-                .subscribe((classifications) => this.classifications = classifications);
+                .subscribe((classifications) => this.classifications = classifications );
 
             this.hintService.getHintsForFile(this.execID, this.fileID)
                 .subscribe((hints) => this.hints = hints);
@@ -184,6 +187,11 @@ export class SourceReportComponent implements OnInit, AfterViewChecked {
                     this.fileLines = fileSource.split(/[\r\n]/).map((line) => line + "\n");
                 });
         });
+    }
+
+    private getClassificationLinks(classification:ClassificationModel):Observable<LinkModel[]> {
+        let linkableModel = <LinkableModel>new GraphJSONToModelService().translateType(classification, this.http, LinkableModel);
+        return linkableModel.links;
     }
 
     get storyPoints():number {
