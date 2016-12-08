@@ -12,7 +12,7 @@ import {utils} from '../../../utils';
     ]
 })
 export class MigrationIssuesComponent implements OnInit {
-    protected categorizedIssues: Dictionary<ProblemSummary[]> = {};
+    protected categorizedIssues: Dictionary<ProblemSummary[]>;
     protected categories: string[];
 
     public constructor(
