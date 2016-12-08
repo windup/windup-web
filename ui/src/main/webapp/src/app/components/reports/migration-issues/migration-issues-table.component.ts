@@ -2,6 +2,9 @@ import {Component, Input, OnInit} from "@angular/core";
 import {Router, ActivatedRoute} from "@angular/router";
 import {MigrationIssuesService} from "./migration-issues.service";
 import {NotificationService} from "../../../services/notification.service";
+import {Http} from "@angular/http";
+import {GraphJSONToModelService} from "../../../services/graph/graph-json-to-model.service";
+import {FileModel} from "../../../generated/tsModels/FileModel";
 
 @Component({
     selector: 'wu-migration-issues-table',
@@ -21,6 +24,7 @@ export class MigrationIssuesTableComponent implements OnInit {
 
     public constructor(
         private _router: Router,
+        private _http: Http,
         private _activatedRoute: ActivatedRoute,
         private _migrationIssuesService: MigrationIssuesService,
         private _notificationService: NotificationService
@@ -78,5 +82,14 @@ export class MigrationIssuesTableComponent implements OnInit {
         }
 
         return this.problemSummariesFiles.get(issue);
+    }
+
+    navigateToSource(file:any) {
+        let fileModel = <FileModel>new GraphJSONToModelService().fromJSON(file, this._http, FileModel);
+        console.log("File clicked: " + fileModel.vertexId);
+        ///projects/32057/groups/32058/reports/32121/source/32121
+        let newPath = `source/${fileModel.vertexId}`;
+        this._router.navigate([newPath], { relativeTo: this._activatedRoute });
+        return false;
     }
 }

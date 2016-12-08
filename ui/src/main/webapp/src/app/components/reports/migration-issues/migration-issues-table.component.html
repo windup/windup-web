@@ -37,7 +37,7 @@
                         </thead>
                         <tbody>
                             <tr *ngFor="let incident of getProblemSummaryFiles(issue); let isFirst = first">
-                                <td>{{incident.file.fileName}}</td>
+                                <td><a (click)="navigateToSource(incident.file)">{{incident.file.fileName}}</a></td>
                                 <td>{{incident.occurrences}}</td>
                                 <td *ngIf="isFirst" [attr.rowspan]="getProblemSummaryFiles(issue)?.length">
                                     <div class="panel panel-default hint-detail-panel">
@@ -51,7 +51,6 @@
                                         <div class="panel-body">
                                             <p *ngFor="let description of issue.descriptions">{{description}}</p>
                                         </div>
-
                                     </div>
                                 </td>
                             </tr>

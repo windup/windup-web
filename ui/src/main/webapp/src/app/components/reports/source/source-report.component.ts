@@ -186,6 +186,17 @@ export class SourceReportComponent implements OnInit, AfterViewChecked {
         });
     }
 
+    get storyPoints():number {
+        let points = 0;
+        if (this.hints)
+            this.hints.forEach((hint) => points += hint.effort);
+
+        if (this.classifications)
+            this.classifications.forEach((classification) => points += classification.effort);
+
+        return points;
+    }
+
     private hintMatches(hint:InlineHintModel, lineNumber:number):boolean {
         let hintLine = hint.data["lineNumber"];
 

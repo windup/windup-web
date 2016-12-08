@@ -40,6 +40,14 @@ export class GraphJSONToModelService<T extends BaseModel>
         return this.mapping.getModelClassByDiscriminator(discriminator);
     }
 
+    /**
+     * Converts a type that has been serialized as one type into a different type.
+     *
+     * This can be useful in cases where a single type implements multiple interfaces.
+     */
+    public translateType(input:BaseModel, http:Http, clazz: typeof BaseModel): T {
+        return this.fromJSON(input.data, http, clazz);
+    }
 
     /**
      * Unmarshalls the JSON graph data representation into TypeScript objects.
