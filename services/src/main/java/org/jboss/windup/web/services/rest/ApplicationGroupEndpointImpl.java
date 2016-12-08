@@ -20,6 +20,7 @@ import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.model.PackageMetadata;
+import org.jboss.windup.web.services.model.ReportFilter;
 import org.jboss.windup.web.services.service.ApplicationGroupService;
 import org.jboss.windup.web.services.service.AnalysisContextService;
 import org.jboss.windup.web.services.service.PackageService;
@@ -94,6 +95,8 @@ public class ApplicationGroupEndpointImpl implements ApplicationGroupEndpoint
         {
             throw new BadRequestException("Invalid MigrationProject");
         }
+
+        applicationGroup.setReportFilter(new ReportFilter(applicationGroup));
 
         entityManager.persist(applicationGroup);
 

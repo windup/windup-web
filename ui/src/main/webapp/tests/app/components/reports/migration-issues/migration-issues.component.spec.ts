@@ -11,6 +11,7 @@ import {MigrationIssuesTableComponent} from "../../../../../src/app/components/r
 import {By} from "@angular/platform-browser";
 import {HttpModule, BaseRequestOptions, Http, ConnectionBackend} from "@angular/http";
 import {MockBackend} from "@angular/http/testing";
+import {ReportFilterIndicatorComponent} from "../../../../../src/app/components/reports/filter/report-filter-indicator.component";
 
 let comp:    MigrationIssuesComponent;
 let fixture: ComponentFixture<MigrationIssuesComponent>;
@@ -22,10 +23,14 @@ describe('MigrationissuesComponent', () => {
 
     beforeEach(() => {
         activatedRouteMock = new ActivatedRouteMock();
+        activatedRouteMock.parent = new ActivatedRouteMock();
+        activatedRouteMock.parent.parent = new ActivatedRouteMock();
+        activatedRouteMock.parent.parent.parent = new ActivatedRouteMock();
+        activatedRouteMock.parent.parent.parent.testData = { applicationGroup: {} };
 
         TestBed.configureTestingModule({
             imports: [ RouterTestingModule, HttpModule ],
-            declarations: [ MigrationIssuesComponent, MigrationIssuesTableComponent ],
+            declarations: [ MigrationIssuesComponent, MigrationIssuesTableComponent, ReportFilterIndicatorComponent ],
             providers: [
                 {
                     provide: Router,
@@ -145,7 +150,7 @@ describe('MigrationissuesComponent', () => {
         })));
 
         it('should display "No issues found" text', () => {
-            let strongElement = fixture.debugElement.query(By.css('strong'));
+            let strongElement = fixture.debugElement.query(By.css('strong.not-found'));
             expect(strongElement.nativeElement.textContent.trim()).toEqual("No issues found");
         });
     });

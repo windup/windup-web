@@ -12,6 +12,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.windup.graph.model.resource.FileModel;
 import org.jboss.windup.web.addons.websupport.rest.GraphPathLookup;
 import org.jboss.windup.web.addons.websupport.rest.graph.GraphResource;
+import org.jboss.windup.web.addons.websupport.services.ReportFilterService;
 import org.jboss.windup.web.services.AbstractTest;
 import org.jboss.windup.web.services.data.ServiceConstants;
 import org.jboss.windup.web.services.data.WindupExecutionUtil;
@@ -51,6 +52,10 @@ public class GraphResourceTest extends AbstractGraphResourceTest
         @Override
         @POST
         void setGraphPathLookup(GraphPathLookup graphPathLookup);
+
+        @POST
+        @Override
+        void setReportFilterService(ReportFilterService reportFilterService);
     }
 
     @Test

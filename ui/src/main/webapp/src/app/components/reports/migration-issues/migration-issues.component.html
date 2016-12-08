@@ -5,7 +5,7 @@
         <h3 class="panel-title">{{category}}</h3>
     </div>
     <div class="panel-body">
-        <strong *ngIf="!categorizedIssues[category] || categorizedIssues[category].length == 0">
+        <strong *ngIf="!categorizedIssues[category] || categorizedIssues[category].length == 0" class="not-found">
             No issues found
         </strong>
 

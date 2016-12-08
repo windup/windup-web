@@ -16,8 +16,31 @@ export class ActivatedRouteMock {
         this.subject.next(params);
     }
 
+    // ActivatedRoute.data is Observable
+    private dataSubject = new BehaviorSubject(this.testData);
+    data = this.dataSubject.asObservable();
+
+    // Test data
+    private _testData: {};
+    get testData() { return this._testData; }
+    set testData(data: {}) {
+        console.log('TestData set: ', data);
+        this._testData = data;
+        this.dataSubject.next(data);
+    }
+
     // ActivatedRoute.snapshot.params
     get snapshot() {
         return { params: this.testParams };
+    }
+
+    private _parent: ActivatedRouteMock;
+    get parent(): ActivatedRouteMock { return this._parent; }
+    set parent(parent: ActivatedRouteMock) {
+        if (parent) {
+            this._parent = parent;
+        } else {
+            this._parent = new ActivatedRouteMock();
+        }
     }
 }
