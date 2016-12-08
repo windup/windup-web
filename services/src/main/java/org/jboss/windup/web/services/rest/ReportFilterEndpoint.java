@@ -9,6 +9,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import org.jboss.windup.web.services.model.ReportFilter;
+import org.jboss.windup.web.services.model.Tag;
+
+import java.util.Collection;
 
 /**
  * @author <a href="mailto:dklingenberg@gmail.com">David Klingenberg</a>
@@ -20,6 +23,10 @@ public interface ReportFilterEndpoint
 {
     @GET
     ReportFilter getFilter(@PathParam("groupId") Long groupId);
+
+    @GET
+    @Path("tags")
+    Collection<Tag> getTags();
 
     @PUT
     ReportFilter setFilter(@PathParam("groupId") Long groupId, ReportFilter filter);
