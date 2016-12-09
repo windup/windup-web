@@ -22,12 +22,12 @@ import org.jboss.windup.web.services.validators.FileExistsConstraint;
 @Entity
 public class RulesPath implements Serializable
 {
-    public static final String REGISTERED_APPLICATION_ID = "registered_application_id";
+    public static final String RULES_PATH_ID = "rules_path_id";
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = REGISTERED_APPLICATION_ID, updatable = false, nullable = false)
+    @Column(name = RULES_PATH_ID, updatable = false, nullable = false)
     private Long id;
 
     @Version
