@@ -4,11 +4,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
-import org.jboss.windup.config.metadata.RuleProviderRegistryCache;
-import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.model.ApplicationGroup;
+import org.jboss.windup.web.services.model.Category;
 import org.jboss.windup.web.services.model.RegisteredApplication;
 import org.jboss.windup.web.services.model.ReportFilter;
 import org.jboss.windup.web.services.model.Tag;
@@ -58,7 +56,6 @@ public class ReportFilterEndpointImpl implements ReportFilterEndpoint
 
         group.setReportFilter(newFilter);
         this.entityManager.merge(group);
-//        this.entityManager.merge(newFilter);
 
         return newFilter;
     }
@@ -85,6 +82,13 @@ public class ReportFilterEndpointImpl implements ReportFilterEndpoint
     public Collection<Tag> getTags()
     {
         return this.entityManager.createQuery("SELECT t FROM Tag t", Tag.class)
+                .getResultList();
+    }
+
+    @Override
+    public Collection<Category> getCategories()
+    {
+        return this.entityManager.createQuery("SELECT c FROM Category  c", Category.class)
                 .getResultList();
     }
 }

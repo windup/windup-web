@@ -11,9 +11,11 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
@@ -30,8 +32,10 @@ import org.jboss.windup.config.metadata.RuleProviderMetadata;
 import org.jboss.windup.config.metadata.RuleProviderRegistry;
 import org.jboss.windup.config.metadata.TechnologyReference;
 import org.jboss.windup.config.phase.MigrationRulesPhase;
+import org.jboss.windup.web.addons.websupport.services.IssueCategoryProviderService;
 import org.jboss.windup.web.addons.websupport.services.RuleProviderService;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
+import org.jboss.windup.web.services.model.Category;
 import org.jboss.windup.web.services.model.Configuration;
 import org.jboss.windup.web.services.model.RuleEntity;
 import org.jboss.windup.web.services.model.RuleProviderEntity;
@@ -64,15 +68,22 @@ public class RuleDataLoader
     @FromFurnace
     private RuleProviderService ruleProviderService;
 
+    @Inject
+    @FromFurnace
+    private IssueCategoryProviderService issueCategoryProviderService;
+
     @Schedule(hour = "*", minute = "12")
     public void loadPeriodically()
     {
         reloadRuleData();
+        getCategories();
     }
 
-    public void configurationUpdated(@Observes Configuration configuration) {
+    public void configurationUpdated(@Observes Configuration configuration)
+    {
         LOG.info("Reloading rule data due to configuration update!");
         reloadRuleData();
+        getCategories();
     }
 
     public void reloadRuleData()
@@ -152,6 +163,28 @@ public class RuleDataLoader
                 LOG.log(Level.SEVERE, "Could not load rule information due to: " + e.getMessage(), e);
             }
         }
+    }
+
+    private Collection<Category> getCategories()
+    {
+        List<Category> existingCategoriesList = this.entityManager.createQuery("SELECT c FROM Category c", Category.class)
+                .getResultList();
+
+        Set<String> existingCategoriesAsString = existingCategoriesList.stream()
+                .map(Category::getName)
+                .collect(Collectors.toSet());
+
+        Map<String, Integer> categoriesWithPriority = this.issueCategoryProviderService.getCategoriesWithPriority();
+
+        List<Category> categories = categoriesWithPriority
+                    .entrySet().stream()
+                    .filter(category -> !existingCategoriesAsString.contains(category.getKey()))
+                    .map(category -> new Category(category.getKey(), category.getValue()))
+                    .collect(Collectors.toList());
+
+        categories.forEach(category -> this.entityManager.persist(category));
+
+        return categories;
     }
 
     private Set<Tag> getTags(Collection<String> stringTags, HashMap<String, Tag> tagHashMap)

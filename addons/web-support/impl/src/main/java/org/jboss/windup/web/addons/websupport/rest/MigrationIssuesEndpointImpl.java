@@ -51,12 +51,27 @@ public class MigrationIssuesEndpointImpl extends AbstractGraphResource implement
                     excludeTags);
 
         Map<String, List<ProblemSummary>> issuesWithStringKey = new LinkedHashMap<>();
-        issues.entrySet().forEach((entry) -> issuesWithStringKey.put(entry.getKey().getName(), entry.getValue()));
+        issues.entrySet().forEach((entry) -> {
+            boolean includeCategoriesEnabled = !filter.getIncludeCategories().isEmpty();
+            boolean isIncluded = filter.getIncludeCategories().contains(entry.getKey().getName());
+            boolean isExcluded = filter.getExcludeCategories().contains(entry.getKey().getName());
+
+            if ((includeCategoriesEnabled && isIncluded) || (!includeCategoriesEnabled && !isExcluded))
+            {
+                issuesWithStringKey.put(entry.getKey().getName(), entry.getValue());
+            }
+        });
+
         return issuesWithStringKey;
     }
 
     protected Set<ProjectModel> getProjectModels(GraphContext graphContext, ReportFilterDTO filter)
     {
+        if (filter.getSelectedApplicationPaths().isEmpty())
+        {
+            return null;
+        }
+
         Set<ProjectModel> projectModels = new HashSet<>();
 
         for (FileModel inputPath : WindupConfigurationService.getConfigurationModel(graphContext).getInputPaths())
