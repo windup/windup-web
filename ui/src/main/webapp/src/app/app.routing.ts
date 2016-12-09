@@ -104,7 +104,7 @@ export const appRoutes: Routes = [
                                             },
                                         ]},
                                         { path: 'reports', children: [
-                                            { path: 'filter', component: ReportFilterComponent },
+                                            { path: 'filter', component: ReportFilterComponent, data: {displayName: 'Report Filter'} },
                                         ]},
                                         { path: 'reports/:executionId', children: [
                                             {path: 'technology-report', component: TechnologiesReportComponent, data: {displayName: 'Technology Report'}},
