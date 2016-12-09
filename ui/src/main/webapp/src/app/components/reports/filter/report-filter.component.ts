@@ -8,6 +8,7 @@ import {RouteFlattenerService} from "../../../services/route-flattener.service";
 import {CustomSelectConfiguration} from "../../custom-select/custom-select.component";
 import {RegisteredApplication} from "windup-services";
 import {Category} from "windup-services";
+import {utils} from "../../../utils";
 
 @Component({
     templateUrl: './report-filter.component.html'
@@ -62,14 +63,20 @@ export class ReportFilterComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        // TODO: For some reason this is being called twice
-        console.log('ReportFilter Init');
         this.routerSubscriptions.push(this._router.events.filter(event => event instanceof NavigationEnd).subscribe(_ => {
             let flatData = this._routeFlattenerService.getFlattenedRouteData(this._activatedRoute.snapshot);
             this.group = flatData.data['applicationGroup'];
             this.filter = this.group.reportFilter || this.getDefaultFilter(this.group);
-            this._filterService.getTags(this.group).subscribe(tags => this.tags = tags);
-            this._filterService.getCategories(this.group).subscribe(categories => this.categories = categories);
+
+            this._filterService.getTags(this.group).subscribe(
+                tags => this.tags = tags,
+                error => this._notificationService.error(utils.getErrorMessage(error))
+            );
+
+            this._filterService.getCategories(this.group).subscribe(
+                categories => this.categories = categories,
+                error => this._notificationService.error(utils.getErrorMessage(error))
+            );
         }));
     }
 
@@ -79,7 +86,9 @@ export class ReportFilterComponent implements OnInit, OnDestroy {
 
     saveFilter() {
         this._filterService.updateFilter(this.group, this.filter).subscribe(() => {
-            this._notificationService.success('Filter successfully updated');
-        });
+                this._notificationService.success('Filter successfully updated');
+            },
+            error => this._notificationService.error(utils.getErrorMessage(error))
+        );
     }
 }
