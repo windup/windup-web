@@ -62,14 +62,14 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     }
 
     editProject(project: MigrationProject) {
-        event.preventDefault();
         this._router.navigate([`/projects/${project.id}/edit`]);
+        return false;
     }
 
     viewProject(project:MigrationProject) {
-        event.preventDefault();
         console.log(JSON.stringify(project));
         this._router.navigate(['/projects', project.id]);
+        return false;
     }
 
     doDeleteProject(project: MigrationProject) {
