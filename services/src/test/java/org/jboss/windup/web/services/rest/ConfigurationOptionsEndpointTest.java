@@ -9,17 +9,12 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import org.jboss.windup.config.ConfigurationOption;
-import org.jboss.windup.config.ValidationResult;
-import org.jboss.windup.exec.configuration.options.TargetOption;
 import org.jboss.windup.exec.configuration.options.UserIgnorePathOption;
-import org.jboss.windup.exec.configuration.options.UserRulesDirectoryOption;
 import org.jboss.windup.rules.apps.java.config.SourceModeOption;
 import org.jboss.windup.web.services.AbstractTest;
-import org.jboss.windup.web.services.data.ServiceConstants;
+import org.jboss.windup.web.services.ServiceTestUtil;
 import org.jboss.windup.web.services.model.AdvancedOption;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -40,7 +35,7 @@ public class ConfigurationOptionsEndpointTest extends AbstractTest
     @RunAsClient
     public void testConfigurationOptionsList() throws Exception
     {
-        ResteasyClient client = getResteasyClient();
+        ResteasyClient client = ServiceTestUtil.getResteasyClient();
         String uri = contextPath + "rest/" + ConfigurationOptionsEndpoint.CONFIGURATION_OPTIONS_PATH;
         ResteasyWebTarget target = client.target(uri);
         Response response = target.request().get();
@@ -83,7 +78,7 @@ public class ConfigurationOptionsEndpointTest extends AbstractTest
     }
 
     private boolean validateOption(String name, String value) {
-        ResteasyClient client = getResteasyClient();
+        ResteasyClient client = ServiceTestUtil.getResteasyClient();
         String uri = contextPath + "rest/" + ConfigurationOptionsEndpoint.CONFIGURATION_OPTIONS_PATH + "/" + ConfigurationOptionsEndpoint.VALIDATE_OPTION;
         ResteasyWebTarget target = client.target(uri);
 

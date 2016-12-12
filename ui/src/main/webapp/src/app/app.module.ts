@@ -71,7 +71,10 @@ import {RouteFlattenerService} from "./services/route-flattener.service";
 import {ExecutionsListComponent} from "./components/executions/executions-list.component";
 import {AllExecutionsComponent} from "./components/executions/all-executions.component";
 import {GroupExecutionsComponent} from "./components/executions/group-executions.component";
-
+import {SourceReportComponent} from "./components/reports/source/source-report.component";
+import {FileModelService} from "./services/graph/file-model.service";
+import {ClassificationService} from "./services/graph/classification.service";
+import {HintService} from "./services/graph/hint.service";
 
 @NgModule({
     imports: [
@@ -96,6 +99,7 @@ import {GroupExecutionsComponent} from "./components/executions/group-executions
 
         // Reports
         TechnologiesReportComponent,
+        SourceReportComponent,
 
         // Components
         AddRulesPathModalComponent,
@@ -149,6 +153,9 @@ import {GroupExecutionsComponent} from "./components/executions/group-executions
         LoggedInGuard,
         MigrationIssuesService,
         TechReportService,
+        FileModelService,
+        ClassificationService,
+        HintService,
         FramesRestClientService,
         ApplicationGroupResolve,
         ConfigurationResolve,

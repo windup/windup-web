@@ -9,6 +9,8 @@ import {Observable} from "rxjs";
 import {MigrationIssuesComponent} from "../../../../../src/app/components/reports/migration-issues/migration-issues.component";
 import {MigrationIssuesTableComponent} from "../../../../../src/app/components/reports/migration-issues/migration-issues-table.component";
 import {By} from "@angular/platform-browser";
+import {HttpModule, BaseRequestOptions, Http, ConnectionBackend} from "@angular/http";
+import {MockBackend} from "@angular/http/testing";
 
 let comp:    MigrationIssuesComponent;
 let fixture: ComponentFixture<MigrationIssuesComponent>;
@@ -22,7 +24,7 @@ describe('MigrationissuesComponent', () => {
         activatedRouteMock = new ActivatedRouteMock();
 
         TestBed.configureTestingModule({
-            imports: [ RouterTestingModule ],
+            imports: [ RouterTestingModule, HttpModule ],
             declarations: [ MigrationIssuesComponent, MigrationIssuesTableComponent ],
             providers: [
                 {
@@ -34,6 +36,15 @@ describe('MigrationissuesComponent', () => {
                 {
                     provide: ActivatedRoute,
                     useValue: activatedRouteMock
+                },
+                MockBackend,
+                BaseRequestOptions,
+                {
+                    provide: Http,
+                    useFactory: (backend: ConnectionBackend, defaultOptions: BaseRequestOptions) => {
+                        return new Http(backend, defaultOptions);
+                    },
+                    deps: [MockBackend, BaseRequestOptions]
                 },
                 {
                     provide: MigrationIssuesService,

@@ -7,6 +7,7 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.windup.web.services.AbstractTest;
+import org.jboss.windup.web.services.ServiceTestUtil;
 import org.jboss.windup.web.services.data.ServiceConstants;
 import org.jboss.windup.web.services.model.MigrationProject;
 import org.junit.Assert;
@@ -31,7 +32,7 @@ public class MigrationProjectEndpointTest extends AbstractTest
     @Before
     public void setUp()
     {
-        ResteasyClient client = getResteasyClient();
+        ResteasyClient client = ServiceTestUtil.getResteasyClient();
         ResteasyWebTarget target = client.target(contextPath + ServiceConstants.REST_BASE);
 
         this.migrationProjectEndpoint = target.proxy(MigrationProjectEndpoint.class);
@@ -41,8 +42,8 @@ public class MigrationProjectEndpointTest extends AbstractTest
     @RunAsClient
     public void testCreateMigrationProject() throws Exception
     {
-        Collection<MigrationProject> existingApps = migrationProjectEndpoint.getMigrationProjects();
-        Assert.assertEquals(0, existingApps.size());
+        Collection<MigrationProject> existingProjects = migrationProjectEndpoint.getMigrationProjects();
+        Assert.assertEquals(0, existingProjects.size());
 
         String title = "Test Migration Project" + RandomStringUtils.randomAlphabetic(5);
 

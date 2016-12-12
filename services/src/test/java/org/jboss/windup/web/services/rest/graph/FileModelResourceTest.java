@@ -13,6 +13,7 @@ import org.jboss.windup.graph.model.resource.FileModel;
 import org.jboss.windup.web.addons.websupport.rest.GraphPathLookup;
 import org.jboss.windup.web.addons.websupport.rest.graph.FileModelResource;
 import org.jboss.windup.web.addons.websupport.rest.graph.GraphResource;
+import org.jboss.windup.web.services.ServiceTestUtil;
 import org.jboss.windup.web.services.data.ServiceConstants;
 import org.junit.Assert;
 import org.junit.Before;
@@ -41,29 +42,11 @@ public class FileModelResourceTest extends AbstractGraphResourceTest
     @Before
     public void setUp() throws Exception
     {
-        ResteasyClient client = getResteasyClient();
+        ResteasyClient client = ServiceTestUtil.getResteasyClient();
         ResteasyWebTarget target = client.target(contextPath + ServiceConstants.FURNACE_REST_BASE);
 
         super.setUp();
-        this.fileModelResource = target.proxy(FileModelResourceSubclass.class);
-    }
-
-    /**
-     * This exists solely to work around RESTEASY-798. Without it, the client proxy will fail to be generated when it
-     * hits the unannotated methods.
-     */
-    @Path(FileModelResource.FILE_MODEL_RESOURCE_URL)
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public interface FileModelResourceSubclass extends FileModelResource
-    {
-        @Override
-        @POST
-        void setUriInfo(UriInfo uriInfo);
-
-        @Override
-        @POST
-        void setGraphPathLookup(GraphPathLookup graphPathLookup);
+        this.fileModelResource = getFileResource(target);
     }
 
     @Test
@@ -81,6 +64,25 @@ public class FileModelResourceTest extends AbstractGraphResourceTest
 
             Object parentFile = ((Map<String, Object>)result.get(GraphResource.VERTICES_OUT)).get(FileModel.PARENT_FILE);
             Assert.assertNotNull(parentFile);
+        }
+    }
+
+    @Test
+    @RunAsClient
+    public void testGetClassifications()
+    {
+        Long executionID = this.execution.getId();
+        List<Map<String, Object>> results = this.fileModelResource.get(executionID, "pom.xml");
+
+        Assert.assertTrue(results.size() == 1);
+        for (Map<String, Object> result : results)
+        {
+            Integer id = (Integer)result.get(GraphResource.KEY_ID);
+            String source = this.fileModelResource.getSource(executionID, id);
+            Assert.assertNotNull(source);
+            Assert.assertTrue(source.length() > 512);
+
+            break;
         }
     }
 }

@@ -21,6 +21,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.jboss.windup.web.services.AbstractTest;
+import org.jboss.windup.web.services.ServiceTestUtil;
 import org.jboss.windup.web.services.data.DataProvider;
 import org.jboss.windup.web.services.data.ServiceConstants;
 import org.jboss.windup.web.services.model.ApplicationGroup;
@@ -50,7 +51,7 @@ public class RegisteredApplicationEndpointTest extends AbstractTest
     @Before
     public void setUp()
     {
-        this.client = getResteasyClient();
+        this.client = ServiceTestUtil.getResteasyClient();
         this.target = client.target(contextPath + ServiceConstants.REST_BASE);
         this.dataProvider = new DataProvider(target);
 
@@ -129,9 +130,9 @@ public class RegisteredApplicationEndpointTest extends AbstractTest
                 Assert.assertEquals(1, apps.size());
 
                 Assert.assertEquals(fileName, application.getTitle());
-                this.assertFileExists(application.getInputPath());
+                ServiceTestUtil.assertFileExists(application.getInputPath());
 
-                this.assertFileContentsAreEqual(getClass().getResourceAsStream(
+                ServiceTestUtil.assertFileContentsAreEqual(getClass().getResourceAsStream(
                             DataProvider.TINY_SAMPLE_PATH),
                             new FileInputStream(application.getInputPath()));
             }
@@ -177,7 +178,7 @@ public class RegisteredApplicationEndpointTest extends AbstractTest
             Assert.assertTrue("New app file should be created", newFile.exists());
 
             sampleIs.reset();
-            this.assertFileContentsAreEqual(sampleIs, new FileInputStream(updatedApp.getInputPath()));
+            ServiceTestUtil.assertFileContentsAreEqual(sampleIs, new FileInputStream(updatedApp.getInputPath()));
 
             Assert.assertEquals(newFileName, updatedApp.getTitle());
         }
@@ -203,7 +204,7 @@ public class RegisteredApplicationEndpointTest extends AbstractTest
         response.close();
 
         Assert.assertEquals(HttpStatus.SC_NO_CONTENT, response.getStatus());
-        this.assertFileDoesNotExist(dummyApp.getInputPath());
+        ServiceTestUtil.assertFileDoesNotExist(dummyApp.getInputPath());
     }
 
     public void testRegisterAppWithoutFile() throws Exception

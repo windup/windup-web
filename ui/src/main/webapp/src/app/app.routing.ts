@@ -23,6 +23,7 @@ import {FullFlattenedRoute} from "./services/route-flattener.service";
 import {ExecutionsListComponent} from "./components/executions/executions-list.component";
 import {GroupExecutionsComponent} from "./components/executions/group-executions.component";
 import {AllExecutionsComponent} from "./components/executions/all-executions.component";
+import {SourceReportComponent} from "./components/reports/source/source-report.component";
 
 export const appRoutes: Routes = [
     {path: "login", component: LoginComponent},
@@ -102,7 +103,13 @@ export const appRoutes: Routes = [
                                         ]},
                                         { path: 'reports/:executionId', children: [
                                             {path: 'technology-report', component: TechnologiesReportComponent, data: {displayName: 'Technology Report'}},
-                                            {path: 'migration-issues', component: MigrationIssuesComponent, data: {displayName: 'Migration Issues'}}
+                                            {path: 'migration-issues',
+                                                children: [
+                                                    {path: '', component: MigrationIssuesComponent, data: {displayName: 'Migration Issues'}},
+                                                    {path: 'source/:fileId', component: SourceReportComponent, data: {displayName: 'Source Report'}}
+                                                ]
+                                            },
+                                            {path: 'source/:fileId', component: SourceReportComponent, data: {displayName: 'Source Report'}}
                                         ]},
                                         { path: '', children: [
                                             { path: 'edit', component: ApplicationGroupForm, data: {displayName: "Edit Application Group"} }

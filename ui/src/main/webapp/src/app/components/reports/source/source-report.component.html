@@ -1,0 +1,68 @@
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">File: {{fileModel?.fileName}}</h3>
+    </div>
+    <div class="panel-body" style="overflow: auto;">
+        <div class="points" style="text-align: center; color: #00254b; padding-bottom: 1ex;">
+            <div class="number">{{storyPoints}}</div>
+            <div>Story Points</div>
+        </div>
+
+        <div class="info" style="margin-left: 95pt;">
+            <h4>Technologies</h4>
+            <div class="technologies" style="overflow: auto"><!-- "auto" to contain all the tags. -->
+                <span class="label label-info" title="INFORMATIONAL">Decompiled Java File</span>
+            </div>
+
+            <ul class="classifications">
+                <li *ngFor="let classificationModel of classifications">
+                    <div class="title">
+                        <em>{{classificationModel.classification}}</em>
+                        <a title="View Rule: {{classificationModel.ruleID}}" href="#"><span class="glyphicon glyphicon-link rule-link"></span></a>
+                    </div>
+                    <div class="desc">{{classificationModel.description}}</div>
+                    <ul>
+                        <li *ngFor="let link of (getClassificationLinks(classificationModel) | async)">
+                            <a href="{{link.link}}" target="_blank">{{link.description}}</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h4 *ngIf="transformedLinks && transformedLinks.length > 0">Automatically Translated Files</h4>
+            <ul>
+                <li *ngFor="let linkModel of transformedLinks">
+                    <a href="{{linkModel.link}}">{{linkModel.description}}</a>
+                </li>
+            </ul>
+
+            <!-- Snaps under the height keeper. Yes, the same effect could be achieved by a table. -->
+            <div style="clear: both;">
+            </div><!-- .info -->
+        </div>
+
+        <pre class="has-notes"><code class="language-{{filetype()}}"><ol class="snippet-num"><li *ngFor="let line of fileLines; let i = index;" class="{{lineClass(line, i)}}" [attr.data-note]="noteReferences(line, i)">{{line}}</li></ol></code></pre>
+    </div>
+</div>
+
+<div *ngFor="let hintModel of hints" id="note-{{hintModel.vertexId}}" class="inline-source-hint-group">
+    <a name="{{hintModel.vertexId}}" class="windup-file-location sh_url"></a>
+    <div class="inline-source-comment green"> <!-- Also add tags as classes? tag-weblogic tag-webservice -->
+        <div class="inline-comment">
+            <div class="inline-comment-heading">
+                <strong class="notification warning">{{hintModel.title}}</strong>
+                <a title="View Rule: {{hintModel.ruleID}}" href="#" class="sh_url">
+                    <span class="glyphicon glyphicon-link rule-link floatRight"></span>
+                </a>
+            </div>
+            <div class="inline-comment-body">
+                <span [outerHTML]="markdown(hintModel.hint)"></span>
+                <ul>
+                    <li *ngFor="let link of (hintModel.links | async)">
+                        <a href="{{link.link}}" target="_blank">{{link.description}}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

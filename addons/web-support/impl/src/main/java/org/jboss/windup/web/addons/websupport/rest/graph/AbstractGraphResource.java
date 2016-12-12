@@ -82,6 +82,9 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
             String label = edge.getLabel();
 
             Map<String, Object> edgeDetails = (Map<String, Object>) result.get(label);
+            // If the details are already there and we aren't recursing any further, then just skip
+            if (edgeDetails != null && (remainingDepth == null || remainingDepth == 0))
+                continue;
 
             final List<Map<String, Object>> linkedVertices;
             if (edgeDetails == null)
@@ -96,7 +99,7 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
                     edgeDetails.put(GraphResource.TYPE, GraphResource.TYPE_LINK);
                     String linkUri = getLink(executionID, vertex, direction.toString(), label);
                     edgeDetails.put(GraphResource.LINK, linkUri);
-                    return;
+                    continue;
                 }
 
                 linkedVertices = new ArrayList<>();

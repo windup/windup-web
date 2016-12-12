@@ -11,10 +11,8 @@ import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.model.WindupExecution;
 import org.jboss.windup.web.services.rest.ApplicationGroupEndpoint;
 import org.jboss.windup.web.services.rest.WindupEndpoint;
-import org.jboss.windup.web.tests.authentication.KeycloakAuthenticationHelper;
 import org.junit.Assert;
 
-import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;

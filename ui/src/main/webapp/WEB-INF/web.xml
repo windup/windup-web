@@ -13,7 +13,7 @@
         </init-param>
         <init-param>
             <param-name>ExcludedPathPrefixes</param-name>
-            <param-value>/assets;/js;/authenticated.jsp;/not_loggedin.html;/index.html;/keycloak.json;/systemjs.config.js;/app/;/node_modules/;/tests/;/css/</param-value>
+            <param-value>/img;/assets;/js;/authenticated.jsp;/not_loggedin.html;/index.html;/keycloak.json;/systemjs.config.js;/app/;/node_modules/;/tests/;/css/</param-value>
         </init-param>
     </filter>
 
