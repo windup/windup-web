@@ -8,6 +8,9 @@ import * as $ from 'jquery';
 window['jQuery'] = $;
 window['$'] = $;
 
+// D3
+import 'd3';
+
 // Angular 2
 import "@angular/platform-browser";
 import "@angular/platform-browser-dynamic";

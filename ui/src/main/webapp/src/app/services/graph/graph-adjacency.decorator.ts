@@ -11,7 +11,6 @@ export function GraphAdjacency (name: string, direction: string, array: boolean 
     return function(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         if (descriptor) {
             descriptor.get = function () {
-
                 let verticesLabel = (direction == "IN") ? "vertices_in" : "vertices_out";
 
                 // Data is empty, just return null (or an empty array)
@@ -30,25 +29,45 @@ export function GraphAdjacency (name: string, direction: string, array: boolean 
                 if (this.data[verticesLabel][name]["link"] || this.data[verticesLabel][name]["_type"] == "link") {
                     // Make an HTTP call.
                     let url = this.data[verticesLabel][name]["link"];
+                    console.log("Loading remote data from: " + url);
+                    let resultObservable = this.observableCache.get(url);
+                    if (resultObservable)
+                        return resultObservable;
+
                     if (array) {
-                        return this.http.get(url).map((vertices:any) => {
-                            return vertices.json().map((vertice:any) => {
-                                return graphService.fromJSON(vertice, this.http);
-                            });
+                        resultObservable = this.http.get(url)
+                            .do(vertices => {
+                                this.data[verticesLabel][name]["link"] = null;
+                                this.data[verticesLabel][name]["_type"] = null;
+                                this.data[verticesLabel][name]["vertices"] = vertices.json();
+                            })
+                            .map((vertices:any) => {
+                                return vertices.json().map((vertice:any) => {
+                                    return graphService.fromJSON(vertice, this.http);
+                                }
+                            );
                         });
                     } else {
-                        console.log("Should return a single item for: " + name);
-                        return this.http.get(url).map((vertices:any) => {
-                            if (!vertices)
-                                return null;
+                        resultObservable = this.http.get(url)
+                            .do(vertices => {
+                                this.data[verticesLabel][name]["link"] = null;
+                                this.data[verticesLabel][name]["_type"] = null;
+                                this.data[verticesLabel][name]["vertices"] = vertices.json();
+                            })
+                            .map((vertices:any) => {
+                                if (!vertices)
+                                    return null;
 
-                            return graphService.fromJSON(vertices.json()[0], this.http);
-                        });
+                                return graphService.fromJSON(vertices.json()[0], this.http);
+                            });
                     }
+                    this.observableCache.set(url, resultObservable);
+
+                    return resultObservable;
                 }
 
                 // Data was not null and not a link, so return the stored value.
-                var vertices:any[] = this.data[verticesLabel][name].vertices;
+                let vertices:any[] = this.data[verticesLabel][name].vertices;
 
                 let value = array ?
                     vertices.map(vertice => graphService.fromJSON(vertice, this.http))

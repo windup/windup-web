@@ -12,6 +12,7 @@ import {GroupListComponent} from "../group-list.component";
 import {utils} from '../../utils';
 import {GroupPageComponent} from "../group.page.component";
 import {GroupExecutionsComponent} from "../executions/group-executions.component";
+import {ApplicationDetailsComponent} from "../reports/application-details/application-details.component";
 import {ApplicationGroupService} from "../../services/application-group.service";
 
 @Component({
@@ -126,6 +127,13 @@ export class GroupLayoutComponent implements OnInit {
                 isEnabled: true
             },
             */
+            new ReportMenuItem(
+                'Application Details',
+                'fa-list',
+                this.applicationGroup,
+                ApplicationDetailsComponent,
+                this._routeLinkProviderService,
+            ),
             new ReportMenuItem(
                 'Issues',
                 'fa-exclamation-triangle',

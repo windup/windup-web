@@ -80,6 +80,10 @@ import {ReportFilterService} from "./components/reports/filter/report-filter.ser
 import {ReportFilterResolve} from "./components/reports/filter/report-filter.resolve";
 import {CustomSelectComponent} from "./components/custom-select/custom-select.component";
 import {ReportFilterIndicatorComponent} from "./components/reports/filter/report-filter-indicator.component";
+import {ApplicationDetailsComponent} from "./components/reports/application-details/application-details.component";
+import {NG2D3Module} from "ng2d3";
+import {PackageChartComponent} from "./components/package-chart/package-chart.component";
+import {ProjectTraversalService} from "./services/graph/project-traversal.service";
 
 
 @NgModule({
@@ -88,7 +92,10 @@ import {ReportFilterIndicatorComponent} from "./components/reports/filter/report
         FormsModule,
         ReactiveFormsModule,
         HttpModule,
-        routing
+        routing,
+
+        // NG2D
+        NG2D3Module
     ],
     declarations: [
         // pages
@@ -106,6 +113,10 @@ import {ReportFilterIndicatorComponent} from "./components/reports/filter/report
         // Reports
         TechnologiesReportComponent,
         SourceReportComponent,
+        ApplicationDetailsComponent,
+
+        // Report components
+        PackageChartComponent,
 
         // Components
         AddRulesPathModalComponent,
@@ -166,6 +177,7 @@ import {ReportFilterIndicatorComponent} from "./components/reports/filter/report
         FileModelService,
         ClassificationService,
         HintService,
+        ProjectTraversalService,
         FramesRestClientService,
         ApplicationGroupResolve,
         ConfigurationResolve,
