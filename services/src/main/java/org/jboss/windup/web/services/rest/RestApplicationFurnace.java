@@ -1,11 +1,11 @@
 package org.jboss.windup.web.services.rest;
 
-import org.jboss.forge.furnace.Furnace;
 import org.jboss.windup.web.addons.websupport.rest.FurnaceRESTGraphAPI;
 import org.jboss.windup.web.addons.websupport.rest.MigrationIssuesEndpoint;
 import org.jboss.windup.web.addons.websupport.rest.graph.ClassificationResource;
 import org.jboss.windup.web.addons.websupport.rest.graph.HintResource;
 import org.jboss.windup.web.addons.websupport.rest.graph.LinkResource;
+import org.jboss.windup.web.addons.websupport.rest.graph.ProjectTraversalResource;
 import org.jboss.windup.web.addons.websupport.rest.graph.TechnologyTagResource;
 import org.jboss.windup.web.services.service.DefaultGraphPathLookup;
 import org.jboss.windup.web.addons.websupport.rest.graph.FileModelResource;
@@ -52,6 +52,9 @@ public class RestApplicationFurnace extends Application {
     @Inject @FromFurnace
     private LinkResource linkResource;
 
+    @Inject @FromFurnace
+    private ProjectTraversalResource projectTraversalResource;
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -66,6 +69,7 @@ public class RestApplicationFurnace extends Application {
         addService(singletons, hintResource);
         addService(singletons, technologyTagResource);
         addService(singletons, linkResource);
+        addService(singletons, projectTraversalResource);
         return singletons;
     }
 

@@ -2,36 +2,35 @@ package org.jboss.windup.web.addons.websupport.rest.graph;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.tinkerpop.blueprints.Direction;
-import com.tinkerpop.blueprints.Edge;
-import com.tinkerpop.blueprints.Vertex;
+import javax.inject.Inject;
+import javax.ws.rs.NotFoundException;
+import javax.ws.rs.core.UriInfo;
+
 import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.model.WindupVertexFrame;
 import org.jboss.windup.web.addons.websupport.rest.FurnaceRESTGraphAPI;
 import org.jboss.windup.web.addons.websupport.rest.GraphPathLookup;
 import org.jboss.windup.web.addons.websupport.services.ReportFilterService;
 
-import javax.inject.Inject;
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.core.UriInfo;
+import com.tinkerpop.blueprints.Direction;
+import com.tinkerpop.blueprints.Edge;
+import com.tinkerpop.blueprints.Vertex;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
 public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
 {
+    protected ReportFilterService reportFilterService;
     private UriInfo uri;
-
     @Inject
     private GraphCache graphCache;
-
     private GraphPathLookup graphPathLookup;
-
-    protected ReportFilterService reportFilterService;
 
     @Override
     public void setUriInfo(UriInfo uriInfo)
@@ -59,6 +58,11 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
 
     protected Map<String, Object> convertToMap(long executionID, Vertex vertex, Integer depth)
     {
+        return convertToMap(executionID, vertex, depth, Collections.emptyList(), Collections.emptyList());
+    }
+
+    protected Map<String, Object> convertToMap(long executionID, Vertex vertex, Integer depth, List<String> whitelistedOutEdges, List<String> whitelistedInLabels)
+    {
         if (depth == null)
             depth = 0;
 
@@ -73,16 +77,23 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
 
         Map<String, Object> outVertices = new HashMap<>();
         result.put(GraphResource.VERTICES_OUT, outVertices);
-        addEdges(executionID, outVertices, vertex, depth, Direction.OUT);
+        addEdges(executionID, outVertices, vertex, depth, Direction.OUT, whitelistedOutEdges, whitelistedInLabels);
         Map<String, Object> inVertices = new HashMap<>();
         result.put(GraphResource.VERTICES_IN, inVertices);
-        addEdges(executionID, inVertices, vertex, depth, Direction.IN);
+        addEdges(executionID, inVertices, vertex, depth, Direction.IN, whitelistedOutEdges, whitelistedInLabels);
 
         return result;
     }
 
+    private boolean isWhitelistedEdge(List<String> whitelistedOutEdges, List<String> whitelistedInEdges, Direction direction, String label)
+    {
+        return (direction == Direction.OUT && whitelistedOutEdges.contains(label)) ||
+                (direction == Direction.IN && whitelistedInEdges.contains(label));
+    }
+
     @SuppressWarnings("unchecked")
-    private void addEdges(long executionID, Map<String, Object> result, Vertex vertex, Integer remainingDepth, Direction direction)
+    private void addEdges(long executionID, Map<String, Object> result, Vertex vertex, Integer remainingDepth, Direction direction,
+                List<String> whitelistedOutEdges, List<String> whitelistedInEdges)
     {
         final Direction opposite = direction == Direction.OUT ? Direction.IN : Direction.OUT;
 
@@ -92,7 +103,7 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
 
             Map<String, Object> edgeDetails = (Map<String, Object>) result.get(label);
             // If the details are already there and we aren't recursing any further, then just skip
-            if (edgeDetails != null && (remainingDepth == null || remainingDepth == 0))
+            if (!isWhitelistedEdge(whitelistedOutEdges, whitelistedInEdges, direction, label) && edgeDetails != null && (remainingDepth == null || remainingDepth <= 0))
                 continue;
 
             final List<Map<String, Object>> linkedVertices;
@@ -103,7 +114,7 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
                 result.put(label, edgeDetails);
 
                 // If we aren't serializing any further, then just provide a link
-                if (remainingDepth == null || remainingDepth == 0)
+                if (!isWhitelistedEdge(whitelistedOutEdges, whitelistedInEdges, direction, label) && (remainingDepth == null || remainingDepth <= 0))
                 {
                     edgeDetails.put(GraphResource.TYPE, GraphResource.TYPE_LINK);
                     String linkUri = getLink(executionID, vertex, direction.toString(), label);
@@ -120,7 +131,7 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
             }
 
             Vertex otherVertex = edge.getVertex(opposite);
-            Map<String, Object> otherVertexMap = convertToMap(executionID, otherVertex, remainingDepth - 1);
+            Map<String, Object> otherVertexMap = convertToMap(executionID, otherVertex, remainingDepth - 1, whitelistedOutEdges, whitelistedInEdges);
             linkedVertices.add(otherVertexMap);
         }
     }
@@ -130,7 +141,7 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
         List<Map<String, Object>> result = new ArrayList<>();
         for (WindupVertexFrame frame : frames)
         {
-            result.add(convertToMap(executionID, frame.asVertex(), depth));
+            result.add(convertToMap(executionID, frame.asVertex(), depth, Collections.emptyList(), Collections.emptyList()));
         }
         return result;
     }
