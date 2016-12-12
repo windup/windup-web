@@ -9,6 +9,7 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.windup.web.services.AbstractTest;
+import org.jboss.windup.web.services.ServiceTestUtil;
 import org.jboss.windup.web.services.data.DataProvider;
 import org.jboss.windup.web.services.data.ServiceConstants;
 import org.jboss.windup.web.services.model.*;
@@ -39,7 +40,7 @@ public class AnalysisContextEndpointTest extends AbstractTest
     @Before
     public void setUp()
     {
-        this.client = getResteasyClient();
+        this.client = ServiceTestUtil.getResteasyClient();
         this.target = client.target(contextPath + ServiceConstants.REST_BASE);
         this.dataProvider = new DataProvider(target);
 

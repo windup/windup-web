@@ -1,23 +1,23 @@
 package org.jboss.windup.web.addons.websupport.rest.graph;
 
-import com.thinkaurelius.titan.diskstorage.PermanentBackendException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Singleton;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.ServerErrorException;
+import javax.ws.rs.core.Response;
 
 import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.model.WindupVertexFrame;
+import org.jboss.windup.web.addons.websupport.rest.RestUtil;
 
+import com.thinkaurelius.titan.diskstorage.PermanentBackendException;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Query;
 import com.tinkerpop.blueprints.Vertex;
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.ServerErrorException;
-import javax.ws.rs.core.Response;
-import org.jboss.windup.web.addons.websupport.rest.RestUtil;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -79,7 +79,8 @@ public class GraphResourceImpl extends AbstractGraphResource implements GraphRes
         if (id == null)
             throw new IllegalArgumentException("Vertex ID not specified.");
 
-        try {
+        try
+        {
             GraphContext graphContext = getGraph(executionID);
             Vertex vertex = graphContext.getFramed().getVertex(id);
             if (vertex == null)
