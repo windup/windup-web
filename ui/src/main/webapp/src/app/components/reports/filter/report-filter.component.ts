@@ -9,6 +9,7 @@ import {CustomSelectConfiguration} from "../../custom-select/custom-select.compo
 import {RegisteredApplication} from "windup-services";
 import {Category} from "windup-services";
 import {utils} from "../../../utils";
+import {Location} from "@angular/common";
 
 @Component({
     templateUrl: './report-filter.component.html'
@@ -28,7 +29,8 @@ export class ReportFilterComponent implements OnInit, OnDestroy {
         private _activatedRoute: ActivatedRoute,
         private _filterService: ReportFilterService,
         private _notificationService: NotificationService,
-        private _routeFlattenerService: RouteFlattenerService
+        private _routeFlattenerService: RouteFlattenerService,
+        private _location: Location
     ) {
         this.filter = this.getDefaultFilter(null);
 
@@ -90,5 +92,21 @@ export class ReportFilterComponent implements OnInit, OnDestroy {
             },
             error => this._notificationService.error(utils.getErrorMessage(error))
         );
+    }
+
+    cancel() {
+        let route = ['projects', this.group.migrationProject.id, 'groups', this.group.id];
+        this._router.navigate(route);
+    }
+
+    resetFilter() {
+        if (window.confirm('Do you really want to reset filter?')) {
+            this.filter.excludeCategories = [];
+            this.filter.excludeTags = [];
+            this.filter.includeCategories = [];
+            this.filter.includeTags = [];
+            this.filter.selectedApplications = [];
+            this.filter.enabled = false;
+        }
     }
 }
