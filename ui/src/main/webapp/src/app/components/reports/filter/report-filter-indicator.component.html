@@ -1,0 +1,35 @@
+<div>Filter is:
+    <strong *ngIf="filter?.enabled"><a [routerLink]="['/projects', group.migrationProject.id, 'groups', group.id, 'reports', 'filter']">ACTIVE</a></strong>
+    <strong *ngIf="!filter?.enabled">inactive</strong>
+<!--
+    <div *ngIf="filter?.enabled">
+        <ul class="filter-list">
+            <li *ngIf="filter.selectedApplications.length > 0">Applications:
+                <ul>
+                    <li *ngFor="let app of filter.selectedApplications">{{app.title}}</li>
+                </ul>
+            </li>
+            <li  *ngIf="filter.includeCategories.length > 0">Include categories:
+                <ul>
+                    <li *ngFor="let cat of filter.includeCategories">{{cat.name}}</li>
+                </ul>
+            </li>
+            <li *ngIf="filter.excludeCategories.length > 0">Exclude categories:
+                <ul>
+                    <li *ngFor="let cat of filter.excludeCategories">{{cat.name}}</li>
+                </ul>
+            </li>
+            <li *ngIf="filter.includeTags.length > 0">Include tags:
+                <ul>
+                    <li *ngFor="let tag of filter.includeTags">{{tag.name}}</li>
+                </ul>
+            </li>
+            <li *ngIf="filter.excludeTags.length > 0">Exclude tags:
+                <ul>
+                    <li *ngFor="let tag of filter.excludeTags">{{tag.name}}</li>
+                </ul>
+            </li>
+       </ul>
+    </div>
+-->
+</div>

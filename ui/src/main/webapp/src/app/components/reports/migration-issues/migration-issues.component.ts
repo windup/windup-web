@@ -3,6 +3,7 @@ import {Router, ActivatedRoute} from "@angular/router";
 import {NotificationService} from "../../../services/notification.service";
 import {MigrationIssuesService} from "./migration-issues.service";
 import {utils} from '../../../utils';
+import {ApplicationGroup} from "../../../windup-services";
 
 @Component({
     selector: 'wu-migration-issues',
@@ -14,6 +15,8 @@ import {utils} from '../../../utils';
 export class MigrationIssuesComponent implements OnInit {
     protected categorizedIssues: Dictionary<ProblemSummary[]>;
     protected categories: string[];
+
+    protected group: ApplicationGroup;
 
     public constructor(
         private _router: Router,
@@ -37,6 +40,9 @@ export class MigrationIssuesComponent implements OnInit {
                     this._router.navigate(['']);
                 });
         });
+
+        this._activatedRoute.parent.parent.parent.data.subscribe((data: {applicationGroup: ApplicationGroup}) => {
+            this.group = data.applicationGroup;
+        });
     }
 }
-

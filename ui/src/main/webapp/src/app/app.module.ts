@@ -79,6 +79,7 @@ import {ReportFilterComponent} from "./components/reports/filter/report-filter.c
 import {ReportFilterService} from "./components/reports/filter/report-filter.service";
 import {ReportFilterResolve} from "./components/reports/filter/report-filter.resolve";
 import {CustomSelectComponent} from "./components/custom-select/custom-select.component";
+import {ReportFilterIndicatorComponent} from "./components/reports/filter/report-filter-indicator.component";
 
 
 @NgModule({
@@ -140,7 +141,8 @@ import {CustomSelectComponent} from "./components/custom-select/custom-select.co
         GroupExecutionsComponent,
         BreadCrumbsNavigationComponent,
         ReportFilterComponent,
-        CustomSelectComponent
+        CustomSelectComponent,
+        ReportFilterIndicatorComponent
     ],
     providers: [
         appRoutingProviders,
