@@ -1,0 +1,43 @@
+<h1>Dependencies report</h1>
+
+<div class="panel panel-default panel-primary">
+    <div class="panel-body">
+
+        <div *ngFor="let project of rootProjects">
+            <h2>Project #{{project.vertexId}} {{project.name}}</h2>
+            <div>parent: {{(project.parentProject | async) || "NO"}}</div>
+            <div>deps:   {{(project.dependencies | async)?.length || "none"}}</div>
+            <div *ngIf="(project.dependencies | async)?.length">
+                AAAAA
+                <div *ngFor="let dep of (project.dependencies | async)">
+                    BBB scope {{dep.scope}}, type {{dep.type}}, clsf {{dep.classifier}}, projectModel {{(dep.projectModel|async) || "no"}}
+                <!--
+                    <span *ngIf="dep.projectModel? | async">has projectModel</span>
+                    dep:   {{(dep.projectModel | async)?.version?}}
+                    dep:   {{(dep.projectModel | async)?.type?}}
+                -->
+                </div>
+            </div>
+            <!--
+
+            <strong *ngIf="!(project.dependencies | async) || (project.dependencies | async).length == 0">
+                This application group has no dependencies.
+            </strong>
+            -->
+
+            <!--
+            <div *ngFor="let dep of (project.dependencies | async)">
+                <table>
+                    <tr><th>archive</th><td>{{dep.file}}</td></tr>
+                    <tr><th>MD5 checksum</th><td>{{dep.md5checksum}}</td></tr>
+                    <tr><th>Maven group ID, artifact ID</th><td>{{dep.groupId}}:{{dep.artifactId}}</td></tr>
+                    <tr><th>version</th><td>{{dep.version}}</td></tr>
+                    <tr ng-if="dep.classifier"><th>classifier</th><td>{{dep.classifier}}</td></tr>
+                </table>
+            </div>
+            -->
+
+        </div>
+
+    </div>
+</div>

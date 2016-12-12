@@ -1,5 +1,6 @@
 import {GraphJSONToModelService} from "./graph-json-to-model.service";
 import {Observable} from "rxjs/Observable";
+import {Http}       from "@angular/http";
 
 /**
  * @GraphAdjacency decorator, which handles TypeScript Frames models' property resolving.
