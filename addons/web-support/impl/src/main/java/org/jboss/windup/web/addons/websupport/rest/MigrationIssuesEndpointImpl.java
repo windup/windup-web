@@ -15,6 +15,8 @@ import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.model.ProjectModel;
 import org.jboss.windup.graph.model.resource.FileModel;
 import org.jboss.windup.graph.service.WindupConfigurationService;
+import org.jboss.windup.graph.traversal.OnlyOnceTraversalStrategy;
+import org.jboss.windup.graph.traversal.ProjectModelTraversal;
 import org.jboss.windup.reporting.category.IssueCategoryModel;
 import org.jboss.windup.reporting.freemarker.problemsummary.ProblemSummary;
 import org.jboss.windup.reporting.freemarker.problemsummary.ProblemSummaryService;
@@ -48,7 +50,9 @@ public class MigrationIssuesEndpointImpl extends AbstractGraphResource implement
                     graphContext,
                     projectModels,
                     includeTags,
-                    excludeTags);
+                    excludeTags,
+                    true,
+                    false);
 
         Map<String, List<ProblemSummary>> issuesWithStringKey = new LinkedHashMap<>();
         issues.entrySet().forEach((entry) -> {
@@ -80,7 +84,12 @@ public class MigrationIssuesEndpointImpl extends AbstractGraphResource implement
 
             if (filter.getSelectedApplicationPaths().contains(filePath))
             {
-                projectModels.add(inputPath.getProjectModel());
+                ProjectModel rootProjectModel = inputPath.getProjectModel();
+                if (rootProjectModel == null)
+                    continue;
+
+                ProjectModelTraversal traversal = new ProjectModelTraversal(rootProjectModel, new OnlyOnceTraversalStrategy());
+                projectModels.addAll(traversal.getAllProjects(true));
             }
         }
 
