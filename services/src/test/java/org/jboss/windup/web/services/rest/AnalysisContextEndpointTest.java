@@ -63,7 +63,7 @@ public class AnalysisContextEndpointTest extends AbstractTest
         configuration.setRulesPaths(Collections.singleton(new RulesPath(ConfigurationEndpointTest.CUSTOM_RULESPATH, RulesPathType.USER_PROVIDED)));
         configurationEndpoint.saveConfiguration(configuration);
 
-        AnalysisContext analysisContext = group.getAnalysisContext();
+        AnalysisContext analysisContext = analysisContextEndpoint.get(group.getAnalysisContext().getId());
         analysisContext.setMigrationPath(path);
 
         analysisContext.setRulesPaths(configurationEndpoint.getConfiguration().getRulesPaths());
