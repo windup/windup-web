@@ -25,22 +25,24 @@ export function GraphAdjacency (name: string, direction: string, array: boolean 
                 let graphService: GraphJSONToModelService<any> = this.graphService || new GraphJSONToModelService();
                 if (!this.http)
                     throw new Error("Http service was not stored in the unmarshalled object:\n" + JSON.stringify(this));
-                let __httpService = this.http;
 
                 // If data is a link, return a result of a service call.
                 if (this.data[verticesLabel][name]["link"] || this.data[verticesLabel][name]["_type"] == "link") {
                     // Make an HTTP call.
                     let url = this.data[verticesLabel][name]["link"];
                     if (array) {
-                        return __httpService.get(url).map((vertices:any) => {
+                        return this.http.get(url).map((vertices:any) => {
                             return vertices.json().map((vertice:any) => {
-                                return graphService.fromJSON(vertice, __httpService);
+                                return graphService.fromJSON(vertice, this.http);
                             });
                         });
                     } else {
-                        console.log("Should return a single item for: " + name);///
-                        return __httpService.get(url).map((vertices:any) => {
-                            return graphService.fromJSON(vertices[0], __httpService);
+                        console.log("Should return a single item for: " + name);
+                        return this.http.get(url).map((vertices:any) => {
+                            if (!vertices)
+                                return null;
+
+                            return graphService.fromJSON(vertices.json()[0], this.http);
                         });
                     }
                 }
@@ -49,8 +51,8 @@ export function GraphAdjacency (name: string, direction: string, array: boolean 
                 var vertices:any[] = this.data[verticesLabel][name].vertices;
 
                 let value = array ?
-                    vertices.map(vertice => graphService.fromJSON(vertice, __httpService))
-                    : graphService.fromJSON(vertices[0], __httpService);
+                    vertices.map(vertice => graphService.fromJSON(vertice, this.http))
+                    : graphService.fromJSON(vertices[0], this.http);
 
                 return Observable.of(value);
             };
