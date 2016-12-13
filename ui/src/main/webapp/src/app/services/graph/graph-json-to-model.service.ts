@@ -53,8 +53,10 @@ export class GraphJSONToModelService<T extends BaseModel>
      * Unmarshalls the JSON graph data representation into TypeScript objects.
      * Accepts a single JSON object or a JSON array, returns an object or an array, respectively.
      */
-    public fromJSON(input: Object, http:Http, clazz?: typeof BaseModel): T
+    public fromJSON(input: Object, http: Http, clazz?: typeof BaseModel): T
     {
+        if (!http) throw new Error("Http service must be passed.");
+
         let discriminator:string[] = input[GraphJSONToModelService.DISCRIMINATOR];
         if (!clazz) {
             clazz = this.getModelClassForJsonObject(input, clazz);
@@ -66,6 +68,20 @@ export class GraphJSONToModelService<T extends BaseModel>
         // TODO: Http could be in the service.
         frameModel.graphService = this;
         return <T>frameModel;
+    }
+
+    public fromJSONarray(input: any[], http: Http, clazz?: typeof BaseModel): T[]
+    {
+        if (!http) throw new Error("Http service must be passed.");
+
+        let frameModels = [];
+        for (let item of input) {
+            let obj = this.fromJSON(item, http, clazz);
+            if (obj == null || ! (typeof obj === "object") /*|| ! (obj instanceof clazz)*/)
+                console.warn(`Unmarshalling: ${obj} not instance of ${clazz}`);
+            frameModels.push(obj);
+        }
+        return <T[]>frameModels;
     }
 
 
