@@ -74,14 +74,12 @@ export class GraphJSONToModelService<T extends BaseModel>
     {
         if (!http) throw new Error("Http service must be passed.");
 
-        let frameModels = [];
-        for (let item of input) {
+        return input.map((item) => {
             let obj = this.fromJSON(item, http, clazz);
             if (obj == null || ! (typeof obj === "object") /*|| ! (obj instanceof clazz)*/)
                 console.warn(`Unmarshalling: ${obj} not instance of ${clazz}`);
-            frameModels.push(obj);
-        }
-        return <T[]>frameModels;
+            return obj;
+        });
     }
 
 

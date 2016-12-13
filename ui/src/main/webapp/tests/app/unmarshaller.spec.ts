@@ -31,13 +31,21 @@ describe('Unmarshaller tests', () => {
     });
 
     it ('unmarshaller test - fromJSON() - basic properties', () => {
-        let modelObject = new GraphJSONToModelService(DiscriminatorMappingTestData).fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA, null);
+        let modelObject = new GraphJSONToModelService(DiscriminatorMappingTestData).fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA, <Http>{});
         expect(modelObject).toBeDefined();
         expect(modelObject.vertexId).toEqual(456);
         let model = <TestGeneratorModel> modelObject;
         console.log("Returned model: " + model);
 
         expect(model.name).toEqual("Blake Ross");
+    });
+
+    it ('unmarshaller test - fromJSON() - basic properties - array', () => {
+        let modelObjects = new GraphJSONToModelService(DiscriminatorMappingTestData).fromJSONarray(TestGraphData.TEST_FILE_MODELS, <Http>{});
+        expect(modelObjects).toBeDefined();
+        expect(modelObjects.length).toEqual(2);
+        expect(modelObjects[0].vertexId).toEqual(16384);
+        expect(modelObjects[1].vertexId).toEqual(16640);
     });
 
     it ('unmarshaller test - fromJSON() - ship', async(() => {
