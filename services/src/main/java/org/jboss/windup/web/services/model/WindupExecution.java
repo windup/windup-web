@@ -43,7 +43,7 @@ public class WindupExecution implements Serializable
     @Column(name = "version")
     private int version;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JsonIgnore
     private ApplicationGroup group;
 

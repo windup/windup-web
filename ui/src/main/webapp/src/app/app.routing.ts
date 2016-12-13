@@ -24,6 +24,8 @@ import {ExecutionsListComponent} from "./components/executions/executions-list.c
 import {GroupExecutionsComponent} from "./components/executions/group-executions.component";
 import {AllExecutionsComponent} from "./components/executions/all-executions.component";
 import {SourceReportComponent} from "./components/reports/source/source-report.component";
+import {ReportFilterComponent} from "./components/reports/filter/report-filter.component";
+import {ReportFilterResolve} from "./components/reports/filter/report-filter.resolve";
 
 export const appRoutes: Routes = [
     {path: "login", component: LoginComponent},
@@ -100,6 +102,9 @@ export const appRoutes: Routes = [
                                                 },
                                                 data: {displayName: "Edit Application"}
                                             },
+                                        ]},
+                                        { path: 'reports', children: [
+                                            { path: 'filter', component: ReportFilterComponent, data: {displayName: 'Report Filter'} },
                                         ]},
                                         { path: 'reports/:executionId', children: [
                                             {path: 'technology-report', component: TechnologiesReportComponent, data: {displayName: 'Technology Report'}},

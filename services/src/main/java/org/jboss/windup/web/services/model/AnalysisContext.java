@@ -56,7 +56,7 @@ public class AnalysisContext implements Serializable
     private Collection<AdvancedOption> advancedOptions;
 
 //    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @OneToOne
+    @OneToOne(optional = false)
     private ApplicationGroup applicationGroup;
 
     @Valid

@@ -54,7 +54,7 @@ public class RegisteredApplication implements Serializable
     @Column(length = 2048)
     private String reportIndexPath;
 
-    @ManyToOne()
+    @ManyToOne(optional = false)
     private ApplicationGroup applicationGroup;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -68,6 +68,11 @@ public class RegisteredApplication implements Serializable
     {
         this.inputPath = inputPath;
         this.title = Paths.get(inputPath).getFileName().toString();
+    }
+
+    public RegisteredApplication(ApplicationGroup group)
+    {
+        this.applicationGroup = group;
     }
 
     public Long getId()
@@ -153,6 +158,7 @@ public class RegisteredApplication implements Serializable
     /**
      * References the {@link ApplicationGroup} that contains this application.
      */
+    @JsonIgnore
     public ApplicationGroup getApplicationGroup()
     {
         return applicationGroup;

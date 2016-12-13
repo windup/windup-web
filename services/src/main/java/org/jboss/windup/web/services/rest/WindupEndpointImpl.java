@@ -25,6 +25,7 @@ import org.jboss.windup.web.services.model.ExecutionState;
 import org.jboss.windup.web.services.model.RegisteredApplication;
 import org.jboss.windup.web.services.model.WindupExecution;
 import org.jboss.windup.web.services.service.AnalysisContextService;
+import org.jboss.windup.web.services.service.ApplicationGroupService;
 import org.jboss.windup.web.services.service.ConfigurationService;
 
 @Stateless
@@ -55,6 +56,9 @@ public class WindupEndpointImpl implements WindupEndpoint
     @FromFurnace
     private WebPathUtil webPathUtil;
 
+    @Inject
+    private ApplicationGroupService applicationGroupService;
+
     @Resource(lookup = "java:/queues/" + MessagingConstants.EXECUTOR_QUEUE)
     private Queue executorQueue;
 
@@ -74,7 +78,7 @@ public class WindupEndpointImpl implements WindupEndpoint
     @Override
     public WindupExecution executeGroup(Long groupID)
     {
-        ApplicationGroup group = getApplicationGroup(groupID);
+        ApplicationGroup group = this.applicationGroupService.getApplicationGroup(groupID);
 
         for (RegisteredApplication application : group.getApplications())
         {
@@ -105,18 +109,6 @@ public class WindupEndpointImpl implements WindupEndpoint
         messaging.createProducer().send(executorQueue, execution);
 
         return execution;
-    }
-
-    private ApplicationGroup getApplicationGroup(Long groupID)
-    {
-        ApplicationGroup applicationGroup = entityManager.find(ApplicationGroup.class, groupID);
-
-        if (applicationGroup == null)
-        {
-            throw new NotFoundException("ApplicationGroup with id: " + groupID + " not found");
-        }
-
-        return applicationGroup;
     }
 
     @Override

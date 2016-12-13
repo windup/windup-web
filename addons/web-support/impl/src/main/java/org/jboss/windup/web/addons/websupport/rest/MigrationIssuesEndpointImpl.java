@@ -1,15 +1,26 @@
 package org.jboss.windup.web.addons.websupport.rest;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import javax.ws.rs.NotFoundException;
 
 import org.jboss.windup.graph.GraphContext;
+import org.jboss.windup.graph.model.ProjectModel;
+import org.jboss.windup.graph.model.resource.FileModel;
+import org.jboss.windup.graph.service.WindupConfigurationService;
+import org.jboss.windup.graph.traversal.OnlyOnceTraversalStrategy;
+import org.jboss.windup.graph.traversal.ProjectModelTraversal;
 import org.jboss.windup.reporting.category.IssueCategoryModel;
 import org.jboss.windup.reporting.freemarker.problemsummary.ProblemSummary;
 import org.jboss.windup.reporting.freemarker.problemsummary.ProblemSummaryService;
+import org.jboss.windup.web.addons.websupport.model.ReportFilterDTO;
 import org.jboss.windup.web.addons.websupport.rest.graph.AbstractGraphResource;
 
 /**
@@ -17,24 +28,72 @@ import org.jboss.windup.web.addons.websupport.rest.graph.AbstractGraphResource;
  */
 public class MigrationIssuesEndpointImpl extends AbstractGraphResource implements MigrationIssuesEndpoint
 {
-
     @Override
     public Map<String, List<ProblemSummary>> getAggregatedIssues(Long reportId)
     {
         GraphContext graphContext = this.getGraph(reportId);
 
+        ReportFilterDTO filter = this.reportFilterService.getReportFilter(reportId);
+
         Set<String> includeTags = new HashSet<>();
         Set<String> excludeTags = new HashSet<>();
+        Set<ProjectModel> projectModels = null;
+
+        if (filter.isEnabled())
+        {
+            includeTags.addAll(filter.getIncludeTags());
+            excludeTags.addAll(filter.getExcludeTags());
+            projectModels = this.getProjectModels(graphContext, filter);
+        }
 
         Map<IssueCategoryModel, List<ProblemSummary>> issues = ProblemSummaryService.getProblemSummaries(
                     graphContext,
-                    null,
+                    projectModels,
                     includeTags,
-                    excludeTags);
+                    excludeTags,
+                    true,
+                    false);
 
         Map<String, List<ProblemSummary>> issuesWithStringKey = new LinkedHashMap<>();
-        issues.entrySet().forEach((entry) -> issuesWithStringKey.put(entry.getKey().getName(), entry.getValue()));
+        issues.entrySet().forEach((entry) -> {
+            boolean includeCategoriesEnabled = !filter.getIncludeCategories().isEmpty();
+            boolean isIncluded = filter.getIncludeCategories().contains(entry.getKey().getName());
+            boolean isExcluded = filter.getExcludeCategories().contains(entry.getKey().getName());
+
+            if ((includeCategoriesEnabled && isIncluded) || (!includeCategoriesEnabled && !isExcluded))
+            {
+                issuesWithStringKey.put(entry.getKey().getName(), entry.getValue());
+            }
+        });
+
         return issuesWithStringKey;
+    }
+
+    protected Set<ProjectModel> getProjectModels(GraphContext graphContext, ReportFilterDTO filter)
+    {
+        if (filter.getSelectedApplicationPaths().isEmpty())
+        {
+            return null;
+        }
+
+        Set<ProjectModel> projectModels = new HashSet<>();
+
+        for (FileModel inputPath : WindupConfigurationService.getConfigurationModel(graphContext).getInputPaths())
+        {
+            String filePath = inputPath.getFilePath();
+
+            if (filter.getSelectedApplicationPaths().contains(filePath))
+            {
+                ProjectModel rootProjectModel = inputPath.getProjectModel();
+                if (rootProjectModel == null)
+                    continue;
+
+                ProjectModelTraversal traversal = new ProjectModelTraversal(rootProjectModel, new OnlyOnceTraversalStrategy());
+                projectModels.addAll(traversal.getAllProjects(true));
+            }
+        }
+
+        return projectModels;
     }
 
     @Override

@@ -44,6 +44,9 @@ public class WindupWebProgressMonitor implements WindupProgressMonitor
             return;
         }
 
+        if (execution.getState() == ExecutionState.QUEUED)
+            execution.setState(ExecutionState.STARTED);
+
         managedExecutorService.submit(() -> {
             UserTransaction userTransaction = ServiceUtil.getUserTransaction();
 

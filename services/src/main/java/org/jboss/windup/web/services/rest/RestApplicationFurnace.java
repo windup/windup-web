@@ -1,5 +1,6 @@
 package org.jboss.windup.web.services.rest;
 
+import org.jboss.forge.furnace.Furnace;
 import org.jboss.windup.web.addons.websupport.rest.FurnaceRESTGraphAPI;
 import org.jboss.windup.web.addons.websupport.rest.MigrationIssuesEndpoint;
 import org.jboss.windup.web.addons.websupport.rest.graph.ClassificationResource;
@@ -10,6 +11,7 @@ import org.jboss.windup.web.services.service.DefaultGraphPathLookup;
 import org.jboss.windup.web.addons.websupport.rest.graph.FileModelResource;
 import org.jboss.windup.web.addons.websupport.rest.graph.GraphResource;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
+import org.jboss.windup.web.services.service.ReportFilterServiceImpl;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -72,8 +74,11 @@ public class RestApplicationFurnace extends Application {
         if (service instanceof FurnaceRESTGraphAPI)
         {
             LOG.info("Adding graph REST service from furnace: " + service);
-            ((FurnaceRESTGraphAPI) service).setGraphPathLookup(new DefaultGraphPathLookup(this.entityManager));
-        } else
+            FurnaceRESTGraphAPI furnaceService = ((FurnaceRESTGraphAPI) service);
+            furnaceService.setGraphPathLookup(new DefaultGraphPathLookup(this.entityManager));
+            furnaceService.setReportFilterService(new ReportFilterServiceImpl(this.entityManager));
+        }
+        else
         {
             LOG.info("Adding REST service from furnace: " + service);
         }
