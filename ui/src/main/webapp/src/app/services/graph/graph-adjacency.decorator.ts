@@ -7,7 +7,7 @@ import {Observable} from "rxjs/Observable";
  * The underlying object contains graph vertices data or links to graph REST service.
  * This decorator turns these data into model objects, optionally fetching the data first.
  */
-export function GraphAdjacency (name:string, direction:string, array:boolean = true): any {
+export function GraphAdjacency (name: string, direction: string, array: boolean = true): any {
     return function(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         if (descriptor) {
             descriptor.get = function () {
