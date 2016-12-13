@@ -13,6 +13,7 @@ import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.model.WindupVertexFrame;
 import org.jboss.windup.web.addons.websupport.rest.FurnaceRESTGraphAPI;
 import org.jboss.windup.web.addons.websupport.rest.GraphPathLookup;
+import org.jboss.windup.web.addons.websupport.services.ReportFilterService;
 
 import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
@@ -30,6 +31,8 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
 
     private GraphPathLookup graphPathLookup;
 
+    protected ReportFilterService reportFilterService;
+
     @Override
     public void setUriInfo(UriInfo uriInfo)
     {
@@ -40,6 +43,12 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
     public void setGraphPathLookup(GraphPathLookup graphPathLookup)
     {
         this.graphPathLookup = graphPathLookup;
+    }
+
+    @Override
+    public void setReportFilterService(ReportFilterService reportFilterService)
+    {
+        this.reportFilterService = reportFilterService;
     }
 
     private String getLink(long executionID, Vertex vertex, String direction, String label)

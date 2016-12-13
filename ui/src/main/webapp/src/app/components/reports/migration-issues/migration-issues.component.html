@@ -1,3 +1,5 @@
+<wu-report-filter-indicator [group]="group"></wu-report-filter-indicator>
+
 <h1>Migration Issues Report</h1>
 
 <div class="panel panel-default panel-primary" *ngFor="let category of categories">
@@ -5,12 +7,20 @@
         <h3 class="panel-title">{{category}}</h3>
     </div>
     <div class="panel-body">
-        <strong *ngIf="!categorizedIssues[category] || categorizedIssues[category].length == 0">
+        <strong *ngIf="!categorizedIssues[category] || categorizedIssues[category].length == 0" class="not-found">
             No issues found
         </strong>
 
         <wu-migration-issues-table *ngIf="categorizedIssues[category] && categorizedIssues[category].length !== 0"
                                    [migrationIssues]="categorizedIssues[category]">
         </wu-migration-issues-table>
+    </div>
+</div>
+<div *ngIf="categories && categories.length == 0" class="panel panel-default panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">Migration Issues</h3>
+    </div>
+    <div class="panel-body">
+        <strong>No issues found</strong>
     </div>
 </div>

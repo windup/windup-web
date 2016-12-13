@@ -20,6 +20,8 @@ import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.model.PackageMetadata;
+import org.jboss.windup.web.services.model.ReportFilter;
+import org.jboss.windup.web.services.service.ApplicationGroupService;
 import org.jboss.windup.web.services.service.AnalysisContextService;
 import org.jboss.windup.web.services.service.PackageService;
 
@@ -35,6 +37,9 @@ public class ApplicationGroupEndpointImpl implements ApplicationGroupEndpoint
 
     @PersistenceContext(type = PersistenceContextType.EXTENDED)
     private EntityManager entityManager;
+
+    @Inject
+    private ApplicationGroupService applicationGroupService;
 
     @Inject
     private PackageService packageServiceNew;
@@ -64,14 +69,7 @@ public class ApplicationGroupEndpointImpl implements ApplicationGroupEndpoint
     @Override
     public ApplicationGroup getApplicationGroup(Long id)
     {
-        ApplicationGroup applicationGroup = entityManager.find(ApplicationGroup.class, id);
-
-        if (applicationGroup == null)
-        {
-            throw new NotFoundException("ApplicationGroup with id: " + id + " not found");
-        }
-
-        return applicationGroup;
+        return this.applicationGroupService.getApplicationGroup(id);
     }
 
     protected MigrationProject getMigrationProject(ApplicationGroup applicationGroup)
@@ -97,6 +95,8 @@ public class ApplicationGroupEndpointImpl implements ApplicationGroupEndpoint
         {
             throw new BadRequestException("Invalid MigrationProject");
         }
+
+        applicationGroup.setReportFilter(new ReportFilter(applicationGroup));
 
         entityManager.persist(applicationGroup);
 

@@ -75,6 +75,12 @@ import {SourceReportComponent} from "./components/reports/source/source-report.c
 import {FileModelService} from "./services/graph/file-model.service";
 import {ClassificationService} from "./services/graph/classification.service";
 import {HintService} from "./services/graph/hint.service";
+import {ReportFilterComponent} from "./components/reports/filter/report-filter.component";
+import {ReportFilterService} from "./components/reports/filter/report-filter.service";
+import {ReportFilterResolve} from "./components/reports/filter/report-filter.resolve";
+import {CustomSelectComponent} from "./components/custom-select/custom-select.component";
+import {ReportFilterIndicatorComponent} from "./components/reports/filter/report-filter-indicator.component";
+
 
 @NgModule({
     imports: [
@@ -132,7 +138,11 @@ import {HintService} from "./services/graph/hint.service";
         DefaultLayoutComponent,
         ExecutionsListComponent,
         AllExecutionsComponent,
-        GroupExecutionsComponent
+        GroupExecutionsComponent,
+        BreadCrumbsNavigationComponent,
+        ReportFilterComponent,
+        CustomSelectComponent,
+        ReportFilterIndicatorComponent
     ],
     providers: [
         appRoutingProviders,
@@ -162,6 +172,8 @@ import {HintService} from "./services/graph/hint.service";
         ProjectResolve,
         ApplicationResolve,
         RouteFlattenerService,
+        ReportFilterService,
+        ReportFilterResolve,
         {
             provide: RouteLinkProviderService,
             useFactory: () => {

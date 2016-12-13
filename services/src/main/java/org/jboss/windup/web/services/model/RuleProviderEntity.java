@@ -1,7 +1,9 @@
 package org.jboss.windup.web.services.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -104,8 +106,19 @@ public class RuleProviderEntity implements Serializable
     @ManyToOne(fetch = FetchType.EAGER)
     private RulesPath rulesPath;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Tag> tags;
+
     @Column
     private RuleProviderType ruleProviderType;
+
+    public RuleProviderEntity()
+    {
+        this.sources = new HashSet<>();
+        this.targets = new HashSet<>();
+        this.rules = new ArrayList<>();
+        this.tags = new HashSet<>();
+    }
 
     /**
      * Contains the primary key.
@@ -313,5 +326,21 @@ public class RuleProviderEntity implements Serializable
     public void setRuleProviderType(RuleProviderType ruleProviderType)
     {
         this.ruleProviderType = ruleProviderType;
+    }
+
+    /**
+     * Contains the tags of provider
+     */
+    public Set<Tag> getTags()
+    {
+        return tags;
+    }
+
+    /**
+     * Sets tags of provider
+     */
+    public void setTags(Set<Tag> tags)
+    {
+        this.tags = tags;
     }
 }

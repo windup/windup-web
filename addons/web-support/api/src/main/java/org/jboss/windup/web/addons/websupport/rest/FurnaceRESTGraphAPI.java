@@ -1,5 +1,7 @@
 package org.jboss.windup.web.addons.websupport.rest;
 
+import org.jboss.windup.web.addons.websupport.services.ReportFilterService;
+
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
@@ -20,4 +22,9 @@ public interface FurnaceRESTGraphAPI
      * Provides this service with an implementation of {@link GraphPathLookup}.
      */
     void setGraphPathLookup(GraphPathLookup graphPathLookup);
+
+    /**
+     * Provides this service with an implementation of {@link ReportFilterService}
+     */
+    void setReportFilterService(ReportFilterService reportFilterService);
 }

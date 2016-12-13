@@ -12,6 +12,7 @@ import org.jboss.windup.web.addons.websupport.rest.graph.GraphResource;
 import org.jboss.windup.web.addons.websupport.rest.graph.HintResource;
 import org.jboss.windup.web.addons.websupport.rest.graph.LinkResource;
 import org.jboss.windup.web.addons.websupport.rest.graph.TechnologyTagResource;
+import org.jboss.windup.web.addons.websupport.services.ReportFilterService;
 import org.jboss.windup.web.services.AbstractTest;
 import org.jboss.windup.web.services.ServiceTestUtil;
 import org.jboss.windup.web.services.data.ServiceConstants;
@@ -149,6 +150,10 @@ public abstract class AbstractGraphResourceTest
         @Override
         @POST
         void setGraphPathLookup(GraphPathLookup graphPathLookup);
+
+        @Override
+        @POST
+        void setReportFilterService(ReportFilterService reportFilterService);
     }
 
     /**
@@ -167,6 +172,10 @@ public abstract class AbstractGraphResourceTest
         @Override
         @POST
         void setGraphPathLookup(GraphPathLookup graphPathLookup);
+
+        @Override
+        @POST
+        void setReportFilterService(ReportFilterService reportFilterService);
     }
 
     /**
@@ -185,6 +194,10 @@ public abstract class AbstractGraphResourceTest
         @Override
         @POST
         void setGraphPathLookup(GraphPathLookup graphPathLookup);
+
+        @Override
+        @POST
+        void setReportFilterService(ReportFilterService reportFilterService);
     }
 
     /**
@@ -203,6 +216,10 @@ public abstract class AbstractGraphResourceTest
         @Override
         @POST
         void setGraphPathLookup(GraphPathLookup graphPathLookup);
+
+        @Override
+        @POST
+        void setReportFilterService(ReportFilterService reportFilterService);
     }
 
     /**
@@ -221,5 +238,9 @@ public abstract class AbstractGraphResourceTest
         @Override
         @POST
         void setGraphPathLookup(GraphPathLookup graphPathLookup);
+
+        @Override
+        @POST
+        void setReportFilterService(ReportFilterService reportFilterService);
     }
 }
