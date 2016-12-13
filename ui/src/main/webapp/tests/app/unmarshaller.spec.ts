@@ -41,7 +41,7 @@ describe('Unmarshaller tests', () => {
     });
 
     it ('unmarshaller test - fromJSON() - ship', async(() => {
-        let modelObject = new GraphJSONToModelService<TestGeneratorModel>(DiscriminatorMappingTestData).fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA, null);
+        let modelObject = new GraphJSONToModelService<TestGeneratorModel>(DiscriminatorMappingTestData).fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA, <Http>{});
 
         return modelObject.ship.toPromise()
             .then((ship:TestShipModel) => {
@@ -88,7 +88,11 @@ describe('Unmarshaller tests', () => {
             get(url:string) {
                 console.log("Should call get to: " + url + " now");
                 return Observable.create(function(observer) {
-                    let value: any = JSON.parse(`[{ "_id": 1001, "w:winduptype": ["TestShip"], "name": "Fighter"}]`);
+                    let value: any = {
+                        json: function () {
+                            return [{ "_id": 1001, "w:winduptype": ["TestShip"], "name": "Fighter"}];
+                        }
+                    };
                     observer.next(value);
                     observer.complete();
                 });
@@ -108,7 +112,7 @@ describe('Unmarshaller tests', () => {
     }));
 
     it ('unmarshaller test - fromJSON() - planets', async(() => {
-        let modelObject = new GraphJSONToModelService<TestGeneratorModel>(DiscriminatorMappingTestData).fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA, null);
+        let modelObject = new GraphJSONToModelService<TestGeneratorModel>(DiscriminatorMappingTestData).fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA, <Http>{});
 
         return modelObject.colonizedPlanet.toPromise()
             .then((planets:TestPlanetModel[]) => {
