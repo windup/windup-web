@@ -66,13 +66,15 @@ public class ReportFilterEndpointImpl implements ReportFilterEndpoint
     }
 
     @Override
-    public void clearFilter(Long groupId)
+    public ReportFilter clearFilter(Long groupId)
     {
         ApplicationGroup group = this.applicationGroupService.getApplicationGroup(groupId);
 
         ReportFilter filter = group.getReportFilter();
         filter.clear();
         this.entityManager.merge(filter);
+
+        return filter;
     }
 
     @Override
