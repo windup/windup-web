@@ -91,6 +91,7 @@ public class ApplicationGroupTest extends AbstractTest
         Assert.assertNotNull(retrievedGroup.getExecutions());
         Assert.assertNotNull(retrievedGroup.getApplications());
         Assert.assertNotNull(retrievedGroup.getMigrationProject());
+        Assert.assertNotNull(retrievedGroup.getReportFilter());
     }
 
     @Test
