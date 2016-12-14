@@ -10,6 +10,7 @@ import {AbstractService} from "./abtract.service";
 export class ConfigurationService extends AbstractService {
     private GET_URL = "/configuration";
     private SAVE_URL = "/configuration";
+    private CONFIGURATION_RELOAD_URL = '/configuration/reload';
 
     constructor (private _http: Http) {
         super();
@@ -47,5 +48,11 @@ export class ConfigurationService extends AbstractService {
             .map(res => <RulesPath[]> res.json())
             .catch(this.handleError);
 
+    }
+
+    reloadConfigration(): Observable<Configuration> {
+        return this._http.post(Constants.REST_BASE + this.CONFIGURATION_RELOAD_URL, null)
+            .map(res => res.json())
+            .catch(this.handleError);
     }
 }

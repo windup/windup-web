@@ -5,6 +5,8 @@ import {RuleService} from "../services/rule.service";
 import {RulesModalComponent} from "./rules-modal.component";
 import {AddRulesPathModalComponent, ConfigurationEvent} from "./add-rules-path-modal.component";
 import {ActivatedRoute} from "@angular/router";
+import {NotificationService} from "../services/notification.service";
+import {utils} from "../utils";
 
 @Component({
     selector: 'application-list',
@@ -26,7 +28,8 @@ export class ConfigurationComponent implements OnInit {
     constructor(
         private _activatedRoute: ActivatedRoute,
         private _configurationService:ConfigurationService,
-        private _ruleService:RuleService
+        private _ruleService:RuleService,
+        private _notificationService: NotificationService
     ) {
 
     }
@@ -99,5 +102,17 @@ export class ConfigurationComponent implements OnInit {
             },
             error => console.log("Error: " + error)
         )
+    }
+
+    reloadConfiguration() {
+        this._configurationService.reloadConfigration().subscribe(
+            configuration => {
+                this.configuration = configuration;
+                this.loadProviders();
+
+                this._notificationService.success('Configuration was reloaded');
+            },
+            error => this._notificationService.error(utils.getErrorMessage(error))
+        );
     }
 }
