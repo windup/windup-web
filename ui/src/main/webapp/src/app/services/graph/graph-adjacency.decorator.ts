@@ -30,10 +30,8 @@ export function GraphAdjacency (name: string, direction: string, array: boolean 
                 function fetcher(url: string): Observable<any> {
                     return (<Http>this.http).get(url).map((response: Response) => {
                         if (!response) return null;
-                        if (typeof response.json() !== "array") throw new Error("Graph REST should return an array of vertices.");
-                        /*let items: any[] = response.json().map((vertice:any) => {
-                            return graphService.fromJSON(vertice, this.http);
-                        });*/
+                        if (typeof response.json() !== "array")
+                            throw new Error("Graph REST should return an array of vertices.");
                         let items: any[] = graphService.fromJSONarray(response.json(), this.http);
                         return array ? items : items[0];
                     });
@@ -44,9 +42,11 @@ export function GraphAdjacency (name: string, direction: string, array: boolean 
                     // Make an HTTP call.
                     let url = this.data[verticesLabel][name]["link"];
                     let cachedObservable: Observable<any> = LinkToDataCache.getOrFetch(url, fetcher);
-                    if (cachedObservable)
-                        return cachedObservable;
+                    if (!cachedObservable)
+                        throw new Error("Failed loading link: " + url);
+                    return cachedObservable;
 
+                    /*
                     if (array) {
                         return this.http.get(url).map((response: Response) => {
                             return response.json().map((vertice:any) => {
@@ -60,7 +60,7 @@ export function GraphAdjacency (name: string, direction: string, array: boolean 
                                 return null;
                             return graphService.fromJSON(response.json()[0], this.http);
                         });
-                    }
+                    }*/
                 }
 
                 // Data was not null and not a link, so return the stored value.
@@ -84,7 +84,6 @@ class LinkToDataCache
 {
     static cachedData: Map<string, any> = new Map<string, any>();
     //static keysFIFO: Set<string> = new Set<string>(); ///string[] = [];
-    static http: Http;
     static maxRequests: number = 400;
 
     static getOrFetch(key: string, fetcher: (string) => any): Observable<Response> {
@@ -96,11 +95,6 @@ class LinkToDataCache
         this.cachedData.set(key, value);
         this.deleteOverflowing();
         return value;
-        /*
-        return this.http.get(key).do((res: Response) => {
-            this.cachedData.set(key, res.json());
-            this.deleteOverflowing();
-        });*/
     }
 
     static add(key, value){
@@ -117,10 +111,16 @@ class LinkToDataCache
     /// A Map object iterates its elements in insertion order — a for...of loop returns an array of [key, value] for each iteration.
     /// However that seems not to work. Trying with forEach.
     static deleteOldest(howMany: number): void {
-        let done: boolean;
-        this.cachedData.forEach( (val, key, map) => {
+        console.log("Deleting oldest " + howMany);
+        /*this.cachedData.forEach((val, key, map) => {
+            console.log("forEach: " + key + " " + howMany);
             if (howMany-- > 0)
                 map.delete(key);
-        });
+        });*/
+        let iterKeys = this.cachedData.keys();
+        let item: IteratorResult<string>;
+        while (howMany-- > 0 && (item = iterKeys.next(), !item.done))
+            this.cachedData.delete(item.value); // Deleting while iterating should be ok in JS.
     }
+
 }
