@@ -54,9 +54,6 @@ public class ReportFilterEndpointImpl implements ReportFilterEndpoint
         newFilter.setApplicationGroup(group);
         this.entityManager.merge(newFilter);
 
-        group.setReportFilter(newFilter);
-        this.entityManager.merge(group);
-
         return newFilter;
     }
 
