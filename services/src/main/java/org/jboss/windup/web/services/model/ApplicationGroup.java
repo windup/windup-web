@@ -50,9 +50,6 @@ public class ApplicationGroup implements Serializable
     @Column(name = "version")
     private int version;
 
-    @Column
-    private boolean readOnly;
-
     @Column(length = 256)
     @Size(min = 1, max = 256)
     @NotNull
@@ -114,26 +111,6 @@ public class ApplicationGroup implements Serializable
     public void setVersion(int version)
     {
         this.version = version;
-    }
-
-    /**
-     * Indicates whether or not the client should consider the properties associated with this group to be "readonly".
-     *
-     * This would be used with system generated groups to indicate that the name should be a constant.
-     */
-    public boolean isReadOnly()
-    {
-        return readOnly;
-    }
-
-    /**
-     * Indicates whether or not the client should consider the properties associated with this group to be "readonly".
-     *
-     * This would be used with system generated groups to indicate that the name should be a constant.
-     */
-    public void setReadOnly(boolean readOnly)
-    {
-        this.readOnly = readOnly;
     }
 
     /**

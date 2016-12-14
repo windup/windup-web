@@ -13,9 +13,7 @@ import javax.ws.rs.NotFoundException;
 
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
-import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.MigrationProject;
-import org.jboss.windup.web.services.model.PackageMetadata;
 import org.jboss.windup.web.services.service.ApplicationGroupService;
 
 /**
