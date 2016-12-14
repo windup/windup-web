@@ -15,10 +15,10 @@
         <td class="title">
             <a [routerLink]="['/projects/' + project.id + '/groups', group.id]">{{group.title}}</a>
 
-            <a *ngIf="!group.readOnly" href="#" (click)="editGroup(group, $event)">
+            <a href="#" (click)="editGroup(group, $event)">
                 <span class="glyphicon glyphicon-pencil"></span>
             </a>
-            <a *ngIf="!group.readOnly" (click)="deleteGroup(group)">
+            <a (click)="deleteGroup(group)">
                 <span class="glyphicon glyphicon-trash"></span>
             </a>
         </td>

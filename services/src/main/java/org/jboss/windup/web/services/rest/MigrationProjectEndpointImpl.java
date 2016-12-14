@@ -61,7 +61,6 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
         ApplicationGroup defaultGroup = new ApplicationGroup();
         defaultGroup.setTitle(ApplicationGroup.DEFAULT_NAME);
         defaultGroup.setMigrationProject(migrationProject);
-        defaultGroup.setReadOnly(true);
 
         entityManager.persist(defaultGroup);
 
