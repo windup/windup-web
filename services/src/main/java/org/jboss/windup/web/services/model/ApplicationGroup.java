@@ -65,7 +65,7 @@ public class ApplicationGroup implements Serializable
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private MigrationProject migrationProject;
 
-    @OneToOne(mappedBy = "applicationGroup", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "applicationGroup", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @Fetch(FetchMode.SELECT)
     private AnalysisContext analysisContext;
 
@@ -77,10 +77,10 @@ public class ApplicationGroup implements Serializable
     @Fetch(FetchMode.SELECT)
     private Set<WindupExecution> executions;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.LAZY)
     private PackageMetadata packageMetadata;
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "applicationGroup")
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, mappedBy = "applicationGroup")
     private ReportFilter reportFilter;
 
     public ApplicationGroup()
