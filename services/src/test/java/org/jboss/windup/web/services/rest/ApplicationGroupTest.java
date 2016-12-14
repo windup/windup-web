@@ -1,5 +1,10 @@
 package org.jboss.windup.web.services.rest;
 
+import java.net.URL;
+
+import javax.ws.rs.NotFoundException;
+import javax.ws.rs.core.Response;
+
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.http.HttpStatus;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -21,10 +26,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import javax.ws.rs.core.Response;
-import javax.ws.rs.NotFoundException;
-import java.net.URL;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -141,8 +142,7 @@ public class ApplicationGroupTest extends AbstractTest
     }
 
     /**
-     * TODO: Write some meaningful test.
-     * Problem is how. Result of this endpoint depends on JMS queue processing.
+     * TODO: Write some meaningful test. Problem is how. Result of this endpoint depends on JMS queue processing.
      *
      * @throws Exception
      */
@@ -162,7 +162,8 @@ public class ApplicationGroupTest extends AbstractTest
         JSONObject json;
 
         long beginTime = System.currentTimeMillis();
-        do {
+        do
+        {
             Thread.sleep(1000L);
 
             response = registeredAppTarget.request().get();
@@ -179,7 +180,8 @@ public class ApplicationGroupTest extends AbstractTest
                 Assert.fail("Processing never completed. Current status: " + packageMetadata.getScanStatus());
             }
 
-        } while (packageMetadata.getScanStatus() != PackageMetadata.ScanStatus.COMPLETE);
+        }
+        while (packageMetadata.getScanStatus() != PackageMetadata.ScanStatus.COMPLETE);
 
         JSONArray packageTree = json.getJSONArray("packageTree");
 
