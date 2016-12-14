@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.ws.rs.core.Response;
+import javax.ws.rs.NotFoundException;
 import java.net.URL;
 
 /**
@@ -89,6 +90,54 @@ public class ApplicationGroupTest extends AbstractTest
         Assert.assertNotNull(retrievedGroup.getExecutions());
         Assert.assertNotNull(retrievedGroup.getApplications());
         Assert.assertNotNull(retrievedGroup.getMigrationProject());
+    }
+
+    @Test
+    @RunAsClient
+    public void renameApplicationGroup()
+    {
+        MigrationProject project = this.dataProvider.getMigrationProject();
+        ApplicationGroup group = this.dataProvider.getApplicationGroup(project);
+
+        String newTitle = "Updated group";
+
+        group.setTitle(newTitle);
+
+        ApplicationGroup updated = applicationGroupEndpoint.update(group);
+        ApplicationGroup reloaded = applicationGroupEndpoint.getApplicationGroup(group.getId());
+
+        Assert.assertNotNull(updated);
+        Assert.assertNotNull(reloaded);
+
+        Assert.assertEquals(newTitle, updated.getTitle());
+        Assert.assertEquals(newTitle, reloaded.getTitle());
+
+        Assert.assertEquals(group.getId(), updated.getId());
+        Assert.assertNotNull(updated.getAnalysisContext());
+        Assert.assertNotNull(updated.getExecutions());
+        Assert.assertNotNull(updated.getApplications());
+        Assert.assertNotNull(updated.getMigrationProject());
+    }
+
+    @Test
+    @RunAsClient
+    public void deleteApplicationGroup()
+    {
+        MigrationProject project = this.dataProvider.getMigrationProject();
+        ApplicationGroup group = this.dataProvider.getApplicationGroup(project);
+
+        applicationGroupEndpoint.delete(group);
+
+        try
+        {
+            ApplicationGroup reloaded = applicationGroupEndpoint.getApplicationGroup(group.getId());
+            Assert.fail("Exception should have been thrown");
+        }
+        catch (NotFoundException e)
+        {
+            // String message = e.getMessage();
+            // Assert.assertTrue(message.matches("ApplicationGroup with id: [0-9]+ not found"));
+        }
     }
 
     /**
