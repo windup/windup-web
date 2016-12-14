@@ -16,6 +16,7 @@ import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.model.PackageMetadata;
+import org.jboss.windup.web.services.service.ApplicationGroupService;
 
 /**
  * @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
@@ -27,6 +28,9 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
 
     @PersistenceContext(type = PersistenceContextType.EXTENDED)
     private EntityManager entityManager;
+
+    @Inject
+    private ApplicationGroupService applicationGroupService;
 
     @Inject
     @FromFurnace
@@ -58,24 +62,7 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
         entityManager.persist(migrationProject);
 
         LOG.info("Creating a migration project: " + migrationProject.getId());
-        ApplicationGroup defaultGroup = new ApplicationGroup();
-        defaultGroup.setTitle(ApplicationGroup.DEFAULT_NAME);
-        defaultGroup.setMigrationProject(migrationProject);
-        defaultGroup.setReadOnly(true);
-
-        entityManager.persist(defaultGroup);
-
-        defaultGroup.setOutputPath(webPathUtil.createApplicationGroupPath(
-                    migrationProject.getId().toString(),
-                    defaultGroup.getId().toString()).toString());
-
-        PackageMetadata packageMetadata = new PackageMetadata();
-        entityManager.persist(packageMetadata);
-
-        defaultGroup.setPackageMetadata(packageMetadata);
-        entityManager.merge(defaultGroup);
-
-        entityManager.merge(migrationProject);
+        this.applicationGroupService.createDefaultApplicationGroup(migrationProject);
 
         return migrationProject;
     }

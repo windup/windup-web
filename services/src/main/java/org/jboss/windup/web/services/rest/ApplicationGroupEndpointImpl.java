@@ -91,30 +91,14 @@ public class ApplicationGroupEndpointImpl implements ApplicationGroupEndpoint
     {
         LOG.info("Creating group: " + applicationGroup + " with project: " + applicationGroup.getMigrationProject());
 
-        if (this.getMigrationProject(applicationGroup) == null)
+        MigrationProject migrationProject = this.getMigrationProject(applicationGroup);
+
+        if (migrationProject == null)
         {
             throw new BadRequestException("Invalid MigrationProject");
         }
 
-        applicationGroup.setReportFilter(new ReportFilter(applicationGroup));
-
-        entityManager.persist(applicationGroup);
-
-        AnalysisContext analysisContext = this.analysisContextService.createDefaultAnalysisContext(applicationGroup);
-        applicationGroup.setAnalysisContext(analysisContext);
-
-        Path outputPath = webPathUtil.createApplicationGroupPath(
-                    applicationGroup.getMigrationProject().getId().toString(),
-                    applicationGroup.getId().toString());
-        applicationGroup.setOutputPath(outputPath.toAbsolutePath().toString());
-
-        if (applicationGroup.getPackageMetadata() == null)
-        {
-            applicationGroup.setPackageMetadata(new PackageMetadata());
-        }
-
-        entityManager.merge(applicationGroup);
-        return entityManager.find(ApplicationGroup.class, applicationGroup.getId());
+        return this.applicationGroupService.createApplicationGroup(applicationGroup.getTitle(), migrationProject);
     }
 
     @Override
