@@ -29,7 +29,7 @@ class ModelProperty extends ModelMember
         {
             sb.append(String.format("    @GraphProperty(%s)\n", quoteIfNotNull(this.graphPropertyName)));
         }
-        sb.append(String.format("    get %s(): %s { return null };\n", this.beanPropertyName, this.type.getTypeScriptTypeName()));
+        sb.append(String.format("    get %s(): %s { return null; };\n", this.beanPropertyName, this.type.getTypeScriptTypeName()));
         return sb.toString();
     }
 
