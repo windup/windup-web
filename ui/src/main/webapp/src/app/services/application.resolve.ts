@@ -14,14 +14,12 @@ export class ApplicationResolve implements Resolve<RegisteredApplication> {
         private _registeredApplicationService: RegisteredApplicationService,
         private _notificationService: NotificationService,
         private _router: Router
-    ) {
+    ) { }
 
-    }
-
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<MigrationProject|boolean> {
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<RegisteredApplication> {
         let id = +route.params['applicationId'];
 
-        return new Observable<MigrationProject>(observer => {
+        return new Observable<RegisteredApplication>(observer => {
             this._registeredApplicationService.get(id).subscribe(
                 application => {
                     observer.next(application);

@@ -24,7 +24,7 @@ export class ApplicationGroupResolve implements Resolve<ApplicationGroup> {
 
     }
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<ApplicationGroup|boolean> {
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<ApplicationGroup> {
         let id = +route.params['groupId'];
 
         return new Observable<ApplicationGroup>(observer => {
