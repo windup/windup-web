@@ -104,7 +104,10 @@ public class ApplicationGroupEndpointImpl implements ApplicationGroupEndpoint
     @Override
     public ApplicationGroup update(@Valid ApplicationGroup applicationGroup)
     {
-        return entityManager.merge(applicationGroup);
+        ApplicationGroup original = this.entityManager.find(ApplicationGroup.class, applicationGroup.getId());
+        original.setTitle(applicationGroup.getTitle());
+
+        return original;
     }
 
     @Override
