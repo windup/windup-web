@@ -1,6 +1,7 @@
 import {GraphJSONToModelService} from "./graph-json-to-model.service";
 import {Observable} from "rxjs/Observable";
 import {Http, Response} from "@angular/http";
+import {StaticCache} from "./cache";
 
 /**
  * @GraphAdjacency decorator, which handles TypeScript Frames models' property resolving.
@@ -41,7 +42,7 @@ export function GraphAdjacency (name: string, direction: string, array: boolean 
                 if (this.data[verticesLabel][name]["link"] || this.data[verticesLabel][name]["_type"] == "link") {
                     // Make an HTTP call.
                     let url = this.data[verticesLabel][name]["link"];
-                    let cachedObservable: Observable<any> = LinkToDataCache.getOrFetch(url, fetcher);
+                    let cachedObservable: Observable<any> = StaticCache.getOrFetch(url, fetcher);
                     if (!cachedObservable)
                         throw new Error("Failed loading link: " + url);
                     return cachedObservable;
@@ -74,57 +75,4 @@ export function GraphAdjacency (name: string, direction: string, array: boolean 
             };
         }
     };
-}
-
-
-/**
- * Caches the Observable.of(Response).
- */
-export class LinkToDataCache
-{
-    static cachedData: Map<string, any> = new Map<string, any>();
-    //static keysFIFO: Set<string> = new Set<string>(); ///string[] = [];
-    static maxItems: number = 400;
-
-    static getOrFetch(key: string, fetcher: (string) => any): Observable<Response> {
-        let value = this.cachedData.get(key);
-        if (value != null)
-            return value;
-
-        value = fetcher(key);
-        this.cachedData.set(key, value);
-        this.deleteOverflowing();
-        return value;
-    }
-
-    static add(key, value){
-        this.cachedData.set(key, value);
-        this.deleteOverflowing();
-    }
-
-    static deleteOverflowing(): void {
-        while (this.cachedData.size > this.maxItems) {
-            this.deleteOldest(this.maxItems - this.cachedData.size);
-        }
-    }
-
-    /// A Map object iterates its elements in insertion order — a for...of loop returns an array of [key, value] for each iteration.
-    /// However that seems not to work. Trying with forEach.
-    static deleteOldest(howMany: number): void {
-        console.log("Deleting oldest " + howMany);
-        /*this.cachedData.forEach((val, key, map) => {
-            console.log("forEach: " + key + " " + howMany);
-            if (howMany-- > 0)
-                map.delete(key);
-        });*/
-        let iterKeys = this.cachedData.keys();
-        let item: IteratorResult<string>;
-        while (howMany-- > 0 && (item = iterKeys.next(), !item.done))
-            this.cachedData.delete(item.value); // Deleting while iterating should be ok in JS.
-    }
-
-    static clear(): void {
-        this.cachedData = new Map<string, any>();
-    }
-
 }
