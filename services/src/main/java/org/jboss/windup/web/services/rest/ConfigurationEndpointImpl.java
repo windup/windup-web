@@ -41,4 +41,13 @@ public class ConfigurationEndpointImpl implements ConfigurationEndpoint
     {
         return configurationService.getCustomRulesPath();
     }
+
+    @Override
+    public Configuration reloadConfiguration()
+    {
+        Configuration configuration = configurationService.getConfiguration();
+        this.configurationEvent.fire(configuration);
+
+        return configuration;
+    }
 }

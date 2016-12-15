@@ -5,6 +5,7 @@
         <span class="glyphicon glyphicon-plus"></span>
         Register Custom Rule Path
     </button>
+    <button class="btn btn-primary" (click)="reloadConfiguration()">Force Reload Configuration</button>
 </h1>
 
 <template [ngIf]="configuration != null && configuration.rulesPaths != null && configuration.rulesPaths.length > 0">
