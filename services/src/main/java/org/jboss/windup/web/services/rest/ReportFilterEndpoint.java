@@ -37,5 +37,5 @@ public interface ReportFilterEndpoint
     ReportFilter setFilter(@PathParam("groupId") Long groupId, ReportFilter filter);
 
     @DELETE
-    void clearFilter(@PathParam("groupId") Long groupId);
+    ReportFilter clearFilter(@PathParam("groupId") Long groupId);
 }

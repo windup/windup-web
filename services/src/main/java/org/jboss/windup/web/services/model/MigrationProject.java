@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -48,6 +49,11 @@ public class MigrationProject implements Serializable
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "migrationProject", cascade = CascadeType.REMOVE)
     private Set<ApplicationGroup> groups;
+
+    public MigrationProject()
+    {
+        this.groups = new HashSet<>();
+    }
 
     public Long getId()
     {
@@ -101,6 +107,16 @@ public class MigrationProject implements Serializable
     public void setGroups(Set<ApplicationGroup> groups)
     {
         this.groups = groups;
+    }
+
+    public void addGroup(ApplicationGroup group)
+    {
+        this.groups.add(group);
+    }
+
+    public void removeGroup(ApplicationGroup group)
+    {
+        this.groups.remove(group);
     }
 
     @Override

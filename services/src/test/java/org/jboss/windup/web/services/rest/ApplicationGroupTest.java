@@ -1,5 +1,10 @@
 package org.jboss.windup.web.services.rest;
 
+import java.net.URL;
+
+import javax.ws.rs.NotFoundException;
+import javax.ws.rs.core.Response;
+
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.http.HttpStatus;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -21,9 +26,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import javax.ws.rs.core.Response;
-import java.net.URL;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -89,11 +91,59 @@ public class ApplicationGroupTest extends AbstractTest
         Assert.assertNotNull(retrievedGroup.getExecutions());
         Assert.assertNotNull(retrievedGroup.getApplications());
         Assert.assertNotNull(retrievedGroup.getMigrationProject());
+        Assert.assertNotNull(retrievedGroup.getReportFilter());
+    }
+
+    @Test
+    @RunAsClient
+    public void renameApplicationGroup()
+    {
+        MigrationProject project = this.dataProvider.getMigrationProject();
+        ApplicationGroup group = this.dataProvider.getApplicationGroup(project);
+
+        String newTitle = "Updated group";
+
+        group.setTitle(newTitle);
+
+        ApplicationGroup updated = applicationGroupEndpoint.update(group);
+        ApplicationGroup reloaded = applicationGroupEndpoint.getApplicationGroup(group.getId());
+
+        Assert.assertNotNull(updated);
+        Assert.assertNotNull(reloaded);
+
+        Assert.assertEquals(newTitle, updated.getTitle());
+        Assert.assertEquals(newTitle, reloaded.getTitle());
+
+        Assert.assertEquals(group.getId(), updated.getId());
+        Assert.assertNotNull(updated.getAnalysisContext());
+        Assert.assertNotNull(updated.getExecutions());
+        Assert.assertNotNull(updated.getApplications());
+        Assert.assertNotNull(updated.getMigrationProject());
+    }
+
+    @Test
+    @RunAsClient
+    public void deleteApplicationGroup()
+    {
+        MigrationProject project = this.dataProvider.getMigrationProject();
+        ApplicationGroup group = this.dataProvider.getApplicationGroup(project);
+
+        applicationGroupEndpoint.delete(group);
+
+        try
+        {
+            ApplicationGroup reloaded = applicationGroupEndpoint.getApplicationGroup(group.getId());
+            Assert.fail("Exception should have been thrown");
+        }
+        catch (NotFoundException e)
+        {
+            // String message = e.getMessage();
+            // Assert.assertTrue(message.matches("ApplicationGroup with id: [0-9]+ not found"));
+        }
     }
 
     /**
-     * TODO: Write some meaningful test.
-     * Problem is how. Result of this endpoint depends on JMS queue processing.
+     * TODO: Write some meaningful test. Problem is how. Result of this endpoint depends on JMS queue processing.
      *
      * @throws Exception
      */
@@ -113,7 +163,8 @@ public class ApplicationGroupTest extends AbstractTest
         JSONObject json;
 
         long beginTime = System.currentTimeMillis();
-        do {
+        do
+        {
             Thread.sleep(1000L);
 
             response = registeredAppTarget.request().get();
@@ -130,7 +181,8 @@ public class ApplicationGroupTest extends AbstractTest
                 Assert.fail("Processing never completed. Current status: " + packageMetadata.getScanStatus());
             }
 
-        } while (packageMetadata.getScanStatus() != PackageMetadata.ScanStatus.COMPLETE);
+        }
+        while (packageMetadata.getScanStatus() != PackageMetadata.ScanStatus.COMPLETE);
 
         JSONArray packageTree = json.getJSONArray("packageTree");
 

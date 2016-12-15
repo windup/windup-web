@@ -54,9 +54,6 @@ public class ReportFilterEndpointImpl implements ReportFilterEndpoint
         newFilter.setApplicationGroup(group);
         this.entityManager.merge(newFilter);
 
-        group.setReportFilter(newFilter);
-        this.entityManager.merge(group);
-
         return newFilter;
     }
 
@@ -69,13 +66,15 @@ public class ReportFilterEndpointImpl implements ReportFilterEndpoint
     }
 
     @Override
-    public void clearFilter(Long groupId)
+    public ReportFilter clearFilter(Long groupId)
     {
         ApplicationGroup group = this.applicationGroupService.getApplicationGroup(groupId);
 
         ReportFilter filter = group.getReportFilter();
         filter.clear();
         this.entityManager.merge(filter);
+
+        return filter;
     }
 
     @Override
