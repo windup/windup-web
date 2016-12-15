@@ -7,11 +7,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import javax.annotation.PreDestroy;
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.jboss.forge.furnace.Furnace;
+import org.jboss.forge.furnace.exception.ContainerException;
+import org.jboss.forge.furnace.spi.ContainerLifecycleListener;
 import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.GraphContextFactory;
 
@@ -38,8 +40,50 @@ public class GraphCache
     @Inject
     private Furnace furnace;
 
-    @PreDestroy
-    public void preDestroy()
+    @PostConstruct
+    public void postConstruct()
+    {
+        this.furnace.addContainerLifecycleListener(new ContainerLifecycleListener()
+        {
+            @Override
+            public void beforeStart(Furnace furnace) throws ContainerException
+            {
+
+            }
+
+            @Override
+            public void beforeConfigurationScan(Furnace furnace) throws ContainerException
+            {
+
+            }
+
+            @Override
+            public void afterConfigurationScan(Furnace furnace) throws ContainerException
+            {
+
+            }
+
+            @Override
+            public void afterStart(Furnace furnace) throws ContainerException
+            {
+
+            }
+
+            @Override
+            public void beforeStop(Furnace furnace) throws ContainerException
+            {
+                GraphCache.this.cleanup();
+            }
+
+            @Override
+            public void afterStop(Furnace furnace) throws ContainerException
+            {
+
+            }
+        });
+    }
+
+    private void cleanup()
     {
         LOG.info("Furnace is shutting down, closing existing graph connections.");
         // Close each one and remove it from the list
@@ -49,9 +93,11 @@ public class GraphCache
             {
                 LOG.info("Purging connnection from the cache for graph path: " + path);
                 entry.getValue().graphContext.close();
+                LOG.info("Connection closed for: " + path);
             }
             catch (Throwable t)
             {
+                t.printStackTrace();
                 LOG.warning("Failed to close graph at: " + path + " due to: " + t.getMessage());
             }
         });
