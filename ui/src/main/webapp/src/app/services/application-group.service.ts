@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, Output, EventEmitter} from '@angular/core';
 import {Headers, Http, RequestOptions, Response} from '@angular/http';
 
 import {Constants} from "../constants";
@@ -8,6 +8,9 @@ import {Observable} from "rxjs";
 
 @Injectable()
 export class ApplicationGroupService extends AbstractService {
+    @Output()
+    applicationGroupLoaded = new EventEmitter<ApplicationGroup>();
+
     private GET_ALL_URL = "/applicationGroups/list";
     private GET_BY_PROJECT_URL = "/applicationGroups/by-project/";
     private GET_BY_ID_URL = "/applicationGroups/get";
@@ -30,6 +33,7 @@ export class ApplicationGroupService extends AbstractService {
 
         return this._http.put(Constants.REST_BASE + this.CREATE_URL, body, options)
             .map(res => <ApplicationGroup> res.json())
+            .do(group => this.applicationGroupLoaded.emit(group))
             .catch(this.handleError);
     }
 
@@ -43,6 +47,7 @@ export class ApplicationGroupService extends AbstractService {
 
         return this._http.put(Constants.REST_BASE + this.UPDATE_URL, body, options)
             .map(res => <ApplicationGroup> res.json())
+            .do(group => this.applicationGroupLoaded.emit(group))
             .catch(this.handleError);
     }
 
@@ -67,6 +72,7 @@ export class ApplicationGroupService extends AbstractService {
         let options = new RequestOptions({ headers: headers });
         return this._http.get(Constants.REST_BASE + this.GET_BY_ID_URL + "/" + id, options)
             .map(res => <ApplicationGroup> res.json())
+            .do(group => this.applicationGroupLoaded.emit(group))
             .catch(this.handleError);
     }
 
@@ -87,6 +93,7 @@ export class ApplicationGroupService extends AbstractService {
 
         return this._http.get(Constants.REST_BASE + this.GET_BY_PROJECT_URL + projectID, options)
             .map(res => <ApplicationGroup[]> res.json())
+            .do(groups => groups.forEach(group => this.applicationGroupLoaded.emit(group)))
             .catch(this.handleError);
     }
 
@@ -96,6 +103,7 @@ export class ApplicationGroupService extends AbstractService {
 
         return this._http.get(Constants.REST_BASE + this.GET_ALL_URL, options)
             .map(res => <ApplicationGroup[]> res.json())
+            .do(groups => groups.forEach(group => this.applicationGroupLoaded.emit(group)))
             .catch(this.handleError);
     }
 }
