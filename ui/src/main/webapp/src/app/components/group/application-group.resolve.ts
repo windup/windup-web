@@ -14,7 +14,7 @@ import {utils} from '../../utils';
  * On failure, it creates new error notification using NotificationService and navigates to homepage.
  */
 @Injectable()
-export class ApplicationGroupResolve implements Resolve<ApplicationGroup> {
+export class ApplicationGroupResolve implements Resolve<ApplicationGroup|boolean> {
 
     public constructor(
         private _applicationGroupService: ApplicationGroupService,
@@ -24,7 +24,7 @@ export class ApplicationGroupResolve implements Resolve<ApplicationGroup> {
 
     }
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<ApplicationGroup> {
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<ApplicationGroup|boolean> {
         let id = +route.params['groupId'];
 
         return new Observable<ApplicationGroup>(observer => {

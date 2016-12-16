@@ -7,7 +7,7 @@ import {NotificationService} from "./notification.service";
 import {utils} from '../utils';
 
 @Injectable()
-export class ProjectResolve implements Resolve<MigrationProject> {
+export class ProjectResolve implements Resolve<MigrationProject|boolean> {
 
     public constructor(
         private _migrationProjectService: MigrationProjectService,
@@ -17,7 +17,7 @@ export class ProjectResolve implements Resolve<MigrationProject> {
 
     }
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<MigrationProject> {
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<MigrationProject|boolean> {
         let id = +route.params['projectId'];
 
         return new Observable<MigrationProject>(observer => {
