@@ -8,7 +8,7 @@ import {RegisteredApplication} from "windup-services";
 import {utils} from '../utils';
 
 @Injectable()
-export class ApplicationResolve implements Resolve<RegisteredApplication> {
+export class ApplicationResolve implements Resolve<RegisteredApplication|boolean> {
 
     public constructor(
         private _registeredApplicationService: RegisteredApplicationService,
@@ -16,7 +16,7 @@ export class ApplicationResolve implements Resolve<RegisteredApplication> {
         private _router: Router
     ) { }
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<RegisteredApplication> {
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<RegisteredApplication|boolean> {
         let id = +route.params['applicationId'];
 
         return new Observable<RegisteredApplication>(observer => {

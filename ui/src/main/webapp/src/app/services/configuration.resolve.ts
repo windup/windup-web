@@ -7,7 +7,7 @@ import {ConfigurationService} from "./configuration.service";
 import {utils} from '../utils';
 
 @Injectable()
-export class ConfigurationResolve implements Resolve<Configuration> {
+export class ConfigurationResolve implements Resolve<Configuration|boolean> {
 
     public constructor(
         private  _configurationService: ConfigurationService,
@@ -17,7 +17,7 @@ export class ConfigurationResolve implements Resolve<Configuration> {
 
     }
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Configuration> {
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Configuration|boolean> {
         return new Observable<Configuration>(observer => {
             this._configurationService.get().subscribe(
                 configuration => {
