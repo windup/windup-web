@@ -1,23 +1,32 @@
 import {GraphJSONToModelService} from "./graph-json-to-model.service";
 import {Observable} from "rxjs/Observable";
+import {Http, Response} from "@angular/http";
+import {StaticCache} from "./cache";
 
 /**
  * @GraphAdjacency decorator, which handles TypeScript Frames models' property resolving.
  *
  * The underlying object contains graph vertices data or links to graph REST service.
  * This decorator turns these data into model objects, optionally fetching the data first.
+ *
+ * The `Observable`s returned are cached
  */
-export function GraphAdjacency (name: string, direction: string, array: boolean = true): any {
+let emptyArrayObs = Observable.of([]);
+let nullObs = Observable.of(null);
+
+export function GraphAdjacency (name: string, direction: "IN" | "OUT", returnArray: boolean = true): any {
     return function(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         if (descriptor) {
             descriptor.get = function () {
+                //console.log(`* get() v#${this.vertexId} ${name} ${direction} ${array ? "array" : "single"}`);///
 
-                let verticesLabel = (direction == "IN") ? "vertices_in" : "vertices_out";
+                let verticesLabel = (direction === "IN") ? "vertices_in" : "vertices_out";
 
                 // Data is empty, just return null (or an empty array)
-                if (!this.data || !this.data[verticesLabel] || !this.data[verticesLabel][name]
-                          ||  (!this.data[verticesLabel][name]["vertices"] && !this.data[verticesLabel][name]["link"]))
-                    return Observable.of( array ? [] : null );
+                let relations = this.data![verticesLabel]![name];
+                if (!relations || !(relations["vertices"] || relations["link"])){
+                    return returnArray ? emptyArrayObs : nullObs;
+                }
 
                 // .graphService and .http are stored by the initial call of fromJSON().
                 if (this.graphService == null)
@@ -26,35 +35,48 @@ export function GraphAdjacency (name: string, direction: string, array: boolean 
                 if (!this.http)
                     throw new Error("Http service was not stored in the unmarshalled object:\n" + JSON.stringify(this));
 
-                // If data is a link, return a result of a service call.
-                if (this.data[verticesLabel][name]["link"] || this.data[verticesLabel][name]["_type"] == "link") {
-                    // Make an HTTP call.
-                    let url = this.data[verticesLabel][name]["link"];
-                    if (array) {
-                        return this.http.get(url).map((vertices:any) => {
-                            return vertices.json().map((vertice:any) => {
-                                return graphService.fromJSON(vertice, this.http);
-                            });
-                        });
-                    } else {
-                        console.log("Should return a single item for: " + name);
-                        return this.http.get(url).map((vertices:any) => {
-                            if (!vertices)
-                                return null;
+                //console.log("before fetcher(), " + array);///
 
-                            return graphService.fromJSON(vertices.json()[0], this.http);
-                        });
-                    }
+                // A callback for StaticCache.
+                let httpService: Http = this.http;
+                let returnArray_ = returnArray; // Otherwise returnArray sticks with it's first value for all calls.
+                function fetcher(url: string): Observable<any> {
+                    //console.debug("    Fetching URL: " + url);///
+                    return httpService.get(url).map((response: Response) => {
+                        if (!response)
+                            return console.error("Fetching URL returned null: " + url), null;
+                        let responseJson: any[] = response.json();
+                        if (!Array.isArray(responseJson))
+                            throw new Error("Graph REST should return an array of vertices, returned: " + JSON.stringify(responseJson));
+                        let items: any[] = graphService.fromJSONarray(responseJson, httpService);
+                        return returnArray_ ? items : items[0];
+                    });
+                }
+
+                // If data is a link, return a result of a service call.
+                if (relations["link"] || relations["_type"] === "link")
+                {
+                    // Make an HTTP call.
+                    let url = relations["link"];
+                    let cachedObservable: Observable<any> = StaticCache.getOrFetch(url, fetcher);
+                    if (!cachedObservable)
+                        throw new Error("Failed loading link: " + url);
+                    return cachedObservable;
                 }
 
                 // Data was not null and not a link, so return the stored value.
-                var vertices:any[] = this.data[verticesLabel][name].vertices;
+                // The observable, once created, is cached in `relations.observable`.
+                if (relations.observable){
+                    return relations.observable;
+                }
 
-                let value = array ?
+                var vertices:any[] = relations.vertices;
+                let value = returnArray ?
                     vertices.map(vertice => graphService.fromJSON(vertice, this.http))
                     : graphService.fromJSON(vertices[0], this.http);
 
-                return Observable.of(value);
+                relations.observable = Observable.of(value);
+                return relations.observable;
             };
         }
     };
