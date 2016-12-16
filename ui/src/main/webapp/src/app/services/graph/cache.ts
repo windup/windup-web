@@ -1,7 +1,8 @@
 import {Observable} from "rxjs/Observable";
 
 /**
- * Cache.
+ * Caches results returned from given fetcher callback for given key,
+ * up to maxItems results, deletes the oldest results when full (FIFO).
  */
 export class StaticCache
 {
@@ -14,9 +15,13 @@ export class StaticCache
 
     static getOrFetch(key: string, fetcher: (string) => any): Observable<any> {
         let value = this.cachedData.get(key);
-        if (value != null)
-            return value;
 
+        if (value != null){
+            console.log("Cache HIT! (fetcher)");
+            return value;
+        }
+
+        console.log("Cache MISS... (fetcher)");
         value = fetcher(key);
         this.add(key, value);
         return value;

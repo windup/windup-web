@@ -9,14 +9,14 @@
             <div>deps:   {{(project.dependencies | async)?.length || "none"}}</div>
             <div *ngIf="(project.dependencies | async)?.length">
                 AAAAA
+                <!--
                 <div *ngFor="let dep of (project.dependencies | async)">
                     BBB scope {{dep.scope}}, type {{dep.type}}, clsf {{dep.classifier}}, projectModel {{(dep.projectModel|async) || "no"}}
-                <!--
                     <span *ngIf="dep.projectModel? | async">has projectModel</span>
                     dep:   {{(dep.projectModel | async)?.version?}}
                     dep:   {{(dep.projectModel | async)?.type?}}
-                -->
                 </div>
+                -->
             </div>
             <!--
 
