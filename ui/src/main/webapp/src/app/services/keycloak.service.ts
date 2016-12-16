@@ -18,7 +18,7 @@ export class KeycloakService {
     public constructor(private _router: Router) {
         console.log('KeycloakService constructor called');
         this.keyCloak = new Keycloak(KeycloakService.KEYCLOAK_FILE);
-        this.init({ onLoad: Constants.SSO_MODE })
+        this.init({ onLoad: Constants.SSO_MODE, checkLoginIframe: false })
             .subscribe((isLoggedIn) => {
                 this.onLoginSuccess(isLoggedIn);
                 console.log('subscribe success', isLoggedIn);
