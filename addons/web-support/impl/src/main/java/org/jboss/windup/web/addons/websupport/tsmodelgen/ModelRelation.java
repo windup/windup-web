@@ -103,7 +103,7 @@ class ModelRelation extends ModelMember
         StringBuilder sb = new StringBuilder();
         String direction = this.directionOut ? "'OUT'" : "'IN'";
         sb.append(String.format("    @GraphAdjacency(%s, %s, %b)\n", quoteIfNotNull(this.edgeLabel), direction, this.isIterable));
-        sb.append(String.format("    get %s(): Observable<%s%s> { return null };\n", this.beanPropertyName, this.type.getTypeScriptTypeName(),
+        sb.append(String.format("    get %s(): Observable<%s%s> { return null; };\n", this.beanPropertyName, this.type.getTypeScriptTypeName(),
                     brackets));
         return sb.toString();
     }
