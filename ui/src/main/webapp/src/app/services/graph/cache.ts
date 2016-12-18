@@ -15,11 +15,11 @@ export class StaticCache
         let value = this.cachedData.get(key);
 
         if (value != null){
-            console.log("Cache HIT! (fetcher)");
+            console.debug("Cache HIT! (fetcher)");
             return value;
         }
 
-        console.log("Cache MISS... (fetcher)");
+        console.debug("Cache MISS... (fetcher)");
         value = fetcher(key);
         this.add(key, value);
         return value;
