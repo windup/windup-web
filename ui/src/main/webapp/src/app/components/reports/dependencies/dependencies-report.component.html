@@ -3,27 +3,25 @@
 <div class="panel panel-default panel-primary">
     <div class="panel-body">
 
-    <div class="container-fluid" role="main">
-        
+    <div class="container" role="main">
+
         <div class="row">
-            <div class="page-header page-header-no-border">
+            <div class="xpage-header xpage-header-no-border">
                 <h1>
-                    <div class="main">{{reportModel.reportName}}</div>
-                    <div *ngIf="reportModel.projectModel" class="path">{{reportModel.projectModel.name}}</div>
+                    <div class="main">{{reportModel?.reportName}}</div>
+                    <div class="path">{{reportModel?.projectModel?.name}}</div>
                 </h1>
-                <div class="desc"> {{reportModel.description}} </div>
+                <div class="desc"> {{reportModel?.description}} </div>
             </div>
         </div>
 
         <div class="row">
-            <div class="container-fluid theme-showcase" role="main">
-
-                <div *ngIf="reportModel.archiveGroups" class="panel panel-primary">
+                <div *ngIf="archiveGroups_" class="panel panel-primary">
                     <div class="panel-heading">
                         <h3 class="panel-title">Dependencies</h3>
                     </div>
                     <div class="dependencies">
-                        <div *ngFor="let dependency of reportModel.archiveGroups">
+                        <div *ngFor="let dependency of archiveGroups_">
                             <!--#assign dependencyProject = dependency.canonicalProject-->
                             <template [ngIf]="dependency.project">
                                 <div id="{{dependency.archiveName}}" class="dependency panel panel-default">
@@ -33,16 +31,16 @@
                                             <dt class="trait">Maven coordinates:</dt>
                                             <dd id="{{dependency.archiveName}}-maven">
                                                 <span *ngIf="dependency.sha1url">
-                                                    <a id="{{dependency.archiveName}}-gav" href="{{sha1url}}" target="_blank">{{gav}}</a>
+                                                    <a id="{{dependency.archiveName}}-gav" href="{{dependency.sha1url}}" target="_blank">{{dependency.gav}}</a>
                                                 </span>
                                                 <span *ngIf="dependency.sha1"> {{dependency.gav}} </span>
                                             </dd>
                                         </template>
                                         <template [ngIf]="dependency.sha1">
                                             <dt class="trait">SHA1 hash:</dt>
-                                            <dd id="{{dependency.archiveName}}-hash">{{sha1}}</dd>
+                                            <dd id="{{dependency.archiveName}}-hash">{{dependency.sha1}}</dd>
                                         </template>
-                                        <template [ngIf]="dependency.project.name && dependency.project.name !== archiveName">
+                                        <template [ngIf]="dependency.project.name && dependency.project.name !== dependency.archiveName">
                                             <dt class="trait">Name:</dt>
                                             <dd id="{{dependency.archiveName}}-name">{{dependency.project.name}}</dd>
                                         </template>
@@ -54,7 +52,7 @@
                                             <dt class="trait">Organization:</dt>
                                             <dd id="{{dependency.archiveName}}-org">{{dependency.project.organization}}</dd>
                                         </template>
-                                        <!--
+                                        <!-- @Incidence not yet supported by the TsModelGen.
                                         <dt class="trait">Found at path:</dt>
                                         <dd>
                                             <ul id="{{archiveName}}-paths" class="list-unstyled">
@@ -69,7 +67,6 @@
                     </div>
                 </div>
 
-            </div> <!-- /container -->
         </div><!--/row-->
 
     </div><!-- /container main-->

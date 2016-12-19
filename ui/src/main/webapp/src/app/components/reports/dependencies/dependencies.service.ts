@@ -46,15 +46,16 @@ export class DependenciesService extends AbstractService
      */
     getDepsReportModel(executionId: number): Observable<DependenciesReportModel> {
         let service = new GraphJSONToModelService();
-        let url = `${Constants.GRAPH_REST_BASE}/graph/${executionId}/by-type/` + DependenciesReportModel.name + "?depth=1";
+        let url = `${Constants.GRAPH_REST_BASE}/graph/${executionId}/by-type/` + DependenciesReportModel.discriminator + "?depth=1";
         return this._http.get(url)
             .map((res:Response) => res.json())
             .map((data:any) => {
                 if (!Array.isArray(data) || data.length == 0) {
                     throw new Error("No items returned, URL: " + url);
                 }
-                let reportModel = <DependenciesReportModel>service.fromJSONarray(data, this._http)[0];
-                return Observable.of(reportModel);
+                let reportModel = <DependenciesReportModel>service.fromJSONarray(data, this._http, DependenciesReportModel)[0];
+                console.log("reportModel: ", reportModel);
+                return reportModel;
             })
             .catch(this.handleError);
     }
@@ -64,7 +65,7 @@ export class DependenciesService extends AbstractService
      */
     getWindupConfiguration(executionId: number): Observable<WindupConfigurationModel> {
         let service = new GraphJSONToModelService();
-        let url = `${Constants.GRAPH_REST_BASE}/graph/${executionId}/by-type/` + WindupConfigurationModel.name + "?depth=1";
+        let url = `${Constants.GRAPH_REST_BASE}/graph/${executionId}/by-type/` + WindupConfigurationModel.discriminator + "?depth=1";
         return this._http.get(url)
             .map((res:Response) => res.json())
             .map((data:any) => {
@@ -72,7 +73,7 @@ export class DependenciesService extends AbstractService
                     throw new Error("No items returned, URL: " + url);
                 }
                 let windupConfig = <WindupConfigurationModel>service.fromJSONarray(data, this._http)[0];
-                return Observable.of(windupConfig);
+                return windupConfig;
             })
             .catch(this.handleError);
     }
@@ -82,10 +83,10 @@ export class DependenciesService extends AbstractService
      */
     getRootProjects(executionId: number): Observable<ProjectModel[]> {
         ///return this._http.get(`${Constants.GRAPH_REST_BASE}/reports/${executionId}/${DependenciesService.DEPS_URL}`)
-        //return this._http.get(`${Constants.GRAPH_REST_BASE}/graph/${executionId}/` + ProjectDependencyModel.name)
+        //return this._http.get(`${Constants.GRAPH_REST_BASE}/graph/${executionId}/` + ProjectDependencyModel.discriminator)
 
         let service = new GraphJSONToModelService();
-        let url = `${Constants.GRAPH_REST_BASE}/graph/${executionId}/by-type/` + ProjectModel.name + "?depth=1";
+        let url = `${Constants.GRAPH_REST_BASE}/graph/${executionId}/by-type/` + ProjectModel.discriminator + "?depth=1";
         return this._http.get(url)
             .map((res:Response) => res.json())
             .map((data:any) => {

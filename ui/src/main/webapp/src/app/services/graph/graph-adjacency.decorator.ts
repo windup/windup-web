@@ -26,7 +26,7 @@ export function GraphAdjacency (name: string, direction: "IN" | "OUT", array: bo
                 let relations;
                 if (!this.data || !this.data[verticesLabel] || !(relations = this.data[verticesLabel][name])
                           ||  (!relations["vertices"] && !relations["link"])){
-                    console.log("Using empty...");
+                    //console.log("Using empty...");
                     return array ? emptyArrayObs : nullObs;
                 }
 
@@ -37,15 +37,17 @@ export function GraphAdjacency (name: string, direction: "IN" | "OUT", array: bo
                 if (!this.http)
                     throw new Error("Http service was not stored in the unmarshalled object:\n" + JSON.stringify(this));
 
-                //
+                // The fetcher() is called on cache miss.
                 let httpService: Http = this.http;
                 function fetcher(url: string): Observable<any> {
                     console.debug("    Fetching URL: " + url);
                     return httpService.get(url).map((response: Response) => {
                         if (!response)
                             return console.error("Fetching URL returned null: " + url), null;
-                        if (typeof response.json() !== "array")
-                            throw new Error("Graph REST should return an array of vertices.");
+                        if (response.json().constructor !== Array) {
+                            console.error(`Graph REST should return an array of vertices; URL: ${url}`, response, response.json());
+                            throw new Error(`Graph REST should return an array of vertices; Response: ${response}`);
+                        }
                         let items: any[] = graphService.fromJSONarray(response.json(), httpService);
                         return array ? items : items[0];
                     });
@@ -65,10 +67,10 @@ export function GraphAdjacency (name: string, direction: "IN" | "OUT", array: bo
                 // Data was not null and not a link, so return the stored value.
                 // The observable, once created, is cached in `relations.observable`.
                 if (relations.observable){
-                    console.debug("Cache HIT! (prefetched data)")
+                    //console.debug("Cache HIT! (prefetched data)")
                     return relations.observable;
                 }
-                console.debug("Cache MISS... (prefetched data)")
+                //console.debug("Cache MISS... (prefetched data)")
 
                 var vertices:any[] = relations.vertices;
                 let value = array ?

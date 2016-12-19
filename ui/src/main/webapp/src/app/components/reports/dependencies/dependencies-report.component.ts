@@ -37,7 +37,7 @@ export class DependenciesReportComponent implements OnInit
 {
     private execID: number;
     protected reportModel: DependenciesReportModel;
-    protected archiveGroups: DependencyReportDependencyGroupModel[];
+    protected archiveGroups_: DependencyReportDependencyGroupModel[];
     /// Not used?
     protected inputApps: ApplicationArchiveModel[];
     protected rootProjects: ProjectModel[];
@@ -55,16 +55,19 @@ export class DependenciesReportComponent implements OnInit
         this._activatedRoute.params.forEach((params: Params) => {
             this.execID = +params['executionId'];
             this.fetchDepsReportModel();
-            this.fetchRootProjects();
-            this.fetchInputApps();
+            //this.fetchRootProjects();
+            //this.fetchInputApps();
         });
     }
 
     fetchDepsReportModel(): void {
         this._depsService.getDepsReportModel(this.execID).subscribe(
             (depReport: DependenciesReportModel) => {
-                console.debug("windupConfig: ", depReport);
+                console.debug("depReport: ", depReport);
+                //debugger;
                 this.reportModel = depReport;
+                if (!depReport.projectModel)
+                    throw new Error("Missing depReport.projectModel .");
                 depReport.projectModel.subscribe(p => (<any>depReport.projectModel).result = p);
                 ///fetch(depReport.projectModel);
                 /// Report -*> ArchiveGroup -*> rootFileModel ~=> ArchiveModel { ~=> DuplicateArchiveModel? .canonicalArchive }
@@ -74,16 +77,22 @@ export class DependenciesReportComponent implements OnInit
                 //    .name .version ...
                 // }
 
+                if (!depReport.archiveGroups)
+                    throw new Error("Missing depReport.archiveGroups: " + depReport);
+
                 // Setting these:
                 // * dependency.canonicalProject.result
                 // * dependency.archiveName
-                depReport.archiveGroups.map(groups => {
-                    this.archiveGroups = groups;
+                //console.log("depReport.archiveGroups: ", depReport.archiveGroups);
+                depReport.archiveGroups.subscribe(groups => {
+                    console.log("depReport.archiveGroups: ", depReport.archiveGroups, groups);
+                    this.archiveGroups_ = groups;
+                    console.log("groups: ", groups);
                     groups.map(dep => {
                         let dep_:any = dep; // Prevent TS complaints.
+                        dep_.sha1 = dep.sHA1;
                         //dependency.canonicalProject.subscribe(p => (<any>dependency.canonicalProject).result = p);
                         fetch(dep.canonicalProject, (depProj) => {
-                            dep_.sha1 = dep.sHA1;
                             dep_.project = depProj;
                             fetch(depProj.rootFileModel, (root) => {
                                 dep_.archiveName = root.fileName;
@@ -132,10 +141,14 @@ export class DependenciesReportComponent implements OnInit
 
 
 // TODO
+function encodeURL(url: string, encoding: string) {
+    return encodeURI(url);
+}
+
 @Pipe({name: 'encodeURL', pure: false})
 export class EncodeUrlPipe implements PipeTransform {
    transform(value: any, args: any[] = []) {
-       return value;
+       return encodeURL(value, null);
    }
 }
 
@@ -147,7 +160,7 @@ export class SortDependencyGroupArchivesByPathPipe implements PipeTransform {
 }
 
 @Pipe({name: 'sortDependencyArchivesByPath', pure: false})
-export class sortDependencyArchivesByPathAscendingPipe implements PipeTransform {
+export class SortDependencyArchivesByPathAscendingPipe implements PipeTransform {
    transform(value: any, args: any[] = []) {
        return value;
    }
