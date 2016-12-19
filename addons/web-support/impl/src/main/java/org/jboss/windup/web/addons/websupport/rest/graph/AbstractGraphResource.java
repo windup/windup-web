@@ -4,15 +4,23 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.UriInfo;
 
 import org.jboss.windup.graph.GraphContext;
+import org.jboss.windup.graph.model.ProjectModel;
 import org.jboss.windup.graph.model.WindupVertexFrame;
+import org.jboss.windup.graph.model.resource.FileModel;
+import org.jboss.windup.graph.service.WindupConfigurationService;
+import org.jboss.windup.graph.traversal.OnlyOnceTraversalStrategy;
+import org.jboss.windup.graph.traversal.ProjectModelTraversal;
+import org.jboss.windup.web.addons.websupport.model.ReportFilterDTO;
 import org.jboss.windup.web.addons.websupport.rest.FurnaceRESTGraphAPI;
 import org.jboss.windup.web.addons.websupport.rest.GraphPathLookup;
 import org.jboss.windup.web.addons.websupport.services.ReportFilterService;
@@ -187,6 +195,33 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
         if (graph == null)
             throw new IllegalStateException("GraphContext obtaining failed for exec. ID " + executionID + ", path: " + graphPath);
         return graph;
+    }
+
+    protected Set<ProjectModel> getProjectModels(GraphContext graphContext, ReportFilterDTO filter)
+    {
+        if (filter.getSelectedApplicationPaths().isEmpty())
+        {
+            return null;
+        }
+
+        Set<ProjectModel> projectModels = new HashSet<>();
+
+        for (FileModel inputPath : WindupConfigurationService.getConfigurationModel(graphContext).getInputPaths())
+        {
+            String filePath = inputPath.getFilePath();
+
+            if (filter.getSelectedApplicationPaths().contains(filePath))
+            {
+                ProjectModel rootProjectModel = inputPath.getProjectModel();
+                if (rootProjectModel == null)
+                    continue;
+
+                ProjectModelTraversal traversal = new ProjectModelTraversal(rootProjectModel, new OnlyOnceTraversalStrategy());
+                projectModels.addAll(traversal.getAllProjects(true));
+            }
+        }
+
+        return projectModels;
     }
 }
 
