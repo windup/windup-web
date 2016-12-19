@@ -1,5 +1,6 @@
 package org.jboss.windup.web.addons.websupport.tsmodelgen;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -124,6 +125,11 @@ public class TsGenUtils
     static String escapeJSandQuote(String str)
     {
         return String.format("'%s'", StringEscapeUtils.escapeEcmaScript(str));
+    }
+
+    static StringBuilder format(StringBuilder sb, String format, Serializable... args)
+    {
+        return sb.append(String.format(format, args));
     }
 
 }

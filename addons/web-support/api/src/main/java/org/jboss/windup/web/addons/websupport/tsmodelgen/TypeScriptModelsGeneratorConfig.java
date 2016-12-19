@@ -28,9 +28,10 @@ public class TypeScriptModelsGeneratorConfig
     /**
      * Location of the generated report files.
      */
-    public void setOutputPath(Path outputPath)
+    public TypeScriptModelsGeneratorConfig setOutputPath(Path outputPath)
     {
         this.outputPath = outputPath;
+        return this;
     }
 
     /**
@@ -46,9 +47,10 @@ public class TypeScriptModelsGeneratorConfig
      * Path the webapp/ dir which will be used for the generated TS models imports.
      * E.g. <code>import {...} from '$importPathToWebapp';</code>
      */
-    public void setImportPathToWebapp(Path importPathToWebapp)
+    public TypeScriptModelsGeneratorConfig setImportPathToWebapp(Path importPathToWebapp)
     {
         this.importPathToWebapp = importPathToWebapp;
+        return this;
     }
 
     /**
@@ -62,9 +64,10 @@ public class TypeScriptModelsGeneratorConfig
     /**
      * How adjacency is handled - plain arrays ('MATERIALIZED') or proxied methods ('PROXIED').
      */
-    public void setAdjacencyMode(AdjacencyMode adjacencyMode)
+    public TypeScriptModelsGeneratorConfig setAdjacencyMode(AdjacencyMode adjacencyMode)
     {
         this.adjacencyMode = adjacencyMode;
+        return this;
     }
 
     /**
@@ -78,9 +81,10 @@ public class TypeScriptModelsGeneratorConfig
     /**
      * FooModel.ts vs foo.model.ts vs foo-model.ts.
      */
-    public void setFileNamingStyle(FileNamingStyle fileNamingStyle)
+    public TypeScriptModelsGeneratorConfig setFileNamingStyle(FileNamingStyle fileNamingStyle)
     {
         this.fileNamingStyle = fileNamingStyle;
+        return this;
     }
 
 }
