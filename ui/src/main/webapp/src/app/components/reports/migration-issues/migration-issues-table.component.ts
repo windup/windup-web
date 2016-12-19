@@ -5,17 +5,21 @@ import {NotificationService} from "../../../services/notification.service";
 import {Http} from "@angular/http";
 import {GraphJSONToModelService} from "../../../services/graph/graph-json-to-model.service";
 import {FileModel} from "../../../generated/tsModels/FileModel";
+import {SortingService, OrderDirection} from "../../../services/sorting.service";
 
 @Component({
     selector: 'wu-migration-issues-table',
     templateUrl: '/migration-issues-table.component.html',
     styles: [
         `a { cursor: pointer; }`
-    ]
+    ],
+    providers: [SortingService]
 })
 export class MigrationIssuesTableComponent implements OnInit {
     @Input()
     migrationIssues: ProblemSummary[] = [];
+
+    sortedIssues: ProblemSummary[] = [];
 
     problemSummariesFiles: any = new Map<ProblemSummary, any>(); // Map<ProblemSummary, any>
     displayedSummariesFiles = new Map<ProblemSummary, boolean>();
@@ -27,12 +31,15 @@ export class MigrationIssuesTableComponent implements OnInit {
         private _http: Http,
         private _activatedRoute: ActivatedRoute,
         private _migrationIssuesService: MigrationIssuesService,
-        private _notificationService: NotificationService
+        private _notificationService: NotificationService,
+        private _sortingService: SortingService<ProblemSummary>
     ) {
 
     }
 
     ngOnInit(): void {
+        this.sortedIssues = this.migrationIssues;
+
         this._activatedRoute.params.subscribe(params => {
             this.executionId = parseInt(params['executionId']);
         });
@@ -91,5 +98,24 @@ export class MigrationIssuesTableComponent implements OnInit {
         let newPath = `source/${fileModel.vertexId}`;
         this._router.navigate([newPath], { relativeTo: this._activatedRoute });
         return false;
+    }
+
+    orderDirection: OrderDirection = OrderDirection.ASC;
+    orderBy: any;
+
+    getTotalStoryPoints(summary: ProblemSummary) {
+        return (summary.effortPerIncident * summary.numberFound);
+    }
+
+    sortBy(property: string) {
+        if (property === this.orderBy) {
+            this.orderDirection = (this.orderDirection === OrderDirection.ASC) ? OrderDirection.DESC : OrderDirection.ASC;
+            this._sortingService.setOrderDirection(this.orderDirection);
+        } else {
+            this._sortingService.orderBy(property);
+            this.orderBy = property;
+        }
+
+        this.sortedIssues = this._sortingService.sort(this.migrationIssues);
     }
 }
