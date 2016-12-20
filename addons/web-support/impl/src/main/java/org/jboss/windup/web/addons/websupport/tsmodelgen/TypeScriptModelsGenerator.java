@@ -35,10 +35,11 @@ import com.tinkerpop.frames.Adjacency;
 import com.tinkerpop.frames.Incidence;
 import com.tinkerpop.frames.Property;
 import com.tinkerpop.frames.modules.typedgraph.TypeValue;
+import org.jboss.windup.graph.model.WindupEdgeFrame;
 import org.jboss.windup.util.exception.WindupException;
 
 /**
- * Creates the TypeScript models which could accomodate the Frames models instances. Also creates a mapping between discriminators (@TypeValue's) and
+ * Creates the TypeScript models which could accommodate the Frames models instances. Also creates a mapping between discriminators (@TypeValue's) and
  * the TS model classes. In TypeScript it's not reliably possible to scan for all models.
  *
  * How this class works:
@@ -69,8 +70,15 @@ public class TypeScriptModelsGenerator
     private static final Pattern UPPERCASE_LETTER = Pattern.compile("(.)(\\p{javaUpperCase})");
 
     // private final Path modelFilesDir;
-    private String BaseModelName = "BaseModel";
-    private String BaseModelPath = "base.model";
+    private static final String BaseModelName = "BaseModel";
+    private static final String BaseModelPath = "base.model";
+
+    private final Set<Class<? extends WindupFrame<?>>> notModels =
+        (Set<Class<? extends WindupFrame<?>>>) new HashSet(Arrays.asList(new Class[]{
+            WindupFrame.class,
+            WindupVertexFrame.class,
+            WindupEdgeFrame.class
+        }));
 
     private TypeScriptModelsGeneratorConfig config;
 
@@ -130,8 +138,16 @@ public class TypeScriptModelsGenerator
 
         for (Class<? extends WindupFrame<?>> frameClass : modelTypes)
         {
-            if (!(WindupVertexFrame.class.isAssignableFrom(frameClass)))
+            if (!(WindupFrame.class.isAssignableFrom(frameClass)))
+            {
+                LOG.warning("Does not extend " + WindupFrame.class.getSimpleName() + ", skipping: " + frameClass);
                 continue;
+            }
+            if (notModels.contains(frameClass))
+            {
+                LOG.warning("Base model class - not a model, skipping: " + frameClass);
+                continue;
+            }
 
             @SuppressWarnings("unchecked")
             final Class<? extends WindupVertexFrame> frameClass2 = (Class<? extends WindupVertexFrame>) frameClass;
@@ -164,6 +180,7 @@ public class TypeScriptModelsGenerator
         List<String> artificiallyAddedModels = new ArrayList<>();
         // This is a hack in AmbiguousReferenceMode and WindupVertexListModel
         artificiallyAddedModels.add("WindupVertexFrame");
+        artificiallyAddedModels.add("WindupEdgeFrame");
         // graphTypeManager.getRegisteredTypes() skips the following for some reason.
         artificiallyAddedModels.add("ResourceModel");
         for (String className : artificiallyAddedModels)
@@ -213,7 +230,7 @@ public class TypeScriptModelsGenerator
                 Property propAnn = method.getAnnotation(Property.class);
                 if (propAnn == null)
                     break prop;
-                LOG.info("        * Examining @Property " + method.getName());
+                LOG.fine("    * Examining @Property " + method.getName());
 
                 final Class propertyType = TsGenUtils.getPropertyTypeFromMethod(method);
                 if (propertyType == null)
@@ -245,7 +262,7 @@ public class TypeScriptModelsGenerator
                 if (adjAnn == null && incAnn == null)
                     break adj;
                 boolean isAdjacency = adjAnn != null;
-                LOG.info("    * Examining @ " + (isAdjacency ? Adjacency.class : Incidence.class).getSimpleName() + method.getName());
+                LOG.fine("    * Examining @" + (isAdjacency ? Adjacency.class : Incidence.class).getSimpleName() + " " + method.getName());
 
                 // Model class of the other end.
                 final Class theOtherType = TsGenUtils.getPropertyTypeFromMethod(method);
@@ -402,6 +419,8 @@ public class TypeScriptModelsGenerator
     private void writeTypeScriptModelClass(ModelDescriptor modelDescriptor, AdjacencyMode mode)
     {
         final File tsFile = this.config.getOutputPath().resolve(formatClassFileName(modelDescriptor.modelClassName, true)).toFile();
+        LOG.info("    * Writing " + tsFile.getPath());
+
         try (FileWriter tsWriter = new FileWriter(tsFile))
         {
             final Path graphPkg = this.config.getImportPathToWebapp().resolve(PATH_TO_GRAPH_PKG);
