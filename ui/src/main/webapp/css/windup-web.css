@@ -14,3 +14,7 @@
 table.datatable, table.dataTable {
     height: unset;
 }
+
+.pointer {
+    cursor: pointer;
+}
