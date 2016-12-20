@@ -22,8 +22,6 @@ import {utils} from "../utils";
 })
 export class GroupListComponent implements OnInit, OnDestroy {
     project: MigrationProject;
-    inGroupID: number;
-    groupSelected: ApplicationGroup;
     groups: ApplicationGroup[];
 
     processingStatus: Map<number, WindupExecution> = new Map<number, WindupExecution>();
@@ -84,7 +82,6 @@ export class GroupListComponent implements OnInit, OnDestroy {
     }
 
     groupsLoaded(groups:ApplicationGroup[]) {
-        console.log("groupsLoaded()" +         " this.inGroupID: " + this.inGroupID);
         this.errorMessage = "";
         this.groups = groups;
 
@@ -94,9 +91,6 @@ export class GroupListComponent implements OnInit, OnDestroy {
                 group.executions.forEach((execution:WindupExecution) => {
                     console.log("Group #" + group.id + " " + group.title + ", status: " + execution.state);
                     let previousExecution = this.processingStatus.get(group.id);
-
-                    if (group.id == this.inGroupID)
-                        this.groupSelected = group;
 
                     if (previousExecution == null || execution.state == "STARTED" || execution.timeStarted > previousExecution.timeStarted)
                         this.processingStatus.set(group.id, execution);
@@ -140,13 +134,6 @@ export class GroupListComponent implements OnInit, OnDestroy {
 
     static reportURL(app:RegisteredApplication):string {
         return Constants.STATIC_REPORTS_BASE + "/" + app.reportIndexPath;
-    }
-
-    onClickGroup(group: ApplicationGroup) {
-        this.groupSelected = group;
-        //this._router.navigate(['/group-list', { projectID: this.inProjectID, groupID: group.id }]);
-        console.log('onClickGroup(), navigating to /group/' + +group.id);
-        this._router.navigate(['/groups', group.id]);
     }
 
     createGroup() {
