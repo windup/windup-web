@@ -12,10 +12,7 @@ import {GroupListComponent} from "../group-list.component";
 import {utils} from '../../utils';
 import {GroupPageComponent} from "../group.page.component";
 import {GroupExecutionsComponent} from "../executions/group-executions.component";
-import {ReportFilterComponent} from "../reports/filter/report-filter.component";
 import {ApplicationGroupService} from "../../services/application-group.service";
-
-
 
 @Component({
     templateUrl: './group-layout.component.html',
@@ -45,13 +42,13 @@ export class GroupLayoutComponent implements OnInit {
 
             console.log("Group layout reloading group: " + this.applicationGroup.id);
             this._applicationGroupService.get(this.applicationGroup.id).subscribe((group) => {
-                this.applicationGroup = <ApplicationGroup>group;
+                this.applicationGroup = group;
                 this.createContextMenuItems();
             });
         });
 
         this._applicationGroupService.applicationGroupLoaded.subscribe((group) => {
-            this.applicationGroup = <ApplicationGroup>group;
+            this.applicationGroup = group;
             this.createContextMenuItems();
         });
 
