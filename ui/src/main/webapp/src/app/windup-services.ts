@@ -1,4 +1,4 @@
-// Generated using typescript-generator version 1.10.212 on 2016-10-21 15:23:16.
+// Generated using typescript-generator version 1.10.212 on 2016-12-16 13:25:38.
 
 export interface AdvancedOption {
     id: number;
@@ -27,17 +27,25 @@ export interface AnalysisContext_ {
 export interface ApplicationGroup {
     id: number;
     version: number;
-    readOnly: boolean;
     title: string;
     outputPath: string;
     migrationProject: MigrationProject;
     analysisContext: AnalysisContext;
     applications: RegisteredApplication[];
     executions: WindupExecution[];
-    packageMetadata: PackageMetadata;
+    reportFilter: ReportFilter;
 }
 
 export interface ApplicationGroup_ {
+}
+
+export interface Category {
+    id: number;
+    name: string;
+    priority: number;
+}
+
+export interface Category_ {
 }
 
 export interface Configuration {
@@ -97,12 +105,26 @@ export interface RegisteredApplication {
     title: string;
     inputPath: string;
     reportIndexPath: string;
-    applicationGroup: ApplicationGroup;
-    packageMetadata: PackageMetadata;
     inputFilename: string;
 }
 
 export interface RegisteredApplication_ {
+}
+
+export interface ReportFilter {
+    id: number;
+    selectedApplications: RegisteredApplication[];
+    includeTags: Tag[];
+    excludeTags: Tag[];
+    includeCategories: Category[];
+    excludeCategories: Category[];
+    enabled: boolean;
+}
+
+export interface ReportFilterDTOImpl extends ReportFilterDTO {
+}
+
+export interface ReportFilter_ {
 }
 
 export interface RuleEntity {
@@ -128,6 +150,7 @@ export interface RuleProviderEntity {
     targets: Technology[];
     rules: RuleEntity[];
     rulesPath: RulesPath;
+    tags: Tag[];
     ruleProviderType: RuleProviderType;
 }
 
@@ -143,6 +166,14 @@ export interface RulesPath {
 }
 
 export interface RulesPath_ {
+}
+
+export interface Tag {
+    id: number;
+    name: string;
+}
+
+export interface Tag_ {
 }
 
 export interface Technology {
@@ -172,6 +203,15 @@ export interface WindupExecution {
 }
 
 export interface WindupExecution_ {
+}
+
+export interface ReportFilterDTO {
+    selectedApplicationPaths: string[];
+    includeCategories: string[];
+    excludeCategories: string[];
+    includeTags: string[];
+    excludeTags: string[];
+    enabled: boolean;
 }
 
 export interface Calendar extends Cloneable, Comparable<Calendar> {

@@ -85,12 +85,16 @@ export class ReportMenuItem extends ContextMenuItem {
     }
 
     protected getLastCompletedExecution(): WindupExecution {
-        let completedExecutions = this.applicationGroup.executions.filter(execution => execution.state === "COMPLETED");
+        let startedExecutions = this.applicationGroup.executions.filter(execution => execution.state === "STARTED" || execution.state === "COMPLETED");
 
-        if (completedExecutions.length > 0) {
-            return completedExecutions[completedExecutions.length - 1];
-        }
+        let lastExecution:WindupExecution = null;
+        startedExecutions.forEach((execution) => {
+            if (lastExecution == null)
+                lastExecution = execution;
+            else if (execution.timeStarted > lastExecution.timeStarted)
+                lastExecution = execution;
+        });
 
-        return null;
+        return lastExecution;
     }
 }

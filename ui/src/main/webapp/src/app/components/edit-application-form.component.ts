@@ -22,10 +22,9 @@ export class EditApplicationFormComponent extends RegisterApplicationFormCompone
         _activatedRoute: ActivatedRoute,
         _fileService:FileService,
         _registeredApplicationService:RegisteredApplicationService,
-        _applicationGroupService:ApplicationGroupService,
         _formBuilder: FormBuilder
     ) {
-        super(_router, _activatedRoute, _fileService, _registeredApplicationService, _applicationGroupService, _formBuilder);
+        super(_router, _activatedRoute, _fileService, _registeredApplicationService, _formBuilder);
         this.multipartUploader = _registeredApplicationService.getMultipartUploader();
     }
 
@@ -45,7 +44,6 @@ export class EditApplicationFormComponent extends RegisterApplicationFormCompone
             this.application = data.application;
             this.mode = this.application.registrationType;
             this.fileInputPath = this.application.inputPath;
-            this.applicationGroup = this.application.applicationGroup;
             this.multipartUploader.setOptions({
                 url: Constants.REST_BASE + RegisteredApplicationService.REGISTERED_APPLICATION_SERVICE_NAME + this.application.id,
                 disableMultipart: false,

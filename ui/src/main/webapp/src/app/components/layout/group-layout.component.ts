@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {ApplicationGroup} from "windup-services";
 import {RouteLinkProviderService} from "../../services/route-link-provider-service";
 import {MigrationIssuesComponent} from "../reports/migration-issues/migration-issues.component";
@@ -12,8 +12,7 @@ import {GroupListComponent} from "../group-list.component";
 import {utils} from '../../utils';
 import {GroupPageComponent} from "../group.page.component";
 import {GroupExecutionsComponent} from "../executions/group-executions.component";
-import {ReportFilterComponent} from "../reports/filter/report-filter.component";
-
+import {ApplicationGroupService} from "../../services/application-group.service";
 
 @Component({
     templateUrl: './group-layout.component.html',
@@ -27,6 +26,8 @@ export class GroupLayoutComponent implements OnInit {
 
     constructor(
         private _activatedRoute: ActivatedRoute,
+        private _applicationGroupService: ApplicationGroupService,
+        private _router: Router,
         private _routeLinkProviderService: RouteLinkProviderService,
         private _windupService: WindupService,
         private _notificationService: NotificationService
@@ -35,6 +36,22 @@ export class GroupLayoutComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this._router.events.subscribe((newRoute) => {
+            if (!this.applicationGroup)
+                return;
+
+            console.log("Group layout reloading group: " + this.applicationGroup.id);
+            this._applicationGroupService.get(this.applicationGroup.id).subscribe((group) => {
+                this.applicationGroup = group;
+                this.createContextMenuItems();
+            });
+        });
+
+        this._applicationGroupService.applicationGroupLoaded.subscribe((group) => {
+            this.applicationGroup = group;
+            this.createContextMenuItems();
+        });
+
         this._activatedRoute.data.forEach((data: {applicationGroup: ApplicationGroup}) => {
             this.applicationGroup = data.applicationGroup;
             this.createContextMenuItems();
@@ -78,17 +95,13 @@ export class GroupLayoutComponent implements OnInit {
                 icon: 'fa-cogs',
                 isEnabled: true,
             },
-            {
-                label: 'Report Filter',
-/*                link: this._routeLinkProviderService.getRouteForComponent(ReportFilterComponent, {
-                    projectId: this.applicationGroup.migrationProject.id,
-                    groupId: this.applicationGroup.id
-                }),
-*/
-                link: `/projects/${this.applicationGroup.migrationProject.id}/groups/${this.applicationGroup.id}/reports/filter`,
-                icon: 'fa-filter',
-                isEnabled: true
-            },
+            new ContextMenuItem(
+                'Report Filter',
+                'fa-filter',
+                () => { return this.applicationGroup.applications.length > 0; },
+                `/projects/${this.applicationGroup.migrationProject.id}/groups/${this.applicationGroup.id}/reports/filter`,
+                null
+            ),
             new ContextMenuItem(
                 'Run Windup',
                 'fa-rocket',

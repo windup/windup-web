@@ -40,7 +40,6 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
         protected _activatedRoute: ActivatedRoute,
         protected _fileService:FileService,
         protected _registeredApplicationService:RegisteredApplicationService,
-        protected _applicationGroupService:ApplicationGroupService,
         protected _formBuilder: FormBuilder
     ) {
         super();
