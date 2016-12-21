@@ -4,7 +4,7 @@ import {FileUploader} from 'ng2-file-upload/ng2-file-upload';
 import {Observable} from 'rxjs/Observable';
 
 import {Constants} from "../constants";
-import {RegisteredApplication} from "../windup-services";
+import {RegisteredApplication} from "windup-services";
 import {AbstractService} from "./abtract.service";
 import {KeycloakService} from "./keycloak.service";
 

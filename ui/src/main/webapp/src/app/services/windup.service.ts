@@ -3,7 +3,7 @@ import {Headers, Http, RequestOptions} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 
 import {Constants} from "../constants";
-import {WindupExecution} from "../windup-services";
+import {WindupExecution} from "windup-services";
 import {AbstractService} from "./abtract.service";
 
 @Injectable()

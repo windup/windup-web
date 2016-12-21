@@ -3,7 +3,7 @@ import {ActivatedRoute, Params, Router}   from '@angular/router';
 
 import {TechReportService, StatsItem} from "./tech-report.service";
 
-import {ApplicationGroup} from "../../../../app/windup-services";
+import {ApplicationGroup} from "windup-services";
 import {ApplicationGroupService} from '../../../services/application-group.service';
 import {TechnologiesStatsModel} from '../../../generated/tsModels/TechnologiesStatsModel';
 import {NotificationService} from "../../../services/notification.service";

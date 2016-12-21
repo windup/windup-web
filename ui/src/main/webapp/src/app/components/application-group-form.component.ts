@@ -1,7 +1,7 @@
 import {Component, OnInit, OnDestroy} from "@angular/core";
 import {ActivatedRoute, Router, NavigationEnd} from "@angular/router";
 
-import {ApplicationGroup, MigrationProject} from "../windup-services";
+import {ApplicationGroup, MigrationProject} from "windup-services";
 import {ApplicationGroupService} from "../services/application-group.service";
 import {FormComponent} from "./form.component";
 import {RouteFlattenerService} from "../services/route-flattener.service";

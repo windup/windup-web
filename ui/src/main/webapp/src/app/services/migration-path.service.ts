@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Headers, Http, RequestOptions} from '@angular/http';
 
 import {Constants} from "../constants";
-import {MigrationPath} from "../windup-services";
+import {MigrationPath} from "windup-services";
 import {AbstractService} from "./abtract.service";
 
 @Injectable()
