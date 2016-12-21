@@ -12,7 +12,8 @@ import {Configuration, RulesPath} from "windup-services";
 })
 export class AddRulesPathModalComponent extends FormComponent implements OnInit {
     @Input()
-    configuration:Configuration;
+    configuration: Configuration|any;
+    // TODO: This is workaround, without |any it would not find 'windup-services' module
 
     @Output()
     configurationSaved = new EventEmitter();

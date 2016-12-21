@@ -1,6 +1,6 @@
 import {Component, Input} from "@angular/core";
-import {RuleProviderEntity} from "windup-services";
 import * as $ from "jquery";
+import {RuleProviderEntity} from "windup-services";
 
 @Component({
     selector: 'rules-modal',
@@ -8,7 +8,8 @@ import * as $ from "jquery";
 })
 export class RulesModalComponent {
     @Input()
-    ruleProviderEntity:RuleProviderEntity = <RuleProviderEntity>{};
+    ruleProviderEntity: RuleProviderEntity|any = <RuleProviderEntity>{};
+    // TODO: This is workaround, without |any it would not find 'windup-services' module
 
     constructor() {}
 
