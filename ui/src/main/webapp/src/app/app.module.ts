@@ -50,12 +50,14 @@ import {PopoverComponent} from "./components/popover.component";
 import {JsTreeAngularWrapperComponent} from "./components/js-tree-angular-wrapper.component";
 import {PackageRegistryService} from "./services/package-registry.service";
 import {TechnologiesReportComponent} from "./components/reports/technologies/technologies-report.component";
+import {TechReportService} from "./components/reports/technologies/tech-report.service";
+import {DependenciesReportComponent} from "./components/reports/dependencies/dependencies-report.component";
+import {DependenciesService} from "./components/reports/dependencies/dependencies.service";
 import {LoginComponent} from "./components/login.component";
 import {LoggedInGuard} from "./services/logged-in.guard";
 import {MigrationIssuesComponent} from "./components/reports/migration-issues/migration-issues.component";
 import {MigrationIssuesTableComponent} from "./components/reports/migration-issues/migration-issues-table.component";
 import {MigrationIssuesService} from "./components/reports/migration-issues/migration-issues.service";
-import {TechReportService} from "./components/reports/technologies/tech-report.service";
 import {FramesRestClientService} from './services/graph/frames-rest-client.service';
 import {ContextMenuComponent} from "./components/navigation/context-menu.component";
 import {GroupLayoutComponent} from "./components/layout/group-layout.component";
@@ -105,6 +107,7 @@ import {ReportFilterIndicatorComponent} from "./components/reports/filter/report
 
         // Reports
         TechnologiesReportComponent,
+        DependenciesReportComponent,
         SourceReportComponent,
 
         // Components
@@ -174,6 +177,7 @@ import {ReportFilterIndicatorComponent} from "./components/reports/filter/report
         RouteFlattenerService,
         ReportFilterService,
         ReportFilterResolve,
+        DependenciesService,
         {
             provide: RouteLinkProviderService,
             useFactory: () => {

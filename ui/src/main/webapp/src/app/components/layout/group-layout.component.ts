@@ -4,6 +4,7 @@ import {ApplicationGroup} from "windup-services";
 import {RouteLinkProviderService} from "../../services/route-link-provider-service";
 import {MigrationIssuesComponent} from "../reports/migration-issues/migration-issues.component";
 import {TechnologiesReportComponent} from "../reports/technologies/technologies-report.component";
+import {DependenciesReportComponent} from "../reports/dependencies/dependencies-report.component";
 import {WindupService} from "../../services/windup.service";
 import {ReportMenuItem, ContextMenuItem} from "../navigation/context-menu-item.class";
 import {AnalysisContextFormComponent} from "../analysis-context-form.component";
@@ -140,14 +141,13 @@ export class GroupLayoutComponent implements OnInit {
                 TechnologiesReportComponent,
                 this._routeLinkProviderService,
             ),
-            /*
-            {
-                label: 'Dependencies',
-                link: '',
-                icon: 'fa-code-fork',
-                isEnabled: true
-            }
-            */
+            new ReportMenuItem(
+                'Dependencies',
+                'fa-code-fork',
+                this.applicationGroup,
+                DependenciesReportComponent,
+                this._routeLinkProviderService,
+            ),
         ];
     }
 }
