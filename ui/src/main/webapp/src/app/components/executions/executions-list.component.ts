@@ -1,4 +1,4 @@
-import {Component, OnInit, ElementRef, Input} from "@angular/core";
+import {Component, OnInit, ElementRef, Input, OnChanges, SimpleChanges} from "@angular/core";
 import {WindupService} from "../../services/windup.service";
 import {WindupExecution} from "windup-services";
 import {NotificationService} from "../../services/notification.service";
@@ -8,9 +8,12 @@ import {utils} from '../../utils';
     selector: 'wu-executions-list',
     templateUrl: './executions-list.component.html'
 })
-export class ExecutionsListComponent implements OnInit {
+export class ExecutionsListComponent implements OnInit, OnChanges {
     @Input()
     executions: WindupExecution[];
+
+    @Input()
+    activeExecutions: WindupExecution[];
 
     protected element;
 
@@ -23,6 +26,11 @@ export class ExecutionsListComponent implements OnInit {
     }
 
     ngOnInit(): void {
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        console.log('Execution list on changes');
+        console.log(changes);
     }
 
     canCancel(execution: WindupExecution): boolean {
