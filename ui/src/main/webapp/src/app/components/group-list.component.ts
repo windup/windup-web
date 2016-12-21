@@ -12,6 +12,10 @@ import {RegisteredApplicationService} from "../services/registered-application.s
 import {NotificationService} from "../services/notification.service";
 import {MigrationProjectService} from "../services/migration-project.service";
 import {utils} from "../utils";
+import {WindupExecutionService} from "../services/windup-execution.service";
+import {EventBusService} from "../services/events/event-bus.service";
+import {ApplicationGroupEvent, ExecutionEvent} from "../services/events/windup-event";
+import {Subscription} from "rxjs";
 
 @Component({
     selector: 'application-list',
@@ -29,6 +33,9 @@ export class GroupListComponent implements OnInit, OnDestroy {
 
     errorMessage: string;
 
+    protected eventSubscriptions: Subscription[] = [];
+
+
     constructor(
         private _activatedRoute: ActivatedRoute,
         private _router: Router,
@@ -36,14 +43,23 @@ export class GroupListComponent implements OnInit, OnDestroy {
         private _windupService: WindupService,
         private _registeredApplicationsService: RegisteredApplicationService,
         private _notificationService: NotificationService,
-        private _migrationProjectService: MigrationProjectService
+        private _migrationProjectService: MigrationProjectService,
+        private _windupExecutionService: WindupExecutionService,
+        private _eventBus: EventBusService
     ) {}
+
+    // TODO: Execution progress: Group List must be updated when execution state changes
 
     ngOnInit():any {
         this._activatedRoute.data.subscribe((data: {project: MigrationProject}) => {
             this.project = data.project;
             this.getGroups();
         });
+
+        this.eventSubscriptions.push(
+            this._eventBus.onEvent.filter(event => event.isTypeOf(ExecutionEvent))
+                .subscribe((event: ExecutionEvent) => this.onExecutionUpdate(event))
+        );
 
         this.processMonitoringInterval = setInterval(() => {
             this.processingStatus.forEach( (previousExecution:WindupExecution, groupID:number, map:Map<number, WindupExecution>) => {
@@ -61,9 +77,15 @@ export class GroupListComponent implements OnInit, OnDestroy {
         }, 30000);
     }
 
+    onExecutionUpdate(event: ExecutionEvent) {
+
+    }
+
     ngOnDestroy():any {
         if (this.processMonitoringInterval)
             clearInterval(this.processMonitoringInterval);
+
+        this.eventSubscriptions.forEach(subscription => subscription.unsubscribe());
     }
 
     getGroups() {
@@ -114,7 +136,7 @@ export class GroupListComponent implements OnInit, OnDestroy {
     {
         event.preventDefault();
 
-        this._windupService.executeWindupGroup(group.id).subscribe(
+        this._windupExecutionService.execute(group).subscribe(
             (execution:WindupExecution) => {
                 console.log("Execution started for group: " + JSON.stringify(execution));
                 this.processingStatus.set(group.id, execution);
