@@ -2,7 +2,7 @@ import {
     Component, OnInit, Input, ElementRef, SimpleChange, Output, EventEmitter, NgZone,
     OnChanges
 } from "@angular/core";
-import {Package} from "../windup-services";
+import {Package} from "windup-services";
 import * as $ from "jquery";
 import 'jstree';
 

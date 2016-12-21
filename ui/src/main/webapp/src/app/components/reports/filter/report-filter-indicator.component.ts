@@ -1,6 +1,5 @@
 import {Component, Input, OnChanges, SimpleChanges, SimpleChange} from "@angular/core";
-import {ApplicationGroup} from "../../../windup-services";
-import {ReportFilter} from "windup-services";
+import {ApplicationGroup, ReportFilter} from "windup-services";
 
 @Component({
     selector: 'wu-report-filter-indicator',
@@ -9,7 +8,9 @@ import {ReportFilter} from "windup-services";
 })
 export class ReportFilterIndicatorComponent implements OnChanges {
     @Input()
-    group: ApplicationGroup;
+    group: ApplicationGroup|any;
+    // TODO: This is workaround, without |any it would not find 'windup-services' module;
+
     filter: ReportFilter;
 
     constructor() {

@@ -2,7 +2,7 @@ import {Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Router} from "@ang
 import {Observable} from "rxjs";
 import {Injectable} from "@angular/core";
 import {NotificationService} from "./notification.service";
-import {Configuration} from "../windup-services";
+import {Configuration} from "windup-services";
 import {ConfigurationService} from "./configuration.service";
 import {utils} from '../utils';
 

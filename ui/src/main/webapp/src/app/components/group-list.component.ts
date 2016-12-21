@@ -1,13 +1,13 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 
-import {MigrationProject} from "../windup-services";
-import {ApplicationGroup} from "../windup-services";
+import {MigrationProject} from "windup-services";
+import {ApplicationGroup} from "windup-services";
 import {ApplicationGroupService} from "../services/application-group.service";
 import {WindupService} from "../services/windup.service";
 import {Constants} from "../constants";
-import {RegisteredApplication} from "../windup-services";
-import {WindupExecution} from "../windup-services";
+import {RegisteredApplication} from "windup-services";
+import {WindupExecution} from "windup-services";
 import {RegisteredApplicationService} from "../services/registered-application.service";
 import {NotificationService} from "../services/notification.service";
 import {MigrationProjectService} from "../services/migration-project.service";

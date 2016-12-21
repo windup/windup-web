@@ -12,8 +12,7 @@ import {ModalDialogComponent} from "./modal-dialog.component";
 import {IsDirty} from "../is-dirty.interface";
 import {Observable} from "rxjs/Observable";
 import {PackageRegistryService} from "../services/package-registry.service";
-import {ApplicationGroup, AnalysisContext, Package, MigrationPath, AdvancedOption, RulesPath} from "../windup-services";
-import {PackageMetadata} from "windup-services";
+import {ApplicationGroup, AnalysisContext, Package, MigrationPath, AdvancedOption, RulesPath, PackageMetadata} from "windup-services";
 
 @Component({
     templateUrl: 'analysis-context-form.component.html'

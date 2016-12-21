@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit, NgZone, ViewChild} from "@angular/core";
 import {Router} from "@angular/router";
 
 import {MigrationProjectService} from "../services/migration-project.service";
-import {MigrationProject} from "../windup-services";
+import {MigrationProject} from "windup-services";
 import {NotificationService} from "../services/notification.service";
 import {utils} from "../utils";
 import {ConfirmationModalComponent} from "./confirmation-modal.component";

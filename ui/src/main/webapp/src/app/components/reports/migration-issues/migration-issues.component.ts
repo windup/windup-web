@@ -3,7 +3,7 @@ import {Router, ActivatedRoute} from "@angular/router";
 import {NotificationService} from "../../../services/notification.service";
 import {MigrationIssuesService} from "./migration-issues.service";
 import {utils} from '../../../utils';
-import {ApplicationGroup} from "../../../windup-services";
+import {ApplicationGroup} from "windup-services";
 
 @Component({
     selector: 'wu-migration-issues',

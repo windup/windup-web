@@ -1,6 +1,6 @@
 import {Component, OnInit, ElementRef, Input} from "@angular/core";
 import {WindupService} from "../../services/windup.service";
-import {WindupExecution} from "../../windup-services";
+import {WindupExecution} from "windup-services";
 import {NotificationService} from "../../services/notification.service";
 import {utils} from '../../utils';
 
