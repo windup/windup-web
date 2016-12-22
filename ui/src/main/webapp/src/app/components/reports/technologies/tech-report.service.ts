@@ -32,15 +32,13 @@ export class TechReportService extends AbstractService
         let service = new GraphJSONToModelService();
         let url = TechReportService.GRAPH_TECHSTATS_URL.replace(/#\{execID\}/, ""+execID);
         return this.http.get(url)
-            .map((res:Response) => (console.log("Got response for: " + url), res.json()))
+            .map((res:Response) => (res.json()))
             .map((data:any) => {
-                console.log("Data items: ", data);///
                 if (!Array.isArray(data) || data.length == 0) {
                     throw new Error("No items returned, URL: " + url);
                 }
                 return <TechnologiesStatsModel>service.fromJSON(data[0], this.http);
             })
-            // This breaks the return type.
             .catch( (error, caught) => Observable.throw(error));
     }
  }
