@@ -16,12 +16,10 @@ export class KeycloakService {
     protected static TOKEN_MIN_VALIDITY_MINUTES = 5;
 
     public constructor(private _router: Router) {
-        console.log('KeycloakService constructor called');
         this.keyCloak = new Keycloak(KeycloakService.KEYCLOAK_FILE);
         this.init({ onLoad: Constants.SSO_MODE, checkLoginIframe: false })
             .subscribe((isLoggedIn) => {
                 this.onLoginSuccess(isLoggedIn);
-                console.log('subscribe success', isLoggedIn);
             },
                 error => console.error('error', error)
             );
@@ -46,11 +44,10 @@ export class KeycloakService {
         return new Promise<boolean>((resolve, error) => {
             keyCloakPromise
                 .success((auth) => {
-                    console.log('transform promise resolved, ', auth);
                     resolve(auth);
                 })
                 .error((failure) => {
-                    console.log('transform promise error', failure);
+                    //console.log('transform promise error', failure);
                     error(failure)
                 });
         });
@@ -77,7 +74,7 @@ export class KeycloakService {
             console.log('Login success, not logged in');
             this._router.navigate(['/login']);
         } else {
-            console.log('login success, logged in');
+            //console.log('login success, logged in');
             this.auth.loggedIn = true;
             this.auth.authz = this.keyCloak;
             this.auth.logoutUrl =  this.keyCloak.authServerUrl + "/realms/windup/tokens/logout?redirect_uri=" + Constants.AUTH_REDIRECT_URL;
@@ -87,7 +84,7 @@ export class KeycloakService {
                 this.logout();
             };
             this.keyCloak.onAuthRefreshError = function () {
-                console.log("Auth refresh error!");
+                console.warn("Auth refresh error!");
                 this.logout();
             };
         }
@@ -107,14 +104,14 @@ export class KeycloakService {
         realPromise
             .then((auth) => this.onLoginSuccess(auth))
             .catch((error) => {
-                console.log(error);
+                console.warn(error);
             });
 
         return Observable.fromPromise(realPromise);
     }
 
     logout() {
-        console.log('*** LOGOUT');
+        console.log('Keycloak logging out.');
         this.auth.authz.logout();
         this.auth.loggedIn = false;
         this.auth.authz = null;
