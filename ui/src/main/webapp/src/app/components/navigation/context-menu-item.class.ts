@@ -41,7 +41,6 @@ export class ContextMenuItem implements ContextMenuItemInterface {
     }
 
     get isEnabled(): boolean {
-        console.log("Is function? " + (this._isEnabled instanceof Function));
         if (this._isEnabled instanceof Function)
             return <boolean>this._isEnabled();
         else
