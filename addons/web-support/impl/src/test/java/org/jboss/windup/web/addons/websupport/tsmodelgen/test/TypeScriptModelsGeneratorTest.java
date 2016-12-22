@@ -1,8 +1,6 @@
-    package org.jboss.windup.web.addons.websupport.tsmodelgen.test;
+package org.jboss.windup.web.addons.websupport.tsmodelgen.test;
 
-import com.thinkaurelius.titan.diskstorage.util.DirectoryUtil;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;

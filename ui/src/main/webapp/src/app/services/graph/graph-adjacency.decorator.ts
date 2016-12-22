@@ -9,12 +9,16 @@ import {StaticCache} from "./cache";
  * The underlying object contains graph vertices data or links to graph REST service.
  * This decorator turns these data into model objects, optionally fetching the data first.
  *
- * The `Observable`s returned are cached
+ * The `Observable`s returned are cached.
+ *
+ * @param array Whether this getter represents a 1:N (if true) or a 1:1 relation.
+ * @param isAdjacency Whether this getter represents an @Adjacency (if true) or @Incidence relation.
+ * @param direction "IN" or "OUT".
  */
 let emptyArrayObs = Observable.of([]);
 let nullObs = Observable.of(null);
 
-export function GraphAdjacency (name: string, direction: "IN" | "OUT", returnArray: boolean = true): any {
+export function GraphAdjacency (name: string, direction: "IN" | "OUT", returnArray: boolean = true, isAdjacency: boolean = true): any {
     return function(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         if (descriptor) {
             descriptor.get = function () {
