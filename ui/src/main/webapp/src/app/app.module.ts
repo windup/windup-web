@@ -86,6 +86,8 @@ import {PackageChartComponent} from "./components/package-chart/package-chart.co
 import {ProjectTraversalService} from "./services/graph/project-traversal.service";
 import {TechnologyTagComponent} from "./components/reports/technology-tag/technology-tag.component";
 import {EventBusService} from "./services/events/event-bus.service";
+import {WindupExecutionService} from "./services/windup-execution.service";
+import {SchedulerService} from "./services/scheduler.service";
 
 
 @NgModule({
@@ -190,6 +192,8 @@ import {EventBusService} from "./services/events/event-bus.service";
         ReportFilterService,
         ReportFilterResolve,
         EventBusService,
+        WindupExecutionService,
+        SchedulerService,
         {
             provide: RouteLinkProviderService,
             useFactory: () => {
