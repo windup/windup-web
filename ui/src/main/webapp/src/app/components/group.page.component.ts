@@ -28,7 +28,7 @@ export class GroupPageComponent implements OnInit, OnDestroy
     processingStatus: Map<number, WindupExecution> = new Map<number, WindupExecution>();
     processMonitoringInterval;
 
-    activeExecution: WindupExecution;
+    activeExecutions: WindupExecution[] = [];
 
     errorMessage: string;
 
@@ -49,9 +49,9 @@ export class GroupPageComponent implements OnInit, OnDestroy
             .filter((event: ExecutionEvent) => event.group.id === this.group.id)
             .subscribe((event: ExecutionEvent) => {
                 if (event.execution.state === "QUEUED" || event.execution.state === "STARTED") {
-                    this.activeExecution = event.execution;
+                    this.activeExecutions = [ event.execution ];
                 } else {
-                    this.activeExecution = null;
+                    this.activeExecutions = [];
                 }
             });
 

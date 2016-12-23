@@ -88,6 +88,7 @@ import {TechnologyTagComponent} from "./components/reports/technology-tag/techno
 import {EventBusService} from "./services/events/event-bus.service";
 import {WindupExecutionService} from "./services/windup-execution.service";
 import {SchedulerService} from "./services/scheduler.service";
+import {ActiveExecutionsProgressbarComponent} from "./components/executions/active-executions-progressbar.component";
 
 
 @NgModule({
@@ -158,7 +159,8 @@ import {SchedulerService} from "./services/scheduler.service";
         ReportFilterComponent,
         CustomSelectComponent,
         ReportFilterIndicatorComponent,
-        TechnologyTagComponent
+        TechnologyTagComponent,
+        ActiveExecutionsProgressbarComponent
     ],
     providers: [
         appRoutingProviders,
