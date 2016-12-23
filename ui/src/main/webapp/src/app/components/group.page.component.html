@@ -1,5 +1,15 @@
 <div class="panel-body">
 
+    <div *ngIf="activeExecution">
+        <h2>Running Execution</h2>
+        <progress-bar
+                [taskName]="activeExecution.currentTask"
+                [currentValue]="activeExecution.workCompleted"
+                [minValue]="0"
+                [maxValue]="activeExecution.totalWork">
+        </progress-bar>
+    </div>
+
     <h2>Group {{group?.title || "loading..."}}</h2>
 
     <table class="datatable table table-striped table-bordered">

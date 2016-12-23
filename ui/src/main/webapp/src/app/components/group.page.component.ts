@@ -9,12 +9,17 @@ import {WindupExecution} from "windup-services";
 import {RegisteredApplicationService} from "../services/registered-application.service";
 import {NotificationService} from "../services/notification.service";
 import {utils} from "../utils";
+import {WindupExecutionService} from "../services/windup-execution.service";
+import {EventBusService} from "../services/events/event-bus.service";
+import {ExecutionEvent} from "../services/events/windup-event";
 
 @Component({
     templateUrl: 'group.page.component.html'
 })
 export class GroupPageComponent implements OnInit, OnDestroy
 {
+    // TODO: Execution progress: Group page must be updated when execution state changes
+
     projectID: number;
     inGroupID: number;
     group: ApplicationGroup;
@@ -22,6 +27,8 @@ export class GroupPageComponent implements OnInit, OnDestroy
 
     processingStatus: Map<number, WindupExecution> = new Map<number, WindupExecution>();
     processMonitoringInterval;
+
+    activeExecution: WindupExecution;
 
     errorMessage: string;
 
@@ -31,10 +38,23 @@ export class GroupPageComponent implements OnInit, OnDestroy
         private _applicationGroupService: ApplicationGroupService,
         private _windupService: WindupService,
         private _registeredApplicationsService: RegisteredApplicationService,
-        private _notificationService: NotificationService
+        private _notificationService: NotificationService,
+        private _windupExecutionService: WindupExecutionService,
+        private _eventBus: EventBusService
     ) {}
 
     ngOnInit(): any {
+        this._eventBus.onEvent
+            .filter(event => event.isTypeOf(ExecutionEvent))
+            .filter((event: ExecutionEvent) => event.group.id === this.group.id)
+            .subscribe((event: ExecutionEvent) => {
+                if (event.execution.state === "QUEUED" || event.execution.state === "STARTED") {
+                    this.activeExecution = event.execution;
+                } else {
+                    this.activeExecution = null;
+                }
+            });
+
         // Get groupID from params.
         this._activatedRoute.params.subscribe(params => {
             this.inGroupID = parseInt(params["groupId"]);
