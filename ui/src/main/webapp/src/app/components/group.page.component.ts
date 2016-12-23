@@ -10,19 +10,17 @@ import {utils} from "../utils";
 import {WindupExecutionService} from "../services/windup-execution.service";
 import {EventBusService} from "../services/events/event-bus.service";
 import {ExecutionEvent} from "../services/events/windup-event";
+import {ExecutionsMonitoringComponent} from "./executions/executions-monitoring.component";
 
 @Component({
     templateUrl: 'group.page.component.html'
 })
-export class GroupPageComponent implements OnInit, OnDestroy
+export class GroupPageComponent extends ExecutionsMonitoringComponent implements OnInit, OnDestroy
 {
     inGroupID: number;
     group: ApplicationGroup;
 
     processMonitoringInterval;
-
-    activeExecutions: WindupExecution[] = [];
-
     errorMessage: string;
 
     constructor(
@@ -31,20 +29,18 @@ export class GroupPageComponent implements OnInit, OnDestroy
         private _applicationGroupService: ApplicationGroupService,
         private _registeredApplicationsService: RegisteredApplicationService,
         private _notificationService: NotificationService,
-        private _windupExecutionService: WindupExecutionService,
+        _windupExecutionService: WindupExecutionService,
         private _eventBus: EventBusService
-    ) {}
+    ) {
+        super(_windupExecutionService);
+    }
 
     ngOnInit(): any {
         this._eventBus.onEvent
             .filter(event => event.isTypeOf(ExecutionEvent))
             .filter((event: ExecutionEvent) => event.group.id === this.group.id)
             .subscribe((event: ExecutionEvent) => {
-                if (event.execution.state === "QUEUED" || event.execution.state === "STARTED") {
-                    this.activeExecutions = [ event.execution ];
-                } else {
-                    this.activeExecutions = [];
-                }
+                this.onExecutionEvent(event);
             });
 
         // Get groupID from params.
@@ -69,6 +65,7 @@ export class GroupPageComponent implements OnInit, OnDestroy
         this._applicationGroupService.get(inGroupID).subscribe(
             group => {
                 this.group = group;
+                this.loadActiveExecutions(this.group.executions);
                 console.log('Group loaded: ', inGroupID);
             },
             error => {
@@ -79,6 +76,7 @@ export class GroupPageComponent implements OnInit, OnDestroy
     }
 
     ngOnDestroy(): any {
+        super.ngOnDestroy();
         if (this.processMonitoringInterval)
             clearInterval(this.processMonitoringInterval);
     }
