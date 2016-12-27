@@ -40,7 +40,7 @@ export class GroupLayoutComponent implements OnInit {
             if (!this.applicationGroup)
                 return;
 
-            console.log("Group layout reloading group: " + this.applicationGroup.id);
+            //console.log("Group layout reloading group: " + this.applicationGroup.id);
             this._applicationGroupService.get(this.applicationGroup.id).subscribe((group) => {
                 this.applicationGroup = group;
                 this.createContextMenuItems();

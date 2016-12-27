@@ -10,7 +10,6 @@ export class RouteLinkProviderService {
     constructor(routes: Routes) {
         this.routes = routes;
         let componentRoutes = this.getComponentRoutes(routes);
-        console.log(componentRoutes);
         this.routesByComponents = this.getComponentRouteMap(componentRoutes);
     }
 
