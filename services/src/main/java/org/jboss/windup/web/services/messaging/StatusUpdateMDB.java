@@ -34,6 +34,7 @@ import java.util.logging.Logger;
  * This receives updates from the Windup execution backend processes and persists the current state to the database.
  *
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
+ * @author <a href="mailto:zizka@seznam.cz">Ondrej Zizka</a>
  */
 @MessageDriven(activationConfig = {
     @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
@@ -41,6 +42,7 @@ import java.util.logging.Logger;
     @ActivationConfigProperty(propertyName = "maxSession", propertyValue = "1"),
     @ActivationConfigProperty(propertyName = "destination", propertyValue = MessagingConstants.STATUS_UPDATE_QUEUE),
 })
+@TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class StatusUpdateMDB extends AbstractMDB implements MessageListener
 {
     private static Logger LOG = Logger.getLogger(StatusUpdateMDB.class.getName());
@@ -66,9 +68,8 @@ public class StatusUpdateMDB extends AbstractMDB implements MessageListener
 
             // Update the DB with this information
             WindupExecution fromDB = entityManager.find(WindupExecution.class, execution.getId());
-
             if (fromDB == null)
-                LOG.warning("Received unrecognized status update for execution: " + fromDB);
+                LOG.warning("Received status update for unknown execution ID: " + execution.getId());
 
             fromDB.setLastModified(new GregorianCalendar());
             fromDB.setTimeStarted(execution.getTimeStarted());
@@ -80,7 +81,8 @@ public class StatusUpdateMDB extends AbstractMDB implements MessageListener
 
             fromDB.setApplicationListRelativePath(execution.getApplicationListRelativePath());
             fromDB.setOutputPath(execution.getOutputPath());
-            fromDB.setState(execution.getState());
+            if (execution.getState() != ExecutionState.CANCELLED)
+                fromDB.setState(execution.getState());
 
             // Once the run is complete, make sure that we have the correct path information in the execution.
             if (fromDB.getState() == ExecutionState.COMPLETED)

@@ -26,7 +26,7 @@ export class ExecutionsListComponent implements OnInit {
     }
 
     canCancel(execution: WindupExecution): boolean {
-        return execution.state === 'QUEUED'; // || execution.state === 'STARTED';
+        return execution.state === 'QUEUED' || execution.state === 'STARTED';
     }
 
     cancelExecution(execution: WindupExecution) {

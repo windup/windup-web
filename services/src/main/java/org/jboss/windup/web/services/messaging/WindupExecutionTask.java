@@ -60,7 +60,8 @@ public class WindupExecutionTask implements Runnable
     @Override
     public void run()
     {
-        if (this.execution.getState() == ExecutionState.CANCELLED) {
+        if (this.execution.getState() == ExecutionState.CANCELLING) {
+            LOG.warning("Execution cancelling, not running: " + execution);
             return;
         }
 
@@ -79,7 +80,8 @@ public class WindupExecutionTask implements Runnable
             try
             {
                 FileUtils.deleteDirectory(new File(this.execution.getOutputPath()));
-            } catch (IOException e)
+            }
+            catch (IOException e)
             {
                 LOG.warning("Failed to delete output directory: " + this.execution.getOutputPath() + ", due to: " + e.getMessage());
             }
@@ -131,7 +133,7 @@ public class WindupExecutionTask implements Runnable
                         otherOptions);
 
             // reload the current state
-            progressMonitor.done();
+            ///progressMonitor.done(); /// This callback is supposed to be called by Windup core.
         }
         catch (Exception e)
         {
@@ -143,8 +145,7 @@ public class WindupExecutionTask implements Runnable
     }
 
     private List<String> getPackagesAsString(Collection<Package> packages) {
-        return packages.stream().map(Package::getFullName)
-                .collect(Collectors.toList());
+        return packages.stream().map(Package::getFullName).collect(Collectors.toList());
     }
 
     private Map<String, Object> getOtherOptions(AnalysisContext analysisContext)
