@@ -5,6 +5,7 @@ import {getParentClass} from '../../src/app/services/graph/discriminator-mapping
 import {DiscriminatorMappingTestData} from './models/discriminator-mapping-test-data';
 import {TestGeneratorModel, TestPlanetModel, TestShipModel} from './models/test.models';
 import {TestGraphData} from './models/test-graph-data';
+import {StaticCache} from "../../src/app/services/graph/cache";
 
 import 'rxjs/Rx';
 import {Observable} from "rxjs/Observable";
@@ -13,6 +14,11 @@ import 'rxjs/add/operator/toPromise';
 import {Http} from "@angular/http";
 
 describe('Unmarshaller tests', () => {
+
+    beforeEach(() => {
+        console.log("-------------------- Unmarshaller test -------------------- ");
+        StaticCache.clear();
+    });
 
     it("getParentClass()", function() {
         expect(getParentClass(TestPlanetModel).name).toBe("BaseModel");
@@ -65,7 +71,7 @@ describe('Unmarshaller tests', () => {
     it ('unmarshaller test - fromJSON() - shuttles', async(() => {
         let http = <Http>{
             get(url:string) {
-                console.log("Should call get to: " + url + " now");
+                console.log("Called Http.get for: " + url);
                 return Observable.create(function(observer) {
                     let value: any = {
                         json: function () {
@@ -84,7 +90,7 @@ describe('Unmarshaller tests', () => {
             .then((shuttles:TestShipModel[]) => {
                 expect(shuttles).toBeDefined();
                 expect(shuttles instanceof Array).toBeTruthy();
-                expect(shuttles.length).toEqual(1);
+                expect(shuttles.length).toEqual(1, "shuttles.length should be 1, was " + shuttles.length);
                 expect(shuttles[0].name).toEqual("Shuttle 1")
             }, error => {
                 expect(false).toBeTruthy("Getting ship data failed due to: " + error);
@@ -94,7 +100,7 @@ describe('Unmarshaller tests', () => {
     it ('unmarshaller test - fromJSON() - fighter', async(() => {
         let http = <Http>{
             get(url:string) {
-                console.log("Should call get to: " + url + " now");
+                console.log("Called Http.get for: " + url);
                 return Observable.create(function(observer) {
                     let value: any = {
                         json: function () {
@@ -108,11 +114,12 @@ describe('Unmarshaller tests', () => {
         };
 
         let modelObject = new GraphJSONToModelService<TestGeneratorModel>(DiscriminatorMappingTestData).fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA, http);
+        expect(modelObject instanceof Array).toBeFalsy("fromJSON() should return a single object, was: " + JSON.stringify(modelObject ));
 
         return modelObject.fighter.toPromise()
             .then((fighter:TestShipModel) => {
                 expect(fighter).toBeDefined();
-                expect(fighter instanceof Array).toBeFalsy();
+                expect(fighter instanceof Array).toBeFalsy("modelObject.fighter getter should return a single object, was: " + JSON.stringify(fighter));
                 expect(fighter.name).toEqual("Fighter")
             }, error => {
                 expect(false).toBeTruthy("Getting ship data failed due to: " + error);

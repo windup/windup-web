@@ -56,6 +56,9 @@ export class GraphJSONToModelService<T extends BaseModel>
     public fromJSON(input: Object, http: Http, clazz?: typeof BaseModel): T
     {
         if (!http) throw new Error("Http service must be passed.");
+        if (Array.isArray(input))
+            //return this.fromJSONarray(input, http, clazz);
+            throw new TypeError("For arrays of models, use fromJSONarray(...).");
 
         let discriminator:string[] = input[GraphJSONToModelService.DISCRIMINATOR];
         if (!clazz) {
