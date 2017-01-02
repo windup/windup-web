@@ -22,7 +22,7 @@ export function GraphAdjacency (name: string, direction: "IN" | "OUT", returnArr
     return function(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         if (descriptor) {
             descriptor.get = function () {
-                //console.log(`* get() v#${this.vertexId} ${name} ${direction} ${array ? "array" : "single"}`);///
+                console.log(`* get() v#${this.vertexId} ${name} ${direction} ${returnArray ? "array" : "single"}`);///
 
                 let verticesLabel = (direction === "IN") ? "vertices_in" : "vertices_out";
 
@@ -38,8 +38,6 @@ export function GraphAdjacency (name: string, direction: "IN" | "OUT", returnArr
                 let graphService: GraphJSONToModelService<any> = this.graphService || new GraphJSONToModelService();
                 if (!this.http)
                     throw new Error("Http service was not stored in the unmarshalled object:\n" + JSON.stringify(this));
-
-                //console.log("before fetcher(), " + array);///
 
                 // A callback for StaticCache.
                 let httpService: Http = this.http;

@@ -7,6 +7,8 @@ import com.tinkerpop.frames.modules.typedgraph.TypeValue;
 import org.jboss.windup.graph.model.WindupVertexFrame;
 
 /**
+ * Has relations to an unacceptable type (not a model).
+ * 
  * @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
  */
 @TypeValue(TestWrongRelTypeModel.TYPE)
