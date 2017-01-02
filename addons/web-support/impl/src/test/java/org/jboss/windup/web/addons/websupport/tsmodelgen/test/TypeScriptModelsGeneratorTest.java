@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Set;
+import java.util.regex.Pattern;
 import org.apache.commons.io.FileUtils;
 import org.jboss.windup.graph.model.DuplicateArchiveModel;
 import org.jboss.windup.graph.model.DuplicateProjectModel;
@@ -19,7 +21,9 @@ import org.jboss.windup.graph.model.WindupFrame;
 import org.jboss.windup.graph.model.WindupVertexFrame;
 import org.jboss.windup.reporting.model.source.SourceReportToProjectEdgeModel;
 import org.jboss.windup.rules.apps.java.dependencyreport.DependenciesReportModel;
+import org.jboss.windup.rules.apps.java.dependencyreport.DependencyReportDependencyGroupModel;
 import org.jboss.windup.rules.apps.java.dependencyreport.DependencyReportToArchiveEdgeModel;
+import org.jboss.windup.rules.apps.javaee.model.JmsDestinationModel;
 import org.jboss.windup.web.addons.websupport.tsmodelgen.TypeScriptModelsGenerator;
 import org.jboss.windup.web.addons.websupport.tsmodelgen.TypeScriptModelsGeneratorConfig;
 import org.junit.Assert;
@@ -53,9 +57,13 @@ public class TypeScriptModelsGeneratorTest
             ProjectModel.class,
             // @Incidence
             ProjectDependencyModel.class,
+            // Observable<any>
+            DependencyReportDependencyGroupModel.class,
             // WindupEdgeFrame's
             SourceReportToProjectEdgeModel.class,
             DependencyReportToArchiveEdgeModel.class,
+            // Getter returning void getDestinationName(String)
+            JmsDestinationModel.class,
         });
 
         // These should not be generated.
@@ -85,6 +93,32 @@ public class TypeScriptModelsGeneratorTest
             Path modelPath = OUTPUT_DIR.resolve(model.getSimpleName() + ".ts");
             Assert.assertFalse("Model file should not generated: " + modelPath.toString(), modelPath.toFile().exists());
         });
+
+        // Check that there's no "import {any} from './any';"
+        Path modelPath = OUTPUT_DIR.resolve("DependencyReportDependencyGroupModel.ts");
+        try(Scanner scanner = new Scanner(modelPath))
+        {
+            Assert.assertNull(scanner.findWithinHorizon(Pattern.quote("{any}"), 0));
+        }
+
+        // Non-WindupFrame relations.
+        typesToScan.clear();
+        typesToScan.add(TestWrongRelTypeModel.class);
+        try
+        {
+            gen.generate(typesToScan);
+            Assert.fail("Should have failed when processing " +TestWrongRelTypeModel.class.getSimpleName()+ " which has non-WindupFrame relations.");
+        }
+        catch (Exception ex) { }
+
+        // Wrong getter.
+        typesToScan.clear();
+        typesToScan.add(TestWrongGetMethodModel.class);
+        try
+        {
+            gen.generate(typesToScan);
+            Assert.fail("Should have failed when processing " +TestWrongGetMethodModel.class.getSimpleName()+ " which has wrong getter.");
+        }
+        catch (Exception ex) { }
     }
 }
-

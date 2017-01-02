@@ -7,7 +7,7 @@ package org.jboss.windup.web.addons.websupport.tsmodelgen;
  */
 enum PrimitiveType implements ModelType
 {
-    STRING("string"), NUMBER("number"), BOOLEAN("boolean"), ENUM("string"), ANY("any");
+    STRING("string"), NUMBER("number"), BOOLEAN("boolean"), ENUM("string"), DATE("Date"), ANY("any");
 
     private String typeScriptTypeName;
 
@@ -36,12 +36,17 @@ enum PrimitiveType implements ModelType
         {
             return BOOLEAN;
         }
+        if (java.util.Date.class.isAssignableFrom(type) || java.sql.Date.class.isAssignableFrom(type) || java.util.Calendar.class.isAssignableFrom(type))
+        {
+            return DATE;
+        }
         if (Enum.class.isAssignableFrom(type))
         {
             return ENUM;
         }
-        // TypeScriptModelsGenerator.LOG.warning("Not a primitive type: " + type.getTypeName());
-        return ANY;
+        TypeScriptModelsGenerator.LOG.warning("Not a primitive type: " + type.getTypeName());
+        //return ANY;
+        return null;
     }
 
     @Override

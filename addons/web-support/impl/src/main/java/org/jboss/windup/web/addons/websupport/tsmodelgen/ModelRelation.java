@@ -8,6 +8,7 @@ import java.util.EnumSet;
 
 import org.apache.commons.lang3.StringUtils;
 import static org.apache.commons.lang3.StringUtils.capitalize;
+import org.jboss.windup.util.exception.WindupException;
 
 /**
  * A relation between WinudpVertexFrame's.
@@ -57,6 +58,12 @@ class ModelRelation extends ModelMember
         name = StringUtils.uncapitalize(name);
         // name = StringUtils.removeEnd(modelClassName, "s"); // Better to have addItems(item: Item) than getItem(): Item[]
         info.beanPropertyName = name;
+        if (info.methodsPresent.contains(BeanMethodType.GET) && method.getReturnType().equals(Void.TYPE))
+            throw new WindupException(String.format("Getter returns void: %s %s", method.getDeclaringClass(), method.getName()));
+
+        if (info.methodsPresent.contains(BeanMethodType.SET) && method.getParameterCount() != 1)
+            throw new WindupException(String.format("Setter must have 1 param: %s %s", method.getDeclaringClass(), method.getName()));
+
         if (Iterable.class.isAssignableFrom(method.getReturnType()))
             info.isIterable = true;
         else if (method.getParameterCount() > 0 && Iterable.class.isAssignableFrom(method.getParameterTypes()[0]))

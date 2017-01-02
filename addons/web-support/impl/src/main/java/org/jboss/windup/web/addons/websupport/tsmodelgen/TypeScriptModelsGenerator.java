@@ -241,8 +241,8 @@ public class TypeScriptModelsGenerator
                 final ModelProperty existing = modelDescriptor.getProperties().get(graphPropName);
 
                 checkMethodNameVsPropNameConsistency(methodNameVsPropName, methodInfo.beanPropertyName, graphPropName, method,
-                            "Property name '%s' of method '%s' doesn't fit previously seen property name '%s' of other method for '%s'."
-                                        + "\nCheck the Frames model %s");
+                    "Property name '%s' of method '%s' doesn't fit previously seen property name '%s' of other method for '%s'."
+                    + "\nCheck the Frames model %s");
 
                 // Method base beanPropertyName already seen.
                 if (existing != null)
@@ -250,7 +250,11 @@ public class TypeScriptModelsGenerator
 
                 // This method beanPropertyName was not seen yet.
 
-                final ModelProperty prop = new ModelProperty(methodInfo.beanPropertyName, graphPropName, PrimitiveType.from(propertyType));
+                final PrimitiveType primitiveType = PrimitiveType.from(propertyType);
+                if (primitiveType == null)
+                    throw new WindupException(String.format("Unrecognized primitive type: %s\n of %s %s",
+                            propertyType.getName(), frameClass.getName(), method.getName()));
+                final ModelProperty prop = new ModelProperty(methodInfo.beanPropertyName, graphPropName, primitiveType);
                 modelDescriptor.getProperties().put(prop.graphPropertyName, prop);
             }
 
@@ -371,7 +375,6 @@ public class TypeScriptModelsGenerator
 
             for (Map.Entry<String, ModelDescriptor> entry : discriminatorToClassMapping.entrySet())
             {
-
                 mappingWriter.write("        \"" + entry.getKey() + "\": " + entry.getValue().modelClassName + ",\n");
             }
             mappingWriter.write("    };\n\n");
@@ -439,6 +442,9 @@ public class TypeScriptModelsGenerator
                 final String typeScriptTypeName = relation.type.getTypeScriptTypeName();
                 // Don't import this class
                 if (typeScriptTypeName.equals(modelDescriptor.modelClassName))
+                    continue;
+                // Prevent import {any}...
+                if ("any".equals(modelDescriptor.modelClassName))
                     continue;
                 if (imported.add(typeScriptTypeName))
                     tsWriter.write(String.format("import {%1$s} from './%1$s';\n",
