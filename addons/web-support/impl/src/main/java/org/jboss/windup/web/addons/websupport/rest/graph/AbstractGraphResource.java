@@ -97,7 +97,15 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
     {
         final Direction opposite = direction == Direction.OUT ? Direction.IN : Direction.OUT;
 
-        for (Edge edge : vertex.getEdges(direction))
+        List<String> whitelistedLabels = direction == Direction.OUT ? whitelistedOutEdges : whitelistedInEdges;
+
+        Iterable<Edge> edges;
+        if (whitelistedLabels == null || whitelistedLabels.isEmpty())
+            edges = vertex.getEdges(direction);
+        else
+            edges = vertex.getEdges(direction, whitelistedLabels.toArray(new String[whitelistedLabels.size()]));
+
+        for (Edge edge : edges)
         {
             String label = edge.getLabel();
 
