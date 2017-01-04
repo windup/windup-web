@@ -125,14 +125,14 @@ export class ApplicationDetailsComponent implements OnInit {
         let total = 0;
         this.classificationsByFile.forEach(classifications => {
             classifications.forEach(classification => {
-                if (classification.effort)
+                if (classification.effort && !isNaN(classification.effort))
                     total += classification.effort;
             });
         });
 
         this.hintsByFile.forEach(hints => {
             hints.forEach(hint => {
-                if (hint.effort)
+                if (hint.effort && !isNaN(hint.effort))
                     total += hint.effort;
             });
         });
@@ -155,10 +155,16 @@ export class ApplicationDetailsComponent implements OnInit {
     storyPoints(file:PersistedProjectModelTraversalModel):number {
         let total = 0;
         if (this.classificationsByFile.get(file.vertexId))
-            this.classificationsByFile.get(file.vertexId).forEach(classification => total += classification.effort);
+            this.classificationsByFile.get(file.vertexId).forEach(classification => {
+                if (classification.effort && !isNaN(classification.effort))
+                    total += classification.effort
+            });
 
         if (this.hintsByFile.get(file.vertexId)) {
-            this.hintsByFile.get(file.vertexId).forEach(hint => total += hint.effort);
+            this.hintsByFile.get(file.vertexId).forEach(hint => {
+                if (hint.effort && !isNaN(hint.effort))
+                    total += hint.effort
+            });
         }
         return total;
     }
