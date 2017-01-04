@@ -7,59 +7,7 @@ import {colorHelper} from "ng2d3/release/utils/color-sets";
 
 @Component({
     selector: 'wu-package-chart',
-    template: `<div
-      [style.width.px]="width"
-      [style.height.px]="height">
-      <div class="advanced-pie chart"
-        [style.width.px]="dims.width"
-        [style.height.px]="dims.height"
-        [style.float]="'left'">
-        <chart
-          [colors]="colors"
-          [legend]="legend"
-          [legendData]="domain"
-          (legendLabelClick)="onClick($event)"
-          (legendLabelActivate)="onActivate($event)"
-          (legendLabelDeactivate)="onDeactivate($event)"
-          [view]="[dims.width, dims.height]">
-          <svg:g
-            [attr.transform]="transform"
-            class="pie chart">
-            <svg:g pieSeries
-              [colors]="colors"
-              [showLabels]="labels"
-              [series]="results"
-              [innerRadius]="innerRadius"
-              [activeEntries]="activeEntries"
-              [outerRadius]="outerRadius"
-              [gradient]="gradient"
-              (select)="onClick($event)">
-            </svg:g>
-          </svg:g>
-        </chart>
-      </div>
-      <div class="legend">
-            <table style=";font-size:smaller;color:#545454">
-                <tbody>
-                    <tr *ngFor="let row of results;">
-                        <td class="legendColorBox">
-                            <div style="border:1px solid #ccc;padding:1px">
-                                <div 
-                                    [style.border-width]="'5px'"
-                                    [style.border-style]="'solid'"
-                                    [style.border-color]="color(row)"
-                                    [style.width]="'4px'"
-                                    [style.height]="'0px'"
-                                    [style.overflow]="'hidden'"
-                                ></div>
-                            </div>
-                        </td>
-                        <td class="legendLabel">{{row.name}} - {{row.value}}×</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>`,
+    templateUrl: '/package-chart.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PackageChartComponent extends BaseChartComponent implements OnChanges, OnDestroy, AfterViewInit {

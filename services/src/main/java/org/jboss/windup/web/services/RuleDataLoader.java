@@ -113,7 +113,6 @@ public class RuleDataLoader
 
                 for (RuleProvider provider : providerRegistry.getProviders())
                 {
-                    LOG.info("Loading provider: " + provider);
                     RuleProviderMetadata ruleProviderMetadata = provider.getMetadata();
 
                     String providerID = ruleProviderMetadata.getID();

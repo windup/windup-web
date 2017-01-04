@@ -12,6 +12,8 @@ import org.jboss.windup.web.addons.websupport.model.PersistedTraversalChildFileM
 import org.jboss.windup.web.addons.websupport.services.PersistedProjectModelTraversalService;
 
 /**
+ * Implements {@link ProjectTraversalResource}.
+ *
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
 public class ProjectTraversalResourceImpl extends AbstractGraphResource implements ProjectTraversalResource
@@ -26,6 +28,12 @@ public class ProjectTraversalResourceImpl extends AbstractGraphResource implemen
         Iterable<PersistedProjectModelTraversalModel> persistedTraversals = persistedTraversalService.getRootTraversalsByType(persistedTraversalType);
         List<Map<String, Object>> result = new ArrayList<>();
 
+        /*
+         * For efficiency, include as much data as we need in the initial result. This will cause the serializer to traverse
+         * across as many steps as are necessary to serialize this data, regardless of the recurision depth setting.
+         *
+         * This is to reduce network requests when getting this data in aggregate.
+         */
         List<String> whiteListedOutLabels = new ArrayList<>();
         whiteListedOutLabels.add(PersistedProjectModelTraversalModel.CHILD);
         whiteListedOutLabels.add(PersistedProjectModelTraversalModel.CANONICAL_PROJECT);
