@@ -183,11 +183,12 @@
                     <tr *ngFor="let file of filesByProject.get(traversal.vertexId)" class="projectFile">
                         <td class="path">
                             <a [routerLink]="['../source/' + (file.fileModel | async)?.vertexId]">
-                                {{file.filePath}}
+                                {{file | prettyPath}}
                             </a>
                         </td>
                         <td class="tech">
                             <wu-technology-tag *ngFor="let tag of technologyTagsByFile.get(file.vertexId)" [tag]="tag"></wu-technology-tag>
+                            <wu-technology-tag *ngFor="let tag of tagsByFile.get(file.vertexId)" [tag]="tag"></wu-technology-tag>
                             <div style="clear: both;"></div>
                         </td>
 

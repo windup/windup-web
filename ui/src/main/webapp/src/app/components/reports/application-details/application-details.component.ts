@@ -14,6 +14,8 @@ import {GraphJSONToModelService} from "../../../services/graph/graph-json-to-mod
 import {ArchiveModel} from "../../../generated/tsModels/ArchiveModel";
 import {Http} from "@angular/http";
 import {IdentifiedArchiveModel} from "../../../generated/tsModels/IdentifiedArchiveModel";
+import {TaggableModel} from "../../../generated/tsModels/TaggableModel";
+import {FileModel} from "../../../generated/tsModels/FileModel";
 
 @Component({
     templateUrl: '/application-details.component.html',
@@ -56,6 +58,7 @@ export class ApplicationDetailsComponent implements OnInit {
     classificationsByFile:Map<number, ClassificationModel[]> = new Map<number, ClassificationModel[]>();
     hintsByFile:Map<number, InlineHintModel[]> = new Map<number, InlineHintModel[]>();
     technologyTagsByFile:Map<number, TechnologyTagModel[]> = new Map<number, TechnologyTagModel[]>();
+    tagsByFile:Map<number, string[]> = new Map<number, string[]>();
 
     constructor(
         private _changeDetectorRef: ChangeDetectorRef,
@@ -103,10 +106,19 @@ export class ApplicationDetailsComponent implements OnInit {
                 files.forEach(file => {
                     file.classifications.subscribe(classifications => {
                         this.classificationsByFile.set(file.vertexId, classifications);
+                        classifications.forEach(classification => {
+                            let taggableModel = <TaggableModel>new GraphJSONToModelService().translateType(classification, this._http, TaggableModel);
+                            this.cacheTagsForFile(file, taggableModel);
+                        });
                         this.updateTotalPoints();
                     });
                     file.hints.subscribe(hints => {
                         this.hintsByFile.set(file.vertexId, hints);
+                        hints.forEach(hint => {
+                            let taggableModel = <TaggableModel>new GraphJSONToModelService().translateType(hint, this._http, TaggableModel);
+                            this.cacheTagsForFile(file, taggableModel);
+                        });
+
                         this.updateTotalPoints();
                     });
                     file.technologyTags.subscribe(technologyTags => this.technologyTagsByFile.set(file.vertexId, technologyTags));
@@ -118,6 +130,24 @@ export class ApplicationDetailsComponent implements OnInit {
                     this.flattenTraversals(children);
                 },
                 error => this._notificationService.error(utils.getErrorMessage(error)));
+        });
+    }
+
+    private cacheTagsForFile(file:PersistedTraversalChildFileModel, taggableModel:TaggableModel) {
+        taggableModel.tagModel.subscribe((tagModel) => {
+            if (tagModel == null)
+                return;
+
+            let tagsByFile = this.tagsByFile.get(file.vertexId);
+            if (!tagsByFile)
+                tagsByFile = [];
+
+            tagModel.tags.forEach(tag => {
+                if (tagsByFile.indexOf(tag) == -1)
+                    tagsByFile.push(tag);
+            });
+
+            this.tagsByFile.set(file.vertexId, tagsByFile);
         });
     }
 

@@ -24,6 +24,10 @@ export class TestGraphData
 
         "bar": "bar123", "name": "Blake Ross", "rank": "capitain",
 
+        "SET_PREFIX:property1": 1,
+        "SET_PREFIX:property2": 1,
+        "SET_PREFIX:property3": 1,
+
         "vertices_out": {
             // -> ship
             "commands": {

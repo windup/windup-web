@@ -85,6 +85,7 @@ import {NG2D3Module} from "ng2d3";
 import {PackageChartComponent} from "./components/package-chart/package-chart.component";
 import {ProjectTraversalService} from "./services/graph/project-traversal.service";
 import {TechnologyTagComponent} from "./components/reports/technology-tag/technology-tag.component";
+import {PrettyPathPipe} from "./components/reports/pretty-path.pipe";
 import {EventBusService} from "./services/events/event-bus.service";
 import {WindupExecutionService} from "./services/windup-execution.service";
 import {SchedulerService} from "./services/scheduler.service";
@@ -119,6 +120,7 @@ import {ActiveExecutionsProgressbarComponent} from "./components/executions/acti
         TechnologiesReportComponent,
         SourceReportComponent,
         ApplicationDetailsComponent,
+        PrettyPathPipe,
 
         // Report components
         PackageChartComponent,
