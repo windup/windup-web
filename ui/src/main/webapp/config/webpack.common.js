@@ -27,26 +27,26 @@ module.exports = {
             },
             {
                 test: /\.html$/,
-                loader: 'html'
+                loader: 'html-loader'
             },
             {
                 test: /\.(json|ftl)$/,
                 exclude: /index\.html\.ftl/,
-                loader: 'file?name=[name].[ext]'
+                loader: 'file-loader?name=[name].[ext]'
             },
             {
                 test: /\.(png|jpe?g|gif|svg|woff|woff2|ttf|eot|ico)$/,
-                loader: 'file?name=assets/[name].[hash].[ext]'
+                loader: 'file-loader?name=assets/[name].[hash].[ext]'
             },
             {
                 test: /\.css$/,
                 exclude: helpers.root('src', 'app'),
-                loader: ExtractTextPlugin.extract({ fallbackLoader: 'style', loader: ['css?sourceMap'], publicPath: '../' })
+                loader: ExtractTextPlugin.extract({ fallbackLoader: 'style-loader', loader: ['css-loader?sourceMap'], publicPath: '../' })
             },
             {
                 test: /\.css$/,
                 include: helpers.root('src', 'app'),
-                loader: 'raw'
+                loader: 'raw-loader'
             },
             // All the sh*t for jQuery and other global plugins
             // jQuery needs to be exposed in window.jQuery and window.$ because of plugins dependencies
@@ -54,18 +54,18 @@ module.exports = {
             {
                 test: '/jquery/',
                 exclude: /\.css/,
-                loader: 'expose?$!expose?jQuery'
+                loader: 'expose-loader?$!expose?jQuery'
             },
             // Force those plugins to be loaded into global scope
             // They can load using AMD or CommonJS, but it doesn't work properly
             // They depend on global jQuery variable
             {
                 test: /dataTables*\.js|jquery*\.js|colVis*\.js|colReorder*\.js|jstree\.js/,
-                loader: "imports?define=>false!imports?exports=>false"
+                loader: "imports-loader?define=>false!imports-loader?exports=>false"
             },
             {
                 test: /jstree\.js/,
-                loader: 'imports?define=>false!imports?exports=>false!imports?module=>false'
+                loader: 'imports-loader?define=>false!imports-loader?exports=>false!imports-loader?module=>false'
             }
         ]
     },
@@ -77,7 +77,7 @@ module.exports = {
             name: ['app', 'vendor', 'polyfills']
         }),
         new HtmlWebpackPlugin({
-            template: 'text!src/index.html.ftl',
+            template: 'text-loader!src/index.html.ftl',
             filename: 'index.html.ftl'
         }),
         // This is needed to suppress warning caused by some angular issue
@@ -88,7 +88,7 @@ module.exports = {
             helpers.root('./src'), // location of your src
             {} // a map of your routes
         )
-    ]
+    ],
     // TODO: Find out if it helps,
     // tried this to get jquery externally loaded into global scope using <script> tag
 /*    externals: {

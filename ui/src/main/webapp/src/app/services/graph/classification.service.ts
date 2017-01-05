@@ -3,7 +3,6 @@ import {Http} from "@angular/http";
 import {Observable} from "rxjs";
 import {AbstractService} from "../abtract.service";
 import {Constants} from "../../constants";
-import {FileModel} from "../../generated/tsModels/FileModel";
 import {GraphJSONToModelService} from "./graph-json-to-model.service";
 import {ClassificationModel} from "../../generated/tsModels/ClassificationModel";
 

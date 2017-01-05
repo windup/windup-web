@@ -18,3 +18,81 @@ table.datatable, table.dataTable {
 .pointer {
     cursor: pointer;
 }
+
+
+.page-header-no-border {
+    border: 0 none;
+    margin-bottom: 0;
+}
+.page-header h1 {
+    margin: 15px;
+}
+.page-header h1 span.slash {
+    color: #555;
+}
+.page-header h1 {
+    padding-left: 12pt;
+}
+.page-header h1 div.main {
+    border-bottom: 1px solid #add8e6;
+    color: #005387;
+    margin: 0 6em 0.5ex 0;
+    width: auto;
+}
+
+.page-header div.desc, div.tooltipLikeMessage {
+    background: beige none repeat scroll 0 0;
+    border: 1px solid #888;
+    color: black;
+    display: inline-block;
+    font-size: 12pt;
+    font-weight: normal;
+    padding: 1ex 1em;
+}
+.page-header div.desc {
+    margin: 0 15px 15px 30px;
+}
+div.tooltipLikeMessage {
+    margin: 15px 0 0;
+}
+.page-header div.desc::before, div.tooltipLikeMessage::before {
+    color: gray;
+    content: "";
+    cursor: help;
+    display: inline-block;
+    font-family: "Glyphicons Halflings";
+    font-size: 12pt;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    padding: 0.3ex 0.3em;
+    position: relative;
+    top: 1px;
+    vertical-align: top;
+}
+
+.chartBoundary h4 {
+    border-bottom: 1px solid #008cba;
+    margin-right: 10%;
+}
+
+.windupPieGraph div.legend td.legendLabel {
+    padding-left: 0.6ex;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+.label {
+    border-radius: 4px;
+    display: block;
+    float: left;
+    font-weight: bold;
+    margin: 2px;
+    padding: 4px;
+}
+
+.label-info {
+    background-color: #696969;
+}

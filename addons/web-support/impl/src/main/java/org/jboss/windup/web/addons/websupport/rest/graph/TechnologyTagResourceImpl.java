@@ -22,7 +22,7 @@ public class TechnologyTagResourceImpl extends AbstractGraphResource implements 
         FileModel fileModel = fileService.getById(fileModelID);
 
         TechnologyTagService technologyTagService = new TechnologyTagService(context);
-        Iterable<TechnologyTagModel> technologyTagModels= technologyTagService.findTechnologyTagsForFile(fileModel);
+        Iterable<TechnologyTagModel> technologyTagModels = technologyTagService.findTechnologyTagsForFile(fileModel);
         return super.frameIterableToResult(executionID, technologyTagModels, 0);
     }
 }

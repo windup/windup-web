@@ -1,0 +1,214 @@
+<div class="page-header page-header-no-border">
+    <h1>
+        <div class="main">Application Details Report</div>
+    </h1>
+    <div class="desc">
+        This provides a detailed overview of all resources found within the application that may need attention during the migration.
+    </div>
+</div>
+
+<div *ngIf="allProjects?.length == 0">
+    <h1>Loading...</h1>
+</div>
+
+<!-- Summary -->
+<div class="row">
+    <div class="container mainGraphContainer">
+        <table class="summaryLayout" style="width: 100%;">
+            <tr>
+                <td colspan="2">
+                    <div *ngIf="totalPoints != null" class="points" style="text-align: center; color: #00254b; padding-bottom: 1ex;">
+                        <div class="number">{{totalPoints}}</div>
+                        <div>Story Points</div>
+                    </div>
+                    <div id="treeView-Projects-wrap" class="short">
+                        <app-js-tree-wrapper [treeNodes]="[]"></app-js-tree-wrapper>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <!-- div class="chartBoundary">
+                        <h4>Java Incidents by Package</h4>
+                        <div id="application_pie" class="windupPieGraph">
+                            <wu-package-chart
+                                    [results]="packageInfo"
+                                    [scheme]="colorScheme"
+                            ></wu-package-chart>
+                        </div>
+                    </div -->
+                </td>
+                <td>
+                    <!-- div class="chartBoundary" *ngIf="allTagInfo()?.length > 0">
+                        <h4>Technologies found - occurrence count</h4>
+                        <bar-horizontal
+                                [scheme]="colorScheme"
+                                [results]="allTagInfo()"
+                                [showGridLines]="true"
+                                [xAxis]="true"
+                                [yAxis]="true"
+                        >
+                        </bar-horizontal>
+                    </div -->
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div class="row container-fluid" *ngIf="allProjects?.length > 0">
+    <div class="theme-showcase" role="main">
+        <div class="panel panel-primary" *ngFor="let traversal of rootProjects">
+            <div class="panel-heading" *ngIf="(traversal.applicationMessages | async).length > 0">
+                <h3 class="panel-title">Application Messages for: {{traversal.path}}</h3>
+            </div>
+            <table class="table table-striped table-bordered" *ngIf="(traversal.applicationMessages | async).length > 0">
+                <tr *ngFor="let applicationMessage of (traversal.applicationMessages | async)">
+                    <td [innerHTML]="applicationMessage.message"></td>
+                </tr>
+            </table>
+        </div>
+        <div>
+            <a id="collapseAll" *ngIf="!allCollapsed()" (click)="collapseAll()">Collapse All</a>
+            <a id="expandAll" *ngIf="!allExpanded()" (click)="expandAll()">Expand All</a>
+        </div>
+
+        <div *ngFor="let traversal of allProjects" class="panel panel-primary projectBox">
+            <div class="panel-heading panel-collapsed clickable" (click)="toggleCollapsed(traversal)">
+                <span class="pull-left"><i class="glyphicon glyphicon-expand arrowIcon"></i></span>
+                <h3 class="panel-title">
+                    <span class="name">{{traversal.path}}</span>
+
+                    <span class="storyPoints">(<span class="points">{{storyPointsForFiles(traversal, traversal.files | async)}}</span> <span class="legend">story points</span>)</span>
+                    <span title="a24b9823">&nbsp;</span>
+                </h3>
+            </div>
+            <div class="panel-body" *ngIf="!isCollapsed(traversal)">
+                <div class="summaryMargin">
+                    <table class="summaryLayout">
+                        <tr>
+                            <td colspan="2">
+                                <!-- Points -->
+                                <div class="points">
+                                    <div class="number">{{storyPointsForFiles(traversal, traversal.files | async)}}</div>
+                                    <div>Story Points</div>
+                                </div>
+
+                                <!-- Basic info -->
+                                <div class="basicInfo">
+                                    <table class="table">
+                                        <tr>
+                                            <th>Maven coordinates</th>
+                                            <td>
+                                                {{traversalToCanonical.get(traversal.vertexId)?.mavenIdentifier}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Organization</th>
+                                            <td>
+                                                <span *ngFor="let organization of traversalToOrganizations.get(traversal.vertexId)">
+                                                    {{organization.name}}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Name</th>
+                                            <td>{{traversalToCanonical.get(traversal.vertexId)?.name}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Version</th>
+                                            <td>{{traversalToCanonical.get(traversal.vertexId)?.version}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Links</th>
+                                            <td>
+                                                <a
+                                                        *ngIf="traversalToCanonical.get(traversal.vertexId)?.url"
+                                                        [href]="traversalToCanonical.get(traversal.vertexId)?.url"
+                                                        target="_blank">
+                                                    Project Site
+                                                </a>
+
+                                                <a
+                                                    *ngIf="traversalToSHA1.get(traversal.vertexId)"
+                                                    [href]="'http://search.maven.org/#search|ga|1|1:' + traversalToSHA1.get(traversal.vertexId)"
+                                                >
+                                                    Maven Central
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Description</th>
+                                            <td>{{traversalToCanonical.get(traversal.vertexId)?.description}}</td>
+                                        </tr>
+                                    </table>
+                                </div><!-- /.basicInfo -->
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <!-- Packages pie chart -->
+                                <!-- div class="chartBoundary">
+                                    <h4>Java Incidents by Package</h4>
+                                    <div id="project_65536_pie" class="windupPieGraph">
+                                        <wu-package-chart
+                                                [results]="packageInfo"
+                                                [scheme]="colorScheme"
+                                        ></wu-package-chart>
+                                    </div>
+                                </div -->
+                            </td>
+                            <td>
+                                <!-- div class="tagsBarChart chartBoundary">
+                                    <h4>Technologies found - occurrence count</h4>
+                                    <bar-horizontal
+                                            [scheme]="colorScheme"
+                                            [results]="tagInfo"
+                                            [showGridLines]="true"
+                                            [xAxis]="true"
+                                            [yAxis]="true"
+                                    >
+                                    </bar-horizontal>
+                                </div -->
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+                <table class="subprojects table table-striped table-bordered">
+                    <tr>
+                        <th>Name</th><th>Technology</th><th>Issues</th><th>Story Points</th>
+                    </tr>
+
+                    <tr *ngFor="let file of filesByProject.get(traversal.vertexId)" class="projectFile">
+                        <td class="path">
+                            <a [routerLink]="['../source/' + (file.fileModel | async)?.vertexId]">
+                                {{file.filePath}}
+                            </a>
+                        </td>
+                        <td class="tech">
+                            <wu-technology-tag *ngFor="let tag of technologyTagsByFile.get(file.vertexId)" [tag]="tag"></wu-technology-tag>
+                            <div style="clear: both;"></div>
+                        </td>
+
+                        <td class="warnCount1">
+                            <div class="warns">Warnings: {{classificationsByFile.get(file.vertexId)?.length + hintsByFile.get(file.vertexId)?.length}} items</div>
+                            <ul class="notifications">
+                                <li class="warning" *ngFor="let classification of classificationsByFile.get(file.vertexId)">
+                                    {{classification.classification}}
+                                </li>
+                                <li class="warning" *ngFor="let hint of hintsByFile.get(file.vertexId)">
+                                    {{hint.title}}
+                                </li>
+                            </ul>
+                        </td>
+
+                        <td>
+                            {{storyPoints(file)}}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div> <!-- /container -->
+</div>
