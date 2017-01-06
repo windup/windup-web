@@ -1,10 +1,9 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, OnInit, OnDestroy} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ApplicationGroup} from "windup-services";
 import {RouteLinkProviderService} from "../../services/route-link-provider-service";
 import {MigrationIssuesComponent} from "../reports/migration-issues/migration-issues.component";
 import {TechnologiesReportComponent} from "../reports/technologies/technologies-report.component";
-import {WindupService} from "../../services/windup.service";
 import {ReportMenuItem, ContextMenuItem} from "../navigation/context-menu-item.class";
 import {AnalysisContextFormComponent} from "../analysis-context-form.component";
 import {NotificationService} from "../../services/notification.service";
@@ -14,6 +13,10 @@ import {GroupPageComponent} from "../group.page.component";
 import {GroupExecutionsComponent} from "../executions/group-executions.component";
 import {ApplicationDetailsComponent} from "../reports/application-details/application-details.component";
 import {ApplicationGroupService} from "../../services/application-group.service";
+import {WindupExecutionService} from "../../services/windup-execution.service";
+import {EventBusService} from "../../services/events/event-bus.service";
+import {ExecutionEvent, ExecutionCompletedEvent, ApplicationGroupEvent} from "../../services/events/windup-event";
+import {AbstractComponent} from "../AbstractComponent";
 
 @Component({
     templateUrl: './group-layout.component.html',
@@ -21,42 +24,51 @@ import {ApplicationGroupService} from "../../services/application-group.service"
         `:host /deep/ .nav-pf-vertical { top: 139px; }`
     ]
 })
-export class GroupLayoutComponent implements OnInit {
+export class GroupLayoutComponent extends AbstractComponent implements OnInit, OnDestroy {
     protected applicationGroup: ApplicationGroup;
     protected menuItems;
+
+    // TODO: Execution progress: Group Layout must be updated when execution state changes (is completed)
 
     constructor(
         private _activatedRoute: ActivatedRoute,
         private _applicationGroupService: ApplicationGroupService,
         private _router: Router,
         private _routeLinkProviderService: RouteLinkProviderService,
-        private _windupService: WindupService,
-        private _notificationService: NotificationService
+        private _executionService: WindupExecutionService,
+        private _notificationService: NotificationService,
+        private _eventBus: EventBusService
     ) {
-
+        super();
     }
 
     ngOnInit(): void {
-        this._router.events.subscribe((newRoute) => {
-            if (!this.applicationGroup)
-                return;
-
-            //console.log("Group layout reloading group: " + this.applicationGroup.id);
-            this._applicationGroupService.get(this.applicationGroup.id).subscribe((group) => {
-                this.applicationGroup = group;
+        this.addSubscription(this._eventBus.onEvent.filter(event => event.isTypeOf(ApplicationGroupEvent))
+            .subscribe((event: ApplicationGroupEvent) => {
+                this.applicationGroup = event.group;
                 this.createContextMenuItems();
-            });
-        });
-
-        this._applicationGroupService.applicationGroupLoaded.subscribe((group) => {
-            this.applicationGroup = group;
-            this.createContextMenuItems();
-        });
+        }));
 
         this._activatedRoute.data.forEach((data: {applicationGroup: ApplicationGroup}) => {
             this.applicationGroup = data.applicationGroup;
+            this._applicationGroupService.monitorGroup(this.applicationGroup);
             this.createContextMenuItems();
         });
+/*
+        // It would be nice if it was possible to programatically rerun Resolve
+        // I created issue for that: https://github.com/angular/angular/issues/13638
+        this.addSubscription(this._eventBus.onEvent.filter(event => event.isTypeOf(ExecutionCompletedEvent.TYPE))
+            .filter((event: ExecutionEvent) => event.group && event.group.id === this.applicationGroup.id)
+            .subscribe((event: ExecutionEvent) => {
+                this.createContextMenuItems();
+            })
+        );
+*/
+    }
+
+    ngOnDestroy() {
+        super.ngOnDestroy();
+        this._applicationGroupService.stopMonitoringGroup(this.applicationGroup);
     }
 
     protected createContextMenuItems() {
@@ -109,7 +121,8 @@ export class GroupLayoutComponent implements OnInit {
                 () => { return this.applicationGroup.applications.length > 0; },
                 null,
                 () => {
-                    this._windupService.executeWindupGroup(this.applicationGroup.id).subscribe(
+                    // TODO: 'windup-services' vs 'windup-services.ts' issues
+                    this._executionService.execute(<any>this.applicationGroup).subscribe(
                         success => {
                             this._notificationService.info('Windup execution has started');
                         },

@@ -5,11 +5,15 @@ import {Constants} from "../constants";
 import {ApplicationGroup, PackageMetadata} from "windup-services";
 import {AbstractService} from "./abtract.service";
 import {Observable, Subject} from "rxjs";
+import {EventBusService} from "./events/event-bus.service";
+import {ApplicationGroupEvent, NewExecutionStartedEvent, ExecutionUpdatedEvent} from "./events/windup-event";
 
 @Injectable()
 export class ApplicationGroupService extends AbstractService {
     private applicationGroupLoadedSubject = new Subject<ApplicationGroup>();
     applicationGroupLoaded:Observable<ApplicationGroup> = this.applicationGroupLoadedSubject.asObservable();
+
+    protected monitoredGroups: Map<number, ApplicationGroup> = new Map<number, ApplicationGroup>();
 
     private GET_ALL_URL = "/applicationGroups/list";
     private GET_BY_PROJECT_URL = "/applicationGroups/by-project/";
@@ -19,8 +23,49 @@ export class ApplicationGroupService extends AbstractService {
     private UPDATE_URL = "/applicationGroups/update";
     private DELETE_URL = '/applicationGroups/delete';
 
-    constructor (private _http: Http) {
+    constructor (private _http: Http, private _eventBus: EventBusService) {
         super();
+
+        this._eventBus.onEvent.filter(event => event.source !== this)
+            .filter(event => event.isTypeOf(ApplicationGroupEvent))
+            .subscribe((event: ApplicationGroupEvent) => this.handleEvent(event));
+    }
+
+    handleEvent(event: ApplicationGroupEvent) {
+        if (!event.group || (event.group && !this.monitoredGroups.has(event.group.id))) {
+            return;
+        }
+
+        let monitoredGroup = this.monitoredGroups.get(event.group.id);
+
+        if (event.isTypeOf(NewExecutionStartedEvent)) {
+            monitoredGroup.executions.push((<NewExecutionStartedEvent>event).execution);
+        } else if (event.isTypeOf(ExecutionUpdatedEvent)) {
+            let currentExecutionIndex = -1;
+            let eventExecution = (<ExecutionUpdatedEvent>event).execution;
+
+            for (let index in monitoredGroup.executions) {
+                if (eventExecution.id === monitoredGroup.executions[index].id) {
+                    currentExecutionIndex = <any>index;
+                    break;
+                }
+            }
+            if (currentExecutionIndex !== -1) {
+                monitoredGroup.executions[currentExecutionIndex] = eventExecution;
+            } else {
+                monitoredGroup.executions.push(eventExecution);
+            }
+        }
+
+        this._eventBus.fireEvent(new ApplicationGroupEvent(monitoredGroup, this));
+    }
+
+    monitorGroup(applicationGroup: ApplicationGroup) {
+        this.monitoredGroups.set(applicationGroup.id, applicationGroup);
+    }
+
+    stopMonitoringGroup(applicationGroup: ApplicationGroup) {
+        this.monitoredGroups.delete(applicationGroup.id);
     }
 
     create(applicationGroup: ApplicationGroup) {

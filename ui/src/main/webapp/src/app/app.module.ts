@@ -85,6 +85,10 @@ import {NG2D3Module} from "ng2d3";
 import {PackageChartComponent} from "./components/package-chart/package-chart.component";
 import {ProjectTraversalService} from "./services/graph/project-traversal.service";
 import {TechnologyTagComponent} from "./components/reports/technology-tag/technology-tag.component";
+import {EventBusService} from "./services/events/event-bus.service";
+import {WindupExecutionService} from "./services/windup-execution.service";
+import {SchedulerService} from "./services/scheduler.service";
+import {ActiveExecutionsProgressbarComponent} from "./components/executions/active-executions-progressbar.component";
 
 
 @NgModule({
@@ -155,7 +159,8 @@ import {TechnologyTagComponent} from "./components/reports/technology-tag/techno
         ReportFilterComponent,
         CustomSelectComponent,
         ReportFilterIndicatorComponent,
-        TechnologyTagComponent
+        TechnologyTagComponent,
+        ActiveExecutionsProgressbarComponent
     ],
     providers: [
         appRoutingProviders,
@@ -188,6 +193,9 @@ import {TechnologyTagComponent} from "./components/reports/technology-tag/techno
         RouteFlattenerService,
         ReportFilterService,
         ReportFilterResolve,
+        EventBusService,
+        WindupExecutionService,
+        SchedulerService,
         {
             provide: RouteLinkProviderService,
             useFactory: () => {

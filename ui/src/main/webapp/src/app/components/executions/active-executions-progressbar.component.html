@@ -1,0 +1,11 @@
+<div *ngIf="activeExecutions && activeExecutions.length > 0">
+    <h2>Active Executions</h2>
+    <div>
+        <progress-bar *ngFor="let activeExecution of activeExecutions"
+                      [taskName]="activeExecution.currentTask"
+                      [currentValue]="activeExecution.workCompleted"
+                      [minValue]="0"
+                      [maxValue]="activeExecution.totalWork">
+        </progress-bar>
+    </div>
+</div>
