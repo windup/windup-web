@@ -97,6 +97,7 @@ export class ReportFilterComponent implements OnInit, OnDestroy {
     cancel() {
         let route = ['projects', this.group.migrationProject.id, 'groups', this.group.id];
         this._router.navigate(route);
+        return false;
     }
 
     resetFilter() {

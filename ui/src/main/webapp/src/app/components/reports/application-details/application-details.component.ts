@@ -16,6 +16,7 @@ import {Http} from "@angular/http";
 import {IdentifiedArchiveModel} from "../../../generated/tsModels/IdentifiedArchiveModel";
 import {TaggableModel} from "../../../generated/tsModels/TaggableModel";
 import {compareTraversals, compareTraversalChildFiles} from "../file-path-comparators";
+import {ApplicationGroup} from "windup-services";
 
 @Component({
     templateUrl: '/application-details.component.html',
@@ -42,13 +43,14 @@ export class ApplicationDetailsComponent implements OnInit {
         domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
     };
 
-    private execID: number;
+    private execID:number;
+    private group:ApplicationGroup;
     rootProjects:PersistedProjectModelTraversalModel[] = [];
 
     allProjects:PersistedProjectModelTraversalModel[] = [];
     projectsCollapsed:Map<number, boolean> = new Map<number, boolean>();
 
-    totalPoints: number = null;
+    totalPoints:number = null;
 
     traversalToCanonical:Map<number, ProjectModel> = new Map<number, ProjectModel>();
     traversalToOrganizations:Map<number, OrganizationModel[]> = new Map<number, OrganizationModel[]>();
@@ -62,23 +64,27 @@ export class ApplicationDetailsComponent implements OnInit {
 
     constructor(
         private _changeDetectorRef: ChangeDetectorRef,
-        private _route:ActivatedRoute,
+        private _activatedRoute:ActivatedRoute,
         private _projectTraversalService:ProjectTraversalService,
         private _notificationService:NotificationService,
         private _http:Http
     ) {}
 
     ngOnInit(): void {
-        this._route.params.forEach((params: Params) => {
-            this.execID = +params['executionId'];
-            this._projectTraversalService.getRootTraversals(this.execID, "ALL").subscribe(
-                traversals => {
-                    this.rootProjects = traversals;
-                    this.allProjects = [];
-                    this.flattenTraversals(traversals);
-                },
-                error => this._notificationService.error(utils.getErrorMessage(error))
-            );
+        this._activatedRoute.parent.parent.parent.data.subscribe((data: {applicationGroup: ApplicationGroup}) => {
+            this.group = data.applicationGroup;
+
+            this._activatedRoute.params.forEach((params: Params) => {
+                this.execID = +params['executionId'];
+                this._projectTraversalService.getRootTraversals(this.execID, "ALL").subscribe(
+                    traversals => {
+                        this.rootProjects = traversals;
+                        this.allProjects = [];
+                        this.flattenTraversals(traversals);
+                    },
+                    error => this._notificationService.error(utils.getErrorMessage(error))
+                );
+            });
         });
     }
 

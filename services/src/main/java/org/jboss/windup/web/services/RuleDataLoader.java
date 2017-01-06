@@ -24,6 +24,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import org.jboss.windup.config.RuleProvider;
 import org.jboss.windup.config.RuleUtils;
@@ -195,6 +196,11 @@ public class RuleDataLoader
         {
             if (!tagHashMap.containsKey(tag))
             {
+                Query q = this.entityManager.createQuery("select t from Tag t where t." + Tag.TAG_NAME + " = :tagName");
+                q.setParameter("tagName", tag);
+                if (!q.getResultList().isEmpty())
+                    continue;
+
                 Tag tagEntity = new Tag(tag);
                 tagHashMap.put(tag, tagEntity);
 
