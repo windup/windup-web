@@ -9,6 +9,7 @@ import {WindupExecution} from "windup-services";
 import {EXECUTIONS_DATA} from "./executions-data";
 import {Observable} from "rxjs";
 import {ProgressBarComponent} from "../../../../src/app/components/progress-bar.component";
+import {ActiveExecutionsProgressbarComponent} from "../../../../src/app/components/executions/active-executions-progressbar.component";
 
 let comp:    ExecutionsListComponent;
 let fixture: ComponentFixture<ExecutionsListComponent>;
@@ -21,7 +22,7 @@ describe('ExecutionsListComponent', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [ RouterTestingModule ],
-            declarations: [ ExecutionsListComponent, ProgressBarComponent ],
+            declarations: [ ExecutionsListComponent, ProgressBarComponent, ActiveExecutionsProgressbarComponent ],
             providers: [
                 {
                     provide: WindupService,
