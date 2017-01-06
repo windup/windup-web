@@ -15,7 +15,7 @@ import {ArchiveModel} from "../../../generated/tsModels/ArchiveModel";
 import {Http} from "@angular/http";
 import {IdentifiedArchiveModel} from "../../../generated/tsModels/IdentifiedArchiveModel";
 import {TaggableModel} from "../../../generated/tsModels/TaggableModel";
-import {FileModel} from "../../../generated/tsModels/FileModel";
+import {compareTraversals, compareTraversalChildFiles} from "../file-path-comparators";
 
 @Component({
     templateUrl: '/application-details.component.html',
@@ -83,6 +83,8 @@ export class ApplicationDetailsComponent implements OnInit {
     }
 
     private flattenTraversals(traversals:PersistedProjectModelTraversalModel[]) {
+        traversals.sort(compareTraversals);
+
         traversals.forEach(traversal => {
             traversal.canonicalProject
                 .subscribe(canonical => {
@@ -102,6 +104,7 @@ export class ApplicationDetailsComponent implements OnInit {
                 });
 
             traversal.files.subscribe(files => {
+                files.sort(compareTraversalChildFiles);
                 this.filesByProject.set(traversal.vertexId, files);
                 files.forEach(file => {
                     file.classifications.subscribe(classifications => {
