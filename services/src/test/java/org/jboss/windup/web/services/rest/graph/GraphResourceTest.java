@@ -62,7 +62,7 @@ public class GraphResourceTest extends AbstractGraphResourceTest
     @RunAsClient
     public void testQueryByType()
     {
-        List<Map<String, Object>> fileModels = graphResource.getByType(execution.getId(), FileModel.TYPE, 1);
+        List<Map<String, Object>> fileModels = graphResource.getByType(execution.getId(), FileModel.TYPE, 1, null, null);
         Assert.assertNotNull(fileModels);
         Assert.assertTrue(fileModels.size() > 1);
 
