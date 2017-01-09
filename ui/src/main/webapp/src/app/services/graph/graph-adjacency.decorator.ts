@@ -15,9 +15,10 @@ let nullObs = Observable.of(null);
  *
  * The `Observable`s returned are cached.
  *
- * @param array Whether this getter represents a 1:N (if true) or a 1:1 relation.
- * @param isAdjacency Whether this getter represents an @Adjacency (if true) or @Incidence relation.
- * @param direction "IN" or "OUT".
+ * @param name         Adjacency name
+ * @param direction    "IN" or "OUT".
+ * @param returnArray  Whether this getter represents a 1:N (if true) or a 1:1 relation.
+ * @param kind         Whether this getter represents an @Adjacency, @Incidence, @InVertex or @OutVertex relation.
  */
 export function GraphAdjacency (
         name: string,
@@ -27,66 +28,90 @@ export function GraphAdjacency (
 ): any
 {
     return function(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-        if (descriptor) {
-            descriptor.get = function () {
-                console.log(`* get() v#${this.vertexId} ${name} ${direction} ${returnArray ? "array" : "single"}`);///
+        if (!descriptor)
+            return;
 
-                let verticesLabel = (direction === "IN") ? "vertices_in" : "vertices_out";
+        descriptor.get = function () {
+            console.log(`* get() v#${this.vertexId} ${name} ${direction} ${returnArray ? "array" : "single"}`);
 
-                // Data is empty, just return null (or an empty array)
-                let relations = this.data![verticesLabel]![name];
-                if (!relations || !(relations["vertices"] || relations["link"])){
-                    return returnArray ? emptyArrayObs : nullObs;
-                }
+            let verticesLabel = (direction === "IN") ? "vertices_in" : "vertices_out";
 
-                // .graphService and .http are stored by the initial call of fromJSON().
-                if (this.graphService == null)
-                    console.warn("@GraphAdjacency() sees no graphService on target (should not happen?), will instantiate a default one: ", this);
-                let graphService: GraphJSONToModelService<any> = this.graphService || new GraphJSONToModelService();
-                if (!this.http)
-                    throw new Error("Http service was not stored in the unmarshalled object:\n" + JSON.stringify(this));
+            // Data is empty, just return null (or an empty array)
+            let relations = this.data![verticesLabel]![name];
+            if (!relations || !(relations["vertices"] || relations["link"])){
+                return returnArray ? emptyArrayObs : nullObs;
+            }
 
-                // A callback for StaticCache.
-                let httpService: Http = this.http;
-                let returnArray_ = returnArray; // Otherwise returnArray sticks with it's first value for all calls.
-                function fetcher(url: string): Observable<any> {
-                    //console.debug("    Fetching URL: " + url);///
-                    return httpService.get(url).map((response: Response) => {
-                        if (!response)
-                            return console.error("Fetching URL returned null: " + url), null;
-                        let responseJson: any[] = response.json();
-                        if (!Array.isArray(responseJson))
-                            throw new Error("Graph REST should return an array of vertices, returned: " + JSON.stringify(responseJson));
-                        let items: any[] = graphService.fromJSONarray(responseJson, httpService);
-                        return returnArray_ ? items : items[0];
-                    });
-                }
+            // .graphService and .http are stored by the initial call of fromJSON().
+            if (this.graphService == null)
+                console.warn("@GraphAdjacency() sees no graphService on target (should not happen?), will instantiate a default one: ", this);
+            let graphService: GraphJSONToModelService<any> = this.graphService || new GraphJSONToModelService();
+            if (!this.http)
+                throw new Error("Http service was not stored in the unmarshalled object:\n" + JSON.stringify(this));
 
-                // If data is a link, return a result of a service call.
-                if (relations["link"] || relations["_type"] === "link")
-                {
-                    // Make an HTTP call.
-                    let url = relations["link"];
-                    let cachedObservable: Observable<any> = StaticCache.getOrFetch(url, fetcher);
-                    if (!cachedObservable)
-                        throw new Error("Failed loading link: " + url);
-                    return cachedObservable;
-                }
+            // A callback for StaticCache.
+            let httpService: Http = this.http;
+            let returnArray_ = returnArray; // Otherwise returnArray sticks with it's first value for all calls.
+            function fetcher(url: string): Observable<any> {
+                //console.debug("    Fetching URL: " + url);///
+                return httpService.get(url).map((response: Response) => {
+                    if (!response)
+                        return console.error("Fetching URL returned null: " + url), null;
+                    let responseJson: any[] = response.json();
+                    if (!Array.isArray(responseJson))
+                        throw new Error("Graph REST should return an array of vertices, returned: " + JSON.stringify(responseJson));
+                    let items: any[] = graphService.fromJSONarray(responseJson, httpService);
+                    return returnArray_ ? items : items[0];
+                });
+            }
 
-                // Data was not null and not a link, so return the stored value.
-                // The observable, once created, is cached in `relations.observable`.
-                if (relations.observable){
-                    return relations.observable;
-                }
+            // If data is a link, return a result of a service call.
+            if (relations["link"] || relations["_type"] === "link")
+            {
+                // Make an HTTP call.
+                let url = relations["link"];
+                let cachedObservable: Observable<any> = StaticCache.getOrFetch(url, fetcher);
+                if (!cachedObservable)
+                    throw new Error("Failed loading link: " + url);
+                return cachedObservable;
+            }
 
-                var vertices:any[] = relations.vertices;
-                let value = returnArray ?
-                    vertices.map(vertice => graphService.fromJSON(vertice, this.http))
-                    : graphService.fromJSON(vertices[0], this.http);
-
-                relations.observable = Observable.of(value);
+            // Data was not null and not a link, so return the stored value.
+            // The observable, once created, is cached in `relations.observable`.
+            if (relations.observable){
                 return relations.observable;
-            };
-        }
+            }
+
+            var vertices:any[] = relations.vertices;
+
+            // TODO: Some of the code above should go into case: "ADJACENCY".
+            let models;
+            switch(kind){
+                case "ADJACENCY":
+                    models = vertices.map(vertice => graphService.fromJSON(vertice, this.http))
+                    if (!returnArray)
+                        models = models[0];
+                    break;
+                // @Incidence: We need to return the edge's model(s) with the above vertex under the original direction.
+                case "INCIDENCE":
+                    models = vertices.map(vertice => {
+                        let model = graphService.fromJSON(vertice, this.http);
+                        let edgeModel = graphService.fromJSON(vertice.edgeData, this.http);
+                        // Store the in/out vertexes.
+                        edgeModel[direction === "IN" ? "_in" : "_out"] = model;
+                        edgeModel[direction !== "IN" ? "_out" : "_in"] = this; /// This should be the "this" of the getter, i.e. original vertex.
+                        return edgeModel;
+                    });
+                break;
+                // @InVertex/@OutVertex: getter called on edge model; it only has _in and _out reference (no need for specfic name).
+                case "IN_V":
+                    return Observable.of(this._in);
+                case "OUT_V":
+                    return Observable.of(this._out);
+            }
+
+            relations.observable = Observable.of(models);
+            return relations.observable;
+        };
     };
 }

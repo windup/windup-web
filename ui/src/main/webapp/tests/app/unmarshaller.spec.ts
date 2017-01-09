@@ -1,4 +1,8 @@
 import {async} from '@angular/core/testing';
+import {Http} from "@angular/http";
+import 'rxjs/Rx';
+import {Observable} from "rxjs/Observable";
+import 'rxjs/add/operator/toPromise';
 
 import {GraphJSONToModelService, RelationInfo} from '../../src/app/services/graph/graph-json-to-model.service';
 import {getParentClass} from '../../src/app/services/graph/discriminator-mapping';
@@ -7,11 +11,10 @@ import {TestGeneratorModel, TestPlanetModel, TestShipModel} from './models/test.
 import {TestGraphData} from './models/test-graph-data';
 import {StaticCache} from "../../src/app/services/graph/cache";
 
-import 'rxjs/Rx';
-import {Observable} from "rxjs/Observable";
-import 'rxjs/add/operator/toPromise';
+// A real model
+import { SourceReportModel } from '../../src/app/generated/tsModels/SourceReportModel';
+import { SourceReportToProjectEdgeModel } from '../../src/app/generated/tsModels/SourceReportToProjectEdgeModel';
 
-import {Http} from "@angular/http";
 
 describe('Unmarshaller tests', () => {
 
@@ -157,6 +160,28 @@ describe('Unmarshaller tests', () => {
                 expect(false).toBeTruthy("Getting planet data failed due to: " + error);
             });
     }));
+
+
+    it ('unmarshaller test - fromJSON() - SourceModelReport with @Incidence', async(() => {
+        let modelObject = new GraphJSONToModelService<SourceReportModel>(DiscriminatorMappingTestData)
+            .fromJSON(TestGraphData.TEST_FRAME_WITH_INCIDENCE, <Http>{});
+
+        return modelObject.projectEdges.toPromise()
+            .then((sourceReports: SourceReportToProjectEdgeModel[]) => {
+                expect(sourceReports).toBeDefined();
+                expect(sourceReports instanceof Array).toBeTruthy();
+                expect(sourceReports.length).toEqual(2);
+                expect(sourceReports[0]).toBeDefined();
+                expect(sourceReports[1]).toBeDefined();
+                expect(sourceReports[0].name).toEqual("Mars");
+                expect(sourceReports[1].name).toEqual("Venus");
+                //expect(planets[2]).toBeNull();
+            }, error => {
+                expect(false).toBeTruthy("Getting planet data failed due to: " + error);
+            });
+    }));
+
+
 
     it("Util functions", () => {
         let info = RelationInfo.parse("foo[Bar");

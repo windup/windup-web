@@ -114,4 +114,44 @@ export class TestGraphData
             "isDirectory": false
         }
     ];
+
+    // SourceReportModel with @Incidence
+    static TEST_FRAME_WITH_INCIDENCE = {
+        "templateType": "FREEMARKER",
+        "w:winduptype": [
+            "SourceReportModel",
+            "Report",
+            "FreeMarkerSourceReport"
+        ],
+        "vertices_in": {},
+        "reportName": "MANIFEST.MF",
+        "sourceType": "manifest",
+        "reportFilename": "MANIFEST_MF.html",
+        "_type": "vertex",
+        "vertices_out": {
+            "sourceReportEdgeToProjectModel": {
+                "vertices": [
+                    {
+                        "w:winduptype": [
+                            "MavenFacet",
+                            "ProjectModel"
+                        ],
+                        "vertices_in": {},
+                        "mavenIdentifier": "org.windup.example:jee-example-app:1.0.0",
+                        "groupId": "org.windup.example",
+                        "_type": "vertex",
+                        "name": "JEE Example App",
+                        "artifactId": "jee-example-app",
+                        "vertices_out": {},
+                        "_id": 70400,
+                        "version": "1.0.0",
+                        "specificationVersion": "4.0.0"
+                    }
+                ],
+                "direction": "OUT"
+            }
+        },
+        "_id": 250624,
+        "templatePath": "/reports/templates/source.ftl"
+    };
 }

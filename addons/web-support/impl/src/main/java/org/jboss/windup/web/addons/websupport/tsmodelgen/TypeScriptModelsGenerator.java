@@ -348,6 +348,31 @@ public class TypeScriptModelsGenerator
                     modelRelation.methodsPresent.addAll(methodInfo.methodsPresent);
                     modelDescriptor.addRelation(modelRelation);
                 }
+
+                setInProperties:
+                {
+                    SetInProperties setInProperties = method.getAnnotation(SetInProperties.class);
+                    if (setInProperties == null)
+                        break setInProperties;
+
+                    final Class propertyType = TsGenUtils.getPropertyTypeFromMethod(method);
+                    if (propertyType == null)
+                        break setInProperties;
+
+                    String graphPropertyPrefix = setInProperties.propertyPrefix();
+                    final ModelRelation methodInfo = ModelRelation.infoFromMethod(method);
+                    final ModelSetInProperties existing = modelDescriptor.modelSetInPropertiesMap.get(graphPropertyPrefix);
+                    if (existing != null)
+                        continue;
+
+                    LOG.info("    * Examining @SetInProperties " + method.getName());
+                    final ModelSetInProperties modelSetInProperties = new ModelSetInProperties(
+                            methodInfo.beanPropertyName,
+                            graphPropertyPrefix,
+                            PrimitiveType.from(propertyType)
+                    );
+                    modelDescriptor.modelSetInPropertiesMap.put(graphPropertyPrefix, modelSetInProperties);
+                }
             }
             catch (Exception ex)
             {

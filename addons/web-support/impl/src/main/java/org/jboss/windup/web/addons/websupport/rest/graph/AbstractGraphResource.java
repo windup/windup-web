@@ -23,6 +23,10 @@ import com.tinkerpop.blueprints.Vertex;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.jboss.windup.graph.GraphTypeManager;
+import org.jboss.windup.graph.model.WindupEdgeFrame;
+import org.jboss.windup.graph.model.WindupFrame;
+
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  * @author <a href="http://ondra.zizka.cz">Ondrej Zizka, zizka at seznam.cz</a>
@@ -34,6 +38,9 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
     @Inject
     private GraphCache graphCache;
     private GraphPathLookup graphPathLookup;
+
+    @Inject
+    private GraphTypeManager graphTypeManager;
 
     @Override
     public void setUriInfo(UriInfo uriInfo)
@@ -69,6 +76,7 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
         return convertToMap(new GraphMarhallingContext(executionID, vertex, depth, dedup, whitelistedOutEdges, whitelistedInLabels), vertex);
     }
 
+    /// TODO: Rename vertex -> currentVertex, result -> vertexMap
     private Map<String, Object> convertToMap(GraphMarhallingContext ctx, Vertex vertex)
     {
         Map<String, Object> result = new HashMap<>();
@@ -85,26 +93,23 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
             result.put(key, vertex.getProperty(key));
         }
 
-
         Map<String, Object> outVertices = new HashMap<>();
         result.put(GraphResource.VERTICES_OUT, outVertices);
         addEdges(ctx, vertex, Direction.OUT, outVertices);
+        ///addEdges(ctx, vertex, Direction.OUT, result); ???
 
         Map<String, Object> inVertices = new HashMap<>();
         result.put(GraphResource.VERTICES_IN, inVertices);
         addEdges(ctx, vertex, Direction.IN, inVertices);
+        ///addEdges(ctx, vertex, Direction.IN, result);???
 
         return result;
     }
 
-    private boolean isWhitelistedEdge(List<String> whitelistedOutEdges, List<String> whitelistedInEdges, Direction direction, String label)
-    {
-        return (direction == Direction.OUT && whitelistedOutEdges.contains(label)) ||
-                (direction == Direction.IN && whitelistedInEdges.contains(label));
-    }
 
     @SuppressWarnings("unchecked")
     private void addEdges(GraphMarhallingContext ctx, Vertex vertex, Direction direction, Map<String, Object> result)
+    ///private void addEdges(GraphMarhallingContext ctx, Vertex vertex, Direction direction, Map<String, Object> dataTree) /// ???
     {
         List<String> whitelistedLabels = direction == Direction.OUT ? ctx.whitelistedOutEdges : ctx.whitelistedInEdges;
 
@@ -120,7 +125,7 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
 
             Map<String, Object> edgeDetails = (Map<String, Object>) result.get(label);
             // If the details are already there and we aren't recursing any further, then just skip
-            if (!isWhitelistedEdge(ctx.whitelistedOutEdges, ctx.whitelistedInEdges, direction, label) && edgeDetails != null && ctx.remainingDepth <= 0)
+            if (!whitelistedLabels.contains(label) && edgeDetails != null && ctx.remainingDepth <= 0)
                 continue;
 
             final List<Map<String, Object>> linkedVertices;
@@ -131,7 +136,7 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
                 result.put(label, edgeDetails);
 
                 // If we aren't serializing any further, then just provide a link
-                if (!isWhitelistedEdge(ctx.whitelistedOutEdges, ctx.whitelistedInEdges, direction, label) && ctx.remainingDepth <= 0)
+                if (!whitelistedLabels.contains(label) && ctx.remainingDepth <= 0)
                 {
                     edgeDetails.put(GraphResource.TYPE, GraphResource.TYPE_LINK);
                     String linkUri = getLink(ctx.executionID, vertex, direction.toString(), label);
@@ -160,7 +165,11 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
                 Map<String, Object> edgeData = new HashMap<>();
                 edge.getPropertyKeys().forEach(key -> edgeData.put(key, edge.getProperty(key)));
                 otherVertexMap.put(GraphResource.EDGE_DATA, edgeData);
+
+                /// Add the edge frame's @TypeValue.  Workaround until PR #1063.
+                edgeData.put(WindupFrame.TYPE_PROP, graphTypeManager.resolveTypes(edge, WindupEdgeFrame.class));
             }
+
             linkedVertices.add(otherVertexMap);
         }
     }
