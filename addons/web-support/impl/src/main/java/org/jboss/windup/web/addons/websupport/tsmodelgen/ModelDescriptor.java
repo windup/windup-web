@@ -22,6 +22,7 @@ class ModelDescriptor
     String discriminator;
 
     Map<String, ModelProperty> properties = new HashMap<>();
+    Map<String, ModelSetInProperties> modelSetInPropertiesMap = new HashMap<>();
 
     private Map<String, ModelRelation> relations = new HashMap<>();
 

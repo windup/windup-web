@@ -54,6 +54,20 @@ describe('Unmarshaller tests', () => {
         expect(modelObjects[1].vertexId).toEqual(16640);
     });
 
+    it ('unmarshaller test - fromJSON() - SetInProperties', () => {
+        let modelObject = new GraphJSONToModelService(DiscriminatorMappingTestData).fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA, <Http>{});
+        expect(modelObject).toBeDefined();
+        expect(modelObject.vertexId).toEqual(456);
+        let model = <TestGeneratorModel> modelObject;
+        console.log("Returned model: " + model);
+
+        expect(model.setInPropsTest).toBeDefined("Should be defined");
+        expect(model.setInPropsTest.length).toEqual(3);
+        expect(model.setInPropsTest[0]).toEqual("property1");
+        expect(model.setInPropsTest[1]).toEqual("property2");
+        expect(model.setInPropsTest[2]).toEqual("property3");
+    });
+
     it ('unmarshaller test - fromJSON() - ship', async(() => {
         let modelObject = new GraphJSONToModelService<TestGeneratorModel>(DiscriminatorMappingTestData).fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA, <Http>{});
 

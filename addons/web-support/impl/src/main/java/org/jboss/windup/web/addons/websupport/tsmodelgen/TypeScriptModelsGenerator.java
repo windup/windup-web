@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.BidiMap;
 import org.apache.commons.collections4.bidimap.DualHashBidiMap;
+import org.jboss.windup.graph.SetInProperties;
 import org.jboss.windup.graph.model.WindupFrame;
 import org.jboss.windup.graph.model.WindupVertexFrame;
 import org.jboss.windup.graph.model.resource.FileModel;
@@ -269,6 +270,31 @@ public class TypeScriptModelsGenerator
                 modelRelation.methodsPresent.addAll(methodInfo.methodsPresent);
                 modelDescriptor.addRelation(modelRelation);
             }
+
+            setInProperties:
+            {
+                SetInProperties setInProperties = method.getAnnotation(SetInProperties.class);
+                if (setInProperties == null)
+                    break setInProperties;
+
+                final Class propertyType = TsGenUtils.getPropertyTypeFromMethod(method);
+                if (propertyType == null)
+                    break setInProperties;
+
+                String graphPropertyPrefix = setInProperties.propertyPrefix();
+                final ModelRelation methodInfo = ModelRelation.infoFromMethod(method);
+                final ModelSetInProperties existing = modelDescriptor.modelSetInPropertiesMap.get(graphPropertyPrefix);
+                if (existing != null)
+                    continue;
+
+                LOG.info("    * Examining @SetInProperties " + method.getName());
+                final ModelSetInProperties modelSetInProperties = new ModelSetInProperties(
+                        methodInfo.beanPropertyName,
+                        graphPropertyPrefix,
+                        PrimitiveType.from(propertyType)
+                );
+                modelDescriptor.modelSetInPropertiesMap.put(graphPropertyPrefix, modelSetInProperties);
+            }
         }
         return modelDescriptor;
     }
@@ -364,7 +390,8 @@ public class TypeScriptModelsGenerator
             final Path graphPkg = this.config.getImportPathToWebapp().resolve(PATH_TO_GRAPH_PKG);
             tsWriter.write("import {" + BaseModelName + "} from '" + graphPkg.resolve(BaseModelPath) + "';\n");
             tsWriter.write("import {GraphAdjacency} from '" + graphPkg.resolve("graph-adjacency.decorator") + "';\n");
-            tsWriter.write("import {GraphProperty} from '" + graphPkg.resolve("graph-property.decorator") + "';\n\n");
+            tsWriter.write("import {GraphProperty} from '" + graphPkg.resolve("graph-property.decorator") + "';\n");
+            tsWriter.write("import {SetInProperties} from '" + graphPkg.resolve("set-in-properties.decorator") + "';\n\n");
             tsWriter.write("import {Observable} from 'rxjs/Observable';\n\n");
 
             Set<String> imported = new HashSet<>();
@@ -437,6 +464,12 @@ public class TypeScriptModelsGenerator
             for (ModelProperty property : modelDescriptor.properties.values())
             {
                 tsWriter.write(property.toTypeScript(mode));
+                tsWriter.write("\n");
+            }
+
+            for (ModelSetInProperties modelSetInProperties : modelDescriptor.modelSetInPropertiesMap.values())
+            {
+                tsWriter.write(modelSetInProperties.toTypeScript(mode));
                 tsWriter.write("\n");
             }
 
