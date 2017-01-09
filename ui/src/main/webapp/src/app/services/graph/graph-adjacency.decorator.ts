@@ -3,6 +3,10 @@ import {Observable} from "rxjs/Observable";
 import {Http, Response} from "@angular/http";
 import {StaticCache} from "./cache";
 
+
+let emptyArrayObs = Observable.of([]);
+let nullObs = Observable.of(null);
+
 /**
  * @GraphAdjacency decorator, which handles TypeScript Frames models' property resolving.
  *
@@ -15,10 +19,13 @@ import {StaticCache} from "./cache";
  * @param isAdjacency Whether this getter represents an @Adjacency (if true) or @Incidence relation.
  * @param direction "IN" or "OUT".
  */
-let emptyArrayObs = Observable.of([]);
-let nullObs = Observable.of(null);
-
-export function GraphAdjacency (name: string, direction: "IN" | "OUT", returnArray: boolean = true, isAdjacency: boolean = true): any {
+export function GraphAdjacency (
+        name: string,
+        direction: "IN" | "OUT",
+        returnArray: boolean = true,
+        kind: "ADJACENCY" | "INCIDENCE" | "IN_V" | "OUT_V" = "ADJACENCY" // See ModelRelation.RelationKind
+): any
+{
     return function(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         if (descriptor) {
             descriptor.get = function () {

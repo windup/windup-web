@@ -32,11 +32,20 @@ import org.jboss.windup.web.addons.websupport.tsmodelgen.TypeScriptModelsGenerat
 
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.frames.Adjacency;
+import com.tinkerpop.frames.InVertex;
 import com.tinkerpop.frames.Incidence;
+import com.tinkerpop.frames.OutVertex;
 import com.tinkerpop.frames.Property;
 import com.tinkerpop.frames.modules.typedgraph.TypeValue;
+import java.lang.annotation.Annotation;
 import org.jboss.windup.graph.model.WindupEdgeFrame;
 import org.jboss.windup.util.exception.WindupException;
+import org.jboss.windup.web.addons.websupport.tsmodelgen.ModelRelation.RelationKind;
+import static org.jboss.windup.web.addons.websupport.tsmodelgen.ModelRelation.RelationKind.IN_V;
+import static org.jboss.windup.web.addons.websupport.tsmodelgen.ModelRelation.RelationKind.OUT_V;
+import static org.jboss.windup.web.addons.websupport.tsmodelgen.TsGenUtils.methodIdent;
+import static org.jboss.windup.web.addons.websupport.tsmodelgen.ModelRelation.RelationKind.INCIDENCE;
+import static org.jboss.windup.web.addons.websupport.tsmodelgen.ModelRelation.RelationKind.ADJACENCY;
 
 /**
  * Creates the TypeScript models which could accommodate the Frames models instances. Also creates a mapping between discriminators (@TypeValue's) and
@@ -224,89 +233,125 @@ public class TypeScriptModelsGenerator
 
         for (Method method : frameClass.getDeclaredMethods())
         {
-            // Get the properties - @Property
-            prop:
-            {
-                Property propAnn = method.getAnnotation(Property.class);
-                if (propAnn == null)
-                    break prop;
-                LOG.fine("    * Examining @Property " + method.getName());
-
-                final Class propertyType = TsGenUtils.getPropertyTypeFromMethod(method);
-                if (propertyType == null)
-                    break prop;
-
-                final ModelRelation methodInfo = ModelRelation.infoFromMethod(method);
-                final String graphPropName = propAnn.value();
-                final ModelProperty existing = modelDescriptor.getProperties().get(graphPropName);
-
-                checkMethodNameVsPropNameConsistency(methodNameVsPropName, methodInfo.beanPropertyName, graphPropName, method,
-                    "Property name '%s' of method '%s' doesn't fit previously seen property name '%s' of other method for '%s'."
-                    + "\nCheck the Frames model %s");
-
-                // Method base beanPropertyName already seen.
-                if (existing != null)
-                    continue;
-
-                // This method beanPropertyName was not seen yet.
-
-                final PrimitiveType primitiveType = PrimitiveType.from(propertyType);
-                if (primitiveType == null)
-                    throw new WindupException(String.format("Unrecognized primitive type: %s\n of %s %s",
-                            propertyType.getName(), frameClass.getName(), method.getName()));
-                final ModelProperty prop = new ModelProperty(methodInfo.beanPropertyName, graphPropName, primitiveType);
-                modelDescriptor.getProperties().put(prop.graphPropertyName, prop);
-            }
-
-            // Get the relations - @Adjacent or @Incidence (an explicit relation to an edge model)
-            adj:
-            {
-                Adjacency adjAnn = method.getAnnotation(Adjacency.class);
-                Incidence incAnn = method.getAnnotation(Incidence.class);
-                if (adjAnn == null && incAnn == null)
-                    break adj;
-                boolean isAdjacency = adjAnn != null;
-                LOG.fine("    * Examining @" + (isAdjacency ? Adjacency.class : Incidence.class).getSimpleName() + " " + method.getName());
-
-                // Model class of the other end.
-                final Class theOtherType = TsGenUtils.getPropertyTypeFromMethod(method);
-                if (theOtherType == null)
-                    break adj;
-
-                final ModelRelation methodInfo = ModelRelation.infoFromMethod(method);
-                final String label = isAdjacency ? adjAnn.label() : incAnn.label();
-                final Direction direction = isAdjacency ? adjAnn.direction() : incAnn.direction();
-                final ModelRelation existing = modelDescriptor.getRelation(label, Direction.OUT.equals(direction));
-
-                checkMethodNameVsPropNameConsistency(methodNameVsEdgeLabel, methodInfo.beanPropertyName, label, method,
-                            "Edge label '%s' of method '%s' doesn't fit previously seen edge label '%s' of other method for '%s'."
-                                        + "\nCheck the Frames model %s");
-
-                // Method base beanPropertyName already seen. Override some traits.
-                if (existing != null)
+            try {
+                // Get the properties - @Property
+                prop:
                 {
-                    if (existing.isAdjacency && !isAdjacency)
-                        throw new WindupException("Same label used for both @Adjacency and @Incidence: " + frameClass.getName() + ", " + label);
-                    existing.isIterable |= methodInfo.isIterable;
-                    existing.methodsPresent.addAll(methodInfo.getMethodsPresent());
-                    // We want the plural, which is presumably on methods working with Iterable.
-                    // Also, this filters out things like addFileToDirectory() next to getFilesInDirectory().
-                    if (methodInfo.isIterable)
-                        existing.beanPropertyName = methodInfo.beanPropertyName;
-                    continue;
+                    Property propAnn = method.getAnnotation(Property.class);
+                    if (propAnn == null)
+                        break prop;
+                    LOG.fine("    * Examining @Property " + method.getName());
+
+                    final Class propertyType = TsGenUtils.getPropertyTypeFromMethod(method);
+                    if (propertyType == null)
+                        break prop;
+
+                    final ModelRelation methodInfo = ModelRelation.infoFromMethod(method);
+                    final String graphPropName = propAnn.value();
+                    final ModelProperty existing = modelDescriptor.getProperties().get(graphPropName);
+
+                    checkMethodNameVsPropNameConsistency(methodNameVsPropName, methodInfo.beanPropertyName, graphPropName, method,
+                        "Property name '%s' of method '%s' doesn't fit previously seen property name '%s' of other method for '%s'."
+                        + "\nCheck the Frames model %s");
+
+                    // Method base beanPropertyName already seen.
+                    if (existing != null)
+                        continue;
+
+                    // This method beanPropertyName was not seen yet.
+
+                    final PrimitiveType primitiveType = PrimitiveType.from(propertyType);
+                    if (primitiveType == null)
+                        throw new WindupException(String.format("Unrecognized primitive type: %s\n of %s %s",
+                                propertyType.getName(), frameClass.getName(), method.getName()));
+                    final ModelProperty prop = new ModelProperty(methodInfo.beanPropertyName, graphPropName, primitiveType);
+                    modelDescriptor.getProperties().put(prop.graphPropertyName, prop);
                 }
 
-                ModelType adjType = ModelType.from(theOtherType);
-                final ModelRelation modelRelation = new ModelRelation(
-                            methodInfo.beanPropertyName,
-                            label,
-                            direction.OUT.equals(direction),
-                            adjType,
-                            methodInfo.isIterable, // Also add/remove? That prefix suggests it's a collection.
-                            isAdjacency
-                );
-                modelRelation.methodsPresent.addAll(methodInfo.methodsPresent);
-                modelDescriptor.addRelation(modelRelation);
+                // Get the relations - @Adjacent or @Incidence (an explicit relation to an edge model)
+                adj:
+                {
+                    Adjacency adjAnn = method.getAnnotation(Adjacency.class);
+                    Incidence incAnn = method.getAnnotation(Incidence.class);
+                    InVertex  inAnn = method.getAnnotation(InVertex.class);
+                    OutVertex outAnn = method.getAnnotation(OutVertex.class);
+                    {
+                        int check = (adjAnn == null ? 0 : 1) + (incAnn == null ? 0 : 1) + (inAnn == null ? 0 : 1) + (outAnn == null ? 0 : 1);
+                        if (check == 0)
+                            break adj;
+                        if (check > 1)
+                            throw new WindupException("Method can only have one of @Adjacency, @Incidence, @InVertex, or @OutVertex.");
+                    }
+
+                    Annotation ann = (adjAnn != null ? adjAnn : (incAnn != null ? incAnn: (inAnn != null ? inAnn : (outAnn != null ? outAnn : null))));
+                    Class<? extends Annotation> annType = ann.getClass(); //(adjAnn != null ? Adjacency.class : (incAnn != null ? Incidence.class : (inAnn != null ? InVertex.class : (outAnn != null ? OutVertex.class : null))));
+                    RelationKind relKind = (adjAnn != null ? ADJACENCY : (incAnn != null ? INCIDENCE : (inAnn != null ? IN_V : (outAnn != null ? OUT_V : null))));
+
+                    boolean isAdjacency = adjAnn != null;
+                    LOG.fine("    * Examining @" + annType.getSimpleName() + " " + method.getName());
+
+                    // Model class of the other end.
+                    final Class theOtherType = TsGenUtils.getPropertyTypeFromMethod(method);
+                    if (theOtherType == null)
+                        //break adj;
+                        throw new WindupException("Could not determine the relation target type: " + methodIdent(method));
+
+                    final ModelRelation methodInfo = ModelRelation.infoFromMethod(method);
+                    final String label = relKind.label(ann); //(adjAnn != null ? adjAnn.label() : (incAnn != null ? incAnn.label() : null));
+                    final Direction direction = relKind.direction(ann); //(adjAnn != null ? adjAnn.direction(): (incAnn != null ? incAnn.direction(): null));
+                    final ModelRelation existing = modelDescriptor.getRelation(label, Direction.OUT.equals(direction));
+
+                    checkMethodNameVsPropNameConsistency(methodNameVsEdgeLabel, methodInfo.beanPropertyName, label, method,
+                                "Edge label '%s' of method '%s' doesn't fit previously seen edge label '%s' of other method for '%s'."
+                                            + "\nCheck the Frames model %s");
+
+                    // @Incidence - find the target type. Maybe this should rather be in createModelDescriptor().
+                    if (relKind == RelationKind.INCIDENCE)
+                    {
+                        if(methodInfo.methodsPresent.contains(ModelMember.BeanMethodType.ADD))
+                        {
+                            if (method.getReturnType().equals(Void.TYPE))
+                                throw new WindupException("Adder of @Incidence relation must return the edge frame model: " + methodIdent(method));
+                            methodInfo.targetModelType = ModelType.from(method.getParameterTypes()[0]);
+                        }
+
+                        if(methodInfo.methodsPresent.contains(ModelMember.BeanMethodType.ADD) || methodInfo.methodsPresent.contains(ModelMember.BeanMethodType.GET))
+                            methodInfo.type = ModelType.from(theOtherType);
+                        else
+                            LOG.warning("Only adder and getter is supported for @Incidence: " + methodIdent(method));
+                    }
+
+                    // Method base beanPropertyName already seen. Override some traits and check consistency.
+                    if (existing != null)
+                    {
+                        if (existing.isAdjacency && !isAdjacency)
+                            throw new WindupException("Same label used for both @Adjacency and @Incidence: " + frameClass.getName() + ", " + label);
+                        existing.isIterable |= methodInfo.isIterable;
+                        existing.methodsPresent.addAll(methodInfo.getMethodsPresent());
+                        // We want the plural, which is presumably on methods working with Iterable.
+                        // Also, this filters out things like addFileToDirectory() next to getFilesInDirectory().
+                        if (methodInfo.isIterable)
+                            existing.beanPropertyName = methodInfo.beanPropertyName;
+                        continue;
+                    }
+
+
+                    ModelType adjType = ModelType.from(theOtherType);
+                    final ModelRelation modelRelation = new ModelRelation(
+                                methodInfo.beanPropertyName,
+                                label,
+                                direction.OUT.equals(direction),
+                                adjType,
+                                methodInfo.isIterable, // Also add/remove? That prefix suggests it's a collection.
+                                relKind
+                    );
+                    modelRelation.methodsPresent.addAll(methodInfo.methodsPresent);
+                    modelDescriptor.addRelation(modelRelation);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new WindupException("Error on " + methodIdent(method) +":\n    " + ex.getMessage(), ex);
             }
 
             setInProperties:
@@ -560,3 +605,6 @@ public class TypeScriptModelsGenerator
         }
     }
 }
+
+
+
