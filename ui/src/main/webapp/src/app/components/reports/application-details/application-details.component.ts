@@ -19,6 +19,7 @@ import {compareTraversals, compareTraversalChildFiles} from "../file-path-compar
 import {ApplicationGroup} from "windup-services";
 import {TagFilterService} from "../tag-filter.service";
 import {TagSetModel} from "../../../generated/tsModels/TagSetModel";
+import {forkJoin} from "rxjs/observable/forkJoin";
 
 @Component({
     templateUrl: '/application-details.component.html',
@@ -118,36 +119,24 @@ export class ApplicationDetailsComponent implements OnInit {
                     file.classifications.zip(file.hints).subscribe(hintsAndClassifications => {
                         let classifications = hintsAndClassifications[0];
                         let hints = hintsAndClassifications[1];
+
                         this.classificationsByFile.set(file.vertexId, classifications);
                         this.hintsByFile.set(file.vertexId, hints);
 
-                        let tagsRequired = classifications.length + hints.length;
-                        if (tagsRequired == 0) {
-                            this.filterAndSetFiles(traversal, files);
-                        } else {
-                            let tagsFound = 0;
-
-                            classifications.forEach(classification => {
-                                let taggableModel = <TaggableModel>new GraphJSONToModelService().translateType(classification, this._http, TaggableModel);
-                                taggableModel.tagModel.subscribe(tagModel => {
-                                    this.cacheTagsForFile(file, tagModel);
-                                    tagsFound++;
-
-                                    if (tagsFound >= tagsRequired)
-                                        this.filterAndSetFiles(traversal, files);
-                                });
-                            });
-                            hints.forEach(hint => {
-                                let taggableModel = <TaggableModel>new GraphJSONToModelService().translateType(hint, this._http, TaggableModel);
-                                taggableModel.tagModel.subscribe(tagModel => {
-                                    this.cacheTagsForFile(file, tagModel);
-                                    tagsFound++;
-
-                                    if (tagsFound >= tagsRequired)
-                                        this.filterAndSetFiles(traversal, files);
-                                });
-                            });
-                        }
+                        let classificationTagMapObservables = classifications.map(classification => {
+                            let taggableModel = <TaggableModel>new GraphJSONToModelService().translateType(classification, this._http, TaggableModel);
+                            return taggableModel.tagModel;
+                        });
+                        let hintTagMapObservables = hints.map(hint => {
+                            let taggableModel = <TaggableModel>new GraphJSONToModelService().translateType(hint, this._http, TaggableModel);
+                            return taggableModel.tagModel;
+                        });
+                        forkJoin(classificationTagMapObservables.concat(hintTagMapObservables)).subscribe(tagSetModels => {
+                            tagSetModels.forEach(tagSetModel => {
+                                this.cacheTagsForFile(file, tagSetModel);
+                            })
+                        });
+                        this.filterAndSetFiles(traversal, files);
                     });
 
                     file.technologyTags.subscribe(technologyTags => this.technologyTagsByFile.set(file.vertexId, technologyTags));
