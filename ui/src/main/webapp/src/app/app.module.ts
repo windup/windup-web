@@ -89,6 +89,7 @@ import {EventBusService} from "./services/events/event-bus.service";
 import {WindupExecutionService} from "./services/windup-execution.service";
 import {SchedulerService} from "./services/scheduler.service";
 import {ActiveExecutionsProgressbarComponent} from "./components/executions/active-executions-progressbar.component";
+import {TagDataService} from "./components/reports/tag-data.service";
 
 
 @NgModule({
@@ -195,6 +196,7 @@ import {ActiveExecutionsProgressbarComponent} from "./components/executions/acti
         ReportFilterResolve,
         EventBusService,
         WindupExecutionService,
+        TagDataService,
         SchedulerService,
         {
             provide: RouteLinkProviderService,
