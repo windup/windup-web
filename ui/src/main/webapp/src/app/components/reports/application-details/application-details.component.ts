@@ -17,6 +17,8 @@ import {IdentifiedArchiveModel} from "../../../generated/tsModels/IdentifiedArch
 import {TaggableModel} from "../../../generated/tsModels/TaggableModel";
 import {compareTraversals, compareTraversalChildFiles} from "../file-path-comparators";
 import {ApplicationGroup} from "windup-services";
+import {TagFilterService} from "../tag-filter.service";
+import {TagSetModel} from "../../../generated/tsModels/TagSetModel";
 
 @Component({
     templateUrl: '/application-details.component.html',
@@ -111,25 +113,43 @@ export class ApplicationDetailsComponent implements OnInit {
 
             traversal.files.subscribe(files => {
                 files.sort(compareTraversalChildFiles);
-                this.filesByProject.set(traversal.vertexId, files);
-                files.forEach(file => {
-                    file.classifications.subscribe(classifications => {
-                        this.classificationsByFile.set(file.vertexId, classifications);
-                        classifications.forEach(classification => {
-                            let taggableModel = <TaggableModel>new GraphJSONToModelService().translateType(classification, this._http, TaggableModel);
-                            this.cacheTagsForFile(file, taggableModel);
-                        });
-                        this.updateTotalPoints();
-                    });
-                    file.hints.subscribe(hints => {
-                        this.hintsByFile.set(file.vertexId, hints);
-                        hints.forEach(hint => {
-                            let taggableModel = <TaggableModel>new GraphJSONToModelService().translateType(hint, this._http, TaggableModel);
-                            this.cacheTagsForFile(file, taggableModel);
-                        });
 
-                        this.updateTotalPoints();
+                files.forEach(file => {
+                    file.classifications.zip(file.hints).subscribe(hintsAndClassifications => {
+                        let classifications = hintsAndClassifications[0];
+                        let hints = hintsAndClassifications[1];
+                        this.classificationsByFile.set(file.vertexId, classifications);
+                        this.hintsByFile.set(file.vertexId, hints);
+
+                        let tagsRequired = classifications.length + hints.length;
+                        if (tagsRequired == 0) {
+                            this.filterAndSetFiles(traversal, files);
+                        } else {
+                            let tagsFound = 0;
+
+                            classifications.forEach(classification => {
+                                let taggableModel = <TaggableModel>new GraphJSONToModelService().translateType(classification, this._http, TaggableModel);
+                                taggableModel.tagModel.subscribe(tagModel => {
+                                    this.cacheTagsForFile(file, tagModel);
+                                    tagsFound++;
+
+                                    if (tagsFound >= tagsRequired)
+                                        this.filterAndSetFiles(traversal, files);
+                                });
+                            });
+                            hints.forEach(hint => {
+                                let taggableModel = <TaggableModel>new GraphJSONToModelService().translateType(hint, this._http, TaggableModel);
+                                taggableModel.tagModel.subscribe(tagModel => {
+                                    this.cacheTagsForFile(file, tagModel);
+                                    tagsFound++;
+
+                                    if (tagsFound >= tagsRequired)
+                                        this.filterAndSetFiles(traversal, files);
+                                });
+                            });
+                        }
                     });
+
                     file.technologyTags.subscribe(technologyTags => this.technologyTagsByFile.set(file.vertexId, technologyTags));
                 });
             });
@@ -142,22 +162,42 @@ export class ApplicationDetailsComponent implements OnInit {
         });
     }
 
-    private cacheTagsForFile(file:PersistedTraversalChildFileModel, taggableModel:TaggableModel) {
-        taggableModel.tagModel.subscribe((tagModel) => {
-            if (tagModel == null)
-                return;
+    private filterAndSetFiles(traversal:PersistedProjectModelTraversalModel, files:PersistedTraversalChildFileModel[]) {
+        let tagFilterService = new TagFilterService(this.group.reportFilter);
+        files = files.filter((file) => {
+            let tags = this.tagsByFile.get(file.vertexId);
+            if (!tags)
+                return true;
 
-            let tagsByFile = this.tagsByFile.get(file.vertexId);
-            if (!tagsByFile)
-                tagsByFile = [];
+            for (let tag of tags) {
+                if (!tagFilterService.tagMatches(tag)) {
+                    this.classificationsByFile.delete(file.vertexId);
+                    this.hintsByFile.delete(file.vertexId);
+                    return false;
+                }
+            }
 
-            tagModel.tags.forEach(tag => {
-                if (tagsByFile.indexOf(tag) == -1)
-                    tagsByFile.push(tag);
-            });
-
-            this.tagsByFile.set(file.vertexId, tagsByFile);
+            return true;
         });
+
+        this.filesByProject.set(traversal.vertexId, files);
+        this.updateTotalPoints();
+    }
+
+    private cacheTagsForFile(file:PersistedTraversalChildFileModel, tagModel:TagSetModel) {
+        if (tagModel == null)
+            return;
+
+        let tagsByFile = this.tagsByFile.get(file.vertexId);
+        if (!tagsByFile)
+            tagsByFile = [];
+
+        tagModel.tags.forEach(tag => {
+            if (tagsByFile.indexOf(tag) == -1)
+                tagsByFile.push(tag);
+        });
+
+        this.tagsByFile.set(file.vertexId, tagsByFile);
     }
 
     updateTotalPoints() {
