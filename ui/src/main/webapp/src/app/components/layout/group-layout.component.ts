@@ -21,7 +21,7 @@ import {AbstractComponent} from "../AbstractComponent";
 @Component({
     templateUrl: './group-layout.component.html',
     styles: [
-        `:host /deep/ .nav-pf-vertical { top: 139px; }`
+        `:host /deep/ .nav-pf-vertical { top: 82px; }`
     ]
 })
 export class GroupLayoutComponent extends AbstractComponent implements OnInit, OnDestroy {

@@ -18,7 +18,6 @@ import {GroupPageComponent} from "./components/group.page.component";
 import {RegisterApplicationFormComponent} from "./components/register-application-form.component";
 import {ProgressBarComponent} from "./components/progress-bar.component";
 import {NavbarComponent} from "./components/navbar.component";
-import {BreadCrumbsComponent} from "./components/breadcrumbs.component";
 import {ConfigurationService} from "./services/configuration.service";
 import {AnalysisContextService} from "./services/analysis-context.service";
 import {ApplicationGroupService} from "./services/application-group.service";
@@ -128,7 +127,6 @@ import {ActiveExecutionsProgressbarComponent} from "./components/executions/acti
         // Components
         AddRulesPathModalComponent,
         AnalysisContextAdvancedOptionsModalComponent,
-        BreadCrumbsComponent,
         ConfirmationModalComponent,
         ModalDialogComponent,
         NavbarComponent,

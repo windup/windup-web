@@ -53,7 +53,7 @@ export const appRoutes: Routes = [
                         }
                     },
                     {path: "project-list",           component: ProjectListComponent,   data: {displayName: "Project List"}},
-                    {path: 'executions', component: AllExecutionsComponent}
+                    {path: 'executions', component: AllExecutionsComponent, data: {displayName: 'Global Executions List'}}
                 ]
             },
             {

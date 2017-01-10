@@ -15,7 +15,6 @@ import freemarker.template.SimpleHash;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
-import freemarker.template.utility.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -58,6 +57,7 @@ public class FreemarkerServlet extends freemarker.ext.servlet.FreemarkerServlet
 
             hashModel.put("dispatchRequest", new TemplateMethodModelEx()
             {
+                @SuppressWarnings("rawtypes")
                 @Override
                 public Object exec(List arguments) throws TemplateModelException
                 {
@@ -107,7 +107,7 @@ public class FreemarkerServlet extends freemarker.ext.servlet.FreemarkerServlet
 
     private void deriveResponseContentType(HttpServletRequest request, HttpServletResponse response)
     {
-        Map<String, String> suffixToMimeType = new HashMap();
+        Map<String, String> suffixToMimeType = new HashMap<>();
         suffixToMimeType.put("html", "text/html");
         suffixToMimeType.put("xml", "text/xml");
         suffixToMimeType.put("json", "application/json");
