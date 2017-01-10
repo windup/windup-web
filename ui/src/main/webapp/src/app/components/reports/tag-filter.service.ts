@@ -33,7 +33,6 @@ export class TagFilterService {
         if (!this._reportFilter.includeTags.length || this.tagValueInCollection(this._reportFilter.includeTags, tagValue))
             matches = true;
 
-        console.log("Tag matches for: " + tag + " returning: " + matches);
         return matches;
     }
 
