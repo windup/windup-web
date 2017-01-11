@@ -30,7 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 public class GraphResourceImpl extends AbstractGraphResource implements GraphResource
 {
     @Override
-    public List<Map<String, Object>> getEdges(Long executionID, Integer vertexID, String edgeDirection, String edgeLabel)
+    public List<Map<String, Object>> getEdges(Long executionID, Integer vertexID, String edgeDirection, String edgeLabel, Boolean dedup)
     {
         GraphContext graphContext = getGraph(executionID);
         if (vertexID == null)
@@ -43,13 +43,13 @@ public class GraphResourceImpl extends AbstractGraphResource implements GraphRes
 
         for (Vertex v : relatedVertices)
         {
-            vertices.add(convertToMap(executionID, v, 0));
+            vertices.add(convertToMap(executionID, v, 0, dedup));
         }
         return vertices;
     }
 
     @Override
-    public List<Map<String, Object>> getByType(Long executionID, String vertexType, Integer depth, String inEdges, String outEdges)
+    public List<Map<String, Object>> getByType(Long executionID, String vertexType, Integer depth, Boolean dedup, String inEdges, String outEdges)
     {
         List<String> inEdges_ = inEdges == null ? Collections.emptyList() : Arrays.asList(StringUtils.split(inEdges, ','));
         List<String> outEdges_ = outEdges == null ? Collections.emptyList() : Arrays.asList(StringUtils.split(outEdges, ','));
@@ -58,26 +58,26 @@ public class GraphResourceImpl extends AbstractGraphResource implements GraphRes
         List<Map<String, Object>> vertices = new ArrayList<>();
         for (Vertex v : graphContext.getFramed().getVertices(WindupVertexFrame.TYPE_PROP, vertexType))
         {
-            vertices.add(convertToMap(executionID, v, depth, outEdges_, inEdges_));
+            vertices.add(convertToMap(executionID, v, depth, dedup, outEdges_, inEdges_));
         }
         return vertices;
     }
 
     @Override
-    public List<Map<String, Object>> getByType(Long executionID, String vertexType, String propertyName, String propertyValue, Integer depth)
+    public List<Map<String, Object>> getByType(Long executionID, String vertexType, String propertyName, String propertyValue, Integer depth, Boolean dedup)
     {
         GraphContext graphContext = getGraph(executionID);
         List<Map<String, Object>> vertices = new ArrayList<>();
         Query query = graphContext.getFramed().query().has(WindupVertexFrame.TYPE_PROP, vertexType).has(propertyName, propertyValue);
         for (Vertex vertex : query.vertices())
         {
-            vertices.add(convertToMap(executionID, vertex, depth));
+            vertices.add(convertToMap(executionID, vertex, depth, dedup));
         }
         return vertices;
     }
 
     @Override
-    public Map<String, Object> get(Long executionID, Integer id, Integer depth)
+    public Map<String, Object> get(Long executionID, Integer id, Integer depth, Boolean dedup)
     {
         if (executionID == null)
             throw new IllegalArgumentException("Execution ID not specified.");
@@ -95,7 +95,7 @@ public class GraphResourceImpl extends AbstractGraphResource implements GraphRes
                 final Response response = RestUtil.createErrorResponse(Response.Status.NOT_FOUND, msg);
                 throw new NotFoundException(msg, response);
             }
-            return convertToMap(executionID, vertex, depth);
+            return convertToMap(executionID, vertex, depth, dedup);
         }
         catch (IllegalStateException ex)
         {

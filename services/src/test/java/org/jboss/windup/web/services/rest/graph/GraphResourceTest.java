@@ -62,7 +62,7 @@ public class GraphResourceTest extends AbstractGraphResourceTest
     @RunAsClient
     public void testQueryByType()
     {
-        List<Map<String, Object>> fileModels = graphResource.getByType(execution.getId(), FileModel.TYPE, 1, null, null);
+        List<Map<String, Object>> fileModels = graphResource.getByType(execution.getId(), FileModel.TYPE, 1, false, null, null);
         Assert.assertNotNull(fileModels);
         Assert.assertTrue(fileModels.size() > 1);
 
@@ -76,7 +76,7 @@ public class GraphResourceTest extends AbstractGraphResourceTest
     @RunAsClient
     public void testEdgeQuery()
     {
-        List<Map<String, Object>> fileModels = graphResource.getByType(execution.getId(), FileModel.TYPE, FileModel.FILE_NAME, "windup-src-example", 0);
+        List<Map<String, Object>> fileModels = graphResource.getByType(execution.getId(), FileModel.TYPE, FileModel.FILE_NAME, "windup-src-example", 0, false);
         Assert.assertNotNull(fileModels);
         Assert.assertTrue(fileModels.size() == 1);
 
@@ -92,7 +92,7 @@ public class GraphResourceTest extends AbstractGraphResourceTest
             Assert.assertNotNull(edgesUri);
 
             Object vertexID = fileModel.get(GraphResource.KEY_ID);
-            List<Map<String, Object>> edges = graphResource.getEdges(execution.getId(), (Integer)vertexID, "OUT", FileModel.PARENT_FILE);
+            List<Map<String, Object>> edges = graphResource.getEdges(execution.getId(), (Integer)vertexID, "OUT", FileModel.PARENT_FILE, false);
             Assert.assertNotNull(edges);
             Assert.assertEquals(1, edges.size());
             Assert.assertNotNull(edges.get(0));
@@ -103,7 +103,7 @@ public class GraphResourceTest extends AbstractGraphResourceTest
     @RunAsClient
     public void testQueryByTypeAndProperty()
     {
-        List<Map<String, Object>> fileModels = graphResource.getByType(execution.getId(), FileModel.TYPE, FileModel.FILE_NAME, "windup-src-example", 1);
+        List<Map<String, Object>> fileModels = graphResource.getByType(execution.getId(), FileModel.TYPE, FileModel.FILE_NAME, "windup-src-example", 1, false);
         Assert.assertNotNull(fileModels);
         Assert.assertTrue(fileModels.size() == 1);
 

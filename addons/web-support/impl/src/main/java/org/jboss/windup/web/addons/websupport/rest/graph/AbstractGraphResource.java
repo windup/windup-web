@@ -20,9 +20,12 @@ import org.jboss.windup.web.addons.websupport.services.ReportFilterService;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
+ * @author <a href="http://ondra.zizka.cz">Ondrej Zizka, zizka at seznam.cz</a>
  */
 public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
 {
@@ -56,31 +59,40 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
         return uri.getBaseUri() + GraphResource.GRAPH_RESOURCE_URL + params;
     }
 
-    protected Map<String, Object> convertToMap(long executionID, Vertex vertex, Integer depth)
+    protected Map<String, Object> convertToMap(long executionID, Vertex vertex, Integer depth, boolean dedup)
     {
-        return convertToMap(executionID, vertex, depth, Collections.emptyList(), Collections.emptyList());
+        return convertToMap(executionID, vertex, depth, dedup, Collections.emptyList(), Collections.emptyList());
     }
 
-    protected Map<String, Object> convertToMap(long executionID, Vertex vertex, Integer depth, List<String> whitelistedOutEdges, List<String> whitelistedInLabels)
+    protected Map<String, Object> convertToMap(long executionID, Vertex vertex, Integer depth, boolean dedup, List<String> whitelistedOutEdges, List<String> whitelistedInLabels)
     {
-        if (depth == null)
-            depth = 0;
+        return convertToMap(new GraphMarhallingContext(executionID, vertex, depth, dedup, whitelistedOutEdges, whitelistedInLabels), vertex);
+    }
 
+    private Map<String, Object> convertToMap(GraphMarhallingContext ctx, Vertex vertex)
+    {
         Map<String, Object> result = new HashMap<>();
 
         result.put(GraphResource.TYPE, GraphResource.TYPE_VERTEX);
+        result.put(GraphResource.KEY_ID, vertex.getId());
+
+        // Spare CPU cycles, save the planet. Visited vertices will only contain _id.
+        if (ctx.deduplicateVertices && !ctx.addVisited(vertex))
+            return result;
+
         for (String key : vertex.getPropertyKeys())
         {
             result.put(key, vertex.getProperty(key));
         }
-        result.put(GraphResource.KEY_ID, vertex.getId());
+
 
         Map<String, Object> outVertices = new HashMap<>();
         result.put(GraphResource.VERTICES_OUT, outVertices);
-        addEdges(executionID, outVertices, vertex, depth, Direction.OUT, whitelistedOutEdges, whitelistedInLabels);
+        addEdges(ctx, vertex, Direction.OUT, outVertices);
+
         Map<String, Object> inVertices = new HashMap<>();
         result.put(GraphResource.VERTICES_IN, inVertices);
-        addEdges(executionID, inVertices, vertex, depth, Direction.IN, whitelistedOutEdges, whitelistedInLabels);
+        addEdges(ctx, vertex, Direction.IN, inVertices);
 
         return result;
     }
@@ -92,12 +104,9 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
     }
 
     @SuppressWarnings("unchecked")
-    private void addEdges(long executionID, Map<String, Object> result, Vertex vertex, Integer remainingDepth, Direction direction,
-                List<String> whitelistedOutEdges, List<String> whitelistedInEdges)
+    private void addEdges(GraphMarhallingContext ctx, Vertex vertex, Direction direction, Map<String, Object> result)
     {
-        final Direction opposite = direction == Direction.OUT ? Direction.IN : Direction.OUT;
-
-        List<String> whitelistedLabels = direction == Direction.OUT ? whitelistedOutEdges : whitelistedInEdges;
+        List<String> whitelistedLabels = direction == Direction.OUT ? ctx.whitelistedOutEdges : ctx.whitelistedInEdges;
 
         Iterable<Edge> edges;
         if (whitelistedLabels == null || whitelistedLabels.isEmpty())
@@ -111,7 +120,7 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
 
             Map<String, Object> edgeDetails = (Map<String, Object>) result.get(label);
             // If the details are already there and we aren't recursing any further, then just skip
-            if (!isWhitelistedEdge(whitelistedOutEdges, whitelistedInEdges, direction, label) && edgeDetails != null && (remainingDepth == null || remainingDepth <= 0))
+            if (!isWhitelistedEdge(ctx.whitelistedOutEdges, ctx.whitelistedInEdges, direction, label) && edgeDetails != null && ctx.remainingDepth <= 0)
                 continue;
 
             final List<Map<String, Object>> linkedVertices;
@@ -122,10 +131,10 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
                 result.put(label, edgeDetails);
 
                 // If we aren't serializing any further, then just provide a link
-                if (!isWhitelistedEdge(whitelistedOutEdges, whitelistedInEdges, direction, label) && (remainingDepth == null || remainingDepth <= 0))
+                if (!isWhitelistedEdge(ctx.whitelistedOutEdges, ctx.whitelistedInEdges, direction, label) && ctx.remainingDepth <= 0)
                 {
                     edgeDetails.put(GraphResource.TYPE, GraphResource.TYPE_LINK);
-                    String linkUri = getLink(executionID, vertex, direction.toString(), label);
+                    String linkUri = getLink(ctx.executionID, vertex, direction.toString(), label);
                     edgeDetails.put(GraphResource.LINK, linkUri);
                     continue;
                 }
@@ -138,10 +147,12 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
                 linkedVertices = (List<Map<String, Object>>) edgeDetails.get(GraphResource.VERTICES);
             }
 
-            Vertex otherVertex = edge.getVertex(opposite);
+            Vertex otherVertex = edge.getVertex(direction == Direction.OUT ? Direction.IN : Direction.OUT);
 
             // Recursion
-            Map<String, Object> otherVertexMap = convertToMap(executionID, otherVertex, remainingDepth - 1, whitelistedOutEdges, whitelistedInEdges);
+            ctx.remainingDepth--;
+            Map<String, Object> otherVertexMap = convertToMap(ctx, otherVertex);
+            ctx.remainingDepth++;
 
             // Add edge properties if any
             if (!edge.getPropertyKeys().isEmpty())
@@ -156,10 +167,12 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
 
     protected List<Map<String, Object>> frameIterableToResult(long executionID, Iterable<? extends WindupVertexFrame> frames, int depth)
     {
+        GraphMarhallingContext ctx = new GraphMarhallingContext(executionID, null, depth, false, Collections.emptyList(), Collections.emptyList());
+
         List<Map<String, Object>> result = new ArrayList<>();
         for (WindupVertexFrame frame : frames)
         {
-            result.add(convertToMap(executionID, frame.asVertex(), depth, Collections.emptyList(), Collections.emptyList()));
+            result.add(convertToMap(ctx, frame.asVertex()));
         }
         return result;
     }
@@ -174,5 +187,46 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
         if (graph == null)
             throw new IllegalStateException("GraphContext obtaining failed for exec. ID " + executionID + ", path: " + graphPath);
         return graph;
+    }
+}
+
+
+/**
+ * Keeps the context of a marshalling of a single data tree.
+ */
+class GraphMarhallingContext
+{
+    final long executionID;
+    final Vertex startVertex;
+    int remainingDepth;
+    final List<String> whitelistedOutEdges;
+    final List<String> whitelistedInEdges;
+
+    final Set<Long> visitedVertices = new HashSet();
+    final boolean deduplicateVertices;
+
+
+    public GraphMarhallingContext(long executionID, Vertex startVertex, Integer depth, boolean dedup, List<String> whitelistedOutEdges, List<String> whitelistedInLabels)
+    {
+        this.executionID = executionID;
+        this.startVertex = startVertex;
+        this.remainingDepth = depth == null ? 0 : depth;
+        this.deduplicateVertices = dedup;
+        this.whitelistedOutEdges = whitelistedOutEdges;
+        this.whitelistedInEdges = whitelistedInLabels;
+    }
+
+
+    /**
+     * @return False if the given vertex was already visited before.
+     */
+    boolean addVisited(Vertex v)
+    {
+        return this.visitedVertices.add(((Number)v.getId()).longValue());
+    }
+
+    boolean wasVisited(Vertex v)
+    {
+        return this.visitedVertices.contains(((Number)v.getId()).longValue());
     }
 }
