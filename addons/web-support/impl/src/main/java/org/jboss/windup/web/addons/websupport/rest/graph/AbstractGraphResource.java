@@ -59,15 +59,15 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
         return uri.getBaseUri() + GraphResource.GRAPH_RESOURCE_URL + params;
     }
 
-    protected Map<String, Object> convertToMap(long executionID, Vertex vertex, Integer depth)
+    protected Map<String, Object> convertToMap(long executionID, Vertex vertex, Integer depth, boolean dedup)
     {
-        return convertToMap(executionID, vertex, depth, Collections.emptyList(), Collections.emptyList());
+        return convertToMap(executionID, vertex, depth, dedup, Collections.emptyList(), Collections.emptyList());
     }
 
-    protected Map<String, Object> convertToMap(long executionID, Vertex vertex, Integer depth, List<String> whitelistedOutEdges, List<String> whitelistedInLabels)
+    protected Map<String, Object> convertToMap(long executionID, Vertex vertex, Integer depth, boolean dedup, List<String> whitelistedOutEdges, List<String> whitelistedInLabels)
     {
         return convertToMap(
-                new GraphMarhallingContext(executionID, vertex, depth, whitelistedOutEdges, whitelistedInLabels),
+                new GraphMarhallingContext(executionID, vertex, depth, dedup, whitelistedOutEdges, whitelistedInLabels),
                 executionID, vertex, depth, whitelistedOutEdges, whitelistedInLabels);
     }
 
@@ -84,7 +84,7 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
         result.put(GraphResource.KEY_ID, vertex.getId());
 
         // Spare CPU cycles, save the planet. Visited vertices will only contain _id.
-        if (!ctx.addVisited(vertex))
+        if (ctx.deduplicateVertices && !ctx.addVisited(vertex))
             return result;
 
         for (String key : vertex.getPropertyKeys())
@@ -177,7 +177,7 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
 
     protected List<Map<String, Object>> frameIterableToResult(long executionID, Iterable<? extends WindupVertexFrame> frames, int depth)
     {
-        GraphMarhallingContext ctx = new GraphMarhallingContext(executionID, null, depth, Collections.emptyList(), Collections.emptyList());
+        GraphMarhallingContext ctx = new GraphMarhallingContext(executionID, null, depth, false, Collections.emptyList(), Collections.emptyList());
 
         List<Map<String, Object>> result = new ArrayList<>();
         for (WindupVertexFrame frame : frames)
@@ -201,6 +201,9 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
 }
 
 
+/**
+ * Keeps the context of a marshalling of a single data tree.
+ */
 class GraphMarhallingContext
 {
     long executionID;
@@ -210,13 +213,15 @@ class GraphMarhallingContext
     List<String> whitelistedInEdges;
 
     Set<Long> visitedVertices = new HashSet();
+    boolean deduplicateVertices = false;
 
 
-    public GraphMarhallingContext(long executionID, Vertex startVertex, Integer depth, List<String> whitelistedOutEdges, List<String> whitelistedInLabels)
+    public GraphMarhallingContext(long executionID, Vertex startVertex, Integer depth, boolean dedup, List<String> whitelistedOutEdges, List<String> whitelistedInLabels)
     {
         this.executionID = executionID;
         this.startVertex = startVertex;
         this.remainingDepth = depth == null ? 0 : depth;
+        this.deduplicateVertices = dedup;
         this.whitelistedOutEdges = whitelistedOutEdges;
         this.whitelistedInEdges = whitelistedInLabels;
     }

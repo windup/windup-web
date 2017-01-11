@@ -11,6 +11,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 import java.util.Map;
+import javax.ws.rs.DefaultValue;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -41,7 +42,8 @@ public interface GraphResource extends FurnaceRESTGraphAPI
     Map<String, Object> get(
         @PathParam("executionID") Long executionID,
         @PathParam("id") Integer vertexID,
-        @QueryParam("depth") Integer depth
+        @QueryParam("depth") Integer depth,
+        @QueryParam("dedup") @DefaultValue("false") Boolean dedup
     );
 
     @GET()
@@ -50,7 +52,8 @@ public interface GraphResource extends FurnaceRESTGraphAPI
         @PathParam("executionID") Long executionID,
         @PathParam("vertexID") Integer vertexID,
         @PathParam("edgeDirection") String edgeDirection,
-        @PathParam("edgeLabel") String edgeLabel
+        @PathParam("edgeLabel") String edgeLabel,
+        @QueryParam("dedup") @DefaultValue("false") Boolean dedup
     );
 
     @GET()
@@ -59,6 +62,7 @@ public interface GraphResource extends FurnaceRESTGraphAPI
         @PathParam("executionID") Long executionID,
         @PathParam("vertexType") String vertexType,
         @QueryParam("depth") Integer depth,
+        @QueryParam("dedup") @DefaultValue("false") Boolean dedup,
         @QueryParam("in") String inEdges,
         @QueryParam("out") String outEdges
     );
@@ -74,7 +78,8 @@ public interface GraphResource extends FurnaceRESTGraphAPI
         @PathParam("vertexType") String vertexType,
         @PathParam("propertyName") String propertyName,
         @PathParam("propertyValue") String propertyValue,
-        @QueryParam("depth") Integer depth
+        @QueryParam("depth") Integer depth,
+        @QueryParam("dedup") @DefaultValue("false") Boolean dedup
     );
 
     // @formatter:on
