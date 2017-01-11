@@ -11,7 +11,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 import java.util.Map;
-import javax.ws.rs.DefaultValue;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -34,8 +33,6 @@ public interface GraphResource extends FurnaceRESTGraphAPI
     String VERTICES_OUT = "vertices_out";
     String VERTICES_IN = "vertices_in";
     String EDGE_DATA = "edgeData";
-
-    public static final boolean DEVELOPMENT_MODE = true;
 
     // @formatter:off
 
