@@ -17,9 +17,10 @@ import {IdentifiedArchiveModel} from "../../../generated/tsModels/IdentifiedArch
 import {TaggableModel} from "../../../generated/tsModels/TaggableModel";
 import {compareTraversals, compareTraversalChildFiles} from "../file-path-comparators";
 import {ApplicationGroup} from "windup-services";
-import {TagFilterService} from "../tag-filter.service";
+import {TagFilterService, MatchResult} from "../tag-filter.service";
 import {TagSetModel} from "../../../generated/tsModels/TagSetModel";
 import {forkJoin} from "rxjs/observable/forkJoin";
+import {Observable} from "rxjs";
 
 @Component({
     templateUrl: '/application-details.component.html',
@@ -120,23 +121,44 @@ export class ApplicationDetailsComponent implements OnInit {
                         let classifications = hintsAndClassifications[0];
                         let hints = hintsAndClassifications[1];
 
+                        let classificationTagMapObservables = classifications.map(classification => {
+                            let taggableModel = <TaggableModel>new GraphJSONToModelService().translateType(classification, this._http, TaggableModel);
+                            return taggableModel.tagModel.map(tagModel => {
+                                return {classification: classification, tagModel: tagModel}
+                            });
+                        });
+
+                        forkJoin(classificationTagMapObservables).subscribe(
+                            (classificationAndTags:{classification: ClassificationModel, tagModel: TagSetModel}[]) => {
+                                classificationAndTags.forEach(classificationAndTag => {
+                                    let tagFilterService = new TagFilterService(this.group.reportFilter);
+                                    if (!tagFilterService.tagsMatch(classificationAndTag.tagModel.tags))
+                                        classifications.splice(classifications.indexOf(classificationAndTag.classification), 1);
+                                });
+                            }
+                        );
+
+                        let hintTagMapObservables = hints.map(hint => {
+                            let taggableModel = <TaggableModel>new GraphJSONToModelService().translateType(hint, this._http, TaggableModel);
+                            return taggableModel.tagModel.map(tagModel => {
+                                return {hint: hint, tagModel: tagModel};
+                            });
+                        });
+
+                        forkJoin(hintTagMapObservables).subscribe(
+                            (hintAndTags:{hint: InlineHintModel, tagModel: TagSetModel}[]) => {
+                                hintAndTags.forEach(hintAndTag => {
+                                    let tagFilterService = new TagFilterService(this.group.reportFilter);
+                                    if (!tagFilterService.tagsMatch(hintAndTag.tagModel.tags))
+                                        hints.splice(hints.indexOf(hintAndTag.hint), 1);
+                                })
+                            });
+
                         this.classificationsByFile.set(file.vertexId, classifications);
                         this.hintsByFile.set(file.vertexId, hints);
 
-                        let classificationTagMapObservables = classifications.map(classification => {
-                            let taggableModel = <TaggableModel>new GraphJSONToModelService().translateType(classification, this._http, TaggableModel);
-                            return taggableModel.tagModel;
-                        });
-                        let hintTagMapObservables = hints.map(hint => {
-                            let taggableModel = <TaggableModel>new GraphJSONToModelService().translateType(hint, this._http, TaggableModel);
-                            return taggableModel.tagModel;
-                        });
-                        forkJoin(classificationTagMapObservables.concat(hintTagMapObservables)).subscribe(tagSetModels => {
-                            tagSetModels.forEach(tagSetModel => {
-                                this.cacheTagsForFile(file, tagSetModel);
-                            })
-                        });
-                        this.filterAndSetFiles(traversal, files);
+                        this.filesByProject.set(traversal.vertexId, files);
+                        this.updateTotalPoints();
                     });
 
                     file.technologyTags.subscribe(technologyTags => this.technologyTagsByFile.set(file.vertexId, technologyTags));
@@ -149,28 +171,6 @@ export class ApplicationDetailsComponent implements OnInit {
                 },
                 error => this._notificationService.error(utils.getErrorMessage(error)));
         });
-    }
-
-    private filterAndSetFiles(traversal:PersistedProjectModelTraversalModel, files:PersistedTraversalChildFileModel[]) {
-        let tagFilterService = new TagFilterService(this.group.reportFilter);
-        files = files.filter((file) => {
-            let tags = this.tagsByFile.get(file.vertexId);
-            if (!tags)
-                return true;
-
-            for (let tag of tags) {
-                if (!tagFilterService.tagMatches(tag)) {
-                    this.classificationsByFile.delete(file.vertexId);
-                    this.hintsByFile.delete(file.vertexId);
-                    return false;
-                }
-            }
-
-            return true;
-        });
-
-        this.filesByProject.set(traversal.vertexId, files);
-        this.updateTotalPoints();
     }
 
     private cacheTagsForFile(file:PersistedTraversalChildFileModel, tagModel:TagSetModel) {

@@ -24,7 +24,6 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 import org.jboss.windup.config.RuleProvider;
 import org.jboss.windup.config.RuleUtils;
@@ -111,6 +110,10 @@ public class RuleDataLoader
                 RuleProviderRegistry providerRegistry = ruleProviderService.loadRuleProviderRegistry(Collections.singleton(path));
 
                 HashMap<String, Tag> tagHashMap = new HashMap<>();
+                for (Tag tag : (Iterable<Tag>)this.entityManager.createQuery("select t from Tag t").getResultList())
+                {
+                    tagHashMap.put(tag.getName(), tag);
+                }
 
                 for (RuleProvider provider : providerRegistry.getProviders())
                 {
@@ -196,11 +199,6 @@ public class RuleDataLoader
         {
             if (!tagHashMap.containsKey(tag))
             {
-                Query q = this.entityManager.createQuery("select t from Tag t where t." + Tag.TAG_NAME + " = :tagName");
-                q.setParameter("tagName", tag);
-                if (!q.getResultList().isEmpty())
-                    continue;
-
                 Tag tagEntity = new Tag(tag);
                 tagHashMap.put(tag, tagEntity);
 

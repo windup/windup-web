@@ -74,8 +74,7 @@ export class ReportFilterComponent implements OnInit, OnDestroy {
 
             this._tagService.getTagData().subscribe(
                 tags => {
-                    this.tags = [];
-                    this.accumulateAllTags(tags);
+                    this.tags = this.accumulateAllTags([], tags);
                 },
                 error => this._notificationService.error(utils.getErrorMessage(error))
             );
@@ -87,13 +86,14 @@ export class ReportFilterComponent implements OnInit, OnDestroy {
         }));
     }
 
-    private accumulateAllTags(tags:TagHierarchyData[]) {
+    private accumulateAllTags(accumulatedTags:Tag[], tags:TagHierarchyData[]):Tag[] {
         tags.forEach(tag => {
-            if (!this.tags.find(existingTag => existingTag.name == tag.tagName))
-                this.tags.push({ id: null, name: tag.tagName });
+            if (!accumulatedTags.find(existingTag => existingTag.name == tag.tagName))
+                accumulatedTags.push({ id: null, name: tag.tagName });
 
-            this.accumulateAllTags(tag.containedTags);
+            this.accumulateAllTags(accumulatedTags, tag.containedTags);
         });
+        return accumulatedTags;
     }
 
     ngOnDestroy(): void {

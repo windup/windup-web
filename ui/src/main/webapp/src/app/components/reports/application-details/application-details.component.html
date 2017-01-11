@@ -63,7 +63,7 @@
                 <div class="panel-heading">
                     <h3 class="panel-title">Application Messages for: {{traversal.path}}</h3>
                 </div>
-                <table class="table table-striped table-bordered" *ngIf="(traversal.applicationMessages | async).length > 0">
+                <table class="table table-striped table-bordered">
                     <tr *ngFor="let applicationMessage of (traversal.applicationMessages | async)">
                         <td [innerHTML]="applicationMessage.message"></td>
                     </tr>

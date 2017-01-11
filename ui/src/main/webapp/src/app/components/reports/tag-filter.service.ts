@@ -1,39 +1,68 @@
 import { ReportFilter, Tag } from "windup-services";
 import { TechnologyTagModel } from "../../generated/tsModels/TechnologyTagModel";
 
+export enum MatchResult {
+    ExplicitInclude,
+    ImplicitInclude,
+    ImplicitExclude,
+    ExplicitExclude
+}
+
 export class TagFilterService {
 
     constructor(private _reportFilter: ReportFilter) {
     }
 
-    tagMatches(tag: TechnologyTagModel | string):boolean {
-        // Always match if there is no filter
-        if (!this._reportFilter)
-            return true;
+    tagsMatch(tags:TechnologyTagModel[] | string[]):boolean {
+        let implicitIncludeFound = false;
+        let explicitIncludeFound = false;
+        let implicitExcludeFound = false;
+        let explicitExcludeFound = false;
+        for (let tag of tags) {
+            let tagMatchStatus = this.tagMatches(tag);
+            if (tagMatchStatus == MatchResult.ImplicitInclude)
+                implicitIncludeFound = true;
+            else if (tagMatchStatus == MatchResult.ExplicitInclude)
+                explicitIncludeFound = true;
+            else if (tagMatchStatus == MatchResult.ImplicitExclude)
+                implicitExcludeFound = true;
+            else if (tagMatchStatus == MatchResult.ExplicitExclude)
+                explicitExcludeFound = true;
+        }
+        return explicitIncludeFound ||
+            !(implicitExcludeFound || explicitExcludeFound);
+    }
 
-        // Always match null tags
+    tagMatches(tag: TechnologyTagModel | string):MatchResult {
+        // Always match if there is no filter
+        if (!this._reportFilter || !this._reportFilter.enabled)
+            return MatchResult.ImplicitInclude;
+
+        // Always match null tags (I'm not sure that this would ever get hit)
         if (!tag)
-            return true;
+            return MatchResult.ImplicitInclude;
 
         let tagValue = tag;
         if (tagValue instanceof TechnologyTagModel)
             tagValue = (<TechnologyTagModel>tagValue).name;
 
-        if (!this._reportFilter.includeTags)
-            return true;
+        let includeTags = this._reportFilter.includeTags ? this._reportFilter.includeTags : [];
+        let excludeTags = this._reportFilter.excludeTags ? this._reportFilter.excludeTags : [];
 
-        if (!this._reportFilter.excludeTags)
-            return true;
-
-        let matches = false;
-        if (this.tagValueInCollection(this._reportFilter.excludeTags, tagValue)) {
-            matches = false;
-        }
-
-        if (!this._reportFilter.includeTags.length || this.tagValueInCollection(this._reportFilter.includeTags, tagValue))
-            matches = true;
-
-        return matches;
+        // If there are no include tags and no exclude tags, return true
+        if (includeTags.length == 0 && excludeTags.length == 0)
+            return MatchResult.ImplicitInclude;
+        else if (this.tagValueInCollection(includeTags, tagValue))
+            // Tag was explicitly included, return true
+            return MatchResult.ExplicitInclude;
+        else if (this.tagValueInCollection(excludeTags, tagValue))
+            // Tag is explicitly excluded, return false
+            return MatchResult.ExplicitExclude;
+        else if (includeTags.length != 0)
+            // List of include Tags was present, but this tag wasn't explicitly included, return false
+            return MatchResult.ImplicitExclude;
+        else
+            return MatchResult.ImplicitInclude;
     }
 
     private tagValueInCollection(collection:Tag[], tagValue:string) {
