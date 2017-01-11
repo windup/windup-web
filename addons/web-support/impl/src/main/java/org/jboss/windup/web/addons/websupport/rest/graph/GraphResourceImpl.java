@@ -18,6 +18,9 @@ import com.thinkaurelius.titan.diskstorage.PermanentBackendException;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Query;
 import com.tinkerpop.blueprints.Vertex;
+import java.util.Arrays;
+import java.util.Collections;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -46,13 +49,16 @@ public class GraphResourceImpl extends AbstractGraphResource implements GraphRes
     }
 
     @Override
-    public List<Map<String, Object>> getByType(Long executionID, String vertexType, Integer depth)
+    public List<Map<String, Object>> getByType(Long executionID, String vertexType, Integer depth, String inEdges, String outEdges)
     {
+        List<String> inEdges_ = inEdges == null ? Collections.emptyList() : Arrays.asList(StringUtils.split(inEdges, ','));
+        List<String> outEdges_ = outEdges == null ? Collections.emptyList() : Arrays.asList(StringUtils.split(outEdges, ','));
+
         GraphContext graphContext = getGraph(executionID);
         List<Map<String, Object>> vertices = new ArrayList<>();
         for (Vertex v : graphContext.getFramed().getVertices(WindupVertexFrame.TYPE_PROP, vertexType))
         {
-            vertices.add(convertToMap(executionID, v, depth));
+            vertices.add(convertToMap(executionID, v, depth, outEdges_, inEdges_));
         }
         return vertices;
     }

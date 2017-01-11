@@ -11,6 +11,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 import java.util.Map;
+import javax.ws.rs.DefaultValue;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -33,19 +34,48 @@ public interface GraphResource extends FurnaceRESTGraphAPI
     String VERTICES_OUT = "vertices_out";
     String VERTICES_IN = "vertices_in";
 
+    // @formatter:off
+
     @GET
     @Path("/{executionID}/{id}")
-    Map<String, Object> get(@PathParam("executionID") Long executionID, @PathParam("id") Integer vertexID, @QueryParam("depth") Integer depth);
+    Map<String, Object> get(
+        @PathParam("executionID") Long executionID,
+        @PathParam("id") Integer vertexID,
+        @QueryParam("depth") Integer depth
+    );
 
     @GET()
     @Path("/{executionID}/edges/{vertexID}/{edgeDirection}/{edgeLabel}")
-    List<Map<String, Object>> getEdges(@PathParam("executionID") Long executionID, @PathParam("vertexID") Integer vertexID, @PathParam("edgeDirection") String edgeDirection, @PathParam("edgeLabel") String edgeLabel);
+    List<Map<String, Object>> getEdges(
+        @PathParam("executionID") Long executionID,
+        @PathParam("vertexID") Integer vertexID,
+        @PathParam("edgeDirection") String edgeDirection,
+        @PathParam("edgeLabel") String edgeLabel
+    );
 
     @GET()
     @Path("/{executionID}/by-type/{vertexType}")
-    List<Map<String, Object>> getByType(@PathParam("executionID") Long executionID, @PathParam("vertexType") String vertexType, @QueryParam("depth") Integer depth);
+    List<Map<String, Object>> getByType(
+        @PathParam("executionID") Long executionID,
+        @PathParam("vertexType") String vertexType,
+        @QueryParam("depth") Integer depth,
+        @QueryParam("in") String inEdges,
+        @QueryParam("out") String outEdges
+    );
 
+
+    /**
+     * Filters the returned frames to those which have given @propertyName with a given @propertyValue.
+     */
     @GET()
     @Path("/{executionID}/by-type/{vertexType}/{propertyName}={propertyValue}")
-    List<Map<String, Object>> getByType(@PathParam("executionID") Long executionID, @PathParam("vertexType") String vertexType, @PathParam("propertyName") String propertyName, @PathParam("propertyValue") String propertyValue, @QueryParam("depth") Integer depth);
+    List<Map<String, Object>> getByType(
+        @PathParam("executionID") Long executionID,
+        @PathParam("vertexType") String vertexType,
+        @PathParam("propertyName") String propertyName,
+        @PathParam("propertyValue") String propertyValue,
+        @QueryParam("depth") Integer depth
+    );
+
+    // @formatter:on
 }
