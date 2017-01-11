@@ -40,7 +40,7 @@ public class GraphResourceImpl extends AbstractGraphResource implements GraphRes
 
         for (Vertex v : relatedVertices)
         {
-            vertices.add(convertToMap(executionID, v, 0));
+            vertices.add(convertVertexToMap(executionID, v, 0));
         }
         return vertices;
     }
@@ -52,7 +52,7 @@ public class GraphResourceImpl extends AbstractGraphResource implements GraphRes
         List<Map<String, Object>> vertices = new ArrayList<>();
         for (Vertex v : graphContext.getFramed().getVertices(WindupVertexFrame.TYPE_PROP, vertexType))
         {
-            vertices.add(convertToMap(executionID, v, depth));
+            vertices.add(convertVertexToMap(executionID, v, depth));
         }
         return vertices;
     }
@@ -65,7 +65,7 @@ public class GraphResourceImpl extends AbstractGraphResource implements GraphRes
         Query query = graphContext.getFramed().query().has(WindupVertexFrame.TYPE_PROP, vertexType).has(propertyName, propertyValue);
         for (Vertex vertex : query.vertices())
         {
-            vertices.add(convertToMap(executionID, vertex, depth));
+            vertices.add(convertVertexToMap(executionID, vertex, depth));
         }
         return vertices;
     }
@@ -89,7 +89,7 @@ public class GraphResourceImpl extends AbstractGraphResource implements GraphRes
                 final Response response = RestUtil.createErrorResponse(Response.Status.NOT_FOUND, msg);
                 throw new NotFoundException(msg, response);
             }
-            return convertToMap(executionID, vertex, depth);
+            return convertVertexToMap(executionID, vertex, depth);
         }
         catch (IllegalStateException ex)
         {

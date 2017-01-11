@@ -53,7 +53,7 @@ public class ProjectTraversalResourceImpl extends AbstractGraphResource implemen
 
         for (PersistedProjectModelTraversalModel persistedTraversal : persistedTraversals)
         {
-            result.add(super.convertToMap(executionID, persistedTraversal.asVertex(), 0, whiteListedOutLabels, whiteListedInLabels));
+            result.add(super.convertVertexToMap(executionID, persistedTraversal.asVertex(), 0, whiteListedOutLabels, whiteListedInLabels));
         }
 
         return result;
