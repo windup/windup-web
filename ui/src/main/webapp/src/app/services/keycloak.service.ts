@@ -16,6 +16,9 @@ export class KeycloakService {
     protected static TOKEN_MIN_VALIDITY_MINUTES = 5;
 
     public constructor(private _router: Router) {
+        if (!Keycloak)
+            throw new Error("Keycloak class not defined; is Keycloak service running?");
+
         this.keyCloak = new Keycloak(KeycloakService.KEYCLOAK_FILE);
         this.init({ onLoad: Constants.SSO_MODE, checkLoginIframe: false })
             .subscribe((isLoggedIn) => {
