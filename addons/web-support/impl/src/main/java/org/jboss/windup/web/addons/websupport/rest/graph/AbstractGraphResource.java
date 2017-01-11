@@ -66,6 +66,8 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
         if (depth == null)
             depth = 0;
 
+        // Keep the order so that _id and _type are 1st.
+        //Map<String, Object> result = DEVELOPMENT_MODE ? new TreeMap<>() : new HashMap<>();
         Map<String, Object> result = new HashMap<>();
 
         result.put(GraphResource.TYPE, GraphResource.TYPE_VERTEX);
@@ -139,7 +141,16 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
             }
 
             Vertex otherVertex = edge.getVertex(opposite);
+
+            // Recursion
             Map<String, Object> otherVertexMap = convertToMap(executionID, otherVertex, remainingDepth - 1, whitelistedOutEdges, whitelistedInEdges);
+
+            // Add edge properties if any
+            if (!edge.getPropertyKeys().isEmpty()){
+                Map<String, Object> edgeData = new HashMap<>();
+                edge.getPropertyKeys().forEach(key -> edgeData.put(key, edge.getProperty(key)));
+                otherVertexMap.put(GraphResource.EDGE_DATA, edgeData);
+            }
             linkedVertices.add(otherVertexMap);
         }
     }
