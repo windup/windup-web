@@ -108,7 +108,7 @@ public class MigrationIssuesEndpointImpl extends AbstractGraphResource implement
         return StreamSupport.stream(summary.getDescriptions().spliterator(), false)
                     .flatMap(description -> StreamSupport.stream(summary.getFilesForDescription(description).spliterator(), false))
                     .map(fileSummary -> new ProblemFileSummaryWrapper(
-                                this.convertToMap(executionId, fileSummary.getFile().asVertex(), 0),
+                                this.convertVertexToMap(executionId, fileSummary.getFile().asVertex(), 0),
                                 fileSummary.getOccurrences()))
                     .collect(Collectors.toList());
     }

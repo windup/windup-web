@@ -32,6 +32,7 @@ public interface GraphResource extends FurnaceRESTGraphAPI
     String VERTICES = "vertices";
     String VERTICES_OUT = "vertices_out";
     String VERTICES_IN = "vertices_in";
+    String EDGE_DATA = "edgeData";
 
     @GET
     @Path("/{executionID}/{id}")
