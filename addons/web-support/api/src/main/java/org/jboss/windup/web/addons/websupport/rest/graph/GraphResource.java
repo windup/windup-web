@@ -33,6 +33,9 @@ public interface GraphResource extends FurnaceRESTGraphAPI
     String VERTICES = "vertices";
     String VERTICES_OUT = "vertices_out";
     String VERTICES_IN = "vertices_in";
+    String EDGE_DATA = "edgeData";
+
+    public static final boolean DEVELOPMENT_MODE = true;
 
     // @formatter:off
 
