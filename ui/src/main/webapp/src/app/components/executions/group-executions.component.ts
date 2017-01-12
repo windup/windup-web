@@ -27,6 +27,7 @@ export class GroupExecutionsComponent extends ExecutionsMonitoringComponent impl
     ngOnInit(): void {
         this._activatedRoute.parent.data.subscribe((data: {applicationGroup: ApplicationGroup}) => {
             this.group = data.applicationGroup;
+            this.executions = this.group.executions;
             this.loadActiveExecutions(this.group.executions);
         });
 
