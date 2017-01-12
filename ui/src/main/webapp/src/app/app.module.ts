@@ -90,6 +90,8 @@ import {WindupExecutionService} from "./services/windup-execution.service";
 import {SchedulerService} from "./services/scheduler.service";
 import {ActiveExecutionsProgressbarComponent} from "./components/executions/active-executions-progressbar.component";
 import {TagDataService} from "./components/reports/tag-data.service";
+import {RuleProviderExecutionsService} from "./components/reports/rule-provider-executions/rule-provider-executions.service";
+import {RuleProviderExecutionsComponent} from "./components/reports/rule-provider-executions/rule-provider-executions.component";
 
 
 @NgModule({
@@ -161,7 +163,8 @@ import {TagDataService} from "./components/reports/tag-data.service";
         CustomSelectComponent,
         ReportFilterIndicatorComponent,
         TechnologyTagComponent,
-        ActiveExecutionsProgressbarComponent
+        ActiveExecutionsProgressbarComponent,
+        RuleProviderExecutionsComponent
     ],
     providers: [
         appRoutingProviders,
@@ -198,6 +201,7 @@ import {TagDataService} from "./components/reports/tag-data.service";
         WindupExecutionService,
         TagDataService,
         SchedulerService,
+        RuleProviderExecutionsService,
         {
             provide: RouteLinkProviderService,
             useFactory: () => {
