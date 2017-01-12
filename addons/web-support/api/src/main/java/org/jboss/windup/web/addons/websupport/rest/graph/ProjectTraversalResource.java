@@ -28,6 +28,10 @@ public interface ProjectTraversalResource extends FurnaceRESTGraphAPI
 
     /**
      * Returns a list of traversals based upon the traversal type.
+     *
+     * NOTE: In this case, the filter associated with the execution will only be applied at the application level.
+     *       Hints and Classifications will not be automatically filtered by the group filter.
+     *
      */
     @GET
     @Path("/{executionID}/by-traversal-type/{traversalType}")

@@ -14,13 +14,14 @@ import javax.validation.constraints.Size;
 @Entity
 public class Tag {
     public static final String TAG_ID = "tag_id";
+    public static final String TAG_NAME = "name";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = TAG_ID, updatable = false, nullable = false)
     private Long id;
 
-    @Column(length = 256)
+    @Column(name = TAG_NAME, length = 256)
     @Size(min = 0, max = 256)
     @NotNull
     private String name;

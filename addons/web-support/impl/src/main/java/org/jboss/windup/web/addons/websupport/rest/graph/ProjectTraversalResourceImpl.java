@@ -3,6 +3,7 @@ package org.jboss.windup.web.addons.websupport.rest.graph;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.model.OrganizationModel;
@@ -10,6 +11,7 @@ import org.jboss.windup.graph.model.ProjectModel;
 import org.jboss.windup.reporting.model.TaggableModel;
 import org.jboss.windup.web.addons.websupport.model.PersistedProjectModelTraversalModel;
 import org.jboss.windup.web.addons.websupport.model.PersistedTraversalChildFileModel;
+import org.jboss.windup.web.addons.websupport.model.ReportFilterDTO;
 import org.jboss.windup.web.addons.websupport.services.PersistedProjectModelTraversalService;
 
 /**
@@ -19,11 +21,15 @@ import org.jboss.windup.web.addons.websupport.services.PersistedProjectModelTrav
  */
 public class ProjectTraversalResourceImpl extends AbstractGraphResource implements ProjectTraversalResource
 {
+    private static Logger LOG = Logger.getLogger(ProjectTraversalResourceImpl.class.getName());
+
     @Override
     public List<Map<String, Object>> getTraversalsByType(Long executionID,
                 PersistedProjectModelTraversalModel.PersistedTraversalType persistedTraversalType)
     {
         GraphContext context = getGraph(executionID);
+        ReportFilterDTO filter = this.reportFilterService.getReportFilter(executionID);
+
         PersistedProjectModelTraversalService persistedTraversalService = new PersistedProjectModelTraversalService(context);
 
         Iterable<PersistedProjectModelTraversalModel> persistedTraversals = persistedTraversalService.getRootTraversalsByType(persistedTraversalType);
@@ -53,6 +59,9 @@ public class ProjectTraversalResourceImpl extends AbstractGraphResource implemen
 
         for (PersistedProjectModelTraversalModel persistedTraversal : persistedTraversals)
         {
+            if (!include(filter, persistedTraversal))
+                continue;
+
             result.add(super.convertToMap(executionID, persistedTraversal.asVertex(), 0, false, whiteListedOutLabels, whiteListedInLabels));
         }
 

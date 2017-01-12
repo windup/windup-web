@@ -16,6 +16,11 @@ import {Http} from "@angular/http";
 import {IdentifiedArchiveModel} from "../../../generated/tsModels/IdentifiedArchiveModel";
 import {TaggableModel} from "../../../generated/tsModels/TaggableModel";
 import {compareTraversals, compareTraversalChildFiles} from "../file-path-comparators";
+import {ApplicationGroup} from "windup-services";
+import {TagFilterService, MatchResult} from "../tag-filter.service";
+import {TagSetModel} from "../../../generated/tsModels/TagSetModel";
+import {forkJoin} from "rxjs/observable/forkJoin";
+import {Observable} from "rxjs";
 
 @Component({
     templateUrl: '/application-details.component.html',
@@ -42,13 +47,14 @@ export class ApplicationDetailsComponent implements OnInit {
         domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
     };
 
-    private execID: number;
+    private execID:number;
+    private group:ApplicationGroup;
     rootProjects:PersistedProjectModelTraversalModel[] = [];
 
     allProjects:PersistedProjectModelTraversalModel[] = [];
     projectsCollapsed:Map<number, boolean> = new Map<number, boolean>();
 
-    totalPoints: number = null;
+    totalPoints:number = null;
 
     traversalToCanonical:Map<number, ProjectModel> = new Map<number, ProjectModel>();
     traversalToOrganizations:Map<number, OrganizationModel[]> = new Map<number, OrganizationModel[]>();
@@ -62,23 +68,27 @@ export class ApplicationDetailsComponent implements OnInit {
 
     constructor(
         private _changeDetectorRef: ChangeDetectorRef,
-        private _route:ActivatedRoute,
+        private _activatedRoute:ActivatedRoute,
         private _projectTraversalService:ProjectTraversalService,
         private _notificationService:NotificationService,
         private _http:Http
     ) {}
 
     ngOnInit(): void {
-        this._route.params.forEach((params: Params) => {
-            this.execID = +params['executionId'];
-            this._projectTraversalService.getRootTraversals(this.execID, "ALL").subscribe(
-                traversals => {
-                    this.rootProjects = traversals;
-                    this.allProjects = [];
-                    this.flattenTraversals(traversals);
-                },
-                error => this._notificationService.error(utils.getErrorMessage(error))
-            );
+        this._activatedRoute.parent.parent.parent.data.subscribe((data: {applicationGroup: ApplicationGroup}) => {
+            this.group = data.applicationGroup;
+
+            this._activatedRoute.params.forEach((params: Params) => {
+                this.execID = +params['executionId'];
+                this._projectTraversalService.getRootTraversals(this.execID, "ALL").subscribe(
+                    traversals => {
+                        this.rootProjects = traversals;
+                        this.allProjects = [];
+                        this.flattenTraversals(traversals);
+                    },
+                    error => this._notificationService.error(utils.getErrorMessage(error))
+                );
+            });
         });
     }
 
@@ -105,25 +115,52 @@ export class ApplicationDetailsComponent implements OnInit {
 
             traversal.files.subscribe(files => {
                 files.sort(compareTraversalChildFiles);
-                this.filesByProject.set(traversal.vertexId, files);
+
                 files.forEach(file => {
-                    file.classifications.subscribe(classifications => {
-                        this.classificationsByFile.set(file.vertexId, classifications);
-                        classifications.forEach(classification => {
+                    file.classifications.zip(file.hints).subscribe(hintsAndClassifications => {
+                        let classifications = hintsAndClassifications[0];
+                        let hints = hintsAndClassifications[1];
+
+                        let classificationTagMapObservables = classifications.map(classification => {
                             let taggableModel = <TaggableModel>new GraphJSONToModelService().translateType(classification, this._http, TaggableModel);
-                            this.cacheTagsForFile(file, taggableModel);
-                        });
-                        this.updateTotalPoints();
-                    });
-                    file.hints.subscribe(hints => {
-                        this.hintsByFile.set(file.vertexId, hints);
-                        hints.forEach(hint => {
-                            let taggableModel = <TaggableModel>new GraphJSONToModelService().translateType(hint, this._http, TaggableModel);
-                            this.cacheTagsForFile(file, taggableModel);
+                            return taggableModel.tagModel.map(tagModel => {
+                                return {classification: classification, tagModel: tagModel}
+                            });
                         });
 
+                        forkJoin(classificationTagMapObservables).subscribe(
+                            (classificationAndTags:{classification: ClassificationModel, tagModel: TagSetModel}[]) => {
+                                classificationAndTags.forEach(classificationAndTag => {
+                                    let tagFilterService = new TagFilterService(this.group.reportFilter);
+                                    if (!tagFilterService.tagsMatch(classificationAndTag.tagModel.tags))
+                                        classifications.splice(classifications.indexOf(classificationAndTag.classification), 1);
+                                });
+                            }
+                        );
+
+                        let hintTagMapObservables = hints.map(hint => {
+                            let taggableModel = <TaggableModel>new GraphJSONToModelService().translateType(hint, this._http, TaggableModel);
+                            return taggableModel.tagModel.map(tagModel => {
+                                return {hint: hint, tagModel: tagModel};
+                            });
+                        });
+
+                        forkJoin(hintTagMapObservables).subscribe(
+                            (hintAndTags:{hint: InlineHintModel, tagModel: TagSetModel}[]) => {
+                                hintAndTags.forEach(hintAndTag => {
+                                    let tagFilterService = new TagFilterService(this.group.reportFilter);
+                                    if (!tagFilterService.tagsMatch(hintAndTag.tagModel.tags))
+                                        hints.splice(hints.indexOf(hintAndTag.hint), 1);
+                                })
+                            });
+
+                        this.classificationsByFile.set(file.vertexId, classifications);
+                        this.hintsByFile.set(file.vertexId, hints);
+
+                        this.filesByProject.set(traversal.vertexId, files);
                         this.updateTotalPoints();
                     });
+
                     file.technologyTags.subscribe(technologyTags => this.technologyTagsByFile.set(file.vertexId, technologyTags));
                 });
             });
@@ -136,22 +173,20 @@ export class ApplicationDetailsComponent implements OnInit {
         });
     }
 
-    private cacheTagsForFile(file:PersistedTraversalChildFileModel, taggableModel:TaggableModel) {
-        taggableModel.tagModel.subscribe((tagModel) => {
-            if (tagModel == null)
-                return;
+    private cacheTagsForFile(file:PersistedTraversalChildFileModel, tagModel:TagSetModel) {
+        if (tagModel == null)
+            return;
 
-            let tagsByFile = this.tagsByFile.get(file.vertexId);
-            if (!tagsByFile)
-                tagsByFile = [];
+        let tagsByFile = this.tagsByFile.get(file.vertexId);
+        if (!tagsByFile)
+            tagsByFile = [];
 
-            tagModel.tags.forEach(tag => {
-                if (tagsByFile.indexOf(tag) == -1)
-                    tagsByFile.push(tag);
-            });
-
-            this.tagsByFile.set(file.vertexId, tagsByFile);
+        tagModel.tags.forEach(tag => {
+            if (tagsByFile.indexOf(tag) == -1)
+                tagsByFile.push(tag);
         });
+
+        this.tagsByFile.set(file.vertexId, tagsByFile);
     }
 
     updateTotalPoints() {

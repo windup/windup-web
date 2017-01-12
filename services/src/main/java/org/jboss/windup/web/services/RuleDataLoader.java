@@ -110,6 +110,10 @@ public class RuleDataLoader
                 RuleProviderRegistry providerRegistry = ruleProviderService.loadRuleProviderRegistry(Collections.singleton(path));
 
                 HashMap<String, Tag> tagHashMap = new HashMap<>();
+                for (Tag tag : (Iterable<Tag>)this.entityManager.createQuery("select t from Tag t").getResultList())
+                {
+                    tagHashMap.put(tag.getName(), tag);
+                }
 
                 for (RuleProvider provider : providerRegistry.getProviders())
                 {
