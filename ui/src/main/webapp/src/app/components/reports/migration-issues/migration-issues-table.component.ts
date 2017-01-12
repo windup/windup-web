@@ -118,4 +118,33 @@ export class MigrationIssuesTableComponent implements OnInit {
 
         this.sortedIssues = this._sortingService.sort(this.migrationIssues);
     }
+
+    showRule(ruleID: string) {
+        /*
+        This is not working either.
+        Why do they even mention relative navigation in documentation if it doesn't work at all?
+
+        this._router.navigate(['../executed-rules', {
+            ruleID: ruleID
+        }], {
+            relativeTo: this._activatedRoute
+        });
+        */
+        let currentUrl = this._activatedRoute.snapshot.pathFromRoot.reduce<string>((accumulator, item) => {
+            let currentPart = item.url.reduce((acc, itm) => {
+                return acc.concat((itm.path.length > 0 ? ('/'.concat(itm.path)) : ''));
+            }, '');
+
+            return accumulator + currentPart;
+        }, '');
+
+        let lastSlash = currentUrl.lastIndexOf('/');
+        let newPath = currentUrl.substring(0, lastSlash).concat('/executed-rules');
+
+        return this._router.navigate([newPath], {
+            queryParams: {
+                ruleID: ruleID
+            }
+        });
+    }
 }

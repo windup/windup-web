@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, OnInit, AfterViewChecked, ElementRef} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
 import {RuleProviderExecutionsService} from "./rule-provider-executions.service";
 import {ExecutionPhaseModel} from "../../../generated/tsModels/ExecutionPhaseModel";
@@ -18,12 +18,14 @@ import {ExecutionPhaseModel} from "../../../generated/tsModels/ExecutionPhaseMod
         }`
     ]
 })
-export class RuleProviderExecutionsComponent implements OnInit {
+export class RuleProviderExecutionsComponent implements OnInit, AfterViewChecked {
     protected phases: ExecutionPhaseModel[];
+    protected anchor: string;
 
     constructor(
         private _ruleProviderExecutionsService: RuleProviderExecutionsService,
-        private _activatedRoute: ActivatedRoute
+        private _activatedRoute: ActivatedRoute,
+        private _element: ElementRef
     ) {
 
     }
@@ -33,8 +35,25 @@ export class RuleProviderExecutionsComponent implements OnInit {
             this._ruleProviderExecutionsService.getPhases(params.executionId)
                 .subscribe(phases => {
                     this.phases = phases;
-                    console.log(phases);
                 });
         });
+
+        this._activatedRoute.queryParams.subscribe((queryParams) => {
+            if (queryParams.hasOwnProperty('ruleID')) {
+                this.anchor = queryParams['ruleID'];
+            }
+        });
+    }
+
+
+    ngAfterViewChecked(): void {
+        if (this.anchor) {
+            let element = this._element.nativeElement.querySelector(`a[name="${this.anchor}"]`);
+
+            if (element) {
+                element.scrollIntoView(element);
+                this.anchor = null;
+            }
+        }
     }
 }
