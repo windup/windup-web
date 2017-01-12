@@ -17,31 +17,17 @@ import {IdentifiedArchiveModel} from "../../../generated/tsModels/IdentifiedArch
 import {TaggableModel} from "../../../generated/tsModels/TaggableModel";
 import {compareTraversals, compareTraversalChildFiles} from "../file-path-comparators";
 import {ApplicationGroup} from "windup-services";
-import {TagFilterService, MatchResult} from "../tag-filter.service";
+import {TagFilterService} from "../tag-filter.service";
 import {TagSetModel} from "../../../generated/tsModels/TagSetModel";
 import {forkJoin} from "rxjs/observable/forkJoin";
-import {Observable} from "rxjs";
+import {TypeReferenceStatisticsService} from "../type-reference-statistics.service";
+import {TagDataService} from "../tag-data.service";
 
 @Component({
     templateUrl: '/application-details.component.html',
     styleUrls: ['/application-details.component.css']
 })
 export class ApplicationDetailsComponent implements OnInit {
-
-    /*
-     * Sample data for a package pie -- Just hardcoded for now
-     */
-    packageInfo = [
-        { "name": "weblogic.i18n.*", "value": 27 },
-        { "name": "weblogic.application.*", "value": 16 },
-        { "name": "weblogic.transaction.*", "value": 9 },
-        { "name": "javax.naming.*", "value": 7 },
-        { "name": "weblogic.jndi.*", "value": 7 },
-        { "name": "javax.management.*", "value": 5 },
-        { "name": "weblogic.servlet.*", "value": 3 },
-        { "name": "weblogic.ejb.*", "value": 3 },
-        { "name": "Other", "value": 1 }
-    ];
 
     colorScheme = {
         domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
@@ -51,6 +37,7 @@ export class ApplicationDetailsComponent implements OnInit {
     private group:ApplicationGroup;
     rootProjects:PersistedProjectModelTraversalModel[] = [];
 
+    globalPackageUseData:ChartStatistic[] = [];
     allProjects:PersistedProjectModelTraversalModel[] = [];
     projectsCollapsed:Map<number, boolean> = new Map<number, boolean>();
 
@@ -61,6 +48,10 @@ export class ApplicationDetailsComponent implements OnInit {
     traversalToSHA1:Map<number, string> = new Map<number, string>();
 
     filesByProject:Map<number, PersistedTraversalChildFileModel[]> = new Map<number, PersistedTraversalChildFileModel[]>();
+    packageFrequenciesByProject:Map<number, ChartStatistic[]> = new Map<number, ChartStatistic[]>();
+    tagFrequencies:ChartStatistic[];
+    tagFrequenciesByProject:Map<number, ChartStatistic[]>;
+
     classificationsByFile:Map<number, ClassificationModel[]> = new Map<number, ClassificationModel[]>();
     hintsByFile:Map<number, InlineHintModel[]> = new Map<number, InlineHintModel[]>();
     technologyTagsByFile:Map<number, TechnologyTagModel[]> = new Map<number, TechnologyTagModel[]>();
@@ -71,6 +62,7 @@ export class ApplicationDetailsComponent implements OnInit {
         private _activatedRoute:ActivatedRoute,
         private _projectTraversalService:ProjectTraversalService,
         private _notificationService:NotificationService,
+        private _tagDataService:TagDataService,
         private _http:Http
     ) {}
 
@@ -84,7 +76,11 @@ export class ApplicationDetailsComponent implements OnInit {
                     traversals => {
                         this.rootProjects = traversals;
                         this.allProjects = [];
-                        this.flattenTraversals(traversals);
+
+                        // Make sure tag data is loaded first
+                        this._tagDataService.getTagData().subscribe((tagData) => {
+                            this.flattenTraversals(traversals);
+                        });
                     },
                     error => this._notificationService.error(utils.getErrorMessage(error))
                 );
@@ -92,8 +88,17 @@ export class ApplicationDetailsComponent implements OnInit {
         });
     }
 
+    allTagStats():ChartStatistic[] {
+        return this.tagFrequencies;
+    }
+
+    tagStatsForProject(traversal:PersistedProjectModelTraversalModel):ChartStatistic[] {
+        return this.tagFrequenciesByProject.get(traversal.vertexId);
+    }
+
     private flattenTraversals(traversals:PersistedProjectModelTraversalModel[]) {
-        traversals.sort(compareTraversals);
+        traversals = traversals.sort(compareTraversals);
+        traversals.forEach(traversal => this.allProjects.push(traversal));
 
         traversals.forEach(traversal => {
             traversal.canonicalProject
@@ -114,7 +119,7 @@ export class ApplicationDetailsComponent implements OnInit {
                 });
 
             traversal.files.subscribe(files => {
-                files.sort(compareTraversalChildFiles);
+                files = files.sort(compareTraversalChildFiles);
 
                 files.forEach(file => {
                     file.classifications.zip(file.hints).subscribe(hintsAndClassifications => {
@@ -132,8 +137,10 @@ export class ApplicationDetailsComponent implements OnInit {
                             (classificationAndTags:{classification: ClassificationModel, tagModel: TagSetModel}[]) => {
                                 classificationAndTags.forEach(classificationAndTag => {
                                     let tagFilterService = new TagFilterService(this.group.reportFilter);
-                                    if (!tagFilterService.tagsMatch(classificationAndTag.tagModel.tags))
+                                    if (classificationAndTag.tagModel && !tagFilterService.tagsMatch(classificationAndTag.tagModel.tags))
                                         classifications.splice(classifications.indexOf(classificationAndTag.classification), 1);
+                                    else
+                                        this.cacheTagsForFile(file, classificationAndTag.tagModel);
                                 });
                             }
                         );
@@ -149,8 +156,10 @@ export class ApplicationDetailsComponent implements OnInit {
                             (hintAndTags:{hint: InlineHintModel, tagModel: TagSetModel}[]) => {
                                 hintAndTags.forEach(hintAndTag => {
                                     let tagFilterService = new TagFilterService(this.group.reportFilter);
-                                    if (!tagFilterService.tagsMatch(hintAndTag.tagModel.tags))
+                                    if (hintAndTag.tagModel && !tagFilterService.tagsMatch(hintAndTag.tagModel.tags))
                                         hints.splice(hints.indexOf(hintAndTag.hint), 1);
+                                    else
+                                        this.cacheTagsForFile(file, hintAndTag.tagModel);
                                 })
                             });
 
@@ -158,19 +167,122 @@ export class ApplicationDetailsComponent implements OnInit {
                         this.hintsByFile.set(file.vertexId, hints);
 
                         this.filesByProject.set(traversal.vertexId, files);
+                        this.setPackageFrequenciesByProject(traversal, files);
                         this.updateTotalPoints();
+                        this.calculateTagFrequencies();
                     });
 
                     file.technologyTags.subscribe(technologyTags => this.technologyTagsByFile.set(file.vertexId, technologyTags));
                 });
             });
-            this.allProjects.push(traversal);
             traversal.children.subscribe(
                 children => {
                     this.flattenTraversals(children);
                 },
                 error => this._notificationService.error(utils.getErrorMessage(error)));
         });
+    }
+
+    private convertToChartStatistic(tagStatistics:Map<string, number>) {
+        if (!tagStatistics)
+            return;
+
+        let result = [];
+        tagStatistics.forEach((count, tagName) => {
+            result.push(new ChartStatistic(tagName, count));
+        });
+        result = result.sort(chartStatisticComparator);
+        return result;
+    }
+
+    private calculateTagFrequencies() {
+        // Update them completely
+        this.tagFrequencies = [];
+        this.tagFrequenciesByProject = new Map<number, ChartStatistic[]>();
+
+        if (!this.allProjects)
+            return;
+
+        let allFrequencyStatsMap = new Map<string, number>();
+        this.allProjects.forEach(traversal => {
+            this.calculateTagFrequenciesForProject(allFrequencyStatsMap, traversal);
+        });
+        this.tagFrequencies = this.convertToChartStatistic(allFrequencyStatsMap);
+    }
+
+    private calculateTagFrequenciesForProject(allFrequencyStatsMap:Map<string, number>, traversal:PersistedProjectModelTraversalModel) {
+        let currentProjectMap = new Map<string, number>();
+
+        if (!this.filesByProject.get(traversal.vertexId))
+            return;
+
+        this.filesByProject.get(traversal.vertexId).forEach(file => {
+            if (!this.tagsByFile.get(file.vertexId))
+                return;
+
+            this.tagsByFile.get(file.vertexId).forEach(tag => {
+                let rootTags = this._tagDataService.getRootTags(tag);
+
+                if (!rootTags)
+                    return;
+
+                rootTags.forEach(parent => {
+                    let name = parent.title ? parent.title : parent.tagName;
+
+                    // Update the global stats
+                    if (allFrequencyStatsMap.has(name))
+                        allFrequencyStatsMap.set(name, allFrequencyStatsMap.get(name) + 1);
+                    else
+                        allFrequencyStatsMap.set(name, 1);
+
+                    // Update the per-project stats
+                    if (currentProjectMap.has(name))
+                        currentProjectMap.set(name, currentProjectMap.get(name) + 1);
+                    else
+                        currentProjectMap.set(name, 1);
+                });
+            });
+        });
+
+        // Don't bother to set it if there are fewer than two tags.
+        if (currentProjectMap.size < 2)
+            return;
+
+        this.tagFrequenciesByProject.set(traversal.vertexId, this.convertToChartStatistic(currentProjectMap));
+    }
+
+    private setPackageFrequenciesByProject(traversal:PersistedProjectModelTraversalModel, files:PersistedTraversalChildFileModel[]) {
+        if (!files)
+            return;
+
+        let hints = [];
+        files.forEach((file) => {
+            let hintsForFile = this.hintsByFile.get(file.vertexId);
+
+            if (!hintsForFile)
+                return;
+
+            hintsForFile.forEach(hint => hints.push(hint));
+        });
+
+        this.packageFrequenciesByProject.set(traversal.vertexId, this.calculateTreeDataForHints(hints));
+
+        let allHints = [];
+        this.hintsByFile.forEach((hints, file) => {
+            hints.forEach(hint => allHints.push(hint));
+        });
+
+        this.globalPackageUseData = this.calculateTreeDataForHints(allHints);
+    }
+
+    private calculateTreeDataForHints(hints:InlineHintModel[]):ChartStatistic[] {
+        let service = new TypeReferenceStatisticsService();
+        let resultMap = service.getPackageUseFrequencies(hints, 2, this._http);
+        let result = [];
+        resultMap.forEach((value, key) => {
+            result.push(new ChartStatistic(key, value));
+        });
+        return result.sort(chartStatisticComparator);
     }
 
     private cacheTagsForFile(file:PersistedTraversalChildFileModel, tagModel:TagSetModel) {
@@ -281,4 +393,18 @@ export class ApplicationDetailsComponent implements OnInit {
     isCollapsed(traversal) {
         return this.projectsCollapsed.get(traversal.vertexId);
     }
+}
+
+class ChartStatistic {
+    name:string;
+    value:number;
+
+    constructor(name: string, value: number) {
+        this.name = name;
+        this.value = value;
+    }
+}
+
+function chartStatisticComparator(stat1:ChartStatistic, stat2:ChartStatistic):number {
+    return stat1.value - stat2.value;
 }

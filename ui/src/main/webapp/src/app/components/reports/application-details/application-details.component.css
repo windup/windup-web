@@ -8,6 +8,17 @@
     width: 1.5em;
 }
 
+/* Charts */
+.chartBoundary {
+    width: 500px;
+    margin: 20px auto;
+}
+
+.chartBoundary h4 {
+    border-bottom: 1px solid #008CBA;
+    margin-right: 10%;
+}
+
 table.summaryLayout {
     width: 100%;
 }
