@@ -22,6 +22,7 @@ import {TagSetModel} from "../../../generated/tsModels/TagSetModel";
 import {forkJoin} from "rxjs/observable/forkJoin";
 import {TypeReferenceStatisticsService} from "../type-reference-statistics.service";
 import {TagDataService} from "../tag-data.service";
+import {TreeData} from "../../js-tree-angular-wrapper.component";
 
 @Component({
     templateUrl: '/application-details.component.html',
@@ -38,6 +39,9 @@ export class ApplicationDetailsComponent implements OnInit {
     rootProjects:PersistedProjectModelTraversalModel[] = [];
 
     globalPackageUseData:ChartStatistic[] = [];
+
+    applicationTree:TreeData[] = [];
+
     allProjects:PersistedProjectModelTraversalModel[] = [];
     projectsCollapsed:Map<number, boolean> = new Map<number, boolean>();
 
@@ -79,13 +83,17 @@ export class ApplicationDetailsComponent implements OnInit {
 
                         // Make sure tag data is loaded first
                         this._tagDataService.getTagData().subscribe((tagData) => {
-                            this.flattenTraversals(traversals);
+                            this.flattenTraversals(null, traversals);
                         });
                     },
                     error => this._notificationService.error(utils.getErrorMessage(error))
                 );
             });
         });
+    }
+
+    selectedProject(treeData:TreeData) {
+        console.log("Selected project: " + JSON.stringify(treeData.data));
     }
 
     allTagStats():ChartStatistic[] {
@@ -96,11 +104,24 @@ export class ApplicationDetailsComponent implements OnInit {
         return this.tagFrequenciesByProject.get(traversal.vertexId);
     }
 
-    private flattenTraversals(traversals:PersistedProjectModelTraversalModel[]) {
+    private flattenTraversals(parentTreeData:TreeData, traversals:PersistedProjectModelTraversalModel[]) {
         traversals = traversals.sort(compareTraversals);
         traversals.forEach(traversal => this.allProjects.push(traversal));
 
         traversals.forEach(traversal => {
+            let newTreeData:TreeData = {
+                id: traversal.vertexId,
+                name: traversal.path,
+                childs: [],
+                data: traversal.vertexId
+            };
+
+            if (parentTreeData) {
+                parentTreeData.childs.push(newTreeData);
+            } else {
+                this.applicationTree = this.applicationTree.concat(newTreeData);
+            }
+
             traversal.canonicalProject
                 .subscribe(canonical => {
                     this.traversalToCanonical.set(traversal.vertexId, canonical);
@@ -177,7 +198,7 @@ export class ApplicationDetailsComponent implements OnInit {
             });
             traversal.children.subscribe(
                 children => {
-                    this.flattenTraversals(children);
+                    this.flattenTraversals(newTreeData, children);
                 },
                 error => this._notificationService.error(utils.getErrorMessage(error)));
         });

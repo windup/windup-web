@@ -22,7 +22,11 @@
                         <div>Story Points</div>
                     </div>
                     <div id="treeView-Projects-wrap" class="short">
-                        <app-js-tree-wrapper [treeNodes]="[]"></app-js-tree-wrapper>
+                        <app-js-tree-wrapper [treeNodes]="applicationTree"
+                                             [hasCheckboxes]="false"
+                                             (nodeClicked)="selectedProject($event)"
+                        >
+                        </app-js-tree-wrapper>
                     </div>
                 </td>
             </tr>
