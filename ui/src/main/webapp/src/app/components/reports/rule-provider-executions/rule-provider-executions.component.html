@@ -1,0 +1,57 @@
+<div class="container-fluid" role="main">
+    <div class="row">
+        <div class="page-header page-header-no-border">
+            <h1>
+                <div class="main">Rule Provider Executions</div>
+            </h1>
+            <div class="desc">
+                This report lists "rule providers", or sets of Windup rules.
+                They may originate from a <code>.windup.xml</code> file
+                or a Java class implementing <code>RuleProvider</code>.
+            </div>
+        </div>
+    </div>
+
+    <div class="row container-fluid">
+
+        <template ngFor [ngForOf]="phases" let-phase>
+            <div class="alert alert-info">
+                <h3 class="panel-title">Phase: {{phase.name}}</h3>
+            </div>
+            <div class="panel panel-primary" *ngFor="let ruleProvider of (phase?.ruleProviders | async)">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{{ruleProvider.ruleProviderID}}</h3>
+                    Phase: {{phase.name}}
+                </div>
+                <table class="table table-striped table-bordered">
+                    <tr>
+                        <th>Rule-ID</th>
+                        <th>Rule</th>
+                        <th>Statistics</th>
+                        <th>Status?</th>
+                        <th>Result?</th>
+                        <th>Failure Cause</th>
+                    </tr>
+
+                    <tr *ngFor="let rule of (ruleProvider?.rules | async)">
+                        <td>{{rule.ruleId}}</td>
+                        <td>
+                            <a name="{{rule.ruleId}}" class="anchor"></a>
+                            <span style="white-space: pre-wrap">{{rule.ruleContents}}</span>
+                        </td>
+                        <td>
+                            <div>Vertices Created: {{rule.countAddedVertices}}</div>
+                            <div>Edges Created: {{rule.countAddedEdges}}</div>
+                            <div>Vertices Removed: {{rule.countRemovedVertices}}</div>
+                            <div>Edges Removed: {{rule.countRemovedEdges}}</div>
+                        </td>
+                        <td>{{rule.isExecuted ? 'Condition met.' : 'Condition not met.'}}</td>
+                        <td>{{rule.isFailed ? 'failed' : 'success'}}</td>
+                        <td>{{rule.failureMessage}}</td>
+                    </tr>
+                </table>
+            </div>
+        </template>
+
+    </div> <!-- /row -->
+</div> <!-- /container main -->
