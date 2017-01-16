@@ -121,6 +121,7 @@ export class ApplicationDetailsComponent implements OnInit {
                 id: traversal.vertexId,
                 name: traversal.path,
                 childs: [],
+                opened: true,
                 data: traversal.vertexId
             };
 

@@ -72,8 +72,15 @@ export class JsTreeAngularWrapperComponent implements OnInit, OnChanges {
             id: node.id,
             text: node.name,
             children: [],
-            original: node
+            original: node,
+            state: {}
         };
+
+        if (node.opened) {
+            transformed.state = {
+                opened: node.opened
+            }
+        }
 
         let self = this;
 
@@ -142,5 +149,6 @@ export interface TreeData {
     id: number,
     name: string,
     childs: TreeData[],
-    data: any
+    data: any,
+    opened: boolean
 }
