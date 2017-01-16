@@ -1,4 +1,4 @@
-import {Component, OnInit, ChangeDetectorRef} from "@angular/core";
+import {Component, OnInit, ChangeDetectorRef, ElementRef} from "@angular/core";
 import {ProjectTraversalService} from "../../../services/graph/project-traversal.service";
 import {Params, ActivatedRoute} from "@angular/router";
 import {utils} from "../../../utils";
@@ -62,6 +62,7 @@ export class ApplicationDetailsComponent implements OnInit {
     tagsByFile:Map<number, string[]> = new Map<number, string[]>();
 
     constructor(
+        private _element: ElementRef,
         private _changeDetectorRef: ChangeDetectorRef,
         private _activatedRoute:ActivatedRoute,
         private _projectTraversalService:ProjectTraversalService,
@@ -94,6 +95,13 @@ export class ApplicationDetailsComponent implements OnInit {
 
     selectedProject(treeData:TreeData) {
         console.log("Selected project: " + JSON.stringify(treeData.data));
+        let vertexID = treeData.data;
+        let element = this._element.nativeElement.querySelector(`div[id="${vertexID}"]`);
+
+        if (element) {
+            let newOffset = element.offsetTop - 82; // Has to be offset for the fixed header for some reason.
+            window.scrollTo(0, newOffset);
+        }
     }
 
     allTagStats():ChartStatistic[] {

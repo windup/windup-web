@@ -43,7 +43,6 @@ export class JsTreeAngularWrapperComponent implements OnInit, OnChanges {
     }
 
     ngOnChanges(changes: {[treeNodes: string]: SimpleChange}): any {
-        console.log("On changes -- jstree");
         let jsTree = $(this.element).jstree(true);
 
         // This is ugly workaround to prevent recursively calling ngOnChanges from change handler

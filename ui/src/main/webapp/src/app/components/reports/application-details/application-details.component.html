@@ -80,7 +80,7 @@
             <a id="expandAll" *ngIf="!allExpanded()" (click)="expandAll()">Expand All</a>
         </div>
 
-        <div *ngFor="let traversal of allProjects" class="panel panel-primary projectBox">
+        <div *ngFor="let traversal of allProjects" class="panel panel-primary projectBox" id="{{traversal.vertexId}}">
             <div class="panel-heading panel-collapsed clickable" (click)="toggleCollapsed(traversal)">
                 <span class="pull-left"><i class="glyphicon glyphicon-expand arrowIcon"></i></span>
                 <h3 class="panel-title">
