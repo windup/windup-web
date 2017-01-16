@@ -86,14 +86,19 @@
             <a id="expandAll" *ngIf="!allExpanded()" (click)="expandAll()">Expand All</a>
         </div>
 
-        <div *ngFor="let traversal of allProjects" class="panel panel-primary projectBox" id="{{traversal.vertexId}}">
+        <div *ngFor="let traversal of allProjects" class="panel panel-primary projectBox" id="{{traversalToCanonical.get(traversal.vertexId).vertexId}}">
             <div class="panel-heading panel-collapsed clickable" (click)="toggleCollapsed(traversal)">
                 <span class="pull-left"><i class="glyphicon glyphicon-expand arrowIcon"></i></span>
-                <h3 class="panel-title">
-                    <span class="name">{{traversal.path}}</span>
+                <h3 class="panel-title" [ngSwitch]="">
+                    <span class="name" *ngIf="!isDuplicateProject(traversal)">
+                        {{traversal.path}}
+                    </span>
+                    <span class="name" *ngIf="isDuplicateProject(traversal)">
+                        [Included Multiple Times] {{ (traversalToCanonical.get(traversal.vertexId).rootFileModel | async)?.fileName }}
+                    </span>
 
                     <span class="storyPoints">(<span class="points">{{storyPointsForFiles(traversal, traversal.files | async)}}</span> <span class="legend">story points</span>)</span>
-                    <span title="a24b9823">&nbsp;</span>
+                    <span>&nbsp;</span>
                 </h3>
             </div>
             <div class="panel-body" *ngIf="!isCollapsed(traversal)">
@@ -153,6 +158,14 @@
                                         <tr>
                                             <th>Description</th>
                                             <td>{{traversalToCanonical.get(traversal.vertexId)?.description}}</td>
+                                        </tr>
+                                        <tr *ngIf="isDuplicateProject(traversal)">
+                                            <th>Duplicates</th>
+                                            <td>
+                                                <div *ngFor="let path of getDuplicateProjectPaths(traversal)">
+                                                    {{path}}
+                                                </div>
+                                            </td>
                                         </tr>
                                     </table>
                                 </div><!-- /.basicInfo -->
