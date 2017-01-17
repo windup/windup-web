@@ -5,21 +5,27 @@ import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
-import javax.persistence.CascadeType;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 /**
  * Contains the current execution status for a Windup run.
@@ -76,6 +82,10 @@ public class WindupExecution implements Serializable
 
     @ManyToOne(cascade = CascadeType.REMOVE)
     private AnalysisContext analysisContext;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
+    private Set<FilterApplication> filterApplications;
 
     public Long getId()
     {
@@ -294,6 +304,30 @@ public class WindupExecution implements Serializable
     public void setAnalysisContext(AnalysisContext analysisContext)
     {
         this.analysisContext = analysisContext;
+    }
+
+    /**
+     * Adds application for filter
+     */
+    public void addFilterApplication(FilterApplication filterApplication)
+    {
+        this.filterApplications.add(filterApplication);
+    }
+
+    /**
+     * Contain all applications available for filter
+     */
+    public Set<FilterApplication> getFilterApplications()
+    {
+        return filterApplications;
+    }
+
+    /**
+     * Sets applications for filter
+     */
+    public void setFilterApplications(Set<FilterApplication> filterApplications)
+    {
+        this.filterApplications = filterApplications;
     }
 
     @Override

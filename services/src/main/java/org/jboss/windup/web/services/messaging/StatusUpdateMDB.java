@@ -1,5 +1,6 @@
 package org.jboss.windup.web.services.messaging;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
 import javax.ejb.TransactionAttribute;
@@ -17,12 +18,18 @@ import javax.transaction.NotSupportedException;
 import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 
+import org.jboss.windup.graph.model.resource.FileModel;
+import org.jboss.windup.web.addons.websupport.services.ProjectLoaderService;
 import org.jboss.windup.web.addons.websupport.services.WindupExecutorService;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
+import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.ExecutionState;
+import org.jboss.windup.web.services.model.FilterApplication;
 import org.jboss.windup.web.services.model.RegisteredApplication;
+import org.jboss.windup.web.services.model.ReportFilter;
 import org.jboss.windup.web.services.model.WindupExecution;
+import org.jboss.windup.web.services.service.DefaultGraphPathLookup;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -41,8 +48,7 @@ import java.util.logging.Logger;
     @ActivationConfigProperty(propertyName = "maxSession", propertyValue = "1"),
     @ActivationConfigProperty(propertyName = "destination", propertyValue = MessagingConstants.STATUS_UPDATE_QUEUE),
 })
-public class StatusUpdateMDB extends AbstractMDB implements MessageListener
-{
+public class StatusUpdateMDB extends AbstractMDB implements MessageListener {
     private static Logger LOG = Logger.getLogger(StatusUpdateMDB.class.getName());
 
     @PersistenceContext
@@ -51,6 +57,16 @@ public class StatusUpdateMDB extends AbstractMDB implements MessageListener
     @Inject
     @FromFurnace
     private WindupExecutorService windupExecutorService;
+
+    @Inject
+    @FromFurnace
+    private ProjectLoaderService projectLoaderService;
+
+    @PostConstruct
+    protected void initialize()
+    {
+        this.projectLoaderService.setGraphPathLookup(new DefaultGraphPathLookup(this.entityManager));
+    }
 
     @Override
     public void onMessage(Message message)
@@ -84,11 +100,41 @@ public class StatusUpdateMDB extends AbstractMDB implements MessageListener
 
             // Once the run is complete, make sure that we have the correct path information in the execution.
             if (fromDB.getState() == ExecutionState.COMPLETED)
+            {
                 setReportIndexPath(fromDB);
+                setApplicationFilters(fromDB);
+            }
         }
         catch (Throwable e)
         {
             LOG.log(Level.SEVERE, "Failed to execute windup due to: " + e.getMessage(), e);
+        }
+    }
+
+    private void setApplicationFilters(WindupExecution execution)
+    {
+        if (execution.getFilterApplications().size() > 0)
+        {
+            // this method is executed twice, prevent having duplicities
+            return;
+        }
+
+        Iterable<FileModel> data = this.projectLoaderService.getTopLevelProjects(execution.getId());
+
+        ApplicationGroup applicationGroup = execution.getGroup();
+        ReportFilter reportFilter = applicationGroup.getReportFilter();
+        reportFilter.clear();
+
+        for (FileModel fileModel : data)
+        {
+            FilterApplication filterApplication = new FilterApplication(fileModel.getFileName());
+            filterApplication.setMd5Hash(fileModel.getMD5Hash());
+            filterApplication.setSha1Hash(fileModel.getSHA1Hash());
+            filterApplication.setInputPath(fileModel.getFilePath());
+
+            this.entityManager.persist(filterApplication);
+
+            execution.addFilterApplication(filterApplication);
         }
     }
 

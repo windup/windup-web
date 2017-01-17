@@ -34,7 +34,7 @@ public class ReportFilter implements Serializable
 
     @OneToMany(fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
-    private Set<RegisteredApplication> selectedApplications;
+    private Set<FilterApplication> selectedApplications;
 
     @OneToMany(fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
@@ -173,17 +173,17 @@ public class ReportFilter implements Serializable
         this.applicationGroup = applicationGroup;
     }
 
-    public Set<RegisteredApplication> getSelectedApplications()
+    public Set<FilterApplication> getSelectedApplications()
     {
         return selectedApplications;
     }
 
-    public void addSelectedApplication(RegisteredApplication Application)
+    public void addSelectedApplication(FilterApplication Application)
     {
         this.selectedApplications.add(Application);
     }
 
-    public void removeSelectedApplication(RegisteredApplication Application)
+    public void removeSelectedApplication(FilterApplication Application)
     {
         this.selectedApplications.remove(Application);
     }
