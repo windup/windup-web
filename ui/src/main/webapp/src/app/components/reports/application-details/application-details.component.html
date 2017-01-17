@@ -28,28 +28,28 @@
             </tr>
             <tr>
                 <td>
-                    <!-- div class="chartBoundary">
+                    <div class="chartBoundary" *ngIf="globalPackageUseData && globalPackageUseData.length > 0">
                         <h4>Java Incidents by Package</h4>
                         <div id="application_pie" class="windupPieGraph">
                             <wu-package-chart
-                                    [results]="packageInfo"
+                                    [results]="globalPackageUseData"
                                     [scheme]="colorScheme"
                             ></wu-package-chart>
                         </div>
-                    </div -->
+                    </div>
                 </td>
                 <td>
-                    <!-- div class="chartBoundary" *ngIf="allTagInfo()?.length > 0">
+                    <div class="chartBoundary" *ngIf="allTagStats()?.length > 0">
                         <h4>Technologies found - occurrence count</h4>
                         <bar-horizontal
                                 [scheme]="colorScheme"
-                                [results]="allTagInfo()"
+                                [results]="allTagStats()"
                                 [showGridLines]="true"
                                 [xAxis]="true"
                                 [yAxis]="true"
                         >
                         </bar-horizontal>
-                    </div -->
+                    </div>
                 </td>
             </tr>
         </table>
@@ -151,28 +151,29 @@
                         <tr>
                             <td>
                                 <!-- Packages pie chart -->
-                                <!-- div class="chartBoundary">
+                                <div class="chartBoundary" *ngIf="packageFrequenciesByProject.get(traversal.vertexId) && packageFrequenciesByProject.get(traversal.vertexId).length > 0">
                                     <h4>Java Incidents by Package</h4>
-                                    <div id="project_65536_pie" class="windupPieGraph">
+                                    <div class="windupPieGraph">
                                         <wu-package-chart
-                                                [results]="packageInfo"
+                                                [results]="packageFrequenciesByProject.get(traversal.vertexId)"
                                                 [scheme]="colorScheme"
                                         ></wu-package-chart>
                                     </div>
-                                </div -->
+                                </div>
                             </td>
                             <td>
-                                <!-- div class="tagsBarChart chartBoundary">
+                                <div class="tagsBarChart chartBoundary" *ngIf="tagStatsForProject(traversal)?.length > 0">
                                     <h4>Technologies found - occurrence count</h4>
                                     <bar-horizontal
+                                            *ngIf="!isCollapsed(traversal)"
                                             [scheme]="colorScheme"
-                                            [results]="tagInfo"
+                                            [results]="tagStatsForProject(traversal)"
                                             [showGridLines]="true"
                                             [xAxis]="true"
                                             [yAxis]="true"
                                     >
                                     </bar-horizontal>
-                                </div -->
+                                </div>
                             </td>
                         </tr>
                     </table>

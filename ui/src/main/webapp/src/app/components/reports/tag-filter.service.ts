@@ -14,6 +14,14 @@ export class TagFilterService {
     }
 
     tagsMatch(tags:TechnologyTagModel[] | string[]):boolean {
+
+        // If there were no tags, then match as long as the include filter is empty
+        if (tags == null || tags.length == 0)
+            return this._reportFilter == null ||
+                !this._reportFilter.enabled ||
+                this._reportFilter.includeTags == null ||
+                this._reportFilter.includeTags.length == 0;
+
         let implicitIncludeFound = false;
         let explicitIncludeFound = false;
         let implicitExcludeFound = false;

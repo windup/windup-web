@@ -22,23 +22,23 @@ export function comparePaths(path1:string, path2:string):number {
     let pathArray1 = path1.split("/");
     let pathArray2 = path2.split("/");
 
-    if (path1.length != path2.length)
+    if (pathArray1.length != pathArray2.length)
     {
         // if there are differing number of path elements, compare based on number of segments
-        return path1.length - path2.length;
+        return pathArray1.length - pathArray2.length;
     }
     else
     {
         // otherwise, compare each segment
         for (let i = 0; i < path1.length; i++)
         {
-            let o1Segment = pathArray1[i];
-            let o2Segment = pathArray2[i];
+            let o1Segment:string = pathArray1[i];
+            let o2Segment:string = pathArray2[i];
 
             // if the segments are different, return the results of this comparison
             if (o1Segment != o2Segment)
             {
-                return o1Segment.localeCompare(o2Segment);
+                return o2Segment.localeCompare(o1Segment);
             }
         }
 

@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.model.OrganizationModel;
 import org.jboss.windup.graph.model.ProjectModel;
+import org.jboss.windup.reporting.model.InlineHintModel;
 import org.jboss.windup.reporting.model.TaggableModel;
 import org.jboss.windup.web.addons.websupport.model.PersistedProjectModelTraversalModel;
 import org.jboss.windup.web.addons.websupport.model.PersistedTraversalChildFileModel;
@@ -50,6 +51,7 @@ public class ProjectTraversalResourceImpl extends AbstractGraphResource implemen
         whiteListedOutLabels.add(PersistedTraversalChildFileModel.CLASSIFICATIONS);
         whiteListedOutLabels.add(PersistedTraversalChildFileModel.FILE_MODEL);
         whiteListedOutLabels.add(PersistedTraversalChildFileModel.HINTS);
+        whiteListedOutLabels.add(InlineHintModel.FILE_LOCATION_REFERENCE);
         whiteListedOutLabels.add(PersistedTraversalChildFileModel.TECHNOLOGYTAGS);
         whiteListedOutLabels.add(ProjectModel.ROOT_FILE_MODEL);
         whiteListedOutLabels.add(TaggableModel.TAG);
