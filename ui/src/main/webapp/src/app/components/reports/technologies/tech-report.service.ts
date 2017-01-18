@@ -1,17 +1,15 @@
-import {Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions, Response} from '@angular/http';
-
-import {Constants} from "../../../../app/constants";
-import {AbstractService} from "../../../../app/services/abtract.service";
-
-import {Observable} from 'rxjs/Observable';
+import {Injectable} from "@angular/core";
+import {Http, Response} from "@angular/http";
+import {Constants} from "../../../constants";
+import {AbstractService} from "../../../services/abtract.service";
+import {Observable} from "rxjs/Observable";
 
 // Windup
-import {GraphJSONToModelService} from '../../../../app/services/graph/graph-json-to-model.service';
+import {GraphJSONToModelService} from "../../../services/graph/graph-json-to-model.service";
 
 // Models
-import {TechnologiesStatsModel} from '../../../../app/generated/tsModels/TechnologiesStatsModel';
-
+import {TechnologiesStatsModel} from "../../../generated/tsModels/TechnologiesStatsModel";
+import {ProjectTechnologiesStatsModel} from "../../../generated/tsModels/ProjectTechnologiesStatsModel";
 
 
 @Injectable()
@@ -22,12 +20,12 @@ export class TechReportService extends AbstractService
     ) { super(); }
 
     static WINDUP_REST_URL = Constants.REST_SERVER + "/windup-web-services/rest-furnace"; //"http://localhost:8080/
-    static DISCR_TECH_STATS =    TechnologiesStatsModel.discriminator; //"TechnologiesStats";
+    static DISCR_TECH_STATS =    ProjectTechnologiesStatsModel.discriminator; //"TechnologiesStats";
     static INVOKER_URL =         `${TechReportService.WINDUP_REST_URL}/technologyStats/create?exec=`;
-    static GRAPH_TECHSTATS_URL = `${TechReportService.WINDUP_REST_URL}/graph/#{execID}/by-type/${TechReportService.DISCR_TECH_STATS}?depth=1`;
+    static GRAPH_TECHSTATS_URL = `${TechReportService.WINDUP_REST_URL}/graph/#{execID}/by-type/${TechReportService.DISCR_TECH_STATS}?depth=2&includeInVertices=false`;
 
 
-    getStats(execID: number): Observable<TechnologiesStatsModel>
+    getStats(execID: number): Observable<ProjectTechnologiesStatsModel[]>
     {
         let service = new GraphJSONToModelService();
         let url = TechReportService.GRAPH_TECHSTATS_URL.replace(/#\{execID\}/, ""+execID);
@@ -37,7 +35,8 @@ export class TechReportService extends AbstractService
                 if (!Array.isArray(data) || data.length == 0) {
                     throw new Error("No items returned, URL: " + url);
                 }
-                return <TechnologiesStatsModel>service.fromJSON(data[0], this.http);
+
+                return service.fromJSONarray(data, this.http);
             })
             .catch( (error, caught) => Observable.throw(error));
     }
