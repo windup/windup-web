@@ -69,10 +69,10 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
 
     protected Map<String, Object> convertToMap(long executionID, Vertex vertex, Integer depth, boolean dedup, List<String> whitelistedOutEdges, List<String> whitelistedInLabels)
     {
-        return convertToMap(new GraphMarhallingContext(executionID, vertex, depth, dedup, whitelistedOutEdges, whitelistedInLabels, true), vertex);
+        return convertToMap(new GraphMarshallingContext(executionID, vertex, depth, dedup, whitelistedOutEdges, whitelistedInLabels, true), vertex);
     }
 
-    protected Map<String, Object> convertToMap(GraphMarhallingContext ctx, Vertex vertex)
+    protected Map<String, Object> convertToMap(GraphMarshallingContext ctx, Vertex vertex)
     {
         Map<String, Object> result = new HashMap<>();
 
@@ -110,7 +110,7 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
     }
 
     @SuppressWarnings("unchecked")
-    private void addEdges(GraphMarhallingContext ctx, Vertex vertex, Direction direction, Map<String, Object> result)
+    private void addEdges(GraphMarshallingContext ctx, Vertex vertex, Direction direction, Map<String, Object> result)
     {
         List<String> whitelistedLabels = direction == Direction.OUT ? ctx.whitelistedOutEdges : ctx.whitelistedInEdges;
 
@@ -173,7 +173,7 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
 
     protected List<Map<String, Object>> frameIterableToResult(long executionID, Iterable<? extends WindupVertexFrame> frames, int depth)
     {
-        GraphMarhallingContext ctx = new GraphMarhallingContext(executionID, null, depth, false, Collections.emptyList(), Collections.emptyList(), true);
+        GraphMarshallingContext ctx = new GraphMarshallingContext(executionID, null, depth, false, Collections.emptyList(), Collections.emptyList(), true);
 
         List<Map<String, Object>> result = new ArrayList<>();
         for (WindupVertexFrame frame : frames)
@@ -212,7 +212,7 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
 /**
  * Keeps the context of a marshalling of a single data tree.
  */
-class GraphMarhallingContext
+class GraphMarshallingContext
 {
     final long executionID;
     final Vertex startVertex;
@@ -224,7 +224,7 @@ class GraphMarhallingContext
     final boolean deduplicateVertices;
     final boolean includeInVertices;
 
-    public GraphMarhallingContext(
+    public GraphMarshallingContext(
             long executionID,
             Vertex startVertex,
             Integer depth,
