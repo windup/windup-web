@@ -224,14 +224,21 @@ class GraphMarhallingContext
     final boolean deduplicateVertices;
     final boolean includeInVertices;
 
-    public GraphMarhallingContext(long executionID, Vertex startVertex, Integer depth, boolean dedup, List<String> whitelistedOutEdges, List<String> whitelistedInLabels, boolean includeInVertices)
-    {
+    public GraphMarhallingContext(
+            long executionID,
+            Vertex startVertex,
+            Integer depth,
+            boolean dedup,
+            List<String> whitelistedOutEdges,
+            List<String> whitelistedInLabels,
+            boolean includeInVertices
+    ) {
         this.executionID = executionID;
         this.startVertex = startVertex;
         this.remainingDepth = depth == null ? 0 : depth;
         this.deduplicateVertices = dedup;
-        this.whitelistedOutEdges = whitelistedOutEdges;
-        this.whitelistedInEdges = whitelistedInLabels;
+        this.whitelistedOutEdges = whitelistedOutEdges == null ? Collections.emptyList() : whitelistedOutEdges;
+        this.whitelistedInEdges = whitelistedInLabels == null ? Collections.emptyList() : whitelistedInLabels;
         this.includeInVertices = includeInVertices;
     }
 
