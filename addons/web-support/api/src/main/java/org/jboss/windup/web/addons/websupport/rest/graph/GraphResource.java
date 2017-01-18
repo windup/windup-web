@@ -64,13 +64,10 @@ public interface GraphResource extends FurnaceRESTGraphAPI
         @QueryParam("depth") Integer depth,
         @QueryParam("dedup") @DefaultValue("false") Boolean dedup,
         @QueryParam("in") String inEdges,
-        @QueryParam("out") String outEdges
+        @QueryParam("out") String outEdges,
+        @QueryParam("includeInVertices") @DefaultValue("true") Boolean includeInVertices
     );
 
-
-    /**
-     * Filters the returned frames to those which have given @propertyName with a given @propertyValue.
-     */
     @GET()
     @Path("/{executionID}/by-type/{vertexType}/{propertyName}={propertyValue}")
     List<Map<String, Object>> getByType(
@@ -79,7 +76,8 @@ public interface GraphResource extends FurnaceRESTGraphAPI
         @PathParam("propertyName") String propertyName,
         @PathParam("propertyValue") String propertyValue,
         @QueryParam("depth") Integer depth,
-        @QueryParam("dedup") @DefaultValue("false") Boolean dedup
+        @QueryParam("dedup") @DefaultValue("false") Boolean dedup,
+        @QueryParam("includeInVertices") @DefaultValue("true") Boolean includeInVertices
     );
 
     // @formatter:on

@@ -62,7 +62,7 @@ public class GraphResourceTest extends AbstractGraphResourceTest
     @RunAsClient
     public void testQueryByType()
     {
-        List<Map<String, Object>> fileModels = graphResource.getByType(execution.getId(), FileModel.TYPE, 1, false, null, null);
+        List<Map<String, Object>> fileModels = graphResource.getByType(execution.getId(), FileModel.TYPE, 1, false, null, null, true);
         Assert.assertNotNull(fileModels);
         Assert.assertTrue(fileModels.size() > 1);
 
@@ -76,7 +76,7 @@ public class GraphResourceTest extends AbstractGraphResourceTest
     @RunAsClient
     public void testEdgeQuery()
     {
-        List<Map<String, Object>> fileModels = graphResource.getByType(execution.getId(), FileModel.TYPE, FileModel.FILE_NAME, "windup-src-example", 0, false);
+        List<Map<String, Object>> fileModels = graphResource.getByType(execution.getId(), FileModel.TYPE, FileModel.FILE_NAME, "windup-src-example", 0, false, true);
         Assert.assertNotNull(fileModels);
         Assert.assertTrue(fileModels.size() == 1);
 
@@ -103,7 +103,7 @@ public class GraphResourceTest extends AbstractGraphResourceTest
     @RunAsClient
     public void testQueryByTypeAndProperty()
     {
-        List<Map<String, Object>> fileModels = graphResource.getByType(execution.getId(), FileModel.TYPE, FileModel.FILE_NAME, "windup-src-example", 1, false);
+        List<Map<String, Object>> fileModels = graphResource.getByType(execution.getId(), FileModel.TYPE, FileModel.FILE_NAME, "windup-src-example", 1, false, true);
         Assert.assertNotNull(fileModels);
         Assert.assertTrue(fileModels.size() == 1);
 

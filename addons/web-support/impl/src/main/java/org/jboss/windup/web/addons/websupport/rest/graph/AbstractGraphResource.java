@@ -25,7 +25,6 @@ import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
 import java.util.HashSet;
-import java.util.Set;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -70,10 +69,10 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
 
     protected Map<String, Object> convertToMap(long executionID, Vertex vertex, Integer depth, boolean dedup, List<String> whitelistedOutEdges, List<String> whitelistedInLabels)
     {
-        return convertToMap(new GraphMarhallingContext(executionID, vertex, depth, dedup, whitelistedOutEdges, whitelistedInLabels), vertex);
+        return convertToMap(new GraphMarhallingContext(executionID, vertex, depth, dedup, whitelistedOutEdges, whitelistedInLabels, true), vertex);
     }
 
-    private Map<String, Object> convertToMap(GraphMarhallingContext ctx, Vertex vertex)
+    protected Map<String, Object> convertToMap(GraphMarhallingContext ctx, Vertex vertex)
     {
         Map<String, Object> result = new HashMap<>();
 
@@ -94,9 +93,12 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
         result.put(GraphResource.VERTICES_OUT, outVertices);
         addEdges(ctx, vertex, Direction.OUT, outVertices);
 
-        Map<String, Object> inVertices = new HashMap<>();
-        result.put(GraphResource.VERTICES_IN, inVertices);
-        addEdges(ctx, vertex, Direction.IN, inVertices);
+        if (ctx.includeInVertices)
+        {
+            Map<String, Object> inVertices = new HashMap<>();
+            result.put(GraphResource.VERTICES_IN, inVertices);
+            addEdges(ctx, vertex, Direction.IN, inVertices);
+        }
 
         return result;
     }
@@ -171,7 +173,7 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
 
     protected List<Map<String, Object>> frameIterableToResult(long executionID, Iterable<? extends WindupVertexFrame> frames, int depth)
     {
-        GraphMarhallingContext ctx = new GraphMarhallingContext(executionID, null, depth, false, Collections.emptyList(), Collections.emptyList());
+        GraphMarhallingContext ctx = new GraphMarhallingContext(executionID, null, depth, false, Collections.emptyList(), Collections.emptyList(), true);
 
         List<Map<String, Object>> result = new ArrayList<>();
         for (WindupVertexFrame frame : frames)
@@ -218,11 +220,11 @@ class GraphMarhallingContext
     final List<String> whitelistedOutEdges;
     final List<String> whitelistedInEdges;
 
-    final Set<Long> visitedVertices = new HashSet();
+    final Set<Long> visitedVertices = new HashSet<>();
     final boolean deduplicateVertices;
+    final boolean includeInVertices;
 
-
-    public GraphMarhallingContext(long executionID, Vertex startVertex, Integer depth, boolean dedup, List<String> whitelistedOutEdges, List<String> whitelistedInLabels)
+    public GraphMarhallingContext(long executionID, Vertex startVertex, Integer depth, boolean dedup, List<String> whitelistedOutEdges, List<String> whitelistedInLabels, boolean includeInVertices)
     {
         this.executionID = executionID;
         this.startVertex = startVertex;
@@ -230,6 +232,7 @@ class GraphMarhallingContext
         this.deduplicateVertices = dedup;
         this.whitelistedOutEdges = whitelistedOutEdges;
         this.whitelistedInEdges = whitelistedInLabels;
+        this.includeInVertices = includeInVertices;
     }
 
 
