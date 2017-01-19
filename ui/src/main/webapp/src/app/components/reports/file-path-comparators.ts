@@ -38,7 +38,7 @@ export function comparePaths(path1:string, path2:string):number {
             // if the segments are different, return the results of this comparison
             if (o1Segment != o2Segment)
             {
-                return o2Segment.localeCompare(o1Segment);
+                return o1Segment.localeCompare(o2Segment);
             }
         }
 

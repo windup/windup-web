@@ -91,7 +91,7 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
         } else {
             // for migration path, store the id only
             if (analysisContext.migrationPath) {
-                analysisContext.migrationPath = <MigrationPath>{id: this.analysisContext.migrationPath.id};
+                analysisContext.migrationPath = <MigrationPath>{id: analysisContext.migrationPath.id};
             } else {
                 analysisContext.migrationPath = <MigrationPath>{id: 0};
             }

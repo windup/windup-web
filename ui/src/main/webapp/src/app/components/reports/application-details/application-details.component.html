@@ -21,8 +21,18 @@
                         <div class="number">{{totalPoints}}</div>
                         <div>Story Points</div>
                     </div>
-                    <div id="treeView-Projects-wrap" class="short">
-                        <app-js-tree-wrapper [treeNodes]="[]"></app-js-tree-wrapper>
+                    <div id="treeView-Projects-wrap" class="short" *ngIf="allProjects?.length > 0">
+                        <app-js-tree-wrapper
+                                            id="treeView-Projects"
+                                            [treeNodes]="applicationTree"
+                                            [hasCheckboxes]="false"
+                                            (nodeClicked)="selectedProject($event)"
+                        >
+                        </app-js-tree-wrapper>
+                        <div class="showButtons hideUntilComputed">
+                            <a class="showMore" href="#" onclick='$("#treeView-Projects-wrap").removeClass("short"); return false;'>Show all &#x21F2;</a>
+                            <a class="showLess" href="#" onclick='$("#treeView-Projects-wrap").addClass("short"); return false;'>Show less &#x21F1;</a>
+                        </div>
                     </div>
                 </td>
             </tr>
@@ -76,14 +86,19 @@
             <a id="expandAll" *ngIf="!allExpanded()" (click)="expandAll()">Expand All</a>
         </div>
 
-        <div *ngFor="let traversal of allProjects" class="panel panel-primary projectBox">
+        <div *ngFor="let traversal of allProjects" class="panel panel-primary projectBox" id="{{traversalToCanonical.get(traversal.vertexId).vertexId}}">
             <div class="panel-heading panel-collapsed clickable" (click)="toggleCollapsed(traversal)">
                 <span class="pull-left"><i class="glyphicon glyphicon-expand arrowIcon"></i></span>
-                <h3 class="panel-title">
-                    <span class="name">{{traversal.path}}</span>
+                <h3 class="panel-title" [ngSwitch]="">
+                    <span class="name" *ngIf="!isDuplicateProject(traversal)">
+                        {{traversal.path}}
+                    </span>
+                    <span class="name" *ngIf="isDuplicateProject(traversal)">
+                        [Included Multiple Times] {{ (traversalToCanonical.get(traversal.vertexId).rootFileModel | async)?.fileName }}
+                    </span>
 
                     <span class="storyPoints">(<span class="points">{{storyPointsForFiles(traversal, traversal.files | async)}}</span> <span class="legend">story points</span>)</span>
-                    <span title="a24b9823">&nbsp;</span>
+                    <span>&nbsp;</span>
                 </h3>
             </div>
             <div class="panel-body" *ngIf="!isCollapsed(traversal)">
@@ -143,6 +158,14 @@
                                         <tr>
                                             <th>Description</th>
                                             <td>{{traversalToCanonical.get(traversal.vertexId)?.description}}</td>
+                                        </tr>
+                                        <tr *ngIf="isDuplicateProject(traversal)">
+                                            <th>Duplicates</th>
+                                            <td>
+                                                <div *ngFor="let path of getDuplicateProjectPaths(traversal)">
+                                                    {{path}}
+                                                </div>
+                                            </td>
                                         </tr>
                                     </table>
                                 </div><!-- /.basicInfo -->
