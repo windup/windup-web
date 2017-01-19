@@ -11,7 +11,6 @@ import {utils} from "../../../utils";
 import {Location} from "@angular/common";
 import {TagDataService, TagHierarchyData} from "../tag-data.service";
 import {FilterApplication} from "windup-services";
-import {WindupEvent} from "../../../services/events/windup-event";
 import {WindupExecution} from "windup-services";
 
 @Component({
@@ -27,6 +26,8 @@ export class ReportFilterComponent implements OnInit, OnDestroy {
 
     appSelectConfig: CustomSelectConfiguration;
     categoryTagSelectConfig: CustomSelectConfiguration;
+
+    isFilterUpToDate: boolean = false;
 
     constructor(private _router: Router,
                 private _activatedRoute: ActivatedRoute,
@@ -89,9 +90,31 @@ export class ReportFilterComponent implements OnInit, OnDestroy {
 
             if (lastExecution != null) {
                 this._filterService.getFilterApplications(this.group, lastExecution)
-                    .subscribe(filterApplications => this.filterApplications = filterApplications);
+                    .subscribe(filterApplications => {
+                        this.filterApplications = filterApplications;
+                        this.isFilterUpToDate = this.areApplicationsInFilterUpToDate();
+                    });
             }
         }));
+    }
+
+    private areApplicationsInFilterUpToDate(): boolean {
+        // compare filter applications with app group apps
+        let filterApplicationsWithoutSharedLibs = this.filterApplications.filter(application => application.fileName !== 'shared-libs');
+
+        if (filterApplicationsWithoutSharedLibs.length !== this.group.applications.length) {
+            // filter apps = at most real apps + 1 (shared libraries virtual application)
+            return false;
+        }
+
+        let hashMap = new Map<string, any>();
+
+        this.group.applications.forEach(application => hashMap.set(application.inputPath, application));
+        let areAllApplicationsInMap = filterApplicationsWithoutSharedLibs.reduce((accumulator, filterApplication) => {
+            return accumulator && hashMap.has(filterApplication.inputPath);
+        }, true);
+
+        return areAllApplicationsInMap;
     }
 
     private getLastExecution(applicationGroup: ApplicationGroup): WindupExecution
