@@ -5,7 +5,7 @@
         <div class="form-group">
             <label class="col-sm-2 control-label">Selected Applications</label>
             <div class="col-sm-10">
-                <wu-custom-select [options]="group.applications" [(selection)]="filter.selectedApplications" [configuration]="appSelectConfig"></wu-custom-select>
+                <wu-custom-select [options]="filterApplications" [(selection)]="filter.selectedApplications" [configuration]="appSelectConfig"></wu-custom-select>
                 <span class="help-block">Please select some application</span>
             </div>
         </div>

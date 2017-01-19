@@ -6,11 +6,13 @@ import {ReportFilterService} from "./report-filter.service";
 import {NotificationService} from "../../../services/notification.service";
 import {RouteFlattenerService} from "../../../services/route-flattener.service";
 import {CustomSelectConfiguration} from "../../custom-select/custom-select.component";
-import {RegisteredApplication} from "windup-services";
 import {Category} from "windup-services";
 import {utils} from "../../../utils";
 import {Location} from "@angular/common";
 import {TagDataService, TagHierarchyData} from "../tag-data.service";
+import {FilterApplication} from "windup-services";
+import {WindupEvent} from "../../../services/events/windup-event";
+import {WindupExecution} from "windup-services";
 
 @Component({
     templateUrl: './report-filter.component.html'
@@ -21,19 +23,18 @@ export class ReportFilterComponent implements OnInit, OnDestroy {
     tags: Tag[] = [];
     categories: Category[] = [];
     routerSubscriptions: Subscription[] = [];
+    filterApplications: FilterApplication[] = [];
 
     appSelectConfig: CustomSelectConfiguration;
     categoryTagSelectConfig: CustomSelectConfiguration;
 
-    constructor(
-        private _router: Router,
-        private _activatedRoute: ActivatedRoute,
-        private _filterService: ReportFilterService,
-        private _tagService: TagDataService,
-        private _notificationService: NotificationService,
-        private _routeFlattenerService: RouteFlattenerService,
-        private _location: Location
-    ) {
+    constructor(private _router: Router,
+                private _activatedRoute: ActivatedRoute,
+                private _filterService: ReportFilterService,
+                private _tagService: TagDataService,
+                private _notificationService: NotificationService,
+                private _routeFlattenerService: RouteFlattenerService,
+                private _location: Location) {
         this.filter = this.getDefaultFilter(null);
 
         this.categoryTagSelectConfig = {
@@ -42,8 +43,8 @@ export class ReportFilterComponent implements OnInit, OnDestroy {
         };
 
         this.appSelectConfig = {
-            getLabel: (app: RegisteredApplication) => app.title,
-            comparator: (option: RegisteredApplication, b: RegisteredApplication|number) => {
+            getLabel: (app: FilterApplication) => app.fileName,
+            comparator: (option: FilterApplication, b: FilterApplication|number) => {
                 if (typeof b === 'number') {
                     return option.id === b;
                 } else {
@@ -83,7 +84,33 @@ export class ReportFilterComponent implements OnInit, OnDestroy {
                 categories => this.categories = categories,
                 error => this._notificationService.error(utils.getErrorMessage(error))
             );
+
+            let lastExecution = this.getLastExecution(this.group);
+
+            if (lastExecution != null) {
+                this._filterService.getFilterApplications(this.group, lastExecution)
+                    .subscribe(filterApplications => this.filterApplications = filterApplications);
+            }
         }));
+    }
+
+    private getLastExecution(applicationGroup: ApplicationGroup): WindupExecution
+    {
+        let execution: WindupExecution = null;
+
+        let allExecutions = applicationGroup.executions.slice(); // make copy of array
+
+        allExecutions.sort((a: WindupExecution, b: WindupExecution) => {
+            return <any>b.timeCompleted - <any>a.timeCompleted;
+        });
+
+        if (allExecutions.length > 0)
+        {
+            execution = allExecutions[0];
+        }
+
+
+        return execution;
     }
 
     private accumulateAllTags(accumulatedTags:Tag[], tags:TagHierarchyData[]):Tag[] {
