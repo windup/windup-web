@@ -15,7 +15,7 @@ import java.util.Collection;
  *
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
-@Path("windup")
+@Path("/windup")
 @Consumes("application/json")
 @Produces("application/json")
 public interface WindupEndpoint

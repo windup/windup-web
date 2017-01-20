@@ -43,6 +43,8 @@ public class ExecutorMDB extends AbstractMDB implements MessageListener
         try
         {
             WindupExecution execution = (WindupExecution)((ObjectMessage) message).getObject();
+            //Long executionId = (Long)((ObjectMessage) message).getObject();
+            LOG.info("Working with execution #" + execution.getId());
 
             WindupExecutionTask executionTask = windupExecutionTaskInstance.get();
             executionTask.init(execution, execution.getGroup());
@@ -53,6 +55,5 @@ public class ExecutorMDB extends AbstractMDB implements MessageListener
             LOG.log(Level.SEVERE, "Failed to execute windup due to: " + e.getMessage(), e);
         }
     }
-
 
 }

@@ -3,6 +3,7 @@ package org.jboss.windup.web.services;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSContext;
 import javax.jms.Queue;
+import javax.jms.Topic;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.transaction.UserTransaction;
@@ -11,6 +12,7 @@ import javax.transaction.UserTransaction;
  * This contains useful utility methods for the services module.
  *
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
+ * @author <a href="mailto:zizka@seznam.cz">Ondrej Zizka</a>
  */
 public class ServiceUtil
 {
@@ -21,6 +23,14 @@ public class ServiceUtil
     public static Queue getJMSQueue(String jndiName)
     {
         return lookup("JMSQueue", Queue.class, jndiName);
+    }
+
+    /**
+     * Lookup a JMS topic.
+     */
+    public static Topic getJMSTopic(String jndiName)
+    {
+        return lookup("JMSTopic", Topic.class, jndiName);
     }
 
     /**
