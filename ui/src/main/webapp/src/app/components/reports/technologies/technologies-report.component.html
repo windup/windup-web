@@ -36,19 +36,19 @@
 
     <div class="technologyItems">
         <div class="technologyItem col-lg-2">
-             Java {{(technologiesStats.statsFilesByTypeJavaPercent | async)?.quantity}} %
+             Java {{filteredTechnologiesStats?.fileTypes['Java'] || 0 }} %
         </div>
         <div class="technologyItem col-lg-2">
-             XML {{(technologiesStats?.statsFilesByTypeXmlPercent | async)?.quantity}} %
+             XML {{filteredTechnologiesStats?.fileTypes['xml'] || 0 }} %
         </div>
         <div class="technologyItem col-lg-2">
-             HTML {{(technologiesStats?.statsFilesByTypeHtmlPercent | async)?.quantity}} %
+             HTML {{filteredTechnologiesStats?.fileTypes['html'] || 0 }} %
         </div>
         <div class="technologyItem col-lg-2">
-             CSS {{(technologiesStats?.statsFilesByTypeCssPercent | async)?.quantity}} %
+             CSS {{filteredTechnologiesStats?.fileTypes['css'] || 0 }} %
         </div>
         <div class="technologyItem col-lg-2">
-             JavaScript {{(technologiesStats?.statsFilesByTypeJsPercent | async)?.quantity}} %
+             JavaScript {{filteredTechnologiesStats?.fileTypes['js'] || 0 }} %
         </div>
     </div>
 
@@ -69,9 +69,9 @@
                             </thead>
 
                             <tbody>
-                                <tr> <td>stateless</td> <td>{{(technologiesStats?.statsServicesEjbStateless | async)?.quantity}}</td> </tr>
-                                <tr> <td>stateful</td> <td>{{(technologiesStats?.statsServicesEjbStateful | async)?.quantity}}</td> </tr>
-                                <tr> <td>message driven</td> <td>{{(technologiesStats?.statsServicesEjbMessageDriven | async)?.quantity}}</td> </tr>
+                                <tr> <td>stateless</td> <td>{{filteredTechnologiesStats?.technologies['stats.services.ejb.stateless'] || 0 }}</td> </tr>
+                                <tr> <td>stateful</td> <td>{{filteredTechnologiesStats?.technologies['stats.services.ejb.stateful'] || 0 }}</td> </tr>
+                                <tr> <td>message driven</td> <td>{{filteredTechnologiesStats?.technologies['stats.services.ejb.messageDriven'] || 0 }}</td> </tr>
                             </tbody>
                         </table>
                         <table class="datatable table table-striped table-bordered technologies-table">
@@ -79,8 +79,8 @@
                                 <tr> <th>HTTP</th> <th>Amount</th> </tr>
                             </thead>
                             <tbody>
-                                <tr> <td>JAX-RS services</td> <td>{{(technologiesStats?.statsServicesHttpJaxRs | async)?.quantity}}</td> </tr>
-                                <tr> <td>JAX-WS services</td> <td>{{(technologiesStats?.statsServicesHttpJaxWs | async)?.quantity}}</td> </tr>
+                                <tr> <td>JAX-RS services</td> <td>{{filteredTechnologiesStats?.technologies['stats.services.http.jax-rs'] || 0 }}</td> </tr>
+                                <tr> <td>JAX-WS services</td> <td>{{filteredTechnologiesStats?.technologies['stats.services.http.jax-ws'] || 0 }}</td> </tr>
                             </tbody>
                         </table>
                         <table class="datatable table table-striped table-bordered technologies-table">
@@ -88,14 +88,14 @@
                                 <tr> <th>Other</th> <th>Amount</th> </tr>
                             </thead>
                             <tbody>
-                                <tr> <td>JPA entities</td> <td>{{(technologiesStats?.statsServicesJpaEntitites | async)?.quantity}}</td> </tr>
-                                <tr> <td>JPA persistence units</td> <td>{{(technologiesStats?.statsServicesJpaPersistenceUnits | async)?.quantity}}</td> </tr>
-                                <tr> <td>JPA named queries</td> <td>{{(technologiesStats?.statsServicesJpaNamedQueries | async)?.quantity}}</td> </tr>
-                                <tr> <td>Hibernate configuration files</td> <td>{{(technologiesStats?.statsServicesHibernateConfigurationFiles | async)?.quantity}}</td> </tr>
-                                <tr> <td>Hibernate entities</td> <td>{{(technologiesStats?.statsServicesHibernateEntities | async)?.quantity}}</td> </tr>
-                                <tr> <td>Hibernate mapping files</td> <td>{{(technologiesStats?.statsServicesHibernateMappingFiles | async)?.quantity}}</td> </tr>
-                                <tr> <td>Hibernate session factories</td> <td>{{(technologiesStats?.statsServicesHibernateSessionFactories | async)?.quantity}}</td> </tr>
-                                <tr> <td>RMI services</td> <td>{{(technologiesStats?.statsServicesRmiServices | async)?.quantity}}</td> </tr>
+                                <tr> <td>JPA entities</td> <td>{{filteredTechnologiesStats?.technologies['stats.services.jpa.entities'] || 0 }}</td> </tr>
+                                <tr> <td>JPA persistence units</td> <td>{{filteredTechnologiesStats?.technologies['stats.services.jpa.persistenceUnits'] || 0 }}</td> </tr>
+                                <tr> <td>JPA named queries</td> <td>{{filteredTechnologiesStats?.technologies['stats.services.jpa.namedQueries'] || 0 }}</td> </tr>
+                                <tr> <td>Hibernate configuration files</td> <td>{{filteredTechnologiesStats?.technologies['stats.services.hibernate.configurationFiles'] || 0 }}</td> </tr>
+                                <tr> <td>Hibernate entities</td> <td>{{filteredTechnologiesStats?.technologies['stats.services.hibernate.Entities'] || 0 }}</td> </tr>
+                                <tr> <td>Hibernate mapping files</td> <td>{{filteredTechnologiesStats?.technologies['stats.services.hibernate.MappingFiles'] || 0 }}</td> </tr>
+                                <tr> <td>Hibernate session factories</td> <td>{{filteredTechnologiesStats?.technologies['stats.services.hibernate.SessionFactories'] || 0 }}</td> </tr>
+                                <tr> <td>RMI services</td> <td>{{filteredTechnologiesStats?.technologies['stats.services.rmi.services'] || 0 }}</td> </tr>
                             </tbody>
                         </table>
                     </div>
@@ -114,8 +114,8 @@
                                 <tr> <th>Database</th> <th>Amount</th> </tr>
                             </thead>
                             <tbody>
-                                <tr> <td>JDBC datasources</td> <td>{{(technologiesStats?.statsServerResourcesDbJdbcDatasources | async)?.quantity}}</td> </tr>
-                                <tr> <td>XA JDBC datasources</td> <td>{{(technologiesStats?.statsServerResourcesDbXaJdbcDatasources | async)?.quantity}}</td> </tr>
+                                <tr> <td>JDBC datasources</td> <td>{{filteredTechnologiesStats?.technologies['stats.serverResources.db.jdbcDatasources'] || 0 }}</td> </tr>
+                                <tr> <td>XA JDBC datasources</td> <td>{{filteredTechnologiesStats?.technologies['stats.serverResources.db.xaJdbcDatasources'] || 0 }}</td> </tr>
                             </tbody>
                         </table>
                         <table class="datatable table table-striped table-bordered technologies-table">
@@ -123,9 +123,9 @@
                                 <tr> <th>Messaging</th> <th>Amount</th> </tr>
                             </thead>
                             <tbody>
-                                <tr> <td>JMS queues</td> <td>{{(technologiesStats?.statsServerResourcesMsgJmsQueues | async)?.quantity}}</td> </tr>
-                                <tr> <td>JMS topics</td> <td>{{(technologiesStats?.statsServerResourcesMsgJmsTopics | async)?.quantity}}</td> </tr>
-                                <tr> <td>JMS connection factories</td> <td>{{(technologiesStats?.statsServerResourcesMsgJmsConnectionFactories | async)?.quantity}}</td> </tr>
+                                <tr> <td>JMS queues</td> <td>{{filteredTechnologiesStats?.technologies['stats.serverResources.msg.jms.queues'] || 0 }}</td> </tr>
+                                <tr> <td>JMS topics</td> <td>{{filteredTechnologiesStats?.technologies['stats.serverResources.msg.jms.topics'] || 0 }}</td> </tr>
+                                <tr> <td>JMS connection factories</td> <td>{{filteredTechnologiesStats?.technologies['stats.serverResources.msg.jms.connectionFactories'] || 0 }}</td> </tr>
                             </tbody>
                         </table>
                         <table class="datatable table table-striped table-bordered technologies-table">
@@ -133,8 +133,8 @@
                                 <tr> <th>Other</th> <th>Amount</th> </tr>
                             </thead>
                             <tbody>
-                                <tr> <td>security realms</td> <td>{{(technologiesStats?.statsServerResourcesSecurityRealms | async)?.quantity}}</td> </tr>
-                                <tr> <td>total JNDI entries</td> <td>{{(technologiesStats?.statsServerResourcesJndiTotalEntries | async)?.quantity}}</td> </tr>
+                                <tr> <td>security realms</td> <td>{{filteredTechnologiesStats?.technologies['stats.serverResources.security.realms'] || 0 }}</td> </tr>
+                                <tr> <td>total JNDI entries</td> <td>{{filteredTechnologiesStats?.technologies['stats.serverResources.jndi.totalEntries'] || 0 }}</td> </tr>
                             </tbody>
                         </table>
                     </div>
@@ -157,13 +157,13 @@
                             <tbody>
                                 <tr>
                                     <td>Self-written</td>
-                                    <td>{{(technologiesStats?.statsJavaClassesOriginal | async)?.quantity || 0}} classes</td>
-                                    <td>{{(technologiesStats?.statsJavaJarsOriginal | async)?.quantity || 0}} jars</td>
+                                    <td>{{filteredTechnologiesStats?.technologies['stats.java.classes.original']  || 0}} classes</td>
+                                    <td>{{filteredTechnologiesStats?.technologies['stats.java.jars.original']  || 0}} jars</td>
                                 </tr>
                                 <tr>
                                     <td>Total</td>
-                                    <td>{{(technologiesStats?.statsJavaClassesTotal | async)?.quantity || 0}} classes</td>
-                                    <td>{{(technologiesStats?.statsJavaJarsTotal | async)?.quantity || 0}} jars</td>
+                                    <td>{{filteredTechnologiesStats?.technologies['stats.java.classes.total'] || 0}} classes</td>
+                                    <td>{{filteredTechnologiesStats?.technologies['stats.java.jars.total'] || 0 }} jars</td>
                                 </tr>
                             </tbody>
                         </table>

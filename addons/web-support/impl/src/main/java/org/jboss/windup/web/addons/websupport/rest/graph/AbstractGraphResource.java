@@ -6,13 +6,17 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.UriInfo;
 
 import org.jboss.windup.graph.GraphContext;
+import org.jboss.windup.graph.model.ProjectModel;
 import org.jboss.windup.graph.model.WindupVertexFrame;
+import org.jboss.windup.graph.service.ProjectService;
+import org.jboss.windup.web.addons.websupport.model.ReportFilterDTO;
 import org.jboss.windup.web.addons.websupport.rest.FurnaceRESTGraphAPI;
 import org.jboss.windup.web.addons.websupport.rest.GraphPathLookup;
 import org.jboss.windup.web.addons.websupport.services.ReportFilterService;
@@ -21,7 +25,6 @@ import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
 import java.util.HashSet;
-import java.util.Set;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -66,10 +69,10 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
 
     protected Map<String, Object> convertToMap(long executionID, Vertex vertex, Integer depth, boolean dedup, List<String> whitelistedOutEdges, List<String> whitelistedInLabels)
     {
-        return convertToMap(new GraphMarhallingContext(executionID, vertex, depth, dedup, whitelistedOutEdges, whitelistedInLabels), vertex);
+        return convertToMap(new GraphMarshallingContext(executionID, vertex, depth, dedup, whitelistedOutEdges, whitelistedInLabels, true), vertex);
     }
 
-    private Map<String, Object> convertToMap(GraphMarhallingContext ctx, Vertex vertex)
+    protected Map<String, Object> convertToMap(GraphMarshallingContext ctx, Vertex vertex)
     {
         Map<String, Object> result = new HashMap<>();
 
@@ -90,9 +93,12 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
         result.put(GraphResource.VERTICES_OUT, outVertices);
         addEdges(ctx, vertex, Direction.OUT, outVertices);
 
-        Map<String, Object> inVertices = new HashMap<>();
-        result.put(GraphResource.VERTICES_IN, inVertices);
-        addEdges(ctx, vertex, Direction.IN, inVertices);
+        if (ctx.includeInVertices)
+        {
+            Map<String, Object> inVertices = new HashMap<>();
+            result.put(GraphResource.VERTICES_IN, inVertices);
+            addEdges(ctx, vertex, Direction.IN, inVertices);
+        }
 
         return result;
     }
@@ -104,7 +110,7 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
     }
 
     @SuppressWarnings("unchecked")
-    private void addEdges(GraphMarhallingContext ctx, Vertex vertex, Direction direction, Map<String, Object> result)
+    private void addEdges(GraphMarshallingContext ctx, Vertex vertex, Direction direction, Map<String, Object> result)
     {
         List<String> whitelistedLabels = direction == Direction.OUT ? ctx.whitelistedOutEdges : ctx.whitelistedInEdges;
 
@@ -167,7 +173,7 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
 
     protected List<Map<String, Object>> frameIterableToResult(long executionID, Iterable<? extends WindupVertexFrame> frames, int depth)
     {
-        GraphMarhallingContext ctx = new GraphMarhallingContext(executionID, null, depth, false, Collections.emptyList(), Collections.emptyList());
+        GraphMarshallingContext ctx = new GraphMarshallingContext(executionID, null, depth, false, Collections.emptyList(), Collections.emptyList(), true);
 
         List<Map<String, Object>> result = new ArrayList<>();
         for (WindupVertexFrame frame : frames)
@@ -188,13 +194,25 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
             throw new IllegalStateException("GraphContext obtaining failed for exec. ID " + executionID + ", path: " + graphPath);
         return graph;
     }
+
+    protected Set<ProjectModel> getProjectModels(GraphContext graphContext, ReportFilterDTO filter)
+    {
+        if (filter.getSelectedApplicationPaths().isEmpty())
+        {
+            return null;
+        }
+
+        ProjectService projectService = new ProjectService(graphContext);
+
+        return projectService.getFilteredProjectModels(filter.getSelectedApplicationPaths());
+    }
 }
 
 
 /**
  * Keeps the context of a marshalling of a single data tree.
  */
-class GraphMarhallingContext
+class GraphMarshallingContext
 {
     final long executionID;
     final Vertex startVertex;
@@ -202,18 +220,26 @@ class GraphMarhallingContext
     final List<String> whitelistedOutEdges;
     final List<String> whitelistedInEdges;
 
-    final Set<Long> visitedVertices = new HashSet();
+    final Set<Long> visitedVertices = new HashSet<>();
     final boolean deduplicateVertices;
+    final boolean includeInVertices;
 
-
-    public GraphMarhallingContext(long executionID, Vertex startVertex, Integer depth, boolean dedup, List<String> whitelistedOutEdges, List<String> whitelistedInLabels)
-    {
+    public GraphMarshallingContext(
+            long executionID,
+            Vertex startVertex,
+            Integer depth,
+            boolean dedup,
+            List<String> whitelistedOutEdges,
+            List<String> whitelistedInLabels,
+            boolean includeInVertices
+    ) {
         this.executionID = executionID;
         this.startVertex = startVertex;
         this.remainingDepth = depth == null ? 0 : depth;
         this.deduplicateVertices = dedup;
-        this.whitelistedOutEdges = whitelistedOutEdges;
-        this.whitelistedInEdges = whitelistedInLabels;
+        this.whitelistedOutEdges = whitelistedOutEdges == null ? Collections.emptyList() : whitelistedOutEdges;
+        this.whitelistedInEdges = whitelistedInLabels == null ? Collections.emptyList() : whitelistedInLabels;
+        this.includeInVertices = includeInVertices;
     }
 
 
