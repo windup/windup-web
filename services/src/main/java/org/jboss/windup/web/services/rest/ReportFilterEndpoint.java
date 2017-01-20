@@ -7,8 +7,10 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
 import org.jboss.windup.web.services.model.Category;
+import org.jboss.windup.web.services.model.FilterApplication;
 import org.jboss.windup.web.services.model.ReportFilter;
 import org.jboss.windup.web.services.model.Tag;
 
@@ -32,6 +34,10 @@ public interface ReportFilterEndpoint
     @GET
     @Path("categories")
     Collection<Category> getCategories();
+
+    @GET
+    @Path("applications")
+    Collection<FilterApplication> getApplications(@QueryParam("executionId") Long executionId);
 
     @PUT
     ReportFilter setFilter(@PathParam("groupId") Long groupId, ReportFilter filter);

@@ -38,7 +38,7 @@ public class ReportFilterDTOImpl implements ReportFilterDTO
 
             this.selectedApplications = filter.getSelectedApplications()
                     .stream()
-                    .map(RegisteredApplication::getInputPath)
+                    .map(FilterApplication::getInputPath)
                     .collect(Collectors.toSet());
         }
         else
