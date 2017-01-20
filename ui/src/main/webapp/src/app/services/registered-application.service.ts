@@ -8,7 +8,7 @@ import {RegisteredApplication} from "windup-services";
 import {AbstractService} from "./abtract.service";
 import {KeycloakService} from "./keycloak.service";
 import {EventBusService} from "./events/event-bus.service";
-import {ApplicationRegisteredEvent} from "./events/windup-event";
+import {ApplicationRegisteredEvent, ApplicationDeletedEvent} from "./events/windup-event";
 import {ApplicationGroup} from "windup-services";
 
 @Injectable()
@@ -201,15 +201,17 @@ export class RegisteredApplicationService extends AbstractService {
             });
     }
 
-    unregister(application:RegisteredApplication) {
+    unregister(group: ApplicationGroup, application: RegisteredApplication) {
         let url = `${Constants.REST_BASE + this.UNREGISTER_URL}/${application.id}`;
         return this._http.delete(url)
-            .catch(this.handleError);
+            .do(_ => this._eventBusService.fireEvent(new ApplicationDeletedEvent(group, application, this)))
+            .catch(this.handleError)
     }
 
-    deleteApplication(application: RegisteredApplication) {
+    deleteApplication(group: ApplicationGroup, application: RegisteredApplication) {
         let url = `${Constants.REST_BASE + this.REGISTERED_APPLICATIONS_URL}/${application.id}`;
         return this._http.delete(url)
+            .do(_ => this._eventBusService.fireEvent(new ApplicationDeletedEvent(group, application, this)))
             .catch(this.handleError);
     }
 }

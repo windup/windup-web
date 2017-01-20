@@ -15,7 +15,10 @@ import {ApplicationDetailsComponent} from "../reports/application-details/applic
 import {ApplicationGroupService} from "../../services/application-group.service";
 import {WindupExecutionService} from "../../services/windup-execution.service";
 import {EventBusService} from "../../services/events/event-bus.service";
-import {ExecutionEvent, ExecutionCompletedEvent, ApplicationGroupEvent} from "../../services/events/windup-event";
+import {
+    ExecutionEvent, ExecutionCompletedEvent, ApplicationGroupEvent,
+    UpdateApplicationGroupEvent
+} from "../../services/events/windup-event";
 import {AbstractComponent} from "../AbstractComponent";
 import {ReportFilterComponent} from "../reports/filter/report-filter.component";
 
@@ -44,7 +47,7 @@ export class GroupLayoutComponent extends AbstractComponent implements OnInit, O
     }
 
     ngOnInit(): void {
-        this.addSubscription(this._eventBus.onEvent.filter(event => event.isTypeOf(ApplicationGroupEvent))
+        this.addSubscription(this._eventBus.onEvent.filter(event => event.isTypeOf(UpdateApplicationGroupEvent))
             .subscribe((event: ApplicationGroupEvent) => {
                 this.applicationGroup = event.group;
                 this.createContextMenuItems();

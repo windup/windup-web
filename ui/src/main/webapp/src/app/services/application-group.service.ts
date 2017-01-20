@@ -8,7 +8,7 @@ import {Observable, Subject} from "rxjs";
 import {EventBusService} from "./events/event-bus.service";
 import {
     ApplicationGroupEvent, NewExecutionStartedEvent, ExecutionUpdatedEvent,
-    ApplicationRegisteredEvent
+    ApplicationRegisteredEvent, ApplicationDeletedEvent, UpdateApplicationGroupEvent
 } from "./events/windup-event";
 
 @Injectable()
@@ -62,9 +62,23 @@ export class ApplicationGroupService extends AbstractService {
             (<ApplicationRegisteredEvent>event).applications.forEach(application => {
                 monitoredGroup.applications.push(application);
             });
+        } else if (event.isTypeOf(ApplicationDeletedEvent)) {
+            let applicationToRemoveIds = (<ApplicationRegisteredEvent>event).applications.map(app => app.id);
+            let applicationsToRemoveIndices = monitoredGroup.applications.map((app, index) => {
+                if (applicationToRemoveIds.indexOf(app.id) !== -1) {
+                    return index;
+                } else {
+                    return -1;
+                }
+            }).filter(index => index >= 0)
+                .sort((a, b) => b - a);
+
+            applicationsToRemoveIndices.forEach(appIndex => {
+                monitoredGroup.applications.splice(appIndex, 1);
+            });
         }
 
-        this._eventBus.fireEvent(new ApplicationGroupEvent(monitoredGroup, this));
+        this._eventBus.fireEvent(new UpdateApplicationGroupEvent(monitoredGroup, this));
     }
 
     monitorGroup(applicationGroup: ApplicationGroup) {

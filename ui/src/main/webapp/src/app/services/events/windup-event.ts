@@ -40,6 +40,12 @@ export class ApplicationGroupEvent extends WindupEvent {
     }
 }
 
+export class UpdateApplicationGroupEvent extends ApplicationGroupEvent {
+    constructor(group: ApplicationGroup, source: any) {
+        super(group, source);
+    }
+}
+
 export class ExecutionEvent extends ApplicationGroupEvent {
     public static TYPE = 'ExecutionEvent';
     private _execution: WindupExecution;

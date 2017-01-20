@@ -91,13 +91,13 @@ export class GroupPageComponent extends ExecutionsMonitoringComponent implements
 
     deleteApplication(application: RegisteredApplication) {
         if (application.registrationType == "PATH") {
-            this._registeredApplicationsService.unregister(application)
+            this._registeredApplicationsService.unregister(this.group, application)
                 .subscribe(result => {
                     console.log(result);
                     this.loadGroup(this.inGroupID);
                 });
         } else {
-            this._registeredApplicationsService.deleteApplication(application)
+            this._registeredApplicationsService.deleteApplication(this.group, application)
                 .subscribe(result => {
                     console.log(result);
                     this.loadGroup(this.inGroupID);
