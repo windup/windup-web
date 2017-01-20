@@ -69,33 +69,6 @@ public class MigrationIssuesEndpointImpl extends AbstractGraphResource implement
         return issuesWithStringKey;
     }
 
-    protected Set<ProjectModel> getProjectModels(GraphContext graphContext, ReportFilterDTO filter)
-    {
-        if (filter.getSelectedApplicationPaths().isEmpty())
-        {
-            return null;
-        }
-
-        Set<ProjectModel> projectModels = new HashSet<>();
-
-        for (FileModel inputPath : WindupConfigurationService.getConfigurationModel(graphContext).getInputPaths())
-        {
-            String filePath = inputPath.getFilePath();
-
-            if (filter.getSelectedApplicationPaths().contains(filePath))
-            {
-                ProjectModel rootProjectModel = inputPath.getProjectModel();
-                if (rootProjectModel == null)
-                    continue;
-
-                ProjectModelTraversal traversal = new ProjectModelTraversal(rootProjectModel, new OnlyOnceTraversalStrategy());
-                projectModels.addAll(traversal.getAllProjects(true));
-            }
-        }
-
-        return projectModels;
-    }
-
     @Override
     public Object getIssueFiles(Long executionId, String issueId)
     {

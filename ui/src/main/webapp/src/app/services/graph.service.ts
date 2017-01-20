@@ -9,7 +9,7 @@ import {BaseModel} from "./graph/base.model";
 @Injectable()
 export class GraphService extends AbstractService {
     private static WINDUP_REST_URL = Constants.REST_SERVER + "/windup-web-services/rest-furnace";
-    private static GRAPH_TECHSTATS_URL = `${GraphService.WINDUP_REST_URL}/graph/{execID}/by-type/{type}`;
+    private static GRAPH_ENDPOINT_URL = `${GraphService.WINDUP_REST_URL}/graph/{execID}/by-type/{type}`;
 
     constructor(private _http: Http) {
         super();
@@ -44,7 +44,7 @@ export class GraphService extends AbstractService {
 
     protected prepareGetRequest(type: string, execID: number, options?: GraphEndpointOptions): Observable<any> {
         let params: URLSearchParams = new URLSearchParams();
-        let url = GraphService.GRAPH_TECHSTATS_URL
+        let url = GraphService.GRAPH_ENDPOINT_URL
             .replace('{execID}', execID.toString())
             .replace('{type}', type);
 
@@ -61,4 +61,5 @@ export class GraphService extends AbstractService {
 
 export interface GraphEndpointOptions {
     depth?: number;
+    includeInVertices?: boolean;
 }
