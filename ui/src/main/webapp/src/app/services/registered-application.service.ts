@@ -7,6 +7,9 @@ import {Constants} from "../constants";
 import {RegisteredApplication} from "windup-services";
 import {AbstractService} from "./abtract.service";
 import {KeycloakService} from "./keycloak.service";
+import {EventBusService} from "./events/event-bus.service";
+import {ApplicationRegisteredEvent} from "./events/windup-event";
+import {ApplicationGroup} from "windup-services";
 
 @Injectable()
 export class RegisteredApplicationService extends AbstractService {
@@ -23,7 +26,12 @@ export class RegisteredApplicationService extends AbstractService {
 
     private UPLOAD_URL = '/file';
 
-    constructor (private _http: Http, private _keycloakService:KeycloakService, private _multipartUploader: FileUploader) {
+    constructor (
+        private _http: Http,
+        private _keycloakService:KeycloakService,
+        private _multipartUploader: FileUploader,
+        private _eventBusService: EventBusService
+    ) {
         super();
         this._multipartUploader.setOptions({
             url: Constants.REST_BASE + this.UPLOAD_URL + '/multipart',
@@ -49,7 +57,7 @@ export class RegisteredApplicationService extends AbstractService {
         application.inputPath = path;
     }
 
-    registerByPath(applicationGroupId:number, path:string):Observable<RegisteredApplication> {
+    registerByPath(applicationGroup: ApplicationGroup, path:string):Observable<RegisteredApplication> {
         let headers = new Headers();
         let options = new RequestOptions({ headers: headers });
         headers.append('Content-Type', 'application/json');
@@ -62,27 +70,29 @@ export class RegisteredApplicationService extends AbstractService {
 
         let body = JSON.stringify(application);
 
-        let url = Constants.REST_BASE + this.REGISTER_PATH_URL + applicationGroupId;
+        let url = Constants.REST_BASE + this.REGISTER_PATH_URL + applicationGroup.id;
         return this._http.post(url, body, options)
             .map(res => <RegisteredApplication> res.json())
+            .do((responseApplication) => this._eventBusService.fireEvent(new ApplicationRegisteredEvent(applicationGroup, responseApplication, this)))
             .catch(this.handleError);
     }
 
-    registerApplicationInDirectoryByPath(applicationGroupId: number, path: string): Observable<RegisteredApplication[]> {
+    registerApplicationInDirectoryByPath(applicationGroup: ApplicationGroup, path: string): Observable<RegisteredApplication[]> {
         let headers = new Headers();
         let options = new RequestOptions({ headers: headers });
         headers.append('Content-Type', 'application/json');
         headers.append('Accept', 'application/json');
 
         let body = path;
-        let url = Constants.REST_BASE + this.REGISTER_DIRECTORY_URL + "/" + applicationGroupId;
+        let url = Constants.REST_BASE + this.REGISTER_DIRECTORY_URL + "/" + applicationGroup.id;
 
         return this._http.post(url, body, options)
             .map(res => <RegisteredApplication[]> res.json())
+            .do((responseApplications) => this._eventBusService.fireEvent(new ApplicationRegisteredEvent(applicationGroup, responseApplications, this)))
             .catch(this.handleError);
     }
 
-    registerApplication(applicationGroupId: number) {
+    registerApplication(applicationGroup: ApplicationGroup) {
         return this._keycloakService
             .getToken()
             .flatMap((token:string, index:number) =>
@@ -115,7 +125,8 @@ export class RegisteredApplicationService extends AbstractService {
 
                 this._multipartUploader.uploadAll();
 
-                return Observable.fromPromise(promise);
+                return Observable.fromPromise(promise)
+                    .do((responseApplications: RegisteredApplication[]) => this._eventBusService.fireEvent(new ApplicationRegisteredEvent(applicationGroup, responseApplications, this)));
             });
     }
 

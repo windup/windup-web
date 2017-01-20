@@ -73,13 +73,13 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
         console.log("Registering path: " + this.fileInputPath);
 
         if (this.isDirectory) {
-            this._registeredApplicationService.registerApplicationInDirectoryByPath(this.applicationGroup.id, this.fileInputPath)
+            this._registeredApplicationService.registerApplicationInDirectoryByPath(this.applicationGroup, this.fileInputPath)
                 .subscribe(
                     application => this.rerouteToApplicationList(),
                     error => this.handleError(error)
                 );
         } else {
-            this._registeredApplicationService.registerByPath(this.applicationGroup.id, this.fileInputPath).subscribe(
+            this._registeredApplicationService.registerByPath(this.applicationGroup, this.fileInputPath).subscribe(
                 application => this.rerouteToApplicationList(),
                 error => this.handleError(<any>error)
             )
@@ -91,7 +91,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
             this.registerByPath();
         } else {
             if (this.multipartUploader.getNotUploadedItems().length > 0) {
-                this._registeredApplicationService.registerApplication(this.applicationGroup.id).subscribe(
+                this._registeredApplicationService.registerApplication(this.applicationGroup).subscribe(
                     application => this.rerouteToApplicationList(),
                     error => this.handleError(<any>error)
                 );

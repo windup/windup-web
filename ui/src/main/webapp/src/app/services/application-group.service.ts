@@ -6,7 +6,10 @@ import {ApplicationGroup, PackageMetadata} from "windup-services";
 import {AbstractService} from "./abtract.service";
 import {Observable, Subject} from "rxjs";
 import {EventBusService} from "./events/event-bus.service";
-import {ApplicationGroupEvent, NewExecutionStartedEvent, ExecutionUpdatedEvent} from "./events/windup-event";
+import {
+    ApplicationGroupEvent, NewExecutionStartedEvent, ExecutionUpdatedEvent,
+    ApplicationRegisteredEvent
+} from "./events/windup-event";
 
 @Injectable()
 export class ApplicationGroupService extends AbstractService {
@@ -55,6 +58,10 @@ export class ApplicationGroupService extends AbstractService {
             } else {
                 monitoredGroup.executions.push(eventExecution);
             }
+        } else if (event.isTypeOf(ApplicationRegisteredEvent)) {
+            (<ApplicationRegisteredEvent>event).applications.forEach(application => {
+                monitoredGroup.applications.push(application);
+            });
         }
 
         this._eventBus.fireEvent(new ApplicationGroupEvent(monitoredGroup, this));
