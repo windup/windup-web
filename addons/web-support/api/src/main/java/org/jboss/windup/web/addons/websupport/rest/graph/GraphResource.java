@@ -37,6 +37,15 @@ public interface GraphResource extends FurnaceRESTGraphAPI
 
     // @formatter:off
 
+    /**
+     * Gets vertex by id
+     *
+     * @param executionID Execution id
+     * @param vertexID Vertex id
+     * @param depth Depth of returned graph
+     * @param dedup Deduplicate vertices
+     * @return Map of selected vertices
+     */
     @GET
     @Path("/{executionID}/{id}")
     Map<String, Object> get(
@@ -46,6 +55,16 @@ public interface GraphResource extends FurnaceRESTGraphAPI
         @QueryParam("dedup") @DefaultValue("false") Boolean dedup
     );
 
+    /**
+     * Returns edges map filtered by parameters
+     *
+     * @param executionID Execution id
+     * @param vertexID Vertex containing given edge
+     * @param edgeDirection Edge direction (IN/OUT/BOTH)
+     * @param edgeLabel Edge label
+     * @param dedup Deduplicate result
+     * @return Map of selected edges
+     */
     @GET
     @Path("/{executionID}/edges/{vertexID}/{edgeDirection}/{edgeLabel}")
     List<Map<String, Object>> getEdges(
@@ -56,6 +75,18 @@ public interface GraphResource extends FurnaceRESTGraphAPI
         @QueryParam("dedup") @DefaultValue("false") Boolean dedup
     );
 
+    /**
+     * Returns vertices map filtered by parameters
+     *
+     * @param executionID Execution id
+     * @param vertexType Type of vertex
+     * @param depth Depth of returned graph
+     * @param dedup Deduplicate vertices
+     * @param inEdges List of in edges separated by ","
+     * @param outEdges List of out edges separated by ",'
+     * @param includeInVertices Include in vertices
+     * @return Map of selected vertices
+     */
     @GET
     @Path("/{executionID}/by-type/{vertexType}")
     List<Map<String, Object>> getByType(
@@ -69,6 +100,18 @@ public interface GraphResource extends FurnaceRESTGraphAPI
     );
 
 
+    /**
+     * Returns vertices map filtered by parameters
+     *
+     * @param executionID Execution id
+     * @param vertexType Type of vertex
+     * @param propertyName Name of property
+     * @param propertyValue Value of property
+     * @param depth Depth of returned graph
+     * @param dedup Deduplicate vertices
+     * @param includeInVertices Include in vertices
+     * @return Map of selected vertices
+     */
     @GET
     @Path("/{executionID}/by-type/{vertexType}/{propertyName}={propertyValue}")
     List<Map<String, Object>> getByType(
