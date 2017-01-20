@@ -46,7 +46,7 @@ public interface GraphResource extends FurnaceRESTGraphAPI
         @QueryParam("dedup") @DefaultValue("false") Boolean dedup
     );
 
-    @GET()
+    @GET
     @Path("/{executionID}/edges/{vertexID}/{edgeDirection}/{edgeLabel}")
     List<Map<String, Object>> getEdges(
         @PathParam("executionID") Long executionID,
@@ -56,7 +56,7 @@ public interface GraphResource extends FurnaceRESTGraphAPI
         @QueryParam("dedup") @DefaultValue("false") Boolean dedup
     );
 
-    @GET()
+    @GET
     @Path("/{executionID}/by-type/{vertexType}")
     List<Map<String, Object>> getByType(
         @PathParam("executionID") Long executionID,
@@ -68,7 +68,8 @@ public interface GraphResource extends FurnaceRESTGraphAPI
         @QueryParam("includeInVertices") @DefaultValue("true") Boolean includeInVertices
     );
 
-    @GET()
+
+    @GET
     @Path("/{executionID}/by-type/{vertexType}/{propertyName}={propertyValue}")
     List<Map<String, Object>> getByType(
         @PathParam("executionID") Long executionID,
