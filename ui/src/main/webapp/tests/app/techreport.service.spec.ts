@@ -10,6 +10,9 @@ import 'rxjs/Rx';
 import {Constants} from '../../src/app/constants';
 import {TechReportService} from "../../src/app/components/reports/technologies/tech-report.service";
 import {TECH_REPORT_DATA} from "./techreport-data";
+import {initializeModelMappingData} from "../../src/app/generated/tsModels/discriminator-mapping-data";
+
+initializeModelMappingData();
 
 describe("TechReportService Test", () => {
     beforeEach(() => {
