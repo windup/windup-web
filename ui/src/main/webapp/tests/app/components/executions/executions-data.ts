@@ -13,6 +13,7 @@ export const EXECUTIONS_DATA: WindupExecution[] = [
         "lastModified": 1477907647318,
         "state": "COMPLETED",
         "analysisContext": null,
+        "filterApplications": null,
         "outputDirectoryName": "Default Group.ANnIuZsNxbfq.report",
         "applicationListRelativePath": "Default Group.ANnIuZsNxbfq.report/index.html"
     },
@@ -28,6 +29,7 @@ export const EXECUTIONS_DATA: WindupExecution[] = [
         "lastModified": 1477907948484,
         "state": "FAILED",
         "analysisContext": null,
+        "filterApplications": null,
         "outputDirectoryName": "Default Group.ANnIuZsNxbfq.report",
         "applicationListRelativePath": "Default Group.ANnIuZsNxbfq.report/index.html"
     },
@@ -43,6 +45,7 @@ export const EXECUTIONS_DATA: WindupExecution[] = [
         "lastModified": 1478000316581,
         "state": "STARTED",
         "analysisContext": null,
+        "filterApplications": null,
         "outputDirectoryName": "Default Group.ANnIuZsNxbfq.report",
         "applicationListRelativePath": "Default Group.ANnIuZsNxbfq.report/index.html"
     },
@@ -58,6 +61,7 @@ export const EXECUTIONS_DATA: WindupExecution[] = [
         "lastModified": 1478000242721,
         "state": "QUEUED",
         "analysisContext": null,
+        "filterApplications": null,
         "outputDirectoryName": "Default Group.ANnIuZsNxbfq.report",
         "applicationListRelativePath": "Default Group.ANnIuZsNxbfq.report/index.html"
     },
@@ -73,6 +77,7 @@ export const EXECUTIONS_DATA: WindupExecution[] = [
         "lastModified": 1478000242721,
         "state": "CANCELLED",
         "analysisContext": null,
+        "filterApplications": null,
         "outputDirectoryName": "Default Group.ANnIuZsNxbfq.report",
         "applicationListRelativePath": "Default Group.ANnIuZsNxbfq.report/index.html"
     },
