@@ -2,7 +2,6 @@ import {Injectable} from "@angular/core";
 import {Http}       from "@angular/http";
 
 import {DiscriminatorMapping}     from './discriminator-mapping';
-import {DiscriminatorMappingData} from "../../generated/tsModels/discriminator-mapping-data";
 import {BaseModel} from './base.model';
 
 /**
@@ -34,7 +33,7 @@ export class GraphJSONToModelService<T extends BaseModel>
     /**
      * @param mapping  Maps the @TypeValue strings to TS model classes.
      */
-    constructor(private mapping: typeof DiscriminatorMapping = DiscriminatorMappingData){ }
+    constructor(private mapping: typeof DiscriminatorMapping = DiscriminatorMapping){ }
 
     public getTypeScriptClassByDiscriminator(discriminator: string): typeof BaseModel {
         return this.mapping.getModelClassByDiscriminator(discriminator);

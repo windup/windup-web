@@ -326,23 +326,14 @@ public class TypeScriptModelsGenerator
                     mappingWriter.write(String.format("// {%1$s} wanted to be here again\n", importedClass));
             }
 
-            mappingWriter.write("\n" +
-                        "export class " + DISCRIMINATOR_MAPPING_DATA + " extends " + DISCRIMINATOR_MAPPING + "\n{\n" +
-                        "    //@Override\n" +
-                        "    public static getMapping(): { [key: string]: typeof " + BaseModelName + " } {\n" +
-                        "        return this.mapping;\n" +
-                        "    }\n\n" +
 
-                        "    static mapping: { [key: string]: typeof " + BaseModelName + " } = {\n");
-
+            mappingWriter.write("\n");
+            mappingWriter.write("export function initializeModelMappingData() {\n");
             for (Map.Entry<String, ModelDescriptor> entry : discriminatorToClassMapping.entrySet())
             {
-
-                mappingWriter.write("        \"" + entry.getKey() + "\": " + entry.getValue().modelClassName + ",\n");
+                mappingWriter.write("    DiscriminatorMapping.addModelClass(" + entry.getValue().modelClassName + ");\n");
             }
-            mappingWriter.write("    };\n\n");
-            mappingWriter.write("    constructor() { super(); };\n");
-            mappingWriter.write("};\n");
+            mappingWriter.write("}\n");
         }
         catch (IOException ex)
         {
