@@ -4,12 +4,15 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.NotFoundException;
 
 import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.Category;
-import org.jboss.windup.web.services.model.RegisteredApplication;
+import org.jboss.windup.web.services.model.FilterApplication;
 import org.jboss.windup.web.services.model.ReportFilter;
 import org.jboss.windup.web.services.model.Tag;
+import org.jboss.windup.web.services.model.WindupExecution;
 import org.jboss.windup.web.services.service.ApplicationGroupService;
 
 import java.util.Collection;
@@ -44,11 +47,11 @@ public class ReportFilterEndpointImpl implements ReportFilterEndpoint
         oldFilter.clear();
 
         Set<Long> selectedApplicationIds = newFilter.getSelectedApplications().stream()
-                .map(RegisteredApplication::getId)
+                .map(FilterApplication::getId)
                 .collect(Collectors.toSet());
         newFilter.clearSelectedApplications();
 
-        Collection<RegisteredApplication> applications = this.getAllApplicationsByIds(selectedApplicationIds);
+        Collection<FilterApplication> applications = this.getAllApplicationsByIds(selectedApplicationIds);
         applications.forEach(newFilter::addSelectedApplication);
 
         newFilter.setApplicationGroup(group);
@@ -57,10 +60,10 @@ public class ReportFilterEndpointImpl implements ReportFilterEndpoint
         return newFilter;
     }
 
-    Collection<RegisteredApplication> getAllApplicationsByIds(Set<Long> ids)
+    Collection<FilterApplication> getAllApplicationsByIds(Set<Long> ids)
     {
         return entityManager
-                .createQuery("select a from " + RegisteredApplication.class.getSimpleName() + " a WHERE a.id IN (:ids)", RegisteredApplication.class)
+                .createQuery("select a from " + FilterApplication.class.getSimpleName() + " a WHERE a.id IN (:ids)", FilterApplication.class)
                 .setParameter("ids", ids)
                 .getResultList();
     }
@@ -89,5 +92,23 @@ public class ReportFilterEndpointImpl implements ReportFilterEndpoint
     {
         return this.entityManager.createQuery("SELECT c FROM Category  c", Category.class)
                 .getResultList();
+    }
+
+    @Override
+    public Collection<FilterApplication> getApplications(Long executionId)
+    {
+        if (executionId == null)
+        {
+            throw new BadRequestException("ExecutionId parameter cannot be null");
+        }
+
+        WindupExecution execution = this.entityManager.find(WindupExecution.class, executionId);
+
+        if (execution == null)
+        {
+            throw new NotFoundException("WindupExecution not found");
+        }
+
+        return execution.getFilterApplications();
     }
 }

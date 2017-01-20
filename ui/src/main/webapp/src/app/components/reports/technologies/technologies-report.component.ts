@@ -13,6 +13,7 @@ import {ProjectModel} from "../../../generated/tsModels/ProjectModel";
 import {FileModel} from "../../../generated/tsModels/FileModel";
 import {TechnologyKeyValuePairModel} from "../../../generated/tsModels/TechnologyKeyValuePairModel";
 import {RegisteredApplication} from "windup-services";
+import {FilterApplication} from "windup-services";
 
 @Component({
     selector: 'wu-technologies-report',
@@ -65,16 +66,14 @@ export class TechnologiesReportComponent implements OnInit {
     }
 
     /**
-     * This is workaround for RESTeasy returning sometimes ID and simetimes full entity
+     * This is workaround for RESTeasy returning sometimes ID and sometimes full entity
      */
-    getFilterSelectedApplications(): RegisteredApplication[] {
+    getFilterSelectedApplications(): (RegisteredApplication | FilterApplication)[] {
         let filterData = this.currentGroup.reportFilter.selectedApplications;
 
         return filterData.map(appOrId => {
             if (typeof appOrId !== 'object') {
-                let app = this.currentGroup.applications.find((item) => item.id === appOrId);
-
-                return app;
+                return this.currentGroup.applications.find((item) => item.id === appOrId);
             }
 
             return appOrId;
@@ -100,7 +99,10 @@ export class TechnologiesReportComponent implements OnInit {
             indices = rootFileModelArray.map((fileModel, index) => {
                 let isApplicationSelected = this.getFilterSelectedApplications()
                     .some(selectedApp => {
-                        return fileModel.fileName === selectedApp.inputFilename;
+                        if ((<FilterApplication>selectedApp).fileName)
+                            return fileModel.fileName === (<FilterApplication>selectedApp).fileName;
+                        else
+                            return fileModel.fileName === (<RegisteredApplication>selectedApp).inputFilename;
                     });
 
                 if (isApplicationSelected) {

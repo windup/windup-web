@@ -17,6 +17,7 @@ import {WindupExecutionService} from "../../services/windup-execution.service";
 import {EventBusService} from "../../services/events/event-bus.service";
 import {ExecutionEvent, ExecutionCompletedEvent, ApplicationGroupEvent} from "../../services/events/windup-event";
 import {AbstractComponent} from "../AbstractComponent";
+import {ReportFilterComponent} from "../reports/filter/report-filter.component";
 
 @Component({
     templateUrl: './group-layout.component.html',
@@ -108,12 +109,12 @@ export class GroupLayoutComponent extends AbstractComponent implements OnInit, O
                 icon: 'fa-cogs',
                 isEnabled: true,
             },
-            new ContextMenuItem(
+            new ReportMenuItem(
                 'Report Filter',
                 'fa-filter',
-                () => { return this.applicationGroup.applications.length > 0; },
-                `/projects/${this.applicationGroup.migrationProject.id}/groups/${this.applicationGroup.id}/reports/filter`,
-                null
+                this.applicationGroup,
+                ReportFilterComponent,
+                this._routeLinkProviderService
             ),
             new ContextMenuItem(
                 'Run Windup',
