@@ -139,7 +139,7 @@ export class ReportFilterComponent implements OnInit, OnDestroy {
     private accumulateAllTags(accumulatedTags:Tag[], tags:TagHierarchyData[]):Tag[] {
         tags.forEach(tag => {
             if (!accumulatedTags.find(existingTag => existingTag.name == tag.tagName))
-                accumulatedTags.push({ id: null, name: tag.tagName });
+                accumulatedTags.push({ id: <any>tag.tagName, name: tag.tagName });
 
             this.accumulateAllTags(accumulatedTags, tag.containedTags);
         });
