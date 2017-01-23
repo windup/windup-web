@@ -94,12 +94,15 @@ export class CustomSelectComponent implements OnChanges {
 
         let selectedIndices = [];
 
-        this.options.forEach((option, index) => {
-            selectedItems.forEach((selection) => {
+        selectedItems.forEach((selection) => {
+            for (let index = 0; index < this.options.length; index++) {
+                let option = this.options[index];
+
                 if (this.compare(option, selection)) {
                     selectedIndices.push(index);
+                    break;
                 }
-            });
+            }
         });
 
         this.selection = selectedIndices.map(index => this.options[index]);
