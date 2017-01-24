@@ -15,7 +15,7 @@ import {PackageRegistryService} from "../services/package-registry.service";
 import {ApplicationGroup, AnalysisContext, Package, MigrationPath, AdvancedOption, RulesPath, PackageMetadata} from "windup-services";
 
 @Component({
-    templateUrl: 'analysis-context-form.component.html'
+    templateUrl: './analysis-context-form.component.html'
 })
 export class AnalysisContextFormComponent extends FormComponent implements OnInit, IsDirty
 {

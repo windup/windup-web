@@ -21,8 +21,8 @@ import {Observable} from "rxjs";
 import {NotificationService} from "../../../services/notification.service";
 
 @Component({
-    templateUrl: '/source-report.component.html',
-    styleUrls: [ '/source-report.component.css' ]
+    templateUrl: './source-report.component.html',
+    styleUrls: [ './source-report.component.css' ]
 })
 export class SourceReportComponent implements OnInit, AfterViewChecked {
     private execID: number;

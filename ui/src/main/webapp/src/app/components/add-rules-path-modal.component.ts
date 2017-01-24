@@ -8,7 +8,7 @@ import {Configuration, RulesPath} from "windup-services";
 
 @Component({
     selector: 'wu-add-rules-path-modal',
-    templateUrl: 'add-rules-path-modal.component.html'
+    templateUrl: './add-rules-path-modal.component.html'
 })
 export class AddRulesPathModalComponent extends FormComponent implements OnInit {
     @Input()

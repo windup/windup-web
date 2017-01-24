@@ -6,7 +6,7 @@ import 'bootstrap';
 
 @Component({
     selector: 'wu-navbar',
-    templateUrl: 'navbar.component.html'
+    templateUrl: './navbar.component.html'
 })
 export class NavbarComponent implements OnInit {
     constructor(private _keycloak:KeycloakService, private _router:Router, private _element: ElementRef) {

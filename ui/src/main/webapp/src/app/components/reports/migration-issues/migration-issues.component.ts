@@ -7,7 +7,7 @@ import {ApplicationGroup} from "windup-services";
 
 @Component({
     selector: 'wu-migration-issues',
-    templateUrl: '/migration-issues.component.html',
+    templateUrl: './migration-issues.component.html',
     styles: [
         `a { cursor: pointer; }`
     ]

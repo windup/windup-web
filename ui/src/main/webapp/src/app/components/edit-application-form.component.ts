@@ -11,7 +11,7 @@ import {Constants} from "../constants";
 import {RegisterApplicationFormComponent} from "./register-application-form.component";
 
 @Component({
-    templateUrl: 'register-application-form.component.html'
+    templateUrl: './register-application-form.component.html'
 })
 export class EditApplicationFormComponent extends RegisterApplicationFormComponent implements OnInit {
     application: RegisteredApplication;

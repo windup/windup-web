@@ -13,7 +13,7 @@ import {ExecutionEvent} from "../services/events/windup-event";
 import {ExecutionsMonitoringComponent} from "./executions/executions-monitoring.component";
 
 @Component({
-    templateUrl: 'group.page.component.html'
+    templateUrl: './group.page.component.html'
 })
 export class GroupPageComponent extends ExecutionsMonitoringComponent implements OnInit, OnDestroy
 {

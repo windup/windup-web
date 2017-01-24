@@ -9,7 +9,7 @@ import {NotificationService} from "../services/notification.service";
 import {utils} from "../utils";
 
 @Component({
-    templateUrl: 'configuration.component.html'
+    templateUrl: './configuration.component.html'
 })
 export class ConfigurationComponent implements OnInit {
 

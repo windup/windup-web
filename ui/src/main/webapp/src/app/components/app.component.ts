@@ -3,7 +3,7 @@ import {Router} from "@angular/router";
 
 @Component({
     selector: 'windup-app',
-    templateUrl: 'app.component.html'
+    templateUrl: './app.component.html'
 })
 export class AppComponent {
 
