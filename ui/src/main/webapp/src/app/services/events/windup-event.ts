@@ -1,4 +1,5 @@
 import {ApplicationGroup, WindupExecution} from "windup-services";
+import {RegisteredApplication} from "windup-services";
 
 export abstract class WindupEvent {
     public static TYPE = 'WindupEvent';
@@ -36,6 +37,12 @@ export class ApplicationGroupEvent extends WindupEvent {
 
     public get group() {
         return this._group;
+    }
+}
+
+export class UpdateApplicationGroupEvent extends ApplicationGroupEvent {
+    constructor(group: ApplicationGroup, source: any) {
+        super(group, source);
     }
 }
 
@@ -83,4 +90,35 @@ export class ExecutionCompletedEvent extends ExecutionUpdatedEvent {
     public get type(): string {
         return ExecutionCompletedEvent.TYPE;
     }
+}
+
+export class ApplicationRegistrationEvent extends ApplicationGroupEvent {
+    public static TYPE = 'ApplicationRegistrationEvent';
+    private _applications: RegisteredApplication[];
+
+    constructor(group: ApplicationGroup, application: RegisteredApplication|RegisteredApplication[], source: any) {
+        super(group, source);
+
+        if (!application.hasOwnProperty('length')) {
+            this._applications = [ <RegisteredApplication>application ];
+        } else {
+            this._applications = <RegisteredApplication[]>application;
+        }
+    }
+
+    public get applications(): RegisteredApplication[] {
+        return this._applications;
+    }
+
+    public get type(): string {
+        return ApplicationRegistrationEvent.TYPE;
+    }
+}
+
+export class ApplicationRegisteredEvent extends ApplicationRegistrationEvent {
+
+}
+
+export class ApplicationDeletedEvent extends ApplicationRegistrationEvent {
+
 }
