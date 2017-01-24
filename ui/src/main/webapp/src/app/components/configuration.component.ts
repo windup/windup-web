@@ -9,7 +9,6 @@ import {NotificationService} from "../services/notification.service";
 import {utils} from "../utils";
 
 @Component({
-    selector: 'application-list',
     templateUrl: 'configuration.component.html'
 })
 export class ConfigurationComponent implements OnInit {

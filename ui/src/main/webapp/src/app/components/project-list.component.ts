@@ -8,7 +8,6 @@ import {utils} from "../utils";
 import {ConfirmationModalComponent} from "./confirmation-modal.component";
 
 @Component({
-    selector: 'application-list',
     templateUrl: 'project-list.component.html',
     styles: [
         `a { cursor: pointer; }`

@@ -18,7 +18,6 @@ import {ApplicationGroupEvent, ExecutionEvent} from "../services/events/windup-e
 import {Subscription} from "rxjs";
 
 @Component({
-    selector: 'application-list',
     templateUrl: 'group-list.component.html',
     styles: [
         `a { cursor: pointer; }`
