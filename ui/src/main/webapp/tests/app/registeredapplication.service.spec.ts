@@ -16,6 +16,8 @@ import {KeycloakService} from "../../src/app/services/keycloak.service";
 import {FileService} from "../../src/app/services/file.service";
 import {FileUploader, FileUploaderOptions} from "ng2-file-upload/ng2-file-upload";
 import {MockBackend, MockConnection} from "@angular/http/testing";
+import {EventBusService} from "../../src/app/services/events/event-bus.service";
+import {ApplicationGroup} from "windup-services";
 
 describe("Registered Application Service Test", () => {
     beforeEach(() => {
@@ -24,6 +26,10 @@ describe("Registered Application Service Test", () => {
                 imports: [HttpModule],
                 providers: [
                     Constants, FileService, RegisteredApplicationService, MockBackend, BaseRequestOptions,
+                    {
+                        provide: EventBusService,
+                        useValue: jasmine.createSpyObj('EventBusService', ['fireEvent'])
+                    },
                     {
                         provide: FileUploader,
                         /*
@@ -72,7 +78,7 @@ describe("Registered Application Service Test", () => {
                 })));
             });
 
-            service.registerByPath(0, inputPath).toPromise()
+            service.registerByPath(<ApplicationGroup>{id: 0}, inputPath).toPromise()
                 .then(application => {
                     expect(application.inputFilename).toEqual("java");
                 }, error => {
