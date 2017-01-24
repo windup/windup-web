@@ -13,6 +13,7 @@ import {IsDirty} from "../is-dirty.interface";
 import {Observable} from "rxjs/Observable";
 import {PackageRegistryService} from "../services/package-registry.service";
 import {ApplicationGroup, AnalysisContext, Package, MigrationPath, AdvancedOption, RulesPath, PackageMetadata} from "windup-services";
+import {RouteHistoryService} from "../services/route-history.service";
 
 @Component({
     templateUrl: 'analysis-context-form.component.html'
@@ -50,7 +51,9 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
                 private _migrationPathService:MigrationPathService,
                 private _analysisContextService:AnalysisContextService,
                 private _configurationOptionsService:ConfigurationOptionsService,
-                private _packageRegistryService: PackageRegistryService) {
+                private _packageRegistryService: PackageRegistryService,
+                private _routeHistoryService: RouteHistoryService
+    ) {
         super();
         this.includePackages = [];
         this.excludePackages = [];
@@ -166,7 +169,7 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
             this._analysisContextService.update(this.analysisContext).subscribe(
                 migrationProject => {
                     this._dirty = false;
-                    this.routeToGroupList()
+                    this.navigateBack()
                 },
                 error => this.handleError(<any> error)
             );
@@ -175,7 +178,7 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
             this._analysisContextService.create(this.analysisContext).subscribe(
                 migrationProject => {
                     this._dirty = false;
-                    this.routeToGroupList()
+                    this.navigateBack()
                 },
                 error => this.handleError(<any> error)
             );
@@ -192,11 +195,11 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
     }
 
     cancel() {
-        this.routeToGroupList();
+        this.navigateBack();
     }
 
-    routeToGroupList() {
-        this._router.navigate(['/projects', this.applicationGroup.migrationProject.id]);
+    navigateBack() {
+        let groupPageRoute = `/projects/${this.applicationGroup.migrationProject.id}/groups/${this.applicationGroup.id}`;
+        this._routeHistoryService.navigateBackOrToRoute(groupPageRoute);
     }
 }
-

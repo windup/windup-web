@@ -1,5 +1,6 @@
 import {Component} from "@angular/core";
-import {Router} from "@angular/router";
+import {Router, NavigationEnd} from "@angular/router";
+import {RouteHistoryService} from "../services/route-history.service";
 
 @Component({
     selector: 'windup-app',
@@ -13,6 +14,9 @@ export class AppComponent {
      *
      * When extension is fixed, this can be safely removed
      */
-    constructor(private router: Router) {
+    constructor(private router: Router, private routeHistoryService: RouteHistoryService) {
+        router.events
+            .filter(event => event instanceof NavigationEnd)
+            .subscribe((event: NavigationEnd) => routeHistoryService.addNavigationEvent(event));
     }
 }
