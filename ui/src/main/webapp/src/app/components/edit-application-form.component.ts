@@ -29,6 +29,8 @@ export class EditApplicationFormComponent extends RegisterApplicationFormCompone
     }
 
     ngOnInit():any {
+        super.ngOnInit();
+
         this.isMultiple = false;
 
         this.labels = {
