@@ -19,6 +19,7 @@ import org.jboss.windup.graph.model.WindupEdgeFrame;
 
 import org.jboss.windup.graph.model.WindupFrame;
 import org.jboss.windup.graph.model.WindupVertexFrame;
+import org.jboss.windup.reporting.model.source.SourceReportModel;
 import org.jboss.windup.reporting.model.source.SourceReportToProjectEdgeModel;
 import org.jboss.windup.rules.apps.java.dependencyreport.DependenciesReportModel;
 import org.jboss.windup.rules.apps.java.dependencyreport.DependencyReportDependencyGroupModel;
@@ -62,6 +63,8 @@ public class TypeScriptModelsGeneratorTest
             // WindupEdgeFrame's
             SourceReportToProjectEdgeModel.class,
             DependencyReportToArchiveEdgeModel.class,
+            // and something using them
+            SourceReportModel.class,
             // Getter returning void getDestinationName(String)
             JmsDestinationModel.class,
         });
@@ -99,6 +102,14 @@ public class TypeScriptModelsGeneratorTest
         try(Scanner scanner = new Scanner(modelPath))
         {
             Assert.assertNull(scanner.findWithinHorizon(Pattern.quote("{any}"), 0));
+        }
+
+        // Check the edge relation
+        modelPath = OUTPUT_DIR.resolve("SourceReportModel.ts");
+        try(Scanner scanner = new Scanner(modelPath))
+        {
+            Assert.assertNotNull("Edge relation should return Observable<SourceReportToProjectEdgeModel[]> in \n"
+                + modelPath.toAbsolutePath(), scanner.findWithinHorizon(Pattern.quote("Observable<SourceReportToProjectEdgeModel[]>"), 0));
         }
 
         // Non-WindupFrame relations.

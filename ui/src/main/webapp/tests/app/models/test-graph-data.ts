@@ -129,7 +129,7 @@ export class TestGraphData
         "reportFilename": "MANIFEST_MF.html",
         "_type": "vertex",
         "vertices_out": {
-            "sourceReportEdgeToProjectModel": {
+            "sourceReportToProjectModel": { // Later it will be sourceReportEdgeToProjectModel
                 "vertices": [
                     {
                         "w:winduptype": [
@@ -145,7 +145,13 @@ export class TestGraphData
                         "vertices_out": {},
                         "_id": 70400,
                         "version": "1.0.0",
-                        "specificationVersion": "4.0.0"
+                        "specificationVersion": "4.0.0",
+                        "edgeData":{
+                            "fullPath": "jee-example    -app-1.0.0.ear/META-INF/MANIFEST.MF",
+                            "w:winduptype": [
+                                "SourceReportEdgeToProjectModel" // TODO: Currently not returning this!
+                            ]
+                        }
                     }
                 ],
                 "direction": "OUT"

@@ -41,4 +41,9 @@ class FrameType implements ModelType
         return frameType.getSimpleName();
     }
 
+    @Override
+    public String toString()
+    {
+        return "FrameType{" + (frameType == null ? "null" : frameType.getSimpleName()) + '}';
+    }
 }

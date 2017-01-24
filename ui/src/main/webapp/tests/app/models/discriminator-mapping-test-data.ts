@@ -5,6 +5,7 @@ import {TestGeneratorModel, TestPlanetModel, TestShipModel} from '../models/test
 import {WindupConfigurationModel} from '../../../src/app/generated/tsModels/WindupConfigurationModel';
 import {FileModel} from '../../../src/app/generated/tsModels/FileModel';
 import {JavaClassFileModel} from '../../../src/app/generated/tsModels/JavaClassFileModel';
+import {SourceReportModel} from '../../../src/app/generated/tsModels/SourceReportModel';
 
 
 export class DiscriminatorMappingTestData extends DiscriminatorMapping
@@ -16,6 +17,7 @@ export class DiscriminatorMappingTestData extends DiscriminatorMapping
         "TestPlanet": TestPlanetModel,
         "FileResource": FileModel,
         "JavaClassFileModel": JavaClassFileModel,
+        "SourceReportModel": SourceReportModel,
     };
 
     constructor() { super(); };

@@ -291,7 +291,7 @@ public class TypeScriptModelsGenerator
                     LOG.fine("    * Examining @" + annType.getSimpleName() + " " + method.getName());
 
                     // Model class of the other end.
-                    final Class theOtherType = TsGenUtils.getPropertyTypeFromMethod(method);
+                    Class theOtherType = TsGenUtils.getPropertyTypeFromMethod(method);
                     if (theOtherType == null)
                         //break adj;
                         throw new WindupException("Could not determine the relation target type: " + methodIdent(method));
@@ -312,10 +312,12 @@ public class TypeScriptModelsGenerator
                         {
                             if (method.getReturnType().equals(Void.TYPE))
                                 throw new WindupException("Adder of @Incidence relation must return the edge frame model: " + methodIdent(method));
+                            // Override this from infoFromMethod() as it's different for @Incidence methods.
+                            //methodInfo.type = ModelType.from(method.getReturnType());
+                            theOtherType = method.getReturnType();
                             methodInfo.targetModelType = ModelType.from(method.getParameterTypes()[0]);
                         }
-
-                        if(methodInfo.methodsPresent.contains(ModelMember.BeanMethodType.ADD) || methodInfo.methodsPresent.contains(ModelMember.BeanMethodType.GET))
+                        else if(methodInfo.methodsPresent.contains(ModelMember.BeanMethodType.GET))
                             methodInfo.type = ModelType.from(theOtherType);
                         else
                             LOG.warning("Only adder and getter is supported for @Incidence: " + methodIdent(method));
@@ -332,19 +334,22 @@ public class TypeScriptModelsGenerator
                         // Also, this filters out things like addFileToDirectory() next to getFilesInDirectory().
                         if (methodInfo.isIterable)
                             existing.beanPropertyName = methodInfo.beanPropertyName;
+
+                        existing.targetModelType = (ModelType) setAndWarnIfDifferent("targetModelType", existing.targetModelType, methodInfo.targetModelType);
+                        //existing.targetModelType = methodInfo.targetModelType;
                         continue;
                     }
 
 
-                    ModelType adjType = ModelType.from(theOtherType);
                     final ModelRelation modelRelation = new ModelRelation(
                                 methodInfo.beanPropertyName,
                                 label,
                                 direction.OUT.equals(direction),
-                                adjType,
+                                ModelType.from(theOtherType),
                                 methodInfo.isIterable, // Also add/remove? That prefix suggests it's a collection.
                                 relKind
                     );
+                    modelRelation.targetModelType = methodInfo.targetModelType;
                     modelRelation.methodsPresent.addAll(methodInfo.methodsPresent);
                     modelDescriptor.addRelation(modelRelation);
                 }
@@ -628,6 +633,17 @@ public class TypeScriptModelsGenerator
         case CAMELCASE:
             return className + suffix;
         }
+    }
+
+    private Object setAndWarnIfDifferent(String what, Object existing, Object newOne)
+    {
+        if (existing == null)
+            return newOne;
+        if (existing.equals(newOne) || newOne == null)
+            return existing;
+        throw new WindupException(String.format("Trait '%s' was expected to be new or same as previously seen, but were:"
+                + "\n    Existing: %s"
+                + "\n    New:      %s", what, existing, newOne));
     }
 }
 

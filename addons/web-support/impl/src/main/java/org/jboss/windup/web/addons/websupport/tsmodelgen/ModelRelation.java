@@ -179,8 +179,12 @@ class ModelRelation extends ModelMember
         String brackets = this.isIterable ? "[]" : "";
         StringBuilder sb = new StringBuilder();
         String direction = this.directionOut ? "'OUT'" : "'IN'";
-        format(sb, "    @GraphAdjacency(%s, %s, %b, '%s')\n", quoteIfNotNull(this.edgeLabel), direction, this.isIterable, this.kind.name());
+        format(sb, "    @GraphAdjacency(%s, %s, %b, '%s')", quoteIfNotNull(this.edgeLabel), direction, this.isIterable, this.kind.name());
+        if(this.targetModelType != null)
+            format(sb, " // @Incidence opposite type: %s", this.targetModelType.getTypeScriptTypeName());
+        sb.append("\n");
         format(sb, "    get %s(): Observable<%s%s> { return null; };\n", this.beanPropertyName, this.type.getTypeScriptTypeName(), brackets);
+
         return sb.toString();
     }
 

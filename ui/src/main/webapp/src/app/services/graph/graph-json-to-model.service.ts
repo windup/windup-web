@@ -1,5 +1,6 @@
 import {Injectable} from "@angular/core";
 import {Http}       from "@angular/http";
+import * as $ from "jquery";
 
 import {DiscriminatorMapping}     from './discriminator-mapping';
 import {DiscriminatorMappingData} from "../../generated/tsModels/discriminator-mapping-data";
@@ -97,7 +98,6 @@ export class GraphJSONToModelService<T extends BaseModel>
             if (!disc)
                 throw new Error(`Given object doesn't specify "${GraphJSONToModelService.DISCRIMINATOR}" and no target class given, vertex id: ` + input["_id"]);
             if (Array.isArray(disc)) {
-                //disc = disc[0];
                 let classes: Array<typeof BaseModel> =
                     (<Array<string>>disc).map(disc => clazz = this.getTypeScriptClassByDiscriminator(disc));
                 clazz = classes[0];
@@ -108,7 +108,7 @@ export class GraphJSONToModelService<T extends BaseModel>
         }
 
         if (clazz == null) {
-            throw new Error(`No class found for discriminator ${disc}: ` + JSON.stringify(input));
+            throw new Error(`No class found for discriminator ${disc} (${$.type(disc)}):\n` + JSON.stringify(input));
         }
 
         return clazz;
