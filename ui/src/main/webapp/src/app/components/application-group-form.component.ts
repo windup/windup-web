@@ -7,7 +7,7 @@ import {FormComponent} from "./form.component";
 import {RouteFlattenerService} from "../services/route-flattener.service";
 
 @Component({
-    selector: 'create-group-form',
+    selector: 'wu-create-group-form',
     templateUrl: 'application-group-form.component.html',
 })
 export class ApplicationGroupForm extends FormComponent implements OnInit, OnDestroy

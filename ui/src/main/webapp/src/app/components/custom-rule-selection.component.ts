@@ -6,7 +6,7 @@ import {ConfigurationService} from "../services/configuration.service";
 
 
 @Component({
-    selector: 'custom-rule-selection',
+    selector: 'wu-custom-rule-selection',
     templateUrl: 'custom-rule-selection.component.html'
 })
 export class CustomRuleSelectionComponent implements OnInit {

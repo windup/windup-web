@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from "@angular/core";
 import {Inject, Input} from '@angular/core';
 
 @Component({
-    selector: 'progress-bar',
+    selector: 'wu-progress-bar',
     template: `
         <div class="progress-description">
             <div class="spinner spinner-xs spinner-inline"></div> <strong>Task:</strong> {{taskName ? taskName : "Starting..."}}

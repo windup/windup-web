@@ -39,11 +39,11 @@
             </span>
             <div>
                 <div *ngIf="status(group).state == 'STARTED'">
-                    <progress-bar
+                    <wu-progress-bar
                             [taskName]="status(group).currentTask"
                             [currentValue]="status(group).workCompleted"
                             [minValue]="0"
-                            [maxValue]="status(group).totalWork"></progress-bar>
+                            [maxValue]="status(group).totalWork"></wu-progress-bar>
                 </div>
             </div>
         </td>

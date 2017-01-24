@@ -2,7 +2,7 @@ import {Component, EventEmitter, Inject, Input, Output} from "@angular/core";
 import * as $ from "jquery";
 
 @Component({
-    selector: 'confirmation-modal',
+    selector: 'wu-confirmation-modal',
     template: `
     <div id="{{id}}" class="modal fade" tabindex="-1" role="dialog" [attr.aria-labelledby]="title" aria-hidden="true">
     <div class="modal-dialog modal-lg">

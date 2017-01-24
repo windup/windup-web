@@ -56,8 +56,8 @@
         </div>
 
         <div *ngSwitchCase="'UPLOADED'"  class="col-md-6 col-md-offset-2">
-            <app-upload-queue *ngIf="isMultiple" [uploader]="multipartUploader"></app-upload-queue>
-            <app-upload-progressbar [uploader]="multipartUploader"></app-upload-progressbar>
+            <wu-upload-queue *ngIf="isMultiple" [uploader]="multipartUploader"></wu-upload-queue>
+            <wu-upload-progressbar [uploader]="multipartUploader"></wu-upload-progressbar>
         </div>
 
         <div class="form-group">

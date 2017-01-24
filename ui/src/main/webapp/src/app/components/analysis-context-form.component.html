@@ -33,32 +33,32 @@
         <div class="form-group">
             <label class="col-md-2 control-label">Include Packages</label>
             <div class="col-md-4">
-                <app-js-tree-wrapper
+                <wu-js-tree-wrapper
                         [treeNodes]="packageTree"
                         [(selectedNodes)]="analysisContext.includePackages"
                 >
-                </app-js-tree-wrapper>
+                </wu-js-tree-wrapper>
             </div>
         </div>
         <div class="form-group">
             <label class="col-md-2 control-label">Exclude Package</label>
             <div class="col-md-3">
-                <app-js-tree-wrapper
+                <wu-js-tree-wrapper
                         [treeNodes]="packageTree"
                         [(selectedNodes)]="analysisContext.excludePackages">
-                </app-js-tree-wrapper>
+                </wu-js-tree-wrapper>
             </div>
         </div>
-        <custom-rule-selection [selectedRulePaths]="analysisContext.rulesPaths" (selectedRulePathsChanged)="rulesPathsChanged($event)"></custom-rule-selection>
+        <wu-custom-rule-selection [selectedRulePaths]="analysisContext.rulesPaths" (selectedRulePathsChanged)="rulesPathsChanged($event)"></wu-custom-rule-selection>
         <div class="form-group">
             <label class="col-md-2 control-label">Advanced Options</label>
             <div class="col-md-6">
-                <analysis-context-advanced-options
+                <wu-analysis-context-advanced-options
                         [(selectedOptions)]="analysisContext.advancedOptions"
                         (advancedOptionsChanged)="advancedOptionsChanged($event)"
                         [configurationOptions]="configurationOptions"
                         #advancedOptionsModal>
-                </analysis-context-advanced-options>
+                </wu-analysis-context-advanced-options>
             </div>
         </div>
         <div class="form-group">

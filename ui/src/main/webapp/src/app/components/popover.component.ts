@@ -2,7 +2,7 @@ import {Component, OnInit, Input, ElementRef, ViewChild, QueryList, AfterViewIni
 import * as $ from "jquery";
 
 @Component({
-    selector: "w-popover",
+    selector: "wu-popover",
     template: `<a   #popoverElement
                     tabindex="0"
                     role="button"

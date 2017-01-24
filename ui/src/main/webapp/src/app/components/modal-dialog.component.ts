@@ -6,7 +6,7 @@ import 'bootstrap';
 var modalID = 0;
 
 @Component({
-    selector: 'modal-dialog',
+    selector: 'wu-modal-dialog',
     template: `
     <div id="{{id}}" class="modal fade" tabindex="-1" role="dialog" [attr.aria-labelledby]="title" aria-hidden="true">
         <div class="modal-dialog modal-lg">

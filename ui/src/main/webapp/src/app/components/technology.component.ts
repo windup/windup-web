@@ -3,7 +3,7 @@ import {Input} from '@angular/core';
 import {Technology} from "windup-services";
 
 @Component({
-    selector: 'technology',
+    selector: 'wu-technology',
     template: `{{technology.name}}{{versionRangeSuffix}}`
 })
 export class TechnologyComponent {

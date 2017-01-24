@@ -5,7 +5,7 @@ import * as $ from 'jquery';
 import 'bootstrap';
 
 @Component({
-    selector: 'navbar',
+    selector: 'wu-navbar',
     templateUrl: 'navbar.component.html'
 })
 export class NavbarComponent implements OnInit {
