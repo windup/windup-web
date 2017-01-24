@@ -93,6 +93,7 @@ import {TagDataService} from "./components/reports/tag-data.service";
 import {RuleProviderExecutionsService} from "./components/reports/rule-provider-executions/rule-provider-executions.service";
 import {RuleProviderExecutionsComponent} from "./components/reports/rule-provider-executions/rule-provider-executions.component";
 import {initializeModelMappingData} from "./generated/tsModels/discriminator-mapping-data";
+import {RouteHistoryService} from "./services/route-history.service";
 
 /**
  * Load all mapping data from the generated files.
@@ -207,6 +208,7 @@ initializeModelMappingData();
         TagDataService,
         SchedulerService,
         RuleProviderExecutionsService,
+        RouteHistoryService,
         {
             provide: RouteLinkProviderService,
             useFactory: () => {
