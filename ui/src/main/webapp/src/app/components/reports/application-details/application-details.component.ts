@@ -372,7 +372,23 @@ export class ApplicationDetailsComponent implements OnInit {
         resultMap.forEach((value, key) => {
             result.push(new ChartStatistic(key, value));
         });
-        return result.sort(chartStatisticComparator);
+        result = result.sort(chartStatisticComparator);
+
+        let MAX_RESULT = 9;
+        // Collect the bottom of the list for the "Other" category.
+        if (MAX_RESULT < result.length)
+        {
+            // Add the "Other" category up.
+            let other = 0;
+            result.slice(MAX_RESULT).forEach(item => {
+                other += item.value;
+            });
+
+            result = result.slice(0, MAX_RESULT);
+            if (other > 0)
+                result.push(new ChartStatistic("Other", other));
+        }
+        return result;
     }
 
     private cacheTagsForFile(file:PersistedTraversalChildFileModel, tagModel:TagSetModel) {
@@ -496,5 +512,5 @@ class ChartStatistic {
 }
 
 function chartStatisticComparator(stat1:ChartStatistic, stat2:ChartStatistic):number {
-    return stat1.value - stat2.value;
+    return stat2.value - stat1.value;
 }
