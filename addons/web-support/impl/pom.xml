@@ -53,6 +53,13 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>org.jboss.windup.rules.apps</groupId>
+            <artifactId>windup-rules-java-archives</artifactId>
+            <version>3.0.0-SNAPSHOT</version>
+            <classifier>forge-addon</classifier>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.jboss.windup.utils</groupId>
             <artifactId>windup-utils</artifactId>
             <classifier>forge-addon</classifier>
