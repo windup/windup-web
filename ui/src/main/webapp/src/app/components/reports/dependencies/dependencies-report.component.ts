@@ -57,11 +57,9 @@ export class DependenciesReportComponent implements OnInit
             // 2. Cycle through each group
             groups.forEach(group => {
                 let sha1 = group.sHA1;
-                console.log("Group: " + sha1);
 
                 // 3. Get the canonical project
                 group.canonicalProject.subscribe(canonical => {
-                    console.log("Canonical: " + canonical.name);
 
                     let mavenIdentifier = null;
                     let mavenProject = <MavenProjectModel>new GraphJSONToModelService().translateType(canonical, this._http, MavenProjectModel);
@@ -70,11 +68,9 @@ export class DependenciesReportComponent implements OnInit
 
                     // 4. Get the root file
                     canonical.rootFileModel.subscribe(rootFileModel => {
-                        console.log("Root file: " + rootFileModel.fileName);
 
                         // 5. Get the archives
                         group.archives.subscribe(archives => {
-                            console.log("Archives: " + archives);
                             let sha1Url = sha1 ?
                                 'http://search.maven.org/#search|ga|1|1:"' + encodeURI(sha1) + '"'
                                 : null;
