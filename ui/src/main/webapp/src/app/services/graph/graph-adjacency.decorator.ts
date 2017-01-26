@@ -32,14 +32,19 @@ export function GraphAdjacency (
             return;
 
         descriptor.get = function () {
-            //console.log(`* get() v#${this.vertexId} ${name} ${direction} ${returnArray ? "array" : "single"}`);
+            //console.log(`* get() v#${this.vertexId} ${name} ${direction} ${returnArray ? "array" : "single"} ${kind}`);
 
             let verticesLabel = (direction === "IN") ? "vertices_in" : "vertices_out";
 
             // Data is empty, just return null (or an empty array)
-            let relations = this.data![verticesLabel]![name];
-            if (!relations || !(relations["vertices"] || relations["link"])){
-                return returnArray ? emptyArrayObs : nullObs;
+            let relations;
+            if (kind == "ADJACENCY" || kind == "INCIDENCE") {
+                relations = this.data![verticesLabel]![name];
+                if (!relations || !(relations["vertices"] || relations["link"])){
+                    return returnArray ? emptyArrayObs : nullObs;
+                }
+            } else if (kind == "IN_V" || kind == "OUT_V") {
+                relations = {};
             }
 
             // .graphService and .http are stored by the initial call of fromJSON().
@@ -86,9 +91,9 @@ export function GraphAdjacency (
 
             // TODO: Some of the code above should go into case: "ADJACENCY".
             let models;
-            switch(kind){
+            switch(kind) {
                 case "ADJACENCY":
-                    models = vertices.map(vertice => graphService.fromJSON(vertice, this.http))
+                    models = vertices.map(vertice => graphService.fromJSON(vertice, this.http));
                     if (!returnArray)
                         models = models[0];
                     break;
@@ -98,15 +103,18 @@ export function GraphAdjacency (
                         let model = graphService.fromJSON(vertice, this.http);
                         let edgeModel = graphService.fromJSON(vertice.edgeData, this.http);
                         // Store the in/out vertexes.
-                        edgeModel[direction === "IN" ? "_in" : "_out"] = model;
-                        edgeModel[direction !== "IN" ? "_out" : "_in"] = this; /// This should be the "this" of the getter, i.e. original vertex.
+                        edgeModel[direction === "IN" ? "_out" : "_in"] = model;
+                        edgeModel[direction === "IN" ? "_in"  : "_out"] = this; /// This should be the "this" of the getter, i.e. original vertex.
+                        //console.log("Incidence edge model: " + edgeModel + " in: " + edgeModel._in + " out: " + edgeModel._out);
                         return edgeModel;
                     });
                 break;
                 // @InVertex/@OutVertex: getter called on edge model; it only has _in and _out reference (no need for specfic name).
                 case "IN_V":
+                    //console.log("This _in: " + this._in);
                     return Observable.of(this._in);
                 case "OUT_V":
+                    //console.log("This _out: " + this._out);
                     return Observable.of(this._out);
             }
 

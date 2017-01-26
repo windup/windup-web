@@ -147,7 +147,7 @@ export class TestGraphData
                         "version": "1.0.0",
                         "specificationVersion": "4.0.0",
                         "edgeData":{
-                            "fullPath": "jee-example    -app-1.0.0.ear/META-INF/MANIFEST.MF",
+                            "fullPath": "jee-example-app-1.0.0.ear/META-INF/MANIFEST.MF",
                             "w:winduptype": [
                                 "SourceReportEdgeToProjectModel" // TODO: Currently not returning this!
                             ]

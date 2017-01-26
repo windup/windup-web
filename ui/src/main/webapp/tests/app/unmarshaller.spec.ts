@@ -168,21 +168,20 @@ describe('Unmarshaller tests', () => {
             .fromJSON(TestGraphData.TEST_FRAME_WITH_INCIDENCE, <Http>{});
 
         /// SourceReportModel projectEdges -> should be Observable<SourceReportToProjectEdgeModel[]>
-        /// See /home/ondra/work/Migration/windup-web/ui/src/main/webapp/src/app/generated/tsModels/SourceReportToProjectEdgeModel.ts
         return modelObject.projectEdges.toPromise()
             .then((sourceReports: SourceReportToProjectEdgeModel[]) => {
-                expect(sourceReports).toBeDefined();
-                expect(sourceReports instanceof Array).toBeTruthy();
-                expect(sourceReports.length).toEqual(1);
-                expect(sourceReports[0]).toBeDefined();
-                expect(sourceReports[0].fullPath).toBeDefined();
-                expect(sourceReports[0].fullPath).toEqual("jee-example-app-1.0.0.ear/META-INF/MANIFEST.MF");
-                expect(sourceReports[0].projectModel).toBeDefined();
+                expect(sourceReports).toBeDefined("sourceReports should be defined");
+                expect(sourceReports instanceof Array).toBeTruthy("sourceReports should be an array");
+                expect(sourceReports.length).toEqual(1, "sourceReports length should be 1");
+                expect(sourceReports[0]).toBeDefined("sourceReports item one should be defined");
+                expect(sourceReports[0].fullPath).toBeDefined("sourceReports fullPath should be defined");
+                expect(sourceReports[0].fullPath).toEqual("jee-example-app-1.0.0.ear/META-INF/MANIFEST.MF", "sourceReports[0] should have the expected fullPath");
+                expect(sourceReports[0].projectModel).toBeDefined("sourceReports[0].projectModel should be defined");
                 sourceReports[0].projectModel.toPromise().then((projectModel: ProjectModel)  => {
                     expect(projectModel.name).toEqual("JEE Example App");
                 });
             }, error => {
-                expect(false).toBeTruthy("Getting planet data failed due to: " + error);
+                expect(false).toBeTruthy("Getting source report data failed due to: " + error);
             });
     }));
 

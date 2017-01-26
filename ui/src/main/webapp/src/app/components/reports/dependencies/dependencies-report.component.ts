@@ -21,10 +21,10 @@ export class DependenciesReportComponent implements OnInit
 
     public constructor(
         private _router: Router,
-        private _http: Http,
         private _activatedRoute: ActivatedRoute,
         private _notificationService: NotificationService,
         private _depsService: DependenciesService,
+        private _http: Http,
     ) {
     }
 
