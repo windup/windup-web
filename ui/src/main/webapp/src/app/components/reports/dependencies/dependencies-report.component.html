@@ -1,0 +1,75 @@
+<h1>Dependencies report</h1>
+
+<div class="panel panel-default panel-primary">
+    <div class="panel-body">
+
+    <div class="container" role="main">
+
+        <div class="row">
+            <div class="xpage-header xpage-header-no-border">
+                <h1>
+                    <div class="main">{{reportModel?.reportName}}</div>
+                    <div class="path">{{reportModel?.projectModel?.name}}</div>
+                </h1>
+                <div class="desc"> {{reportModel?.description}} </div>
+            </div>
+        </div>
+
+        <div class="row">
+                <div *ngIf="archiveGroups_" class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Dependencies</h3>
+                    </div>
+                    <div class="dependencies">
+                        <div *ngFor="let dependency of archiveGroups_">
+                            <!--#assign dependencyProject = dependency.canonicalProject-->
+                            <template [ngIf]="dependency.project">
+                                <div id="{{dependency.archiveName}}" class="dependency panel panel-default">
+                                    <h4>{{dependency.archiveName}}</h4>
+                                    <dl class="traits dl-horizontal">
+                                        <template [ngIf]="dependency.gav">
+                                            <dt class="trait">Maven coordinates:</dt>
+                                            <dd id="{{dependency.archiveName}}-maven">
+                                                <span *ngIf="dependency.sha1url">
+                                                    <a id="{{dependency.archiveName}}-gav" href="{{dependency.sha1url}}" target="_blank">{{dependency.gav}}</a>
+                                                </span>
+                                                <span *ngIf="dependency.sha1"> {{dependency.gav}} </span>
+                                            </dd>
+                                        </template>
+                                        <template [ngIf]="dependency.sha1">
+                                            <dt class="trait">SHA1 hash:</dt>
+                                            <dd id="{{dependency.archiveName}}-hash">{{dependency.sha1}}</dd>
+                                        </template>
+                                        <template [ngIf]="dependency.project.name && dependency.project.name !== dependency.archiveName">
+                                            <dt class="trait">Name:</dt>
+                                            <dd id="{{dependency.archiveName}}-name">{{dependency.project.name}}</dd>
+                                        </template>
+                                        <template [ngIf]="dependency.project.version">
+                                            <dt class="trait">Version:</dt>
+                                            <dd id="{{dependency.archiveName}}-version">{{dependency.project.version}}</dd>
+                                        </template>
+                                        <template [ngIf]="dependency.project.organization">
+                                            <dt class="trait">Organization:</dt>
+                                            <dd id="{{dependency.archiveName}}-org">{{dependency.project.organization}}</dd>
+                                        </template>
+                                        <!-- @Incidence not yet supported by the TsModelGen.
+                                        <dt class="trait">Found at path:</dt>
+                                        <dd>
+                                            <ul id="{{archiveName}}-paths" class="list-unstyled">
+                                                <li *ngFor="let edge of dependency.archives">{{edge.fullPath}}</li>
+                                            </ul>
+                                        </dd>
+                                        -->
+                                    </dl>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+
+        </div><!--/row-->
+
+    </div><!-- /container main-->
+
+    </div>
+</div>

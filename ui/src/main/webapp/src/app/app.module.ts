@@ -18,6 +18,7 @@ import {GroupPageComponent} from "./components/group.page.component";
 import {RegisterApplicationFormComponent} from "./components/register-application-form.component";
 import {ProgressBarComponent} from "./components/progress-bar.component";
 import {NavbarComponent} from "./components/navbar.component";
+import {BreadCrumbsComponent} from "./components/breadcrumbs.component";
 import {ConfigurationService} from "./services/configuration.service";
 import {AnalysisContextService} from "./services/analysis-context.service";
 import {ApplicationGroupService} from "./services/application-group.service";
@@ -55,6 +56,8 @@ import {MigrationIssuesComponent} from "./components/reports/migration-issues/mi
 import {MigrationIssuesTableComponent} from "./components/reports/migration-issues/migration-issues-table.component";
 import {MigrationIssuesService} from "./components/reports/migration-issues/migration-issues.service";
 import {TechReportService} from "./components/reports/technologies/tech-report.service";
+import {DependenciesReportComponent} from "./components/reports/dependencies/dependencies-report.component";
+import {DependenciesService} from "./components/reports/dependencies/dependencies.service";
 import {FramesRestClientService} from './services/graph/frames-rest-client.service';
 import {ContextMenuComponent} from "./components/navigation/context-menu.component";
 import {GroupLayoutComponent} from "./components/layout/group-layout.component";
@@ -126,6 +129,7 @@ initializeModelMappingData();
 
         // Reports
         TechnologiesReportComponent,
+        DependenciesReportComponent,
         SourceReportComponent,
         ApplicationDetailsComponent,
         PrettyPathPipe,
@@ -136,6 +140,7 @@ initializeModelMappingData();
         // Components
         AddRulesPathModalComponent,
         AnalysisContextAdvancedOptionsModalComponent,
+        BreadCrumbsComponent,
         ConfirmationModalComponent,
         ModalDialogComponent,
         NavbarComponent,
@@ -203,6 +208,7 @@ initializeModelMappingData();
         RouteFlattenerService,
         ReportFilterService,
         ReportFilterResolve,
+        DependenciesService,
         EventBusService,
         WindupExecutionService,
         TagDataService,

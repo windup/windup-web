@@ -199,4 +199,3 @@ export function sortClassesBySpeciality(classes: Array<AnyClass>) : Array<AnyCla
     classesLevels.forEach( (level)=>level.forEach( (cls)=>sortedClasses.push(cls) ) );
     return sortedClasses;
 }
-
