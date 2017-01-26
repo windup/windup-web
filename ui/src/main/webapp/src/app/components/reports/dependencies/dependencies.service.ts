@@ -44,18 +44,16 @@ export class DependenciesService extends AbstractService
     /**
      * Returns the DependenciesReportModel
      */
-    getDepsReportModel(executionId: number): Observable<DependenciesReportModel> {
+    getDepsReportModel(executionId: number): Observable<DependenciesReportModel[]> {
         let service = new GraphJSONToModelService();
-        let url = `${Constants.GRAPH_REST_BASE}/graph/${executionId}/by-type/` + DependenciesReportModel.discriminator + "?depth=1";
+        let url = `${Constants.GRAPH_REST_BASE}/graph/${executionId}/by-type/` + DependenciesReportModel.discriminator + "?depth=2";
         return this._http.get(url)
             .map((res:Response) => res.json())
             .map((data:any) => {
                 if (!Array.isArray(data) || data.length == 0) {
                     throw new Error("No items returned, URL: " + url);
                 }
-                let reportModel = <DependenciesReportModel>service.fromJSONarray(data, this._http, DependenciesReportModel)[0];
-                console.log("reportModel: ", reportModel);
-                return reportModel;
+                return <DependenciesReportModel[]>service.fromJSONarray(data, this._http, DependenciesReportModel);
             })
             .catch(this.handleError);
     }

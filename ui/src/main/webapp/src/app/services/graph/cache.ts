@@ -1,3 +1,12 @@
+/**
+ * Caches results returned from given fetcher callback for given key,
+ * up to maxItems results, deletes the oldest results when full (FIFO).
+ */
+export class StaticCache
+{
+    static cachedData: Map<string, any> = new Map<string, any>();
+    static maxItems: number = 400;
+    static stats = { hits: 0, fetches: 0 };
 
     static get(key: string){
         return this.cachedData.get(key);

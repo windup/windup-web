@@ -1,50 +1,27 @@
-import {Observable} from "rxjs";
-import {Component, OnInit, Pipe, PipeTransform} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
+import {Http} from "@angular/http";
 import {Router, ActivatedRoute, Params} from "@angular/router";
 import {NotificationService} from "../../../services/notification.service";
 import {DependenciesService} from "./dependencies.service";
 import {utils} from '../../../utils';
 
 import {DependenciesReportModel} from "../../../generated/tsModels/DependenciesReportModel";
-import {DependencyReportDependencyGroupModel} from "../../../generated/tsModels/DependencyReportDependencyGroupModel";
-import {ProjectDependencyModel} from "../../../generated/tsModels/ProjectDependencyModel";
-import {ProjectModel} from "../../../generated/tsModels/ProjectModel";
-import {ArchiveModel} from "../../../generated/tsModels/ArchiveModel";
-import {DuplicateArchiveModel} from "../../../generated/tsModels/DuplicateArchiveModel";
-import {WindupConfigurationModel} from "../../../generated/tsModels/WindupConfigurationModel";
-import {ApplicationArchiveModel} from "../../../generated/tsModels/ApplicationArchiveModel";
-import {FileModel} from "../../../generated/tsModels/FileModel";
-
-
-/**
- * Fetches the given Observable and stores it's result into it's .result property, then calls given continuation.
- */
-export function fetch <T> (from: Observable<T>, then: (result: T, from: Observable<T> & {result: T}) => any) {
-    if (!from)
-        return console.warn("null passed as Observable."), void 0;
-    from.subscribe(what => {
-        (<any>from).result = what;
-        then(what, <any>from);
-    });
-}
-
+import {GraphJSONToModelService} from "../../../services/graph/graph-json-to-model.service";
+import {MavenProjectModel} from "../../../generated/tsModels/MavenProjectModel";
 
 @Component({
     selector: 'wu-dependencies-report',
-    templateUrl: 'dependencies-report.component.html'
+    templateUrl: './dependencies-report.component.html'
 })
 export class DependenciesReportComponent implements OnInit
 {
     private execID: number;
-    protected reportModel: DependenciesReportModel;
-    protected archiveGroups_: DependencyReportDependencyGroupModel[];
-    /// Not used?
-    protected inputApps: ApplicationArchiveModel[];
-    protected rootProjects: ProjectModel[];
-    protected dependencies: ProjectDependencyModel[];
+    reportModel: DependenciesReportModel;
+    dependencies: DependencyEntry[] = [];
 
     public constructor(
         private _router: Router,
+        private _http: Http,
         private _activatedRoute: ActivatedRoute,
         private _notificationService: NotificationService,
         private _depsService: DependenciesService,
@@ -55,113 +32,84 @@ export class DependenciesReportComponent implements OnInit
         this._activatedRoute.params.forEach((params: Params) => {
             this.execID = +params['executionId'];
             this.fetchDepsReportModel();
-            //this.fetchRootProjects();
-            //this.fetchInputApps();
         });
     }
 
-    fetchDepsReportModel(): void {
+    private fetchDepsReportModel(): void {
         this._depsService.getDepsReportModel(this.execID).subscribe(
-            (depReport: DependenciesReportModel) => {
-                console.debug("depReport: ", depReport);
-                //debugger;
-                this.reportModel = depReport;
-                if (!depReport.projectModel)
-                    throw new Error("Missing depReport.projectModel .");
-                depReport.projectModel.subscribe(p => (<any>depReport.projectModel).result = p);
-                ///fetch(depReport.projectModel);
-                /// Report -*> ArchiveGroup -*> rootFileModel ~=> ArchiveModel { ~=> DuplicateArchiveModel? .canonicalArchive }
-                // ArchiveModel --> .canonicalProject {
-                //    .rootFileModel.fileName
-                //    .mavenIdentifier
-                //    .name .version ...
-                // }
+            depReports => {
+                depReports.forEach(depReport => {
+                    this.loadDepReportData(depReport);
+                });
+            },
+            error => {
+                this._notificationService.error(utils.getErrorMessage(error));
+                this._router.navigate(['']);
+            }
+        );
+    }
 
-                if (!depReport.archiveGroups)
-                    throw new Error("Missing depReport.archiveGroups: " + depReport);
+    private loadDepReportData(depReport:DependenciesReportModel) {
+        this.reportModel = depReport;
 
-                // Setting these:
-                // * dependency.canonicalProject.result
-                // * dependency.archiveName
-                //console.log("depReport.archiveGroups: ", depReport.archiveGroups);
-                depReport.archiveGroups.subscribe(groups => {
-                    console.log("depReport.archiveGroups: ", depReport.archiveGroups, groups);
-                    this.archiveGroups_ = groups;
-                    console.log("groups: ", groups);
-                    groups.map(dep => {
-                        let dep_:any = dep; // Prevent TS complaints.
-                        dep_.sha1 = dep.sHA1;
-                        //dependency.canonicalProject.subscribe(p => (<any>dependency.canonicalProject).result = p);
-                        fetch(dep.canonicalProject, (depProj) => {
-                            dep_.project = depProj;
-                            fetch(depProj.rootFileModel, (root) => {
-                                dep_.archiveName = root.fileName;
+        // 1. Get the archives
+        depReport.archiveGroups.subscribe(groups => {
+            // 2. Cycle through each group
+            groups.forEach(group => {
+                let sha1 = group.sHA1;
+                console.log("Group: " + sha1);
+
+                // 3. Get the canonical project
+                group.canonicalProject.subscribe(canonical => {
+                    console.log("Canonical: " + canonical.name);
+
+                    let mavenIdentifier = null;
+                    let mavenProject = <MavenProjectModel>new GraphJSONToModelService().translateType(canonical, this._http, MavenProjectModel);
+                    if (mavenProject.mavenIdentifier)
+                        mavenIdentifier = mavenProject.mavenIdentifier;
+
+                    // 4. Get the root file
+                    canonical.rootFileModel.subscribe(rootFileModel => {
+                        console.log("Root file: " + rootFileModel.fileName);
+
+                        // 5. Get the archives
+                        group.archives.subscribe(archives => {
+                            console.log("Archives: " + archives);
+                            let sha1Url = sha1 ?
+                                'http://search.maven.org/#search|ga|1|1:"' + encodeURI(sha1) + '"'
+                                : null;
+
+                            let entry:DependencyEntry = {
+                                paths: [],
+                                gav: mavenIdentifier,
+                                filename: rootFileModel.fileName,
+                                sha1: sha1,
+                                sha1Url: sha1Url,
+                                name: canonical.name,
+                                version: canonical.version,
+                                organization: canonical.organization
+                            };
+                            this.dependencies.push(entry);
+
+                            archives.forEach(archive => {
+                                entry.paths.push(archive.fullPath);
                             });
-                            dep_.gav = dep_.project.mavenIdentifier;
-                            dep_.sha1url = 'http://search.maven.org/#search|ga|1|1:"' + encodeURL(dep.sHA1, 'ISO-8859-1') + '"';
+
                         });
                     });
                 });
-            },
-            error => {
-                this._notificationService.error(utils.getErrorMessage(error));
-                this._router.navigate(['']);
-            }
-        );
-    }
-
-    fetchInputApps(): void {
-        this._depsService.getWindupConfiguration(this.execID).subscribe(
-            (windupConfig: WindupConfigurationModel) => {
-                console.debug("windupConfig: ", windupConfig);
-                windupConfig.inputPaths.map(app => {
-                });
-            },
-            error => {
-                this._notificationService.error(utils.getErrorMessage(error));
-                this._router.navigate(['']);
-            }
-        );
-    }
-
-    fetchRootProjects(): void {
-        this._depsService.getRootProjects(this.execID).subscribe(
-            (rootProjects:ProjectModel[]) => {
-                console.debug("rootProjects: ", rootProjects);
-                this.rootProjects = rootProjects;
-            },
-            error => {
-                this._notificationService.error(utils.getErrorMessage(error));
-                this._router.navigate(['']);
-            }
-        );
+            });
+        });
     }
 }
 
-
-
-// TODO
-function encodeURL(url: string, encoding: string) {
-    return encodeURI(url);
-}
-
-@Pipe({name: 'encodeURL', pure: false})
-export class EncodeUrlPipe implements PipeTransform {
-   transform(value: any, args: any[] = []) {
-       return encodeURL(value, null);
-   }
-}
-
-@Pipe({name: 'sortDependencyGroupArchivesByPath', pure: false})
-export class SortDependencyGroupArchivesByPathPipe implements PipeTransform {
-   transform(value: any, args: any[] = []) {
-       return value;
-   }
-}
-
-@Pipe({name: 'sortDependencyArchivesByPath', pure: false})
-export class SortDependencyArchivesByPathAscendingPipe implements PipeTransform {
-   transform(value: any, args: any[] = []) {
-       return value;
-   }
+interface DependencyEntry {
+    paths:string[];
+    gav:string;
+    filename:string;
+    sha1?:string;
+    sha1Url?:string;
+    name:string;
+    version:string;
+    organization:string;
 }

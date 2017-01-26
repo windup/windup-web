@@ -116,7 +116,7 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
         List<String> whitelistedLabels = direction == Direction.OUT ? ctx.whitelistedOutEdges : ctx.whitelistedInEdges;
 
         Iterable<Edge> edges;
-        if (whitelistedLabels == null || whitelistedLabels.isEmpty())
+        if (whitelistedLabels.isEmpty())
             edges = vertex.getEdges(direction);
         else
             edges = vertex.getEdges(direction, whitelistedLabels.toArray(new String[whitelistedLabels.size()]));
@@ -169,7 +169,7 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
                 otherVertexMap.put(GraphResource.EDGE_DATA, edgeData);
 
                 /// Add the edge frame's @TypeValue.  Workaround until PR #1063.
-                edgeData.put(WindupFrame.TYPE_PROP, graphTypeManager.resolveTypes(edge, WindupEdgeFrame.class));
+                //edgeData.put(WindupFrame.TYPE_PROP, graphTypeManager.resolveTypes(edge, WindupEdgeFrame.class));
             }
 
             linkedVertices.add(otherVertexMap);

@@ -32,7 +32,7 @@ export function GraphAdjacency (
             return;
 
         descriptor.get = function () {
-            console.log(`* get() v#${this.vertexId} ${name} ${direction} ${returnArray ? "array" : "single"}`);
+            //console.log(`* get() v#${this.vertexId} ${name} ${direction} ${returnArray ? "array" : "single"}`);
 
             let verticesLabel = (direction === "IN") ? "vertices_in" : "vertices_out";
 
