@@ -29,6 +29,7 @@ import {ApplicationDetailsComponent} from "./components/reports/application-deta
 import {ReportFilterComponent} from "./components/reports/filter/report-filter.component";
 import {ReportFilterResolve} from "./components/reports/filter/report-filter.resolve";
 import {RuleProviderExecutionsComponent} from "./components/reports/rule-provider-executions/rule-provider-executions.component";
+import {DependenciesReportComponent} from "./components/reports/dependencies/dependencies-report.component";
 
 export const appRoutes: Routes = [
     {path: "login", component: LoginComponent},
@@ -120,7 +121,8 @@ export const appRoutes: Routes = [
                                             },
                                             {path: 'source/:fileId', component: SourceReportComponent, data: {displayName: 'Source Report'}},
                                             {path: 'application-details', component: ApplicationDetailsComponent, data: { displayName: 'Application Details'}},
-                                            {path: 'executed-rules', component: RuleProviderExecutionsComponent, data: {displayName: 'Executed Rules'}}
+                                            {path: 'executed-rules', component: RuleProviderExecutionsComponent, data: {displayName: 'Executed Rules'}},
+                                            {path: 'dependencies', component: DependenciesReportComponent, data: {displayName: 'Dependencies Report' }}
                                         ]},
                                         { path: '', children: [
                                             { path: 'edit', component: ApplicationGroupForm, data: {displayName: "Edit Application Group"} }
