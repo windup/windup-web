@@ -118,7 +118,8 @@ export const appRoutes: Routes = [
                                             },
                                             {path: 'source/:fileId', component: SourceReportComponent, data: {displayName: 'Source Report'}},
                                             {path: 'application-details', component: ApplicationDetailsComponent, data: { displayName: 'Application Details'}},
-                                            {path: 'executed-rules', component: RuleProviderExecutionsComponent, data: {displayName: 'Executed Rules'}}
+                                            {path: 'executed-rules', component: RuleProviderExecutionsComponent, data: {displayName: 'Executed Rules'}},
+                                            {path: 'dependencies', component: DependenciesReportComponent, data: {displayName: 'Dependencies Report' }}
                                         ]},
                                         { path: '', children: [
                                             { path: 'edit', component: ApplicationGroupForm, data: {displayName: "Edit Application Group"} }
