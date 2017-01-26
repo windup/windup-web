@@ -2,7 +2,7 @@ import {Component, Input, OnInit, NgZone} from "@angular/core";
 import {FileUploader} from 'ng2-file-upload/ng2-file-upload';
 
 @Component({
-    selector: 'app-upload-queue',
+    selector: 'wu-upload-queue',
     templateUrl: 'upload-queue.component.html'
 })
 export class UploadQueueComponent implements OnInit {

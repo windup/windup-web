@@ -4,7 +4,7 @@ import {Subscription} from "rxjs/Subscription";
 import {Notification, NotificationLevel} from "../services/notification";
 
 @Component({
-    selector: 'ap-notification',
+    selector: 'wu-notification',
     templateUrl: 'notification.component.html'
 })
 export class NotificationComponent implements OnInit, OnDestroy {

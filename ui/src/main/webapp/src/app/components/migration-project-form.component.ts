@@ -8,7 +8,7 @@ import {Subscription} from "rxjs";
 import {RouteFlattenerService} from "../services/route-flattener.service";
 
 @Component({
-    templateUrl: 'migration-project-form.component.html'
+    templateUrl: './migration-project-form.component.html'
 })
 export class MigrationProjectFormComponent extends FormComponent implements OnInit, OnDestroy
 {

@@ -16,7 +16,7 @@ import {ApplicationGroup, AnalysisContext, Package, MigrationPath, AdvancedOptio
 import {RouteHistoryService} from "../services/route-history.service";
 
 @Component({
-    templateUrl: 'analysis-context-form.component.html'
+    templateUrl: './analysis-context-form.component.html'
 })
 export class AnalysisContextFormComponent extends FormComponent implements OnInit, IsDirty
 {

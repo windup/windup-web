@@ -7,7 +7,7 @@ import {colorHelper} from "ng2d3/release/utils/color-sets";
 
 @Component({
     selector: 'wu-package-chart',
-    templateUrl: '/package-chart.component.html',
+    templateUrl: './package-chart.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PackageChartComponent extends BaseChartComponent implements OnChanges, OnDestroy, AfterViewInit {

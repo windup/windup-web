@@ -6,7 +6,7 @@ import {ConfigurationOptionsService} from "../services/configuration-options.ser
 import {ValidationResult} from "../model/validation-result.model";
 
 @Component({
-    selector: 'analysis-context-advanced-options',
+    selector: 'wu-analysis-context-advanced-options',
     template: `
             <table class="datatable table table-striped table-bordered">
                 <thead>
@@ -33,7 +33,7 @@ import {ValidationResult} from "../model/validation-result.model";
                             <select class="form-control" name="newOptionTypeSelection" [(ngModel)]="newOption.name" (change)="newOptionTypeChanged()">
                                 <option *ngFor="let option of availableOptions" value="{{option.name}}">{{option.name}}</option>
                             </select>
-                            <w-popover class="input-group-addon" *ngIf="currentSelectedOptionDefinition?.description" [content]="currentSelectedOptionDefinition?.description"></w-popover>
+                            <wu-popover class="input-group-addon" *ngIf="currentSelectedOptionDefinition?.description" [content]="currentSelectedOptionDefinition?.description"></wu-popover>
                         </td>
                         <td [class.bg-danger]="newOptionError" align="right">
                             <span class="text-danger">{{newOptionError}}</span>

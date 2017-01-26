@@ -3,7 +3,7 @@ import * as $ from "jquery";
 import {RuleProviderEntity} from "windup-services";
 
 @Component({
-    selector: 'rules-modal',
+    selector: 'wu-rules-modal',
     templateUrl: 'rules-modal.component.html'
 })
 export class RulesModalComponent {

@@ -25,14 +25,14 @@
                     Unregister Rules
                 </a>
 
-                <confirmation-modal
+                <wu-confirmation-modal
                         #removeRulesConfirmationModal
                         id="deleteRulesConfirmation_{{rulePath.id}}"
                         title="Unregister Rules?"
                         body="Unregister rules from Windup?"
                         (confirmed)="removeRulesPath(rulePath)"
                 >
-                </confirmation-modal>
+                </wu-confirmation-modal>
 
                 <div *ngIf="!hasFileBasedProviders(rulePath)">
                     <h3>This path contains no rules!</h3>
@@ -64,12 +64,12 @@
                             </td>
                             <td>
                                 <div *ngFor="let source of ruleProvider.sources">
-                                    <technology [technology]="source"></technology>
+                                    <wu-technology [technology]="source"></wu-technology>
                                 </div>
                             </td>
                             <td>
                                 <div *ngFor="let target of ruleProvider.targets">
-                                    <technology [technology]="target"></technology>
+                                    <wu-technology [technology]="target"></wu-technology>
                                 </div>
                             </td>
                             <td>
@@ -87,5 +87,5 @@
     </div>
 </template>
 
-<rules-modal></rules-modal>
-<add-rules-path-modal [configuration]="configuration" (configurationSaved)="configurationUpdated($event)"></add-rules-path-modal>
+<wu-rules-modal></wu-rules-modal>
+<wu-add-rules-path-modal [configuration]="configuration" (configurationSaved)="configurationUpdated($event)"></wu-add-rules-path-modal>

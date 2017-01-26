@@ -1,4 +1,4 @@
-import { Pipe } from "@angular/core";
+import {Pipe, PipeTransform} from "@angular/core";
 import { Http } from "@angular/http";
 
 import { PersistedTraversalChildFileModel } from "../../generated/tsModels/PersistedTraversalChildFileModel";
@@ -11,7 +11,7 @@ import {JavaSourceFileModel} from "../../generated/tsModels/JavaSourceFileModel"
  *
  */
 @Pipe({name: 'prettyPath'})
-export class PrettyPathPipe {
+export class PrettyPathPipe implements PipeTransform {
     private prettyPath: string;
 
     constructor(private _http: Http) {

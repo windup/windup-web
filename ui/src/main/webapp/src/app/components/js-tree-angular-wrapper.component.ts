@@ -10,8 +10,8 @@ import 'jstree';
  * Wrapper for jstree from: https://www.jstree.com/
  */
 @Component({
-    templateUrl: 'js-tree-angular-wrapper.component.html',
-    selector: 'app-js-tree-wrapper'
+    templateUrl: './js-tree-angular-wrapper.component.html',
+    selector: 'wu-js-tree-wrapper'
 })
 export class JsTreeAngularWrapperComponent implements OnInit, OnChanges {
     @Input()

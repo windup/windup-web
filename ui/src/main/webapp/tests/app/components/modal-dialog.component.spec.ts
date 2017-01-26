@@ -15,11 +15,11 @@ let el: HTMLElement;
 
 @Component({
     template: `
-    <modal-dialog>
+    <wu-modal-dialog>
         <div body class="body"><strong>Body for test</strong></div>
         <div header class="header"><strong>Header for test</strong></div>
         <div footer class="footer"><strong>Footer for test</strong></div>
-    </modal-dialog>`
+    </wu-modal-dialog>`
 })
 class ModalDialogHost {
     @ViewChild(ModalDialogComponent)
