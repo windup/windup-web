@@ -10,6 +10,7 @@ import {ConfigurationComponent} from "./components/configuration.component";
 import {EditApplicationFormComponent} from "./components/edit-application-form.component";
 import {ConfirmDeactivateGuard} from "./confirm-deactivate.guard";
 import {TechnologiesReportComponent} from "./components/reports/technologies/technologies-report.component";
+import {DependenciesReportComponent} from "./components/reports/dependencies/dependencies-report.component";
 import {LoginComponent} from "./components/login.component";
 import {LoggedInGuard} from "./services/logged-in.guard";
 import {GroupLayoutComponent} from "./components/layout/group-layout.component";
@@ -109,6 +110,7 @@ export const appRoutes: Routes = [
                                             { path: 'filter', component: ReportFilterComponent, data: {displayName: 'Report Filter'} },
                                         ]},
                                         { path: 'reports/:executionId', children: [
+                                            {path: 'dependencies-report', component: DependenciesReportComponent, data: {displayName: 'Dependency Report'}},
                                             {path: 'technology-report', component: TechnologiesReportComponent, data: {displayName: 'Technology Report'}},
                                             {path: 'migration-issues',
                                                 children: [

@@ -211,15 +211,15 @@ public class WindupTsModelGenMojo extends AbstractMojo
             generatingService.generate(config);
 
             getLog().info(
-                        "\n\n=========================================================================================================================="
-                                    + "\n\n    Windup TypeScript models created in " + config.getOutputPath().toFile().getAbsolutePath() + ""
-                                    + "\n\n==========================================================================================================================\n");
+                "\n\n=========================================================================================================================="
+              + "\n\n    Windup TypeScript models created in " + config.getOutputPath().toFile().getAbsolutePath() + ""
+              + "\n\n==========================================================================================================================\n");
 
             furnace.stop();
         }
-        catch (Exception e)
+        catch (Throwable ex)
         {
-            e.printStackTrace();
+            throw new MojoExecutionException("Windup TypeScript models generation failed:\n" + ex.getMessage(), ex);
         }
     }
 

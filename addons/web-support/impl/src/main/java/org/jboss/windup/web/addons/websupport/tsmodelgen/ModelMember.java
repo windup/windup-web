@@ -7,7 +7,7 @@ import java.util.EnumSet;
  *
  * @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
  */
-abstract class ModelMember
+abstract class ModelMember implements Comparable<ModelMember>
 {
     String beanPropertyName;
     ModelType type;
@@ -18,4 +18,13 @@ abstract class ModelMember
     {
         GET, SET, ADD, REMOVE
     }
+
+    @Override
+    public int compareTo(ModelMember o)
+    {
+        if (o == null)
+            throw new IllegalArgumentException("Comparing to null.");
+        return this.beanPropertyName.compareToIgnoreCase(o.beanPropertyName);
+    }
+
 }

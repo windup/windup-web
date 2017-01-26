@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Info about the type class from which the TypeScript model can be created.
@@ -21,11 +22,12 @@ class ModelDescriptor
     /** Frames model class discriminator - determines the type. */
     String discriminator;
 
-    Map<String, ModelProperty> properties = new HashMap<>();
+    private final Map<String, ModelProperty> properties = new TreeMap<>();
     Map<String, ModelSetInProperties> modelSetInPropertiesMap = new HashMap<>();
 
-    private Map<String, ModelRelation> relations = new HashMap<>();
+    private final Map<String, ModelRelation> relations = new TreeMap<>();
 
+    
     private static String formatRelationsMapKey(String edgeLabel, boolean out)
     {
         return edgeLabel + (out ? "/o" : "/i");
@@ -45,6 +47,11 @@ class ModelDescriptor
     Collection<ModelRelation> getRelations()
     {
         return this.relations.values();
+    }
+
+    public Map<String, ModelProperty> getProperties()
+    {
+        return properties;
     }
 
     @Override

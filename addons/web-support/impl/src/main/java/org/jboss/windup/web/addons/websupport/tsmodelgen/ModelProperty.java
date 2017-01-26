@@ -3,8 +3,8 @@ package org.jboss.windup.web.addons.websupport.tsmodelgen;
 import static org.jboss.windup.web.addons.websupport.tsmodelgen.TsGenUtils.quoteIfNotNull;
 
 /**
- * A property - annotated with @Property in the original model. Can be a {@link java.io.Serializable} too, but in Windup models, it's only primitive
- * types IIRC.
+ * A property - annotated with @Property in the original model. Can be a {@link java.io.Serializable} too,
+ * but in Windup models, it's only primitive types IIRC.
  *
  * @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
  */
@@ -19,6 +19,8 @@ class ModelProperty extends ModelMember
     {
         this.beanPropertyName = beanPropertyName;
         this.graphPropertyName = graphPropertyName;
+        if (type == null)
+            throw new IllegalArgumentException("Property type can't be null, beanProp:" + beanPropertyName + ", graphProp:" + graphPropertyName);
         this.type = type;
     }
 
