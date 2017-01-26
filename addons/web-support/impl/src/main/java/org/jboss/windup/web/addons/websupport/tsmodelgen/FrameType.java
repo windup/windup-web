@@ -1,26 +1,25 @@
 package org.jboss.windup.web.addons.websupport.tsmodelgen;
 
-import org.jboss.windup.graph.model.WindupVertexFrame;
-
 import com.tinkerpop.frames.modules.typedgraph.TypeValue;
+import org.jboss.windup.graph.model.WindupFrame;
 
 /**
- * Handles WindupVertexFrame's.
+ * Handles WindupFrame's.
  *
  * @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
  */
 class FrameType implements ModelType
 {
-    private Class<? extends WindupVertexFrame> frameType;
+    private Class<? extends WindupFrame> frameType;
 
-    public FrameType(Class<? extends WindupVertexFrame> frameType)
+    public FrameType(Class<? extends WindupFrame> frameType)
     {
         this.frameType = frameType;
     }
 
     static FrameType from(Class cls)
     {
-        if (WindupVertexFrame.class.isAssignableFrom(cls))
+        if (WindupFrame.class.isAssignableFrom(cls))
         {
             return new FrameType(cls);
         }
@@ -42,4 +41,9 @@ class FrameType implements ModelType
         return frameType.getSimpleName();
     }
 
+    @Override
+    public String toString()
+    {
+        return "FrameType{" + (frameType == null ? "null" : frameType.getSimpleName()) + '}';
+    }
 }

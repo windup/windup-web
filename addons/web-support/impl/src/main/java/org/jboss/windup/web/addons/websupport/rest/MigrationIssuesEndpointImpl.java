@@ -13,10 +13,7 @@ import javax.ws.rs.NotFoundException;
 
 import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.model.ProjectModel;
-import org.jboss.windup.graph.model.resource.FileModel;
-import org.jboss.windup.graph.service.WindupConfigurationService;
-import org.jboss.windup.graph.traversal.OnlyOnceTraversalStrategy;
-import org.jboss.windup.graph.traversal.ProjectModelTraversal;
+import org.jboss.windup.graph.service.ProjectService;
 import org.jboss.windup.reporting.category.IssueCategoryModel;
 import org.jboss.windup.reporting.freemarker.problemsummary.ProblemSummary;
 import org.jboss.windup.reporting.freemarker.problemsummary.ProblemSummaryService;
@@ -105,6 +102,15 @@ public class MigrationIssuesEndpointImpl extends AbstractGraphResource implement
         return problemSummaries.get(0);
     }
 
+    protected Set<ProjectModel> getProjectModels(GraphContext graphContext, ReportFilterDTO filter)
+    {
+        if (filter.getSelectedApplicationPaths().isEmpty())
+            return null;
+
+        ProjectService projectService = new ProjectService(graphContext);
+        return projectService.getFilteredProjectModels(filter.getSelectedApplicationPaths());
+    }
+
     static class ProblemFileSummaryWrapper
     {
         private final Map<String, Object> file;
@@ -127,4 +133,5 @@ public class MigrationIssuesEndpointImpl extends AbstractGraphResource implement
             return occurrences;
         }
     }
+
 }

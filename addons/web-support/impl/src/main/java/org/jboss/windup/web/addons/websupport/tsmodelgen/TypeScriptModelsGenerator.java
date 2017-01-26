@@ -32,12 +32,32 @@ import org.jboss.windup.web.addons.websupport.tsmodelgen.TypeScriptModelsGenerat
 
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.frames.Adjacency;
+import com.tinkerpop.frames.InVertex;
+import com.tinkerpop.frames.Incidence;
+import com.tinkerpop.frames.OutVertex;
 import com.tinkerpop.frames.Property;
 import com.tinkerpop.frames.modules.typedgraph.TypeValue;
+import java.lang.annotation.Annotation;
+import org.jboss.windup.graph.model.WindupEdgeFrame;
+import org.jboss.windup.util.exception.WindupException;
+import org.jboss.windup.web.addons.websupport.tsmodelgen.ModelRelation.RelationKind;
+import static org.jboss.windup.web.addons.websupport.tsmodelgen.ModelRelation.RelationKind.IN_V;
+import static org.jboss.windup.web.addons.websupport.tsmodelgen.ModelRelation.RelationKind.OUT_V;
+import static org.jboss.windup.web.addons.websupport.tsmodelgen.TsGenUtils.methodIdent;
+import static org.jboss.windup.web.addons.websupport.tsmodelgen.ModelRelation.RelationKind.INCIDENCE;
+import static org.jboss.windup.web.addons.websupport.tsmodelgen.ModelRelation.RelationKind.ADJACENCY;
 
 /**
- * Creates the TypeScript models which could accomodate the Frames models instances. Also creates a mapping between discriminators (@TypeValue's) and
+ * Creates the TypeScript models which could accommodate the Frames models instances. Also creates a mapping between discriminators (@TypeValue's) and
  * the TS model classes. In TypeScript it's not reliably possible to scan for all models.
+ *
+ * How this class works:
+ *
+ * 1) The list of models are given to generate()
+ * 2) Collect the model information - createModelDescriptor()
+ * 3) Writes the TypeScript classes - writeTypeScriptModelClass()
+ *      * ModelProperty#toTypeScript(mode)
+ *      * ModelRelation#toTypeScript(mode)
  *
  * @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
  */
@@ -59,8 +79,15 @@ public class TypeScriptModelsGenerator
     private static final Pattern UPPERCASE_LETTER = Pattern.compile("(.)(\\p{javaUpperCase})");
 
     // private final Path modelFilesDir;
-    private String BaseModelName = "BaseModel";
-    private String BaseModelPath = "base.model";
+    private static final String BaseModelName = "BaseModel";
+    private static final String BaseModelPath = "base.model";
+
+    private final Set<Class<? extends WindupFrame<?>>> notModels =
+        (Set<Class<? extends WindupFrame<?>>>) new HashSet(Arrays.asList(new Class[]{
+            WindupFrame.class,
+            WindupVertexFrame.class,
+            WindupEdgeFrame.class
+        }));
 
     private TypeScriptModelsGeneratorConfig config;
 
@@ -120,8 +147,16 @@ public class TypeScriptModelsGenerator
 
         for (Class<? extends WindupFrame<?>> frameClass : modelTypes)
         {
-            if (!(WindupVertexFrame.class.isAssignableFrom(frameClass)))
+            if (!(WindupFrame.class.isAssignableFrom(frameClass)))
+            {
+                LOG.warning("Does not extend " + WindupFrame.class.getSimpleName() + ", skipping: " + frameClass);
                 continue;
+            }
+            if (notModels.contains(frameClass))
+            {
+                LOG.warning("Base model class - not a model, skipping: " + frameClass);
+                continue;
+            }
 
             @SuppressWarnings("unchecked")
             final Class<? extends WindupVertexFrame> frameClass2 = (Class<? extends WindupVertexFrame>) frameClass;
@@ -154,6 +189,7 @@ public class TypeScriptModelsGenerator
         List<String> artificiallyAddedModels = new ArrayList<>();
         // This is a hack in AmbiguousReferenceMode and WindupVertexListModel
         artificiallyAddedModels.add("WindupVertexFrame");
+        artificiallyAddedModels.add("WindupEdgeFrame");
         // graphTypeManager.getRegisteredTypes() skips the following for some reason.
         artificiallyAddedModels.add("ResourceModel");
         for (String className : artificiallyAddedModels)
@@ -197,78 +233,155 @@ public class TypeScriptModelsGenerator
 
         for (Method method : frameClass.getDeclaredMethods())
         {
-            // Get the properties - @Property
-            prop:
-            {
-                Property propAnn = method.getAnnotation(Property.class);
-                if (propAnn == null)
-                    break prop;
-                LOG.info("        * Examining @Property " + method.getName());
-
-                final Class propertyType = TsGenUtils.getPropertyTypeFromMethod(method);
-                if (propertyType == null)
-                    break prop;
-
-                final ModelRelation methodInfo = ModelRelation.infoFromMethod(method);
-                final String graphPropName = propAnn.value();
-                final ModelProperty existing = modelDescriptor.properties.get(graphPropName);
-
-                checkMethodNameVsPropNameConsistency(methodNameVsPropName, methodInfo.beanPropertyName, graphPropName, method,
-                            "Property name '%s' of method '%s' doesn't fit previously seen property name '%s' of other method for '%s'."
-                                        + "\nCheck the Frames model %s");
-
-                // Method base beanPropertyName already seen.
-                if (existing != null)
-                    continue;
-
-                // This method beanPropertyName was not seen yet.
-
-                final ModelProperty prop = new ModelProperty(methodInfo.beanPropertyName, graphPropName, PrimitiveType.from(propertyType));
-                modelDescriptor.properties.put(prop.graphPropertyName, prop);
-            }
-
-            // Get the relations - @Adjacent
-            adj:
-            {
-                Adjacency adjAnn = method.getAnnotation(Adjacency.class);
-                if (adjAnn == null)
-                    break adj;
-                LOG.info("    * Examining @Adjacency " + method.getName());
-
-                // Model class of the other end.
-                final Class theOtherType = TsGenUtils.getPropertyTypeFromMethod(method);
-                if (theOtherType == null)
-                    break adj;
-
-                final ModelRelation methodInfo = ModelRelation.infoFromMethod(method);
-                final ModelRelation existing = modelDescriptor.getRelation(adjAnn.label(), Direction.OUT.equals(adjAnn.direction()));
-
-                checkMethodNameVsPropNameConsistency(methodNameVsEdgeLabel, methodInfo.beanPropertyName, adjAnn.label(), method,
-                            "Edge label '%s' of method '%s' doesn't fit previously seen edge label '%s' of other method for '%s'."
-                                        + "\nCheck the Frames model %s");
-
-                // Method base beanPropertyName already seen. Override some traits.
-                if (existing != null)
+            try {
+                // Get the properties - @Property
+                prop:
                 {
-                    existing.isIterable |= methodInfo.isIterable;
-                    existing.methodsPresent.addAll(methodInfo.getMethodsPresent());
-                    // We want the plural, which is presumably on methods working with Iterable.
-                    // Also, this filters out things like addFileToDirectory() next to getFilesInDirectory().
-                    if (methodInfo.isIterable)
-                        existing.beanPropertyName = methodInfo.beanPropertyName;
-                    continue;
+                    Property propAnn = method.getAnnotation(Property.class);
+                    if (propAnn == null)
+                        break prop;
+                    LOG.fine("    * Examining @Property " + method.getName());
+
+                    final Class propertyType = TsGenUtils.getPropertyTypeFromMethod(method);
+                    if (propertyType == null)
+                        break prop;
+
+                    final ModelRelation methodInfo = ModelRelation.infoFromMethod(method);
+                    final String graphPropName = propAnn.value();
+                    final ModelProperty existing = modelDescriptor.getProperties().get(graphPropName);
+
+                    checkMethodNameVsPropNameConsistency(methodNameVsPropName, methodInfo.beanPropertyName, graphPropName, method,
+                        "Property name '%s' of method '%s' doesn't fit previously seen property name '%s' of other method for '%s'."
+                        + "\nCheck the Frames model %s");
+
+                    // Method base beanPropertyName already seen.
+                    if (existing != null)
+                        continue;
+
+                    // This method beanPropertyName was not seen yet.
+
+                    final PrimitiveType primitiveType = PrimitiveType.from(propertyType);
+                    if (primitiveType == null)
+                        throw new WindupException(String.format("Unrecognized primitive type: %s\n of %s %s",
+                                propertyType.getName(), frameClass.getName(), method.getName()));
+                    final ModelProperty prop = new ModelProperty(methodInfo.beanPropertyName, graphPropName, primitiveType);
+                    modelDescriptor.getProperties().put(prop.graphPropertyName, prop);
                 }
 
-                ModelType adjType = ModelType.from(theOtherType);
-                final ModelRelation modelRelation = new ModelRelation(
+                // Get the relations - @Adjacent or @Incidence (an explicit relation to an edge model)
+                adj:
+                {
+                    Adjacency adjAnn = method.getAnnotation(Adjacency.class);
+                    Incidence incAnn = method.getAnnotation(Incidence.class);
+                    InVertex  inAnn = method.getAnnotation(InVertex.class);
+                    OutVertex outAnn = method.getAnnotation(OutVertex.class);
+                    {
+                        int check = (adjAnn == null ? 0 : 1) + (incAnn == null ? 0 : 1) + (inAnn == null ? 0 : 1) + (outAnn == null ? 0 : 1);
+                        if (check == 0)
+                            break adj;
+                        if (check > 1)
+                            throw new WindupException("Method can only have one of @Adjacency, @Incidence, @InVertex, or @OutVertex.");
+                    }
+
+                    Annotation ann = (adjAnn != null ? adjAnn : (incAnn != null ? incAnn: (inAnn != null ? inAnn : (outAnn != null ? outAnn : null))));
+                    Class<? extends Annotation> annType = ann.getClass(); //(adjAnn != null ? Adjacency.class : (incAnn != null ? Incidence.class : (inAnn != null ? InVertex.class : (outAnn != null ? OutVertex.class : null))));
+                    RelationKind relKind = (adjAnn != null ? ADJACENCY : (incAnn != null ? INCIDENCE : (inAnn != null ? IN_V : (outAnn != null ? OUT_V : null))));
+
+                    boolean isAdjacency = adjAnn != null;
+                    LOG.fine("    * Examining @" + annType.getSimpleName() + " " + method.getName());
+
+                    // Model class of the other end.
+                    Class theOtherType = TsGenUtils.getPropertyTypeFromMethod(method);
+                    if (theOtherType == null)
+                        //break adj;
+                        throw new WindupException("Could not determine the relation target type: " + methodIdent(method));
+
+                    final ModelRelation methodInfo = ModelRelation.infoFromMethod(method);
+                    final String label = relKind.label(ann); //(adjAnn != null ? adjAnn.label() : (incAnn != null ? incAnn.label() : null));
+                    final Direction direction = relKind.direction(ann); //(adjAnn != null ? adjAnn.direction(): (incAnn != null ? incAnn.direction(): null));
+                    final ModelRelation existing = modelDescriptor.getRelation(label, Direction.OUT.equals(direction));
+
+                    checkMethodNameVsPropNameConsistency(methodNameVsEdgeLabel, methodInfo.beanPropertyName, label, method,
+                                "Edge label '%s' of method '%s' doesn't fit previously seen edge label '%s' of other method for '%s'."
+                                            + "\nCheck the Frames model %s");
+
+                    // @Incidence - find the target type. Maybe this should rather be in createModelDescriptor().
+                    if (relKind == RelationKind.INCIDENCE)
+                    {
+                        if(methodInfo.methodsPresent.contains(ModelMember.BeanMethodType.ADD))
+                        {
+                            if (method.getReturnType().equals(Void.TYPE))
+                                throw new WindupException("Adder of @Incidence relation must return the edge frame model: " + methodIdent(method));
+                            // Override this from infoFromMethod() as it's different for @Incidence methods.
+                            //methodInfo.type = ModelType.from(method.getReturnType());
+                            theOtherType = method.getReturnType();
+                            methodInfo.targetModelType = ModelType.from(method.getParameterTypes()[0]);
+                        }
+                        else if(methodInfo.methodsPresent.contains(ModelMember.BeanMethodType.GET))
+                            methodInfo.type = ModelType.from(theOtherType);
+                        else
+                            LOG.warning("Only adder and getter is supported for @Incidence: " + methodIdent(method));
+                    }
+
+                    // Method base beanPropertyName already seen. Override some traits and check consistency.
+                    if (existing != null)
+                    {
+                        if (existing.isAdjacency && !isAdjacency)
+                            throw new WindupException("Same label used for both @Adjacency and @Incidence: " + frameClass.getName() + ", " + label);
+                        existing.isIterable |= methodInfo.isIterable;
+                        existing.methodsPresent.addAll(methodInfo.getMethodsPresent());
+                        // We want the plural, which is presumably on methods working with Iterable.
+                        // Also, this filters out things like addFileToDirectory() next to getFilesInDirectory().
+                        if (methodInfo.isIterable)
+                            existing.beanPropertyName = methodInfo.beanPropertyName;
+
+                        existing.targetModelType = (ModelType) setAndWarnIfDifferent("targetModelType", existing.targetModelType, methodInfo.targetModelType);
+                        //existing.targetModelType = methodInfo.targetModelType;
+                        continue;
+                    }
+
+
+                    final ModelRelation modelRelation = new ModelRelation(
+                                methodInfo.beanPropertyName,
+                                label,
+                                direction.OUT.equals(direction),
+                                ModelType.from(theOtherType),
+                                methodInfo.isIterable, // Also add/remove? That prefix suggests it's a collection.
+                                relKind
+                    );
+                    modelRelation.targetModelType = methodInfo.targetModelType;
+                    modelRelation.methodsPresent.addAll(methodInfo.methodsPresent);
+                    modelDescriptor.addRelation(modelRelation);
+                }
+
+                setInProperties:
+                {
+                    SetInProperties setInProperties = method.getAnnotation(SetInProperties.class);
+                    if (setInProperties == null)
+                        break setInProperties;
+
+                    final Class propertyType = TsGenUtils.getPropertyTypeFromMethod(method);
+                    if (propertyType == null)
+                        break setInProperties;
+
+                    String graphPropertyPrefix = setInProperties.propertyPrefix();
+                    final ModelRelation methodInfo = ModelRelation.infoFromMethod(method);
+                    final ModelSetInProperties existing = modelDescriptor.modelSetInPropertiesMap.get(graphPropertyPrefix);
+                    if (existing != null)
+                        continue;
+
+                    LOG.info("    * Examining @SetInProperties " + method.getName());
+                    final ModelSetInProperties modelSetInProperties = new ModelSetInProperties(
                             methodInfo.beanPropertyName,
-                            adjAnn.label(),
-                            adjAnn.direction().OUT.equals(adjAnn.direction()),
-                            adjType,
-                            methodInfo.isIterable // Also add/remove? That prefix suggests it's a collection.
-                );
-                modelRelation.methodsPresent.addAll(methodInfo.methodsPresent);
-                modelDescriptor.addRelation(modelRelation);
+                            graphPropertyPrefix,
+                            PrimitiveType.from(propertyType)
+                    );
+                    modelDescriptor.modelSetInPropertiesMap.put(graphPropertyPrefix, modelSetInProperties);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new WindupException("Error on " + methodIdent(method) +":\n    " + ex.getMessage(), ex);
             }
 
             setInProperties:
@@ -326,8 +439,6 @@ public class TypeScriptModelsGenerator
                     mappingWriter.write(String.format("// {%1$s} wanted to be here again\n", importedClass));
             }
 
-
-            mappingWriter.write("\n");
             mappingWriter.write("export function initializeModelMappingData() {\n");
             for (Map.Entry<String, ModelDescriptor> entry : discriminatorToClassMapping.entrySet())
             {
@@ -376,6 +487,8 @@ public class TypeScriptModelsGenerator
     private void writeTypeScriptModelClass(ModelDescriptor modelDescriptor, AdjacencyMode mode)
     {
         final File tsFile = this.config.getOutputPath().resolve(formatClassFileName(modelDescriptor.modelClassName, true)).toFile();
+        LOG.info("    * Writing " + tsFile.getPath());
+
         try (FileWriter tsWriter = new FileWriter(tsFile))
         {
             final Path graphPkg = this.config.getImportPathToWebapp().resolve(PATH_TO_GRAPH_PKG);
@@ -395,6 +508,9 @@ public class TypeScriptModelsGenerator
                 // Don't import this class
                 if (typeScriptTypeName.equals(modelDescriptor.modelClassName))
                     continue;
+                // Prevent import {any}...
+                if ("any".equals(modelDescriptor.modelClassName))
+                    continue;
                 if (imported.add(typeScriptTypeName))
                     tsWriter.write(String.format("import {%1$s} from './%1$s';\n",
                                 typeScriptTypeName, formatClassFileName(typeScriptTypeName, false)));
@@ -405,12 +521,10 @@ public class TypeScriptModelsGenerator
                 extendedModels = Collections.singletonList(AdjacencyMode.PROXIED.equals(mode) ? "FrameProxy" : BaseModelName);
 
             // Import extended types.
-            tsWriter.write(
-                        extendedModels.stream().filter(imported::add)
-                                    .map((x) -> {
-                                        return String.format("import {%1$s} from './%1$s';\n", x);
-                                    })
-                                    .collect(Collectors.joining()));
+            tsWriter.write( extendedModels.stream()
+                .filter(imported::add)
+                .map(x -> String.format("import {%1$s} from './%1$s';\n", x))
+                .collect(Collectors.joining()));
 
             tsWriter.write("\nexport class " + modelDescriptor.modelClassName + " extends " + String.join(" //", extendedModels) + "\n{\n");
             // tsWriter.write(" private vertexId: number;\n\n");
@@ -420,7 +534,7 @@ public class TypeScriptModelsGenerator
             if (!AdjacencyMode.DECORATED.equals(mode))
             {
                 tsWriter.write("    static graphPropertyMapping: { [key:string]:string; } = {\n");
-                for (ModelProperty property : modelDescriptor.properties.values())
+                for (ModelProperty property : modelDescriptor.getProperties().values())
                 {
                     tsWriter.write(String.format("        %s: '%s',\n", TsGenUtils.escapeJSandQuote(property.graphPropertyName),
                                 property.beanPropertyName));
@@ -452,7 +566,7 @@ public class TypeScriptModelsGenerator
             }
 
             // Actual properties and methods.
-            for (ModelProperty property : modelDescriptor.properties.values())
+            for (ModelProperty property : modelDescriptor.getProperties().values())
             {
                 tsWriter.write(property.toTypeScript(mode));
                 tsWriter.write("\n");
@@ -509,5 +623,16 @@ public class TypeScriptModelsGenerator
         case CAMELCASE:
             return className + suffix;
         }
+    }
+
+    private Object setAndWarnIfDifferent(String what, Object existing, Object newOne)
+    {
+        if (existing == null)
+            return newOne;
+        if (existing.equals(newOne) || newOne == null)
+            return existing;
+        throw new WindupException(String.format("Trait '%s' was expected to be new or same as previously seen, but were:"
+                + "\n    Existing: %s"
+                + "\n    New:      %s", what, existing, newOne));
     }
 }

@@ -1,11 +1,14 @@
 package org.jboss.windup.web.addons.websupport.tsmodelgen;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -18,8 +21,22 @@ public class TsGenUtils
 {
     private static final Logger LOG = Logger.getLogger(TsGenUtils.class.getName());
 
+    static String methodIdent(Method method)
+    {
+        //String[] params = (String[]) Arrays.asList(method.getParameterTypes()).stream().map((x) -> x.getSimpleName()).toArray();
+        String params = Arrays.asList(method.getParameterTypes()).stream().map((x) -> x.getSimpleName()).collect(Collectors.joining(", "));
+
+        return String.format("%s %s(%s) -> %s",
+            method.getDeclaringClass().getSimpleName(),
+            method.getName(),
+            params,
+            method.getReturnType().getSimpleName()
+        );
+    }
+
     /**
-     * Returns the in or out type of given method, assumably implementing a bean property. For getters, returns the return type. For setters, returns
+     * Returns the in or out type of given method, which is assumably implementing a bean property.
+     * For getters, returns the return type. For setters, returns
      * the single (first) parameter. If the type is an Iterable&lt;T&gt;, returns T.
      */
     static Class getPropertyTypeFromMethod(Method method)
@@ -124,6 +141,11 @@ public class TsGenUtils
     static String escapeJSandQuote(String str)
     {
         return String.format("'%s'", StringEscapeUtils.escapeEcmaScript(str));
+    }
+
+    static StringBuilder format(StringBuilder sb, String format, Serializable... args)
+    {
+        return sb.append(String.format(format, args));
     }
 
 }

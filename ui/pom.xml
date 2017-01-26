@@ -20,7 +20,7 @@
             This property gives Jenkins a hint as to where to find Karma test results. This is needed since the Jenkins
             Maven plugin does not currently automatically find this folder (as of Jenkins Maven 2.14 on November 28, 2016).
 
-           
+
             Documention is here: https://wiki.jenkins-ci.org/display/JENKINS/Building+a+maven2+project
         -->
         <jenkins.karmaTests.reportsDirectory>target/karma-reports</jenkins.karmaTests.reportsDirectory>
@@ -249,6 +249,30 @@
             <activation> <activeByDefault>true</activeByDefault> </activation>
             <build>
                 <plugins>
+                    <!-- Delete old TS models -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-clean-plugin</artifactId>
+                        <version>3.0.0</version>
+                        <executions>
+                            <execution>
+                                <id>delete-tsModels</id>
+                                <phase>validate</phase>
+                                <goals> <goal>clean</goal> </goals>
+                                <configuration>
+                                    <excludeDefaultDirectories>true</excludeDefaultDirectories>
+                                    <filesets>
+                                      <fileset>
+                                          <directory>${project.basedir}/src/main/webapp/src/app/generated/tsModels</directory>
+                                          <followSymlinks>false</followSymlinks>
+                                          <useDefaultExcludes>false</useDefaultExcludes>
+                                      </fileset>
+                                    </filesets>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
                     <!-- Extract TS models -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>

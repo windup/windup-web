@@ -13,10 +13,7 @@ import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.UriInfo;
 
 import org.jboss.windup.graph.GraphContext;
-import org.jboss.windup.graph.model.ProjectModel;
 import org.jboss.windup.graph.model.WindupVertexFrame;
-import org.jboss.windup.graph.service.ProjectService;
-import org.jboss.windup.web.addons.websupport.model.ReportFilterDTO;
 import org.jboss.windup.web.addons.websupport.rest.FurnaceRESTGraphAPI;
 import org.jboss.windup.web.addons.websupport.rest.GraphPathLookup;
 import org.jboss.windup.web.addons.websupport.services.ReportFilterService;
@@ -25,6 +22,10 @@ import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
 import java.util.HashSet;
+
+import org.jboss.windup.graph.GraphTypeManager;
+import org.jboss.windup.graph.model.WindupEdgeFrame;
+import org.jboss.windup.graph.model.WindupFrame;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -37,6 +38,9 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
     @Inject
     private GraphCache graphCache;
     private GraphPathLookup graphPathLookup;
+
+    @Inject
+    private GraphTypeManager graphTypeManager;
 
     @Override
     public void setUriInfo(UriInfo uriInfo)
@@ -93,12 +97,9 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
         result.put(GraphResource.VERTICES_OUT, outVertices);
         addEdges(ctx, vertex, Direction.OUT, outVertices);
 
-        if (ctx.includeInVertices)
-        {
-            Map<String, Object> inVertices = new HashMap<>();
-            result.put(GraphResource.VERTICES_IN, inVertices);
-            addEdges(ctx, vertex, Direction.IN, inVertices);
-        }
+        Map<String, Object> inVertices = new HashMap<>();
+        result.put(GraphResource.VERTICES_IN, inVertices);
+        addEdges(ctx, vertex, Direction.IN, inVertices);
 
         return result;
     }
@@ -126,7 +127,7 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
 
             Map<String, Object> edgeDetails = (Map<String, Object>) result.get(label);
             // If the details are already there and we aren't recursing any further, then just skip
-            if (!isWhitelistedEdge(ctx.whitelistedOutEdges, ctx.whitelistedInEdges, direction, label) && edgeDetails != null && ctx.remainingDepth <= 0)
+            if (!whitelistedLabels.contains(label) && edgeDetails != null && ctx.remainingDepth <= 0)
                 continue;
 
             final List<Map<String, Object>> linkedVertices;
@@ -137,7 +138,7 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
                 result.put(label, edgeDetails);
 
                 // If we aren't serializing any further, then just provide a link
-                if (!isWhitelistedEdge(ctx.whitelistedOutEdges, ctx.whitelistedInEdges, direction, label) && ctx.remainingDepth <= 0)
+                if (!whitelistedLabels.contains(label) && ctx.remainingDepth <= 0)
                 {
                     edgeDetails.put(GraphResource.TYPE, GraphResource.TYPE_LINK);
                     String linkUri = getLink(ctx.executionID, vertex, direction.toString(), label);
@@ -166,7 +167,11 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
                 Map<String, Object> edgeData = new HashMap<>();
                 edge.getPropertyKeys().forEach(key -> edgeData.put(key, edge.getProperty(key)));
                 otherVertexMap.put(GraphResource.EDGE_DATA, edgeData);
+
+                /// Add the edge frame's @TypeValue.  Workaround until PR #1063.
+                edgeData.put(WindupFrame.TYPE_PROP, graphTypeManager.resolveTypes(edge, WindupEdgeFrame.class));
             }
+
             linkedVertices.add(otherVertexMap);
         }
     }
@@ -193,18 +198,6 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
         if (graph == null)
             throw new IllegalStateException("GraphContext obtaining failed for exec. ID " + executionID + ", path: " + graphPath);
         return graph;
-    }
-
-    protected Set<ProjectModel> getProjectModels(GraphContext graphContext, ReportFilterDTO filter)
-    {
-        if (filter.getSelectedApplicationPaths().isEmpty())
-        {
-            return null;
-        }
-
-        ProjectService projectService = new ProjectService(graphContext);
-
-        return projectService.getFilteredProjectModels(filter.getSelectedApplicationPaths());
     }
 }
 

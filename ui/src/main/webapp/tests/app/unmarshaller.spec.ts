@@ -1,4 +1,8 @@
 import {async} from '@angular/core/testing';
+import {Http} from "@angular/http";
+import 'rxjs/Rx';
+import {Observable} from "rxjs/Observable";
+import 'rxjs/add/operator/toPromise';
 
 import {GraphJSONToModelService, RelationInfo} from '../../src/app/services/graph/graph-json-to-model.service';
 import {getParentClass} from '../../src/app/services/graph/discriminator-mapping';
@@ -7,11 +11,11 @@ import {TestGeneratorModel, TestPlanetModel, TestShipModel} from './models/test.
 import {TestGraphData} from './models/test-graph-data';
 import {StaticCache} from "../../src/app/services/graph/cache";
 
-import 'rxjs/Rx';
-import {Observable} from "rxjs/Observable";
-import 'rxjs/add/operator/toPromise';
+// A real model
+import { SourceReportModel } from '../../src/app/generated/tsModels/SourceReportModel';
+import { SourceReportToProjectEdgeModel } from '../../src/app/generated/tsModels/SourceReportToProjectEdgeModel';
+import { ProjectModel } from '../../src/app/generated/tsModels/ProjectModel';
 
-import {Http} from "@angular/http";
 
 describe('Unmarshaller tests', () => {
 
@@ -157,6 +161,32 @@ describe('Unmarshaller tests', () => {
                 expect(false).toBeTruthy("Getting planet data failed due to: " + error);
             });
     }));
+
+
+    it ('unmarshaller test - fromJSON() - SourceModelReport with @Incidence', async(() => {
+        let modelObject = new GraphJSONToModelService<SourceReportModel>(DiscriminatorMappingTestData)
+            .fromJSON(TestGraphData.TEST_FRAME_WITH_INCIDENCE, <Http>{});
+
+        /// SourceReportModel projectEdges -> should be Observable<SourceReportToProjectEdgeModel[]>
+        /// See /home/ondra/work/Migration/windup-web/ui/src/main/webapp/src/app/generated/tsModels/SourceReportToProjectEdgeModel.ts
+        return modelObject.projectEdges.toPromise()
+            .then((sourceReports: SourceReportToProjectEdgeModel[]) => {
+                expect(sourceReports).toBeDefined();
+                expect(sourceReports instanceof Array).toBeTruthy();
+                expect(sourceReports.length).toEqual(1);
+                expect(sourceReports[0]).toBeDefined();
+                expect(sourceReports[0].fullPath).toBeDefined();
+                expect(sourceReports[0].fullPath).toEqual("jee-example-app-1.0.0.ear/META-INF/MANIFEST.MF");
+                expect(sourceReports[0].projectModel).toBeDefined();
+                sourceReports[0].projectModel.toPromise().then((projectModel: ProjectModel)  => {
+                    expect(projectModel.name).toEqual("JEE Example App");
+                });
+            }, error => {
+                expect(false).toBeTruthy("Getting planet data failed due to: " + error);
+            });
+    }));
+
+
 
     it("Util functions", () => {
         let info = RelationInfo.parse("foo[Bar");
