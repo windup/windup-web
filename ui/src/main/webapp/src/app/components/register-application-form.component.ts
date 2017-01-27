@@ -28,11 +28,16 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
 
     modeChanged(newMode:string) {
         this.mode = newMode;
+
+        if (newMode == "UPLOADED")
+            this.labels.submitButton = "Upload";
+        else
+            this.labels.submitButton = "Register";
     }
 
     protected labels = {
         heading: 'Register Application',
-        submitButton: 'Register'
+        submitButton: 'Upload'
     };
 
     constructor(

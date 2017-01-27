@@ -1,4 +1,4 @@
-import {Component, OnInit, Renderer, NgZone} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {FormBuilder, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FileUploader} from "ng2-file-upload/ng2-file-upload";
@@ -6,7 +6,6 @@ import {RegisteredApplication} from "windup-services";
 import {RegisteredApplicationService} from "../services/registered-application.service";
 import {FileExistsValidator} from "../validators/file-exists.validator";
 import {FileService} from "../services/file.service";
-import {ApplicationGroupService} from "../services/application-group.service";
 import {Constants} from "../constants";
 import {RegisterApplicationFormComponent} from "./register-application-form.component";
 
@@ -26,6 +25,10 @@ export class EditApplicationFormComponent extends RegisterApplicationFormCompone
     ) {
         super(_router, _activatedRoute, _fileService, _registeredApplicationService, _formBuilder);
         this.multipartUploader = _registeredApplicationService.getMultipartUploader();
+    }
+
+    modeChanged(newMode:string) {
+        this.mode = newMode;
     }
 
     ngOnInit():any {
