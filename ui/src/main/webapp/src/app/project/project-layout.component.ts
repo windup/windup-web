@@ -2,31 +2,31 @@ import {Component, OnInit, OnDestroy} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 
 import {ApplicationGroup} from "windup-services";
-import {RouteLinkProviderService} from "../../core/routing/route-link-provider-service";
-import {MigrationIssuesComponent} from "../reports/migration-issues/migration-issues.component";
-import {TechnologiesReportComponent} from "../reports/technologies/technologies-report.component";
-import {DependenciesReportComponent} from "../reports/dependencies/dependencies-report.component";
-import {ReportMenuItem, ContextMenuItem} from "../../shared/navigation/context-menu-item.class";
-import {AnalysisContextFormComponent} from "../analysis-context-form.component";
-import {NotificationService} from "../../core/notification/notification.service";
-import {utils} from '../../shared/utils';
-import {GroupExecutionsComponent} from "../executions/group-executions.component";
-import {ApplicationDetailsComponent} from "../reports/application-details/application-details.component";
-import {ApplicationGroupService} from "../../services/application-group.service";
-import {WindupExecutionService} from "../../services/windup-execution.service";
-import {EventBusService} from "../../core/events/event-bus.service";
+import {RouteLinkProviderService} from "../core/routing/route-link-provider-service";
+import {MigrationIssuesComponent} from "../components/reports/migration-issues/migration-issues.component";
+import {TechnologiesReportComponent} from "../components/reports/technologies/technologies-report.component";
+import {DependenciesReportComponent} from "../components/reports/dependencies/dependencies-report.component";
+import {ReportMenuItem, ContextMenuItem} from "../shared/navigation/context-menu-item.class";
+import {AnalysisContextFormComponent} from "../components/analysis-context-form.component";
+import {NotificationService} from "../core/notification/notification.service";
+import {utils} from '../shared/utils';
+import {GroupExecutionsComponent} from "../components/executions/group-executions.component";
+import {ApplicationDetailsComponent} from "../components/reports/application-details/application-details.component";
+import {ApplicationGroupService} from "../services/application-group.service";
+import {WindupExecutionService} from "../services/windup-execution.service";
+import {EventBusService} from "../core/events/event-bus.service";
 import {
     ApplicationGroupEvent,
     UpdateApplicationGroupEvent
-} from "../../core/events/windup-event";
-import {AbstractComponent} from "../../shared/AbstractComponent";
-import {ReportFilterComponent} from "../reports/filter/report-filter.component";
+} from "../core/events/windup-event";
+import {AbstractComponent} from "../shared/AbstractComponent";
+import {ReportFilterComponent} from "../components/reports/filter/report-filter.component";
 import {MigrationProject} from "windup-services";
-import {ApplicationListComponent} from "../application-list.component";
-import {RegisteredApplicationService} from "../../services/registered-application.service";
-import {WINDUP_WEB} from "../../app.module";
-import {ApplicationIndexComponent} from "../reports/application-index/application-index.component";
-import {ProjectExecutionsComponent} from "../executions/project-executions.component";
+import {ApplicationListComponent} from "../components/application-list.component";
+import {RegisteredApplicationService} from "../services/registered-application.service";
+import {WINDUP_WEB} from "../app.module";
+import {ApplicationIndexComponent} from "../components/reports/application-index/application-index.component";
+import {ProjectExecutionsComponent} from "../components/executions/project-executions.component";
 
 
 @Component({

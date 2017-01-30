@@ -11,7 +11,7 @@ import {Observable} from "rxjs";
 import {ProgressBarComponent} from "../../../../src/app/shared/progress-bar.component";
 import {ActiveExecutionsProgressbarComponent} from "../../../../src/app/components/executions/active-executions-progressbar.component";
 import {DurationPipe} from "../../../../src/app/shared/duration.pipe";
-import {MigrationProjectService} from "../../../../src/app/services/migration-project.service";
+import {MigrationProjectService} from "../../../../src/app/project/migration-project.service";
 import {SortableTableComponent} from "../../../../src/app/shared/sortable-table.component";
 import {SortIndicatorComponent} from "../../../../src/app/shared/sort-indicator.component";
 import {StatusIconComponent} from "../../../../src/app/shared/status-icon.component";

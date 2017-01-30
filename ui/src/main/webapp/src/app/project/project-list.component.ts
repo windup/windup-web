@@ -1,12 +1,12 @@
 import {Component, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {Router} from "@angular/router";
 
-import {MigrationProjectService, HasAppCount} from "../../services/migration-project.service";
+import {MigrationProjectService, HasAppCount} from "./migration-project.service";
 import {MigrationProject} from "windup-services";
-import {NotificationService} from "../../core/notification/notification.service";
-import {utils} from "../../shared/utils";
-import {ConfirmationModalComponent} from "../../shared/confirmation-modal.component";
-import {SortingService, OrderDirection} from "../../shared/sorting.service";
+import {NotificationService} from "../core/notification/notification.service";
+import {utils} from "../shared/utils";
+import {ConfirmationModalComponent} from "../shared/confirmation-modal.component";
+import {SortingService, OrderDirection} from "../shared/sorting.service";
 
 @Component({
     templateUrl: './project-list.component.html',

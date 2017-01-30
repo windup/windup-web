@@ -4,7 +4,7 @@ import {WindupExecution} from "windup-services";
 import {NotificationService} from "../../core/notification/notification.service";
 import {utils} from '../../shared/utils';
 import {SortingService, OrderDirection} from "../../shared/sorting.service";
-import {MigrationProjectService} from "../../services/migration-project.service";
+import {MigrationProjectService} from "../../project/migration-project.service";
 import {MigrationProject} from "windup-services";
 
 @Component({

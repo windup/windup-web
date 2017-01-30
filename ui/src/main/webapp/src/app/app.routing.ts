@@ -1,8 +1,8 @@
 import {Routes, RouterModule} from '@angular/router';
-import {ProjectListComponent} from "./components/project-list/project-list.component";
+import {ProjectListComponent} from "./project/project-list.component";
 import {GroupPageComponent} from "./components/group.page.component";
 import {RegisterApplicationFormComponent} from "./components/register-application-form.component";
-import {MigrationProjectFormComponent} from "./components/migration-project-form.component";
+import {MigrationProjectFormComponent} from "./project/migration-project-form.component";
 import {ApplicationGroupForm} from "./components/application-group-form.component";
 import {AnalysisContextFormComponent} from "./components/analysis-context-form.component";
 import {ConfigurationComponent} from "./components/configuration.component";
@@ -12,11 +12,11 @@ import {TechnologiesReportComponent} from "./components/reports/technologies/tec
 import {DependenciesReportComponent} from "./components/reports/dependencies/dependencies-report.component";
 import {LoginComponent} from "./components/login.component";
 import {LoggedInGuard} from "./core/authentication/logged-in.guard";
-import {ProjectLayoutComponent} from "./components/layout/project-layout.component";
+import {ProjectLayoutComponent} from "./project/project-layout.component";
 import {DefaultLayoutComponent} from "./shared/layout/default-layout.component";
 import {ApplicationGroupResolve} from "./components/group/application-group.resolve";
 import {MigrationIssuesComponent} from "./components/reports/migration-issues/migration-issues.component";
-import {ProjectResolve} from "./services/project.resolve";
+import {ProjectResolve} from "./project/project.resolve";
 import {ConfigurationResolve} from "./services/configuration.resolve";
 import {ApplicationResolve} from "./services/application.resolve";
 import {FullFlattenedRoute} from "./core/routing/route-flattener.service";
@@ -39,6 +39,7 @@ export const appRoutes: Routes = [
     {
         path: '',
         canActivate: [LoggedInGuard],
+
         canActivateChild: [LoggedInGuard],
         children: [
             {
