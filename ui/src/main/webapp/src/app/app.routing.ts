@@ -4,7 +4,7 @@ import {GroupPageComponent} from "./group/group.page.component";
 import {RegisterApplicationFormComponent} from "./components/register-application-form.component";
 import {MigrationProjectFormComponent} from "./project/migration-project-form.component";
 import {ApplicationGroupForm} from "./group/application-group-form.component";
-import {AnalysisContextFormComponent} from "./components/analysis-context-form.component";
+import {AnalysisContextFormComponent} from "./analysis-context/analysis-context-form.component";
 import {ConfigurationComponent} from "./components/configuration.component";
 import {EditApplicationFormComponent} from "./components/edit-application-form.component";
 import {ConfirmDeactivateGuard} from "./shared/confirm-deactivate.guard";

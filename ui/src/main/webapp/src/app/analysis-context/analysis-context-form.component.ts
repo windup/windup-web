@@ -4,14 +4,14 @@ import {ActivatedRoute, Router, NavigationEnd} from "@angular/router";
 
 import {FormComponent} from "../shared/form.component";
 import {ApplicationGroupService} from "../group/application-group.service";
-import {MigrationPathService} from "../services/migration-path.service";
-import {AnalysisContextService} from "../services/analysis-context.service";
+import {MigrationPathService} from "./migration-path.service";
+import {AnalysisContextService} from "./analysis-context.service";
 import {ConfigurationOption} from "../model/configuration-option.model";
 import {ConfigurationOptionsService} from "../services/configuration-options.service";
 import {ModalDialogComponent} from "../shared/modal-dialog.component";
 import {IsDirty} from "../shared/is-dirty.interface";
 import {Observable} from "rxjs/Observable";
-import {PackageRegistryService} from "../services/package-registry.service";
+import {PackageRegistryService} from "./package-registry.service";
 import {ApplicationGroup, AnalysisContext, Package, MigrationPath, AdvancedOption, RulesPath, PackageMetadata} from "windup-services";
 import {RouteHistoryService} from "../core/routing/route-history.service";
 import {Subscription} from "rxjs";

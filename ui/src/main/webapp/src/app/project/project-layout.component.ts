@@ -7,7 +7,7 @@ import {MigrationIssuesComponent} from "../components/reports/migration-issues/m
 import {TechnologiesReportComponent} from "../components/reports/technologies/technologies-report.component";
 import {DependenciesReportComponent} from "../components/reports/dependencies/dependencies-report.component";
 import {ReportMenuItem, ContextMenuItem} from "../shared/navigation/context-menu-item.class";
-import {AnalysisContextFormComponent} from "../components/analysis-context-form.component";
+import {AnalysisContextFormComponent} from "../analysis-context/analysis-context-form.component";
 import {NotificationService} from "../core/notification/notification.service";
 import {utils} from '../shared/utils';
 import {GroupExecutionsComponent} from "../components/executions/group-executions.component";
