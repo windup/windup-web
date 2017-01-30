@@ -109,11 +109,6 @@ public class RuleDataLoader
                 RuleLoaderContext ruleLoaderContext = new RuleLoaderContext(Collections.singleton(path), null);
                 RuleProviderRegistry providerRegistry = ruleProviderService.loadRuleProviderRegistry(Collections.singleton(path));
 
-                HashMap<String, Tag> tagHashMap = new HashMap<>();
-                for (Tag tag : (Iterable<Tag>)this.entityManager.createQuery("select t from Tag t").getResultList())
-                {
-                    tagHashMap.put(tag.getName(), tag);
-                }
 
                 for (RuleProvider provider : providerRegistry.getProviders())
                 {
@@ -127,7 +122,6 @@ public class RuleDataLoader
                     ruleProviderEntity.setDateLoaded(new GregorianCalendar());
                     ruleProviderEntity.setDescription(ruleProviderMetadata.getDescription());
                     ruleProviderEntity.setOrigin(origin);
-                    ruleProviderEntity.setTags(this.getTags(ruleProviderMetadata.getTags(), tagHashMap));
                     entityManager.persist(ruleProviderEntity);
 
                     setFileMetaData(rulesPath, ruleProviderEntity);
@@ -189,26 +183,6 @@ public class RuleDataLoader
         categories.forEach(category -> this.entityManager.persist(category));
 
         return categories;
-    }
-
-    private Set<Tag> getTags(Collection<String> stringTags, HashMap<String, Tag> tagHashMap)
-    {
-        Set<Tag> resultTags = new HashSet<>();
-
-        for (String tag : stringTags)
-        {
-            if (!tagHashMap.containsKey(tag))
-            {
-                Tag tagEntity = new Tag(tag);
-                tagHashMap.put(tag, tagEntity);
-
-                this.entityManager.persist(tagEntity);
-            }
-
-            resultTags.add(tagHashMap.get(tag));
-        }
-
-        return resultTags;
     }
 
     private Set<Technology> technologyReferencesToTechnologyList(Collection<TechnologyReference> technologyReferences)

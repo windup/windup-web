@@ -9,7 +9,7 @@ import {CustomSelectConfiguration} from "../../custom-select/custom-select.compo
 import {Category} from "windup-services";
 import {utils} from "../../../utils";
 import {Location} from "@angular/common";
-import {TagDataService, TagHierarchyData} from "../tag-data.service";
+import {TagDataService} from "../tag-data.service";
 import {FilterApplication} from "windup-services";
 import {WindupExecution} from "windup-services";
 
@@ -74,7 +74,7 @@ export class ReportFilterComponent implements OnInit, OnDestroy {
             this.group = flatData.data['applicationGroup'];
             this.filter = this.group.reportFilter || this.getDefaultFilter(this.group);
 
-            this._tagService.getTagData().subscribe(
+            this._filterService.getTags(this.group).subscribe(
                 tags => {
                     this.tags = this.accumulateAllTags([], tags);
                 },
@@ -136,13 +136,15 @@ export class ReportFilterComponent implements OnInit, OnDestroy {
         return execution;
     }
 
-    private accumulateAllTags(accumulatedTags:Tag[], tags:TagHierarchyData[]):Tag[] {
+    private accumulateAllTags(accumulatedTags: Tag[], tags: Tag[]): Tag[] {
         tags.forEach(tag => {
-            if (!accumulatedTags.find(existingTag => existingTag.name == tag.tagName))
-                accumulatedTags.push({ id: <any>tag.tagName, name: tag.tagName });
+            if (!accumulatedTags.find(existingTag => existingTag.name == tag.name)) {
+                accumulatedTags.push(tag);
+            }
 
             this.accumulateAllTags(accumulatedTags, tag.containedTags);
         });
+
         return accumulatedTags;
     }
 

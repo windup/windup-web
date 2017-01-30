@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import org.jboss.windup.config.tags.Tag;
 import org.jboss.windup.config.tags.TagServiceHolder;
+import org.jboss.windup.web.addons.websupport.model.TagDTO;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -18,15 +19,15 @@ public class TagResourceImpl implements TagResource
     private TagServiceHolder tagServiceHolder;
 
     @Override
-    public List<Object> getRootTags()
+    public List<TagDTO> getRootTags()
     {
         return buildTagStructure(null, tagServiceHolder.getTagService().getRootTags());
     }
 
-    private List<Object> buildTagStructure(TagDTO parent, Collection<Tag> children) {
-        List<Object> result = new ArrayList<>();
+    private List<TagDTO> buildTagStructure(TagDTO parent, Collection<Tag> children) {
+        List<TagDTO> result = new ArrayList<>();
         children.forEach(tag -> {
-            TagDTO tagDTO = new TagDTO(tag.getName(), tag.isRoot(), tag.isPseudo(), tag.getColor(), tag.getTitle());
+            TagDTO tagDTO = new TagDTOImpl(tag.getName(), tag.isRoot(), tag.isPseudo(), tag.getColor(), tag.getTitle());
 
             if (parent != null)
                 parent.getContainedTags().add(tagDTO);
@@ -35,10 +36,11 @@ public class TagResourceImpl implements TagResource
 
             this.buildTagStructure(tagDTO, tag.getContainedTags());
         });
+
         return result;
     }
 
-    private class TagDTO
+    private static class TagDTOImpl implements TagDTO
     {
         private String tagName;
         private boolean isRoot;
@@ -47,7 +49,7 @@ public class TagResourceImpl implements TagResource
         private String title;
         private List<TagDTO> containedTags = new ArrayList<>();
 
-        public TagDTO(String tagName, boolean isRoot, boolean isPseudo, String color, String title)
+        public TagDTOImpl(String tagName, boolean isRoot, boolean isPseudo, String color, String title)
         {
             this.tagName = tagName;
             this.isRoot = isRoot;
