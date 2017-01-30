@@ -6,7 +6,7 @@ import {MigrationProjectService} from "./migration-project.service";
 import {FormComponent} from "../shared/form.component";
 import {Subscription} from "rxjs";
 import {RouteFlattenerService} from "../core/routing/route-flattener.service";
-import {ApplicationGroupService} from "../services/application-group.service";
+import {ApplicationGroupService} from "../group/application-group.service";
 
 @Component({
     templateUrl: './migration-project-form.component.html',

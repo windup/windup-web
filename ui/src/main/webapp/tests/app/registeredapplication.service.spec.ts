@@ -19,7 +19,7 @@ import {MockBackend, MockConnection} from "@angular/http/testing";
 import {EventBusService} from "../../src/app/core/events/event-bus.service";
 import {ApplicationGroup} from "windup-services";
 import {MigrationProject} from "windup-services";
-import {ApplicationGroupService} from "../../src/app/services/application-group.service";
+import {ApplicationGroupService} from "../../src/app/group/application-group.service";
 import {Observable} from "rxjs";
 
 describe("Registered Application Service Test", () => {

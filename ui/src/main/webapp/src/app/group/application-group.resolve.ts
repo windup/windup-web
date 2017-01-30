@@ -1,10 +1,10 @@
 import {Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Router} from "@angular/router";
 import {Observable} from "rxjs";
 import {ApplicationGroup} from "windup-services";
-import {ApplicationGroupService} from "../../services/application-group.service";
-import {NotificationService} from "../../core/notification/notification.service";
+import {ApplicationGroupService} from "./application-group.service";
+import {NotificationService} from "../core/notification/notification.service";
 import {Injectable} from "@angular/core";
-import {utils} from '../../shared/utils';
+import {utils} from '../shared/utils';
 
 /**
  * Gets ApplicationGroup object for groupId route parameter.

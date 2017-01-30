@@ -10,8 +10,8 @@ import {routing, appRoutingProviders, appRoutes} from './app.routing';
 
 import {ProjectListComponent} from "./project/project-list.component";
 import {AnalysisContextFormComponent} from "./components/analysis-context-form.component";
-import {ApplicationGroupForm} from "./components/application-group-form.component";
-import {GroupListComponent} from "./components/group-list.component";
+import {ApplicationGroupForm} from "./group/application-group-form.component";
+import {GroupListComponent} from "./group/group-list.component";
 import {MigrationProjectFormComponent} from "./project/migration-project-form.component";
 import {RegisterApplicationFormComponent} from "./components/register-application-form.component";
 import {ProgressBarComponent} from "./shared/progress-bar.component";
@@ -19,7 +19,7 @@ import {NavbarComponent} from "./shared/navbar.component";
 import {BreadCrumbsComponent} from "./shared/navigation/breadcrumbs.component";
 import {ConfigurationService} from "./services/configuration.service";
 import {AnalysisContextService} from "./services/analysis-context.service";
-import {ApplicationGroupService} from "./services/application-group.service";
+import {ApplicationGroupService} from "./group/application-group.service";
 import {FileService} from "./services/file.service";
 import {MigrationPathService} from "./services/migration-path.service";
 import {MigrationProjectService} from "./project/migration-project.service";
@@ -60,7 +60,7 @@ import {FramesRestClientService} from './services/graph/frames-rest-client.servi
 import {ContextMenuComponent} from "./shared/navigation/context-menu.component";
 import {ProjectLayoutComponent} from "./project/project-layout.component";
 import {DefaultLayoutComponent} from "./shared/layout/default-layout.component";
-import {ApplicationGroupResolve} from "./components/group/application-group.resolve";
+import {ApplicationGroupResolve} from "./group/application-group.resolve";
 import {RouteLinkProviderService} from "./core/routing/route-link-provider-service";
 import {ConfigurationResolve} from "./services/configuration.resolve";
 import {ProjectResolve} from "./project/project.resolve";
@@ -115,7 +115,7 @@ import {SortableTableComponent} from "./shared/sortable-table.component";
 import {StatusIconComponent} from "./shared/status-icon.component";
 import {GraphJSONToModelService} from "./services/graph/graph-json-to-model.service";
 import {ApplicationListComponent} from "./components/application-list.component";
-import {GroupPageComponent} from "./components/group.page.component";
+import {GroupPageComponent} from "./group/group.page.component";
 import {ProjectExecutionsComponent} from "./components/executions/project-executions.component";
 import {CheckboxesComponent} from "./shared/checkboxes.component";
 

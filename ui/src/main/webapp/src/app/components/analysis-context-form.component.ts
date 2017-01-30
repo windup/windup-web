@@ -3,7 +3,7 @@ import {NgForm} from "@angular/forms";
 import {ActivatedRoute, Router, NavigationEnd} from "@angular/router";
 
 import {FormComponent} from "../shared/form.component";
-import {ApplicationGroupService} from "../services/application-group.service";
+import {ApplicationGroupService} from "../group/application-group.service";
 import {MigrationPathService} from "../services/migration-path.service";
 import {AnalysisContextService} from "../services/analysis-context.service";
 import {ConfigurationOption} from "../model/configuration-option.model";

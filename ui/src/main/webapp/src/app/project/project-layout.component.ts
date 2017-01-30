@@ -12,7 +12,7 @@ import {NotificationService} from "../core/notification/notification.service";
 import {utils} from '../shared/utils';
 import {GroupExecutionsComponent} from "../components/executions/group-executions.component";
 import {ApplicationDetailsComponent} from "../components/reports/application-details/application-details.component";
-import {ApplicationGroupService} from "../services/application-group.service";
+import {ApplicationGroupService} from "../group/application-group.service";
 import {WindupExecutionService} from "../services/windup-execution.service";
 import {EventBusService} from "../core/events/event-bus.service";
 import {

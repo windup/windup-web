@@ -14,7 +14,7 @@ import {
 } from "../core/events/windup-event";
 import {ApplicationGroup} from "windup-services";
 import {MigrationProject} from "windup-services";
-import {ApplicationGroupService} from "./application-group.service";
+import {ApplicationGroupService} from "../group/application-group.service";
 
 @Injectable()
 export class RegisteredApplicationService extends AbstractService {

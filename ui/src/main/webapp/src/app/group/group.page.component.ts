@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 
 import {ApplicationGroup} from "windup-services";
-import {ApplicationGroupService} from "../services/application-group.service";
+import {ApplicationGroupService} from "./application-group.service";
 import {RegisteredApplication} from "windup-services";
 import {RegisteredApplicationService} from "../services/registered-application.service";
 import {NotificationService} from "../core/notification/notification.service";
@@ -10,7 +10,7 @@ import {utils} from "../shared/utils";
 import {WindupExecutionService} from "../services/windup-execution.service";
 import {EventBusService} from "../core/events/event-bus.service";
 import {ExecutionEvent} from "../core/events/windup-event";
-import {ExecutionsMonitoringComponent} from "./executions/executions-monitoring.component";
+import {ExecutionsMonitoringComponent} from "../components/executions/executions-monitoring.component";
 import {MigrationProject} from "windup-services";
 
 @Component({
