@@ -6,7 +6,7 @@ import {ApplicationGroupService} from "../services/application-group.service";
 import {RegisteredApplication} from "windup-services";
 import {RegisteredApplicationService} from "../services/registered-application.service";
 import {NotificationService} from "../core/notification/notification.service";
-import {utils} from "../utils";
+import {utils} from "../shared/utils";
 import {WindupExecutionService} from "../services/windup-execution.service";
 import {EventBusService} from "../core/events/event-bus.service";
 import {ExecutionEvent} from "../core/events/windup-event";

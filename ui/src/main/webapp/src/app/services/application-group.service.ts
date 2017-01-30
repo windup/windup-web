@@ -3,7 +3,7 @@ import {Headers, Http, RequestOptions} from '@angular/http';
 
 import {Constants} from "../constants";
 import {ApplicationGroup, PackageMetadata} from "windup-services";
-import {AbstractService} from "./abtract.service";
+import {AbstractService} from "../shared/abtract.service";
 import {Observable, Subject} from "rxjs";
 import {EventBusService} from "../core/events/event-bus.service";
 import {

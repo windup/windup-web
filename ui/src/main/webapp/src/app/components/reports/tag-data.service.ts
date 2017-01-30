@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { Http, Headers, RequestOptions } from "@angular/http";
 import { Observable } from "rxjs";
 import { Constants } from "../../constants";
-import {AbstractService} from "../../services/abtract.service";
+import {AbstractService} from "../../shared/abtract.service";
 
 export class TagHierarchyData {
     tagName: string;

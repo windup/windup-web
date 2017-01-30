@@ -5,7 +5,7 @@ import {Notification, NotificationLevel} from "../core/notification/notification
 
 @Component({
     selector: 'wu-notification',
-    templateUrl: 'notification.component.html'
+    templateUrl: './notification.component.html'
 })
 export class NotificationComponent implements OnInit, OnDestroy {
     @Input()

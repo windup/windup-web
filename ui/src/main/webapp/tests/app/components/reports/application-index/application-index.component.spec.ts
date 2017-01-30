@@ -7,7 +7,7 @@ import {RouterTestingModule} from "@angular/router/testing";
 import {ActivatedRouteMock} from "../../../mocks/activated-route.mock";
 import {Observable} from "rxjs";
 import {ApplicationIndexComponent} from "../../../../../src/app/components/reports/application-index/application-index.component";
-import {PackageChartComponent} from "../../../../../src/app/components/package-chart/package-chart.component";
+import {PackageChartComponent} from "../../../../../src/app/shared/package-chart/package-chart.component";
 import {By} from "@angular/platform-browser";
 import {HttpModule, BaseRequestOptions, Http, ConnectionBackend} from "@angular/http";
 import {MockBackend} from "@angular/http/testing";

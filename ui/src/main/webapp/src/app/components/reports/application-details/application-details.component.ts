@@ -4,15 +4,15 @@ import {
     ProjectTraversalFullDTO, HintFullDTO, FileFullDTO
 } from "./application-details.service";
 import {Params, ActivatedRoute} from "@angular/router";
-import {utils} from "../../../utils";
+import {utils} from "../../../shared/utils";
 import {NotificationService} from "../../../core/notification/notification.service";
 import {Http} from "@angular/http";
 import {compareTraversals, compareTraversalChildFiles} from "../file-path-comparators";
 import {TagFilterService} from "../tag-filter.service";
 import {TypeReferenceStatisticsService} from "./type-reference-statistics.service";
 import {TagDataService} from "../tag-data.service";
-import {TreeData} from "../../js-tree-angular-wrapper.component";
-import {calculateColorScheme} from "../color-schemes";
+import {TreeData} from "../../../shared/js-tree-angular-wrapper.component";
+import {calculateColorScheme} from "../../../shared/color-schemes";
 
 @Component({
     templateUrl: './application-details.component.html',

@@ -1,5 +1,5 @@
 import {NgControl} from "@angular/forms";
-import {utils} from "../utils";
+import {utils} from "./utils";
 
 export class FormComponent {
     errorMessages: string[] = [];

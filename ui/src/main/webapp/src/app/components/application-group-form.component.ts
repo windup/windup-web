@@ -3,7 +3,7 @@ import {ActivatedRoute, Router, NavigationEnd} from "@angular/router";
 
 import {ApplicationGroup, MigrationProject} from "windup-services";
 import {ApplicationGroupService} from "../services/application-group.service";
-import {FormComponent} from "./form.component";
+import {FormComponent} from "../shared/form.component";
 import {RouteFlattenerService} from "../core/routing/route-flattener.service";
 
 @Component({

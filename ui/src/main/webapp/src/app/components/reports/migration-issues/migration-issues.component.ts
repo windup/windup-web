@@ -1,6 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {Router, ActivatedRoute} from "@angular/router";
-import {utils} from '../../../utils';
+import {utils} from '../../../shared/utils';
 
 import {NotificationService} from "../../../core/notification/notification.service";
 import {MigrationIssuesService} from "./migration-issues.service";

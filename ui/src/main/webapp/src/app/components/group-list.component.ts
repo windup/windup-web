@@ -11,7 +11,7 @@ import {WindupExecution} from "windup-services";
 import {RegisteredApplicationService} from "../services/registered-application.service";
 import {NotificationService} from "../core/notification/notification.service";
 import {MigrationProjectService} from "../services/migration-project.service";
-import {utils} from "../utils";
+import {utils} from "../shared/utils";
 import {WindupExecutionService} from "../services/windup-execution.service";
 import {EventBusService} from "../core/events/event-bus.service";
 import {ApplicationGroupEvent, ExecutionEvent} from "../core/events/windup-event";

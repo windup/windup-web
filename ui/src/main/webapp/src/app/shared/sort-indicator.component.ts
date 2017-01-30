@@ -1,5 +1,5 @@
 import {Input, Component, ChangeDetectionStrategy} from "@angular/core";
-import {OrderDirection} from "../services/sorting.service";
+import {OrderDirection} from "./sorting.service";
 
 @Component({
     selector: 'wu-sort-indicator',

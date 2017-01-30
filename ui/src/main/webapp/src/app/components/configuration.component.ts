@@ -6,7 +6,7 @@ import {RulesModalComponent} from "./rules-modal.component";
 import {AddRulesPathModalComponent, ConfigurationEvent} from "./add-rules-path-modal.component";
 import {ActivatedRoute} from "@angular/router";
 import {NotificationService} from "../core/notification/notification.service";
-import {utils} from "../utils";
+import {utils} from "../shared/utils";
 
 @Component({
     templateUrl: './configuration.component.html',

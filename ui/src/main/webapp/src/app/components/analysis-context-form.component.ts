@@ -2,14 +2,14 @@ import {Component, OnInit, ViewChild, OnChanges, SimpleChanges} from "@angular/c
 import {NgForm} from "@angular/forms";
 import {ActivatedRoute, Router, NavigationEnd} from "@angular/router";
 
-import {FormComponent} from "./form.component";
+import {FormComponent} from "../shared/form.component";
 import {ApplicationGroupService} from "../services/application-group.service";
 import {MigrationPathService} from "../services/migration-path.service";
 import {AnalysisContextService} from "../services/analysis-context.service";
 import {ConfigurationOption} from "../model/configuration-option.model";
 import {ConfigurationOptionsService} from "../services/configuration-options.service";
-import {ModalDialogComponent} from "./modal-dialog.component";
-import {IsDirty} from "../is-dirty.interface";
+import {ModalDialogComponent} from "../shared/modal-dialog.component";
+import {IsDirty} from "../shared/is-dirty.interface";
 import {Observable} from "rxjs/Observable";
 import {PackageRegistryService} from "../services/package-registry.service";
 import {ApplicationGroup, AnalysisContext, Package, MigrationPath, AdvancedOption, RulesPath, PackageMetadata} from "windup-services";
@@ -18,7 +18,7 @@ import {Subscription} from "rxjs";
 import {RouteFlattenerService} from "../core/routing/route-flattener.service";
 import {WindupService} from "../services/windup.service";
 import {NotificationService} from "../core/notification/notification.service";
-import {utils} from "../utils";
+import {utils} from "../shared/utils";
 import {RegisteredApplicationService} from "../services/registered-application.service";
 import {RegisteredApplication} from "windup-services";
 

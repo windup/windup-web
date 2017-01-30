@@ -1,10 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { utils } from "../../../utils";
+import { utils } from "../../../shared/utils";
 import { NotificationService } from "../../../core/notification/notification.service";
 import { ApplicationGroup } from "windup-services";
 import { AggregatedStatisticsService } from "./aggregated-statistics.service";
-import { calculateColorScheme } from "../color-schemes";
+import { calculateColorScheme } from "../../../shared/color-schemes";
 import { StatisticsList } from "windup-services";
 import { EffortByCategoryDTO } from "windup-services";
 import { EffortCategoryDTO } from "windup-services";

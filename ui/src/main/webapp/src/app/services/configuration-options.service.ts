@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Http} from '@angular/http';
 
 import {Constants} from "../constants";
-import {AbstractService} from "./abtract.service";
+import {AbstractService} from "../shared/abtract.service";
 import {ConfigurationOption} from "../model/configuration-option.model";
 import {Observable} from "rxjs/Observable";
 import {ValidationResult} from "../model/validation-result.model";

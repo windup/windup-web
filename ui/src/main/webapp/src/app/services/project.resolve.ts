@@ -4,7 +4,7 @@ import {Injectable} from "@angular/core";
 import {MigrationProject} from "windup-services";
 import {MigrationProjectService} from "./migration-project.service";
 import {NotificationService} from "../core/notification/notification.service";
-import {utils} from '../utils';
+import {utils} from '../shared/utils';
 
 @Injectable()
 export class ProjectResolve implements Resolve<MigrationProject|boolean> {

@@ -2,7 +2,7 @@ import {Component, ContentChildren, QueryList, AfterContentInit} from "@angular/
 import {TabComponent} from "./tab.component";
 
 @Component({
-    templateUrl: 'tab-container.component.html',
+    templateUrl: './tab-container.component.html',
     selector: 'wu-tab-container',
     styleUrls: ['./tab-container.component.scss']
 })

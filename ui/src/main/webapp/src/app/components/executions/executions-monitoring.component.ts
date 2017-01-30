@@ -1,5 +1,5 @@
 import {WindupExecution} from "windup-services";
-import {AbstractComponent} from "../AbstractComponent";
+import {AbstractComponent} from "../../shared/AbstractComponent";
 import {WindupExecutionService} from "../../services/windup-execution.service";
 import {ExecutionEvent} from "../../core/events/windup-event";
 

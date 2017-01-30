@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {ApplicationGroup, WindupExecution} from "windup-services";
-import {AbstractService} from "./abtract.service";
+import {AbstractService} from "../shared/abtract.service";
 import {Observable} from "rxjs/Observable";
 import {WindupService} from "./windup.service";
 import {EventBusService} from "../core/events/event-bus.service";
@@ -8,7 +8,7 @@ import {
     ExecutionEvent, NewExecutionStartedEvent, ExecutionUpdatedEvent,
     ExecutionCompletedEvent
 } from "../core/events/windup-event";
-import {SchedulerService} from "./scheduler.service";
+import {SchedulerService} from "../shared/scheduler.service";
 
 @Injectable()
 export class WindupExecutionService extends AbstractService {

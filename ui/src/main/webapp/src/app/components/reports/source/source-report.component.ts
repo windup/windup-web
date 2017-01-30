@@ -6,7 +6,6 @@ import {Observable} from "rxjs";
 import * as showdown from "showdown";
 import "./prism";
 
-import {utils} from "../../../utils";
 import {FileModelService} from "../../../services/graph/file-model.service";
 import {FileModel} from "../../../generated/tsModels/FileModel";
 import {ClassificationService} from "../../../services/graph/classification.service";
@@ -16,6 +15,7 @@ import {HintService} from "../../../services/graph/hint.service";
 import {LinkModel} from "../../../generated/tsModels/LinkModel";
 import {SourceFileModel} from "../../../generated/tsModels/SourceFileModel";
 import {GraphJSONToModelService} from "../../../services/graph/graph-json-to-model.service";
+import {utils} from "../../../shared/utils";
 import {LinkableModel} from "../../../generated/tsModels/LinkableModel";
 import {NotificationService} from "../../../core/notification/notification.service";
 

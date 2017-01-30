@@ -5,10 +5,10 @@ import {FileUploader} from "ng2-file-upload/ng2-file-upload";
 
 import {RegisteredApplication, RegistrationType} from "windup-services";
 import {RegisteredApplicationService} from "../services/registered-application.service";
-import {FileExistsValidator} from "../validators/file-exists.validator";
+import {FileExistsValidator} from "../shared/validators/file-exists.validator";
 import {FileService} from "../services/file.service";
 import {ApplicationGroup} from "windup-services";
-import {FormComponent} from "./form.component";
+import {FormComponent} from "../shared/form.component";
 import {Constants} from "../constants";
 import {MigrationProject} from "windup-services";
 import {Subscription} from "rxjs";

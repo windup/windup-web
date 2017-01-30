@@ -3,7 +3,7 @@ import {FormBuilder, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {RegisteredApplication, RegistrationType} from "windup-services";
 import {RegisteredApplicationService} from "../services/registered-application.service";
-import {FileExistsValidator} from "../validators/file-exists.validator";
+import {FileExistsValidator} from "../shared/validators/file-exists.validator";
 import {FileService} from "../services/file.service";
 import {Constants} from "../constants";
 import {RegisterApplicationFormComponent} from "./register-application-form.component";

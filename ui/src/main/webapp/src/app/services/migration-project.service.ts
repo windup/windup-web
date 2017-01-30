@@ -3,7 +3,7 @@ import {Headers, Http, RequestOptions} from '@angular/http';
 
 import {Constants} from "../constants";
 import {MigrationProject} from "windup-services";
-import {AbstractService} from "./abtract.service";
+import {AbstractService} from "../shared/abtract.service";
 import {Observable} from "rxjs";
 import {isNumber} from "util";
 

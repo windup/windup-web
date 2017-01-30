@@ -6,10 +6,10 @@ import {RouteLinkProviderService} from "../../core/routing/route-link-provider-s
 import {MigrationIssuesComponent} from "../reports/migration-issues/migration-issues.component";
 import {TechnologiesReportComponent} from "../reports/technologies/technologies-report.component";
 import {DependenciesReportComponent} from "../reports/dependencies/dependencies-report.component";
-import {ReportMenuItem, ContextMenuItem} from "../navigation/context-menu-item.class";
+import {ReportMenuItem, ContextMenuItem} from "../../shared/navigation/context-menu-item.class";
 import {AnalysisContextFormComponent} from "../analysis-context-form.component";
 import {NotificationService} from "../../core/notification/notification.service";
-import {utils} from '../../utils';
+import {utils} from '../../shared/utils';
 import {GroupExecutionsComponent} from "../executions/group-executions.component";
 import {ApplicationDetailsComponent} from "../reports/application-details/application-details.component";
 import {ApplicationGroupService} from "../../services/application-group.service";
@@ -19,7 +19,7 @@ import {
     ApplicationGroupEvent,
     UpdateApplicationGroupEvent
 } from "../../core/events/windup-event";
-import {AbstractComponent} from "../AbstractComponent";
+import {AbstractComponent} from "../../shared/AbstractComponent";
 import {ReportFilterComponent} from "../reports/filter/report-filter.component";
 import {MigrationProject} from "windup-services";
 import {ApplicationListComponent} from "../application-list.component";

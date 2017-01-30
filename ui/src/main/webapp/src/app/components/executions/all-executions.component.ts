@@ -1,7 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {WindupService} from "../../services/windup.service";
 import {NotificationService} from "../../core/notification/notification.service";
-import {utils} from "../../utils";
+import {utils} from "../../shared/utils";
 import {WindupExecution} from "windup-services";
 import {WindupExecutionService} from "../../services/windup-execution.service";
 import {EventBusService} from "../../core/events/event-bus.service";

@@ -1,4 +1,4 @@
-import {AbstractService} from "../../../services/abtract.service";
+import {AbstractService} from "../../../shared/abtract.service";
 import {Http, Response} from "@angular/http";
 import {Observable} from "rxjs";
 import {Injectable} from "@angular/core";

@@ -5,7 +5,7 @@ import {MigrationProject} from "windup-services";
 import {NotificationService} from "../core/notification/notification.service";
 import {RegisteredApplicationService} from "./registered-application.service";
 import {RegisteredApplication} from "windup-services";
-import {utils} from '../utils';
+import {utils} from '../shared/utils';
 
 @Injectable()
 export class ApplicationResolve implements Resolve<RegisteredApplication|boolean> {

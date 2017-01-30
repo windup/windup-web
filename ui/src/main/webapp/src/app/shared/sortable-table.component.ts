@@ -1,5 +1,5 @@
 import {Input, Component, EventEmitter, Output, ChangeDetectionStrategy} from "@angular/core";
-import {SortingService, OrderDirection} from "../services/sorting.service";
+import {SortingService, OrderDirection} from "./sorting.service";
 
 @Component({
     selector: '[wu-sortable-table]',

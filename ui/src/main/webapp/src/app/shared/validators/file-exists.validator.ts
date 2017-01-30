@@ -1,5 +1,5 @@
 import {AbstractControl, AsyncValidatorFn} from "@angular/forms";
-import {FileService} from "../services/file.service";
+import {FileService} from "../../services/file.service";
 
 export class FileExistsValidator {
 

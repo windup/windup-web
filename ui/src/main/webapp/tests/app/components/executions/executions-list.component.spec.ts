@@ -8,13 +8,13 @@ import {NotificationService} from "../../../../src/app/core/notification/notific
 import {WindupExecution} from "windup-services";
 import {EXECUTIONS_DATA} from "./executions-data";
 import {Observable} from "rxjs";
-import {ProgressBarComponent} from "../../../../src/app/components/progress-bar.component";
+import {ProgressBarComponent} from "../../../../src/app/shared/progress-bar.component";
 import {ActiveExecutionsProgressbarComponent} from "../../../../src/app/components/executions/active-executions-progressbar.component";
-import {DurationPipe} from "../../../../src/app/components/duration.pipe";
+import {DurationPipe} from "../../../../src/app/shared/duration.pipe";
 import {MigrationProjectService} from "../../../../src/app/services/migration-project.service";
-import {SortableTableComponent} from "../../../../src/app/components/sortable-table.component";
-import {SortIndicatorComponent} from "../../../../src/app/components/sort-indicator.component";
-import {StatusIconComponent} from "../../../../src/app/components/status-icon.component";
+import {SortableTableComponent} from "../../../../src/app/shared/sortable-table.component";
+import {SortIndicatorComponent} from "../../../../src/app/shared/sort-indicator.component";
+import {StatusIconComponent} from "../../../../src/app/shared/status-icon.component";
 
 let comp:    ExecutionsListComponent;
 let fixture: ComponentFixture<ExecutionsListComponent>;

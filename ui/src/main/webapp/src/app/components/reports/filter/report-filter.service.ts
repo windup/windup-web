@@ -1,6 +1,6 @@
 import {Http} from "@angular/http";
 import {Constants} from "../../../constants";
-import {AbstractService} from "../../../services/abtract.service";
+import {AbstractService} from "../../../shared/abtract.service";
 import {Observable} from "rxjs";
 import {ReportFilter, ApplicationGroup} from "windup-services";
 import {Injectable} from "@angular/core";

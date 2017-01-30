@@ -4,7 +4,7 @@ import {Http} from '@angular/http';
 import {Constants} from "../constants";
 import {RuleProviderEntity} from "windup-services";
 import {RulesPath} from "windup-services";
-import {AbstractService} from "./abtract.service";
+import {AbstractService} from "../shared/abtract.service";
 import {Observable} from "rxjs";
 
 @Injectable()

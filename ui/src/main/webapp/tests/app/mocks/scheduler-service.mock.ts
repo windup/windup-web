@@ -1,4 +1,4 @@
-import {SchedulerService} from "../../../src/app/services/scheduler.service";
+import {SchedulerService} from "../../../src/app/shared/scheduler.service";
 
 export class SchedulerServiceMock extends SchedulerService {
     constructor() {

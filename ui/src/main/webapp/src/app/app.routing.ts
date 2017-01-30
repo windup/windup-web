@@ -7,13 +7,13 @@ import {ApplicationGroupForm} from "./components/application-group-form.componen
 import {AnalysisContextFormComponent} from "./components/analysis-context-form.component";
 import {ConfigurationComponent} from "./components/configuration.component";
 import {EditApplicationFormComponent} from "./components/edit-application-form.component";
-import {ConfirmDeactivateGuard} from "./confirm-deactivate.guard";
+import {ConfirmDeactivateGuard} from "./shared/confirm-deactivate.guard";
 import {TechnologiesReportComponent} from "./components/reports/technologies/technologies-report.component";
 import {DependenciesReportComponent} from "./components/reports/dependencies/dependencies-report.component";
 import {LoginComponent} from "./components/login.component";
 import {LoggedInGuard} from "./core/authentication/logged-in.guard";
 import {ProjectLayoutComponent} from "./components/layout/project-layout.component";
-import {DefaultLayoutComponent} from "./components/layout/default-layout.component";
+import {DefaultLayoutComponent} from "./shared/layout/default-layout.component";
 import {ApplicationGroupResolve} from "./components/group/application-group.resolve";
 import {MigrationIssuesComponent} from "./components/reports/migration-issues/migration-issues.component";
 import {ProjectResolve} from "./services/project.resolve";
@@ -27,7 +27,7 @@ import {ApplicationDetailsComponent} from "./components/reports/application-deta
 import {ApplicationIndexComponent} from "./components/reports/application-index/application-index.component";
 import {ReportFilterComponent} from "./components/reports/filter/report-filter.component";
 import {RuleProviderExecutionsComponent} from "./components/reports/rule-provider-executions/rule-provider-executions.component";
-import {WizardComponent} from "./components/wizard.component";
+import {WizardComponent} from "./shared/wizard.component";
 import {ExecutionDetailComponent} from "./components/executions/execution-detail.component";
 import {ApplicationListComponent} from "./components/application-list.component";
 import {ProjectExecutionsComponent} from "./components/executions/project-executions.component";

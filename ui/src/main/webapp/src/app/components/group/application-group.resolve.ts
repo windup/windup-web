@@ -4,7 +4,7 @@ import {ApplicationGroup} from "windup-services";
 import {ApplicationGroupService} from "../../services/application-group.service";
 import {NotificationService} from "../../core/notification/notification.service";
 import {Injectable} from "@angular/core";
-import {utils} from '../../utils';
+import {utils} from '../../shared/utils';
 
 /**
  * Gets ApplicationGroup object for groupId route parameter.

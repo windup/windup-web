@@ -4,7 +4,7 @@ import {Injectable} from "@angular/core";
 import {NotificationService} from "../core/notification/notification.service";
 import {Configuration} from "windup-services";
 import {ConfigurationService} from "./configuration.service";
-import {utils} from '../utils';
+import {utils} from '../shared/utils';
 
 @Injectable()
 export class ConfigurationResolve implements Resolve<Configuration|boolean> {

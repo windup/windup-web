@@ -2,7 +2,7 @@ import {Component, OnInit, Input, OnChanges, SimpleChange} from "@angular/core";
 import {DependenciesData, DependencyNode, DependencyEdge} from "./dependencies.service";
 import * as d3 from "d3";
 import "d3-selection-multi"; // Doesn't work.
-import {substringAfterLast} from "../../../../app/utils";
+import {substringAfterLast} from "../../../shared/utils";
 
 
 type SvgSelection = d3.Selection<SVGElement, {}, HTMLElement, any>;
