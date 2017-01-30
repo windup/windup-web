@@ -83,7 +83,7 @@ import {ReportFilterResolve} from "./components/reports/filter/report-filter.res
 import {CustomSelectComponent} from "./components/custom-select/custom-select.component";
 import {ReportFilterIndicatorComponent} from "./components/reports/filter/report-filter-indicator.component";
 import {ApplicationDetailsComponent} from "./components/reports/application-details/application-details.component";
-import {NG2D3Module} from "ng2d3";
+import {NgxChartsModule} from "ngx-charts";
 import {PackageChartComponent} from "./components/package-chart/package-chart.component";
 import {ProjectTraversalService} from "./services/graph/project-traversal.service";
 import {TechnologyTagComponent} from "./components/reports/technology-tag/technology-tag.component";
@@ -111,8 +111,8 @@ initializeModelMappingData();
         HttpModule,
         routing,
 
-        // NG2D
-        NG2D3Module
+        // NGX Charts
+        NgxChartsModule
     ],
     declarations: [
         // pages
