@@ -4,7 +4,7 @@ import {ActivatedRoute, Router, NavigationEnd} from "@angular/router";
 import {FileUploader} from "ng2-file-upload/ng2-file-upload";
 
 import {RegisteredApplication, RegistrationType} from "windup-services";
-import {RegisteredApplicationService} from "../services/registered-application.service";
+import {RegisteredApplicationService} from "./registered-application.service";
 import {FileExistsValidator} from "../shared/validators/file-exists.validator";
 import {FileService} from "../services/file.service";
 import {ApplicationGroup} from "windup-services";

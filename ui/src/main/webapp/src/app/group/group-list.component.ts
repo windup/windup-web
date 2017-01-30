@@ -8,7 +8,7 @@ import {WindupService} from "../services/windup.service";
 import {Constants} from "../constants";
 import {RegisteredApplication} from "windup-services";
 import {WindupExecution} from "windup-services";
-import {RegisteredApplicationService} from "../services/registered-application.service";
+import {RegisteredApplicationService} from "../registered-application/registered-application.service";
 import {NotificationService} from "../core/notification/notification.service";
 import {MigrationProjectService} from "../project/migration-project.service";
 import {utils} from "../shared/utils";

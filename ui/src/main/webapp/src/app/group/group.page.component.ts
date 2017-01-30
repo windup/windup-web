@@ -4,7 +4,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {ApplicationGroup} from "windup-services";
 import {ApplicationGroupService} from "./application-group.service";
 import {RegisteredApplication} from "windup-services";
-import {RegisteredApplicationService} from "../services/registered-application.service";
+import {RegisteredApplicationService} from "../registered-application/registered-application.service";
 import {NotificationService} from "../core/notification/notification.service";
 import {utils} from "../shared/utils";
 import {WindupExecutionService} from "../services/windup-execution.service";

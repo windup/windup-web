@@ -13,7 +13,8 @@ import {AnalysisContextFormComponent} from "./analysis-context/analysis-context-
 import {ApplicationGroupForm} from "./group/application-group-form.component";
 import {GroupListComponent} from "./group/group-list.component";
 import {MigrationProjectFormComponent} from "./project/migration-project-form.component";
-import {RegisterApplicationFormComponent} from "./components/register-application-form.component";
+import {GroupPageComponent} from "./group/group.page.component";
+import {RegisterApplicationFormComponent} from "./registered-application/register-application-form.component";
 import {ProgressBarComponent} from "./shared/progress-bar.component";
 import {NavbarComponent} from "./shared/navbar.component";
 import {BreadCrumbsComponent} from "./shared/navigation/breadcrumbs.component";
@@ -23,7 +24,7 @@ import {ApplicationGroupService} from "./group/application-group.service";
 import {FileService} from "./services/file.service";
 import {MigrationPathService} from "./analysis-context/migration-path.service";
 import {MigrationProjectService} from "./project/migration-project.service";
-import {RegisteredApplicationService} from "./services/registered-application.service";
+import {RegisteredApplicationService} from "./registered-application/registered-application.service";
 import {WindupService} from "./services/windup.service";
 import {RuleService} from "./configuration/rule.service";
 import {ConfigurationComponent} from "./configuration/configuration.component";
@@ -35,7 +36,7 @@ import {CustomRuleSelectionComponent} from "./analysis-context/custom-rule-selec
 
 import {KeycloakService} from "./core/authentication/keycloak.service";
 import {WindupHttpService} from "./core/authentication/windup.http.service";
-import {EditApplicationFormComponent} from "./components/edit-application-form.component";
+import {EditApplicationFormComponent} from "./registered-application/edit-application-form.component";
 import {UploadQueueComponent} from "./shared/upload/upload-queue.component";
 import {UploadProgressbarComponent} from "./shared/upload/upload-progressbar.component";
 import {AnalysisContextAdvancedOptionsModalComponent} from "./analysis-context/analysis-context-advanced-options-modal.component";
@@ -64,7 +65,7 @@ import {ApplicationGroupResolve} from "./group/application-group.resolve";
 import {RouteLinkProviderService} from "./core/routing/route-link-provider-service";
 import {ConfigurationResolve} from "./configuration/configuration.resolve";
 import {ProjectResolve} from "./project/project.resolve";
-import {ApplicationResolve} from "./services/application.resolve";
+import {ApplicationResolve} from "./registered-application/application.resolve";
 import {BreadCrumbsComponent as BreadCrumbsNavigationComponent} from "./shared/navigation/breadcrumbs.component";
 import {BreadCrumbsService} from "./shared/navigation/breadcrumbs.service";
 import {RouteFlattenerService} from "./core/routing/route-flattener.service";
@@ -114,8 +115,7 @@ import {SortIndicatorComponent} from "./shared/sort-indicator.component";
 import {SortableTableComponent} from "./shared/sortable-table.component";
 import {StatusIconComponent} from "./shared/status-icon.component";
 import {GraphJSONToModelService} from "./services/graph/graph-json-to-model.service";
-import {ApplicationListComponent} from "./components/application-list.component";
-import {GroupPageComponent} from "./group/group.page.component";
+import {ApplicationListComponent} from "./registered-application/application-list.component";
 import {ProjectExecutionsComponent} from "./components/executions/project-executions.component";
 import {CheckboxesComponent} from "./shared/checkboxes.component";
 

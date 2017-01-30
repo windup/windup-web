@@ -22,8 +22,8 @@ import {
 import {AbstractComponent} from "../shared/AbstractComponent";
 import {ReportFilterComponent} from "../components/reports/filter/report-filter.component";
 import {MigrationProject} from "windup-services";
-import {ApplicationListComponent} from "../components/application-list.component";
-import {RegisteredApplicationService} from "../services/registered-application.service";
+import {ApplicationListComponent} from "../registered-application/application-list.component";
+import {RegisteredApplicationService} from "../registered-application/registered-application.service";
 import {WINDUP_WEB} from "../app.module";
 import {ApplicationIndexComponent} from "../components/reports/application-index/application-index.component";
 import {ProjectExecutionsComponent} from "../components/executions/project-executions.component";

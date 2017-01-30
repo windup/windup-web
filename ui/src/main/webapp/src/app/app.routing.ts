@@ -1,12 +1,12 @@
 import {Routes, RouterModule} from '@angular/router';
 import {ProjectListComponent} from "./project/project-list.component";
 import {GroupPageComponent} from "./group/group.page.component";
-import {RegisterApplicationFormComponent} from "./components/register-application-form.component";
+import {RegisterApplicationFormComponent} from "./registered-application//register-application-form.component";
 import {MigrationProjectFormComponent} from "./project/migration-project-form.component";
 import {ApplicationGroupForm} from "./group/application-group-form.component";
 import {AnalysisContextFormComponent} from "./analysis-context/analysis-context-form.component";
 import {ConfigurationComponent} from "./configuration/configuration.component";
-import {EditApplicationFormComponent} from "./components/edit-application-form.component";
+import {EditApplicationFormComponent} from "./registered-application//edit-application-form.component";
 import {ConfirmDeactivateGuard} from "./shared/confirm-deactivate.guard";
 import {TechnologiesReportComponent} from "./components/reports/technologies/technologies-report.component";
 import {DependenciesReportComponent} from "./components/reports/dependencies/dependencies-report.component";
@@ -18,7 +18,7 @@ import {ApplicationGroupResolve} from "./group/application-group.resolve";
 import {MigrationIssuesComponent} from "./components/reports/migration-issues/migration-issues.component";
 import {ProjectResolve} from "./project/project.resolve";
 import {ConfigurationResolve} from "./configuration/configuration.resolve";
-import {ApplicationResolve} from "./services/application.resolve";
+import {ApplicationResolve} from "./registered-application//application.resolve";
 import {FullFlattenedRoute} from "./core/routing/route-flattener.service";
 import {GroupExecutionsComponent} from "./components/executions/group-executions.component";
 import {AllExecutionsComponent} from "./components/executions/all-executions.component";
@@ -29,7 +29,7 @@ import {ReportFilterComponent} from "./components/reports/filter/report-filter.c
 import {RuleProviderExecutionsComponent} from "./components/reports/rule-provider-executions/rule-provider-executions.component";
 import {WizardComponent} from "./shared/wizard.component";
 import {ExecutionDetailComponent} from "./components/executions/execution-detail.component";
-import {ApplicationListComponent} from "./components/application-list.component";
+import {ApplicationListComponent} from "./registered-application/application-list.component";
 import {ProjectExecutionsComponent} from "./components/executions/project-executions.component";
 
 export const appRoutes: Routes = [
