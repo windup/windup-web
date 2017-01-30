@@ -3,7 +3,7 @@ import {FormComponent} from "../shared/form.component";
 import {FormGroup, FormBuilder, Validators} from "@angular/forms";
 import {FileExistsValidator} from "../shared/validators/file-exists.validator";
 import {FileService} from "../services/file.service";
-import {ConfigurationService} from "../services/configuration.service";
+import {ConfigurationService} from "./configuration.service";
 import {Configuration, RulesPath} from "windup-services";
 
 @Component({

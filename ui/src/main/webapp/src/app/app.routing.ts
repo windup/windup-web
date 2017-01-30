@@ -5,7 +5,7 @@ import {RegisterApplicationFormComponent} from "./components/register-applicatio
 import {MigrationProjectFormComponent} from "./project/migration-project-form.component";
 import {ApplicationGroupForm} from "./group/application-group-form.component";
 import {AnalysisContextFormComponent} from "./analysis-context/analysis-context-form.component";
-import {ConfigurationComponent} from "./components/configuration.component";
+import {ConfigurationComponent} from "./configuration/configuration.component";
 import {EditApplicationFormComponent} from "./components/edit-application-form.component";
 import {ConfirmDeactivateGuard} from "./shared/confirm-deactivate.guard";
 import {TechnologiesReportComponent} from "./components/reports/technologies/technologies-report.component";
@@ -17,7 +17,7 @@ import {DefaultLayoutComponent} from "./shared/layout/default-layout.component";
 import {ApplicationGroupResolve} from "./group/application-group.resolve";
 import {MigrationIssuesComponent} from "./components/reports/migration-issues/migration-issues.component";
 import {ProjectResolve} from "./project/project.resolve";
-import {ConfigurationResolve} from "./services/configuration.resolve";
+import {ConfigurationResolve} from "./configuration/configuration.resolve";
 import {ApplicationResolve} from "./services/application.resolve";
 import {FullFlattenedRoute} from "./core/routing/route-flattener.service";
 import {GroupExecutionsComponent} from "./components/executions/group-executions.component";

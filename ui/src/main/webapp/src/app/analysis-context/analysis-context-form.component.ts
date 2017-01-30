@@ -7,7 +7,7 @@ import {ApplicationGroupService} from "../group/application-group.service";
 import {MigrationPathService} from "./migration-path.service";
 import {AnalysisContextService} from "./analysis-context.service";
 import {ConfigurationOption} from "../model/configuration-option.model";
-import {ConfigurationOptionsService} from "../services/configuration-options.service";
+import {ConfigurationOptionsService} from "../configuration/configuration-options.service";
 import {ModalDialogComponent} from "../shared/modal-dialog.component";
 import {IsDirty} from "../shared/is-dirty.interface";
 import {Observable} from "rxjs/Observable";
