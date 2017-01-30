@@ -60,17 +60,18 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
     }
 
     ngOnInit() {
+        this._configurationOptionsService.getAll().subscribe((options:ConfigurationOption[]) => {
+            this.configurationOptions = options;
+        });
+
         this._activatedRoute.parent.parent.data.subscribe((data: {applicationGroup: ApplicationGroup}) => {
-            this.applicationGroup = data.applicationGroup;
-
-            this._configurationOptionsService.getAll().subscribe((options:ConfigurationOption[]) => {
-                this.configurationOptions = options;
+            // Reload from the service to insure fresh data
+            this._applicationGroupService.get(data.applicationGroup.id).subscribe(updatedGroup => {
+                this.applicationGroup = updatedGroup;
+                this.initializeAnalysisContext();
+                this.loadPackageMetadata();
+                console.log("Loaded analysis context: " + JSON.stringify(this.analysisContext));
             });
-
-            this.initializeAnalysisContext();
-            this.loadPackageMetadata();
-
-            console.log("Loaded analysis context: " + JSON.stringify(this.analysisContext));
         });
     }
 
