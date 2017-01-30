@@ -51,14 +51,14 @@
                 <td>
                     <div class="chartBoundary" *ngIf="allTagStats()?.length > 0">
                         <h4>Technologies found - occurrence count</h4>
-                        <bar-horizontal
+                        <ngx-charts-bar-horizontal
                                 [scheme]="colorScheme"
                                 [results]="allTagStats()"
                                 [showGridLines]="true"
                                 [xAxis]="true"
                                 [yAxis]="true"
                         >
-                        </bar-horizontal>
+                        </ngx-charts-bar-horizontal>
                     </div>
                 </td>
             </tr>
@@ -187,7 +187,7 @@
                             <td>
                                 <div class="tagsBarChart chartBoundary" *ngIf="tagStatsForProject(traversal)?.length > 0">
                                     <h4>Technologies found - occurrence count</h4>
-                                    <bar-horizontal
+                                    <ngx-charts-bar-horizontal
                                             *ngIf="!isCollapsed(traversal)"
                                             [scheme]="colorScheme"
                                             [results]="tagStatsForProject(traversal)"
@@ -195,7 +195,7 @@
                                             [xAxis]="true"
                                             [yAxis]="true"
                                     >
-                                    </bar-horizontal>
+                                    </ngx-charts-bar-horizontal>
                                 </div>
                             </td>
                         </tr>

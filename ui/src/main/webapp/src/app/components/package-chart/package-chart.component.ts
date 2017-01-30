@@ -2,8 +2,7 @@ import {
     Component, ElementRef, ChangeDetectorRef, NgZone, ChangeDetectionStrategy, OnChanges,
     OnDestroy, AfterViewInit, SimpleChanges, EventEmitter, Output, Input
 } from "@angular/core";
-import {BaseChartComponent, calculateViewDimensions, ViewDimensions, formatLabel} from "ng2d3";
-import {colorHelper} from "ng2d3/release/utils/color-sets";
+import {BaseChartComponent, calculateViewDimensions, ViewDimensions, formatLabel, ColorHelper} from "ngx-charts";
 
 @Component({
     selector: 'wu-package-chart',
@@ -30,27 +29,27 @@ export class PackageChartComponent extends BaseChartComponent implements OnChang
     outerRadius: number;
     innerRadius: number;
     transform: string;
-    colors: Function;
+    colors: ColorHelper;
     legendWidth: number;
 
-    constructor(private element: ElementRef, private cd: ChangeDetectorRef, zone: NgZone) {
+    constructor(element: ElementRef, zone: NgZone, cd: ChangeDetectorRef) {
         super(element, zone, cd);
     }
 
-    color(item) {
-        return this.colors(formatLabel(item.name));
+    label(item): string {
+        return formatLabel(item);
+    }
+
+    color(item): any {
+        return this.colors.getColor(this.label(item.name));
     }
 
     setColors(): void {
-        this.colors = colorHelper(this.scheme, 'ordinal', this.domain, this.customColors);
+        this.colors = new ColorHelper(this.scheme, 'ordinal', this.domain, this.customColors);
     }
 
     onClick(data: any, group: any): void {
 
-    }
-
-    protected bindResizeEvents(view: number[]): void {
-        super.bindResizeEvents(view);
     }
 
     getContainerDims(): any {
@@ -63,10 +62,6 @@ export class PackageChartComponent extends BaseChartComponent implements OnChang
             height = hostElem.parentNode.clientHeight;
         }
         return {width, height};
-    }
-
-    ngAfterViewInit(): void {
-        this.bindResizeEvents(this.view);
     }
 
     ngOnDestroy(): void {
