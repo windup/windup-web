@@ -2,7 +2,6 @@ package org.jboss.windup.web.services.rest;
 
 import org.jboss.windup.config.RuleProvider;
 import org.jboss.windup.web.services.model.RuleProviderEntity;
-import org.ocpsoft.rewrite.config.Rule;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;

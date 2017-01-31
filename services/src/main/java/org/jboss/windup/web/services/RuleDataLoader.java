@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -26,13 +25,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.jboss.windup.config.RuleProvider;
-import org.jboss.windup.config.RuleUtils;
 import org.jboss.windup.config.loader.RuleLoaderContext;
 import org.jboss.windup.config.metadata.RuleProviderMetadata;
 import org.jboss.windup.config.metadata.RuleProviderRegistry;
 import org.jboss.windup.config.metadata.TechnologyReference;
 import org.jboss.windup.config.phase.MigrationRulesPhase;
 import org.jboss.windup.web.addons.websupport.services.IssueCategoryProviderService;
+import org.jboss.windup.web.addons.websupport.services.RuleFormatterService;
 import org.jboss.windup.web.addons.websupport.services.RuleProviderService;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.model.Category;
@@ -40,7 +39,6 @@ import org.jboss.windup.web.services.model.Configuration;
 import org.jboss.windup.web.services.model.RuleEntity;
 import org.jboss.windup.web.services.model.RuleProviderEntity;
 import org.jboss.windup.web.services.model.RulesPath;
-import org.jboss.windup.web.services.model.Tag;
 import org.jboss.windup.web.services.model.Technology;
 import org.jboss.windup.web.services.service.ConfigurationService;
 import org.jboss.windup.web.services.service.TechnologyService;
@@ -71,6 +69,10 @@ public class RuleDataLoader
     @Inject
     @FromFurnace
     private IssueCategoryProviderService issueCategoryProviderService;
+
+    @Inject
+    @FromFurnace
+    private RuleFormatterService ruleFormatterService;
 
     @Schedule(hour = "*", minute = "12")
     public void loadPeriodically()
@@ -142,7 +144,7 @@ public class RuleDataLoader
                     for (Rule rule : provider.getConfiguration(ruleLoaderContext).getRules())
                     {
                         String ruleID = rule.getId();
-                        String ruleString = RuleUtils.ruleToRuleContentsString(rule, 0);
+                        String ruleString = this.ruleFormatterService.ruleToRuleContentsString(rule);
 
                         RuleEntity ruleEntity = new RuleEntity();
                         ruleEntity.setRuleID(ruleID);
