@@ -10,6 +10,7 @@ window['$'] = $;
 
 // D3
 import 'd3';
+import 'd3-selection-multi';
 
 // Angular 2
 import "@angular/platform-browser";
