@@ -1,0 +1,36 @@
+<!--
+    Created on : Feb 1, 2017, 2:53:44 PM
+    Author     : Ondrej Zizka, zizka at seznam.cz
+-->
+<div class="legend">
+    <span class="typeApplication"> <span class="sample"></span> <span class="label">The analyzed applications (Windup's input)</span> </span>
+    <span class="suffix_war">      <span class="sample"></span> <span class="label">.war or .ear application module </span> </span>
+    <span class="suffix_jar">      <span class="sample"></span> <span class="label">Unknown library </span> </span>
+    <span class="isKnown">         <span class="sample"></span> <span class="label">Known open source library </span> </span>
+</div>
+<svg id="dependenciesGraph" width="100%" height="500">
+    <g id="zoomingGroup">
+    </g>
+</svg>
+<div id="dependencyDetails">
+    <table>
+        <tr class="header"> <th colspan="2">Dependency details</th></tr>
+        <tbody id="traits">
+            <tr> <th>ID</th> <td id="id"></td></tr>
+            <tr> <th>Name</th> <td class="trait" id="name"></td></tr>
+            <tr> <th>Type</th> <td class="trait" id="type"></td></tr>
+            <tr> <th>File name</th> <td class="trait" id="fileName"></td></tr>
+            <tr> <th>File path</th> <td class="trait" id="filePath"></td></tr>
+        </tbody>
+        <tbody>
+            <tr class="header"> <th colspan="2">Depends on</th></tr>
+            <tr class="noDependencies"> <td colspan="2">(nothing)</td></tr>
+        </tbody>
+        <tbody id="dependsOn"></tbody>
+        <tbody>
+            <tr class="header"> <th colspan="2">Is dependency of</th></tr>
+            <tr class="noDependees"> <td colspan="2">(nothing)</td></tr>
+        </tbody>
+        <tbody id="dependencyOf"></tbody>
+    </table>
+</div>

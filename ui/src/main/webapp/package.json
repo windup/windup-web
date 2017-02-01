@@ -60,9 +60,10 @@
     "showdown": "^1.5.1",
     "text-loader": "^0.0.1",
     "webpack-merge": "^0.15.0",
-    "zone.js": "^0.6.21",
+    "zone.js": "^0.7.6",
     "d3": "4.4.0",
     "d3-transition": "1.0.3",
+    "d3-selection-multi": "1.0.0",
     "ngx-charts": "^3.0.2"
   },
   "devDependencies": {
@@ -83,6 +84,7 @@
     "@types/d3-interpolate": "0.0.4",
     "@types/d3-scale": "0.0.3",
     "@types/d3-selection": "0.0.3",
+    "@types/d3-selection-multi": "1.0.4",
     "@types/d3-shape": "0.0.4",
     "@types/d3-time-format": "2.0.4",
     "angular2-template-loader": "^0.4.0",

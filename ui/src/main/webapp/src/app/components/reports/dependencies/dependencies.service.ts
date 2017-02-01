@@ -43,6 +43,7 @@ export class DependenciesService extends AbstractService {
 export interface DependencyNode {
     id: number;
     name: string;
+    data: any;
 }
 
 export interface DependencyEdge {
