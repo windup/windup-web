@@ -24,4 +24,8 @@ public interface DependenciesReportResource extends FurnaceRESTGraphAPI
      */
     @GET
     Object getDependencies(@PathParam("executionId") Long executionId);
+
+    @Path("technologies")
+    @GET
+    Object getTechnologiesDependencies(@PathParam("executionId") Long executionId);
 }

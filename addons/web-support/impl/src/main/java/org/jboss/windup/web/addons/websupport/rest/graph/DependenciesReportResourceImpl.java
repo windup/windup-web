@@ -3,11 +3,13 @@ package org.jboss.windup.web.addons.websupport.rest.graph;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.web.addons.websupport.services.dependencies.DependenciesDTO;
 import org.jboss.windup.web.addons.websupport.services.dependencies.LibraryDependenciesService;
+import org.jboss.windup.web.addons.websupport.services.dependencies.TechnologiesDependenciesService;
 
 /**
  * @author <a href="mailto:dklingenberg@gmail.com">David Klingenberg</a>
@@ -17,6 +19,9 @@ public class DependenciesReportResourceImpl extends AbstractGraphResource implem
     @Inject
     LibraryDependenciesService libraryDependenciesService;
 
+    @Inject
+    Instance<TechnologiesDependenciesService> technologiesDependenciesService;
+
     @Override
     public Object getDependencies(Long executionId)
     {
@@ -24,6 +29,16 @@ public class DependenciesReportResourceImpl extends AbstractGraphResource implem
         this.libraryDependenciesService.setGraphContext(graphContext);
 
         return this.getResult(this.libraryDependenciesService.getDependencies());
+    }
+
+    @Override
+    public Object getTechnologiesDependencies(Long executionId)
+    {
+        GraphContext graphContext = this.getGraph(executionId);
+        TechnologiesDependenciesService technologiesDependenciesService = this.technologiesDependenciesService.get();
+        technologiesDependenciesService.setGraphContext(graphContext);
+
+        return this.getResult(technologiesDependenciesService.getDependencies());
     }
 
     /**
