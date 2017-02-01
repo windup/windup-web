@@ -97,6 +97,7 @@ import {RuleProviderExecutionsService} from "./components/reports/rule-provider-
 import {RuleProviderExecutionsComponent} from "./components/reports/rule-provider-executions/rule-provider-executions.component";
 import {initializeModelMappingData} from "./generated/tsModels/discriminator-mapping-data";
 import {RouteHistoryService} from "./services/route-history.service";
+import {ChosenModule} from "./components/chosen/chosen.module";
 
 /**
  * Load all mapping data from the generated files.
@@ -112,7 +113,8 @@ initializeModelMappingData();
         routing,
 
         // NGX Charts
-        NgxChartsModule
+        NgxChartsModule,
+        ChosenModule
     ],
     declarations: [
         // pages

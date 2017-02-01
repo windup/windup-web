@@ -57,3 +57,6 @@ require('../node_modules/patternfly/dist/css/patternfly-additions.min.css');
 // Prism
 require('../node_modules/prismjs/prism');
 require('../node_modules/prismjs/themes/prism.css');
+
+// chosen
+require('../css/chosen/chosen.css');
