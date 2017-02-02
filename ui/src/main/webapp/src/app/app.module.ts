@@ -56,8 +56,6 @@ import {MigrationIssuesComponent} from "./components/reports/migration-issues/mi
 import {MigrationIssuesTableComponent} from "./components/reports/migration-issues/migration-issues-table.component";
 import {MigrationIssuesService} from "./components/reports/migration-issues/migration-issues.service";
 import {TechReportService} from "./components/reports/technologies/tech-report.service";
-import {DependenciesReportComponent} from "./components/reports/dependencies/dependencies-report.component";
-import {DependenciesService} from "./components/reports/dependencies/dependencies.service";
 import {FramesRestClientService} from './services/graph/frames-rest-client.service';
 import {ContextMenuComponent} from "./components/navigation/context-menu.component";
 import {GroupLayoutComponent} from "./components/layout/group-layout.component";
@@ -98,6 +96,7 @@ import {RuleProviderExecutionsComponent} from "./components/reports/rule-provide
 import {initializeModelMappingData} from "./generated/tsModels/discriminator-mapping-data";
 import {RouteHistoryService} from "./services/route-history.service";
 import {ChosenModule} from "./components/chosen/chosen.module";
+import {DependenciesGraphComponent} from "./components/reports/dependencies/dependencies-graph.component";
 
 /**
  * Load all mapping data from the generated files.
@@ -177,7 +176,8 @@ initializeModelMappingData();
         ReportFilterIndicatorComponent,
         TechnologyTagComponent,
         ActiveExecutionsProgressbarComponent,
-        RuleProviderExecutionsComponent
+        RuleProviderExecutionsComponent,
+        DependenciesGraphComponent
     ],
     providers: [
         appRoutingProviders,
