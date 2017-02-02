@@ -7,7 +7,7 @@ import {TechnologiesReportComponent} from "../reports/technologies/technologies-
 import {DependenciesReportComponent} from "../reports/dependencies/dependencies-report.component";
 import {WindupService} from "../../services/windup.service";
 import {ReportMenuItem, ContextMenuItem} from "../navigation/context-menu-item.class";
-import {AnalysisContextFormComponent} from "../analysis-context-form.component";
+import {AnalysisContextFormComponent} from "../analysis-context/analysis-context-form.component";
 import {NotificationService} from "../../services/notification.service";
 import {GroupListComponent} from "../group-list.component";
 import {utils} from '../../utils';

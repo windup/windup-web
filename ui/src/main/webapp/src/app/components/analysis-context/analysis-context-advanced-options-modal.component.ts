@@ -1,9 +1,8 @@
-import {Component, Input, Output, ViewChild, EventEmitter} from "@angular/core";
-import {ConfigurationOption} from "../model/configuration-option.model";
+import {Component, Input, Output, EventEmitter} from "@angular/core";
+import {ConfigurationOption} from "../../model/configuration-option.model";
 import {AdvancedOption} from "windup-services";
-import {ModalDialogComponent} from "./modal-dialog.component";
-import {ConfigurationOptionsService} from "../services/configuration-options.service";
-import {ValidationResult} from "../model/validation-result.model";
+import {ConfigurationOptionsService} from "../../services/configuration-options.service";
+import {ValidationResult} from "../../model/validation-result.model";
 
 @Component({
     selector: 'wu-analysis-context-advanced-options',

@@ -5,7 +5,7 @@ import {GroupPageComponent} from "./components/group.page.component";
 import {RegisterApplicationFormComponent} from "./components/register-application-form.component";
 import {MigrationProjectFormComponent} from "./components/migration-project-form.component";
 import {ApplicationGroupForm} from "./components/application-group-form.component";
-import {AnalysisContextFormComponent} from "./components/analysis-context-form.component";
+import {AnalysisContextFormComponent} from "./components/analysis-context/analysis-context-form.component";
 import {ConfigurationComponent} from "./components/configuration.component";
 import {EditApplicationFormComponent} from "./components/edit-application-form.component";
 import {ConfirmDeactivateGuard} from "./confirm-deactivate.guard";

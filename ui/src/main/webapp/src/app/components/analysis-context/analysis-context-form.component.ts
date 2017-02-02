@@ -2,18 +2,18 @@ import {Component, OnInit, ViewChild} from "@angular/core";
 import {NgForm} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 
-import {FormComponent} from "./form.component";
-import {ApplicationGroupService} from "../services/application-group.service";
-import {MigrationPathService} from "../services/migration-path.service";
-import {AnalysisContextService} from "../services/analysis-context.service";
-import {ConfigurationOption} from "../model/configuration-option.model";
-import {ConfigurationOptionsService} from "../services/configuration-options.service";
-import {ModalDialogComponent} from "./modal-dialog.component";
-import {IsDirty} from "../is-dirty.interface";
+import {FormComponent} from "../form.component";
+import {ApplicationGroupService} from "../../services/application-group.service";
+import {MigrationPathService} from "../../services/migration-path.service";
+import {AnalysisContextService} from "../../services/analysis-context.service";
+import {ConfigurationOption} from "../../model/configuration-option.model";
+import {ConfigurationOptionsService} from "../../services/configuration-options.service";
+import {ModalDialogComponent} from "../modal-dialog.component";
+import {IsDirty} from "../../is-dirty.interface";
 import {Observable} from "rxjs/Observable";
-import {PackageRegistryService} from "../services/package-registry.service";
+import {PackageRegistryService} from "../../services/package-registry.service";
 import {ApplicationGroup, AnalysisContext, Package, MigrationPath, AdvancedOption, RulesPath, PackageMetadata} from "windup-services";
-import {RouteHistoryService} from "../services/route-history.service";
+import {RouteHistoryService} from "../../services/route-history.service";
 
 @Component({
     templateUrl: './analysis-context-form.component.html'
