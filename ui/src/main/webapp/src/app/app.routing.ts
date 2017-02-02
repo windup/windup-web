@@ -21,13 +21,11 @@ import {ProjectResolve} from "./services/project.resolve";
 import {ConfigurationResolve} from "./services/configuration.resolve";
 import {ApplicationResolve} from "./services/application.resolve";
 import {FullFlattenedRoute} from "./services/route-flattener.service";
-import {ExecutionsListComponent} from "./components/executions/executions-list.component";
 import {GroupExecutionsComponent} from "./components/executions/group-executions.component";
 import {AllExecutionsComponent} from "./components/executions/all-executions.component";
 import {SourceReportComponent} from "./components/reports/source/source-report.component";
 import {ApplicationDetailsComponent} from "./components/reports/application-details/application-details.component";
 import {ReportFilterComponent} from "./components/reports/filter/report-filter.component";
-import {ReportFilterResolve} from "./components/reports/filter/report-filter.resolve";
 import {RuleProviderExecutionsComponent} from "./components/reports/rule-provider-executions/rule-provider-executions.component";
 
 export const appRoutes: Routes = [
