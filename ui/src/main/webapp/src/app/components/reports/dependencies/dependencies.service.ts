@@ -9,6 +9,7 @@ import {GraphJSONToModelService} from "../../../services/graph/graph-json-to-mod
 @Injectable()
 export class DependenciesService extends AbstractService {
     private GET_DEPENDENCIES_URL = Constants.GRAPH_REST_BASE +  '/graph/{executionId}/dependencies';
+    private GET_TECH_DEPENDENCIES_URL = Constants.GRAPH_REST_BASE +  '/graph/{executionId}/dependencies/technologies';
 
     constructor (private _http: Http) {
         super();
@@ -33,6 +34,14 @@ export class DependenciesService extends AbstractService {
 
     public getDependencies(executionId: number): Observable<any> {
         let url = this.GET_DEPENDENCIES_URL.replace('{executionId}', executionId.toString());
+
+        return this._http.get(url)
+            .map(res => res.json())
+            .catch(this.handleError);
+    }
+
+    public getTechnologyDependencies(executionId: number): Observable<any> {
+        let url = this.GET_TECH_DEPENDENCIES_URL.replace('{executionId}', executionId.toString());
 
         return this._http.get(url)
             .map(res => res.json())

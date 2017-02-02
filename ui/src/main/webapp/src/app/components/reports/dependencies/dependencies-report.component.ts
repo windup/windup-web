@@ -3,10 +3,14 @@ import {DependenciesService} from "./dependencies.service";
 import {ActivatedRoute} from "@angular/router";
 
 @Component({
-    template: `<wu-dependencies-graph [dependencies]="dependencies"></wu-dependencies-graph>`
+    templateUrl: './dependencies-report.component.html'
 })
 export class DependenciesReportComponent {
     dependencies: any[];
+    technologies: any[];
+
+    showDependencies: boolean = true;
+    showTechDependencies: boolean = false;
 
     constructor(private _activatedRoute: ActivatedRoute, private _dependenciesService: DependenciesService) {
 
@@ -18,6 +22,9 @@ export class DependenciesReportComponent {
 
             this._dependenciesService.getDependencies(executionId)
                 .subscribe(dependencies => this.dependencies = dependencies);
+
+            this._dependenciesService.getTechnologyDependencies(executionId)
+                .subscribe(techDependencies => this.technologies = techDependencies);
         });
     }
 }

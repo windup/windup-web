@@ -29,7 +29,6 @@ import {ApplicationDetailsComponent} from "./components/reports/application-deta
 import {ReportFilterComponent} from "./components/reports/filter/report-filter.component";
 import {ReportFilterResolve} from "./components/reports/filter/report-filter.resolve";
 import {RuleProviderExecutionsComponent} from "./components/reports/rule-provider-executions/rule-provider-executions.component";
-import {DependenciesReportComponent} from "./components/reports/dependencies/dependencies-report.component";
 
 export const appRoutes: Routes = [
     {path: "login", component: LoginComponent},

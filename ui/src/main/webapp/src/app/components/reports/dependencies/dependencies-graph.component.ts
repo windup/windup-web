@@ -42,12 +42,14 @@ export class DependenciesGraphComponent implements OnInit, OnChanges {
     }
 
     ngOnInit(): void {
-        this.svg = d3.select('#dependencies-graph');
+
     }
 
     // changes: {configuration: SimpleChange, selection: SimpleChange, options: SimpleChange}
     ngOnChanges(changes: {dependencies: SimpleChange}): void {
         if (changes.dependencies.currentValue && changes.dependencies.currentValue !== changes.dependencies.previousValue) {
+            this.svg = d3.select('#dependencies-graph');
+
             let width = +this.svg.attr("width"),
                 height = +this.svg.attr("height");
 
