@@ -464,7 +464,7 @@ public class TypeScriptModelsGenerator
         {
             final Path path = this.config.getImportPathToWebapp().resolve(PATH_TO_GRAPH_PKG).resolve(BaseModelPath);
             mappingWriter.write("import {" + BaseModelName + "} from '" + path + "';\n");
-            mappingWriter.write("import {" + DISCRIMINATOR_MAPPING_DATA + "} from './" + DISCRIMINATOR_MAPPING_DATA_PATH + "';\n\n");
+            //mappingWriter.write("import {" + DISCRIMINATOR_MAPPING_DATA + "} from './" + DISCRIMINATOR_MAPPING_DATA_PATH + "';\n\n");
 
             for (Map.Entry<String, ModelDescriptor> entry : discriminatorToClassMapping.entrySet())
             {
