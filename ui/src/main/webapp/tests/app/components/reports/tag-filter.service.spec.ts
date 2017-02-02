@@ -1,11 +1,11 @@
 import {TagFilterService, MatchResult} from "../../../../src/app/components/reports/tag-filter.service";
-import { ReportFilter } from "windup-services";
+import {ReportFilter} from "windup-services";
 import {Tag} from "windup-services";
 
 describe('Tag Filter Service', () => {
 
     function tag(tagName:string):Tag {
-        return {id: 0, name: tagName};
+        return {id: 0, name: tagName, color: null, title: null, containedTags: [], root: false, pseudo: false};
     }
 
     it ('no includes or excludes', () => {
