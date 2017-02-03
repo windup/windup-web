@@ -42,6 +42,8 @@ public class UnhandledExceptionHandler implements ExceptionMapper<RuntimeExcepti
             responseBody = Response.Status.INTERNAL_SERVER_ERROR.getReasonPhrase();
         }
 
+        LOG.severe(cause.getMessage());
+
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity(new ErrorMessage(responseBody))
                     .type(MediaType.APPLICATION_JSON)
