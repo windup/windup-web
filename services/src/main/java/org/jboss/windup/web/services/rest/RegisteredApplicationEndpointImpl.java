@@ -1,5 +1,7 @@
 package org.jboss.windup.web.services.rest;
 
+import java.util.Collection;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -18,6 +20,12 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
     private RegisteredApplicationService registeredApplicationService;
 
     @Override
+    public Collection<RegisteredApplication> getAllApplications()
+    {
+        return this.registeredApplicationService.getAllApplications();
+    }
+
+    @Override
     public RegisteredApplication getApplication(long id)
     {
         return this.registeredApplicationService.getApplication(id);
@@ -30,17 +38,11 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
     }
 
     @Override
-    public RegisteredApplication reuploadApplication(MultipartFormDataInput data, long appId)
+    public RegisteredApplication reuploadApplication(long appId, MultipartFormDataInput data)
     {
         RegisteredApplication application = this.getApplication(appId);
 
         return this.registeredApplicationService.updateApplication(application, data);
-    }
-
-    @Override
-    public void unregister(long applicationID)
-    {
-        this.deleteApplication(applicationID);
     }
 
     @Override

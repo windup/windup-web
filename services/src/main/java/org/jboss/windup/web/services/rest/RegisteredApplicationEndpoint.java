@@ -6,6 +6,7 @@ import org.jboss.windup.web.services.model.RegisteredApplication;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.Collection;
 
 /**
  * Contains methods for managing applications registered within Windup.
@@ -19,33 +20,32 @@ public interface RegisteredApplicationEndpoint
 {
     String REGISTERED_APPLICATIONS = "/registeredApplications";
 
-    @Path("id/{id}")
+    @GET
+    Collection<RegisteredApplication> getAllApplications();
+
+    @Path("{id}")
     @GET
     RegisteredApplication getApplication(@PathParam("id") long id);
 
     /**
      * Updates an existing application.
      */
-    @Path("update-application")
+    @Path("{id}/update-path")
     @PUT
     RegisteredApplication updatePath(@Valid RegisteredApplication application);
 
     /**
      * Updates existing application
      */
-    @Path("{id}")
+    @Path("{id}/reupload")
     @PUT
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    RegisteredApplication reuploadApplication(MultipartFormDataInput data, @PathParam("id") long appId);
-
-    @Path("{id}")
-    @DELETE
-    void deleteApplication(@PathParam("id") long appId);
+    RegisteredApplication reuploadApplication(@PathParam("id") long appId, MultipartFormDataInput data);
 
     /**
      * Removes the registration entry for an application.
      */
-    @Path("unregister/{id}")
+    @Path("{id}")
     @DELETE
-    void unregister(@PathParam("id") long applicationID);
+    void deleteApplication(@PathParam("id") long appId);
 }
