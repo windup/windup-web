@@ -63,6 +63,9 @@ public class RegisteredApplication implements Serializable
     @ManyToOne(optional = false)
     private ApplicationGroup applicationGroup;
 
+    @ManyToOne(optional = false)
+    private MigrationProject migrationProject;
+
     @OneToOne(fetch = FetchType.LAZY)
     private PackageMetadata packageMetadata;
 
@@ -217,6 +220,23 @@ public class RegisteredApplication implements Serializable
     public void setPackageMetadata(PackageMetadata packageMetadata)
     {
         this.packageMetadata = packageMetadata;
+    }
+
+    /**
+     * Gets migration project
+     */
+    @JsonIgnore
+    public MigrationProject getMigrationProject()
+    {
+        return migrationProject;
+    }
+
+    /**
+     * Sets migration project
+     */
+    public void setMigrationProject(MigrationProject migrationProject)
+    {
+        this.migrationProject = migrationProject;
     }
 
     @Override

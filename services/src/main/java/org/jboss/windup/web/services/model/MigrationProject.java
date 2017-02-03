@@ -11,6 +11,7 @@ import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -23,9 +24,15 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
-import javax.persistence.CascadeType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 /**
  * A migration project is a group of applications which are related to each other and migrated as a bigger enterprise system.
@@ -66,9 +73,14 @@ public class MigrationProject implements Serializable
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "migrationProject", cascade = CascadeType.REMOVE)
     private Set<ApplicationGroup> groups;
 
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "migrationProject", cascade = CascadeType.REMOVE)
+    @Fetch(FetchMode.SELECT)
+    private Set<RegisteredApplication> applications;
+
     public MigrationProject()
     {
         this.groups = new HashSet<>();
+        this.applications = new HashSet<>();
     }
 
     @PrePersist
@@ -169,6 +181,28 @@ public class MigrationProject implements Serializable
     public void setLastModified(Calendar lastModified)
     {
         this.lastModified = lastModified;
+    }
+
+    /**
+     * Contains the {@link RegisteredApplication}s associated with this project
+     */
+    public Set<RegisteredApplication> getApplications()
+    {
+        return applications;
+    }
+
+    @JsonIgnore
+    public void setApplications(Set<RegisteredApplication> applications)
+    {
+        this.applications = applications;
+    }
+
+    /**
+     * Adds the {@link RegisteredApplication} to this project
+     */
+    public void addApplication(RegisteredApplication application)
+    {
+        this.applications.add(application);
     }
 
     @Override
