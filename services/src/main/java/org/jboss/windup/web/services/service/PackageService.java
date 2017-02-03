@@ -64,35 +64,37 @@ public class PackageService
         metadata.setScanStatus(PackageMetadata.ScanStatus.IN_PROGRESS);
         this.entityManager.merge(metadata);
 
-        ApplicationGroup appGroup = application.getApplicationGroup();
-        PackageMetadata appGroupMetadata = appGroup.getPackageMetadata();
-        appGroupMetadata.setScanStatus(PackageMetadata.ScanStatus.IN_PROGRESS);
-        this.entityManager.merge(appGroupMetadata);
+        for (ApplicationGroup appGroup : application.getApplicationGroups())
+        {
+            PackageMetadata appGroupMetadata = appGroup.getPackageMetadata();
+            appGroupMetadata.setScanStatus(PackageMetadata.ScanStatus.IN_PROGRESS);
+            this.entityManager.merge(appGroupMetadata);
 
-        String rulesPath = this.webProperties.getRulesRepository().toString();
-        String inputPath = application.getInputPath();
-        PackageDiscoveryService.PackageDiscoveryResult result = this.packageDiscoveryService.execute(rulesPath, inputPath);
+            String rulesPath = this.webProperties.getRulesRepository().toString();
+            String inputPath = application.getInputPath();
+            PackageDiscoveryService.PackageDiscoveryResult result = this.packageDiscoveryService.execute(rulesPath, inputPath);
 
-        Map<String, Package> packageMap = new TreeMap<>();
-        appGroupMetadata.getPackages().forEach(aPackage -> packageMap.put(aPackage.getFullName(), aPackage));
+            Map<String, Package> packageMap = new TreeMap<>();
+            appGroupMetadata.getPackages().forEach(aPackage -> packageMap.put(aPackage.getFullName(), aPackage));
 
-        this.addPackagesToPackageMetadata(metadata, result.getKnownPackages(), packageMap);
-        this.addPackagesToPackageMetadata(metadata, result.getUnknownPackages(), packageMap);
+            this.addPackagesToPackageMetadata(metadata, result.getKnownPackages(), packageMap);
+            this.addPackagesToPackageMetadata(metadata, result.getUnknownPackages(), packageMap);
 
-        this.addPackagesToPackageMetadata(appGroupMetadata, result.getKnownPackages(), packageMap);
-        this.addPackagesToPackageMetadata(appGroupMetadata, result.getUnknownPackages(), packageMap);
+            this.addPackagesToPackageMetadata(appGroupMetadata, result.getKnownPackages(), packageMap);
+            this.addPackagesToPackageMetadata(appGroupMetadata, result.getUnknownPackages(), packageMap);
 
-        metadata.setScanStatus(PackageMetadata.ScanStatus.COMPLETE);
-        this.entityManager.merge(metadata);
+            metadata.setScanStatus(PackageMetadata.ScanStatus.COMPLETE);
+            this.entityManager.merge(metadata);
 
-        PackageMetadata.ScanStatus finalStatus = appGroup.getApplications().stream()
+            PackageMetadata.ScanStatus finalStatus = appGroup.getApplications().stream()
                     .map(app -> app.getPackageMetadata().getScanStatus())
                     .reduce(PackageMetadata.ScanStatus.COMPLETE,
-                                (currentStatus, accumulator) -> currentStatus == PackageMetadata.ScanStatus.COMPLETE && currentStatus == accumulator
-                                            ? PackageMetadata.ScanStatus.COMPLETE : PackageMetadata.ScanStatus.IN_PROGRESS);
+                            (currentStatus, accumulator) -> currentStatus == PackageMetadata.ScanStatus.COMPLETE && currentStatus == accumulator
+                                    ? PackageMetadata.ScanStatus.COMPLETE : PackageMetadata.ScanStatus.IN_PROGRESS);
 
-        appGroupMetadata.setScanStatus(finalStatus);
-        this.entityManager.merge(appGroupMetadata);
+            appGroupMetadata.setScanStatus(finalStatus);
+            this.entityManager.merge(appGroupMetadata);
+        }
 
         return metadata.getPackages();
     }

@@ -153,7 +153,7 @@ public class ApplicationGroupTest extends AbstractTest
     {
         MigrationProject dummyProject = this.dataProvider.getMigrationProject();
         ApplicationGroup dummyGroup = this.dataProvider.getApplicationGroup(dummyProject);
-        RegisteredApplication dummyApp = this.dataProvider.getApplication(dummyGroup);
+        RegisteredApplication dummyApp = this.dataProvider.getApplication(dummyProject);
 
         String registeredAppTargetUri = this.target.getUri() + "/applicationGroups/" + dummyGroup.getId() + "/packages";
         ResteasyWebTarget registeredAppTarget = this.client.target(registeredAppTargetUri);

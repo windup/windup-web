@@ -2,6 +2,8 @@ package org.jboss.windup.web.services.model;
 
 import java.io.Serializable;
 import java.nio.file.Paths;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Version;
@@ -60,8 +63,8 @@ public class RegisteredApplication implements Serializable
     @Column(length = 2048)
     private String reportIndexPath;
 
-    @ManyToOne(optional = false)
-    private ApplicationGroup applicationGroup;
+    @ManyToMany
+    private Set<ApplicationGroup> applicationGroups;
 
     @ManyToOne(optional = false)
     private MigrationProject migrationProject;
@@ -71,16 +74,19 @@ public class RegisteredApplication implements Serializable
 
     public RegisteredApplication()
     {
+        this.applicationGroups = new HashSet<>();
     }
 
     public RegisteredApplication(String inputPath)
     {
+        this();
         this.inputPath = inputPath;
         this.title = Paths.get(inputPath).getFileName().toString();
     }
 
     public RegisteredApplication(MigrationProject project)
     {
+        this();
         this.migrationProject = project;
     }
 
@@ -168,17 +174,22 @@ public class RegisteredApplication implements Serializable
      * References the {@link ApplicationGroup} that contains this application.
      */
     @JsonIgnore
-    public ApplicationGroup getApplicationGroup()
+    public Set<ApplicationGroup> getApplicationGroups()
     {
-        return applicationGroup;
+        return this.applicationGroups;
     }
 
     /**
      * References the {@link ApplicationGroup} that contains this application.
      */
-    public void setApplicationGroup(ApplicationGroup applicationGroup)
+    public void addApplicationGroup(ApplicationGroup applicationGroup)
     {
-        this.applicationGroup = applicationGroup;
+        this.applicationGroups.add(applicationGroup);
+    }
+
+    public void removeApplicationGroup(ApplicationGroup applicationGroup)
+    {
+        this.applicationGroups.add(applicationGroup);
     }
 
     /**
