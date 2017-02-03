@@ -14,6 +14,7 @@ import org.jboss.windup.web.services.rest.ApplicationGroupEndpoint;
 import org.jboss.windup.web.services.rest.ConfigurationEndpoint;
 import org.jboss.windup.web.services.rest.ConfigurationEndpointTest;
 import org.jboss.windup.web.services.rest.MigrationProjectEndpoint;
+import org.jboss.windup.web.services.rest.MigrationProjectRegisteredApplicationsEndpoint;
 import org.junit.Assert;
 
 import javax.ws.rs.client.Entity;
@@ -130,18 +131,19 @@ public class DataProvider
         return Entity.entity(entity, MediaType.MULTIPART_FORM_DATA_TYPE);
     }
 
-    public RegisteredApplication getApplication(ApplicationGroup group) throws IOException
+    public RegisteredApplication getApplication(MigrationProject project) throws IOException
     {
         try (InputStream sampleIS = getClass().getResourceAsStream(DataProvider.TINY_SAMPLE_PATH))
         {
-            return this.getApplication(group, sampleIS, "sample-tiny.war");
+            return this.getApplication(project, sampleIS, "sample-tiny.war");
         }
     }
 
-    public RegisteredApplication getApplication(ApplicationGroup group, InputStream inputStream, String filename) throws IOException {
+    public RegisteredApplication getApplication(MigrationProject project, InputStream inputStream, String filename) throws IOException {
         Entity entity = this.getMultipartFormDataEntity(inputStream, filename);
 
-        String registeredAppTargetUri = this.target.getUri() + ServiceConstants.REGISTERED_APP_ENDPOINT + "/appGroup/" + group.getId();
+        String registeredAppTargetUri = this.target.getUri() + MigrationProjectRegisteredApplicationsEndpoint.PROJECT_APPLICATIONS
+            .replace("{projectId}", project.getId().toString());
         ResteasyWebTarget registeredAppTarget = this.target.getResteasyClient().target(registeredAppTargetUri);
 
         try

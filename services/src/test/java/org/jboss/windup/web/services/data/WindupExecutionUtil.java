@@ -10,6 +10,7 @@ import org.jboss.windup.web.services.model.ExecutionState;
 import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.model.WindupExecution;
 import org.jboss.windup.web.services.rest.ApplicationGroupEndpoint;
+import org.jboss.windup.web.services.rest.MigrationProjectRegisteredApplicationsEndpoint;
 import org.jboss.windup.web.services.rest.WindupEndpoint;
 import org.junit.Assert;
 
@@ -49,7 +50,8 @@ public class WindupExecutionUtil
             uploadData.addFormData("file", sampleIS, MediaType.APPLICATION_OCTET_STREAM_TYPE, "sample-tiny.war");
 
             GenericEntity<MultipartFormDataOutput> entity = new GenericEntity<MultipartFormDataOutput>(uploadData) {};
-            String registeredAppTargetUri = this.target.getUri() + ServiceConstants.REGISTERED_APP_ENDPOINT + "/appGroup/" + group.getId();
+            String registeredAppTargetUri = this.target.getUri() + MigrationProjectRegisteredApplicationsEndpoint.PROJECT_APPLICATIONS
+                    .replace("{projectId}", project.getId().toString());
             ResteasyWebTarget registeredAppTarget = this.client.target(registeredAppTargetUri);
 
             try {
