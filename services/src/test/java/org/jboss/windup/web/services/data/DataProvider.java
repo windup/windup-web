@@ -143,12 +143,14 @@ public class DataProvider
         Entity entity = this.getMultipartFormDataEntity(inputStream, filename);
 
         String registeredAppTargetUri = this.target.getUri() + MigrationProjectRegisteredApplicationsEndpoint.PROJECT_APPLICATIONS
-            .replace("{projectId}", project.getId().toString());
+            .replace("{projectId}", project.getId().toString()) + "/upload";
         ResteasyWebTarget registeredAppTarget = this.target.getResteasyClient().target(registeredAppTargetUri);
 
         try
         {
             Response response = registeredAppTarget.request().post(entity);
+            response.bufferEntity();
+            String entityAsString = response.readEntity(String.class);
             RegisteredApplication application = response.readEntity(RegisteredApplication.class);
             response.close();
 

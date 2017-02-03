@@ -60,7 +60,7 @@ public class RegisteredApplicationEndpointTest extends AbstractTest
 
     @Test
     @RunAsClient
-    public void testEditApp() throws Exception
+    public void testReuploadApp() throws Exception
     {
         RegisteredApplication dummyApp = this.dataProvider.getApplication(this.project);
 
@@ -69,9 +69,11 @@ public class RegisteredApplicationEndpointTest extends AbstractTest
             String newFileName = "new-file.jar";
             Entity entity = this.dataProvider.getMultipartFormDataEntity(sampleIs, newFileName);
 
-            ResteasyWebTarget registeredAppTarget = getResteasyWebTarget(dummyApp.getId());
+            ResteasyWebTarget registeredAppTarget = getResteasyWebTarget(dummyApp.getId(), "reupload");
 
             Response response = registeredAppTarget.request().put(entity);
+            response.bufferEntity();
+            String stringEntity = response.readEntity(String.class);
             RegisteredApplication updatedApp = response.readEntity(RegisteredApplication.class);
             response.close();
 
@@ -114,13 +116,24 @@ public class RegisteredApplicationEndpointTest extends AbstractTest
 
     private ResteasyWebTarget getResteasyWebTarget(Long appId)
     {
+        return this.getResteasyWebTarget(appId, "");
+    }
+    
+    private ResteasyWebTarget getResteasyWebTarget(Long appId, String resource)
+    {
         String registeredAppTargetUri = this.target.getUri() + RegisteredApplicationEndpoint.REGISTERED_APPLICATIONS + "/" + appId;
+
+        if (!resource.isEmpty())
+        {
+            registeredAppTargetUri += "/"  + resource;
+        }
+
         return this.client.target(registeredAppTargetUri);
     }
 
     @Test
     @RunAsClient
-    public void testEditAppWithoutFile() throws Exception
+    public void testReuploadAppWithoutFile() throws Exception
     {
         RegisteredApplication app = this.dataProvider.getApplication(this.project);
 
@@ -130,7 +143,7 @@ public class RegisteredApplicationEndpointTest extends AbstractTest
         };
         Entity entity = Entity.entity(genericEntity, MediaType.MULTIPART_FORM_DATA_TYPE);
 
-        ResteasyWebTarget registeredAppTarget = getResteasyWebTarget(app.getId());
+        ResteasyWebTarget registeredAppTarget = getResteasyWebTarget(app.getId(), "reupload");
 
         Response response = registeredAppTarget.request().put(entity);
         response.close();
@@ -140,17 +153,16 @@ public class RegisteredApplicationEndpointTest extends AbstractTest
 
     @Test
     @RunAsClient
-    public void testEditNonExistingApp() throws Exception
+    public void testEditReuploadNonExistingApp() throws Exception
     {
-        Integer nonExistingAppId = 0;
+        Long nonExistingAppId = 0L;
 
         try (InputStream sampleIs = new ByteArrayInputStream("Hello World!".getBytes(StandardCharsets.UTF_8)))
         {
             String newFileName = "new-file.jar";
             Entity entity = this.dataProvider.getMultipartFormDataEntity(sampleIs, newFileName);
 
-            String registeredAppTargetUri = this.target.getUri() + RegisteredApplicationEndpoint.REGISTERED_APPLICATIONS + "/" + nonExistingAppId;
-            ResteasyWebTarget registeredAppTarget = this.client.target(registeredAppTargetUri);
+            ResteasyWebTarget registeredAppTarget = this.getResteasyWebTarget(nonExistingAppId, "reupload");
 
             Response response = registeredAppTarget.request().put(entity);
             response.close();
@@ -163,9 +175,8 @@ public class RegisteredApplicationEndpointTest extends AbstractTest
     @RunAsClient
     public void testDeleteNonExistingApp() throws Exception
     {
-        Integer nonExistingAppId = 0;
-        String registeredAppTargetUri = this.target.getUri() + RegisteredApplicationEndpoint.REGISTERED_APPLICATIONS + "/" + nonExistingAppId;
-        ResteasyWebTarget registeredAppTarget = this.client.target(registeredAppTargetUri);
+        Long nonExistingAppId = 0L;
+        ResteasyWebTarget registeredAppTarget = this.getResteasyWebTarget(nonExistingAppId);
 
         Response response = registeredAppTarget.request().delete();
         response.close();

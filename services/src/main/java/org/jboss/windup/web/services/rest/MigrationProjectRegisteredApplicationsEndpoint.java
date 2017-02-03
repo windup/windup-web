@@ -30,7 +30,6 @@ public interface MigrationProjectRegisteredApplicationsEndpoint
     /**
      * Gets the list of all registered applications.
      */
-    @Path("list")
     @GET
     Collection<RegisteredApplication> getRegisteredApplications(@PathParam("projectId") long projectId);
 

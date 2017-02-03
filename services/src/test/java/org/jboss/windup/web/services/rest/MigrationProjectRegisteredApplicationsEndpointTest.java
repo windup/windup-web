@@ -30,6 +30,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
+ * @author <a href="mailto:dklingenberg@gmail.com">David Klingenberg</a>
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
 @RunWith(Arquillian.class)
@@ -54,6 +55,9 @@ public class MigrationProjectRegisteredApplicationsEndpointTest extends Abstract
         this.dataProvider = new DataProvider(target);
 
         this.migrationProjectRegisteredApplicationsEndpoint = target.proxy(MigrationProjectRegisteredApplicationsEndpoint.class);
+        this.registeredApplicationEndpoint = target.proxy(RegisteredApplicationEndpoint.class);
+        
+        this.dummyProject = this.dataProvider.getMigrationProject();
     }
 
     @Test
@@ -66,12 +70,10 @@ public class MigrationProjectRegisteredApplicationsEndpointTest extends Abstract
         File tempFile1 = File.createTempFile(RegisteredApplicationEndpointTest.class.getSimpleName() + ".1", ".ear");
         File tempFile2 = File.createTempFile(RegisteredApplicationEndpointTest.class.getSimpleName() + ".2", ".ear");
 
-        MigrationProject project = this.dataProvider.getMigrationProject();
-
         RegisteredApplication dto1 = new RegisteredApplication(tempFile1.getAbsolutePath());
         RegisteredApplication dto2 = new RegisteredApplication(tempFile2.getAbsolutePath());
-        this.migrationProjectRegisteredApplicationsEndpoint.registerApplicationByPath(project.getId(), dto1);
-        this.migrationProjectRegisteredApplicationsEndpoint.registerApplicationByPath(project.getId(), dto2);
+        this.migrationProjectRegisteredApplicationsEndpoint.registerApplicationByPath(dummyProject.getId(), dto1);
+        this.migrationProjectRegisteredApplicationsEndpoint.registerApplicationByPath(dummyProject.getId(), dto2);
 
         try
         {
@@ -111,13 +113,15 @@ public class MigrationProjectRegisteredApplicationsEndpointTest extends Abstract
         {
             String fileName = "sample-tiny.war";
             String registeredAppTargetUri = this.target.getUri() + MigrationProjectRegisteredApplicationsEndpoint.PROJECT_APPLICATIONS
-                    .replace("{projectId}", dummyProject.getId().toString());
+                    .replace("{projectId}", dummyProject.getId().toString()) + "/upload";
             ResteasyWebTarget registeredAppTarget = this.client.target(registeredAppTargetUri);
 
             try
             {
                 Entity entity = this.dataProvider.getMultipartFormDataEntity(sampleIS, fileName);
                 Response response = registeredAppTarget.request().post(entity);
+                response.bufferEntity();
+                String entityString = response.readEntity(String.class);
                 RegisteredApplication application = response.readEntity(RegisteredApplication.class);
                 response.close();
 
@@ -155,7 +159,7 @@ public class MigrationProjectRegisteredApplicationsEndpointTest extends Abstract
         Entity entity = Entity.entity(genericEntity, MediaType.MULTIPART_FORM_DATA_TYPE);
 
         String registeredAppTargetUri = this.target.getUri() + MigrationProjectRegisteredApplicationsEndpoint.PROJECT_APPLICATIONS
-                .replace("{projectId}", dummyProject.getId().toString());
+                .replace("{projectId}", dummyProject.getId().toString()) + "/upload";
         ResteasyWebTarget registeredAppTarget = this.client.target(registeredAppTargetUri);
 
         Response response = registeredAppTarget.request().post(entity);

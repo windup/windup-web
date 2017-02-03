@@ -19,6 +19,7 @@ import javax.jms.JMSContext;
 import javax.jms.Queue;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotFoundException;
@@ -51,9 +52,6 @@ public class RegisteredApplicationService
     @FromFurnace
     private FileNameSanitizer fileNameSanitizer;
 
-    @Inject
-    private ApplicationGroupService applicationGroupService;
-
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -81,6 +79,7 @@ public class RegisteredApplicationService
         return application;
     }
 
+    @Transactional
     public RegisteredApplication registerApplication(MultipartFormDataInput data, MigrationProject project)
     {
         Map<String, List<InputPart>> uploadForm = data.getFormDataMap();
@@ -108,6 +107,7 @@ public class RegisteredApplicationService
         return application;
     }
 
+    @Transactional
     public Collection<RegisteredApplication> registerApplicationsInDirectoryByPath(MigrationProject project, String path)
     {
         File directory = new File(path);
@@ -153,6 +153,7 @@ public class RegisteredApplicationService
         return registeredApplicationList;
     }
 
+    @Transactional
     public RegisteredApplication registerApplicationByPath(MigrationProject project, RegisteredApplication application)
     {
         LOG.info("Registering an application at: " + application.getInputPath());
@@ -179,6 +180,7 @@ public class RegisteredApplicationService
         return application;
     }
 
+    @Transactional
     public RegisteredApplication updateApplicationPath(RegisteredApplication application)
     {
         RegisteredApplication previousApplication = getApplication(application.getId());
@@ -212,20 +214,19 @@ public class RegisteredApplicationService
         return application;
     }
 
+    @Transactional
     public RegisteredApplication updateApplication(RegisteredApplication application, MultipartFormDataInput data)
     {
         Map<String, List<InputPart>> uploadForm = data.getFormDataMap();
         List<InputPart> inputParts = uploadForm.get("file");
 
-        int uploadedFiles = inputParts.size();
-
-        if (uploadedFiles > 1)
-        {
-            throw new BadRequestException("Application can have only one file");
-        }
-        else if (uploadedFiles == 0)
+        if (inputParts == null || inputParts.size() == 0)
         {
             throw new BadRequestException("Please provide a file");
+        }
+        else if (inputParts.size() > 1)
+        {
+            throw new BadRequestException("Application can have only one file");
         }
 
         this.deleteApplicationFileIfUploaded(application);
@@ -236,6 +237,7 @@ public class RegisteredApplicationService
         return application;
     }
 
+    @Transactional
     public void deleteApplication(RegisteredApplication application)
     {
         MigrationProject project = application.getMigrationProject();
@@ -268,6 +270,7 @@ public class RegisteredApplicationService
         }
     }
 
+    @Transactional
     public Collection<RegisteredApplication> registerMultipleApplications(MultipartFormDataInput data, MigrationProject project)
     {
         Map<String, List<InputPart>> uploadForm = data.getFormDataMap();
