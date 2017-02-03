@@ -58,7 +58,7 @@ public class GraphResourceImpl extends AbstractGraphResource implements GraphRes
         List<Map<String, Object>> vertices = new ArrayList<>();
         for (Vertex v : graphContext.getFramed().getVertices(WindupVertexFrame.TYPE_PROP, vertexType))
         {
-            vertices.add(convertToMap(new GraphMarshallingContext(executionID, v, depth, dedup, outEdges_, inEdges_, includeInVertices), v));
+            vertices.add(convertToMap(new GraphMarshallingContext(executionID, v, depth, dedup, outEdges_, inEdges_, null, includeInVertices), v));
         }
         return vertices;
     }
@@ -71,7 +71,7 @@ public class GraphResourceImpl extends AbstractGraphResource implements GraphRes
         Query query = graphContext.getFramed().query().has(WindupVertexFrame.TYPE_PROP, vertexType).has(propertyName, propertyValue);
         for (Vertex vertex : query.vertices())
         {
-            vertices.add(convertToMap(new GraphMarshallingContext(executionID, vertex, depth, dedup, null, null, includeInVertices), vertex));
+            vertices.add(convertToMap(new GraphMarshallingContext(executionID, vertex, depth, dedup, null, null, null, includeInVertices), vertex));
         }
         return vertices;
     }

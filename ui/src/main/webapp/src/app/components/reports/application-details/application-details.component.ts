@@ -1,5 +1,5 @@
 import {Component, OnInit, ChangeDetectorRef, ElementRef} from "@angular/core";
-import {ProjectTraversalService} from "../../../services/graph/project-traversal.service";
+import {ApplicationDetailsService} from "./application-details.service";
 import {Params, ActivatedRoute} from "@angular/router";
 import {utils} from "../../../utils";
 import {NotificationService} from "../../../services/notification.service";
@@ -74,7 +74,7 @@ export class ApplicationDetailsComponent implements OnInit {
         private _element: ElementRef,
         private _changeDetectorRef: ChangeDetectorRef,
         private _activatedRoute:ActivatedRoute,
-        private _projectTraversalService:ProjectTraversalService,
+        private _applicationDetailsService:ApplicationDetailsService,
         private _notificationService:NotificationService,
         private _tagDataService:TagDataService,
         private _http:Http
@@ -86,7 +86,7 @@ export class ApplicationDetailsComponent implements OnInit {
 
             this._activatedRoute.params.forEach((params: Params) => {
                 this.execID = +params['executionId'];
-                this._projectTraversalService.getRootTraversals(this.execID, "ALL").subscribe(
+                this._applicationDetailsService.getApplicationDetailsData(this.execID).subscribe(
                     traversals => {
                         this.rootProjects = traversals;
                         this.allProjects = [];

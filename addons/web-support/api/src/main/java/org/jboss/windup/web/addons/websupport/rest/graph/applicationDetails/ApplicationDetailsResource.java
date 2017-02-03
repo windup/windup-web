@@ -1,6 +1,5 @@
-package org.jboss.windup.web.addons.websupport.rest.graph;
+package org.jboss.windup.web.addons.websupport.rest.graph.applicationDetails;
 
-import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.Consumes;
@@ -19,12 +18,12 @@ import org.jboss.windup.web.addons.websupport.rest.FurnaceRESTGraphAPI;
  *
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
-@Path(ProjectTraversalResource.BASE_URL)
+@Path(ApplicationDetailsResource.BASE_URL)
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public interface ProjectTraversalResource extends FurnaceRESTGraphAPI
+public interface ApplicationDetailsResource extends FurnaceRESTGraphAPI
 {
-    String BASE_URL = "/graph/project-traversal";
+    String BASE_URL = "/graph/application-details";
 
     /**
      * Returns a list of traversals based upon the traversal type.
@@ -34,7 +33,6 @@ public interface ProjectTraversalResource extends FurnaceRESTGraphAPI
      *
      */
     @GET
-    @Path("/{executionID}/by-traversal-type/{traversalType}")
-    List<Map<String, Object>> getTraversalsByType(@PathParam("executionID") Long executionID,
-                @PathParam("traversalType") PersistedProjectModelTraversalModel.PersistedTraversalType persistedTraversalType);
+    @Path("/{executionID}")
+    ApplicationDetailsDTO getApplicationDetailsData(@PathParam("executionID") Long executionID);
 }
