@@ -6,7 +6,6 @@ import org.jboss.windup.web.services.model.RegisteredApplication;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.Collection;
 
 /**
  * Contains methods for managing applications registered within Windup.
@@ -20,39 +19,9 @@ public interface RegisteredApplicationEndpoint
 {
     String REGISTERED_APPLICATIONS = "/registeredApplications";
 
-    /**
-     * Gets the list of all registered applications.
-     */
-    @Path("list")
-    @GET
-    Collection<RegisteredApplication> getRegisteredApplications();
-
     @Path("id/{id}")
     @GET
     RegisteredApplication getApplication(@PathParam("id") long id);
-
-    /**
-     * Registers a new application with Windup.
-     */
-    @Path("appGroup/{appGroupId}")
-    @POST
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces("application/json")
-    RegisteredApplication registerApplication(MultipartFormDataInput data, @PathParam("appGroupId") long appGroupId);
-
-    /**
-     * Registers a new application with Windup by its path on the server.
-     */
-    @Path("register-path/{appGroupId}")
-    @POST
-    RegisteredApplication registerApplicationByPath(@PathParam("appGroupId") long appGroupId, @Valid RegisteredApplication application);
-
-    /**
-     * Registers all applications found in directory path on the server.
-     */
-    @Path("register-directory-path/{appGroupId}")
-    @POST
-    Collection<RegisteredApplication> registerApplicationsInDirectoryByPath(@PathParam("appGroupId") long appGroupId, String directoryPath);
 
     /**
      * Updates an existing application.
@@ -79,13 +48,4 @@ public interface RegisteredApplicationEndpoint
     @Path("{id}")
     @DELETE
     void deleteApplication(@PathParam("id") long appId);
-
-    /**
-     * Registers a multiple applications with Windup.
-     */
-    @Path("appGroup/{appGroupId}/multiple")
-    @POST
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces("application/json")
-    Collection<RegisteredApplication> registerMultipleApplications(MultipartFormDataInput data, @PathParam("appGroupId") long appGroupId);
 }
