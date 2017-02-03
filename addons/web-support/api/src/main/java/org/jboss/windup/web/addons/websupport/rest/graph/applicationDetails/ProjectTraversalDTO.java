@@ -1,18 +1,23 @@
 package org.jboss.windup.web.addons.websupport.rest.graph.applicationDetails;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import javax.enterprise.inject.Vetoed;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.enterprise.inject.Vetoed;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
 @Vetoed
-@JsonIgnoreProperties({"handler", "delegate"})
+@JsonIgnoreProperties({ "handler", "delegate" })
 public class ProjectTraversalDTO
 {
+    private Object id;
+    private Object currentID;
+    private Object canonicalID;
+    private String canonicalFilename;
     private String path;
     private String name;
     private String description;
@@ -25,6 +30,46 @@ public class ProjectTraversalDTO
     private List<FileDTO> files = new ArrayList<>();
     private List<ProjectTraversalDTO> children = new ArrayList<>();
     private List<DuplicateProjectDTO> duplicates = new ArrayList<>();
+
+    public Object getId()
+    {
+        return id;
+    }
+
+    public void setId(Object id)
+    {
+        this.id = id;
+    }
+
+    public Object getCurrentID()
+    {
+        return currentID;
+    }
+
+    public void setCurrentID(Object currentID)
+    {
+        this.currentID = currentID;
+    }
+
+    public Object getCanonicalID()
+    {
+        return canonicalID;
+    }
+
+    public void setCanonicalID(Object canonicalID)
+    {
+        this.canonicalID = canonicalID;
+    }
+
+    public String getCanonicalFilename()
+    {
+        return canonicalFilename;
+    }
+
+    public void setCanonicalFilename(String canonicalFilename)
+    {
+        this.canonicalFilename = canonicalFilename;
+    }
 
     public List<DuplicateProjectDTO> getDuplicates()
     {

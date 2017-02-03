@@ -5,6 +5,7 @@ import {AbstractService} from "../../../services/abtract.service";
 import {Constants} from "../../../constants";
 import {GraphJSONToModelService} from "../../../services/graph/graph-json-to-model.service";
 import {PersistedProjectModelTraversalModel} from "../../../generated/tsModels/PersistedProjectModelTraversalModel";
+import {ApplicationDetailsDTO} from "windup-services";
 
 @Injectable()
 export class ApplicationDetailsService extends AbstractService {
@@ -13,13 +14,11 @@ export class ApplicationDetailsService extends AbstractService {
         super();
     }
 
-    getApplicationDetailsData(executionId: number): Observable<PersistedProjectModelTraversalModel[]> {
+    getApplicationDetailsData(executionId: number): Observable<ApplicationDetailsDTO> {
         let url = `${Constants.GRAPH_REST_BASE}/graph/application-details/${executionId}`;
-        let service = new GraphJSONToModelService();
 
         return this._http.get(url)
             .map(res => res.json())
-            .map(res => <PersistedProjectModelTraversalModel[]>res.map((json) => service.fromJSON(json, this._http)))
             .catch(this.handleError);
     }
 }

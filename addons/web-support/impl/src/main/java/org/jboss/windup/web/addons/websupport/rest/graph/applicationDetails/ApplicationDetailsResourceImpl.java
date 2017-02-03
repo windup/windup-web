@@ -56,13 +56,19 @@ public class ApplicationDetailsResourceImpl extends AbstractGraphResource implem
 
     private void serializeProjectMetadata(ProjectTraversalDTO traversalDTO, PersistedProjectModelTraversalModel traversal)
     {
+        ProjectModel current = traversal.getCurrentProject();
         ProjectModel canonical = traversal.getCanonicalProject();
+        traversalDTO.setId(traversal.asVertex().getId());
+        traversalDTO.setCurrentID(current.asVertex().getId());
+        traversalDTO.setCanonicalID(canonical.asVertex().getId());
+
         FileModel rootFileModel = canonical.getRootFileModel();
         if (rootFileModel != null)
         {
             traversalDTO.setSha1(rootFileModel.getSHA1Hash());
         }
         traversalDTO.setName(canonical.getName());
+        traversalDTO.setCanonicalFilename(rootFileModel.getFileName());
         traversalDTO.setPath(traversal.getPath());
         traversalDTO.setOrganization(canonical.getOrganization());
         traversalDTO.setUrl(canonical.getURL());
@@ -82,6 +88,7 @@ public class ApplicationDetailsResourceImpl extends AbstractGraphResource implem
 
             FileModel fileModel = traversalFileModel.getFileModel();
             fileDTO.setFileModelVertexID(fileModel.asVertex().getId());
+            fileDTO.setFilePath(traversalFileModel.getFilePath());
             if (fileModel instanceof JavaSourceFileModel)
             {
                 JavaSourceFileModel javaSourceModel = (JavaSourceFileModel)fileModel;
@@ -146,10 +153,13 @@ public class ApplicationDetailsResourceImpl extends AbstractGraphResource implem
     private void serializeTraversal(ApplicationDetailsDTO applicationDetails, ProjectTraversalDTO parent, PersistedProjectModelTraversalModel traversal)
     {
         ProjectTraversalDTO traversalDTO = new ProjectTraversalDTO();
+        // Add it to a parent if one exists, otherwise add it to the details
         if (parent != null)
             parent.getChildren().add(traversalDTO);
+        else
+            applicationDetails.getTraversals().add(traversalDTO);
 
-        applicationDetails.getTraversals().add(traversalDTO);
+
         serializeProjectMetadata(traversalDTO, traversal);
 
         serializeChildFiles(applicationDetails, traversalDTO, traversal);
