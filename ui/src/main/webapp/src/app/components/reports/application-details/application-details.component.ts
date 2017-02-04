@@ -42,6 +42,8 @@ export class ApplicationDetailsComponent implements OnInit {
      */
     allProjects:ProjectTraversalDTO[] = [];
     totalPoints:number = null;
+    pointsByProject:Map<number, number> = new Map<number, number>();
+    pointsByFile:Map<number, number> = new Map<number, number>();
 
     projectsCollapsed:Map<number, boolean> = new Map<number, boolean>();
     packageFrequenciesByProject:Map<number, ChartStatistic[]> = new Map<number, ChartStatistic[]>();
@@ -71,17 +73,12 @@ export class ApplicationDetailsComponent implements OnInit {
                             this.applicationDetails = applicationDetailsDto;
                             this.rootProjects = applicationDetailsDto.traversals;
 
-                            this.allHints = [];
-                            this.applicationTree = [];
-                            this.allProjects = [];
-                            this.tagsForFile.clear();
-                            this.traversalsForCanonicalVertexID.clear();
-
                             this.createProjectTreeData(null, this.rootProjects);
                             this.flattenTraversals(this.rootProjects);
 
                             this.globalPackageUseData = this.calculateTreeDataForHints(this.allHints);
                             this.calculateTagFrequencies();
+                            this.storeTotalPoints();
                         });
                     },
                     error => this._notificationService.error(utils.getErrorMessage(error))
@@ -98,14 +95,6 @@ export class ApplicationDetailsComponent implements OnInit {
             let newOffset = element.offsetTop - 82; // Has to be offset for the fixed header for some reason.
             window.scrollTo(0, newOffset);
         }
-    }
-
-    allTagStats():ChartStatistic[] {
-        return this.tagFrequencies;
-    }
-
-    tagStatsForProject(traversal:ProjectTraversalDTO):ChartStatistic[] {
-        return this.tagFrequenciesByProject.get(traversal.id);
     }
 
     private createProjectTreeData(parentTreeData:TreeData, traversals:ProjectTraversalDTO[]) {
@@ -152,6 +141,7 @@ export class ApplicationDetailsComponent implements OnInit {
 
             this.allProjects.push(traversal);
             this.storeProjectData(traversal);
+            this.storePointsForTraversal(traversal);
         });
     }
 
@@ -338,16 +328,25 @@ export class ApplicationDetailsComponent implements OnInit {
         return result;
     }
 
-    storyPointsForFiles(traversal:ProjectTraversalDTO, files:FileDTO[]):number {
+    storePointsForTraversal(traversal:ProjectTraversalDTO) {
         let total = 0;
-        files.forEach(file => total += this.storyPoints(file));
+        traversal.files.forEach(file => {
+            let pointsForFile = this.storyPoints(file);
+            this.pointsByFile.set(file.fileModelVertexID, pointsForFile);
+            total += pointsForFile;
+        });
+        this.pointsByProject.set(traversal.canonicalID, total);
 
         if (this.projectsCollapsed.get(traversal.id) == null) {
             this.projectsCollapsed.set(traversal.id, total == 0);
-            this._changeDetectorRef.detectChanges();
         }
+    }
 
-        return total;
+    storeTotalPoints() {
+        this.totalPoints = 0;
+        this.allProjects.forEach(traversal => {
+            this.totalPoints += this.pointsByProject.get(traversal.canonicalID);
+        });
     }
 
     storyPoints(file:FileDTO):number {

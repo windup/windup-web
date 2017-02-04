@@ -49,11 +49,11 @@
                     </div>
                 </td>
                 <td>
-                    <div class="chartBoundary" *ngIf="allTagStats()?.length > 0">
+                    <div class="chartBoundary" *ngIf="tagFrequencies?.length > 0">
                         <h4>Technologies found - occurrence count</h4>
                         <ngx-charts-bar-horizontal
                                 [scheme]="colorScheme"
-                                [results]="allTagStats()"
+                                [results]="tagFrequencies"
                                 [showGridLines]="true"
                                 [xAxis]="true"
                                 [yAxis]="true"
@@ -97,7 +97,7 @@
                         [Included Multiple Times] {{ traversal.canonicalFilename }}
                     </span>
 
-                    <span class="storyPoints">(<span class="points">{{storyPointsForFiles(traversal, traversal.files)}}</span> <span class="legend">story points</span>)</span>
+                    <span class="storyPoints">(<span class="points">{{pointsByProject.get(traversal.canonicalID)}}</span> <span class="legend">story points</span>)</span>
                     <span>&nbsp;</span>
                 </h3>
             </div>
@@ -108,7 +108,7 @@
                             <td colspan="2">
                                 <!-- Points -->
                                 <div class="points">
-                                    <div class="number">{{storyPointsForFiles(traversal, traversal.files)}}</div>
+                                    <div class="number">{{pointsByProject.get(traversal.canonicalID)}}</div>
                                     <div>Story Points</div>
                                 </div>
 
@@ -174,7 +174,7 @@
                         <tr>
                             <td>
                                 <!-- Packages pie chart -->
-                                <div class="chartBoundary" *ngIf="packageFrequenciesByProject.get(traversal.id) && packageFrequenciesByProject.get(traversal.id).length > 0">
+                                <div class="chartBoundary" *ngIf="packageFrequenciesByProject?.get(traversal.id)?.length > 0">
                                     <h4>Java Incidents by Package</h4>
                                     <div class="windupPieGraph">
                                         <wu-package-chart
@@ -185,12 +185,12 @@
                                 </div>
                             </td>
                             <td>
-                                <div class="tagsBarChart chartBoundary" *ngIf="tagStatsForProject(traversal)?.length > 0">
+                                <div class="tagsBarChart chartBoundary" *ngIf="this.tagFrequenciesByProject?.get(traversal.id)?.length > 0">
                                     <h4>Technologies found - occurrence count</h4>
                                     <ngx-charts-bar-horizontal
                                             *ngIf="!isCollapsed(traversal)"
                                             [scheme]="colorScheme"
-                                            [results]="tagStatsForProject(traversal)"
+                                            [results]="this.tagFrequenciesByProject.get(traversal.id)"
                                             [showGridLines]="true"
                                             [xAxis]="true"
                                             [yAxis]="true"
@@ -215,7 +215,6 @@
                         </td>
                         <td class="tech">
                             <wu-technology-tag *ngFor="let tag of tagsForFile.get(file.fileModelVertexID)" [tag]="tag"></wu-technology-tag>
-                            <!-- wu-technology-tag *ngFor="let tag of tagsByFile.get(file.vertexId)" [tag]="tag"></wu-technology-tag -->
                             <div style="clear: both;"></div>
                         </td>
 
@@ -232,7 +231,7 @@
                         </td>
 
                         <td>
-                            {{storyPoints(file)}}
+                            {{pointsByFile.get(file.fileModelVertexID)}}
                         </td>
                     </tr>
                 </table>
