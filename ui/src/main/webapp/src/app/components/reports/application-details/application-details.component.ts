@@ -32,6 +32,7 @@ export class ApplicationDetailsComponent implements OnInit {
     applicationDetails:ApplicationDetailsDTO;
     rootProjects:ProjectTraversalDTO[] = [];
 
+    allHints:HintDTO[] = []
     globalPackageUseData:ChartStatistic[] = [];
 
     applicationTree:TreeData[] = [];
@@ -71,11 +72,15 @@ export class ApplicationDetailsComponent implements OnInit {
                             this.applicationDetails = applicationDetailsDto;
                             this.rootProjects = applicationDetailsDto.traversals;
 
+                            this.allHints = [];
                             this.applicationTree = [];
                             this.allProjects = [];
 
                             this.createProjectTreeData(null, this.rootProjects);
                             this.flattenTraversals(this.rootProjects);
+
+                            this.globalPackageUseData = this.calculateTreeDataForHints(this.allHints);
+                            this.calculateTagFrequencies();
                         });
                     },
                     error => this._notificationService.error(utils.getErrorMessage(error))
@@ -173,10 +178,12 @@ export class ApplicationDetailsComponent implements OnInit {
                 // Remove it if it doesn't match the filter
                 if (!tagFilterService.tagsMatch(tagStrings))
                     file.hintIDs.splice(file.classificationIDs.indexOf(hintID), 1);
+                else
+                    this.allHints.push(hint);
             });
 
+
             this.setPackageFrequenciesByProject(traversal, files);
-            this.calculateTagFrequencies();
         });
 
         this.flattenTraversals(traversal.children);
@@ -261,7 +268,6 @@ export class ApplicationDetailsComponent implements OnInit {
         });
 
         this.packageFrequenciesByProject.set(traversal.id, this.calculateTreeDataForHints(hints));
-
     }
 
     private calculateTreeDataForHints(hints:HintDTO[]):ChartStatistic[] {
