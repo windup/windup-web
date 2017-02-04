@@ -58,6 +58,7 @@ public class ApplicationDetailsResourceImpl extends AbstractGraphResource implem
     {
         ProjectModel current = traversal.getCurrentProject();
         ProjectModel canonical = traversal.getCanonicalProject();
+
         traversalDTO.setId(traversal.asVertex().getId());
         traversalDTO.setCurrentID(current.asVertex().getId());
         traversalDTO.setCanonicalID(canonical.asVertex().getId());
@@ -159,9 +160,7 @@ public class ApplicationDetailsResourceImpl extends AbstractGraphResource implem
         else
             applicationDetails.getTraversals().add(traversalDTO);
 
-
         serializeProjectMetadata(traversalDTO, traversal);
-
         serializeChildFiles(applicationDetails, traversalDTO, traversal);
 
         for (OverviewReportLineMessageModel applicationMessage : traversal.getApplicationMessages())

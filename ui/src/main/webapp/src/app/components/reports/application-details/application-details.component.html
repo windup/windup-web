@@ -90,10 +90,10 @@
             <div class="panel-heading panel-collapsed clickable" (click)="toggleCollapsed(traversal)">
                 <span class="pull-left"><i class="glyphicon glyphicon-expand arrowIcon"></i></span>
                 <h3 class="panel-title" [ngSwitch]="">
-                    <span class="name" *ngIf="!isDuplicateProject(traversal)">
+                    <span class="name" *ngIf="!hasDuplicateProjects(traversal)">
                         {{traversal.path}}
                     </span>
-                    <span class="name" *ngIf="isDuplicateProject(traversal)">
+                    <span class="name" *ngIf="hasDuplicateProjects(traversal)">
                         [Included Multiple Times] {{ traversal.canonicalFilename }}
                     </span>
 
@@ -159,11 +159,11 @@
                                             <th>Description</th>
                                             <td>{{traversal.description}}</td>
                                         </tr>
-                                        <tr *ngIf="isDuplicateProject(traversal)">
+                                        <tr *ngIf="hasDuplicateProjects(traversal)">
                                             <th>Duplicates</th>
                                             <td>
-                                                <div *ngFor="let path of traversal?.duplicates?.duplicatePaths">
-                                                    {{path}}
+                                                <div *ngFor="let duplicate of traversalsForCanonicalVertexID.get(traversal.canonicalID).sort(compareTraversals)">
+                                                    {{duplicate.path}}
                                                 </div>
                                             </td>
                                         </tr>
@@ -214,7 +214,7 @@
                             </a>
                         </td>
                         <td class="tech">
-                            <wu-technology-tag *ngFor="let tag of tagDTOsToTechnologyTags(file.tags)" [tag]="tag"></wu-technology-tag>
+                            <wu-technology-tag *ngFor="let tag of tagsForFile.get(file.fileModelVertexID)" [tag]="tag"></wu-technology-tag>
                             <!-- wu-technology-tag *ngFor="let tag of tagsByFile.get(file.vertexId)" [tag]="tag"></wu-technology-tag -->
                             <div style="clear: both;"></div>
                         </td>

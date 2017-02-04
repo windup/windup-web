@@ -14,8 +14,6 @@ import {ProjectTraversalDTO} from "windup-services";
 import {ApplicationDetailsDTO} from "windup-services";
 import {FileDTO} from "windup-services";
 import {HintDTO} from "windup-services";
-import {TagDTO} from "windup-services";
-import {TechnologyTag} from "../technology-tag/technology-tag.component";
 
 @Component({
     templateUrl: './application-details.component.html',
@@ -31,10 +29,11 @@ export class ApplicationDetailsComponent implements OnInit {
     private group:ApplicationGroup;
     applicationDetails:ApplicationDetailsDTO;
     rootProjects:ProjectTraversalDTO[] = [];
+    traversalsForCanonicalVertexID:Map<number, ProjectTraversalDTO[]> = new Map<number, ProjectTraversalDTO[]>();
+    tagsForFile:Map<number, {name:string, level:string}[]> = new Map<number, {name:string, level:string}[]>();
 
-    allHints:HintDTO[] = []
+    allHints:HintDTO[] = [];
     globalPackageUseData:ChartStatistic[] = [];
-
     applicationTree:TreeData[] = [];
 
     /**
@@ -75,6 +74,8 @@ export class ApplicationDetailsComponent implements OnInit {
                             this.allHints = [];
                             this.applicationTree = [];
                             this.allProjects = [];
+                            this.tagsForFile.clear();
+                            this.traversalsForCanonicalVertexID.clear();
 
                             this.createProjectTreeData(null, this.rootProjects);
                             this.flattenTraversals(this.rootProjects);
@@ -115,7 +116,7 @@ export class ApplicationDetailsComponent implements OnInit {
                 name: traversal.path,
                 childs: [],
                 opened: true,
-                data: traversal.id
+                data: traversal.canonicalID
             };
 
             if (parentTreeData) {
@@ -136,9 +137,16 @@ export class ApplicationDetailsComponent implements OnInit {
 
         traversals.forEach(traversal => {
 
+            // Maintain a list by canonical id, so that we can display this on the canonical project
+            let traversalsForCanonicalID = this.traversalsForCanonicalVertexID.get(traversal.canonicalID);
+            if (!traversalsForCanonicalID)
+                traversalsForCanonicalID = [];
+            traversalsForCanonicalID.push(traversal);
+            traversalsForCanonicalID = traversalsForCanonicalID.sort(compareTraversals);
+            this.traversalsForCanonicalVertexID.set(traversal.canonicalID, traversalsForCanonicalID);
+
             // If these do not match, then this is not a canonical project.
             // We don't need to calculate points for this.
-            console.log("Name: " + traversal.canonicalFilename + " - cur: " + traversal.currentID + " canon: " + traversal.canonicalID);
             if (traversal.currentID != traversal.canonicalID)
                 return;
 
@@ -147,8 +155,8 @@ export class ApplicationDetailsComponent implements OnInit {
         });
     }
 
-    private isDuplicateProject(traversal:ProjectTraversalDTO):boolean {
-        return traversal.currentID != traversal.canonicalID;
+    private hasDuplicateProjects(traversal:ProjectTraversalDTO):boolean {
+        return this.traversalsForCanonicalVertexID.get(traversal.canonicalID).length > 1;
     }
 
     resolveString(id:number):string {
@@ -182,9 +190,10 @@ export class ApplicationDetailsComponent implements OnInit {
                     this.allHints.push(hint);
             });
 
-
-            this.setPackageFrequenciesByProject(traversal, files);
+            // this is basically just creating a cache
+            this.storeTagsForFile(file);
         });
+        this.setPackageFrequenciesByProject(traversal, files);
 
         this.flattenTraversals(traversal.children);
     }
@@ -220,8 +229,8 @@ export class ApplicationDetailsComponent implements OnInit {
         let currentProjectMap = new Map<string, number>();
 
         traversal.files.forEach(file => {
-            file.tags.forEach(tag => {
-                let rootTags = this._tagDataService.getRootTags(this.resolveString(tag.name));
+            this.tagsForFile.get(file.fileModelVertexID).forEach(tag => {
+                let rootTags = this._tagDataService.getRootTags(tag.name);
 
                 if (!rootTags)
                     return;
@@ -251,8 +260,41 @@ export class ApplicationDetailsComponent implements OnInit {
         this.tagFrequenciesByProject.set(traversal.id, this.convertToChartStatistic(currentProjectMap));
     }
 
-    tagDTOsToTechnologyTags(tags:TagDTO[]):TechnologyTag[] {
-        return tags.map(tagDTO => { return { name: this.resolveString(tagDTO.name), level: this.resolveString(tagDTO.level) }; });
+    storeTagsForFile(file:FileDTO):{name:string, level:string}[] {
+        if(this.tagsForFile.has(file.fileModelVertexID))
+            return this.tagsForFile.get(file.fileModelVertexID);
+
+        let tags = file.tags.map(tagDTO => { return { name: this.resolveString(tagDTO.name), level: this.resolveString(tagDTO.level) }; });
+
+        file.hintIDs.map(hintID => this.applicationDetails.hints[hintID])
+            .forEach(hint => {
+                hint.tags.forEach(tag => {
+                    let tagName = this.resolveString(tag.name);
+                    if (tags.findIndex(existingTag => existingTag.name == tagName) != -1)
+                        return;
+
+                    let level = this.resolveString(tag.level);
+                    tags.push({name: tagName, level: level});
+                });
+            });
+        file.classificationIDs.map(classificationID => this.applicationDetails.classifications[classificationID])
+            .forEach(classification => {
+                classification.tags.forEach(tag => {
+                    let tagName = this.resolveString(tag.name);
+                    if (tags.findIndex(existingTag => existingTag.name == tagName) != -1)
+                        return;
+
+                    let level = this.resolveString(tag.level);
+                    tags.push({name: tagName, level: level});
+                });
+            });
+
+        tags = tags.sort((tag1, tag2) => {
+            return tag1.name.localeCompare(tag2.name);
+        });
+
+        this.tagsForFile.set(file.fileModelVertexID, tags);
+        return tags;
     }
 
     private setPackageFrequenciesByProject(traversal:ProjectTraversalDTO, files:FileDTO[]) {

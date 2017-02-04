@@ -29,7 +29,6 @@ public class ProjectTraversalDTO
 
     private List<FileDTO> files = new ArrayList<>();
     private List<ProjectTraversalDTO> children = new ArrayList<>();
-    private List<DuplicateProjectDTO> duplicates = new ArrayList<>();
 
     public Object getId()
     {
@@ -69,16 +68,6 @@ public class ProjectTraversalDTO
     public void setCanonicalFilename(String canonicalFilename)
     {
         this.canonicalFilename = canonicalFilename;
-    }
-
-    public List<DuplicateProjectDTO> getDuplicates()
-    {
-        return duplicates;
-    }
-
-    public void setDuplicates(List<DuplicateProjectDTO> duplicates)
-    {
-        this.duplicates = duplicates;
     }
 
     public String getPath()

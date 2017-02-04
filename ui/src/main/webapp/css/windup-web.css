@@ -101,6 +101,10 @@ div.tooltipLikeMessage {
     background-color: #696969;
 }
 
+.label-danger {
+    background-color: #f04124;
+}
+
 .welcome-help-text {
     padding-top: 15px;
 }
