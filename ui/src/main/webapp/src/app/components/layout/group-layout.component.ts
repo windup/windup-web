@@ -173,8 +173,8 @@ export class GroupLayoutComponent extends AbstractComponent implements OnInit, O
                 'fa-code-fork',
                 this.applicationGroup,
                 DependenciesReportComponent,
-                this._routeLinkProviderService,
-            ),
+                this._routeLinkProviderService
+            )
         ];
     }
 }

@@ -98,6 +98,7 @@ import {RuleProviderExecutionsComponent} from "./components/reports/rule-provide
 import {initializeModelMappingData} from "./generated/tsModels/discriminator-mapping-data";
 import {RouteHistoryService} from "./services/route-history.service";
 import {ChosenModule} from "./components/chosen/chosen.module";
+import {DependenciesGraphComponent} from "./components/reports/dependencies/dependencies-graph.component";
 
 /**
  * Load all mapping data from the generated files.
@@ -177,7 +178,8 @@ initializeModelMappingData();
         ReportFilterIndicatorComponent,
         TechnologyTagComponent,
         ActiveExecutionsProgressbarComponent,
-        RuleProviderExecutionsComponent
+        RuleProviderExecutionsComponent,
+        DependenciesGraphComponent
     ],
     providers: [
         appRoutingProviders,

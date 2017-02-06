@@ -13,7 +13,10 @@ import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.UriInfo;
 
 import org.jboss.windup.graph.GraphContext;
+import org.jboss.windup.graph.model.ProjectModel;
 import org.jboss.windup.graph.model.WindupVertexFrame;
+import org.jboss.windup.graph.service.ProjectService;
+import org.jboss.windup.web.addons.websupport.model.ReportFilterDTO;
 import org.jboss.windup.web.addons.websupport.rest.FurnaceRESTGraphAPI;
 import org.jboss.windup.web.addons.websupport.rest.GraphPathLookup;
 import org.jboss.windup.web.addons.websupport.services.ReportFilterService;
@@ -97,9 +100,11 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
         result.put(GraphResource.VERTICES_OUT, outVertices);
         addEdges(ctx, vertex, Direction.OUT, outVertices);
 
-        Map<String, Object> inVertices = new HashMap<>();
-        result.put(GraphResource.VERTICES_IN, inVertices);
-        addEdges(ctx, vertex, Direction.IN, inVertices);
+        if (ctx.includeInVertices) {
+            Map<String, Object> inVertices = new HashMap<>();
+            result.put(GraphResource.VERTICES_IN, inVertices);
+            addEdges(ctx, vertex, Direction.IN, inVertices);
+        }
 
         return result;
     }
@@ -116,7 +121,7 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
         List<String> whitelistedLabels = direction == Direction.OUT ? ctx.whitelistedOutEdges : ctx.whitelistedInEdges;
 
         Iterable<Edge> edges;
-        if (whitelistedLabels.isEmpty())
+        if (whitelistedLabels == null || whitelistedLabels.isEmpty())
             edges = vertex.getEdges(direction);
         else
             edges = vertex.getEdges(direction, whitelistedLabels.toArray(new String[whitelistedLabels.size()]));
@@ -198,6 +203,18 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
         if (graph == null)
             throw new IllegalStateException("GraphContext obtaining failed for exec. ID " + executionID + ", path: " + graphPath);
         return graph;
+    }
+
+    protected Set<ProjectModel> getProjectModels(GraphContext graphContext, ReportFilterDTO filter)
+    {
+        if (filter.getSelectedApplicationPaths().isEmpty())
+        {
+            return null;
+        }
+
+        ProjectService projectService = new ProjectService(graphContext);
+
+        return projectService.getFilteredProjectModels(filter.getSelectedApplicationPaths());
     }
 }
 
