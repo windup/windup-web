@@ -89,6 +89,7 @@ public class ApplicationGroupService
         original.setTitle(updatedGroup.getTitle());
         this.updateApplications(original, updatedGroup.getApplications());
 
+        this.entityManager.merge(original);
 
         return original;
     }
@@ -101,6 +102,10 @@ public class ApplicationGroupService
 
         Collection<RegisteredApplication> applications = this.getAllApplicationsByIds(selectedApplicationIds);
         group.setApplications(new HashSet<>(applications));
+        applications.forEach(application -> {
+            application.addApplicationGroup(group);
+            this.entityManager.merge(application);
+        });
 
         this.updatePackageMetadata(group, applications);
 
@@ -134,6 +139,8 @@ public class ApplicationGroupService
                                 ? PackageMetadata.ScanStatus.COMPLETE : PackageMetadata.ScanStatus.IN_PROGRESS);
 
         packageMetadata.setScanStatus(finalStatus);
+
+        this.entityManager.merge(packageMetadata);
 
         return packageMetadata;
     }
