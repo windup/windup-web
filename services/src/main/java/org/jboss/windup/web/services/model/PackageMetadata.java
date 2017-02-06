@@ -111,6 +111,12 @@ public class PackageMetadata implements Serializable
         return packages;
     }
 
+    @JsonIgnore
+    public void setPackages(Collection<Package> packages)
+    {
+        this.packages = new HashSet<>(packages);
+    }
+
     /**
      * Gets root packages
      *

@@ -155,6 +155,10 @@ public class ApplicationGroupTest extends AbstractTest
         ApplicationGroup dummyGroup = this.dataProvider.getApplicationGroup(dummyProject);
         RegisteredApplication dummyApp = this.dataProvider.getApplication(dummyProject);
 
+        dummyGroup.addApplication(dummyApp);
+
+        this.applicationGroupEndpoint.update(dummyGroup);
+
         String registeredAppTargetUri = this.target.getUri() + "/applicationGroups/" + dummyGroup.getId() + "/packages";
         ResteasyWebTarget registeredAppTarget = this.client.target(registeredAppTargetUri);
 
