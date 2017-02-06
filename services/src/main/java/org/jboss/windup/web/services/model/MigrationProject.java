@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -181,6 +182,18 @@ public class MigrationProject implements Serializable
     public void setLastModified(Calendar lastModified)
     {
         this.lastModified = lastModified;
+    }
+
+    /**
+     * Gets default group
+     */
+    public ApplicationGroup getDefaultGroup()
+    {
+        Optional<ApplicationGroup> group = this.groups.stream()
+                .filter(ApplicationGroup::isDefault)
+                .findFirst();
+
+        return group.isPresent() ? group.get() : null;
     }
 
     /**

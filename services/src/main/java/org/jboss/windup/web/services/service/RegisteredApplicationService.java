@@ -31,6 +31,7 @@ import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.addons.websupport.services.FileNameSanitizer;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.messaging.MessagingConstants;
+import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.model.PackageMetadata;
 import org.jboss.windup.web.services.model.RegisteredApplication;
@@ -208,8 +209,12 @@ public class RegisteredApplicationService
         PackageMetadata packageMetadata = new PackageMetadata();
         application.setPackageMetadata(packageMetadata);
 
+        ApplicationGroup defaultGroup = project.getDefaultGroup();
+        defaultGroup.addApplication(application);
+
         this.entityManager.persist(packageMetadata);
         this.entityManager.persist(application);
+        this.entityManager.merge(defaultGroup);
 
         return application;
     }
