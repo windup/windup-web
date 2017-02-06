@@ -28,6 +28,7 @@ import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -41,6 +42,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
  * @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
  */
 @Entity
+@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = MigrationProject.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MigrationProject implements Serializable
@@ -71,7 +73,7 @@ public class MigrationProject implements Serializable
     @Temporal(TemporalType.TIMESTAMP)
     private Calendar lastModified;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "migrationProject", cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "migrationProject", cascade = CascadeType.REMOVE)
     private Set<ApplicationGroup> groups;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "migrationProject", cascade = CascadeType.REMOVE)
