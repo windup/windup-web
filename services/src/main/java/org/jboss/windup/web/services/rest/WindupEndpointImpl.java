@@ -80,6 +80,11 @@ public class WindupEndpointImpl implements WindupEndpoint
     {
         ApplicationGroup group = this.applicationGroupService.getApplicationGroup(groupID);
 
+        if (group.getApplications().size() == 0)
+        {
+            throw new BadRequestException("Cannot execute windup on empty group");
+        }
+
         for (RegisteredApplication application : group.getApplications())
         {
             application.setReportIndexPath(null);
