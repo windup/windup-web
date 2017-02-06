@@ -4,20 +4,14 @@ import java.io.InputStream;
 
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.ExecutionState;
 import org.jboss.windup.web.services.model.MigrationProject;
+import org.jboss.windup.web.services.model.RegisteredApplication;
 import org.jboss.windup.web.services.model.WindupExecution;
 import org.jboss.windup.web.services.rest.ApplicationGroupEndpoint;
-import org.jboss.windup.web.services.rest.MigrationProjectRegisteredApplicationsEndpoint;
 import org.jboss.windup.web.services.rest.WindupEndpoint;
 import org.junit.Assert;
-
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.GenericEntity;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -43,24 +37,12 @@ public class WindupExecutionUtil
         MigrationProject project = dataProvider.getMigrationProject();
         ApplicationGroup group = dataProvider.getApplicationGroup(project);
 
-        MultipartFormDataOutput uploadData = new MultipartFormDataOutput();
-
         try (InputStream sampleIS = getClass().getResourceAsStream(DataProvider.TINY_SAMPLE_PATH))
         {
-            uploadData.addFormData("file", sampleIS, MediaType.APPLICATION_OCTET_STREAM_TYPE, "sample-tiny.war");
+            RegisteredApplication application = dataProvider.getApplication(project, sampleIS, "sample-tiny.war");
 
-            GenericEntity<MultipartFormDataOutput> entity = new GenericEntity<MultipartFormDataOutput>(uploadData) {};
-            String registeredAppTargetUri = this.target.getUri() + MigrationProjectRegisteredApplicationsEndpoint.PROJECT_APPLICATIONS
-                    .replace("{projectId}", project.getId().toString());
-            ResteasyWebTarget registeredAppTarget = this.client.target(registeredAppTargetUri);
-
-            try {
-                Response response = registeredAppTarget.request().post(Entity.entity(entity, MediaType.MULTIPART_FORM_DATA_TYPE));
-                response.close();
-            } catch (Throwable t) {
-                t.printStackTrace();
-                throw new RuntimeException("Failed to post application due to: " + t.getMessage());
-            }
+            group.addApplication(application);
+            this.applicationGroupEndpoint.update(group);
         }
 
         System.out.println("Setup Graph test, registered application and ready to start Windup analysis...");
