@@ -67,7 +67,7 @@ public class ApplicationGroup implements Serializable
     @Fetch(FetchMode.SELECT)
     private AnalysisContext analysisContext;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
     private Set<RegisteredApplication> applications;
 
