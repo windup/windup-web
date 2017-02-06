@@ -97,6 +97,8 @@ public class LibraryDependenciesService implements DependenciesService
             name = identifiedArchiveModel.getFileName();
         }
 
+        data.put("isIdentified", true);
+
         this.addFileInfo(identifiedArchiveModel, data, false);
 
         GraphNode graphNode = new GraphNode(
