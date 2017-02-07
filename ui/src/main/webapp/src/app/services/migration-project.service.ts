@@ -4,6 +4,7 @@ import {Headers, Http, RequestOptions} from '@angular/http';
 import {Constants} from "../constants";
 import {MigrationProject} from "windup-services";
 import {AbstractService} from "./abtract.service";
+import {Observable} from "rxjs";
 
 @Injectable()
 export class MigrationProjectService extends AbstractService {
@@ -69,7 +70,7 @@ export class MigrationProjectService extends AbstractService {
             .catch(this.handleError);
     }
 
-    getAll() {
+    getAll(): Observable<MigrationProject[]> {
         let headers = new Headers();
         let options = new RequestOptions({ headers: headers });
 

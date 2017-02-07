@@ -99,6 +99,8 @@ import {initializeModelMappingData} from "./generated/tsModels/discriminator-map
 import {RouteHistoryService} from "./services/route-history.service";
 import {ChosenModule} from "./components/chosen/chosen.module";
 import {DependenciesGraphComponent} from "./components/reports/dependencies/dependencies-graph.component";
+import {SortOption, SortComponent} from "./components/sort.component";
+import {SearchComponent} from "./components/search.component";
 
 /**
  * Load all mapping data from the generated files.
@@ -179,7 +181,9 @@ initializeModelMappingData();
         TechnologyTagComponent,
         ActiveExecutionsProgressbarComponent,
         RuleProviderExecutionsComponent,
-        DependenciesGraphComponent
+        DependenciesGraphComponent,
+        SortComponent,
+        SearchComponent
     ],
     providers: [
         appRoutingProviders,
