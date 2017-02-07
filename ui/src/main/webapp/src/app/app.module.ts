@@ -99,7 +99,8 @@ import {initializeModelMappingData} from "./generated/tsModels/discriminator-map
 import {RouteHistoryService} from "./services/route-history.service";
 import {ChosenModule} from "./components/chosen/chosen.module";
 import {DependenciesGraphComponent} from "./components/reports/dependencies/dependencies-graph.component";
-import {SortOption, SortComponent} from "./components/sort.component";
+import {NoProjectsWelcomeComponent} from "./components/project-list/no-projects-welcome.component";
+import {SortComponent} from "./components/sort.component";
 import {SearchComponent} from "./components/search.component";
 import {MomentModule} from "angular2-moment";
 
@@ -133,6 +134,7 @@ initializeModelMappingData();
         GroupPageComponent,
         MigrationProjectFormComponent,
         ProjectListComponent,
+        NoProjectsWelcomeComponent,
         RegisterApplicationFormComponent,
         EditApplicationFormComponent,
 

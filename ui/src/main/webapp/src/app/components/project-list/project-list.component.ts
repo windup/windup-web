@@ -9,7 +9,7 @@ import {ConfirmationModalComponent} from "../confirmation-modal.component";
 import {SortingService, OrderDirection} from "../../services/sorting.service";
 
 @Component({
-    templateUrl: 'project-list.component.html',
+    templateUrl: './project-list.component.html',
     styleUrls: [
         './project-list.component.scss',
     ],
