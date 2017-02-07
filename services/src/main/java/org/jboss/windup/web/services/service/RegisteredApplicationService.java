@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -250,6 +251,17 @@ public class RegisteredApplicationService
         if (project != null)
         {
             application.setMigrationProject(null);
+
+            Set<ApplicationGroup> groups = application.getApplicationGroups();
+
+            for (ApplicationGroup group : groups)
+            {
+                group.removeApplication(application);
+                application.removeApplicationGroup(group);
+
+                this.entityManager.merge(group);
+            }
+
             project.removeApplication(application);
             application = this.entityManager.merge(application);
 
