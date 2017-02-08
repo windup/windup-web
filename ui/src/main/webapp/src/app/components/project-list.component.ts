@@ -33,7 +33,8 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     sort = {
         sortOptions: [
             { name: 'Name', field: 'title' },
-            { name: 'Id', field: 'id' }
+            { name: 'Created date', field: 'created' },
+            { name: 'Last modified date', field: 'lastModified' }
         ],
         selectedOption: { name: 'Name', field: 'title' },
         direction: OrderDirection.ASC
