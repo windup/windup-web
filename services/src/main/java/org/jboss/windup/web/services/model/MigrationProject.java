@@ -2,9 +2,12 @@ package org.jboss.windup.web.services.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import java.io.Serializable;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,6 +18,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Version;
 import javax.persistence.CascadeType;
 import javax.validation.constraints.NotNull;
@@ -27,6 +34,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = MigrationProject.class)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class MigrationProject implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -47,12 +55,32 @@ public class MigrationProject implements Serializable
     @NotNull
     private String title;
 
+    @Column(columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable=false, updatable=false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Calendar created;
+
+    @Column(columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Calendar lastModified;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "migrationProject", cascade = CascadeType.REMOVE)
     private Set<ApplicationGroup> groups;
 
     public MigrationProject()
     {
         this.groups = new HashSet<>();
+    }
+
+    @PrePersist
+    protected void onCreate()
+    {
+        this.created = this.lastModified = new GregorianCalendar();
+    }
+
+    @PreUpdate
+    protected void onUpdated()
+    {
+        this.lastModified = new GregorianCalendar();
     }
 
     public Long getId()
@@ -117,6 +145,30 @@ public class MigrationProject implements Serializable
     public void removeGroup(ApplicationGroup group)
     {
         this.groups.remove(group);
+    }
+
+    /**
+     * Contains creation date
+     */
+    public Calendar getCreated()
+    {
+        return created;
+    }
+
+    /**
+     * Contains date of last modification
+     */
+    public Calendar getLastModified()
+    {
+        return lastModified;
+    }
+
+    /**
+     * Sets date of last modification
+     */
+    public void setLastModified(Calendar lastModified)
+    {
+        this.lastModified = lastModified;
     }
 
     @Override
