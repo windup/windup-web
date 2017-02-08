@@ -20,6 +20,13 @@ import {SortingService, OrderDirection} from "../../services/sorting.service";
 export class ProjectListComponent implements OnInit, OnDestroy {
     private _originalProjects: MigrationProject[] = [];
 
+    get totalProjectCount():number {
+        if (this._originalProjects == null)
+            return 0;
+
+        return this._originalProjects.length;
+    }
+
     public projects: MigrationProject[] = [];
 
     @ViewChild('deleteProjectModal')

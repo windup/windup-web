@@ -1,6 +1,6 @@
-<wu-no-projects-welcome *ngIf="projects?.length == 0" (newProject)="createMigrationProject()"></wu-no-projects-welcome>
+<wu-no-projects-welcome *ngIf="totalProjectCount == 0" (newProject)="createMigrationProject()"></wu-no-projects-welcome>
 
-<template [ngIf]="projects?.length > 0">
+<template [ngIf]="totalProjectCount > 0">
     <div class="projects-list-page">
         <div class="projects-header">
             <div class="projects-bar">
@@ -26,6 +26,10 @@
         </div>
 
         <div class="list-group list-view-pf projects-list">
+            <div *ngIf="projects?.length == 0" class="no-matches">
+                -- No Matching Projects --
+            </div>
+
             <div *ngFor="let project of projects" class="list-group-item project-info tile-click" (click)="viewProject($event, project)">
                 <div class="list-view-pf-main-info">
                     <div class="list-view-pf-description">
