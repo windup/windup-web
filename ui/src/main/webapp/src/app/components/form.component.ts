@@ -2,7 +2,7 @@ import {NgControl} from "@angular/forms";
 import {utils} from "../utils";
 
 export class FormComponent {
-    errorMessages:string[];
+    errorMessages: string[] = [];
 
     constructor() {
     }
@@ -24,15 +24,17 @@ export class FormComponent {
     handleError(error:any) {
         this.errorMessages = [];
         if (!error) {
-            this.errorMessages.push("Server call failed!");
-        } else if (error.parameterViolations) {
+            this.errorMessages.push("Server call failed.");
+        }
+        else if (error.parameterViolations) {
             error.parameterViolations.forEach(violation => {
                 console.log("Violation: " + JSON.stringify(violation));
                 this.errorMessages.push(violation.message);
             });
-        } else {
+        }
+        else {
             if (error instanceof ProgressEvent)
-                this.errorMessages.push("Server connection failed!");
+                this.errorMessages.push("Server connection failed.");
             else
                 this.errorMessages.push("Error: " + utils.getErrorMessage(error));
         }
