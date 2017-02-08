@@ -1,4 +1,4 @@
-<ol class="breadcrumb">
+<ol class="breadcrumb" *ngIf="breadCrumbLinks?.length > 1">
     <li *ngFor="let link of breadCrumbLinks" [ngClass]="{'active': last}">
         <a *ngIf="!last" [routerLink]="link.route">{{link.name}}</a>
         <span *ngIf="last">{{link.name}}</span>
