@@ -6,6 +6,8 @@ var ContextReplacementPlugin = webpack.ContextReplacementPlugin;
 var DedupePlugin = webpack.optimize.DedupePlugin;
 var CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin;
 var helpers = require('./helpers');
+var ngtools = require('@ngtools/webpack');
+var AotPlugin = ngtools.AotPlugin;
 
 module.exports = {
     entry: {
@@ -23,7 +25,7 @@ module.exports = {
             {
                 test: /\.ts$/,
                 exclude: /jquery*\.js/,
-                loaders: ['awesome-typescript-loader', 'angular2-template-loader']
+                loaders: '@ngtools/webpack'
             },
             {
                 test: /\.html$/,
@@ -41,7 +43,7 @@ module.exports = {
             {
                 test: /\.css$/,
                 exclude: helpers.root('src', 'app'),
-                loader: ExtractTextPlugin.extract({ fallbackLoader: 'style-loader', loader: ['css-loader?sourceMap'], publicPath: '../' })
+                loader: ExtractTextPlugin.extract({ fallback: 'style-loader', loader: ['css-loader?sourceMap'], publicPath: '../' })
             },
             {
                 test: /\.scss$/,
@@ -94,7 +96,17 @@ module.exports = {
             /angular(\\|\/)core(\\|\/)(esm(\\|\/)src|src)(\\|\/)linker/,
             helpers.root('./src'), // location of your src
             {} // a map of your routes
-        )
+        ),
+        new AotPlugin({
+            tsConfigPath: './tsconfig.json',
+            basePath: '.',
+            mainPath: 'src/main.ts'
+        }),
+        new webpack.optimize.UglifyJsPlugin({ // https://github.com/angular/angular/issues/10618
+            mangle: {
+                keep_fnames: true
+            }
+        }),
     ],
     // TODO: Find out if it helps,
     // tried this to get jquery externally loaded into global scope using <script> tag

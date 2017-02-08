@@ -31,13 +31,12 @@ export class GraphJSONToModelService<T extends BaseModel>
     static MODE = "_mode";
     static DISCRIMINATOR = "w:winduptype";
 
-    /**
-     * @param mapping  Maps the @TypeValue strings to TS model classes.
-     */
-    constructor(private mapping: typeof DiscriminatorMapping = DiscriminatorMapping){ }
+    constructor() {
+
+    }
 
     public getTypeScriptClassByDiscriminator(discriminator: string): typeof BaseModel {
-        return this.mapping.getModelClassByDiscriminator(discriminator);
+        return DiscriminatorMapping.getModelClassByDiscriminator(discriminator);
     }
 
     /**
