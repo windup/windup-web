@@ -252,6 +252,8 @@
                                 </artifactItem>
                             </artifactItems>
                             <outputDirectory>${project.build.directory}/${project.artifactId}/WEB-INF/</outputDirectory>
+                            <overWriteReleases>true</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
                         </configuration>
                     </execution>
                 </executions>
