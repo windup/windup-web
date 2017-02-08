@@ -18,4 +18,12 @@ public interface FileEndpoint
     @POST
     @Path("pathExists")
     boolean pathExists(String path);
+
+    @POST
+    @Path("pathTargetType")
+    PathTargetType pathTargetType(String path);
+
+    enum PathTargetType {
+        FILE, DIRECTORY
+    }
 }
