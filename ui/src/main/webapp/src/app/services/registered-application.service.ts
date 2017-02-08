@@ -39,22 +39,19 @@ export class RegisteredApplicationService extends AbstractService {
         });
     }
 
-    private updateTitle(application:RegisteredApplication) {
+    private static deriveTitle(application: RegisteredApplication) {
         let path = application.inputPath;
 
-        // remove trailing slash if present
+        // Remove trailing slash if present.
         if (path.endsWith("/") || path.endsWith("\\"))
-        {
             path = path.substring(0, path.length-1);
-        }
-
-        if (path.lastIndexOf("/") != -1) {
-            application.title = path.substring(path.lastIndexOf("/") + 1);
-        } else if (path.lastIndexOf("\\") != -1) {
-            application.title = path.substring(path.lastIndexOf("\\") + 1);
-        }
-
         application.inputPath = path;
+
+        // Title = the last element of the path.
+        path = path.substring(path.lastIndexOf("/") + 1);
+        path = path.substring(path.lastIndexOf("\\") + 1);
+        application.title = path;
+
     }
 
     registerByPath(applicationGroup: ApplicationGroup, path:string):Observable<RegisteredApplication> {
@@ -66,7 +63,7 @@ export class RegisteredApplicationService extends AbstractService {
         let application = <RegisteredApplication>{};
         application.inputPath = path;
 
-        this.updateTitle(application);
+        RegisteredApplicationService.deriveTitle(application);
 
         let body = JSON.stringify(application);
 
@@ -155,7 +152,7 @@ export class RegisteredApplicationService extends AbstractService {
         headers.append('Accept', 'application/json');
         let options = new RequestOptions({ headers: headers });
 
-        this.updateTitle(application);
+        RegisteredApplicationService.deriveTitle(application);
 
         let body = JSON.stringify(application);
 

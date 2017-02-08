@@ -1,5 +1,5 @@
-import { Component, Input, OnInit, ElementRef, Renderer, NgZone, OnDestroy, AfterViewInit} from "@angular/core";
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import { Component, Input, OnInit, OnChanges, SimpleChanges, SimpleChange, ElementRef, Renderer, NgZone, OnDestroy, AfterViewInit} from "@angular/core";
+import {FormBuilder, FormControl, FormGroup, Validators, AsyncValidatorFn} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FileUploader} from "ng2-file-upload/ng2-file-upload";
 
@@ -13,8 +13,6 @@ import {FormComponent} from "./form.component";
 import {Constants} from "../constants";
 
 
-//export type AppRegisterMode = "UPLOAD" | "REGISTER_PATH";
-
 @Component({
     templateUrl: "./register-application-form.component.html"
 })
@@ -26,7 +24,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     protected multipartUploader: FileUploader;
     protected mode:              RegistrationType = "UPLOADED";
     protected fileInputPath:     string;
-    private isDirectory:       boolean = false;
+    private isDirWithApps:       boolean = false;
     protected isAllowUploadMultiple: boolean = true;
 
     protected labels = {
@@ -47,29 +45,16 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
 
     ngAfterViewInit(): any {
         $("#addAppModeTabs a").click(function (event) {
-            console.warn("tab click", this, event);
             event.preventDefault();
             $(this).tab("show");
         })
     }
 
     ngOnInit(): any {
-        /*
-	$("#addAppModeTabs  li").click(function(){
-            console.warn("tab click", this, event);
-            var tabID = $(this).attr("data-tab");
-
-            $("#addAppModeTabs li").removeClass("active");
-            $("#addAppsModeTabsContent").removeClass("active");
-
-            $(this).addClass("active");
-            $("#"+tabID).addClass("active");
-	})
-        */
-
         this.registrationForm = this._formBuilder.group({
+            // Name under which the control is registered, default value, Validator, AsyncValidator
             appPathToRegister: ["", Validators.compose([Validators.required, Validators.minLength(4)]), FileExistsValidator.create(this._fileService)],
-            isDirectory: []
+            isDirWithAppsCheckBox: [] // TODO: Validate if appPathToRegister has a directory if this is true.
         });
 
         /*
@@ -103,7 +88,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     private registerPath() {
         console.log("Registering path: " + this.fileInputPath);
 
-        if (this.isDirectory) {
+        if (this.isDirWithApps) {
             this._registeredApplicationService.registerApplicationInDirectoryByPath(this.applicationGroup, this.fileInputPath)
                 .subscribe(
                     application => this.rerouteToApplicationList(),
@@ -119,7 +104,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
 
     private registerUploaded() {
         if (this.multipartUploader.getNotUploadedItems().length == 0) {
-            this.handleError("Please select file first");
+            this.handleError("Please select the file to upload.");
             return;
         }
 
@@ -136,5 +121,9 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
 
     private cancelRegistration() {
         this.rerouteToApplicationList();
+    }
+
+    private changeMode(mode: RegistrationType){
+        this.mode = mode;
     }
 }

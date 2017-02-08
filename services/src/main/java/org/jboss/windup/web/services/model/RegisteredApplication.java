@@ -10,7 +10,9 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import javax.validation.ReportAsSingleViolation;
 import org.jboss.windup.web.services.validators.FileExistsConstraint;
+import org.jboss.windup.web.services.validators.NotBlankConstraint;
 
 /**
  * Contains an application that has been registered into Windup.
@@ -41,14 +43,14 @@ public class RegisteredApplication implements Serializable
     private RegistrationType registrationType;
 
     @Column(length = 256)
-    @Size(min = 1, max = 256)
-    @NotNull
+    @NotBlankConstraint(message = "The application title must be set.")
+    @Size(min = 1, max = 256, message = "The application title must be set and not longer than 250 characters.")
     private String title;
 
     @Column(length = 2048)
-    @Size(min = 1, max = 2048)
-    @FileExistsConstraint
-    @NotNull
+    @NotBlankConstraint(message = "The application path must be set.")
+    @FileExistsConstraint(message = "The path does not exist on the server: ${validatedValue}")
+    @Size(min = 1, max = 2048, message = "The application title path must be set and not longer than 2048 characters.")
     private String inputPath;
 
     @Column(length = 2048)
