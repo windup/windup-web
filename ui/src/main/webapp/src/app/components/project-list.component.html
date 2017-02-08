@@ -1,39 +1,63 @@
-<h1>
-    Project List
-    <button (click)="createMigrationProject()" class="btn btn-primary" type="button">Create Migration Project</button>
-</h1>
-<h3 *ngIf="errorMessage != null">{{errorMessage}}</h3>
-<table class="datatable table table-striped table-bordered">
-    <thead>
-    <tr>
-        <th>Project</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let project of projects">
-        <td class="col-md-1">
-            <a (click)="viewProject(project)">{{project.title}}</a>
-        </td>
-        <td class="col-md-1">
-            <a (click)="editProject(project)">Edit</a>
-            |
-            <a (click)="deleteProject(project)">Delete</a>
-        </td>
-    </tr>
-    </tbody>
-</table>
-<wu-confirmation-modal
-        #deleteProjectModal
-        id="delete_project"
-        title="Delete project?"
-        body="Delete project?"
-        (confirmed)="doDeleteProject(project)"
->
-</wu-confirmation-modal>
-<script>
-    // Initialize Datatables
-    $(document).ready(function () {
-        $('.datatable').dataTable();
-    });
-</script>
+<div class="projects-list-page">
+    <div class="projects-header">
+        <div class="projects-bar">
+            <h1 i18n="Project page header">Projects</h1>
+            <div class="project-options">
+                <div class="projects-search">
+                    <wu-search [searchValue]="searchValue" (searchValueChange)="updateSearch($event)"></wu-search>
+                    <span class="vertical-divider"></span>
+                    <wu-sort
+                            [sortOptions]="sort.sortOptions"
+                            [(selectedOption)]="sort.selectedOption"
+                            [(direction)]="sort.direction"
+                            (onChange)="updateSort()"
+                    ></wu-sort>
+                </div>
+                <div class="projects-add">
+                    <button (click)="createMigrationProject()" class="btn btn-primary" type="button" i18n="Create Migration Project">
+                        Create Migration Project
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="list-group list-view-pf projects-list">
+        <div *ngFor="let project of projects" class="list-group-item project-info tile-click" (click)="viewProject($event, project)">
+            <div class="list-view-pf-main-info">
+                <div class="list-view-pf-description">
+                    <div class="list-group-item-heading">
+                        <a (click)="viewProject($event, project)"><h2 class="project-title">{{project.title}}</h2></a>
+                        <!-- TODO: Add project creation date
+                        <small>
+                            Created on ....
+                        </small>
+                        -->
+                    </div>
+                </div>
+            </div>
+            <div class="project-actions">
+                <span class="fa-lg project-action-item" i18n-title="Edit project" title="Edit project">
+                    <a (click)="editProject($event, project)" class="action-button">
+                        <i class="fa fa-pencil"></i>
+                    </a>
+                </span>
+                <span class="fa-lg project-action-item" i18n-title="Delete project" title="Delete project">
+                    <a (click)="deleteProject($event, project)"  class="action-button">
+                        <i class="fa fa-trash-o"></i>
+                    </a>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <wu-confirmation-modal
+            #deleteProjectModal
+            id="delete_project"
+            title="Delete project?"
+            body="Delete project?"
+            (confirmed)="doDeleteProject(project)"
+    >
+    </wu-confirmation-modal>
+
+</div>
