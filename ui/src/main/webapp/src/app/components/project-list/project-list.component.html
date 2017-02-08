@@ -28,11 +28,12 @@
                 <div class="list-view-pf-description">
                     <div class="list-group-item-heading">
                         <a (click)="viewProject($event, project)"><h2 class="project-title">{{project.title}}</h2></a>
-                        <!-- TODO: Add project creation date
-                        <small>
-                            Created on ....
+                        <small *ngIf="!project.lastModified">
+                            Created {{project.created | amTimeAgo}}
                         </small>
-                        -->
+                        <small *ngIf="project.lastModified">
+                            Last Modified {{project.lastModified | amTimeAgo}}
+                        </small>
                     </div>
                 </div>
             </div>

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,6 +18,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
@@ -66,6 +69,18 @@ public class MigrationProject implements Serializable
     public MigrationProject()
     {
         this.groups = new HashSet<>();
+    }
+
+    @PrePersist
+    protected void onCreate()
+    {
+        this.created = this.lastModified = new GregorianCalendar();
+    }
+
+    @PreUpdate
+    protected void onUpdated()
+    {
+        this.lastModified = new GregorianCalendar();
     }
 
     public Long getId()

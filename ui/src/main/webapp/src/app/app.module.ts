@@ -9,7 +9,7 @@ import {FileSelectDirective, FileDropDirective, FileUploader} from 'ng2-file-upl
 import { AppComponent }  from './components/app.component';
 import {routing, appRoutingProviders, appRoutes} from './app.routing';
 
-import {ProjectListComponent} from "./components/project-list.component";
+import {ProjectListComponent} from "./components/project-list/project-list.component";
 import {AnalysisContextFormComponent} from "./components/analysis-context-form.component";
 import {ApplicationGroupForm} from "./components/application-group-form.component";
 import {GroupListComponent} from "./components/group-list.component";
@@ -101,6 +101,7 @@ import {ChosenModule} from "./components/chosen/chosen.module";
 import {DependenciesGraphComponent} from "./components/reports/dependencies/dependencies-graph.component";
 import {SortOption, SortComponent} from "./components/sort.component";
 import {SearchComponent} from "./components/search.component";
+import {MomentModule} from "angular2-moment";
 
 /**
  * Load all mapping data from the generated files.
@@ -117,7 +118,10 @@ initializeModelMappingData();
 
         // NGX Charts
         NgxChartsModule,
-        ChosenModule
+        ChosenModule,
+
+        // Moment
+        MomentModule
     ],
     declarations: [
         // pages
