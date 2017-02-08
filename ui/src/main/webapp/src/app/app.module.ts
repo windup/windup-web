@@ -10,7 +10,7 @@ import { AppComponent }  from './components/app.component';
 import {routing, appRoutingProviders, appRoutes} from './app.routing';
 
 import {ProjectListComponent} from "./components/project-list.component";
-import {AnalysisContextFormComponent} from "./components/analysis-context-form.component";
+import {AnalysisContextFormComponent} from "./components/analysis-context/analysis-context-form.component";
 import {ApplicationGroupForm} from "./components/application-group-form.component";
 import {GroupListComponent} from "./components/group-list.component";
 import {MigrationProjectFormComponent} from "./components/migration-project-form.component";
@@ -40,7 +40,7 @@ import {WindupHttpService} from "./services/windup.http.service";
 import {EditApplicationFormComponent} from "./components/edit-application-form.component";
 import {UploadQueueComponent} from "./components/upload/upload-queue.component";
 import {UploadProgressbarComponent} from "./components/upload/upload-progressbar.component";
-import {AnalysisContextAdvancedOptionsModalComponent} from "./components/analysis-context-advanced-options-modal.component";
+import {AnalysisContextAdvancedOptionsModalComponent} from "./components/analysis-context/analysis-context-advanced-options-modal.component";
 import {ConfigurationOptionsService} from "./services/configuration-options.service";
 import {ModalDialogComponent} from "./components/modal-dialog.component";
 import {NotificationService} from "./services/notification.service";

@@ -10,7 +10,7 @@ import 'jstree';
  * Wrapper for jstree from: https://www.jstree.com/
  */
 @Component({
-    templateUrl: './js-tree-angular-wrapper.component.html',
+    template: '<div></div>',
     selector: 'wu-js-tree-wrapper'
 })
 export class JsTreeAngularWrapperComponent implements OnInit, OnChanges {
@@ -110,7 +110,7 @@ export class JsTreeAngularWrapperComponent implements OnInit, OnChanges {
             },
             'checkbox': {
                 'tie_selection': false,
-                'cascade': 'undetermined+down',
+                'cascade': 'undetermined',
                 'three_state': false
             }
         });
