@@ -25,11 +25,11 @@
             </div>
         </div>
 
-        <div class="list-group list-view-pf projects-list">
-            <div *ngIf="projects?.length == 0" class="no-matches">
-                -- No Matching Projects --
-            </div>
+        <div *ngIf="projects?.length == 0" class="no-matches">
+            The current filter is hiding all projects. <a action (click)="updateSearch('')">Clear filter</a>
+        </div>
 
+        <div *ngIf="projects?.length > 0" class="list-group list-view-pf projects-list">
             <div *ngFor="let project of projects" class="list-group-item project-info tile-click" (click)="viewProject($event, project)">
                 <div class="list-view-pf-main-info">
                     <div class="list-view-pf-description">
