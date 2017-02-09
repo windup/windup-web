@@ -4,8 +4,12 @@
 
 <!-- Tabs -->
 <ul id="addAppModeTabs" class="nav nav-tabs">
-    <li role="presentation" class="active" (click)="changeMode('UPLOADED')"><a role="tab" data-toggle="tab" aria-controls="tabContentRegister" href="#tabContentRegister">Register local application file or directory</a></li>
-    <li role="presentation"                (click)="changeMode('PATH')"    ><a role="tab" data-toggle="tab" aria-controls="tabContentUpload"   href="#tabContentUpload">Upload application file</a></li>
+    <li role="presentation" (click)="changeMode('UPLOADED')" class="active">
+        <a role="tab" data-toggle="tab" aria-controls="tabContentRegister" href="#tabContentRegister" title="Register application file or directory located on the server">Register server path</a>
+    </li>
+    <li role="presentation" (click)="changeMode('PATH')">
+        <a role="tab" data-toggle="tab" aria-controls="tabContentUpload"   href="#tabContentUpload">Upload application file</a>
+    </li>
 </ul>
 
 
@@ -14,15 +18,15 @@
     <div id="addAppsModeTabsContent" class="tab-content">
         <!-- Register tab panel -->
         <div role="tabpanel" id="tabContentRegister" class="tab-pane fade in active">
-            <div class="form-group">
-                <div class="col-md-10 description">
-                    <div class="alert alert-info">
-                        This registers the application which is accessible on the server where Windup runs.
+            <div class="row description">
+                <div class="col-md-10">
+                    <div class="alert">
+                        <!-- Register an application which is accessible on the server where Windup runs. -->
+                        Enter the server path containing your project applications to register in Windup.
                     </div>
                 </div>
             </div>
             <div class="form-group" [ngClass]="{'has-error': hasError(registrationForm.get('appPathToRegister'))}">
-                <label class="col-md-2 control-label" for="appPathToRegister">Local application file</label>
                 <div class="col-md-10">
                     <input  [(ngModel)]="fileInputPath" id="appPathToRegister" formControlName="appPathToRegister"
                             type="text"
@@ -33,13 +37,13 @@
                 </div>
             </div>
             <div class="form-group"  *ngIf="isAllowUploadMultiple">
-                <div class="col-md-offset-2 col-sm-10">
+                <div class="col-md-10">
                     <div class="checkbox">
                         <label>
                             <input [(ngModel)]="isDirWithApps" formControlName="isDirWithAppsCheckBox" type="checkbox">
-                            Create new applications from files in this directory
+                            If the given path is a directory, each contained file will be treated as an application.
                         </label>
-                        <div class="description">Given path may be a directory, in which case each file in that directory are treated as an application.</div>
+                        <div class="description">Otherwise, the whole directory will be treated as an unzipped application.</div>
                     </div>
                 </div>
             </div>
@@ -54,20 +58,25 @@
         <!-- Upload tab panel -->
         <div role="tabpanel" id="tabContentUpload" class="tab-pane fade">
 
-            <div class="form-group">
-                <div class="col-md-10 description">
-                    <div class="alert alert-info">
+            <div class="row description">
+                <div class="col-md-10">
+                    <div class="alert">
                         Here you can upload an application to analyze it on the Windup server.
                     </div>
                 </div>
             </div>
 
-            <div class="form-group" [ngClass]="{'has-error': hasError(registrationForm.get('fileUpload'))}">
-                <label class="col-md-2 control-label" for="fileUpload">Application to upload</label>
-                <div class="col-md-8">
-                    <input id="fileUpload" type="file" [attr.multiple]="isAllowUploadMultiple ? true : null" ng2FileSelect [uploader]="multipartUploader" class="form-control" name="files" />
-                    <div ng2FileDrop [uploader]="multipartUploader" style="border: dotted 3px lightgray;" class="well">
-                        <strong>Drop files here</strong>
+            <div class="form-group" [ngClass]="{'has-error': hasError(registrationForm.get('fileUpload'))}" style="margin-bottom: 0;">
+                <div class="col-md-10">
+                    <label class="btn btn-primary">
+                        <input id="fileUpload" type="file" ng2FileSelect class="form-control" name="files"
+                               [attr.multiple]="isAllowUploadMultiple ? true : null"
+                               [uploader]="multipartUploader"
+                               style="position: fixed; top: -10000px;">
+                        <span>Select a file to upload...</span>
+                    </label>
+                    <div ng2FileDrop [uploader]="multipartUploader" style="border: dotted 3px lightgray;" class="well filesDropArea" style="border: 2px dashed lightgray; background-color: #FAFAFA">
+                        <strong>...or drag and drop the files here.</strong>
                     </div>
                 </div>
             </div>

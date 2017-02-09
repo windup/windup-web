@@ -14,7 +14,33 @@ import {Constants} from "../constants";
 
 
 @Component({
-    templateUrl: "./register-application-form.component.html"
+    templateUrl: "./register-application-form.component.html",
+    styles: [`
+        ul#addAppModeTabs.nav.nav-tabs  {
+            font-size: 16px;
+            background: none;
+            border: none;
+            border-bottom: 1px solid silver;
+        }
+        ul#addAppModeTabs.nav.nav-tabs li {
+        }
+        ul#addAppModeTabs.nav.nav-tabs li.active {
+            border-bottom: 2px solid #0088ce;
+        }
+        ul#addAppModeTabs.nav.nav-tabs li:hover {
+            border-bottom: 2px solid #008Fd8;
+        }
+        ul#addAppModeTabs.nav.nav-tabs li.active a {
+            font-color: #0088ce;
+            background: none;
+            border: none;
+            border-bottom: 2px solid #0088ce;
+        }
+        .filesDropArea { background-color: #FDFDFD !important; border-style: dashed; }
+
+        .row.description,
+        .description .alert { margin-bottom: 0px !important; }
+    `]
 })
 export class RegisterApplicationFormComponent extends FormComponent implements OnInit, OnDestroy, AfterViewInit
 {
@@ -26,11 +52,6 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     protected fileInputPath:     string;
     private isDirWithApps:       boolean = false;
     protected isAllowUploadMultiple: boolean = true;
-
-    protected labels = {
-        heading: "Register Application",
-        submitButton: "Upload"
-    };
 
     constructor(
         protected _router: Router,

@@ -1,4 +1,4 @@
-<table class="table">
+<table class="table component-UploadQueue">
     <thead>
         <tr>
             <th>Name</th>
@@ -9,7 +9,9 @@
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let item of uploader.queue">
+        <tr *ngIf="uploader.queue.length == 0" class="noItems"><td colspan="5">No upload in progress.</td></tr>
+
+        <tr *ngFor="let item of uploader.queue"  [ngClass]="{'finishedSuccess': item.isSuccess, 'finishedCancel': item.isCancel, 'finishedError': item.isError}" >
             <td>{{ item?.file?.name }}</td>
             <td>{{ item?.file?.size / 1024 / 1024 | number:'.2' }} MB</td>
             <td>{{ getProgress(item) }}%</td>
@@ -19,12 +21,10 @@
                 <span *ngIf="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
             </td>
             <td>
-                <button type="button" class="btn btn-warning btn-xs"
-                        (click)="item.cancel()" [disabled]="!item.isUploading">
+                <button type="button" class="btn btn-warning btn-xs" (click)="item.cancel()" [disabled]="!item.isUploading">
                     <span class="glyphicon glyphicon-ban-circle"></span> Cancel
                 </button>
-                <button type="button" class="btn btn-danger btn-xs"
-                        (click)="item.remove()">
+                <button type="button" class="btn btn-danger btn-xs" (click)="item.remove()">
                     <span class="glyphicon glyphicon-trash"></span> Remove
                 </button>
             </td>
