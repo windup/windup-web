@@ -27,7 +27,9 @@
         </div>
         <div class="form-group">
             <div class="col-md-10 col-md-offset-2">
-                <button class="btn btn-primary" type="submit" [disabled]="!projectForm.form.valid">Save</button>
+                <button class="btn btn-primary" type="submit" [disabled]="!projectForm.form.valid">
+                    {{isInWizard ? 'Next' : 'Save'}}
+                </button>
                 <button (click)="cancel()" type="button" class="btn btn-default">Cancel</button>
             </div>
         </div>

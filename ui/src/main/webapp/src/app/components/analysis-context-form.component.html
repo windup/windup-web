@@ -64,10 +64,10 @@
         </div>
         <div class="form-group">
             <div class="col-md-10 col-md-offset-2">
-                <button [disabled]="!analysisContextForm.form.valid" class="btn btn-primary" type="submit">Save</button>
+                <button *ngIf="isInWizard" [disabled]="!analysisContextForm.form.valid" class="btn btn-primary" (click)="saveAndRun()">Save & Run</button>
+                <button [disabled]="!analysisContextForm.form.valid" class="btn btn-primary" (click)="save()">Save</button>
                 <button (click)="cancel()" type="button" class="btn btn-default">Cancel</button>
             </div>
         </div>
-
     </div>
 </form>

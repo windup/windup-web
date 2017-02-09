@@ -7,6 +7,7 @@ import {FileExistsValidator} from "../validators/file-exists.validator";
 import {FileService} from "../services/file.service";
 import {Constants} from "../constants";
 import {RegisterApplicationFormComponent} from "./register-application-form.component";
+import {RouteFlattenerService} from "../services/route-flattener.service";
 
 @Component({
     templateUrl: './register-application-form.component.html'
@@ -18,9 +19,10 @@ export class EditApplicationFormComponent extends RegisterApplicationFormCompone
         _activatedRoute: ActivatedRoute,
         _fileService:FileService,
         _registeredApplicationService:RegisteredApplicationService,
-        _formBuilder: FormBuilder
+        _formBuilder: FormBuilder,
+        _routeFlattener: RouteFlattenerService
     ) {
-        super(_router, _activatedRoute, _fileService, _registeredApplicationService, _formBuilder);
+        super(_router, _activatedRoute, _fileService, _registeredApplicationService, _formBuilder, _routeFlattener);
         this.multipartUploader = _registeredApplicationService.getMultipartUploader();
     }
 
