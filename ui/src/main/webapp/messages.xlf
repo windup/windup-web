@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en" datatype="plaintext" original="ng2.template">
+    <body>
+      <trans-unit id="d2a7deb7096cada2c3177157652680fe7e6de0ed" datatype="html">
+        <source>Projects</source>
+        <target/>
+        <note priority="1" from="description">Project page header</note>
+      </trans-unit>
+      <trans-unit id="c600cf4dc08f1269fa9745bfc5c94c548ec7203e" datatype="html">
+        <source>
+                            Create Migration Project
+                        </source>
+        <target/>
+        <note priority="1" from="description">Create Migration Project</note>
+      </trans-unit>
+      <trans-unit id="b50b492392bbd579b8b38f3833b1ed18e1c6bd7d" datatype="html">
+        <source>Edit project</source>
+        <target/>
+        <note priority="1" from="description">Edit project</note>
+      </trans-unit>
+      <trans-unit id="210ca341161aa287ee75d40bbb819947c5a6f90c" datatype="html">
+        <source>Delete project</source>
+        <target/>
+        <note priority="1" from="description">Delete project</note>
+      </trans-unit>
+      <trans-unit id="cf06e739e997b44712246f7b4638c6b0aab6b833" datatype="html">
+        <source>Sort by</source>
+        <target/>
+        <note priority="1" from="description">Label for sorting options</note>
+        <note priority="1" from="meaning">Sort by</note>
+      </trans-unit>
+      <trans-unit id="7e892ba15f2c6c17e83510e273b3e10fc32ea016" datatype="html">
+        <source>Search</source>
+        <target/>
+        <note priority="1" from="description">Search label</note>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

@@ -4,6 +4,14 @@
   version "2.4.6"
   resolved "https://registry.yarnpkg.com/@angular/common/-/common-2.4.6.tgz#f005528f75d0a6deaaf636f3b779f26bda4adb07"
 
+"@angular/compiler-cli":
+  version "2.4.6"
+  resolved "https://registry.yarnpkg.com/@angular/compiler-cli/-/compiler-cli-2.4.6.tgz#7a34a3114b67ba9f42cb5d65eb81c9cffd54583f"
+  dependencies:
+    "@angular/tsc-wrapped" "0.5.2"
+    minimist "^1.2.0"
+    reflect-metadata "^0.1.2"
+
 "@angular/compiler@^2.4.5":
   version "2.4.6"
   resolved "https://registry.yarnpkg.com/@angular/compiler/-/compiler-2.4.6.tgz#17236b858f5730eed257d93e90bcbae45e21e0fe"
@@ -28,9 +36,21 @@
   version "2.4.6"
   resolved "https://registry.yarnpkg.com/@angular/platform-browser/-/platform-browser-2.4.6.tgz#ded44169d4a870d5ee40e95496d34e9ab03c2c3a"
 
+"@angular/platform-server":
+  version "2.4.6"
+  resolved "https://registry.yarnpkg.com/@angular/platform-server/-/platform-server-2.4.6.tgz#753a60866583e0469532719a3d0b92d0763bcef9"
+  dependencies:
+    parse5 "^2.2.1"
+
 "@angular/router@^3.4.5":
   version "3.4.6"
   resolved "https://registry.yarnpkg.com/@angular/router/-/router-3.4.6.tgz#df708503f2006a090a2704f5490a9ea1ba9fc9d0"
+
+"@angular/tsc-wrapped@0.5.2":
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/@angular/tsc-wrapped/-/tsc-wrapped-0.5.2.tgz#2eddf472c467fcb334ea94deddaaa71990c5a482"
+  dependencies:
+    tsickle "^0.2"
 
 "@angularclass/hmr-loader@^3.0.2":
   version "3.0.2"
@@ -516,16 +536,17 @@ autoprefixer@^6.3.1, autoprefixer@^6.3.2:
     postcss "^5.2.11"
     postcss-value-parser "^3.2.3"
 
-awesome-typescript-loader@^2.2.4:
-  version "2.2.4"
-  resolved "https://registry.yarnpkg.com/awesome-typescript-loader/-/awesome-typescript-loader-2.2.4.tgz#4185d60c035c25515f9c2a747fa5f69b2a001e9e"
+awesome-typescript-loader@3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/awesome-typescript-loader/-/awesome-typescript-loader-3.0.3.tgz#83884dcd19eb7054b638bb34328fec9584783dde"
   dependencies:
     colors "^1.1.2"
-    enhanced-resolve "^2.2.2"
-    loader-utils "^0.2.6"
-    lodash "^4.13.1"
-    object-assign "^4.1.0"
-    source-map-support "^0.4.0"
+    enhanced-resolve "^3.1.0"
+    loader-utils "^0.2.16"
+    lodash "^4.17.4"
+    mkdirp "^0.5.1"
+    object-assign "^4.1.1"
+    source-map-support "^0.4.11"
 
 aws-sign2@~0.6.0:
   version "0.6.0"
@@ -1924,16 +1945,7 @@ engine.io@1.6.10:
     engine.io-parser "1.2.4"
     ws "1.0.1"
 
-enhanced-resolve@^2.2.2:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/enhanced-resolve/-/enhanced-resolve-2.3.0.tgz#a115c32504b6302e85a76269d7a57ccdd962e359"
-  dependencies:
-    graceful-fs "^4.1.2"
-    memory-fs "^0.3.0"
-    object-assign "^4.0.1"
-    tapable "^0.2.3"
-
-enhanced-resolve@^3.0.0:
+enhanced-resolve@^3.0.0, enhanced-resolve@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/enhanced-resolve/-/enhanced-resolve-3.1.0.tgz#9f4b626f577245edcf4b2ad83d86e17f4f421dec"
   dependencies:
@@ -3354,7 +3366,7 @@ loader-runner@^2.2.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/loader-runner/-/loader-runner-2.3.0.tgz#f482aea82d543e07921700d5a46ef26fdac6b8a2"
 
-loader-utils@^0.2.15, loader-utils@^0.2.16, loader-utils@^0.2.5, loader-utils@^0.2.6, loader-utils@^0.2.7, loader-utils@~0.2.2, loader-utils@~0.2.5, loader-utils@0.2.x, loader-utils@0.x.x:
+loader-utils@^0.2.15, loader-utils@^0.2.16, loader-utils@^0.2.5, loader-utils@^0.2.7, loader-utils@~0.2.2, loader-utils@~0.2.5, loader-utils@0.2.x, loader-utils@0.x.x:
   version "0.2.16"
   resolved "https://registry.yarnpkg.com/loader-utils/-/loader-utils-0.2.16.tgz#f08632066ed8282835dff88dfb52704765adee6d"
   dependencies:
@@ -3613,7 +3625,7 @@ lodash@^3.8.0:
   version "3.10.1"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-3.10.1.tgz#5bf45e8e49ba4189e17d482789dfd15bd140b7b6"
 
-lodash@^4.0.0, lodash@^4.0.1, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.17.2, lodash@^4.17.3, lodash@^4.3.0, lodash@^4.5.0:
+lodash@^4.0.0, lodash@^4.0.1, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.17.2, lodash@^4.17.3, lodash@^4.17.4, lodash@^4.3.0, lodash@^4.5.0:
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
@@ -3693,13 +3705,6 @@ math-expression-evaluator@^1.2.14:
 media-typer@0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/media-typer/-/media-typer-0.3.0.tgz#8710d7af0aa626f8fffa1ce00168545263255748"
-
-memory-fs@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/memory-fs/-/memory-fs-0.3.0.tgz#7bcc6b629e3a43e871d7e29aca6ae8a7f15cbb20"
-  dependencies:
-    errno "^0.1.3"
-    readable-stream "^2.0.1"
 
 memory-fs@^0.4.0, memory-fs@~0.4.1:
   version "0.4.1"
@@ -4084,7 +4089,7 @@ object-assign@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-3.0.0.tgz#9bedd5ca0897949bca47e7ff408062d549f587f2"
 
-object-assign@^4.0.1, object-assign@^4.1.0, object-assign@4.x.x:
+object-assign@^4.0.1, object-assign@^4.1.0, object-assign@^4.1.1, object-assign@4.x.x:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
 
@@ -4234,6 +4239,10 @@ parse-json@^2.1.0, parse-json@^2.2.0:
   resolved "https://registry.yarnpkg.com/parse-json/-/parse-json-2.2.0.tgz#f480f40434ef80741f8469099f8dea18f55a4dc9"
   dependencies:
     error-ex "^1.2.0"
+
+parse5@^2.2.1:
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/parse5/-/parse5-2.2.3.tgz#0c4fc41c1000c5e6b93d48b03f8083837834e9f6"
 
 parsejson@0.0.1:
   version "0.0.1"
@@ -4970,7 +4979,7 @@ reduce-function-call@^1.0.1:
   dependencies:
     balanced-match "^0.4.2"
 
-reflect-metadata@^0.1.3:
+reflect-metadata@^0.1.2, reflect-metadata@^0.1.3:
   version "0.1.9"
   resolved "https://registry.yarnpkg.com/reflect-metadata/-/reflect-metadata-0.1.9.tgz#987238dc87a516895fe457f130435ffbd763a4d4"
 
@@ -5409,7 +5418,7 @@ source-list-map@^0.1.4, source-list-map@~0.1.7:
   version "0.1.8"
   resolved "https://registry.yarnpkg.com/source-list-map/-/source-list-map-0.1.8.tgz#c550b2ab5427f6b3f21f5afead88c4f5587b2106"
 
-source-map-support@^0.4.0, source-map-support@~0.4.0:
+source-map-support@^0.4.11, source-map-support@^0.4.2, source-map-support@~0.4.0:
   version "0.4.11"
   resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.4.11.tgz#647f939978b38535909530885303daf23279f322"
   dependencies:
@@ -5603,7 +5612,7 @@ symbol-observable@^1.0.1:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/symbol-observable/-/symbol-observable-1.0.4.tgz#29bf615d4aa7121bdd898b22d4b3f9bc4e2aa03d"
 
-tapable@^0.2.3, tapable@^0.2.5, tapable@~0.2.5:
+tapable@^0.2.5, tapable@~0.2.5:
   version "0.2.6"
   resolved "https://registry.yarnpkg.com/tapable/-/tapable-0.2.6.tgz#206be8e188860b514425375e6f1ae89bfb01fd8d"
 
@@ -5723,6 +5732,15 @@ ts-helpers@^1.1.1:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/ts-helpers/-/ts-helpers-1.1.2.tgz#fc69be9f1f3baed01fb1a0ef8d4cfe748814d835"
 
+tsickle@^0.2:
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/tsickle/-/tsickle-0.2.6.tgz#ad4abf92e74ebdf3fb5aa187ca85b02066fe1a1b"
+  dependencies:
+    minimist "^1.2.0"
+    mkdirp "^0.5.1"
+    source-map "^0.5.6"
+    source-map-support "^0.4.2"
+
 tslint-loader@^2.1.0:
   version "2.1.5"
   resolved "https://registry.yarnpkg.com/tslint-loader/-/tslint-loader-2.1.5.tgz#77abdfd9bf13d7133a6efa4447a1690783c4bb49"
@@ -5794,13 +5812,17 @@ typedoc@^0.4.4:
     typedoc-default-themes "^0.4.0"
     typescript "1.8.10"
 
-typescript@^2.0.3, typescript@2.1.1:
+typescript@^2.0.3:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.1.1.tgz#41c2b64472f529331b2055c0424862b44ce58d42"
 
 typescript@1.8.10:
   version "1.8.10"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-1.8.10.tgz#b475d6e0dff0bf50f296e5ca6ef9fbb5c7320f1e"
+
+typescript@2.1.5:
+  version "2.1.5"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.1.5.tgz#6fe9479e00e01855247cea216e7561bafcdbcd4a"
 
 typings-core@^1.5.0:
   version "1.6.1"
