@@ -3,14 +3,22 @@ package org.jboss.windup.web.services.model;
 import java.io.Serializable;
 import java.nio.file.Paths;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.Version;
 import javax.validation.constraints.Size;
+
+import org.jboss.windup.web.services.validators.FileExistsConstraint;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import org.jboss.windup.web.services.validators.FileExistsConstraint;
 
 /**
  * Contains an application that has been registered into Windup.
@@ -41,14 +49,12 @@ public class RegisteredApplication implements Serializable
     private RegistrationType registrationType;
 
     @Column(length = 256)
-    @Size(min = 1, max = 256)
-    @NotNull
+    @Size(min = 1, max = 256, message = "The application title must be set and not longer than 250 characters.")
     private String title;
 
     @Column(length = 2048)
-    @Size(min = 1, max = 2048)
-    @FileExistsConstraint
-    @NotNull
+    @FileExistsConstraint(message = "The path does not exist on the server: ${validatedValue}")
+    @Size(min = 1, max = 2048, message = "The application title path must be set and not longer than 2048 characters.")
     private String inputPath;
 
     @Column(length = 2048)

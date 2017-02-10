@@ -2,6 +2,8 @@ package org.jboss.windup.web.services.rest;
 
 import java.io.File;
 import java.net.URL;
+import java.nio.file.Paths;
+import javax.ws.rs.Path;
 
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -50,6 +52,25 @@ public class FileEndpointTest extends AbstractTest
             Assert.assertTrue(fileEndpoint.pathExists(file.toString()));
 
             Assert.assertFalse(fileEndpoint.pathExists("filedoesntexist.notthere"));
+        }
+        finally
+        {
+            file.delete();
+        }
+    }
+
+    @Test
+    @RunAsClient
+    public void testPathTargetType() throws Exception
+    {
+        File file = File.createTempFile(FileEndpointTest.class.getSimpleName(), "testfile2");
+        try
+        {
+            Assert.assertEquals(FileEndpoint.PathTargetType.FILE, fileEndpoint.pathTargetType(file.toString()));
+            final File dir = file.getParentFile();
+            Assert.assertTrue(FileEndpointImpl.remoteUserCanQueryPath(dir.toPath()));
+            Assert.assertEquals("Should be dir: " + dir.getAbsolutePath(), FileEndpoint.PathTargetType.DIRECTORY, fileEndpoint.pathTargetType(dir.toString()));
+            Assert.assertEquals(null, fileEndpoint.pathTargetType("Doh!"));
         }
         finally
         {

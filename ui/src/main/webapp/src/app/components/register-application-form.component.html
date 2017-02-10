@@ -1,70 +1,114 @@
-<h1>{{labels.heading}}</h1>
+
+
+<h1 i18n="Add Applications to Project">Add Applications to the Project</h1>
+
+<!-- Tabs -->
+<ul id="addAppModeTabs" class="nav nav-tabs">
+    <li role="presentation" class="active">
+        <a role="tab" data-toggle="tab" aria-controls="tabContentUpload" href="#tabContentUpload" i18n-title="Upload Tab Title" i18n="Upload Tab Text" title="Upload an Application">Upload</a>
+    </li>
+    <li role="presentation">
+        <a role="tab" data-toggle="tab" aria-controls="tabContentRegister" href="#tabContentRegister" i18n-title="Register Server Path Tab Title" i18n="Register Server Path Tab Text" title="Register application file or directory located on the server">Server Path</a>
+    </li>
+</ul>
+
+
 <form [formGroup]="registrationForm" (ngSubmit)="register()"  class="form-horizontal" ng2FileDrop [uploader]="multipartUploader">
-    <div *ngFor="let errorMessage of errorMessages" class="row form-errors alert alert-danger">
-        <div class="col-md-2">&nbsp;</div>
-        <div class="col-md-10">
-            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-            {{errorMessage}}
-        </div>
-    </div>
 
-    <div [ngSwitch]="mode">
-        <div class="form-group">
-            <label class="col-md-2 control-label" for="fileUpload">Mode</label>
-            <div class="col-md-6">
-                <select [ngModel]="mode" (change)="modeChanged($event.target.value)" [ngModelOptions]="{standalone: true}">
-                    <option value="UPLOADED">Upload</option>
-                    <option value="PATH">Register Server Path</option>
-                </select>
+    <div id="addAppsModeTabsContent" class="tab-content">
+
+        <!-- Upload tab panel -->
+        <div role="tabpanel" id="tabContentUpload" class="tab-pane fade in active">
+
+            <div class="row description">
+                <div class="col-md-10">
+                    <div class="alert" i18n="Upload Description Text">
+                        Choose files to upload to your project. You can select more than one file at a time. You can
+                        also drag and drop files to start uploading.
+                    </div>
+                </div>
             </div>
-        </div>
-        <div *ngSwitchCase="'PATH'" class="form-group" [ngClass]="{'has-error': hasError(registrationForm.get('inputPath'))}">
-            <label class="col-md-2 control-label" for="fileUpload">Upload Application</label>
-            <div class="col-md-6">
-                <input
-                        [(ngModel)]="fileInputPath"
-                        formControlName="inputPath"
-                        type="text"
-                        id="textInput"
-                        class="form-control">
-                <span [class.hidden]="!hasError(registrationForm.get('inputPath'))" class="help-block">
-                    The input path must exist on the server.
-                </span>
-            </div>
-        </div>
-        <div class="form-group"  *ngIf="isMultiple && mode === 'PATH'">
-            <div class="col-sm-offset-2 col-sm-10">
-                <div class="checkbox">
-                    <label>
-                        <input
-                                [(ngModel)]="isDirectory"
-                                formControlName="isDirectory"
-                                type="checkbox">
-                        Create new applications from files in directory
+
+            <div class="form-group" [ngClass]="{'has-error': hasError(registrationForm.get('fileUpload'))}" style="margin-bottom: 0;">
+                <div class="col-md-10">
+                    <label class="btn btn-primary">
+                        <input id="fileUpload" type="file" ng2FileSelect class="form-control" name="files"
+                               [attr.multiple]="isAllowUploadMultiple ? true : null"
+                               [uploader]="multipartUploader"
+                               style="position: fixed; top: -10000px;">
+                        <span i18n>Select a file to upload...</span>
                     </label>
+                    <div ng2FileDrop [uploader]="multipartUploader" style="border: dotted 3px lightgray;" class="well filesDropArea" style="border: 2px dashed lightgray; background-color: #FAFAFA">
+                        <strong i18n>...or drag and drop the files here.</strong>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div *ngSwitchCase="'UPLOADED'" class="form-group" [ngClass]="{'has-error': hasError(registrationForm.get('fileUpload'))}">
-            <label class="col-md-2 control-label" for="fileUpload">Upload Application</label>
-            <div class="col-md-6">
-                <input id="fileUpload" type="file" [attr.multiple]="isMultiple ? true : null" ng2FileSelect [uploader]="multipartUploader" class="form-control" name="files" />
-                <div ng2FileDrop [uploader]="multipartUploader" style="border: dotted 3px lightgray;" class="well">
-                    <strong>Drop files here</strong>
+
+            <div class="form-group">
+                <div class="col-md-10">
+                    <button class="btn btn-primary" type="submit" (click)="changeMode('UPLOADED')" i18n>Save</button>
+                    <button (click)="cancelRegistration()" type="button" class="btn btn-default" i18n>Cancel</button>
                 </div>
             </div>
+
+            <div class="form-group">
+                <div class="col-md-10">
+                    <h4 i18n>Upload queue</h4>
+                    <wu-upload-queue *ngIf="isAllowUploadMultiple" [uploader]="multipartUploader"></wu-upload-queue>
+
+                    <h4 i18n>Upload progress</h4>
+                    <wu-upload-progressbar [uploader]="multipartUploader"></wu-upload-progressbar>
+                </div>
+            </div>
+
         </div>
 
-        <div *ngSwitchCase="'UPLOADED'"  class="col-md-6 col-md-offset-2">
-            <wu-upload-queue *ngIf="isMultiple" [uploader]="multipartUploader"></wu-upload-queue>
-            <wu-upload-progressbar [uploader]="multipartUploader"></wu-upload-progressbar>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-10 col-md-offset-2">
-                <button class="btn btn-primary" type="submit">{{labels.submitButton}}</button>
-                <button (click)="cancelRegistration()" type="button" class="btn btn-default">Cancel</button>
+        <!-- Register tab panel -->
+        <div role="tabpanel" id="tabContentRegister" class="tab-pane fade">
+            <div class="row description">
+                <div class="col-md-10">
+                    <div class="alert" i18n="Server Path Description">
+                        Enter the server path containing your project applications.
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" [ngClass]="{'has-error': hasError(registrationForm.get('appPathToRegister'))}">
+                <div class="col-md-10">
+                    <input  [(ngModel)]="fileInputPath" id="appPathToRegister" formControlName="appPathToRegister"
+                            type="text"
+                            class="form-control" />
+                    <span [class.hidden]="!hasError(registrationForm.get('appPathToRegister'))" class="help-block" i18n="Path Error">
+                        The input path must exist on the server.
+                    </span>
+                </div>
+            </div>
+            <div class="form-group"  *ngIf="isAllowUploadMultiple">
+                <div class="col-md-10">
+                    <div class="checkbox">
+                        <label i18n="Directory Help Text">
+                            <input [(ngModel)]="isDirWithApps" formControlName="isDirWithAppsCheckBox" type="checkbox" i18n="Directory Contains Multiple Apps">
+                            Directory Contains Multiple Apps
+                        </label>
+                        <div class="description" i18n="Directory Contains Multiple Apps Help Text">
+                            If box is checked, the given path will be treated as a directory with multiple
+                            applications. Otherwise, the path will be treated as a single application.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-10">
+                    <button class="btn btn-primary" type="submit" (click)="changeMode('PATH')" i18n>Save</button>
+                    <button (click)="cancelRegistration()" type="button" class="btn btn-default" i18n>Cancel</button>
+                </div>
             </div>
         </div>
     </div>
+
+    <!-- Errors -->
+    <div *ngFor="let errorMessage of errorMessages" class="form-errors alert alert-danger">
+        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+        {{errorMessage}}
+    </div>
+
 </form>

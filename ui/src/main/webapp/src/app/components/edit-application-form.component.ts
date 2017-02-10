@@ -1,8 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {FormBuilder, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
-import {FileUploader} from "ng2-file-upload/ng2-file-upload";
-import {RegisteredApplication} from "windup-services";
+import {RegisteredApplication, RegistrationType} from "windup-services";
 import {RegisteredApplicationService} from "../services/registered-application.service";
 import {FileExistsValidator} from "../validators/file-exists.validator";
 import {FileService} from "../services/file.service";
@@ -13,8 +12,6 @@ import {RegisterApplicationFormComponent} from "./register-application-form.comp
     templateUrl: './register-application-form.component.html'
 })
 export class EditApplicationFormComponent extends RegisterApplicationFormComponent implements OnInit {
-    application: RegisteredApplication;
-    multipartUploader: FileUploader;
 
     constructor(
         _router:Router,
@@ -27,22 +24,13 @@ export class EditApplicationFormComponent extends RegisterApplicationFormCompone
         this.multipartUploader = _registeredApplicationService.getMultipartUploader();
     }
 
-    modeChanged(newMode:string) {
-        this.mode = newMode;
-    }
-
     ngOnInit():any {
         super.ngOnInit();
 
-        this.isMultiple = false;
-
-        this.labels = {
-            heading: 'Update application',
-            submitButton: 'Update'
-        };
+        this.isAllowUploadMultiple = false;
 
         this.registrationForm = this._formBuilder.group({
-            inputPath: ["", Validators.compose([Validators.required, Validators.minLength(4)]), FileExistsValidator.create(this._fileService)]
+            appPathToRegister: ["", Validators.compose([Validators.required, Validators.minLength(4)]), FileExistsValidator.create(this._fileService)]
         });
 
         this._activatedRoute.data.subscribe((data: {application: RegisteredApplication}) => {
@@ -57,6 +45,7 @@ export class EditApplicationFormComponent extends RegisterApplicationFormCompone
         });
     }
 
+    // @Override
     register() {
         if (this.mode == "PATH") {
             this.application.inputPath = this.fileInputPath;
