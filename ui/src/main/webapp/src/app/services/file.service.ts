@@ -15,12 +15,7 @@ export class FileService extends AbstractService {
     }
 
     pathExists(path: string): Observable<boolean> {
-        let headers = new Headers();
-        let options = new RequestOptions({ headers: headers });
-        headers.append('Content-Type', 'application/json');
-        headers.append('Accept', 'application/json');
-
-        return this._http.post(Constants.REST_BASE + this.PATH_EXISTS_URL, path, options)
+        return this._http.post(Constants.REST_BASE + this.PATH_EXISTS_URL, path, this.JSON_OPTIONS)
             .map(res => <boolean> res.json())
             .catch(this.handleError);
     }
