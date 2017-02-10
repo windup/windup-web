@@ -94,6 +94,10 @@ export class GroupPageComponent extends ExecutionsMonitoringComponent implements
     }
 
     deleteApplication(application: RegisteredApplication) {
-        this._registeredApplicationsService.deleteApplication(this.project, application);
+        this._registeredApplicationsService.deleteApplication(this.project, application)
+            .subscribe(
+                () => this.loadGroup(this.inGroupID),
+                error => this._notificationService.error(utils.getErrorMessage(error))
+            );
     }
 }
