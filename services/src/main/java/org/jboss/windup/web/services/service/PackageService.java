@@ -10,7 +10,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
-import com.esotericsoftware.minlog.Log;
 import org.jboss.forge.furnace.Furnace;
 import org.jboss.windup.web.addons.websupport.services.PackageDiscoveryService;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
@@ -118,7 +117,7 @@ public class PackageService
                                     ? PackageMetadata.ScanStatus.COMPLETE : PackageMetadata.ScanStatus.IN_PROGRESS);
 
             LOG.info("New group package discovery status: " + finalStatus);
-            Log.info("Updating group package metadata (id: " + appGroupMetadata.getId() +" )");
+            LOG.info("Updating group package metadata (id: " + appGroupMetadata.getId() +" )");
             appGroupMetadata.setScanStatus(finalStatus);
             this.entityManager.merge(appGroupMetadata);
         }
