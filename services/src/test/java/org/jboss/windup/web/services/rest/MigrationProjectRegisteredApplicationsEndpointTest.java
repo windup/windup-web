@@ -70,10 +70,8 @@ public class MigrationProjectRegisteredApplicationsEndpointTest extends Abstract
         File tempFile1 = File.createTempFile(RegisteredApplicationEndpointTest.class.getSimpleName() + ".1", ".ear");
         File tempFile2 = File.createTempFile(RegisteredApplicationEndpointTest.class.getSimpleName() + ".2", ".ear");
 
-        RegisteredApplication dto1 = new RegisteredApplication(tempFile1.getAbsolutePath());
-        RegisteredApplication dto2 = new RegisteredApplication(tempFile2.getAbsolutePath());
-        this.migrationProjectRegisteredApplicationsEndpoint.registerApplicationByPath(dummyProject.getId(), dto1);
-        this.migrationProjectRegisteredApplicationsEndpoint.registerApplicationByPath(dummyProject.getId(), dto2);
+        this.migrationProjectRegisteredApplicationsEndpoint.registerApplicationByPath(dummyProject.getId(), tempFile1.getAbsolutePath());
+        this.migrationProjectRegisteredApplicationsEndpoint.registerApplicationByPath(dummyProject.getId(), tempFile2.getAbsolutePath());
 
         try
         {
