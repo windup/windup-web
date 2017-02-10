@@ -67,7 +67,7 @@ public class MigrationProject implements Serializable
     @Temporal(TemporalType.TIMESTAMP)
     private Calendar lastModified;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "migrationProject", cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "migrationProject", cascade = CascadeType.REMOVE)
     private Set<ApplicationGroup> groups;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "migrationProject", cascade = CascadeType.REMOVE)
@@ -178,18 +178,6 @@ public class MigrationProject implements Serializable
     public void setLastModified(Calendar lastModified)
     {
         this.lastModified = lastModified;
-    }
-
-    /**
-     * Gets default group
-     */
-    public ApplicationGroup getDefaultGroup()
-    {
-        Optional<ApplicationGroup> group = this.groups.stream()
-                .filter(ApplicationGroup::isDefault)
-                .findFirst();
-
-        return group.isPresent() ? group.get() : null;
     }
 
     /**

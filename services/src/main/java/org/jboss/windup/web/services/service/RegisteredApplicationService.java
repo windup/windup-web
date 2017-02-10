@@ -213,12 +213,23 @@ public class RegisteredApplicationService
         PackageMetadata packageMetadata = new PackageMetadata();
         application.setPackageMetadata(packageMetadata);
 
-        ApplicationGroup defaultGroup = project.getDefaultGroup();
-        defaultGroup.addApplication(application);
+
+        Set<ApplicationGroup> projectGroups = project.getGroups();
+
+        // This is temporary solution to support current application groups logic
+        // In future, groups will be created probably on analysis context page
+        // and applications will be associated there.
+        if (projectGroups.size() == 1)
+        {
+            ApplicationGroup defaultGroup = projectGroups.iterator().next();
+            application.addApplicationGroup(defaultGroup);
+            defaultGroup.addApplication(application);
+
+            this.entityManager.merge(defaultGroup);
+        }
 
         this.entityManager.persist(packageMetadata);
         this.entityManager.persist(application);
-        this.entityManager.merge(defaultGroup);
 
         return application;
     }

@@ -60,9 +60,6 @@ public class ApplicationGroup implements Serializable
     @Size(min = 1, max = 2048)
     private String outputPath;
 
-    @Column
-    private boolean isDefault;
-
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private MigrationProject migrationProject;
 
@@ -274,25 +271,6 @@ public class ApplicationGroup implements Serializable
     public void setReportFilter(ReportFilter reportFilter)
     {
         this.reportFilter = reportFilter;
-    }
-
-    /**
-     * Is this group default group?
-     *
-     * Default group contains all applications from project
-     */
-    public boolean isDefault()
-    {
-        return isDefault;
-    }
-
-    /**
-     * Marks group as default group
-     *
-     */
-    public void setDefault(boolean aDefault)
-    {
-        isDefault = aDefault;
     }
 
     @Override

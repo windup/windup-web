@@ -80,11 +80,7 @@ public class ApplicationGroupService
 
     public ApplicationGroup createDefaultApplicationGroup(MigrationProject project)
     {
-        ApplicationGroup group = this.createApplicationGroup(ApplicationGroup.DEFAULT_NAME, project);
-        group.setDefault(true);
-        entityManager.merge(group);
-
-        return group;
+        return this.createApplicationGroup(ApplicationGroup.DEFAULT_NAME, project);
     }
 
     public ApplicationGroup update(ApplicationGroup updatedGroup)
