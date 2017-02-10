@@ -55,6 +55,12 @@ public class MigrationProject implements Serializable
     @NotNull
     private String title;
 
+    @Size(max = 4096)
+    @NotNull
+    @Column(length = 4096, nullable = false)
+    @org.hibernate.annotations.ColumnDefault("")
+    private String description;
+
     @Column(columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable=false, updatable=false)
     @Temporal(TemporalType.TIMESTAMP)
     private Calendar created;
@@ -117,6 +123,16 @@ public class MigrationProject implements Serializable
     public void setTitle(String title)
     {
         this.title = title;
+    }
+
+    public String getDescription()
+    {
+        return description;
+    }
+
+    public void setDescription(String description)
+    {
+        this.description = description;
     }
 
     /**

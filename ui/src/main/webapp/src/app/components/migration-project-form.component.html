@@ -9,7 +9,7 @@
     </div>
     <div class="row">
         <div class="form-group">
-            <label class="col-md-2 control-label" for="idProjectTitle">Migration Project Title</label>
+            <label class="col-md-2 control-label" for="idProjectTitle">Project Title</label>
             <div class="col-md-6">
                 <input #projectTitleControl="ngModel"
                        name="projectTitle"
@@ -24,6 +24,14 @@
             <span [class.hidden]="!hasError(projectTitleControl)" class="help-block">
                 The title must be greater than 3 characters long and fewer than 128 characters.
             </span>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="idDescription">Project Description</label>
+            <div class="col-md-6">
+                <textarea name="description" id="idDescription" class="form-control"
+                        #controlDescription="ngModel"
+                        [(ngModel)]="model.description"></textarea>
+            </div>
         </div>
         <div class="form-group">
             <div class="col-md-10 col-md-offset-2">

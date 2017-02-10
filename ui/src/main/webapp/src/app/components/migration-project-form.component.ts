@@ -12,11 +12,11 @@ import {RouteFlattenerService} from "../services/route-flattener.service";
 })
 export class MigrationProjectFormComponent extends FormComponent implements OnInit, OnDestroy
 {
-    title: string = 'Create Migration Project';
+    title: string = "Create Migration Project";
 
-    model:MigrationProject = <MigrationProject>{};
+    model: MigrationProject = <MigrationProject>{};
 
-    editMode:boolean = false;
+    editMode: boolean = false;
 
     errorMessages: string[];
     private routerSubscription: Subscription;
