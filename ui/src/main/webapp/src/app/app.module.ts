@@ -5,7 +5,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import 'rxjs/Rx';
 
-import {FileSelectDirective, FileDropDirective, FileUploader} from 'ng2-file-upload/ng2-file-upload';
 import { AppComponent }  from './components/app.component';
 import {routing, appRoutingProviders, appRoutes} from './app.routing';
 
@@ -103,6 +102,7 @@ import {NoProjectsWelcomeComponent} from "./components/project-list/no-projects-
 import {SortComponent} from "./components/sort.component";
 import {SearchComponent} from "./components/search.component";
 import {MomentModule} from "angular2-moment";
+import {FileUploadModule, FileUploader} from "ng2-file-upload";
 
 /**
  * Load all mapping data from the generated files.
@@ -116,6 +116,8 @@ initializeModelMappingData();
         ReactiveFormsModule,
         HttpModule,
         routing,
+
+        FileUploadModule,
 
         // NGX Charts
         NgxChartsModule,
@@ -159,8 +161,6 @@ initializeModelMappingData();
         RulesModalComponent,
         TechnologyComponent,
 
-        FileSelectDirective,
-        FileDropDirective,
         UploadQueueComponent,
         UploadProgressbarComponent,
         CustomRuleSelectionComponent,
@@ -231,26 +231,38 @@ initializeModelMappingData();
         RouteHistoryService,
         {
             provide: RouteLinkProviderService,
-            useFactory: () => {
-                return new RouteLinkProviderService(appRoutes);
-            }
+            useFactory: createRouteLinkProviderService
         },
         BreadCrumbsService,
         {
             provide: Http,
-            useFactory:
-                (
-                    backend: XHRBackend,
-                    defaultOptions: RequestOptions,
-                    keycloakService: KeycloakService
-                ) => new WindupHttpService(backend, defaultOptions, keycloakService),
+            useFactory: breadcrumbsServiceFactory,
             deps: [XHRBackend, RequestOptions, KeycloakService]
         },
         {
             provide: FileUploader,
-            useValue: new FileUploader({})
+            useFactory: createFileUploader
         }
     ],
     bootstrap:    [ AppComponent ]
 })
 export class AppModule { }
+
+let fileUploader = null;
+export function createFileUploader() {
+    if (fileUploader != null)
+        return fileUploader;
+
+    fileUploader = new FileUploader({});
+    return fileUploader;
+}
+
+export function createRouteLinkProviderService() {
+        return new RouteLinkProviderService(appRoutes);
+}
+
+export function breadcrumbsServiceFactory(backend: XHRBackend,
+                                          defaultOptions: RequestOptions,
+                                          keycloakService: KeycloakService) {
+    return new WindupHttpService(backend, defaultOptions, keycloakService);
+}

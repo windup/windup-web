@@ -9,7 +9,7 @@ import {SortingService, OrderDirection} from "../../../services/sorting.service"
 
 @Component({
     selector: 'wu-migration-issues-table',
-    templateUrl: '/migration-issues-table.component.html',
+    templateUrl: './migration-issues-table.component.html',
     styles: [
         `a { cursor: pointer; }`
     ],

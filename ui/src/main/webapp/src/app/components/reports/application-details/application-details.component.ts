@@ -25,8 +25,8 @@ import {TagDataService} from "../tag-data.service";
 import {TreeData} from "../../js-tree-angular-wrapper.component";
 
 @Component({
-    templateUrl: '/application-details.component.html',
-    styleUrls: ['/application-details.component.css']
+    templateUrl: './application-details.component.html',
+    styleUrls: ['./application-details.component.css']
 })
 export class ApplicationDetailsComponent implements OnInit {
 

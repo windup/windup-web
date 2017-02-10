@@ -66,9 +66,7 @@ export const appRoutes: Routes = [
                     {
                         path: ':projectId',
                         data: {
-                            breadcrumbTitle: (route: FullFlattenedRoute) => {
-                                return `Project ${route.data['project'].title}`;
-                            }
+                            breadcrumbTitle: getProjectBreadcrumbTitle
                         },
                         resolve: {
                             project: ProjectResolve
@@ -85,9 +83,7 @@ export const appRoutes: Routes = [
                                     applicationGroup: ApplicationGroupResolve
                                 },
                                 data: {
-                                    breadcrumbTitle: (route: FullFlattenedRoute) => {
-                                        return `Group ${route.data['applicationGroup'].title}`;
-                                    }
+                                    breadcrumbTitle: getGroupBreadcrumbTitle
                                 },
                                 children: [
                                     { path: '', component: GroupLayoutComponent, children: [
@@ -135,6 +131,14 @@ export const appRoutes: Routes = [
         ]
     }
 ];
+
+export function getGroupBreadcrumbTitle(route: FullFlattenedRoute) {
+    return `Group ${route.data['applicationGroup'].title}`;
+}
+
+export function getProjectBreadcrumbTitle(route: FullFlattenedRoute) {
+    return `Project ${route.data['project'].title}`;
+}
 
 export const appRoutingProviders: any[] = [
 
