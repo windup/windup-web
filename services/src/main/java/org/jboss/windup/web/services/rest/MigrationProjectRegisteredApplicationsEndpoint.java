@@ -44,7 +44,7 @@ public interface MigrationProjectRegisteredApplicationsEndpoint
 
     @Path("register-path")
     @POST
-    RegisteredApplication registerApplicationByPath(@PathParam("projectId") long projectId, @Valid RegisteredApplication application);
+    RegisteredApplication registerApplicationByPath(@PathParam("projectId") long projectId, String path);
 
     /**
      * Registers all applications found in directory path on the server.
@@ -54,9 +54,9 @@ public interface MigrationProjectRegisteredApplicationsEndpoint
     Collection<RegisteredApplication> registerApplicationsInDirectoryByPath(@PathParam("projectId") long projectId, String directoryPath);
 
     /**
-     * Registers a multiple applications with Windup.
+     * Uploads multiple applications with Windup.
      */
-    @Path("register-multiple")
+    @Path("upload-multiple")
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces("application/json")

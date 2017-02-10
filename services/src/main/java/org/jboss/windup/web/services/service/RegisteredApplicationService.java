@@ -156,17 +156,19 @@ public class RegisteredApplicationService
     }
 
     @Transactional
-    public RegisteredApplication registerApplicationByPath(MigrationProject project, RegisteredApplication application)
+    public RegisteredApplication registerApplicationByPath(MigrationProject project, String path)
     {
-        LOG.info("Registering an application at: " + application.getInputPath());
+        LOG.info("Registering an application at: " + path);
 
         for (RegisteredApplication alreadyRegistered : project.getApplications())
         {
-            if (alreadyRegistered.getInputPath() != null && alreadyRegistered.getInputPath().equals(application.getInputPath()))
+            if (alreadyRegistered.getInputPath() != null && alreadyRegistered.getInputPath().equals(path))
             {
                 return alreadyRegistered;
             }
         }
+
+        RegisteredApplication application = new RegisteredApplication(path);
 
         application.setMigrationProject(project);
         project.addApplication(application);
@@ -179,6 +181,7 @@ public class RegisteredApplicationService
         entityManager.persist(application);
 
         this.enqueuePackageDiscovery(application);
+
         return application;
     }
 
