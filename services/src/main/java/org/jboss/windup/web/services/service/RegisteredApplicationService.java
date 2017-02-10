@@ -19,7 +19,6 @@ import javax.jms.JMSContext;
 import javax.jms.Queue;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.validation.Valid;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotFoundException;
@@ -31,7 +30,6 @@ import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.addons.websupport.services.FileNameSanitizer;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.messaging.MessagingConstants;
-import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.model.PackageMetadata;
 import org.jboss.windup.web.services.model.RegisteredApplication;
@@ -67,7 +65,8 @@ public class RegisteredApplicationService
 
     public Collection<RegisteredApplication> getAllApplications()
     {
-        return entityManager.createQuery("select app from " + RegisteredApplication.class.getSimpleName() + " app", RegisteredApplication.class).getResultList();
+        return entityManager.createQuery("select app from " + RegisteredApplication.class.getSimpleName() + " app", RegisteredApplication.class)
+                    .getResultList();
     }
 
     public RegisteredApplication getApplication(long id)
@@ -82,25 +81,7 @@ public class RegisteredApplicationService
         return application;
     }
 
-    public void unregister(long applicationID)
-    {
-        RegisteredApplication application = this.getApplication(applicationID);
-
-        ApplicationGroup group = application.getApplicationGroup();
-        if (group != null)
-        {
-            application.setApplicationGroup(null);
-            group.removeApplication(application);
-            application = this.entityManager.merge(application);
-
-            this.entityManager.merge(group);
-        }
-
-        this.deleteApplicationFileIfUploaded(application);
-        this.entityManager.remove(application);
-    }
-
-    public RegisteredApplication registerApplication(MultipartFormDataInput data, long appGroupId)
+    public RegisteredApplication registerApplication(MultipartFormDataInput data, MigrationProject project)
     {
         Map<String, List<InputPart>> uploadForm = data.getFormDataMap();
         List<InputPart> inputParts = uploadForm.get("file");
@@ -116,19 +97,18 @@ public class RegisteredApplicationService
             throw new BadRequestException("Please provide a file");
         }
 
-        ApplicationGroup appGroup = this.applicationGroupService.getApplicationGroup(appGroupId);
-        RegisteredApplication application = this.createApplication(appGroup);
+        RegisteredApplication application = this.createApplication(project);
         application.setRegistrationType(RegisteredApplication.RegistrationType.UPLOADED);
-        appGroup.addApplication(application);
+        project.addApplication(application);
 
         this.uploadApplicationFile(inputParts.get(0), application, false);
         this.entityManager.merge(application);
-        this.entityManager.merge(appGroup);
+        this.entityManager.merge(project);
 
         return application;
     }
 
-    public Collection<RegisteredApplication> registerApplicationsInDirectoryByPath(long appGroupId, String path)
+    public Collection<RegisteredApplication> registerApplicationsInDirectoryByPath(MigrationProject project, String path)
     {
         File directory = new File(path);
 
@@ -140,8 +120,6 @@ public class RegisteredApplicationService
         {
             throw new BadRequestException("Expecting directory, got file path");
         }
-
-        ApplicationGroup group = this.applicationGroupService.getApplicationGroup(appGroupId);
 
         String[] allowedExtensions = new String[] { ".jar", ".war", ".ear" };
 
@@ -159,10 +137,10 @@ public class RegisteredApplicationService
             return false;
         }))
         {
-            RegisteredApplication application = this.createApplication(group);
+            RegisteredApplication application = this.createApplication(project);
             application.setInputPath(file.getPath());
             application.setTitle(file.getName());
-            group.addApplication(application);
+            project.addApplication(application);
 
             this.entityManager.persist(application);
             this.enqueuePackageDiscovery(application);
@@ -170,27 +148,25 @@ public class RegisteredApplicationService
             registeredApplicationList.add(application);
         }
 
-        this.entityManager.merge(group);
+        this.entityManager.merge(project);
 
         return registeredApplicationList;
     }
 
-    public RegisteredApplication registerApplicationByPath(long appGroupId, @Valid RegisteredApplication application)
+    public RegisteredApplication registerApplicationByPath(MigrationProject project, RegisteredApplication application)
     {
         LOG.info("Registering an application at: " + application.getInputPath());
 
-        ApplicationGroup appGroup = appGroupId == 0 ? null : this.applicationGroupService.getApplicationGroup(appGroupId);
-
-        if (appGroup != null)
+        for (RegisteredApplication alreadyRegistered : project.getApplications())
         {
-            for (RegisteredApplication alreadyRegistered : appGroup.getApplications())
+            if (alreadyRegistered.getInputPath() != null && alreadyRegistered.getInputPath().equals(application.getInputPath()))
             {
-                if (alreadyRegistered.getInputPath() != null && alreadyRegistered.getInputPath().equals(application.getInputPath()))
-                    return alreadyRegistered;
+                return alreadyRegistered;
             }
-            appGroup.getApplications().add(application);
-            application.setApplicationGroup(appGroup);
         }
+
+        application.setMigrationProject(project);
+        project.addApplication(application);
 
         application.setRegistrationType(RegisteredApplication.RegistrationType.PATH);
 
@@ -203,21 +179,25 @@ public class RegisteredApplicationService
         return application;
     }
 
-    public RegisteredApplication update(@Valid RegisteredApplication application)
+    public RegisteredApplication updateApplicationPath(RegisteredApplication application)
     {
         RegisteredApplication previousApplication = getApplication(application.getId());
+
         if (previousApplication != null)
+        {
             this.deleteApplicationFileIfUploaded(previousApplication);
+        }
 
         application.setRegistrationType(RegisteredApplication.RegistrationType.PATH);
         application = this.entityManager.merge(application);
         this.enqueuePackageDiscovery(application);
+
         return application;
     }
 
-    private RegisteredApplication createApplication(ApplicationGroup group)
+    private RegisteredApplication createApplication(MigrationProject project)
     {
-        RegisteredApplication application = new RegisteredApplication(group);
+        RegisteredApplication application = new RegisteredApplication(project);
 
         // need to get ID, set dummy title and path, it will be replaced
         application.setTitle("dummy-title");
@@ -232,10 +212,8 @@ public class RegisteredApplicationService
         return application;
     }
 
-    public RegisteredApplication updateApplication(MultipartFormDataInput data, long appId)
+    public RegisteredApplication updateApplication(RegisteredApplication application, MultipartFormDataInput data)
     {
-        RegisteredApplication application = this.getApplication(appId);
-
         Map<String, List<InputPart>> uploadForm = data.getFormDataMap();
         List<InputPart> inputParts = uploadForm.get("file");
 
@@ -258,6 +236,23 @@ public class RegisteredApplicationService
         return application;
     }
 
+    public void deleteApplication(RegisteredApplication application)
+    {
+        MigrationProject project = application.getMigrationProject();
+
+        if (project != null)
+        {
+            application.setMigrationProject(null);
+            project.removeApplication(application);
+            application = this.entityManager.merge(application);
+
+            this.entityManager.merge(project);
+        }
+
+        this.deleteApplicationFileIfUploaded(application);
+        this.entityManager.remove(application);
+    }
+
     private void deleteApplicationFileIfUploaded(RegisteredApplication application)
     {
         if (application.getRegistrationType() != RegisteredApplication.RegistrationType.UPLOADED)
@@ -273,12 +268,7 @@ public class RegisteredApplicationService
         }
     }
 
-    public void deleteApplication(long appId)
-    {
-        this.unregister(appId);
-    }
-
-    public Collection<RegisteredApplication> registerMultipleApplications(MultipartFormDataInput data, long appGroupId)
+    public Collection<RegisteredApplication> registerMultipleApplications(MultipartFormDataInput data, MigrationProject project)
     {
         Map<String, List<InputPart>> uploadForm = data.getFormDataMap();
         List<InputPart> inputParts = uploadForm.get("file");
@@ -290,28 +280,24 @@ public class RegisteredApplicationService
 
         List<RegisteredApplication> registeredApplications = new ArrayList<>();
 
-        ApplicationGroup appGroup = this.applicationGroupService.getApplicationGroup(appGroupId);
-
         for (InputPart inputPart : inputParts)
         {
-            RegisteredApplication application = this.createApplication(appGroup);
+            RegisteredApplication application = this.createApplication(project);
             application.setRegistrationType(RegisteredApplication.RegistrationType.UPLOADED);
-            appGroup.addApplication(application);
+            project.addApplication(application);
 
             this.uploadApplicationFile(inputPart, application, false);
             this.entityManager.merge(application);
             registeredApplications.add(application);
         }
 
-        this.entityManager.merge(appGroup);
+        this.entityManager.merge(project);
 
         return registeredApplications;
     }
 
     protected RegisteredApplication uploadApplicationFile(InputPart inputPart, RegisteredApplication application, boolean rewrite)
     {
-        ApplicationGroup group = application.getApplicationGroup();
-
         try
         {
             MultivaluedMap<String, String> header = inputPart.getHeaders();
@@ -321,12 +307,11 @@ public class RegisteredApplicationService
             // convert the uploaded file to inputstream
             InputStream inputStream = inputPart.getBody(InputStream.class, null);
 
-            MigrationProject project = group.getMigrationProject();
+            MigrationProject project = application.getMigrationProject();
 
             String filePath = Paths.get(
                         this.webPathUtil.getGlobalWindupDataPath().toString(),
                         project.getId().toString(),
-                        group.getId().toString(),
                         "apps",
                         fileName).toString();
 

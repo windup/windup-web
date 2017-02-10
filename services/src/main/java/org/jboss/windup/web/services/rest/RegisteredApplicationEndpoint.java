@@ -28,14 +28,7 @@ public interface RegisteredApplicationEndpoint
      */
     @Path("update-application")
     @PUT
-    RegisteredApplication update(@Valid RegisteredApplication application);
-
-    /**
-     * Removes the registration entry for an application.
-     */
-    @Path("unregister/{id}")
-    @DELETE
-    void unregister(@PathParam("id") long applicationID);
+    RegisteredApplication updatePath(@Valid RegisteredApplication application);
 
     /**
      * Updates existing application
@@ -43,9 +36,16 @@ public interface RegisteredApplicationEndpoint
     @Path("{id}")
     @PUT
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    RegisteredApplication updateApplication(MultipartFormDataInput data, @PathParam("id") long appId);
+    RegisteredApplication reuploadApplication(MultipartFormDataInput data, @PathParam("id") long appId);
 
     @Path("{id}")
     @DELETE
     void deleteApplication(@PathParam("id") long appId);
+
+    /**
+     * Removes the registration entry for an application.
+     */
+    @Path("unregister/{id}")
+    @DELETE
+    void unregister(@PathParam("id") long applicationID);
 }

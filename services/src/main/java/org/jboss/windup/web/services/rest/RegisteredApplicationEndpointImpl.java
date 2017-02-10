@@ -24,26 +24,30 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
     }
 
     @Override
+    public RegisteredApplication updatePath(@Valid RegisteredApplication application)
+    {
+        return this.registeredApplicationService.updateApplicationPath(application);
+    }
+
+    @Override
+    public RegisteredApplication reuploadApplication(MultipartFormDataInput data, long appId)
+    {
+        RegisteredApplication application = this.getApplication(appId);
+
+        return this.registeredApplicationService.updateApplication(application, data);
+    }
+
+    @Override
     public void unregister(long applicationID)
     {
-        this.registeredApplicationService.unregister(applicationID);
-    }
-
-    @Override
-    public RegisteredApplication update(@Valid RegisteredApplication application)
-    {
-        return this.registeredApplicationService.update(application);
-    }
-
-    @Override
-    public RegisteredApplication updateApplication(MultipartFormDataInput data, long appId)
-    {
-        return this.registeredApplicationService.updateApplication(data, appId);
+        this.deleteApplication(applicationID);
     }
 
     @Override
     public void deleteApplication(long appId)
     {
-        this.registeredApplicationService.deleteApplication(appId);
+        RegisteredApplication application = this.registeredApplicationService.getApplication(appId);
+
+        this.registeredApplicationService.deleteApplication(application);
     }
 }

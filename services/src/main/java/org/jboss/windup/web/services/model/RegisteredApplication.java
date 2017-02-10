@@ -79,9 +79,9 @@ public class RegisteredApplication implements Serializable
         this.title = Paths.get(inputPath).getFileName().toString();
     }
 
-    public RegisteredApplication(ApplicationGroup group)
+    public RegisteredApplication(MigrationProject project)
     {
-        this.applicationGroup = group;
+        this.migrationProject = project;
     }
 
     public Long getId()

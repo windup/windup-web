@@ -6,7 +6,9 @@ import javax.inject.Inject;
 import javax.validation.Valid;
 
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.model.RegisteredApplication;
+import org.jboss.windup.web.services.service.MigrationProjectService;
 import org.jboss.windup.web.services.service.RegisteredApplicationService;
 
 /**
@@ -17,33 +19,46 @@ public class MigrationProjectRegisteredApplicationsEndpointImpl implements Migra
     @Inject
     private RegisteredApplicationService registeredApplicationService;
 
+    @Inject
+    private MigrationProjectService migrationProjectService;
+
     @Override
     public Collection<RegisteredApplication> getRegisteredApplications(long projectId)
     {
-        return null;
+        MigrationProject project = this.migrationProjectService.getMigrationProject(projectId);
+
+        return project.getApplications();
     }
 
     @Override
     public RegisteredApplication uploadApplication(MultipartFormDataInput data, long projectId)
     {
-        return this.registeredApplicationService.registerApplication(data, projectId);
+        MigrationProject project = this.migrationProjectService.getMigrationProject(projectId);
+
+        return this.registeredApplicationService.registerApplication(data, project);
     }
 
     @Override
     public RegisteredApplication registerApplicationByPath(long projectId, @Valid RegisteredApplication application)
     {
-        return this.registeredApplicationService.registerApplicationByPath(projectId, application);
+        MigrationProject project = this.migrationProjectService.getMigrationProject(projectId);
+
+        return this.registeredApplicationService.registerApplicationByPath(project, application);
     }
 
     @Override
     public Collection<RegisteredApplication> registerApplicationsInDirectoryByPath(long projectId, String directoryPath)
     {
-        return this.registeredApplicationService.registerApplicationsInDirectoryByPath(projectId, directoryPath);
+        MigrationProject project = this.migrationProjectService.getMigrationProject(projectId);
+
+        return this.registeredApplicationService.registerApplicationsInDirectoryByPath(project, directoryPath);
     }
 
     @Override
     public Collection<RegisteredApplication> uploadMultipleApplications(MultipartFormDataInput data, long projectId)
     {
-        return this.registeredApplicationService.registerMultipleApplications(data, projectId);
+        MigrationProject project = this.migrationProjectService.getMigrationProject(projectId);
+
+        return this.registeredApplicationService.registerMultipleApplications(data, project);
     }
 }
