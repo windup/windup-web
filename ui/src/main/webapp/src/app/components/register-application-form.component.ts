@@ -12,7 +12,6 @@ import {FormComponent} from "./form.component";
 import {Constants} from "../constants";
 import {MigrationProject} from "windup-services";
 
-
 @Component({
     templateUrl: "./register-application-form.component.html",
     styles: [`
@@ -131,7 +130,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
             return;
         }
 
-        this._registeredApplicationService.registerApplication(this.applicationGroup).subscribe(
+        this._registeredApplicationService.uploadApplications(this.project).subscribe(
             application => this.rerouteToApplicationList(),
             error => this.handleError(<any>error)
         );
