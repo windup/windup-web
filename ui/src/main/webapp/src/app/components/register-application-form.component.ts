@@ -10,6 +10,7 @@ import {FileService} from "../services/file.service";
 import {ApplicationGroup} from "windup-services";
 import {FormComponent} from "./form.component";
 import {Constants} from "../constants";
+import {MigrationProject} from "windup-services";
 
 
 @Component({
@@ -52,6 +53,8 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     private isDirWithApps: boolean = false;
     protected isAllowUploadMultiple: boolean = true;
 
+    project: MigrationProject;
+
     constructor(
         protected _router: Router,
         protected _activatedRoute: ActivatedRoute,
@@ -83,8 +86,8 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
         this._activatedRoute.parent.parent.data.subscribe((data: {applicationGroup: ApplicationGroup}) => {
             this.applicationGroup = data.applicationGroup;
             this.multipartUploader.setOptions({
-                url: Constants.REST_BASE + RegisteredApplicationService.REGISTER_APPLICATION_URL + this.applicationGroup.id,
-                method: "POST",
+                url: Constants.REST_BASE + RegisteredApplicationService.UPLOAD_URL.replace('{projectId}', this.project.id.toString()),
+                method: 'POST',
                 disableMultipart: false
             });
         });
@@ -109,13 +112,13 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
         console.log("Registering path: " + this.fileInputPath);
 
         if (this.isDirWithApps) {
-            this._registeredApplicationService.registerApplicationInDirectoryByPath(this.applicationGroup, this.fileInputPath)
+            this._registeredApplicationService.registerApplicationInDirectoryByPath(this.project, this.fileInputPath)
                 .subscribe(
                     application => this.rerouteToApplicationList(),
                     error => this.handleError(error)
                 );
         } else {
-            this._registeredApplicationService.registerByPath(this.applicationGroup, this.fileInputPath).subscribe(
+            this._registeredApplicationService.registerByPath(this.project, this.fileInputPath).subscribe(
                 application => this.rerouteToApplicationList(),
                 error => this.handleError(<any>error)
             )

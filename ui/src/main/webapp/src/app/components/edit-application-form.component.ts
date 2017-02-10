@@ -38,7 +38,7 @@ export class EditApplicationFormComponent extends RegisterApplicationFormCompone
             this.mode = this.application.registrationType;
             this.fileInputPath = this.application.inputPath;
             this.multipartUploader.setOptions({
-                url: Constants.REST_BASE + RegisteredApplicationService.REGISTERED_APPLICATION_SERVICE_NAME + this.application.id,
+                url: Constants.REST_BASE + RegisteredApplicationService.REUPLOAD_APPLICATION_URL.replace('{appId}', this.application.id.toString()),
                 disableMultipart: false,
                 method: 'PUT'
             });
@@ -49,7 +49,7 @@ export class EditApplicationFormComponent extends RegisterApplicationFormCompone
     register() {
         if (this.mode == "PATH") {
             this.application.inputPath = this.fileInputPath;
-            this._registeredApplicationService.update(this.application).subscribe(
+            this._registeredApplicationService.updateByPath(this.application).subscribe(
                 application => this.rerouteToApplicationList(),
                 error => this.handleError(<any>error)
             );
