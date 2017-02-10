@@ -205,6 +205,14 @@ public class MigrationProject implements Serializable
         this.applications.add(application);
     }
 
+    /**
+     * Removes the {@link RegisteredApplication} from this project
+     */
+    public void removeApplication(RegisteredApplication application)
+    {
+        this.applications.remove(application);
+    }
+
     @Override
     public boolean equals(Object o)
     {
