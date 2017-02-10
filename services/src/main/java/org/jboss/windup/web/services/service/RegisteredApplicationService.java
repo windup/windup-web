@@ -168,7 +168,8 @@ public class RegisteredApplicationService
             }
         }
 
-        RegisteredApplication application = new RegisteredApplication(path);
+        RegisteredApplication application = this.createApplication(project);
+        application.setInputPath(path);
 
         application.setMigrationProject(project);
         project.addApplication(application);
