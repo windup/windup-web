@@ -11,17 +11,12 @@ import org.apache.commons.lang.StringUtils;
  */
 public class FileEndpointImpl implements FileEndpoint
 {
-    static boolean remoteUserCanQueryPath(Path path){
+    static boolean remoteUserCanQueryPath(Path path)
+    {
         if (!Files.isReadable(path))
-           return false;
-        if (Files.isExecutable(path) && !Files.isDirectory(path))
-               return false;
-        for (Path element : path) {
-            if (element.toString().equals(".."))
-                return false;
-            if (element.toString().startsWith("."))
-                return false;
-        }
+            return false;
+        if (!Files.isDirectory(path))
+            return false;
 
         return true;
     }

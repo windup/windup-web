@@ -71,13 +71,6 @@ public class FileEndpointTest extends AbstractTest
             Assert.assertTrue(FileEndpointImpl.remoteUserCanQueryPath(dir.toPath()));
             Assert.assertEquals("Should be dir: " + dir.getAbsolutePath(), FileEndpoint.PathTargetType.DIRECTORY, fileEndpoint.pathTargetType(dir.toString()));
             Assert.assertEquals(null, fileEndpoint.pathTargetType("Doh!"));
-
-            Assert.assertFalse(FileEndpointImpl.remoteUserCanQueryPath(Paths.get("..")));
-            Assert.assertEquals(null, fileEndpoint.pathTargetType(".."));
-
-            final String ssh = System.getProperty("user.home") + File.separator + ".ssh";
-            Assert.assertFalse(FileEndpointImpl.remoteUserCanQueryPath(Paths.get(ssh)));
-            Assert.assertEquals(null, fileEndpoint.pathTargetType(ssh));
         }
         finally
         {

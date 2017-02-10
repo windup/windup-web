@@ -19,11 +19,19 @@ public interface FileEndpoint
     @Path("pathExists")
     boolean pathExists(String path);
 
+    /**
+     * Gets an indication as to whether the given path is a file or a directory.
+     *
+     * This will return null if this cannot be determined for any reason. For example, this will
+     * return null if the path is blank, non-existent, or if the server has no read permissions on this
+     * path.
+     */
     @POST
     @Path("pathTargetType")
     PathTargetType pathTargetType(String path);
 
-    enum PathTargetType {
+    enum PathTargetType
+    {
         FILE, DIRECTORY
     }
 }

@@ -1,5 +1,5 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges, SimpleChange, ElementRef, Renderer, NgZone, OnDestroy, AfterViewInit} from "@angular/core";
-import {FormBuilder, FormControl, FormGroup, Validators, AsyncValidatorFn} from "@angular/forms";
+import { Component, OnInit, OnDestroy, AfterViewInit} from "@angular/core";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FileUploader} from "ng2-file-upload/ng2-file-upload";
 
@@ -7,7 +7,6 @@ import {RegisteredApplication, RegistrationType} from "windup-services";
 import {RegisteredApplicationService} from "../services/registered-application.service";
 import {FileExistsValidator} from "../validators/file-exists.validator";
 import {FileService} from "../services/file.service";
-import {ApplicationGroupService} from "../services/application-group.service";
 import {ApplicationGroup} from "windup-services";
 import {FormComponent} from "./form.component";
 import {Constants} from "../constants";
@@ -45,12 +44,12 @@ import {Constants} from "../constants";
 export class RegisterApplicationFormComponent extends FormComponent implements OnInit, OnDestroy, AfterViewInit
 {
     protected registrationForm: FormGroup;
-    private applicationGroup:  ApplicationGroup;
-    protected application:       RegisteredApplication;
+    private applicationGroup: ApplicationGroup;
+    protected application: RegisteredApplication;
     protected multipartUploader: FileUploader;
-    protected mode:              RegistrationType = "UPLOADED";
-    protected fileInputPath:     string;
-    private isDirWithApps:       boolean = false;
+    protected mode: RegistrationType = "UPLOADED";
+    protected fileInputPath: string;
+    private isDirWithApps: boolean = false;
     protected isAllowUploadMultiple: boolean = true;
 
     constructor(
@@ -99,7 +98,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
         if (this.mode == "PATH") {
             this.registerPath();
         } else {
-            this.registerUploaded()
+            this.registerUploaded();
             return false;
         }
     }
@@ -144,7 +143,8 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
         this.rerouteToApplicationList();
     }
 
-    private changeMode(mode: RegistrationType){
+    private changeMode(mode: RegistrationType) {
+        console.log("Changing mode to: " + mode);
         this.mode = mode;
     }
 }
