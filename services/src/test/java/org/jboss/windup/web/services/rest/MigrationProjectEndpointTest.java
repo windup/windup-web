@@ -42,7 +42,7 @@ public class MigrationProjectEndpointTest extends AbstractTest
     @RunAsClient
     public void testCreateMigrationProject() throws Exception
     {
-        Collection<MigrationProject> existingProjects = migrationProjectEndpoint.getMigrationProjects();
+        Collection<MigrationProjectEndpoint.MigrationProjectAndAppCount> existingProjects = migrationProjectEndpoint.getMigrationProjects(Boolean.TRUE);
         Assert.assertEquals(0, existingProjects.size());
 
         String title = "Test Migration Project" + RandomStringUtils.randomAlphabetic(5);
@@ -52,9 +52,9 @@ public class MigrationProjectEndpointTest extends AbstractTest
 
         this.migrationProjectEndpoint.createMigrationProject(migrationProject);
 
-        Collection<MigrationProject> apps = migrationProjectEndpoint.getMigrationProjects();
+        Collection<MigrationProjectEndpoint.MigrationProjectAndAppCount> apps = migrationProjectEndpoint.getMigrationProjects(Boolean.TRUE);
         Assert.assertEquals(1, apps.size());
         Assert.assertNotNull(apps.iterator().next());
-        Assert.assertEquals(title, apps.iterator().next().getTitle());
+        Assert.assertEquals(title, apps.iterator().next().getMigrationProject().getTitle());
     }
 }
