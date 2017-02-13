@@ -121,8 +121,9 @@ export class ProjectListComponent implements OnInit, OnDestroy {
         this._migrationProjectService.delete(project).subscribe(
             success => {
                 this._notificationService.success(`Migration project '${project.title}' was successfully deleted`);
-                let index = this.projects.indexOf(project);
-                this.projects.splice(index, 1);
+                let index = this._originalProjects.indexOf(project);
+                this._originalProjects.splice(index, 1);
+                this.updateProjects();
             },
             error => {
                 this._notificationService.error(utils.getErrorMessage(error));
