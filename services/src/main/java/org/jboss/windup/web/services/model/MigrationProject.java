@@ -24,6 +24,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
 import javax.persistence.CascadeType;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -33,6 +35,7 @@ import javax.validation.constraints.Size;
  * @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
  */
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = "title", name = "uniqueTitle"))
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = MigrationProject.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MigrationProject implements Serializable
@@ -57,9 +60,9 @@ public class MigrationProject implements Serializable
 
     @Size(max = 4096)
     @NotNull
-    @Column(length = 4096, nullable = false)
+    @Column(length = 4096, nullable = false, unique = true)
     @org.hibernate.annotations.ColumnDefault("")
-    private String description;
+    private String description = "";
 
     @Column(columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable=false, updatable=false)
     @Temporal(TemporalType.TIMESTAMP)

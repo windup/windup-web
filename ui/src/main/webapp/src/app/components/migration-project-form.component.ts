@@ -8,7 +8,10 @@ import {Subscription} from "rxjs";
 import {RouteFlattenerService} from "../services/route-flattener.service";
 
 @Component({
-    templateUrl: './migration-project-form.component.html'
+    templateUrl: './migration-project-form.component.html',
+    styles: [`
+        .project-edit .finish-buttons .btn { padding: 0 6em; margin-right: 2em; }
+    `]
 })
 export class MigrationProjectFormComponent extends FormComponent implements OnInit, OnDestroy
 {
@@ -20,6 +23,8 @@ export class MigrationProjectFormComponent extends FormComponent implements OnIn
 
     errorMessages: string[];
     private routerSubscription: Subscription;
+
+    private Math: typeof Math = Math;
 
     constructor(
         private _router: Router,

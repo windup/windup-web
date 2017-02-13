@@ -1,5 +1,5 @@
 <h1>{{title}}</h1>
-<form #projectForm="ngForm" (ngSubmit)="save()" class="form-horizontal">
+<form #projectForm="ngForm" (ngSubmit)="save()" class="form-horizontal project-edit">
     <div *ngFor="let errorMessage of errorMessages" class="row form-errors alert alert-danger">
         <div class="col-md-2">&nbsp;</div>
         <div class="col-md-10">
@@ -10,7 +10,7 @@
     <div class="row">
         <div class="form-group">
             <label class="col-md-2 control-label" for="idProjectTitle">Project Title</label>
-            <div class="col-md-6">
+            <div class="col-md-8">
                 <input #projectTitleControl="ngModel"
                        name="projectTitle"
                        [(ngModel)]="model.title"
@@ -27,13 +27,13 @@
         </div>
         <div class="form-group">
             <label class="col-md-2 control-label" for="idDescription">Project Description</label>
-            <div class="col-md-6">
-                <textarea name="description" id="idDescription" class="form-control"
+            <div class="col-md-8">
+                <textarea name="description" id="idDescription" class="form-control" [rows]="Math.min(4 + (model.description ? model.description.length : 0) / 80, 25)"
                         #controlDescription="ngModel"
                         [(ngModel)]="model.description"></textarea>
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group finish-buttons">
             <div class="col-md-10 col-md-offset-2">
                 <button class="btn btn-primary" type="submit" [disabled]="!projectForm.form.valid">Save</button>
                 <button (click)="cancel()" type="button" class="btn btn-default">Cancel</button>

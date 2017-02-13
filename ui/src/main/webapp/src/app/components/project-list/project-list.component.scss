@@ -47,6 +47,14 @@ a {
     .project-info:hover { background-color: rgb(222, 243, 255); }
 }
 
+/* Override Patternfly's middle alignment. */
+.list-view-pf.projects-list .list-group-item.project-info,
+.list-view-pf.projects-list .list-view-pf-description { align-items: flex-start; }
+
+/* Action buttons padding */
+.list-view-pf.projects-list .list-view-pf-actions span { margin-left: 1em; }
+.list-view-pf.projects-list .list-view-pf-actions span a i { font-size: 16pt; }
+
 @media (min-width: 650px) {
     .projects-bar {
         flex-direction: row;
@@ -71,7 +79,7 @@ a {
 .action-button {
     color: #9c9c9c;
     cursor: pointer;
-    
+
     &:hover { color: #000; }
 }
 
