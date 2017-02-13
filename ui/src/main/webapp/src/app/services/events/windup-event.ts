@@ -138,3 +138,34 @@ export class ApplicationRegisteredEvent extends ApplicationRegistrationEvent {
 export class ApplicationDeletedEvent extends ApplicationRegistrationEvent {
 
 }
+
+export class ApplicationGroupAssignmentEvent extends ApplicationGroupEvent {
+    public static TYPE = 'ApplicationGroupAssignmentEvent';
+    private _applications: RegisteredApplication[];
+
+    constructor(group: ApplicationGroup, application: RegisteredApplication|RegisteredApplication[], source: any) {
+        super(group, source);
+
+        if (!application.hasOwnProperty('length')) {
+            this._applications = [ <RegisteredApplication>application ];
+        } else {
+            this._applications = <RegisteredApplication[]>application;
+        }
+    }
+
+    public get applications(): RegisteredApplication[] {
+        return this._applications;
+    }
+
+    public get type(): string {
+        return ApplicationGroupAssignmentEvent.TYPE;
+    }
+}
+
+export class ApplicationAssignedToGroupEvent extends ApplicationGroupAssignmentEvent {
+
+}
+
+export class ApplicationRemovedFromGroupEvent extends ApplicationGroupAssignmentEvent {
+
+}

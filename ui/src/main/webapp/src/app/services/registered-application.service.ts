@@ -8,9 +8,13 @@ import {RegisteredApplication} from "windup-services";
 import {AbstractService} from "./abtract.service";
 import {KeycloakService} from "./keycloak.service";
 import {EventBusService} from "./events/event-bus.service";
-import {ApplicationRegisteredEvent, ApplicationDeletedEvent} from "./events/windup-event";
+import {
+    ApplicationRegisteredEvent, ApplicationDeletedEvent,
+    ApplicationRemovedFromGroupEvent, ApplicationAssignedToGroupEvent
+} from "./events/windup-event";
 import {ApplicationGroup} from "windup-services";
 import {MigrationProject} from "windup-services";
+import {ApplicationGroupService} from "./application-group.service";
 
 @Injectable()
 export class RegisteredApplicationService extends AbstractService {
@@ -34,6 +38,7 @@ export class RegisteredApplicationService extends AbstractService {
         private _http: Http,
         private _keycloakService:KeycloakService,
         private _multipartUploader: FileUploader,
+        private _applicationGroupService: ApplicationGroupService,
         private _eventBusService: EventBusService
     ) {
         super();
@@ -70,11 +75,7 @@ export class RegisteredApplicationService extends AbstractService {
         return this._http.post(url, body, options)
             .map(res => <RegisteredApplication> res.json())
             .catch(this.handleError)
-            .do((responseApplication) => {
-                this._eventBusService.fireEvent(
-                    new ApplicationRegisteredEvent(project, responseApplication, this)
-                );
-            });
+            .do((responseApplication) => this.fireNewApplicationEvents(responseApplication, project));
     }
 
     registerByPath(project: MigrationProject, path: string): Observable<RegisteredApplication> {
@@ -123,10 +124,21 @@ export class RegisteredApplicationService extends AbstractService {
                 this._multipartUploader.uploadAll();
 
                 return Observable.fromPromise(promise)
-                    .do((responseApplications: RegisteredApplication[]) => this._eventBusService.fireEvent(
-                        new ApplicationRegisteredEvent(project, responseApplications, this)
-                    ));
+                    .do((responseApplications: RegisteredApplication[]) => this.fireNewApplicationEvents(responseApplications, project));
             });
+    }
+
+    protected fireNewApplicationEvents(applications: RegisteredApplication|RegisteredApplication[], project: MigrationProject) {
+        this._eventBusService.fireEvent(new ApplicationRegisteredEvent(project, applications, this));
+
+        // This is workaround until we change logic regarding to groups
+        this._applicationGroupService.getByProjectID(project.id).subscribe(groups => {
+            // If there is only 1 group, it is probably the default group
+            // add new applications to this group automatically
+            if (groups.length === 1) {
+                groups.forEach(group => this._eventBusService.fireEvent(new ApplicationAssignedToGroupEvent(group, applications, this)));
+            }
+        });
     }
 
     getMultipartUploader() {
@@ -203,7 +215,14 @@ export class RegisteredApplicationService extends AbstractService {
     deleteApplication(project: MigrationProject, application: RegisteredApplication) {
         let url = Constants.REST_BASE + RegisteredApplicationService.SINGLE_APPLICATION_URL.replace('{appId}', application.id.toString());
         return this._http.delete(url)
-            .do(_ => this._eventBusService.fireEvent(new ApplicationDeletedEvent(project, application, this)))
+            .do(_ => {
+                this._eventBusService.fireEvent(new ApplicationDeletedEvent(project, application, this));
+
+                // This is workaround until we change logic regarding to groups
+                this._applicationGroupService.getByProjectID(project.id).subscribe(appGroups => {
+                    appGroups.forEach(group => this._eventBusService.fireEvent(new ApplicationRemovedFromGroupEvent(group, application, this)));
+                });
+            })
             .catch(this.handleError);
     }
 }

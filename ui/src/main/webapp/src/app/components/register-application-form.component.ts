@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, AfterViewInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute, Router, NavigationEnd} from "@angular/router";
 import {FileUploader} from "ng2-file-upload/ng2-file-upload";
 
 import {RegisteredApplication, RegistrationType} from "windup-services";
@@ -11,6 +11,8 @@ import {ApplicationGroup} from "windup-services";
 import {FormComponent} from "./form.component";
 import {Constants} from "../constants";
 import {MigrationProject} from "windup-services";
+import {Subscription} from "rxjs";
+import {RouteFlattenerService} from "../services/route-flattener.service";
 
 @Component({
     templateUrl: "./register-application-form.component.html",
@@ -52,6 +54,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     private isDirWithApps: boolean = false;
     protected isAllowUploadMultiple: boolean = true;
 
+    protected routerSubscription: Subscription;
     project: MigrationProject;
 
     constructor(
@@ -59,7 +62,8 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
         protected _activatedRoute: ActivatedRoute,
         protected _fileService: FileService,
         protected _registeredApplicationService: RegisteredApplicationService,
-        protected _formBuilder: FormBuilder
+        protected _formBuilder: FormBuilder,
+        protected _routeFlattener: RouteFlattenerService
     ) {
         super();
         this.multipartUploader = _registeredApplicationService.getMultipartUploader();
@@ -79,21 +83,24 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
             isDirWithAppsCheckBox: [] // TODO: Validate if appPathToRegister has a directory if this is true.
         });
 
-        /*
-         * parent.parent is workaround for this issue: https://github.com/angular/angular/issues/12767
-         */
-        this._activatedRoute.parent.parent.data.subscribe((data: {applicationGroup: ApplicationGroup}) => {
-            this.applicationGroup = data.applicationGroup;
-            this.multipartUploader.setOptions({
-                url: Constants.REST_BASE + RegisteredApplicationService.UPLOAD_URL.replace('{projectId}', this.project.id.toString()),
-                method: 'POST',
-                disableMultipart: false
-            });
+        this.routerSubscription = this._router.events.filter(event => event instanceof NavigationEnd).subscribe(_ => {
+            let flatRouteData = this._routeFlattener.getFlattenedRouteData(this._activatedRoute.snapshot);
+
+            if (flatRouteData.data['applicationGroup']) {
+                this.applicationGroup = flatRouteData.data['applicationGroup'];
+                this.project = this.applicationGroup.migrationProject;
+                this.multipartUploader.setOptions({
+                    url: Constants.REST_BASE + RegisteredApplicationService.UPLOAD_URL.replace('{projectId}', this.project.id.toString()),
+                    method: 'POST',
+                    disableMultipart: false
+                });
+            }
         });
     }
 
     ngOnDestroy(): void {
         this.multipartUploader.clearQueue();
+        this.routerSubscription.unsubscribe();
     }
 
     protected register() {
