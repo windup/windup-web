@@ -42,7 +42,7 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
     {
         RegisteredApplication application = this.getApplication(appId);
 
-        return this.registeredApplicationService.updateApplication(application, data);
+        return this.registeredApplicationService.updateApplicationByUpload(application, data);
     }
 
     @Override

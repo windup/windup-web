@@ -3,7 +3,6 @@ package org.jboss.windup.web.services.rest;
 import java.util.Collection;
 
 import javax.inject.Inject;
-import javax.validation.Valid;
 
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.windup.web.services.model.MigrationProject;
@@ -35,7 +34,7 @@ public class MigrationProjectRegisteredApplicationsEndpointImpl implements Migra
     {
         MigrationProject project = this.migrationProjectService.getMigrationProject(projectId);
 
-        return this.registeredApplicationService.registerApplication(data, project);
+        return this.registeredApplicationService.registerApplicationByUpload(data, project);
     }
 
     @Override
@@ -59,6 +58,6 @@ public class MigrationProjectRegisteredApplicationsEndpointImpl implements Migra
     {
         MigrationProject project = this.migrationProjectService.getMigrationProject(projectId);
 
-        return this.registeredApplicationService.registerMultipleApplications(data, project);
+        return this.registeredApplicationService.registerMultipleApplicationsByUpload(data, project);
     }
 }

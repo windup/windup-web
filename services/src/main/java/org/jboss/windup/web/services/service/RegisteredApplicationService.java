@@ -82,7 +82,7 @@ public class RegisteredApplicationService
     }
 
     @Transactional
-    public RegisteredApplication registerApplication(MultipartFormDataInput data, MigrationProject project)
+    public RegisteredApplication registerApplicationByUpload(MultipartFormDataInput data, MigrationProject project)
     {
         Map<String, List<InputPart>> uploadForm = data.getFormDataMap();
         List<InputPart> inputParts = uploadForm.get("file");
@@ -127,7 +127,20 @@ public class RegisteredApplicationService
 
         List<RegisteredApplication> registeredApplicationList = new ArrayList<>();
 
-        for (File file : directory.listFiles((dir, name) -> {
+        for (File file : this.getFilesFromDirectory(directory, allowedExtensions))
+        {
+            RegisteredApplication application = this.registerApplicationByPath(project, file.getPath());
+            registeredApplicationList.add(application);
+        }
+
+        this.entityManager.merge(project);
+
+        return registeredApplicationList;
+    }
+
+    private File[] getFilesFromDirectory(File directory, String[] allowedExtensions)
+    {
+        return directory.listFiles((dir, name) -> {
             for (String ext : allowedExtensions)
             {
                 if (name.endsWith(ext))
@@ -137,22 +150,7 @@ public class RegisteredApplicationService
             }
 
             return false;
-        }))
-        {
-            RegisteredApplication application = this.createApplication(project);
-            application.setInputPath(file.getPath());
-            application.setTitle(file.getName());
-            project.addApplication(application);
-
-            this.entityManager.persist(application);
-            this.enqueuePackageDiscovery(application);
-
-            registeredApplicationList.add(application);
-        }
-
-        this.entityManager.merge(project);
-
-        return registeredApplicationList;
+        });
     }
 
     @Transactional
@@ -168,8 +166,11 @@ public class RegisteredApplicationService
             }
         }
 
+        File file = new File(path);
+
         RegisteredApplication application = this.createApplication(project);
         application.setInputPath(path);
+        application.setTitle(file.getName());
 
         application.setMigrationProject(project);
         project.addApplication(application);
@@ -214,6 +215,8 @@ public class RegisteredApplicationService
         PackageMetadata packageMetadata = new PackageMetadata();
         application.setPackageMetadata(packageMetadata);
 
+        this.entityManager.persist(packageMetadata);
+        this.entityManager.persist(application);
 
         Set<ApplicationGroup> projectGroups = project.getGroups();
 
@@ -229,14 +232,11 @@ public class RegisteredApplicationService
             this.entityManager.merge(defaultGroup);
         }
 
-        this.entityManager.persist(packageMetadata);
-        this.entityManager.persist(application);
-
         return application;
     }
 
     @Transactional
-    public RegisteredApplication updateApplication(RegisteredApplication application, MultipartFormDataInput data)
+    public RegisteredApplication updateApplicationByUpload(RegisteredApplication application, MultipartFormDataInput data)
     {
         Map<String, List<InputPart>> uploadForm = data.getFormDataMap();
         List<InputPart> inputParts = uploadForm.get("file");
@@ -303,7 +303,7 @@ public class RegisteredApplicationService
     }
 
     @Transactional
-    public Collection<RegisteredApplication> registerMultipleApplications(MultipartFormDataInput data, MigrationProject project)
+    public Collection<RegisteredApplication> registerMultipleApplicationsByUpload(MultipartFormDataInput data, MigrationProject project)
     {
         Map<String, List<InputPart>> uploadForm = data.getFormDataMap();
         List<InputPart> inputParts = uploadForm.get("file");
