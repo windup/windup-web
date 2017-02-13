@@ -24,6 +24,7 @@
             Documention is here: https://wiki.jenkins-ci.org/display/JENKINS/Building+a+maven2+project
         -->
         <jenkins.karmaTests.reportsDirectory>target/karma-reports</jenkins.karmaTests.reportsDirectory>
+        <webpack.environment>development</webpack.environment>
     </properties>
 
     <dependencies>
@@ -199,6 +200,7 @@
                                 <argument>--progress</argument>
                                 <argument>--profile</argument>
                                 <argument>--bail</argument>
+                                <argument>--env=${webpack.environment}</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -246,7 +248,9 @@
                 <windup.tsmodelgen.importPathToWebapp>../../..</windup.tsmodelgen.importPathToWebapp>
             </properties>
             <id>extractTypescriptModels</id>
-            <activation> <activeByDefault>true</activeByDefault> </activation>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <build>
                 <plugins>
                     <!-- Delete old TS models -->
@@ -258,7 +262,9 @@
                             <execution>
                                 <id>delete-tsModels</id>
                                 <phase>validate</phase>
-                                <goals> <goal>clean</goal> </goals>
+                                <goals>
+                                    <goal>clean</goal>
+                                </goals>
                                 <configuration>
                                     <excludeDefaultDirectories>true</excludeDefaultDirectories>
                                     <filesets>
@@ -282,7 +288,9 @@
                             <execution>
                                 <id>unpack-tsModels</id>
                                 <phase>initialize</phase>
-                                <goals> <goal>unpack</goal> </goals>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
                                 <configuration>
                                     <artifactItems>
                                         <artifactItem>
@@ -308,11 +316,15 @@
                             <execution>
                                 <id>process-tsModels</id>
                                 <phase>initialize</phase>
-                                <goals> <goal>copy-resources</goal> </goals>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
                                 <configuration>
                                     <resources><resource>
                                         <directory>target/tsModels-tmp</directory>
-                                        <includes> <include>**/*.ts</include> </includes>
+                                        <includes>
+                                            <include>**/*.ts</include>
+                                        </includes>
                                         <filtering>true</filtering>
                                     </resource></resources>
                                     <delimiters>

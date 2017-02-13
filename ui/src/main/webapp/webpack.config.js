@@ -1,8 +1,8 @@
 module.exports = function(environment) {
   var mode;
 
-  if (environment && environment.hasOwnProperty('environment')) {
-    mode = environment.environment;
+  if (environment) {
+    mode = environment;
   } else {
     mode = process.env.NODE_ENV;
   }
