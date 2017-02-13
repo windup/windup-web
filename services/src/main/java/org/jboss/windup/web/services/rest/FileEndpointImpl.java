@@ -15,8 +15,6 @@ public class FileEndpointImpl implements FileEndpoint
     {
         if (!Files.isReadable(path))
             return false;
-        if (!Files.isDirectory(path))
-            return false;
 
         return true;
     }
