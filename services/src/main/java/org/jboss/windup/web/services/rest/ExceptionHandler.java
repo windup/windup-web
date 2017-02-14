@@ -13,7 +13,7 @@ public class ExceptionHandler implements ExceptionMapper<WebApplicationException
     public Response toResponse(WebApplicationException exception)
     {
         return Response.status(exception.getResponse().getStatus())
-                    .entity(new ErrorMessage(exception.getMessage()))
+                    .entity(new ErrorInfo(exception.getMessage()))
                     .type(MediaType.APPLICATION_JSON)
                     .build();
     }
