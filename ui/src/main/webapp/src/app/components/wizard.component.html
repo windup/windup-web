@@ -1,0 +1,9 @@
+<ul class="steps-container">
+    <li class="steps" *ngFor="let step of wizardSteps" [ngClass]="{'active': step?.name === currentStep?.name}">
+        <span>
+            <a>{{step.name}}</a>
+        </span>
+    </li>
+</ul>
+
+<router-outlet></router-outlet>

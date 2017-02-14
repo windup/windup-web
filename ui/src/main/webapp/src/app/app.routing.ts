@@ -27,6 +27,7 @@ import {SourceReportComponent} from "./components/reports/source/source-report.c
 import {ApplicationDetailsComponent} from "./components/reports/application-details/application-details.component";
 import {ReportFilterComponent} from "./components/reports/filter/report-filter.component";
 import {RuleProviderExecutionsComponent} from "./components/reports/rule-provider-executions/rule-provider-executions.component";
+import {WizardComponent} from "./components/wizard.component";
 
 export const appRoutes: Routes = [
     {path: "login", component: LoginComponent},
@@ -54,6 +55,35 @@ export const appRoutes: Routes = [
                     },
                     {path: "project-list",           component: ProjectListComponent,   data: {displayName: "Project List"}},
                     {path: 'executions', component: AllExecutionsComponent, data: {displayName: 'Global Executions List'}}
+                ]
+            },
+            {
+                path: 'wizard',
+                component: DefaultLayoutComponent,
+                children: [
+                    {
+                        path: '',
+                        component: WizardComponent,
+                        data: {
+                            steps: [
+                                { name: 'Create New Project', path: 'create-project' },
+                                { name: 'Add Applications', path: 'add-applications' },
+                                { name: 'Configure Analysis', path: 'configure-analysis' }
+                            ],
+                            wizard: true
+                        },
+                        children: [
+                            { path: 'create-project', component: MigrationProjectFormComponent, data: {displayName: 'Create Project', wizard: true} },
+                            {
+                                path: 'group/:groupId',
+                                resolve: { applicationGroup: ApplicationGroupResolve },
+                                children: [
+                                    { path: 'add-applications', component: RegisterApplicationFormComponent },
+                                    { path: 'configure-analysis', component: AnalysisContextFormComponent }
+                                ]
+                            },
+                        ]
+                    }
                 ]
             },
             {

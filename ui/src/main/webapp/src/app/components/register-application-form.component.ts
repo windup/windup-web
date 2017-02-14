@@ -54,8 +54,9 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     private isDirWithApps: boolean = false;
     protected isAllowUploadMultiple: boolean = true;
 
-    protected routerSubscription: Subscription;
+    isInWizard: boolean = false;
     project: MigrationProject;
+    routerSubscription: Subscription;
 
     constructor(
         protected _router: Router,
@@ -89,12 +90,18 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
             if (flatRouteData.data['applicationGroup']) {
                 this.applicationGroup = flatRouteData.data['applicationGroup'];
                 this.project = this.applicationGroup.migrationProject;
-                this.multipartUploader.setOptions({
-                    url: Constants.REST_BASE + RegisteredApplicationService.UPLOAD_URL.replace('{projectId}', this.project.id.toString()),
-                    method: 'POST',
-                    disableMultipart: false
-                });
             }
+            let uploadUrl = Constants.REST_BASE + RegisteredApplicationService.UPLOAD_URL;
+            uploadUrl = uploadUrl.replace("{projectId}", this.project.id.toString());
+            console.log("URL: " + uploadUrl);
+
+            this.multipartUploader.setOptions({
+                url: uploadUrl,
+                method: 'POST',
+                disableMultipart: false
+            });
+
+            this.isInWizard = flatRouteData.data.hasOwnProperty('wizard') && flatRouteData.data['wizard'];
         });
     }
 
@@ -112,20 +119,18 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
         }
     }
 
-
-
     private registerPath() {
         console.log("Registering path: " + this.fileInputPath);
 
         if (this.isDirWithApps) {
             this._registeredApplicationService.registerApplicationInDirectoryByPath(this.project, this.fileInputPath)
                 .subscribe(
-                    application => this.rerouteToApplicationList(),
+                    application => this.navigateOnSuccess(),
                     error => this.handleError(error)
                 );
         } else {
             this._registeredApplicationService.registerByPath(this.project, this.fileInputPath).subscribe(
-                application => this.rerouteToApplicationList(),
+                application => this.navigateOnSuccess(),
                 error => this.handleError(<any>error)
             )
         }
@@ -138,18 +143,34 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
         }
 
         this._registeredApplicationService.uploadApplications(this.project).subscribe(
-            application => this.rerouteToApplicationList(),
+            application => this.navigateOnSuccess(),
             error => this.handleError(<any>error)
         );
     }
 
-    protected rerouteToApplicationList() {
+    navigateOnSuccess() {
+        if (this.isInWizard) {
+            this.navigateAway(['/wizard', 'group', this.applicationGroup.id, 'configure-analysis']);
+        } else {
+            this.rerouteToApplicationList();
+        }
+    }
+
+    protected navigateAway(path: any[]) {
         this.multipartUploader.clearQueue();
-        this._router.navigate([`/projects/${this.applicationGroup.migrationProject.id}/groups/${this.applicationGroup.id}`]);
+        this._router.navigate(path);
+    }
+
+    protected rerouteToApplicationList() {
+        this.navigateAway([`/projects/${this.applicationGroup.migrationProject.id}/groups/${this.applicationGroup.id}`]);
     }
 
     private cancelRegistration() {
-        this.rerouteToApplicationList();
+        if (this.isInWizard) {
+            this.navigateAway(['/']);
+        } else {
+            this.rerouteToApplicationList();
+        }
     }
 
     private changeMode(mode: RegistrationType) {
