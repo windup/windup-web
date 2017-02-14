@@ -30,6 +30,11 @@ module.exports = webpackMerge(commonConfig, {
             mangle: {
                 keep_fnames: true
             }
+        }),
+        new webpack.DefinePlugin({
+            'process.env': {
+                'ENV': JSON.stringify(ENV)
+            }
         })
     ]
 });
