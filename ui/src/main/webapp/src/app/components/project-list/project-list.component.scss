@@ -53,7 +53,7 @@ a {
 
 /* Action buttons padding */
 .list-view-pf.projects-list .list-view-pf-actions span { margin-left: 1em; }
-.list-view-pf.projects-list .list-view-pf-actions span a i { font-size: 16pt; }
+.list-view-pf.projects-list .list-view-pf-actions span a i { font-size: inherit; }
 
 @media (min-width: 650px) {
     .projects-bar {
