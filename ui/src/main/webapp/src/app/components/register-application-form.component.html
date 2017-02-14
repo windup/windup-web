@@ -85,9 +85,9 @@
             <div class="form-group"  *ngIf="isAllowUploadMultiple">
                 <div class="col-md-10">
                     <div class="checkbox">
-                        <label i18n="Directory Help Text">
+                        <label>
                             <input [(ngModel)]="isDirWithApps" formControlName="isDirWithAppsCheckBox" type="checkbox" i18n="Directory Contains Multiple Apps">
-                            Directory Contains Multiple Apps
+                            <ng-container i18n>Directory Contains Multiple Apps</ng-container>
                         </label>
                         <div class="description" i18n="Directory Contains Multiple Apps Help Text">
                             If box is checked, the given path will be treated as a directory with multiple
