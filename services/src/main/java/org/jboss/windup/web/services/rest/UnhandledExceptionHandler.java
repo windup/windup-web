@@ -1,5 +1,6 @@
 package org.jboss.windup.web.services.rest;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ws.rs.WebApplicationException;
@@ -7,72 +8,68 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
+import org.jboss.windup.web.services.ServerMode;
 
 /**
- * This exception handler should handle all runtime exceptions. It should prevent server from returning HTML Error page with stack trace and internals
- * of error.
+ * This exception handler should handle all runtime exceptions.
+ * It should prevent server from returning HTML Error page with stack trace and internals of error.
  *
  * @author <a href="mailto:dklingenberg@gmail.com">David Klingenberg</a>
+ * @author <a href="mailto:zizka@seznam.cz">Ondrej Zizka</a>
  */
 @Provider
 public class UnhandledExceptionHandler implements ExceptionMapper<RuntimeException>
 {
     private static Logger LOG = Logger.getLogger(UnhandledExceptionHandler.class.getSimpleName());
-    private final String SERVER_MODE_ENV_VARIABLE = "SERVER_MODE";
-    private ExceptionHandler applicationExceptionHandler = new ExceptionHandler();
+    private final ExceptionHandler applicationExceptionHandler = new ExceptionHandler();
 
     @Override
     public Response toResponse(RuntimeException exception)
     {
         Throwable cause = exception.getCause();
-
         if (cause instanceof WebApplicationException)
-        {
             return this.applicationExceptionHandler.toResponse((WebApplicationException) cause);
-        }
 
-        String responseBody;
+        LOG.log(Level.SEVERE, cause.getMessage(), cause);
 
-        if (this.getServerMode() == ServerMode.DEV)
+        ErrorInfo errorInfo;
+        if (ServerMode.isProduction())
         {
-            responseBody = cause.getMessage();
+            errorInfo = new ErrorInfo(Response.Status.INTERNAL_SERVER_ERROR.getReasonPhrase());
+
+            if (null != findFirstOccurenceInExceptionChain(org.hibernate.exception.ConstraintViolationException.class, exception))
+                errorInfo.setMessage("Database constraints were not met.");
+            else if (null != findFirstOccurenceInExceptionChain("org.h2.jdbc.JdbcSQLException", exception))
+                errorInfo.setMessage("Database error occurred.");
         }
         else
         {
-            responseBody = Response.Status.INTERNAL_SERVER_ERROR.getReasonPhrase();
+            Throwable rootCause = exception;
+            while (exception.getCause() != null)
+                rootCause = exception.getCause();
+
+            errorInfo = new ErrorInfo(cause.getMessage()).setOuterException(exception).setRootCause(rootCause);
         }
 
-        LOG.severe(cause.getMessage());
-
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(new ErrorMessage(responseBody))
+                    .entity(errorInfo)
                     .type(MediaType.APPLICATION_JSON)
                     .build();
     }
 
-    protected ServerMode getServerMode()
+    static final Throwable findFirstOccurenceInExceptionChain(Class<? extends Throwable> type, Throwable exception)
     {
-        ServerMode modeEnum = ServerMode.PROD;
-
-        if (System.getenv().containsKey(SERVER_MODE_ENV_VARIABLE))
-        {
-            String modeAsString = System.getenv(SERVER_MODE_ENV_VARIABLE);
-
-            try
-            {
-                modeEnum = ServerMode.valueOf(modeAsString);
-            }
-            catch (IllegalArgumentException e)
-            {
-                LOG.warning(e.getMessage());
-            }
-        }
-
-        return modeEnum;
+        Throwable cause = exception;
+        while (cause != null && type.isAssignableFrom(cause.getClass()))
+            cause = exception.getCause();
+        return cause;
     }
 
-    public enum ServerMode
+    static final Throwable findFirstOccurenceInExceptionChain(String typeName, Throwable exception)
     {
-        DEV, PROD
+        Throwable cause = exception;
+        while (cause != null && typeName.equals(cause.getClass().getName()))
+            cause = exception.getCause();
+        return cause;
     }
 }
