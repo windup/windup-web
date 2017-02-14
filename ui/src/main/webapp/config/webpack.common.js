@@ -23,7 +23,7 @@ module.exports = {
             {
                 test: /\.ts$/,
                 exclude: /jquery*\.js/,
-                loaders: ['awesome-typescript-loader', 'angular2-template-loader']
+                loaders: '@ngtools/webpack'
             },
             {
                 test: /\.html$/,
@@ -41,7 +41,7 @@ module.exports = {
             {
                 test: /\.css$/,
                 exclude: helpers.root('src', 'app'),
-                loader: ExtractTextPlugin.extract({ fallbackLoader: 'style-loader', loader: ['css-loader?sourceMap'], publicPath: '../' })
+                loader: ExtractTextPlugin.extract({ fallback: 'style-loader', loader: ['css-loader?sourceMap'], publicPath: '../' })
             },
             {
                 test: /\.scss$/,
