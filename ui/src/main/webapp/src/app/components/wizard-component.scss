@@ -1,0 +1,133 @@
+$background-color: #D4F0FA;
+$background-color-active: #088CCE;
+
+$border-color: #00A6E0;
+$border-color-active: #088CCE;
+
+$font-color: black;
+$font-color-active: white;
+
+@media(min-width: 1200px) {
+  .steps-container {
+    width: 1000px;
+    margin: auto auto;
+  }
+}
+
+.steps-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  list-style: none;
+}
+
+.steps {
+  height: 50px;
+  width: 150px;
+  text-align: center;
+  line-height: 50px;
+  position: relative;
+  margin: 10px 0 10px 20px;
+  display: inline-block;
+
+  span {
+    position: relative;
+    z-index: 2;
+  }
+
+  &:before, &:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 25px;
+  };
+
+  a {
+    color: $font-color;
+  }
+
+  &:before {
+    top: -2px;
+    border-top: 2px solid $border-color;
+    border-right: 2px solid $border-color;
+    border-left: 2px solid $border-color;
+    background: $background-color;
+    -moz-transform: skew(30deg);
+    -webkit-transform: skew(30deg);
+    transform: skew(30deg);
+  }
+
+  &:after {
+    bottom: -2px;
+    border-left: 2px solid $border-color;
+    border-right: 2px solid $border-color;
+    border-bottom: 2px solid $border-color;
+    background: $background-color;
+    -moz-transform: skew(-30deg);
+    -webkit-transform: skew(-30deg);
+    transform: skew(-30deg);
+  }
+
+  &:first-child:before, &:first-child:after {
+    border-left: none;
+  }
+
+  &:first-child {
+    background: $background-color;
+    border-left: 2px solid $border-color;
+    border-top: 2px solid $border-color;
+    border-bottom: 2px solid $border-color;
+    margin-right: 18px;
+  }
+
+  &:last-child {
+    background: $background-color;
+    border-right: 2px solid $border-color;
+    border-top: 2px solid $border-color;
+    border-bottom: 2px solid $border-color;
+    margin-left: 38px;
+  }
+
+  &:last-child:before, &:last-child:after {
+    border-right: none;
+  }
+
+  &:first-child:before,
+  &:first-child:after {
+    left: 18px;
+  }
+
+  &:last-child:before,
+  &:last-child:after {
+    left: -18px;
+  }
+
+  &.active {
+    a {
+      color: $font-color-active;
+      font-weight: 700;
+    }
+
+    &:before, &:after, &:first-child, &:last-child {
+      background: $background-color-active;
+      border-color: $border-color-active;
+    }
+  }
+}
+
+.steps {
+  flex: 1 1 auto;
+}
+
+.steps:last-child {
+  margin-right: 30px;
+}
+
+*, :before, :after {
+  box-sizing: content-box;
+}
+
+a, a:hover {
+  text-decoration: none;
+}

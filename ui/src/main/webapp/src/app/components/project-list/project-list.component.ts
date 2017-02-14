@@ -77,7 +77,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     }
 
     createMigrationProject() {
-        this._router.navigate(['/projects/create']);
+        this._router.navigate(['/wizard/create-project']);
     }
 
     editProject(event: Event, project: MigrationProject) {
