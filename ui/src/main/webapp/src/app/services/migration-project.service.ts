@@ -61,7 +61,7 @@ export class MigrationProjectService extends AbstractService {
             .catch(this.handleError);
     }
 
-    get(id:number) {
+    get(id: number) {
         let headers = new Headers();
         let options = new RequestOptions({ headers: headers });
 
@@ -70,12 +70,18 @@ export class MigrationProjectService extends AbstractService {
             .catch(this.handleError);
     }
 
-    getAll(): Observable<MigrationProject[]> {
+
+    getAll(): Observable<Array<MigrationProject & HasAppCount>> {
         let headers = new Headers();
         let options = new RequestOptions({ headers: headers });
 
-        return this._http.get(Constants.REST_BASE + this.GET_MIGRATION_PROJECTS_URL, options)
-            .map(res => <MigrationProject[]> res.json())
+        return this._http.get(Constants.REST_BASE + this.GET_MIGRATION_PROJECTS_URL + "?withCount=true", options)
+            .map(res => <MigrationProjectAndCount[]> res.json())
+            // The consuming code still sees  MigrationProject, only with .appCount added.
+            .map(entries => entries.map(entry => (entry.migrationProject["applicationCount"] = entry.applicationCount, entry.migrationProject)))
             .catch(this.handleError);
     }
 }
+
+export interface HasAppCount{ applicationCount: number; }
+type MigrationProjectAndCount = { migrationProject: MigrationProject } & HasAppCount;
