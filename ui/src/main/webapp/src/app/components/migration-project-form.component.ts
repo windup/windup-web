@@ -9,16 +9,19 @@ import {RouteFlattenerService} from "../services/route-flattener.service";
 import {ApplicationGroupService} from "../services/application-group.service";
 
 @Component({
-    templateUrl: './migration-project-form.component.html'
+    templateUrl: './migration-project-form.component.html',
+    styles: [`
+        .project-edit .finish-buttons .btn { padding: 0 6em; margin-right: 2em; }
+    `]
 })
 export class MigrationProjectFormComponent extends FormComponent implements OnInit, OnDestroy
 {
-    title: string = 'Create Migration Project';
+    title: string = "Create Migration Project";
 
-    model:MigrationProject = <MigrationProject>{};
+    model: MigrationProject = <MigrationProject>{};
 
     isInWizard: boolean = false;
-    editMode:boolean = false;
+    editMode: boolean = false;
 
     errorMessages: string[];
     private routerSubscription: Subscription;
@@ -49,6 +52,10 @@ export class MigrationProjectFormComponent extends FormComponent implements OnIn
 
     ngOnDestroy(): void {
         this.routerSubscription.unsubscribe();
+    }
+
+    getDescriptionHeight() {
+        return Math.min(4 + (this.model.description ? this.model.description.length : 0) / 80, 25)
     }
 
     save() {
