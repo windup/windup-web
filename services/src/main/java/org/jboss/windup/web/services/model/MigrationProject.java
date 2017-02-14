@@ -53,14 +53,14 @@ public class MigrationProject implements Serializable
     @Column(name = "version")
     private int version;
 
-    @Column(length = 256)
+    @Column(length = 256, unique = true, nullable = false)
     @Size(min = 1, max = 256)
     @NotNull
     private String title;
 
     @Size(max = 4096)
     @NotNull
-    @Column(length = 4096, nullable = false, unique = true)
+    @Column(length = 4096, nullable = false)
     @org.hibernate.annotations.ColumnDefault("")
     private String description = "";
 

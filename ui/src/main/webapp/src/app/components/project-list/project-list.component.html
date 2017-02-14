@@ -30,7 +30,9 @@
         </div>
 
         <div *ngIf="projects?.length > 0" class="list-group list-view-pf projects-list">
-            <div *ngFor="let project of projects" class="list-group-item project-info tile-click" (click)="viewProject($event, project)">
+            <div *ngFor="let project of projects"
+                class="list-group-item  project-info  tile-click"
+                (click)="viewProject($event, project)">
                 <div class="list-view-pf-actions">
                     <span class="fa-lg project-action-item" i18n-title="Edit project" title="Edit project">
                         <a (click)="editProject($event, project)" class="action-button">
