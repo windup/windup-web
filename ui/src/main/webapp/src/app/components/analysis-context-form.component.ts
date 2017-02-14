@@ -239,7 +239,11 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
     }
 
     cancel() {
-        this.navigateBack();
+        if (!this.isInWizard) {
+            this.navigateBack();
+        } else {
+            this._router.navigate(['/']);
+        }
     }
 
     navigateBack() {
