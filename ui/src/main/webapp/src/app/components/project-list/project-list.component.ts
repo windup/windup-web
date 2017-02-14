@@ -17,7 +17,7 @@ import {SortingService, OrderDirection} from "../../services/sorting.service";
         SortingService
     ]
 })
-export class ProjectListComponent implements OnInit, OnDestroy {
+export class ProjectListComponent implements OnInit {
     private _originalProjects: MigrationProject[] = [];
 
     get totalProjectCount():number {
@@ -33,8 +33,6 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     readonly deleteProjectModal: ConfirmationModalComponent;
 
     searchValue: string = '';
-
-    private _refreshIntervalID;
 
     sort = {
         sortOptions: [
@@ -56,12 +54,6 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     ngOnInit():any {
         this.updateSort();
         this.getMigrationProjects();
-        this._refreshIntervalID = setInterval(() => this.getMigrationProjects(), 30000);
-    }
-
-    ngOnDestroy():any {
-        if (this._refreshIntervalID)
-            clearInterval(this._refreshIntervalID);
     }
 
     getMigrationProjects() {

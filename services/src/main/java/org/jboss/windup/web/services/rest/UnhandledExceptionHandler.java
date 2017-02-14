@@ -27,6 +27,9 @@ public class UnhandledExceptionHandler implements ExceptionMapper<RuntimeExcepti
     public Response toResponse(RuntimeException exception)
     {
         Throwable cause = exception.getCause();
+        if (cause == null)
+            cause = exception;
+
         if (cause instanceof WebApplicationException)
             return this.applicationExceptionHandler.toResponse((WebApplicationException) cause);
 
