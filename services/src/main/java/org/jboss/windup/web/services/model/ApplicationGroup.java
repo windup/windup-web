@@ -11,6 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -66,7 +67,7 @@ public class ApplicationGroup implements Serializable
     @Fetch(FetchMode.SELECT)
     private AnalysisContext analysisContext;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "applicationGroup", cascade = CascadeType.REMOVE)
+    @ManyToMany(fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
     private Set<RegisteredApplication> applications;
 
@@ -206,7 +207,7 @@ public class ApplicationGroup implements Serializable
         }
 
         this.getApplications().add(application);
-        application.setApplicationGroup(this);
+        application.addApplicationGroup(this);
     }
 
     /**
@@ -222,7 +223,7 @@ public class ApplicationGroup implements Serializable
         }
 
         this.getApplications().remove(application);
-        application.setApplicationGroup(null);
+        application.removeApplicationGroup(this);
     }
 
     /**

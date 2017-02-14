@@ -20,72 +20,32 @@ public interface RegisteredApplicationEndpoint
 {
     String REGISTERED_APPLICATIONS = "/registeredApplications";
 
-    /**
-     * Gets the list of all registered applications.
-     */
-    @Path("list")
     @GET
-    Collection<RegisteredApplication> getRegisteredApplications();
+    Collection<RegisteredApplication> getAllApplications();
 
-    @Path("id/{id}")
+    @Path("{id}")
     @GET
     RegisteredApplication getApplication(@PathParam("id") long id);
 
     /**
-     * Registers a new application with Windup.
-     */
-    @Path("appGroup/{appGroupId}")
-    @POST
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces("application/json")
-    RegisteredApplication registerApplication(MultipartFormDataInput data, @PathParam("appGroupId") long appGroupId);
-
-    /**
-     * Registers a new application with Windup by its path on the server.
-     */
-    @Path("register-path/{appGroupId}")
-    @POST
-    RegisteredApplication registerApplicationByPath(@PathParam("appGroupId") long appGroupId, @Valid RegisteredApplication application);
-
-    /**
-     * Registers all applications found in directory path on the server.
-     */
-    @Path("register-directory-path/{appGroupId}")
-    @POST
-    Collection<RegisteredApplication> registerApplicationsInDirectoryByPath(@PathParam("appGroupId") long appGroupId, String directoryPath);
-
-    /**
      * Updates an existing application.
      */
-    @Path("update-application")
+    @Path("{id}/update-path")
     @PUT
-    RegisteredApplication update(@Valid RegisteredApplication application);
-
-    /**
-     * Removes the registration entry for an application.
-     */
-    @Path("unregister/{id}")
-    @DELETE
-    void unregister(@PathParam("id") long applicationID);
+    RegisteredApplication updatePath(@Valid RegisteredApplication application);
 
     /**
      * Updates existing application
      */
-    @Path("{id}")
+    @Path("{id}/reupload")
     @PUT
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    RegisteredApplication updateApplication(MultipartFormDataInput data, @PathParam("id") long appId);
+    RegisteredApplication reuploadApplication(@PathParam("id") long appId, MultipartFormDataInput data);
 
+    /**
+     * Removes the registration entry for an application.
+     */
     @Path("{id}")
     @DELETE
     void deleteApplication(@PathParam("id") long appId);
-
-    /**
-     * Registers a multiple applications with Windup.
-     */
-    @Path("appGroup/{appGroupId}/multiple")
-    @POST
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces("application/json")
-    Collection<RegisteredApplication> registerMultipleApplications(MultipartFormDataInput data, @PathParam("appGroupId") long appGroupId);
 }

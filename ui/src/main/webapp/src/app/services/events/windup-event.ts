@@ -1,5 +1,6 @@
 import {ApplicationGroup, WindupExecution} from "windup-services";
 import {RegisteredApplication} from "windup-services";
+import {MigrationProject} from "windup-services";
 
 export abstract class WindupEvent {
     public static TYPE = 'WindupEvent';
@@ -92,12 +93,27 @@ export class ExecutionCompletedEvent extends ExecutionUpdatedEvent {
     }
 }
 
-export class ApplicationRegistrationEvent extends ApplicationGroupEvent {
+export class MigrationProjectEvent extends WindupEvent {
+    protected _migrationProject: MigrationProject;
+    public static TYPE = 'MigrationProjectEvent';
+
+    constructor(project: MigrationProject, source: any) {
+        super(MigrationProjectEvent.TYPE, source);
+        this._migrationProject = project;
+    }
+
+    public get migrationProject() {
+        return this._migrationProject;
+    }
+
+}
+
+export class ApplicationRegistrationEvent extends MigrationProjectEvent {
     public static TYPE = 'ApplicationRegistrationEvent';
     private _applications: RegisteredApplication[];
 
-    constructor(group: ApplicationGroup, application: RegisteredApplication|RegisteredApplication[], source: any) {
-        super(group, source);
+    constructor(project: MigrationProject, application: RegisteredApplication|RegisteredApplication[], source: any) {
+        super(project, source);
 
         if (!application.hasOwnProperty('length')) {
             this._applications = [ <RegisteredApplication>application ];
@@ -120,5 +136,36 @@ export class ApplicationRegisteredEvent extends ApplicationRegistrationEvent {
 }
 
 export class ApplicationDeletedEvent extends ApplicationRegistrationEvent {
+
+}
+
+export class ApplicationGroupAssignmentEvent extends ApplicationGroupEvent {
+    public static TYPE = 'ApplicationGroupAssignmentEvent';
+    private _applications: RegisteredApplication[];
+
+    constructor(group: ApplicationGroup, application: RegisteredApplication|RegisteredApplication[], source: any) {
+        super(group, source);
+
+        if (!application.hasOwnProperty('length')) {
+            this._applications = [ <RegisteredApplication>application ];
+        } else {
+            this._applications = <RegisteredApplication[]>application;
+        }
+    }
+
+    public get applications(): RegisteredApplication[] {
+        return this._applications;
+    }
+
+    public get type(): string {
+        return ApplicationGroupAssignmentEvent.TYPE;
+    }
+}
+
+export class ApplicationAssignedToGroupEvent extends ApplicationGroupAssignmentEvent {
+
+}
+
+export class ApplicationRemovedFromGroupEvent extends ApplicationGroupAssignmentEvent {
 
 }

@@ -18,6 +18,7 @@ import {FileUploader, FileUploaderOptions} from "ng2-file-upload/ng2-file-upload
 import {MockBackend, MockConnection} from "@angular/http/testing";
 import {EventBusService} from "../../src/app/services/events/event-bus.service";
 import {ApplicationGroup} from "windup-services";
+import {MigrationProject} from "windup-services";
 
 describe("Registered Application Service Test", () => {
     beforeEach(() => {
@@ -78,7 +79,7 @@ describe("Registered Application Service Test", () => {
                 })));
             });
 
-            service.registerByPath(<ApplicationGroup>{id: 0}, inputPath).toPromise()
+            service.registerByPath(<MigrationProject>{id: 0}, inputPath).toPromise()
                 .then(application => {
                     expect(application.inputFilename).toEqual("java");
                 }, error => {

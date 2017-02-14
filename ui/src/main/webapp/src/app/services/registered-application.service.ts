@@ -8,21 +8,29 @@ import {RegisteredApplication} from "windup-services";
 import {AbstractService} from "./abtract.service";
 import {KeycloakService} from "./keycloak.service";
 import {EventBusService} from "./events/event-bus.service";
-import {ApplicationRegisteredEvent, ApplicationDeletedEvent} from "./events/windup-event";
+import {
+    ApplicationRegisteredEvent, ApplicationDeletedEvent,
+    ApplicationRemovedFromGroupEvent, ApplicationAssignedToGroupEvent
+} from "./events/windup-event";
 import {ApplicationGroup} from "windup-services";
+import {MigrationProject} from "windup-services";
+import {ApplicationGroupService} from "./application-group.service";
 
 @Injectable()
 export class RegisteredApplicationService extends AbstractService {
-    public static REGISTERED_APPLICATION_SERVICE_NAME = "/registeredApplications/";
-    public static REGISTER_APPLICATION_URL = "/registeredApplications/appGroup/";
+    public static PROJECT_APPLICATIONS = "/migrationProjects/{projectId}/registeredApplications";
 
-    private GET_APPLICATIONS_URL        = "/registeredApplications/list";
-    private UNREGISTER_URL              = "/registeredApplications/unregister";
-    private UPDATE_APPLICATION_URL      = "/registeredApplications/update-application";
-    private REGISTERED_APP_BY_ID_URL    = '/registeredApplications/id';
-    private REGISTERED_APPLICATIONS_URL = '/registeredApplications';
-    private REGISTER_PATH_URL           = "/registeredApplications/register-path/";
-    private REGISTER_DIRECTORY_URL      = '/registeredApplications/register-directory-path';
+    public static UPLOAD_URL = RegisteredApplicationService.PROJECT_APPLICATIONS + "/upload";
+    public static UPLOAD_MULTIPLE_URL = RegisteredApplicationService.PROJECT_APPLICATIONS + "/upload-multiple";
+    public static REGISTER_PATH_URL = RegisteredApplicationService.PROJECT_APPLICATIONS + "/register-path";
+    public static REGISTER_DIRECTORY_PATH_URL = RegisteredApplicationService.PROJECT_APPLICATIONS + "/register-directory-path";
+
+    public static REGISTERED_APPLICATION_SERVICE_NAME = "/registeredApplications";
+
+    public static GET_APPLICATIONS_URL        = RegisteredApplicationService.REGISTERED_APPLICATION_SERVICE_NAME;
+    public static SINGLE_APPLICATION_URL  = RegisteredApplicationService.REGISTERED_APPLICATION_SERVICE_NAME + '/{appId}';
+    public static UPDATE_APPLICATION_PATH_URL = RegisteredApplicationService.SINGLE_APPLICATION_URL + '/update-path';
+    public static REUPLOAD_APPLICATION_URL    = RegisteredApplicationService.SINGLE_APPLICATION_URL + '/reupload';
 
     private UPLOAD_URL = '/file';
 
@@ -30,6 +38,7 @@ export class RegisteredApplicationService extends AbstractService {
         private _http: Http,
         private _keycloakService:KeycloakService,
         private _multipartUploader: FileUploader,
+        private _applicationGroupService: ApplicationGroupService,
         private _eventBusService: EventBusService
     ) {
         super();
@@ -54,42 +63,34 @@ export class RegisteredApplicationService extends AbstractService {
 
     }
 
-    registerByPath(applicationGroup: ApplicationGroup, path:string):Observable<RegisteredApplication> {
-        let headers = new Headers();
-        let options = new RequestOptions({ headers: headers });
-        headers.append('Content-Type', 'application/json');
-        headers.append('Accept', 'application/json');
-
-        let application = <RegisteredApplication>{};
-        application.inputPath = path;
-
-        RegisteredApplicationService.deriveTitle(application);
-
-        let body = JSON.stringify(application);
-
-        let url = Constants.REST_BASE + this.REGISTER_PATH_URL + applicationGroup.id;
-        return this._http.post(url, body, options)
-            .map(res => <RegisteredApplication> res.json())
-            .do((responseApplication) => this._eventBusService.fireEvent(new ApplicationRegisteredEvent(applicationGroup, responseApplication, this)))
-            .catch(this.handleError);
-    }
-
-    registerApplicationInDirectoryByPath(applicationGroup: ApplicationGroup, path: string): Observable<RegisteredApplication[]> {
+    private _doRegisterByPath<T>(endpoint: string, project: MigrationProject, path: string): Observable<T> {
         let headers = new Headers();
         let options = new RequestOptions({ headers: headers });
         headers.append('Content-Type', 'application/json');
         headers.append('Accept', 'application/json');
 
         let body = path;
-        let url = Constants.REST_BASE + this.REGISTER_DIRECTORY_URL + "/" + applicationGroup.id;
+        let url = endpoint.replace("{projectId}", project.id.toString());
 
         return this._http.post(url, body, options)
-            .map(res => <RegisteredApplication[]> res.json())
-            .do((responseApplications) => this._eventBusService.fireEvent(new ApplicationRegisteredEvent(applicationGroup, responseApplications, this)))
-            .catch(this.handleError);
+            .map(res => <RegisteredApplication> res.json())
+            .catch(this.handleError)
+            .do((responseApplication) => this.fireNewApplicationEvents(responseApplication, project));
     }
 
-    registerApplication(applicationGroup: ApplicationGroup) {
+    registerByPath(project: MigrationProject, path: string): Observable<RegisteredApplication> {
+        let endpoint = Constants.REST_BASE + RegisteredApplicationService.REGISTER_PATH_URL;
+
+        return this._doRegisterByPath<RegisteredApplication>(endpoint, project, path);
+    }
+
+    registerApplicationInDirectoryByPath(project: MigrationProject, path: string): Observable<RegisteredApplication[]> {
+        let endpoint = Constants.REST_BASE + RegisteredApplicationService.REGISTER_DIRECTORY_PATH_URL;
+
+        return this._doRegisterByPath<RegisteredApplication[]>(endpoint, project, path);
+    }
+
+    uploadApplications(project: MigrationProject) {
         return this._keycloakService
             .getToken()
             .flatMap((token:string, index:number) =>
@@ -123,30 +124,42 @@ export class RegisteredApplicationService extends AbstractService {
                 this._multipartUploader.uploadAll();
 
                 return Observable.fromPromise(promise)
-                    .do((responseApplications: RegisteredApplication[]) => this._eventBusService.fireEvent(new ApplicationRegisteredEvent(applicationGroup, responseApplications, this)));
+                    .do((responseApplications: RegisteredApplication[]) => this.fireNewApplicationEvents(responseApplications, project));
             });
+    }
+
+    protected fireNewApplicationEvents(applications: RegisteredApplication|RegisteredApplication[], project: MigrationProject) {
+        this._eventBusService.fireEvent(new ApplicationRegisteredEvent(project, applications, this));
+
+        // This is workaround until we change logic regarding to groups
+        this._applicationGroupService.getByProjectID(project.id).subscribe(groups => {
+            // If there is only 1 group, it is probably the default group
+            // add new applications to this group automatically
+            if (groups.length === 1) {
+                groups.forEach(group => this._eventBusService.fireEvent(new ApplicationAssignedToGroupEvent(group, applications, this)));
+            }
+        });
     }
 
     getMultipartUploader() {
         return this._multipartUploader;
     };
 
-    getApplications() {
-        let headers = new Headers();
-        let options = new RequestOptions({ headers: headers });
-        return this._http.get(Constants.REST_BASE + this.GET_APPLICATIONS_URL, options)
+    getApplications(): Observable<RegisteredApplication[]> {
+        return this._http.get(Constants.REST_BASE + RegisteredApplicationService.GET_APPLICATIONS_URL)
             .map(res => <RegisteredApplication[]> res.json())
             .catch(this.handleError);
     }
 
     get(id: number): Observable<RegisteredApplication> {
-        let url = `${Constants.REST_BASE + this.REGISTERED_APP_BY_ID_URL}/${id}`;
+        let url = Constants.REST_BASE + RegisteredApplicationService.SINGLE_APPLICATION_URL.replace('{appId}', id.toString());
+
         return this._http.get(url)
             .map(response => response.json())
             .catch(this.handleError);
     }
 
-    update(application: RegisteredApplication) {
+    updateByPath(application: RegisteredApplication) {
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
         headers.append('Accept', 'application/json');
@@ -156,7 +169,8 @@ export class RegisteredApplicationService extends AbstractService {
 
         let body = JSON.stringify(application);
 
-        let url = Constants.REST_BASE + this.UPDATE_APPLICATION_URL;
+        let url = Constants.REST_BASE + RegisteredApplicationService.UPDATE_APPLICATION_PATH_URL.replace('{appId}', application.id.toString());
+
         return this._http.put(url, body, options)
             .map(res => <RegisteredApplication> res.json())
             .catch(this.handleError);
@@ -198,17 +212,17 @@ export class RegisteredApplicationService extends AbstractService {
             });
     }
 
-    unregister(group: ApplicationGroup, application: RegisteredApplication) {
-        let url = `${Constants.REST_BASE + this.UNREGISTER_URL}/${application.id}`;
+    deleteApplication(project: MigrationProject, application: RegisteredApplication) {
+        let url = Constants.REST_BASE + RegisteredApplicationService.SINGLE_APPLICATION_URL.replace('{appId}', application.id.toString());
         return this._http.delete(url)
-            .do(_ => this._eventBusService.fireEvent(new ApplicationDeletedEvent(group, application, this)))
-            .catch(this.handleError)
-    }
+            .do(_ => {
+                this._eventBusService.fireEvent(new ApplicationDeletedEvent(project, application, this));
 
-    deleteApplication(group: ApplicationGroup, application: RegisteredApplication) {
-        let url = `${Constants.REST_BASE + this.REGISTERED_APPLICATIONS_URL}/${application.id}`;
-        return this._http.delete(url)
-            .do(_ => this._eventBusService.fireEvent(new ApplicationDeletedEvent(group, application, this)))
+                // This is workaround until we change logic regarding to groups
+                this._applicationGroupService.getByProjectID(project.id).subscribe(appGroups => {
+                    appGroups.forEach(group => this._eventBusService.fireEvent(new ApplicationRemovedFromGroupEvent(group, application, this)));
+                });
+            })
             .catch(this.handleError);
     }
 }

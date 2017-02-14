@@ -11,6 +11,7 @@ import {WindupExecutionService} from "../services/windup-execution.service";
 import {EventBusService} from "../services/events/event-bus.service";
 import {ExecutionEvent} from "../services/events/windup-event";
 import {ExecutionsMonitoringComponent} from "./executions/executions-monitoring.component";
+import {MigrationProject} from "windup-services";
 
 @Component({
     templateUrl: './group.page.component.html'
@@ -19,6 +20,8 @@ export class GroupPageComponent extends ExecutionsMonitoringComponent implements
 {
     inGroupID: number;
     group: ApplicationGroup;
+
+    project: MigrationProject;
 
     processMonitoringInterval;
     errorMessage: string;
@@ -65,6 +68,7 @@ export class GroupPageComponent extends ExecutionsMonitoringComponent implements
         this._applicationGroupService.get(inGroupID).subscribe(
             group => {
                 this.group = group;
+                this.project = group.migrationProject;
                 this.loadActiveExecutions(this.group.executions);
                 console.log('Group loaded: ', inGroupID);
             },
@@ -90,18 +94,10 @@ export class GroupPageComponent extends ExecutionsMonitoringComponent implements
     }
 
     deleteApplication(application: RegisteredApplication) {
-        if (application.registrationType == "PATH") {
-            this._registeredApplicationsService.unregister(this.group, application)
-                .subscribe(result => {
-                    console.log(result);
-                    this.loadGroup(this.inGroupID);
-                });
-        } else {
-            this._registeredApplicationsService.deleteApplication(this.group, application)
-                .subscribe(result => {
-                    console.log(result);
-                    this.loadGroup(this.inGroupID);
-                });
-        }
+        this._registeredApplicationsService.deleteApplication(this.project, application)
+            .subscribe(
+                () => this.loadGroup(this.inGroupID),
+                error => this._notificationService.error(utils.getErrorMessage(error))
+            );
     }
 }

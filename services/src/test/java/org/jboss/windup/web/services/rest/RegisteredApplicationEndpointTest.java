@@ -6,7 +6,6 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericEntity;
@@ -24,7 +23,6 @@ import org.jboss.windup.web.services.AbstractTest;
 import org.jboss.windup.web.services.ServiceTestUtil;
 import org.jboss.windup.web.services.data.DataProvider;
 import org.jboss.windup.web.services.data.ServiceConstants;
-import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.model.RegisteredApplication;
 import org.junit.Assert;
@@ -46,7 +44,7 @@ public class RegisteredApplicationEndpointTest extends AbstractTest
     private RegisteredApplicationEndpoint registeredApplicationEndpoint;
     private DataProvider dataProvider;
 
-    private ApplicationGroup group;
+    private MigrationProject project;
 
     @Before
     public void setUp()
@@ -57,115 +55,25 @@ public class RegisteredApplicationEndpointTest extends AbstractTest
 
         this.registeredApplicationEndpoint = target.proxy(RegisteredApplicationEndpoint.class);
 
-        MigrationProject dummyProject = this.dataProvider.getMigrationProject();
-        this.group = this.dataProvider.getApplicationGroup(dummyProject);
+        this.project = this.dataProvider.getMigrationProject();
     }
 
     @Test
     @RunAsClient
-    public void testRegisterAppByPath() throws Exception
+    public void testReuploadApp() throws Exception
     {
-        Collection<RegisteredApplication> existingApps = registeredApplicationEndpoint.getRegisteredApplications();
-        Assert.assertEquals(0, existingApps.size());
-
-        File tempFile1 = File.createTempFile(RegisteredApplicationEndpointTest.class.getSimpleName() + ".1", ".ear");
-        File tempFile2 = File.createTempFile(RegisteredApplicationEndpointTest.class.getSimpleName() + ".2", ".ear");
-
-        MigrationProject project = this.dataProvider.getMigrationProject();
-        ApplicationGroup group = this.dataProvider.getApplicationGroup(project);
-
-        RegisteredApplication dto1 = new RegisteredApplication(tempFile1.getAbsolutePath());
-        RegisteredApplication dto2 = new RegisteredApplication(tempFile2.getAbsolutePath());
-        this.registeredApplicationEndpoint.registerApplicationByPath(group.getId(), dto1);
-        this.registeredApplicationEndpoint.registerApplicationByPath(group.getId(), dto2);
-
-        try
-        {
-            Collection<RegisteredApplication> apps = registeredApplicationEndpoint.getRegisteredApplications();
-            Assert.assertEquals(2, apps.size());
-            boolean foundPath1 = false;
-            boolean foundPath2 = false;
-
-            for (RegisteredApplication app : apps)
-            {
-                if (app.getInputPath().equals(tempFile1.getAbsolutePath()))
-                    foundPath1 = true;
-                else if (app.getInputPath().equals(tempFile2.getAbsolutePath()))
-                    foundPath2 = true;
-            }
-
-            Assert.assertTrue(foundPath1);
-            Assert.assertTrue(foundPath2);
-        }
-        finally
-        {
-            for (RegisteredApplication application : registeredApplicationEndpoint.getRegisteredApplications())
-            {
-                registeredApplicationEndpoint.unregister(application.getId());
-            }
-        }
-    }
-
-    @Test
-    @RunAsClient
-    public void testRegisterAppUpload() throws Exception
-    {
-        Collection<RegisteredApplication> existingApps = registeredApplicationEndpoint.getRegisteredApplications();
-        Assert.assertEquals(0, existingApps.size());
-
-        try (InputStream sampleIS = getClass().getResourceAsStream(DataProvider.TINY_SAMPLE_PATH))
-        {
-            String fileName = "sample-tiny.war";
-            String registeredAppTargetUri = this.target.getUri() + ServiceConstants.REGISTERED_APP_ENDPOINT + "/appGroup/" + group.getId();
-            ResteasyWebTarget registeredAppTarget = this.client.target(registeredAppTargetUri);
-
-            try
-            {
-                Entity entity = this.dataProvider.getMultipartFormDataEntity(sampleIS, fileName);
-                Response response = registeredAppTarget.request().post(entity);
-                RegisteredApplication application = response.readEntity(RegisteredApplication.class);
-                response.close();
-
-                Collection<RegisteredApplication> apps = registeredApplicationEndpoint.getRegisteredApplications();
-                Assert.assertEquals(1, apps.size());
-
-                Assert.assertEquals(fileName, application.getTitle());
-                ServiceTestUtil.assertFileExists(application.getInputPath());
-
-                ServiceTestUtil.assertFileContentsAreEqual(getClass().getResourceAsStream(
-                            DataProvider.TINY_SAMPLE_PATH),
-                            new FileInputStream(application.getInputPath()));
-            }
-            catch (Throwable t)
-            {
-                t.printStackTrace();
-                throw new RuntimeException("Failed to post application due to: " + t.getMessage() + " exception: " + t.getClass().getName());
-            }
-            finally
-            {
-                for (RegisteredApplication application : registeredApplicationEndpoint.getRegisteredApplications())
-                {
-                    registeredApplicationEndpoint.unregister(application.getId());
-                }
-            }
-        }
-    }
-
-    @Test
-    @RunAsClient
-    public void testEditApp() throws Exception
-    {
-        RegisteredApplication dummyApp = this.dataProvider.getApplication(this.group);
+        RegisteredApplication dummyApp = this.dataProvider.getApplication(this.project);
 
         try (InputStream sampleIs = new ByteArrayInputStream("Hello World!".getBytes(StandardCharsets.UTF_8)))
         {
             String newFileName = "new-file.jar";
             Entity entity = this.dataProvider.getMultipartFormDataEntity(sampleIs, newFileName);
 
-            String registeredAppTargetUri = this.target.getUri() + ServiceConstants.REGISTERED_APP_ENDPOINT + "/" + dummyApp.getId();
-            ResteasyWebTarget registeredAppTarget = this.client.target(registeredAppTargetUri);
+            ResteasyWebTarget registeredAppTarget = getResteasyWebTarget(dummyApp.getId(), "reupload");
 
             Response response = registeredAppTarget.request().put(entity);
+            response.bufferEntity();
+            String stringEntity = response.readEntity(String.class);
             RegisteredApplication updatedApp = response.readEntity(RegisteredApplication.class);
             response.close();
 
@@ -184,9 +92,9 @@ public class RegisteredApplicationEndpointTest extends AbstractTest
         }
         finally
         {
-            for (RegisteredApplication application : registeredApplicationEndpoint.getRegisteredApplications())
+            for (RegisteredApplication application : registeredApplicationEndpoint.getAllApplications())
             {
-                registeredApplicationEndpoint.unregister(application.getId());
+                registeredApplicationEndpoint.deleteApplication(application.getId());
             }
         }
     }
@@ -195,10 +103,9 @@ public class RegisteredApplicationEndpointTest extends AbstractTest
     @RunAsClient
     public void testDeleteApp() throws Exception
     {
-        RegisteredApplication dummyApp = this.dataProvider.getApplication(this.group);
+        RegisteredApplication dummyApp = this.dataProvider.getApplication(this.project);
 
-        String registeredAppTargetUri = this.target.getUri() + ServiceConstants.REGISTERED_APP_ENDPOINT + "/" + dummyApp.getId();
-        ResteasyWebTarget registeredAppTarget = this.client.target(registeredAppTargetUri);
+        ResteasyWebTarget registeredAppTarget = getResteasyWebTarget(dummyApp.getId());
 
         Response response = registeredAppTarget.request().delete();
         response.close();
@@ -207,26 +114,28 @@ public class RegisteredApplicationEndpointTest extends AbstractTest
         ServiceTestUtil.assertFileDoesNotExist(dummyApp.getInputPath());
     }
 
-    public void testRegisterAppWithoutFile() throws Exception
+    private ResteasyWebTarget getResteasyWebTarget(Long appId)
     {
-        MultipartFormDataOutput uploadData = new MultipartFormDataOutput();
-        GenericEntity<MultipartFormDataOutput> genericEntity = new GenericEntity<MultipartFormDataOutput>(uploadData)
+        return this.getResteasyWebTarget(appId, "");
+    }
+    
+    private ResteasyWebTarget getResteasyWebTarget(Long appId, String resource)
+    {
+        String registeredAppTargetUri = this.target.getUri() + RegisteredApplicationEndpoint.REGISTERED_APPLICATIONS + "/" + appId;
+
+        if (!resource.isEmpty())
         {
-        };
-        Entity entity = Entity.entity(genericEntity, MediaType.MULTIPART_FORM_DATA_TYPE);
+            registeredAppTargetUri += "/"  + resource;
+        }
 
-        String registeredAppTargetUri = this.target.getUri() + ServiceConstants.REGISTERED_APP_ENDPOINT + "/appGroup/" + group.getId();
-        ResteasyWebTarget registeredAppTarget = this.client.target(registeredAppTargetUri);
-
-        Response response = registeredAppTarget.request().post(entity);
-        response.close();
-
-        Assert.assertEquals(HttpStatus.SC_BAD_REQUEST, response.getStatus());
+        return this.client.target(registeredAppTargetUri);
     }
 
-    public void testEditAppWithoutFile() throws Exception
+    @Test
+    @RunAsClient
+    public void testReuploadAppWithoutFile() throws Exception
     {
-        RegisteredApplication app = this.dataProvider.getApplication(this.group);
+        RegisteredApplication app = this.dataProvider.getApplication(this.project);
 
         MultipartFormDataOutput uploadData = new MultipartFormDataOutput();
         GenericEntity<MultipartFormDataOutput> genericEntity = new GenericEntity<MultipartFormDataOutput>(uploadData)
@@ -234,8 +143,7 @@ public class RegisteredApplicationEndpointTest extends AbstractTest
         };
         Entity entity = Entity.entity(genericEntity, MediaType.MULTIPART_FORM_DATA_TYPE);
 
-        String registeredAppTargetUri = this.target.getUri() + ServiceConstants.REGISTERED_APP_ENDPOINT + "/" + app.getId();
-        ResteasyWebTarget registeredAppTarget = this.client.target(registeredAppTargetUri);
+        ResteasyWebTarget registeredAppTarget = getResteasyWebTarget(app.getId(), "reupload");
 
         Response response = registeredAppTarget.request().put(entity);
         response.close();
@@ -243,17 +151,18 @@ public class RegisteredApplicationEndpointTest extends AbstractTest
         Assert.assertEquals(HttpStatus.SC_BAD_REQUEST, response.getStatus());
     }
 
-    public void testEditNonExistingApp() throws Exception
+    @Test
+    @RunAsClient
+    public void testEditReuploadNonExistingApp() throws Exception
     {
-        Integer nonExistingAppId = 0;
+        Long nonExistingAppId = 0L;
 
         try (InputStream sampleIs = new ByteArrayInputStream("Hello World!".getBytes(StandardCharsets.UTF_8)))
         {
             String newFileName = "new-file.jar";
             Entity entity = this.dataProvider.getMultipartFormDataEntity(sampleIs, newFileName);
 
-            String registeredAppTargetUri = this.target.getUri() + ServiceConstants.REGISTERED_APP_ENDPOINT + "/" + nonExistingAppId;
-            ResteasyWebTarget registeredAppTarget = this.client.target(registeredAppTargetUri);
+            ResteasyWebTarget registeredAppTarget = this.getResteasyWebTarget(nonExistingAppId, "reupload");
 
             Response response = registeredAppTarget.request().put(entity);
             response.close();
@@ -262,11 +171,12 @@ public class RegisteredApplicationEndpointTest extends AbstractTest
         }
     }
 
+    @Test
+    @RunAsClient
     public void testDeleteNonExistingApp() throws Exception
     {
-        Integer nonExistingAppId = 0;
-        String registeredAppTargetUri = this.target.getUri() + ServiceConstants.REGISTERED_APP_ENDPOINT + "/" + nonExistingAppId;
-        ResteasyWebTarget registeredAppTarget = this.client.target(registeredAppTargetUri);
+        Long nonExistingAppId = 0L;
+        ResteasyWebTarget registeredAppTarget = this.getResteasyWebTarget(nonExistingAppId);
 
         Response response = registeredAppTarget.request().delete();
         response.close();
