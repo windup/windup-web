@@ -2,7 +2,7 @@
     Analysis Context
 </h1>
 <h1 *ngIf="!applicationGroup">Loading...</h1>
-<form *ngIf="applicationGroup" #analysisContextForm="ngForm" (ngSubmit)="save()"  class="form-horizontal">
+<form *ngIf="applicationGroup" #analysisContextForm="ngForm" (ngSubmit)="onSubmit()"  class="form-horizontal">
     <div *ngFor="let errorMessage of errorMessages" class="row form-errors alert alert-danger">
         <div class="col-md-2">&nbsp;</div>
         <div class="col-md-10">
