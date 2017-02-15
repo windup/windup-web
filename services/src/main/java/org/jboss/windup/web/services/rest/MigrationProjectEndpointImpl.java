@@ -47,7 +47,9 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
         {
             final String query =
                     "SELECT project, COUNT(DISTINCT app) AS appCount "
-                    + "FROM " + MigrationProject.class.getSimpleName() + " project LEFT JOIN project.groups AS gr LEFT JOIN gr.applications AS app GROUP BY app.id";
+                    + "FROM " + MigrationProject.class.getSimpleName() + " project "
+                    + "LEFT JOIN project.applications AS app "
+                    + "GROUP BY project.id";
 
             List<Object[]> entries = entityManager.createQuery(query, Object[].class).getResultList();
             return new ArrayList<>(entries.stream().map(e -> new MigrationProjectAndAppCount((MigrationProject)e[0], (long) e[1])).collect(Collectors.toList()));
