@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
 
+import javax.ws.rs.NotFoundException;
+
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -15,6 +17,7 @@ import org.jboss.windup.web.services.ServiceTestUtil;
 import org.jboss.windup.web.services.data.DataProvider;
 import org.jboss.windup.web.services.data.ServiceConstants;
 import org.jboss.windup.web.services.model.MigrationProject;
+import org.jboss.windup.web.services.model.RegisteredApplication;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,6 +65,45 @@ public class MigrationProjectEndpointTest extends AbstractTest
         Assert.assertEquals(title, apps.iterator().next().getMigrationProject().getTitle());
 
         this.migrationProjectEndpoint.deleteProject(createdProject);
+    }
+
+    @Test
+    @RunAsClient
+    public void testDeleteProject()
+    {
+        MigrationProject project = this.dataProvider.getMigrationProject();
+
+        this.migrationProjectEndpoint.deleteProject(project);
+
+        try
+        {
+            MigrationProject reloaded = this.migrationProjectEndpoint.getMigrationProject(project.getId());
+            Assert.fail("Exception should have been thrown");
+        }
+        catch (NotFoundException e)
+        {
+
+        }
+    }
+
+    @Test
+    @RunAsClient
+    public void testDeleteProjectWithApp() throws IOException
+    {
+        MigrationProject project = this.dataProvider.getMigrationProject();
+        RegisteredApplication app = this.dataProvider.getApplication(project);
+
+        this.migrationProjectEndpoint.deleteProject(project);
+
+        try
+        {
+            MigrationProject reloaded = this.migrationProjectEndpoint.getMigrationProject(project.getId());
+            Assert.fail("Exception should have been thrown");
+        }
+        catch (NotFoundException e)
+        {
+
+        }
     }
 
     @Test
