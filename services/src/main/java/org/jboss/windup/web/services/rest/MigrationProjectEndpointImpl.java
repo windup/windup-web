@@ -1,8 +1,13 @@
 package org.jboss.windup.web.services.rest;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateful;
 import javax.inject.Inject;
@@ -10,6 +15,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
 import javax.ws.rs.NotFoundException;
+import org.jboss.windup.util.exception.WindupException;
 
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
@@ -35,9 +41,22 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
     private WebPathUtil webPathUtil;
 
     @Override
-    public Collection<MigrationProject> getMigrationProjects()
+    public List<MigrationProjectAndAppCount> getMigrationProjects()
     {
-        return entityManager.createQuery("select mp from " + MigrationProject.class.getSimpleName() + " mp").getResultList();
+        try
+        {
+            final String query =
+                    "SELECT project, COUNT(DISTINCT app) AS appCount "
+                    + "FROM " + MigrationProject.class.getSimpleName() + " project LEFT JOIN project.groups AS gr LEFT JOIN gr.applications AS app GROUP BY app.id";
+
+            List<Object[]> entries = entityManager.createQuery(query, Object[].class).getResultList();
+            return new ArrayList<>(entries.stream().map(e -> new MigrationProjectAndAppCount((MigrationProject)e[0], (long) e[1])).collect(Collectors.toList()));
+        }
+        catch (Exception ex)
+        {
+            LOG.log(Level.SEVERE, ex.getMessage(), ex);
+            throw new WindupException(ex.getMessage(), ex);
+        }
     }
 
     @Override
