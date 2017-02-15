@@ -187,6 +187,10 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
     }
 
     save() {
+        this.action = Action.Save;
+    }
+
+    onSubmit() {
         if (this.analysisContext.id != null) {
             console.log("Updating analysis context: " + this.analysisContext.migrationPath.id);
             this._analysisContextService.update(this.analysisContext).subscribe(
