@@ -31,7 +31,7 @@ public interface MigrationProjectEndpoint
      */
     @GET
     @Path("list")
-    List<MigrationProjectAndAppCount> getMigrationProjects(@QueryParam("withCount") @DefaultValue("false") Boolean withCount);
+    List<MigrationProjectAndAppCount> getMigrationProjects();
 
     /**
      * Get a {@link MigrationProject} by id.
@@ -65,11 +65,18 @@ public interface MigrationProjectEndpoint
     /**
      * Adds app count to MigrationProject solely for the purpose of this REST API.
      */
-    public static final class MigrationProjectAndAppCount
+    final class MigrationProjectAndAppCount
     {
         MigrationProject migrationProject;
 
         Long applicationCount;
+
+        /**
+         * This just makes arquillian happy.
+         */
+        MigrationProjectAndAppCount()
+        {
+        }
 
         public MigrationProjectAndAppCount(MigrationProject migrationProject, Long applicationCount)
         {

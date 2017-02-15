@@ -75,7 +75,7 @@ export class MigrationProjectService extends AbstractService {
         let headers = new Headers();
         let options = new RequestOptions({ headers: headers });
 
-        return this._http.get(Constants.REST_BASE + this.GET_MIGRATION_PROJECTS_URL + "?withCount=true", options)
+        return this._http.get(Constants.REST_BASE + this.GET_MIGRATION_PROJECTS_URL, options)
             .map(res => <MigrationProjectAndCount[]> res.json())
             // The consuming code still sees  MigrationProject, only with .appCount added.
             .map(entries => entries.map(entry => (entry.migrationProject["applicationCount"] = entry.applicationCount, entry.migrationProject)))

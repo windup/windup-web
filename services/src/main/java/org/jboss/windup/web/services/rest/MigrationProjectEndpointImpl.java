@@ -41,22 +41,16 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
     private WebPathUtil webPathUtil;
 
     @Override
-    public List<MigrationProjectAndAppCount> getMigrationProjects(Boolean withCount)
+    public List<MigrationProjectAndAppCount> getMigrationProjects()
     {
         try
         {
-            if (!withCount){
-                String query = "SELECT project FROM " + MigrationProject.class.getSimpleName() + " project";
-                return entityManager.createQuery(query, MigrationProject.class).getResultList().stream().map(proj -> new MigrationProjectAndAppCount(proj, null)).collect(Collectors.toList());
-            }
-
             final String query =
                     "SELECT project, COUNT(DISTINCT app) AS appCount "
                     + "FROM " + MigrationProject.class.getSimpleName() + " project LEFT JOIN project.groups AS gr LEFT JOIN gr.applications AS app GROUP BY app.id";
 
-            List<Object[]> entries = entityManager.createQuery(query).getResultList();
-            List<MigrationProjectAndAppCount> results = new ArrayList<>(entries.stream().map(e -> new MigrationProjectAndAppCount((MigrationProject)e[0], (long) e[1])).collect(Collectors.toList()));
-            return results;
+            List<Object[]> entries = entityManager.createQuery(query, Object[].class).getResultList();
+            return new ArrayList<>(entries.stream().map(e -> new MigrationProjectAndAppCount((MigrationProject)e[0], (long) e[1])).collect(Collectors.toList()));
         }
         catch (Exception ex)
         {
