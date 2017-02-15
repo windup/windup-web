@@ -133,9 +133,16 @@ public class DataProvider
 
     public RegisteredApplication getApplication(MigrationProject project) throws IOException
     {
+        String appName = "App " + RandomStringUtils.randomAlphabetic(5) + ".war";
+
+        return this.getApplication(project, appName);
+    }
+
+    public RegisteredApplication getApplication(MigrationProject project, String appName) throws IOException
+    {
         try (InputStream sampleIS = getClass().getResourceAsStream(DataProvider.TINY_SAMPLE_PATH))
         {
-            return this.getApplication(project, sampleIS, "sample-tiny.war");
+            return this.getApplication(project, sampleIS, appName);
         }
     }
 
