@@ -148,7 +148,6 @@ import {WindupExecutionService} from "./services/windup-execution.service";
 import {initializeModelMappingData} from "./generated/tsModels/discriminator-mapping-data";
 
 import {ProjectModule} from "./project/project.module";
-import {GroupModule} from "./group/group.module";
 import {ApplicationModule} from "./registered-application/registered-application.module";
 import {ConfigurationModule} from "./configuration/configuration.module";
 import {AnalysisContextModule} from "./analysis-context/analysis-context.module";

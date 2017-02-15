@@ -1,3 +1,4 @@
+import {Injectable} from "@angular/core";
 import { ReportFilter, Tag } from "../generated/windup-services";
 import { TechnologyTagModel } from "../generated/tsModels/TechnologyTagModel";
 
@@ -8,6 +9,7 @@ export enum MatchResult {
     ExplicitExclude
 }
 
+@Injectable()
 export class TagFilterService {
 
     constructor(private _reportFilter: ReportFilter) {
