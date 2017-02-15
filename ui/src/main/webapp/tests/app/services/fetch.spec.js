@@ -1,6 +1,6 @@
 "use strict";
 var rxjs_1 = require("rxjs");
-var dependencies_report_component_1 = require("../../../src/app/components/reports/dependencies/dependencies-report.component");
+var dependencies_report_component_1 = require("../.././dependencies/dependencies-report.component");
 describe("fetch function", function () {
     beforeEach(function () {
     });

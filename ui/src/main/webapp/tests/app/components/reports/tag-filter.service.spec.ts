@@ -1,4 +1,4 @@
-import {TagFilterService, MatchResult} from "../../../../src/app/components/reports/tag-filter.service";
+import {TagFilterService, MatchResult} from "../../../../src/app/reports/tag-filter.service";
 import {ReportFilter} from "windup-services";
 import {Tag} from "windup-services";
 

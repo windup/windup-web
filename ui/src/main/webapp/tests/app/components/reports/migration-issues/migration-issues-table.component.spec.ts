@@ -1,9 +1,9 @@
-import {MigrationIssuesTableComponent} from "../../../../../src/app/components/reports/migration-issues/migration-issues-table.component";
+import {MigrationIssuesTableComponent} from "../../../../../src/app/reports/migration-issues/migration-issues-table.component";
 import {ComponentFixture, TestBed} from "@angular/core/testing";
 import {DebugElement} from "@angular/core";
 import {By} from "@angular/platform-browser";
 import {ActivatedRoute} from "@angular/router";
-import {MigrationIssuesService} from "../../../../../src/app/components/reports/migration-issues/migration-issues.service";
+import {MigrationIssuesService} from "../../../../../src/app/reports/migration-issues/migration-issues.service";
 import {NotificationService} from "../../../../../src/app/core/notification/notification.service";
 import {RouterTestingModule} from "@angular/router/testing";
 import {ActivatedRouteMock} from "../../../mocks/activated-route.mock";
