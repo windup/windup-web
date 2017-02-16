@@ -3,6 +3,7 @@ package org.jboss.windup.web.services.model;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Fetch;
@@ -202,6 +203,7 @@ public class MigrationProject implements Serializable
     /**
      * Contains the {@link RegisteredApplication}s associated with this project
      */
+    @JsonProperty
     public Set<RegisteredApplication> getApplications()
     {
         return applications;
