@@ -13,7 +13,7 @@ import {TechnologiesReportComponent} from "./components/reports/technologies/tec
 import {DependenciesReportComponent} from "./components/reports/dependencies/dependencies-report.component";
 import {LoginComponent} from "./components/login.component";
 import {LoggedInGuard} from "./services/logged-in.guard";
-import {GroupLayoutComponent} from "./components/layout/group-layout.component";
+import {ProjectLayoutComponent} from "./components/layout/project-layout.component";
 import {DefaultLayoutComponent} from "./components/layout/default-layout.component";
 import {ApplicationGroupResolve} from "./components/group/application-group.resolve";
 import {MigrationIssuesComponent} from "./components/reports/migration-issues/migration-issues.component";
@@ -29,6 +29,7 @@ import {ReportFilterComponent} from "./components/reports/filter/report-filter.c
 import {RuleProviderExecutionsComponent} from "./components/reports/rule-provider-executions/rule-provider-executions.component";
 import {WizardComponent} from "./components/wizard.component";
 import {ExecutionDetailComponent} from "./components/executions/execution-detail.component";
+import {ApplicationListComponent} from "./components/application-list.component";
 
 export const appRoutes: Routes = [
     {path: "login", component: LoginComponent},
@@ -103,8 +104,14 @@ export const appRoutes: Routes = [
                             project: ProjectResolve
                         },
                         children: [
+                            {
+                                path: '',
+                                component: ProjectLayoutComponent, data: {displayName: 'Project Detail'},
+                                children: [
+                                    { path: '', component: ApplicationListComponent, data: {displayName: 'Application List'} }
+                                ]
+                            },
                             { path: '', component: DefaultLayoutComponent, children: [
-                                {path: '', component: GroupListComponent, data: {displayName: 'Group List'}},
                                 {path: 'edit', component: MigrationProjectFormComponent, data: {displayName: 'Edit Project'}},
                                 {path: 'groups/create', component: ApplicationGroupForm, data: {displayName: 'Create Application Group'}},
                             ]},
@@ -117,7 +124,7 @@ export const appRoutes: Routes = [
                                     breadcrumbTitle: getGroupBreadcrumbTitle
                                 },
                                 children: [
-                                    { path: '', component: GroupLayoutComponent, children: [
+                                    { path: '', component: ProjectLayoutComponent, children: [
                                         { path: '', component: GroupPageComponent },
                                         { path: 'analysis-context', component: AnalysisContextFormComponent, data: {displayName: "Edit Analysis Context"}, canDeactivate: [ConfirmDeactivateGuard]},
                                         { path: 'applications', children: [
