@@ -108,7 +108,18 @@ export const appRoutes: Routes = [
                                 path: '',
                                 component: ProjectLayoutComponent, data: {displayName: 'Project Detail'},
                                 children: [
-                                    { path: '', component: ApplicationListComponent, data: {displayName: 'Application List'} }
+                                    { path: '', component: ApplicationListComponent, data: {displayName: 'Application List'} },
+                                    { path: 'applications', children: [
+                                        { path: 'register', component: RegisterApplicationFormComponent, data: {displayName: "Application Registration"}},
+                                        {
+                                            path: ':applicationId/edit',
+                                            component: EditApplicationFormComponent,
+                                            resolve: {
+                                                application: ApplicationResolve
+                                            },
+                                            data: {displayName: "Edit Application"}
+                                        },
+                                    ]},
                                 ]
                             },
                             { path: '', component: DefaultLayoutComponent, children: [
@@ -127,17 +138,6 @@ export const appRoutes: Routes = [
                                     { path: '', component: ProjectLayoutComponent, children: [
                                         { path: '', component: GroupPageComponent },
                                         { path: 'analysis-context', component: AnalysisContextFormComponent, data: {displayName: "Edit Analysis Context"}, canDeactivate: [ConfirmDeactivateGuard]},
-                                        { path: 'applications', children: [
-                                            { path: 'register', component: RegisterApplicationFormComponent, data: {displayName: "Application Registration"}},
-                                            {
-                                                path: ':applicationId/edit',
-                                                component: EditApplicationFormComponent,
-                                                resolve: {
-                                                    application: ApplicationResolve
-                                                },
-                                                data: {displayName: "Edit Application"}
-                                            },
-                                        ]},
                                         { path: 'reports', children: [
                                             { path: 'filter', component: ReportFilterComponent, data: {displayName: 'Report Filter'} },
                                         ]},
