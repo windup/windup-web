@@ -242,7 +242,6 @@
                             <goal>unpack</goal>
                         </goals>
                         <configuration>
-                            <skip>${skipTests}</skip>
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.jboss.windup</groupId>
