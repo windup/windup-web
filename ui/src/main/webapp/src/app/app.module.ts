@@ -13,7 +13,6 @@ import {AnalysisContextFormComponent} from "./components/analysis-context-form.c
 import {ApplicationGroupForm} from "./components/application-group-form.component";
 import {GroupListComponent} from "./components/group-list.component";
 import {MigrationProjectFormComponent} from "./components/migration-project-form.component";
-import {GroupPageComponent} from "./components/group.page.component";
 import {RegisterApplicationFormComponent} from "./components/register-application-form.component";
 import {ProgressBarComponent} from "./components/progress-bar.component";
 import {NavbarComponent} from "./components/navbar.component";
@@ -114,6 +113,7 @@ import {SortableTableComponent} from "./components/sortable-table.component";
 import {StatusIconComponent} from "./components/status-icon.component";
 import {GraphJSONToModelService} from "./services/graph/graph-json-to-model.service";
 import {ApplicationListComponent} from "./components/application-list.component";
+import {GroupPageComponent} from "./components/group.page.component";
 
 /**
  * Load all mapping data from the generated files.

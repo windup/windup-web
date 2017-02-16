@@ -1,6 +1,5 @@
 import {Routes, RouterModule} from '@angular/router';
 import {ProjectListComponent} from "./components/project-list/project-list.component";
-import {GroupListComponent} from "./components/group-list.component";
 import {GroupPageComponent} from "./components/group.page.component";
 import {RegisterApplicationFormComponent} from "./components/register-application-form.component";
 import {MigrationProjectFormComponent} from "./components/migration-project-form.component";
