@@ -29,9 +29,14 @@
             <label class="col-md-2 control-label" for="idDescription">Project Description</label>
             <div class="col-md-8">
                 <textarea name="description" id="idDescription" class="form-control" [rows]="getDescriptionHeight()"
+                        minlength="0"
+                        maxlength="4096"
                         #controlDescription="ngModel"
                         [(ngModel)]="model.description"></textarea>
             </div>
+            <span [class.hidden]="!hasError(controlDescription)" class="help-block">
+                The description must contain fewer than 4096 characters.
+            </span>
         </div>
         <div class="form-group finish-buttons">
             <div class="col-md-10 col-md-offset-2">
