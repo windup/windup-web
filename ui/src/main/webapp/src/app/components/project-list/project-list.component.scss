@@ -51,6 +51,12 @@ a {
 .list-view-pf.projects-list .list-group-item.project-info,
 .list-view-pf.projects-list .list-view-pf-description { align-items: flex-start; }
 
+.list-view-pf.projects-list .list-view-pf-additional-info { flex: initial; width: 12%; }
+.list-view-pf.projects-list .list-view-pf-description { width: 80%; }
+
+.list-view-pf.projects-list .list-view-pf-description .list-group-item-heading { width: calc(30% - 40px); }
+.list-view-pf.projects-list .list-view-pf-description .list-group-item-text.description { width: calc(50% - 40px); }
+
 /* Action buttons padding */
 .list-view-pf.projects-list .list-view-pf-actions span { margin-left: 1em; }
 .list-view-pf.projects-list .list-view-pf-actions span a i { font-size: inherit; }
