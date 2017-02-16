@@ -24,6 +24,121 @@
         <target/>
         <note priority="1" from="description">Delete project</note>
       </trans-unit>
+      <trans-unit id="72775b3396df237fa015f71e0d47148ff7b318d7" datatype="html">
+        <source>Add Applications to the Project</source>
+        <target/>
+        <note priority="1" from="description">Add Applications to Project</note>
+      </trans-unit>
+      <trans-unit id="4b3972c3e9485218508a95f7a4ce7758e3f09ced" datatype="html">
+        <source>Upload</source>
+        <target/>
+        <note priority="1" from="description">Upload Tab Text</note>
+      </trans-unit>
+      <trans-unit id="2c8c8a4b783c51a863ebff149bfb356e9211ba32" datatype="html">
+        <source>Upload an Application</source>
+        <target/>
+        <note priority="1" from="description">Upload Tab Title</note>
+      </trans-unit>
+      <trans-unit id="71ff7a562349f6824d61046fed37513fdabb4ebd" datatype="html">
+        <source>Server Path</source>
+        <target/>
+        <note priority="1" from="description">Register Server Path Tab Text</note>
+      </trans-unit>
+      <trans-unit id="6ab98e4118f9fdfc5a5fad017c554b33bbf212fe" datatype="html">
+        <source>Register application file or directory located on the server</source>
+        <target/>
+        <note priority="1" from="description">Register Server Path Tab Title</note>
+      </trans-unit>
+      <trans-unit id="a5d648683b46ef773ecc648f3882cf71188f5c9d" datatype="html">
+        <source>
+                        Choose files to upload to your project. You can select more than one file at a time. You can
+                        also drag and drop files to start uploading.
+                    </source>
+        <target/>
+        <note priority="1" from="description">Upload Description Text</note>
+      </trans-unit>
+      <trans-unit id="0afe51b670040c340ac8408ab9dda4738fe2563f" datatype="html">
+        <source>Select a file to upload...</source>
+        <target/>
+      </trans-unit>
+      <trans-unit id="7cfcef5479823038eb5ff1e04a9d705d5e4f1499" datatype="html">
+        <source>...or drag and drop the files here.</source>
+        <target/>
+      </trans-unit>
+      <trans-unit id="52c9a103b812f258bcddc3d90a6e3f46871d25fe" datatype="html">
+        <source>Save</source>
+        <target/>
+      </trans-unit>
+      <trans-unit id="d7b35c384aecd25a516200d6921836374613dfe7" datatype="html">
+        <source>Cancel</source>
+        <target/>
+      </trans-unit>
+      <trans-unit id="137f2ad49072a3f2eaf17e27822ce008d5f05fc6" datatype="html">
+        <source>Upload queue</source>
+        <target/>
+      </trans-unit>
+      <trans-unit id="085d8412169a5eeb9964477823fe931c86a8321a" datatype="html">
+        <source>Upload progress</source>
+        <target/>
+      </trans-unit>
+      <trans-unit id="5312bcf97445e711c2ce2ed691fac4094d3f712a" datatype="html">
+        <source>
+                        Enter the server path containing your project applications.
+                    </source>
+        <target/>
+        <note priority="1" from="description">Server Path Description</note>
+      </trans-unit>
+      <trans-unit id="05de5aeddb38cbc7f58838bc4a08d7f020337fe4" datatype="html">
+        <source>
+                        The input path must exist on the server.
+                    </source>
+        <target/>
+        <note priority="1" from="description">Path Error</note>
+      </trans-unit>
+      <trans-unit id="d351303aa6789f39e05b83575da2b5dd73b50960" datatype="html">
+        <source>Directory Contains Multiple Apps</source>
+        <target/>
+      </trans-unit>
+      <trans-unit id="76fb9df73f89e24ec6a7cdf314e2c74258f4957e" datatype="html">
+        <source>
+                            If box is checked, the given path will be treated as a directory with multiple
+                            applications. Otherwise, the path will be treated as a single application.
+                        </source>
+        <target/>
+        <note priority="1" from="description">Directory Contains Multiple Apps Help Text</note>
+      </trans-unit>
+      <trans-unit id="ca76f612e7a0954ffe0e0938c9655ca9bfc469b8" datatype="html">
+        <source>
+    Analysis Context
+</source>
+        <target/>
+      </trans-unit>
+      <trans-unit id="94516fa213706c67ce5a5b5765681d7fb032033a" datatype="html">
+        <source>Loading...</source>
+        <target/>
+      </trans-unit>
+      <trans-unit id="cc58947c562b2f199bc04852876962859bb3306a" datatype="html">
+        <source>Migration Path</source>
+        <target/>
+      </trans-unit>
+      <trans-unit id="d7838cdc546f3492b8af59ab5e1eb95b74560a61" datatype="html">
+        <source>
+                    A migration path must be specified.
+                </source>
+        <target/>
+      </trans-unit>
+      <trans-unit id="312b387f333b04cc83ebda933825ef5f74a24213" datatype="html">
+        <source>Include Packages</source>
+        <target/>
+      </trans-unit>
+      <trans-unit id="79f6106b115321b00282ef714c82f016f5b1cfe7" datatype="html">
+        <source>Exclude Package</source>
+        <target/>
+      </trans-unit>
+      <trans-unit id="61cc73163be97beb025909b9ac3596e8c98156fd" datatype="html">
+        <source>Advanced Options</source>
+        <target/>
+      </trans-unit>
       <trans-unit id="cf06e739e997b44712246f7b4638c6b0aab6b833" datatype="html">
         <source>Sort by</source>
         <target/>

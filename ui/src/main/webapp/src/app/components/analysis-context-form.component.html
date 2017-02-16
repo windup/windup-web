@@ -1,8 +1,12 @@
-<h1>
+
+
+<h1 i18n>
     Analysis Context
 </h1>
-<h1 *ngIf="!applicationGroup">Loading...</h1>
+
+<h2 *ngIf="!applicationGroup" i18n>Loading...</h2>
 <form *ngIf="applicationGroup" #analysisContextForm="ngForm" (ngSubmit)="onSubmit()"  class="form-horizontal">
+
     <div *ngFor="let errorMessage of errorMessages" class="row form-errors alert alert-danger">
         <div class="col-md-2">&nbsp;</div>
         <div class="col-md-10">
@@ -12,27 +16,22 @@
     </div>
     <div class="row">
         <div class="form-group">
-            <label class="col-md-2 control-label" for="migrationPath">Migration Path</label>
+            <label class="col-md-2 control-label" for="migrationPath" i18n>Migration Path</label>
             <div class="col-md-6">
-                <select
-                        #migrationPath="ngModel"
-                        name="migrationPath"
+                <select #migrationPath="ngModel" id="migrationPath" name="migrationPath" ngControl="migrationPath"
+                        class="form-control" required
                         [(ngModel)]="analysisContext.migrationPath.id"
-                        ngControl="migrationPath"
                         [ngClass]="{'has-error': hasError(migrationPath)}"
-                        required
-                        id="migrationPath"
-                        class="form-control"
                 >
                     <option *ngFor="let migrationPath of migrationPaths | async" [value]="migrationPath.id">{{migrationPath.name}}</option>
                 </select>
-                <span [class.hidden]="!hasError(migrationPath)" class="help-block">
+                <span [class.hidden]="!hasError(migrationPath)" class="help-block" i18n>
                     A migration path must be specified.
                 </span>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-md-2 control-label">Include Packages</label>
+            <label class="col-md-2 control-label" i18n>Include Packages</label>
             <div class="col-md-4">
                 <wu-js-tree-wrapper
                         [treeNodes]="packageTree"
@@ -42,7 +41,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="col-md-2 control-label">Exclude Package</label>
+            <label class="col-md-2 control-label" i18n>Exclude Package</label>
             <div class="col-md-3">
                 <wu-js-tree-wrapper
                         [treeNodes]="packageTree"
@@ -52,7 +51,7 @@
         </div>
         <wu-custom-rule-selection [selectedRulePaths]="analysisContext.rulesPaths" (selectedRulePathsChanged)="rulesPathsChanged($event)"></wu-custom-rule-selection>
         <div class="form-group">
-            <label class="col-md-2 control-label">Advanced Options</label>
+            <label class="col-md-2 control-label" i18n>Advanced Options</label>
             <div class="col-md-6">
                 <wu-analysis-context-advanced-options
                         [(selectedOptions)]="analysisContext.advancedOptions"
@@ -64,9 +63,9 @@
         </div>
         <div class="form-group">
             <div class="col-md-10 col-md-offset-2">
-                <button *ngIf="isInWizard" [disabled]="!analysisContextForm.form.valid" class="btn btn-primary" (click)="saveAndRun()">Save & Run</button>
-                <button [disabled]="!analysisContextForm.form.valid" class="btn btn-primary" (click)="save()">Save Configuration</button>
-                <button (click)="cancel()" type="button" class="btn btn-default">Cancel</button>
+                <button *ngIf="isInWizard" [disabled]="!analysisContextForm.form.valid" class="btn btn-primary" (click)="saveAndRun()" i18n>Save &amp; Run</button>
+                <button [disabled]="!analysisContextForm.form.valid" class="btn btn-primary" (click)="save()" i18n>Save Configuration</button>
+                <button (click)="cancel()" type="button" class="btn btn-default" i18n>Cancel</button>
             </div>
         </div>
     </div>
