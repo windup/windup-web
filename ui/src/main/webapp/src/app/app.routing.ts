@@ -126,7 +126,9 @@ export const appRoutes: Routes = [
                                             applicationGroup: ApplicationGroupResolve
                                         },
                                         data: {
-                                            breadcrumbTitle: getGroupBreadcrumbTitle
+                                          breadcrumbs: {
+                                              ignore: true
+                                          }
                                         },
                                         children: [
                                             { path: '', component: GroupPageComponent },
