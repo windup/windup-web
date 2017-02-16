@@ -22,7 +22,7 @@
     "docs": "typedoc --options typedoc.json src/app/app.component.ts",
     "start": "npm run server",
     "start:hmr": "npm run server -- --hot",
-    "postinstall": "npm run webdriver-update && ./node_modules/.bin/typings install",
+    "postinstall": "./node_modules/.bin/typings install",
     "i18n": "ng-xi18n"
   },
   "dependencies": {
