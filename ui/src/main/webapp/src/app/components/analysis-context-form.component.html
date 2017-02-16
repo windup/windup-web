@@ -63,7 +63,7 @@
         </div>
         <div class="form-group">
             <div class="col-md-10 col-md-offset-2">
-                <button *ngIf="isInWizard" [disabled]="!analysisContextForm.form.valid" class="btn btn-primary" (click)="saveAndRun()" i18n>Save & Run</button>
+                <button *ngIf="isInWizard" [disabled]="!analysisContextForm.form.valid" class="btn btn-primary" (click)="saveAndRun()" i18n>Save &amp; Run</button>
                 <button [disabled]="!analysisContextForm.form.valid" class="btn btn-primary" (click)="save()" i18n>Save Configuration</button>
                 <button (click)="cancel()" type="button" class="btn btn-default" i18n>Cancel</button>
             </div>
