@@ -2,37 +2,12 @@ a {
     text-decoration: none;
 }
 
-.project-actions {
-    margin: 20px 0 0;
-
-    .project-action-item {
-        margin-left: 12px;
-    }
-}
 
 .project-info {
     &.list-group-item {border-bottom:0;border-color:#e0e0e0;padding:10px 20px}
-    .list-view-pf-description {width:100%}
-    .list-view-pf-main-info {display:block}
 }
 
-.project-name-item {
-    &.list-group-item-heading {
-        .h1 {
-            margin-bottom: 0;
-            margin-top:0;
-            font-weight: 300;
-            font-size: 24px;
-            line-height: 1.1;
 
-
-            &[data-toggle=tooltip] {cursor:help;margin-left:5px}
-            a {display:block;overflow:hidden;line-height:initial;text-overflow:ellipsis}
-        }
-
-        p {margin-bottom:0;margin-top:5px}
-    }
-}
 
 .projects-bar {
     display: flex;
@@ -72,6 +47,14 @@ a {
     .project-info:hover { background-color: rgb(222, 243, 255); }
 }
 
+/* Override Patternfly's middle alignment. */
+.list-view-pf.projects-list .list-group-item.project-info,
+.list-view-pf.projects-list .list-view-pf-description { align-items: flex-start; }
+
+/* Action buttons padding */
+.list-view-pf.projects-list .list-view-pf-actions span { margin-left: 1em; }
+.list-view-pf.projects-list .list-view-pf-actions span a i { font-size: inherit; }
+
 @media (min-width: 650px) {
     .projects-bar {
         flex-direction: row;
@@ -93,20 +76,11 @@ a {
     :host /deep/ .projects-bar .sort-component .dropdown-menu{left:auto;right:0}
 }
 
-@media (min-width:992px) {
-    .project-name-item.list-group-item-heading{white-space:normal;width:45%}
-
-    .project-actions{margin-top:0}
-    .project-additional-info.list-view-pf-additional-info{width:55%}
-}
-
 .action-button {
     color: #9c9c9c;
     cursor: pointer;
 
-    &:hover {
-        color: #000;
-    }
+    &:hover { color: #000; }
 }
 
 .tile-click, a[action] {

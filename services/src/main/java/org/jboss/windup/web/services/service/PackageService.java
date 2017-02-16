@@ -55,46 +55,72 @@ public class PackageService
     @Transactional
     public Collection<Package> discoverPackages(RegisteredApplication application)
     {
+        Long applicationId = application.getId();
         // Reload it to insure that any lazy loaded fields are still available.
         // Don't reload if the id is null (can happen in tests or with detached instances)
-        if (application.getId() != null)
-            application = this.entityManager.find(RegisteredApplication.class, application.getId());
+        if (applicationId != null)
+            application = this.entityManager.find(RegisteredApplication.class, applicationId);
 
-        PackageMetadata metadata = application.getPackageMetadata();
-        metadata.setScanStatus(PackageMetadata.ScanStatus.IN_PROGRESS);
-        this.entityManager.merge(metadata);
-
-        ApplicationGroup appGroup = application.getApplicationGroup();
-        PackageMetadata appGroupMetadata = appGroup.getPackageMetadata();
-        appGroupMetadata.setScanStatus(PackageMetadata.ScanStatus.IN_PROGRESS);
-        this.entityManager.merge(appGroupMetadata);
+        PackageMetadata appPackageMetadata = application.getPackageMetadata();
+        appPackageMetadata.setScanStatus(PackageMetadata.ScanStatus.IN_PROGRESS);
+        this.entityManager.merge(appPackageMetadata);
 
         String rulesPath = this.webProperties.getRulesRepository().toString();
         String inputPath = application.getInputPath();
+
+        LOG.info("Starting package discovery");
+
         PackageDiscoveryService.PackageDiscoveryResult result = this.packageDiscoveryService.execute(rulesPath, inputPath);
 
-        Map<String, Package> packageMap = new TreeMap<>();
-        appGroupMetadata.getPackages().forEach(aPackage -> packageMap.put(aPackage.getFullName(), aPackage));
+        LOG.info("Package discovery finished");
 
-        this.addPackagesToPackageMetadata(metadata, result.getKnownPackages(), packageMap);
-        this.addPackagesToPackageMetadata(metadata, result.getUnknownPackages(), packageMap);
+        Map<String, Package> appPackageMap = new TreeMap<>();
+        appPackageMetadata.getPackages().forEach(aPackage -> appPackageMap.put(aPackage.getFullName(), aPackage));
 
-        this.addPackagesToPackageMetadata(appGroupMetadata, result.getKnownPackages(), packageMap);
-        this.addPackagesToPackageMetadata(appGroupMetadata, result.getUnknownPackages(), packageMap);
+        // TODO: Remove deleted packages
+        this.addPackagesToPackageMetadata(appPackageMetadata, result.getKnownPackages(), appPackageMap);
+        this.addPackagesToPackageMetadata(appPackageMetadata, result.getUnknownPackages(), appPackageMap);
 
-        metadata.setScanStatus(PackageMetadata.ScanStatus.COMPLETE);
-        this.entityManager.merge(metadata);
+        appPackageMetadata.setScanStatus(PackageMetadata.ScanStatus.COMPLETE);
+        this.entityManager.merge(appPackageMetadata);
 
-        PackageMetadata.ScanStatus finalStatus = appGroup.getApplications().stream()
+        LOG.info("Updated application (id: " + applicationId + ", name: " + application.getTitle() +  ")");
+
+        this.updateAppGroups(application, result);
+
+        return appPackageMetadata.getPackages();
+    }
+
+    private void updateAppGroups(RegisteredApplication application, PackageDiscoveryService.PackageDiscoveryResult result)
+    {
+        LOG.info("Updating " + application.getApplicationGroups().size() + " groups");
+
+        for (ApplicationGroup appGroup : application.getApplicationGroups())
+        {
+            LOG.info("Updating group: (id: " + appGroup.getId() + ", name: " + appGroup.getTitle() +  ")");
+
+            PackageMetadata appGroupMetadata = appGroup.getPackageMetadata();
+            appGroupMetadata.setScanStatus(PackageMetadata.ScanStatus.IN_PROGRESS);
+            this.entityManager.merge(appGroupMetadata);
+
+            Map<String, Package> groupPackageMap = new TreeMap<>();
+            appGroupMetadata.getPackages().forEach(aPackage -> groupPackageMap.put(aPackage.getFullName(), aPackage));
+
+            // TODO: Remove deleted packages
+            this.addPackagesToPackageMetadata(appGroupMetadata, result.getKnownPackages(), groupPackageMap);
+            this.addPackagesToPackageMetadata(appGroupMetadata, result.getUnknownPackages(), groupPackageMap);
+
+            PackageMetadata.ScanStatus finalStatus = appGroup.getApplications().stream()
                     .map(app -> app.getPackageMetadata().getScanStatus())
                     .reduce(PackageMetadata.ScanStatus.COMPLETE,
-                                (currentStatus, accumulator) -> currentStatus == PackageMetadata.ScanStatus.COMPLETE && currentStatus == accumulator
-                                            ? PackageMetadata.ScanStatus.COMPLETE : PackageMetadata.ScanStatus.IN_PROGRESS);
+                            (currentStatus, accumulator) -> currentStatus == PackageMetadata.ScanStatus.COMPLETE && currentStatus == accumulator
+                                    ? PackageMetadata.ScanStatus.COMPLETE : PackageMetadata.ScanStatus.IN_PROGRESS);
 
-        appGroupMetadata.setScanStatus(finalStatus);
-        this.entityManager.merge(appGroupMetadata);
-
-        return metadata.getPackages();
+            LOG.info("New group package discovery status: " + finalStatus);
+            LOG.info("Updating group package metadata (id: " + appGroupMetadata.getId() +" )");
+            appGroupMetadata.setScanStatus(finalStatus);
+            this.entityManager.merge(appGroupMetadata);
+        }
     }
 
     private void addPackagesToPackageMetadata(PackageMetadata metadata, Map<String, Integer> discoveredPackages, Map<String, Package> packageMap)

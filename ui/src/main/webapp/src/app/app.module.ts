@@ -103,6 +103,7 @@ import {SortComponent} from "./components/sort.component";
 import {SearchComponent} from "./components/search.component";
 import {MomentModule} from "angular2-moment";
 import {FileUploadModule, FileUploader} from "ng2-file-upload";
+import {WizardComponent} from "./components/wizard.component";
 
 /**
  * Load all mapping data from the generated files.
@@ -189,7 +190,8 @@ initializeModelMappingData();
         RuleProviderExecutionsComponent,
         DependenciesGraphComponent,
         SortComponent,
-        SearchComponent
+        SearchComponent,
+        WizardComponent
     ],
     providers: [
         appRoutingProviders,

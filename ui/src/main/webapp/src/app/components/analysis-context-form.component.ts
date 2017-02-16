@@ -1,6 +1,6 @@
 import {Component, OnInit, ViewChild} from "@angular/core";
 import {NgForm} from "@angular/forms";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute, Router, NavigationEnd} from "@angular/router";
 
 import {FormComponent} from "./form.component";
 import {ApplicationGroupService} from "../services/application-group.service";
@@ -14,6 +14,11 @@ import {Observable} from "rxjs/Observable";
 import {PackageRegistryService} from "../services/package-registry.service";
 import {ApplicationGroup, AnalysisContext, Package, MigrationPath, AdvancedOption, RulesPath, PackageMetadata} from "windup-services";
 import {RouteHistoryService} from "../services/route-history.service";
+import {Subscription} from "rxjs";
+import {RouteFlattenerService} from "../services/route-flattener.service";
+import {WindupService} from "../services/windup.service";
+import {NotificationService} from "../services/notification.service";
+import {utils} from "../utils";
 
 @Component({
     templateUrl: './analysis-context-form.component.html'
@@ -44,6 +49,12 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
     configurationOptions:ConfigurationOption[] = [];
 
     private _migrationPathsObservable:Observable<MigrationPath[]>;
+    private routerSubscription: Subscription;
+
+    isInWizard: boolean;
+
+
+    action: Action;
 
     constructor(private _router:Router,
                 private _activatedRoute: ActivatedRoute,
@@ -52,7 +63,10 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
                 private _analysisContextService:AnalysisContextService,
                 private _configurationOptionsService:ConfigurationOptionsService,
                 private _packageRegistryService: PackageRegistryService,
-                private _routeHistoryService: RouteHistoryService
+                private _routeHistoryService: RouteHistoryService,
+                private _routeFlattener: RouteFlattenerService,
+                private _windupService: WindupService,
+                private _notificationService: NotificationService
     ) {
         super();
         this.includePackages = [];
@@ -64,14 +78,22 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
             this.configurationOptions = options;
         });
 
-        this._activatedRoute.parent.parent.data.subscribe((data: {applicationGroup: ApplicationGroup}) => {
-            // Reload from the service to insure fresh data
-            this._applicationGroupService.get(data.applicationGroup.id).subscribe(updatedGroup => {
-                this.applicationGroup = updatedGroup;
-                this.initializeAnalysisContext();
-                this.loadPackageMetadata();
-                console.log("Loaded analysis context: " + JSON.stringify(this.analysisContext));
-            });
+        this.routerSubscription = this._router.events.filter(event => event instanceof NavigationEnd).subscribe(_ => {
+            let flatRouteData = this._routeFlattener.getFlattenedRouteData(this._activatedRoute.snapshot);
+
+            if (flatRouteData.data['applicationGroup']) {
+                let applicationGroup = flatRouteData.data['applicationGroup'];
+
+                // Reload from the service to insure fresh data
+                this._applicationGroupService.get(applicationGroup.id).subscribe(updatedGroup => {
+                    this.applicationGroup = updatedGroup;
+                    this.initializeAnalysisContext();
+                    this.loadPackageMetadata();
+                    console.log("Loaded analysis context: " + JSON.stringify(this.analysisContext));
+                });
+            }
+
+            this.isInWizard = flatRouteData.data.hasOwnProperty('wizard') && flatRouteData.data['wizard'];
         });
     }
 
@@ -165,25 +187,50 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
     }
 
     save() {
+        this.action = Action.Save;
+    }
+
+    onSubmit() {
         if (this.analysisContext.id != null) {
             console.log("Updating analysis context: " + this.analysisContext.migrationPath.id);
             this._analysisContextService.update(this.analysisContext).subscribe(
-                migrationProject => {
+                analysisContext => {
                     this._dirty = false;
-                    this.navigateBack()
+                    this.onSuccess(analysisContext);
                 },
                 error => this.handleError(<any> error)
             );
         } else {
             console.log("Creating analysis context: " + this.analysisContext.migrationPath.id);
             this._analysisContextService.create(this.analysisContext).subscribe(
-                migrationProject => {
+                analysisContext => {
                     this._dirty = false;
-                    this.navigateBack()
+                    this.onSuccess(analysisContext);
                 },
                 error => this.handleError(<any> error)
             );
         }
+    }
+
+    onSuccess(analysisContext: AnalysisContext) {
+        if (this.action === Action.SaveAndRun) {
+            this._windupService.executeWindupGroup(this.applicationGroup.id)
+                .subscribe(execution => {
+                    this._notificationService.success('Windup execution has started');
+                    this._router.navigate(['/']);
+                },
+                error => {
+                    this._notificationService.error(utils.getErrorMessage(error));
+                });
+        } else if (this.isInWizard) {
+            this._router.navigate(['/']);
+        } else {
+            this.navigateBack();
+        }
+    }
+
+    saveAndRun() {
+        this.action = Action.SaveAndRun;
     }
 
     rulesPathsChanged(rulesPaths:RulesPath[]) {
@@ -196,11 +243,20 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
     }
 
     cancel() {
-        this.navigateBack();
+        if (!this.isInWizard) {
+            this.navigateBack();
+        } else {
+            this._router.navigate(['/']);
+        }
     }
 
     navigateBack() {
         let groupPageRoute = `/projects/${this.applicationGroup.migrationProject.id}/groups/${this.applicationGroup.id}`;
         this._routeHistoryService.navigateBackOrToRoute(groupPageRoute);
     }
+}
+
+enum Action {
+    Save = 0,
+    SaveAndRun = 1
 }

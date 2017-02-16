@@ -6,17 +6,22 @@ import {MigrationProjectService} from "../services/migration-project.service";
 import {FormComponent} from "./form.component";
 import {Subscription} from "rxjs";
 import {RouteFlattenerService} from "../services/route-flattener.service";
+import {ApplicationGroupService} from "../services/application-group.service";
 
 @Component({
-    templateUrl: './migration-project-form.component.html'
+    templateUrl: './migration-project-form.component.html',
+    styles: [`
+        .project-edit .finish-buttons .btn { padding: 0 6em; margin-right: 2em; }
+    `]
 })
 export class MigrationProjectFormComponent extends FormComponent implements OnInit, OnDestroy
 {
-    title: string = 'Create Migration Project';
+    title: string = "Create Migration Project";
 
-    model:MigrationProject = <MigrationProject>{};
+    model: MigrationProject = <MigrationProject>{};
 
-    editMode:boolean = false;
+    isInWizard: boolean = false;
+    editMode: boolean = false;
 
     errorMessages: string[];
     private routerSubscription: Subscription;
@@ -25,7 +30,8 @@ export class MigrationProjectFormComponent extends FormComponent implements OnIn
         private _router: Router,
         private _activatedRoute: ActivatedRoute,
         private _migrationProjectService: MigrationProjectService,
-        private _routeFlattener: RouteFlattenerService
+        private _routeFlattener: RouteFlattenerService,
+        private _applicationGroupService: ApplicationGroupService
     ) {
         super();
     }
@@ -39,6 +45,8 @@ export class MigrationProjectFormComponent extends FormComponent implements OnIn
                 this.editMode = true;
                 this.model = flatRouteData.data['project'];
             }
+
+            this.isInWizard = flatRouteData.data.hasOwnProperty('wizard') && flatRouteData.data['wizard'];
         });
     }
 
@@ -46,19 +54,37 @@ export class MigrationProjectFormComponent extends FormComponent implements OnIn
         this.routerSubscription.unsubscribe();
     }
 
+    getDescriptionHeight() {
+        return Math.min(4 + (this.model.description ? this.model.description.length : 0) / 80, 25)
+    }
+
     save() {
         if (this.editMode) {
             console.log("Updating migration project: " + this.model.title);
             this._migrationProjectService.update(this.model).subscribe(
-                migrationProject => this.rerouteToProjectList(),
+                migrationProject => this.navigateOnSuccess(migrationProject),
                 error => this.handleError(<any> error)
             );
         } else {
             console.log("Creating migration project: " + this.model.title);
             this._migrationProjectService.create(this.model).subscribe(
-                migrationProject => this.rerouteToProjectList(),
+                migrationProject => this.navigateOnSuccess(migrationProject),
                 error => this.handleError(<any> error)
             );
+        }
+    }
+
+    navigateOnSuccess(project: MigrationProject) {
+        if (this.isInWizard) {
+            // Come on, relative routes?!
+            // this._router.navigate(['./add-applications']);
+            this._applicationGroupService.getByProjectID(project.id).subscribe(groups => {
+                // TODO: Fix this when default group has flag
+                let defaultGroup = groups.find(group => group.title === 'Default Group');
+                this._router.navigate(['/wizard', 'group', defaultGroup.id, 'add-applications']);
+            });
+        } else {
+            this.rerouteToProjectList();
         }
     }
 

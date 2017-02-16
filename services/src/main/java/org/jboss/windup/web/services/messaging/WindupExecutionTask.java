@@ -94,6 +94,11 @@ public class WindupExecutionTask implements Runnable
                         .map(application -> Paths.get(application.getInputPath()))
                         .collect(Collectors.toList());
 
+            if (inputPaths.size() == 0)
+            {
+                throw new RuntimeException("InputPaths collection is empty - cannot execute windup without any input.");
+            }
+
             List<String> includePackages = Collections.emptyList();
             List<String> excludePackages = Collections.emptyList();
             String source = null;

@@ -30,21 +30,10 @@
         </div>
 
         <div *ngIf="projects?.length > 0" class="list-group list-view-pf projects-list">
-            <div *ngFor="let project of projects" class="list-group-item project-info tile-click" (click)="viewProject($event, project)">
-                <div class="list-view-pf-main-info">
-                    <div class="list-view-pf-description">
-                        <div class="list-group-item-heading">
-                            <a (click)="viewProject($event, project)"><h2 class="project-title">{{project.title}}</h2></a>
-                            <small *ngIf="!project.lastModified">
-                                Created {{project.created | amTimeAgo}}
-                            </small>
-                            <small *ngIf="project.lastModified">
-                                Last Modified {{project.lastModified | amTimeAgo}}
-                            </small>
-                        </div>
-                    </div>
-                </div>
-                <div class="project-actions">
+            <div *ngFor="let project of projects"
+                class="list-group-item  project-info  tile-click"
+                (click)="viewProject($event, project)">
+                <div class="list-view-pf-actions">
                     <span class="fa-lg project-action-item" i18n-title="Edit project" title="Edit project">
                         <a (click)="editProject($event, project)" class="action-button">
                             <i class="fa fa-pencil"></i>
@@ -55,6 +44,28 @@
                             <i class="fa fa-trash-o"></i>
                         </a>
                     </span>
+                </div>
+                <div class="list-view-pf-main-info">
+                    <div class="list-view-pf-body">
+                        <div class="list-view-pf-description">
+                            <div class="list-group-item-heading">
+                                <a (click)="viewProject($event, project)"><h2 class="project-title">{{project.title}}</h2></a>
+                                <small *ngIf="!project.lastModified">
+                                    Created {{project.created | amTimeAgo}}
+                                </small>
+                                <small *ngIf="project.lastModified">
+                                    Last Modified {{project.lastModified | amTimeAgo}}
+                                </small>
+                            </div>
+                            <div class="list-group-item-text description">{{project.description}}</div>
+                        </div>
+                        <div class="list-view-pf-additional-info">
+                                <div class="list-view-pf-additional-info-item">
+                                    <span class="pficon pficon-image"></span>
+                                    <strong>{{project.applicationCount}}</strong> Applications
+                                </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

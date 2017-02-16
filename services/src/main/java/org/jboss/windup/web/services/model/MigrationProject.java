@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import java.io.Serializable;
 import java.util.Calendar;
@@ -11,6 +14,7 @@ import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -23,7 +27,8 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
-import javax.persistence.CascadeType;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -33,6 +38,7 @@ import javax.validation.constraints.Size;
  * @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
  */
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = "title", name = "uniqueTitle"))
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = MigrationProject.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MigrationProject implements Serializable
@@ -50,10 +56,16 @@ public class MigrationProject implements Serializable
     @Column(name = "version")
     private int version;
 
-    @Column(length = 256)
+    @Column(length = 256, unique = true, nullable = false)
     @Size(min = 1, max = 256)
     @NotNull
     private String title;
+
+    @Size(max = 4096)
+    @NotNull
+    @Column(length = 4096, nullable = false)
+    @ColumnDefault("")
+    private String description = "";
 
     @Column(columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable=false, updatable=false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -63,12 +75,18 @@ public class MigrationProject implements Serializable
     @Temporal(TemporalType.TIMESTAMP)
     private Calendar lastModified;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "migrationProject", cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "migrationProject", cascade = CascadeType.REMOVE)
+    @Fetch(FetchMode.SELECT)
     private Set<ApplicationGroup> groups;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "migrationProject", cascade = CascadeType.REMOVE)
+    @Fetch(FetchMode.SELECT)
+    private Set<RegisteredApplication> applications;
 
     public MigrationProject()
     {
         this.groups = new HashSet<>();
+        this.applications = new HashSet<>();
     }
 
     @PrePersist
@@ -117,6 +135,16 @@ public class MigrationProject implements Serializable
     public void setTitle(String title)
     {
         this.title = title;
+    }
+
+    public String getDescription()
+    {
+        return description;
+    }
+
+    public void setDescription(String description)
+    {
+        this.description = description;
     }
 
     /**
@@ -169,6 +197,36 @@ public class MigrationProject implements Serializable
     public void setLastModified(Calendar lastModified)
     {
         this.lastModified = lastModified;
+    }
+
+    /**
+     * Contains the {@link RegisteredApplication}s associated with this project
+     */
+    public Set<RegisteredApplication> getApplications()
+    {
+        return applications;
+    }
+
+    @JsonIgnore
+    public void setApplications(Set<RegisteredApplication> applications)
+    {
+        this.applications = applications;
+    }
+
+    /**
+     * Adds the {@link RegisteredApplication} to this project
+     */
+    public void addApplication(RegisteredApplication application)
+    {
+        this.applications.add(application);
+    }
+
+    /**
+     * Removes the {@link RegisteredApplication} from this project
+     */
+    public void removeApplication(RegisteredApplication application)
+    {
+        this.applications.remove(application);
     }
 
     @Override

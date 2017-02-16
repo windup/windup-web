@@ -36,6 +36,7 @@
     "@angular/platform-browser-dynamic": "^2.4.5",
     "@angular/platform-server": "^2.4.5",
     "@angular/router": "^3.4.5",
+    "@ngtools/webpack": "^1.2.8",
     "angular2-moment": "^1.1.0",
     "bootstrap": "3.3.7",
     "bootstrap-datepicker": "1.6.4",

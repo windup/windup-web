@@ -18,6 +18,9 @@ import {FileUploader, FileUploaderOptions} from "ng2-file-upload/ng2-file-upload
 import {MockBackend, MockConnection} from "@angular/http/testing";
 import {EventBusService} from "../../src/app/services/events/event-bus.service";
 import {ApplicationGroup} from "windup-services";
+import {MigrationProject} from "windup-services";
+import {ApplicationGroupService} from "../../src/app/services/application-group.service";
+import {Observable} from "rxjs";
 
 describe("Registered Application Service Test", () => {
     beforeEach(() => {
@@ -26,6 +29,17 @@ describe("Registered Application Service Test", () => {
                 imports: [HttpModule],
                 providers: [
                     Constants, FileService, RegisteredApplicationService, MockBackend, BaseRequestOptions,
+                    {
+                        provide: ApplicationGroupService,
+                        useFactory: () =>
+                        {
+                            return <ApplicationGroupService>{
+                                getByProjectID(projectID: number): Observable<ApplicationGroup[]> {
+                                    return Observable.of([]);
+                                }
+                            };
+                        }
+                    },
                     {
                         provide: EventBusService,
                         useValue: jasmine.createSpyObj('EventBusService', ['fireEvent'])
@@ -64,12 +78,9 @@ describe("Registered Application Service Test", () => {
             let inputPath = "src/main/java";
 
             mockBackend.connections.subscribe((connection: MockConnection) => {
-                expect(connection.request.url).toEqual(Constants.REST_BASE + '/registeredApplications/register-path/0');
+                expect(connection.request.url).toEqual(Constants.REST_BASE + '/migrationProjects/0/registeredApplications/register-path');
                 expect(connection.request.method).toEqual(RequestMethod.Post);
-                expect(JSON.parse(connection.request.getBody())).toEqual(jasmine.objectContaining({
-                    "inputPath": inputPath,
-                    "title": "java"
-                }));
+                expect(connection.request.getBody()).toEqual("src/main/java");
 
                 connection.mockRespond(new Response(new ResponseOptions({
                     body: {
@@ -78,7 +89,7 @@ describe("Registered Application Service Test", () => {
                 })));
             });
 
-            service.registerByPath(<ApplicationGroup>{id: 0}, inputPath).toPromise()
+            service.registerByPath(<MigrationProject>{id: 0}, inputPath).toPromise()
                 .then(application => {
                     expect(application.inputFilename).toEqual("java");
                 }, error => {

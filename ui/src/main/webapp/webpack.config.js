@@ -10,15 +10,18 @@ module.exports = function(environment) {
   switch (mode) {
     case 'prod':
     case 'production':
+      console.info('Running webpack in production mode');
       return require('./config/webpack.prod');
       break;
     case 'test':
     case 'testing':
-      return  require('./config/webpack.test');
+      console.info('Running webpack in test mode');
+      return require('./config/webpack.test');
       break;
     case 'dev':
     case 'development':
     default:
+      console.info('Running webpack in dev mode');
       return require('./config/webpack.dev');
     break;
   }
