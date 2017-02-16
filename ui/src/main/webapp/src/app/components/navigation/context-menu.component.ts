@@ -1,22 +1,27 @@
-import {Component, OnInit, Input, OnChanges, SimpleChanges} from "@angular/core";
+import {Component, Input, ChangeDetectionStrategy} from "@angular/core";
 import {ContextMenuItemInterface} from "./context-menu-item.class";
 import {Router} from "@angular/router";
 
 @Component({
     selector: 'wu-context-menu',
-    templateUrl: './context-menu.component.html'
+    templateUrl: './context-menu.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ContextMenuComponent implements OnChanges {
-    @Input()
-    protected menuItems: ContextMenuItemInterface[] = [];
+export class ContextMenuComponent {
+    protected _menuItems: ContextMenuItemInterface[] = [];
     protected enabledItems: ContextMenuItemInterface[] = [];
 
     constructor(private _router: Router) {
     }
 
+    @Input()
+    public set menuItems(items: ContextMenuItemInterface[]) {
+        if (!items) {
+            items = [];
+        }
 
-    ngOnChanges(changes: SimpleChanges): void {
-        this.enabledItems = this.menuItems.filter(item => item.isEnabled);
+        this._menuItems = items;
+        this.enabledItems = this._menuItems.filter(item => item.isEnabled);
     }
 
     click(item: ContextMenuItemInterface) {
