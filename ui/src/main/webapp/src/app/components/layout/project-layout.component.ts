@@ -25,6 +25,7 @@ import {MigrationProject} from "windup-services";
 import {ApplicationListComponent} from "../application-list.component";
 import {RegisteredApplicationService} from "../../services/registered-application.service";
 import {WINDUP_WEB} from "../../app.module";
+import {ApplicationIndexComponent} from "../reports/application-index/application-index.component";
 
 
 @Component({
@@ -165,7 +166,14 @@ export class ProjectLayoutComponent extends AbstractComponent implements OnInit,
                 this.activeGroup,
                 MigrationIssuesComponent,
                 this._routeLinkProviderService,
-            )
+            ),
+            new ReportMenuItem(
+                'Application Index',
+                'fa-book',
+                this.activeGroup,
+                ApplicationIndexComponent,
+                this._routeLinkProviderService,
+            ),
         ];
 
         if (!WINDUP_WEB.config.hideUnfinishedFeatures) {
