@@ -87,10 +87,23 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
         this.routerSubscription = this._router.events.filter(event => event instanceof NavigationEnd).subscribe(_ => {
             let flatRouteData = this._routeFlattener.getFlattenedRouteData(this._activatedRoute.snapshot);
 
-            if (flatRouteData.data['applicationGroup']) {
+            this.isInWizard = flatRouteData.data.hasOwnProperty('wizard') && flatRouteData.data['wizard'];
+
+            if (this.isInWizard) {
+                if (!flatRouteData.data['applicationGroup']) {
+                    throw new Error('In wizard mode application group must be specified');
+                }
+
                 this.applicationGroup = flatRouteData.data['applicationGroup'];
                 this.project = this.applicationGroup.migrationProject;
+            } else {
+                if (!flatRouteData.data['project']) {
+                    throw new Error('Project must be specified');
+                }
+
+                this.project = flatRouteData.data['project'];
             }
+
             let uploadUrl = Constants.REST_BASE + RegisteredApplicationService.UPLOAD_URL;
             uploadUrl = uploadUrl.replace("{projectId}", this.project.id.toString());
             console.log("URL: " + uploadUrl);
@@ -100,8 +113,6 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
                 method: 'POST',
                 disableMultipart: false
             });
-
-            this.isInWizard = flatRouteData.data.hasOwnProperty('wizard') && flatRouteData.data['wizard'];
         });
     }
 
@@ -162,7 +173,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     }
 
     protected rerouteToApplicationList() {
-        this.navigateAway([`/projects/${this.applicationGroup.migrationProject.id}/groups/${this.applicationGroup.id}`]);
+        this.navigateAway([`/projects/${this.project.id}/applications`]);
     }
 
     private cancelRegistration() {
