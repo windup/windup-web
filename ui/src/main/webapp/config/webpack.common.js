@@ -21,11 +21,6 @@ module.exports = {
     module: {
         loaders: [
             {
-                test: /\.ts$/,
-                exclude: /jquery*\.js/,
-                loaders: '@ngtools/webpack'
-            },
-            {
                 test: /\.html$/,
                 loader: 'html-loader'
             },

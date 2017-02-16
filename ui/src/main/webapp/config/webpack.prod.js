@@ -17,6 +17,15 @@ module.exports = webpackMerge(commonConfig, {
         chunkFilename: 'js/[id].chunk.js'
     },
 
+    module: {
+        loaders: [
+            {
+                test: /\.ts$/,
+                exclude: /jquery*\.js/,
+                loaders: '@ngtools/webpack'
+            }
+        ]
+    },
 
     plugins: [
         new webpack.NoEmitOnErrorsPlugin(),

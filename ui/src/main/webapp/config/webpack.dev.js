@@ -2,8 +2,6 @@ var webpackMerge = require('webpack-merge');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var commonConfig = require('./webpack.common.js');
 var helpers = require('./helpers');
-var ngtools = require('@ngtools/webpack');
-var AotPlugin = ngtools.AotPlugin;
 
 module.exports = webpackMerge(commonConfig, {
     devtool: 'source-map', //devtool: 'cheap-module-eval-source-map',
@@ -14,13 +12,18 @@ module.exports = webpackMerge(commonConfig, {
         chunkFilename: 'js/[id].chunk.js'
     },
 
+    module: {
+        loaders: [
+            {
+                test: /\.ts$/,
+                exclude: /jquery*\.js/,
+                loaders: ['awesome-typescript-loader', 'angular2-template-loader']
+            }
+        ]
+    },
+
     plugins: [
-        new ExtractTextPlugin('css/[name].css'),
-        new AotPlugin({
-            tsConfigPath: './tsconfig.json',
-            basePath: '.',
-            mainPath: 'src/main.ts'
-        })
+        new ExtractTextPlugin('css/[name].css')
     ],
 
     devServer: {
