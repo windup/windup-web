@@ -13,17 +13,13 @@ import {TagFilterService} from "../tag-filter.service";
 import {TypeReferenceStatisticsService} from "./type-reference-statistics.service";
 import {TagDataService} from "../tag-data.service";
 import {TreeData} from "../../js-tree-angular-wrapper.component";
+import {chartColorScheme} from "../color-schemes";
 
 @Component({
     templateUrl: './application-details.component.html',
     styleUrls: ['./application-details.component.css']
 })
 export class ApplicationDetailsComponent implements OnInit {
-
-    colorScheme = {
-        domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
-    };
-
     private execID:number;
     private group:ApplicationGroup;
     applicationDetails:ApplicationDetailsFullDTO;
@@ -51,13 +47,16 @@ export class ApplicationDetailsComponent implements OnInit {
 
     constructor(
         private _element: ElementRef,
-        private _changeDetectorRef: ChangeDetectorRef,
         private _activatedRoute:ActivatedRoute,
         private _applicationDetailsService:ApplicationDetailsService,
         private _notificationService:NotificationService,
         private _tagDataService:TagDataService,
         private _http:Http
     ) {}
+
+    get colorScheme() {
+        return chartColorScheme;
+    }
 
     ngOnInit(): void {
         this._activatedRoute.parent.parent.parent.data.subscribe((data: {applicationGroup: ApplicationGroup}) => {

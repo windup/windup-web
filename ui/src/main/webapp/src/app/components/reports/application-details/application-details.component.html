@@ -71,7 +71,7 @@
 <div class="row container-fluid" *ngIf="allProjects?.length > 0">
     <div class="theme-showcase" role="main">
         <template ngFor let-traversal [ngForOf]="rootProjects">
-            <div class="panel panel-primary" *ngIf="traversal.messages?.length > 0">
+            <div class="panel panel-default" *ngIf="traversal.messages?.length > 0">
                 <div class="panel-heading">
                     <h3 class="panel-title">Application Messages for: {{traversal.path}}</h3>
                 </div>
@@ -88,7 +88,7 @@
             <a id="expandAll" *ngIf="!allExpanded()" (click)="expandAll()">Expand All</a>
         </div>
 
-        <div *ngFor="let traversal of allProjects" class="panel panel-primary projectBox" id="{{traversal.canonicalID}}">
+        <div *ngFor="let traversal of allProjects" class="panel panel-default projectBox" id="{{traversal.canonicalID}}">
             <div class="panel-heading panel-collapsed clickable" (click)="toggleCollapsed(traversal)">
                 <span class="pull-left"><i class="glyphicon glyphicon-expand arrowIcon"></i></span>
                 <h3 class="panel-title" [ngSwitch]="">
