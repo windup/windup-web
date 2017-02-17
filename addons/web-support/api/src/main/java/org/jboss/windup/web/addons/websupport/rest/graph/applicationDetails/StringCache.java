@@ -9,6 +9,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
+ * Contains a key/value indexed dictionary of strings as a way of reducing bandwidth overhead in transferring
+ * this data to the client.
+ *
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
 @Vetoed
@@ -22,6 +25,9 @@ public class StringCache
 
     private Map<Integer, String> byID = new HashMap<>();
 
+    /**
+     * Adds a string to the cache and returns the id.
+     */
     public int getOrAdd(String title)
     {
         Integer id = stringToID.get(title);
@@ -34,6 +40,9 @@ public class StringCache
         return id;
     }
 
+    /**
+     * Gets a string from the cache based upon its id.
+     */
     public Map<Integer, String> getByID()
     {
         return byID;

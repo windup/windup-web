@@ -1,10 +1,5 @@
 package org.jboss.windup.web.addons.websupport.rest.graph.applicationDetails;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.model.ProjectModel;
@@ -54,7 +49,7 @@ public class ApplicationDetailsResourceImpl extends AbstractGraphResource implem
         return result;
     }
 
-    private void serializeProjectMetadata(ProjectTraversalDTO traversalDTO, PersistedProjectModelTraversalModel traversal)
+    private void serializeProjectMetadata(ProjectTraversalReducedDTO traversalDTO, PersistedProjectModelTraversalModel traversal)
     {
         ProjectModel current = traversal.getCurrentProject();
         ProjectModel canonical = traversal.getCanonicalProject();
@@ -80,12 +75,12 @@ public class ApplicationDetailsResourceImpl extends AbstractGraphResource implem
         }
     }
 
-    private void serializeChildFiles(ApplicationDetailsDTO applicationDetails, ProjectTraversalDTO traversalDTO, PersistedProjectModelTraversalModel traversal)
+    private void serializeChildFiles(ApplicationDetailsDTO applicationDetails, ProjectTraversalReducedDTO traversalDTO, PersistedProjectModelTraversalModel traversal)
     {
         StringCache strings = applicationDetails.getStringCache();
         for (PersistedTraversalChildFileModel traversalFileModel : traversal.getFiles())
         {
-            FileDTO fileDTO = new FileDTO();
+            FileReducedDTO fileDTO = new FileReducedDTO();
 
             FileModel fileModel = traversalFileModel.getFileModel();
             fileDTO.setFileModelVertexID(fileModel.asVertex().getId());
@@ -108,7 +103,7 @@ public class ApplicationDetailsResourceImpl extends AbstractGraphResource implem
             for (TechnologyTagModel tag : traversalFileModel.getTechnologyTags())
             {
                 String level = tag.getLevel() == null ? null : tag.getLevel().toString();
-                TagDTO tagDTO = new TagDTO(strings.getOrAdd(tag.getName()), strings.getOrAdd(level));
+                TagReducedDTO tagDTO = new TagReducedDTO(strings.getOrAdd(tag.getName()), strings.getOrAdd(level));
                 fileDTO.getTags().add(tagDTO);
             }
 
@@ -117,13 +112,13 @@ public class ApplicationDetailsResourceImpl extends AbstractGraphResource implem
                 if (applicationDetails.getClassifications().containsKey(classification.asVertex().getId()))
                     continue;
 
-                ClassificationDTO classificationDTO = new ClassificationDTO();
-                classificationDTO.setTitle(strings.getOrAdd(classification.getClassification()));
-                classificationDTO.setEffort(classification.getEffort());
+                ClassificationReducedDTO classificationReducedDTO = new ClassificationReducedDTO();
+                classificationReducedDTO.setTitle(strings.getOrAdd(classification.getClassification()));
+                classificationReducedDTO.setEffort(classification.getEffort());
                 for (String tag : classification.getTags())
-                    classificationDTO.getTags().add(new TagDTO(strings.getOrAdd(tag), 0));
+                    classificationReducedDTO.getTags().add(new TagReducedDTO(strings.getOrAdd(tag), 0));
 
-                applicationDetails.getClassifications().put(classification.asVertex().getId(), classificationDTO);
+                applicationDetails.getClassifications().put(classification.asVertex().getId(), classificationReducedDTO);
                 fileDTO.getClassificationIDs().add(classification.asVertex().getId());
             }
 
@@ -132,18 +127,18 @@ public class ApplicationDetailsResourceImpl extends AbstractGraphResource implem
                 if (applicationDetails.getHints().containsKey(hint.asVertex().getId()))
                     continue;
 
-                HintDTO hintDTO = new HintDTO();
-                hintDTO.setTitle(strings.getOrAdd(hint.getTitle()));
-                hintDTO.setEffort(hint.getEffort());
+                HintReducedDTO hintReducedDTO = new HintReducedDTO();
+                hintReducedDTO.setTitle(strings.getOrAdd(hint.getTitle()));
+                hintReducedDTO.setEffort(hint.getEffort());
 
                 FileLocationModel fileLocationModel = hint.getFileLocationReference();
                 if (fileLocationModel instanceof JavaTypeReferenceModel)
-                    hintDTO.setJavaFQCN(strings.getOrAdd(((JavaTypeReferenceModel) fileLocationModel).getResolvedSourceSnippit()));
+                    hintReducedDTO.setJavaFQCN(strings.getOrAdd(((JavaTypeReferenceModel) fileLocationModel).getResolvedSourceSnippit()));
 
                 for (String tag : hint.getTags())
-                    hintDTO.getTags().add(new TagDTO(strings.getOrAdd(tag), 0));
+                    hintReducedDTO.getTags().add(new TagReducedDTO(strings.getOrAdd(tag), 0));
 
-                applicationDetails.getHints().put(hint.asVertex().getId(), hintDTO);
+                applicationDetails.getHints().put(hint.asVertex().getId(), hintReducedDTO);
                 fileDTO.getHintIDs().add(hint.asVertex().getId());
             }
 
@@ -151,9 +146,9 @@ public class ApplicationDetailsResourceImpl extends AbstractGraphResource implem
         }
     }
 
-    private void serializeTraversal(ApplicationDetailsDTO applicationDetails, ProjectTraversalDTO parent, PersistedProjectModelTraversalModel traversal)
+    private void serializeTraversal(ApplicationDetailsDTO applicationDetails, ProjectTraversalReducedDTO parent, PersistedProjectModelTraversalModel traversal)
     {
-        ProjectTraversalDTO traversalDTO = new ProjectTraversalDTO();
+        ProjectTraversalReducedDTO traversalDTO = new ProjectTraversalReducedDTO();
         // Add it to a parent if one exists, otherwise add it to the details
         if (parent != null)
             parent.getChildren().add(traversalDTO);
@@ -165,7 +160,7 @@ public class ApplicationDetailsResourceImpl extends AbstractGraphResource implem
 
         for (OverviewReportLineMessageModel applicationMessage : traversal.getApplicationMessages())
         {
-            ApplicationMessageDTO messageDTO = new ApplicationMessageDTO(applicationMessage.getMessage(), applicationMessage.getRuleID());
+            ApplicationMessageReducedDTO messageDTO = new ApplicationMessageReducedDTO(applicationMessage.getMessage(), applicationMessage.getRuleID());
             traversalDTO.getMessages().add(messageDTO);
         }
 

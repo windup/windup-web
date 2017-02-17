@@ -1,7 +1,5 @@
 package org.jboss.windup.web.addons.websupport.rest.graph.applicationDetails;
 
-import java.util.Map;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -29,7 +27,8 @@ public interface ApplicationDetailsResource extends FurnaceRESTGraphAPI
      * Returns a list of traversals based upon the traversal type.
      *
      * NOTE: In this case, the filter associated with the execution will only be applied at the application level.
-     *       Hints and Classifications will not be automatically filtered by the group filter.
+     *       Hints and Classifications will not be automatically filtered by the group filter and should be filtered on
+     *       the client instead.
      *
      */
     @GET

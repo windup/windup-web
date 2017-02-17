@@ -11,10 +11,11 @@ import java.util.List;
  */
 @Vetoed
 @JsonIgnoreProperties({"handler", "delegate"})
-public class ClassificationDTO
+public class HintReducedDTO
 {
     private int title;
-    private List<TagDTO> tags = new ArrayList<>();
+    private int javaFQCN;
+    private List<TagReducedDTO> tags = new ArrayList<>();
     private int effort;
 
     public int getTitle()
@@ -27,12 +28,22 @@ public class ClassificationDTO
         this.title = title;
     }
 
-    public List<TagDTO> getTags()
+    public int getJavaFQCN()
+    {
+        return javaFQCN;
+    }
+
+    public void setJavaFQCN(int javaFQCN)
+    {
+        this.javaFQCN = javaFQCN;
+    }
+
+    public List<TagReducedDTO> getTags()
     {
         return tags;
     }
 
-    public void setTags(List<TagDTO> tags)
+    public void setTags(List<TagReducedDTO> tags)
     {
         this.tags = tags;
     }

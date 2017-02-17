@@ -1,7 +1,5 @@
-import {PersistedProjectModelTraversalModel} from "../../generated/tsModels/PersistedProjectModelTraversalModel";
-import {PersistedTraversalChildFileModel} from "../../generated/tsModels/PersistedTraversalChildFileModel";
-import {ProjectTraversalDTO} from "windup-services";
-import {FileDTO} from "windup-services";
+import {ProjectTraversalReducedDTO} from "windup-services";
+import {FileReducedDTO} from "windup-services";
 
 /**
  * This is a direct port of windup core:
@@ -49,10 +47,10 @@ export function comparePaths(path1:string, path2:string):number {
     }
 }
 
-export function compareTraversals(traversal1:ProjectTraversalDTO, traversal2:ProjectTraversalDTO):number {
+export function compareTraversals(traversal1:ProjectTraversalReducedDTO, traversal2:ProjectTraversalReducedDTO):number {
     return comparePaths(traversal1.path, traversal2.path);
 }
 
-export function compareTraversalChildFiles(childFile1:FileDTO, childFile2:FileDTO):number {
+export function compareTraversalChildFiles(childFile1:FileReducedDTO, childFile2:FileReducedDTO):number {
     return comparePaths(childFile1.filePath, childFile2.filePath);
 }

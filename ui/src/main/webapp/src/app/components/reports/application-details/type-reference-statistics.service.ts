@@ -1,13 +1,8 @@
-import {InlineHintModel} from "../../../generated/tsModels/InlineHintModel";
 import {Http} from "@angular/http";
-import {GraphJSONToModelService} from "../../../services/graph/graph-json-to-model.service";
-import {JavaTypeReferenceModel} from "../../../generated/tsModels/JavaTypeReferenceModel";
-import {forkJoin} from "rxjs/observable/forkJoin";
-import {HintDTO} from "windup-services";
-import {StringCache} from "windup-services";
+import {HintReducedDTO, StringCache} from "windup-services";
 
 export class TypeReferenceStatisticsService {
-    getPackageUseFrequencies(stringCache:StringCache, hints:HintDTO[], nameDepth:number, http:Http):Map<string, number> {
+    getPackageUseFrequencies(stringCache:StringCache, hints:HintReducedDTO[], nameDepth:number, http:Http):Map<string, number> {
         if (hints == null || hints.length == 0) {
             return new Map<string, number>();
         }

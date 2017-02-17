@@ -11,16 +11,22 @@ import javax.enterprise.inject.Vetoed;
  */
 @Vetoed
 @JsonIgnoreProperties({"handler", "delegate"})
-public class ApplicationMessageDTO
+public class ApplicationMessageReducedDTO
 {
     String message;
     String ruleID;
 
-    public ApplicationMessageDTO()
+    /**
+     * Creates an empty instance. This is largely here to support proxies, as this object is immutable.
+     */
+    public ApplicationMessageReducedDTO()
     {
     }
 
-    public ApplicationMessageDTO(String message, String ruleID)
+    /**
+     * Creates an instance with the given message and rule id.
+     */
+    public ApplicationMessageReducedDTO(String message, String ruleID)
     {
         this.message = message;
         this.ruleID = ruleID;

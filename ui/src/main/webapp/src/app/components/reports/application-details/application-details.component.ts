@@ -10,10 +10,10 @@ import {TagFilterService} from "../tag-filter.service";
 import {TypeReferenceStatisticsService} from "./type-reference-statistics.service";
 import {TagDataService} from "../tag-data.service";
 import {TreeData} from "../../js-tree-angular-wrapper.component";
-import {ProjectTraversalDTO} from "windup-services";
+import {ProjectTraversalReducedDTO} from "windup-services";
 import {ApplicationDetailsDTO} from "windup-services";
-import {FileDTO} from "windup-services";
-import {HintDTO} from "windup-services";
+import {FileReducedDTO} from "windup-services";
+import {HintReducedDTO} from "windup-services";
 
 @Component({
     templateUrl: './application-details.component.html',
@@ -28,11 +28,11 @@ export class ApplicationDetailsComponent implements OnInit {
     private execID:number;
     private group:ApplicationGroup;
     applicationDetails:ApplicationDetailsDTO;
-    rootProjects:ProjectTraversalDTO[] = [];
-    traversalsForCanonicalVertexID:Map<number, ProjectTraversalDTO[]> = new Map<number, ProjectTraversalDTO[]>();
+    rootProjects:ProjectTraversalReducedDTO[] = [];
+    traversalsForCanonicalVertexID:Map<number, ProjectTraversalReducedDTO[]> = new Map<number, ProjectTraversalReducedDTO[]>();
     tagsForFile:Map<number, {name:string, level:string}[]> = new Map<number, {name:string, level:string}[]>();
 
-    allHints:HintDTO[] = [];
+    allHints:HintReducedDTO[] = [];
     globalPackageUseData:ChartStatistic[] = [];
     applicationTree:TreeData[] = [];
 
@@ -40,7 +40,7 @@ export class ApplicationDetailsComponent implements OnInit {
      * This contains all projects. Do note, however, that if a project appears more than once, it will only contain
      * one instance. The others will appear in the duplicateProjects Map.
      */
-    allProjects:ProjectTraversalDTO[] = [];
+    allProjects:ProjectTraversalReducedDTO[] = [];
     totalPoints:number = null;
     pointsByProject:Map<number, number> = new Map<number, number>();
     pointsByFile:Map<number, number> = new Map<number, number>();
@@ -97,7 +97,7 @@ export class ApplicationDetailsComponent implements OnInit {
         }
     }
 
-    private createProjectTreeData(parentTreeData:TreeData, traversals:ProjectTraversalDTO[]) {
+    private createProjectTreeData(parentTreeData:TreeData, traversals:ProjectTraversalReducedDTO[]) {
         traversals.forEach(traversal => {
             // Store data for the tree
             let newTreeData:TreeData = {
@@ -121,7 +121,7 @@ export class ApplicationDetailsComponent implements OnInit {
         });
     }
 
-    private flattenTraversals(traversals:ProjectTraversalDTO[]) {
+    private flattenTraversals(traversals:ProjectTraversalReducedDTO[]) {
         traversals = traversals.sort(compareTraversals);
 
         traversals.forEach(traversal => {
@@ -145,7 +145,7 @@ export class ApplicationDetailsComponent implements OnInit {
         });
     }
 
-    private hasDuplicateProjects(traversal:ProjectTraversalDTO):boolean {
+    private hasDuplicateProjects(traversal:ProjectTraversalReducedDTO):boolean {
         return this.traversalsForCanonicalVertexID.get(traversal.canonicalID).length > 1;
     }
 
@@ -155,7 +155,7 @@ export class ApplicationDetailsComponent implements OnInit {
         return this.applicationDetails.stringCache.byID[id];
     }
 
-    private storeProjectData(traversal:ProjectTraversalDTO) {
+    private storeProjectData(traversal:ProjectTraversalReducedDTO) {
         let files = traversal.files.sort(compareTraversalChildFiles);
 
         files.forEach(file => {
@@ -215,7 +215,7 @@ export class ApplicationDetailsComponent implements OnInit {
         this.tagFrequencies = this.convertToChartStatistic(allFrequencyStatsMap);
     }
 
-    private calculateTagFrequenciesForProject(allFrequencyStatsMap:Map<string, number>, traversal:ProjectTraversalDTO) {
+    private calculateTagFrequenciesForProject(allFrequencyStatsMap:Map<string, number>, traversal:ProjectTraversalReducedDTO) {
         let currentProjectMap = new Map<string, number>();
 
         traversal.files.forEach(file => {
@@ -250,7 +250,7 @@ export class ApplicationDetailsComponent implements OnInit {
         this.tagFrequenciesByProject.set(traversal.id, this.convertToChartStatistic(currentProjectMap));
     }
 
-    storeTagsForFile(file:FileDTO):{name:string, level:string}[] {
+    storeTagsForFile(file:FileReducedDTO):{name:string, level:string}[] {
         if(this.tagsForFile.has(file.fileModelVertexID))
             return this.tagsForFile.get(file.fileModelVertexID);
 
@@ -287,11 +287,11 @@ export class ApplicationDetailsComponent implements OnInit {
         return tags;
     }
 
-    private setPackageFrequenciesByProject(traversal:ProjectTraversalDTO, files:FileDTO[]) {
+    private setPackageFrequenciesByProject(traversal:ProjectTraversalReducedDTO, files:FileReducedDTO[]) {
         if (!files)
             return;
 
-        let hints:HintDTO[] = [];
+        let hints:HintReducedDTO[] = [];
         files.forEach((file) => {
             if (!file.hintIDs)
                 return;
@@ -302,7 +302,7 @@ export class ApplicationDetailsComponent implements OnInit {
         this.packageFrequenciesByProject.set(traversal.id, this.calculateTreeDataForHints(hints));
     }
 
-    private calculateTreeDataForHints(hints:HintDTO[]):ChartStatistic[] {
+    private calculateTreeDataForHints(hints:HintReducedDTO[]):ChartStatistic[] {
         let service = new TypeReferenceStatisticsService();
         let resultMap = service.getPackageUseFrequencies(this.applicationDetails.stringCache, hints, 2, this._http);
         let result = [];
@@ -328,7 +328,7 @@ export class ApplicationDetailsComponent implements OnInit {
         return result;
     }
 
-    storePointsForTraversal(traversal:ProjectTraversalDTO) {
+    storePointsForTraversal(traversal:ProjectTraversalReducedDTO) {
         let total = 0;
         traversal.files.forEach(file => {
             let pointsForFile = this.storyPoints(file);
@@ -349,7 +349,7 @@ export class ApplicationDetailsComponent implements OnInit {
         });
     }
 
-    storyPoints(file:FileDTO):number {
+    storyPoints(file:FileReducedDTO):number {
         let total = 0;
 
         file.classificationIDs
