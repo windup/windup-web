@@ -199,7 +199,6 @@
                             <arguments>
                                 <argument>--progress</argument>
                                 <argument>--profile</argument>
-                                <argument>--bail</argument>
                                 <argument>--env.environment=${webpack.environment}</argument>
                             </arguments>
                         </configuration>
