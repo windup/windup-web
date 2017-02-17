@@ -387,19 +387,19 @@ export class ApplicationDetailsComponent implements OnInit {
         return allCollapsed;
     }
 
-    toggleCollapsed(traversal) {
-        if (!this.projectsCollapsed.get(traversal.vertexId))
-            this.projectsCollapsed.set(traversal.vertexId, true);
+    toggleCollapsed(traversal:ProjectTraversalReducedDTO) {
+        if (!this.projectsCollapsed.get(traversal.id))
+            this.projectsCollapsed.set(traversal.id, true);
         else
-            this.projectsCollapsed.set(traversal.vertexId, false);
+            this.projectsCollapsed.set(traversal.id, false);
     }
 
-    setCollapsed(traversal) {
-        this.projectsCollapsed.set(traversal.vertexId, true);
+    setCollapsed(traversal:ProjectTraversalReducedDTO) {
+        this.projectsCollapsed.set(traversal.id, true);
     }
 
-    setExpanded(traversal) {
-        this.projectsCollapsed.set(traversal.vertexId, false);
+    setExpanded(traversal:ProjectTraversalReducedDTO) {
+        this.projectsCollapsed.set(traversal.id, false);
     }
 
     collapseAll() {
@@ -410,8 +410,8 @@ export class ApplicationDetailsComponent implements OnInit {
         this.allProjects.forEach((project) => this.projectsCollapsed.set(project.id, false));
     }
 
-    isCollapsed(traversal) {
-        return this.projectsCollapsed.get(traversal.vertexId);
+    isCollapsed(traversal:ProjectTraversalReducedDTO) {
+        return this.projectsCollapsed.get(traversal.id);
     }
 }
 
