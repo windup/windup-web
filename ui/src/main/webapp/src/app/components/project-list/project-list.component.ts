@@ -20,6 +20,7 @@ import {SortingService, OrderDirection} from "../../services/sorting.service";
 export class ProjectListComponent implements OnInit {
     private _originalProjects: MigrationProject[] = [];
 
+    loading: boolean = true;
     get totalProjectCount():number {
         if (this._originalProjects == null)
             return 0;
@@ -27,7 +28,7 @@ export class ProjectListComponent implements OnInit {
         return this._originalProjects.length;
     }
 
-    public projects: MigrationProject[] = [];
+    projects: MigrationProject[] = [];
 
     @ViewChild('deleteProjectModal')
     readonly deleteProjectModal: ConfirmationModalComponent;
@@ -64,6 +65,7 @@ export class ProjectListComponent implements OnInit {
     }
 
     projectsLoaded(projects:MigrationProject[]) {
+        this.loading = false;
         this._originalProjects = projects;
         this.updateProjects();
     }

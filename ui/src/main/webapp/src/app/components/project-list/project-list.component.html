@@ -1,4 +1,6 @@
-<wu-no-projects-welcome *ngIf="totalProjectCount == 0" (newProject)="createMigrationProject()"></wu-no-projects-welcome>
+<h2 *ngIf="loading">Loading...</h2>
+
+<wu-no-projects-welcome *ngIf="!loading && totalProjectCount == 0" (newProject)="createMigrationProject()"></wu-no-projects-welcome>
 
 <template [ngIf]="totalProjectCount > 0">
     <div class="projects-list-page">
