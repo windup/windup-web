@@ -36,7 +36,6 @@
     "@angular/platform-browser-dynamic": "^2.4.5",
     "@angular/platform-server": "^2.4.5",
     "@angular/router": "^3.4.5",
-    "@ngtools/webpack": "^1.2.8",
     "angular2-moment": "^1.1.0",
     "bootstrap": "3.3.7",
     "bootstrap-datepicker": "1.6.4",
@@ -74,6 +73,7 @@
   "devDependencies": {
     "@angularclass/hmr": "^1.0.1",
     "@angularclass/hmr-loader": "^3.0.2",
+    "@ngtools/webpack": "^1.2.10",
     "@types/bootstrap": "^3.3.32",
     "@types/core-js": "^0.9.35",
     "@types/d3": "4.4.1",
