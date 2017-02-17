@@ -68,7 +68,10 @@ public class FurnaceExtension implements Extension
 
             if (addon.getStatus() == AddonStatus.STARTED)
             {
-                for (Class<?> exportedType : addon.getServiceRegistry().getExportedTypes())
+                // Copy them to prevent concurrent modification
+                Set<Class<?>> exportedTypes = new HashSet<>(addon.getServiceRegistry().getExportedTypes());
+
+                for (Class<?> exportedType : exportedTypes)
                 {
                     addService(duplicateCheck, abd, beanManager, exportedType);
                 }
