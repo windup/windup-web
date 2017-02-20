@@ -1,8 +1,8 @@
 import {Http} from "@angular/http";
-import {HintReducedDTO, StringCache} from "windup-services";
+import {HintFullDTO} from "./application-details.service";
 
 export class TypeReferenceStatisticsService {
-    getPackageUseFrequencies(stringCache:StringCache, hints:HintReducedDTO[], nameDepth:number, http:Http):Map<string, number> {
+    getPackageUseFrequencies(hints:HintFullDTO[], nameDepth:number, http:Http):Map<string, number> {
         if (hints == null || hints.length == 0) {
             return new Map<string, number>();
         }
@@ -15,7 +15,7 @@ export class TypeReferenceStatisticsService {
             // 2. Organize them by package name and summarize results.
             let val = 1;
 
-            let pattern:string = stringCache.byID[javaTypeReference.javaFQCN];
+            let pattern:string = javaTypeReference.javaFQCNString;
             let keyArray:string[] = pattern.split(".");
 
             if (keyArray.length > 1 && nameDepth > 1) {

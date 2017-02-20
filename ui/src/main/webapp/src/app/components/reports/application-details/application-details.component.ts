@@ -1,5 +1,8 @@
 import {Component, OnInit, ChangeDetectorRef, ElementRef} from "@angular/core";
-import {ApplicationDetailsService} from "./application-details.service";
+import {
+    ApplicationDetailsService, ApplicationDetailsFullDTO,
+    ProjectTraversalFullDTO, HintFullDTO, FileFullDTO
+} from "./application-details.service";
 import {Params, ActivatedRoute} from "@angular/router";
 import {utils} from "../../../utils";
 import {NotificationService} from "../../../services/notification.service";
@@ -10,10 +13,6 @@ import {TagFilterService} from "../tag-filter.service";
 import {TypeReferenceStatisticsService} from "./type-reference-statistics.service";
 import {TagDataService} from "../tag-data.service";
 import {TreeData} from "../../js-tree-angular-wrapper.component";
-import {ProjectTraversalReducedDTO} from "windup-services";
-import {ApplicationDetailsDTO} from "windup-services";
-import {FileReducedDTO} from "windup-services";
-import {HintReducedDTO} from "windup-services";
 
 @Component({
     templateUrl: './application-details.component.html',
@@ -27,12 +26,12 @@ export class ApplicationDetailsComponent implements OnInit {
 
     private execID:number;
     private group:ApplicationGroup;
-    applicationDetails:ApplicationDetailsDTO;
-    rootProjects:ProjectTraversalReducedDTO[] = [];
-    traversalsForCanonicalVertexID:Map<number, ProjectTraversalReducedDTO[]> = new Map<number, ProjectTraversalReducedDTO[]>();
+    applicationDetails:ApplicationDetailsFullDTO;
+    rootProjects:ProjectTraversalFullDTO[] = [];
+    traversalsForCanonicalVertexID:Map<number, ProjectTraversalFullDTO[]> = new Map<number, ProjectTraversalFullDTO[]>();
     tagsForFile:Map<number, {name:string, level:string}[]> = new Map<number, {name:string, level:string}[]>();
 
-    allHints:HintReducedDTO[] = [];
+    allHints:HintFullDTO[] = [];
     globalPackageUseData:ChartStatistic[] = [];
     applicationTree:TreeData[] = [];
 
@@ -40,7 +39,7 @@ export class ApplicationDetailsComponent implements OnInit {
      * This contains all projects. Do note, however, that if a project appears more than once, it will only contain
      * one instance. The others will appear in the duplicateProjects Map.
      */
-    allProjects:ProjectTraversalReducedDTO[] = [];
+    allProjects:ProjectTraversalFullDTO[] = [];
     totalPoints:number = null;
     pointsByProject:Map<number, number> = new Map<number, number>();
     pointsByFile:Map<number, number> = new Map<number, number>();
@@ -97,7 +96,7 @@ export class ApplicationDetailsComponent implements OnInit {
         }
     }
 
-    private createProjectTreeData(parentTreeData:TreeData, traversals:ProjectTraversalReducedDTO[]) {
+    private createProjectTreeData(parentTreeData:TreeData, traversals:ProjectTraversalFullDTO[]) {
         traversals.forEach(traversal => {
             // Store data for the tree
             let newTreeData:TreeData = {
@@ -121,7 +120,7 @@ export class ApplicationDetailsComponent implements OnInit {
         });
     }
 
-    private flattenTraversals(traversals:ProjectTraversalReducedDTO[]) {
+    private flattenTraversals(traversals:ProjectTraversalFullDTO[]) {
         traversals = traversals.sort(compareTraversals);
 
         traversals.forEach(traversal => {
@@ -145,39 +144,35 @@ export class ApplicationDetailsComponent implements OnInit {
         });
     }
 
-    private hasDuplicateProjects(traversal:ProjectTraversalReducedDTO):boolean {
+    private hasDuplicateProjects(traversal:ProjectTraversalFullDTO):boolean {
         return this.traversalsForCanonicalVertexID.get(traversal.canonicalID).length > 1;
     }
 
-    resolveString(id:number):string {
-        if (id == 0)
-            return null;
-        return this.applicationDetails.stringCache.byID[id];
-    }
-
-    private storeProjectData(traversal:ProjectTraversalReducedDTO) {
+    private storeProjectData(traversal:ProjectTraversalFullDTO) {
         let files = traversal.files.sort(compareTraversalChildFiles);
 
         files.forEach(file => {
-            file.classificationIDs.forEach(classificationID => {
-                let classification = this.applicationDetails.classifications[classificationID];
+            file.classifications.forEach(classification => {
                 let tagFilterService = new TagFilterService(this.group.reportFilter);
-                let tagStrings = classification.tags.map(tag => this.resolveString(tag.name));
+                let tagStrings = classification.tags.map(tag => tag.nameString);
 
                 // Remove it if it doesn't match the filter
-                if (!tagFilterService.tagsMatch(tagStrings))
-                    file.classificationIDs.splice(file.classificationIDs.indexOf(classificationID), 1);
+                if (!tagFilterService.tagsMatch(tagStrings)) {
+                    file.classificationIDs.splice(file.classificationIDs.indexOf(classification.id), 1);
+                    file.classifications.splice(file.classifications.indexOf(classification), 1);
+                }
             });
-            file.hintIDs.forEach(hintID => {
-                let hint = this.applicationDetails.hints[hintID];
+            file.hints.forEach(hint => {
                 let tagFilterService = new TagFilterService(this.group.reportFilter);
-                let tagStrings = hint.tags.map(tag => this.resolveString(tag.name));
+                let tagStrings = hint.tags.map(tag => tag.nameString);
 
                 // Remove it if it doesn't match the filter
-                if (!tagFilterService.tagsMatch(tagStrings))
-                    file.hintIDs.splice(file.classificationIDs.indexOf(hintID), 1);
-                else
+                if (!tagFilterService.tagsMatch(tagStrings)) {
+                    file.hintIDs.splice(file.hintIDs.indexOf(hint.id), 1);
+                    file.hints.splice(file.hints.indexOf(hint), 1);
+                } else {
                     this.allHints.push(hint);
+                }
             });
 
             // this is basically just creating a cache
@@ -215,7 +210,7 @@ export class ApplicationDetailsComponent implements OnInit {
         this.tagFrequencies = this.convertToChartStatistic(allFrequencyStatsMap);
     }
 
-    private calculateTagFrequenciesForProject(allFrequencyStatsMap:Map<string, number>, traversal:ProjectTraversalReducedDTO) {
+    private calculateTagFrequenciesForProject(allFrequencyStatsMap:Map<string, number>, traversal:ProjectTraversalFullDTO) {
         let currentProjectMap = new Map<string, number>();
 
         traversal.files.forEach(file => {
@@ -250,32 +245,28 @@ export class ApplicationDetailsComponent implements OnInit {
         this.tagFrequenciesByProject.set(traversal.id, this.convertToChartStatistic(currentProjectMap));
     }
 
-    storeTagsForFile(file:FileReducedDTO):{name:string, level:string}[] {
+    storeTagsForFile(file:FileFullDTO):{name:string, level:string}[] {
         if(this.tagsForFile.has(file.fileModelVertexID))
             return this.tagsForFile.get(file.fileModelVertexID);
 
-        let tags = file.tags.map(tagDTO => { return { name: this.resolveString(tagDTO.name), level: this.resolveString(tagDTO.level) }; });
+        let tags = file.tags.map(tagDTO => { return { name: tagDTO.nameString, level: tagDTO.levelString }; });
 
-        file.hintIDs.map(hintID => this.applicationDetails.hints[hintID])
+        file.hints
             .forEach(hint => {
                 hint.tags.forEach(tag => {
-                    let tagName = this.resolveString(tag.name);
-                    if (tags.findIndex(existingTag => existingTag.name == tagName) != -1)
+                    if (tags.findIndex(existingTag => existingTag.name == tag.nameString) != -1)
                         return;
 
-                    let level = this.resolveString(tag.level);
-                    tags.push({name: tagName, level: level});
+                    tags.push({name: tag.nameString, level: tag.levelString});
                 });
             });
-        file.classificationIDs.map(classificationID => this.applicationDetails.classifications[classificationID])
+        file.classifications
             .forEach(classification => {
                 classification.tags.forEach(tag => {
-                    let tagName = this.resolveString(tag.name);
-                    if (tags.findIndex(existingTag => existingTag.name == tagName) != -1)
+                    if (tags.findIndex(existingTag => existingTag.name == tag.nameString) != -1)
                         return;
 
-                    let level = this.resolveString(tag.level);
-                    tags.push({name: tagName, level: level});
+                    tags.push({name: tag.nameString, level: tag.levelString});
                 });
             });
 
@@ -287,24 +278,24 @@ export class ApplicationDetailsComponent implements OnInit {
         return tags;
     }
 
-    private setPackageFrequenciesByProject(traversal:ProjectTraversalReducedDTO, files:FileReducedDTO[]) {
+    private setPackageFrequenciesByProject(traversal:ProjectTraversalFullDTO, files:FileFullDTO[]) {
         if (!files)
             return;
 
-        let hints:HintReducedDTO[] = [];
+        let hints:HintFullDTO[] = [];
         files.forEach((file) => {
             if (!file.hintIDs)
                 return;
 
-            file.hintIDs.forEach(hintID => hints.push(this.applicationDetails.hints[hintID]));
+            file.hints.forEach(hint => hints.push(hint));
         });
 
         this.packageFrequenciesByProject.set(traversal.id, this.calculateTreeDataForHints(hints));
     }
 
-    private calculateTreeDataForHints(hints:HintReducedDTO[]):ChartStatistic[] {
+    private calculateTreeDataForHints(hints:HintFullDTO[]):ChartStatistic[] {
         let service = new TypeReferenceStatisticsService();
-        let resultMap = service.getPackageUseFrequencies(this.applicationDetails.stringCache, hints, 2, this._http);
+        let resultMap = service.getPackageUseFrequencies(hints, 2, this._http);
         let result = [];
         resultMap.forEach((value, key) => {
             result.push(new ChartStatistic(key, value));
@@ -328,7 +319,7 @@ export class ApplicationDetailsComponent implements OnInit {
         return result;
     }
 
-    storePointsForTraversal(traversal:ProjectTraversalReducedDTO) {
+    storePointsForTraversal(traversal:ProjectTraversalFullDTO) {
         let total = 0;
         traversal.files.forEach(file => {
             let pointsForFile = this.storyPoints(file);
@@ -349,18 +340,16 @@ export class ApplicationDetailsComponent implements OnInit {
         });
     }
 
-    storyPoints(file:FileReducedDTO):number {
+    storyPoints(file:FileFullDTO):number {
         let total = 0;
 
-        file.classificationIDs
-            .map(classificationID => this.applicationDetails.classifications[classificationID])
+        file.classifications
             .forEach(classification => {
                 if (classification.effort && !isNaN(classification.effort))
                     total += classification.effort
             });
 
-        file.hintIDs
-            .map(hintID => this.applicationDetails.hints[hintID])
+        file.hints
             .forEach(hint => {
                 if (hint.effort && !isNaN(hint.effort))
                     total += hint.effort
@@ -387,18 +376,18 @@ export class ApplicationDetailsComponent implements OnInit {
         return allCollapsed;
     }
 
-    toggleCollapsed(traversal:ProjectTraversalReducedDTO) {
+    toggleCollapsed(traversal:ProjectTraversalFullDTO) {
         if (!this.projectsCollapsed.get(traversal.id))
             this.projectsCollapsed.set(traversal.id, true);
         else
             this.projectsCollapsed.set(traversal.id, false);
     }
 
-    setCollapsed(traversal:ProjectTraversalReducedDTO) {
+    setCollapsed(traversal:ProjectTraversalFullDTO) {
         this.projectsCollapsed.set(traversal.id, true);
     }
 
-    setExpanded(traversal:ProjectTraversalReducedDTO) {
+    setExpanded(traversal:ProjectTraversalFullDTO) {
         this.projectsCollapsed.set(traversal.id, false);
     }
 
@@ -410,7 +399,7 @@ export class ApplicationDetailsComponent implements OnInit {
         this.allProjects.forEach((project) => this.projectsCollapsed.set(project.id, false));
     }
 
-    isCollapsed(traversal:ProjectTraversalReducedDTO) {
+    isCollapsed(traversal:ProjectTraversalFullDTO) {
         return this.projectsCollapsed.get(traversal.id);
     }
 }

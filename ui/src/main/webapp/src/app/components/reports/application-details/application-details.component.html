@@ -219,13 +219,13 @@
                         </td>
 
                         <td class="warnCount1">
-                            <div class="warns">Warnings: {{file.classificationIDs?.length + file.hintIDs?.length}} items</div>
+                            <div class="warns">Warnings: {{file.classifications?.length + file.hints?.length}} items</div>
                             <ul class="notifications">
-                                <li class="warning" *ngFor="let classificationID of file.classificationIDs">
-                                    {{resolveString(applicationDetails.classifications[classificationID].title)}}
+                                <li class="warning" *ngFor="let classification of file.classifications">
+                                    {{classification.titleString}}
                                 </li>
-                                <li class="warning" *ngFor="let hintID of file.hintIDs">
-                                    {{resolveString(applicationDetails.hints[hintID].title)}}
+                                <li class="warning" *ngFor="let hint of file.hints">
+                                    {{hint.titleString}}
                                 </li>
                             </ul>
                         </td>
