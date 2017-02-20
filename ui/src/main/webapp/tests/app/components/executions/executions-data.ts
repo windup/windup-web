@@ -1,6 +1,6 @@
 import {WindupExecution} from "windup-services";
 
-export const EXECUTIONS_DATA: WindupExecution[] = [
+export const EXECUTIONS_DATA: Partial<WindupExecution>[] = [
     {
         "id": 13,
         "version": 1,

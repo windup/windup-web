@@ -56,7 +56,7 @@ describe('ExecutionsListComponent', () => {
         de = fixture.debugElement.query(By.css('table.executions-list-table'));
         el = de.nativeElement;
 
-        comp.executions = SORTED_EXECUTIONS_DATA;
+        comp.executions = <WindupExecution[]>SORTED_EXECUTIONS_DATA;
         fixture.detectChanges();
     });
 
