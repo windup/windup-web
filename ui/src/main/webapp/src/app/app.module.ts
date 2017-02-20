@@ -108,6 +108,7 @@ import {DurationPipe} from "./components/duration.pipe";
 import {TabContainerComponent} from "./components/tabs/tab-container.component";
 import {TabComponent} from "./components/tabs/tab.component";
 import {LogViewComponent} from "./components/log-view.component";
+import {ExecutionDetailComponent} from "./components/executions/execution-detail.component";
 
 /**
  * Load all mapping data from the generated files.
@@ -199,7 +200,8 @@ initializeModelMappingData();
         DurationPipe,
         TabContainerComponent,
         TabComponent,
-        LogViewComponent
+        LogViewComponent,
+        ExecutionDetailComponent,
     ],
     providers: [
         appRoutingProviders,

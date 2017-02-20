@@ -28,6 +28,7 @@ import {ApplicationDetailsComponent} from "./components/reports/application-deta
 import {ReportFilterComponent} from "./components/reports/filter/report-filter.component";
 import {RuleProviderExecutionsComponent} from "./components/reports/rule-provider-executions/rule-provider-executions.component";
 import {WizardComponent} from "./components/wizard.component";
+import {ExecutionDetailComponent} from "./components/executions/execution-detail.component";
 
 export const appRoutes: Routes = [
     {path: "login", component: LoginComponent},
@@ -134,6 +135,7 @@ export const appRoutes: Routes = [
                                             { path: 'filter', component: ReportFilterComponent, data: {displayName: 'Report Filter'} },
                                         ]},
                                         { path: 'reports/:executionId', children: [
+                                            {path: '', component: ExecutionDetailComponent, data: {displayName: 'Execution Info'}},
                                             {path: 'dependencies-report', component: DependenciesReportComponent, data: {displayName: 'Dependency Report'}},
                                             {path: 'technology-report', component: TechnologiesReportComponent, data: {displayName: 'Technology Report'}},
                                             {path: 'migration-issues',
