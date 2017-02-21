@@ -83,9 +83,6 @@ public class WindupExecution implements Serializable
     @Column(name = "status")
     private ExecutionState state;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
-    private AnalysisContext analysisContext;
-
     @OneToMany(fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
     private Set<FilterApplication> filterApplications;
@@ -298,16 +295,9 @@ public class WindupExecution implements Serializable
      */
     public AnalysisContext getAnalysisContext()
     {
-        return analysisContext;
+        return this.group.getAnalysisContext();
     }
 
-    /**
-     * Contains the configuration to use for this execution.
-     */
-    public void setAnalysisContext(AnalysisContext analysisContext)
-    {
-        this.analysisContext = analysisContext;
-    }
 
     /**
      * Adds application for filter
