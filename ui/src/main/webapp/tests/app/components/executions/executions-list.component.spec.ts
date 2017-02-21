@@ -10,6 +10,7 @@ import {EXECUTIONS_DATA} from "./executions-data";
 import {Observable} from "rxjs";
 import {ProgressBarComponent} from "../../../../src/app/components/progress-bar.component";
 import {ActiveExecutionsProgressbarComponent} from "../../../../src/app/components/executions/active-executions-progressbar.component";
+import {DurationPipe} from "../../../../src/app/components/duration.pipe";
 
 let comp:    ExecutionsListComponent;
 let fixture: ComponentFixture<ExecutionsListComponent>;
@@ -22,7 +23,7 @@ describe('ExecutionsListComponent', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [ RouterTestingModule ],
-            declarations: [ ExecutionsListComponent, ProgressBarComponent, ActiveExecutionsProgressbarComponent ],
+            declarations: [ ExecutionsListComponent, ProgressBarComponent, ActiveExecutionsProgressbarComponent, DurationPipe ],
             providers: [
                 {
                     provide: WindupService,
@@ -95,7 +96,8 @@ describe('ExecutionsListComponent', () => {
             // TODO: Cannot test dates, they are timezone dependent. Find out way how to test this
             // expect(el.children[2].textContent).toEqual('10/31/2016, 10:54 AM');
             // expect(el.children[3].textContent).toEqual('10/31/2016, 10:54 AM');
-            expect(el.children[4].textContent).toEqual('5324');
+            // NOTE: I'm not sure if this is not locale dependent
+            expect(el.children[4].textContent).toEqual('5 seconds');
         });
 
         it('should display data', () => {
