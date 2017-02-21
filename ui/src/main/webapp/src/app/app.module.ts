@@ -105,6 +105,9 @@ import {MomentModule} from "angular2-moment";
 import {FileUploadModule, FileUploader} from "ng2-file-upload";
 import {WizardComponent} from "./components/wizard.component";
 import {DurationPipe} from "./components/duration.pipe";
+import {TabContainerComponent} from "./components/tabs/tab-container.component";
+import {TabComponent} from "./components/tabs/tab.component";
+
 
 /**
  * Load all mapping data from the generated files.
@@ -193,7 +196,9 @@ initializeModelMappingData();
         SortComponent,
         SearchComponent,
         WizardComponent,
-        DurationPipe
+        DurationPipe,
+        TabContainerComponent,
+        TabComponent
     ],
     providers: [
         appRoutingProviders,
