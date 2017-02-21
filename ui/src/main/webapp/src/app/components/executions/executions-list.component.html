@@ -18,7 +18,7 @@
         <td>{{execution.state}}</td>
         <td>{{execution.timeStarted | date: 'short'}}</td>
         <td>{{execution.timeCompleted | date: 'short'}}</td>
-        <td *ngIf="execution.timeCompleted">{{ execution.timeCompleted - execution.timeStarted }}</td>
+        <td *ngIf="execution.timeCompleted">{{ execution.timeCompleted - execution.timeStarted | wuDuration }}</td>
         <td *ngIf="!execution.timeCompleted"></td>
         <td><a class="link" *ngIf="canCancel(execution)" (click)="cancelExecution(execution)">Cancel</a></td>
     </tr>
