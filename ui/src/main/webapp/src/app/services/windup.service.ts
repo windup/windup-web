@@ -15,7 +15,7 @@ export class WindupService extends AbstractService {
         super();
     }
 
-    public getStatusGroup(executionID:number):Observable<WindupExecution> {
+    public getExecution(executionID: number): Observable<WindupExecution> {
         let headers = new Headers();
         let options = new RequestOptions({ headers: headers });
 

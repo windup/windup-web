@@ -36,10 +36,10 @@ describe("WindupExecution service", () => {
     function getWindupServiceMock() {
         let windupServiceMock = jasmine.createSpyObj('WindupService', [
             'executeWindupGroup',
-            'getStatusGroup'
+            'getExecution'
         ]);
 
-        windupServiceMock.getStatusGroup.and.callFake((executionId) => {
+        windupServiceMock.getExecution.and.callFake((executionId) => {
             return Observable.of(getExecution(executionId));
         });
 
@@ -97,7 +97,7 @@ describe("WindupExecution service", () => {
 
         it('should listen for changes of all of them', () => {
             schedulerMock.intervalTick();
-            expect(windupServiceMock.getStatusGroup).toHaveBeenCalledTimes(2);
+            expect(windupServiceMock.getExecution).toHaveBeenCalledTimes(2);
             // TODO: Check parameters
         });
     });
@@ -111,26 +111,26 @@ describe("WindupExecution service", () => {
         });
 
         let assertIsNotListening = (state: string) => {
-            expect(windupServiceMock.getStatusGroup).not.toHaveBeenCalled();
+            expect(windupServiceMock.getExecution).not.toHaveBeenCalled();
             schedulerMock.intervalTick();
-            expect(windupServiceMock.getStatusGroup).toHaveBeenCalledTimes(1);
-            expect(windupServiceMock.getStatusGroup).toHaveBeenCalledWith(execution.id);
+            expect(windupServiceMock.getExecution).toHaveBeenCalledTimes(1);
+            expect(windupServiceMock.getExecution).toHaveBeenCalledWith(execution.id);
 
-            windupServiceMock.getStatusGroup.and.callFake((id) => {
+            windupServiceMock.getExecution.and.callFake((id) => {
                 let object = Object.assign({}, execution, {state: state});
                 return Observable.of(object);
             });
 
             schedulerMock.intervalTick(); // now it should get data with new state
-            expect(windupServiceMock.getStatusGroup).toHaveBeenCalledTimes(2);
+            expect(windupServiceMock.getExecution).toHaveBeenCalledTimes(2);
 
             schedulerMock.intervalTick(); // now it should not call getStatusGroup anymore
-            expect(windupServiceMock.getStatusGroup).toHaveBeenCalledTimes(2);
+            expect(windupServiceMock.getExecution).toHaveBeenCalledTimes(2);
         };
 
         it('should listen for execution changes', () => {
             schedulerMock.intervalTick();
-            expect(windupServiceMock.getStatusGroup).toHaveBeenCalledWith(execution.id);
+            expect(windupServiceMock.getExecution).toHaveBeenCalledWith(execution.id);
         });
 
         it('should stop listening once execution reaches COMPLETE state', () => {
