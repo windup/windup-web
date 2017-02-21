@@ -1,7 +1,4 @@
-package org.jboss.windup.web.addons.websupport.rest.graph;
-
-import java.util.List;
-import java.util.Map;
+package org.jboss.windup.web.addons.websupport.rest.graph.applicationDetails;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -19,22 +16,22 @@ import org.jboss.windup.web.addons.websupport.rest.FurnaceRESTGraphAPI;
  *
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
-@Path(ProjectTraversalResource.BASE_URL)
+@Path(ApplicationDetailsResource.BASE_URL)
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public interface ProjectTraversalResource extends FurnaceRESTGraphAPI
+public interface ApplicationDetailsResource extends FurnaceRESTGraphAPI
 {
-    String BASE_URL = "/graph/project-traversal";
+    String BASE_URL = "/graph/application-details";
 
     /**
      * Returns a list of traversals based upon the traversal type.
      *
      * NOTE: In this case, the filter associated with the execution will only be applied at the application level.
-     *       Hints and Classifications will not be automatically filtered by the group filter.
+     *       Hints and Classifications will not be automatically filtered by the group filter and should be filtered on
+     *       the client instead.
      *
      */
     @GET
-    @Path("/{executionID}/by-traversal-type/{traversalType}")
-    List<Map<String, Object>> getTraversalsByType(@PathParam("executionID") Long executionID,
-                @PathParam("traversalType") PersistedProjectModelTraversalModel.PersistedTraversalType persistedTraversalType);
+    @Path("/{executionID}")
+    ApplicationDetailsDTO getApplicationDetailsData(@PathParam("executionID") Long executionID);
 }

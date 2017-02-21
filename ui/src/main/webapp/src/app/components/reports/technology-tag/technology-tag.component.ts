@@ -1,5 +1,4 @@
 import {Component, Input} from "@angular/core";
-import {TechnologyTagModel} from "../../../generated/tsModels/TechnologyTagModel";
 
 @Component({
     selector: 'wu-technology-tag',
@@ -7,21 +6,23 @@ import {TechnologyTagModel} from "../../../generated/tsModels/TechnologyTagModel
 })
 export class TechnologyTagComponent {
     @Input()
-    tag:TechnologyTagModel | string;
+    tag:{name: string, level: string} | string;
 
     get tagClass():string {
         let tagLevel = "info";
 
-        if (this.tag instanceof TechnologyTagModel)
-            tagLevel = this.tag.level == 'IMPORTANT' ? 'danger' : 'info';
+        if ((<any>this.tag).level == "INFORMATIONAL")
+            tagLevel = "info";
+        else if ((<any>this.tag).level == "IMPORTANT")
+            tagLevel = "danger";
 
         return `label label-${tagLevel} tag`;
     }
 
     get tagValue():string {
-        if (this.tag instanceof TechnologyTagModel)
-            return (<TechnologyTagModel>this.tag).name;
+        if ((<any>this.tag).name)
+            return (<any>this.tag).name;
         else
-            return this.tag;
+            return <string>this.tag;
     }
 }

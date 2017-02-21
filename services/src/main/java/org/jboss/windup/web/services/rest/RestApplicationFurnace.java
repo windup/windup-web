@@ -7,7 +7,7 @@ import org.jboss.windup.web.addons.websupport.rest.graph.ClassificationResource;
 import org.jboss.windup.web.addons.websupport.rest.graph.DependenciesReportResource;
 import org.jboss.windup.web.addons.websupport.rest.graph.HintResource;
 import org.jboss.windup.web.addons.websupport.rest.graph.LinkResource;
-import org.jboss.windup.web.addons.websupport.rest.graph.ProjectTraversalResource;
+import org.jboss.windup.web.addons.websupport.rest.graph.applicationDetails.ApplicationDetailsResource;
 import org.jboss.windup.web.addons.websupport.rest.graph.TechnologyTagResource;
 import org.jboss.windup.web.services.service.DefaultGraphPathLookup;
 import org.jboss.windup.web.addons.websupport.rest.graph.FileModelResource;
@@ -55,7 +55,7 @@ public class RestApplicationFurnace extends Application {
     private LinkResource linkResource;
 
     @Inject @FromFurnace
-    private ProjectTraversalResource projectTraversalResource;
+    private ApplicationDetailsResource applicationDetailsResource;
 
     @Inject @FromFurnace
     private TagResource tagResource;
@@ -77,7 +77,7 @@ public class RestApplicationFurnace extends Application {
         addService(singletons, hintResource);
         addService(singletons, technologyTagResource);
         addService(singletons, linkResource);
-        addService(singletons, projectTraversalResource);
+        addService(singletons, applicationDetailsResource);
         addService(singletons, tagResource);
         addService(singletons, dependenciesReportResource);
 

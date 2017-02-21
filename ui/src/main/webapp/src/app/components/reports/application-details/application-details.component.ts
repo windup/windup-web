@@ -1,26 +1,16 @@
 import {Component, OnInit, ChangeDetectorRef, ElementRef} from "@angular/core";
-import {ProjectTraversalService} from "../../../services/graph/project-traversal.service";
+import {
+    ApplicationDetailsService, ApplicationDetailsFullDTO,
+    ProjectTraversalFullDTO, HintFullDTO, FileFullDTO
+} from "./application-details.service";
 import {Params, ActivatedRoute} from "@angular/router";
 import {utils} from "../../../utils";
 import {NotificationService} from "../../../services/notification.service";
-import {PersistedProjectModelTraversalModel} from "../../../generated/tsModels/PersistedProjectModelTraversalModel";
-import {PersistedTraversalChildFileModel} from "../../../generated/tsModels/PersistedTraversalChildFileModel";
-import {ClassificationModel} from "../../../generated/tsModels/ClassificationModel";
-import {InlineHintModel} from "../../../generated/tsModels/InlineHintModel";
-import {TechnologyTagModel} from "../../../generated/tsModels/TechnologyTagModel";
-import {ProjectModel} from "../../../generated/tsModels/ProjectModel";
-import {OrganizationModel} from "../../../generated/tsModels/OrganizationModel";
-import {GraphJSONToModelService} from "../../../services/graph/graph-json-to-model.service";
-import {ArchiveModel} from "../../../generated/tsModels/ArchiveModel";
 import {Http} from "@angular/http";
-import {IdentifiedArchiveModel} from "../../../generated/tsModels/IdentifiedArchiveModel";
-import {TaggableModel} from "../../../generated/tsModels/TaggableModel";
-import {compareTraversals, compareTraversalChildFiles, comparePaths} from "../file-path-comparators";
+import {compareTraversals, compareTraversalChildFiles} from "../file-path-comparators";
 import {ApplicationGroup} from "windup-services";
 import {TagFilterService} from "../tag-filter.service";
-import {TagSetModel} from "../../../generated/tsModels/TagSetModel";
-import {forkJoin} from "rxjs/observable/forkJoin";
-import {TypeReferenceStatisticsService} from "../type-reference-statistics.service";
+import {TypeReferenceStatisticsService} from "./type-reference-statistics.service";
 import {TagDataService} from "../tag-data.service";
 import {TreeData} from "../../js-tree-angular-wrapper.component";
 
@@ -36,45 +26,34 @@ export class ApplicationDetailsComponent implements OnInit {
 
     private execID:number;
     private group:ApplicationGroup;
-    rootProjects:PersistedProjectModelTraversalModel[] = [];
+    applicationDetails:ApplicationDetailsFullDTO;
+    rootProjects:ProjectTraversalFullDTO[] = [];
+    traversalsForCanonicalVertexID:Map<number, ProjectTraversalFullDTO[]> = new Map<number, ProjectTraversalFullDTO[]>();
+    tagsForFile:Map<number, {name:string, level:string}[]> = new Map<number, {name:string, level:string}[]>();
 
+    allHints:HintFullDTO[] = [];
     globalPackageUseData:ChartStatistic[] = [];
-
     applicationTree:TreeData[] = [];
 
     /**
      * This contains all projects. Do note, however, that if a project appears more than once, it will only contain
      * one instance. The others will appear in the duplicateProjects Map.
      */
-    allProjects:PersistedProjectModelTraversalModel[] = [];
-
-    /**
-     * Contains a map from the vertexID of the canonical project to all of the projects that duplicate it.
-     */
-    duplicateProjects:Map<number, PersistedProjectModelTraversalModel[]> = new Map<number, PersistedProjectModelTraversalModel[]>();
-    projectsCollapsed:Map<number, boolean> = new Map<number, boolean>();
-
+    allProjects:ProjectTraversalFullDTO[] = [];
     totalPoints:number = null;
+    pointsByProject:Map<number, number> = new Map<number, number>();
+    pointsByFile:Map<number, number> = new Map<number, number>();
 
-    traversalToCanonical:Map<number, ProjectModel> = new Map<number, ProjectModel>();
-    traversalToOrganizations:Map<number, OrganizationModel[]> = new Map<number, OrganizationModel[]>();
-    traversalToSHA1:Map<number, string> = new Map<number, string>();
-
-    filesByProject:Map<number, PersistedTraversalChildFileModel[]> = new Map<number, PersistedTraversalChildFileModel[]>();
+    projectsCollapsed:Map<number, boolean> = new Map<number, boolean>();
     packageFrequenciesByProject:Map<number, ChartStatistic[]> = new Map<number, ChartStatistic[]>();
     tagFrequencies:ChartStatistic[];
     tagFrequenciesByProject:Map<number, ChartStatistic[]>;
-
-    classificationsByFile:Map<number, ClassificationModel[]> = new Map<number, ClassificationModel[]>();
-    hintsByFile:Map<number, InlineHintModel[]> = new Map<number, InlineHintModel[]>();
-    technologyTagsByFile:Map<number, TechnologyTagModel[]> = new Map<number, TechnologyTagModel[]>();
-    tagsByFile:Map<number, string[]> = new Map<number, string[]>();
 
     constructor(
         private _element: ElementRef,
         private _changeDetectorRef: ChangeDetectorRef,
         private _activatedRoute:ActivatedRoute,
-        private _projectTraversalService:ProjectTraversalService,
+        private _applicationDetailsService:ApplicationDetailsService,
         private _notificationService:NotificationService,
         private _tagDataService:TagDataService,
         private _http:Http
@@ -86,15 +65,19 @@ export class ApplicationDetailsComponent implements OnInit {
 
             this._activatedRoute.params.forEach((params: Params) => {
                 this.execID = +params['executionId'];
-                this._projectTraversalService.getRootTraversals(this.execID, "ALL").subscribe(
-                    traversals => {
-                        this.rootProjects = traversals;
-                        this.allProjects = [];
-
+                this._applicationDetailsService.getApplicationDetailsData(this.execID).subscribe(
+                    applicationDetailsDto => {
                         // Make sure tag data is loaded first
                         this._tagDataService.getTagData().subscribe((tagData) => {
-                            this.createProjectTreeData(null, traversals);
-                            this.flattenTraversals(traversals);
+                            this.applicationDetails = applicationDetailsDto;
+                            this.rootProjects = applicationDetailsDto.traversals;
+
+                            this.createProjectTreeData(null, this.rootProjects);
+                            this.flattenTraversals(this.rootProjects);
+
+                            this.globalPackageUseData = this.calculateTreeDataForHints(this.allHints);
+                            this.calculateTagFrequencies();
+                            this.storeTotalPoints();
                         });
                     },
                     error => this._notificationService.error(utils.getErrorMessage(error))
@@ -113,164 +96,91 @@ export class ApplicationDetailsComponent implements OnInit {
         }
     }
 
-    allTagStats():ChartStatistic[] {
-        return this.tagFrequencies;
-    }
-
-    tagStatsForProject(traversal:PersistedProjectModelTraversalModel):ChartStatistic[] {
-        return this.tagFrequenciesByProject.get(traversal.vertexId);
-    }
-
-    private createProjectTreeData(parentTreeData:TreeData, traversals:PersistedProjectModelTraversalModel[]) {
+    private createProjectTreeData(parentTreeData:TreeData, traversals:ProjectTraversalFullDTO[]) {
         traversals.forEach(traversal => {
-            traversal.canonicalProject.subscribe(canonical => {
-                // Store data for the tree
-                let newTreeData:TreeData = {
-                    id: traversal.vertexId,
-                    name: traversal.path,
-                    childs: [],
-                    opened: true,
-                    data: canonical.vertexId
-                };
+            // Store data for the tree
+            let newTreeData:TreeData = {
+                id: traversal.id,
+                name: traversal.path,
+                childs: [],
+                opened: true,
+                data: traversal.canonicalID
+            };
 
-                if (parentTreeData) {
-                    parentTreeData.childs.push(newTreeData);
-                } else {
-                    this.applicationTree = this.applicationTree.concat(newTreeData);
-                }
+            if (parentTreeData) {
+                parentTreeData.childs.push(newTreeData);
+            } else {
+                this.applicationTree = this.applicationTree.concat(newTreeData);
+            }
 
-                if (!traversal.children)
-                    return;
+            if (!traversal.children)
+                return;
 
-                traversal.children.subscribe(children => {
-                    this.createProjectTreeData(newTreeData, children);
-                });
-            });
+            this.createProjectTreeData(newTreeData, traversal.children);
         });
     }
 
-    private flattenTraversals(traversals:PersistedProjectModelTraversalModel[]) {
+    private flattenTraversals(traversals:ProjectTraversalFullDTO[]) {
         traversals = traversals.sort(compareTraversals);
 
         traversals.forEach(traversal => {
-            forkJoin(traversal.currentProject, traversal.canonicalProject).subscribe((currentAndCanonical:any[]) => {
-                let current:ProjectModel = currentAndCanonical[0];
-                let canonical:ProjectModel = currentAndCanonical[1];
 
-                canonical.rootFileModel.subscribe(rootFileModel => {
-                    let asArchive:ArchiveModel = <ArchiveModel>new GraphJSONToModelService().translateType(rootFileModel, this._http, ArchiveModel);
-                    if (asArchive.organizationModels) {
-                        asArchive.organizationModels.subscribe(organizations => {
-                            this.traversalToOrganizations.set(traversal.vertexId, organizations);
-                        });
+            // Maintain a list by canonical id, so that we can display this on the canonical project
+            let traversalsForCanonicalID = this.traversalsForCanonicalVertexID.get(traversal.canonicalID);
+            if (!traversalsForCanonicalID)
+                traversalsForCanonicalID = [];
+            traversalsForCanonicalID.push(traversal);
+            traversalsForCanonicalID = traversalsForCanonicalID.sort(compareTraversals);
+            this.traversalsForCanonicalVertexID.set(traversal.canonicalID, traversalsForCanonicalID);
 
-                        if (asArchive.discriminator.indexOf(IdentifiedArchiveModel.discriminator) != -1)
-                            this.traversalToSHA1.set(traversal.vertexId, asArchive.sHA1Hash);
-                    }
+            // If these do not match, then this is not a canonical project.
+            // We don't need to calculate points for this.
+            if (traversal.currentID != traversal.canonicalID)
+                return;
 
-                    if (this.duplicateProjects.has(canonical.vertexId)) {
-                        this.duplicateProjects.get(canonical.vertexId).push(traversal);
-                        return;
-                    } else {
-                        this.traversalToCanonical.set(traversal.vertexId, canonical);
-                        this.allProjects.push(traversal);
-                        this.duplicateProjects.set(canonical.vertexId, [traversal]);
-                    }
-
-                    this.storeProjectData(traversal);
-                });
-            });
+            this.allProjects.push(traversal);
+            this.storeProjectData(traversal);
+            this.storePointsForTraversal(traversal);
         });
     }
 
-    private getDuplicateProjectPaths(traversal:PersistedProjectModelTraversalModel):string[] {
-        let canonical = this.traversalToCanonical.get(traversal.vertexId);
-        if (!canonical)
-            return [];
-
-        let duplicateList = this.duplicateProjects.get(canonical.vertexId);
-        if (!duplicateList)
-            return [];
-
-        let names = duplicateList.map(traversal => traversal.path);
-        return names.sort(comparePaths);
+    private hasDuplicateProjects(traversal:ProjectTraversalFullDTO):boolean {
+        return this.traversalsForCanonicalVertexID.get(traversal.canonicalID).length > 1;
     }
 
-    private isDuplicateProject(traversal:PersistedProjectModelTraversalModel):boolean {
-        let canonical = this.traversalToCanonical.get(traversal.vertexId);
-        if (!canonical)
-            return false;
+    private storeProjectData(traversal:ProjectTraversalFullDTO) {
+        let files = traversal.files.sort(compareTraversalChildFiles);
 
-        let duplicateList = this.duplicateProjects.get(canonical.vertexId);
-        if (!duplicateList)
-            return false;
+        files.forEach(file => {
+            file.classifications.forEach(classification => {
+                let tagFilterService = new TagFilterService(this.group.reportFilter);
+                let tagStrings = classification.tags.map(tag => tag.nameString);
 
-        return duplicateList.length > 1;
-    }
-
-    private storeProjectData(traversal:PersistedProjectModelTraversalModel) {
-        traversal.files.subscribe(files => {
-            files = files.sort(compareTraversalChildFiles);
-
-            files.forEach(file => {
-                file.classifications.zip(file.hints).subscribe(hintsAndClassifications => {
-                    let classifications = hintsAndClassifications[0];
-                    let hints = hintsAndClassifications[1];
-
-                    let classificationTagMapObservables = classifications.map(classification => {
-                        let taggableModel = <TaggableModel>new GraphJSONToModelService().translateType(classification, this._http, TaggableModel);
-                        return taggableModel.tagModel.map(tagModel => {
-                            return {classification: classification, tagModel: tagModel}
-                        });
-                    });
-
-                    forkJoin(classificationTagMapObservables).subscribe(
-                        (classificationAndTags:{classification: ClassificationModel, tagModel: TagSetModel}[]) => {
-                            classificationAndTags.forEach(classificationAndTag => {
-                                let tagFilterService = new TagFilterService(this.group.reportFilter);
-                                if (classificationAndTag.tagModel && !tagFilterService.tagsMatch(classificationAndTag.tagModel.tags))
-                                    classifications.splice(classifications.indexOf(classificationAndTag.classification), 1);
-                                else
-                                    this.cacheTagsForFile(file, classificationAndTag.tagModel);
-                            });
-                        }
-                    );
-
-                    let hintTagMapObservables = hints.map(hint => {
-                        let taggableModel = <TaggableModel>new GraphJSONToModelService().translateType(hint, this._http, TaggableModel);
-                        return taggableModel.tagModel.map(tagModel => {
-                            return {hint: hint, tagModel: tagModel};
-                        });
-                    });
-
-                    forkJoin(hintTagMapObservables).subscribe(
-                        (hintAndTags:{hint: InlineHintModel, tagModel: TagSetModel}[]) => {
-                            hintAndTags.forEach(hintAndTag => {
-                                let tagFilterService = new TagFilterService(this.group.reportFilter);
-                                if (hintAndTag.tagModel && !tagFilterService.tagsMatch(hintAndTag.tagModel.tags))
-                                    hints.splice(hints.indexOf(hintAndTag.hint), 1);
-                                else
-                                    this.cacheTagsForFile(file, hintAndTag.tagModel);
-                            })
-                        });
-
-                    this.classificationsByFile.set(file.vertexId, classifications);
-                    this.hintsByFile.set(file.vertexId, hints);
-
-                    this.filesByProject.set(traversal.vertexId, files);
-                    this.setPackageFrequenciesByProject(traversal, files);
-                    this.updateTotalPoints();
-                    this.calculateTagFrequencies();
-                });
-
-                file.technologyTags.subscribe(technologyTags => this.technologyTagsByFile.set(file.vertexId, technologyTags));
+                // Remove it if it doesn't match the filter
+                if (!tagFilterService.tagsMatch(tagStrings)) {
+                    file.classificationIDs.splice(file.classificationIDs.indexOf(classification.id), 1);
+                    file.classifications.splice(file.classifications.indexOf(classification), 1);
+                }
             });
+            file.hints.forEach(hint => {
+                let tagFilterService = new TagFilterService(this.group.reportFilter);
+                let tagStrings = hint.tags.map(tag => tag.nameString);
+
+                // Remove it if it doesn't match the filter
+                if (!tagFilterService.tagsMatch(tagStrings)) {
+                    file.hintIDs.splice(file.hintIDs.indexOf(hint.id), 1);
+                    file.hints.splice(file.hints.indexOf(hint), 1);
+                } else {
+                    this.allHints.push(hint);
+                }
+            });
+
+            // this is basically just creating a cache
+            this.storeTagsForFile(file);
         });
-        traversal.children.subscribe(
-            children => {
-                this.flattenTraversals(children);
-            },
-            error => this._notificationService.error(utils.getErrorMessage(error)));
+        this.setPackageFrequenciesByProject(traversal, files);
+
+        this.flattenTraversals(traversal.children);
     }
 
     private convertToChartStatistic(tagStatistics:Map<string, number>) {
@@ -300,18 +210,12 @@ export class ApplicationDetailsComponent implements OnInit {
         this.tagFrequencies = this.convertToChartStatistic(allFrequencyStatsMap);
     }
 
-    private calculateTagFrequenciesForProject(allFrequencyStatsMap:Map<string, number>, traversal:PersistedProjectModelTraversalModel) {
+    private calculateTagFrequenciesForProject(allFrequencyStatsMap:Map<string, number>, traversal:ProjectTraversalFullDTO) {
         let currentProjectMap = new Map<string, number>();
 
-        if (!this.filesByProject.get(traversal.vertexId))
-            return;
-
-        this.filesByProject.get(traversal.vertexId).forEach(file => {
-            if (!this.tagsByFile.get(file.vertexId))
-                return;
-
-            this.tagsByFile.get(file.vertexId).forEach(tag => {
-                let rootTags = this._tagDataService.getRootTags(tag);
+        traversal.files.forEach(file => {
+            this.tagsForFile.get(file.fileModelVertexID).forEach(tag => {
+                let rootTags = this._tagDataService.getRootTags(tag.name);
 
                 if (!rootTags)
                     return;
@@ -338,34 +242,58 @@ export class ApplicationDetailsComponent implements OnInit {
         if (currentProjectMap.size < 2)
             return;
 
-        this.tagFrequenciesByProject.set(traversal.vertexId, this.convertToChartStatistic(currentProjectMap));
+        this.tagFrequenciesByProject.set(traversal.id, this.convertToChartStatistic(currentProjectMap));
     }
 
-    private setPackageFrequenciesByProject(traversal:PersistedProjectModelTraversalModel, files:PersistedTraversalChildFileModel[]) {
+    storeTagsForFile(file:FileFullDTO):{name:string, level:string}[] {
+        if(this.tagsForFile.has(file.fileModelVertexID))
+            return this.tagsForFile.get(file.fileModelVertexID);
+
+        let tags = file.tags.map(tagDTO => { return { name: tagDTO.nameString, level: tagDTO.levelString }; });
+
+        file.hints
+            .forEach(hint => {
+                hint.tags.forEach(tag => {
+                    if (tags.findIndex(existingTag => existingTag.name == tag.nameString) != -1)
+                        return;
+
+                    tags.push({name: tag.nameString, level: tag.levelString});
+                });
+            });
+        file.classifications
+            .forEach(classification => {
+                classification.tags.forEach(tag => {
+                    if (tags.findIndex(existingTag => existingTag.name == tag.nameString) != -1)
+                        return;
+
+                    tags.push({name: tag.nameString, level: tag.levelString});
+                });
+            });
+
+        tags = tags.sort((tag1, tag2) => {
+            return tag1.name.localeCompare(tag2.name);
+        });
+
+        this.tagsForFile.set(file.fileModelVertexID, tags);
+        return tags;
+    }
+
+    private setPackageFrequenciesByProject(traversal:ProjectTraversalFullDTO, files:FileFullDTO[]) {
         if (!files)
             return;
 
-        let hints = [];
+        let hints:HintFullDTO[] = [];
         files.forEach((file) => {
-            let hintsForFile = this.hintsByFile.get(file.vertexId);
-
-            if (!hintsForFile)
+            if (!file.hintIDs)
                 return;
 
-            hintsForFile.forEach(hint => hints.push(hint));
+            file.hints.forEach(hint => hints.push(hint));
         });
 
-        this.packageFrequenciesByProject.set(traversal.vertexId, this.calculateTreeDataForHints(hints));
-
-        let allHints = [];
-        this.hintsByFile.forEach((hints, file) => {
-            hints.forEach(hint => allHints.push(hint));
-        });
-
-        this.globalPackageUseData = this.calculateTreeDataForHints(allHints);
+        this.packageFrequenciesByProject.set(traversal.id, this.calculateTreeDataForHints(hints));
     }
 
-    private calculateTreeDataForHints(hints:InlineHintModel[]):ChartStatistic[] {
+    private calculateTreeDataForHints(hints:HintFullDTO[]):ChartStatistic[] {
         let service = new TypeReferenceStatisticsService();
         let resultMap = service.getPackageUseFrequencies(hints, 2, this._http);
         let result = [];
@@ -391,74 +319,49 @@ export class ApplicationDetailsComponent implements OnInit {
         return result;
     }
 
-    private cacheTagsForFile(file:PersistedTraversalChildFileModel, tagModel:TagSetModel) {
-        if (tagModel == null)
-            return;
-
-        let tagsByFile = this.tagsByFile.get(file.vertexId);
-        if (!tagsByFile)
-            tagsByFile = [];
-
-        tagModel.tags.forEach(tag => {
-            if (tagsByFile.indexOf(tag) == -1)
-                tagsByFile.push(tag);
-        });
-
-        this.tagsByFile.set(file.vertexId, tagsByFile);
-    }
-
-    updateTotalPoints() {
+    storePointsForTraversal(traversal:ProjectTraversalFullDTO) {
         let total = 0;
-        this.classificationsByFile.forEach(classifications => {
-            classifications.forEach(classification => {
-                if (classification.effort && !isNaN(classification.effort))
-                    total += classification.effort;
-            });
+        traversal.files.forEach(file => {
+            let pointsForFile = this.storyPoints(file);
+            this.pointsByFile.set(file.fileModelVertexID, pointsForFile);
+            total += pointsForFile;
         });
+        this.pointsByProject.set(traversal.canonicalID, total);
 
-        this.hintsByFile.forEach(hints => {
-            hints.forEach(hint => {
-                if (hint.effort && !isNaN(hint.effort))
-                    total += hint.effort;
-            });
-        });
-
-        this.totalPoints = total;
-    }
-
-    storyPointsForFiles(traversal, files:PersistedProjectModelTraversalModel[]):number {
-        let total = 0;
-        files.forEach(file => total += this.storyPoints(file));
-
-        if (this.projectsCollapsed.get(traversal.vertexId) == null) {
-            this.projectsCollapsed.set(traversal.vertexId, total == 0);
-            this._changeDetectorRef.detectChanges();
+        if (this.projectsCollapsed.get(traversal.id) == null) {
+            this.projectsCollapsed.set(traversal.id, total == 0);
         }
-
-        return total;
     }
 
-    storyPoints(file:PersistedProjectModelTraversalModel):number {
+    storeTotalPoints() {
+        this.totalPoints = 0;
+        this.allProjects.forEach(traversal => {
+            this.totalPoints += this.pointsByProject.get(traversal.canonicalID);
+        });
+    }
+
+    storyPoints(file:FileFullDTO):number {
         let total = 0;
-        if (this.classificationsByFile.get(file.vertexId))
-            this.classificationsByFile.get(file.vertexId).forEach(classification => {
+
+        file.classifications
+            .forEach(classification => {
                 if (classification.effort && !isNaN(classification.effort))
                     total += classification.effort
             });
 
-        if (this.hintsByFile.get(file.vertexId)) {
-            this.hintsByFile.get(file.vertexId).forEach(hint => {
+        file.hints
+            .forEach(hint => {
                 if (hint.effort && !isNaN(hint.effort))
                     total += hint.effort
             });
-        }
+
         return total;
     }
 
     allExpanded():boolean {
         let allExpanded = true;
         this.allProjects.forEach((traversal) => {
-            if (this.projectsCollapsed.get(traversal.vertexId))
+            if (this.projectsCollapsed.get(traversal.id))
                 allExpanded = false;
         });
         return allExpanded;
@@ -467,37 +370,37 @@ export class ApplicationDetailsComponent implements OnInit {
     allCollapsed():boolean {
         let allCollapsed = true;
         this.allProjects.forEach((traversal) => {
-            if (!this.projectsCollapsed.get(traversal.vertexId))
+            if (!this.projectsCollapsed.get(traversal.id))
                 allCollapsed = false;
         });
         return allCollapsed;
     }
 
-    toggleCollapsed(traversal) {
-        if (!this.projectsCollapsed.get(traversal.vertexId))
-            this.projectsCollapsed.set(traversal.vertexId, true);
+    toggleCollapsed(traversal:ProjectTraversalFullDTO) {
+        if (!this.projectsCollapsed.get(traversal.id))
+            this.projectsCollapsed.set(traversal.id, true);
         else
-            this.projectsCollapsed.set(traversal.vertexId, false);
+            this.projectsCollapsed.set(traversal.id, false);
     }
 
-    setCollapsed(traversal) {
-        this.projectsCollapsed.set(traversal.vertexId, true);
+    setCollapsed(traversal:ProjectTraversalFullDTO) {
+        this.projectsCollapsed.set(traversal.id, true);
     }
 
-    setExpanded(traversal) {
-        this.projectsCollapsed.set(traversal.vertexId, false);
+    setExpanded(traversal:ProjectTraversalFullDTO) {
+        this.projectsCollapsed.set(traversal.id, false);
     }
 
     collapseAll() {
-        this.allProjects.forEach((project) => this.projectsCollapsed.set(project.vertexId, true));
+        this.allProjects.forEach((project) => this.projectsCollapsed.set(project.id, true));
     }
 
     expandAll() {
-        this.allProjects.forEach((project) => this.projectsCollapsed.set(project.vertexId, false));
+        this.allProjects.forEach((project) => this.projectsCollapsed.set(project.id, false));
     }
 
-    isCollapsed(traversal) {
-        return this.projectsCollapsed.get(traversal.vertexId);
+    isCollapsed(traversal:ProjectTraversalFullDTO) {
+        return this.projectsCollapsed.get(traversal.id);
     }
 }
 

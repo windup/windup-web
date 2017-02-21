@@ -27,8 +27,6 @@ import com.tinkerpop.blueprints.Vertex;
 import java.util.HashSet;
 
 import org.jboss.windup.graph.GraphTypeManager;
-import org.jboss.windup.graph.model.WindupEdgeFrame;
-import org.jboss.windup.graph.model.WindupFrame;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -71,12 +69,12 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
 
     protected Map<String, Object> convertToMap(long executionID, Vertex vertex, Integer depth, boolean dedup)
     {
-        return convertToMap(executionID, vertex, depth, dedup, Collections.emptyList(), Collections.emptyList());
+        return convertToMap(executionID, vertex, depth, dedup, Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
     }
 
-    protected Map<String, Object> convertToMap(long executionID, Vertex vertex, Integer depth, boolean dedup, List<String> whitelistedOutEdges, List<String> whitelistedInLabels)
+    protected Map<String, Object> convertToMap(long executionID, Vertex vertex, Integer depth, boolean dedup, List<String> whitelistedOutEdges, List<String> whitelistedInLabels, List<String> blackListProperties)
     {
-        return convertToMap(new GraphMarshallingContext(executionID, vertex, depth, dedup, whitelistedOutEdges, whitelistedInLabels, true), vertex);
+        return convertToMap(new GraphMarshallingContext(executionID, vertex, depth, dedup, whitelistedOutEdges, whitelistedInLabels, blackListProperties, true), vertex);
     }
 
     protected Map<String, Object> convertToMap(GraphMarshallingContext ctx, Vertex vertex)
@@ -92,6 +90,9 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
 
         for (String key : vertex.getPropertyKeys())
         {
+            if (ctx.blacklistProperties.contains(key))
+                continue;
+
             result.put(key, vertex.getProperty(key));
         }
 
@@ -183,7 +184,7 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
 
     protected List<Map<String, Object>> frameIterableToResult(long executionID, Iterable<? extends WindupVertexFrame> frames, int depth)
     {
-        GraphMarshallingContext ctx = new GraphMarshallingContext(executionID, null, depth, false, Collections.emptyList(), Collections.emptyList(), true);
+        GraphMarshallingContext ctx = new GraphMarshallingContext(executionID, null, depth, false, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), true);
 
         List<Map<String, Object>> result = new ArrayList<>();
         for (WindupVertexFrame frame : frames)
@@ -229,6 +230,7 @@ class GraphMarshallingContext
     int remainingDepth;
     final List<String> whitelistedOutEdges;
     final List<String> whitelistedInEdges;
+    final List<String> blacklistProperties;
 
     final Set<Long> visitedVertices = new HashSet<>();
     final boolean deduplicateVertices;
@@ -241,6 +243,7 @@ class GraphMarshallingContext
             boolean dedup,
             List<String> whitelistedOutEdges,
             List<String> whitelistedInLabels,
+            List<String> blacklistProperties,
             boolean includeInVertices
     ) {
         this.executionID = executionID;
@@ -249,6 +252,7 @@ class GraphMarshallingContext
         this.deduplicateVertices = dedup;
         this.whitelistedOutEdges = whitelistedOutEdges == null ? Collections.emptyList() : whitelistedOutEdges;
         this.whitelistedInEdges = whitelistedInLabels == null ? Collections.emptyList() : whitelistedInLabels;
+        this.blacklistProperties = blacklistProperties == null ? Collections.emptyList() : blacklistProperties;
         this.includeInVertices = includeInVertices;
     }
 

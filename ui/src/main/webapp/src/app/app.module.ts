@@ -84,7 +84,7 @@ import {ReportFilterIndicatorComponent} from "./components/reports/filter/report
 import {ApplicationDetailsComponent} from "./components/reports/application-details/application-details.component";
 import {NgxChartsModule} from "ngx-charts";
 import {PackageChartComponent} from "./components/package-chart/package-chart.component";
-import {ProjectTraversalService} from "./services/graph/project-traversal.service";
+import {ApplicationDetailsService} from "./components/reports/application-details/application-details.service";
 import {TechnologyTagComponent} from "./components/reports/technology-tag/technology-tag.component";
 import {PrettyPathPipe} from "./components/reports/pretty-path.pipe";
 import {EventBusService} from "./services/events/event-bus.service";
@@ -215,7 +215,7 @@ initializeModelMappingData();
         FileModelService,
         ClassificationService,
         HintService,
-        ProjectTraversalService,
+        ApplicationDetailsService,
         FramesRestClientService,
         ApplicationGroupResolve,
         ConfigurationResolve,
