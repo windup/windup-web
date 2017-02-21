@@ -16,6 +16,15 @@ let fixture: ComponentFixture<ExecutionsListComponent>;
 let de:      DebugElement;
 let el:      HTMLElement;
 
+let SORTED_EXECUTIONS_DATA = EXECUTIONS_DATA.slice().sort((a, b) => <any>b.timeStarted - <any>a.timeStarted);
+
+const COL_ID = 0;
+const COL_STATE = 1;
+const COL_DATE_STARTED = 2;
+const COL_DATE_COMPLETED = 3;
+const COL_DURATION = 4;
+const COL_ACTIONS = 5;
+
 describe('ExecutionsListComponent', () => {
     let executions: WindupExecution[];
 
@@ -46,28 +55,28 @@ describe('ExecutionsListComponent', () => {
         de = fixture.debugElement.query(By.css('table.executions-list-table'));
         el = de.nativeElement;
 
-        comp.executions = EXECUTIONS_DATA;
+        comp.executions = SORTED_EXECUTIONS_DATA;
         fixture.detectChanges();
     });
 
     it('should display all windup executions', () => {
         let rows = fixture.debugElement.queryAll(By.css('tbody tr'));
-        expect(rows.length).toEqual(EXECUTIONS_DATA.length);
+        expect(rows.length).toEqual(SORTED_EXECUTIONS_DATA.length);
     });
 
     it('should display cancel link for QUEUED executions', () => {
         let rows = fixture.debugElement.queryAll(By.css('tbody tr'));
 
-        let queuedExecutions = rows.filter(row => row.nativeElement.children[1].textContent.trim() === 'QUEUED');
+        let queuedExecutions = rows.filter(row => row.nativeElement.children[COL_STATE].textContent.trim() === 'QUEUED');
 
         expect(queuedExecutions.length).toBe(1);
 
         queuedExecutions.forEach(row => {
             let el = row.nativeElement;
 
-            expect(el.children[5].children.length).toBe(1);
-            expect(el.children[5].children[0].nodeName.toLowerCase()).toEqual('a');
-            expect(el.children[5].children[0].textContent).toEqual('Cancel');
+            expect(el.children[COL_ACTIONS].children.length).toBe(1);
+            expect(el.children[COL_ACTIONS].children[0].nodeName.toLowerCase()).toEqual('a');
+            expect(el.children[COL_ACTIONS].children[0].textContent).toEqual('Cancel');
         });
     });
 
@@ -80,33 +89,36 @@ describe('ExecutionsListComponent', () => {
 
         notQueuedExecutions.forEach(row => {
             let el = row.nativeElement;
-            expect(el.children[5].children.length).toBe(0);
-            expect(el.children[5].textContent).toEqual('');
+            expect(el.children[COL_ACTIONS].children.length).toBe(0);
+            expect(el.children[COL_ACTIONS].textContent).toEqual('');
         });
     });
 
     describe('should display windup execution data', () => {
         it('should correctly display dates', () => {
-            let row = fixture.debugElement.query(By.css('tbody tr'));
-            let el = row.nativeElement;
+            let row = fixture.debugElement.queryAll(By.css('tbody tr'));
+
+            let index = SORTED_EXECUTIONS_DATA.findIndex(item => <any>item.timeCompleted > 0);
+            let el = row[index].nativeElement;
+            let duration = <any>SORTED_EXECUTIONS_DATA[index].timeCompleted - <any>SORTED_EXECUTIONS_DATA[index].timeStarted;
 
             expect(el.children.length).toEqual(6);
 
             // TODO: Cannot test dates, they are timezone dependent. Find out way how to test this
             // expect(el.children[2].textContent).toEqual('10/31/2016, 10:54 AM');
             // expect(el.children[3].textContent).toEqual('10/31/2016, 10:54 AM');
-            expect(el.children[4].textContent).toEqual('5324');
+            expect(el.children[COL_DURATION].textContent).toEqual(duration.toString());
         });
 
         it('should display data', () => {
             let row = fixture.debugElement.queryAll(By.css('tbody tr'));
 
-            for (let i = 0; i < EXECUTIONS_DATA.length; i++) {
+            for (let i = 0; i < SORTED_EXECUTIONS_DATA.length; i++) {
                 let el = row[i].nativeElement;
 
                 expect(el.children.length).toEqual(6);
-                expect(el.children[0].textContent.trim()).toEqual(EXECUTIONS_DATA[i].id.toString());
-                expect(el.children[1].textContent.trim()).toEqual(EXECUTIONS_DATA[i].state);
+                expect(el.children[COL_ID].textContent.trim()).toEqual(SORTED_EXECUTIONS_DATA[i].id.toString());
+                expect(el.children[COL_STATE].textContent.trim()).toEqual(SORTED_EXECUTIONS_DATA[i].state);
             }
         });
     });
@@ -132,7 +144,9 @@ describe('ExecutionsListComponent', () => {
         });
 
         it('should call cancel method on windup service', () => {
-            expect(windupService.cancelExecution).toHaveBeenCalledWith(EXECUTIONS_DATA[3]);
+            let queuedExecution = SORTED_EXECUTIONS_DATA.find(execution => execution.state === 'QUEUED');
+
+            expect(windupService.cancelExecution).toHaveBeenCalledWith(queuedExecution);
         });
 
         describe('when cancellation completes successfully', () => {

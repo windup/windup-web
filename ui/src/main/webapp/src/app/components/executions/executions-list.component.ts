@@ -1,36 +1,47 @@
-import {Component, OnInit, ElementRef, Input, OnChanges, SimpleChanges} from "@angular/core";
+import {Component, ElementRef, Input} from "@angular/core";
 import {WindupService} from "../../services/windup.service";
 import {WindupExecution} from "windup-services";
 import {NotificationService} from "../../services/notification.service";
 import {utils} from '../../utils';
+import {SortingService, OrderDirection} from "../../services/sorting.service";
 
 @Component({
     selector: 'wu-executions-list',
-    templateUrl: './executions-list.component.html'
+    templateUrl: './executions-list.component.html',
+    providers: [SortingService]
 })
-export class ExecutionsListComponent implements OnInit, OnChanges {
-    @Input()
-    executions: WindupExecution[];
-
-    @Input()
-    activeExecutions: WindupExecution[];
-
+export class ExecutionsListComponent {
     protected element;
+
+    private _executions: WindupExecution[];
+    private _activeExecutions: WindupExecution[];
 
     constructor(
         private _elementRef: ElementRef,
         private _windupService: WindupService,
-        private _notificationService: NotificationService
+        private _notificationService: NotificationService,
+        private _sortingService: SortingService<WindupExecution>
     ) {
         this.element = _elementRef.nativeElement;
+        this._sortingService.orderBy('timeStarted', OrderDirection.DESC);
     }
 
-    ngOnInit(): void {
+    @Input()
+    public set executions(executions: WindupExecution[]) {
+        this._executions = this._sortingService.sort(executions || []);
     }
 
-    ngOnChanges(changes: SimpleChanges): void {
-        console.log('Execution list on changes');
-        console.log(changes);
+    public get executions(): WindupExecution[] {
+        return this._executions;
+    }
+
+    @Input()
+    public set activeExecutions(activeExecutions: WindupExecution[]) {
+        this._activeExecutions = this._sortingService.sort(activeExecutions || []);
+    }
+
+    public get activeExecutions(): WindupExecution[] {
+        return this._activeExecutions;
     }
 
     canCancel(execution: WindupExecution): boolean {
