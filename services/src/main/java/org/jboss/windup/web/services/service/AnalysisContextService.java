@@ -3,6 +3,7 @@ package org.jboss.windup.web.services.service;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.ws.rs.NotFoundException;
 
 import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.ApplicationGroup;
@@ -26,6 +27,21 @@ public class AnalysisContextService
 
     @Inject
     private ConfigurationService configurationService;
+
+    /**
+     * Gets analysis context
+     */
+    public AnalysisContext get(Long id)
+    {
+        AnalysisContext context = entityManager.find(AnalysisContext.class, id);
+
+        if (context == null)
+        {
+            throw new NotFoundException("AnalysisContext with id" + id + "not found");
+        }
+
+        return context;
+    }
 
     /**
      * Creates a default instance.
@@ -70,8 +86,11 @@ public class AnalysisContextService
      */
     public AnalysisContext update(AnalysisContext analysisContext)
     {
+        AnalysisContext original = this.get(analysisContext.getId());
+
         this.ensureSystemRulesPathsPresent(analysisContext);
         this.loadPackagesToAnalysisContext(analysisContext);
+        analysisContext.setApplicationGroup(original.getApplicationGroup());
 
         return entityManager.merge(analysisContext);
     }
