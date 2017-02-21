@@ -104,6 +104,7 @@ import {SearchComponent} from "./components/search.component";
 import {MomentModule} from "angular2-moment";
 import {FileUploadModule, FileUploader} from "ng2-file-upload";
 import {WizardComponent} from "./components/wizard.component";
+import {DurationPipe} from "./components/duration.pipe";
 
 /**
  * Load all mapping data from the generated files.
@@ -191,7 +192,8 @@ initializeModelMappingData();
         DependenciesGraphComponent,
         SortComponent,
         SearchComponent,
-        WizardComponent
+        WizardComponent,
+        DurationPipe
     ],
     providers: [
         appRoutingProviders,
