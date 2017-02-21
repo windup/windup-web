@@ -217,13 +217,13 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
             this._windupService.executeWindupGroup(this.applicationGroup.id)
                 .subscribe(execution => {
                     this._notificationService.success('Windup execution has started');
-                    this._router.navigate(['/']);
+                    this._router.navigate([`/projects/${this.applicationGroup.migrationProject.id}/groups/${this.applicationGroup.id}`]);
                 },
                 error => {
                     this._notificationService.error(utils.getErrorMessage(error));
                 });
         } else if (this.isInWizard) {
-            this._router.navigate(['/']);
+            this._router.navigate([`/projects/${this.applicationGroup.migrationProject.id}/groups/${this.applicationGroup.id}`]);
         } else {
             this.navigateBack();
         }
