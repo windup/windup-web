@@ -1,0 +1,10 @@
+<div class="log-view">
+    <div class="log-view-output">
+        <table>
+            <tr *ngFor="let line of lines; let i = index" class="log-line">
+                <td class="log-line-number">{{i + 1}}</td>
+                <td class="log-line-text">{{line}}</td>
+            </tr>
+        </table>
+    </div>
+</div>

@@ -107,7 +107,7 @@ import {WizardComponent} from "./components/wizard.component";
 import {DurationPipe} from "./components/duration.pipe";
 import {TabContainerComponent} from "./components/tabs/tab-container.component";
 import {TabComponent} from "./components/tabs/tab.component";
-
+import {LogViewComponent} from "./components/log-view.component";
 
 /**
  * Load all mapping data from the generated files.
@@ -198,7 +198,8 @@ initializeModelMappingData();
         WizardComponent,
         DurationPipe,
         TabContainerComponent,
-        TabComponent
+        TabComponent,
+        LogViewComponent
     ],
     providers: [
         appRoutingProviders,
