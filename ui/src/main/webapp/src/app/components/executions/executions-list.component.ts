@@ -1,29 +1,40 @@
-import {Component, ElementRef, Input} from "@angular/core";
+import {Component, ElementRef, Input, OnInit} from "@angular/core";
 import {WindupService} from "../../services/windup.service";
 import {WindupExecution} from "windup-services";
 import {NotificationService} from "../../services/notification.service";
 import {utils} from '../../utils';
 import {SortingService, OrderDirection} from "../../services/sorting.service";
+import {MigrationProjectService} from "../../services/migration-project.service";
+import {MigrationProject} from "windup-services";
 
 @Component({
     selector: 'wu-executions-list',
     templateUrl: './executions-list.component.html',
     providers: [SortingService]
 })
-export class ExecutionsListComponent {
+export class ExecutionsListComponent implements OnInit {
     protected element;
 
     private _executions: WindupExecution[];
     private _activeExecutions: WindupExecution[];
+    protected projectsMap: Map<number, MigrationProject> = new Map<number, MigrationProject>();
 
     constructor(
         private _elementRef: ElementRef,
         private _windupService: WindupService,
         private _notificationService: NotificationService,
-        private _sortingService: SortingService<WindupExecution>
+        private _sortingService: SortingService<WindupExecution>,
+        private _projectService: MigrationProjectService
     ) {
         this.element = _elementRef.nativeElement;
         this._sortingService.orderBy('timeStarted', OrderDirection.DESC);
+    }
+
+    ngOnInit(): void {
+        this._projectService.getAll().subscribe(projects => {
+            this.projectsMap.clear();
+            projects.forEach(project => this.projectsMap.set(project.id, project));
+        });
     }
 
     @Input()
@@ -42,6 +53,10 @@ export class ExecutionsListComponent {
 
     public get activeExecutions(): WindupExecution[] {
         return this._activeExecutions;
+    }
+
+    public getProject(id: number): MigrationProject {
+        return this.projectsMap.get(id);
     }
 
     canCancel(execution: WindupExecution): boolean {

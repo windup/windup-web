@@ -5,6 +5,7 @@
     <thead>
     <tr>
         <th>Execution</th>
+        <th>Project</th>
         <th>State</th>
         <th>Date Started</th>
         <th>Date Completed</th>
@@ -15,6 +16,7 @@
     <tbody>
     <tr *ngFor="let execution of executions" [class]="getClass(execution)" class="execution-row">
         <td><a [routerLink]="['/projects', execution.projectId, 'groups', execution.groupId, 'reports', execution.id]">{{execution.id}}</a></td>
+        <td><a [routerLink]="['/projects', execution.projectId]">{{getProject(execution.projectId)?.title}}</a></td>
         <td>{{execution.state}}</td>
         <td>{{execution.timeStarted | date: 'short'}}</td>
         <td>{{execution.timeCompleted | date: 'short'}}</td>

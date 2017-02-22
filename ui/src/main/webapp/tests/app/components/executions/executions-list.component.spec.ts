@@ -11,6 +11,7 @@ import {Observable} from "rxjs";
 import {ProgressBarComponent} from "../../../../src/app/components/progress-bar.component";
 import {ActiveExecutionsProgressbarComponent} from "../../../../src/app/components/executions/active-executions-progressbar.component";
 import {DurationPipe} from "../../../../src/app/components/duration.pipe";
+import {MigrationProjectService} from "../../../../src/app/services/migration-project.service";
 
 let comp:    ExecutionsListComponent;
 let fixture: ComponentFixture<ExecutionsListComponent>;
@@ -20,11 +21,18 @@ let el:      HTMLElement;
 let SORTED_EXECUTIONS_DATA = EXECUTIONS_DATA.slice().sort((a, b) => <any>b.timeStarted - <any>a.timeStarted);
 
 const COL_ID = 0;
-const COL_STATE = 1;
-const COL_DATE_STARTED = 2;
-const COL_DATE_COMPLETED = 3;
-const COL_DURATION = 4;
-const COL_ACTIONS = 5;
+const COL_PROJECT = 1;
+const COL_STATE = 2;
+const COL_DATE_STARTED = 3;
+const COL_DATE_COMPLETED = 4;
+const COL_DURATION = 5;
+const COL_ACTIONS = 6;
+
+const COUNT_COLUMNS = 7;
+
+let mockProjects = [
+    { id: 1, title: 'Dummy project' }
+];
 
 describe('ExecutionsListComponent', () => {
     let executions: WindupExecution[];
@@ -46,6 +54,12 @@ describe('ExecutionsListComponent', () => {
                         'error',
                         'success'
                     ])
+                },
+                {
+                    provide: MigrationProjectService,
+                    useValue: jasmine.createSpyObj('MigrationProjectService', [
+                        'getAll'
+                    ])
                 }
             ]
         });
@@ -55,6 +69,10 @@ describe('ExecutionsListComponent', () => {
 
         de = fixture.debugElement.query(By.css('table.executions-list-table'));
         el = de.nativeElement;
+
+        let projectServiceMock = de.injector.get(MigrationProjectService);
+
+        projectServiceMock.getAll.and.returnValue(Observable.of(mockProjects));
 
         comp.executions = <WindupExecution[]>SORTED_EXECUTIONS_DATA;
         fixture.detectChanges();
@@ -84,7 +102,7 @@ describe('ExecutionsListComponent', () => {
     it('should not display cancel link for executions in other state', () => {
         let rows = fixture.debugElement.queryAll(By.css('tbody tr'));
 
-        let notQueuedExecutions = rows.filter(row => row.nativeElement.children[1].textContent.trim() !== 'QUEUED');
+        let notQueuedExecutions = rows.filter(row => row.nativeElement.children[COL_STATE].textContent.trim() !== 'QUEUED');
 
         expect(notQueuedExecutions.length).toBe(4);
 
@@ -103,7 +121,7 @@ describe('ExecutionsListComponent', () => {
             let el = row[index].nativeElement;
             let duration = <any>SORTED_EXECUTIONS_DATA[index].timeCompleted - <any>SORTED_EXECUTIONS_DATA[index].timeStarted;
 
-            expect(el.children.length).toEqual(6);
+            expect(el.children.length).toEqual(COUNT_COLUMNS);
 
             // TODO: Cannot test dates, they are timezone dependent. Find out way how to test this
             // expect(el.children[2].textContent).toEqual('10/31/2016, 10:54 AM');
@@ -111,7 +129,7 @@ describe('ExecutionsListComponent', () => {
 
             // NOTE: I'm not sure if this is not locale dependent
             let durationSeconds = Math.round(duration/1000);
-            expect(el.children[4].textContent).toEqual(durationSeconds + ' seconds');
+            expect(el.children[COL_DURATION].textContent).toEqual(durationSeconds + ' seconds');
         });
 
         it('should display data', () => {
@@ -120,9 +138,10 @@ describe('ExecutionsListComponent', () => {
             for (let i = 0; i < SORTED_EXECUTIONS_DATA.length; i++) {
                 let el = row[i].nativeElement;
 
-                expect(el.children.length).toEqual(6);
+                expect(el.children.length).toEqual(COUNT_COLUMNS);
                 expect(el.children[COL_ID].textContent.trim()).toEqual(SORTED_EXECUTIONS_DATA[i].id.toString());
                 expect(el.children[COL_STATE].textContent.trim()).toEqual(SORTED_EXECUTIONS_DATA[i].state);
+                expect(el.children[COL_PROJECT].textContent.trim()).toEqual(mockProjects[0].title);
             }
         });
     });
