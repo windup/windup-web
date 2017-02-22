@@ -44,7 +44,7 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
             <scope>provided</scope>
-            <version>5.0.7.Final</version>
+            <version>5.0.10.Final</version>
         </dependency>
 
         <!-- Multipart provider for file upload -->
