@@ -26,7 +26,7 @@
         <wu-tab [tabTitle]="'Execution Status'">
             <dl>
                 <dt i18n="Execution state">State</dt>
-                <dd>{{execution.state}}</dd>
+                <dd><wu-status-icon [status]="execution.state"></wu-status-icon>{{execution.state}}</dd>
                 <dt i18n="Execution start date">Started Date</dt>
                 <dd>{{execution.timeStarted | date: 'short'}}</dd>
                 <ng-container *ngIf="execution.timeCompleted">
@@ -56,14 +56,14 @@
                 <li *ngFor="let rulePath of execution.analysisContext.rulesPaths">{{rulePath.path}}</li>
             </ul>
 
-            <h4 i18n="Packages included for execution">TODO: Included packages</h4>
+            <h4 i18n="Packages included for execution">Included packages</h4>
             <ul>
-                <li *ngFor=""></li>
+                <li *ngFor="let package of execution.analysisContext.includePackages">{{package.fullName}}</li>
             </ul>
 
-            <h4 i18n="Packages excluded from execution">TODO: Excluded packages</h4>
+            <h4 i18n="Packages excluded from execution">Excluded packages</h4>
             <ul>
-                <li *ngFor=""></li>
+                <li *ngFor="let package of execution.analysisContext.excludePackages">{{package.fullName}}</li>
             </ul>
 
             <h4 i18n="Advanced Options|Execution">Advanced options</h4>
