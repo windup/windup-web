@@ -12,6 +12,9 @@ import {ProgressBarComponent} from "../../../../src/app/components/progress-bar.
 import {ActiveExecutionsProgressbarComponent} from "../../../../src/app/components/executions/active-executions-progressbar.component";
 import {DurationPipe} from "../../../../src/app/components/duration.pipe";
 import {MigrationProjectService} from "../../../../src/app/services/migration-project.service";
+import {SortableTableComponent} from "../../../../src/app/components/sortable-table.component";
+import {SortIndicatorComponent} from "../../../../src/app/components/sort-indicator.component";
+import {StatusIconComponent} from "../../../../src/app/components/status-icon.component";
 
 let comp:    ExecutionsListComponent;
 let fixture: ComponentFixture<ExecutionsListComponent>;
@@ -40,7 +43,15 @@ describe('ExecutionsListComponent', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [ RouterTestingModule ],
-            declarations: [ ExecutionsListComponent, ProgressBarComponent, ActiveExecutionsProgressbarComponent, DurationPipe ],
+            declarations: [
+                ExecutionsListComponent,
+                ProgressBarComponent,
+                ActiveExecutionsProgressbarComponent,
+                DurationPipe,
+                SortableTableComponent,
+                SortIndicatorComponent,
+                StatusIconComponent
+            ],
             providers: [
                 {
                     provide: WindupService,

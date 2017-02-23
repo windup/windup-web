@@ -10,7 +10,8 @@ import {MigrationProject} from "windup-services";
 @Component({
     selector: 'wu-executions-list',
     templateUrl: './executions-list.component.html',
-    providers: [SortingService]
+    providers: [SortingService],
+    styleUrls: ['../../../../css/tables.scss']
 })
 export class ExecutionsListComponent implements OnInit {
     protected element;
@@ -18,6 +19,8 @@ export class ExecutionsListComponent implements OnInit {
     private _executions: WindupExecution[];
     private _activeExecutions: WindupExecution[];
     protected projectsMap: Map<number, MigrationProject> = new Map<number, MigrationProject>();
+
+    public sortedExecutions: WindupExecution[] = [];
 
     constructor(
         private _elementRef: ElementRef,
@@ -40,6 +43,7 @@ export class ExecutionsListComponent implements OnInit {
     @Input()
     public set executions(executions: WindupExecution[]) {
         this._executions = this._sortingService.sort(executions || []);
+        this.sortedExecutions = this._executions;
     }
 
     public get executions(): WindupExecution[] {
@@ -84,4 +88,14 @@ export class ExecutionsListComponent implements OnInit {
                 return 'warning';
         }
     }
+
+    sortByProjectCallback = (item: WindupExecution) => {
+        let project = this.getProject(item.projectId);
+
+        return project ? project.title : 0;
+    };
+
+    sortByDurationCallback = (item: WindupExecution) => {
+        return <any>item.timeCompleted - <any>item.timeStarted;
+    };
 }

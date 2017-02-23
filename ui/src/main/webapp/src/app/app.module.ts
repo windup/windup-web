@@ -109,6 +109,9 @@ import {TabContainerComponent} from "./components/tabs/tab-container.component";
 import {TabComponent} from "./components/tabs/tab.component";
 import {LogViewComponent} from "./components/log-view.component";
 import {ExecutionDetailComponent} from "./components/executions/execution-detail.component";
+import {SortIndicatorComponent} from "./components/sort-indicator.component";
+import {SortableTableComponent} from "./components/sortable-table.component";
+import {StatusIconComponent} from "./components/status-icon.component";
 
 /**
  * Load all mapping data from the generated files.
@@ -202,6 +205,9 @@ initializeModelMappingData();
         TabComponent,
         LogViewComponent,
         ExecutionDetailComponent,
+        SortIndicatorComponent,
+        SortableTableComponent,
+        StatusIconComponent
     ],
     providers: [
         appRoutingProviders,
