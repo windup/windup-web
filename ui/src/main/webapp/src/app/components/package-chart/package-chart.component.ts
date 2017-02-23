@@ -1,12 +1,15 @@
 import {
     Component, ElementRef, ChangeDetectorRef, NgZone, ChangeDetectionStrategy, OnChanges,
-    OnDestroy, AfterViewInit, SimpleChanges, EventEmitter, Output, Input
+    OnDestroy, AfterViewInit, SimpleChanges, EventEmitter, Output, Input, ViewEncapsulation
 } from "@angular/core";
-import {BaseChartComponent, calculateViewDimensions, ViewDimensions, formatLabel, ColorHelper} from "ngx-charts";
+import { Location } from "@angular/common";
+
+import { BaseChartComponent, calculateViewDimensions, ViewDimensions, formatLabel, ColorHelper } from "@swimlane/ngx-charts";
 
 @Component({
     selector: 'wu-package-chart',
     templateUrl: './package-chart.component.html',
+    encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PackageChartComponent extends BaseChartComponent implements OnChanges, OnDestroy, AfterViewInit {
@@ -32,8 +35,8 @@ export class PackageChartComponent extends BaseChartComponent implements OnChang
     colors: ColorHelper;
     legendWidth: number;
 
-    constructor(element: ElementRef, zone: NgZone, cd: ChangeDetectorRef) {
-        super(element, zone, cd);
+    constructor(element: ElementRef, zone: NgZone, cd: ChangeDetectorRef, location: Location) {
+        super(element, zone, cd, location);
     }
 
     label(item): string {

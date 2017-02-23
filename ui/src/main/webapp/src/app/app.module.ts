@@ -82,7 +82,7 @@ import {ReportFilterResolve} from "./components/reports/filter/report-filter.res
 import {CustomSelectComponent} from "./components/custom-select/custom-select.component";
 import {ReportFilterIndicatorComponent} from "./components/reports/filter/report-filter-indicator.component";
 import {ApplicationDetailsComponent} from "./components/reports/application-details/application-details.component";
-import {NgxChartsModule} from "ngx-charts";
+import {NgxChartsModule} from "@swimlane/ngx-charts";
 import {PackageChartComponent} from "./components/package-chart/package-chart.component";
 import {ApplicationDetailsService} from "./components/reports/application-details/application-details.service";
 import {TechnologyTagComponent} from "./components/reports/technology-tag/technology-tag.component";
