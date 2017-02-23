@@ -55,7 +55,7 @@ public class AnalysisContext implements Serializable
     @Fetch(FetchMode.SELECT)
     private Collection<AdvancedOption> advancedOptions;
 
-//    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    //@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToOne(optional = false)
     private ApplicationGroup applicationGroup;
 
