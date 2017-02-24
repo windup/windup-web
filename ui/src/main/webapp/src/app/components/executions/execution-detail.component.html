@@ -1,8 +1,8 @@
 <div *ngIf="!execution">
-    <h2 i18n="Loading execution detail page">Loading execution data</h2>
+    <h2 i18n="Loading execution heading|Execution Page">Loading execution data</h2>
 </div>
 <div *ngIf="execution">
-    <h2 i18n="Execution Page Header">Execution {{execution.id}}</h2>
+    <h2 i18n="Heading|Execution Page">Execution {{execution.id}}</h2>
 
     <div *ngIf="execution.state === 'QUEUED' || execution.state === 'STARTED'">
         <wu-progress-bar
@@ -15,12 +15,11 @@
 
     <wu-tab-container>
         <wu-tab [tabTitle]="'Available Reports'">
-            <h3>Note: This is just temporary version, it should have dashboard-like layout</h3>
             <ul>
-                <li><a [routerLink]="['./application-details']">Application Details</a></li>
-                <li><a [routerLink]="['./migration-issues']">Issues</a></li>
-                <li><a [routerLink]="['./technology-report']">Technologies</a></li>
-                <li><a [routerLink]="['./dependencies']">Dependencies</a></li>
+                <li><a [routerLink]="['./application-details']" i18n="report">Application Details</a></li>
+                <li><a [routerLink]="['./migration-issues']" i18n="report">Issues</a></li>
+                <li><a [routerLink]="['./technology-report']" i18n="report">Technologies</a></li>
+                <li><a [routerLink]="['./dependencies']" i18n="report">Dependencies</a></li>
             </ul>
         </wu-tab>
         <wu-tab [tabTitle]="'Execution Status'">
