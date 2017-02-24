@@ -34,9 +34,10 @@ export class GraphJSONToModelService<T extends BaseModel>
     private mapping: typeof DiscriminatorMapping;
 
     /**
+     * @param _http Http
      * @param mapping  Maps the @TypeValue strings to TS model classes.
      */
-    constructor(mapping?: any) {
+    constructor(private _http: Http, mapping?: any) {
         if (!mapping) {
             this.mapping = DiscriminatorMapping;
         } else {

@@ -26,7 +26,7 @@ describe('Generated TS Files', () => {
             }
         };
 
-        let modelObject = new GraphJSONToModelService(DiscriminatorMappingTestData).fromJSON(TestGraphData.TEST_FILE_MODELS[1], http);
+        let modelObject = new GraphJSONToModelService(http, DiscriminatorMappingTestData).fromJSON(TestGraphData.TEST_FILE_MODELS[1], http);
         expect(modelObject).toBeDefined();
         expect(modelObject.vertexId).toEqual(16640);
         let model = <FileModel> modelObject;

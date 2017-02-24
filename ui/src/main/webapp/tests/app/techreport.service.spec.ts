@@ -11,6 +11,7 @@ import {Constants} from '../../src/app/constants';
 import {TechReportService} from "../../src/app/components/reports/technologies/tech-report.service";
 import {TECH_REPORT_DATA} from "./techreport-data";
 import {initializeModelMappingData} from "../../src/app/generated/tsModels/discriminator-mapping-data";
+import {GraphJSONToModelService} from "../../src/app/services/graph/graph-json-to-model.service";
 
 initializeModelMappingData();
 
@@ -27,6 +28,13 @@ describe("TechReportService Test", () => {
                             return new Http(backend, defaultOptions);
                         },
                         deps: [MockBackend, BaseRequestOptions]
+                    },
+                    {
+                        provide: GraphJSONToModelService,
+                        useFactory: (http: Http) => {
+                            return new GraphJSONToModelService<any>(http, null);
+                        },
+                        deps: [ Http ]
                     }
                 ]
             }

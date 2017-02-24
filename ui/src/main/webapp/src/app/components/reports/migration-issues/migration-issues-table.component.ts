@@ -32,7 +32,8 @@ export class MigrationIssuesTableComponent implements OnInit {
         private _activatedRoute: ActivatedRoute,
         private _migrationIssuesService: MigrationIssuesService,
         private _notificationService: NotificationService,
-        private _sortingService: SortingService<ProblemSummary>
+        private _sortingService: SortingService<ProblemSummary>,
+        private _graphJsonToModelService: GraphJSONToModelService<any>
     ) {
 
     }
@@ -92,7 +93,7 @@ export class MigrationIssuesTableComponent implements OnInit {
     }
 
     navigateToSource(file:any) {
-        let fileModel = <FileModel>new GraphJSONToModelService().fromJSON(file, this._http, FileModel);
+        let fileModel = <FileModel>this._graphJsonToModelService.fromJSON(file, this._http, FileModel);
         console.log("File clicked: " + fileModel.vertexId);
         ///projects/32057/groups/32058/reports/32121/source/32121
         let newPath = `source/${fileModel.vertexId}`;

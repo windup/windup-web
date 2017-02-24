@@ -50,7 +50,7 @@ export function GraphAdjacency (
             // .graphService and .http are stored by the initial call of fromJSON().
             if (this.graphService == null)
                 console.warn("@GraphAdjacency() sees no graphService on target (should not happen?), will instantiate a default one: ", this);
-            let graphService: GraphJSONToModelService<any> = this.graphService || new GraphJSONToModelService();
+            let graphService: GraphJSONToModelService<any> = this.graphService; // || new GraphJSONToModelService();
             if (!this.http)
                 throw new Error("Http service was not stored in the unmarshalled object:\n" + JSON.stringify(this));
 

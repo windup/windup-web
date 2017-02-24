@@ -39,12 +39,13 @@ export class SourceReportComponent implements OnInit, AfterViewChecked {
     private hints: InlineHintModel[];
     private rendered: boolean = false;
 
-    constructor(private route:ActivatedRoute,
-                private fileModelService:FileModelService,
-                private classificationService:ClassificationService,
-                private hintService:HintService,
+    constructor(private route: ActivatedRoute,
+                private fileModelService: FileModelService,
+                private classificationService: ClassificationService,
+                private hintService: HintService,
                 private notificationService: NotificationService,
-                private http:Http
+                private http: Http,
+                private _graphJsonToModelService: GraphJSONToModelService<any>
     ) { }
 
     ngOnInit(): void {
@@ -58,7 +59,7 @@ export class SourceReportComponent implements OnInit, AfterViewChecked {
 
                     // Assume this is a source file model and deserialize it as one... if it is not, this will have a lot of null
                     //   properties
-                    this.sourceFileModel = <SourceFileModel>new GraphJSONToModelService().fromJSON(this.fileModel.data, this.http, SourceFileModel);
+                    this.sourceFileModel = <SourceFileModel>this._graphJsonToModelService.fromJSON(this.fileModel.data, this.http, SourceFileModel);
                     this.sourceFileModel.linksToTransformedFiles.subscribe((links) => this.transformedLinks = links);
                 },
                 error => this.notificationService.error(utils.getErrorMessage(error)));
@@ -81,7 +82,7 @@ export class SourceReportComponent implements OnInit, AfterViewChecked {
     }
 
     private getClassificationLinks(classification:ClassificationModel):Observable<LinkModel[]> {
-        let linkableModel = <LinkableModel>new GraphJSONToModelService().translateType(classification, this.http, LinkableModel);
+        let linkableModel = <LinkableModel>this._graphJsonToModelService.translateType(classification, this.http, LinkableModel);
         return linkableModel.links;
     }
 

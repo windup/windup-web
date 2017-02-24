@@ -19,9 +19,13 @@ import { ProjectModel } from '../../src/app/generated/tsModels/ProjectModel';
 
 describe('Unmarshaller tests', () => {
 
+    let graphJsonToModelService: GraphJSONToModelService<any>;
+
     beforeEach(() => {
         console.log("-------------------- Unmarshaller test -------------------- ");
         StaticCache.clear();
+
+        graphJsonToModelService = new GraphJSONToModelService<any>(<Http>{}, DiscriminatorMappingTestData);
     });
 
     it("getParentClass()", function() {
@@ -41,7 +45,7 @@ describe('Unmarshaller tests', () => {
     });
 
     it ('unmarshaller test - fromJSON() - basic properties', () => {
-        let modelObject = new GraphJSONToModelService(DiscriminatorMappingTestData).fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA, <Http>{});
+        let modelObject = graphJsonToModelService.fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA, <Http>{});
         expect(modelObject).toBeDefined();
         expect(modelObject.vertexId).toEqual(456);
         let model = <TestGeneratorModel> modelObject;
@@ -51,7 +55,7 @@ describe('Unmarshaller tests', () => {
     });
 
     it ('unmarshaller test - fromJSON() - basic properties - array', () => {
-        let modelObjects = new GraphJSONToModelService(DiscriminatorMappingTestData).fromJSONarray(TestGraphData.TEST_FILE_MODELS, <Http>{});
+        let modelObjects = graphJsonToModelService.fromJSONarray(TestGraphData.TEST_FILE_MODELS, <Http>{});
         expect(modelObjects).toBeDefined();
         expect(modelObjects.length).toEqual(2);
         expect(modelObjects[0].vertexId).toEqual(16384);
@@ -59,7 +63,7 @@ describe('Unmarshaller tests', () => {
     });
 
     it ('unmarshaller test - fromJSON() - SetInProperties', () => {
-        let modelObject = new GraphJSONToModelService(DiscriminatorMappingTestData).fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA, <Http>{});
+        let modelObject = graphJsonToModelService.fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA, <Http>{});
         expect(modelObject).toBeDefined();
         expect(modelObject.vertexId).toEqual(456);
         let model = <TestGeneratorModel> modelObject;
@@ -73,7 +77,7 @@ describe('Unmarshaller tests', () => {
     });
 
     it ('unmarshaller test - fromJSON() - ship', async(() => {
-        let modelObject = new GraphJSONToModelService<TestGeneratorModel>(DiscriminatorMappingTestData).fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA, <Http>{});
+        let modelObject = graphJsonToModelService.fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA, <Http>{});
 
         return modelObject.ship.toPromise()
             .then((ship:TestShipModel) => {
@@ -102,7 +106,7 @@ describe('Unmarshaller tests', () => {
             }
         };
 
-        let modelObject = new GraphJSONToModelService<TestGeneratorModel>(DiscriminatorMappingTestData).fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA, http);
+        let modelObject = graphJsonToModelService.fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA, http);
 
         return modelObject.shuttles.toPromise()
             .then((shuttles:TestShipModel[]) => {
@@ -131,7 +135,7 @@ describe('Unmarshaller tests', () => {
             }
         };
 
-        let modelObject = new GraphJSONToModelService<TestGeneratorModel>(DiscriminatorMappingTestData).fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA, http);
+        let modelObject = graphJsonToModelService.fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA, http);
         expect(modelObject instanceof Array).toBeFalsy("fromJSON() should return a single object, was: " + JSON.stringify(modelObject ));
 
         return modelObject.fighter.toPromise()
@@ -145,7 +149,7 @@ describe('Unmarshaller tests', () => {
     }));
 
     it ('unmarshaller test - fromJSON() - planets', async(() => {
-        let modelObject = new GraphJSONToModelService<TestGeneratorModel>(DiscriminatorMappingTestData).fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA, <Http>{});
+        let modelObject = graphJsonToModelService.fromJSON(TestGraphData.TEST_GRAPH_MODEL_DATA, <Http>{});
 
         return modelObject.colonizedPlanet.toPromise()
             .then((planets:TestPlanetModel[]) => {
@@ -164,7 +168,7 @@ describe('Unmarshaller tests', () => {
 
 
     it ('unmarshaller test - fromJSON() - SourceModelReport with @Incidence', async(() => {
-        let modelObject = new GraphJSONToModelService<SourceReportModel>(DiscriminatorMappingTestData)
+        let modelObject = graphJsonToModelService
             .fromJSON(TestGraphData.TEST_FRAME_WITH_INCIDENCE, <Http>{});
 
         /// SourceReportModel projectEdges -> should be Observable<SourceReportToProjectEdgeModel[]>

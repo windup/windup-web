@@ -105,6 +105,7 @@ import {MomentModule} from "angular2-moment";
 import {FileUploadModule, FileUploader} from "ng2-file-upload";
 import {WizardComponent} from "./components/wizard.component";
 import {DurationPipe} from "./components/duration.pipe";
+import {GraphJSONToModelService} from "./services/graph/graph-json-to-model.service";
 
 /**
  * Load all mapping data from the generated files.
@@ -246,6 +247,11 @@ initializeModelMappingData();
         {
             provide: FileUploader,
             useFactory: createFileUploader
+        },
+        {
+            provide: GraphJSONToModelService,
+            useFactory: createGraphJSONToModelService,
+            deps: [Http]
         }
     ],
     bootstrap:    [ AppComponent ]
@@ -269,6 +275,10 @@ export function breadcrumbsServiceFactory(backend: XHRBackend,
                                           defaultOptions: RequestOptions,
                                           keycloakService: KeycloakService) {
     return new WindupHttpService(backend, defaultOptions, keycloakService);
+}
+
+export function createGraphJSONToModelService(http: Http) {
+    return new GraphJSONToModelService(http, null);
 }
 
 export class WINDUP_WEB {

@@ -12,6 +12,7 @@ import {By} from "@angular/platform-browser";
 import {HttpModule, BaseRequestOptions, Http, ConnectionBackend} from "@angular/http";
 import {MockBackend} from "@angular/http/testing";
 import {ReportFilterIndicatorComponent} from "../../../../../src/app/components/reports/filter/report-filter-indicator.component";
+import {GraphJSONToModelService} from "../../../../../src/app/services/graph/graph-json-to-model.service";
 
 let comp:    MigrationIssuesComponent;
 let fixture: ComponentFixture<MigrationIssuesComponent>;
@@ -63,6 +64,13 @@ describe('MigrationissuesComponent', () => {
                     useValue: jasmine.createSpyObj('NotificationService', [
                         'error'
                     ])
+                },
+                {
+                    provide: GraphJSONToModelService,
+                    useFactory: (http: Http) => {
+                        return new GraphJSONToModelService<any>(http, null);
+                    },
+                    deps: [ Http ]
                 }
             ]
         }).compileComponents();

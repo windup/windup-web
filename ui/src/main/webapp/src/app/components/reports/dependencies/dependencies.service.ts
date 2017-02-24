@@ -10,7 +10,7 @@ import {GraphJSONToModelService} from "../../../services/graph/graph-json-to-mod
 export class DependenciesService extends AbstractService {
     private GET_DEPENDENCIES_URL = Constants.GRAPH_REST_BASE +  '/graph/{executionId}/dependencies';
 
-    constructor (private _http: Http) {
+    constructor (private _http: Http, private _graphJsonToModelService: GraphJSONToModelService<any>) {
         super();
     }
 
@@ -18,7 +18,7 @@ export class DependenciesService extends AbstractService {
      * Returns the DependenciesReportModel
      */
     getDepsReportModel(executionId: number): Observable<DependenciesReportModel[]> {
-        let service = new GraphJSONToModelService();
+        let service = this._graphJsonToModelService;
         let url = `${Constants.GRAPH_REST_BASE}/graph/${executionId}/by-type/` + DependenciesReportModel.discriminator + "?depth=2";
         return this._http.get(url)
             .map((res:Response) => res.json())

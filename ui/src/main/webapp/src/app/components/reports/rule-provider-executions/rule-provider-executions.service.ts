@@ -5,12 +5,13 @@ import {GraphService} from "../../../services/graph.service";
 import {ExecutionPhaseModel} from "../../../generated/tsModels/ExecutionPhaseModel";
 import {RuleProviderModel} from "../../../generated/tsModels/RuleProviderModel";
 import {RuleExecutionModel} from "../../../generated/tsModels/RuleExecutionModel";
+import {GraphJSONToModelService} from "../../../services/graph/graph-json-to-model.service";
 
 @Injectable()
 export class RuleProviderExecutionsService extends GraphService {
 
-    constructor(http: Http) {
-        super(http);
+    constructor(http: Http, graphJsonToModelService: GraphJSONToModelService<any>) {
+        super(http, graphJsonToModelService);
     }
 
     getPhases(execID: number): Observable<ExecutionPhaseModel[]> {

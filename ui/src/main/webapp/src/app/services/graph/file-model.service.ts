@@ -9,13 +9,13 @@ import {GraphJSONToModelService} from "./graph-json-to-model.service";
 @Injectable()
 export class FileModelService extends AbstractService {
 
-    constructor(private _http: Http) {
+    constructor(private _http: Http, private _graphJsonToModelService: GraphJSONToModelService<any>) {
         super();
     }
 
     getFileModel(executionId: number, vertexID: number): Observable<FileModel> {
         let url = `${Constants.GRAPH_REST_BASE}/graph/${executionId}/${vertexID}?depth=1`;
-        let service = new GraphJSONToModelService();
+        let service = this._graphJsonToModelService;
 
         return this._http.get(url)
             .map(res => res.json())

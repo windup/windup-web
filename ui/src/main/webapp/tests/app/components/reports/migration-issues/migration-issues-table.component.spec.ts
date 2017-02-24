@@ -10,6 +10,7 @@ import {ActivatedRouteMock} from "../../../mocks/activated-route.mock";
 import {Observable} from "rxjs";
 import {BaseRequestOptions, Http, ConnectionBackend} from "@angular/http";
 import {MockBackend} from "@angular/http/testing";
+import {GraphJSONToModelService} from "../../../../../src/app/services/graph/graph-json-to-model.service";
 
 let comp:    MigrationIssuesTableComponent;
 let fixture: ComponentFixture<MigrationIssuesTableComponent>;
@@ -48,7 +49,14 @@ describe('MigrationissuesTableComponent', () => {
                         'getIssuesPerFile'
                     ])
                 },
-                NotificationService
+                NotificationService,
+                {
+                    provide: GraphJSONToModelService,
+                    useFactory: (http: Http) => {
+                        return new GraphJSONToModelService<any>(http, null);
+                    },
+                    deps: [ Http ]
+                }
             ]
         });
 
