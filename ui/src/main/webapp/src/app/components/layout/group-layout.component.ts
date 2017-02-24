@@ -166,13 +166,7 @@ export class GroupLayoutComponent extends AbstractComponent implements OnInit, O
                 this._routeLinkProviderService
             )
             this.menuItems.splice(4, 0, reportFilterMenu);
-        }
 
-        // Hide technologies and dependencies report in production mode
-        // TODO: Use process.env.ENV !== 'production' when AOT is fixed
-        let showUnfinishedReports = false;
-
-        if (showUnfinishedReports) {
             this.menuItems = [ ...this.menuItems,
                 new ReportMenuItem(
                     'Technologies',
@@ -180,14 +174,14 @@ export class GroupLayoutComponent extends AbstractComponent implements OnInit, O
                     this.applicationGroup,
                     TechnologiesReportComponent,
                     this._routeLinkProviderService,
-                 ),
-                 new ReportMenuItem(
-                     'Dependencies',
-                     'fa-code-fork',
-                     this.applicationGroup,
-                     DependenciesReportComponent,
-                     this._routeLinkProviderService
-                 )
+                ),
+                new ReportMenuItem(
+                    'Dependencies',
+                    'fa-code-fork',
+                    this.applicationGroup,
+                    DependenciesReportComponent,
+                    this._routeLinkProviderService
+                )
             ];
         }
     }

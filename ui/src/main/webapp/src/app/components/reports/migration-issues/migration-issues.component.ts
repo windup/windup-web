@@ -4,19 +4,19 @@ import {NotificationService} from "../../../services/notification.service";
 import {MigrationIssuesService} from "./migration-issues.service";
 import {utils} from '../../../utils';
 import {ApplicationGroup} from "windup-services";
+import {WINDUP_WEB} from "../../../app.module";
 
 @Component({
     selector: 'wu-migration-issues',
     templateUrl: './migration-issues.component.html',
-    styles: [
-        `a { cursor: pointer; }`
-    ]
 })
 export class MigrationIssuesComponent implements OnInit {
     protected categorizedIssues: Dictionary<ProblemSummary[]>;
     protected categories: string[];
 
     protected group: ApplicationGroup;
+
+    protected hideFilter = WINDUP_WEB.config.hideUnfinishedFeatures;
 
     public constructor(
         private _router: Router,

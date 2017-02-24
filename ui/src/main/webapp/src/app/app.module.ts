@@ -273,6 +273,8 @@ export function breadcrumbsServiceFactory(backend: XHRBackend,
 
 export class WINDUP_WEB {
     public static config = {
+        // Hide the unfinished features in production mode.
+        // TODO: Use process.env.ENV !== 'production' when AOT is fixed.
         // process is not accessible here. Supposedly the references to env vars should be replaced by WebPack but they are not.
         //hideUnfinishedFeatures: (process.env.hideUnfinishedFeatures !== (void 0)) ? process.env.hideUnfinishedFeatures : true;
         hideUnfinishedFeatures: true
