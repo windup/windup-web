@@ -270,3 +270,13 @@ export function breadcrumbsServiceFactory(backend: XHRBackend,
                                           keycloakService: KeycloakService) {
     return new WindupHttpService(backend, defaultOptions, keycloakService);
 }
+
+export class WINDUP_WEB {
+    public static config = {
+        // process is not accessible here. Supposedly the references to env vars should be replaced by WebPack but they are not.
+        //hideUnfinishedFeatures: (process.env.hideUnfinishedFeatures !== (void 0)) ? process.env.hideUnfinishedFeatures : true;
+        hideUnfinishedFeatures: true
+    };
+}
+
+WINDUP_WEB.config = { hideUnfinishedFeatures: true };

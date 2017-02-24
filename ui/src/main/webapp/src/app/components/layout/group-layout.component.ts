@@ -23,6 +23,7 @@ import {
 } from "../../services/events/windup-event";
 import {AbstractComponent} from "../AbstractComponent";
 import {ReportFilterComponent} from "../reports/filter/report-filter.component";
+import {WINDUP_WEB} from "../../app.module";
 
 
 @Component({
@@ -115,13 +116,6 @@ export class GroupLayoutComponent extends AbstractComponent implements OnInit, O
                 icon: 'fa-cogs',
                 isEnabled: true,
             },
-            new ReportMenuItem(
-                'Report Filter',
-                'fa-filter',
-                this.applicationGroup,
-                ReportFilterComponent,
-                this._routeLinkProviderService
-            ),
             new ContextMenuItem(
                 'Run Windup',
                 'fa-rocket',
@@ -162,6 +156,17 @@ export class GroupLayoutComponent extends AbstractComponent implements OnInit, O
                 this._routeLinkProviderService,
             ),
         ];
+
+        if (!WINDUP_WEB.config.hideUnfinishedFeatures) {
+            let reportFilterMenu = new ReportMenuItem(
+                'Report Filter',
+                'fa-filter',
+                this.applicationGroup,
+                ReportFilterComponent,
+                this._routeLinkProviderService
+            )
+            this.menuItems.splice(4, 0, reportFilterMenu);
+        }
 
         // Hide technologies and dependencies report in production mode
         // TODO: Use process.env.ENV !== 'production' when AOT is fixed
