@@ -21,7 +21,7 @@ export class HintService extends AbstractService {
 
         return this._http.get(url)
             .map(res => res.json())
-            .map(res => <InlineHintModel[]>res.map((json) => service.fromJSON(json, this._http)))
+            .map(res => <InlineHintModel[]>res.map((json) => service.fromJSON(json)))
             .catch(this.handleError);
     }
 }

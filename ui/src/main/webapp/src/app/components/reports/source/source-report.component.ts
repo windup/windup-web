@@ -59,7 +59,7 @@ export class SourceReportComponent implements OnInit, AfterViewChecked {
 
                     // Assume this is a source file model and deserialize it as one... if it is not, this will have a lot of null
                     //   properties
-                    this.sourceFileModel = <SourceFileModel>this._graphJsonToModelService.fromJSON(this.fileModel.data, this.http, SourceFileModel);
+                    this.sourceFileModel = <SourceFileModel>this._graphJsonToModelService.fromJSON(this.fileModel.data, SourceFileModel);
                     this.sourceFileModel.linksToTransformedFiles.subscribe((links) => this.transformedLinks = links);
                 },
                 error => this.notificationService.error(utils.getErrorMessage(error)));
@@ -82,7 +82,7 @@ export class SourceReportComponent implements OnInit, AfterViewChecked {
     }
 
     private getClassificationLinks(classification:ClassificationModel):Observable<LinkModel[]> {
-        let linkableModel = <LinkableModel>this._graphJsonToModelService.translateType(classification, this.http, LinkableModel);
+        let linkableModel = <LinkableModel>this._graphJsonToModelService.translateType(classification, LinkableModel);
         return linkableModel.links;
     }
 

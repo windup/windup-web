@@ -65,7 +65,7 @@ export function GraphAdjacency (
                     let responseJson: any[] = response.json();
                     if (!Array.isArray(responseJson))
                         throw new Error("Graph REST should return an array of vertices, returned: " + JSON.stringify(responseJson));
-                    let items: any[] = graphService.fromJSONarray(responseJson, httpService);
+                    let items: any[] = graphService.fromJSONarray(responseJson);
                     return returnArray_ ? items : items[0];
                 });
             }
@@ -93,15 +93,15 @@ export function GraphAdjacency (
             let models;
             switch(kind) {
                 case "ADJACENCY":
-                    models = vertices.map(vertice => graphService.fromJSON(vertice, this.http));
+                    models = vertices.map(vertice => graphService.fromJSON(vertice));
                     if (!returnArray)
                         models = models[0];
                     break;
                 // @Incidence: We need to return the edge's model(s) with the above vertex under the original direction.
                 case "INCIDENCE":
                     models = vertices.map(vertice => {
-                        let model = graphService.fromJSON(vertice, this.http);
-                        let edgeModel = graphService.fromJSON(vertice.edgeData, this.http);
+                        let model = graphService.fromJSON(vertice);
+                        let edgeModel = graphService.fromJSON(vertice.edgeData);
                         // Store the in/out vertexes.
                         edgeModel[direction === "IN" ? "_out" : "_in"] = model;
                         edgeModel[direction === "IN" ? "_in"  : "_out"] = this; /// This should be the "this" of the getter, i.e. original vertex.

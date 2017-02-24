@@ -19,7 +19,7 @@ export class FileModelService extends AbstractService {
 
         return this._http.get(url)
             .map(res => res.json())
-            .map(res => <FileModel>service.fromJSON(res, this._http))
+            .map(res => <FileModel>service.fromJSON(res))
             .catch(this.handleError);
     }
 

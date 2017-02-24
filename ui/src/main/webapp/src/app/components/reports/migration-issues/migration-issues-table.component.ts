@@ -93,7 +93,7 @@ export class MigrationIssuesTableComponent implements OnInit {
     }
 
     navigateToSource(file:any) {
-        let fileModel = <FileModel>this._graphJsonToModelService.fromJSON(file, this._http, FileModel);
+        let fileModel = <FileModel>this._graphJsonToModelService.fromJSON(file, FileModel);
         console.log("File clicked: " + fileModel.vertexId);
         ///projects/32057/groups/32058/reports/32121/source/32121
         let newPath = `source/${fileModel.vertexId}`;

@@ -26,7 +26,7 @@ export class DependenciesService extends AbstractService {
                 if (!Array.isArray(data) || data.length == 0) {
                     throw new Error("No items returned, URL: " + url);
                 }
-                return <DependenciesReportModel[]>service.fromJSONarray(data, this._http, DependenciesReportModel);
+                return <DependenciesReportModel[]>service.fromJSONarray(data, DependenciesReportModel);
             })
             .catch(this.handleError);
     }

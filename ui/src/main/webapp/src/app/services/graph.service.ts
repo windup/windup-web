@@ -24,7 +24,7 @@ export class GraphService extends AbstractService {
                     throw new Error("No items returned");
                 }
 
-                return <T>service.fromJSON(data[0], this._http);
+                return <T>service.fromJSON(data[0]);
             })
             .catch(this.handleError);
     }
@@ -38,7 +38,7 @@ export class GraphService extends AbstractService {
                     throw new Error("No items returned");
                 }
 
-                return <T[]>service.fromJSONarray(data,  this._http);
+                return <T[]>service.fromJSONarray(data);
             });
     }
 

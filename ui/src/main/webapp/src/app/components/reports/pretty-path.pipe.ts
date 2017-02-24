@@ -26,7 +26,7 @@ export class PrettyPathPipe implements PipeTransform {
             file.fileModel.subscribe(
                 fileModel => {
                     let javaSourceModel:JavaSourceFileModel = <JavaSourceFileModel>this._graphJsonToModelService
-                        .translateType(fileModel, this._http, JavaSourceFileModel);
+                        .translateType(fileModel, JavaSourceFileModel);
                     if (!javaSourceModel.packageName)
                         return;
 
