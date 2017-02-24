@@ -12,40 +12,30 @@ export class MigrationProjectService extends AbstractService {
     private GET_MIGRATION_PROJECT_URL = "/migrationProjects/get";
     private CREATE_MIGRATION_PROJECT_URL = "/migrationProjects/create";
     private UPDATE_MIGRATION_PROJECT_URL = "/migrationProjects/update";
-    private DELETE_MIGRATION_PROJECT_URL = '/migrationProjects/delete'
+    private DELETE_MIGRATION_PROJECT_URL = '/migrationProjects/delete';
 
 
     constructor (private _http: Http) {
         super();
     }
 
-    create(migrationProject: MigrationProject) {
-        let headers = new Headers();
-        let options = new RequestOptions({ headers: headers });
-        headers.append('Content-Type', 'application/json');
-        headers.append('Accept', 'application/json');
-
+    create(migrationProject: MigrationProject): Observable<MigrationProject> {
         let body = JSON.stringify(migrationProject);
 
-        return this._http.put(Constants.REST_BASE + this.CREATE_MIGRATION_PROJECT_URL, body, options)
+        return this._http.put(Constants.REST_BASE + this.CREATE_MIGRATION_PROJECT_URL, body, this.JSON_OPTIONS)
             .map(res => <MigrationProject> res.json())
             .catch(this.handleError);
     }
 
-    update(migrationProject: MigrationProject) {
-        let headers = new Headers();
-        let options = new RequestOptions({ headers: headers });
-        headers.append('Content-Type', 'application/json');
-        headers.append('Accept', 'application/json');
-
+    update(migrationProject: MigrationProject): Observable<MigrationProject> {
         let body = JSON.stringify(migrationProject);
 
-        return this._http.put(Constants.REST_BASE + this.UPDATE_MIGRATION_PROJECT_URL, body, options)
+        return this._http.put(Constants.REST_BASE + this.UPDATE_MIGRATION_PROJECT_URL, body, this.JSON_OPTIONS)
             .map(res => <MigrationProject> res.json())
             .catch(this.handleError);
     }
 
-    delete(migrationProject: MigrationProject) {
+    delete(migrationProject: MigrationProject): Observable<void> {
         let body = JSON.stringify(migrationProject);
 
         let options = new RequestOptions({
@@ -61,21 +51,15 @@ export class MigrationProjectService extends AbstractService {
             .catch(this.handleError);
     }
 
-    get(id: number) {
-        let headers = new Headers();
-        let options = new RequestOptions({ headers: headers });
-
-        return this._http.get(Constants.REST_BASE + this.GET_MIGRATION_PROJECT_URL + "/" + id, options)
+    get(id: number): Observable<MigrationProject> {
+        return this._http.get(Constants.REST_BASE + this.GET_MIGRATION_PROJECT_URL + "/" + id)
             .map(res => <MigrationProject> res.json())
             .catch(this.handleError);
     }
 
 
     getAll(): Observable<Array<MigrationProject & HasAppCount>> {
-        let headers = new Headers();
-        let options = new RequestOptions({ headers: headers });
-
-        return this._http.get(Constants.REST_BASE + this.GET_MIGRATION_PROJECTS_URL, options)
+        return this._http.get(Constants.REST_BASE + this.GET_MIGRATION_PROJECTS_URL)
             .map(res => <MigrationProjectAndCount[]> res.json())
             // The consuming code still sees  MigrationProject, only with .appCount added.
             .map(entries => entries.map(entry => (entry.migrationProject["applicationCount"] = entry.applicationCount, entry.migrationProject)))
