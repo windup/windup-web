@@ -9,7 +9,18 @@ import {NotificationService} from "../services/notification.service";
 import {utils} from "../utils";
 
 @Component({
-    templateUrl: './configuration.component.html'
+    templateUrl: './configuration.component.html',
+    styles: [`
+        .rulesList .techLabel {
+            display: inline-block; border: 1px solid transparent; background-color:  #e0f7ff; margin: 0.2ex 0.6ex;
+        }
+        .rulesList .list-view-pf-body { display: initial; }
+        @media (min-width: 992px) { .rulesList .list-view-pf .list-group-item-heading { font-size: initial; } } /* Disable this weird rule from PF. */
+        @media (min-width: 992px) {
+            .rulesList .list-view-pf-additional-info { width: 15%; }
+            .rulesList .list-view-pf-description     { width: 85%; }
+        }
+    `]
 })
 export class ConfigurationComponent implements OnInit {
 

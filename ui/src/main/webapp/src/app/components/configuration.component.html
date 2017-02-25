@@ -1,9 +1,9 @@
 <h1>
-    Windup Configuration
+    <template i18="Header">Windup Configuration</template>
 
     <button class="btn btn-primary" (click)="displayAddRulesPathForm()">
         <span class="glyphicon glyphicon-plus"></span>
-        Register Custom Rule Path
+        <span i18n>Register Custom Rule Path</span>
     </button>
     <button class="btn btn-primary" (click)="reloadConfiguration()">Force Reload Configuration</button>
 </h1>
@@ -11,18 +11,21 @@
 <template [ngIf]="configuration != null && configuration.rulesPaths != null && configuration.rulesPaths.length > 0">
     <div class="panel-group">
         <div *ngFor="let rulePath of configuration.rulesPaths" id="rulePathPanel_{{rulePath.id}}" class="panel panel-default">
+
+            <!-- Header for each set of rules. -->
             <div class="panel-heading">
                 <h2 class="panel-title">
                     <a class="collapsed" data-toggle="collapse" [attr.data-parent]="'#rulePathPanel_' + rulePath.id" href="#collapse_{{rulePath.id}}">
-                        Rules: {{rulePath.rulesPathType == "SYSTEM_PROVIDED" ? "&lt;System Rules&gt;" : rulePath.path}}
+                        <span i18n>Rules:</span> {{rulePath.rulesPathType == "SYSTEM_PROVIDED" ? "&lt;System Rules&gt;" : rulePath.path}}
                     </a>
                 </h2>
             </div>
 
+            <!-- Area that collapses when the header is clicked. -->
             <div id="collapse_{{rulePath.id}}" class="panel-body panel-collapse collapse">
                 <a (click)="removeRulesConfirmationModal.show($event)" *ngIf="rulePath.rulesPathType != 'SYSTEM_PROVIDED'" href="#">
                     <span class="glyphicon glyphicon-trash"></span>
-                    Unregister Rules
+                    <span i18n>Unregister Rules</span>
                 </a>
 
                 <wu-confirmation-modal
@@ -35,13 +38,49 @@
                 </wu-confirmation-modal>
 
                 <div *ngIf="!hasFileBasedProviders(rulePath)">
-                    <h3>This path contains no rules!</h3>
+                    <h3 i18n>This path contains no rules!</h3>
                 </div>
 
                 <div *ngIf="rulePath.loadError">
                     <h3>{{rulePath.loadError}}</h3>
                 </div>
 
+                <!-- List of rules. -->
+                <div class="rulesList list-group list-view-pf list-view-pf-view" *ngIf="hasFileBasedProviders(rulePath)">
+                    <div *ngFor="let ruleProvider of ruleProvidersByPath.get(rulePath)" class="list-group-item">
+                        <div class="list-view-pf-checkbox">
+                            <input type="checkbox">
+                        </div>
+                        <div class="list-view-pf-actions">
+                            <button class="btn btn-default" (click)="displayRules(ruleProvider, $event)" i18n="Button">Show rules</button>
+                        </div>
+                        <div class="list-view-pf-main-info">
+                            <div class="list-view-pf-left">
+                                <span class="fa fa-puzzle-piece list-view-pf-icon-sm"></span>
+                            </div>
+                            <div class="list-view-pf-body">
+                                <div class="list-view-pf-description">
+                                    <div class="list-group-item-heading"> {{ruleProvider.providerID}} </div>
+                                    <div class="list-group-item-text">
+                                        <div>
+                                            <span class="fa fa-file-code-o list-view-pf-icon-md"></span>
+                                            {{ruleProvider.origin}}</div>
+                                        <div> Source technologies: <wu-technology *ngFor="let source of ruleProvider.sources" [technology]="source" class="techLabel"></wu-technology> </div>
+                                        <div> Target technologies: <wu-technology *ngFor="let target of ruleProvider.targets" [technology]="target" class="techLabel"></wu-technology> </div>
+                                    </div>
+                                </div>
+                                <div class="list-view-pf-additional-info">
+                                    <div class="list-view-pf-additional-info-item">
+                                        <span class="fa fa-list-ol"></span>
+                                        <strong>{{ruleProvider.rules ? ruleProvider.rules.length : 0}}</strong> Rules
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--
                 <table class="datatable table table-striped table-bordered" *ngIf="hasFileBasedProviders(rulePath)">
                     <thead>
                     <tr>
@@ -54,34 +93,19 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <template ngFor let-ruleProvider [ngForOf]="ruleProvidersByPath.get(rulePath)">
+                    <template *ngFor="let ruleProvider of ruleProvidersByPath.get(rulePath)">
                         <tr *ngIf="isFileBasedProvider(ruleProvider)">
-                            <td>
-                                {{ruleProvider.providerID}}
-                            </td>
-                            <td>
-                                {{ruleProvider.origin}}
-                            </td>
-                            <td>
-                                <div *ngFor="let source of ruleProvider.sources">
-                                    <wu-technology [technology]="source"></wu-technology>
-                                </div>
-                            </td>
-                            <td>
-                                <div *ngFor="let target of ruleProvider.targets">
-                                    <wu-technology [technology]="target"></wu-technology>
-                                </div>
-                            </td>
-                            <td>
-                                {{ruleProvider.rules ? ruleProvider.rules.length : 0}}
-                            </td>
-                            <td>
-                                <a href="#" (click)="displayRules(ruleProvider, $event)">Rules</a>
-                            </td>
+                            <td> {{ruleProvider.providerID}} </td>
+                            <td> {{ruleProvider.origin}} </td>
+                            <td> <div *ngFor="let source of ruleProvider.sources"> <wu-technology [technology]="source"></wu-technology> </div> </td>
+                            <td> <div *ngFor="let target of ruleProvider.targets"> <wu-technology [technology]="target"></wu-technology> </div> </td>
+                            <td> {{ruleProvider.rules ? ruleProvider.rules.length : 0}} </td>
+                            <td> <a href="#" (click)="displayRules(ruleProvider, $event)">Rules</a> </td>
                         </tr>
                     </template>
                     </tbody>
                 </table>
+                -->
             </div>
         </div>
     </div>
