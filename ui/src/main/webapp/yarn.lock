@@ -2473,11 +2473,7 @@ glogg@^1.0.0:
   dependencies:
     sparkles "^1.0.0"
 
-google-code-prettify@1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/google-code-prettify/-/google-code-prettify-1.0.1.tgz#72ed730414769db2ecc470f4ec413174ccb76327"
-
-google-code-prettify@~1.0.5:
+google-code-prettify@^1.0.5, google-code-prettify@~1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/google-code-prettify/-/google-code-prettify-1.0.5.tgz#9f477f224dbfa62372e5ef803a7e157410400084"
 

@@ -20,6 +20,9 @@ import {utils} from "../utils";
             .rulesList .list-view-pf-additional-info { width: 12%; }
             .rulesList .list-view-pf-description     { width: 88%; }
         }
+        @media (min-width: 992px) {
+            .list-view-pf-additional-info { -ms-flex: 0 0 auto; flex: 0 0 auto; }
+        }
     `]
 })
 export class ConfigurationComponent implements OnInit {
