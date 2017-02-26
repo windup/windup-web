@@ -12,13 +12,13 @@ import {utils} from "../utils";
     templateUrl: './configuration.component.html',
     styles: [`
         .rulesList .techLabel {
-            display: inline-block; border: 1px solid transparent; background-color:  #e0f7ff; margin: 0.2ex 0.6ex;
+            display: inline-block; border: 2px ridge white/*1px solid #9ed0f1*/; background-color:  #e0f7ff; padding: 0.1ex 0.4em; margin: 0.1ex 0.4ex 0;
         }
-        .rulesList .list-view-pf-body { display: initial; }
+        .rulesList .list-view-pf-body { flex-basis: 89%; }
         @media (min-width: 992px) { .rulesList .list-view-pf .list-group-item-heading { font-size: initial; } } /* Disable this weird rule from PF. */
         @media (min-width: 992px) {
-            .rulesList .list-view-pf-additional-info { width: 15%; }
-            .rulesList .list-view-pf-description     { width: 85%; }
+            .rulesList .list-view-pf-additional-info { width: 12%; }
+            .rulesList .list-view-pf-description     { width: 88%; }
         }
     `]
 })

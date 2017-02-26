@@ -48,10 +48,12 @@
                 <!-- List of rules. -->
                 <div class="rulesList list-group list-view-pf list-view-pf-view" *ngIf="hasFileBasedProviders(rulePath)">
                     <div *ngFor="let ruleProvider of ruleProvidersByPath.get(rulePath)" class="list-group-item">
+                        <!-- If we need a checkbox for actions / global disabling.
                         <div class="list-view-pf-checkbox">
                             <input type="checkbox">
                         </div>
-                        <div class="list-view-pf-actions">
+                        -->
+                        <div class="list-view-pf-actions" style="margin-left: 5px;">
                             <button class="btn btn-default" (click)="displayRules(ruleProvider, $event)" i18n="Button">Show rules</button>
                         </div>
                         <div class="list-view-pf-main-info">
@@ -62,17 +64,20 @@
                                 <div class="list-view-pf-description">
                                     <div class="list-group-item-heading"> {{ruleProvider.providerID}} </div>
                                     <div class="list-group-item-text">
-                                        <div>
-                                            <span class="fa fa-file-code-o list-view-pf-icon-md"></span>
-                                            {{ruleProvider.origin}}</div>
-                                        <div> Source technologies: <wu-technology *ngFor="let source of ruleProvider.sources" [technology]="source" class="techLabel"></wu-technology> </div>
-                                        <div> Target technologies: <wu-technology *ngFor="let target of ruleProvider.targets" [technology]="target" class="techLabel"></wu-technology> </div>
+                                        <div style="width: 16pt; position: absolute;">
+                                            <span class="fa fa-file-code-o list-view-pf-icon-md" style="font-size: 16pt;"></span>
+                                        </div>
+                                        <div style="margin-left: 25pt; ">
+                                            <div>{{ruleProvider.origin}}</div>
+                                            <div> Source technologies: <wu-technology *ngFor="let source of ruleProvider.sources" [technology]="source" class="techLabel"></wu-technology> </div>
+                                            <div> Target technologies: <wu-technology *ngFor="let target of ruleProvider.targets" [technology]="target" class="techLabel"></wu-technology> </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="list-view-pf-additional-info">
                                     <div class="list-view-pf-additional-info-item">
                                         <span class="fa fa-list-ol"></span>
-                                        <strong>{{ruleProvider.rules ? ruleProvider.rules.length : 0}}</strong> Rules
+                                        <strong>{{ruleProvider.rules ? ruleProvider.rules.length : 0}}</strong> <span i18n="Count, e.g. 5 Rules">Rules</span>
                                     </div>
                                 </div>
                             </div>
@@ -80,32 +85,6 @@
                     </div>
                 </div>
 
-                <!--
-                <table class="datatable table table-striped table-bordered" *ngIf="hasFileBasedProviders(rulePath)">
-                    <thead>
-                    <tr>
-                        <th>Provider ID</th>
-                        <th>Provider Location</th>
-                        <th>Sources</th>
-                        <th>Targets</th>
-                        <th>Rule Count</th>
-                        <th>Details</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <template *ngFor="let ruleProvider of ruleProvidersByPath.get(rulePath)">
-                        <tr *ngIf="isFileBasedProvider(ruleProvider)">
-                            <td> {{ruleProvider.providerID}} </td>
-                            <td> {{ruleProvider.origin}} </td>
-                            <td> <div *ngFor="let source of ruleProvider.sources"> <wu-technology [technology]="source"></wu-technology> </div> </td>
-                            <td> <div *ngFor="let target of ruleProvider.targets"> <wu-technology [technology]="target"></wu-technology> </div> </td>
-                            <td> {{ruleProvider.rules ? ruleProvider.rules.length : 0}} </td>
-                            <td> <a href="#" (click)="displayRules(ruleProvider, $event)">Rules</a> </td>
-                        </tr>
-                    </template>
-                    </tbody>
-                </table>
-                -->
             </div>
         </div>
     </div>
