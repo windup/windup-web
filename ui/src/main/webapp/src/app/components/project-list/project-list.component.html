@@ -28,7 +28,7 @@
         </div>
 
         <div *ngIf="projects?.length == 0" class="no-matches">
-            The current filter is hiding all projects. <a action (click)="updateSearch('')">Clear filter</a>
+            <template i18n>The current filter is hiding all projects.</template> <a action (click)="updateSearch('')"><template i18n>Remove filter</template></a>
         </div>
 
         <div *ngIf="projects?.length > 0" class="list-group list-view-pf projects-list">
@@ -53,10 +53,10 @@
                             <div class="list-group-item-heading">
                                 <a (click)="viewProject($event, project)"><h2 class="project-title">{{project.title}}</h2></a>
                                 <small *ngIf="!project.lastModified">
-                                    Created {{project.created | amTimeAgo}}
+                                    <template i18n>Created</template> {{project.created | amTimeAgo}}
                                 </small>
                                 <small *ngIf="project.lastModified">
-                                    Last Modified {{project.lastModified | amTimeAgo}}
+                                    <template i18n>Last Modified</template> {{project.lastModified | amTimeAgo}}
                                 </small>
                             </div>
                             <div class="list-group-item-text description">{{project.description}}</div>
@@ -64,7 +64,7 @@
                         <div class="list-view-pf-additional-info">
                                 <div class="list-view-pf-additional-info-item">
                                     <span class="pficon pficon-image"></span>
-                                    <strong>{{project.applicationCount}}</strong> Applications
+                                    <strong>{{project.applicationCount}}</strong> <template i18n>Applications</template>
                                 </div>
                         </div>
                     </div>

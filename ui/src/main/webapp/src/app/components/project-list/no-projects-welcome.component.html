@@ -1,13 +1,15 @@
 <div class="blank-slate-pf">
-    <h1>
-        Welcome to the Red Hat Application Migration Toolkit Web Console
+    <h1 i18n="Header">
+        Welcome to the Red Hat Application Migration Toolkit Web Console.
     </h1>
     <div class="blank-slate-pf-main-action">
-        <a (click)="newProjectClicked()" class="clickable btn btn-primary btn-lg">New Project</a>
+        <a (click)="newProjectClicked()" class="clickable btn btn-primary btn-lg" i18n="Button">New Project</a>
     </div>
 
     <div class="welcome-help-text">
-        To learn more, visit the <a href="https://github.com/windup/windup-web/blob/master/README.md">
-            Red Hat Application Migration Toolkit Web Console Documentation</a>.
+            <template i18n="Intro text, 1st part">To learn more, visit the</template>
+            <a href="https://github.com/windup/windup-web/blob/master/README.md">
+                <template i18n="Intro text, 2nd part">Red Hat Application Migration Toolkit Web Console Documentation</template>
+            </a>.
     </div>
 </div>

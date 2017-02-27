@@ -22,10 +22,10 @@
             </td>
             <td>
                 <button type="button" class="btn btn-warning btn-xs" (click)="item.cancel()" [disabled]="!item.isUploading">
-                    <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+                    <span class="glyphicon glyphicon-ban-circle"></span> <template i18n="Upload">Cancel</template>
                 </button>
                 <button type="button" class="btn btn-danger btn-xs" (click)="item.remove()">
-                    <span class="glyphicon glyphicon-trash"></span> Remove
+                    <span class="glyphicon glyphicon-trash"></span> <template i18n="Upload queue">Remove</template>
                 </button>
             </td>
         </tr>

@@ -60,11 +60,8 @@ export class KeycloakService {
         let keyCloakPromise = this.keyCloak.init(options);
         let realPromise = this.transformKeycloakPromise(keyCloakPromise);
 
-        realPromise.then(success => console.log('Keycloak promise success', success))
-            .catch(error => console.error('Keycloak promise error'));
-
+        realPromise.then(success => true).catch(error => console.error('Keycloak promise error'));
         this.initObservable = Observable.fromPromise(realPromise);
-
         return this.initObservable;
     }
 
