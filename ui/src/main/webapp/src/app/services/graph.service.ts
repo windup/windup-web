@@ -11,12 +11,12 @@ export class GraphService extends AbstractService {
     private static WINDUP_REST_URL = Constants.REST_SERVER + "/windup-web-services/rest-furnace";
     private static GRAPH_ENDPOINT_URL = `${GraphService.WINDUP_REST_URL}/graph/{execID}/by-type/{type}`;
 
-    constructor(private _http: Http) {
+    constructor(private _http: Http, private _graphJsonToModelService: GraphJSONToModelService<any>) {
         super();
     }
 
     protected getSingleType<T extends BaseModel>(type: string, execID: number, options?: GraphEndpointOptions): Observable<T> {
-        let service = new GraphJSONToModelService();
+        let service = this._graphJsonToModelService;
 
         return this.prepareGetRequest(type, execID,  options)
             .map(data => {
@@ -24,13 +24,13 @@ export class GraphService extends AbstractService {
                     throw new Error("No items returned");
                 }
 
-                return <T>service.fromJSON(data[0], this._http);
+                return <T>service.fromJSON(data[0]);
             })
             .catch(this.handleError);
     }
 
     protected getTypeAsArray<T extends BaseModel>(type: string, execID: number, options?: GraphEndpointOptions): Observable<T[]> {
-        let service = new GraphJSONToModelService();
+        let service = this._graphJsonToModelService;
 
         return this.prepareGetRequest(type,execID, options)
             .map(data => {
@@ -38,7 +38,7 @@ export class GraphService extends AbstractService {
                     throw new Error("No items returned");
                 }
 
-                return <T[]>service.fromJSONarray(data,  this._http);
+                return <T[]>service.fromJSONarray(data);
             });
     }
 

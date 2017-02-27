@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions} from '@angular/http';
+import {Http} from '@angular/http';
 
 import {Constants} from "../constants";
 import {AnalysisContext} from "windup-services";
@@ -16,37 +16,23 @@ export class AnalysisContextService extends AbstractService {
     }
 
     create(analysisContext: AnalysisContext) {
-        let headers = new Headers();
-        let options = new RequestOptions({ headers: headers });
-
-        headers.append('Content-Type', 'application/json');
-        headers.append('Accept', 'application/json');
-
         let body = JSON.stringify(analysisContext);
 
-        return this._http.put(Constants.REST_BASE + this.CREATE_URL, body, options)
+        return this._http.put(Constants.REST_BASE + this.CREATE_URL, body, this.JSON_OPTIONS)
             .map(res => <AnalysisContext> res.json())
             .catch(this.handleError);
     }
 
     update(analysisContext: AnalysisContext) {
-        let headers = new Headers();
-        let options = new RequestOptions({ headers: headers });
-        headers.append('Content-Type', 'application/json');
-        headers.append('Accept', 'application/json');
-
         let body = JSON.stringify(analysisContext);
 
-        return this._http.put(Constants.REST_BASE + this.UPDATE_URL, body, options)
+        return this._http.put(Constants.REST_BASE + this.UPDATE_URL, body, this.JSON_OPTIONS)
             .map(res => <AnalysisContext> res.json())
             .catch(this.handleError);
     }
 
     get(id: number) {
-        let headers = new Headers();
-        let options = new RequestOptions({ headers: headers });
-
-        return this._http.get(Constants.REST_BASE + this.GET_URL + "/" + id, options)
+        return this._http.get(Constants.REST_BASE + this.GET_URL + "/" + id)
             .map(res => <AnalysisContext> res.json())
             .catch(this.handleError);
     }

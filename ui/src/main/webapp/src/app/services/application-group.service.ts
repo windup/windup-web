@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions, Response} from '@angular/http';
+import {Headers, Http, RequestOptions} from '@angular/http';
 
 import {Constants} from "../constants";
 import {ApplicationGroup, PackageMetadata} from "windup-services";
@@ -14,7 +14,7 @@ import {
 @Injectable()
 export class ApplicationGroupService extends AbstractService {
     private applicationGroupLoadedSubject = new Subject<ApplicationGroup>();
-    applicationGroupLoaded:Observable<ApplicationGroup> = this.applicationGroupLoadedSubject.asObservable();
+    applicationGroupLoaded: Observable<ApplicationGroup> = this.applicationGroupLoadedSubject.asObservable();
 
     protected monitoredGroups: Map<number, ApplicationGroup> = new Map<number, ApplicationGroup>();
 
@@ -90,28 +90,18 @@ export class ApplicationGroupService extends AbstractService {
     }
 
     create(applicationGroup: ApplicationGroup) {
-        let headers = new Headers();
-        let options = new RequestOptions({ headers: headers });
-        headers.append('Content-Type', 'application/json');
-        headers.append('Accept', 'application/json');
-
         let body = JSON.stringify(applicationGroup);
 
-        return this._http.put(Constants.REST_BASE + this.CREATE_URL, body, options)
+        return this._http.put(Constants.REST_BASE + this.CREATE_URL, body, this.JSON_OPTIONS)
             .map(res => <ApplicationGroup> res.json())
             .do(group => this.applicationGroupLoadedSubject.next(group))
             .catch(this.handleError);
     }
 
     update(applicationGroup: ApplicationGroup) {
-        let headers = new Headers();
-        let options = new RequestOptions({ headers: headers });
-        headers.append('Content-Type', 'application/json');
-        headers.append('Accept', 'application/json');
-
         let body = JSON.stringify(applicationGroup);
 
-        return this._http.put(Constants.REST_BASE + this.UPDATE_URL, body, options)
+        return this._http.put(Constants.REST_BASE + this.UPDATE_URL, body, this.JSON_OPTIONS)
             .map(res => <ApplicationGroup> res.json())
             .do(group => this.applicationGroupLoadedSubject.next(group))
             .catch(this.handleError);
@@ -133,41 +123,30 @@ export class ApplicationGroupService extends AbstractService {
             .catch(this.handleError);
     }
 
-    get(id:number): Observable<ApplicationGroup> {
-        let headers = new Headers();
-        let options = new RequestOptions({ headers: headers });
-        return this._http.get(Constants.REST_BASE + this.GET_BY_ID_URL + "/" + id, options)
+    get(id: number): Observable<ApplicationGroup> {
+        return this._http.get(Constants.REST_BASE + this.GET_BY_ID_URL + "/" + id)
             .map(res => <ApplicationGroup> res.json())
             .do(group => this.applicationGroupLoadedSubject.next(group))
             .catch(this.handleError);
     }
 
-    getPackageMetadata(id:number): Observable<PackageMetadata> {
-        let headers = new Headers();
-        let options = new RequestOptions({ headers: headers });
-
+    getPackageMetadata(id: number): Observable<PackageMetadata> {
         let url = this.PACKAGE_METADATA.replace("#{groupID}", id.toString());
 
-        return this._http.get(Constants.REST_BASE + url, options)
+        return this._http.get(Constants.REST_BASE + url)
             .map(res => <ApplicationGroup> res.json())
             .catch(this.handleError);
     }
 
     getByProjectID(projectID: number): Observable<ApplicationGroup[]> {
-        let headers = new Headers();
-        let options = new RequestOptions({ headers: headers });
-
-        return this._http.get(Constants.REST_BASE + this.GET_BY_PROJECT_URL + projectID, options)
+        return this._http.get(Constants.REST_BASE + this.GET_BY_PROJECT_URL + projectID)
             .map(res => <ApplicationGroup[]> res.json())
             .do(groups => groups.forEach(group => this.applicationGroupLoadedSubject.next(group)))
             .catch(this.handleError);
     }
 
     getAll() {
-        let headers = new Headers();
-        let options = new RequestOptions({ headers: headers });
-
-        return this._http.get(Constants.REST_BASE + this.GET_ALL_URL, options)
+        return this._http.get(Constants.REST_BASE + this.GET_ALL_URL)
             .map(res => <ApplicationGroup[]> res.json())
             .do(groups => groups.forEach(group => this.applicationGroupLoadedSubject.next(group)))
             .catch(this.handleError);

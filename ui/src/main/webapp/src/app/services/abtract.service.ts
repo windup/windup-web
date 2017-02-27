@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Response} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
-import {Headers, Http, RequestOptions} from '@angular/http';
+import {Headers, RequestOptions} from '@angular/http';
 
 @Injectable()
 export class AbstractService {
@@ -10,7 +10,7 @@ export class AbstractService {
     public JSON_OPTIONS: RequestOptions;
 
     constructor (){
-        this.JSON_HEADERS = new Headers()
+        this.JSON_HEADERS = new Headers();
 
         this.JSON_HEADERS.append('Content-Type', 'application/json');
         this.JSON_HEADERS.append('Accept', 'application/json');
