@@ -20,6 +20,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -33,6 +35,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
 @Entity
+@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = WindupExecution.class)
 public class WindupExecution implements Serializable
 {
@@ -79,9 +82,6 @@ public class WindupExecution implements Serializable
 
     @Column(name = "status")
     private ExecutionState state;
-
-    @ManyToOne(cascade = CascadeType.REMOVE)
-    private AnalysisContext analysisContext;
 
     @OneToMany(fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
@@ -295,16 +295,9 @@ public class WindupExecution implements Serializable
      */
     public AnalysisContext getAnalysisContext()
     {
-        return analysisContext;
+        return this.group.getAnalysisContext();
     }
 
-    /**
-     * Contains the configuration to use for this execution.
-     */
-    public void setAnalysisContext(AnalysisContext analysisContext)
-    {
-        this.analysisContext = analysisContext;
-    }
 
     /**
      * Adds application for filter
@@ -328,6 +321,18 @@ public class WindupExecution implements Serializable
     public void setFilterApplications(Set<FilterApplication> filterApplications)
     {
         this.filterApplications = filterApplications;
+    }
+
+    @JsonProperty
+    public long getGroupId()
+    {
+        return this.group.getId();
+    }
+
+    @JsonProperty
+    public long getProjectId()
+    {
+        return this.group.getMigrationProject().getId();
     }
 
     @Override

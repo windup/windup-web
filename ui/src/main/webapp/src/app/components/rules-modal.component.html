@@ -10,24 +10,12 @@
                 </h4>
             </div>
             <div class="modal-body">
-                <table class="datatable table table-striped table-bordered">
-                    <thead>
-                    <tr>
-                        <th>Rule ID</th>
-                        <th>Contents</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let ruleEntity of ruleProviderEntity.rules">
-                            <td>
-                                {{ruleEntity.ruleID}}
-                            </td>
-                            <td>
-                                {{ruleEntity.ruleContents}}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+
+                <div *ngFor="let ruleEntity of ruleProviderEntity.rules">
+                    <h4> {{ruleEntity.ruleID}} </h4>
+                    <pre (load)="prettyPrint()" class="prettyprint" style="white-space: pre-wrap">{{ruleEntity.ruleContents}}</pre>
+                </div>
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

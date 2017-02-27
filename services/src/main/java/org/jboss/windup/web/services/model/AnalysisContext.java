@@ -22,6 +22,7 @@ import javax.validation.Valid;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.hibernate.annotations.Fetch;
@@ -34,6 +35,7 @@ import org.hibernate.annotations.FetchMode;
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
 @Entity
+@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = AnalysisContext.class)
 public class AnalysisContext implements Serializable
 {
@@ -55,7 +57,7 @@ public class AnalysisContext implements Serializable
     @Fetch(FetchMode.SELECT)
     private Collection<AdvancedOption> advancedOptions;
 
-//    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    //@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToOne(optional = false)
     private ApplicationGroup applicationGroup;
 
@@ -154,9 +156,22 @@ public class AnalysisContext implements Serializable
     /**
      * Contains the group being analyzed.
      */
+    @JsonIgnore
     public ApplicationGroup getApplicationGroup()
     {
         return applicationGroup;
+    }
+
+    @JsonProperty
+    public Long getApplicationGroupId()
+    {
+        if (this.applicationGroup == null)
+        {
+            // This should not happen, since ApplicationGroup is parent of AnalysisContext
+            return null;
+        }
+
+        return this.applicationGroup.getId();
     }
 
     /**

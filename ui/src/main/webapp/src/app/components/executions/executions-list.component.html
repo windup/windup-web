@@ -1,26 +1,29 @@
 <wu-active-executions-progressbar [activeExecutions]="activeExecutions"></wu-active-executions-progressbar>
 
-<h2>Executions List</h2>
-<table class="datatable table table-striped table-bordered executions-list-table">
-    <thead>
-    <tr>
-        <th>Execution</th>
-        <th>State</th>
-        <th>Date Started</th>
-        <th>Date Completed</th>
-        <th>Duration</th>
-        <th>Actions</th>
-    </tr>
+<h2 i18n="heading|executions list">Executions List</h2>
+<table class="table table-bordered table-hover table-mobile executions-list-table">
+    <thead wu-sortable-table
+        [(sortedData)]="sortedExecutions" [data]="executions"
+        [tableHeaders]="[
+            { title: 'Execution', isSortable: true, sortBy: 'id' },
+            { title: 'Project', isSortable: true, sortBy: sortByProjectCallback },
+            { title: 'State', isSortable: true, sortBy: 'state' },
+            { title: 'Date Started', isSortable: true, sortBy: 'timeStarted' },
+            { title: 'Date Completed', isSortable: true, sortBy: 'timeCompleted' },
+            { title: 'Duration', isSortable: true, sortBy: sortByDurationCallback },
+            { title: 'Actions', isSortable: false }
+        ]">
     </thead>
     <tbody>
-    <tr *ngFor="let execution of executions" [class]="getClass(execution)" class="execution-row">
-        <td>{{execution.id}}</td>
-        <td>{{execution.state}}</td>
+    <tr *ngFor="let execution of sortedExecutions" [class]="getClass(execution)" class="execution-row">
+        <td><a [routerLink]="['/projects', execution.projectId, 'groups', execution.groupId, 'reports', execution.id]">{{execution.id}}</a></td>
+        <td><a [routerLink]="['/projects', execution.projectId]">{{getProject(execution.projectId)?.title}}</a></td>
+        <td><wu-status-icon [status]="execution.state"></wu-status-icon>{{execution.state}}</td>
         <td>{{execution.timeStarted | date: 'short'}}</td>
         <td>{{execution.timeCompleted | date: 'short'}}</td>
         <td *ngIf="execution.timeCompleted">{{ execution.timeCompleted - execution.timeStarted | wuDuration }}</td>
         <td *ngIf="!execution.timeCompleted"></td>
-        <td><a class="link" *ngIf="canCancel(execution)" (click)="cancelExecution(execution)">Cancel</a></td>
+        <td><a class="link" *ngIf="canCancel(execution)" (click)="cancelExecution(execution)" i18n="button">Cancel</a></td>
     </tr>
     </tbody>
 </table>

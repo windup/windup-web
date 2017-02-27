@@ -1,6 +1,6 @@
 import {WindupExecution} from "windup-services";
 
-export const EXECUTIONS_DATA: WindupExecution[] = [
+export const EXECUTIONS_DATA: Partial<WindupExecution>[] = [
     {
         "id": 13,
         "version": 1,
@@ -15,7 +15,8 @@ export const EXECUTIONS_DATA: WindupExecution[] = [
         "analysisContext": null,
         "filterApplications": null,
         "outputDirectoryName": "Default Group.ANnIuZsNxbfq.report",
-        "applicationListRelativePath": "Default Group.ANnIuZsNxbfq.report/index.html"
+        "applicationListRelativePath": "Default Group.ANnIuZsNxbfq.report/index.html",
+        "projectId": 1
     },
     {
         "id": 15,
@@ -31,7 +32,8 @@ export const EXECUTIONS_DATA: WindupExecution[] = [
         "analysisContext": null,
         "filterApplications": null,
         "outputDirectoryName": "Default Group.ANnIuZsNxbfq.report",
-        "applicationListRelativePath": "Default Group.ANnIuZsNxbfq.report/index.html"
+        "applicationListRelativePath": "Default Group.ANnIuZsNxbfq.report/index.html",
+        "projectId": 1
     },
     {
         "id": 25,
@@ -47,7 +49,8 @@ export const EXECUTIONS_DATA: WindupExecution[] = [
         "analysisContext": null,
         "filterApplications": null,
         "outputDirectoryName": "Default Group.ANnIuZsNxbfq.report",
-        "applicationListRelativePath": "Default Group.ANnIuZsNxbfq.report/index.html"
+        "applicationListRelativePath": "Default Group.ANnIuZsNxbfq.report/index.html",
+        "projectId": 1
     },
     {
         "id": 30,
@@ -63,7 +66,8 @@ export const EXECUTIONS_DATA: WindupExecution[] = [
         "analysisContext": null,
         "filterApplications": null,
         "outputDirectoryName": "Default Group.ANnIuZsNxbfq.report",
-        "applicationListRelativePath": "Default Group.ANnIuZsNxbfq.report/index.html"
+        "applicationListRelativePath": "Default Group.ANnIuZsNxbfq.report/index.html",
+        "projectId": 1
     },
     {
         "id": 35,
@@ -79,6 +83,7 @@ export const EXECUTIONS_DATA: WindupExecution[] = [
         "analysisContext": null,
         "filterApplications": null,
         "outputDirectoryName": "Default Group.ANnIuZsNxbfq.report",
-        "applicationListRelativePath": "Default Group.ANnIuZsNxbfq.report/index.html"
+        "applicationListRelativePath": "Default Group.ANnIuZsNxbfq.report/index.html",
+        "projectId": 1
     },
 ];

@@ -9,15 +9,17 @@ import {AbstractService} from "./abtract.service";
 @Injectable()
 export class WindupService extends AbstractService {
     private EXECUTE_GROUP_PATH = "/windup/executeGroup";
-    private GET_STATUS_GROUP_PATH = "/windup/statusGroup/";
     private EXECUTIONS_PATH = '/windup/executions';
 
     constructor (private _http: Http) {
         super();
     }
 
-    public getStatusGroup(executionID: number): Observable<WindupExecution> {
-        let url = Constants.REST_BASE + this.GET_STATUS_GROUP_PATH + executionID;
+    public getExecution(executionID: number): Observable<WindupExecution> {
+        let headers = new Headers();
+        let options = new RequestOptions({ headers: headers });
+
+        let url = Constants.REST_BASE + this.EXECUTIONS_PATH + '/' + executionID;
 
         return this._http.get(url)
             .map(res => <WindupExecution> res.json())
