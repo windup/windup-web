@@ -37,7 +37,7 @@
                 </td>
             </tr>
             <tr>
-                <td>
+                <td class="chartTD">
                     <div class="chartBoundary" *ngIf="globalPackageUseData && globalPackageUseData.length > 0">
                         <h4>Java Incidents by Package</h4>
                         <div id="application_pie" class="windupPieGraph">
@@ -49,7 +49,7 @@
                         </div>
                     </div>
                 </td>
-                <td>
+                <td class="chartTD">
                     <div class="chartBoundary" *ngIf="tagFrequencies?.length > 0">
                         <h4>Technologies found - occurrence count</h4>
                         <ngx-charts-bar-horizontal
@@ -174,7 +174,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>
+                            <td class="chartTD">
                                 <!-- Packages pie chart -->
                                 <div class="chartBoundary" *ngIf="packageFrequenciesByProject?.get(traversal.id)?.length > 0">
                                     <h4>Java Incidents by Package</h4>
@@ -187,7 +187,7 @@
                                     </div>
                                 </div>
                             </td>
-                            <td>
+                            <td class="chartTD">
                                 <div class="tagsBarChart chartBoundary" *ngIf="this.tagFrequenciesByProject?.get(traversal.id)?.length > 0">
                                     <h4>Technologies found - occurrence count</h4>
                                     <ngx-charts-bar-horizontal
