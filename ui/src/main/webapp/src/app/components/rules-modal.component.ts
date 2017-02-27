@@ -1,6 +1,8 @@
-import {Component, Input} from "@angular/core";
+import {Component, Input, AfterViewInit} from "@angular/core";
 import * as $ from "jquery";
 import {RuleProviderEntity} from "windup-services";
+
+declare function prettyPrint();
 
 @Component({
     selector: 'wu-rules-modal',
@@ -8,12 +10,10 @@ import {RuleProviderEntity} from "windup-services";
 })
 export class RulesModalComponent {
     @Input()
-    ruleProviderEntity: RuleProviderEntity|any = <RuleProviderEntity>{};
-    // TODO: This is workaround, without |any it would not find 'windup-services' module
-
-    constructor() {}
+    ruleProviderEntity: RuleProviderEntity = <RuleProviderEntity>{};
 
     show():void {
         (<any>$('#rulesModal')).modal();
+        setTimeout(() => prettyPrint(), 1000);
     }
 }
