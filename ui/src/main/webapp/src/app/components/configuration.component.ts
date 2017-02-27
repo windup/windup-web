@@ -14,6 +14,7 @@ import {utils} from "../utils";
         .rulesList .techLabel {
             display: inline-block; border: 2px ridge white/*1px solid #9ed0f1*/; background-color:  #e0f7ff; padding: 0.1ex 0.4em; margin: 0.1ex 0.4ex 0;
         }
+        .list-group-item:hover { background-color: rgb(222, 243, 255); }
         .rulesList .list-view-pf-body { flex-basis: 89%; }
         @media (min-width: 992px) { .rulesList .list-view-pf .list-group-item-heading { font-size: initial; } } /* Disable this weird rule from PF. */
         @media (min-width: 992px) {
