@@ -105,6 +105,7 @@ import {MomentModule} from "angular2-moment";
 import {FileUploadModule, FileUploader} from "ng2-file-upload";
 import {WizardComponent} from "./components/wizard.component";
 import {DurationPipe} from "./components/duration.pipe";
+import {GraphJSONToModelService} from "./services/graph/graph-json-to-model.service";
 import {TabContainerComponent} from "./components/tabs/tab-container.component";
 import {TabComponent} from "./components/tabs/tab.component";
 import {LogViewComponent} from "./components/log-view.component";
