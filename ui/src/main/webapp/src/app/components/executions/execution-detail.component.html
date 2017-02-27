@@ -1,0 +1,79 @@
+<div *ngIf="!execution">
+    <h2 i18n="Loading execution heading|Execution Page">Loading execution data</h2>
+</div>
+<div *ngIf="execution">
+    <h2 i18n="Heading|Execution Page">Execution {{execution.id}}</h2>
+
+    <div *ngIf="execution.state === 'QUEUED' || execution.state === 'STARTED'">
+        <wu-progress-bar
+                [taskName]="execution.currentTask"
+                [currentValue]="execution.workCompleted"
+                [minValue]="0"
+                [maxValue]="execution.totalWork">
+        </wu-progress-bar>
+    </div>
+
+    <wu-tab-container>
+        <wu-tab [tabTitle]="'Available Reports'">
+            <ul>
+                <li><a [routerLink]="['./application-details']" i18n="report">Application Details</a></li>
+                <li><a [routerLink]="['./migration-issues']" i18n="report">Issues</a></li>
+                <li><a [routerLink]="['./technology-report']" i18n="report">Technologies</a></li>
+                <li><a [routerLink]="['./dependencies']" i18n="report">Dependencies</a></li>
+            </ul>
+        </wu-tab>
+        <wu-tab [tabTitle]="'Execution Status'">
+            <dl>
+                <dt i18n="Execution state">State</dt>
+                <dd><wu-status-icon [status]="execution.state"></wu-status-icon>{{execution.state}}</dd>
+                <dt i18n="Execution start date">Started Date</dt>
+                <dd>{{execution.timeStarted | date: 'short'}}</dd>
+                <ng-container *ngIf="execution.timeCompleted">
+                    <dt i18n="Execution completion date">Completed Date</dt>
+                    <dd>{{execution.timeCompleted | date: 'short'}}</dd>
+                    <dt i18n="Execution duration">Duration</dt>
+                    <dd>{{ execution.timeCompleted - execution.timeStarted | wuDuration }}</dd>
+                </ng-container>
+                <ng-container *ngIf="!execution.timeCompleted">
+                    <dt i18n="Execution last modification">Last Modified Date</dt>
+                    <dd>{{execution.lastModified | date: 'short'}}</dd>
+                </ng-container>
+            </dl>
+
+            <h3 i18n="Execution configuration|Section">Configuration</h3>
+
+            <h4 i18n="Migration Path">Migration path</h4>
+            {{execution.analysisContext?.migrationPath?.name}}
+
+            <h4 i18n="Analyzed applications">Analyzed applications</h4>
+            <ul>
+                <li *ngFor="let application of execution.filterApplications">{{application.fileName}}</li>
+            </ul>
+
+            <h4 i18n="Rules used for execution">Rules</h4>
+            <ul>
+                <li *ngFor="let rulePath of execution.analysisContext.rulesPaths">{{rulePath.path}}</li>
+            </ul>
+
+            <h4 i18n="Packages included for execution">Included packages</h4>
+            <ul>
+                <li *ngFor="let package of execution.analysisContext.includePackages">{{package.fullName}}</li>
+            </ul>
+
+            <h4 i18n="Packages excluded from execution">Excluded packages</h4>
+            <ul>
+                <li *ngFor="let package of execution.analysisContext.excludePackages">{{package.fullName}}</li>
+            </ul>
+
+            <h4 i18n="Advanced Options|Execution">Advanced options</h4>
+            <wu-analysis-context-advanced-options
+                [(selectedOptions)]="execution.analysisContext.advancedOptions"
+                [isReadOnly]="true"
+            >
+            </wu-analysis-context-advanced-options>
+        </wu-tab>
+        <wu-tab [tabTitle]="'Logs'">
+            <wu-log-view [text]="log"></wu-log-view>
+        </wu-tab>
+    </wu-tab-container>
+</div>

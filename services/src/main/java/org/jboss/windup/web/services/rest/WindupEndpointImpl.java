@@ -63,19 +63,6 @@ public class WindupEndpointImpl implements WindupEndpoint
     private Queue executorQueue;
 
     @Override
-    public WindupExecution getStatus(Long executionID)
-    {
-        WindupExecution execution = this.entityManager.find(WindupExecution.class, executionID);
-
-        if (execution == null)
-        {
-            throw new NotFoundException("WindupExecution with id: " + executionID + " not found");
-        }
-
-        return execution;
-    }
-
-    @Override
     public WindupExecution executeGroup(Long groupID)
     {
         ApplicationGroup group = this.applicationGroupService.getApplicationGroup(groupID);
@@ -122,7 +109,8 @@ public class WindupEndpointImpl implements WindupEndpoint
         return this.entityManager.createQuery("SELECT ex from " + WindupExecution.class.getSimpleName() + " ex").getResultList();
     }
 
-    protected WindupExecution getExecution(Long executionId)
+    @Override
+    public WindupExecution getExecution(Long executionId)
     {
         WindupExecution execution = this.entityManager.find(WindupExecution.class, executionId);
 

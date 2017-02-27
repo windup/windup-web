@@ -21,11 +21,11 @@ import java.util.Collection;
 public interface WindupEndpoint
 {
     /**
-     * Gets the status of an execution based upon the execution ID.
+     * Gets the execution based upon the execution ID.
      */
     @GET
-    @Path("statusGroup/{executionID}")
-    WindupExecution getStatus(@PathParam("executionID") Long executionID);
+    @Path("executions/{executionID}")
+    WindupExecution getExecution(@PathParam("executionID") Long executionID);
 
     /**
      * Initiates a Windup execution for a particular group.

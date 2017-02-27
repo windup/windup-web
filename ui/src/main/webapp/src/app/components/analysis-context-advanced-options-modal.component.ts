@@ -7,53 +7,7 @@ import {ValidationResult} from "../model/validation-result.model";
 
 @Component({
     selector: 'wu-analysis-context-advanced-options',
-    template: `
-            <table class="datatable table table-striped table-bordered">
-                <thead>
-                    <tr>
-                        <th width="33%">Option</th>
-                        <th width="50%">Value</th>
-                        <th width="17%">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let selectedOption of selectedOptions; let i = index;">
-                        <td>
-                            {{selectedOption.name}}
-                        </td>
-                        <td>
-                            {{selectedOption.value}}
-                        </td>
-                        <td>
-                            <button (click)="removeAdvancedOption(i)" class="btn-warning" href="#">Delete</button>
-                        </td>
-                    </tr>
-                    <tr *ngIf="newOption">
-                        <td class="input-group">
-                            <select class="form-control" name="newOptionTypeSelection" [(ngModel)]="newOption.name" (change)="newOptionTypeChanged()">
-                                <option *ngFor="let option of availableOptions" value="{{option.name}}">{{option.name}}</option>
-                            </select>
-                            <wu-popover class="input-group-addon" *ngIf="currentSelectedOptionDefinition?.description" [content]="currentSelectedOptionDefinition?.description"></wu-popover>
-                        </td>
-                        <td [class.bg-danger]="newOptionError" align="right">
-                            <span class="text-danger">{{newOptionError}}</span>
-                            <div [ngSwitch]="currentOptionType">
-                                <input *ngSwitchCase="'text'" type="text" name="currentOptionInput" class="form-control" [(ngModel)]="newOption.value">
-                                <input *ngSwitchCase="'checkbox'" type="checkbox" class="form-control" name="currentOptionInput" [(ngModel)]="newOption.value">
-                                <select *ngSwitchCase="'select'" class="form-control" name="newOptionSelect" [(ngModel)]="newOption.value">
-                                    <option *ngFor="let option of currentSelectedOptionDefinition.availableValues" value="{{option}}">{{option}}</option>
-                                </select>
-                            </div>
-                        </td>
-                        <td>
-                            <button (click)="addAdvancedOption($event)" class="btn btn-default">Add</button>
-                            <button (click)="cancelAddAdvancedOption($event)" class="btn btn-default">Cancel</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <button *ngIf="!newOption" (click)="startAddNew()" class="btn btn-default">Add New Option</button>
-`
+    templateUrl: './analysis-context-advanced-options-modal.component.html'
 })
 export class AnalysisContextAdvancedOptionsModalComponent {
     @Input()
@@ -61,6 +15,9 @@ export class AnalysisContextAdvancedOptionsModalComponent {
 
     @Input() @Output()
     selectedOptions:AdvancedOption[] = [];
+
+    @Input()
+    isReadOnly = false;
 
     @Output()
     advancedOptionsChanged:EventEmitter<AdvancedOption[]> = new EventEmitter<AdvancedOption[]>();

@@ -49,13 +49,13 @@ public class WindupExecutionUtil
 
         WindupExecution initialExecution = this.windupEndpoint.executeGroup(group.getId());
 
-        WindupExecution status = this.windupEndpoint.getStatus(initialExecution.getId());
+        WindupExecution status = this.windupEndpoint.getExecution(initialExecution.getId());
         long beginTime = System.currentTimeMillis();
         do
         {
             Thread.sleep(1000L);
 
-            status = this.windupEndpoint.getStatus(status.getId());
+            status = this.windupEndpoint.getExecution(status.getId());
             System.out.println("Status: " + status);
 
             if ((System.currentTimeMillis() - beginTime) > (1000L * 240L))

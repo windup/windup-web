@@ -63,7 +63,7 @@ export class GroupListComponent implements OnInit, OnDestroy {
         this.processMonitoringInterval = setInterval(() => {
             this.processingStatus.forEach( (previousExecution:WindupExecution, groupID:number, map:Map<number, WindupExecution>) => {
                 if (["STARTED", "QUEUED"].includes(previousExecution.state)) {
-                    this._windupService.getStatusGroup(previousExecution.id).subscribe(
+                    this._windupService.getExecution(previousExecution.id).subscribe(
                         execution => {
                             this.processingStatus.set(groupID, execution);
                             this.errorMessage = "";

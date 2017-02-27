@@ -5,7 +5,7 @@ import {Inject, Input} from '@angular/core';
     selector: 'wu-progress-bar',
     template: `
         <div class="progress-description">
-            <div class="spinner spinner-xs spinner-inline"></div> <strong>Task:</strong> {{taskName ? taskName : "Starting..."}}
+            <div class="spinner spinner-xs spinner-inline"></div><strong i18n="Progressbar task">Task:</strong> {{taskName ? taskName : "Starting..."}}
         </div>
         <div class="progress progress-label-top-right">
             <div

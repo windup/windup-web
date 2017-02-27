@@ -13,12 +13,15 @@ import org.jboss.windup.web.services.ServiceTestUtil;
 import org.jboss.windup.web.services.data.DataProvider;
 import org.jboss.windup.web.services.data.ServiceConstants;
 import org.jboss.windup.web.services.model.*;
-import org.jboss.windup.web.services.model.Package;
 import org.jboss.windup.web.services.model.RulesPath.RulesPathType;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import javax.ws.rs.core.Response;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -52,8 +55,7 @@ public class AnalysisContextEndpointTest extends AbstractTest
 
     @Test
     @RunAsClient
-    public void testEndpointWithExistingCustomRules()
-    {
+    public void testEndpointWithExistingCustomRules() throws JSONException {
         ApplicationGroup group = createGroup();
 
         // Just grab the first one (this is completely arbitrary)
@@ -71,13 +73,19 @@ public class AnalysisContextEndpointTest extends AbstractTest
         analysisContext = analysisContextEndpoint.update(analysisContext);
 
         AnalysisContext loaded = analysisContextEndpoint.get(analysisContext.getId());
+
+        Response response = target.path("/analysis-context/get/" + analysisContext.getId()).request().get();
+        response.bufferEntity();
+        String stringResponse = response.readEntity(String.class);
+        JSONObject json = new JSONObject(stringResponse);
+        
         Assert.assertNotNull(loaded);
 
         Assert.assertEquals(analysisContext.getId(), loaded.getId());
 
         Assert.assertEquals(path, loaded.getMigrationPath());
 
-        Assert.assertEquals(group, loaded.getApplicationGroup());
+        Assert.assertEquals((long)group.getId(), json.getLong("applicationGroupId"));
         Assert.assertEquals(1, loaded.getRulesPaths().size());
     }
 

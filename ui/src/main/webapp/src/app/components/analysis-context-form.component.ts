@@ -104,7 +104,6 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
         analysisContext.includePackages = [];
         analysisContext.excludePackages = [];
         analysisContext.rulesPaths = [];
-        analysisContext.applicationGroup = <ApplicationGroup>{id: 0};
 
         return analysisContext;
     }
@@ -125,9 +124,6 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
             if (analysisContext.rulesPaths == null)
                 analysisContext.rulesPaths = [];
         }
-
-        // Just use the ID here
-        analysisContext.applicationGroup = <ApplicationGroup>{id: this.applicationGroup.id};
 
         this.analysisContext = analysisContext;
     }
