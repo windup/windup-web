@@ -44,8 +44,6 @@ require('../node_modules/bootstrap-select/dist/js/bootstrap-select.min.js');
 require('../node_modules/bootstrap-switch/dist/js/bootstrap-switch.min.js');
 require('../node_modules/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js');
 require('../node_modules/bootstrap-treeview/dist/bootstrap-treeview.min.js');
-
-require('../node_modules/google-code-prettify/bin/prettify.min.js');
 require('../node_modules/jquery-match-height/dist/jquery.matchHeight-min.js');
 
 require('../node_modules/jstree/dist/jstree');
@@ -54,6 +52,11 @@ require('../node_modules/jstree/dist/themes/default/style.min.css');
 // css
 require('../node_modules/patternfly/dist/css/patternfly.min.css');
 require('../node_modules/patternfly/dist/css/patternfly-additions.min.css');
+
+// Google Code Prettify
+require('../node_modules/google-code-prettify/bin/prettify.min.js');
+require('../node_modules/google-code-prettify/bin/prettify.min.css');
+
 
 // Prism
 require('../node_modules/prismjs/prism');
