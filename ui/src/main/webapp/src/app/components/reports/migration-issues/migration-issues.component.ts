@@ -16,7 +16,7 @@ export class MigrationIssuesComponent implements OnInit {
 
     protected group: ApplicationGroup;
 
-    protected hideFilter = WINDUP_WEB.config.hideUnfinishedFeatures;
+    public hideFilter = WINDUP_WEB.config.hideUnfinishedFeatures;
 
     public constructor(
         private _router: Router,
