@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions} from '@angular/http';
+import {Http} from '@angular/http';
 import {FileUploader} from 'ng2-file-upload/ng2-file-upload';
 import {Observable} from 'rxjs/Observable';
 
@@ -64,15 +64,10 @@ export class RegisteredApplicationService extends AbstractService {
     }
 
     private _doRegisterByPath<T>(endpoint: string, project: MigrationProject, path: string): Observable<T> {
-        let headers = new Headers();
-        let options = new RequestOptions({ headers: headers });
-        headers.append('Content-Type', 'application/json');
-        headers.append('Accept', 'application/json');
-
         let body = path;
         let url = endpoint.replace("{projectId}", project.id.toString());
 
-        return this._http.post(url, body, options)
+        return this._http.post(url, body, this.JSON_OPTIONS)
             .map(res => <RegisteredApplication> res.json())
             .catch(this.handleError)
             .do((responseApplication) => this.fireNewApplicationEvents(responseApplication, project));
@@ -93,7 +88,7 @@ export class RegisteredApplicationService extends AbstractService {
     uploadApplications(project: MigrationProject) {
         return this._keycloakService
             .getToken()
-            .flatMap((token:string, index:number) =>
+            .flatMap((token: string, index: number) =>
             {
                 this._multipartUploader.setOptions({
                     authToken: 'Bearer ' + token,
@@ -159,19 +154,14 @@ export class RegisteredApplicationService extends AbstractService {
             .catch(this.handleError);
     }
 
-    updateByPath(application: RegisteredApplication) {
-        let headers = new Headers();
-        headers.append('Content-Type', 'application/json');
-        headers.append('Accept', 'application/json');
-        let options = new RequestOptions({ headers: headers });
-
+    updateByPath(application: RegisteredApplication): Observable<RegisteredApplication> {
         RegisteredApplicationService.deriveTitle(application);
 
         let body = JSON.stringify(application);
 
         let url = Constants.REST_BASE + RegisteredApplicationService.UPDATE_APPLICATION_PATH_URL.replace('{appId}', application.id.toString());
 
-        return this._http.put(url, body, options)
+        return this._http.put(url, body, this.JSON_OPTIONS)
             .map(res => <RegisteredApplication> res.json())
             .catch(this.handleError);
     }
@@ -179,7 +169,7 @@ export class RegisteredApplicationService extends AbstractService {
     updateByUpload(application: RegisteredApplication) {
         return this._keycloakService
             .getToken()
-            .flatMap((token:string, index:number) => {
+            .flatMap((token: string, index: number) => {
                 this._multipartUploader.setOptions({
                     authToken: 'Bearer ' + token,
                     method: 'PUT'
@@ -212,7 +202,7 @@ export class RegisteredApplicationService extends AbstractService {
             });
     }
 
-    deleteApplication(project: MigrationProject, application: RegisteredApplication) {
+    deleteApplication(project: MigrationProject, application: RegisteredApplication): Observable<void> {
         let url = Constants.REST_BASE + RegisteredApplicationService.SINGLE_APPLICATION_URL.replace('{appId}', application.id.toString());
         return this._http.delete(url)
             .do(_ => {

@@ -14,7 +14,7 @@ import {JavaSourceFileModel} from "../../generated/tsModels/JavaSourceFileModel"
 export class PrettyPathPipe implements PipeTransform {
     private prettyPath: string;
 
-    constructor(private _http: Http) {
+    constructor(private _http: Http, private _graphJsonToModelService: GraphJSONToModelService<any>) {
     }
 
     transform(file: PersistedTraversalChildFileModel):string {
@@ -25,7 +25,8 @@ export class PrettyPathPipe implements PipeTransform {
         if (file.filePath.toLowerCase().endsWith(".java")) {
             file.fileModel.subscribe(
                 fileModel => {
-                    let javaSourceModel:JavaSourceFileModel = <JavaSourceFileModel>new GraphJSONToModelService().translateType(fileModel, this._http, JavaSourceFileModel);
+                    let javaSourceModel:JavaSourceFileModel = <JavaSourceFileModel>this._graphJsonToModelService
+                        .translateType(fileModel, JavaSourceFileModel);
                     if (!javaSourceModel.packageName)
                         return;
 

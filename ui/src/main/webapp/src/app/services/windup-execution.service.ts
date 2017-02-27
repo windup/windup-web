@@ -53,7 +53,7 @@ export class WindupExecutionService extends AbstractService {
     // TODO: It would be great to switch from pull model to push notifications
     protected checkExecutions() {
         this.activeExecutions.forEach((previousExecution: WindupExecution) => {
-            this._windupService.getExecution(previousExecution.id).subscribe(
+            this._windupService.getStatusGroup(previousExecution.id).subscribe(
                 execution => {
                     let group = this.executionGroups.get(execution.id);
 

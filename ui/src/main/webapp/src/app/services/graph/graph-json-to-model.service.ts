@@ -34,9 +34,10 @@ export class GraphJSONToModelService<T extends BaseModel>
     private mapping: typeof DiscriminatorMapping;
 
     /**
+     * @param _http Http
      * @param mapping  Maps the @TypeValue strings to TS model classes.
      */
-    constructor(mapping?: any) {
+    constructor(private _http: Http, mapping?: any) {
         if (!mapping) {
             this.mapping = DiscriminatorMapping;
         } else {
@@ -53,17 +54,16 @@ export class GraphJSONToModelService<T extends BaseModel>
      *
      * This can be useful in cases where a single type implements multiple interfaces.
      */
-    public translateType(input:BaseModel, http:Http, clazz: typeof BaseModel): T {
-        return this.fromJSON(input.data, http, clazz);
+    public translateType(input:BaseModel, clazz: typeof BaseModel): T {
+        return this.fromJSON(input.data, clazz);
     }
 
     /**
      * Unmarshalls the JSON graph data representation into TypeScript objects.
      * Accepts a single JSON object or a JSON array, returns an object or an array, respectively.
      */
-    public fromJSON(input: Object, http: Http, clazz?: typeof BaseModel): T
+    public fromJSON(input: Object, clazz?: typeof BaseModel): T
     {
-        if (!http) throw new Error("Http service must be passed.");
         if (Array.isArray(input))
             //return this.fromJSONarray(input, http, clazz);
             throw new TypeError("For arrays of models, use fromJSONarray(...).");
@@ -74,19 +74,17 @@ export class GraphJSONToModelService<T extends BaseModel>
         }
         let frameModel:BaseModel = Object.create(clazz.prototype);
         frameModel.constructor.apply(frameModel, [discriminator, input["_id"], input]);
-        frameModel.http = http;
+        frameModel.http = this._http;
         // Store this service to use when resolving Observable's in fields.
         // TODO: Http could be in the service.
         frameModel.graphService = this;
         return <T>frameModel;
     }
 
-    public fromJSONarray(input: any[], http: Http, clazz?: typeof BaseModel): T[]
+    public fromJSONarray(input: any[], clazz?: typeof BaseModel): T[]
     {
-        if (!http) throw new Error("Http service must be passed.");
-
         return input.map((item) => {
-            let obj = this.fromJSON(item, http, clazz);
+            let obj = this.fromJSON(item, clazz);
             if (obj == null || ! (typeof obj === "object") /*|| ! (obj instanceof clazz)*/)
                 console.warn(`Unmarshalling: ${obj} not instance of ${clazz}`);
             return obj;

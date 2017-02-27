@@ -112,6 +112,7 @@ import {ExecutionDetailComponent} from "./components/executions/execution-detail
 import {SortIndicatorComponent} from "./components/sort-indicator.component";
 import {SortableTableComponent} from "./components/sortable-table.component";
 import {StatusIconComponent} from "./components/status-icon.component";
+import {GraphJSONToModelService} from "./services/graph/graph-json-to-model.service";
 
 /**
  * Load all mapping data from the generated files.
@@ -260,6 +261,11 @@ initializeModelMappingData();
         {
             provide: FileUploader,
             useFactory: createFileUploader
+        },
+        {
+            provide: GraphJSONToModelService,
+            useFactory: createGraphJSONToModelService,
+            deps: [Http]
         }
     ],
     bootstrap:    [ AppComponent ]
@@ -283,6 +289,10 @@ export function breadcrumbsServiceFactory(backend: XHRBackend,
                                           defaultOptions: RequestOptions,
                                           keycloakService: KeycloakService) {
     return new WindupHttpService(backend, defaultOptions, keycloakService);
+}
+
+export function createGraphJSONToModelService(http: Http) {
+    return new GraphJSONToModelService(http, null);
 }
 
 export class WINDUP_WEB {

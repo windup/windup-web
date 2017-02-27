@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions} from '@angular/http';
+import {Http} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 
 import {Constants} from "../constants";
@@ -15,25 +15,18 @@ export class WindupService extends AbstractService {
         super();
     }
 
-    public getExecution(executionID: number): Observable<WindupExecution> {
-        let headers = new Headers();
-        let options = new RequestOptions({ headers: headers });
-
+    public getStatusGroup(executionID:number):Observable<WindupExecution> {
         let url = Constants.REST_BASE + this.EXECUTIONS_PATH + '/' + executionID;
 
-        return this._http.get(url, options)
+        return this._http.get(url)
             .map(res => <WindupExecution> res.json())
             .catch(this.handleError);
     }
 
-    public executeWindupGroup(groupID:number):Observable<WindupExecution> {
-        let headers = new Headers();
-        let options = new RequestOptions({ headers: headers });
+    public executeWindupGroup(groupID: number): Observable<WindupExecution> {
+        let body = JSON.stringify(groupID);
 
-        headers.append('Content-Type', 'application/json');
-        var body = JSON.stringify(groupID);
-
-        return this._http.post(Constants.REST_BASE + this.EXECUTE_GROUP_PATH, body, options)
+        return this._http.post(Constants.REST_BASE + this.EXECUTE_GROUP_PATH, body, this.JSON_OPTIONS)
             .map(res => <WindupExecution> res.json())
             .catch(this.handleError);
     }

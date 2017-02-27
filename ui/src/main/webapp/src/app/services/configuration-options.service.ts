@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions} from '@angular/http';
+import {Http} from '@angular/http';
 
 import {Constants} from "../constants";
 import {AbstractService} from "./abtract.service";
@@ -17,24 +17,16 @@ export class ConfigurationOptionsService extends AbstractService {
         super();
     }
 
-    validate(option:AdvancedOption):Observable<ValidationResult> {
-        let headers = new Headers();
-        let options = new RequestOptions({ headers: headers });
-        headers.append('Content-Type', 'application/json');
-        headers.append('Accept', 'application/json');
-
+    validate(option: AdvancedOption): Observable<ValidationResult> {
         let body = JSON.stringify(option);
 
-        return this._http.post(Constants.REST_BASE + this.VALIDATE_OPTION_URL, body, options)
+        return this._http.post(Constants.REST_BASE + this.VALIDATE_OPTION_URL, body, this.JSON_OPTIONS)
             .map(res => <ValidationResult> res.json())
             .catch(this.handleError);
     }
 
-    getAll():Observable<ConfigurationOption[]> {
-        let headers = new Headers();
-        let options = new RequestOptions({ headers: headers });
-
-        return this._http.get(Constants.REST_BASE + this.GET_CONFIGURATION_OPTIONS_URL, options)
+    getAll(): Observable<ConfigurationOption[]> {
+        return this._http.get(Constants.REST_BASE + this.GET_CONFIGURATION_OPTIONS_URL)
             .map(res => <ConfigurationOption[]> res.json())
             .catch(this.handleError);
     }
