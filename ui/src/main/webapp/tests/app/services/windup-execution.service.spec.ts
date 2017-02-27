@@ -15,7 +15,7 @@ describe("WindupExecution service", () => {
     let schedulerMock: SchedulerServiceMock;
     let windupExecutionService: WindupExecutionService;
 
-    let getExecution = (id) => {
+    let getStatusGroup = (id) => {
         return {
             "id": id,
             "version": 1,
@@ -36,11 +36,11 @@ describe("WindupExecution service", () => {
     function getWindupServiceMock() {
         let windupServiceMock = jasmine.createSpyObj('WindupService', [
             'executeWindupGroup',
-            'getExecution'
+            'getStatusGroup',
         ]);
 
-        windupServiceMock.getExecution.and.callFake((executionId) => {
-            return Observable.of(getExecution(executionId));
+        windupServiceMock.getStatusGroup.and.callFake((executionId) => {
+            return Observable.of(getStatusGroup(executionId));
         });
 
         return windupServiceMock;
@@ -60,7 +60,7 @@ describe("WindupExecution service", () => {
         let spy;
 
         beforeEach(() => {
-            execution = getExecution(1);
+            execution = getStatusGroup(1);
             windupServiceMock.executeWindupGroup.and.returnValue(Observable.of(execution));
             spy = spyOn(windupExecutionService, 'watchExecutionUpdates');
             windupExecutionService.execute(group).subscribe();
@@ -85,7 +85,7 @@ describe("WindupExecution service", () => {
 
         beforeEach(() => {
             windupServiceMock.executeWindupGroup.and.callFake((groupId) => {
-                let execution = getExecution(registeredExecutions.length + 1);
+                let execution = getStatusGroup(registeredExecutions.length + 1);
                 registeredExecutions.push(execution);
 
                 return Observable.of(execution);
@@ -97,7 +97,7 @@ describe("WindupExecution service", () => {
 
         it('should listen for changes of all of them', () => {
             schedulerMock.intervalTick();
-            expect(windupServiceMock.getExecution).toHaveBeenCalledTimes(2);
+            expect(windupServiceMock.getStatusGroup).toHaveBeenCalledTimes(2);
             // TODO: Check parameters
         });
     });
@@ -106,31 +106,31 @@ describe("WindupExecution service", () => {
         let execution: WindupExecution;
 
         beforeEach(() => {
-            execution = <any>getExecution(1);
+            execution = <any>getStatusGroup(1);
             windupExecutionService.watchExecutionUpdates(execution, group);
         });
 
         let assertIsNotListening = (state: string) => {
-            expect(windupServiceMock.getExecution).not.toHaveBeenCalled();
+            expect(windupServiceMock.getStatusGroup).not.toHaveBeenCalled();
             schedulerMock.intervalTick();
-            expect(windupServiceMock.getExecution).toHaveBeenCalledTimes(1);
-            expect(windupServiceMock.getExecution).toHaveBeenCalledWith(execution.id);
+            expect(windupServiceMock.getStatusGroup).toHaveBeenCalledTimes(1);
+            expect(windupServiceMock.getStatusGroup).toHaveBeenCalledWith(execution.id);
 
-            windupServiceMock.getExecution.and.callFake((id) => {
+            windupServiceMock.getStatusGroup.and.callFake((id) => {
                 let object = Object.assign({}, execution, {state: state});
                 return Observable.of(object);
             });
 
             schedulerMock.intervalTick(); // now it should get data with new state
-            expect(windupServiceMock.getExecution).toHaveBeenCalledTimes(2);
+            expect(windupServiceMock.getStatusGroup).toHaveBeenCalledTimes(2);
 
             schedulerMock.intervalTick(); // now it should not call getStatusGroup anymore
-            expect(windupServiceMock.getExecution).toHaveBeenCalledTimes(2);
+            expect(windupServiceMock.getStatusGroup).toHaveBeenCalledTimes(2);
         };
 
         it('should listen for execution changes', () => {
             schedulerMock.intervalTick();
-            expect(windupServiceMock.getExecution).toHaveBeenCalledWith(execution.id);
+            expect(windupServiceMock.getStatusGroup).toHaveBeenCalledWith(execution.id);
         });
 
         it('should stop listening once execution reaches COMPLETE state', () => {
