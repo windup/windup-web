@@ -23,14 +23,18 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.jboss.windup.util.exception.WindupException;
 
 /**
  * @author <a href="mailto:dklingenberg@gmail.com">David Klingenberg</a>
  */
 public class ApplicationGroupService
 {
+    private static final Logger LOG = Logger.getLogger(ApplicationGroupService.class.getName());
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -83,24 +87,27 @@ public class ApplicationGroupService
         return this.createApplicationGroup(ApplicationGroup.DEFAULT_NAME, project);
     }
 
-    public ApplicationGroup update(ApplicationGroup updatedGroup)
+    public ApplicationGroup update(ApplicationGroup updatedGroupDTO)
     {
-        ApplicationGroup original = this.entityManager.find(ApplicationGroup.class, updatedGroup.getId());
-        original.setTitle(updatedGroup.getTitle());
-        this.updateApplications(original, updatedGroup.getApplications());
+        if (updatedGroupDTO.getId() == null)
+            throw new WindupException("Group ID is null.");
+
+        ApplicationGroup original = this.entityManager.find(ApplicationGroup.class, updatedGroupDTO.getId());
+        original.setTitle(updatedGroupDTO.getTitle());
+        this.setIncludedApplications(original, updatedGroupDTO.getApplications());
 
         this.entityManager.merge(original);
-
         return original;
     }
 
-    public ApplicationGroup updateApplications(ApplicationGroup group, Collection<RegisteredApplication> newApplications)
+    private ApplicationGroup setIncludedApplications(ApplicationGroup group, Collection<RegisteredApplication> newApplicationSet)
     {
-        Set<Long> selectedApplicationIds = newApplications.stream()
+        Set<Long> includedApplicationIds = newApplicationSet.stream()
                 .map(RegisteredApplication::getId)
                 .collect(Collectors.toSet());
+        LOG.fine("Updating App Group #" + group.getId() + ", includedApplicationIds: " + String.join(", ", includedApplicationIds.stream().map((id) -> "" + id).collect(Collectors.toList())));
 
-        Collection<RegisteredApplication> applications = this.getAllApplicationsByIds(selectedApplicationIds);
+        Collection<RegisteredApplication> applications = this.getAllApplicationsByIds(includedApplicationIds);
         group.setApplications(new HashSet<>(applications));
         applications.forEach(application -> {
             application.addApplicationGroup(group);
