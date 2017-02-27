@@ -44,7 +44,7 @@
                             <wu-package-chart
                                     [view]="[500, 150]"
                                     [results]="globalPackageUseData"
-                                    [scheme]="colorScheme"
+                                    [scheme]="getColorScheme(globalPackageUseData.length)"
                             ></wu-package-chart>
                         </div>
                     </div>
@@ -54,7 +54,7 @@
                         <h4>Technologies found - occurrence count</h4>
                         <ngx-charts-bar-horizontal
                                 [view]="[500, 258]"
-                                [scheme]="colorScheme"
+                                [scheme]="getColorScheme(tagFrequencies.length)"
                                 [results]="tagFrequencies"
                                 [showGridLines]="true"
                                 [xAxis]="true"
@@ -182,7 +182,7 @@
                                         <wu-package-chart
                                                 [view]="[500, 150]"
                                                 [results]="packageFrequenciesByProject.get(traversal.id)"
-                                                [scheme]="colorScheme"
+                                                [scheme]="getColorScheme(packageFrequenciesByProject.get(traversal.id)?.length)"
                                         ></wu-package-chart>
                                     </div>
                                 </div>
@@ -193,7 +193,7 @@
                                     <ngx-charts-bar-horizontal
                                             *ngIf="!isCollapsed(traversal)"
                                             [view]="[500, 258]"
-                                            [scheme]="colorScheme"
+                                            [scheme]="getColorScheme(this.tagFrequenciesByProject.get(traversal.id)?.length)"
                                             [results]="this.tagFrequenciesByProject.get(traversal.id)"
                                             [showGridLines]="true"
                                             [xAxis]="true"

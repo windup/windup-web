@@ -1,4 +1,4 @@
-import {Component, OnInit, ChangeDetectorRef, ElementRef} from "@angular/core";
+import {Component, OnInit, ElementRef} from "@angular/core";
 import {
     ApplicationDetailsService, ApplicationDetailsFullDTO,
     ProjectTraversalFullDTO, HintFullDTO, FileFullDTO
@@ -13,7 +13,7 @@ import {TagFilterService} from "../tag-filter.service";
 import {TypeReferenceStatisticsService} from "./type-reference-statistics.service";
 import {TagDataService} from "../tag-data.service";
 import {TreeData} from "../../js-tree-angular-wrapper.component";
-import {chartColorScheme} from "../color-schemes";
+import {calculateColorScheme} from "../color-schemes";
 
 @Component({
     templateUrl: './application-details.component.html',
@@ -54,8 +54,8 @@ export class ApplicationDetailsComponent implements OnInit {
         private _http:Http
     ) {}
 
-    get colorScheme() {
-        return chartColorScheme;
+    getColorScheme(len) {
+        return calculateColorScheme(len);
     }
 
     ngOnInit(): void {
