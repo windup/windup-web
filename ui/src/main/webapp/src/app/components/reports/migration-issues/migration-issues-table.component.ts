@@ -10,9 +10,32 @@ import {SortingService, OrderDirection} from "../../../services/sorting.service"
 @Component({
     selector: 'wu-migration-issues-table',
     templateUrl: './migration-issues-table.component.html',
-    styles: [
-        `a { cursor: pointer; }`
-    ],
+    styles: [`
+        a { cursor: pointer; }
+        
+        table.migration-issues-table { margin-bottom: 0; font-size: 14px; }
+        table.migration-issues-table > thead > tr > th:first-child { text-align: left; }
+        table.migration-issues-table > thead > tr > th             { text-align: right; }
+        table.migration-issues-table > tbody > tr > th:first-child,
+        table.migration-issues-table > tbody > tr > td:first-child { text-align: left; }
+        table.migration-issues-table > tbody > tr > th,
+        table.migration-issues-table > tbody > tr > td             { text-align: right; }
+
+        /* Files subtable */
+        table.migration-issues-table table { margin-bottom: 0; font-size: 14px; border: 1px solid #e7e7e7; }
+        table.migration-issues-table table tbody td { background: #fffff5 !important; } /* A very subtle yellow tint. */
+        
+        table.migration-issues-table table.filesDetails > thead > tr > th.fileName { text-align: left; }
+        table.migration-issues-table table.filesDetails > thead > tr > th.hint     { text-align: left; }
+        table.migration-issues-table table.filesDetails                th          { text-align: right; }
+        table.migration-issues-table table.filesDetails > tbody > tr > td.fileName,
+        table.migration-issues-table table.filesDetails > tbody > tr > td.hint     { text-align: left; }
+        table.migration-issues-table table.filesDetails > tbody > tr > td          { text-align: right; }
+        
+        table.migration-issues-table table.filesDetails > tbody > tr > td.hint .panel-title     { font-weight: 600; line-height: 1.66; }
+        table.migration-issues-table table.filesDetails > tbody > tr > td.hint .description     { }
+        
+    `],
     providers: [SortingService]
 })
 export class MigrationIssuesTableComponent implements OnInit {

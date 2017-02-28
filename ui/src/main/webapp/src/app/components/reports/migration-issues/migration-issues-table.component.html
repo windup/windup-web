@@ -1,4 +1,4 @@
-<table class="table table-bordered table-condensed tablesorter migration-issues-table tablesorter-default">
+<table class="migration-issues-table   table table-bordered table-condensed tablesorter tablesorter-default">
     <thead>
         <tr>
             <th (click)="sortBy('issueName')" class="pointer">
@@ -45,38 +45,38 @@
                 <td></td>
                 <td>{{issue.numberFound * issue.effortPerIncident}}</td>
             </tr>
-            <tr *ngIf="filesVisible(issue)">
+            <tr *ngIf="filesVisible(issue)" class="filesDetailsRow">
                 <td colspan="5">
-                    <table class="table table-condensed">
+                    <table class="filesDetails  table table-condensed">
                         <thead>
                             <tr>
-                                <th style="width: 628px;">File</th>
-                                <th style="width: 302px;">Incidents Found</th>
-                                <th>Hint</th>
+                                <th class="fileName" style="width: 628px;">File</th>
+                                <th class="count" style="width: 302px;">Incidents Found</th>
+                                <th class="hint">Hint</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr *ngFor="let incident of getProblemSummaryFiles(issue); let isFirst = first">
-                                <td><a (click)="navigateToSource(incident.file)">{{incident.file.fileName}}</a></td>
-                                <td>{{incident.occurrences}}</td>
-                                <td *ngIf="isFirst" [attr.rowspan]="getProblemSummaryFiles(issue)?.length">
+                                <td class="fileName"><a (click)="navigateToSource(incident.file)">{{incident.file.fileName}}</a></td>
+                                <td class="count">{{incident.occurrences}}</td>
+                                <td class="hint" *ngIf="isFirst" [attr.rowspan]="getProblemSummaryFiles(issue)?.length">
                                     <div class="panel panel-default hint-detail-panel">
                                         <div class="panel-heading">
                                             <h4 class="panel-title pull-left">Issue Detail: {{issue.issueName}}</h4>
                                             <div class="pull-right">
                                                 <a class="sh_url" title="{{issue.ruleID}}"
                                                    (click)="showRule(issue.ruleID)">Show Rule</a>
-<!--
-[routerLink] is currently buggy, cannot use relative navigation. Use this when it is fixed
+                                                <!--
+                                                    [routerLink] is currently buggy, cannot use relative navigation. Use this when it is fixed.
                                                 <a class="sh_url" title="{{issue.ruleID}}"
                                                    [routerLink]="['../executed-rules']"
                                                    [queryParams]="{ruleID: issue.ruleID}">Show Rule</a>
--->
+                                                -->
                                             </div>
                                             <div class="clearfix"></div>
                                         </div>
                                         <div class="panel-body">
-                                            <p *ngFor="let description of issue.descriptions">{{description}}</p>
+                                            <p class="description" *ngFor="let description of issue.descriptions">{{description}}</p>
                                         </div>
                                     </div>
                                 </td>
