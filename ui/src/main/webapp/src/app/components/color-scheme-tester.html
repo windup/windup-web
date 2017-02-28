@@ -1,0 +1,45 @@
+<div>
+    <label>Color scheme</label>
+    <select [(ngModel)]="selectedColorScheme" (ngModelChange)="redrawGraph()">
+        <option *ngFor="let scheme of colorsSchemes">{{scheme}}</option>
+    </select>
+
+    <label>Number of values</label>
+    <select [(ngModel)]="selectedNumberOfColors" (ngModelChange)="redrawGraph()">
+        <option *ngFor="let count of getAvailableColors(selectedColorScheme)">{{count}}</option>
+    </select>
+
+    <div>
+        <ngx-charts-pie-chart
+                [view]="[700, 400]"
+                [scheme]="colorSchemeValues"
+                [results]="graphData"
+                [legend]="false"
+                [explodeSlices]="false"
+                [labels]="false"
+                [doughnut]="false"
+                [gradient]="false">
+        </ngx-charts-pie-chart>
+    </div>
+
+    <div style="float: right; position: relative; left: -200px">
+        <wu-package-chart
+                [view]="[500, 150]"
+                [results]="graphData"
+                [scheme]="colorSchemeValues">
+        </wu-package-chart>
+
+        <ngx-charts-pie-chart
+                [view]="[500, 150]"
+                [scheme]="colorSchemeValues"
+                [results]="graphData"
+                [legend]="true"
+                [explodeSlices]="false"
+                [labels]="true"
+                [doughnut]="true"
+                [gradient]="false">
+        </ngx-charts-pie-chart>
+
+
+    </div>
+</div>

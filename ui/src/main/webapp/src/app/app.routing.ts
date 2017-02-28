@@ -29,6 +29,7 @@ import {RuleProviderExecutionsComponent} from "./components/reports/rule-provide
 import {WizardComponent} from "./components/wizard.component";
 import {ExecutionDetailComponent} from "./components/executions/execution-detail.component";
 import {ApplicationListComponent} from "./components/application-list.component";
+import {ColorSchemeTesterComponent} from "./components/color-scheme-tester";
 
 export const appRoutes: Routes = [
     {path: "login", component: LoginComponent},
@@ -107,7 +108,7 @@ export const appRoutes: Routes = [
                                 path: '',
                                 component: ProjectLayoutComponent, data: {displayName: 'Project Detail'},
                                 children: [
-                                    { path: '', component: ApplicationListComponent, data: {displayName: 'Application List'} },
+                                    { path: '', component: ColorSchemeTesterComponent, data: {displayName: 'Test color scheme'} },
                                     { path: 'applications', children: [
                                         { path: 'register', component: RegisterApplicationFormComponent, data: {displayName: "Application Registration"}},
                                         {

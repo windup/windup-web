@@ -114,6 +114,7 @@ import {StatusIconComponent} from "./components/status-icon.component";
 import {GraphJSONToModelService} from "./services/graph/graph-json-to-model.service";
 import {ApplicationListComponent} from "./components/application-list.component";
 import {GroupPageComponent} from "./components/group.page.component";
+import {ColorSchemeTesterComponent} from "./components/color-scheme-tester";
 
 /**
  * Load all mapping data from the generated files.
@@ -210,7 +211,8 @@ initializeModelMappingData();
         SortIndicatorComponent,
         SortableTableComponent,
         StatusIconComponent,
-        ApplicationListComponent
+        ApplicationListComponent,
+        ColorSchemeTesterComponent
     ],
     providers: [
         appRoutingProviders,
