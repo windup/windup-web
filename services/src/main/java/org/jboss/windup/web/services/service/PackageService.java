@@ -11,6 +11,7 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 import org.jboss.forge.furnace.Furnace;
+import org.jboss.windup.util.exception.WindupException;
 import org.jboss.windup.web.addons.websupport.services.PackageDiscoveryService;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.furnaceserviceprovider.WebProperties;
@@ -60,6 +61,9 @@ public class PackageService
         // Don't reload if the id is null (can happen in tests or with detached instances)
         if (applicationId != null)
             application = this.entityManager.find(RegisteredApplication.class, applicationId);
+
+        if (application == null)
+            throw new WindupException("Non-existent app ID: " + applicationId);
 
         PackageMetadata appPackageMetadata = application.getPackageMetadata();
         appPackageMetadata.setScanStatus(PackageMetadata.ScanStatus.IN_PROGRESS);

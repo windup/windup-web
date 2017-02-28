@@ -21,7 +21,7 @@ public interface RegisteredApplicationEndpoint
     String REGISTERED_APPLICATIONS = "/registeredApplications";
 
     @GET
-    Collection<RegisteredApplication> getAllApplications();
+    Collection<RegisteredApplication> getAllApplications(@QueryParam("projectId") Long projectId);
 
     @Path("{id}")
     @GET

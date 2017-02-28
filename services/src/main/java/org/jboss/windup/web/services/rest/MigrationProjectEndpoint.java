@@ -21,11 +21,13 @@ import javax.ws.rs.QueryParam;
  *
  *  @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
  */
-@Path("migrationProjects")
+@Path(MigrationProjectEndpoint.MIGRATION_PROJECTS_SUBPATH)
 @Consumes("application/json")
 @Produces("application/json")
 public interface MigrationProjectEndpoint
 {
+    static final String MIGRATION_PROJECTS_SUBPATH = "migrationProjects";
+
     /**
      * List all {@link MigrationProject}s.
      */

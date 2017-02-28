@@ -22,6 +22,8 @@ import org.jboss.windup.web.services.validators.FileExistsConstraint;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 
 /**
  * Contains an application that has been registered into Windup.
@@ -40,6 +42,7 @@ public class RegisteredApplication implements Serializable
     public static final String REGISTERED_APPLICATION_ID = "registered_application_id";
 
     @Id
+    @Access(AccessType.PROPERTY) // Allow accessing ID without Lazy-loading the entity.
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = REGISTERED_APPLICATION_ID, updatable = false, nullable = false)
     private Long id;

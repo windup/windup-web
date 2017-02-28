@@ -20,9 +20,12 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
     private RegisteredApplicationService registeredApplicationService;
 
     @Override
-    public Collection<RegisteredApplication> getAllApplications()
+    public Collection<RegisteredApplication> getAllApplications(Long projectId)
     {
-        return this.registeredApplicationService.getAllApplications();
+        if (projectId == null)
+            return this.registeredApplicationService.getAllApplications();
+        else
+            return this.registeredApplicationService.getApplicationsFromProject((long)projectId);
     }
 
     @Override
