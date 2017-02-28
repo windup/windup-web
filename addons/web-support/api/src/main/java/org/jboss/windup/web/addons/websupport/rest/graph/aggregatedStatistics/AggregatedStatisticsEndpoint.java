@@ -1,7 +1,7 @@
-package org.jboss.windup.web.addons.websupport.rest;
+package org.jboss.windup.web.addons.websupport.rest.graph.aggregatedStatistics;
 
 
-import java.util.Map;
+import org.jboss.windup.web.addons.websupport.rest.FurnaceRESTGraphAPI;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -19,27 +19,19 @@ import javax.ws.rs.Produces;
 @Produces("application/json")
 public interface AggregatedStatisticsEndpoint extends FurnaceRESTGraphAPI
 {
-
-    /**
-     * Returns a high level summary of all issues.
-     */
-    @GET
-    @Path("aggregatedMandatoryIncidents")
-    Map<String, Map<String, Integer>> getAggregatedMandatoryIncidents(@PathParam("executionId") Long executionId);
-
     /**
      * Returns a high level summary of all categories.
      */
     @GET
     @Path("aggregatedCategories")
-    Map<String, Map<String, Integer>> getAggregatedCategories(@PathParam("executionId") Long executionId);
+    EffortByCategoryDTO getAggregatedCategories(@PathParam("executionId") Long executionId);
 
     /**
      * Returns a high level summary of all java package incidents.
      */
     @GET
     @Path("aggregatedJavaPackages")
-    Map<String, Integer> getJavaPackageStats(@PathParam("executionId") Long executionId);
+    StatisticsList getJavaPackageStatistics(@PathParam("executionId") Long executionId);
 
     /**
      * Returns summary numbers of processed archive files like ear, jar, war. Extension is the key
@@ -49,7 +41,7 @@ public interface AggregatedStatisticsEndpoint extends FurnaceRESTGraphAPI
      */
     @GET
     @Path("aggregatedArchives")
-    Map<String, Long> getArchivesStatistics(@PathParam("executionId") Long executionId);
+    StatisticsList getArchivesStatistics(@PathParam("executionId") Long executionId);
 
     /**
      * Returns summary numbers of processed dependencies like unique/distinct, shared dependencies
@@ -59,6 +51,6 @@ public interface AggregatedStatisticsEndpoint extends FurnaceRESTGraphAPI
      */
     @GET
     @Path("aggregatedDependencies")
-    Map<String, Long> getDependenciesStatistics(@PathParam("executionId") Long executionId);
+    StatisticsList getDependenciesStatistics(@PathParam("executionId") Long executionId);
 
 }

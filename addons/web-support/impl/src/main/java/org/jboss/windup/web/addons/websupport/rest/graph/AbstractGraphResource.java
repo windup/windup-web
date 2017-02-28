@@ -208,12 +208,13 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
 
     protected Set<ProjectModel> getProjectModels(GraphContext graphContext, ReportFilterDTO filter)
     {
-        if (filter.getSelectedApplicationPaths().isEmpty())
-        {
-            return null;
-        }
-
         ProjectService projectService = new ProjectService(graphContext);
+
+        if (filter == null || !filter.isEnabled())
+            return projectService.getRootProjectModels();
+
+        if (filter.getSelectedApplicationPaths().isEmpty())
+            return null;
 
         return projectService.getFilteredProjectModels(filter.getSelectedApplicationPaths());
     }

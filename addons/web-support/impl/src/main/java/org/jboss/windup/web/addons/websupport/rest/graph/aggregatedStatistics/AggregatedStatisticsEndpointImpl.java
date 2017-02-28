@@ -1,7 +1,6 @@
-package org.jboss.windup.web.addons.websupport.rest;
+package org.jboss.windup.web.addons.websupport.rest.graph.aggregatedStatistics;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -9,14 +8,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
 import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.model.ProjectModel;
-import org.jboss.windup.graph.service.ProjectService;
 import org.jboss.windup.reporting.category.IssueCategoryModel;
 import org.jboss.windup.reporting.freemarker.problemsummary.ProblemSummary;
 import org.jboss.windup.reporting.freemarker.problemsummary.ProblemSummaryService;
@@ -35,36 +31,14 @@ public class AggregatedStatisticsEndpointImpl extends AbstractGraphResource impl
 {
     private static final Logger LOG = Logger.getLogger(AggregatedStatisticsEndpointImpl.class.getSimpleName());
 
-    /*
-     *  initialize map with all EffortLevel values with 0 incidents
-     */
-    private static final Map<String, Integer> EFFORT_LEVELS = getEffortLevelMap(new HashMap<String, Integer>());
-
-    private static Map<String, Integer> getEffortLevelMap(Map<String, Integer> filledMap)
-    {
-        Stream.of(EffortLevel.values()).forEach(effort -> filledMap.put(effort.getShortDescription(), 0));
-        return filledMap;
-    }
-
-    /**
-     * Get all project models filtered for the graph context
-     */
-    @Override
-    protected Set<ProjectModel> getProjectModels(GraphContext graphContext, ReportFilterDTO filter)
-    {
-        // if (filter.getSelectedApplicationPaths().isEmpty())
-        // return Collections.emptySet();
-
-        ProjectService projectService = new ProjectService(graphContext);
-        // for FILTER return projectService.getFilteredProjectModels(filter.getSelectedApplicationPaths());
-        return projectService.getRootProjectModels();
-    }
+    @Inject
+    private LibraryDependenciesService libraryDependenciesService;
 
     /**
      * This counts incidents for every category issue type
      */
     @Override
-    public Map<String, Map<String, Integer>> getAggregatedCategories(Long executionId)
+    public EffortByCategoryDTO getAggregatedCategories(Long executionId)
     {
         GraphContext graphContext = this.getGraph(executionId);
 
@@ -98,70 +72,32 @@ public class AggregatedStatisticsEndpointImpl extends AbstractGraphResource impl
      * @param problems all found problems
      * @return
      */
-    private Map<String, Map<String, Integer>> getIncidentsByEffort(Map<IssueCategoryModel, List<ProblemSummary>> problems)
+    private EffortByCategoryDTO getIncidentsByEffort(Map<IssueCategoryModel, List<ProblemSummary>> problems)
     {
-        Map<String, Map<String, Integer>> incidentsByEfforts = new HashMap<>();
+        EffortByCategoryDTO result = new EffortByCategoryDTO();
 
+        Map<String, Integer> categoryIDToPriority = new HashMap<>();
         problems.forEach((issueCategory, problemSummaries) -> {
+            categoryIDToPriority.put(issueCategory.getCategoryID(), issueCategory.getPriority());
 
-            Map<String, Integer> effortsIncidents = new HashMap<>();
-            effortsIncidents.putAll(EFFORT_LEVELS);
+            EffortCategoryDTO categoryDTO = new EffortCategoryDTO();
+            categoryDTO.setCategoryID(issueCategory.getCategoryID());
 
             for (ProblemSummary problemSummary : problemSummaries)
             {
                 EffortLevel effort = EffortLevel.forPoints(problemSummary.getEffortPerIncident());
-                Integer incidents = effortsIncidents.get(effort.getShortDescription());
-                effortsIncidents.put(effort.getShortDescription(), new Integer(incidents.intValue() + problemSummary.getNumberFound()));
+                categoryDTO.addValue(effort.getShortDescription(), problemSummary.getNumberFound());
             }
-            incidentsByEfforts.put(issueCategory.getCategoryID(), effortsIncidents);
+            result.addCategory(categoryDTO);
         });
-        return incidentsByEfforts;
-    }
 
-    /**
-     * Get all issues and filter it to only a given IssueCategoryModel
-     *
-     * @param problems - all found problems
-     * @return
-     */
-    private Map<IssueCategoryModel, List<ProblemSummary>> getIncidentsByCategory(Map<IssueCategoryModel, List<ProblemSummary>> problems)
-    {
-        return problems.entrySet().stream()
-                    .collect(Collectors.toMap(map -> map.getKey(), map -> map.getValue()));
-    }
+        result.categories.sort((category1, category2) -> {
+            int priority1 = categoryIDToPriority.get(category1.getCategoryID());
+            int priority2 = categoryIDToPriority.get(category2.getCategoryID());
+            return priority1 - priority2;
+        });
 
-    /**
-     * This counts incidents for every EffortLevel
-     *
-     */
-    @Override
-    public Map<String, Map<String, Integer>> getAggregatedMandatoryIncidents(Long executionId)
-    {
-        GraphContext graphContext = this.getGraph(executionId);
-
-        Set<String> includeTags = new HashSet<>();
-        Set<String> excludeTags = new HashSet<>();
-        Set<ProjectModel> projectModels = null;
-
-        ReportFilterDTO filter = this.reportFilterService.getReportFilter(executionId);
-
-        if (filter.isEnabled())
-        {
-            includeTags.addAll(filter.getIncludeTags());
-            excludeTags.addAll(filter.getExcludeTags());
-            projectModels = this.getProjectModels(graphContext, filter);
-        }
-
-        Map<IssueCategoryModel, List<ProblemSummary>> issues = ProblemSummaryService.getProblemSummaries(
-                    graphContext,
-                    projectModels,
-                    includeTags,
-                    excludeTags,
-                    true,
-                    false);
-
-        return getIncidentsByEffort(getIncidentsByCategory(issues)).entrySet().stream().filter(map -> map.getKey().equals("mandatory"))
-                    .collect(Collectors.toMap(map -> map.getKey(), map -> map.getValue()));
+        return result;
     }
 
     /**
@@ -169,13 +105,13 @@ public class AggregatedStatisticsEndpointImpl extends AbstractGraphResource impl
      *
      */
     @Override
-    public Map<String, Integer> getJavaPackageStats(Long executionId)
+    public StatisticsList getJavaPackageStatistics(Long executionId)
     {
         GraphContext graphContext = this.getGraph(executionId);
 
         Set<String> includeTags = new HashSet<>();
         Set<String> excludeTags = new HashSet<>();
-        Set<ProjectModel> projectModels = null;
+        Set<ProjectModel> projectModels;
 
         ReportFilterDTO filter = this.reportFilterService.getReportFilter(executionId);
 
@@ -188,18 +124,24 @@ public class AggregatedStatisticsEndpointImpl extends AbstractGraphResource impl
 
         TypeReferenceService typeReferenceService = new TypeReferenceService(graphContext);
 
-        Map<String, Integer> data = new HashMap<>();
+        StatisticsList packageStatisticsDTO = new StatisticsList();
         for (Iterator<ProjectModel> iterator = projectModels.iterator(); iterator.hasNext();)
         {
             ProjectModel projectModel = iterator.next();
-            data.putAll(typeReferenceService.getPackageUseFrequencies(projectModel, includeTags, excludeTags, 2, true));
+            typeReferenceService
+                    .getPackageUseFrequencies(projectModel, includeTags, excludeTags, 2, true)
+                    .entrySet()
+                    .forEach(entry -> {
+                        packageStatisticsDTO.addValue(entry.getKey(), entry.getValue());
+                    });
         }
 
-        return data;
+        packageStatisticsDTO.sortByValue();
+        return packageStatisticsDTO;
     }
 
     @Override
-    public Map<String, Long> getArchivesStatistics(Long executionId)
+    public StatisticsList getArchivesStatistics(Long executionId)
     {
         GraphContext graphContext = this.getGraph(executionId);
 
@@ -233,12 +175,10 @@ public class AggregatedStatisticsEndpointImpl extends AbstractGraphResource impl
             if (data instanceof Map)
             {
                 Map<String, Object> dataMap = (Map<String, Object>) data;
-                String filename = null;
-                String filepath = null;
+                String filename;
                 String fileExtension = null;
                 if (dataMap.containsKey(LibraryDependenciesService.KEY_FILE_NAME))
                 {
-                    filepath = (String) dataMap.get(LibraryDependenciesService.KEY_FILE_PATH);
                     filename = (String) dataMap.get(LibraryDependenciesService.KEY_FILE_NAME);
                     if (filename.lastIndexOf('.') > 0)
                     {
@@ -256,44 +196,23 @@ public class AggregatedStatisticsEndpointImpl extends AbstractGraphResource impl
             depsDetailsMap.put(type, deps);
         }
 
-        // Map<String, Long> depStats = new HashMap<>();
-        Map<String, Long> extensionStats = new HashMap<>();
+        StatisticsList extensionStats = new StatisticsList();
         for (Map.Entry<String, List<String>> dependency : depsDetailsMap.entrySet())
         {
             List<String> extensions = dependency.getValue();
             for (String extension : extensions)
             {
-                extensionStats.put(extension, extensionStats.getOrDefault(extension, 0l) + 1l);
+                extensionStats.addValue(extension, 1);
             }
         }
+        extensionStats.sortByKey();
         return extensionStats;
-
     }
-
-    private Set<String> getUniqueProjectTypes(Set<ProjectModel> projectModels)
-    {
-        return projectModels.stream().map(ProjectModel::getProjectType).collect(Collectors.toSet());
-    }
-
-    @Inject
-    private LibraryDependenciesService libraryDependenciesService;
 
     @Override
-    public Map<String, Long> getDependenciesStatistics(Long executionId)
+    public StatisticsList getDependenciesStatistics(Long executionId)
     {
         GraphContext graphContext = this.getGraph(executionId);
-
-        Set<String> includeTags = new HashSet<>();
-        Set<String> excludeTags = new HashSet<>();
-
-        ReportFilterDTO filter = this.reportFilterService.getReportFilter(executionId);
-
-        // Set<ProjectModel> projectModels = this.getProjectModels(graphContext, filter);
-        if (filter.isEnabled())
-        {
-            includeTags.addAll(filter.getIncludeTags());
-            excludeTags.addAll(filter.getExcludeTags());
-        }
 
         this.libraryDependenciesService.setGraphContext(graphContext);
         DependenciesDTO dependenciesDTO = this.libraryDependenciesService.getDependencies();
@@ -301,7 +220,6 @@ public class AggregatedStatisticsEndpointImpl extends AbstractGraphResource impl
         // will use only nodes data not edges
         Set<GraphNode> depsGraphNodes = dependenciesDTO.getNodes();
 
-        //
         Map<String, List<String>> depsDetailsMap = new HashMap<>();
         for (GraphNode node : depsGraphNodes)
         {
@@ -313,12 +231,10 @@ public class AggregatedStatisticsEndpointImpl extends AbstractGraphResource impl
             if (data instanceof Map)
             {
                 Map<String, Object> dataMap = (Map<String, Object>) data;
-                String filename = null;
-                String filepath = null;
+                String filename;
                 String fileExtension = null;
                 if (dataMap.containsKey(LibraryDependenciesService.KEY_FILE_NAME))
                 {
-                    filepath = (String) dataMap.get(LibraryDependenciesService.KEY_FILE_PATH);
                     filename = (String) dataMap.get(LibraryDependenciesService.KEY_FILE_NAME);
                     if (filename.lastIndexOf('.') > 0)
                     {
@@ -337,60 +253,14 @@ public class AggregatedStatisticsEndpointImpl extends AbstractGraphResource impl
             depsDetailsMap.put(type, deps);
         }
         
-        Map<String, Long> depStats = new HashMap<>();
+        StatisticsList dependencyStatisticsDTO = new StatisticsList();
         for (Map.Entry<String, List<String>> dependency : depsDetailsMap.entrySet())
         {
             String type = dependency.getKey();
             Integer count = dependency.getValue().size();
-            depStats.put(type, count.longValue());
+            dependencyStatisticsDTO.addValue(type, count);
         }
-        return depStats;
+        dependencyStatisticsDTO.sortByKey();
+        return dependencyStatisticsDTO;
     }
-
-//    private Set<ProjectModel> getDependencies()
-//    {
-        // GraphContext graphContext = this.getGraph(executionId);
-        //
-        // Set<String> includeTags = new HashSet<>();
-        // Set<String> excludeTags = new HashSet<>();
-        // Set<ProjectModel> projectModels = null;
-        //
-        // ReportFilterDTO filter = this.reportFilterService.getReportFilter(executionId);
-        //
-        // projectModels = this.getProjectModels(graphContext, filter);
-        // if (filter.isEnabled())
-        // {
-        // includeTags.addAll(filter.getIncludeTags());
-        // excludeTags.addAll(filter.getExcludeTags());
-        // }
-        // TraversalStrategy allTraversalStrategy = new AllTraversalStrategy();
-        //
-        // // get real stats
-        // Map<String, Long> components = new HashMap<>();
-        // for (ProjectModel projectModel : projectModels)
-        // {
-        // ProjectModelTraversal traversal = new ProjectModelTraversal(projectModel, allTraversalStrategy);
-        //
-        // Set<ProjectModel> allProjects = traversal.getAllProjects(true);
-        // LOG.info("Number " + allProjects.size() + " of Projects for " + projectModel);
-        // for (String projectType : getUniqueProjectTypes(allProjects))
-        // {
-        // // TODO: properly handle projectModel.getProjectType() null why is this not set properly to file extension?
-        // if (projectType != null)
-        // {
-        // long count = allProjects.stream().filter(projectM -> projectType.equals(projectM.getProjectType())).count();
-        // components.put(projectType, components.getOrDefault(projectType, 0L) + count);
-        // }
-        // else
-        // {
-        // List<String> nullProjectMap = allProjects.stream().filter(proj -> proj.getProjectType() == null).map(ProjectModel::getName)
-        // .collect(Collectors.toList());
-        // LOG.info("list of null projects " + nullProjectMap);
-        // components.put("null", components.getOrDefault("null", 0l) + nullProjectMap.size());
-        // }
-        // }
-        // }
-        // return components;
-    // }
-
 }

@@ -1,11 +1,13 @@
-import { Component, OnInit, ChangeDetectorRef, ElementRef } from "@angular/core";
-import { Http } from "@angular/http";
-import { Params, ActivatedRoute, Router } from "@angular/router";
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import { utils } from "../../../utils";
 import { NotificationService } from "../../../services/notification.service";
 import { ApplicationGroup } from "windup-services";
 import { AggregatedStatisticsService } from "./aggregated-statistics.service";
-import { ColorHelper } from '@swimlane/ngx-charts';
+import { calculateColorScheme } from "../color-schemes";
+import { StatisticsList } from "windup-services";
+import { EffortByCategoryDTO } from "windup-services";
+import {EffortCategoryDTO} from "windup-services";
 
 @Component({
     templateUrl: '/application-index.component.html',
@@ -17,9 +19,6 @@ export class ApplicationIndexComponent implements OnInit {
     showDetails: boolean = false;
 
     domain: any;
-    colors: ColorHelper;
-    // color scheme for graphs on template
-    colorScheme: any = 'cool';
 
     // both are used for getting graph and for report filter DTO
     private execID: number;
@@ -28,25 +27,20 @@ export class ApplicationIndexComponent implements OnInit {
     // aggregated statistics variables
     globalPackageUseData: ChartStatistic[] = [];
     categoriesMultiStats: any[] = [];
-    categoriesStats: ChartStatistic[] = [];
     mandatoryMultiStats: any[] = [];
-    mandatoryStats: ChartStatistic[] = [];
 
-    componentsStats: any[] = [];
-    dependenciesStats: any[] = [];
+    componentsStats: StatisticsList = <StatisticsList>{};
+    dependenciesStats: StatisticsList = <StatisticsList>{};
 
     constructor(
         private _router: Router,
         private _activatedRoute: ActivatedRoute,
         private _notificationService: NotificationService,
-        private _aggregatedStatsService: AggregatedStatisticsService,
-        private _http: Http
+        private _aggregatedStatsService: AggregatedStatisticsService
     ) { }
 
 
     ngOnInit(): void {
-   
-
         this._activatedRoute.params.subscribe(params => {
             let executionId = parseInt(params['executionId']);
             this.execID = executionId;
@@ -54,17 +48,7 @@ export class ApplicationIndexComponent implements OnInit {
             this._aggregatedStatsService.getAggregatedCategories(executionId).subscribe(
                 result => {
                     this.categoriesMultiStats = this.getCategoriesStats(this.calculateCategoryIncidents(result), this.calculateStoryPointsInCategories(result));
-                    this.categoriesStats = this.convertToChartStatistic(result);
-                },
-                error => {
-                    this._notificationService.error(utils.getErrorMessage(error));
-                    this._router.navigate(['']);
-                }
-            );
-            this._aggregatedStatsService.getMandatoryIncidents(executionId).subscribe(
-                result => {
-                    this.mandatoryMultiStats = this.getCategoryDetailsStats(this.convertToChartStatistic(result));
-                    this.mandatoryStats = this.convertToChartStatistic(result);
+                    this.mandatoryMultiStats = this.getMandatoryMultiStats(result.categories.find(category => category.categoryID == "mandatory"));
                 },
                 error => {
                     this._notificationService.error(utils.getErrorMessage(error));
@@ -100,112 +84,103 @@ export class ApplicationIndexComponent implements OnInit {
             this.group = data.applicationGroup;
         });
         
-        // setting colors according colorTheme and count of max/min items in data sets
-        this.setColors();
     }
 
-    setColors() {
-        this.colors = new ColorHelper(this.colorScheme, 'ordinal', this.getDomain());
+    sumStatsList(statsList:StatisticsList):number {
+        if (!statsList || !statsList.entries)
+            return 0;
+
+        return statsList.entries.reduce((previousNumber, nextEntry) => previousNumber + nextEntry.value, 0);
     }
 
-    getDomain():any {
-        let minDomain:number = Math.min(this.categoriesMultiStats.keys.length, this.mandatoryMultiStats.length, this.globalPackageUseData.length);
-        let maxDomain:number = Math.max(this.categoriesMultiStats.keys.length, this.mandatoryMultiStats.length, this.globalPackageUseData.length);
-        console.log('Domain values: ' + [minDomain, maxDomain]);
-        return [minDomain, maxDomain];
+    getDependencyCountByType(type:string):number {
+        let result = 0;
+        if (!this.dependenciesStats || !this.dependenciesStats.entries)
+            return result;
+
+        this.dependenciesStats.entries.forEach(entry => {
+            if (entry.name == type)
+                result += entry.value;
+        });
+        return result;
+    }
+
+    getColorScheme(len) {
+        return calculateColorScheme(len);
     }
 
     /**
      * Array of package statistics converted into ChartStatistic array for table and chart rendering
      */
-    private convertPackagesToChartStatistic(statistics: PackageStatistics[]): ChartStatistic[] {
+    private convertPackagesToChartStatistic(statistics: StatisticsList): ChartStatistic[] {
         if (!statistics)
             return;
 
         let result: ChartStatistic[] = [];
 
-        Object.keys(statistics).forEach(key => {
-            let chartStat: ChartStatistic = new ChartStatistic(key, statistics[key]);
+        statistics.entries.forEach(entry => {
+            result.push(new ChartStatistic(entry.name, entry.value));
+        });
+        return result;
+    }
+
+    private calculateCategoryIncidents(statistics: EffortByCategoryDTO): ChartStatistic[] {
+        if (!statistics)
+            return;
+
+        let result: ChartStatistic[] = [];
+
+        statistics.categories.forEach(category => {
+            let categoryIncidentsSum = category.entries.reduce((previousValue, nextEntry) => previousValue + nextEntry.value, 0);
+            let chartStat: ChartStatistic = new ChartStatistic(category.categoryID, categoryIncidentsSum);
             result.push(chartStat);
         });
-        result = result.sort(chartStatisticComparator);
+
         return result;
     }
 
-    /**
-     * Converting array of categories statistics into ChartStatistic array for table and chart rendering
-     */
-    private convertToChartStatistic(statistics: Statistics): ChartStatistic[] {
-        if (!statistics)
-            return;
-
-        let result: ChartStatistic[] = [];
-
-        Object.keys(statistics).forEach(category => {
-            let incidents: any[] = statistics[category];
-            Object.keys(incidents).forEach(effort => {
-                let chartStat: ChartStatistic = new ChartStatistic(effort, incidents[effort]);
-                result.push(chartStat);
-            });
-        });
-        result = result.sort(chartStatisticComparator);
-        return result;
-    }
-
-    private calculateCategoryIncidents(statistics: Statistics): ChartStatistic[] {
+    private calculateStoryPointsInCategories(statistics: EffortByCategoryDTO): ChartStatistic[] {
         if (!statistics)
             return;
         let result: ChartStatistic[] = [];
 
-        Object.keys(statistics).forEach(key => {
-            let categoryIncidentsSum = Object.values(statistics[key]).reduce(function (item1, item2) { return item1 + item2; }, 0);
-            let chartStat: ChartStatistic = new ChartStatistic(key, categoryIncidentsSum);
-            result.push(chartStat);
-        });
-        result = result.sort(chartStatisticComparator);
-        return result;
-    }
-
-    private calculateStoryPointsInCategories(statistics: Statistics): ChartStatistic[] {
-        if (!statistics)
-            return;
-        let result: ChartStatistic[] = [];
-
-        Object.keys(statistics).forEach(category => {
-            let effortIncidents = statistics[category];
+        statistics.categories.forEach(category => {
             let sum: number = 0;
-            Object.keys(effortIncidents).forEach(issueEffort => {
-                let storyPointPerIncident: number = EffortLevel[issueEffort];
-                let incidents: number = effortIncidents[issueEffort];
+            category.entries.forEach(entry => {
+                let storyPointPerIncident: number = EffortLevel[entry.name];
+                let incidents: number = entry.value;
                 sum += storyPointPerIncident * incidents;
             });
-            let chartStat: ChartStatistic = new ChartStatistic(category, sum);
+            let chartStat: ChartStatistic = new ChartStatistic(category.categoryID, sum);
             result.push(chartStat);
         });
-        result = result.sort(chartStatisticComparator);
         return result;
     }
 
-    private getCategoryDetailsStats(incidents: ChartStatistic[]): any[] {
+    private getMandatoryMultiStats (mandatoryCategory: EffortCategoryDTO): any[] {
         let result: any[] = [];
 
-        Object.keys(incidents).forEach(effort => {
+        mandatoryCategory.entries.forEach(incidentStat => {
             let series: ChartStatistic[] = [];
-            let effortIncidents: ChartStatistic = incidents[effort];
-            let incidentsNumber: number = effortIncidents.value;
-            let storyPointPerIncident: number = EffortLevel[effortIncidents.name];
+            let incidentsNumber: number = incidentStat.value;
+            let storyPointPerIncident: number = EffortLevel[incidentStat.name];
 
             series.push(new ChartStatistic("incidents", incidentsNumber));
             series.push(new ChartStatistic("points", incidentsNumber * storyPointPerIncident));
-            result.push({ "name": effortIncidents.name, "series": series });
+            result.push({ "name": incidentStat.name, "series": series });
+        });
+
+        result = result.sort((obj1:{name:string, series:any[]}, obj2:{name:string, series:any[]}) => {
+            let pointsPerIncident1 = EffortLevel[obj1.name];
+            let pointsPerIncident2 = EffortLevel[obj2.name];
+            return pointsPerIncident1 - pointsPerIncident2;
         });
 
         return result;
     }
+
     private getCategoriesStats(incidents: ChartStatistic[], points: ChartStatistic[]): any[] {
-
         let result: any[] = [];
-
         Object.keys(incidents).forEach(category => {
             let categoryStr: string = incidents[category].name;
             let series: ChartStatistic[] = [];
@@ -213,6 +188,13 @@ export class ApplicationIndexComponent implements OnInit {
             series.push(new ChartStatistic("points", points[category].value));
             result.push({ "name": categoryStr, "series": series });
         });
+
+        result = result.sort((obj1:{name:string, series:any[]}, obj2:{name:string, series:any[]}) => {
+            let pointsPerIncident1 = EffortLevel[obj1.name];
+            let pointsPerIncident2 = EffortLevel[obj2.name];
+            return pointsPerIncident1 - pointsPerIncident2;
+        });
+
         return result;
     }
 }
@@ -229,21 +211,6 @@ class ChartStatistic {
     public getValue(): number {
         return this.value;
     }
-}
-
-//export function getSumOfArray(array: ChartStatistic[]): number {
-//    let sum: number = 0;
-//    let i = array.length;
-//
-//    while (i--) {
-//        let stat: ChartStatistic = array[i];
-//        sum = sum + stat.value;
-//    }
-//    return sum;
-//}
-
-function chartStatisticComparator(stat1: ChartStatistic, stat2: ChartStatistic): number {
-    return stat1.value - stat2.value;
 }
 
 export enum EffortLevel {

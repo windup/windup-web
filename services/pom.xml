@@ -312,6 +312,7 @@
                             <classPatterns>
                                 <pattern>org.jboss.windup.web.services.model.**</pattern>
                                 <pattern>org.jboss.windup.web.addons.websupport.rest.graph.applicationDetails.**</pattern>
+                                <pattern>org.jboss.windup.web.addons.websupport.rest.graph.aggregatedStatistics.**</pattern>
                             </classPatterns>
                             <excludeClasses>
                                 <class>java.io.Serializable</class>

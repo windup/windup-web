@@ -1,6 +1,6 @@
 package org.jboss.windup.web.services.rest;
 
-import org.jboss.windup.web.addons.websupport.rest.AggregatedStatisticsEndpoint;
+import org.jboss.windup.web.addons.websupport.rest.graph.aggregatedStatistics.AggregatedStatisticsEndpoint;
 import org.jboss.windup.web.addons.websupport.rest.FurnaceRESTGraphAPI;
 import org.jboss.windup.web.addons.websupport.rest.MigrationIssuesEndpoint;
 import org.jboss.windup.web.addons.websupport.rest.TagResource;

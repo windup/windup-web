@@ -19,25 +19,22 @@
                 <caption>Summary</caption>
                 <tfoot>
                     <tr class="info">
-                        <td><span class="highlightNumber">&Sigma;</span></td>
-                        <td><span class="highlightNumber">{{dependenciesStats.Dependency + dependenciesStats.KnownLibrary}}</span></td>
+                        <td><span class="highlightNumber">Total</span></td>
+                        <td><span class="highlightNumber">{{getDependencyCountByType("Application") + getDependencyCountByType("Dependency") + getDependencyCountByType("KnownLibrary")}}</span></td>
                     </tr>
                 </tfoot>
                 <tbody>
                     <tr>
                         <td> <i class="fa fa-cubes"></i> Applications</td>
-                        <td><span class="highlightNumber">{{dependenciesStats.Application}}</span></td>
+                        <td><span class="highlightNumber">{{getDependencyCountByType("Application")}}</span></td>
                     </tr>
                     <tr>
-                        <td colspan="2">&nbsp;</td>
-                    </tr>                    
-                    <tr>
                         <td> <i class="fa fa-puzzle-piece"></i> Known Libraries</td>
-                        <td><span class="highlightNumber">{{dependenciesStats.KnownLibrary}}</span></td>
+                        <td><span class="highlightNumber">{{getDependencyCountByType("KnownLibrary")}}</span></td>
                     </tr>
                     <tr>
                         <td> <i class="fa fa-cube"></i> Dependencies</td>
-                        <td><span class="highlightNumber">{{dependenciesStats.Dependency}}</span></td>
+                        <td><span class="highlightNumber">{{getDependencyCountByType("Dependency")}}</span></td>
                     </tr>
 <!--                    <tr>
                         <td>Shared Dependencies</td>
@@ -47,28 +44,20 @@
                 </table>
             </div>
         </div>
-        <div class="panel panel-default col-md-3" style="margin-left: 20px;margin-right: 20px;">
+        <div class="panel panel-default col-md-3" style="margin-left: 20px; margin-right: 20px;">
             <div class="panel-body">
                 <table class="table table-condensed">
                     <caption>Components</caption>
                     <tbody>
-                        <tr>
-                            <td class="summaryStats">EAR</td>
-                            <td><span class="highlightNumber">{{componentsStats.ear}}</span></td>
-                        </tr>
-                        <tr>
-                            <td class="summaryStats">WAR</td>
-                            <td><span class="highlightNumber">{{componentsStats.war}}</span></td>
-                        </tr>
-                        <tr>
-                            <td class="summaryStats">JAR</td>
-                            <td><span class="highlightNumber">{{componentsStats.jar}}</span></td>
+                        <tr *ngFor="let statEntry of componentsStats?.entries">
+                            <td class="summaryStats">{{statEntry.name.toUpperCase()}}</td>
+                            <td><span class="highlightNumber">{{statEntry.value}}</span></td>
                         </tr>
                     </tbody>
                     <tfoot>
                         <tr class="info">
-                            <td class="summaryStats"><span class="highlightNumber">&Sigma;</span></td>
-                            <td><span class="highlightNumber">{{componentsStats.ear + componentsStats.war + componentsStats.jar}}</span></td>
+                            <td class="summaryStats"><span class="highlightNumber">Total</span></td>
+                            <td><span class="highlightNumber">{{sumStatsList(componentsStats)}}</span></td>
                         </tr>
                     </tfoot>
                 </table>
@@ -81,30 +70,26 @@
             <div class="col-md-4 chartBoundary" *ngIf="globalPackageUseData && globalPackageUseData.length > 0">
                 <h4>Java Packages Usage Chart</h4>
                 <div id="application_pie" class="windupPieGraph">
-                    <wu-package-chart [results]="globalPackageUseData" [scheme]="colorScheme">
+                    <wu-package-chart
+                            [view]="[500, 150]"
+                            [results]="globalPackageUseData"
+                            [scheme]="getColorScheme(globalPackageUseData.length)"
+                    >
                     </wu-package-chart>
-<!--                          <ngx-charts-pie-chart  -->
-<!--                                 [results]="globalPackageUseData" -->
-<!--                                 [scheme]="colorScheme" -->
-<!--                                 [doughnut]="true" -->
-<!--                                 [legend]="true" -->
-<!--                             > -->
-<!--                         </ngx-charts-pie-chart> -->
-            <span class="note">Note: this does not include XML files and "possible" issues.</span>
             </div>
             
         </div>
         <!-- categories incidents -->
         <div class="col-md-4 chartBoundary" *ngIf="categoriesMultiStats && categoriesMultiStats.length > 0">
             <h4>Incidents by Category</h4>
-            <ngx-charts-bar-vertical-2d [scheme]="colorScheme" [results]="categoriesMultiStats" [showGridLines]="true" [xAxis]="true"
+            <ngx-charts-bar-vertical-2d [scheme]="getColorScheme(categoriesMultiStats.length)" [results]="categoriesMultiStats" [showGridLines]="true" [xAxis]="true"
                 [yAxis]="true" [legend]="true"> </ngx-charts-bar-vertical-2d>
         </div>
 
         <!-- mandatory incidents -->
-        <div class="col-md-4 chartBoundary" *ngIf="mandatoryMultiStats && mandatoryMultiStats.length > 0">
+        <div class="col-md-4 chartBoundary" *ngIf="mandatoryMultiStats?.length > 0">
             <h4>Mandatory Incidents by Type</h4>
-            <ngx-charts-bar-vertical-2d [scheme]="colorScheme" [results]="mandatoryMultiStats" [showGridLines]="true" [xAxis]="true"
+            <ngx-charts-bar-vertical-2d [scheme]="getColorScheme(mandatoryMultiStats.length)" [results]="mandatoryMultiStats" [showGridLines]="true" [xAxis]="true"
                 [yAxis]="true" [legend]="true"> </ngx-charts-bar-vertical-2d>
         </div>
     </div>
