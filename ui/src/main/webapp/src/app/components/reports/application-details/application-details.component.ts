@@ -1,4 +1,4 @@
-import {Component, OnInit, ChangeDetectorRef, ElementRef} from "@angular/core";
+import {Component, OnInit, ElementRef} from "@angular/core";
 import {
     ApplicationDetailsService, ApplicationDetailsFullDTO,
     ProjectTraversalFullDTO, HintFullDTO, FileFullDTO
@@ -13,17 +13,13 @@ import {TagFilterService} from "../tag-filter.service";
 import {TypeReferenceStatisticsService} from "./type-reference-statistics.service";
 import {TagDataService} from "../tag-data.service";
 import {TreeData} from "../../js-tree-angular-wrapper.component";
+import {calculateColorScheme} from "../color-schemes";
 
 @Component({
     templateUrl: './application-details.component.html',
     styleUrls: ['./application-details.component.css']
 })
 export class ApplicationDetailsComponent implements OnInit {
-
-    colorScheme = {
-        domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
-    };
-
     private execID:number;
     private group:ApplicationGroup;
     applicationDetails:ApplicationDetailsFullDTO;
@@ -51,13 +47,16 @@ export class ApplicationDetailsComponent implements OnInit {
 
     constructor(
         private _element: ElementRef,
-        private _changeDetectorRef: ChangeDetectorRef,
         private _activatedRoute:ActivatedRoute,
         private _applicationDetailsService:ApplicationDetailsService,
         private _notificationService:NotificationService,
         private _tagDataService:TagDataService,
         private _http:Http
     ) {}
+
+    getColorScheme(len) {
+        return calculateColorScheme(len);
+    }
 
     ngOnInit(): void {
         this._activatedRoute.parent.parent.parent.data.subscribe((data: {applicationGroup: ApplicationGroup}) => {

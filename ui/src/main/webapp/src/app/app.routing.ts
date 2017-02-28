@@ -1,6 +1,5 @@
 import {Routes, RouterModule} from '@angular/router';
 import {ProjectListComponent} from "./components/project-list/project-list.component";
-import {GroupListComponent} from "./components/group-list.component";
 import {GroupPageComponent} from "./components/group.page.component";
 import {RegisterApplicationFormComponent} from "./components/register-application-form.component";
 import {MigrationProjectFormComponent} from "./components/migration-project-form.component";
@@ -13,7 +12,7 @@ import {TechnologiesReportComponent} from "./components/reports/technologies/tec
 import {DependenciesReportComponent} from "./components/reports/dependencies/dependencies-report.component";
 import {LoginComponent} from "./components/login.component";
 import {LoggedInGuard} from "./services/logged-in.guard";
-import {GroupLayoutComponent} from "./components/layout/group-layout.component";
+import {ProjectLayoutComponent} from "./components/layout/project-layout.component";
 import {DefaultLayoutComponent} from "./components/layout/default-layout.component";
 import {ApplicationGroupResolve} from "./components/group/application-group.resolve";
 import {MigrationIssuesComponent} from "./components/reports/migration-issues/migration-issues.component";
@@ -29,6 +28,8 @@ import {ReportFilterComponent} from "./components/reports/filter/report-filter.c
 import {RuleProviderExecutionsComponent} from "./components/reports/rule-provider-executions/rule-provider-executions.component";
 import {WizardComponent} from "./components/wizard.component";
 import {ExecutionDetailComponent} from "./components/executions/execution-detail.component";
+import {ApplicationListComponent} from "./components/application-list.component";
+import {ColorSchemeTesterComponent} from "./components/color-scheme-tester";
 
 export const appRoutes: Routes = [
     {path: "login", component: LoginComponent},
@@ -103,59 +104,65 @@ export const appRoutes: Routes = [
                             project: ProjectResolve
                         },
                         children: [
+                            {
+                                path: '',
+                                component: ProjectLayoutComponent, data: {displayName: 'Project Detail'},
+                                children: [
+                                    { path: '', component: ColorSchemeTesterComponent, data: {displayName: 'Test color scheme'} },
+                                    { path: 'applications', children: [
+                                        { path: 'register', component: RegisterApplicationFormComponent, data: {displayName: "Application Registration"}},
+                                        {
+                                            path: ':applicationId/edit',
+                                            component: EditApplicationFormComponent,
+                                            resolve: {
+                                                application: ApplicationResolve
+                                            },
+                                            data: {displayName: "Edit Application"}
+                                        },
+                                    ]},
+                                    {
+                                        path: 'groups/:groupId',
+                                        resolve: {
+                                            applicationGroup: ApplicationGroupResolve
+                                        },
+                                        data: {
+                                          breadcrumbs: {
+                                              ignore: true
+                                          }
+                                        },
+                                        children: [
+                                            { path: '', component: GroupPageComponent },
+                                            { path: 'analysis-context', component: AnalysisContextFormComponent, data: {displayName: "Edit Analysis Context"}, canDeactivate: [ConfirmDeactivateGuard]},
+                                            { path: 'reports', children: [
+                                                { path: 'filter', component: ReportFilterComponent, data: {displayName: 'Report Filter'} },
+                                            ]},
+                                            { path: 'reports/:executionId', children: [
+                                                {path: '', component: ExecutionDetailComponent, data: {displayName: 'Execution Info'}},
+                                                {path: 'dependencies-report', component: DependenciesReportComponent, data: {displayName: 'Dependency Report'}},
+                                                {path: 'technology-report', component: TechnologiesReportComponent, data: {displayName: 'Technology Report'}},
+                                                {path: 'migration-issues',
+                                                    children: [
+                                                        {path: '', component: MigrationIssuesComponent, data: {displayName: 'Migration Issues'}},
+                                                        {path: 'source/:fileId', component: SourceReportComponent, data: {displayName: 'Source Report'}}
+                                                    ]
+                                                },
+                                                {path: 'source/:fileId', component: SourceReportComponent, data: {displayName: 'Source Report'}},
+                                                {path: 'application-details', component: ApplicationDetailsComponent, data: { displayName: 'Application Details'}},
+                                                {path: 'executed-rules', component: RuleProviderExecutionsComponent, data: {displayName: 'Executed Rules'}},
+                                                {path: 'dependencies', component: DependenciesReportComponent, data: {displayName: 'Dependencies Report' }}
+                                            ]},
+                                            { path: '', children: [
+                                                { path: 'edit', component: ApplicationGroupForm, data: {displayName: "Edit Application Group"} }
+                                            ]},
+                                            { path: 'executions', component: GroupExecutionsComponent, data: {displayName: 'Executions list'} }
+                                        ]
+                                    },
+                                ]
+                            },
                             { path: '', component: DefaultLayoutComponent, children: [
-                                {path: '', component: GroupListComponent, data: {displayName: 'Group List'}},
                                 {path: 'edit', component: MigrationProjectFormComponent, data: {displayName: 'Edit Project'}},
                                 {path: 'groups/create', component: ApplicationGroupForm, data: {displayName: 'Create Application Group'}},
                             ]},
-                            {
-                                path: 'groups/:groupId',
-                                resolve: {
-                                    applicationGroup: ApplicationGroupResolve
-                                },
-                                data: {
-                                    breadcrumbTitle: getGroupBreadcrumbTitle
-                                },
-                                children: [
-                                    { path: '', component: GroupLayoutComponent, children: [
-                                        { path: '', component: GroupPageComponent },
-                                        { path: 'analysis-context', component: AnalysisContextFormComponent, data: {displayName: "Edit Analysis Context"}, canDeactivate: [ConfirmDeactivateGuard]},
-                                        { path: 'applications', children: [
-                                            { path: 'register', component: RegisterApplicationFormComponent, data: {displayName: "Application Registration"}},
-                                            {
-                                                path: ':applicationId/edit',
-                                                component: EditApplicationFormComponent,
-                                                resolve: {
-                                                    application: ApplicationResolve
-                                                },
-                                                data: {displayName: "Edit Application"}
-                                            },
-                                        ]},
-                                        { path: 'reports', children: [
-                                            { path: 'filter', component: ReportFilterComponent, data: {displayName: 'Report Filter'} },
-                                        ]},
-                                        { path: 'reports/:executionId', children: [
-                                            {path: '', component: ExecutionDetailComponent, data: {displayName: 'Execution Info'}},
-                                            {path: 'dependencies-report', component: DependenciesReportComponent, data: {displayName: 'Dependency Report'}},
-                                            {path: 'technology-report', component: TechnologiesReportComponent, data: {displayName: 'Technology Report'}},
-                                            {path: 'migration-issues',
-                                                children: [
-                                                    {path: '', component: MigrationIssuesComponent, data: {displayName: 'Migration Issues'}},
-                                                    {path: 'source/:fileId', component: SourceReportComponent, data: {displayName: 'Source Report'}}
-                                                ]
-                                            },
-                                            {path: 'source/:fileId', component: SourceReportComponent, data: {displayName: 'Source Report'}},
-                                            {path: 'application-details', component: ApplicationDetailsComponent, data: { displayName: 'Application Details'}},
-                                            {path: 'executed-rules', component: RuleProviderExecutionsComponent, data: {displayName: 'Executed Rules'}},
-                                            {path: 'dependencies', component: DependenciesReportComponent, data: {displayName: 'Dependencies Report' }}
-                                        ]},
-                                        { path: '', children: [
-                                            { path: 'edit', component: ApplicationGroupForm, data: {displayName: "Edit Application Group"} }
-                                        ]},
-                                        { path: 'executions', component: GroupExecutionsComponent, data: {displayName: 'Executions list'} }
-                                    ]}
-                                ]
-                            },
                         ]
                     }
                 ]

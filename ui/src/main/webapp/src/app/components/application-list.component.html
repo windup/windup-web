@@ -1,0 +1,24 @@
+<div class="panel-body">
+    <wu-active-executions-progressbar [activeExecutions]="activeExecutions"></wu-active-executions-progressbar>
+
+    <h2>Project {{project?.title || "loading..."}}</h2>
+
+    <table class="datatable table table-striped table-bordered">
+        <thead>
+        <tr>
+            <th>Application</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody *ngIf="project">
+            <tr *ngFor="let app of project.applications">
+                <td>{{app.title}}</td>
+                <td>
+                    <button class="btn btn-default" (click)="editApplication(app)">Edit</button>
+                    <button class="btn btn-danger" (click)="deleteApplication(app)">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <button (click)="registerApplication()" class="btn btn-primary" type="button">Register Application</button>
+</div>

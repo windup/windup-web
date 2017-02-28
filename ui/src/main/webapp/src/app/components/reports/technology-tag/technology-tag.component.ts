@@ -16,7 +16,7 @@ export class TechnologyTagComponent {
         else if ((<any>this.tag).level == "IMPORTANT")
             tagLevel = "danger";
 
-        return `label label-${tagLevel} tag`;
+        return `label label-${tagLevel} tech-tag`;
     }
 
     get tagValue():string {

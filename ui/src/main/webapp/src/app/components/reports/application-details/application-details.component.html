@@ -37,24 +37,24 @@
                 </td>
             </tr>
             <tr>
-                <td>
+                <td class="chartTD">
                     <div class="chartBoundary" *ngIf="globalPackageUseData && globalPackageUseData.length > 0">
                         <h4>Java Incidents by Package</h4>
                         <div id="application_pie" class="windupPieGraph">
                             <wu-package-chart
                                     [view]="[500, 150]"
                                     [results]="globalPackageUseData"
-                                    [scheme]="colorScheme"
+                                    [scheme]="getColorScheme(globalPackageUseData.length)"
                             ></wu-package-chart>
                         </div>
                     </div>
                 </td>
-                <td>
+                <td class="chartTD">
                     <div class="chartBoundary" *ngIf="tagFrequencies?.length > 0">
                         <h4>Technologies found - occurrence count</h4>
                         <ngx-charts-bar-horizontal
                                 [view]="[500, 258]"
-                                [scheme]="colorScheme"
+                                [scheme]="getColorScheme(tagFrequencies.length)"
                                 [results]="tagFrequencies"
                                 [showGridLines]="true"
                                 [xAxis]="true"
@@ -71,7 +71,7 @@
 <div class="row container-fluid" *ngIf="allProjects?.length > 0">
     <div class="theme-showcase" role="main">
         <template ngFor let-traversal [ngForOf]="rootProjects">
-            <div class="panel panel-primary" *ngIf="traversal.messages?.length > 0">
+            <div class="panel panel-default" *ngIf="traversal.messages?.length > 0">
                 <div class="panel-heading">
                     <h3 class="panel-title">Application Messages for: {{traversal.path}}</h3>
                 </div>
@@ -88,7 +88,7 @@
             <a id="expandAll" *ngIf="!allExpanded()" (click)="expandAll()">Expand All</a>
         </div>
 
-        <div *ngFor="let traversal of allProjects" class="panel panel-primary projectBox" id="{{traversal.canonicalID}}">
+        <div *ngFor="let traversal of allProjects" class="panel panel-default projectBox" id="{{traversal.canonicalID}}">
             <div class="panel-heading panel-collapsed clickable" (click)="toggleCollapsed(traversal)">
                 <span class="pull-left"><i class="glyphicon glyphicon-expand arrowIcon"></i></span>
                 <h3 class="panel-title" [ngSwitch]="">
@@ -174,7 +174,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>
+                            <td class="chartTD">
                                 <!-- Packages pie chart -->
                                 <div class="chartBoundary" *ngIf="packageFrequenciesByProject?.get(traversal.id)?.length > 0">
                                     <h4>Java Incidents by Package</h4>
@@ -182,18 +182,18 @@
                                         <wu-package-chart
                                                 [view]="[500, 150]"
                                                 [results]="packageFrequenciesByProject.get(traversal.id)"
-                                                [scheme]="colorScheme"
+                                                [scheme]="getColorScheme(packageFrequenciesByProject.get(traversal.id)?.length)"
                                         ></wu-package-chart>
                                     </div>
                                 </div>
                             </td>
-                            <td>
+                            <td class="chartTD">
                                 <div class="tagsBarChart chartBoundary" *ngIf="this.tagFrequenciesByProject?.get(traversal.id)?.length > 0">
                                     <h4>Technologies found - occurrence count</h4>
                                     <ngx-charts-bar-horizontal
                                             *ngIf="!isCollapsed(traversal)"
                                             [view]="[500, 258]"
-                                            [scheme]="colorScheme"
+                                            [scheme]="getColorScheme(this.tagFrequenciesByProject.get(traversal.id)?.length)"
                                             [results]="this.tagFrequenciesByProject.get(traversal.id)"
                                             [showGridLines]="true"
                                             [xAxis]="true"
