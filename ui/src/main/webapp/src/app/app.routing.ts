@@ -30,6 +30,7 @@ import {RuleProviderExecutionsComponent} from "./components/reports/rule-provide
 import {WizardComponent} from "./components/wizard.component";
 import {ExecutionDetailComponent} from "./components/executions/execution-detail.component";
 import {ApplicationListComponent} from "./components/application-list.component";
+import {ProjectExecutionsComponent} from "./components/executions/project-executions.component";
 
 export const appRoutes: Routes = [
     {path: "login", component: LoginComponent},
@@ -108,7 +109,7 @@ export const appRoutes: Routes = [
                                 path: '',
                                 component: ProjectLayoutComponent, data: {displayName: 'Project Detail'},
                                 children: [
-                                    { path: '', component: ApplicationListComponent, data: {displayName: 'Application List'} },
+                                    { path: '', component: ProjectExecutionsComponent, data: {displayName: 'Application List'} },
                                     { path: 'applications', children: [
                                         { path: 'register', component: RegisterApplicationFormComponent, data: {displayName: "Application Registration"}},
                                         {
