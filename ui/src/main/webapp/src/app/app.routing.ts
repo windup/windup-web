@@ -25,6 +25,7 @@ import {GroupExecutionsComponent} from "./components/executions/group-executions
 import {AllExecutionsComponent} from "./components/executions/all-executions.component";
 import {SourceReportComponent} from "./components/reports/source/source-report.component";
 import {ApplicationDetailsComponent} from "./components/reports/application-details/application-details.component";
+import {ApplicationIndexComponent} from "./components/reports/application-index/application-index.component";
 import {ReportFilterComponent} from "./components/reports/filter/report-filter.component";
 import {RuleProviderExecutionsComponent} from "./components/reports/rule-provider-executions/rule-provider-executions.component";
 import {WizardComponent} from "./components/wizard.component";
@@ -145,6 +146,7 @@ export const appRoutes: Routes = [
                                                 ]
                                             },
                                             {path: 'source/:fileId', component: SourceReportComponent, data: {displayName: 'Source Report'}},
+                                            {path: 'application-index', component: ApplicationIndexComponent, data: { displayName: 'Application Index'}},
                                             {path: 'application-details', component: ApplicationDetailsComponent, data: { displayName: 'Application Details'}},
                                             {path: 'executed-rules', component: RuleProviderExecutionsComponent, data: {displayName: 'Executed Rules'}},
                                             {path: 'dependencies', component: DependenciesReportComponent, data: {displayName: 'Dependencies Report' }}

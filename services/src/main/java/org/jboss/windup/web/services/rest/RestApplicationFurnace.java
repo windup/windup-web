@@ -1,5 +1,6 @@
 package org.jboss.windup.web.services.rest;
 
+import org.jboss.windup.web.addons.websupport.rest.AggregatedStatisticsEndpoint;
 import org.jboss.windup.web.addons.websupport.rest.FurnaceRESTGraphAPI;
 import org.jboss.windup.web.addons.websupport.rest.MigrationIssuesEndpoint;
 import org.jboss.windup.web.addons.websupport.rest.TagResource;
@@ -42,6 +43,10 @@ public class RestApplicationFurnace extends Application {
     @Inject @FromFurnace
     private MigrationIssuesEndpoint migrationIssuesEndpoint;
 
+    @Inject
+    @FromFurnace
+    private AggregatedStatisticsEndpoint aggregatedStatisticsEndPoint;
+
     @Inject @FromFurnace
     private ClassificationResource classificationResource;
 
@@ -73,6 +78,7 @@ public class RestApplicationFurnace extends Application {
         addService(singletons, graphResource);
         addService(singletons, fileModelResource);
         addService(singletons, migrationIssuesEndpoint);
+        addService(singletons, aggregatedStatisticsEndPoint);
         addService(singletons, classificationResource);
         addService(singletons, hintResource);
         addService(singletons, technologyTagResource);

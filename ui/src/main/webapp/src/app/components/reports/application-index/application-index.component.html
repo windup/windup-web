@@ -1,0 +1,177 @@
+<div class="page-header page-header-no-border">
+    <h1>
+        <div class="main">Application Index Report</div>
+    </h1>
+    <div class="desc">This report provides summary information about findings from the migration analysis.</div>
+</div>
+
+<!-- for report filter later, now disabled -->
+<!-- <wu-report-filter-indicator [group]="group"></wu-report-filter-indicator> -->
+
+
+<div class="container-fluid summaryInfo panel panel-primary col-md-12">
+
+    <!-- Stats for archives, components, files -->
+    <div class="row col-md-12 report-index-row">
+        <div class="panel panel-default col-md-3" style="margin-left: 20px;margin-right: 20px;">
+            <div class="panel-body">
+            <table class="table table-condensed ">
+                <caption>Summary</caption>
+                <tfoot>
+                    <tr class="info">
+                        <td><span class="highlightNumber">&Sigma;</span></td>
+                        <td><span class="highlightNumber">{{dependenciesStats.Dependency + dependenciesStats.KnownLibrary}}</span></td>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    <tr>
+                        <td> <i class="fa fa-cubes"></i> Applications</td>
+                        <td><span class="highlightNumber">{{dependenciesStats.Application}}</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">&nbsp;</td>
+                    </tr>                    
+                    <tr>
+                        <td> <i class="fa fa-puzzle-piece"></i> Known Libraries</td>
+                        <td><span class="highlightNumber">{{dependenciesStats.KnownLibrary}}</span></td>
+                    </tr>
+                    <tr>
+                        <td> <i class="fa fa-cube"></i> Dependencies</td>
+                        <td><span class="highlightNumber">{{dependenciesStats.Dependency}}</span></td>
+                    </tr>
+<!--                    <tr>
+                        <td>Shared Dependencies</td>
+                        <td><span class="highlightNumber">{{dependenciesStats.Dependency}}</span></td>
+                    </tr>     -->               
+                </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="panel panel-default col-md-3" style="margin-left: 20px;margin-right: 20px;">
+            <div class="panel-body">
+                <table class="table table-condensed">
+                    <caption>Components</caption>
+                    <tbody>
+                        <tr>
+                            <td class="summaryStats">EAR</td>
+                            <td><span class="highlightNumber">{{componentsStats.ear}}</span></td>
+                        </tr>
+                        <tr>
+                            <td class="summaryStats">WAR</td>
+                            <td><span class="highlightNumber">{{componentsStats.war}}</span></td>
+                        </tr>
+                        <tr>
+                            <td class="summaryStats">JAR</td>
+                            <td><span class="highlightNumber">{{componentsStats.jar}}</span></td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr class="info">
+                            <td class="summaryStats"><span class="highlightNumber">&Sigma;</span></td>
+                            <td><span class="highlightNumber">{{componentsStats.ear + componentsStats.war + componentsStats.jar}}</span></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <!-- Java packages usage -->
+        <div class="row col-md-12 report-index-row">
+
+            <div class="col-md-4 chartBoundary" *ngIf="globalPackageUseData && globalPackageUseData.length > 0">
+                <h4>Java Packages Usage Chart</h4>
+                <div id="application_pie" class="windupPieGraph">
+                    <wu-package-chart [results]="globalPackageUseData" [scheme]="colorScheme">
+                    </wu-package-chart>
+<!--                          <ngx-charts-pie-chart  -->
+<!--                                 [results]="globalPackageUseData" -->
+<!--                                 [scheme]="colorScheme" -->
+<!--                                 [doughnut]="true" -->
+<!--                                 [legend]="true" -->
+<!--                             > -->
+<!--                         </ngx-charts-pie-chart> -->
+            <span class="note">Note: this does not include XML files and "possible" issues.</span>
+            </div>
+            
+        </div>
+        <!-- categories incidents -->
+        <div class="col-md-4 chartBoundary" *ngIf="categoriesMultiStats && categoriesMultiStats.length > 0">
+            <h4>Incidents by Category</h4>
+            <ngx-charts-bar-vertical-2d [scheme]="colorScheme" [results]="categoriesMultiStats" [showGridLines]="true" [xAxis]="true"
+                [yAxis]="true" [legend]="true"> </ngx-charts-bar-vertical-2d>
+        </div>
+
+        <!-- mandatory incidents -->
+        <div class="col-md-4 chartBoundary" *ngIf="mandatoryMultiStats && mandatoryMultiStats.length > 0">
+            <h4>Mandatory Incidents by Type</h4>
+            <ngx-charts-bar-vertical-2d [scheme]="colorScheme" [results]="mandatoryMultiStats" [showGridLines]="true" [xAxis]="true"
+                [yAxis]="true" [legend]="true"> </ngx-charts-bar-vertical-2d>
+        </div>
+    </div>
+
+    <!-- Details with tables data - showing & hiding panel -->
+    <div class="row col-md-12 report-index-row">
+           <div class="panel panel-heading" style="cursor: pointer;">
+                <a (click)="showDetails = !showDetails">
+                    <span *ngIf="showDetails"><i class="glyphicon glyphicon-expand"></i> Hide Details</span>
+                    <span *ngIf="!showDetails"><i class="glyphicon glyphicon-collapse-down"></i> Show Details</span>
+                </a>
+           </div>
+           <div class="panel-body col-md-4" *ngIf="showDetails">
+                <table class="table table-condensed table-striped" *ngIf="globalPackageUseData && globalPackageUseData.length > 0">
+                    <caption>Java Packages Usage</caption> 
+                    <thead>
+                        <tr>
+                            <th>Java Package</th>
+                            <th>Incidents</th>
+                        </tr>
+                    </thead>
+                    <tbody id="javaIncidentsByPackageTBody">
+                        <tr *ngFor="let row of globalPackageUseData">
+                            <td>{{row.name}}</td>
+                            <td class="numeric-column">{{row.value}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+           </div>
+            <div class="panel-body col-md-4" *ngIf="showDetails">
+                <table class="table table-condensed table-striped" id="categoriesMultiStats"
+                *ngIf="categoriesMultiStats && categoriesMultiStats.length > 0">
+                    <caption>Incidents by Category</caption>
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Incidents</th>
+                            <th>Story Points</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let row of categoriesMultiStats">
+                           <td>{{row.name}}</td>
+                           <td class="numeric-column">{{row.series[0].value}}</td>
+                           <td class="numeric-column">{{row.series[1].value}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+           <div class="panel-body col-md-4" *ngIf="showDetails">
+                <table class="table table-condensed table-striped" id="mandatoryMultiStats"
+                *ngIf="mandatoryMultiStats && mandatoryMultiStats.length > 0">
+                    <caption>Mandatory Incidents by Type</caption>
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Incidents</th>
+                            <th>Story Points</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let row of mandatoryMultiStats">
+                           <td>{{row.name}}</td>
+                           <td class="numeric-column">{{row.series[0].value}}</td>
+                           <td class="numeric-column">{{row.series[1].value}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div> 
+    </div>
