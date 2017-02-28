@@ -69,6 +69,12 @@ public class RegisteredApplicationService
                     .getResultList();
     }
 
+    public Collection<RegisteredApplication> getApplicationsFromProject(long projectId)
+    {
+        String jql = "SELECT app FROM " + RegisteredApplication.class.getSimpleName() + " app WHERE app.migrationProject.id = " + projectId;
+        return entityManager.createQuery(jql, RegisteredApplication.class).getResultList();
+    }
+
     public RegisteredApplication getApplication(long id)
     {
         RegisteredApplication application = this.entityManager.find(RegisteredApplication.class, id);

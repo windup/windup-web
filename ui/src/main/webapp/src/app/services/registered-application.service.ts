@@ -25,10 +25,11 @@ export class RegisteredApplicationService extends AbstractService {
     public static REGISTER_PATH_URL = RegisteredApplicationService.PROJECT_APPLICATIONS + "/register-path";
     public static REGISTER_DIRECTORY_PATH_URL = RegisteredApplicationService.PROJECT_APPLICATIONS + "/register-directory-path";
 
-    public static REGISTERED_APPLICATION_SERVICE_NAME = "/registeredApplications";
+    public static SERVICE_SUBPATH = "/registeredApplications";
 
-    public static GET_APPLICATIONS_URL        = RegisteredApplicationService.REGISTERED_APPLICATION_SERVICE_NAME;
-    public static SINGLE_APPLICATION_URL  = RegisteredApplicationService.REGISTERED_APPLICATION_SERVICE_NAME + '/{appId}';
+    public static GET_APPLICATIONS_URL        = RegisteredApplicationService.SERVICE_SUBPATH;
+    public static BY_PROJECT_ID_URL           = RegisteredApplicationService.SERVICE_SUBPATH + "?projectId={id}";
+    public static SINGLE_APPLICATION_URL  = RegisteredApplicationService.SERVICE_SUBPATH + '/{appId}';
     public static UPDATE_APPLICATION_PATH_URL = RegisteredApplicationService.SINGLE_APPLICATION_URL + '/update-path';
     public static REUPLOAD_APPLICATION_URL    = RegisteredApplicationService.SINGLE_APPLICATION_URL + '/reupload';
 
@@ -142,6 +143,12 @@ export class RegisteredApplicationService extends AbstractService {
 
     getApplications(): Observable<RegisteredApplication[]> {
         return this._http.get(Constants.REST_BASE + RegisteredApplicationService.GET_APPLICATIONS_URL)
+            .map(res => <RegisteredApplication[]> res.json())
+            .catch(this.handleError);
+    }
+
+    getApplicationsByProjectID(id: number): Observable<RegisteredApplication[]> {
+        return this._http.get(Constants.REST_BASE + RegisteredApplicationService.BY_PROJECT_ID_URL.replace("{id}", id.toString()))
             .map(res => <RegisteredApplication[]> res.json())
             .catch(this.handleError);
     }

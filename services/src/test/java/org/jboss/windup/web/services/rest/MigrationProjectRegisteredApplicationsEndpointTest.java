@@ -56,15 +56,32 @@ public class MigrationProjectRegisteredApplicationsEndpointTest extends Abstract
 
         this.migrationProjectRegisteredApplicationsEndpoint = target.proxy(MigrationProjectRegisteredApplicationsEndpoint.class);
         this.registeredApplicationEndpoint = target.proxy(RegisteredApplicationEndpoint.class);
-        
+
         this.dummyProject = this.dataProvider.getMigrationProject();
+    }
+
+    @Test
+    @RunAsClient
+    public void testRegisteredAppByProjectId() throws Exception
+    {
+        try {
+            final MigrationProject project = this.dataProvider.getMigrationProject();
+            RegisteredApplication dummyApp = this.dataProvider.getApplication(project);
+            Collection<RegisteredApplication> existingApps = registeredApplicationEndpoint.getAllApplications(project.getId());
+            Assert.assertNotEquals(0, existingApps.size());
+        }
+        finally
+        {
+            for (RegisteredApplication application : registeredApplicationEndpoint.getAllApplications(null))
+                registeredApplicationEndpoint.deleteApplication(application.getId());
+        }
     }
 
     @Test
     @RunAsClient
     public void testRegisterAppByPath() throws Exception
     {
-        Collection<RegisteredApplication> existingApps = registeredApplicationEndpoint.getAllApplications();
+        Collection<RegisteredApplication> existingApps = registeredApplicationEndpoint.getAllApplications(null);
         Assert.assertEquals(0, existingApps.size());
 
         File tempFile1 = File.createTempFile(RegisteredApplicationEndpointTest.class.getSimpleName() + ".1", ".ear");
@@ -75,7 +92,7 @@ public class MigrationProjectRegisteredApplicationsEndpointTest extends Abstract
 
         try
         {
-            Collection<RegisteredApplication> apps = registeredApplicationEndpoint.getAllApplications();
+            Collection<RegisteredApplication> apps = registeredApplicationEndpoint.getAllApplications(null);
             Assert.assertEquals(2, apps.size());
             boolean foundPath1 = false;
             boolean foundPath2 = false;
@@ -93,7 +110,7 @@ public class MigrationProjectRegisteredApplicationsEndpointTest extends Abstract
         }
         finally
         {
-            for (RegisteredApplication application : registeredApplicationEndpoint.getAllApplications())
+            for (RegisteredApplication application : registeredApplicationEndpoint.getAllApplications(null))
             {
                 registeredApplicationEndpoint.deleteApplication(application.getId());
             }
@@ -104,7 +121,7 @@ public class MigrationProjectRegisteredApplicationsEndpointTest extends Abstract
     @RunAsClient
     public void testRegisterAppUpload() throws Exception
     {
-        Collection<RegisteredApplication> existingApps = registeredApplicationEndpoint.getAllApplications();
+        Collection<RegisteredApplication> existingApps = registeredApplicationEndpoint.getAllApplications(null);
         Assert.assertEquals(0, existingApps.size());
 
         try (InputStream sampleIS = getClass().getResourceAsStream(DataProvider.TINY_SAMPLE_PATH))
@@ -123,7 +140,7 @@ public class MigrationProjectRegisteredApplicationsEndpointTest extends Abstract
                 RegisteredApplication application = response.readEntity(RegisteredApplication.class);
                 response.close();
 
-                Collection<RegisteredApplication> apps = registeredApplicationEndpoint.getAllApplications();
+                Collection<RegisteredApplication> apps = registeredApplicationEndpoint.getAllApplications(null);
                 Assert.assertEquals(1, apps.size());
 
                 Assert.assertEquals(fileName, application.getTitle());
@@ -140,7 +157,7 @@ public class MigrationProjectRegisteredApplicationsEndpointTest extends Abstract
             }
             finally
             {
-                for (RegisteredApplication application : registeredApplicationEndpoint.getAllApplications())
+                for (RegisteredApplication application : registeredApplicationEndpoint.getAllApplications(null))
                 {
                     registeredApplicationEndpoint.deleteApplication(application.getId());
                 }

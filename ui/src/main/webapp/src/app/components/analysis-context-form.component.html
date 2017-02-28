@@ -5,6 +5,7 @@
 </h1>
 
 <h2 *ngIf="!applicationGroup" i18n>Loading...</h2>
+
 <form *ngIf="applicationGroup" #analysisContextForm="ngForm" (ngSubmit)="onSubmit()"  class="form-horizontal">
 
     <div *ngFor="let errorMessage of errorMessages" class="row form-errors alert alert-danger">
@@ -17,7 +18,7 @@
     <div class="row">
         <div class="form-group">
             <label class="col-md-2 control-label" for="migrationPath" i18n>Migration Path</label>
-            <div class="col-md-6">
+            <div class="col-md-10 col-lg-8">
                 <select #migrationPath="ngModel" id="migrationPath" name="migrationPath" ngControl="migrationPath"
                         class="form-control" required
                         [(ngModel)]="analysisContext.migrationPath.id"
@@ -30,9 +31,27 @@
                 </span>
             </div>
         </div>
+
+        <!-- Apps -->
+        <div class="form-group">
+            <label class="col-md-2 control-label" i18n>Applications included</label>
+            <div class="col-md-10 col-lg-8">
+                <wu-checkboxes [groupName]="'includedApps'"
+                               [options]="availableApps"
+                               [valueCallback]="appsValueCallback"
+                               [labelCallback]="appsLabelCallback"
+                               [equalsCallback]="equalsCallback"
+                               [(checkedOptions)]="applicationGroup.applications"
+                               (checkedOptionsChange)="onCheckedOptionsChange()"
+                >
+                </wu-checkboxes>
+            </div>
+        </div>
+
+        <!-- Packages -->
         <div class="form-group">
             <label class="col-md-2 control-label" i18n>Include Packages</label>
-            <div class="col-md-4">
+            <div class="col-md-10 col-lg-8">
                 <wu-js-tree-wrapper
                         [treeNodes]="packageTree"
                         [(selectedNodes)]="analysisContext.includePackages"
@@ -42,7 +61,7 @@
         </div>
         <div class="form-group">
             <label class="col-md-2 control-label" i18n>Exclude Package</label>
-            <div class="col-md-3">
+            <div class="col-md-10 col-lg-8">
                 <wu-js-tree-wrapper
                         [treeNodes]="packageTree"
                         [(selectedNodes)]="analysisContext.excludePackages">
@@ -51,8 +70,18 @@
         </div>
         <wu-custom-rule-selection [selectedRulePaths]="analysisContext.rulesPaths" (selectedRulePathsChanged)="rulesPathsChanged($event)"></wu-custom-rule-selection>
         <div class="form-group">
-            <label class="col-md-2 control-label" i18n>Advanced Options</label>
+            <label class="col-md-2 control-label">Custom Ruleset selection</label>
             <div class="col-md-6">
+                <wu-custom-rule-selection
+                        [selectedRulePaths]="analysisContext.rulesPaths"
+                        (selectedRulePathsChanged)="rulesPathsChanged($event)">
+                </wu-custom-rule-selection>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-2 control-label" i18n>Advanced Options</label>
+            <div class="col-md-10 col-lg-8">
                 <wu-analysis-context-advanced-options
                         [(selectedOptions)]="analysisContext.advancedOptions"
                         (advancedOptionsChanged)="advancedOptionsChanged($event)"
@@ -62,10 +91,10 @@
             </div>
         </div>
         <div class="form-group">
-            <div class="col-md-10 col-md-offset-2">
-                <button *ngIf="isInWizard" [disabled]="!analysisContextForm.form.valid" class="btn btn-primary" (click)="saveAndRun()" i18n>Save &amp; Run</button>
-                <button [disabled]="!analysisContextForm.form.valid" class="btn btn-primary" (click)="save()" i18n>Save Configuration</button>
-                <button (click)="cancel()" type="button" class="btn btn-default" i18n>Cancel</button>
+            <div class="col-lg-10 col-lg-offset-2">
+                <button (click)="saveAndRun()" class="btn btn-primary" [disabled]="!analysisContextForm.form.valid" *ngIf="isInWizard" i18n>Save &amp; Run</button>
+                <button (click)="save()"       class="btn btn-primary" [disabled]="!analysisContextForm.form.valid" i18n>Save Configuration</button>
+                <button (click)="cancel()"     class="btn btn-default" type="button" i18n>Cancel</button>
             </div>
         </div>
     </div>

@@ -106,6 +106,7 @@ import {MomentModule} from "angular2-moment";
 import {FileUploadModule, FileUploader} from "ng2-file-upload";
 import {WizardComponent} from "./components/wizard.component";
 import {DurationPipe} from "./components/duration.pipe";
+import {CheckboxesComponent} from "./components/reusable/checkboxes.component";
 import {TabContainerComponent} from "./components/tabs/tab-container.component";
 import {TabComponent} from "./components/tabs/tab.component";
 import {LogViewComponent} from "./components/log-view.component";
@@ -176,6 +177,7 @@ initializeModelMappingData();
         RulesModalComponent,
         TechnologyComponent,
 
+        CheckboxesComponent,
         UploadQueueComponent,
         UploadProgressbarComponent,
         CustomRuleSelectionComponent,

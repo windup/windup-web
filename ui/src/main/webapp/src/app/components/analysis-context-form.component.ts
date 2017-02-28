@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from "@angular/core";
+import {Component, OnInit, ViewChild, OnChanges, SimpleChanges} from "@angular/core";
 import {NgForm} from "@angular/forms";
 import {ActivatedRoute, Router, NavigationEnd} from "@angular/router";
 
@@ -19,49 +19,56 @@ import {RouteFlattenerService} from "../services/route-flattener.service";
 import {WindupService} from "../services/windup.service";
 import {NotificationService} from "../services/notification.service";
 import {utils} from "../utils";
+import {RegisteredApplicationService} from "../services/registered-application.service";
+import {RegisteredApplication} from "windup-services";
 
 @Component({
     templateUrl: './analysis-context-form.component.html'
 })
-export class AnalysisContextFormComponent extends FormComponent implements OnInit, IsDirty
+export class AnalysisContextFormComponent extends FormComponent
+    implements OnInit, IsDirty, OnChanges
 {
     @ViewChild(NgForm)
-    private analysisContextForm:NgForm;
+    private analysisContextForm: NgForm;
 
     private _dirty: boolean = null;
 
+    // Models
     applicationGroup: ApplicationGroup = null;
+    analysisContext: AnalysisContext;
 
-    analysisContext:AnalysisContext;
-    packageTree: Package[] = [];
+
+    availableApps: RegisteredApplication[];
+    includedApps: RegisteredApplication[];
 
     /**
      * These two variables exist because we need for the item in the array not to just be a literal.
-     *
-     * This works around issues with JavaScript not being able to iterate over and modify a simple array of literals within
-     * a form easily.
-     *
+     * Workaround for JavaScript issues not able to iterate and modify a simple array of literals within a form easily.
      * See also: http://stackoverflow.com/questions/33346677/angular2-ngmodel-against-ngfor-variables
      */
     includePackages: Package[];
     excludePackages: Package[];
+    packageTree: Package[] = [];
 
-    configurationOptions:ConfigurationOption[] = [];
+    configurationOptions: ConfigurationOption[] = [];
 
-    private _migrationPathsObservable:Observable<MigrationPath[]>;
+    private _migrationPathsObservable: Observable<MigrationPath[]>;
     private routerSubscription: Subscription;
 
     isInWizard: boolean;
-
-
     action: Action;
 
-    constructor(private _router:Router,
+    onCheckedOptionsChange(event){
+        console.warn('onCheckedOptionsChange() called', this.applicationGroup.applications, event);
+    }
+
+    constructor(private _router: Router,
                 private _activatedRoute: ActivatedRoute,
-                private _applicationGroupService:ApplicationGroupService,
-                private _migrationPathService:MigrationPathService,
-                private _analysisContextService:AnalysisContextService,
-                private _configurationOptionsService:ConfigurationOptionsService,
+                private _applicationGroupService: ApplicationGroupService,
+                private _migrationPathService: MigrationPathService,
+                private _analysisContextService: AnalysisContextService,
+                private _appService: RegisteredApplicationService,
+                private _configurationOptionsService: ConfigurationOptionsService,
                 private _packageRegistryService: PackageRegistryService,
                 private _routeHistoryService: RouteHistoryService,
                 private _routeFlattener: RouteFlattenerService,
@@ -78,18 +85,26 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
             this.configurationOptions = options;
         });
 
+        ///this._appService.getApplications().subscribe( apps => this.updateAvailableApps(apps) );
+
         this.routerSubscription = this._router.events.filter(event => event instanceof NavigationEnd).subscribe(_ => {
             let flatRouteData = this._routeFlattener.getFlattenedRouteData(this._activatedRoute.snapshot);
-
             if (flatRouteData.data['applicationGroup']) {
                 let applicationGroup = flatRouteData.data['applicationGroup'];
 
-                // Reload from the service to insure fresh data
+                // Reload the App from the service to ensure fresh data
                 this._applicationGroupService.get(applicationGroup.id).subscribe(updatedGroup => {
                     this.applicationGroup = updatedGroup;
+
+                    // Load the apps of this project.
+                    this._appService.getApplicationsByProjectID(this.applicationGroup.migrationProject.id)
+                        .subscribe( apps => {
+                            this.availableApps = apps;
+                            console.log("Loaded availableApps", apps);
+                        } );
+
                     this.initializeAnalysisContext();
                     this.loadPackageMetadata();
-                    console.log("Loaded analysis context: " + JSON.stringify(this.analysisContext));
                 });
             }
 
@@ -97,7 +112,20 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
         });
     }
 
-    getDefaultAnalysisContext() {
+    ngOnChanges(changes: SimpleChanges): void {
+        // Checkboxes changed
+        if (changes.hasOwnProperty("includedApps")) {
+            console.log("Changing included apps to: ", changes["includedApps"].currentValue);
+            this.applicationGroup.applications = changes["includedApps"].currentValue;
+        }
+    }
+
+    appsValueCallback = (app: RegisteredApplication) => ""+app.id;
+    appsLabelCallback = (app: RegisteredApplication) => app.title;
+    equalsCallback = (a1: RegisteredApplication, a2: RegisteredApplication) => a1.id === a2.id;
+
+
+    static getDefaultAnalysisContext() {
         let analysisContext = <AnalysisContext>{};
         analysisContext.migrationPath = <MigrationPath>{id: 0};
         analysisContext.advancedOptions = [];
@@ -108,11 +136,11 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
         return analysisContext;
     }
 
-    initializeAnalysisContext() {
+    private initializeAnalysisContext() {
         let analysisContext = this.applicationGroup.analysisContext;
 
         if (analysisContext == null) {
-            analysisContext = this.getDefaultAnalysisContext();
+            analysisContext = AnalysisContextFormComponent.getDefaultAnalysisContext();
         } else {
             // for migration path, store the id only
             if (analysisContext.migrationPath) {
@@ -126,6 +154,8 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
         }
 
         this.analysisContext = analysisContext;
+
+        console.log("initializeAnalysisContext() done: " + JSON.stringify(this.analysisContext));
     }
 
     private loadPackageMetadata() {
@@ -178,37 +208,42 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
         this._dirty = true;
     }
 
-    onNodesChanged(event) {
-        console.log(event);
-    }
-
-    save() {
-        this.action = Action.Save;
-    }
 
     onSubmit() {
-        if (this.analysisContext.id != null) {
-            console.log("Updating analysis context: " + this.analysisContext.migrationPath.id);
-            this._analysisContextService.update(this.analysisContext).subscribe(
-                analysisContext => {
-                    this._dirty = false;
-                    this.onSuccess(analysisContext);
-                },
-                error => this.handleError(<any> error)
-            );
-        } else {
-            console.log("Creating analysis context: " + this.analysisContext.migrationPath.id);
-            this._analysisContextService.create(this.analysisContext).subscribe(
-                analysisContext => {
-                    this._dirty = false;
-                    this.onSuccess(analysisContext);
-                },
-                error => this.handleError(<any> error)
-            );
-        }
+        // Store the Analysis Context
+        let update = this.analysisContext.id != null;
+        let service = update ? this._analysisContextService.update : this._analysisContextService.create;
+
+        console.log(`Updating/creating analysis context #${this.analysisContext.id}, migrPath: ${this.analysisContext.migrationPath.id}`);
+
+
+        //let contextObservable = service(this.analysisContext);
+        let contextObservable = service.call(this._analysisContextService, this.analysisContext);
+
+        // Store the App Group
+
+        // Remove this because the service can't handle circular relation and would complain:
+        // Already had POJO for id (java.lang.Long) [[ObjectId: key=73, ...
+        let tmpContext = this.applicationGroup.analysisContext;
+        this.applicationGroup.analysisContext = void 0;
+
+        let appGroupObservable = this._applicationGroupService.update(this.applicationGroup);
+
+        // Wait for both
+        Observable.forkJoin( contextObservable, appGroupObservable).subscribe(
+            results => {
+                this._dirty = false;
+                this.onSuccess(<AnalysisContext>results[0], <ApplicationGroup>results[1]);
+                this.applicationGroup.analysisContext = tmpContext;
+            },
+            error => {
+                this.applicationGroup.analysisContext = tmpContext;
+                this.handleError(error);
+            }
+        );
     }
 
-    onSuccess(analysisContext: AnalysisContext) {
+    onSuccess(analysisContext: AnalysisContext, appGroup: ApplicationGroup) {
         if (this.action === Action.SaveAndRun) {
             this._windupService.executeWindupGroup(this.applicationGroup.id)
                 .subscribe(execution => {
@@ -225,19 +260,13 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
         }
     }
 
+    // Button handlers
     saveAndRun() {
         this.action = Action.SaveAndRun;
     }
-
-    rulesPathsChanged(rulesPaths:RulesPath[]) {
-        this.analysisContext.rulesPaths = rulesPaths;
+    save() {
+        this.action = Action.Save;
     }
-
-    viewAdvancedOptions(advancedOptionsModal:ModalDialogComponent) {
-        advancedOptionsModal.show();
-        return false;
-    }
-
     cancel() {
         if (!this.isInWizard) {
             this.navigateBack();
@@ -245,11 +274,15 @@ export class AnalysisContextFormComponent extends FormComponent implements OnIni
             this._router.navigate(['/']);
         }
     }
-
     navigateBack() {
         let groupPageRoute = `/projects/${this.applicationGroup.migrationProject.id}/groups/${this.applicationGroup.id}`;
         this._routeHistoryService.navigateBackOrToRoute(groupPageRoute);
     }
+
+    rulesPathsChanged(rulesPaths:RulesPath[]) {
+        this.analysisContext.rulesPaths = rulesPaths;
+    }
+
 }
 
 enum Action {
