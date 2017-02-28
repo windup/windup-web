@@ -38,6 +38,10 @@ public interface WindupEndpoint
     @Path("executions")
     Collection<WindupExecution> getAllExecutions();
 
+    @GET
+    @Path("by-project/{projectId}")
+    Collection<WindupExecution> getProjectExecutions(@PathParam("projectId") Long projectId);
+
     @POST
     @Path("executions/{executionId}/cancel")
     void cancelExecution(@PathParam("executionId") Long executionID);

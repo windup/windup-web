@@ -22,6 +22,7 @@ import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.messaging.MessagingConstants;
 import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.ExecutionState;
+import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.model.RegisteredApplication;
 import org.jboss.windup.web.services.model.WindupExecution;
 import org.jboss.windup.web.services.service.AnalysisContextService;
@@ -137,5 +138,23 @@ public class WindupEndpointImpl implements WindupEndpoint
         // TODO: Cancel execution here
         execution.setState(ExecutionState.CANCELLED);
         this.entityManager.merge(execution);
+    }
+
+    @Override
+    public Collection<WindupExecution> getProjectExecutions(Long projectId)
+    {
+        if (projectId == null) {
+            throw new BadRequestException("Invalid projectId");
+        }
+
+        MigrationProject project = this.entityManager.find(MigrationProject.class, projectId);
+
+        if (project == null) {
+            throw new NotFoundException("Migration project with id: " + projectId + " not found");
+        }
+
+       return this.entityManager.createQuery("SELECT ex FROM WindupExecution ex JOIN ex.group AS gr WHERE gr.migrationProject = :project")
+               .setParameter("project", project)
+               .getResultList();
     }
 }
