@@ -13,6 +13,7 @@ import {GroupListComponent} from "../group-list.component";
 import {utils} from '../../utils';
 import {GroupPageComponent} from "../group.page.component";
 import {GroupExecutionsComponent} from "../executions/group-executions.component";
+import {ApplicationIndexComponent} from "../reports/application-index/application-index.component";
 import {ApplicationDetailsComponent} from "../reports/application-details/application-details.component";
 import {ApplicationGroupService} from "../../services/application-group.service";
 import {WindupExecutionService} from "../../services/windup-execution.service";
@@ -141,6 +142,13 @@ export class GroupLayoutComponent extends AbstractComponent implements OnInit, O
                 isEnabled: true
             },
             */
+            new ReportMenuItem(
+                'Application Index',
+                'fa-book',
+                this.applicationGroup,
+                ApplicationIndexComponent,
+                this._routeLinkProviderService,
+            ),
             new ReportMenuItem(
                 'Application Details',
                 'fa-list',

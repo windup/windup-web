@@ -1,0 +1,22 @@
+.numeric-column {
+    text-align: right;
+}
+
+table.summaryLayout {
+    width: 100%;
+}
+
+table.summaryLayout > tr > td, table.summaryLayout > tbody > tr > td {
+    margin-bottom: 2ex;
+    vertical-align: top;
+}
+
+.highlightNumber {
+    color: #00254b;
+    font-size: 20pt;
+    width: 1.5em;
+}
+
+.legend {
+    text-align: center;
+}

@@ -21,6 +21,10 @@ import org.jboss.windup.rules.apps.java.archives.model.IdentifiedArchiveModel;
  */
 public class LibraryDependenciesService implements DependenciesService
 {
+    public static final String KEY_FILE_NAME = "fileName";
+
+    public static final String KEY_FILE_PATH = "filePath";
+
     public enum Type
     {
         Application,
@@ -182,16 +186,16 @@ public class LibraryDependenciesService implements DependenciesService
     {
         if (isRootProject)
         {
-            data.put("filePath", fileModel.getFileName());
+            data.put(KEY_FILE_PATH, fileModel.getFileName());
         }
         else
         {
             Path graphPath = this.graphContext.getGraphDirectory().getParent().resolve("archives");
             String filePath = fileModel.getFilePath().replace(graphPath.toString() + "/", "");
-            data.put("filePath", filePath);
+            data.put(KEY_FILE_PATH, filePath);
         }
 
-        data.put("fileName", fileModel.getFileName());
+        data.put(KEY_FILE_NAME, fileModel.getFileName());
 
         return data;
     }

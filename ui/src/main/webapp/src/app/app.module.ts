@@ -83,6 +83,8 @@ import {CustomSelectComponent} from "./components/custom-select/custom-select.co
 import {ReportFilterIndicatorComponent} from "./components/reports/filter/report-filter-indicator.component";
 import {ApplicationDetailsComponent} from "./components/reports/application-details/application-details.component";
 import {NgxChartsModule} from "@swimlane/ngx-charts";
+import {ApplicationIndexComponent} from "./components/reports/application-index/application-index.component";
+import {AggregatedStatisticsService} from "./components/reports/application-index/aggregated-statistics.service";
 import {PackageChartComponent} from "./components/package-chart/package-chart.component";
 import {ApplicationDetailsService} from "./components/reports/application-details/application-details.service";
 import {TechnologyTagComponent} from "./components/reports/technology-tag/technology-tag.component";
@@ -155,6 +157,7 @@ initializeModelMappingData();
         DependenciesReportComponent,
         SourceReportComponent,
         ApplicationDetailsComponent,
+        ApplicationIndexComponent,
         PrettyPathPipe,
 
         // Report components
@@ -266,7 +269,8 @@ initializeModelMappingData();
             provide: GraphJSONToModelService,
             useFactory: createGraphJSONToModelService,
             deps: [Http]
-        }
+        },
+        AggregatedStatisticsService
     ],
     bootstrap:    [ AppComponent ]
 })
