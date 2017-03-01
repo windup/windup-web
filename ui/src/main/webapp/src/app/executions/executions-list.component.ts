@@ -1,17 +1,17 @@
 import {Component, ElementRef, Input, OnInit} from "@angular/core";
-import {WindupService} from "../../services/windup.service";
+import {WindupService} from "../services/windup.service";
 import {WindupExecution} from "windup-services";
-import {NotificationService} from "../../core/notification/notification.service";
-import {utils} from '../../shared/utils';
-import {SortingService, OrderDirection} from "../../shared/sorting.service";
-import {MigrationProjectService} from "../../project/migration-project.service";
+import {NotificationService} from "../core/notification/notification.service";
+import {utils} from '../shared/utils';
+import {SortingService, OrderDirection} from "../shared/sorting.service";
+import {MigrationProjectService} from "../project/migration-project.service";
 import {MigrationProject} from "windup-services";
 
 @Component({
     selector: 'wu-executions-list',
     templateUrl: './executions-list.component.html',
     providers: [SortingService],
-    styleUrls: ['../../../../css/tables.scss']
+    styleUrls: ['../../../css/tables.scss']
 })
 export class ExecutionsListComponent implements OnInit {
     protected element;

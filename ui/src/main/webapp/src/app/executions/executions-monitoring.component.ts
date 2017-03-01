@@ -1,7 +1,7 @@
 import {WindupExecution} from "windup-services";
-import {AbstractComponent} from "../../shared/AbstractComponent";
-import {WindupExecutionService} from "../../services/windup-execution.service";
-import {ExecutionEvent} from "../../core/events/windup-event";
+import {AbstractComponent} from "../shared/AbstractComponent";
+import {WindupExecutionService} from "../services/windup-execution.service";
+import {ExecutionEvent} from "../core/events/windup-event";
 
 export abstract class ExecutionsMonitoringComponent extends AbstractComponent {
     protected activeExecutionsMap: Map<number, WindupExecution> = new Map<number, WindupExecution>();

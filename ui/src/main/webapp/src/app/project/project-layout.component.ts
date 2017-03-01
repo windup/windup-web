@@ -12,7 +12,7 @@ import {ReportMenuItem, ContextMenuItem} from "../shared/navigation/context-menu
 import {AnalysisContextFormComponent} from "../analysis-context/analysis-context-form.component";
 import {NotificationService} from "../core/notification/notification.service";
 import {utils} from '../shared/utils';
-import {GroupExecutionsComponent} from "../components/executions/group-executions.component";
+import {GroupExecutionsComponent} from "../executions/group-executions.component";
 import {ApplicationIndexComponent} from "../reports/application-index/application-index.component";
 import {ApplicationDetailsComponent} from "../reports/application-details/application-details.component";
 import {ApplicationGroupService} from "../group/application-group.service";
@@ -25,7 +25,7 @@ import {
 import {AbstractComponent} from "../shared/AbstractComponent";
 import {ReportFilterComponent} from "../reports/filter/report-filter.component";
 import {WINDUP_WEB} from "../app.module";
-import {ProjectExecutionsComponent} from "../components/executions/project-executions.component";
+import {ProjectExecutionsComponent} from "../executions/project-executions.component";
 import {ApplicationListComponent} from "../registered-application/application-list.component";
 
 

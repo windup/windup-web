@@ -20,17 +20,17 @@ import {ProjectResolve} from "./project/project.resolve";
 import {ConfigurationResolve} from "./configuration/configuration.resolve";
 import {ApplicationResolve} from "./registered-application//application.resolve";
 import {FullFlattenedRoute} from "./core/routing/route-flattener.service";
-import {GroupExecutionsComponent} from "./components/executions/group-executions.component";
-import {AllExecutionsComponent} from "./components/executions/all-executions.component";
+import {GroupExecutionsComponent} from "./executions/group-executions.component";
+import {AllExecutionsComponent} from "./executions/all-executions.component";
 import {SourceReportComponent} from "./reports/source/source-report.component";
 import {ApplicationDetailsComponent} from "./reports/application-details/application-details.component";
 import {ApplicationIndexComponent} from "./reports/application-index/application-index.component";
 import {ReportFilterComponent} from "./reports/filter/report-filter.component";
 import {RuleProviderExecutionsComponent} from "./reports/rule-provider-executions/rule-provider-executions.component";
 import {WizardComponent} from "./shared/wizard.component";
-import {ExecutionDetailComponent} from "./components/executions/execution-detail.component";
+import {ExecutionDetailComponent} from "./executions/execution-detail.component";
 import {ApplicationListComponent} from "./registered-application/application-list.component";
-import {ProjectExecutionsComponent} from "./components/executions/project-executions.component";
+import {ProjectExecutionsComponent} from "./executions/project-executions.component";
 
 export const appRoutes: Routes = [
     {path: "login", component: LoginComponent},

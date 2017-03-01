@@ -19,7 +19,7 @@ import {RouteFlattenerService} from "../core/routing/route-flattener.service";
 import {WindupService} from "../services/windup.service";
 import {NotificationService} from "../core/notification/notification.service";
 import {utils} from "../shared/utils";
-import {RegisteredApplicationService} from "../services/registered-application.service";
+import {RegisteredApplicationService} from "../registered-application/registered-application.service";
 import {RegisteredApplication} from "windup-services";
 
 @Component({

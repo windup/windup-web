@@ -1,11 +1,11 @@
 import {Component, OnInit} from "@angular/core";
 import {WindupExecution, ApplicationGroup} from "windup-services";
 import {ActivatedRoute} from "@angular/router";
-import {EventBusService} from "../../core/events/event-bus.service";
-import {WindupExecutionService} from "../../services/windup-execution.service";
+import {EventBusService} from "../core/events/event-bus.service";
+import {WindupExecutionService} from "../services/windup-execution.service";
 import {ExecutionsMonitoringComponent} from "./executions-monitoring.component";
 import {MigrationProject} from "windup-services";
-import {WindupService} from "../../services/windup.service";
+import {WindupService} from "../services/windup.service";
 
 @Component({
     template: '<wu-executions-list [executions]="executions" [activeExecutions]="activeExecutions"></wu-executions-list>'

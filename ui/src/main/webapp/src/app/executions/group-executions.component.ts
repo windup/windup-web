@@ -1,12 +1,12 @@
 import {Component, OnInit} from "@angular/core";
 import {WindupExecution, ApplicationGroup} from "windup-services";
 import {ActivatedRoute} from "@angular/router";
-import {EventBusService} from "../../core/events/event-bus.service";
+import {EventBusService} from "../core/events/event-bus.service";
 import {
     ExecutionEvent, ExecutionUpdatedEvent, NewExecutionStartedEvent,
     ApplicationGroupEvent
-} from "../../core/events/windup-event";
-import {WindupExecutionService} from "../../services/windup-execution.service";
+} from "../core/events/windup-event";
+import {WindupExecutionService} from "../services/windup-execution.service";
 import {ExecutionsMonitoringComponent} from "./executions-monitoring.component";
 
 @Component({

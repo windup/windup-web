@@ -10,7 +10,7 @@ import {utils} from "../shared/utils";
 import {WindupExecutionService} from "../services/windup-execution.service";
 import {EventBusService} from "../core/events/event-bus.service";
 import {ExecutionEvent} from "../core/events/windup-event";
-import {ExecutionsMonitoringComponent} from "../components/executions/executions-monitoring.component";
+import {ExecutionsMonitoringComponent} from "../executions/executions-monitoring.component";
 import {MigrationProject} from "windup-services";
 
 @Component({

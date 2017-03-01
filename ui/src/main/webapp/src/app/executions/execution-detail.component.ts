@@ -1,13 +1,13 @@
 import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
-import {WindupService} from "../../services/windup.service";
+import {WindupService} from "../services/windup.service";
 import {WindupExecution} from "windup-services";
-import {WINDUP_WEB} from "../../app.module";
+import {WINDUP_WEB} from "../app.module";
 
 import {someLog} from './some-log';
 
 @Component({
-    templateUrl: 'execution-detail.component.html',
+    templateUrl: './execution-detail.component.html',
     styleUrls: ['./execution-detail.component.scss']
 })
 export class ExecutionDetailComponent implements OnInit {
