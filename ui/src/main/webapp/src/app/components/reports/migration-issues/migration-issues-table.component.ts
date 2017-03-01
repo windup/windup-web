@@ -13,7 +13,7 @@ import {SortingService, OrderDirection} from "../../../services/sorting.service"
     styles: [`
         a { cursor: pointer; }
         
-        table.migration-issues-table { margin-bottom: 0; font-size: 14px; }
+        table.migration-issues-table { margin-bottom: 0; }
         table.migration-issues-table > thead > tr > th:first-child { text-align: left; }
         table.migration-issues-table > thead > tr > th             { text-align: right; }
         table.migration-issues-table > tbody > tr > th:first-child,
@@ -22,7 +22,7 @@ import {SortingService, OrderDirection} from "../../../services/sorting.service"
         table.migration-issues-table > tbody > tr > td             { text-align: right; }
 
         /* Files subtable */
-        table.migration-issues-table table { margin-bottom: 0; font-size: 14px; border: 1px solid #e7e7e7; }
+        table.migration-issues-table table { margin-bottom: 0; border: 1px solid #e7e7e7; }
         table.migration-issues-table table tbody td { background: #fffff5 !important; } /* A very subtle yellow tint. */
         
         table.migration-issues-table table.filesDetails > thead > tr > th.fileName { text-align: left; }
