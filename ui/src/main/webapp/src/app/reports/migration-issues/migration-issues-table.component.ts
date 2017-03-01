@@ -9,7 +9,7 @@ import {MigrationIssuesService} from "./migration-issues.service";
 import {NotificationService} from "../../core/notification/notification.service";
 import {GraphJSONToModelService} from "../../services/graph/graph-json-to-model.service";
 import {FileModel} from "../../generated/tsModels/FileModel";
-import {SortingService, OrderDirection} from "../../shared/sorting.service";
+import {SortingService, OrderDirection} from "../../shared/sort/sorting.service";
 
 @Component({
     selector: 'wu-migration-issues-table',

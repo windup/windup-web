@@ -6,7 +6,7 @@ import {MigrationProject} from "windup-services";
 import {NotificationService} from "../core/notification/notification.service";
 import {utils} from "../shared/utils";
 import {ConfirmationModalComponent} from "../shared/confirmation-modal.component";
-import {SortingService, OrderDirection} from "../shared/sorting.service";
+import {SortingService, OrderDirection} from "../shared/sort/sorting.service";
 
 @Component({
     templateUrl: './project-list.component.html',

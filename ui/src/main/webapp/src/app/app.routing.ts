@@ -27,7 +27,7 @@ import {ApplicationDetailsComponent} from "./reports/application-details/applica
 import {ApplicationIndexComponent} from "./reports/application-index/application-index.component";
 import {ReportFilterComponent} from "./reports/filter/report-filter.component";
 import {RuleProviderExecutionsComponent} from "./reports/rule-provider-executions/rule-provider-executions.component";
-import {WizardComponent} from "./shared/wizard.component";
+import {WizardComponent} from "./shared/wizard/wizard.component";
 import {ExecutionDetailComponent} from "./executions/execution-detail.component";
 import {ApplicationListComponent} from "./registered-application/application-list.component";
 import {ProjectExecutionsComponent} from "./executions/project-executions.component";
