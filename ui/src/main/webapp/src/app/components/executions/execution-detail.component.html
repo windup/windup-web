@@ -16,10 +16,13 @@
     <wu-tab-container>
         <wu-tab [tabTitle]="'Available Reports'">
             <ul>
+                <li><a [routerLink]="['./application-index']" i18n="report">Application Index</a></li>
                 <li><a [routerLink]="['./application-details']" i18n="report">Application Details</a></li>
                 <li><a [routerLink]="['./migration-issues']" i18n="report">Issues</a></li>
-                <li><a [routerLink]="['./technology-report']" i18n="report">Technologies</a></li>
-                <li><a [routerLink]="['./dependencies']" i18n="report">Dependencies</a></li>
+                <li *ngIf="!hideUnfinishedFeatures"><a [routerLink]="['./technology-report']" i18n="report">Technologies</a></li>
+                <li *ngIf="!hideUnfinishedFeatures"><a [routerLink]="['./dependencies']" i18n="report">Dependencies</a></li>
+
+
             </ul>
         </wu-tab>
         <wu-tab [tabTitle]="'Execution Status'">

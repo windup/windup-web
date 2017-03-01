@@ -7,13 +7,16 @@ import { AggregatedStatisticsService } from "./aggregated-statistics.service";
 import { calculateColorScheme } from "../color-schemes";
 import { StatisticsList } from "windup-services";
 import { EffortByCategoryDTO } from "windup-services";
-import {EffortCategoryDTO} from "windup-services";
+import { EffortCategoryDTO } from "windup-services";
+import { WINDUP_WEB } from "../../../app.module";
 
 @Component({
     templateUrl: '/application-index.component.html',
     styleUrls: ['/application-index.component.css']
 })
 export class ApplicationIndexComponent implements OnInit {
+
+    public hideFilter = WINDUP_WEB.config.hideUnfinishedFeatures;
 
     // used for showing/hiding details in tables
     showDetails: boolean = false;
