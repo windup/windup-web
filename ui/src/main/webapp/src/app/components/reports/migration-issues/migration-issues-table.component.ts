@@ -1,8 +1,11 @@
 import {Component, Input, OnInit} from "@angular/core";
 import {Router, ActivatedRoute} from "@angular/router";
+import {Http} from "@angular/http";
+
+import * as showdown from "showdown";
+
 import {MigrationIssuesService} from "./migration-issues.service";
 import {NotificationService} from "../../../services/notification.service";
-import {Http} from "@angular/http";
 import {GraphJSONToModelService} from "../../../services/graph/graph-json-to-model.service";
 import {FileModel} from "../../../generated/tsModels/FileModel";
 import {SortingService, OrderDirection} from "../../../services/sorting.service";
@@ -170,5 +173,9 @@ export class MigrationIssuesTableComponent implements OnInit {
                 ruleID: ruleID
             }
         });
+    }
+
+    renderMarkdownToHtml(input:string): string {
+        return new showdown.Converter().makeHtml(input);
     }
 }

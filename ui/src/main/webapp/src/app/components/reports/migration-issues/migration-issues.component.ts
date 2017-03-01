@@ -1,10 +1,12 @@
 import {Component, OnInit} from "@angular/core";
 import {Router, ActivatedRoute} from "@angular/router";
+import {utils} from '../../../utils';
+
 import {NotificationService} from "../../../services/notification.service";
 import {MigrationIssuesService} from "./migration-issues.service";
-import {utils} from '../../../utils';
 import {ApplicationGroup} from "windup-services";
 import {WINDUP_WEB} from "../../../app.module";
+
 
 @Component({
     selector: 'wu-migration-issues',
