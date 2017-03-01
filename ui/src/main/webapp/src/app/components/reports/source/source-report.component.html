@@ -1,4 +1,4 @@
-<div class="panel panel-primary">
+<div class="sourceReport  panel panel-primary">
     <div class="panel-heading">
         <h3 class="panel-title">File: {{fileModel?.fileName}}</h3>
     </div>
@@ -41,7 +41,14 @@
             </div><!-- .info -->
         </div>
 
-        <pre class="has-notes"><code class="language-{{filetype()}}"><ol class="snippet-num"><li *ngFor="let line of fileLines; let i = index;" class="{{lineClass(line, i)}}" [attr.data-note]="noteReferences(line, i)">{{line}}</li></ol></code></pre>
+        <!-- Keep formatted this way, whitespace would break it! -->
+        <pre class="has-notes"
+            ><code class="language-{{filetype()}}"
+                ><ol class="snippet-num"
+                    ><li *ngFor="let line of fileLines; let i = index;"
+                         class="{{lineClass(line, i)}}"
+                         [attr.data-note]="noteReferences(line, i)"
+                        >{{line}}</li></ol></code></pre>
     </div>
 </div>
 
@@ -57,11 +64,11 @@
             </div>
             <div class="inline-comment-body">
                 <span [outerHTML]="markdown(hintModel.hint)"></span>
-                <ul>
-                    <li *ngFor="let link of (hintModel.links | async)">
+                <ul ng-if="(hintModel.links | async).length > 0" class="links"
+                    ><li *ngFor="let link of (hintModel.links | async)">
                         <a href="{{link.link}}" target="_blank">{{link.description}}</a>
-                    </li>
-                </ul>
+                    </li
+                ></ul>
             </div>
         </div>
     </div>
