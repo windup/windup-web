@@ -3,7 +3,7 @@ import {Observable} from "rxjs";
 import {Injectable} from "@angular/core";
 import {MigrationProject} from "windup-services";
 import {MigrationProjectService} from "./migration-project.service";
-import {NotificationService} from "./notification.service";
+import {NotificationService} from "../core/notification/notification.service";
 import {utils} from '../utils';
 
 @Injectable()

@@ -12,7 +12,7 @@ import {FormComponent} from "./form.component";
 import {Constants} from "../constants";
 import {MigrationProject} from "windup-services";
 import {Subscription} from "rxjs";
-import {RouteFlattenerService} from "../services/route-flattener.service";
+import {RouteFlattenerService} from "../core/routing/route-flattener.service";
 
 @Component({
     templateUrl: "./register-application-form.component.html",

@@ -6,12 +6,12 @@ import {Observable} from 'rxjs/Observable';
 import {Constants} from "../constants";
 import {RegisteredApplication} from "windup-services";
 import {AbstractService} from "./abtract.service";
-import {KeycloakService} from "./keycloak.service";
-import {EventBusService} from "./events/event-bus.service";
+import {KeycloakService} from "../core/authentication/keycloak.service";
+import {EventBusService} from "../core/events/event-bus.service";
 import {
     ApplicationRegisteredEvent, ApplicationDeletedEvent,
     ApplicationRemovedFromGroupEvent, ApplicationAssignedToGroupEvent
-} from "./events/windup-event";
+} from "../core/events/windup-event";
 import {ApplicationGroup} from "windup-services";
 import {MigrationProject} from "windup-services";
 import {ApplicationGroupService} from "./application-group.service";

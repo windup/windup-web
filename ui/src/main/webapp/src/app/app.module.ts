@@ -33,15 +33,15 @@ import {AddRulesPathModalComponent} from "./components/add-rules-path-modal.comp
 import {ConfirmationModalComponent} from "./components/confirmation-modal.component";
 import {CustomRuleSelectionComponent} from "./components/custom-rule-selection.component";
 
-import {KeycloakService} from "./services/keycloak.service";
-import {WindupHttpService} from "./services/windup.http.service";
+import {KeycloakService} from "./core/authentication/keycloak.service";
+import {WindupHttpService} from "./core/authentication/windup.http.service";
 import {EditApplicationFormComponent} from "./components/edit-application-form.component";
 import {UploadQueueComponent} from "./components/upload/upload-queue.component";
 import {UploadProgressbarComponent} from "./components/upload/upload-progressbar.component";
 import {AnalysisContextAdvancedOptionsModalComponent} from "./components/analysis-context-advanced-options-modal.component";
 import {ConfigurationOptionsService} from "./services/configuration-options.service";
 import {ModalDialogComponent} from "./components/modal-dialog.component";
-import {NotificationService} from "./services/notification.service";
+import {NotificationService} from "./core/notification/notification.service";
 import {NotificationComponent} from "./components/notification.component";
 import {ConfirmDeactivateGuard} from "./confirm-deactivate.guard";
 import {PopoverComponent} from "./components/popover.component";
@@ -49,7 +49,7 @@ import {JsTreeAngularWrapperComponent} from "./components/js-tree-angular-wrappe
 import {PackageRegistryService} from "./services/package-registry.service";
 import {TechnologiesReportComponent} from "./components/reports/technologies/technologies-report.component";
 import {LoginComponent} from "./components/login.component";
-import {LoggedInGuard} from "./services/logged-in.guard";
+import {LoggedInGuard} from "./core/authentication/logged-in.guard";
 import {MigrationIssuesComponent} from "./components/reports/migration-issues/migration-issues.component";
 import {MigrationIssuesTableComponent} from "./components/reports/migration-issues/migration-issues-table.component";
 import {MigrationIssuesService} from "./components/reports/migration-issues/migration-issues.service";
@@ -61,13 +61,13 @@ import {ContextMenuComponent} from "./components/navigation/context-menu.compone
 import {ProjectLayoutComponent} from "./components/layout/project-layout.component";
 import {DefaultLayoutComponent} from "./components/layout/default-layout.component";
 import {ApplicationGroupResolve} from "./components/group/application-group.resolve";
-import {RouteLinkProviderService} from "./services/route-link-provider-service";
+import {RouteLinkProviderService} from "./core/routing/route-link-provider-service";
 import {ConfigurationResolve} from "./services/configuration.resolve";
 import {ProjectResolve} from "./services/project.resolve";
 import {ApplicationResolve} from "./services/application.resolve";
 import {BreadCrumbsComponent as BreadCrumbsNavigationComponent} from "./components/navigation/breadcrumbs.component";
 import {BreadCrumbsService} from "./components/navigation/breadcrumbs.service";
-import {RouteFlattenerService} from "./services/route-flattener.service";
+import {RouteFlattenerService} from "./core/routing/route-flattener.service";
 import {ExecutionsListComponent} from "./components/executions/executions-list.component";
 import {AllExecutionsComponent} from "./components/executions/all-executions.component";
 import {GroupExecutionsComponent} from "./components/executions/group-executions.component";
@@ -88,7 +88,7 @@ import {PackageChartComponent} from "./components/package-chart/package-chart.co
 import {ApplicationDetailsService} from "./components/reports/application-details/application-details.service";
 import {TechnologyTagComponent} from "./components/reports/technology-tag/technology-tag.component";
 import {PrettyPathPipe} from "./components/reports/pretty-path.pipe";
-import {EventBusService} from "./services/events/event-bus.service";
+import {EventBusService} from "./core/events/event-bus.service";
 import {WindupExecutionService} from "./services/windup-execution.service";
 import {SchedulerService} from "./services/scheduler.service";
 import {ActiveExecutionsProgressbarComponent} from "./components/executions/active-executions-progressbar.component";
@@ -96,7 +96,7 @@ import {TagDataService} from "./components/reports/tag-data.service";
 import {RuleProviderExecutionsService} from "./components/reports/rule-provider-executions/rule-provider-executions.service";
 import {RuleProviderExecutionsComponent} from "./components/reports/rule-provider-executions/rule-provider-executions.component";
 import {initializeModelMappingData} from "./generated/tsModels/discriminator-mapping-data";
-import {RouteHistoryService} from "./services/route-history.service";
+import {RouteHistoryService} from "./core/routing/route-history.service";
 import {ChosenModule} from "./components/chosen/chosen.module";
 import {DependenciesGraphComponent} from "./components/reports/dependencies/dependencies-graph.component";
 import {NoProjectsWelcomeComponent} from "./components/project-list/no-projects-welcome.component";
@@ -144,6 +144,7 @@ initializeModelMappingData();
     declarations: [
         // pages
         AppComponent,
+        LoginComponent,
         AnalysisContextFormComponent,
         ApplicationGroupForm,
         ConfigurationComponent,

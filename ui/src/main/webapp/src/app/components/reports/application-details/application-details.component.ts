@@ -5,7 +5,7 @@ import {
 } from "./application-details.service";
 import {Params, ActivatedRoute} from "@angular/router";
 import {utils} from "../../../utils";
-import {NotificationService} from "../../../services/notification.service";
+import {NotificationService} from "../../../core/notification/notification.service";
 import {Http} from "@angular/http";
 import {compareTraversals, compareTraversalChildFiles} from "../file-path-comparators";
 import {TagFilterService} from "../tag-filter.service";

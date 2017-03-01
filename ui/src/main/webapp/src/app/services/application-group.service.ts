@@ -5,11 +5,11 @@ import {Constants} from "../constants";
 import {ApplicationGroup, PackageMetadata} from "windup-services";
 import {AbstractService} from "./abtract.service";
 import {Observable, Subject} from "rxjs";
-import {EventBusService} from "./events/event-bus.service";
+import {EventBusService} from "../core/events/event-bus.service";
 import {
     ApplicationGroupEvent, NewExecutionStartedEvent, ExecutionUpdatedEvent,
     ApplicationAssignedToGroupEvent, ApplicationRemovedFromGroupEvent, UpdateApplicationGroupEvent
-} from "./events/windup-event";
+} from "../core/events/windup-event";
 
 @Injectable()
 export class ApplicationGroupService extends AbstractService {

@@ -5,7 +5,7 @@ import {RuleService} from "../services/rule.service";
 import {RulesModalComponent} from "./rules-modal.component";
 import {AddRulesPathModalComponent, ConfigurationEvent} from "./add-rules-path-modal.component";
 import {ActivatedRoute} from "@angular/router";
-import {NotificationService} from "../services/notification.service";
+import {NotificationService} from "../core/notification/notification.service";
 import {utils} from "../utils";
 
 @Component({

@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {ActivatedRouteSnapshot, UrlSegment, Route, Data} from "@angular/router";
-import {RouteFlattenerService, FlattenedRouteData} from "../../services/route-flattener.service";
+import {RouteFlattenerService, FlattenedRouteData} from "../../core/routing/route-flattener.service";
 
 @Injectable()
 export class BreadCrumbsService {

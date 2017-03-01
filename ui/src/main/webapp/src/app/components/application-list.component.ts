@@ -5,11 +5,11 @@ import {ApplicationGroup} from "windup-services";
 import {ApplicationGroupService} from "../services/application-group.service";
 import {RegisteredApplication} from "windup-services";
 import {RegisteredApplicationService} from "../services/registered-application.service";
-import {NotificationService} from "../services/notification.service";
+import {NotificationService} from "../core/notification/notification.service";
 import {utils} from "../utils";
 import {WindupExecutionService} from "../services/windup-execution.service";
-import {EventBusService} from "../services/events/event-bus.service";
-import {ExecutionEvent} from "../services/events/windup-event";
+import {EventBusService} from "../core/events/event-bus.service";
+import {ExecutionEvent} from "../core/events/windup-event";
 import {ExecutionsMonitoringComponent} from "./executions/executions-monitoring.component";
 import {MigrationProject} from "windup-services";
 

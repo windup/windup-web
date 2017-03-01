@@ -5,7 +5,7 @@ import {MigrationProject} from "windup-services";
 import {MigrationProjectService} from "../services/migration-project.service";
 import {FormComponent} from "./form.component";
 import {Subscription} from "rxjs";
-import {RouteFlattenerService} from "../services/route-flattener.service";
+import {RouteFlattenerService} from "../core/routing/route-flattener.service";
 import {ApplicationGroupService} from "../services/application-group.service";
 
 @Component({

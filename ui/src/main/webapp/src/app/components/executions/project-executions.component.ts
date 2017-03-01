@@ -1,7 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {WindupExecution, ApplicationGroup} from "windup-services";
 import {ActivatedRoute} from "@angular/router";
-import {EventBusService} from "../../services/events/event-bus.service";
+import {EventBusService} from "../../core/events/event-bus.service";
 import {WindupExecutionService} from "../../services/windup-execution.service";
 import {ExecutionsMonitoringComponent} from "./executions-monitoring.component";
 import {MigrationProject} from "windup-services";

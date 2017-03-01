@@ -1,7 +1,7 @@
 import {
     ExecutionUpdatedEvent, ExecutionCompletedEvent,
     WindupEvent, ApplicationGroupEvent
-} from "../../../src/app/services/events/windup-event";
+} from "../../../src/app/core/events/windup-event";
 
 describe('events test', () => {
 

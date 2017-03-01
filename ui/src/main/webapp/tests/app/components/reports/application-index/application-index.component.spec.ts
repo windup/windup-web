@@ -2,7 +2,7 @@ import {ComponentFixture, TestBed, inject, async} from "@angular/core/testing";
 import {DebugElement} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {AggregatedStatisticsService} from "../../../../../src/app/components/reports/application-index/aggregated-statistics.service";
-import {NotificationService} from "../../../../../src/app/services/notification.service";
+import {NotificationService} from "../../../../../src/app/core/notification/notification.service";
 import {RouterTestingModule} from "@angular/router/testing";
 import {ActivatedRouteMock} from "../../../mocks/activated-route.mock";
 import {Observable} from "rxjs";

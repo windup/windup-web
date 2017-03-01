@@ -2,23 +2,23 @@ import {Component, OnInit, OnDestroy} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 
 import {ApplicationGroup} from "windup-services";
-import {RouteLinkProviderService} from "../../services/route-link-provider-service";
+import {RouteLinkProviderService} from "../../core/routing/route-link-provider-service";
 import {MigrationIssuesComponent} from "../reports/migration-issues/migration-issues.component";
 import {TechnologiesReportComponent} from "../reports/technologies/technologies-report.component";
 import {DependenciesReportComponent} from "../reports/dependencies/dependencies-report.component";
 import {ReportMenuItem, ContextMenuItem} from "../navigation/context-menu-item.class";
 import {AnalysisContextFormComponent} from "../analysis-context-form.component";
-import {NotificationService} from "../../services/notification.service";
+import {NotificationService} from "../../core/notification/notification.service";
 import {utils} from '../../utils';
 import {GroupExecutionsComponent} from "../executions/group-executions.component";
 import {ApplicationDetailsComponent} from "../reports/application-details/application-details.component";
 import {ApplicationGroupService} from "../../services/application-group.service";
 import {WindupExecutionService} from "../../services/windup-execution.service";
-import {EventBusService} from "../../services/events/event-bus.service";
+import {EventBusService} from "../../core/events/event-bus.service";
 import {
     ApplicationGroupEvent,
     UpdateApplicationGroupEvent
-} from "../../services/events/windup-event";
+} from "../../core/events/windup-event";
 import {AbstractComponent} from "../AbstractComponent";
 import {ReportFilterComponent} from "../reports/filter/report-filter.component";
 import {MigrationProject} from "windup-services";

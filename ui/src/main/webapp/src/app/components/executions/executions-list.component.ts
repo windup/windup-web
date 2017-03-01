@@ -1,7 +1,7 @@
 import {Component, ElementRef, Input, OnInit} from "@angular/core";
 import {WindupService} from "../../services/windup.service";
 import {WindupExecution} from "windup-services";
-import {NotificationService} from "../../services/notification.service";
+import {NotificationService} from "../../core/notification/notification.service";
 import {utils} from '../../utils';
 import {SortingService, OrderDirection} from "../../services/sorting.service";
 import {MigrationProjectService} from "../../services/migration-project.service";

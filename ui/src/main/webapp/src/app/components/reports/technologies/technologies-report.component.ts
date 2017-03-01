@@ -5,7 +5,7 @@ import {TechReportService, StatsItem} from "./tech-report.service";
 
 import {ApplicationGroup} from "windup-services";
 import {ApplicationGroupService} from '../../../services/application-group.service';
-import {NotificationService} from "../../../services/notification.service";
+import {NotificationService} from "../../../core/notification/notification.service";
 import {utils} from '../../../utils';
 import {ProjectTechnologiesStatsModel} from "../../../generated/tsModels/ProjectTechnologiesStatsModel";
 import {forkJoin} from "rxjs/observable/forkJoin";

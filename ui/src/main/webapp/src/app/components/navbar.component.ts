@@ -1,6 +1,6 @@
 import {Component, OnInit, ElementRef} from '@angular/core';
 import {Router} from "@angular/router";
-import {KeycloakService} from "../services/keycloak.service";
+import {KeycloakService} from "../core/authentication/keycloak.service";
 import * as $ from 'jquery';
 import 'bootstrap';
 

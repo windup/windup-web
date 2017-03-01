@@ -17,7 +17,7 @@ import {LinkModel} from "../../../generated/tsModels/LinkModel";
 import {SourceFileModel} from "../../../generated/tsModels/SourceFileModel";
 import {GraphJSONToModelService} from "../../../services/graph/graph-json-to-model.service";
 import {LinkableModel} from "../../../generated/tsModels/LinkableModel";
-import {NotificationService} from "../../../services/notification.service";
+import {NotificationService} from "../../../core/notification/notification.service";
 
 @Component({
     templateUrl: './source-report.component.html',

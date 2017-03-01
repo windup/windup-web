@@ -11,7 +11,7 @@ import {ConfirmDeactivateGuard} from "./confirm-deactivate.guard";
 import {TechnologiesReportComponent} from "./components/reports/technologies/technologies-report.component";
 import {DependenciesReportComponent} from "./components/reports/dependencies/dependencies-report.component";
 import {LoginComponent} from "./components/login.component";
-import {LoggedInGuard} from "./services/logged-in.guard";
+import {LoggedInGuard} from "./core/authentication/logged-in.guard";
 import {ProjectLayoutComponent} from "./components/layout/project-layout.component";
 import {DefaultLayoutComponent} from "./components/layout/default-layout.component";
 import {ApplicationGroupResolve} from "./components/group/application-group.resolve";
@@ -19,7 +19,7 @@ import {MigrationIssuesComponent} from "./components/reports/migration-issues/mi
 import {ProjectResolve} from "./services/project.resolve";
 import {ConfigurationResolve} from "./services/configuration.resolve";
 import {ApplicationResolve} from "./services/application.resolve";
-import {FullFlattenedRoute} from "./services/route-flattener.service";
+import {FullFlattenedRoute} from "./core/routing/route-flattener.service";
 import {GroupExecutionsComponent} from "./components/executions/group-executions.component";
 import {AllExecutionsComponent} from "./components/executions/all-executions.component";
 import {SourceReportComponent} from "./components/reports/source/source-report.component";

@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {Constants} from "../constants";
+import {Constants} from "../../constants";
 import {Observable} from "rxjs/Observable";
 import {Router} from "@angular/router";
 import IKeycloak = KeycloakModule.IKeycloak;

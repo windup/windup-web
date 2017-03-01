@@ -1,5 +1,5 @@
 import {ApplicationGroup} from "windup-services";
-import {RouteLinkProviderService} from "../../services/route-link-provider-service";
+import {RouteLinkProviderService} from "../../core/routing/route-link-provider-service";
 import {WindupExecution} from "windup-services";
 
 export interface ContextMenuItemInterface {

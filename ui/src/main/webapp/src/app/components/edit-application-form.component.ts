@@ -7,7 +7,7 @@ import {FileExistsValidator} from "../validators/file-exists.validator";
 import {FileService} from "../services/file.service";
 import {Constants} from "../constants";
 import {RegisterApplicationFormComponent} from "./register-application-form.component";
-import {RouteFlattenerService} from "../services/route-flattener.service";
+import {RouteFlattenerService} from "../core/routing/route-flattener.service";
 
 @Component({
     templateUrl: './register-application-form.component.html'

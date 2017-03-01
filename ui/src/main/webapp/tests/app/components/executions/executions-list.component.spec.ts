@@ -4,7 +4,7 @@ import {By} from "@angular/platform-browser";
 import {RouterTestingModule} from "@angular/router/testing";
 import {ExecutionsListComponent} from "../../../../src/app/components/executions/executions-list.component";
 import {WindupService} from "../../../../src/app/services/windup.service";
-import {NotificationService} from "../../../../src/app/services/notification.service";
+import {NotificationService} from "../../../../src/app/core/notification/notification.service";
 import {WindupExecution} from "windup-services";
 import {EXECUTIONS_DATA} from "./executions-data";
 import {Observable} from "rxjs";

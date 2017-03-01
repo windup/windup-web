@@ -6,7 +6,7 @@ import * as showdown from "showdown";
 import "../source/prism";
 
 import {MigrationIssuesService} from "./migration-issues.service";
-import {NotificationService} from "../../../services/notification.service";
+import {NotificationService} from "../../../core/notification/notification.service";
 import {GraphJSONToModelService} from "../../../services/graph/graph-json-to-model.service";
 import {FileModel} from "../../../generated/tsModels/FileModel";
 import {SortingService, OrderDirection} from "../../../services/sorting.service";
