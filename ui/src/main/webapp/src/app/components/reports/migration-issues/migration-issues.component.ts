@@ -9,6 +9,11 @@ import {WINDUP_WEB} from "../../../app.module";
 @Component({
     selector: 'wu-migration-issues',
     templateUrl: './migration-issues.component.html',
+    styles: [`
+        .panel-primary.wuMigrationIssues { border-color: #e7e7e7; }
+        .panel-primary.wuMigrationIssues .panel-heading { background-color: white; padding: 15px 15px; border-bottom: 2px solid #e7e7e7; }
+        .panel-primary.wuMigrationIssues .panel-heading .panel-title { color: black; font-size: 20px; font-weight: 500; }
+    `]
 })
 export class MigrationIssuesComponent implements OnInit {
     protected categorizedIssues: Dictionary<ProblemSummary[]>;
