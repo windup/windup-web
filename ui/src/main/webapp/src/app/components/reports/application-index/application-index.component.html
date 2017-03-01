@@ -5,8 +5,7 @@
     <div class="desc">This report provides summary information about findings from the migration analysis.</div>
 </div>
 
-<!-- for report filter later, now disabled -->
-<!-- <wu-report-filter-indicator [group]="group"></wu-report-filter-indicator> -->
+<wu-report-filter-indicator *ngIf="!hideFilter" [group]="group"></wu-report-filter-indicator>
 
 
 <div class="container-fluid summaryInfo panel panel-primary col-md-12">
