@@ -9,7 +9,7 @@ export enum MatchResult {
     ExplicitExclude
 }
 
-@Injectable()
+
 export class TagFilterService {
 
     constructor(private _reportFilter: ReportFilter) {
