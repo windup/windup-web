@@ -109,8 +109,9 @@ export const appRoutes: Routes = [
                                 path: '',
                                 component: ProjectLayoutComponent, data: {displayName: 'Project Detail'},
                                 children: [
-                                    { path: '', component: ProjectExecutionsComponent, data: {displayName: 'Application List'} },
+                                    { path: '', component: ProjectExecutionsComponent, data: {displayName: 'Executions List'}},
                                     { path: 'applications', children: [
+                                        { path: '', component: ApplicationListComponent, data: {displayName: 'Application List'} },
                                         { path: 'register', component: RegisterApplicationFormComponent, data: {displayName: "Application Registration"}},
                                         {
                                             path: ':applicationId/edit',

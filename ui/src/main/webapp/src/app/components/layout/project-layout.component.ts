@@ -26,6 +26,7 @@ import {ApplicationListComponent} from "../application-list.component";
 import {RegisteredApplicationService} from "../../services/registered-application.service";
 import {WINDUP_WEB} from "../../app.module";
 import {ApplicationIndexComponent} from "../reports/application-index/application-index.component";
+import {ProjectExecutionsComponent} from "../executions/project-executions.component";
 
 
 @Component({
@@ -93,7 +94,7 @@ export class ProjectLayoutComponent extends AbstractComponent implements OnInit,
         this.menuItems = [
             {
                 label: 'View Project',
-                link: this._routeLinkProviderService.getRouteForComponent(ApplicationListComponent, {
+                link: this._routeLinkProviderService.getRouteForComponent(ProjectExecutionsComponent, {
                     projectId: this.project.id
                 }),
                 icon: 'fa-tachometer',
@@ -109,9 +110,8 @@ export class ProjectLayoutComponent extends AbstractComponent implements OnInit,
             },
             {
                 label: 'Executions',
-                link: this._routeLinkProviderService.getRouteForComponent(GroupExecutionsComponent, {
-                    projectId: this.project.id,
-                    groupId: this.activeGroup.id
+                link: this._routeLinkProviderService.getRouteForComponent(ProjectExecutionsComponent, {
+                    projectId: this.project.id
                 }),
                 icon: 'fa-flask',
                 isEnabled: true
