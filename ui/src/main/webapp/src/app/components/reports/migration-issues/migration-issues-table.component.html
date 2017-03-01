@@ -76,7 +76,9 @@
                                             <div class="clearfix"></div>
                                         </div>
                                         <div class="panel-body">
-                                            <p class="description" *ngFor="let description of issue.descriptions">{{description}}</p>
+                                            <p class="description" *ngFor="let description of issue.descriptions">
+                                                <span [outerHTML]="renderMarkdownToHtml(description)"></span>
+                                            </p>
                                         </div>
                                     </div>
                                 </td>
