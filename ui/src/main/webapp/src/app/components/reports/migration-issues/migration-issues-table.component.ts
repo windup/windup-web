@@ -180,35 +180,31 @@ export class MigrationIssuesTableComponent implements OnInit, AfterViewChecked
         });
     }
 
-    renderMarkdownToHtml(markdownCode:string): string {
-        console.log("Rendering markdown", markdownCode)
-
-        var addJavaHighlightClassExt = {
-            type: 'output',
-            regex: /<code /g,
-            replace: '<code class="language-java" '
-        };
-        showdown.extension('addJavaHighlightClassExt', addJavaHighlightClassExt);
-
-        return new showdown.Converter().makeHtml(markdownCode);
+    ngAfterViewChecked() {
+        console.log("ngAfterViewChecked() called")
     }
 
-    ngAfterViewChecked(): void {
-        if (this.rendered)
-            return;
+    renderMarkdownToHtml(markdownCode:string): string {
+        console.log("renderMarkdownToHtml() called");
 
-        // Add language-java to all <code> in .description
-        // <pre class="has-notes"><code class="language-{{filetype()}}">
-        let nodeList = document.querySelectorAll('.description code');
-        console.log("Code elements found:: " + nodeList.length);
-        for (let i = 0; i < nodeList.length; i++) {
+        // The class="language-java" is already in <code>
+        // <pre><code class="language-{{filetype()}}">
 
+        let html: string;
+        if (this.markdownCache.has(markdownCode))
+            html = this.markdownCache.get(markdownCode);
+        else {
+            console.log("Rendering markdown and caching it.");
+            html = new showdown.Converter().makeHtml(markdownCode);
+            this.markdownCache.set(markdownCode, html);
+
+            // Colorize the included code snippets on the first displaying.
+            setTimeout(() => Prism.highlightAll(false), 1000);
         }
 
-        Prism.highlightAll(false);
-        this.rendered = true;
+        return html;
     }
 
-    private rendered: boolean = false;
+    private markdownCache: Map<string, string> = new Map<string, string>();
 
 }
