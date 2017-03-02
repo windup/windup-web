@@ -188,10 +188,15 @@
                                 </div>
                             </td>
                             <td class="chartTD">
-                                <div class="tagsBarChart chartBoundary" *ngIf="this.tagFrequenciesByProject?.get(traversal.id)?.length > 0">
-                                    <h4>Technologies found - occurrence count</h4>
+                                <div
+                                        wu-in-viewport
+                                        id="chartdiv_{{traversal.id}}"
+                                        (inViewport)="traversal['inviewport'] = $event"
+                                        class="tagsBarChart chartBoundary"
+                                        *ngIf="this.tagFrequenciesByProject?.get(traversal.id)?.length > 0">
+                                    <h4 *ngIf="traversal['inviewport']">Technologies found - occurrence count</h4>
                                     <ngx-charts-bar-horizontal
-                                            *ngIf="!isCollapsed(traversal)"
+                                            *ngIf="!isCollapsed(traversal) && traversal['inviewport']"
                                             [view]="[500, 258]"
                                             [scheme]="getColorScheme(this.tagFrequenciesByProject.get(traversal.id)?.length)"
                                             [results]="this.tagFrequenciesByProject.get(traversal.id)"
