@@ -28,7 +28,7 @@ export class RegisteredApplicationService extends AbstractService {
     public static SERVICE_SUBPATH = "/registeredApplications";
 
     public static GET_APPLICATIONS_URL        = RegisteredApplicationService.SERVICE_SUBPATH;
-    public static BY_PROJECT_ID_URL           = RegisteredApplicationService.SERVICE_SUBPATH + "?projectId={id}";
+    public static BY_PROJECT_ID_URL           = RegisteredApplicationService.SERVICE_SUBPATH + "/by-project/{projectId}";
     public static SINGLE_APPLICATION_URL  = RegisteredApplicationService.SERVICE_SUBPATH + '/{appId}';
     public static UPDATE_APPLICATION_PATH_URL = RegisteredApplicationService.SINGLE_APPLICATION_URL + '/update-path';
     public static REUPLOAD_APPLICATION_URL    = RegisteredApplicationService.SINGLE_APPLICATION_URL + '/reupload';
@@ -148,7 +148,7 @@ export class RegisteredApplicationService extends AbstractService {
     }
 
     getApplicationsByProjectID(id: number): Observable<RegisteredApplication[]> {
-        return this._http.get(Constants.REST_BASE + RegisteredApplicationService.BY_PROJECT_ID_URL.replace("{id}", id.toString()))
+        return this._http.get(Constants.REST_BASE + RegisteredApplicationService.BY_PROJECT_ID_URL.replace("{projectId}", id.toString()))
             .map(res => <RegisteredApplication[]> res.json())
             .catch(this.handleError);
     }

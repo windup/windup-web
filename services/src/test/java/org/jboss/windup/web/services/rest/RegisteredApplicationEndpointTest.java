@@ -72,8 +72,8 @@ public class RegisteredApplicationEndpointTest extends AbstractTest
     {
         RegisteredApplication dummyApp = this.dataProvider.getApplication(this.project);
 
-        String uri = this.target.getUri() + RegisteredApplicationEndpoint.REGISTERED_APPLICATIONS;
-        ResteasyWebTarget target = this.client.target(uri).queryParam("projectId", this.project.getId());
+        String uri = this.target.getUri() + RegisteredApplicationEndpoint.REGISTERED_APPLICATIONS + "/by-project/" + this.project.getId();
+        ResteasyWebTarget target = this.client.target(uri);
         Response response = target.request().get();
         response.close();
         Assert.assertEquals(HttpStatus.SC_OK, response.getStatus());
@@ -119,7 +119,7 @@ public class RegisteredApplicationEndpointTest extends AbstractTest
         }
         finally
         {
-            for (RegisteredApplication application : registeredApplicationEndpoint.getAllApplications(null))
+            for (RegisteredApplication application : registeredApplicationEndpoint.getAllApplications())
             {
                 registeredApplicationEndpoint.deleteApplication(application.getId());
             }
