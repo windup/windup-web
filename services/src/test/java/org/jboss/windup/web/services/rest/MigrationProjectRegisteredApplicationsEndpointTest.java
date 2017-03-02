@@ -62,23 +62,6 @@ public class MigrationProjectRegisteredApplicationsEndpointTest extends Abstract
 
     @Test
     @RunAsClient
-    public void testRegisteredAppByProjectId() throws Exception
-    {
-        try {
-            final MigrationProject project = this.dataProvider.getMigrationProject();
-            RegisteredApplication dummyApp = this.dataProvider.getApplication(project);
-            Collection<RegisteredApplication> existingApps = registeredApplicationEndpoint.getProjectApplications(project.getId());
-            Assert.assertNotEquals(0, existingApps.size());
-        }
-        finally
-        {
-            for (RegisteredApplication application : registeredApplicationEndpoint.getAllApplications())
-                registeredApplicationEndpoint.deleteApplication(application.getId());
-        }
-    }
-
-    @Test
-    @RunAsClient
     public void testRegisterAppByPath() throws Exception
     {
         Collection<RegisteredApplication> existingApps = registeredApplicationEndpoint.getAllApplications();
