@@ -66,7 +66,7 @@ div.inline-comment-body p:first-child, div.inline-comment-body ul:first-child, d
     padding-top:0;
 }
 
-/* Not used?
+/* Not used? I'm keeping it here in case it was used by some functionality I overlooked.
 .source-report .info .classifications .desc { padding-left: 3ex; }
 */
 
@@ -75,7 +75,6 @@ tr th:last-child { width: 600px; }
 tr td:last-child { width: 600px; }
 tr th:nth-child(2) { width: 80px; }
 tr td:nth-child(2) { width: 70px; }
-
 */
 
 /* Pie chart - not used?
@@ -162,6 +161,14 @@ ul.notifications li.critical {
 */
 
 
+/* Hint box.
+    The hierarchy goes like this:
+
+.inline-source-hint-group .inline-source-comment .inline-comment {
+    .inline-comment-heading {}
+    .inline-comment-body {}
+}
+*/
 
 /* Hint box - reset the <code> styles. */
 div.inline-source-hint-group {
@@ -169,34 +176,6 @@ div.inline-source-hint-group {
     text-shadow: none;
     font-family: "Lucida Grand", Verdana, Arial, Helvetica, sans-serif;
 }
-
-div.inline-comment-heading {
-    line-height: 2;
-}
-div.inline-comment-heading strong.notification {
-    background-repeat: no-repeat;
-    background-position: left center;
-    padding-left: 20px;
-    margin-left:   5px;
-    margin-top:    2px;
-    margin-bottom: 2px;
-    font-weight: 500;
-    font-size: 13pt;
-}
-
-div.inline-comment-heading strong.info {
-    background-image: url("img/styles/glyphicons_195_circle_info.png");
-}
-div.inline-comment-heading strong.warning {
-    background-image: url("img/styles/glyphicons_196_circle_exclamation_mark.png");
-}
-div.inline-comment-heading strong.severe {
-    background-image: url("img/styles/glyphicons_196_circle_exclamation_mark.png");
-}
-div.inline-comment-heading strong.critical {
-    background-image: url("img/styles/glyphicons_196_circle_exclamation_mark.png");
-}
-
 
 div.inline-source-comment {
     margin-left:   -6px;
@@ -219,6 +198,39 @@ div.green div.inline-comment {
     border: 1px solid #4f673a;
 }
 
+
+div.inline-comment div.inline-comment-heading {
+    line-height: 2;
+    padding: 5px 5px;
+    margin:0;
+    -border-bottom: 1px solid #999;
+}
+
+div.inline-comment div.inline-comment-heading h2 {
+    font-size: 12px;
+    padding: 0;
+    padding-left: 20px;
+    margin: 0;
+}
+
+div.inline-comment-heading strong.notification {
+    background-repeat: no-repeat;
+    background-position: left center;
+    padding-left: 20px;
+    margin-left:   5px;
+    margin-top:    2px;
+    margin-bottom: 2px;
+    font-weight: 500;
+    font-size: 13pt;
+}
+
+div.inline-comment-heading strong.info { background-image: url("img/styles/glyphicons_195_circle_info.png"); }
+div.inline-comment-heading strong.warning { background-image: url("img/styles/glyphicons_196_circle_exclamation_mark.png"); }
+div.inline-comment-heading strong.severe { background-image: url("img/styles/glyphicons_196_circle_exclamation_mark.png"); }
+div.inline-comment-heading strong.critical { background-image: url("img/styles/glyphicons_196_circle_exclamation_mark.png"); }
+
+
+
 div.inline-source-comment div.inline-comment-body {
     background: #FFF;
     padding: 10px;
@@ -234,20 +246,6 @@ div.inline-source-comment div.inline-comment-body p > code {
 /* Code sample */
 div.inline-source-comment div.inline-comment-body pre > code {
     font-size: 11pt;
-}
-
-
-div.inline-comment div.inline-comment-heading {
-    padding: 5px 5px;
-    margin:0;
-    -border-bottom: 1px solid #999;
-}
-
-div.inline-comment div.inline-comment-heading h2 {
-    font-size: 12px;
-    padding: 0;
-    padding-left: 20px;
-    margin: 0;
 }
 
 div.inline-comment-body pre {
@@ -333,7 +331,7 @@ li.box-bg {
 
 
 div.green div.inline-comment div.inline-comment-heading {
-    background: #9dce74;
+    background-color: #cae2f3; /* greyed green: #dcf2ca , light blue: #cae2f3, almost grey: #d6dee4, original green: #9dce74 */
     padding: 0;
     font-size: 12pt;
     font-weight: 500;
