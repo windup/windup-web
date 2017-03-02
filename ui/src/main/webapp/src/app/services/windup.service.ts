@@ -10,6 +10,7 @@ import {AbstractService} from "./abtract.service";
 export class WindupService extends AbstractService {
     private EXECUTE_GROUP_PATH = "/windup/executeGroup";
     private EXECUTIONS_PATH = '/windup/executions';
+    private PROJECT_EXECUTIONS_PATH = '/windup/by-project/{projectId}';
 
     constructor (private _http: Http) {
         super();
@@ -34,6 +35,14 @@ export class WindupService extends AbstractService {
     public getAllExecutions(): Observable<WindupExecution[]> {
         return this._http.get(Constants.REST_BASE + this.EXECUTIONS_PATH)
             .map(res => <WindupExecution[]> res.json())
+            .catch(this.handleError);
+    }
+
+    public getProjectExecutions(projectId: number): Observable<WindupExecution[]> {
+        let url = Constants.REST_BASE + this.PROJECT_EXECUTIONS_PATH.replace('{projectId}', projectId.toString());
+
+        return this._http.get(url)
+            .map(res => res.json())
             .catch(this.handleError);
     }
 

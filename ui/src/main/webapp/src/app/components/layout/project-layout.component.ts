@@ -1,40 +1,49 @@
 import {Component, OnInit, OnDestroy} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
+
 import {ApplicationGroup} from "windup-services";
 import {RouteLinkProviderService} from "../../services/route-link-provider-service";
 import {MigrationIssuesComponent} from "../reports/migration-issues/migration-issues.component";
 import {TechnologiesReportComponent} from "../reports/technologies/technologies-report.component";
 import {DependenciesReportComponent} from "../reports/dependencies/dependencies-report.component";
-import {WindupService} from "../../services/windup.service";
 import {ReportMenuItem, ContextMenuItem} from "../navigation/context-menu-item.class";
 import {AnalysisContextFormComponent} from "../analysis-context-form.component";
 import {NotificationService} from "../../services/notification.service";
-import {GroupListComponent} from "../group-list.component";
 import {utils} from '../../utils';
-import {GroupPageComponent} from "../group.page.component";
 import {GroupExecutionsComponent} from "../executions/group-executions.component";
-import {ApplicationIndexComponent} from "../reports/application-index/application-index.component";
 import {ApplicationDetailsComponent} from "../reports/application-details/application-details.component";
 import {ApplicationGroupService} from "../../services/application-group.service";
 import {WindupExecutionService} from "../../services/windup-execution.service";
 import {EventBusService} from "../../services/events/event-bus.service";
 import {
-    ExecutionEvent, ExecutionCompletedEvent, ApplicationGroupEvent,
+    ApplicationGroupEvent,
     UpdateApplicationGroupEvent
 } from "../../services/events/windup-event";
 import {AbstractComponent} from "../AbstractComponent";
 import {ReportFilterComponent} from "../reports/filter/report-filter.component";
+import {MigrationProject} from "windup-services";
+import {ApplicationListComponent} from "../application-list.component";
+import {RegisteredApplicationService} from "../../services/registered-application.service";
 import {WINDUP_WEB} from "../../app.module";
+import {ApplicationIndexComponent} from "../reports/application-index/application-index.component";
+import {ProjectExecutionsComponent} from "../executions/project-executions.component";
 
 
 @Component({
-    templateUrl: './group-layout.component.html',
+    templateUrl: './project-layout.component.html',
     styles: [
         `:host /deep/ .nav-pf-vertical { top: 82px; }`
     ]
 })
-export class GroupLayoutComponent extends AbstractComponent implements OnInit, OnDestroy {
-    protected applicationGroup: ApplicationGroup;
+export class ProjectLayoutComponent extends AbstractComponent implements OnInit, OnDestroy {
+    protected project: MigrationProject;
+
+    /**
+     * TODO: It is little bit unclear what is and what will be active group.
+     * For now user won't see any direct UI to create a new group, so project will have only one group.
+     * So active group will be Default Group which is automatically created with project.
+     */
+    protected activeGroup: ApplicationGroup;
     protected menuItems;
 
     // TODO: Execution progress: Group Layout must be updated when execution state changes (is completed)
@@ -54,56 +63,55 @@ export class GroupLayoutComponent extends AbstractComponent implements OnInit, O
     ngOnInit(): void {
         this.addSubscription(this._eventBus.onEvent.filter(event => event.isTypeOf(UpdateApplicationGroupEvent))
             .subscribe((event: ApplicationGroupEvent) => {
-                this.applicationGroup = event.group;
+                this.activeGroup = event.group;
                 this.createContextMenuItems();
         }));
 
-        this._activatedRoute.data.forEach((data: {applicationGroup: ApplicationGroup}) => {
-            this.applicationGroup = data.applicationGroup;
-            this._applicationGroupService.monitorGroup(this.applicationGroup);
-            this.createContextMenuItems();
-        });
-/*
-        // It would be nice if it was possible to programatically rerun Resolve
-        // I created issue for that: https://github.com/angular/angular/issues/13638
-        this.addSubscription(this._eventBus.onEvent.filter(event => event.isTypeOf(ExecutionCompletedEvent.TYPE))
-            .filter((event: ExecutionEvent) => event.group && event.group.id === this.applicationGroup.id)
-            .subscribe((event: ExecutionEvent) => {
+        this._activatedRoute.data.subscribe((data: {project: MigrationProject}) => {
+            this.project = data.project;
+
+            this._applicationGroupService.getByProjectID(this.project.id).subscribe(appGroups => {
+                if (appGroups.length > 1) {
+                    this.activeGroup = appGroups[appGroups.length - 1];
+                } else if (appGroups.length === 1) {
+                    this.activeGroup = appGroups[0];
+                } else {
+                    throw Error('No app group found');
+                }
+
+                this._applicationGroupService.monitorGroup(this.activeGroup);
                 this.createContextMenuItems();
-            })
-        );
-*/
+            });
+        });
     }
 
     ngOnDestroy() {
         super.ngOnDestroy();
-        this._applicationGroupService.stopMonitoringGroup(this.applicationGroup);
+        this._applicationGroupService.stopMonitoringGroup(this.activeGroup);
     }
 
     protected createContextMenuItems() {
         this.menuItems = [
             {
                 label: 'View Project',
-                link: this._routeLinkProviderService.getRouteForComponent(GroupListComponent, {
-                    projectId: this.applicationGroup.migrationProject.id
+                link: this._routeLinkProviderService.getRouteForComponent(ProjectExecutionsComponent, {
+                    projectId: this.project.id
                 }),
                 icon: 'fa-tachometer',
                 isEnabled: true
             },
             {
                 label: 'Applications',
-                link: this._routeLinkProviderService.getRouteForComponent(GroupPageComponent, {
-                    projectId: this.applicationGroup.migrationProject.id,
-                    groupId: this.applicationGroup.id
+                link: this._routeLinkProviderService.getRouteForComponent(ApplicationListComponent, {
+                    projectId: this.project.id
                 }),
                 icon: 'fa-cubes',
                 isEnabled: true
             },
             {
                 label: 'Executions',
-                link: this._routeLinkProviderService.getRouteForComponent(GroupExecutionsComponent, {
-                    projectId: this.applicationGroup.migrationProject.id,
-                    groupId: this.applicationGroup.id
+                link: this._routeLinkProviderService.getRouteForComponent(ProjectExecutionsComponent, {
+                    projectId: this.project.id
                 }),
                 icon: 'fa-flask',
                 isEnabled: true
@@ -111,8 +119,8 @@ export class GroupLayoutComponent extends AbstractComponent implements OnInit, O
             {
                 label: 'Config',
                 link: this._routeLinkProviderService.getRouteForComponent(AnalysisContextFormComponent, {
-                    projectId: this.applicationGroup.migrationProject.id,
-                    groupId: this.applicationGroup.id
+                    projectId: this.project.id,
+                    groupId: this.activeGroup.id
                 }),
                 icon: 'fa-cogs',
                 isEnabled: true,
@@ -120,11 +128,14 @@ export class GroupLayoutComponent extends AbstractComponent implements OnInit, O
             new ContextMenuItem(
                 'Run Windup',
                 'fa-rocket',
-                () => { return this.applicationGroup.applications.length > 0; },
+                () => {
+                    // TODO: Fix this after full recompilation
+                    return (<any>this.project).applications.length > 0;
+                },
                 null,
                 () => {
                     // TODO: 'windup-services' vs 'windup-services.ts' issues
-                    this._executionService.execute(<any>this.applicationGroup).subscribe(
+                    this._executionService.execute(<any>this.activeGroup).subscribe(
                         success => {
                             this._notificationService.info('Windup execution has started');
                         },
@@ -143,24 +154,24 @@ export class GroupLayoutComponent extends AbstractComponent implements OnInit, O
             },
             */
             new ReportMenuItem(
-                'Application Index',
-                'fa-book',
-                this.applicationGroup,
-                ApplicationIndexComponent,
-                this._routeLinkProviderService,
-            ),
-            new ReportMenuItem(
                 'Application Details',
                 'fa-list',
-                this.applicationGroup,
+                this.activeGroup,
                 ApplicationDetailsComponent,
                 this._routeLinkProviderService,
             ),
             new ReportMenuItem(
                 'Issues',
                 'fa-exclamation-triangle',
-                this.applicationGroup,
+                this.activeGroup,
                 MigrationIssuesComponent,
+                this._routeLinkProviderService,
+            ),
+            new ReportMenuItem(
+                'Application Index',
+                'fa-book',
+                this.activeGroup,
+                ApplicationIndexComponent,
                 this._routeLinkProviderService,
             ),
         ];
@@ -169,24 +180,25 @@ export class GroupLayoutComponent extends AbstractComponent implements OnInit, O
             let reportFilterMenu = new ReportMenuItem(
                 'Report Filter',
                 'fa-filter',
-                this.applicationGroup,
+                this.activeGroup,
                 ReportFilterComponent,
                 this._routeLinkProviderService
-            )
+            );
+
             this.menuItems.splice(4, 0, reportFilterMenu);
 
             this.menuItems = [ ...this.menuItems,
                 new ReportMenuItem(
                     'Technologies',
                     'fa-cubes',
-                    this.applicationGroup,
+                    this.activeGroup,
                     TechnologiesReportComponent,
                     this._routeLinkProviderService,
                 ),
                 new ReportMenuItem(
                     'Dependencies',
                     'fa-code-fork',
-                    this.applicationGroup,
+                    this.activeGroup,
                     DependenciesReportComponent,
                     this._routeLinkProviderService
                 )

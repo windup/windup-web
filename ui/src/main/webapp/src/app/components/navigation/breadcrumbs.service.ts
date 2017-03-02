@@ -59,7 +59,7 @@ export class BreadCrumbsService {
                 snapshot: current.snapshot
             };
 
-            if (this.canReachToComponentRoute(current.snapshot.routeConfig)) {
+            if (this.canReachToComponentRoute(current.snapshot.routeConfig) && !this.isIgnoredRoute(current.snapshot.routeConfig)) {
                 links.push(sum);
             }
 
@@ -91,6 +91,11 @@ export class BreadCrumbsService {
                 .map(child => this.canReachToComponentRoute(child))
                 .reduce((previous, current) => previous || current, false);
         }
+    }
+
+    protected isIgnoredRoute(route: Route) {
+        return route.data && route.data.hasOwnProperty('breadcrumbs') && route.data['breadcrumbs'].hasOwnProperty('ignore')
+            && route.data['breadcrumbs']['ignore'];
     }
 
     protected getName(snapshot: ActivatedRouteSnapshot, route: Route, flattenedRouteData: FlattenedRouteData) {
