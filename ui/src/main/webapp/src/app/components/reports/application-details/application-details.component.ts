@@ -8,7 +8,6 @@ import {utils} from "../../../utils";
 import {NotificationService} from "../../../services/notification.service";
 import {Http} from "@angular/http";
 import {compareTraversals, compareTraversalChildFiles} from "../file-path-comparators";
-import {ApplicationGroup} from "windup-services";
 import {TagFilterService} from "../tag-filter.service";
 import {TypeReferenceStatisticsService} from "./type-reference-statistics.service";
 import {TagDataService} from "../tag-data.service";
@@ -21,7 +20,6 @@ import {calculateColorScheme} from "../color-schemes";
 })
 export class ApplicationDetailsComponent implements OnInit {
     private execID:number;
-    private group:ApplicationGroup;
     applicationDetails:ApplicationDetailsFullDTO;
     rootProjects:ProjectTraversalFullDTO[] = [];
     traversalsForCanonicalVertexID:Map<number, ProjectTraversalFullDTO[]> = new Map<number, ProjectTraversalFullDTO[]>();
@@ -59,29 +57,25 @@ export class ApplicationDetailsComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this._activatedRoute.parent.parent.parent.data.subscribe((data: {applicationGroup: ApplicationGroup}) => {
-            this.group = data.applicationGroup;
+        this._activatedRoute.params.forEach((params: Params) => {
+            this.execID = +params['executionId'];
+            this._applicationDetailsService.getApplicationDetailsData(this.execID).subscribe(
+                applicationDetailsDto => {
+                    // Make sure tag data is loaded first
+                    this._tagDataService.getTagData().subscribe((tagData) => {
+                        this.applicationDetails = applicationDetailsDto;
+                        this.rootProjects = applicationDetailsDto.traversals;
 
-            this._activatedRoute.params.forEach((params: Params) => {
-                this.execID = +params['executionId'];
-                this._applicationDetailsService.getApplicationDetailsData(this.execID).subscribe(
-                    applicationDetailsDto => {
-                        // Make sure tag data is loaded first
-                        this._tagDataService.getTagData().subscribe((tagData) => {
-                            this.applicationDetails = applicationDetailsDto;
-                            this.rootProjects = applicationDetailsDto.traversals;
+                        this.createProjectTreeData(null, this.rootProjects);
+                        this.flattenTraversals(this.rootProjects);
 
-                            this.createProjectTreeData(null, this.rootProjects);
-                            this.flattenTraversals(this.rootProjects);
-
-                            this.globalPackageUseData = this.calculateTreeDataForHints(this.allHints);
-                            this.calculateTagFrequencies();
-                            this.storeTotalPoints();
-                        });
-                    },
-                    error => this._notificationService.error(utils.getErrorMessage(error))
-                );
-            });
+                        this.globalPackageUseData = this.calculateTreeDataForHints(this.allHints);
+                        this.calculateTagFrequencies();
+                        this.storeTotalPoints();
+                    });
+                },
+                error => this._notificationService.error(utils.getErrorMessage(error))
+            );
         });
     }
 
@@ -152,7 +146,7 @@ export class ApplicationDetailsComponent implements OnInit {
 
         files.forEach(file => {
             file.classifications.forEach(classification => {
-                let tagFilterService = new TagFilterService(this.group.reportFilter);
+                let tagFilterService = new TagFilterService(null);
                 let tagStrings = classification.tags.map(tag => tag.nameString);
 
                 // Remove it if it doesn't match the filter
@@ -162,7 +156,7 @@ export class ApplicationDetailsComponent implements OnInit {
                 }
             });
             file.hints.forEach(hint => {
-                let tagFilterService = new TagFilterService(this.group.reportFilter);
+                let tagFilterService = new TagFilterService(null);
                 let tagStrings = hint.tags.map(tag => tag.nameString);
 
                 // Remove it if it doesn't match the filter
