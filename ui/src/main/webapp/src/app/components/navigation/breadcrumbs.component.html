@@ -9,6 +9,8 @@ ol.breadcrumb {
     border-bottom: 1px solid #d5d5d5;
     margin-bottom: 0px;
     background-color: white;
+    /* Negates this PF rule: .cards-pf .row-cards-pf:first-child { padding-top: 20px; } */
+    margin-top: -18px;
 }
 
 ol.breadcrumb > li {
@@ -21,12 +23,6 @@ ol.breadcrumb > li:last-child > a:hover {
     text-decoration: none;
     color: dimgrey;
     cursor: default !important;
-}
-</style>
-
-<style *ngIf="breadCrumbLinks?.length > 1">
-/deep/ .cards-pf .row-cards-pf:first-child {
-    padding-top: 2px; /* Overrides PF default 20px for :first-child, intended for content. */
 }
 </style>
 
