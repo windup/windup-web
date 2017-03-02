@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import java.util.List;
 import javax.json.Json;
 
@@ -67,23 +68,26 @@ public class RegisteredApplicationEndpointTest extends AbstractTest
 
     @Test
     @RunAsClient
-    @Ignore
     public void testGetAppFromProject() throws Exception
     {
-        RegisteredApplication dummyApp = this.dataProvider.getApplication(this.project);
+        try
+        {
+            final MigrationProject project = this.dataProvider.getMigrationProject();
+            RegisteredApplication dummyApp = this.dataProvider.getApplication(project);
 
-        String uri = this.target.getUri() + RegisteredApplicationEndpoint.REGISTERED_APPLICATIONS + "/by-project/" + this.project.getId();
-        ResteasyWebTarget target = this.client.target(uri);
-        Response response = target.request().get();
-        response.close();
-        Assert.assertEquals(HttpStatus.SC_OK, response.getStatus());
+            Collection<RegisteredApplication> existingApps = registeredApplicationEndpoint.getProjectApplications(project.getId());
 
-        //String json = response.readEntity(String.class);
-        //Json.createParser(new StringReader(json)).;
-        List<RegisteredApplication> apps = response.readEntity(new GenericType<List<RegisteredApplication>>(){});
-        Assert.assertEquals("App ID matches", dummyApp.getId(), apps.get(0).getId());
+            Assert.assertNotEquals(0, existingApps.size());
+            Assert.assertEquals("App ID matches", dummyApp.getId(), existingApps.iterator().next().getId());
+        }
+        finally
+        {
+            for (RegisteredApplication application : registeredApplicationEndpoint.getAllApplications())
+            {
+                registeredApplicationEndpoint.deleteApplication(application.getId());
+            }
+        }
     }
-
 
     @Test
     @RunAsClient
