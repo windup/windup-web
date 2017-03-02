@@ -66,101 +66,6 @@ div.inline-comment-body p:first-child, div.inline-comment-body ul:first-child, d
     padding-top:0;
 }
 
-/* Not used? I'm keeping it here in case it was used by some functionality I overlooked.
-.source-report .info .classifications .desc { padding-left: 3ex; }
-*/
-
-/*
-tr th:last-child { width: 600px; }
-tr td:last-child { width: 600px; }
-tr th:nth-child(2) { width: 80px; }
-tr td:nth-child(2) { width: 70px; }
-*/
-
-/* Pie chart - not used?
-div.windupPieGraph {
-    height:250px;
-    width:800px;
-    margin: 0 auto;
-    border: 0px dashed gainsboro;
-}
-
-div.windupPieGraph div.legend table {
-    width: 300px;
-}
-
-div.windupPieGraph div.legend td.legendColorBox,
-div.windupPieGraph div.legend td.legendColorBox div {
-    width: 14px;
-}
-*/
-
-/* Not used?
-div.sausage {
-    background: #FFEEB9;
-    border: 1px solid #CFC195;
-}
-
-div.sausage-current {
-    background: #FF6600;
-    border: 1px solid #CC5200;
-}
-
-.sausage-set {
-    border: 0px !important;
-}
-span.dash {
-    padding: 0 10px;
-}
-*/
-
-/* Not used?
-ul.links {
-    list-style-type: none;
-    padding: 0px;
-    margin: 0px;
-}
-
-ul.links li {
-    background-image: url("img/styles/glyphicons_217_circle_arrow_right.png");
-    background-repeat: no-repeat;
-    background-position: left center;
-    padding-left: 20px;
-    margin-left: 20px;
-    margin-top:2px;
-    margin-bottom:2px;
-}
-
-ul.notifications {
-    list-style-type: none;
-    padding: 0px;
-    margin: 0px;
-}
-
-
-ul.notifications li {
-    background-repeat: no-repeat;
-    background-position: left center;
-    padding-left: 20px;
-    margin-left: 20px;
-    margin-top:2px;
-    margin-bottom:2px;
-}
-ul.notifications li.info {
-    background-image: url("img/styles/glyphicons_195_circle_info.png");
-}
-ul.notifications li.warning {
-    background-image: url("img/styles/glyphicons_196_circle_exclamation_mark.png");
-}
-ul.notifications li.severe {
-    background-image: url("img/styles/glyphicons_196_circle_exclamation_mark.png");
-}
-ul.notifications li.critical {
-    background-image: url("img/styles/glyphicons_196_circle_exclamation_mark.png");
-}
-*/
-
-
 /* Hint box.
     The hierarchy goes like this:
 
@@ -311,6 +216,10 @@ ul:last-child,
 ol.last-child {
     padding-bottom: 0;
     margin-bottom:  0;
+}
+
+ol.snippet-num > li.note-placeholder {
+    padding-top: 5px;
 }
 
 li.box {
