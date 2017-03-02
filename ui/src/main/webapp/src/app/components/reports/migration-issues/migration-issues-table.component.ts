@@ -3,6 +3,7 @@ import {Router, ActivatedRoute} from "@angular/router";
 import {Http} from "@angular/http";
 
 import * as showdown from "showdown";
+import "../source/prism";
 
 import {MigrationIssuesService} from "./migration-issues.service";
 import {NotificationService} from "../../../services/notification.service";
@@ -41,7 +42,8 @@ import {SortingService, OrderDirection} from "../../../services/sorting.service"
     `],
     providers: [SortingService]
 })
-export class MigrationIssuesTableComponent implements OnInit {
+export class MigrationIssuesTableComponent implements OnInit
+{
     @Input()
     migrationIssues: ProblemSummary[] = [];
 
@@ -88,9 +90,15 @@ export class MigrationIssuesTableComponent implements OnInit {
         return this.getSum((issue: ProblemSummary) => issue.numberFound * issue.effortPerIncident);
     }
 
+    private delayedPrismRender() {
+        // Colorize the included code snippets on the first displaying.
+        setTimeout(() => Prism.highlightAll(false), 1000);
+    }
+
     toggleFiles(summary: ProblemSummary) {
         if (this.displayedSummariesFiles.has(summary)) {
             this.displayedSummariesFiles.set(summary, !this.displayedSummariesFiles.get(summary));
+            this.delayedPrismRender();
         } else {
             this.loadIssuesPerFile(summary);
         }
@@ -100,6 +108,7 @@ export class MigrationIssuesTableComponent implements OnInit {
         this._migrationIssuesService.getIssuesPerFile(this.executionId, summary).subscribe(fileSummaries => {
             this.problemSummariesFiles.set(summary, fileSummaries);
             this.displayedSummariesFiles.set(summary, true);
+            this.delayedPrismRender();
         },
         error => {
             this._notificationService.error('Could not load file summaries due to: ' + error);
@@ -175,7 +184,21 @@ export class MigrationIssuesTableComponent implements OnInit {
         });
     }
 
-    renderMarkdownToHtml(input:string): string {
-        return new showdown.Converter().makeHtml(input);
+    renderMarkdownToHtml(markdownCode:string): string {
+        // The class="language-java" is already in <code>
+        // <pre><code class="language-{{filetype()}}">
+
+        let html: string;
+        if (this.markdownCache.has(markdownCode))
+            html = this.markdownCache.get(markdownCode);
+        else {
+            html = new showdown.Converter().makeHtml(markdownCode);
+            this.markdownCache.set(markdownCode, html);
+        }
+
+        return html;
     }
+
+    private markdownCache: Map<string, string> = new Map<string, string>();
+
 }
