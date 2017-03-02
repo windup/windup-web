@@ -81,6 +81,11 @@ $font-color-active: white;
     margin-right: 18px;
   }
 
+  &:not(:first-child):not(:last-child) {
+    top: -2px;
+    bottom: 2px;
+  }
+
   &:last-child {
     background: $background-color;
     border-right: 2px solid $border-color;
