@@ -1,10 +1,12 @@
-import {Component, OnInit, AfterViewChecked} from "@angular/core";
+import {Component, OnInit, AfterViewChecked, ViewEncapsulation} from "@angular/core";
 import {ActivatedRoute, Params} from "@angular/router";
+import {Http} from "@angular/http";
+import {Observable} from "rxjs";
 
 import * as showdown from "showdown";
-
 import "./prism";
 
+import {utils} from "../../../utils";
 import {FileModelService} from "../../../services/graph/file-model.service";
 import {FileModel} from "../../../generated/tsModels/FileModel";
 import {ClassificationService} from "../../../services/graph/classification.service";
@@ -14,15 +16,13 @@ import {HintService} from "../../../services/graph/hint.service";
 import {LinkModel} from "../../../generated/tsModels/LinkModel";
 import {SourceFileModel} from "../../../generated/tsModels/SourceFileModel";
 import {GraphJSONToModelService} from "../../../services/graph/graph-json-to-model.service";
-import {utils} from "../../../utils";
-import {Http} from "@angular/http";
 import {LinkableModel} from "../../../generated/tsModels/LinkableModel";
-import {Observable} from "rxjs";
 import {NotificationService} from "../../../services/notification.service";
 
 @Component({
     templateUrl: './source-report.component.html',
-    styleUrls: [ './source-report.component.css' ]
+    styleUrls: [ './source-report.component.css' ],
+    encapsulation: ViewEncapsulation.None, // Don't adjust CSS selectors with '[_ng...]'.
 })
 export class SourceReportComponent implements OnInit, AfterViewChecked {
     private execID: number;

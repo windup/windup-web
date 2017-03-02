@@ -1,3 +1,8 @@
+/* Candidate for a global style - OS-like panel heading. */
+.panel-primary.sourceReport { border-color: #e7e7e7; }
+.panel-primary.sourceReport .panel-heading { background-color: white; padding: 15px 15px; border-bottom: 2px solid #e7e7e7; }
+.panel-primary.sourceReport .panel-heading .panel-title { color: black; font-size: 20px; font-weight: 500; }
+
 .panel .panel-body .points {
     color: #00254b;
     float: left;
@@ -15,7 +20,10 @@
     margin: 6pt 0 4pt;
 }
 
-.label {
+
+
+/* Technology labels. */
+.sourceReport .label {
     border-radius: 4px;
     display: block;
     float: left;
@@ -23,48 +31,29 @@
     margin: 2px;
     padding: 4px;
 }
-.label-info {
-    background-color: #696969;
-}
-
-.label-default {
-    background-color: #999999;
-}
-.label-default[href]:hover, .label-default[href]:focus {
-    background-color: #808080;
-}
-.label-primary {
-    background-color: #008cba;
-}
-.label-primary[href]:hover, .label-primary[href]:focus {
-    background-color: #006687;
-}
-.label-success {
-    background-color: #43ac6a;
-}
-.label-success[href]:hover, .label-success[href]:focus {
-    background-color: #358753;
-}
-.label-info {
-    background-color: #5bc0de;
-}
-.label-info[href]:hover, .label-info[href]:focus {
-    background-color: #31b0d5;
-}
-.label-warning {
-    background-color: #e99002;
-}
-.label-warning[href]:hover, .label-warning[href]:focus {
-    background-color: #b67102;
-}
-.label-danger {
-    background-color: #f04124;
-}
-.label-danger[href]:hover, .label-danger[href]:focus {
-    background-color: #d32a0e;
-}
+.sourceReport .label-info { background-color: #696969; }
+.sourceReport .label-default { background-color: #999999; }
+.sourceReport .label-default[href]:hover, .label-default[href]:focus { background-color: #808080; }
+.sourceReport .label-primary { background-color: #008cba; }
+.sourceReport .label-primary[href]:hover, .label-primary[href]:focus { background-color: #006687; }
+.sourceReport .label-success { background-color: #43ac6a; }
+.sourceReport .label-success[href]:hover, .label-success[href]:focus { background-color: #358753; }
+.sourceReport .label-info { background-color: #5bc0de; }
+.sourceReport .label-info[href]:hover, .label-info[href]:focus { background-color: #31b0d5; }
+.sourceReport .label-warning { background-color: #e99002; }
+.sourceReport .label-warning[href]:hover, .label-warning[href]:focus { background-color: #b67102; }
+.sourceReport .label-danger { background-color: #f04124; }
+.sourceReport .label-danger[href]:hover, .label-danger[href]:focus { background-color: #d32a0e; }
 
 .classifications .desc { padding-left: 3ex; }
+
+
+
+pre {
+    font-family: "Lucida Grand", Verdana, Arial, Helvetica, sans-serif;
+    margin: 5px;
+    padding: 5px;
+}
 
 pre#source {
     background: #F9F9F9;
@@ -72,131 +61,25 @@ pre#source {
     padding: 0;
 }
 
+
 div.inline-comment-body p:first-child, div.inline-comment-body ul:first-child, div.inline-comment-body ol:first-child {
     padding-top:0;
 }
 
-.source-report .info .classifications .desc { padding-left: 3ex; }
+/* Hint box.
+    The hierarchy goes like this:
 
+.inline-source-hint-group .inline-source-comment .inline-comment {
+    .inline-comment-heading {}
+    .inline-comment-body {}
+}
+*/
 
-tr th:last-child { width: 600px; }
-tr td:last-child { width: 600px; }
-tr th:nth-child(2) { width: 80px; }
-tr td:nth-child(2) { width: 70px; }
-
-pre {
-    font-family : "Lucida Grand", Verdana, Arial, Helvetica, sans-serif;
-}
-
-/* Pie chart */
-div.windupPieGraph {
-    height:250px;
-    width:800px;
-    margin: 0 auto;
-    border: 0px dashed gainsboro;
-}
-
-div.windupPieGraph div.legend table {
-    width: 300px;
-}
-
-div.windupPieGraph div.legend td.legendColorBox,
-div.windupPieGraph div.legend td.legendColorBox div {
-    width: 14px;
-}
-
-
-div.sausage {
-    background: #FFEEB9;
-    border: 1px solid #CFC195;
-}
-
-div.sausage-current {
-    background: #FF6600;
-    border: 1px solid #CC5200;
-}
-
-.sausage-set {
-    border: 0px !important;
-}
-span.dash {
-    padding: 0 10px;
-}
-
-ul.links {
-    list-style-type: none;
-    padding: 0px;
-    margin: 0px;
-}
-
-ul.links li {
-    background-image: url("img/styles/glyphicons_217_circle_arrow_right.png");
-    background-repeat: no-repeat;
-    background-position: left center;
-    padding-left: 20px;
-    margin-left: 20px;
-    margin-top:2px;
-    margin-bottom:2px;
-}
-
-ul.notifications {
-    list-style-type: none;
-    padding: 0px;
-    margin: 0px;
-}
-
-
-ul.notifications li {
-    background-repeat: no-repeat;
-    background-position: left center;
-    padding-left: 20px;
-    margin-left: 20px;
-    margin-top:2px;
-    margin-bottom:2px;
-}
-ul.notifications li.info {
-    background-image: url("img/styles/glyphicons_195_circle_info.png");
-}
-ul.notifications li.warning {
-    background-image: url("img/styles/glyphicons_196_circle_exclamation_mark.png");
-}
-ul.notifications li.severe {
-    background-image: url("img/styles/glyphicons_196_circle_exclamation_mark.png");
-}
-ul.notifications li.critical {
-    background-image: url("img/styles/glyphicons_196_circle_exclamation_mark.png");
-}
-
-div.inline-comment-heading strong.notification {
-    background-repeat: no-repeat;
-    background-position: left center;
-    padding-left: 20px;
-    margin-left: 5px;
-    margin-top:2px;
-    margin-bottom:2px;
-}
-
+/* Hint box - reset the <code> styles. */
 div.inline-source-hint-group {
     white-space: normal;
-}
-
-div.inline-comment-heading strong.info {
-    background-image: url("img/styles/glyphicons_195_circle_info.png");
-}
-div.inline-comment-heading strong.warning {
-    background-image: url("img/styles/glyphicons_196_circle_exclamation_mark.png");
-}
-div.inline-comment-heading strong.severe {
-    background-image: url("img/styles/glyphicons_196_circle_exclamation_mark.png");
-}
-div.inline-comment-heading strong.critical {
-    background-image: url("img/styles/glyphicons_196_circle_exclamation_mark.png");
-}
-
-pre {
+    text-shadow: none;
     font-family: "Lucida Grand", Verdana, Arial, Helvetica, sans-serif;
-    margin: 5px;
-    padding: 5px;
 }
 
 div.inline-source-comment {
@@ -212,20 +95,20 @@ div.inline-comment {
 }
 
 div.inline-comment:last-child {
+    margin-top: 1ex;
     margin-bottom: 0;
 }
 
-div.inline-source-comment div.inline-comment-body {
-    background: #FFF;
-    padding: 10px;
-    white-space: normal;
+div.green div.inline-comment {
+    border: 1px solid #4f673a;
 }
 
-div.inline-comment div.inline-comment-heading {
 
+div.inline-comment div.inline-comment-heading {
+    line-height: 2;
     padding: 5px 5px;
     margin:0;
-    border-bottom: 1px solid #999;
+    -border-bottom: 1px solid #999;
 }
 
 div.inline-comment div.inline-comment-heading h2 {
@@ -235,6 +118,41 @@ div.inline-comment div.inline-comment-heading h2 {
     margin: 0;
 }
 
+div.inline-comment-heading strong.notification {
+    background-repeat: no-repeat;
+    background-position: left center;
+    padding-left: 20px;
+    margin-left:   5px;
+    margin-top:    2px;
+    margin-bottom: 2px;
+    font-weight: 500;
+    font-size: 13pt;
+}
+
+div.inline-comment-heading strong.info { background-image: url("img/styles/glyphicons_195_circle_info.png"); }
+div.inline-comment-heading strong.warning { background-image: url("img/styles/glyphicons_196_circle_exclamation_mark.png"); }
+div.inline-comment-heading strong.severe { background-image: url("img/styles/glyphicons_196_circle_exclamation_mark.png"); }
+div.inline-comment-heading strong.critical { background-image: url("img/styles/glyphicons_196_circle_exclamation_mark.png"); }
+
+
+
+div.inline-source-comment div.inline-comment-body {
+    background: #FFF;
+    padding: 10px;
+    white-space: normal;
+}
+
+/* Identifier within the text */
+div.inline-source-comment div.inline-comment-body p > code {
+    font-size: 9pt;
+    color: mediumvioletred;
+}
+
+/* Code sample */
+div.inline-source-comment div.inline-comment-body pre > code {
+    font-size: 11pt;
+}
+
 div.inline-comment-body pre {
     border: 1px solid #999;
     border-radius: 5px;
@@ -242,14 +160,18 @@ div.inline-comment-body pre {
     margin: 0;
 }
 
-div.inline-comment-body > ul,ol {
-    margin: 1em 0;
+div.inline-comment-body > ul,
+div.inline-comment-body > ol {
+    margin: 0.8ex 0;
     color: #000;
     padding: 0;
     line-height: 1;
-    font-size: 100%;
-    font: inherit;
     vertical-align: baseline;
+}
+
+div.inline-comment-body > ul:last-child,
+div.inline-comment-body > ol:last-child {
+    margin-bottom: 0;
 }
 
 div.inline-comment-body > ul {
@@ -261,14 +183,18 @@ div.inline-comment-body > ul > li {
     padding-left: 6px !important;
 }
 
-div.inline-comment-body > ul > li,ol > li {
+div.inline-comment-body > ul > li,
+div.inline-comment-body > ol > li {
     margin: 0;
     padding: 0;
-    line-height: 1;
-    font-size: 100%;
-    font: inherit;
+    line-height: 1.4;
     vertical-align: baseline;
+    list-style-position: outside;
 }
+
+div.inline-comment-body > ul:empty,
+div.inline-comment-body > ol:empty { display: none; }
+
 
 div.inline-comment-body > ol {
     list-style: decimal inside !important;
@@ -281,17 +207,24 @@ div.inline-comment-body > ol > li {
 
 div.inline-comment-body p {
     padding: 0;
+    line-height: 1.5;
 }
 
-div.inline-comment-body p:last-child, ul:last-child, ol.last-child {
-    padding-bottom:0;
-    margin-bottom:0;
+div.inline-comment-body p:last-child,
+div.inline-comment-body p:last-of-type,
+ul:last-child,
+ol.last-child {
+    padding-bottom: 0;
+    margin-bottom:  0;
+}
+
+ol.snippet-num > li.note-placeholder {
+    padding-top: 5px;
 }
 
 li.box {
-    border: none;
     padding-bottom: 5px;
-    border: 1px solid #80775d !important;
+    border: 1px solid #e7e0cc !important;
     margin-right: 10px;
 }
 
@@ -300,19 +233,18 @@ li.box-bg {
 }
 
 .snippet-wrap .snippet-num div.box {
-    border: 1px;
     padding-bottom: 5px;
     border: 1px solid #80775d !important;
     margin-right: 10px;
 }
 
-div.green div.inline-comment {
-    border: 1px solid #4f673a;
-}
 
 div.green div.inline-comment div.inline-comment-heading {
-    background: #9dce74;
+    background-color: #cae2f3; /* greyed green: #dcf2ca , light blue: #cae2f3, almost grey: #d6dee4, original green: #9dce74 */
     padding: 0;
+    font-size: 12pt;
+    font-weight: 500;
+    font-family: Arial;
 }
 
 div.inline-comment-heading:only-child {
@@ -323,13 +255,14 @@ div.green pre {
     border-color: #1a5006;
 }
 
-li.box + li.box {
+li.box + li.box,
+li.box + span + li.box {
     margin-top:6px;
+    border-top: 0;
 }
 
 .sh_ide-eclipse .sh_sourceCode .sh_type,
 .sh_ide-eclipse .sh_keyword { font-weight: normal; }
-
 
 
 .snippet-num {
@@ -337,13 +270,13 @@ li.box + li.box {
     padding-left: 3em;
 }
 
-.snippet-num li {
+ol.snippet-num > li {
     list-style: decimal-leading-zero outside none;
-    padding: 0 0 1.0em 1.5em;
+    padding: 0 1ex 0.3em 1em;
     margin: 0;
     line-height: 1em;
-    font-family : "Lucida Grand", Verdana, Arial, Helvetica, sans-serif;
-    font-size:14px;
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+    font-size: 14px;
 }
 
 .snippet-no-num li.box {
@@ -351,17 +284,23 @@ li.box + li.box {
     margin-left: -6px;
 }
 
-.snippet-num li.box {
+/deep/ .snippet-num li.box {
     border: 1px solid;
     list-style-position: inside;
-    margin-left: -3em;
-    padding-left: 6px;
+    margin-left: -2.6em;
+    padding-left: 0.5em;
 }
 
+/deep/ .snippet-num li.box span:first-child {
+    margin-left: 1em !important;
+}
+
+/* Some old non-IE hack */
 *:first-child + html .snippet-num li.box {
     margin-left: -2.4em;
 }
 
+/* Some old IE hack */
 * html .snippet-num li.box {
     margin-left: -2.4em;
 }
@@ -411,3 +350,10 @@ li.box-mid {
     list-style: none;
     padding-left: 0;
 }
+
+/* Prism code coloring override. */
+.token.operator, .token.entity, .token.url, .language-css .token.string, .style .token.string {
+    background: transparent;
+}
+
+.token.punctuation { color: inherit; }
