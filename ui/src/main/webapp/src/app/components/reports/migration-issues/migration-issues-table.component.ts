@@ -1,8 +1,9 @@
-import {Component, Input, OnInit} from "@angular/core";
+import {Component, Input, OnInit, AfterViewChecked} from "@angular/core";
 import {Router, ActivatedRoute} from "@angular/router";
 import {Http} from "@angular/http";
 
 import * as showdown from "showdown";
+import "../source/prism";
 
 import {MigrationIssuesService} from "./migration-issues.service";
 import {NotificationService} from "../../../services/notification.service";
@@ -41,7 +42,8 @@ import {SortingService, OrderDirection} from "../../../services/sorting.service"
     `],
     providers: [SortingService]
 })
-export class MigrationIssuesTableComponent implements OnInit {
+export class MigrationIssuesTableComponent implements OnInit, AfterViewChecked
+{
     @Input()
     migrationIssues: ProblemSummary[] = [];
 
@@ -98,6 +100,9 @@ export class MigrationIssuesTableComponent implements OnInit {
 
     protected loadIssuesPerFile(summary: ProblemSummary) {
         this._migrationIssuesService.getIssuesPerFile(this.executionId, summary).subscribe(fileSummaries => {
+            //summary["descriptionsRendered"] = summary.descriptions.map((val, index) => renderMarkdownToHtml)
+            // NODO: Render markdown and add it to description object.
+            // TODO: Call Prism replacer here.
             this.problemSummariesFiles.set(summary, fileSummaries);
             this.displayedSummariesFiles.set(summary, true);
         },
@@ -175,7 +180,35 @@ export class MigrationIssuesTableComponent implements OnInit {
         });
     }
 
-    renderMarkdownToHtml(input:string): string {
-        return new showdown.Converter().makeHtml(input);
+    renderMarkdownToHtml(markdownCode:string): string {
+        console.log("Rendering markdown", markdownCode)
+
+        var addJavaHighlightClassExt = {
+            type: 'output',
+            regex: /<code /g,
+            replace: '<code class="language-java" '
+        };
+        showdown.extension('addJavaHighlightClassExt', addJavaHighlightClassExt);
+
+        return new showdown.Converter().makeHtml(markdownCode);
     }
+
+    ngAfterViewChecked(): void {
+        if (this.rendered)
+            return;
+
+        // Add language-java to all <code> in .description
+        // <pre class="has-notes"><code class="language-{{filetype()}}">
+        let nodeList = document.querySelectorAll('.description code');
+        console.log("Code elements found:: " + nodeList.length);
+        for (let i = 0; i < nodeList.length; i++) {
+
+        }
+
+        Prism.highlightAll(false);
+        this.rendered = true;
+    }
+
+    private rendered: boolean = false;
+
 }

@@ -29,8 +29,8 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 /**
- * Contains information about how Windup analysis should be configured. For example, this might include the package list to scan or the target
- * platform.
+ * Contains information about how Windup analysis should be configured.
+ * For example, this might include the package list to scan or the target platform.
  *
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */

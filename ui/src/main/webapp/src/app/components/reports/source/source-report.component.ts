@@ -154,6 +154,7 @@ export class SourceReportComponent implements OnInit, AfterViewChecked {
         if (!this.fileSource || !this.fileModel || this.hints == null || this.classifications == null)
             return;
 
+        // Add the hint nodes to appropriate lines.
         Prism.hooks.add('after-highlight', function () {
             let nodeList = document.querySelectorAll('.has-notes .note-placeholder');
             for (let i = 0; i < nodeList.length; i++) {
@@ -169,6 +170,5 @@ export class SourceReportComponent implements OnInit, AfterViewChecked {
 
         Prism.highlightAll(false);
         this.rendered = true;
-        console.log("Rendered!");
     }
 }
