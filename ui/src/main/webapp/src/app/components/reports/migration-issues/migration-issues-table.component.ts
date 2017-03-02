@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, AfterViewChecked} from "@angular/core";
+import {Component, Input, OnInit} from "@angular/core";
 import {Router, ActivatedRoute} from "@angular/router";
 import {Http} from "@angular/http";
 
@@ -42,7 +42,7 @@ import {SortingService, OrderDirection} from "../../../services/sorting.service"
     `],
     providers: [SortingService]
 })
-export class MigrationIssuesTableComponent implements OnInit, AfterViewChecked
+export class MigrationIssuesTableComponent implements OnInit
 {
     @Input()
     migrationIssues: ProblemSummary[] = [];
@@ -90,9 +90,15 @@ export class MigrationIssuesTableComponent implements OnInit, AfterViewChecked
         return this.getSum((issue: ProblemSummary) => issue.numberFound * issue.effortPerIncident);
     }
 
+    private delayedPrismRender() {
+        // Colorize the included code snippets on the first displaying.
+        setTimeout(() => Prism.highlightAll(false), 1000);
+    }
+
     toggleFiles(summary: ProblemSummary) {
         if (this.displayedSummariesFiles.has(summary)) {
             this.displayedSummariesFiles.set(summary, !this.displayedSummariesFiles.get(summary));
+            this.delayedPrismRender();
         } else {
             this.loadIssuesPerFile(summary);
         }
@@ -100,11 +106,9 @@ export class MigrationIssuesTableComponent implements OnInit, AfterViewChecked
 
     protected loadIssuesPerFile(summary: ProblemSummary) {
         this._migrationIssuesService.getIssuesPerFile(this.executionId, summary).subscribe(fileSummaries => {
-            //summary["descriptionsRendered"] = summary.descriptions.map((val, index) => renderMarkdownToHtml)
-            // NODO: Render markdown and add it to description object.
-            // TODO: Call Prism replacer here.
             this.problemSummariesFiles.set(summary, fileSummaries);
             this.displayedSummariesFiles.set(summary, true);
+            this.delayedPrismRender();
         },
         error => {
             this._notificationService.error('Could not load file summaries due to: ' + error);
@@ -180,13 +184,7 @@ export class MigrationIssuesTableComponent implements OnInit, AfterViewChecked
         });
     }
 
-    ngAfterViewChecked() {
-        console.log("ngAfterViewChecked() called")
-    }
-
     renderMarkdownToHtml(markdownCode:string): string {
-        console.log("renderMarkdownToHtml() called");
-
         // The class="language-java" is already in <code>
         // <pre><code class="language-{{filetype()}}">
 
@@ -194,12 +192,8 @@ export class MigrationIssuesTableComponent implements OnInit, AfterViewChecked
         if (this.markdownCache.has(markdownCode))
             html = this.markdownCache.get(markdownCode);
         else {
-            console.log("Rendering markdown and caching it.");
             html = new showdown.Converter().makeHtml(markdownCode);
             this.markdownCache.set(markdownCode, html);
-
-            // Colorize the included code snippets on the first displaying.
-            setTimeout(() => Prism.highlightAll(false), 1000);
         }
 
         return html;
