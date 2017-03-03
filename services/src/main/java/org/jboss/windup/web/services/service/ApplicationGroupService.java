@@ -90,9 +90,16 @@ public class ApplicationGroupService
     public ApplicationGroup update(ApplicationGroup updatedGroupDTO)
     {
         if (updatedGroupDTO.getId() == null)
-            throw new WindupException("Group ID is null.");
+            throw new BadRequestException("Group ID is null.");
 
         ApplicationGroup original = this.entityManager.find(ApplicationGroup.class, updatedGroupDTO.getId());
+
+        if (original == null)
+        {
+            throw new NotFoundException("Group with id " + updatedGroupDTO.getId() + " not found");
+        }
+
+
         original.setTitle(updatedGroupDTO.getTitle());
         this.setIncludedApplications(original, updatedGroupDTO.getApplications());
 
