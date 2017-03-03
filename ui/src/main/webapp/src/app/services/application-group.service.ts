@@ -99,7 +99,13 @@ export class ApplicationGroupService extends AbstractService {
     }
 
     update(applicationGroup: ApplicationGroup) {
-        let body = JSON.stringify(applicationGroup);
+        let updatedGroup = Object.assign({}, {
+            id: applicationGroup.id,
+            applications: applicationGroup.applications,
+            title: applicationGroup.title
+        });
+
+        let body = JSON.stringify(updatedGroup);
 
         return this._http.put(Constants.REST_BASE + this.UPDATE_URL, body, this.JSON_OPTIONS)
             .map(res => <ApplicationGroup> res.json())
