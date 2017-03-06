@@ -2,9 +2,6 @@ import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute, Params, Router}   from '@angular/router';
 
 import {TechReportService, StatsItem} from "./tech-report.service";
-
-import {ApplicationGroup} from "windup-services";
-import {ApplicationGroupService} from '../../group/application-group.service';
 import {NotificationService} from "../../core/notification/notification.service";
 import {utils} from '../../shared/utils';
 import {ProjectTechnologiesStatsModel} from "../../generated/tsModels/ProjectTechnologiesStatsModel";
@@ -24,13 +21,10 @@ export class TechnologiesReportComponent implements OnInit {
     private execID: number;
     private technologiesStats: ProjectTechnologiesStatsModel[] = [];
     private filteredTechnologiesStats: TechnologiesStats;
-    private appGroups : ApplicationGroup[];
-    private currentGroup: ApplicationGroup;
 
     constructor(
         private route: ActivatedRoute,
         private techReportService: TechReportService,
-        private appGrpService: ApplicationGroupService,
         private _notificationService: NotificationService,
         private _router: Router
     ){}
@@ -39,11 +33,6 @@ export class TechnologiesReportComponent implements OnInit {
         this.route.params.forEach((params: Params) => {
             this.execID = +params['executionId'];
             this.fetchTechnologiesStats();
-        });
-
-        this.appGrpService.getAll().toPromise().then(appGroups => this.appGroups = appGroups);
-        this.route.parent.parent.data.subscribe((data: {applicationGroup: ApplicationGroup}) => {
-            this.currentGroup = data.applicationGroup;
         });
     }
 
@@ -69,6 +58,10 @@ export class TechnologiesReportComponent implements OnInit {
      * This is workaround for RESTeasy returning sometimes ID and sometimes full entity
      */
     getFilterSelectedApplications(): (RegisteredApplication | FilterApplication)[] {
+        return [];
+
+/*
+TODO: Fix this
         let filterData = this.currentGroup.reportFilter.selectedApplications;
 
         return filterData.map(appOrId => {
@@ -78,10 +71,12 @@ export class TechnologiesReportComponent implements OnInit {
 
             return appOrId;
         });
+*/
     }
 
     filterTechnologiesStats(techReports: ProjectTechnologiesStatsModel[]): ProjectTechnologiesStatsModel[] {
-        let filter = this.currentGroup.reportFilter;
+        // TODO: Fix
+        let filter = <any>{};// this.currentGroup.reportFilter;
 
         if (!filter.enabled || filter.selectedApplications.length === 0) {
             return techReports;

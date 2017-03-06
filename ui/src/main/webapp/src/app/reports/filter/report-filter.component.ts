@@ -1,5 +1,5 @@
 import {Component, OnInit, OnDestroy} from "@angular/core";
-import {ApplicationGroup, ReportFilter, Tag} from "windup-services";
+import {ReportFilter, Tag} from "windup-services";
 import {ActivatedRoute, Router, NavigationEnd} from "@angular/router";
 import {Subscription} from "rxjs";
 import {ReportFilterService} from "./report-filter.service";
@@ -12,12 +12,14 @@ import {Location} from "@angular/common";
 import {TagDataService} from "../tag-data.service";
 import {FilterApplication} from "windup-services";
 import {WindupExecution} from "windup-services";
+import {MigrationProject} from "windup-services";
 
 @Component({
     templateUrl: './report-filter.component.html'
 })
 export class ReportFilterComponent implements OnInit, OnDestroy {
-    group: ApplicationGroup = <ApplicationGroup>{};
+    project: MigrationProject = <MigrationProject>{};
+    execution: WindupExecution|any = <WindupExecution>{};
     filter: ReportFilter;
     tags: Tag[] = [];
     categories: Category[] = [];
@@ -36,7 +38,7 @@ export class ReportFilterComponent implements OnInit, OnDestroy {
                 private _notificationService: NotificationService,
                 private _routeFlattenerService: RouteFlattenerService,
                 private _location: Location) {
-        this.filter = this.getDefaultFilter(null);
+        this.filter = this.getDefaultFilter();
 
         this.categoryTagSelectConfig = {
             getLabel: (tag: Tag) => tag.name,
@@ -55,10 +57,9 @@ export class ReportFilterComponent implements OnInit, OnDestroy {
         };
     }
 
-    private getDefaultFilter(applicationGroup: ApplicationGroup): ReportFilter {
+    private getDefaultFilter(): ReportFilter {
         return {
             id: null,
-            // applicationGroup: applicationGroup,
             selectedApplications: [],
             includeTags: [],
             excludeTags: [],
@@ -71,25 +72,27 @@ export class ReportFilterComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.routerSubscriptions.push(this._router.events.filter(event => event instanceof NavigationEnd).subscribe(_ => {
             let flatData = this._routeFlattenerService.getFlattenedRouteData(this._activatedRoute.snapshot);
-            this.group = flatData.data['applicationGroup'];
-            this.filter = this.group.reportFilter || this.getDefaultFilter(this.group);
 
-            this._filterService.getTags(this.group).subscribe(
+            // TODO: Fix this
+            this.execution = flatData.data['applicationGroup'];
+            this.filter = this.execution.reportFilter || this.getDefaultFilter();
+
+            this._filterService.getTags(this.execution).subscribe(
                 tags => {
                     this.tags = this.accumulateAllTags([], tags);
                 },
                 error => this._notificationService.error(utils.getErrorMessage(error))
             );
 
-            this._filterService.getCategories(this.group).subscribe(
+            this._filterService.getCategories(this.execution).subscribe(
                 categories => this.categories = categories,
                 error => this._notificationService.error(utils.getErrorMessage(error))
             );
 
-            let lastExecution = this.getLastExecution(this.group);
+            let lastExecution = this.getLastExecution(this.project);
 
             if (lastExecution != null) {
-                this._filterService.getFilterApplications(this.group, lastExecution)
+                this._filterService.getFilterApplications(lastExecution)
                     .subscribe(filterApplications => {
                         this.filterApplications = filterApplications;
                         this.isFilterUpToDate = this.areApplicationsInFilterUpToDate();
@@ -102,14 +105,14 @@ export class ReportFilterComponent implements OnInit, OnDestroy {
         // compare filter applications with app group apps
         let filterApplicationsWithoutSharedLibs = this.filterApplications.filter(application => application.fileName !== 'shared-libs');
 
-        if (filterApplicationsWithoutSharedLibs.length !== this.group.applications.length) {
+        if (filterApplicationsWithoutSharedLibs.length !== this.project.applications.length) {
             // filter apps = at most real apps + 1 (shared libraries virtual application)
             return false;
         }
 
         let hashMap = new Map<string, any>();
 
-        this.group.applications.forEach(application => hashMap.set(application.inputPath, application));
+        this.project.applications.forEach(application => hashMap.set(application.inputPath, application));
         let areAllApplicationsInMap = filterApplicationsWithoutSharedLibs.reduce((accumulator, filterApplication) => {
             return accumulator && hashMap.has(filterApplication.inputPath);
         }, true);
@@ -117,11 +120,10 @@ export class ReportFilterComponent implements OnInit, OnDestroy {
         return areAllApplicationsInMap;
     }
 
-    private getLastExecution(applicationGroup: ApplicationGroup): WindupExecution
+    private getLastExecution(project: MigrationProject): WindupExecution
     {
         let execution: WindupExecution = null;
-
-        let allExecutions = applicationGroup.executions.slice(); // make copy of array
+        let allExecutions = project.executions.slice(); // make copy of array
 
         allExecutions.sort((a: WindupExecution, b: WindupExecution) => {
             return <any>b.timeCompleted - <any>a.timeCompleted;
@@ -131,7 +133,6 @@ export class ReportFilterComponent implements OnInit, OnDestroy {
         {
             execution = allExecutions[0];
         }
-
 
         return execution;
     }
@@ -153,7 +154,7 @@ export class ReportFilterComponent implements OnInit, OnDestroy {
     }
 
     saveFilter() {
-        this._filterService.updateFilter(this.group, this.filter).subscribe(() => {
+        this._filterService.updateFilter(this.execution, this.filter).subscribe(() => {
                 this._notificationService.success('Filter successfully updated');
             },
             error => this._notificationService.error(utils.getErrorMessage(error))
@@ -161,8 +162,9 @@ export class ReportFilterComponent implements OnInit, OnDestroy {
     }
 
     cancel() {
-        let route = ['projects', this.group.migrationProject.id, 'groups', this.group.id];
+        let route = ['projects', this.project.id];
         this._router.navigate(route);
+
         return false;
     }
 

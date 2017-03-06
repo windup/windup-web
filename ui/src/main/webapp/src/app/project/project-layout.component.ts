@@ -1,34 +1,23 @@
 import {Component, OnInit, OnDestroy} from "@angular/core";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 
-import {ApplicationGroup} from "windup-services";
 import {MigrationProject} from "windup-services";
 import {RouteLinkProviderService} from "../core/routing/route-link-provider-service";
 import {MigrationIssuesComponent} from "../reports/migration-issues/migration-issues.component";
 import {TechnologiesReportComponent} from "../reports/technologies/technologies-report.component";
 import {DependenciesReportComponent} from "../reports/dependencies/dependencies-report.component";
-import {WindupService} from "../services/windup.service";
-import {ReportMenuItem, ContextMenuItem} from "../shared/navigation/context-menu-item.class";
+import {ReportMenuItem} from "../shared/navigation/context-menu-item.class";
 import {AnalysisContextFormComponent} from "../analysis-context/analysis-context-form.component";
-import {NotificationService} from "../core/notification/notification.service";
-import {utils} from '../shared/utils';
-import {GroupExecutionsComponent} from "../executions/group-executions.component";
 import {ApplicationIndexComponent} from "../reports/application-index/application-index.component";
 import {ApplicationDetailsComponent} from "../reports/application-details/application-details.component";
-import {ApplicationGroupService} from "../group/application-group.service";
-import {WindupExecutionService} from "../services/windup-execution.service";
 import {EventBusService} from "../core/events/event-bus.service";
-import {
-    ApplicationGroupEvent,
-    UpdateApplicationGroupEvent
-} from "../core/events/windup-event";
 import {AbstractComponent} from "../shared/AbstractComponent";
 import {ReportFilterComponent} from "../reports/filter/report-filter.component";
 import {WINDUP_WEB} from "../app.module";
 import {ProjectExecutionsComponent} from "../executions/project-executions.component";
 import {ApplicationListComponent} from "../registered-application/application-list.component";
-
-
+import {MigrationProjectEvent, UpdateMigrationProjectEvent} from "../core/events/windup-event";
+import {MigrationProjectService} from "./migration-project.service";
 
 @Component({
     templateUrl: './project-layout.component.html',
@@ -38,57 +27,37 @@ import {ApplicationListComponent} from "../registered-application/application-li
 })
 export class ProjectLayoutComponent extends AbstractComponent implements OnInit, OnDestroy {
     protected project: MigrationProject;
-
-    /**
-     * TODO: It is little bit unclear what is and what will be active group.
-     * For now user won't see any direct UI to create a new group, so project will have only one group.
-     * So active group will be Default Group which is automatically created with project.
-     */
-    protected activeGroup: ApplicationGroup;
     protected menuItems;
 
-    // TODO: Execution progress: Group Layout must be updated when execution state changes (is completed)
+    // TODO: Execution progress: Project Layout must be updated when execution state changes (is completed)
 
     constructor(
         private _activatedRoute: ActivatedRoute,
-        private _applicationGroupService: ApplicationGroupService,
-        private _router: Router,
         private _routeLinkProviderService: RouteLinkProviderService,
-        private _executionService: WindupExecutionService,
-        private _notificationService: NotificationService,
+        private _migrationProjectService: MigrationProjectService,
         private _eventBus: EventBusService
     ) {
         super();
     }
 
     ngOnInit(): void {
-        this.addSubscription(this._eventBus.onEvent.filter(event => event.isTypeOf(UpdateApplicationGroupEvent))
-            .subscribe((event: ApplicationGroupEvent) => {
-                this.activeGroup = event.group;
+        this.addSubscription(this._eventBus.onEvent.filter(event => event.isTypeOf(UpdateMigrationProjectEvent))
+            .subscribe((event: MigrationProjectEvent) => {
+                this.project = event.migrationProject;
                 this.createContextMenuItems();
         }));
 
         this._activatedRoute.data.subscribe((data: {project: MigrationProject}) => {
             this.project = data.project;
 
-            this._applicationGroupService.getByProjectID(this.project.id).subscribe(appGroups => {
-                if (appGroups.length > 1) {
-                    this.activeGroup = appGroups[appGroups.length - 1];
-                } else if (appGroups.length === 1) {
-                    this.activeGroup = appGroups[0];
-                } else {
-                    throw Error('No app group found');
-                }
-
-                this._applicationGroupService.monitorGroup(this.activeGroup);
-                this.createContextMenuItems();
-            });
+            this._migrationProjectService.monitorProject(this.project);
+            this.createContextMenuItems();
         });
     }
 
     ngOnDestroy() {
         super.ngOnDestroy();
-        this._applicationGroupService.stopMonitoringGroup(this.activeGroup);
+        this._migrationProjectService.stopMonitoringProject(this.project);
     }
 
     protected createContextMenuItems() {
@@ -121,31 +90,10 @@ export class ProjectLayoutComponent extends AbstractComponent implements OnInit,
                 label: 'Config',
                 link: this._routeLinkProviderService.getRouteForComponent(AnalysisContextFormComponent, {
                     projectId: this.project.id,
-                    groupId: this.activeGroup.id
                 }),
                 icon: 'fa-cogs',
                 isEnabled: true,
             },
-            new ContextMenuItem(
-                'Run Windup',
-                'fa-rocket',
-                () => {
-                    // TODO: Fix this after full recompilation
-                    return (<any>this.project).applications.length > 0;
-                },
-                null,
-                () => {
-                    // TODO: 'windup-services' vs 'windup-services.ts' issues
-                    this._executionService.execute(<any>this.activeGroup).subscribe(
-                        success => {
-                            this._notificationService.info('Windup execution has started');
-                        },
-                        error => {
-                            this._notificationService.error(utils.getErrorMessage(error));
-                        }
-                    );
-                }
-            ),
             /*
             {
                 label: 'Dashboard',
@@ -157,21 +105,21 @@ export class ProjectLayoutComponent extends AbstractComponent implements OnInit,
             new ReportMenuItem(
                 'Application Details',
                 'fa-list',
-                this.activeGroup,
+                this.project,
                 ApplicationDetailsComponent,
                 this._routeLinkProviderService,
             ),
             new ReportMenuItem(
                 'Issues',
                 'fa-exclamation-triangle',
-                this.activeGroup,
+                this.project,
                 MigrationIssuesComponent,
                 this._routeLinkProviderService,
             ),
             new ReportMenuItem(
                 'Application Index',
                 'fa-book',
-                this.activeGroup,
+                this.project,
                 ApplicationIndexComponent,
                 this._routeLinkProviderService,
             ),
@@ -181,7 +129,7 @@ export class ProjectLayoutComponent extends AbstractComponent implements OnInit,
             let reportFilterMenu = new ReportMenuItem(
                 'Report Filter',
                 'fa-filter',
-                this.activeGroup,
+                this.project,
                 ReportFilterComponent,
                 this._routeLinkProviderService
             );
@@ -192,14 +140,14 @@ export class ProjectLayoutComponent extends AbstractComponent implements OnInit,
                 new ReportMenuItem(
                     'Technologies',
                     'fa-cubes',
-                    this.activeGroup,
+                    this.project,
                     TechnologiesReportComponent,
                     this._routeLinkProviderService,
                 ),
                 new ReportMenuItem(
                     'Dependencies',
                     'fa-code-fork',
-                    this.activeGroup,
+                    this.project,
                     DependenciesReportComponent,
                     this._routeLinkProviderService
                 )

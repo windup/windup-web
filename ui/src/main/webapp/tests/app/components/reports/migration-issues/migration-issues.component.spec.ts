@@ -13,6 +13,7 @@ import {HttpModule, BaseRequestOptions, Http, ConnectionBackend} from "@angular/
 import {MockBackend} from "@angular/http/testing";
 import {ReportFilterIndicatorComponent} from "../../../../../src/app/reports/filter/report-filter-indicator.component";
 import {GraphJSONToModelService} from "../../../../../src/app/services/graph/graph-json-to-model.service";
+import {WindupService} from "../../../../../src/app/services/windup.service";
 
 let comp:    MigrationIssuesComponent;
 let fixture: ComponentFixture<MigrationIssuesComponent>;
@@ -64,6 +65,21 @@ describe('MigrationissuesComponent', () => {
                     useValue: jasmine.createSpyObj('NotificationService', [
                         'error'
                     ])
+                },
+                {
+                    provide: WindupService,
+                    useFactory: () => {
+                        let mock = jasmine.createSpyObj('WindupService', [
+                            'getExecution'
+                        ]);
+
+                        mock.getExecution.and.returnValue(new Observable<any>(observer => {
+                            observer.next(null);
+                            observer.complete();
+                        }));
+
+                        return mock;
+                    }
                 },
                 {
                     provide: GraphJSONToModelService,

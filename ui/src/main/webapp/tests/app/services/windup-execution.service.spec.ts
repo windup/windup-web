@@ -3,19 +3,22 @@ import {fakeAsync, tick, discardPeriodicTasks} from "@angular/core/testing";
 import {WindupService} from "../../../src/app/services/windup.service";
 import {EventBusService} from "../../../src/app/core/events/event-bus.service";
 import {WindupExecutionService} from "../../../src/app/services/windup-execution.service";
-import {ApplicationGroup, WindupExecution} from "windup-services";
+import {WindupExecution} from "windup-services";
 import {ExecutionEvent, NewExecutionStartedEvent} from "../../../src/app/core/events/windup-event";
 import {Observable} from "rxjs";
 import {SchedulerServiceMock} from "../mocks/scheduler-service.mock";
+import {AnalysisContext} from "windup-services";
+import {MigrationProject} from "windup-services";
 
 describe("WindupExecution service", () => {
-    let group: ApplicationGroup = <ApplicationGroup>{ id: 10 };
+    let project: MigrationProject = <MigrationProject>{ id: 10 };
+    let analysisContext: AnalysisContext = <AnalysisContext> { id: 10 };
     let windupServiceMock;
     let eventBusMock;
     let schedulerMock: SchedulerServiceMock;
     let windupExecutionService: WindupExecutionService;
 
-    let getStatusGroup = (id) => {
+    let getExecution = (id) => {
         return {
             "id": id,
             "version": 1,
@@ -35,12 +38,12 @@ describe("WindupExecution service", () => {
 
     function getWindupServiceMock() {
         let windupServiceMock = jasmine.createSpyObj('WindupService', [
-            'executeWindupGroup',
-            'getStatusGroup',
+            'executeWindupWithAnalysisContext',
+            'getExecution',
         ]);
 
-        windupServiceMock.getStatusGroup.and.callFake((executionId) => {
-            return Observable.of(getStatusGroup(executionId));
+        windupServiceMock.getExecution.and.callFake((executionId) => {
+            return Observable.of(getExecution(executionId));
         });
 
         return windupServiceMock;
@@ -60,14 +63,14 @@ describe("WindupExecution service", () => {
         let spy;
 
         beforeEach(() => {
-            execution = getStatusGroup(1);
-            windupServiceMock.executeWindupGroup.and.returnValue(Observable.of(execution));
+            execution = getExecution(1);
+            windupServiceMock.executeWindupWithAnalysisContext.and.returnValue(Observable.of(execution));
             spy = spyOn(windupExecutionService, 'watchExecutionUpdates');
-            windupExecutionService.execute(group).subscribe();
+            windupExecutionService.execute(analysisContext, project).subscribe();
         });
 
         it('should fire event', fakeAsync(() => {
-            let event = new NewExecutionStartedEvent(<any>execution, group, windupExecutionService);
+            let event = new NewExecutionStartedEvent(<any>execution, project, windupExecutionService);
             tick();
             expect(eventBusMock.fireEvent).toHaveBeenCalled();
             expect(eventBusMock.fireEvent).toHaveBeenCalledWith(event);
@@ -76,7 +79,7 @@ describe("WindupExecution service", () => {
 
         it('should listen for execution changes', (() => {
             expect(spy).toHaveBeenCalled();
-            expect(spy).toHaveBeenCalledWith(execution, group);
+            expect(spy).toHaveBeenCalledWith(execution, project);
         }));
     });
 
@@ -84,20 +87,20 @@ describe("WindupExecution service", () => {
         let registeredExecutions = [];
 
         beforeEach(() => {
-            windupServiceMock.executeWindupGroup.and.callFake((groupId) => {
-                let execution = getStatusGroup(registeredExecutions.length + 1);
+            windupServiceMock.executeWindupWithAnalysisContext.and.callFake((groupId) => {
+                let execution = getExecution(registeredExecutions.length + 1);
                 registeredExecutions.push(execution);
 
                 return Observable.of(execution);
             });
 
-            windupExecutionService.execute(group).subscribe();
-            windupExecutionService.execute(group).subscribe();
+            windupExecutionService.execute(analysisContext, project).subscribe();
+            windupExecutionService.execute(analysisContext, project).subscribe();
         });
 
         it('should listen for changes of all of them', () => {
             schedulerMock.intervalTick();
-            expect(windupServiceMock.getStatusGroup).toHaveBeenCalledTimes(2);
+            expect(windupServiceMock.getExecution).toHaveBeenCalledTimes(2);
             // TODO: Check parameters
         });
     });
@@ -106,31 +109,31 @@ describe("WindupExecution service", () => {
         let execution: WindupExecution;
 
         beforeEach(() => {
-            execution = <any>getStatusGroup(1);
-            windupExecutionService.watchExecutionUpdates(execution, group);
+            execution = <any>getExecution(1);
+            windupExecutionService.watchExecutionUpdates(execution, project);
         });
 
         let assertIsNotListening = (state: string) => {
-            expect(windupServiceMock.getStatusGroup).not.toHaveBeenCalled();
+            expect(windupServiceMock.getExecution).not.toHaveBeenCalled();
             schedulerMock.intervalTick();
-            expect(windupServiceMock.getStatusGroup).toHaveBeenCalledTimes(1);
-            expect(windupServiceMock.getStatusGroup).toHaveBeenCalledWith(execution.id);
+            expect(windupServiceMock.getExecution).toHaveBeenCalledTimes(1);
+            expect(windupServiceMock.getExecution).toHaveBeenCalledWith(execution.id);
 
-            windupServiceMock.getStatusGroup.and.callFake((id) => {
+            windupServiceMock.getExecution.and.callFake((id) => {
                 let object = Object.assign({}, execution, {state: state});
                 return Observable.of(object);
             });
 
             schedulerMock.intervalTick(); // now it should get data with new state
-            expect(windupServiceMock.getStatusGroup).toHaveBeenCalledTimes(2);
+            expect(windupServiceMock.getExecution).toHaveBeenCalledTimes(2);
 
-            schedulerMock.intervalTick(); // now it should not call getStatusGroup anymore
-            expect(windupServiceMock.getStatusGroup).toHaveBeenCalledTimes(2);
+            schedulerMock.intervalTick(); // now it should not call getExecution anymore
+            expect(windupServiceMock.getExecution).toHaveBeenCalledTimes(2);
         };
 
         it('should listen for execution changes', () => {
             schedulerMock.intervalTick();
-            expect(windupServiceMock.getStatusGroup).toHaveBeenCalledWith(execution.id);
+            expect(windupServiceMock.getExecution).toHaveBeenCalledWith(execution.id);
         });
 
         it('should stop listening once execution reaches COMPLETE state', () => {

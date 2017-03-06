@@ -2,13 +2,14 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { utils } from "../../shared/utils";
 import { NotificationService } from "../../core/notification/notification.service";
-import { ApplicationGroup } from "windup-services";
 import { AggregatedStatisticsService } from "./aggregated-statistics.service";
 import { calculateColorScheme } from "../../shared/color-schemes";
 import { StatisticsList } from "windup-services";
 import { EffortByCategoryDTO } from "windup-services";
 import { EffortCategoryDTO } from "windup-services";
 import { WINDUP_WEB } from "../../app.module";
+import {WindupExecution} from "windup-services";
+import {WindupService} from "../../services/windup.service";
 
 @Component({
     templateUrl: './application-index.component.html',
@@ -17,6 +18,7 @@ import { WINDUP_WEB } from "../../app.module";
 export class ApplicationIndexComponent implements OnInit {
 
     public hideFilter = WINDUP_WEB.config.hideUnfinishedFeatures;
+    public execution: WindupExecution;
 
     // used for showing/hiding details in tables
     showDetails: boolean = false;
@@ -25,7 +27,6 @@ export class ApplicationIndexComponent implements OnInit {
 
     // both are used for getting graph and for report filter DTO
     private execID: number;
-    private group: ApplicationGroup;
 
     // aggregated statistics variables
     globalPackageUseData: ChartStatistic[] = [];
@@ -39,7 +40,8 @@ export class ApplicationIndexComponent implements OnInit {
         private _router: Router,
         private _activatedRoute: ActivatedRoute,
         private _notificationService: NotificationService,
-        private _aggregatedStatsService: AggregatedStatisticsService
+        private _aggregatedStatsService: AggregatedStatisticsService,
+        private _windupService: WindupService
     ) { }
 
 
@@ -47,6 +49,8 @@ export class ApplicationIndexComponent implements OnInit {
         this._activatedRoute.params.subscribe(params => {
             let executionId = parseInt(params['executionId']);
             this.execID = executionId;
+
+            this._windupService.getExecution(executionId).subscribe(execution => this.execution = execution);
 
             this._aggregatedStatsService.getAggregatedCategories(executionId).subscribe(
                 result => {
@@ -83,8 +87,8 @@ export class ApplicationIndexComponent implements OnInit {
             );
         });
 
-        this._activatedRoute.parent.parent.parent.data.subscribe((data: { applicationGroup: ApplicationGroup }) => {
-            this.group = data.applicationGroup;
+        this._activatedRoute.parent.parent.parent.data.subscribe((data: any) => {
+            // TODO: Fix
         });
         
     }

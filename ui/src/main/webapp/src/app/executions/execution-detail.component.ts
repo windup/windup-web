@@ -27,7 +27,7 @@ export class ExecutionDetailComponent implements OnInit {
         this._activatedRoute.parent.params.subscribe((params: {executionId: number}) => {
             let executionId = +params.executionId;
 
-            this._windupService.getStatusGroup(executionId).subscribe(execution => {
+            this._windupService.getExecution(executionId).subscribe(execution => {
                 this.execution = execution;
             });
         });

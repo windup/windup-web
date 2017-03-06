@@ -1,5 +1,5 @@
 <div>Filter is:
-    <strong *ngIf="filter?.enabled"><a [routerLink]="['/projects', group.migrationProject.id, 'groups', group.id, 'reports', 'filter']">ACTIVE</a></strong>
+    <strong *ngIf="filter?.enabled"><a [routerLink]="['/projects', project.id, 'reports', 'filter']">ACTIVE</a></strong>
     <strong *ngIf="!filter?.enabled">inactive</strong>
 <!--
     <div *ngIf="filter?.enabled">

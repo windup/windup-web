@@ -6,7 +6,6 @@ import {MigrationProjectService} from "./migration-project.service";
 import {FormComponent} from "../shared/form.component";
 import {Subscription} from "rxjs";
 import {RouteFlattenerService} from "../core/routing/route-flattener.service";
-import {ApplicationGroupService} from "../group/application-group.service";
 
 @Component({
     templateUrl: './migration-project-form.component.html',
@@ -30,8 +29,7 @@ export class MigrationProjectFormComponent extends FormComponent implements OnIn
         private _router: Router,
         private _activatedRoute: ActivatedRoute,
         private _migrationProjectService: MigrationProjectService,
-        private _routeFlattener: RouteFlattenerService,
-        private _applicationGroupService: ApplicationGroupService
+        private _routeFlattener: RouteFlattenerService
     ) {
         super();
     }
@@ -78,11 +76,7 @@ export class MigrationProjectFormComponent extends FormComponent implements OnIn
         if (this.isInWizard) {
             // Come on, relative routes?!
             // this._router.navigate(['./add-applications']);
-            this._applicationGroupService.getByProjectID(project.id).subscribe(groups => {
-                // TODO: Fix this when default group has flag
-                let defaultGroup = groups.find(group => group.title === 'Default Group');
-                this._router.navigate(['/wizard', 'group', defaultGroup.id, 'add-applications']);
-            });
+            this._router.navigate(['/wizard', 'project', project.id, 'add-applications']);
         } else {
             this.rerouteToProjectList();
         }

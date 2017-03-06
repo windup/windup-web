@@ -1,6 +1,6 @@
-import {ApplicationGroup} from "windup-services";
 import {RouteLinkProviderService} from "../../core/routing/route-link-provider-service";
 import {WindupExecution} from "windup-services";
+import {MigrationProject} from "windup-services";
 
 export interface ContextMenuItemInterface {
     label: string;
@@ -57,34 +57,33 @@ export class ContextMenuItem implements ContextMenuItemInterface {
 }
 
 export class ReportMenuItem extends ContextMenuItem {
-    protected applicationGroup: ApplicationGroup;
+    protected project: MigrationProject;
     protected component: any;
 
-    constructor(label: string, icon: string, applicationGroup: ApplicationGroup, component,
+    constructor(label: string, icon: string, project: MigrationProject, component,
                 protected _routeLinkProviderService: RouteLinkProviderService
     ) {
         super(label, icon);
         this.component = component;
-        this.applicationGroup = applicationGroup;
+        this.project = project;
     }
 
     get link(): string {
         let execution = this.getLastCompletedExecution();
 
         return this._routeLinkProviderService.getRouteForComponent(this.component, {
-            groupId: this.applicationGroup.id,
             executionId: execution.id,
-            projectId: this.applicationGroup.migrationProject.id,
+            projectId: this.project.id,
         });
     }
 
     get isEnabled(): boolean {
         let execution = this.getLastCompletedExecution();
-        return <boolean><any>(this.applicationGroup && this.applicationGroup.id && execution && execution.id);
+        return <boolean><any>(this.project && this.project.id && execution && execution.id);
     }
 
     protected getLastCompletedExecution(): WindupExecution {
-        let completedExecutions = this.applicationGroup.executions
+        let completedExecutions = this.project.executions
             .filter(execution => execution.state === "COMPLETED")
             .sort((a, b) => {
                 return <any>b.timeCompleted - <any>a.timeCompleted;

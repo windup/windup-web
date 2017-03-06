@@ -1,6 +1,6 @@
 import {
     ExecutionUpdatedEvent, ExecutionCompletedEvent,
-    WindupEvent, ApplicationGroupEvent
+    WindupEvent
 } from "../../../src/app/core/events/windup-event";
 
 describe('events test', () => {
@@ -22,10 +22,6 @@ describe('events test', () => {
 
         it('should be typeOf ExecutionEvent', () => {
             expect(event.isTypeOf(ExecutionUpdatedEvent)).toBe(true);
-        });
-
-        it('should be typeOf ApplicationGroupEvent', () => {
-            expect(event.isTypeOf(ApplicationGroupEvent)).toBe(true);
         });
 
         it('should be typeOf WindupEvent', () => {

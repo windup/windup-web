@@ -16,7 +16,7 @@
     </thead>
     <tbody>
     <tr *ngFor="let execution of sortedExecutions" [class]="getClass(execution)" class="execution-row">
-        <td><a [routerLink]="['/projects', execution.projectId, 'groups', execution.groupId, 'reports', execution.id]">{{execution.id}}</a></td>
+        <td><a [routerLink]="['/projects', execution.projectId, 'reports', execution.id]">{{execution.id}}</a></td>
         <td><a [routerLink]="['/projects', execution.projectId]">{{getProject(execution.projectId)?.title}}</a></td>
         <td><wu-status-icon [status]="execution.state"></wu-status-icon>{{execution.state}}</td>
         <td>{{execution.timeStarted | date: 'short'}}</td>
