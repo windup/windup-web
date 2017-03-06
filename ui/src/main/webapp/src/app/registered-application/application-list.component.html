@@ -1,7 +1,91 @@
 <div class="panel-body">
     <wu-active-executions-progressbar [activeExecutions]="activeExecutions"></wu-active-executions-progressbar>
 
-    <h2>Project {{project?.title || "loading..."}}</h2>
+    <template [ngIf]="project?.applications?.length > 0">
+        <div class="projects-list-page">
+            <div class="projects-header">
+                <div class="projects-bar">
+                    <h1 i18n="Project page header">Project {{project?.title + ' Applications ' || 'loading...'}}</h1>
+                    <div class="project-options">
+                        <div class="projects-search">
+                            <wu-search [searchValue]="searchValue" (searchValueChange)="updateSearch($event)"></wu-search>
+                            <span class="vertical-divider"></span>
+                            <wu-sort
+                                    [sortOptions]="sort.sortOptions"
+                                    [(selectedOption)]="sort.selectedOption"
+                                    [(direction)]="sort.direction"
+                                    (onChange)="updateSort()"
+                            ></wu-sort>
+                        </div>
+                        <div class="projects-add">
+
+                            <button (click)="registerApplication()"
+                                    class="btn btn-primary" type="button"
+                                    i18n="Register Application|Application list"
+                            >Create Migration Project</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="projects?.length == 0" class="no-matches">
+                <template i18n>The current filter is hiding all applications.</template>
+                <a action (click)="updateSearch('')" i18n="Clear filter">Clear filter</a>
+            </div>
+
+            <div *ngIf="projects?.length > 0" class="list-group list-view-pf projects-list">
+                <div *ngFor="let project of projects"
+                     class="list-group-item  project-info  tile-click"
+                     (click)="viewProject($event, project)">
+                    <div class="list-view-pf-actions">
+                    <span class="fa-lg project-action-item" i18n-title="Edit project" title="Edit project">
+                        <a (click)="editProject($event, project)" class="action-button">
+                            <i class="fa fa-pencil"></i>
+                        </a>
+                    </span>
+                        <span class="fa-lg project-action-item" i18n-title="Delete project" title="Delete project">
+                        <a (click)="deleteProject($event, project)"  class="action-button">
+                            <i class="fa fa-trash-o"></i>
+                        </a>
+                    </span>
+                    </div>
+                    <div class="list-view-pf-main-info">
+                        <div class="list-view-pf-body">
+                            <div class="list-view-pf-description">
+                                <div class="list-group-item-heading">
+                                    <a (click)="viewProject($event, project)"><h2 class="project-title">{{project.title}}</h2></a>
+                                    <small *ngIf="!project.lastModified">
+                                        <template i18n>Created</template> {{project.created | amTimeAgo}}
+                                    </small>
+                                    <small *ngIf="project.lastModified">
+                                        <template i18n>Last Modified</template> {{project.lastModified | amTimeAgo}}
+                                    </small>
+                                </div>
+                                <div class="list-group-item-text description">{{project.description}}</div>
+                            </div>
+                            <div class="list-view-pf-additional-info">
+                                <div class="list-view-pf-additional-info-item">
+                                    <span class="pficon pficon-image"></span>
+                                    <strong>{{project.applicationCount}}</strong> <template i18n>Applications</template>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <wu-confirmation-modal
+                    #deleteProjectModal
+                    id="delete_project"
+                    title="Delete project?"
+                    body="Delete project?"
+                    (confirmed)="doDeleteProject(project)"
+            >
+            </wu-confirmation-modal>
+
+        </div>
+    </template>
+
 
     <table class="datatable table table-striped table-bordered">
         <thead>
