@@ -10,11 +10,6 @@
     padding-top: 60px;
 }
 
-ol.breadcrumb > li > a {
-    font-size: 10pt;
-    font-weight: bold;
-}
-
 table.datatable, table.dataTable {
     height: unset;
 }
