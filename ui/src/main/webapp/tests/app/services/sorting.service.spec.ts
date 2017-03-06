@@ -1,4 +1,4 @@
-import {SortingService, OrderDirection} from "../../../src/app/services/sorting.service";
+import {SortingService, OrderDirection} from "../../../src/app/shared/sort/sorting.service";
 import Order = jasmine.Order;
 
 describe("Sorting service", () => {

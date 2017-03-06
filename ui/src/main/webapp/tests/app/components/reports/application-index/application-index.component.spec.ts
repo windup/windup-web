@@ -1,17 +1,17 @@
 import {ComponentFixture, TestBed, inject, async} from "@angular/core/testing";
 import {DebugElement} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
-import {AggregatedStatisticsService} from "../../../../../src/app/components/reports/application-index/aggregated-statistics.service";
-import {NotificationService} from "../../../../../src/app/services/notification.service";
+import {AggregatedStatisticsService} from "../../../../../src/app/reports/application-index/aggregated-statistics.service";
+import {NotificationService} from "../../../../../src/app/core/notification/notification.service";
 import {RouterTestingModule} from "@angular/router/testing";
 import {ActivatedRouteMock} from "../../../mocks/activated-route.mock";
 import {Observable} from "rxjs";
-import {ApplicationIndexComponent} from "../../../../../src/app/components/reports/application-index/application-index.component";
-import {PackageChartComponent} from "../../../../../src/app/components/package-chart/package-chart.component";
+import {ApplicationIndexComponent} from "../../../../../src/app/reports/application-index/application-index.component";
+import {PackageChartComponent} from "../../../../../src/app/shared/package-chart/package-chart.component";
 import {By} from "@angular/platform-browser";
 import {HttpModule, BaseRequestOptions, Http, ConnectionBackend} from "@angular/http";
 import {MockBackend} from "@angular/http/testing";
-import {ReportFilterIndicatorComponent} from "../../../../../src/app/components/reports/filter/report-filter-indicator.component";
+import {ReportFilterIndicatorComponent} from "../../../../../src/app/reports/filter/report-filter-indicator.component";
 import {NgxChartsModule} from "@swimlane/ngx-charts";
 
 let comp:    ApplicationIndexComponent;

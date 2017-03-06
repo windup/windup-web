@@ -1,10 +1,10 @@
 import {fakeAsync, tick, discardPeriodicTasks} from "@angular/core/testing";
 
 import {WindupService} from "../../../src/app/services/windup.service";
-import {EventBusService} from "../../../src/app/services/events/event-bus.service";
+import {EventBusService} from "../../../src/app/core/events/event-bus.service";
 import {WindupExecutionService} from "../../../src/app/services/windup-execution.service";
 import {ApplicationGroup, WindupExecution} from "windup-services";
-import {ExecutionEvent, NewExecutionStartedEvent} from "../../../src/app/services/events/windup-event";
+import {ExecutionEvent, NewExecutionStartedEvent} from "../../../src/app/core/events/windup-event";
 import {Observable} from "rxjs";
 import {SchedulerServiceMock} from "../mocks/scheduler-service.mock";
 

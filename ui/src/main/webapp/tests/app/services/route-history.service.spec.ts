@@ -1,4 +1,4 @@
-import {RouteHistoryService} from "../../../src/app/services/route-history.service";
+import {RouteHistoryService} from "../../../src/app/core/routing/route-history.service";
 import {Router} from "@angular/router";
 
 describe("RouteHistoryService", () => {

@@ -1,17 +1,17 @@
 import {ComponentFixture, TestBed, inject, async} from "@angular/core/testing";
 import {DebugElement} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
-import {MigrationIssuesService} from "../../../../../src/app/components/reports/migration-issues/migration-issues.service";
-import {NotificationService} from "../../../../../src/app/services/notification.service";
+import {MigrationIssuesService} from "../../../../../src/app/reports/migration-issues/migration-issues.service";
+import {NotificationService} from "../../../../../src/app/core/notification/notification.service";
 import {RouterTestingModule} from "@angular/router/testing";
 import {ActivatedRouteMock} from "../../../mocks/activated-route.mock";
 import {Observable} from "rxjs";
-import {MigrationIssuesComponent} from "../../../../../src/app/components/reports/migration-issues/migration-issues.component";
-import {MigrationIssuesTableComponent} from "../../../../../src/app/components/reports/migration-issues/migration-issues-table.component";
+import {MigrationIssuesComponent} from "../../../../../src/app/reports/migration-issues/migration-issues.component";
+import {MigrationIssuesTableComponent} from "../../../../../src/app/reports/migration-issues/migration-issues-table.component";
 import {By} from "@angular/platform-browser";
 import {HttpModule, BaseRequestOptions, Http, ConnectionBackend} from "@angular/http";
 import {MockBackend} from "@angular/http/testing";
-import {ReportFilterIndicatorComponent} from "../../../../../src/app/components/reports/filter/report-filter-indicator.component";
+import {ReportFilterIndicatorComponent} from "../../../../../src/app/reports/filter/report-filter-indicator.component";
 import {GraphJSONToModelService} from "../../../../../src/app/services/graph/graph-json-to-model.service";
 
 let comp:    MigrationIssuesComponent;

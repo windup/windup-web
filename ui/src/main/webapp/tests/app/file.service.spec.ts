@@ -10,7 +10,7 @@ import 'rxjs/Rx';
 import {Constants} from '../../src/app/constants';
 
 import {FileService} from "../../src/app/services/file.service";
-import {KeycloakService} from "../../src/app/services/keycloak.service";
+import {KeycloakService} from "../../src/app/core/authentication/keycloak.service";
 import {MockBackend, MockConnection} from "@angular/http/testing";
 
 

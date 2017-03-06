@@ -1,36 +1,36 @@
 import {Routes, RouterModule} from '@angular/router';
-import {ProjectListComponent} from "./components/project-list/project-list.component";
-import {GroupPageComponent} from "./components/group.page.component";
-import {RegisterApplicationFormComponent} from "./components/register-application-form.component";
-import {MigrationProjectFormComponent} from "./components/migration-project-form.component";
-import {ApplicationGroupForm} from "./components/application-group-form.component";
-import {AnalysisContextFormComponent} from "./components/analysis-context-form.component";
-import {ConfigurationComponent} from "./components/configuration.component";
-import {EditApplicationFormComponent} from "./components/edit-application-form.component";
-import {ConfirmDeactivateGuard} from "./confirm-deactivate.guard";
-import {TechnologiesReportComponent} from "./components/reports/technologies/technologies-report.component";
-import {DependenciesReportComponent} from "./components/reports/dependencies/dependencies-report.component";
+import {ProjectListComponent} from "./project/project-list.component";
+import {GroupPageComponent} from "./group/group.page.component";
+import {RegisterApplicationFormComponent} from "./registered-application//register-application-form.component";
+import {MigrationProjectFormComponent} from "./project/migration-project-form.component";
+import {ApplicationGroupForm} from "./group/application-group-form.component";
+import {AnalysisContextFormComponent} from "./analysis-context/analysis-context-form.component";
+import {ConfigurationComponent} from "./configuration/configuration.component";
+import {EditApplicationFormComponent} from "./registered-application//edit-application-form.component";
+import {ConfirmDeactivateGuard} from "./shared/confirm-deactivate.guard";
+import {TechnologiesReportComponent} from "./reports/technologies/technologies-report.component";
+import {DependenciesReportComponent} from "./reports/dependencies/dependencies-report.component";
 import {LoginComponent} from "./components/login.component";
-import {LoggedInGuard} from "./services/logged-in.guard";
-import {ProjectLayoutComponent} from "./components/layout/project-layout.component";
-import {DefaultLayoutComponent} from "./components/layout/default-layout.component";
-import {ApplicationGroupResolve} from "./components/group/application-group.resolve";
-import {MigrationIssuesComponent} from "./components/reports/migration-issues/migration-issues.component";
-import {ProjectResolve} from "./services/project.resolve";
-import {ConfigurationResolve} from "./services/configuration.resolve";
-import {ApplicationResolve} from "./services/application.resolve";
-import {FullFlattenedRoute} from "./services/route-flattener.service";
-import {GroupExecutionsComponent} from "./components/executions/group-executions.component";
-import {AllExecutionsComponent} from "./components/executions/all-executions.component";
-import {SourceReportComponent} from "./components/reports/source/source-report.component";
-import {ApplicationDetailsComponent} from "./components/reports/application-details/application-details.component";
-import {ApplicationIndexComponent} from "./components/reports/application-index/application-index.component";
-import {ReportFilterComponent} from "./components/reports/filter/report-filter.component";
-import {RuleProviderExecutionsComponent} from "./components/reports/rule-provider-executions/rule-provider-executions.component";
-import {WizardComponent} from "./components/wizard.component";
-import {ExecutionDetailComponent} from "./components/executions/execution-detail.component";
-import {ApplicationListComponent} from "./components/application-list.component";
-import {ProjectExecutionsComponent} from "./components/executions/project-executions.component";
+import {LoggedInGuard} from "./core/authentication/logged-in.guard";
+import {ProjectLayoutComponent} from "./project/project-layout.component";
+import {DefaultLayoutComponent} from "./shared/layout/default-layout.component";
+import {ApplicationGroupResolve} from "./group/application-group.resolve";
+import {MigrationIssuesComponent} from "./reports/migration-issues/migration-issues.component";
+import {ProjectResolve} from "./project/project.resolve";
+import {ConfigurationResolve} from "./configuration/configuration.resolve";
+import {ApplicationResolve} from "./registered-application//application.resolve";
+import {FullFlattenedRoute} from "./core/routing/route-flattener.service";
+import {GroupExecutionsComponent} from "./executions/group-executions.component";
+import {AllExecutionsComponent} from "./executions/all-executions.component";
+import {SourceReportComponent} from "./reports/source/source-report.component";
+import {ApplicationDetailsComponent} from "./reports/application-details/application-details.component";
+import {ApplicationIndexComponent} from "./reports/application-index/application-index.component";
+import {ReportFilterComponent} from "./reports/filter/report-filter.component";
+import {RuleProviderExecutionsComponent} from "./reports/rule-provider-executions/rule-provider-executions.component";
+import {WizardComponent} from "./shared/wizard/wizard.component";
+import {ExecutionDetailComponent} from "./executions/execution-detail.component";
+import {ApplicationListComponent} from "./registered-application/application-list.component";
+import {ProjectExecutionsComponent} from "./executions/project-executions.component";
 
 export const appRoutes: Routes = [
     {path: "login", component: LoginComponent},
@@ -39,6 +39,7 @@ export const appRoutes: Routes = [
     {
         path: '',
         canActivate: [LoggedInGuard],
+
         canActivateChild: [LoggedInGuard],
         children: [
             {

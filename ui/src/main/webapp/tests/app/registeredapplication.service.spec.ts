@@ -11,15 +11,15 @@ import 'rxjs/Rx';
 import {Constants} from '../../src/app/constants';
 
 import {KeyCloakServiceMock} from "./mocks/keycloak-service.mock";
-import {RegisteredApplicationService} from "../../src/app/services/registered-application.service";
-import {KeycloakService} from "../../src/app/services/keycloak.service";
+import {RegisteredApplicationService} from "../../src/app/registered-application/registered-application.service";
+import {KeycloakService} from "../../src/app/core/authentication/keycloak.service";
 import {FileService} from "../../src/app/services/file.service";
 import {FileUploader, FileUploaderOptions} from "ng2-file-upload/ng2-file-upload";
 import {MockBackend, MockConnection} from "@angular/http/testing";
-import {EventBusService} from "../../src/app/services/events/event-bus.service";
+import {EventBusService} from "../../src/app/core/events/event-bus.service";
 import {ApplicationGroup} from "windup-services";
 import {MigrationProject} from "windup-services";
-import {ApplicationGroupService} from "../../src/app/services/application-group.service";
+import {ApplicationGroupService} from "../../src/app/group/application-group.service";
 import {Observable} from "rxjs";
 
 describe("Registered Application Service Test", () => {

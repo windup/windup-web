@@ -1,6 +1,6 @@
 import {Component} from "@angular/core";
 import {Router, NavigationEnd} from "@angular/router";
-import {RouteHistoryService} from "../services/route-history.service";
+import {RouteHistoryService} from "../core/routing/route-history.service";
 
 @Component({
     selector: 'windup-app',

@@ -1,4 +1,4 @@
-import {MigrationIssuesService} from "../../../src/app/components/reports/migration-issues/migration-issues.service";
+import {MigrationIssuesService} from "../../../src/app/reports/migration-issues/migration-issues.service";
 import {Observable} from "rxjs";
 
 export class MigrationIssuesServiceMock extends  MigrationIssuesService {
