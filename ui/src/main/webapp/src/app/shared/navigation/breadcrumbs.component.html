@@ -1,6 +1,38 @@
+
+<style>
+ol.breadcrumb {
+    /* Pull the line to the borders. */
+    margin-left:  -30px;
+    margin-right:  -30px;
+    padding-left: 30px;
+    padding-right: 30px;
+    border-bottom: 1px solid #d5d5d5;
+    margin-bottom: 0px;
+    background-color: white;
+    /* Negates this PF rule: .cards-pf .row-cards-pf:first-child { padding-top: 20px; } */
+    margin-top: -18px;
+}
+
+ol.breadcrumb > li {
+    font-size: 10pt;
+}
+
+ol.breadcrumb > li:last-child > a,
+ol.breadcrumb > li:last-child > a:hover {
+    font-weight: bold;
+    text-decoration: none;
+    color: dimgrey;
+    cursor: default !important;
+}
+</style>
+
 <ol class="breadcrumb" *ngIf="breadCrumbLinks?.length > 1">
+
     <li *ngFor="let link of breadCrumbLinks" [ngClass]="{'active': last}">
+
         <a *ngIf="!last" [routerLink]="link.route">{{link.name}}</a>
         <span *ngIf="last">{{link.name}}</span>
+
     </li>
+
 </ol>
