@@ -28,11 +28,11 @@ public interface WindupEndpoint
     WindupExecution getExecution(@PathParam("executionID") Long executionID);
 
     /**
-     * Initiates a Windup execution for a particular group.
+     * Initiates a Windup execution for a particular AnalysisContext.
      */
     @POST
-    @Path("executeGroup")
-    WindupExecution executeGroup(Long groupID);
+    @Path("execute-with-context")
+    WindupExecution executeWithContext(Long contextID);
 
     @GET
     @Path("executions")

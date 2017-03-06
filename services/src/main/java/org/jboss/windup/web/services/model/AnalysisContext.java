@@ -19,6 +19,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Version;
 import javax.validation.Valid;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -72,16 +73,30 @@ public class AnalysisContext implements Serializable
     @JoinTable(name = "analysis_context_exclude_packages")
     private Set<Package> excludePackages;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
+    private Set<RegisteredApplication> applications;
+
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    private MigrationProject migrationProject;
+
     protected AnalysisContext()
     {
         this.includePackages = new HashSet<>();
         this.excludePackages = new HashSet<>();
+        this.applications = new HashSet<>();
     }
 
     public AnalysisContext(ApplicationGroup applicationGroup)
     {
         this();
         this.applicationGroup = applicationGroup;
+    }
+
+    public AnalysisContext(MigrationProject project)
+    {
+        this();
+        this.migrationProject = project;
     }
 
     public Long getId()
@@ -182,6 +197,23 @@ public class AnalysisContext implements Serializable
     }
 
     /**
+     * Contains the {@link MigrationProject} associated with this group.
+     */
+    @JsonIgnore
+    public MigrationProject getMigrationProject()
+    {
+        return migrationProject;
+    }
+
+    /**
+     * Contains the {@link MigrationProject} associated with this group.
+     */
+    public void setMigrationProject(MigrationProject migrationProject)
+    {
+        this.migrationProject = migrationProject;
+    }
+
+    /**
      * Contains the rules paths to be analyzed.
      */
     public Set<RulesPath> getRulesPaths()
@@ -211,6 +243,52 @@ public class AnalysisContext implements Serializable
     public void setAdvancedOptions(Collection<AdvancedOption> advancedOptions)
     {
         this.advancedOptions = advancedOptions;
+    }
+
+    /**
+     * Contains the applications associated with this group.
+     */
+    public Set<RegisteredApplication> getApplications()
+    {
+        return applications;
+    }
+
+    /**
+     * Contains the applications associated with this group.
+     */
+    public void setApplications(Set<RegisteredApplication> applications)
+    {
+        this.applications = applications;
+    }
+
+    /**
+     * Adds application to application group
+     *
+     * @param application Application
+     */
+    public void addApplication(RegisteredApplication application)
+    {
+        if (this.getApplications().contains(application))
+        {
+            throw new RuntimeException("Application already in this group");
+        }
+
+        this.getApplications().add(application);
+    }
+
+    /**
+     * Removes application from application group
+     *
+     * @param application Application
+     */
+    public void removeApplication(RegisteredApplication application)
+    {
+        if (!this.getApplications().contains(application))
+        {
+            throw new RuntimeException("Application not found");
+        }
+
+        this.getApplications().remove(application);
     }
 
     @Override

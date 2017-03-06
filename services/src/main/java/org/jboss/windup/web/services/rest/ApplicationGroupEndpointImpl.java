@@ -39,9 +39,6 @@ public class ApplicationGroupEndpointImpl implements ApplicationGroupEndpoint
     private EntityManager entityManager;
 
     @Inject
-    private ApplicationGroupService applicationGroupService;
-
-    @Inject
     private PackageService packageServiceNew;
 
     @Inject
@@ -69,7 +66,7 @@ public class ApplicationGroupEndpointImpl implements ApplicationGroupEndpoint
     @Override
     public ApplicationGroup getApplicationGroup(Long id)
     {
-        return this.applicationGroupService.getApplicationGroup(id);
+        return null; // this.applicationGroupService.getApplicationGroup(id);
     }
 
     protected MigrationProject getMigrationProject(ApplicationGroup applicationGroup)
@@ -98,13 +95,13 @@ public class ApplicationGroupEndpointImpl implements ApplicationGroupEndpoint
             throw new BadRequestException("Invalid MigrationProject");
         }
 
-        return this.applicationGroupService.createApplicationGroup(applicationGroup.getTitle(), migrationProject);
+        return null; // this.applicationGroupService.createApplicationGroup(applicationGroup.getTitle(), migrationProject);
     }
 
     @Override
     public ApplicationGroup update(@Valid ApplicationGroup applicationGroup)
     {
-        return this.applicationGroupService.update(applicationGroup);
+        return null; // this.applicationGroupService.update(applicationGroup);
     }
 
     @Override

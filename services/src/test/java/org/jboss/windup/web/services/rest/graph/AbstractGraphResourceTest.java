@@ -17,9 +17,9 @@ import org.jboss.windup.web.services.AbstractTest;
 import org.jboss.windup.web.services.ServiceTestUtil;
 import org.jboss.windup.web.services.data.ServiceConstants;
 import org.jboss.windup.web.services.data.WindupExecutionUtil;
-import org.jboss.windup.web.services.model.ApplicationGroup;
+import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.model.WindupExecution;
-import org.jboss.windup.web.services.rest.ApplicationGroupEndpoint;
+import org.jboss.windup.web.services.rest.MigrationProjectEndpoint;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
@@ -33,6 +33,7 @@ import javax.ws.rs.core.UriInfo;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -47,7 +48,6 @@ public abstract class AbstractGraphResourceTest
 
 
     GraphResource graphResource;
-    ApplicationGroupEndpoint applicationGroupEndpoint;
 
     WindupExecution execution;
 
@@ -66,33 +66,38 @@ public abstract class AbstractGraphResourceTest
         ResteasyWebTarget target = client.target(contextPath + ServiceConstants.REST_BASE);
         ResteasyWebTarget furnaceRestTarget = client.target(contextPath + ServiceConstants.FURNACE_REST_BASE);
 
-        this.applicationGroupEndpoint = target.proxy(ApplicationGroupEndpoint.class);
+        MigrationProjectEndpoint projectEndpoint = target.proxy(MigrationProjectEndpoint.class);
         this.graphResource = furnaceRestTarget.proxy(GraphResourceTest.GraphResourceSubInterface.class);
 
         if (this.execution != null)
             return;
 
-        Collection<ApplicationGroup> groups = this.applicationGroupEndpoint.getApplicationGroups();
-        Optional<WindupExecution> existingExecution = groups
+        Collection<MigrationProjectEndpoint.MigrationProjectAndAppCount> projectsAndCount = projectEndpoint.getMigrationProjects();
+        Collection<MigrationProject> projects = projectsAndCount.stream().map(project -> project.getMigrationProject())
+                .collect(Collectors.toList());
+
+        Optional<WindupExecution> existingExecution = projects
                 .stream()
-                .map(group -> group.getExecutions())
+                .map(MigrationProject::getExecutions)
                 .filter(executions -> !executions.isEmpty())
                 .map(executions -> executions.iterator().next())
                 .findFirst();
+
         if (existingExecution.isPresent())
             this.execution = existingExecution.get();
 
         if (execution == null)
         {
             System.out.println("Executing windup!!!");
-            printDebugging(groups);
+            printDebugging(projects);
 
             WindupExecutionUtil windupExecutionUtil = new WindupExecutionUtil(client, target);
             this.execution = windupExecutionUtil.executeWindup();
-        } else
+        }
+        else
         {
             System.out.println("Not Executing windup!!!");
-            printDebugging(groups);
+            printDebugging(projects);
         }
     }
 
@@ -121,13 +126,14 @@ public abstract class AbstractGraphResourceTest
         return target.proxy(HintResourceSubclass.class);
     }
 
-    private void printDebugging(Collection<ApplicationGroup> groups)
+    private void printDebugging(Collection<MigrationProject> projects)
     {
-        System.out.println(Thread.currentThread().getName() + ", " + name.getMethodName() + ": Executing windup!!!! " + groups.size());
-        for (ApplicationGroup group : groups)
+        System.out.println(Thread.currentThread().getName() + ", " + name.getMethodName() + ": Executing windup!!!! " + projects.size());
+
+        for (MigrationProject project : projects)
         {
-            System.out.println("\tGroup: " + group.getId() + ": " + group.getTitle());
-            for (WindupExecution execution : group.getExecutions())
+            System.out.println("\tGroup: " + project.getId() + ": " + project.getTitle());
+            for (WindupExecution execution : project.getExecutions())
             {
                 System.out.println("\t\tExecution: " + execution.getId() + " state: " + execution.getState() + " path: " + execution.getOutputPath());
             }

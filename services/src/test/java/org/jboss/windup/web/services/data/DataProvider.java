@@ -87,8 +87,25 @@ public class DataProvider
         if (analysisContext.getRulesPaths() == null)
             analysisContext.setRulesPaths(new LinkedHashSet<>());
         analysisContext.getRulesPaths().add(getTestRulesPath());
+
         return this.analysisContextEndpoint.update(analysisContext);
     }
+
+    public AnalysisContext getAnalysisContext(MigrationProject project)
+    {
+        AnalysisContext analysisContext = new AnalysisContext(project);
+        analysisContext = this.analysisContextEndpoint.create(analysisContext);
+
+        if (analysisContext.getRulesPaths() == null)
+        {
+            analysisContext.setRulesPaths(new LinkedHashSet<>());
+        }
+
+        analysisContext.getRulesPaths().add(getTestRulesPath());
+
+        return this.analysisContextEndpoint.update(analysisContext);
+    }
+
 
     public ApplicationGroup getApplicationGroup(MigrationProject migrationProject)
     {
@@ -99,7 +116,7 @@ public class DataProvider
         applicationGroup.setTitle(groupTitle);
 
         applicationGroup = this.applicationGroupEndpoint.create(applicationGroup);
-        getAnalysisContext(applicationGroup);
+        // getAnalysisContext(applicationGroup);
 
         return applicationGroup;
     }

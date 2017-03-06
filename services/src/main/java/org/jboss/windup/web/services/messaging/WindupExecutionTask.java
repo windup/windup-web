@@ -46,6 +46,7 @@ public class WindupExecutionTask implements Runnable
     private ConfigurationOptionsService configurationOptionsService;
 
     private WindupExecution execution;
+    private AnalysisContext analysisContext;
     private ApplicationGroup group;
 
     /**
@@ -57,6 +58,12 @@ public class WindupExecutionTask implements Runnable
         this.group = group;
     }
 
+    public void init(WindupExecution execution, AnalysisContext context)
+    {
+        this.execution = execution;
+        this.analysisContext = context;
+    }
+
     @Override
     public void run()
     {
@@ -64,13 +71,17 @@ public class WindupExecutionTask implements Runnable
             return;
         }
 
-        if (this.group == null)
-            throw new IllegalArgumentException("The group must be initialized by calling setGroup() with a non-null value first!");
+        if (this.analysisContext == null)
+        {
+            throw new IllegalArgumentException("AnalysisContext must be initialized first");
+        }
+
+//        if (this.group == null)
+//            throw new IllegalArgumentException("The group must be initialized by calling setGroup() with a non-null value first!");
 
         WindupWebProgressMonitor progressMonitor = progressMonitorInstance.get();
         progressMonitor.setExecution(this.execution);
 
-        AnalysisContext analysisContext = group.getAnalysisContext();
         try
         {
             Path reportOutputPath = Paths.get(this.execution.getOutputPath());
@@ -88,7 +99,7 @@ public class WindupExecutionTask implements Runnable
                         .map((rulesPath) -> Paths.get(rulesPath.getPath()))
                         .collect(Collectors.toList());
 
-            List<Path> inputPaths = group
+            List<Path> inputPaths = this.analysisContext
                         .getApplications()
                         .stream()
                         .map(application -> Paths.get(application.getInputPath()))
@@ -142,7 +153,7 @@ public class WindupExecutionTask implements Runnable
         {
             progressMonitor.setFailed();
             execution.setTimeCompleted(new GregorianCalendar());
-            LOG.log(Level.WARNING, "Processing of " + group + " failed due to: " + e.getMessage(), e);
+            LOG.log(Level.WARNING, "Processing of execution " + this.execution + " failed due to: " + e.getMessage(), e);
             throw new RuntimeException(e);
         }
     }

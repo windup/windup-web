@@ -1,14 +1,5 @@
 package org.jboss.windup.web.services.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -25,13 +16,23 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Version;
-import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 /**
  * A migration project is a group of applications which are related to each other and migrated as a bigger enterprise system.
@@ -68,11 +69,11 @@ public class MigrationProject implements Serializable
     @ColumnDefault("")
     private String description = "";
 
-    @Column(columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable=false, updatable=false)
+    @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Calendar created;
 
-    @Column(columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     @Temporal(TemporalType.TIMESTAMP)
     private Calendar lastModified;
 
@@ -84,10 +85,15 @@ public class MigrationProject implements Serializable
     @Fetch(FetchMode.SELECT)
     private Set<RegisteredApplication> applications;
 
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "project", cascade = CascadeType.REMOVE)
+    @Fetch(FetchMode.SELECT)
+    private Set<WindupExecution> executions;
+
     public MigrationProject()
     {
         this.groups = new HashSet<>();
         this.applications = new HashSet<>();
+        this.executions = new HashSet<>();
     }
 
     @PrePersist
@@ -229,6 +235,38 @@ public class MigrationProject implements Serializable
     public void removeApplication(RegisteredApplication application)
     {
         this.applications.remove(application);
+    }
+
+    /**
+     * Contains a collection of {@link WindupExecution}s.
+     */
+    public Set<WindupExecution> getExecutions()
+    {
+        return executions;
+    }
+
+    /**
+     * Contains a collection of {@link WindupExecution}s.
+     */
+    public void setExecutions(Set<WindupExecution> executions)
+    {
+        this.executions = executions;
+    }
+
+    /**
+     * Adds execution
+     */
+    public void addExecution(WindupExecution execution)
+    {
+        this.executions.add(execution);
+    }
+
+    /**
+     * Removes execution
+     */
+    public void removeExecution(WindupExecution execution)
+    {
+        this.executions.remove(execution);
     }
 
     @Override

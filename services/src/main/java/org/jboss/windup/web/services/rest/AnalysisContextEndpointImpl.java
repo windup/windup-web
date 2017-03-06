@@ -9,7 +9,7 @@ import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 
 import org.jboss.windup.web.services.model.AnalysisContext;
-import org.jboss.windup.web.services.model.ApplicationGroup;
+import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.service.AnalysisContextService;
 
 /**
@@ -37,22 +37,24 @@ public class AnalysisContextEndpointImpl implements AnalysisContextEndpoint
         return context;
     }
 
-    protected boolean validateApplicationGroup(ApplicationGroup applicationGroup)
+    protected boolean validateMigrationProject(MigrationProject project)
     {
-        if (applicationGroup == null || applicationGroup.getId() == null) {
+        if (project == null || project.getId() == null)
+        {
             return false;
         }
 
-        ApplicationGroup persistedAppGroup = this.entityManager.find(ApplicationGroup.class, applicationGroup.getId());
+        MigrationProject persistedProject = this.entityManager.find(MigrationProject.class, project.getId());
 
-        return persistedAppGroup != null;
+        return persistedProject != null;
     }
 
     @Override
     public AnalysisContext create(@Valid AnalysisContext analysisContext)
     {
-        if (!this.validateApplicationGroup(analysisContext.getApplicationGroup())) {
-            throw new BadRequestException("Invalid application group");
+        if (!this.validateMigrationProject(analysisContext.getMigrationProject()))
+        {
+            throw new BadRequestException("Invalid migration project");
         }
 
         return analysisContextService.create(analysisContext);
