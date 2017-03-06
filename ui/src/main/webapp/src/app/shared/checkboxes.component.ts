@@ -11,6 +11,11 @@ export type ItemType = any;
 })
 export class CheckboxesComponent
 {
+    private _options: ItemType[];
+
+    private component: CheckboxesComponent;
+    private rootElement;
+
     /**
      * The name of this checkboxes group.
      */
@@ -44,10 +49,10 @@ export class CheckboxesComponent
         if (!Array.isArray(options))
             throw new Error("Invalid @Input value for options: " + JSON.stringify(options));
     }
-    get options(): ItemType[]{
+
+    get options(): ItemType[] {
         return this._options;
     }
-    _options: ItemType[];
 
     /**
      * This can be either the values or a subset of options.
@@ -69,9 +74,6 @@ export class CheckboxesComponent
 
         return false;
     }
-
-    private component: CheckboxesComponent;
-    private rootElement;
 
     public constructor(element: ElementRef) {
         this.component = this;
