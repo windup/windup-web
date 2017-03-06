@@ -1,6 +1,7 @@
 import {
     Component, Input, ElementRef, Output, EventEmitter, ChangeDetectionStrategy
 } from "@angular/core";
+import {isFunction} from "util";
 
 export type ItemType = any;
 
@@ -12,6 +13,11 @@ export type ItemType = any;
 export class CheckboxesComponent
 {
     private _options: ItemType[];
+    private _checkedOptions: ItemType[];
+
+    private _equalsCallback: (a: any, b: any) => boolean = (a, b) => a === b;
+    private _labelCallback: (a: any) => string = (a) => a;
+    private _valueCallback: (a: any) => any = (a) => a;
 
     private component: CheckboxesComponent;
     private rootElement;
@@ -26,28 +32,50 @@ export class CheckboxesComponent
      * Callbacks
      */
     @Input()
-    valueCallback: (item: any) => string
-        = app => { throw new Error("valueCallback not yet defined.") };
+    public set valueCallback(callback: (item: any) => any) {
+        if (callback && isFunction(callback)) {
+            this._valueCallback = callback;
+        }
+    }
+
+    public get valueCallback() {
+        return this._valueCallback;
+    }
 
     @Input()
-    labelCallback: (item: ItemType) => string;
+    public set equalsCallback(callback: (a: any, b: any) => boolean) {
+        if (callback && isFunction(callback)) {
+            this._equalsCallback = callback;
+        }
+        //         return this.valueCallback(item1) == this.valueCallback(item2);
+
+    }
+
+    public get equalsCallback() {
+        return this._equalsCallback;
+    }
 
     @Input()
-    equalsCallback: (item1: ItemType, item2: ItemType) => boolean = (item1, item2) => {
-        return this.valueCallback(item1) == this.valueCallback(item2);
-    };
+    public set labelCallback(callback: (a: any) => string) {
+        if (callback && isFunction(callback)) {
+            this._labelCallback = callback;
+        }
+    }
+
+    public get labelCallback() {
+        return this._labelCallback;
+    }
 
     /**
      * All available options.
      */
     @Input()
-    set options(options: ItemType[]){
-        this._options = options;
-        //console.log("set options()", options);
-        if (!options)
-            return; // May be loaded async.
-        if (!Array.isArray(options))
-            throw new Error("Invalid @Input value for options: " + JSON.stringify(options));
+    set options(options: ItemType[]) {
+        if (options && !Array.isArray(options)) {
+            throw new Error("Invalid value for options. Expecting array, got: " + JSON.stringify(options));
+        }
+
+        this._options = options || [];
     }
 
     get options(): ItemType[] {
@@ -58,10 +86,20 @@ export class CheckboxesComponent
      * This can be either the values or a subset of options.
      */
     @Input()
-    checkedOptions: ItemType[] = [];
+    public set checkedOptions(checkedOptions: ItemType[]) {
+        if (checkedOptions && !Array.isArray(checkedOptions)) {
+            throw new Error("Invalid value for checkedOptions. Expecting array, got: " + JSON.stringify(checkedOptions));
+        }
+
+        this._checkedOptions = checkedOptions || [];
+    }
+
+    public get checkedOptions() {
+        return this._checkedOptions;
+    }
 
     @Output()
-    checkedOptionsChange = new EventEmitter<ItemType[]>();
+    checkedOptionsChange = new EventEmitter<string[] | ItemType[]>();
 
     shouldBeChecked(option: ItemType): boolean {
         console.log("shouldBeChecked() called.", option, this.checkedOptions);
