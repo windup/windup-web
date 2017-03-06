@@ -5,6 +5,7 @@ import {Constants} from "../constants";
 import {MigrationProject} from "windup-services";
 import {AbstractService} from "./abtract.service";
 import {Observable} from "rxjs";
+import {isNumber} from "util";
 
 @Injectable()
 export class MigrationProjectService extends AbstractService {
@@ -52,6 +53,9 @@ export class MigrationProjectService extends AbstractService {
     }
 
     get(id: number): Observable<MigrationProject> {
+        if (!isNumber(id)) {
+            throw new Error("Not a project ID: " + id);
+        }
         return this._http.get(Constants.REST_BASE + this.GET_MIGRATION_PROJECT_URL + "/" + id)
             .map(res => <MigrationProject> res.json())
             .catch(this.handleError);
