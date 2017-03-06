@@ -5,8 +5,10 @@ import {Observable, Subscription} from "rxjs";
     selector: '[wu-in-viewport]'
 })
 export class InViewport implements OnInit, OnDestroy {
-    private scrollSubscriber:Subscription;
-    private resizeSubscriber:Subscription;
+    private static scrollSubscriber:Subscription;
+    private static resizeSubscriber:Subscription;
+    private static currentPosition:{top: number, bottom:number};
+    private static subscribers:InViewport[] = [];
 
     @Output('inViewport')
     inViewport:EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -14,15 +16,34 @@ export class InViewport implements OnInit, OnDestroy {
     constructor(private _element:ElementRef) { }
 
     ngOnInit() {
-        this.checkInViewport();
+        InViewport.subscribers.push(this);
+        InViewport.updateViewport();
 
-        this.scrollSubscriber = Observable.fromEvent(window, "scroll").debounceTime(500).subscribe(event => this.checkInViewport());
-        this.resizeSubscriber = Observable.fromEvent(window, "resize").debounceTime(500).subscribe(event => this.checkInViewport());
+        if (!InViewport.scrollSubscriber)
+            InViewport.scrollSubscriber = Observable.fromEvent(window, "scroll").debounceTime(1000).subscribe(event => InViewport.updateViewport());
+
+        if (!InViewport.resizeSubscriber)
+            InViewport.resizeSubscriber = Observable.fromEvent(window, "resize").debounceTime(1000).subscribe(event => InViewport.updateViewport());
+
     }
 
     ngOnDestroy(): void {
-        this.scrollSubscriber.unsubscribe();
-        this.resizeSubscriber.unsubscribe();
+        InViewport.subscribers.splice(InViewport.subscribers.indexOf(this), 1);
+
+        if (InViewport.subscribers.length == 0) {
+            InViewport.scrollSubscriber.unsubscribe();
+            InViewport.resizeSubscriber.unsubscribe();
+            InViewport.scrollSubscriber = null;
+            InViewport.resizeSubscriber = null;
+        }
+    }
+
+    static updateViewport() {
+        let windowTop = window.pageYOffset;
+        let windowBottom = windowTop + window.innerHeight;
+        InViewport.currentPosition = { top: windowTop, bottom: windowBottom };
+
+        InViewport.subscribers.forEach(subscriber => subscriber.checkInViewport());
     }
 
     checkInViewport() {
@@ -32,17 +53,13 @@ export class InViewport implements OnInit, OnDestroy {
         //console.log("Element: ", this._element.nativeElement);
         //console.log("Element top,bottom: ", elementTop, elementBottom);
 
-        let windowTop = window.pageYOffset;
-        let windowBottom = windowTop + window.innerHeight;
-        //console.log("Window top,bottom: ", windowTop, windowBottom);
-
         let inView = false;
-        if (elementTop > windowTop && elementTop < windowBottom)
+        if (elementTop > InViewport.currentPosition.top && elementTop < InViewport.currentPosition.bottom)
             inView = true;
-        else if (elementBottom > windowTop && elementBottom < windowBottom)
+        else if (elementBottom > InViewport.currentPosition.top && elementBottom < InViewport.currentPosition.bottom)
             inView = true;
 
-        //console.log("returning inView: " + inView);
+        //console.log("returning inView: ", inView, this._element.nativeElement);
         this.inViewport.emit(inView);
     }
 }

@@ -176,9 +176,13 @@
                         <tr>
                             <td class="chartTD">
                                 <!-- Packages pie chart -->
-                                <div class="chartBoundary" *ngIf="packageFrequenciesByProject?.get(traversal.id)?.length > 0">
-                                    <h4>Java Incidents by Package</h4>
-                                    <div class="windupPieGraph">
+                                <div
+                                        wu-in-viewport
+                                        (inViewport)="setIsVisibleStatus(traversal, $event)"
+                                        class="chartBoundary"
+                                        *ngIf="packageFrequenciesByProject?.get(traversal.id)?.length > 0">
+                                    <h4 *ngIf="isVisible(traversal)">Java Incidents by Package</h4>
+                                    <div *ngIf="isVisible(traversal)" class="windupPieGraph">
                                         <wu-package-chart
                                                 [view]="[500, 150]"
                                                 [results]="packageFrequenciesByProject.get(traversal.id)"
@@ -190,13 +194,13 @@
                             <td class="chartTD">
                                 <div
                                         wu-in-viewport
+                                        (inViewport)="setIsVisibleStatus(traversal, $event)"
                                         id="chartdiv_{{traversal.id}}"
-                                        (inViewport)="traversal['inviewport'] = $event"
                                         class="tagsBarChart chartBoundary"
                                         *ngIf="this.tagFrequenciesByProject?.get(traversal.id)?.length > 0">
-                                    <h4 *ngIf="traversal['inviewport']">Technologies found - occurrence count</h4>
+                                    <h4 *ngIf="isVisible(traversal)">Technologies found - occurrence count</h4>
                                     <ngx-charts-bar-horizontal
-                                            *ngIf="!isCollapsed(traversal) && traversal['inviewport']"
+                                            *ngIf="!isCollapsed(traversal) && isVisible(traversal)"
                                             [view]="[500, 258]"
                                             [scheme]="getColorScheme(this.tagFrequenciesByProject.get(traversal.id)?.length)"
                                             [results]="this.tagFrequenciesByProject.get(traversal.id)"
