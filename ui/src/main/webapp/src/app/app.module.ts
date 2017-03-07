@@ -118,6 +118,7 @@ import {GraphJSONToModelService} from "./services/graph/graph-json-to-model.serv
 import {ApplicationListComponent} from "./registered-application/application-list.component";
 import {ProjectExecutionsComponent} from "./executions/project-executions.component";
 import {CheckboxesComponent} from "./shared/checkboxes.component";
+import {WizardLayoutComponent} from "./shared/layout/wizard-layout.component";
 
 /**
  * Load all mapping data from the generated files.
@@ -193,8 +194,8 @@ initializeModelMappingData();
         ContextMenuComponent,
         ProjectLayoutComponent,
         DefaultLayoutComponent,
+        WizardLayoutComponent,
         BreadCrumbsNavigationComponent,
-        DefaultLayoutComponent,
         ExecutionsListComponent,
         AllExecutionsComponent,
         GroupExecutionsComponent,
