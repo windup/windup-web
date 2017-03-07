@@ -28,7 +28,7 @@
         </div>
 
         <div *ngIf="projects?.length == 0" class="no-matches">
-            <template i18n>The current filter is hiding all projects.</template> <a action (click)="updateSearch('')"><template i18n>Remove filter</template></a>
+            <ng-container i18n>The current filter is hiding all projects.</ng-container> <a action (click)="updateSearch('')"><ng-container i18n>Remove filter</ng-container></a>
         </div>
 
         <div *ngIf="projects?.length > 0" class="list-group list-view-pf projects-list">
@@ -53,10 +53,10 @@
                             <div class="list-group-item-heading">
                                 <a (click)="viewProject($event, project)"><h2 class="project-title">{{project.title}}</h2></a>
                                 <small *ngIf="!project.lastModified">
-                                    <template i18n>Created</template> {{project.created | amTimeAgo}}
+                                    <ng-container i18n>Created</ng-container> {{project.created | amTimeAgo}}
                                 </small>
                                 <small *ngIf="project.lastModified">
-                                    <template i18n>Last Modified</template> {{project.lastModified | amTimeAgo}}
+                                    <ng-container i18n>Last Modified</ng-container> {{project.lastModified | amTimeAgo}}
                                 </small>
                             </div>
                             <div class="list-group-item-text description">{{project.description}}</div>
@@ -64,7 +64,7 @@
                         <div class="list-view-pf-additional-info">
                                 <div class="list-view-pf-additional-info-item">
                                     <span class="pficon pficon-image"></span>
-                                    <strong>{{project.applicationCount}}</strong> <template i18n>Applications</template>
+                                    <strong>{{project.applicationCount}}</strong> <ng-container i18n>Applications</ng-container>
                                 </div>
                         </div>
                     </div>
