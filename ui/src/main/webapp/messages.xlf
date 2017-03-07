@@ -2,6 +2,54 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en" datatype="plaintext" original="ng2.template">
     <body>
+      <trans-unit id="ca76f612e7a0954ffe0e0938c9655ca9bfc469b8" datatype="html">
+        <source>
+    Analysis Context
+</source>
+        <target/>
+      </trans-unit>
+      <trans-unit id="94516fa213706c67ce5a5b5765681d7fb032033a" datatype="html">
+        <source>Loading...</source>
+        <target/>
+      </trans-unit>
+      <trans-unit id="cc58947c562b2f199bc04852876962859bb3306a" datatype="html">
+        <source>Migration Path</source>
+        <target/>
+      </trans-unit>
+      <trans-unit id="d7838cdc546f3492b8af59ab5e1eb95b74560a61" datatype="html">
+        <source>
+                    A migration path must be specified.
+                </source>
+        <target/>
+      </trans-unit>
+      <trans-unit id="6b23369a9e03ca3bf72ebd887117019b589fef39" datatype="html">
+        <source>Applications included</source>
+        <target/>
+      </trans-unit>
+      <trans-unit id="312b387f333b04cc83ebda933825ef5f74a24213" datatype="html">
+        <source>Include Packages</source>
+        <target/>
+      </trans-unit>
+      <trans-unit id="79f6106b115321b00282ef714c82f016f5b1cfe7" datatype="html">
+        <source>Exclude Package</source>
+        <target/>
+      </trans-unit>
+      <trans-unit id="61cc73163be97beb025909b9ac3596e8c98156fd" datatype="html">
+        <source>Advanced Options</source>
+        <target/>
+      </trans-unit>
+      <trans-unit id="9b68f631e717d9d20ca56ef09fa50e0c87e3d1b3" datatype="html">
+        <source>Save &amp; Run</source>
+        <target/>
+      </trans-unit>
+      <trans-unit id="5a3995cedca5cd65a820ff1b2e5d974ae9060a39" datatype="html">
+        <source>Save Configuration</source>
+        <target/>
+      </trans-unit>
+      <trans-unit id="d7b35c384aecd25a516200d6921836374613dfe7" datatype="html">
+        <source>Cancel</source>
+        <target/>
+      </trans-unit>
       <trans-unit id="d2a7deb7096cada2c3177157652680fe7e6de0ed" datatype="html">
         <source>Projects</source>
         <target/>
@@ -14,6 +62,14 @@
         <target/>
         <note priority="1" from="description">Create Migration Project</note>
       </trans-unit>
+      <trans-unit id="0f931e92e0dd5db9eb15fffe5570a372f40ad658" datatype="html">
+        <source>The current filter is hiding all projects.</source>
+        <target/>
+      </trans-unit>
+      <trans-unit id="49f33ab0a10387961143efd56ab84b4f65737ec4" datatype="html">
+        <source>Remove filter</source>
+        <target/>
+      </trans-unit>
       <trans-unit id="b50b492392bbd579b8b38f3833b1ed18e1c6bd7d" datatype="html">
         <source>Edit project</source>
         <target/>
@@ -23,6 +79,18 @@
         <source>Delete project</source>
         <target/>
         <note priority="1" from="description">Delete project</note>
+      </trans-unit>
+      <trans-unit id="1b051734b0ee9021991c91b3ed4e81c244322462" datatype="html">
+        <source>Created</source>
+        <target/>
+      </trans-unit>
+      <trans-unit id="86d5dd7fde61a6bf2b014354374bd0d991ab9f77" datatype="html">
+        <source>Last Modified</source>
+        <target/>
+      </trans-unit>
+      <trans-unit id="f1abafaeb40ce52355ddcc24686e3cd17b64e08a" datatype="html">
+        <source>Applications</source>
+        <target/>
       </trans-unit>
       <trans-unit id="72775b3396df237fa015f71e0d47148ff7b318d7" datatype="html">
         <source>Add Applications to the Project</source>
@@ -65,12 +133,8 @@
         <source>...or drag and drop the files here.</source>
         <target/>
       </trans-unit>
-      <trans-unit id="52c9a103b812f258bcddc3d90a6e3f46871d25fe" datatype="html">
-        <source>Save</source>
-        <target/>
-      </trans-unit>
-      <trans-unit id="d7b35c384aecd25a516200d6921836374613dfe7" datatype="html">
-        <source>Cancel</source>
+      <trans-unit id="837bd43fba5af6232afc4e5ebe67345af97c6df8" datatype="html">
+        <source>Register Applications</source>
         <target/>
       </trans-unit>
       <trans-unit id="137f2ad49072a3f2eaf17e27822ce008d5f05fc6" datatype="html">
@@ -98,6 +162,7 @@
       <trans-unit id="d351303aa6789f39e05b83575da2b5dd73b50960" datatype="html">
         <source>Directory Contains Multiple Apps</source>
         <target/>
+        <note priority="1" from="description">Directory Help Text</note>
       </trans-unit>
       <trans-unit id="76fb9df73f89e24ec6a7cdf314e2c74258f4957e" datatype="html">
         <source>
@@ -107,37 +172,169 @@
         <target/>
         <note priority="1" from="description">Directory Contains Multiple Apps Help Text</note>
       </trans-unit>
-      <trans-unit id="ca76f612e7a0954ffe0e0938c9655ca9bfc469b8" datatype="html">
+      <trans-unit id="e2c0f196ede301b33edf95344282b7a8d4fb57d8" datatype="html">
+        <source>Register Custom Rule Path</source>
+        <target/>
+      </trans-unit>
+      <trans-unit id="78ad6040961a6ed0ad4e5719b8a7f9fd794eaffe" datatype="html">
+        <source>Rules:</source>
+        <target/>
+      </trans-unit>
+      <trans-unit id="b981e9e14672c44df45f8009e4966b31d7afc3fa" datatype="html">
+        <source>Unregister Rules</source>
+        <target/>
+      </trans-unit>
+      <trans-unit id="19d3d727eceeb7e39f468008d3b57d30dc1e4c01" datatype="html">
+        <source>This path contains no rules!</source>
+        <target/>
+      </trans-unit>
+      <trans-unit id="5f41466ce35947cac6a216335ad7a4449d1bf3d4" datatype="html">
+        <source>Show rules</source>
+        <target/>
+        <note priority="1" from="description">Button</note>
+      </trans-unit>
+      <trans-unit id="2489eefea00931942b91f4a1ae109514b591e2e1" datatype="html">
+        <source>Rules</source>
+        <target/>
+        <note priority="1" from="description">Count, e.g. 5 Rules</note>
+      </trans-unit>
+      <trans-unit id="b17a2fab5e2adad950f817b08ca2b6b2e6a204aa" datatype="html">
+        <source>Loading execution data</source>
+        <target/>
+        <note priority="1" from="description">Execution Page</note>
+        <note priority="1" from="meaning">Loading execution heading</note>
+      </trans-unit>
+      <trans-unit id="1dcc96b50735de106f3684c8b051f548f83b3f05" datatype="html">
+        <source>Execution <x id="INTERPOLATION"/></source>
+        <target/>
+        <note priority="1" from="description">Execution Page</note>
+        <note priority="1" from="meaning">Heading</note>
+      </trans-unit>
+      <trans-unit id="7b6caf59815a31968ab8be045850ab478c59e40b" datatype="html">
+        <source>Application Index</source>
+        <target/>
+        <note priority="1" from="description">report</note>
+      </trans-unit>
+      <trans-unit id="3ac60e653e2141aa15815932620cd7a251616a17" datatype="html">
+        <source>Application Details</source>
+        <target/>
+        <note priority="1" from="description">report</note>
+      </trans-unit>
+      <trans-unit id="66db799d67958d4b0765181d072df62e2d1c16f5" datatype="html">
+        <source>Issues</source>
+        <target/>
+        <note priority="1" from="description">report</note>
+      </trans-unit>
+      <trans-unit id="937cc1e579a9825cc21109876aa8131d57891da2" datatype="html">
+        <source>Technologies</source>
+        <target/>
+        <note priority="1" from="description">report</note>
+      </trans-unit>
+      <trans-unit id="473fb06a7b7b3992af493059e8f9c8c74f369a97" datatype="html">
+        <source>Dependencies</source>
+        <target/>
+        <note priority="1" from="description">report</note>
+      </trans-unit>
+      <trans-unit id="873b72903b1858a9cd6c8967521030b4d7d1435b" datatype="html">
+        <source>State</source>
+        <target/>
+        <note priority="1" from="description">Execution state</note>
+      </trans-unit>
+      <trans-unit id="21556f18eb0b6e4c40327947b82929dc7589c2ee" datatype="html">
+        <source>Started Date</source>
+        <target/>
+        <note priority="1" from="description">Execution start date</note>
+      </trans-unit>
+      <trans-unit id="d7c04ea781d411269c2853f1c63f8d0771fb977d" datatype="html">
+        <source>Completed Date</source>
+        <target/>
+        <note priority="1" from="description">Execution completion date</note>
+      </trans-unit>
+      <trans-unit id="a02ea1d4e7424ca989929da5e598f379940fdbf2" datatype="html">
+        <source>Duration</source>
+        <target/>
+        <note priority="1" from="description">Execution duration</note>
+      </trans-unit>
+      <trans-unit id="acfab684e25186b61277749c21dc3d00cf2e1679" datatype="html">
+        <source>Last Modified Date</source>
+        <target/>
+        <note priority="1" from="description">Execution last modification</note>
+      </trans-unit>
+      <trans-unit id="9594cbf5043de3ffc913891f1ec1f58df2eb988d" datatype="html">
+        <source>Configuration</source>
+        <target/>
+        <note priority="1" from="description">Section</note>
+        <note priority="1" from="meaning">Execution configuration</note>
+      </trans-unit>
+      <trans-unit id="83e363898b44d7aba0dba235cc80dffe561532d6" datatype="html">
+        <source>Migration path</source>
+        <target/>
+        <note priority="1" from="description">Migration Path</note>
+      </trans-unit>
+      <trans-unit id="aa2b1b1d87e7a996d82ed7393d50194d774ebe79" datatype="html">
+        <source>Analyzed applications</source>
+        <target/>
+        <note priority="1" from="description">Analyzed applications</note>
+      </trans-unit>
+      <trans-unit id="0891f7475f64da2c5b74185ee77a4c2428e7748b" datatype="html">
+        <source>Included packages</source>
+        <target/>
+        <note priority="1" from="description">Packages included for execution</note>
+      </trans-unit>
+      <trans-unit id="97a34a5a70c5e989618f34407450d43ced197d18" datatype="html">
+        <source>Excluded packages</source>
+        <target/>
+        <note priority="1" from="description">Packages excluded from execution</note>
+      </trans-unit>
+      <trans-unit id="5de5c9aa27c5858d4020fcca9646ff2f5b36f3fd" datatype="html">
+        <source>Advanced options</source>
+        <target/>
+        <note priority="1" from="description">Execution</note>
+        <note priority="1" from="meaning">Advanced Options</note>
+      </trans-unit>
+      <trans-unit id="41f883b96980ad03407749f5c0b2523528924dda" datatype="html">
+        <source>Task:</source>
+        <target/>
+        <note priority="1" from="description">Progressbar task</note>
+      </trans-unit>
+      <trans-unit id="019d4bd6a5690f0cfa0ecf346a4e6bf7f0d8debb" datatype="html">
+        <source>Remove</source>
+        <target/>
+        <note priority="1" from="description">Upload queue</note>
+      </trans-unit>
+      <trans-unit id="f109f09a9f94dce66e9dcbea1403da0cafbd7399" datatype="html">
+        <source>Executions List</source>
+        <target/>
+        <note priority="1" from="description">executions list</note>
+        <note priority="1" from="meaning">heading</note>
+      </trans-unit>
+      <trans-unit id="eaffe71b87800a5d0f90d5bbd15d224a387144d1" datatype="html">
+        <source>Active Executions</source>
+        <target/>
+        <note priority="1" from="description">Active Executions</note>
+        <note priority="1" from="meaning">heading</note>
+      </trans-unit>
+      <trans-unit id="e8f808887b0e059a2c5c94e12612d84ec037ec50" datatype="html">
         <source>
-    Analysis Context
-</source>
+        Welcome to the Red Hat Application Migration Toolkit Web Console.
+    </source>
         <target/>
+        <note priority="1" from="description">Header</note>
       </trans-unit>
-      <trans-unit id="94516fa213706c67ce5a5b5765681d7fb032033a" datatype="html">
-        <source>Loading...</source>
+      <trans-unit id="1a505cdde8f200719dd8c98ef91886cd81ecc1f2" datatype="html">
+        <source>New Project</source>
         <target/>
+        <note priority="1" from="description">Button</note>
       </trans-unit>
-      <trans-unit id="cc58947c562b2f199bc04852876962859bb3306a" datatype="html">
-        <source>Migration Path</source>
+      <trans-unit id="3a9471f02c39756bd75ffd6c12ed06c953ebab7a" datatype="html">
+        <source>To learn more, visit the</source>
         <target/>
+        <note priority="1" from="description">Intro text, 1st part</note>
       </trans-unit>
-      <trans-unit id="d7838cdc546f3492b8af59ab5e1eb95b74560a61" datatype="html">
-        <source>
-                    A migration path must be specified.
-                </source>
+      <trans-unit id="be4447ba967dd93b3fe55e4f2e58d1cbe312b2b6" datatype="html">
+        <source>Red Hat Application Migration Toolkit Web Console Documentation</source>
         <target/>
-      </trans-unit>
-      <trans-unit id="312b387f333b04cc83ebda933825ef5f74a24213" datatype="html">
-        <source>Include Packages</source>
-        <target/>
-      </trans-unit>
-      <trans-unit id="79f6106b115321b00282ef714c82f016f5b1cfe7" datatype="html">
-        <source>Exclude Package</source>
-        <target/>
-      </trans-unit>
-      <trans-unit id="61cc73163be97beb025909b9ac3596e8c98156fd" datatype="html">
-        <source>Advanced Options</source>
-        <target/>
+        <note priority="1" from="description">Intro text, 2nd part</note>
       </trans-unit>
       <trans-unit id="cf06e739e997b44712246f7b4638c6b0aab6b833" datatype="html">
         <source>Sort by</source>

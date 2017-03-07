@@ -22,10 +22,10 @@
             </td>
             <td>
                 <button type="button" class="btn btn-warning btn-xs" (click)="item.cancel()" [disabled]="!item.isUploading">
-                    <span class="glyphicon glyphicon-ban-circle"></span> <template i18n="Upload">Cancel</template>
+                    <span class="glyphicon glyphicon-ban-circle"></span> <ng-container i18n="Upload">Cancel</ng-container>
                 </button>
                 <button type="button" class="btn btn-danger btn-xs" (click)="item.remove()">
-                    <span class="glyphicon glyphicon-trash"></span> <template i18n="Upload queue">Remove</template>
+                    <span class="glyphicon glyphicon-trash"></span> <ng-container i18n="Upload queue">Remove</ng-container>
                 </button>
             </td>
         </tr>
