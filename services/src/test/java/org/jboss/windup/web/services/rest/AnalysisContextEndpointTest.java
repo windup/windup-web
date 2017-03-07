@@ -70,11 +70,11 @@ public class AnalysisContextEndpointTest extends AbstractTest
 
         analysisContext.setRulesPaths(configurationEndpoint.getConfiguration().getRulesPaths());
 
-        analysisContext = analysisContextEndpoint.update(analysisContext);
+        analysisContext = analysisContextEndpoint.update(analysisContext.getId(), analysisContext);
 
         AnalysisContext loaded = analysisContextEndpoint.get(analysisContext.getId());
 
-        Response response = target.path("/analysis-context/get/" + analysisContext.getId()).request().get();
+        Response response = target.path("/analysis-context/" + analysisContext.getId()).request().get();
         response.bufferEntity();
         String stringResponse = response.readEntity(String.class);
         JSONObject json = new JSONObject(stringResponse);

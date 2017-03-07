@@ -5,12 +5,12 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.Valid;
-import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 
 import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.service.AnalysisContextService;
+import org.jboss.windup.web.services.service.MigrationProjectService;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -23,6 +23,9 @@ public class AnalysisContextEndpointImpl implements AnalysisContextEndpoint
 
     @Inject
     private AnalysisContextService analysisContextService;
+
+    @Inject
+    private MigrationProjectService migrationProjectService;
 
     @Override
     public AnalysisContext get(Long id)
@@ -37,31 +40,17 @@ public class AnalysisContextEndpointImpl implements AnalysisContextEndpoint
         return context;
     }
 
-    protected boolean validateMigrationProject(MigrationProject project)
-    {
-        if (project == null || project.getId() == null)
-        {
-            return false;
-        }
-
-        MigrationProject persistedProject = this.entityManager.find(MigrationProject.class, project.getId());
-
-        return persistedProject != null;
-    }
-
     @Override
-    public AnalysisContext create(@Valid AnalysisContext analysisContext)
+    public AnalysisContext create(@Valid AnalysisContext analysisContext, Long projectId)
     {
-        if (!this.validateMigrationProject(analysisContext.getMigrationProject()))
-        {
-            throw new BadRequestException("Invalid migration project");
-        }
+        MigrationProject project = this.migrationProjectService.getMigrationProject(projectId);
+        analysisContext.setMigrationProject(project);
 
         return analysisContextService.create(analysisContext);
     }
 
     @Override
-    public AnalysisContext update(@Valid AnalysisContext analysisContext)
+    public AnalysisContext update(Long id, @Valid AnalysisContext analysisContext)
     {
         return analysisContextService.update(analysisContext);
     }

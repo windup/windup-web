@@ -94,7 +94,7 @@ public class DataProvider
     public AnalysisContext getAnalysisContext(MigrationProject project)
     {
         AnalysisContext analysisContext = new AnalysisContext(project);
-        analysisContext = this.analysisContextEndpoint.create(analysisContext);
+        analysisContext = this.analysisContextEndpoint.create(analysisContext, project.getId());
 
         if (analysisContext.getRulesPaths() == null)
         {
@@ -103,7 +103,7 @@ public class DataProvider
 
         analysisContext.getRulesPaths().add(getTestRulesPath());
 
-        return this.analysisContextEndpoint.update(analysisContext);
+        return this.analysisContextEndpoint.update(analysisContext.getId(), analysisContext);
     }
 
 
