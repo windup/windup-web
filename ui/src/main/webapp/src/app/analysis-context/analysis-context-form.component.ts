@@ -8,7 +8,6 @@ import {MigrationPathService} from "./migration-path.service";
 import {AnalysisContextService} from "./analysis-context.service";
 import {ConfigurationOption} from "../model/configuration-option.model";
 import {ConfigurationOptionsService} from "../configuration/configuration-options.service";
-import {ModalDialogComponent} from "../shared/modal-dialog.component";
 import {IsDirty} from "../shared/is-dirty.interface";
 import {Observable} from "rxjs/Observable";
 import {PackageRegistryService} from "./package-registry.service";
@@ -21,12 +20,13 @@ import {NotificationService} from "../core/notification/notification.service";
 import {utils} from "../shared/utils";
 import {RegisteredApplicationService} from "../registered-application/registered-application.service";
 import {RegisteredApplication} from "windup-services";
+import isInteger = require("core-js/fn/number/is-integer");
 
 @Component({
     templateUrl: './analysis-context-form.component.html'
 })
 export class AnalysisContextFormComponent extends FormComponent
-    implements OnInit, IsDirty, OnChanges
+    implements OnInit, IsDirty
 {
     @ViewChild(NgForm)
     private analysisContextForm: NgForm;
@@ -39,7 +39,6 @@ export class AnalysisContextFormComponent extends FormComponent
 
 
     availableApps: RegisteredApplication[];
-    includedApps: RegisteredApplication[];
 
     /**
      * These two variables exist because we need for the item in the array not to just be a literal.
@@ -57,10 +56,6 @@ export class AnalysisContextFormComponent extends FormComponent
 
     isInWizard: boolean;
     action: Action;
-
-    onCheckedOptionsChange(event){
-        console.warn('onCheckedOptionsChange() called', this.applicationGroup.applications, event);
-    }
 
     constructor(private _router: Router,
                 private _activatedRoute: ActivatedRoute,
@@ -104,6 +99,20 @@ export class AnalysisContextFormComponent extends FormComponent
                         } );
 
                     this.initializeAnalysisContext();
+
+                    this.applicationGroup.applications = this.applicationGroup.applications.map(application => {
+                        if (!isInteger(<any>application))
+                            return application;
+
+                        console.log("Should remap application: " + application);
+                        application = this.applicationGroup.migrationProject.applications.find(applicationFromProject => {
+                            return applicationFromProject.id == <any>application;
+                        });
+                        console.log("Mapped to: ", application);
+
+                        return application;
+                    });
+
                     this.loadPackageMetadata();
                 });
             }
@@ -112,18 +121,8 @@ export class AnalysisContextFormComponent extends FormComponent
         });
     }
 
-    ngOnChanges(changes: SimpleChanges): void {
-        // Checkboxes changed
-        if (changes.hasOwnProperty("includedApps")) {
-            console.log("Changing included apps to: ", changes["includedApps"].currentValue);
-            this.applicationGroup.applications = changes["includedApps"].currentValue;
-        }
-    }
-
     appsValueCallback = (app: RegisteredApplication) => ""+app.id;
     appsLabelCallback = (app: RegisteredApplication) => app.title;
-    equalsCallback = (a1: RegisteredApplication, a2: RegisteredApplication) => a1.id === a2.id;
-
 
     static getDefaultAnalysisContext() {
         let analysisContext = <AnalysisContext>{};
@@ -154,8 +153,6 @@ export class AnalysisContextFormComponent extends FormComponent
         }
 
         this.analysisContext = analysisContext;
-
-        console.log("initializeAnalysisContext() done: " + JSON.stringify(this.analysisContext));
     }
 
     private loadPackageMetadata() {
@@ -216,8 +213,6 @@ export class AnalysisContextFormComponent extends FormComponent
 
         console.log(`Updating/creating analysis context #${this.analysisContext.id}, migrPath: ${this.analysisContext.migrationPath.id}`);
 
-
-        //let contextObservable = service(this.analysisContext);
         let contextObservable = service.call(this._analysisContextService, this.analysisContext);
 
         // Store the App Group
@@ -230,7 +225,7 @@ export class AnalysisContextFormComponent extends FormComponent
         let appGroupObservable = this._applicationGroupService.update(this.applicationGroup);
 
         // Wait for both
-        Observable.forkJoin( contextObservable, appGroupObservable).subscribe(
+        Observable.forkJoin(contextObservable, appGroupObservable).subscribe(
             results => {
                 this._dirty = false;
                 this.onSuccess(<AnalysisContext>results[0], <ApplicationGroup>results[1]);
