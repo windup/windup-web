@@ -24,7 +24,7 @@
         <td *ngIf="execution.timeCompleted">{{ execution.timeCompleted - execution.timeStarted | wuDuration }}</td>
         <td *ngIf="!execution.timeCompleted"></td>
         <td>
-            <a class="link" *ngIf="canCancel(execution)" (click)="cancelExecution(execution)" i18n="button">Cancel</a>
+            <a class="link cancel" *ngIf="canCancel(execution)" (click)="cancelExecution(execution)" i18n="button">Cancel</a>
             <a class="link" *ngIf="execution.state == 'COMPLETED'" target="_blank" href="{{formatStaticReportUrl(execution)}}"> View Static Report </a>
         </td>
     </tr>

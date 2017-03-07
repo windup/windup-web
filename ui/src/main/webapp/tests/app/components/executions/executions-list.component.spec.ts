@@ -119,8 +119,16 @@ describe('ExecutionsListComponent', () => {
 
         notQueuedExecutions.forEach(row => {
             let el = row.nativeElement;
-            expect(el.children[COL_ACTIONS].children.length).toBe(0);
-            expect(el.children[COL_ACTIONS].textContent.trim()).toEqual('');
+            let state = el.children[COL_STATE];
+            let stateText = state.textContent ? state.textContent.trim() : "";
+
+            if (stateText == "COMPLETED") {
+                expect(el.children[COL_ACTIONS].children.length).toBe(1);
+                expect(el.children[COL_ACTIONS].textContent.trim()).toEqual('View Static Report');
+            } else {
+                expect(el.children[COL_ACTIONS].children.length).toBe(0);
+                expect(el.children[COL_ACTIONS].textContent.trim()).toEqual('');
+            }
         });
     });
 
@@ -171,7 +179,7 @@ describe('ExecutionsListComponent', () => {
                 observer.complete();
             }));
 
-            let cancelLink = fixture.debugElement.query(By.css('tbody tr td a.link'));
+            let cancelLink = fixture.debugElement.query(By.css('tbody tr td a.cancel'));
 
             cancelLink.triggerEventHandler('click', null);
             fixture.detectChanges();
@@ -199,7 +207,7 @@ describe('ExecutionsListComponent', () => {
                     observer.complete();
                 }));
 
-                let cancelLink = fixture.debugElement.query(By.css('tbody tr td a.link'));
+                let cancelLink = fixture.debugElement.query(By.css('tbody tr td a.cancel'));
                 cancelLink.triggerEventHandler('click', null);
                 fixture.detectChanges();
             });
