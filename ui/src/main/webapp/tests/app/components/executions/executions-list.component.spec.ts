@@ -120,7 +120,7 @@ describe('ExecutionsListComponent', () => {
         notQueuedExecutions.forEach(row => {
             let el = row.nativeElement;
             expect(el.children[COL_ACTIONS].children.length).toBe(0);
-            expect(el.children[COL_ACTIONS].textContent).toEqual('');
+            expect(el.children[COL_ACTIONS].textContent.trim()).toEqual('');
         });
     });
 
