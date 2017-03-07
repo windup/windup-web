@@ -103,7 +103,6 @@ export class ExecutionsListComponent implements OnInit {
 
     formatStaticReportUrl(execution: WindupExecution): string {
         return WindupExecutionService.formatStaticReportUrl(execution);
-        //return Constants.STATIC_REPORTS_BASE + "/" + execution.applicationListRelativePath;
     }
 
 }
