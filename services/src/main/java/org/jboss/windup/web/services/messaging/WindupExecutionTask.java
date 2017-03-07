@@ -47,16 +47,6 @@ public class WindupExecutionTask implements Runnable
 
     private WindupExecution execution;
     private AnalysisContext analysisContext;
-    private ApplicationGroup group;
-
-    /**
-     * The {@link ApplicationGroup} to execute.
-     */
-    public void init(WindupExecution execution, ApplicationGroup group)
-    {
-        this.execution = execution;
-        this.group = group;
-    }
 
     public void init(WindupExecution execution, AnalysisContext context)
     {
@@ -75,9 +65,6 @@ public class WindupExecutionTask implements Runnable
         {
             throw new IllegalArgumentException("AnalysisContext must be initialized first");
         }
-
-//        if (this.group == null)
-//            throw new IllegalArgumentException("The group must be initialized by calling setGroup() with a non-null value first!");
 
         WindupWebProgressMonitor progressMonitor = progressMonitorInstance.get();
         progressMonitor.setExecution(this.execution);

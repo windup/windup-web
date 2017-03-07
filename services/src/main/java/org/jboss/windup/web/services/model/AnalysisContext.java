@@ -16,15 +16,12 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Version;
 import javax.validation.Valid;
-import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -58,9 +55,6 @@ public class AnalysisContext implements Serializable
     @Fetch(FetchMode.SELECT)
     private Collection<AdvancedOption> advancedOptions;
 
-    @OneToOne(optional = false)
-    private ApplicationGroup applicationGroup;
-
     @Valid
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<RulesPath> rulesPaths;
@@ -85,12 +79,6 @@ public class AnalysisContext implements Serializable
         this.includePackages = new HashSet<>();
         this.excludePackages = new HashSet<>();
         this.applications = new HashSet<>();
-    }
-
-    public AnalysisContext(ApplicationGroup applicationGroup)
-    {
-        this();
-        this.applicationGroup = applicationGroup;
     }
 
     public AnalysisContext(MigrationProject project)
@@ -165,35 +153,6 @@ public class AnalysisContext implements Serializable
     public void setMigrationPath(MigrationPath migrationPath)
     {
         this.migrationPath = migrationPath;
-    }
-
-    /**
-     * Contains the group being analyzed.
-     */
-    @JsonIgnore
-    public ApplicationGroup getApplicationGroup()
-    {
-        return applicationGroup;
-    }
-
-    @JsonProperty
-    public Long getApplicationGroupId()
-    {
-        if (this.applicationGroup == null)
-        {
-            // This should not happen, since ApplicationGroup is parent of AnalysisContext
-            return null;
-        }
-
-        return this.applicationGroup.getId();
-    }
-
-    /**
-     * Contains the group being analyzed.
-     */
-    public void setApplicationGroup(ApplicationGroup applicationGroup)
-    {
-        this.applicationGroup = applicationGroup;
     }
 
     /**

@@ -32,7 +32,6 @@ public class AnalysisContextEndpointTest extends AbstractTest
     @ArquillianResource
     private URL contextPath;
 
-    private ApplicationGroupEndpoint applicationGroupEndpoint;
     private MigrationPathEndpoint migrationPathEndpoint;
     private AnalysisContextEndpoint analysisContextEndpoint;
     private ConfigurationEndpoint configurationEndpoint;
@@ -47,7 +46,6 @@ public class AnalysisContextEndpointTest extends AbstractTest
         this.target = client.target(contextPath + ServiceConstants.REST_BASE);
         this.dataProvider = new DataProvider(target);
 
-        this.applicationGroupEndpoint = target.proxy(ApplicationGroupEndpoint.class);
         this.migrationPathEndpoint = target.proxy(MigrationPathEndpoint.class);
         this.analysisContextEndpoint = target.proxy(AnalysisContextEndpoint.class);
         this.configurationEndpoint = target.proxy(ConfigurationEndpoint.class);
@@ -56,8 +54,6 @@ public class AnalysisContextEndpointTest extends AbstractTest
     @Test
     @RunAsClient
     public void testEndpointWithExistingCustomRules() throws JSONException {
-        ApplicationGroup group = createGroup();
-
         // Just grab the first one (this is completely arbitrary)
         MigrationPath path = migrationPathEndpoint.getAvailablePaths().iterator().next();
 
@@ -65,7 +61,8 @@ public class AnalysisContextEndpointTest extends AbstractTest
         configuration.setRulesPaths(Collections.singleton(new RulesPath(ConfigurationEndpointTest.CUSTOM_RULESPATH, RulesPathType.USER_PROVIDED)));
         configurationEndpoint.saveConfiguration(configuration);
 
-        AnalysisContext analysisContext = analysisContextEndpoint.get(group.getAnalysisContext().getId());
+        MigrationProject project = this.dataProvider.getMigrationProject();
+        AnalysisContext analysisContext = this.dataProvider.getAnalysisContext(project);
         analysisContext.setMigrationPath(path);
 
         analysisContext.setRulesPaths(configurationEndpoint.getConfiguration().getRulesPaths());
@@ -80,18 +77,8 @@ public class AnalysisContextEndpointTest extends AbstractTest
         JSONObject json = new JSONObject(stringResponse);
         
         Assert.assertNotNull(loaded);
-
         Assert.assertEquals(analysisContext.getId(), loaded.getId());
-
         Assert.assertEquals(path, loaded.getMigrationPath());
-
-        Assert.assertEquals((long)group.getId(), json.getLong("applicationGroupId"));
         Assert.assertEquals(1, loaded.getRulesPaths().size());
-    }
-
-    private ApplicationGroup createGroup()
-    {
-        MigrationProject dummyProject = this.dataProvider.getMigrationProject();
-        return this.dataProvider.getApplicationGroup(dummyProject);
     }
 }

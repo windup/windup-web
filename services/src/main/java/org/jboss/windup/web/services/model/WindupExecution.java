@@ -55,10 +55,6 @@ public class WindupExecution implements Serializable
 
     @ManyToOne(optional = false)
     @JsonIgnore
-    private ApplicationGroup group;
-
-    @ManyToOne(optional = false)
-    @JsonIgnore
     private MigrationProject project;
 
     @Column(name = "time_started")
@@ -128,22 +124,6 @@ public class WindupExecution implements Serializable
     public void setVersion(int version)
     {
         this.version = version;
-    }
-
-    /**
-     * Contains the {@link ApplicationGroup} being analyzed.
-     */
-    public ApplicationGroup getGroup()
-    {
-        return group;
-    }
-
-    /**
-     * Contains the {@link ApplicationGroup} being analyzed.
-     */
-    public void setGroup(ApplicationGroup group)
-    {
-        this.group = group;
     }
 
     /**
@@ -369,12 +349,6 @@ public class WindupExecution implements Serializable
     public void setFilterApplications(Set<FilterApplication> filterApplications)
     {
         this.filterApplications = filterApplications;
-    }
-
-    @JsonProperty
-    public long getGroupId()
-    {
-        return this.group.getId();
     }
 
     @JsonProperty

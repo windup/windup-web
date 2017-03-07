@@ -2,16 +2,12 @@ package org.jboss.windup.web.services.model;
 
 import java.io.Serializable;
 import java.nio.file.Paths;
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Version;
@@ -66,9 +62,6 @@ public class RegisteredApplication implements Serializable
     @Column(length = 2048)
     private String reportIndexPath;
 
-    @ManyToMany
-    private Set<ApplicationGroup> applicationGroups;
-
     @ManyToOne(optional = false)
     private MigrationProject migrationProject;
 
@@ -77,7 +70,7 @@ public class RegisteredApplication implements Serializable
 
     public RegisteredApplication()
     {
-        this.applicationGroups = new HashSet<>();
+
     }
 
     public RegisteredApplication(String inputPath)
@@ -171,28 +164,6 @@ public class RegisteredApplication implements Serializable
     public void setReportIndexPath(String reportIndexPath)
     {
         this.reportIndexPath = reportIndexPath;
-    }
-
-    /**
-     * References the {@link ApplicationGroup} that contains this application.
-     */
-    @JsonIgnore
-    public Set<ApplicationGroup> getApplicationGroups()
-    {
-        return this.applicationGroups;
-    }
-
-    /**
-     * References the {@link ApplicationGroup} that contains this application.
-     */
-    public void addApplicationGroup(ApplicationGroup applicationGroup)
-    {
-        this.applicationGroups.add(applicationGroup);
-    }
-
-    public void removeApplicationGroup(ApplicationGroup applicationGroup)
-    {
-        this.applicationGroups.add(applicationGroup);
     }
 
     /**

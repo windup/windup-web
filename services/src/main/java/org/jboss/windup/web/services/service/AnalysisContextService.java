@@ -6,7 +6,6 @@ import javax.persistence.PersistenceContext;
 import javax.ws.rs.NotFoundException;
 
 import org.jboss.windup.web.services.model.AnalysisContext;
-import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.model.Package;
 import org.jboss.windup.web.services.model.RulesPath;
@@ -42,17 +41,6 @@ public class AnalysisContextService
         }
 
         return context;
-    }
-
-    /**
-     * Creates a default instance.
-     */
-    public AnalysisContext createDefaultAnalysisContext(ApplicationGroup group)
-    {
-        AnalysisContext defaultAnalysisContext = new AnalysisContext(group);
-        ensureSystemRulesPathsPresent(defaultAnalysisContext);
-        entityManager.persist(defaultAnalysisContext);
-        return defaultAnalysisContext;
     }
 
     /**

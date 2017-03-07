@@ -79,10 +79,6 @@ public class MigrationProject implements Serializable
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "migrationProject", cascade = CascadeType.REMOVE)
     @Fetch(FetchMode.SELECT)
-    private Set<ApplicationGroup> groups;
-
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "migrationProject", cascade = CascadeType.REMOVE)
-    @Fetch(FetchMode.SELECT)
     private Set<RegisteredApplication> applications;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "project", cascade = CascadeType.REMOVE)
@@ -91,7 +87,6 @@ public class MigrationProject implements Serializable
 
     public MigrationProject()
     {
-        this.groups = new HashSet<>();
         this.applications = new HashSet<>();
         this.executions = new HashSet<>();
     }
@@ -152,34 +147,6 @@ public class MigrationProject implements Serializable
     public void setDescription(String description)
     {
         this.description = description;
-    }
-
-    /**
-     * Contains the {@link ApplicationGroup}s associated with this project.
-     */
-    @JsonIgnore
-    public Set<ApplicationGroup> getGroups()
-    {
-        return groups;
-    }
-
-    /**
-     * Contains the {@link ApplicationGroup}s associated with this project.
-     */
-    @JsonIgnore
-    public void setGroups(Set<ApplicationGroup> groups)
-    {
-        this.groups = groups;
-    }
-
-    public void addGroup(ApplicationGroup group)
-    {
-        this.groups.add(group);
-    }
-
-    public void removeGroup(ApplicationGroup group)
-    {
-        this.groups.remove(group);
     }
 
     /**
