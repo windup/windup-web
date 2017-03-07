@@ -6,6 +6,8 @@ import {utils} from '../shared/utils';
 import {SortingService, OrderDirection} from "../shared/sort/sorting.service";
 import {MigrationProjectService} from "../project/migration-project.service";
 import {MigrationProject} from "windup-services";
+import {WindupExecutionService} from "../services/windup-execution.service";
+import {Constants} from "../constants";
 
 @Component({
     selector: 'wu-executions-list',
@@ -98,4 +100,10 @@ export class ExecutionsListComponent implements OnInit {
     sortByDurationCallback = (item: WindupExecution) => {
         return <any>item.timeCompleted - <any>item.timeStarted;
     };
+
+    formatStaticReportUrl(execution: WindupExecution): string {
+        return WindupExecutionService.formatStaticReportUrl(execution);
+        //return Constants.STATIC_REPORTS_BASE + "/" + execution.applicationListRelativePath;
+    }
+
 }
