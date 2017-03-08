@@ -211,28 +211,6 @@ describe('CheckboxesComponent', () => {
             });
         });
 
-        describe('when using valueCallback function to get value', () => {
-            let mock;
-
-            beforeEach(() => {
-                mock = jasmine.createSpyObj('Spy', ['getValue']);
-                mock.getValue.and.callFake(item => item.value);
-                comp.valueCallback = mock.getValue;
-                comp.checkedOptions = [];
-            });
-
-            it('should return value when item is clicked', () => {
-                fixture.detectChanges();
-
-                clickOnItems(fixture, [ items[0].value ]);
-
-                fixture.detectChanges();
-
-                expect(comp.checkedOptions.length).toBe(1);
-                expect(comp.checkedOptions[0]).toBe(valueObjects[0]);
-            });
-        });
-
         describe('when no comparator provided', () => {
             let selectedItems;
 

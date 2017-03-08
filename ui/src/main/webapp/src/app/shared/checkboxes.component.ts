@@ -45,8 +45,6 @@ export class CheckboxesComponent
         if (callback && isFunction(callback)) {
             this._equalsCallback = callback;
         }
-        //         return this.valueCallback(item1) == this.valueCallback(item2);
-
     }
 
     public get equalsCallback() {
@@ -118,7 +116,7 @@ export class CheckboxesComponent
         if (!checked && index != -1)
             this.checkedOptions.splice(index, 1);
         else
-            this.checkedOptions.push(this.valueCallback(option));
+            this.checkedOptions.push(option);
         
         this.checkedOptionsChange.emit(this.checkedOptions);
     }
