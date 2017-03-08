@@ -31,6 +31,7 @@ import {WizardComponent} from "./shared/wizard/wizard.component";
 import {ExecutionDetailComponent} from "./executions/execution-detail.component";
 import {ApplicationListComponent} from "./registered-application/application-list.component";
 import {ProjectExecutionsComponent} from "./executions/project-executions.component";
+import {WizardLayoutComponent} from "./shared/layout/wizard-layout.component";
 
 export const appRoutes: Routes = [
     {path: "login", component: LoginComponent},
@@ -63,7 +64,7 @@ export const appRoutes: Routes = [
             },
             {
                 path: 'wizard',
-                component: DefaultLayoutComponent,
+                component: WizardLayoutComponent,
                 children: [
                     {
                         path: '',

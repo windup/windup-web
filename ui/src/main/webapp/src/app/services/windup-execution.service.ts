@@ -9,6 +9,7 @@ import {
     ExecutionCompletedEvent
 } from "../core/events/windup-event";
 import {SchedulerService} from "../shared/scheduler.service";
+import {Constants} from "../constants";
 
 @Injectable()
 export class WindupExecutionService extends AbstractService {
@@ -73,5 +74,12 @@ export class WindupExecutionService extends AbstractService {
                 }
             );
         });
+    }
+
+    /**
+     * @returns {string} An URL to the static reports of the given execution.
+     */
+    public static formatStaticReportUrl(execution: WindupExecution): string {
+        return Constants.STATIC_REPORTS_BASE + "/" + execution.applicationListRelativePath;
     }
 }

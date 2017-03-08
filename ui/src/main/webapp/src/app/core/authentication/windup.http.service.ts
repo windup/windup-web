@@ -18,9 +18,7 @@ export class WindupHttpService extends Http {
                         options.headers = new Headers();
                     }
 
-                    if (!options.headers.has('Authorization')) {
-                        options.headers.set('Authorization', 'Bearer ' + token);
-                    }
+                    options.headers.set('Authorization', 'Bearer ' + token);
 
                     observer.next(options);
                     observer.complete();

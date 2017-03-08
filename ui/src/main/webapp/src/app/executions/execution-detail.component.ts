@@ -5,6 +5,7 @@ import {WindupExecution} from "windup-services";
 import {WINDUP_WEB} from "../app.module";
 
 import {someLog} from './some-log';
+import {WindupExecutionService} from "../services/windup-execution.service";
 
 @Component({
     templateUrl: './execution-detail.component.html',
@@ -30,5 +31,9 @@ export class ExecutionDetailComponent implements OnInit {
                 this.execution = execution;
             });
         });
+    }
+
+    formatStaticReportUrl(execution: WindupExecution): string {
+        return WindupExecutionService.formatStaticReportUrl(execution);
     }
 }

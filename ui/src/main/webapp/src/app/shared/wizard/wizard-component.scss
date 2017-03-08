@@ -82,8 +82,7 @@ $font-color-active: white;
   }
 
   &:not(:first-child):not(:last-child) {
-    top: -2px;
-    bottom: 2px;
+    top: 2px;
   }
 
   &:last-child {
