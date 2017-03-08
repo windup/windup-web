@@ -5,7 +5,6 @@ import javax.ws.rs.NotFoundException;
 
 import org.jboss.windup.web.addons.websupport.model.ReportFilterDTO;
 import org.jboss.windup.web.addons.websupport.services.ReportFilterService;
-import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.ReportFilter;
 import org.jboss.windup.web.services.model.ReportFilterDTOImpl;
 import org.jboss.windup.web.services.model.WindupExecution;
@@ -37,8 +36,7 @@ public class ReportFilterServiceImpl implements ReportFilterService
     public ReportFilter getFilter(Long executionId)
     {
         WindupExecution execution = this.getExecution(executionId);
-        ApplicationGroup appGroup = execution.getGroup();
-        return appGroup.getReportFilter();
+        return execution.getReportFilter();
     }
 
     @Override

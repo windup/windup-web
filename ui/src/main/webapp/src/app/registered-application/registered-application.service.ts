@@ -9,12 +9,9 @@ import {AbstractService} from "../shared/abtract.service";
 import {KeycloakService} from "../core/authentication/keycloak.service";
 import {EventBusService} from "../core/events/event-bus.service";
 import {
-    ApplicationRegisteredEvent, ApplicationDeletedEvent,
-    ApplicationRemovedFromGroupEvent, ApplicationAssignedToGroupEvent
+    ApplicationRegisteredEvent, ApplicationDeletedEvent
 } from "../core/events/windup-event";
-import {ApplicationGroup} from "windup-services";
 import {MigrationProject} from "windup-services";
-import {ApplicationGroupService} from "../group/application-group.service";
 
 @Injectable()
 export class RegisteredApplicationService extends AbstractService {
@@ -39,7 +36,6 @@ export class RegisteredApplicationService extends AbstractService {
         private _http: Http,
         private _keycloakService:KeycloakService,
         private _multipartUploader: FileUploader,
-        private _applicationGroupService: ApplicationGroupService,
         private _eventBusService: EventBusService
     ) {
         super();
@@ -126,15 +122,6 @@ export class RegisteredApplicationService extends AbstractService {
 
     protected fireNewApplicationEvents(applications: RegisteredApplication|RegisteredApplication[], project: MigrationProject) {
         this._eventBusService.fireEvent(new ApplicationRegisteredEvent(project, applications, this));
-
-        // This is workaround until we change logic regarding to groups
-        this._applicationGroupService.getByProjectID(project.id).subscribe(groups => {
-            // If there is only 1 group, it is probably the default group
-            // add new applications to this group automatically
-            if (groups.length === 1) {
-                groups.forEach(group => this._eventBusService.fireEvent(new ApplicationAssignedToGroupEvent(group, applications, this)));
-            }
-        });
     }
 
     getMultipartUploader() {
@@ -214,11 +201,6 @@ export class RegisteredApplicationService extends AbstractService {
         return this._http.delete(url)
             .do(_ => {
                 this._eventBusService.fireEvent(new ApplicationDeletedEvent(project, application, this));
-
-                // This is workaround until we change logic regarding to groups
-                this._applicationGroupService.getByProjectID(project.id).subscribe(appGroups => {
-                    appGroups.forEach(group => this._eventBusService.fireEvent(new ApplicationRemovedFromGroupEvent(group, application, this)));
-                });
             })
             .catch(this.handleError);
     }

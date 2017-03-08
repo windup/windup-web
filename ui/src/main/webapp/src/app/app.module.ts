@@ -10,17 +10,13 @@ import {routing, appRoutingProviders, appRoutes} from './app.routing';
 
 import {ProjectListComponent} from "./project/project-list.component";
 import {AnalysisContextFormComponent} from "./analysis-context/analysis-context-form.component";
-import {ApplicationGroupForm} from "./group/application-group-form.component";
-import {GroupListComponent} from "./group/group-list.component";
 import {MigrationProjectFormComponent} from "./project/migration-project-form.component";
-import {GroupPageComponent} from "./group/group.page.component";
 import {RegisterApplicationFormComponent} from "./registered-application/register-application-form.component";
 import {ProgressBarComponent} from "./shared/progress-bar.component";
 import {NavbarComponent} from "./shared/navigation/navbar.component";
 import {BreadCrumbsComponent} from "./shared/navigation/breadcrumbs.component";
 import {ConfigurationService} from "./configuration/configuration.service";
 import {AnalysisContextService} from "./analysis-context/analysis-context.service";
-import {ApplicationGroupService} from "./group/application-group.service";
 import {FileService} from "./services/file.service";
 import {MigrationPathService} from "./analysis-context/migration-path.service";
 import {MigrationProjectService} from "./project/migration-project.service";
@@ -61,7 +57,6 @@ import {FramesRestClientService} from './services/graph/frames-rest-client.servi
 import {ContextMenuComponent} from "./shared/navigation/context-menu.component";
 import {ProjectLayoutComponent} from "./project/project-layout.component";
 import {DefaultLayoutComponent} from "./shared/layout/default-layout.component";
-import {ApplicationGroupResolve} from "./group/application-group.resolve";
 import {RouteLinkProviderService} from "./core/routing/route-link-provider-service";
 import {ConfigurationResolve} from "./configuration/configuration.resolve";
 import {ProjectResolve} from "./project/project.resolve";
@@ -71,7 +66,6 @@ import {BreadCrumbsService} from "./shared/navigation/breadcrumbs.service";
 import {RouteFlattenerService} from "./core/routing/route-flattener.service";
 import {ExecutionsListComponent} from "./executions/executions-list.component";
 import {AllExecutionsComponent} from "./executions/all-executions.component";
-import {GroupExecutionsComponent} from "./executions/group-executions.component";
 import {SourceReportComponent} from "./reports/source/source-report.component";
 import {FileModelService} from "./services/graph/file-model.service";
 import {ClassificationService} from "./services/graph/classification.service";
@@ -147,10 +141,7 @@ initializeModelMappingData();
         AppComponent,
         LoginComponent,
         AnalysisContextFormComponent,
-        ApplicationGroupForm,
         ConfigurationComponent,
-        GroupListComponent,
-        GroupPageComponent,
         MigrationProjectFormComponent,
         ProjectListComponent,
         NoProjectsWelcomeComponent,
@@ -198,7 +189,6 @@ initializeModelMappingData();
         BreadCrumbsNavigationComponent,
         ExecutionsListComponent,
         AllExecutionsComponent,
-        GroupExecutionsComponent,
         BreadCrumbsNavigationComponent,
         ReportFilterComponent,
         CustomSelectComponent,
@@ -225,7 +215,6 @@ initializeModelMappingData();
         appRoutingProviders,
         KeycloakService,
         AnalysisContextService,
-        ApplicationGroupService,
         ConfigurationService,
         ConfigurationOptionsService,
         ConfirmDeactivateGuard,
@@ -245,7 +234,6 @@ initializeModelMappingData();
         HintService,
         ApplicationDetailsService,
         FramesRestClientService,
-        ApplicationGroupResolve,
         ConfigurationResolve,
         ProjectResolve,
         ApplicationResolve,

@@ -1,12 +1,7 @@
+<h1 i18n>Analysis Context</h1>
+<h2 *ngIf="!project" i18n>Loading...</h2>
 
-
-<h1 i18n>
-    Analysis Context
-</h1>
-
-<h2 *ngIf="!applicationGroup" i18n>Loading...</h2>
-
-<form *ngIf="applicationGroup" #analysisContextForm="ngForm" (ngSubmit)="onSubmit()"  class="form-horizontal">
+<form *ngIf="project" #analysisContextForm="ngForm" (ngSubmit)="onSubmit()"  class="form-horizontal">
 
     <div *ngFor="let errorMessage of errorMessages" class="row form-errors alert alert-danger">
         <div class="col-md-2">&nbsp;</div>
@@ -40,7 +35,8 @@
                                [options]="availableApps"
                                [valueCallback]="appsValueCallback"
                                [labelCallback]="appsLabelCallback"
-                               [(checkedOptions)]="applicationGroup.applications"
+                               [equalsCallback]="equalsCallback"
+                               [(checkedOptions)]="analysisContext.applications"
                 >
                 </wu-checkboxes>
             </div>

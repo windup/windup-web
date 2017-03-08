@@ -1,8 +1,6 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 
-import {ApplicationGroup} from "windup-services";
-import {ApplicationGroupService} from "../group/application-group.service";
 import {RegisteredApplication} from "windup-services";
 import {RegisteredApplicationService} from "./registered-application.service";
 import {NotificationService} from "../core/notification/notification.service";
@@ -18,13 +16,9 @@ import {MigrationProject} from "windup-services";
 })
 export class ApplicationListComponent extends ExecutionsMonitoringComponent implements OnInit, OnDestroy
 {
-    group: ApplicationGroup;
-    project: MigrationProject;
-
     constructor(
         private _activatedRoute: ActivatedRoute,
         private _router: Router,
-        private _applicationGroupService: ApplicationGroupService,
         private _registeredApplicationsService: RegisteredApplicationService,
         private _notificationService: NotificationService,
         _windupExecutionService: WindupExecutionService,
@@ -36,30 +30,14 @@ export class ApplicationListComponent extends ExecutionsMonitoringComponent impl
     ngOnInit(): any {
         this._eventBus.onEvent
             .filter(event => event.isTypeOf(ExecutionEvent))
-            .filter((event: ExecutionEvent) => event.group.id === this.group.id)
+            .filter((event: ExecutionEvent) => event.migrationProject.id === this.project.id)
             .subscribe((event: ExecutionEvent) => {
                 this.onExecutionEvent(event);
             });
 
-        // Get groupID from params.
         this._activatedRoute.parent.parent.data.subscribe((data: {project: MigrationProject}) => {
             this.project = data.project;
         });
-    }
-
-    loadGroup(inGroupID?: number): void {
-        this._applicationGroupService.get(inGroupID).subscribe(
-            group => {
-                this.group = group;
-                this.project = group.migrationProject;
-                this.loadActiveExecutions(this.group.executions);
-                console.log('Group loaded: ', inGroupID);
-            },
-            error => {
-                this._notificationService.error(utils.getErrorMessage(error));
-                this._router.navigate(['']);
-            }
-        );
     }
 
     ngOnDestroy() {

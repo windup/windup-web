@@ -13,6 +13,7 @@ import {HttpModule, BaseRequestOptions, Http, ConnectionBackend} from "@angular/
 import {MockBackend} from "@angular/http/testing";
 import {ReportFilterIndicatorComponent} from "../../../../../src/app/reports/filter/report-filter-indicator.component";
 import {NgxChartsModule} from "@swimlane/ngx-charts";
+import {WindupService} from "../../../../../src/app/services/windup.service";
 
 let comp:    ApplicationIndexComponent;
 let fixture: ComponentFixture<ApplicationIndexComponent>;
@@ -70,7 +71,22 @@ describe('ApplicationIndexComponent', () => {
                     useValue: jasmine.createSpyObj('NotificationService', [
                         'error'
                     ])
-                }
+                },
+                {
+                    provide: WindupService,
+                    useFactory: () => {
+                        let mock = jasmine.createSpyObj('WindupService', [
+                            'getExecution'
+                        ]);
+
+                        mock.getExecution.and.returnValue(new Observable<any>(observer => {
+                            observer.next(null);
+                            observer.complete();
+                        }));
+
+                        return mock;
+                    }
+                },
             ]
         }).compileComponents();
 

@@ -1,9 +1,7 @@
 import {Routes, RouterModule} from '@angular/router';
 import {ProjectListComponent} from "./project/project-list.component";
-import {GroupPageComponent} from "./group/group.page.component";
 import {RegisterApplicationFormComponent} from "./registered-application//register-application-form.component";
 import {MigrationProjectFormComponent} from "./project/migration-project-form.component";
-import {ApplicationGroupForm} from "./group/application-group-form.component";
 import {AnalysisContextFormComponent} from "./analysis-context/analysis-context-form.component";
 import {ConfigurationComponent} from "./configuration/configuration.component";
 import {EditApplicationFormComponent} from "./registered-application//edit-application-form.component";
@@ -14,13 +12,11 @@ import {LoginComponent} from "./components/login.component";
 import {LoggedInGuard} from "./core/authentication/logged-in.guard";
 import {ProjectLayoutComponent} from "./project/project-layout.component";
 import {DefaultLayoutComponent} from "./shared/layout/default-layout.component";
-import {ApplicationGroupResolve} from "./group/application-group.resolve";
 import {MigrationIssuesComponent} from "./reports/migration-issues/migration-issues.component";
 import {ProjectResolve} from "./project/project.resolve";
 import {ConfigurationResolve} from "./configuration/configuration.resolve";
 import {ApplicationResolve} from "./registered-application//application.resolve";
 import {FullFlattenedRoute} from "./core/routing/route-flattener.service";
-import {GroupExecutionsComponent} from "./executions/group-executions.component";
 import {AllExecutionsComponent} from "./executions/all-executions.component";
 import {SourceReportComponent} from "./reports/source/source-report.component";
 import {ApplicationDetailsComponent} from "./reports/application-details/application-details.component";
@@ -80,8 +76,8 @@ export const appRoutes: Routes = [
                         children: [
                             { path: 'create-project', component: MigrationProjectFormComponent, data: {displayName: 'Create Project', wizard: true} },
                             {
-                                path: 'group/:groupId',
-                                resolve: { applicationGroup: ApplicationGroupResolve },
+                                path: 'project/:projectId',
+                                resolve: { project: ProjectResolve },
                                 children: [
                                     { path: 'add-applications', component: RegisterApplicationFormComponent },
                                     { path: 'configure-analysis', component: AnalysisContextFormComponent }
@@ -124,49 +120,30 @@ export const appRoutes: Routes = [
                                             data: {displayName: "Edit Application"}
                                         },
                                     ]},
-                                    {
-                                        path: 'groups/:groupId',
-                                        resolve: {
-                                            applicationGroup: ApplicationGroupResolve
+                                    { path: 'analysis-context', component: AnalysisContextFormComponent, data: {displayName: "Edit Analysis Context"}, canDeactivate: [ConfirmDeactivateGuard]},
+                                    { path: 'reports', children: [
+                                        { path: 'filter', component: ReportFilterComponent, data: {displayName: 'Report Filter'} },
+                                    ]},
+                                    { path: 'reports/:executionId', children: [
+                                        {path: '', component: ExecutionDetailComponent, data: {displayName: 'Execution Info'}},
+                                        {path: 'dependencies-report', component: DependenciesReportComponent, data: {displayName: 'Dependency Report'}},
+                                        {path: 'technology-report', component: TechnologiesReportComponent, data: {displayName: 'Technology Report'}},
+                                        {path: 'migration-issues',
+                                            children: [
+                                                {path: '', component: MigrationIssuesComponent, data: {displayName: 'Migration Issues'}},
+                                                {path: 'source/:fileId', component: SourceReportComponent, data: {displayName: 'Source Report'}}
+                                            ]
                                         },
-                                        data: {
-                                          breadcrumbs: {
-                                              ignore: true
-                                          }
-                                        },
-                                        children: [
-                                            { path: '', component: GroupPageComponent },
-                                            { path: 'analysis-context', component: AnalysisContextFormComponent, data: {displayName: "Edit Analysis Context"}, canDeactivate: [ConfirmDeactivateGuard]},
-                                            { path: 'reports', children: [
-                                                { path: 'filter', component: ReportFilterComponent, data: {displayName: 'Report Filter'} },
-                                            ]},
-                                            { path: 'reports/:executionId', children: [
-                                                {path: '', component: ExecutionDetailComponent, data: {displayName: 'Execution Info'}},
-                                                {path: 'dependencies-report', component: DependenciesReportComponent, data: {displayName: 'Dependency Report'}},
-                                                {path: 'technology-report', component: TechnologiesReportComponent, data: {displayName: 'Technology Report'}},
-                                                {path: 'migration-issues',
-                                                    children: [
-                                                        {path: '', component: MigrationIssuesComponent, data: {displayName: 'Migration Issues'}},
-                                                        {path: 'source/:fileId', component: SourceReportComponent, data: {displayName: 'Source Report'}}
-                                                    ]
-                                                },
-                                                {path: 'source/:fileId', component: SourceReportComponent, data: {displayName: 'Source Report'}},
-                                                {path: 'application-index', component: ApplicationIndexComponent, data: { displayName: 'Application Index'}},
-                                                {path: 'application-details', component: ApplicationDetailsComponent, data: { displayName: 'Application Details'}},
-                                                {path: 'executed-rules', component: RuleProviderExecutionsComponent, data: {displayName: 'Executed Rules'}},
-                                                {path: 'dependencies', component: DependenciesReportComponent, data: {displayName: 'Dependencies Report' }}
-                                            ]},
-                                            { path: '', children: [
-                                                { path: 'edit', component: ApplicationGroupForm, data: {displayName: "Edit Application Group"} }
-                                            ]},
-                                            { path: 'executions', component: GroupExecutionsComponent, data: {displayName: 'Executions list'} }
-                                        ]
-                                    },
+                                        {path: 'source/:fileId', component: SourceReportComponent, data: {displayName: 'Source Report'}},
+                                        {path: 'application-index', component: ApplicationIndexComponent, data: { displayName: 'Application Index'}},
+                                        {path: 'application-details', component: ApplicationDetailsComponent, data: { displayName: 'Application Details'}},
+                                        {path: 'executed-rules', component: RuleProviderExecutionsComponent, data: {displayName: 'Executed Rules'}},
+                                        {path: 'dependencies', component: DependenciesReportComponent, data: {displayName: 'Dependencies Report' }}
+                                    ]}
                                 ]
                             },
                             { path: '', component: DefaultLayoutComponent, children: [
                                 {path: 'edit', component: MigrationProjectFormComponent, data: {displayName: 'Edit Project'}},
-                                {path: 'groups/create', component: ApplicationGroupForm, data: {displayName: 'Create Application Group'}},
                             ]},
                         ]
                     }

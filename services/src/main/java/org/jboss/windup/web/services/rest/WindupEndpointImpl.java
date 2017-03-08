@@ -20,13 +20,12 @@ import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.addons.websupport.services.WindupExecutorService;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.messaging.MessagingConstants;
-import org.jboss.windup.web.services.model.ApplicationGroup;
+import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.ExecutionState;
 import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.model.RegisteredApplication;
 import org.jboss.windup.web.services.model.WindupExecution;
 import org.jboss.windup.web.services.service.AnalysisContextService;
-import org.jboss.windup.web.services.service.ApplicationGroupService;
 import org.jboss.windup.web.services.service.ConfigurationService;
 
 @Stateless
@@ -57,46 +56,36 @@ public class WindupEndpointImpl implements WindupEndpoint
     @FromFurnace
     private WebPathUtil webPathUtil;
 
-    @Inject
-    private ApplicationGroupService applicationGroupService;
-
     @Resource(lookup = "java:/queues/" + MessagingConstants.EXECUTOR_QUEUE)
     private Queue executorQueue;
 
     @Override
-    public WindupExecution executeGroup(Long groupID)
+    public WindupExecution executeWithContext(Long contextId)
     {
-        ApplicationGroup group = this.applicationGroupService.getApplicationGroup(groupID);
+        AnalysisContext analysisContext = this.analysisContextService.get(contextId);
 
-        if (group.getApplications().size() == 0)
+        if (analysisContext.getApplications().size() == 0)
         {
-            throw new BadRequestException("Cannot execute windup on empty group");
+            throw new BadRequestException("Cannot execute windup without selected applications");
         }
 
-        for (RegisteredApplication application : group.getApplications())
+        for (RegisteredApplication application : analysisContext.getApplications())
         {
             application.setReportIndexPath(null);
         }
 
-        WindupExecution execution = new WindupExecution();
-        execution.setGroup(group);
+        WindupExecution execution = new WindupExecution(analysisContext);
         execution.setTimeStarted(new GregorianCalendar());
         execution.setState(ExecutionState.QUEUED);
 
         entityManager.persist(execution);
 
         Path reportOutputPath = this.webPathUtil.createWindupReportOutputPath(
-                execution.getGroup().getMigrationProject().getId().toString(),
-                execution.getGroup().getId().toString(),
+                execution.getProject().getId().toString(),
                 execution.getId().toString()
         );
 
         execution.setOutputPath(reportOutputPath.toString());
-
-        if (group.getAnalysisContext() == null)
-        {
-            group.setAnalysisContext(analysisContextService.createDefaultAnalysisContext(group));
-        }
         entityManager.merge(execution);
 
         messaging.createProducer().send(executorQueue, execution);
@@ -143,17 +132,19 @@ public class WindupEndpointImpl implements WindupEndpoint
     @Override
     public Collection<WindupExecution> getProjectExecutions(Long projectId)
     {
-        if (projectId == null) {
+        if (projectId == null)
+        {
             throw new BadRequestException("Invalid projectId");
         }
 
         MigrationProject project = this.entityManager.find(MigrationProject.class, projectId);
 
-        if (project == null) {
+        if (project == null)
+        {
             throw new NotFoundException("Migration project with id: " + projectId + " not found");
         }
 
-       return this.entityManager.createQuery("SELECT ex FROM WindupExecution ex JOIN ex.group AS gr WHERE gr.migrationProject = :project")
+       return this.entityManager.createQuery("SELECT ex FROM WindupExecution ex WHERE ex.project = :project", WindupExecution.class)
                .setParameter("project", project)
                .getResultList();
     }

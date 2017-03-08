@@ -7,7 +7,6 @@ import {RegisteredApplication, RegistrationType} from "windup-services";
 import {RegisteredApplicationService} from "./registered-application.service";
 import {FileExistsValidator} from "../shared/validators/file-exists.validator";
 import {FileService} from "../services/file.service";
-import {ApplicationGroup} from "windup-services";
 import {FormComponent} from "../shared/form.component";
 import {Constants} from "../constants";
 import {MigrationProject} from "windup-services";
@@ -46,7 +45,6 @@ import {RouteFlattenerService} from "../core/routing/route-flattener.service";
 export class RegisterApplicationFormComponent extends FormComponent implements OnInit, OnDestroy, AfterViewInit
 {
     protected registrationForm: FormGroup;
-    private applicationGroup: ApplicationGroup;
     protected application: RegisteredApplication;
     protected multipartUploader: FileUploader;
     protected mode: RegistrationType = "UPLOADED";
@@ -89,20 +87,11 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
 
             this.isInWizard = flatRouteData.data.hasOwnProperty('wizard') && flatRouteData.data['wizard'];
 
-            if (this.isInWizard) {
-                if (!flatRouteData.data['applicationGroup']) {
-                    throw new Error('In wizard mode application group must be specified');
-                }
-
-                this.applicationGroup = flatRouteData.data['applicationGroup'];
-                this.project = this.applicationGroup.migrationProject;
-            } else {
-                if (!flatRouteData.data['project']) {
-                    throw new Error('Project must be specified');
-                }
-
-                this.project = flatRouteData.data['project'];
+            if (!flatRouteData.data['project']) {
+                throw new Error('Project must be specified');
             }
+
+            this.project = flatRouteData.data['project'];
 
             let uploadUrl = Constants.REST_BASE + RegisteredApplicationService.UPLOAD_URL;
             uploadUrl = uploadUrl.replace("{projectId}", this.project.id.toString());
@@ -161,7 +150,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
 
     navigateOnSuccess() {
         if (this.isInWizard) {
-            this.navigateAway(['/wizard', 'group', this.applicationGroup.id, 'configure-analysis']);
+            this.navigateAway(['/wizard', 'project', this.project.id, 'configure-analysis']);
         } else {
             this.rerouteToApplicationList();
         }

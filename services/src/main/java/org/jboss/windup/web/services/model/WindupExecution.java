@@ -16,17 +16,18 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 /**
@@ -54,7 +55,7 @@ public class WindupExecution implements Serializable
 
     @ManyToOne(optional = false)
     @JsonIgnore
-    private ApplicationGroup group;
+    private MigrationProject project;
 
     @Column(name = "time_started")
     @Temporal(TemporalType.TIMESTAMP)
@@ -87,6 +88,24 @@ public class WindupExecution implements Serializable
     @Fetch(FetchMode.SELECT)
     private Set<FilterApplication> filterApplications;
 
+    @OneToOne
+    private AnalysisContext analysisContext;
+
+    @OneToOne(mappedBy = "windupExecution", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    private ReportFilter reportFilter;
+
+    protected WindupExecution()
+    {
+        this.reportFilter = new ReportFilter(this);
+    }
+
+    public WindupExecution(AnalysisContext context)
+    {
+        this();
+        this.analysisContext = context;
+        this.project = context.getMigrationProject();
+    }
+
     public Long getId()
     {
         return id;
@@ -108,19 +127,20 @@ public class WindupExecution implements Serializable
     }
 
     /**
-     * Contains the {@link ApplicationGroup} being analyzed.
+     * Contains the project owning this execution
      */
-    public ApplicationGroup getGroup()
+    public MigrationProject getProject()
     {
-        return group;
+        return project;
     }
 
+
     /**
-     * Contains the {@link ApplicationGroup} being analyzed.
+     * Sets the project owning this
      */
-    public void setGroup(ApplicationGroup group)
+    public void setProject(MigrationProject project)
     {
-        this.group = group;
+        this.project = project;
     }
 
     /**
@@ -291,11 +311,19 @@ public class WindupExecution implements Serializable
     }
 
     /**
+     * Sets configuration for this execution
+     */
+    public void setAnalysisContext(AnalysisContext analysisContext)
+    {
+        this.analysisContext = analysisContext;
+    }
+
+    /**
      * Contains the configuration to use for this execution.
      */
     public AnalysisContext getAnalysisContext()
     {
-        return this.group.getAnalysisContext();
+        return this.analysisContext;
     }
 
 
@@ -324,15 +352,17 @@ public class WindupExecution implements Serializable
     }
 
     @JsonProperty
-    public long getGroupId()
-    {
-        return this.group.getId();
-    }
-
-    @JsonProperty
     public long getProjectId()
     {
-        return this.group.getMigrationProject().getId();
+        return this.project.getId();
+    }
+
+    /**
+     * Gets ReportFilter
+     */
+    public ReportFilter getReportFilter()
+    {
+        return reportFilter;
     }
 
     @Override

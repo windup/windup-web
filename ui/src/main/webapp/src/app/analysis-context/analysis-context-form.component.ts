@@ -3,7 +3,6 @@ import {NgForm} from "@angular/forms";
 import {ActivatedRoute, Router, NavigationEnd} from "@angular/router";
 
 import {FormComponent} from "../shared/form.component";
-import {ApplicationGroupService} from "../group/application-group.service";
 import {MigrationPathService} from "./migration-path.service";
 import {AnalysisContextService} from "./analysis-context.service";
 import {ConfigurationOption} from "../model/configuration-option.model";
@@ -11,7 +10,7 @@ import {ConfigurationOptionsService} from "../configuration/configuration-option
 import {IsDirty} from "../shared/is-dirty.interface";
 import {Observable} from "rxjs/Observable";
 import {PackageRegistryService} from "./package-registry.service";
-import {ApplicationGroup, AnalysisContext, Package, MigrationPath, AdvancedOption, RulesPath, PackageMetadata} from "windup-services";
+import {AnalysisContext, Package, MigrationPath, AdvancedOption, RulesPath, PackageMetadata} from "windup-services";
 import {RouteHistoryService} from "../core/routing/route-history.service";
 import {Subscription} from "rxjs";
 import {RouteFlattenerService} from "../core/routing/route-flattener.service";
@@ -20,7 +19,8 @@ import {NotificationService} from "../core/notification/notification.service";
 import {utils} from "../shared/utils";
 import {RegisteredApplicationService} from "../registered-application/registered-application.service";
 import {RegisteredApplication} from "windup-services";
-import isInteger = require("core-js/fn/number/is-integer");
+import {MigrationProject} from "windup-services";
+import {MigrationProjectService} from "../project/migration-project.service";
 
 @Component({
     templateUrl: './analysis-context-form.component.html'
@@ -33,10 +33,8 @@ export class AnalysisContextFormComponent extends FormComponent
 
     private _dirty: boolean = null;
 
-    // Models
-    applicationGroup: ApplicationGroup = null;
     analysisContext: AnalysisContext;
-
+    project: MigrationProject;
 
     availableApps: RegisteredApplication[];
 
@@ -59,7 +57,7 @@ export class AnalysisContextFormComponent extends FormComponent
 
     constructor(private _router: Router,
                 private _activatedRoute: ActivatedRoute,
-                private _applicationGroupService: ApplicationGroupService,
+                private _migrationProjectService: MigrationProjectService,
                 private _migrationPathService: MigrationPathService,
                 private _analysisContextService: AnalysisContextService,
                 private _appService: RegisteredApplicationService,
@@ -73,6 +71,8 @@ export class AnalysisContextFormComponent extends FormComponent
         super();
         this.includePackages = [];
         this.excludePackages = [];
+
+        this.initializeAnalysisContext();
     }
 
     ngOnInit() {
@@ -84,37 +84,22 @@ export class AnalysisContextFormComponent extends FormComponent
 
         this.routerSubscription = this._router.events.filter(event => event instanceof NavigationEnd).subscribe(_ => {
             let flatRouteData = this._routeFlattener.getFlattenedRouteData(this._activatedRoute.snapshot);
-            if (flatRouteData.data['applicationGroup']) {
-                let applicationGroup = flatRouteData.data['applicationGroup'];
+            if (flatRouteData.data['project']) {
+                let project = flatRouteData.data['project'];
 
                 // Reload the App from the service to ensure fresh data
-                this._applicationGroupService.get(applicationGroup.id).subscribe(updatedGroup => {
-                    this.applicationGroup = updatedGroup;
-
-                    // Load the apps of this project.
-                    this._appService.getApplicationsByProjectID(this.applicationGroup.migrationProject.id)
-                        .subscribe( apps => {
-                            this.availableApps = apps;
-                            console.log("Loaded availableApps", apps);
-                        } );
-
-                    this.initializeAnalysisContext();
-
-                    this.applicationGroup.applications = this.applicationGroup.applications.map(application => {
-                        if (!isInteger(<any>application))
-                            return application;
-
-                        console.log("Should remap application: " + application);
-                        application = this.applicationGroup.migrationProject.applications.find(applicationFromProject => {
-                            return applicationFromProject.id == <any>application;
-                        });
-                        console.log("Mapped to: ", application);
-
-                        return application;
-                    });
-
-                    this.loadPackageMetadata();
+                this._migrationProjectService.get(project.id).subscribe(loadedProject => {
+                    this.project = loadedProject;
                 });
+
+                // Load the apps of this project.
+                this._appService.getApplicationsByProjectID(project.id).subscribe(apps => {
+                    this.availableApps = apps;
+                    console.log("Loaded availableApps", apps);
+                });
+
+                this.initializeAnalysisContext();
+                this.loadPackageMetadata();
             }
 
             this.isInWizard = flatRouteData.data.hasOwnProperty('wizard') && flatRouteData.data['wizard'];
@@ -123,6 +108,8 @@ export class AnalysisContextFormComponent extends FormComponent
 
     appsValueCallback = (app: RegisteredApplication) => ""+app.id;
     appsLabelCallback = (app: RegisteredApplication) => app.title;
+    equalsCallback = (a1: RegisteredApplication, a2: RegisteredApplication) => a1.id === a2.id;
+
 
     static getDefaultAnalysisContext() {
         let analysisContext = <AnalysisContext>{};
@@ -131,12 +118,13 @@ export class AnalysisContextFormComponent extends FormComponent
         analysisContext.includePackages = [];
         analysisContext.excludePackages = [];
         analysisContext.rulesPaths = [];
+        analysisContext.applications = [];
 
         return analysisContext;
     }
 
     private initializeAnalysisContext() {
-        let analysisContext = this.applicationGroup.analysisContext;
+        let analysisContext = this.analysisContext;
 
         if (analysisContext == null) {
             analysisContext = AnalysisContextFormComponent.getDefaultAnalysisContext();
@@ -156,7 +144,9 @@ export class AnalysisContextFormComponent extends FormComponent
     }
 
     private loadPackageMetadata() {
-        this._applicationGroupService.getPackageMetadata(this.applicationGroup.id).subscribe(
+        /*
+        TODO: Fix this later
+        this._applicationGroupService.getPackageMetadata(null).subscribe(
             (packageMetadata: PackageMetadata) => {
                 if (packageMetadata.scanStatus === "COMPLETE") {
                     packageMetadata.packageTree.forEach(node => {
@@ -184,6 +174,7 @@ export class AnalysisContextFormComponent extends FormComponent
                 this.excludePackages = this.analysisContext.excludePackages;
             }
         );
+        */
     }
 
     get migrationPaths() {
@@ -201,10 +192,9 @@ export class AnalysisContextFormComponent extends FormComponent
         return this.analysisContextForm.dirty;
     }
 
-    advancedOptionsChanged(advancedOptions:AdvancedOption[]) {
+    advancedOptionsChanged(advancedOptions: AdvancedOption[]) {
         this._dirty = true;
     }
-
 
     onSubmit() {
         // Store the Analysis Context
@@ -212,44 +202,31 @@ export class AnalysisContextFormComponent extends FormComponent
         let service = update ? this._analysisContextService.update : this._analysisContextService.create;
 
         console.log(`Updating/creating analysis context #${this.analysisContext.id}, migrPath: ${this.analysisContext.migrationPath.id}`);
+        let contextObservable: Observable<AnalysisContext> = service.call(this._analysisContextService, this.analysisContext, this.project);
 
-        let contextObservable = service.call(this._analysisContextService, this.analysisContext);
-
-        // Store the App Group
-
-        // Remove this because the service can't handle circular relation and would complain:
-        // Already had POJO for id (java.lang.Long) [[ObjectId: key=73, ...
-        let tmpContext = this.applicationGroup.analysisContext;
-        this.applicationGroup.analysisContext = void 0;
-
-        let appGroupObservable = this._applicationGroupService.update(this.applicationGroup);
-
-        // Wait for both
-        Observable.forkJoin(contextObservable, appGroupObservable).subscribe(
-            results => {
+        contextObservable.subscribe(
+            updatedContext => {
                 this._dirty = false;
-                this.onSuccess(<AnalysisContext>results[0], <ApplicationGroup>results[1]);
-                this.applicationGroup.analysisContext = tmpContext;
+                this.onSuccess(updatedContext);
             },
             error => {
-                this.applicationGroup.analysisContext = tmpContext;
                 this.handleError(error);
             }
         );
     }
 
-    onSuccess(analysisContext: AnalysisContext, appGroup: ApplicationGroup) {
+    onSuccess(analysisContext: AnalysisContext) {
         if (this.action === Action.SaveAndRun) {
-            this._windupService.executeWindupGroup(this.applicationGroup.id)
+            this._windupService.executeWindupWithAnalysisContext(analysisContext.id)
                 .subscribe(execution => {
                     this._notificationService.success('Windup execution has started');
-                    this._router.navigate([`/projects/${this.applicationGroup.migrationProject.id}`]);
+                    this._router.navigate([`/projects/${this.project.id}`]);
                 },
                 error => {
                     this._notificationService.error(utils.getErrorMessage(error));
                 });
         } else if (this.isInWizard) {
-            this._router.navigate([`/projects/${this.applicationGroup.migrationProject.id}`]);
+            this._router.navigate([`/projects/${this.project.id}`]);
         } else {
             this.navigateBack();
         }
@@ -259,9 +236,11 @@ export class AnalysisContextFormComponent extends FormComponent
     saveAndRun() {
         this.action = Action.SaveAndRun;
     }
+
     save() {
         this.action = Action.Save;
     }
+
     cancel() {
         if (!this.isInWizard) {
             this.navigateBack();
@@ -269,15 +248,15 @@ export class AnalysisContextFormComponent extends FormComponent
             this._router.navigate(['/']);
         }
     }
+
     navigateBack() {
-        let groupPageRoute = `/projects/${this.applicationGroup.migrationProject.id}/groups/${this.applicationGroup.id}`;
-        this._routeHistoryService.navigateBackOrToRoute(groupPageRoute);
+        let projectPageRoute = `/projects/${this.project.id}`;
+        this._routeHistoryService.navigateBackOrToRoute(projectPageRoute);
     }
 
     rulesPathsChanged(rulesPaths:RulesPath[]) {
         this.analysisContext.rulesPaths = rulesPaths;
     }
-
 }
 
 enum Action {

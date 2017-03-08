@@ -4,8 +4,9 @@ import {utils} from '../../shared/utils';
 
 import {NotificationService} from "../../core/notification/notification.service";
 import {MigrationIssuesService} from "./migration-issues.service";
-import {ApplicationGroup} from "windup-services";
 import {WINDUP_WEB} from "../../app.module";
+import {WindupService} from "../../services/windup.service";
+import {WindupExecution} from "windup-services";
 
 
 @Component({
@@ -21,21 +22,22 @@ export class MigrationIssuesComponent implements OnInit {
     protected categorizedIssues: Dictionary<ProblemSummary[]>;
     protected categories: string[];
 
-    protected group: ApplicationGroup;
-
     public hideFilter = WINDUP_WEB.config.hideUnfinishedFeatures;
+    public execution: WindupExecution;
 
     public constructor(
         private _router: Router,
         private _activatedRoute: ActivatedRoute,
         private _migrationIssuesService: MigrationIssuesService,
-        private _notificationService: NotificationService
+        private _notificationService: NotificationService,
+        private _windupService: WindupService
     ) {
     }
 
     ngOnInit(): void {
         this._activatedRoute.params.subscribe(params => {
             let executionId = parseInt(params['executionId']);
+            this._windupService.getExecution(executionId).subscribe(execution => this.execution = execution);
 
             this._migrationIssuesService.getAggregatedIssues(executionId).subscribe(
                 result => {
@@ -46,10 +48,6 @@ export class MigrationIssuesComponent implements OnInit {
                     this._notificationService.error(utils.getErrorMessage(error));
                     this._router.navigate(['']);
                 });
-        });
-
-        this._activatedRoute.parent.parent.parent.data.subscribe((data: {applicationGroup: ApplicationGroup}) => {
-            this.group = data.applicationGroup;
         });
     }
 }

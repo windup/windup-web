@@ -9,13 +9,13 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+import javax.ws.rs.NotFoundException;
 
 import org.jboss.forge.furnace.Furnace;
 import org.jboss.windup.util.exception.WindupException;
 import org.jboss.windup.web.addons.websupport.services.PackageDiscoveryService;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.furnaceserviceprovider.WebProperties;
-import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.Package;
 import org.jboss.windup.web.services.model.PackageMetadata;
 import org.jboss.windup.web.services.model.RegisteredApplication;
@@ -63,7 +63,7 @@ public class PackageService
             application = this.entityManager.find(RegisteredApplication.class, applicationId);
 
         if (application == null)
-            throw new WindupException("Non-existent app ID: " + applicationId);
+            throw new NotFoundException("Non-existent app ID: " + applicationId);
 
         PackageMetadata appPackageMetadata = application.getPackageMetadata();
         appPackageMetadata.setScanStatus(PackageMetadata.ScanStatus.IN_PROGRESS);
@@ -90,41 +90,7 @@ public class PackageService
 
         LOG.info("Updated application (id: " + applicationId + ", name: " + application.getTitle() +  ")");
 
-        this.updateAppGroups(application, result);
-
         return appPackageMetadata.getPackages();
-    }
-
-    private void updateAppGroups(RegisteredApplication application, PackageDiscoveryService.PackageDiscoveryResult result)
-    {
-        LOG.info("Updating " + application.getApplicationGroups().size() + " groups");
-
-        for (ApplicationGroup appGroup : application.getApplicationGroups())
-        {
-            LOG.info("Updating group: (id: " + appGroup.getId() + ", name: " + appGroup.getTitle() +  ")");
-
-            PackageMetadata appGroupMetadata = appGroup.getPackageMetadata();
-            appGroupMetadata.setScanStatus(PackageMetadata.ScanStatus.IN_PROGRESS);
-            this.entityManager.merge(appGroupMetadata);
-
-            Map<String, Package> groupPackageMap = new TreeMap<>();
-            appGroupMetadata.getPackages().forEach(aPackage -> groupPackageMap.put(aPackage.getFullName(), aPackage));
-
-            // TODO: Remove deleted packages
-            this.addPackagesToPackageMetadata(appGroupMetadata, result.getKnownPackages(), groupPackageMap);
-            this.addPackagesToPackageMetadata(appGroupMetadata, result.getUnknownPackages(), groupPackageMap);
-
-            PackageMetadata.ScanStatus finalStatus = appGroup.getApplications().stream()
-                    .map(app -> app.getPackageMetadata().getScanStatus())
-                    .reduce(PackageMetadata.ScanStatus.COMPLETE,
-                            (currentStatus, accumulator) -> currentStatus == PackageMetadata.ScanStatus.COMPLETE && currentStatus == accumulator
-                                    ? PackageMetadata.ScanStatus.COMPLETE : PackageMetadata.ScanStatus.IN_PROGRESS);
-
-            LOG.info("New group package discovery status: " + finalStatus);
-            LOG.info("Updating group package metadata (id: " + appGroupMetadata.getId() +" )");
-            appGroupMetadata.setScanStatus(finalStatus);
-            this.entityManager.merge(appGroupMetadata);
-        }
     }
 
     private void addPackagesToPackageMetadata(PackageMetadata metadata, Map<String, Integer> discoveredPackages, Map<String, Package> packageMap)

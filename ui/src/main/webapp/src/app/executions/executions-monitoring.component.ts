@@ -2,11 +2,12 @@ import {WindupExecution} from "windup-services";
 import {AbstractComponent} from "../shared/AbstractComponent";
 import {WindupExecutionService} from "../services/windup-execution.service";
 import {ExecutionEvent} from "../core/events/windup-event";
+import {MigrationProject} from "windup-services";
 
 export abstract class ExecutionsMonitoringComponent extends AbstractComponent {
     protected activeExecutionsMap: Map<number, WindupExecution> = new Map<number, WindupExecution>();
     protected activeExecutions: WindupExecution[];
-    protected group;
+    protected project: MigrationProject;
 
     public constructor(protected _windupExecutionService: WindupExecutionService) {
         super();
@@ -16,7 +17,7 @@ export abstract class ExecutionsMonitoringComponent extends AbstractComponent {
         executions.filter(execution => this.isExecutionActive(execution))
             .forEach(execution => {
                 this.activeExecutionsMap.set(execution.id, execution);
-                this._windupExecutionService.watchExecutionUpdates(execution, this.group);
+                this._windupExecutionService.watchExecutionUpdates(execution, this.project);
             });
         this.updateActiveExecutions();
     }
@@ -30,7 +31,6 @@ export abstract class ExecutionsMonitoringComponent extends AbstractComponent {
     }
 
     protected onExecutionEvent(event: ExecutionEvent) {
-
         if (this.isExecutionActive(event.execution)) {
             this.activeExecutionsMap.set(event.execution.id, event.execution);
             this.updateActiveExecutions();

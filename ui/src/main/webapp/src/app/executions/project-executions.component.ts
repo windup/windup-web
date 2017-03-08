@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {WindupExecution, ApplicationGroup} from "windup-services";
+import {WindupExecution} from "windup-services";
 import {ActivatedRoute} from "@angular/router";
 import {EventBusService} from "../core/events/event-bus.service";
 import {WindupExecutionService} from "../services/windup-execution.service";
@@ -12,8 +12,6 @@ import {ExecutionUpdatedEvent, ExecutionEvent} from "../core/events/windup-event
     template: '<wu-executions-list [executions]="executions" [activeExecutions]="activeExecutions"></wu-executions-list>'
 })
 export class ProjectExecutionsComponent extends ExecutionsMonitoringComponent implements OnInit {
-    protected project: MigrationProject;
-    protected group: ApplicationGroup;
     protected executions: WindupExecution[];
 
     constructor(

@@ -16,14 +16,12 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Version;
 import javax.validation.Valid;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -57,9 +55,6 @@ public class AnalysisContext implements Serializable
     @Fetch(FetchMode.SELECT)
     private Collection<AdvancedOption> advancedOptions;
 
-    @OneToOne(optional = false)
-    private ApplicationGroup applicationGroup;
-
     @Valid
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<RulesPath> rulesPaths;
@@ -72,16 +67,24 @@ public class AnalysisContext implements Serializable
     @JoinTable(name = "analysis_context_exclude_packages")
     private Set<Package> excludePackages;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
+    private Set<RegisteredApplication> applications;
+
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    private MigrationProject migrationProject;
+
     protected AnalysisContext()
     {
         this.includePackages = new HashSet<>();
         this.excludePackages = new HashSet<>();
+        this.applications = new HashSet<>();
     }
 
-    public AnalysisContext(ApplicationGroup applicationGroup)
+    public AnalysisContext(MigrationProject project)
     {
         this();
-        this.applicationGroup = applicationGroup;
+        this.migrationProject = project;
     }
 
     public Long getId()
@@ -153,32 +156,20 @@ public class AnalysisContext implements Serializable
     }
 
     /**
-     * Contains the group being analyzed.
+     * Contains the {@link MigrationProject} associated with this group.
      */
     @JsonIgnore
-    public ApplicationGroup getApplicationGroup()
+    public MigrationProject getMigrationProject()
     {
-        return applicationGroup;
-    }
-
-    @JsonProperty
-    public Long getApplicationGroupId()
-    {
-        if (this.applicationGroup == null)
-        {
-            // This should not happen, since ApplicationGroup is parent of AnalysisContext
-            return null;
-        }
-
-        return this.applicationGroup.getId();
+        return migrationProject;
     }
 
     /**
-     * Contains the group being analyzed.
+     * Contains the {@link MigrationProject} associated with this group.
      */
-    public void setApplicationGroup(ApplicationGroup applicationGroup)
+    public void setMigrationProject(MigrationProject migrationProject)
     {
-        this.applicationGroup = applicationGroup;
+        this.migrationProject = migrationProject;
     }
 
     /**
@@ -211,6 +202,52 @@ public class AnalysisContext implements Serializable
     public void setAdvancedOptions(Collection<AdvancedOption> advancedOptions)
     {
         this.advancedOptions = advancedOptions;
+    }
+
+    /**
+     * Contains the applications associated with this group.
+     */
+    public Set<RegisteredApplication> getApplications()
+    {
+        return applications;
+    }
+
+    /**
+     * Contains the applications associated with this group.
+     */
+    public void setApplications(Set<RegisteredApplication> applications)
+    {
+        this.applications = applications;
+    }
+
+    /**
+     * Adds application to application group
+     *
+     * @param application Application
+     */
+    public void addApplication(RegisteredApplication application)
+    {
+        if (this.getApplications().contains(application))
+        {
+            throw new RuntimeException("Application already in this group");
+        }
+
+        this.getApplications().add(application);
+    }
+
+    /**
+     * Removes application from application group
+     *
+     * @param application Application
+     */
+    public void removeApplication(RegisteredApplication application)
+    {
+        if (!this.getApplications().contains(application))
+        {
+            throw new RuntimeException("Application not found");
+        }
+
+        this.getApplications().remove(application);
     }
 
     @Override

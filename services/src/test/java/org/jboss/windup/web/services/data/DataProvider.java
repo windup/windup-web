@@ -4,29 +4,24 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.jboss.windup.web.services.model.AnalysisContext;
-import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.Configuration;
 import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.model.RegisteredApplication;
 import org.jboss.windup.web.services.model.RulesPath;
 import org.jboss.windup.web.services.rest.AnalysisContextEndpoint;
-import org.jboss.windup.web.services.rest.ApplicationGroupEndpoint;
 import org.jboss.windup.web.services.rest.ConfigurationEndpoint;
 import org.jboss.windup.web.services.rest.ConfigurationEndpointTest;
 import org.jboss.windup.web.services.rest.MigrationProjectEndpoint;
 import org.jboss.windup.web.services.rest.MigrationProjectRegisteredApplicationsEndpoint;
-import org.junit.Assert;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -41,7 +36,6 @@ public class DataProvider
     private final ConfigurationEndpoint configurationEndpoint;
     private final AnalysisContextEndpoint analysisContextEndpoint;
     private final MigrationProjectEndpoint migrationProjectEndpoint;
-    private final ApplicationGroupEndpoint applicationGroupEndpoint;
     private Set<RulesPath> rulesPathSet;
 
     public DataProvider(ResteasyWebTarget restEasyTarget)
@@ -50,7 +44,6 @@ public class DataProvider
         this.configurationEndpoint = restEasyTarget.proxy(ConfigurationEndpoint.class);
         this.analysisContextEndpoint = restEasyTarget.proxy(AnalysisContextEndpoint.class);
         this.migrationProjectEndpoint = restEasyTarget.proxy(MigrationProjectEndpoint.class);
-        this.applicationGroupEndpoint = restEasyTarget.proxy(ApplicationGroupEndpoint.class);
 
         updateConfiguration();
     }
@@ -73,35 +66,19 @@ public class DataProvider
         return this.migrationProjectEndpoint.createMigrationProject(migrationProject);
     }
 
-    public AnalysisContext getAnalysisContext(ApplicationGroup applicationGroup)
+    public AnalysisContext getAnalysisContext(MigrationProject project)
     {
-        AnalysisContext analysisContext = applicationGroup.getAnalysisContext();
-        if (analysisContext == null)
-        {
-            analysisContext = new AnalysisContext(applicationGroup);
-            analysisContext.setApplicationGroup(applicationGroup);
-            applicationGroup.setAnalysisContext(analysisContext);
-            analysisContext = this.analysisContextEndpoint.create(analysisContext);
-        }
+        AnalysisContext analysisContext = new AnalysisContext(project);
+        analysisContext = this.analysisContextEndpoint.create(analysisContext, project.getId());
 
         if (analysisContext.getRulesPaths() == null)
+        {
             analysisContext.setRulesPaths(new LinkedHashSet<>());
+        }
+
         analysisContext.getRulesPaths().add(getTestRulesPath());
-        return this.analysisContextEndpoint.update(analysisContext);
-    }
 
-    public ApplicationGroup getApplicationGroup(MigrationProject migrationProject)
-    {
-        String groupTitle = "App Group " + RandomStringUtils.randomAlphabetic(5);
-
-        ApplicationGroup applicationGroup = new ApplicationGroup();
-        applicationGroup.setMigrationProject(migrationProject);
-        applicationGroup.setTitle(groupTitle);
-
-        applicationGroup = this.applicationGroupEndpoint.create(applicationGroup);
-        getAnalysisContext(applicationGroup);
-
-        return applicationGroup;
+        return this.analysisContextEndpoint.update(analysisContext.getId(), analysisContext);
     }
 
     private RulesPath getTestRulesPath()

@@ -7,19 +7,20 @@ import javax.persistence.PersistenceContext;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 
-import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.Category;
 import org.jboss.windup.web.services.model.FilterApplication;
 import org.jboss.windup.web.services.model.ReportFilter;
 import org.jboss.windup.web.services.model.Tag;
 import org.jboss.windup.web.services.model.WindupExecution;
-import org.jboss.windup.web.services.service.ApplicationGroupService;
+import org.jboss.windup.web.services.service.WindupExecutionService;
 
 import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
+ * TODO: Find out what to do with report filter
+ *
  * @author <a href="mailto:dklingenberg@gmail.com">David Klingenberg</a>
  */
 @Stateless
@@ -29,21 +30,22 @@ public class ReportFilterEndpointImpl implements ReportFilterEndpoint
     private EntityManager entityManager;
 
     @Inject
-    private ApplicationGroupService applicationGroupService;
+    private WindupExecutionService windupExecutionService;
 
     @Override
-    public ReportFilter getFilter(Long groupId)
+    public ReportFilter getFilter(Long executionId)
     {
-        ApplicationGroup group = this.applicationGroupService.getApplicationGroup(groupId);
-        return group.getReportFilter();
+        WindupExecution execution = this.windupExecutionService.get(executionId);
+
+        return execution.getReportFilter();
     }
 
     @Override
-    public ReportFilter setFilter(Long groupId, ReportFilter newFilter)
+    public ReportFilter setFilter(Long executionId, ReportFilter newFilter)
     {
-        ApplicationGroup group = this.applicationGroupService.getApplicationGroup(groupId);
+        WindupExecution execution = this.windupExecutionService.get(executionId);
 
-        ReportFilter oldFilter = group.getReportFilter();
+        ReportFilter oldFilter = execution.getReportFilter();
         oldFilter.clear();
 
         Set<Long> selectedApplicationIds = newFilter.getSelectedApplications().stream()
@@ -54,7 +56,7 @@ public class ReportFilterEndpointImpl implements ReportFilterEndpoint
         Collection<FilterApplication> applications = this.getAllApplicationsByIds(selectedApplicationIds);
         applications.forEach(newFilter::addSelectedApplication);
 
-        newFilter.setApplicationGroup(group);
+        newFilter.setWindupExecution(execution);
         this.entityManager.merge(newFilter);
 
         return newFilter;
@@ -71,9 +73,7 @@ public class ReportFilterEndpointImpl implements ReportFilterEndpoint
     @Override
     public ReportFilter clearFilter(Long groupId)
     {
-        ApplicationGroup group = this.applicationGroupService.getApplicationGroup(groupId);
-
-        ReportFilter filter = group.getReportFilter();
+        ReportFilter filter = null;
         filter.clear();
         this.entityManager.merge(filter);
 

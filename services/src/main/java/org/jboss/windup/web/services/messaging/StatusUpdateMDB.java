@@ -3,8 +3,6 @@ package org.jboss.windup.web.services.messaging;
 import javax.annotation.PostConstruct;
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.jms.Message;
 import javax.jms.MessageListener;
@@ -23,7 +21,6 @@ import org.jboss.windup.web.addons.websupport.services.ProjectLoaderService;
 import org.jboss.windup.web.addons.websupport.services.WindupExecutorService;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.model.AnalysisContext;
-import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.ExecutionState;
 import org.jboss.windup.web.services.model.FilterApplication;
 import org.jboss.windup.web.services.model.RegisteredApplication;
@@ -121,8 +118,7 @@ public class StatusUpdateMDB extends AbstractMDB implements MessageListener {
 
         Iterable<FileModel> data = this.projectLoaderService.getTopLevelProjects(execution.getId());
 
-        ApplicationGroup applicationGroup = execution.getGroup();
-        ReportFilter reportFilter = applicationGroup.getReportFilter();
+        ReportFilter reportFilter = execution.getReportFilter();
         reportFilter.clear();
 
         for (FileModel fileModel : data)
@@ -139,11 +135,13 @@ public class StatusUpdateMDB extends AbstractMDB implements MessageListener {
     }
 
     private void setReportIndexPath(WindupExecution execution)
-            throws HeuristicMixedException, HeuristicRollbackException, NamingException, NotSupportedException, RollbackException, SystemException
+            throws HeuristicMixedException, HeuristicRollbackException,
+            NamingException, NotSupportedException, RollbackException, SystemException
     {
-        ApplicationGroup group = execution.getGroup();
+        AnalysisContext context = execution.getAnalysisContext();
         Path reportDirectory = Paths.get(execution.getOutputPath());
-        for (RegisteredApplication application : group.getApplications())
+
+        for (RegisteredApplication application : context.getApplications())
         {
             Path applicationPath = Paths.get(application.getInputPath());
 

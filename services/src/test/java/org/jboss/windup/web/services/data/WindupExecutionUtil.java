@@ -4,12 +4,12 @@ import java.io.InputStream;
 
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import org.jboss.windup.web.services.model.ApplicationGroup;
+import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.ExecutionState;
 import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.model.RegisteredApplication;
 import org.jboss.windup.web.services.model.WindupExecution;
-import org.jboss.windup.web.services.rest.ApplicationGroupEndpoint;
+import org.jboss.windup.web.services.rest.AnalysisContextEndpoint;
 import org.jboss.windup.web.services.rest.WindupEndpoint;
 import org.junit.Assert;
 
@@ -20,14 +20,14 @@ public class WindupExecutionUtil
 {
     private ResteasyClient client;
     private ResteasyWebTarget target;
-    private ApplicationGroupEndpoint applicationGroupEndpoint;
+    private AnalysisContextEndpoint analysisContextEndpoint;
     private WindupEndpoint windupEndpoint;
 
     public WindupExecutionUtil(ResteasyClient client, ResteasyWebTarget target)
     {
         this.client = client;
         this.target = target;
-        this.applicationGroupEndpoint = target.proxy(ApplicationGroupEndpoint.class);
+        this.analysisContextEndpoint = target.proxy(AnalysisContextEndpoint.class);
         this.windupEndpoint = target.proxy(WindupEndpoint.class);
     }
 
@@ -35,19 +35,19 @@ public class WindupExecutionUtil
     {
         DataProvider dataProvider = new DataProvider(this.target);
         MigrationProject project = dataProvider.getMigrationProject();
-        ApplicationGroup group = dataProvider.getApplicationGroup(project);
+        AnalysisContext context = dataProvider.getAnalysisContext(project);
 
         try (InputStream sampleIS = getClass().getResourceAsStream(DataProvider.TINY_SAMPLE_PATH))
         {
             RegisteredApplication application = dataProvider.getApplication(project, sampleIS, "sample-tiny.war");
 
-            group.addApplication(application);
-            this.applicationGroupEndpoint.update(group);
+            context.addApplication(application);
+            this.analysisContextEndpoint.update(context.getId(), context);
         }
 
         System.out.println("Setup Graph test, registered application and ready to start Windup analysis...");
 
-        WindupExecution initialExecution = this.windupEndpoint.executeGroup(group.getId());
+        WindupExecution initialExecution = this.windupEndpoint.executeWithContext(context.getId());
 
         WindupExecution status = this.windupEndpoint.getExecution(initialExecution.getId());
         long beginTime = System.currentTimeMillis();

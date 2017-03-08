@@ -58,7 +58,7 @@ public class ReportFilter implements Serializable
 
     @OneToOne(optional = false)
     @JsonIgnore
-    private ApplicationGroup applicationGroup;
+    private WindupExecution windupExecution;
 
     @Column(nullable = false)
     private boolean isEnabled = false;
@@ -72,10 +72,10 @@ public class ReportFilter implements Serializable
         this.excludeCategories = new HashSet<>();
     }
 
-    public ReportFilter(ApplicationGroup applicationGroup)
+    public ReportFilter(WindupExecution execution)
     {
         this();
-        this.applicationGroup = applicationGroup;
+        this.windupExecution = execution;
     }
 
     public Long getId()
@@ -163,14 +163,20 @@ public class ReportFilter implements Serializable
         this.excludeTags.clear();
     }
 
-    public ApplicationGroup getApplicationGroup()
+    /**
+     * Gets WindupExecution for which this filter is applied
+     */
+    public WindupExecution getWindupExecution()
     {
-        return applicationGroup;
+        return windupExecution;
     }
 
-    public void setApplicationGroup(ApplicationGroup applicationGroup)
+    /**
+     * Sets WindupExecution for which this filter is applied
+     */
+    public void setWindupExecution(WindupExecution windupExecution)
     {
-        this.applicationGroup = applicationGroup;
+        this.windupExecution = windupExecution;
     }
 
     public Set<FilterApplication> getSelectedApplications()

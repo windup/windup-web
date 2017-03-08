@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,7 +31,6 @@ import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.addons.websupport.services.FileNameSanitizer;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.messaging.MessagingConstants;
-import org.jboss.windup.web.services.model.ApplicationGroup;
 import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.model.PackageMetadata;
 import org.jboss.windup.web.services.model.RegisteredApplication;
@@ -224,20 +222,6 @@ public class RegisteredApplicationService
         this.entityManager.persist(packageMetadata);
         this.entityManager.persist(application);
 
-        Set<ApplicationGroup> projectGroups = project.getGroups();
-
-        // This is temporary solution to support current application groups logic
-        // In future, groups will be created probably on analysis context page
-        // and applications will be associated there.
-        if (projectGroups.size() == 1)
-        {
-            ApplicationGroup defaultGroup = projectGroups.iterator().next();
-            application.addApplicationGroup(defaultGroup);
-            defaultGroup.addApplication(application);
-
-            this.entityManager.merge(defaultGroup);
-        }
-
         return application;
     }
 
@@ -272,17 +256,6 @@ public class RegisteredApplicationService
         if (project != null)
         {
             application.setMigrationProject(null);
-
-            Set<ApplicationGroup> groups = application.getApplicationGroups();
-
-            for (ApplicationGroup group : groups)
-            {
-                group.removeApplication(application);
-                application.removeApplicationGroup(group);
-
-                this.entityManager.merge(group);
-            }
-
             project.removeApplication(application);
             application = this.entityManager.merge(application);
 

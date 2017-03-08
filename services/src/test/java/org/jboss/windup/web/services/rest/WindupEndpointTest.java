@@ -40,7 +40,7 @@ public class WindupEndpointTest extends AbstractTest
 
     @Test
     @RunAsClient
-    public void testExecutionGroup() throws Exception
+    public void testExecution() throws Exception
     {
         WindupExecutionUtil util = new WindupExecutionUtil(client, target);
         WindupExecution status = util.executeWindup();

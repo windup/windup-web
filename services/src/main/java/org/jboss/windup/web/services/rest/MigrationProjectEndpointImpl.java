@@ -1,9 +1,6 @@
 package org.jboss.windup.web.services.rest;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,7 +17,8 @@ import org.jboss.windup.util.exception.WindupException;
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.model.MigrationProject;
-import org.jboss.windup.web.services.service.ApplicationGroupService;
+import org.jboss.windup.web.services.service.AnalysisContextService;
+import org.jboss.windup.web.services.service.MigrationProjectService;
 
 /**
  * @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
@@ -34,7 +32,10 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
     private EntityManager entityManager;
 
     @Inject
-    private ApplicationGroupService applicationGroupService;
+    private MigrationProjectService migrationProjectService;
+
+    @Inject
+    private AnalysisContextService analysisContextService;
 
     @Inject
     @FromFurnace
@@ -80,8 +81,9 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
 
         entityManager.persist(migrationProject);
 
+        this.analysisContextService.createDefaultAnalysisContext(migrationProject);
+
         LOG.info("Creating a migration project: " + migrationProject.getId());
-        this.applicationGroupService.createDefaultApplicationGroup(migrationProject);
 
         return migrationProject;
     }
@@ -96,12 +98,6 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
     public void deleteProject(MigrationProject migrationProject)
     {
         MigrationProject project = this.getMigrationProject(migrationProject.getId());
-        entityManager.remove(project);
-
-        File projectDir = new File(this.webPathUtil.createMigrationProjectPath(project.getId().toString()).toString());
-
-        if (projectDir.exists()) {
-            projectDir.delete();
-        }
+        this.migrationProjectService.deleteProject(project);
     }
 }

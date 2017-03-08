@@ -45,7 +45,7 @@ public class ExecutorMDB extends AbstractMDB implements MessageListener
             WindupExecution execution = (WindupExecution)((ObjectMessage) message).getObject();
 
             WindupExecutionTask executionTask = windupExecutionTaskInstance.get();
-            executionTask.init(execution, execution.getGroup());
+            executionTask.init(execution, execution.getAnalysisContext());
             executionTask.run();
         }
         catch (Throwable e)
