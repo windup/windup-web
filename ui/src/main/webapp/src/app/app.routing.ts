@@ -28,6 +28,7 @@ import {ExecutionDetailComponent} from "./executions/execution-detail.component"
 import {ApplicationListComponent} from "./registered-application/application-list.component";
 import {ProjectExecutionsComponent} from "./executions/project-executions.component";
 import {WizardLayoutComponent} from "./shared/layout/wizard-layout.component";
+import {ExecutionsLayoutComponent} from "./executions/executions-layout.component";
 
 export const appRoutes: Routes = [
     {path: "login", component: LoginComponent},
@@ -104,42 +105,56 @@ export const appRoutes: Routes = [
                         },
                         children: [
                             {
-                                path: '',
-                                component: ProjectLayoutComponent, data: {displayName: 'Project Detail'},
+                                path: '', redirectTo: "project-detail", pathMatch: "full",
+                            },
+                            {
+                                path: 'project-detail',
                                 children: [
-                                    { path: '', component: ProjectExecutionsComponent, data: {displayName: 'Executions List'}},
-                                    { path: 'applications', children: [
-                                        { path: '', component: ApplicationListComponent, data: {displayName: 'Application List'} },
-                                        { path: 'register', component: RegisterApplicationFormComponent, data: {displayName: "Application Registration"}},
-                                        {
-                                            path: ':applicationId/edit',
-                                            component: EditApplicationFormComponent,
-                                            resolve: {
-                                                application: ApplicationResolve
-                                            },
-                                            data: {displayName: "Edit Application"}
-                                        },
-                                    ]},
-                                    { path: 'analysis-context', component: AnalysisContextFormComponent, data: {displayName: "Edit Analysis Context"}, canDeactivate: [ConfirmDeactivateGuard]},
-                                    { path: 'reports', children: [
-                                        { path: 'filter', component: ReportFilterComponent, data: {displayName: 'Report Filter'} },
-                                    ]},
-                                    { path: 'reports/:executionId', children: [
-                                        {path: '', component: ExecutionDetailComponent, data: {displayName: 'Execution Info'}},
-                                        {path: 'dependencies-report', component: DependenciesReportComponent, data: {displayName: 'Dependency Report'}},
-                                        {path: 'technology-report', component: TechnologiesReportComponent, data: {displayName: 'Technology Report'}},
-                                        {path: 'migration-issues',
-                                            children: [
-                                                {path: '', component: MigrationIssuesComponent, data: {displayName: 'Migration Issues'}},
-                                                {path: 'source/:fileId', component: SourceReportComponent, data: {displayName: 'Source Report'}}
-                                            ]
-                                        },
-                                        {path: 'source/:fileId', component: SourceReportComponent, data: {displayName: 'Source Report'}},
-                                        {path: 'application-index', component: ApplicationIndexComponent, data: { displayName: 'Application Index'}},
-                                        {path: 'application-details', component: ApplicationDetailsComponent, data: { displayName: 'Application Details'}},
-                                        {path: 'executed-rules', component: RuleProviderExecutionsComponent, data: {displayName: 'Executed Rules'}},
-                                        {path: 'dependencies', component: DependenciesReportComponent, data: {displayName: 'Dependencies Report' }}
-                                    ]}
+                                    {
+                                        path: '',
+                                        component: ProjectLayoutComponent, data: {displayName: 'Project Detail'},
+                                        children: [
+                                            { path: '', component: ProjectExecutionsComponent, data: {displayName: 'Executions List'}},
+                                            { path: 'applications', children: [
+                                                { path: '', component: ApplicationListComponent, data: {displayName: 'Application List'} },
+                                                { path: 'register', component: RegisterApplicationFormComponent, data: {displayName: "Application Registration"}},
+                                                {
+                                                    path: ':applicationId/edit',
+                                                    component: EditApplicationFormComponent,
+                                                    resolve: {
+                                                        application: ApplicationResolve
+                                                    },
+                                                    data: {displayName: "Edit Application"}
+                                                },
+                                            ]},
+                                            { path: 'analysis-context', component: AnalysisContextFormComponent, data: {displayName: "Edit Analysis Context"}, canDeactivate: [ConfirmDeactivateGuard]},
+                                        ]
+                                    },
+                                ]
+                            },
+                            {
+                                path: 'reports/:executionId',
+                                component: ExecutionsLayoutComponent,
+                                children: [
+                                    {path: '', component: ExecutionDetailComponent, data: {displayName: 'Execution Info'}},
+                                    {path: 'dependencies-report', component: DependenciesReportComponent, data: {displayName: 'Dependency Report'}},
+                                    {path: 'technology-report', component: TechnologiesReportComponent, data: {displayName: 'Technology Report'}},
+                                    {path: 'migration-issues',
+                                        children: [
+                                            {path: '', component: MigrationIssuesComponent, data: {displayName: 'Migration Issues'}},
+                                            {path: 'source/:fileId', component: SourceReportComponent, data: {displayName: 'Source Report'}}
+                                        ]
+                                    },
+                                    {path: 'source/:fileId', component: SourceReportComponent, data: {displayName: 'Source Report'}},
+                                    {path: 'application-index', component: ApplicationIndexComponent, data: { displayName: 'Application Index'}},
+                                    {path: 'application-details',
+                                        children: [
+                                            {path: '', component: ApplicationDetailsComponent, data: { displayName: 'Application Details'}},
+                                            {path: 'source/:fileId', component: SourceReportComponent, data: {displayName: 'Source Report'}}
+                                        ]
+                                    },
+                                    {path: 'executed-rules', component: RuleProviderExecutionsComponent, data: {displayName: 'Executed Rules'}},
+                                    {path: 'dependencies', component: DependenciesReportComponent, data: {displayName: 'Dependencies Report' }}
                                 ]
                             },
                             { path: '', component: DefaultLayoutComponent, children: [
@@ -152,10 +167,6 @@ export const appRoutes: Routes = [
         ]
     }
 ];
-
-export function getGroupBreadcrumbTitle(route: FullFlattenedRoute) {
-    return `Group ${route.data['applicationGroup'].title}`;
-}
 
 export function getProjectBreadcrumbTitle(route: FullFlattenedRoute) {
     return `Project ${route.data['project'].title}`;

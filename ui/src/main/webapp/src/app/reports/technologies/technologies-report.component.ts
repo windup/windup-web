@@ -30,7 +30,7 @@ export class TechnologiesReportComponent implements OnInit {
     ){}
 
     ngOnInit(): void {
-        this.route.params.forEach((params: Params) => {
+        this.route.parent.params.forEach((params: Params) => {
             this.execID = +params['executionId'];
             this.fetchTechnologiesStats();
         });

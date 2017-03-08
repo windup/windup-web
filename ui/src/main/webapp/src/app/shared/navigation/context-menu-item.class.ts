@@ -58,43 +58,29 @@ export class ContextMenuItem implements ContextMenuItemInterface {
 
 export class ReportMenuItem extends ContextMenuItem {
     protected project: MigrationProject;
+    protected execution: WindupExecution;
     protected component: any;
 
-    constructor(label: string, icon: string, project: MigrationProject, component,
+    constructor(label: string, icon: string, project: MigrationProject, execution: WindupExecution, component,
                 protected _routeLinkProviderService: RouteLinkProviderService
     ) {
         super(label, icon);
         this.component = component;
         this.project = project;
+        this.execution = execution;
     }
 
     get link(): string {
-        let execution = this.getLastCompletedExecution();
-
         return this._routeLinkProviderService.getRouteForComponent(this.component, {
-            executionId: execution.id,
+            executionId: this.execution.id,
             projectId: this.project.id,
         });
     }
 
     get isEnabled(): boolean {
-        let execution = this.getLastCompletedExecution();
-        return <boolean><any>(this.project && this.project.id && execution && execution.id);
-    }
+        if (!this.project || !this.project.id || !this.execution || !this.execution.id)
+            return false;
 
-    protected getLastCompletedExecution(): WindupExecution {
-        let completedExecutions = this.project.executions
-            .filter(execution => execution.state === "COMPLETED")
-            .sort((a, b) => {
-                return <any>b.timeCompleted - <any>a.timeCompleted;
-            });
-
-        let lastExecution = null;
-
-        if (completedExecutions.length > 0) {
-            lastExecution = completedExecutions[0];
-        }
-
-        return lastExecution;
+        return this.execution.state === "COMPLETED";
     }
 }

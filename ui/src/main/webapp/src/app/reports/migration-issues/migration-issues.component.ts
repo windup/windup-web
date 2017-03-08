@@ -35,7 +35,7 @@ export class MigrationIssuesComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this._activatedRoute.params.subscribe(params => {
+        this._activatedRoute.parent.parent.params.subscribe(params => {
             let executionId = parseInt(params['executionId']);
             this._windupService.getExecution(executionId).subscribe(execution => this.execution = execution);
 

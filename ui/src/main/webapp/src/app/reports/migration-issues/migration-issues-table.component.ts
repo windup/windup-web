@@ -69,7 +69,7 @@ export class MigrationIssuesTableComponent implements OnInit
     ngOnInit(): void {
         this.sortedIssues = this.migrationIssues;
 
-        this._activatedRoute.params.subscribe(params => {
+        this._activatedRoute.parent.parent.params.subscribe(params => {
             this.executionId = parseInt(params['executionId']);
         });
     }

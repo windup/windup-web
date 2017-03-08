@@ -46,7 +46,7 @@ export class ApplicationIndexComponent implements OnInit {
 
 
     ngOnInit(): void {
-        this._activatedRoute.params.subscribe(params => {
+        this._activatedRoute.parent.params.subscribe(params => {
             let executionId = parseInt(params['executionId']);
             this.execID = executionId;
 

@@ -3,17 +3,9 @@ import {ActivatedRoute} from "@angular/router";
 
 import {MigrationProject} from "windup-services";
 import {RouteLinkProviderService} from "../core/routing/route-link-provider-service";
-import {MigrationIssuesComponent} from "../reports/migration-issues/migration-issues.component";
-import {TechnologiesReportComponent} from "../reports/technologies/technologies-report.component";
-import {DependenciesReportComponent} from "../reports/dependencies/dependencies-report.component";
-import {ReportMenuItem} from "../shared/navigation/context-menu-item.class";
 import {AnalysisContextFormComponent} from "../analysis-context/analysis-context-form.component";
-import {ApplicationIndexComponent} from "../reports/application-index/application-index.component";
-import {ApplicationDetailsComponent} from "../reports/application-details/application-details.component";
 import {EventBusService} from "../core/events/event-bus.service";
 import {AbstractComponent} from "../shared/AbstractComponent";
-import {ReportFilterComponent} from "../reports/filter/report-filter.component";
-import {WINDUP_WEB} from "../app.module";
 import {ProjectExecutionsComponent} from "../executions/project-executions.component";
 import {ApplicationListComponent} from "../registered-application/application-list.component";
 import {MigrationProjectEvent, UpdateMigrationProjectEvent} from "../core/events/windup-event";
@@ -94,64 +86,6 @@ export class ProjectLayoutComponent extends AbstractComponent implements OnInit,
                 icon: 'fa-cogs',
                 isEnabled: true,
             },
-            /*
-            {
-                label: 'Dashboard',
-                link: '/groups/' + this.applicationGroup.id,
-                icon: 'fa-tachometer',
-                isEnabled: true
-            },
-            */
-            new ReportMenuItem(
-                'Application Details',
-                'fa-list',
-                this.project,
-                ApplicationDetailsComponent,
-                this._routeLinkProviderService,
-            ),
-            new ReportMenuItem(
-                'Issues',
-                'fa-exclamation-triangle',
-                this.project,
-                MigrationIssuesComponent,
-                this._routeLinkProviderService,
-            ),
-            new ReportMenuItem(
-                'Application Index',
-                'fa-book',
-                this.project,
-                ApplicationIndexComponent,
-                this._routeLinkProviderService,
-            ),
         ];
-
-        if (!WINDUP_WEB.config.hideUnfinishedFeatures) {
-            let reportFilterMenu = new ReportMenuItem(
-                'Report Filter',
-                'fa-filter',
-                this.project,
-                ReportFilterComponent,
-                this._routeLinkProviderService
-            );
-
-            this.menuItems.splice(4, 0, reportFilterMenu);
-
-            this.menuItems = [ ...this.menuItems,
-                new ReportMenuItem(
-                    'Technologies',
-                    'fa-cubes',
-                    this.project,
-                    TechnologiesReportComponent,
-                    this._routeLinkProviderService,
-                ),
-                new ReportMenuItem(
-                    'Dependencies',
-                    'fa-code-fork',
-                    this.project,
-                    DependenciesReportComponent,
-                    this._routeLinkProviderService
-                )
-            ];
-        }
     }
 }

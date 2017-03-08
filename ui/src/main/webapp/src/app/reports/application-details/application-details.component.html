@@ -213,7 +213,7 @@
 
                     <tr *ngFor="let file of traversal.files" class="projectFile">
                         <td class="path">
-                            <a [routerLink]="['../source/' + file.fileModelVertexID]">
+                            <a [routerLink]="['source/' + file.fileModelVertexID]">
                                 {{file.name}}
                             </a>
                         </td>

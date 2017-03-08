@@ -57,7 +57,7 @@ export class ApplicationDetailsComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this._activatedRoute.params.forEach((params: Params) => {
+        this._activatedRoute.parent.parent.params.forEach((params: Params) => {
             this.execID = +params['executionId'];
             this._applicationDetailsService.getApplicationDetailsData(this.execID).subscribe(
                 applicationDetailsDto => {

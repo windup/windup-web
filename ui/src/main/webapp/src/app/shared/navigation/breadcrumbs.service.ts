@@ -86,6 +86,8 @@ export class BreadCrumbsService {
     protected canReachToComponentRoute(route: Route) {
         if (route.component) {
             return true;
+        } else if (!route.children) {
+            return false;
         } else {
             return route.children.filter(child => child.path === '' || child.path === '**')
                 .map(child => this.canReachToComponentRoute(child))

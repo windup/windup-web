@@ -1,6 +1,5 @@
 import {Component, OnInit, AfterViewChecked, ViewEncapsulation} from "@angular/core";
 import {ActivatedRoute, Params} from "@angular/router";
-import {Http} from "@angular/http";
 import {Observable} from "rxjs";
 
 import * as showdown from "showdown";
@@ -44,40 +43,49 @@ export class SourceReportComponent implements OnInit, AfterViewChecked {
                 private classificationService: ClassificationService,
                 private hintService: HintService,
                 private notificationService: NotificationService,
-                private http: Http,
                 private _graphJsonToModelService: GraphJSONToModelService<any>
     ) { }
 
     ngOnInit(): void {
-        this.route.params.forEach((params: Params) => {
+        // This multiple route parent searching is kind of ridiculous, but I'm not sure of a better way at the moment?
+        this.route.parent.parent.params.forEach((params: Params) => {
             this.execID = +params['executionId'];
-            this.fileID = +params['fileId'];
 
-            this.fileModelService.getFileModel(this.execID, this.fileID).subscribe(
-                (fileModel) => {
-                    this.fileModel = fileModel;
+            this.route.parent.params.forEach((params: Params) => {
+                if (!this.execID)
+                    this.execID = +params['executionId'];
 
-                    // Assume this is a source file model and deserialize it as one... if it is not, this will have a lot of null
-                    //   properties
-                    this.sourceFileModel = <SourceFileModel>this._graphJsonToModelService.fromJSON(this.fileModel.data, SourceFileModel);
-                    this.sourceFileModel.linksToTransformedFiles.subscribe((links) => this.transformedLinks = links);
-                },
-                error => this.notificationService.error(utils.getErrorMessage(error)));
+                this.route.params.forEach((params: Params) => {
+                    this.fileID = +params['fileId'];
 
-            this.classificationService.getClassificationsForFile(this.execID, this.fileID)
-                .subscribe((classifications) => this.classifications = classifications,
-                error => this.notificationService.error(utils.getErrorMessage(error)));
+                    this.fileModelService.getFileModel(this.execID, this.fileID).subscribe(
+                        (fileModel) => {
+                            this.fileModel = fileModel;
 
-            this.hintService.getHintsForFile(this.execID, this.fileID)
-                .subscribe((hints) => this.hints = hints,
-                error => this.notificationService.error(utils.getErrorMessage(error)));
+                            // Assume this is a source file model and deserialize it as one... if it is not, this will have a lot of null
+                            //   properties
+                            this.sourceFileModel = <SourceFileModel>this._graphJsonToModelService.fromJSON(this.fileModel.data, SourceFileModel);
+                            this.sourceFileModel.linksToTransformedFiles.subscribe((links) => this.transformedLinks = links);
+                        },
+                        error => this.notificationService.error(utils.getErrorMessage(error)));
 
-            this.fileModelService.getSource(this.execID, this.fileID)
-                .subscribe((fileSource) => {
-                    this.fileSource = fileSource;
-                    this.fileLines = fileSource.split(/[\r\n]/).map((line) => line + "\n");
-                },
-                error => this.notificationService.error(utils.getErrorMessage(error)));
+                    this.classificationService.getClassificationsForFile(this.execID, this.fileID)
+                        .subscribe((classifications) => this.classifications = classifications,
+                            error => this.notificationService.error(utils.getErrorMessage(error)));
+
+                    this.hintService.getHintsForFile(this.execID, this.fileID)
+                        .subscribe((hints) => this.hints = hints,
+                            error => this.notificationService.error(utils.getErrorMessage(error)));
+
+                    this.fileModelService.getSource(this.execID, this.fileID)
+                        .subscribe((fileSource) => {
+                                this.fileSource = fileSource;
+                                this.fileLines = fileSource.split(/[\r\n]/).map((line) => line + "\n");
+                            },
+                            error => this.notificationService.error(utils.getErrorMessage(error)));
+                });
+
+            });
         });
     }
 
