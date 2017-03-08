@@ -118,7 +118,7 @@ export class CheckboxesComponent
         if (!checked && index != -1)
             this.checkedOptions.splice(index, 1);
         else
-            this.checkedOptions.push(option);
+            this.checkedOptions.push(this.valueCallback(option));
         
         this.checkedOptionsChange.emit(this.checkedOptions);
     }
