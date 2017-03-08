@@ -1,10 +1,12 @@
-<div *ngFor="let option of _options">
-    <label>
-        <input type="checkbox" [name]="groupName"
-               [value]="valueCallback(option)"
-               [checked]="shouldBeChecked(option)"
-               (change)="handleCheckboxChange(option, $event)"
-               />
-        {{labelCallback(option)}}
-    </label>
+<div class="checkboxes-component">
+    <div *ngFor="let option of options">
+        <label>
+            <input type="checkbox" [name]="groupName"
+                   [value]="valueCallback(option)"
+                   [checked]="shouldBeChecked(option)"
+                   (change)="handleCheckboxChange(option, $event)"
+                   />
+            {{labelCallback(option)}}
+        </label>
+    </div>
 </div>
