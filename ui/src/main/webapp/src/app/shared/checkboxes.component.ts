@@ -1,8 +1,7 @@
 import {
-    Component, Input, ElementRef, Output, EventEmitter, ChangeDetectionStrategy
+    Component, Input, Output, EventEmitter, ChangeDetectionStrategy
 } from "@angular/core";
-
-export type ItemType = any;
+import {isFunction} from "util";
 
 @Component({
     templateUrl: './checkboxes.component.html',
@@ -11,6 +10,13 @@ export type ItemType = any;
 })
 export class CheckboxesComponent
 {
+    private _options: any[];
+    private _checkedOptions: any[];
+
+    private _equalsCallback: (a: any, b: any) => boolean = (a, b) => a === b;
+    private _labelCallback: (a: any) => string = (a) => a;
+    private _valueCallback: (a: any) => any = (a) => a;
+
     /**
      * The name of this checkboxes group.
      */
@@ -18,76 +24,102 @@ export class CheckboxesComponent
     groupName: string = "checkboxes";
 
     /**
-     * Callbacks
+     * Callback to get item value
      */
     @Input()
-    valueCallback: (item: any) => string
-        = app => { throw new Error("valueCallback not yet defined.") };
+    public set valueCallback(callback: (item: any) => any) {
+        if (callback && isFunction(callback)) {
+            this._valueCallback = callback;
+        }
+    }
 
-    @Input()
-    labelCallback: (item: ItemType) => string;
-
-    @Input()
-    equalsCallback: (item1: ItemType, item2: ItemType) => boolean = (item1, item2) => {
-        return this.valueCallback(item1) == this.valueCallback(item2);
-    };
+    public get valueCallback() {
+        return this._valueCallback;
+    }
 
     /**
-     * All available options.
+     * Callback to compare item from options and checked options
      */
     @Input()
-    set options(options: ItemType[]){
-        this._options = options;
-        //console.log("set options()", options);
-        if (!options)
-            return; // May be loaded async.
-        if (!Array.isArray(options))
-            throw new Error("Invalid @Input value for options: " + JSON.stringify(options));
+    public set equalsCallback(callback: (a: any, b: any) => boolean) {
+        if (callback && isFunction(callback)) {
+            this._equalsCallback = callback;
+        }
+        //         return this.valueCallback(item1) == this.valueCallback(item2);
+
     }
-    get options(): ItemType[]{
+
+    public get equalsCallback() {
+        return this._equalsCallback;
+    }
+
+    /**
+     * Callback to get item label
+     */
+    @Input()
+    public set labelCallback(callback: (a: any) => string) {
+        if (callback && isFunction(callback)) {
+            this._labelCallback = callback;
+        }
+    }
+
+    public get labelCallback() {
+        return this._labelCallback;
+    }
+
+    /**
+     * Set available options
+     */
+    @Input()
+    set options(options: any[]) {
+        if (options && !Array.isArray(options)) {
+            throw new Error("Invalid value for options. Expecting array, got: " + JSON.stringify(options));
+        }
+
+        this._options = options || [];
+    }
+
+    get options(): any[] {
         return this._options;
     }
-    _options: ItemType[];
 
     /**
-     * This can be either the values or a subset of options.
+     * Array of checked options. Could be the same object as option, or object from valueCallback
      */
     @Input()
-    checkedOptions: ItemType[] = [];
+    public set checkedOptions(checkedOptions: any[]) {
+        if (checkedOptions && !Array.isArray(checkedOptions)) {
+            throw new Error("Invalid value for checkedOptions. Expecting array, got: " + JSON.stringify(checkedOptions));
+        }
+
+        this._checkedOptions = checkedOptions || [];
+    }
+
+    public get checkedOptions(): any[] {
+        return this._checkedOptions;
+    }
 
     @Output()
-    checkedOptionsChange = new EventEmitter<ItemType[]>();
+    checkedOptionsChange = new EventEmitter<any[]>();
 
-    shouldBeChecked(option: ItemType): boolean {
+    shouldBeChecked(option: any): boolean {
         console.log("shouldBeChecked() called.", option, this.checkedOptions);
 
         if (!this.checkedOptions)
             return false;
 
-        if ((<ItemType[]>this.checkedOptions).some(checkedOption => this.equalsCallback(option, checkedOption)))
-            return true;
-
-        return false;
+        return this.checkedOptions.some(checkedOption => this.equalsCallback(option, checkedOption));
     }
 
-    private component: CheckboxesComponent;
-    private rootElement;
-
-    public constructor(element: ElementRef) {
-        this.component = this;
-        this.rootElement = element.nativeElement;
-    }
-
-    handleCheckboxChange(option: ItemType, $event)  {
+    handleCheckboxChange(option: any, $event)  {
         let checked = $event.target ? $event.target.checked : false;
         let index = this.checkedOptions.findIndex((checkedOption) => this.equalsCallback(checkedOption, option));
-        //console.log("Index: " + index);
 
-        //console.log("handleCheckboxChange() called", this.labelCallback(option), checked);
         if (!checked && index != -1)
             this.checkedOptions.splice(index, 1);
         else
-            this.checkedOptions.push(option);
+            this.checkedOptions.push(this.valueCallback(option));
+        
         this.checkedOptionsChange.emit(this.checkedOptions);
     }
 }
