@@ -87,7 +87,7 @@ export class AnalysisContextFormComponent extends FormComponent
             if (flatRouteData.data['project']) {
                 let project = flatRouteData.data['project'];
 
-                console.log("router event NavigationEnd, this.analysisContext: ", this.analysisContext, project, flatRouteData);///
+                console.log("router event NavigationEnd, this.analysisContext: ", this.analysisContext);
 
                 // Reload the App from the service to ensure fresh data
                 this._migrationProjectService.get(project.id).subscribe(loadedProject => {
@@ -105,7 +105,7 @@ export class AnalysisContextFormComponent extends FormComponent
                 this.initializeAnalysisContext();
                 this.loadPackageMetadata();
             }
-            console.log("router event NavigationEnd, after: ", this.analysisContext, this.project);///
+            //console.log("router event NavigationEnd, after: ", this.analysisContext, this.project);
 
             this.isInWizard = flatRouteData.data.hasOwnProperty('wizard') && flatRouteData.data['wizard'];
         });
@@ -139,7 +139,7 @@ export class AnalysisContextFormComponent extends FormComponent
         if (analysisContext == null) {
             analysisContext = AnalysisContextFormComponent.getDefaultAnalysisContext();
         } else {
-            // for migration path, store the id only
+            // For the migration path, store the id only.
             if (analysisContext.migrationPath) {
                 analysisContext.migrationPath = <MigrationPath>{id: analysisContext.migrationPath.id};
             } else {
