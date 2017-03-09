@@ -65,7 +65,7 @@ export class ApplicationIndexComponent implements OnInit {
             this._aggregatedStatsService.getAggregatedJavaPackages(executionId).subscribe(
                 result => this.globalPackageUseData = this.convertPackagesToChartStatistic(result),
                 error => {
-                    this._notificationService.error(utils.getErrorMessage(error))
+                    this._notificationService.error(utils.getErrorMessage(error));
                     this._router.navigate(['']);
                 }
             );
@@ -164,8 +164,12 @@ export class ApplicationIndexComponent implements OnInit {
         return result;
     }
 
-    private getMandatoryMultiStats (mandatoryCategory: EffortCategoryDTO): any[] {
+    private getMandatoryMultiStats(mandatoryCategory: EffortCategoryDTO): any[] {
         let result: any[] = [];
+
+        if (!mandatoryCategory) {
+            return [];
+        }
 
         mandatoryCategory.entries.forEach(incidentStat => {
             let series: ChartStatistic[] = [];
