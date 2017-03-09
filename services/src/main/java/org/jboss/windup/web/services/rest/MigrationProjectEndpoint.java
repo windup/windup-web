@@ -11,6 +11,8 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import org.jboss.windup.web.services.model.AnalysisContext;
+
 
 /**
  *  Provides a service for creating, updating, and deleting migration projects.
@@ -58,6 +60,17 @@ public interface MigrationProjectEndpoint
     @DELETE
     @Path("delete")
     void deleteProject(MigrationProject migration);
+
+    /**
+     * Get the default analysis context for given project.
+     * When a new execution is being launched, some config needs to be used.
+     * Same when user navigates to the analysis context page - needs some default data.
+     * This will be the one.
+     */
+    @GET
+    @Path("get/{id}/getDefaultAnalysisContext")
+    AnalysisContext getDefaultAnalysisContext(@PathParam("id") Long projectId);
+
 
     /**
      * Adds app count to MigrationProject solely for the purpose of this REST API.

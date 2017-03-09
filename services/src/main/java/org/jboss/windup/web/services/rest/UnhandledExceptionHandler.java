@@ -42,8 +42,10 @@ public class UnhandledExceptionHandler implements ExceptionMapper<RuntimeExcepti
 
             if (null != findFirstOccurenceInExceptionChain(org.hibernate.exception.ConstraintViolationException.class, exception))
                 errorInfo.setMessage("Database constraints were not met.");
-            else if (null != findFirstOccurenceInExceptionChain("org.h2.jdbc.JdbcSQLException", exception))
+            else if (null != findFirstOccurenceInExceptionChain("org.h2.jdbc.JdbcSQLException", cause))
                 errorInfo.setMessage("Database error occurred.");
+            else if (null != findFirstOccurenceInExceptionChain(javax.persistence.PersistenceException.class, cause))
+                errorInfo.setMessage("Persistence error orccured.");
         }
         else
         {
@@ -63,16 +65,16 @@ public class UnhandledExceptionHandler implements ExceptionMapper<RuntimeExcepti
     static final Throwable findFirstOccurenceInExceptionChain(Class<? extends Throwable> type, Throwable exception)
     {
         Throwable cause = exception;
-        while (cause != null && type.isAssignableFrom(cause.getClass()))
-            cause = exception.getCause();
+        while (cause != null && !type.isAssignableFrom(cause.getClass()))
+            cause = cause.getCause();
         return cause;
     }
 
     static final Throwable findFirstOccurenceInExceptionChain(String typeName, Throwable exception)
     {
         Throwable cause = exception;
-        while (cause != null && typeName.equals(cause.getClass().getName()))
-            cause = exception.getCause();
+        while (cause != null && !typeName.equals(cause.getClass().getName()))
+            cause = cause.getCause();
         return cause;
     }
 }

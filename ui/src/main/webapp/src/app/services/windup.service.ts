@@ -6,10 +6,12 @@ import {Constants} from "../constants";
 import {WindupExecution} from "windup-services";
 import {AbstractService} from "../shared/abtract.service";
 import {Cached, CacheServiceInstance} from "../shared/cache.service";
+import {AnalysisContext} from "windup-services";
+import {MigrationProject} from "windup-services";
 
 @Injectable()
 export class WindupService extends AbstractService {
-    private EXECUTE_WITH_CONTEXT_PATH = "/windup/execute-with-context";
+    private EXECUTE_WITH_CONTEXT_PATH = "/windup/execute-with-context/{projectId}";
     private EXECUTIONS_PATH = '/windup/executions';
     private PROJECT_EXECUTIONS_PATH = '/windup/by-project/{projectId}';
 
@@ -40,11 +42,16 @@ export class WindupService extends AbstractService {
             .catch(this.handleError);
     }
 
-    public executeWindupWithAnalysisContext(contextId: number): Observable<WindupExecution> {
-        let body = JSON.stringify(contextId);
+    /**
+     * Executes project context.projectId as per given context.
+     * Clones the context for the execution and creates a new one with projectId == null.
+     * See the endpoint.
+     */
+    public executeWindupWithAnalysisContext(context: AnalysisContext, project: MigrationProject): Observable<WindupExecution> {
+        let body = JSON.stringify(context);
+        let url = Constants.REST_BASE + this.EXECUTE_WITH_CONTEXT_PATH.replace('{projectId}', project.id.toString());
 
-
-        return this._http.post(Constants.REST_BASE + this.EXECUTE_WITH_CONTEXT_PATH, body, this.JSON_OPTIONS)
+        return this._http.post(url, body, this.JSON_OPTIONS)
             .map(res => <WindupExecution> res.json())
             .do(res => {
                 CacheServiceInstance.getSection('execution').clear();

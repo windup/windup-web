@@ -351,10 +351,13 @@ public class WindupExecution implements Serializable
         this.filterApplications = filterApplications;
     }
 
+    /**
+     * Returns project.getId(). This is here for @JsonProperty.
+     */
     @JsonProperty
     public long getProjectId()
     {
-        return this.project.getId();
+        return this.getProject().getId();
     }
 
     /**

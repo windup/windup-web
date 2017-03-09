@@ -274,6 +274,13 @@ public class AnalysisContext implements Serializable
     }
 
     @Override
+    public String toString()
+    {
+        return "AnalysisContext{" + "id=" + id + ", migrationPath=" + migrationPath + ", migrationProject=" + migrationProject + '}';
+    }
+
+
+    @Override
     public boolean equals(Object o)
     {
         if (this == o)

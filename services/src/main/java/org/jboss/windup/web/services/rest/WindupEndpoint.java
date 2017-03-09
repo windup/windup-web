@@ -9,6 +9,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import java.util.Collection;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import org.jboss.windup.web.services.model.AnalysisContext;
 
 /**
  * Contains methods for executing Windup and querying the current status of an execution run.
@@ -28,11 +31,19 @@ public interface WindupEndpoint
     WindupExecution getExecution(@PathParam("executionID") Long executionID);
 
     /**
-     * Initiates a Windup execution for a particular AnalysisContext.
+     * Initiates a Windup execution for the given existing AnalysisContext.
      */
     @POST
     @Path("execute-with-context")
     WindupExecution executeWithContext(Long contextID);
+
+    /**
+     * Initiates a Windup execution for the given AnalysisContext.
+     * The context is persisted as a new instance, and attached to the new execution.
+     */
+    @POST
+    @Path("execute-with-context/{projectId}")
+    WindupExecution executeProjectWithContext(@Valid AnalysisContext analysisContext, @PathParam("projectId") @NotNull Long projectId);
 
     @GET
     @Path("executions")
