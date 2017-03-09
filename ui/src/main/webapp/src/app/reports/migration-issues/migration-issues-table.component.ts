@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from "@angular/core";
-import {Router, ActivatedRoute} from "@angular/router";
+import {Router, ActivatedRoute, NavigationEnd} from "@angular/router";
 import {Http} from "@angular/http";
 
 import * as showdown from "showdown";
@@ -10,6 +10,8 @@ import {NotificationService} from "../../core/notification/notification.service"
 import {GraphJSONToModelService} from "../../services/graph/graph-json-to-model.service";
 import {FileModel} from "../../generated/tsModels/FileModel";
 import {SortingService, OrderDirection} from "../../shared/sort/sorting.service";
+import {RouteFlattenerService} from "../../core/routing/route-flattener.service";
+import {AbstractComponent} from "../../shared/AbstractComponent";
 
 @Component({
     selector: 'wu-migration-issues-table',
@@ -42,7 +44,7 @@ import {SortingService, OrderDirection} from "../../shared/sort/sorting.service"
     `],
     providers: [SortingService]
 })
-export class MigrationIssuesTableComponent implements OnInit
+export class MigrationIssuesTableComponent extends AbstractComponent implements OnInit
 {
     @Input()
     migrationIssues: ProblemSummary[] = [];
@@ -56,6 +58,7 @@ export class MigrationIssuesTableComponent implements OnInit
 
     public constructor(
         private _router: Router,
+        private _routeFlattener: RouteFlattenerService,
         private _http: Http,
         private _activatedRoute: ActivatedRoute,
         private _migrationIssuesService: MigrationIssuesService,
@@ -63,15 +66,16 @@ export class MigrationIssuesTableComponent implements OnInit
         private _sortingService: SortingService<ProblemSummary>,
         private _graphJsonToModelService: GraphJSONToModelService<any>
     ) {
-
+        super();
     }
 
     ngOnInit(): void {
         this.sortedIssues = this.migrationIssues;
 
-        this._activatedRoute.parent.parent.params.subscribe(params => {
-            this.executionId = parseInt(params['executionId']);
-        });
+        this.addSubscription(this._router.events.filter(event => event instanceof NavigationEnd).subscribe(_ => {
+            let flatRouteData = this._routeFlattener.getFlattenedRouteData(this._activatedRoute.snapshot);
+            this.executionId = parseInt(flatRouteData.params['executionId']);
+        }));
     }
 
     public getSum(field: string|Function): number {
