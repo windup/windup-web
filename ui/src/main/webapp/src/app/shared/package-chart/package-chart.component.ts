@@ -2,7 +2,7 @@ import {
     Component, ElementRef, ChangeDetectorRef, NgZone, ChangeDetectionStrategy, OnChanges,
     OnDestroy, AfterViewInit, SimpleChanges, EventEmitter, Output, Input, ViewEncapsulation
 } from "@angular/core";
-import { Location } from "@angular/common";
+import { LocationStrategy } from "@angular/common";
 
 import { BaseChartComponent, calculateViewDimensions, ViewDimensions, formatLabel, ColorHelper } from "@swimlane/ngx-charts";
 
@@ -35,7 +35,7 @@ export class PackageChartComponent extends BaseChartComponent implements OnChang
     colors: ColorHelper;
     legendWidth: number;
 
-    constructor(element: ElementRef, zone: NgZone, cd: ChangeDetectorRef, location: Location) {
+    constructor(element: ElementRef, zone: NgZone, cd: ChangeDetectorRef, location: LocationStrategy) {
         super(element, zone, cd, location);
     }
 
