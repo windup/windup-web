@@ -12,6 +12,7 @@ import {FileModel} from "../../generated/tsModels/FileModel";
 import {SortingService, OrderDirection} from "../../shared/sort/sorting.service";
 import {RouteFlattenerService} from "../../core/routing/route-flattener.service";
 import {AbstractComponent} from "../../shared/AbstractComponent";
+import {RoutedComponent} from "../../shared/routed.component";
 
 @Component({
     selector: 'wu-migration-issues-table',
@@ -44,7 +45,7 @@ import {AbstractComponent} from "../../shared/AbstractComponent";
     `],
     providers: [SortingService]
 })
-export class MigrationIssuesTableComponent extends AbstractComponent implements OnInit
+export class MigrationIssuesTableComponent extends RoutedComponent implements OnInit
 {
     @Input()
     migrationIssues: ProblemSummary[] = [];
@@ -57,23 +58,22 @@ export class MigrationIssuesTableComponent extends AbstractComponent implements 
     protected executionId;
 
     public constructor(
-        private _router: Router,
-        private _routeFlattener: RouteFlattenerService,
+        _router: Router,
+        _routeFlattener: RouteFlattenerService,
         private _http: Http,
-        private _activatedRoute: ActivatedRoute,
+        _activatedRoute: ActivatedRoute,
         private _migrationIssuesService: MigrationIssuesService,
         private _notificationService: NotificationService,
         private _sortingService: SortingService<ProblemSummary>,
         private _graphJsonToModelService: GraphJSONToModelService<any>
     ) {
-        super();
+        super(_router, _activatedRoute, _routeFlattener);
     }
 
     ngOnInit(): void {
         this.sortedIssues = this.migrationIssues;
 
-        this.addSubscription(this._router.events.filter(event => event instanceof NavigationEnd).subscribe(_ => {
-            let flatRouteData = this._routeFlattener.getFlattenedRouteData(this._activatedRoute.snapshot);
+        this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
             this.executionId = parseInt(flatRouteData.params['executionId']);
         }));
     }

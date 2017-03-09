@@ -19,13 +19,14 @@ import {LinkableModel} from "../../generated/tsModels/LinkableModel";
 import {NotificationService} from "../../core/notification/notification.service";
 import {RouteFlattenerService} from "../../core/routing/route-flattener.service";
 import {AbstractComponent} from "../../shared/AbstractComponent";
+import {RoutedComponent} from "../../shared/routed.component";
 
 @Component({
     templateUrl: './source-report.component.html',
     styleUrls: [ './source-report.component.css' ],
     encapsulation: ViewEncapsulation.None, // Don't adjust CSS selectors with '[_ng...]'.
 })
-export class SourceReportComponent extends AbstractComponent implements OnInit, AfterViewChecked {
+export class SourceReportComponent extends RoutedComponent implements OnInit, AfterViewChecked {
     private execID: number;
     private fileID: number;
     private fileSource: string = "Loading...";
@@ -40,22 +41,20 @@ export class SourceReportComponent extends AbstractComponent implements OnInit, 
     private hints: InlineHintModel[];
     private rendered: boolean = false;
 
-    constructor(private route: ActivatedRoute,
+    constructor(route: ActivatedRoute,
                 private fileModelService: FileModelService,
                 private classificationService: ClassificationService,
                 private hintService: HintService,
                 private notificationService: NotificationService,
                 private _graphJsonToModelService: GraphJSONToModelService<any>,
-                private _routeFlattener: RouteFlattenerService,
-                private _router: Router
+                _routeFlattener: RouteFlattenerService,
+                _router: Router
     ) {
-        super();
+        super(_router, route, _routeFlattener);
     }
 
     ngOnInit(): void {
-        this.addSubscription(this._router.events.filter(event => event instanceof NavigationEnd).subscribe(_ => {
-            let flatRouteData = this._routeFlattener.getFlattenedRouteData(this.route.snapshot);
-
+        this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
             this.execID = +flatRouteData.params['executionId'];
             this.fileID = +flatRouteData.params['fileId'];
 

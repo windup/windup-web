@@ -10,14 +10,14 @@ import { EffortCategoryDTO } from "windup-services";
 import { WINDUP_WEB } from "../../app.module";
 import {WindupExecution} from "windup-services";
 import {WindupService} from "../../services/windup.service";
-import {AbstractComponent} from "../../shared/AbstractComponent";
 import {RouteFlattenerService} from "../../core/routing/route-flattener.service";
+import {RoutedComponent} from "../../shared/routed.component";
 
 @Component({
     templateUrl: './application-index.component.html',
     styleUrls: ['./application-index.component.css']
 })
-export class ApplicationIndexComponent extends AbstractComponent implements OnInit {
+export class ApplicationIndexComponent extends RoutedComponent implements OnInit {
 
     public hideFilter = WINDUP_WEB.config.hideUnfinishedFeatures;
     public execution: WindupExecution;
@@ -39,21 +39,19 @@ export class ApplicationIndexComponent extends AbstractComponent implements OnIn
     dependenciesStats: StatisticsList = <StatisticsList>{};
 
     constructor(
-        private _router: Router,
-        private _activatedRoute: ActivatedRoute,
+        _router: Router,
+        _activatedRoute: ActivatedRoute,
         private _notificationService: NotificationService,
         private _aggregatedStatsService: AggregatedStatisticsService,
         private _windupService: WindupService,
-        private _routeFlattener: RouteFlattenerService
+        _routeFlattener: RouteFlattenerService
     ) {
-        super();
+        super(_router, _activatedRoute, _routeFlattener);
     }
 
 
     ngOnInit(): void {
-        this.addSubscription(this._router.events.filter(event => event instanceof NavigationEnd).subscribe(_ => {
-            let flatRouteData = this._routeFlattener.getFlattenedRouteData(this._activatedRoute.snapshot);
-
+        this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
             let executionId = parseInt(flatRouteData.params['executionId']);
             this.execID = executionId;
 

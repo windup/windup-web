@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {Router, ActivatedRoute, NavigationEnd} from "@angular/router";
+import {Router, ActivatedRoute} from "@angular/router";
 import {utils} from '../../shared/utils';
 
 import {NotificationService} from "../../core/notification/notification.service";
@@ -8,7 +8,7 @@ import {WINDUP_WEB} from "../../app.module";
 import {WindupService} from "../../services/windup.service";
 import {WindupExecution} from "windup-services";
 import {RouteFlattenerService} from "../../core/routing/route-flattener.service";
-import {AbstractComponent} from "../../shared/AbstractComponent";
+import {RoutedComponent} from "../../shared/routed.component";
 
 
 @Component({
@@ -20,7 +20,7 @@ import {AbstractComponent} from "../../shared/AbstractComponent";
         .panel-primary.wuMigrationIssues .panel-heading .panel-title { color: black; font-size: 20px; font-weight: 500; }
     `]
 })
-export class MigrationIssuesComponent extends AbstractComponent implements OnInit {
+export class MigrationIssuesComponent extends RoutedComponent implements OnInit {
     protected categorizedIssues: Dictionary<ProblemSummary[]>;
     protected categories: string[];
 
@@ -28,23 +28,18 @@ export class MigrationIssuesComponent extends AbstractComponent implements OnIni
     public execution: WindupExecution;
 
     public constructor(
-        private _router: Router,
-        private _activatedRoute: ActivatedRoute,
+        _router: Router,
+        _activatedRoute: ActivatedRoute,
         private _migrationIssuesService: MigrationIssuesService,
         private _notificationService: NotificationService,
         private _windupService: WindupService,
-        private _routeFlattener: RouteFlattenerService
+        _routeFlattener: RouteFlattenerService
     ) {
-        super();
+        super(_router, _activatedRoute, _routeFlattener);
     }
 
     ngOnInit(): void {
-        this.addSubscription(this._router.events.filter(event => event instanceof NavigationEnd).subscribe(_ => {
-            let flatRouteData = this._routeFlattener.getFlattenedRouteData(this._activatedRoute.snapshot);
-
-            console.log(flatRouteData);
-            console.log(flatRouteData.params['executionId']);
-
+        this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
             let executionId = parseInt(flatRouteData.params['executionId']);
             this._windupService.getExecution(executionId).subscribe(execution => this.execution = execution);
 
