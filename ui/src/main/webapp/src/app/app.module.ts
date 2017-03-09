@@ -117,6 +117,7 @@ import {WizardLayoutComponent} from "./shared/layout/wizard-layout.component";
 import {ExecutionsLayoutComponent} from "./executions/executions-layout.component";
 import {NavbarSelectionComponent} from "./shared/navigation/navbar-selection.component";
 import {DatePipe} from "@angular/common";
+import {ContextMenuLinkComponent} from "./shared/navigation/context-menu-link.component";
 
 /**
  * Load all mapping data from the generated files.
@@ -218,7 +219,8 @@ initializeModelMappingData();
         StatusIconComponent,
         ApplicationListComponent,
         ProjectExecutionsComponent,
-        NavbarSelectionComponent
+        NavbarSelectionComponent,
+        ContextMenuLinkComponent
     ],
     providers: [
         appRoutingProviders,
