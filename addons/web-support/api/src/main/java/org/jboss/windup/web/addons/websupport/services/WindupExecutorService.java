@@ -35,7 +35,8 @@ public interface WindupExecutorService
             List<String> excludePackages,
             String source,
             String target,
-            Map<String, Object> otherOptions);
+            Map<String, Object> otherOptions,
+            boolean generateStaticReports);
 
     /**
      * Gets the filesystem path to the report for a given application.

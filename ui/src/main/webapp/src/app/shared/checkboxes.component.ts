@@ -101,7 +101,7 @@ export class CheckboxesComponent
     checkedOptionsChange = new EventEmitter<any[]>();
 
     shouldBeChecked(option: any): boolean {
-        console.log("shouldBeChecked() called.", option, this.checkedOptions);
+        //console.log("shouldBeChecked() called for #" + option.id + ", checked: ", this.checkedOptions);
 
         if (!this.checkedOptions)
             return false;
@@ -117,7 +117,7 @@ export class CheckboxesComponent
             this.checkedOptions.splice(index, 1);
         else
             this.checkedOptions.push(option);
-        
+
         this.checkedOptionsChange.emit(this.checkedOptions);
     }
 }

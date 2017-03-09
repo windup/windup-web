@@ -13,6 +13,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.apache.commons.io.FileUtils;
+import org.jboss.forge.furnace.Furnace;
 import org.jboss.windup.config.ConfigurationOption;
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.addons.websupport.services.WindupExecutorService;
@@ -41,6 +42,10 @@ public class WindupExecutionTask implements Runnable
     @Inject
     @FromFurnace
     private WebPathUtil webPathUtil;
+
+    @Inject
+    private Furnace furnace;
+
 
     @Inject
     private ConfigurationOptionsService configurationOptionsService;
@@ -77,7 +82,8 @@ public class WindupExecutionTask implements Runnable
             try
             {
                 FileUtils.deleteDirectory(new File(this.execution.getOutputPath()));
-            } catch (IOException e)
+            }
+            catch (IOException e)
             {
                 LOG.warning("Failed to delete output directory: " + this.execution.getOutputPath() + ", due to: " + e.getMessage());
             }
@@ -122,6 +128,8 @@ public class WindupExecutionTask implements Runnable
 
             Map<String, Object> otherOptions = getOtherOptions(analysisContext);
 
+            boolean generateStaticReports = analysisContext.getGenerateStaticReports();
+
             windupExecutorService.execute(
                         progressMonitor,
                         rulesPaths,
@@ -131,7 +139,8 @@ public class WindupExecutionTask implements Runnable
                         excludePackages,
                         source,
                         target,
-                        otherOptions);
+                        otherOptions,
+                        generateStaticReports);
 
             // reload the current state
             progressMonitor.done();

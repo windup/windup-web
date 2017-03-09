@@ -23,6 +23,8 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import javax.ws.rs.DefaultValue;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -47,6 +49,10 @@ public class AnalysisContext implements Serializable
     @Version
     @Column(name = "version")
     private int version;
+
+    @Column(nullable = false)
+    @ColumnDefault("true")
+    private boolean generateStaticReports = true;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private MigrationPath migrationPath;
@@ -106,6 +112,23 @@ public class AnalysisContext implements Serializable
     {
         this.version = version;
     }
+
+    /**
+     * Should Windup generate HTML reports?
+     */
+    public boolean getGenerateStaticReports()
+    {
+        return generateStaticReports;
+    }
+
+    /**
+     * Should Windup generate HTML reports?
+     */
+    public void setGenerateStaticReports(boolean generateStaticReports)
+    {
+        this.generateStaticReports = generateStaticReports;
+    }
+
 
     /**
      * Contains the package prefixes to analyze.
