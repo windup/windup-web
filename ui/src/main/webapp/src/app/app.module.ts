@@ -112,6 +112,7 @@ import {GraphJSONToModelService} from "./services/graph/graph-json-to-model.serv
 import {ApplicationListComponent} from "./registered-application/application-list.component";
 import {ProjectExecutionsComponent} from "./executions/project-executions.component";
 import {CheckboxesComponent} from "./shared/checkboxes.component";
+import {InViewport} from "./components/in-viewport.directive";
 import {WizardLayoutComponent} from "./shared/layout/wizard-layout.component";
 import {ExecutionsLayoutComponent} from "./executions/executions-layout.component";
 
@@ -138,6 +139,9 @@ initializeModelMappingData();
         MomentModule
     ],
     declarations: [
+        // Directives
+        InViewport,
+
         // pages
         AppComponent,
         LoginComponent,

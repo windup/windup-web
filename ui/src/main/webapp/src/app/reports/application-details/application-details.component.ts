@@ -13,6 +13,7 @@ import {TypeReferenceStatisticsService} from "./type-reference-statistics.servic
 import {TagDataService} from "../tag-data.service";
 import {TreeData} from "../../shared/js-tree-angular-wrapper.component";
 import {calculateColorScheme} from "../../shared/color-schemes";
+import {PersistedProjectModelTraversalModel} from "../../generated/tsModels/PersistedProjectModelTraversalModel";
 
 @Component({
     templateUrl: './application-details.component.html',
@@ -135,6 +136,14 @@ export class ApplicationDetailsComponent implements OnInit {
             this.storeProjectData(traversal);
             this.storePointsForTraversal(traversal);
         });
+    }
+
+    private visibleMap:Map<number, boolean> = new Map<number, boolean>();
+    private setIsVisibleStatus(traversal:ProjectTraversalFullDTO, visible:boolean) {
+        this.visibleMap.set(traversal.id, visible);
+    }
+    private isVisible(traversal:ProjectTraversalFullDTO):boolean {
+        return this.visibleMap.get(traversal.id) || false;
     }
 
     private hasDuplicateProjects(traversal:ProjectTraversalFullDTO):boolean {
