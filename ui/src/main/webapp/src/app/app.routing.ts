@@ -134,6 +134,9 @@ export const appRoutes: Routes = [
                             },
                             {
                                 path: 'reports/:executionId',
+                                data: {
+                                    breadcrumbTitle: getExecutionBreadcrumbTitle
+                                },
                                 component: ExecutionsLayoutComponent,
                                 children: [
                                     {path: '', component: ExecutionDetailComponent, data: {displayName: 'Execution Info'}},
@@ -167,6 +170,10 @@ export const appRoutes: Routes = [
         ]
     }
 ];
+
+export function getExecutionBreadcrumbTitle(route: FullFlattenedRoute) {
+    return `Execution ${route.params['executionId']}`;
+}
 
 export function getProjectBreadcrumbTitle(route: FullFlattenedRoute) {
     return `Project ${route.data['project'].title}`;
