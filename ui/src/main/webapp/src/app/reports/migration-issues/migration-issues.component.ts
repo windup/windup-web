@@ -7,6 +7,8 @@ import {MigrationIssuesService} from "./migration-issues.service";
 import {WINDUP_WEB} from "../../app.module";
 import {WindupService} from "../../services/windup.service";
 import {WindupExecution} from "windup-services";
+import {RouteFlattenerService} from "../../core/routing/route-flattener.service";
+import {RoutedComponent} from "../../shared/routed.component";
 
 
 @Component({
@@ -18,7 +20,7 @@ import {WindupExecution} from "windup-services";
         .panel-primary.wuMigrationIssues .panel-heading .panel-title { color: black; font-size: 20px; font-weight: 500; }
     `]
 })
-export class MigrationIssuesComponent implements OnInit {
+export class MigrationIssuesComponent extends RoutedComponent implements OnInit {
     protected categorizedIssues: Dictionary<ProblemSummary[]>;
     protected categories: string[];
 
@@ -26,17 +28,19 @@ export class MigrationIssuesComponent implements OnInit {
     public execution: WindupExecution;
 
     public constructor(
-        private _router: Router,
-        private _activatedRoute: ActivatedRoute,
+        _router: Router,
+        _activatedRoute: ActivatedRoute,
         private _migrationIssuesService: MigrationIssuesService,
         private _notificationService: NotificationService,
-        private _windupService: WindupService
+        private _windupService: WindupService,
+        _routeFlattener: RouteFlattenerService
     ) {
+        super(_router, _activatedRoute, _routeFlattener);
     }
 
     ngOnInit(): void {
-        this._activatedRoute.params.subscribe(params => {
-            let executionId = parseInt(params['executionId']);
+        this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
+            let executionId = parseInt(flatRouteData.params['executionId']);
             this._windupService.getExecution(executionId).subscribe(execution => this.execution = execution);
 
             this._migrationIssuesService.getAggregatedIssues(executionId).subscribe(
@@ -48,6 +52,6 @@ export class MigrationIssuesComponent implements OnInit {
                     this._notificationService.error(utils.getErrorMessage(error));
                     this._router.navigate(['']);
                 });
-        });
+        }));
     }
 }

@@ -14,6 +14,8 @@ import {MockBackend} from "@angular/http/testing";
 import {ReportFilterIndicatorComponent} from "../../../../../src/app/reports/filter/report-filter-indicator.component";
 import {GraphJSONToModelService} from "../../../../../src/app/services/graph/graph-json-to-model.service";
 import {WindupService} from "../../../../../src/app/services/windup.service";
+import {RouteFlattenerService} from "../../../../../src/app/core/routing/route-flattener.service";
+import {RouterMock} from "../../../mocks/router.mock";
 
 let comp:    MigrationIssuesComponent;
 let fixture: ComponentFixture<MigrationIssuesComponent>;
@@ -25,10 +27,6 @@ describe('MigrationissuesComponent', () => {
 
     beforeEach(() => {
         activatedRouteMock = new ActivatedRouteMock();
-        activatedRouteMock.parent = new ActivatedRouteMock();
-        activatedRouteMock.parent.parent = new ActivatedRouteMock();
-        activatedRouteMock.parent.parent.parent = new ActivatedRouteMock();
-        activatedRouteMock.parent.parent.parent.testData = { applicationGroup: {} };
 
         TestBed.configureTestingModule({
             imports: [ RouterTestingModule, HttpModule ],
@@ -36,14 +34,13 @@ describe('MigrationissuesComponent', () => {
             providers: [
                 {
                     provide: Router,
-                    useValue: jasmine.createSpyObj('Router', [
-                        'navigate'
-                    ])
+                    useValue: RouterMock
                 },
                 {
                     provide: ActivatedRoute,
                     useValue: activatedRouteMock
                 },
+                RouteFlattenerService,
                 MockBackend,
                 BaseRequestOptions,
                 {
@@ -109,6 +106,7 @@ describe('MigrationissuesComponent', () => {
 
             activatedRouteMock.testParams = {executionId: 0};
             fixture.detectChanges();
+            RouterMock.navigationEnd();
         })));
 
         it('should navigate to homepage', async(inject([Router], (router: Router) => {
@@ -134,7 +132,9 @@ describe('MigrationissuesComponent', () => {
             );
 
             activatedRouteMock.testParams = {executionId: 1};
-            fixture.detectChanges();
+            fixture.detectChanges(); // init
+            RouterMock.navigationEnd(); // resolve route data
+            fixture.detectChanges(); // load changes
         })));
 
         it('should get data from migration issues service', () => {
@@ -170,7 +170,9 @@ describe('MigrationissuesComponent', () => {
             );
 
             activatedRouteMock.testParams = {executionId: 1};
-            fixture.detectChanges();
+            fixture.detectChanges(); // init
+            RouterMock.navigationEnd(); // resolve route data
+            fixture.detectChanges(); // load changes
         })));
 
         it('should display "No issues found" text', () => {

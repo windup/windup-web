@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import {ActivatedRoute, Router, NavigationEnd} from "@angular/router";
 import { utils } from "../../shared/utils";
 import { NotificationService } from "../../core/notification/notification.service";
 import { AggregatedStatisticsService } from "./aggregated-statistics.service";
@@ -10,12 +10,14 @@ import { EffortCategoryDTO } from "windup-services";
 import { WINDUP_WEB } from "../../app.module";
 import {WindupExecution} from "windup-services";
 import {WindupService} from "../../services/windup.service";
+import {RouteFlattenerService} from "../../core/routing/route-flattener.service";
+import {RoutedComponent} from "../../shared/routed.component";
 
 @Component({
     templateUrl: './application-index.component.html',
     styleUrls: ['./application-index.component.css']
 })
-export class ApplicationIndexComponent implements OnInit {
+export class ApplicationIndexComponent extends RoutedComponent implements OnInit {
 
     public hideFilter = WINDUP_WEB.config.hideUnfinishedFeatures;
     public execution: WindupExecution;
@@ -37,17 +39,20 @@ export class ApplicationIndexComponent implements OnInit {
     dependenciesStats: StatisticsList = <StatisticsList>{};
 
     constructor(
-        private _router: Router,
-        private _activatedRoute: ActivatedRoute,
+        _router: Router,
+        _activatedRoute: ActivatedRoute,
         private _notificationService: NotificationService,
         private _aggregatedStatsService: AggregatedStatisticsService,
-        private _windupService: WindupService
-    ) { }
+        private _windupService: WindupService,
+        _routeFlattener: RouteFlattenerService
+    ) {
+        super(_router, _activatedRoute, _routeFlattener);
+    }
 
 
     ngOnInit(): void {
-        this._activatedRoute.params.subscribe(params => {
-            let executionId = parseInt(params['executionId']);
+        this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
+            let executionId = parseInt(flatRouteData.params['executionId']);
             this.execID = executionId;
 
             this._windupService.getExecution(executionId).subscribe(execution => this.execution = execution);
@@ -85,12 +90,7 @@ export class ApplicationIndexComponent implements OnInit {
                     this._router.navigate(['']);
                 }
             );
-        });
-
-        this._activatedRoute.parent.parent.parent.data.subscribe((data: any) => {
-            // TODO: Fix
-        });
-        
+        }));
     }
 
     sumStatsList(statsList:StatisticsList):number {

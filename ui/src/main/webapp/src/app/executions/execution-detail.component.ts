@@ -6,6 +6,8 @@ import {WINDUP_WEB} from "../app.module";
 
 import {someLog} from './some-log';
 import {WindupExecutionService} from "../services/windup-execution.service";
+import {EventBusService} from "../core/events/event-bus.service";
+import {ExecutionEvent} from "../core/events/windup-event";
 
 @Component({
     templateUrl: './execution-detail.component.html',
@@ -19,7 +21,7 @@ export class ExecutionDetailComponent implements OnInit {
 
     hideUnfinishedFeatures: boolean = WINDUP_WEB.config.hideUnfinishedFeatures;
 
-    constructor(private _activatedRoute: ActivatedRoute, private _windupService: WindupService) {
+    constructor(private _activatedRoute: ActivatedRoute, private _eventBus: EventBusService, private _windupService: WindupService) {
         this.log = someLog;
     }
 
@@ -27,10 +29,24 @@ export class ExecutionDetailComponent implements OnInit {
         this._activatedRoute.parent.params.subscribe((params: {executionId: number}) => {
             let executionId = +params.executionId;
 
+            this._eventBus.onEvent
+                .filter(event => event.isTypeOf(ExecutionEvent))
+                .filter((event: ExecutionEvent) => event.execution.id === executionId)
+                .subscribe((event: ExecutionEvent) => {
+                    this.execution = event.execution;
+                });
+
             this._windupService.getExecution(executionId).subscribe(execution => {
-                this.execution = execution;
+
+                // Null check to make sure that we don't overwrite one from the event system
+                if (!this.execution)
+                    this.execution = execution;
             });
         });
+    }
+
+    get displayReportLinks():boolean {
+        return this.execution && this.execution.state === "COMPLETED";
     }
 
     formatStaticReportUrl(execution: WindupExecution): string {

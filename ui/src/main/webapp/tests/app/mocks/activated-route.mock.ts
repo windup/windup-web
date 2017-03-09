@@ -31,7 +31,11 @@ export class ActivatedRouteMock {
 
     // ActivatedRoute.snapshot.params
     get snapshot() {
-        return { params: this.testParams };
+        return {
+            params: this.testParams,
+            data: this.testData,
+            url: this.url
+        };
     }
 
     private _parent: ActivatedRouteMock;
@@ -42,5 +46,9 @@ export class ActivatedRouteMock {
         } else {
             this._parent = new ActivatedRouteMock();
         }
+    }
+
+    get url(): string[] {
+        return ['this', 'is', 'a', 'mock'];
     }
 }

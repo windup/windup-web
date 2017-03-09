@@ -113,6 +113,7 @@ import {ApplicationListComponent} from "./registered-application/application-lis
 import {ProjectExecutionsComponent} from "./executions/project-executions.component";
 import {CheckboxesComponent} from "./shared/checkboxes.component";
 import {WizardLayoutComponent} from "./shared/layout/wizard-layout.component";
+import {ExecutionsLayoutComponent} from "./executions/executions-layout.component";
 
 /**
  * Load all mapping data from the generated files.
@@ -184,6 +185,7 @@ initializeModelMappingData();
         LoginComponent,
         ContextMenuComponent,
         ProjectLayoutComponent,
+        ExecutionsLayoutComponent,
         DefaultLayoutComponent,
         WizardLayoutComponent,
         BreadCrumbsNavigationComponent,

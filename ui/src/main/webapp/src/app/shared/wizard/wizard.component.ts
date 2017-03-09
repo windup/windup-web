@@ -1,7 +1,7 @@
 import {Component, OnInit} from "@angular/core";
-import {ActivatedRoute, Router, NavigationEnd} from "@angular/router";
-import {AbstractComponent} from "../AbstractComponent";
+import {ActivatedRoute, Router} from "@angular/router";
 import {RouteFlattenerService} from "../../core/routing/route-flattener.service";
+import {RoutedComponent} from "../routed.component";
 
 @Component({
     templateUrl: './wizard.component.html',
@@ -9,22 +9,20 @@ import {RouteFlattenerService} from "../../core/routing/route-flattener.service"
         './wizard-component.scss'
     ]
 })
-export class WizardComponent extends AbstractComponent implements OnInit {
+export class WizardComponent extends RoutedComponent implements OnInit {
     wizardSteps: WizardStep[];
     currentStep: WizardStep;
 
     constructor(
-        private _activatedRoute: ActivatedRoute,
-        private _router: Router,
-        private _routeFlattener: RouteFlattenerService
+        _activatedRoute: ActivatedRoute,
+        _router: Router,
+        _routeFlattener: RouteFlattenerService
     ) {
-        super();
+        super(_router, _activatedRoute, _routeFlattener);
     }
 
     ngOnInit(): void {
-        this.addSubscription(this._router.events.filter(event => event instanceof NavigationEnd).subscribe(_ => {
-            let flatRouteData = this._routeFlattener.getFlattenedRouteData(this._activatedRoute.snapshot);
-
+        this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
             this.wizardSteps = flatRouteData.data['steps'];
 
             if (flatRouteData.url.length > 0) {
