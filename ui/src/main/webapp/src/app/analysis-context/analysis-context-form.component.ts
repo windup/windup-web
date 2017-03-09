@@ -87,9 +87,13 @@ export class AnalysisContextFormComponent extends FormComponent
             if (flatRouteData.data['project']) {
                 let project = flatRouteData.data['project'];
 
+                console.log("router event NavigationEnd, this.analysisContext: ", this.analysisContext);
+
                 // Reload the App from the service to ensure fresh data
                 this._migrationProjectService.get(project.id).subscribe(loadedProject => {
                     this.project = loadedProject;
+
+                    this.loadProjectRelations();
                 });
 
                 // Load the apps of this project.
@@ -101,9 +105,14 @@ export class AnalysisContextFormComponent extends FormComponent
                 this.initializeAnalysisContext();
                 this.loadPackageMetadata();
             }
+            //console.log("router event NavigationEnd, after: ", this.analysisContext, this.project);
 
             this.isInWizard = flatRouteData.data.hasOwnProperty('wizard') && flatRouteData.data['wizard'];
         });
+    }
+
+    private loadProjectRelations() {
+        this._migrationProjectService.getDefaultAnalysisContext(this.project.id).subscribe(ctx => this.analysisContext = ctx);
     }
 
     appsValueCallback = (app: RegisteredApplication) => ""+app.id;
@@ -124,12 +133,13 @@ export class AnalysisContextFormComponent extends FormComponent
     }
 
     private initializeAnalysisContext() {
+        console.log("initializeAnalysisContext(), this.analysisContext: ", this.analysisContext);
         let analysisContext = this.analysisContext;
 
         if (analysisContext == null) {
             analysisContext = AnalysisContextFormComponent.getDefaultAnalysisContext();
         } else {
-            // for migration path, store the id only
+            // For the migration path, store the id only.
             if (analysisContext.migrationPath) {
                 analysisContext.migrationPath = <MigrationPath>{id: analysisContext.migrationPath.id};
             } else {
@@ -257,6 +267,7 @@ export class AnalysisContextFormComponent extends FormComponent
     rulesPathsChanged(rulesPaths:RulesPath[]) {
         this.analysisContext.rulesPaths = rulesPaths;
     }
+
 }
 
 enum Action {

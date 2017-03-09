@@ -11,6 +11,7 @@ import {
     ApplicationRegisteredEvent, ApplicationDeletedEvent, UpdateMigrationProjectEvent
 } from "../core/events/windup-event";
 import {EventBusService} from "../core/events/event-bus.service";
+import {AnalysisContext} from "windup-services";
 
 @Injectable()
 export class MigrationProjectService extends AbstractService {
@@ -19,6 +20,7 @@ export class MigrationProjectService extends AbstractService {
     private CREATE_MIGRATION_PROJECT_URL = "/migrationProjects/create";
     private UPDATE_MIGRATION_PROJECT_URL = "/migrationProjects/update";
     private DELETE_MIGRATION_PROJECT_URL = '/migrationProjects/delete';
+    private GET_DEFAULT_CONTEXT_SUBURL = 'getDefaultAnalysisContext';
 
     private monitoredProjects = new Map<number, MigrationProject>();
 
@@ -134,6 +136,15 @@ export class MigrationProjectService extends AbstractService {
 
     stopMonitoringProject(project: MigrationProject) {
         this.monitoredProjects.delete(project.id);
+    }
+
+    /**
+     *  See the REST method.
+     */
+    getDefaultAnalysisContext(projectId: number): Observable<AnalysisContext> {
+        return this._http.get(Constants.REST_BASE + this.GET_MIGRATION_PROJECT_URL + "/" + projectId + "/" + this.GET_DEFAULT_CONTEXT_SUBURL)
+            .map(res => <AnalysisContext> res.json())
+            .catch(this.handleError);
     }
 }
 
