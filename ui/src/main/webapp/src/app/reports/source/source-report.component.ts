@@ -1,5 +1,5 @@
 import {Component, OnInit, AfterViewChecked, ViewEncapsulation} from "@angular/core";
-import {ActivatedRoute, Params} from "@angular/router";
+import {ActivatedRoute, Params, Router, NavigationEnd} from "@angular/router";
 import {Observable} from "rxjs";
 
 import * as showdown from "showdown";
@@ -17,13 +17,16 @@ import {GraphJSONToModelService} from "../../services/graph/graph-json-to-model.
 import {utils} from "../../shared/utils";
 import {LinkableModel} from "../../generated/tsModels/LinkableModel";
 import {NotificationService} from "../../core/notification/notification.service";
+import {RouteFlattenerService} from "../../core/routing/route-flattener.service";
+import {AbstractComponent} from "../../shared/AbstractComponent";
+import {RoutedComponent} from "../../shared/routed.component";
 
 @Component({
     templateUrl: './source-report.component.html',
     styleUrls: [ './source-report.component.css' ],
     encapsulation: ViewEncapsulation.None, // Don't adjust CSS selectors with '[_ng...]'.
 })
-export class SourceReportComponent implements OnInit, AfterViewChecked {
+export class SourceReportComponent extends RoutedComponent implements OnInit, AfterViewChecked {
     private execID: number;
     private fileID: number;
     private fileSource: string = "Loading...";
@@ -38,55 +41,49 @@ export class SourceReportComponent implements OnInit, AfterViewChecked {
     private hints: InlineHintModel[];
     private rendered: boolean = false;
 
-    constructor(private route: ActivatedRoute,
+    constructor(route: ActivatedRoute,
                 private fileModelService: FileModelService,
                 private classificationService: ClassificationService,
                 private hintService: HintService,
                 private notificationService: NotificationService,
-                private _graphJsonToModelService: GraphJSONToModelService<any>
-    ) { }
+                private _graphJsonToModelService: GraphJSONToModelService<any>,
+                _routeFlattener: RouteFlattenerService,
+                _router: Router
+    ) {
+        super(_router, route, _routeFlattener);
+    }
 
     ngOnInit(): void {
-        // This multiple route parent searching is kind of ridiculous, but I'm not sure of a better way at the moment?
-        this.route.parent.parent.params.forEach((params: Params) => {
-            this.execID = +params['executionId'];
+        this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
+            this.execID = +flatRouteData.params['executionId'];
+            this.fileID = +flatRouteData.params['fileId'];
 
-            this.route.parent.params.forEach((params: Params) => {
-                if (!this.execID)
-                    this.execID = +params['executionId'];
+            this.fileModelService.getFileModel(this.execID, this.fileID).subscribe(
+                (fileModel) => {
+                    this.fileModel = fileModel;
 
-                this.route.params.forEach((params: Params) => {
-                    this.fileID = +params['fileId'];
+                    // Assume this is a source file model and deserialize it as one... if it is not, this will have a lot of null
+                    //   properties
+                    this.sourceFileModel = <SourceFileModel>this._graphJsonToModelService.fromJSON(this.fileModel.data, SourceFileModel);
+                    this.sourceFileModel.linksToTransformedFiles.subscribe((links) => this.transformedLinks = links);
+                },
+                error => this.notificationService.error(utils.getErrorMessage(error)));
 
-                    this.fileModelService.getFileModel(this.execID, this.fileID).subscribe(
-                        (fileModel) => {
-                            this.fileModel = fileModel;
+            this.classificationService.getClassificationsForFile(this.execID, this.fileID)
+                .subscribe((classifications) => this.classifications = classifications,
+                    error => this.notificationService.error(utils.getErrorMessage(error)));
 
-                            // Assume this is a source file model and deserialize it as one... if it is not, this will have a lot of null
-                            //   properties
-                            this.sourceFileModel = <SourceFileModel>this._graphJsonToModelService.fromJSON(this.fileModel.data, SourceFileModel);
-                            this.sourceFileModel.linksToTransformedFiles.subscribe((links) => this.transformedLinks = links);
-                        },
-                        error => this.notificationService.error(utils.getErrorMessage(error)));
+            this.hintService.getHintsForFile(this.execID, this.fileID)
+                .subscribe((hints) => this.hints = hints,
+                    error => this.notificationService.error(utils.getErrorMessage(error)));
 
-                    this.classificationService.getClassificationsForFile(this.execID, this.fileID)
-                        .subscribe((classifications) => this.classifications = classifications,
-                            error => this.notificationService.error(utils.getErrorMessage(error)));
-
-                    this.hintService.getHintsForFile(this.execID, this.fileID)
-                        .subscribe((hints) => this.hints = hints,
-                            error => this.notificationService.error(utils.getErrorMessage(error)));
-
-                    this.fileModelService.getSource(this.execID, this.fileID)
-                        .subscribe((fileSource) => {
-                                this.fileSource = fileSource;
-                                this.fileLines = fileSource.split(/[\r\n]/).map((line) => line + "\n");
-                            },
-                            error => this.notificationService.error(utils.getErrorMessage(error)));
-                });
-
-            });
-        });
+            this.fileModelService.getSource(this.execID, this.fileID)
+                .subscribe((fileSource) => {
+                        this.fileSource = fileSource;
+                        this.fileLines = fileSource.split(/[\r\n]/).map((line) => line + "\n");
+                    },
+                    error => this.notificationService.error(utils.getErrorMessage(error)));
+        }));
     }
 
     private getClassificationLinks(classification:ClassificationModel):Observable<LinkModel[]> {

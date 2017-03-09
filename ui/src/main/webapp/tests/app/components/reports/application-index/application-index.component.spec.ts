@@ -8,12 +8,13 @@ import {ActivatedRouteMock} from "../../../mocks/activated-route.mock";
 import {Observable} from "rxjs";
 import {ApplicationIndexComponent} from "../../../../../src/app/reports/application-index/application-index.component";
 import {PackageChartComponent} from "../../../../../src/app/shared/package-chart/package-chart.component";
-import {By} from "@angular/platform-browser";
 import {HttpModule, BaseRequestOptions, Http, ConnectionBackend} from "@angular/http";
 import {MockBackend} from "@angular/http/testing";
 import {ReportFilterIndicatorComponent} from "../../../../../src/app/reports/filter/report-filter-indicator.component";
 import {NgxChartsModule} from "@swimlane/ngx-charts";
 import {WindupService} from "../../../../../src/app/services/windup.service";
+import {RouterMock} from "../../../mocks/router.mock";
+import {RouteFlattenerService} from "../../../../../src/app/core/routing/route-flattener.service";
 
 let comp:    ApplicationIndexComponent;
 let fixture: ComponentFixture<ApplicationIndexComponent>;
@@ -26,10 +27,6 @@ describe('ApplicationIndexComponent', () => {
 
     beforeEach(() =>{
         activeRouteMock = new ActivatedRouteMock();
-        activeRouteMock.parent = new ActivatedRouteMock();
-        activeRouteMock.parent.parent = new ActivatedRouteMock();
-        activeRouteMock.parent.parent.parent = new ActivatedRouteMock();
-        activeRouteMock.parent.parent.parent.testData = { applicationGroup: {} };
 
         TestBed.configureTestingModule({
             imports: [ RouterTestingModule, HttpModule, NgxChartsModule ],
@@ -39,14 +36,13 @@ describe('ApplicationIndexComponent', () => {
             providers: [
                 {
                     provide: Router,
-                    useValue: jasmine.createSpyObj('Router', [
-                        'navigate'
-                    ])
+                    useValue: RouterMock
                 },
                 {
                     provide: ActivatedRoute,
                     useValue: activeRouteMock
                 },
+                RouteFlattenerService,
                 MockBackend,
                 BaseRequestOptions,
                 {
@@ -94,7 +90,7 @@ describe('ApplicationIndexComponent', () => {
         comp = fixture.componentInstance;
 
         de = fixture.debugElement;
-        el = de.nativeElement
+        el = de.nativeElement;
     });
 
     describe('when navigate to non-existing report id', () => {
@@ -137,6 +133,7 @@ describe('ApplicationIndexComponent', () => {
 
             activeRouteMock.testParams = { executionId: 0 };
             fixture.detectChanges();
+            RouterMock.navigationEnd();
         })));
 
         it('should navigate to homepage', async(inject([Router], (router: Router) => {

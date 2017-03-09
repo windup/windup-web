@@ -2,7 +2,7 @@ import {MigrationIssuesTableComponent} from "../../../../../src/app/reports/migr
 import {ComponentFixture, TestBed} from "@angular/core/testing";
 import {DebugElement} from "@angular/core";
 import {By} from "@angular/platform-browser";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {MigrationIssuesService} from "../../../../../src/app/reports/migration-issues/migration-issues.service";
 import {NotificationService} from "../../../../../src/app/core/notification/notification.service";
 import {RouterTestingModule} from "@angular/router/testing";
@@ -11,6 +11,8 @@ import {Observable} from "rxjs";
 import {BaseRequestOptions, Http, ConnectionBackend} from "@angular/http";
 import {MockBackend} from "@angular/http/testing";
 import {GraphJSONToModelService} from "../../../../../src/app/services/graph/graph-json-to-model.service";
+import {RouteFlattenerService} from "../../../../../src/app/core/routing/route-flattener.service";
+import {RouterMock} from "../../../mocks/router.mock";
 
 let comp:    MigrationIssuesTableComponent;
 let fixture: ComponentFixture<MigrationIssuesTableComponent>;
@@ -33,6 +35,11 @@ describe('MigrationissuesTableComponent', () => {
                     provide: ActivatedRoute,
                     useValue: activatedRouteMock
                 },
+                {
+                    provide: Router,
+                    useValue: RouterMock
+                },
+                RouteFlattenerService,
                 MockBackend,
                 BaseRequestOptions,
                 {
@@ -95,6 +102,7 @@ describe('MigrationissuesTableComponent', () => {
 
         comp.migrationIssues = migrationIssues;
         fixture.detectChanges();
+        RouterMock.navigationEnd();
     });
 
     it('should display migration issues', () => {
