@@ -5,7 +5,7 @@ describe("PackageRegistryService", () => {
     let instance: PackageRegistryService;
 
     beforeEach(() => {
-        instance = new PackageRegistryService(null);
+        instance = new PackageRegistryService();
     });
 
     let id = 0;

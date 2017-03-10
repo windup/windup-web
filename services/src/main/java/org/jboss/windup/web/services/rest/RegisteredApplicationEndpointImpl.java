@@ -7,6 +7,8 @@ import javax.inject.Inject;
 import javax.validation.Valid;
 
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+import org.jboss.windup.web.services.model.Package;
+import org.jboss.windup.web.services.model.PackageMetadata;
 import org.jboss.windup.web.services.model.RegisteredApplication;
 import org.jboss.windup.web.services.service.RegisteredApplicationService;
 
@@ -57,5 +59,15 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
         RegisteredApplication application = this.registeredApplicationService.getApplication(appId);
 
         this.registeredApplicationService.deleteApplication(application);
+    }
+
+    @Override
+    public PackageMetadata getPackages(Long appId)
+    {
+        RegisteredApplication app = this.registeredApplicationService.getApplication(appId);
+        PackageMetadata packageMetadata = app.getPackageMetadata();
+        packageMetadata.getId(); // should force hibernate lazy loader to load data
+
+        return packageMetadata;
     }
 }

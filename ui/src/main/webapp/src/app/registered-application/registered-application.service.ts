@@ -12,6 +12,9 @@ import {
     ApplicationRegisteredEvent, ApplicationDeletedEvent
 } from "../core/events/windup-event";
 import {MigrationProject} from "windup-services";
+import {PackageMetadata} from "windup-services";
+import {SchedulerService} from "../shared/scheduler.service";
+import {Subject} from "rxjs";
 
 @Injectable()
 export class RegisteredApplicationService extends AbstractService {
@@ -29,6 +32,9 @@ export class RegisteredApplicationService extends AbstractService {
     public static SINGLE_APPLICATION_URL  = RegisteredApplicationService.SERVICE_SUBPATH + '/{appId}';
     public static UPDATE_APPLICATION_PATH_URL = RegisteredApplicationService.SINGLE_APPLICATION_URL + '/update-path';
     public static REUPLOAD_APPLICATION_URL    = RegisteredApplicationService.SINGLE_APPLICATION_URL + '/reupload';
+    public static PACKAGES_URL    = RegisteredApplicationService.SINGLE_APPLICATION_URL + '/packages';
+
+    protected static PACKAGE_REQUEST_PAUSE_TIME_MS = 10000;
 
     private UPLOAD_URL = '/file';
 
@@ -36,7 +42,8 @@ export class RegisteredApplicationService extends AbstractService {
         private _http: Http,
         private _keycloakService:KeycloakService,
         private _multipartUploader: FileUploader,
-        private _eventBusService: EventBusService
+        private _eventBusService: EventBusService,
+        private _schedulerService: SchedulerService
     ) {
         super();
         this._multipartUploader.setOptions({
@@ -203,5 +210,36 @@ export class RegisteredApplicationService extends AbstractService {
                 this._eventBusService.fireEvent(new ApplicationDeletedEvent(project, application, this));
             })
             .catch(this.handleError);
+    }
+
+    getPackageMetadata(application: RegisteredApplication): Observable<PackageMetadata> {
+        let url = Constants.REST_BASE + RegisteredApplicationService.PACKAGES_URL.replace("{appId}", application.id.toString());
+
+        return this._http.get(url)
+            .catch(error => this.handleError(error))
+            .map(res => res.json());
+    }
+
+    waitUntilPackagesAreResolved(application: RegisteredApplication): Observable<PackageMetadata> {
+        let subject = new Subject<PackageMetadata>();
+
+        let closure = () => {
+            console.log('Closure called');
+
+            this.getPackageMetadata(application).subscribe(packageMetadata => {
+                console.log('Subscriber of getPackageMetadata called');
+                if (packageMetadata.scanStatus !== "COMPLETE") {
+                    // schedule another round
+                    this._schedulerService.setTimeout(closure, RegisteredApplicationService.PACKAGE_REQUEST_PAUSE_TIME_MS);
+                } else {
+                    subject.next(packageMetadata);
+                    subject.complete();
+                }
+            });
+        };
+
+        closure();
+
+        return subject.asObservable();
     }
 }
