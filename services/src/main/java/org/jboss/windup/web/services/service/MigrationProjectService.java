@@ -4,6 +4,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
@@ -13,6 +14,7 @@ import org.jboss.windup.web.services.model.MigrationProject;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * @author <a href="mailto:dklingenberg@gmail.com">David Klingenberg</a>
@@ -48,6 +50,32 @@ public class MigrationProjectService
         return this.entityManager.createQuery(query, AnalysisContext.class)
                 .setParameter("project", project)
                 .getResultList();
+    }
+
+    /**
+     * Gets project by title
+     */
+    public Collection<MigrationProject> getProjectByTitle(String title)
+    {
+        String query = "SELECT proj FROM MigrationProject proj WHERE proj.title = :title";
+
+        return this.entityManager.createQuery(query, MigrationProject.class)
+                .setParameter("title", title)
+                .getResultList();
+    }
+
+    @Transactional
+    public MigrationProject createProject(MigrationProject project)
+    {
+        if (this.getProjectByTitle(project.getTitle()).size() > 0) {
+            throw new BadRequestException("Project with title: '" + project.getTitle() + "' already exists");
+        }
+
+        project.setId(null); // creating new project, should not have id set
+
+        this.entityManager.persist(project);
+
+        return project;
     }
 
     @Transactional
