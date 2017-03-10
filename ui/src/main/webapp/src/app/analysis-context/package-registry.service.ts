@@ -24,4 +24,59 @@ export class PackageRegistryService {
             aPackage.childs.forEach(child => this.putHierarchy(child));
         }
     }
+
+    /**
+     * Recursively merges multiple package root sets into one
+     *
+     * +- a   +   +- a   =   +- a
+     * +-- b      +-- c      +-- b
+     *                       +-- c
+     *
+     * +- a   +   +- b   =   +- a
+     *                       +- b
+     *
+     */
+    public mergePackageRoots(root: Package[]): Package[] {
+        let packageMap = new Map<string, Package>();
+        let packageRoots = new Set<Package>();
+        let result = [];
+
+        root.forEach(aPackage => {
+            let rootPackage = this.mergePackageHierarchy(aPackage, packageMap);
+
+            if (!packageRoots.has(rootPackage)) {
+                result.push(rootPackage);
+                packageRoots.add(rootPackage);
+            }
+        });
+
+        return result;
+    }
+
+    protected mergePackageHierarchy(aPackage: Package, packageMap: Map<string, Package>, parentPackage: Package = null) {
+        let packageInMap: Package = null;
+
+        let childPackages = aPackage.childs;
+
+        if (!packageMap.has(aPackage.fullName)) {
+            packageInMap = Object.assign({}, aPackage); // clone object
+            packageMap.set(aPackage.fullName, packageInMap);
+
+            if (parentPackage) {
+                parentPackage.childs.push(packageInMap);
+            }
+
+            packageInMap.childs = [];
+        } else {
+            // some magic
+            packageInMap = packageMap.get(aPackage.fullName);
+            packageInMap.countClasses += aPackage.countClasses;
+        }
+
+        childPackages.forEach(childPackage => {
+            this.mergePackageHierarchy(childPackage, packageMap, packageInMap)
+        });
+
+        return packageInMap;
+    }
 }
