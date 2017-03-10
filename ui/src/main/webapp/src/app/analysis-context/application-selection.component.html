@@ -1,0 +1,36 @@
+<div *ngIf="empty"><b>No applications present</b></div>
+<div *ngIf="!empty" class="application-selection">
+    <div class="toolbar-pf-actions">
+        <div class="toolbar-pf-filter">
+            <label class="sr-only" for="filter">Name</label>
+            <input
+                    (change)="updateFilter($event.target.value)"
+                    (keypress)="updateFilter($event.target.value)"
+                    (keyup)="updateFilter($event.target.value)"
+                    type="text"
+                    class="form-control"
+                    id="filter"
+                    placeholder="Filter By Name...">
+        </div>
+    </div>
+    <table class="datatable table table-striped table-bordered">
+        <thead>
+        <tr>
+            <th></th>
+            <th>Application</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let app of applications" (click)="handleCheckboxChange(app, !shouldBeChecked(app))">
+            <td>
+                <input type="checkbox"
+                       [value]="app"
+                       [checked]="shouldBeChecked(app)"
+                       (change)="handleCheckboxChange(app, $event.target.checked)"
+                />
+            </td>
+            <td>{{app.title}}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>

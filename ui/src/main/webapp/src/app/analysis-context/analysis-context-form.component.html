@@ -31,14 +31,10 @@
         <div class="form-group">
             <label class="col-md-2 control-label" i18n>Applications included</label>
             <div class="col-md-10 col-lg-8">
-                <wu-checkboxes [groupName]="'includedApps'"
-                               [options]="availableApps"
-                               [valueCallback]="appsValueCallback"
-                               [labelCallback]="appsLabelCallback"
-                               [equalsCallback]="equalsCallback"
-                               [(checkedOptions)]="analysisContext.applications"
-                >
-                </wu-checkboxes>
+                <wu-application-selection
+                        [applications]="availableApps"
+                        [(selectedApplications)]="analysisContext.applications"
+                ></wu-application-selection>
             </div>
         </div>
 
