@@ -21,6 +21,7 @@ import {RegisteredApplicationService} from "../registered-application/registered
 import {RegisteredApplication} from "windup-services";
 import {MigrationProject} from "windup-services";
 import {MigrationProjectService} from "../project/migration-project.service";
+import {forkJoin} from "rxjs/observable/forkJoin";
 
 @Component({
     templateUrl: './analysis-context-form.component.html'
@@ -47,6 +48,8 @@ export class AnalysisContextFormComponent extends FormComponent
     excludePackages: Package[];
     packageTree: Package[] = [];
 
+    packageTreeLoaded: boolean = false;
+
     configurationOptions: ConfigurationOption[] = [];
 
     private _migrationPathsObservable: Observable<MigrationPath[]>;
@@ -66,7 +69,8 @@ export class AnalysisContextFormComponent extends FormComponent
                 private _routeHistoryService: RouteHistoryService,
                 private _routeFlattener: RouteFlattenerService,
                 private _windupService: WindupService,
-                private _notificationService: NotificationService
+                private _notificationService: NotificationService,
+                private _registeredApplicationService: RegisteredApplicationService
     ) {
         super();
         this.includePackages = [];
@@ -90,6 +94,7 @@ export class AnalysisContextFormComponent extends FormComponent
                 // Reload the App from the service to ensure fresh data
                 this._migrationProjectService.get(project.id).subscribe(loadedProject => {
                     this.project = loadedProject;
+                    this.loadPackageMetadata();
                 });
 
                 // Load the apps of this project.
@@ -99,7 +104,6 @@ export class AnalysisContextFormComponent extends FormComponent
                 });
 
                 this.initializeAnalysisContext();
-                this.loadPackageMetadata();
             }
 
             this.isInWizard = flatRouteData.data.hasOwnProperty('wizard') && flatRouteData.data['wizard'];
@@ -144,37 +148,64 @@ export class AnalysisContextFormComponent extends FormComponent
     }
 
     private loadPackageMetadata() {
+        let registeredPackagesObservables = this.project.applications.map(app => {
+            return this._registeredApplicationService.waitUntilPackagesAreResolved(app);
+        });
+
         /*
-        TODO: Fix this later
-        this._applicationGroupService.getPackageMetadata(null).subscribe(
-            (packageMetadata: PackageMetadata) => {
-                if (packageMetadata.scanStatus === "COMPLETE") {
-                    packageMetadata.packageTree.forEach(node => {
-                        this._packageRegistryService.putHierarchy(node);
-                    });
-                }
+         * TODO: Find out how to continuously update data with new information. (If it is worth it)
+         * (only huge issue is with same packages possibly having different Ids since they come from different apps)
+         *
+         * Idea is following:
+         *  Make a request to all applications to get PackageMetadata. Filter out finished ones and build package tree from them.
+         *  Fire new event on subject.
+         *  Make additional requests to all not yet finished applications (with some delay).
+         *  Every time some application finishes, add data to package tree.
+         *  Repeat until all packages are resolved :)
+         *
+         *  Basically pretty much everything is done now, only thing to do would be replacing forkJoin with forEach
+         *    and subscribing to every single observable separately.
+         *
+         *  Another thing to solve would be how to inform user about packages being only partial data
 
-                this.packageTree = packageMetadata.packageTree;
+        let countRemainingPackagesToBeResolved = registeredPackagesObservables.length;
 
-                if (this.analysisContext != null) {
-                    if (this.analysisContext.includePackages == null || this.analysisContext.includePackages.length == 0) {
-                        this.includePackages = [];
-                    } else {
-                        this.includePackages = this.analysisContext.includePackages.map(node => this._packageRegistryService.get(node.id));
-                    }
+        let packageTree = [];
 
-                    if (this.analysisContext.excludePackages == null || this.analysisContext.excludePackages.length == 0) {
-                        this.analysisContext.excludePackages = [];
-                    } else {
-                        this.analysisContext.excludePackages = this.analysisContext.excludePackages.map(node => this._packageRegistryService.get(node.id));
-                    }
-                }
+        registeredPackagesObservables.forEach(observable => {
+            observable.subscribe(packageMetadata => {
+                countRemainingPackagesToBeResolved--;
 
-                this.includePackages = this.analysisContext.includePackages;
-                this.excludePackages = this.analysisContext.excludePackages;
-            }
-        );
+                packageTree = this._packageRegistryService.mergePackageRoots([ ... packageTree, ... packageMetadata.packageTree ]);
+            });
+        });
         */
+
+        forkJoin(registeredPackagesObservables).subscribe((packageMetadataArray: PackageMetadata[]) => {
+            let arrayOfRoots = [].concat(...packageMetadataArray.map((singlePackageMetadata) => singlePackageMetadata.packageTree));
+            let mergedRoots = this._packageRegistryService.mergePackageRoots(arrayOfRoots);
+            mergedRoots.forEach(singleRoot => this._packageRegistryService.putHierarchy(singleRoot));
+
+            this.packageTree = mergedRoots;
+            this.packageTreeLoaded = true;
+
+            if (this.analysisContext != null) {
+                if (this.analysisContext.includePackages == null || this.analysisContext.includePackages.length == 0) {
+                    this.includePackages = [];
+                } else {
+                    this.includePackages = this.analysisContext.includePackages.map(node => this._packageRegistryService.get(node.id));
+                }
+
+                if (this.analysisContext.excludePackages == null || this.analysisContext.excludePackages.length == 0) {
+                    this.analysisContext.excludePackages = [];
+                } else {
+                    this.analysisContext.excludePackages = this.analysisContext.excludePackages.map(node => this._packageRegistryService.get(node.id));
+                }
+            }
+
+            this.includePackages = this.analysisContext.includePackages;
+            this.excludePackages = this.analysisContext.excludePackages;
+        });
     }
 
     get migrationPaths() {

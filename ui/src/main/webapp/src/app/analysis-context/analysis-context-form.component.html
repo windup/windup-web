@@ -46,6 +46,7 @@
         <div class="form-group">
             <label class="col-md-2 control-label" i18n>Include Packages</label>
             <div class="col-md-10 col-lg-8">
+                <strong *ngIf="!packageTreeLoaded"><span class="spinner spinner-xs spinner-inline"></span>Loading...</strong>
                 <wu-js-tree-wrapper
                         [treeNodes]="packageTree"
                         [(selectedNodes)]="analysisContext.includePackages"
@@ -56,6 +57,7 @@
         <div class="form-group">
             <label class="col-md-2 control-label" i18n>Exclude Package</label>
             <div class="col-md-10 col-lg-8">
+                <strong *ngIf="!packageTreeLoaded"><span class="spinner spinner-xs spinner-inline"></span>Loading...</strong>
                 <wu-js-tree-wrapper
                         [treeNodes]="packageTree"
                         [(selectedNodes)]="analysisContext.excludePackages">

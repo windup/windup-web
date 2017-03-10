@@ -4,6 +4,7 @@ import {Package} from "windup-services";
 @Injectable()
 export class PackageRegistryService {
     protected registeredPackages: {[id: number]: Package} = {};
+    protected packagesByNameMap: Map<string, Package> = new Map<string, Package>();
 
     public get(id: number): Package {
         return this.registeredPackages[id];
@@ -14,7 +15,10 @@ export class PackageRegistryService {
     }
 
     public put(aPackage: Package) {
-        this.registeredPackages[aPackage.id] = aPackage;
+        if (!this.packagesByNameMap.has(aPackage.fullName)) {
+            this.registeredPackages[aPackage.id] = aPackage;
+            this.packagesByNameMap.set(aPackage.fullName, aPackage);
+        }
     }
 
     public putHierarchy(aPackage: Package) {
