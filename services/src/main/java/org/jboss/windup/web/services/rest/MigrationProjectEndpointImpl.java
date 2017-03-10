@@ -11,7 +11,10 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
+import javax.persistence.PersistenceException;
 import javax.ws.rs.NotFoundException;
+
+import org.hibernate.exception.ConstraintViolationException;
 import org.jboss.windup.util.exception.WindupException;
 
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
@@ -74,15 +77,7 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
     @Override
     public MigrationProject createMigrationProject(MigrationProject migrationProject)
     {
-        if (migrationProject.getId() != null)
-        {
-            migrationProject.setId(null); // creating new project, should not have id set
-        }
-
-        entityManager.persist(migrationProject);
-
-        this.analysisContextService.createDefaultAnalysisContext(migrationProject);
-
+        migrationProject = this.migrationProjectService.createProject(migrationProject);
         LOG.info("Creating a migration project: " + migrationProject.getId());
 
         return migrationProject;
