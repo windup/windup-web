@@ -1,0 +1,245 @@
+# this is an example of the Uber API
+# as a demonstration of an API spec in YAML
+swagger: '2.0'
+info:
+  title: WindUp Web REST API
+  description: REST API specification for WindUp
+  version: "1.0.0"
+# the domain of the service
+host: localhost:8080
+# array of all schemes that your API supports
+schemes:
+  - http
+# will be prefixed to all paths
+basePath: /windup-web-service
+produces:
+  - application/json
+paths:
+  /migrationProjects:
+    get:
+      summary: Migration projects
+      description: |
+        This endpoint returns list of currently logged in users projects.
+      responses:
+        200:
+          description: An array of projects
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/MigrationProject'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: Create new migration project
+      responses:
+        201:
+          description: New project created
+          schema:
+            $ref: '#/definitions/MigrationProject'
+          headers:
+            location:
+              type: string
+              description: URI of newly created object
+        400:
+          description: Invalid data
+          schema:
+            $ref: '#/definitions/Error'
+  /migrationProjects/{id}:
+    parameters:
+      - name: id
+        in: path
+        type: number
+        required: true
+        description: id of project.
+    get:
+      responses:
+        200:
+          description: Gets a project
+          schema:
+            $ref: '#/definitions/MigrationProject'
+        404:
+          description: Not found
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      responses:
+        200:
+          description: Gets a project
+          schema:
+            $ref: '#/definitions/MigrationProject'
+        400:
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Not found
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      responses:
+        201:
+          description: Deleted
+  /migrationProjects/{id}/applicationGroups:
+    parameters:
+      - name: id
+        in: path
+        type: number
+        required: true
+        description: id of project.
+    get:
+      responses:
+        200:
+          description: Gets application groups within project
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ApplicationGroup'
+        404:
+          description: Migration project not found
+    post:
+      responses:
+        201:
+          description: Creates new application group
+          schema:
+            $ref: "#/definitions/ApplicationGroup"
+          headers:
+            location:
+              type: string
+              description: URI of newly created object
+
+  /applicationGroups/{id}:
+    parameters:
+      - name: id
+        in: path
+        type: number
+        required: true
+        description: id of project.
+    get:
+      responses:
+        200:
+          description: Gets application groups within project
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ApplicationGroup'
+        404:
+          description: Migration project not found
+    put:
+      responses:
+        200:
+          description: Updates application group
+          schema:
+            $ref: "#/definitions/ApplicationGroup"
+    delete:
+      responses:
+        200:
+          description: Gets application groups within project
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ApplicationGroup'
+        404:
+          description: Migration project not found
+
+  /applicationGroups/{id}/applications:
+    parameters:
+      - name: id
+        in: path
+        type: number
+        required: true
+        description: id of project.
+    get:
+      responses:
+        200:
+          description: Gets applications within ApplicationGroup
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ApplicationGroup'
+        404:
+          description: Application group not found
+    post:
+      responses:
+        201:
+          description: Creates new application
+          schema:
+            $ref: "#/definitions/ApplicationGroup"
+          headers:
+            location:
+              type: string
+              description: URI of newly created object
+
+definitions:
+  MigrationProject:
+    type: object
+    properties:
+      id:
+        type: number
+        description: Unique identifier
+      title:
+        type: string
+        description: Title of the project
+  ApplicationGroup:
+    type: object
+    properties:
+      id:
+        type: number
+        description: Unique identifier
+      title:
+        type: string
+        description: Title of the project
+      readonly:
+        type: boolean
+        description: Is read only?
+      outputPath:
+        type: string
+        description: Output path
+      analysisContextId:
+        type: number
+        description: Analysis context
+      applications:
+        type: array
+        items:
+          $ref: "#/definitions/RegisteredApplication"
+        description: Applications in app group
+      windupExecutions:
+        type: array
+        items:
+          $ref: "#/definitions/WindupExecution"
+  RegisteredApplication:
+    type: object
+    properties:
+      id:
+        type: number
+        description: Unique identifier
+      inputFilename:
+        type: string
+        description: Name of application file
+      inputPath:
+        type: string
+        description: Path to application file
+      outputPath:
+        type: string
+        description: Path to (report) output
+      reportIndexPath:
+        type: string
+        description: Path to report index
+      applicationGroupId:
+        type: number
+        description: Id of application group
+  ApplicationContext:
+    type: object
+  WindupExecution:
+    type: object
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      fields:
+        type: string
