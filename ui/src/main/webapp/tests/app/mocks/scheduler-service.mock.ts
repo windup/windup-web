@@ -35,10 +35,15 @@ export class SchedulerServiceMock extends SchedulerService {
 
     public timerTick() {
         this.timeoutHandles.forEach(callback => callback());
+        this.timeoutHandles = [];
     }
 
     public intervalTick() {
         this.intervalHandles.forEach(callback => callback());
+    }
+
+    public countTimeoutHandles() {
+        return this.timeoutHandles.length;
     }
 
     public cleanup() {

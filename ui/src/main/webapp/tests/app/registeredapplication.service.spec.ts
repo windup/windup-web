@@ -18,6 +18,12 @@ import {FileUploader} from "ng2-file-upload/ng2-file-upload";
 import {MockBackend, MockConnection} from "@angular/http/testing";
 import {EventBusService} from "../../src/app/core/events/event-bus.service";
 import {MigrationProject} from "windup-services";
+import {SchedulerServiceMock} from "./mocks/scheduler-service.mock";
+import {PackageMetadata} from "windup-services";
+import {Subject} from "rxjs";
+import createSpy = jasmine.createSpy;
+import {RegisteredApplication} from "windup-services";
+import {SchedulerService} from "../../src/app/shared/scheduler.service";
 
 describe("Registered Application Service Test", () => {
     beforeEach(() => {
@@ -26,6 +32,10 @@ describe("Registered Application Service Test", () => {
                 imports: [HttpModule],
                 providers: [
                     Constants, FileService, RegisteredApplicationService, MockBackend, BaseRequestOptions,
+                    {
+                        provide: SchedulerService,
+                        useClass: SchedulerServiceMock
+                    },
                     {
                         provide: EventBusService,
                         useValue: jasmine.createSpyObj('EventBusService', ['fireEvent'])
@@ -82,4 +92,77 @@ describe("Registered Application Service Test", () => {
                     fail(error);
                 });
         })));
+
+    describe('waitUntilPackagesAreResolved', () => {
+        let instance: RegisteredApplicationService;
+        let schedulerMock: SchedulerServiceMock;
+        let count = 0;
+
+        // todo find out what to do with this:
+        let subject = new Subject<PackageMetadata>();
+
+        let getPackageMetadata = () => {
+            console.log('getPackageMetadata called');
+
+            count++;
+
+            let result: PackageMetadata = {
+                id: 1,
+                discoveredDate: new Date(),
+                scanStatus: 'QUEUED',
+                packageTree: []
+            };
+
+            if (count === 3) {
+                result.scanStatus = 'COMPLETE';
+            } else if (count < 3) {
+                result.scanStatus = 'IN_PROGRESS';
+            } else {
+                //throw new Error('Expected to get called max. 3 times, got called 4 times');
+                result.scanStatus = 'COMPLETE';
+                console.error('Expected to get called max. 3 times, got called 4 times');
+            }
+
+            subject.next(result);
+
+            return subject;
+        };
+
+        beforeEach(() => {
+            count = 0;
+            schedulerMock = new SchedulerServiceMock();
+
+            let originalMethod = schedulerMock.setTimeout.bind(schedulerMock);
+            spyOn((<any>SchedulerServiceMock).prototype, 'setTimeout').and.callFake((callback, timeout) => {
+                originalMethod(callback, timeout);
+                schedulerMock.timerTick();
+            });
+
+            instance = new RegisteredApplicationService(null, null, jasmine.createSpyObj('multipartUploader', [
+                'setOptions'
+            ]), null, schedulerMock);
+            spyOn(RegisteredApplicationService.prototype, 'getPackageMetadata').and.callFake(getPackageMetadata);
+        });
+
+        it('should use getPackageMetadata method', () => {
+            instance.waitUntilPackagesAreResolved(<RegisteredApplication>{id: 1});
+            expect(instance.getPackageMetadata).toHaveBeenCalled();
+        });
+
+        it('should make requests with timeout until packages are resolved', async(() => {
+            instance.waitUntilPackagesAreResolved(<RegisteredApplication>{id: 1}).subscribe(
+                value => {
+                    expect(instance.getPackageMetadata).toHaveBeenCalledTimes(3);
+                    expect(value.scanStatus).toBe('COMPLETED');
+                },
+                error => {
+                    fail(error);
+                }
+            );
+
+            expect(schedulerMock.setTimeout).toHaveBeenCalledTimes(2);
+            schedulerMock.timerTick();
+            expect(schedulerMock.setTimeout).toHaveBeenCalledTimes(2);
+        }));
+    });
 });

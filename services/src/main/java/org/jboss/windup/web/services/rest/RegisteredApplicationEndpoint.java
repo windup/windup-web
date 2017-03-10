@@ -1,6 +1,8 @@
 package org.jboss.windup.web.services.rest;
 
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+import org.jboss.windup.web.services.model.Package;
+import org.jboss.windup.web.services.model.PackageMetadata;
 import org.jboss.windup.web.services.model.RegisteredApplication;
 
 import javax.validation.Valid;
@@ -52,4 +54,9 @@ public interface RegisteredApplicationEndpoint
     @Path("{id}")
     @DELETE
     void deleteApplication(@PathParam("id") long appId);
+
+
+    @Path("{id}/packages")
+    @GET
+    PackageMetadata getPackages(@PathParam("id") Long appId);
 }
