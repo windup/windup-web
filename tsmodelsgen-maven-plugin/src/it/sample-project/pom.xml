@@ -10,9 +10,9 @@
   <description>A simple IT verifying the basic use case.</description>
 
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-      <windup.version>3.0.0-SNAPSHOT</windup.version>
-      <forge.version>3.2.2.Final</forge.version>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      <version.windup>3.0.0-SNAPSHOT</version.windup>
+      <version.forge>3.2.2.Final</version.forge>
       <inputDirectory></inputDirectory>
       <outputDirectory>${project.build.directory}/tsModels</outputDirectory>
   </properties>
@@ -31,8 +31,8 @@
                     <inputDirectory>${inputDirectory}</inputDirectory>
                     <outputDirectory>${outputDirectory}</outputDirectory>
                     <overwrite>false</overwrite>
-                    <windupVersion>${windup.version}</windupVersion>
-                    <forgeVersion>${forge.version}</forgeVersion>
+                    <windupVersion>${version.windup}</windupVersion>
+                    <forgeVersion>${version.forge}</forgeVersion>
                 </configuration>
             </plugin>
         </plugins>
