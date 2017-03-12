@@ -11,7 +11,8 @@
 
   <properties>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-      <version.windup>3.1.0-SNAPSHOT</version.windup>
+      <version.windup.core>3.1.0-SNAPSHOT</version.windup.core>
+      <version.windup.web>3.0.0-SNAPSHOT</version.windup.web>
       <version.forge>3.3.2.Final</version.forge>
       <inputDirectory></inputDirectory>
       <outputDirectory>${project.build.directory}/tsModels</outputDirectory>
@@ -31,7 +32,8 @@
                     <inputDirectory>${inputDirectory}</inputDirectory>
                     <outputDirectory>${outputDirectory}</outputDirectory>
                     <overwrite>false</overwrite>
-                    <windupVersion>${version.windup}</windupVersion>
+                    <windupCoreVersion>${version.windup.core}</windupCoreVersion>
+                    <windupWebVersion>${version.windup.core}</windupWebVersion>
                     <forgeVersion>${version.forge}</forgeVersion>
                 </configuration>
             </plugin>
