@@ -1,5 +1,5 @@
 import {Component, OnInit, OnDestroy} from "@angular/core";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 
 import {MigrationProject} from "windup-services";
 import {RouteLinkProviderService} from "../core/routing/route-link-provider-service";
@@ -18,16 +18,18 @@ import {MigrationProjectService} from "./migration-project.service";
     ]
 })
 export class ProjectLayoutComponent extends AbstractComponent implements OnInit, OnDestroy {
+    protected allProjects: MigrationProject[];
     protected project: MigrationProject;
     protected menuItems;
 
     // TODO: Execution progress: Project Layout must be updated when execution state changes (is completed)
 
     constructor(
-        private _activatedRoute: ActivatedRoute,
-        private _routeLinkProviderService: RouteLinkProviderService,
-        private _migrationProjectService: MigrationProjectService,
-        private _eventBus: EventBusService
+        protected _activatedRoute: ActivatedRoute,
+        protected _routeLinkProviderService: RouteLinkProviderService,
+        protected _migrationProjectService: MigrationProjectService,
+        protected _eventBus: EventBusService,
+        protected _router: Router
     ) {
         super();
     }
@@ -44,6 +46,14 @@ export class ProjectLayoutComponent extends AbstractComponent implements OnInit,
 
             this._migrationProjectService.monitorProject(this.project);
             this.createContextMenuItems();
+        });
+
+        this.loadProjects();
+    }
+
+    protected loadProjects() {
+        this._migrationProjectService.getAll().subscribe((projects: MigrationProject[]) => {
+            this.allProjects = projects;
         });
     }
 
@@ -88,4 +98,16 @@ export class ProjectLayoutComponent extends AbstractComponent implements OnInit,
             },
         ];
     }
+
+    public getProjectLabel = (project: MigrationProject): string => {
+        return project ? project.title : '';
+    };
+
+    public getProjectRoute = (project: MigrationProject): any[] => {
+        return project ? ['/projects', project.id, 'project-detail'] : null;
+    };
+
+    public navigateToProject = (project: MigrationProject) => {
+        this._router.navigate(this.getProjectRoute(project));
+    };
 }

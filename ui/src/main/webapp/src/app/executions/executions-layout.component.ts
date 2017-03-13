@@ -1,5 +1,5 @@
 import {Component, OnInit, OnDestroy} from "@angular/core";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 
 import {MigrationProject} from "windup-services";
 import {RouteLinkProviderService} from "../core/routing/route-link-provider-service";
@@ -9,7 +9,6 @@ import {DependenciesReportComponent} from "../reports/dependencies/dependencies-
 import {ReportMenuItem} from "../shared/navigation/context-menu-item.class";
 import {ApplicationIndexComponent} from "../reports/application-index/application-index.component";
 import {ApplicationDetailsComponent} from "../reports/application-details/application-details.component";
-import {AbstractComponent} from "../shared/AbstractComponent";
 import {ReportFilterComponent} from "../reports/filter/report-filter.component";
 import {WINDUP_WEB} from "../app.module";
 import {ProjectExecutionsComponent} from "./project-executions.component";
@@ -17,6 +16,9 @@ import {WindupExecution} from "windup-services";
 import {WindupService} from "../services/windup.service";
 import {EventBusService} from "../core/events/event-bus.service";
 import {ExecutionEvent} from "../core/events/windup-event";
+import {ProjectLayoutComponent} from "../project/project-layout.component";
+import {MigrationProjectService} from "../project/migration-project.service";
+import {DatePipe} from "@angular/common";
 
 @Component({
     templateUrl: './executions-layout.component.html',
@@ -24,24 +26,28 @@ import {ExecutionEvent} from "../core/events/windup-event";
         `:host /deep/ .nav-pf-vertical { top: 82px; }`
     ]
 })
-export class ExecutionsLayoutComponent extends AbstractComponent implements OnInit, OnDestroy {
-    protected project: MigrationProject;
+export class ExecutionsLayoutComponent extends ProjectLayoutComponent implements OnInit, OnDestroy {
     protected execution: WindupExecution;
-    protected menuItems;
+    protected allExecutions: WindupExecution[];
 
     constructor(
-        private _activatedRoute: ActivatedRoute,
-        private _routeLinkProviderService: RouteLinkProviderService,
+        _activatedRoute: ActivatedRoute,
+        _routeLinkProviderService: RouteLinkProviderService,
+        _migrationProjectService: MigrationProjectService,
+        _eventBus: EventBusService,
+        _router: Router,
         private _windupService: WindupService,
-        private _eventBus: EventBusService,
+        private _datePipe: DatePipe
     ) {
-        super();
+        super(_activatedRoute, _routeLinkProviderService, _migrationProjectService, _eventBus, _router);
     }
 
     ngOnInit(): void {
-
         this._activatedRoute.parent.data.subscribe((data: {project: MigrationProject}) => {
             this.project = data.project;
+
+            this.loadProjectExecutions();
+            this.loadProjects();
 
             this._activatedRoute.params.subscribe((params: {executionId: number}) => {
                 let executionId = +params.executionId;
@@ -60,6 +66,24 @@ export class ExecutionsLayoutComponent extends AbstractComponent implements OnIn
             });
         });
     }
+
+    protected loadProjectExecutions() {
+        this._windupService.getProjectExecutions(this.project.id).subscribe((executions: WindupExecution[]) => {
+            this.allExecutions = executions;
+        });
+    }
+
+    public getExecutionLabel = (execution: WindupExecution): string => {
+        return execution ? this._datePipe.transform(execution.timeStarted, 'short') : '';
+    };
+
+    public getExecutionRoute = (execution: WindupExecution): any[] => {
+        return execution ? ['/projects', this.project.id, 'reports', execution.id] : null;
+    };
+
+    public navigateToExecution = (execution: WindupExecution) => {
+        this._router.navigate(this.getExecutionRoute(execution));
+    };
 
     protected createContextMenuItems() {
         this.menuItems = [

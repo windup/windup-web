@@ -115,6 +115,8 @@ import {CheckboxesComponent} from "./shared/checkboxes.component";
 import {InViewport} from "./components/in-viewport.directive";
 import {WizardLayoutComponent} from "./shared/layout/wizard-layout.component";
 import {ExecutionsLayoutComponent} from "./executions/executions-layout.component";
+import {NavbarSelectionComponent} from "./shared/navigation/navbar-selection.component";
+import {DatePipe} from "@angular/common";
 
 /**
  * Load all mapping data from the generated files.
@@ -215,7 +217,8 @@ initializeModelMappingData();
         SortableTableComponent,
         StatusIconComponent,
         ApplicationListComponent,
-        ProjectExecutionsComponent
+        ProjectExecutionsComponent,
+        NavbarSelectionComponent
     ],
     providers: [
         appRoutingProviders,
@@ -272,7 +275,8 @@ initializeModelMappingData();
             useFactory: createGraphJSONToModelService,
             deps: [Http]
         },
-        AggregatedStatisticsService
+        AggregatedStatisticsService,
+        DatePipe
     ],
     bootstrap:    [ AppComponent ]
 })
