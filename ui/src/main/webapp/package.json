@@ -76,7 +76,7 @@
     "@angularclass/hmr-loader": "^3.0.2",
     "@ngtools/webpack": "^1.2.12",
     "@types/bootstrap": "^3.3.32",
-    "@types/core-js": "^0.9.37",
+    "@types/core-js": "0.9.36",
     "@types/d3": "4.7.0",
     "@types/d3-array": "1.1.0",
     "@types/d3-brush": "1.0.6",
