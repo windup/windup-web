@@ -1,3 +1,5 @@
+$navbar-text-color: #72767b;
+
 $navbar-background-color: #292E34;
 $navbar-hover-item-background-color: #1e2126;
 $navbar-active-item-background-color: #292E34;
@@ -17,6 +19,7 @@ li.home a {
   width: 200px;
   border-bottom: 1px black solid;
   padding-left: 25px;
+  color: $navbar-text-color;
 }
 
 span.pficon-home {
