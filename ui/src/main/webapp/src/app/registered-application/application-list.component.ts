@@ -44,11 +44,11 @@ export class ApplicationListComponent extends ExecutionsMonitoringComponent impl
     }
 
     registerApplication() {
-        this._router.navigate([`/projects/${this.project.id}/applications/register`]);
+        this._router.navigate([`/projects/${this.project.id}/project-detail/applications/register`]);
     }
 
     editApplication(application: RegisteredApplication) {
-        this._router.navigate([`/projects/${this.project.id}/applications/${application.id}/edit`]);
+        this._router.navigate([`/projects/${this.project.id}/project-detail/applications/${application.id}/edit`]);
     }
 
     deleteApplication(application: RegisteredApplication) {
