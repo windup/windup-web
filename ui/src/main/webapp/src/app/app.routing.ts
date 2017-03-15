@@ -108,6 +108,7 @@ export const appRoutes: Routes = [
                                 path: '',
                                 component: ProjectLayoutComponent,
                                 children: [
+                                    { path: '', redirectTo: 'project-detail', pathMatch: 'full' },
                                     { path: 'project-detail', component: ProjectExecutionsComponent, data: {displayName: 'Executions List'}},
                                     { path: 'applications', children: [
                                         { path: '', component: ApplicationListComponent, data: {displayName: 'Application List'} },
