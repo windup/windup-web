@@ -17,7 +17,6 @@ import javax.ws.rs.NotFoundException;
 
 import org.jboss.forge.furnace.Furnace;
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
-import org.jboss.windup.web.addons.websupport.services.WindupExecutorService;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.messaging.MessagingConstants;
 import org.jboss.windup.web.services.model.AnalysisContext;
@@ -35,10 +34,6 @@ public class WindupEndpointImpl implements WindupEndpoint
 
     @Inject
     private Furnace furnace;
-
-    @Inject
-    @FromFurnace
-    private WindupExecutorService windupExecutorService;
 
     @PersistenceContext
     private EntityManager entityManager;
