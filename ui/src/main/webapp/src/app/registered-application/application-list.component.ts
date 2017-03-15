@@ -56,6 +56,7 @@ export class ApplicationListComponent extends ExecutionsMonitoringComponent impl
     }
 
     deleteApplication(application: RegisteredApplication) {
+        // TODO: Show confirm dialog
         this._registeredApplicationsService.deleteApplication(this.project, application).subscribe(
             () => {}, // reload project
             error => this._notificationService.error(utils.getErrorMessage(error))
