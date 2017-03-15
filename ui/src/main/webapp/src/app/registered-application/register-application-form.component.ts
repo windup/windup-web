@@ -162,7 +162,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     }
 
     protected rerouteToApplicationList() {
-        this.navigateAway([`/projects/${this.project.id}/applications`]);
+        this.navigateAway([`/projects/${this.project.id}/project-detail/applications`]);
     }
 
     private cancelRegistration() {
