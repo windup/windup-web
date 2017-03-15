@@ -134,7 +134,7 @@
     "tslint": "^4.3.1",
     "tslint-loader": "^2.1.0",
     "typedoc": "^0.4.4",
-    "typescript": "2.1.5",
+    "typescript": "2.2.1",
     "typings": "1.4.0",
     "url-loader": "^0.5.6",
     "webpack": "2.2.0",

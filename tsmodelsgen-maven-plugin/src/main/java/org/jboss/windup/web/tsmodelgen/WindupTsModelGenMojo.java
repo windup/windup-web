@@ -98,10 +98,16 @@ public class WindupTsModelGenMojo extends AbstractMojo
     private Boolean overwrite;
 
     /**
-     * Windup version to use to generate the models from. If not set, default are loaded from within the plugin.
+     * Windup Core version to use to generate the models from. If not set, default are loaded from within the plugin.
      */
-    @Parameter(alias = "windupVersion", property = "windupVersion", required = false)
-    private String windupVersion;
+    @Parameter(alias = "windupCoreVersion", property = "windupCoreVersion", required = false)
+    private String windupCoreVersion;
+
+    /**
+     * Windup Web version to use (contains the TsGen service). If not set, default are loaded from within the plugin.
+     */
+    @Parameter(alias = "windupWebVersion", property = "windupWebVersion", required = false)
+    private String windupWebVersion;
 
     private static Furnace createAndStartFurnace()
     {
@@ -189,21 +195,27 @@ public class WindupTsModelGenMojo extends AbstractMojo
         if (forgeVersion == null)
             throw new MojoExecutionException("Version of Forge was not defined in 'version.forge'.");
 
-        final String windupVersion_ = versions.getProperty("version.windup");
-        if (null != windupVersion_)
-            this.windupVersion = windupVersion_;
-        if (null == this.windupVersion)
-            throw new MojoExecutionException("Version of Windup which should be used was not defined in 'version.windup'.");
+        final String windupCoreVersion_ = versions.getProperty("version.windup.core");
+        if (null != windupCoreVersion_)
+            this.windupCoreVersion = windupCoreVersion_;
+        if (null == this.windupCoreVersion)
+            throw new MojoExecutionException("Version of Windup which should be used was not defined in 'version.windup.core'.");
+
+        final String windupWebVersion_ = versions.getProperty("version.windup.web");
+        if (null != windupWebVersion_)
+            this.windupWebVersion = windupWebVersion_;
+        if (null == this.windupWebVersion)
+            throw new MojoExecutionException("Version of Windup which should be used was not defined in 'version.windup.web'.");
 
         try
         {
             Furnace furnace = createAndStartFurnace();
             install("org.jboss.forge.furnace.container:simple," + furnaceVersion, furnace); // :simple instead of :cdi
             install("org.jboss.forge.addon:core," + forgeVersion, furnace);
-            install("org.jboss.windup:windup-tooling," + this.windupVersion, furnace);
-            install("org.jboss.windup.rules.apps:windup-rules-java-project," + this.windupVersion, furnace);
+            install("org.jboss.windup:windup-tooling," + this.windupCoreVersion, furnace);
+            install("org.jboss.windup.rules.apps:windup-rules-java-project," + this.windupCoreVersion, furnace);
             // This addon contains the TsGen service.
-            install("org.jboss.windup.web.addons:windup-web-support," + this.windupVersion, furnace);
+            install("org.jboss.windup.web.addons:windup-web-support," + this.windupWebVersion, furnace);
 
             AddonRegistry addonRegistry = furnace.getAddonRegistry();
             TypeScriptModelsGeneratingService generatingService = addonRegistry.getServices(TypeScriptModelsGeneratingService.class).get();
