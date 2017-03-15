@@ -7,12 +7,12 @@
                     Home
                 </a>
             </li>
-            <li [routerLinkActive]="['active']">
-                <a [routerLink]="['/executions']">Executions</a>
-            </li>
             <ng-content></ng-content>
         </ul>
         <ul class="nav navbar-nav navbar-utility">
+            <li [routerLinkActive]="['active']">
+                <a [routerLink]="['/executions']">All Executions</a>
+            </li>
             <li [routerLinkActive]="['active']">
                 <a [routerLink]="['/configuration']">Settings</a>
             </li>
