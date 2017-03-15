@@ -105,33 +105,28 @@ export const appRoutes: Routes = [
                         },
                         children: [
                             {
-                                path: '', redirectTo: "project-detail", pathMatch: "full",
-                            },
-                            {
-                                path: 'project-detail',
+                                path: '',
+                                component: ProjectLayoutComponent,
                                 children: [
-                                    {
-                                        path: '',
-                                        component: ProjectLayoutComponent, data: {displayName: 'Project Detail'},
-                                        children: [
-                                            { path: '', component: ProjectExecutionsComponent, data: {displayName: 'Executions List'}},
-                                            { path: 'applications', children: [
-                                                { path: '', component: ApplicationListComponent, data: {displayName: 'Application List'} },
-                                                { path: 'register', component: RegisterApplicationFormComponent, data: {displayName: "Application Registration"}},
-                                                {
-                                                    path: ':applicationId/edit',
-                                                    component: EditApplicationFormComponent,
-                                                    resolve: {
-                                                        application: ApplicationResolve
-                                                    },
-                                                    data: {displayName: "Edit Application"}
-                                                },
-                                            ]},
-                                            { path: 'analysis-context', component: AnalysisContextFormComponent, data: {displayName: "Edit Analysis Context"}, canDeactivate: [ConfirmDeactivateGuard]},
-                                        ]
-                                    },
-                                ]
+                                    { path: '', redirectTo: 'project-detail', pathMatch: 'full' },
+                                    { path: 'project-detail', component: ProjectExecutionsComponent, data: {displayName: 'Executions List'}},
+                                    { path: 'applications', children: [
+                                        { path: '', component: ApplicationListComponent, data: {displayName: 'Application List'} },
+                                        { path: 'register', component: RegisterApplicationFormComponent, data: {displayName: "Application Registration"}},
+                                        {
+                                            path: ':applicationId/edit',
+                                            component: EditApplicationFormComponent,
+                                            resolve: {
+                                                application: ApplicationResolve
+                                            },
+                                            data: {displayName: "Edit Application"}
+                                        },
+                                    ]},
+                                    { path: 'analysis-context', component: AnalysisContextFormComponent, data: {displayName: "Edit Analysis Context"}, canDeactivate: [ConfirmDeactivateGuard]},                                ]
                             },
+                            { path: '', component: DefaultLayoutComponent, children: [
+                                {path: 'edit', component: MigrationProjectFormComponent, data: {displayName: 'Edit Project'}},
+                            ]},
                             {
                                 path: 'reports/:executionId',
                                 data: {
@@ -160,9 +155,6 @@ export const appRoutes: Routes = [
                                     {path: 'dependencies', component: DependenciesReportComponent, data: {displayName: 'Dependencies Report' }}
                                 ]
                             },
-                            { path: '', component: DefaultLayoutComponent, children: [
-                                {path: 'edit', component: MigrationProjectFormComponent, data: {displayName: 'Edit Project'}},
-                            ]},
                         ]
                     }
                 ]
