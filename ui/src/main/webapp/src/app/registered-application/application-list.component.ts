@@ -12,10 +12,13 @@ import {ExecutionsMonitoringComponent} from "../executions/executions-monitoring
 import {MigrationProject} from "windup-services";
 
 @Component({
-    templateUrl: './application-list.component.html'
+    templateUrl: './application-list.component.html',
+    styleUrls: ['../../../css/tables.scss']
 })
 export class ApplicationListComponent extends ExecutionsMonitoringComponent implements OnInit, OnDestroy
 {
+    public sortedApplications: RegisteredApplication[] = [];
+
     constructor(
         private _activatedRoute: ActivatedRoute,
         private _router: Router,
@@ -37,6 +40,7 @@ export class ApplicationListComponent extends ExecutionsMonitoringComponent impl
 
         this._activatedRoute.parent.parent.data.subscribe((data: {project: MigrationProject}) => {
             this.project = data.project;
+            this.sortedApplications = data.project.applications;
         });
     }
 
