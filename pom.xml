@@ -21,8 +21,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.target>1.8</maven.compiler.target>
 
-        <version.forge>3.3.2.Final</version.forge>
-        <version.furnace>2.24.2.Final</version.furnace>
+        <version.forge>3.5.1.Final</version.forge>
+        <version.furnace>2.25.2.Final</version.furnace>
         <version.windup>3.1.0-SNAPSHOT</version.windup>
         <version.keycloak>2.1.0.Final</version.keycloak>
         <version.resteasy>3.0.19.Final</version.resteasy>
