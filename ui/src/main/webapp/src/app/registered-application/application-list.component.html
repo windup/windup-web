@@ -1,7 +1,12 @@
 <div class="panel-body">
     <wu-active-executions-progressbar [activeExecutions]="activeExecutions"></wu-active-executions-progressbar>
 
-    <h2>Project {{project?.title || "loading..."}}</h2>
+    <div class="header-bar">
+        <h2>Project {{project?.title || "loading..."}}</h2>
+        <div class="button-container">
+            <button (click)="registerApplication()" class="btn btn-primary" type="button">Register Application</button>
+        </div>
+    </div>
 
     <table class="table table-bordered table-hover">
         <thead wu-sortable-table
@@ -33,5 +38,4 @@
             </tr>
         </tbody>
     </table>
-    <button (click)="registerApplication()" class="btn btn-primary" type="button">Register Application</button>
 </div>

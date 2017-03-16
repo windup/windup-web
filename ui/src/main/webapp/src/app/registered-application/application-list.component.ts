@@ -13,7 +13,10 @@ import {MigrationProject} from "windup-services";
 
 @Component({
     templateUrl: './application-list.component.html',
-    styleUrls: ['../../../css/tables.scss']
+    styleUrls: [
+        '../../../css/tables.scss',
+        './application-list.component.scss'
+    ]
 })
 export class ApplicationListComponent extends ExecutionsMonitoringComponent implements OnInit, OnDestroy
 {
