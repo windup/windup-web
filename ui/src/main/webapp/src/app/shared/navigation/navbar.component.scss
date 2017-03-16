@@ -17,7 +17,9 @@ $navbar-os-project-menu-border: #050505;
 
 li.home a {
   width: 200px;
-  border-bottom: 1px black solid;
+//  border-bottom: 1px black solid;
+  border-right: 1px solid $navbar-os-project-menu-border;
+
   padding-left: 25px;
   color: $navbar-text-color;
 }
@@ -30,6 +32,7 @@ span.pficon-home {
  .navbar-pf .navbar-primary {
    background-color: $navbar-background-color;
    background-image: initial;
+   border-bottom: 1px solid $navbar-os-project-menu-border;
  }
 
   .navbar-primary > li {
