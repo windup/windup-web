@@ -19,12 +19,12 @@
                 <td>{{app.created | date: 'short'}}</td>
                 <td>{{app.lastModified | date: 'short' }}</td>
                 <td>
-                    <span class="fa-lg project-action-item" i18n-title="Edit application" title="Edit">
+                    <span class="fa-lg action-item" i18n-title="Edit application" title="Edit">
                         <a (click)="editApplication(app)" class="action-button">
                             <i class="fa fa-pencil"></i>
                         </a>
                     </span>
-                    <span class="fa-lg project-action-item" i18n-title="Delete application" title="Delete">
+                    <span class="fa-lg action-item" i18n-title="Delete application" title="Delete">
                         <a (click)="deleteApplication(app)"  class="action-button">
                             <i class="fa fa-trash-o"></i>
                         </a>
