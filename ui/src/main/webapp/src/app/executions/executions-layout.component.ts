@@ -23,7 +23,8 @@ import {DatePipe} from "@angular/common";
 @Component({
     templateUrl: './executions-layout.component.html',
     styles: [
-        `:host /deep/ .nav-pf-vertical { top: 61px; }`
+        `:host /deep/ .nav-pf-vertical { top: 61px; }`,
+        `:host /deep/ .row-cards-pf:first-child { padding-top: initial; }`
     ]
 })
 export class ExecutionsLayoutComponent extends ProjectLayoutComponent implements OnInit, OnDestroy {

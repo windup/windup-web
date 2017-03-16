@@ -14,7 +14,8 @@ import {MigrationProjectService} from "./migration-project.service";
 @Component({
     templateUrl: './project-layout.component.html',
     styles: [
-        `:host /deep/ .nav-pf-vertical { top: 61px; }`
+        `:host /deep/ .nav-pf-vertical { top: 61px; }`,
+        `:host /deep/ .row-cards-pf:first-child { padding-top: initial; }`
     ]
 })
 export class ProjectLayoutComponent extends AbstractComponent implements OnInit, OnDestroy {
