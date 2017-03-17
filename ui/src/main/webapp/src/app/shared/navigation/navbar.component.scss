@@ -1,0 +1,52 @@
+$navbar-text-color: #d1d1d1;  // OpenShift uses this one: #72767b;
+
+$navbar-background-color: #292E34;
+$navbar-hover-item-background-color: #1e2126;
+$navbar-active-item-background-color: #292E34;
+
+$dropdown-select-color: #dbdada;
+$dropdown-hover-color: #383f47;
+$dropdown-active-item-color: #00a8e1;
+
+$navbar-os-project-menu-active-color: #fcfcfc;
+$navbar-os-project-menu-border: #050505;
+
+.navbar-pf {
+  border-top: 0;
+}
+
+li.home a {
+  width: 200px;
+//  border-bottom: 1px black solid;
+  border-right: 1px solid $navbar-os-project-menu-border;
+
+  padding-left: 25px;
+  color: $navbar-text-color;
+}
+
+span.pficon-home {
+  font-size: 20px;
+}
+
+:host /deep/ {
+ .navbar-pf .navbar-primary {
+   background-color: $navbar-background-color;
+   background-image: initial;
+   border-bottom: 1px solid $navbar-os-project-menu-border;
+ }
+
+  .navbar-primary > li {
+    height: 60px;
+  }
+
+  .navbar-primary li a {
+    height: 100%;
+    padding-top: 24px;
+  }
+
+  .navbar-pf .navbar-primary > li > a:hover,
+  .navbar-pf .navbar-primary > .open > a {
+    background-image: initial;
+    background-color: $navbar-hover-item-background-color;
+  }
+}

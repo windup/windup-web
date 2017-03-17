@@ -5,6 +5,7 @@ import {Router} from "@angular/router";
 @Component({
     selector: 'wu-context-menu',
     templateUrl: './context-menu.component.html',
+    styleUrls: ['./context-menu.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContextMenuComponent {

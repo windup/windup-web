@@ -1,4 +1,17 @@
-<wu-navbar></wu-navbar>
+<wu-navbar>
+    <li wu-navbar-selection
+        [label]="'Project'"
+        [items]="allProjects" [selectedItem]="project"
+        [getItemLabel]="getProjectLabel" [getItemRoute]="getProjectRoute"
+        (selectedItemChange)="navigateToProject($event)"
+    ></li>
+    <li wu-navbar-selection
+        [label]="'Report'"
+        [items]="allExecutions" [selectedItem]="execution"
+        [getItemLabel]="getExecutionLabel" [getItemRoute]="getExecutionRoute"
+        (selectedItemChange)="navigateToExecution($event)"
+    ></li>
+</wu-navbar>
 <wu-context-menu [menuItems]="menuItems"></wu-context-menu>
 <div class="layout-project container-fluid container-cards-pf container-pf-nav-pf-vertical nav-pf-persistent-secondary">
     <div class="row row-cards-pf">

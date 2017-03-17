@@ -36,12 +36,7 @@ export class ExecutionDetailComponent implements OnInit {
                     this.execution = event.execution;
                 });
 
-            this._windupService.getExecution(executionId).subscribe(execution => {
-
-                // Null check to make sure that we don't overwrite one from the event system
-                if (!this.execution)
-                    this.execution = execution;
-            });
+            this._windupService.getExecution(executionId).subscribe(execution => this.execution = execution);
         });
     }
 
