@@ -15,6 +15,7 @@ import {MigrationProjectService} from "../../../../src/app/project/migration-pro
 import {SortableTableComponent} from "../../../../src/app/shared/sort/sortable-table.component";
 import {SortIndicatorComponent} from "../../../../src/app/shared/sort/sort-indicator.component";
 import {StatusIconComponent} from "../../../../src/app/shared/status-icon.component";
+import {SchedulerService} from "../../../../src/app/shared/scheduler.service";
 
 let comp:    ExecutionsListComponent;
 let fixture: ComponentFixture<ExecutionsListComponent>;
@@ -53,6 +54,7 @@ describe('ExecutionsListComponent', () => {
                 StatusIconComponent
             ],
             providers: [
+                SchedulerService,
                 {
                     provide: WindupService,
                     useValue: jasmine.createSpyObj('WindupService', [
