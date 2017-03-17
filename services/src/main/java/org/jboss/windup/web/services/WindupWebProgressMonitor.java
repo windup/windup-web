@@ -5,7 +5,6 @@ import java.util.logging.Logger;
 
 import javax.annotation.Resource;
 import javax.enterprise.concurrent.ManagedExecutorService;
-import javax.inject.Inject;
 import javax.jms.JMSContext;
 import javax.transaction.Status;
 import javax.transaction.UserTransaction;
