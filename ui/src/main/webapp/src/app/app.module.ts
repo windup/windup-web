@@ -115,6 +115,7 @@ import {CheckboxesComponent} from "./shared/checkboxes.component";
 import {InViewport} from "./components/in-viewport.directive";
 import {WizardLayoutComponent} from "./shared/layout/wizard-layout.component";
 import {ExecutionsLayoutComponent} from "./executions/executions-layout.component";
+import {ApplicationSelectionComponent} from "./analysis-context/application-selection.component";
 
 /**
  * Load all mapping data from the generated files.
@@ -215,7 +216,8 @@ initializeModelMappingData();
         SortableTableComponent,
         StatusIconComponent,
         ApplicationListComponent,
-        ProjectExecutionsComponent
+        ProjectExecutionsComponent,
+        ApplicationSelectionComponent
     ],
     providers: [
         appRoutingProviders,
