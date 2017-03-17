@@ -1,24 +1,44 @@
 <div class="panel-body">
     <wu-active-executions-progressbar [activeExecutions]="activeExecutions"></wu-active-executions-progressbar>
 
-    <h2>Project {{project?.title || "loading..."}}</h2>
+    <div class="header-bar">
+        <h2>Project {{project?.title || "loading..."}}</h2>
+        <div class="search-and-create">
+            <wu-search (searchValueChange)="updateSearch($event)"></wu-search>
+            <div class="button-container">
+                <button (click)="registerApplication()" class="btn btn-primary" type="button">Register Application</button>
+            </div>
+        </div>
+    </div>
 
-    <table class="datatable table table-striped table-bordered">
-        <thead>
-        <tr>
-            <th>Application</th>
-            <th></th>
-        </tr>
+    <table class="table table-bordered table-hover">
+        <thead wu-sortable-table
+               [(sortedData)]="sortedApplications" [data]="filteredApplications"
+               [tableHeaders]="[
+            { title: 'Application', isSortable: true, sortBy: 'title' },
+            { title: 'Created Date', isSortable: true, sortBy: 'created'},
+            { title: 'Last Modified Date', isSortable: true, sortBy: 'lastModified'},
+            { title: 'Actions', isSortable: false }
+        ]">
         </thead>
         <tbody *ngIf="project">
-            <tr *ngFor="let app of project.applications">
+            <tr *ngFor="let app of sortedApplications">
                 <td>{{app.title}}</td>
+                <td>{{app.created | date: 'short'}}</td>
+                <td>{{app.lastModified | date: 'short' }}</td>
                 <td>
-                    <button class="btn btn-default" (click)="editApplication(app)">Edit</button>
-                    <button class="btn btn-danger" (click)="deleteApplication(app)">Delete</button>
+                    <span class="fa-lg action-item" i18n-title="Edit application" title="Edit">
+                        <a (click)="editApplication(app)" class="action-button">
+                            <i class="fa fa-pencil"></i>
+                        </a>
+                    </span>
+                    <span class="fa-lg action-item" i18n-title="Delete application" title="Delete">
+                        <a (click)="deleteApplication(app)"  class="action-button">
+                            <i class="fa fa-trash-o"></i>
+                        </a>
+                    </span>
                 </td>
             </tr>
         </tbody>
     </table>
-    <button (click)="registerApplication()" class="btn btn-primary" type="button">Register Application</button>
 </div>

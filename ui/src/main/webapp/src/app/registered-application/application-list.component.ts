@@ -12,10 +12,17 @@ import {ExecutionsMonitoringComponent} from "../executions/executions-monitoring
 import {MigrationProject} from "windup-services";
 
 @Component({
-    templateUrl: './application-list.component.html'
+    templateUrl: './application-list.component.html',
+    styleUrls: [
+        '../../../css/tables.scss',
+        './application-list.component.scss'
+    ]
 })
 export class ApplicationListComponent extends ExecutionsMonitoringComponent implements OnInit, OnDestroy
 {
+    public filteredApplications: RegisteredApplication[] = [];
+    public sortedApplications: RegisteredApplication[] = [];
+
     constructor(
         private _activatedRoute: ActivatedRoute,
         private _router: Router,
@@ -37,6 +44,8 @@ export class ApplicationListComponent extends ExecutionsMonitoringComponent impl
 
         this._activatedRoute.parent.parent.data.subscribe((data: {project: MigrationProject}) => {
             this.project = data.project;
+            this.filteredApplications = data.project.applications;
+            this.sortedApplications = data.project.applications;
         });
     }
 
@@ -52,9 +61,18 @@ export class ApplicationListComponent extends ExecutionsMonitoringComponent impl
     }
 
     deleteApplication(application: RegisteredApplication) {
+        // TODO: Show confirm dialog
         this._registeredApplicationsService.deleteApplication(this.project, application).subscribe(
             () => {}, // reload project
             error => this._notificationService.error(utils.getErrorMessage(error))
         );
+    }
+
+    updateSearch(value: string) {
+        if (value && value.length > 0) {
+            this.filteredApplications = this.project.applications.filter(app => app.title.search(new RegExp(value, 'i')) !== -1);
+        } else {
+            this.filteredApplications = this.project.applications;
+        }
     }
 }

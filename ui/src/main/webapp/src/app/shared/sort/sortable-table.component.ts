@@ -1,5 +1,6 @@
 import {Input, Component, EventEmitter, Output, ChangeDetectionStrategy} from "@angular/core";
 import {SortingService, OrderDirection} from "./sorting.service";
+import {SchedulerService} from "../scheduler.service";
 
 @Component({
     selector: '[wu-sortable-table]',
@@ -19,7 +20,7 @@ export class SortableTableComponent {
     @Output()
     public sortedDataChange: EventEmitter<any[]> = new EventEmitter<any[]>();
 
-    public constructor(private _sortingService: SortingService<any>) {
+    public constructor(private _sortingService: SortingService<any>, private _schedulerService: SchedulerService) {
         this.sort = {
             direction: OrderDirection.ASC,
             property: () => 0,
@@ -46,7 +47,22 @@ export class SortableTableComponent {
     @Input()
     public set data(inputData: any[]) {
         this._originalData = inputData || [];
-        // this.sortData();
+
+        /**
+         * This is workaround for issues with "Expression has changed after it was checked." exception.
+         *
+         * Angular runs setters during change detection phase. Apparently, setter cannot trigger any change detection.
+         * But this setter needs to update sortedData output.
+         *
+         * To avoid those issues, setTimeout with 0 timeout is used. It should be sufficient to execute the code after
+         *  angular finishes change detection.
+         *
+         * More details for example here:
+         *   https://github.com/angular/angular/issues/10131
+         *
+         *  (SchedulerService is used just to simplify mocking timeouts in tests)
+         */
+        this._schedulerService.setTimeout(() => this.sortData(), 0);
     }
 
     @Input()
@@ -88,5 +104,5 @@ interface SortConfiguration {
 export interface TableHeader {
     isSortable: boolean;
     title: string;
-    sortBy: string|Function;
+    sortBy?: string|Function;
 }

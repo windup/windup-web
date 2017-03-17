@@ -2,6 +2,11 @@ package org.jboss.windup.web.services.model;
 
 import java.io.Serializable;
 import java.nio.file.Paths;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,6 +15,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Version;
 import javax.validation.constraints.Size;
 
@@ -18,8 +27,6 @@ import org.jboss.windup.web.services.validators.FileExistsConstraint;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import javax.persistence.Access;
-import javax.persistence.AccessType;
 
 /**
  * Contains an application that has been registered into Windup.
@@ -68,6 +75,14 @@ public class RegisteredApplication implements Serializable
     @OneToOne(fetch = FetchType.LAZY)
     private PackageMetadata packageMetadata;
 
+    @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Calendar created;
+
+    @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Calendar lastModified;
+
     public RegisteredApplication()
     {
 
@@ -84,6 +99,18 @@ public class RegisteredApplication implements Serializable
     {
         this();
         this.migrationProject = project;
+    }
+
+    @PrePersist
+    protected void onCreate()
+    {
+        this.created = this.lastModified = new GregorianCalendar();
+    }
+
+    @PreUpdate
+    protected void onUpdated()
+    {
+        this.lastModified = new GregorianCalendar();
     }
 
     public Long getId()
@@ -222,6 +249,22 @@ public class RegisteredApplication implements Serializable
     public void setMigrationProject(MigrationProject migrationProject)
     {
         this.migrationProject = migrationProject;
+    }
+
+    /**
+     * Gets created date
+     */
+    public Calendar getCreated()
+    {
+        return created;
+    }
+
+    /**
+     * Gets last modified date
+     */
+    public Calendar getLastModified()
+    {
+        return lastModified;
     }
 
     @Override

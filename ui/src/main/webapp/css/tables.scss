@@ -26,3 +26,16 @@
   width: 13px;
   text-align: center;
 }
+
+span.action-item {
+  cursor: pointer;
+  margin-left: 1em;
+}
+
+span.action-item a {
+  text-decoration: none;
+  color: #9c9c9c;
+  font-size: inherit;
+
+  &:hover { color: #000; }
+}
