@@ -7,3 +7,15 @@
 .button-container {
   padding-top: 15px;
 }
+
+.search-and-create {
+  display: flex;
+  flex-direction: row;
+}
+
+:host /deep/ {
+  .search-and-create .search-component {
+    padding-top: 15px;
+    margin-right: 10px;
+  }
+}

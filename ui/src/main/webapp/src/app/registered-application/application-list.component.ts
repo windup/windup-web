@@ -20,6 +20,7 @@ import {MigrationProject} from "windup-services";
 })
 export class ApplicationListComponent extends ExecutionsMonitoringComponent implements OnInit, OnDestroy
 {
+    public filteredApplications: RegisteredApplication[] = [];
     public sortedApplications: RegisteredApplication[] = [];
 
     constructor(
@@ -43,6 +44,7 @@ export class ApplicationListComponent extends ExecutionsMonitoringComponent impl
 
         this._activatedRoute.parent.parent.data.subscribe((data: {project: MigrationProject}) => {
             this.project = data.project;
+            this.filteredApplications = data.project.applications;
             this.sortedApplications = data.project.applications;
         });
     }
@@ -64,5 +66,13 @@ export class ApplicationListComponent extends ExecutionsMonitoringComponent impl
             () => {}, // reload project
             error => this._notificationService.error(utils.getErrorMessage(error))
         );
+    }
+
+    updateSearch(value: string) {
+        if (value && value.length > 0) {
+            this.filteredApplications = this.project.applications.filter(app => app.title.search(new RegExp(value, 'i')) !== -1);
+        } else {
+            this.filteredApplications = this.project.applications;
+        }
     }
 }
