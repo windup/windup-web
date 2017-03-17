@@ -13,7 +13,8 @@ import org.apache.commons.lang.StringUtils;
  */
 public class WebPathUtilImpl implements WebPathUtil
 {
-    private static final String PROPERTY_DATA_DIR = "jboss.server.data.dir";
+    private static final String DEFAULT_DATA_DIR = "jboss.server.data.dir";
+    private static final String PROPERTY_DATA_DIR = "windup.data.dir";
     private static final String DIR_NAME = "windup";
     private static final String REPORT_DIR = "reports";
     private static final String APPS_DIR = "apps";
@@ -37,7 +38,8 @@ public class WebPathUtilImpl implements WebPathUtil
     @Override
     public Path getGlobalWindupDataPath()
     {
-        String dataDir = System.getProperty(PROPERTY_DATA_DIR);
+        String windupDataDir = System.getProperty(PROPERTY_DATA_DIR);
+        String dataDir = (windupDataDir != null) ? windupDataDir : System.getProperty(DEFAULT_DATA_DIR);
         if (StringUtils.isBlank(dataDir))
             throw new RuntimeException("Data directory not found via system property: " + PROPERTY_DATA_DIR);
 
