@@ -99,21 +99,37 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
 
     /**
      * Impl notes:
-     * Chooses the last execution of this project.
+     * Chooses the last AnalysisContext which has no execution attached, or, if there's no such, the AnalysisContext of the last execution.
      */
     @Override
     public AnalysisContext getDefaultAnalysisContext(Long projectId)
     {
         try
         {
-            String query = "SELECT ctx FROM " + AnalysisContext.class.getSimpleName() + " AS ctx WHERE ctx.migrationProject.id = :projectId ORDER BY ctx.id DESC";
-            AnalysisContext ctx = entityManager.createQuery(query, AnalysisContext.class).setParameter("projectId", projectId).setMaxResults(1).getSingleResult();
-            return ctx;
+            // The last AnalysisContext which has no execution attached
+            String jql = "SELECT ctx FROM " + AnalysisContext.class.getSimpleName() + " AS ctx "
+                    + " WHERE ctx.migrationProject.id = :projectId AND NOT EXISTS (FROM WindupExecution exec WHERE exec.analysisContext = ctx) "
+                    + " ORDER BY ctx.id DESC";
+            List<AnalysisContext> contexts = entityManager.createQuery(jql, AnalysisContext.class).setParameter("projectId", projectId).setMaxResults(1).getResultList();
+
+            if (contexts.size() > 0)
+                return contexts.get(0);
+
+            // The AnalysisContext of the last execution.
+            jql = "SELECT ctx FROM WindupExecution AS exec LEFT JOIN exec.analysisContext AS ctx "
+                    + " WHERE exec.project.id = :projectId"
+                    + " ORDER BY exec.id DESC";
+            contexts = entityManager.createQuery(jql, AnalysisContext.class).setParameter("projectId", projectId).setMaxResults(1).getResultList();
+
+            if (contexts.size() > 0)
+                return contexts.get(0);
+
+            return null;
         }
         catch (Exception ex)
         {
             LOG.log(Level.SEVERE, ex.getMessage(), ex);
-            throw new WindupException("Could not fetch last context used in this project: " + ex.getMessage(), ex);
+            throw new WindupException("Error fetching last context used in this project: " + ex.getMessage(), ex);
         }
     }
 }
