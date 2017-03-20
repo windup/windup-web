@@ -4,7 +4,7 @@
     <div class="header-bar">
         <h2>Project {{project?.title || "loading..."}}</h2>
         <div class="search-and-create">
-            <wu-search (searchValueChange)="updateSearch($event)"></wu-search>
+            <wu-search [(searchValue)]="searchText" (searchValueChange)="updateSearch()"></wu-search>
             <div class="button-container">
                 <button (click)="registerApplication()" class="btn btn-primary" type="button">Register Application</button>
             </div>
