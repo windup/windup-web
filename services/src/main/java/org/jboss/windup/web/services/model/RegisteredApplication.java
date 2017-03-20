@@ -69,7 +69,7 @@ public class RegisteredApplication implements Serializable
     @Column(length = 2048)
     private String reportIndexPath;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     private MigrationProject migrationProject;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -82,6 +82,9 @@ public class RegisteredApplication implements Serializable
     @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     @Temporal(TemporalType.TIMESTAMP)
     private Calendar lastModified;
+
+    @Column
+    private boolean isDeleted = false;
 
     public RegisteredApplication()
     {
@@ -265,6 +268,21 @@ public class RegisteredApplication implements Serializable
     public Calendar getLastModified()
     {
         return lastModified;
+    }
+
+    /**
+     * Checks if application is deleted
+     */
+    public boolean isDeleted()
+    {
+        return isDeleted;
+    }
+
+    /**
+     * Sets application deleted status
+     */
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 
     @Override

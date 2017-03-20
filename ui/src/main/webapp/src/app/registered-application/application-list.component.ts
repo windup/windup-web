@@ -7,7 +7,10 @@ import {NotificationService} from "../core/notification/notification.service";
 import {utils} from "../shared/utils";
 import {WindupExecutionService} from "../services/windup-execution.service";
 import {EventBusService} from "../core/events/event-bus.service";
-import {ExecutionEvent} from "../core/events/windup-event";
+import {
+    ExecutionEvent, ApplicationDeletedEvent, UpdateMigrationProjectEvent,
+    MigrationProjectEvent
+} from "../core/events/windup-event";
 import {ExecutionsMonitoringComponent} from "../executions/executions-monitoring.component";
 import {MigrationProject} from "windup-services";
 
@@ -22,6 +25,7 @@ export class ApplicationListComponent extends ExecutionsMonitoringComponent impl
 {
     public filteredApplications: RegisteredApplication[] = [];
     public sortedApplications: RegisteredApplication[] = [];
+    public searchText: string;
 
     constructor(
         private _activatedRoute: ActivatedRoute,
@@ -42,10 +46,30 @@ export class ApplicationListComponent extends ExecutionsMonitoringComponent impl
                 this.onExecutionEvent(event);
             });
 
+        this._eventBus.onEvent
+            .filter(event => event.isTypeOf(ApplicationDeletedEvent))
+            .subscribe((event: ApplicationDeletedEvent) => this.onApplicationDeleted(event));
+
+        this._eventBus.onEvent
+            .filter(event => event.isTypeOf(UpdateMigrationProjectEvent))
+            .filter((event: UpdateMigrationProjectEvent) => event.migrationProject.id === this.project.id)
+            .subscribe((event: UpdateMigrationProjectEvent) => this.reloadMigrationProject(event.migrationProject));
+
         this._activatedRoute.parent.parent.data.subscribe((data: {project: MigrationProject}) => {
-            this.project = data.project;
-            this.filteredApplications = data.project.applications;
-            this.sortedApplications = data.project.applications;
+            this.reloadMigrationProject(data.project);
+        });
+    }
+
+    reloadMigrationProject(project: MigrationProject) {
+        this.project = project;
+        this.filteredApplications = project.applications;
+        this.sortedApplications = project.applications;
+        this.updateSearch();
+    }
+
+    onApplicationDeleted(event: ApplicationDeletedEvent) {
+        this.project.applications = this.project.applications.filter(app => {
+           return !event.applications.includes(app);
         });
     }
 
@@ -63,14 +87,14 @@ export class ApplicationListComponent extends ExecutionsMonitoringComponent impl
     deleteApplication(application: RegisteredApplication) {
         // TODO: Show confirm dialog
         this._registeredApplicationsService.deleteApplication(this.project, application).subscribe(
-            () => {}, // reload project
+            () => this._notificationService.success('Application was successfully deleted'),
             error => this._notificationService.error(utils.getErrorMessage(error))
         );
     }
 
-    updateSearch(value: string) {
-        if (value && value.length > 0) {
-            this.filteredApplications = this.project.applications.filter(app => app.title.search(new RegExp(value, 'i')) !== -1);
+    updateSearch() {
+        if (this.searchText && this.searchText.length > 0) {
+            this.filteredApplications = this.project.applications.filter(app => app.title.search(new RegExp(this.searchText, 'i')) !== -1);
         } else {
             this.filteredApplications = this.project.applications;
         }

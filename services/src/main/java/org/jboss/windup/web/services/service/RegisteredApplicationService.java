@@ -31,6 +31,7 @@ import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.addons.websupport.services.FileNameSanitizer;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.messaging.MessagingConstants;
+import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.model.PackageMetadata;
 import org.jboss.windup.web.services.model.RegisteredApplication;
@@ -262,8 +263,31 @@ public class RegisteredApplicationService
             this.entityManager.merge(project);
         }
 
+        String query = "SELECT ctxt FROM AnalysisContext ctxt WHERE :app MEMBER OF ctxt.applications";
+        Collection<AnalysisContext> contexts = this.entityManager.createQuery(query, AnalysisContext.class)
+                .setParameter("app", application)
+                .getResultList();
+
+        if (contexts.isEmpty())
+        {
+            /*
+             * Delete application if it is not used in any context
+             */
+            this.entityManager.remove(application);
+            this.entityManager.flush();
+        }
+        else
+        {
+            /*
+             * Do not delete application if it is used for some analysis context
+             * Keep the record in database (for reference in applications used in execution)
+             */
+            application.setInputPath(null);
+            application.setDeleted(true);
+            this.entityManager.merge(application);
+        }
+
         this.deleteApplicationFileIfUploaded(application);
-        this.entityManager.remove(application);
     }
 
     private void deleteApplicationFileIfUploaded(RegisteredApplication application)
