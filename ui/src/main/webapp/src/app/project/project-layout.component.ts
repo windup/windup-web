@@ -10,6 +10,8 @@ import {ProjectExecutionsComponent} from "../executions/project-executions.compo
 import {ApplicationListComponent} from "../registered-application/application-list.component";
 import {MigrationProjectEvent, UpdateMigrationProjectEvent} from "../core/events/windup-event";
 import {MigrationProjectService} from "./migration-project.service";
+import {RoutedComponent} from "../shared/routed.component";
+import {RouteFlattenerService} from "../core/routing/route-flattener.service";
 
 @Component({
     templateUrl: './project-layout.component.html',
@@ -18,7 +20,7 @@ import {MigrationProjectService} from "./migration-project.service";
         `:host /deep/ .row-cards-pf:first-child { padding-top: initial; }`
     ]
 })
-export class ProjectLayoutComponent extends AbstractComponent implements OnInit, OnDestroy {
+export class ProjectLayoutComponent extends RoutedComponent implements OnInit, OnDestroy {
     protected allProjects: MigrationProject[];
     protected project: MigrationProject;
     protected menuItems;
@@ -26,13 +28,14 @@ export class ProjectLayoutComponent extends AbstractComponent implements OnInit,
     // TODO: Execution progress: Project Layout must be updated when execution state changes (is completed)
 
     constructor(
-        protected _activatedRoute: ActivatedRoute,
+        _router: Router,
+        _activatedRoute: ActivatedRoute,
+        _routeFlattener: RouteFlattenerService,
         protected _routeLinkProviderService: RouteLinkProviderService,
         protected _migrationProjectService: MigrationProjectService,
         protected _eventBus: EventBusService,
-        protected _router: Router
     ) {
-        super();
+        super(_router, _activatedRoute, _routeFlattener);
     }
 
     ngOnInit(): void {
@@ -42,12 +45,12 @@ export class ProjectLayoutComponent extends AbstractComponent implements OnInit,
                 this.createContextMenuItems();
         }));
 
-        this._activatedRoute.data.subscribe((data: {project: MigrationProject}) => {
+        this.addSubscription(this._activatedRoute.data.subscribe((data: {project: MigrationProject}) => {
             this.project = data.project;
 
             this._migrationProjectService.monitorProject(this.project);
             this.createContextMenuItems();
-        });
+        }));
 
         this.loadProjects();
     }

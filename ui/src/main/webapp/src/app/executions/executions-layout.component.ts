@@ -19,6 +19,7 @@ import {ExecutionEvent} from "../core/events/windup-event";
 import {ProjectLayoutComponent} from "../project/project-layout.component";
 import {MigrationProjectService} from "../project/migration-project.service";
 import {DatePipe} from "@angular/common";
+import {RouteFlattenerService} from "../core/routing/route-flattener.service";
 
 @Component({
     templateUrl: './executions-layout.component.html',
@@ -32,40 +33,46 @@ export class ExecutionsLayoutComponent extends ProjectLayoutComponent implements
     protected allExecutions: WindupExecution[];
 
     constructor(
+        _router: Router,
         _activatedRoute: ActivatedRoute,
+        _routeFlattenerService: RouteFlattenerService,
         _routeLinkProviderService: RouteLinkProviderService,
         _migrationProjectService: MigrationProjectService,
         _eventBus: EventBusService,
-        _router: Router,
-        private _windupService: WindupService,
-        private _datePipe: DatePipe
+        protected _windupService: WindupService,
+        protected _datePipe: DatePipe
     ) {
-        super(_activatedRoute, _routeLinkProviderService, _migrationProjectService, _eventBus, _router);
+        super(_router, _activatedRoute, _routeFlattenerService, _routeLinkProviderService, _migrationProjectService, _eventBus);
     }
 
     ngOnInit(): void {
-        this._activatedRoute.parent.data.subscribe((data: {project: MigrationProject}) => {
-            this.project = data.project;
+        this.addSubscription(this.flatRouteLoaded.subscribe(flatRoute => {
+            this.project = flatRoute.data.project;
 
             this.loadProjectExecutions();
             this.loadProjects();
 
-            this._activatedRoute.params.subscribe((params: {executionId: number}) => {
-                let executionId = +params.executionId;
-                this._eventBus.onEvent
-                    .filter(event => event.isTypeOf(ExecutionEvent))
-                    .filter((event: ExecutionEvent) => event.execution.id === executionId)
-                    .subscribe((event: ExecutionEvent) => {
-                        this.execution = event.execution;
-                        this.createContextMenuItems();
-                    });
-
-                this._windupService.getExecution(executionId).subscribe(execution => {
-                    this.execution = execution;
+            let executionId = +flatRoute.params.executionId;
+            this.addSubscription(this._eventBus.onEvent
+                .filter(event => event.isTypeOf(ExecutionEvent))
+                .filter((event: ExecutionEvent) => event.execution.id === executionId)
+                .subscribe((event: ExecutionEvent) => {
+                    this.execution = event.execution;
                     this.createContextMenuItems();
-                });
-            });
+                }));
+
+            this.loadSelectedExecution(executionId);
+        }));
+    }
+
+    protected loadSelectedExecution(executionId: number) {
+        let observable = this._windupService.getExecution(executionId);
+        observable.subscribe(execution => {
+            this.execution = execution;
+            this.createContextMenuItems();
         });
+
+        return observable;
     }
 
     protected loadProjectExecutions() {
