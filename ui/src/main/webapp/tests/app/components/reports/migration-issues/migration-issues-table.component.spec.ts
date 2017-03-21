@@ -22,7 +22,6 @@ let el:      HTMLElement;
 describe('MigrationissuesTableComponent', () => {
     let migrationIssues: ProblemSummary[];
     let activatedRouteMock: ActivatedRouteMock;
-    let routeFlattener: RouteFlattenerService = new RouteFlattenerService();
 
     beforeEach(() => {
         activatedRouteMock = new ActivatedRouteMock();
@@ -40,10 +39,7 @@ describe('MigrationissuesTableComponent', () => {
                     provide: Router,
                     useValue: RouterMock
                 },
-                {
-                    provide: RouteFlattenerService,
-                    useValue: routeFlattener
-                },
+                RouteFlattenerService,
                 MockBackend,
                 BaseRequestOptions,
                 {
@@ -107,7 +103,6 @@ describe('MigrationissuesTableComponent', () => {
         comp.migrationIssues = migrationIssues;
         fixture.detectChanges();
         RouterMock.navigationEnd();
-        routeFlattener.onNewRouteActivated(<any>activatedRouteMock.snapshot);
     });
 
     it('should display migration issues', () => {
