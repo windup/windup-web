@@ -64,3 +64,5 @@ require('../node_modules/prismjs/themes/prism.css');
 
 // chosen
 require('../css/chosen/chosen.css');
+
+require('../node_modules/font-awesome/css/font-awesome.css');
