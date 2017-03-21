@@ -116,4 +116,5 @@ a[target='_blank']::before {
     content: '\F2D2';
     font: normal normal normal 14px/1 FontAwesome;
     font-size: 12px;
+    padding-right: 3px;
 }
