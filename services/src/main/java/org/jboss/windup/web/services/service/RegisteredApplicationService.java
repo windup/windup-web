@@ -282,7 +282,6 @@ public class RegisteredApplicationService
              * Do not delete application if it is used for some analysis context
              * Keep the record in database (for reference in applications used in execution)
              */
-            application.setInputPath(null);
             application.setDeleted(true);
             this.entityManager.merge(application);
         }

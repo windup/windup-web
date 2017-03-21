@@ -176,8 +176,8 @@ public class RegisteredApplication implements Serializable
 
         if (getInputPath() == null)
             setInputFilename("");
-
-        setInputFilename(Paths.get(getInputPath()).getFileName().toString());
+        else
+            setInputFilename(Paths.get(getInputPath()).getFileName().toString());
     }
 
     /**
@@ -282,6 +282,8 @@ public class RegisteredApplication implements Serializable
      * Sets application deleted status
      */
     public void setDeleted(boolean deleted) {
+        if (deleted)
+            this.setInputPath(FileExistsConstraint.DELETED_FILEPATH);
         isDeleted = deleted;
     }
 
