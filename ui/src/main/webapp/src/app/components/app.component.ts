@@ -1,6 +1,7 @@
 import {Component} from "@angular/core";
-import {Router, NavigationEnd} from "@angular/router";
+import {Router, NavigationEnd, ActivatedRouteSnapshot, ActivatedRoute} from "@angular/router";
 import {RouteHistoryService} from "../core/routing/route-history.service";
+import {RouteFlattenerService} from "../core/routing/route-flattener.service";
 
 @Component({
     selector: 'windup-app',
@@ -14,9 +15,17 @@ export class AppComponent {
      *
      * When extension is fixed, this can be safely removed
      */
-    constructor(private router: Router, private routeHistoryService: RouteHistoryService) {
+    constructor(
+        private router: Router,
+        private routeHistoryService: RouteHistoryService,
+        private routeFlattener: RouteFlattenerService,
+        private activatedRoute: ActivatedRoute
+    ) {
         router.events
             .filter(event => event instanceof NavigationEnd)
-            .subscribe((event: NavigationEnd) => routeHistoryService.addNavigationEvent(event));
+            .subscribe((event: NavigationEnd) => {
+                this.routeHistoryService.addNavigationEvent(event);
+                this.routeFlattener.onNewRouteActivated(activatedRoute.snapshot);
+            });
     }
 }
