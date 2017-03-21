@@ -73,8 +73,7 @@ export class MigrationIssuesTableComponent extends RoutedComponent implements On
     ngOnInit(): void {
         this.sortedIssues = this.migrationIssues;
 
-        this.addSubscription(this._routeFlattener.OnFlatRouteLoaded.subscribe(flatRouteData => {
-            console.log('flat route loaded');
+        this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
             this.executionId = parseInt(flatRouteData.params['executionId']);
         }));
     }
