@@ -12,10 +12,10 @@
         <description>Serves static files.</description>
         <servlet-name>FileServlet</servlet-name>
         <servlet-class>org.jboss.windup.web.services.servlet.FileDefaultServlet</servlet-class>
-        <init-param>
-            <param-name>base-path</param-name>
-            <param-value>${windup.data.dir}/windup/</param-value>
-        </init-param>
+<!--         <init-param> -->
+<!--             <param-name>base-path</param-name> -->
+<!--             <param-value>${windup.data.dir}/windup/</param-value> -->
+<!--         </init-param> -->
         <async-supported>true</async-supported>
     </servlet>
 
