@@ -73,10 +73,14 @@ export class MigrationIssuesTableComponent extends RoutedComponent implements On
     ngOnInit(): void {
         this.sortedIssues = this.migrationIssues;
 
-        this.addSubscription(this._routeFlattener.OnFlatRouteLoaded.subscribe(flatRouteData => {
-            console.log('flat route loaded');
-            this.executionId = parseInt(flatRouteData.params['executionId']);
-        }));
+        let flatRouteData = this._routeFlattener.getFlattenedRouteData(this._activatedRoute.snapshot);
+        this.getExecutionId(flatRouteData);
+
+        this.addSubscription(this._routeFlattener.OnFlatRouteLoaded.subscribe(flatRouteData => this.getExecutionId(flatRouteData)));
+    }
+
+    protected getExecutionId(flatRouteData) {
+        this.executionId = parseInt(flatRouteData.params['executionId']);
     }
 
     public getSum(field: string|Function): number {

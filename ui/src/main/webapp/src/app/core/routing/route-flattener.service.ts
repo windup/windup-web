@@ -1,6 +1,6 @@
 import {ActivatedRouteSnapshot, UrlSegment, Params, Data, Route} from "@angular/router";
 import {Type, Injectable} from "@angular/core";
-import {Subject, ReplaySubject} from "rxjs";
+import {Subject} from "rxjs";
 
 /**
  * This service is used to get ActivatedRouteSnapshot-like object with flattened data and parameters
@@ -19,7 +19,7 @@ import {Subject, ReplaySubject} from "rxjs";
  */
 @Injectable()
 export class RouteFlattenerService {
-    protected flatRouteLoaded = new ReplaySubject<FlattenedRouteData>(1);
+    protected flatRouteLoaded = new Subject<FlattenedRouteData>();
     public OnFlatRouteLoaded = this.flatRouteLoaded.asObservable();
 
     public onNewRouteActivated(route: ActivatedRouteSnapshot) {
