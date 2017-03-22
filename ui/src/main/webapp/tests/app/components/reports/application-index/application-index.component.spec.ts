@@ -94,7 +94,7 @@ describe('ApplicationIndexComponent', () => {
     });
 
     describe('when navigate to non-existing report id', () => {
-        beforeEach( async( inject( [AggregatedStatisticsService, Router], (aggregatedStatsService: any) => {
+        beforeEach( async( inject( [AggregatedStatisticsService, Router, RouteFlattenerService], (aggregatedStatsService: any, router: any, flattener: any) => {
            
             aggregatedStatsService.getAggregatedCategories.and.returnValue(
                 new Observable<any>(observer => {
@@ -134,6 +134,7 @@ describe('ApplicationIndexComponent', () => {
             activeRouteMock.testParams = { executionId: 0 };
             fixture.detectChanges();
             RouterMock.navigationEnd();
+            flattener.onNewRouteActivated(<any>activeRouteMock.snapshot);
         })));
 
         it('should navigate to homepage', async(inject([Router], (router: Router) => {
