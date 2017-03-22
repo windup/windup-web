@@ -96,7 +96,9 @@ describe('MigrationissuesComponent', () => {
     });
 
     describe('when navigate to non-existing report id', () => {
-        beforeEach(async(inject([MigrationIssuesService, Router], (migrationIssuesService: any) => {
+        beforeEach(async(inject([MigrationIssuesService, Router, RouteFlattenerService],
+                (migrationIssuesService: any, router, flattener: RouteFlattenerService) => {
+
             migrationIssuesService.getAggregatedIssues.and.returnValue(
                 new Observable<any>(observer => {
                     observer.error({error: 'Report not found'});
@@ -107,6 +109,8 @@ describe('MigrationissuesComponent', () => {
             activatedRouteMock.testParams = {executionId: 0};
             fixture.detectChanges();
             RouterMock.navigationEnd();
+
+            flattener.onNewRouteActivated(<any>activatedRouteMock.snapshot);
         })));
 
         it('should navigate to homepage', async(inject([Router], (router: Router) => {
@@ -122,7 +126,7 @@ describe('MigrationissuesComponent', () => {
     describe('when navigate to correct report id', () => {
         let migrationIssuesServiceSpy;
 
-        beforeEach(async(inject([MigrationIssuesService], (migrationIssuesService: any) => {
+        beforeEach(async(inject([MigrationIssuesService, RouteFlattenerService], (migrationIssuesService: any, flattener: any) => {
             migrationIssuesServiceSpy = migrationIssuesService;
             migrationIssuesService.getAggregatedIssues.and.returnValue(
                 new Observable<any>(observer => {
@@ -134,6 +138,7 @@ describe('MigrationissuesComponent', () => {
             activatedRouteMock.testParams = {executionId: 1};
             fixture.detectChanges(); // init
             RouterMock.navigationEnd(); // resolve route data
+            flattener.onNewRouteActivated(<any>activatedRouteMock.snapshot);
             fixture.detectChanges(); // load changes
         })));
 
@@ -157,7 +162,7 @@ describe('MigrationissuesComponent', () => {
     });
 
     describe('when navigate to report without any issues', () => {
-        beforeEach(async(inject([MigrationIssuesService], (migrationIssuesService: any) => {
+        beforeEach(async(inject([MigrationIssuesService, RouteFlattenerService], (migrationIssuesService: any, flattener: any) => {
             migrationIssuesService.getAggregatedIssues.and.returnValue(
                 new Observable<any>(observer => {
                     let value = {
@@ -172,6 +177,7 @@ describe('MigrationissuesComponent', () => {
             activatedRouteMock.testParams = {executionId: 1};
             fixture.detectChanges(); // init
             RouterMock.navigationEnd(); // resolve route data
+            flattener.onNewRouteActivated(<any>activatedRouteMock.snapshot);
             fixture.detectChanges(); // load changes
         })));
 
