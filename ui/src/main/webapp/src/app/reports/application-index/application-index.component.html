@@ -17,7 +17,7 @@
                 <h4>Analyzed applications</h4>
                 <ul>
                     <li *ngFor="let application of execution.filterApplications">
-                        <a [routerLink]="['../applications', application.id]">{{application.fileName}}</a>
+                        <a [routerLink]="['/projects', projectId, 'reports', execID, 'applications', application.id]">{{application.fileName}}</a>
                     </li>
                 </ul>
             </div>

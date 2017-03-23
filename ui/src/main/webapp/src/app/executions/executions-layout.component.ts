@@ -1,15 +1,8 @@
 import {Component, OnInit, OnDestroy} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 
-import {MigrationProject} from "windup-services";
 import {RouteLinkProviderService} from "../core/routing/route-link-provider-service";
-import {MigrationIssuesComponent} from "../reports/migration-issues/migration-issues.component";
-import {TechnologiesReportComponent} from "../reports/technologies/technologies-report.component";
-import {DependenciesReportComponent} from "../reports/dependencies/dependencies-report.component";
 import {ReportMenuItem} from "../shared/navigation/context-menu-item.class";
-import {ApplicationIndexComponent} from "../reports/application-index/application-index.component";
-import {ApplicationDetailsComponent} from "../reports/application-details/application-details.component";
-import {ReportFilterComponent} from "../reports/filter/report-filter.component";
 import {WINDUP_WEB} from "../app.module";
 import {ProjectExecutionsComponent} from "./project-executions.component";
 import {WindupExecution} from "windup-services";
@@ -103,37 +96,26 @@ export class ExecutionsLayoutComponent extends ProjectLayoutComponent implements
                 icon: 'fa-tachometer',
                 isEnabled: true
             },
-            /*
-             {
-             label: 'Dashboard',
-             link: '/groups/' + this.applicationGroup.id,
-             icon: 'fa-tachometer',
-             isEnabled: true
-             },
-             */
             new ReportMenuItem(
                 'Application Details',
                 'fa-list',
                 this.project,
                 this.execution,
-                ApplicationDetailsComponent,
-                this._routeLinkProviderService,
+                'application-details'
             ),
             new ReportMenuItem(
                 'Issues',
                 'fa-exclamation-triangle',
                 this.project,
                 this.execution,
-                MigrationIssuesComponent,
-                this._routeLinkProviderService,
+                'migration-issues'
             ),
             new ReportMenuItem(
                 'Application Index',
                 'fa-book',
                 this.project,
                 this.execution,
-                ApplicationIndexComponent,
-                this._routeLinkProviderService,
+                'application-index'
             ),
         ];
 
@@ -143,8 +125,7 @@ export class ExecutionsLayoutComponent extends ProjectLayoutComponent implements
                 'fa-filter',
                 this.project,
                 this.execution,
-                ReportFilterComponent,
-                this._routeLinkProviderService
+                'filter'
             );
 
             this.menuItems.splice(4, 0, reportFilterMenu);
@@ -155,16 +136,14 @@ export class ExecutionsLayoutComponent extends ProjectLayoutComponent implements
                     'fa-cubes',
                     this.project,
                     this.execution,
-                    TechnologiesReportComponent,
-                    this._routeLinkProviderService,
+                    'technologies-report'
                 ),
                 new ReportMenuItem(
                     'Dependencies',
                     'fa-code-fork',
                     this.project,
                     this.execution,
-                    DependenciesReportComponent,
-                    this._routeLinkProviderService
+                    'dependencies'
                 )
             ];
         }

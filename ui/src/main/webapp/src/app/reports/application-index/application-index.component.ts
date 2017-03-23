@@ -28,7 +28,8 @@ export class ApplicationIndexComponent extends RoutedComponent implements OnInit
     domain: any;
 
     // both are used for getting graph and for report filter DTO
-    private execID: number;
+    public execID: number;
+    public projectId: number;
 
     // aggregated statistics variables
     globalPackageUseData: ChartStatistic[] = [];
@@ -54,6 +55,7 @@ export class ApplicationIndexComponent extends RoutedComponent implements OnInit
         this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
             let executionId = parseInt(flatRouteData.params['executionId']);
             this.execID = executionId;
+            this.projectId = +flatRouteData.params.projectId;
 
             this._windupService.getExecution(executionId).subscribe(execution => this.execution = execution);
 
