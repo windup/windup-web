@@ -23,9 +23,29 @@ export class SelectApplicationsComponent {
         return this._selectedApps;
     }
 
-    appsLabelCallback = (app: RegisteredApplication) => {
-        console.log("Title is: " + app.title + ", for " , app);
-        return app.title;
-    };
+    get notAllSelected():boolean {
+        if (!this.availableApps)
+            return false;
+        if (!this._selectedApps)
+            return false;
+
+        return this._selectedApps.length != this.availableApps.length;
+    }
+
+    get someSelected():boolean {
+        return this._selectedApps ? this._selectedApps.length > 0 : false;
+    }
+
+    appsLabelCallback = (app: RegisteredApplication) => app.title;
     equalsCallback = (a1: RegisteredApplication, a2: RegisteredApplication) => a1.id === a2.id;
+
+    selectAll() {
+        this.selectedApps = this.availableApps;
+        return false;
+    }
+
+    selectNone() {
+        this.selectedApps = [];
+        return false;
+    }
 }
