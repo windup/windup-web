@@ -268,6 +268,7 @@ public class RegisteredApplicationService
                 .setParameter("app", application)
                 .getResultList();
 
+        this.deleteApplicationFileIfUploaded(application);
         if (contexts.isEmpty())
         {
             /*
@@ -285,8 +286,6 @@ public class RegisteredApplicationService
             application.setDeleted(true);
             this.entityManager.merge(application);
         }
-
-        this.deleteApplicationFileIfUploaded(application);
     }
 
     private void deleteApplicationFileIfUploaded(RegisteredApplication application)
