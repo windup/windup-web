@@ -53,6 +53,11 @@ export class ChosenMultipleComponent extends AbstractChosenComponent<Array<strin
         }
 
         this._getLabel = fn;
+
+        // This is necessary, in case the options were set before the label function gets set
+        // (this seems to happen intermittently)
+        if (this._options)
+            super.setOptions(this._options.map(internalOption => <ChosenOption>internalOption.value));
     }
 
     @Input()

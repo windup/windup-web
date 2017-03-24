@@ -110,11 +110,6 @@ export class AnalysisContextFormComponent extends FormComponent
     }
 
     // Apps selection checkboxes
-    appsValueCallback = (app: RegisteredApplication) => ""+app.id;
-    appsLabelCallback = (app: RegisteredApplication) => app.title;
-    equalsCallback = (a1: RegisteredApplication, a2: RegisteredApplication) => a1.id === a2.id;
-
-
     static getDefaultAnalysisContext() {
         let analysisContext = <AnalysisContext>{};
         analysisContext.migrationPath = <MigrationPath>{id: 0};

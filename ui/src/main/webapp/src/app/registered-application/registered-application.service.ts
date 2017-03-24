@@ -224,10 +224,7 @@ export class RegisteredApplicationService extends AbstractService {
         let subject = new Subject<PackageMetadata>();
 
         let closure = () => {
-            console.log('Closure called');
-
             this.getPackageMetadata(application).subscribe(packageMetadata => {
-                console.log('Subscriber of getPackageMetadata called');
                 if (packageMetadata.scanStatus !== "COMPLETE") {
                     // schedule another round
                     this._schedulerService.setTimeout(closure, RegisteredApplicationService.PACKAGE_REQUEST_PAUSE_TIME_MS);

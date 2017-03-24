@@ -1,0 +1,10 @@
+<div class="select-applications">
+    <chosen-multiple [getLabel]="appsLabelCallback"
+                     [compareWith]="equalsCallback"
+                     [(ngModel)]="selectedApps"
+                     [options]="availableAppsSorted"
+                     name="selectedApplications">
+    </chosen-multiple>
+    <button (click)="selectAll()">Select All</button>
+    <button (click)="selectNone()">Select None</button>
+</div>
