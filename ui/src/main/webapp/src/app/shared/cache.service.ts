@@ -4,7 +4,13 @@ import 'rxjs/add/operator/do';
 
 @Injectable()
 export class CacheService {
+    private static instance = new CacheService();
+
     private cacheSections: Map<string, CacheSection> = new Map<string, CacheSection>();
+
+    public static getInstance(): CacheService {
+        return CacheService.instance;
+    }
 
     public getSection(section: string) {
         if (!this.cacheSections.has(section)) {
@@ -31,13 +37,13 @@ export class CacheSection {
 
         let item = this.dataMap.get(key);
 
-        return item.immutable || !this.isExpired(item);
+        return !this.isExpired(item);
     }
 
     protected isExpired(item: CacheItem) {
         let currentTime = new Date();
 
-        return currentTime > item.expires;
+        return !item.immutable && currentTime > item.expires;
     }
 
     public getItem(key: string) {
@@ -55,6 +61,11 @@ export class CacheSection {
      * @param expiration {CacheExpiration} - Cache expiration interval
      */
     public setItem(key: string, data: any, immutable: boolean = false, expiration: CacheExpiration = {minutes: 5}) {
+        expiration = Object.assign({
+            minutes: 0,
+            seconds: 0
+        }, expiration);
+
         let expirationInSec = expiration.minutes * 60 + expiration.seconds;
         let expirationTimestamp = new Date().getTime() + expirationInSec * 1000;
         let expirationDate = new Date(expirationTimestamp);
@@ -67,6 +78,34 @@ export class CacheSection {
         };
 
         this.dataMap.set(key, item);
+    }
+
+    /**
+     * Remove expired items from cache
+     */
+    public removeExpiredItems() {
+        this.dataMap.forEach((item, key) => {
+            if (this.isExpired(item)) {
+                // I think JS HashMap should be concurrently modifiable
+                this.dataMap.delete(key);
+            }
+        });
+    }
+
+    /**
+     * Clears cache
+     */
+    public clear() {
+        this.dataMap.clear();
+    }
+
+    /**
+     * Gets count of items in cache
+     *
+     * @returns {number}
+     */
+    public countItems(): number {
+        return this.dataMap.size;
     }
 }
 
@@ -107,12 +146,17 @@ export function Cached(section?: string, expiration?: CacheExpiration, immutable
 
             if (!cacheSection.hasItem(cacheKey)) {
                 console.log('Cache miss', cacheKey);
-                let result: Observable<any> = originalMethod.apply(this, args);
+                let result: any|Observable<any> = originalMethod.apply(this, args);
 
-                return result.do(function(jsonResult) {
-                    console.log('Cache emplacement', jsonResult);
-                    cacheSection.setItem(cacheKey, jsonResult, immutable, expiration);
-                });
+                if (isObservable(result)) {
+                    return result.do(function(jsonResult) {
+                        console.log('Cache emplacement', jsonResult);
+                        cacheSection.setItem(cacheKey, jsonResult, immutable, expiration);
+                    });
+                } else {
+                    cacheSection.setItem(cacheKey, result, immutable, expiration);
+                    return result;
+                }
             }
 
             console.log('cache hit', cacheKey);
@@ -124,6 +168,17 @@ export function Cached(section?: string, expiration?: CacheExpiration, immutable
 
         return descriptor;
     };
+}
+
+/**
+ * Not really a proper way to detect observable, but good enough for now
+ * Borrowed from https://github.com/angular/angular/pull/15171
+ *
+ * @param obj
+ * @returns {boolean}
+ */
+function isObservable(obj: any|Observable<any>) {
+    return !!obj && typeof obj.subscribe === 'function';
 }
 
 function getCacheKey(functionName: string, args: any[]) {
