@@ -117,6 +117,7 @@ import {WizardLayoutComponent} from "./shared/layout/wizard-layout.component";
 import {ExecutionsLayoutComponent} from "./executions/executions-layout.component";
 import {NavbarSelectionComponent} from "./shared/navigation/navbar-selection.component";
 import {DatePipe} from "@angular/common";
+import {ApplicationLevelLayoutComponent} from "./reports/application-level-layout.component";
 import {SelectApplicationsComponent} from "./analysis-context/select-applications.component";
 import {ContextMenuLinkComponent} from "./shared/navigation/context-menu-link.component";
 
@@ -222,7 +223,8 @@ initializeModelMappingData();
         ProjectExecutionsComponent,
         NavbarSelectionComponent,
         SelectApplicationsComponent,
-        ContextMenuLinkComponent
+        ContextMenuLinkComponent,
+        ApplicationLevelLayoutComponent
     ],
     providers: [
         appRoutingProviders,

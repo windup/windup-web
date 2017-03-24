@@ -29,6 +29,30 @@ import {ApplicationListComponent} from "./registered-application/application-lis
 import {ProjectExecutionsComponent} from "./executions/project-executions.component";
 import {WizardLayoutComponent} from "./shared/layout/wizard-layout.component";
 import {ExecutionsLayoutComponent} from "./executions/executions-layout.component";
+import {ApplicationLevelLayoutComponent} from "./reports/application-level-layout.component";
+
+export const executionLevelRoutes: Routes = [
+    {path: '', component: ExecutionDetailComponent, data: {displayName: 'Execution Info'}},
+    {path: 'dependencies-report', component: DependenciesReportComponent, data: {displayName: 'Dependency Report'}},
+    {path: 'technology-report', component: TechnologiesReportComponent, data: {displayName: 'Technology Report'}},
+    {path: 'migration-issues',
+        children: [
+            {path: '', component: MigrationIssuesComponent, data: {displayName: 'Migration Issues'}},
+            {path: 'source/:fileId', component: SourceReportComponent, data: {displayName: 'Source Report'}}
+        ]
+    },
+    {path: 'source/:fileId', component: SourceReportComponent, data: {displayName: 'Source Report'}},
+    {path: 'application-index', component: ApplicationIndexComponent, data: { displayName: 'Application Index'}},
+    {path: 'application-details',
+        children: [
+            {path: '', component: ApplicationDetailsComponent, data: { displayName: 'Application Details'}},
+            {path: 'source/:fileId', component: SourceReportComponent, data: {displayName: 'Source Report'}}
+        ]
+    },
+    {path: 'executed-rules', component: RuleProviderExecutionsComponent, data: {displayName: 'Executed Rules'}},
+    {path: 'dependencies', component: DependenciesReportComponent, data: {displayName: 'Dependencies Report' }}
+];
+
 
 export const appRoutes: Routes = [
     {path: "login", component: LoginComponent},
@@ -133,28 +157,16 @@ export const appRoutes: Routes = [
                                     breadcrumbTitle: getExecutionBreadcrumbTitle
                                 },
                                 component: ExecutionsLayoutComponent,
-                                children: [
-                                    {path: '', component: ExecutionDetailComponent, data: {displayName: 'Execution Info'}},
-                                    {path: 'dependencies-report', component: DependenciesReportComponent, data: {displayName: 'Dependency Report'}},
-                                    {path: 'technology-report', component: TechnologiesReportComponent, data: {displayName: 'Technology Report'}},
-                                    {path: 'migration-issues',
-                                        children: [
-                                            {path: '', component: MigrationIssuesComponent, data: {displayName: 'Migration Issues'}},
-                                            {path: 'source/:fileId', component: SourceReportComponent, data: {displayName: 'Source Report'}}
-                                        ]
-                                    },
-                                    {path: 'source/:fileId', component: SourceReportComponent, data: {displayName: 'Source Report'}},
-                                    {path: 'application-index', component: ApplicationIndexComponent, data: { displayName: 'Application Index'}},
-                                    {path: 'application-details',
-                                        children: [
-                                            {path: '', component: ApplicationDetailsComponent, data: { displayName: 'Application Details'}},
-                                            {path: 'source/:fileId', component: SourceReportComponent, data: {displayName: 'Source Report'}}
-                                        ]
-                                    },
-                                    {path: 'executed-rules', component: RuleProviderExecutionsComponent, data: {displayName: 'Executed Rules'}},
-                                    {path: 'dependencies', component: DependenciesReportComponent, data: {displayName: 'Dependencies Report' }}
-                                ]
+                                children: executionLevelRoutes
                             },
+                            {
+                                path: 'reports/:executionId/applications/:applicationId',
+                                data: {
+                                    breadcrumbTitle: getExecutionBreadcrumbTitle
+                                },
+                                component: ApplicationLevelLayoutComponent,
+                                children: executionLevelRoutes
+                            }
                         ]
                     }
                 ]
