@@ -11,6 +11,7 @@ import {
     ApplicationRegisteredEvent, ApplicationDeletedEvent, UpdateMigrationProjectEvent
 } from "../core/events/windup-event";
 import {EventBusService} from "../core/events/event-bus.service";
+import {Cached} from "../shared/cache.service";
 
 @Injectable()
 export class MigrationProjectService extends AbstractService {
@@ -110,6 +111,7 @@ export class MigrationProjectService extends AbstractService {
             .catch(this.handleError);
     }
 
+    @Cached('project')
     get(id: number): Observable<MigrationProject> {
         if (!isNumber(id)) {
             throw new Error("Not a project ID: " + id);
@@ -119,7 +121,7 @@ export class MigrationProjectService extends AbstractService {
             .catch(this.handleError);
     }
 
-
+    @Cached('project', {minutes: 1})
     getAll(): Observable<Array<MigrationProject & HasAppCount>> {
         return this._http.get(Constants.REST_BASE + this.GET_MIGRATION_PROJECTS_URL)
             .map(res => <MigrationProjectAndCount[]> res.json())

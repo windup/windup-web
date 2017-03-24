@@ -5,6 +5,7 @@ import {Constants} from "../constants";
 import {AnalysisContext} from "windup-services";
 import {AbstractService} from "../shared/abtract.service";
 import {MigrationProject} from "windup-services";
+import {Cached} from "../shared/cache.service";
 
 @Injectable()
 export class AnalysisContextService extends AbstractService {
@@ -33,6 +34,7 @@ export class AnalysisContextService extends AbstractService {
             .catch(this.handleError);
     }
 
+    @Cached('analysisContext')
     get(id: number) {
         return this._http.get(Constants.REST_BASE + this.ANALYSIS_CONTEXT_URL.replace("{id}", id.toString()))
             .map(res => <AnalysisContext> res.json())

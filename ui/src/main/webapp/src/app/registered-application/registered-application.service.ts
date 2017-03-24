@@ -15,6 +15,7 @@ import {MigrationProject} from "windup-services";
 import {PackageMetadata} from "windup-services";
 import {SchedulerService} from "../shared/scheduler.service";
 import {Subject} from "rxjs";
+import {Cached} from "../shared/cache.service";
 
 @Injectable()
 export class RegisteredApplicationService extends AbstractService {
@@ -135,18 +136,21 @@ export class RegisteredApplicationService extends AbstractService {
         return this._multipartUploader;
     };
 
+    @Cached('application')
     getApplications(): Observable<RegisteredApplication[]> {
         return this._http.get(Constants.REST_BASE + RegisteredApplicationService.GET_APPLICATIONS_URL)
             .map(res => <RegisteredApplication[]> res.json())
             .catch(this.handleError);
     }
 
+    @Cached('application')
     getApplicationsByProjectID(id: number): Observable<RegisteredApplication[]> {
         return this._http.get(Constants.REST_BASE + RegisteredApplicationService.BY_PROJECT_ID_URL.replace("{projectId}", id.toString()))
             .map(res => <RegisteredApplication[]> res.json())
             .catch(this.handleError);
     }
 
+    @Cached('application')
     get(id: number): Observable<RegisteredApplication> {
         let url = Constants.REST_BASE + RegisteredApplicationService.SINGLE_APPLICATION_URL.replace('{appId}', id.toString());
 

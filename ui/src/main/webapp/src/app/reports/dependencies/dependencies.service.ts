@@ -5,6 +5,7 @@ import {Injectable} from "@angular/core";
 import {Constants} from "../../constants";
 import {DependenciesReportModel} from "../../generated/tsModels/DependenciesReportModel";
 import {GraphJSONToModelService} from "../../services/graph/graph-json-to-model.service";
+import {Cached} from "../../shared/cache.service";
 
 @Injectable()
 export class DependenciesService extends AbstractService {
@@ -17,6 +18,7 @@ export class DependenciesService extends AbstractService {
     /**
      * Returns the DependenciesReportModel
      */
+    @Cached('dependencies', null, true)
     getDepsReportModel(executionId: number): Observable<DependenciesReportModel[]> {
         let service = this._graphJsonToModelService;
         let url = `${Constants.GRAPH_REST_BASE}/graph/${executionId}/by-type/` + DependenciesReportModel.discriminator + "?depth=2";
@@ -31,6 +33,7 @@ export class DependenciesService extends AbstractService {
             .catch(this.handleError);
     }
 
+    @Cached('dependencies', null, true)
     public getDependencies(executionId: number): Observable<any> {
         let url = this.GET_DEPENDENCIES_URL.replace('{executionId}', executionId.toString());
 
