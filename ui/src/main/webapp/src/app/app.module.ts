@@ -118,6 +118,7 @@ import {ExecutionsLayoutComponent} from "./executions/executions-layout.componen
 import {NavbarSelectionComponent} from "./shared/navigation/navbar-selection.component";
 import {DatePipe} from "@angular/common";
 import {SelectApplicationsComponent} from "./analysis-context/select-applications.component";
+import {ContextMenuLinkComponent} from "./shared/navigation/context-menu-link.component";
 
 /**
  * Load all mapping data from the generated files.
@@ -220,7 +221,8 @@ initializeModelMappingData();
         ApplicationListComponent,
         ProjectExecutionsComponent,
         NavbarSelectionComponent,
-        SelectApplicationsComponent
+        SelectApplicationsComponent,
+        ContextMenuLinkComponent
     ],
     providers: [
         appRoutingProviders,
