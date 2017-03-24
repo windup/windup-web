@@ -9,6 +9,7 @@ import {FileReducedDTO} from "windup-services";
 import {HintReducedDTO} from "windup-services";
 import {ClassificationReducedDTO} from "windup-services";
 import {TagReducedDTO} from "windup-services";
+import {Cached} from "../../shared/cache.service";
 
 @Injectable()
 export class ApplicationDetailsService extends AbstractService {
@@ -17,6 +18,7 @@ export class ApplicationDetailsService extends AbstractService {
         super();
     }
 
+    @Cached('applicationDetails', null, true)
     getApplicationDetailsData(executionId: number): Observable<ApplicationDetailsFullDTO> {
         let url = `${Constants.GRAPH_REST_BASE}/graph/application-details/${executionId}`;
 

@@ -5,6 +5,7 @@ import {Observable} from "rxjs/Observable";
 import {ProjectTechnologiesStatsModel} from "../../generated/tsModels/ProjectTechnologiesStatsModel";
 import {GraphService} from "../../services/graph.service";
 import {GraphJSONToModelService} from "../../services/graph/graph-json-to-model.service";
+import {Cached} from "../../shared/cache.service";
 
 @Injectable()
 export class TechReportService extends GraphService
@@ -13,6 +14,7 @@ export class TechReportService extends GraphService
         super(http, graphJsonToModelService);
     }
 
+    @Cached('techReport', null, true)
     getStats(execID: number): Observable<ProjectTechnologiesStatsModel[]>
     {
         return this.getTypeAsArray<ProjectTechnologiesStatsModel>(ProjectTechnologiesStatsModel.discriminator, execID, {
