@@ -91,31 +91,22 @@ export class AnalysisContextFormComponent extends FormComponent
             if (flatRouteData.data['project']) {
                 let project = flatRouteData.data['project'];
 
-                console.log("router event NavigationEnd, this.analysisContext: ", this.analysisContext);
-
                 // Reload the App from the service to ensure fresh data
                 this._migrationProjectService.get(project.id).subscribe(loadedProject => {
                     this.project = loadedProject;
                     this.loadPackageMetadata();
-                    this.loadProjectRelations();
                 });
 
                 // Load the apps of this project.
                 this._appService.getApplicationsByProjectID(project.id).subscribe(apps => {
                     this.availableApps = apps;
-                    console.log("Loaded availableApps", apps);
                 });
 
                 this.initializeAnalysisContext();
             }
-            //console.log("router event NavigationEnd, after: ", this.analysisContext, this.project);
 
             this.isInWizard = flatRouteData.data.hasOwnProperty('wizard') && flatRouteData.data['wizard'];
         });
-    }
-
-    private loadProjectRelations() {
-        this._migrationProjectService.getDefaultAnalysisContext(this.project.id).subscribe(ctx => this.analysisContext = ctx);
     }
 
     // Apps selection checkboxes
@@ -132,6 +123,7 @@ export class AnalysisContextFormComponent extends FormComponent
         analysisContext.excludePackages = [];
         analysisContext.rulesPaths = [];
         analysisContext.applications = [];
+        analysisContext.generateStaticReports = true;
 
         return analysisContext;
     }
@@ -231,15 +223,6 @@ export class AnalysisContextFormComponent extends FormComponent
         }
 
         return this.analysisContextForm.dirty;
-    }
-
-    // Create static reports checkbox
-    is_createStaticReports() {
-        return this.analysisContext.generateStaticReports;
-    }
-
-    onClick_createStaticReports(checked) {
-        this.analysisContext.generateStaticReports = checked;
     }
 
     advancedOptionsChanged(advancedOptions: AdvancedOption[]) {

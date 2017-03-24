@@ -137,15 +137,6 @@ export class MigrationProjectService extends AbstractService {
     stopMonitoringProject(project: MigrationProject) {
         this.monitoredProjects.delete(project.id);
     }
-
-    /**
-     *  See the REST method.
-     */
-    getDefaultAnalysisContext(projectId: number): Observable<AnalysisContext> {
-        return this._http.get(Constants.REST_BASE + this.GET_MIGRATION_PROJECT_URL + "/" + projectId + "/" + this.GET_DEFAULT_CONTEXT_SUBURL)
-            .map(res => <AnalysisContext> res.json())
-            .catch(this.handleError);
-    }
 }
 
 export interface HasAppCount{ applicationCount: number; }

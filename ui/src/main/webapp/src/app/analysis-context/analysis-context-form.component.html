@@ -42,37 +42,6 @@
             </div>
         </div>
 
-        <!-- Static reports  checkbox
-        <div class="form-group">
-            <label class="col-md-2 control-label" i18n>Create static reports</label>
-            <div class="col-md-10 col-lg-8">
-                <input id="createStaticReports" type="checkbox"
-                    [checked]="is_createStaticReports()"
-                    (click)="onClick_createStaticReports($event.target.checked)"
-                >
-            </div>
-        </div>
-        -->
-
-        <!-- Advanced options -->
-        <div class="form-group">
-            <label class="col-md-2 control-label" i18n>Advanced Options</label>
-            <div class="col-md-10 col-lg-8">
-                <input id="createStaticReports" type="checkbox"
-                       [checked]="is_createStaticReports()"
-                       (click)="onClick_createStaticReports($event.target.checked)"
-                >
-                <label for="createStaticReports" i18n>Create static HTML reports</label>
-
-                <wu-analysis-context-advanced-options
-                        [(selectedOptions)]="analysisContext.advancedOptions"
-                        (advancedOptionsChanged)="advancedOptionsChanged($event)"
-                        [configurationOptions]="configurationOptions"
-                        #advancedOptionsModal>
-                </wu-analysis-context-advanced-options>
-            </div>
-        </div>
-
         <!-- Packages -->
         <div class="form-group">
             <label class="col-md-2 control-label" i18n>Include Packages</label>
@@ -107,6 +76,23 @@
             </div>
         </div>
 
+        <!-- Advanced options -->
+        <div class="form-group">
+            <label class="col-md-2 control-label" i18n>Advanced Options</label>
+            <div class="col-md-10 col-lg-8">
+                <input id="createStaticReports" name="generateStaticReports" type="checkbox"
+                       [(ngModel)]="analysisContext.generateStaticReports"
+                >
+                <label for="createStaticReports" i18n>Create static HTML reports</label>
+
+                <wu-analysis-context-advanced-options
+                        [(selectedOptions)]="analysisContext.advancedOptions"
+                        (advancedOptionsChanged)="advancedOptionsChanged($event)"
+                        [configurationOptions]="configurationOptions"
+                        #advancedOptionsModal>
+                </wu-analysis-context-advanced-options>
+            </div>
+        </div>
 
         <div class="form-group">
             <div class="col-lg-10 col-lg-offset-2">

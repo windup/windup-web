@@ -95,24 +95,4 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
         this.migrationProjectService.deleteProject(project);
     }
 
-
-    /**
-     * Impl notes:
-     * Chooses the last execution of this project.
-     */
-    @Override
-    public AnalysisContext getDefaultAnalysisContext(Long projectId)
-    {
-        try
-        {
-            String query = "SELECT ctx FROM " + AnalysisContext.class.getSimpleName() + " AS ctx WHERE ctx.migrationProject.id = :projectId ORDER BY ctx.id DESC";
-            AnalysisContext ctx = entityManager.createQuery(query, AnalysisContext.class).setParameter("projectId", projectId).setMaxResults(1).getSingleResult();
-            return ctx;
-        }
-        catch (Exception ex)
-        {
-            LOG.log(Level.SEVERE, ex.getMessage(), ex);
-            throw new WindupException("Could not fetch last context used in this project: " + ex.getMessage(), ex);
-        }
-    }
 }

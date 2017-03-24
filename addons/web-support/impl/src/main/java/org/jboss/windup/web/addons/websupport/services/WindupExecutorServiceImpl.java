@@ -55,7 +55,8 @@ public class WindupExecutorServiceImpl implements WindupExecutorService
                     .setProgressMonitor(progressMonitor);
 
 
-        if (generateStaticReports){
+        if (!generateStaticReports)
+        {
             configuration.setRuleProviderFilter(new NotPredicate(new RuleProviderPhasePredicate(ReportRenderingPhase.class)));
         }
 

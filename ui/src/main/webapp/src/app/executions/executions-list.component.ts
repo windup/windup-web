@@ -22,7 +22,8 @@ export class ExecutionsListComponent implements OnInit {
     private _activeExecutions: WindupExecution[];
     protected projectsMap: Map<number, MigrationProject> = new Map<number, MigrationProject>();
 
-    public sortedExecutions: WindupExecution[] = [];
+    sortedExecutions: WindupExecution[] = [];
+    initialSort = {property: 'timeStarted', direction: OrderDirection.DESC};
 
     constructor(
         private _elementRef: ElementRef,
@@ -32,7 +33,6 @@ export class ExecutionsListComponent implements OnInit {
         private _projectService: MigrationProjectService
     ) {
         this.element = _elementRef.nativeElement;
-        this._sortingService.orderBy('timeStarted', OrderDirection.DESC);
     }
 
     ngOnInit(): void {
