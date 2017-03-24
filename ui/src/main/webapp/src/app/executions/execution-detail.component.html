@@ -20,7 +20,7 @@
                 <h2 i18n>Reports are only available for completed executions.</h2>
             </div>
             <ul *ngIf="displayReportLinks">
-                <li><a [routerLink]="['./application-index']" i18n="report">Application Index</a></li>
+                <li><a [routerLink]="['./application-index']" i18n="report">Report Index</a></li>
                 <li><a [routerLink]="['./application-details']" i18n="report">Application Details</a></li>
                 <li><a [routerLink]="['./migration-issues']" i18n="report">Issues</a></li>
                 <li *ngIf="execution?.analysisContext?.generateStaticReports">

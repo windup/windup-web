@@ -70,33 +70,25 @@ export class ProjectLayoutComponent extends RoutedComponent implements OnInit, O
         this.menuItems = [
             {
                 label: 'View Project',
-                link: this._routeLinkProviderService.getRouteForComponent(ProjectExecutionsComponent, {
-                    projectId: this.project.id
-                }),
+                link: this._routeLinkProviderService.getRouteForComponent(ProjectExecutionsComponent, { projectId: this.project.id }),
                 icon: 'fa-tachometer',
                 isEnabled: true
             },
             {
                 label: 'Applications',
-                link: this._routeLinkProviderService.getRouteForComponent(ApplicationListComponent, {
-                    projectId: this.project.id
-                }),
+                link: this._routeLinkProviderService.getRouteForComponent(ApplicationListComponent, { projectId: this.project.id }),
                 icon: 'fa-cubes',
                 isEnabled: true
             },
-            {
+            /*{
                 label: 'Executions',
-                link: this._routeLinkProviderService.getRouteForComponent(ProjectExecutionsComponent, {
-                    projectId: this.project.id
-                }),
+                link: this._routeLinkProviderService.getRouteForComponent(ProjectExecutionsComponent, { projectId: this.project.id }),
                 icon: 'fa-flask',
                 isEnabled: true
-            },
+            },*/
             {
-                label: 'Config',
-                link: this._routeLinkProviderService.getRouteForComponent(AnalysisContextFormComponent, {
-                    projectId: this.project.id,
-                }),
+                label: 'New Execution',
+                link: this._routeLinkProviderService.getRouteForComponent(AnalysisContextFormComponent, { projectId: this.project.id }),
                 icon: 'fa-cogs',
                 isEnabled: true,
             },

@@ -1,6 +1,6 @@
 <div class="page-header page-header-no-border">
     <h1>
-        <div class="main">Application Index Report</div>
+        <div class="main">Report Index</div>
     </h1>
     <div class="desc">This report provides summary information about findings from the migration analysis.</div>
 </div>
@@ -48,7 +48,7 @@
 <!--                    <tr>
                         <td>Shared Dependencies</td>
                         <td><span class="highlightNumber">{{dependenciesStats.Dependency}}</span></td>
-                    </tr>     -->               
+                    </tr>     -->
                 </tbody>
                 </table>
             </div>
@@ -86,7 +86,7 @@
                     >
                     </wu-package-chart>
             </div>
-            
+
         </div>
         <!-- categories incidents -->
         <div class="col-md-4 chartBoundary" *ngIf="categoriesMultiStats && categoriesMultiStats.length > 0">
@@ -113,7 +113,7 @@
            </div>
            <div class="panel-body col-md-4" *ngIf="showDetails">
                 <table class="table table-condensed table-striped" *ngIf="globalPackageUseData && globalPackageUseData.length > 0">
-                    <caption>Java Packages Usage</caption> 
+                    <caption>Java Packages Usage</caption>
                     <thead>
                         <tr>
                             <th>Java Package</th>
@@ -167,5 +167,5 @@
                         </tr>
                     </tbody>
                 </table>
-            </div> 
+            </div>
     </div>
