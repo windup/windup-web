@@ -3,7 +3,9 @@
 <h2 i18n="heading|executions list">Executions List</h2>
 <table class="table table-bordered table-hover table-mobile executions-list-table">
     <thead wu-sortable-table
-        [(sortedData)]="sortedExecutions" [data]="executions"
+        [(sortedData)]="sortedExecutions"
+        [data]="executions"
+        [initialSortBy]="initialSort"
         [tableHeaders]="[
             { title: 'Execution', isSortable: true, sortBy: 'id' },
             { title: 'Project', isSortable: true, sortBy: sortByProjectCallback },
@@ -25,7 +27,7 @@
         <td *ngIf="!execution.timeCompleted"></td>
         <td>
             <a class="link cancel" *ngIf="canCancel(execution)" (click)="cancelExecution(execution)" i18n="button">Cancel</a>
-            <a class="link" *ngIf="execution.state == 'COMPLETED'" target="_blank" href="{{formatStaticReportUrl(execution)}}"> View Static Report </a>
+            <a class="link" *ngIf="execution.state == 'COMPLETED' && execution?.analysisContext?.generateStaticReports" target="_blank" href="{{formatStaticReportUrl(execution)}}"> View Static Report </a>
         </td>
     </tr>
     </tbody>

@@ -100,7 +100,6 @@ export class AnalysisContextFormComponent extends FormComponent
                 // Load the apps of this project.
                 this._appService.getApplicationsByProjectID(project.id).subscribe(apps => {
                     this.availableApps = apps;
-                    console.log("Loaded availableApps", apps);
                 });
 
                 this.initializeAnalysisContext();
@@ -110,6 +109,7 @@ export class AnalysisContextFormComponent extends FormComponent
         });
     }
 
+    // Apps selection checkboxes
     appsValueCallback = (app: RegisteredApplication) => ""+app.id;
     appsLabelCallback = (app: RegisteredApplication) => app.title;
     equalsCallback = (a1: RegisteredApplication, a2: RegisteredApplication) => a1.id === a2.id;
@@ -123,17 +123,19 @@ export class AnalysisContextFormComponent extends FormComponent
         analysisContext.excludePackages = [];
         analysisContext.rulesPaths = [];
         analysisContext.applications = [];
+        analysisContext.generateStaticReports = true;
 
         return analysisContext;
     }
 
     private initializeAnalysisContext() {
+        console.log("initializeAnalysisContext(), this.analysisContext: ", this.analysisContext);
         let analysisContext = this.analysisContext;
 
         if (analysisContext == null) {
             analysisContext = AnalysisContextFormComponent.getDefaultAnalysisContext();
         } else {
-            // for migration path, store the id only
+            // For the migration path, store the id only.
             if (analysisContext.migrationPath) {
                 analysisContext.migrationPath = <MigrationPath>{id: analysisContext.migrationPath.id};
             } else {
@@ -288,6 +290,7 @@ export class AnalysisContextFormComponent extends FormComponent
     rulesPathsChanged(rulesPaths:RulesPath[]) {
         this.analysisContext.rulesPaths = rulesPaths;
     }
+
 }
 
 enum Action {

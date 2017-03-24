@@ -11,6 +11,7 @@ import {
     ApplicationRegisteredEvent, ApplicationDeletedEvent, UpdateMigrationProjectEvent
 } from "../core/events/windup-event";
 import {EventBusService} from "../core/events/event-bus.service";
+import {AnalysisContext} from "windup-services";
 
 @Injectable()
 export class MigrationProjectService extends AbstractService {
@@ -19,6 +20,7 @@ export class MigrationProjectService extends AbstractService {
     private CREATE_MIGRATION_PROJECT_URL = "/migrationProjects/create";
     private UPDATE_MIGRATION_PROJECT_URL = "/migrationProjects/update";
     private DELETE_MIGRATION_PROJECT_URL = '/migrationProjects/delete';
+    private GET_DEFAULT_CONTEXT_SUBURL = 'getDefaultAnalysisContext';
 
     private monitoredProjects = new Map<number, MigrationProject>();
 

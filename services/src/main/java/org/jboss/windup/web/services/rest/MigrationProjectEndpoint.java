@@ -2,19 +2,15 @@ package org.jboss.windup.web.services.rest;
 
 import org.jboss.windup.web.services.model.MigrationProject;
 
-import java.util.Collection;
 import java.util.List;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-
 
 /**
  *  Provides a service for creating, updating, and deleting migration projects.
@@ -62,7 +58,6 @@ public interface MigrationProjectEndpoint
     @DELETE
     @Path("delete")
     void deleteProject(MigrationProject migration);
-
 
     /**
      * Adds app count to MigrationProject solely for the purpose of this REST API.
