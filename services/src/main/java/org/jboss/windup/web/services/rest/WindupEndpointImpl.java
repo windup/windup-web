@@ -54,6 +54,9 @@ public class WindupEndpointImpl implements WindupEndpoint
     @Resource(lookup = "java:/queues/" + MessagingConstants.EXECUTOR_QUEUE)
     private Queue executorQueue;
 
+    /**
+     * @see org.jboss.windup.web.services.messaging.ExecutorMDB
+     */
     @Override
     public WindupExecution executeWithContext(Long contextId)
     {
