@@ -6,8 +6,19 @@ import {RegisteredApplication} from "windup-services";
     templateUrl: './select-applications.component.html'
 })
 export class SelectApplicationsComponent {
+    _availableApps:RegisteredApplication[];
     @Input()
-    availableApps:RegisteredApplication[];
+    set availableApps(availableApps:RegisteredApplication[]) {
+        this._availableApps = availableApps;
+        this.sort();
+    }
+
+    get availableApps():RegisteredApplication[] {
+        return this._availableApps;
+    }
+
+    availableAppsSorted:RegisteredApplication[];
+
     _selectedApps:RegisteredApplication[];
 
     @Output()
@@ -23,21 +34,16 @@ export class SelectApplicationsComponent {
         return this._selectedApps;
     }
 
-    get notAllSelected():boolean {
-        if (!this.availableApps)
-            return false;
-        if (!this._selectedApps)
-            return false;
-
-        return this._selectedApps.length != this.availableApps.length;
-    }
-
-    get someSelected():boolean {
-        return this._selectedApps ? this._selectedApps.length > 0 : false;
-    }
-
     appsLabelCallback = (app: RegisteredApplication) => app.title;
     equalsCallback = (a1: RegisteredApplication, a2: RegisteredApplication) => a1.id === a2.id;
+
+    sort() {
+        if (!this._availableApps) {
+            this.availableAppsSorted = [];
+        } else {
+            this.availableAppsSorted = this._availableApps.sort((app1, app2) => app1.inputFilename.localeCompare(app2.inputFilename));
+        }
+    }
 
     selectAll() {
         this.selectedApps = this.availableApps;
