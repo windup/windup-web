@@ -42,7 +42,7 @@ public interface WindupEndpoint
      * The context is persisted as a new instance, and attached to the new execution.
      */
     @POST
-    @Path("execute-with-context/{projectId}")
+    @Path("execute-project-with-context/{projectId}")
     WindupExecution executeProjectWithContext(@Valid AnalysisContext analysisContext, @PathParam("projectId") @NotNull Long projectId);
 
     @GET

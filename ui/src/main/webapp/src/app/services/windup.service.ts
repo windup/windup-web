@@ -11,7 +11,7 @@ import {MigrationProject} from "windup-services";
 
 @Injectable()
 export class WindupService extends AbstractService {
-    private EXECUTE_WITH_CONTEXT_PATH = "/windup/execute-with-context/{projectId}";
+    private EXECUTE_WITH_CONTEXT_PATH = "/windup/execute-project-with-context/{projectId}";
     private EXECUTIONS_PATH = '/windup/executions';
     private PROJECT_EXECUTIONS_PATH = '/windup/by-project/{projectId}';
 
