@@ -217,16 +217,23 @@ export class RegisteredApplicationService extends AbstractService {
     }
 
     /**
-     * Method
-     * @param metadata
-     * @returns {PackageMetadata|boolean}
+     * Checks if PackageMetadata scanStatus is complete.
+     * If it is, PackageMetadata object can be treated as immutable and cached
+     *
+     * @param metadata {PackageMetadata}
+     * @returns {boolean}
      */
     static arePackagesLoaded = (metadata: PackageMetadata) => {
         return metadata && metadata.scanStatus === "COMPLETE";
     };
 
-    //@Cached({section: 'application', immutable: true, expiration: {minutes: 5}})
-    @Cached('application', null, true, RegisteredApplicationService.arePackagesLoaded)
+    /**
+     * Gets package metadata
+     *
+     * @param application {RegisteredApplication}
+     * @returns {Observable<PackageMetadata>}
+     */
+    @Cached({section: 'application', immutable: true, cacheItemCallback: RegisteredApplicationService.arePackagesLoaded})
     getPackageMetadata(application: RegisteredApplication): Observable<PackageMetadata> {
         let url = Constants.REST_BASE + RegisteredApplicationService.PACKAGES_URL.replace("{appId}", application.id.toString());
 

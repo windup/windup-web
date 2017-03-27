@@ -125,13 +125,28 @@ interface CacheExpiration {
 /**
  * Caches function call result
  *
+ * @param configuration {CacheConfiguration}
+ */
+export function Cached(configuration?: CacheConfiguration);
+/**
+ * Caches function call result
+ *
  * @param section {string} Cache section name
  * @param expiration {CacheExpiration} Expiration time (default is 5 min.)
  * @param immutable {boolean} If object is immutable, its cache never expires
  * @param cacheItemCallback {Function} Callback which specifies if item can be cached.
  */
-export function Cached(section?: string, expiration?: CacheExpiration, immutable: boolean = false, cacheItemCallback?: Function) {
-    if (section === null || section === undefined) {
+export function Cached(section?: string, expiration?: CacheExpiration, immutable?: boolean, cacheItemCallback?: Function);
+export function Cached(section?, expiration?: CacheExpiration, immutable: boolean = false, cacheItemCallback?: Function) {
+    if (typeof section === 'object') {
+        let configuration = Object.assign({}, {
+            immutable: false
+        }, section);
+
+        expiration = configuration.expiration;
+        immutable = configuration.immutable;
+        cacheItemCallback = configuration.cacheItemCallback;
+    } else if (section === null || section === undefined) {
         section = 'global';
     }
 
@@ -200,3 +215,10 @@ function getCacheKey(functionName: string, args: any[]) {
 
 // I hope this will be sufficient for having single instance
 export const CacheServiceInstance = new CacheService();
+
+export interface CacheConfiguration {
+    section?: string;
+    immutable?: boolean;
+    expiration?: CacheExpiration;
+    cacheItemCallback?: (any) => boolean;
+}
