@@ -1,9 +1,7 @@
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var ProvidePlugin = webpack.ProvidePlugin;
 var ContextReplacementPlugin = webpack.ContextReplacementPlugin;
-var DedupePlugin = webpack.optimize.DedupePlugin;
 var CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin;
 var helpers = require('./helpers');
 
@@ -35,7 +33,7 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                exclude: helpers.root('src', 'app'),
+                exclude: [helpers.root('src', 'app'), helpers.root('node_modules', '@swimlane')],
                 loader: ExtractTextPlugin.extract({ fallback: 'style-loader', loader: ['css-loader?sourceMap'], publicPath: '../' })
             },
             {
@@ -47,7 +45,7 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                include: helpers.root('src', 'app'),
+                include: [helpers.root('src', 'app'), helpers.root('node_modules', '@swimlane')],
                 loader: 'raw-loader'
             },
             // All the sh*t for jQuery and other global plugins
