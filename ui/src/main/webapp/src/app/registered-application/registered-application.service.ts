@@ -216,6 +216,17 @@ export class RegisteredApplicationService extends AbstractService {
             .catch(this.handleError);
     }
 
+    /**
+     * Method
+     * @param metadata
+     * @returns {PackageMetadata|boolean}
+     */
+    static arePackagesLoaded = (metadata: PackageMetadata) => {
+        return metadata && metadata.scanStatus === "COMPLETE";
+    };
+
+    //@Cached({section: 'application', immutable: true, expiration: {minutes: 5}})
+    @Cached('application', null, true, RegisteredApplicationService.arePackagesLoaded)
     getPackageMetadata(application: RegisteredApplication): Observable<PackageMetadata> {
         let url = Constants.REST_BASE + RegisteredApplicationService.PACKAGES_URL.replace("{appId}", application.id.toString());
 
