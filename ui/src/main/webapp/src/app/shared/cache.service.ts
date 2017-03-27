@@ -128,8 +128,9 @@ interface CacheExpiration {
  * @param section {string} Cache section name
  * @param expiration {CacheExpiration} Expiration time (default is 5 min.)
  * @param immutable {boolean} If object is immutable, its cache never expires
+ * @param cacheItemCallback {Function} Callback which specifies if item can be cached.
  */
-export function Cached(section?: string, expiration?: CacheExpiration, immutable: boolean = false) {
+export function Cached(section?: string, expiration?: CacheExpiration, immutable: boolean = false, cacheItemCallback?: Function) {
     if (section === null || section === undefined) {
         section = 'global';
     }
@@ -148,13 +149,23 @@ export function Cached(section?: string, expiration?: CacheExpiration, immutable
                 console.log('Cache miss', cacheKey);
                 let result: any|Observable<any> = originalMethod.apply(this, args);
 
+                let storeItemInCache = (result: any) => {
+                    let isItemCacheable = true;
+
+                    if (cacheItemCallback && typeof cacheItemCallback === 'function') {
+                        isItemCacheable = cacheItemCallback(result);
+                    }
+
+                    if (isItemCacheable) {
+                        console.log('Cache emplacement', result);
+                        cacheSection.setItem(cacheKey, result, immutable, expiration);
+                    }
+                };
+
                 if (isObservable(result)) {
-                    return result.do(function(jsonResult) {
-                        console.log('Cache emplacement', jsonResult);
-                        cacheSection.setItem(cacheKey, jsonResult, immutable, expiration);
-                    });
+                    return result.do(storeItemInCache);
                 } else {
-                    cacheSection.setItem(cacheKey, result, immutable, expiration);
+                    storeItemInCache(result);
                     return result;
                 }
             }
