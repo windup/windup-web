@@ -7,6 +7,7 @@ import {ConfigurationOption} from "../model/configuration-option.model";
 import {Observable} from "rxjs/Observable";
 import {ValidationResult} from "../model/validation-result.model";
 import {AdvancedOption} from "windup-services";
+import {Cached} from "../shared/cache.service";
 
 @Injectable()
 export class ConfigurationOptionsService extends AbstractService {
@@ -25,6 +26,7 @@ export class ConfigurationOptionsService extends AbstractService {
             .catch(this.handleError);
     }
 
+    @Cached({section: 'configurationOptions', immutable: true})
     getAll(): Observable<ConfigurationOption[]> {
         return this._http.get(Constants.REST_BASE + this.GET_CONFIGURATION_OPTIONS_URL)
             .map(res => <ConfigurationOption[]> res.json())
