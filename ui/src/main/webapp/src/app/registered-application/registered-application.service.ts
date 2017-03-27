@@ -14,7 +14,7 @@ import {
 import {MigrationProject} from "windup-services";
 import {PackageMetadata} from "windup-services";
 import {SchedulerService} from "../shared/scheduler.service";
-import {Subject} from "rxjs";
+import {ReplaySubject, Subject} from "rxjs";
 import {Cached} from "../shared/cache.service";
 
 @Injectable()
@@ -243,7 +243,8 @@ export class RegisteredApplicationService extends AbstractService {
     }
 
     waitUntilPackagesAreResolved(application: RegisteredApplication): Observable<PackageMetadata> {
-        let subject = new Subject<PackageMetadata>();
+        // ReplaySubject must be used because data might be cached and resolved right away
+        let subject = new ReplaySubject<PackageMetadata>(1);
 
         let closure = () => {
             this.getPackageMetadata(application).subscribe(packageMetadata => {
