@@ -4,13 +4,7 @@ import 'rxjs/add/operator/do';
 
 @Injectable()
 export class CacheService {
-    private static instance = new CacheService();
-
     private cacheSections: Map<string, CacheSection> = new Map<string, CacheSection>();
-
-    public static getInstance(): CacheService {
-        return CacheService.instance;
-    }
 
     public getSection(section: string) {
         if (!this.cacheSections.has(section)) {
@@ -146,6 +140,7 @@ export function Cached(section?, expiration?: CacheExpiration, immutable: boolea
         expiration = configuration.expiration;
         immutable = configuration.immutable;
         cacheItemCallback = configuration.cacheItemCallback;
+        section = section.section;
     } else if (section === null || section === undefined) {
         section = 'global';
     }
@@ -164,7 +159,7 @@ export function Cached(section?, expiration?: CacheExpiration, immutable: boolea
                 console.log('Cache miss', cacheKey);
                 let result: any|Observable<any> = originalMethod.apply(this, args);
 
-                let storeItemInCache = (result: any) => {
+                let storeItemInCache = (result: any, isObservable: boolean = false) => {
                     let isItemCacheable = true;
 
                     if (cacheItemCallback && typeof cacheItemCallback === 'function') {
@@ -173,12 +168,15 @@ export function Cached(section?, expiration?: CacheExpiration, immutable: boolea
 
                     if (isItemCacheable) {
                         console.log('Cache emplacement', result);
-                        cacheSection.setItem(cacheKey, result, immutable, expiration);
+                        cacheSection.setItem(cacheKey, {
+                            value: result,
+                            isObservable: isObservable
+                        }, immutable, expiration);
                     }
                 };
 
                 if (isObservable(result)) {
-                    return result.do(storeItemInCache);
+                    return result.do(jsonResult => storeItemInCache(jsonResult, true));
                 } else {
                     storeItemInCache(result);
                     return result;
@@ -186,10 +184,13 @@ export function Cached(section?, expiration?: CacheExpiration, immutable: boolea
             }
 
             console.log('cache hit', cacheKey);
-            return new Observable<any>(function(observer) {
-                observer.next(cacheSection.getItem(cacheKey));
-                observer.complete();
-            });
+            let data = cacheSection.getItem(cacheKey);
+
+            if (!data.isObservable) {
+                return data.value;
+            } else {
+                return Observable.of(data.value);
+            }
         };
 
         return descriptor;
