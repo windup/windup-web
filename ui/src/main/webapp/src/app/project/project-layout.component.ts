@@ -80,12 +80,6 @@ export class ProjectLayoutComponent extends RoutedComponent implements OnInit, O
                 icon: 'fa-cubes',
                 isEnabled: true
             },
-            /*{
-                label: 'Executions',
-                link: this._routeLinkProviderService.getRouteForComponent(ProjectExecutionsComponent, { projectId: this.project.id }),
-                icon: 'fa-flask',
-                isEnabled: true
-            },*/
             {
                 label: 'New Execution',
                 link: this._routeLinkProviderService.getRouteForComponent(AnalysisContextFormComponent, { projectId: this.project.id }),

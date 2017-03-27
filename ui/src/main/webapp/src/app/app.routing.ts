@@ -31,9 +31,11 @@ import {ProjectExecutionsComponent} from "./executions/project-executions.compon
 import {WizardLayoutComponent} from "./shared/layout/wizard-layout.component";
 import {ExecutionsLayoutComponent} from "./executions/executions-layout.component";
 import {ApplicationLevelLayoutComponent} from "./reports/application-level-layout.component";
+import {ExecutionApplicationListComponent} from "./reports/execution-application-list/execution-application-list.component";
 
 export const executionLevelRoutes: Routes = [
-    {path: '', component: ExecutionDetailComponent, data: {displayName: 'Execution Info'}},
+    {path: '', component: ExecutionApplicationListComponent, data: {displayName: 'Applications'}},
+    {path: 'execution-details', component: ExecutionDetailComponent, data: {displayName: 'Execution Info'}},
     {path: 'dependencies-report', component: DependenciesReportComponent, data: {displayName: 'Dependency Report'}},
     {path: 'technology-report', component: TechnologiesReportComponent, data: {displayName: 'Technology Report'}},
     {path: 'migration-issues',

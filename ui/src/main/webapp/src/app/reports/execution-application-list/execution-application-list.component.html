@@ -1,0 +1,30 @@
+<div *ngIf="false">
+    <h2 i18n="Application List Page Loading|A message to indicate that the application list data is still loading">
+        Loading execution data
+    </h2>
+</div>
+<div>
+    <div class="header-bar">
+        <h2 i18n="Heading|Application List">Applications</h2>
+        <div class="search">
+            <wu-search [(searchValue)]="searchText" (searchValueChange)="updateSearch()"></wu-search>
+        </div>
+    </div>
+
+    <table class="table table-bordered table-hover">
+        <thead wu-sortable-table
+               [(sortedData)]="sortedApplications" [data]="filteredApplications"
+               [initialSortBy]="initialSort"
+               [tableHeaders]="[
+                    { title: 'Application', isSortable: true, sortBy: 'fileName' }
+               ]">
+        </thead>
+        <tbody>
+            <tr *ngFor="let app of sortedApplications">
+                <td>
+                    <a [routerLink]="['/projects', projectID, 'reports', execID, 'applications', app.id]">{{app.fileName}}</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
