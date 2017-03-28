@@ -43,7 +43,7 @@ export class MigrationIssuesService extends AbstractService {
                 if (filter) {
                     data = serverResponse.filter(item => {
                         return filter.selectedApplications.some(filterApp => {
-                            let rootFileName =  (<any>item.projectModel.rootFileModel).fileName;
+                            let rootFileName =  (<any>item.projectModel).vertices_out.rootFileModel.vertices[0].fileName;
 
                             if ((<FilterApplication>filterApp).fileName) {
                                 return rootFileName === (<FilterApplication>filterApp).fileName;
