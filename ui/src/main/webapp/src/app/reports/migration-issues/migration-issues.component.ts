@@ -43,7 +43,14 @@ export class MigrationIssuesComponent extends RoutedComponent implements OnInit 
             let executionId = parseInt(flatRouteData.params['executionId']);
             this._windupService.getExecution(executionId).subscribe(execution => this.execution = execution);
 
-            this._migrationIssuesService.getAggregatedIssues(executionId).subscribe(
+            let dataSource = this._migrationIssuesService.getNewAggregatedIssues;
+
+            if (flatRouteData.data.oldMode) {
+                dataSource = this._migrationIssuesService.getAggregatedIssues;
+            }
+
+
+            dataSource(executionId).subscribe(
                 result => {
                     this.categorizedIssues = result;
                     this.categories = Object.keys(result);
