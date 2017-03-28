@@ -4,7 +4,7 @@ import {Observable} from "rxjs";
 import {AbstractService} from "../../shared/abtract.service";
 import {Constants} from "../../constants";
 import {Cached} from "../../shared/cache.service";
-import {ReportFilter} from "windup-services";
+import {FilterApplication, RegisteredApplication, ReportFilter} from "windup-services";
 import {ProjectModel} from "../../generated/tsModels/ProjectModel";
 
 @Injectable()
@@ -23,29 +23,69 @@ export class MigrationIssuesService extends AbstractService {
             .catch(this.handleError);
     }
 
-    getNewAggregatedIssues(executionId: number, filter?: ReportFilter): Observable<Dictionary<ProblemSummary[]>> {
+    @Cached({section: 'migrationIssues', immutable: true})
+    getDataFromServer(executionId: number) {
         let url = MigrationIssuesService.NEW_AGGREGATED_ISSUES_URL.replace('{executionId}', executionId.toString());
 
         return this._http.get(url)
             .map(res => res.json())
+            .catch(this.handleError);
+    }
+
+    getNewAggregatedIssues(executionId: number, filter?: ReportFilter): Observable<Dictionary<ProblemSummary[]>> {
+        return this.getDataFromServer(executionId)
             .map((serverResponse: MigrationIssuesResponse[]) => {
                 let result: Dictionary<ProblemSummary[]> = {};
 
-                if (!filter) {
-                    serverResponse.map(item => item.problemSummaries).forEach((problemSummary) => {
-                        Object.keys(problemSummary).forEach(category => {
-                            if (!result.hasOwnProperty(category)) {
-                                result[category] = [];
-                            }
+                let data  = serverResponse;
 
-                            result[category] = [...result[category], problemSummary[category]];
+
+                if (filter) {
+                    data = serverResponse.filter(item => {
+                        return filter.selectedApplications.some(filterApp => {
+                            let rootFileName =  (<any>item.projectModel.rootFileModel).fileName;
+
+                            if ((<FilterApplication>filterApp).fileName) {
+                                return rootFileName === (<FilterApplication>filterApp).fileName;
+                            } else {
+                                return rootFileName === (<Partial<RegisteredApplication>>filterApp).inputFilename;
+                            }
                         });
-                    })
+                    });
                 }
 
+                data.map(item => item.problemSummaries).forEach((problemSummary) => {
+                    Object.keys(problemSummary).forEach(category => {
+                        if (!result.hasOwnProperty(category)) {
+                            result[category] = [];
+                        }
+
+                        result[category] = [].concat(result[category]).concat(problemSummary[category]);
+                    });
+                });
+
+                Object.keys(result).forEach(category => {
+                    result[category] = this.groupSummariesByRule(result[category]);
+                });
+
                 return result;
-            })
-            .catch(this.handleError);
+            });
+    }
+
+    protected groupSummariesByRule(summaries: ProblemSummary[]): ProblemSummary[] {
+        let map: Map<string, ProblemSummary> = new Map<string, ProblemSummary>();
+
+        summaries.forEach(summary => {
+            if (!map.has(summary.ruleID)) {
+                map.set(summary.ruleID, summary);
+            } else {
+                let existingSummary = map.get(summary.ruleID);
+                existingSummary.numberFound += summary.numberFound;
+            }
+        });
+
+
+        return Array.from(map.values());
     }
 
     @Cached('migrationIssues', null, true)
