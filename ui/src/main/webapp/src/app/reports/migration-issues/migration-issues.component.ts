@@ -6,9 +6,10 @@ import {NotificationService} from "../../core/notification/notification.service"
 import {MigrationIssuesService} from "./migration-issues.service";
 import {WINDUP_WEB} from "../../app.module";
 import {WindupService} from "../../services/windup.service";
-import {WindupExecution} from "windup-services";
+import {MigrationProject, ReportFilter, WindupExecution} from "windup-services";
 import {RouteFlattenerService} from "../../core/routing/route-flattener.service";
 import {RoutedComponent} from "../../shared/routed.component";
+import {Observable} from "rxjs";
 
 
 @Component({
@@ -41,24 +42,44 @@ export class MigrationIssuesComponent extends RoutedComponent implements OnInit 
     ngOnInit(): void {
         this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
             let executionId = parseInt(flatRouteData.params['executionId']);
-            this._windupService.getExecution(executionId).subscribe(execution => this.execution = execution);
-
-            let dataSource = this._migrationIssuesService.getNewAggregatedIssues;
-
-            if (flatRouteData.data.oldMode) {
-                dataSource = this._migrationIssuesService.getAggregatedIssues;
-            }
+            this._windupService.getExecution(executionId).subscribe(execution => {
+                this.execution = execution;
 
 
-            dataSource(executionId).subscribe(
-                result => {
-                    this.categorizedIssues = result;
-                    this.categories = Object.keys(result);
-                },
-                error => {
-                    this._notificationService.error(utils.getErrorMessage(error));
-                    this._router.navigate(['']);
-                });
+                let dataSource: Observable<any>;
+
+                if (flatRouteData.data.oldMode) {
+                    dataSource = this._migrationIssuesService.getAggregatedIssues(executionId);
+                } else {
+                    let reportFilter = null;
+
+                    if (flatRouteData.data.level === 'application') {
+                        let selectedApplications = this.execution.filterApplications.filter(app => app.id === +flatRouteData.params.applicationId);
+
+                        reportFilter = {
+                            id: 0,
+                            selectedApplications: selectedApplications,
+                            includeTags: [],
+                            excludeTags: [],
+                            includeCategories: [],
+                            excludeCategories: [],
+                            enabled: true
+                        };
+                    }
+
+                    dataSource = this._migrationIssuesService.getNewAggregatedIssues(executionId, reportFilter);
+                }
+
+                dataSource.subscribe(
+                    result => {
+                        this.categorizedIssues = result;
+                        this.categories = Object.keys(result).sort();
+                    },
+                    error => {
+                        this._notificationService.error(utils.getErrorMessage(error));
+                        this._router.navigate(['']);
+                    });
+            });
         }));
     }
 }
