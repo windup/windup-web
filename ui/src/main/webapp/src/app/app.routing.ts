@@ -73,9 +73,7 @@ export const appRoutes: Routes = [
                     {path: '', redirectTo: "/project-list", pathMatch: "full"},
                     {
                         path: "configuration",
-                        resolve: {
-                            configuration: ConfigurationResolve
-                        },
+                        resolve: { configuration: ConfigurationResolve },
                         component: ConfigurationComponent,
                         data: {
                             displayName: "Global Configuration"
@@ -126,9 +124,7 @@ export const appRoutes: Routes = [
                         data: {
                             breadcrumbTitle: getProjectBreadcrumbTitle
                         },
-                        resolve: {
-                            project: ProjectResolve
-                        },
+                        resolve: { project: ProjectResolve },
                         children: [
                             {
                                 path: '',
@@ -142,9 +138,7 @@ export const appRoutes: Routes = [
                                         {
                                             path: ':applicationId/edit',
                                             component: EditApplicationFormComponent,
-                                            resolve: {
-                                                application: ApplicationResolve
-                                            },
+                                            resolve: { application: ApplicationResolve },
                                             data: {displayName: "Edit Application"}
                                         },
                                     ]},
