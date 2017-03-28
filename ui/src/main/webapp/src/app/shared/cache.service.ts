@@ -4,13 +4,7 @@ import 'rxjs/add/operator/do';
 
 @Injectable()
 export class CacheService {
-    private static instance = new CacheService();
-
     private cacheSections: Map<string, CacheSection> = new Map<string, CacheSection>();
-
-    public static getInstance(): CacheService {
-        return CacheService.instance;
-    }
 
     public getSection(section: string) {
         if (!this.cacheSections.has(section)) {
@@ -125,12 +119,29 @@ interface CacheExpiration {
 /**
  * Caches function call result
  *
+ * @param configuration {CacheConfiguration}
+ */
+export function Cached(configuration?: CacheConfiguration);
+/**
+ * Caches function call result
+ *
  * @param section {string} Cache section name
  * @param expiration {CacheExpiration} Expiration time (default is 5 min.)
  * @param immutable {boolean} If object is immutable, its cache never expires
+ * @param cacheItemCallback {Function} Callback which specifies if item can be cached.
  */
-export function Cached(section?: string, expiration?: CacheExpiration, immutable: boolean = false) {
-    if (section === null || section === undefined) {
+export function Cached(section?: string, expiration?: CacheExpiration, immutable?: boolean, cacheItemCallback?: Function);
+export function Cached(section?, expiration?: CacheExpiration, immutable: boolean = false, cacheItemCallback?: Function) {
+    if (typeof section === 'object') {
+        let configuration = Object.assign({}, {
+            immutable: false
+        }, section);
+
+        expiration = configuration.expiration;
+        immutable = configuration.immutable;
+        cacheItemCallback = configuration.cacheItemCallback;
+        section = section.section;
+    } else if (section === null || section === undefined) {
         section = 'global';
     }
 
@@ -148,22 +159,38 @@ export function Cached(section?: string, expiration?: CacheExpiration, immutable
                 console.log('Cache miss', cacheKey);
                 let result: any|Observable<any> = originalMethod.apply(this, args);
 
+                let storeItemInCache = (result: any, isObservable: boolean = false) => {
+                    let isItemCacheable = true;
+
+                    if (cacheItemCallback && typeof cacheItemCallback === 'function') {
+                        isItemCacheable = cacheItemCallback(result);
+                    }
+
+                    if (isItemCacheable) {
+                        console.log('Cache emplacement', result);
+                        cacheSection.setItem(cacheKey, {
+                            value: result,
+                            isObservable: isObservable
+                        }, immutable, expiration);
+                    }
+                };
+
                 if (isObservable(result)) {
-                    return result.do(function(jsonResult) {
-                        console.log('Cache emplacement', jsonResult);
-                        cacheSection.setItem(cacheKey, jsonResult, immutable, expiration);
-                    });
+                    return result.do(jsonResult => storeItemInCache(jsonResult, true));
                 } else {
-                    cacheSection.setItem(cacheKey, result, immutable, expiration);
+                    storeItemInCache(result);
                     return result;
                 }
             }
 
             console.log('cache hit', cacheKey);
-            return new Observable<any>(function(observer) {
-                observer.next(cacheSection.getItem(cacheKey));
-                observer.complete();
-            });
+            let data = cacheSection.getItem(cacheKey);
+
+            if (!data.isObservable) {
+                return data.value;
+            } else {
+                return Observable.of(data.value);
+            }
         };
 
         return descriptor;
@@ -189,3 +216,10 @@ function getCacheKey(functionName: string, args: any[]) {
 
 // I hope this will be sufficient for having single instance
 export const CacheServiceInstance = new CacheService();
+
+export interface CacheConfiguration {
+    section?: string;
+    immutable?: boolean;
+    expiration?: CacheExpiration;
+    cacheItemCallback?: (any) => boolean;
+}

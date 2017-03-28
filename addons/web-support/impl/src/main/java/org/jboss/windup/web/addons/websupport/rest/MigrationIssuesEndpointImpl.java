@@ -1,6 +1,8 @@
 package org.jboss.windup.web.addons.websupport.rest;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -11,20 +13,91 @@ import java.util.stream.StreamSupport;
 
 import javax.ws.rs.NotFoundException;
 
+import org.apache.commons.collections4.map.LinkedMap;
 import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.model.ProjectModel;
 import org.jboss.windup.graph.service.ProjectService;
 import org.jboss.windup.reporting.category.IssueCategoryModel;
 import org.jboss.windup.reporting.freemarker.problemsummary.ProblemSummary;
 import org.jboss.windup.reporting.freemarker.problemsummary.ProblemSummaryService;
+import org.jboss.windup.reporting.freemarker.problemsummary.ProblemSummaryServiceForWindupWeb;
 import org.jboss.windup.web.addons.websupport.model.ReportFilterDTO;
 import org.jboss.windup.web.addons.websupport.rest.graph.AbstractGraphResource;
+import org.jboss.windup.web.addons.websupport.rest.graph.GraphMarshallingContext;
 
 /**
  * @author <a href="mailto:dklingenberg@gmail.com">David Klingenberg</a>
  */
 public class MigrationIssuesEndpointImpl extends AbstractGraphResource implements MigrationIssuesEndpoint
 {
+    @Override
+    public Object getNewAggregatedIssues(Long reportId) {
+        GraphContext graphContext = this.getGraph(reportId);
+
+        ReportFilterDTO filter = this.reportFilterService.getReportFilter(reportId);
+
+        Set<String> includeTags = new HashSet<>();
+        Set<String> excludeTags = new HashSet<>();
+        Set<ProjectModel> projectModels = null;
+
+        if (filter.isEnabled())
+        {
+            includeTags.addAll(filter.getIncludeTags());
+            excludeTags.addAll(filter.getExcludeTags());
+            projectModels = this.getProjectModels(graphContext, filter);
+        }
+
+        ProblemSummaryServiceForWindupWeb problemSummaryService = new ProblemSummaryServiceForWindupWeb(
+                graphContext,
+                projectModels,
+                includeTags,
+                excludeTags
+        );
+
+        Map<ProjectModel, Map<IssueCategoryModel, List<ProblemSummary>>> issues = problemSummaryService.getProblemSummaries(true, false);
+        Map<Object, Map<String, List<ProblemSummary>>> projectIssuesWithStringKey = new LinkedHashMap<>();
+        List<Object> result = new ArrayList<>();
+
+        List<String> whitelistedOutEdges = new ArrayList<>();
+        whitelistedOutEdges.add("rootFileModel");
+
+        issues.entrySet().forEach((projectModelEntry) -> {
+            Object serializedProjectModel = this.convertToMap(
+                    new GraphMarshallingContext(
+                            reportId,
+                            projectModelEntry.getKey().asVertex(),
+                            1,
+                            false,
+                            whitelistedOutEdges,
+                            null,
+                            null,
+                            false
+                    ), projectModelEntry.getKey().asVertex()
+            );
+
+            Map<String, List<ProblemSummary>> projectSummaries = projectIssuesWithStringKey.computeIfAbsent(serializedProjectModel, k -> new LinkedMap<>());
+
+            projectModelEntry.getValue().entrySet().forEach((entry) -> {
+                boolean includeCategoriesEnabled = !filter.getIncludeCategories().isEmpty();
+                boolean isIncluded = filter.getIncludeCategories().contains(entry.getKey().getName());
+                boolean isExcluded = filter.getExcludeCategories().contains(entry.getKey().getName());
+
+                if ((includeCategoriesEnabled && isIncluded) || (!includeCategoriesEnabled && !isExcluded))
+                {
+                    projectSummaries.put(entry.getKey().getName(), entry.getValue());
+                }
+            });
+
+            Map<String, Object> serializedResultMap = new HashMap<>();
+            serializedResultMap.put("projectModel", serializedProjectModel);
+            serializedResultMap.put("problemSummaries", projectSummaries);
+
+            result.add(serializedResultMap);
+        });
+
+        return result;
+    }
+
     @Override
     public Map<String, List<ProblemSummary>> getAggregatedIssues(Long reportId)
     {

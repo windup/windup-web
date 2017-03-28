@@ -25,6 +25,10 @@ public interface MigrationIssuesEndpoint extends FurnaceRESTGraphAPI
     @Path("aggregatedIssues")
     Object getAggregatedIssues(@PathParam("executionId") Long executionId);
 
+    @GET
+    @Path("new-aggregated-issues")
+    Object getNewAggregatedIssues(@PathParam("executionId") Long executionId);
+
     /**
      * Returns the specific files associated with a particular issue.
      */

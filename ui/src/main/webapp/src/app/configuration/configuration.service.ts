@@ -5,6 +5,7 @@ import {Observable} from 'rxjs/Observable';
 import {Constants} from "../constants";
 import {Configuration, RulesPath} from "windup-services";
 import {AbstractService} from "../shared/abtract.service";
+import {Cached} from "../shared/cache.service";
 
 @Injectable()
 export class ConfigurationService extends AbstractService {
@@ -24,6 +25,7 @@ export class ConfigurationService extends AbstractService {
             .catch(this.handleError);
     }
 
+    @Cached({section: 'configuration', immutable: true})
     get(): Observable<Configuration> {
         return this._http.get(Constants.REST_BASE + this.GET_URL)
             .map(res => <Configuration> res.json())
@@ -32,6 +34,7 @@ export class ConfigurationService extends AbstractService {
 
     private GET_CUSTOM_RULESETS_URL = "/configuration/custom-rulesets";
 
+    @Cached({section: 'configuration', immutable: true})
     getCustomRulesetPaths(): Observable<RulesPath[]> {
         return this._http.get(Constants.REST_BASE + this.GET_CUSTOM_RULESETS_URL)
             .map(res => <RulesPath[]> res.json())

@@ -41,6 +41,15 @@ export const executionLevelRoutes: Routes = [
             {path: 'source/:fileId', component: SourceReportComponent, data: {displayName: 'Source Report'}}
         ]
     },
+    {path: 'old-migration-issues',
+        children: [
+            {path: '', component: MigrationIssuesComponent, data: {
+                displayName: 'Migration Issues',
+                oldMode: true
+            }},
+            {path: 'source/:fileId', component: SourceReportComponent, data: {displayName: 'Source Report'}}
+        ]
+    },
     {path: 'source/:fileId', component: SourceReportComponent, data: {displayName: 'Source Report'}},
     {path: 'application-index', component: ApplicationIndexComponent, data: { displayName: 'Application Index'}},
     {path: 'application-details',
@@ -154,7 +163,8 @@ export const appRoutes: Routes = [
                             {
                                 path: 'reports/:executionId',
                                 data: {
-                                    breadcrumbTitle: getExecutionBreadcrumbTitle
+                                    breadcrumbTitle: getExecutionBreadcrumbTitle,
+                                    level: 'global'
                                 },
                                 component: ExecutionsLayoutComponent,
                                 children: executionLevelRoutes
@@ -162,7 +172,8 @@ export const appRoutes: Routes = [
                             {
                                 path: 'reports/:executionId/applications/:applicationId',
                                 data: {
-                                    breadcrumbTitle: getExecutionBreadcrumbTitle
+                                    breadcrumbTitle: getExecutionBreadcrumbTitle,
+                                    level: 'application'
                                 },
                                 component: ApplicationLevelLayoutComponent,
                                 children: executionLevelRoutes
