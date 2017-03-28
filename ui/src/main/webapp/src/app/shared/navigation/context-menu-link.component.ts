@@ -20,7 +20,8 @@ import {ContextMenuItemInterface} from "./context-menu-item.class";
 @Component({
     template: `
             <a *ngIf="item.action" (click)="click(item)"><ng-content></ng-content></a>
-            <a [routerLink]="getLink(item)"><ng-content></ng-content></a>`,
+            <a *ngIf="!item.absolute" [routerLink]="getLink(item)"><ng-content select="[router-mode]"></ng-content></a>
+            <a *ngIf="item.absolute" [href]="item.link" [target]="item.target"><ng-content select="[absolute-mode]"></ng-content></a>`,
     selector: '[wu-context-menu-link]',
     changeDetection: ChangeDetectionStrategy.OnPush,
     styles: [
