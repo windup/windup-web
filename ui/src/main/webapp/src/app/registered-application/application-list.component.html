@@ -2,7 +2,7 @@
     <wu-active-executions-progressbar [activeExecutions]="activeExecutions"></wu-active-executions-progressbar>
 
     <div class="header-bar">
-        <h2>Project {{project?.title || "loading..."}}</h2>
+        <h2>Applications of project {{project?.title || "loading..."}}</h2>
         <div class="search-and-create">
             <wu-search [(searchValue)]="searchText" (searchValueChange)="updateSearch()"></wu-search>
             <div class="button-container">

@@ -73,6 +73,14 @@ export class ApplicationLevelLayoutComponent extends ExecutionsLayoutComponent i
                 isEnabled: true
             },
             new ApplicationReportMenuItem(
+                'Dashboard',
+                'fa-book',
+                this.project,
+                this.execution,
+                this.application,
+                'application-index'
+            ),
+            new ApplicationReportMenuItem(
                 'Application Details',
                 'fa-list',
                 this.project,
@@ -87,14 +95,6 @@ export class ApplicationLevelLayoutComponent extends ExecutionsLayoutComponent i
                 this.execution,
                 this.application,
                 'migration-issues'
-            ),
-            new ApplicationReportMenuItem(
-                'Application Index',
-                'fa-book',
-                this.project,
-                this.execution,
-                this.application,
-                'application-index'
             ),
         ];
 

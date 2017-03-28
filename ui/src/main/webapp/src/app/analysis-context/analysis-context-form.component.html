@@ -1,5 +1,9 @@
-<h1 i18n>Analysis Context</h1>
+
+<h1 i18n>Configure Analysis</h1>
+
+
 <h2 *ngIf="!project" i18n>Loading...</h2>
+
 
 <form *ngIf="project" #analysisContextForm="ngForm" (ngSubmit)="onSubmit()"  class="form-horizontal">
 

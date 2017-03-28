@@ -1,10 +1,10 @@
 import {Routes, RouterModule} from '@angular/router';
 import {ProjectListComponent} from "./project/project-list.component";
-import {RegisterApplicationFormComponent} from "./registered-application//register-application-form.component";
+import {RegisterApplicationFormComponent} from "./registered-application/register-application-form.component";
 import {MigrationProjectFormComponent} from "./project/migration-project-form.component";
 import {AnalysisContextFormComponent} from "./analysis-context/analysis-context-form.component";
 import {ConfigurationComponent} from "./configuration/configuration.component";
-import {EditApplicationFormComponent} from "./registered-application//edit-application-form.component";
+import {EditApplicationFormComponent} from "./registered-application/edit-application-form.component";
 import {ConfirmDeactivateGuard} from "./shared/confirm-deactivate.guard";
 import {TechnologiesReportComponent} from "./reports/technologies/technologies-report.component";
 import {DependenciesReportComponent} from "./reports/dependencies/dependencies-report.component";
@@ -14,8 +14,9 @@ import {ProjectLayoutComponent} from "./project/project-layout.component";
 import {DefaultLayoutComponent} from "./shared/layout/default-layout.component";
 import {MigrationIssuesComponent} from "./reports/migration-issues/migration-issues.component";
 import {ProjectResolve} from "./project/project.resolve";
+import {SourceResolve} from "../app/reports/source/source.resolve";
 import {ConfigurationResolve} from "./configuration/configuration.resolve";
-import {ApplicationResolve} from "./registered-application//application.resolve";
+import {ApplicationResolve} from "./registered-application/application.resolve";
 import {FullFlattenedRoute} from "./core/routing/route-flattener.service";
 import {AllExecutionsComponent} from "./executions/all-executions.component";
 import {SourceReportComponent} from "./reports/source/source-report.component";
@@ -37,16 +38,18 @@ export const executionLevelRoutes: Routes = [
     {path: 'technology-report', component: TechnologiesReportComponent, data: {displayName: 'Technology Report'}},
     {path: 'migration-issues',
         children: [
-            {path: '', component: MigrationIssuesComponent, data: {displayName: 'Migration Issues'}},
-            {path: 'source/:fileId', component: SourceReportComponent, data: {displayName: 'Source Report'}}
+            {path: '', component: MigrationIssuesComponent, data: {displayName: 'Issues'}},
+            {path: 'source/:fileId', component: SourceReportComponent, resolve: { sourceFile: SourceResolve }, data: {displayName: 'Source Report', breadcrumbTitle: getSourceReportBreadcrumbTitle}}
         ]
     },
-    {path: 'source/:fileId', component: SourceReportComponent, data: {displayName: 'Source Report'}},
-    {path: 'application-index', component: ApplicationIndexComponent, data: { displayName: 'Application Index'}},
+    {path: 'source/:fileId', component: SourceReportComponent, resolve: { sourceFile: SourceResolve }, data: {displayName: 'Source Report', breadcrumbTitle: getSourceReportBreadcrumbTitle}},
+    {path: 'application-index', component: ApplicationIndexComponent, data: { displayName: 'Dashboard'}},
     {path: 'application-details',
         children: [
             {path: '', component: ApplicationDetailsComponent, data: { displayName: 'Application Details'}},
-            {path: 'source/:fileId', component: SourceReportComponent, data: {displayName: 'Source Report'}}
+            {path: 'source/:fileId', component: SourceReportComponent, resolve: { sourceFile: SourceResolve }, data: {
+                displayName: 'Source Report', breadcrumbTitle: getSourceReportBreadcrumbTitle
+            }}
         ]
     },
     {path: 'executed-rules', component: RuleProviderExecutionsComponent, data: {displayName: 'Executed Rules'}},
@@ -71,15 +74,13 @@ export const appRoutes: Routes = [
                     {path: '', redirectTo: "/project-list", pathMatch: "full"},
                     {
                         path: "configuration",
-                        resolve: {
-                            configuration: ConfigurationResolve
-                        },
+                        resolve: { configuration: ConfigurationResolve },
                         component: ConfigurationComponent,
                         data: {
-                            displayName: "Windup Configuration"
+                            displayName: "Global Configuration"
                         }
                     },
-                    {path: "project-list",           component: ProjectListComponent,   data: {displayName: "Project List"}},
+                    {path: "project-list",           component: ProjectListComponent,   data: {displayName: "Projects"}},
                     {path: 'executions', component: AllExecutionsComponent, data: {displayName: 'Global Executions List'}}
                 ]
             },
@@ -116,7 +117,7 @@ export const appRoutes: Routes = [
                 path: 'projects',
                 children: [
                     {path: '', component: DefaultLayoutComponent, children: [
-                        {path: '', component: ProjectListComponent, data: {displayName: "Project List"}},
+                        {path: '', component: ProjectListComponent, data: {displayName: "Projects"}},
                         {path: 'create', component: MigrationProjectFormComponent, data: {displayName: 'Create Project'}},
                     ]},
                     {
@@ -124,29 +125,25 @@ export const appRoutes: Routes = [
                         data: {
                             breadcrumbTitle: getProjectBreadcrumbTitle
                         },
-                        resolve: {
-                            project: ProjectResolve
-                        },
+                        resolve: { project: ProjectResolve },
                         children: [
                             {
                                 path: '',
                                 component: ProjectLayoutComponent,
                                 children: [
                                     { path: '', redirectTo: 'project-detail', pathMatch: 'full' },
-                                    { path: 'project-detail', component: ProjectExecutionsComponent, data: {displayName: 'Executions List'}},
+                                    { path: 'project-detail', component: ProjectExecutionsComponent, data: {displayName: 'Executions'}},
                                     { path: 'applications', children: [
                                         { path: '', component: ApplicationListComponent, data: {displayName: 'Application List'} },
                                         { path: 'register', component: RegisterApplicationFormComponent, data: {displayName: "Application Registration"}},
                                         {
                                             path: ':applicationId/edit',
                                             component: EditApplicationFormComponent,
-                                            resolve: {
-                                                application: ApplicationResolve
-                                            },
+                                            resolve: { application: ApplicationResolve },
                                             data: {displayName: "Edit Application"}
                                         },
                                     ]},
-                                    { path: 'analysis-context', component: AnalysisContextFormComponent, data: {displayName: "Edit Analysis Context"}, canDeactivate: [ConfirmDeactivateGuard]},                                ]
+                                    { path: 'analysis-context', component: AnalysisContextFormComponent, data: {displayName: "Configure Analysis"}, canDeactivate: [ConfirmDeactivateGuard]},                                ]
                             },
                             { path: '', component: DefaultLayoutComponent, children: [
                                 {path: 'edit', component: MigrationProjectFormComponent, data: {displayName: 'Edit Project'}},
@@ -181,6 +178,10 @@ export function getExecutionBreadcrumbTitle(route: FullFlattenedRoute) {
 
 export function getProjectBreadcrumbTitle(route: FullFlattenedRoute) {
     return `Project ${route.data['project'].title}`;
+}
+
+export function getSourceReportBreadcrumbTitle(route: FullFlattenedRoute) {
+    return `Source of ${route.data['sourceFile'] && route.data['sourceFile'].fileName ? route.data['sourceFile'].fileName : "file"}`;
 }
 
 export const appRoutingProviders: any[] = [
