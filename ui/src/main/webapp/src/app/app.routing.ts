@@ -38,12 +38,12 @@ export const executionLevelRoutes: Routes = [
     {path: 'technology-report', component: TechnologiesReportComponent, data: {displayName: 'Technology Report'}},
     {path: 'migration-issues',
         children: [
-            {path: '', component: MigrationIssuesComponent, data: {displayName: 'Migration Issues'}},
+            {path: '', component: MigrationIssuesComponent, data: {displayName: 'Issues'}},
             {path: 'source/:fileId', component: SourceReportComponent, resolve: { sourceFile: SourceResolve }, data: {displayName: 'Source Report', breadcrumbTitle: getSourceReportBreadcrumbTitle}}
         ]
     },
     {path: 'source/:fileId', component: SourceReportComponent, resolve: { sourceFile: SourceResolve }, data: {displayName: 'Source Report', breadcrumbTitle: getSourceReportBreadcrumbTitle}},
-    {path: 'application-index', component: ApplicationIndexComponent, data: { displayName: 'Report Index'}},
+    {path: 'application-index', component: ApplicationIndexComponent, data: { displayName: 'Dashboard'}},
     {path: 'application-details',
         children: [
             {path: '', component: ApplicationDetailsComponent, data: { displayName: 'Application Details'}},
@@ -143,7 +143,7 @@ export const appRoutes: Routes = [
                                             data: {displayName: "Edit Application"}
                                         },
                                     ]},
-                                    { path: 'analysis-context', component: AnalysisContextFormComponent, data: {displayName: "Edit Analysis Context"}, canDeactivate: [ConfirmDeactivateGuard]},                                ]
+                                    { path: 'analysis-context', component: AnalysisContextFormComponent, data: {displayName: "Configure Analysis"}, canDeactivate: [ConfirmDeactivateGuard]},                                ]
                             },
                             { path: '', component: DefaultLayoutComponent, children: [
                                 {path: 'edit', component: MigrationProjectFormComponent, data: {displayName: 'Edit Project'}},

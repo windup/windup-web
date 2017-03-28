@@ -97,7 +97,7 @@ export class ExecutionsLayoutComponent extends ProjectLayoutComponent implements
                 isEnabled: true
             },
             new ReportMenuItem(
-                'Report Index',
+                'Dashboard',
                 'fa-book',
                 this.project,
                 this.execution,

@@ -73,7 +73,7 @@ export class ApplicationLevelLayoutComponent extends ExecutionsLayoutComponent i
                 isEnabled: true
             },
             new ApplicationReportMenuItem(
-                'Report Index',
+                'Dashboard',
                 'fa-book',
                 this.project,
                 this.execution,
