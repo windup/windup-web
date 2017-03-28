@@ -181,7 +181,7 @@ export function getProjectBreadcrumbTitle(route: FullFlattenedRoute) {
 }
 
 export function getSourceReportBreadcrumbTitle(route: FullFlattenedRoute) {
-    return `Source of ${route.data['sourceFile'] ? route.data['sourceFile'].name : "file"}`;
+    return `Source of ${route.data['sourceFile'] && route.data['sourceFile'].fileName ? route.data['sourceFile'].fileName : "file"}`;
 }
 
 export const appRoutingProviders: any[] = [
