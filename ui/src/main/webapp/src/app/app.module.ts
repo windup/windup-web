@@ -120,6 +120,7 @@ import {DatePipe} from "@angular/common";
 import {ApplicationLevelLayoutComponent} from "./reports/application-level-layout.component";
 import {SelectApplicationsComponent} from "./analysis-context/select-applications.component";
 import {ContextMenuLinkComponent} from "./shared/navigation/context-menu-link.component";
+import {SourceResolve} from "./reports/source/source.resolve";
 
 /**
  * Load all mapping data from the generated files.
@@ -252,6 +253,7 @@ initializeModelMappingData();
         ConfigurationResolve,
         ProjectResolve,
         ApplicationResolve,
+        SourceResolve,
         RouteFlattenerService,
         ReportFilterService,
         ReportFilterResolve,

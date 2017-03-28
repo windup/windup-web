@@ -14,6 +14,7 @@ import {ProjectLayoutComponent} from "./project/project-layout.component";
 import {DefaultLayoutComponent} from "./shared/layout/default-layout.component";
 import {MigrationIssuesComponent} from "./reports/migration-issues/migration-issues.component";
 import {ProjectResolve} from "./project/project.resolve";
+import {SourceResolve} from "../app/reports/source/source.resolve";
 import {ConfigurationResolve} from "./configuration/configuration.resolve";
 import {ApplicationResolve} from "./registered-application/application.resolve";
 import {FullFlattenedRoute} from "./core/routing/route-flattener.service";
@@ -38,15 +39,15 @@ export const executionLevelRoutes: Routes = [
     {path: 'migration-issues',
         children: [
             {path: '', component: MigrationIssuesComponent, data: {displayName: 'Migration Issues'}},
-            {path: 'source/:fileId', component: SourceReportComponent, data: {displayName: 'Source Report'}}
+            {path: 'source/:fileId', component: SourceReportComponent, resolve: { sourceFile: SourceResolve }, data: {displayName: 'Source Report', breadcrumbTitle: getSourceReportBreadcrumbTitle}}
         ]
     },
-    {path: 'source/:fileId', component: SourceReportComponent, data: {displayName: 'Source Report'}},
-    {path: 'application-index', component: ApplicationIndexComponent, data: { displayName: 'Application Index'}},
+    {path: 'source/:fileId', component: SourceReportComponent, resolve: { sourceFile: SourceResolve }, data: {displayName: 'Source Report', breadcrumbTitle: getSourceReportBreadcrumbTitle}},
+    {path: 'application-index', component: ApplicationIndexComponent, data: { displayName: 'Report Index'}},
     {path: 'application-details',
         children: [
             {path: '', component: ApplicationDetailsComponent, data: { displayName: 'Application Details'}},
-            {path: 'source/:fileId', component: SourceReportComponent, data: {
+            {path: 'source/:fileId', component: SourceReportComponent, resolve: { sourceFile: SourceResolve }, data: {
                 displayName: 'Source Report', breadcrumbTitle: getSourceReportBreadcrumbTitle
             }}
         ]
@@ -180,7 +181,7 @@ export function getProjectBreadcrumbTitle(route: FullFlattenedRoute) {
 }
 
 export function getSourceReportBreadcrumbTitle(route: FullFlattenedRoute) {
-    return `Source of ${route.params['fileId']}`;
+    return `Source of ${route.data['sourceFile'] ? route.data['sourceFile'].name : "file"}`;
 }
 
 export const appRoutingProviders: any[] = [
