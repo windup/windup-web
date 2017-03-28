@@ -97,6 +97,13 @@ export class ExecutionsLayoutComponent extends ProjectLayoutComponent implements
                 isEnabled: true
             },
             new ReportMenuItem(
+                'Report Index',
+                'fa-book',
+                this.project,
+                this.execution,
+                'application-index'
+            ),
+            new ReportMenuItem(
                 'Application Details',
                 'fa-list',
                 this.project,
@@ -109,13 +116,6 @@ export class ExecutionsLayoutComponent extends ProjectLayoutComponent implements
                 this.project,
                 this.execution,
                 'migration-issues'
-            ),
-            new ReportMenuItem(
-                'Application Index',
-                'fa-book',
-                this.project,
-                this.execution,
-                'application-index'
             ),
         ];
 
