@@ -32,8 +32,6 @@ export function GraphAdjacency (
             return;
 
         descriptor.get = function () {
-            //console.log(`* get() v#${this.vertexId} ${name} ${direction} ${returnArray ? "array" : "single"} ${kind}`);
-
             let verticesLabel = (direction === "IN") ? "vertices_in" : "vertices_out";
 
             // Data is empty, just return null (or an empty array)
@@ -58,7 +56,6 @@ export function GraphAdjacency (
             let httpService: Http = this.http;
             let returnArray_ = returnArray; // Otherwise returnArray sticks with it's first value for all calls.
             function fetcher(url: string): Observable<any> {
-                //console.debug("    Fetching URL: " + url);///
                 return httpService.get(url).map((response: Response) => {
                     if (!response)
                         return console.error("Fetching URL returned null: " + url), null;
@@ -105,16 +102,14 @@ export function GraphAdjacency (
                         // Store the in/out vertexes.
                         edgeModel[direction === "IN" ? "_out" : "_in"] = model;
                         edgeModel[direction === "IN" ? "_in"  : "_out"] = this; /// This should be the "this" of the getter, i.e. original vertex.
-                        //console.log("Incidence edge model: " + edgeModel + " in: " + edgeModel._in + " out: " + edgeModel._out);
+
                         return edgeModel;
                     });
                 break;
                 // @InVertex/@OutVertex: getter called on edge model; it only has _in and _out reference (no need for specfic name).
                 case "IN_V":
-                    //console.log("This _in: " + this._in);
                     return Observable.of(this._in);
                 case "OUT_V":
-                    //console.log("This _out: " + this._out);
                     return Observable.of(this._out);
             }
 

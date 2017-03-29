@@ -24,7 +24,6 @@ export class ActivatedRouteMock {
     private _testData: {};
     get testData() { return this._testData; }
     set testData(data: {}) {
-        console.log('TestData set: ', data);
         this._testData = data;
         this.dataSubject.next(data);
     }

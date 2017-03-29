@@ -17,7 +17,6 @@ describe('Generated TS Files', () => {
     it ('filemodels - fromJSON()', () => {
         let http = <Http>{
             get(url:string) {
-                console.log("Should call get to: " + url + " now");
                 return Observable.create(function(observer) {
                     let value: any = [ TestGraphData.TEST_FILE_MODELS[0] ];
                     observer.next(value);
@@ -30,7 +29,6 @@ describe('Generated TS Files', () => {
         expect(modelObject).toBeDefined();
         expect(modelObject.vertexId).toEqual(16640);
         let model = <FileModel> modelObject;
-        console.log("Returned model: " + model);
 
         expect(model.fileName).toEqual("NonXAResource.class");
         model.parentFile.toPromise()

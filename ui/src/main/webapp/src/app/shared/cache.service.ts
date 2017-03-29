@@ -156,7 +156,6 @@ export function Cached(section?, expiration?: CacheExpiration, immutable: boolea
             let cacheKey = getCacheKey(propertyKey, args);
 
             if (!cacheSection.hasItem(cacheKey)) {
-                console.log('Cache miss', cacheKey);
                 let result: any|Observable<any> = originalMethod.apply(this, args);
 
                 let storeItemInCache = (result: any, isObservable: boolean = false) => {

@@ -11,7 +11,6 @@ export class LoginComponent implements OnInit {
 
     ngOnInit(): void {
         this._keyCloakService.isLoggedIn().subscribe((isLoggedIn) => {
-            console.log('is logged in?', isLoggedIn);
             if (isLoggedIn) {
                 this._router.navigate(['']);
             }

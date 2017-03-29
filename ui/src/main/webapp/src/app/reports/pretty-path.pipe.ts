@@ -20,7 +20,7 @@ export class PrettyPathPipe implements PipeTransform {
     transform(file: PersistedTraversalChildFileModel):string {
         this.prettyPath = file.filePath;
         if (!file.filePath)
-            console.log("NO file path? " + file);
+            console.warn("NO file path? " + file);
 
         if (file.filePath.toLowerCase().endsWith(".java")) {
             file.fileModel.subscribe(

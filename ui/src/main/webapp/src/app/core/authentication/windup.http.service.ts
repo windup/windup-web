@@ -24,7 +24,7 @@ export class WindupHttpService extends Http {
                     observer.complete();
                 },
                 error => {
-                    console.log("Need a token, but no token is available, not setting bearer token.");
+                    console.warn("Need a token, but no token is available, not setting bearer token.");
                     observer.error(error);
                 }
             )

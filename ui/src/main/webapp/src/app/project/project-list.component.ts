@@ -84,7 +84,6 @@ export class ProjectListComponent implements OnInit {
     viewProject(event: Event, project:MigrationProject) {
         event.stopPropagation();
 
-        console.log(JSON.stringify(project));
         this._router.navigate(['/projects', project.id]);
         return false;
     }

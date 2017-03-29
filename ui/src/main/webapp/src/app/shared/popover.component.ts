@@ -22,7 +22,6 @@ export class PopoverComponent implements AfterViewInit {
     popoverElement:ElementRef;
 
     ngAfterViewInit() {
-        console.log("Popover element: " + this.popoverElement.nativeElement);
         (<any>$(this.popoverElement.nativeElement)).popover();
     }
 }

@@ -58,13 +58,11 @@ export class MigrationProjectFormComponent extends FormComponent implements OnIn
 
     save() {
         if (this.editMode) {
-            console.log("Updating migration project: " + this.model.title);
             this._migrationProjectService.update(this.model).subscribe(
                 migrationProject => this.navigateOnSuccess(migrationProject),
                 error => this.handleError(<any> error)
             );
         } else {
-            console.log("Creating migration project: " + this.model.title);
             this._migrationProjectService.create(this.model).subscribe(
                 migrationProject => this.navigateOnSuccess(migrationProject),
                 error => this.handleError(<any> error)
