@@ -11,8 +11,7 @@ import {GraphJSONToModelService} from "../../services/graph/graph-json-to-model.
 import {FileModel} from "../../generated/tsModels/FileModel";
 import {SortingService, OrderDirection} from "../../shared/sort/sorting.service";
 import {RouteFlattenerService} from "../../core/routing/route-flattener.service";
-import {AbstractComponent} from "../../shared/AbstractComponent";
-import {RoutedComponent} from "../../shared/routed.component";
+import {FilterableReportComponent} from "../filterable-report.component";
 
 @Component({
     selector: 'wu-migration-issues-table',
@@ -45,7 +44,7 @@ import {RoutedComponent} from "../../shared/routed.component";
     `],
     providers: [SortingService]
 })
-export class MigrationIssuesTableComponent extends RoutedComponent implements OnInit
+export class MigrationIssuesTableComponent extends FilterableReportComponent implements OnInit
 {
     @Input()
     migrationIssues: ProblemSummary[] = [];
@@ -54,8 +53,6 @@ export class MigrationIssuesTableComponent extends RoutedComponent implements On
 
     problemSummariesFiles: any = new Map<ProblemSummary, any>(); // Map<ProblemSummary, any>
     displayedSummariesFiles = new Map<ProblemSummary, boolean>();
-
-    protected executionId;
 
     public constructor(
         _router: Router,
@@ -74,13 +71,11 @@ export class MigrationIssuesTableComponent extends RoutedComponent implements On
         this.sortedIssues = this.migrationIssues;
 
         let flatRouteData = this._routeFlattener.getFlattenedRouteData(this._activatedRoute.snapshot);
-        this.getExecutionId(flatRouteData);
+        this.loadFilterFromRouteData(flatRouteData);
 
-        this.addSubscription(this._routeFlattener.OnFlatRouteLoaded.subscribe(flatRouteData => this.getExecutionId(flatRouteData)));
-    }
-
-    protected getExecutionId(flatRouteData) {
-        this.executionId = parseInt(flatRouteData.params['executionId']);
+        this.addSubscription(this._routeFlattener.OnFlatRouteLoaded.subscribe(
+            flatRouteData => this.loadFilterFromRouteData(flatRouteData)
+        ));
     }
 
     public getSum(field: string|Function): number {
@@ -114,7 +109,7 @@ export class MigrationIssuesTableComponent extends RoutedComponent implements On
     }
 
     protected loadIssuesPerFile(summary: ProblemSummary) {
-        this._migrationIssuesService.getIssuesPerFile(this.executionId, summary).subscribe(fileSummaries => {
+        this._migrationIssuesService.getIssuesPerFile(this.execution.id, summary, this.reportFilter).subscribe(fileSummaries => {
             this.problemSummariesFiles.set(summary, fileSummaries);
             this.displayedSummariesFiles.set(summary, true);
             this.delayedPrismRender();

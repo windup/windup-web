@@ -3,7 +3,7 @@ import {
     ApplicationDetailsService, ApplicationDetailsFullDTO,
     ProjectTraversalFullDTO, HintFullDTO, FileFullDTO
 } from "./application-details.service";
-import {Params, ActivatedRoute} from "@angular/router";
+import {Params, ActivatedRoute, Router} from "@angular/router";
 import {utils} from "../../shared/utils";
 import {NotificationService} from "../../core/notification/notification.service";
 import {Http} from "@angular/http";
@@ -14,13 +14,14 @@ import {TagDataService} from "../tag-data.service";
 import {TreeData} from "../../shared/js-tree-angular-wrapper.component";
 import {calculateColorScheme} from "../../shared/color-schemes";
 import {PersistedProjectModelTraversalModel} from "../../generated/tsModels/PersistedProjectModelTraversalModel";
+import {FilterableReportComponent} from "../filterable-report.component";
+import {RouteFlattenerService} from "../../core/routing/route-flattener.service";
 
 @Component({
     templateUrl: './application-details.component.html',
     styleUrls: ['./application-details.component.css']
 })
-export class ApplicationDetailsComponent implements OnInit {
-    private execID:number;
+export class ApplicationDetailsComponent extends FilterableReportComponent implements OnInit {
     applicationDetails:ApplicationDetailsFullDTO;
     rootProjects:ProjectTraversalFullDTO[] = [];
     traversalsForCanonicalVertexID:Map<number, ProjectTraversalFullDTO[]> = new Map<number, ProjectTraversalFullDTO[]>();
@@ -46,21 +47,26 @@ export class ApplicationDetailsComponent implements OnInit {
 
     constructor(
         private _element: ElementRef,
-        private _activatedRoute:ActivatedRoute,
+        _router: Router,
+        _routeFlattener: RouteFlattenerService,
+        _activatedRoute: ActivatedRoute,
         private _applicationDetailsService:ApplicationDetailsService,
         private _notificationService:NotificationService,
         private _tagDataService:TagDataService,
         private _http:Http
-    ) {}
+    ) {
+        super(_router, _activatedRoute, _routeFlattener);
+    }
 
     getColorScheme(len) {
         return calculateColorScheme(len);
     }
 
     ngOnInit(): void {
-        this._activatedRoute.parent.parent.params.forEach((params: Params) => {
-            this.execID = +params['executionId'];
-            this._applicationDetailsService.getApplicationDetailsData(this.execID).subscribe(
+        this.addSubscription(this.flatRouteLoaded.subscribe(flattenedRoute => {
+            this.loadFilterFromRouteData(flattenedRoute);
+
+            this._applicationDetailsService.getApplicationDetailsData(this.execution.id, this.reportFilter).subscribe(
                 applicationDetailsDto => {
                     // Make sure tag data is loaded first
                     this._tagDataService.getTagData().subscribe((tagData) => {
@@ -77,7 +83,7 @@ export class ApplicationDetailsComponent implements OnInit {
                 },
                 error => this._notificationService.error(utils.getErrorMessage(error))
             );
-        });
+        }));
     }
 
     selectedProject(treeData:TreeData) {

@@ -1,23 +1,23 @@
 import { Component, OnInit } from "@angular/core";
-import {ActivatedRoute, Router, NavigationEnd} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import { utils } from "../../shared/utils";
 import { NotificationService } from "../../core/notification/notification.service";
 import { AggregatedStatisticsService } from "./aggregated-statistics.service";
 import { calculateColorScheme } from "../../shared/color-schemes";
-import { StatisticsList } from "windup-services";
+import {FilterApplication, StatisticsList} from "windup-services";
 import { EffortByCategoryDTO } from "windup-services";
 import { EffortCategoryDTO } from "windup-services";
 import { WINDUP_WEB } from "../../app.module";
 import {WindupExecution} from "windup-services";
 import {WindupService} from "../../services/windup.service";
 import {RouteFlattenerService} from "../../core/routing/route-flattener.service";
-import {RoutedComponent} from "../../shared/routed.component";
+import {FilterableReportComponent} from "../filterable-report.component";
 
 @Component({
     templateUrl: './application-index.component.html',
     styleUrls: ['./application-index.component.css']
 })
-export class ApplicationIndexComponent extends RoutedComponent implements OnInit {
+export class ApplicationIndexComponent extends FilterableReportComponent implements OnInit {
 
     public hideFilter = WINDUP_WEB.config.hideUnfinishedFeatures;
     public execution: WindupExecution;
@@ -27,8 +27,7 @@ export class ApplicationIndexComponent extends RoutedComponent implements OnInit
 
     domain: any;
 
-    // both are used for getting graph and for report filter DTO
-    public execID: number;
+    // used for getting graph and for report filter DTO
     public projectId: number;
 
     // aggregated statistics variables
@@ -38,6 +37,8 @@ export class ApplicationIndexComponent extends RoutedComponent implements OnInit
 
     componentsStats: StatisticsList = <StatisticsList>{};
     dependenciesStats: StatisticsList = <StatisticsList>{};
+
+    analyzedApplications: FilterApplication[] = [];
 
     constructor(
         _router: Router,
@@ -53,13 +54,19 @@ export class ApplicationIndexComponent extends RoutedComponent implements OnInit
 
     ngOnInit(): void {
         this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
-            let executionId = parseInt(flatRouteData.params['executionId']);
-            this.execID = executionId;
+            this.loadFilterFromRouteData(flatRouteData);
+
+            this.analyzedApplications = this.execution.filterApplications.slice();
+
+            if (this.reportFilter) {
+                this.analyzedApplications = this.analyzedApplications.filter(app =>
+                    this.reportFilter.selectedApplications.includes(<any>app.inputPath)
+                );
+            }
+
             this.projectId = +flatRouteData.params.projectId;
 
-            this._windupService.getExecution(executionId).subscribe(execution => this.execution = execution);
-
-            this._aggregatedStatsService.getAggregatedCategories(executionId).subscribe(
+            this._aggregatedStatsService.getAggregatedCategories(this.execution.id, this.reportFilter).subscribe(
                 result => {
                     this.categoriesMultiStats = this.getCategoriesStats(this.calculateCategoryIncidents(result), this.calculateStoryPointsInCategories(result));
                     this.mandatoryMultiStats = this.getMandatoryMultiStats(result.categories.find(category => category.categoryID == "mandatory"));
@@ -69,7 +76,8 @@ export class ApplicationIndexComponent extends RoutedComponent implements OnInit
                     this._router.navigate(['']);
                 }
             );
-            this._aggregatedStatsService.getAggregatedJavaPackages(executionId).subscribe(
+
+            this._aggregatedStatsService.getAggregatedJavaPackages(this.execution.id, this.reportFilter).subscribe(
                 result => this.globalPackageUseData = this.convertPackagesToChartStatistic(result),
                 error => {
                     this._notificationService.error(utils.getErrorMessage(error));
@@ -77,7 +85,7 @@ export class ApplicationIndexComponent extends RoutedComponent implements OnInit
                 }
             );
 
-            this._aggregatedStatsService.getAggregatedArchives(executionId).subscribe(
+            this._aggregatedStatsService.getAggregatedArchives(this.execution.id, this.reportFilter).subscribe(
                 result => this.componentsStats = result,
                 error => {
                     this._notificationService.error(utils.getErrorMessage(error));
@@ -85,7 +93,7 @@ export class ApplicationIndexComponent extends RoutedComponent implements OnInit
                 }
             );
 
-            this._aggregatedStatsService.getAggregatedDependencies(executionId).subscribe(
+            this._aggregatedStatsService.getAggregatedDependencies(this.execution.id, this.reportFilter).subscribe(
                 result => this.dependenciesStats = result,
                 error => {
                     this._notificationService.error(utils.getErrorMessage(error));

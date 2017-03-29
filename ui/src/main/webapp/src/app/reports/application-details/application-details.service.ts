@@ -3,7 +3,7 @@ import {Http} from "@angular/http";
 import {Observable} from "rxjs";
 import {AbstractService} from "../../shared/abtract.service";
 import {Constants} from "../../constants";
-import {ApplicationDetailsDTO} from "windup-services";
+import {ApplicationDetailsDTO, ReportFilter} from "windup-services";
 import {ProjectTraversalReducedDTO} from "windup-services";
 import {FileReducedDTO} from "windup-services";
 import {HintReducedDTO} from "windup-services";
@@ -19,7 +19,7 @@ export class ApplicationDetailsService extends AbstractService {
     }
 
     @Cached('applicationDetails', null, true)
-    getApplicationDetailsData(executionId: number): Observable<ApplicationDetailsFullDTO> {
+    getApplicationDetailsData(executionId: number, filter?: ReportFilter): Observable<ApplicationDetailsFullDTO> {
         let url = `${Constants.GRAPH_REST_BASE}/graph/application-details/${executionId}`;
 
         return this._http.get(url)

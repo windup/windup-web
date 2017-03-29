@@ -154,7 +154,8 @@ export const appRoutes: Routes = [
                             {
                                 path: 'reports/:executionId',
                                 data: {
-                                    breadcrumbTitle: getExecutionBreadcrumbTitle
+                                    breadcrumbTitle: getExecutionBreadcrumbTitle,
+                                    level: 'global'
                                 },
                                 resolve: {
                                     execution: ExecutionResolve
@@ -165,7 +166,8 @@ export const appRoutes: Routes = [
                             {
                                 path: 'reports/:executionId/applications/:applicationId',
                                 data: {
-                                    breadcrumbTitle: getExecutionBreadcrumbTitle
+                                    breadcrumbTitle: getExecutionBreadcrumbTitle,
+                                    level: 'application'
                                 },
                                 resolve: {
                                     execution: ExecutionResolve

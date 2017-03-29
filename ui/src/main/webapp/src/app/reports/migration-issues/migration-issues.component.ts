@@ -9,6 +9,7 @@ import {WindupService} from "../../services/windup.service";
 import {WindupExecution} from "windup-services";
 import {RouteFlattenerService} from "../../core/routing/route-flattener.service";
 import {RoutedComponent} from "../../shared/routed.component";
+import {FilterableReportComponent} from "../filterable-report.component";
 
 
 @Component({
@@ -20,7 +21,7 @@ import {RoutedComponent} from "../../shared/routed.component";
         .panel-primary.wuMigrationIssues .panel-heading .panel-title { color: black; font-size: 20px; font-weight: 500; }
     `]
 })
-export class MigrationIssuesComponent extends RoutedComponent implements OnInit {
+export class MigrationIssuesComponent extends FilterableReportComponent implements OnInit {
     protected categorizedIssues: Dictionary<ProblemSummary[]>;
     protected categories: string[];
 
@@ -40,10 +41,9 @@ export class MigrationIssuesComponent extends RoutedComponent implements OnInit 
 
     ngOnInit(): void {
         this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
-            let executionId = parseInt(flatRouteData.params['executionId']);
-            this._windupService.getExecution(executionId).subscribe(execution => this.execution = execution);
+            this.loadFilterFromRouteData(flatRouteData);
 
-            this._migrationIssuesService.getAggregatedIssues(executionId).subscribe(
+            this._migrationIssuesService.getAggregatedIssues(this.execution.id, this.reportFilter).subscribe(
                 result => {
                     this.categorizedIssues = result;
                     this.categories = Object.keys(result);

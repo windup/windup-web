@@ -3,7 +3,7 @@ import {Http} from "@angular/http";
 import {Observable} from "rxjs";
 import {AbstractService} from "../../shared/abtract.service";
 import {Constants} from "../../constants";
-import {EffortByCategoryDTO} from "windup-services";
+import {EffortByCategoryDTO, ReportFilter} from "windup-services";
 import {StatisticsList} from "windup-services";
 import {Cached} from "../../shared/cache.service";
 
@@ -21,28 +21,28 @@ export class AggregatedStatisticsService extends AbstractService {
     }
 
     @Cached('aggregatedStatistics', null, true)
-    getAggregatedCategories(executionId: number): Observable<EffortByCategoryDTO> {
+    getAggregatedCategories(executionId: number, filter?: ReportFilter): Observable<EffortByCategoryDTO> {
         return this._http.get(`${Constants.GRAPH_REST_BASE}/reports/${executionId}/${AggregatedStatisticsService.AGGREGATED_CATEGORIES_URL}`)
             .map(res => res.json())
             .catch(this.handleError);
     }
 
     @Cached('aggregatedStatistics', null, true)
-    getAggregatedJavaPackages(executionId: number): Observable<StatisticsList> {
+    getAggregatedJavaPackages(executionId: number, filter?: ReportFilter): Observable<StatisticsList> {
         return this._http.get(`${Constants.GRAPH_REST_BASE}/reports/${executionId}/${AggregatedStatisticsService.AGGREGATED_JAVA_PACKAGES_URL}`)
             .map(res => res.json())
             .catch(this.handleError);
     }
 
     @Cached('aggregatedStatistics', null, true)
-    getAggregatedArchives(executionId: number): Observable<StatisticsList> {
+    getAggregatedArchives(executionId: number, filter?: ReportFilter): Observable<StatisticsList> {
         return this._http.get(`${Constants.GRAPH_REST_BASE}/reports/${executionId}/${AggregatedStatisticsService.AGGREGATED_COMPONENTS_URL}`)
             .map(res => res.json())
             .catch(this.handleError);
     }
 
     @Cached('aggregatedStatistics', null, true)
-    getAggregatedDependencies(executionId: number): Observable<StatisticsList> {
+    getAggregatedDependencies(executionId: number, filter?: ReportFilter): Observable<StatisticsList> {
         return this._http.get(`${Constants.GRAPH_REST_BASE}/reports/${executionId}/${AggregatedStatisticsService.AGGREGATED_DEPENDENCIES_URL}`)
             .map(res => res.json())
             .catch(this.handleError);
