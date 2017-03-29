@@ -16,13 +16,26 @@
                [(sortedData)]="sortedApplications" [data]="filteredApplications"
                [initialSortBy]="initialSort"
                [tableHeaders]="[
-                    { title: 'Application', isSortable: true, sortBy: 'fileName' }
+                    { title: 'Application', isSortable: true, sortBy: 'fileName' },
+                    { title: 'Tags', isSortable: false, sortBy: 'fileName' },
+                    { title: 'Points', isSortable: true, sortBy: 'fileName' }
                ]">
         </thead>
         <tbody>
             <tr *ngFor="let app of sortedApplications">
                 <td>
                     <a [routerLink]="['/projects', projectID, 'reports', execID, 'applications', app.id]">{{app.fileName}}</a>
+                </td>
+                <td>
+                    <span *ngIf="tagsByApplication.get(app.id) == null">
+                        Loading...
+                    </span>
+                    <span *ngIf="tagsByApplication.get(app.id) != null">
+                        <wu-technology-tag *ngFor="let tag of tagsByApplication.get(app.id)" [tag]="tag"></wu-technology-tag>
+                    </span>
+                </td>
+                <td>
+                    {{pointsByApplication.get(app.id) != null ? pointsByApplication.get(app.id) : 'Loading...' }}
                 </td>
             </tr>
         </tbody>
