@@ -209,7 +209,7 @@ function isObservable(obj: any|Observable<any>) {
 }
 
 function getCacheKey(functionName: string, args: any[]) {
-    let commaSeparatedArgs = args.join(', ');
+    let commaSeparatedArgs = args.map(arg => JSON.stringify(arg)).join(', ');
 
     return functionName + '(' + commaSeparatedArgs + ')';
 }

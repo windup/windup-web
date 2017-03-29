@@ -42,6 +42,15 @@ class MockClass {
     public world(value: number) {
         return value;
     }
+
+
+    public arbitraryParameterCalledTimes = 0;
+
+    @Cached()
+    public arbitraryParameter(object: any) {
+        this.arbitraryParameterCalledTimes++;
+        return object;
+    }
 }
 
 class MockCacheSection extends CacheSection {
@@ -223,6 +232,51 @@ describe('@Cached decorator', () => {
 
                 expect(sectionSection.countItems()).toBe(1);
             });
+        });
+    });
+
+    describe('Passing different function parameters', () => {
+        beforeEach(() => {
+            instance.arbitraryParameterCalledTimes = 0;
+        });
+
+        let functionCallTemplate = (parameter, anotherParameter, countCallsFirst = 1, countCallsSecond = 2) => {
+            let result = instance.arbitraryParameter(parameter);
+            let cachedResult = instance.arbitraryParameter(parameter);
+
+            expect(instance.arbitraryParameterCalledTimes).toBe(countCallsFirst);
+            expect(cachedResult).toBe(result);
+            expect(cachedResult).toBe(parameter);
+
+            for (let i = 0; i < 2; i++) {
+                let result = instance.arbitraryParameter(anotherParameter);
+
+                expect(instance.arbitraryParameterCalledTimes).toBe(countCallsSecond);
+                expect(result).toBe(anotherParameter);
+            }
+        };
+
+        it('should work for numeric parameter', () => {
+            functionCallTemplate(7, 42);
+        });
+
+        it('should work for string parameter', () => {
+            functionCallTemplate('hello', 'world');
+        });
+
+        it('should work for object parameter', () => {
+            let firstObject = { title: 'hello' };
+            let secondObject = { title: 'world' };
+            let thirdObject = { title: 'hello' };
+
+            functionCallTemplate(firstObject, secondObject);
+
+            let result = instance.arbitraryParameter(firstObject);
+            let cachedResult = instance.arbitraryParameter(thirdObject);
+            // first object and third object has the same signature => they should have the same cache key
+            expect(instance.arbitraryParameterCalledTimes).toBe(2);
+            expect(result).toBe(cachedResult);
+            expect(result).toBe(firstObject);
         });
     });
 });
