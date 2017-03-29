@@ -102,7 +102,6 @@ describe("Registered Application Service Test", () => {
         let subject = new Subject<PackageMetadata>();
 
         let getPackageMetadata = () => {
-            console.log('getPackageMetadata called');
 
             count++;
 

@@ -40,11 +40,9 @@ export class StaticCache
     /// A Map object iterates its elements in insertion order — a for...of loop returns an array of [key, value] for each iteration.
     /// However that seems not to work. Trying with forEach.
     static deleteOldest(howMany: number): void {
-        //console.debug("Deleting oldest " + howMany + " of " + this.cachedData.size);
         let iterKeys = this.cachedData.keys();
         let item: IteratorResult<string>;
         while (howMany-- > 0 && (item = iterKeys.next(), !item.done)){
-            //console.debug("    Deleting: " + item.value);
             this.cachedData.delete(item.value); // Deleting while iterating should be ok in JS.
         }
     }

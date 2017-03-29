@@ -125,7 +125,6 @@ export class AnalysisContextFormComponent extends FormComponent
     }
 
     private initializeAnalysisContext() {
-        console.log("initializeAnalysisContext(), this.analysisContext: ", this.analysisContext);
         let analysisContext = this.analysisContext;
 
         if (analysisContext == null) {
@@ -229,8 +228,6 @@ export class AnalysisContextFormComponent extends FormComponent
         // Store the Analysis Context
         let update = this.analysisContext.id != null;
         let service = update ? this._analysisContextService.update : this._analysisContextService.create;
-
-        console.log(`Updating/creating analysis context #${this.analysisContext.id}, migrPath: ${this.analysisContext.migrationPath.id}`);
         let contextObservable: Observable<AnalysisContext> = service.call(this._analysisContextService, this.analysisContext, this.project);
 
         contextObservable.subscribe(

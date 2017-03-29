@@ -50,7 +50,6 @@ export class KeycloakService {
                     resolve(auth);
                 })
                 .error((failure) => {
-                    //console.log('transform promise error', failure);
                     error(failure)
                 });
         });
@@ -71,16 +70,14 @@ export class KeycloakService {
 
     protected onLoginSuccess(isLoggedIn) {
         if (!isLoggedIn) {
-            console.log('Login success, not logged in');
+            console.warn('Login success, not logged in');
             this._router.navigate(['/login']);
         } else {
-            //console.log('login success, logged in');
             this.auth.loggedIn = true;
             this.auth.authz = this.keyCloak;
             this.auth.logoutUrl =  this.keyCloak.authServerUrl + "/realms/windup/tokens/logout?redirect_uri=" + Constants.AUTH_REDIRECT_URL;
 
             this.keyCloak.onAuthLogout = function () {
-                console.log("Logout event received!");
                 this.logout();
             };
             this.keyCloak.onAuthRefreshError = function () {
@@ -111,7 +108,6 @@ export class KeycloakService {
     }
 
     logout() {
-        console.log('Keycloak logging out.');
         this.auth.authz.logout();
         this.auth.loggedIn = false;
         this.auth.authz = null;

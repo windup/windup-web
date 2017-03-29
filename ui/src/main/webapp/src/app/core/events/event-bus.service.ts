@@ -14,7 +14,6 @@ export class EventBusService {
     }
 
     public fireEvent(event: WindupEvent) {
-        console.log('Firing event: ', event);
         this.eventSubscribers.next(event);
     }
 }

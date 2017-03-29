@@ -50,7 +50,7 @@ export class CustomRuleSelectionComponent implements OnInit {
             rulesPaths => {
                 this.rulesPaths = rulesPaths;
             },
-            err => { console.log(err) }
+            err => { console.error(err) }
         );
     }
 

@@ -50,8 +50,6 @@ export class InViewport implements OnInit, OnDestroy {
         let boundingRectangle = this._element.nativeElement.getBoundingClientRect();
         let elementTop = $(this._element.nativeElement).offset().top;
         let elementBottom = elementTop + boundingRectangle.height;
-        //console.log("Element: ", this._element.nativeElement);
-        //console.log("Element top,bottom: ", elementTop, elementBottom);
 
         let inView = false;
         if (elementTop > InViewport.currentPosition.top && elementTop < InViewport.currentPosition.bottom)
@@ -59,7 +57,6 @@ export class InViewport implements OnInit, OnDestroy {
         else if (elementBottom > InViewport.currentPosition.top && elementBottom < InViewport.currentPosition.bottom)
             inView = true;
 
-        //console.log("returning inView: ", inView, this._element.nativeElement);
         this.inViewport.emit(inView);
     }
 }

@@ -145,12 +145,10 @@ export function Cached(section?: string, expiration?: CacheExpiration, immutable
             let cacheKey = getCacheKey(propertyKey, args);
 
             if (!cacheSection.hasItem(cacheKey)) {
-                console.log('Cache miss', cacheKey);
                 let result: any|Observable<any> = originalMethod.apply(this, args);
 
                 if (isObservable(result)) {
                     return result.do(function(jsonResult) {
-                        console.log('Cache emplacement', jsonResult);
                         cacheSection.setItem(cacheKey, jsonResult, immutable, expiration);
                     });
                 } else {
@@ -159,7 +157,6 @@ export function Cached(section?: string, expiration?: CacheExpiration, immutable
                 }
             }
 
-            console.log('cache hit', cacheKey);
             return new Observable<any>(function(observer) {
                 observer.next(cacheSection.getItem(cacheKey));
                 observer.complete();

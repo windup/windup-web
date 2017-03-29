@@ -276,7 +276,6 @@ function assertIndicatorIsCorrect(fixture: ComponentFixture<SortableTableCompone
     let sortingIndicators = fixture.debugElement.queryAll(By.css('i'));
 
     sortingIndicators.forEach((indicator, idx) => {
-        console.log(indicator.classes);
         expect(indicator.classes['fa']).toBe(true);
 
         if (idx === index) {
