@@ -91,7 +91,6 @@ export class SortableTableComponent {
     protected sortData() {
         this.sortedData = this._sortingService.sort(this._originalData);
         this.sortedDataChange.emit(this.sortedData);
-        console.log(this.sortedData);
     }
 }
 

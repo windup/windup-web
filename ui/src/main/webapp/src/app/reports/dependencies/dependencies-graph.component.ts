@@ -83,7 +83,6 @@ export class DependenciesGraphComponent implements OnInit, OnChanges {
 
 
     private initVisualisation() {
-        console.log("initVisualisation()");
         this.svg = d3.select('svg#dependenciesGraph');
         this.zoomingGroup = d3.select("svg #zoomingGroup");
         this.myEdges = this.svg.selectAll(".myEdge");
@@ -129,7 +128,6 @@ export class DependenciesGraphComponent implements OnInit, OnChanges {
 
 
     private processNewDependenciesData(depsData: DependenciesData): void {
-        console.log("processNewDependenciesData()");
         this.jsonData = depsData;
 
         // Adjust the height according to count of nodes. If this doesn't work, we could watch the Y positions difference of top and bottom nodes (before zooming).
@@ -148,7 +146,6 @@ export class DependenciesGraphComponent implements OnInit, OnChanges {
      * Main rendering function.
      */
     private render(jsonData) {
-        //console.warn("render()")
         // Edges
         this.zoomingGroup.selectAll(".myEdge")
             .data(jsonData.links)
@@ -159,10 +156,8 @@ export class DependenciesGraphComponent implements OnInit, OnChanges {
         // Nodes
         this.myGroups =  this.zoomingGroup.selectAll(".myGroup")
             .data(jsonData.nodes, (d) => d.id)
-                //.each((x) => console.log("Updating: ", x.id, x.state))
                 .classed("small", (d) => d.state == "small")
             .enter()
-                //.each((d) => (console.log("Entering: ", d.id, d.state)))
                 // Initially centered
                 //.each(function(d){ d.x = this.center.x + DependenciesGraphComponent.displacement(); d.y = this.center.y + DependenciesGraphComponent.displacement();})
                 .append("g")
@@ -173,7 +168,7 @@ export class DependenciesGraphComponent implements OnInit, OnChanges {
                     .on("end", () => this.dragEnded())
                 )
             ;
-        this.myGroups.exit().each((x) => console.log("Exiting: ", x)).remove();
+        this.myGroups.exit().remove();
         this.myGroups
             .attr("class", (d) => "myGroup node" + d.id + " type" + d.type + " suffix_" + (d.data ? d.data.fileSuffix : "none"))
             //.classed("isKnown", (d) => -1 === ["jar", "war", "ear"].indexOf(substringAfterLast(d.name, ".")))

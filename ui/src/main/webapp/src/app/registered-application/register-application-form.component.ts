@@ -95,7 +95,6 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
 
             let uploadUrl = Constants.REST_BASE + RegisteredApplicationService.UPLOAD_URL;
             uploadUrl = uploadUrl.replace("{projectId}", this.project.id.toString());
-            console.log("URL: " + uploadUrl);
 
             this.multipartUploader.setOptions({
                 url: uploadUrl,
@@ -120,8 +119,6 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     }
 
     private registerPath() {
-        console.log("Registering path: " + this.fileInputPath);
-
         if (this.isDirWithApps) {
             this._registeredApplicationService.registerApplicationInDirectoryByPath(this.project, this.fileInputPath)
                 .subscribe(
@@ -174,7 +171,6 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     }
 
     private changeMode(mode: RegistrationType) {
-        console.log("Changing mode to: " + mode);
         this.mode = mode;
     }
 }

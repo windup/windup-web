@@ -174,16 +174,12 @@ export function sortClassesBySpeciality(classes: Array<AnyClass>) : Array<AnyCla
 {
     let classesLevels: AnyClass[][] = [];
     for (let i = 0; i < classes.length; i++){
-        console.log("Next class");
         let clazz = classes[i], parent;
         let proto = Object.getPrototypeOf(new (<typeof Object>clazz)()); // The only way to get to the actual function.
         let protoOrig = proto;
         for (var depth = 0; ; depth++){
-            //console.log(`  Proto: ${proto}`);
-            console.log(`  Depth: ${depth} Proto: ${proto.constructor.name}`);
             parent = Object.getPrototypeOf(proto);
             if (!parent) {
-                console.log("No parent, break;")
                 break;
             }
             proto = parent;

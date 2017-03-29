@@ -23,7 +23,6 @@ describe('Unmarshaller tests', () => {
     let http: any;
 
     beforeEach(() => {
-        console.log("-------------------- Unmarshaller test -------------------- ");
         StaticCache.clear();
 
         http = jasmine.createSpyObj('Http', [
@@ -54,7 +53,6 @@ describe('Unmarshaller tests', () => {
         expect(modelObject).toBeDefined();
         expect(modelObject.vertexId).toEqual(456);
         let model = <TestGeneratorModel> modelObject;
-        console.log("Returned model: " + model);
 
         expect(model.name).toEqual("Blake Ross");
     });
@@ -72,7 +70,6 @@ describe('Unmarshaller tests', () => {
         expect(modelObject).toBeDefined();
         expect(modelObject.vertexId).toEqual(456);
         let model = <TestGeneratorModel> modelObject;
-        console.log("Returned model: " + model);
 
         expect(model.setInPropsTest).toBeDefined("Should be defined");
         expect(model.setInPropsTest.length).toEqual(3);
@@ -97,7 +94,6 @@ describe('Unmarshaller tests', () => {
 
     it ('unmarshaller test - fromJSON() - shuttles', async(() => {
         http.get.and.callFake((url: string) => {
-                console.log("Called Http.get for: " + url);
                 return Observable.create(function(observer) {
                     let value: any = {
                         json: function () {
@@ -125,7 +121,6 @@ describe('Unmarshaller tests', () => {
 
     it ('unmarshaller test - fromJSON() - fighter', async(() => {
         http.get.and.callFake((url:string) => {
-                console.log("Called Http.get for: " + url);
                 return Observable.create(function(observer) {
                     let value: any = {
                         json: function () {

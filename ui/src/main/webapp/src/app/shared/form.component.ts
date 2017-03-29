@@ -27,7 +27,7 @@ export class FormComponent {
             this.errorMessages.push("Server call failed.");
         } else if (error.parameterViolations) {
             error.parameterViolations.forEach(violation => {
-                console.log("Violation: " + JSON.stringify(violation));
+                console.warn("Violation: " + JSON.stringify(violation));
                 this.errorMessages.push(violation.message);
             });
         } else {

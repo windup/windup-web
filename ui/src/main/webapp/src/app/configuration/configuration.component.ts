@@ -114,7 +114,7 @@ export class ConfigurationComponent implements OnInit {
                 this.configuration = configuration;
                 this.loadProviders();
             },
-            error => console.log("Error: " + error)
+            error => console.error("Error: " + error)
         )
     }
 

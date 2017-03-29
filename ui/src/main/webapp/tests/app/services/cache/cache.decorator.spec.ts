@@ -56,7 +56,6 @@ xdescribe('@Cached decorator', () => {
         beforeEach(() => {
             spyOn(instance, 'foo');
             instance.foo(value);
-            console.log(sectionSection);
         });
 
         it('should add item into "global" cache section after first call', () => {

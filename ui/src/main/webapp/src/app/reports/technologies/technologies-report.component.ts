@@ -45,7 +45,6 @@ export class TechnologiesReportComponent implements OnInit {
                 mergedStats.fileTypes = this.mergeFileTypesToOne(<any>mergedStats.fileTypes, ['class', 'java'], 'Java');
                 mergedStats.fileTypes = this.calculateFileTypeUsagePercentage(mergedStats.fileTypes);
                 this.filteredTechnologiesStats = mergedStats;
-                console.log(this.filteredTechnologiesStats);
             },
             error => {
                 this._notificationService.error(utils.getErrorMessage(error));
@@ -121,8 +120,6 @@ TODO: Fix this
                 return technologiesStats[property];
             });
         });
-
-        console.log(propertiesArray);
 
         forkJoin(propertiesArray)
             .subscribe((projectTechnologiesArray: TechnologyKeyValuePairModel[][]) => {
