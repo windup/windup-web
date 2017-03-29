@@ -97,12 +97,13 @@ export class AnalysisContextFormComponent extends FormComponent
                     this.loadPackageMetadata();
                 });
 
+                this.initializeAnalysisContext();
+
                 // Load the apps of this project.
                 this._appService.getApplicationsByProjectID(project.id).subscribe(apps => {
                     this.availableApps = apps;
+                    this.analysisContext.applications = apps.slice();
                 });
-
-                this.initializeAnalysisContext();
             }
 
             this.isInWizard = flatRouteData.data.hasOwnProperty('wizard') && flatRouteData.data['wizard'];
