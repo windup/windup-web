@@ -75,17 +75,23 @@ public class WindupEndpointImpl implements WindupEndpoint
             MigrationProject projectRef = entityManager.find(MigrationProject.class, projectId);
             analysisContext.setMigrationProject(projectRef);
 
-            // If there is a default context, delete it and clone the new analysisContext to use it as a new default.
+            // Update the detault
             AnalysisContext defaultContext = this.analysisContextService.getDefaultProjectAnalysisContext(projectId);
-            if (null != defaultContext)
-            {
-                this.entityManager.remove(defaultContext);
-            }
-            // This one is the new default.
-            this.analysisContextService.create(analysisContext);
+            if (null == defaultContext)
+                throw new WindupException("No default AnalysisContext for project " + projectId);
 
-            // This one will be used for execution.
+            defaultContext.setAdvancedOptions(analysisContext.getAdvancedOptions());
+            defaultContext.setApplications(analysisContext.getApplications());
+            defaultContext.setExcludePackages(analysisContext.getExcludePackages());
+            defaultContext.setGenerateStaticReports(analysisContext.getGenerateStaticReports());
+            defaultContext.setIncludePackages(analysisContext.getIncludePackages());
+            defaultContext.setMigrationPath(analysisContext.getMigrationPath());
+            defaultContext.setRulesPaths(analysisContext.getRulesPaths());
+            this.entityManager.merge(defaultContext);
+            this.entityManager.flush();
+
             analysisContext = this.analysisContextService.create(analysisContext);
+            this.entityManager.flush();
         }
 
         WindupExecution execution = createAndTriggerExecution(analysisContext);
