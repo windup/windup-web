@@ -51,7 +51,7 @@ public class AnalysisContextService
     }
 
     /**
-     * Creates a default instance.
+     * Creates and persists a default instance.
      */
     public AnalysisContext createDefaultAnalysisContext(MigrationProject project)
     {
