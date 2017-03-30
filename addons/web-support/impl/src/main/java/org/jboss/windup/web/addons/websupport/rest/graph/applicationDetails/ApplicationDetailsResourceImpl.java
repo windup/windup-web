@@ -2,6 +2,7 @@ package org.jboss.windup.web.addons.websupport.rest.graph.applicationDetails;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.windup.graph.GraphContext;
+import org.jboss.windup.graph.model.FileLocationModel;
 import org.jboss.windup.graph.model.ProjectModel;
 import org.jboss.windup.graph.model.resource.FileModel;
 import org.jboss.windup.reporting.model.ClassificationModel;
@@ -11,7 +12,6 @@ import org.jboss.windup.reporting.model.TechnologyTagModel;
 import org.jboss.windup.rules.apps.java.model.JavaSourceFileModel;
 import org.jboss.windup.rules.apps.java.model.project.MavenProjectModel;
 import org.jboss.windup.rules.apps.java.scan.ast.JavaTypeReferenceModel;
-import org.jboss.windup.rules.files.model.FileLocationModel;
 import org.jboss.windup.web.addons.websupport.model.PersistedProjectModelTraversalModel;
 import org.jboss.windup.web.addons.websupport.model.PersistedTraversalChildFileModel;
 import org.jboss.windup.web.addons.websupport.model.ReportFilterDTO;
