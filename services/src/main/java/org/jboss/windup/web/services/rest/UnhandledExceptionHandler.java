@@ -42,6 +42,8 @@ public class UnhandledExceptionHandler implements ExceptionMapper<RuntimeExcepti
 
             if (null != findFirstOccurenceInExceptionChain(org.hibernate.exception.ConstraintViolationException.class, exception))
                 errorInfo.setMessage("Database constraints were not met.");
+            if (null != findFirstOccurenceInExceptionChain(javax.persistence.NoResultException.class, exception))
+                errorInfo.setMessage("No item found for the query.");
             else if (null != findFirstOccurenceInExceptionChain("org.h2.jdbc.JdbcSQLException", cause))
                 errorInfo.setMessage("Database error occurred.");
             else if (null != findFirstOccurenceInExceptionChain(javax.persistence.PersistenceException.class, cause))
