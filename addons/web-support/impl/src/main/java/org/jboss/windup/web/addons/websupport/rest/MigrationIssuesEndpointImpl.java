@@ -26,11 +26,12 @@ import org.jboss.windup.web.addons.websupport.rest.graph.AbstractGraphResource;
 public class MigrationIssuesEndpointImpl extends AbstractGraphResource implements MigrationIssuesEndpoint
 {
     @Override
-    public Map<String, List<ProblemSummary>> getAggregatedIssues(Long reportId)
+    public Map<String, List<ProblemSummary>> getAggregatedIssues(Long reportId, Map<String, Object> filterAsMap)
     {
         GraphContext graphContext = this.getGraph(reportId);
 
-        ReportFilterDTO filter = this.reportFilterService.getReportFilter(reportId);
+        // ReportFilterDTO filter = this.reportFilterService.getReportFilter(reportId);
+        ReportFilterDTO filter = this.reportFilterService.getReportFilterFromMap(filterAsMap);
 
         Set<String> includeTags = new HashSet<>();
         Set<String> excludeTags = new HashSet<>();
@@ -67,9 +68,9 @@ public class MigrationIssuesEndpointImpl extends AbstractGraphResource implement
     }
 
     @Override
-    public Object getIssueFiles(Long executionId, String issueId)
+    public Object getIssueFiles(Long executionId, String issueId, Map<String, Object> filterAsMap)
     {
-        ProblemSummary summary = getProblemSummary(executionId, issueId);
+        ProblemSummary summary = getProblemSummary(executionId, issueId, filterAsMap);
         return getFileSummaries(executionId, summary);
     }
 
@@ -83,9 +84,9 @@ public class MigrationIssuesEndpointImpl extends AbstractGraphResource implement
                     .collect(Collectors.toList());
     }
 
-    private ProblemSummary getProblemSummary(Long executionId, String issueId)
+    private ProblemSummary getProblemSummary(Long executionId, String issueId, Map<String, Object> filterAsMap)
     {
-        Map<String, List<ProblemSummary>> categorizedProblems = this.getAggregatedIssues(executionId);
+        Map<String, List<ProblemSummary>> categorizedProblems = this.getAggregatedIssues(executionId, filterAsMap);
 
         List<ProblemSummary> problemSummaries = categorizedProblems.entrySet()
                     .stream()

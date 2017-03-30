@@ -38,7 +38,7 @@ public class AggregatedStatisticsEndpointImpl extends AbstractGraphResource impl
      * This counts incidents for every category issue type
      */
     @Override
-    public EffortByCategoryDTO getAggregatedCategories(Long executionId)
+    public EffortByCategoryDTO getAggregatedCategories(Long executionId, Map<String, Object> filterAsMap)
     {
         GraphContext graphContext = this.getGraph(executionId);
 
@@ -46,7 +46,8 @@ public class AggregatedStatisticsEndpointImpl extends AbstractGraphResource impl
         Set<String> excludeTags = new HashSet<>();
         Set<ProjectModel> projectModels = null;
 
-        ReportFilterDTO filter = this.reportFilterService.getReportFilter(executionId);
+        //ReportFilterDTO filter = this.reportFilterService.getReportFilter(executionId);
+        ReportFilterDTO filter = this.reportFilterService.getReportFilterFromMap(filterAsMap);
 
         if (filter.isEnabled())
         {
@@ -105,7 +106,7 @@ public class AggregatedStatisticsEndpointImpl extends AbstractGraphResource impl
      *
      */
     @Override
-    public StatisticsList getJavaPackageStatistics(Long executionId)
+    public StatisticsList getJavaPackageStatistics(Long executionId, Map<String, Object> filterAsMap)
     {
         GraphContext graphContext = this.getGraph(executionId);
 
@@ -113,7 +114,8 @@ public class AggregatedStatisticsEndpointImpl extends AbstractGraphResource impl
         Set<String> excludeTags = new HashSet<>();
         Set<ProjectModel> projectModels;
 
-        ReportFilterDTO filter = this.reportFilterService.getReportFilter(executionId);
+        //ReportFilterDTO filter = this.reportFilterService.getReportFilter(executionId);
+        ReportFilterDTO filter = this.reportFilterService.getReportFilterFromMap(filterAsMap);
 
         projectModels = this.getProjectModels(graphContext, filter);
         if (filter.isEnabled())
@@ -141,14 +143,16 @@ public class AggregatedStatisticsEndpointImpl extends AbstractGraphResource impl
     }
 
     @Override
-    public StatisticsList getArchivesStatistics(Long executionId)
+    public StatisticsList getArchivesStatistics(Long executionId, Map<String, Object> filterAsMap)
     {
         GraphContext graphContext = this.getGraph(executionId);
 
         Set<String> includeTags = new HashSet<>();
         Set<String> excludeTags = new HashSet<>();
 
-        ReportFilterDTO filter = this.reportFilterService.getReportFilter(executionId);
+        //ReportFilterDTO filter = this.reportFilterService.getReportFilter(executionId);
+        ReportFilterDTO filter = this.reportFilterService.getReportFilterFromMap(filterAsMap);
+
 
         // Set<ProjectModel> projectModels = this.getProjectModels(graphContext, filter);
         if (filter.isEnabled())
@@ -210,7 +214,7 @@ public class AggregatedStatisticsEndpointImpl extends AbstractGraphResource impl
     }
 
     @Override
-    public StatisticsList getDependenciesStatistics(Long executionId)
+    public StatisticsList getDependenciesStatistics(Long executionId, Map<String, Object> filterAsMap)
     {
         GraphContext graphContext = this.getGraph(executionId);
 

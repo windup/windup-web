@@ -25,7 +25,9 @@ export class AggregatedStatisticsService extends AbstractService {
         let url = AggregatedStatisticsService.AGGREGATED_CATEGORIES_URL
             .replace('{executionId}', executionId.toString());
 
-        return this._http.get(url)
+        let serializedFilter = this.serializeFilter(filter);
+
+        return this._http.post(url, serializedFilter, this.JSON_OPTIONS)
             .map(res => res.json())
             .catch(this.handleError);
     }
@@ -35,7 +37,9 @@ export class AggregatedStatisticsService extends AbstractService {
         let url = AggregatedStatisticsService.AGGREGATED_JAVA_PACKAGES_URL
             .replace('{executionId}', executionId.toString());
 
-        return this._http.get(url)
+        let serializedFilter = this.serializeFilter(filter);
+
+        return this._http.post(url, serializedFilter, this.JSON_OPTIONS)
             .map(res => res.json())
             .catch(this.handleError);
     }
@@ -45,7 +49,9 @@ export class AggregatedStatisticsService extends AbstractService {
         let url = AggregatedStatisticsService.AGGREGATED_COMPONENTS_URL
             .replace('{executionId}', executionId.toString());
 
-        return this._http.get(url)
+        let serializedFilter = this.serializeFilter(filter);
+
+        return this._http.post(url, serializedFilter, this.JSON_OPTIONS)
             .map(res => res.json())
             .catch(this.handleError);
     }
@@ -55,7 +61,9 @@ export class AggregatedStatisticsService extends AbstractService {
         let url = AggregatedStatisticsService.AGGREGATED_DEPENDENCIES_URL
             .replace('{executionId}', executionId.toString());
 
-        return this._http.get(url)
+        let serializedFilter = this.serializeFilter(filter);
+
+        return this._http.post(url, serializedFilter, this.JSON_OPTIONS)
             .map(res => res.json())
             .catch(this.handleError);
     }

@@ -20,7 +20,9 @@ export class MigrationIssuesService extends AbstractService {
     getAggregatedIssues(executionId: number, filter?: ReportFilter): Observable<Dictionary<ProblemSummary[]>> {
         let url = MigrationIssuesService.AGGREGATED_ISSUES_URL.replace('{executionId}', executionId.toString());
 
-        return this._http.get(url)
+        let serializedFilter = this.serializeFilter(filter);
+
+        return this._http.post(url, serializedFilter, this.JSON_OPTIONS)
             .map(res => res.json())
             .catch(this.handleError);
     }
@@ -31,7 +33,9 @@ export class MigrationIssuesService extends AbstractService {
             .replace('{executionId}', executionId.toString())
             .replace('{summaryId}', problemSummary.ruleID + problemSummary.issueName);
 
-        return this._http.get(url)
+        let serializedFilter = this.serializeFilter(filter);
+
+        return this._http.post(url, serializedFilter, this.JSON_OPTIONS)
             .map(res => res.json())
             .catch(this.handleError);
     }

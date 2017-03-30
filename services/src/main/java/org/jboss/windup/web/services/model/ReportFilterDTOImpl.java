@@ -1,7 +1,9 @@
 package org.jboss.windup.web.services.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -21,11 +23,21 @@ public class ReportFilterDTOImpl implements ReportFilterDTO
 
     protected ReportFilterDTOImpl()
     {
+        this.isEnabled = false;
 
+        this.includeTags = new HashSet<>();
+        this.excludeTags = new HashSet<>();
+
+        this.includeCategories = new HashSet<>();
+        this.excludeCategories = new HashSet<>();
+
+        this.selectedApplications = new HashSet<>();
     }
 
     public ReportFilterDTOImpl(ReportFilter filter)
     {
+        this();
+
         if (filter != null)
         {
             this.isEnabled = filter.isEnabled();
@@ -41,18 +53,21 @@ public class ReportFilterDTOImpl implements ReportFilterDTO
                     .map(FilterApplication::getInputPath)
                     .collect(Collectors.toSet());
         }
-        else
-        {
-            this.isEnabled = false;
+    }
 
-            this.includeTags = new HashSet<>();
-            this.excludeTags = new HashSet<>();
+    public static ReportFilterDTO fromMap(Map<String, Object> map)
+    {
+        ReportFilterDTOImpl filter = new ReportFilterDTOImpl();
 
-            this.includeCategories = new HashSet<>();
-            this.excludeCategories = new HashSet<>();
-
-            this.selectedApplications = new HashSet<>();
+        if (map.containsKey("selectedApplications")) {
+            filter.selectedApplications.addAll((ArrayList<String>)map.get("selectedApplications"));
         }
+
+        if (map.containsKey("enabled")) {
+            filter.isEnabled = (Boolean)map.get("enabled");
+        }
+
+        return filter;
     }
 
     private static Set<String> transformTags(Set<Tag> tags)

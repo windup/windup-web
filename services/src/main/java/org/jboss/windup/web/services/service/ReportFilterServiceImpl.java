@@ -9,6 +9,8 @@ import org.jboss.windup.web.services.model.ReportFilter;
 import org.jboss.windup.web.services.model.ReportFilterDTOImpl;
 import org.jboss.windup.web.services.model.WindupExecution;
 
+import java.util.Map;
+
 /**
  * @author <a href="mailto:dklingenberg@gmail.com">David Klingenberg</a>
  */
@@ -44,5 +46,12 @@ public class ReportFilterServiceImpl implements ReportFilterService
     {
         ReportFilter reportFilter = this.getFilter(executionId);
         return new ReportFilterDTOImpl(reportFilter);
+    }
+
+
+    @Override
+    public ReportFilterDTO getReportFilterFromMap(Map<String, Object> map)
+    {
+        return ReportFilterDTOImpl.fromMap(map);
     }
 }

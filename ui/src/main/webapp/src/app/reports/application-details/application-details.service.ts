@@ -22,7 +22,9 @@ export class ApplicationDetailsService extends AbstractService {
     getApplicationDetailsData(executionId: number, filter?: ReportFilter): Observable<ApplicationDetailsFullDTO> {
         let url = `${Constants.GRAPH_REST_BASE}/graph/application-details/${executionId}`;
 
-        return this._http.get(url)
+        let serializedFilter = this.serializeFilter(filter);
+
+        return this._http.post(url, serializedFilter, this.JSON_OPTIONS)
             .map(res => res.json())
             .map((res:ApplicationDetailsDTO) => {
                 res.traversals = res.traversals.map(traversal => {
