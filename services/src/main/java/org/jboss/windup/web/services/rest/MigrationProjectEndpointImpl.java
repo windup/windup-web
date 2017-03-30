@@ -104,32 +104,6 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
     @Override
     public AnalysisContext getDefaultAnalysisContext(Long projectId)
     {
-        try
-        {
-            // The last AnalysisContext which has no execution attached
-            String jql = "SELECT ctx FROM " + AnalysisContext.class.getSimpleName() + " AS ctx "
-                    + " WHERE ctx.migrationProject.id = :projectId AND NOT EXISTS (FROM WindupExecution exec WHERE exec.analysisContext = ctx) "
-                    + " ORDER BY ctx.id DESC";
-            List<AnalysisContext> contexts = entityManager.createQuery(jql, AnalysisContext.class).setParameter("projectId", projectId).setMaxResults(1).getResultList();
-
-            if (contexts.size() > 0)
-                return contexts.get(0);
-
-            // The AnalysisContext of the last execution.
-            jql = "SELECT ctx FROM WindupExecution AS exec LEFT JOIN exec.analysisContext AS ctx "
-                    + " WHERE exec.project.id = :projectId"
-                    + " ORDER BY exec.id DESC";
-            contexts = entityManager.createQuery(jql, AnalysisContext.class).setParameter("projectId", projectId).setMaxResults(1).getResultList();
-
-            if (contexts.size() > 0)
-                return contexts.get(0);
-
-            return null;
-        }
-        catch (Exception ex)
-        {
-            LOG.log(Level.SEVERE, ex.getMessage(), ex);
-            throw new WindupException("Error fetching last context used in this project: " + ex.getMessage(), ex);
-        }
+        return this.analysisContextService.getDefaultProjectAnalysisContext(projectId);
     }
 }
