@@ -87,6 +87,16 @@ export class ExecutionsLayoutComponent extends ProjectLayoutComponent implements
         this._router.navigate(this.getExecutionRoute(execution));
     };
 
+    get staticReportsAvailable():boolean {
+        if (!this.execution)
+            return false;
+
+        if (!this.execution.analysisContext)
+            return false;
+
+        return this.execution.analysisContext.generateStaticReports;
+    }
+
     protected createContextMenuItems() {
         this.menuItems = [
             new ReportMenuItem(
@@ -119,8 +129,8 @@ export class ExecutionsLayoutComponent extends ProjectLayoutComponent implements
             ),
             new ContextMenuItem(
                 'Static Reports',
-                'fa-external-link',
-                true,
+                'fa-window-restore',
+                this.staticReportsAvailable,
                 WindupExecutionService.formatStaticReportUrl(this.execution),
                 null,
                 null,
