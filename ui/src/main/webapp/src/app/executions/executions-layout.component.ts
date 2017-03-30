@@ -12,7 +12,7 @@ import {ExecutionEvent} from "../core/events/windup-event";
 import {ProjectLayoutComponent} from "../project/project-layout.component";
 import {MigrationProjectService} from "../project/migration-project.service";
 import {DatePipe} from "@angular/common";
-import {RouteFlattenerService} from "../core/routing/route-flattener.service";
+import {FlattenedRouteData, RouteFlattenerService} from "../core/routing/route-flattener.service";
 import {WindupExecutionService} from "../services/windup-execution.service";
 
 @Component({
@@ -39,24 +39,22 @@ export class ExecutionsLayoutComponent extends ProjectLayoutComponent implements
         super(_router, _activatedRoute, _routeFlattenerService, _routeLinkProviderService, _migrationProjectService, _eventBus);
     }
 
-    ngOnInit(): void {
-        this.addSubscription(this.flatRouteLoaded.subscribe(flatRoute => {
-            this.project = flatRoute.data.project;
+    protected loadDataFromRoute(flatRoute: FlattenedRouteData) {
+        this.project = flatRoute.data.project;
 
-            this.loadProjectExecutions();
-            this.loadProjects();
+        this.loadProjectExecutions();
+        this.loadProjects();
 
-            let executionId = +flatRoute.params.executionId;
-            this.addSubscription(this._eventBus.onEvent
-                .filter(event => event.isTypeOf(ExecutionEvent))
-                .filter((event: ExecutionEvent) => event.execution.id === executionId)
-                .subscribe((event: ExecutionEvent) => {
-                    this.execution = event.execution;
-                    this.createContextMenuItems();
-                }));
+        let executionId = +flatRoute.params.executionId;
+        this.addSubscription(this._eventBus.onEvent
+            .filter(event => event.isTypeOf(ExecutionEvent))
+            .filter((event: ExecutionEvent) => event.execution.id === executionId)
+            .subscribe((event: ExecutionEvent) => {
+                this.execution = event.execution;
+                this.createContextMenuItems();
+            }));
 
-            this.loadSelectedExecution(executionId);
-        }));
+        this.loadSelectedExecution(executionId);
     }
 
     protected loadSelectedExecution(executionId: number) {

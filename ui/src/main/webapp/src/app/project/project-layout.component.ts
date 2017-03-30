@@ -11,7 +11,7 @@ import {ApplicationListComponent} from "../registered-application/application-li
 import {MigrationProjectEvent, UpdateMigrationProjectEvent} from "../core/events/windup-event";
 import {MigrationProjectService} from "./migration-project.service";
 import {RoutedComponent} from "../shared/routed.component";
-import {RouteFlattenerService} from "../core/routing/route-flattener.service";
+import {FlattenedRouteData, RouteFlattenerService} from "../core/routing/route-flattener.service";
 
 @Component({
     templateUrl: './project-layout.component.html',
@@ -45,14 +45,14 @@ export class ProjectLayoutComponent extends RoutedComponent implements OnInit, O
                 this.createContextMenuItems();
         }));
 
-        this.addSubscription(this._activatedRoute.data.subscribe((data: {project: MigrationProject}) => {
-            this.project = data.project;
-
-            this._migrationProjectService.monitorProject(this.project);
-            this.createContextMenuItems();
-        }));
-
+        this.addSubscription(this.flatRouteLoaded.subscribe(flattenedRoute => this.loadDataFromRoute(flattenedRoute)));
         this.loadProjects();
+    }
+
+    protected loadDataFromRoute(flattenedRoute: FlattenedRouteData) {
+        this.project = flattenedRoute.data.project;
+        this._migrationProjectService.monitorProject(this.project);
+        this.createContextMenuItems();
     }
 
     protected loadProjects() {
