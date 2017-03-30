@@ -8,7 +8,9 @@ import {ReportFilter} from "windup-services";
 
 @Injectable()
 export class MigrationIssuesService extends AbstractService {
-    private static AGGREGATED_ISSUES_URL = 'migrationIssues/aggregatedIssues';
+    private static MIGRATION_ISSUES_BASE = Constants.GRAPH_REST_BASE + '/reports/{executionId}/migrationIssues';
+    private static AGGREGATED_ISSUES_URL = MigrationIssuesService.MIGRATION_ISSUES_BASE + '/aggregatedIssues';
+    private static FILE_ISSUES_URL = MigrationIssuesService.MIGRATION_ISSUES_BASE + '/{summaryId}/files';
 
     constructor(private _http: Http) {
         super();
@@ -16,14 +18,20 @@ export class MigrationIssuesService extends AbstractService {
 
     @Cached('migrationIssues', null, true)
     getAggregatedIssues(executionId: number, filter?: ReportFilter): Observable<Dictionary<ProblemSummary[]>> {
-        return this._http.get(`${Constants.GRAPH_REST_BASE}/reports/${executionId}/${MigrationIssuesService.AGGREGATED_ISSUES_URL}`)
+        let url = MigrationIssuesService.AGGREGATED_ISSUES_URL.replace('{executionId}', executionId.toString());
+
+        return this._http.get(url)
             .map(res => res.json())
             .catch(this.handleError);
     }
 
     @Cached('migrationIssues', null, true)
     getIssuesPerFile(executionId: number, problemSummary: ProblemSummary, filter?: ReportFilter): Observable<any> {
-        return this._http.get(`${Constants.GRAPH_REST_BASE}/reports/${executionId}/migrationIssues/${problemSummary.ruleID}${problemSummary.issueName}/files`)
+        let url = MigrationIssuesService.FILE_ISSUES_URL
+            .replace('{executionId}', executionId.toString())
+            .replace('{summaryId}', problemSummary.ruleID + problemSummary.issueName);
+
+        return this._http.get(url)
             .map(res => res.json())
             .catch(this.handleError);
     }
