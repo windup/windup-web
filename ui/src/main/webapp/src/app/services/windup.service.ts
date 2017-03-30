@@ -5,7 +5,7 @@ import {Observable} from 'rxjs/Observable';
 import {Constants} from "../constants";
 import {WindupExecution} from "windup-services";
 import {AbstractService} from "../shared/abtract.service";
-import {Cached} from "../shared/cache.service";
+import {Cached, CacheServiceInstance} from "../shared/cache.service";
 
 @Injectable()
 export class WindupService extends AbstractService {
@@ -27,6 +27,10 @@ export class WindupService extends AbstractService {
         return execution.state === "COMPLETED" || execution.state === "FAILED";
     };
 
+    static cacheExecutionList = (executions: WindupExecution[]): boolean => {
+        return executions.find(execution => !WindupService.cacheExecution(execution)) == null;
+    }
+
     @Cached({section: 'execution', immutable: true, cacheItemCallback: WindupService.cacheExecution})
     public getExecution(executionID:number):Observable<WindupExecution> {
         let url = Constants.REST_BASE + this.EXECUTIONS_PATH + '/' + executionID;
@@ -39,19 +43,23 @@ export class WindupService extends AbstractService {
     public executeWindupWithAnalysisContext(contextId: number): Observable<WindupExecution> {
         let body = JSON.stringify(contextId);
 
+
         return this._http.post(Constants.REST_BASE + this.EXECUTE_WITH_CONTEXT_PATH, body, this.JSON_OPTIONS)
             .map(res => <WindupExecution> res.json())
+            .do(res => {
+                CacheServiceInstance.getSection('execution').clear();
+            })
             .catch(this.handleError);
     }
 
-    @Cached('execution')
+    @Cached({section: 'execution', cacheItemCallback: WindupService.cacheExecutionList})
     public getAllExecutions(): Observable<WindupExecution[]> {
         return this._http.get(Constants.REST_BASE + this.EXECUTIONS_PATH)
             .map(res => <WindupExecution[]> res.json())
             .catch(this.handleError);
     }
 
-    @Cached('execution')
+    @Cached({section: 'execution', cacheItemCallback: WindupService.cacheExecutionList})
     public getProjectExecutions(projectId: number): Observable<WindupExecution[]> {
         let url = Constants.REST_BASE + this.PROJECT_EXECUTIONS_PATH.replace('{projectId}', projectId.toString());
 
