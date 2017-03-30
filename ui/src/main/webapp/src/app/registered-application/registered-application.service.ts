@@ -14,7 +14,7 @@ import {
 import {MigrationProject} from "windup-services";
 import {PackageMetadata} from "windup-services";
 import {SchedulerService} from "../shared/scheduler.service";
-import {Subject} from "rxjs";
+import {ReplaySubject, Subject} from "rxjs";
 import {Cached} from "../shared/cache.service";
 
 @Injectable()
@@ -216,6 +216,24 @@ export class RegisteredApplicationService extends AbstractService {
             .catch(this.handleError);
     }
 
+    /**
+     * Checks if PackageMetadata scanStatus is complete.
+     * If it is, PackageMetadata object can be treated as immutable and cached
+     *
+     * @param metadata {PackageMetadata}
+     * @returns {boolean}
+     */
+    static arePackagesLoaded = (metadata: PackageMetadata) => {
+        return metadata && metadata.scanStatus === "COMPLETE";
+    };
+
+    /**
+     * Gets package metadata
+     *
+     * @param application {RegisteredApplication}
+     * @returns {Observable<PackageMetadata>}
+     */
+    @Cached({section: 'application', immutable: true, cacheItemCallback: RegisteredApplicationService.arePackagesLoaded})
     getPackageMetadata(application: RegisteredApplication): Observable<PackageMetadata> {
         let url = Constants.REST_BASE + RegisteredApplicationService.PACKAGES_URL.replace("{appId}", application.id.toString());
 
@@ -225,7 +243,8 @@ export class RegisteredApplicationService extends AbstractService {
     }
 
     waitUntilPackagesAreResolved(application: RegisteredApplication): Observable<PackageMetadata> {
-        let subject = new Subject<PackageMetadata>();
+        // ReplaySubject must be used because data might be cached and resolved right away
+        let subject = new ReplaySubject<PackageMetadata>(1);
 
         let closure = () => {
             this.getPackageMetadata(application).subscribe(packageMetadata => {
