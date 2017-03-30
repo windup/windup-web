@@ -91,7 +91,9 @@ export class AnalysisContextFormComponent extends FormComponent
             if (flatRouteData.data['project']) {
                 let project = flatRouteData.data['project'];
 
-                console.log("router event NavigationEnd, this.analysisContext: ", this.analysisContext);
+                console.log("router event NavigationEnd, flatRouteData + this.analysisContext: ", flatRouteData, this.analysisContext);
+
+                this.initializeAnalysisContext();
 
                 // Reload the App from the service to ensure fresh data
                 this._migrationProjectService.get(project.id).subscribe(loadedProject => {
@@ -99,8 +101,6 @@ export class AnalysisContextFormComponent extends FormComponent
                     this.loadPackageMetadata();
                     this.loadProjectRelations();
                 });
-
-                this.initializeAnalysisContext();
 
                 // Load the apps of this project.
                 this._appService.getApplicationsByProjectID(project.id).subscribe(apps => {
@@ -115,7 +115,9 @@ export class AnalysisContextFormComponent extends FormComponent
     }
 
     private loadProjectRelations() {
-        this._migrationProjectService.getDefaultAnalysisContext(this.project.id).subscribe(ctx => this.analysisContext = ctx);
+        this._migrationProjectService.getDefaultAnalysisContext(this.project.id).subscribe(ctx => {
+            this.analysisContext = this.canonicalizeAnalysisContext(ctx);
+        });
     }
 
     // Apps selection checkboxes
@@ -138,23 +140,18 @@ export class AnalysisContextFormComponent extends FormComponent
     }
 
     private initializeAnalysisContext() {
-        let analysisContext = this.analysisContext;
-
-        if (analysisContext == null) {
-            analysisContext = AnalysisContextFormComponent.getDefaultAnalysisContext();
+        if (this.analysisContext == null) {
+            this.analysisContext = AnalysisContextFormComponent.getDefaultAnalysisContext();
         } else {
-            // For the migration path, store the id only.
-            if (analysisContext.migrationPath) {
-                analysisContext.migrationPath = <MigrationPath>{id: analysisContext.migrationPath.id};
-            } else {
-                analysisContext.migrationPath = <MigrationPath>{id: 0};
-            }
-
-            if (analysisContext.rulesPaths == null)
-                analysisContext.rulesPaths = [];
+            this.analysisContext = this.canonicalizeAnalysisContext(this.analysisContext);
         }
+    }
 
-        this.analysisContext = analysisContext;
+    private canonicalizeAnalysisContext(ctx: AnalysisContext): AnalysisContext {
+        // For the migration path, store the id only.
+        ctx.migrationPath = <MigrationPath>{id: ctx.migrationPath ? ctx.migrationPath.id : 0};
+        ctx.rulesPaths = ctx.rulesPaths || [];
+        return ctx;
     }
 
     private loadPackageMetadata() {
