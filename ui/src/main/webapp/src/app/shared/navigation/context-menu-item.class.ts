@@ -18,14 +18,25 @@ export class ContextMenuItem implements ContextMenuItemInterface {
     protected _isEnabled: boolean | Function;
     protected _action?: Function;
     protected _data?: any;
+    protected _target?: string;
+    protected _absolute?: boolean;
 
-    constructor(label: string, icon: string, isEnabled?: boolean | Function, link?: string, action?:Function, data?: any) {
+    constructor(label: string,
+                icon: string,
+                isEnabled?: boolean | Function,
+                link?: string, action?:Function,
+                data?: any,
+                target?: string,
+                absolute?: boolean)
+    {
         this._label = label;
         this._link = link;
         this._icon = icon;
         this._isEnabled = isEnabled;
         this._action = action;
         this._data = data;
+        this._target = target;
+        this._absolute = (typeof absolute == "undefined") ? false : absolute;
     }
 
     get label(): string {
@@ -53,6 +64,18 @@ export class ContextMenuItem implements ContextMenuItemInterface {
 
     get data():any {
         return this._data;
+    }
+
+    get target():string {
+        return this._target;
+    }
+
+    /**
+     * Indicates that this is an absolute HTML link, rather than a link that should
+     * go through Angular's routing system.
+     */
+    get absolute():boolean {
+        return this._absolute;
     }
 }
 

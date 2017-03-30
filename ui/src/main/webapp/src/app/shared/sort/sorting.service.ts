@@ -44,6 +44,9 @@ export class SortingService<T> {
     }
 
     protected comparatorCallback(a: any, b: any): number  {
+        if (typeof a == "string" && typeof b == "string")
+            return a.localeCompare(b);
+
         if (a < b) {
             return -1;
         }

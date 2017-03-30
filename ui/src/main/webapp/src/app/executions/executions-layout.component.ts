@@ -2,7 +2,7 @@ import {Component, OnInit, OnDestroy} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 
 import {RouteLinkProviderService} from "../core/routing/route-link-provider-service";
-import {ReportMenuItem} from "../shared/navigation/context-menu-item.class";
+import {ContextMenuItem, ReportMenuItem} from "../shared/navigation/context-menu-item.class";
 import {WINDUP_WEB} from "../app.module";
 import {ProjectExecutionsComponent} from "./project-executions.component";
 import {WindupExecution} from "windup-services";
@@ -13,6 +13,7 @@ import {ProjectLayoutComponent} from "../project/project-layout.component";
 import {MigrationProjectService} from "../project/migration-project.service";
 import {DatePipe} from "@angular/common";
 import {RouteFlattenerService} from "../core/routing/route-flattener.service";
+import {WindupExecutionService} from "../services/windup-execution.service";
 
 @Component({
     templateUrl: './executions-layout.component.html',
@@ -86,16 +87,25 @@ export class ExecutionsLayoutComponent extends ProjectLayoutComponent implements
         this._router.navigate(this.getExecutionRoute(execution));
     };
 
+    get staticReportsAvailable():boolean {
+        if (!this.execution)
+            return false;
+
+        if (!this.execution.analysisContext)
+            return false;
+
+        return this.execution.analysisContext.generateStaticReports;
+    }
+
     protected createContextMenuItems() {
         this.menuItems = [
-            {
-                label: 'View Project',
-                link: this._routeLinkProviderService.getRouteForComponent(ProjectExecutionsComponent, {
-                    projectId: this.project.id
-                }),
-                icon: 'fa-tachometer',
-                isEnabled: true
-            },
+            new ReportMenuItem(
+                'Application List',
+                'fa-list',
+                this.project,
+                this.execution,
+                ''
+            ),
             new ReportMenuItem(
                 'Dashboard',
                 'fa-book',
@@ -117,6 +127,16 @@ export class ExecutionsLayoutComponent extends ProjectLayoutComponent implements
                 this.execution,
                 'migration-issues'
             ),
+            new ContextMenuItem(
+                'Static Reports',
+                'fa-window-restore',
+                this.staticReportsAvailable,
+                WindupExecutionService.formatStaticReportUrl(this.execution),
+                null,
+                null,
+                '_blank',
+                true
+            )
         ];
 
         if (!WINDUP_WEB.config.hideUnfinishedFeatures) {

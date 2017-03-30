@@ -24,7 +24,7 @@
                 <li><a [routerLink]="['./application-details']" i18n="report">Application Details</a></li>
                 <li><a [routerLink]="['./migration-issues']" i18n="report">Issues</a></li>
                 <li *ngIf="execution?.analysisContext?.generateStaticReports">
-                    <a class="link" target="_blank" href="{{formatStaticReportUrl(execution)}}">Static Reports</a>
+                    <a class="link external-link" target="_blank" href="{{formatStaticReportUrl(execution)}}">Static Reports</a>
                 </li>
                 <li *ngIf="!hideUnfinishedFeatures"><a [routerLink]="['./technology-report']" i18n="report">Technologies</a></li>
                 <li *ngIf="!hideUnfinishedFeatures"><a [routerLink]="['./dependencies']" i18n="report">Dependencies</a></li>
