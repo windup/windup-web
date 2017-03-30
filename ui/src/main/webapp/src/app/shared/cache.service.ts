@@ -166,7 +166,6 @@ export function Cached(section?, expiration?: CacheExpiration, immutable: boolea
                     }
 
                     if (isItemCacheable) {
-                        console.log('Cache emplacement', result);
                         cacheSection.setItem(cacheKey, {
                             value: result,
                             isObservable: isObservable
