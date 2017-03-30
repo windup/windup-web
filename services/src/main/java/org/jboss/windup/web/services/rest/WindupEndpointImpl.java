@@ -92,13 +92,6 @@ public class WindupEndpointImpl implements WindupEndpoint
         return execution;
     }
 
-    @Override
-    public WindupExecution executeWithContext(Long contextId)
-    {
-        AnalysisContext analysisContext = this.analysisContextService.get(contextId);
-        WindupExecution execution = createAndTriggerExecution(analysisContext);
-        return execution;
-    }
 
     private WindupExecution createAndTriggerExecution(AnalysisContext analysisContext)
     {

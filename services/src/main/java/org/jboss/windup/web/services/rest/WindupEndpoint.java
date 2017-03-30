@@ -31,13 +31,6 @@ public interface WindupEndpoint
     WindupExecution getExecution(@PathParam("executionID") Long executionID);
 
     /**
-     * Initiates a Windup execution for the given existing AnalysisContext.
-     */
-    @POST
-    @Path("execute-with-context")
-    WindupExecution executeWithContext(Long contextID);
-
-    /**
      * Initiates a Windup execution for the given AnalysisContext.
      * The context is persisted as a new instance, and attached to the new execution.
      */
