@@ -138,11 +138,17 @@ public class AnalysisContextService
      * Returns the default analysis context for the given project, that is, the context that has no execution assigned.
      *
      * @return If there are multiple, it returns the last one and deletes the rest (for robustness).
-     *         If there's none, returns null.
+     * @throws If there's none, returns null.
      */
     public AnalysisContext getDefaultProjectAnalysisContext(Long projectId)
     {
-        return deleteDefaultContextOfProject(projectId, true);
+        String jql = String.format(
+                "SELECT ctx FROM %s AS ctx LEFT JOIN ctx.migrationProject AS proj"
+                + " WHERE proj.id = :projectId AND NOT EXISTS (FROM WindupExecution exec WHERE exec.analysisContext = ctx)",
+                AnalysisContext.class.getSimpleName());
+
+        AnalysisContext context = this.entityManager.createQuery(jql, AnalysisContext.class).setParameter("projectId", projectId).getSingleResult();
+        return context;
     }
 
     /**
