@@ -93,60 +93,6 @@ describe('ApplicationIndexComponent', () => {
         el = de.nativeElement;
     });
 
-    describe('when navigate to non-existing report id', () => {
-        beforeEach( async( inject( [AggregatedStatisticsService, Router, RouteFlattenerService], (aggregatedStatsService: any, router: any, flattener: any) => {
-           
-            aggregatedStatsService.getAggregatedCategories.and.returnValue(
-                new Observable<any>(observer => {
-                    observer.error({ error: 'Report not found' });
-                    observer.complete();
-                })
-            );
-                
-            aggregatedStatsService.getMandatoryIncidents.and.returnValue(
-                new Observable<any>(observer => {
-                    observer.error({ error: 'Report not found' });
-                    observer.complete();
-                })
-            );
-
-            aggregatedStatsService.getAggregatedJavaPackages.and.returnValue(
-                new Observable<any>(observer => {
-                    observer.error({ error: 'Report not found' });
-                    observer.complete();
-                })
-            );
-
-            aggregatedStatsService.getAggregatedArchives.and.returnValue(
-                new Observable<any>(observer => {
-                    observer.error({ error: 'Report not found' });
-                    observer.complete();
-                })
-            );
-
-            aggregatedStatsService.getAggregatedDependencies.and.returnValue(
-                new Observable<any>(observer => {
-                    observer.error({ error: 'Report not found' });
-                    observer.complete();
-                })
-            );                        
-
-            activeRouteMock.testParams = { executionId: 0 };
-            fixture.detectChanges();
-            RouterMock.navigationEnd();
-            flattener.onNewRouteActivated(<any>activeRouteMock.snapshot);
-        })));
-
-        it('should navigate to homepage', async(inject([Router], (router: Router) => {
-            expect(router.navigate).toHaveBeenCalledWith(['']);
-        })));
-
-        it('should create error message in notification service', async(inject([NotificationService], (notificationService: NotificationService) => {
-            expect(notificationService.error).toHaveBeenCalled();
-            expect(notificationService.error).toHaveBeenCalledWith('Report not found');
-        })))
-    });
-
     /*describe('when navigate to correct report id', () => {
         let statisticsServiceSpy;
 

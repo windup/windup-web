@@ -95,34 +95,6 @@ describe('MigrationissuesComponent', () => {
         el = de.nativeElement;
     });
 
-    describe('when navigate to non-existing report id', () => {
-        beforeEach(async(inject([MigrationIssuesService, Router, RouteFlattenerService],
-                (migrationIssuesService: any, router, flattener: RouteFlattenerService) => {
-
-            migrationIssuesService.getAggregatedIssues.and.returnValue(
-                new Observable<any>(observer => {
-                    observer.error({error: 'Report not found'});
-                    observer.complete();
-                })
-            );
-
-            activatedRouteMock.testParams = {executionId: 0};
-            fixture.detectChanges();
-            RouterMock.navigationEnd();
-
-            flattener.onNewRouteActivated(<any>activatedRouteMock.snapshot);
-        })));
-
-        it('should navigate to homepage', async(inject([Router], (router: Router) => {
-            expect(router.navigate).toHaveBeenCalledWith(['']);
-        })));
-
-        it('should create error message in notification service', async(inject([NotificationService], (notificationService: NotificationService) => {
-            expect(notificationService.error).toHaveBeenCalled();
-            expect(notificationService.error).toHaveBeenCalledWith('Report not found');
-        })));
-    });
-
     describe('when navigate to correct report id', () => {
         let migrationIssuesServiceSpy;
 
@@ -135,7 +107,7 @@ describe('MigrationissuesComponent', () => {
                 })
             );
 
-            activatedRouteMock.testParams = {executionId: 1};
+            activatedRouteMock.testData = { execution: {id: 1} };
             fixture.detectChanges(); // init
             RouterMock.navigationEnd(); // resolve route data
             flattener.onNewRouteActivated(<any>activatedRouteMock.snapshot);
@@ -143,7 +115,7 @@ describe('MigrationissuesComponent', () => {
         })));
 
         it('should get data from migration issues service', () => {
-            expect(migrationIssuesServiceSpy.getAggregatedIssues).toHaveBeenCalledWith(1);
+            expect(migrationIssuesServiceSpy.getAggregatedIssues).toHaveBeenCalledWith(1, undefined);
         });
 
         it('should display migration issue tables', () => {
@@ -174,7 +146,7 @@ describe('MigrationissuesComponent', () => {
                 })
             );
 
-            activatedRouteMock.testParams = {executionId: 1};
+            activatedRouteMock.testData = { execution: {id: 1} };
             fixture.detectChanges(); // init
             RouterMock.navigationEnd(); // resolve route data
             flattener.onNewRouteActivated(<any>activatedRouteMock.snapshot);

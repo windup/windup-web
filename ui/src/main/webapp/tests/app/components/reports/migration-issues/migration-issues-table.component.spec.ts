@@ -26,7 +26,7 @@ describe('MigrationissuesTableComponent', () => {
 
     beforeEach(() => {
         activatedRouteMock = new ActivatedRouteMock();
-        activatedRouteMock.testParams = {executionId: 1};
+        activatedRouteMock.testData = { execution: {id: 1} };
 
         TestBed.configureTestingModule({
             imports: [ RouterTestingModule ],
@@ -186,7 +186,7 @@ describe('MigrationissuesTableComponent', () => {
         });
 
         it('should use migration issues service to get file issue data', () => {
-            expect(migrationIssueService.getIssuesPerFile).toHaveBeenCalledWith(1, migrationIssues[0]);
+            expect(migrationIssueService.getIssuesPerFile).toHaveBeenCalledWith(1, migrationIssues[0], undefined);
         });
 
         it('should display file issues table', () => {

@@ -18,6 +18,8 @@ import org.jboss.windup.web.addons.websupport.model.ReportFilterDTO;
 import org.jboss.windup.web.addons.websupport.rest.graph.AbstractGraphResource;
 import org.jboss.windup.web.addons.websupport.services.PersistedProjectModelTraversalService;
 
+import java.util.Map;
+
 /**
  * Implements {@link ApplicationDetailsResource}.
  *
@@ -26,12 +28,13 @@ import org.jboss.windup.web.addons.websupport.services.PersistedProjectModelTrav
 public class ApplicationDetailsResourceImpl extends AbstractGraphResource implements ApplicationDetailsResource
 {
     @Override
-    public ApplicationDetailsDTO getApplicationDetailsData(Long executionID)
+    public ApplicationDetailsDTO getApplicationDetailsData(Long executionID, Map<String, Object> filterAsMap)
     {
         PersistedProjectModelTraversalModel.PersistedTraversalType persistedTraversalType = PersistedProjectModelTraversalModel.PersistedTraversalType.ALL;
 
         GraphContext context = getGraph(executionID);
-        ReportFilterDTO filter = this.reportFilterService.getReportFilter(executionID);
+        //ReportFilterDTO filter = this.reportFilterService.getReportFilter(executionID);
+        ReportFilterDTO filter = this.reportFilterService.getReportFilterFromMap(filterAsMap);
 
         PersistedProjectModelTraversalService persistedTraversalService = new PersistedProjectModelTraversalService(context);
 

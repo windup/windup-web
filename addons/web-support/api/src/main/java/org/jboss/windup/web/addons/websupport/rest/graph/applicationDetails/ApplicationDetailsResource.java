@@ -2,6 +2,7 @@ package org.jboss.windup.web.addons.websupport.rest.graph.applicationDetails;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -9,6 +10,8 @@ import javax.ws.rs.core.MediaType;
 
 import org.jboss.windup.web.addons.websupport.model.PersistedProjectModelTraversalModel;
 import org.jboss.windup.web.addons.websupport.rest.FurnaceRESTGraphAPI;
+
+import java.util.Map;
 
 /**
  * Contains methods for loading data regarding {@link PersistedProjectModelTraversalModel}. This is primarily useful
@@ -31,7 +34,7 @@ public interface ApplicationDetailsResource extends FurnaceRESTGraphAPI
      *       the client instead.
      *
      */
-    @GET
+    @POST
     @Path("/{executionID}")
-    ApplicationDetailsDTO getApplicationDetailsData(@PathParam("executionID") Long executionID);
+    ApplicationDetailsDTO getApplicationDetailsData(@PathParam("executionID") Long executionID, Map<String, Object> filterAsMap);
 }

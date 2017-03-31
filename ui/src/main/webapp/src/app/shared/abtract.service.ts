@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {Response} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import {Headers, RequestOptions} from '@angular/http';
+import {ReportFilter} from "windup-services";
 
 @Injectable()
 export class AbstractService {
@@ -32,5 +33,13 @@ export class AbstractService {
         }
 
         return Observable.throw(json);
+    }
+
+    protected serializeFilter(filter: ReportFilter) {
+        if (filter && filter.selectedApplications.length > 0) {
+            filter.enabled = true;
+        }
+
+       return JSON.stringify(filter);
     }
 }

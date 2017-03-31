@@ -16,8 +16,8 @@
             <div *ngIf="execution" class="panel-body analyzed-applications">
                 <h4>Analyzed applications</h4>
                 <ul>
-                    <li *ngFor="let application of execution.filterApplications">
-                        <a [routerLink]="['/projects', projectId, 'reports', execID, 'applications', application.id]">{{application.fileName}}</a>
+                    <li *ngFor="let application of analyzedApplications">
+                        <a [routerLink]="['/projects', projectId, 'reports', execution.id, 'applications', application.id]">{{application.fileName}}</a>
                     </li>
                 </ul>
             </div>

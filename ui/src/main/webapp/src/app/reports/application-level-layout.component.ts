@@ -7,7 +7,7 @@ import {EventBusService} from "../core/events/event-bus.service";
 import {MigrationProjectService} from "../project/migration-project.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {DatePipe} from "@angular/common";
-import {RouteFlattenerService} from "../core/routing/route-flattener.service";
+import {FlattenedRouteData, RouteFlattenerService} from "../core/routing/route-flattener.service";
 import {FilterApplication} from "windup-services";
 import {ApplicationReportMenuItem} from "../shared/navigation/context-menu-item.class";
 import {ProjectExecutionsComponent} from "../executions/project-executions.component";
@@ -18,7 +18,7 @@ type Application = any; //RegisteredApplication|FilterApplication;
 @Component({
     templateUrl: './application-level-layout.component.html'
 })
-export class ApplicationLevelLayoutComponent extends ExecutionsLayoutComponent implements OnInit {
+export class ApplicationLevelLayoutComponent extends ExecutionsLayoutComponent {
     public allApplications: (RegisteredApplication|FilterApplication)[];
     public application: RegisteredApplication|FilterApplication;
     protected applicationId: number;
@@ -45,11 +45,9 @@ export class ApplicationLevelLayoutComponent extends ExecutionsLayoutComponent i
         );
     }
 
-    ngOnInit(): void {
-        super.ngOnInit();
-        this.flatRouteLoaded.subscribe(flatRoute => {
-            this.applicationId = +flatRoute.params.applicationId;
-        });
+    protected loadDataFromRoute(flattenedRoute: FlattenedRouteData) {
+        this.applicationId = +flattenedRoute.params.applicationId;
+        super.loadDataFromRoute(flattenedRoute);
     }
 
     protected loadSelectedExecution(executionId: number) {
@@ -57,6 +55,7 @@ export class ApplicationLevelLayoutComponent extends ExecutionsLayoutComponent i
         observable.subscribe(execution => {
             this.allApplications = execution.filterApplications;
             this.application = this.allApplications.find(app => app.id === this.applicationId);
+            this.createContextMenuItems();
         });
 
         return observable;
