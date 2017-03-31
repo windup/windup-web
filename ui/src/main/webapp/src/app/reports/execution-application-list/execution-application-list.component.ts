@@ -88,7 +88,6 @@ export class ExecutionApplicationListComponent extends RoutedComponent implement
         this.applicationDetailsDTO.traversals.forEach(traversal => {
             // 1. Get the Filter Application
             let filterApplication = this.getFilterApplication(traversal);
-            console.log("Found app: ", filterApplication);
 
             if (!filterApplication)
                 return;
@@ -152,7 +151,6 @@ export class ExecutionApplicationListComponent extends RoutedComponent implement
     private getFilterApplication(traversal:ProjectTraversalFullDTO):FilterApplication {
         if (!this.filteredApplications)
             return null;
-        console.log(" finding for: " + traversal.canonicalFilename + " among: ", this.filteredApplications);
 
         return this.filteredApplications.find(app => app.fileName == traversal.canonicalFilename);
     }
