@@ -14,7 +14,7 @@ import {AnalysisContext, Package, MigrationPath, AdvancedOption, RulesPath, Pack
 import {RouteHistoryService} from "../core/routing/route-history.service";
 import {Subscription} from "rxjs";
 import {RouteFlattenerService} from "../core/routing/route-flattener.service";
-import {WindupService} from "../services/windup.service";
+import {WindupExecutionService} from "../services/windup-execution.service";
 import {NotificationService} from "../core/notification/notification.service";
 import {utils} from "../shared/utils";
 import {RegisteredApplicationService} from "../registered-application/registered-application.service";
@@ -68,7 +68,7 @@ export class AnalysisContextFormComponent extends FormComponent
                 private _packageRegistryService: PackageRegistryService,
                 private _routeHistoryService: RouteHistoryService,
                 private _routeFlattener: RouteFlattenerService,
-                private _windupService: WindupService,
+                private _windupExecutionService: WindupExecutionService,
                 private _notificationService: NotificationService,
                 private _registeredApplicationService: RegisteredApplicationService
     ) {
@@ -243,7 +243,7 @@ export class AnalysisContextFormComponent extends FormComponent
 
     onSuccess(analysisContext: AnalysisContext) {
         if (this.action === Action.SaveAndRun) {
-            this._windupService.executeWindupWithAnalysisContext(analysisContext.id)
+            this._windupExecutionService.execute(analysisContext, this.project)
                 .subscribe(execution => {
                     this._notificationService.success('Windup execution has started');
                     this._router.navigate([`/projects/${this.project.id}`]);
