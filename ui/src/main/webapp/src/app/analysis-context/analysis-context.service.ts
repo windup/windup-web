@@ -5,7 +5,7 @@ import {Constants} from "../constants";
 import {AnalysisContext} from "windup-services";
 import {AbstractService} from "../shared/abtract.service";
 import {MigrationProject} from "windup-services";
-import {Cached} from "../shared/cache.service";
+import {Cached, CacheSection, CacheService} from "../shared/cache.service";
 
 /**
  * Analysis context, AKA execution configuration, is tied 1:1 to executions.
@@ -18,8 +18,11 @@ export class AnalysisContextService extends AbstractService {
     private ANALYSIS_CONTEXT_URL = "/analysis-context/{id}";
     private CREATE_URL = "/analysis-context/migrationProjects/{projectId}";
 
-    constructor (private _http: Http) {
+    private _cache: CacheSection;
+
+    constructor (private _http: Http, private _cacheService: CacheService) {
         super();
+        this._cache = _cacheService.getSection('analysisContext');
     }
 
     create(analysisContext: AnalysisContext, project: MigrationProject) {
@@ -43,6 +46,10 @@ export class AnalysisContextService extends AbstractService {
 
         return this._http.put(url, body, this.JSON_OPTIONS)
             .map(res => <AnalysisContext> res.json())
+            .do((context: AnalysisContext) => {
+                let key = 'get(' + context.id + ')';
+                this._cache.removeItem(key);
+            })
             .catch(this.handleError);
     }
 

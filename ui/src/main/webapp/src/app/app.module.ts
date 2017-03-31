@@ -123,6 +123,7 @@ import {ContextMenuLinkComponent} from "./shared/navigation/context-menu-link.co
 import {ExecutionApplicationListComponent} from "./reports/execution-application-list/execution-application-list.component";
 import {SourceResolve} from "./reports/source/source.resolve";
 import {ExecutionResolve} from "./executions/execution.resolve";
+import {CacheService, CacheServiceInstance} from "./shared/cache.service";
 
 /**
  * Load all mapping data from the generated files.
@@ -286,6 +287,10 @@ initializeModelMappingData();
             provide: GraphJSONToModelService,
             useFactory: createGraphJSONToModelService,
             deps: [Http]
+        },
+        {
+          provide: CacheService,
+          useValue: CacheServiceInstance
         },
         AggregatedStatisticsService,
         DatePipe
