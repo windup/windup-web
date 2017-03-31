@@ -7,12 +7,11 @@
 
 <wu-report-filter-indicator *ngIf="!hideFilter" [execution]="execution"></wu-report-filter-indicator>
 
-
 <div class="container-fluid summaryInfo panel panel-primary col-md-12">
 
     <!-- Stats for archives, components, files -->
     <div class="row col-md-12 report-index-row">
-        <div class="panel panel-default col-md-3" style="margin-left: 20px;margin-right: 20px;">
+        <div *ngIf="!reportFilter" class="panel panel-default col-md-3" style="margin-left: 20px;margin-right: 20px;">
             <div class="panel-body">
             <table class="table table-condensed ">
                 <caption>Summary</caption>
@@ -43,7 +42,7 @@
                 </table>
             </div>
         </div>
-        <div class="panel panel-default col-md-3" style="margin-left: 20px; margin-right: 20px;">
+        <div *ngIf="!reportFilter" class="panel panel-default col-md-3" style="margin-left: 20px; margin-right: 20px;">
             <div class="panel-body">
                 <table class="table table-condensed">
                     <caption>Components</caption>

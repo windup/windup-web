@@ -131,7 +131,7 @@ public class AggregatedStatisticsEndpointImpl extends AbstractGraphResource impl
         {
             ProjectModel projectModel = iterator.next();
             typeReferenceService
-                    .getPackageUseFrequencies(projectModel, includeTags, excludeTags, 2, true)
+                    .getPackageUseFrequencies(projectModel, includeTags, excludeTags, 2, false)
                     .entrySet()
                     .forEach(entry -> {
                         packageStatisticsDTO.addValue(entry.getKey(), entry.getValue());
