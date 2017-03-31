@@ -60,12 +60,16 @@ public class WindupEndpointImpl implements WindupEndpoint
     @Override
     public WindupExecution executeWithContext(Long contextId)
     {
-        AnalysisContext analysisContext = this.analysisContextService.get(contextId);
+        AnalysisContext originalContext = this.analysisContextService.get(contextId);
 
-        if (analysisContext.getApplications().size() == 0)
+        if (originalContext.getApplications().size() == 0)
         {
             throw new BadRequestException("Cannot execute windup without selected applications");
         }
+
+        // make clone of analysis context and use it for execution
+        AnalysisContext analysisContext = originalContext.clone();
+        this.entityManager.persist(analysisContext);
 
         for (RegisteredApplication application : analysisContext.getApplications())
         {

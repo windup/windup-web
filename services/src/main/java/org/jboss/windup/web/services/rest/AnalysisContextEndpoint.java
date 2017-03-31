@@ -25,6 +25,12 @@ public interface AnalysisContextEndpoint
     @Path("{id}")
     AnalysisContext get(@PathParam("id") Long id);
 
+    /**
+     * This is fallback solution when no default analysis context exists for project
+     *
+     * (Should not really happen)
+     *
+     */
     @POST
     @Path("migrationProjects/{projectId}")
     AnalysisContext create(@Valid AnalysisContext analysisContext, @PathParam("projectId") Long projectId);

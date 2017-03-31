@@ -3,6 +3,7 @@ package org.jboss.windup.web.services.service;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 
 import org.jboss.windup.web.services.model.AnalysisContext;
@@ -51,6 +52,7 @@ public class AnalysisContextService
         AnalysisContext defaultAnalysisContext = new AnalysisContext(project);
         ensureSystemRulesPathsPresent(defaultAnalysisContext);
         entityManager.persist(defaultAnalysisContext);
+
         return defaultAnalysisContext;
     }
 
@@ -81,12 +83,29 @@ public class AnalysisContextService
                 .collect(Collectors.toSet());
     }
 
+    protected boolean contextHasExecutions(AnalysisContext context)
+    {
+        String query = "SELECT COUNT(ex) FROM WindupExecution ex WHERE ex.analysisContext = :ctxt";
+
+
+        Long count = this.entityManager.createQuery(query, Long.class)
+            .setParameter("ctxt", context)
+            .getSingleResult();
+
+        return count > 0;
+    }
+
     /**
      * Updates an existing instance.
      */
     public AnalysisContext update(AnalysisContext analysisContext)
     {
         AnalysisContext original = this.get(analysisContext.getId());
+
+        if (this.contextHasExecutions(original))
+        {
+            throw new BadRequestException("Cannot update context used for executions");
+        }
 
         this.ensureSystemRulesPathsPresent(analysisContext);
         this.loadPackagesToAnalysisContext(analysisContext);

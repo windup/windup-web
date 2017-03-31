@@ -5,6 +5,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.Valid;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 
 import org.jboss.windup.web.services.model.AnalysisContext;
@@ -44,9 +45,19 @@ public class AnalysisContextEndpointImpl implements AnalysisContextEndpoint
     public AnalysisContext create(@Valid AnalysisContext analysisContext, Long projectId)
     {
         MigrationProject project = this.migrationProjectService.getMigrationProject(projectId);
-        analysisContext.setMigrationProject(project);
 
-        return analysisContextService.create(analysisContext);
+        if (project.getDefaultAnalysisContext() != null)
+        {
+            throw new BadRequestException("Project already has default AnalysisContext");
+        }
+
+        analysisContext.setMigrationProject(project);
+        analysisContext = analysisContextService.create(analysisContext);
+
+        project.setDefaultAnalysisContext(analysisContext);
+        this.entityManager.persist(project);
+
+        return analysisContext;
     }
 
     @Override

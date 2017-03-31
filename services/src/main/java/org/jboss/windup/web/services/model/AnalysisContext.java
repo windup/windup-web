@@ -1,6 +1,7 @@
 package org.jboss.windup.web.services.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -85,6 +86,8 @@ public class AnalysisContext implements Serializable
         this.includePackages = new HashSet<>();
         this.excludePackages = new HashSet<>();
         this.applications = new HashSet<>();
+        this.advancedOptions = new ArrayList<>();
+        this.rulesPaths = new HashSet<>();
     }
 
     public AnalysisContext(MigrationProject project)
@@ -271,6 +274,21 @@ public class AnalysisContext implements Serializable
         }
 
         this.getApplications().remove(application);
+    }
+
+    public AnalysisContext clone()
+    {
+        AnalysisContext clone = new AnalysisContext(this.migrationProject);
+
+        clone.applications.addAll(this.getApplications());
+        clone.generateStaticReports = this.generateStaticReports;
+        clone.migrationPath = this.migrationPath;
+        clone.advancedOptions.addAll(this.advancedOptions);
+        clone.rulesPaths.addAll(this.rulesPaths);
+        clone.includePackages.addAll(this.includePackages);
+        clone.excludePackages.addAll(this.excludePackages);
+
+        return clone;
     }
 
     @Override
