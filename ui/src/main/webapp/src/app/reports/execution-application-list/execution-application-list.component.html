@@ -24,7 +24,7 @@
         <tbody>
             <tr *ngFor="let app of sortedApplications">
                 <td>
-                    <a [routerLink]="['/projects', projectID, 'reports', execID, 'applications', app.id]">{{app.fileName}}</a>
+                    <a [routerLink]="['/projects', projectID, 'reports', execID, 'applications', app.id, 'application-index']">{{app.fileName}}</a>
                 </td>
                 <td>
                     <span *ngIf="tagsByApplication.get(app.id) == null">

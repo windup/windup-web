@@ -12,16 +12,6 @@
 
     <!-- Stats for archives, components, files -->
     <div class="row col-md-12 report-index-row">
-        <div class="panel panel-default col-md-3">
-            <div *ngIf="execution" class="panel-body analyzed-applications">
-                <h4>Analyzed applications</h4>
-                <ul>
-                    <li *ngFor="let application of analyzedApplications">
-                        <a [routerLink]="['/projects', projectId, 'reports', execution.id, 'applications', application.id]">{{application.fileName}}</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
         <div class="panel panel-default col-md-3" style="margin-left: 20px;margin-right: 20px;">
             <div class="panel-body">
             <table class="table table-condensed ">

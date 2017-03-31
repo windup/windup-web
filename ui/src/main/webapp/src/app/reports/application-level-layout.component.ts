@@ -9,7 +9,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {DatePipe} from "@angular/common";
 import {FlattenedRouteData, RouteFlattenerService} from "../core/routing/route-flattener.service";
 import {FilterApplication} from "windup-services";
-import {ApplicationReportMenuItem} from "../shared/navigation/context-menu-item.class";
+import {ApplicationReportMenuItem, ReportMenuItem} from "../shared/navigation/context-menu-item.class";
 import {ProjectExecutionsComponent} from "../executions/project-executions.component";
 import {WINDUP_WEB} from "../app.module";
 
@@ -63,14 +63,13 @@ export class ApplicationLevelLayoutComponent extends ExecutionsLayoutComponent {
 
     protected createContextMenuItems() {
         this.menuItems = [
-            {
-                label: 'View Project',
-                link: this._routeLinkProviderService.getRouteForComponent(ProjectExecutionsComponent, {
-                    projectId: this.project.id
-                }),
-                icon: 'fa-tachometer',
-                isEnabled: true
-            },
+            new ReportMenuItem(
+                'Application List',
+                'fa-cubes',
+                this.project,
+                this.execution,
+                '../'
+            ),
             new ApplicationReportMenuItem(
                 'Dashboard',
                 'fa-book',

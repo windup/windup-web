@@ -99,7 +99,7 @@ export class ExecutionsLayoutComponent extends ProjectLayoutComponent implements
         this.menuItems = [
             new ReportMenuItem(
                 'Application List',
-                'fa-list',
+                'fa-cubes',
                 this.project,
                 this.execution,
                 ''
