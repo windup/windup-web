@@ -6,7 +6,7 @@ import {WindupExecutionService} from "../services/windup-execution.service";
 import {ExecutionsMonitoringComponent} from "./executions-monitoring.component";
 import {MigrationProject} from "windup-services";
 import {WindupService} from "../services/windup.service";
-import {ExecutionUpdatedEvent, ExecutionEvent} from "../core/events/windup-event";
+import {ExecutionUpdatedEvent, ExecutionEvent, NewExecutionStartedEvent} from "../core/events/windup-event";
 
 @Component({
     template: '<wu-executions-list [executions]="executions" [activeExecutions]="activeExecutions"></wu-executions-list>'
@@ -29,7 +29,9 @@ export class ProjectExecutionsComponent extends ExecutionsMonitoringComponent im
             this.refreshExecutionList();
         });
 
-        this.addSubscription(this._eventBus.onEvent.filter(event => event.isTypeOf(ExecutionUpdatedEvent))
+        this.addSubscription(this._eventBus.onEvent
+            .filter(event => event.isTypeOf(ExecutionEvent))
+            .filter((event: ExecutionEvent) => event.migrationProject.id === this.project.id)
             .subscribe((event: ExecutionEvent) => this.onExecutionEvent(event)));
     }
 
