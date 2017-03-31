@@ -11,7 +11,11 @@ import org.jboss.windup.web.services.model.RegisteredApplication;
 import org.jboss.windup.web.services.model.WindupExecution;
 import org.jboss.windup.web.services.rest.AnalysisContextEndpoint;
 import org.jboss.windup.web.services.rest.WindupEndpoint;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Assert;
+
+import javax.ws.rs.core.Response;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
