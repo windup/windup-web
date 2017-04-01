@@ -3,7 +3,7 @@ import {Http} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 
 import {Constants} from "../constants";
-import {WindupExecution} from "windup-services";
+import {AnalysisContext, WindupExecution} from "windup-services";
 import {AbstractService} from "../shared/abtract.service";
 import {Cached, CacheServiceInstance} from "../shared/cache.service";
 
@@ -29,7 +29,7 @@ export class WindupService extends AbstractService {
 
     static cacheExecutionList = (executions: WindupExecution[]): boolean => {
         return executions.find(execution => !WindupService.cacheExecution(execution)) == null;
-    }
+    };
 
     @Cached({section: 'execution', immutable: true, cacheItemCallback: WindupService.cacheExecution})
     public getExecution(executionID:number):Observable<WindupExecution> {
@@ -40,9 +40,8 @@ export class WindupService extends AbstractService {
             .catch(this.handleError);
     }
 
-    public executeWindupWithAnalysisContext(contextId: number): Observable<WindupExecution> {
-        let body = JSON.stringify(contextId);
-
+    public executeWindupWithAnalysisContext(context: AnalysisContext): Observable<WindupExecution> {
+        let body = JSON.stringify(context);
 
         return this._http.post(Constants.REST_BASE + this.EXECUTE_WITH_CONTEXT_PATH, body, this.JSON_OPTIONS)
             .map(res => <WindupExecution> res.json())

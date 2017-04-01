@@ -58,9 +58,13 @@ public class WindupEndpointImpl implements WindupEndpoint
      * @see org.jboss.windup.web.services.messaging.ExecutorMDB
      */
     @Override
-    public WindupExecution executeWithContext(Long contextId)
+    public WindupExecution executeWithContext(AnalysisContext originalContext)
     {
-        AnalysisContext originalContext = this.analysisContextService.get(contextId);
+        if (originalContext == null)
+        {
+            throw new BadRequestException("AnalysisContext must be provided");
+        }
+
 
         if (originalContext.getApplications().size() == 0)
         {

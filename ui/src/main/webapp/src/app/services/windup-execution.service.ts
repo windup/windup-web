@@ -26,7 +26,7 @@ export class WindupExecutionService extends AbstractService {
     }
 
     public execute(analysisContext: AnalysisContext, project: MigrationProject): Observable<WindupExecution> {
-        return this._windupService.executeWindupWithAnalysisContext(analysisContext.id)
+        return this._windupService.executeWindupWithAnalysisContext(analysisContext)
             .do(execution => {
                 this._eventBus.fireEvent(new NewExecutionStartedEvent(execution, project, this));
                 this.watchExecutionUpdates(execution, project)
