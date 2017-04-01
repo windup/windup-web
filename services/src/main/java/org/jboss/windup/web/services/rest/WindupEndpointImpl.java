@@ -26,6 +26,7 @@ import org.jboss.windup.web.services.model.RegisteredApplication;
 import org.jboss.windup.web.services.model.WindupExecution;
 import org.jboss.windup.web.services.service.AnalysisContextService;
 import org.jboss.windup.web.services.service.ConfigurationService;
+import org.jboss.windup.web.services.service.MigrationProjectService;
 
 @Stateless
 public class WindupEndpointImpl implements WindupEndpoint
@@ -45,6 +46,9 @@ public class WindupEndpointImpl implements WindupEndpoint
     private AnalysisContextService analysisContextService;
 
     @Inject
+    private MigrationProjectService migrationProjectService;
+
+    @Inject
     private JMSContext messaging;
 
     @Inject
@@ -58,7 +62,7 @@ public class WindupEndpointImpl implements WindupEndpoint
      * @see org.jboss.windup.web.services.messaging.ExecutorMDB
      */
     @Override
-    public WindupExecution executeWithContext(AnalysisContext originalContext)
+    public WindupExecution executeProjectWithContext(AnalysisContext originalContext, Long projectId)
     {
         if (originalContext == null)
         {
@@ -73,6 +77,10 @@ public class WindupEndpointImpl implements WindupEndpoint
 
         // make clone of analysis context and use it for execution
         AnalysisContext analysisContext = originalContext.clone();
+
+        MigrationProject project = this.migrationProjectService.getMigrationProject(projectId);
+        analysisContext.setMigrationProject(project); // ensure project is correctly set
+
         this.entityManager.persist(analysisContext);
 
         for (RegisteredApplication application : analysisContext.getApplications())

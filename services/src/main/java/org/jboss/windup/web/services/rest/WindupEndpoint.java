@@ -32,8 +32,8 @@ public interface WindupEndpoint
      * Initiates a Windup execution for a particular AnalysisContext.
      */
     @POST
-    @Path("execute-with-context")
-    WindupExecution executeWithContext(AnalysisContext context);
+    @Path("execute-project-with-context/{projectId}")
+    WindupExecution executeProjectWithContext(AnalysisContext context, @PathParam("projectId") Long projectId);
 
     @GET
     @Path("executions")
