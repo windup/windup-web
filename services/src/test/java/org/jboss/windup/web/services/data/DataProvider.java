@@ -90,7 +90,7 @@ public class DataProvider
 
         analysisContext.getRulesPaths().add(getTestRulesPath());
 
-        return this.analysisContextEndpoint.update(analysisContext.getId(), analysisContext);
+        return this.analysisContextEndpoint.saveAsProjectDefault(analysisContext, project.getId());
     }
 
     private RulesPath getTestRulesPath()

@@ -13,12 +13,16 @@ import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.service.AnalysisContextService;
 import org.jboss.windup.web.services.service.MigrationProjectService;
 
+import java.util.logging.Logger;
+
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
 @Stateless
 public class AnalysisContextEndpointImpl implements AnalysisContextEndpoint
 {
+    private static Logger LOG = Logger.getLogger(AnalysisContextEndpoint.class.getName());
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -42,27 +46,26 @@ public class AnalysisContextEndpointImpl implements AnalysisContextEndpoint
     }
 
     @Override
-    public AnalysisContext create(@Valid AnalysisContext analysisContext, Long projectId)
+    public AnalysisContext saveAsProjectDefault(@Valid AnalysisContext analysisContext, Long projectId)
     {
         MigrationProject project = this.migrationProjectService.getMigrationProject(projectId);
 
-        if (project.getDefaultAnalysisContext() != null)
+        if (project.getDefaultAnalysisContext() == null)
         {
-            throw new BadRequestException("Project already has default AnalysisContext");
+            LOG.warning("Project doesn't have default AnalysisContext - something is wrong");
+
+            analysisContext.setMigrationProject(project);
+            analysisContext = analysisContextService.create(analysisContext);
+
+            project.setDefaultAnalysisContext(analysisContext);
+            this.entityManager.persist(project);
+        }
+        else
+        {
+            AnalysisContext defaultAnalysisContext = project.getDefaultAnalysisContext();
+            analysisContext = analysisContextService.update(defaultAnalysisContext.getId(), analysisContext);
         }
 
-        analysisContext.setMigrationProject(project);
-        analysisContext = analysisContextService.create(analysisContext);
-
-        project.setDefaultAnalysisContext(analysisContext);
-        this.entityManager.persist(project);
-
         return analysisContext;
-    }
-
-    @Override
-    public AnalysisContext update(Long id, @Valid AnalysisContext analysisContext)
-    {
-        return analysisContextService.update(analysisContext);
     }
 }

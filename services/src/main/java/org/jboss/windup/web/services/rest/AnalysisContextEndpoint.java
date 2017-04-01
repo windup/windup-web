@@ -26,16 +26,16 @@ public interface AnalysisContextEndpoint
     AnalysisContext get(@PathParam("id") Long id);
 
     /**
-     * This is fallback solution when no default analysis context exists for project
+     * Saves default analysis context for project
      *
-     * (Should not really happen)
+     * Each project should have default context by default,
+     * so it should update it.
+     *
+     * But in very rare situation, it creates new default context,
+     * if project doesn't have any (that should never happen)
      *
      */
-    @POST
-    @Path("migrationProjects/{projectId}")
-    AnalysisContext create(@Valid AnalysisContext analysisContext, @PathParam("projectId") Long projectId);
-
     @PUT
-    @Path("{id}")
-    AnalysisContext update(@PathParam("id") Long id, @Valid AnalysisContext analysisContext);
+    @Path("migrationProjects/{projectId}")
+    AnalysisContext saveAsProjectDefault(@Valid AnalysisContext analysisContext, @PathParam("projectId") Long projectId);
 }

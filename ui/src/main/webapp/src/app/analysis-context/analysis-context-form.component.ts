@@ -230,15 +230,7 @@ export class AnalysisContextFormComponent extends FormComponent
     }
 
     onSubmit() {
-        let observable = this._analysisContextService.update(this.analysisContext);
-
-        // Store the Analysis Context
-        if (this.analysisContext.id === 0 || this.analysisContext.id === null) {
-            console.warn("AnalysisContext for project not loaded - should never happen");
-            observable = this._analysisContextService.create(this.analysisContext, this.project);
-        }
-
-        observable.subscribe(
+        this._analysisContextService.saveAsDefault(this.analysisContext, this.project).subscribe(
             updatedContext => {
                 this._dirty = false;
                 this.onSuccess(updatedContext);

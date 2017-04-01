@@ -46,7 +46,7 @@ public class WindupExecutionUtil
             RegisteredApplication application = dataProvider.getApplication(project, sampleIS, "sample-tiny.war");
 
             context.addApplication(application);
-            this.analysisContextEndpoint.update(context.getId(), context);
+            this.analysisContextEndpoint.saveAsProjectDefault(context, project.getId());
         }
 
         System.out.println("Setup Graph test, registered application and ready to start Windup analysis...");
