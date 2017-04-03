@@ -12,6 +12,7 @@ import {FileModel} from "../../generated/tsModels/FileModel";
 import {SortingService, OrderDirection} from "../../shared/sort/sorting.service";
 import {RouteFlattenerService} from "../../core/routing/route-flattener.service";
 import {FilterableReportComponent} from "../filterable-report.component";
+import {EffortLevel, EffortLevelPipe} from "../effort-level.enum";
 
 @Component({
     selector: 'wu-migration-issues-table',

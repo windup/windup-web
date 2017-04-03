@@ -83,6 +83,7 @@ import {PackageChartComponent} from "./shared/package-chart/package-chart.compon
 import {ApplicationDetailsService} from "./reports/application-details/application-details.service";
 import {TechnologyTagComponent} from "./reports/technology-tag/technology-tag.component";
 import {PrettyPathPipe} from "./reports/pretty-path.pipe";
+import {EffortLevelPipe} from "./reports/effort-level.enum";
 import {EventBusService} from "./core/events/event-bus.service";
 import {WindupExecutionService} from "./services/windup-execution.service";
 import {SchedulerService} from "./shared/scheduler.service";
@@ -169,6 +170,7 @@ initializeModelMappingData();
         ApplicationDetailsComponent,
         ApplicationIndexComponent,
         PrettyPathPipe,
+        EffortLevelPipe,
 
         // Report components
         PackageChartComponent,
@@ -293,7 +295,8 @@ initializeModelMappingData();
           useValue: CacheServiceInstance
         },
         AggregatedStatisticsService,
-        DatePipe
+        DatePipe,
+        EffortLevelPipe
     ],
     bootstrap:    [ AppComponent ]
 })

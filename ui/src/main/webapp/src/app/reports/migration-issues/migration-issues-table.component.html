@@ -42,7 +42,7 @@
                 <td><a class="issue-title" (click)="toggleFiles(issue)">{{issue.issueName}}</a></td>
                 <td>{{issue.numberFound}}</td>
                 <td>{{issue.effortPerIncident}}</td>
-                <td></td>
+                <td>{{issue.effortPerIncident | effortLevelConvert }}</td>
                 <td>{{issue.numberFound * issue.effortPerIncident}}</td>
             </tr>
             <tr *ngIf="filesVisible(issue)" class="filesDetailsRow">

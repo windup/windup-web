@@ -12,6 +12,7 @@ import {WindupExecution} from "windup-services";
 import {WindupService} from "../../services/windup.service";
 import {RouteFlattenerService} from "../../core/routing/route-flattener.service";
 import {FilterableReportComponent} from "../filterable-report.component";
+import {EffortLevel} from "../effort-level.enum";
 
 @Component({
     templateUrl: './application-index.component.html',
@@ -232,13 +233,4 @@ class ChartStatistic {
     public getValue(): number {
         return this.value;
     }
-}
-
-export enum EffortLevel {
-    Info = 0,
-    Trivial = 1,
-    Complex = 3,
-    Redesign = 5,
-    Architectural = 7,
-    Unknown = 13
 }
