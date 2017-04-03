@@ -24,8 +24,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import org.jboss.windup.web.services.service.AnalysisContextService;
 
 /**
+ * Test data provider.
  * @author <a href="mailto:dklingen@redhat.com">David Klingenberg</a>
  */
 public class DataProvider
@@ -68,17 +70,14 @@ public class DataProvider
 
     public AnalysisContext getAnalysisContext(MigrationProject project)
     {
-        AnalysisContext analysisContext = new AnalysisContext(project);
-        analysisContext = this.analysisContextEndpoint.create(analysisContext, project.getId());
+        AnalysisContext analysisContext = this.migrationProjectEndpoint.getDefaultAnalysisContext(project.getId());
 
         if (analysisContext.getRulesPaths() == null)
-        {
             analysisContext.setRulesPaths(new LinkedHashSet<>());
-        }
 
         analysisContext.getRulesPaths().add(getTestRulesPath());
 
-        return this.analysisContextEndpoint.update(analysisContext.getId(), analysisContext);
+        return this.analysisContextEndpoint.updateDefaultConfigForProject(analysisContext, project.getId());
     }
 
     private RulesPath getTestRulesPath()

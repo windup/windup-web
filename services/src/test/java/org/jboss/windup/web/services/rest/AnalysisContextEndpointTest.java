@@ -38,7 +38,7 @@ public class AnalysisContextEndpointTest extends AbstractTest
     private DataProvider dataProvider;
     private ResteasyClient client;
     private ResteasyWebTarget target;
-    
+
     @Before
     public void setUp()
     {
@@ -67,7 +67,7 @@ public class AnalysisContextEndpointTest extends AbstractTest
 
         analysisContext.setRulesPaths(configurationEndpoint.getConfiguration().getRulesPaths());
 
-        analysisContext = analysisContextEndpoint.update(analysisContext.getId(), analysisContext);
+        analysisContext = analysisContextEndpoint.updateDefaultConfigForProject(analysisContext, project.getId());
 
         AnalysisContext loaded = analysisContextEndpoint.get(analysisContext.getId());
 
@@ -75,7 +75,7 @@ public class AnalysisContextEndpointTest extends AbstractTest
         response.bufferEntity();
         String stringResponse = response.readEntity(String.class);
         JSONObject json = new JSONObject(stringResponse);
-        
+
         Assert.assertNotNull(loaded);
         Assert.assertEquals(analysisContext.getId(), loaded.getId());
         Assert.assertEquals(path, loaded.getMigrationPath());

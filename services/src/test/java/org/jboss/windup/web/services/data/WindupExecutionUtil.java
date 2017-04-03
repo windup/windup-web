@@ -14,6 +14,7 @@ import org.jboss.windup.web.services.rest.WindupEndpoint;
 import org.junit.Assert;
 
 /**
+ * Test execution utils.
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
 public class WindupExecutionUtil
@@ -42,7 +43,7 @@ public class WindupExecutionUtil
             RegisteredApplication application = dataProvider.getApplication(project, sampleIS, "sample-tiny.war");
 
             context.addApplication(application);
-            this.analysisContextEndpoint.update(context.getId(), context);
+            this.analysisContextEndpoint.updateDefaultConfigForProject(context, project.getId());
         }
 
         System.out.println("Setup Graph test, registered application and ready to start Windup analysis...");
