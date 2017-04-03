@@ -81,7 +81,7 @@ public class WindupEndpointImpl implements WindupEndpoint
         MigrationProject project = this.migrationProjectService.getMigrationProject(projectId);
         analysisContext.setMigrationProject(project); // ensure project is correctly set
 
-        this.entityManager.persist(analysisContext);
+        analysisContext = this.analysisContextService.create(analysisContext);
 
         for (RegisteredApplication application : analysisContext.getApplications())
         {
