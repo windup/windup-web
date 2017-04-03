@@ -11,7 +11,11 @@ import org.jboss.windup.web.services.model.RegisteredApplication;
 import org.jboss.windup.web.services.model.WindupExecution;
 import org.jboss.windup.web.services.rest.AnalysisContextEndpoint;
 import org.jboss.windup.web.services.rest.WindupEndpoint;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Assert;
+
+import javax.ws.rs.core.Response;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -42,12 +46,12 @@ public class WindupExecutionUtil
             RegisteredApplication application = dataProvider.getApplication(project, sampleIS, "sample-tiny.war");
 
             context.addApplication(application);
-            this.analysisContextEndpoint.update(context.getId(), context);
+            this.analysisContextEndpoint.saveAsProjectDefault(context, project.getId());
         }
 
         System.out.println("Setup Graph test, registered application and ready to start Windup analysis...");
 
-        WindupExecution initialExecution = this.windupEndpoint.executeWithContext(context.getId());
+        WindupExecution initialExecution = this.windupEndpoint.executeProjectWithContext(context, project.getId());
 
         WindupExecution status = this.windupEndpoint.getExecution(initialExecution.getId());
         long beginTime = System.currentTimeMillis();

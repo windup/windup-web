@@ -91,13 +91,18 @@ export class AnalysisContextFormComponent extends FormComponent
             if (flatRouteData.data['project']) {
                 let project = flatRouteData.data['project'];
 
+                if (project.defaultAnalysisContextId == null) {
+                    this.initializeAnalysisContext();
+                } else {
+                    this._analysisContextService.get(project.defaultAnalysisContextId)
+                        .subscribe(context => this.analysisContext = context);
+                }
+
                 // Reload the App from the service to ensure fresh data
                 this._migrationProjectService.get(project.id).subscribe(loadedProject => {
                     this.project = loadedProject;
                     this.loadPackageMetadata();
                 });
-
-                this.initializeAnalysisContext();
 
                 // Load the apps of this project.
                 this._appService.getApplicationsByProjectID(project.id).subscribe(apps => {
@@ -225,12 +230,7 @@ export class AnalysisContextFormComponent extends FormComponent
     }
 
     onSubmit() {
-        // Store the Analysis Context
-        let update = this.analysisContext.id != null;
-        let service = update ? this._analysisContextService.update : this._analysisContextService.create;
-        let contextObservable: Observable<AnalysisContext> = service.call(this._analysisContextService, this.analysisContext, this.project);
-
-        contextObservable.subscribe(
+        this._analysisContextService.saveAsDefault(this.analysisContext, this.project).subscribe(
             updatedContext => {
                 this._dirty = false;
                 this.onSuccess(updatedContext);
@@ -242,6 +242,8 @@ export class AnalysisContextFormComponent extends FormComponent
     }
 
     onSuccess(analysisContext: AnalysisContext) {
+        this.analysisContext = analysisContext; // update context
+
         if (this.action === Action.SaveAndRun) {
             this._windupExecutionService.execute(analysisContext, this.project)
                 .subscribe(execution => {

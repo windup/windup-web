@@ -5,7 +5,8 @@ import {Constants} from "../constants";
 import {AnalysisContext} from "windup-services";
 import {AbstractService} from "../shared/abtract.service";
 import {MigrationProject} from "windup-services";
-import {Cached} from "../shared/cache.service";
+import {Cached, CacheSection, CacheService} from "../shared/cache.service";
+import {Observable} from "rxjs";
 
 /**
  * Analysis context, AKA execution configuration, is tied 1:1 to executions.
@@ -18,31 +19,31 @@ export class AnalysisContextService extends AbstractService {
     private ANALYSIS_CONTEXT_URL = "/analysis-context/{id}";
     private CREATE_URL = "/analysis-context/migrationProjects/{projectId}";
 
-    constructor (private _http: Http) {
+    private _cache: CacheSection;
+
+    constructor (private _http: Http, private _cacheService: CacheService) {
         super();
-    }
-
-    create(analysisContext: AnalysisContext, project: MigrationProject) {
-        let body = JSON.stringify(analysisContext);
-        let url = Constants.REST_BASE + this.CREATE_URL.replace('{projectId}', project.id.toString());
-
-        return this._http.post(url, body, this.JSON_OPTIONS)
-            .map(res => <AnalysisContext> res.json())
-            .catch(this.handleError);
+        this._cache = _cacheService.getSection('analysisContext');
     }
 
     /**
-     * Updating an analysis context only makes sense for those used as project default, i.e. those without an execution related to it.
-     * Also, there should be only one such context.
+     * Saves analysis context as project default context
      *
-     * TODO: Throw if trying to update a context of a past execution.
+     * @param analysisContext {AnalysisContext}
+     * @param project {MigrationProject}
+     * @returns {Observable<AnalysisContext>}
      */
-    update(analysisContext: AnalysisContext) {
+    saveAsDefault(analysisContext: AnalysisContext, project: MigrationProject): Observable<AnalysisContext> {
         let body = JSON.stringify(analysisContext);
-        let url = Constants.REST_BASE + this.ANALYSIS_CONTEXT_URL.replace("{id}", analysisContext.id.toString());
+        let url = Constants.REST_BASE + this.CREATE_URL.replace('{projectId}', project.id.toString());
 
         return this._http.put(url, body, this.JSON_OPTIONS)
             .map(res => <AnalysisContext> res.json())
+            .do((context: AnalysisContext) => {
+                // invalidate cache for just updated context
+                let key = 'get(' + context.id + ')';
+                this._cache.removeItem(key);
+            })
             .catch(this.handleError);
     }
 

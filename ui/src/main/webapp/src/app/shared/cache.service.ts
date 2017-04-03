@@ -46,6 +46,12 @@ export class CacheSection {
         return item.data;
     }
 
+    public removeItem(key: string) {
+        if (this.dataMap.has(key)) {
+            this.dataMap.delete(key);
+        }
+    }
+
     /**
      * Sets cache item
      *

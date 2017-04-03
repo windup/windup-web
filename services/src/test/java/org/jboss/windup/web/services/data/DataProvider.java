@@ -13,6 +13,8 @@ import org.jboss.windup.web.services.rest.ConfigurationEndpoint;
 import org.jboss.windup.web.services.rest.ConfigurationEndpointTest;
 import org.jboss.windup.web.services.rest.MigrationProjectEndpoint;
 import org.jboss.windup.web.services.rest.MigrationProjectRegisteredApplicationsEndpoint;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericEntity;
@@ -66,10 +68,20 @@ public class DataProvider
         return this.migrationProjectEndpoint.createMigrationProject(migrationProject);
     }
 
-    public AnalysisContext getAnalysisContext(MigrationProject project)
+    protected Long getProjectAnalysisContextId(MigrationProject project) throws JSONException
     {
-        AnalysisContext analysisContext = new AnalysisContext(project);
-        analysisContext = this.analysisContextEndpoint.create(analysisContext, project.getId());
+        Response response = target.path("/migrationProjects/get/" + project.getId()).request().get();
+        response.bufferEntity();
+        String stringResponse = response.readEntity(String.class);
+        JSONObject json = new JSONObject(stringResponse);
+
+        return json.getLong("defaultAnalysisContextId");
+    }
+
+    public AnalysisContext getAnalysisContext(MigrationProject project) throws JSONException
+    {
+        Long contextId = this.getProjectAnalysisContextId(project);
+        AnalysisContext analysisContext = this.analysisContextEndpoint.get(contextId);
 
         if (analysisContext.getRulesPaths() == null)
         {
@@ -78,7 +90,7 @@ public class DataProvider
 
         analysisContext.getRulesPaths().add(getTestRulesPath());
 
-        return this.analysisContextEndpoint.update(analysisContext.getId(), analysisContext);
+        return this.analysisContextEndpoint.saveAsProjectDefault(analysisContext, project.getId());
     }
 
     private RulesPath getTestRulesPath()

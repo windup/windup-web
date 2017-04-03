@@ -67,7 +67,7 @@ public class AnalysisContextEndpointTest extends AbstractTest
 
         analysisContext.setRulesPaths(configurationEndpoint.getConfiguration().getRulesPaths());
 
-        analysisContext = analysisContextEndpoint.update(analysisContext.getId(), analysisContext);
+        analysisContext = analysisContextEndpoint.saveAsProjectDefault(analysisContext, project.getId());
 
         AnalysisContext loaded = analysisContextEndpoint.get(analysisContext.getId());
 

@@ -14,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -84,6 +85,9 @@ public class MigrationProject implements Serializable
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "project", cascade = CascadeType.REMOVE)
     @Fetch(FetchMode.SELECT)
     private Set<WindupExecution> executions;
+
+    @OneToOne
+    private AnalysisContext defaultAnalysisContext;
 
     public MigrationProject()
     {
@@ -234,6 +238,39 @@ public class MigrationProject implements Serializable
     public void removeExecution(WindupExecution execution)
     {
         this.executions.remove(execution);
+    }
+
+    /**
+     * Gets default analysis context
+     */
+    @JsonIgnore
+    public AnalysisContext getDefaultAnalysisContext()
+    {
+        return defaultAnalysisContext;
+    }
+
+    /**
+     * Gets id of default analysis context
+     */
+    @JsonProperty
+    public Long getDefaultAnalysisContextId()
+    {
+        Long id = null;
+
+        if (this.defaultAnalysisContext != null) {
+            id = this.defaultAnalysisContext.getId();
+        }
+
+        return id;
+    }
+
+    /**
+     * Sets new default analysis context
+     */
+    @JsonIgnore
+    public void setDefaultAnalysisContext(AnalysisContext defaultAnalysisContext)
+    {
+        this.defaultAnalysisContext = defaultAnalysisContext;
     }
 
     @Override

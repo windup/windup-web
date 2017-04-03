@@ -28,6 +28,9 @@ public class MigrationProjectService
     @FromFurnace
     private WebPathUtil webPathUtil;
 
+    @Inject
+    private AnalysisContextService analysisContextService;
+
     /**
      * Gets migration project
      */
@@ -72,7 +75,10 @@ public class MigrationProjectService
         }
 
         project.setId(null); // creating new project, should not have id set
+        this.entityManager.persist(project); // get id for analysis context
 
+        AnalysisContext analysisContext = this.analysisContextService.createDefaultAnalysisContext(project);
+        project.setDefaultAnalysisContext(analysisContext);
         this.entityManager.persist(project);
 
         return project;

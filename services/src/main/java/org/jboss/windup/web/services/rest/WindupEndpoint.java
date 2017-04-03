@@ -1,5 +1,6 @@
 package org.jboss.windup.web.services.rest;
 
+import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.WindupExecution;
 
 import javax.ws.rs.Consumes;
@@ -31,8 +32,8 @@ public interface WindupEndpoint
      * Initiates a Windup execution for a particular AnalysisContext.
      */
     @POST
-    @Path("execute-with-context")
-    WindupExecution executeWithContext(Long contextID);
+    @Path("execute-project-with-context/{projectId}")
+    WindupExecution executeProjectWithContext(AnalysisContext context, @PathParam("projectId") Long projectId);
 
     @GET
     @Path("executions")

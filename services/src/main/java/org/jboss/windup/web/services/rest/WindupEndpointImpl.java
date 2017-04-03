@@ -26,6 +26,7 @@ import org.jboss.windup.web.services.model.RegisteredApplication;
 import org.jboss.windup.web.services.model.WindupExecution;
 import org.jboss.windup.web.services.service.AnalysisContextService;
 import org.jboss.windup.web.services.service.ConfigurationService;
+import org.jboss.windup.web.services.service.MigrationProjectService;
 
 @Stateless
 public class WindupEndpointImpl implements WindupEndpoint
@@ -45,6 +46,9 @@ public class WindupEndpointImpl implements WindupEndpoint
     private AnalysisContextService analysisContextService;
 
     @Inject
+    private MigrationProjectService migrationProjectService;
+
+    @Inject
     private JMSContext messaging;
 
     @Inject
@@ -58,14 +62,26 @@ public class WindupEndpointImpl implements WindupEndpoint
      * @see org.jboss.windup.web.services.messaging.ExecutorMDB
      */
     @Override
-    public WindupExecution executeWithContext(Long contextId)
+    public WindupExecution executeProjectWithContext(AnalysisContext originalContext, Long projectId)
     {
-        AnalysisContext analysisContext = this.analysisContextService.get(contextId);
+        if (originalContext == null)
+        {
+            throw new BadRequestException("AnalysisContext must be provided");
+        }
 
-        if (analysisContext.getApplications().size() == 0)
+
+        if (originalContext.getApplications().size() == 0)
         {
             throw new BadRequestException("Cannot execute windup without selected applications");
         }
+
+        // make clone of analysis context and use it for execution
+        AnalysisContext analysisContext = originalContext.clone();
+
+        MigrationProject project = this.migrationProjectService.getMigrationProject(projectId);
+        analysisContext.setMigrationProject(project); // ensure project is correctly set
+
+        analysisContext = this.analysisContextService.create(analysisContext);
 
         for (RegisteredApplication application : analysisContext.getApplications())
         {

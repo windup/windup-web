@@ -5,6 +5,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.Valid;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 
 import org.jboss.windup.web.services.model.AnalysisContext;
@@ -12,12 +13,16 @@ import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.service.AnalysisContextService;
 import org.jboss.windup.web.services.service.MigrationProjectService;
 
+import java.util.logging.Logger;
+
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
 @Stateless
 public class AnalysisContextEndpointImpl implements AnalysisContextEndpoint
 {
+    private static Logger LOG = Logger.getLogger(AnalysisContextEndpoint.class.getName());
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -41,17 +46,26 @@ public class AnalysisContextEndpointImpl implements AnalysisContextEndpoint
     }
 
     @Override
-    public AnalysisContext create(@Valid AnalysisContext analysisContext, Long projectId)
+    public AnalysisContext saveAsProjectDefault(@Valid AnalysisContext analysisContext, Long projectId)
     {
         MigrationProject project = this.migrationProjectService.getMigrationProject(projectId);
-        analysisContext.setMigrationProject(project);
 
-        return analysisContextService.create(analysisContext);
-    }
+        if (project.getDefaultAnalysisContext() == null)
+        {
+            LOG.warning("Project doesn't have default AnalysisContext - something is wrong");
 
-    @Override
-    public AnalysisContext update(Long id, @Valid AnalysisContext analysisContext)
-    {
-        return analysisContextService.update(analysisContext);
+            analysisContext.setMigrationProject(project);
+            analysisContext = analysisContextService.create(analysisContext);
+
+            project.setDefaultAnalysisContext(analysisContext);
+            this.entityManager.persist(project);
+        }
+        else
+        {
+            AnalysisContext defaultAnalysisContext = project.getDefaultAnalysisContext();
+            analysisContext = analysisContextService.update(defaultAnalysisContext.getId(), analysisContext);
+        }
+
+        return analysisContext;
     }
 }
