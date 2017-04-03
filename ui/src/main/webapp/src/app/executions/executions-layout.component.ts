@@ -112,18 +112,18 @@ export class ExecutionsLayoutComponent extends ProjectLayoutComponent implements
                 'application-index'
             ),
             new ReportMenuItem(
-                'Application Details',
-                'fa-list',
-                this.project,
-                this.execution,
-                'application-details'
-            ),
-            new ReportMenuItem(
                 'Issues',
                 'fa-exclamation-triangle',
                 this.project,
                 this.execution,
                 'migration-issues'
+            ),
+            new ReportMenuItem(
+                'Execution Details',
+                'fa-cog',
+                this.project,
+                this.execution,
+                'execution-details'
             ),
             new ContextMenuItem(
                 'Static Reports',
