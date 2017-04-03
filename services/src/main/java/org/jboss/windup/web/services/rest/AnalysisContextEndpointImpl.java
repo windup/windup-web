@@ -41,30 +41,22 @@ public class AnalysisContextEndpointImpl implements AnalysisContextEndpoint
     }
 
     @Override
-    public AnalysisContext storeDefaultConfigForProject(AnalysisContext analysisContext, Long projectId)
+    public AnalysisContext updateDefaultConfigForProject(@Valid AnalysisContext ctx, Long projectId)
     {
-        LOG.info("Storing default config for project #" + projectId + ": " + analysisContext);
+        LOG.info("Storing default config for project #" + projectId + ": " + ctx);
         MigrationProject project = this.migrationProjectService.getMigrationProject(projectId);
-        analysisContext.setMigrationProject(project);
-        analysisContextService.deleteDefaultContextOfProject(project.getId(), false);
-        analysisContext.setId(null);
+        AnalysisContext defaultAC = this.analysisContextService.getDefaultProjectAnalysisContext(projectId);
 
-        return analysisContextService.create(analysisContext);
+        defaultAC.setAdvancedOptions(ctx.getAdvancedOptions());
+        defaultAC.setApplications(ctx.getApplications());
+        defaultAC.setExcludePackages(ctx.getExcludePackages());
+        defaultAC.setGenerateStaticReports(ctx.getGenerateStaticReports());
+        defaultAC.setIncludePackages(ctx.getIncludePackages());
+        defaultAC.setMigrationPath(ctx.getMigrationPath());
+        defaultAC.setRulesPaths(ctx.getRulesPaths());
+
+        analysisContextService.update(ctx);
+        return defaultAC;
     }
 
-
-
-    @Override
-    public AnalysisContext create(@Valid AnalysisContext analysisContext, Long projectId)
-    {
-        MigrationProject project = this.migrationProjectService.getMigrationProject(projectId);
-        analysisContext.setMigrationProject(project);
-        return analysisContextService.create(analysisContext);
-    }
-
-    @Override
-    public AnalysisContext update(Long id, @Valid AnalysisContext analysisContext)
-    {
-        return analysisContextService.update(analysisContext);
-    }
 }

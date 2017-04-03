@@ -6,7 +6,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -30,13 +29,5 @@ public interface AnalysisContextEndpoint
 
     @PUT
     @Path("storeDefaultConfigForProject/{projectId}")
-    AnalysisContext storeDefaultConfigForProject(@Valid AnalysisContext analysisContext, @PathParam("projectId") @NotNull Long projectId);
-
-    @POST
-    @Path("migrationProjects/{projectId}")
-    AnalysisContext create(@Valid AnalysisContext analysisContext, @PathParam("projectId") Long projectId);
-
-    @PUT
-    @Path("{id}")
-    AnalysisContext update(@PathParam("id") Long id, @Valid AnalysisContext analysisContext);
+    AnalysisContext updateDefaultConfigForProject(@Valid AnalysisContext analysisContext, @PathParam("projectId") @NotNull Long projectId);
 }
