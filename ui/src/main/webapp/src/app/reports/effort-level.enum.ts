@@ -1,6 +1,5 @@
 import {Pipe, PipeTransform} from "@angular/core";
 
-
 @Pipe({name: 'effortLevelConvert'})
 export class EffortLevelPipe implements PipeTransform {
   constructor() {}

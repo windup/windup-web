@@ -205,9 +205,4 @@ export class MigrationIssuesTableComponent extends FilterableReportComponent imp
 
     private markdownCache: Map<string, string> = new Map<string, string>();
 
-
-
-}
-function  getEffortLevelDescription(effortLevelNumber:number):string {
-    return EffortLevel[effortLevelNumber];
 }

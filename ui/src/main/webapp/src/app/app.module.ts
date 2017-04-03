@@ -290,7 +290,8 @@ initializeModelMappingData();
             deps: [Http]
         },
         AggregatedStatisticsService,
-        DatePipe
+        DatePipe,
+        EffortLevelPipe
     ],
     bootstrap:    [ AppComponent ]
 })

@@ -4,6 +4,7 @@ import {DebugElement} from "@angular/core";
 import {By} from "@angular/platform-browser";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MigrationIssuesService} from "../../../../../src/app/reports/migration-issues/migration-issues.service";
+import {EffortLevel, EffortLevelPipe} from "../../../../../src/app/reports/effort-level.enum";
 import {NotificationService} from "../../../../../src/app/core/notification/notification.service";
 import {RouterTestingModule} from "@angular/router/testing";
 import {ActivatedRouteMock} from "../../../mocks/activated-route.mock";
@@ -30,7 +31,7 @@ describe('MigrationissuesTableComponent', () => {
 
         TestBed.configureTestingModule({
             imports: [ RouterTestingModule ],
-            declarations: [ MigrationIssuesTableComponent ],
+            declarations: [ MigrationIssuesTableComponent, EffortLevelPipe, EffortLevel ],
             providers: [
                 {
                     provide: ActivatedRoute,
@@ -96,7 +97,7 @@ describe('MigrationissuesTableComponent', () => {
                 "ruleID": "weblogic-catchall-06500",
                 "issueName": "Oracle proprietary JDBC type reference",
                 "numberFound": 18,
-                "effortPerIncident": 2,
+                "effortPerIncident": 3,
                 "links": [],
                 "descriptions": [
                     "This is an Oracle proprietary JDBC type (`oracle.sql.driver.OracleConnection`).\n\nIt should be replaced by standard Java EE JCA, datasource and JDBC types."
@@ -117,7 +118,7 @@ describe('MigrationissuesTableComponent', () => {
         expect(el.children[0].textContent).toEqual(migrationIssues[0].issueName);
         expect(el.children[1].textContent).toEqual(migrationIssues[0].numberFound.toString());
         expect(el.children[2].textContent).toEqual(migrationIssues[0].effortPerIncident.toString());
-        expect(el.children[3].textContent).toEqual('');
+        expect(el.children[3].textContent).toEqual(EffortLevel[migrationIssues[0].effortPerIncident]);
         expect(el.children[4].textContent).toBe((migrationIssues[0].numberFound * migrationIssues[0].effortPerIncident).toString());
     });
 
