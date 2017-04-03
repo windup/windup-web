@@ -1,7 +1,6 @@
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
 import 'rxjs/add/operator/do';
-import {WINDUP_WEB} from "../app.module";
 
 @Injectable()
 export class CacheService {
@@ -160,44 +159,43 @@ export function Cached(section?, expiration?: CacheExpiration, immutable: boolea
         // NOTE: Do not use arrow syntax here. Use a function expression in
         // order to use the correct value of `this` in this method (see notes below)
         descriptor.value = function (...args: any[]) {
-            if (WINDUP_WEB.config.hideUnfinishedFeatures)
-                return originalMethod.apply(this, args);
+            return originalMethod.apply(this, args);
 
-            let cacheKey = getCacheKey(propertyKey, args);
-
-            if (!cacheSection.hasItem(cacheKey)) {
-                let result: any|Observable<any> = originalMethod.apply(this, args);
-
-                let storeItemInCache = (result: any, isObservable: boolean = false) => {
-                    let isItemCacheable = true;
-
-                    if (cacheItemCallback && typeof cacheItemCallback === 'function') {
-                        isItemCacheable = cacheItemCallback(result);
-                    }
-
-                    if (isItemCacheable) {
-                        cacheSection.setItem(cacheKey, {
-                            value: result,
-                            isObservable: isObservable
-                        }, immutable, expiration);
-                    }
-                };
-
-                if (isObservable(result)) {
-                    return result.do(jsonResult => storeItemInCache(jsonResult, true));
-                } else {
-                    storeItemInCache(result);
-                    return result;
-                }
-            }
-
-            let data = cacheSection.getItem(cacheKey);
-
-            if (!data.isObservable) {
-                return data.value;
-            } else {
-                return Observable.of(data.value);
-            }
+        //     let cacheKey = getCacheKey(propertyKey, args);
+        //
+        //     if (!cacheSection.hasItem(cacheKey)) {
+        //         let result: any|Observable<any> = originalMethod.apply(this, args);
+        //
+        //         let storeItemInCache = (result: any, isObservable: boolean = false) => {
+        //             let isItemCacheable = true;
+        //
+        //             if (cacheItemCallback && typeof cacheItemCallback === 'function') {
+        //                 isItemCacheable = cacheItemCallback(result);
+        //             }
+        //
+        //             if (isItemCacheable) {
+        //                 cacheSection.setItem(cacheKey, {
+        //                     value: result,
+        //                     isObservable: isObservable
+        //                 }, immutable, expiration);
+        //             }
+        //         };
+        //
+        //         if (isObservable(result)) {
+        //             return result.do(jsonResult => storeItemInCache(jsonResult, true));
+        //         } else {
+        //             storeItemInCache(result);
+        //             return result;
+        //         }
+        //     }
+        //
+        //     let data = cacheSection.getItem(cacheKey);
+        //
+        //     if (!data.isObservable) {
+        //         return data.value;
+        //     } else {
+        //         return Observable.of(data.value);
+        //     }
         };
 
         return descriptor;

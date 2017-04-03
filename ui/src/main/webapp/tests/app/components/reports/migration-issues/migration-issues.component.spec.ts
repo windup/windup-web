@@ -16,6 +16,7 @@ import {GraphJSONToModelService} from "../../../../../src/app/services/graph/gra
 import {WindupService} from "../../../../../src/app/services/windup.service";
 import {RouteFlattenerService} from "../../../../../src/app/core/routing/route-flattener.service";
 import {RouterMock} from "../../../mocks/router.mock";
+import {EffortLevelPipe} from "../../../../../src/app/reports/effort-level.enum";
 
 let comp:    MigrationIssuesComponent;
 let fixture: ComponentFixture<MigrationIssuesComponent>;
@@ -30,7 +31,7 @@ describe('MigrationissuesComponent', () => {
 
         TestBed.configureTestingModule({
             imports: [ RouterTestingModule, HttpModule ],
-            declarations: [ MigrationIssuesComponent, MigrationIssuesTableComponent, ReportFilterIndicatorComponent ],
+            declarations: [ MigrationIssuesComponent, MigrationIssuesTableComponent, ReportFilterIndicatorComponent, EffortLevelPipe ],
             providers: [
                 {
                     provide: Router,

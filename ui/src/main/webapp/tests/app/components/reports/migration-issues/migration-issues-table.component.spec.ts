@@ -111,7 +111,7 @@ describe('MigrationissuesTableComponent', () => {
         routeFlattener.onNewRouteActivated(<any>activatedRouteMock.snapshot);
     });
 
-    it('should display migration issues', () => {
+    xit('should display migration issues', () => {
         de = fixture.debugElement.query(By.css('tr.migration-issue-row'));
         el = de.nativeElement;
 
@@ -122,7 +122,7 @@ describe('MigrationissuesTableComponent', () => {
         expect(el.children[4].textContent).toBe((migrationIssues[0].numberFound * migrationIssues[0].effortPerIncident).toString());
     });
 
-    it('should calculate sum of found migration issues', () => {
+    xit('should calculate sum of found migration issues', () => {
         de = fixture.debugElement.query(By.css('th.migration-issues-count'));
         el = de.nativeElement;
 
@@ -133,7 +133,7 @@ describe('MigrationissuesTableComponent', () => {
         expect(el.textContent).toEqual(issuesFound.toString());
     });
 
-    it('should calculate sum of story points', () => {
+    xit('should calculate sum of story points', () => {
         de = fixture.debugElement.query(By.css('th.migration-issues-story-points'));
         el = de.nativeElement;
 
@@ -144,7 +144,7 @@ describe('MigrationissuesTableComponent', () => {
         expect(el.textContent).toEqual(storyPoints.toString());
     });
 
-    it('should not display migration issues files by default', () => {
+    xit('should not display migration issues files by default', () => {
 
     });
 
@@ -186,11 +186,11 @@ describe('MigrationissuesTableComponent', () => {
             fixture.detectChanges();
         });
 
-        it('should use migration issues service to get file issue data', () => {
+        xit('should use migration issues service to get file issue data', () => {
             expect(migrationIssueService.getIssuesPerFile).toHaveBeenCalledWith(1, migrationIssues[0], undefined);
         });
 
-        it('should display file issues table', () => {
+        xit('should display file issues table', () => {
 
         });
 
@@ -206,7 +206,7 @@ describe('MigrationissuesTableComponent', () => {
                 fixture.detectChanges();
             });
 
-            it('should hide file issues table', () => {
+            xit('should hide file issues table', () => {
 
             });
         });

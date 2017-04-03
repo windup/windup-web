@@ -1,6 +1,6 @@
 <html class="layout-pf layout-pf-fixed transitions">
 <head>
-    <title>Windup 3.0</title>
+    <title>Red Hat Application Migration Toolkit Web Console (RHAMT WC)</title>
     <base href="/windup-web/">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="${keycloak.serverUrl}/js/keycloak.js"></script>
