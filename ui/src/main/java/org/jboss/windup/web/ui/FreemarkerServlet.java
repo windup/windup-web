@@ -98,7 +98,7 @@ public class FreemarkerServlet extends freemarker.ext.servlet.FreemarkerServlet
             );
 
             hashModel.put("apiServerUrl", apiServerUrl);
-            hashModel.put("graphApiServerUrl", apiServerUrl.concat("/graph"));
+            hashModel.put("graphApiServerUrl", apiServerUrl.concat("/furnace"));
             hashModel.put("staticReportServerUrl", apiServerUrl.concat("/static-report"));
         }
 

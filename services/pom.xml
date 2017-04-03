@@ -219,7 +219,7 @@
     </dependencies>
 
     <build>
-        <finalName>windup-web-services</finalName>
+        <finalName>rhamt-web/api</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
