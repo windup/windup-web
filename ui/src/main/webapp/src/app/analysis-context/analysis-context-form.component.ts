@@ -95,7 +95,11 @@ export class AnalysisContextFormComponent extends FormComponent
                     this.initializeAnalysisContext();
                 } else {
                     this._analysisContextService.get(project.defaultAnalysisContextId)
-                        .subscribe(context => this.analysisContext = context);
+                        .subscribe(context => {
+                            this.analysisContext = context;
+                            if (this.analysisContext.migrationPath == null)
+                                this.analysisContext.migrationPath = <MigrationPath>{id: 0};
+                        });
                 }
 
                 // Reload the App from the service to ensure fresh data

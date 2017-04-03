@@ -35,7 +35,7 @@ export class RegisteredApplicationService extends AbstractService {
     public static REUPLOAD_APPLICATION_URL    = RegisteredApplicationService.SINGLE_APPLICATION_URL + '/reupload';
     public static PACKAGES_URL    = RegisteredApplicationService.SINGLE_APPLICATION_URL + '/packages';
 
-    protected static PACKAGE_REQUEST_PAUSE_TIME_MS = 10000;
+    protected static PACKAGE_REQUEST_PAUSE_TIME_MS = 2000;
 
     private UPLOAD_URL = '/file';
 

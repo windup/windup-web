@@ -1,6 +1,7 @@
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
 import 'rxjs/add/operator/do';
+import {WINDUP_WEB} from "../app.module";
 
 @Injectable()
 export class CacheService {
@@ -159,6 +160,9 @@ export function Cached(section?, expiration?: CacheExpiration, immutable: boolea
         // NOTE: Do not use arrow syntax here. Use a function expression in
         // order to use the correct value of `this` in this method (see notes below)
         descriptor.value = function (...args: any[]) {
+            if (WINDUP_WEB.config.hideUnfinishedFeatures)
+                return originalMethod.apply(this, args);
+
             let cacheKey = getCacheKey(propertyKey, args);
 
             if (!cacheSection.hasItem(cacheKey)) {
