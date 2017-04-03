@@ -101,6 +101,12 @@ public class MigrationPath implements Serializable
     }
 
     @Override
+    public String toString()
+    {
+        return "MigrationPath{" + "id=" + id + ", name=" + name + ", source=" + source + ", target=" + target + '}';
+    }
+
+    @Override
     public boolean equals(Object o)
     {
         if (this == o)

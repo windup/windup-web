@@ -37,4 +37,8 @@ export class FormComponent {
                 this.errorMessages.push("Error: " + utils.getErrorMessage(error));
         }
     }
+
+    log(msg: string){
+        console.log(msg);
+    }
 }

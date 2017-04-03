@@ -14,7 +14,6 @@ import org.jboss.windup.web.services.model.MigrationProject;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * @author <a href="mailto:dklingenberg@gmail.com">David Klingenberg</a>
@@ -27,6 +26,9 @@ public class MigrationProjectService
     @Inject
     @FromFurnace
     private WebPathUtil webPathUtil;
+
+    @Inject
+    private AnalysisContextService analysisContextService;
 
     /**
      * Gets migration project
@@ -72,8 +74,9 @@ public class MigrationProjectService
         }
 
         project.setId(null); // creating new project, should not have id set
-
         this.entityManager.persist(project);
+
+        this.analysisContextService.createDefaultAnalysisContext(project);
 
         return project;
     }

@@ -91,13 +91,16 @@ export class AnalysisContextFormComponent extends FormComponent
             if (flatRouteData.data['project']) {
                 let project = flatRouteData.data['project'];
 
+                console.log("router event NavigationEnd, flatRouteData + this.analysisContext: ", flatRouteData, this.analysisContext);
+
+                this.initializeAnalysisContext();
+
                 // Reload the App from the service to ensure fresh data
                 this._migrationProjectService.get(project.id).subscribe(loadedProject => {
                     this.project = loadedProject;
                     this.loadPackageMetadata();
+                    this.loadProjectRelations();
                 });
-
-                this.initializeAnalysisContext();
 
                 // Load the apps of this project.
                 this._appService.getApplicationsByProjectID(project.id).subscribe(apps => {
@@ -105,12 +108,24 @@ export class AnalysisContextFormComponent extends FormComponent
                     this.analysisContext.applications = apps.slice();
                 });
             }
+            //console.log("router event NavigationEnd, after: ", this.analysisContext, this.project);
 
             this.isInWizard = flatRouteData.data.hasOwnProperty('wizard') && flatRouteData.data['wizard'];
         });
     }
 
+    private loadProjectRelations() {
+        this._migrationProjectService.getDefaultAnalysisContext(this.project.id).subscribe(ctx => {
+            this.analysisContext = this.canonicalizeAnalysisContext(ctx);
+        });
+    }
+
     // Apps selection checkboxes
+    appsValueCallback = (app: RegisteredApplication) => ""+app.id;
+    appsLabelCallback = (app: RegisteredApplication) => app.title;
+    equalsCallback = (a1: RegisteredApplication, a2: RegisteredApplication) => a1.id === a2.id;
+
+
     static getDefaultAnalysisContext() {
         let analysisContext = <AnalysisContext>{};
         analysisContext.migrationPath = <MigrationPath>{id: 0};
@@ -125,23 +140,18 @@ export class AnalysisContextFormComponent extends FormComponent
     }
 
     private initializeAnalysisContext() {
-        let analysisContext = this.analysisContext;
-
-        if (analysisContext == null) {
-            analysisContext = AnalysisContextFormComponent.getDefaultAnalysisContext();
+        if (this.analysisContext == null) {
+            this.analysisContext = AnalysisContextFormComponent.getDefaultAnalysisContext();
         } else {
-            // For the migration path, store the id only.
-            if (analysisContext.migrationPath) {
-                analysisContext.migrationPath = <MigrationPath>{id: analysisContext.migrationPath.id};
-            } else {
-                analysisContext.migrationPath = <MigrationPath>{id: 0};
-            }
-
-            if (analysisContext.rulesPaths == null)
-                analysisContext.rulesPaths = [];
+            this.analysisContext = this.canonicalizeAnalysisContext(this.analysisContext);
         }
+    }
 
-        this.analysisContext = analysisContext;
+    private canonicalizeAnalysisContext(ctx: AnalysisContext): AnalysisContext {
+        // For the migration path, store the id only.
+        ctx.migrationPath = <MigrationPath>{id: ctx.migrationPath ? ctx.migrationPath.id : 0};
+        ctx.rulesPaths = ctx.rulesPaths || [];
+        return ctx;
     }
 
     private loadPackageMetadata() {
@@ -224,26 +234,28 @@ export class AnalysisContextFormComponent extends FormComponent
         this._dirty = true;
     }
 
+    /**
+     * For Save, saves the project config properly.
+     * For Save & Run, triggers an execution as per given project config. Saving the config as default project config is up to the server endpoint.
+     */
     onSubmit() {
-        // Store the Analysis Context
-        let update = this.analysisContext.id != null;
-        let service = update ? this._analysisContextService.update : this._analysisContextService.create;
-        let contextObservable: Observable<AnalysisContext> = service.call(this._analysisContextService, this.analysisContext, this.project);
-
-        contextObservable.subscribe(
-            updatedContext => {
-                this._dirty = false;
-                this.onSuccess(updatedContext);
-            },
-            error => {
-                this.handleError(error);
-            }
-        );
-    }
-
-    onSuccess(analysisContext: AnalysisContext) {
-        if (this.action === Action.SaveAndRun) {
-            this._windupExecutionService.execute(analysisContext, this.project)
+        if (this.action == Action.Save) {
+            console.log(`Updating/creating analysis context #${this.analysisContext.id}, migrPath: ${this.analysisContext.migrationPath.id}`);
+            let contextObservable: Observable<AnalysisContext> = this._analysisContextService.saveDefaultProjectConfiguration(this.analysisContext, this.project);
+            contextObservable.subscribe(
+                updatedContext => {
+                    this.analysisContext = updatedContext;
+                    this._dirty = false;
+                    if (this.isInWizard)
+                        this._router.navigate([`/projects/${this.project.id}`]);
+                    else
+                        this.navigateBack();
+                },
+                error => { this.handleError(error); }
+            );
+        }
+        else if (this.action === Action.SaveAndRun) {
+            this._windupExecutionService.execute(this.analysisContext, this.project)
                 .subscribe(execution => {
                     this._notificationService.success('Windup execution has started');
                     this._router.navigate([`/projects/${this.project.id}`]);
@@ -251,12 +263,9 @@ export class AnalysisContextFormComponent extends FormComponent
                 error => {
                     this._notificationService.error(utils.getErrorMessage(error));
                 });
-        } else if (this.isInWizard) {
-            this._router.navigate([`/projects/${this.project.id}`]);
-        } else {
-            this.navigateBack();
         }
     }
+
 
     // Button handlers
     saveAndRun() {

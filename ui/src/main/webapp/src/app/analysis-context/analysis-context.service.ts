@@ -17,10 +17,19 @@ import {Cached} from "../shared/cache.service";
 export class AnalysisContextService extends AbstractService {
     private ANALYSIS_CONTEXT_URL = "/analysis-context/{id}";
     private CREATE_URL = "/analysis-context/migrationProjects/{projectId}";
+    private URL_STORE_DEFAULT = "/analysis-context/storeDefaultConfigForProject/{projectId}";
 
     constructor (private _http: Http) {
         super();
     }
+
+    @Cached('analysisContext')
+    get(id: number) {
+        return this._http.get(Constants.REST_BASE + this.ANALYSIS_CONTEXT_URL.replace("{id}", id.toString()))
+            .map(res => <AnalysisContext> res.json())
+            .catch(this.handleError);
+    }
+
 
     create(analysisContext: AnalysisContext, project: MigrationProject) {
         let body = JSON.stringify(analysisContext);
@@ -46,9 +55,12 @@ export class AnalysisContextService extends AbstractService {
             .catch(this.handleError);
     }
 
-    @Cached('analysisContext')
-    get(id: number) {
-        return this._http.get(Constants.REST_BASE + this.ANALYSIS_CONTEXT_URL.replace("{id}", id.toString()))
+    saveDefaultProjectConfiguration(analysisContext: AnalysisContext, project: MigrationProject){
+        console.log("saveDefaultProjectConfiguration()");
+        let body = JSON.stringify(analysisContext);
+        let url = Constants.REST_BASE + this.URL_STORE_DEFAULT.replace('{projectId}', project.id.toString());
+
+        return this._http.put(url, body, this.JSON_OPTIONS)
             .map(res => <AnalysisContext> res.json())
             .catch(this.handleError);
     }

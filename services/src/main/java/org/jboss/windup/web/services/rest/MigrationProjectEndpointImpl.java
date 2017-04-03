@@ -1,3 +1,4 @@
+
 package org.jboss.windup.web.services.rest;
 
 import java.util.ArrayList;
@@ -95,4 +96,14 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
         this.migrationProjectService.deleteProject(project);
     }
 
+
+    /**
+     * Impl notes:
+     * Chooses the last AnalysisContext which has no execution attached, or, if there's no such, the AnalysisContext of the last execution.
+     */
+    @Override
+    public AnalysisContext getDefaultAnalysisContext(Long projectId)
+    {
+        return this.analysisContextService.getDefaultProjectAnalysisContext(projectId);
+    }
 }
