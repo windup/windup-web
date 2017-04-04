@@ -6,10 +6,12 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.windup.web.services.ServiceTestUtil;
+import org.jboss.windup.web.services.data.DataProvider;
 import org.jboss.windup.web.services.data.ServiceConstants;
 import org.jboss.windup.web.services.data.WindupExecutionUtil;
 import org.jboss.windup.web.services.model.ExecutionState;
 import org.jboss.windup.web.services.AbstractTest;
+import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.model.WindupExecution;
 import org.junit.Assert;
 import org.junit.Before;
@@ -29,24 +31,50 @@ public class WindupEndpointTest extends AbstractTest
 
     private ResteasyClient client;
     private ResteasyWebTarget target;
+    private MigrationProjectEndpoint migrationProjectEndpoint;
 
     @Before
     public void setUp()
     {
         this.client = ServiceTestUtil.getResteasyClient();
         this.target = client.target(contextPath + ServiceConstants.REST_BASE);
-
+        this.migrationProjectEndpoint = this.target.proxy(MigrationProjectEndpoint.class);
     }
 
     @Test
     @RunAsClient
     public void testExecution() throws Exception
     {
+        DataProvider dataProvider = new DataProvider(this.target);
+        MigrationProject project = dataProvider.getMigrationProject();
+
         WindupExecutionUtil util = new WindupExecutionUtil(client, target);
-        WindupExecution status = util.executeWindup();
+        WindupExecution status = util.executeWindup(project);
 
         Assert.assertEquals(ExecutionState.COMPLETED, status.getState());
         Assert.assertTrue(status.getTotalWork() > 10);
         Assert.assertTrue(status.getWorkCompleted() > 9);
+
+        this.assertLastModifiedIsUpdated(project);
+    }
+
+    /**
+     * Asserts lastModified field of project is updated
+     */
+    protected void assertLastModifiedIsUpdated(MigrationProject originalProject)
+    {
+        MigrationProject updatedProject = this.getProject(originalProject.getId());
+
+        Assert.assertNotNull(updatedProject.getLastModified());
+        Assert.assertTrue(updatedProject.getLastModified().after(originalProject.getLastModified()));
+    }
+
+
+    /**
+     * Gets project
+     */
+    protected MigrationProject getProject(Long id)
+    {
+        return this.migrationProjectEndpoint.getMigrationProject(id);
     }
 }

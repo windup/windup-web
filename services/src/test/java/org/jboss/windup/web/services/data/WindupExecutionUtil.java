@@ -35,10 +35,9 @@ public class WindupExecutionUtil
         this.windupEndpoint = target.proxy(WindupEndpoint.class);
     }
 
-    public WindupExecution executeWindup() throws Exception
+    public WindupExecution executeWindup(MigrationProject project) throws Exception
     {
         DataProvider dataProvider = new DataProvider(this.target);
-        MigrationProject project = dataProvider.getMigrationProject();
         AnalysisContext context = dataProvider.getAnalysisContext(project);
 
         try (InputStream sampleIS = getClass().getResourceAsStream(DataProvider.TINY_SAMPLE_PATH))
@@ -72,5 +71,13 @@ public class WindupExecutionUtil
 
         Assert.assertEquals(ExecutionState.COMPLETED, status.getState());
         return status;
+    }
+
+    public WindupExecution executeWindup() throws Exception
+    {
+        DataProvider dataProvider = new DataProvider(this.target);
+        MigrationProject project = dataProvider.getMigrationProject();
+
+        return this.executeWindup(project);
     }
 }

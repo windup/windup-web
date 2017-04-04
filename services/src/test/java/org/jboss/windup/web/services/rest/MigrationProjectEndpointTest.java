@@ -64,6 +64,8 @@ public class MigrationProjectEndpointTest extends AbstractTest
         Assert.assertNotNull(apps.iterator().next());
         Assert.assertEquals(title, apps.iterator().next().getMigrationProject().getTitle());
 
+        // TODO: Assert created/lastModifier
+
         this.migrationProjectEndpoint.deleteProject(createdProject);
     }
 

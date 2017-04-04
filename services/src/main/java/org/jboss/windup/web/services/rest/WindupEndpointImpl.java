@@ -79,6 +79,7 @@ public class WindupEndpointImpl implements WindupEndpoint
         AnalysisContext analysisContext = originalContext.clone();
 
         MigrationProject project = this.migrationProjectService.getMigrationProject(projectId);
+        project.setLastModified(new GregorianCalendar());
         analysisContext.setMigrationProject(project); // ensure project is correctly set
 
         analysisContext = this.analysisContextService.create(analysisContext);
