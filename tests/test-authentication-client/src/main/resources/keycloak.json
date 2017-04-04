@@ -1,5 +1,5 @@
 {
-  "realm": "windup",
+  "realm": "rhamt",
   "auth-server-url": "http://localhost:8180/auth",
   "resource": "rhamt-web/api",
   "credentials": {
