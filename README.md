@@ -1,9 +1,9 @@
-Trying out Windup Web
+Trying out RHAMT Web Console
 =====================
 
-If you just want to run Windup Web, not build or modify it, the simplest way is to use the docker image at https://hub.docker.com/r/windup3/windup-web_nightly/.
+If you just want to run RHAMT Web Console, not build or modify it, the simplest way is to use the docker image at https://hub.docker.com/r/windup3/windup-web_nightly/.
 
-If you want to build Windup Web yourself and run it without setting up a WildFly server and Keycloak, you can build [windup-web-distribution](https://github.com/windup/windup-web-distribution) after building windup-web to create a self-contained distribution.
+If you want to build RHAMT Web Console yourself and run it without setting up a WildFly server and Keycloak, you can build [windup-web-distribution](https://github.com/windup/windup-web-distribution) after building windup-web to create a self-contained distribution.
 
 
 Setting up the development environment
@@ -67,17 +67,17 @@ Running the webapp
 
     `bin/jboss-cli.sh -c --file=scripts/eap-setup.cli`
 
-- Deploy the exploded `services/target/windup-web-services` and `ui/target/web-services` to EAP 7.
+- Deploy the exploded `services/target/rhamt-web/api` and `ui/target/rhamt-web` to EAP 7.
 
     There are 3 possible ways how to do it.
 
     - Manual copying:
 
         ```
-        cp -r services/target/windup-web-services ~/apps/wildfly-10.1.0.Final/standalone/deployments/windup-web-services.war;
-        touch ~/apps/wildfly-10.1.0.Final/standalone/deployments/windup-web-services.war.dodeploy;
-        cp -r ui/target/windup-web ~/apps/wildfly-10.1.0.Final/standalone/deployments/windup-web.war;
-        touch ~/apps/wildfly-10.1.0.Final/standalone/deployments/windup-web.war.dodeploy;
+        cp -r services/target/rhamt-web/api ~/apps/wildfly-10.1.0.Final/standalone/deployments/rhamt-web/api.war;
+        touch ~/apps/wildfly-10.1.0.Final/standalone/deployments/rmaht-web/api.war.dodeploy;
+        cp -r ui/target/rhamt-web ~/apps/wildfly-10.1.0.Final/standalone/deployments/rmaht-web.war;
+        touch ~/apps/wildfly-10.1.0.Final/standalone/deployments/rhamt-web.war.dodeploy;
         ```
 
         or
@@ -85,8 +85,8 @@ Running the webapp
     - JBoss CLI deployment, deploy the `target` directory directly - see [WildFly docs](https://docs.jboss.org/author/display/WFLY10/Application+deployment#Applicationdeployment-UnmanagedDeployments):
 
         ```
-        deploy services/target/windup-web-services --unmanaged;
-        deploy ui/target/windup-web --unmanaged;
+        deploy services/target/rhamt-web/api --unmanaged;
+        deploy ui/target/rhamt-web --unmanaged;
         ```
 
         or
@@ -95,15 +95,15 @@ Running the webapp
 
         ```xml
         <deployments>
-            <deployment name="windup-web-services" runtime-name="windup-web-services.war">
-                <fs-exploded path=".../windup-web/services/target/windup-web-services"/>
+            <deployment name="rhamt-web/api" runtime-name="rhamt-web/api.war">
+                <fs-exploded path=".../windup-web/services/target/rhamt-web/api"/>
             </deployment>
-            <deployment name="windup-web" runtime-name="windup-web.war">
-                <fs-exploded path=".../windup-web/ui/target/windup-web"/>
+            <deployment name="rhamt-web" runtime-name="rhamt-web.war">
+                <fs-exploded path=".../windup-web/ui/target/rhamt-web"/>
             </deployment>
         </deployments>
         ```
     > Note: Replace ... with real absolute path on your local environment.
 
 - Follow the steps for deploying keycloak in [Keycloak Setup](./KEYCLOAK-SETUP.md)
-- Access the webapp: <http://localhost:8080/windup-web>
+- Access the webapp: <http://localhost:8080/rhamt-web>
