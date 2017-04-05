@@ -6,6 +6,7 @@ import {MigrationProjectService} from "./migration-project.service";
 import {FormComponent} from "../shared/form.component";
 import {Subscription} from "rxjs";
 import {RouteFlattenerService} from "../core/routing/route-flattener.service";
+import {FormControl} from "@angular/forms";
 
 @Component({
     templateUrl: './migration-project-form.component.html',
@@ -54,6 +55,11 @@ export class MigrationProjectFormComponent extends FormComponent implements OnIn
 
     getDescriptionHeight() {
         return Math.min(4 + (this.model.description ? this.model.description.length : 0) / 80, 25)
+    }
+
+    titleIsDuplicated(control:FormControl):boolean {
+        let touched = control.touched == null ? false : control.touched;
+        return control.hasError('nameIsTaken') && touched;
     }
 
     save() {
