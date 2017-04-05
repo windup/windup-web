@@ -60,6 +60,15 @@ public interface MigrationProjectEndpoint
     void deleteProject(MigrationProject migration);
 
     /**
+     * Look up a project ID by name.
+     */
+    @GET
+    @Path("id-by-name/{title}")
+    Long getProjectIdByName(@PathParam("title") String title);
+
+
+
+    /**
      * Adds app count to MigrationProject solely for the purpose of this REST API.
      */
     final class MigrationProjectAndAppCount
