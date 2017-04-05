@@ -8,7 +8,6 @@ import {EditApplicationFormComponent} from "./registered-application/edit-applic
 import {ConfirmDeactivateGuard} from "./shared/confirm-deactivate.guard";
 import {TechnologiesReportComponent} from "./reports/technologies/technologies-report.component";
 import {DependenciesReportComponent} from "./reports/dependencies/dependencies-report.component";
-import {LoginComponent} from "./components/login.component";
 import {LoggedInGuard} from "./core/authentication/logged-in.guard";
 import {ProjectLayoutComponent} from "./project/project-layout.component";
 import {DefaultLayoutComponent} from "./shared/layout/default-layout.component";
@@ -61,8 +60,6 @@ export const executionLevelRoutes: Routes = [
 
 
 export const appRoutes: Routes = [
-    {path: "login", component: LoginComponent},
-
     // Authenticated routes
     {
         path: '',

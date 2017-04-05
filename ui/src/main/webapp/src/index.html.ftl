@@ -14,7 +14,7 @@
             'REST_BASE': '${apiServerUrl}',
             'GRAPH_REST_BASE': '${graphApiServerUrl}',
             'STATIC_REPORTS_BASE': '${staticReportServerUrl}',
-            'SSO_MODE': 'check-sso'
+            'SSO_MODE': 'login-required'
         };
     </script>
 
