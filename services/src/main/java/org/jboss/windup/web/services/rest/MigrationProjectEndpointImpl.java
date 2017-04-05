@@ -12,12 +12,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.PathParam;
 
 import org.jboss.windup.util.exception.WindupException;
 
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
-import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.service.AnalysisContextService;
 import org.jboss.windup.web.services.service.MigrationProjectService;
@@ -95,4 +95,12 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
         this.migrationProjectService.deleteProject(project);
     }
 
+    @Override
+    public Long getProjectIdByName(String title){
+        String jql = "SELECT id FROM MigrationProject p WHERE LOWER(p.title) = LOWER(:title)";
+        List<Long> ids = this.entityManager.createQuery(jql, Long.class)
+                .setParameter("title", title)
+                .getResultList();
+        return ids.isEmpty() ? null : ids.get(0);
+    }
 }
