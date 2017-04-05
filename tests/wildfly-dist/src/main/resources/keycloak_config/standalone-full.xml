@@ -484,7 +484,7 @@
                 <auth-server-url>${keycloak.server.url}</auth-server-url>
                 <public-client>true</public-client>
                 <ssl-required>EXTERNAL</ssl-required>
-                <resource>rhamt-web/api</resource>
+                <resource>rhamt-web</resource>
             </secure-deployment>
         </subsystem>
     </profile>

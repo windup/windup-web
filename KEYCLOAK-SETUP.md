@@ -86,7 +86,5 @@ https://access.redhat.com/documentation/en/red-hat-single-sign-on/7.0/single/get
       ```
 
 * Now **copy secure-deployment configuration for `rhamt-web/api`**.
-  * Copy `<secure-deployment name="rhamt-web.war">` and insert it below, use name **rhamt-web/api** instead of **rhamt-web**.
-  * Change `<resource>` name to `rhamt-web/api`
-
-
+  * Copy `<secure-deployment name="rhamt-web.war">` and insert it below, use name **rhamt-web/api.war** instead of **rhamt-web.war**.
+  * All remaining configuration will be the same, only the name changes
