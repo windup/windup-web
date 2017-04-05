@@ -11,14 +11,8 @@
         <div class="form-group">
             <label class="col-md-2 control-label" for="idProjectTitle">Project Title</label>
             <div class="col-md-8">
-                <input #projectTitleControl="ngModel"
-                       name="projectTitle"
-                       [(ngModel)]="model.title"
-                       required
-                       minlength="1"
-                       maxlength="128"
-                       type="text"
-                       id="idProjectTitle"
+                <input #projectTitleControl="ngModel" name="projectTitle" id="idProjectTitle" [(ngModel)]="model.title"
+                       required projectNameNotUsed minlength="1" maxlength="128" type="text"
                        class="form-control">
             </div>
             <span [class.hidden]="!hasError(projectTitleControl)" class="help-block">
