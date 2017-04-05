@@ -125,6 +125,7 @@ import {ExecutionApplicationListComponent} from "./reports/execution-application
 import {SourceResolve} from "./reports/source/source.resolve";
 import {ExecutionResolve} from "./executions/execution.resolve";
 import {CacheService, CacheServiceInstance} from "./shared/cache.service";
+import {ProjectNameNotExistsValidator} from "./shared/validators/project-name-not-exists.validator";
 
 /**
  * Load all mapping data from the generated files.
@@ -151,6 +152,7 @@ initializeModelMappingData();
     declarations: [
         // Directives
         InViewport,
+        ProjectNameNotExistsValidator,
 
         // pages
         AppComponent,

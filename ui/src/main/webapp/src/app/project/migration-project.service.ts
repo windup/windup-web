@@ -21,6 +21,7 @@ export class MigrationProjectService extends AbstractService {
     private CREATE_MIGRATION_PROJECT_URL = "/migrationProjects/create";
     private UPDATE_MIGRATION_PROJECT_URL = "/migrationProjects/update";
     private DELETE_MIGRATION_PROJECT_URL = '/migrationProjects/delete';
+    private GET_ID_BY_NAME_URL = '/migrationProjects/id-by-name';
 
     private monitoredProjects = new Map<number, MigrationProject>();
 
@@ -137,6 +138,12 @@ export class MigrationProjectService extends AbstractService {
 
     stopMonitoringProject(project: MigrationProject) {
         this.monitoredProjects.delete(project.id);
+    }
+
+    getIdByName(name: string): Observable<number> | null {
+        return this._http.get(Constants.REST_BASE + this.GET_ID_BY_NAME_URL + "/" + encodeURIComponent(name))
+            .map(res => <number> res.json())
+            .catch(this.handleError);
     }
 }
 
