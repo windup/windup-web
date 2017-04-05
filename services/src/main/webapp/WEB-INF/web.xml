@@ -24,16 +24,6 @@
         <url-pattern>/static-report/*</url-pattern>
     </servlet-mapping>
 
-    <servlet-mapping>
-        <servlet-name>org.jboss.windup.web.services.rest.RestApplication</servlet-name>
-        <url-pattern>/*</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>org.jboss.windup.web.services.rest.RestApplicationFurnace</servlet-name>
-        <url-pattern>/furnace/*</url-pattern>
-    </servlet-mapping>
-
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>secured</web-resource-name>

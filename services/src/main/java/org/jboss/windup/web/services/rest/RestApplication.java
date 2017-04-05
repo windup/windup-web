@@ -6,5 +6,5 @@ import javax.ws.rs.core.Application;
 @ApplicationPath(RestApplication.REST_BASE)
 public class RestApplication extends Application
 {
-    public static final String REST_BASE = "/rest";
+    public static final String REST_BASE = "/";
 }
