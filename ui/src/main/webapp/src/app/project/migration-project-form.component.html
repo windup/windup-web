@@ -12,10 +12,13 @@
             <label class="col-md-2 control-label" for="idProjectTitle">Project Title</label>
             <div class="col-md-8">
                 <input #projectTitleControl="ngModel" name="projectTitle" id="idProjectTitle" [(ngModel)]="model.title"
-                       required projectNameNotUsed minlength="1" maxlength="128" type="text"
+                       required wuProjectNameNotUsed minlength="1" maxlength="128" type="text"
                        class="form-control">
             </div>
-            <span [class.hidden]="!hasError(projectTitleControl)" class="help-block">
+            <span [class.hidden]="!titleIsDuplicated(projectTitleControl)" class="help-block">
+                The title must be unique
+            </span>
+            <span [class.hidden]="titleIsDuplicated(projectTitleControl) || !hasError(projectTitleControl)" class="help-block">
                 The title must be greater than 3 characters long and fewer than 128 characters.
             </span>
         </div>
