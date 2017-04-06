@@ -37,7 +37,7 @@ public class Deployments
      */
     public static WebArchive createDeploymentInMemory()
     {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "rhamt-web/api.war");
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "api.war");
         PomEquippedResolveStage pom = Maven.resolver().loadPomFromFile("pom.xml");
         File[] files = pom.importRuntimeDependencies().resolve().withTransitivity().asFile();
         war.addAsLibraries(files);

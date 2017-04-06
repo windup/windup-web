@@ -478,7 +478,7 @@
             </secure-deployment>
 
 
-            <secure-deployment name="rhamt-web/api.war">
+            <secure-deployment name="api.war">
                 <realm>rhamt</realm>
                 <realm-public-key>${keycloak.realm.public.key}</realm-public-key>
                 <auth-server-url>${keycloak.server.url}</auth-server-url>
