@@ -58,6 +58,8 @@ public class ReportFilterDTOImpl implements ReportFilterDTO
     public static ReportFilterDTO fromMap(Map<String, Object> map)
     {
         ReportFilterDTOImpl filter = new ReportFilterDTOImpl();
+        if (map == null)
+            return filter;
 
         if (map.containsKey("selectedApplications")) {
             filter.selectedApplications.addAll((ArrayList<String>)map.get("selectedApplications"));

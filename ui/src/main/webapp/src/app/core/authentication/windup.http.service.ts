@@ -1,5 +1,8 @@
 import {Injectable} from "@angular/core";
-import {Http, Request, ConnectionBackend, RequestOptions, RequestOptionsArgs, Response, Headers} from "@angular/http";
+import {
+    Http, Request, ConnectionBackend, RequestOptions, RequestOptionsArgs, Response, Headers,
+    RequestMethod
+} from "@angular/http";
 
 import {KeycloakService} from "./keycloak.service";
 import {Observable} from 'rxjs/Observable';
@@ -31,14 +34,27 @@ export class WindupHttpService extends Http {
         });
     }
 
-    private configureRequest(f:Function, url:string | Request, options:RequestOptionsArgs = {}, body?: any): Observable<Response> {
+    private configureRequest(method:RequestMethod, f:Function, url:string | Request, options:RequestOptionsArgs = {}, body?: any): Observable<Response> {
         return (this.setToken(options) as Observable<Response>).flatMap(options => {
             return new Observable<Response>((observer) => {
+                let bodyRequired = false;
+                if (method != null) {
+                    switch (method) {
+                        case RequestMethod.Post:
+                        case RequestMethod.Put:
+                        case RequestMethod.Patch:
+                            bodyRequired = true;
+                            break;
+                        default:
+                            bodyRequired = false;
+                    }
+                }
+
                 let result;
-                if (typeof body === 'undefined') {
-                    result = f.apply(this, [url, options]);
-                } else {
+                if (bodyRequired) {
                     result = f.apply(this, [url, body, options]);
+                } else {
+                    result = f.apply(this, [url, options]);
                 }
 
                 result.subscribe(
@@ -57,55 +73,55 @@ export class WindupHttpService extends Http {
      * of {@link BaseRequestOptions} before performing the request.
      */
     request(url: string | Request, options?: RequestOptionsArgs): Observable<Response> {
-        return this.configureRequest(super.request, url, options);
+        return this.configureRequest(null, super.request, url, options);
     }
 
     /**
      * Performs a request with `get` http method.
      */
     get(url: string, options?: RequestOptionsArgs): Observable<Response> {
-        return this.configureRequest(super.get, url, options);
+        return this.configureRequest(RequestMethod.Get, super.get, url, options);
     }
 
     /**
      * Performs a request with `post` http method.
      */
     post(url: string, body: any, options?: RequestOptionsArgs): Observable<Response> {
-        return this.configureRequest(super.post, url, options, body);
+        return this.configureRequest(RequestMethod.Post, super.post, url, options, body);
     }
 
     /**
      * Performs a request with `put` http method.
      */
     put(url: string, body: any, options?: RequestOptionsArgs): Observable<Response> {
-        return this.configureRequest(super.put, url, options, body);
+        return this.configureRequest(RequestMethod.Put, super.put, url, options, body);
     }
 
     /**
      * Performs a request with `delete` http method.
      */
     delete(url: string, options?: RequestOptionsArgs): Observable<Response> {
-        return this.configureRequest(super.delete, url, options);
+        return this.configureRequest(RequestMethod.Delete, super.delete, url, options);
     }
 
     /**
      * Performs a request with `patch` http method.
      */
     patch(url: string, body: any, options?: RequestOptionsArgs): Observable<Response> {
-        return this.configureRequest(super.patch, url, options, body);
+        return this.configureRequest(RequestMethod.Patch, super.patch, url, options, body);
     }
 
     /**
      * Performs a request with `head` http method.
      */
     head(url: string, options?: RequestOptionsArgs): Observable<Response> {
-        return this.configureRequest(super.head, url, options);
+        return this.configureRequest(RequestMethod.Head, super.head, url, options);
     }
 
     /**
      * Performs a request with `options` http method.
      */
     options(url: string, options?: RequestOptionsArgs): Observable<Response> {
-        return this.configureRequest(super.options, url, options);
+        return this.configureRequest(RequestMethod.Options, super.options, url, options);
     }
 }
