@@ -20,7 +20,7 @@ import java.util.Collection;
 @Produces("application/json")
 public interface RegisteredApplicationEndpoint
 {
-    String REGISTERED_APPLICATIONS = "/registeredApplications";
+    String REGISTERED_APPLICATIONS = "registeredApplications";
 
     @GET
     Collection<RegisteredApplication> getAllApplications();

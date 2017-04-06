@@ -82,12 +82,44 @@ public class FreemarkerServlet extends freemarker.ext.servlet.FreemarkerServlet
 
             String serverURI = request.getRequestURI();
             String serverAddress = request.getRequestURL().toString().replace(serverURI, "");
+            String serverAddressWithContextPath = serverAddress.concat(request.getContextPath());
 
-            hashModel.put("serverUrl", serverAddress);
+            hashModel.put("serverUrl", serverAddressWithContextPath);
+            hashModel.put("basePath", request.getContextPath() + "/");
+
+            /*
+             * 1) Read env. variable, if set,
+             * 2) If not, use system property rhamt.apiServer.url as fallback,
+             * 3) If system property not set, use current address + rhamt-web-services as fallback
+             */
+            String apiServerUrl = this.readEnvVariable(
+                    "RHAMT_API_SERVER_URL",
+                    System.getProperty("rhamt.apiServer.url", serverAddress + "/rhamt-web/api")
+            );
+
+            hashModel.put("apiServerUrl", apiServerUrl);
+            hashModel.put("graphApiServerUrl", apiServerUrl.concat("/furnace"));
+            hashModel.put("staticReportServerUrl", apiServerUrl.concat("/static-report"));
         }
 
         deriveResponseContentType(request, response);
         return templateModel;
+    }
+
+    /**
+     * Reads env. variable, if set. If not, uses fallbackValue
+     */
+    protected String readEnvVariable(String envVariableName, String fallbackValue)
+    {
+        String value = System.getenv(envVariableName);
+
+        if (value == null)
+        {
+            LOG.info("Env. variable " + envVariableName + " not set, using fallback value");
+            value = fallbackValue;
+        }
+
+        return value;
     }
 
     @Override

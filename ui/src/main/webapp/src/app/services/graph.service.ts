@@ -8,7 +8,7 @@ import {BaseModel} from "./graph/base.model";
 
 @Injectable()
 export class GraphService extends AbstractService {
-    private static WINDUP_REST_URL = Constants.REST_SERVER + "/windup-web-services/rest-furnace";
+    private static WINDUP_REST_URL = Constants.GRAPH_REST_BASE;
     private static GRAPH_ENDPOINT_URL = `${GraphService.WINDUP_REST_URL}/graph/{execID}/by-type/{type}`;
 
     constructor(private _http: Http, private _graphJsonToModelService: GraphJSONToModelService<any>) {

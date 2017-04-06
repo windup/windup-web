@@ -25,7 +25,7 @@ import org.jboss.windup.web.services.model.RegisteredApplication;
 @Produces("application/json")
 public interface MigrationProjectRegisteredApplicationsEndpoint
 {
-    String PROJECT_APPLICATIONS = "/migrationProjects/{projectId}/registeredApplications";
+    String PROJECT_APPLICATIONS = "migrationProjects/{projectId}/registeredApplications";
 
     /**
      * Gets the list of all registered applications.

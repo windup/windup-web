@@ -32,7 +32,7 @@ import java.util.logging.Logger;
 public class RestApplicationFurnace extends Application {
     private static Logger LOG = Logger.getLogger(RestApplicationFurnace.class.getName());
 
-    public static final String REST_BASE = "/rest-furnace";
+    public static final String REST_BASE = "/furnace";
 
     @Inject @FromFurnace
     private GraphResource graphResource;

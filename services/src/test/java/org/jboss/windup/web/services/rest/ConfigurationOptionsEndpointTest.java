@@ -36,7 +36,7 @@ public class ConfigurationOptionsEndpointTest extends AbstractTest
     public void testConfigurationOptionsList() throws Exception
     {
         ResteasyClient client = ServiceTestUtil.getResteasyClient();
-        String uri = contextPath + "rest/" + ConfigurationOptionsEndpoint.CONFIGURATION_OPTIONS_PATH;
+        String uri = contextPath + ConfigurationOptionsEndpoint.CONFIGURATION_OPTIONS_PATH;
         ResteasyWebTarget target = client.target(uri);
         Response response = target.request().get();
         Assert.assertEquals(200, response.getStatus());
@@ -79,7 +79,7 @@ public class ConfigurationOptionsEndpointTest extends AbstractTest
 
     private boolean validateOption(String name, String value) {
         ResteasyClient client = ServiceTestUtil.getResteasyClient();
-        String uri = contextPath + "rest/" + ConfigurationOptionsEndpoint.CONFIGURATION_OPTIONS_PATH + "/" + ConfigurationOptionsEndpoint.VALIDATE_OPTION;
+        String uri = contextPath + ConfigurationOptionsEndpoint.CONFIGURATION_OPTIONS_PATH + "/" + ConfigurationOptionsEndpoint.VALIDATE_OPTION;
         ResteasyWebTarget target = client.target(uri);
 
         AdvancedOption option = new AdvancedOption();
