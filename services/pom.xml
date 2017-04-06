@@ -251,7 +251,7 @@
                                     <type>zip</type>
                                 </artifactItem>
                             </artifactItems>
-                            <outputDirectory>${project.build.directory}/${build.finalName}/WEB-INF/</outputDirectory>
+                            <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/</outputDirectory>
                             <overWriteReleases>true</overWriteReleases>
                             <overWriteSnapshots>true</overWriteSnapshots>
                         </configuration>
@@ -272,7 +272,7 @@
                         <inherited>false</inherited>
                         <configuration>
                             <overwrite>false</overwrite>
-                            <addonRepository>${project.build.directory}/${build.finalName}/WEB-INF/windup-distribution-${version.windup}/addons</addonRepository>
+                            <addonRepository>${project.build.directory}/${project.build.finalName}/WEB-INF/${windup.distribution.name}-${version.windup}/addons</addonRepository>
                             <addonIds>
                                 <addonId>org.jboss.windup.web.addons:windup-web-support,${project.version}</addonId>
                             </addonIds>
@@ -291,7 +291,7 @@
                         </goals>
                         <configuration>
                             <tasks>
-                                <move file="${project.build.directory}/${build.finalName}/WEB-INF/windup-distribution-${version.windup}" tofile="${project.build.directory}/${project.build.finalName}/WEB-INF/windup-distribution" />
+                                <move file="${project.build.directory}/${project.build.finalName}/WEB-INF/${windup.distribution.name}-${version.windup}" tofile="${project.build.directory}/${project.build.finalName}/WEB-INF/${windup.distribution.name}" />
                             </tasks>
                         </configuration>
                     </execution>
