@@ -1,6 +1,6 @@
 <nav class="navbar navbar-default navbar-pf" role="navigation">
     <div class="collapse navbar-collapse navbar-collapse-1">
-        <ul class="nav navbar-nav navbar-primary">
+        <ul class="nav navbar-nav navbar-primary" *ngIf="showMenuItems">
             <li [routerLinkActive]="['active']" class="home">
                 <a [routerLink]="['/project-list']">
                     <span class="fa-fw pficon pficon-home" aria-hidden="true"></span>
@@ -9,6 +9,11 @@
             </li>
             <ng-content></ng-content>
         </ul>
+        <div *ngIf="!showMenuItems" id="header-logo-wrapper">
+            <a [routerLink]="['/']">
+                <div id="header-logo"><strong>Red Hat Application Migration Toolkit</strong> - Web Console</div>
+            </a>
+        </div>
         <ul class="nav navbar-nav navbar-utility">
             <li [routerLinkActive]="['active']">
                 <a [routerLink]="['/executions']">All Executions</a>

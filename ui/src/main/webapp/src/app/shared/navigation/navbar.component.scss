@@ -50,3 +50,21 @@ span.pficon-home {
     background-color: $navbar-hover-item-background-color;
   }
 }
+
+#header-logo {
+  /* background-image: url('../../../../img/Logotype_RH_AMT_RGB_White.svg'); */
+  height: 60px;
+  padding-left: 30px;
+}
+
+#header-logo-wrapper a {
+  font-size: 18px;
+  vertical-align: middle;
+  line-height: 60px;
+
+  color: $navbar-text-color;
+
+  &:hover, &:focus {
+    text-decoration: none;
+  }
+}

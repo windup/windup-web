@@ -1,4 +1,4 @@
-import {Component, OnInit, ElementRef} from '@angular/core';
+import {Component, OnInit, ElementRef, Input} from '@angular/core';
 import {KeycloakService} from "../../core/authentication/keycloak.service";
 import * as $ from 'jquery';
 import 'bootstrap';
@@ -9,6 +9,9 @@ import 'bootstrap';
     styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent implements OnInit {
+    @Input()
+    public showMenuItems: boolean = true;
+
     constructor(private _keycloak: KeycloakService, private _element: ElementRef) {
 
     }
