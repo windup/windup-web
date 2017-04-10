@@ -183,6 +183,7 @@ public class RegisteredApplicationService
         application.setMigrationProject(project);
         project.addApplication(application);
         project.setLastModified(new GregorianCalendar());
+        entityManager.merge(project);
 
         application.setRegistrationType(RegisteredApplication.RegistrationType.PATH);
 
