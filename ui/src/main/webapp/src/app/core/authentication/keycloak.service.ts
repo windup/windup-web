@@ -3,6 +3,7 @@ import {Constants} from "../../constants";
 import {Observable} from "rxjs/Observable";
 import {Router} from "@angular/router";
 import IKeycloak = KeycloakModule.IKeycloak;
+import {RouteHistoryService} from "../routing/route-history.service";
 
 @Injectable()
 export class KeycloakService {
@@ -15,7 +16,7 @@ export class KeycloakService {
     protected static KEYCLOAK_FILE = 'keycloak.json';
     protected static TOKEN_MIN_VALIDITY_MINUTES = 5;
 
-    public constructor(private _router: Router) {
+    public constructor(private _router: Router, private _history: RouteHistoryService) {
         if (!Keycloak)
             throw new Error("Keycloak class not defined; is Keycloak service running?");
 
@@ -68,14 +69,22 @@ export class KeycloakService {
         return this.initObservable;
     }
 
+    protected getRedirectUrl(): string {
+        let redirectUrl = this._history.getPreviousRouteOrDefaultUrl(0, Constants.AUTH_REDIRECT_URL);
+        return redirectUrl;
+    }
+
     protected onLoginSuccess(isLoggedIn) {
         if (!isLoggedIn) {
             console.warn('Login success, not logged in');
-            this._router.navigate(['/login']);
+            this._router.navigateByUrl(this.keyCloak.authServerUrl);
+//            this._router.navigate(['/login']);
         } else {
+            let redirectUrl = this.getRedirectUrl();
+
             this.auth.loggedIn = true;
             this.auth.authz = this.keyCloak;
-            this.auth.logoutUrl =  this.keyCloak.authServerUrl + "/realms/windup/tokens/logout?redirect_uri=" + Constants.AUTH_REDIRECT_URL;
+            this.auth.logoutUrl =  this.keyCloak.authServerUrl + "/realms/windup/tokens/logout?redirect_uri=" + redirectUrl;
 
             this.keyCloak.onAuthLogout = function () {
                 this.logout();
@@ -94,7 +103,7 @@ export class KeycloakService {
         this.auth.loggedIn = false;
 
         let promise = this.keyCloak.login(<KeycloakModule.LoginOptions>{
-            redirectUri: Constants.AUTH_REDIRECT_URL
+            redirectUri: this.getRedirectUrl()
         });
 
         let realPromise = this.transformKeycloakPromise(promise);

@@ -45,7 +45,6 @@ import {PopoverComponent} from "./shared/popover.component";
 import {JsTreeAngularWrapperComponent} from "./shared/js-tree-angular-wrapper.component";
 import {PackageRegistryService} from "./analysis-context/package-registry.service";
 import {TechnologiesReportComponent} from "./reports/technologies/technologies-report.component";
-import {LoginComponent} from "./components/login.component";
 import {LoggedInGuard} from "./core/authentication/logged-in.guard";
 import {MigrationIssuesComponent} from "./reports/migration-issues/migration-issues.component";
 import {MigrationIssuesTableComponent} from "./reports/migration-issues/migration-issues-table.component";
@@ -156,7 +155,6 @@ initializeModelMappingData();
 
         // pages
         AppComponent,
-        LoginComponent,
         AnalysisContextFormComponent,
         ConfigurationComponent,
         MigrationProjectFormComponent,
@@ -195,11 +193,9 @@ initializeModelMappingData();
         NotificationComponent,
         PopoverComponent,
         JsTreeAngularWrapperComponent,
-        LoginComponent,
         JsTreeAngularWrapperComponent,
         MigrationIssuesComponent,
         MigrationIssuesTableComponent,
-        LoginComponent,
         ContextMenuComponent,
         ProjectLayoutComponent,
         ExecutionsLayoutComponent,

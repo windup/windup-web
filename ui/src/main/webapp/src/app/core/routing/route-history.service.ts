@@ -50,6 +50,21 @@ export class RouteHistoryService {
     }
 
     /**
+     * Returns previous route, if there is any. If not, returs defaultUrl
+     *
+     * @param steps {number}
+     * @param defaultUrl {string}
+     * @returns {string}
+     */
+    public getPreviousRouteOrDefaultUrl(steps: number = 1, defaultUrl: string) {
+        if (steps > this.countPreviousRoutes) {
+            return defaultUrl;
+        }
+
+        return this.getPreviousRoute(steps);
+    }
+
+    /**
      * Navigates to previous route if exists or to route specified in parameter
      *
      * @param route
