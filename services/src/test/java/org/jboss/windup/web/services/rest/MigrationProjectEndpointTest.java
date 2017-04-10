@@ -160,16 +160,24 @@ public class MigrationProjectEndpointTest extends AbstractTest
     public void testUpdateProject()
     {
         MigrationProject project = this.dataProvider.getMigrationProject();
-        String updatedTitle = "This should be updated title";
-        project.setTitle(updatedTitle);
 
-        MigrationProject resultOfUpdate = this.migrationProjectEndpoint.updateMigrationProject(project);
-        MigrationProject updatedProject = this.migrationProjectEndpoint.getMigrationProject(project.getId());
+        try
+        {
+            String updatedTitle = "This should be updated title";
+            project.setTitle(updatedTitle);
 
-        Assert.assertEquals(updatedTitle, resultOfUpdate.getTitle());
-        Assert.assertEquals(updatedTitle, updatedProject.getTitle());
+            MigrationProject resultOfUpdate = this.migrationProjectEndpoint.updateMigrationProject(project);
+            MigrationProject updatedProject = this.migrationProjectEndpoint.getMigrationProject(project.getId());
 
-        MigrationProjectAssertions.assertLastModifiedIsUpdated(project, resultOfUpdate);
-        MigrationProjectAssertions.assertLastModifiedIsUpdated(project, updatedProject);
+            Assert.assertEquals(updatedTitle, resultOfUpdate.getTitle());
+            Assert.assertEquals(updatedTitle, updatedProject.getTitle());
+
+            MigrationProjectAssertions.assertLastModifiedIsUpdated(project, resultOfUpdate);
+            MigrationProjectAssertions.assertLastModifiedIsUpdated(project, updatedProject);
+        }
+        finally
+        {
+            this.migrationProjectEndpoint.deleteProject(project);
+        }
     }
 }
