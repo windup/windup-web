@@ -5,6 +5,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
+import org.jboss.windup.web.services.MigrationProjectAssertions;
 import org.jboss.windup.web.services.ServiceTestUtil;
 import org.jboss.windup.web.services.data.DataProvider;
 import org.jboss.windup.web.services.data.ServiceConstants;
@@ -55,26 +56,7 @@ public class WindupEndpointTest extends AbstractTest
         Assert.assertTrue(status.getTotalWork() > 10);
         Assert.assertTrue(status.getWorkCompleted() > 9);
 
-        this.assertLastModifiedIsUpdated(project);
-    }
-
-    /**
-     * Asserts lastModified field of project is updated
-     */
-    protected void assertLastModifiedIsUpdated(MigrationProject originalProject)
-    {
-        MigrationProject updatedProject = this.getProject(originalProject.getId());
-
-        Assert.assertNotNull(updatedProject.getLastModified());
-        Assert.assertTrue(updatedProject.getLastModified().after(originalProject.getLastModified()));
-    }
-
-
-    /**
-     * Gets project
-     */
-    protected MigrationProject getProject(Long id)
-    {
-        return this.migrationProjectEndpoint.getMigrationProject(id);
+        MigrationProject updatedProject = this.migrationProjectEndpoint.getMigrationProject(project.getId());
+        MigrationProjectAssertions.assertLastModifiedIsUpdated(project, updatedProject);
     }
 }

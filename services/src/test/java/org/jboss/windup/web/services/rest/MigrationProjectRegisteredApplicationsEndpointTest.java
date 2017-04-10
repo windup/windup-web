@@ -20,6 +20,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.jboss.windup.web.services.AbstractTest;
+import org.jboss.windup.web.services.MigrationProjectAssertions;
 import org.jboss.windup.web.services.ServiceTestUtil;
 import org.jboss.windup.web.services.data.DataProvider;
 import org.jboss.windup.web.services.data.ServiceConstants;
@@ -94,7 +95,8 @@ public class MigrationProjectRegisteredApplicationsEndpointTest extends Abstract
             Assert.assertTrue(foundPath1);
             Assert.assertTrue(foundPath2);
 
-            this.assertLastModifiedIsUpdated(dummyProject);
+            MigrationProject updatedProject = this.migrationProjectEndpoint.getMigrationProject(dummyProject.getId());
+            MigrationProjectAssertions.assertLastModifiedIsUpdated(dummyProject, updatedProject);
         }
         finally
         {
@@ -139,7 +141,8 @@ public class MigrationProjectRegisteredApplicationsEndpointTest extends Abstract
                             DataProvider.TINY_SAMPLE_PATH),
                             new FileInputStream(application.getInputPath()));
 
-                this.assertLastModifiedIsUpdated(dummyProject);
+                MigrationProject updatedProject = this.migrationProjectEndpoint.getMigrationProject(dummyProject.getId());
+                MigrationProjectAssertions.assertLastModifiedIsUpdated(dummyProject, updatedProject);
             }
             catch (Throwable t)
             {
@@ -173,37 +176,7 @@ public class MigrationProjectRegisteredApplicationsEndpointTest extends Abstract
 
         Assert.assertEquals(HttpStatus.SC_BAD_REQUEST, response.getStatus());
 
-        this.assertLastModifiedIsNotUpdated(dummyProject);
-    }
-
-    /**
-     * Asserts lastModified field of project is updated
-     */
-    protected void assertLastModifiedIsUpdated(MigrationProject originalProject)
-    {
-        MigrationProject updatedProject = this.getProject(originalProject.getId());
-
-        Assert.assertNotNull(updatedProject.getLastModified());
-        Assert.assertTrue(updatedProject.getLastModified().after(originalProject.getLastModified()));
-
-    }
-
-    /**
-     * Asserts lastModified field of project is not updated
-     */
-    protected void assertLastModifiedIsNotUpdated(MigrationProject originalProject)
-    {
-        MigrationProject updatedProject = this.getProject(originalProject.getId());
-
-        Assert.assertNotNull(updatedProject.getLastModified());
-        Assert.assertEquals(updatedProject.getLastModified(), originalProject.getLastModified());
-    }
-
-    /**
-     * Gets project
-     */
-    protected MigrationProject getProject(Long id)
-    {
-        return this.migrationProjectEndpoint.getMigrationProject(id);
+        MigrationProject updatedProject = this.migrationProjectEndpoint.getMigrationProject(dummyProject.getId());
+        MigrationProjectAssertions.assertLastModifiedIsNotUpdated(dummyProject, updatedProject);
     }
 }
