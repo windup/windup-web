@@ -7,32 +7,19 @@
         <wu-tab [tabTitle]="'Upload'">
             <div class="row description">
                 <div class="col-md-10">
-                    <div class="alert" i18n="Upload Description Text">
+                    <div i18n="Upload Description Text">
                         Choose files to upload to your project. You can select more than one file at a time. You can
                         also drag and drop files to start uploading.
                     </div>
                 </div>
-            </div>
-
-            <div class="form-group" [ngClass]="{'has-error': hasError(registrationForm.get('fileUpload'))}" style="margin-bottom: 0;">
-                <div class="col-md-10">
+                <div class="col-md-2">
                     <label class="btn btn-primary">
                         <input id="fileUpload" type="file" ng2FileSelect class="form-control" name="files"
                                [attr.multiple]="isAllowUploadMultiple ? true : null"
                                [uploader]="multipartUploader"
                                style="position: fixed; top: -10000px;">
-                        <span i18n>Select a file to upload...</span>
+                        <span i18n="Choose Files Button">Choose files</span>
                     </label>
-                    <div ng2FileDrop [uploader]="multipartUploader" style="border: dotted 3px lightgray;" class="well filesDropArea" style="border: 2px dashed lightgray; background-color: #FAFAFA">
-                        <strong i18n>...or drag and drop the files here.</strong>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <div class="col-md-10">
-                    <button class="btn btn-primary" type="submit" (click)="changeMode('UPLOADED')" i18n>Register Applications</button>
-                    <button (click)="cancelRegistration()" type="button" class="btn btn-default" i18n>Cancel</button>
                 </div>
             </div>
 
@@ -45,13 +32,27 @@
                     <wu-upload-progressbar [uploader]="multipartUploader"></wu-upload-progressbar>
                 </div>
             </div>
+
+            <div class="form-group" [ngClass]="{'has-error': hasError(registrationForm.get('fileUpload'))}" style="margin-bottom: 0;">
+                <div class="col-md-10">
+                    <div ng2FileDrop [uploader]="multipartUploader" class="well filesDropArea">
+                        <strong i18n="Drag & Drop box description">Drop files here.</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-10">
+                    <button class="btn btn-primary" type="submit" (click)="changeMode('UPLOADED')" i18n>Register Applications</button>
+                    <button (click)="cancelRegistration()" type="button" class="btn btn-default" i18n>Cancel</button>
+                </div>
+            </div>
+
         </wu-tab>
         <wu-tab [tabTitle]="'Server Path'">
             <div class="row description">
                 <div class="col-md-10">
-                    <div class="alert" i18n="Server Path Description">
-                        Enter the server path containing your project applications.
-                    </div>
+                    <div i18n="Server Path Description">Enter the server path containing your project applications.</div>
                 </div>
             </div>
             <div class="form-group" [ngClass]="{'has-error': hasError(registrationForm.get('appPathToRegister'))}">
