@@ -11,9 +11,11 @@ import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.MigrationProject;
+import org.jboss.windup.web.services.model.RegisteredApplication;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -89,7 +91,7 @@ public class MigrationProjectService
     {
         /* TODO: This is workaround to remove report filters
            For some reason filter didn't get removed even though
-           both WidupExecution and ReportFilter have cascade REMOVE set....
+           both WindupExecution and ReportFilter have cascade REMOVE set....
 
            Without this workaround, org.h2.jdbc.JdbcSQLException exception will appear:
             " NULL not allowed for column "WINDUPEXECUTION_WINDUP_EXECUTION_ID"; SQL statement:
@@ -97,6 +99,12 @@ public class MigrationProjectService
         */
         project.getExecutions().forEach(execution -> {
             entityManager.remove(execution.getReportFilter());
+        });
+        
+        // removing all packages from packageMetadata due FK
+        project.getApplications().forEach( application -> {
+            application.getPackageMetadata().setPackages(Collections.emptySet());
+            entityManager.remove(application); 
         });
 
         this.getAnalysisContexts(project).forEach(context -> entityManager.remove(context));
@@ -109,4 +117,5 @@ public class MigrationProjectService
             projectDir.delete();
         }
     }
+    
 }
