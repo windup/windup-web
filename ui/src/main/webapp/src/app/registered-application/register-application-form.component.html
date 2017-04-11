@@ -45,7 +45,7 @@
                 <div class="col-md-offset-10 col-md-2">
                     <div class="button-container">
                         <button (click)="cancelRegistration()" type="button" class="btn btn-default">{{isInWizard ? 'Back' : 'Cancel'}}</button>
-                        <button class="btn btn-primary" type="submit" (click)="changeMode('UPLOADED')" i18n>{{isInWizard ? 'Next' : 'Save'}}</button>
+                        <button [attr.disabled]="!isValid" class="btn btn-primary" type="submit" (click)="changeMode('UPLOADED')" i18n>{{isInWizard ? 'Next' : 'Save'}}</button>
                     </div>
                 </div>
             </div>
@@ -85,7 +85,7 @@
                 <div class="col-md-offset-10 col-md-2">
                     <div class="button-container">
                         <button (click)="cancelRegistration()" type="button" class="btn btn-default">{{isInWizard ? 'Back' : 'Cancel'}}</button>
-                        <button class="btn btn-primary" type="submit" (click)="changeMode('PATH')">{{isInWizard ? 'Next' : 'Save'}}</button>
+                        <button [attr.disabled]="!isValid" class="btn btn-primary" type="submit" (click)="changeMode('PATH')">{{isInWizard ? 'Next' : 'Save'}}</button>
                     </div>
                 </div>
             </div>

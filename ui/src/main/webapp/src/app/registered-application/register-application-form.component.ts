@@ -141,4 +141,8 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     private changeMode(mode: RegistrationType) {
         this.mode = mode;
     }
+
+    public get isValid() {
+        return true;
+    }
 }
