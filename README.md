@@ -76,7 +76,7 @@ Running the webapp
         ```
         cp -r services/target/rhamt-web/api ~/apps/wildfly-10.1.0.Final/standalone/deployments/rhamt-web/api.war;
         touch ~/apps/wildfly-10.1.0.Final/standalone/deployments/rmaht-web/api.war.dodeploy;
-        cp -r ui/target/rhamt-web ~/apps/wildfly-10.1.0.Final/standalone/deployments/rmaht-web.war;
+        cp -r ui/target/rhamt-web ~/apps/wildfly-10.1.0.Final/standalone/deployments/rhamt-web.war;
         touch ~/apps/wildfly-10.1.0.Final/standalone/deployments/rhamt-web.war.dodeploy;
         ```
 
