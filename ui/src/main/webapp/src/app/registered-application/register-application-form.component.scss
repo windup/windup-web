@@ -26,13 +26,15 @@ ul#addAppModeTabs.nav.nav-tabs li.active a {
 
 .filesDropArea {
   background-color: #FDFDFD;
- // border-style: dashed;
-
-//  border: dotted 3px lightgray;
   border: 2px dashed lightgray;
-//  background-color: #FAFAFA;
+
+  height: 200px;
 }
 
 .row.description, .description .alert {
   margin-bottom: 0px !important;
+}
+
+.upload-button, .button-container {
+  float: right;
 }

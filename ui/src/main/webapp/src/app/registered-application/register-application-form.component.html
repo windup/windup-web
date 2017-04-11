@@ -13,7 +13,7 @@
                     </div>
                 </div>
                 <div class="col-md-2">
-                    <label class="btn btn-primary">
+                    <label class="btn btn-primary upload-button">
                         <input id="fileUpload" type="file" ng2FileSelect class="form-control" name="files"
                                [attr.multiple]="isAllowUploadMultiple ? true : null"
                                [uploader]="multipartUploader"
@@ -24,7 +24,7 @@
             </div>
 
             <div class="form-group">
-                <div class="col-md-10">
+                <div class="col-md-12">
                     <h4 i18n>Upload queue</h4>
                     <wu-upload-queue *ngIf="isAllowUploadMultiple" [uploader]="multipartUploader"></wu-upload-queue>
 
@@ -34,7 +34,7 @@
             </div>
 
             <div class="form-group" [ngClass]="{'has-error': hasError(registrationForm.get('fileUpload'))}" style="margin-bottom: 0;">
-                <div class="col-md-10">
+                <div class="col-md-12">
                     <div ng2FileDrop [uploader]="multipartUploader" class="well filesDropArea">
                         <strong i18n="Drag & Drop box description">Drop files here.</strong>
                     </div>
@@ -42,27 +42,29 @@
             </div>
 
             <div class="form-group">
-                <div class="col-md-10">
-                    <button class="btn btn-primary" type="submit" (click)="changeMode('UPLOADED')" i18n>Register Applications</button>
-                    <button (click)="cancelRegistration()" type="button" class="btn btn-default" i18n>Cancel</button>
+                <div class="col-md-offset-10 col-md-2">
+                    <div class="button-container">
+                        <button (click)="cancelRegistration()" type="button" class="btn btn-default">{{isInWizard ? 'Back' : 'Cancel'}}</button>
+                        <button class="btn btn-primary" type="submit" (click)="changeMode('UPLOADED')" i18n>{{isInWizard ? 'Next' : 'Save'}}</button>
+                    </div>
                 </div>
             </div>
 
         </wu-tab>
         <wu-tab [tabTitle]="'Server Path'">
             <div class="row description">
-                <div class="col-md-10">
-                    <div i18n="Server Path Description">Enter the server path containing your project applications.</div>
+                <div class="col-md-12">
+                    <label for="appPathToRegister" i18n="Server Path Description">Enter the server path containing your project applications.</label>
                 </div>
             </div>
             <div class="form-group" [ngClass]="{'has-error': hasError(registrationForm.get('appPathToRegister'))}">
-                <div class="col-md-10">
-                    <input  [(ngModel)]="fileInputPath" id="appPathToRegister" formControlName="appPathToRegister"
-                            type="text"
-                            class="form-control" />
+                <div class="col-md-12">
+                    <input [(ngModel)]="fileInputPath" id="appPathToRegister" formControlName="appPathToRegister"
+                           type="text"
+                           class="form-control" />
                     <span [class.hidden]="!hasError(registrationForm.get('appPathToRegister'))" class="help-block" i18n="Path Error">
                             The input path must exist on the server.
-                        </span>
+                    </span>
                 </div>
             </div>
             <div class="form-group"  *ngIf="isAllowUploadMultiple">
@@ -80,9 +82,11 @@
                 </div>
             </div>
             <div class="form-group">
-                <div class="col-md-10">
-                    <button class="btn btn-primary" type="submit" (click)="changeMode('PATH')" i18n>Register Applications</button>
-                    <button (click)="cancelRegistration()" type="button" class="btn btn-default" i18n="Cancel registration">Cancel</button>
+                <div class="col-md-offset-10 col-md-2">
+                    <div class="button-container">
+                        <button (click)="cancelRegistration()" type="button" class="btn btn-default">{{isInWizard ? 'Back' : 'Cancel'}}</button>
+                        <button class="btn btn-primary" type="submit" (click)="changeMode('PATH')">{{isInWizard ? 'Next' : 'Save'}}</button>
+                    </div>
                 </div>
             </div>
         </wu-tab>
