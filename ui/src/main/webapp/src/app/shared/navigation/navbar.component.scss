@@ -68,3 +68,41 @@ span.pficon-home {
     text-decoration: none;
   }
 }
+
+.pficon {
+  font-size: 17px;
+}
+
+.navbar-pf .navbar-nav>li>a.dropdown-toggle {
+  padding: 21px 14px;
+
+  &:hover {
+    color: #fff !important; // patternfly uses important, must override it
+  }
+}
+
+/* replace wrong patternfly styles: */
+/*@media (min-width: 768px) {
+  .navbar-pf .navbar-utility li.dropdown > .dropdown-toggle .pficon-user {
+    left: initial;
+    top: initial;
+  }
+}
+*/
+.navbar-pf .navbar-utility li.dropdown > .dropdown-toggle .pficon-user {
+  left: initial;
+  top: initial;
+  position: inherit;
+}
+
+ul.navbar-utility {
+  margin-right: 20px;
+}
+
+.navbar-pf .navbar-utility > li > a {
+  border: none;
+
+  &:hover {
+    background: none;
+  }
+}

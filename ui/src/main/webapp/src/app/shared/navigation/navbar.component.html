@@ -4,7 +4,7 @@
             <li [routerLinkActive]="['active']" class="home">
                 <a [routerLink]="['/project-list']">
                     <span class="fa-fw pficon pficon-home" aria-hidden="true"></span>
-                    Home
+                    Projects
                 </a>
             </li>
             <ng-content></ng-content>
@@ -17,6 +17,17 @@
         <ul class="nav navbar-nav navbar-utility">
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <span class="pficon pficon-help" aria-hidden="true"></span>
+                    <span class="sr-only">Help</span>
+                    <span class="caret" aria-hidden="true"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a target="_blank" i18n-href="RHAMT WC documentation link" href="https://access.redhat.com/documentation/en/red-hat-jboss-migration-toolkit/">User Guide</a></li>
+                    <li><a href="#">About</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                     <span class="pficon pficon-user"></span>
                     {{username}} <b class="caret"></b>
                 </a>
@@ -25,7 +36,7 @@
                         <a [routerLink]="['/configuration']" i18n="Rules configuration menu item">Rules Configuration</a>
                     </li>
                     <li>
-                        <a (click)="logout($event)" href="#" i81n="Logout menu item">Logout</a>
+                        <a (click)="logout($event)" href="#" i18n="Logout menu item">Logout</a>
                     </li>
                 </ul>
             </li>
