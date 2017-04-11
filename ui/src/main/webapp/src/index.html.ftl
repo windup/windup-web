@@ -1,6 +1,6 @@
 <html class="layout-pf layout-pf-fixed transitions">
 <head>
-    <title>Red Hat Application Migration Toolkit Web Console (RHAMT WC)</title>
+    <title>Red Hat Application Migration Toolkit Web Console (RHAMT)</title>
     <base href="${basePath}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="${keycloak.serverUrl}/js/keycloak.js"></script>
