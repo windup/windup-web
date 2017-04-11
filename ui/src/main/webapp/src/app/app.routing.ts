@@ -93,14 +93,14 @@ export const appRoutes: Routes = [
                         component: WizardComponent,
                         data: {
                             steps: [
-                                { name: 'Create New Project', path: 'create-project' },
+                                { name: 'Create new Project', path: 'create-project' },
                                 { name: 'Add Applications', path: 'add-applications' },
                                 { name: 'Configure Analysis', path: 'configure-analysis' }
                             ],
                             wizard: true
                         },
                         children: [
-                            { path: 'create-project', component: MigrationProjectFormComponent, data: {displayName: 'Create Project', wizard: true} },
+                            { path: 'create-project', component: MigrationProjectFormComponent, data: {displayName: 'Create new Project', wizard: true} },
                             {
                                 path: 'project/:projectId',
                                 resolve: { project: ProjectResolve },
