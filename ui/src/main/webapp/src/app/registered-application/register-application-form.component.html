@@ -41,15 +41,6 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <div class="col-md-offset-10 col-md-2">
-                    <div class="button-container">
-                        <button (click)="cancelRegistration()" type="button" class="btn btn-default">{{isInWizard ? 'Back' : 'Cancel'}}</button>
-                        <button [attr.disabled]="!isValid" class="btn btn-primary" type="submit" (click)="changeMode('UPLOADED')" i18n>{{isInWizard ? 'Next' : 'Save'}}</button>
-                    </div>
-                </div>
-            </div>
-
         </wu-tab>
         <wu-tab [tabTitle]="'Server Path'" [properties]="{mode: 'PATH'}">
             <div class="row description">
@@ -81,14 +72,6 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <div class="col-md-offset-10 col-md-2">
-                    <div class="button-container">
-                        <button (click)="cancelRegistration()" type="button" class="btn btn-default">{{isInWizard ? 'Back' : 'Cancel'}}</button>
-                        <button [attr.disabled]="!isValid" class="btn btn-primary" type="submit" (click)="changeMode('PATH')">{{isInWizard ? 'Next' : 'Save'}}</button>
-                    </div>
-                </div>
-            </div>
         </wu-tab>
     </wu-tab-container>
 
@@ -97,5 +80,15 @@
         <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
         {{errorMessage}}
     </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-10 col-md-2">
+            <div class="button-container">
+                <button (click)="cancelRegistration()" type="button" class="btn btn-default">{{isInWizard ? 'Back' : 'Cancel'}}</button>
+                <button [attr.disabled]="!isValid" class="btn btn-primary" type="submit">{{isInWizard ? 'Next' : 'Save'}}</button>
+            </div>
+        </div>
+    </div>
+
 </form>
 </div>
