@@ -1,4 +1,4 @@
-import {Component, OnInit, ElementRef, Input} from '@angular/core';
+import {Component, OnInit, ElementRef, Input, AfterViewInit} from '@angular/core';
 import {KeycloakService} from "../../core/authentication/keycloak.service";
 import * as $ from 'jquery';
 import 'bootstrap';
@@ -8,7 +8,7 @@ import 'bootstrap';
     templateUrl: './navbar.component.html',
     styleUrls: ['./navbar.component.scss']
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements AfterViewInit {
     @Input()
     public showMenuItems: boolean = true;
 
@@ -16,11 +16,12 @@ export class NavbarComponent implements OnInit {
 
     }
 
-    ngOnInit(): void {
+    ngAfterViewInit(): void {
         $(this._element.nativeElement).find('.dropdown-toggle').dropdown();
     }
 
     get username(): String {
+        console.log(this._keycloak.username);
         return this._keycloak.username;
     }
 
