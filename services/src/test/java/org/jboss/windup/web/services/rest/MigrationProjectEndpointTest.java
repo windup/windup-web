@@ -13,6 +13,7 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.windup.web.services.AbstractTest;
+import org.jboss.windup.web.services.MigrationProjectAssertions;
 import org.jboss.windup.web.services.ServiceTestUtil;
 import org.jboss.windup.web.services.data.DataProvider;
 import org.jboss.windup.web.services.data.ServiceConstants;
@@ -63,6 +64,8 @@ public class MigrationProjectEndpointTest extends AbstractTest
         Assert.assertEquals(1, apps.size());
         Assert.assertNotNull(apps.iterator().next());
         Assert.assertEquals(title, apps.iterator().next().getMigrationProject().getTitle());
+
+        // TODO: Assert created/lastModifier
 
         this.migrationProjectEndpoint.deleteProject(createdProject);
     }
@@ -145,6 +148,32 @@ public class MigrationProjectEndpointTest extends AbstractTest
 
             Assert.assertEquals(2L, (long) projectFromServer.applicationCount);
             Assert.assertEquals(project.getTitle(), projectFromServer.getMigrationProject().getTitle());
+        }
+        finally
+        {
+            this.migrationProjectEndpoint.deleteProject(project);
+        }
+    }
+
+    @Test
+    @RunAsClient
+    public void testUpdateProject()
+    {
+        MigrationProject project = this.dataProvider.getMigrationProject();
+
+        try
+        {
+            String updatedTitle = "This should be updated title";
+            project.setTitle(updatedTitle);
+
+            MigrationProject resultOfUpdate = this.migrationProjectEndpoint.updateMigrationProject(project);
+            MigrationProject updatedProject = this.migrationProjectEndpoint.getMigrationProject(project.getId());
+
+            Assert.assertEquals(updatedTitle, resultOfUpdate.getTitle());
+            Assert.assertEquals(updatedTitle, updatedProject.getTitle());
+
+            MigrationProjectAssertions.assertLastModifiedIsUpdated(project, resultOfUpdate);
+            MigrationProjectAssertions.assertLastModifiedIsUpdated(project, updatedProject);
         }
         finally
         {

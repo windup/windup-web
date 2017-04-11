@@ -12,6 +12,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.http.HttpStatus;
+import org.eclipse.core.internal.resources.Project;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -19,6 +20,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.jboss.windup.web.services.AbstractTest;
+import org.jboss.windup.web.services.MigrationProjectAssertions;
 import org.jboss.windup.web.services.ServiceTestUtil;
 import org.jboss.windup.web.services.data.DataProvider;
 import org.jboss.windup.web.services.data.ServiceConstants;
@@ -41,6 +43,7 @@ public class MigrationProjectRegisteredApplicationsEndpointTest extends Abstract
     private URL contextPath;
     private ResteasyClient client;
     private ResteasyWebTarget target;
+    private MigrationProjectEndpoint migrationProjectEndpoint;
     private MigrationProjectRegisteredApplicationsEndpoint migrationProjectRegisteredApplicationsEndpoint;
     private RegisteredApplicationEndpoint registeredApplicationEndpoint;
     private DataProvider dataProvider;
@@ -55,6 +58,7 @@ public class MigrationProjectRegisteredApplicationsEndpointTest extends Abstract
         this.dataProvider = new DataProvider(target);
 
         this.migrationProjectRegisteredApplicationsEndpoint = target.proxy(MigrationProjectRegisteredApplicationsEndpoint.class);
+        this.migrationProjectEndpoint = target.proxy(MigrationProjectEndpoint.class);
         this.registeredApplicationEndpoint = target.proxy(RegisteredApplicationEndpoint.class);
 
         this.dummyProject = this.dataProvider.getMigrationProject();
@@ -90,6 +94,9 @@ public class MigrationProjectRegisteredApplicationsEndpointTest extends Abstract
 
             Assert.assertTrue(foundPath1);
             Assert.assertTrue(foundPath2);
+
+            MigrationProject updatedProject = this.migrationProjectEndpoint.getMigrationProject(dummyProject.getId());
+            MigrationProjectAssertions.assertLastModifiedIsUpdated(dummyProject, updatedProject);
         }
         finally
         {
@@ -99,6 +106,7 @@ public class MigrationProjectRegisteredApplicationsEndpointTest extends Abstract
             }
         }
     }
+
 
     @Test
     @RunAsClient
@@ -132,6 +140,9 @@ public class MigrationProjectRegisteredApplicationsEndpointTest extends Abstract
                 ServiceTestUtil.assertFileContentsAreEqual(getClass().getResourceAsStream(
                             DataProvider.TINY_SAMPLE_PATH),
                             new FileInputStream(application.getInputPath()));
+
+                MigrationProject updatedProject = this.migrationProjectEndpoint.getMigrationProject(dummyProject.getId());
+                MigrationProjectAssertions.assertLastModifiedIsUpdated(dummyProject, updatedProject);
             }
             catch (Throwable t)
             {
@@ -164,5 +175,8 @@ public class MigrationProjectRegisteredApplicationsEndpointTest extends Abstract
         response.close();
 
         Assert.assertEquals(HttpStatus.SC_BAD_REQUEST, response.getStatus());
+
+        MigrationProject updatedProject = this.migrationProjectEndpoint.getMigrationProject(dummyProject.getId());
+        MigrationProjectAssertions.assertLastModifiedIsNotUpdated(dummyProject, updatedProject);
     }
 }

@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -105,6 +106,7 @@ public class RegisteredApplicationService
 
         RegisteredApplication application = this.createApplication(project);
         application.setRegistrationType(RegisteredApplication.RegistrationType.UPLOADED);
+        project.setLastModified(new GregorianCalendar());
         project.addApplication(application);
 
         this.uploadApplicationFile(inputParts.get(0), application, false);
@@ -138,6 +140,7 @@ public class RegisteredApplicationService
             registeredApplicationList.add(application);
         }
 
+        project.setLastModified(new GregorianCalendar());
         this.entityManager.merge(project);
 
         return registeredApplicationList;
@@ -179,6 +182,8 @@ public class RegisteredApplicationService
 
         application.setMigrationProject(project);
         project.addApplication(application);
+        project.setLastModified(new GregorianCalendar());
+        entityManager.merge(project);
 
         application.setRegistrationType(RegisteredApplication.RegistrationType.PATH);
 
@@ -205,6 +210,8 @@ public class RegisteredApplicationService
         application.setRegistrationType(RegisteredApplication.RegistrationType.PATH);
         application = this.entityManager.merge(application);
         this.enqueuePackageDiscovery(application);
+
+        application.getMigrationProject().setLastModified(new GregorianCalendar());
 
         return application;
     }
@@ -245,6 +252,7 @@ public class RegisteredApplicationService
 
         application.setRegistrationType(RegisteredApplication.RegistrationType.UPLOADED);
         this.uploadApplicationFile(inputParts.get(0), application, true);
+        application.getMigrationProject().setLastModified(new GregorianCalendar());
 
         return application;
     }
@@ -260,6 +268,7 @@ public class RegisteredApplicationService
             project.removeApplication(application);
             application = this.entityManager.merge(application);
 
+            project.setLastModified(new GregorianCalendar());
             this.entityManager.merge(project);
         }
 
@@ -327,6 +336,7 @@ public class RegisteredApplicationService
             registeredApplications.add(application);
         }
 
+        project.setLastModified(new GregorianCalendar());
         this.entityManager.merge(project);
 
         return registeredApplications;
