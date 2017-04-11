@@ -144,7 +144,11 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     }
 
     public get isValid() {
-        return true;
+        if (this.mode === 'PATH') {
+            return this.fileInputPath && this.fileInputPath.length > 0;
+        } else if (this.mode === 'UPLOADED') {
+            return false; // return this.multipartUploader.queue.length === 0;
+        }
     }
 
     public onTabSelected(tab: TabComponent) {
