@@ -1,8 +1,10 @@
-import {Component, ContentChildren, QueryList, AfterContentInit} from "@angular/core";
+import {Component, ContentChildren, QueryList, AfterContentInit, EventEmitter, Output} from "@angular/core";
 import {TabComponent} from "./tab.component";
 
 /**
  * Component for tab interface
+ *
+ * By default it activates the first tab, if none of tabs has isActive property set
  *
  * Usage:
  *  <wu-tab-container>
@@ -21,6 +23,13 @@ export class TabContainerComponent implements AfterContentInit {
     @ContentChildren(TabComponent)
     tabs: QueryList<TabComponent>;
 
+    /**
+     * Event triggered when tab is selected
+     * @type {EventEmitter<TabComponent>}
+     */
+    @Output()
+    tabSelected: EventEmitter<TabComponent> = new EventEmitter<TabComponent>();
+
     ngAfterContentInit(): void {
         let activeTabs = this.tabs.filter(tab => tab.isActive);
 
@@ -29,8 +38,13 @@ export class TabContainerComponent implements AfterContentInit {
         }
     }
 
+    /**
+     * Sets selected tab as active
+     * @param selectedTab {TabComponent}
+     */
     selectTab(selectedTab: TabComponent) {
         this.tabs.forEach(tab => tab.isActive = false);
         selectedTab.isActive = true;
+        this.tabSelected.next(selectedTab);
     }
 }

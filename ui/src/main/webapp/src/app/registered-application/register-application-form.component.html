@@ -3,8 +3,8 @@
 
 <form [formGroup]="registrationForm" (ngSubmit)="register()"  class="form-horizontal" ng2FileDrop [uploader]="multipartUploader">
 
-    <wu-tab-container>
-        <wu-tab [tabTitle]="'Upload'">
+    <wu-tab-container (tabSelected)="onTabSelected($event)">
+        <wu-tab [tabTitle]="'Upload'" [properties]="{mode: 'UPLOADED'}">
             <div class="row description">
                 <div class="col-md-10">
                     <div i18n="Upload Description Text">
@@ -51,7 +51,7 @@
             </div>
 
         </wu-tab>
-        <wu-tab [tabTitle]="'Server Path'">
+        <wu-tab [tabTitle]="'Server Path'" [properties]="{mode: 'PATH'}">
             <div class="row description">
                 <div class="col-md-12">
                     <label for="appPathToRegister" i18n="Server Path Description">Enter the server path containing your project applications.</label>

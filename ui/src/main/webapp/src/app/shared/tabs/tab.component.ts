@@ -11,9 +11,22 @@ import {Component, Input} from "@angular/core";
     selector: 'wu-tab'
 })
 export class TabComponent {
+    /**
+     * Displayed tab title
+     */
     @Input()
-    tabTitle;
+    tabTitle: string;
 
+    /**
+     * Any additional tab properties
+     * (not required)
+     */
     @Input()
-    isActive;
+    properties: any;
+
+    /**
+     * Flag indicating if tab is active
+     */
+    @Input()
+    isActive: boolean;
 }

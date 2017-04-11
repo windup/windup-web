@@ -12,6 +12,7 @@ import {Constants} from "../constants";
 import {MigrationProject} from "windup-services";
 import {Subscription} from "rxjs";
 import {RouteFlattenerService} from "../core/routing/route-flattener.service";
+import {TabComponent} from "../shared/tabs/tab.component";
 
 @Component({
     templateUrl: "./register-application-form.component.html",
@@ -144,5 +145,9 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
 
     public get isValid() {
         return true;
+    }
+
+    public onTabSelected(tab: TabComponent) {
+        this.changeMode(tab.properties.mode);
     }
 }
