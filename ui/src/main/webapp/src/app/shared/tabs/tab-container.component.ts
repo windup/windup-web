@@ -1,6 +1,17 @@
 import {Component, ContentChildren, QueryList, AfterContentInit} from "@angular/core";
 import {TabComponent} from "./tab.component";
 
+/**
+ * Component for tab interface
+ *
+ * Usage:
+ *  <wu-tab-container>
+ *      <wu-tab [tabTitle]="'Title'">
+ *          .... tab content here.....
+ *      </wu-tab>
+ *  </wu-tab-container>
+ *
+ */
 @Component({
     templateUrl: './tab-container.component.html',
     selector: 'wu-tab-container',

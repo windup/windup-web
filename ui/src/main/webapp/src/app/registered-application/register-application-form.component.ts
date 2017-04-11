@@ -42,7 +42,7 @@ import {RouteFlattenerService} from "../core/routing/route-flattener.service";
         .description .alert { margin-bottom: 0px !important; }
     `]
 })
-export class RegisterApplicationFormComponent extends FormComponent implements OnInit, OnDestroy, AfterViewInit
+export class RegisterApplicationFormComponent extends FormComponent implements OnInit, OnDestroy
 {
     protected registrationForm: FormGroup;
     protected application: RegisteredApplication;
@@ -66,13 +66,6 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     ) {
         super();
         this.multipartUploader = _registeredApplicationService.getMultipartUploader();
-    }
-
-    ngAfterViewInit(): any {
-        $("#addAppModeTabs a").click(function (event) {
-            event.preventDefault();
-            $(this).tab("show");
-        })
     }
 
     ngOnInit(): any {
