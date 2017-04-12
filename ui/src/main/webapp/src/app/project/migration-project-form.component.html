@@ -7,16 +7,24 @@
                 <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> {{errorMessage}}
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group" [ngClass]="{'has-error': titleIsDuplicated(projectTitleControl) || hasError(projectTitleControl)}">
             <label class="control-label" for="idProjectTitle">* Name</label>
-            <input #projectTitleControl="ngModel" name="projectTitle" id="idProjectTitle" [(ngModel)]="model.title" required wuProjectNameNotUsed
-                type="text" placeholder="my-project" class="form-control">
-            <p class="help-block">A unique name for the project</p>
+            <input #projectTitleControl="ngModel"
+                   name="projectTitle"
+                   id="idProjectTitle"
+                   [(ngModel)]="model.title"
+                   required
+                   wuProjectNameNotUsed
+                   pattern=".*[^\s].*"
+                   minlength="1"
+                   maxlength="128"
+                   [project]="model"
+                   type="text"
+                   placeholder="my-project"
+                   class="form-control">
+            <p [class.hidden]="titleIsDuplicated(projectTitleControl)" class="help-block" >A unique name for project</p>
             <span [class.hidden]="!titleIsDuplicated(projectTitleControl)" class="help-block">
-                The name must be unique
-            </span>
-            <span [class.hidden]="titleIsDuplicated(projectTitleControl) || !hasError(projectTitleControl)" class="help-block">
-                The name must be greater than 3 characters long and fewer than 128 characters.
+                Project Name must be unique
             </span>
         </div>
         <div class="form-group">
@@ -29,7 +37,7 @@
         </div>
         <div class="form-group pull-right">
             <button (click)="cancel()" type="button" class="btn btn-default" i18n="Cancel button">Cancel</button>
-            <button class="btn btn-primary" type="submit" [disabled]="!projectForm.form.valid">
+            <button class="btn btn-primary" type="submit" [disabled]="!projectForm.form.pending && !projectForm.form.valid">
                 {editMode ? 'true' : 'false', select, true {Update Project} false {Next}}
             </button>
         </div>
