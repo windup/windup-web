@@ -1,4 +1,4 @@
-import {Directive, forwardRef} from '@angular/core';
+import {Directive, forwardRef, Input} from '@angular/core';
 import {FormControl, NG_ASYNC_VALIDATORS, Validator} from "@angular/forms";
 import {MigrationProjectService} from "../../project/migration-project.service";
 
@@ -13,6 +13,9 @@ import {MigrationProjectService} from "../../project/migration-project.service";
 })
 export class ProjectNameNotExistsValidator implements Validator {
 
+    @Input()
+    editMode:boolean;
+
     constructor(private projectService: MigrationProjectService)
     {
     }
@@ -21,6 +24,10 @@ export class ProjectNameNotExistsValidator implements Validator {
         let projectService = this.projectService;
 
         return new Promise(resolve => {
+            if (this.editMode) {
+                resolve(null);
+                return;
+            }
             projectService.getIdByName(control.value).subscribe(result => {
                 if (result == null) {
                     resolve(null);
