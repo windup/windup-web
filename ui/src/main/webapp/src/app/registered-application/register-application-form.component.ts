@@ -68,7 +68,8 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
             this.multipartUploader.setOptions({
                 url: uploadUrl,
                 method: 'POST',
-                disableMultipart: false
+                disableMultipart: false,
+                autoUpload: true
             });
         });
     }
