@@ -81,7 +81,7 @@ export class ProjectLayoutComponent extends RoutedComponent implements OnInit, O
                 isEnabled: true
             },
             {
-                label: 'New Execution',
+                label: 'Configuration', // MarcZ 2017-04
                 link: this._routeLinkProviderService.getRouteForComponent(AnalysisContextFormComponent, { projectId: this.project.id }),
                 icon: 'fa-cogs',
                 isEnabled: true,
