@@ -10,7 +10,7 @@
         <div class="form-group">
             <label class="control-label" for="idProjectTitle">* Name</label>
             <input #projectTitleControl="ngModel" name="projectTitle" id="idProjectTitle" [(ngModel)]="model.title" required wuProjectNameNotUsed
-                type="text" placeholder="A unique name for project" class="form-control">
+                type="text" placeholder="my-project" class="form-control">
             <p class="help-block">A unique name for project</p>
             <span [class.hidden]="!titleIsDuplicated(projectTitleControl)" class="help-block">
                 The title must be unique
