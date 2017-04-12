@@ -39,7 +39,8 @@ export class ProjectListComponent implements OnInit {
         sortOptions: [
             { name: 'Name', field: 'title' },
             { name: 'Created date', field: 'created' },
-            { name: 'Last modified date', field: 'lastModified' }
+            { name: 'Last modified date', field: 'lastModified' },
+            { name: 'Number of applications', field: (proj:MigrationProject) => proj.applications ? proj.applications.length : 0 },
         ],
         selectedOption: { name: 'Name', field: 'title' },
         direction: OrderDirection.ASC
