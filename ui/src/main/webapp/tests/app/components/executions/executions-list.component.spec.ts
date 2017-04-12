@@ -25,14 +25,12 @@ let el:      HTMLElement;
 let SORTED_EXECUTIONS_DATA = EXECUTIONS_DATA.slice().sort((a, b) => <any>b.timeStarted - <any>a.timeStarted);
 
 const COL_ID = 0;
-const COL_PROJECT = 1;
-const COL_STATE = 2;
-const COL_DATE_STARTED = 3;
-const COL_DATE_COMPLETED = 4;
-const COL_DURATION = 5;
-const COL_ACTIONS = 6;
+const COL_STATE = 1;
+const COL_DATE_STARTED = 2;
+const COL_DURATION = 3;
+const COL_ACTIONS = 4;
 
-const COUNT_COLUMNS = 7;
+const COUNT_COLUMNS = 5;
 
 let mockProjects = [
     { id: 1, title: 'Dummy project' }
@@ -162,7 +160,6 @@ describe('ExecutionsListComponent', () => {
                 expect(el.children.length).toEqual(COUNT_COLUMNS);
                 expect(el.children[COL_ID].textContent.trim()).toEqual(SORTED_EXECUTIONS_DATA[i].id.toString());
                 expect(el.children[COL_STATE].textContent.trim()).toEqual(SORTED_EXECUTIONS_DATA[i].state);
-                expect(el.children[COL_PROJECT].textContent.trim()).toEqual(mockProjects[0].title);
             }
         });
     });

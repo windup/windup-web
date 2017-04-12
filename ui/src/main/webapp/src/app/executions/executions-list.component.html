@@ -19,7 +19,8 @@
         <td><a [routerLink]="['/projects', execution.projectId, 'reports', execution.id, 'execution-details']">{{execution.id}}</a></td>
         <td><wu-status-icon [status]="execution.state"></wu-status-icon>{{execution.state}}</td>
         <td>{{execution.timeStarted | date: 'short'}}</td>
-        <td>{{execution.timeCompleted | date: 'short'}}</td>
+        <td *ngIf="execution.timeCompleted">{{ execution.timeCompleted - execution.timeStarted | wuDuration }}</td>
+        <td *ngIf="!execution.timeCompleted"></td>
         <td>
             <a class="link cancel" *ngIf="canCancel(execution)" (click)="cancelExecution(execution)" i18n="button">Cancel</a>
             <a
