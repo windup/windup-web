@@ -25,11 +25,7 @@
 
             <div class="form-group">
                 <div class="col-md-12">
-                    <h4 i18n>Upload queue</h4>
-                    <wu-upload-queue *ngIf="isAllowUploadMultiple" [uploader]="multipartUploader"></wu-upload-queue>
-
-                    <h4 i18n>Upload progress</h4>
-                    <wu-upload-progressbar [uploader]="multipartUploader"></wu-upload-progressbar>
+                    <wu-alternative-upload-queue [uploader]="multipartUploader"></wu-alternative-upload-queue>
                 </div>
             </div>
 
