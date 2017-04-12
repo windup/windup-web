@@ -16,7 +16,7 @@ import {FormControl} from "@angular/forms";
 })
 export class MigrationProjectFormComponent extends FormComponent implements OnInit, OnDestroy
 {
-    title: string = "Create Migration Project";
+    title: string = "Create new Project";
 
     model: MigrationProject = <MigrationProject>{};
 

@@ -9,7 +9,7 @@
     </div>
     <div class="row">
         <div class="form-group">
-            <label class="col-md-2 control-label" for="idProjectTitle">Project Title</label>
+            <label class="col-md-2 control-label" for="idProjectTitle">Name</label>
             <div class="col-md-8">
                 <input #projectTitleControl="ngModel" name="projectTitle" id="idProjectTitle" [(ngModel)]="model.title"
                        required wuProjectNameNotUsed minlength="1" maxlength="128" type="text"
@@ -23,7 +23,7 @@
             </span>
         </div>
         <div class="form-group">
-            <label class="col-md-2 control-label" for="idDescription">Project Description</label>
+            <label class="col-md-2 control-label" for="idDescription">Description</label>
             <div class="col-md-8">
                 <textarea name="description" id="idDescription" class="form-control" [rows]="getDescriptionHeight()"
                         minlength="0"
