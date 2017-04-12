@@ -31,7 +31,7 @@ export class KeycloakService {
 
     get username(): String {
         if (this.auth.authz) {
-            return this.auth.authz.tokenParsed.name;
+            return this.auth.authz.tokenParsed.preferred_username;
         }
     }
 

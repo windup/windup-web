@@ -20,12 +20,28 @@ li.home a {
 //  border-bottom: 1px black solid;
   border-right: 1px solid $navbar-os-project-menu-border;
 
-  padding-left: 25px;
   color: $navbar-text-color;
+
+  background-color: transparent;
+  cursor: pointer;
+  display: block;
+  font-size: 14px;
+  font-weight: 400;
+  height: 63px;
+  line-height: 26px;
+  outline: 0;
+  padding: 17px 20px 17px 25px;
+  position: relative;
+  white-space: nowrap;
 }
 
 span.pficon-home {
   font-size: 20px;
+  float: left;
+  line-height: 26px;
+  margin-right: 10px;
+  text-align: center;
+  width: 24px;
 }
 
 :host /deep/ {
@@ -49,4 +65,72 @@ span.pficon-home {
     background-image: initial;
     background-color: $navbar-hover-item-background-color;
   }
+}
+
+#header-logo {
+  /* background-image: url('../../../../img/Logotype_RH_AMT_RGB_White.svg'); */
+  height: 60px;
+  padding-left: 30px;
+}
+
+#header-logo-wrapper a {
+  font-size: 18px;
+  vertical-align: middle;
+  line-height: 60px;
+
+  color: $navbar-text-color;
+
+  &:hover, &:focus {
+    text-decoration: none;
+  }
+}
+
+.pficon {
+  font-size: 17px;
+}
+
+.navbar-pf .navbar-nav>li>a.dropdown-toggle {
+  padding: 21px 14px;
+
+  &:hover {
+    color: #fff !important; // patternfly uses important, must override it
+  }
+}
+
+/* replace wrong patternfly styles: */
+/*@media (min-width: 768px) {
+  .navbar-pf .navbar-utility li.dropdown > .dropdown-toggle .pficon-user {
+    left: initial;
+    top: initial;
+  }
+}
+*/
+.navbar-pf .navbar-utility li.dropdown > .dropdown-toggle .pficon-user {
+  left: initial;
+  top: initial;
+  position: inherit;
+}
+
+ul.navbar-utility {
+  margin-right: 20px;
+}
+
+.navbar-pf .navbar-utility > li > a {
+  border: none;
+
+  &:hover {
+    background: none;
+  }
+}
+
+.username {
+  display: inline-block;
+  font-weight: 300;
+  line-height: 1.4;
+  max-width: 100px;
+  padding: 0 2px;
+  position: relative;
+  top: -2px;
+  margin-bottom: -3px;
+  font-size: 13px;
 }
