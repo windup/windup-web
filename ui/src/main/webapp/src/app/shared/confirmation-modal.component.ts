@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Inject, Input, Output} from "@angular/core";
+import {Component, EventEmitter, Input, Output} from "@angular/core";
 import * as $ from "jquery";
 
 @Component({
@@ -16,11 +16,16 @@ import * as $ from "jquery";
                 </h4>
             </div>
             <div class="modal-body">
-                {{body}}
+                <p>{{body}}</p>
+                <p [style.display]="confirmPhrase ? 'block' : 'none'">
+                    <input #confirmInput style="margin: 1ex 1em" type="text"
+                       (keyup)="yes.disabled = (confirmPhrase && ($event.target.value.trim().toLowerCase() != confirmPhrase.trim().toLowerCase()))" >
+                </p>
             </div>
+            
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" (click)="no()">No</button>
-                <button type="button" class="btn btn-default" (click)="yes()">Yes</button>
+                <button #no  type="button" class="btn btn-default" (click)="clickedNo()">{{noLabel}}</button>
+                <button #yes type="button" class="btn btn-default" (click)="clickedYes()">{{yesLabel}}</button>
             </div>
         </div>
     </div>
@@ -29,13 +34,22 @@ import * as $ from "jquery";
 })
 export class ConfirmationModalComponent {
     @Input()
-    id:string;
+    id: string;
 
     @Input()
-    title:string;
+    title: string;
 
     @Input()
-    body:string;
+    body: string;
+
+    @Input()
+    confirmPhrase: string;
+
+    @Input()
+    yesLabel: string = "Yes";
+
+    @Input()
+    noLabel: string = "No";
 
     @Input()
     public data: any;
@@ -48,20 +62,20 @@ export class ConfirmationModalComponent {
 
     constructor() {}
 
-    show():void {
+    show(): void {
         (<any>$('#' + this.id)).modal('show');
     }
 
-    hide():void {
+    hide(): void {
         (<any>$('#' + this.id)).modal('hide');
     }
 
-    yes():void {
+    clickedYes(): void {
         this.confirmed.emit({data: this.data});
         this.hide();
     }
 
-    no():void {
+    clickedNo(): void {
         this.cancelled.emit({data: this.data});
         this.hide();
     }

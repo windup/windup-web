@@ -33,8 +33,7 @@
 
         <div *ngIf="projects?.length > 0" class="list-group list-view-pf projects-list">
             <div *ngFor="let project of projects"
-                class="list-group-item  project-info  tile-click"
-                (click)="viewProject($event, project)">
+                class="list-group-item  project-info  tile-click">
                 <div class="list-view-pf-actions">
                     <span class="fa-lg project-action-item" i18n-title="Edit project" title="Edit project">
                         <a (click)="editProject($event, project)" class="action-button">
@@ -72,7 +71,10 @@
                 <wu-confirmation-modal #deleteProjectModal
                         id="deleteProjectConfirmation_{{project.id}}"
                         title="Delete project?"
-                        body="Delete project?"
+                        body="Type in the name of the project to confirm deletion."
+                        confirmPhrase="{{project.title}}"
+                        yesLabel="Delete the project"
+                        noLabel="Cancel"
                         (confirmed)="doDeleteProject(project)"
                 >
                 </wu-confirmation-modal>
