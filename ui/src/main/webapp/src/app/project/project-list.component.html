@@ -42,7 +42,7 @@
                         </a>
                     </span>
                     <span class="fa-lg project-action-item" i18n-title="Delete project" title="Delete project">
-                        <a (click)="deleteProject($event, project)"  class="action-button">
+                        <a (click)="$event.stopPropagation(); deleteProjectModal.show($event, project)"  class="action-button">
                             <i class="fa fa-trash-o"></i>
                         </a>
                     </span>
@@ -62,16 +62,24 @@
                             <div class="list-group-item-text description">{{project.description}}</div>
                         </div>
                         <div class="list-view-pf-additional-info">
-                                <div class="list-view-pf-additional-info-item">
-                                    <span class="pficon pficon-image"></span>
-                                    <strong>{{project.applicationCount}}</strong> <ng-container i18n>Applications</ng-container>
-                                </div>
+                            <div class="list-view-pf-additional-info-item">
+                                <span class="pficon pficon-image"></span>
+                                <strong>{{project.applicationCount}}</strong> <ng-container i18n>Applications</ng-container>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <wu-confirmation-modal #deleteProjectModal
+                        id="deleteProjectConfirmation_{{project.id}}"
+                        title="Delete project?"
+                        body="Delete project?"
+                        (confirmed)="doDeleteProject(project)"
+                >
+                </wu-confirmation-modal>
             </div>
         </div>
 
+        <!--
         <wu-confirmation-modal
                 #deleteProjectModal
                 id="delete_project"
@@ -80,6 +88,6 @@
                 (confirmed)="doDeleteProject(project)"
         >
         </wu-confirmation-modal>
-
+        -->
     </div>
 </template>
