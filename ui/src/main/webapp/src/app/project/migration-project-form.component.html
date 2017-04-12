@@ -10,8 +10,9 @@
         <div class="form-group">
             <label class="control-label" for="idProjectTitle">* Name</label>
             <input #projectTitleControl="ngModel" name="projectTitle" id="idProjectTitle" [(ngModel)]="model.title"
-                    required wuProjectNameNotUsed type="text" placeholder="Project name"
+                    required wuProjectNameNotUsed type="text" placeholder="A unique name for project"
                     class="form-control">
+            <p class="help-block">A unique name for project</p>
             <span [class.hidden]="!titleIsDuplicated(projectTitleControl)" class="help-block">
                 The title must be unique
             </span>
@@ -21,7 +22,7 @@
         </div>
         <div class="form-group">
             <label class="control-label" for="idDescription">Description</label>
-            <textarea name="description" id="idDescription" class="form-control" placeholder="Description of Project" [rows]="getDescriptionHeight()"
+            <textarea name="description" id="idDescription" class="form-control" placeholder="A short description of project" [rows]="getDescriptionHeight()"
                     #controlDescription="ngModel"
                     [(ngModel)]="model.description"></textarea>
             <span [class.hidden]="!hasError(controlDescription)" class="help-block">
