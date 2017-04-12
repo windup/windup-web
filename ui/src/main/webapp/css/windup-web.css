@@ -118,3 +118,20 @@ td {
     font-size: 12px;
     padding-right: 3px;
 }
+
+.container-fluid .wu-frame {
+    padding-top: 40px;
+    background: #EDF1F2;
+    margin-left: 20px !important;
+    margin-right: 20px !important;
+    margin-bottom: 2px !important;
+    border-style: solid;
+    border-width: 10px;
+    border-radius: 5%;
+    border-color: #EDF1F2;
+}
+
+form .wizard-form {
+    padding-left: 10px;
+    padding-right: 10px;
+}

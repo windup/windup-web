@@ -1,17 +1,16 @@
-<h1>{{title}}</h1>
-<form #projectForm="ngForm" (ngSubmit)="save()" class="form-horizontal">
-    <div *ngFor="let errorMessage of errorMessages" class="row form-errors alert alert-danger">
-        <div class="col-md-2">&nbsp;</div>
-        <div class="col-md-10">
-            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-            {{errorMessage}}
+<div class="container-fluid wu-frame">
+    <h1>{{title}}</h1>
+    <form #projectForm="ngForm" (ngSubmit)="save()" class="form-horizontal wizard-form">
+        <div *ngFor="let errorMessage of errorMessages" class="row form-errors alert alert-danger">
+            <div class="col-md-2">&nbsp;</div>
+            <div class="col-md-10">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> {{errorMessage}}
+            </div>
         </div>
-    </div>
         <div class="form-group">
             <label class="control-label" for="idProjectTitle">* Name</label>
-            <input #projectTitleControl="ngModel" name="projectTitle" id="idProjectTitle" [(ngModel)]="model.title"
-                    required wuProjectNameNotUsed type="text" placeholder="A unique name for project"
-                    class="form-control">
+            <input #projectTitleControl="ngModel" name="projectTitle" id="idProjectTitle" [(ngModel)]="model.title" required wuProjectNameNotUsed
+                type="text" placeholder="A unique name for project" class="form-control">
             <p class="help-block">A unique name for project</p>
             <span [class.hidden]="!titleIsDuplicated(projectTitleControl)" class="help-block">
                 The title must be unique
@@ -23,8 +22,7 @@
         <div class="form-group">
             <label class="control-label" for="idDescription">Description</label>
             <textarea name="description" id="idDescription" class="form-control" placeholder="A short description of project" [rows]="getDescriptionHeight()"
-                    #controlDescription="ngModel"
-                    [(ngModel)]="model.description"></textarea>
+                #controlDescription="ngModel" [(ngModel)]="model.description"></textarea>
             <span [class.hidden]="!hasError(controlDescription)" class="help-block">
                 The description must contain fewer than 4096 characters.
             </span>
@@ -35,4 +33,6 @@
                 {editMode ? 'true' : 'false', select, true {Update Project} false {Next}}
             </button>
         </div>
-</form>
+
+    </form>
+</div>

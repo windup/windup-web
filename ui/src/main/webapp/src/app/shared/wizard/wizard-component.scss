@@ -53,9 +53,9 @@ $font-color-active: white;
     border-right: 2px solid $border-color;
     border-left: 2px solid $border-color;
     background: $background-color;
-    -moz-transform: skew(30deg);
-    -webkit-transform: skew(30deg);
-    transform: skew(30deg);
+    -moz-transform: skew(45deg);
+    -webkit-transform: skew(45deg);
+    transform: skew(45deg);
   }
 
   &:after {
@@ -64,9 +64,9 @@ $font-color-active: white;
     border-right: 2px solid $border-color;
     border-bottom: 2px solid $border-color;
     background: $background-color;
-    -moz-transform: skew(-30deg);
-    -webkit-transform: skew(-30deg);
-    transform: skew(-30deg);
+    -moz-transform: skew(-45deg);
+    -webkit-transform: skew(-45deg);
+    transform: skew(-45deg);
   }
 
   &:first-child:before, &:first-child:after {
@@ -93,7 +93,7 @@ $font-color-active: white;
     margin-left: 38px;
   }
 
-  &:last-child:before, &:last-child:after {
+  &:last-child:before {
     border-right: none;
   }
 
