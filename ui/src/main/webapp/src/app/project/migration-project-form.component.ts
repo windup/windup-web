@@ -11,12 +11,12 @@ import {FormControl} from "@angular/forms";
 @Component({
     templateUrl: './migration-project-form.component.html',
     styles: [`
-        .project-edit .finish-buttons .btn { padding: 0 6em; margin-right: 2em; }
+      
     `]
 })
 export class MigrationProjectFormComponent extends FormComponent implements OnInit, OnDestroy
 {
-    title: string = "Create Migration Project";
+    title: string = "Create new Project";
 
     model: MigrationProject = <MigrationProject>{};
 
