@@ -20,12 +20,28 @@ li.home a {
 //  border-bottom: 1px black solid;
   border-right: 1px solid $navbar-os-project-menu-border;
 
-  padding-left: 25px;
   color: $navbar-text-color;
+
+  background-color: transparent;
+  cursor: pointer;
+  display: block;
+  font-size: 14px;
+  font-weight: 400;
+  height: 63px;
+  line-height: 26px;
+  outline: 0;
+  padding: 17px 20px 17px 25px;
+  position: relative;
+  white-space: nowrap;
 }
 
 span.pficon-home {
   font-size: 20px;
+  float: left;
+  line-height: 26px;
+  margin-right: 10px;
+  text-align: center;
+  width: 24px;
 }
 
 :host /deep/ {
