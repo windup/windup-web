@@ -13,6 +13,7 @@ import {ExecutionUpdatedEvent, ExecutionEvent, NewExecutionStartedEvent} from ".
 })
 export class ProjectExecutionsComponent extends ExecutionsMonitoringComponent implements OnInit {
     protected executions: WindupExecution[];
+    private runUpdate: boolean;
 
     constructor(
         private _activatedRoute: ActivatedRoute,
@@ -33,6 +34,8 @@ export class ProjectExecutionsComponent extends ExecutionsMonitoringComponent im
             .filter(event => event.isTypeOf(ExecutionEvent))
             .filter((event: ExecutionEvent) => event.migrationProject.id === this.project.id)
             .subscribe((event: ExecutionEvent) => this.onExecutionEvent(event)));
+
+        this.runUpdate = false;
     }
 
     private refreshExecutionList() {
@@ -44,8 +47,9 @@ export class ProjectExecutionsComponent extends ExecutionsMonitoringComponent im
 
     protected onExecutionEvent(event: ExecutionEvent) {
         super.onExecutionEvent(event);
-        if (!this.isExecutionActive(event.execution)) {
+        if (!this.runUpdate || !(event.execution.state === 'STARTED')) {
             this.refreshExecutionList();
+            this.runUpdate = true;
         }
     }
 }
