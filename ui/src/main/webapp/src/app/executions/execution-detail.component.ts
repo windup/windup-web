@@ -26,7 +26,7 @@ export class ExecutionDetailComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this._activatedRoute.parent.params.subscribe((params: {executionId: number}) => {
+        this._activatedRoute.params.subscribe((params: {executionId: number}) => {
             let executionId = +params.executionId;
 
             this._eventBus.onEvent

@@ -35,7 +35,6 @@ import {ExecutionResolve} from "./executions/execution.resolve";
 
 export const executionLevelRoutes: Routes = [
     {path: '', component: ExecutionApplicationListComponent, data: {displayName: 'Applications'}},
-    {path: 'execution-details', component: ExecutionDetailComponent, data: {displayName: 'Execution Info'}},
     {path: 'dependencies-report', component: DependenciesReportComponent, data: {displayName: 'Dependency Report'}},
     {path: 'technology-report', component: TechnologiesReportComponent, data: {displayName: 'Technology Report'}},
     {path: 'migration-issues',
@@ -133,6 +132,7 @@ export const appRoutes: Routes = [
                                 children: [
                                     { path: '', redirectTo: 'project-detail', pathMatch: 'full' },
                                     { path: 'project-detail', component: ProjectExecutionsComponent, data: {displayName: 'Executions'}},
+                                    { path: ':executionId/execution-details', component: ExecutionDetailComponent, data: {displayName: 'Execution Info'}},
                                     { path: 'applications', children: [
                                         { path: '', component: ApplicationListComponent, data: {displayName: 'Application List'} },
                                         { path: 'register', component: RegisterApplicationFormComponent, data: {displayName: "Application Registration"}},

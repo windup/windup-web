@@ -6,7 +6,7 @@ import {WindupExecutionService} from "../services/windup-execution.service";
 import {ExecutionsMonitoringComponent} from "./executions-monitoring.component";
 import {MigrationProject} from "windup-services";
 import {WindupService} from "../services/windup.service";
-import {ExecutionUpdatedEvent, ExecutionEvent, NewExecutionStartedEvent} from "../core/events/windup-event";
+import {ExecutionEvent} from "../core/events/windup-event";
 
 @Component({
     template: '<wu-executions-list [executions]="executions" [activeExecutions]="activeExecutions"></wu-executions-list>'
