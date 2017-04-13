@@ -1,12 +1,16 @@
-<h1>
-    <ng-container i18="Header">Global Configuration</ng-container>
-
-    <button class="btn btn-primary" (click)="displayAddRulesPathForm()">
-        <span class="glyphicon glyphicon-plus"></span>
-        <span i18n>Register Custom Rule Path</span>
-    </button>
-    <button class="btn btn-primary" (click)="reloadConfiguration()">Force Reload Configuration</button>
-</h1>
+<div class="row">
+    <div class="col-md-2">
+        <h1 i18n="Header">Rules Configuration</h1>
+    </div>
+    <div class="col-md-10">
+        <div class="action-button">
+            <button class="btn btn-primary" (click)="displayAddRulesPathForm()">
+                <span class="glyphicon glyphicon-plus"></span>
+                <span i18n>Register Custom Rule Path</span>
+            </button>
+        </div>
+    </div>
+</div>
 
 <template [ngIf]="configuration != null && configuration.rulesPaths != null && configuration.rulesPaths.length > 0">
     <div class="panel-group">
