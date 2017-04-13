@@ -11,6 +11,7 @@ import {Cached, CacheServiceInstance} from "../shared/cache.service";
 export class WindupService extends AbstractService {
     private EXECUTE_WITH_CONTEXT_PATH = Constants.REST_BASE + "/windup/execute-project-with-context/{projectId}";
     private EXECUTIONS_PATH = '/windup/executions';
+    private LOGS_PATH = '/logs';
     private PROJECT_EXECUTIONS_PATH = '/windup/by-project/{projectId}';
 
     constructor (private _http: Http) {
@@ -71,6 +72,14 @@ export class WindupService extends AbstractService {
 
     public cancelExecution(execution: WindupExecution): Observable<any> {
         return this._http.post(Constants.REST_BASE + this.EXECUTIONS_PATH + '/' + execution.id + '/cancel' , null)
+            .catch(this.handleError);
+    }
+
+    public getLogData(executionID:number): Observable<string[]> {
+        let url = Constants.REST_BASE + this.EXECUTIONS_PATH + '/' + executionID + this.LOGS_PATH;
+
+        return this._http.get(url)
+            .map(res => <WindupExecution> res.json())
             .catch(this.handleError);
     }
 }

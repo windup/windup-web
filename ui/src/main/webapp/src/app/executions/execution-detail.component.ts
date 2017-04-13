@@ -4,10 +4,10 @@ import {WindupService} from "../services/windup.service";
 import {WindupExecution} from "windup-services";
 import {WINDUP_WEB} from "../app.module";
 
-import {someLog} from './some-log';
 import {WindupExecutionService} from "../services/windup-execution.service";
 import {EventBusService} from "../core/events/event-bus.service";
 import {ExecutionEvent} from "../core/events/windup-event";
+import {Observable} from "rxjs";
 
 @Component({
     templateUrl: './execution-detail.component.html',
@@ -16,13 +16,11 @@ import {ExecutionEvent} from "../core/events/windup-event";
 export class ExecutionDetailComponent implements OnInit {
 
     execution: WindupExecution;
-
-    log: string;
+    logLines:string[];
 
     hideUnfinishedFeatures: boolean = WINDUP_WEB.config.hideUnfinishedFeatures;
 
     constructor(private _activatedRoute: ActivatedRoute, private _eventBus: EventBusService, private _windupService: WindupService) {
-        this.log = someLog;
     }
 
     ngOnInit(): void {
@@ -34,10 +32,18 @@ export class ExecutionDetailComponent implements OnInit {
                 .filter((event: ExecutionEvent) => event.execution.id === executionId)
                 .subscribe((event: ExecutionEvent) => {
                     this.execution = event.execution;
+                    this.loadLogData();
                 });
 
-            this._windupService.getExecution(executionId).subscribe(execution => this.execution = execution);
+            this._windupService.getExecution(executionId).subscribe(execution => {
+                this.execution = execution;
+                this.loadLogData();
+            });
         });
+    }
+
+    get loglines(): Observable<string[]> {
+        return this._windupService.getLogData(this.execution.id);
     }
 
     get displayReportLinks():boolean {
@@ -46,5 +52,9 @@ export class ExecutionDetailComponent implements OnInit {
 
     formatStaticReportUrl(execution: WindupExecution): string {
         return WindupExecutionService.formatStaticReportUrl(execution);
+    }
+
+    private loadLogData() {
+        this._windupService.getLogData(this.execution.id).subscribe(logLines => this.logLines = logLines);
     }
 }

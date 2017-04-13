@@ -1,8 +1,10 @@
 package org.jboss.windup.web.services.rest;
 
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.nio.file.Path;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.annotation.Resource;
@@ -17,6 +19,7 @@ import javax.ws.rs.NotFoundException;
 
 import org.jboss.forge.furnace.Furnace;
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
+import org.jboss.windup.web.addons.websupport.services.LogService;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.messaging.MessagingConstants;
 import org.jboss.windup.web.services.model.AnalysisContext;
@@ -32,6 +35,8 @@ import org.jboss.windup.web.services.service.MigrationProjectService;
 public class WindupEndpointImpl implements WindupEndpoint
 {
     private static Logger LOG = Logger.getLogger(WindupEndpointImpl.class.getSimpleName());
+
+    private static int MAX_LOG_SIZE = 1024 * 1024 * 3; // 3 Megabytes
 
     @Inject
     private Furnace furnace;
@@ -54,6 +59,10 @@ public class WindupEndpointImpl implements WindupEndpoint
     @Inject
     @FromFurnace
     private WebPathUtil webPathUtil;
+
+    @Inject
+    @FromFurnace
+    private LogService logService;
 
     @Resource(lookup = "java:/queues/" + MessagingConstants.EXECUTOR_QUEUE)
     private Queue executorQueue;
@@ -162,5 +171,14 @@ public class WindupEndpointImpl implements WindupEndpoint
        return this.entityManager.createQuery("SELECT ex FROM WindupExecution ex WHERE ex.project = :project", WindupExecution.class)
                .setParameter("project", project)
                .getResultList();
+    }
+
+    @Override
+    public List<String> getExecutionLogs(Long executionID)
+    {
+        WindupExecution execution = this.getExecution(executionID);
+
+        Path reportPath = Paths.get(execution.getOutputPath());
+        return this.logService.getLogData(reportPath, MAX_LOG_SIZE);
     }
 }
