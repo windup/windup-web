@@ -41,7 +41,7 @@
         <wu-tab [tabTitle]="'Server Path'" [properties]="{mode: 'PATH'}">
             <div class="row description">
                 <div class="col-md-12">
-                    <label for="appPathToRegister" i18n="Server Path Description">Enter the server path containing your project applications.</label>
+                    <label class="required" for="appPathToRegister" i18n="Server Path Description">Enter the server path containing your project applications.</label>
                 </div>
             </div>
             <div class="form-group" [ngClass]="{'has-error': hasError(registrationForm.get('appPathToRegister'))}">

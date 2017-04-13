@@ -135,3 +135,7 @@ form .wizard-form {
     padding-left: 10px;
     padding-right: 10px;
 }
+
+label.required:before {
+    content: '* ';
+}
