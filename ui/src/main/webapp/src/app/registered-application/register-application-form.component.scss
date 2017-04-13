@@ -31,10 +31,22 @@ ul#addAppModeTabs.nav.nav-tabs li.active a {
   height: 200px;
 }
 
+.filesDropArea strong {
+  top: 44%;
+  left: 50%;
+  position: relative;
+  display: block;
+  width: 100px;
+}
+
 .row.description, .description .alert {
   margin-bottom: 0px !important;
 }
 
 .upload-button, .button-container {
   float: right;
+}
+
+.upload-queue {
+  margin-top: 10px;
 }

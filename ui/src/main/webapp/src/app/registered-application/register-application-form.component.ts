@@ -32,6 +32,8 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     project: MigrationProject;
     routerSubscription: Subscription;
 
+    countUploadedApplications: number = 0;
+
     constructor(
         protected _router: Router,
         protected _activatedRoute: ActivatedRoute,
@@ -42,6 +44,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     ) {
         super();
         this.multipartUploader = _registeredApplicationService.getMultipartUploader();
+        this.multipartUploader.onCompleteItem = () => this.countUploadedApplications++;
     }
 
     ngOnInit(): any {
@@ -148,7 +151,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
         if (this.mode === 'PATH') {
             return this.fileInputPath && this.fileInputPath.length > 0;
         } else if (this.mode === 'UPLOADED') {
-            return false; // return this.multipartUploader.queue.length === 0;
+            return this.countUploadedApplications > 0;
         }
     }
 
