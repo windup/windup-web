@@ -8,7 +8,9 @@ import {Component, ChangeDetectionStrategy, Input} from "@angular/core";
 })
 export class LogViewComponent {
     private _text: string;
-    private _lines: string[];
+
+    @Input()
+    lines: string[] = [ "Loading..." ];
 
     constructor() {
 
@@ -21,10 +23,6 @@ export class LogViewComponent {
         }
 
         this._text = text;
-        this._lines = text.split(/\r?\n/g);
-    }
-
-    public get lines(): string[] {
-        return this._lines;
+        this.lines = text.split(/\r?\n/g);
     }
 }

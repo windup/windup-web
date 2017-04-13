@@ -1,13 +1,20 @@
 package org.jboss.windup.web.addons.websupport.services;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
+import org.jboss.forge.furnace.util.OperatingSystemUtils;
 import org.jboss.windup.config.KeepWorkDirsOption;
 import org.jboss.windup.config.phase.ReportRenderingPhase;
 import org.jboss.windup.exec.WindupProcessor;
@@ -26,6 +33,7 @@ import org.jboss.windup.reporting.model.ApplicationReportModel;
 import org.jboss.windup.reporting.service.ApplicationReportService;
 import org.jboss.windup.rules.apps.java.config.ExcludePackagesOption;
 import org.jboss.windup.rules.apps.java.config.ScanPackagesOption;
+import org.jboss.windup.util.exception.WindupException;
 import org.jboss.windup.web.addons.websupport.rest.graph.GraphCache;
 
 /**
@@ -37,11 +45,15 @@ public class WindupExecutorServiceImpl implements WindupExecutorService
     private WindupProcessor processor;
 
     @Inject
+    private LogService logService;
+
+    @Inject
     private GraphCache graphCache;
 
     @Override
-    public void execute(WindupProgressMonitor progressMonitor, Collection<Path> rulesPaths, List<Path> inputPaths, Path outputPath, List<String> packages,
-                        List<String> excludePackages, String source, String target, Map<String, Object> otherOptions, boolean generateStaticReports)
+    public void execute(WindupProgressMonitor progressMonitor, Collection<Path> rulesPaths, List<Path> inputPaths, Path outputPath,
+                List<String> packages,
+                List<String> excludePackages, String source, String target, Map<String, Object> otherOptions, boolean generateStaticReports)
     {
         Path graphPath = outputPath.resolve(GraphContextFactory.DEFAULT_GRAPH_SUBDIRECTORY);
         // Close it here, since we will be deleting the old one and rewriting
@@ -53,7 +65,6 @@ public class WindupExecutorServiceImpl implements WindupExecutorService
         WindupConfiguration configuration = new WindupConfiguration()
                     .setGraphContext(context)
                     .setProgressMonitor(progressMonitor);
-
 
         if (!generateStaticReports)
         {
@@ -87,7 +98,26 @@ public class WindupExecutorServiceImpl implements WindupExecutorService
             configuration.setOptionValue(optionEntry.getKey(), optionEntry.getValue());
         }
 
-        processor.execute(configuration);
+        Logger globalLogger = Logger.getLogger("org.jboss.windup");
+        Handler logHandler = null;
+        try
+        {
+            logHandler = this.logService.createLogHandler(configuration);
+        }
+        catch (IOException e)
+        {
+            throw new WindupException("Failed to create log handler due to: " + e.getMessage(), e);
+        }
+        try
+        {
+            globalLogger.addHandler(logHandler);
+
+            processor.execute(configuration);
+        }
+        finally
+        {
+            globalLogger.removeHandler(logHandler);
+        }
     }
 
     @Override
