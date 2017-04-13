@@ -19,13 +19,14 @@ import * as $ from "jquery";
                 <p>{{body}}</p>
                 <p [style.display]="confirmPhrase ? 'block' : 'none'">
                     <input #confirmInput style="margin: 1ex 1em" type="text"
-                       (keyup)="yes.disabled = (confirmPhrase && ($event.target.value.trim().toLowerCase() != confirmPhrase.trim().toLowerCase()))" >
+                       (keyup)="yes.disabled = (confirmPhrase && ($event.target.value.trim().toLowerCase() != confirmPhrase.trim().toLowerCase()))"
+                        >
                 </p>
             </div>
             
             <div class="modal-footer">
                 <button #no  type="button" class="btn btn-default" (click)="clickedNo()">{{noLabel}}</button>
-                <button #yes type="button" class="btn btn-default" (click)="clickedYes()">{{yesLabel}}</button>
+                <button #yes type="button" class="btn btn-default" (click)="clickedYes()" disabled="{{confirmPhrase}}">{{yesLabel}}</button>
             </div>
         </div>
     </div>
