@@ -63,6 +63,12 @@ export class MigrationProjectFormComponent extends FormComponent implements OnIn
     }
 
     save() {
+        if (this.model.title)
+            this.model.title = this.model.title.trim();
+
+        if (this.model.description)
+            this.model.description = this.model.description.trim();
+
         if (this.editMode) {
             this._migrationProjectService.update(this.model).subscribe(
                 migrationProject => this.navigateOnSuccess(migrationProject),

@@ -17,6 +17,9 @@ export class FormComponent {
         if (control == null)
             return false;
 
+        if (control.pending)
+            return false;
+
         let touched = control.touched == null ? false : control.touched;
         return !control.valid && touched;
     }

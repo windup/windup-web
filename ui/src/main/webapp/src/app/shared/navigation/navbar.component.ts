@@ -21,7 +21,6 @@ export class NavbarComponent implements AfterViewInit {
     }
 
     get username(): String {
-        console.log(this._keycloak.username);
         return this._keycloak.username;
     }
 

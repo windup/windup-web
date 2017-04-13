@@ -1,6 +1,7 @@
-import {Directive, forwardRef} from '@angular/core';
+import {Directive, forwardRef, Input} from '@angular/core';
 import {FormControl, NG_ASYNC_VALIDATORS, Validator} from "@angular/forms";
 import {MigrationProjectService} from "../../project/migration-project.service";
+import {MigrationProject} from "windup-services";
 
 /**
  * Fails validation if the name in the given control already exists as a project name.
@@ -12,6 +13,9 @@ import {MigrationProjectService} from "../../project/migration-project.service";
     ]
 })
 export class ProjectNameNotExistsValidator implements Validator {
+
+    @Input()
+    project:MigrationProject;
 
     constructor(private projectService: MigrationProjectService)
     {
@@ -25,7 +29,10 @@ export class ProjectNameNotExistsValidator implements Validator {
                 if (result == null) {
                     resolve(null);
                 } else {
-                    resolve({['nameIsTaken']: true});
+                    if (this.project != null && result == this.project.id)
+                        resolve(null);
+                    else
+                        resolve({['nameIsTaken']: true});
                 }
             });
         });
