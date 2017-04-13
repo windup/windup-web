@@ -105,4 +105,8 @@ export class ExecutionsListComponent implements OnInit {
         return WindupExecutionService.formatStaticReportUrl(execution);
     }
 
+    humanReadableLabel(execution: WindupExecution): string {
+        return utils.humanReadableLabel(execution.state);
+    }
+
 }

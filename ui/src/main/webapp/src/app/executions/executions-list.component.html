@@ -10,23 +10,23 @@
             { title: 'Analysis', isSortable: true, sortBy: 'id' },
             { title: 'Status', isSortable: true, sortBy: 'state' },
             { title: 'Date Started', isSortable: true, sortBy: 'timeStarted' },
-            { title: 'Duration', isSortable: true, sortBy: sortByDurationCallback },
             { title: 'Actions', isSortable: false }
         ]">
     </thead>
     <tbody>
     <tr *ngFor="let execution of sortedExecutions" [class]="getClass(execution)" class="execution-row">
         <td><a [routerLink]="['/projects', execution.projectId, 'reports', execution.id, 'execution-details']">{{execution.id}}</a></td>
-        <td><wu-status-icon [status]="execution.state"></wu-status-icon>{{execution.state}}</td>
+        <td><wu-status-icon [status]="execution.state"></wu-status-icon>{{humanReadableLabel(execution)}} {{execution.state == 'COMPLETED' || execution.state == 'FAILED' ? "in " + (execution.timeCompleted - execution.timeStarted | wuDuration) : ""}}</td>
         <td>{{execution.timeStarted | date: 'short'}}</td>
-        <td *ngIf="execution.timeCompleted">{{ execution.timeCompleted - execution.timeStarted | wuDuration }}</td>
-        <td *ngIf="!execution.timeCompleted"></td>
         <td>
             <a class="link cancel" *ngIf="canCancel(execution)" (click)="cancelExecution(execution)" i18n="button">Cancel</a>
+            <!-- left for when dynamic report will be linked again
             <a
                     class="link"
                     *ngIf="execution.state == 'COMPLETED'"
                     [routerLink]="['/projects', execution.projectId, 'reports', execution.id]">View Reports</a>
+            -->
+            <a *ngIf="execution.state == 'COMPLETED' && execution?.analysisContext?.generateStaticReports" class="link external-link" target="_blank" href="{{formatStaticReportUrl(execution)}}">Static Report</a>
         </td>
     </tr>
     </tbody>
