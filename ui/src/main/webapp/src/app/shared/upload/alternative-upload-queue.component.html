@@ -1,4 +1,4 @@
-<ul> <!--  *ngIf="uploader.queue.length > 0" -->
+<ul *ngIf="uploader.queue.length > 0">
     <li *ngFor="let item of uploader.queue">
         <div class="progress">
             <div class="progress-bar" [ngClass]="{'progress-bar-danger': item.isError, 'progress-bar-warning': item.isCancel}"
@@ -18,25 +18,4 @@
             </div>
         </div>
     </li>
-    <!--
-    <li *ngFor="let mockProgress of [0, 25, 50, 75, 100]">
-        <div class="progress">
-            <div class="progress-bar"
-                 role="progressbar"
-                 aria-valuemin="0" aria-valuemax="100" [attr.aria-valuenow]="mockProgress"
-                 [ngStyle]="{ 'width': mockProgress + '%' }">
-                <div class="file-info">
-                    <span>{{'mockFile.war'}}</span>
-                    <span>{{(1024*1024*10) / 1024 / 1024 | number:'.2' }} MB</span>
-                </div>
-                <div class="action-button">
-                    <span *ngIf="mockProgress === 100"><i class="glyphicon glyphicon-ok"></i></span>
-                    <span *ngIf="mockProgress !== 0 && mockProgress !== 100"><i class="glyphicon glyphicon-ban-circle"></i></span>
-                    <span *ngIf="mockProgress === 0"><i class="glyphicon glyphicon-remove"></i></span>
-                </div>
-                <div>{{ mockProgress }}%</div>
-            </div>
-        </div>
-    </li>
-    -->
 </ul>
