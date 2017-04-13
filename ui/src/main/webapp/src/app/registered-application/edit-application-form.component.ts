@@ -10,7 +10,8 @@ import {RegisterApplicationFormComponent} from "./register-application-form.comp
 import {RouteFlattenerService} from "../core/routing/route-flattener.service";
 
 @Component({
-    templateUrl: './register-application-form.component.html'
+    templateUrl: './register-application-form.component.html',
+    styleUrls: ['./register-application-form.component.scss'] // apparently they are not inherited
 })
 export class EditApplicationFormComponent extends RegisterApplicationFormComponent implements OnInit {
 
@@ -23,7 +24,9 @@ export class EditApplicationFormComponent extends RegisterApplicationFormCompone
         _routeFlattener: RouteFlattenerService
     ) {
         super(_router, _activatedRoute, _fileService, _registeredApplicationService, _formBuilder, _routeFlattener);
-        this.multipartUploader = _registeredApplicationService.getMultipartUploader();
+
+        this.labels.heading = 'Update application';
+        this.labels.uploadButton = 'Update';
     }
 
     ngOnInit():any {

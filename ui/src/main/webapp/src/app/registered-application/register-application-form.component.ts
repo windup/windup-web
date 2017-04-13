@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewInit} from "@angular/core";
+import { Component, OnInit, OnDestroy} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router, NavigationEnd} from "@angular/router";
 import {FileUploader} from "ng2-file-upload/ng2-file-upload";
@@ -34,6 +34,11 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
 
     countUploadedApplications: number = 0;
 
+    protected labels = {
+        heading: 'Add Applications',
+        uploadButton: 'Upload'
+    };
+
     constructor(
         protected _router: Router,
         protected _activatedRoute: ActivatedRoute,
@@ -44,7 +49,11 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     ) {
         super();
         this.multipartUploader = _registeredApplicationService.getMultipartUploader();
-        this.multipartUploader.onCompleteItem = () => this.countUploadedApplications++;
+        this.multipartUploader.onSuccessItem = () => this.countUploadedApplications++;
+        this.multipartUploader.onErrorItem = (item, response) => {
+            this.errorMessages.push(response);
+        };
+        this.multipartUploader.onAfterAddingFile = () => this.registerUploaded();
     }
 
     ngOnInit(): any {
@@ -71,8 +80,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
             this.multipartUploader.setOptions({
                 url: uploadUrl,
                 method: 'POST',
-                disableMultipart: false,
-                autoUpload: true
+                disableMultipart: false
             });
         });
     }
@@ -86,7 +94,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
         if (this.mode == "PATH") {
             this.registerPath();
         } else {
-            this.registerUploaded();
+            this.navigateOnSuccess();
             return false;
         }
     }
@@ -113,7 +121,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
         }
 
         this._registeredApplicationService.uploadApplications(this.project).subscribe(
-            application => this.navigateOnSuccess(),
+            () => {},
             error => this.handleError(<any>error)
         );
     }
@@ -145,6 +153,14 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
 
     private changeMode(mode: RegistrationType) {
         this.mode = mode;
+
+        if (this.mode === 'PATH') {
+            this.labels.uploadButton = 'Upload';
+        } else if (this.mode === 'UPLOADED') {
+            // this is not really nice, but when using UPLOADED mode, upload is done automatically
+            // so no action is actually being executed, so label is 'Done'
+            this.labels.uploadButton = 'Done';
+        }
     }
 
     public get isValid() {

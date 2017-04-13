@@ -1,7 +1,13 @@
 <div class="container-fluid wu-frame">
-<h1 i18n="Add Applications to Project">Add Applications</h1>
+<h1>{{labels.heading}}</h1>
 
 <form [formGroup]="registrationForm" (ngSubmit)="register()"  class="form-horizontal" ng2FileDrop [uploader]="multipartUploader">
+
+    <!-- Errors -->
+    <div *ngFor="let errorMessage of errorMessages" class="form-errors alert alert-danger">
+        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+        {{errorMessage}}
+    </div>
 
     <wu-tab-container (tabSelected)="onTabSelected($event)">
         <wu-tab [tabTitle]="'Upload'" [properties]="{mode: 'UPLOADED'}">
@@ -71,17 +77,11 @@
         </wu-tab>
     </wu-tab-container>
 
-    <!-- Errors -->
-    <div *ngFor="let errorMessage of errorMessages" class="form-errors alert alert-danger">
-        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-        {{errorMessage}}
-    </div>
-
     <div class="form-group">
         <div class="col-md-offset-10 col-md-2">
             <div class="button-container">
                 <button (click)="cancelRegistration()" type="button" class="btn btn-default">{{isInWizard ? 'Back' : 'Cancel'}}</button>
-                <button [attr.disabled]="isValid ? null : true" class="btn btn-primary" type="submit">{{isInWizard ? 'Next' : 'Save'}}</button>
+                <button [disabled]="!isValid" class="btn btn-primary" type="submit">{{isInWizard ? 'Next' : labels.uploadButton}}</button>
             </div>
         </div>
     </div>
