@@ -16,6 +16,7 @@ import {SortableTableComponent} from "../../../../src/app/shared/sort/sortable-t
 import {SortIndicatorComponent} from "../../../../src/app/shared/sort/sort-indicator.component";
 import {StatusIconComponent} from "../../../../src/app/shared/status-icon.component";
 import {SchedulerService} from "../../../../src/app/shared/scheduler.service";
+import {PrettyExecutionStatus} from "../../../../src/app/shared/pretty-execution-state.pipe";
 
 let comp:    ExecutionsListComponent;
 let fixture: ComponentFixture<ExecutionsListComponent>;
@@ -27,10 +28,9 @@ let SORTED_EXECUTIONS_DATA = EXECUTIONS_DATA.slice().sort((a, b) => <any>b.timeS
 const COL_ID = 0;
 const COL_STATE = 1;
 const COL_DATE_STARTED = 2;
-const COL_DURATION = 3;
-const COL_ACTIONS = 4;
+const COL_ACTIONS = 3;
 
-const COUNT_COLUMNS = 5;
+const COUNT_COLUMNS = 4;
 
 let mockProjects = [
     { id: 1, title: 'Dummy project' }
@@ -49,7 +49,8 @@ describe('ExecutionsListComponent', () => {
                 DurationPipe,
                 SortableTableComponent,
                 SortIndicatorComponent,
-                StatusIconComponent
+                StatusIconComponent,
+                PrettyExecutionStatus
             ],
             providers: [
                 SchedulerService,
@@ -97,7 +98,7 @@ describe('ExecutionsListComponent', () => {
     it('should display cancel link for QUEUED executions', () => {
         let rows = fixture.debugElement.queryAll(By.css('tbody tr'));
 
-        let queuedExecutions = rows.filter(row => row.nativeElement.children[COL_STATE].textContent.trim() === 'QUEUED');
+        let queuedExecutions = rows.filter(row => row.nativeElement.children[COL_STATE].textContent.trim() === 'Queued');
 
         expect(queuedExecutions.length).toBe(1);
 
@@ -113,7 +114,7 @@ describe('ExecutionsListComponent', () => {
     it('should not display cancel link for executions in other state', () => {
         let rows = fixture.debugElement.queryAll(By.css('tbody tr'));
 
-        let notQueuedExecutions = rows.filter(row => row.nativeElement.children[COL_STATE].textContent.trim() !== 'QUEUED');
+        let notQueuedExecutions = rows.filter(row => row.nativeElement.children[COL_STATE].textContent.trim() !== 'Queued');
 
         expect(notQueuedExecutions.length).toBe(4);
 
@@ -122,9 +123,9 @@ describe('ExecutionsListComponent', () => {
             let state = el.children[COL_STATE];
             let stateText = state.textContent ? state.textContent.trim() : "";
 
-            if (stateText == "COMPLETED") {
+            if (stateText == "Completed") {
                 expect(el.children[COL_ACTIONS].children.length).toBe(1);
-                expect(el.children[COL_ACTIONS].textContent.trim()).toEqual('View Reports');
+                expect(el.children[COL_ACTIONS].textContent.trim()).toEqual('Static Report');
             } else {
                 expect(el.children[COL_ACTIONS].children.length).toBe(0);
                 expect(el.children[COL_ACTIONS].textContent.trim()).toEqual('');
@@ -148,7 +149,7 @@ describe('ExecutionsListComponent', () => {
 
             // NOTE: I'm not sure if this is not locale dependent
             let durationSeconds = Math.round(duration/1000);
-            expect(el.children[COL_DURATION].textContent).toEqual(durationSeconds + ' seconds');
+            expect(el.children[COL_STATE].textContent).toContain(durationSeconds + ' seconds');
         });
 
         it('should display data', () => {
@@ -159,7 +160,7 @@ describe('ExecutionsListComponent', () => {
 
                 expect(el.children.length).toEqual(COUNT_COLUMNS);
                 expect(el.children[COL_ID].textContent.trim()).toEqual(SORTED_EXECUTIONS_DATA[i].id.toString());
-                expect(el.children[COL_STATE].textContent.trim()).toEqual(SORTED_EXECUTIONS_DATA[i].state);
+                expect(el.children[COL_STATE].textContent.trim()).toContain((new PrettyExecutionStatus().transform(SORTED_EXECUTIONS_DATA[i].state)));
             }
         });
     });

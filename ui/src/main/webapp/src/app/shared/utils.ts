@@ -1,5 +1,3 @@
-
-
 export function substringAfterLast(str, delimiter) {
     return str.substring(str.lastIndexOf(delimiter) + 1); // +1 trick for no occurence.
 }

@@ -52,6 +52,10 @@ export class ExecutionsListComponent implements OnInit {
         return this._executions;
     }
 
+    public get currentTime(): number {
+        return new Date().getTime();
+    }
+
     @Input()
     public set activeExecutions(activeExecutions: WindupExecution[]) {
         this._activeExecutions = this._sortingService.sort(activeExecutions || []);

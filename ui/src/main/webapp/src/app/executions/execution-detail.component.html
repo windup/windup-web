@@ -16,7 +16,7 @@
     <wu-tab-container>
         <wu-tab [tabTitle]="'Available Reports'">
             <div *ngIf="!displayReportLinks">
-                <div><wu-status-icon [status]="execution.state"></wu-status-icon>{{execution.state}}</div>
+                <div><wu-status-icon [status]="execution.state"></wu-status-icon>{{execution.state | wuPrettyExecutionStatus}}</div>
                 <h2 i18n>Reports are only available for completed executions.</h2>
             </div>
             <ul *ngIf="displayReportLinks">
@@ -28,14 +28,12 @@
                 </li>
                 <li *ngIf="!hideUnfinishedFeatures"><a [routerLink]="['../technology-report']" i18n="report">Technologies</a></li>
                 <li *ngIf="!hideUnfinishedFeatures"><a [routerLink]="['../dependencies']" i18n="report">Dependencies</a></li>
-
-
             </ul>
         </wu-tab>
         <wu-tab [tabTitle]="'Execution Status'">
             <dl>
                 <dt i18n="Execution state">State</dt>
-                <dd><wu-status-icon [status]="execution.state"></wu-status-icon>{{execution.state}}</dd>
+                <dd><wu-status-icon [status]="execution.state"></wu-status-icon>{{execution.state | wuPrettyExecutionStatus}}</dd>
                 <dt i18n="Execution start date">Started Date</dt>
                 <dd>{{execution.timeStarted | date: 'short'}}</dd>
                 <ng-container *ngIf="execution.timeCompleted">
