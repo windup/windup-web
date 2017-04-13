@@ -33,7 +33,7 @@
                         </a>
                     </span>
                     <span class="fa-lg action-item" i18n-title="Delete application" title="Delete">
-                        <a (click)="deleteApplication(app)"  class="action-button">
+                        <a (click)="confirmDeleteApplication(app)"  class="action-button">
                             <i class="fa fa-trash-o"></i>
                         </a>
                     </span>
@@ -41,4 +41,6 @@
             </tr>
         </tbody>
     </table>
+
+    <wu-confirmation-modal #deleteAppDialog [id]="'deleteAppDialog'"></wu-confirmation-modal>
 </div>
