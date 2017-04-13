@@ -16,7 +16,7 @@ import {SortableTableComponent} from "../../../../src/app/shared/sort/sortable-t
 import {SortIndicatorComponent} from "../../../../src/app/shared/sort/sort-indicator.component";
 import {StatusIconComponent} from "../../../../src/app/shared/status-icon.component";
 import {SchedulerService} from "../../../../src/app/shared/scheduler.service";
-import {utils} from "../../../../src/app/shared/utils";
+import {PrettyExecutionStatus} from "../../../../src/app/shared/pretty-execution-state.pipe";
 
 let comp:    ExecutionsListComponent;
 let fixture: ComponentFixture<ExecutionsListComponent>;
@@ -49,7 +49,8 @@ describe('ExecutionsListComponent', () => {
                 DurationPipe,
                 SortableTableComponent,
                 SortIndicatorComponent,
-                StatusIconComponent
+                StatusIconComponent,
+                PrettyExecutionStatus
             ],
             providers: [
                 SchedulerService,
@@ -159,7 +160,7 @@ describe('ExecutionsListComponent', () => {
 
                 expect(el.children.length).toEqual(COUNT_COLUMNS);
                 expect(el.children[COL_ID].textContent.trim()).toEqual(SORTED_EXECUTIONS_DATA[i].id.toString());
-                expect(el.children[COL_STATE].textContent.trim()).toContain(utils.humanReadableLabel(SORTED_EXECUTIONS_DATA[i].state));
+                expect(el.children[COL_STATE].textContent.trim()).toContain((new PrettyExecutionStatus().transform(SORTED_EXECUTIONS_DATA[i].state)));
             }
         });
     });

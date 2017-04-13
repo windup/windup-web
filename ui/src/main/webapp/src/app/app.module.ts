@@ -125,6 +125,7 @@ import {SourceResolve} from "./reports/source/source.resolve";
 import {ExecutionResolve} from "./executions/execution.resolve";
 import {CacheService, CacheServiceInstance} from "./shared/cache.service";
 import {ProjectNameNotExistsValidator} from "./shared/validators/project-name-not-exists.validator";
+import {PrettyExecutionStatus} from "./shared/pretty-execution-state.pipe";
 
 /**
  * Load all mapping data from the generated files.
@@ -229,7 +230,8 @@ initializeModelMappingData();
         SelectApplicationsComponent,
         ContextMenuLinkComponent,
         ApplicationLevelLayoutComponent,
-        ExecutionApplicationListComponent
+        ExecutionApplicationListComponent,
+        PrettyExecutionStatus
     ],
     providers: [
         appRoutingProviders,

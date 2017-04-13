@@ -35,7 +35,7 @@ export class ProjectExecutionsComponent extends ExecutionsMonitoringComponent im
             .filter((event: ExecutionEvent) => event.migrationProject.id === this.project.id)
             .subscribe((event: ExecutionEvent) => this.onExecutionEvent(event)));
 
-        this.runUpdate = Boolean(false);
+        this.runUpdate = false;
     }
 
     private refreshExecutionList() {
@@ -49,7 +49,7 @@ export class ProjectExecutionsComponent extends ExecutionsMonitoringComponent im
         super.onExecutionEvent(event);
         if (!this.runUpdate || !(event.execution.state === 'STARTED')) {
             this.refreshExecutionList();
-            this.runUpdate = Boolean(true);
+            this.runUpdate = true;
         }
     }
 }
