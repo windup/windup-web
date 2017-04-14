@@ -98,7 +98,7 @@ describe('ExecutionsListComponent', () => {
     it('should display cancel link for QUEUED executions', () => {
         let rows = fixture.debugElement.queryAll(By.css('tbody tr'));
 
-        let queuedExecutions = rows.filter(row => row.nativeElement.children[COL_STATE].textContent.trim() === 'Queued');
+        let queuedExecutions = rows.filter(row => row.nativeElement.children[COL_STATE].textContent.trim().startsWith('Queued'));
 
         expect(queuedExecutions.length).toBe(1);
 
@@ -114,7 +114,7 @@ describe('ExecutionsListComponent', () => {
     it('should not display cancel link for executions in other state', () => {
         let rows = fixture.debugElement.queryAll(By.css('tbody tr'));
 
-        let notQueuedExecutions = rows.filter(row => row.nativeElement.children[COL_STATE].textContent.trim() !== 'Queued');
+        let notQueuedExecutions = rows.filter(row => !row.nativeElement.children[COL_STATE].textContent.trim().startsWith('Queued'));
 
         expect(notQueuedExecutions.length).toBe(4);
 

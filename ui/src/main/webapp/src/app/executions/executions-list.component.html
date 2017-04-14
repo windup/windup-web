@@ -26,6 +26,9 @@
                 <span *ngIf="execution.state == 'COMPLETED' || execution.state == 'FAILED'">
                     in
                 </span>
+                <span *ngIf="execution.state == 'CANCELLED'">
+                    after
+                </span>
                 <span *ngIf="execution.timeCompleted">
                     {{(execution.timeCompleted - execution.timeStarted | wuDuration)}}
                 </span>
