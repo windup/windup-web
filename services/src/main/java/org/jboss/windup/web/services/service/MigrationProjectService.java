@@ -14,15 +14,25 @@ import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.model.RegisteredApplication;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileVisitOption;
+import java.nio.file.Files;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author <a href="mailto:dklingenberg@gmail.com">David Klingenberg</a>
  */
 public class MigrationProjectService
 {
+    private static Logger LOG = Logger.getLogger(MigrationProjectService.class.getSimpleName());
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -114,7 +124,15 @@ public class MigrationProjectService
         File projectDir = new File(this.webPathUtil.createMigrationProjectPath(project.getId().toString()).toString());
 
         if (projectDir.exists()) {
-            projectDir.delete();
+            Path rootPath = Paths.get(projectDir.getAbsolutePath());
+            try {
+                Files.walk(rootPath, FileVisitOption.FOLLOW_LINKS)
+                        .sorted(Comparator.reverseOrder())
+                        .map(Path::toFile)
+                        .forEach(File::delete);
+            } catch (IOException e) {
+                LOG.log(Level.WARNING, "Unable to delete directory " + projectDir.getAbsolutePath() + " (" + e.getMessage() + ")");
+            }
         }
     }
     
