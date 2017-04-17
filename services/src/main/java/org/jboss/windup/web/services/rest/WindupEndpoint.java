@@ -10,7 +10,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Contains methods for executing Windup and querying the current status of an execution run.
@@ -54,4 +53,12 @@ public interface WindupEndpoint
     @GET
     @Path("executions/{executionId}/logs")
     List<String> getExecutionLogs(@PathParam("executionId") Long executionID);
+
+    /**
+     * Deletes a report from the specified execution.
+     */
+    @DELETE
+    @Path("executions/{executionId}")
+    void deleteExecution(@PathParam("executionId") Long executionID);
+
 }

@@ -108,11 +108,13 @@ public class WindupExecutionTask implements Runnable
             String source = null;
             String target = null;
 
-            if (analysisContext.getIncludePackages() != null) {
+            if (analysisContext.getIncludePackages() != null)
+            {
                 includePackages = this.getPackagesAsString(analysisContext.getIncludePackages());
             }
 
-            if (analysisContext.getExcludePackages() != null) {
+            if (analysisContext.getExcludePackages() != null)
+            {
                 excludePackages = this.getPackagesAsString(analysisContext.getExcludePackages());
             }
 

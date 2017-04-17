@@ -9,7 +9,7 @@ import {WindupService} from "../services/windup.service";
 import {ExecutionEvent} from "../core/events/windup-event";
 
 @Component({
-    template: '<wu-executions-list [executions]="executions" [activeExecutions]="activeExecutions"></wu-executions-list>'
+    template: '<wu-executions-list (reloadRequestEvent)="refreshExecutionList()" [executions]="executions" [activeExecutions]="activeExecutions"></wu-executions-list>'
 })
 export class ProjectExecutionsComponent extends ExecutionsMonitoringComponent implements OnInit {
     protected executions: WindupExecution[];
@@ -38,7 +38,7 @@ export class ProjectExecutionsComponent extends ExecutionsMonitoringComponent im
         this.runUpdate = false;
     }
 
-    private refreshExecutionList() {
+    refreshExecutionList() {
         this._windupService.getProjectExecutions(this.project.id).subscribe(executions => {
             this.executions = executions;
             this.loadActiveExecutions(this.executions);

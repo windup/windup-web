@@ -10,6 +10,7 @@ import javax.transaction.Status;
 import javax.transaction.UserTransaction;
 
 import org.jboss.windup.exec.WindupProgressMonitor;
+import org.jboss.windup.web.services.messaging.ExecutionStateCache;
 import org.jboss.windup.web.services.messaging.MessagingConstants;
 import org.jboss.windup.web.services.model.ExecutionState;
 import org.jboss.windup.web.services.model.WindupExecution;
@@ -45,6 +46,11 @@ public class WindupWebProgressMonitor implements WindupProgressMonitor
 
         if (execution.getState() == ExecutionState.QUEUED)
             execution.setState(ExecutionState.STARTED);
+
+        if (ExecutionStateCache.isCancelled(execution))
+        {
+            this.setCancelled(true);
+        }
 
         managedExecutorService.submit(() -> {
             UserTransaction userTransaction = ServiceUtil.getUserTransaction();
@@ -122,7 +128,6 @@ public class WindupWebProgressMonitor implements WindupProgressMonitor
     public void setCancelled(boolean cancelled)
     {
         execution.setState(ExecutionState.CANCELLED);
-        sendUpdate(execution);
     }
 
     @Override

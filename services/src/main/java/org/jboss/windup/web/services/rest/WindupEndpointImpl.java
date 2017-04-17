@@ -1,10 +1,15 @@
 package org.jboss.windup.web.services.rest;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileVisitOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.GregorianCalendar;
-import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.Resource;
@@ -12,11 +17,13 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.jms.JMSContext;
 import javax.jms.Queue;
+import javax.jms.Topic;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jboss.forge.furnace.Furnace;
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.addons.websupport.services.LogService;
@@ -67,6 +74,9 @@ public class WindupEndpointImpl implements WindupEndpoint
     @Resource(lookup = "java:/queues/" + MessagingConstants.EXECUTOR_QUEUE)
     private Queue executorQueue;
 
+    @Resource(lookup = "java:/topics/" + MessagingConstants.CANCELLATION_TOPIC)
+    private Topic cancellationTopic;
+
     /**
      * @see org.jboss.windup.web.services.messaging.ExecutorMDB
      */
@@ -105,9 +115,8 @@ public class WindupEndpointImpl implements WindupEndpoint
         entityManager.persist(execution);
 
         Path reportOutputPath = this.webPathUtil.createWindupReportOutputPath(
-                execution.getProject().getId().toString(),
-                execution.getId().toString()
-        );
+                    execution.getProject().getId().toString(),
+                    execution.getId().toString());
 
         execution.setOutputPath(reportOutputPath.toString());
         entityManager.merge(execution);
@@ -141,16 +150,11 @@ public class WindupEndpointImpl implements WindupEndpoint
     {
         WindupExecution execution = this.getExecution(executionID);
 
-        if (execution.getState() != ExecutionState.QUEUED)
-        {
-            throw new BadRequestException("WindupExecution with id: " + executionID + " cannot be cancelled. \n" +
-                        " It is in state: " + execution.getState() + " which doesn't allow cancelling.");
-        }
 
-
-        // TODO: Cancel execution here
         execution.setState(ExecutionState.CANCELLED);
         this.entityManager.merge(execution);
+
+        messaging.createProducer().send(cancellationTopic, execution);
     }
 
     @Override
@@ -168,15 +172,44 @@ public class WindupEndpointImpl implements WindupEndpoint
             throw new NotFoundException("Migration project with id: " + projectId + " not found");
         }
 
-       return this.entityManager.createQuery("SELECT ex FROM WindupExecution ex WHERE ex.project = :project", WindupExecution.class)
-               .setParameter("project", project)
-               .getResultList();
+        return this.entityManager.createQuery("SELECT ex FROM WindupExecution ex WHERE ex.project = :project", WindupExecution.class)
+                    .setParameter("project", project)
+                    .getResultList();
+    }
+
+    @Override
+    public void deleteExecution(Long executionID)
+    {
+        WindupExecution execution = this.getExecution(executionID);
+        if (StringUtils.isBlank(execution.getOutputPath()))
+            return;
+
+        File executionDir = new File(execution.getOutputPath());
+        if (executionDir.exists())
+        {
+            Path rootPath = Paths.get(executionDir.getAbsolutePath());
+            LOG.info("Removing report from: " + rootPath);
+            try
+            {
+                Files.walk(rootPath, FileVisitOption.FOLLOW_LINKS)
+                            .sorted(Comparator.reverseOrder())
+                            .map(Path::toFile)
+                            .forEach(File::delete);
+            }
+            catch (IOException e)
+            {
+                LOG.log(Level.WARNING, "Unable to execution contents at " + executionDir.getAbsolutePath() + " (cause: " + e.getMessage() + ")", e);
+            }
+        }
+        this.entityManager.remove(execution);
     }
 
     @Override
     public List<String> getExecutionLogs(Long executionID)
     {
         WindupExecution execution = this.getExecution(executionID);
+        if (StringUtils.isBlank(execution.getOutputPath()))
+            return;
 
         Path reportPath = Paths.get(execution.getOutputPath());
         return this.logService.getLogData(reportPath, MAX_LOG_SIZE);

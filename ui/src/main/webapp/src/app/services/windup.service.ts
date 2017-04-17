@@ -6,6 +6,7 @@ import {Constants} from "../constants";
 import {AnalysisContext, MigrationProject, WindupExecution} from "windup-services";
 import {AbstractService} from "../shared/abtract.service";
 import {Cached, CacheServiceInstance} from "../shared/cache.service";
+import {EventBusService} from "../core/events/event-bus.service";
 
 @Injectable()
 export class WindupService extends AbstractService {
@@ -14,7 +15,7 @@ export class WindupService extends AbstractService {
     private LOGS_PATH = '/logs';
     private PROJECT_EXECUTIONS_PATH = '/windup/by-project/{projectId}';
 
-    constructor (private _http: Http) {
+    constructor (private _http: Http, private _eventBus: EventBusService) {
         super();
     }
 
@@ -75,11 +76,8 @@ export class WindupService extends AbstractService {
             .catch(this.handleError);
     }
 
-    public getLogData(executionID:number): Observable<string[]> {
-        let url = Constants.REST_BASE + this.EXECUTIONS_PATH + '/' + executionID + this.LOGS_PATH;
-
-        return this._http.get(url)
-            .map(res => <WindupExecution> res.json())
+    public deleteExecution(execution: WindupExecution): Observable<any> {
+        return this._http.delete(Constants.REST_BASE + this.EXECUTIONS_PATH + '/' + execution.id, this.JSON_OPTIONS)
             .catch(this.handleError);
     }
 }
