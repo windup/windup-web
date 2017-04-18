@@ -71,8 +71,9 @@
                 </div>
                 <wu-confirmation-modal #deleteProjectModal
                                        id="deleteProjectConfirmation_{{project.id}}"
-                                       title="Delete project {{project.title}}?"
-                                       body="Type in the name of the project to confirm deletion."
+                                       title="Are you sure you want to delete the project '&lt;strong>{{project.title}}&lt;/strong>'?"
+                                       body="&lt;p>This will &lt;strong>delete all resources&lt;/strong> associated with the project Test and &lt;strong>cannot be undone&lt;/strong>.
+                                            Make sure this is something you really want to do!&lt;/p>"
                                        confirmPhrase="{{project.title}}"
                                        yesLabel="Delete the project"
                                        noLabel="Cancel"
