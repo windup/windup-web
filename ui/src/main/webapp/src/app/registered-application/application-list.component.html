@@ -16,7 +16,6 @@
                [(sortedData)]="sortedApplications" [data]="filteredApplications"
                [tableHeaders]="[
             { title: 'Application', isSortable: true, sortBy: 'title' },
-            { title: 'Created Date', isSortable: true, sortBy: 'created'},
             { title: 'Last Modified Date', isSortable: true, sortBy: 'lastModified'},
             { title: 'Actions', isSortable: false }
         ]">
@@ -24,7 +23,6 @@
         <tbody *ngIf="project">
             <tr *ngFor="let app of sortedApplications">
                 <td>{{app.title}}</td>
-                <td>{{app.created | date: 'short'}}</td>
                 <td>{{app.lastModified | date: 'short' }}</td>
                 <td>
                     <span class="fa-lg action-item" i18n-title="Edit application" title="Edit">
