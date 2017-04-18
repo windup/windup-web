@@ -53,14 +53,16 @@
                             <div class="list-group-item-heading">
                                 <a (click)="viewProject($event, project)"><h2 class="project-title">{{project.title}}</h2></a>
                                 <small *ngIf="project.applications">
-                                    {{project.applications.length}} <ng-container i18n="project app count">Application</ng-container
+                                    <ng-container *ngIf="project.applications">
+                                        {{project.applications.length}} <ng-container i18n="project app count">Application</ng-container
                                         ><ng-container i18n="project app count plural suffix" *ngIf="project.applications.length != 1">s</ng-container>
-                                </small>
-                                <small *ngIf="!project.lastModified">
-                                    <ng-container i18n="project">Created</ng-container> {{project.created | amTimeAgo}}
-                                </small>
-                                <small *ngIf="project.lastModified">
-                                    <ng-container i18n="project">Last Modified</ng-container> {{project.lastModified | amTimeAgo}}
+                                    </ng-container> -
+                                    <ng-container *ngIf="!project.lastModified">
+                                        <ng-container i18n="project">created</ng-container> {{project.created | amTimeAgo}}
+                                    </ng-container>
+                                    <ng-container *ngIf="project.lastModified">
+                                        <ng-container i18n="project">last Modified</ng-container> {{project.lastModified | amTimeAgo}}
+                                    </ng-container>
                                 </small>
                             </div>
                             <div class="list-group-item-text description">{{project.description}}</div>
