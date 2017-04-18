@@ -71,6 +71,14 @@ export class WindupService extends AbstractService {
             .catch(this.handleError);
     }
 
+    public getLogData(executionID:number): Observable<string[]> {
+        let url = Constants.REST_BASE + this.EXECUTIONS_PATH + '/' + executionID + this.LOGS_PATH;
+
+        return this._http.get(url)
+            .map(res => <WindupExecution> res.json())
+            .catch(this.handleError);
+    }
+
     public cancelExecution(execution: WindupExecution): Observable<any> {
         return this._http.post(Constants.REST_BASE + this.EXECUTIONS_PATH + '/' + execution.id + '/cancel' , null)
             .catch(this.handleError);

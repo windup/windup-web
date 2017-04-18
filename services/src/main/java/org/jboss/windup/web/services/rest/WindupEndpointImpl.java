@@ -7,8 +7,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -74,6 +76,9 @@ public class WindupEndpointImpl implements WindupEndpoint
 
     @Resource(lookup = "java:/queues/" + MessagingConstants.EXECUTOR_QUEUE)
     private Queue executorQueue;
+
+    @Resource(lookup = "java:/queues/" + MessagingConstants.STATUS_UPDATE_QUEUE)
+    private Queue statusUpdateQueue;
 
     @Resource(lookup = "java:/topics/" + MessagingConstants.CANCELLATION_TOPIC)
     private Topic cancellationTopic;
@@ -151,10 +156,9 @@ public class WindupEndpointImpl implements WindupEndpoint
     {
         WindupExecution execution = this.getExecution(executionID);
 
-
         execution.setState(ExecutionState.CANCELLED);
-        this.entityManager.merge(execution);
 
+        messaging.createProducer().send(statusUpdateQueue, execution);
         messaging.createProducer().send(cancellationTopic, execution);
     }
 
@@ -205,8 +209,6 @@ public class WindupEndpointImpl implements WindupEndpoint
     public List<String> getExecutionLogs(Long executionID)
     {
         WindupExecution execution = this.getExecution(executionID);
-        if (StringUtils.isBlank(execution.getOutputPath()))
-            return;
 
         Path reportPath = Paths.get(execution.getOutputPath());
         return this.logService.getLogData(reportPath, MAX_LOG_SIZE);
