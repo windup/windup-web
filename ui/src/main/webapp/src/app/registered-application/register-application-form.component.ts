@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewInit} from "@angular/core";
+import { Component, OnInit, OnDestroy} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router, NavigationEnd} from "@angular/router";
 import {FileUploader} from "ng2-file-upload/ng2-file-upload";
@@ -12,37 +12,13 @@ import {Constants} from "../constants";
 import {MigrationProject} from "windup-services";
 import {Subscription} from "rxjs";
 import {RouteFlattenerService} from "../core/routing/route-flattener.service";
+import {TabComponent} from "../shared/tabs/tab.component";
 
 @Component({
     templateUrl: "./register-application-form.component.html",
-    styles: [`
-        ul#addAppModeTabs.nav.nav-tabs  {
-            font-size: 16px;
-            background: none;
-            border: none;
-            border-bottom: 1px solid silver;
-        }
-        ul#addAppModeTabs.nav.nav-tabs li {
-        }
-        ul#addAppModeTabs.nav.nav-tabs li.active {
-            border-bottom: 2px solid #0088ce;
-        }
-        ul#addAppModeTabs.nav.nav-tabs li:hover {
-            border-bottom: 2px solid #008Fd8;
-        }
-        ul#addAppModeTabs.nav.nav-tabs li.active a {
-            font-color: #0088ce;
-            background: none;
-            border: none;
-            border-bottom: 2px solid #0088ce;
-        }
-        .filesDropArea { background-color: #FDFDFD !important; border-style: dashed; }
-
-        .row.description,
-        .description .alert { margin-bottom: 0px !important; }
-    `]
+    styleUrls: ['./register-application-form.component.scss']
 })
-export class RegisterApplicationFormComponent extends FormComponent implements OnInit, OnDestroy, AfterViewInit
+export class RegisterApplicationFormComponent extends FormComponent implements OnInit, OnDestroy
 {
     protected registrationForm: FormGroup;
     protected application: RegisteredApplication;
@@ -56,6 +32,13 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     project: MigrationProject;
     routerSubscription: Subscription;
 
+    countUploadedApplications: number = 0;
+
+    protected labels = {
+        heading: 'Add Applications',
+        uploadButton: 'Upload'
+    };
+
     constructor(
         protected _router: Router,
         protected _activatedRoute: ActivatedRoute,
@@ -66,13 +49,11 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     ) {
         super();
         this.multipartUploader = _registeredApplicationService.getMultipartUploader();
-    }
-
-    ngAfterViewInit(): any {
-        $("#addAppModeTabs a").click(function (event) {
-            event.preventDefault();
-            $(this).tab("show");
-        })
+        this.multipartUploader.onSuccessItem = () => this.countUploadedApplications++;
+        this.multipartUploader.onErrorItem = (item, response) => {
+            this.errorMessages.push(response);
+        };
+        this.multipartUploader.onAfterAddingFile = () => this.registerUploaded();
     }
 
     ngOnInit(): any {
@@ -113,7 +94,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
         if (this.mode == "PATH") {
             this.registerPath();
         } else {
-            this.registerUploaded();
+            this.navigateOnSuccess();
             return false;
         }
     }
@@ -140,7 +121,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
         }
 
         this._registeredApplicationService.uploadApplications(this.project).subscribe(
-            application => this.navigateOnSuccess(),
+            () => {},
             error => this.handleError(<any>error)
         );
     }
@@ -172,5 +153,25 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
 
     private changeMode(mode: RegistrationType) {
         this.mode = mode;
+
+        if (this.mode === 'PATH') {
+            this.labels.uploadButton = 'Upload';
+        } else if (this.mode === 'UPLOADED') {
+            // this is not really nice, but when using UPLOADED mode, upload is done automatically
+            // so no action is actually being executed, so label is 'Done'
+            this.labels.uploadButton = 'Done';
+        }
+    }
+
+    public get isValid() {
+        if (this.mode === 'PATH') {
+            return this.fileInputPath && this.fileInputPath.length > 0;
+        } else if (this.mode === 'UPLOADED') {
+            return this.countUploadedApplications > 0;
+        }
+    }
+
+    public onTabSelected(tab: TabComponent) {
+        this.changeMode(tab.properties.mode);
     }
 }

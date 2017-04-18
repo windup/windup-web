@@ -1,0 +1,52 @@
+ul#addAppModeTabs.nav.nav-tabs {
+  font-size: 16px;
+  background: none;
+  border: none;
+  border-bottom: 1px solid silver;
+}
+
+ul#addAppModeTabs.nav.nav-tabs li {
+
+}
+
+ul#addAppModeTabs.nav.nav-tabs li.active {
+  border-bottom: 2px solid #0088ce;
+}
+
+ul#addAppModeTabs.nav.nav-tabs li:hover {
+  border-bottom: 2px solid #008Fd8;
+}
+
+ul#addAppModeTabs.nav.nav-tabs li.active a {
+  font-color: #0088ce;
+  background: none;
+  border: none;
+  border-bottom: 2px solid #0088ce;
+}
+
+.filesDropArea {
+  background-color: #FDFDFD;
+  border: 2px dashed lightgray;
+
+  height: 200px;
+}
+
+.filesDropArea strong {
+  top: 44%;
+  left: 50%;
+  position: relative;
+  display: block;
+  width: 100px;
+}
+
+.row.description, .description .alert {
+  margin-bottom: 0px !important;
+}
+
+.upload-button, .button-container {
+  float: right;
+}
+
+.upload-queue {
+  margin-top: 10px;
+}

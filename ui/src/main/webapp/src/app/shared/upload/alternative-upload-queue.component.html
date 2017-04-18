@@ -1,0 +1,21 @@
+<ul *ngIf="uploader.queue.length > 0">
+    <li *ngFor="let item of uploader.queue">
+        <div class="progress">
+            <div class="progress-bar" [ngClass]="{'progress-bar-danger': item.isError, 'progress-bar-warning': item.isCancel}"
+                  role="progressbar"
+                  aria-valuemin="0" aria-valuemax="100" [attr.aria-valuenow]="item.progress"
+                  [ngStyle]="{ 'width': getProgressbarWidth(item) + '%' }">
+                <div class="file-info">
+                    <span>{{item?.file?.name}}</span>
+                    <span>{{ item?.file?.size / 1024 / 1024 | number:'.2' }} MB</span>
+                </div>
+                <div class="action-button">
+                    <span (click)="isCancellable(item) ? item.cancel() : null" [ngClass]="{'pointer': isCancellable(item)}">
+                        <i class="glyphicon" [ngClass]="getStatusIcon(item)"></i>
+                    </span>
+                </div>
+                <div>{{getProgressLabel(item)}}</div>
+            </div>
+        </div>
+    </li>
+</ul>
