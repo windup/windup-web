@@ -33,6 +33,9 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
     @ViewChild('deleteExecutionDialog')
     readonly deleteExecutionDialog: ConfirmationModalComponent;
 
+    @ViewChild('cancelExecutionDialog')
+    readonly cancelExecutionDialog: ConfirmationModalComponent;
+
     constructor(
         private _elementRef: ElementRef,
         private _windupService: WindupService,
@@ -48,8 +51,12 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
             this.projectsMap.clear();
             projects.forEach(project => this.projectsMap.set(project.id, project));
         });
-        this.deleteExecutionDialog.confirmed.subscribe((application) => {
-            this.doDeleteExecution(application);
+        this.cancelExecutionDialog.confirmed.subscribe((execution) => {
+            this.doCancelExecution(execution);
+        });
+
+        this.deleteExecutionDialog.confirmed.subscribe((execution) => {
+            this.doDeleteExecution(execution);
         });
 
         this.currentTimeTimer = setInterval(() => {
@@ -90,9 +97,17 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
     }
 
     cancelExecution(execution: WindupExecution) {
+        this.cancelExecutionDialog.data = execution;
+        this.cancelExecutionDialog.title = 'Confirm cancel Analysis';
+        this.cancelExecutionDialog.body = `Do you really want to cancel analysis ${execution.id}?`;
+
+        this.cancelExecutionDialog.show();
+    }
+
+    doCancelExecution(execution: WindupExecution) {
         this._windupService.cancelExecution(execution).subscribe(
             success => {
-                this._notificationService.success('Execution was successfully cancelled.');
+                this._notificationService.success('Analysis was successfully cancelled.');
                 this.reloadRequestEvent.emit(true);
             },
             error => this._notificationService.error(utils.getErrorMessage(error))
@@ -101,7 +116,7 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
 
     confirmDeleteExecution(execution: WindupExecution) {
         this.deleteExecutionDialog.data = execution;
-        this.deleteExecutionDialog.title = 'Confirm execution deletion';
+        this.deleteExecutionDialog.title = 'Confirm analysis deletion';
         this.deleteExecutionDialog.body = `Do you really want to delete analysis ${execution.id}?`;
 
         this.deleteExecutionDialog.show();

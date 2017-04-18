@@ -27,7 +27,7 @@
 
             <!-- Area that collapses when the header is clicked. -->
             <div id="collapse_{{rulePath.id}}" class="panel-body panel-collapse collapse">
-                <a (click)="removeRulesConfirmationModal.show($event)" *ngIf="rulePath.rulesPathType != 'SYSTEM_PROVIDED'" href="#">
+                <a (click)="removeRulesConfirmationModal.show()" *ngIf="rulePath.rulesPathType != 'SYSTEM_PROVIDED'" href="#">
                     <span class="glyphicon glyphicon-trash"></span>
                     <span i18n>Unregister Rules</span>
                 </a>
