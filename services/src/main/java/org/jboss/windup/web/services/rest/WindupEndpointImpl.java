@@ -23,6 +23,7 @@ import javax.persistence.PersistenceContext;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.forge.furnace.Furnace;
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
@@ -187,14 +188,10 @@ public class WindupEndpointImpl implements WindupEndpoint
         File executionDir = new File(execution.getOutputPath());
         if (executionDir.exists())
         {
-            Path rootPath = Paths.get(executionDir.getAbsolutePath());
-            LOG.info("Removing report from: " + rootPath);
+            LOG.info("Removing report from: " + executionDir);
             try
             {
-                Files.walk(rootPath, FileVisitOption.FOLLOW_LINKS)
-                            .sorted(Comparator.reverseOrder())
-                            .map(Path::toFile)
-                            .forEach(File::delete);
+                FileUtils.deleteDirectory(executionDir);
             }
             catch (IOException e)
             {
