@@ -19,8 +19,8 @@ import * as $ from "jquery";
                 {{body}}
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" (click)="no()">No</button>
-                <button type="button" class="btn btn-default" (click)="yes()">Yes</button>
+                <button type="button" class="btn" [ngClass]="noClasses" (click)="no()">No</button>
+                <button type="button" class="btn" [ngClass]="yesClasses" (click)="yes()">Yes</button>
             </div>
         </div>
     </div>
@@ -46,6 +46,12 @@ export class ConfirmationModalComponent {
     @Output()
     cancelled = new EventEmitter();
 
+    @Input()
+    public yesClasses = 'btn-danger';
+
+    @Input()
+    public noClasses = 'btn-default';
+
     constructor() {}
 
     show():void {
@@ -57,12 +63,12 @@ export class ConfirmationModalComponent {
     }
 
     yes():void {
-        this.confirmed.emit({data: this.data});
+        this.confirmed.emit(this.data);
         this.hide();
     }
 
     no():void {
-        this.cancelled.emit({data: this.data});
+        this.cancelled.emit(this.data);
         this.hide();
     }
 }

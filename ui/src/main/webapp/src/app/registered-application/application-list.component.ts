@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from "@angular/core";
+import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 
 import {RegisteredApplication} from "windup-services";
@@ -13,6 +13,7 @@ import {
 } from "../core/events/windup-event";
 import {ExecutionsMonitoringComponent} from "../executions/executions-monitoring.component";
 import {MigrationProject} from "windup-services";
+import {ConfirmationModalComponent} from "../shared/confirmation-modal.component";
 
 @Component({
     templateUrl: './application-list.component.html',
@@ -21,11 +22,14 @@ import {MigrationProject} from "windup-services";
         './application-list.component.scss'
     ]
 })
-export class ApplicationListComponent extends ExecutionsMonitoringComponent implements OnInit, OnDestroy
+export class ApplicationListComponent extends ExecutionsMonitoringComponent implements OnInit, OnDestroy, AfterViewInit
 {
     public filteredApplications: RegisteredApplication[] = [];
     public sortedApplications: RegisteredApplication[] = [];
     public searchText: string;
+
+    @ViewChild('deleteAppDialog')
+    readonly deleteAppDialog: ConfirmationModalComponent;
 
     constructor(
         private _activatedRoute: ActivatedRoute,
@@ -60,6 +64,18 @@ export class ApplicationListComponent extends ExecutionsMonitoringComponent impl
         });
     }
 
+    ngAfterViewInit(): any {
+        this.deleteAppDialog.confirmed.subscribe((application) => {
+            this.doDeleteApplication(application);
+        });
+
+        this.deleteAppDialog.cancelled.subscribe(() => {
+            this.deleteAppDialog.data = null;
+            this.deleteAppDialog.body = '';
+            this.deleteAppDialog.title = '';
+        });
+    }
+
     reloadMigrationProject(project: MigrationProject) {
         this.project = project;
         this.filteredApplications = project.applications;
@@ -84,12 +100,19 @@ export class ApplicationListComponent extends ExecutionsMonitoringComponent impl
         this._router.navigate([`/projects/${this.project.id}/applications/${application.id}/edit`]);
     }
 
-    deleteApplication(application: RegisteredApplication) {
-        // TODO: Show confirm dialog
+    public doDeleteApplication(application: RegisteredApplication) {
         this._registeredApplicationsService.deleteApplication(this.project, application).subscribe(
             () => this._notificationService.success('Application was successfully deleted'),
             error => this._notificationService.error(utils.getErrorMessage(error))
         );
+    }
+
+    public confirmDeleteApplication(application: RegisteredApplication) {
+        this.deleteAppDialog.data = application;
+        this.deleteAppDialog.title = 'Confirm application deletion';
+        this.deleteAppDialog.body = `Do you really want to delete application ${application.title}?`;
+
+        this.deleteAppDialog.show();
     }
 
     updateSearch() {
