@@ -43,13 +43,17 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
     @NamedQuery(name = RuleProviderEntity.DELETE_ALL, query = "delete from RuleProviderEntity"),
     @NamedQuery(
             name = RuleProviderEntity.DELETE_BY_RULES_PATH,
-            query = "delete from RuleProviderEntity rpe where rpe.rulesPath = :" + RuleProviderEntity.RULES_PATH_PARAM)
+            query = "delete from RuleProviderEntity rpe where rpe.rulesPath = :" + RuleProviderEntity.RULES_PATH_PARAM),
+    @NamedQuery(
+            name = RuleProviderEntity.DELETE_WITH_NULL_RULES_PATH,
+            query = "delete from RuleProviderEntity rpe where rpe.rulesPath is null")
 })
 public class RuleProviderEntity implements Serializable
 {
     public static final String FIND_ALL = "RuleProviderEntity.findAll";
     public static final String DELETE_ALL = "RuleProviderEntity.deleteAll";
     public static final String DELETE_BY_RULES_PATH = "RuleProviderEntity.deleteByRulesPath";
+    public static final String DELETE_WITH_NULL_RULES_PATH = "RuleProviderEntity.deleteNullPath";
     public static final String RULES_PATH_PARAM = "rulesPath";
 
     public static final String RULE_PROVIDER_ENTITY_ID = "rule_provider_entity_id";
@@ -99,7 +103,7 @@ public class RuleProviderEntity implements Serializable
     @JoinTable(name = "ruleproviderentity_technology_target", joinColumns = @JoinColumn(name = RULE_PROVIDER_ENTITY_ID, referencedColumnName = RULE_PROVIDER_ENTITY_ID), inverseJoinColumns = @JoinColumn(name = Technology.TECHNOLOGY_ID, referencedColumnName = Technology.TECHNOLOGY_ID))
     private Set<Technology> targets;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @OrderColumn(name = RuleEntity.RULE_SEQUENCE)
     private List<RuleEntity> rules;
 

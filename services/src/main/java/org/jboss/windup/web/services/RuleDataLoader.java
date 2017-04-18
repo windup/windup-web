@@ -78,6 +78,7 @@ public class RuleDataLoader
     public void loadPeriodically()
     {
         reloadRuleData();
+        cleanupDanglingRows();
         getCategories();
     }
 
@@ -104,13 +105,14 @@ public class RuleDataLoader
                         .setParameter(RuleProviderEntity.RULES_PATH_PARAM, rulesPath)
                         .executeUpdate();
 
+            entityManager.createNamedQuery(RuleProviderEntity.DELETE_WITH_NULL_RULES_PATH).executeUpdate();
+
             rulesPath.setLoadError(null);
             try
             {
                 Path path = Paths.get(rulesPath.getPath());
                 RuleLoaderContext ruleLoaderContext = new RuleLoaderContext(Collections.singleton(path), null);
                 RuleProviderRegistry providerRegistry = ruleProviderService.loadRuleProviderRegistry(Collections.singleton(path));
-
 
                 for (RuleProvider provider : providerRegistry.getProviders())
                 {
@@ -124,9 +126,10 @@ public class RuleDataLoader
                     ruleProviderEntity.setDateLoaded(new GregorianCalendar());
                     ruleProviderEntity.setDescription(ruleProviderMetadata.getDescription());
                     ruleProviderEntity.setOrigin(origin);
+                    ruleProviderEntity.setRulesPath(rulesPath);
                     entityManager.persist(ruleProviderEntity);
 
-                    setFileMetaData(rulesPath, ruleProviderEntity);
+                    setFileMetaData(ruleProviderEntity);
 
                     ruleProviderEntity.setSources(technologyReferencesToTechnologyList(ruleProviderMetadata.getSourceTechnologies()));
                     ruleProviderEntity.setTargets(technologyReferencesToTechnologyList(ruleProviderMetadata.getTargetTechnologies()));
@@ -165,14 +168,42 @@ public class RuleDataLoader
         }
     }
 
+    /**
+     * Clean up any stale rows (dangling rows from reloading rules).
+     */
+    private void cleanupDanglingRows()
+    {
+        this.runSqlQuiet("delete from ruleproviderentity_ruleentity where ruleproviderentity_rule_provider_entity_id " +
+                "in (select rule_provider_entity_id from ruleproviderentity where RULESPATH_RULES_PATH_ID is null);");
+        this.runSqlQuiet("delete from ruleproviderentity_technology_source where " +
+                        "rule_provider_entity_id in (select rule_provider_entity_id from ruleproviderentity where RULESPATH_RULES_PATH_ID is null);");
+        this.runSqlQuiet("delete from ruleproviderentity_technology_target " +
+                        "where rule_provider_entity_id in (select rule_provider_entity_id from ruleproviderentity where RULESPATH_RULES_PATH_ID is null);");
+        this.runSqlQuiet("delete from ruleproviderentity where RULESPATH_RULES_PATH_ID is null;");
+        this.runSqlQuiet("delete from ruleentity re where re.rule_entity_id not in " +
+                "(select rules_rule_entity_id from ruleproviderentity_ruleentity);");
+    }
+
+    private void runSqlQuiet(String sql)
+    {
+        try
+        {
+            this.entityManager.createNativeQuery(sql).executeUpdate();
+        }
+        catch (Exception e)
+        {
+            LOG.log(Level.WARNING, "Failed to execute sql due to: " + e.getMessage(), e);
+        }
+    }
+
     private Collection<Category> getCategories()
     {
         List<Category> existingCategoriesList = this.entityManager.createQuery("SELECT c FROM Category c", Category.class)
-                .getResultList();
+                    .getResultList();
 
         Set<String> existingCategoriesAsString = existingCategoriesList.stream()
-                .map(Category::getName)
-                .collect(Collectors.toSet());
+                    .map(Category::getName)
+                    .collect(Collectors.toSet());
 
         Map<String, Integer> categoriesWithPriority = this.issueCategoryProviderService.getCategoriesWithPriority();
 
@@ -199,7 +230,7 @@ public class RuleDataLoader
         return results;
     }
 
-    private void setFileMetaData(RulesPath rulesPath, RuleProviderEntity ruleProviderEntity)
+    private void setFileMetaData(RuleProviderEntity ruleProviderEntity)
     {
         if (ruleProviderEntity.getOrigin() == null)
             return;
@@ -215,19 +246,16 @@ public class RuleDataLoader
             if (!Files.isRegularFile(filePath))
                 return;
 
-                FileTime lastModifiedTime = Files.getLastModifiedTime(Paths.get(filePathString));
-                GregorianCalendar lastModifiedCalendar = new GregorianCalendar();
-                lastModifiedCalendar.setTimeInMillis(lastModifiedTime.toMillis());
-                ruleProviderEntity.setDateModified(lastModifiedCalendar);
+            FileTime lastModifiedTime = Files.getLastModifiedTime(Paths.get(filePathString));
+            GregorianCalendar lastModifiedCalendar = new GregorianCalendar();
+            lastModifiedCalendar.setTimeInMillis(lastModifiedTime.toMillis());
+            ruleProviderEntity.setDateModified(lastModifiedCalendar);
 
-                // Now also find it in the user defined paths
-                ruleProviderEntity.setRulesPath(rulesPath);
-
-                if (ruleProviderEntity.getRulesPath() != null)
-                {
-                    filePath = Paths.get(ruleProviderEntity.getRulesPath().getPath()).relativize(Paths.get(filePathString));
-                    ruleProviderEntity.setOrigin(filePath.toString());
-                }
+            if (ruleProviderEntity.getRulesPath() != null)
+            {
+                filePath = Paths.get(ruleProviderEntity.getRulesPath().getPath()).relativize(Paths.get(filePathString));
+                ruleProviderEntity.setOrigin(filePath.toString());
+            }
         }
         catch (Exception e)
         {
