@@ -30,6 +30,9 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
     private currentTimeTimer:number;
     currentTime:number = new Date().getTime();
 
+    @ViewChild('deleteExecutionDialog')
+    readonly deleteExecutionDialog: ConfirmationModalComponent;
+
     constructor(
         private _elementRef: ElementRef,
         private _windupService: WindupService,
@@ -45,6 +48,10 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
             this.projectsMap.clear();
             projects.forEach(project => this.projectsMap.set(project.id, project));
         });
+        this.deleteExecutionDialog.confirmed.subscribe((application) => {
+            this.doDeleteExecution(application);
+        });
+
         this.currentTimeTimer = setInterval(() => {
             this.currentTime = new Date().getTime();
         }, 5000);
@@ -92,16 +99,15 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
         );
     }
 
-    deleteReport(execution: WindupExecution) {
-        event.stopPropagation();
+    confirmDeleteExecution(execution: WindupExecution) {
+        this.deleteExecutionDialog.data = execution;
+        this.deleteExecutionDialog.title = 'Confirm execution deletion';
+        this.deleteExecutionDialog.body = `Do you really want to delete analysis ${execution.id}?`;
 
-        let deleteExecutionBody = "Delete execution #" + execution.id + "?";
-        if (window.confirm(deleteExecutionBody)) {
-            this.doDeleteReport(execution);
-        }
+        this.deleteExecutionDialog.show();
     }
 
-    doDeleteReport(execution:WindupExecution) {
+    doDeleteExecution(execution:WindupExecution) {
         this._windupService.deleteExecution(execution).subscribe(
             success => {
                 this._notificationService.success('Execution was successfully deleted.');
