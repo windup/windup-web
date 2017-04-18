@@ -63,12 +63,12 @@ export class ConfirmationModalComponent {
     }
 
     yes():void {
-        this.confirmed.emit({data: this.data});
+        this.confirmed.emit(this.data);
         this.hide();
     }
 
     no():void {
-        this.cancelled.emit({data: this.data});
+        this.cancelled.emit(this.data);
         this.hide();
     }
 }
