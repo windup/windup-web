@@ -32,62 +32,55 @@
         </div>
 
         <div *ngIf="projects?.length > 0" class="list-group list-view-pf projects-list">
-            <div *ngFor="let project of projects"
-                class="list-group-item  project-info  tile-click"
-                (click)="viewProject($event, project)">
-                <div class="list-view-pf-actions">
-                    <span class="fa-lg project-action-item" i18n-title="Edit project" title="Edit project">
-                        <a (click)="editProject($event, project)" class="action-button">
-                            <i class="fa fa-pencil"></i>
-                        </a>
-                    </span>
-                    <span class="fa-lg project-action-item" i18n-title="Delete project" title="Delete project">
-                        <a (click)="deleteProject($event, project)"  class="action-button">
-                            <i class="fa fa-trash-o"></i>
-                        </a>
-                    </span>
-                </div>
-                <div class="list-view-pf-main-info">
-                    <div class="list-view-pf-body">
-                        <div class="list-view-pf-description">
-                            <div class="list-group-item-heading">
-                                <a (click)="viewProject($event, project)"><h2 class="project-title">{{project.title}}</h2></a>
-                                <small *ngIf="project.applications">
-                                    <ng-container *ngIf="project.applications">
-                                        {{project.applications.length}} <ng-container i18n="project app count">Application</ng-container
+            <ng-container *ngFor="let project of projects">
+                <div class="list-group-item  project-info  tile-click" (click)="viewProject($event, project)">
+                    <div class="list-view-pf-actions">
+                        <span class="fa-lg project-action-item" i18n-title="Edit project" title="Edit project">
+                            <a (click)="editProject($event, project)" class="action-button">
+                                <i class="fa fa-pencil"></i>
+                            </a>
+                        </span>
+                        <span class="fa-lg project-action-item" i18n-title="Delete project" title="Delete project">
+                            <a (click)="$event.stopPropagation(); deleteProjectModal.show()"  class="action-button">
+                                <i class="fa fa-trash-o"></i>
+                            </a>
+                        </span>
+                    </div>
+                    <div class="list-view-pf-main-info">
+                        <div class="list-view-pf-body">
+                            <div class="list-view-pf-description">
+                                <div class="list-group-item-heading">
+                                    <a (click)="viewProject($event, project)"><h2 class="project-title">{{project.title}}</h2></a>
+                                    <small *ngIf="project.applications">
+                                        <ng-container *ngIf="project.applications">
+                                            {{project.applications.length}} <ng-container i18n="project app count">Application</ng-container
                                         ><ng-container i18n="project app count plural suffix" *ngIf="project.applications.length != 1">s</ng-container>
-                                    </ng-container> -
-                                    <ng-container *ngIf="!project.lastModified">
-                                        <ng-container i18n="project">created</ng-container> {{project.created | amTimeAgo}}
-                                    </ng-container>
-                                    <ng-container *ngIf="project.lastModified">
-                                        <ng-container i18n="project">last updated</ng-container> {{project.lastModified | amTimeAgo}}
-                                    </ng-container>
-                                </small>
-                            </div>
-                            <div class="list-group-item-text description">{{project.description}}</div>
-                        </div>
-                        <!--
-                        <div class="list-view-pf-additional-info">
-                            <div class="list-view-pf-additional-info-item">
-                                <span class="pficon pficon-image"></span>
-                                <strong>{{project.applicationCount}}</strong> <ng-container i18n>Applications</ng-container>
+                                        </ng-container> -
+                                        <ng-container *ngIf="!project.lastModified">
+                                            <ng-container i18n="project">created</ng-container> {{project.created | amTimeAgo}}
+                                        </ng-container>
+                                        <ng-container *ngIf="project.lastModified">
+                                            <ng-container i18n="project">last updated</ng-container> {{project.lastModified | amTimeAgo}}
+                                        </ng-container>
+                                    </small>
+                                </div>
+                                <div class="list-group-item-text description">{{project.description}}</div>
                             </div>
                         </div>
-                        -->
                     </div>
                 </div>
-            </div>
+                <wu-confirmation-modal #deleteProjectModal
+                                       id="deleteProjectConfirmation_{{project.id}}"
+                                       title="Are you sure you want to delete the project '&lt;strong>{{project.title}}&lt;/strong>'?"
+                                       body="&lt;p>This will &lt;strong>delete all resources&lt;/strong> associated with the project Test and &lt;strong>cannot be undone&lt;/strong>.
+                                            Make sure this is something you really want to do!&lt;/p>"
+                                       confirmPhrase="{{project.title}}"
+                                       yesLabel="Delete"
+                                       noLabel="Cancel"
+                                       (confirmed)="doDeleteProject(project)"
+                >
+                </wu-confirmation-modal>
+            </ng-container>
         </div>
-
-        <wu-confirmation-modal
-                #deleteProjectModal
-                id="delete_project"
-                title="Delete project?"
-                body="Delete project?"
-                (confirmed)="doDeleteProject(project)"
-        >
-        </wu-confirmation-modal>
-
     </div>
 </template>

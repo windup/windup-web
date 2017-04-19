@@ -1,12 +1,12 @@
-import {Component, OnDestroy, OnInit, ViewChild} from "@angular/core";
+import {Component, OnInit, ViewChild} from "@angular/core";
 import {Router} from "@angular/router";
 
-import {MigrationProjectService, HasAppCount} from "./migration-project.service";
+import {MigrationProjectService} from "./migration-project.service";
 import {MigrationProject} from "windup-services";
 import {NotificationService} from "../core/notification/notification.service";
 import {utils} from "../shared/utils";
 import {ConfirmationModalComponent} from "../shared/confirmation-modal.component";
-import {SortingService, OrderDirection} from "../shared/sort/sorting.service";
+import {OrderDirection, SortingService} from "../shared/sort/sorting.service";
 
 @Component({
     templateUrl: './project-list.component.html',
@@ -111,7 +111,7 @@ export class ProjectListComponent implements OnInit {
         return this._originalProjects;
     }
 
-    doDeleteProject(project: MigrationProject) {
+    private doDeleteProject(project: MigrationProject) {
         this._migrationProjectService.delete(project).subscribe(
             success => {
                 this._notificationService.success(`Migration project '${project.title}' was successfully deleted`);
@@ -125,18 +125,14 @@ export class ProjectListComponent implements OnInit {
         );
     }
 
-    deleteProject(event: Event, project: MigrationProject) {
+    confirmDeleteProject(event: Event, project: MigrationProject) {
         event.stopPropagation();
 
         this.deleteProjectModal.data = project;
         this.deleteProjectModal.body = `Do you really want to delete project ${project.title}?`;
 
         // TODO: Use modal dialog component for confirmation
-        //        this.deleteProjectModal.show();
-        //        this.deleteProjectModal.confirmed.subscribe(project => this.doDeleteProject(project));
-
-        if (window.confirm(this.deleteProjectModal.body)) {
-            this.doDeleteProject(project);
-        }
+        this.deleteProjectModal.show();
+        this.deleteProjectModal.confirmed.subscribe(project => this.doDeleteProject(project));
     }
 }
