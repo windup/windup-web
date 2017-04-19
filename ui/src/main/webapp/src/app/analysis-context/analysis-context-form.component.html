@@ -11,11 +11,11 @@
                 <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> {{errorMessage}}
             </div>
         </div>
-
         <!-- Form controls begins -->
+        <!-- Advanced Transformation paths -->
         <div class="form-group">
-            <label class="control-label" for="migrationPath" i18n>* Transformation path</label>
-            <select #migrationPath="ngModel" id="migrationPath" name="migrationPath" ngControl="migrationPath" class="form-control" required
+            <label class="control-label required" for="migrationPath" i18n>Transformation path</label>
+            <select #migrationPath="ngModel" id="migrationPath" name="migrationPath" ngControl="migrationPath" class="form-control required"
                     [(ngModel)]="analysisContext.migrationPath.id" [ngClass]="{'has-error': hasError(migrationPath)}">
                     <option *ngFor="let migrationPath of migrationPaths | async" [value]="migrationPath.id">{{migrationPath.name}}</option>
             </select>
@@ -23,49 +23,73 @@
             <p class="help-block">Select the transformation path relevant for the analysis of your application(s).</p>
         </div>
 
-        <!-- Apps -->
+        <!-- Apps 
         <div class="form-group">
             <label class="control-label" i18n>Applications included</label>
             <wu-select-applications [availableApps]="availableApps" [(selectedApps)]="analysisContext.applications">
             </wu-select-applications>
             <p class="help-block">All application included in the analysis.</p>
-        </div>
+        </div>-->
 
         <!-- Packages -->
         <div class="form-group">
-            <label class="control-label" i18n>Included Packages</label>
+            <label class="control-label required" i18n>Included Packages</label>
             <strong *ngIf="!packageTreeLoaded"><span class="spinner spinner-xs spinner-inline"></span>Loading...</strong>
             <wu-js-tree-wrapper [treeNodes]="packageTree" [(selectedNodes)]="analysisContext.includePackages">
             </wu-js-tree-wrapper>
             <p class="help-block">All classes contained in those packages will be considered as written by your organization and will be decompiled and analysed.</p>
         </div>
-        <div class="form-group">
-            <label class="control-label" i18n>Excluded Package</label>
-            <strong *ngIf="!packageTreeLoaded"><span class="spinner spinner-xs spinner-inline"></span>Loading...</strong>
-            <wu-js-tree-wrapper [treeNodes]="packageTree" [(selectedNodes)]="analysisContext.excludePackages">
-            </wu-js-tree-wrapper>
-            <p class="help-block">All classes contained in those packages will be ignored during the analysis.</p>
-        </div>
 
-        <!-- Rulesets selection 
-        <div class="form-group">
-            <label class="control-label">Custom Ruleset selection</label>
-            <wu-custom-rule-selection [selectedRulePaths]="analysisContext.rulesPaths" (selectedRulePathsChanged)="rulesPathsChanged($event)">
-            </wu-custom-rule-selection>
-        </div>
--->
+        <fieldset class="fields-section-pf" id="ExclPackagesSection">
+            <legend class="fields-section-header-pf" aria-expanded="advancedOptionsShow">
+                <span *ngIf="!excludedPkgShow" class="fa fa-angle-right field-section-toggle-pf"></span>
+                <span *ngIf="excludedPkgShow" class="fa fa-angle-right field-section-toggle-pf fa-angle-down"></span>
+                <a (click)="toggleExclPkgOptions()" class="field-section-toggle-pf" i18n>Exclude some packages</a>
+            </legend>
+            <div [hidden]="!excludedPkgShow" class="form-group">
+                <div>
+                    <label class="control-label" i18n>Excluded Packages</label>
+                    <strong *ngIf="!packageTreeLoaded"><span class="spinner spinner-xs spinner-inline"></span>Loading...</strong>
+                    <wu-js-tree-wrapper [treeNodes]="packageTree" [(selectedNodes)]="analysisContext.excludePackages">
+                    </wu-js-tree-wrapper>
+                </div>
+                <p class="help-block">All classes contained in those packages will be ignored during the analysis.</p>
+            </div>
+        </fieldset>
+
+        <!-- Rulesets selection -->
+        <fieldset class="fields-section-pf" id="CustomRulesetsSection">
+            <legend class="fields-section-header-pf" aria-expanded="advancedOptionsShow">
+                <span *ngIf="!customRulesetsShow" class="fa fa-angle-right field-section-toggle-pf"></span>
+                <span *ngIf="customRulesetsShow" class="fa fa-angle-right field-section-toggle-pf fa-angle-down"></span>
+                <a (click)="toggleCustomRulesetsOptions()" class="field-section-toggle-pf" i18n>Use local custom rules</a>
+            </legend>
+            <div [hidden]="!customRulesetsShow" class="form-group">
+                <label class="control-label" i18n>Custom rulesets</label>
+                <wu-custom-rule-selection [selectedRulePaths]="analysisContext.rulesPaths" (selectedRulePathsChanged)="rulesPathsChanged($event)">
+                </wu-custom-rule-selection>
+            </div>
+        </fieldset>
 
         <!-- Advanced options -->
-        <div class="form-group">
-            <label class="control-label" i18n>Advanced Options</label>
-<!--            <input id="createStaticReports" name="generateStaticReports" type="checkbox" [(ngModel)]="analysisContext.generateStaticReports"> 
-            <label for="createStaticReports" i18n>Create static HTML reports</label>
-            -->
-
-            <wu-analysis-context-advanced-options [(selectedOptions)]="analysisContext.advancedOptions" (advancedOptionsChanged)="advancedOptionsChanged($event)"
-                    [configurationOptions]="configurationOptions" #advancedOptionsModal>
-            </wu-analysis-context-advanced-options>
-        </div>
+        <fieldset class="fields-section-pf" id="AdvOptSection">
+            <legend class="fields-section-header-pf" aria-expanded="advancedOptionsShow">
+                <span *ngIf="!advancedOptionsShow" class="fa fa-angle-right field-section-toggle-pf"></span>
+                <span *ngIf="advancedOptionsShow" class="fa fa-angle-right field-section-toggle-pf fa-angle-down"></span>
+                <a (click)="toggleAdvOptions()" class="field-section-toggle-pf" i18n>Advanced Options</a>
+            </legend>
+            <div [hidden]="!advancedOptionsShow" class="form-group">
+                <label for="createStaticReports" i18n>
+                    <input id="createStaticReports" name="generateStaticReports" type="checkbox" [(ngModel)]="analysisContext.generateStaticReports">
+                     Create static HTML reports
+                </label>
+                 
+                <label class="control-label" i18n>Advanced options</label>
+                <wu-analysis-context-advanced-options [(selectedOptions)]="analysisContext.advancedOptions" (advancedOptionsChanged)="advancedOptionsChanged($event)"
+                        [configurationOptions]="configurationOptions" #advancedOptionsModal>
+                </wu-analysis-context-advanced-options>
+            </div>
+        </fieldset>
 
         <div class="form-group pull-right">
             <button (click)="cancel()" class="btn btn-default" type="button" i18n>Back</button>
