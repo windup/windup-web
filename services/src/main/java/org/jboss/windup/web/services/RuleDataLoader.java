@@ -120,6 +120,12 @@ public class RuleDataLoader
 
                     String providerID = ruleProviderMetadata.getID();
                     String origin = ruleProviderMetadata.getOrigin();
+                    RuleProviderEntity.RuleProviderType ruleProviderType = getProviderType(origin);
+
+                    // Skip user provided rules that are
+                    if (rulesPath.getRulesPathType() == RulesPath.RulesPathType.USER_PROVIDED &&
+                            ruleProviderType == RuleProviderEntity.RuleProviderType.JAVA)
+                        continue;
 
                     RuleProviderEntity ruleProviderEntity = new RuleProviderEntity();
                     ruleProviderEntity.setProviderID(providerID);
@@ -140,7 +146,7 @@ public class RuleDataLoader
 
                     ruleProviderEntity.setPhase(phase);
 
-                    ruleProviderEntity.setRuleProviderType(getProviderType(origin));
+                    ruleProviderEntity.setRuleProviderType(ruleProviderType);
 
                     List<RuleEntity> ruleEntities = new ArrayList<>();
 

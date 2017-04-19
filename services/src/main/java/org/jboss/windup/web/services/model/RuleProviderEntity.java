@@ -103,7 +103,7 @@ public class RuleProviderEntity implements Serializable
     @JoinTable(name = "ruleproviderentity_technology_target", joinColumns = @JoinColumn(name = RULE_PROVIDER_ENTITY_ID, referencedColumnName = RULE_PROVIDER_ENTITY_ID), inverseJoinColumns = @JoinColumn(name = Technology.TECHNOLOGY_ID, referencedColumnName = Technology.TECHNOLOGY_ID))
     private Set<Technology> targets;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @OrderColumn(name = RuleEntity.RULE_SEQUENCE)
     private List<RuleEntity> rules;
 
