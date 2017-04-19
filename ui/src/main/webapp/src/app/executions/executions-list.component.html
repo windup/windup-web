@@ -39,15 +39,22 @@
         </td>
         <td>{{execution.timeStarted | date: 'short'}}</td>
         <td>
-            <a class="link cancel" *ngIf="canCancel(execution)" (click)="cancelExecution(execution)" i18n="button">Cancel</a>
+            <a class="pointer link cancel" *ngIf="canCancel(execution)" (click)="cancelExecution(execution)" i18n="button">Cancel</a>
             <!-- left for when dynamic report will be linked again
             <a
                     class="link"
                     *ngIf="execution.state == 'COMPLETED'"
                     [routerLink]="['/projects', execution.projectId, 'reports', execution.id]">View Reports</a>
             -->
-            <a *ngIf="execution.state == 'COMPLETED' && execution?.analysisContext?.generateStaticReports" class="link external-link" target="_blank" href="{{formatStaticReportUrl(execution)}}">Static Report</a>
+            <a *ngIf="execution.state == 'COMPLETED' && execution?.analysisContext?.generateStaticReports" class="pointer link" target="_blank" href="{{formatStaticReportUrl(execution)}}">
+                <i class="fa fa-bar-chart"></i>
+            </a>
+            <a *ngIf="execution.state != 'STARTED' && execution.state != 'QUEUED'" class="pointer link" (click)="confirmDeleteExecution(execution)">
+                <i class="fa fa-trash-o"></i>
+            </a>
         </td>
     </tr>
     </tbody>
 </table>
+<wu-confirmation-modal #deleteExecutionDialog [id]="'deleteExecutionDialog'"></wu-confirmation-modal>
+<wu-confirmation-modal #cancelExecutionDialog [id]="'cancelExecutionDialog'"></wu-confirmation-modal>

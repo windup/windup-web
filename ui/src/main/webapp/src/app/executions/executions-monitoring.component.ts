@@ -14,6 +14,8 @@ export abstract class ExecutionsMonitoringComponent extends AbstractComponent {
     }
 
     protected loadActiveExecutions(executions: WindupExecution[]) {
+        console.log("Load active for executions: ", executions);
+        this.activeExecutionsMap.clear();
         executions.filter(execution => this.isExecutionActive(execution))
             .forEach(execution => {
                 this.activeExecutionsMap.set(execution.id, execution);

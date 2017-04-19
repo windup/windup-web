@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, OnInit} from "@angular/core";
+import {Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from "@angular/core";
 import {WindupService} from "../services/windup.service";
 import {WindupExecution} from "windup-services";
 import {NotificationService} from "../core/notification/notification.service";
@@ -7,7 +7,7 @@ import {SortingService, OrderDirection} from "../shared/sort/sorting.service";
 import {MigrationProjectService} from "../project/migration-project.service";
 import {MigrationProject} from "windup-services";
 import {WindupExecutionService} from "../services/windup-execution.service";
-import {Constants} from "../constants";
+import {ConfirmationModalComponent} from "../shared/confirmation-modal.component";
 
 @Component({
     selector: 'wu-executions-list',
@@ -15,7 +15,10 @@ import {Constants} from "../constants";
     providers: [SortingService],
     styleUrls: ['../../../css/tables.scss']
 })
-export class ExecutionsListComponent implements OnInit {
+export class ExecutionsListComponent implements OnInit, OnDestroy {
+    @Output()
+    reloadRequestEvent:EventEmitter<any> = new EventEmitter();
+
     protected element;
 
     private _executions: WindupExecution[];
@@ -24,6 +27,14 @@ export class ExecutionsListComponent implements OnInit {
 
     sortedExecutions: WindupExecution[] = [];
     initialSort = {property: 'timeStarted', direction: OrderDirection.DESC};
+    private currentTimeTimer:number;
+    currentTime:number = new Date().getTime();
+
+    @ViewChild('deleteExecutionDialog')
+    readonly deleteExecutionDialog: ConfirmationModalComponent;
+
+    @ViewChild('cancelExecutionDialog')
+    readonly cancelExecutionDialog: ConfirmationModalComponent;
 
     constructor(
         private _elementRef: ElementRef,
@@ -40,6 +51,22 @@ export class ExecutionsListComponent implements OnInit {
             this.projectsMap.clear();
             projects.forEach(project => this.projectsMap.set(project.id, project));
         });
+        this.cancelExecutionDialog.confirmed.subscribe((execution) => {
+            this.doCancelExecution(execution);
+        });
+
+        this.deleteExecutionDialog.confirmed.subscribe((execution) => {
+            this.doDeleteExecution(execution);
+        });
+
+        this.currentTimeTimer = setInterval(() => {
+            this.currentTime = new Date().getTime();
+        }, 5000);
+    }
+
+    ngOnDestroy(): void {
+        if (this.currentTimeTimer)
+            clearInterval(this.currentTimeTimer);
     }
 
     @Input()
@@ -50,10 +77,6 @@ export class ExecutionsListComponent implements OnInit {
 
     public get executions(): WindupExecution[] {
         return this._executions;
-    }
-
-    public get currentTime(): number {
-        return new Date().getTime();
     }
 
     @Input()
@@ -70,14 +93,44 @@ export class ExecutionsListComponent implements OnInit {
     }
 
     canCancel(execution: WindupExecution): boolean {
-        return execution.state === 'QUEUED'; // || execution.state === 'STARTED';
+        return execution.state === 'QUEUED' || execution.state === 'STARTED';
     }
 
     cancelExecution(execution: WindupExecution) {
+        this.cancelExecutionDialog.data = execution;
+        this.cancelExecutionDialog.title = 'Confirm cancel Analysis';
+        this.cancelExecutionDialog.body = `Do you really want to cancel analysis ${execution.id}?`;
+
+        this.cancelExecutionDialog.show();
+    }
+
+    doCancelExecution(execution: WindupExecution) {
         this._windupService.cancelExecution(execution).subscribe(
-            success => this._notificationService.success('Execution was successfully cancelled.'),
+            success => {
+                this._notificationService.success('Analysis was successfully cancelled.');
+                this.reloadRequestEvent.emit(true);
+            },
             error => this._notificationService.error(utils.getErrorMessage(error))
         );
+    }
+
+    confirmDeleteExecution(execution: WindupExecution) {
+        this.deleteExecutionDialog.data = execution;
+        this.deleteExecutionDialog.title = 'Confirm analysis deletion';
+        this.deleteExecutionDialog.body = `Do you really want to delete analysis ${execution.id}?`;
+
+        this.deleteExecutionDialog.show();
+    }
+
+    doDeleteExecution(execution:WindupExecution) {
+        this._windupService.deleteExecution(execution).subscribe(
+            success => {
+                this._notificationService.success('Execution was successfully deleted.');
+                this.reloadRequestEvent.emit(true);
+            },
+            error => this._notificationService.error(utils.getErrorMessage(error))
+        );
+        return false;
     }
 
     getClass(execution: WindupExecution): string {

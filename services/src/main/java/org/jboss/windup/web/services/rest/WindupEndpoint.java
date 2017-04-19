@@ -4,6 +4,7 @@ import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.WindupExecution;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -54,4 +55,12 @@ public interface WindupEndpoint
     @GET
     @Path("executions/{executionId}/logs")
     List<String> getExecutionLogs(@PathParam("executionId") Long executionID);
+
+    /**
+     * Deletes a report from the specified execution.
+     */
+    @DELETE
+    @Path("executions/{executionId}")
+    void deleteExecution(@PathParam("executionId") Long executionID);
+
 }

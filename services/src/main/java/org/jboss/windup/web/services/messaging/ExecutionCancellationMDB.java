@@ -21,13 +21,13 @@ import org.jboss.windup.web.services.model.WindupExecution;
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
 @MessageDriven(activationConfig = {
-    @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
-    @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "AUTO_ACKNOWLEDGE"),
-    @ActivationConfigProperty(propertyName = "maxSession", propertyValue = "1"),
-    @ActivationConfigProperty(propertyName = "destination", propertyValue = MessagingConstants.EXECUTOR_QUEUE)
+        @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Topic"),
+        @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "AUTO_ACKNOWLEDGE"),
+        @ActivationConfigProperty(propertyName = "maxSession", propertyValue = "10"),
+        @ActivationConfigProperty(propertyName = "destination", propertyValue = MessagingConstants.CANCELLATION_TOPIC)
 })
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-public class ExecutorMDB extends AbstractMDB implements MessageListener
+public class ExecutionCancellationMDB extends AbstractMDB implements MessageListener
 {
     private static Logger LOG = Logger.getLogger(ExecutorMDB.class.getName());
 
@@ -43,21 +43,12 @@ public class ExecutorMDB extends AbstractMDB implements MessageListener
         try
         {
             WindupExecution execution = (WindupExecution)((ObjectMessage) message).getObject();
-            if (ExecutionStateCache.isCancelled(execution))
-            {
-                LOG.info("Not executing " + execution.getId() + " as it has been marked cancelled!");
-                return;
-            }
-
-            WindupExecutionTask executionTask = windupExecutionTaskInstance.get();
-            executionTask.init(execution, execution.getAnalysisContext());
-            executionTask.run();
+            LOG.info("Marking execution for cancellation: " + execution.getId());
+            ExecutionStateCache.setCancelled(execution);
         }
         catch (Throwable e)
         {
             LOG.log(Level.SEVERE, "Failed to execute windup due to: " + e.getMessage(), e);
         }
     }
-
-
 }
