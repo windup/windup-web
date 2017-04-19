@@ -17,6 +17,7 @@ import {SortIndicatorComponent} from "../../../../src/app/shared/sort/sort-indic
 import {StatusIconComponent} from "../../../../src/app/shared/status-icon.component";
 import {SchedulerService} from "../../../../src/app/shared/scheduler.service";
 import {PrettyExecutionStatus} from "../../../../src/app/shared/pretty-execution-state.pipe";
+import {ConfirmationModalComponent} from "../../../../src/app/shared/confirmation-modal.component";
 
 let comp:    ExecutionsListComponent;
 let fixture: ComponentFixture<ExecutionsListComponent>;
@@ -50,7 +51,8 @@ describe('ExecutionsListComponent', () => {
                 SortableTableComponent,
                 SortIndicatorComponent,
                 StatusIconComponent,
-                PrettyExecutionStatus
+                PrettyExecutionStatus,
+                ConfirmationModalComponent
             ],
             providers: [
                 SchedulerService,
@@ -114,11 +116,14 @@ describe('ExecutionsListComponent', () => {
     it('should not display cancel link for executions in other state', () => {
         let rows = fixture.debugElement.queryAll(By.css('tbody tr'));
 
-        let notQueuedExecutions = rows.filter(row => !row.nativeElement.children[COL_STATE].textContent.trim().startsWith('Queued'));
+        let notCompletedExecutions = rows.filter(row => {
+            return !row.nativeElement.children[COL_STATE].textContent.trim().startsWith('Queued') &&
+                !row.nativeElement.children[COL_STATE].textContent.trim().startsWith('In Progress')
+        });
 
-        expect(notQueuedExecutions.length).toBe(4);
+        expect(notCompletedExecutions.length).toBe(3);
 
-        notQueuedExecutions.forEach(row => {
+        notCompletedExecutions.forEach(row => {
             let el = row.nativeElement;
             let state = el.children[COL_STATE];
             let stateText = state.textContent ? state.textContent.trim() : "";
@@ -127,7 +132,7 @@ describe('ExecutionsListComponent', () => {
                 expect(el.children[COL_ACTIONS].children.length).toBe(1);
                 expect(el.children[COL_ACTIONS].textContent.trim()).toEqual('Static Report');
             } else {
-                expect(el.children[COL_ACTIONS].children.length).toBe(0);
+                expect(el.children[COL_ACTIONS].children.length).toBe(1);
                 expect(el.children[COL_ACTIONS].textContent.trim()).toEqual('');
             }
         });
@@ -183,17 +188,21 @@ describe('ExecutionsListComponent', () => {
 
             cancelLink.triggerEventHandler('click', null);
             fixture.detectChanges();
+
+            let confirmationButton = fixture.debugElement.query(By.css("#cancelExecutionDialog button.btn-danger"));
+            confirmationButton.triggerEventHandler('click', null);
+            fixture.detectChanges();
         });
 
         it('should call cancel method on windup service', () => {
-            let queuedExecution = SORTED_EXECUTIONS_DATA.find(execution => execution.state === 'QUEUED');
+            let queuedExecution = SORTED_EXECUTIONS_DATA.find(execution => execution.state === 'QUEUED' || execution.state === "STARTED");
 
             expect(windupService.cancelExecution).toHaveBeenCalledWith(queuedExecution);
         });
 
         describe('when cancellation completes successfully', () => {
             it('should create notification on success', () => {
-                expect(notificationService.success).toHaveBeenCalledWith('Execution was successfully cancelled.');
+                expect(notificationService.success).toHaveBeenCalledWith('Analysis was successfully cancelled.');
             });
         });
 
@@ -209,6 +218,10 @@ describe('ExecutionsListComponent', () => {
 
                 let cancelLink = fixture.debugElement.query(By.css('tbody tr td a.cancel'));
                 cancelLink.triggerEventHandler('click', null);
+                fixture.detectChanges();
+
+                let confirmationButton = fixture.debugElement.query(By.css("#cancelExecutionDialog button.btn-danger"));
+                confirmationButton.triggerEventHandler('click', null);
                 fixture.detectChanges();
             });
 
