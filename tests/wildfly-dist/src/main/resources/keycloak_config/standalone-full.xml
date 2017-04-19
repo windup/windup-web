@@ -362,6 +362,7 @@
                 <jms-queue name="executorQueue" entries="queues/executorQueue"/>
                 <jms-queue name="statusUpdateQueue" entries="queues/statusUpdateQueue"/>
                 <jms-queue name="packageDiscoveryQueue" entries="queues/packageDiscoveryQueue"/>
+                <jms-topic name="executorCancellation" entries="topics/executorCancellation"/>
                 <connection-factory name="InVmConnectionFactory" entries="java:/ConnectionFactory" connectors="in-vm"/>
                 <connection-factory name="RemoteConnectionFactory" entries="java:jboss/exported/jms/RemoteConnectionFactory" connectors="http-connector"/>
                 <pooled-connection-factory name="activemq-ra" entries="java:/JmsXA java:jboss/DefaultJMSConnectionFactory" connectors="in-vm" transaction="xa"/>
