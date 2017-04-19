@@ -16,7 +16,7 @@ import {FlattenedRouteData, RouteFlattenerService} from "../core/routing/route-f
 @Component({
     templateUrl: './project-layout.component.html',
     styles: [
-        `:host /deep/ .nav-pf-vertical { top: 61px; }`,
+        `:host /deep/ .container-fluid { padding-top: 122px; }`,
         `:host /deep/ .row-cards-pf:first-child { padding-top: initial; }`
     ]
 })

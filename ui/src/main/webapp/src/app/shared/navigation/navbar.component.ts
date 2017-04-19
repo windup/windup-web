@@ -12,6 +12,9 @@ export class NavbarComponent implements AfterViewInit {
     @Input()
     public showMenuItems: boolean = true;
 
+    @Input()
+    public showLogotype: boolean = true;
+
     constructor(private _keycloak: KeycloakService, private _element: ElementRef) {
 
     }
