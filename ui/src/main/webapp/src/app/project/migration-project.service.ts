@@ -1,5 +1,5 @@
-import {Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions} from '@angular/http';
+import {Injectable} from "@angular/core";
+import {Headers, Http, RequestOptions} from "@angular/http";
 
 import {Constants} from "../constants";
 import {MigrationProject} from "windup-services";
@@ -11,7 +11,6 @@ import {
     ApplicationRegisteredEvent, ApplicationDeletedEvent, UpdateMigrationProjectEvent, DeleteMigrationProjectEvent
 } from "../core/events/windup-event";
 import {EventBusService} from "../core/events/event-bus.service";
-import {AnalysisContext} from "windup-services";
 import {Cached} from "../shared/cache.service";
 
 @Injectable()
@@ -21,6 +20,7 @@ export class MigrationProjectService extends AbstractService {
     private CREATE_MIGRATION_PROJECT_URL = "/migrationProjects/create";
     private UPDATE_MIGRATION_PROJECT_URL = "/migrationProjects/update";
     private DELETE_MIGRATION_PROJECT_URL = '/migrationProjects/delete';
+    private DELETE_PROVISIONAL_PROJECTS_URL = '/migrationProjects/deleteProvisional';
     private GET_ID_BY_NAME_URL = '/migrationProjects/id-by-name';
 
     private monitoredProjects = new Map<number, MigrationProject>();
@@ -42,7 +42,8 @@ export class MigrationProjectService extends AbstractService {
 
         if (event.isTypeOf(NewExecutionStartedEvent)) {
             monitoredProject.executions.push((<NewExecutionStartedEvent>event).execution);
-        } else if (event.isTypeOf(ExecutionUpdatedEvent)) {
+        }
+        else if (event.isTypeOf(ExecutionUpdatedEvent)) {
             let currentExecutionIndex = -1;
             let eventExecution = (<ExecutionUpdatedEvent>event).execution;
 
@@ -58,10 +59,12 @@ export class MigrationProjectService extends AbstractService {
             } else {
                 monitoredProject.executions.push(eventExecution);
             }
-        } else if (event.isTypeOf(ApplicationRegisteredEvent)) {
+        }
+        else if (event.isTypeOf(ApplicationRegisteredEvent)) {
             // create new array by merging project and event arrays together
             monitoredProject.applications = [...monitoredProject.applications, ...(<any>event).applications];
-        } else if (event.isTypeOf(ApplicationDeletedEvent)) {
+        }
+        else if (event.isTypeOf(ApplicationDeletedEvent)) {
             monitoredProject.applications = monitoredProject.applications.filter((app) => {
                 // keep only those items which are not in event applications
                 return (<any>event).applications.findIndex(eventApp => eventApp.id === app.id) === -1;
@@ -120,6 +123,12 @@ export class MigrationProjectService extends AbstractService {
             .map(res => <MigrationProjectAndCount[]> res.json())
             // The consuming code still sees  MigrationProject, only with .appCount added.
             .map(entries => entries.map(entry => (entry.migrationProject["applicationCount"] = entry.applicationCount, entry.migrationProject)))
+            .catch(this.handleError);
+    }
+
+    deleteProvisionalProjects(): Observable<void> {
+        return this._http.delete(Constants.REST_BASE + this.DELETE_PROVISIONAL_PROJECTS_URL)
+            .map(res => res.json())
             .catch(this.handleError);
     }
 

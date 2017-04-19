@@ -10,9 +10,6 @@ import {FormControl} from "@angular/forms";
 
 @Component({
     templateUrl: './migration-project-form.component.html',
-    styles: [`
-      
-    `]
 })
 export class MigrationProjectFormComponent extends FormComponent implements OnInit, OnDestroy
 {
@@ -21,6 +18,7 @@ export class MigrationProjectFormComponent extends FormComponent implements OnIn
     model: MigrationProject = <MigrationProject>{};
 
     isInWizard: boolean = false;
+    isCreating: boolean = false;
     editMode: boolean = false;
 
     errorMessages: string[];
@@ -49,6 +47,9 @@ export class MigrationProjectFormComponent extends FormComponent implements OnIn
             }
 
             this.isInWizard = flatRouteData.data.hasOwnProperty('wizard') && flatRouteData.data['wizard'];
+
+            if(!this.editMode) // Creating a new project.
+                this._migrationProjectService.deleteProvisionalProjects().subscribe(res => {});
         });
     }
 

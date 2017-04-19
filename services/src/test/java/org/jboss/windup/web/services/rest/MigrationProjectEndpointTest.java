@@ -50,7 +50,7 @@ public class MigrationProjectEndpointTest extends AbstractTest
     @RunAsClient
     public void testCreateMigrationProject() throws Exception
     {
-        Collection<MigrationProjectEndpoint.MigrationProjectAndAppCount> existingProjects = migrationProjectEndpoint.getMigrationProjects();
+        Collection<MigrationProjectEndpoint.MigrationProjectAndAppCount> existingProjects = migrationProjectEndpoint.getMigrationProjects(false);
         Assert.assertEquals(0, existingProjects.size());
 
         String title = "Test Migration Project" + RandomStringUtils.randomAlphabetic(5);
@@ -60,7 +60,7 @@ public class MigrationProjectEndpointTest extends AbstractTest
 
         MigrationProject createdProject = this.migrationProjectEndpoint.createMigrationProject(migrationProject);
 
-        Collection<MigrationProjectEndpoint.MigrationProjectAndAppCount> apps = migrationProjectEndpoint.getMigrationProjects();
+        Collection<MigrationProjectEndpoint.MigrationProjectAndAppCount> apps = migrationProjectEndpoint.getMigrationProjects(false);
         Assert.assertEquals(1, apps.size());
         Assert.assertNotNull(apps.iterator().next());
         Assert.assertEquals(title, apps.iterator().next().getMigrationProject().getTitle());
@@ -117,7 +117,7 @@ public class MigrationProjectEndpointTest extends AbstractTest
 
         try
         {
-            Collection<MigrationProjectEndpoint.MigrationProjectAndAppCount> existingProjects = migrationProjectEndpoint.getMigrationProjects();
+            Collection<MigrationProjectEndpoint.MigrationProjectAndAppCount> existingProjects = migrationProjectEndpoint.getMigrationProjects(false);
             Assert.assertEquals(1, existingProjects.size());
 
             MigrationProjectEndpoint.MigrationProjectAndAppCount projectFromServer = existingProjects.iterator().next();
@@ -141,7 +141,7 @@ public class MigrationProjectEndpointTest extends AbstractTest
 
         try
         {
-            Collection<MigrationProjectEndpoint.MigrationProjectAndAppCount> existingProjects = migrationProjectEndpoint.getMigrationProjects();
+            Collection<MigrationProjectEndpoint.MigrationProjectAndAppCount> existingProjects = migrationProjectEndpoint.getMigrationProjects(false);
             Assert.assertEquals(1, existingProjects.size());
 
             MigrationProjectEndpoint.MigrationProjectAndAppCount projectFromServer = existingProjects.iterator().next();

@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
+import javax.validation.ValidationException;
 import javax.ws.rs.NotFoundException;
 
 import org.jboss.windup.util.exception.WindupException;
@@ -50,14 +51,16 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
     private WebPathUtil webPathUtil;
 
     @Override
-    public List<MigrationProjectAndAppCount> getMigrationProjects()
+    public List<MigrationProjectAndAppCount> getMigrationProjects(Boolean includeProvisional)
     {
         try
         {
-            final String query = "SELECT project, COUNT(DISTINCT app) AS appCount "
-                        + "FROM " + MigrationProject.class.getSimpleName() + " project "
-                        + "LEFT JOIN project.applications AS app "
-                        + "GROUP BY project.id";
+            final String query =
+                    "SELECT project, COUNT(DISTINCT app) AS appCount "
+                    + "\n FROM " + MigrationProject.class.getSimpleName() + " AS project "
+                    + "\n LEFT JOIN project.applications AS app "
+                    + (Boolean.TRUE.equals(includeProvisional) ? "" : "\n WHERE project.provisional = FALSE")
+                    + "\n GROUP BY project.id";
 
             List<Object[]> entries = entityManager.createQuery(query, Object[].class).getResultList();
             return new ArrayList<>(entries.stream().map(e -> new MigrationProjectAndAppCount((MigrationProject) e[0], (long) e[1]))
@@ -82,6 +85,9 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
     @Override
     public MigrationProject createMigrationProject(MigrationProject migrationProject)
     {
+        if (null != getProjectIdByName(migrationProject.getTitle()))
+            throw new ValidationException("The project name is already in use: " + migrationProject.getTitle());
+
         migrationProject = this.migrationProjectService.createProject(migrationProject);
         LOG.info("Creating a migration project: " + migrationProject.getId());
 
@@ -91,6 +97,9 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
     @Override
     public MigrationProject updateMigrationProject(MigrationProject migrationProject)
     {
+        if (null != getProjectIdByName(migrationProject.getTitle()))
+            throw new ValidationException("The project name is already in use: " + migrationProject.getTitle());
+
         return entityManager.merge(migrationProject);
     }
 
@@ -145,9 +154,15 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
     }
 
     @Override
+    public void deleteOldProvisionalProjects()
+    {
+        this.migrationProjectService.deleteOldProvisionalProjects(180);
+    }
+
+    @Override
     public Long getProjectIdByName(String title)
     {
-        String jql = "SELECT id FROM MigrationProject p WHERE LOWER(p.title) = LOWER(:title)";
+        String jql = "SELECT p.id FROM MigrationProject p WHERE REGEXP_REPLACE(TRIM(LOWER(p.title)), ' +', ' ') = REGEXP_REPLACE(TRIM(LOWER(:title)), ' +', ' ') AND p.provisional = FALSE";
         List<Long> ids = this.entityManager.createQuery(jql, Long.class)
                     .setParameter("title", title)
                     .getResultList();
