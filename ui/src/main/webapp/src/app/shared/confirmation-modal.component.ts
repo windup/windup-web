@@ -17,69 +17,104 @@ import * as $ from "jquery";
         }
         p { font-size: 16px; }
     `],
-    template: `
-    <div id="{{id}}" class="modal fade" tabindex="-1" role="dialog" [attr.aria-labelledby]="title" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <!--
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                    <span class="pficon pficon-close"></span>
-                </button>
-                -->
-                <h1 class="modal-title" [innerHTML]="(title)"></h1>
-            </div>
-            <div class="modal-body">
-                <p [innerHTML]="(body)"></p>
-                <div [style.display]="confirmPhrase ? 'block' : 'none'">
-                    <p class="ng-binding">Type the name of the project to confirm.</p>
-                    <p>
-                        <label class="sr-only" for="resource-to-delete">project to delete</label>
-                        <input #confirmInput id="resource-to-delete" xstyle="margin: 1ex 1em" type="text"
-                               class="form-control input-lg"
-                               autocorrect="off" autocapitalize="off" spellcheck="false" autofocus=""
-                               (keyup)="confirmationFieldChanged($event.target.value)"
-                        >
-                    </p>
-                </div>
-            </div>
-            
-            <div class="modal-footer">
-                <button type="button" class="confirm-button btn btn-lg {{confirmPhrase ? 'btn-danger' : 'btn-primary'}}" (click)="yes()" [disabled]="!formValid">{{yesLabel}}</button>
-                <button type="button" class="cancel-button btn btn-lg btn-default" (click)="no()">{{noLabel}}</button>
-            </div>
-        </div>
-    </div>
-</div>
-`
+    templateUrl: './confirmation-modal.component.html'
 })
 export class ConfirmationModalComponent {
+    /**
+     * CSS id of current dialog
+     *
+     * @type {string}
+     */
     @Input()
     id: string;
 
+    /**
+     * HTML code for dialog title
+     *
+     * @type {string}
+     */
     @Input()
     title: string;
 
+    /**
+     * HTML code for dialog body
+     *
+     * @type {string}
+     */
     @Input()
     body: string;
 
+    /**
+     * Phrase used for deletion dialogs
+     * User must type the exact same phrase to proceed
+     *
+     * @type {string}
+     */
     @Input()
     confirmPhrase: string;
 
+    /**
+     * Label of 'yes' button
+     *
+     * @type {string}
+     */
     @Input()
     yesLabel: string = "Yes";
 
+    /**
+     * Label of 'no' button
+     *
+     * @type {string}
+     */
     @Input()
     noLabel: string = "No";
 
+    /**
+     * CSS classes of 'yes' button
+     *
+     * @type {string}
+     */
+    @Input()
+    public yesClasses = 'btn-danger';
+
+    /**
+     * CSS classes of 'no' button
+     *
+     * @type {string}
+     */
+    @Input()
+    public noClasses = 'btn-default';
+
+    /**
+     * Data passed to all dialog events
+     *
+     */
     @Input()
     public data: any;
 
+    /**
+     * Event triggered when 'confirm' button is clicked
+     *
+     * @type {EventEmitter<any>}
+     */
     @Output()
-    confirmed = new EventEmitter();
+    confirmed = new EventEmitter<any>();
 
+    /**
+     * Event triggered when 'cancel' button is clicked
+     *
+     * @type {EventEmitter<any>}
+     */
     @Output()
-    cancelled = new EventEmitter();
+    cancelled = new EventEmitter<any>();
+
+    /**
+     * Event triggered when dialog is closed
+     *
+     * @type {EventEmitter<any>}
+     */
+    @Output()
+    closed = new EventEmitter<any>();
 
     typedConfirmationPhrase: string = "";
 
@@ -106,6 +141,7 @@ export class ConfirmationModalComponent {
 
     hide(): void {
         (<any>$('#' + this.id)).modal('hide');
+        this.closed.next(this.data);
     }
 
     yes():void {

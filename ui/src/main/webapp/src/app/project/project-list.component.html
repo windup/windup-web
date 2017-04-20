@@ -41,7 +41,7 @@
                             </a>
                         </span>
                         <span class="fa-lg project-action-item" i18n-title="Delete project" title="Delete project">
-                            <a (click)="$event.stopPropagation(); deleteProjectModal.show()"  class="action-button">
+                            <a (click)="confirmDeleteProject($event, project)"  class="action-button">
                                 <i class="fa fa-trash-o"></i>
                             </a>
                         </span>
@@ -69,18 +69,12 @@
                         </div>
                     </div>
                 </div>
-                <wu-confirmation-modal #deleteProjectModal
-                                       id="deleteProjectConfirmation_{{project.id}}"
-                                       title="Are you sure you want to delete the project '&lt;strong>{{project.title}}&lt;/strong>'?"
-                                       body="&lt;p>This will &lt;strong>delete all resources&lt;/strong> associated with the project Test and &lt;strong>cannot be undone&lt;/strong>.
-                                            Make sure this is something you really want to do!&lt;/p>"
-                                       confirmPhrase="{{project.title}}"
-                                       yesLabel="Delete"
-                                       noLabel="Cancel"
-                                       (confirmed)="doDeleteProject(project)"
-                >
-                </wu-confirmation-modal>
             </ng-container>
         </div>
     </div>
 </template>
+<wu-confirmation-modal #deleteProjectModal
+                       [id]="'deleteProjectDialog'"
+                       [yesLabel]="'Delete'"
+                       [noLabel]="'Cancel'"
+></wu-confirmation-modal>

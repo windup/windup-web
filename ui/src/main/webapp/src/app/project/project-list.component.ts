@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
 import {Router} from "@angular/router";
 
 import {MigrationProjectService} from "./migration-project.service";
@@ -17,7 +17,7 @@ import {OrderDirection, SortingService} from "../shared/sort/sorting.service";
         SortingService
     ]
 })
-export class ProjectListComponent implements OnInit {
+export class ProjectListComponent implements OnInit, AfterViewInit {
     private _originalProjects: MigrationProject[] = [];
 
     loading: boolean = true;
@@ -56,6 +56,18 @@ export class ProjectListComponent implements OnInit {
     ngOnInit():any {
         this.updateSort();
         this.getMigrationProjects();
+    }
+
+    ngAfterViewInit(): void {
+        this.deleteProjectModal.closed.subscribe(() => {
+            this.deleteProjectModal.title = '';
+            this.deleteProjectModal.body = '';
+            this.deleteProjectModal.confirmPhrase = '';
+            this.deleteProjectModal.typedConfirmationPhrase = '';
+            this.deleteProjectModal.data = null;
+        });
+
+        this.deleteProjectModal.confirmed.subscribe(project => this.doDeleteProject(project));
     }
 
     getMigrationProjects() {
@@ -128,11 +140,13 @@ export class ProjectListComponent implements OnInit {
     confirmDeleteProject(event: Event, project: MigrationProject) {
         event.stopPropagation();
 
+        this.deleteProjectModal.title = `Are you sure you want to delete the project <strong>'${project.title}'</strong>?`;
+        this.deleteProjectModal.body = `<p>This will <strong>delete all resources</strong> associated with the project \
+                                            '${project.title}' and <strong>cannot be undone</strong>. \
+                                            Make sure this is something you really want to do!</p>`;
+        this.deleteProjectModal.confirmPhrase = project.title;
         this.deleteProjectModal.data = project;
-        this.deleteProjectModal.body = `Do you really want to delete project ${project.title}?`;
 
-        // TODO: Use modal dialog component for confirmation
         this.deleteProjectModal.show();
-        this.deleteProjectModal.confirmed.subscribe(project => this.doDeleteProject(project));
     }
 }
