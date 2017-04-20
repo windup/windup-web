@@ -19,9 +19,10 @@
             <div>
                 <ng-container *ngFor="let transformationPath of transformationPaths">
                     <label class="radio-inline">
-                        <input type="radio" name="migrationPath" #migrationPath="ngModel" [checked]="transformationPath.id===101"
-                        [(ngModel)]="analysisContext.migrationPath.id" ngControl="migrationPath" [value]="transformationPath.id"/>
-                        {{ transformationPath.name }}</label>
+                        <input type="radio" name="migrationPath" #migrationPath="ngModel"
+                            [(ngModel)]="analysisContext.migrationPath.id" ngControl="migrationPath" [value]="transformationPath.id"/>
+                        {{ transformationPath.name }}
+                    </label>
                 </ng-container>
             </div>
             <label class="checkbox-inline">
