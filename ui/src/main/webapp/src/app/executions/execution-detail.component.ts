@@ -17,6 +17,8 @@ export class ExecutionDetailComponent implements OnInit {
 
     execution: WindupExecution;
     logLines:string[];
+    includedPkgsShow: boolean = false;
+    excludedPkgsShow: boolean = false;
 
     hideUnfinishedFeatures: boolean = WINDUP_WEB.config.hideUnfinishedFeatures;
 
