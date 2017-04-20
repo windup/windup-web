@@ -70,13 +70,13 @@
                     </div>
                 </div>
                 <wu-confirmation-modal #deleteProjectModal
-                                       id="deleteProjectConfirmation_{{project.id}}"
-                                       title="Are you sure you want to delete the project '&lt;strong>{{project.title}}&lt;/strong>'?"
-                                       body="&lt;p>This will &lt;strong>delete all resources&lt;/strong> associated with the project Test and &lt;strong>cannot be undone&lt;/strong>.
-                                            Make sure this is something you really want to do!&lt;/p>"
-                                       confirmPhrase="{{project.title}}"
-                                       yesLabel="Delete"
-                                       noLabel="Cancel"
+                                       [id]="'deleteProjectConfirmation_' + project.id"
+                                       [title]="'Are you sure you want to delete the project \'<strong>' + project.title + '</strong>\'?'"
+                                       [body]="'<p>This will <strong>delete all resources</strong> associated with the project \'' + project.title + '\' and <strong>cannot be undone</strong>.
+                                            Make sure this is something you really want to do!</p>'"
+                                       [confirmPhrase]="project.title"
+                                       [yesLabel]="'Delete'"
+                                       [noLabel]="'Cancel'"
                                        (confirmed)="doDeleteProject(project)"
                 >
                 </wu-confirmation-modal>
