@@ -145,7 +145,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
 
     private cancelRegistration() {
         if (this.isInWizard) {
-            this.navigateAway(['/']);
+            this.navigateAway([`/wizard/project/${this.project.id}/create-project`]);
         } else {
             this.rerouteToApplicationList();
         }

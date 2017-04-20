@@ -42,7 +42,10 @@ export class MigrationProjectFormComponent extends FormComponent implements OnIn
 
             if (flatRouteData.data['project']) {
                 this.editMode = true;
-                this.model = flatRouteData.data['project'];
+                let projectID = flatRouteData.data['project'].id;
+
+                // Reload it as we always need the latest data (route resolver does not guarantee this)
+                this._migrationProjectService.get(projectID).subscribe(model => this.model = model);
             }
 
             this.isInWizard = flatRouteData.data.hasOwnProperty('wizard') && flatRouteData.data['wizard'];

@@ -104,6 +104,7 @@ export const appRoutes: Routes = [
                                 path: 'project/:projectId',
                                 resolve: { project: ProjectResolve },
                                 children: [
+                                    { path: 'create-project', component: MigrationProjectFormComponent },
                                     { path: 'add-applications', component: RegisterApplicationFormComponent },
                                     { path: 'configure-analysis', component: AnalysisContextFormComponent }
                                 ]
