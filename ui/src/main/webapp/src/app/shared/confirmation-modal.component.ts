@@ -45,8 +45,8 @@ import * as $ from "jquery";
             </div>
             
             <div class="modal-footer">
-                <button type="button" class="btn btn-lg {{confirmPhrase ? 'btn-danger' : 'btn-primary'}}" (click)="yes()" [disabled]="!formValid">{{yesLabel}}</button>
-                <button type="button" class="btn btn-lg btn-default" (click)="no()">{{noLabel}}</button>
+                <button type="button" class="confirm-button btn btn-lg {{confirmPhrase ? 'btn-danger' : 'btn-primary'}}" (click)="yes()" [disabled]="!formValid">{{yesLabel}}</button>
+                <button type="button" class="cancel-button btn btn-lg btn-default" (click)="no()">{{noLabel}}</button>
             </div>
         </div>
     </div>
