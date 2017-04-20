@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
 import {Router} from "@angular/router";
 
 import {MigrationProjectService} from "./migration-project.service";
@@ -127,12 +127,6 @@ export class ProjectListComponent implements OnInit {
 
     confirmDeleteProject(event: Event, project: MigrationProject) {
         event.stopPropagation();
-
-        this.deleteProjectModal.data = project;
-        this.deleteProjectModal.body = `Do you really want to delete project ${project.title}?`;
-
-        // TODO: Use modal dialog component for confirmation
         this.deleteProjectModal.show();
-        this.deleteProjectModal.confirmed.subscribe(project => this.doDeleteProject(project));
     }
 }
