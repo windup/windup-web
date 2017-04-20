@@ -8,7 +8,11 @@
         <name>Migration to Red Hat JBoss EAP 7</name>
         <target id="eap" version-range="[7]"/>
     </path>
-
+    <path id="102">
+        <name>Cloud readiness analysis</name>
+        <target id="cloud-readiness"/>
+        <target id="openshift"/>
+    </path>
     <path id="200">
         <name>Migration from Oracle WebLogic to Red Hat JBoss EAP 6</name>
         <source id="weblogic"/>
