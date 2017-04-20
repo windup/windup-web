@@ -12,18 +12,43 @@
             </div>
         </div>
         <!-- Form controls begins -->
-        <!-- Advanced Transformation paths -->
+
+        <!-- Fixed Transformation paths -->
         <div class="form-group">
             <label class="control-label required" for="migrationPath" i18n>Transformation path</label>
-            <select #migrationPath="ngModel" id="migrationPath" name="migrationPath" ngControl="migrationPath" class="form-control required"
-                    [(ngModel)]="analysisContext.migrationPath.id" [ngClass]="{'has-error': hasError(migrationPath)}">
-                    <option *ngFor="let migrationPath of migrationPaths | async" [value]="migrationPath.id">{{migrationPath.name}}</option>
-            </select>
-            <span [class.hidden]="!hasError(migrationPath)" class="help-block alert" i18n>Transformation path must be specified.</span>
+            <div>
+                <ng-container *ngFor="let transformationPath of transformationPaths">
+                    <label class="radio-inline">
+                        <input type="radio" name="migrationPath" #migrationPath="ngModel" [checked]="transformationPath.id===101"
+                        [(ngModel)]="analysisContext.migrationPath.id" ngControl="migrationPath" [value]="transformationPath.id"/>
+                        {{ transformationPath.name }}</label>
+                </ng-container>
+            </div>
+            <label class="checkbox-inline">
+                <input type="checkbox" name="migrationPath" ngControl="migrationPath" value="102"/>
+                Cloud readiness verification</label>
             <p class="help-block">Select the transformation path relevant for the analysis of your application(s).</p>
         </div>
+        
+        <!-- Advanced Transformation paths -->
+        <fieldset class="fields-section-pf" id="advTransformPathSection">
+            <legend class="fields-section-header-pf" aria-expanded="advTransformPathShoww">
+                <span *ngIf="!advTransformPathShow" class="fa fa-angle-right field-section-toggle-pf"></span>
+                <span *ngIf="advTransformPathShow" class="fa fa-angle-right field-section-toggle-pf fa-angle-down"></span>
+                <a (click)="toggleAdvTransformPathOptions()" class="field-section-toggle-pf" i18n>Advanced selection of transformation path</a>
+            </legend>        
+            <div class="form-group" [hidden]="!advTransformPathShow">
+                <label class="control-label required" for="migrationPath" i18n>Advanced transformation path</label>
+                <select #migrationPath="ngModel" id="migrationPath" name="migrationPath" ngControl="migrationPath" class="form-control required"
+                        [(ngModel)]="analysisContext.migrationPath.id" [ngClass]="{'has-error': hasError(migrationPath)}">
+                        <option *ngFor="let migrationPath of migrationPaths | async" [value]="migrationPath.id">{{migrationPath.name}}</option>
+                </select>
+                <span [class.hidden]="!hasError(migrationPath)" class="help-block alert" i18n>Transformation path must be specified.</span>
+                <p class="help-block">Select the transformation path relevant for the analysis of your application(s).</p>
+            </div>
+        </fieldset>
 
-        <!-- Apps 
+        <!-- Apps Commented out due changed Mockup - for now Applications are not able to exclude from Analysis, They are taken into analysis all registered apps!
         <div class="form-group">
             <label class="control-label" i18n>Applications included</label>
             <wu-select-applications [availableApps]="availableApps" [(selectedApps)]="analysisContext.applications">
@@ -41,7 +66,7 @@
         </div>
 
         <fieldset class="fields-section-pf" id="ExclPackagesSection">
-            <legend class="fields-section-header-pf" aria-expanded="advancedOptionsShow">
+            <legend class="fields-section-header-pf" aria-expanded="excludedPkgShow">
                 <span *ngIf="!excludedPkgShow" class="fa fa-angle-right field-section-toggle-pf"></span>
                 <span *ngIf="excludedPkgShow" class="fa fa-angle-right field-section-toggle-pf fa-angle-down"></span>
                 <a (click)="toggleExclPkgOptions()" class="field-section-toggle-pf" i18n>Exclude some packages</a>
@@ -59,7 +84,7 @@
 
         <!-- Rulesets selection -->
         <fieldset class="fields-section-pf" id="CustomRulesetsSection">
-            <legend class="fields-section-header-pf" aria-expanded="advancedOptionsShow">
+            <legend class="fields-section-header-pf" aria-expanded="customRulesetsShow">
                 <span *ngIf="!customRulesetsShow" class="fa fa-angle-right field-section-toggle-pf"></span>
                 <span *ngIf="customRulesetsShow" class="fa fa-angle-right field-section-toggle-pf fa-angle-down"></span>
                 <a (click)="toggleCustomRulesetsOptions()" class="field-section-toggle-pf" i18n>Use local custom rules</a>

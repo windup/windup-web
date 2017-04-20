@@ -45,12 +45,35 @@ export class AnalysisContextFormComponent extends FormComponent
      * See also: http://stackoverflow.com/questions/33346677/angular2-ngmodel-against-ngfor-variables
      */
     includePackages: Package[];
+    excludePackages: Package[];
 
+private transformationPaths: MigrationPath[] = [
+{    "id": 100,
+    "name": "Migration to RedHat JBoss EAP 6",
+    "source": null,
+    "target": {
+        "id": 3,
+        "version": 0,
+        "name": "eap",
+        "versionRange": "[6]"
+    }
+},
+{    "id": 101,
+    "name": "Migration to RedHat JBoss EAP 7",
+    "source": null,
+    "target": {
+        "id": 4,
+        "version": 0,
+        "name": "eap",
+        "versionRange": "[7]"
+    }
+}
+];
     excludedPkgShow: boolean = false;
     advancedOptionsShow: boolean = false;
     customRulesetsShow: boolean = false;
+    advTransformPathShow: boolean = false;
 
-    excludePackages: Package[];
     packageTree: Package[] = [];
 
     packageTreeLoaded: boolean = false;
@@ -58,6 +81,8 @@ export class AnalysisContextFormComponent extends FormComponent
     configurationOptions: ConfigurationOption[] = [];
 
     private _migrationPathsObservable: Observable<MigrationPath[]>;
+
+    private _transformationPaths: MigrationPath[];
     private routerSubscription: Subscription;
 
     isInWizard: boolean;
@@ -230,6 +255,10 @@ export class AnalysisContextFormComponent extends FormComponent
         return this._migrationPathsObservable;
     }
 
+  /*  get transformationPaths() {
+       this._transformationPaths = {};
+       return this._transformationPaths;
+    }*/
 
     get dirty(): boolean {
         if (this._dirty != null) {
@@ -321,9 +350,38 @@ export class AnalysisContextFormComponent extends FormComponent
             this.customRulesetsShow = true;
         }
     }
+
+    toggleAdvTransformPathOptions() {
+        if (this.advTransformPathShow) {
+            this.advTransformPathShow = false;
+        } else {
+            this.advTransformPathShow = true;
+        }
+    }
 }
 
 enum Action {
     Save = 0,
     SaveAndRun = 1
 }
+
+
+/*,
+{    "id": 102,
+    "name": "Cloud readiness verifications",
+    "source": null,
+    "target": {
+        "id": 5,
+        "version": 0,
+        "name": "openshift",
+        "versionRange": null
+    }
+} ]    ,
+    {
+        "id": ?,
+        "version": 0,
+        "name": "cloud-readiness",
+        "versionRange": null
+    }
+}
+*/
