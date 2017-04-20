@@ -20,38 +20,101 @@ import * as $ from "jquery";
     templateUrl: './confirmation-modal.component.html'
 })
 export class ConfirmationModalComponent {
+    /**
+     * CSS id of current dialog
+     *
+     * @type {string}
+     */
     @Input()
     id: string;
 
+    /**
+     * HTML code for dialog title
+     *
+     * @type {string}
+     */
     @Input()
     title: string;
 
+    /**
+     * HTML code for dialog body
+     *
+     * @type {string}
+     */
     @Input()
     body: string;
 
+    /**
+     * Phrase used for deletion dialogs
+     * User must type the exact same phrase to proceed
+     *
+     * @type {string}
+     */
     @Input()
     confirmPhrase: string;
 
+    /**
+     * Label of 'yes' button
+     *
+     * @type {string}
+     */
     @Input()
     yesLabel: string = "Yes";
 
+    /**
+     * Label of 'no' button
+     *
+     * @type {string}
+     */
     @Input()
     noLabel: string = "No";
 
+    /**
+     * CSS classes of 'yes' button
+     *
+     * @type {string}
+     */
     @Input()
     public yesClasses = 'btn-danger';
 
+    /**
+     * CSS classes of 'no' button
+     *
+     * @type {string}
+     */
     @Input()
     public noClasses = 'btn-default';
 
+    /**
+     * Data passed to all dialog events
+     *
+     */
     @Input()
     public data: any;
 
+    /**
+     * Event triggered when 'confirm' button is clicked
+     *
+     * @type {EventEmitter<any>}
+     */
     @Output()
-    confirmed = new EventEmitter();
+    confirmed = new EventEmitter<any>();
 
+    /**
+     * Event triggered when 'cancel' button is clicked
+     *
+     * @type {EventEmitter<any>}
+     */
     @Output()
-    cancelled = new EventEmitter();
+    cancelled = new EventEmitter<any>();
+
+    /**
+     * Event triggered when dialog is closed
+     *
+     * @type {EventEmitter<any>}
+     */
+    @Output()
+    closed = new EventEmitter<any>();
 
     typedConfirmationPhrase: string = "";
 
@@ -78,6 +141,7 @@ export class ConfirmationModalComponent {
 
     hide(): void {
         (<any>$('#' + this.id)).modal('hide');
+        this.closed.next(this.data);
     }
 
     yes():void {
