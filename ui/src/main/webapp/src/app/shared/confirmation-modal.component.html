@@ -1,0 +1,34 @@
+<div id="{{id}}" class="modal fade" tabindex="-1" role="dialog" [attr.aria-labelledby]="title" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!--
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    <span class="pficon pficon-close"></span>
+                </button>
+                -->
+                <h1 class="modal-title" [innerHTML]="(title)"></h1>
+            </div>
+            <div class="modal-body">
+                <p [innerHTML]="(body)"></p>
+                <div [style.display]="confirmPhrase ? 'block' : 'none'">
+                    <p class="ng-binding">Type the name of the project to confirm.</p>
+                    <p>
+                        <label class="sr-only" for="resource-to-delete">project to delete</label>
+                        <input #confirmInput id="resource-to-delete" xstyle="margin: 1ex 1em" type="text"
+                               class="form-control input-lg"
+                               autocorrect="off" autocapitalize="off" spellcheck="false" autofocus=""
+                               (keyup)="confirmationFieldChanged($event.target.value)"
+                        >
+                    </p>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="confirm-button btn btn-lg {{confirmPhrase ? 'btn-danger' : 'btn-primary'}}" (click)="yes()" [disabled]="!formValid">{{yesLabel}}</button>
+                <button type="button" class="cancel-button btn btn-lg btn-default" (click)="no()">{{noLabel}}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
