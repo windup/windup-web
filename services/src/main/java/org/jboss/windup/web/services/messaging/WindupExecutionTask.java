@@ -31,6 +31,8 @@ import org.jboss.windup.web.services.service.ConfigurationOptionsService;
 public class WindupExecutionTask implements Runnable
 {
     private static Logger LOG = Logger.getLogger(WindupExecutionTask.class.getName());
+    
+    private static String[] CLOUD_TARGETS = {"openshift", "cloud-readiness"};
 
     @Inject
     @FromFurnace
@@ -118,16 +120,24 @@ public class WindupExecutionTask implements Runnable
                 excludePackages = this.getPackagesAsString(analysisContext.getExcludePackages());
             }
 
+            List<String> targets = new ArrayList<>();
+            
             MigrationPath migrationPath = analysisContext.getMigrationPath();
             if (migrationPath != null)
             {
                 if (migrationPath.getSource() != null)
                     source = migrationPath.getSource().toString();
 
-                if (migrationPath.getTarget() != null)
+                if (migrationPath.getTarget() != null) {
                     target = migrationPath.getTarget().toString();
+                    targets.add(target);
+                }
             }
-
+            
+            if (analysisContext.isCloudTargetsIncluded()) {
+                targets.addAll(Arrays.asList(CLOUD_TARGETS));
+            }
+            
             Map<String, Object> otherOptions = getOtherOptions(analysisContext);
 
             boolean generateStaticReports = analysisContext.getGenerateStaticReports();
@@ -140,7 +150,7 @@ public class WindupExecutionTask implements Runnable
                         includePackages,
                         excludePackages,
                         source,
-                        target,
+                        targets,
                         otherOptions,
                         generateStaticReports);
 

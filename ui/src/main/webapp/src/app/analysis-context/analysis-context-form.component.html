@@ -26,7 +26,7 @@
                 </ng-container>
             </div>
             <label class="checkbox-inline">
-                <input type="checkbox" name="migrationPath" ngControl="migrationPath" value="102"/>
+                <input type="checkbox" name="cloudTargetsIncluded" ngControl="cloudTargetsIncluded" [(ngModel)]="analysisContext.cloudTargetsIncluded"/>
                 Cloud readiness verification</label>
             <p class="help-block">Select the transformation path relevant for the analysis of your application(s).</p>
         </div>

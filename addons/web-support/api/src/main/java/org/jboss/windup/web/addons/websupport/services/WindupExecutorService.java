@@ -25,6 +25,8 @@ public interface WindupExecutorService
      * @param excludePackages The list of any packages to explicitly exclude from analysis for migration.
      * @param source The source technology and version range (for example, "eap:6").
      * @param target The target technology and version range (for example, "eap:7").
+     * 
+     * @TODO: temporary adding list of targets instead of single target for cloud target addition
      */
     void execute(
             WindupProgressMonitor progressMonitor,
@@ -34,7 +36,7 @@ public interface WindupExecutorService
             List<String> packages,
             List<String> excludePackages,
             String source,
-            String target,
+            List<String> target,
             Map<String, Object> otherOptions,
             boolean generateStaticReports);
 

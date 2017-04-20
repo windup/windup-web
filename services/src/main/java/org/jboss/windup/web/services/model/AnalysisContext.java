@@ -24,7 +24,6 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import javax.ws.rs.DefaultValue;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -54,6 +53,22 @@ public class AnalysisContext implements Serializable
     @Column(nullable = false)
     @ColumnDefault("true")
     private boolean generateStaticReports = true;
+
+    /*
+     * @TODO temporary added for obey single target selection in migration path
+     */
+    @Column(name = "cloudtargets")
+    private boolean cloudTargetsIncluded;
+    
+    public boolean isCloudTargetsIncluded()
+    {
+        return cloudTargetsIncluded;
+    }
+
+    public void setCloudTargetsIncluded(boolean cloudTargetsIncluded)
+    {
+        this.cloudTargetsIncluded = cloudTargetsIncluded;
+    }
 
     @ManyToOne(fetch = FetchType.EAGER)
     private MigrationPath migrationPath;
@@ -287,6 +302,8 @@ public class AnalysisContext implements Serializable
         clone.rulesPaths.addAll(this.rulesPaths);
         clone.includePackages.addAll(this.includePackages);
         clone.excludePackages.addAll(this.excludePackages);
+        // temporary added for adding cloud related targets in parallel to selected main target
+        clone.cloudTargetsIncluded = this.cloudTargetsIncluded;
 
         return clone;
     }

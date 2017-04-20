@@ -83,6 +83,8 @@ private transformationPaths: MigrationPath[] = [
     private _migrationPathsObservable: Observable<MigrationPath[]>;
 
     private _transformationPaths: MigrationPath[];
+
+    private addCloudTargets: boolean;
     private routerSubscription: Subscription;
 
     isInWizard: boolean;
