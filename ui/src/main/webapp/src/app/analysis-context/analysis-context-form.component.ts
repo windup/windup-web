@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild, OnChanges, SimpleChanges} from "@angular/core";
+import {Component, OnInit, ViewChild, OnChanges, SimpleChanges, OnDestroy} from "@angular/core";
 import {NgForm} from "@angular/forms";
 import {ActivatedRoute, Router, NavigationEnd} from "@angular/router";
 
@@ -27,7 +27,7 @@ import {forkJoin} from "rxjs/observable/forkJoin";
     templateUrl: './analysis-context-form.component.html'
 })
 export class AnalysisContextFormComponent extends FormComponent
-    implements OnInit, IsDirty
+    implements OnInit, OnDestroy, IsDirty
 {
     @ViewChild(NgForm)
     private analysisContextForm: NgForm;
@@ -117,6 +117,10 @@ export class AnalysisContextFormComponent extends FormComponent
 
             this.isInWizard = flatRouteData.data.hasOwnProperty('wizard') && flatRouteData.data['wizard'];
         });
+    }
+
+    ngOnDestroy(): void {
+        this.routerSubscription.unsubscribe();
     }
 
     // Apps selection checkboxes
