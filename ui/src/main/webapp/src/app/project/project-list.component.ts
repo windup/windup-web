@@ -63,8 +63,11 @@ export class ProjectListComponent implements OnInit, AfterViewInit {
             this.deleteProjectModal.title = '';
             this.deleteProjectModal.body = '';
             this.deleteProjectModal.confirmPhrase = '';
+            this.deleteProjectModal.typedConfirmationPhrase = '';
             this.deleteProjectModal.data = null;
         });
+
+        this.deleteProjectModal.confirmed.subscribe(project => this.doDeleteProject(project));
     }
 
     getMigrationProjects() {
@@ -136,6 +139,14 @@ export class ProjectListComponent implements OnInit, AfterViewInit {
 
     confirmDeleteProject(event: Event, project: MigrationProject) {
         event.stopPropagation();
+
+        this.deleteProjectModal.title = `Are you sure you want to delete the project <strong>'${project.title}'</strong>?`;
+        this.deleteProjectModal.body = `<p>This will <strong>delete all resources</strong> associated with the project \
+                                            '${project.title}' and <strong>cannot be undone</strong>. \
+                                            Make sure this is something you really want to do!</p>`;
+        this.deleteProjectModal.confirmPhrase = project.title;
+        this.deleteProjectModal.data = project;
+
         this.deleteProjectModal.show();
     }
 }

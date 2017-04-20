@@ -69,18 +69,12 @@
                         </div>
                     </div>
                 </div>
-                <wu-confirmation-modal #deleteProjectModal
-                                       [id]="'deleteProjectConfirmation_' + project.id"
-                                       [title]="'Are you sure you want to delete the project \'<strong>' + project.title + '</strong>\'?'"
-                                       [body]="'<p>This will <strong>delete all resources</strong> associated with the project \'' + project.title + '\' and <strong>cannot be undone</strong>.
-                                            Make sure this is something you really want to do!</p>'"
-                                       [confirmPhrase]="project.title"
-                                       [yesLabel]="'Delete'"
-                                       [noLabel]="'Cancel'"
-                                       (confirmed)="doDeleteProject(project)"
-                >
-                </wu-confirmation-modal>
             </ng-container>
         </div>
     </div>
 </template>
+<wu-confirmation-modal #deleteProjectModal
+                       [id]="'deleteProjectDialog'"
+                       [yesLabel]="'Delete'"
+                       [noLabel]="'Cancel'"
+></wu-confirmation-modal>
