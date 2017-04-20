@@ -53,6 +53,7 @@ span.pficon-home {
 
   .navbar-primary > li {
     height: 60px;
+    margin-top: 0;
   }
 
   .navbar-primary li a {
@@ -64,6 +65,7 @@ span.pficon-home {
   .navbar-pf .navbar-primary > .open > a {
     background-image: initial;
     background-color: $navbar-hover-item-background-color;
+    border-top-color: transparent;
   }
 }
 
@@ -71,6 +73,10 @@ span.pficon-home {
   /* background-image: url('../../../../img/Logotype_RH_AMT_RGB_White.svg'); */
   height: 60px;
   padding-left: 30px;
+}
+
+#header-logo strong {
+  text-transform: uppercase;
 }
 
 #header-logo-wrapper a {
