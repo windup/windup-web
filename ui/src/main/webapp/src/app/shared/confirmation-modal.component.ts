@@ -39,6 +39,12 @@ export class ConfirmationModalComponent {
     noLabel: string = "No";
 
     @Input()
+    public yesClasses = 'btn-danger';
+
+    @Input()
+    public noClasses = 'btn-default';
+
+    @Input()
     public data: any;
 
     @Output()
