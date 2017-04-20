@@ -17,7 +17,7 @@ import {OrderDirection, SortingService} from "../shared/sort/sorting.service";
         SortingService
     ]
 })
-export class ProjectListComponent implements OnInit {
+export class ProjectListComponent implements OnInit, AfterViewInit {
     private _originalProjects: MigrationProject[] = [];
 
     loading: boolean = true;
@@ -56,6 +56,15 @@ export class ProjectListComponent implements OnInit {
     ngOnInit():any {
         this.updateSort();
         this.getMigrationProjects();
+    }
+
+    ngAfterViewInit(): void {
+        this.deleteProjectModal.closed.subscribe(() => {
+            this.deleteProjectModal.title = '';
+            this.deleteProjectModal.body = '';
+            this.deleteProjectModal.confirmPhrase = '';
+            this.deleteProjectModal.data = null;
+        });
     }
 
     getMigrationProjects() {

@@ -15,7 +15,7 @@
                     <p class="ng-binding">Type the name of the project to confirm.</p>
                     <p>
                         <label class="sr-only" for="resource-to-delete">project to delete</label>
-                        <input #confirmInput id="resource-to-delete" xstyle="margin: 1ex 1em" type="text"
+                        <input [(ngModel)]="typedConfirmationPhrase" id="resource-to-delete" type="text"
                                class="form-control input-lg"
                                autocorrect="off" autocapitalize="off" spellcheck="false" autofocus=""
                                (keyup)="confirmationFieldChanged($event.target.value)"
