@@ -189,7 +189,7 @@ describe('ExecutionsListComponent', () => {
             cancelLink.triggerEventHandler('click', null);
             fixture.detectChanges();
 
-            let confirmationButton = fixture.debugElement.query(By.css("#cancelExecutionDialog button.btn-danger"));
+            let confirmationButton = fixture.debugElement.query(By.css("#cancelExecutionDialog button.confirm-button"));
             confirmationButton.triggerEventHandler('click', null);
             fixture.detectChanges();
         });
@@ -220,7 +220,7 @@ describe('ExecutionsListComponent', () => {
                 cancelLink.triggerEventHandler('click', null);
                 fixture.detectChanges();
 
-                let confirmationButton = fixture.debugElement.query(By.css("#cancelExecutionDialog button.btn-danger"));
+                let confirmationButton = fixture.debugElement.query(By.css("#cancelExecutionDialog button.confirm-button"));
                 confirmationButton.triggerEventHandler('click', null);
                 fixture.detectChanges();
             });
