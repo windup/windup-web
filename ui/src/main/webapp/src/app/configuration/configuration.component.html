@@ -27,19 +27,10 @@
 
             <!-- Area that collapses when the header is clicked. -->
             <div id="collapse_{{rulePath.id}}" class="panel-body panel-collapse collapse">
-                <a (click)="removeRulesConfirmationModal.show()" *ngIf="rulePath.rulesPathType != 'SYSTEM_PROVIDED'" href="#">
+                <a class="pointer" (click)="confirmRemoveRules(rulePath)" *ngIf="rulePath.rulesPathType != 'SYSTEM_PROVIDED'">
                     <span class="glyphicon glyphicon-trash"></span>
                     <span i18n>Unregister Rules</span>
                 </a>
-
-                <wu-confirmation-modal
-                        #removeRulesConfirmationModal
-                        id="deleteRulesConfirmation_{{rulePath.id}}"
-                        title="Unregister Rules?"
-                        body="Unregister rules?"
-                        (confirmed)="removeRulesPath(rulePath)"
-                >
-                </wu-confirmation-modal>
 
                 <div *ngIf="!hasFileBasedProviders(rulePath)">
                     <h3 i18n>This path contains no rules!</h3>
@@ -96,3 +87,10 @@
 
 <wu-rules-modal></wu-rules-modal>
 <wu-add-rules-path-modal [configuration]="configuration" (configurationSaved)="configurationUpdated($event)"></wu-add-rules-path-modal>
+<wu-confirmation-modal
+        #removeRulesConfirmationModal
+        [id]="'deleteRulesConfirmationDialog'"
+        [title]="'Unregister Rules?'"
+        [body]="'Unregister rules?'"
+>
+</wu-confirmation-modal>

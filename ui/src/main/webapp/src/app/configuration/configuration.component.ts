@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
 import {ConfigurationService} from "./configuration.service";
 import {Configuration, RuleProviderEntity, RulesPath} from "windup-services";
 import {RuleService} from "./rule.service";
@@ -7,12 +7,13 @@ import {AddRulesPathModalComponent, ConfigurationEvent} from "./add-rules-path-m
 import {ActivatedRoute} from "@angular/router";
 import {NotificationService} from "../core/notification/notification.service";
 import {utils} from "../shared/utils";
+import {ConfirmationModalComponent} from "../shared/confirmation-modal.component";
 
 @Component({
     templateUrl: './configuration.component.html',
     styleUrls: ['./configuration.component.scss']
 })
-export class ConfigurationComponent implements OnInit {
+export class ConfigurationComponent implements OnInit, AfterViewInit {
 
     errorMessage:string;
     configuration:Configuration;
@@ -24,6 +25,9 @@ export class ConfigurationComponent implements OnInit {
 
     @ViewChild(AddRulesPathModalComponent)
     addRulesModalComponent:AddRulesPathModalComponent;
+
+    @ViewChild('removeRulesConfirmationModal')
+    removeRulesConfirmationModal: ConfirmationModalComponent;
 
     constructor(
         private _activatedRoute: ActivatedRoute,
@@ -39,6 +43,10 @@ export class ConfigurationComponent implements OnInit {
             this.configuration = data.configuration;
             this.loadProviders();
         });
+    }
+
+    ngAfterViewInit(): void {
+        this.removeRulesConfirmationModal.confirmed.subscribe(rulePath => this.removeRulesPath(rulePath));
     }
 
     loadProviders() {
@@ -93,7 +101,14 @@ export class ConfigurationComponent implements OnInit {
 
     removeRulesPath(rulesPath:RulesPath) {
         let newConfiguration = JSON.parse(JSON.stringify(this.configuration));
-        newConfiguration.rulesPaths.splice(newConfiguration.rulesPaths.indexOf(rulesPath), 1);
+
+        let index = newConfiguration.rulesPaths.findIndex(item => item.id === rulesPath.id);
+
+        if (index === -1) {
+            throw new Error('Rule path not found in configuration');
+        }
+
+        newConfiguration.rulesPaths.splice(index, 1);
 
         this._configurationService.save(newConfiguration).subscribe(
             configuration => {
@@ -114,5 +129,11 @@ export class ConfigurationComponent implements OnInit {
             },
             error => this._notificationService.error(utils.getErrorMessage(error))
         );
+    }
+
+    confirmRemoveRules(rulesPath: RulesPath) {
+        this.removeRulesConfirmationModal.body = `Unregister rules from path: '${rulesPath.path}' ?`;
+        this.removeRulesConfirmationModal.data = rulesPath;
+        this.removeRulesConfirmationModal.show();
     }
 }
