@@ -18,20 +18,22 @@
             <label class="control-label required" for="migrationPath" i18n>Transformation path</label>
             <div>
                 <ng-container *ngFor="let transformationPath of transformationPaths">
-                    <label class="radio-inline">
+                    <label class="radio-inline control-label" style="padding-left: 20px; padding-right: 40px;">
                         <input type="radio" name="migrationPath" #migrationPath="ngModel"
                             [(ngModel)]="analysisContext.migrationPath.id" ngControl="migrationPath" [value]="transformationPath.id"/>
                         {{ transformationPath.name }}
                     </label>
                 </ng-container>
+                <p class="help-block">Select the transformation path relevant for the analysis of your application(s).</p>
             </div>
             <label class="checkbox-inline">
                 <input type="checkbox" name="cloudTargetsIncluded" ngControl="cloudTargetsIncluded" [(ngModel)]="analysisContext.cloudTargetsIncluded"/>
-                Cloud readiness verification</label>
-            <p class="help-block">Select the transformation path relevant for the analysis of your application(s).</p>
+                Cloud readiness verification?
+            </label>
+            <p class="help-block">Check to enable rules for preparing your application for deployment on a cloud service.</p>
         </div>
         
-        <!-- Advanced Transformation paths -->
+        <!-- Advanced Transformation paths 
         <fieldset class="fields-section-pf" id="advTransformPathSection">
             <legend class="fields-section-header-pf" aria-expanded="advTransformPathShoww">
                 <span *ngIf="!advTransformPathShow" class="fa fa-angle-right field-section-toggle-pf"></span>
@@ -47,7 +49,7 @@
                 <span [class.hidden]="!hasError(migrationPath)" class="help-block alert" i18n>Transformation path must be specified.</span>
                 <p class="help-block">Select the transformation path relevant for the analysis of your application(s).</p>
             </div>
-        </fieldset>
+        </fieldset>-->
 
         <!-- Apps Commented out due changed Mockup - for now Applications are not able to exclude from Analysis, They are taken into analysis all registered apps!
         <div class="form-group">
