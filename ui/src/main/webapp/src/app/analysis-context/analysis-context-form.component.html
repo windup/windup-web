@@ -106,7 +106,7 @@
                 <a style="cursor: pointer;" class="field-section-toggle-pf" i18n>Advanced Options</a>
             </legend>
             <div [hidden]="!advancedOptionsShow" class="form-group">
-                <label for="createStaticReports" i18n>
+                <label *ngIf="!hideUnfinishedFeatures" for="createStaticReports" i18n>
                     <input id="createStaticReports" name="generateStaticReports" type="checkbox" [(ngModel)]="analysisContext.generateStaticReports">
                      Create static HTML reports
                 </label>

@@ -22,6 +22,7 @@ import {RegisteredApplication} from "windup-services";
 import {MigrationProject} from "windup-services";
 import {MigrationProjectService} from "../project/migration-project.service";
 import {forkJoin} from "rxjs/observable/forkJoin";
+import {WINDUP_WEB} from "../app.module";
 
 @Component({
     templateUrl: './analysis-context-form.component.html',
@@ -49,6 +50,7 @@ export class AnalysisContextFormComponent extends FormComponent
      */
     includePackages: Package[];
     excludePackages: Package[];
+    hideUnfinishedFeatures: boolean = WINDUP_WEB.config.hideUnfinishedFeatures;
 
 private transformationPaths: MigrationPath[] = [
 {    "id": 100,
