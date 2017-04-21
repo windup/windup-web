@@ -24,7 +24,10 @@ import {MigrationProjectService} from "../project/migration-project.service";
 import {forkJoin} from "rxjs/observable/forkJoin";
 
 @Component({
-    templateUrl: './analysis-context-form.component.html'
+    templateUrl: './analysis-context-form.component.html',
+    styles: [ // this is needed as main layout has weird padding 122px and this can't fit for Analysis Context form
+        `:host /deep/ .container-fluid { padding-top: 40px; }`,
+    ]
 })
 export class AnalysisContextFormComponent extends FormComponent
     implements OnInit, OnDestroy, IsDirty
@@ -66,7 +69,17 @@ private transformationPaths: MigrationPath[] = [
         "version": 0,
         "name": "eap",
         "versionRange": "[7]"
+    }},
+ {    "id": 102,
+    "name": "None",
+    "source": null,
+    "target": {
+        "id": 5,
+        "version": 0,
+        "name": "cloud-readiness",
+        "versionRange": null
     }
+
 }
 ];
     excludedPkgShow: boolean = false;
@@ -259,11 +272,6 @@ private transformationPaths: MigrationPath[] = [
         return this._migrationPathsObservable;
     }
 
-  /*  get transformationPaths() {
-       this._transformationPaths = {};
-       return this._transformationPaths;
-    }*/
-
     get dirty(): boolean {
         if (this._dirty != null) {
             return this._dirty;
@@ -362,6 +370,7 @@ private transformationPaths: MigrationPath[] = [
             this.advTransformPathShow = true;
         }
     }
+
 }
 
 enum Action {
