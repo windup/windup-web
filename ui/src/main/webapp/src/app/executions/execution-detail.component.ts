@@ -8,6 +8,9 @@ import {WindupExecutionService} from "../services/windup-execution.service";
 import {EventBusService} from "../core/events/event-bus.service";
 import {ExecutionEvent} from "../core/events/windup-event";
 import {Observable} from "rxjs";
+import {RuleProviderExecutionsService} from "../reports/rule-provider-executions/rule-provider-executions.service";
+import {RuleExecutionModel} from "../generated/tsModels/RuleExecutionModel";
+import {ExecutionPhaseModel} from "../generated/tsModels/ExecutionPhaseModel";
 
 @Component({
     templateUrl: './execution-detail.component.html',
@@ -19,10 +22,11 @@ export class ExecutionDetailComponent implements OnInit {
     logLines:string[];
     includedPkgsShow: boolean = false;
     excludedPkgsShow: boolean = false;
+    phases: ExecutionPhaseModel[];
 
     hideUnfinishedFeatures: boolean = WINDUP_WEB.config.hideUnfinishedFeatures;
 
-    constructor(private _activatedRoute: ActivatedRoute, private _eventBus: EventBusService, private _windupService: WindupService) {
+    constructor(private _activatedRoute: ActivatedRoute, private _eventBus: EventBusService, private _windupService: WindupService, private _ruleProviderExecutionsService: RuleProviderExecutionsService) {
     }
 
     ngOnInit(): void {
@@ -35,11 +39,16 @@ export class ExecutionDetailComponent implements OnInit {
                 .subscribe((event: ExecutionEvent) => {
                     this.execution = event.execution;
                     this.loadLogData();
+                    console.log("qui");
                 });
 
             this._windupService.getExecution(executionId).subscribe(execution => {
                 this.execution = execution;
                 this.loadLogData();
+                this._ruleProviderExecutionsService.getPhases(params.executionId)
+                    .subscribe(phases => {
+                        this.phases = phases;
+                    });
             });
         });
     }
