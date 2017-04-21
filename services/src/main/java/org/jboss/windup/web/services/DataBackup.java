@@ -41,7 +41,7 @@ public class DataBackup
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Schedule(hour = "5,11,17,23", minute = "10")
+    @Schedule(hour = "23/6", minute = "10")
     public void maintainBackups()
     {
         this.backupDatabase();
