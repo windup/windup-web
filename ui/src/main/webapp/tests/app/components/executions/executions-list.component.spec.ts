@@ -165,7 +165,7 @@ describe('ExecutionsListComponent', () => {
                 let el = row[i].nativeElement;
 
                 expect(el.children.length).toEqual(COUNT_COLUMNS);
-                expect(el.children[COL_ID].textContent.trim()).toEqual(SORTED_EXECUTIONS_DATA[i].id.toString());
+                expect(el.children[COL_ID].textContent.trim()).toEqual("#" + SORTED_EXECUTIONS_DATA[i].id.toString());
                 expect(el.children[COL_STATE].textContent.trim()).toContain((new PrettyExecutionStatus().transform(SORTED_EXECUTIONS_DATA[i].state)));
             }
         });

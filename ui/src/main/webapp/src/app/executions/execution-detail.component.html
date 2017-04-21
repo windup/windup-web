@@ -2,7 +2,7 @@
     <h2 i18n="Loading analysis heading|Analysis Page">Loading analysis data</h2>
 </div>
 <div *ngIf="execution">
-    <h2 i18n="Heading|Analysis Page">Analysis details</h2>
+    <h2 i18n="Heading|Analysis Page">Analysis #{{execution.id}}</h2>
 
     <div *ngIf="execution.state === 'QUEUED' || execution.state === 'STARTED'">
         <wu-progress-bar
@@ -32,50 +32,95 @@
             </ul>
         </wu-tab>
 -->
-        <wu-tab [tabTitle]="'Analysis Status'">
+        <wu-tab [tabTitle]="'Details'">
+            <h3 i18n="Analysis status|Section">Status</h3>
             <dl>
-                <dt i18n="Analysis state">State</dt>
+                <dt i18n="Analysis status">Status:</dt>
                 <dd><wu-status-icon [status]="execution.state"></wu-status-icon>{{execution.state | wuPrettyExecutionStatus}}</dd>
-                <dt i18n="Analysis start date">Started Date</dt>
+                <dt i18n="Analysis start date">Started:</dt>
                 <dd>{{execution.timeStarted | date: 'short'}}</dd>
                 <ng-container *ngIf="execution.timeCompleted">
+<!--
                     <dt i18n="Analysis completion date">Completed Date</dt>
                     <dd>{{execution.timeCompleted | date: 'short'}}</dd>
-                    <dt i18n="Analysis duration">Duration</dt>
+-->
+                    <dt i18n="Analysis duration">Duration:</dt>
                     <dd>{{ execution.timeCompleted - execution.timeStarted | wuDuration }}</dd>
                 </ng-container>
                 <ng-container *ngIf="!execution.timeCompleted">
-                    <dt i18n="Analysis last modification">Last Modified Date</dt>
+                    <dt i18n="Analysis last modification">Duration:</dt>
                     <dd>{{execution.lastModified | date: 'short'}}</dd>
                 </ng-container>
             </dl>
 
             <h3 i18n="Analysis configuration|Section">Configuration</h3>
+            <dl>
+                <dt i18n="Migration Path">Transformation path:</dt>
+                <dd>{{execution.analysisContext?.migrationPath?.name}}</dd>
+            </dl>
 
-            <h4 i18n="Migration Path">Migration path</h4>
-            {{execution.analysisContext?.migrationPath?.name}}
+            <fieldset *ngIf="execution.analysisContext.includePackages.length > 0" class="fields-section-pf" id="includedPkgsSection">
+                <legend class="fields-section-header-pf" aria-expanded="includedPkgsShow">
+                    <span *ngIf="!includedPkgsShow" class="fa fa-angle-right field-section-toggle-pf"></span>
+                    <span *ngIf="includedPkgsShow" class="fa fa-angle-right field-section-toggle-pf fa-angle-down"></span>
+                    <a (click)="includedPkgsShow = !includedPkgsShow;" class="field-section-toggle-pf" i18n>Included packages</a>
+                </legend>
+                <div [hidden]="!includedPkgsShow" class="form-group">
+                    <ul>
+                        <li *ngFor="let package of execution.analysisContext.includePackages">{{package.fullName}}</li>
+                    </ul>
+                </div>
+            </fieldset>
 
-            <h4 i18n="Analyzed applications">Analyzed applications</h4>
-            <ul>
-                <li *ngFor="let application of execution.filterApplications">{{application.fileName}}</li>
-            </ul>
+            <fieldset *ngIf="execution.analysisContext.excludePackages.length > 0" class="fields-section-pf" id="excludedPkgsSection">
+                <legend class="fields-section-header-pf" aria-expanded="excludedPkgsShow">
+                    <span *ngIf="!excludedPkgsShow" class="fa fa-angle-right field-section-toggle-pf"></span>
+                    <span *ngIf="excludedPkgsShow" class="fa fa-angle-right field-section-toggle-pf fa-angle-down"></span>
+                    <a (click)="excludedPkgsShow = !excludedPkgsShow;" class="field-section-toggle-pf" i18n>Excluded packages</a>
+                </legend>
+                <div [hidden]="!excludedPkgsShow" class="form-group">
+                    <ul>
+                        <li *ngFor="let package of execution.analysisContext.excludePackages">{{package.fullName}}</li>
+                    </ul>
+                </div>
+            </fieldset>
 
-            <h4 i18n="Rules used for analysis">Rules</h4>
-            <ul>
-                <li *ngFor="let rulePath of execution.analysisContext.rulesPaths">{{rulePath.path}}</li>
-            </ul>
-
-            <h4 i18n="Packages included for analysis">Included packages</h4>
-            <ul>
-                <li *ngFor="let package of execution.analysisContext.includePackages">{{package.fullName}}</li>
-            </ul>
-
-            <h4 i18n="Packages excluded from analysis">Excluded packages</h4>
-            <ul>
-                <li *ngFor="let package of execution.analysisContext.excludePackages">{{package.fullName}}</li>
-            </ul>
-
-            <h4 i18n="Advanced Options|Analysis">Advanced options</h4>
+        </wu-tab>
+        <wu-tab [tabTitle]="'Applications (' + execution.filterApplications.length + ')'">
+            <h3 i18n="Analysis configuration|Section">Applications</h3>
+            <span *ngFor="let application of execution.filterApplications">{{application.fileName}}<br/></span>
+        </wu-tab>
+        <wu-tab [tabTitle]="'Rules'">
+            <table class="table table-bordered table-hover table-mobile executions-list-table">
+                <thead wu-sortable-table
+                       [data]="phases"
+                       [tableHeaders]="[
+                            { title: 'Rule ID', isSortable: false  },
+                            { title: 'Phase', isSortable: false  },
+                            { title: 'Rule Provider', isSortable: false  },
+                            { title: 'Executed', isSortable: false },
+                            { title: 'Succeed', isSortable: false },
+                            { title: 'Failure Cause', isSortable: false }
+                        ]">
+                </thead>
+                <tbody>
+                <template ngFor [ngForOf]="phases" let-phase>
+                    <template ngFor [ngForOf]="(phase?.ruleProviders | async)" let-ruleProvider>
+                        <tr *ngFor="let rule of (ruleProvider?.rules | async)" class="execution-row">
+                            <td>{{rule.ruleId}}</td>
+                            <td>{{phase.name}}</td>
+                            <td>{{ruleProvider.ruleProviderID}}</td>
+                            <td>{{rule.executed ? 'Yes' : 'No'}}</td>
+                            <td>{{rule.failed ? 'No' : 'Yes'}}</td>
+                            <td>{{rule.failureMessage}}</td>
+                        </tr>
+                    </template>
+                </template>
+                <tbody>
+            </table>
+        </wu-tab>
+        <wu-tab [tabTitle]="'Advanced Options'">
+            <h3 i18n="Advanced Options|Analysis">Advanced options</h3>
             <wu-analysis-context-advanced-options
                 [(selectedOptions)]="execution.analysisContext.advancedOptions"
                 [isReadOnly]="true"
