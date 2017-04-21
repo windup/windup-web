@@ -327,11 +327,7 @@ private transformationPaths: MigrationPath[] = [
     }
 
     cancel() {
-        if (!this.isInWizard) {
-            this.navigateBack();
-        } else {
-            this._router.navigate(['/']);
-        }
+        this.navigateBack();
     }
 
     navigateBack() {
