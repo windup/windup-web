@@ -6,10 +6,8 @@ import javax.persistence.PersistenceContext;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 
-import org.jboss.windup.web.services.model.AnalysisContext;
-import org.jboss.windup.web.services.model.MigrationProject;
+import org.jboss.windup.web.services.model.*;
 import org.jboss.windup.web.services.model.Package;
-import org.jboss.windup.web.services.model.RulesPath;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -64,9 +62,25 @@ public class AnalysisContextService
         analysisContext.setId(null); // creating new instance, should not have id
         this.ensureSystemRulesPathsPresent(analysisContext);
         this.loadPackagesToAnalysisContext(analysisContext);
+        this.loadAdvancedOptionsToAnalysisContext(analysisContext);
         entityManager.persist(analysisContext);
 
         return analysisContext;
+    }
+
+    protected void loadAdvancedOptionsToAnalysisContext(AnalysisContext analysisContext)
+    {
+        analysisContext.setAdvancedOptions(this.loadAdvancedOptionsFromPersistenceContext(analysisContext.getAdvancedOptions()));
+    }
+
+    protected Collection<AdvancedOption> loadAdvancedOptionsFromPersistenceContext(Collection<AdvancedOption> advancedOptions)
+    {
+        return advancedOptions.stream()
+                .filter(anOption -> anOption.getId() != null && anOption.getId() != 0)
+                .map(anOption -> this.entityManager.find(AdvancedOption.class, anOption.getId()))
+                .filter(anOption -> anOption != null)
+                .map(anOption -> new AdvancedOption(anOption.getName(), anOption.getValue()))
+                .collect(Collectors.toList());
     }
 
     protected void loadPackagesToAnalysisContext(AnalysisContext analysisContext)

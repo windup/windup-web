@@ -43,6 +43,14 @@ public class AdvancedOption implements Serializable
     @Column(length = 8192)
     private String value;
 
+    public AdvancedOption() {}
+
+    public AdvancedOption(String name, String value)
+    {
+        this.name = name;
+        this.value = value;
+    }
+
     public Long getId()
     {
         return id;
