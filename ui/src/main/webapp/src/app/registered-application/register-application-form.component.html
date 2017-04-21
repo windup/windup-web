@@ -1,4 +1,4 @@
-<div class="container-fluid wu-frame">
+<div class="container-fluid">
 <h1>{{labels.heading}}</h1>
 
 <form [formGroup]="registrationForm" (ngSubmit)="register()"  class="form-horizontal" ng2FileDrop [uploader]="multipartUploader">
@@ -11,7 +11,7 @@
 
     <wu-tab-container (tabSelected)="onTabSelected($event)">
         <wu-tab [tabTitle]="'Upload'" [properties]="{mode: 'UPLOADED'}">
-            <div class="row description">
+            <div class="form-group description">
                 <div class="col-md-10">
                     <div i18n="Upload Description Text">
                         Choose files to upload to your project. You can select more than one file at a time. You can
@@ -45,7 +45,7 @@
 
         </wu-tab>
         <wu-tab [tabTitle]="'Server Path'" [properties]="{mode: 'PATH'}">
-            <div class="row description">
+            <div class="form-group description">
                 <div class="col-md-12">
                     <label class="required" for="appPathToRegister" i18n="Server Path Description">Enter the server path containing your project applications.</label>
                 </div>

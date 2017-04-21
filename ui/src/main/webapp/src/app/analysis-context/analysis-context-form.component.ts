@@ -25,10 +25,7 @@ import {forkJoin} from "rxjs/observable/forkJoin";
 import {WINDUP_WEB} from "../app.module";
 
 @Component({
-    templateUrl: './analysis-context-form.component.html',
-    styles: [ // this is needed as main layout has weird padding 122px and this can't fit for Analysis Context form
-        `:host /deep/ .container-fluid { padding-top: 40px; }`,
-    ]
+    templateUrl: './analysis-context-form.component.html'
 })
 export class AnalysisContextFormComponent extends FormComponent
     implements OnInit, OnDestroy, IsDirty
