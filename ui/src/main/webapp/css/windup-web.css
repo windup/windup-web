@@ -120,7 +120,7 @@ td {
 }
 
 .container-fluid .wu-frame {
-    padding-top: 40px;
+    padding-top: 40px !important;
     background: #EDF1F2;
     margin-left: 20px !important;
     margin-right: 20px !important;
@@ -138,4 +138,13 @@ form .wizard-form {
 
 label.required:before {
     content: '* ';
+}
+
+fieldset.fields-section-pf {
+    border-color: #adaaaa;
+}
+
+.form-horizontal .form-group {
+    margin-left: 10px;
+    margin-right: 10px;
 }

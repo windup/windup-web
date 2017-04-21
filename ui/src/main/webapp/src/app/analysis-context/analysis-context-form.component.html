@@ -1,88 +1,128 @@
 <div class="container-fluid wu-frame">
-    <h1 i18n>Configure Analysis</h1>
-
+    <h1 i18n>Configure the Analysis</h1>
 
     <h2 *ngIf="!project" i18n>Loading...</h2>
 
+    <form *ngIf="project" #analysisContextForm="ngForm" (ngSubmit)="onSubmit()" class="form-horizontal wizard-form">
 
-    <form *ngIf="project" #analysisContextForm="ngForm" (ngSubmit)="onSubmit()" class="form-horizontal">
-
-        <div *ngFor="let errorMessage of errorMessages" class="row form-errors alert alert-danger">
+        <div *ngFor="let errorMessage of errorMessages" class="form-errors alert alert-danger">
             <div class="col-md-2">&nbsp;</div>
             <div class="col-md-10">
                 <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> {{errorMessage}}
             </div>
         </div>
-        <div class="row">
-            <div class="form-group">
-                <label class="col-md-2 control-label" for="migrationPath" i18n>Migration Path</label>
-                <div class="col-md-10 col-lg-8">
-                    <select #migrationPath="ngModel" id="migrationPath" name="migrationPath" ngControl="migrationPath" class="form-control" required
+        <!-- Form controls begins -->
+
+        <!-- Fixed Transformation paths -->
+        <div class="form-group">
+            <label class="control-label required" for="migrationPath" i18n>Transformation path</label>
+            <div>
+                <ng-container *ngFor="let transformationPath of transformationPaths">
+                    <label class="radio-inline control-label" style="padding-left: 20px; padding-right: 40px;">
+                        <input type="radio" name="migrationPath" #migrationPath="ngModel"
+                            [(ngModel)]="analysisContext.migrationPath.id" ngControl="migrationPath" [value]="transformationPath.id"/>
+                        {{ transformationPath.name }}
+                    </label>
+                </ng-container>
+                <p class="help-block">Select the transformation path relevant for the analysis of your application(s).</p>
+            </div>
+            <label class="checkbox-inline">
+                <input type="checkbox" name="cloudTargetsIncluded" ngControl="cloudTargetsIncluded" [(ngModel)]="analysisContext.cloudTargetsIncluded"/>
+                Cloud readiness verification?
+            </label>
+            <p class="help-block">Check to enable rules for preparing your application for deployment on a cloud service.</p>
+        </div>
+        
+        <!-- Advanced Transformation paths 
+        <fieldset class="fields-section-pf" id="advTransformPathSection">
+            <legend class="fields-section-header-pf" aria-expanded="advTransformPathShoww">
+                <span *ngIf="!advTransformPathShow" class="fa fa-angle-right field-section-toggle-pf"></span>
+                <span *ngIf="advTransformPathShow" class="fa fa-angle-right field-section-toggle-pf fa-angle-down"></span>
+                <a (click)="toggleAdvTransformPathOptions()" class="field-section-toggle-pf" i18n>Advanced selection of transformation path</a>
+            </legend>        
+            <div class="form-group" [hidden]="!advTransformPathShow">
+                <label class="control-label required" for="migrationPath" i18n>Advanced transformation path</label>
+                <select #migrationPath="ngModel" id="migrationPath" name="migrationPath" ngControl="migrationPath" class="form-control required"
                         [(ngModel)]="analysisContext.migrationPath.id" [ngClass]="{'has-error': hasError(migrationPath)}">
-                    <option *ngFor="let migrationPath of migrationPaths | async" [value]="migrationPath.id">{{migrationPath.name}}</option>
+                        <option *ngFor="let migrationPath of migrationPaths | async" [value]="migrationPath.id">{{migrationPath.name}}</option>
                 </select>
-                    <span [class.hidden]="!hasError(migrationPath)" class="help-block" i18n>
-                    A migration path must be specified.
-                </span>
-                </div>
+                <span [class.hidden]="!hasError(migrationPath)" class="help-block alert" i18n>Transformation path must be specified.</span>
+                <p class="help-block">Select the transformation path relevant for the analysis of your application(s).</p>
             </div>
+        </fieldset>-->
 
-            <!-- Apps -->
-            <div class="form-group">
-                <label class="col-md-2 control-label" i18n>Applications included</label>
-                <div class="col-md-10 col-lg-8">
-                    <wu-select-applications [availableApps]="availableApps" [(selectedApps)]="analysisContext.applications">
-                    </wu-select-applications>
-                </div>
-            </div>
+        <!-- Apps Commented out due changed Mockup - for now Applications are not able to exclude from Analysis, They are taken into analysis all registered apps!
+        <div class="form-group">
+            <label class="control-label" i18n>Applications included</label>
+            <wu-select-applications [availableApps]="availableApps" [(selectedApps)]="analysisContext.applications">
+            </wu-select-applications>
+            <p class="help-block">All application included in the analysis.</p>
+        </div>-->
 
-            <!-- Packages -->
-            <div class="form-group">
-                <label class="col-md-2 control-label" i18n>Include Packages</label>
-                <div class="col-md-10 col-lg-8">
-                    <strong *ngIf="!packageTreeLoaded"><span class="spinner spinner-xs spinner-inline"></span>Loading...</strong>
-                    <wu-js-tree-wrapper [treeNodes]="packageTree" [(selectedNodes)]="analysisContext.includePackages">
-                    </wu-js-tree-wrapper>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-md-2 control-label" i18n>Exclude Package</label>
-                <div class="col-md-10 col-lg-8">
+        <!-- Packages -->
+        <div class="form-group">
+            <label class="control-label required" i18n>Included Packages</label>
+            <strong *ngIf="!packageTreeLoaded"><span class="spinner spinner-xs spinner-inline"></span>Loading...</strong>
+            <wu-js-tree-wrapper [treeNodes]="packageTree" [(selectedNodes)]="analysisContext.includePackages">
+            </wu-js-tree-wrapper>
+            <p class="help-block">All classes contained in those packages will be considered as written by your organization and will be decompiled and analysed.</p>
+        </div>
+
+        <fieldset class="fields-section-pf" id="ExclPackagesSection">
+            <legend (click)="toggleExclPkgOptions()" class="fields-section-header-pf" aria-expanded="excludedPkgShow">
+                <span *ngIf="!excludedPkgShow" class="fa fa-angle-right field-section-toggle-pf"></span>
+                <span *ngIf="excludedPkgShow" class="fa fa-angle-right field-section-toggle-pf fa-angle-down"></span>
+                <a style="cursor: pointer;" class="field-section-toggle-pf" i18n>Exclude some packages</a>
+            </legend>
+            <div [hidden]="!excludedPkgShow" class="form-group">
+                <div>
+                    <label class="control-label" i18n>Excluded Packages</label>
                     <strong *ngIf="!packageTreeLoaded"><span class="spinner spinner-xs spinner-inline"></span>Loading...</strong>
                     <wu-js-tree-wrapper [treeNodes]="packageTree" [(selectedNodes)]="analysisContext.excludePackages">
                     </wu-js-tree-wrapper>
                 </div>
+                <p class="help-block">All classes contained in those packages will be ignored during the analysis.</p>
             </div>
+        </fieldset>
 
-            <!-- Rulesets selection -->
-            <div class="form-group">
-                <label class="col-md-2 control-label">Custom Ruleset selection</label>
-                <div class="col-md-6">
-                    <wu-custom-rule-selection [selectedRulePaths]="analysisContext.rulesPaths" (selectedRulePathsChanged)="rulesPathsChanged($event)">
-                    </wu-custom-rule-selection>
-                </div>
+        <!-- Rulesets selection -->
+        <fieldset class="fields-section-pf" id="CustomRulesetsSection">
+            <legend (click)="toggleCustomRulesetsOptions()" class="fields-section-header-pf" aria-expanded="customRulesetsShow">
+                <span *ngIf="!customRulesetsShow" class="fa fa-angle-right field-section-toggle-pf"></span>
+                <span *ngIf="customRulesetsShow" class="fa fa-angle-right field-section-toggle-pf fa-angle-down"></span>
+                <a style="cursor: pointer;" class="field-section-toggle-pf" i18n>Use local custom rules</a>
+            </legend>
+            <div [hidden]="!customRulesetsShow" class="form-group">
+                <label class="control-label" i18n>Custom rulesets</label>
+                <wu-custom-rule-selection [selectedRulePaths]="analysisContext.rulesPaths" (selectedRulePathsChanged)="rulesPathsChanged($event)">
+                </wu-custom-rule-selection>
             </div>
+        </fieldset>
 
-            <!-- Advanced options -->
-            <div class="form-group">
-                <label class="col-md-2 control-label" i18n>Advanced Options</label>
-                <div class="col-md-10 col-lg-8">
+        <!-- Advanced options -->
+        <fieldset class="fields-section-pf" id="AdvOptSection">
+            <legend (click)="toggleAdvOptions()" class="fields-section-header-pf" aria-expanded="advancedOptionsShow">
+                <span *ngIf="!advancedOptionsShow" class="fa fa-angle-right field-section-toggle-pf"></span>
+                <span *ngIf="advancedOptionsShow" class="fa fa-angle-right field-section-toggle-pf fa-angle-down"></span>
+                <a style="cursor: pointer;" class="field-section-toggle-pf" i18n>Advanced Options</a>
+            </legend>
+            <div [hidden]="!advancedOptionsShow" class="form-group">
+                <label for="createStaticReports" i18n>
                     <input id="createStaticReports" name="generateStaticReports" type="checkbox" [(ngModel)]="analysisContext.generateStaticReports">
-                    <label for="createStaticReports" i18n>Create static HTML reports</label>
-
-                    <wu-analysis-context-advanced-options [(selectedOptions)]="analysisContext.advancedOptions" (advancedOptionsChanged)="advancedOptionsChanged($event)"
+                     Create static HTML reports
+                </label>
+                 
+                <label class="control-label" i18n>Advanced options</label>
+                <wu-analysis-context-advanced-options [(selectedOptions)]="analysisContext.advancedOptions" (advancedOptionsChanged)="advancedOptionsChanged($event)"
                         [configurationOptions]="configurationOptions" #advancedOptionsModal>
-                    </wu-analysis-context-advanced-options>
-                </div>
+                </wu-analysis-context-advanced-options>
             </div>
+        </fieldset>
 
-            <div class="form-group">
-                <div class="col-lg-10 col-lg-offset-2">
-                    <button (click)="saveAndRun()" class="btn btn-primary" [disabled]="!analysisContextForm.form.valid" i18n>Save &amp; Run</button>
-                    <button (click)="save()" class="btn btn-primary" [disabled]="!analysisContextForm.form.valid" i18n>Save Configuration</button>
-                    <button (click)="cancel()" class="btn btn-default" type="button" i18n>Cancel</button>
-                </div>
-            </div>
+        <div class="form-group pull-right">
+            <button (click)="cancel()" class="btn btn-default" type="button" i18n>Back</button>
+            <button (click)="save()" class="btn btn-primary" [disabled]="!analysisContextForm.form.valid" i18n>Save</button>
+            <button (click)="saveAndRun()" class="btn btn-primary" [disabled]="!analysisContextForm.form.valid" i18n>Save &amp; Run</button>
         </div>
     </form>
 </div>

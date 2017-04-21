@@ -1,56 +1,60 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <migration-paths>
     <path id="100">
-        <name>Anything to EAP 6</name>
+        <name>Migration to Red Hat JBoss EAP 6</name>
         <target id="eap" version-range="[6]"/>
     </path>
     <path id="101">
-        <name>Anything to EAP 7</name>
+        <name>Migration to Red Hat JBoss EAP 7</name>
         <target id="eap" version-range="[7]"/>
     </path>
-
+    <path id="102">
+        <name>Cloud readiness analysis</name>
+        <target id="cloud-readiness"/>
+        <target id="openshift"/>
+    </path>
     <path id="200">
-        <name>WebLogic to EAP 6</name>
+        <name>Migration from Oracle WebLogic to Red Hat JBoss EAP 6</name>
         <source id="weblogic"/>
         <target id="eap" version-range="[6]"/>
     </path>
     <path id="201">
-        <name>WebLogic to EAP 7</name>
+        <name>Migration from Oracle WebLogic to Red Hat JBoss EAP 7</name>
         <source id="weblogic"/>
         <target id="eap" version-range="[7]"/>
     </path>
 
     <path id="300">
-        <name>WebSphere to EAP 6</name>
+        <name>Migration from IBM WebSphere to Red Hat JBoss EAP 6</name>
         <source id="websphere"/>
         <target id="eap" version-range="[6]"/>
     </path>
     <path id="301">
-        <name>WebSphere to EAP 7</name>
+        <name>Migration from IBM WebSphere to Red Hat JBoss EAP 7</name>
         <source id="websphere"/>
         <target id="eap" version-range="[7]"/>
     </path>
 
     <path id="400">
-        <name>EAP 4 to EAP 6</name>
+        <name>Migration from Red Hat JBoss EAP 4 to EAP 6</name>
         <source id="eap" version-range="[4]"/>
         <target id="eap" version-range="[6]"/>
     </path>
 
     <path id="500">
-        <name>EAP 5 to EAP 6</name>
+        <name>Migration from Red Hat JBoss EAP 5 to 6</name>
         <source id="eap" version-range="[5]"/>
         <target id="eap" version-range="[6]"/>
     </path>
 
     <path id="600">
-        <name>EAP 5 to EAP 7</name>
+        <name>Migration from Red Hat JBoss EAP 5 to 7</name>
         <source id="eap" version-range="[5]"/>
         <target id="eap" version-range="[7]"/>
     </path>
 
     <path id="700">
-        <name>EAP 6 to EAP 7</name>
+        <name>Migration from Red Hat JBoss EAP 6 to 7</name>
         <source id="eap" version-range="[6]"/>
         <target id="eap" version-range="[7]"/>
     </path>

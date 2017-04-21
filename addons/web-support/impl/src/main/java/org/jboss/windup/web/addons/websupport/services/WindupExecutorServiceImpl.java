@@ -1,20 +1,16 @@
 package org.jboss.windup.web.addons.websupport.services;
 
-import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Handler;
-import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
-import org.jboss.forge.furnace.util.OperatingSystemUtils;
 import org.jboss.windup.config.KeepWorkDirsOption;
 import org.jboss.windup.config.phase.ReportRenderingPhase;
 import org.jboss.windup.exec.WindupProcessor;
@@ -53,7 +49,7 @@ public class WindupExecutorServiceImpl implements WindupExecutorService
     @Override
     public void execute(WindupProgressMonitor progressMonitor, Collection<Path> rulesPaths, List<Path> inputPaths, Path outputPath,
                 List<String> packages,
-                List<String> excludePackages, String source, String target, Map<String, Object> otherOptions, boolean generateStaticReports)
+                List<String> excludePackages, String source, List<String> targets, Map<String, Object> otherOptions, boolean generateStaticReports)
     {
         Path graphPath = outputPath.resolve(GraphContextFactory.DEFAULT_GRAPH_SUBDIRECTORY);
         // Close it here, since we will be deleting the old one and rewriting
@@ -87,8 +83,9 @@ public class WindupExecutorServiceImpl implements WindupExecutorService
         if (source != null)
             configuration.setOptionValue(SourceOption.NAME, Collections.singletonList(source));
 
-        if (target != null)
-            configuration.setOptionValue(TargetOption.NAME, Collections.singletonList(target));
+        if (targets != null && targets.size() > 0) {
+            configuration.setOptionValue(TargetOption.NAME, targets);
+        }
 
         configuration.setOptionValue(OverwriteOption.NAME, true);
         configuration.setOptionValue(KeepWorkDirsOption.NAME, true);
@@ -97,7 +94,7 @@ public class WindupExecutorServiceImpl implements WindupExecutorService
         {
             configuration.setOptionValue(optionEntry.getKey(), optionEntry.getValue());
         }
-
+        
         Logger globalLogger = Logger.getLogger("org.jboss.windup");
         Handler logHandler = null;
         try
