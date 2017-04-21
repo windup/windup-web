@@ -64,7 +64,7 @@
             <strong *ngIf="!packageTreeLoaded"><span class="spinner spinner-xs spinner-inline"></span>Loading...</strong>
             <wu-js-tree-wrapper [treeNodes]="packageTree" [(selectedNodes)]="analysisContext.includePackages">
             </wu-js-tree-wrapper>
-            <p class="help-block">All classes contained in those packages will be considered as written by your organization and will be decompiled and analysed.</p>
+            <p class="help-block">Select the Java packages that will be decompiled and analyzed. If no package is selected, all classes will be considered.</p>
         </div>
 
         <fieldset class="fields-section-pf" id="ExclPackagesSection">
