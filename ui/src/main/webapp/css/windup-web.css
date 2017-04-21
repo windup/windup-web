@@ -143,3 +143,8 @@ label.required:before {
 fieldset.fields-section-pf {
     border-color: #adaaaa;
 }
+
+.form-horizontal .form-group {
+    margin-left: 10px;
+    margin-right: 10px;
+}
