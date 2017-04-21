@@ -1,4 +1,4 @@
-<div class="container-fluid wu-frame">
+<div [class.wu-frame]="isInWizard" class="container-fluid">
     <h1 i18n>Configure the Analysis</h1>
 
     <h2 *ngIf="!project" i18n>Loading...</h2>
@@ -28,9 +28,9 @@
             </div>
             <label class="checkbox-inline">
                 <input type="checkbox" name="cloudTargetsIncluded" ngControl="cloudTargetsIncluded" [(ngModel)]="analysisContext.cloudTargetsIncluded"/>
-                Cloud readiness verification?
+                Cloud readiness analysis
             </label>
-            <p class="help-block">Check to enable rules for preparing your application for deployment on a cloud service.</p>
+            <p class="help-block">Check to also assess the cloud readiness of your application(s).</p>
         </div>
         
         <!-- Advanced Transformation paths 
