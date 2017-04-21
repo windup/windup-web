@@ -94,7 +94,7 @@ export const appRoutes: Routes = [
                             steps: [
                                 { name: 'Create new Project', path: 'create-project' },
                                 { name: 'Add Applications', path: 'add-applications' },
-                                { name: 'Configure Analysis', path: 'configure-analysis' }
+                                { name: 'Configure the Analysis', path: 'configure-analysis' }
                             ],
                             wizard: true
                         },
