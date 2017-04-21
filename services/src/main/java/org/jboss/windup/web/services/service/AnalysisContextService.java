@@ -1,18 +1,21 @@
 package org.jboss.windup.web.services.service;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 
-import org.jboss.windup.web.services.model.*;
+import org.jboss.windup.web.services.model.AdvancedOption;
+import org.jboss.windup.web.services.model.AnalysisContext;
+import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.model.Package;
-
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
+import org.jboss.windup.web.services.model.RulesPath;
 
 /**
  * Provides tools for creating default analysis context instances, as well as providing default configuration data.
@@ -76,11 +79,11 @@ public class AnalysisContextService
     protected Collection<AdvancedOption> loadAdvancedOptionsFromPersistenceContext(Collection<AdvancedOption> advancedOptions)
     {
         return advancedOptions.stream()
-                .filter(anOption -> anOption.getId() != null && anOption.getId() != 0)
-                .map(anOption -> this.entityManager.find(AdvancedOption.class, anOption.getId()))
-                .filter(anOption -> anOption != null)
-                .map(anOption -> new AdvancedOption(anOption.getName(), anOption.getValue()))
-                .collect(Collectors.toList());
+                    .filter(anOption -> anOption.getId() != null && anOption.getId() != 0)
+                    .map(anOption -> this.entityManager.find(AdvancedOption.class, anOption.getId()))
+                    .filter(anOption -> anOption != null)
+                    .map(anOption -> new AdvancedOption(anOption.getName(), anOption.getValue()))
+                    .collect(Collectors.toList());
     }
 
     protected void loadPackagesToAnalysisContext(AnalysisContext analysisContext)
@@ -92,20 +95,19 @@ public class AnalysisContextService
     protected Set<Package> loadPackagesFromPersistenceContext(Collection<Package> detachedPackages)
     {
         return detachedPackages.stream()
-                .filter(aPackage -> aPackage.getId() != null && aPackage.getId() != 0)
-                .map(aPackage -> this.entityManager.find(Package.class, aPackage.getId()))
-                .filter(aPackage -> aPackage != null)
-                .collect(Collectors.toSet());
+                    .filter(aPackage -> aPackage.getId() != null && aPackage.getId() != 0)
+                    .map(aPackage -> this.entityManager.find(Package.class, aPackage.getId()))
+                    .filter(aPackage -> aPackage != null)
+                    .collect(Collectors.toSet());
     }
 
     protected boolean contextHasExecutions(AnalysisContext context)
     {
         String query = "SELECT COUNT(ex) FROM WindupExecution ex WHERE ex.analysisContext = :ctxt";
 
-
         Long count = this.entityManager.createQuery(query, Long.class)
-            .setParameter("ctxt", context)
-            .getSingleResult();
+                    .setParameter("ctxt", context)
+                    .getSingleResult();
 
         return count > 0;
     }
