@@ -1,4 +1,4 @@
-import {Routes, RouterModule} from '@angular/router';
+import {RouterModule, Routes} from "@angular/router";
 import {ProjectListComponent} from "./project/project-list.component";
 import {RegisterApplicationFormComponent} from "./registered-application/register-application-form.component";
 import {MigrationProjectFormComponent} from "./project/migration-project-form.component";
@@ -21,7 +21,6 @@ import {AllExecutionsComponent} from "./executions/all-executions.component";
 import {SourceReportComponent} from "./reports/source/source-report.component";
 import {ApplicationDetailsComponent} from "./reports/application-details/application-details.component";
 import {ApplicationIndexComponent} from "./reports/application-index/application-index.component";
-import {ReportFilterComponent} from "./reports/filter/report-filter.component";
 import {RuleProviderExecutionsComponent} from "./reports/rule-provider-executions/rule-provider-executions.component";
 import {WizardComponent} from "./shared/wizard/wizard.component";
 import {ExecutionDetailComponent} from "./executions/execution-detail.component";
@@ -32,6 +31,7 @@ import {ExecutionsLayoutComponent} from "./executions/executions-layout.componen
 import {ApplicationLevelLayoutComponent} from "./reports/application-level-layout.component";
 import {ExecutionApplicationListComponent} from "./reports/execution-application-list/execution-application-list.component";
 import {ExecutionResolve} from "./executions/execution.resolve";
+import {AboutPageComponent} from "./misc/about.component";
 
 export const executionLevelRoutes: Routes = [
     {path: '', component: ExecutionApplicationListComponent, data: {displayName: 'Applications'}},
@@ -71,16 +71,15 @@ export const appRoutes: Routes = [
                 component: DefaultLayoutComponent,
                 children: [
                     {path: '', redirectTo: "/project-list", pathMatch: "full"},
+                    {path: 'about', component: AboutPageComponent},
                     {
                         path: "configuration",
-                        resolve: { configuration: ConfigurationResolve },
                         component: ConfigurationComponent,
-                        data: {
-                            displayName: "Global Configuration"
-                        }
+                        resolve: { configuration: ConfigurationResolve },
+                        data: { displayName: "Global Configuration" }
                     },
-                    {path: "project-list",           component: ProjectListComponent,   data: {displayName: "Projects"}},
-                    {path: 'executions', component: AllExecutionsComponent, data: {displayName: 'Global Executions List'}}
+                    {path: "project-list", component: ProjectListComponent,   data: {displayName: "Projects"}},
+                    {path: 'executions',   component: AllExecutionsComponent, data: {displayName: 'Global Executions List'}}
                 ]
             },
             {
@@ -144,7 +143,8 @@ export const appRoutes: Routes = [
                                             data: {displayName: "Edit Application"}
                                         },
                                     ]},
-                                    { path: 'analysis-context', component: AnalysisContextFormComponent, data: {displayName: "Configure Analysis"}, canDeactivate: [ConfirmDeactivateGuard]},                                ]
+                                    { path: 'analysis-context', component: AnalysisContextFormComponent, data: {displayName: "Configure Analysis"}, canDeactivate: [ConfirmDeactivateGuard]},
+                                ]
                             },
                             { path: '', component: DefaultLayoutComponent, children: [
                                 {path: 'edit', component: MigrationProjectFormComponent, data: {displayName: 'Edit Project'}},
@@ -176,7 +176,7 @@ export const appRoutes: Routes = [
                         ]
                     }
                 ]
-            }
+            },
         ]
     }
 ];

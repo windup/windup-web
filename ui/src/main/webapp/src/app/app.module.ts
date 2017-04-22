@@ -1,12 +1,12 @@
-import { NgModule }      from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { HttpModule, RequestOptions, XHRBackend, Http } from '@angular/http';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {NgModule} from "@angular/core";
+import {BrowserModule} from "@angular/platform-browser";
+import {Http, HttpModule, RequestOptions, XHRBackend} from "@angular/http";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
-import 'rxjs/Rx';
+import "rxjs/Rx";
 
-import { AppComponent }  from './components/app.component';
-import {routing, appRoutingProviders, appRoutes} from './app.routing';
+import {AppComponent} from "./components/app.component";
+import {appRoutes, appRoutingProviders, routing} from "./app.routing";
 
 import {ProjectListComponent} from "./project/project-list.component";
 import {AnalysisContextFormComponent} from "./analysis-context/analysis-context-form.component";
@@ -14,7 +14,10 @@ import {MigrationProjectFormComponent} from "./project/migration-project-form.co
 import {RegisterApplicationFormComponent} from "./registered-application/register-application-form.component";
 import {ProgressBarComponent} from "./shared/progress-bar.component";
 import {NavbarComponent} from "./shared/navigation/navbar.component";
-import {BreadCrumbsComponent} from "./shared/navigation/breadcrumbs.component";
+import {
+    BreadCrumbsComponent,
+    BreadCrumbsComponent as BreadCrumbsNavigationComponent
+} from "./shared/navigation/breadcrumbs.component";
 import {ConfigurationService} from "./configuration/configuration.service";
 import {AnalysisContextService} from "./analysis-context/analysis-context.service";
 import {FileService} from "./services/file.service";
@@ -52,7 +55,7 @@ import {MigrationIssuesService} from "./reports/migration-issues/migration-issue
 import {TechReportService} from "./reports/technologies/tech-report.service";
 import {DependenciesReportComponent} from "./reports/dependencies/dependencies-report.component";
 import {DependenciesService} from "./reports/dependencies/dependencies.service";
-import {FramesRestClientService} from './services/graph/frames-rest-client.service';
+import {FramesRestClientService} from "./services/graph/frames-rest-client.service";
 import {ContextMenuComponent} from "./shared/navigation/context-menu.component";
 import {ProjectLayoutComponent} from "./project/project-layout.component";
 import {DefaultLayoutComponent} from "./shared/layout/default-layout.component";
@@ -60,7 +63,6 @@ import {RouteLinkProviderService} from "./core/routing/route-link-provider-servi
 import {ConfigurationResolve} from "./configuration/configuration.resolve";
 import {ProjectResolve} from "./project/project.resolve";
 import {ApplicationResolve} from "./registered-application/application.resolve";
-import {BreadCrumbsComponent as BreadCrumbsNavigationComponent} from "./shared/navigation/breadcrumbs.component";
 import {BreadCrumbsService} from "./shared/navigation/breadcrumbs.service";
 import {RouteFlattenerService} from "./core/routing/route-flattener.service";
 import {ExecutionsListComponent} from "./executions/executions-list.component";
@@ -98,7 +100,7 @@ import {NoProjectsWelcomeComponent} from "./project/no-projects-welcome.componen
 import {SortComponent} from "./shared/sort/sort.component";
 import {SearchComponent} from "./shared/search/search.component";
 import {MomentModule} from "angular2-moment";
-import {FileUploadModule, FileUploader} from "ng2-file-upload";
+import {FileUploader, FileUploadModule} from "ng2-file-upload";
 import {WizardComponent} from "./shared/wizard/wizard.component";
 import {DurationPipe} from "./shared/duration.pipe";
 import {TabContainerComponent} from "./shared/tabs/tab-container.component";
@@ -127,6 +129,7 @@ import {CacheService, CacheServiceInstance} from "./shared/cache.service";
 import {ProjectNameNotExistsValidator} from "./shared/validators/project-name-not-exists.validator";
 import {PrettyExecutionStatus} from "./shared/pretty-execution-state.pipe";
 import {AlternativeUploadQueueComponent} from "./shared/upload/alternative-upload-queue.component";
+import {AboutPageComponent} from "./misc/about.component";
 
 /**
  * Load all mapping data from the generated files.
@@ -233,7 +236,8 @@ initializeModelMappingData();
         ApplicationLevelLayoutComponent,
         ExecutionApplicationListComponent,
         PrettyExecutionStatus,
-        AlternativeUploadQueueComponent
+        AlternativeUploadQueueComponent,
+        AboutPageComponent
     ],
     providers: [
         appRoutingProviders,
