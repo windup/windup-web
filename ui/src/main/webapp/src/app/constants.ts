@@ -18,5 +18,5 @@ export class Constants {
     public static UNAUTHENTICATED_PAGE: string = `${Constants.SERVER}/login`;
     public static AUTH_REDIRECT_URL: string = Constants.SERVER;
     public static WINDUP_WEB_VERSION: string = "$MAVEN{project.version}";
-    //public static WINDUP_CORE_VERSION: string = "$MAVEN{windup.version}";
+    // Core version is obtained through the REST /windup/coreVersion endpoint
 }
