@@ -1,0 +1,90 @@
+<div class="about-page">
+
+    <div class="container surface-shaded gutter-top">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="about">
+                    <div class="row">
+                        <div class="col-md-2 about-icon gutter-top hidden-sm hidden-xs">
+                            <img src="../../../img/rhamt-square-248.png" width="172" style="margin-top: -12px;">
+                        </div>
+                        <div class="col-md-9">
+                            <h1>Red Hat Application Migration Toolkit <span class="about-reg">®</span></h1>
+
+                            <h2>About</h2>
+                            <p><a target="_blank" href="https://developers.redhat.com/products/rhamt/overview/">Red Hat Application Migration Toolkit</a> is Red Hat's toolkit that allows developers to quickly decompile, analyze, assess, and migrate legacy applications from various Java EE platforms to JBoss EAP.</p>
+
+                            <h2 id="version">Version</h2>
+                            <dl class="dl-horizontal left">
+                                <dt>Red Hat Application Migration Toolkit Core:</dt>
+                                <dd class="ng-binding">Red Hat Application Migration Toolkit 4.0</dd> <!-- TODO -->
+                                <dt>Red Hat Application Migration Toolkit Web Console:</dt>
+                                <dd class="ng-binding">Red Hat Application Migration Toolkit 4.0</dd>
+                            </dl>
+                            <p>
+                                The <a target="_blank" href="http://red.ht/rhamtgettingstarted">documentation</a>
+                                contains information and guides to help you learn about Red Hat Application Migration Toolkit
+                                and start exploring its features.
+                                From getting started with migration of your first application, to trying out creation of your own rules, it provides what you need to set up and use Red Hat Application Migration Toolkit.
+                            </p>
+
+                            <h2>Links</h2>
+
+                            <dl class="dl-horizontal">
+                                <dt>Follow on Twitter</dt>
+                                <dd><a href="http://twitter.com/jbosswindup">@jbossWindup</a></dd>
+
+                                <dt>Website</dt>
+                                <dd><a href="http://windup.jboss.org">http://windup.jboss.org</a></dd>
+
+                                <dt>Documentation</dt>
+                                <dd><a href="https://access.redhat.com/documentation/en/red-hat-jboss-migration-toolkit/">https://access.redhat.com/documentation/en/red-hat-jboss-migration-toolkit/</a></dd>
+                            </dl>
+
+                            <dl class="dl-horizontal">
+                                <dt>GitHub Source</dt>
+                                <dd><a href="https://github.com/windup/windup">https://github.com/windup/windup</a></dd>
+
+                                <dt>GitHub Wiki</dt>
+                                <dd><a href="https://github.com/windup/windup/wiki">https://github.com/windup/windup/wiki</a></dd>
+
+                                <dt>Discussion Forum</dt>
+                                <dd><a href="https://community.jboss.org/en/windup?view=discussions">https://community.jboss.org/en/windup</a></dd>
+
+                                <dt>Mailing List</dt>
+                                <dd><a href="https://lists.jboss.org/mailman/listinfo/windup-dev">https://lists.jboss.org/mailman/listinfo/windup-dev</a></dd>
+
+                                <dt>Issues Tracking</dt>
+                                <dd><a href="https://issues.jboss.org/browse/WINDUP">https://issues.jboss.org/browse/WINDUP</a></dd>
+                            </dl>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h2>Contributors</h2>
+
+                            <div id="windup-contributors"></div>
+                            <p class="windup-contributors small">A special <strong>thanks</strong> to our contributors!</p>
+                        </div>
+
+                        <script type="text/javascript">
+                            var divTarget = $("#windup-contributors");
+                            $.getJSON( "https://api.github.com/repos/windup/windup/contributors", function( data ) {
+                                $.each( data, function( key, val ) {
+                                    $( "<a data-toggle='tooltip' title='"+val.login+"' href='"+val.html_url+"'><img class='windup-contributors' sr"+"c='"+val.avatar_url+"'/></a>").appendTo(divTarget);
+                                });
+                            });
+
+                            $('[data-toggle="tooltip"]').tooltip({
+                                'placement': 'top'
+                            });
+                        </script>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
