@@ -14,10 +14,7 @@ import {MigrationProjectFormComponent} from "./project/migration-project-form.co
 import {RegisterApplicationFormComponent} from "./registered-application/register-application-form.component";
 import {ProgressBarComponent} from "./shared/progress-bar.component";
 import {NavbarComponent} from "./shared/navigation/navbar.component";
-import {
-    BreadCrumbsComponent,
-    BreadCrumbsComponent as BreadCrumbsNavigationComponent
-} from "./shared/navigation/breadcrumbs.component";
+import {BreadCrumbsComponent} from "./shared/navigation/breadcrumbs.component";
 import {ConfigurationService} from "./configuration/configuration.service";
 import {AnalysisContextService} from "./analysis-context/analysis-context.service";
 import {FileService} from "./services/file.service";
@@ -206,10 +203,9 @@ initializeModelMappingData();
         ExecutionsLayoutComponent,
         DefaultLayoutComponent,
         WizardLayoutComponent,
-        BreadCrumbsNavigationComponent,
+        BreadCrumbsComponent,
         ExecutionsListComponent,
         AllExecutionsComponent,
-        BreadCrumbsNavigationComponent,
         ReportFilterComponent,
         CustomSelectComponent,
         ReportFilterIndicatorComponent,
