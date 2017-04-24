@@ -16,6 +16,7 @@ import {TabComponent} from "../shared/tabs/tab.component";
 import {FileItem} from "ng2-file-upload";
 import {EventBusService} from "../core/events/event-bus.service";
 import {ApplicationDeletedEvent, UpdateMigrationProjectEvent} from "../core/events/windup-event";
+import {MigrationProjectService} from "../project/migration-project.service";
 
 @Component({
     templateUrl: "./register-application-form.component.html",
@@ -49,7 +50,8 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
         protected _registeredApplicationService: RegisteredApplicationService,
         protected _formBuilder: FormBuilder,
         protected _routeFlattener: RouteFlattenerService,
-        protected _eventBus: EventBusService
+        protected _eventBus: EventBusService,
+        protected _migrationProjectService: MigrationProjectService
     ) {
         super();
         this.multipartUploader = _registeredApplicationService.getMultipartUploader();
@@ -81,6 +83,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
             }
 
             this.project = flatRouteData.data['project'];
+            this._migrationProjectService.monitorProject(this.project);
 
             let uploadUrl = Constants.REST_BASE + RegisteredApplicationService.UPLOAD_URL;
             uploadUrl = uploadUrl.replace("{projectId}", this.project.id.toString());
@@ -97,6 +100,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     ngOnDestroy(): void {
         this.multipartUploader.clearQueue();
         this.routerSubscription.unsubscribe();
+        this._migrationProjectService.stopMonitoringProject(this.project);
     }
 
     protected register() {
