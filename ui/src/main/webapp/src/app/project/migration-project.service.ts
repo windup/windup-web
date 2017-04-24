@@ -59,22 +59,12 @@ export class MigrationProjectService extends AbstractService {
                 monitoredProject.executions.push(eventExecution);
             }
         } else if (event.isTypeOf(ApplicationRegisteredEvent)) {
-            (<any>event).applications.forEach(application => {
-                monitoredProject.applications.push(application);
-            });
+            // create new array by merging project and event arrays together
+            monitoredProject.applications = [...monitoredProject.applications, ...(<any>event).applications];
         } else if (event.isTypeOf(ApplicationDeletedEvent)) {
-            let applicationToRemoveIds = (<any>event).applications.map(app => app.id);
-            let applicationsToRemoveIndices = monitoredProject.applications.map((app, index) => {
-                if (applicationToRemoveIds.indexOf(app.id) !== -1) {
-                    return index;
-                } else {
-                    return -1;
-                }
-            }).filter(index => index >= 0)
-                .sort((a, b) => b - a);
-
-            applicationsToRemoveIndices.forEach(appIndex => {
-                monitoredProject.applications.splice(appIndex, 1);
+            monitoredProject.applications = monitoredProject.applications.filter((app) => {
+                // keep only those items which are not in event applications
+                return (<any>event).applications.findIndex(eventApp => eventApp.id === app.id) === -1;
             });
         }
 
