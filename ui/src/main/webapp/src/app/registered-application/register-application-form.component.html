@@ -9,6 +9,16 @@
         {{errorMessage}}
     </div>
 
+    <div class="form-group upload-queue">
+        <div class="col-md-12">
+            <wu-application-queue-list [registeredApplications]="project?.applications" [project]="project">
+            </wu-application-queue-list>
+        </div>
+        <div class="col-md-12">
+            <wu-alternative-upload-queue [uploader]="multipartUploader"></wu-alternative-upload-queue>
+        </div>
+    </div>
+
     <wu-tab-container (tabSelected)="onTabSelected($event)">
         <wu-tab [tabTitle]="'Upload'" [properties]="{mode: 'UPLOADED'}">
             <div class="form-group description">
@@ -29,11 +39,6 @@
                 </div>
             </div>
 
-            <div class="form-group upload-queue">
-                <div class="col-md-12">
-                    <wu-alternative-upload-queue [uploader]="multipartUploader"></wu-alternative-upload-queue>
-                </div>
-            </div>
 
             <div class="form-group" [ngClass]="{'has-error': hasError(registrationForm.get('fileUpload'))}" style="margin-bottom: 0;">
                 <div class="col-md-12">

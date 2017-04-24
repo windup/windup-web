@@ -90,7 +90,7 @@ export class RegisteredApplicationService extends AbstractService {
         return this._doRegisterByPath<RegisteredApplication[]>(endpoint, project, path);
     }
 
-    uploadApplications(project: MigrationProject) {
+    uploadApplications(project: MigrationProject): Observable<RegisteredApplication[]> {
         return this._keycloakService
             .getToken()
             .flatMap((token: string, index: number) =>

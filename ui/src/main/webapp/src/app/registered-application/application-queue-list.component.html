@@ -1,0 +1,23 @@
+<ul *ngIf="registeredApplications?.length > 0">
+    <li *ngFor="let application of registeredApplications">
+        <div class="progress">
+            <div class="progress-bar"
+                 role="progressbar"
+                 aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"
+                 style="width: 100%">
+                <div class="file-info">
+                    <span>{{application.title}}</span>
+                </div>
+                <div class="action-button">
+                    <span class="pointer" (click)="confirmDeleteApplication(application)">
+                        <i class="glyphicon fa fa-trash-o"></i>
+                    </span>
+                </div>
+                <div>100%</div>
+            </div>
+        </div>
+    </li>
+</ul>
+
+
+<wu-confirmation-modal #deleteAppDialog [id]="'deleteAppDialog'"></wu-confirmation-modal>

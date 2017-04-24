@@ -13,6 +13,9 @@ import {MigrationProject} from "windup-services";
 import {Subscription} from "rxjs";
 import {RouteFlattenerService} from "../core/routing/route-flattener.service";
 import {TabComponent} from "../shared/tabs/tab.component";
+import {FileItem} from "ng2-file-upload";
+import {EventBusService} from "../core/events/event-bus.service";
+import {ApplicationDeletedEvent, UpdateMigrationProjectEvent} from "../core/events/windup-event";
 
 @Component({
     templateUrl: "./register-application-form.component.html",
@@ -45,7 +48,8 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
         protected _fileService: FileService,
         protected _registeredApplicationService: RegisteredApplicationService,
         protected _formBuilder: FormBuilder,
-        protected _routeFlattener: RouteFlattenerService
+        protected _routeFlattener: RouteFlattenerService,
+        protected _eventBus: EventBusService
     ) {
         super();
         this.multipartUploader = _registeredApplicationService.getMultipartUploader();
@@ -57,6 +61,10 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     }
 
     ngOnInit(): any {
+        this._eventBus.onEvent
+            .filter(event => event.isTypeOf(UpdateMigrationProjectEvent))
+            .subscribe((event: UpdateMigrationProjectEvent) => this.project = event.migrationProject);
+
         this.registrationForm = this._formBuilder.group({
             // Name under which the control is registered, default value, Validator, AsyncValidator
             appPathToRegister: ["", Validators.compose([Validators.required, Validators.minLength(4)]), FileExistsValidator.create(this._fileService)],
@@ -80,7 +88,8 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
             this.multipartUploader.setOptions({
                 url: uploadUrl,
                 method: 'POST',
-                disableMultipart: false
+                disableMultipart: false,
+                removeAfterUpload: true // application is moved to existing applications queue after upload
             });
         });
     }
