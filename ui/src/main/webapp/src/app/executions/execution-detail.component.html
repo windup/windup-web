@@ -59,31 +59,17 @@
                 <dd>{{execution.analysisContext?.migrationPath?.name}}</dd>
             </dl>
 
-            <fieldset *ngIf="execution.analysisContext.includePackages.length > 0" class="fields-section-pf" id="includedPkgsSection">
-                <legend class="fields-section-header-pf" aria-expanded="includedPkgsShow">
-                    <span *ngIf="!includedPkgsShow" class="fa fa-angle-right field-section-toggle-pf"></span>
-                    <span *ngIf="includedPkgsShow" class="fa fa-angle-right field-section-toggle-pf fa-angle-down"></span>
-                    <a (click)="includedPkgsShow = !includedPkgsShow;" class="field-section-toggle-pf" i18n>Included packages</a>
-                </legend>
-                <div [hidden]="!includedPkgsShow" class="form-group">
-                    <ul>
-                        <li *ngFor="let package of execution.analysisContext.includePackages">{{package.fullName}}</li>
-                    </ul>
-                </div>
-            </fieldset>
+            <wu-expand-collapse [tabTitle]="'Include Packages'" *ngIf="execution.analysisContext.includePackages.length > 0">
+                <ul>
+                    <li *ngFor="let package of execution.analysisContext.includePackages">{{package.fullName}}</li>
+                </ul>
+            </wu-expand-collapse>
 
-            <fieldset *ngIf="execution.analysisContext.excludePackages.length > 0" class="fields-section-pf" id="excludedPkgsSection">
-                <legend class="fields-section-header-pf" aria-expanded="excludedPkgsShow">
-                    <span *ngIf="!excludedPkgsShow" class="fa fa-angle-right field-section-toggle-pf"></span>
-                    <span *ngIf="excludedPkgsShow" class="fa fa-angle-right field-section-toggle-pf fa-angle-down"></span>
-                    <a (click)="excludedPkgsShow = !excludedPkgsShow;" class="field-section-toggle-pf" i18n>Excluded packages</a>
-                </legend>
-                <div [hidden]="!excludedPkgsShow" class="form-group">
-                    <ul>
-                        <li *ngFor="let package of execution.analysisContext.excludePackages">{{package.fullName}}</li>
-                    </ul>
-                </div>
-            </fieldset>
+            <wu-expand-collapse [tabTitle]="'Exclude Packages'" *ngIf="execution.analysisContext.excludePackages.length > 0">
+                <ul>
+                    <li *ngFor="let package of execution.analysisContext.excludePackages">{{package.fullName}}</li>
+                </ul>
+            </wu-expand-collapse>
 
         </wu-tab>
         <wu-tab [tabTitle]="'Applications (' + execution.filterApplications.length + ')'">

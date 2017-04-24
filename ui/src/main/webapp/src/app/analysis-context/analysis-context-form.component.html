@@ -32,14 +32,14 @@
             </label>
             <p class="help-block">Check to also assess the cloud readiness of your application(s).</p>
         </div>
-        
-        <!-- Advanced Transformation paths 
+
+        <!-- Advanced Transformation paths
         <fieldset class="fields-section-pf" id="advTransformPathSection">
             <legend class="fields-section-header-pf" aria-expanded="advTransformPathShoww">
                 <span *ngIf="!advTransformPathShow" class="fa fa-angle-right field-section-toggle-pf"></span>
                 <span *ngIf="advTransformPathShow" class="fa fa-angle-right field-section-toggle-pf fa-angle-down"></span>
                 <a (click)="toggleAdvTransformPathOptions()" class="field-section-toggle-pf" i18n>Advanced selection of transformation path</a>
-            </legend>        
+            </legend>
             <div class="form-group" [hidden]="!advTransformPathShow">
                 <label class="control-label required" for="migrationPath" i18n>Advanced transformation path</label>
                 <select #migrationPath="ngModel" id="migrationPath" name="migrationPath" ngControl="migrationPath" class="form-control required"
@@ -67,13 +67,8 @@
             <p class="help-block">Select the Java packages that will be decompiled and analyzed. If no package is selected, all classes will be considered.</p>
         </div>
 
-        <fieldset class="fields-section-pf" id="ExclPackagesSection">
-            <legend (click)="toggleExclPkgOptions()" class="fields-section-header-pf" aria-expanded="excludedPkgShow">
-                <span *ngIf="!excludedPkgShow" class="fa fa-angle-right field-section-toggle-pf"></span>
-                <span *ngIf="excludedPkgShow" class="fa fa-angle-right field-section-toggle-pf fa-angle-down"></span>
-                <a style="cursor: pointer;" class="field-section-toggle-pf" i18n>Exclude some packages</a>
-            </legend>
-            <div [hidden]="!excludedPkgShow" class="form-group">
+        <wu-expand-collapse [tabTitle]="'Exclude some packages'">
+            <div class="form-group">
                 <div>
                     <label class="control-label" i18n>Excluded Packages</label>
                     <strong *ngIf="!packageTreeLoaded"><span class="spinner spinner-xs spinner-inline"></span>Loading...</strong>
@@ -82,41 +77,36 @@
                 </div>
                 <p class="help-block">All classes contained in those packages will be ignored during the analysis.</p>
             </div>
-        </fieldset>
+        </wu-expand-collapse>
 
         <!-- Rulesets selection -->
-        <fieldset class="fields-section-pf" id="CustomRulesetsSection">
-            <legend (click)="toggleCustomRulesetsOptions()" class="fields-section-header-pf" aria-expanded="customRulesetsShow">
-                <span *ngIf="!customRulesetsShow" class="fa fa-angle-right field-section-toggle-pf"></span>
-                <span *ngIf="customRulesetsShow" class="fa fa-angle-right field-section-toggle-pf fa-angle-down"></span>
-                <a style="cursor: pointer;" class="field-section-toggle-pf" i18n>Use local custom rules</a>
-            </legend>
-            <div [hidden]="!customRulesetsShow" class="form-group">
+        <wu-expand-collapse [tabTitle]="'Use local custom rules'">
+            <div class="form-group">
                 <label class="control-label" i18n>Custom rulesets</label>
-                <wu-custom-rule-selection [selectedRulePaths]="analysisContext.rulesPaths" (selectedRulePathsChanged)="rulesPathsChanged($event)">
+                <wu-custom-rule-selection
+                        [selectedRulePaths]="analysisContext.rulesPaths"
+                        (selectedRulePathsChanged)="rulesPathsChanged($event)">
                 </wu-custom-rule-selection>
             </div>
-        </fieldset>
+        </wu-expand-collapse>
 
         <!-- Advanced options -->
-        <fieldset class="fields-section-pf" id="AdvOptSection">
-            <legend (click)="toggleAdvOptions()" class="fields-section-header-pf" aria-expanded="advancedOptionsShow">
-                <span *ngIf="!advancedOptionsShow" class="fa fa-angle-right field-section-toggle-pf"></span>
-                <span *ngIf="advancedOptionsShow" class="fa fa-angle-right field-section-toggle-pf fa-angle-down"></span>
-                <a style="cursor: pointer;" class="field-section-toggle-pf" i18n>Advanced Options</a>
-            </legend>
-            <div [hidden]="!advancedOptionsShow" class="form-group">
+        <wu-expand-collapse [tabTitle]="'Advanced Options'">
+            <div class="form-group">
                 <label *ngIf="!hideUnfinishedFeatures" for="createStaticReports" i18n>
-                    <input id="createStaticReports" name="generateStaticReports" type="checkbox" [(ngModel)]="analysisContext.generateStaticReports">
-                     Create static HTML reports
+                    <input id="createStaticReports" name="generateStaticReports" type="checkbox"
+                           [(ngModel)]="analysisContext.generateStaticReports">
+                    Create static HTML reports
                 </label>
-                 
+
                 <label class="control-label" i18n>Advanced options</label>
-                <wu-analysis-context-advanced-options [(selectedOptions)]="analysisContext.advancedOptions" (advancedOptionsChanged)="advancedOptionsChanged($event)"
+                <wu-analysis-context-advanced-options
+                        [(selectedOptions)]="analysisContext.advancedOptions"
+                        (advancedOptionsChanged)="advancedOptionsChanged($event)"
                         [configurationOptions]="configurationOptions" #advancedOptionsModal>
                 </wu-analysis-context-advanced-options>
             </div>
-        </fieldset>
+        </wu-expand-collapse>
 
         <div class="form-group pull-right">
             <button (click)="cancel()" class="btn btn-default" type="button" i18n>

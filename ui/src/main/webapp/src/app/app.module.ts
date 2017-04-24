@@ -127,6 +127,7 @@ import {ProjectNameNotExistsValidator} from "./shared/validators/project-name-no
 import {PrettyExecutionStatus} from "./shared/pretty-execution-state.pipe";
 import {AlternativeUploadQueueComponent} from "./shared/upload/alternative-upload-queue.component";
 import {AboutPageComponent} from "./misc/about.component";
+import {ExpandCollapseComponent} from "./shared/expand-collapse.component";
 
 /**
  * Load all mapping data from the generated files.
@@ -233,7 +234,8 @@ initializeModelMappingData();
         ExecutionApplicationListComponent,
         PrettyExecutionStatus,
         AlternativeUploadQueueComponent,
-        AboutPageComponent
+        AboutPageComponent,
+        ExpandCollapseComponent
     ],
     providers: [
         appRoutingProviders,

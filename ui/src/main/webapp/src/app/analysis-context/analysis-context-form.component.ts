@@ -81,11 +81,6 @@ private transformationPaths: MigrationPath[] = [
 
 }
 ];
-    excludedPkgShow: boolean = false;
-    advancedOptionsShow: boolean = false;
-    customRulesetsShow: boolean = false;
-    advTransformPathShow: boolean = false;
-
     packageTree: Package[] = [];
 
     packageTreeLoaded: boolean = false;
@@ -335,37 +330,6 @@ private transformationPaths: MigrationPath[] = [
     rulesPathsChanged(rulesPaths: RulesPath[]) {
         this.analysisContext.rulesPaths = rulesPaths;
     }
-
-    toggleAdvOptions() {
-        if (this.advancedOptionsShow) {
-            this.advancedOptionsShow = false;
-        } else {
-            this.advancedOptionsShow = true;
-        }
-    }
-    toggleExclPkgOptions() {
-        if (this.excludedPkgShow) {
-            this.excludedPkgShow = false;
-        } else {
-            this.excludedPkgShow = true;
-        }
-    }
-    toggleCustomRulesetsOptions() {
-        if (this.customRulesetsShow) {
-            this.customRulesetsShow = false;
-        } else {
-            this.customRulesetsShow = true;
-        }
-    }
-
-    toggleAdvTransformPathOptions() {
-        if (this.advTransformPathShow) {
-            this.advTransformPathShow = false;
-        } else {
-            this.advTransformPathShow = true;
-        }
-    }
-
 }
 
 enum Action {
