@@ -150,7 +150,7 @@
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                     <warSourceExcludes>app,config/,src/,tests/,typings/,node_modules/,.gitignore,*.js,*.json,*.html</warSourceExcludes>
                     <delimiters>
-                        <delimiter>$MAVEN{*}</delimiter>
+                        <delimiter>$MAVEN_TOKEN{*}</delimiter>
                     </delimiters>
                     <webResources>
                         <resource>

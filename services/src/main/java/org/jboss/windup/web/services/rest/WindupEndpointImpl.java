@@ -226,7 +226,7 @@ public class WindupEndpointImpl implements WindupEndpoint
                 cachedCoreVersion = "(failed to read)";
             }
         }
-        return cachedCoreVersion;
+        return "\"" + cachedCoreVersion + "\"";
     }
 
     private static String cachedCoreVersion = null;
