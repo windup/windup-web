@@ -59,13 +59,13 @@
                 <dd>{{execution.analysisContext?.migrationPath?.name}}</dd>
             </dl>
 
-            <wu-expand-collapse [tabTitle]="'Include Packages'" *ngIf="execution.analysisContext.includePackages.length > 0">
+            <wu-expand-collapse [tabTitle]="'Included Packages'" *ngIf="execution.analysisContext.includePackages.length > 0">
                 <ul>
                     <li *ngFor="let package of execution.analysisContext.includePackages">{{package.fullName}}</li>
                 </ul>
             </wu-expand-collapse>
 
-            <wu-expand-collapse [tabTitle]="'Exclude Packages'" *ngIf="execution.analysisContext.excludePackages.length > 0">
+            <wu-expand-collapse [tabTitle]="'Excluded Packages'" *ngIf="execution.analysisContext.excludePackages.length > 0">
                 <ul>
                     <li *ngFor="let package of execution.analysisContext.excludePackages">{{package.fullName}}</li>
                 </ul>
