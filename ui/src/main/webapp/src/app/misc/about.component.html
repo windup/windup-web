@@ -29,7 +29,7 @@
 
                             <h2 id="version">Version</h2>
                             <dl class="dl-horizontal left versions">
-                                <dt style="">Red Hat Application Migration Toolkit Core:</dt>
+                                <dt>Red Hat Application Migration Toolkit Core:</dt>
                                 <dd class="ng-binding">{{versionWindupCore}}</dd>
                                 <dt>Red Hat Application Migration Toolkit Web Console:</dt>
                                 <dd class="ng-binding">{{versionWindupWeb}}</dd>  <!-- This will show $MAVEN_TOKEN{project.version} during development, but work from a .war. -->
@@ -76,20 +76,15 @@
 
                             <p class="windup-contributors small">A special <strong>thanks</strong> to our contributors!</p>
 
-                            <div id="windup-contributors"></div>
+                            <div id="windup-contributors">
+                                <p *ngIf="!contributors" i18n="GitHub contributors">Loading...</p>
+                                <a *ngFor="let cont of contributors" data-toggle='tooltip' title="{{cont.login}}" href="{{cont.html_url}}">
+                                    <img class='windupContributor' src="{{cont.avatar_url}}"/>
+                                </a>
+                            </div>
                             <script type="text/javascript">
-                                var divTarget = $("#windup-contributors");
-                                $.getJSON( "https://api.github.com/repos/windup/windup/contributors", function( data ) {
-                                    $.each( data, function( key, val ) {
-                                        $( "<a data-toggle='tooltip' title='"+val.login+"' href='"+val.html_url+"'><img class='windup-contributors' sr"+"c='"+val.avatar_url+"'/></a>").appendTo(divTarget);
-                                    });
-                                });
-
-                                $('[data-toggle="tooltip"]').tooltip({
-                                    'placement': 'top'
-                                });
+                                $('[data-toggle="tooltip"]').tooltip({'placement': 'top'});
                             </script>
-
                         </div>
                     </div>
 
