@@ -97,6 +97,8 @@
         #header-logo {
             text-transform: uppercase;
         }
+
+        .blank-slate-pf { border: none !important; }
     </style>
 
     <div class="navbar">
