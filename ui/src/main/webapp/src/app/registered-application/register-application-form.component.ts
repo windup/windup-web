@@ -163,7 +163,27 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
         }
     }
 
+    /**
+     * Checks if project has any applications
+     *
+     * @returns {boolean}
+     */
+    projectHasApplications() {
+        return (this.project && this.project.applications && this.project.applications.length > 0);
+    }
+
     public get isValid() {
+        /**
+         * If project already has some applications,
+         * form is always valid, no matter of what is filled in.
+         *
+         * This allows us to have 'Back' step in wizard and not requiring
+         * user to upload new application.
+         */
+        if (this.projectHasApplications()) {
+            return true;
+        }
+
         if (this.mode === 'PATH') {
             return this.fileInputPath && this.fileInputPath.length > 0;
         } else if (this.mode === 'UPLOADED') {
