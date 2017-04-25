@@ -21,13 +21,60 @@
 </head>
 
 <body class="cards-pf">
-<windup-app>
+<windup-app> <!--  -->
+
+    <style>
+        .navbar {
+            width: 100%;
+            background-clip: border-box;
+            background-color: rgb(3, 3, 3);
+            background-origin: padding-box;
+            border-color: rgb(54, 54, 54);
+            box-sizing: border-box;
+            color: rgb(54, 54, 54);
+            display: block;
+            font-family: "Open Sans", Helvetica, Arial, sans-serif;
+            font-size: 12px;
+            height: 60px;
+            line-height: 20px;
+            position: fixed;
+            z-index: 1030;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        }
+        #header-logo-wrapper {
+            box-sizing: border-box;
+            color: rgb(209, 209, 209);
+            display: block;
+            font-family: "Open Sans", Helvetica, Arial, sans-serif;
+            font-size: 18px;
+            height: 60px;
+            line-height: 60px;
+            padding-left: 30px;
+            width: 100%;
+            vertical-align: middle;
+        }
+        #header-logo strong {
+            text-transform: uppercase;
+            color: #d1d1d1;
+        }
+
+        .blank-slate-pf { border: none !important; }
+    </style>
+
+    <div class="navbar">
+        <div class="collapse navbar-collapse navbar-collapse-1">
+            <div id="header-logo-wrapper">
+                <div id="header-logo"><strong>Red Hat Application Migration Toolkit</strong> - Web Console</div>
+            </div>
+        </div>
+    </div>
+
     <div id="loading" class="blank-slate-pf">
         <h1>
             Loading...
         </h1>
     </div>
+
 </windup-app>
 </body>
-
 </html>
