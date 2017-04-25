@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -209,4 +210,24 @@ public class WindupEndpointImpl implements WindupEndpoint
         Path reportPath = Paths.get(execution.getOutputPath());
         return this.logService.getLogData(reportPath, MAX_LOG_SIZE);
     }
+
+
+    @Override
+    public String getCoreVersion()
+    {
+        if (cachedCoreVersion == null) {
+            try {
+                Properties props = new Properties();
+                props.load(WindupEndpointImpl.class.getClassLoader().getResourceAsStream("/META-INF/windup-web-services.build.properties"));
+                cachedCoreVersion = props.getProperty("version.windup.core");
+            }
+            catch (IOException ex) {
+                LOG.severe("Couldn't read build.properties.");
+                cachedCoreVersion = "(failed to read)";
+            }
+        }
+        return "\"" + cachedCoreVersion + "\"";
+    }
+
+    private static String cachedCoreVersion = null;
 }
