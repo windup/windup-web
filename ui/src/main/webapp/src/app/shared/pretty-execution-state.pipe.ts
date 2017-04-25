@@ -10,7 +10,7 @@ export class PrettyExecutionStatus implements PipeTransform {
     transform(state: ExecutionState): string {
         switch (state) {
             case "STARTED":
-                return 'In Progress';
+                return 'In progress';
             case "QUEUED":
                 return 'Queued';
             case "COMPLETED":
