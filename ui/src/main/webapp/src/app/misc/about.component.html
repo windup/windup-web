@@ -1,3 +1,8 @@
+<style>
+    dl.versions dt { width: 340px; }
+    dl.versions dd { margin-left: 360px; }
+</style>
+
 <div class="about-page">
 
     <div class="container surface-shaded gutter-top">
@@ -6,20 +11,28 @@
                 <div class="about">
                     <div class="row">
                         <div class="col-md-2 about-icon gutter-top hidden-sm hidden-xs">
+                            <!-- Leave this here, we will eventually get a graphical logo.
                             <img src="../../../img/rhamt-square-248.png" width="172" style="margin-top: -12px;">
+                            -->
                         </div>
                         <div class="col-md-9">
-                            <h1>Red Hat Application Migration Toolkit <span class="about-reg">®</span></h1>
+                            <div class="">
+                                <img src="../../../img/rhamt-3lines-gray.svg" width="100%">
+                            </div>
 
                             <h2>About</h2>
-                            <p><a target="_blank" href="https://developers.redhat.com/products/rhamt/overview/">Red Hat Application Migration Toolkit</a> is Red Hat's toolkit that allows developers to quickly decompile, analyze, assess, and migrate legacy applications from various Java EE platforms to JBoss EAP.</p>
+                            <p>
+                                <a target="_blank" href="https://developers.redhat.com/products/rhamt/overview/">Red Hat Application Migration Toolkit</a>
+                                allows application architects and developers to quickly decompile, analyze, assess
+                                and modernize large scale application portfolios and migrate them to Red Hat Middleware, cloud and containers.
+                            </p>
 
                             <h2 id="version">Version</h2>
-                            <dl class="dl-horizontal left">
+                            <dl class="dl-horizontal left versions">
                                 <dt>Red Hat Application Migration Toolkit Core:</dt>
-                                <dd class="ng-binding">Red Hat Application Migration Toolkit 4.0</dd> <!-- TODO -->
+                                <dd class="ng-binding">{{versionWindupCore}}</dd>
                                 <dt>Red Hat Application Migration Toolkit Web Console:</dt>
-                                <dd class="ng-binding">Red Hat Application Migration Toolkit 4.0</dd>
+                                <dd class="ng-binding">{{versionWindupWeb}}</dd>  <!-- This will show $MAVEN_TOKEN{project.version} during development, but work from a .war. -->
                             </dl>
                             <p>
                                 The <a target="_blank" href="http://red.ht/rhamtgettingstarted">documentation</a>
@@ -57,29 +70,22 @@
                                 <dt>Issues Tracking</dt>
                                 <dd><a href="https://issues.jboss.org/browse/WINDUP">https://issues.jboss.org/browse/WINDUP</a></dd>
                             </dl>
-                        </div>
-                    </div>
 
-                    <div class="row">
-                        <div class="col-md-12">
+
                             <h2>Contributors</h2>
 
-                            <div id="windup-contributors"></div>
                             <p class="windup-contributors small">A special <strong>thanks</strong> to our contributors!</p>
+
+                            <div id="windup-contributors">
+                                <p *ngIf="!contributors" i18n="GitHub contributors">Loading...</p>
+                                <a *ngFor="let cont of contributors" data-toggle='tooltip' title="{{cont.login}}" href="{{cont.html_url}}">
+                                    <img class='windupContributor' src="{{cont.avatar_url}}"/>
+                                </a>
+                            </div>
+                            <script type="text/javascript">
+                                $('[data-toggle="tooltip"]').tooltip({'placement': 'top'});
+                            </script>
                         </div>
-
-                        <script type="text/javascript">
-                            var divTarget = $("#windup-contributors");
-                            $.getJSON( "https://api.github.com/repos/windup/windup/contributors", function( data ) {
-                                $.each( data, function( key, val ) {
-                                    $( "<a data-toggle='tooltip' title='"+val.login+"' href='"+val.html_url+"'><img class='windup-contributors' sr"+"c='"+val.avatar_url+"'/></a>").appendTo(divTarget);
-                                });
-                            });
-
-                            $('[data-toggle="tooltip"]').tooltip({
-                                'placement': 'top'
-                            });
-                        </script>
                     </div>
 
                 </div>

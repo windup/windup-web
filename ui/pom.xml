@@ -149,6 +149,16 @@
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                     <warSourceExcludes>app,config/,src/,tests/,typings/,node_modules/,.gitignore,*.js,*.json,*.html</warSourceExcludes>
+                    <delimiters>
+                        <delimiter>$MAVEN_TOKEN{*}</delimiter>
+                    </delimiters>
+                    <webResources>
+                        <resource>
+                            <directory>src/main/webapp/src/app</directory>
+                            <filtering>true</filtering>
+                            <includes> <include>**/constants.ts</include> </includes>
+                        </resource>
+                    </webResources>
                 </configuration>
             </plugin>
 
