@@ -1,12 +1,17 @@
 <div class="container-fluid wu-frame">
-    <h1>{{title}}</h1>
     <form #projectForm="ngForm" (ngSubmit)="save()" class="form-horizontal wizard-form">
-        <div *ngFor="let errorMessage of errorMessages" class="row form-errors alert alert-danger">
-            <div class="col-md-2">&nbsp;</div>
-            <div class="col-md-10">
-                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> {{errorMessage}}
+
+        <div class="form-group">
+            <h1>{{title}}</h1>
+
+            <div *ngFor="let errorMessage of errorMessages" class="row form-errors alert alert-danger">
+                <div class="col-md-2">&nbsp;</div>
+                <div class="col-md-10">
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> {{errorMessage}}
+                </div>
             </div>
         </div>
+
         <div class="form-group" [ngClass]="{'has-error': titleIsDuplicated(projectTitleControl) || hasError(projectTitleControl)}">
             <label class="control-label" for="idProjectTitle">* Name</label>
             <input #projectTitleControl="ngModel"
