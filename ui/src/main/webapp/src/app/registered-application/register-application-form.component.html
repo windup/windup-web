@@ -78,7 +78,7 @@
     </wu-tab-container>
 
     <div class="form-group">
-        <div class="col-md-offset-10 col-md-2">
+        <div class="col-md-12">
             <div class="button-container">
                 <button (click)="cancelRegistration()" type="button" class="btn btn-default">{{isInWizard ? 'Back' : 'Cancel'}}</button>
                 <button [disabled]="!isValid" class="btn btn-primary" type="submit">{{isInWizard ? 'Next' : labels.uploadButton}}</button>
