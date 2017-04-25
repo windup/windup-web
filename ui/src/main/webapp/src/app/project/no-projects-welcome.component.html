@@ -1,21 +1,23 @@
 <div class="blank-slate-pf" style="border: none;">
-    <h1 i18n="Header">
+    <h1 i18n="no projects page Header" style="margin-bottom: 1.4ex;">
         Welcome to the Web Console.
     </h1>
     <div class="welcome-help-text">
-        <ng-container i18n="Intro text, 1st part">
-            Red Hat Application Migration Toolkit helps you quickly analyse, assess, modernize and migrate applications.<br/>
+
+        <p i18n="no projects page text 1" style="margin-bottom: 0.2ex;">
+            Red Hat Application Migration Toolkit helps you quickly analyse, assess, modernize and migrate applications.
+        </p>
+        <p i18n="no projects page text 2">
             Create a project for your applications.
-        </ng-container>
+        </p>
     </div>
+
     <div class="blank-slate-pf-main-action">
-        <a (click)="newProjectClicked()" class="clickable btn btn-primary btn-lg" i18n="Button">New Project</a>
+        <a (click)="newProjectClicked()" class="clickable btn btn-primary btn-lg" i18n="no projects page Button">New Project</a>
     </div>
 
     <div class="welcome-help-text">
-            <ng-container i18n="Intro text, 2nd part">To learn more, visit the toolkit </ng-container>
-            <a href="http://red.ht/rhamtgettingstarted">
-                <ng-container i18n="Intro text, 2nd part">documentation</ng-container>
-            </a>.
+        <ng-container i18n="Docs link text, 1st part">To learn more, visit the toolkit </ng-container>
+        <a href="http://red.ht/rhamtgettingstarted" i18n="Docs link text, link">documentation</a>.
     </div>
 </div>
