@@ -1,14 +1,11 @@
-<div class="row">
-    <div class="col-md-2">
-        <h1 i18n="Header">Rules Configuration</h1>
-    </div>
-    <div class="col-md-10">
-        <div class="action-button">
+<div class="panel-group">
+    <div>
+        <div class="action-button" style="float: right; margin-top: 0;">
             <button class="btn btn-primary" (click)="displayAddRulesPathForm()">
-                <span class="glyphicon glyphicon-plus"></span>
-                <span i18n>Register Custom Rule Path</span>
+                <span i18="Button">Add</span>
             </button>
         </div>
+        <h1 i18n="Header" style="margin-bottom: 25px">Rules Configuration</h1>
     </div>
 </div>
 
@@ -19,21 +16,30 @@
             <!-- Header for each set of rules. -->
             <div class="panel-heading">
                 <h2 class="panel-title">
-                    <a class="collapsed" data-toggle="collapse" [attr.data-parent]="'#rulePathPanel_' + rulePath.id" href="#collapse_{{rulePath.id}}">
+                    <span style="float: right" class="pointer" (click)="confirmRemoveRules(rulePath)" *ngIf="rulePath.rulesPathType != 'SYSTEM_PROVIDED'">
+                        <span class="glyphicon glyphicon-trash"></span>
+                        <span i18n>Delete</span>
+                    </span>
+                    <a data-toggle="collapse"
+                       class="collapsed"
+                       [attr.data-parent]="'#rulePathPanel_' + rulePath.id"
+                       href="#collapse_{{rulePath.id}}"
+                    >
                         <span i18n>Rules:</span> {{rulePath.rulesPathType == "SYSTEM_PROVIDED" ? "&lt;System Rules&gt;" : rulePath.path}}
                     </a>
                 </h2>
             </div>
 
             <!-- Area that collapses when the header is clicked. -->
-            <div id="collapse_{{rulePath.id}}" class="panel-body panel-collapse collapse">
-                <a class="pointer" (click)="confirmRemoveRules(rulePath)" *ngIf="rulePath.rulesPathType != 'SYSTEM_PROVIDED'">
-                    <span class="glyphicon glyphicon-trash"></span>
-                    <span i18n>Unregister Rules</span>
-                </a>
+            <div id="collapse_{{rulePath.id}}"
+                 class="panel-body panel-collapse collapse {{(rulePath.rulesPathType == 'SYSTEM_PROVIDED') ? 'in' : ''}}"
+            >
+            <!-- Angular doesn't know this attribute. Fortunatelly it works just with the 'in' class.
+                 aria-expanded="{{(rulePath.rulesPathType == 'SYSTEM_PROVIDED') ? 'true' : 'false'}}"
+            -->
 
                 <div *ngIf="!hasFileBasedProviders(rulePath)">
-                    <h3 i18n>This path contains no rules!</h3>
+                    <h3 i18n>Rules are still loading (or there were no rules).</h3>
                 </div>
 
                 <div *ngIf="rulePath.loadError">
@@ -41,7 +47,7 @@
                 </div>
 
                 <!-- List of rules. -->
-                <div class="rulesList list-group list-view-pf list-view-pf-view" *ngIf="hasFileBasedProviders(rulePath)">
+                <div class="rulesList list-group list-view-pf list-view-pf-view" *ngIf="hasFileBasedProviders(rulePath)" style="margin-top: 0px;">
                     <div *ngFor="let ruleProvider of ruleProvidersByPath.get(rulePath)" class="list-group-item">
                         <!-- If we need a checkbox for actions / global disabling.
                         <div class="list-view-pf-checkbox">
@@ -90,7 +96,7 @@
 <wu-confirmation-modal
         #removeRulesConfirmationModal
         [id]="'deleteRulesConfirmationDialog'"
-        [title]="'Unregister Rules?'"
-        [body]="'Unregister rules?'"
+        [title]="'Confirm rule removal'"
+        [body]="'Do you really want to remove the rules from ...?'"
 >
 </wu-confirmation-modal>

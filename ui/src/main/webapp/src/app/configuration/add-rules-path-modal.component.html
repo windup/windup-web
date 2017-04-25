@@ -5,9 +5,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                     <span class="pficon pficon-close"></span>
                 </button>
-                <h4 class="modal-title" id="myModalLabel">
-                    Add Rules Path
-                </h4>
+                <h4 class="modal-title" id="myModalLabel"> Add rules </h4>
             </div>
             <div class="modal-body">
                 <form [formGroup]="addRulesPathForm">
@@ -16,13 +14,18 @@
                         {{errorMessage}}
                     </div>
                     <div class="form-group" [ngClass]="{'has-error': hasError(addRulesPathForm.get('inputPathControl'))}">
-                        <label class="control-label" for="addRulesPathInput">Rules Path (file or directory):</label>
+                        <label class="control-label" for="addRulesPathInput">Rules Path (file or directory)</label>
                         <input
                                 [(ngModel)]="inputPath"
                                 formControlName="inputPathControl"
                                 type="text"
                                 id="addRulesPathInput"
-                                class="form-control">
+                                class="form-control"
+                                placeholder="/opt/rules or /opt/rules/my-rules.windup.xml"
+                        >
+                        <div>
+                            Path to the file or folder containing the rule(s).
+                        </div>
                         <span [class.hidden]="!hasError(addRulesPathForm.get('inputPathControl'))" class="help-block">
                             The path must exist on the server.
                         </span>
@@ -31,7 +34,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-default" (click)="addPath()">Add</button>
+                <button type="button" class="btn btn-primary" (click)="addPath()">Add</button>
             </div>
         </div>
     </div>
