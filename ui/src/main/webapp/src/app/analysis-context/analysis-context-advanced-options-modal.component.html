@@ -19,7 +19,7 @@
             {{selectedOption.value}}
         </td>
         <td *ngIf="!isReadOnly">
-            <button (click)="removeAdvancedOption(i)" class="btn btn-warning" href="#">Delete</button>
+            <button (click)="removeAdvancedOption(i)" class="btn btn-default" href="#">Delete</button>
         </td>
     </tr>
     <tr *ngIf="newOption">
@@ -40,11 +40,13 @@
             </div>
         </td>
         <td>
-            <button (click)="addAdvancedOption($event)" class="btn btn-default">Add</button>
-            <button (click)="cancelAddAdvancedOption($event)" class="btn btn-default">Cancel</button>
+            <button (click)="addAdvancedOption($event)" class="btn btn-default" i18n>Add</button>
+            <button (click)="cancelAddAdvancedOption($event)" class="btn btn-default" i18n>Cancel</button>
         </td>
     </tr>
     </tbody>
 </table>
-<button *ngIf="!newOption && !isReadOnly" (click)="startAddNew()" class="btn btn-default">Add option</button>
-<p class="help-block">You can specify any advanced options you know from CLI tool here.</p>
+
+<button *ngIf="!newOption && !isReadOnly" (click)="startAddNew()" class="btn btn-default" i18n="button">Add option</button>
+
+<p class="help-block">Advanced options available in the CLI analyzer can be specified here.</p>

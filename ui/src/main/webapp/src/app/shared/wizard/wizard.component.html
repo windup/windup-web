@@ -1,3 +1,10 @@
+<style>
+    /deep/ .wizard-content div .wu-frame {
+        margin-left: 0;
+        margin-right: 0;
+    }
+</style>
+
 <ul class="steps-container">
     <li class="steps" *ngFor="let step of wizardSteps" [ngClass]="{'active': step?.name === currentStep?.name}">
         <span>

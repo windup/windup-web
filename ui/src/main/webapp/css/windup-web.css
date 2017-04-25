@@ -10,6 +10,10 @@
     padding-top: 60px;
 }
 
+.wizard-content .container-fluid {
+    padding-top: 0px;
+}
+
 table.datatable, table.dataTable {
     height: unset;
 }
@@ -120,14 +124,12 @@ td {
 }
 
 .container-fluid .wu-frame {
-    background: #EDF1F2;
+    background: #e8e8e8;
     margin-left: 20px !important;
     margin-right: 20px !important;
     margin-bottom: 2px !important;
-    border-style: solid;
-    border-width: 10px;
-    border-radius: 5%;
-    border-color: #EDF1F2;
+
+    padding-top: 0; /* override */
 }
 
 form .wizard-form {
@@ -135,8 +137,14 @@ form .wizard-form {
     padding-right: 10px;
 }
 
+label.required {
+}
 label.required:before {
-    content: '* ';
+    content: '*';
+    position: relative;
+    left: -2ex;
+    float: left;
+    width: 0;
 }
 
 fieldset.fields-section-pf {

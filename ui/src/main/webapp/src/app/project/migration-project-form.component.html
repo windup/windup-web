@@ -1,40 +1,45 @@
 <div class="container-fluid wu-frame">
-    <h1>{{title}}</h1>
     <form #projectForm="ngForm" (ngSubmit)="save()" class="form-horizontal wizard-form">
-        <div *ngFor="let errorMessage of errorMessages" class="row form-errors alert alert-danger">
-            <div class="col-md-2">&nbsp;</div>
-            <div class="col-md-10">
-                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> {{errorMessage}}
+
+        <div class="form-group">
+            <h1>{{title}}</h1>
+
+            <div *ngFor="let errorMessage of errorMessages" class="row form-errors alert alert-danger">
+                <div class="col-md-2">&nbsp;</div>
+                <div class="col-md-10">
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> {{errorMessage}}
+                </div>
             </div>
         </div>
+
         <div class="form-group" [ngClass]="{'has-error': titleIsDuplicated(projectTitleControl) || hasError(projectTitleControl)}">
-            <label class="control-label" for="idProjectTitle">* Name</label>
+            <label class="control-label required" for="idProjectTitle">Name</label>
             <input #projectTitleControl="ngModel"
                    name="projectTitle"
                    id="idProjectTitle"
                    [(ngModel)]="model.title"
                    required
                    wuProjectNameNotUsed
-                   pattern=".*[^\s].*"
+                   pattern="\s*[^\s]\s*"
                    minlength="1"
-                   maxlength="128"
+                   maxlength="120"
                    [project]="model"
                    type="text"
                    placeholder="my-project"
                    class="form-control">
-            <p [class.hidden]="titleIsDuplicated(projectTitleControl)" class="help-block" >A unique name for project</p>
-            <span [class.hidden]="!titleIsDuplicated(projectTitleControl)" class="help-block">
-                Project Name must be unique
-            </span>
+            <p class="help-block" i18n="hint">A unique name for the project</p>
+            <span [class.hidden]="!titleIsDuplicated(projectTitleControl)" class="help-block" i18n="valid. error"> The entered name is already in use. </span>
         </div>
+
         <div class="form-group">
             <label class="control-label" for="idDescription">Description</label>
-            <textarea name="description" id="idDescription" class="form-control" placeholder="A short description of project" [rows]="getDescriptionHeight()"
+            <textarea name="description" id="idDescription" name="idDescription" class="form-control" i18n="placeholder" placeholder="A short description of the project." [rows]="getDescriptionHeight()"
                 #controlDescription="ngModel" [(ngModel)]="model.description"></textarea>
             <span [class.hidden]="!hasError(controlDescription)" class="help-block">
                 The description must contain fewer than 4096 characters.
             </span>
         </div>
+
         <div class="form-group pull-right">
             <button (click)="cancel()" type="button" class="btn btn-default" i18n="Cancel button">Cancel</button>
             <button class="btn btn-primary" type="submit" [disabled]="!projectForm.form.pending && !projectForm.form.valid">

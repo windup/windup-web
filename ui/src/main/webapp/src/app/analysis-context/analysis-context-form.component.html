@@ -19,7 +19,7 @@
             <div>
                 <ng-container *ngFor="let transformationPath of transformationPaths">
                     <label class="radio-inline control-label" style="padding-left: 20px; padding-right: 40px;">
-                        <input type="radio" name="migrationPath" #migrationPath="ngModel"
+                        <input type="radio" id="migrationPath" name="migrationPath" #migrationPath="ngModel"
                             [(ngModel)]="analysisContext.migrationPath.id" ngControl="migrationPath" [value]="transformationPath.id"/>
                         {{ transformationPath.name }}
                     </label>
@@ -60,7 +60,7 @@
 
         <!-- Packages -->
         <div class="form-group">
-            <label class="control-label" i18n>Included Packages</label>
+            <label class="control-label" i18n>Included packages</label>
             <strong *ngIf="!packageTreeLoaded"><span class="spinner spinner-xs spinner-inline"></span>Loading...</strong>
             <wu-js-tree-wrapper [treeNodes]="packageTree" [(selectedNodes)]="analysisContext.includePackages">
             </wu-js-tree-wrapper>
