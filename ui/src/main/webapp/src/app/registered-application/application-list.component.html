@@ -2,11 +2,11 @@
     <wu-active-executions-progressbar [activeExecutions]="activeExecutions"></wu-active-executions-progressbar>
 
     <div class="header-bar">
-        <h2>Applications of project {{project?.title || "loading..."}}</h2>
+        <h2>Applications</h2>
         <div class="search-and-create">
             <wu-search [(searchValue)]="searchText" (searchValueChange)="updateSearch()"></wu-search>
             <div class="button-container">
-                <button (click)="registerApplication()" class="btn btn-primary" type="button">Register Application</button>
+                <button (click)="registerApplication()" class="btn btn-primary" type="button">Add</button>
             </div>
         </div>
     </div>
