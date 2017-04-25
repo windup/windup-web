@@ -2,11 +2,11 @@
     <wu-active-executions-progressbar [activeExecutions]="activeExecutions"></wu-active-executions-progressbar>
 
     <div class="header-bar">
-        <h2>Applications of project {{project?.title || "loading..."}}</h2>
+        <h2>Applications</h2>
         <div class="search-and-create">
             <wu-search [(searchValue)]="searchText" (searchValueChange)="updateSearch()"></wu-search>
             <div class="button-container">
-                <button (click)="registerApplication()" class="btn btn-primary" type="button">Register Application</button>
+                <button (click)="registerApplication()" class="btn btn-primary" type="button">Add</button>
             </div>
         </div>
     </div>
@@ -25,11 +25,14 @@
                 <td>{{app.title}}</td>
                 <td>{{app.lastModified | date: 'short' }}</td>
                 <td>
-                    <span class="fa-lg action-item" i18n-title="Edit application" title="Edit">
+                    <!--
+                    (jsight - 2017/04/25 - Editing is too complicated, remove for now :)
+
+                    span class="fa-lg action-item" i18n-title="Edit application" title="Edit">
                         <a (click)="editApplication(app)" class="action-button">
                             <i class="fa fa-pencil"></i>
                         </a>
-                    </span>
+                    </span -->
                     <span class="fa-lg action-item" i18n-title="Delete application" title="Delete">
                         <a (click)="confirmDeleteApplication(app)"  class="action-button">
                             <i class="fa fa-trash-o"></i>

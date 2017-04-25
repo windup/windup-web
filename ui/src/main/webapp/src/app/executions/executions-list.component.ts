@@ -59,7 +59,7 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
             this.doDeleteExecution(execution);
         });
 
-        this.currentTimeTimer = setInterval(() => {
+        this.currentTimeTimer = <any> setInterval(() => {
             this.currentTime = new Date().getTime();
         }, 5000);
     }
@@ -107,7 +107,7 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
     doCancelExecution(execution: WindupExecution) {
         this._windupService.cancelExecution(execution).subscribe(
             success => {
-                this._notificationService.success('Analysis was successfully cancelled.');
+                this._notificationService.success(`The analysis #${execution.id} was cancelled.`);
                 this.reloadRequestEvent.emit(true);
             },
             error => this._notificationService.error(utils.getErrorMessage(error))
@@ -125,7 +125,7 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
     doDeleteExecution(execution:WindupExecution) {
         this._windupService.deleteExecution(execution).subscribe(
             success => {
-                this._notificationService.success('Execution was successfully deleted.');
+                this._notificationService.success(`The analysis #${execution.id} was deleted.`);
                 this.reloadRequestEvent.emit(true);
             },
             error => this._notificationService.error(utils.getErrorMessage(error))

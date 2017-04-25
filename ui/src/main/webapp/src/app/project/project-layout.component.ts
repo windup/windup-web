@@ -68,7 +68,7 @@ export class ProjectLayoutComponent extends RoutedComponent implements OnInit, O
     protected createContextMenuItems() {
         this.menuItems = [
             {
-                label: 'View Project',
+                label: 'Analysis',
                 link: this._routeLinkProviderService.getRouteForComponent(ProjectExecutionsComponent, { projectId: this.project.id }),
                 icon: 'fa-tachometer',
                 isEnabled: true

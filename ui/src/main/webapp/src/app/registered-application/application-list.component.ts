@@ -102,7 +102,7 @@ export class ApplicationListComponent extends ExecutionsMonitoringComponent impl
 
     public doDeleteApplication(application: RegisteredApplication) {
         this._registeredApplicationsService.deleteApplication(this.project, application).subscribe(
-            () => this._notificationService.success('Application was successfully deleted'),
+            () => this._notificationService.success(`The application ‘${application.title}’ was deleted.`),
             error => this._notificationService.error(utils.getErrorMessage(error))
         );
     }
@@ -110,7 +110,7 @@ export class ApplicationListComponent extends ExecutionsMonitoringComponent impl
     public confirmDeleteApplication(application: RegisteredApplication) {
         this.deleteAppDialog.data = application;
         this.deleteAppDialog.title = 'Confirm application deletion';
-        this.deleteAppDialog.body = `Do you really want to delete application ${application.title}?`;
+        this.deleteAppDialog.body = `Do you really want to delete the “${application.title}” application?`;
 
         this.deleteAppDialog.show();
     }
