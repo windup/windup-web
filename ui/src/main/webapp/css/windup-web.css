@@ -124,10 +124,8 @@ td {
     margin-left: 20px !important;
     margin-right: 20px !important;
     margin-bottom: 2px !important;
-    border-style: solid;
-    border-width: 10px;
-    border-radius: 5%;
-    border-color: #EDF1F2;
+
+    padding-top: 0; /* override */
 }
 
 form .wizard-form {
