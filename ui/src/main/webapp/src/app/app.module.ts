@@ -128,6 +128,7 @@ import {PrettyExecutionStatus} from "./shared/pretty-execution-state.pipe";
 import {AlternativeUploadQueueComponent} from "./shared/upload/alternative-upload-queue.component";
 import {AboutPageComponent} from "./misc/about.component";
 import {ExpandCollapseComponent} from "./shared/expand-collapse.component";
+import {ApplicationQueueListComponent} from "./registered-application/application-queue-list.component";
 
 /**
  * Load all mapping data from the generated files.
@@ -235,7 +236,8 @@ initializeModelMappingData();
         PrettyExecutionStatus,
         AlternativeUploadQueueComponent,
         AboutPageComponent,
-        ExpandCollapseComponent
+        ExpandCollapseComponent,
+        ApplicationQueueListComponent
     ],
     providers: [
         appRoutingProviders,
