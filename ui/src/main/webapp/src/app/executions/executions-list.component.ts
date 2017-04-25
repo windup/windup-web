@@ -98,7 +98,7 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
 
     cancelExecution(execution: WindupExecution) {
         this.cancelExecutionDialog.data = execution;
-        this.cancelExecutionDialog.title = 'Confirm cancel Analysis';
+        this.cancelExecutionDialog.title = 'Confirm cancel analysis';
         this.cancelExecutionDialog.body = `Do you really want to cancel the analysis #${execution.id}?`;
 
         this.cancelExecutionDialog.show();
