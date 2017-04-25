@@ -16,9 +16,8 @@
             <!-- Header for each set of rules. -->
             <div class="panel-heading">
                 <h2 class="panel-title">
-                    <span style="float: right" class="pointer" (click)="confirmRemoveRules(rulePath)" *ngIf="rulePath.rulesPathType != 'SYSTEM_PROVIDED'">
+                    <span style="float: right" class="pointer" (click)="confirmRemoveRules(rulePath)" *ngIf="rulePath.rulesPathType != 'SYSTEM_PROVIDED'" title="Delete">
                         <span class="glyphicon glyphicon-trash"></span>
-                        <span i18n>Delete</span>
                     </span>
                     <a data-toggle="collapse"
                        class="collapsed"
