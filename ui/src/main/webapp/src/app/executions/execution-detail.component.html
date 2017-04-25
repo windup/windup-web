@@ -67,7 +67,7 @@
                 </ul>
             </wu-expand-collapse>
 
-            <wu-expand-collapse [tabTitle]="'Advanced options'" *ngIf="execution.analysisContext.advancedOptions.length > 0">
+            <wu-expand-collapse [isActive]="true" [tabTitle]="'Advanced options'" *ngIf="execution.analysisContext.advancedOptions.length > 0">
                 <wu-analysis-context-advanced-options
                         [(selectedOptions)]="execution.analysisContext.advancedOptions"
                         [isReadOnly]="true">
