@@ -13,7 +13,7 @@
         </div>
 
         <div class="form-group" [ngClass]="{'has-error': titleIsDuplicated(projectTitleControl) || hasError(projectTitleControl)}">
-            <label class="control-label" for="idProjectTitle">* Name</label>
+            <label class="control-label required" for="idProjectTitle">Name</label>
             <input #projectTitleControl="ngModel"
                    name="projectTitle"
                    id="idProjectTitle"
@@ -33,7 +33,7 @@
 
         <div class="form-group">
             <label class="control-label" for="idDescription">Description</label>
-            <textarea name="description" id="idDescription" class="form-control" i18n="placeholder" placeholder="A short description of the project." [rows]="getDescriptionHeight()"
+            <textarea name="description" id="idDescription" name="idDescription" class="form-control" i18n="placeholder" placeholder="A short description of the project." [rows]="getDescriptionHeight()"
                 #controlDescription="ngModel" [(ngModel)]="model.description"></textarea>
             <span [class.hidden]="!hasError(controlDescription)" class="help-block">
                 The description must contain fewer than 4096 characters.

@@ -133,8 +133,14 @@ form .wizard-form {
     padding-right: 10px;
 }
 
+label.required {
+}
 label.required:before {
-    content: '* ';
+    content: '*';
+    position: relative;
+    left: -2ex;
+    float: left;
+    width: 0;
 }
 
 fieldset.fields-section-pf {
