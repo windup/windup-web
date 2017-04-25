@@ -20,14 +20,14 @@
                    [(ngModel)]="model.title"
                    required
                    wuProjectNameNotUsed
-                   pattern=".*[^\s].*"
-                   minlength="1"
-                   maxlength="128"
+                   pattern="\s*[ 一-龠ぁ-ゔァ-ヴーa-zA-Z0-9ａ-ｚＡ-Ｚ０-９々〆〤]+\s*"
+                   minlength="3"
+                   maxlength="120"
                    [project]="model"
                    type="text"
                    placeholder="my-project"
                    class="form-control">
-            <p class="help-block" i18n="hint">A unique name for the project</p>
+            <p class="help-block" i18n="hint">A unique name for the project, 3 to 120 characters</p>
             <span [class.hidden]="!titleIsDuplicated(projectTitleControl)" class="help-block" i18n="valid. error"> The entered name is already in use. </span>
         </div>
 
