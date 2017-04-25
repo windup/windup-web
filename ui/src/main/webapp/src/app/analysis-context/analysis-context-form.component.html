@@ -60,7 +60,7 @@
 
         <!-- Packages -->
         <div class="form-group">
-            <label class="control-label" i18n>Included Packages</label>
+            <label class="control-label" i18n>Included packages</label>
             <strong *ngIf="!packageTreeLoaded"><span class="spinner spinner-xs spinner-inline"></span>Loading...</strong>
             <wu-js-tree-wrapper [treeNodes]="packageTree" [(selectedNodes)]="analysisContext.includePackages">
             </wu-js-tree-wrapper>
