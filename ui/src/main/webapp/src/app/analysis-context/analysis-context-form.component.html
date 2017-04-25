@@ -19,7 +19,7 @@
             <div>
                 <ng-container *ngFor="let transformationPath of transformationPaths">
                     <label class="radio-inline control-label" style="padding-left: 20px; padding-right: 40px;">
-                        <input type="radio" id="migrationPath" #migrationPath="ngModel"
+                        <input type="radio" id="migrationPath" name="migrationPath" #migrationPath="ngModel"
                             [(ngModel)]="analysisContext.migrationPath.id" ngControl="migrationPath" [value]="transformationPath.id"/>
                         {{ transformationPath.name }}
                     </label>

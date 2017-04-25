@@ -40,11 +40,13 @@
             </div>
         </td>
         <td>
-            <button (click)="addAdvancedOption($event)" class="btn btn-default">Add</button>
-            <button (click)="cancelAddAdvancedOption($event)" class="btn btn-default">Cancel</button>
+            <button (click)="addAdvancedOption($event)" class="btn btn-default" i18n="button in analysis context advanced options">Add</button>
+            <button (click)="cancelAddAdvancedOption($event)" class="btn btn-default" i18n="button in  analysis context advanced options">Cancel</button>
         </td>
     </tr>
     </tbody>
 </table>
-<button *ngIf="!newOption && !isReadOnly" (click)="startAddNew()" class="btn btn-default">Add option</button>
+
+<button *ngIf="!newOption && !isReadOnly" (click)="startAddNew()" class="btn btn-default" i18n="button">Add option</button>
+
 <p class="help-block">You can specify any advanced options you know from CLI tool here.</p>
