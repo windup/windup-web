@@ -7,6 +7,10 @@ $border-color-active: #088CCE;
 $font-color: grey;
 $font-color-active: white;
 
+.wizard-content .wu-frame {
+    background-color: #F3F3F3;
+}
+
 @media(min-width: 1200px) {
     .steps-container {
         width: 1000px;
