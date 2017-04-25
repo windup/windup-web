@@ -148,15 +148,28 @@
                 <version>3.0.0</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
-                    <warSourceExcludes>app,config/,src/,tests/,typings/,node_modules/,.gitignore,*.js,*.json,*.html</warSourceExcludes>
+                    <warSourceExcludes>
+                        app,
+                        config/,
+                        src/,
+                        tests/,
+                        typings/,
+                        node_modules/,
+                        .gitignore,
+                        *.js,
+                        version/,
+                        *.json,
+                        *.html</warSourceExcludes>
                     <delimiters>
                         <delimiter>$MAVEN_TOKEN{*}</delimiter>
                     </delimiters>
                     <webResources>
                         <resource>
-                            <directory>src/main/webapp/src/app</directory>
+                            <directory>src/main/webapp/</directory>
                             <filtering>true</filtering>
-                            <includes> <include>**/constants.ts</include> </includes>
+                            <includes>
+                                <include>**/version.properties.js</include>
+                            </includes>
                         </resource>
                     </webResources>
                 </configuration>
