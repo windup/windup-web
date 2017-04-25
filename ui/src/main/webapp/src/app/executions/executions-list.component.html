@@ -47,10 +47,10 @@
                     [routerLink]="['/projects', execution.projectId, 'reports', execution.id]">View Reports</a>
             -->
             <a *ngIf="execution.state == 'COMPLETED' && execution?.analysisContext?.generateStaticReports" class="pointer link" target="_blank" href="{{formatStaticReportUrl(execution)}}">
-                <i class="fa fa-bar-chart"></i>
+                <i class="fa fa-bar-chart fa-fw"></i>
             </a>
             <a *ngIf="execution.state != 'STARTED' && execution.state != 'QUEUED'" class="pointer link" (click)="confirmDeleteExecution(execution)">
-                <i class="fa fa-trash-o"></i>
+                <i class="fa fa-trash-o fa-fw"></i>
             </a>
         </td>
     </tr>

@@ -19,7 +19,7 @@
             {{selectedOption.value}}
         </td>
         <td *ngIf="!isReadOnly">
-            <button (click)="removeAdvancedOption(i)" class="btn-warning" href="#">Delete</button>
+            <button (click)="removeAdvancedOption(i)" class="btn btn-warning" href="#">Delete</button>
         </td>
     </tr>
     <tr *ngIf="newOption">
@@ -46,5 +46,5 @@
     </tr>
     </tbody>
 </table>
-<button *ngIf="!newOption && !isReadOnly" (click)="startAddNew()" class="btn btn-default">Add New Option</button>
+<button *ngIf="!newOption && !isReadOnly" (click)="startAddNew()" class="btn btn-default">Add option</button>
 <p class="help-block">You can specify any advanced options you know from CLI tool here.</p>
