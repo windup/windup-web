@@ -99,7 +99,7 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
     cancelExecution(execution: WindupExecution) {
         this.cancelExecutionDialog.data = execution;
         this.cancelExecutionDialog.title = 'Confirm cancel Analysis';
-        this.cancelExecutionDialog.body = `Do you really want to cancel analysis ${execution.id}?`;
+        this.cancelExecutionDialog.body = `Do you really want to cancel the analysis #${execution.id}?`;
 
         this.cancelExecutionDialog.show();
     }
@@ -117,7 +117,7 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
     confirmDeleteExecution(execution: WindupExecution) {
         this.deleteExecutionDialog.data = execution;
         this.deleteExecutionDialog.title = 'Confirm analysis deletion';
-        this.deleteExecutionDialog.body = `Do you really want to delete analysis ${execution.id}?`;
+        this.deleteExecutionDialog.body = `Do you really want to delete the analysis #${execution.id}?`;
 
         this.deleteExecutionDialog.show();
     }
