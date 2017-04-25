@@ -16,7 +16,7 @@
             <!-- Header for each set of rules. -->
             <div class="panel-heading">
                 <h2 class="panel-title">
-                    <span style="float: right" class="pointer" (click)="confirmRemoveRules(rulePath)" *ngIf="rulePath.rulesPathType == 'SYSTEM_PROVIDED'">
+                    <span style="float: right" class="pointer" (click)="confirmRemoveRules(rulePath)" *ngIf="rulePath.rulesPathType != 'SYSTEM_PROVIDED'">
                         <span class="glyphicon glyphicon-trash"></span>
                         <span i18n>Delete</span>
                     </span>
@@ -96,7 +96,7 @@
 <wu-confirmation-modal
         #removeRulesConfirmationModal
         [id]="'deleteRulesConfirmationDialog'"
-        [title]="'Unregister Rules?'"
-        [body]="'Unregister rules?'"
+        [title]="'Confirm rule removal'"
+        [body]="'Do you really want to remove the rules from ...?'"
 >
 </wu-confirmation-modal>
