@@ -63,4 +63,10 @@ public interface WindupEndpoint
     @Path("executions/{executionId}")
     void deleteExecution(@PathParam("executionId") Long executionID);
 
+    /**
+     * The Windup Core version.
+     */
+    @GET
+    @Path("coreVersion")
+    String getCoreVersion();
 }

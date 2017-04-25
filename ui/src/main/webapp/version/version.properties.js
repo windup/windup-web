@@ -1,0 +1,1 @@
+window.windupWebVersion = '$MAVEN_TOKEN{project.version}';
