@@ -38,7 +38,7 @@
             -->
 
                 <div *ngIf="!hasFileBasedProviders(rulePath)">
-                    <h3 i18n>Rules are still loading (or there were no rules).</h3>
+                    <h3 i18n>No rule found.</h3>
                 </div>
 
                 <div *ngIf="rulePath.loadError">
