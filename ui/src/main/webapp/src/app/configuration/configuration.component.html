@@ -16,6 +16,10 @@
             <!-- Header for each set of rules. -->
             <div class="panel-heading">
                 <h2 class="panel-title">
+                    <span style="float: right" class="pointer" (click)="confirmRemoveRules(rulePath)" *ngIf="rulePath.rulesPathType == 'SYSTEM_PROVIDED'">
+                        <span class="glyphicon glyphicon-trash"></span>
+                        <span i18n>Delete</span>
+                    </span>
                     <a data-toggle="collapse"
                        class="collapsed"
                        [attr.data-parent]="'#rulePathPanel_' + rulePath.id"
@@ -33,10 +37,6 @@
             <!-- Angular doesn't know this attribute. Fortunatelly it works just with the 'in' class.
                  aria-expanded="{{(rulePath.rulesPathType == 'SYSTEM_PROVIDED') ? 'true' : 'false'}}"
             -->
-                <a class="pointer" (click)="confirmRemoveRules(rulePath)" *ngIf="rulePath.rulesPathType != 'SYSTEM_PROVIDED'">
-                    <span class="glyphicon glyphicon-trash"></span>
-                    <span i18n>Unregister Rules</span>
-                </a>
 
                 <div *ngIf="!hasFileBasedProviders(rulePath)">
                     <h3 i18n>Rules are still loading (or there were no rules).</h3>
