@@ -5,9 +5,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                     <span class="pficon pficon-close"></span>
                 </button>
-                <h4 class="modal-title" id="myModalLabel">
-                    Add Rules Path
-                </h4>
+                <h4 class="modal-title" id="myModalLabel"> Add rules </h4>
             </div>
             <div class="modal-body">
                 <form [formGroup]="addRulesPathForm">
@@ -22,7 +20,9 @@
                                 formControlName="inputPathControl"
                                 type="text"
                                 id="addRulesPathInput"
-                                class="form-control">
+                                class="form-control"
+                                placeholder="/opt/rules or /opt/rules/my-rules.windup.xml"
+                        >
                         <span [class.hidden]="!hasError(addRulesPathForm.get('inputPathControl'))" class="help-block">
                             The path must exist on the server.
                         </span>
