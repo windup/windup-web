@@ -49,38 +49,43 @@ export class AnalysisContextFormComponent extends FormComponent
     excludePackages: Package[];
     hideUnfinishedFeatures: boolean = WINDUP_WEB.config.hideUnfinishedFeatures;
 
-private transformationPaths: MigrationPath[] = [
-{    "id": 100,
-    "name": "Migration to Red Hat JBoss EAP 6",
-    "source": null,
-    "target": {
-        "id": 3,
-        "version": 0,
-        "name": "eap",
-        "versionRange": "[6]"
-    }
-},
-{    "id": 101,
-    "name": "Migration to Red Hat JBoss EAP 7",
-    "source": null,
-    "target": {
-        "id": 4,
-        "version": 0,
-        "name": "eap",
-        "versionRange": "[7]"
-    }},
- {    "id": 102,
-    "name": "None",
-    "source": null,
-    "target": {
-        "id": 5,
-        "version": 0,
-        "name": "cloud-readiness",
-        "versionRange": null
-    }
+    private transformationPaths: MigrationPath[] = [
+        {
+            "id": 101,
+            "name": "Migration to Red Hat JBoss EAP 7",
+            "source": null,
+            "target": {
+                "id": 4,
+                "version": 0,
+                "name": "eap",
+                "versionRange": "[7]"
+            }
+        },
+        {
+            "id": 100,
+            "name": "Migration to Red Hat JBoss EAP 6",
+            "source": null,
+            "target": {
+                "id": 3,
+                "version": 0,
+                "name": "eap",
+                "versionRange": "[6]"
+            }
+        },
+        {
+            "id": 102,
+            "name": "None",
+            "source": null,
+            "target": {
+                "id": 5,
+                "version": 0,
+                "name": "cloud-readiness",
+                "versionRange": null
+            }
 
-}
-];
+        }
+    ];
+
     packageTree: Package[] = [];
 
     packageTreeLoaded: boolean = false;
