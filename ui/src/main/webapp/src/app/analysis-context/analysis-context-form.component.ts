@@ -301,7 +301,6 @@ export class AnalysisContextFormComponent extends FormComponent
         if (this.action === Action.SaveAndRun) {
             this._windupExecutionService.execute(analysisContext, this.project)
                 .subscribe(execution => {
-                    this._notificationService.success('Windup execution has started');
                     this._router.navigate([`/projects/${this.project.id}`]);
                 },
                 error => {
