@@ -1,5 +1,8 @@
 package org.jboss.windup.web.services.service;
 
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -11,7 +14,6 @@ import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.MigrationProject;
-import org.jboss.windup.web.services.model.RegisteredApplication;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +22,6 @@ import java.nio.file.Files;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.logging.Level;
@@ -29,6 +30,7 @@ import java.util.logging.Logger;
 /**
  * @author <a href="mailto:dklingenberg@gmail.com">David Klingenberg</a>
  */
+@Stateless
 public class MigrationProjectService
 {
     private static Logger LOG = Logger.getLogger(MigrationProjectService.class.getSimpleName());
@@ -96,9 +98,12 @@ public class MigrationProjectService
         return project;
     }
 
-    @Transactional
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void deleteProject(MigrationProject project)
     {
+        // Reload to insure we have the latest version
+        project = this.entityManager.find(MigrationProject.class, project.getId());
+
         /* TODO: This is workaround to remove report filters
            For some reason filter didn't get removed even though
            both WindupExecution and ReportFilter have cascade REMOVE set....

@@ -8,7 +8,7 @@ import {Observable} from "rxjs";
 import {isNumber} from "util";
 import {
     MigrationProjectEvent, NewExecutionStartedEvent, ExecutionUpdatedEvent,
-    ApplicationRegisteredEvent, ApplicationDeletedEvent, UpdateMigrationProjectEvent
+    ApplicationRegisteredEvent, ApplicationDeletedEvent, UpdateMigrationProjectEvent, DeleteMigrationProjectEvent
 } from "../core/events/windup-event";
 import {EventBusService} from "../core/events/event-bus.service";
 import {AnalysisContext} from "windup-services";
@@ -100,6 +100,7 @@ export class MigrationProjectService extends AbstractService {
 
         return this._http.delete(Constants.REST_BASE + this.DELETE_MIGRATION_PROJECT_URL, options)
             .map(res => res.json())
+            .do(res => this._eventBus.fireEvent(new DeleteMigrationProjectEvent(migrationProject, this)))
             .catch(this.handleError);
     }
 

@@ -6,7 +6,7 @@ import {WindupService} from "./windup.service";
 import {EventBusService} from "../core/events/event-bus.service";
 import {
     ExecutionUpdatedEvent,
-    ExecutionCompletedEvent, NewExecutionStartedEvent
+    ExecutionCompletedEvent, NewExecutionStartedEvent, DeleteMigrationProjectEvent
 } from "../core/events/windup-event";
 import {SchedulerService} from "../shared/scheduler.service";
 import {AnalysisContext} from "windup-services";
@@ -23,6 +23,22 @@ export class WindupExecutionService extends AbstractService {
     constructor(private _windupService: WindupService, private _eventBus: EventBusService, private _scheduler: SchedulerService) {
         super();
         this._scheduler.setInterval(() => this.checkExecutions(),  WindupExecutionService.CHECK_EXECUTIONS_INTERVAL);
+
+        this._eventBus.onEvent.filter(event => event.source !== this)
+            .filter(event => event.isTypeOf(DeleteMigrationProjectEvent))
+            .subscribe((event: DeleteMigrationProjectEvent) => this.stopWatchingExecutions(event));
+    }
+
+    private stopWatchingExecutions(event: DeleteMigrationProjectEvent) {
+        this.activeExecutions.forEach((execution, executionId) => {
+            if (execution.projectId == event.migrationProject.id)
+                this.activeExecutions.delete(executionId);
+        });
+
+        this.executionProjects.forEach((project, executionId) => {
+            if (project.id == event.migrationProject.id)
+                this.executionProjects.delete(executionId);
+        });
     }
 
     public execute(analysisContext: AnalysisContext, project: MigrationProject): Observable<WindupExecution> {
