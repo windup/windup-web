@@ -119,7 +119,7 @@ describe('ExecutionsListComponent', () => {
 
         let notCompletedExecutions = rows.filter(row => {
             return !row.nativeElement.children[COL_STATE].textContent.trim().startsWith('Queued') &&
-                !row.nativeElement.children[COL_STATE].textContent.trim().startsWith('In Progress')
+                !row.nativeElement.children[COL_STATE].textContent.trim().startsWith('In progress')
         });
 
         expect(notCompletedExecutions.length).toBe(3);
