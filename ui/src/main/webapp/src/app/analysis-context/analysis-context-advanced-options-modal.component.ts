@@ -1,7 +1,7 @@
 import {Component, Input, Output, ViewChild, EventEmitter} from "@angular/core";
 import {ConfigurationOption} from "../model/configuration-option.model";
 import {AdvancedOption} from "windup-services";
-import {ModalDialogComponent} from "../shared/modal-dialog.component";
+import {ModalDialogComponent} from "../shared/dialog/modal-dialog.component";
 import {ConfigurationOptionsService} from "../configuration/configuration-options.service";
 import {ValidationResult} from "../model/validation-result.model";
 

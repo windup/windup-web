@@ -7,7 +7,7 @@ import {SortingService, OrderDirection} from "../shared/sort/sorting.service";
 import {MigrationProjectService} from "../project/migration-project.service";
 import {MigrationProject} from "windup-services";
 import {WindupExecutionService} from "../services/windup-execution.service";
-import {ConfirmationModalComponent} from "../shared/confirmation-modal.component";
+import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
 
 @Component({
     selector: 'wu-executions-list',

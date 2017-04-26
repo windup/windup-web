@@ -13,7 +13,7 @@ import {
 } from "../core/events/windup-event";
 import {ExecutionsMonitoringComponent} from "../executions/executions-monitoring.component";
 import {MigrationProject} from "windup-services";
-import {ConfirmationModalComponent} from "../shared/confirmation-modal.component";
+import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
 
 @Component({
     templateUrl: './application-list.component.html',

@@ -17,7 +17,7 @@ import {SortIndicatorComponent} from "../../../../src/app/shared/sort/sort-indic
 import {StatusIconComponent} from "../../../../src/app/shared/status-icon.component";
 import {SchedulerService} from "../../../../src/app/shared/scheduler.service";
 import {PrettyExecutionStatus} from "../../../../src/app/shared/pretty-execution-state.pipe";
-import {ConfirmationModalComponent} from "../../../../src/app/shared/confirmation-modal.component";
+import {ConfirmationModalComponent} from "../../../../src/app/shared/dialog/confirmation-modal.component";
 import {FormsModule} from "@angular/forms";
 
 let comp:    ExecutionsListComponent;

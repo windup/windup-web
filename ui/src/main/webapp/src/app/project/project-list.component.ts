@@ -5,7 +5,7 @@ import {MigrationProjectService} from "./migration-project.service";
 import {MigrationProject} from "windup-services";
 import {NotificationService} from "../core/notification/notification.service";
 import {utils} from "../shared/utils";
-import {ConfirmationModalComponent} from "../shared/confirmation-modal.component";
+import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
 import {OrderDirection, SortingService} from "../shared/sort/sorting.service";
 
 @Component({

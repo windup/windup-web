@@ -7,7 +7,7 @@ import {AddRulesPathModalComponent, ConfigurationEvent} from "./add-rules-path-m
 import {ActivatedRoute} from "@angular/router";
 import {NotificationService} from "../core/notification/notification.service";
 import {utils} from "../shared/utils";
-import {ConfirmationModalComponent} from "../shared/confirmation-modal.component";
+import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
 
 @Component({
     templateUrl: './configuration.component.html',
