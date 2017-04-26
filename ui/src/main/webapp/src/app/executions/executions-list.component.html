@@ -39,7 +39,9 @@
         </td>
         <td>{{execution.timeStarted | date: 'short'}}</td>
         <td>
-            <a class="pointer link cancel" *ngIf="canCancel(execution)" (click)="cancelExecution(execution)" i18n="button">Cancel</a>
+            <a class="pointer link cancel" *ngIf="canCancel(execution)" (click)="cancelExecution(execution)" title="Cancel">
+                <i class="fa fa-ban fa-fw"></i>
+            </a>
             <!-- left for when dynamic report will be linked again
             <a
                     class="link"

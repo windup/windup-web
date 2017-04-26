@@ -5,7 +5,7 @@ import {Inject, Input} from '@angular/core';
     selector: 'wu-progress-bar',
     template: `
         <div class="progress-description">
-            <div class="spinner spinner-xs spinner-inline"></div><strong i18n="Progressbar task">Task:</strong> {{taskName ? taskName : "Starting..."}}
+            <div class="spinner spinner-xs spinner-inline"></div>&nbsp;<strong i18n="Analysis id">Analysis:</strong> #{{activeExecutionId}}&nbsp;&nbsp;<strong i18n="Progressbar task">Task:</strong> {{taskName ? taskName : "Starting..."}}
         </div>
         <div class="progress progress-label-top-right">
             <div
@@ -30,6 +30,8 @@ export class ProgressBarComponent {
     maxValue:number;
     @Input()
     currentValue:number;
+    @Input()
+    activeExecutionId: number;
 
     constructor() {}
 }
