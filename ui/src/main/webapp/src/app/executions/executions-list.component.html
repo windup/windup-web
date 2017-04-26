@@ -1,10 +1,21 @@
 <wu-active-executions-progressbar [activeExecutions]="activeExecutions"></wu-active-executions-progressbar>
 
-<h2 i18n="heading|executions list">Analysis</h2>
+<div class="panel-body">
+    <div class="header-bar">
+        <h2>Analysis</h2>
+        <div class="search-and-create">
+            <wu-search [(searchValue)]="searchText" (searchValueChange)="updateSearch()"></wu-search>
+<!--        to be implemented next
+            <div class="button-container">
+                <button (click)="runExecution()" class="btn btn-primary" type="button">Run analysis</button>
+            </div>-->
+        </div>
+    </div>
+
 <table class="table table-bordered table-hover table-mobile executions-list-table">
     <thead wu-sortable-table
         [(sortedData)]="sortedExecutions"
-        [data]="executions"
+        [data]="filteredExecutions"
         [initialSortBy]="initialSort"
         [tableHeaders]="[
             { title: 'Analysis', isSortable: true, sortBy: 'id' },
@@ -46,10 +57,12 @@
                     *ngIf="execution.state == 'COMPLETED'"
                     [routerLink]="['/projects', execution.projectId, 'reports', execution.id]">View Reports</a>
             -->
-            <a *ngIf="execution.state == 'COMPLETED' && execution?.analysisContext?.generateStaticReports" class="pointer link" target="_blank" href="{{formatStaticReportUrl(execution)}}" title="Show static reports">
-                <i class="fa fa-bar-chart fa-fw"></i>
-            </a>
-            &nbsp;
+            <span *ngIf="execution.state == 'COMPLETED' && execution?.analysisContext?.generateStaticReports">
+                <a  class="pointer link" target="_blank" href="{{formatStaticReportUrl(execution)}}" title="Show static reports">
+                    <i class="fa fa-bar-chart fa-fw"></i>
+                </a>
+                &nbsp;
+            </span>
             <a *ngIf="execution.state != 'STARTED' && execution.state != 'QUEUED'" class="pointer link" (click)="confirmDeleteExecution(execution)" title="Delete">
                 <i class="fa fa-trash-o fa-fw"></i>
             </a>
@@ -59,3 +72,4 @@
 </table>
 <wu-confirmation-modal #deleteExecutionDialog [id]="'deleteExecutionDialog'"></wu-confirmation-modal>
 <wu-confirmation-modal #cancelExecutionDialog [id]="'cancelExecutionDialog'"></wu-confirmation-modal>
+</div>

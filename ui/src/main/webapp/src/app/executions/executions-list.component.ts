@@ -13,7 +13,7 @@ import {ConfirmationModalComponent} from "../shared/confirmation-modal.component
     selector: 'wu-executions-list',
     templateUrl: './executions-list.component.html',
     providers: [SortingService],
-    styleUrls: ['../../../css/tables.scss']
+    styleUrls: ['../../../css/tables.scss', 'executions-list.component.scss']
 })
 export class ExecutionsListComponent implements OnInit, OnDestroy {
     @Output()
@@ -35,6 +35,10 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
 
     @ViewChild('cancelExecutionDialog')
     readonly cancelExecutionDialog: ConfirmationModalComponent;
+
+    searchText: string = '';
+
+    private filteredExecutions: WindupExecution[];
 
     constructor(
         private _elementRef: ElementRef,
@@ -73,6 +77,7 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
     public set executions(executions: WindupExecution[]) {
         this._executions = this._sortingService.sort(executions || []);
         this.sortedExecutions = this._executions;
+        this.filteredExecutions = this._executions;
     }
 
     public get executions(): WindupExecution[] {
@@ -162,4 +167,14 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
         return WindupExecutionService.formatStaticReportUrl(execution);
     }
 
+    updateSearch() {
+        if (this.searchText && this.searchText.length > 0) {
+            this.filteredExecutions = this._executions.filter(execution => (
+                execution.id.toString().search(new RegExp(this.searchText, 'i')) !== -1 ||
+                execution.state.search(new RegExp(this.searchText, 'i')) !== -1
+            ));
+        } else {
+            this.filteredExecutions = this._executions;
+        }
+    }
 }

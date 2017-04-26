@@ -19,6 +19,7 @@ import {SchedulerService} from "../../../../src/app/shared/scheduler.service";
 import {PrettyExecutionStatus} from "../../../../src/app/shared/pretty-execution-state.pipe";
 import {ConfirmationModalComponent} from "../../../../src/app/shared/confirmation-modal.component";
 import {FormsModule} from "@angular/forms";
+import {SearchComponent} from "../../../../src/app/shared/search/search.component";
 
 let comp:    ExecutionsListComponent;
 let fixture: ComponentFixture<ExecutionsListComponent>;
@@ -53,7 +54,8 @@ describe('ExecutionsListComponent', () => {
                 SortIndicatorComponent,
                 StatusIconComponent,
                 PrettyExecutionStatus,
-                ConfirmationModalComponent
+                ConfirmationModalComponent,
+                SearchComponent
             ],
             providers: [
                 SchedulerService,
