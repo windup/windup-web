@@ -110,7 +110,7 @@ describe('ExecutionsListComponent', () => {
 
             expect(el.children[COL_ACTIONS].children.length).toBe(1);
             expect(el.children[COL_ACTIONS].children[0].nodeName.toLowerCase()).toEqual('a');
-            expect(el.children[COL_ACTIONS].children[0].textContent).toEqual('Cancel');
+            expect(el.children[COL_ACTIONS].children[0].title).toEqual('Cancel');
         });
     });
 
