@@ -18,9 +18,12 @@ import org.jboss.windup.util.exception.WindupException;
 
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
+import org.jboss.windup.web.services.model.ExecutionState;
 import org.jboss.windup.web.services.model.MigrationProject;
+import org.jboss.windup.web.services.model.WindupExecution;
 import org.jboss.windup.web.services.service.AnalysisContextService;
 import org.jboss.windup.web.services.service.MigrationProjectService;
+import org.jboss.windup.web.services.service.WindupExecutionService;
 
 /**
  * @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
@@ -38,6 +41,9 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
 
     @Inject
     private AnalysisContextService analysisContextService;
+
+    @Inject
+    private WindupExecutionService windupExecutionService;
 
     @Inject
     @FromFurnace
@@ -92,6 +98,15 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
     public void deleteProject(MigrationProject migrationProject)
     {
         MigrationProject project = this.getMigrationProject(migrationProject.getId());
+        for (WindupExecution execution : project.getExecutions())
+        {
+            switch (execution.getState()) {
+                case QUEUED:
+                case STARTED:
+                    this.windupExecutionService.cancelExecution(execution.getId());
+                    break;
+            }
+        }
         this.migrationProjectService.deleteProject(project);
     }
 
