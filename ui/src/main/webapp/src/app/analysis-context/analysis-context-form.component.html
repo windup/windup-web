@@ -70,7 +70,7 @@
         <wu-expand-collapse [tabTitle]="'Exclude some packages'">
             <div class="form-group">
                 <div>
-                    <label class="control-label" i18n>Excluded Packages</label>
+                    <label class="control-label" i18n>Excluded packages</label>
                     <strong *ngIf="!packageTreeLoaded"><span class="spinner spinner-xs spinner-inline"></span>Loading...</strong>
                     <wu-js-tree-wrapper [treeNodes]="packageTree" [(selectedNodes)]="analysisContext.excludePackages">
                     </wu-js-tree-wrapper>
