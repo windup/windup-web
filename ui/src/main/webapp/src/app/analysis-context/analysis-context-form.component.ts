@@ -283,6 +283,10 @@ export class AnalysisContextFormComponent extends FormComponent
         this._dirty = true;
     }
 
+    packageSelectionChanged() {
+        this._dirty = true;
+    }
+
     onSubmit() {
         this._analysisContextService.saveAsDefault(this.analysisContext, this.project).subscribe(
             updatedContext => {

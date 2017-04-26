@@ -27,7 +27,7 @@ import {ConfigurationComponent} from "./configuration/configuration.component";
 import {TechnologyComponent} from "./configuration/technology.component";
 import {RulesModalComponent} from "./configuration/rules-modal.component";
 import {AddRulesPathModalComponent} from "./configuration/add-rules-path-modal.component";
-import {ConfirmationModalComponent} from "./shared/confirmation-modal.component";
+import {ConfirmationModalComponent} from "./shared/dialog/confirmation-modal.component";
 import {CustomRuleSelectionComponent} from "./analysis-context/custom-rule-selection.component";
 
 import {KeycloakService} from "./core/authentication/keycloak.service";
@@ -37,7 +37,7 @@ import {UploadQueueComponent} from "./shared/upload/upload-queue.component";
 import {UploadProgressbarComponent} from "./shared/upload/upload-progressbar.component";
 import {AnalysisContextAdvancedOptionsModalComponent} from "./analysis-context/analysis-context-advanced-options-modal.component";
 import {ConfigurationOptionsService} from "./configuration/configuration-options.service";
-import {ModalDialogComponent} from "./shared/modal-dialog.component";
+import {ModalDialogComponent} from "./shared/dialog/modal-dialog.component";
 import {NotificationService} from "./core/notification/notification.service";
 import {NotificationComponent} from "./shared/notification.component";
 import {ConfirmDeactivateGuard} from "./shared/confirm-deactivate.guard";
@@ -129,6 +129,7 @@ import {AlternativeUploadQueueComponent} from "./shared/upload/alternative-uploa
 import {AboutPageComponent} from "./misc/about.component";
 import {ExpandCollapseComponent} from "./shared/expand-collapse.component";
 import {ApplicationQueueListComponent} from "./registered-application/application-queue-list.component";
+import {DialogService} from "./shared/dialog/dialog.service";
 
 /**
  * Load all mapping data from the generated files.
@@ -277,6 +278,7 @@ initializeModelMappingData();
         RuleProviderExecutionsService,
         RouteHistoryService,
         ExecutionResolve,
+        DialogService,
         {
             provide: RouteLinkProviderService,
             useFactory: createRouteLinkProviderService
