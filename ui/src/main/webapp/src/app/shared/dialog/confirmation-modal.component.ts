@@ -111,10 +111,10 @@ export class ConfirmationModalComponent {
     /**
      * Event triggered when dialog is closed
      *
-     * @type {EventEmitter<any>}
+     * @type {EventEmitter<DialogResult>}
      */
     @Output()
-    closed = new EventEmitter<any>();
+    closed = new EventEmitter<DialogResult>();
 
     typedConfirmationPhrase: string = "";
 
@@ -139,18 +139,26 @@ export class ConfirmationModalComponent {
         (<any>$('#' + this.id)).modal('show');
     }
 
-    hide(): void {
+    hide(result: boolean = false): void {
         (<any>$('#' + this.id)).modal('hide');
-        this.closed.next(this.data);
+        this.closed.next({
+            data: this.data,
+            result: result
+        });
     }
 
     yes():void {
         this.confirmed.emit(this.data);
-        this.hide();
+        this.hide(true);
     }
 
     no():void {
         this.cancelled.emit(this.data);
-        this.hide();
+        this.hide(false);
     }
+}
+
+export interface DialogResult {
+    data: any;
+    result: boolean;
 }

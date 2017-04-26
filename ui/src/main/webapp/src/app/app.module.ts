@@ -129,6 +129,7 @@ import {AlternativeUploadQueueComponent} from "./shared/upload/alternative-uploa
 import {AboutPageComponent} from "./misc/about.component";
 import {ExpandCollapseComponent} from "./shared/expand-collapse.component";
 import {ApplicationQueueListComponent} from "./registered-application/application-queue-list.component";
+import {DialogService} from "./shared/dialog/dialog.service";
 
 /**
  * Load all mapping data from the generated files.
@@ -277,6 +278,7 @@ initializeModelMappingData();
         RuleProviderExecutionsService,
         RouteHistoryService,
         ExecutionResolve,
+        DialogService,
         {
             provide: RouteLinkProviderService,
             useFactory: createRouteLinkProviderService
