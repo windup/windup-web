@@ -1,42 +1,26 @@
 package org.jboss.windup.web.services.rest;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.jms.JMSContext;
-import javax.jms.Queue;
-import javax.jms.Topic;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.jboss.forge.furnace.Furnace;
-import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.addons.websupport.services.LogService;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
-import org.jboss.windup.web.services.messaging.MessagingConstants;
 import org.jboss.windup.web.services.model.AnalysisContext;
-import org.jboss.windup.web.services.model.ExecutionState;
 import org.jboss.windup.web.services.model.MigrationProject;
-import org.jboss.windup.web.services.model.RegisteredApplication;
 import org.jboss.windup.web.services.model.WindupExecution;
-import org.jboss.windup.web.services.service.AnalysisContextService;
-import org.jboss.windup.web.services.service.ConfigurationService;
-import org.jboss.windup.web.services.service.MigrationProjectService;
+import org.jboss.windup.web.services.service.WindupExecutionService;
 
 @Stateless
 public class WindupEndpointImpl implements WindupEndpoint
@@ -45,40 +29,17 @@ public class WindupEndpointImpl implements WindupEndpoint
 
     private static int MAX_LOG_SIZE = 1024 * 1024 * 3; // 3 Megabytes
 
-    @Inject
-    private Furnace furnace;
-
     @PersistenceContext
     private EntityManager entityManager;
 
     @Inject
-    private ConfigurationService configurationService;
-
-    @Inject
-    private AnalysisContextService analysisContextService;
-
-    @Inject
-    private MigrationProjectService migrationProjectService;
-
-    @Inject
-    private JMSContext messaging;
-
-    @Inject
-    @FromFurnace
-    private WebPathUtil webPathUtil;
+    private WindupExecutionService windupExecutionService;
 
     @Inject
     @FromFurnace
     private LogService logService;
 
-    @Resource(lookup = "java:/queues/" + MessagingConstants.EXECUTOR_QUEUE)
-    private Queue executorQueue;
-
-    @Resource(lookup = "java:/queues/" + MessagingConstants.STATUS_UPDATE_QUEUE)
-    private Queue statusUpdateQueue;
-
-    @Resource(lookup = "java:/topics/" + MessagingConstants.CANCELLATION_TOPIC)
-    private Topic cancellationTopic;
+    private static String cachedCoreVersion = null;
 
     /**
      * @see org.jboss.windup.web.services.messaging.ExecutorMDB
@@ -91,42 +52,12 @@ public class WindupEndpointImpl implements WindupEndpoint
             throw new BadRequestException("AnalysisContext must be provided");
         }
 
-
         if (originalContext.getApplications().size() == 0)
         {
             throw new BadRequestException("Cannot execute windup without selected applications");
         }
 
-        // make clone of analysis context and use it for execution
-        AnalysisContext analysisContext = originalContext.clone();
-
-        MigrationProject project = this.migrationProjectService.getMigrationProject(projectId);
-        project.setLastModified(new GregorianCalendar());
-        analysisContext.setMigrationProject(project); // ensure project is correctly set
-
-        analysisContext = this.analysisContextService.create(analysisContext);
-
-        for (RegisteredApplication application : analysisContext.getApplications())
-        {
-            application.setReportIndexPath(null);
-        }
-
-        WindupExecution execution = new WindupExecution(analysisContext);
-        execution.setTimeStarted(new GregorianCalendar());
-        execution.setState(ExecutionState.QUEUED);
-
-        entityManager.persist(execution);
-
-        Path reportOutputPath = this.webPathUtil.createWindupReportOutputPath(
-                    execution.getProject().getId().toString(),
-                    execution.getId().toString());
-
-        execution.setOutputPath(reportOutputPath.toString());
-        entityManager.merge(execution);
-
-        messaging.createProducer().send(executorQueue, execution);
-
-        return execution;
+        return this.windupExecutionService.executeProjectWithContext(originalContext, projectId);
     }
 
     @Override
@@ -138,25 +69,13 @@ public class WindupEndpointImpl implements WindupEndpoint
     @Override
     public WindupExecution getExecution(Long executionId)
     {
-        WindupExecution execution = this.entityManager.find(WindupExecution.class, executionId);
-
-        if (execution == null)
-        {
-            throw new NotFoundException("WindupExecution with id: " + executionId + " not found");
-        }
-
-        return execution;
+        return this.windupExecutionService.get(executionId);
     }
 
     @Override
     public void cancelExecution(Long executionID)
     {
-        WindupExecution execution = this.getExecution(executionID);
-
-        execution.setState(ExecutionState.CANCELLED);
-
-        messaging.createProducer().send(statusUpdateQueue, execution);
-        messaging.createProducer().send(cancellationTopic, execution);
+        this.windupExecutionService.cancelExecution(executionID);
     }
 
     @Override
@@ -182,24 +101,7 @@ public class WindupEndpointImpl implements WindupEndpoint
     @Override
     public void deleteExecution(Long executionID)
     {
-        WindupExecution execution = this.getExecution(executionID);
-        if (StringUtils.isBlank(execution.getOutputPath()))
-            return;
-
-        File executionDir = new File(execution.getOutputPath());
-        if (executionDir.exists())
-        {
-            LOG.info("Removing report from: " + executionDir);
-            try
-            {
-                FileUtils.deleteDirectory(executionDir);
-            }
-            catch (IOException e)
-            {
-                LOG.log(Level.WARNING, "Unable to execution contents at " + executionDir.getAbsolutePath() + " (cause: " + e.getMessage() + ")", e);
-            }
-        }
-        this.entityManager.remove(execution);
+        this.windupExecutionService.deleteExecution(executionID);
     }
 
     @Override
@@ -228,6 +130,4 @@ public class WindupEndpointImpl implements WindupEndpoint
         }
         return "\"" + cachedCoreVersion + "\"";
     }
-
-    private static String cachedCoreVersion = null;
 }

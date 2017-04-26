@@ -82,7 +82,16 @@ public class StatusUpdateMDB extends AbstractMDB implements MessageListener
             WindupExecution fromDB = entityManager.find(WindupExecution.class, execution.getId());
 
             if (fromDB == null)
+            {
                 LOG.warning("Received unrecognized status update for execution: " + fromDB);
+                return;
+            }
+
+            if (fromDB.getState() == ExecutionState.CANCELLED)
+            {
+                LOG.warning("Not continuing to update state for cancelled status...");
+                return;
+            }
 
             fromDB.setLastModified(new GregorianCalendar());
             if (fromDB.getState() == ExecutionState.QUEUED)
@@ -110,6 +119,7 @@ public class StatusUpdateMDB extends AbstractMDB implements MessageListener
                 setReportIndexPath(fromDB);
                 setApplicationFilters(fromDB);
             }
+
         }
         catch (Throwable e)
         {

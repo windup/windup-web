@@ -7,20 +7,23 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
 import javax.ws.rs.NotFoundException;
-import javax.ws.rs.PathParam;
 
 import org.jboss.windup.util.exception.WindupException;
-
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
+import org.jboss.windup.web.services.model.ExecutionState;
 import org.jboss.windup.web.services.model.MigrationProject;
+import org.jboss.windup.web.services.model.WindupExecution;
 import org.jboss.windup.web.services.service.AnalysisContextService;
 import org.jboss.windup.web.services.service.MigrationProjectService;
+import org.jboss.windup.web.services.service.WindupExecutionService;
 
 /**
  * @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
@@ -40,6 +43,9 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
     private AnalysisContextService analysisContextService;
 
     @Inject
+    private WindupExecutionService windupExecutionService;
+
+    @Inject
     @FromFurnace
     private WebPathUtil webPathUtil;
 
@@ -48,14 +54,14 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
     {
         try
         {
-            final String query =
-                    "SELECT project, COUNT(DISTINCT app) AS appCount "
-                    + "FROM " + MigrationProject.class.getSimpleName() + " project "
-                    + "LEFT JOIN project.applications AS app "
-                    + "GROUP BY project.id";
+            final String query = "SELECT project, COUNT(DISTINCT app) AS appCount "
+                        + "FROM " + MigrationProject.class.getSimpleName() + " project "
+                        + "LEFT JOIN project.applications AS app "
+                        + "GROUP BY project.id";
 
             List<Object[]> entries = entityManager.createQuery(query, Object[].class).getResultList();
-            return new ArrayList<>(entries.stream().map(e -> new MigrationProjectAndAppCount((MigrationProject)e[0], (long) e[1])).collect(Collectors.toList()));
+            return new ArrayList<>(entries.stream().map(e -> new MigrationProjectAndAppCount((MigrationProject) e[0], (long) e[1]))
+                        .collect(Collectors.toList()));
         }
         catch (Exception ex)
         {
@@ -89,18 +95,62 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
     }
 
     @Override
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public void deleteProject(MigrationProject migrationProject)
     {
         MigrationProject project = this.getMigrationProject(migrationProject.getId());
+        boolean jobsCancelled = false;
+
+        List<WindupExecution> pendingExecutions = new ArrayList<>();
+        for (WindupExecution execution : project.getExecutions())
+        {
+            switch (execution.getState())
+            {
+            case QUEUED:
+            case STARTED:
+                jobsCancelled = true;
+                this.windupExecutionService.cancelExecution(execution.getId());
+
+                pendingExecutions.add(execution);
+                break;
+            }
+        }
+
+        waitOnPendingExecutions(pendingExecutions);
+
         this.migrationProjectService.deleteProject(project);
     }
 
+    private void waitOnPendingExecutions(List<WindupExecution> pendingExecutions) {
+        // Silly little hack to make sure that we don't proceed until executions are
+        // at least in the cancelled state.
+        pendingExecutions.forEach(execution -> {
+            while (!isFinished(execution)) {
+                try {
+                    Thread.sleep(100);
+                } catch (Exception e) {
+                    return;
+                }
+            }
+
+        });
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    private boolean isFinished(WindupExecution execution)
+    {
+        WindupExecution reloaded = this.windupExecutionService.get(execution.getId());
+        LOG.info("Is cancelled? " + reloaded.getState());
+        return reloaded.getState() != ExecutionState.QUEUED && reloaded.getState() != ExecutionState.STARTED;
+    }
+
     @Override
-    public Long getProjectIdByName(String title){
+    public Long getProjectIdByName(String title)
+    {
         String jql = "SELECT id FROM MigrationProject p WHERE LOWER(p.title) = LOWER(:title)";
         List<Long> ids = this.entityManager.createQuery(jql, Long.class)
-                .setParameter("title", title)
-                .getResultList();
+                    .setParameter("title", title)
+                    .getResultList();
         return ids.isEmpty() ? null : ids.get(0);
     }
 }
