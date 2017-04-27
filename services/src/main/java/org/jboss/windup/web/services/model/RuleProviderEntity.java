@@ -42,18 +42,22 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @NamedQueries({
     @NamedQuery(name = RuleProviderEntity.FIND_ALL, query = "select rpe from RuleProviderEntity rpe"),
     @NamedQuery(name = RuleProviderEntity.DELETE_ALL, query = "delete from RuleProviderEntity"),
-    @NamedQuery(
-            name = RuleProviderEntity.DELETE_BY_RULES_PATH,
+    @NamedQuery(name = RuleProviderEntity.SELECT_BY_RULES_PATH,
+            query = "FROM RuleProviderEntity rpe WHERE rpe.rulesPath = :" + RuleProviderEntity.RULES_PATH_PARAM),
+    @NamedQuery(name = RuleProviderEntity.DELETE_BY_RULES_PATH,
             query = "delete from RuleProviderEntity rpe where rpe.rulesPath = :" + RuleProviderEntity.RULES_PATH_PARAM),
-    @NamedQuery(
-            name = RuleProviderEntity.DELETE_WITH_NULL_RULES_PATH,
+    @NamedQuery(name = RuleProviderEntity.SELECT_WITH_NULL_RULES_PATH,
+            query = "FROM RuleProviderEntity rpe WHERE rpe.rulesPath IS NULL"),
+    @NamedQuery(name = RuleProviderEntity.DELETE_WITH_NULL_RULES_PATH,
             query = "delete from RuleProviderEntity rpe where rpe.rulesPath is null")
 })
 public class RuleProviderEntity implements Serializable
 {
     public static final String FIND_ALL = "RuleProviderEntity.findAll";
     public static final String DELETE_ALL = "RuleProviderEntity.deleteAll";
+    public static final String SELECT_BY_RULES_PATH = "RuleProviderEntity.selectByRulesPath";
     public static final String DELETE_BY_RULES_PATH = "RuleProviderEntity.deleteByRulesPath";
+    public static final String SELECT_WITH_NULL_RULES_PATH = "RuleProviderEntity.selectNullPath";
     public static final String DELETE_WITH_NULL_RULES_PATH = "RuleProviderEntity.deleteNullPath";
     public static final String RULES_PATH_PARAM = "rulesPath";
 
@@ -107,6 +111,7 @@ public class RuleProviderEntity implements Serializable
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @OrderColumn(name = RuleEntity.RULE_SEQUENCE)
     private List<RuleEntity> rules;
+
 
     @ManyToOne(fetch = FetchType.EAGER)
     private RulesPath rulesPath;

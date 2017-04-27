@@ -134,11 +134,27 @@ public class RuleDataLoader
                         continue;
                 }
                 LOG.info("Purging existing rule data for: " + rulesPath);
-                // Delete the previous ones
-                entityManager
-                            .createNamedQuery(RuleProviderEntity.DELETE_BY_RULES_PATH)
+
+                logCurrentEntityCounts("1");
+                {
+                    // Delete the previous providers from that path
+                    List<RuleProviderEntity> providers = entityManager.createNamedQuery(RuleProviderEntity.SELECT_BY_RULES_PATH, RuleProviderEntity.class)
                             .setParameter(RuleProviderEntity.RULES_PATH_PARAM, rulesPath)
-                            .executeUpdate();
+                            .getResultList();
+                    for(RuleProviderEntity provider : providers)
+                        entityManager.remove(provider);
+                    LOG.info(RuleProviderEntity.SELECT_BY_RULES_PATH + " purged RuleProviderEntity count: " + providers.size());
+                }
+                logCurrentEntityCounts("2");
+                {
+                    // Delete the previous rule providers with no path
+                    List<RuleProviderEntity> providers = entityManager.createNamedQuery(RuleProviderEntity.SELECT_WITH_NULL_RULES_PATH, RuleProviderEntity.class)
+                            .getResultList();
+                    for(RuleProviderEntity provider : providers)
+                        entityManager.remove(provider);
+                    LOG.info(RuleProviderEntity.SELECT_WITH_NULL_RULES_PATH + " purged RuleProviderEntity count: " + providers.size());
+                }
+                logCurrentEntityCounts("3");
 
                 rulesPath.setLoadError(null);
                 try
@@ -358,5 +374,15 @@ public class RuleDataLoader
 //        {
 //            throw new RuntimeException(e);
 //        }
+    }
+
+    /**
+     * Debug purposes.
+     */
+    private void logCurrentEntityCounts(String logLabel)
+    {
+        Long rpeCount = entityManager.createQuery("SELECT COUNT(*) FROM RuleProviderEntity", Long.class).getSingleResult();
+        Long reCount =  entityManager.createQuery("SELECT COUNT(*) FROM RuleEntity", Long.class).getSingleResult();
+        LOG.fine(String.format("%s RuleProviderEntity: %d, RuleEntity: %d", logLabel, rpeCount, reCount));
     }
 }
