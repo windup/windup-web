@@ -1,6 +1,6 @@
 import {Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from "@angular/core";
 import {WindupService} from "../services/windup.service";
-import {WindupExecution, AnalysisContext, MigrationPath} from "windup-services";
+import {WindupExecution, AnalysisContext} from "windup-services";
 import {NotificationService} from "../core/notification/notification.service";
 import {utils} from '../shared/utils';
 import {SortingService, OrderDirection} from "../shared/sort/sorting.service";
@@ -12,6 +12,7 @@ import {AnalysisContextService} from "../analysis-context/analysis-context.servi
 import {Subscription} from "rxjs";
 import {ActivatedRoute, Router, NavigationEnd} from "@angular/router";
 import {RouteFlattenerService} from "../core/routing/route-flattener.service";
+import {AnalysisContextFormComponent} from "../analysis-context/analysis-context-form.component";
 
 @Component({
     selector: 'wu-executions-list',
@@ -47,7 +48,6 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
     analysisContext: AnalysisContext;
     private routerSubscription: Subscription;
     project: MigrationProject;
-    static DEFAULT_MIGRATION_PATH: MigrationPath = <MigrationPath>{ id: 101 };
 
     constructor(
         private _elementRef: ElementRef,
@@ -60,7 +60,7 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
         private _migrationProjectService: MigrationProjectService,
         private _router: Router,
         private _routeFlattener: RouteFlattenerService,
-        private _activatedRoute: ActivatedRoute,
+        private _activatedRoute: ActivatedRoute
     ) {
         this.element = _elementRef.nativeElement;
     }
@@ -92,7 +92,7 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
                     .subscribe(context => {
                         this.analysisContext = context;
                         if (this.analysisContext.migrationPath == null)
-                            this.analysisContext.migrationPath = ExecutionsListComponent.DEFAULT_MIGRATION_PATH;
+                            this.analysisContext.migrationPath = AnalysisContextFormComponent.DEFAULT_MIGRATION_PATH;
                     });
 
                 // Reload the App from the service to ensure fresh data
@@ -217,9 +217,7 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
 
     runExecution() {
         this._windupExecutionService.execute(this.analysisContext, this.project)
-            .subscribe(execution => {
-                    this._router.navigate([`/projects/${this.project.id}`]);
-                },
+            .subscribe(() => {},
                 error => {
                     this._notificationService.error(utils.getErrorMessage(error));
                 }
