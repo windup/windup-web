@@ -50,13 +50,15 @@
                 <p class="help-block">Select the transformation path relevant for the analysis of your application(s).</p>
             </div>
         </fieldset>-->
-        <!-- Apps Commented out due changed Mockup - for now Applications are not able to exclude from Analysis, They are taken into analysis all registered apps!
-        <div class="form-group">
+    
+        <!-- In wizard mode All applications are included! /see ngIf/
+             Configuration form outside wizard is able to select only subset of uploaded applications -->
+        <div class="form-group" *ngIf="!isInWizard">
             <label class="control-label" i18n>Applications included</label>
             <wu-select-applications [availableApps]="availableApps" [(selectedApps)]="analysisContext.applications">
             </wu-select-applications>
             <p class="help-block">All application included in the analysis.</p>
-        </div>-->
+        </div>
 
         <!-- Packages -->
         <div class="form-group">
