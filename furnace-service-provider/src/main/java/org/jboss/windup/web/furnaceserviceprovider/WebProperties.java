@@ -1,5 +1,6 @@
 package org.jboss.windup.web.furnaceserviceprovider;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -99,9 +100,14 @@ public class WebProperties
     {
         try
         {
-            String pathString = FurnaceExtension.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+            String pathString = FurnaceExtension.class.getProtectionDomain().getCodeSource().getLocation().getFile();
             LOG.info("Path String: " + pathString);
-            Path path = Paths.get(pathString);
+
+            // This is here to work around an issue on Windows. Sometimes Windows will give us a path like
+            // "/C:/path/to/api.war". The File API will properly see this as "C:/path/to/api.war", but
+            // Paths.get() would fail completely.
+            File file = new File(pathString);
+            Path path = Paths.get(file.getCanonicalPath());
             if (!Files.isRegularFile(path))
                 return null;
 
@@ -113,6 +119,7 @@ public class WebProperties
             return path;
         } catch (Exception e)
         {
+            LOG.warning("Failed to get servlet context physical path due to: " + e.getMessage());
             return null;
         }
     }
