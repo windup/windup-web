@@ -5,6 +5,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Handler;
@@ -35,7 +38,8 @@ public class LogServiceImpl implements LogService
             {
                 try
                 {
-                    writer.write("[");
+                    writer.write(LocalDateTime.ofInstant(Instant.ofEpochMilli(record.getMillis()), ZoneId.systemDefault()).toString());
+                    writer.write(" [");
                     writer.write(record.getLoggerName());
                     writer.write("] ");
                     writer.write(record.getMessage());
