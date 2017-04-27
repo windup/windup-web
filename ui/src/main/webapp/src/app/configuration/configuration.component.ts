@@ -15,6 +15,9 @@ import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.co
 })
 export class ConfigurationComponent implements OnInit, AfterViewInit {
 
+    forceReloadAttempted:boolean = false;
+    rescanInProgress:boolean= false;
+
     errorMessage:string;
     configuration:Configuration;
 
@@ -53,12 +56,47 @@ export class ConfigurationComponent implements OnInit, AfterViewInit {
         if (!this.configuration || this.configuration.rulesPaths == null)
             return;
 
+        this.loadRuleProviderDetails();
+    }
+
+    forceReload() {
+        this.forceReloadAttempted = true;
+        this.rescanInProgress = true;
+        this._configurationService.reloadConfigration().subscribe(() => {
+            this.rescanInProgress = false;
+            this.loadRuleProviderDetails()
+        });
+    }
+
+    loadRuleProviderDetails() {
         this.configuration.rulesPaths.forEach((rulesPath) => {
             this._ruleService.getByRulesPath(rulesPath).subscribe(
-                (ruleProviders:RuleProviderEntity[]) => this.ruleProvidersByPath.set(rulesPath, ruleProviders),
+                (ruleProviders:RuleProviderEntity[]) => {
+                    this.ruleProvidersByPath.set(rulesPath, ruleProviders);
+                    if (!this.forceReloadAttempted && rulesPath.rulesPathType == "SYSTEM_PROVIDED" && ruleProviders.length == 0) // needs to be loaded
+                        this.forceReload();
+                },
                 error => this.errorMessage = <any>error
             );
         });
+    }
+
+    get sortedPaths() {
+        if (!this.configuration || this.configuration.rulesPaths == null)
+            return null;
+
+        return this.configuration.rulesPaths.sort((a, b) => {
+            if (a.rulesPathType == b.rulesPathType)
+                return 0;
+            else if (a.rulesPathType == "SYSTEM_PROVIDED" && b.rulesPathType == "USER_PROVIDED")
+                return 1;
+            else if (a.rulesPathType == "USER_PROVIDED" && b.rulesPathType == "SYSTEM_PROVIDED")
+                return -1;
+        });
+    }
+
+    areRulesLoaded(rulesPath:RulesPath) {
+        return this.ruleProvidersByPath.has(rulesPath);
     }
 
     hasFileBasedProviders(rulesPath:RulesPath) {

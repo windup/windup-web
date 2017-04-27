@@ -2,16 +2,23 @@
     <div>
         <div class="action-button" style="float: right; margin-top: 0;">
             <button class="btn btn-primary" (click)="displayAddRulesPathForm()">
-                <span i18="Button">Add</span>
+                <span *ngIf="!rescanInProgress"  i18="Button">Add</span>
             </button>
         </div>
         <h1 i18n="Header" style="margin-bottom: 25px">Rules Configuration</h1>
     </div>
 </div>
 
-<template [ngIf]="configuration != null && configuration.rulesPaths != null && configuration.rulesPaths.length > 0">
+<template [ngIf]="rescanInProgress">
+    <h1>
+        <span class="status-icon"><span aria-hidden="true" class="spinner spinner-xs spinner-inline"></span></span>
+        Scanning rules...
+    </h1>
+</template>
+
+<template [ngIf]="!rescanInProgress && configuration != null && configuration.rulesPaths != null && configuration.rulesPaths.length > 0">
     <div class="panel-group">
-        <div *ngFor="let rulePath of configuration.rulesPaths" id="rulePathPanel_{{rulePath.id}}" class="panel panel-default">
+        <div *ngFor="let rulePath of sortedPaths" id="rulePathPanel_{{rulePath.id}}" class="panel panel-default">
 
             <!-- Header for each set of rules. -->
             <div class="panel-heading">
@@ -31,13 +38,17 @@
 
             <!-- Area that collapses when the header is clicked. -->
             <div id="collapse_{{rulePath.id}}"
-                 class="panel-body panel-collapse collapse {{(rulePath.rulesPathType == 'SYSTEM_PROVIDED') ? 'in' : ''}}"
+                 class="panel-body panel-collapse collapse in"
             >
-            <!-- Angular doesn't know this attribute. Fortunatelly it works just with the 'in' class.
+            <!-- Angular doesn't know this attribute. Fortunately it works just with the 'in' class.
                  aria-expanded="{{(rulePath.rulesPathType == 'SYSTEM_PROVIDED') ? 'true' : 'false'}}"
             -->
 
-                <div *ngIf="!hasFileBasedProviders(rulePath)">
+                <div *ngIf="!areRulesLoaded(rulePath)">
+                    <h3 i18n>Loading rules...</h3>
+                </div>
+
+                <div *ngIf="areRulesLoaded(rulePath) && !hasFileBasedProviders(rulePath)">
                     <h3 i18n>No rule found.</h3>
                 </div>
 

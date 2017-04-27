@@ -7,7 +7,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Lob;
+import javax.persistence.Table;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -20,6 +22,9 @@ import org.jboss.windup.web.services.validators.FileExistsConstraint;
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
 @Entity
+@Table(
+   indexes = @Index(columnList = "path")
+)
 public class RulesPath implements Serializable
 {
     public static final String RULES_PATH_ID = "rules_path_id";
