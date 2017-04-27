@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {WindupExecution} from "windup-services";
+import {AnalysisContext, WindupExecution} from "windup-services";
 import {ActivatedRoute} from "@angular/router";
 import {EventBusService} from "../core/events/event-bus.service";
 import {WindupExecutionService} from "../services/windup-execution.service";
@@ -7,19 +7,30 @@ import {ExecutionsMonitoringComponent} from "./executions-monitoring.component";
 import {MigrationProject} from "windup-services";
 import {WindupService} from "../services/windup.service";
 import {ExecutionEvent} from "../core/events/windup-event";
+import {AnalysisContextService} from "../analysis-context/analysis-context.service";
+import {NotificationService} from "../core/notification/notification.service";
+import {utils} from "../shared/utils";
 
 @Component({
-    template: '<wu-executions-list (reloadRequestEvent)="refreshExecutionList()" [executions]="executions" [activeExecutions]="activeExecutions"></wu-executions-list>'
+    template: `<wu-executions-list 
+            (reloadRequestEvent)="refreshExecutionList()" 
+            (runExecution)="startExecution()"
+            [executions]="executions" 
+            [activeExecutions]="activeExecutions">
+    </wu-executions-list>`
 })
 export class ProjectExecutionsComponent extends ExecutionsMonitoringComponent implements OnInit {
     protected executions: WindupExecution[];
-    private runUpdate: boolean;
+    private doNotRefreshList: boolean;
+    private analysisContext: AnalysisContext;
 
     constructor(
         private _activatedRoute: ActivatedRoute,
         _windupExecutionService: WindupExecutionService,
         private _eventBus: EventBusService,
-        private _windupService: WindupService
+        private _windupService: WindupService,
+        private _analysisContextService: AnalysisContextService,
+        private _notificationService: NotificationService
     ) {
         super(_windupExecutionService);
     }
@@ -27,6 +38,10 @@ export class ProjectExecutionsComponent extends ExecutionsMonitoringComponent im
     ngOnInit(): void {
         this._activatedRoute.parent.data.subscribe((data: {project: MigrationProject}) => {
             this.project = data.project;
+
+            this._analysisContextService.get(this.project.defaultAnalysisContextId)
+                .subscribe(context => this.analysisContext = context);
+
             this.refreshExecutionList();
         });
 
@@ -35,7 +50,7 @@ export class ProjectExecutionsComponent extends ExecutionsMonitoringComponent im
             .filter((event: ExecutionEvent) => event.migrationProject.id === this.project.id)
             .subscribe((event: ExecutionEvent) => this.onExecutionEvent(event)));
 
-        this.runUpdate = false;
+        this.doNotRefreshList = false;
     }
 
     refreshExecutionList() {
@@ -47,9 +62,38 @@ export class ProjectExecutionsComponent extends ExecutionsMonitoringComponent im
 
     protected onExecutionEvent(event: ExecutionEvent) {
         super.onExecutionEvent(event);
-        if (!this.runUpdate || !(event.execution.state === 'STARTED')) {
+
+        if (!this.doNotRefreshList || event.execution.state !== 'STARTED') {
             this.refreshExecutionList();
-            this.runUpdate = true;
+
+            /**
+             * Do not refresh list if we are already observing active execution
+             * (it would flood server with requests)
+             */
+            if (event.execution.state === 'STARTED') {
+                this.doNotRefreshList = true;
+            }
+        }
+
+        /**
+         * When execution finished for some reason (success or failure, we don't care), start refreshing list again
+         */
+        if (event.execution.state !== 'QUEUED' && event.execution.state !== 'STARTED') {
+            this.doNotRefreshList = false;
+        }
+    }
+
+    public startExecution() {
+        if (this.analysisContext && this.project) {
+            this._windupExecutionService.execute(this.analysisContext, this.project).subscribe(
+                execution => {
+                    this.refreshExecutionList();
+                    console.log('load active executions');
+                    this.loadActiveExecutions([execution]);
+                },
+                error => {
+                    this._notificationService.error(utils.getErrorMessage(error));
+                });
         }
     }
 }

@@ -20,6 +20,9 @@ import {PrettyExecutionStatus} from "../../../../src/app/shared/pretty-execution
 import {ConfirmationModalComponent} from "../../../../src/app/shared/dialog/confirmation-modal.component";
 import {FormsModule} from "@angular/forms";
 import {SearchComponent} from "../../../../src/app/shared/search/search.component";
+import {WindupExecutionService} from "../../../../src/app/services/windup-execution.service";
+import {AnalysisContextService} from "../../../../src/app/analysis-context/analysis-context.service";
+import {RouteFlattenerService} from "../../../../src/app/core/routing/route-flattener.service";
 
 let comp:    ExecutionsListComponent;
 let fixture: ComponentFixture<ExecutionsListComponent>;
@@ -76,6 +79,24 @@ describe('ExecutionsListComponent', () => {
                     provide: MigrationProjectService,
                     useValue: jasmine.createSpyObj('MigrationProjectService', [
                         'getAll'
+                    ])
+                },
+                {
+                    provide: WindupExecutionService,
+                    useValue: jasmine.createSpyObj('WindupExecutionService', [
+                        'execute'
+                    ])
+                },
+                {
+                    provide: AnalysisContextService,
+                    useValue: jasmine.createSpyObj('AnalysisContextService', [
+                        'get'
+                    ])
+                },
+                {
+                    provide: RouteFlattenerService,
+                    useValue: jasmine.createSpyObj('RouteFlattenerService', [
+                        'getFlattenedRouteData'
                     ])
                 }
             ]

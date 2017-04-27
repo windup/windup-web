@@ -19,6 +19,9 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
     @Output()
     reloadRequestEvent:EventEmitter<any> = new EventEmitter();
 
+    @Output()
+    runExecution: EventEmitter<void> = new EventEmitter<void>();
+
     protected element;
 
     private _executions: WindupExecution[];
@@ -176,5 +179,9 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
         } else {
             this.filteredExecutions = this._executions;
         }
+    }
+
+    startExecution() {
+        this.runExecution.emit();
     }
 }
