@@ -26,7 +26,7 @@ export class StatusIconComponent {
             case 'COMPLETED':
                 return 'fa fa-check text-success';
             case 'FAILED':
-                return 'fa fa-times text-danger';
+                return 'fa fa-ban text-danger';
             case 'CANCELLED':
                 return 'fa fa-ban text-muted';
         }
