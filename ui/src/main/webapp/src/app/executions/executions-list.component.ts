@@ -1,6 +1,6 @@
 import {Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from "@angular/core";
 import {WindupService} from "../services/windup.service";
-import {WindupExecution, AnalysisContext} from "windup-services";
+import {WindupExecution} from "windup-services";
 import {NotificationService} from "../core/notification/notification.service";
 import {utils} from '../shared/utils';
 import {SortingService, OrderDirection} from "../shared/sort/sorting.service";
@@ -8,11 +8,6 @@ import {MigrationProjectService} from "../project/migration-project.service";
 import {MigrationProject} from "windup-services";
 import {WindupExecutionService} from "../services/windup-execution.service";
 import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
-import {AnalysisContextService} from "../analysis-context/analysis-context.service";
-import {Subscription} from "rxjs";
-import {ActivatedRoute, Router, NavigationEnd} from "@angular/router";
-import {RouteFlattenerService} from "../core/routing/route-flattener.service";
-import {AnalysisContextFormComponent} from "../analysis-context/analysis-context-form.component";
 
 @Component({
     selector: 'wu-executions-list',
@@ -23,6 +18,9 @@ import {AnalysisContextFormComponent} from "../analysis-context/analysis-context
 export class ExecutionsListComponent implements OnInit, OnDestroy {
     @Output()
     reloadRequestEvent:EventEmitter<any> = new EventEmitter();
+
+    @Output()
+    runExecution: EventEmitter<void> = new EventEmitter<void>();
 
     protected element;
 
@@ -45,22 +43,12 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
 
     private filteredExecutions: WindupExecution[];
 
-    analysisContext: AnalysisContext;
-    private routerSubscription: Subscription;
-    project: MigrationProject;
-
     constructor(
         private _elementRef: ElementRef,
         private _windupService: WindupService,
         private _notificationService: NotificationService,
         private _sortingService: SortingService<WindupExecution>,
-        private _projectService: MigrationProjectService,
-        private _windupExecutionService: WindupExecutionService,
-        private _analysisContextService: AnalysisContextService,
-        private _migrationProjectService: MigrationProjectService,
-        private _router: Router,
-        private _routeFlattener: RouteFlattenerService,
-        private _activatedRoute: ActivatedRoute
+        private _projectService: MigrationProjectService
     ) {
         this.element = _elementRef.nativeElement;
     }
@@ -81,28 +69,6 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
         this.currentTimeTimer = <any> setInterval(() => {
             this.currentTime = new Date().getTime();
         }, 5000);
-
-
-        this.routerSubscription = this._router.events.filter(event => event instanceof NavigationEnd).subscribe(_ => {
-            let flatRouteData = this._routeFlattener.getFlattenedRouteData(this._activatedRoute.snapshot);
-            if (flatRouteData.data['project']) {
-                let project = flatRouteData.data['project'];
-
-                this._analysisContextService.get(project.defaultAnalysisContextId)
-                    .subscribe(context => {
-                        this.analysisContext = context;
-                        if (this.analysisContext.migrationPath == null)
-                            this.analysisContext.migrationPath = AnalysisContextFormComponent.DEFAULT_MIGRATION_PATH;
-                    });
-
-                // Reload the App from the service to ensure fresh data
-                this._migrationProjectService.get(project.id).subscribe(loadedProject => {
-                    this.project = loadedProject;
-                });
-            }
-        });
-
-
     }
 
     ngOnDestroy(): void {
@@ -215,12 +181,7 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
         }
     }
 
-    runExecution() {
-        this._windupExecutionService.execute(this.analysisContext, this.project)
-            .subscribe(() => {},
-                error => {
-                    this._notificationService.error(utils.getErrorMessage(error));
-                }
-            );
+    startExecution() {
+        this.runExecution.emit();
     }
 }
