@@ -17,6 +17,7 @@ import org.jboss.windup.web.services.MigrationProjectAssertions;
 import org.jboss.windup.web.services.ServiceTestUtil;
 import org.jboss.windup.web.services.data.DataProvider;
 import org.jboss.windup.web.services.data.ServiceConstants;
+import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.model.RegisteredApplication;
 import org.junit.Assert;
@@ -34,6 +35,7 @@ public class MigrationProjectEndpointTest extends AbstractTest
     private URL contextPath;
 
     private MigrationProjectEndpoint migrationProjectEndpoint;
+    private AnalysisContextEndpoint analysisContextEndpoint;
     private DataProvider dataProvider;
 
     @Before
@@ -43,6 +45,7 @@ public class MigrationProjectEndpointTest extends AbstractTest
         ResteasyWebTarget target = client.target(contextPath + ServiceConstants.REST_BASE);
 
         this.migrationProjectEndpoint = target.proxy(MigrationProjectEndpoint.class);
+        this.analysisContextEndpoint = target.proxy(AnalysisContextEndpoint.class);
         this.dataProvider = new DataProvider(target);
     }
 
@@ -59,6 +62,7 @@ public class MigrationProjectEndpointTest extends AbstractTest
         migrationProject.setTitle(title);
 
         MigrationProject createdProject = this.migrationProjectEndpoint.createMigrationProject(migrationProject);
+        this.analysisContextEndpoint.saveAsProjectDefault(new AnalysisContext(createdProject), createdProject.getId());
 
         Collection<MigrationProjectEndpoint.MigrationProjectAndAppCount> apps = migrationProjectEndpoint.getMigrationProjects();
         Assert.assertEquals(1, apps.size());

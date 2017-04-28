@@ -65,7 +65,10 @@ public class DataProvider
         MigrationProject migrationProject = new MigrationProject();
         migrationProject.setTitle(projectTitle);
 
-        return this.migrationProjectEndpoint.createMigrationProject(migrationProject);
+        migrationProject = this.migrationProjectEndpoint.createMigrationProject(migrationProject);
+        this.analysisContextEndpoint.saveAsProjectDefault(new AnalysisContext(migrationProject), migrationProject.getId());
+        migrationProject = this.migrationProjectEndpoint.getMigrationProject(migrationProject.getId());
+        return migrationProject;
     }
 
     protected Long getProjectAnalysisContextId(MigrationProject project) throws JSONException
