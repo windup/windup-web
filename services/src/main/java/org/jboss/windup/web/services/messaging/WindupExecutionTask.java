@@ -97,6 +97,7 @@ public class WindupExecutionTask implements Runnable
             List<Path> inputPaths = this.analysisContext
                         .getApplications()
                         .stream()
+                        .filter(application -> !application.isDeleted())
                         .map(application -> Paths.get(application.getInputPath()))
                         .collect(Collectors.toList());
 

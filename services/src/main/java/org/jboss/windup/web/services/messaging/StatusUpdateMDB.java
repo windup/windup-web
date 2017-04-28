@@ -3,6 +3,7 @@ package org.jboss.windup.web.services.messaging;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.GregorianCalendar;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -153,7 +154,9 @@ public class StatusUpdateMDB extends AbstractMDB implements MessageListener
         AnalysisContext context = execution.getAnalysisContext();
         Path reportDirectory = Paths.get(execution.getOutputPath());
 
-        for (RegisteredApplication application : context.getApplications())
+        Set<RegisteredApplication> applications = context.getApplications();
+        applications.removeIf((RegisteredApplication app) -> app.isDeleted());
+        for (RegisteredApplication application : applications)
         {
             Path applicationPath = Paths.get(application.getInputPath());
 
