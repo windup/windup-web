@@ -45,6 +45,10 @@ export class UpdateMigrationProjectEvent extends MigrationProjectEvent {
 
 }
 
+export class DeleteMigrationProjectEvent extends MigrationProjectEvent {
+
+}
+
 export class ExecutionEvent extends MigrationProjectEvent {
     public static TYPE = 'ExecutionEvent';
     private _execution: WindupExecution;
