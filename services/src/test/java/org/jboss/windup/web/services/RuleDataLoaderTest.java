@@ -2,6 +2,7 @@ package org.jboss.windup.web.services;
 
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.windup.web.services.model.RuleProviderEntity;
+import org.jboss.windup.web.services.service.ConfigurationService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,12 +22,16 @@ public class RuleDataLoaderTest extends AbstractTest
     private EntityManager entityManager;
 
     @Inject
+    private ConfigurationService configurationService;
+
+    @Inject
     private RuleDataLoader ruleDataLoader;
 
     @Test
     public void testDataLoader()
     {
-        ruleDataLoader.reloadRuleData();
+
+        ruleDataLoader.reloadRuleData(this.configurationService.getConfiguration());
 
         @SuppressWarnings("unchecked")
         List<RuleProviderEntity> ruleProviderEntities = entityManager.createNamedQuery(RuleProviderEntity.FIND_ALL).getResultList();

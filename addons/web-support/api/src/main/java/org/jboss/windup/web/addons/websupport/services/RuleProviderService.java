@@ -10,5 +10,5 @@ import java.util.Collection;
  */
 public interface RuleProviderService
 {
-    RuleProviderRegistry loadRuleProviderRegistry(Collection<Path> rulePaths);
+    RuleProviderRegistry loadRuleProviderRegistry(Collection<Path> rulePaths, boolean fileRulesOnly);
 }

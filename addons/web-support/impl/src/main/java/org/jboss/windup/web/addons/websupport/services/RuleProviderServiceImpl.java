@@ -20,9 +20,11 @@ public class RuleProviderServiceImpl implements RuleProviderService
     @Inject
     private RuleLoader ruleLoader;
 
-    public RuleProviderRegistry loadRuleProviderRegistry(Collection<Path> rulePaths)
+    public RuleProviderRegistry loadRuleProviderRegistry(Collection<Path> rulePaths, boolean fileRulesOnly)
     {
         RuleLoaderContext ruleLoaderContext = new RuleLoaderContext(rulePaths, null);
+        if (fileRulesOnly)
+            ruleLoaderContext.setFileBasedRulesOnly();
         return ruleLoader.loadConfiguration(ruleLoaderContext);
     }
 }

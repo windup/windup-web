@@ -26,6 +26,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.transaction.UserTransaction;
 
 import org.jboss.windup.config.RuleProvider;
@@ -53,7 +54,6 @@ import org.ocpsoft.rewrite.config.Rule;
  */
 @Singleton
 @Startup
-@TransactionManagement(TransactionManagementType.BEAN)
 public class RuleDataLoader
 {
     private static Logger LOG = Logger.getLogger(RuleDataLoader.class.getName());
@@ -61,8 +61,8 @@ public class RuleDataLoader
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Resource
-    private UserTransaction userTransaction;
+//    @Resource
+//    private UserTransaction userTransaction;
 
     @Inject
     private ConfigurationService configurationService;
@@ -85,42 +85,54 @@ public class RuleDataLoader
     @Schedule(hour = "*", minute = "12")
     public void loadPeriodically()
     {
-        reloadRuleData();
+        Configuration webConfiguration = configurationService.getConfiguration();
+        reloadRuleData(webConfiguration);
+        this.cleanupDanglingRows();
     }
 
     public void configurationUpdated(@Observes Configuration configuration)
     {
         LOG.info("Reloading rule data due to configuration update!");
-        reloadRuleData();
+        reloadRuleData(configuration);
     }
 
-    public void reloadRuleData()
+    public void reloadRuleData(Configuration configuration)
     {
         LOG.info("Starting reload of rule data...");
         try
         {
-            this.loadRules();
+            this.loadRules(configuration);
         }
         catch (Exception e)
         {
             LOG.log(Level.SEVERE, "Error loading rules due to: " + e.getMessage(), e);
         }
         this.getCategories();
-        this.cleanupDanglingRows();
         LOG.info("Rule data reload complete!");
     }
 
-    private void loadRules()
+    private void loadRules(Configuration webConfiguration)
     {
         this.begin();
         try
         {
-            Configuration webConfiguration = configurationService.getConfiguration();
             if (webConfiguration.getRulesPaths() == null || webConfiguration.getRulesPaths().isEmpty())
                 return;
 
             for (RulesPath rulesPath : webConfiguration.getRulesPaths())
             {
+                /*
+                 * Do not reload system rules if we have already loaded them
+                 */
+                if (rulesPath.getRulesPathType() == RulesPath.RulesPathType.SYSTEM_PROVIDED)
+                {
+                    Long count = entityManager
+                            .createQuery("select count(rpe) from RuleProviderEntity rpe where rpe.rulesPath = :rulesPath", Long.class)
+                            .setParameter("rulesPath", rulesPath)
+                            .getSingleResult();
+                    if (count > 0)
+                        continue;
+                }
                 LOG.info("Purging existing rule data for: " + rulesPath);
                 // Delete the previous ones
                 entityManager
@@ -128,14 +140,15 @@ public class RuleDataLoader
                             .setParameter(RuleProviderEntity.RULES_PATH_PARAM, rulesPath)
                             .executeUpdate();
 
-                entityManager.createNamedQuery(RuleProviderEntity.DELETE_WITH_NULL_RULES_PATH).executeUpdate();
-
                 rulesPath.setLoadError(null);
                 try
                 {
                     Path path = Paths.get(rulesPath.getPath());
                     RuleLoaderContext ruleLoaderContext = new RuleLoaderContext(Collections.singleton(path), null);
-                    RuleProviderRegistry providerRegistry = ruleProviderService.loadRuleProviderRegistry(Collections.singleton(path));
+                    boolean fileRulesOnly = rulesPath.getRulesPathType() == RulesPath.RulesPathType.USER_PROVIDED;
+
+                    RuleProviderRegistry providerRegistry = ruleProviderService.loadRuleProviderRegistry(Collections.singleton(path), fileRulesOnly);
+                    LOG.info("Providers for: " + path + " are " + providerRegistry.getProviders());
 
                     for (RuleProvider provider : providerRegistry.getProviders())
                     {
@@ -210,7 +223,7 @@ public class RuleDataLoader
         try
         {
             this.begin();
-            this.entityManager.createQuery("delete from RuleProviderEntity where rulesPath is null").executeUpdate();
+            this.entityManager.createNamedQuery(RuleProviderEntity.DELETE_WITH_NULL_RULES_PATH).executeUpdate();
             this.commit();
 
             this.begin();
@@ -325,25 +338,25 @@ public class RuleDataLoader
 
     private void begin()
     {
-        try
-        {
-            this.userTransaction.begin();
-        }
-        catch (Exception e)
-        {
-            throw new RuntimeException(e);
-        }
+//        try
+//        {
+//            this.userTransaction.begin();
+//        }
+//        catch (Exception e)
+//        {
+//            throw new RuntimeException(e);
+//        }
     }
 
     private void commit()
     {
-        try
-        {
-            this.userTransaction.commit();
-        }
-        catch (Exception e)
-        {
-            throw new RuntimeException(e);
-        }
+//        try
+//        {
+//            this.userTransaction.commit();
+//        }
+//        catch (Exception e)
+//        {
+//            throw new RuntimeException(e);
+//        }
     }
 }
