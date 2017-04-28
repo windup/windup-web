@@ -2,6 +2,7 @@
     <li wu-navbar-selection
         [label]="'Project'"
         [items]="allProjects" [selectedItem]="project" [getItemLabel]="getProjectLabel"
+        [getItemRoute]="getProjectRoute"
         (selectedItemChange)="navigateToProject($event)"
     ></li>
 </wu-navbar>
