@@ -40,7 +40,7 @@ import javax.validation.constraints.Pattern;
  * @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
  */
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = "title", name = "uniqueTitle"))
+@Table()
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = MigrationProject.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MigrationProject implements Serializable
@@ -66,8 +66,8 @@ public class MigrationProject implements Serializable
     private boolean provisional = true;
 
     @Column(length = 120, unique = false, nullable = false)
-    @Size(min = 3, max = 120)
-    @Pattern(message = "The name must be at least 3 letters long.",
+    @Size(min = 3, max = 120, message = "The name must be at least 3 letters long.")
+    @Pattern(message = "The name must contain only alphanumeric characters",
             regexp = "\\s*\\w[- \\w]+\\w\\s*") // Allow whitespace around, limit to A-Za-z0-9-, allow spaces inside, at least 3 characters after whitespace trimmed.
     @NotNull
     private String title;

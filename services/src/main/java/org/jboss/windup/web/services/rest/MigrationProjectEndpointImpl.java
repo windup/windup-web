@@ -51,7 +51,7 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
     private WebPathUtil webPathUtil;
 
     @Override
-    public List<MigrationProjectAndAppCount> getMigrationProjects(Boolean includeProvisional)
+    public List<MigrationProjectAndAppCount> getMigrationProjects()
     {
         try
         {
@@ -59,7 +59,7 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
                     "SELECT project, COUNT(DISTINCT app) AS appCount "
                     + "\n FROM " + MigrationProject.class.getSimpleName() + " AS project "
                     + "\n LEFT JOIN project.applications AS app "
-                    + (Boolean.TRUE.equals(includeProvisional) ? "" : "\n WHERE project.provisional = FALSE")
+                    + "\n WHERE project.provisional = FALSE"
                     + "\n GROUP BY project.id";
 
             List<Object[]> entries = entityManager.createQuery(query, Object[].class).getResultList();
@@ -97,7 +97,8 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
     @Override
     public MigrationProject updateMigrationProject(MigrationProject migrationProject)
     {
-        if (null != getProjectIdByName(migrationProject.getTitle()))
+        Long otherProjectID = getProjectIdByName(migrationProject.getTitle());
+        if (otherProjectID != null && !otherProjectID.equals(migrationProject.getId()))
             throw new ValidationException("The project name is already in use: " + migrationProject.getTitle());
 
         return entityManager.merge(migrationProject);
@@ -160,7 +161,7 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
     @Override
     public Long getProjectIdByName(String title)
     {
-        String jql = "SELECT p.id FROM MigrationProject p WHERE LOWER(p.title) = LOWER(:title)";
+        String jql = "SELECT p.id FROM MigrationProject p WHERE LOWER(p.title) = LOWER(:title) AND p.provisional = FALSE";
         List<Long> ids = this.entityManager.createQuery(jql, Long.class)
                     .setParameter("title", title)
                     .getResultList();

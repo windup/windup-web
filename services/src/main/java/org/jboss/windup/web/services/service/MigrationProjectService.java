@@ -76,7 +76,7 @@ public class MigrationProjectService
      */
     public Collection<MigrationProject> getProjectByTitle(String title)
     {
-        String query = "SELECT proj FROM MigrationProject proj WHERE proj.title = :title";
+        String query = "SELECT proj FROM MigrationProject proj WHERE proj.title = :title and proj.provisional = FALSE";
 
         return this.entityManager.createQuery(query, MigrationProject.class)
                 .setParameter("title", title)
@@ -112,10 +112,8 @@ public class MigrationProjectService
         if (olderThanMinutes > 0)
             query += " AND pr.lastModified < DATEADD('MINUTE', -"+olderThanMinutes+", CURRENT_TIMESTAMP) "; // JPA had issues with a param here.
         List<MigrationProject> provisional = entityManager.createQuery(query, MigrationProject.class).getResultList();
-        LOG.info("Deleting " + provisional.size() + " provisional projects older than "+olderThanMinutes+" minutes.");
-        provisional.forEach(project -> {
-            this.deleteProject(project);
-        });
+        LOG.info("Deleted " + provisional.size() + " provisional projects older than "+olderThanMinutes+" minutes.");
+        provisional.forEach(this::deleteProject);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)

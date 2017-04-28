@@ -72,7 +72,7 @@ public abstract class AbstractGraphResourceTest
         if (this.execution != null)
             return;
 
-        Collection<MigrationProjectEndpoint.MigrationProjectAndAppCount> projectsAndCount = projectEndpoint.getMigrationProjects(false);
+        Collection<MigrationProjectEndpoint.MigrationProjectAndAppCount> projectsAndCount = projectEndpoint.getMigrationProjects();
         Collection<MigrationProject> projects = projectsAndCount.stream().map(project -> project.getMigrationProject())
                 .collect(Collectors.toList());
 

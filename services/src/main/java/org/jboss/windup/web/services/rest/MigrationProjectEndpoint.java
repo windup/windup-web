@@ -11,7 +11,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 
 /**
  * Provides a service for creating, updating, and deleting migration projects.
@@ -30,7 +29,7 @@ public interface MigrationProjectEndpoint
      */
     @GET
     @Path("list")
-    List<MigrationProjectAndAppCount> getMigrationProjects(@QueryParam("includeProvisional") Boolean includeProvisional);
+    List<MigrationProjectAndAppCount> getMigrationProjects();
 
     /**
      * Get a {@link MigrationProject} by id.

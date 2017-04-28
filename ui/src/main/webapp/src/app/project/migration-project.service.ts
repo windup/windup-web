@@ -42,8 +42,7 @@ export class MigrationProjectService extends AbstractService {
 
         if (event.isTypeOf(NewExecutionStartedEvent)) {
             monitoredProject.executions.push((<NewExecutionStartedEvent>event).execution);
-        }
-        else if (event.isTypeOf(ExecutionUpdatedEvent)) {
+        } else if (event.isTypeOf(ExecutionUpdatedEvent)) {
             let currentExecutionIndex = -1;
             let eventExecution = (<ExecutionUpdatedEvent>event).execution;
 
@@ -59,12 +58,10 @@ export class MigrationProjectService extends AbstractService {
             } else {
                 monitoredProject.executions.push(eventExecution);
             }
-        }
-        else if (event.isTypeOf(ApplicationRegisteredEvent)) {
+        } else if (event.isTypeOf(ApplicationRegisteredEvent)) {
             // create new array by merging project and event arrays together
             monitoredProject.applications = [...monitoredProject.applications, ...(<any>event).applications];
-        }
-        else if (event.isTypeOf(ApplicationDeletedEvent)) {
+        } else if (event.isTypeOf(ApplicationDeletedEvent)) {
             monitoredProject.applications = monitoredProject.applications.filter((app) => {
                 // keep only those items which are not in event applications
                 return (<any>event).applications.findIndex(eventApp => eventApp.id === app.id) === -1;
