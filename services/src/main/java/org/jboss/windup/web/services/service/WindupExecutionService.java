@@ -1,6 +1,9 @@
 package org.jboss.windup.web.services.service;
 
 import javax.annotation.Resource;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.jms.JMSContext;
 import javax.jms.Queue;
@@ -32,6 +35,7 @@ import java.util.logging.Logger;
 /**
  * @author <a href="mailto:dklingenberg@gmail.com">David Klingenberg</a>
  */
+@Stateless
 public class WindupExecutionService
 {
     private static Logger LOG = Logger.getLogger(WindupEndpointImpl.class.getSimpleName());
@@ -117,9 +121,11 @@ public class WindupExecutionService
         return execution;
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void cancelExecution(Long executionID)
     {
         WindupExecution execution = this.get(executionID);
+
         ExecutionStateCache.setCancelled(execution);
 
         execution.setState(ExecutionState.CANCELLED);

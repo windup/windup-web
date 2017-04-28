@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.OptimisticLockException;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
@@ -28,18 +29,14 @@ public class WindupEndpointImpl implements WindupEndpoint
     private static Logger LOG = Logger.getLogger(WindupEndpointImpl.class.getSimpleName());
 
     private static int MAX_LOG_SIZE = 1024 * 1024 * 3; // 3 Megabytes
-
+    private static String cachedCoreVersion = null;
     @PersistenceContext
     private EntityManager entityManager;
-
     @Inject
     private WindupExecutionService windupExecutionService;
-
     @Inject
     @FromFurnace
     private LogService logService;
-
-    private static String cachedCoreVersion = null;
 
     /**
      * @see org.jboss.windup.web.services.messaging.ExecutorMDB
@@ -75,7 +72,34 @@ public class WindupEndpointImpl implements WindupEndpoint
     @Override
     public void cancelExecution(Long executionID)
     {
-        this.windupExecutionService.cancelExecution(executionID);
+        for (int i = 0; i < 10; i++)
+        {
+            try
+            {
+                this.windupExecutionService.cancelExecution(executionID);
+                return;
+            }
+            catch (Exception e) {
+                if (!isOptimisticLockException(e))
+                    return;
+
+                LOG.info("Optimistic lock on first cancellation attempt for execution: " + executionID + "... trying again.");
+                try
+                {
+                    Thread.sleep(5000L);
+                }
+                catch (Exception ignored)
+                {
+                }
+            }
+        }
+    }
+
+    private boolean isOptimisticLockException(Throwable e) {
+        if (e instanceof OptimisticLockException)
+            return true;
+        else
+            return isOptimisticLockException(e.getCause());
     }
 
     @Override
@@ -113,17 +137,19 @@ public class WindupEndpointImpl implements WindupEndpoint
         return this.logService.getLogData(reportPath, MAX_LOG_SIZE);
     }
 
-
     @Override
     public String getCoreVersion()
     {
-        if (cachedCoreVersion == null) {
-            try {
+        if (cachedCoreVersion == null)
+        {
+            try
+            {
                 Properties props = new Properties();
                 props.load(WindupEndpointImpl.class.getClassLoader().getResourceAsStream("/META-INF/windup-web-services.build.properties"));
                 cachedCoreVersion = props.getProperty("version.windup.core");
             }
-            catch (IOException ex) {
+            catch (IOException ex)
+            {
                 LOG.severe("Couldn't read build.properties.");
                 cachedCoreVersion = "(failed to read)";
             }
