@@ -49,7 +49,7 @@
         </td>
         <td>{{execution.timeStarted | date: 'short'}}</td>
         <td>
-            <a class="pointer link cancel" *ngIf="canCancel(execution)" (click)="cancelExecution(execution)" title="Cancel">
+            <a class="pointer link cancel" [ngClass]="{'disabled': (execution.state == 'STARTED')}" *ngIf="canCancel(execution)" (click)="cancelExecution(execution)" title="{{execution.state == 'STARTED' ? (execution.state | wuPrettyExecutionStatus) + ' analysis can not be canceled' : 'Cancel'}}">
                 <i class="fa fa-times fa-fw"></i>
             </a>
             <!-- left for when dynamic report will be linked again
