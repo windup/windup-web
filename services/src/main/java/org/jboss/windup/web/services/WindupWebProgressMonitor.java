@@ -46,7 +46,7 @@ public class WindupWebProgressMonitor implements WindupProgressMonitor
 
         if (execution.getState() == ExecutionState.QUEUED) {
             execution.setState(ExecutionState.STARTED);
-            execution.setTimeStarted(new GregorianCalendar());
+            //execution.setTimeStarted(new GregorianCalendar());
         }
 
         if (ExecutionStateCache.isCancelled(execution))
