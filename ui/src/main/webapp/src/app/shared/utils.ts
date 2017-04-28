@@ -7,7 +7,7 @@ export module utils {
     export function getErrorMessage(error: any): string
     {
         if (error instanceof ProgressEvent) {
-            return "Server disconnected";
+            return "The network connection was lost. Please try again later.";
         } else if (typeof error == 'string') {
             return error;
         } else if (typeof error == 'object' && error.hasOwnProperty('message')) {
