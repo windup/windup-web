@@ -1,11 +1,21 @@
 package org.jboss.windup.web.services.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,18 +32,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import javax.validation.constraints.Pattern;
 
 /**
  * A migration project is a group of applications which are related to each other and migrated as a bigger enterprise system.
@@ -59,8 +58,17 @@ public class MigrationProject implements Serializable
     @Column(name = "version")
     private int version;
 
-    @Column(length = 256, unique = true, nullable = false)
-    @Size(min = 1, max = 256)
+    /**
+     * The project is being created in the wizard and should not be treated as a ready project.
+     */
+    @Column(nullable = true)
+    @ColumnDefault("FALSE")
+    private boolean provisional = true;
+
+    @Column(length = 120, unique = false, nullable = false)
+    @Size(min = 3, max = 120)
+    @Pattern(message = "The name must be at least 3 letters long.",
+            regexp = "\\s*\\w[- \\w]+\\w\\s*") // Allow whitespace around, limit to A-Za-z0-9-, allow spaces inside, at least 3 characters after whitespace trimmed.
     @NotNull
     private String title;
 
@@ -115,6 +123,16 @@ public class MigrationProject implements Serializable
     public void setId(final Long id)
     {
         this.id = id;
+    }
+
+    public boolean isProvisional()
+    {
+        return provisional;
+    }
+
+    public void setProvisional(boolean beingCreated)
+    {
+        this.provisional = beingCreated;
     }
 
     public int getVersion()

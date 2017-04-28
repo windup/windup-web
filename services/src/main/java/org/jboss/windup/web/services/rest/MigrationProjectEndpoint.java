@@ -11,11 +11,12 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
 /**
- *  Provides a service for creating, updating, and deleting migration projects.
+ * Provides a service for creating, updating, and deleting migration projects.
  *
- *  @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
+ * @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
  */
 @Path(MigrationProjectEndpoint.MIGRATION_PROJECTS_SUBPATH)
 @Consumes("application/json")
@@ -29,7 +30,7 @@ public interface MigrationProjectEndpoint
      */
     @GET
     @Path("list")
-    List<MigrationProjectAndAppCount> getMigrationProjects();
+    List<MigrationProjectAndAppCount> getMigrationProjects(@QueryParam("includeProvisional") Boolean includeProvisional);
 
     /**
      * Get a {@link MigrationProject} by id.
@@ -58,6 +59,13 @@ public interface MigrationProjectEndpoint
     @DELETE
     @Path("delete")
     void deleteProject(MigrationProject migration);
+
+    /**
+     * Delete old provisional projects.
+     */
+    @DELETE
+    @Path("deleteProvisional")
+    void deleteOldProvisionalProjects();
 
     /**
      * Look up a project ID by name.

@@ -24,11 +24,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * @author <a href="mailto:dklingenberg@gmail.com">David Klingenberg</a>
+ * @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
  */
 @Stateless
 public class MigrationProjectService
@@ -98,6 +100,24 @@ public class MigrationProjectService
         return project;
     }
 
+    /**
+     * Delete old projects created during wizard but not finished.
+     *
+     * @param olderThanMinutes The limit to consider provisional projects old.
+     */
+    @Transactional
+    public void deleteOldProvisionalProjects(int olderThanMinutes)
+    {
+        String query = "SELECT pr FROM " + MigrationProject.class.getSimpleName() + " pr WHERE pr.provisional = TRUE ";
+        if (olderThanMinutes > 0)
+            query += " AND pr.lastModified < DATEADD('MINUTE', -"+olderThanMinutes+", CURRENT_TIMESTAMP) "; // JPA had issues with a param here.
+        List<MigrationProject> provisional = entityManager.createQuery(query, MigrationProject.class).getResultList();
+        LOG.info("Deleting " + provisional.size() + " provisional projects older than "+olderThanMinutes+" minutes.");
+        provisional.forEach(project -> {
+            this.deleteProject(project);
+        });
+    }
+
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void deleteProject(MigrationProject project)
     {
@@ -115,11 +135,11 @@ public class MigrationProjectService
         project.getExecutions().forEach(execution -> {
             entityManager.remove(execution.getReportFilter());
         });
-        
+
         // removing all packages from packageMetadata due FK
         project.getApplications().forEach( application -> {
             application.getPackageMetadata().setPackages(Collections.emptySet());
-            entityManager.remove(application); 
+            entityManager.remove(application);
         });
 
         this.getAnalysisContexts(project).forEach(context -> entityManager.remove(context));
@@ -140,5 +160,5 @@ public class MigrationProjectService
             }
         }
     }
-    
+
 }

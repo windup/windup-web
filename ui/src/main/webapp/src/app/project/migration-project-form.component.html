@@ -1,6 +1,31 @@
 <div class="container-fluid">
     <form #projectForm="ngForm" (ngSubmit)="save()" class="form-horizontal wizard-form">
 
+        <style>
+            input:invalid {
+                border-color: #c00;
+                box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+            }
+            input:invalid:focus {
+                border-color: #900;
+                box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 6px #f33;
+            }
+            input:invalid.ng-untouched {
+                border-color: initial;
+                box-shadow: initial;
+            }
+
+            .error-msg-invalid { display: none; }
+            input:invalid ~ .error-msg-invalid {
+                color: #c00;
+                display: initial;
+            }
+            input:invalid.ng-untouched ~ .error-msg-invalid {
+                color: #c00;
+                display: none;
+            }
+        </style>
+
         <div class="form-group">
             <h1>{{title}}</h1>
 
@@ -17,23 +42,23 @@
             <input #projectTitleControl="ngModel"
                    name="projectTitle"
                    id="idProjectTitle"
-                   [(ngModel)]="model.title"
-                   required
-                   wuProjectNameNotUsed
-                   pattern="\s*[^\s].*\s*"
-                   minlength="1"
-                   maxlength="120"
-                   [project]="model"
                    type="text"
                    placeholder="my-project"
-                   class="form-control">
-            <p class="help-block" i18n="hint">A unique name for the project</p>
-            <span [class.hidden]="!titleIsDuplicated(projectTitleControl)" class="help-block" i18n="valid. error"> The entered name is already in use. </span>
+                   required pattern="\s*\w[- \w]+\w\s*" minlength="3" maxlength="120"
+                   [(ngModel)]="model.title"
+                   wuProjectNameNotUsed
+                   [project]="model"
+                   class="form-control"
+                   (blur)="$event.target.value = $event.target.value.trim();"
+            >
+            <div i18n="hint">A unique name for the project</div>
+            <div [class.hidden]="!titleIsDuplicated(projectTitleControl)" class="help-block" i18n="valid. error"> The entered name is already in use. </div>
+            <div class="error-msg-invalid help-block" i18n="valid. error"> The name must be 3 to 120 letters long. </div>
         </div>
 
         <div class="form-group">
             <label class="control-label" for="idDescription">Description</label>
-            <textarea name="description" id="idDescription" name="idDescription" class="form-control" i18n="placeholder" placeholder="A short description of the project." [rows]="getDescriptionHeight()"
+            <textarea name="description" id="idDescription" name="idDescription" class="form-control" maxlength="4095" i18n="placeholder" placeholder="A short description of the project." [rows]="getDescriptionHeight()"
                 #controlDescription="ngModel" [(ngModel)]="model.description"></textarea>
             <span [class.hidden]="!hasError(controlDescription)" class="help-block">
                 The description must contain fewer than 4096 characters.
