@@ -25,7 +25,7 @@ export class ProjectNameNotExistsValidator implements Validator {
         let projectService = this.projectService;
 
         return new Promise(resolve => {
-            projectService.getIdByName(control.value).subscribe(result => {
+            projectService.getIdByName(control.value.trim()).subscribe(result => {
                 if (result == null) {
                     resolve(null);
                 } else {

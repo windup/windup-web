@@ -13,7 +13,7 @@ export class FormComponent {
      * It makes sure that the control is not-pristine (don't show errors on fields the user hasn't touched yet)
      * and that the control is already rendered.
      */
-    hasError(control:NgControl) {
+    hasError(control:NgControl, errorName:string) {
         if (control == null)
             return false;
 
@@ -21,7 +21,11 @@ export class FormComponent {
             return false;
 
         let touched = control.touched == null ? false : control.touched;
-        return !control.valid && touched;
+        if (errorName) {
+            return control.hasError(errorName) && touched;
+        } else {
+            return !control.valid && touched;
+        }
     }
 
     handleError(error:any) {

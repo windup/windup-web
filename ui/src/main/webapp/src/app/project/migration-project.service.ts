@@ -1,5 +1,5 @@
-import {Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions} from '@angular/http';
+import {Injectable} from "@angular/core";
+import {Headers, Http, RequestOptions} from "@angular/http";
 
 import {Constants} from "../constants";
 import {MigrationProject} from "windup-services";
@@ -11,7 +11,6 @@ import {
     ApplicationRegisteredEvent, ApplicationDeletedEvent, UpdateMigrationProjectEvent, DeleteMigrationProjectEvent
 } from "../core/events/windup-event";
 import {EventBusService} from "../core/events/event-bus.service";
-import {AnalysisContext} from "windup-services";
 import {Cached} from "../shared/cache.service";
 
 @Injectable()
@@ -21,6 +20,7 @@ export class MigrationProjectService extends AbstractService {
     private CREATE_MIGRATION_PROJECT_URL = "/migrationProjects/create";
     private UPDATE_MIGRATION_PROJECT_URL = "/migrationProjects/update";
     private DELETE_MIGRATION_PROJECT_URL = '/migrationProjects/delete';
+    private DELETE_PROVISIONAL_PROJECTS_URL = '/migrationProjects/deleteProvisional';
     private GET_ID_BY_NAME_URL = '/migrationProjects/id-by-name';
 
     private monitoredProjects = new Map<number, MigrationProject>();
@@ -120,6 +120,12 @@ export class MigrationProjectService extends AbstractService {
             .map(res => <MigrationProjectAndCount[]> res.json())
             // The consuming code still sees  MigrationProject, only with .appCount added.
             .map(entries => entries.map(entry => (entry.migrationProject["applicationCount"] = entry.applicationCount, entry.migrationProject)))
+            .catch(this.handleError);
+    }
+
+    deleteProvisionalProjects(): Observable<void> {
+        return this._http.delete(Constants.REST_BASE + this.DELETE_PROVISIONAL_PROJECTS_URL)
+            .map(res => res.json())
             .catch(this.handleError);
     }
 

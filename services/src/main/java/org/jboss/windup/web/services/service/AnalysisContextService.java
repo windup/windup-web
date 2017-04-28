@@ -129,7 +129,17 @@ public class AnalysisContextService
         this.loadPackagesToAnalysisContext(analysisContext);
         analysisContext.setMigrationProject(original.getMigrationProject());
 
-        return entityManager.merge(analysisContext);
+        /*
+         * This promotes the provisional project (temporary instance before finished in wizard)
+         * to a normal project that is listed in project list.
+         *
+         * It seems a little out of place here, but this is the only place that projects are
+         * currently finalized. (jsight - 2017/04/28)
+         */
+        analysisContext.getMigrationProject().setProvisional(Boolean.FALSE);
+
+        AnalysisContext merged = entityManager.merge(analysisContext);
+        return merged;
     }
 
     private void ensureSystemRulesPathsPresent(AnalysisContext analysisContext)

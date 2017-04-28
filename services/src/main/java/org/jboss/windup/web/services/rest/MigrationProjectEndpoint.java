@@ -13,9 +13,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 /**
- *  Provides a service for creating, updating, and deleting migration projects.
+ * Provides a service for creating, updating, and deleting migration projects.
  *
- *  @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
+ * @author <a href="http://ondra.zizka.cz/">Ondrej Zizka, zizka@seznam.cz</a>
  */
 @Path(MigrationProjectEndpoint.MIGRATION_PROJECTS_SUBPATH)
 @Consumes("application/json")
@@ -58,6 +58,13 @@ public interface MigrationProjectEndpoint
     @DELETE
     @Path("delete")
     void deleteProject(MigrationProject migration);
+
+    /**
+     * Delete old provisional projects.
+     */
+    @DELETE
+    @Path("deleteProvisional")
+    void deleteOldProvisionalProjects();
 
     /**
      * Look up a project ID by name.
