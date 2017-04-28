@@ -38,7 +38,8 @@ export class MigrationProjectFormComponent extends FormComponent implements OnIn
     ngOnInit(): void {
         this.routerSubscription = this._router.events.filter(event => event instanceof NavigationEnd).subscribe(_ => {
             let flatRouteData = this._routeFlattener.getFlattenedRouteData(this._activatedRoute.snapshot);
-            this.title = flatRouteData.data['displayName'];
+            if (flatRouteData.data['displayName'])
+                this.title = flatRouteData.data['displayName'];
 
             if (flatRouteData.data['project']) {
                 this.editMode = true;
