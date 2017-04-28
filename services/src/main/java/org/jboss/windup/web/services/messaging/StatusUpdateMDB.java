@@ -1,5 +1,11 @@
 package org.jboss.windup.web.services.messaging;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.GregorianCalendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
@@ -28,24 +34,19 @@ import org.jboss.windup.web.services.model.ReportFilter;
 import org.jboss.windup.web.services.model.WindupExecution;
 import org.jboss.windup.web.services.service.DefaultGraphPathLookup;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.GregorianCalendar;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * This receives updates from the Windup execution backend processes and persists the current state to the database.
  *
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
 @MessageDriven(activationConfig = {
-    @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
-    @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "AUTO_ACKNOWLEDGE"),
-    @ActivationConfigProperty(propertyName = "maxSession", propertyValue = "1"),
-    @ActivationConfigProperty(propertyName = "destination", propertyValue = MessagingConstants.STATUS_UPDATE_QUEUE),
+            @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
+            @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "AUTO_ACKNOWLEDGE"),
+            @ActivationConfigProperty(propertyName = "maxSession", propertyValue = "1"),
+            @ActivationConfigProperty(propertyName = "destination", propertyValue = MessagingConstants.STATUS_UPDATE_QUEUE),
 })
-public class StatusUpdateMDB extends AbstractMDB implements MessageListener {
+public class StatusUpdateMDB extends AbstractMDB implements MessageListener
+{
     private static Logger LOG = Logger.getLogger(StatusUpdateMDB.class.getName());
 
     @PersistenceContext
@@ -74,7 +75,7 @@ public class StatusUpdateMDB extends AbstractMDB implements MessageListener {
 
         try
         {
-            WindupExecution execution = (WindupExecution)((ObjectMessage) message).getObject();
+            WindupExecution execution = (WindupExecution) ((ObjectMessage) message).getObject();
             LOG.info("Received execution update event: " + execution);
 
             // Update the DB with this information
@@ -84,7 +85,15 @@ public class StatusUpdateMDB extends AbstractMDB implements MessageListener {
                 LOG.warning("Received unrecognized status update for execution: " + fromDB);
 
             fromDB.setLastModified(new GregorianCalendar());
-            fromDB.setTimeStarted(execution.getTimeStarted());
+            if (fromDB.getState() == ExecutionState.QUEUED)
+            {
+                fromDB.setTimeStarted(new GregorianCalendar());
+            }
+            else
+            {
+                fromDB.setTimeStarted(execution.getTimeStarted());
+            }
+
             fromDB.setTimeCompleted(execution.getTimeCompleted());
 
             fromDB.setTotalWork(execution.getTotalWork());
@@ -135,8 +144,8 @@ public class StatusUpdateMDB extends AbstractMDB implements MessageListener {
     }
 
     private void setReportIndexPath(WindupExecution execution)
-            throws HeuristicMixedException, HeuristicRollbackException,
-            NamingException, NotSupportedException, RollbackException, SystemException
+                throws HeuristicMixedException, HeuristicRollbackException,
+                NamingException, NotSupportedException, RollbackException, SystemException
     {
         AnalysisContext context = execution.getAnalysisContext();
         Path reportDirectory = Paths.get(execution.getOutputPath());
