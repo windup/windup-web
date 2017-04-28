@@ -7,6 +7,8 @@ import {NotificationService} from "../core/notification/notification.service";
 import {utils} from "../shared/utils";
 import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
 import {OrderDirection, SortingService} from "../shared/sort/sorting.service";
+import {WindupExecutionService} from "../services/windup-execution.service";
+import {WindupService} from "../services/windup.service";
 
 @Component({
     templateUrl: './project-list.component.html',
@@ -50,7 +52,8 @@ export class ProjectListComponent implements OnInit, AfterViewInit {
         private _router: Router,
         private _migrationProjectService: MigrationProjectService,
         private _notificationService: NotificationService,
-        private _sortingService: SortingService<MigrationProject>
+        private _sortingService: SortingService<MigrationProject>,
+        private _windupService: WindupService
     ) {}
 
     ngOnInit():any {
@@ -139,14 +142,26 @@ export class ProjectListComponent implements OnInit, AfterViewInit {
 
     confirmDeleteProject(event: Event, project: MigrationProject) {
         event.stopPropagation();
+        this._windupService.getProjectExecutions(project.id).subscribe((executions) => {
+            let inProgressExecution = executions.find((execution) => {
+                return execution.state == "QUEUED" || execution.state == "STARTED";
+            });
 
-        this.deleteProjectModal.title = `Are you sure you want to delete the project <strong>'${project.title}'</strong>?`;
-        this.deleteProjectModal.body = `<p>This will <strong>delete all resources</strong> associated with the project \
+            if (inProgressExecution) {
+                this._notificationService.error(`Cannot delete project '${project.title}' while an analysis is in progress.`);
+                return;
+            }
+
+            this.deleteProjectModal.title = `Are you sure you want to delete the project <strong>'${project.title}'</strong>?`;
+            this.deleteProjectModal.body = `<p>This will <strong>delete all resources</strong> associated with the project \
                                             '${project.title}' and <strong>cannot be undone</strong>. \
                                             Make sure this is something you really want to do!</p>`;
-        this.deleteProjectModal.confirmPhrase = project.title;
-        this.deleteProjectModal.data = project;
+            this.deleteProjectModal.confirmPhrase = project.title;
+            this.deleteProjectModal.data = project;
 
-        this.deleteProjectModal.show();
+            this.deleteProjectModal.show();
+        }, error => {
+            this._notificationService.error(utils.getErrorMessage(error));
+        });
     }
 }
