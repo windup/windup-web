@@ -159,10 +159,13 @@ export class AnalysisContextFormComponent extends FormComponent
                     this.availableApps = apps;
                     this.analysisContext.applications = apps.slice();
                 });
+
             }
 
             this.isInWizard = flatRouteData.data.hasOwnProperty('wizard') && flatRouteData.data['wizard'];
         });
+
+       
     }
 
     ngOnDestroy(): void {
@@ -276,7 +279,11 @@ export class AnalysisContextFormComponent extends FormComponent
             return this._dirty;
         }
 
-        return this.analysisContextForm.dirty;
+        // Q: Why is this here? A: Because why returning something what could be Undefined?
+        if (this.analysisContextForm) {
+            return this.analysisContextForm.dirty;
+        }
+        return false;
     }
 
     advancedOptionsChanged(advancedOptions: AdvancedOption[]) {
@@ -341,23 +348,3 @@ enum Action {
     SaveAndRun = 1
 }
 
-
-/*,
-{    "id": 102,
-    "name": "Cloud readiness verifications",
-    "source": null,
-    "target": {
-        "id": 5,
-        "version": 0,
-        "name": "openshift",
-        "versionRange": null
-    }
-} ]    ,
-    {
-        "id": ?,
-        "version": 0,
-        "name": "cloud-readiness",
-        "versionRange": null
-    }
-}
-*/
