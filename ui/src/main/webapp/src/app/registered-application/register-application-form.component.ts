@@ -116,6 +116,17 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     }
 
     private registerPath() {
+        /**
+         * If there are already some uploaded applications, we consider form to be valid
+         * But if user is on Register Path section, clicking submit button triggers registering app by path with invalid
+         *  path.
+         *  To avoid that, treat it as success and do the navigation right away, even when no input path is set.
+         */
+        if ((!this.fileInputPath || this.fileInputPath.length === 0) && this.isValid) {
+            this.navigateOnSuccess();
+            return;
+        }
+
         if (this.isDirWithApps) {
             this._registeredApplicationService.registerApplicationInDirectoryByPath(this.project, this.fileInputPath)
                 .subscribe(
