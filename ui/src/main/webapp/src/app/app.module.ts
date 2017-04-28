@@ -130,6 +130,7 @@ import {AboutPageComponent} from "./misc/about.component";
 import {ExpandCollapseComponent} from "./shared/expand-collapse.component";
 import {ApplicationQueueListComponent} from "./registered-application/application-queue-list.component";
 import {DialogService} from "./shared/dialog/dialog.service";
+import {IsRouteActiveDirective} from "./shared/is-route-active.directive";
 
 /**
  * Load all mapping data from the generated files.
@@ -238,7 +239,8 @@ initializeModelMappingData();
         AlternativeUploadQueueComponent,
         AboutPageComponent,
         ExpandCollapseComponent,
-        ApplicationQueueListComponent
+        ApplicationQueueListComponent,
+        IsRouteActiveDirective
     ],
     providers: [
         appRoutingProviders,
