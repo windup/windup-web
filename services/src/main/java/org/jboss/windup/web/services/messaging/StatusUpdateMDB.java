@@ -85,14 +85,7 @@ public class StatusUpdateMDB extends AbstractMDB implements MessageListener
                 LOG.warning("Received unrecognized status update for execution: " + fromDB);
 
             fromDB.setLastModified(new GregorianCalendar());
-            if (fromDB.getState() == ExecutionState.QUEUED)
-            {
-                fromDB.setTimeStarted(new GregorianCalendar());
-            }
-            else
-            {
-                fromDB.setTimeStarted(execution.getTimeStarted());
-            }
+            fromDB.setTimeStarted(execution.getTimeStarted());
 
             fromDB.setTimeCompleted(execution.getTimeCompleted());
 
