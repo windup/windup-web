@@ -33,7 +33,11 @@
                         </a>
                     </span -->
                     <span class="fa-lg action-item" i18n-title="Delete application" title="Delete">
-                        <a (click)="confirmDeleteApplication(app)"  class="action-button">
+                        <a (click)="confirmDeleteApplication(app)"
+                           class="action-button"
+                           [ngClass]="{'disabled': (this.activeExecutions?.length > 0), 'action-button': true}"
+                           title="{{(this.activeExecutions?.length > 0) ? 'Cannot delete while an analysis is in progress' : 'Delete'}}"
+                        >
                             <i class="fa fa-trash-o"></i>
                         </a>
                     </span>

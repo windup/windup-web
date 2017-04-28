@@ -14,6 +14,7 @@ import {
 import {ExecutionsMonitoringComponent} from "../executions/executions-monitoring.component";
 import {MigrationProject} from "windup-services";
 import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
+import {WindupService} from "../services/windup.service";
 
 @Component({
     templateUrl: './application-list.component.html',
@@ -37,6 +38,7 @@ export class ApplicationListComponent extends ExecutionsMonitoringComponent impl
         private _registeredApplicationsService: RegisteredApplicationService,
         private _notificationService: NotificationService,
         _windupExecutionService: WindupExecutionService,
+        private _windupService: WindupService,
         private _eventBus: EventBusService
     ) {
         super(_windupExecutionService);
@@ -61,6 +63,9 @@ export class ApplicationListComponent extends ExecutionsMonitoringComponent impl
 
         this._activatedRoute.parent.parent.data.subscribe((data: {project: MigrationProject}) => {
             this.reloadMigrationProject(data.project);
+            this._windupService.getProjectExecutions(this.project.id).subscribe(executions => {
+                this.loadActiveExecutions(executions);
+            });
         });
     }
 
