@@ -2,13 +2,6 @@
 <h1>{{labels.heading}}</h1>
 
 <form [formGroup]="registrationForm" (ngSubmit)="register()"  class="form-horizontal" ng2FileDrop [uploader]="multipartUploader">
-
-    <!-- Errors -->
-    <div *ngFor="let errorMessage of errorMessages" class="form-errors alert alert-danger">
-        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-        {{errorMessage}}
-    </div>
-
     <div class="form-group upload-queue">
         <div class="col-md-12">
             <wu-application-queue-list [registeredApplications]="project?.applications" [project]="project">

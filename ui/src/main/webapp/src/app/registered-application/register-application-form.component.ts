@@ -17,6 +17,8 @@ import {FileItem} from "ng2-file-upload";
 import {EventBusService} from "../core/events/event-bus.service";
 import {ApplicationDeletedEvent, UpdateMigrationProjectEvent} from "../core/events/windup-event";
 import {MigrationProjectService} from "../project/migration-project.service";
+import {NotificationService} from "../core/notification/notification.service";
+import {utils} from "../shared/utils";
 
 @Component({
     templateUrl: "./register-application-form.component.html",
@@ -51,13 +53,14 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
         protected _formBuilder: FormBuilder,
         protected _routeFlattener: RouteFlattenerService,
         protected _eventBus: EventBusService,
-        protected _migrationProjectService: MigrationProjectService
+        protected _migrationProjectService: MigrationProjectService,
+        protected _notificationService: NotificationService
     ) {
         super();
         this.multipartUploader = _registeredApplicationService.getMultipartUploader();
         this.multipartUploader.onSuccessItem = () => this.countUploadedApplications++;
         this.multipartUploader.onErrorItem = (item, response) => {
-            this.errorMessages.push(response);
+            this._notificationService.error(utils.getErrorMessage(response));
         };
         this.multipartUploader.onAfterAddingFile = () => this.registerUploaded();
     }
@@ -183,6 +186,10 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
      */
     projectHasApplications() {
         return (this.project && this.project.applications && this.project.applications.length > 0);
+    }
+
+    handleError(error: any) {
+        this._notificationService.error(utils.getErrorMessage(error));
     }
 
     public get isValid() {
