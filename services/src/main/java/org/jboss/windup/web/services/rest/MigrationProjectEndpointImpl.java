@@ -99,7 +99,6 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
     public void deleteProject(MigrationProject migrationProject)
     {
         MigrationProject project = this.getMigrationProject(migrationProject.getId());
-        boolean jobsCancelled = false;
 
         List<WindupExecution> pendingExecutions = new ArrayList<>();
         for (WindupExecution execution : project.getExecutions())
@@ -108,7 +107,6 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
             {
             case QUEUED:
             case STARTED:
-                jobsCancelled = true;
                 this.windupExecutionService.cancelExecution(execution.getId());
 
                 pendingExecutions.add(execution);
@@ -147,7 +145,7 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
     @Override
     public Long getProjectIdByName(String title)
     {
-        String jql = "SELECT id FROM MigrationProject p WHERE LOWER(p.title) = LOWER(:title)";
+        String jql = "SELECT p.id FROM MigrationProject p WHERE LOWER(p.title) = LOWER(:title)";
         List<Long> ids = this.entityManager.createQuery(jql, Long.class)
                     .setParameter("title", title)
                     .getResultList();
