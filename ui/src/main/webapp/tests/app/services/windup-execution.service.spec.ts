@@ -54,6 +54,26 @@ describe("WindupExecution service", () => {
         eventBusMock = jasmine.createSpyObj('EventBusService', [
             'fireEvent'
         ]);
+
+        Object.defineProperty(eventBusMock, 'onEvent', {
+            value: {
+                filter: () => {
+                    return {
+                        filter: () => {
+                            return {
+                                subscribe: () => {}
+                            }
+                        },
+                        subscribe: () => {}
+                    }
+                }
+            }
+        });
+
+        console.log("1Mock: ", eventBusMock);
+        console.log("2Mock onEvent: " + eventBusMock.onEvent);
+        console.log("3Mock onEvent: " + eventBusMock.onEvent.subscribe);
+
         schedulerMock = new SchedulerServiceMock();
         windupExecutionService = new WindupExecutionService(windupServiceMock, eventBusMock, schedulerMock);
     });
