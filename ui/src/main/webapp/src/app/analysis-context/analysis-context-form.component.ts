@@ -25,7 +25,8 @@ import {forkJoin} from "rxjs/observable/forkJoin";
 import {WINDUP_WEB} from "../app.module";
 
 @Component({
-    templateUrl: './analysis-context-form.component.html'
+    templateUrl: './analysis-context-form.component.html',
+    styleUrls: ['analysis-context-form.component.scss']
 })
 export class AnalysisContextFormComponent extends FormComponent
     implements OnInit, OnDestroy, IsDirty

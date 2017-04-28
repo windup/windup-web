@@ -1,5 +1,13 @@
-<div class="container-fluid">
-    <h1 i18n>Configuration</h1>
+<div [ngClass]="{'panel-body': !isInWizard, 'container-fluid': isInWizard}">
+    <div class="header-bar">
+        <h2>Configuration</h2>
+        <!--
+        <div *ngIf=!isInWizard" class="save-and-run">
+            <div class="button-container form-group">
+            </div>
+        </div>
+        -->
+    </div>
 
     <h2 *ngIf="!project" i18n>Loading...</h2>
 
