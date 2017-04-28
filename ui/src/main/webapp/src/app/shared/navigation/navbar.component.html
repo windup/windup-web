@@ -2,8 +2,9 @@
     <div class="collapse navbar-collapse navbar-collapse-1">
         <div *ngIf="showLogotype" id="header-logo-wrapper">
             <a [routerLink]="['/']">
-                <div id="header-logo"><strong>Red Hat Application Migration Toolkit</strong> - Web Console</div>
+                <span id="header-logo"><strong>Red Hat Application Migration Toolkit</strong> - Web Console</span>
             </a>
+            <a class="pointer link" target="_blank" href="https://developers.redhat.com/products/rhamt/overview/" style="color: #ff0000">(Beta)</a>
         </div>
         <ul class="nav navbar-nav navbar-primary" *ngIf="showMenuItems">
             <li [routerLinkActive]="['active']" class="home">

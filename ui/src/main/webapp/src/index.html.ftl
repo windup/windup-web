@@ -65,7 +65,9 @@
     <div class="navbar">
         <div class="collapse navbar-collapse navbar-collapse-1">
             <div id="header-logo-wrapper">
-                <div id="header-logo"><strong>Red Hat Application Migration Toolkit</strong> - Web Console</div>
+                <div id="header-logo"><strong>Red Hat Application Migration Toolkit</strong> - Web Console
+                    <a class="pointer link" target="_blank" href="https://developers.redhat.com/products/rhamt/overview/" style="color: #ff0000">(Beta)</a>
+                </div>
             </div>
         </div>
     </div>
