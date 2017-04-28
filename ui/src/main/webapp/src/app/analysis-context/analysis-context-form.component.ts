@@ -125,36 +125,33 @@ export class AnalysisContextFormComponent extends FormComponent
             this.configurationOptions = options;
         });
 
-        ///this._appService.getApplications().subscribe( apps => this.updateAvailableApps(apps) );
-
         this.routerSubscription = this._router.events.filter(event => event instanceof NavigationEnd).subscribe(_ => {
             let flatRouteData = this._routeFlattener.getFlattenedRouteData(this._activatedRoute.snapshot);
             if (flatRouteData.data['project']) {
                 let project = flatRouteData.data['project'];
 
-                if (project.defaultAnalysisContextId == null) {
-                    this.initializeAnalysisContext();
-                } else {
-                    this._analysisContextService.get(project.defaultAnalysisContextId)
-                        .subscribe(context => {
-                            this.analysisContext = context;
-                            if (this.analysisContext.migrationPath == null)
-                                this.analysisContext.migrationPath = AnalysisContextFormComponent.DEFAULT_MIGRATION_PATH;
-                        });
-                }
-
-                // Reload the App from the service to ensure fresh data
-                this._migrationProjectService.get(project.id).subscribe(loadedProject => {
-                    this.project = loadedProject;
-                    this.loadPackageMetadata();
-                });
-
                 // Load the apps of this project.
                 this._appService.getApplicationsByProjectID(project.id).subscribe(apps => {
                     this.availableApps = apps;
-                    this.analysisContext.applications = apps.slice();
-                });
 
+                    // Reload the App from the service to ensure fresh data
+                    this._migrationProjectService.get(project.id).subscribe(loadedProject => {
+                        this.project = loadedProject;
+                        if (project.defaultAnalysisContextId == null) {
+                            this.initializeAnalysisContext();
+                            this.analysisContext.applications = apps.slice();
+                        } else {
+                            this._analysisContextService.get(project.defaultAnalysisContextId)
+                                .subscribe(context => {
+                                    this.analysisContext = context;
+                                    if (this.analysisContext.migrationPath == null)
+                                        this.analysisContext.migrationPath = AnalysisContextFormComponent.DEFAULT_MIGRATION_PATH;
+                                    this.analysisContext.applications = apps.slice();
+                                });
+                        }
+                        this.loadPackageMetadata();
+                    });
+                });
             }
 
             this.isInWizard = flatRouteData.data.hasOwnProperty('wizard') && flatRouteData.data['wizard'];
@@ -286,6 +283,11 @@ export class AnalysisContextFormComponent extends FormComponent
     }
 
     onSubmit() {
+        // HACK - this readds all of the apps in case the weird bug strikes that causes some not to be selected
+        if (this.isInWizard && !this.analysisContext.applications || this.analysisContext.applications.length == 0) {
+            this.analysisContext.applications = this.availableApps.slice();
+        }
+
         this._analysisContextService.saveAsDefault(this.analysisContext, this.project).subscribe(
             updatedContext => {
                 this._dirty = false;

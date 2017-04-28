@@ -113,6 +113,9 @@ export class ApplicationListComponent extends ExecutionsMonitoringComponent impl
     }
 
     public confirmDeleteApplication(application: RegisteredApplication) {
+        if (this.activeExecutions && this.activeExecutions.length > 0)
+            return false;
+
         this.deleteAppDialog.data = application;
         this.deleteAppDialog.title = 'Confirm application deletion';
         this.deleteAppDialog.body = `Do you really want to delete the “${application.title}” application?`;
