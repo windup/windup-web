@@ -1,4 +1,4 @@
-<div class="panel-body">
+<div [ngClass]="{'panel-body': !isInWizard, 'container-fluid': isInWizard}">
     <div class="header-bar">
         <h2>Configuration</h2>
         <!--
