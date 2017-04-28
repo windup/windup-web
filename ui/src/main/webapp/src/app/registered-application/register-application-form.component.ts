@@ -171,8 +171,8 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
             this.labels.uploadButton = 'Upload';
         } else if (this.mode === 'UPLOADED') {
             // this is not really nice, but when using UPLOADED mode, upload is done automatically
-            // so no action is actually being executed, so label is 'Done'
-            this.labels.uploadButton = 'Done';
+            // so no action is actually being executed, so label is 'Done'. Update: Marc requested change to 'Save'.
+            this.labels.uploadButton = 'Save';
         }
     }
 
