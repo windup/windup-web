@@ -72,7 +72,9 @@
         <!-- Packages -->
         <div class="form-group">
             <label class="control-label" i18n>Included packages</label>
-            <strong *ngIf="!packageTreeLoaded"><span class="spinner spinner-xs spinner-inline"></span>Loading...</strong>
+            <div class="loading-packages" *ngIf="!packageTreeLoaded">
+                <p><span class="spinner spinner-xs spinner-inline"></span>Analyzing packages...</p>
+            </div>
             <wu-js-tree-wrapper [treeNodes]="packageTree" [(selectedNodes)]="analysisContext.includePackages">
             </wu-js-tree-wrapper>
             <p class="help-block">Select the Java packages that will be decompiled and analyzed. If no package is selected, all classes will be considered.</p>
@@ -82,7 +84,9 @@
             <div class="form-group">
                 <div>
                     <label class="control-label" i18n>Excluded packages</label>
-                    <strong *ngIf="!packageTreeLoaded"><span class="spinner spinner-xs spinner-inline"></span>Loading...</strong>
+                    <div class="loading-packages" *ngIf="!packageTreeLoaded">
+                        <p><span class="spinner spinner-xs spinner-inline"></span>Analyzing packages...</p>
+                    </div>
                     <wu-js-tree-wrapper [treeNodes]="packageTree" [(selectedNodes)]="analysisContext.excludePackages">
                     </wu-js-tree-wrapper>
                 </div>

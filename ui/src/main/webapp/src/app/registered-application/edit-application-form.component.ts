@@ -10,6 +10,7 @@ import {RegisterApplicationFormComponent} from "./register-application-form.comp
 import {RouteFlattenerService} from "../core/routing/route-flattener.service";
 import {EventBusService} from "../core/events/event-bus.service";
 import {MigrationProjectService} from "../project/migration-project.service";
+import {NotificationService} from "../core/notification/notification.service";
 
 @Component({
     templateUrl: './register-application-form.component.html',
@@ -25,10 +26,11 @@ export class EditApplicationFormComponent extends RegisterApplicationFormCompone
         _formBuilder: FormBuilder,
         _routeFlattener: RouteFlattenerService,
         _eventBus: EventBusService,
-        _migrationProjectService: MigrationProjectService
+        _migrationProjectService: MigrationProjectService,
+        _notificationService: NotificationService
     ) {
         super(_router, _activatedRoute, _fileService, _registeredApplicationService, _formBuilder, _routeFlattener,
-            _eventBus, _migrationProjectService);
+            _eventBus, _migrationProjectService, _notificationService);
 
         this.labels.heading = 'Update application';
         this.labels.uploadButton = 'Update';

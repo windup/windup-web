@@ -11,7 +11,9 @@ import {FormControl} from "@angular/forms";
 @Component({
     templateUrl: './migration-project-form.component.html',
     styles: [`
-      
+        p.help-block {
+            color: #767676;
+        }      
     `]
 })
 export class MigrationProjectFormComponent extends FormComponent implements OnInit, OnDestroy
