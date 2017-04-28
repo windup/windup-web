@@ -12,12 +12,7 @@ import {NotificationService} from "../core/notification/notification.service";
 import {utils} from "../shared/utils";
 
 @Component({
-    template: `<wu-executions-list 
-            (reloadRequestEvent)="refreshExecutionList()" 
-            (runExecution)="startExecution()"
-            [executions]="executions" 
-            [activeExecutions]="activeExecutions">
-    </wu-executions-list>`
+    templateUrl: './project-executions.component.html'
 })
 export class ProjectExecutionsComponent extends ExecutionsMonitoringComponent implements OnInit {
     protected executions: WindupExecution[];

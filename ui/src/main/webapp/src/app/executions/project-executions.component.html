@@ -1,0 +1,23 @@
+<div class="panel-body" *ngIf="executions?.length == 0">
+    <div class="header-bar">
+        <h2>Analysis</h2>
+    </div>
+
+    <div  class="blank-slate-pf" style="border: none;">
+        <div class="blank-slate-pf-main-action">
+            <p>There are no analysis in your project. Configure and execute one first.</p>
+            <a [routerLink]="['/projects', project.id, 'analysis-context']"
+               class="clickable btn btn-primary btn-lg"
+               i18n="Configure Analysis Button">
+                Configure Analysis
+            </a>
+        </div>
+    </div>
+
+</div>
+<wu-executions-list *ngIf="executions?.length > 0"
+        (reloadRequestEvent)="refreshExecutionList()"
+        (runExecution)="startExecution()"
+        [executions]="executions"
+        [activeExecutions]="activeExecutions">
+</wu-executions-list>
