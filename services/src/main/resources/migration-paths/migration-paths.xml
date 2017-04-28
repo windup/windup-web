@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <migration-paths>
+    <path id="90">
+        <name>None</name>
+    </path>
+
     <path id="100">
         <name>Migration to Red Hat JBoss EAP 6</name>
         <target id="eap" version-range="[6]"/>

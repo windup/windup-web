@@ -74,16 +74,10 @@ export class AnalysisContextFormComponent extends FormComponent
             }
         },
         {
-            "id": 102,
+            "id": 90,
             "name": "None",
             "source": null,
-            "target": {
-                "id": 5,
-                "version": 0,
-                "name": "cloud-readiness",
-                "versionRange": null
-            }
-
+            "target": null
         }
     ];
 
