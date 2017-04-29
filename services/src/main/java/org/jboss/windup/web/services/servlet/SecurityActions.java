@@ -30,7 +30,8 @@ class SecurityActions {
     static HttpSessionImpl forSession(final Session session, final ServletContext servletContext, final boolean newSession) {
         if (System.getSecurityManager() == null) {
             return HttpSessionImpl.forSession(session, servletContext, newSession);
-        } else {
+        }
+        else {
             return AccessController.doPrivileged(new PrivilegedAction<HttpSessionImpl>() {
                 @Override
                 public HttpSessionImpl run() {
@@ -43,7 +44,8 @@ class SecurityActions {
     static ServletRequestContext requireCurrentServletRequestContext() {
         if (System.getSecurityManager() == null) {
             return ServletRequestContext.requireCurrent();
-        } else {
+        }
+        else {
             return AccessController.doPrivileged(new PrivilegedAction<ServletRequestContext>() {
                 @Override
                 public ServletRequestContext run() {
