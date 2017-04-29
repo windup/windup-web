@@ -180,10 +180,12 @@ public class FileDefaultServlet extends HttpServlet
             if (!path.exists()) {
                 throw new ServletException("FileServlet init param 'basePath' value '"
                         + this.basePath + "' does actually not exist in file system.");
-            } else if (!path.isDirectory()) {
+            }
+            else if (!path.isDirectory()) {
                 throw new ServletException("FileServlet init param 'basePath' value '"
                         + this.basePath + "' is actually not a directory in file system.");
-            } else if (!path.canRead()) {
+            }
+            else if (!path.canRead()) {
                 throw new ServletException("FileServlet init param 'basePath' value '"
                         + this.basePath + "' is actually not readable in file system.");
             }
@@ -247,7 +249,8 @@ public class FileDefaultServlet extends HttpServlet
                 resp.setContentType("text/css");
                 resp.getWriter().write(DirectoryUtils.Blobs.FILE_CSS);
                 return;
-            } else if ("js".equals(req.getQueryString())) {
+            }
+            else if ("js".equals(req.getQueryString())) {
                 resp.setContentType("application/javascript");
                 resp.getWriter().write(DirectoryUtils.Blobs.FILE_JS);
                 return;
@@ -412,7 +415,8 @@ public class FileDefaultServlet extends HttpServlet
                             }
                             start = contentLength - end;
                             end = contentLength;
-                        } else if(end == -1) {
+                        }
+                        else if(end == -1) {
                             //prefix range
                             long toWrite = contentLength - start;
                             if(toWrite >= 0) {
@@ -495,7 +499,8 @@ public class FileDefaultServlet extends HttpServlet
 
         if (result == null) {
             result = servletPath;
-        } else if(resolveAgainstContextRoot) {
+        }
+        else if(resolveAgainstContextRoot) {
             result = servletPath + CanonicalPathUtils.canonicalize(pathInfo);
         }
         else {
