@@ -116,7 +116,8 @@ describe("Registered Application Service Test", () => {
                 result.scanStatus = 'COMPLETE';
             } else if (count < 3) {
                 result.scanStatus = 'IN_PROGRESS';
-            } else {
+            }
+            else {
                 //throw new Error('Expected to get called max. 3 times, got called 4 times');
                 result.scanStatus = 'COMPLETE';
                 console.error('Expected to get called max. 3 times, got called 4 times');

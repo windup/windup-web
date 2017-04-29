@@ -107,7 +107,8 @@ export class RegisteredApplicationService extends AbstractService {
                     this._multipartUploader.onCompleteItem = (item, response, status, headers) => {
                         if (status == 200) {
                             responses.push(JSON.parse(response));
-                        } else {
+                        }
+                        else {
                             errors.push(JSON.parse(response));
                         }
                     };
@@ -187,7 +188,8 @@ export class RegisteredApplicationService extends AbstractService {
                     this._multipartUploader.onCompleteItem = (item, response, status, headers) => {
                         if (status == 200) {
                             responses.push(JSON.parse(response));
-                        } else {
+                        }
+                        else {
                             errors.push(JSON.parse(response));
                         }
                     };
@@ -251,7 +253,8 @@ export class RegisteredApplicationService extends AbstractService {
                 if (packageMetadata.scanStatus !== "COMPLETE") {
                     // schedule another round
                     this._schedulerService.setTimeout(closure, RegisteredApplicationService.PACKAGE_REQUEST_PAUSE_TIME_MS);
-                } else {
+                }
+                else {
                     subject.next(packageMetadata);
                     subject.complete();
                 }

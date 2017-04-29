@@ -60,7 +60,8 @@ export class AlternativeUploadQueueComponent {
             return 'Cancelled';
         } else if (item.isError) {
             return 'Error';
-        } else {
+        }
+        else {
             return item.progress.toString() + '%';
         }
     }

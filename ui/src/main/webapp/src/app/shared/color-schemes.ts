@@ -69,7 +69,8 @@ function hslToRGB (hsl){
         r = x;
         g = 0;
         b = c;
-    } else {
+    }
+    else {
         r = c;
         g = 0;
         b = x;

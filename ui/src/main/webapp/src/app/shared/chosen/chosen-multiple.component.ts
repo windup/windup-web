@@ -98,7 +98,8 @@ export class ChosenMultipleComponent extends AbstractChosenComponent<Array<strin
     updateModel() {
         if (this.multipleSelectedOptions != null) {
             this.onChange(this.multipleSelectedOptions.map((option: InternalChosenOption) => option.value));
-        } else {
+        }
+        else {
             this.onChange(null);
         }
     }
@@ -163,7 +164,8 @@ export class ChosenMultipleComponent extends AbstractChosenComponent<Array<strin
     onChosenBlur() {
         if (this.isSelectionEmpty()) {
             this.inputValue = this.placeholder_text_multiple;
-        } else {
+        }
+        else {
             this.inputValue = null;
         }
 
@@ -194,7 +196,8 @@ export class ChosenMultipleComponent extends AbstractChosenComponent<Array<strin
                     lastOption.focus = false;
                 }
                 return;
-            } else {
+            }
+            else {
                 lastOption.focus = true;
             }
         }

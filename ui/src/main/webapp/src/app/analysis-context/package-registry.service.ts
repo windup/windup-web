@@ -71,7 +71,8 @@ export class PackageRegistryService {
             }
 
             packageInMap.childs = [];
-        } else {
+        }
+        else {
             // some magic
             packageInMap = packageMap.get(aPackage.fullName);
             packageInMap.countClasses += aPackage.countClasses;

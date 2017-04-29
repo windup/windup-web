@@ -41,7 +41,8 @@ export class ContextMenuLinkComponent {
     getLink(item: ContextMenuItemInterface) {
         if (typeof item.link === 'function') {
             return item.link();
-        } else {
+        }
+        else {
             return item.link;
         }
     }

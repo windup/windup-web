@@ -14,7 +14,8 @@ export module utils {
             return error.message;
         } else if (typeof error == 'object' && error.hasOwnProperty('error')) {
             return error.error;
-        } else {
+        }
+        else {
             return 'Unknown error: ' + error;
         }
     }

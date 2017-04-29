@@ -124,7 +124,8 @@ export class CustomSelectComponent implements OnChanges {
             return this.configuration.getLabel(option);
         } else if (typeof option === 'string' || typeof option === 'number' || typeof option === 'boolean') {
             return <string>option;
-        } else {
+        }
+        else {
             throw new Error(`Cannot get label for input type: ${option}`);
         }
     }
@@ -139,7 +140,8 @@ export class CustomSelectComponent implements OnChanges {
                 return this.configuration.comparator.equals(a, b);
             } else if (typeof this.configuration.comparator === 'function') {
                 return this.configuration.comparator(a, b);
-            } else {
+            }
+            else {
                 throw new Error(`Comparator must be either Comparator<T> object or ComparatorCallback<T> function`);
             }
         }

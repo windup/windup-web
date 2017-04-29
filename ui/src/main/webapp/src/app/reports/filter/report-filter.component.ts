@@ -50,7 +50,8 @@ export class ReportFilterComponent implements OnInit, OnDestroy {
             comparator: (option: FilterApplication, b: FilterApplication|number) => {
                 if (typeof b === 'number') {
                     return option.id === b;
-                } else {
+                }
+                else {
                     return option.id === b.id;
                 }
             }

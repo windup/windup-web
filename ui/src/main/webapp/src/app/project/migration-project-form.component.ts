@@ -83,7 +83,8 @@ export class MigrationProjectFormComponent extends FormComponent implements OnIn
                 migrationProject => this.navigateOnSuccess(migrationProject),
                 error => this.handleError(<any> error)
             );
-        } else {
+        }
+        else {
             this._migrationProjectService.create(this.model).subscribe(
                 migrationProject => this.navigateOnSuccess(migrationProject),
                 error => this.handleError(<any> error)
@@ -96,7 +97,8 @@ export class MigrationProjectFormComponent extends FormComponent implements OnIn
             // Come on, relative routes?!
             // this._router.navigate(['./add-applications']);
             this._router.navigate(['/wizard', 'project', project.id, 'add-applications']);
-        } else {
+        }
+        else {
             this.rerouteToProjectList();
         }
     }

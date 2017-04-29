@@ -109,7 +109,8 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
 
             if (parentTreeData) {
                 parentTreeData.childs.push(newTreeData);
-            } else {
+            }
+            else {
                 this.applicationTree = this.applicationTree.concat(newTreeData);
             }
 
@@ -178,7 +179,8 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
                 if (!tagFilterService.tagsMatch(tagStrings)) {
                     file.hintIDs.splice(file.hintIDs.indexOf(hint.id), 1);
                     file.hints.splice(file.hints.indexOf(hint), 1);
-                } else {
+                }
+                else {
                     this.allHints.push(hint);
                 }
             });

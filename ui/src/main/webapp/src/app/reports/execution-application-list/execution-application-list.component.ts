@@ -79,7 +79,8 @@ export class ExecutionApplicationListComponent extends RoutedComponent implement
     updateSearch() {
         if (this.searchText && this.searchText.length > 0) {
             this.filteredApplications = this.execution.filterApplications.filter(app => app.fileName.search(new RegExp(this.searchText, 'i')) !== -1);
-        } else {
+        }
+        else {
             this.filteredApplications = this.execution.filterApplications;
         }
     }

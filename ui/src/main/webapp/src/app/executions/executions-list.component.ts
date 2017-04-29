@@ -176,7 +176,8 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
                 execution.id.toString().search(new RegExp(this.searchText, 'i')) !== -1 ||
                 execution.state.search(new RegExp(this.searchText, 'i')) !== -1
             ));
-        } else {
+        }
+        else {
             this.filteredExecutions = this._executions;
         }
     }

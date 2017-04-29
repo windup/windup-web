@@ -101,7 +101,8 @@ TODO: Fix this
 
                 if (isApplicationSelected) {
                     return index;
-                } else {
+                }
+                else {
                     return -1;
                 }
             });

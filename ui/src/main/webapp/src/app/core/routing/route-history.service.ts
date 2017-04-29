@@ -75,7 +75,8 @@ export class RouteHistoryService {
 
         if (this.countPreviousRoutes > 0) {
             navigationRoute.push(this.getPreviousRoute(1));
-        } else {
+        }
+        else {
             navigationRoute.push(route);
         }
 

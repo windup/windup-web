@@ -184,7 +184,8 @@ describe('SortableTableComponentHost', () => {
                         if (i % 2 === 1) {
                             assertArrayIsSorted(host.componentInstance.sortableTable, OrderDirection.DESC, comparators.id.desc);
                             assertIndicatorIsCorrect(host, 0, indicators.desc);
-                        } else {
+                        }
+                        else {
                             assertArrayIsSorted(host.componentInstance.sortableTable, OrderDirection.ASC, comparators.id.asc);
                             assertIndicatorIsCorrect(host, 0, indicators.asc);
                         }
@@ -261,7 +262,8 @@ function assertArrayIsSorted(array: any[], order: OrderDirection = OrderDirectio
 
     if (!comparator) {
         compareCallback = (order === OrderDirection.ASC) ? ascComparator : descComparator;
-    } else {
+    }
+    else {
         compareCallback = comparator;
     }
 
@@ -280,7 +282,8 @@ function assertIndicatorIsCorrect(fixture: ComponentFixture<SortableTableCompone
 
         if (idx === index) {
             expect(indicator.classes[expectedClass]).toBe(true);
-        } else {
+        }
+        else {
             expect(indicator.classes['fa-sort']).toBe(true);
         }
     });

@@ -32,7 +32,8 @@ export class SortingService<T> {
             this.orderByCallback = (a: T, b: T) => {
                 return this.comparatorCallback(property(a), property(b)) * this.modifier;
             };
-        } else {
+        }
+        else {
             this.orderByCallback = (a: T, b: T) => {
                 return this.comparatorCallback(a[property], b[property]) * this.modifier;
             };

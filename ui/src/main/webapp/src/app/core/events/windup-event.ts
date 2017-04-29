@@ -102,7 +102,8 @@ export class ApplicationRegistrationEvent extends MigrationProjectEvent {
 
         if (!application.hasOwnProperty('length')) {
             this._applications = [ <RegisteredApplication>application ];
-        } else {
+        }
+        else {
             this._applications = <RegisteredApplication[]>application;
         }
     }

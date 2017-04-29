@@ -55,7 +55,8 @@ export class MigrationProjectService extends AbstractService {
 
             if (currentExecutionIndex !== -1) {
                 monitoredProject.executions[currentExecutionIndex] = eventExecution;
-            } else {
+            }
+            else {
                 monitoredProject.executions.push(eventExecution);
             }
         } else if (event.isTypeOf(ApplicationRegisteredEvent)) {

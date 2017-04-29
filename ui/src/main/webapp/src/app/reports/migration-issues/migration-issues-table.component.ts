@@ -85,7 +85,8 @@ export class MigrationIssuesTableComponent extends FilterableReportComponent imp
                 return field(issue);
             } else if (typeof issue[field] === 'function') {
                 return issue[field]();
-            } else {
+            }
+            else {
                 return issue[field];
             }
         }).reduce((a, b) => a + b, 0);
@@ -104,7 +105,8 @@ export class MigrationIssuesTableComponent extends FilterableReportComponent imp
         if (this.displayedSummariesFiles.has(summary)) {
             this.displayedSummariesFiles.set(summary, !this.displayedSummariesFiles.get(summary));
             this.delayedPrismRender();
-        } else {
+        }
+        else {
             this.loadIssuesPerFile(summary);
         }
     }
@@ -151,7 +153,8 @@ export class MigrationIssuesTableComponent extends FilterableReportComponent imp
         if (property === this.orderBy) {
             this.orderDirection = (this.orderDirection === OrderDirection.ASC) ? OrderDirection.DESC : OrderDirection.ASC;
             this._sortingService.setOrderDirection(this.orderDirection);
-        } else {
+        }
+        else {
             this._sortingService.orderBy(property);
             this.orderBy = property;
         }

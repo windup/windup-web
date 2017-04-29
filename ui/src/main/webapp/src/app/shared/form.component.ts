@@ -23,7 +23,8 @@ export class FormComponent {
         let touched = control.touched == null ? false : control.touched;
         if (errorName) {
             return control.hasError(errorName) && touched;
-        } else {
+        }
+        else {
             return !control.valid && touched;
         }
     }
@@ -37,7 +38,8 @@ export class FormComponent {
                 console.warn("Violation: " + JSON.stringify(violation));
                 this.errorMessages.push(violation.message);
             });
-        } else {
+        }
+        else {
             if (error instanceof ProgressEvent)
                 this.errorMessages.push("Server connection failed.");
             else
