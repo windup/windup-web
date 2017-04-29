@@ -13,7 +13,7 @@ export class SelectApplicationsComponent {
         this.sort();
     }
 
-    get availableApps():RegisteredApplication[] {
+    get availableApps(): RegisteredApplication[] {
         return this._availableApps;
     }
 
@@ -30,7 +30,7 @@ export class SelectApplicationsComponent {
         this.selectedAppsChange.emit(this._selectedApps);
     }
 
-    get selectedApps():RegisteredApplication[] {
+    get selectedApps(): RegisteredApplication[] {
         return this._selectedApps;
     }
 

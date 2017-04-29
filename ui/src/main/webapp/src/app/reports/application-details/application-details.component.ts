@@ -366,7 +366,7 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
         return total;
     }
 
-    allExpanded():boolean {
+    allExpanded(): boolean {
         let allExpanded = true;
         this.allProjects.forEach((traversal) => {
             if (this.projectsCollapsed.get(traversal.id))
@@ -375,7 +375,7 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
         return allExpanded;
     }
 
-    allCollapsed():boolean {
+    allCollapsed(): boolean {
         let allCollapsed = true;
         this.allProjects.forEach((traversal) => {
             if (!this.projectsCollapsed.get(traversal.id))

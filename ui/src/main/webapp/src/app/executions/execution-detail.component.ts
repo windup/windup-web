@@ -55,7 +55,7 @@ export class ExecutionDetailComponent implements OnInit {
         return this._windupService.getLogData(this.execution.id);
     }
 
-    get displayReportLinks():boolean {
+    get displayReportLinks(): boolean {
         return this.execution && this.execution.state === "COMPLETED";
     }
 

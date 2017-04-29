@@ -30,13 +30,13 @@ export class AddRulesPathModalComponent extends FormComponent implements OnInit 
         super();
     }
 
-    ngOnInit():void {
+    ngOnInit(): void {
         this.addRulesPathForm = this._formBuilder.group({
             inputPathControl: ["", Validators.compose([Validators.required, Validators.minLength(4)]), FileExistsValidator.create(this._fileService)]
         });
     }
 
-    show():void {
+    show(): void {
         this.errorMessages = [];
         if (this.addRulesPathForm)
             this.addRulesPathForm.reset();
@@ -44,11 +44,11 @@ export class AddRulesPathModalComponent extends FormComponent implements OnInit 
         (<any>$('#addRulesPathModal')).modal('show');
     }
 
-    hide():void {
+    hide(): void {
         (<any>$('#addRulesPathModal')).modal('hide');
     }
 
-    addPath():void {
+    addPath(): void {
         let newConfiguration = JSON.parse(JSON.stringify(this.configuration));
 
         let newPath = <RulesPath>{};

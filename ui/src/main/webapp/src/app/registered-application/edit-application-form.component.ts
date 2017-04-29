@@ -36,7 +36,7 @@ export class EditApplicationFormComponent extends RegisterApplicationFormCompone
         this.labels.uploadButton = 'Update';
     }
 
-    ngOnInit():any {
+    ngOnInit(): any {
         super.ngOnInit();
 
         this.isAllowUploadMultiple = false;

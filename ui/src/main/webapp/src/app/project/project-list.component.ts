@@ -56,7 +56,7 @@ export class ProjectListComponent implements OnInit, AfterViewInit {
         private _windupService: WindupService
     ) {}
 
-    ngOnInit():any {
+    ngOnInit(): any {
         this.updateSort();
         this.getMigrationProjects();
     }

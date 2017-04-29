@@ -147,12 +147,12 @@ export class ConfirmationModalComponent {
         });
     }
 
-    yes():void {
+    yes(): void {
         this.confirmed.emit(this.data);
         this.hide(true);
     }
 
-    no():void {
+    no(): void {
         this.cancelled.emit(this.data);
         this.hide(false);
     }

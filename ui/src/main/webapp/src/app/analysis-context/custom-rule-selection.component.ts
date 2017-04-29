@@ -16,7 +16,7 @@ export class CustomRuleSelectionComponent implements OnInit {
     selectedRulePathsChanged:EventEmitter<RulesPath[]> = new EventEmitter<RulesPath[]>();
 
     @Input()
-    public get selectedRulePaths():RulesPath[] {
+    public get selectedRulePaths(): RulesPath[] {
         return this._selectedRulePaths;
     }
 

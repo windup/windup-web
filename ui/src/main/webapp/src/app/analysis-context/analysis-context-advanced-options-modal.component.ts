@@ -25,7 +25,7 @@ export class AnalysisContextAdvancedOptionsModalComponent {
     private newOption: AdvancedOption;
     private newOptionError: string;
 
-    private get currentSelectedOptionDefinition():ConfigurationOption {
+    private get currentSelectedOptionDefinition(): ConfigurationOption {
         return this.configurationOptions.find((option:ConfigurationOption) => {
             return this.newOption.name == option.name;
         });
@@ -56,7 +56,7 @@ export class AnalysisContextAdvancedOptionsModalComponent {
         this.newOption = null;
     }
 
-    get availableOptions():ConfigurationOption[] {
+    get availableOptions(): ConfigurationOption[] {
         if (this.configurationOptions == null)
             return [];
 

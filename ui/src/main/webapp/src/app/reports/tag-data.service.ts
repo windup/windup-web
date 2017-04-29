@@ -79,7 +79,7 @@ export class TagDataService extends AbstractService {
         });
     }
 
-    getTagData():Observable<TagHierarchyData[]> {
+    getTagData(): Observable<TagHierarchyData[]> {
         if (this.cachedTagData)
             return Observable.of(this.cachedTagData);
 
