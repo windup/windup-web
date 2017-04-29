@@ -22,28 +22,28 @@ import {RouteFlattenerService} from "../../core/routing/route-flattener.service"
     styleUrls: ['./application-details.component.css']
 })
 export class ApplicationDetailsComponent extends FilterableReportComponent implements OnInit {
-    applicationDetails:ApplicationDetailsFullDTO;
-    rootProjects:ProjectTraversalFullDTO[] = [];
-    traversalsForCanonicalVertexID:Map<number, ProjectTraversalFullDTO[]> = new Map<number, ProjectTraversalFullDTO[]>();
-    tagsForFile:Map<number, {name: string, level: string}[]> = new Map<number, {name: string, level: string}[]>();
+    applicationDetails: ApplicationDetailsFullDTO;
+    rootProjects: ProjectTraversalFullDTO[] = [];
+    traversalsForCanonicalVertexID: Map<number, ProjectTraversalFullDTO[]> = new Map<number, ProjectTraversalFullDTO[]>();
+    tagsForFile: Map<number, {name: string, level: string}[]> = new Map<number, {name: string, level: string}[]>();
 
-    allHints:HintFullDTO[] = [];
-    globalPackageUseData:ChartStatistic[] = [];
-    applicationTree:TreeData[] = [];
+    allHints: HintFullDTO[] = [];
+    globalPackageUseData: ChartStatistic[] = [];
+    applicationTree: TreeData[] = [];
 
     /**
      * This contains all projects. Do note, however, that if a project appears more than once, it will only contain
      * one instance. The others will appear in the duplicateProjects Map.
      */
-    allProjects:ProjectTraversalFullDTO[] = [];
+    allProjects: ProjectTraversalFullDTO[] = [];
     totalPoints: number = null;
-    pointsByProject:Map<number, number> = new Map<number, number>();
-    pointsByFile:Map<number, number> = new Map<number, number>();
+    pointsByProject: Map<number, number> = new Map<number, number>();
+    pointsByFile: Map<number, number> = new Map<number, number>();
 
-    projectsCollapsed:Map<number, boolean> = new Map<number, boolean>();
-    packageFrequenciesByProject:Map<number, ChartStatistic[]> = new Map<number, ChartStatistic[]>();
-    tagFrequencies:ChartStatistic[];
-    tagFrequenciesByProject:Map<number, ChartStatistic[]>;
+    projectsCollapsed: Map<number, boolean> = new Map<number, boolean>();
+    packageFrequenciesByProject: Map<number, ChartStatistic[]> = new Map<number, ChartStatistic[]>();
+    tagFrequencies: ChartStatistic[];
+    tagFrequenciesByProject: Map<number, ChartStatistic[]>;
 
     constructor(
         private _element: ElementRef,
@@ -145,7 +145,7 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
     }
 
     private visibleMap: Map<number, boolean> = new Map<number, boolean>();
-    private setIsVisibleStatus(traversal:ProjectTraversalFullDTO, visible:boolean) {
+    private setIsVisibleStatus(traversal:ProjectTraversalFullDTO, visible: boolean) {
         this.visibleMap.set(traversal.id, visible);
     }
     private isVisible(traversal:ProjectTraversalFullDTO): boolean {

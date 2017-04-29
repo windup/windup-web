@@ -6,7 +6,7 @@ import {RegisteredApplication} from "windup-services";
     templateUrl: './select-applications.component.html'
 })
 export class SelectApplicationsComponent {
-    _availableApps:RegisteredApplication[];
+    _availableApps: RegisteredApplication[];
     @Input()
     set availableApps(availableApps:RegisteredApplication[]) {
         this._availableApps = availableApps;
@@ -17,12 +17,12 @@ export class SelectApplicationsComponent {
         return this._availableApps;
     }
 
-    availableAppsSorted:RegisteredApplication[];
+    availableAppsSorted: RegisteredApplication[];
 
-    _selectedApps:RegisteredApplication[];
+    _selectedApps: RegisteredApplication[];
 
     @Output()
-    selectedAppsChange:EventEmitter<RegisteredApplication[]> = new EventEmitter<RegisteredApplication[]>();
+    selectedAppsChange: EventEmitter<RegisteredApplication[]> = new EventEmitter<RegisteredApplication[]>();
 
     @Input()
     set selectedApps(apps:RegisteredApplication[]) {

@@ -15,19 +15,19 @@ import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.co
 })
 export class ConfigurationComponent implements OnInit, AfterViewInit {
 
-    forceReloadAttempted:boolean = false;
-    rescanInProgress:boolean= false;
+    forceReloadAttempted: boolean = false;
+    rescanInProgress: boolean= false;
 
     errorMessage: string;
-    configuration:Configuration;
+    configuration: Configuration;
 
-    ruleProvidersByPath:Map<RulesPath, RuleProviderEntity[]> = new Map<RulesPath, RuleProviderEntity[]>();
+    ruleProvidersByPath: Map<RulesPath, RuleProviderEntity[]> = new Map<RulesPath, RuleProviderEntity[]>();
 
     @ViewChild(RulesModalComponent)
-    rulesModalComponent:RulesModalComponent;
+    rulesModalComponent: RulesModalComponent;
 
     @ViewChild(AddRulesPathModalComponent)
-    addRulesModalComponent:AddRulesPathModalComponent;
+    addRulesModalComponent: AddRulesPathModalComponent;
 
     @ViewChild('removeRulesConfirmationModal')
     removeRulesConfirmationModal: ConfirmationModalComponent;

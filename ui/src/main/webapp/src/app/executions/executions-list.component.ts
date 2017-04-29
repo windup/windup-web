@@ -17,7 +17,7 @@ import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.co
 })
 export class ExecutionsListComponent implements OnInit, OnDestroy {
     @Output()
-    reloadRequestEvent:EventEmitter<any> = new EventEmitter();
+    reloadRequestEvent: EventEmitter<any> = new EventEmitter();
 
     @Output()
     runExecution: EventEmitter<void> = new EventEmitter<void>();

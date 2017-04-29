@@ -1,5 +1,5 @@
 export class ValidationResult {
-    level:LevelType;
+    level: LevelType;
     message: string;
 }
 

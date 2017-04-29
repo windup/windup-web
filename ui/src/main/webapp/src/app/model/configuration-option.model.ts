@@ -28,17 +28,17 @@ export interface ConfigurationOption {
     /**
      * Indicates whether or not this option must be specified.
      */
-    required:boolean;
+    required: boolean;
 
     /**
      * Default value for this option (if not set by user).
      */
-    defaultValue:any;
+    defaultValue: any;
 
     /**
      * Returns an ordered list of available values.
      */
-    availableValues:any[];
+    availableValues: any[];
 
     /**
      * Indicates the "priority" of this option. Higher values (and therefore higher priority) of this value will result in the item being asked

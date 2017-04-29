@@ -71,5 +71,5 @@ export class AddRulesPathModalComponent extends FormComponent implements OnInit 
 }
 
 export interface ConfigurationEvent extends Event {
-    configuration:Configuration;
+    configuration: Configuration;
 }

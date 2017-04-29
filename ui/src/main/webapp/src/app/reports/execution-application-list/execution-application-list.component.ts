@@ -25,14 +25,14 @@ export class ExecutionApplicationListComponent extends RoutedComponent implement
     private execID: number;
 
     initialSort = {property: 'fileName', direction: OrderDirection.ASC};
-    execution:WindupExecution;
+    execution: WindupExecution;
     filteredApplications: FilterApplication[] = [];
     sortedApplications: FilterApplication[] = [];
     searchText: string;
 
-    applicationDetailsDTO:ApplicationDetailsFullDTO;
-    pointsByApplication:Map<number, number> = new Map<number, number>();
-    tagsByApplication:Map<number, {name: string, level: string}[]> = new Map<number, {name: string, level: string}[]>();
+    applicationDetailsDTO: ApplicationDetailsFullDTO;
+    pointsByApplication: Map<number, number> = new Map<number, number>();
+    tagsByApplication: Map<number, {name: string, level: string}[]> = new Map<number, {name: string, level: string}[]>();
 
     constructor(
         _activatedRoute: ActivatedRoute,

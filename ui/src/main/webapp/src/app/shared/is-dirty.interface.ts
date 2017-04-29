@@ -5,5 +5,5 @@
  * from the page.
  */
 export interface IsDirty {
-    dirty:boolean;
+    dirty: boolean;
 }

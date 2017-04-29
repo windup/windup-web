@@ -85,19 +85,19 @@ export interface HintFullDTO extends HintReducedDTO {
     id: number;
     titleString: string;
     javaFQCNString: string;
-    tags:TagFullDTO[];
+    tags: TagFullDTO[];
 }
 
 export interface ClassificationFullDTO extends ClassificationReducedDTO {
     id: number;
     titleString: string;
-    tags:TagFullDTO[];
+    tags: TagFullDTO[];
 }
 
 export interface FileFullDTO extends FileReducedDTO {
-    hints:HintFullDTO[];
-    classifications:ClassificationFullDTO[];
-    tags:TagFullDTO[];
+    hints: HintFullDTO[];
+    classifications: ClassificationFullDTO[];
+    tags: TagFullDTO[];
 }
 
 export interface ProjectTraversalFullDTO extends ProjectTraversalReducedDTO {

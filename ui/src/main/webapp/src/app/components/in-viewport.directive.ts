@@ -11,7 +11,7 @@ export class InViewport implements OnInit, OnDestroy {
     private static subscribers: InViewport[] = [];
 
     @Output('inViewport')
-    inViewport:EventEmitter<boolean> = new EventEmitter<boolean>();
+    inViewport: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     constructor(private _element:ElementRef) { }
 

@@ -7,7 +7,7 @@ import {TechnologyTagModel} from "../../generated/tsModels/TechnologyTagModel";
 })
 export class TechnologyTagComponent {
     @Input()
-    tag:{name: string, level: string} | string;
+    tag: {name: string, level: string} | string;
 
     get tagClass(): string {
         let tagLevel = "info";

@@ -13,7 +13,7 @@ export class CustomRuleSelectionComponent implements OnInit {
     private _selectedRulePaths: RulesPath[];
 
     @Output()
-    selectedRulePathsChanged:EventEmitter<RulesPath[]> = new EventEmitter<RulesPath[]>();
+    selectedRulePathsChanged: EventEmitter<RulesPath[]> = new EventEmitter<RulesPath[]>();
 
     @Input()
     public get selectedRulePaths(): RulesPath[] {

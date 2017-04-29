@@ -11,16 +11,16 @@ import {ValidationResult} from "../model/validation-result.model";
 })
 export class AnalysisContextAdvancedOptionsModalComponent {
     @Input()
-    configurationOptions:ConfigurationOption[] = [];
+    configurationOptions: ConfigurationOption[] = [];
 
     @Input() @Output()
-    selectedOptions:AdvancedOption[] = [];
+    selectedOptions: AdvancedOption[] = [];
 
     @Input()
     isReadOnly = false;
 
     @Output()
-    advancedOptionsChanged:EventEmitter<AdvancedOption[]> = new EventEmitter<AdvancedOption[]>();
+    advancedOptionsChanged: EventEmitter<AdvancedOption[]> = new EventEmitter<AdvancedOption[]>();
 
     private newOption: AdvancedOption;
     private newOptionError: string;
