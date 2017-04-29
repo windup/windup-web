@@ -24,7 +24,7 @@ export class DependenciesService extends AbstractService {
         let url = `${Constants.GRAPH_REST_BASE}/graph/${executionId}/by-type/` + DependenciesReportModel.discriminator + "?depth=2";
         return this._http.get(url)
             .map((res:Response) => res.json())
-            .map((data:any) => {
+            .map((data: any) => {
                 if (!Array.isArray(data) || data.length == 0) {
                     throw new Error("No items returned, URL: " + url);
                 }

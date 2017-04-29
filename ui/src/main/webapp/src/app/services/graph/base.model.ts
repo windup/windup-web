@@ -15,7 +15,7 @@ export class BaseModel
     observableCache: Map<string, Observable<any>> = new Map<string, Observable<any>>();
     graphService: GraphJSONToModelService<BaseModel>;
 
-    constructor(public discriminator: string[], public vertexId: number, public data:any){
+    constructor(public discriminator: string[], public vertexId: number, public data: any){
     }
 
     public toString(): string {

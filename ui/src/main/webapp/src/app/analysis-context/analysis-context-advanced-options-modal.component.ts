@@ -118,7 +118,7 @@ export class AnalysisContextAdvancedOptionsModalComponent {
 
                 this.resetCurrentOption();
             },
-            (error:any) => {
+            (error: any) => {
                 this.newOptionError = "Error validating option";
             });
     }

@@ -132,7 +132,7 @@ export class MigrationIssuesTableComponent extends FilterableReportComponent imp
         return this.problemSummariesFiles.get(issue);
     }
 
-    navigateToSource(file:any) {
+    navigateToSource(file: any) {
         let fileModel = <FileModel>this._graphJsonToModelService.fromJSON(file, FileModel);
         ///projects/32057/groups/32058/reports/32121/source/32121
         let newPath = `source/${fileModel.vertexId}`;

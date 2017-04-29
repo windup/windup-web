@@ -28,7 +28,7 @@ export class FormComponent {
         }
     }
 
-    handleError(error:any) {
+    handleError(error: any) {
         this.errorMessages = [];
         if (!error) {
             this.errorMessages.push("Server call failed.");

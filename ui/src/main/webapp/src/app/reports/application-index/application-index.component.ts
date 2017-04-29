@@ -192,7 +192,7 @@ export class ApplicationIndexComponent extends FilterableReportComponent impleme
             result.push({ "name": incidentStat.name, "series": series });
         });
 
-        result = result.sort((obj1:{name: string, series:any[]}, obj2:{name: string, series:any[]}) => {
+        result = result.sort((obj1:{name: string, series: any[]}, obj2:{name: string, series: any[]}) => {
             let pointsPerIncident1 = EffortLevel[obj1.name];
             let pointsPerIncident2 = EffortLevel[obj2.name];
             return pointsPerIncident1 - pointsPerIncident2;
@@ -211,7 +211,7 @@ export class ApplicationIndexComponent extends FilterableReportComponent impleme
             result.push({ "name": categoryStr, "series": series });
         });
 
-        result = result.sort((obj1:{name: string, series:any[]}, obj2:{name: string, series:any[]}) => {
+        result = result.sort((obj1:{name: string, series: any[]}, obj2:{name: string, series: any[]}) => {
             let pointsPerIncident1 = EffortLevel[obj1.name];
             let pointsPerIncident2 = EffortLevel[obj2.name];
             return pointsPerIncident1 - pointsPerIncident2;
