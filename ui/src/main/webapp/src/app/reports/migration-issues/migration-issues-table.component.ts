@@ -83,7 +83,8 @@ export class MigrationIssuesTableComponent extends FilterableReportComponent imp
         return this.migrationIssues.map(issue => {
             if (typeof field === 'function') {
                 return field(issue);
-            } else if (typeof issue[field] === 'function') {
+            }
+            else if (typeof issue[field] === 'function') {
                 return issue[field]();
             }
             else {

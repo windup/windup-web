@@ -110,7 +110,8 @@ export class RouteFlattenerService {
 
         if (route.routeConfigHierarchy) {
             routeConfig = [].concat(route.routeConfigHierarchy);
-        } else if (route.routeConfig) {
+        }
+        else if (route.routeConfig) {
             routeConfig = [].concat([ route.routeConfig ]);
         }
 

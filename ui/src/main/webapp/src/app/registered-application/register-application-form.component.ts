@@ -187,7 +187,8 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
 
         if (this.mode === 'PATH') {
             this.labels.uploadButton = 'Upload';
-        } else if (this.mode === 'UPLOADED') {
+        }
+        else if (this.mode === 'UPLOADED') {
             // this is not really nice, but when using UPLOADED mode, upload is done automatically
             // so no action is actually being executed, so label is 'Done'
             this.labels.uploadButton = 'Done';
@@ -221,7 +222,8 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
 
         if (this.mode === 'PATH') {
             return this.fileInputPath && this.fileInputPath.length > 0;
-        } else if (this.mode === 'UPLOADED') {
+        }
+        else if (this.mode === 'UPLOADED') {
             return this.countUploadedApplications > 0;
         }
     }

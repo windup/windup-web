@@ -58,7 +58,8 @@ export class AlternativeUploadQueueComponent {
     public getProgressLabel(item: FileItem): string {
         if (item.isCancel) {
             return 'Cancelled';
-        } else if (item.isError) {
+        }
+        else if (item.isError) {
             return 'Error';
         }
         else {
@@ -76,9 +77,11 @@ export class AlternativeUploadQueueComponent {
     public getStatusIcon(item: FileItem): string {
         if (item.isSuccess) {
             return 'glyphicon-ok';
-        } else if (item.isCancel || item.isError) {
+        }
+        else if (item.isCancel || item.isError) {
             return 'glyphicon-ban-circle';
-        } else if (this.isCancellable(item)) {
+        }
+        else if (this.isCancellable(item)) {
             return 'glyphicon-remove';
         }
     }

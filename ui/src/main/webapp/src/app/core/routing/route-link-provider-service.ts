@@ -19,7 +19,8 @@ export class RouteLinkProviderService {
         routes.forEach((route: Route) => {
             if (route.component && (!route.children || route.children.length === 0)) {
                 finalRoutes.push(this.createRoutingEntry(route, predecessors));
-            } else if (route.children) {
+            }
+            else if (route.children) {
                 let currentPredecessors = predecessors.slice().concat([route]);
                 let nestedRoutes = this.getComponentRoutes(route.children, currentPredecessors);
 
@@ -78,9 +79,11 @@ export class RouteLinkProviderService {
                 throw new Error("Route has parameters, but none were provided");
             }  else if (Array.isArray(parameters)) {
                 routingParameters = this.getParametersFromArray(routingEntry.parameters, <any[]>parameters);
-            } else if (typeof parameters === 'object') {
+            }
+            else if (typeof parameters === 'object') {
                 routingParameters = this.getParametersFromObject(routingEntry.parameters, <Object>parameters);
-            } else if (this.isScalar(parameters)) {
+            }
+            else if (this.isScalar(parameters)) {
                 if (routingEntry.parameters.length > 1) {
                     throw new Error("Route has multiple parameters, need to provide array or object with parameters");
                 }

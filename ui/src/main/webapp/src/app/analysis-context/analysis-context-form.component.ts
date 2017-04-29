@@ -315,7 +315,8 @@ export class AnalysisContextFormComponent extends FormComponent
                 error => {
                     this._notificationService.error(utils.getErrorMessage(error));
                 });
-        } else if (this.isInWizard) {
+        }
+        else if (this.isInWizard) {
             this._router.navigate([`/projects/${this.project.id}`]);
         }
         else {

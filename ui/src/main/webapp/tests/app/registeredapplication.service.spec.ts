@@ -114,7 +114,8 @@ describe("Registered Application Service Test", () => {
 
             if (count === 3) {
                 result.scanStatus = 'COMPLETE';
-            } else if (count < 3) {
+            }
+            else if (count < 3) {
                 result.scanStatus = 'IN_PROGRESS';
             }
             else {

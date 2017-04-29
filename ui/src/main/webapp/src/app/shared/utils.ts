@@ -8,11 +8,14 @@ export module utils {
     {
         if (error instanceof ProgressEvent) {
             return "The network connection was lost. Please try again later.";
-        } else if (typeof error == 'string') {
+        }
+        else if (typeof error == 'string') {
             return error;
-        } else if (typeof error == 'object' && error.hasOwnProperty('message')) {
+        }
+        else if (typeof error == 'object' && error.hasOwnProperty('message')) {
             return error.message;
-        } else if (typeof error == 'object' && error.hasOwnProperty('error')) {
+        }
+        else if (typeof error == 'object' && error.hasOwnProperty('error')) {
             return error.error;
         }
         else {

@@ -87,7 +87,8 @@ export class BreadCrumbsService {
     protected canReachToComponentRoute(route: Route) {
         if (route.component) {
             return true;
-        } else if (!route.children) {
+        }
+        else if (!route.children) {
             return false;
         }
         else {
@@ -123,7 +124,8 @@ export class BreadCrumbsService {
             else {
                 return data['breadcrumbTitle'];
             }
-        } else if (data.hasOwnProperty('displayName')) {
+        }
+        else if (data.hasOwnProperty('displayName')) {
             return data['displayName'];
         }
         else {
