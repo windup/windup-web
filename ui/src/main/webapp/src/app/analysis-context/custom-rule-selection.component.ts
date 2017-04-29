@@ -31,11 +31,11 @@ export class CustomRuleSelectionComponent implements OnInit {
     }
 
     private _selectedRuleIDs;
-    private get selectedRuleIDs():number[] {
+    private get selectedRuleIDs(): number[] {
         return this._selectedRuleIDs;
     }
 
-    private set selectedRuleIDs(ids:number[]) {
+    private set selectedRuleIDs(ids: number[]) {
         this.selectedRulePaths = this.rulesPaths.filter((value) => {
             return ids.indexOf(value.id) != -1;
         });

@@ -5,10 +5,10 @@ import {Observable, Subscription} from "rxjs";
     selector: '[wu-in-viewport]'
 })
 export class InViewport implements OnInit, OnDestroy {
-    private static scrollSubscriber:Subscription;
-    private static resizeSubscriber:Subscription;
-    private static currentPosition:{top: number, bottom:number};
-    private static subscribers:InViewport[] = [];
+    private static scrollSubscriber: Subscription;
+    private static resizeSubscriber: Subscription;
+    private static currentPosition: {top: number, bottom: number};
+    private static subscribers: InViewport[] = [];
 
     @Output('inViewport')
     inViewport:EventEmitter<boolean> = new EventEmitter<boolean>();

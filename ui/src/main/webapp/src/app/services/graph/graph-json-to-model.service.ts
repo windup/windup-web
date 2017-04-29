@@ -68,7 +68,7 @@ export class GraphJSONToModelService<T extends BaseModel>
             //return this.fromJSONarray(input, http, clazz);
             throw new TypeError("For arrays of models, use fromJSONarray(...).");
 
-        let discriminator:string[] = input[GraphJSONToModelService.DISCRIMINATOR];
+        let discriminator: string[] = input[GraphJSONToModelService.DISCRIMINATOR];
         if (!clazz) {
             clazz = this.getModelClassForJsonObject(input, clazz);
         }

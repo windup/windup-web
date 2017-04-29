@@ -67,7 +67,7 @@ export class ContextMenuItem implements ContextMenuItemInterface {
         return this._data;
     }
 
-    get target():string {
+    get target(): string {
         return this._target;
     }
 

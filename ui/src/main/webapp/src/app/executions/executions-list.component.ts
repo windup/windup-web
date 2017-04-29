@@ -30,8 +30,8 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
 
     sortedExecutions: WindupExecution[] = [];
     initialSort = {property: 'timeStarted', direction: OrderDirection.DESC};
-    private currentTimeTimer:number;
-    currentTime:number = new Date().getTime();
+    private currentTimeTimer: number;
+    currentTime: number = new Date().getTime();
 
     @ViewChild('deleteExecutionDialog')
     readonly deleteExecutionDialog: ConfirmationModalComponent;

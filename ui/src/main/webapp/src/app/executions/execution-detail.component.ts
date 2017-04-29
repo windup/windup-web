@@ -19,7 +19,7 @@ import {ExecutionPhaseModel} from "../generated/tsModels/ExecutionPhaseModel";
 export class ExecutionDetailComponent implements OnInit {
 
     execution: WindupExecution;
-    logLines:string[];
+    logLines: string[];
     phases: ExecutionPhaseModel[];
 
     hideUnfinishedFeatures: boolean = WINDUP_WEB.config.hideUnfinishedFeatures;

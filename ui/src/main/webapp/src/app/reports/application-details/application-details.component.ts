@@ -25,7 +25,7 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
     applicationDetails:ApplicationDetailsFullDTO;
     rootProjects:ProjectTraversalFullDTO[] = [];
     traversalsForCanonicalVertexID:Map<number, ProjectTraversalFullDTO[]> = new Map<number, ProjectTraversalFullDTO[]>();
-    tagsForFile:Map<number, {name:string, level:string}[]> = new Map<number, {name:string, level:string}[]>();
+    tagsForFile:Map<number, {name: string, level: string}[]> = new Map<number, {name: string, level: string}[]>();
 
     allHints:HintFullDTO[] = [];
     globalPackageUseData:ChartStatistic[] = [];
@@ -36,7 +36,7 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
      * one instance. The others will appear in the duplicateProjects Map.
      */
     allProjects:ProjectTraversalFullDTO[] = [];
-    totalPoints:number = null;
+    totalPoints: number = null;
     pointsByProject:Map<number, number> = new Map<number, number>();
     pointsByFile:Map<number, number> = new Map<number, number>();
 
@@ -144,7 +144,7 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
         });
     }
 
-    private visibleMap:Map<number, boolean> = new Map<number, boolean>();
+    private visibleMap: Map<number, boolean> = new Map<number, boolean>();
     private setIsVisibleStatus(traversal:ProjectTraversalFullDTO, visible:boolean) {
         this.visibleMap.set(traversal.id, visible);
     }
@@ -253,7 +253,7 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
         this.tagFrequenciesByProject.set(traversal.id, this.convertToChartStatistic(currentProjectMap));
     }
 
-    storeTagsForFile(file:FileFullDTO):{name:string, level:string}[] {
+    storeTagsForFile(file:FileFullDTO):{name: string, level: string}[] {
         if(this.tagsForFile.has(file.fileModelVertexID))
             return this.tagsForFile.get(file.fileModelVertexID);
 
@@ -348,7 +348,7 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
         });
     }
 
-    storyPoints(file:FileFullDTO):number {
+    storyPoints(file:FileFullDTO): number {
         let total = 0;
 
         file.classifications
@@ -413,8 +413,8 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
 }
 
 class ChartStatistic {
-    name:string;
-    value:number;
+    name: string;
+    value: number;
 
     constructor(name: string, value: number) {
         this.name = name;
@@ -422,6 +422,6 @@ class ChartStatistic {
     }
 }
 
-function chartStatisticComparator(stat1:ChartStatistic, stat2:ChartStatistic):number {
+function chartStatisticComparator(stat1:ChartStatistic, stat2:ChartStatistic): number {
     return stat2.value - stat1.value;
 }

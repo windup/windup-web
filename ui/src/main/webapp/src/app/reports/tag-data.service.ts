@@ -16,14 +16,14 @@ export class TagHierarchyData {
 
 @Injectable()
 export class TagDataService extends AbstractService {
-    private cachedTagData:TagHierarchyData[];
-    private allTags:Map<string, TagHierarchyData> = new Map<string, TagHierarchyData>();
+    private cachedTagData: TagHierarchyData[];
+    private allTags: Map<string, TagHierarchyData> = new Map<string, TagHierarchyData>();
 
     constructor(private _http:Http) {
         super();
     }
 
-    getRootTags(tagName:string):TagHierarchyData[] {
+    getRootTags(tagName: string):TagHierarchyData[] {
         let tag = this.allTags.get(tagName);
         if (!tag)
             return null;

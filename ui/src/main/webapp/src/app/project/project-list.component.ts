@@ -23,7 +23,7 @@ export class ProjectListComponent implements OnInit, AfterViewInit {
     private _originalProjects: MigrationProject[] = [];
 
     loading: boolean = true;
-    get totalProjectCount():number {
+    get totalProjectCount(): number {
         if (this._originalProjects == null)
             return 0;
 

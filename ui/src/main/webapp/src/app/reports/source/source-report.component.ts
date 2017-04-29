@@ -91,7 +91,7 @@ export class SourceReportComponent extends RoutedComponent implements OnInit, Af
         return linkableModel.links;
     }
 
-    get storyPoints():number {
+    get storyPoints(): number {
         let points = 0;
         if (this.hints)
             this.hints.forEach((hint) => points += hint.effort);
@@ -102,7 +102,7 @@ export class SourceReportComponent extends RoutedComponent implements OnInit, Af
         return points;
     }
 
-    private hintMatches(hint:InlineHintModel, lineNumber:number):boolean {
+    private hintMatches(hint:InlineHintModel, lineNumber: number):boolean {
         let hintLine = hint.data["lineNumber"];
 
         // workaround an odd edge case
@@ -112,7 +112,7 @@ export class SourceReportComponent extends RoutedComponent implements OnInit, Af
         return hintLine == (lineNumber+1)
     }
 
-    noteReferences(line:string, lineNumber:number): string {
+    noteReferences(line: string, lineNumber: number): string {
         if (!this.hints)
             return "";
 
@@ -122,7 +122,7 @@ export class SourceReportComponent extends RoutedComponent implements OnInit, Af
             .join(", ");
     }
 
-    lineClass(line:string, lineNumber:number): string {
+    lineClass(line: string, lineNumber: number): string {
         if (!this.hints)
             return "";
 
@@ -137,7 +137,7 @@ export class SourceReportComponent extends RoutedComponent implements OnInit, Af
         return styleClasses;
     }
 
-    filetype():string {
+    filetype(): string {
         if (!this.fileModel)
             return "";
 
@@ -148,7 +148,7 @@ export class SourceReportComponent extends RoutedComponent implements OnInit, Af
         return this.fileModel.fileName.substring(lastDotIndex + 1);
     }
 
-    markdown(input:string):string {
+    markdown(input: string): string {
         return new showdown.Converter().makeHtml(input);
     }
 

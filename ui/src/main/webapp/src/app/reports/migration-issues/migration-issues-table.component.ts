@@ -188,7 +188,7 @@ export class MigrationIssuesTableComponent extends FilterableReportComponent imp
         });
     }
 
-    renderMarkdownToHtml(markdownCode:string): string {
+    renderMarkdownToHtml(markdownCode: string): string {
         // The class="language-java" is already in <code>
         // <pre><code class="language-{{filetype()}}">
 

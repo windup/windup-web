@@ -11,10 +11,10 @@ export class TestGeneratorModel extends BaseModel
     static discriminator: string = 'TestGenerator';
 
     @GraphProperty("name")
-    get name():string { return null; }
+    get name(): string { return null; }
 
     @GraphProperty("rank")
-    get rank():string { return null; }
+    get rank(): string { return null; }
 
     @GraphAdjacency("colonizes", "OUT")
     get colonizedPlanet(): Observable<TestPlanetModel[]> { return null; }
@@ -29,7 +29,7 @@ export class TestGeneratorModel extends BaseModel
     get fighter(): Observable<TestShipModel> { return null; }
 
     @SetInProperties("SET_PREFIX")
-    get setInPropsTest():string[] { return null; }
+    get setInPropsTest(): string[] { return null; }
 }
 
 export class TestPlanetModel extends BaseModel
@@ -37,7 +37,7 @@ export class TestPlanetModel extends BaseModel
     static discriminator: string = 'TestPlanet';
 
     @GraphProperty("name")
-    get name():string { return null; }
+    get name(): string { return null; }
 }
 
 export class TestShipModel extends BaseModel
@@ -45,7 +45,7 @@ export class TestShipModel extends BaseModel
     static discriminator: string = 'TestShip';
 
     @GraphProperty("name")
-    get name():string { return null; }
+    get name(): string { return null; }
 }
 
 DiscriminatorMapping.addModelClass(TestGeneratorModel);

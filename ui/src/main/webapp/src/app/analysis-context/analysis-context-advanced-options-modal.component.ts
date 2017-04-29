@@ -22,8 +22,8 @@ export class AnalysisContextAdvancedOptionsModalComponent {
     @Output()
     advancedOptionsChanged:EventEmitter<AdvancedOption[]> = new EventEmitter<AdvancedOption[]>();
 
-    private newOption:AdvancedOption;
-    private newOptionError:string;
+    private newOption: AdvancedOption;
+    private newOptionError: string;
 
     private get currentSelectedOptionDefinition():ConfigurationOption {
         return this.configurationOptions.find((option:ConfigurationOption) => {
@@ -31,7 +31,7 @@ export class AnalysisContextAdvancedOptionsModalComponent {
         });
     }
 
-    private get currentOptionType():string {
+    private get currentOptionType(): string {
         if (this.newOption.name == null)
             return null;
 
@@ -73,7 +73,7 @@ export class AnalysisContextAdvancedOptionsModalComponent {
         });
     }
 
-    private removeAdvancedOption(index:number) {
+    private removeAdvancedOption(index: number) {
         this.selectedOptions.splice(index, 1);
         this.advancedOptionsChanged.emit(this.selectedOptions);
         return false;

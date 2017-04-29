@@ -34,7 +34,7 @@ export class WindupHttpService extends Http {
         });
     }
 
-    private configureRequest(method:RequestMethod, f:Function, url:string | Request, options:RequestOptionsArgs = {}, body?: any): Observable<Response> {
+    private configureRequest(method:RequestMethod, f:Function, url: string | Request, options:RequestOptionsArgs = {}, body?: any): Observable<Response> {
         return (this.setToken(options) as Observable<Response>).flatMap(options => {
             return new Observable<Response>((observer) => {
                 let bodyRequired = false;

@@ -21,8 +21,8 @@ import {utils} from "../../shared/utils";
 })
 export class ExecutionApplicationListComponent extends RoutedComponent implements OnInit, OnDestroy
 {
-    private projectID:number;
-    private execID:number;
+    private projectID: number;
+    private execID: number;
 
     initialSort = {property: 'fileName', direction: OrderDirection.ASC};
     execution:WindupExecution;
@@ -116,7 +116,7 @@ export class ExecutionApplicationListComponent extends RoutedComponent implement
     }
 
     private flattenReportDataForTraversal(filterApplication:FilterApplication, traversal:ProjectTraversalFullDTO) {
-        let addPointsToMap = (points:number) => {
+        let addPointsToMap = (points: number) => {
             let existingPoints = this.pointsByApplication.get(filterApplication.id);
             if (!existingPoints)
                 this.pointsByApplication.set(filterApplication.id, points);

@@ -18,7 +18,7 @@ export class ConfigurationComponent implements OnInit, AfterViewInit {
     forceReloadAttempted:boolean = false;
     rescanInProgress:boolean= false;
 
-    errorMessage:string;
+    errorMessage: string;
     configuration:Configuration;
 
     ruleProvidersByPath:Map<RulesPath, RuleProviderEntity[]> = new Map<RulesPath, RuleProviderEntity[]>();

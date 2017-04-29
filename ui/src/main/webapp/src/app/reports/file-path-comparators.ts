@@ -10,7 +10,7 @@ import {FileReducedDTO} from "windup-services";
  * @param path2
  * @returns {number}
  */
-export function comparePaths(path1:string, path2:string):number {
+export function comparePaths(path1: string, path2: string): number {
     // if they are exactly the same, just short circuit everything
     // and return 0
     if (path1 == path2)
@@ -32,8 +32,8 @@ export function comparePaths(path1:string, path2:string):number {
         // otherwise, compare each segment
         for (let i = 0; i < path1.length; i++)
         {
-            let o1Segment:string = pathArray1[i];
-            let o2Segment:string = pathArray2[i];
+            let o1Segment: string = pathArray1[i];
+            let o2Segment: string = pathArray2[i];
 
             // if the segments are different, return the results of this comparison
             if (o1Segment != o2Segment)
@@ -47,10 +47,10 @@ export function comparePaths(path1:string, path2:string):number {
     }
 }
 
-export function compareTraversals(traversal1:ProjectTraversalReducedDTO, traversal2:ProjectTraversalReducedDTO):number {
+export function compareTraversals(traversal1:ProjectTraversalReducedDTO, traversal2:ProjectTraversalReducedDTO): number {
     return comparePaths(traversal1.path, traversal2.path);
 }
 
-export function compareTraversalChildFiles(childFile1:FileReducedDTO, childFile2:FileReducedDTO):number {
+export function compareTraversalChildFiles(childFile1:FileReducedDTO, childFile2:FileReducedDTO): number {
     return comparePaths(childFile1.filePath, childFile2.filePath);
 }

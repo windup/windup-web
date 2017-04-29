@@ -77,20 +77,20 @@ export class ApplicationDetailsService extends AbstractService {
 }
 
 export interface TagFullDTO extends TagReducedDTO {
-    nameString:string;
-    levelString:string;
+    nameString: string;
+    levelString: string;
 }
 
 export interface HintFullDTO extends HintReducedDTO {
-    id:number;
-    titleString:string;
-    javaFQCNString:string;
+    id: number;
+    titleString: string;
+    javaFQCNString: string;
     tags:TagFullDTO[];
 }
 
 export interface ClassificationFullDTO extends ClassificationReducedDTO {
-    id:number;
-    titleString:string;
+    id: number;
+    titleString: string;
     tags:TagFullDTO[];
 }
 
