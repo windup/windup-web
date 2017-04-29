@@ -2,7 +2,7 @@ import {Http} from "@angular/http";
 import {HintFullDTO} from "./application-details.service";
 
 export class TypeReferenceStatisticsService {
-    getPackageUseFrequencies(hints:HintFullDTO[], nameDepth: number, http:Http):Map<string, number> {
+    getPackageUseFrequencies(hints:HintFullDTO[], nameDepth: number, http:Http): Map<string, number> {
         if (hints == null || hints.length == 0) {
             return new Map<string, number>();
         }

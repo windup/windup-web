@@ -66,7 +66,7 @@ export class MigrationProjectFormComponent extends FormComponent implements OnIn
         return Math.min(4 + (this.model.description ? this.model.description.length : 0) / 80, 25)
     }
 
-    titleIsDuplicated(control:FormControl):boolean {
+    titleIsDuplicated(control:FormControl): boolean {
         let touched = control.touched == null ? false : control.touched;
         return control.hasError('nameIsTaken') && touched;
     }

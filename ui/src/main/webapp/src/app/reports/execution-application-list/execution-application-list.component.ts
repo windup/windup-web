@@ -148,7 +148,7 @@ export class ExecutionApplicationListComponent extends RoutedComponent implement
         traversal.children.forEach(childTraversal => this.flattenReportDataForTraversal(filterApplication, childTraversal));
     }
 
-    private getFilterApplication(traversal:ProjectTraversalFullDTO):FilterApplication {
+    private getFilterApplication(traversal:ProjectTraversalFullDTO): FilterApplication {
         if (!this.filteredApplications)
             return null;
 

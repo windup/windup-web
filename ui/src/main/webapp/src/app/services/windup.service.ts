@@ -34,7 +34,7 @@ export class WindupService extends AbstractService {
     };
 
     @Cached({section: 'execution', immutable: true, cacheItemCallback: WindupService.cacheExecution})
-    public getExecution(executionID: number):Observable<WindupExecution> {
+    public getExecution(executionID: number): Observable<WindupExecution> {
         let url = Constants.REST_BASE + this.EXECUTIONS_PATH + '/' + executionID;
 
         return this._http.get(url)

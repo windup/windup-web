@@ -148,11 +148,11 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
     private setIsVisibleStatus(traversal:ProjectTraversalFullDTO, visible:boolean) {
         this.visibleMap.set(traversal.id, visible);
     }
-    private isVisible(traversal:ProjectTraversalFullDTO):boolean {
+    private isVisible(traversal:ProjectTraversalFullDTO): boolean {
         return this.visibleMap.get(traversal.id) || false;
     }
 
-    private hasDuplicateProjects(traversal:ProjectTraversalFullDTO):boolean {
+    private hasDuplicateProjects(traversal:ProjectTraversalFullDTO): boolean {
         return this.traversalsForCanonicalVertexID.get(traversal.canonicalID).length > 1;
     }
 
@@ -253,7 +253,7 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
         this.tagFrequenciesByProject.set(traversal.id, this.convertToChartStatistic(currentProjectMap));
     }
 
-    storeTagsForFile(file:FileFullDTO):{name: string, level: string}[] {
+    storeTagsForFile(file:FileFullDTO): {name: string, level: string}[] {
         if(this.tagsForFile.has(file.fileModelVertexID))
             return this.tagsForFile.get(file.fileModelVertexID);
 
@@ -301,7 +301,7 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
         this.packageFrequenciesByProject.set(traversal.id, this.calculateTreeDataForHints(hints));
     }
 
-    private calculateTreeDataForHints(hints:HintFullDTO[]):ChartStatistic[] {
+    private calculateTreeDataForHints(hints:HintFullDTO[]): ChartStatistic[] {
         let service = new TypeReferenceStatisticsService();
         let resultMap = service.getPackageUseFrequencies(hints, 2, this._http);
         let result = [];

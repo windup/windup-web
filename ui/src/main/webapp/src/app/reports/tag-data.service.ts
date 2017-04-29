@@ -23,7 +23,7 @@ export class TagDataService extends AbstractService {
         super();
     }
 
-    getRootTags(tagName: string):TagHierarchyData[] {
+    getRootTags(tagName: string): TagHierarchyData[] {
         let tag = this.allTags.get(tagName);
         if (!tag)
             return null;

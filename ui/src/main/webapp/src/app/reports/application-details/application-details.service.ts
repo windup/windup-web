@@ -35,7 +35,7 @@ export class ApplicationDetailsService extends AbstractService {
             .catch(this.handleError);
     }
 
-    private mapTraversal(applicationDetails:ApplicationDetailsDTO, traversal:ProjectTraversalReducedDTO):ProjectTraversalFullDTO {
+    private mapTraversal(applicationDetails:ApplicationDetailsDTO, traversal:ProjectTraversalReducedDTO): ProjectTraversalFullDTO {
         let newTraversal = <ProjectTraversalFullDTO>traversal;
 
         newTraversal.files = traversal.files.map(file => {
@@ -66,7 +66,7 @@ export class ApplicationDetailsService extends AbstractService {
         return newTraversal;
     }
 
-    private mapTags(details:ApplicationDetailsDTO, reducedTags:TagReducedDTO[]):TagFullDTO[] {
+    private mapTags(details:ApplicationDetailsDTO, reducedTags:TagReducedDTO[]): TagFullDTO[] {
         return reducedTags.map(reducedTag => {
             let fullTag = <TagFullDTO>reducedTag;
             fullTag.nameString = details.stringCache.byID[reducedTag.name];
