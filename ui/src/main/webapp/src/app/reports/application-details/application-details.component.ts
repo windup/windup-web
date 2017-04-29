@@ -256,7 +256,7 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
     }
 
     storeTagsForFile(file:FileFullDTO):{name:string, level:string}[] {
-        if(this.tagsForFile.has(file.fileModelVertexID))
+        if (this.tagsForFile.has(file.fileModelVertexID))
             return this.tagsForFile.get(file.fileModelVertexID);
 
         let tags = file.tags.map(tagDTO => { return { name: tagDTO.nameString, level: tagDTO.levelString }; });
