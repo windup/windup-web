@@ -8,7 +8,7 @@ import {RegisteredApplication} from "windup-services";
 export class SelectApplicationsComponent {
     _availableApps: RegisteredApplication[];
     @Input()
-    set availableApps(availableApps:RegisteredApplication[]) {
+    set availableApps(availableApps: RegisteredApplication[]) {
         this._availableApps = availableApps;
         this.sort();
     }
@@ -25,7 +25,7 @@ export class SelectApplicationsComponent {
     selectedAppsChange: EventEmitter<RegisteredApplication[]> = new EventEmitter<RegisteredApplication[]>();
 
     @Input()
-    set selectedApps(apps:RegisteredApplication[]) {
+    set selectedApps(apps: RegisteredApplication[]) {
         this._selectedApps = apps;
         this.selectedAppsChange.emit(this._selectedApps);
     }

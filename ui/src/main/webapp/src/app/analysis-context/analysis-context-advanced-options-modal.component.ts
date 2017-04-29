@@ -90,7 +90,7 @@ export class AnalysisContextAdvancedOptionsModalComponent {
         return false;
     }
 
-    private addAdvancedOption(event:Event) {
+    private addAdvancedOption(event: Event) {
         event.preventDefault();
         this.newOptionError = "";
         // Only accept null for a checkbox (with a checkbox "null" == false).

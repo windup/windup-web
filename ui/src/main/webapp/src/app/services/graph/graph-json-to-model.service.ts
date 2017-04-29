@@ -54,7 +54,7 @@ export class GraphJSONToModelService<T extends BaseModel>
      *
      * This can be useful in cases where a single type implements multiple interfaces.
      */
-    public translateType(input:BaseModel, clazz: typeof BaseModel): T {
+    public translateType(input: BaseModel, clazz: typeof BaseModel): T {
         return this.fromJSON(input.data, clazz);
     }
 

@@ -115,7 +115,7 @@ export class ExecutionApplicationListComponent extends RoutedComponent implement
         });
     }
 
-    private flattenReportDataForTraversal(filterApplication:FilterApplication, traversal:ProjectTraversalFullDTO) {
+    private flattenReportDataForTraversal(filterApplication: FilterApplication, traversal: ProjectTraversalFullDTO) {
         let addPointsToMap = (points: number) => {
             let existingPoints = this.pointsByApplication.get(filterApplication.id);
             if (!existingPoints)
@@ -148,7 +148,7 @@ export class ExecutionApplicationListComponent extends RoutedComponent implement
         traversal.children.forEach(childTraversal => this.flattenReportDataForTraversal(filterApplication, childTraversal));
     }
 
-    private getFilterApplication(traversal:ProjectTraversalFullDTO): FilterApplication {
+    private getFilterApplication(traversal: ProjectTraversalFullDTO): FilterApplication {
         if (!this.filteredApplications)
             return null;
 

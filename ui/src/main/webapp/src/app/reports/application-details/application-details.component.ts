@@ -96,7 +96,7 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
         }
     }
 
-    private createProjectTreeData(parentTreeData:TreeData, traversals:ProjectTraversalFullDTO[]) {
+    private createProjectTreeData(parentTreeData: TreeData, traversals: ProjectTraversalFullDTO[]) {
         traversals.forEach(traversal => {
             // Store data for the tree
             let newTreeData:TreeData = {
@@ -120,7 +120,7 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
         });
     }
 
-    private flattenTraversals(traversals:ProjectTraversalFullDTO[]) {
+    private flattenTraversals(traversals: ProjectTraversalFullDTO[]) {
         traversals = traversals.sort(compareTraversals);
 
         traversals.forEach(traversal => {
@@ -145,18 +145,18 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
     }
 
     private visibleMap: Map<number, boolean> = new Map<number, boolean>();
-    private setIsVisibleStatus(traversal:ProjectTraversalFullDTO, visible: boolean) {
+    private setIsVisibleStatus(traversal: ProjectTraversalFullDTO, visible: boolean) {
         this.visibleMap.set(traversal.id, visible);
     }
-    private isVisible(traversal:ProjectTraversalFullDTO): boolean {
+    private isVisible(traversal: ProjectTraversalFullDTO): boolean {
         return this.visibleMap.get(traversal.id) || false;
     }
 
-    private hasDuplicateProjects(traversal:ProjectTraversalFullDTO): boolean {
+    private hasDuplicateProjects(traversal: ProjectTraversalFullDTO): boolean {
         return this.traversalsForCanonicalVertexID.get(traversal.canonicalID).length > 1;
     }
 
-    private storeProjectData(traversal:ProjectTraversalFullDTO) {
+    private storeProjectData(traversal: ProjectTraversalFullDTO) {
         let files = traversal.files.sort(compareTraversalChildFiles);
 
         files.forEach(file => {
@@ -191,7 +191,7 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
         this.flattenTraversals(traversal.children);
     }
 
-    private convertToChartStatistic(tagStatistics:Map<string, number>) {
+    private convertToChartStatistic(tagStatistics: Map<string, number>) {
         if (!tagStatistics)
             return;
 
@@ -218,7 +218,7 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
         this.tagFrequencies = this.convertToChartStatistic(allFrequencyStatsMap);
     }
 
-    private calculateTagFrequenciesForProject(allFrequencyStatsMap:Map<string, number>, traversal:ProjectTraversalFullDTO) {
+    private calculateTagFrequenciesForProject(allFrequencyStatsMap: Map<string, number>, traversal: ProjectTraversalFullDTO) {
         let currentProjectMap = new Map<string, number>();
 
         traversal.files.forEach(file => {
@@ -286,7 +286,7 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
         return tags;
     }
 
-    private setPackageFrequenciesByProject(traversal:ProjectTraversalFullDTO, files:FileFullDTO[]) {
+    private setPackageFrequenciesByProject(traversal: ProjectTraversalFullDTO, files: FileFullDTO[]) {
         if (!files)
             return;
 
@@ -301,7 +301,7 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
         this.packageFrequenciesByProject.set(traversal.id, this.calculateTreeDataForHints(hints));
     }
 
-    private calculateTreeDataForHints(hints:HintFullDTO[]): ChartStatistic[] {
+    private calculateTreeDataForHints(hints: HintFullDTO[]): ChartStatistic[] {
         let service = new TypeReferenceStatisticsService();
         let resultMap = service.getPackageUseFrequencies(hints, 2, this._http);
         let result = [];
@@ -422,6 +422,6 @@ class ChartStatistic {
     }
 }
 
-function chartStatisticComparator(stat1:ChartStatistic, stat2:ChartStatistic): number {
+function chartStatisticComparator(stat1: ChartStatistic, stat2: ChartStatistic): number {
     return stat2.value - stat1.value;
 }

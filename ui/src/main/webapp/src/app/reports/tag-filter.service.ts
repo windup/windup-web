@@ -73,7 +73,7 @@ export class TagFilterService {
             return MatchResult.ImplicitInclude;
     }
 
-    private tagValueInCollection(collection:Tag[], tagValue: string) {
+    private tagValueInCollection(collection: Tag[], tagValue: string) {
         for (let tag of collection) {
             if (tag.name == tagValue)
                 return true;

@@ -46,7 +46,7 @@ export class TagDataService extends AbstractService {
         return result;
     }
 
-    private cacheTagData(tagList:TagHierarchyData[]) {
+    private cacheTagData(tagList: TagHierarchyData[]) {
         this.setParentTags(null, tagList);
 
         let cache = (tags:TagHierarchyData[]) => {
@@ -67,7 +67,7 @@ export class TagDataService extends AbstractService {
      * @param parentTag
      * @param tagList
      */
-    private setParentTags(parentTag:TagHierarchyData, tagList:TagHierarchyData[]) {
+    private setParentTags(parentTag: TagHierarchyData, tagList: TagHierarchyData[]) {
         tagList.forEach(tag => {
             if (tag.parents == null)
                 tag.parents = [];

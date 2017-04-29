@@ -86,7 +86,7 @@ export class SourceReportComponent extends RoutedComponent implements OnInit, Af
         }));
     }
 
-    private getClassificationLinks(classification:ClassificationModel): Observable<LinkModel[]> {
+    private getClassificationLinks(classification: ClassificationModel): Observable<LinkModel[]> {
         let linkableModel = <LinkableModel>this._graphJsonToModelService.translateType(classification, LinkableModel);
         return linkableModel.links;
     }
@@ -102,7 +102,7 @@ export class SourceReportComponent extends RoutedComponent implements OnInit, Af
         return points;
     }
 
-    private hintMatches(hint:InlineHintModel, lineNumber: number): boolean {
+    private hintMatches(hint: InlineHintModel, lineNumber: number): boolean {
         let hintLine = hint.data["lineNumber"];
 
         // workaround an odd edge case
