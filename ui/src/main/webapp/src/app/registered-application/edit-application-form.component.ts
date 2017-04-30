@@ -65,13 +65,15 @@ export class EditApplicationFormComponent extends RegisterApplicationFormCompone
                 application => this.rerouteToApplicationList(),
                 error => this.handleError(<any>error)
             );
-        } else {
+        }
+        else {
             if (this.multipartUploader.getNotUploadedItems().length > 0) {
                 this._registeredApplicationService.updateByUpload(this.application).subscribe(
                     application => this.rerouteToApplicationList(),
                     error => this.handleError(<any>error)
                 );
-            } else {
+            }
+            else {
                 this.handleError("Please select file first");
             }
         }

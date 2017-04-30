@@ -53,23 +53,28 @@ function hslToRGB (hsl){
         r = c;
         g = x;
         b = 0;
-    } else if (h < 2) {
+    }
+    else if (h < 2) {
         r = x;
         g = c;
         b = 0;
-    } else if (h < 3) {
+    }
+    else if (h < 3) {
         r = 0;
         g = c;
         b = x;
-    } else if (h < 4) {
+    }
+    else if (h < 4) {
         r = 0;
         g = x;
         b = c;
-    } else if (h < 5) {
+    }
+    else if (h < 5) {
         r = x;
         g = 0;
         b = c;
-    } else {
+    }
+    else {
         r = c;
         g = 0;
         b = x;

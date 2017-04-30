@@ -140,7 +140,8 @@ export class AnalysisContextFormComponent extends FormComponent
                         if (project.defaultAnalysisContextId == null) {
                             this.initializeAnalysisContext();
                             this.analysisContext.applications = apps.slice();
-                        } else {
+                        }
+                        else {
                             this._analysisContextService.get(project.defaultAnalysisContextId)
                                 .subscribe(context => {
                                     this.analysisContext = context;
@@ -157,7 +158,7 @@ export class AnalysisContextFormComponent extends FormComponent
             this.isInWizard = flatRouteData.data.hasOwnProperty('wizard') && flatRouteData.data['wizard'];
         });
 
-       
+
     }
 
     ngOnDestroy(): void {
@@ -183,11 +184,13 @@ export class AnalysisContextFormComponent extends FormComponent
 
         if (analysisContext == null) {
             analysisContext = AnalysisContextFormComponent.getDefaultAnalysisContext();
-        } else {
+        }
+        else {
             // For the migration path, store the id only.
             if (analysisContext.migrationPath) {
                 analysisContext.migrationPath = <MigrationPath>{ id: analysisContext.migrationPath.id };
-            } else {
+            }
+            else {
                 analysisContext.migrationPath = AnalysisContextFormComponent.DEFAULT_MIGRATION_PATH;
             }
 
@@ -243,13 +246,15 @@ export class AnalysisContextFormComponent extends FormComponent
             if (this.analysisContext != null) {
                 if (this.analysisContext.includePackages == null || this.analysisContext.includePackages.length == 0) {
                     this.includePackages = [];
-                } else {
+                }
+                else {
                     this.includePackages = this.analysisContext.includePackages.map(node => this._packageRegistryService.get(node.id));
                 }
 
                 if (this.analysisContext.excludePackages == null || this.analysisContext.excludePackages.length == 0) {
                     this.analysisContext.excludePackages = [];
-                } else {
+                }
+                else {
                     this.analysisContext.excludePackages = this.analysisContext.excludePackages.map(node => this._packageRegistryService.get(node.id));
                 }
             }
@@ -310,9 +315,11 @@ export class AnalysisContextFormComponent extends FormComponent
                 error => {
                     this._notificationService.error(utils.getErrorMessage(error));
                 });
-        } else if (this.isInWizard) {
+        }
+        else if (this.isInWizard) {
             this._router.navigate([`/projects/${this.project.id}`]);
-        } else {
+        }
+        else {
             this.navigateBack();
         }
     }

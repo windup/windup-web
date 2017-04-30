@@ -22,7 +22,8 @@ describe("Sorting service", () => {
 
         if (!comparator) {
             compareCallback = (order === OrderDirection.ASC) ? ascComparator : descComparator;
-        } else {
+        }
+        else {
             compareCallback = comparator;
         }
 

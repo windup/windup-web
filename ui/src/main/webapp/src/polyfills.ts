@@ -12,7 +12,8 @@ declare var process: any;
 
 if (process.env.ENV === 'build') {
   // Production
-} else {
+}
+else {
   // Development
   Error['stackTraceLimit'] = Infinity;
 

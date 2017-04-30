@@ -78,7 +78,8 @@ export class BreadCrumbsService {
 
         if (children.length == 0) {
             return route; // Do we care if it has component?
-        } else {
+        }
+        else {
             return this.getEndRoute(children[0]);
         }
     }
@@ -86,9 +87,11 @@ export class BreadCrumbsService {
     protected canReachToComponentRoute(route: Route) {
         if (route.component) {
             return true;
-        } else if (!route.children) {
+        }
+        else if (!route.children) {
             return false;
-        } else {
+        }
+        else {
             return route.children.filter(child => child.path === '' || child.path === '**')
                 .map(child => this.canReachToComponentRoute(child))
                 .reduce((previous, current) => previous || current, false);
@@ -103,7 +106,8 @@ export class BreadCrumbsService {
     protected getName(snapshot: ActivatedRouteSnapshot, route: Route, flattenedRouteData: FlattenedRouteData) {
         if (snapshot.data && (snapshot.data.hasOwnProperty('breadcrumbTitle') || snapshot.data.hasOwnProperty('displayName'))) {
             return this.getNameFromData(snapshot.data, flattenedRouteData);
-        } else {
+        }
+        else {
             return this.getNameFromData(route.data, flattenedRouteData);
         }
     }
@@ -116,12 +120,15 @@ export class BreadCrumbsService {
         if (data.hasOwnProperty('breadcrumbTitle')) {
             if (typeof data['breadcrumbTitle'] === 'function') {
                 return data['breadcrumbTitle'](flattenedRouteData);
-            } else {
+            }
+            else {
                 return data['breadcrumbTitle'];
             }
-        } else if (data.hasOwnProperty('displayName')) {
+        }
+        else if (data.hasOwnProperty('displayName')) {
             return data['displayName'];
-        } else {
+        }
+        else {
             return '';
         }
     }

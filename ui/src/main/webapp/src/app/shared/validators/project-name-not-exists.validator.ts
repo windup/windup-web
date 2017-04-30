@@ -28,7 +28,8 @@ export class ProjectNameNotExistsValidator implements Validator {
             projectService.getIdByName(control.value.trim()).subscribe(result => {
                 if (result == null) {
                     resolve(null);
-                } else {
+                }
+                else {
                     // When updating, it's ok to enter the same name.
                     if (this.project != null && result == this.project.id)
                         resolve(null);

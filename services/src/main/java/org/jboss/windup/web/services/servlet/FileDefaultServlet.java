@@ -174,15 +174,18 @@ public class FileDefaultServlet extends HttpServlet
         // Validate base path.
         if (this.basePath == null) {
             throw new ServletException("FileServlet init param 'basePath' is required.");
-        } else {
+        }
+        else {
             File path = new File(this.basePath);
             if (!path.exists()) {
                 throw new ServletException("FileServlet init param 'basePath' value '"
                         + this.basePath + "' does actually not exist in file system.");
-            } else if (!path.isDirectory()) {
+            }
+            else if (!path.isDirectory()) {
                 throw new ServletException("FileServlet init param 'basePath' value '"
                         + this.basePath + "' is actually not a directory in file system.");
-            } else if (!path.canRead()) {
+            }
+            else if (!path.canRead()) {
                 throw new ServletException("FileServlet init param 'basePath' value '"
                         + this.basePath + "' is actually not readable in file system.");
             }
@@ -224,7 +227,8 @@ public class FileDefaultServlet extends HttpServlet
             //resource = resourceManager.getResource(path);
             //resource = new FileResource(requestedFile, this.fileResourceManager, path);
             resource = this.fileResourceManager.getResource(path);
-        } else {
+        }
+        else {
             resource = null;
         }
 
@@ -232,7 +236,8 @@ public class FileDefaultServlet extends HttpServlet
             if (req.getDispatcherType() == DispatcherType.INCLUDE) {
                 //servlet 9.3
                 throw new FileNotFoundException(path);
-            } else {
+            }
+            else {
                 resp.sendError(StatusCodes.NOT_FOUND);
             }
             return;
@@ -244,7 +249,8 @@ public class FileDefaultServlet extends HttpServlet
                 resp.setContentType("text/css");
                 resp.getWriter().write(DirectoryUtils.Blobs.FILE_CSS);
                 return;
-            } else if ("js".equals(req.getQueryString())) {
+            }
+            else if ("js".equals(req.getQueryString())) {
                 resp.setContentType("application/javascript");
                 resp.getWriter().write(DirectoryUtils.Blobs.FILE_JS);
                 return;
@@ -357,7 +363,8 @@ public class FileDefaultServlet extends HttpServlet
                 final String contentType = deployment.getServletContext().getMimeType(resource.getName());
                 if (contentType != null) {
                     resp.setContentType(contentType);
-                } else {
+                }
+                else {
                     resp.setContentType("application/octet-stream");
                 }
             }
@@ -381,7 +388,8 @@ public class FileDefaultServlet extends HttpServlet
                 resp.getOutputStream();
                 if(contentLength > Integer.MAX_VALUE) {
                     resp.setContentLengthLong(contentLength);
-                } else {
+                }
+                else {
                     resp.setContentLength(contentLength.intValue());
                 }
                 if(resource instanceof RangeAwareResource && ((RangeAwareResource)resource).isRangeSupported()) {
@@ -396,34 +404,41 @@ public class FileDefaultServlet extends HttpServlet
                             if(toWrite >= 0) {
                                 if(toWrite > Integer.MAX_VALUE) {
                                     resp.setContentLengthLong(toWrite);
-                                } else {
+                                }
+                                else {
                                     resp.setContentLength((int)toWrite);
                                 }
-                            } else {
+                            }
+                            else {
                                 //ignore the range request
                                 range = null;
                             }
                             start = contentLength - end;
                             end = contentLength;
-                        } else if(end == -1) {
+                        }
+                        else if(end == -1) {
                             //prefix range
                             long toWrite = contentLength - start;
                             if(toWrite >= 0) {
                                 if(toWrite > Integer.MAX_VALUE) {
                                     resp.setContentLengthLong(toWrite);
-                                } else {
+                                }
+                                else {
                                     resp.setContentLength((int)toWrite);
                                 }
-                            } else {
+                            }
+                            else {
                                 //ignore the range request
                                 range = null;
                             }
                             end = contentLength;
-                        } else {
+                        }
+                        else {
                             long toWrite = end - start + 1;
                             if(toWrite > Integer.MAX_VALUE) {
                                 resp.setContentLengthLong(toWrite);
-                            } else {
+                            }
+                            else {
                                 resp.setContentLength((int)toWrite);
                             }
                         }
@@ -442,7 +457,8 @@ public class FileDefaultServlet extends HttpServlet
             HttpServerExchange exchange = SecurityActions.requireCurrentServletRequestContext().getOriginalRequest().getExchange();
             if(range == null) {
                 resource.serve(exchange.getResponseSender(), exchange, completionCallback(include));
-            } else {
+            }
+            else {
                 ((RangeAwareResource)resource).serveRange(exchange.getResponseSender(), exchange, start, end, completionCallback(include));
             }
         }
@@ -473,7 +489,8 @@ public class FileDefaultServlet extends HttpServlet
         if (request.getDispatcherType() == DispatcherType.INCLUDE && request.getAttribute(RequestDispatcher.INCLUDE_REQUEST_URI) != null) {
             pathInfo = (String) request.getAttribute(RequestDispatcher.INCLUDE_PATH_INFO);
             servletPath = (String) request.getAttribute(RequestDispatcher.INCLUDE_SERVLET_PATH);
-        } else {
+        }
+        else {
             pathInfo = request.getPathInfo();
             servletPath = request.getServletPath();
         }
@@ -482,9 +499,11 @@ public class FileDefaultServlet extends HttpServlet
 
         if (result == null) {
             result = servletPath;
-        } else if(resolveAgainstContextRoot) {
+        }
+        else if(resolveAgainstContextRoot) {
             result = servletPath + CanonicalPathUtils.canonicalize(pathInfo);
-        } else {
+        }
+        else {
             result = CanonicalPathUtils.canonicalize(result);
         }
 
@@ -522,7 +541,8 @@ public class FileDefaultServlet extends HttpServlet
         final String lastSegment;
         if (pos == -1) {
             lastSegment = path;
-        } else {
+        }
+        else {
             lastSegment = path.substring(pos + 1);
         }
         if (lastSegment.isEmpty()) {
@@ -536,7 +556,8 @@ public class FileDefaultServlet extends HttpServlet
         final String extension = lastSegment.substring(ext + 1, lastSegment.length());
         if (defaultAllowed) {
             return !disallowed.contains(extension);
-        } else {
+        }
+        else {
             return allowed.contains(extension);
         }
     }

@@ -40,7 +40,8 @@ export class GraphJSONToModelService<T extends BaseModel>
     constructor(private _http: Http, mapping?: any) {
         if (!mapping) {
             this.mapping = DiscriminatorMapping;
-        } else {
+        }
+        else {
             this.mapping = mapping;
         }
     }

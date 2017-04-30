@@ -81,7 +81,8 @@ export abstract class AbstractChosenComponent<T> implements ControlValueAccessor
                     if (this.isOptionInitiallySelected(option)) {
                         initialSelection.push(option);
                         option.selected = true;
-                    } else {
+                    }
+                    else {
                         option.selected = false;
                     }
                 });
@@ -94,7 +95,8 @@ export abstract class AbstractChosenComponent<T> implements ControlValueAccessor
                         let optionGroup: InternalChosenOptionGroup = this._groups.find(group => group.value == option.group);
                         option.groupIndex = optionGroup.index;
                         option.groupObject = optionGroup;
-                    } else {
+                    }
+                    else {
                         option.groupIndex = -1;
                     }
                 });
@@ -121,7 +123,8 @@ export abstract class AbstractChosenComponent<T> implements ControlValueAccessor
             });
             this.dropOptions = dropOptions;
             this.filterMode = true;
-        } else {
+        }
+        else {
             this.dropOptions = this._options;
             this.filterMode = false;
         }

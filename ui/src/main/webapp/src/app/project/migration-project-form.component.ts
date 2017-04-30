@@ -50,7 +50,7 @@ export class MigrationProjectFormComponent extends FormComponent implements OnIn
                 // Reload it as we always need the latest data (route resolver does not guarantee this)
                 this._migrationProjectService.get(projectID).subscribe(model => this.model = model);
 
-                if(!this.editMode) // Creating a new project.
+                if (!this.editMode) // Creating a new project.
                     this._migrationProjectService.deleteProvisionalProjects().subscribe(res => {});
             }
 
@@ -83,7 +83,8 @@ export class MigrationProjectFormComponent extends FormComponent implements OnIn
                 migrationProject => this.navigateOnSuccess(migrationProject),
                 error => this.handleError(<any> error)
             );
-        } else {
+        }
+        else {
             this._migrationProjectService.create(this.model).subscribe(
                 migrationProject => this.navigateOnSuccess(migrationProject),
                 error => this.handleError(<any> error)
@@ -96,7 +97,8 @@ export class MigrationProjectFormComponent extends FormComponent implements OnIn
             // Come on, relative routes?!
             // this._router.navigate(['./add-applications']);
             this._router.navigate(['/wizard', 'project', project.id, 'add-applications']);
-        } else {
+        }
+        else {
             this.rerouteToProjectList();
         }
     }

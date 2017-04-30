@@ -53,7 +53,8 @@ export class WindupHttpService extends Http {
                 let result;
                 if (bodyRequired) {
                     result = f.apply(this, [url, body, options]);
-                } else {
+                }
+                else {
                     result = f.apply(this, [url, options]);
                 }
 

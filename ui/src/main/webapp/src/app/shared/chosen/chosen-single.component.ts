@@ -80,7 +80,8 @@ export class ChosenSingleComponent extends AbstractChosenComponent<string> {
     updateModel() {
         if (this.singleSelectedOption == null) {
             this.onChange(null);
-        } else {
+        }
+        else {
             this.onChange(this.singleSelectedOption.value);
         }
     }

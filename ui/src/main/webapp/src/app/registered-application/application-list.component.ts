@@ -126,7 +126,8 @@ export class ApplicationListComponent extends ExecutionsMonitoringComponent impl
     updateSearch() {
         if (this.searchText && this.searchText.length > 0) {
             this.filteredApplications = this.project.applications.filter(app => app.title.search(new RegExp(this.searchText, 'i')) !== -1);
-        } else {
+        }
+        else {
             this.filteredApplications = this.project.applications;
         }
     }

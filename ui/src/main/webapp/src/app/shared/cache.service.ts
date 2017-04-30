@@ -147,7 +147,8 @@ export function Cached(section?, expiration?: CacheExpiration, immutable: boolea
         immutable = configuration.immutable;
         cacheItemCallback = configuration.cacheItemCallback;
         section = section.section;
-    } else if (section === null || section === undefined) {
+    }
+    else if (section === null || section === undefined) {
         section = 'global';
     }
 

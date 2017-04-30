@@ -80,7 +80,8 @@ export class SortableTableComponent {
         if (property === this.sort.property) {
             this.sort.direction = (this.sort.direction === OrderDirection.ASC) ? OrderDirection.DESC : OrderDirection.ASC;
             this._sortingService.setOrderDirection(this.sort.direction);
-        } else {
+        }
+        else {
             this._sortingService.orderBy(property, this.sort.direction);
             this.sort.property = property;
         }

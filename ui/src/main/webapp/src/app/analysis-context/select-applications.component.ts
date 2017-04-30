@@ -40,7 +40,8 @@ export class SelectApplicationsComponent {
     sort() {
         if (!this._availableApps) {
             this.availableAppsSorted = [];
-        } else {
+        }
+        else {
             this.availableAppsSorted = this._availableApps.sort((app1, app2) => app1.inputFilename.localeCompare(app2.inputFilename));
         }
     }

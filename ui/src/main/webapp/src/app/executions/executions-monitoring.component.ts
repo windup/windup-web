@@ -36,7 +36,8 @@ export abstract class ExecutionsMonitoringComponent extends AbstractComponent {
         if (this.isExecutionActive(event.execution)) {
             this.activeExecutionsMap.set(event.execution.id, event.execution);
             this.updateActiveExecutions();
-        } else if (this.activeExecutionsMap.has(event.execution.id)) {
+        }
+        else if (this.activeExecutionsMap.has(event.execution.id)) {
             this.activeExecutionsMap.delete(event.execution.id);
             this.updateActiveExecutions();
         }

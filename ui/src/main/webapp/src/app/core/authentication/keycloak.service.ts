@@ -79,7 +79,8 @@ export class KeycloakService {
             console.warn('Login success, not logged in');
             this._router.navigateByUrl(this.keyCloak.authServerUrl);
 //            this._router.navigate(['/login']);
-        } else {
+        }
+        else {
             let redirectUrl = this.getRedirectUrl();
 
             this.auth.loggedIn = true;
@@ -129,7 +130,8 @@ export class KeycloakService {
                         this.keyCloak.updateToken(KeycloakService.TOKEN_MIN_VALIDITY_MINUTES)
                             .success(() => resolve(this.auth.authz.token))
                             .error(error => reject(error));
-                    } else {
+                    }
+                    else {
                         reject('User is not authenticated, token is not set');
                     }
                 },

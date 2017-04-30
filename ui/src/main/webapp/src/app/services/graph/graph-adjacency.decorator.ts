@@ -41,7 +41,8 @@ export function GraphAdjacency (
                 if (!relations || !(relations["vertices"] || relations["link"])){
                     return returnArray ? emptyArrayObs : nullObs;
                 }
-            } else if (kind == "IN_V" || kind == "OUT_V") {
+            }
+            else if (kind == "IN_V" || kind == "OUT_V") {
                 relations = {};
             }
 

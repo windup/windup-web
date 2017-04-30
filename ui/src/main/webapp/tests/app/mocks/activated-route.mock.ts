@@ -42,7 +42,8 @@ export class ActivatedRouteMock {
     set parent(parent: ActivatedRouteMock) {
         if (parent) {
             this._parent = parent;
-        } else {
+        }
+        else {
             this._parent = new ActivatedRouteMock();
         }
     }

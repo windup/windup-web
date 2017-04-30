@@ -19,7 +19,7 @@ export class DiscriminatorMapping
     public static getDiscriminatorByModelClass(clazz: typeof BaseModel)
     {
         // It should be in the class' static data.
-        if(clazz.discriminator)
+        if (clazz.discriminator)
             return clazz.discriminator;
 
         return null;

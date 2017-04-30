@@ -66,7 +66,8 @@ export class ChosenDropComponent {
     getOptionLabel(option): string {
         if (this.filterMode) {
             return option.labelWithMark;
-        } else {
+        }
+        else {
             return option.label;
         }
     }
@@ -96,10 +97,12 @@ export class ChosenDropComponent {
         if (option.group != null && option.groupObject != null) {
             if (i == 0) {
                 return true;
-            } else {
+            }
+            else {
                 return this._options[i - 1].group != option.group;
             }
-        } else {
+        }
+        else {
             return false;
         }
     }
