@@ -12,7 +12,7 @@
 
     <groupId>org.jboss.windup.web.ui</groupId>
     <artifactId>windup-web-ui-tsmodels</artifactId>
-    <version>4.0.0.Beta1</version>
+    <version>3.0.0-SNAPSHOT</version>
 
     <name>Windup Web - Generate TS Models</name>
 
@@ -33,7 +33,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
 
-        <version.windup.core>4.0.0-SNAPSHOT</version.windup.core>
+        <version.windup.core>4.0.0.Beta1</version.windup.core>
         <!-- For now, we need to pass this to the Mojo explicitly (through META-INF/versions.properties),
              but it should be possible to figure that out from the Windup POM. -->
         <version.forge>3.6.0.Final</version.forge>
@@ -125,8 +125,4 @@
         </profile>
 
     </profiles>
-
-  <scm>
-    <tag>4.0.0.Beta1</tag>
-  </scm>
 </project>

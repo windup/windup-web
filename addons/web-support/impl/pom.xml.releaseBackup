@@ -5,14 +5,19 @@
     <parent>
         <groupId>org.jboss.windup.web.addons</groupId>
         <artifactId>windup-web-support-parent</artifactId>
-        <version>4.0.0.Beta1</version>
+        <version>3.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>windup-web-support-api</artifactId>
-    <name>Windup Web - Support Addon API</name>
+    <artifactId>windup-web-support-impl</artifactId>
+    <name>Windup Web - Support Addon Impl</name>
 
     <dependencies>
         <!-- Local Dependencies -->
+        <dependency>
+            <groupId>org.jboss.windup.web.addons</groupId>
+            <artifactId>windup-web-support-api</artifactId>
+            <scope>compile</scope>
+        </dependency>
 
         <!-- Addon Dependencies -->
         <dependency>
@@ -21,14 +26,14 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.jboss.windup.config</groupId>
-            <artifactId>windup-config-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org.jboss.windup.graph</groupId>
             <artifactId>windup-graph</artifactId>
             <classifier>forge-addon</classifier>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.windup.config</groupId>
+            <artifactId>windup-config-api</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -39,6 +44,18 @@
         <dependency>
             <groupId>org.jboss.windup.rules.apps</groupId>
             <artifactId>windup-rules-java-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.windup.rules.apps</groupId>
+            <artifactId>windup-rules-java-ee</artifactId>
+            <classifier>forge-addon</classifier>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.windup.rules.apps</groupId>
+            <artifactId>windup-rules-java-archives</artifactId>
+            <classifier>forge-addon</classifier>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -62,7 +79,6 @@
             <scope>provided</scope>
         </dependency>
 
-
         <!-- Furnace Container -->
         <dependency>
             <groupId>org.jboss.forge.furnace.container</groupId>
@@ -70,6 +86,13 @@
             <classifier>forge-addon</classifier>
             <scope>provided</scope>
         </dependency>
-    </dependencies>
 
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.9.5</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>
