@@ -49,10 +49,10 @@ export class MigrationProjectFormComponent extends FormComponent implements OnIn
 
                 // Reload it as we always need the latest data (route resolver does not guarantee this)
                 this._migrationProjectService.get(projectID).subscribe(model => this.model = model);
-
-                if(!this.editMode) // Creating a new project.
-                    this._migrationProjectService.deleteProvisionalProjects().subscribe(res => {});
             }
+
+            if(!this.editMode) // Creating a new project.
+                this._migrationProjectService.deleteProvisionalProjects().subscribe(res => {});
 
             this.isInWizard = flatRouteData.data.hasOwnProperty('wizard') && flatRouteData.data['wizard'];
         });
