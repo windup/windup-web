@@ -67,6 +67,7 @@
         <module>tests</module>
         <module>services</module>
         <module>ui</module>
+        <module>ear</module>
     </modules>
 
     <dependencyManagement>
