@@ -3,13 +3,12 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router, NavigationEnd} from "@angular/router";
 import {FileUploader} from "ng2-file-upload/ng2-file-upload";
 
-import {RegisteredApplication, RegistrationType} from "windup-services";
+import {MigrationProject, RegisteredApplication, RegistrationType} from "../generated/windup-services";
 import {RegisteredApplicationService} from "./registered-application.service";
 import {FileExistsValidator} from "../shared/validators/file-exists.validator";
 import {FileService} from "../services/file.service";
 import {FormComponent} from "../shared/form.component";
 import {Constants} from "../constants";
-import {MigrationProject} from "windup-services";
 import {Subscription} from "rxjs";
 import {RouteFlattenerService} from "../core/routing/route-flattener.service";
 import {TabComponent} from "../shared/tabs/tab.component";

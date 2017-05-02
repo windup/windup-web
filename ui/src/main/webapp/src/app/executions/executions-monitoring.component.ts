@@ -1,8 +1,7 @@
-import {WindupExecution} from "windup-services";
+import {MigrationProject, WindupExecution} from "../generated/windup-services";
 import {AbstractComponent} from "../shared/AbstractComponent";
 import {WindupExecutionService} from "../services/windup-execution.service";
 import {ExecutionEvent} from "../core/events/windup-event";
-import {MigrationProject} from "windup-services";
 
 export abstract class ExecutionsMonitoringComponent extends AbstractComponent {
     protected activeExecutionsMap: Map<number, WindupExecution> = new Map<number, WindupExecution>();
@@ -14,7 +13,6 @@ export abstract class ExecutionsMonitoringComponent extends AbstractComponent {
     }
 
     protected loadActiveExecutions(executions: WindupExecution[]) {
-        console.log("Load active for executions: ", executions);
         this.activeExecutionsMap.clear();
         executions.filter(execution => this.isExecutionActive(execution))
             .forEach(execution => {

@@ -1,11 +1,10 @@
 import {Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from "@angular/core";
 import {WindupService} from "../services/windup.service";
-import {WindupExecution} from "windup-services";
+import {MigrationProject, WindupExecution} from "../generated/windup-services";
 import {NotificationService} from "../core/notification/notification.service";
 import {utils} from '../shared/utils';
 import {SortingService, OrderDirection} from "../shared/sort/sorting.service";
 import {MigrationProjectService} from "../project/migration-project.service";
-import {MigrationProject} from "windup-services";
 import {WindupExecutionService} from "../services/windup-execution.service";
 import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
 

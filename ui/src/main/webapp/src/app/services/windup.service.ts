@@ -1,11 +1,12 @@
+///<reference path="../shared/cache.service.ts"/>
 import {Injectable} from '@angular/core';
 import {Http} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 
 import {Constants} from "../constants";
-import {AnalysisContext, MigrationProject, WindupExecution} from "windup-services";
+import {AnalysisContext, MigrationProject, WindupExecution} from "../generated/windup-services";
 import {AbstractService} from "../shared/abtract.service";
-import {Cached, CacheServiceInstance} from "../shared/cache.service";
+import {Cached, getCacheServiceInstance} from "../shared/cache.service";
 import {EventBusService} from "../core/events/event-bus.service";
 
 @Injectable()
@@ -50,7 +51,7 @@ export class WindupService extends AbstractService {
         return this._http.post(url, body, this.JSON_OPTIONS)
             .map(res => <WindupExecution> res.json())
             .do(res => {
-                CacheServiceInstance.getSection('execution').clear();
+                getCacheServiceInstance().getSection('execution').clear();
             })
             .catch(this.handleError);
     }

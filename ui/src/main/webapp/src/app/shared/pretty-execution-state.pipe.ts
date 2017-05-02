@@ -1,5 +1,5 @@
 import {Pipe, PipeTransform} from "@angular/core";
-import {ExecutionState} from "windup-services";
+import {ExecutionState} from "../generated/windup-services";
 
 @Pipe({
     name: 'wuPrettyExecutionStatus'

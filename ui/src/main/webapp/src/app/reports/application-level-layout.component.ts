@@ -1,6 +1,6 @@
-import {Component, OnInit} from "@angular/core";
+import {Component} from "@angular/core";
 import {ExecutionsLayoutComponent} from "../executions/executions-layout.component";
-import {RegisteredApplication} from "windup-services";
+import {FilterApplication, RegisteredApplication} from "../generated/windup-services";
 import {RouteLinkProviderService} from "../core/routing/route-link-provider-service";
 import {WindupService} from "../services/windup.service";
 import {EventBusService} from "../core/events/event-bus.service";
@@ -8,9 +8,7 @@ import {MigrationProjectService} from "../project/migration-project.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {DatePipe} from "@angular/common";
 import {FlattenedRouteData, RouteFlattenerService} from "../core/routing/route-flattener.service";
-import {FilterApplication} from "windup-services";
 import {ApplicationReportMenuItem, ReportMenuItem} from "../shared/navigation/context-menu-item.class";
-import {ProjectExecutionsComponent} from "../executions/project-executions.component";
 import {WINDUP_WEB} from "../app.module";
 
 type Application = any; //RegisteredApplication|FilterApplication;

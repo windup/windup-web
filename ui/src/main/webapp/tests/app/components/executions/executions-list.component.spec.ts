@@ -5,7 +5,7 @@ import {RouterTestingModule} from "@angular/router/testing";
 import {ExecutionsListComponent} from "../../../../src/app/executions/executions-list.component";
 import {WindupService} from "../../../../src/app/services/windup.service";
 import {NotificationService} from "../../../../src/app/core/notification/notification.service";
-import {WindupExecution} from "windup-services";
+import {WindupExecution} from "../../../../src/app/generated/windup-services";
 import {EXECUTIONS_DATA} from "./executions-data";
 import {Observable} from "rxjs";
 import {ProgressBarComponent} from "../../../../src/app/shared/progress-bar.component";

@@ -3,12 +3,10 @@ import {fakeAsync, tick, discardPeriodicTasks} from "@angular/core/testing";
 import {WindupService} from "../../../src/app/services/windup.service";
 import {EventBusService} from "../../../src/app/core/events/event-bus.service";
 import {WindupExecutionService} from "../../../src/app/services/windup-execution.service";
-import {WindupExecution} from "windup-services";
-import {ExecutionEvent, NewExecutionStartedEvent} from "../../../src/app/core/events/windup-event";
+import {AnalysisContext, MigrationProject, WindupExecution} from "../../../src/app/generated/windup-services";
+import {NewExecutionStartedEvent} from "../../../src/app/core/events/windup-event";
 import {Observable} from "rxjs";
 import {SchedulerServiceMock} from "../mocks/scheduler-service.mock";
-import {AnalysisContext} from "windup-services";
-import {MigrationProject} from "windup-services";
 
 describe("WindupExecution service", () => {
     let project: MigrationProject = <MigrationProject>{ id: 10 };

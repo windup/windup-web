@@ -1,6 +1,4 @@
-import {WindupExecution} from "windup-services";
-import {RegisteredApplication} from "windup-services";
-import {MigrationProject} from "windup-services";
+import {MigrationProject, RegisteredApplication, WindupExecution} from "../../generated/windup-services";
 
 export abstract class WindupEvent {
     public static TYPE = 'WindupEvent';

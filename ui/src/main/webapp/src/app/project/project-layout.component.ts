@@ -1,11 +1,10 @@
 import {Component, OnInit, OnDestroy} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 
-import {MigrationProject} from "windup-services";
+import {MigrationProject} from "../generated/windup-services";
 import {RouteLinkProviderService} from "../core/routing/route-link-provider-service";
 import {AnalysisContextFormComponent} from "../analysis-context/analysis-context-form.component";
 import {EventBusService} from "../core/events/event-bus.service";
-import {AbstractComponent} from "../shared/AbstractComponent";
 import {ProjectExecutionsComponent} from "../executions/project-executions.component";
 import {ApplicationListComponent} from "../registered-application/application-list.component";
 import {MigrationProjectEvent, UpdateMigrationProjectEvent} from "../core/events/windup-event";

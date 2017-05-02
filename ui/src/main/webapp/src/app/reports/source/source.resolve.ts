@@ -1,7 +1,6 @@
 import {Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Router} from "@angular/router";
 import {Observable} from "rxjs";
 import {Injectable} from "@angular/core";
-import {MigrationProject} from "windup-services";
 import {NotificationService} from "../../core/notification/notification.service";
 import {utils} from '../../shared/utils';
 import {SourceFileModel} from "../../generated/tsModels/SourceFileModel";

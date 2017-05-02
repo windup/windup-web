@@ -122,7 +122,7 @@ import {ContextMenuLinkComponent} from "./shared/navigation/context-menu-link.co
 import {ExecutionApplicationListComponent} from "./reports/execution-application-list/execution-application-list.component";
 import {SourceResolve} from "./reports/source/source.resolve";
 import {ExecutionResolve} from "./executions/execution.resolve";
-import {CacheService, CacheServiceInstance} from "./shared/cache.service";
+import {CacheService, getCacheServiceInstance} from "./shared/cache.service";
 import {ProjectNameNotExistsValidator} from "./shared/validators/project-name-not-exists.validator";
 import {PrettyExecutionStatus} from "./shared/pretty-execution-state.pipe";
 import {AlternativeUploadQueueComponent} from "./shared/upload/alternative-upload-queue.component";
@@ -302,7 +302,7 @@ initializeModelMappingData();
         },
         {
           provide: CacheService,
-          useValue: CacheServiceInstance
+          useFactory: getCacheServiceInstance
         },
         AggregatedStatisticsService,
         DatePipe,

@@ -1,18 +1,14 @@
 import {Component, OnInit, OnDestroy} from "@angular/core";
-import {ReportFilter, Tag} from "windup-services";
+import {Category, FilterApplication, MigrationProject, ReportFilter, Tag, WindupExecution} from "../../generated/windup-services";
 import {ActivatedRoute, Router, NavigationEnd} from "@angular/router";
 import {Subscription} from "rxjs";
 import {ReportFilterService} from "./report-filter.service";
 import {NotificationService} from "../../core/notification/notification.service";
 import {RouteFlattenerService} from "../../core/routing/route-flattener.service";
 import {CustomSelectConfiguration} from "../../shared/custom-select/custom-select.component";
-import {Category} from "windup-services";
 import {utils} from "../../shared/utils";
 import {Location} from "@angular/common";
 import {TagDataService} from "../tag-data.service";
-import {FilterApplication} from "windup-services";
-import {WindupExecution} from "windup-services";
-import {MigrationProject} from "windup-services";
 
 @Component({
     templateUrl: './report-filter.component.html'
