@@ -188,4 +188,8 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
     getNumberAnalyzedApplications(execution : WindupExecution) : number {
         return execution.analysisContext.applications.filter(application => !application.deleted).length;
     }
+
+    sortByNumberAnalyzedApplicationsCallback = (item: WindupExecution) => {
+        return this.getNumberAnalyzedApplications(item);
+    };
 }
