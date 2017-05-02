@@ -17,12 +17,11 @@
             <input #projectTitleControl="ngModel"
                    name="projectTitle"
                    id="idProjectTitle"
+                   type="text"
+                   placeholder="my-project"
+                   required pattern="\s*\w[- \w]+\w\s*" minlength="3" maxlength="120"
                    [(ngModel)]="model.title"
-                   required
                    wuProjectNameNotUsed
-                   pattern="\s*\w[- \w]+\w\s*"
-                   minlength="3"
-                   maxlength="120"
                    [project]="model"
                    type="text"
                    placeholder="my-project"
@@ -42,7 +41,7 @@
 
         <div class="form-group">
             <label class="control-label" for="idDescription">Description</label>
-            <textarea name="description" id="idDescription" name="idDescription" class="form-control" i18n="placeholder" placeholder="A short description of the project." [rows]="getDescriptionHeight()"
+            <textarea name="description" id="idDescription" name="idDescription" class="form-control" maxlength="4095" i18n="placeholder" placeholder="A short description of the project." [rows]="getDescriptionHeight()"
                 #controlDescription="ngModel" [(ngModel)]="model.description"></textarea>
             <span [class.hidden]="!hasError(controlDescription)" class="help-block">
                 The description must contain fewer than 4096 characters.
