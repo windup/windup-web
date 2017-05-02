@@ -52,7 +52,12 @@
             <h3 i18n="Analysis configuration|Section">Configuration</h3>
             <dl>
                 <dt i18n="Migration Path">Transformation path:</dt>
-                <dd>{{execution.analysisContext?.migrationPath?.name}}</dd>
+                <dd>
+                    {{execution.analysisContext?.migrationPath?.name}}
+                    <span *ngIf="execution.analysisContext?.cloudTargetsIncluded">
+                        (with cloud readiness analysis)
+                    </span>
+                </dd>
             </dl>
 
             <wu-expand-collapse [tabTitle]="'Included Packages'" *ngIf="execution.analysisContext.includePackages.length > 0">
