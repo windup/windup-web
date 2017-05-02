@@ -11,6 +11,7 @@ import {Observable} from "rxjs";
 import {RuleProviderExecutionsService} from "../reports/rule-provider-executions/rule-provider-executions.service";
 import {RuleExecutionModel} from "../generated/tsModels/RuleExecutionModel";
 import {ExecutionPhaseModel} from "../generated/tsModels/ExecutionPhaseModel";
+import {RegisteredApplication} from "windup-services";
 
 @Component({
     templateUrl: './execution-detail.component.html',
@@ -65,5 +66,9 @@ export class ExecutionDetailComponent implements OnInit {
 
     private loadLogData() {
         this._windupService.getLogData(this.execution.id).subscribe(logLines => this.logLines = logLines);
+    }
+
+    getAnalyzedApplications(execution : WindupExecution) : RegisteredApplication[] {
+        return execution.analysisContext.applications.filter(application => !application.deleted);
     }
 }
