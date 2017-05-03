@@ -100,6 +100,7 @@ import {MomentModule} from "angular2-moment";
 import {FileUploader, FileUploadModule} from "ng2-file-upload";
 import {WizardComponent} from "./shared/wizard/wizard.component";
 import {DurationPipe} from "./shared/duration.pipe";
+import {ReplacePipe} from "./shared/replace.pipe";
 import {TabContainerComponent} from "./shared/tabs/tab-container.component";
 import {TabComponent} from "./shared/tabs/tab.component";
 import {LogViewComponent} from "./shared/log-view/log-view.component";
@@ -221,6 +222,7 @@ initializeModelMappingData();
         SearchComponent,
         WizardComponent,
         DurationPipe,
+        ReplacePipe,
         TabContainerComponent,
         TabComponent,
         LogViewComponent,
