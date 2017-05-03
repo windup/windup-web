@@ -13,7 +13,7 @@ export class FormComponent {
      * It makes sure that the control is not-pristine (don't show errors on fields the user hasn't touched yet)
      * and that the control is already rendered.
      */
-    hasError(control:NgControl, errorName:string) {
+    hasError(control:NgControl, errorName: string) {
         if (control == null)
             return false;
 
@@ -28,7 +28,7 @@ export class FormComponent {
         }
     }
 
-    handleError(error:any) {
+    handleError(error: any) {
         this.errorMessages = [];
         if (!error) {
             this.errorMessages.push("Server call failed.");

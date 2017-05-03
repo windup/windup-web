@@ -101,14 +101,14 @@ export class ApplicationIndexComponent extends FilterableReportComponent impleme
         }));
     }
 
-    sumStatsList(statsList:StatisticsList):number {
+    sumStatsList(statsList:StatisticsList): number {
         if (!statsList || !statsList.entries)
             return 0;
 
         return statsList.entries.reduce((previousNumber, nextEntry) => previousNumber + nextEntry.value, 0);
     }
 
-    getDependencyCountByType(type:string):number {
+    getDependencyCountByType(type: string): number {
         let result = 0;
         if (!this.dependenciesStats || !this.dependenciesStats.entries)
             return result;
@@ -189,7 +189,7 @@ export class ApplicationIndexComponent extends FilterableReportComponent impleme
             result.push({ "name": incidentStat.name, "series": series });
         });
 
-        result = result.sort((obj1:{name:string, series:any[]}, obj2:{name:string, series:any[]}) => {
+        result = result.sort((obj1:{name: string, series: any[]}, obj2:{name: string, series: any[]}) => {
             let pointsPerIncident1 = EffortLevel[obj1.name];
             let pointsPerIncident2 = EffortLevel[obj2.name];
             return pointsPerIncident1 - pointsPerIncident2;
@@ -208,7 +208,7 @@ export class ApplicationIndexComponent extends FilterableReportComponent impleme
             result.push({ "name": categoryStr, "series": series });
         });
 
-        result = result.sort((obj1:{name:string, series:any[]}, obj2:{name:string, series:any[]}) => {
+        result = result.sort((obj1:{name: string, series: any[]}, obj2:{name: string, series: any[]}) => {
             let pointsPerIncident1 = EffortLevel[obj1.name];
             let pointsPerIncident2 = EffortLevel[obj2.name];
             return pointsPerIncident1 - pointsPerIncident2;

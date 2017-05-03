@@ -17,7 +17,7 @@ export class PrettyPathPipe implements PipeTransform {
     constructor(private _http: Http, private _graphJsonToModelService: GraphJSONToModelService<any>) {
     }
 
-    transform(file: PersistedTraversalChildFileModel):string {
+    transform(file: PersistedTraversalChildFileModel): string {
         this.prettyPath = file.filePath;
         if (!file.filePath)
             console.warn("NO file path? " + file);

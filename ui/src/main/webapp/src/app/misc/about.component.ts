@@ -24,7 +24,7 @@ export class AboutPageComponent implements OnInit, AfterViewInit {
     constructor (private _http: Http) {
     }
 
-    ngOnInit():any {
+    ngOnInit(): any {
         this._http.get(Constants.REST_BASE + this.WINDUP_CORE_VERSION_URL)
             .map(res => res.json())
             .subscribe(version => this.versionWindupCore = version);

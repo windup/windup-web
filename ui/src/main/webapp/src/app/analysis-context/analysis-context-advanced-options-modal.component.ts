@@ -12,27 +12,27 @@ import {isString} from "util";
 })
 export class AnalysisContextAdvancedOptionsModalComponent {
     @Input()
-    configurationOptions:ConfigurationOption[] = [];
+    configurationOptions: ConfigurationOption[] = [];
 
     @Input() @Output()
-    selectedOptions:AdvancedOption[] = [];
+    selectedOptions: AdvancedOption[] = [];
 
     @Input()
     isReadOnly = false;
 
     @Output()
-    advancedOptionsChanged:EventEmitter<AdvancedOption[]> = new EventEmitter<AdvancedOption[]>();
+    advancedOptionsChanged: EventEmitter<AdvancedOption[]> = new EventEmitter<AdvancedOption[]>();
 
-    private newOption:AdvancedOption;
-    private newOptionError:string;
+    private newOption: AdvancedOption;
+    private newOptionError: string;
 
-    private get currentSelectedOptionDefinition():ConfigurationOption {
+    private get currentSelectedOptionDefinition(): ConfigurationOption {
         return this.configurationOptions.find((option:ConfigurationOption) => {
             return this.newOption.name == option.name;
         });
     }
 
-    private get currentOptionType():string {
+    private get currentOptionType(): string {
         if (this.newOption.name == null)
             return null;
 
@@ -57,7 +57,7 @@ export class AnalysisContextAdvancedOptionsModalComponent {
         this.newOption = null;
     }
 
-    get availableOptions():ConfigurationOption[] {
+    get availableOptions(): ConfigurationOption[] {
         if (this.configurationOptions == null)
             return [];
 
@@ -74,7 +74,7 @@ export class AnalysisContextAdvancedOptionsModalComponent {
         });
     }
 
-    private removeAdvancedOption(index:number) {
+    private removeAdvancedOption(index: number) {
         this.selectedOptions.splice(index, 1);
         this.advancedOptionsChanged.emit(this.selectedOptions);
         return false;
@@ -91,7 +91,7 @@ export class AnalysisContextAdvancedOptionsModalComponent {
         return false;
     }
 
-    private addAdvancedOption(event:Event) {
+    private addAdvancedOption(event: Event) {
         event.preventDefault();
         this.newOptionError = "";
         // Only accept null for a checkbox (with a checkbox "null" == false).
@@ -119,7 +119,7 @@ export class AnalysisContextAdvancedOptionsModalComponent {
 
                 this.resetCurrentOption();
             },
-            (error:any) => {
+            (error: any) => {
                 this.newOptionError = "Error validating option";
             });
     }

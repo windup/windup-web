@@ -16,7 +16,7 @@ describe('Generated TS Files', () => {
 
     it ('filemodels - fromJSON()', () => {
         let http = <Http>{
-            get(url:string) {
+            get(url: string) {
                 return Observable.create(function(observer) {
                     let value: any = [ TestGraphData.TEST_FILE_MODELS[0] ];
                     observer.next(value);

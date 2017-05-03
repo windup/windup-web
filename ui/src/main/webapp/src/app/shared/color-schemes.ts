@@ -1,6 +1,6 @@
 let colorSchemeCache = [];
 
-export function calculateColorScheme(len:number) {
+export function calculateColorScheme(len: number) {
     if (!len || len == 0)
         len = 10;
 

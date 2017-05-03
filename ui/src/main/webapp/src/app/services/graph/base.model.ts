@@ -11,14 +11,14 @@ export class BaseModel
     static discriminator: string;
 
     /* These two store the context of Observable fields resolution done by @GraphAdjacency. */
-    http:Http;
-    observableCache:Map<string, Observable<any>> = new Map<string, Observable<any>>();
+    http: Http;
+    observableCache: Map<string, Observable<any>> = new Map<string, Observable<any>>();
     graphService: GraphJSONToModelService<BaseModel>;
 
-    constructor(public discriminator:string[], public vertexId: number, public data:any){
+    constructor(public discriminator: string[], public vertexId: number, public data: any){
     }
 
-    public toString():string {
+    public toString(): string {
         return `BaseModel<${this.discriminator}>#${this.vertexId}`;
     }
 }

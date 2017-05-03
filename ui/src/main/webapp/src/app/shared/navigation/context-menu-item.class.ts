@@ -62,11 +62,11 @@ export class ContextMenuItem implements ContextMenuItemInterface {
         return this._action;
     }
 
-    get data():any {
+    get data(): any {
         return this._data;
     }
 
-    get target():string {
+    get target(): string {
         return this._target;
     }
 
@@ -74,7 +74,7 @@ export class ContextMenuItem implements ContextMenuItemInterface {
      * Indicates that this is an absolute HTML link, rather than a link that should
      * go through Angular's routing system.
      */
-    get absolute():boolean {
+    get absolute(): boolean {
         return this._absolute;
     }
 }

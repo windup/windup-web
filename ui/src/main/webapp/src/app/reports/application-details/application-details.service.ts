@@ -38,7 +38,7 @@ export class ApplicationDetailsService extends AbstractService {
             .catch(this.handleError);
     }
 
-    private mapTraversal(applicationDetails:ApplicationDetailsDTO, traversal:ProjectTraversalReducedDTO):ProjectTraversalFullDTO {
+    private mapTraversal(applicationDetails: ApplicationDetailsDTO, traversal: ProjectTraversalReducedDTO): ProjectTraversalFullDTO {
         let newTraversal = <ProjectTraversalFullDTO>traversal;
 
         newTraversal.files = traversal.files.map(file => {
@@ -69,7 +69,7 @@ export class ApplicationDetailsService extends AbstractService {
         return newTraversal;
     }
 
-    private mapTags(details:ApplicationDetailsDTO, reducedTags:TagReducedDTO[]):TagFullDTO[] {
+    private mapTags(details: ApplicationDetailsDTO, reducedTags: TagReducedDTO[]): TagFullDTO[] {
         return reducedTags.map(reducedTag => {
             let fullTag = <TagFullDTO>reducedTag;
             fullTag.nameString = details.stringCache.byID[reducedTag.name];
@@ -80,27 +80,27 @@ export class ApplicationDetailsService extends AbstractService {
 }
 
 export interface TagFullDTO extends TagReducedDTO {
-    nameString:string;
-    levelString:string;
+    nameString: string;
+    levelString: string;
 }
 
 export interface HintFullDTO extends HintReducedDTO {
-    id:number;
-    titleString:string;
-    javaFQCNString:string;
-    tags:TagFullDTO[];
+    id: number;
+    titleString: string;
+    javaFQCNString: string;
+    tags: TagFullDTO[];
 }
 
 export interface ClassificationFullDTO extends ClassificationReducedDTO {
-    id:number;
-    titleString:string;
-    tags:TagFullDTO[];
+    id: number;
+    titleString: string;
+    tags: TagFullDTO[];
 }
 
 export interface FileFullDTO extends FileReducedDTO {
-    hints:HintFullDTO[];
-    classifications:ClassificationFullDTO[];
-    tags:TagFullDTO[];
+    hints: HintFullDTO[];
+    classifications: ClassificationFullDTO[];
+    tags: TagFullDTO[];
 }
 
 export interface ProjectTraversalFullDTO extends ProjectTraversalReducedDTO {

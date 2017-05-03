@@ -84,7 +84,7 @@ export class ExecutionsLayoutComponent extends ProjectLayoutComponent implements
         this._router.navigate(this.getExecutionRoute(execution));
     };
 
-    get staticReportsAvailable():boolean {
+    get staticReportsAvailable(): boolean {
         if (!this.execution)
             return false;
 

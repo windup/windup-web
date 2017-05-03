@@ -21,18 +21,18 @@ import {utils} from "../../shared/utils";
 })
 export class ExecutionApplicationListComponent extends RoutedComponent implements OnInit, OnDestroy
 {
-    private projectID:number;
-    private execID:number;
+    private projectID: number;
+    private execID: number;
 
     initialSort = {property: 'fileName', direction: OrderDirection.ASC};
-    execution:WindupExecution;
+    execution: WindupExecution;
     filteredApplications: FilterApplication[] = [];
     sortedApplications: FilterApplication[] = [];
     searchText: string;
 
-    applicationDetailsDTO:ApplicationDetailsFullDTO;
-    pointsByApplication:Map<number, number> = new Map<number, number>();
-    tagsByApplication:Map<number, {name: string, level: string}[]> = new Map<number, {name: string, level: string}[]>();
+    applicationDetailsDTO: ApplicationDetailsFullDTO;
+    pointsByApplication: Map<number, number> = new Map<number, number>();
+    tagsByApplication: Map<number, {name: string, level: string}[]> = new Map<number, {name: string, level: string}[]>();
 
     constructor(
         _activatedRoute: ActivatedRoute,
@@ -115,8 +115,8 @@ export class ExecutionApplicationListComponent extends RoutedComponent implement
         });
     }
 
-    private flattenReportDataForTraversal(filterApplication:FilterApplication, traversal:ProjectTraversalFullDTO) {
-        let addPointsToMap = (points:number) => {
+    private flattenReportDataForTraversal(filterApplication: FilterApplication, traversal: ProjectTraversalFullDTO) {
+        let addPointsToMap = (points: number) => {
             let existingPoints = this.pointsByApplication.get(filterApplication.id);
             if (!existingPoints)
                 this.pointsByApplication.set(filterApplication.id, points);
@@ -148,7 +148,7 @@ export class ExecutionApplicationListComponent extends RoutedComponent implement
         traversal.children.forEach(childTraversal => this.flattenReportDataForTraversal(filterApplication, childTraversal));
     }
 
-    private getFilterApplication(traversal:ProjectTraversalFullDTO):FilterApplication {
+    private getFilterApplication(traversal: ProjectTraversalFullDTO): FilterApplication {
         if (!this.filteredApplications)
             return null;
 

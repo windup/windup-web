@@ -3,7 +3,7 @@ import {ReportFilter, Tag} from "../../../../src/app/generated/windup-services";
 
 describe('Tag Filter Service', () => {
 
-    function tag(tagName:string):Tag {
+    function tag(tagName: string): Tag {
         return {id: 0, name: tagName, color: null, title: null, containedTags: [], root: false, pseudo: false};
     }
 

@@ -21,7 +21,7 @@ export class ProjectNameNotExistsValidator implements Validator {
     {
     }
 
-    validate(control: FormControl):Promise<{[key: string] : boolean}> {
+    validate(control: FormControl): Promise<{[key: string] : boolean}> {
         let projectService = this.projectService;
 
         return new Promise(resolve => {

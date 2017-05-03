@@ -13,7 +13,7 @@ export class TagFilterService {
     constructor(private _reportFilter: ReportFilter) {
     }
 
-    tagsMatch(tags:TechnologyTagModel[] | string[]):boolean {
+    tagsMatch(tags:TechnologyTagModel[] | string[]): boolean {
 
         // If there were no tags, then match as long as the include filter is empty
         if (tags == null || tags.length == 0)
@@ -41,7 +41,7 @@ export class TagFilterService {
             !(implicitExcludeFound || explicitExcludeFound);
     }
 
-    tagMatches(tag: TechnologyTagModel | string):MatchResult {
+    tagMatches(tag: TechnologyTagModel | string): MatchResult {
         // Always match if there is no filter
         if (!this._reportFilter || !this._reportFilter.enabled)
             return MatchResult.ImplicitInclude;
@@ -73,7 +73,7 @@ export class TagFilterService {
             return MatchResult.ImplicitInclude;
     }
 
-    private tagValueInCollection(collection:Tag[], tagValue:string) {
+    private tagValueInCollection(collection: Tag[], tagValue: string) {
         for (let tag of collection) {
             if (tag.name == tagValue)
                 return true;

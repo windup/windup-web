@@ -12,7 +12,7 @@ export class RulesModalComponent {
     @Input()
     ruleProviderEntity: RuleProviderEntity = <RuleProviderEntity>{};
 
-    show():void {
+    show(): void {
         (<any>$('#rulesModal')).modal();
         setTimeout(() => prettyPrint(), 1000);
     }

@@ -18,7 +18,7 @@ import {ExecutionPhaseModel} from "../generated/tsModels/ExecutionPhaseModel";
 export class ExecutionDetailComponent implements OnInit {
 
     execution: WindupExecution;
-    logLines:string[];
+    logLines: string[];
     phases: ExecutionPhaseModel[];
 
     hideUnfinishedFeatures: boolean = WINDUP_WEB.config.hideUnfinishedFeatures;
@@ -53,7 +53,7 @@ export class ExecutionDetailComponent implements OnInit {
         return this._windupService.getLogData(this.execution.id);
     }
 
-    get displayReportLinks():boolean {
+    get displayReportLinks(): boolean {
         return this.execution && this.execution.state === "COMPLETED";
     }
 

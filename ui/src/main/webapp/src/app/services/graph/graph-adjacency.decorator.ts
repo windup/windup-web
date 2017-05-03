@@ -84,7 +84,7 @@ export function GraphAdjacency (
                 return relations.observable;
             }
 
-            var vertices:any[] = relations.vertices;
+            var vertices: any[] = relations.vertices;
 
             // TODO: Some of the code above should go into case: "ADJACENCY".
             let models;

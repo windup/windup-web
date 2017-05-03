@@ -22,7 +22,7 @@ export class ProjectListComponent implements OnInit, AfterViewInit {
     private _originalProjects: MigrationProject[] = [];
 
     loading: boolean = true;
-    get totalProjectCount():number {
+    get totalProjectCount(): number {
         if (this._originalProjects == null)
             return 0;
 
@@ -55,7 +55,7 @@ export class ProjectListComponent implements OnInit, AfterViewInit {
         private _windupService: WindupService
     ) {}
 
-    ngOnInit():any {
+    ngOnInit(): any {
         this.updateSort();
         this.getMigrationProjects();
     }

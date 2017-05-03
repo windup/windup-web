@@ -16,7 +16,7 @@ import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.co
 })
 export class ExecutionsListComponent implements OnInit, OnDestroy {
     @Output()
-    reloadRequestEvent:EventEmitter<any> = new EventEmitter();
+    reloadRequestEvent: EventEmitter<any> = new EventEmitter();
 
     @Output()
     runExecution: EventEmitter<void> = new EventEmitter<void>();
@@ -29,8 +29,8 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
 
     sortedExecutions: WindupExecution[] = [];
     initialSort = {property: 'timeStarted', direction: OrderDirection.DESC};
-    private currentTimeTimer:number;
-    currentTime:number = new Date().getTime();
+    private currentTimeTimer: number;
+    currentTime: number = new Date().getTime();
 
     @ViewChild('deleteExecutionDialog')
     readonly deleteExecutionDialog: ConfirmationModalComponent;

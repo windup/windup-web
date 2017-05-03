@@ -7,9 +7,9 @@ import {TechnologyTagModel} from "../../generated/tsModels/TechnologyTagModel";
 })
 export class TechnologyTagComponent {
     @Input()
-    tag:{name: string, level: string} | string;
+    tag: {name: string, level: string} | string;
 
-    get tagClass():string {
+    get tagClass(): string {
         let tagLevel = "info";
 
         if ((<any>this.tag).level == "INFORMATIONAL")
@@ -20,7 +20,7 @@ export class TechnologyTagComponent {
         return `label label-${tagLevel} tech-tag`;
     }
 
-    get tagValue():string {
+    get tagValue(): string {
         if ((<any>this.tag).name)
             return (<any>this.tag).name;
         else

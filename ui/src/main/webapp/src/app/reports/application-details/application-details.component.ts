@@ -21,28 +21,28 @@ import {RouteFlattenerService} from "../../core/routing/route-flattener.service"
     styleUrls: ['./application-details.component.css']
 })
 export class ApplicationDetailsComponent extends FilterableReportComponent implements OnInit {
-    applicationDetails:ApplicationDetailsFullDTO;
-    rootProjects:ProjectTraversalFullDTO[] = [];
-    traversalsForCanonicalVertexID:Map<number, ProjectTraversalFullDTO[]> = new Map<number, ProjectTraversalFullDTO[]>();
-    tagsForFile:Map<number, {name:string, level:string}[]> = new Map<number, {name:string, level:string}[]>();
+    applicationDetails: ApplicationDetailsFullDTO;
+    rootProjects: ProjectTraversalFullDTO[] = [];
+    traversalsForCanonicalVertexID: Map<number, ProjectTraversalFullDTO[]> = new Map<number, ProjectTraversalFullDTO[]>();
+    tagsForFile: Map<number, {name: string, level: string}[]> = new Map<number, {name: string, level: string}[]>();
 
-    allHints:HintFullDTO[] = [];
-    globalPackageUseData:ChartStatistic[] = [];
-    applicationTree:TreeData[] = [];
+    allHints: HintFullDTO[] = [];
+    globalPackageUseData: ChartStatistic[] = [];
+    applicationTree: TreeData[] = [];
 
     /**
      * This contains all projects. Do note, however, that if a project appears more than once, it will only contain
      * one instance. The others will appear in the duplicateProjects Map.
      */
-    allProjects:ProjectTraversalFullDTO[] = [];
-    totalPoints:number = null;
-    pointsByProject:Map<number, number> = new Map<number, number>();
-    pointsByFile:Map<number, number> = new Map<number, number>();
+    allProjects: ProjectTraversalFullDTO[] = [];
+    totalPoints: number = null;
+    pointsByProject: Map<number, number> = new Map<number, number>();
+    pointsByFile: Map<number, number> = new Map<number, number>();
 
-    projectsCollapsed:Map<number, boolean> = new Map<number, boolean>();
-    packageFrequenciesByProject:Map<number, ChartStatistic[]> = new Map<number, ChartStatistic[]>();
-    tagFrequencies:ChartStatistic[];
-    tagFrequenciesByProject:Map<number, ChartStatistic[]>;
+    projectsCollapsed: Map<number, boolean> = new Map<number, boolean>();
+    packageFrequenciesByProject: Map<number, ChartStatistic[]> = new Map<number, ChartStatistic[]>();
+    tagFrequencies: ChartStatistic[];
+    tagFrequenciesByProject: Map<number, ChartStatistic[]>;
 
     constructor(
         private _element: ElementRef,
@@ -95,7 +95,7 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
         }
     }
 
-    private createProjectTreeData(parentTreeData:TreeData, traversals:ProjectTraversalFullDTO[]) {
+    private createProjectTreeData(parentTreeData: TreeData, traversals: ProjectTraversalFullDTO[]) {
         traversals.forEach(traversal => {
             // Store data for the tree
             let newTreeData:TreeData = {
@@ -119,7 +119,7 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
         });
     }
 
-    private flattenTraversals(traversals:ProjectTraversalFullDTO[]) {
+    private flattenTraversals(traversals: ProjectTraversalFullDTO[]) {
         traversals = traversals.sort(compareTraversals);
 
         traversals.forEach(traversal => {
@@ -143,19 +143,19 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
         });
     }
 
-    private visibleMap:Map<number, boolean> = new Map<number, boolean>();
-    private setIsVisibleStatus(traversal:ProjectTraversalFullDTO, visible:boolean) {
+    private visibleMap: Map<number, boolean> = new Map<number, boolean>();
+    private setIsVisibleStatus(traversal: ProjectTraversalFullDTO, visible: boolean) {
         this.visibleMap.set(traversal.id, visible);
     }
-    private isVisible(traversal:ProjectTraversalFullDTO):boolean {
+    private isVisible(traversal: ProjectTraversalFullDTO): boolean {
         return this.visibleMap.get(traversal.id) || false;
     }
 
-    private hasDuplicateProjects(traversal:ProjectTraversalFullDTO):boolean {
+    private hasDuplicateProjects(traversal: ProjectTraversalFullDTO): boolean {
         return this.traversalsForCanonicalVertexID.get(traversal.canonicalID).length > 1;
     }
 
-    private storeProjectData(traversal:ProjectTraversalFullDTO) {
+    private storeProjectData(traversal: ProjectTraversalFullDTO) {
         let files = traversal.files.sort(compareTraversalChildFiles);
 
         files.forEach(file => {
@@ -190,7 +190,7 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
         this.flattenTraversals(traversal.children);
     }
 
-    private convertToChartStatistic(tagStatistics:Map<string, number>) {
+    private convertToChartStatistic(tagStatistics: Map<string, number>) {
         if (!tagStatistics)
             return;
 
@@ -217,7 +217,7 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
         this.tagFrequencies = this.convertToChartStatistic(allFrequencyStatsMap);
     }
 
-    private calculateTagFrequenciesForProject(allFrequencyStatsMap:Map<string, number>, traversal:ProjectTraversalFullDTO) {
+    private calculateTagFrequenciesForProject(allFrequencyStatsMap: Map<string, number>, traversal: ProjectTraversalFullDTO) {
         let currentProjectMap = new Map<string, number>();
 
         traversal.files.forEach(file => {
@@ -252,7 +252,7 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
         this.tagFrequenciesByProject.set(traversal.id, this.convertToChartStatistic(currentProjectMap));
     }
 
-    storeTagsForFile(file:FileFullDTO):{name:string, level:string}[] {
+    storeTagsForFile(file:FileFullDTO): {name: string, level: string}[] {
         if(this.tagsForFile.has(file.fileModelVertexID))
             return this.tagsForFile.get(file.fileModelVertexID);
 
@@ -285,7 +285,7 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
         return tags;
     }
 
-    private setPackageFrequenciesByProject(traversal:ProjectTraversalFullDTO, files:FileFullDTO[]) {
+    private setPackageFrequenciesByProject(traversal: ProjectTraversalFullDTO, files: FileFullDTO[]) {
         if (!files)
             return;
 
@@ -300,7 +300,7 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
         this.packageFrequenciesByProject.set(traversal.id, this.calculateTreeDataForHints(hints));
     }
 
-    private calculateTreeDataForHints(hints:HintFullDTO[]):ChartStatistic[] {
+    private calculateTreeDataForHints(hints: HintFullDTO[]): ChartStatistic[] {
         let service = new TypeReferenceStatisticsService();
         let resultMap = service.getPackageUseFrequencies(hints, 2, this._http);
         let result = [];
@@ -347,7 +347,7 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
         });
     }
 
-    storyPoints(file:FileFullDTO):number {
+    storyPoints(file:FileFullDTO): number {
         let total = 0;
 
         file.classifications
@@ -365,7 +365,7 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
         return total;
     }
 
-    allExpanded():boolean {
+    allExpanded(): boolean {
         let allExpanded = true;
         this.allProjects.forEach((traversal) => {
             if (this.projectsCollapsed.get(traversal.id))
@@ -374,7 +374,7 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
         return allExpanded;
     }
 
-    allCollapsed():boolean {
+    allCollapsed(): boolean {
         let allCollapsed = true;
         this.allProjects.forEach((traversal) => {
             if (!this.projectsCollapsed.get(traversal.id))
@@ -412,8 +412,8 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
 }
 
 class ChartStatistic {
-    name:string;
-    value:number;
+    name: string;
+    value: number;
 
     constructor(name: string, value: number) {
         this.name = name;
@@ -421,6 +421,6 @@ class ChartStatistic {
     }
 }
 
-function chartStatisticComparator(stat1:ChartStatistic, stat2:ChartStatistic):number {
+function chartStatisticComparator(stat1: ChartStatistic, stat2: ChartStatistic): number {
     return stat2.value - stat1.value;
 }

@@ -16,10 +16,10 @@ import * as $ from "jquery";
 })
 export class PopoverComponent implements AfterViewInit {
     @Input()
-    content:string = "";
+    content: string = "";
 
     @ViewChild("popoverElement")
-    popoverElement:ElementRef;
+    popoverElement: ElementRef;
 
     ngAfterViewInit() {
         (<any>$(this.popoverElement.nativeElement)).popover();

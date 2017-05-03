@@ -23,13 +23,13 @@ import {Inject, Input} from '@angular/core';
 export class ProgressBarComponent {
 
     @Input()
-    taskName:string;
+    taskName: string;
     @Input()
-    minValue:number;
+    minValue: number;
     @Input()
-    maxValue:number;
+    maxValue: number;
     @Input()
-    currentValue:number;
+    currentValue: number;
     @Input()
     activeExecutionId: number;
 

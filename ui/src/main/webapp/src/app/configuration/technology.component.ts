@@ -13,7 +13,7 @@ export class TechnologyComponent {
 
     constructor() {}
 
-    get versionRangeSuffix():string {
+    get versionRangeSuffix(): string {
         if (this.technology.versionRange)
             return ":" + this.technology.versionRange;
         else

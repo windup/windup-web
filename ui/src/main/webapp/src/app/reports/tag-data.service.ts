@@ -16,14 +16,14 @@ export class TagHierarchyData {
 
 @Injectable()
 export class TagDataService extends AbstractService {
-    private cachedTagData:TagHierarchyData[];
-    private allTags:Map<string, TagHierarchyData> = new Map<string, TagHierarchyData>();
+    private cachedTagData: TagHierarchyData[];
+    private allTags: Map<string, TagHierarchyData> = new Map<string, TagHierarchyData>();
 
     constructor(private _http:Http) {
         super();
     }
 
-    getRootTags(tagName:string):TagHierarchyData[] {
+    getRootTags(tagName: string): TagHierarchyData[] {
         let tag = this.allTags.get(tagName);
         if (!tag)
             return null;
@@ -46,7 +46,7 @@ export class TagDataService extends AbstractService {
         return result;
     }
 
-    private cacheTagData(tagList:TagHierarchyData[]) {
+    private cacheTagData(tagList: TagHierarchyData[]) {
         this.setParentTags(null, tagList);
 
         let cache = (tags:TagHierarchyData[]) => {
@@ -67,7 +67,7 @@ export class TagDataService extends AbstractService {
      * @param parentTag
      * @param tagList
      */
-    private setParentTags(parentTag:TagHierarchyData, tagList:TagHierarchyData[]) {
+    private setParentTags(parentTag: TagHierarchyData, tagList: TagHierarchyData[]) {
         tagList.forEach(tag => {
             if (tag.parents == null)
                 tag.parents = [];
@@ -79,7 +79,7 @@ export class TagDataService extends AbstractService {
         });
     }
 
-    getTagData():Observable<TagHierarchyData[]> {
+    getTagData(): Observable<TagHierarchyData[]> {
         if (this.cachedTagData)
             return Observable.of(this.cachedTagData);
 

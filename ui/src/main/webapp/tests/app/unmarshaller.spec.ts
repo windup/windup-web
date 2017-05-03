@@ -120,7 +120,7 @@ describe('Unmarshaller tests', () => {
     }));
 
     it ('unmarshaller test - fromJSON() - fighter', async(() => {
-        http.get.and.callFake((url:string) => {
+        http.get.and.callFake((url: string) => {
                 return Observable.create(function(observer) {
                     let value: any = {
                         json: function () {

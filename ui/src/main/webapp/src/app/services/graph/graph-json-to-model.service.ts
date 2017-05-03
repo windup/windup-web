@@ -54,7 +54,7 @@ export class GraphJSONToModelService<T extends BaseModel>
      *
      * This can be useful in cases where a single type implements multiple interfaces.
      */
-    public translateType(input:BaseModel, clazz: typeof BaseModel): T {
+    public translateType(input: BaseModel, clazz: typeof BaseModel): T {
         return this.fromJSON(input.data, clazz);
     }
 
@@ -68,7 +68,7 @@ export class GraphJSONToModelService<T extends BaseModel>
             //return this.fromJSONarray(input, http, clazz);
             throw new TypeError("For arrays of models, use fromJSONarray(...).");
 
-        let discriminator:string[] = input[GraphJSONToModelService.DISCRIMINATOR];
+        let discriminator: string[] = input[GraphJSONToModelService.DISCRIMINATOR];
         if (!clazz) {
             clazz = this.getModelClassForJsonObject(input, clazz);
         }
