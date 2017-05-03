@@ -27,9 +27,18 @@ public class FurnaceProducer
     public void setup(Path repoDir)
     {
         LOG.info("Starting with repo: " + repoDir);
-        Furnace furnace = FurnaceFactory.getInstance(Thread.currentThread()
-                    .getContextClassLoader(), Thread.currentThread()
-                                .getContextClassLoader());
+        Furnace furnace;
+        try
+        {
+            furnace = FurnaceFactory.getInstance(Thread.currentThread()
+                        .getContextClassLoader(), Thread.currentThread()
+                                    .getContextClassLoader());
+        }
+        catch (Exception cnfe)
+        {
+            LOG.info("Furnace not found with TCCL, trying local CL");
+            furnace = FurnaceFactory.getInstance(this.getClass().getClassLoader(), this.getClass().getClassLoader());
+        }
         furnace.addRepository(AddonRepositoryMode.IMMUTABLE, repoDir.toFile());
         Future<Furnace> future = furnace.startAsync();
 
