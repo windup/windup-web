@@ -67,7 +67,7 @@
                 <p class="help-block">Select the transformation path relevant for the analysis of your application(s).</p>
             </div>
         </fieldset>-->
-    
+
         <!-- In wizard mode All applications are included! /see ngIf/
              Configuration form outside wizard is able to select only subset of uploaded applications -->
         <div class="form-group" *ngIf="!isInWizard">
@@ -122,7 +122,7 @@
                     Create static HTML reports
                 </label>
 
-                <label class="control-label" i18n>Advanced options</label>
+                <!--<label class="control-label" i18n>Advanced options</label>-->
                 <wu-analysis-context-advanced-options
                         [(selectedOptions)]="analysisContext.advancedOptions"
                         (advancedOptionsChanged)="advancedOptionsChanged($event)"
