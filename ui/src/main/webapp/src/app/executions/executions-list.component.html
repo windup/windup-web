@@ -49,7 +49,7 @@
             </span>
         </td>
         <td>{{execution.timeStarted | date: 'short'}}</td>
-        <td>{{getNumberAnalyzedApplications(execution)}}</td>
+        <td class="pad-number-application">{{getNumberAnalyzedApplications(execution)}}</td>
         <td>
             <a class="pointer link cancel" *ngIf="canCancel(execution)" (click)="cancelExecution(execution)" title="Cancel">
                 <i class="fa fa-times fa-fw"></i>

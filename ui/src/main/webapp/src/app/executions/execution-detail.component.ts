@@ -38,7 +38,6 @@ export class ExecutionDetailComponent implements OnInit {
                 .subscribe((event: ExecutionEvent) => {
                     this.execution = event.execution;
                     this.loadLogData();
-                    console.log("qui");
                 });
 
             this._windupService.getExecution(executionId).subscribe(execution => {
