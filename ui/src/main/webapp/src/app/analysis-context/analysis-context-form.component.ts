@@ -336,6 +336,10 @@ export class AnalysisContextFormComponent extends FormComponent
     rulesPathsChanged(rulesPaths: RulesPath[]) {
         this.analysisContext.rulesPaths = rulesPaths;
     }
+
+    isActiveRulesPaths():boolean {
+        return this.analysisContext.rulesPaths.filter(rulesPath => rulesPath.rulesPathType == 'USER_PROVIDED').length > 0;
+    }
 }
 
 enum Action {
