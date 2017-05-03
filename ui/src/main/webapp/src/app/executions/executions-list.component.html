@@ -6,7 +6,7 @@
         <div class="search-and-create">
             <wu-search [(searchValue)]="searchText" (searchValueChange)="updateSearch()"></wu-search>
             <div class="button-container">
-                <button (click)="startExecution()" class="btn btn-primary" type="button">Run Analysis</button>
+                <button (click)="startExecution()" [disabled]="!showRunAnalysisButton" class="btn btn-primary" type="button">Run Analysis</button>
             </div>
         </div>
     </div>

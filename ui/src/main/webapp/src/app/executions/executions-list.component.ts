@@ -21,6 +21,9 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
     @Output()
     runExecution: EventEmitter<void> = new EventEmitter<void>();
 
+    @Input()
+    private showRunAnalysisButton: boolean;
+
     protected element;
 
     private _executions: WindupExecution[];
