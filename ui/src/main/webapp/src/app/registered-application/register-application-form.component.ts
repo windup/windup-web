@@ -184,7 +184,8 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
         if (this.isInWizard) {
             this.navigateAway(['/wizard', 'project', this.project.id, 'configure-analysis']);
         } else {
-            this.rerouteToApplicationList();
+            //this.rerouteToApplicationList();
+            this.rerouteToConfigurationForm();
         }
     }
 
@@ -195,6 +196,10 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
 
     protected rerouteToApplicationList() {
         this.navigateAway([`/projects/${this.project.id}/applications`]);
+    }
+    
+    protected rerouteToConfigurationForm() {
+        this.navigateAway([`/projects/${this.project.id}/analysis-context`]);
     }
 
     private cancelRegistration() {
