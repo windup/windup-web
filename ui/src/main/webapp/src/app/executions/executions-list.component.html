@@ -20,6 +20,7 @@
             { title: 'Analysis', isSortable: true, sortBy: 'id' },
             { title: 'Status', isSortable: true, sortBy: 'state' },
             { title: 'Start Date', isSortable: true, sortBy: 'timeStarted' },
+            { title: 'Analyzed Applications', isSortable: true, sortBy: sortByNumberAnalyzedApplicationsCallback },
             { title: 'Actions', isSortable: false }
         ]">
     </thead>
@@ -48,6 +49,7 @@
             </span>
         </td>
         <td>{{execution.timeStarted | date: 'short'}}</td>
+        <td class="pad-number-application">{{getNumberAnalyzedApplications(execution)}}</td>
         <td>
             <a class="pointer link cancel" *ngIf="canCancel(execution)" (click)="cancelExecution(execution)" title="Cancel">
                 <i class="fa fa-times fa-fw"></i>
