@@ -12,7 +12,7 @@ export class ReportFilterIndicatorComponent {
     filter: ReportFilter;
 
     @Input()
-    public set execution(execution: WindupExecution|any) {
+    public set execution(execution: WindupExecution) {
         if (execution) {
             this._execution = execution;
             this.filter = execution.reportFilter;

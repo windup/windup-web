@@ -9,8 +9,7 @@ import {Technology} from "../generated/windup-services";
 export class TechnologyComponent {
 
     @Input()
-    technology: Technology|any;
-    // TODO: This is workaround, without |any it would not find 'windup-services' module;
+    technology: Technology;
 
     constructor() {}
 
