@@ -62,12 +62,14 @@ export class EditApplicationFormComponent extends RegisterApplicationFormCompone
         if (this.mode == "PATH") {
             this.application.inputPath = this.fileInputPath;
             this._registeredApplicationService.updateByPath(this.application).subscribe(
-                application => this.rerouteToApplicationList(),
+              //  application => this.rerouteToApplicationList(),
+                application => this.rerouteToConfigurationForm(),
                 error => this.handleError(<any>error)
             );
         } else {
             if (this.multipartUploader.getNotUploadedItems().length > 0) {
                 this._registeredApplicationService.updateByUpload(this.application).subscribe(
+                    //application => this.rerouteToApplicationList(),
                     application => this.rerouteToApplicationList(),
                     error => this.handleError(<any>error)
                 );
