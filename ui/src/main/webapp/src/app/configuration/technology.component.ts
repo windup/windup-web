@@ -1,6 +1,6 @@
 import {Component} from "@angular/core";
 import {Input} from '@angular/core';
-import {Technology} from "windup-services";
+import {Technology} from "../generated/windup-services";
 
 @Component({
     selector: 'wu-technology',
@@ -9,8 +9,7 @@ import {Technology} from "windup-services";
 export class TechnologyComponent {
 
     @Input()
-    technology: Technology|any;
-    // TODO: This is workaround, without |any it would not find 'windup-services' module;
+    technology: Technology;
 
     constructor() {}
 

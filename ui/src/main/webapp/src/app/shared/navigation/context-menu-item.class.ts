@@ -1,6 +1,5 @@
 import {RouteLinkProviderService} from "../../core/routing/route-link-provider-service";
-import {FilterApplication, WindupExecution} from "windup-services";
-import {MigrationProject} from "windup-services";
+import {FilterApplication, MigrationProject, WindupExecution} from "../../generated/windup-services";
 
 export interface ContextMenuItemInterface {
     label: string;

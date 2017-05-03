@@ -3,7 +3,7 @@ import {
     ApplicationDetailsService, ApplicationDetailsFullDTO,
     ProjectTraversalFullDTO, HintFullDTO, FileFullDTO
 } from "./application-details.service";
-import {Params, ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {utils} from "../../shared/utils";
 import {NotificationService} from "../../core/notification/notification.service";
 import {Http} from "@angular/http";
@@ -13,7 +13,6 @@ import {TypeReferenceStatisticsService} from "./type-reference-statistics.servic
 import {TagDataService} from "../tag-data.service";
 import {TreeData} from "../../shared/js-tree-angular-wrapper.component";
 import {calculateColorScheme} from "../../shared/color-schemes";
-import {PersistedProjectModelTraversalModel} from "../../generated/tsModels/PersistedProjectModelTraversalModel";
 import {FilterableReportComponent} from "../filterable-report.component";
 import {RouteFlattenerService} from "../../core/routing/route-flattener.service";
 

@@ -1,5 +1,5 @@
 import {Component, Input, EventEmitter, Output} from "@angular/core";
-import {RegisteredApplication} from "windup-services";
+import {RegisteredApplication} from "../generated/windup-services";
 
 @Component({
     selector: 'wu-select-applications',

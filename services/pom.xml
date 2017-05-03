@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.jboss.windup.web</groupId>
         <artifactId>windup-web-parent</artifactId>
-        <version>3.0.0-SNAPSHOT</version>
+        <version>4.0.0-SNAPSHOT</version>
     </parent>
 
     <properties>
@@ -310,6 +310,8 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- Generate Typescript Models -->
             <plugin>
                 <groupId>cz.habarta.typescript-generator</groupId>
                 <artifactId>typescript-generator-maven-plugin</artifactId>
@@ -330,7 +332,8 @@
                             <excludeClasses>
                                 <class>java.io.Serializable</class>
                             </excludeClasses>
-                            <outputFile>target/windup-services.d.ts</outputFile>
+                            <outputFile>${project.build.outputDirectory}/windup-services.ts</outputFile>
+                            <outputFileType>implementationFile</outputFileType>
                             <outputKind>module</outputKind>
                         </configuration>
                     </execution>
@@ -395,6 +398,26 @@
                         <delimiter>$MAVEN_TOKEN{*}</delimiter>
                     </delimiters>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.2</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <classifier>typescript-models</classifier>
+                            <includes>
+                                <include>windup-services.ts</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

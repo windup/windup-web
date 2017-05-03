@@ -3,12 +3,15 @@ import {Http} from "@angular/http";
 import {Observable} from "rxjs";
 import {AbstractService} from "../../shared/abtract.service";
 import {Constants} from "../../constants";
-import {ApplicationDetailsDTO, ReportFilter} from "windup-services";
-import {ProjectTraversalReducedDTO} from "windup-services";
-import {FileReducedDTO} from "windup-services";
-import {HintReducedDTO} from "windup-services";
-import {ClassificationReducedDTO} from "windup-services";
-import {TagReducedDTO} from "windup-services";
+import {
+    ApplicationDetailsDTO,
+    ClassificationReducedDTO,
+    FileReducedDTO,
+    HintReducedDTO,
+    ProjectTraversalReducedDTO,
+    ReportFilter,
+    TagReducedDTO
+} from "../../generated/windup-services";
 import {Cached} from "../../shared/cache.service";
 
 @Injectable()

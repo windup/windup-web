@@ -3,22 +3,23 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router, NavigationEnd} from "@angular/router";
 import {FileUploader} from "ng2-file-upload/ng2-file-upload";
 
-import {RegisteredApplication, RegistrationType} from "windup-services";
+import {MigrationProject, RegisteredApplication, RegistrationType} from "../generated/windup-services";
 import {RegisteredApplicationService} from "./registered-application.service";
 import {FileExistsValidator} from "../shared/validators/file-exists.validator";
 import {FileService} from "../services/file.service";
 import {FormComponent} from "../shared/form.component";
 import {Constants} from "../constants";
-import {MigrationProject} from "windup-services";
 import {Subscription} from "rxjs";
 import {RouteFlattenerService} from "../core/routing/route-flattener.service";
 import {TabComponent} from "../shared/tabs/tab.component";
-import {FileItem} from "ng2-file-upload";
+import {FileItem, FileUploaderOptions, FilterFunction} from "ng2-file-upload";
 import {EventBusService} from "../core/events/event-bus.service";
 import {ApplicationDeletedEvent, UpdateMigrationProjectEvent} from "../core/events/windup-event";
 import {MigrationProjectService} from "../project/migration-project.service";
 import {NotificationService} from "../core/notification/notification.service";
 import {utils} from "../shared/utils";
+import {FileLikeObject} from "ng2-file-upload/file-upload/file-like-object.class";
+import formatString = utils.formatString;
 
 @Component({
     templateUrl: "./register-application-form.component.html",
@@ -63,6 +64,32 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
             this._notificationService.error(utils.getErrorMessage(response));
         };
         this.multipartUploader.onAfterAddingFile = () => this.registerUploaded();
+        this.multipartUploader.onWhenAddingFileFailed = (item: FileLikeObject, filter: FilterFunction, options) => {
+            let msg;
+            if (filter["rejectMessage"])
+                msg = formatString(filter["rejectMessage"], item.name);
+            else
+                switch (filter.name) {
+                    case "onlyJavaArchives": msg = `File was rejected: '${item.name}'\nOnly Java archives are accepted (${filter["suffixes"].join(", ")})`; break;
+                    case 'queueLimit': msg = "Maximum number of queued files reached."; break;
+                    case 'fileSize': msg = `File '${item.name}' is too large.`; break;
+                    case 'fileType': msg = `File '${item.name}' is of invalid file type.`; break;
+                    case 'mimeType': msg = `File '${item.name}' is of invalid MIME type.`; break;
+                    default: `File rejected for uploading: '${item.name}'`; break;
+                }
+            this._notificationService.error(msg);
+        }
+
+        let suffixes = ".war .ear .jar .sar .har .rar".split(" ");
+        this.multipartUploader.options.filters.push(<FilterFunction>{
+            name: "onlyJavaArchives",
+            fn: (item?: FileLikeObject, options?: FileUploaderOptions) => {
+                return item.name && suffixes.some(suffix => item.name.endsWith(suffix));
+            },
+            suffixes: suffixes,
+            // JEXL would be needed for this.
+            //rejectMessage: "File was rejected: '{item.name}'\nOnly Java archives are accepted {filter.suffixes.join(', ')})",
+        });
     }
 
     ngOnInit(): any {

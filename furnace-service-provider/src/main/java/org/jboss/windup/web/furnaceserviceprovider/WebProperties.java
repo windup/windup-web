@@ -1,8 +1,12 @@
 package org.jboss.windup.web.furnaceserviceprovider;
 
+import org.jboss.vfs.VFS;
+import org.jboss.vfs.VirtualFile;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -100,8 +104,19 @@ public class WebProperties
     {
         try
         {
-            String pathString = FurnaceExtension.class.getProtectionDomain().getCodeSource().getLocation().getFile();
-            LOG.info("Path String: " + pathString);
+            URL pathUrl = FurnaceExtension.class.getProtectionDomain().getCodeSource().getLocation();
+            String pathString;
+            if (pathUrl.toString().startsWith("vfs:"))
+            {
+                VirtualFile virtualFile = VFS.getChild(pathUrl.toURI());
+                pathString = virtualFile.getParent().getParent().getParent().getPhysicalFile().getCanonicalPath();
+                LOG.info("From VFS - Path String: " + pathString);
+                return Paths.get(pathString);
+            }
+
+            pathString = pathUrl.getFile();
+            LOG.info("Regular Path String: " + pathString);
+
 
             // This is here to work around an issue on Windows. Sometimes Windows will give us a path like
             // "/C:/path/to/api.war". The File API will properly see this as "C:/path/to/api.war", but

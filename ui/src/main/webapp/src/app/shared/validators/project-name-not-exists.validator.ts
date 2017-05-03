@@ -1,7 +1,7 @@
 import {Directive, forwardRef, Input} from "@angular/core";
 import {FormControl, NG_ASYNC_VALIDATORS, Validator} from "@angular/forms";
 import {MigrationProjectService} from "../../project/migration-project.service";
-import {MigrationProject} from "windup-services";
+import {MigrationProject} from "../../generated/windup-services";
 
 /**
  * Fails validation if the name in the given control already exists as a project name.

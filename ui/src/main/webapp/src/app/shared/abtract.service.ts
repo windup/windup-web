@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Response} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import {Headers, RequestOptions} from '@angular/http';
-import {ReportFilter} from "windup-services";
+import {ReportFilter} from "../generated/windup-services";
 
 @Injectable()
 export class AbstractService {

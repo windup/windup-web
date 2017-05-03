@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {WindupExecution} from "windup-services";
+import {AnalysisContext, MigrationProject, WindupExecution} from "../generated/windup-services";
 import {AbstractService} from "../shared/abtract.service";
 import {Observable} from "rxjs/Observable";
 import {WindupService} from "./windup.service";
@@ -9,8 +9,6 @@ import {
     ExecutionCompletedEvent, NewExecutionStartedEvent, DeleteMigrationProjectEvent
 } from "../core/events/windup-event";
 import {SchedulerService} from "../shared/scheduler.service";
-import {AnalysisContext} from "windup-services";
-import {MigrationProject} from "windup-services";
 import {Constants} from "../constants";
 
 @Injectable()

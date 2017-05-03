@@ -2,7 +2,7 @@
 
     <div class="header-bar">
         <h2>Applications</h2>
-        <div class="search-and-create">
+        <div class="search-and-create"  *ngIf="project?.applications?.length > 0">
             <wu-search [(searchValue)]="searchText" (searchValueChange)="updateSearch()"></wu-search>
             <div class="button-container">
                 <button (click)="registerApplication()" class="btn btn-primary" type="button">Add</button>
@@ -10,7 +10,16 @@
         </div>
     </div>
 
-    <table class="table table-bordered table-hover">
+    <div *ngIf="project?.applications?.length < 1" class="blank-slate-pf" style="border: none;">
+        <div class="blank-slate-pf-main-action">
+            <p>There are no applications in your project. To show application list, please add an application first.</p>
+            <a [routerLink]="['/projects', project.id, 'applications', 'register']" class="clickable btn btn-primary btn-lg" i18n="no application page Button">
+                Add application
+            </a>
+        </div>
+    </div>
+
+    <table class="table table-bordered table-hover" *ngIf="project?.applications?.length > 0">
         <thead wu-sortable-table
                [(sortedData)]="sortedApplications" [data]="filteredApplications"
                [tableHeaders]="[

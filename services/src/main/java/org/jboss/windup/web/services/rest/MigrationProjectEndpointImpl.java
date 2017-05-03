@@ -161,7 +161,7 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
     @Override
     public Long getProjectIdByName(String title)
     {
-        String jql = "SELECT p.id FROM MigrationProject p WHERE LOWER(p.title) = LOWER(:title) AND p.provisional = FALSE";
+        String jql = "SELECT p.id FROM MigrationProject p WHERE REGEXP_REPLACE(TRIM(LOWER(p.title)), ' +', ' ') = REGEXP_REPLACE(TRIM(LOWER(:title)), ' +', ' ') AND p.provisional = FALSE";
         List<Long> ids = this.entityManager.createQuery(jql, Long.class)
                     .setParameter("title", title)
                     .getResultList();

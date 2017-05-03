@@ -1,5 +1,5 @@
 import {AfterViewInit, ChangeDetectionStrategy, Component, Input, OnInit, ViewChild} from "@angular/core";
-import {MigrationProject, RegisteredApplication} from "windup-services";
+import {MigrationProject, RegisteredApplication} from "../generated/windup-services";
 import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
 import {FileItem} from "ng2-file-upload";
 import {RegisteredApplicationService} from "./registered-application.service";

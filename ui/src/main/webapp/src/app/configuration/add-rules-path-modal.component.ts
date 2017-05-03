@@ -4,7 +4,7 @@ import {FormGroup, FormBuilder, Validators} from "@angular/forms";
 import {FileExistsValidator} from "../shared/validators/file-exists.validator";
 import {FileService} from "../services/file.service";
 import {ConfigurationService} from "./configuration.service";
-import {Configuration, RulesPath} from "windup-services";
+import {Configuration, RulesPath} from "../generated/windup-services";
 
 @Component({
     selector: 'wu-add-rules-path-modal',
@@ -12,8 +12,7 @@ import {Configuration, RulesPath} from "windup-services";
 })
 export class AddRulesPathModalComponent extends FormComponent implements OnInit {
     @Input()
-    configuration: Configuration|any;
-    // TODO: This is workaround, without |any it would not find 'windup-services' module
+    configuration: Configuration;
 
     @Output()
     configurationSaved = new EventEmitter();

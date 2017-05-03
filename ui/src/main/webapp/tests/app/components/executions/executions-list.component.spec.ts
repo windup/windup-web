@@ -5,7 +5,7 @@ import {RouterTestingModule} from "@angular/router/testing";
 import {ExecutionsListComponent} from "../../../../src/app/executions/executions-list.component";
 import {WindupService} from "../../../../src/app/services/windup.service";
 import {NotificationService} from "../../../../src/app/core/notification/notification.service";
-import {WindupExecution} from "windup-services";
+import {WindupExecution} from "../../../../src/app/generated/windup-services";
 import {EXECUTIONS_DATA} from "./executions-data";
 import {Observable} from "rxjs";
 import {ProgressBarComponent} from "../../../../src/app/shared/progress-bar.component";
@@ -34,9 +34,10 @@ let SORTED_EXECUTIONS_DATA = EXECUTIONS_DATA.slice().sort((a, b) => <any>b.timeS
 const COL_ID = 0;
 const COL_STATE = 1;
 const COL_DATE_STARTED = 2;
-const COL_ACTIONS = 3;
+const COL_APPLICATION_ANALYZED = 3;
+const COL_ACTIONS = 4;
 
-const COUNT_COLUMNS = 4;
+const COUNT_COLUMNS = 5;
 
 let mockProjects = [
     { id: 1, title: 'Dummy project' }
@@ -152,9 +153,10 @@ describe('ExecutionsListComponent', () => {
             let state = el.children[COL_STATE];
             let stateText = state.textContent ? state.textContent.trim() : "";
 
-            if (stateText == "Completed") {
-                expect(el.children[COL_ACTIONS].children.length).toBe(1);
-                expect(el.children[COL_ACTIONS].textContent.trim()).toEqual('Static Report');
+            if (stateText.startsWith("Completed")) {
+                expect(el.children[COL_ACTIONS].children.length).toBe(2);
+                expect(el.children[COL_ACTIONS].children[0].children[0].title).toEqual('Show static reports');
+                expect(el.children[COL_ACTIONS].children[1].title).toEqual('Delete');
             } else {
                 expect(el.children[COL_ACTIONS].children.length).toBe(1);
                 expect(el.children[COL_ACTIONS].textContent.trim()).toEqual('');

@@ -1,4 +1,4 @@
-import {WindupExecution} from "windup-services";
+import {WindupExecution} from "../../../../src/app/generated/windup-services";
 
 export const EXECUTIONS_DATA: Partial<WindupExecution>[] = [
     {
@@ -12,7 +12,33 @@ export const EXECUTIONS_DATA: Partial<WindupExecution>[] = [
         "currentTask": null,
         "lastModified": 1477907647318,
         "state": "COMPLETED",
-        "analysisContext": null,
+        "analysisContext":
+            {
+                "id": 11,
+                "version": 0,
+                "generateStaticReports": true,
+                "cloudTargetsIncluded": true,
+                "migrationPath": null,
+                "advancedOptions": null,
+                "rulesPaths": null,
+                "includePackages": null,
+                "excludePackages": null,
+                "applications": [
+                    {
+                        "id": 3,
+                        "version": 0,
+                        "registrationType": "UPLOADED",
+                        "title": "jee-example-app-1.0.0.ear",
+                        "inputPath": null,
+                        "reportIndexPath": null,
+                        "created": null,
+                        "lastModified": null,
+                        "deleted": false,
+                        "inputFilename": null
+                    }
+                ]
+            }
+        ,
         "filterApplications": null,
         "outputDirectoryName": "Default Group.ANnIuZsNxbfq.report",
         "applicationListRelativePath": "Default Group.ANnIuZsNxbfq.report/index.html",
@@ -29,7 +55,33 @@ export const EXECUTIONS_DATA: Partial<WindupExecution>[] = [
         "currentTask": null,
         "lastModified": 1477907948484,
         "state": "FAILED",
-        "analysisContext": null,
+        "analysisContext":
+            {
+                "id": 11,
+                "version": 0,
+                "generateStaticReports": true,
+                "cloudTargetsIncluded": true,
+                "migrationPath": null,
+                "advancedOptions": null,
+                "rulesPaths": null,
+                "includePackages": null,
+                "excludePackages": null,
+                "applications": [
+                    {
+                        "id": 3,
+                        "version": 0,
+                        "registrationType": "UPLOADED",
+                        "title": "jee-example-app-1.0.0.ear",
+                        "inputPath": null,
+                        "reportIndexPath": null,
+                        "created": null,
+                        "lastModified": null,
+                        "deleted": false,
+                        "inputFilename": null
+                    }
+                ]
+            }
+        ,
         "filterApplications": null,
         "outputDirectoryName": "Default Group.ANnIuZsNxbfq.report",
         "applicationListRelativePath": "Default Group.ANnIuZsNxbfq.report/index.html",
@@ -46,7 +98,33 @@ export const EXECUTIONS_DATA: Partial<WindupExecution>[] = [
         "currentTask": "PostFinalizePhase - RenderRuleProviderReportRuleProvider - RenderRuleProviderReportRuleProvider_1",
         "lastModified": 1478000316581,
         "state": "STARTED",
-        "analysisContext": null,
+        "analysisContext":
+            {
+                "id": 11,
+                "version": 0,
+                "generateStaticReports": true,
+                "cloudTargetsIncluded": true,
+                "migrationPath": null,
+                "advancedOptions": null,
+                "rulesPaths": null,
+                "includePackages": null,
+                "excludePackages": null,
+                "applications": [
+                    {
+                        "id": 3,
+                        "version": 0,
+                        "registrationType": "UPLOADED",
+                        "title": "jee-example-app-1.0.0.ear",
+                        "inputPath": null,
+                        "reportIndexPath": null,
+                        "created": null,
+                        "lastModified": null,
+                        "deleted": false,
+                        "inputFilename": null
+                    }
+                ]
+            }
+        ,
         "filterApplications": null,
         "outputDirectoryName": "Default Group.ANnIuZsNxbfq.report",
         "applicationListRelativePath": "Default Group.ANnIuZsNxbfq.report/index.html",
@@ -63,7 +141,33 @@ export const EXECUTIONS_DATA: Partial<WindupExecution>[] = [
         "currentTask": null,
         "lastModified": 1478000242721,
         "state": "QUEUED",
-        "analysisContext": null,
+        "analysisContext":
+            {
+                "id": 11,
+                "version": 0,
+                "generateStaticReports": true,
+                "cloudTargetsIncluded": true,
+                "migrationPath": null,
+                "advancedOptions": null,
+                "rulesPaths": null,
+                "includePackages": null,
+                "excludePackages": null,
+                "applications": [
+                    {
+                        "id": 3,
+                        "version": 0,
+                        "registrationType": "UPLOADED",
+                        "title": "jee-example-app-1.0.0.ear",
+                        "inputPath": null,
+                        "reportIndexPath": null,
+                        "created": null,
+                        "lastModified": null,
+                        "deleted": false,
+                        "inputFilename": null
+                    }
+                ]
+            }
+        ,
         "filterApplications": null,
         "outputDirectoryName": "Default Group.ANnIuZsNxbfq.report",
         "applicationListRelativePath": "Default Group.ANnIuZsNxbfq.report/index.html",
@@ -80,7 +184,33 @@ export const EXECUTIONS_DATA: Partial<WindupExecution>[] = [
         "currentTask": null,
         "lastModified": 1478000242721,
         "state": "CANCELLED",
-        "analysisContext": null,
+        "analysisContext":
+            {
+                "id": 11,
+                "version": 0,
+                "generateStaticReports": true,
+                "cloudTargetsIncluded": true,
+                "migrationPath": null,
+                "advancedOptions": null,
+                "rulesPaths": null,
+                "includePackages": null,
+                "excludePackages": null,
+                "applications": [
+                    {
+                        "id": 3,
+                        "version": 0,
+                        "registrationType": "UPLOADED",
+                        "title": "jee-example-app-1.0.0.ear",
+                        "inputPath": null,
+                        "reportIndexPath": null,
+                        "created": null,
+                        "lastModified": null,
+                        "deleted": false,
+                        "inputFilename": null
+                    }
+                ]
+            }
+        ,
         "filterApplications": null,
         "outputDirectoryName": "Default Group.ANnIuZsNxbfq.report",
         "applicationListRelativePath": "Default Group.ANnIuZsNxbfq.report/index.html",

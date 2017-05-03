@@ -2,9 +2,8 @@ import {Injectable} from '@angular/core';
 import {Http} from '@angular/http';
 
 import {Constants} from "../constants";
-import {AnalysisContext} from "windup-services";
+import {AnalysisContext, MigrationProject} from "../generated/windup-services";
 import {AbstractService} from "../shared/abtract.service";
-import {MigrationProject} from "windup-services";
 import {Cached, CacheSection, CacheService} from "../shared/cache.service";
 import {Observable} from "rxjs";
 

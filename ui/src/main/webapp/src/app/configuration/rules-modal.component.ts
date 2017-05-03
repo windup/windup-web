@@ -1,6 +1,6 @@
 import {Component, Input, AfterViewInit} from "@angular/core";
 import * as $ from "jquery";
-import {RuleProviderEntity} from "windup-services";
+import {RuleProviderEntity} from "../generated/windup-services";
 
 declare function prettyPrint();
 

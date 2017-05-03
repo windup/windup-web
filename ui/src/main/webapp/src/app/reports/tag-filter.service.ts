@@ -1,4 +1,4 @@
-import { ReportFilter, Tag } from "windup-services";
+import { ReportFilter, Tag } from "../generated/windup-services";
 import { TechnologyTagModel } from "../generated/tsModels/TechnologyTagModel";
 
 export enum MatchResult {

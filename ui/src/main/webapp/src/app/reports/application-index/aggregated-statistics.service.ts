@@ -3,8 +3,7 @@ import {Http} from "@angular/http";
 import {Observable} from "rxjs";
 import {AbstractService} from "../../shared/abtract.service";
 import {Constants} from "../../constants";
-import {EffortByCategoryDTO, ReportFilter} from "windup-services";
-import {StatisticsList} from "windup-services";
+import {EffortByCategoryDTO, ReportFilter, StatisticsList} from "../../generated/windup-services";
 import {Cached} from "../../shared/cache.service";
 
 @Injectable()

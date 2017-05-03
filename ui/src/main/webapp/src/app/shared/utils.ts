@@ -19,4 +19,14 @@ export module utils {
         }
     }
 
+    /**
+     * Replaces "{i}" in format with i-th member of replacements.
+     */
+    export function formatString(format: string, ...replacements: string[]): string
+    {
+        return format.replace(/{(\d+)}/g, function(match, number) {
+            return typeof replacements[number] != 'undefined' ? replacements[number] : match;
+        });
+    };
+
 }

@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 
-import {RegisteredApplication} from "windup-services";
+import {MigrationProject, RegisteredApplication} from "../generated/windup-services";
 import {RegisteredApplicationService} from "./registered-application.service";
 import {NotificationService} from "../core/notification/notification.service";
 import {utils} from "../shared/utils";
@@ -12,7 +12,6 @@ import {
     MigrationProjectEvent
 } from "../core/events/windup-event";
 import {ExecutionsMonitoringComponent} from "../executions/executions-monitoring.component";
-import {MigrationProject} from "windup-services";
 import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
 import {WindupService} from "../services/windup.service";
 

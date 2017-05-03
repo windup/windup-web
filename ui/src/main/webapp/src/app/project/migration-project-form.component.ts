@@ -1,7 +1,7 @@
 import {Component, OnInit, OnDestroy} from "@angular/core";
 import {ActivatedRoute, Router, NavigationEnd} from "@angular/router";
 
-import {MigrationProject} from "windup-services";
+import {MigrationProject} from "../generated/windup-services";
 import {MigrationProjectService} from "./migration-project.service";
 import {FormComponent} from "../shared/form.component";
 import {Subscription} from "rxjs";
@@ -49,12 +49,15 @@ export class MigrationProjectFormComponent extends FormComponent implements OnIn
 
                 // Reload it as we always need the latest data (route resolver does not guarantee this)
                 this._migrationProjectService.get(projectID).subscribe(model => this.model = model);
-
-                if(!this.editMode) // Creating a new project.
-                    this._migrationProjectService.deleteProvisionalProjects().subscribe(res => {});
             }
 
+            if(!this.editMode) // Creating a new project.
+                this._migrationProjectService.deleteProvisionalProjects().subscribe(res => {});
+
             this.isInWizard = flatRouteData.data.hasOwnProperty('wizard') && flatRouteData.data['wizard'];
+
+            if (!this.editMode) // Creating a new project.
+                this._migrationProjectService.deleteProvisionalProjects().subscribe(res => {});
         });
     }
 

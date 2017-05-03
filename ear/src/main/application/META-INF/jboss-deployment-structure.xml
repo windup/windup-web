@@ -1,0 +1,8 @@
+<jboss-deployment-structure>
+  <sub-deployment name="windup-web-services.war">
+    <dependencies>
+      <module name="org.dom4j"/>
+      <module name="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider" services="import"/>
+    </dependencies>
+  </sub-deployment>
+</jboss-deployment-structure>

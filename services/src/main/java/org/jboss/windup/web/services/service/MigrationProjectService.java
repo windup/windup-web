@@ -112,7 +112,7 @@ public class MigrationProjectService
         if (olderThanMinutes > 0)
             query += " AND pr.lastModified < DATEADD('MINUTE', -"+olderThanMinutes+", CURRENT_TIMESTAMP) "; // JPA had issues with a param here.
         List<MigrationProject> provisional = entityManager.createQuery(query, MigrationProject.class).getResultList();
-        LOG.info("Deleted " + provisional.size() + " provisional projects older than "+olderThanMinutes+" minutes.");
+        LOG.info("Deleting " + provisional.size() + " provisional projects older than "+olderThanMinutes+" minutes.");
         provisional.forEach(this::deleteProject);
     }
 
