@@ -151,7 +151,7 @@ export function Cached(section?, expiration?: CacheExpiration, immutable: boolea
         section = 'global';
     }
 
-    let cacheSection = CacheServiceInstance.getSection(section);
+    let cacheSection = getCacheServiceInstance().getSection(section);
 
     return function (target: Object, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) {
         let originalMethod = descriptor.value; // save a reference to the original method
@@ -220,7 +220,13 @@ function getCacheKey(functionName: string, args: any[]) {
 }
 
 // I hope this will be sufficient for having single instance
-export const CacheServiceInstance = new CacheService();
+let CacheServiceInstance = new CacheService();
+
+export function getCacheServiceInstance() {
+    if (CacheServiceInstance == null)
+        CacheServiceInstance = new CacheService();
+    return CacheServiceInstance;
+}
 
 export interface CacheConfiguration {
     section?: string;

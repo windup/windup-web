@@ -1,5 +1,5 @@
 import {ActivatedRoute, Router} from "@angular/router";
-import {ReportFilter, WindupExecution} from "windup-services";
+import {ReportFilter, WindupExecution} from "../generated/windup-services";
 import {FlattenedRouteData, RouteFlattenerService} from "../core/routing/route-flattener.service";
 import {RoutedComponent} from "../shared/routed.component";
 

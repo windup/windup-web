@@ -2,8 +2,7 @@ import {Injectable} from '@angular/core';
 import {Http} from '@angular/http';
 
 import {Constants} from "../constants";
-import {RuleProviderEntity} from "windup-services";
-import {RulesPath} from "windup-services";
+import {RulesPath, RuleProviderEntity} from "../generated/windup-services";
 import {AbstractService} from "../shared/abtract.service";
 import {Observable} from "rxjs";
 

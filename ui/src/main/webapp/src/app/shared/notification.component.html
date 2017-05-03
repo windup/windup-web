@@ -3,5 +3,6 @@
         <span class="pficon pficon-close"></span>
     </button>
     <span [ngClass]="getIcon(notification)" class="pficon"></span>
-    {{notification.message}}
+
+    <span [innerHTML]="notification.message | wuReplace:'<':'&lt;' | wuReplace:'\n':'<br>'"></span>
 </div>

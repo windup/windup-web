@@ -8,7 +8,7 @@
     "experimentalDecorators": true,
     "removeComments": true,
     "noImplicitAny": false,
-    "inlineSources": true,
+    "inlineSources": false,
     "rootDir": "./",
     "outDir": "../../../target/tscoutput"
   },

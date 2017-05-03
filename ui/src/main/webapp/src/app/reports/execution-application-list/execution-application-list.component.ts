@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 
-import {FilterApplication, ProjectTraversalReducedDTO, WindupExecution} from "windup-services";
+import {FilterApplication, WindupExecution} from "../../generated/windup-services";
 import {NotificationService} from "../../core/notification/notification.service";
 import {RoutedComponent} from "../../shared/routed.component";
 import {RouteFlattenerService} from "../../core/routing/route-flattener.service";

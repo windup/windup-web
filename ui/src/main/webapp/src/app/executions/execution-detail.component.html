@@ -44,7 +44,7 @@
                     <dd>{{ execution.timeCompleted - execution.timeStarted | wuDuration }}</dd>
                 </ng-container>
                 <ng-container *ngIf="!execution.timeCompleted">
-                    <dt i18n="Analysis last modification">Duration:</dt>
+                    <dt i18n="Analysis last modification">Last Modification:</dt>
                     <dd>{{execution.lastModified | date: 'short'}}</dd>
                 </ng-container>
             </dl>
@@ -79,9 +79,9 @@
                 </wu-analysis-context-advanced-options>
             </wu-expand-collapse>
         </wu-tab>
-        <wu-tab [tabTitle]="'Applications (' + execution.filterApplications.length + ')'">
+        <wu-tab [tabTitle]="'Applications (' + getAnalyzedApplications(execution).length + ')'">
             <h3 i18n="Analysis configuration|Section">Applications</h3>
-            <span *ngFor="let application of execution.filterApplications">{{application.fileName}}<br/></span>
+            <span *ngFor="let application of getAnalyzedApplications(execution)">{{application.title}}<br/></span>
         </wu-tab>
         <wu-tab [tabTitle]="'Rules'">
             <span *ngIf="phases == null">

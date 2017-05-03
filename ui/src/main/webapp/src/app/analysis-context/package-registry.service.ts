@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {Package} from "windup-services";
+import {Package} from "../generated/windup-services";
 
 @Injectable()
 export class PackageRegistryService {

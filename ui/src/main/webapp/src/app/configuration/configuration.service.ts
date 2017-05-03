@@ -3,7 +3,7 @@ import {Http} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 
 import {Constants} from "../constants";
-import {Configuration, RulesPath} from "windup-services";
+import {Configuration, RulesPath} from "../generated/windup-services";
 import {AbstractService} from "../shared/abtract.service";
 import {Cached} from "../shared/cache.service";
 

@@ -88,7 +88,7 @@
             <p class="help-block">Select the Java packages that will be decompiled and analyzed. If no package is selected, all classes will be considered.</p>
         </div>
 
-        <wu-expand-collapse [tabTitle]="'Exclude some packages'">
+        <wu-expand-collapse [tabTitle]="'Exclude some packages'" [isActive]="analysisContext.excludePackages?.length > 0">
             <div class="form-group">
                 <div>
                     <label class="control-label" i18n>Excluded packages</label>
@@ -103,7 +103,7 @@
         </wu-expand-collapse>
 
         <!-- Rulesets selection -->
-        <wu-expand-collapse [tabTitle]="'Use local custom rules'">
+        <wu-expand-collapse [tabTitle]="'Use local custom rules'" [isActive]="isActiveRulesPaths()">
             <div class="form-group">
                 <label class="control-label" i18n>Custom rulesets</label>
                 <wu-custom-rule-selection
@@ -114,7 +114,7 @@
         </wu-expand-collapse>
 
         <!-- Advanced options -->
-        <wu-expand-collapse [tabTitle]="'Advanced options'">
+        <wu-expand-collapse [tabTitle]="'Advanced options'" [isActive]="analysisContext.advancedOptions?.length > 0">
             <div class="form-group">
                 <label *ngIf="!hideUnfinishedFeatures" for="createStaticReports" i18n>
                     <input id="createStaticReports" name="generateStaticReports" type="checkbox"

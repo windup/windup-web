@@ -1,7 +1,10 @@
-import {Cached, CacheSection, CacheServiceInstance} from "../../../../src/app/shared/cache.service";
+import {
+    Cached, CacheSection,
+    getCacheServiceInstance
+} from "../../../../src/app/shared/cache.service";
 import {Observable} from "rxjs";
 
-let cacheServiceInstance = CacheServiceInstance;
+let cacheServiceInstance = getCacheServiceInstance();
 let sectionSection = cacheServiceInstance.getSection('section');
 let globalSection = cacheServiceInstance.getSection('global');
 

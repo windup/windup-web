@@ -9,8 +9,7 @@ import {forkJoin} from "rxjs/observable/forkJoin";
 import {ProjectModel} from "../../generated/tsModels/ProjectModel";
 import {FileModel} from "../../generated/tsModels/FileModel";
 import {TechnologyKeyValuePairModel} from "../../generated/tsModels/TechnologyKeyValuePairModel";
-import {RegisteredApplication} from "windup-services";
-import {FilterApplication} from "windup-services";
+import {FilterApplication, RegisteredApplication} from "../../generated/windup-services";
 
 @Component({
     selector: 'wu-technologies-report',

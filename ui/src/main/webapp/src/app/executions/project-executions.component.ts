@@ -1,10 +1,9 @@
 import {Component, OnInit} from "@angular/core";
-import {AnalysisContext, WindupExecution} from "windup-services";
+import {AnalysisContext, MigrationProject, WindupExecution} from "../generated/windup-services";
 import {ActivatedRoute} from "@angular/router";
 import {EventBusService} from "../core/events/event-bus.service";
 import {WindupExecutionService} from "../services/windup-execution.service";
 import {ExecutionsMonitoringComponent} from "./executions-monitoring.component";
-import {MigrationProject} from "windup-services";
 import {WindupService} from "../services/windup.service";
 import {ExecutionEvent} from "../core/events/windup-event";
 import {AnalysisContextService} from "../analysis-context/analysis-context.service";

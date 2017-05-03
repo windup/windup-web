@@ -100,6 +100,7 @@ import {MomentModule} from "angular2-moment";
 import {FileUploader, FileUploadModule} from "ng2-file-upload";
 import {WizardComponent} from "./shared/wizard/wizard.component";
 import {DurationPipe} from "./shared/duration.pipe";
+import {ReplacePipe} from "./shared/replace.pipe";
 import {TabContainerComponent} from "./shared/tabs/tab-container.component";
 import {TabComponent} from "./shared/tabs/tab.component";
 import {LogViewComponent} from "./shared/log-view/log-view.component";
@@ -122,7 +123,7 @@ import {ContextMenuLinkComponent} from "./shared/navigation/context-menu-link.co
 import {ExecutionApplicationListComponent} from "./reports/execution-application-list/execution-application-list.component";
 import {SourceResolve} from "./reports/source/source.resolve";
 import {ExecutionResolve} from "./executions/execution.resolve";
-import {CacheService, CacheServiceInstance} from "./shared/cache.service";
+import {CacheService, getCacheServiceInstance} from "./shared/cache.service";
 import {ProjectNameNotExistsValidator} from "./shared/validators/project-name-not-exists.validator";
 import {PrettyExecutionStatus} from "./shared/pretty-execution-state.pipe";
 import {AlternativeUploadQueueComponent} from "./shared/upload/alternative-upload-queue.component";
@@ -221,6 +222,7 @@ initializeModelMappingData();
         SearchComponent,
         WizardComponent,
         DurationPipe,
+        ReplacePipe,
         TabContainerComponent,
         TabComponent,
         LogViewComponent,
@@ -302,7 +304,7 @@ initializeModelMappingData();
         },
         {
           provide: CacheService,
-          useValue: CacheServiceInstance
+          useFactory: getCacheServiceInstance
         },
         AggregatedStatisticsService,
         DatePipe,
