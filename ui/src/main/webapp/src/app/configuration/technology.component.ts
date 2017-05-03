@@ -1,6 +1,6 @@
 import {Component} from "@angular/core";
 import {Input} from '@angular/core';
-import {Technology} from "windup-services";
+import {Technology} from "../generated/windup-services";
 
 @Component({
     selector: 'wu-technology',

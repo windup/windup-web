@@ -1,5 +1,5 @@
 import {PackageRegistryService} from "../../../src/app/analysis-context/package-registry.service";
-import {Package} from "windup-services";
+import {Package} from "../../../src/app/generated/windup-services";
 
 describe("PackageRegistryService", () => {
     let instance: PackageRegistryService;

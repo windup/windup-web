@@ -2,12 +2,11 @@ import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
 import {Router} from "@angular/router";
 
 import {MigrationProjectService} from "./migration-project.service";
-import {MigrationProject} from "windup-services";
+import {MigrationProject} from "../generated/windup-services";
 import {NotificationService} from "../core/notification/notification.service";
 import {utils} from "../shared/utils";
 import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
 import {OrderDirection, SortingService} from "../shared/sort/sorting.service";
-import {WindupExecutionService} from "../services/windup-execution.service";
 import {WindupService} from "../services/windup.service";
 
 @Component({

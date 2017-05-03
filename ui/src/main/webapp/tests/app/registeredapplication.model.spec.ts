@@ -1,4 +1,4 @@
-import {RegisteredApplication} from "windup-services";
+import {RegisteredApplication} from "../../src/app/generated/windup-services";
 
 describe('registered application model tests', () => {
     it ('has input path', () => {

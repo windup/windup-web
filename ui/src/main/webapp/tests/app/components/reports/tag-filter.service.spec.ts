@@ -1,6 +1,5 @@
 import {TagFilterService, MatchResult} from "../../../../src/app/reports/tag-filter.service";
-import {ReportFilter} from "windup-services";
-import {Tag} from "windup-services";
+import {ReportFilter, Tag} from "../../../../src/app/generated/windup-services";
 
 describe('Tag Filter Service', () => {
 

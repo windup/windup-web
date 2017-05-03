@@ -10,7 +10,7 @@ import {ConfigurationOptionsService} from "../configuration/configuration-option
 import {IsDirty} from "../shared/is-dirty.interface";
 import {Observable} from "rxjs/Observable";
 import {PackageRegistryService} from "./package-registry.service";
-import {AnalysisContext, Package, MigrationPath, AdvancedOption, RulesPath, PackageMetadata} from "windup-services";
+import {AnalysisContext, Package, MigrationPath, MigrationProject, AdvancedOption, RegisteredApplication, RulesPath, PackageMetadata} from "../generated/windup-services";
 import {RouteHistoryService} from "../core/routing/route-history.service";
 import {Subscription} from "rxjs";
 import {RouteFlattenerService} from "../core/routing/route-flattener.service";
@@ -18,8 +18,6 @@ import {WindupExecutionService} from "../services/windup-execution.service";
 import {NotificationService} from "../core/notification/notification.service";
 import {utils} from "../shared/utils";
 import {RegisteredApplicationService} from "../registered-application/registered-application.service";
-import {RegisteredApplication} from "windup-services";
-import {MigrationProject} from "windup-services";
 import {MigrationProjectService} from "../project/migration-project.service";
 import {forkJoin} from "rxjs/observable/forkJoin";
 import {WINDUP_WEB} from "../app.module";

@@ -1,5 +1,5 @@
 import {Component, Input} from "@angular/core";
-import {WindupExecution} from "windup-services";
+import {WindupExecution} from "../generated/windup-services";
 
 @Component({
     selector: 'wu-active-executions-progressbar',

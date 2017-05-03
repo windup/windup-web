@@ -17,12 +17,10 @@ import {FileService} from "../../src/app/services/file.service";
 import {FileUploader} from "ng2-file-upload/ng2-file-upload";
 import {MockBackend, MockConnection} from "@angular/http/testing";
 import {EventBusService} from "../../src/app/core/events/event-bus.service";
-import {MigrationProject} from "windup-services";
+import {MigrationProject, PackageMetadata, RegisteredApplication} from "../../src/app/generated/windup-services";
 import {SchedulerServiceMock} from "./mocks/scheduler-service.mock";
-import {PackageMetadata} from "windup-services";
 import {Subject} from "rxjs";
 import createSpy = jasmine.createSpy;
-import {RegisteredApplication} from "windup-services";
 import {SchedulerService} from "../../src/app/shared/scheduler.service";
 
 describe("Registered Application Service Test", () => {

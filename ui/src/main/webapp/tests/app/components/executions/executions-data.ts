@@ -1,4 +1,4 @@
-import {WindupExecution} from "windup-services";
+import {WindupExecution} from "../../../../src/app/generated/windup-services";
 
 export const EXECUTIONS_DATA: Partial<WindupExecution>[] = [
     {

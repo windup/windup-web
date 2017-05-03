@@ -4,17 +4,15 @@ import {FileUploader} from 'ng2-file-upload/ng2-file-upload';
 import {Observable} from 'rxjs/Observable';
 
 import {Constants} from "../constants";
-import {RegisteredApplication} from "windup-services";
+import {RegisteredApplication, MigrationProject, PackageMetadata} from "../generated/windup-services";
 import {AbstractService} from "../shared/abtract.service";
 import {KeycloakService} from "../core/authentication/keycloak.service";
 import {EventBusService} from "../core/events/event-bus.service";
 import {
     ApplicationRegisteredEvent, ApplicationDeletedEvent
 } from "../core/events/windup-event";
-import {MigrationProject} from "windup-services";
-import {PackageMetadata} from "windup-services";
 import {SchedulerService} from "../shared/scheduler.service";
-import {ReplaySubject, Subject} from "rxjs";
+import {ReplaySubject} from "rxjs";
 import {Cached} from "../shared/cache.service";
 
 @Injectable()

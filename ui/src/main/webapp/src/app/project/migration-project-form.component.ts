@@ -1,7 +1,7 @@
 import {Component, OnInit, OnDestroy} from "@angular/core";
 import {ActivatedRoute, Router, NavigationEnd} from "@angular/router";
 
-import {MigrationProject} from "windup-services";
+import {MigrationProject} from "../generated/windup-services";
 import {MigrationProjectService} from "./migration-project.service";
 import {FormComponent} from "../shared/form.component";
 import {Subscription} from "rxjs";

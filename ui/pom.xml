@@ -323,6 +323,16 @@
                                             <includes>**/*.ts</includes>
                                             <excludes>META-INF/**</excludes>
                                         </artifactItem>
+                                        <artifactItem>
+                                            <groupId>org.jboss.windup.web</groupId>
+                                            <artifactId>windup-web-services</artifactId>
+                                            <classifier>typescript-models</classifier>
+                                            <version>${project.version}</version>
+                                            <overWrite>true</overWrite>
+                                            <outputDirectory>target/tsModels-tmp</outputDirectory>
+                                            <includes>**/*.ts</includes>
+                                            <excludes>META-INF/**</excludes>
+                                        </artifactItem>
                                     </artifactItems>
                                 </configuration>
                             </execution>

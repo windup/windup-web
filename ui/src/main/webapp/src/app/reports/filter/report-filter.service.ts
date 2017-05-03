@@ -2,12 +2,8 @@ import {Http} from "@angular/http";
 import {Constants} from "../../constants";
 import {AbstractService} from "../../shared/abtract.service";
 import {Observable} from "rxjs";
-import {ReportFilter} from "windup-services";
+import {Category, FilterApplication, ReportFilter, Tag, WindupExecution} from "../../generated/windup-services";
 import {Injectable} from "@angular/core";
-import {Tag} from "windup-services";
-import {Category} from "windup-services";
-import {WindupExecution} from "windup-services";
-import {FilterApplication} from "windup-services";
 
 @Injectable()
 export class ReportFilterService extends AbstractService {

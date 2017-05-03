@@ -6,9 +6,8 @@ import {NotificationService} from "../../core/notification/notification.service"
 import {MigrationIssuesService} from "./migration-issues.service";
 import {WINDUP_WEB} from "../../app.module";
 import {WindupService} from "../../services/windup.service";
-import {WindupExecution} from "windup-services";
+import {WindupExecution} from "../../generated/windup-services";
 import {RouteFlattenerService} from "../../core/routing/route-flattener.service";
-import {RoutedComponent} from "../../shared/routed.component";
 import {FilterableReportComponent} from "../filterable-report.component";
 
 

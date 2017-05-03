@@ -1,5 +1,4 @@
-import {ProjectTraversalReducedDTO} from "windup-services";
-import {FileReducedDTO} from "windup-services";
+import {FileReducedDTO, ProjectTraversalReducedDTO} from "../generated/windup-services";
 
 /**
  * This is a direct port of windup core:

@@ -1,6 +1,5 @@
 import {Component, Input} from "@angular/core";
-import {ReportFilter} from "windup-services";
-import {WindupExecution} from "windup-services";
+import {ReportFilter, WindupExecution} from "../../generated/windup-services";
 
 @Component({
     selector: 'wu-report-filter-indicator',

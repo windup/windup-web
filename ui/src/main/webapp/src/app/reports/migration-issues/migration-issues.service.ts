@@ -4,7 +4,7 @@ import {Observable} from "rxjs";
 import {AbstractService} from "../../shared/abtract.service";
 import {Constants} from "../../constants";
 import {Cached} from "../../shared/cache.service";
-import {ReportFilter} from "windup-services";
+import {ReportFilter} from "../../generated/windup-services";
 
 @Injectable()
 export class MigrationIssuesService extends AbstractService {
