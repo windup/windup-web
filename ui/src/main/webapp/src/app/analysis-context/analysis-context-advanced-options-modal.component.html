@@ -35,7 +35,7 @@
                 <input *ngSwitchCase="'text'" type="text" name="currentOptionInput" class="form-control" [(ngModel)]="newOption.value">
                 <input *ngSwitchCase="'checkbox'" type="checkbox" class="form-control" name="currentOptionInput" [(ngModel)]="newOption.value">
                 <select *ngSwitchCase="'select'" class="form-control" name="newOptionSelect" [(ngModel)]="newOption.value">
-                    <option *ngFor="let option of currentSelectedOptionDefinition.availableValues" value="{{option}}">{{option}}</option>
+                    <option *ngFor="let option of sortOptionValues(currentSelectedOptionDefinition.availableValues)" value="{{option}}">{{option}}</option>
                 </select>
             </div>
         </td>

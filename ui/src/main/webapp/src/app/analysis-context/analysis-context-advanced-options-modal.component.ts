@@ -4,6 +4,7 @@ import {AdvancedOption} from "../generated/windup-services";
 import {ModalDialogComponent} from "../shared/dialog/modal-dialog.component";
 import {ConfigurationOptionsService} from "../configuration/configuration-options.service";
 import {ValidationResult} from "../model/validation-result.model";
+import {isString} from "util";
 
 @Component({
     selector: 'wu-analysis-context-advanced-options',
@@ -126,5 +127,12 @@ export class AnalysisContextAdvancedOptionsModalComponent {
     newOptionTypeChanged() {
         if (this.newOption)
             this.newOption.value = "";
+    }
+
+    private sortOptionValues(optionValues: any[]): any[] {
+        optionValues = optionValues.sort();
+        // We should rather get rid of the reviewed tags in rules. WINDUPRULE-206.
+        optionValues = optionValues.filter((v: any) => (!isString(v) || !(<string>v).startsWith("reviewed-")));
+        return optionValues;
     }
 }
