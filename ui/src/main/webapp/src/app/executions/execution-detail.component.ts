@@ -1,7 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
 import {WindupService} from "../services/windup.service";
-import {WindupExecution} from "../generated/windup-services";
+import {WindupExecution, RegisteredApplication} from "../generated/windup-services";
 import {WINDUP_WEB} from "../app.module";
 
 import {WindupExecutionService} from "../services/windup-execution.service";
@@ -10,7 +10,6 @@ import {ExecutionEvent} from "../core/events/windup-event";
 import {Observable} from "rxjs";
 import {RuleProviderExecutionsService} from "../reports/rule-provider-executions/rule-provider-executions.service";
 import {ExecutionPhaseModel} from "../generated/tsModels/ExecutionPhaseModel";
-import {RegisteredApplication} from "windup-services";
 
 @Component({
     templateUrl: './execution-detail.component.html',

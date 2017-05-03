@@ -15,7 +15,7 @@ import {TagDataService} from "../tag-data.service";
 })
 export class ReportFilterComponent implements OnInit, OnDestroy {
     project: MigrationProject = <MigrationProject>{};
-    execution: WindupExecution|any = <WindupExecution>{};
+    execution: WindupExecution = <WindupExecution>{};
     filter: ReportFilter;
     tags: Tag[] = [];
     categories: Category[] = [];
