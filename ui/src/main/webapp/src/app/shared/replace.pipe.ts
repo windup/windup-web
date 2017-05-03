@@ -1,5 +1,4 @@
 import {Pipe, PipeTransform} from "@angular/core";
-import {HumanizeDuration, HumanizeDurationLanguage} from "humanize-duration-ts";
 
 @Pipe({
     name: 'wuReplace'
