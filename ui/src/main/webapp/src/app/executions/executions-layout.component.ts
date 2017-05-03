@@ -68,7 +68,7 @@ export class ExecutionsLayoutComponent extends ProjectLayoutComponent implements
 
     protected loadProjectExecutions() {
         this._windupService.getProjectExecutions(this.project.id).subscribe((executions: WindupExecution[]) => {
-            this.allExecutions = executions;
+            this.allExecutions = executions.sort((a,b) => (a.id||0) - (b.id||0));
         });
     }
 

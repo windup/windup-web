@@ -51,7 +51,7 @@ export class ApplicationLevelLayoutComponent extends ExecutionsLayoutComponent {
     protected loadSelectedExecution(executionId: number) {
         let observable = super.loadSelectedExecution(executionId);
         observable.subscribe(execution => {
-            this.allApplications = execution.filterApplications;
+            this.allApplications = execution.filterApplications.sort((a,b) => a.fileName.localeCompare(b.fileName));
             this.application = this.allApplications.find(app => app.id === this.applicationId);
             this.createContextMenuItems();
         });

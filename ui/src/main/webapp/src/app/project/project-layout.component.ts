@@ -55,7 +55,7 @@ export class ProjectLayoutComponent extends RoutedComponent implements OnInit, O
 
     protected loadProjects() {
         this._migrationProjectService.getAll().subscribe((projects: MigrationProject[]) => {
-            this.allProjects = projects;
+            this.allProjects = projects.sort((a,b) => a.title.localeCompare(b.title));
         });
     }
 
