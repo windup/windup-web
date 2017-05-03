@@ -6,7 +6,7 @@ import 'bootstrap';
 @Component({
     selector: 'wu-navbar',
     templateUrl: './navbar.component.html',
-    styleUrls: ['./navbar.component.scss']
+    styleUrls: ['./navbar.component.scss', './navigation-responsive-styles.scss']
 })
 export class NavbarComponent implements AfterViewInit {
     @Input()
