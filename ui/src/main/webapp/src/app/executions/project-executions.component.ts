@@ -1,5 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {AnalysisContext, MigrationProject, WindupExecution} from "../generated/windup-services";
+import {RegisteredApplication} from "../generated/windup-services";
 import {ActivatedRoute} from "@angular/router";
 import {EventBusService} from "../core/events/event-bus.service";
 import {WindupExecutionService} from "../services/windup-execution.service";
@@ -18,6 +19,8 @@ export class ProjectExecutionsComponent extends ExecutionsMonitoringComponent im
     private doNotRefreshList: boolean;
     private analysisContext: AnalysisContext;
 
+    protected showRunAnalysisButton: boolean;
+
     constructor(
         private _activatedRoute: ActivatedRoute,
         _windupExecutionService: WindupExecutionService,
@@ -34,7 +37,13 @@ export class ProjectExecutionsComponent extends ExecutionsMonitoringComponent im
             this.project = data.project;
 
             this._analysisContextService.get(this.project.defaultAnalysisContextId)
-                .subscribe(context => this.analysisContext = context);
+                .subscribe(context => {
+                    this.analysisContext = context;
+                    this.analysisContext.applications = context.applications.filter(function( app: RegisteredApplication ) {
+                        return !app.deleted ;
+                    });
+                    this.showRunAnalysisButton = (this.analysisContext.applications.length > 0);
+                });
 
             this.refreshExecutionList();
         });
