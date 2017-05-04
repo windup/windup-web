@@ -1,12 +1,23 @@
 <nav class="navbar navbar-default navbar-pf" role="navigation">
-    <div class="collapse navbar-collapse navbar-collapse-1">
+    <div class="navbar-collapse">
+        <div class="visible-xs hamburger-button">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".hamburger-menu-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
         <div *ngIf="showLogotype" id="header-logo-wrapper">
             <a [routerLink]="['/']">
-                <span id="header-logo"><strong>Red Hat Application Migration Toolkit</strong> - Web Console</span>
+                <span id="header-logo">
+                    <strong class="hidden-xs">Red Hat Application Migration Toolkit</strong>
+                    <strong class="visible-xs-inline-block">RHAMT</strong> - Web Console
+                </span>
             </a>
             <a class="pointer link" target="_blank" href="https://developers.redhat.com/products/rhamt/overview/" style="color: #ff0000">(Beta)</a>
         </div>
-        <ul class="nav navbar-nav navbar-primary" *ngIf="showMenuItems">
+        <ul class="nav navbar-nav navbar-primary hidden-xs" *ngIf="showMenuItems">
             <li [routerLinkActive]="['active']" class="home">
                 <a [routerLink]="['/project-list']">
                     <span class="fa-fw pficon pficon-home" aria-hidden="true"></span>
@@ -15,7 +26,7 @@
             </li>
             <ng-content></ng-content>
         </ul>
-        <ul class="nav navbar-nav navbar-utility">
+        <ul class="nav navbar-nav navbar-utility hidden-xs">
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                     <span class="pficon pficon-help" aria-hidden="true"></span>
@@ -38,20 +49,10 @@
                         <a [routerLink]="['/configuration']" i18n="Rules configuration menu item">Rules Configuration</a>
                     </li>
                     <li>
-                        <a (click)="logout($event)" href="#" i18n="Logout menu item">Logout</a>
+                        <a [routerLink]="['/logout']" i18n="Logout menu item">Logout</a>
                     </li>
                 </ul>
             </li>
         </ul>
     </div>
-
-    <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse-1">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </button>
-    </div>
-
 </nav>

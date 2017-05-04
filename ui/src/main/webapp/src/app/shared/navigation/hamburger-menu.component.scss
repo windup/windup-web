@@ -1,0 +1,20 @@
+:host /deep/ .hamburger-menu {
+  .nav-pf-vertical {
+    position: relative;
+    bottom: initial;
+    left: initial;
+    top: initial;
+
+    width: 100%;
+  }
+
+  .nav-pf-vertical .list-group-item > a {
+    width: 100%;
+    height: 40px;
+    padding: 7px 18px 7px 20px;
+  }
+
+  .nav-pf-vertical .list-group-item > a .fa {
+    font-size: 13px;
+  }
+}

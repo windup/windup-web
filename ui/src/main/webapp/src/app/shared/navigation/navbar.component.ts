@@ -6,7 +6,7 @@ import 'bootstrap';
 @Component({
     selector: 'wu-navbar',
     templateUrl: './navbar.component.html',
-    styleUrls: ['./navbar.component.scss']
+    styleUrls: ['./navbar.component.scss', './navigation-responsive-styles.scss']
 })
 export class NavbarComponent implements AfterViewInit {
     @Input()
@@ -25,10 +25,5 @@ export class NavbarComponent implements AfterViewInit {
 
     get username(): String {
         return this._keycloak.username;
-    }
-
-    logout(event:Event): void {
-        event.preventDefault();
-        this._keycloak.logout();
     }
 }

@@ -132,6 +132,8 @@ import {ExpandCollapseComponent} from "./shared/expand-collapse.component";
 import {ApplicationQueueListComponent} from "./registered-application/application-queue-list.component";
 import {DialogService} from "./shared/dialog/dialog.service";
 import {IsRouteActiveDirective} from "./shared/is-route-active.directive";
+import {HamburgerMenuComponent} from "./shared/navigation/hamburger-menu.component";
+import {LogoutGuard} from "./core/authentication/logout.guard";
 
 /**
  * Load all mapping data from the generated files.
@@ -242,7 +244,8 @@ initializeModelMappingData();
         AboutPageComponent,
         ExpandCollapseComponent,
         ApplicationQueueListComponent,
-        IsRouteActiveDirective
+        IsRouteActiveDirective,
+        HamburgerMenuComponent
     ],
     providers: [
         appRoutingProviders,
@@ -283,6 +286,7 @@ initializeModelMappingData();
         RouteHistoryService,
         ExecutionResolve,
         DialogService,
+        LogoutGuard,
         {
             provide: RouteLinkProviderService,
             useFactory: createRouteLinkProviderService

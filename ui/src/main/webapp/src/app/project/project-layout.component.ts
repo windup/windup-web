@@ -11,6 +11,8 @@ import {MigrationProjectEvent, UpdateMigrationProjectEvent} from "../core/events
 import {MigrationProjectService} from "./migration-project.service";
 import {RoutedComponent} from "../shared/routed.component";
 import {FlattenedRouteData, RouteFlattenerService} from "../core/routing/route-flattener.service";
+import {ContextMenuItemInterface} from "../shared/navigation/context-menu-item.class";
+import {DEFAULT_MENU_ITEMS} from "../shared/navigation/hamburger-menu.component";
 
 @Component({
     templateUrl: './project-layout.component.html',
@@ -21,7 +23,8 @@ import {FlattenedRouteData, RouteFlattenerService} from "../core/routing/route-f
 export class ProjectLayoutComponent extends RoutedComponent implements OnInit, OnDestroy {
     protected allProjects: MigrationProject[];
     protected project: MigrationProject;
-    protected menuItems;
+    protected menuItems: ContextMenuItemInterface[];
+    protected hamburgerMenuItems: ContextMenuItemInterface[];
 
     // TODO: Execution progress: Project Layout must be updated when execution state changes (is completed)
 
@@ -85,6 +88,8 @@ export class ProjectLayoutComponent extends RoutedComponent implements OnInit, O
                 isEnabled: true,
             },
         ];
+
+        this.hamburgerMenuItems = [ ...this.menuItems, ...DEFAULT_MENU_ITEMS ];
     }
 
     public getProjectLabel = (project: MigrationProject): string => {

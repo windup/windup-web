@@ -32,6 +32,7 @@ import {ApplicationLevelLayoutComponent} from "./reports/application-level-layou
 import {ExecutionApplicationListComponent} from "./reports/execution-application-list/execution-application-list.component";
 import {ExecutionResolve} from "./executions/execution.resolve";
 import {AboutPageComponent} from "./misc/about.component";
+import {LogoutGuard} from "./core/authentication/logout.guard";
 
 export const executionLevelRoutes: Routes = [
     {path: '', component: ExecutionApplicationListComponent, data: {displayName: 'Applications'}},
@@ -178,6 +179,11 @@ export const appRoutes: Routes = [
                 ]
             },
         ]
+    },
+    {
+        path: 'logout',
+        canActivate: [LogoutGuard],
+        component: DefaultLayoutComponent
     }
 ];
 

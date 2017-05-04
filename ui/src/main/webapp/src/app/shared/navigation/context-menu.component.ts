@@ -4,7 +4,7 @@ import {ContextMenuItemInterface} from "./context-menu-item.class";
 @Component({
     selector: 'wu-context-menu',
     templateUrl: './context-menu.component.html',
-    styleUrls: ['./context-menu.component.scss'],
+    styleUrls: ['./context-menu.component.scss', './navigation-responsive-styles.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContextMenuComponent {
