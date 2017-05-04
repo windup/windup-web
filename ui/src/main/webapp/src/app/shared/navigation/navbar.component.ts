@@ -26,9 +26,4 @@ export class NavbarComponent implements AfterViewInit {
     get username(): String {
         return this._keycloak.username;
     }
-
-    logout(event:Event): void {
-        event.preventDefault();
-        this._keycloak.logout();
-    }
 }

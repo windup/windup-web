@@ -33,7 +33,7 @@ export const DEFAULT_MENU_ITEMS = [
     },
     {
         label: 'Logout',
-        link: '', // TODO: How to trigger logout?
+        link: '/logout',
         absolute: false,
         icon: '',
         isEnabled: true
