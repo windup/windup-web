@@ -140,3 +140,13 @@ ul.navbar-utility {
   margin-bottom: -3px;
   font-size: 13px;
 }
+
+@media (max-width: 767px) {
+  #header-logo-wrapper {
+    line-height: initial;
+  }
+
+  #header-logo {
+    height: auto;
+  }
+}
