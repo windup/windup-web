@@ -1,8 +1,8 @@
 <div class="panel-group">
     <div>
-        <div class="action-button" style="float: right; margin-top: 0;">
+        <div [hidden]="rescanInProgress" class="action-button" style="float: right; margin-top: 0;">
             <button class="btn btn-primary" (click)="displayAddRulesPathForm()">
-                <span *ngIf="!rescanInProgress"  i18="Button">Add</span>
+                <span i18="Button">Add</span>
             </button>
         </div>
         <h1 i18n="Header" style="margin-bottom: 25px">Rules Configuration</h1>
