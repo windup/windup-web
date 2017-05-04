@@ -9,6 +9,7 @@ export interface ContextMenuItemInterface {
     action?: Function;
     data?: any;
     target?: string;
+    absolute?: boolean;
 }
 
 export class ContextMenuItem implements ContextMenuItemInterface {

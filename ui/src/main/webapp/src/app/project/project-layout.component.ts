@@ -11,6 +11,7 @@ import {MigrationProjectEvent, UpdateMigrationProjectEvent} from "../core/events
 import {MigrationProjectService} from "./migration-project.service";
 import {RoutedComponent} from "../shared/routed.component";
 import {FlattenedRouteData, RouteFlattenerService} from "../core/routing/route-flattener.service";
+import {ContextMenuItemInterface} from "../shared/navigation/context-menu-item.class";
 
 @Component({
     templateUrl: './project-layout.component.html',
@@ -22,6 +23,8 @@ export class ProjectLayoutComponent extends RoutedComponent implements OnInit, O
     protected allProjects: MigrationProject[];
     protected project: MigrationProject;
     protected menuItems;
+    protected navigationBarMenuItems: ContextMenuItemInterface[];
+    protected hamburgerMenuItems;
 
     // TODO: Execution progress: Project Layout must be updated when execution state changes (is completed)
 
@@ -34,6 +37,29 @@ export class ProjectLayoutComponent extends RoutedComponent implements OnInit, O
         protected _eventBus: EventBusService,
     ) {
         super(_router, _activatedRoute, _routeFlattener);
+        this.navigationBarMenuItems = [
+            {
+                label: 'Rules Configuration',
+                link: '/configuration',
+                icon: '',
+                isEnabled: true
+            },
+            {
+                label: 'Documentation',
+                link: 'https://access.redhat.com/documentation/en/red-hat-application-migration-toolkit/',
+                absolute: true,
+                icon: '',
+                isEnabled: true
+
+            },
+            {
+                label: 'Logout',
+                link: '',
+                absolute: false,
+                icon: '',
+                isEnabled: true
+            },
+        ];
     }
 
     ngOnInit(): void {
@@ -85,6 +111,8 @@ export class ProjectLayoutComponent extends RoutedComponent implements OnInit, O
                 isEnabled: true,
             },
         ];
+
+        this.hamburgerMenuItems = [ ...this.menuItems, ...this.navigationBarMenuItems ];
     }
 
     public getProjectLabel = (project: MigrationProject): string => {
