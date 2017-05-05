@@ -41,7 +41,7 @@ export class FormComponent {
             if (error instanceof ProgressEvent)
                 this.errorMessages.push("Server connection failed.");
             else
-                this.errorMessages.push("Error: " + utils.getErrorMessage(error));
+                this.errorMessages.push(utils.getErrorMessage(error).trim());
         }
     }
 }
