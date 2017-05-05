@@ -5,7 +5,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                     <span class="pficon pficon-close"></span>
                 </button>
-                <h4 class="modal-title" id="myModalLabel"> Add rules </h4>
+                <h4 class="modal-title" id="myModalLabel">Add rules</h4>
             </div>
             <div class="modal-body">
                 <form [formGroup]="addRulesPathForm">
@@ -34,7 +34,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" (click)="addPath()">Add</button>
+                <button type="button" [disabled]="!addRulesPathForm.valid" class="btn btn-primary" (click)="addPath()">Add</button>
             </div>
         </div>
     </div>
