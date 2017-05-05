@@ -134,6 +134,7 @@ import {DialogService} from "./shared/dialog/dialog.service";
 import {IsRouteActiveDirective} from "./shared/is-route-active.directive";
 import {HamburgerMenuComponent} from "./shared/navigation/hamburger-menu.component";
 import {LogoutGuard} from "./core/authentication/logout.guard";
+import {ShortenPipe} from "./shared/text/shorten.pipe";
 
 /**
  * Load all mapping data from the generated files.
@@ -245,7 +246,8 @@ initializeModelMappingData();
         ExpandCollapseComponent,
         ApplicationQueueListComponent,
         IsRouteActiveDirective,
-        HamburgerMenuComponent
+        HamburgerMenuComponent,
+        ShortenPipe
     ],
     providers: [
         appRoutingProviders,

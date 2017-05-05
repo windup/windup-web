@@ -51,6 +51,27 @@
                             <div class="list-view-pf-description">
                                 <div class="list-group-item-heading">
                                     <a (click)="viewProject($event, project)"><h2 class="project-title">{{project.title}}</h2></a>
+                                    <span>
+                                        <!-- FCK angular, this should work...
+                                        <small *ngIf="project.applications" i18n>
+                                            {project.applications.length, plural, =0 {No application} =1 {# Application} other {# Applications}}
+                                        </small>
+                                        -->
+                                        <small *ngIf="project.applications">
+                                            {{project.applications.length}}
+                                            <ng-container i18n="project app count">Application</ng-container>
+                                            <ng-container i18n="project app count plural suffix" *ngIf="project.applications.length != 1">s</ng-container>
+                                        </small>
+                                        <small>
+                                            <ng-container *ngIf="!project.lastModified">
+                                                <ng-container i18n="project created">created</ng-container> {{project.created | amTimeAgo}}
+                                            </ng-container>
+                                            <ng-container *ngIf="project.lastModified">
+                                                <ng-container i18n="project last updated">last updated</ng-container> {{project.lastModified | amTimeAgo}}
+                                            </ng-container>
+                                        </small>
+                                    </span>
+                                    <!--
                                     <small *ngIf="project.applications">
                                         <ng-container *ngIf="project.applications">
                                             {{project.applications.length}} <ng-container i18n="project app count">Application</ng-container
@@ -63,8 +84,11 @@
                                             <ng-container i18n="project">last updated</ng-container> {{project.lastModified | amTimeAgo}}
                                         </ng-container>
                                     </small>
+                                    -->
                                 </div>
-                                <div class="list-group-item-text description">{{project.description}}</div>
+                                <div class="list-group-item-text description">
+                                    <span>{{project.description | wuShortenPipe: 265}}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
