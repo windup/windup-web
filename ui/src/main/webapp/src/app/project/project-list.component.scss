@@ -31,8 +31,12 @@ a {
     :host /deep/ & {
         .sort-label {margin-right:6px;padding-top:3px}
         .sort-component {
-            flex:1 0 auto;
-            .form-group {margin:0}
+            display: flex;
+            flex: 1 0 auto;
+
+            .form-group {
+                margin: 0;
+            }
         }
     }
 
@@ -52,23 +56,54 @@ a {
 .list-view-pf.projects-list .list-view-pf-description { align-items: flex-start; }
 
 .list-view-pf.projects-list .list-view-pf-additional-info { flex: initial; width: 12%; }
-.list-view-pf.projects-list .list-view-pf-description { width: 80%; }
-
-.list-view-pf.projects-list .list-view-pf-description .list-group-item-heading { width: calc(30% - 40px); }
-.list-view-pf.projects-list .list-view-pf-description .list-group-item-text.description { width: calc(50% - 40px); }
 
 /* Action buttons padding */
 .list-view-pf.projects-list .list-view-pf-actions span { margin-left: 1em; }
 .list-view-pf.projects-list .list-view-pf-actions span a i { font-size: inherit; }
+
+:host /deep/ .project-options {
+    display: flex;
+    flex-direction: column;
+}
+
+.list-view-pf .list-group-item-heading small {
+  display: inline;
+}
+
 
 @media (min-width: 650px) {
     .projects-bar {
         flex-direction: row;
         justify-content: space-between;
 
-        .projects-add {margin-left:40px;margin-top:0;order:2}
-        .projects-options {flex-direction:row}
+        .projects-add {
+            margin-left: 40px;
+            margin-top: 0;
+            order: 2;
+        }
+
+        .projects-options {
+            flex-direction: row;
+        }
     }
+
+    :host /deep/ .project-options {
+        flex-direction: row;
+    }
+}
+
+@media (max-width: 649px) {
+
+  .list-view-pf .list-group-item-heading span {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+@media (min-width: 650px) {
+  .list-view-pf .list-group-item-heading small:first-child:after {
+    content: ' - ';
+  }
 }
 
 @media (max-width:767px) {
@@ -93,10 +128,7 @@ a {
     cursor: pointer;
 }
 
-.project-options {
-    display: flex;
-    flex-direction: row;
-}
+
 
 .projects-list-page {
     margin-left: auto;
@@ -130,4 +162,8 @@ a {
 
 small {
     color: #9c9c9c;
+}
+
+.description {
+  word-wrap: break-word;
 }
