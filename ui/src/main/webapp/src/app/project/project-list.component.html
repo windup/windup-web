@@ -8,6 +8,11 @@
             <div class="projects-bar">
                 <h1 i18n="Project page header">Projects</h1>
                 <div class="project-options">
+                    <div class="projects-add">
+                        <button (click)="createMigrationProject()" class="btn btn-primary" type="button" i18n="button [New Project]">
+                            New Project
+                        </button>
+                    </div>
                     <div class="projects-search">
                         <wu-search [searchValue]="searchValue" (searchValueChange)="updateSearch($event)"></wu-search>
                         <span class="vertical-divider"></span>
@@ -17,11 +22,6 @@
                                 [(direction)]="sort.direction"
                                 (onChange)="updateSort()"
                         ></wu-sort>
-                    </div>
-                    <div class="projects-add">
-                        <button (click)="createMigrationProject()" class="btn btn-primary" type="button" i18n="button [New Project]">
-                            New Project
-                        </button>
                     </div>
                 </div>
             </div>
