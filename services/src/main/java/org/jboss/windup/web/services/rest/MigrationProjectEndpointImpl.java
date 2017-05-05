@@ -101,6 +101,15 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
         if (otherProjectID != null && !otherProjectID.equals(migrationProject.getId()))
             throw new ValidationException("The project name is already in use: " + migrationProject.getTitle());
 
+        if (migrationProject.getDefaultAnalysisContext() == null)
+        {
+            MigrationProject fromDB = this.entityManager.find(MigrationProject.class, migrationProject.getId());
+            if (fromDB.getDefaultAnalysisContext() != null)
+            {
+                migrationProject.setDefaultAnalysisContext(fromDB.getDefaultAnalysisContext());
+            }
+        }
+
         return entityManager.merge(migrationProject);
     }
 
