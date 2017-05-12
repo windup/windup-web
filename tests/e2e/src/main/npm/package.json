@@ -1,0 +1,23 @@
+{
+  "name": "windup-web-ui",
+  "version": "3.0.0-SNAPSHOT",
+  "license": "MIT",
+  "scripts": {
+    "e2e": "protractor",
+    "e2e-live": "protractor --elementExplorer",
+    "webdriver-update": "webdriver-manager update",
+    "webdriver-start": "webdriver-manager start",
+    "postinstall": "npm run webdriver-update"
+  },
+  "devDependencies": {
+    "@types/core-js": "0.9.35",
+    "@types/jasmine": "^2.2.29",
+    "@types/node": "^7.0.31",
+    "jasmine-core": "^2.3.4",
+    "jasmine-reporters": "^2.2.1",
+    "jasmine-spec-reporter": "^4.1.0",
+    "protractor": "^5.1.2",
+    "ts-node": "^3.0.6",
+    "typescript": "^2.3.2"
+  }
+}
