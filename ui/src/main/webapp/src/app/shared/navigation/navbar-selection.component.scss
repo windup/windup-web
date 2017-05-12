@@ -67,6 +67,21 @@ $navbar-os-project-menu-border: #050505;
   background-color: $dropdown-active-item-color;
 }
 
+.dropdown-menu {
+  overflow-y: auto;
+  max-height: 70vh;
+}
+
+/*
+  TODO: These are scrollbar styles. They currently work only in Google Chrome,
+        so there is probably no point of using them now.
+.log-view.log-fixed-height ::-webkit-scrollbar-thumb,.navbar-project-menu ::-webkit-scrollbar-thumb{background-color:rgba(255,255,255,.25);-webkit-box-shadow:inset 1px 1px 0 rgba(255,255,255,.1),inset 0 -1px 0 rgba(255,255,255,.07);box-shadow:inset 1px 1px 0 rgba(255,255,255,.1),inset 0 -1px 0 rgba(255,255,255,.07);}
+.log-view.log-fixed-height ::-webkit-scrollbar-thumb:active,.log-view.log-fixed-height ::-webkit-scrollbar-thumb:hover,.navbar-project-menu ::-webkit-scrollbar-thumb:active,.navbar-project-menu ::-webkit-scrollbar-thumb:hover{background-color:rgba(255,255,255,.35)}
+.log-view.log-fixed-height ::-webkit-scrollbar-track,.navbar-project-menu ::-webkit-scrollbar-track{background-color:#050505}
+.log-view.log-fixed-height ::-webkit-scrollbar{width:17px}
+.log-view.log-fixed-height ::-webkit-scrollbar-track{background-color:rgba(255,255,255,.1)}
+*/
+
 /*
 //
 // navbar-alt (top bar with project menu and utility nav)
