@@ -18,7 +18,7 @@ export class ApplicationResolve implements Resolve<RegisteredApplication|boolean
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<RegisteredApplication|boolean> {
         let id = +route.params['applicationId'];
 
-        return new Observable<RegisteredApplication>(observer => {
+        return new Observable<RegisteredApplication|boolean>(observer => {
             this._registeredApplicationService.get(id).subscribe(
                 application => {
                     observer.next(application);

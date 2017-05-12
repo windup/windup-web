@@ -20,7 +20,7 @@ export class ExecutionResolve implements Resolve<WindupExecution|boolean> {
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<WindupExecution|boolean> {
         let id = +route.params['executionId'];
 
-        return new Observable<WindupExecution>(observer => {
+        return new Observable<WindupExecution|boolean>(observer => {
             this._windupService.getExecution(id).subscribe(
                 project => {
                     observer.next(project);

@@ -18,7 +18,7 @@ export class ConfigurationResolve implements Resolve<Configuration|boolean> {
     }
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Configuration|boolean> {
-        return new Observable<Configuration>(observer => {
+        return new Observable<Configuration|boolean>(observer => {
             this._configurationService.get().subscribe(
                 configuration => {
                     observer.next(configuration);
