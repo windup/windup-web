@@ -30,6 +30,7 @@ public class WindupEndpointImpl implements WindupEndpoint
 
     private static int MAX_LOG_SIZE = 1024 * 1024 * 3; // 3 Megabytes
     private static String cachedCoreVersion = null;
+
     @PersistenceContext
     private EntityManager entityManager;
     @Inject
@@ -37,6 +38,7 @@ public class WindupEndpointImpl implements WindupEndpoint
     @Inject
     @FromFurnace
     private LogService logService;
+
 
     /**
      * @see org.jboss.windup.web.services.messaging.ExecutorMDB
