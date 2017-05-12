@@ -136,7 +136,7 @@
                 {{isInWizard ? 'Back' : 'Cancel'}}
             </button>
             <button (click)="save()" class="btn btn-primary" [disabled]="!analysisContextForm.form.valid" i18n>Save</button>
-            <button (click)="saveAndRun()" class="btn btn-primary" [disabled]="!analysisContextForm.form.valid" i18n>Save &amp; Run</button>
+            <button (click)="saveAndRun()" class="btn btn-primary" [disabled]="!analysisContextForm.form.valid || analysisContext.applications.length === 0" i18n>Save &amp; Run</button>
         </div>
     </form>
 </div>
