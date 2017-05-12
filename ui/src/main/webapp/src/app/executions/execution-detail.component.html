@@ -101,8 +101,8 @@
                             ]">
                     </thead>
                     <tbody>
-                    <template ngFor [ngForOf]="phases" let-phase>
-                        <template ngFor [ngForOf]="(phase?.ruleProviders | async)" let-ruleProvider>
+                    <ng-template ngFor [ngForOf]="phases" let-phase>
+                        <ng-template ngFor [ngForOf]="(phase?.ruleProviders | async)" let-ruleProvider>
                             <tr *ngFor="let rule of (ruleProvider?.rules | async)" class="execution-row">
                                 <td>{{rule.ruleId}}</td>
                                 <td>{{phase.name}}</td>
@@ -111,8 +111,8 @@
                                 <td>{{rule.failed ? 'No' : 'Yes'}}</td>
                                 <td>{{rule.failureMessage}}</td>
                             </tr>
-                        </template>
-                    </template>
+                        </ng-template>
+                    </ng-template>
                     <tbody>
                 </table>
             </span>

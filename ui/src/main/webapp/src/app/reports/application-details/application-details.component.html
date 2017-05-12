@@ -70,7 +70,7 @@
 
 <div class="row container-fluid" *ngIf="allProjects?.length > 0">
     <div class="theme-showcase" role="main">
-        <template ngFor let-traversal [ngForOf]="rootProjects">
+        <ng-template ngFor let-traversal [ngForOf]="rootProjects">
             <div class="panel panel-default" *ngIf="traversal.messages?.length > 0">
                 <div class="panel-heading">
                     <h3 class="panel-title">Application Messages for: {{traversal.path}}</h3>
@@ -81,7 +81,7 @@
                     </tr>
                 </table>
             </div>
-        </template>
+        </ng-template>
 
         <div>
             <a id="collapseAll" *ngIf="!allCollapsed()" (click)="collapseAll()">Collapse All</a>

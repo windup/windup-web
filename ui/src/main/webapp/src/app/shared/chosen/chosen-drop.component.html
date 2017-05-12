@@ -2,7 +2,7 @@
     <input (blur)="onInputBlur()" (keyup)="onInputKeyup($event.target.value)" [(ngModel)]="inputValue" #chosenInput type="text" autocomplete="off">
 </div>
 <ul class="chosen-results">
-    <template ngFor let-option [ngForOf]="_options" let-i="index">
+    <ng-template ngFor let-option [ngForOf]="_options" let-i="index">
 
         <li *ngIf="showGroup(option,i)" class="group-result">{{option.groupObject.label}}</li>
         <li [class.highlighted]="option.highlighted"
@@ -14,6 +14,6 @@
             <span [innerHtml]="getOptionLabel(option)"></span>
         </li>
 
-    </template>
+    </ng-template>
     <li *ngIf="filterMode && _options == null" class="no-results">{{no_results_text}} "<span>{{inputValue}}</span>"</li>
 </ul>
