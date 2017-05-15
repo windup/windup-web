@@ -2,6 +2,7 @@ package org.jboss.windup.web.services.rest;
 
 import org.jboss.windup.web.services.model.MigrationProject;
 
+import java.util.HashMap;
 import java.util.List;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -11,7 +12,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 
 /**
  * Provides a service for creating, updating, and deleting migration projects.
@@ -30,7 +30,7 @@ public interface MigrationProjectEndpoint
      */
     @GET
     @Path("list")
-    List<MigrationProjectAndAppCount> getMigrationProjects();
+    List<ExtendedMigrationProject> getMigrationProjects();
 
     /**
      * Get a {@link MigrationProject} by id.
@@ -77,47 +77,29 @@ public interface MigrationProjectEndpoint
 
 
     /**
-     * Adds app count to MigrationProject solely for the purpose of this REST API.
+     * Adds additional properties to MigrationProject solely for the purpose of this REST API.
      */
-    final class MigrationProjectAndAppCount
+    final class ExtendedMigrationProject extends HashMap<String, Object>
     {
-        MigrationProject migrationProject;
-
-        Long applicationCount;
-
         /**
          * This just makes arquillian happy.
          */
-        MigrationProjectAndAppCount()
+        ExtendedMigrationProject()
         {
         }
 
-        public MigrationProjectAndAppCount(MigrationProject migrationProject, Long applicationCount)
+        public ExtendedMigrationProject(MigrationProject migrationProject, Long applicationCount, Long activeExecutionsCount)
         {
-            this.migrationProject = migrationProject;
-            this.applicationCount = applicationCount;
+            this.put("migrationProject", migrationProject);
+            this.put("applicationCount", applicationCount);
+            this.put("activeExecutionsCount", activeExecutionsCount);
+            this.put("isDeletable", activeExecutionsCount == 0);
         }
 
-
-        public MigrationProject getMigrationProject()
+        public ExtendedMigrationProject(MigrationProject migrationProject, HashMap<String, Object> properties)
         {
-            return migrationProject;
-        }
-
-        public void setMigrationProject(MigrationProject migrationProject)
-        {
-            this.migrationProject = migrationProject;
-        }
-
-
-        public Long getApplicationCount()
-        {
-            return applicationCount;
-        }
-
-        public void setApplicationCount(Long applicationCount)
-        {
-            this.applicationCount = applicationCount;
+            this.put("migrationProject", properties);
+            this.putAll(properties);
         }
     }
 }
