@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
 import {Router} from "@angular/router";
 
-import {MigrationProjectService} from "./migration-project.service";
+import {ExtendedMigrationProject, MigrationProjectService} from "./migration-project.service";
 import {MigrationProject} from "../generated/windup-services";
 import {NotificationService} from "../core/notification/notification.service";
 import {utils} from "../shared/utils";
@@ -29,7 +29,7 @@ export class ProjectListComponent implements OnInit, AfterViewInit {
         return this._originalProjects.length;
     }
 
-    projects: MigrationProject[] = [];
+    projects: ExtendedMigrationProject[] = [];
 
     @ViewChild('deleteProjectModal')
     readonly deleteProjectModal: ConfirmationModalComponent;
@@ -139,8 +139,13 @@ export class ProjectListComponent implements OnInit, AfterViewInit {
         );
     }
 
-    confirmDeleteProject(event: Event, project: MigrationProject) {
+    confirmDeleteProject(event: Event, project: ExtendedMigrationProject) {
         event.stopPropagation();
+
+        if (!project.isDeletable) {
+            return false;
+        }
+
         this._windupService.getProjectExecutions(project.id).subscribe((executions) => {
             let inProgressExecution = executions.find((execution) => {
                 return execution.state == "QUEUED" || execution.state == "STARTED";
