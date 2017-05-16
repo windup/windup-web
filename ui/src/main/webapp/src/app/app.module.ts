@@ -9,13 +9,6 @@ import "rxjs/Rx";
 import {AppComponent} from "./components/app.component";
 import {appRoutes, appRoutingProviders, routing} from "./app.routing";
 
-import {ApplicationListComponent} from "./registered-application/application-list.component";
-import {RegisterApplicationFormComponent} from "./registered-application/register-application-form.component";
-import {RegisteredApplicationService} from "./registered-application/registered-application.service";
-import {ApplicationResolve} from "./registered-application/application.resolve";
-import {ApplicationQueueListComponent} from "./registered-application/application-queue-list.component";
-import {EditApplicationFormComponent} from "./registered-application/edit-application-form.component";
-
 import {MomentModule} from "angular2-moment";
 import {FileUploader, FileUploadModule} from "ng2-file-upload";
 import {NgxChartsModule} from "@swimlane/ngx-charts";
@@ -77,28 +70,21 @@ initializeModelMappingData();
 
         // pages
         AppComponent,
-        RegisterApplicationFormComponent,
-        EditApplicationFormComponent,
-
         // Reports
 
         // Report components
 
         // Components
-        ApplicationListComponent,
         AboutPageComponent,
-        ApplicationQueueListComponent,
     ],
     providers: [
         appRoutingProviders,
         FileService,
-        RegisteredApplicationService,
         WindupService,
         FileModelService,
         ClassificationService,
         HintService,
         FramesRestClientService,
-        ApplicationResolve,
         WindupExecutionService,
         {
             provide: FileUploader,
