@@ -45,12 +45,48 @@ export class LogViewComponent implements AfterViewChecked {
         window.scrollTo(null, 0);
     }
 
+    @HostListener('window:DOMMouseScroll', ['$event'])
+    private scrollListenerDOMMouse(event) {
+        this._scrolled(event);
+    }
+
+    @HostListener('window:mousewheel', ['$event'])
+    private scrollListenerMouseWheel(event) {
+        this._scrolled(event);
+    }
+
+    @HostListener('window:onmousewheel', ['$event'])
+    private scrollListenerOnMouseWheel(event) {
+        this._scrolled(event);
+    }
+
     @HostListener('window:scroll', ['$event'])
-    private scrollListener(event){
-        /*
-        121 is the height in pixel of two top nav bars
-         */
+    private anyScroll(event) {
         this.onTop = (document.body.scrollTop < 121);
+        console.log("On top: " + this.onTop + " scroll top: " + document.body.scrollTop);
+    }
+
+    @HostListener('window:keydown', ['$event'])
+    private scrollListenerOnKeyboard(event) {
+        switch (event.keyCode) {
+            case 35: // end
+            case 36: // home
+            case 38: // up arrow
+            case 40: // down arrow
+            case 33: // page up
+            case 34: // page down
+                this._scrolled(event);
+                break;
+            default:
+                return;
+        }
+    }
+
+    private _scrolled(event) {
+        /*
+         121 is the height in pixel of two top nav bars
+         */
+        this.autoScrollActive = false;
     }
 
     @Input()
