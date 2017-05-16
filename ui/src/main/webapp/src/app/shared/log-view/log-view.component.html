@@ -1,4 +1,10 @@
-<div class="log-view">
+<div #logview class="log-view">
+    <div class="log-scroll log-scroll-top target-logger-node" [ngClass]="{'affix': !onTop}" >
+        <a (click)="toggleAutoScroll()" class="follow-links">
+            <span *ngIf="!autoScrollActive">Follow</span>
+            <span *ngIf="autoScrollActive">Stop following</span>
+        </a>
+    </div>
     <div class="log-view-output">
         <table>
             <tr *ngFor="let line of lines; let i = index" class="log-line">
@@ -6,5 +12,8 @@
                 <td class="log-line-text">{{line}}</td>
             </tr>
         </table>
+    </div>
+    <div class="log-scroll log-scroll-bottom">
+        <a (click)="onScrollTop()" class="follow-links">Go to top</a>
     </div>
 </div>
