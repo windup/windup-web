@@ -23,10 +23,11 @@ function release_windup {
                 -DskipTests \
                 -Darguments=-DskipTests \
                 -Dmvn.test.skip=true \
-                -Dfurnace.dot.skip
+                -Dfurnace.dot.skip \
+                -Dwebpack.environment=production
 
         echo "Priming build for $REPO"
-        mvn -DskipTests clean install
+        mvn -DskipTests clean install -Dwebpack.environment=production
 
         echo "Prepare build for $REPO"
         mvn release:prepare clean install \
@@ -36,7 +37,8 @@ function release_windup {
                 -DskipTests \
                 -Darguments=-DskipTests \
                 -Dmvn.test.skip=true \
-                -Dfurnace.dot.skip
+                -Dfurnace.dot.skip \
+                -Dwebpack.environment=production
 
         echo "Finished preparing release"
 
@@ -47,7 +49,8 @@ function release_windup {
                 -DskipTests \
                 -Darguments=-DskipTests \
                 -Dmvn.test.skip=true \
-                -Dfurnace.dot.skip
+                -Dfurnace.dot.skip \
+                -Dwebpack.environment=production
         cd ..
 }
 
