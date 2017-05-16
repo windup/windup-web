@@ -28,6 +28,7 @@ import {ApplicationLevelLayoutComponent} from "./application-level-layout.compon
 import {EffortLevelPipe} from "./effort-level.enum";
 import {ExecutionApplicationListComponent} from "./execution-application-list/execution-application-list.component";
 import {NgxChartsModule} from "@swimlane/ngx-charts";
+import {PackageChartComponent} from "./package-chart/package-chart.component";
 
 @NgModule({
     imports: [
@@ -50,6 +51,7 @@ import {NgxChartsModule} from "@swimlane/ngx-charts";
         TechnologyTagComponent,
         ApplicationLevelLayoutComponent,
         ExecutionApplicationListComponent,
+        PackageChartComponent,
 
         EffortLevelPipe,
         PrettyPathPipe,

@@ -10,7 +10,6 @@ import {CustomSelectComponent} from "./custom-select/custom-select.component";
 import {DefaultLayoutComponent} from "./layout/default-layout.component";
 import {BreadCrumbsComponent} from "./navigation/breadcrumbs.component";
 import {ContextMenuComponent} from "./navigation/context-menu.component";
-import {PackageChartComponent} from "./package-chart/package-chart.component";
 import {UploadProgressbarComponent} from "./upload/upload-progressbar.component";
 import {UploadQueueComponent} from "./upload/upload-queue.component";
 import {ConfirmationModalComponent} from "./dialog/confirmation-modal.component";
@@ -31,7 +30,6 @@ import {TabComponent} from "./tabs/tab.component";
 import {DurationPipe} from "./duration.pipe";
 import {NotificationComponent} from "./notification.component";
 import {RouterModule} from "@angular/router";
-import {NgxChartsModule} from "@swimlane/ngx-charts";
 import {StatusIconComponent} from "./status-icon.component";
 import {ChosenModule} from "./chosen/chosen.module";
 import {FileUploadModule, FileUploader} from "ng2-file-upload";
@@ -58,7 +56,6 @@ import {DialogService} from "./dialog/dialog.service";
         ReactiveFormsModule,
         HttpModule,
         RouterModule.forChild([]),
-        NgxChartsModule,
         ChosenModule,
         FileUploadModule,
         MomentModule
@@ -89,7 +86,6 @@ import {DialogService} from "./dialog/dialog.service";
         HamburgerMenuComponent,
         NavbarComponent,
         NavbarSelectionComponent,
-        PackageChartComponent,
         SearchComponent,
         SortComponent,
         SortIndicatorComponent,
@@ -130,7 +126,6 @@ import {DialogService} from "./dialog/dialog.service";
         HamburgerMenuComponent,
         NavbarComponent,
         NavbarSelectionComponent,
-        PackageChartComponent,
         SearchComponent,
         SortComponent,
         SortIndicatorComponent,
@@ -164,7 +159,6 @@ import {DialogService} from "./dialog/dialog.service";
         FormsModule,
         ReactiveFormsModule,
         HttpModule,
-        NgxChartsModule,
         ChosenModule,
         MomentModule,
         FileUploadModule,
