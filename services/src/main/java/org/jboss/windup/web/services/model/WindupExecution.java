@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
@@ -45,7 +46,8 @@ public class WindupExecution implements Serializable
     public static final String WINDUP_EXECUTION_ID = "windup_execution_id";
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "execution_sequence")
+    @SequenceGenerator(name = "execution_sequence", sequenceName = "windup_execution", initialValue = 1, allocationSize = 1)
     @Column(name = WINDUP_EXECUTION_ID, updatable = false, nullable = false)
     private Long id;
 
