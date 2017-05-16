@@ -55,7 +55,6 @@ initializeModelMappingData();
         CoreModule,
         SharedModule,
         ProjectModule,
-        GroupModule,
         ApplicationModule,
         ConfigurationModule,
         AnalysisContextModule
