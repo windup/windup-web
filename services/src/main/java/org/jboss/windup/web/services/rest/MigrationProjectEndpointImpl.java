@@ -51,20 +51,26 @@ public class MigrationProjectEndpointImpl implements MigrationProjectEndpoint
     private WebPathUtil webPathUtil;
 
     @Override
-    public List<MigrationProjectAndAppCount> getMigrationProjects()
+    public List<ExtendedMigrationProject> getMigrationProjects()
     {
         try
         {
             final String query =
-                    "SELECT project, COUNT(DISTINCT app) AS appCount "
+                    "SELECT project, COUNT(DISTINCT app) AS appCount, COUNT(DISTINCT ex) AS activeExecutionsCount"
                     + "\n FROM " + MigrationProject.class.getSimpleName() + " AS project "
                     + "\n LEFT JOIN project.applications AS app "
-                    + "\n WHERE project.provisional = FALSE"
+                    + "\n LEFT JOIN project.executions AS ex WITH ex.state IN (:queued, :started) "
+                    + "\n WHERE project.provisional = FALSE "
                     + "\n GROUP BY project.id";
 
-            List<Object[]> entries = entityManager.createQuery(query, Object[].class).getResultList();
-            return new ArrayList<>(entries.stream().map(e -> new MigrationProjectAndAppCount((MigrationProject) e[0], (long) e[1]))
-                        .collect(Collectors.toList()));
+            List<Object[]> entries = entityManager.createQuery(query, Object[].class)
+                    .setParameter("queued", ExecutionState.QUEUED)
+                    .setParameter("started", ExecutionState.STARTED)
+                    .getResultList();
+
+            return entries.stream()
+                    .map(e -> new ExtendedMigrationProject((MigrationProject) e[0], (long) e[1], (long) e[2]))
+                    .collect(Collectors.toList());
         }
         catch (Exception ex)
         {
