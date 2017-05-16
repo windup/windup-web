@@ -51,15 +51,15 @@
         <div class="form-group pull-right">
             <button (click)="cancel()" type="button" class="btn btn-default" i18n="Cancel button">Cancel</button>
             <button class="btn btn-primary" type="submit" [disabled]="!projectForm.form.pending && !projectForm.form.valid">
-                <template [ngIf]="isInWizard">
+                <ng-template [ngIf]="isInWizard">
                     Next
-                </template>
-                <template [ngIf]="!isInWizard && !editMode">
+                </ng-template>
+                <ng-template [ngIf]="!isInWizard && !editMode">
                     Next
-                </template>
-                <template [ngIf]="!isInWizard && editMode">
+                </ng-template>
+                <ng-template [ngIf]="!isInWizard && editMode">
                     Update Project
-                </template>
+                </ng-template>
             </button>
         </div>
 

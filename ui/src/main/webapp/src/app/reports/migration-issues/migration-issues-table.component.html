@@ -37,7 +37,7 @@
     </thead>
     <tbody>
 
-        <template let-issue ngFor [ngForOf]="sortedIssues">
+        <ng-template let-issue ngFor [ngForOf]="sortedIssues">
             <tr class="migration-issue-row">
                 <td><a class="issue-title" (click)="toggleFiles(issue)">{{issue.issueName}}</a></td>
                 <td>{{issue.numberFound}}</td>
@@ -87,7 +87,7 @@
                     </table>
                 </td>
             </tr>
-        </template>
+        </ng-template>
 
     </tbody>
 </table>

@@ -4,14 +4,14 @@
 
     <ul class="chosen-choices">
 
-        <template [ngIf]="multipleSelectedOptions != null">
-            <template ngFor let-option [ngForOf]="multipleSelectedOptions" let-i="index">
+        <ng-template [ngIf]="multipleSelectedOptions != null">
+            <ng-template ngFor let-option [ngForOf]="multipleSelectedOptions" let-i="index">
                 <li class="search-choice" [class.search-choice-focus]="option.focus" >
                     <span>{{option.label}}</span>
                     <a class="search-choice-close" (click)="deselectOption(option, $event);"></a>
                 </li>
-            </template>
-        </template>
+            </ng-template>
+        </ng-template>
 
         <li class="search-field">
             <input #chosenInput type="text"

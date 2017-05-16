@@ -20,7 +20,7 @@ export class ProjectResolve implements Resolve<MigrationProject|boolean> {
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<MigrationProject|boolean> {
         let id = +route.params['projectId'];
 
-        return new Observable<MigrationProject>(observer => {
+        return new Observable<MigrationProject|boolean>(observer => {
             this._migrationProjectService.get(id).subscribe(
                 project => {
                     observer.next(project);

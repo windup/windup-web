@@ -109,7 +109,7 @@ describe('ExecutionsListComponent', () => {
         de = fixture.debugElement.query(By.css('table.executions-list-table'));
         el = de.nativeElement;
 
-        let projectServiceMock = de.injector.get(MigrationProjectService);
+        let projectServiceMock: any = de.injector.get(MigrationProjectService);
 
         projectServiceMock.getAll.and.returnValue(Observable.of(mockProjects));
 

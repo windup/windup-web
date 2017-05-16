@@ -28,10 +28,10 @@ export class SourceResolve implements Resolve<SourceFileModel|boolean> {
         if (!execId || !fileId)
             return Observable.of(false);
 
-        return new Observable<SourceFileModel>(observer => {
+        return new Observable<SourceFileModel|boolean>(observer => {
             this._fileModelService.getFileModel(execId, fileId).subscribe(
                 (file: FileModel) => {
-                    observer.next(file);
+                    observer.next(file as any as SourceFileModel); // TODO: Check correct type for this
                     observer.complete();
                 },
                 error => {

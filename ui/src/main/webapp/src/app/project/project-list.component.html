@@ -2,7 +2,7 @@
 
 <wu-no-projects-welcome *ngIf="!loading && totalProjectCount == 0" (newProject)="createMigrationProject()"></wu-no-projects-welcome>
 
-<template [ngIf]="totalProjectCount > 0">
+<ng-template [ngIf]="totalProjectCount > 0">
     <div class="projects-list-page">
         <div class="projects-header">
             <div class="projects-bar">
@@ -96,7 +96,7 @@
             </ng-container>
         </div>
     </div>
-</template>
+</ng-template>
 <wu-confirmation-modal #deleteProjectModal
                        [id]="'deleteProjectDialog'"
                        [yesLabel]="'Delete'"

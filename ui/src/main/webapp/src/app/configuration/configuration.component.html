@@ -9,14 +9,14 @@
     </div>
 </div>
 
-<template [ngIf]="rescanInProgress">
+<ng-template [ngIf]="rescanInProgress">
     <h1>
         <span class="status-icon"><span aria-hidden="true" class="spinner spinner-xs spinner-inline"></span></span>
         Scanning rules...
     </h1>
-</template>
+</ng-template>
 
-<template [ngIf]="!rescanInProgress && configuration != null && configuration.rulesPaths != null && configuration.rulesPaths.length > 0">
+<ng-template [ngIf]="!rescanInProgress && configuration != null && configuration.rulesPaths != null && configuration.rulesPaths.length > 0">
     <div class="panel-group">
         <div *ngFor="let rulePath of sortedPaths" id="rulePathPanel_{{rulePath.id}}" class="panel panel-default">
 
@@ -99,7 +99,7 @@
             </div>
         </div>
     </div>
-</template>
+</ng-template>
 
 <wu-rules-modal></wu-rules-modal>
 <wu-add-rules-path-modal [configuration]="configuration" (configurationSaved)="configurationUpdated($event)"></wu-add-rules-path-modal>

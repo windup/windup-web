@@ -14,7 +14,7 @@
 
     <div class="row container-fluid">
 
-        <template ngFor [ngForOf]="phases" let-phase>
+        <ng-template ngFor [ngForOf]="phases" let-phase>
             <div class="alert alert-info">
                 <h3 class="panel-title">Phase: {{phase.name}}</h3>
             </div>
@@ -51,7 +51,7 @@
                     </tr>
                 </table>
             </div>
-        </template>
+        </ng-template>
 
     </div> <!-- /row -->
 </div> <!-- /container main -->
