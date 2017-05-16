@@ -20,14 +20,6 @@ import {MomentModule} from "angular2-moment";
 import {FileUploader, FileUploadModule} from "ng2-file-upload";
 import {NgxChartsModule} from "@swimlane/ngx-charts";
 
-import {ProjectExecutionsComponent} from "./executions/project-executions.component";
-import {ExecutionDetailComponent} from "./executions/execution-detail.component";
-import {ExecutionsLayoutComponent} from "./executions/executions-layout.component";
-import {ExecutionResolve} from "./executions/execution.resolve";
-import {ExecutionsListComponent} from "./executions/executions-list.component";
-import {AllExecutionsComponent} from "./executions/all-executions.component";
-import {ActiveExecutionsProgressbarComponent} from "./executions/active-executions-progressbar.component";
-
 import {InViewport} from "./components/in-viewport.directive";
 
 import {AboutPageComponent} from "./misc/about.component";
@@ -93,13 +85,7 @@ initializeModelMappingData();
         // Report components
 
         // Components
-        ExecutionsLayoutComponent,
-        ExecutionsListComponent,
-        AllExecutionsComponent,
-        ActiveExecutionsProgressbarComponent,
-        ExecutionDetailComponent,
         ApplicationListComponent,
-        ProjectExecutionsComponent,
         AboutPageComponent,
         ApplicationQueueListComponent,
     ],
@@ -114,7 +100,6 @@ initializeModelMappingData();
         FramesRestClientService,
         ApplicationResolve,
         WindupExecutionService,
-        ExecutionResolve,
         {
             provide: FileUploader,
             useFactory: createFileUploader
