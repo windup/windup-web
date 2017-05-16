@@ -9,16 +9,6 @@ import "rxjs/Rx";
 import {AppComponent} from "./components/app.component";
 import {appRoutes, appRoutingProviders, routing} from "./app.routing";
 
-import {LogoutGuard} from "./core/authentication/logout.guard";
-import {KeycloakService} from "./core/authentication/keycloak.service";
-import {WindupHttpService} from "./core/authentication/windup.http.service";
-import {NotificationService} from "./core/notification/notification.service";
-import {LoggedInGuard} from "./core/authentication/logged-in.guard";
-import {RouteLinkProviderService} from "./core/routing/route-link-provider-service";
-import {RouteFlattenerService} from "./core/routing/route-flattener.service";
-import {RouteHistoryService} from "./core/routing/route-history.service";
-import {EventBusService} from "./core/events/event-bus.service";
-
 import {NoProjectsWelcomeComponent} from "./project/no-projects-welcome.component";
 import {MigrationProjectFormComponent} from "./project/migration-project-form.component";
 import {ProjectListComponent} from "./project/project-list.component";
@@ -141,7 +131,6 @@ initializeModelMappingData();
     ],
     providers: [
         appRoutingProviders,
-        KeycloakService,
         ConfigurationService,
         ConfigurationOptionsService,
         FileService,
@@ -149,8 +138,6 @@ initializeModelMappingData();
         RegisteredApplicationService,
         RuleService,
         WindupService,
-        NotificationService,
-        LoggedInGuard,
         FileModelService,
         ClassificationService,
         HintService,
@@ -158,21 +145,8 @@ initializeModelMappingData();
         ConfigurationResolve,
         ProjectResolve,
         ApplicationResolve,
-        RouteFlattenerService,
-        EventBusService,
         WindupExecutionService,
-        RouteHistoryService,
         ExecutionResolve,
-        LogoutGuard,
-        {
-            provide: RouteLinkProviderService,
-            useFactory: createRouteLinkProviderService
-        },
-        {
-            provide: Http,
-            useFactory: breadcrumbsServiceFactory,
-            deps: [XHRBackend, RequestOptions, KeycloakService]
-        },
         {
             provide: FileUploader,
             useFactory: createFileUploader
@@ -195,16 +169,6 @@ export function createFileUploader() {
 
     fileUploader = new FileUploader({});
     return fileUploader;
-}
-
-export function createRouteLinkProviderService() {
-        return new RouteLinkProviderService(appRoutes);
-}
-
-export function breadcrumbsServiceFactory(backend: XHRBackend,
-                                          defaultOptions: RequestOptions,
-                                          keycloakService: KeycloakService) {
-    return new WindupHttpService(backend, defaultOptions, keycloakService);
 }
 
 export function createGraphJSONToModelService(http: Http) {
