@@ -167,3 +167,14 @@ small {
 .description {
   word-wrap: break-word;
 }
+
+$disabled-button-color: #C4C5C5;
+
+a[disabled] {
+    cursor: not-allowed !important;
+    color: $disabled-button-color;
+
+    &:hover {
+        color: $disabled-button-color;
+    }
+}
