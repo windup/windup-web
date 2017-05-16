@@ -9,15 +9,6 @@ import "rxjs/Rx";
 import {AppComponent} from "./components/app.component";
 import {appRoutes, appRoutingProviders, routing} from "./app.routing";
 
-import {ConfigurationService} from "./configuration/configuration.service";
-import {RuleService} from "./configuration/rule.service";
-import {ConfigurationComponent} from "./configuration/configuration.component";
-import {TechnologyComponent} from "./configuration/technology.component";
-import {RulesModalComponent} from "./configuration/rules-modal.component";
-import {AddRulesPathModalComponent} from "./configuration/add-rules-path-modal.component";
-import {ConfigurationOptionsService} from "./configuration/configuration-options.service";
-import {ConfigurationResolve} from "./configuration/configuration.resolve";
-
 import {ApplicationListComponent} from "./registered-application/application-list.component";
 import {RegisterApplicationFormComponent} from "./registered-application/register-application-form.component";
 import {RegisteredApplicationService} from "./registered-application/registered-application.service";
@@ -94,7 +85,6 @@ initializeModelMappingData();
 
         // pages
         AppComponent,
-        ConfigurationComponent,
         RegisterApplicationFormComponent,
         EditApplicationFormComponent,
 
@@ -103,10 +93,6 @@ initializeModelMappingData();
         // Report components
 
         // Components
-        AddRulesPathModalComponent,
-        RulesModalComponent,
-        TechnologyComponent,
-
         ExecutionsLayoutComponent,
         ExecutionsListComponent,
         AllExecutionsComponent,
@@ -119,17 +105,13 @@ initializeModelMappingData();
     ],
     providers: [
         appRoutingProviders,
-        ConfigurationService,
-        ConfigurationOptionsService,
         FileService,
         RegisteredApplicationService,
-        RuleService,
         WindupService,
         FileModelService,
         ClassificationService,
         HintService,
         FramesRestClientService,
-        ConfigurationResolve,
         ApplicationResolve,
         WindupExecutionService,
         ExecutionResolve,
