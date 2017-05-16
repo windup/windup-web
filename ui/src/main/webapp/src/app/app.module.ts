@@ -4,8 +4,6 @@ import {Http, HttpModule, RequestOptions, XHRBackend} from "@angular/http";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {DatePipe} from "@angular/common";
 
-import "rxjs/Rx";
-
 import {AppComponent} from "./components/app.component";
 import {appRoutes, appRoutingProviders, routing} from "./app.routing";
 

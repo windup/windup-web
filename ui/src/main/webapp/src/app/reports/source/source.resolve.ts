@@ -1,5 +1,6 @@
 import {Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Router} from "@angular/router";
 import {Observable} from "rxjs";
+import 'rxjs/add/observable/of';
 import {Injectable} from "@angular/core";
 import {NotificationService} from "../../core/notification/notification.service";
 import {utils} from '../../shared/utils';
