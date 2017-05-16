@@ -41,7 +41,9 @@
                             </a>
                         </span>
                         <span class="fa-lg project-action-item" i18n-title="Delete project" title="Delete project">
-                            <a [attr.disabled]="project.isDeletable ? null : true" (click)="confirmDeleteProject($event, project)" class="action-button">
+                            <a [attr.disabled]="project.isDeletable ? null : true" (click)="confirmDeleteProject($event, project)" class="action-button"
+                               title="{{!project.isDeletable ? 'Cannot delete while an analysis is in progress' : 'Delete project'}}"
+                            >
                                 <i class="fa fa-trash-o"></i>
                             </a>
                         </span>
