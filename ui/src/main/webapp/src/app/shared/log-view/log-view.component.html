@@ -1,5 +1,5 @@
 <div #logview class="log-view">
-    <div class="log-scroll log-scroll-top target-logger-node" [ngClass]="{'affix': !isOnTop()}">
+    <div class="log-scroll log-scroll-top target-logger-node" [ngClass]="{'affix': !onTop}" >
         <a (click)="toggleAutoScroll()" class="follow-links">
             <span *ngIf="!autoScrollActive">Follow</span>
             <span *ngIf="autoScrollActive">Stop following</span>

@@ -1,5 +1,5 @@
 import {
-    Component, ChangeDetectionStrategy, Input, AfterViewChecked, ViewChild, ElementRef, OnInit
+    Component, ChangeDetectionStrategy, Input, AfterViewChecked, ViewChild, ElementRef, HostListener
 } from "@angular/core";
 
 @Component({
@@ -13,6 +13,7 @@ export class LogViewComponent implements AfterViewChecked {
 
     @ViewChild('logview') private myScrollContainer: ElementRef;
     autoScrollActive: boolean = false;
+    onTop: boolean = true;
 
     @Input()
     lines: string[] = [ "Loading..." ];
@@ -44,8 +45,12 @@ export class LogViewComponent implements AfterViewChecked {
         window.scrollTo(null, 0);
     }
 
-    isOnTop(): boolean {
-        return document.body.scrollTop == 0;
+    @HostListener('window:scroll', ['$event'])
+    private scrollListener(event){
+        /*
+        121 is the height in pixel of two top nav bars
+         */
+        this.onTop = (document.body.scrollTop < 121);
     }
 
     @Input()
