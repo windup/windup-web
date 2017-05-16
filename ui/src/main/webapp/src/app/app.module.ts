@@ -9,13 +9,6 @@ import "rxjs/Rx";
 import {AppComponent} from "./components/app.component";
 import {appRoutes, appRoutingProviders, routing} from "./app.routing";
 
-import {NoProjectsWelcomeComponent} from "./project/no-projects-welcome.component";
-import {MigrationProjectFormComponent} from "./project/migration-project-form.component";
-import {ProjectListComponent} from "./project/project-list.component";
-import {MigrationProjectService} from "./project/migration-project.service";
-import {ProjectLayoutComponent} from "./project/project-layout.component";
-import {ProjectResolve} from "./project/project.resolve";
-
 import {ConfigurationService} from "./configuration/configuration.service";
 import {RuleService} from "./configuration/rule.service";
 import {ConfigurationComponent} from "./configuration/configuration.component";
@@ -102,9 +95,6 @@ initializeModelMappingData();
         // pages
         AppComponent,
         ConfigurationComponent,
-        MigrationProjectFormComponent,
-        ProjectListComponent,
-        NoProjectsWelcomeComponent,
         RegisterApplicationFormComponent,
         EditApplicationFormComponent,
 
@@ -117,8 +107,6 @@ initializeModelMappingData();
         RulesModalComponent,
         TechnologyComponent,
 
-
-        ProjectLayoutComponent,
         ExecutionsLayoutComponent,
         ExecutionsListComponent,
         AllExecutionsComponent,
@@ -134,7 +122,6 @@ initializeModelMappingData();
         ConfigurationService,
         ConfigurationOptionsService,
         FileService,
-        MigrationProjectService,
         RegisteredApplicationService,
         RuleService,
         WindupService,
@@ -143,7 +130,6 @@ initializeModelMappingData();
         HintService,
         FramesRestClientService,
         ConfigurationResolve,
-        ProjectResolve,
         ApplicationResolve,
         WindupExecutionService,
         ExecutionResolve,
