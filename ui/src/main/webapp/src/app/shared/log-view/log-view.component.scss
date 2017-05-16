@@ -47,7 +47,7 @@ table {
 .log-view .log-scroll-top{position:absolute;right:0;border-right-width:0;border-top:0}
 .log-view .log-scroll-top.affix-top{position:absolute;right:0;top:0}
 .log-view .log-scroll-top.affix{position:fixed;right:20px;top:0}
-.log-view .log-scroll-top.affix.target-logger-node{position:fixed;right:45px;top:60px!important}
+.log-view .log-scroll-top.affix.target-logger-node{position:fixed;right:30px;top:120px!important}
 .log-view .log-scroll-bottom{position:absolute;border-bottom:0;border-right-width:0;bottom:0;right:0}
 .log-view .log-view-output{font-size:11px;padding:40px 0;}
 @media (min-width:768px){.log-view .log-view-output{font-size:12px;}
@@ -90,4 +90,8 @@ table {
 
 .log-view table {
   font-size: 12px;
+}
+
+a.follow-links:hover {
+  cursor:pointer;
 }
