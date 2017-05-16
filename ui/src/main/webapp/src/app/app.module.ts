@@ -148,7 +148,7 @@ initializeModelMappingData();
 
         // Moment
         MomentModule,
-
+/*
         CoreModule,
         SharedModule,
         ProjectModule,
@@ -156,6 +156,7 @@ initializeModelMappingData();
         ApplicationModule,
         ConfigurationModule,
         AnalysisContextModule
+*/
     ],
     declarations: [
         // Directives

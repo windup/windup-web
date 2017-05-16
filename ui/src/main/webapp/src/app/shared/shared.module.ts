@@ -153,6 +153,6 @@ export class SharedModule {
 
 }
 
-function createFileUploader() {
+export function createFileUploader() {
     return new FileUploader({});
 }

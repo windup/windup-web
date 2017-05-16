@@ -53,12 +53,12 @@ export class CoreModule {
     }
 }
 
-function windupHttpServiceFactory(backend: XHRBackend,
+export function windupHttpServiceFactory(backend: XHRBackend,
                                           defaultOptions: RequestOptions,
                                           keycloakService: KeycloakService) {
     return new WindupHttpService(backend, defaultOptions, keycloakService);
 }
 
-function createRouteLinkProviderService() {
+export function createRouteLinkProviderService() {
     return new RouteLinkProviderService(appRoutes);
 }
