@@ -62,33 +62,6 @@ import {RouteFlattenerService} from "./core/routing/route-flattener.service";
 import {RouteHistoryService} from "./core/routing/route-history.service";
 import {EventBusService} from "./core/events/event-bus.service";
 
-import {SourceReportComponent} from "./reports/source/source-report.component";
-import {ReportFilterComponent} from "./reports/filter/report-filter.component";
-import {ReportFilterService} from "./reports/filter/report-filter.service";
-import {ReportFilterResolve} from "./reports/filter/report-filter.resolve";
-import {ReportFilterIndicatorComponent} from "./reports/filter/report-filter-indicator.component";
-import {ApplicationDetailsComponent} from "./reports/application-details/application-details.component";
-import {ApplicationIndexComponent} from "./reports/application-index/application-index.component";
-import {AggregatedStatisticsService} from "./reports/application-index/aggregated-statistics.service";
-import {ApplicationDetailsService} from "./reports/application-details/application-details.service";
-import {TechnologyTagComponent} from "./reports/technology-tag/technology-tag.component";
-import {PrettyPathPipe} from "./reports/pretty-path.pipe";
-import {EffortLevelPipe} from "./reports/effort-level.enum";
-import {TagDataService} from "./reports/tag-data.service";
-import {RuleProviderExecutionsService} from "./reports/rule-provider-executions/rule-provider-executions.service";
-import {RuleProviderExecutionsComponent} from "./reports/rule-provider-executions/rule-provider-executions.component";
-import {DependenciesGraphComponent} from "./reports/dependencies/dependencies-graph.component";
-import {ExecutionApplicationListComponent} from "./reports/execution-application-list/execution-application-list.component";
-import {ApplicationLevelLayoutComponent} from "./reports/application-level-layout.component";
-import {SourceResolve} from "./reports/source/source.resolve";
-import {TechnologiesReportComponent} from "./reports/technologies/technologies-report.component";
-import {MigrationIssuesComponent} from "./reports/migration-issues/migration-issues.component";
-import {MigrationIssuesTableComponent} from "./reports/migration-issues/migration-issues-table.component";
-import {MigrationIssuesService} from "./reports/migration-issues/migration-issues.service";
-import {TechReportService} from "./reports/technologies/tech-report.service";
-import {DependenciesReportComponent} from "./reports/dependencies/dependencies-report.component";
-import {DependenciesService} from "./reports/dependencies/dependencies.service";
-
 import {NoProjectsWelcomeComponent} from "./project/no-projects-welcome.component";
 import {MigrationProjectFormComponent} from "./project/migration-project-form.component";
 import {ProjectListComponent} from "./project/project-list.component";
@@ -151,7 +124,6 @@ import {ProjectModule} from "./project/project.module";
 import {ApplicationModule} from "./registered-application/registered-application.module";
 import {ConfigurationModule} from "./configuration/configuration.module";
 import {AnalysisContextModule} from "./analysis-context/analysis-context.module";
-import {ReportsModule} from "./reports/reports.module";
 import {SharedModule} from "./shared/shared.module";
 import {CoreModule} from "./core/core.module";
 
@@ -175,7 +147,15 @@ initializeModelMappingData();
         ChosenModule,
 
         // Moment
-        MomentModule
+        MomentModule,
+
+        CoreModule,
+        SharedModule,
+        ProjectModule,
+        GroupModule,
+        ApplicationModule,
+        ConfigurationModule,
+        AnalysisContextModule
     ],
     declarations: [
         // Directives
@@ -193,13 +173,6 @@ initializeModelMappingData();
         EditApplicationFormComponent,
 
         // Reports
-        TechnologiesReportComponent,
-        DependenciesReportComponent,
-        SourceReportComponent,
-        ApplicationDetailsComponent,
-        ApplicationIndexComponent,
-        PrettyPathPipe,
-        EffortLevelPipe,
 
         // Report components
         PackageChartComponent,
@@ -223,8 +196,6 @@ initializeModelMappingData();
         PopoverComponent,
         JsTreeAngularWrapperComponent,
         JsTreeAngularWrapperComponent,
-        MigrationIssuesComponent,
-        MigrationIssuesTableComponent,
         ContextMenuComponent,
         ProjectLayoutComponent,
         ExecutionsLayoutComponent,
@@ -233,13 +204,8 @@ initializeModelMappingData();
         BreadCrumbsComponent,
         ExecutionsListComponent,
         AllExecutionsComponent,
-        ReportFilterComponent,
         CustomSelectComponent,
-        ReportFilterIndicatorComponent,
-        TechnologyTagComponent,
         ActiveExecutionsProgressbarComponent,
-        RuleProviderExecutionsComponent,
-        DependenciesGraphComponent,
         SortComponent,
         SearchComponent,
         WizardComponent,
@@ -257,8 +223,6 @@ initializeModelMappingData();
         NavbarSelectionComponent,
         SelectApplicationsComponent,
         ContextMenuLinkComponent,
-        ApplicationLevelLayoutComponent,
-        ExecutionApplicationListComponent,
         PrettyExecutionStatus,
         AlternativeUploadQueueComponent,
         AboutPageComponent,
@@ -284,26 +248,17 @@ initializeModelMappingData();
         NotificationService,
         PackageRegistryService,
         LoggedInGuard,
-        MigrationIssuesService,
-        TechReportService,
         FileModelService,
         ClassificationService,
         HintService,
-        ApplicationDetailsService,
         FramesRestClientService,
         ConfigurationResolve,
         ProjectResolve,
         ApplicationResolve,
-        SourceResolve,
         RouteFlattenerService,
-        ReportFilterService,
-        ReportFilterResolve,
-        DependenciesService,
         EventBusService,
         WindupExecutionService,
-        TagDataService,
         SchedulerService,
-        RuleProviderExecutionsService,
         RouteHistoryService,
         ExecutionResolve,
         DialogService,
@@ -331,9 +286,7 @@ initializeModelMappingData();
           provide: CacheService,
           useFactory: getCacheServiceInstance
         },
-        AggregatedStatisticsService,
-        DatePipe,
-        EffortLevelPipe
+        DatePipe
     ],
     bootstrap:    [ AppComponent ]
 })

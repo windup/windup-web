@@ -23,12 +23,12 @@ import {TypeReferenceStatisticsService} from "./application-details/type-referen
 import {ApplicationIndexComponent} from "./application-index/application-index.component";
 import {AggregatedStatisticsService} from "./application-index/aggregated-statistics.service";
 import {DependenciesGraphComponent} from "./dependencies/dependencies-graph.component";
-import {RouterModule} from "@angular/router";
+import {ReportsRoutingModule} from "./reports-routing.module";
 
 @NgModule({
     imports: [
         SharedModule,
-        RouterModule.forChild([])
+        ReportsRoutingModule
     ],
     declarations: [
         ApplicationDetailsComponent,
