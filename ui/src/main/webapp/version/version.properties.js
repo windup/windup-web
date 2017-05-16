@@ -1,1 +1,1 @@
-window.windupWebVersion = '$MAVEN_TOKEN{project.version}';
+window.windupWebVersion = '$MAVEN_TOKEN{project.version} ($MAVEN_TOKEN{buildNumber})';
