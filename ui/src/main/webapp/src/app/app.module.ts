@@ -9,49 +9,6 @@ import "rxjs/Rx";
 import {AppComponent} from "./components/app.component";
 import {appRoutes, appRoutingProviders, routing} from "./app.routing";
 
-import {ProgressBarComponent} from "./shared/progress-bar.component";
-import {NavbarComponent} from "./shared/navigation/navbar.component";
-import {BreadCrumbsComponent} from "./shared/navigation/breadcrumbs.component";
-import {ConfirmationModalComponent} from "./shared/dialog/confirmation-modal.component";
-import {UploadQueueComponent} from "./shared/upload/upload-queue.component";
-import {UploadProgressbarComponent} from "./shared/upload/upload-progressbar.component";
-import {NotificationComponent} from "./shared/notification.component";
-import {ConfirmDeactivateGuard} from "./shared/confirm-deactivate.guard";
-import {PopoverComponent} from "./shared/popover.component";
-import {JsTreeAngularWrapperComponent} from "./shared/js-tree-angular-wrapper.component";
-import {ModalDialogComponent} from "./shared/dialog/modal-dialog.component";
-import {BreadCrumbsService} from "./shared/navigation/breadcrumbs.service";
-import {ContextMenuComponent} from "./shared/navigation/context-menu.component";
-import {DefaultLayoutComponent} from "./shared/layout/default-layout.component";
-import {SortComponent} from "./shared/sort/sort.component";
-import {SearchComponent} from "./shared/search/search.component";
-import {WizardComponent} from "./shared/wizard/wizard.component";
-import {DurationPipe} from "./shared/duration.pipe";
-import {ReplacePipe} from "./shared/replace.pipe";
-import {TabContainerComponent} from "./shared/tabs/tab-container.component";
-import {TabComponent} from "./shared/tabs/tab.component";
-import {LogViewComponent} from "./shared/log-view/log-view.component";
-import {SortIndicatorComponent} from "./shared/sort/sort-indicator.component";
-import {SortableTableComponent} from "./shared/sort/sortable-table.component";
-import {StatusIconComponent} from "./shared/status-icon.component";
-import {CheckboxesComponent} from "./shared/checkboxes.component";
-import {WizardLayoutComponent} from "./shared/layout/wizard-layout.component";
-import {NavbarSelectionComponent} from "./shared/navigation/navbar-selection.component";
-import {ContextMenuLinkComponent} from "./shared/navigation/context-menu-link.component";
-import {CacheService, getCacheServiceInstance} from "./shared/cache.service";
-import {ProjectNameNotExistsValidator} from "./shared/validators/project-name-not-exists.validator";
-import {PrettyExecutionStatus} from "./shared/pretty-execution-state.pipe";
-import {AlternativeUploadQueueComponent} from "./shared/upload/alternative-upload-queue.component";
-import {ExpandCollapseComponent} from "./shared/expand-collapse.component";
-import {DialogService} from "./shared/dialog/dialog.service";
-import {IsRouteActiveDirective} from "./shared/is-route-active.directive";
-import {HamburgerMenuComponent} from "./shared/navigation/hamburger-menu.component";
-import {ShortenPipe} from "./shared/text/shorten.pipe";
-import {CustomSelectComponent} from "./shared/custom-select/custom-select.component";
-import {PackageChartComponent} from "./shared/package-chart/package-chart.component";
-import {SchedulerService} from "./shared/scheduler.service";
-import {ChosenModule} from "./shared/chosen/chosen.module";
-
 import {LogoutGuard} from "./core/authentication/logout.guard";
 import {KeycloakService} from "./core/authentication/keycloak.service";
 import {WindupHttpService} from "./core/authentication/windup.http.service";
@@ -136,7 +93,6 @@ initializeModelMappingData();
 
         // NGX Charts
         NgxChartsModule,
-        ChosenModule,
 
         // Moment
         MomentModule,
@@ -152,7 +108,6 @@ initializeModelMappingData();
     declarations: [
         // Directives
         InViewport,
-        ProjectNameNotExistsValidator,
 
         // pages
         AppComponent,
@@ -166,66 +121,29 @@ initializeModelMappingData();
         // Reports
 
         // Report components
-        PackageChartComponent,
 
         // Components
         AddRulesPathModalComponent,
-        BreadCrumbsComponent,
-        ConfirmationModalComponent,
-        ModalDialogComponent,
-        NavbarComponent,
-        ProgressBarComponent,
         RulesModalComponent,
         TechnologyComponent,
 
-        CheckboxesComponent,
-        UploadQueueComponent,
-        UploadProgressbarComponent,
-        NotificationComponent,
-        PopoverComponent,
-        JsTreeAngularWrapperComponent,
-        JsTreeAngularWrapperComponent,
-        ContextMenuComponent,
+
         ProjectLayoutComponent,
         ExecutionsLayoutComponent,
-        DefaultLayoutComponent,
-        WizardLayoutComponent,
-        BreadCrumbsComponent,
         ExecutionsListComponent,
         AllExecutionsComponent,
-        CustomSelectComponent,
         ActiveExecutionsProgressbarComponent,
-        SortComponent,
-        SearchComponent,
-        WizardComponent,
-        DurationPipe,
-        ReplacePipe,
-        TabContainerComponent,
-        TabComponent,
-        LogViewComponent,
         ExecutionDetailComponent,
-        SortIndicatorComponent,
-        SortableTableComponent,
-        StatusIconComponent,
         ApplicationListComponent,
         ProjectExecutionsComponent,
-        NavbarSelectionComponent,
-        ContextMenuLinkComponent,
-        PrettyExecutionStatus,
-        AlternativeUploadQueueComponent,
         AboutPageComponent,
-        ExpandCollapseComponent,
         ApplicationQueueListComponent,
-        IsRouteActiveDirective,
-        HamburgerMenuComponent,
-        ShortenPipe
     ],
     providers: [
         appRoutingProviders,
         KeycloakService,
         ConfigurationService,
         ConfigurationOptionsService,
-        ConfirmDeactivateGuard,
         FileService,
         MigrationProjectService,
         RegisteredApplicationService,
@@ -243,16 +161,13 @@ initializeModelMappingData();
         RouteFlattenerService,
         EventBusService,
         WindupExecutionService,
-        SchedulerService,
         RouteHistoryService,
         ExecutionResolve,
-        DialogService,
         LogoutGuard,
         {
             provide: RouteLinkProviderService,
             useFactory: createRouteLinkProviderService
         },
-        BreadCrumbsService,
         {
             provide: Http,
             useFactory: breadcrumbsServiceFactory,
@@ -266,10 +181,6 @@ initializeModelMappingData();
             provide: GraphJSONToModelService,
             useFactory: createGraphJSONToModelService,
             deps: [Http]
-        },
-        {
-          provide: CacheService,
-          useFactory: getCacheServiceInstance
         },
         DatePipe
     ],

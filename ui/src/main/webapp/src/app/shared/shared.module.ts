@@ -44,6 +44,7 @@ import {NavbarSelectionComponent} from "./navigation/navbar-selection.component"
 import {ShortenPipe} from "./text/shorten.pipe";
 import {AlternativeUploadQueueComponent} from "./upload/alternative-upload-queue.component";
 import {ProjectNameNotExistsValidator} from "./validators/project-name-not-exists.validator";
+import {CacheService, getCacheServiceInstance} from "./cache.service";
 
 @NgModule({
     imports: [
@@ -66,6 +67,11 @@ import {ProjectNameNotExistsValidator} from "./validators/project-name-not-exist
             provide: FileUploader,
             useFactory: createFileUploader
         },
+        {
+            provide: CacheService,
+            useFactory: getCacheServiceInstance
+        },
+
     ],
     declarations: [
         CustomSelectComponent,
