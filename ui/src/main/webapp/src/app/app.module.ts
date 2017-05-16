@@ -101,14 +101,6 @@ import {InViewport} from "./components/in-viewport.directive";
 
 import {AboutPageComponent} from "./misc/about.component";
 
-import {SelectApplicationsComponent} from "./analysis-context/select-applications.component";
-import {AnalysisContextFormComponent} from "./analysis-context/analysis-context-form.component";
-import {AnalysisContextService} from "./analysis-context/analysis-context.service";
-import {MigrationPathService} from "./analysis-context/migration-path.service";
-import {CustomRuleSelectionComponent} from "./analysis-context/custom-rule-selection.component";
-import {AnalysisContextAdvancedOptionsModalComponent} from "./analysis-context/analysis-context-advanced-options-modal.component";
-import {PackageRegistryService} from "./analysis-context/package-registry.service";
-
 import {FileService} from "./services/file.service";
 import {WindupService} from "./services/windup.service";
 import {FramesRestClientService} from "./services/graph/frames-rest-client.service";
@@ -148,7 +140,7 @@ initializeModelMappingData();
 
         // Moment
         MomentModule,
-/*
+
         CoreModule,
         SharedModule,
         ProjectModule,
@@ -156,7 +148,6 @@ initializeModelMappingData();
         ApplicationModule,
         ConfigurationModule,
         AnalysisContextModule
-*/
     ],
     declarations: [
         // Directives
@@ -165,7 +156,6 @@ initializeModelMappingData();
 
         // pages
         AppComponent,
-        AnalysisContextFormComponent,
         ConfigurationComponent,
         MigrationProjectFormComponent,
         ProjectListComponent,
@@ -180,7 +170,6 @@ initializeModelMappingData();
 
         // Components
         AddRulesPathModalComponent,
-        AnalysisContextAdvancedOptionsModalComponent,
         BreadCrumbsComponent,
         ConfirmationModalComponent,
         ModalDialogComponent,
@@ -192,7 +181,6 @@ initializeModelMappingData();
         CheckboxesComponent,
         UploadQueueComponent,
         UploadProgressbarComponent,
-        CustomRuleSelectionComponent,
         NotificationComponent,
         PopoverComponent,
         JsTreeAngularWrapperComponent,
@@ -222,7 +210,6 @@ initializeModelMappingData();
         ApplicationListComponent,
         ProjectExecutionsComponent,
         NavbarSelectionComponent,
-        SelectApplicationsComponent,
         ContextMenuLinkComponent,
         PrettyExecutionStatus,
         AlternativeUploadQueueComponent,
@@ -236,18 +223,15 @@ initializeModelMappingData();
     providers: [
         appRoutingProviders,
         KeycloakService,
-        AnalysisContextService,
         ConfigurationService,
         ConfigurationOptionsService,
         ConfirmDeactivateGuard,
         FileService,
-        MigrationPathService,
         MigrationProjectService,
         RegisteredApplicationService,
         RuleService,
         WindupService,
         NotificationService,
-        PackageRegistryService,
         LoggedInGuard,
         FileModelService,
         ClassificationService,
