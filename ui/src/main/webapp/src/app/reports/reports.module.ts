@@ -24,11 +24,16 @@ import {ApplicationIndexComponent} from "./application-index/application-index.c
 import {AggregatedStatisticsService} from "./application-index/aggregated-statistics.service";
 import {DependenciesGraphComponent} from "./dependencies/dependencies-graph.component";
 import {ReportsRoutingModule} from "./reports-routing.module";
+import {ApplicationLevelLayoutComponent} from "./application-level-layout.component";
+import {EffortLevelPipe} from "./effort-level.enum";
+import {ExecutionApplicationListComponent} from "./execution-application-list/execution-application-list.component";
+import {NgxChartsModule} from "@swimlane/ngx-charts";
 
 @NgModule({
     imports: [
         SharedModule,
-        ReportsRoutingModule
+        ReportsRoutingModule,
+        NgxChartsModule
     ],
     declarations: [
         ApplicationDetailsComponent,
@@ -42,7 +47,12 @@ import {ReportsRoutingModule} from "./reports-routing.module";
         RuleProviderExecutionsComponent,
         SourceReportComponent,
         TechnologiesReportComponent,
-        TechnologyTagComponent
+        TechnologyTagComponent,
+        ApplicationLevelLayoutComponent,
+        ExecutionApplicationListComponent,
+
+        EffortLevelPipe,
+        PrettyPathPipe,
     ],
     exports: [
         ApplicationDetailsComponent,
@@ -52,7 +62,12 @@ import {ReportsRoutingModule} from "./reports-routing.module";
         MigrationIssuesComponent,
         RuleProviderExecutionsComponent,
         SourceReportComponent,
-        TechnologiesReportComponent
+        TechnologiesReportComponent,
+        ApplicationLevelLayoutComponent,
+
+        TechnologyTagComponent,
+        ExecutionApplicationListComponent,
+
     ],
     providers: [
         ApplicationDetailsService,

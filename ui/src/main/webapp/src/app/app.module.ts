@@ -11,7 +11,6 @@ import {appRoutes, appRoutingProviders, routing} from "./app.routing";
 
 import {MomentModule} from "angular2-moment";
 import {FileUploader, FileUploadModule} from "ng2-file-upload";
-import {NgxChartsModule} from "@swimlane/ngx-charts";
 
 import {InViewport} from "./components/in-viewport.directive";
 
@@ -50,9 +49,6 @@ initializeModelMappingData();
 
         FileUploadModule,
 
-        // NGX Charts
-        NgxChartsModule,
-
         // Moment
         MomentModule,
 
@@ -70,9 +66,6 @@ initializeModelMappingData();
 
         // pages
         AppComponent,
-        // Reports
-
-        // Report components
 
         // Components
         AboutPageComponent,

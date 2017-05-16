@@ -7,25 +7,30 @@ import {AllExecutionsComponent} from "./all-executions.component";
 import {ExecutionDetailComponent} from "./execution-detail.component";
 import {ExecutionsListComponent} from "./executions-list.component";
 import {ProjectExecutionsComponent} from "./project-executions.component";
+import {ExecutionsLayoutComponent} from "./executions-layout.component";
+import {AnalysisContextModule} from "../analysis-context/analysis-context.module";
 
 @NgModule({
     imports: [
         SharedModule,
-        RouterModule.forChild([])
+        RouterModule.forChild([]),
+        AnalysisContextModule
     ],
     declarations: [
         ActiveExecutionsProgressbarComponent,
         AllExecutionsComponent,
         ExecutionDetailComponent,
         ExecutionsListComponent,
-        ProjectExecutionsComponent
+        ProjectExecutionsComponent,
+        ExecutionsLayoutComponent,
     ],
     exports: [
         ActiveExecutionsProgressbarComponent,
         AllExecutionsComponent,
         ExecutionDetailComponent,
         ExecutionsListComponent,
-        ProjectExecutionsComponent
+        ProjectExecutionsComponent,
+        ExecutionsLayoutComponent,
     ],
     providers: [
     ]

@@ -7,6 +7,7 @@ import {PackageRegistryService} from "./package-registry.service";
 import {AnalysisContextAdvancedOptionsModalComponent} from "./analysis-context-advanced-options-modal.component";
 import {SharedModule} from "../shared/shared.module";
 import {RouterModule} from "@angular/router";
+import {SelectApplicationsComponent} from "./select-applications.component";
 
 @NgModule({
     imports: [
@@ -16,12 +17,14 @@ import {RouterModule} from "@angular/router";
     declarations: [
         AnalysisContextFormComponent,
         AnalysisContextAdvancedOptionsModalComponent,
-        CustomRuleSelectionComponent
+        CustomRuleSelectionComponent,
+        SelectApplicationsComponent
     ],
     exports: [
         AnalysisContextFormComponent,
         AnalysisContextAdvancedOptionsModalComponent,
-        CustomRuleSelectionComponent
+        CustomRuleSelectionComponent,
+        SelectApplicationsComponent
     ],
     providers: [
         AnalysisContextService,

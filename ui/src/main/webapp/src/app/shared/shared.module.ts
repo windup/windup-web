@@ -45,6 +45,11 @@ import {ShortenPipe} from "./text/shorten.pipe";
 import {AlternativeUploadQueueComponent} from "./upload/alternative-upload-queue.component";
 import {ProjectNameNotExistsValidator} from "./validators/project-name-not-exists.validator";
 import {CacheService, getCacheServiceInstance} from "./cache.service";
+import {ExpandCollapseComponent} from "./expand-collapse.component";
+import {IsRouteActiveDirective} from "./is-route-active.directive";
+import {PrettyExecutionStatus} from "./pretty-execution-state.pipe";
+import {ReplacePipe} from "./replace.pipe";
+import {DialogService} from "./dialog/dialog.service";
 
 @NgModule({
     imports: [
@@ -63,6 +68,7 @@ import {CacheService, getCacheServiceInstance} from "./cache.service";
         ConfirmDeactivateGuard,
         SchedulerService,
         SortingService,
+        DialogService,
         {
             provide: FileUploader,
             useFactory: createFileUploader
@@ -104,8 +110,13 @@ import {CacheService, getCacheServiceInstance} from "./cache.service";
         StatusIconComponent,
         CheckboxesComponent,
         WizardLayoutComponent,
+        ExpandCollapseComponent,
 
         ShortenPipe,
+
+        IsRouteActiveDirective,
+        PrettyExecutionStatus,
+        ReplacePipe,
 
         ProjectNameNotExistsValidator
     ],
@@ -140,10 +151,14 @@ import {CacheService, getCacheServiceInstance} from "./cache.service";
         StatusIconComponent,
         CheckboxesComponent,
         WizardLayoutComponent,
+        ExpandCollapseComponent,
 
         ProjectNameNotExistsValidator,
+        IsRouteActiveDirective,
+        PrettyExecutionStatus,
 
         ShortenPipe,
+        ReplacePipe,
 
         CommonModule,
         FormsModule,

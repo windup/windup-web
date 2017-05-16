@@ -6,6 +6,7 @@ import {RegisterApplicationFormComponent} from "./register-application-form.comp
 import {SharedModule} from "../shared/shared.module";
 import {RouterModule} from "@angular/router";
 import {ApplicationListComponent} from "./application-list.component";
+import {ApplicationQueueListComponent} from "./application-queue-list.component";
 
 @NgModule({
     imports: [
@@ -15,12 +16,14 @@ import {ApplicationListComponent} from "./application-list.component";
     declarations: [
         EditApplicationFormComponent,
         RegisterApplicationFormComponent,
-        ApplicationListComponent
+        ApplicationListComponent,
+        ApplicationQueueListComponent,
     ],
     exports: [
         EditApplicationFormComponent,
         RegisterApplicationFormComponent,
-        ApplicationListComponent
+        ApplicationListComponent,
+        ApplicationQueueListComponent,
     ],
     providers: [
         ApplicationResolve,
