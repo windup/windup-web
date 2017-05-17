@@ -18,5 +18,6 @@ export class Constants {
     public static UNAUTHENTICATED_PAGE: string = `${Constants.SERVER}/login`;
     public static AUTH_REDIRECT_URL: string = Constants.SERVER;
     public static WINDUP_WEB_VERSION: string = window['windupWebVersion'];
+    public static WINDUP_WEB_SCM_REVISION: string = window['windupWebScmRevision'];
     // Core version is obtained through the REST /windup/coreVersion endpoint
 }

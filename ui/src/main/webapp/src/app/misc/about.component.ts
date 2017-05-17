@@ -16,6 +16,7 @@ export class AboutPageComponent implements OnInit, AfterViewInit {
     private WINDUP_CORE_VERSION_URL: string = "/windup/coreVersion";
 
     versionWindupWeb: string = Constants.WINDUP_WEB_VERSION;
+    scmRevisionWindupWeb: string = Constants.WINDUP_WEB_SCM_REVISION;
     versionWindupCore: string = "(loading)";
     scmRevisionWindupCore: string = "(loading)";
 

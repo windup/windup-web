@@ -139,12 +139,6 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <format>git rev: {1}</format>
-                    <items>
-                        <item>timestamp</item>
-                        <item>scmVersion</item>
-                    </items>
-                    <shortRevisionLength>5</shortRevisionLength>
                     <doCheck>false</doCheck>
                     <doUpdate>false</doUpdate>
                 </configuration>
