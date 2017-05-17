@@ -116,8 +116,8 @@ export class ApplicationListComponent extends ExecutionsMonitoringComponent impl
             return false;
 
         this.deleteAppDialog.data = application;
-        this.deleteAppDialog.title = 'Confirm application deletion';
-        this.deleteAppDialog.body = `Do you really want to delete the “${application.title}” application?`;
+        this.deleteAppDialog.title = 'Confirm Application Deletion';
+        this.deleteAppDialog.body = `Are you sure you want to delete “${application.title}”?`;
 
         this.deleteAppDialog.show();
     }

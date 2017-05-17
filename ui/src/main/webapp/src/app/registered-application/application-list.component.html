@@ -12,9 +12,9 @@
 
     <div *ngIf="project?.applications?.length < 1" class="blank-slate-pf" style="border: none;">
         <div class="blank-slate-pf-main-action">
-            <p>There are no applications in your project. To show application list, please add an application first.</p>
+            <p>There are no applications in this project.</p>
             <a [routerLink]="['/projects', project.id, 'applications', 'register']" class="clickable btn btn-primary btn-lg" i18n="no application page Button">
-                Add application
+                Add Application
             </a>
         </div>
     </div>
@@ -24,7 +24,7 @@
                [(sortedData)]="sortedApplications" [data]="filteredApplications"
                [tableHeaders]="[
             { title: 'Application', isSortable: true, sortBy: 'title' },
-            { title: 'Date added', isSortable: true, sortBy: 'lastModified'},
+            { title: 'Date Added', isSortable: true, sortBy: 'lastModified'},
             { title: 'Actions', isSortable: false }
         ]">
         </thead>
