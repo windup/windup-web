@@ -1,7 +1,7 @@
 package org.jboss.windup.web.services.rest;
 
-import org.jboss.windup.web.services.model.AnalysisContext;
-import org.jboss.windup.web.services.model.WindupExecution;
+import java.util.Collection;
+import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -10,8 +10,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import java.util.Collection;
-import java.util.List;
+
+import org.jboss.windup.web.services.model.AnalysisContext;
+import org.jboss.windup.web.services.model.WindupExecution;
 
 /**
  * Contains methods for executing Windup and querying the current status of an execution run.
@@ -68,5 +69,32 @@ public interface WindupEndpoint
      */
     @GET
     @Path("coreVersion")
-    String getCoreVersion();
+    VersionAndRevision getCoreVersion();
+
+    class VersionAndRevision
+    {
+        private final String version;
+        private final String scmRevision;
+
+        public VersionAndRevision()
+        {
+            this(null, null);
+        }
+
+        public VersionAndRevision(String version, String scmRevision)
+        {
+            this.version = version;
+            this.scmRevision = scmRevision;
+        }
+
+        public String getVersion()
+        {
+            return version;
+        }
+
+        public String getScmRevision()
+        {
+            return scmRevision;
+        }
+    }
 }

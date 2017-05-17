@@ -30,9 +30,20 @@
                             <h2 id="version">Version</h2>
                             <dl class="dl-horizontal left versions">
                                 <dt>Red Hat Application Migration Toolkit Core:</dt>
-                                <dd class="ng-binding">{{versionWindupCore}}</dd>
+                                <dd class="ng-binding">
+                                    {{versionWindupCore}}
+                                    <ng-container *ngIf="versionWindupCore.indexOf('SNAPSHOT') != -1">
+                                        (<a target="_blank" [href]="'https://github.com/windup/windup/tree/' + scmRevisionWindupCore">git revision</a>)
+                                    </ng-container>
+                                </dd>
+
                                 <dt>Red Hat Application Migration Toolkit Web Console:</dt>
-                                <dd class="ng-binding">{{versionWindupWeb}}</dd>  <!-- This will show $MAVEN_TOKEN{project.version} during development, but work from a .war. -->
+                                <dd class="ng-binding">
+                                    {{versionWindupWeb}}
+                                    <ng-container *ngIf="versionWindupWeb.indexOf('SNAPSHOT') != -1">
+                                        (<a target="_blank" [href]="'https://github.com/windup/windup-web/tree/' + scmRevisionWindupWeb">git revision</a>)
+                                    </ng-container>
+                                </dd>  <!-- This will show $MAVEN_TOKEN{project.version} during development, but work from a .war. -->
                             </dl>
                             <p>
                                 The <a target="_blank" href="https://access.redhat.com/documentation/en/red-hat-application-migration-toolkit/">documentation</a>

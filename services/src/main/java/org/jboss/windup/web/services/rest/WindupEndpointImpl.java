@@ -1,11 +1,14 @@
 package org.jboss.windup.web.services.rest;
 
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
+import java.util.jar.Manifest;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
@@ -16,6 +19,8 @@ import javax.persistence.PersistenceContext;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 
+import org.apache.commons.lang3.StringUtils;
+import org.jboss.windup.config.GraphRewrite;
 import org.jboss.windup.web.addons.websupport.services.LogService;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.model.AnalysisContext;
@@ -30,6 +35,8 @@ public class WindupEndpointImpl implements WindupEndpoint
 
     private static int MAX_LOG_SIZE = 1024 * 1024 * 3; // 3 Megabytes
     private static String cachedCoreVersion = null;
+    private static String cachedCoreScmRevision = null;
+
     @PersistenceContext
     private EntityManager entityManager;
     @Inject
@@ -79,7 +86,8 @@ public class WindupEndpointImpl implements WindupEndpoint
                 this.windupExecutionService.cancelExecution(executionID);
                 return;
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 if (!isOptimisticLockException(e))
                     return;
 
@@ -95,7 +103,8 @@ public class WindupEndpointImpl implements WindupEndpoint
         }
     }
 
-    private boolean isOptimisticLockException(Throwable e) {
+    private boolean isOptimisticLockException(Throwable e)
+    {
         if (e instanceof OptimisticLockException)
             return true;
         else
@@ -138,7 +147,7 @@ public class WindupEndpointImpl implements WindupEndpoint
     }
 
     @Override
-    public String getCoreVersion()
+    public VersionAndRevision getCoreVersion()
     {
         if (cachedCoreVersion == null)
         {
@@ -147,6 +156,30 @@ public class WindupEndpointImpl implements WindupEndpoint
                 Properties props = new Properties();
                 props.load(WindupEndpointImpl.class.getClassLoader().getResourceAsStream("/META-INF/windup-web-services.build.properties"));
                 cachedCoreVersion = props.getProperty("version.windup.core");
+
+                /*
+                 * Get GraphRewrite (a class in windup config api) and use it to get the windup core manifest.
+                 *
+                 * Then use that to get the scmversion.
+                 */
+                Enumeration<URL> resources = GraphRewrite.class.getClassLoader().getResources("META-INF/MANIFEST.MF");
+                while (resources.hasMoreElements())
+                {
+                    try
+                    {
+                        Manifest manifest = new Manifest(resources.nextElement().openStream());
+                        // check that this is your manifest and do what you need or get the next one
+                        String vendorID = manifest.getMainAttributes().getValue("Implementation-Vendor-Id");
+                        if (!StringUtils.equals(vendorID, "org.jboss.windup.config"))
+                            continue;
+
+                        cachedCoreScmRevision = manifest.getMainAttributes().getValue("Scm-Revision");
+                    }
+                    catch (IOException E)
+                    {
+                        // handle
+                    }
+                }
             }
             catch (IOException ex)
             {
@@ -154,6 +187,6 @@ public class WindupEndpointImpl implements WindupEndpoint
                 cachedCoreVersion = "(failed to read)";
             }
         }
-        return "\"" + cachedCoreVersion + "\"";
+        return new VersionAndRevision(cachedCoreVersion, cachedCoreScmRevision);
     }
 }

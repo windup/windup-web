@@ -5,12 +5,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -140,6 +143,11 @@ public class RegisteredApplicationService
             registeredApplicationList.add(application);
         }
 
+        if (registeredApplicationList.isEmpty())
+        {
+            throw new BadRequestException("Directory must not be empty!");
+        }
+
         project.setLastModified(new GregorianCalendar());
         this.entityManager.merge(project);
 
@@ -175,6 +183,23 @@ public class RegisteredApplicationService
         }
 
         File file = new File(path);
+        if (file.isDirectory())
+        {
+            try
+            {
+                Optional<Path> subFile = Files.walk(Paths.get(path))
+                            .filter(childPath -> Files.isRegularFile(childPath))
+                            .findFirst();
+                if (!subFile.isPresent())
+                {
+                    throw new BadRequestException("Directory must not be empty!");
+                }
+            }
+            catch (IOException e)
+            {
+                throw new BadRequestException("Failed to read directory!");
+            }
+        }
 
         RegisteredApplication application = this.createApplication(project);
         application.setInputPath(path);
@@ -274,8 +299,8 @@ public class RegisteredApplicationService
 
         String query = "SELECT ctxt FROM AnalysisContext ctxt WHERE :app MEMBER OF ctxt.applications";
         Collection<AnalysisContext> contexts = this.entityManager.createQuery(query, AnalysisContext.class)
-                .setParameter("app", application)
-                .getResultList();
+                    .setParameter("app", application)
+                    .getResultList();
 
         this.deleteApplicationFileIfUploaded(application);
         if (contexts.isEmpty())
@@ -289,8 +314,8 @@ public class RegisteredApplicationService
         else
         {
             /*
-             * Do not delete application if it is used for some analysis context
-             * Keep the record in database (for reference in applications used in execution)
+             * Do not delete application if it is used for some analysis context Keep the record in database (for reference in applications used in
+             * execution)
              */
             application.setDeleted(true);
             this.entityManager.merge(application);
