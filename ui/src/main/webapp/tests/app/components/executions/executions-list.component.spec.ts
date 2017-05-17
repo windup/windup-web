@@ -155,7 +155,7 @@ describe('ExecutionsListComponent', () => {
 
             if (stateText.startsWith("Completed")) {
                 expect(el.children[COL_ACTIONS].children.length).toBe(2);
-                expect(el.children[COL_ACTIONS].children[0].children[0].title).toEqual('Show static reports');
+                expect(el.children[COL_ACTIONS].children[0].children[0].title).toEqual('Show reports');
                 expect(el.children[COL_ACTIONS].children[1].title).toEqual('Delete');
             } else {
                 expect(el.children[COL_ACTIONS].children.length).toBe(1);
