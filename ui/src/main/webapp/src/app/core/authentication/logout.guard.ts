@@ -22,8 +22,8 @@ export class LogoutGuard implements CanActivate, CanActivateChild {
     }
 
     canActivate(): boolean {
-        this._keycloakService.logout();
-        this._router.navigate(['/']);
+        this._keycloakService.logout()
+            .subscribe(() => window.location.reload(true));
 
         return false;
     }

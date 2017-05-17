@@ -116,10 +116,13 @@ export class KeycloakService {
         return Observable.fromPromise(realPromise);
     }
 
-    logout() {
-        this.auth.authz.logout();
-        this.auth.loggedIn = false;
-        this.auth.authz = null;
+    logout():Observable<{}> {
+        let logoutPromise = this.auth.authz.logout();
+        logoutPromise = this.transformKeycloakPromise(logoutPromise);
+        return Observable.fromPromise(logoutPromise).do(() => {
+            this.auth.loggedIn = false;
+            this.auth.authz = null;
+        });
     }
 
     getToken(): Observable<string> {

@@ -1,11 +1,11 @@
 import {NgModule} from "@angular/core";
 import {BrowserModule} from "@angular/platform-browser";
-import {Http, HttpModule, RequestOptions, XHRBackend} from "@angular/http";
+import {Http, HttpModule} from "@angular/http";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {DatePipe} from "@angular/common";
 
 import {AppComponent} from "./components/app.component";
-import {appRoutes, appRoutingProviders, routing} from "./app.routing";
+import {appRoutingProviders, routing} from "./app.routing";
 
 import {MomentModule} from "angular2-moment";
 import {FileUploader, FileUploadModule} from "ng2-file-upload";
@@ -57,7 +57,7 @@ initializeModelMappingData();
         ApplicationModule,
         ConfigurationModule,
         AnalysisContextModule,
-        ExecutionsModule
+        ExecutionsModule,
     ],
     declarations: [
         // Directives
@@ -67,7 +67,7 @@ initializeModelMappingData();
         AppComponent,
 
         // Components
-        AboutPageComponent,
+        AboutPageComponent
     ],
     providers: [
         appRoutingProviders,
