@@ -31,6 +31,7 @@ import {ConfigurationModule} from "./configuration/configuration.module";
 import {AnalysisContextModule} from "./analysis-context/analysis-context.module";
 import {SharedModule} from "./shared/shared.module";
 import {CoreModule} from "./core/core.module";
+import {ExecutionsModule} from "./executions/executions.module";
 
 /**
  * Load all mapping data from the generated files.
@@ -55,7 +56,8 @@ initializeModelMappingData();
         ProjectModule,
         ApplicationModule,
         ConfigurationModule,
-        AnalysisContextModule
+        AnalysisContextModule,
+        ExecutionsModule
     ],
     declarations: [
         // Directives
