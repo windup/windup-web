@@ -35,23 +35,23 @@
         <wu-tab [tabTitle]="'Details'">
             <h3 i18n="Analysis status|Section">Status</h3>
             <dl>
-                <dt i18n="Analysis status">Status:</dt>
+                <dt i18n="Analysis status">Status</dt>
                 <dd><wu-status-icon [status]="execution.state"></wu-status-icon>{{execution.state | wuPrettyExecutionStatus}}</dd>
-                <dt i18n="Analysis start date">Started:</dt>
+                <dt i18n="Analysis start date">Started</dt>
                 <dd>{{execution.timeStarted | date: 'short'}}</dd>
                 <ng-container *ngIf="execution.timeCompleted">
-                    <dt i18n="Analysis duration">Duration:</dt>
+                    <dt i18n="Analysis duration">Duration</dt>
                     <dd>{{ execution.timeCompleted - execution.timeStarted | wuDuration }}</dd>
                 </ng-container>
                 <ng-container *ngIf="!execution.timeCompleted">
-                    <dt i18n="Analysis last modification">Last Modification:</dt>
+                    <dt i18n="Analysis last modification">Last modification</dt>
                     <dd>{{execution.lastModified | date: 'short'}}</dd>
                 </ng-container>
             </dl>
 
             <h3 i18n="Analysis configuration|Section">Configuration</h3>
             <dl>
-                <dt i18n="Migration Path">Transformation path:</dt>
+                <dt i18n="Migration Path">Transformation path</dt>
                 <dd>
                     {{execution.analysisContext?.migrationPath?.name}}
                     <span *ngIf="execution.analysisContext?.cloudTargetsIncluded">
