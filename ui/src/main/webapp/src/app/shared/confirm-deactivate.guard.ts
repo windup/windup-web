@@ -13,9 +13,8 @@ export class ConfirmDeactivateGuard implements CanDeactivate<IsDirty> {
     canDeactivate(target: IsDirty, route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean>|Promise<boolean>|boolean {
         if(target.dirty) {
             let dialog = this._dialogService.getConfirmationDialog();
-            dialog.title = 'Do you want to leave current page?';
-            dialog.body = 'Leaving the form will revert any changes. Do you want to continue?';
-
+            dialog.title = 'Do you want to leave the current page?';
+            dialog.body = 'You will lose any unsaved changes. Do you want to continue?';
             dialog.show();
 
             return dialog.closed.map(dialogResult => dialogResult.result);
