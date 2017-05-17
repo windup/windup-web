@@ -30,7 +30,14 @@
                             <h2 id="version">Version</h2>
                             <dl class="dl-horizontal left versions">
                                 <dt>Red Hat Application Migration Toolkit Core:</dt>
-                                <dd class="ng-binding">{{versionWindupCore}}</dd>
+                                <dd class="ng-binding">
+                                    {{versionWindupCore}}
+                                    <template *ngIf="versionWindupCore.indexOf('SNAPSHOT') != -1">
+                                        (git rev: {{scmRevisionWindupCore}})
+                                    </template>
+                                </dd>
+
+
                                 <dt>Red Hat Application Migration Toolkit Web Console:</dt>
                                 <dd class="ng-binding">{{versionWindupWeb}}</dd>  <!-- This will show $MAVEN_TOKEN{project.version} during development, but work from a .war. -->
                             </dl>
