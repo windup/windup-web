@@ -228,7 +228,7 @@ describe('ExecutionsListComponent', () => {
 
         describe('when cancellation completes successfully', () => {
             it('should create notification on success', () => {
-                expect(notificationService.success).toHaveBeenCalledWith('The analysis #25 was cancelled.');
+                expect(notificationService.success).toHaveBeenCalledWith('Analysis #25 was cancelled.');
             });
         });
 

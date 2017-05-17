@@ -108,8 +108,8 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
 
     cancelExecution(execution: WindupExecution) {
         this.cancelExecutionDialog.data = execution;
-        this.cancelExecutionDialog.title = 'Confirm cancel analysis';
-        this.cancelExecutionDialog.body = `Do you really want to cancel the analysis #${execution.id}?`;
+        this.cancelExecutionDialog.title = 'Confirm Analysis Cancellation';
+        this.cancelExecutionDialog.body = `Are you sure you want to cancel analysis #${execution.id}?`;
 
         this.cancelExecutionDialog.show();
     }
@@ -117,7 +117,7 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
     doCancelExecution(execution: WindupExecution) {
         this._windupService.cancelExecution(execution).subscribe(
             success => {
-                this._notificationService.success(`The analysis #${execution.id} was cancelled.`);
+                this._notificationService.success(`Analysis #${execution.id} was cancelled.`);
                 this.reloadRequestEvent.emit(true);
             },
             error => this._notificationService.error(utils.getErrorMessage(error))
@@ -126,8 +126,8 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
 
     confirmDeleteExecution(execution: WindupExecution) {
         this.deleteExecutionDialog.data = execution;
-        this.deleteExecutionDialog.title = 'Confirm analysis deletion';
-        this.deleteExecutionDialog.body = `Do you really want to delete the analysis #${execution.id}?`;
+        this.deleteExecutionDialog.title = 'Confirm Analysis Deletion';
+        this.deleteExecutionDialog.body = `Are you sure you want to delete analysis #${execution.id}?`;
 
         this.deleteExecutionDialog.show();
     }
@@ -135,7 +135,7 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
     doDeleteExecution(execution:WindupExecution) {
         this._windupService.deleteExecution(execution).subscribe(
             success => {
-                this._notificationService.success(`The analysis #${execution.id} was deleted.`);
+                this._notificationService.success(`Analysis #${execution.id} was deleted.`);
                 this.reloadRequestEvent.emit(true);
             },
             error => this._notificationService.error(utils.getErrorMessage(error))
