@@ -1,6 +1,6 @@
 <div [ngClass]="{'panel-body': !isInWizard, 'container-fluid': isInWizard}">
     <div class="header-bar">
-        <h2>Configuration</h2>
+        <h2 i18n>Analysis Configuration</h2>
         <!--
         <div *ngIf=!isInWizard" class="save-and-run">
             <div class="button-container form-group">
@@ -41,13 +41,13 @@
                         {{ transformationPath.name }}
                     </label>
                 </ng-container>
-                <p class="help-block">Select the transformation path relevant for the analysis of your application(s).</p>
+                <p class="help-block" i18n="transform path description">Select the transformation path for your applications.</p>
             </div>
             <label class="checkbox-inline">
                 <input type="checkbox" name="cloudTargetsIncluded" ngControl="cloudTargetsIncluded" [(ngModel)]="analysisContext.cloudTargetsIncluded"/>
                 Cloud readiness analysis
             </label>
-            <p class="help-block">Tick this box to also assess your application(s) for cloud and container readiness.</p>
+            <p class="help-block" i18n="cloud readiness description">Check this box to also assess your applications for cloud and container readiness.</p>
         </div>
 
         <!-- Advanced Transformation paths
@@ -81,29 +81,35 @@
         <div class="form-group">
             <label class="control-label" i18n>Included packages</label>
             <div class="loading-packages" *ngIf="!packageTreeLoaded">
-                <p><span class="spinner spinner-xs spinner-inline"></span>Analyzing packages...</p>
+                <p>
+                    <span class="spinner spinner-xs spinner-inline"></span>
+                    <ng-container i18n>Identifying packages...</ng-container>
+                </p>
             </div>
             <wu-js-tree-wrapper [treeNodes]="packageTree" [(selectedNodes)]="analysisContext.includePackages">
             </wu-js-tree-wrapper>
-            <p class="help-block">Select the Java packages that will be decompiled and analyzed. If no package is selected, all classes will be considered.</p>
+            <p class="help-block" i18n="include packages description">Select the Java packages to decompile and analyze. If no packages are selected, all will be analyzed.</p>
         </div>
 
-        <wu-expand-collapse [tabTitle]="'Exclude some packages'" [isActive]="analysisContext.excludePackages?.length > 0">
+        <wu-expand-collapse [tabTitle]="'Exclude packages'" [isActive]="analysisContext.excludePackages?.length > 0">
             <div class="form-group">
                 <div>
                     <label class="control-label" i18n>Excluded packages</label>
                     <div class="loading-packages" *ngIf="!packageTreeLoaded">
-                        <p><span class="spinner spinner-xs spinner-inline"></span>Analyzing packages...</p>
+                        <p>
+                            <span class="spinner spinner-xs spinner-inline"></span>
+                            <ng-container i18n>Identifying packages...</ng-container>
+                        </p>
                     </div>
                     <wu-js-tree-wrapper [treeNodes]="packageTree" [(selectedNodes)]="analysisContext.excludePackages">
                     </wu-js-tree-wrapper>
                 </div>
-                <p class="help-block">All classes contained in those packages will be ignored during the analysis.</p>
+                <p class="help-block" i18n="exclude packages description">All classes in the selected packages will be ignored during analysis.</p>
             </div>
         </wu-expand-collapse>
 
         <!-- Rulesets selection -->
-        <wu-expand-collapse [tabTitle]="'Use local custom rules'" [isActive]="isActiveRulesPaths()">
+        <wu-expand-collapse [tabTitle]="'Use custom rules'" [isActive]="isActiveRulesPaths()">
             <div class="form-group">
                 <label class="control-label" i18n>Custom rulesets</label>
                 <wu-custom-rule-selection
