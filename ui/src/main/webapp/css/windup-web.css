@@ -164,6 +164,10 @@ fieldset.fields-section-pf {
     padding-top: inherit;
 }
 
+button.btn {
+    text-transform: capitalize;
+}
+
 @media (max-width: 767px) {
     .wu-horizontal-nav-content, .layout-pf.layout-pf-fixed .container-pf-nav-pf-vertical {
         margin-left: 0;

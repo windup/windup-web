@@ -14,7 +14,7 @@
                         {{errorMessage}}
                     </div>
                     <div class="form-group" [ngClass]="{'has-error': hasError(addRulesPathForm.get('inputPathControl'))}">
-                        <label class="control-label" for="addRulesPathInput">Rules Path (file or directory)</label>
+                        <label class="control-label" for="addRulesPathInput">Rules path (file or directory)</label>
                         <input
                                 [(ngModel)]="inputPath"
                                 formControlName="inputPathControl"
@@ -24,7 +24,7 @@
                                 placeholder="/opt/rules or /opt/rules/my-rules.windup.xml"
                         >
                         <div>
-                            Path to the file or folder containing the rule(s).
+                            Path to the file or directory containing the rules.
                         </div>
                         <span [class.hidden]="!hasError(addRulesPathForm.get('inputPathControl'))" class="help-block">
                             The path must exist on the server.
