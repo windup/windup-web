@@ -63,7 +63,6 @@ export class LogViewComponent implements AfterViewChecked {
     @HostListener('window:scroll', ['$event'])
     private anyScroll(event) {
         this.onTop = (document.body.scrollTop < 121);
-        console.log("On top: " + this.onTop + " scroll top: " + document.body.scrollTop);
     }
 
     @HostListener('window:keydown', ['$event'])
