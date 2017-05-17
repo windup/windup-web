@@ -9,6 +9,8 @@ import {ExecutionsListComponent} from "./executions-list.component";
 import {ProjectExecutionsComponent} from "./project-executions.component";
 import {ExecutionsLayoutComponent} from "./executions-layout.component";
 import {AnalysisContextModule} from "../analysis-context/analysis-context.module";
+import {RuleProviderExecutionsComponent} from "./rule-provider-executions/rule-provider-executions.component";
+import {RuleProviderExecutionsService} from "./rule-provider-executions/rule-provider-executions.service";
 
 @NgModule({
     imports: [
@@ -23,6 +25,7 @@ import {AnalysisContextModule} from "../analysis-context/analysis-context.module
         ExecutionsListComponent,
         ProjectExecutionsComponent,
         ExecutionsLayoutComponent,
+        RuleProviderExecutionsComponent,
     ],
     exports: [
         ActiveExecutionsProgressbarComponent,
@@ -31,8 +34,10 @@ import {AnalysisContextModule} from "../analysis-context/analysis-context.module
         ExecutionsListComponent,
         ProjectExecutionsComponent,
         ExecutionsLayoutComponent,
+        RuleProviderExecutionsComponent,
     ],
     providers: [
+        RuleProviderExecutionsService
     ]
 })
 export class ExecutionsModule {

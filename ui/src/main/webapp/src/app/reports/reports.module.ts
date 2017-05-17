@@ -5,8 +5,6 @@ import {TechnologyTagComponent} from "./technology-tag/technology-tag.component"
 import {TechReportService} from "./technologies/tech-report.service";
 import {TechnologiesReportComponent} from "./technologies/technologies-report.component";
 import {SourceReportComponent} from "./source/source-report.component";
-import {RuleProviderExecutionsService} from "./rule-provider-executions/rule-provider-executions.service";
-import {RuleProviderExecutionsComponent} from "./rule-provider-executions/rule-provider-executions.component";
 import {MigrationIssuesComponent} from "./migration-issues/migration-issues.component";
 import {MigrationIssuesTableComponent} from "./migration-issues/migration-issues-table.component";
 import {MigrationIssuesService} from "./migration-issues/migration-issues.service";
@@ -45,7 +43,6 @@ import {PackageChartComponent} from "./package-chart/package-chart.component";
         ReportFilterIndicatorComponent,
         MigrationIssuesComponent,
         MigrationIssuesTableComponent,
-        RuleProviderExecutionsComponent,
         SourceReportComponent,
         TechnologiesReportComponent,
         TechnologyTagComponent,
@@ -62,7 +59,6 @@ import {PackageChartComponent} from "./package-chart/package-chart.component";
         DependenciesReportComponent,
         ReportFilterComponent,
         MigrationIssuesComponent,
-        RuleProviderExecutionsComponent,
         SourceReportComponent,
         TechnologiesReportComponent,
         ApplicationLevelLayoutComponent,
@@ -79,7 +75,6 @@ import {PackageChartComponent} from "./package-chart/package-chart.component";
         ReportFilterService,
         ReportFilterResolve,
         MigrationIssuesService,
-        RuleProviderExecutionsService,
         TechReportService,
         PrettyPathPipe,
         TagDataService,

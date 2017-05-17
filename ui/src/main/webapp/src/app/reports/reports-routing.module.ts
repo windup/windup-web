@@ -12,7 +12,7 @@ import {SourceResolve} from "./source/source.resolve";
 import {SourceReportComponent} from "./source/source-report.component";
 import {ApplicationIndexComponent} from "./application-index/application-index.component";
 import {ApplicationDetailsComponent} from "./application-details/application-details.component";
-import {RuleProviderExecutionsComponent} from "./rule-provider-executions/rule-provider-executions.component";
+import {RuleProviderExecutionsComponent} from "../executions/rule-provider-executions/rule-provider-executions.component";
 import {FullFlattenedRoute} from "../core/routing/route-flattener.service";
 
 export const executionLevelRoutes: Routes = [
