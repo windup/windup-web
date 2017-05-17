@@ -3,6 +3,7 @@ package org.jboss.windup.web.services.rest;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
+import java.util.Map;
 
 import javax.ws.rs.NotFoundException;
 
@@ -67,7 +68,7 @@ public class MigrationProjectEndpointTest extends AbstractTest
         Collection<MigrationProjectEndpoint.ExtendedMigrationProject> apps = migrationProjectEndpoint.getMigrationProjects();
         Assert.assertEquals(1, apps.size());
         Assert.assertNotNull(apps.iterator().next());
-        Assert.assertEquals(title, ((MigrationProject)apps.iterator().next().get("migrationProject")).getTitle());
+        Assert.assertEquals(title, ((Map)apps.iterator().next().get("migrationProject")).get("title"));
 
         // TODO: Assert created/lastModifier
 
@@ -126,8 +127,8 @@ public class MigrationProjectEndpointTest extends AbstractTest
 
             MigrationProjectEndpoint.ExtendedMigrationProject projectFromServer = existingProjects.iterator().next();
 
-            Assert.assertEquals(0L, (long) projectFromServer.get("applicationCount"));
-            Assert.assertEquals(project.getTitle(), ((MigrationProject)projectFromServer.get("migrationProject")).getTitle());
+            Assert.assertEquals(0, (int)(Integer) projectFromServer.get("applicationCount"));
+            Assert.assertEquals(project.getTitle(), ((Map)projectFromServer.get("migrationProject")).get("title"));
         }
         finally
         {
@@ -150,8 +151,8 @@ public class MigrationProjectEndpointTest extends AbstractTest
 
             MigrationProjectEndpoint.ExtendedMigrationProject projectFromServer = existingProjects.iterator().next();
 
-            Assert.assertEquals(2L, (long) projectFromServer.get("applicationCount"));
-            Assert.assertEquals(project.getTitle(), ((MigrationProject)projectFromServer.get("migrationProject")).getTitle());
+            Assert.assertEquals(2, (int)(Integer) projectFromServer.get("applicationCount"));
+            Assert.assertEquals(project.getTitle(), ((Map)projectFromServer.get("migrationProject")).get("title"));
         }
         finally
         {

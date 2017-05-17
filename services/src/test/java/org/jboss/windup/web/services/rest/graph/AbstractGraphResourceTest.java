@@ -32,6 +32,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 import java.net.URL;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -73,7 +74,11 @@ public abstract class AbstractGraphResourceTest
             return;
 
         Collection<MigrationProjectEndpoint.ExtendedMigrationProject> projectsAndCount = projectEndpoint.getMigrationProjects();
-        Collection<MigrationProject> projects = projectsAndCount.stream().map(project -> (MigrationProject)project.get("migrationProject"))
+        Collection<MigrationProject> projects = projectsAndCount
+                .stream()
+                .map(extendedProjectMap -> (Map)extendedProjectMap.get("migrationProject"))
+                .map(projectMap -> (Integer)projectMap.get("id"))
+                .map(projectID -> projectEndpoint.getMigrationProject(projectID.longValue()))
                 .collect(Collectors.toList());
 
         Optional<WindupExecution> existingExecution = projects
