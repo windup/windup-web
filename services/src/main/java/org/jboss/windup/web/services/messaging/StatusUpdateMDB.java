@@ -34,6 +34,7 @@ import org.jboss.windup.web.services.model.RegisteredApplication;
 import org.jboss.windup.web.services.model.ReportFilter;
 import org.jboss.windup.web.services.model.WindupExecution;
 import org.jboss.windup.web.services.service.DefaultGraphPathLookup;
+import org.jboss.windup.web.services.service.WindupExecutionService;
 
 /**
  * This receives updates from the Windup execution backend processes and persists the current state to the database.
@@ -60,6 +61,9 @@ public class StatusUpdateMDB extends AbstractMDB implements MessageListener
     @Inject
     @FromFurnace
     private ProjectLoaderService projectLoaderService;
+
+    @Inject
+    private WindupExecutionService windupExecutionService;
 
     @PostConstruct
     protected void initialize()
@@ -88,9 +92,16 @@ public class StatusUpdateMDB extends AbstractMDB implements MessageListener
                 return;
             }
 
+            if (execution.getState() != ExecutionState.CANCELLED && fromDB.getState() == ExecutionState.CANCELLED)
+            {
+                // If the update from the engine hasn't been cancelled, try to send another request
+                this.windupExecutionService.cancelExecution(fromDB.getId());
+            }
+
             if (fromDB.getState() == ExecutionState.CANCELLED)
             {
                 LOG.warning("Not continuing to update state for cancelled status...");
+                fromDB.setTimeCompleted(new GregorianCalendar());
                 return;
             }
 

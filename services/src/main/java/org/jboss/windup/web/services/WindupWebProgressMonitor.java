@@ -123,6 +123,9 @@ public class WindupWebProgressMonitor implements WindupProgressMonitor
     @Override
     public boolean isCancelled()
     {
+        if (this.execution.getState() != ExecutionState.CANCELLED && ExecutionStateCache.isCancelled(this.execution))
+            this.execution.setState(ExecutionState.CANCELLED);
+
         return execution.getState() == ExecutionState.CANCELLED;
     }
 

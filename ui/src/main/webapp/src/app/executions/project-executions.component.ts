@@ -59,6 +59,11 @@ export class ProjectExecutionsComponent extends ExecutionsMonitoringComponent im
     refreshExecutionList() {
         this._windupService.getProjectExecutions(this.project.id).subscribe(executions => {
             this.executions = executions;
+
+            // If there are cancelled jobs that have not yet had a cancelled date added, then refresh the list
+            if (this.executions.find(execution => execution.state == "CANCELLED" && execution.timeCompleted == null) != null)
+                setTimeout(() => this.refreshExecutionList(), 1000);
+
             this.loadActiveExecutions(this.executions);
         });
     }
