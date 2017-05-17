@@ -28,7 +28,8 @@
         </div>
 
         <div *ngIf="projects?.length == 0" class="no-matches">
-            <ng-container i18n>The current filter is hiding all projects.</ng-container> <a action (click)="updateSearch('')"><ng-container i18n>Remove filter</ng-container></a>
+            <ng-container i18n>The current filter is hiding all projects.</ng-container>
+            <a action (click)="updateSearch('')" i18n>Remove</a> <ng-container i18n>the filter.</ng-container>
         </div>
 
         <div *ngIf="projects?.length > 0" class="list-group list-view-pf projects-list">
@@ -61,8 +62,8 @@
                                         -->
                                         <small *ngIf="project.applications">
                                             {{project.applications.length}}
-                                            <ng-container i18n="project app count">Application</ng-container>
-                                            <ng-container i18n="project app count plural suffix" *ngIf="project.applications.length != 1">s</ng-container>
+                                            <ng-container i18n="project app count" *ngIf="project.applications.length === 1">application</ng-container>
+                                            <ng-container i18n="project app count plural" *ngIf="project.applications.length != 1">applications</ng-container>
                                         </small>
                                         <small>
                                             <ng-container *ngIf="!project.lastModified">

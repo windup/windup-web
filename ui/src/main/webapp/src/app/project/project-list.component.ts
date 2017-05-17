@@ -128,7 +128,7 @@ export class ProjectListComponent implements OnInit, AfterViewInit {
     private doDeleteProject(project: MigrationProject) {
         this._migrationProjectService.delete(project).subscribe(
             success => {
-                this._notificationService.success(`Migration project '${project.title}' was successfully deleted`);
+                this._notificationService.success(`Project '${project.title}' was deleted.`);
                 let index = this._originalProjects.indexOf(project);
                 this._originalProjects.splice(index, 1);
                 this.updateProjects();
@@ -156,8 +156,9 @@ export class ProjectListComponent implements OnInit, AfterViewInit {
                 return;
             }
 
-            this.deleteProjectModal.title = `Are you sure you want to delete the project <strong>'${project.title}'</strong>?`;
-            this.deleteProjectModal.body = `<p>This will <strong>delete all resources</strong> associated with the project \
+            this.deleteProjectModal.title = `Confirm Project Deletion`;
+            this.deleteProjectModal.body = `<p>Are you sure you want to delete the project '${project.title}'? 
+                                            This will <strong>delete all resources</strong> associated with \
                                             '${project.title}' and <strong>cannot be undone</strong>. \
                                             Make sure this is something you really want to do!</p>`;
             this.deleteProjectModal.confirmPhrase = project.title;
