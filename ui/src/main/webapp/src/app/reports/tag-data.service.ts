@@ -1,6 +1,8 @@
 import { Injectable } from "@angular/core";
 import { Http, Headers, RequestOptions } from "@angular/http";
 import { Observable } from "rxjs";
+import 'rxjs/add/observable/of';
+
 import { Constants } from "../constants";
 import {AbstractService} from "../shared/abtract.service";
 

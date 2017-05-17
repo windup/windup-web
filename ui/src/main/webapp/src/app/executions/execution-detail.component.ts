@@ -8,7 +8,7 @@ import {WindupExecutionService} from "../services/windup-execution.service";
 import {EventBusService} from "../core/events/event-bus.service";
 import {ExecutionEvent} from "../core/events/windup-event";
 import {Observable} from "rxjs";
-import {RuleProviderExecutionsService} from "../reports/rule-provider-executions/rule-provider-executions.service";
+import {RuleProviderExecutionsService} from "./rule-provider-executions/rule-provider-executions.service";
 import {ExecutionPhaseModel} from "../generated/tsModels/ExecutionPhaseModel";
 
 @Component({

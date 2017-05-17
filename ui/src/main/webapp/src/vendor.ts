@@ -9,8 +9,12 @@ window['jQuery'] = $;
 window['$'] = $;
 
 // D3
+/*
+TODO: This has been disabled for release without reports
+
 import 'd3';
 import 'd3-selection-multi';
+*/
 
 // Angular 2
 import "@angular/platform-browser";
@@ -20,7 +24,6 @@ import "@angular/common";
 import "@angular/http";
 import "@angular/router";
 
-import "rxjs";
 import "@angularclass/hmr";
 
 // Other vendors for example jQuery, Lodash or Bootstrap
@@ -29,11 +32,14 @@ import "@angularclass/hmr";
 // js
 require('../node_modules/bootstrap/dist/js/bootstrap');
 
+/*
+ TODO: This has been disabled for release without reports
 require('../node_modules/datatables/media/js/jquery.dataTables');
 require('../node_modules/datatables/media/css/jquery.dataTables.min.css');
 
 require('../node_modules/drmonty-datatables-colvis/js/dataTables.colVis');
 require('../node_modules/datatables-colreorder/js/dataTables.colReorder.js');
+*/
 
 require('../node_modules/patternfly/dist/js/patternfly.min');
 

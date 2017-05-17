@@ -6,58 +6,21 @@ import {AnalysisContextFormComponent} from "./analysis-context/analysis-context-
 import {ConfigurationComponent} from "./configuration/configuration.component";
 import {EditApplicationFormComponent} from "./registered-application/edit-application-form.component";
 import {ConfirmDeactivateGuard} from "./shared/confirm-deactivate.guard";
-import {TechnologiesReportComponent} from "./reports/technologies/technologies-report.component";
-import {DependenciesReportComponent} from "./reports/dependencies/dependencies-report.component";
 import {LoggedInGuard} from "./core/authentication/logged-in.guard";
 import {ProjectLayoutComponent} from "./project/project-layout.component";
 import {DefaultLayoutComponent} from "./shared/layout/default-layout.component";
-import {MigrationIssuesComponent} from "./reports/migration-issues/migration-issues.component";
 import {ProjectResolve} from "./project/project.resolve";
-import {SourceResolve} from "../app/reports/source/source.resolve";
 import {ConfigurationResolve} from "./configuration/configuration.resolve";
 import {ApplicationResolve} from "./registered-application/application.resolve";
 import {FullFlattenedRoute} from "./core/routing/route-flattener.service";
 import {AllExecutionsComponent} from "./executions/all-executions.component";
-import {SourceReportComponent} from "./reports/source/source-report.component";
-import {ApplicationDetailsComponent} from "./reports/application-details/application-details.component";
-import {ApplicationIndexComponent} from "./reports/application-index/application-index.component";
-import {RuleProviderExecutionsComponent} from "./reports/rule-provider-executions/rule-provider-executions.component";
 import {WizardComponent} from "./shared/wizard/wizard.component";
 import {ExecutionDetailComponent} from "./executions/execution-detail.component";
 import {ApplicationListComponent} from "./registered-application/application-list.component";
 import {ProjectExecutionsComponent} from "./executions/project-executions.component";
 import {WizardLayoutComponent} from "./shared/layout/wizard-layout.component";
-import {ExecutionsLayoutComponent} from "./executions/executions-layout.component";
-import {ApplicationLevelLayoutComponent} from "./reports/application-level-layout.component";
-import {ExecutionApplicationListComponent} from "./reports/execution-application-list/execution-application-list.component";
-import {ExecutionResolve} from "./executions/execution.resolve";
 import {AboutPageComponent} from "./misc/about.component";
 import {LogoutGuard} from "./core/authentication/logout.guard";
-
-export const executionLevelRoutes: Routes = [
-    {path: '', component: ExecutionApplicationListComponent, data: {displayName: 'Applications'}},
-    {path: 'dependencies-report', component: DependenciesReportComponent, data: {displayName: 'Dependency Report'}},
-    {path: 'technology-report', component: TechnologiesReportComponent, data: {displayName: 'Technology Report'}},
-    {path: 'migration-issues',
-        children: [
-            {path: '', component: MigrationIssuesComponent, data: {displayName: 'Issues'}},
-            {path: 'source/:fileId', component: SourceReportComponent, resolve: { sourceFile: SourceResolve }, data: {displayName: 'Source Report', breadcrumbTitle: getSourceReportBreadcrumbTitle}}
-        ]
-    },
-    {path: 'source/:fileId', component: SourceReportComponent, resolve: { sourceFile: SourceResolve }, data: {displayName: 'Source Report', breadcrumbTitle: getSourceReportBreadcrumbTitle}},
-    {path: 'application-index', component: ApplicationIndexComponent, data: { displayName: 'Dashboard'}},
-    {path: 'application-details',
-        children: [
-            {path: '', component: ApplicationDetailsComponent, data: { displayName: 'Application Details'}},
-            {path: 'source/:fileId', component: SourceReportComponent, resolve: { sourceFile: SourceResolve }, data: {
-                displayName: 'Source Report', breadcrumbTitle: getSourceReportBreadcrumbTitle
-            }}
-        ]
-    },
-    {path: 'executed-rules', component: RuleProviderExecutionsComponent, data: {displayName: 'Executed Rules'}},
-    {path: 'dependencies', component: DependenciesReportComponent, data: {displayName: 'Dependencies Report' }}
-];
-
 
 export const appRoutes: Routes = [
     // Authenticated routes
@@ -151,29 +114,9 @@ export const appRoutes: Routes = [
                                 {path: 'edit', component: MigrationProjectFormComponent, data: {displayName: 'Edit Project'}},
                             ]},
                             {
-                                path: 'reports/:executionId',
-                                data: {
-                                    breadcrumbTitle: getExecutionBreadcrumbTitle,
-                                    level: 'global'
-                                },
-                                resolve: {
-                                    execution: ExecutionResolve
-                                },
-                                component: ExecutionsLayoutComponent,
-                                children: executionLevelRoutes
+                                path: 'reports',
+                                loadChildren: './reports/reports.module#ReportsModule'
                             },
-                            {
-                                path: 'reports/:executionId/applications/:applicationId',
-                                data: {
-                                    breadcrumbTitle: getExecutionBreadcrumbTitle,
-                                    level: 'application'
-                                },
-                                resolve: {
-                                    execution: ExecutionResolve
-                                },
-                                component: ApplicationLevelLayoutComponent,
-                                children: executionLevelRoutes
-                            }
                         ]
                     }
                 ]
@@ -187,16 +130,8 @@ export const appRoutes: Routes = [
     }
 ];
 
-export function getExecutionBreadcrumbTitle(route: FullFlattenedRoute) {
-    return `Execution ${route.params['executionId']}`;
-}
-
 export function getProjectBreadcrumbTitle(route: FullFlattenedRoute) {
     return `Project ${route.data['project'].title}`;
-}
-
-export function getSourceReportBreadcrumbTitle(route: FullFlattenedRoute) {
-    return `Source of ${route.data['sourceFile'] && route.data['sourceFile'].fileName ? route.data['sourceFile'].fileName : "file"}`;
 }
 
 export const appRoutingProviders: any[] = [
