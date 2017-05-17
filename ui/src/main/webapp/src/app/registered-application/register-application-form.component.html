@@ -45,7 +45,7 @@
         <wu-tab [tabTitle]="'Server Path'" [properties]="{mode: 'PATH'}">
             <div class="form-group description">
                 <div class="col-md-12">
-                    <label class="required" for="appPathToRegister" i18n="Server Path Description">Enter the server path containing your project applications.</label>
+                    <label class="required" for="appPathToRegister" i18n="Server Path Description">Server-side file system path that contains the applications</label>
                 </div>
             </div>
             <div class="form-group" [ngClass]="{'has-error': hasError(registrationForm.get('appPathToRegister'))}">
@@ -54,7 +54,7 @@
                            type="text"
                            class="form-control" />
                     <span [class.hidden]="!hasError(registrationForm.get('appPathToRegister'))" class="help-block" i18n="Path Error">
-                            The input path must exist on the server.
+                            The file system path must exist on the server.
                     </span>
                 </div>
             </div>
@@ -63,11 +63,11 @@
                     <div class="checkbox">
                         <label>
                             <input [(ngModel)]="isDirWithApps" formControlName="isDirWithAppsCheckBox" type="checkbox" i18n="Directory Contains Multiple Apps">
-                            <ng-container i18n="Directory Help Text">Directory Contains Multiple Apps</ng-container>
+                            <ng-container i18n="Directory Help Text">Directory contains multiple applications</ng-container>
                         </label>
                         <div class="description" i18n="Directory Contains Multiple Apps Help Text">
-                            If box is checked, the given path will be treated as a directory with multiple
-                            applications. Otherwise, the path will be treated as a single application.
+                            If checked, the given path is treated as a directory with multiple applications.
+                            Otherwise, the path is treated as a single application.
                         </div>
                     </div>
                 </div>

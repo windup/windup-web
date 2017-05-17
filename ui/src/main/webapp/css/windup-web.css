@@ -147,6 +147,10 @@ label.required:before {
     width: 0;
 }
 
+label.btn {
+    text-transform: capitalize;
+}
+
 fieldset.fields-section-pf {
     border-color: #adaaaa;
 }
