@@ -70,7 +70,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
                 msg = formatString(filter["rejectMessage"], item.name);
             else
                 switch (filter.name) {
-                    case "onlyJavaArchives": msg = `File was rejected: '${item.name}'\nOnly Java archives are accepted (${filter["suffixes"].join(", ")})`; break;
+                    case "onlyJavaArchives": msg = `'${item.name}' could not be added to the project as it is not a valid Java deployment (${filter["suffixes"].join(", ")})`; break;
                     case 'queueLimit': msg = "Maximum number of queued files reached."; break;
                     case 'fileSize': msg = `File '${item.name}' is too large.`; break;
                     case 'fileType': msg = `File '${item.name}' is of invalid file type.`; break;
@@ -80,7 +80,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
             this._notificationService.error(msg);
         }
 
-        let suffixes = ".war .ear .jar .sar .har .rar".split(" ");
+        let suffixes = ".ear .har .jar .rar .sar .war".split(" ");
         this.multipartUploader.options.filters.push(<FilterFunction>{
             name: "onlyJavaArchives",
             fn: (item?: FileLikeObject, options?: FileUploaderOptions) => {
