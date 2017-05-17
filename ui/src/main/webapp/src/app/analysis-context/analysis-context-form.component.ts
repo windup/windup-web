@@ -51,7 +51,7 @@ export class AnalysisContextFormComponent extends FormComponent
     private transformationPaths: MigrationPath[] = [
         {
             "id": 101,
-            "name": "Migration to Red Hat JBoss EAP 7",
+            "name": "Migration to JBoss EAP 7",
             "source": null,
             "target": {
                 "id": 4,
@@ -62,7 +62,7 @@ export class AnalysisContextFormComponent extends FormComponent
         },
         {
             "id": 100,
-            "name": "Migration to Red Hat JBoss EAP 6",
+            "name": "Migration to JBoss EAP 6",
             "source": null,
             "target": {
                 "id": 3,
