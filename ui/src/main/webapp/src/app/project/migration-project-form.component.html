@@ -14,14 +14,14 @@
 
         <div class="form-group" [ngClass]="{'has-error': titleIsDuplicated(projectTitleControl) || hasError(projectTitleControl)}">
             <label class="control-label required" for="idProjectTitle">Name</label>
-            <input #projectTitleControl="ngModel" name="projectTitle" id="idProjectTitle" type="text" placeholder="My Project" required pattern="\s*\w[- \w]+\w\s*" minlength="3" maxlength="120" [(ngModel)]="model.title" wuProjectNameNotUsed [project]="model" type="text"
+            <input #projectTitleControl="ngModel" name="projectTitle" id="idProjectTitle" type="text" placeholder="My Project" (change)="model.title = model.title.trim()" required pattern="\s*[- \w]+\s*" minlength="3" maxlength="120" [(ngModel)]="model.title" wuProjectNameNotUsed [project]="model" type="text"
                 placeholder="My Project" class="form-control" #idProjectTitle tabindex=1>
             <p class="help-block" i18n="hint">A unique name for the project</p>
             <span [class.hidden]="!titleIsDuplicated(projectTitleControl)" class="help-block" i18n="valid. error"> The entered name is already in use. </span>
             <span [class.hidden]="!hasError(projectTitleControl, 'pattern') || hasError(projectTitleControl, 'minlength') || hasError(projectTitleControl, 'maxlength')" class="help-block" i18n="valid. error pattern">
                 The project name must contain only alphanumeric characters.
             </span>
-            <span [class.hidden]="!hasError(projectTitleControl, 'minlength')" class="help-block" i18n="valid. error min length">
+            <span [class.hidden]="!hasError(projectTitleControl, 'required') && !hasError(projectTitleControl, 'minlength')" class="help-block" i18n="valid. error min length">
                 The project name must contain at least 3 characters.
             </span>
             <span [class.hidden]="!hasError(projectTitleControl, 'maxlength')" class="help-block" i18n="valid. error max length">
