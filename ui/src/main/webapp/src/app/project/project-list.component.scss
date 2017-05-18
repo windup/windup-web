@@ -165,7 +165,8 @@ small {
 }
 
 .description {
-  word-wrap: break-word;
+    overflow-wrap: break-word;
+    align-self: center;
 }
 
 $disabled-button-color: #C4C5C5;
