@@ -56,7 +56,7 @@ public class MigrationPathEndpointTest extends AbstractTest
         boolean foundWebSphereToEAP6 = false;
         for (MigrationPath migrationPath : paths)
         {
-            if (migrationPath.getName().equals("Migration to Red Hat JBoss EAP 6")) {
+            if (migrationPath.getName().equals("Migration to JBoss EAP 6")) {
                 Assert.assertEquals(100L, (long)migrationPath.getId());
                 Assert.assertNull(migrationPath.getSource());
                 Assert.assertEquals("eap", migrationPath.getTarget().getName());
