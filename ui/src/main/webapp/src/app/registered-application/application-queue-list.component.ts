@@ -64,7 +64,8 @@ export class ApplicationQueueListComponent implements AfterViewInit
 
     public doDeleteApplication(application: RegisteredApplication) {
         this._registeredApplicationsService.deleteApplication(this.project, application).subscribe(
-            () => this._notificationService.success('Application was successfully deleted'),
+            //() => this._notificationService.success('Application was successfully deleted'),
+            () => console.log(`Application ${application.id} was successfully deleted`),
             error => this._notificationService.error(utils.getErrorMessage(error))
         );
     }
