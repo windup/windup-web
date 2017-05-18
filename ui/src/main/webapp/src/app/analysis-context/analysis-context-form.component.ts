@@ -73,7 +73,7 @@ export class AnalysisContextFormComponent extends FormComponent
         },
         {
             "id": 90,
-            "name": "None",
+            "name": "Cloud readiness only",
             "source": null,
             "target": null
         }
