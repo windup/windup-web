@@ -71,7 +71,7 @@
         <!-- In wizard mode All applications are included! /see ngIf/
              Configuration form outside wizard is able to select only subset of uploaded applications -->
         <div class="form-group" *ngIf="!isInWizard">
-            <label class="control-label" i18n>Applications included</label>
+            <label class="control-label" i18n>Selected applications</label>
             <wu-select-applications [availableApps]="availableApps" [(selectedApps)]="analysisContext.applications">
             </wu-select-applications>
             <p class="help-block">All applications included in the analysis.</p>
