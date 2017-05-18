@@ -37,14 +37,17 @@
                 <ng-container *ngFor="let transformationPath of transformationPaths">
                     <label class="radio-inline control-label" style="padding-left: 20px; padding-right: 40px;">
                         <input type="radio" id="migrationPath" name="migrationPath" #migrationPath="ngModel"
-                            [(ngModel)]="analysisContext.migrationPath.id" ngControl="migrationPath" [value]="transformationPath.id"/>
+                            [(ngModel)]="analysisContext.migrationPath.id" ngControl="migrationPath" [value]="transformationPath.id"
+                            (ngModelChange)="onMigrationPathChange()"
+                        />
                         {{ transformationPath.name }}
                     </label>
                 </ng-container>
                 <p class="help-block" i18n="transform path description">Select the transformation path for your applications.</p>
             </div>
             <label class="checkbox-inline">
-                <input type="checkbox" name="cloudTargetsIncluded" ngControl="cloudTargetsIncluded" [(ngModel)]="analysisContext.cloudTargetsIncluded"/>
+                <input type="checkbox" name="cloudTargetsIncluded" ngControl="cloudTargetsIncluded" [(ngModel)]="analysisContext.cloudTargetsIncluded"
+                    [disabled]="disableCloudReadiness" />
                 Cloud readiness analysis
             </label>
             <p class="help-block" i18n="cloud readiness description">Check this box to also assess your applications for cloud and container readiness.</p>
