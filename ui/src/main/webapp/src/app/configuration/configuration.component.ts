@@ -170,7 +170,7 @@ export class ConfigurationComponent implements OnInit, AfterViewInit {
     }
 
     confirmRemoveRules(rulesPath: RulesPath) {
-        this.removeRulesConfirmationModal.body = `Do you really want to remove the rules from '${rulesPath.path}'?`;
+        this.removeRulesConfirmationModal.body = `Are you sure you want to remove the rules from '${rulesPath.path}'?`;
         this.removeRulesConfirmationModal.data = rulesPath;
         this.removeRulesConfirmationModal.show();
     }

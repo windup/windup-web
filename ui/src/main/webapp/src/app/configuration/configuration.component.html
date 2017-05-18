@@ -49,7 +49,7 @@
                 </div>
 
                 <div *ngIf="areRulesLoaded(rulePath) && !hasFileBasedProviders(rulePath)">
-                    <h3 i18n>No rule found.</h3>
+                    <h3 i18n>No rules found.</h3>
                 </div>
 
                 <div *ngIf="rulePath.loadError">
@@ -106,7 +106,7 @@
 <wu-confirmation-modal
         #removeRulesConfirmationModal
         [id]="'deleteRulesConfirmationDialog'"
-        [title]="'Confirm rule removal'"
-        [body]="'Do you really want to remove the rules from ...?'"
+        [title]="'Confirm Rule Removal'"
+        [body]="'Are you sure you want to remove the rules from ...?'"
 >
 </wu-confirmation-modal>
