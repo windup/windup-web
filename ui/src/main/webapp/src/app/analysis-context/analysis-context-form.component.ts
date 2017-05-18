@@ -95,7 +95,11 @@ export class AnalysisContextFormComponent extends FormComponent
     isInWizard: boolean;
     action: Action;
 
+    disableCloudReadiness = false;
+
     static DEFAULT_MIGRATION_PATH: MigrationPath = <MigrationPath>{ id: 101 };
+    static CLOUD_READINESS_PATH_ID: number = 90;
+
 
     constructor(private _router: Router,
                 private _activatedRoute: ActivatedRoute,
@@ -339,6 +343,15 @@ export class AnalysisContextFormComponent extends FormComponent
 
     isActiveRulesPaths():boolean {
         return this.analysisContext.rulesPaths.filter(rulesPath => rulesPath.rulesPathType == 'USER_PROVIDED').length > 0;
+    }
+
+    onMigrationPathChange() {
+        if (this.analysisContext.migrationPath.id === AnalysisContextFormComponent.CLOUD_READINESS_PATH_ID) {
+            this.analysisContext.cloudTargetsIncluded = true;
+            this.disableCloudReadiness = true;
+        } else {
+            this.disableCloudReadiness = false;
+        }
     }
 }
 
