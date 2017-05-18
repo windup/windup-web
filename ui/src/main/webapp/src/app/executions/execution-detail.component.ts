@@ -66,6 +66,6 @@ export class ExecutionDetailComponent implements OnInit {
     }
 
     getAnalyzedApplications(execution : WindupExecution) : RegisteredApplication[] {
-        return execution.analysisContext.applications.filter(application => !application.deleted);
+        return execution.analysisContext.applications;
     }
 }
