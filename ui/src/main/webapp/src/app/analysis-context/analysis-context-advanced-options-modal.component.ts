@@ -71,6 +71,14 @@ export class AnalysisContextAdvancedOptionsModalComponent {
             return this.selectedOptions.find((selectedOption:AdvancedOption) => {
                         return selectedOption.name == option.name;
                    }) == null;
+        }).sort((a: ConfigurationOption, b: ConfigurationOption) => {
+            if (a.name < b.name) {
+                return -1;
+            } else if (a.name > b.name) {
+                return 1;
+            } else {
+                return 0;
+            }
         });
     }
 
