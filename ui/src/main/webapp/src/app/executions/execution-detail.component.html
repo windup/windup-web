@@ -45,7 +45,7 @@
                 </ng-container>
                 <ng-container *ngIf="!execution.timeCompleted">
                     <dt i18n="Analysis last modification">Last modification</dt>
-                    <dd>{{execution.lastModified | date: 'short'}}</dd>
+                    <dd>{{execution.lastModified ? (execution.lastModified | date: 'short') : 'n/a'}}</dd>
                 </ng-container>
             </dl>
 
