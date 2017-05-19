@@ -141,6 +141,11 @@ export class AnalysisContextAdvancedOptionsModalComponent {
         optionValues = optionValues.sort();
         // We should rather get rid of the reviewed tags in rules. WINDUPRULE-206.
         optionValues = optionValues.filter((v: any) => (!isString(v) || !(<string>v).startsWith("reviewed-")));
+        // We also filter 'cloud-readiness' and 'openshift' targets because they can only be selected
+        // through the "Cloud readiness analysis" check-box
+        if (this.newOption.name === "target") {
+            optionValues = optionValues.filter((v: any) => (!((<string>v) === "cloud-readiness" || (<string>v) === "openshift")));
+        }
         return optionValues;
     }
 }
