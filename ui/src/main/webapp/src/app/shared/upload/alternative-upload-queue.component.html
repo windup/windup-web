@@ -1,7 +1,8 @@
 <ul *ngIf="uploader.queue.length > 0">
     <li *ngFor="let item of uploader.queue">
         <div class="progress">
-            <div class="progress-bar" [ngClass]="{'progress-bar-danger': item.isError, 'progress-bar-warning': item.isCancel}"
+            <div class="progress-bar"
+                 [ngClass]="{'progress-bar-danger': item.isError, 'progress-bar-warning': item.isCancel, 'success': item.isSuccess}"
                   role="progressbar"
                   aria-valuemin="0" aria-valuemax="100" [attr.aria-valuenow]="item.progress"
                   [ngStyle]="{ 'width': getProgressbarWidth(item) + '%' }">

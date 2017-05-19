@@ -1,3 +1,5 @@
+$progress-success-color: #3f9c35;
+
 .file-info {
   position: absolute;
   margin-left: 20px;
@@ -30,4 +32,8 @@ li {
 ul {
   margin: 0;
   padding: 0;
+}
+
+.progress-bar.success {
+  background-color: $progress-success-color;
 }
