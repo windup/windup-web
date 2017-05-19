@@ -24,6 +24,12 @@ export class FileService extends AbstractService {
             .map(res => <PathTargetType> res.json())
             .catch(this.handleError);
     }
+
+    queryServerPathDirectoryFilesContained(path: string, nameRegex?: string, minSize?: number): Observable<number> {
+        return this._http.post(Constants.REST_BASE + "/file/directoryFilesCount?nameRegex=" + encodeURIComponent(nameRegex) + "&minSize=" + minSize, path, this.JSON_OPTIONS)
+            .map(res => <PathTargetType> res.json())
+            .catch(this.handleError);
+    }
 }
 
 export type PathTargetType = "FILE" | "DIRECTORY" | null;

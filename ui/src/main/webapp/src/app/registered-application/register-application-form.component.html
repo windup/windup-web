@@ -54,7 +54,10 @@
                            type="text"
                            class="form-control" />
                     <span [class.hidden]="!hasError(registrationForm.get('appPathToRegister'))" class="help-block" i18n="Path Error">
+                        <!-- Changing from this text wanted by Marc so that it informs the user a dir can't be empty.
                             The file system path must exist on the server.
+                        -->
+                            The path must be an existing file on an non-empty directory on the server.
                     </span>
                 </div>
             </div>

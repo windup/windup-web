@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy} from "@angular/core";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {AsyncValidator, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router, NavigationEnd} from "@angular/router";
 import {FileUploader} from "ng2-file-upload/ng2-file-upload";
 
@@ -20,6 +20,7 @@ import {NotificationService} from "../core/notification/notification.service";
 import {utils} from "../shared/utils";
 import {FileLikeObject} from "ng2-file-upload/file-upload/file-like-object.class";
 import formatString = utils.formatString;
+import {IfDirectoryThenShouldNonEmptyHaveFilesValidator} from "../shared/validators/dir-has-files.validator";
 
 @Component({
     templateUrl: "./register-application-form.component.html",
@@ -96,8 +97,14 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
             .subscribe((event: UpdateMigrationProjectEvent) => this.project = event.migrationProject);
 
         this.registrationForm = this._formBuilder.group({
-            // Name under which the control is registered, default value, Validator, AsyncValidator
-            appPathToRegister: ["", Validators.compose([Validators.required, Validators.minLength(4)]), FileExistsValidator.create(this._fileService)],
+            // Name under which the control is registered: [default value, Validator, AsyncValidator]
+            appPathToRegister: ["",
+                Validators.compose([Validators.required, Validators.minLength(4)]),
+                Validators.composeAsync([
+                    FileExistsValidator.create(this._fileService),
+                    IfDirectoryThenShouldNonEmptyHaveFilesValidator.create(this._fileService),
+                ]),
+            ],
             isDirWithAppsCheckBox: [] // TODO: Validate if appPathToRegister has a directory if this is true.
         });
 
@@ -199,7 +206,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     protected rerouteToApplicationList() {
         this.navigateAway([`/projects/${this.project.id}/applications`]);
     }
-    
+
     protected rerouteToConfigurationForm() {
         this.navigateAway([`/projects/${this.project.id}/analysis-context`]);
     }
