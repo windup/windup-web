@@ -1,5 +1,5 @@
 <div *ngIf="activeExecutions && activeExecutions.length > 0">
-    <h2 i18n="heading|Active Executions">Active analysis</h2>
+    <h2 i18n="heading|Active Executions">Active Analysis</h2>
     <div>
         <ng-container *ngFor="let activeExecution of activeExecutions">
             <wu-progress-bar *ngIf="activeExecution.currentTask || activeExecutions.length == 1"
