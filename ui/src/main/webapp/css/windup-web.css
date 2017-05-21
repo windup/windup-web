@@ -147,7 +147,7 @@ label.required:before {
     width: 0;
 }
 
-label.btn {
+.btn {
     text-transform: capitalize;
 }
 
@@ -166,10 +166,6 @@ fieldset.fields-section-pf {
 
 .wu-horizontal-nav-content.container-fluid, .wu-horizontal-nav-content .container-fluid {
     padding-top: inherit;
-}
-
-button.btn {
-    text-transform: capitalize;
 }
 
 @media (max-width: 767px) {
