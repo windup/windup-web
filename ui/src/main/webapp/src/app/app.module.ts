@@ -32,6 +32,7 @@ import {AnalysisContextModule} from "./analysis-context/analysis-context.module"
 import {SharedModule} from "./shared/shared.module";
 import {CoreModule} from "./core/core.module";
 import {ExecutionsModule} from "./executions/executions.module";
+import {FileUploaderWrapper} from "./shared/upload/file-uploader-wrapper.service";
 
 /**
  * Load all mapping data from the generated files.
@@ -98,7 +99,7 @@ export function createFileUploader() {
     if (fileUploader != null)
         return fileUploader;
 
-    fileUploader = new FileUploader({});
+    fileUploader = new FileUploaderWrapper({});
     return fileUploader;
 }
 
