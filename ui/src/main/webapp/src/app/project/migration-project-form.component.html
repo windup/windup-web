@@ -25,7 +25,9 @@
                    [project]="model"
                    type="text"
                    placeholder="My Project"
-                   class="form-control">
+                   class="form-control"
+                   #idProjectTitle
+                   tabindex=1>
             <p class="help-block" i18n="hint">A unique name for the project</p>
             <span [class.hidden]="!titleIsDuplicated(projectTitleControl)" class="help-block" i18n="valid. error"> The entered name is already in use. </span>
             <span [class.hidden]="!hasError(projectTitleControl, 'pattern') || hasError(projectTitleControl, 'minlength') || hasError(projectTitleControl, 'maxlength')" class="help-block" i18n="valid. error pattern">
@@ -42,7 +44,7 @@
         <div class="form-group">
             <label class="control-label" for="idDescription">Description</label>
             <textarea name="description" id="idDescription" name="idDescription" class="form-control" maxlength="4095" i18n="placeholder" placeholder="A short description of the project." [rows]="getDescriptionHeight()"
-                #controlDescription="ngModel" [(ngModel)]="model.description"></textarea>
+                #controlDescription="ngModel" [(ngModel)]="model.description" tabindex=2 ></textarea>
             <span [class.hidden]="!hasError(controlDescription)" class="help-block">
                 The description must contain fewer than 4096 characters.
             </span>
