@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy} from "@angular/core";
+import {Component, OnInit, OnDestroy, AfterViewInit, ViewChildren} from "@angular/core";
 import {ActivatedRoute, Router, NavigationEnd} from "@angular/router";
 
 import {MigrationProject} from "../generated/windup-services";
@@ -16,7 +16,7 @@ import {FormControl} from "@angular/forms";
         }      
     `]
 })
-export class MigrationProjectFormComponent extends FormComponent implements OnInit, OnDestroy
+export class MigrationProjectFormComponent extends FormComponent implements OnInit, OnDestroy, AfterViewInit
 {
     title: string = "Create Project";
 
@@ -27,6 +27,8 @@ export class MigrationProjectFormComponent extends FormComponent implements OnIn
 
     errorMessages: string[];
     private routerSubscription: Subscription;
+
+    @ViewChildren('idProjectTitle') inputProjectName;
 
     constructor(
         private _router: Router,
@@ -63,6 +65,10 @@ export class MigrationProjectFormComponent extends FormComponent implements OnIn
 
     ngOnDestroy(): void {
         this.routerSubscription.unsubscribe();
+    }
+
+    ngAfterViewInit(): void {
+        this.inputProjectName.first.nativeElement.focus();
     }
 
     getDescriptionHeight() {
