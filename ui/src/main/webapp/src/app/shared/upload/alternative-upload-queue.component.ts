@@ -1,16 +1,17 @@
 import {Component, Input, NgZone, OnInit} from "@angular/core";
-import {FileUploader} from "ng2-file-upload/ng2-file-upload";
 import {FileItem} from "ng2-file-upload";
 import {utils} from "../utils";
 import {NotificationService} from "../../core/notification/notification.service";
 import {FileUploaderWrapper} from "./file-uploader-wrapper.service";
+import {AbstractComponent} from "../AbstractComponent";
+import {RegisteredApplicationService} from "../../registered-application/registered-application.service";
 
 @Component({
     selector: 'wu-alternative-upload-queue',
     templateUrl: './alternative-upload-queue.component.html',
     styleUrls: ['./alternative-upload-queue.component.scss']
 })
-export class AlternativeUploadQueueComponent implements OnInit {
+export class AlternativeUploadQueueComponent extends AbstractComponent implements OnInit {
     @Input()
     uploader: FileUploaderWrapper;
 
@@ -19,21 +20,26 @@ export class AlternativeUploadQueueComponent implements OnInit {
     protected uploadErrors: Map<FileItem, string> = new Map<FileItem, string>();
 
     public constructor(private _ngZone: NgZone, private _notificationService: NotificationService) {
-
+        super();
     }
 
     ngOnInit(): void {
-        this.uploader.onProgressItem = (item, progress) => {
+        this.subscriptions.push(this.uploader.observables.onProgressItem.subscribe(itemProgress => {
+            const item = itemProgress.item;
+            const progress = itemProgress.progress;
             this._ngZone.run(() => this.progress[item.file.name] = progress);
-        };
+        }));
 
-        this.uploader.onErrorItem = (item, response) => {
-            if (typeof response === 'object' && response['rootCause'] && response['rootCause']['code'] === 1) {
+        this.subscriptions.push(this.uploader.observables.onErrorItem.subscribe(itemError => {
+            const response = JSON.parse(itemError.response);
+            const item = itemError.item;
+
+            if (this.isFileExistsError(response)) {
                 this.uploadErrors.set(item, utils.getErrorMessage(response));
             } else {
                 this._notificationService.error(utils.getErrorMessage(response));
             }
-        };
+        }));
 
         /**
          * Code below is workaround for removeAfterUpload: true
@@ -44,12 +50,17 @@ export class AlternativeUploadQueueComponent implements OnInit {
          */
         let removeAfterUploaded = true;
 
-        this.uploader.onCompleteItem = (item) => {
+        this.subscriptions.push(this.uploader.observables.onCompleteItem.subscribe(result => {
+            const item = result.item;
+
             if (item.isSuccess && removeAfterUploaded) {
                 item.remove();
             }
-        };
+        }));
+    }
 
+    protected isFileExistsError(response: any) {
+        return response['code'] && response['code'] === RegisteredApplicationService.ERROR_FILE_EXISTS;
     }
 
     public getProgress(item: FileItem) {

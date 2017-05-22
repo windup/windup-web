@@ -35,6 +35,8 @@ export class RegisteredApplicationService extends AbstractService {
 
     protected static PACKAGE_REQUEST_PAUSE_TIME_MS = 2000;
 
+    public static ERROR_FILE_EXISTS = 1;
+
     private UPLOAD_URL = '/file';
 
     constructor (

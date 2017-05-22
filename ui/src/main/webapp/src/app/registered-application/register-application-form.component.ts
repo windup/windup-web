@@ -174,7 +174,11 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
 
         this._registeredApplicationService.uploadApplications(this.project).subscribe(
             () => {},
-            error => this.handleError(<any>error)
+            error => {
+                if (!error.hasOwnProperty('code') || error.code !== RegisteredApplicationService.ERROR_FILE_EXISTS) {
+                    this.handleError(<any>error);
+                }
+            }
         );
     }
 
