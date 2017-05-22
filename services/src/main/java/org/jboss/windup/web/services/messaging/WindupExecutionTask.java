@@ -4,7 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -15,12 +21,18 @@ import javax.inject.Inject;
 import org.apache.commons.io.FileUtils;
 import org.jboss.forge.furnace.Furnace;
 import org.jboss.windup.config.ConfigurationOption;
+import org.jboss.windup.exec.configuration.options.ExplodedAppInputOption;
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.addons.websupport.services.WindupExecutorService;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.WindupWebProgressMonitor;
-import org.jboss.windup.web.services.model.*;
+import org.jboss.windup.web.services.model.AdvancedOption;
+import org.jboss.windup.web.services.model.AnalysisContext;
+import org.jboss.windup.web.services.model.ExecutionState;
+import org.jboss.windup.web.services.model.MigrationPath;
 import org.jboss.windup.web.services.model.Package;
+import org.jboss.windup.web.services.model.RegisteredApplication;
+import org.jboss.windup.web.services.model.WindupExecution;
 import org.jboss.windup.web.services.service.ConfigurationOptionsService;
 
 /**
@@ -31,7 +43,7 @@ import org.jboss.windup.web.services.service.ConfigurationOptionsService;
 public class WindupExecutionTask implements Runnable
 {
     private static Logger LOG = Logger.getLogger(WindupExecutionTask.class.getName());
-    
+
     private static String CLOUD_TARGET = "cloud-readiness";
 
     @Inject
@@ -122,7 +134,7 @@ public class WindupExecutionTask implements Runnable
             }
 
             List<String> targets = new ArrayList<>();
-            
+
             MigrationPath migrationPath = analysisContext.getMigrationPath();
             if (migrationPath != null)
             {
@@ -134,11 +146,11 @@ public class WindupExecutionTask implements Runnable
                     targets.add(target);
                 }
             }
-            
+
             if (analysisContext.isCloudTargetsIncluded()) {
                 targets.add(CLOUD_TARGET);
             }
-            
+
             Map<String, Object> otherOptions = getOtherOptions(analysisContext);
 
             boolean generateStaticReports = analysisContext.getGenerateStaticReports();
@@ -177,7 +189,16 @@ public class WindupExecutionTask implements Runnable
         if (analysisContext == null || analysisContext.getAdvancedOptions() == null)
             return Collections.emptyMap();
 
+
         Map<String, Object> result = new HashMap<>();
+
+        // Windup Core can actually only treat all dirs as exploded or not - there is only a global option for that.
+        // That makes this a per-execution option. See WindupExecutionTask for what's the workaround.
+        boolean isSomePathExplodedApp = analysisContext.getApplications().stream().anyMatch(app -> app.isExploded());
+        if (isSomePathExplodedApp)
+            result.put(ExplodedAppInputOption.NAME, true);
+
+        // Process the map of advanced options stored for the analysis context (execution configuration).
         for (AdvancedOption advancedOption : analysisContext.getAdvancedOptions())
         {
             String name = advancedOption.getName();
@@ -211,11 +232,12 @@ public class WindupExecutionTask implements Runnable
                  */
                 if (value instanceof Iterable)
                 {
-                    for (Object iterableItem : (Iterable)value)
+                    for (Object item : (Iterable)value)
                     {
-                        ((List<Object>) previousValue).add(iterableItem);
+                        ((List<Object>) previousValue).add(item);
                     }
-                } else
+                }
+                else
                 {
                     // Single item to add to previous list.
                     ((List<Object>) previousValue).add(value);

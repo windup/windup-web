@@ -7,11 +7,11 @@ export class IfDirectoryThenShouldNonEmptyHaveFilesValidator {
         return function (control: AbstractControl): Promise<ValidationErrors|null> {
             return new Promise(resolve => {
                 /// TODO: Parametrize
-                fileService.queryServerPathDirectoryFilesContained(control.value, "^.*\\.[ewjsh]ar", 50).subscribe(result => {
+                fileService.queryServerPathDirectoryFilesContained(control.value, "^.*\\.[ewjshr]ar", 50).subscribe(result => {
                     if (result != 0)
                         resolve(null);
                     else
-                        resolve({directoryContainsFiles: false});
+                        resolve({directoryContainsFiles: `Directory '${control.value}' does not contain Java archives.`});
                 });
             });
         };

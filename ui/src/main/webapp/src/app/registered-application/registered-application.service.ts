@@ -21,7 +21,7 @@ export class RegisteredApplicationService extends AbstractService {
 
     public static UPLOAD_URL = RegisteredApplicationService.PROJECT_APPLICATIONS + "/upload";
     public static UPLOAD_MULTIPLE_URL = RegisteredApplicationService.PROJECT_APPLICATIONS + "/upload-multiple";
-    public static REGISTER_PATH_URL = RegisteredApplicationService.PROJECT_APPLICATIONS + "/register-path";
+    public static REGISTER_PATH_URL = RegisteredApplicationService.PROJECT_APPLICATIONS + "/register-path?exploded={exploded}";
     public static REGISTER_DIRECTORY_PATH_URL = RegisteredApplicationService.PROJECT_APPLICATIONS + "/register-directory-path";
 
     public static SERVICE_SUBPATH = "/registeredApplications";
@@ -68,9 +68,9 @@ export class RegisteredApplicationService extends AbstractService {
 
     }
 
-    private _doRegisterByPath<T>(endpoint: string, project: MigrationProject, path: string): Observable<T> {
+    private _doRegisterByPath<T>(endpoint: string, project: MigrationProject, path: string, isDirWithExplodedApp: boolean): Observable<T> {
         let body = path;
-        let url = endpoint.replace("{projectId}", project.id.toString());
+        let url = endpoint.replace("{projectId}", project.id.toString()).replace("{exploded}", ""+!!isDirWithExplodedApp);
 
         return this._http.post(url, body, this.JSON_OPTIONS)
             .map(res => <RegisteredApplication> res.json())
@@ -78,16 +78,16 @@ export class RegisteredApplicationService extends AbstractService {
             .do((responseApplication) => this.fireNewApplicationEvents(responseApplication, project));
     }
 
-    registerByPath(project: MigrationProject, path: string): Observable<RegisteredApplication> {
+    registerByPath(project: MigrationProject, path: string, isDirWithExplodedApp: boolean): Observable<RegisteredApplication> {
         let endpoint = Constants.REST_BASE + RegisteredApplicationService.REGISTER_PATH_URL;
 
-        return this._doRegisterByPath<RegisteredApplication>(endpoint, project, path);
+        return this._doRegisterByPath<RegisteredApplication>(endpoint, project, path, isDirWithExplodedApp);
     }
 
     registerApplicationInDirectoryByPath(project: MigrationProject, path: string): Observable<RegisteredApplication[]> {
         let endpoint = Constants.REST_BASE + RegisteredApplicationService.REGISTER_DIRECTORY_PATH_URL;
 
-        return this._doRegisterByPath<RegisteredApplication[]>(endpoint, project, path);
+        return this._doRegisterByPath<RegisteredApplication[]>(endpoint, project, path, false);
     }
 
     uploadApplications(project: MigrationProject): Observable<RegisteredApplication[]> {

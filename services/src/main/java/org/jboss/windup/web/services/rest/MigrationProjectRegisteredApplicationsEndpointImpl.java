@@ -38,11 +38,11 @@ public class MigrationProjectRegisteredApplicationsEndpointImpl implements Migra
     }
 
     @Override
-    public RegisteredApplication registerApplicationByPath(long projectId, String path)
+    public RegisteredApplication registerApplicationByPath(long projectId, Boolean exploded, String path)
     {
         MigrationProject project = this.migrationProjectService.getMigrationProject(projectId);
 
-        return this.registeredApplicationService.registerApplicationByPath(project, path);
+        return this.registeredApplicationService.registerApplicationByPath(project, exploded == null ? false : exploded.booleanValue(), path);
     }
 
     @Override

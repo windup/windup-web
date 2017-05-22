@@ -34,6 +34,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     protected mode: RegistrationType = "UPLOADED";
     protected fileInputPath: string = '';
     private isDirWithApps: boolean = false;
+    private isDirWithExplodedApp: boolean = false;
     protected isAllowUploadMultiple: boolean = true;
 
     isInWizard: boolean = false;
@@ -105,7 +106,8 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
                     IfDirectoryThenShouldNonEmptyHaveFilesValidator.create(this._fileService),
                 ]),
             ],
-            isDirWithAppsCheckBox: [] // TODO: Validate if appPathToRegister has a directory if this is true.
+            //isDirWithAppsCheckBox: [], // TODO: Validate if appPathToRegister has a directory if this is true.
+            isDirWithExplodedApp: [],
         });
 
         this.routerSubscription = this._router.events.filter(event => event instanceof NavigationEnd).subscribe(_ => {
@@ -159,18 +161,20 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
             return;
         }
 
-        if (this.isDirWithApps) {
-            this._registeredApplicationService.registerApplicationInDirectoryByPath(this.project, this.fileInputPath)
-                .subscribe(
+        this._fileService.queryServerPathTargetType(this.fileInputPath).subscribe((type_: string) => {
+            if (type_ === "DIRECTORY" && !this.isDirWithExplodedApp) { //this.isDirWithApps
+                this._registeredApplicationService.registerApplicationInDirectoryByPath(this.project, this.fileInputPath)
+                    .subscribe(
+                        application => this.navigateOnSuccess(),
+                        error => this.handleError(error)
+                    );
+            } else {
+                this._registeredApplicationService.registerByPath(this.project, this.fileInputPath, this.isDirWithExplodedApp).subscribe(
                     application => this.navigateOnSuccess(),
-                    error => this.handleError(error)
-                );
-        } else {
-            this._registeredApplicationService.registerByPath(this.project, this.fileInputPath).subscribe(
-                application => this.navigateOnSuccess(),
-                error => this.handleError(<any>error)
-            )
-        }
+                    error => this.handleError(<any>error)
+                )
+            }
+        });
     }
 
     private registerUploaded() {
