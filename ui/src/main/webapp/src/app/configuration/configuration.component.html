@@ -80,8 +80,8 @@
                                         </div>
                                         <div style="margin-left: 25pt; ">
                                             <div>{{ruleProvider.origin}}</div>
-                                            <div> Source technologies: <wu-technology *ngFor="let source of ruleProvider.sources" [technology]="source" class="techLabel"></wu-technology> </div>
-                                            <div> Target technologies: <wu-technology *ngFor="let target of ruleProvider.targets" [technology]="target" class="techLabel"></wu-technology> </div>
+                                            <div *ngIf="ruleProvider.sources.length > 0"> Source technologies: <wu-technology *ngFor="let source of ruleProvider.sources" [technology]="source" class="techLabel"></wu-technology> </div>
+                                            <div *ngIf="ruleProvider.targets.length > 0"> Target technologies: <wu-technology *ngFor="let target of ruleProvider.targets" [technology]="target" class="techLabel"></wu-technology> </div>
                                         </div>
                                     </div>
                                 </div>
