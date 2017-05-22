@@ -27,6 +27,7 @@ import javax.transaction.Transactional;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
@@ -39,6 +40,7 @@ import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.model.PackageMetadata;
 import org.jboss.windup.web.services.model.RegisteredApplication;
+import org.jboss.windup.web.services.rest.WindupWebException;
 
 /**
  * Manages {@link RegisteredApplication}s
@@ -391,7 +393,7 @@ public class RegisteredApplicationService
             if (file.exists() && !rewrite)
             {
                 LOG.warning("File in path: " + filePath + " already exists, but it should not");
-                throw new BadRequestException("File with name: '" + fileName + "' already exists");
+                throw new FileAlreadyExistsException(new BadRequestException("File with name: '" + fileName + "' already exists"));
             }
 
             this.saveFileTo(inputStream, filePath);
@@ -456,5 +458,15 @@ public class RegisteredApplicationService
     protected void enqueuePackageDiscovery(RegisteredApplication application)
     {
         this.messaging.createProducer().send(this.packageDiscoveryQueue, application);
+    }
+
+    public static class FileAlreadyExistsException extends WindupWebException
+    {
+        public static final int ERROR_CODE = 1;
+
+        public FileAlreadyExistsException(WebApplicationException exception)
+        {
+            super(exception, ERROR_CODE);
+        }
     }
 }

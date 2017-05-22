@@ -12,9 +12,18 @@ public class ExceptionHandler implements ExceptionMapper<WebApplicationException
     @Override
     public Response toResponse(WebApplicationException exception)
     {
-        return Response.status(exception.getResponse().getStatus())
-                    .entity(new ErrorInfo(exception.getMessage()))
-                    .type(MediaType.APPLICATION_JSON)
-                    .build();
+        Response.ResponseBuilder responseBuilder = Response.status(exception.getResponse().getStatus())
+                    .type(MediaType.APPLICATION_JSON);
+
+        if (exception instanceof WindupWebException)
+        {
+            responseBuilder.entity(new ErrorInfo(exception.getMessage(), ((WindupWebException) exception).getCode()));
+        }
+        else
+        {
+            responseBuilder.entity(new ErrorInfo(exception));
+        }
+
+        return responseBuilder.build();
     }
 }
