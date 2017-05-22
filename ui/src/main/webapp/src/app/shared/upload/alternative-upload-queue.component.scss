@@ -37,3 +37,8 @@ ul {
 .progress-bar.success {
   background-color: $progress-success-color;
 }
+
+span.file-size {
+  position: relative;
+  left: 10px;
+}
