@@ -32,7 +32,7 @@ public class WindupExecutionTask implements Runnable
 {
     private static Logger LOG = Logger.getLogger(WindupExecutionTask.class.getName());
     
-    private static String[] CLOUD_TARGETS = {"openshift", "cloud-readiness"};
+    private static String CLOUD_TARGET = "cloud-readiness";
 
     @Inject
     @FromFurnace
@@ -136,7 +136,7 @@ public class WindupExecutionTask implements Runnable
             }
             
             if (analysisContext.isCloudTargetsIncluded()) {
-                targets.addAll(Arrays.asList(CLOUD_TARGETS));
+                targets.add(CLOUD_TARGET);
             }
             
             Map<String, Object> otherOptions = getOtherOptions(analysisContext);
