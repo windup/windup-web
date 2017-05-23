@@ -52,7 +52,12 @@ export class FileUploaderWrapper extends FileUploader {
 
     public _onCompleteItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): void {
         this.subjects.onCompleteItem.next({item, response, status, headers});
-        super._onCompleteItem(item, response, status, headers);
+
+        /**
+         * Normally call to super._onCompleteItem would be here
+         * But it cannot be there, because it calls onCompleteAll directly.
+         * We need to call _onCompleteAll instead.
+         */
 
         item._onComplete(response, status, headers);
         this.onCompleteItem(item, response, status, headers);
