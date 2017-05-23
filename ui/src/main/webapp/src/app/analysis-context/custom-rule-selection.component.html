@@ -1,12 +1,12 @@
-        <button (click)="selectAll()">Select all</button>
-        <button (click)="clearSelection()">Clear all</button>
-        <select multiple
-                name="customRulesetPaths"
-                [(ngModel)]="selectedRuleIDs"
-                id="customRulesetPaths"
-                class="form-control"
-                >
-            <option *ngFor="let ruleset of rulesPaths" [ngValue]="ruleset.id">
-                {{ruleset.path}}
-            </option>
-        </select>
+<button class="btn btn-default" [disabled]="!rulesPaths || rulesPaths?.length === 0" (click)="selectAll()">Select all</button>
+<button class="btn btn-default" [disabled]="!rulesPaths || rulesPaths?.length === 0" (click)="clearSelection()">Clear all</button>
+<select multiple
+        name="customRulesetPaths"
+        [(ngModel)]="selectedRuleIDs"
+        id="customRulesetPaths"
+        class="form-control"
+        >
+    <option *ngFor="let ruleset of rulesPaths" [ngValue]="ruleset.id">
+        {{ruleset.path}}
+    </option>
+</select>
