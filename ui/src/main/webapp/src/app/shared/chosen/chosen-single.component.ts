@@ -18,6 +18,8 @@ export const ChosenSingleComponent_CONTROL_VALUE_ACCESSOR: any = {
 })
 export class ChosenSingleComponent extends AbstractChosenComponent<string> {
 
+    chosenInput: any;
+
     @Input()
     no_results_text = AbstractChosenComponent.NO_RESULTS_TEXT_DEFAULT;
 
