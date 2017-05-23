@@ -19,7 +19,7 @@ import {ExecutionPhaseModel} from "../../generated/tsModels/ExecutionPhaseModel"
     ]
 })
 export class RuleProviderExecutionsComponent implements OnInit, AfterViewChecked {
-    protected phases: ExecutionPhaseModel[];
+    phases: ExecutionPhaseModel[];
     protected anchor: string;
 
     constructor(

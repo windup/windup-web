@@ -19,7 +19,7 @@ export class NotificationComponent implements OnInit, OnDestroy {
 
     protected subscription: Subscription;
 
-    protected notificationsStack: Notification[] = [];
+    notificationsStack: Notification[] = [];
 
     constructor(private _notificationService: NotificationService) {
 

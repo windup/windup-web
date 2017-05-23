@@ -22,7 +22,7 @@ import {FilterableReportComponent} from "../filterable-report.component";
 })
 export class MigrationIssuesComponent extends FilterableReportComponent implements OnInit {
     protected categorizedIssues: Dictionary<ProblemSummary[]>;
-    protected categories: string[];
+    categories: string[];
 
     public hideFilter = WINDUP_WEB.config.hideUnfinishedFeatures;
     public execution: WindupExecution;

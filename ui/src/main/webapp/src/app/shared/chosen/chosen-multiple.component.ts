@@ -81,7 +81,7 @@ export class ChosenMultipleComponent extends AbstractChosenComponent<Array<strin
     @ViewChildren(ChosenDropComponent)
     private chosenDropComponentQueryList: QueryList<ChosenDropComponent>;
 
-    private multipleSelectedOptions: InternalChosenOption[];
+    multipleSelectedOptions: InternalChosenOption[];
 
     previousInputLength: number = 0;
 

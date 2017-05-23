@@ -18,10 +18,10 @@ import {DEFAULT_MENU_ITEMS} from "../shared/navigation/hamburger-menu.component"
     templateUrl: './project-layout.component.html',
 })
 export class ProjectLayoutComponent extends RoutedComponent implements OnInit, OnDestroy {
-    protected allProjects: MigrationProject[];
-    protected project: MigrationProject;
-    protected menuItems: ContextMenuItemInterface[];
-    protected hamburgerMenuItems: ContextMenuItemInterface[];
+    allProjects: MigrationProject[];
+    project: MigrationProject;
+    menuItems: ContextMenuItemInterface[];
+    hamburgerMenuItems: ContextMenuItemInterface[];
 
     // TODO: Execution progress: Project Layout must be updated when execution state changes (is completed)
 

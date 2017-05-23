@@ -23,7 +23,7 @@ export class ExecutionsListComponent extends AbstractComponent implements OnInit
     runExecution: EventEmitter<void> = new EventEmitter<void>();
 
     @Input()
-    private showRunAnalysisButton: boolean;
+    showRunAnalysisButton: boolean;
 
     protected element;
 
@@ -44,7 +44,7 @@ export class ExecutionsListComponent extends AbstractComponent implements OnInit
 
     searchText: string = '';
 
-    private filteredExecutions: WindupExecution[];
+    filteredExecutions: WindupExecution[];
 
     private deletedExecutions: Map<number, WindupExecution> = new Map<number, WindupExecution>();
 

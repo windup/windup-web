@@ -21,7 +21,7 @@ export abstract class AbstractChosenComponent<T> implements ControlValueAccessor
 
     public chosenWithDrop: boolean = false;
 
-    protected inputValue: string;
+    inputValue: string;
 
     filterMode: boolean;
 
@@ -104,7 +104,7 @@ export abstract class AbstractChosenComponent<T> implements ControlValueAccessor
         }
     }
 
-    protected inputKeyUp(inputValue) {
+    inputKeyUp(inputValue) {
         this.filterMode = true;
         let dropOptions = null;
         if (inputValue.trim().length > 0) {

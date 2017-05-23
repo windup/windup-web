@@ -9,7 +9,7 @@ import {ContextMenuItemInterface} from "./context-menu-item.class";
 })
 export class ContextMenuComponent {
     protected _menuItems: ContextMenuItemInterface[] = [];
-    protected enabledItems: ContextMenuItemInterface[] = [];
+    enabledItems: ContextMenuItemInterface[] = [];
 
     @Input()
     public set menuItems(items: ContextMenuItemInterface[]) {

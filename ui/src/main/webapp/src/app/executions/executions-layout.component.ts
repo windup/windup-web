@@ -18,8 +18,8 @@ import {WindupExecutionService} from "../services/windup-execution.service";
     templateUrl: './executions-layout.component.html',
 })
 export class ExecutionsLayoutComponent extends ProjectLayoutComponent implements OnInit, OnDestroy {
-    protected execution: WindupExecution;
-    protected allExecutions: WindupExecution[];
+    execution: WindupExecution;
+    allExecutions: WindupExecution[];
 
     constructor(
         _router: Router,
