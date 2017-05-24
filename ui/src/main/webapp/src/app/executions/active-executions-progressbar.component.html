@@ -1,6 +1,6 @@
-<div *ngIf="activeExecutions && activeExecutions.length > 0">
+<div>
     <h2 i18n="heading|Active Executions">Active Analysis</h2>
-    <div>
+    <div *ngIf="activeExecutions && activeExecutions.length > 0">
         <ng-container *ngFor="let activeExecution of activeExecutions">
             <wu-progress-bar *ngIf="activeExecution.currentTask || activeExecutions.length == 1"
                  [taskName]="activeExecution.currentTask"
@@ -10,5 +10,8 @@
                  [activeExecutionId]="activeExecution.id">
             </wu-progress-bar>
         </ng-container>
+    </div>
+    <div *ngIf="!activeExecutions || activeExecutions.length == 0">
+        There is no active analysis.
     </div>
 </div>
