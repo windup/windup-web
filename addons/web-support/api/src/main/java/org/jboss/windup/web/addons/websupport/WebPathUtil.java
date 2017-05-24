@@ -30,6 +30,11 @@ public interface WebPathUtil
     Path getGlobalWindupDataPath();
 
     /**
+     * Gets the path where custom rule providers are stored
+     */
+    Path getCustomRulesPath();
+
+    /**
      * Gets the path where user uploaded applications are stored
      * @return Path
      */

@@ -22,9 +22,7 @@ import org.jboss.windup.web.services.validators.FileExistsConstraint;
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
 @Entity
-@Table(
-   indexes = @Index(columnList = "path")
-)
+@Table(indexes = @Index(columnList = "path"))
 public class RulesPath implements Serializable
 {
     public static final String RULES_PATH_ID = "rules_path_id";
@@ -51,6 +49,9 @@ public class RulesPath implements Serializable
     @Column
     private RulesPathType rulesPathType;
 
+    @Column
+    private RegistrationType registrationType;
+
     public RulesPath()
     {
     }
@@ -59,6 +60,12 @@ public class RulesPath implements Serializable
     {
         this.path = path;
         this.rulesPathType = rulesPathType;
+    }
+
+    public RulesPath(String path, RulesPathType rulesPathType, RegistrationType registrationType)
+    {
+        this(path, rulesPathType);
+        this.registrationType = registrationType;
     }
 
     public Long getId()
@@ -127,6 +134,16 @@ public class RulesPath implements Serializable
     public void setLoadError(String loadError)
     {
         this.loadError = loadError;
+    }
+
+    public RegistrationType getRegistrationType()
+    {
+        return registrationType;
+    }
+
+    public void setRegistrationType(RegistrationType registrationType)
+    {
+        this.registrationType = registrationType;
     }
 
     @Override
