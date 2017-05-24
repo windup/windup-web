@@ -19,11 +19,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -109,9 +111,21 @@ public class MigrationProjectService
     public void deleteOldProvisionalProjects(int olderThanMinutes)
     {
         String query = "SELECT pr FROM " + MigrationProject.class.getSimpleName() + " pr WHERE pr.provisional = TRUE ";
+
+        List<MigrationProject> provisional;
         if (olderThanMinutes > 0)
-            query += " AND pr.lastModified < DATEADD('MINUTE', -"+olderThanMinutes+", CURRENT_TIMESTAMP) "; // JPA had issues with a param here.
-        List<MigrationProject> provisional = entityManager.createQuery(query, MigrationProject.class).getResultList();
+        {
+            Calendar newestTime = new GregorianCalendar();
+            newestTime.add(Calendar.MINUTE, 0 - olderThanMinutes);
+            query += " AND pr.lastModified < :newestDate"; // JPA had issues with a param here.
+            provisional = entityManager.createQuery(query, MigrationProject.class)
+                    .setParameter("newestDate", newestTime)
+                    .getResultList();
+        } else
+        {
+            provisional = entityManager.createQuery(query, MigrationProject.class).getResultList();
+        }
+
         LOG.info("Deleting " + provisional.size() + " provisional projects older than "+olderThanMinutes+" minutes.");
         provisional.forEach(this::deleteProject);
     }

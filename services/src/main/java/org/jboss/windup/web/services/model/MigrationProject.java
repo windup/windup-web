@@ -75,7 +75,6 @@ public class MigrationProject implements Serializable
     @Size(max = 4096)
     @NotNull
     @Column(length = 4096, nullable = false)
-    @ColumnDefault("")
     private String description = "";
 
     @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false)
