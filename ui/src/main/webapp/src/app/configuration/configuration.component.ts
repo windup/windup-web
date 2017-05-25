@@ -132,7 +132,7 @@ export class ConfigurationComponent implements OnInit, AfterViewInit {
         this.addRulesModalComponent.show();
     }
 
-    configurationUpdated(event:ConfigurationEvent) {
+    configurationUpdated(event: ConfigurationEvent) {
         this.configuration = event.configuration;
         this.loadProviders();
     }

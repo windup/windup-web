@@ -48,6 +48,8 @@ import {IsRouteActiveDirective} from "./is-route-active.directive";
 import {PrettyExecutionStatus} from "./pretty-execution-state.pipe";
 import {ReplacePipe} from "./replace.pipe";
 import {DialogService} from "./dialog/dialog.service";
+import {FileUploaderFactory} from "./upload/file-uploader-factory.service";
+import {UploadedItemsListComponent} from "./upload/uploaded-items-list.component";
 
 @NgModule({
     imports: [
@@ -74,7 +76,7 @@ import {DialogService} from "./dialog/dialog.service";
             provide: CacheService,
             useFactory: getCacheServiceInstance
         },
-
+        FileUploaderFactory
     ],
     declarations: [
         CustomSelectComponent,
@@ -107,6 +109,7 @@ import {DialogService} from "./dialog/dialog.service";
         CheckboxesComponent,
         WizardLayoutComponent,
         ExpandCollapseComponent,
+        UploadedItemsListComponent,
 
         ShortenPipe,
 
@@ -147,6 +150,7 @@ import {DialogService} from "./dialog/dialog.service";
         CheckboxesComponent,
         WizardLayoutComponent,
         ExpandCollapseComponent,
+        UploadedItemsListComponent,
 
         ProjectNameNotExistsValidator,
         IsRouteActiveDirective,
