@@ -13,11 +13,6 @@
   flex-direction: row;
 }
 
-.fixed-height {
-  max-height: 240px;
-  overflow: auto;
-}
-
 :host /deep/ {
   .save-and-run {
     padding-top: 15px;
