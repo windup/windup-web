@@ -1,7 +1,7 @@
-<ul *ngIf="registeredApplications?.length > 0">
+<ul *ngIf="registeredApplications?.length > 0" class="app-list">
     <li *ngFor="let application of registeredApplications">
         <div class="progress">
-            <div class="progress-bar"
+            <div class="progress-bar success"
                  role="progressbar"
                  aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"
                  style="width: 100%">

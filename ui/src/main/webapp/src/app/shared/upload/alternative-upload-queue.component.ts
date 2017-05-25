@@ -1,26 +1,66 @@
-import {Component, Input, NgZone} from "@angular/core";
-import {FileUploader} from "ng2-file-upload/ng2-file-upload";
+import {Component, Input, NgZone, OnInit} from "@angular/core";
 import {FileItem} from "ng2-file-upload";
+import {utils} from "../utils";
+import {NotificationService} from "../../core/notification/notification.service";
+import {FileUploaderWrapper} from "./file-uploader-wrapper.service";
+import {AbstractComponent} from "../AbstractComponent";
+import {RegisteredApplicationService} from "../../registered-application/registered-application.service";
 
 @Component({
     selector: 'wu-alternative-upload-queue',
     templateUrl: './alternative-upload-queue.component.html',
     styleUrls: ['./alternative-upload-queue.component.scss']
 })
-export class AlternativeUploadQueueComponent {
+export class AlternativeUploadQueueComponent extends AbstractComponent implements OnInit {
     @Input()
-    uploader: FileUploader;
+    uploader: FileUploaderWrapper;
 
     progress = {};
 
-    public constructor(private _ngZone: NgZone) {
+    protected uploadErrors: Map<FileItem, string> = new Map<FileItem, string>();
 
+    public constructor(private _ngZone: NgZone, private _notificationService: NotificationService) {
+        super();
     }
 
     ngOnInit(): void {
-        this.uploader.onProgressItem = (item, progress) => {
+        this.subscriptions.push(this.uploader.observables.onProgressItem.subscribe(itemProgress => {
+            const item = itemProgress.item;
+            const progress = itemProgress.progress;
             this._ngZone.run(() => this.progress[item.file.name] = progress);
-        };
+        }));
+
+        this.subscriptions.push(this.uploader.observables.onErrorItem.subscribe(itemError => {
+            const response = JSON.parse(itemError.response);
+            const item = itemError.item;
+
+            if (this.isFileExistsError(response)) {
+                this.uploadErrors.set(item, utils.getErrorMessage(response));
+            } else {
+                this._notificationService.error(utils.getErrorMessage(response));
+            }
+        }));
+
+        /**
+         * Code below is workaround for removeAfterUpload: true
+         *
+         * There is bug (or a feature?) in ng-file-upload, that it removes all items from queue
+         *  when item is successfully uploaded or an error occurs.
+         *  We need to remove it only for success.
+         */
+        let removeAfterUploaded = true;
+
+        this.subscriptions.push(this.uploader.observables.onCompleteItem.subscribe(result => {
+            const item = result.item;
+
+            if (item.isSuccess && removeAfterUploaded) {
+                item.remove();
+            }
+        }));
+    }
+
+    protected isFileExistsError(response: any) {
+        return response['code'] && response['code'] === RegisteredApplicationService.ERROR_FILE_EXISTS;
     }
 
     public getProgress(item: FileItem) {
@@ -59,7 +99,7 @@ export class AlternativeUploadQueueComponent {
         if (item.isCancel) {
             return 'Cancelled';
         } else if (item.isError) {
-            return 'Error';
+            return 'Error: ' + this.getUploadItemError(item);
         } else {
             return item.progress.toString() + '%';
         }
@@ -90,5 +130,9 @@ export class AlternativeUploadQueueComponent {
      */
     public isCancellable(item: FileItem): boolean {
         return !item.isUploaded && !item.isCancel && !item.isError;
+    }
+
+    public getUploadItemError(item: FileItem): string {
+        return this.uploadErrors.get(item) || '';
     }
 }

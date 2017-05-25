@@ -35,6 +35,8 @@ export class RegisteredApplicationService extends AbstractService {
 
     protected static PACKAGE_REQUEST_PAUSE_TIME_MS = 2000;
 
+    public static ERROR_FILE_EXISTS = 1;
+
     private UPLOAD_URL = '/file';
 
     constructor (
@@ -91,7 +93,7 @@ export class RegisteredApplicationService extends AbstractService {
     uploadApplications(project: MigrationProject): Observable<RegisteredApplication[]> {
         return this._keycloakService
             .getToken()
-            .flatMap((token: string, index: number) =>
+            .flatMap((token: string) =>
             {
                 this._multipartUploader.setOptions({
                     authToken: 'Bearer ' + token,
@@ -103,10 +105,13 @@ export class RegisteredApplicationService extends AbstractService {
 
                 let promise = new Promise((resolve, reject) => {
                     this._multipartUploader.onCompleteItem = (item, response, status, headers) => {
+                        const responseJson = JSON.parse(response);
+
                         if (status == 200) {
-                            responses.push(JSON.parse(response));
+                            this.fireNewApplicationEvents(responseJson, project);
+                            responses.push(responseJson);
                         } else {
-                            errors.push(JSON.parse(response));
+                            errors.push(responseJson);
                         }
                     };
 
@@ -121,8 +126,7 @@ export class RegisteredApplicationService extends AbstractService {
 
                 this._multipartUploader.uploadAll();
 
-                return Observable.fromPromise(promise)
-                    .do((responseApplications: RegisteredApplication[]) => this.fireNewApplicationEvents(responseApplications, project));
+                return Observable.fromPromise(promise);
             });
     }
 
