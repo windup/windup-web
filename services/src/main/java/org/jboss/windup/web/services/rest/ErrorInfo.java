@@ -6,6 +6,7 @@ package org.jboss.windup.web.services.rest;
 public class ErrorInfo
 {
     private String message;
+    private int code;
     private ExceptionInfo outerException;
     private ExceptionInfo rootCause;
 
@@ -13,6 +14,17 @@ public class ErrorInfo
     public ErrorInfo(String message)
     {
         this.message = message;
+    }
+
+    public ErrorInfo(String message, int code)
+    {
+        this.message = message;
+        this.code = code;
+    }
+
+    public ErrorInfo(Exception e)
+    {
+        this(e.getMessage());
     }
 
     public ErrorInfo(String message, ExceptionInfo outerException, ExceptionInfo rootCause)
@@ -55,6 +67,15 @@ public class ErrorInfo
         return this;
     }
 
+    public void setCode(int code)
+    {
+        this.code = code;
+    }
+
+    public int getCode()
+    {
+        return code;
+    }
 
     public static class ExceptionInfo
     {

@@ -58,11 +58,9 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
         protected _notificationService: NotificationService
     ) {
         super();
+
         this.multipartUploader = _registeredApplicationService.getMultipartUploader();
         this.multipartUploader.onSuccessItem = () => this.countUploadedApplications++;
-        this.multipartUploader.onErrorItem = (item, response) => {
-            this._notificationService.error(utils.getErrorMessage(response));
-        };
         this.multipartUploader.onAfterAddingFile = () => this.registerUploaded();
         this.multipartUploader.onWhenAddingFileFailed = (item: FileLikeObject, filter: FilterFunction, options) => {
             let msg;
@@ -78,7 +76,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
                     default: `File rejected for uploading: '${item.name}'`; break;
                 }
             this._notificationService.error(msg);
-        }
+        };
 
         let suffixes = ".ear .har .jar .rar .sar .war".split(" ");
         this.multipartUploader.options.filters.push(<FilterFunction>{
@@ -122,7 +120,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
                 url: uploadUrl,
                 method: 'POST',
                 disableMultipart: false,
-                removeAfterUpload: true // application is moved to existing applications queue after upload
+                removeAfterUpload: false // cannot use this, there is a bug and it always removes items even for failure
             });
         });
     }
@@ -176,7 +174,11 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
 
         this._registeredApplicationService.uploadApplications(this.project).subscribe(
             () => {},
-            error => this.handleError(<any>error)
+            error => {
+                if (!error.hasOwnProperty('code') || error.code !== RegisteredApplicationService.ERROR_FILE_EXISTS) {
+                    this.handleError(<any>error);
+                }
+            }
         );
     }
 
