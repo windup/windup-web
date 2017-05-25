@@ -68,7 +68,7 @@ public class MigrationProject implements Serializable
     @Column(length = 120, unique = false, nullable = false)
     @Size(min = 3, max = 120, message = "The name must be at least 3 letters long.")
     @Pattern(message = "The name must contain only alphanumeric characters and spaces",
-            regexp = "\\s*\\w[- \\w]+\\w\\s*") // Allow whitespace around, limit to A-Za-z0-9-, allow spaces inside, at least 3 characters after whitespace trimmed.
+            regexp = "\\s*[- \\w]+\\s*") // Allow whitespace around, limit to A-Za-z0-9-, allow spaces inside, at least 3 characters after whitespace trimmed.
     @NotNull
     private String title;
 
