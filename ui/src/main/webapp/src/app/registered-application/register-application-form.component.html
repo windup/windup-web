@@ -78,7 +78,7 @@
     <div class="form-group">
         <div class="col-md-12">
             <div class="button-container">
-                <button (click)="cancelRegistration()" type="button" class="btn btn-default">{{isInWizard ? 'Back' : 'Cancel'}}</button>
+                <button *ngIf="isInWizard" (click)="cancelRegistration()" type="button" class="btn btn-default">{{isInWizard ? 'Back' : 'Cancel'}}</button>
                 <button [disabled]="!isValid" class="btn btn-primary" type="submit">{{isInWizard ? 'Next' : labels.uploadButton}}</button>
             </div>
         </div>
