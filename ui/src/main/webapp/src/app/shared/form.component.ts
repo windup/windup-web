@@ -1,4 +1,4 @@
-import {NgControl} from "@angular/forms";
+import {AbstractControl, NgControl} from "@angular/forms";
 import {utils} from "./utils";
 
 export class FormComponent {
@@ -13,7 +13,7 @@ export class FormComponent {
      * It makes sure that the control is not-pristine (don't show errors on fields the user hasn't touched yet)
      * and that the control is already rendered.
      */
-    hasError(control:NgControl, errorName: string) {
+    hasError(control: NgControl|AbstractControl, errorName?: string) {
         if (control == null)
             return false;
 
