@@ -44,7 +44,9 @@ public class WindupExecutionUtil
         {
             RegisteredApplication application = dataProvider.getApplication(project, sampleIS, "sample-tiny.war");
 
-            context.addApplication(application);
+            // Refresh it, as adding the app may have caused changes
+            context = this.analysisContextEndpoint.get(context.getId());
+
             this.analysisContextEndpoint.saveAsProjectDefault(context, project.getId());
         }
 
