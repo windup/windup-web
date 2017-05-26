@@ -37,14 +37,6 @@ public interface RuleEndpoint
     @Path("/by-rules-path/{id}")
     List<RuleProviderEntity> getByRulesPath(@PathParam("id") Long rulesPathID);
 
-
-    /**
-     * Register new RuleProvider by server path
-     */
-    @Path("register-path")
-    @POST
-    RulesPath registerRuleProviderByPath(String path);
-
     /**
      * Uploads new RuleProvider
      */

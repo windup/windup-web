@@ -43,6 +43,10 @@ public class RulesPath implements Serializable
     @NotNull
     private String path;
 
+    @Column(length = 2048)
+    @Size(min = 1, max = 2048)
+    private String shortPath;
+
     @Lob
     private String loadError;
 
@@ -102,6 +106,24 @@ public class RulesPath implements Serializable
     public void setPath(String inputPath)
     {
         this.path = inputPath;
+    }
+
+    /**
+     * Contains a short file path, suitable for display. This is primarily useful for user
+     * uploaded rules, where we may not want to display the entire path.
+     */
+    public String getShortPath()
+    {
+        return shortPath;
+    }
+
+    /**
+     * Contains a short file path, suitable for display. This is primarily useful for user
+     * uploaded rules, where we may not want to display the entire path.
+     */
+    public void setShortPath(String shortPath)
+    {
+        this.shortPath = shortPath;
     }
 
     /**

@@ -73,19 +73,6 @@ public class RuleEndpointImpl implements RuleEndpoint
         return rulesPath;
     }
 
-    /**
-     * TODO:
-     * 1) Validate if path exists
-     * 2) Validate if it is not already used
-     * 3) Validate if it is valid RuleProvider
-     */
-    @Override
-    public RulesPath registerRuleProviderByPath(String path)
-    {
-
-        return null;
-    }
-
     @Override
     public RulesPath uploadRuleProvider(MultipartFormDataInput data)
     {
@@ -95,6 +82,9 @@ public class RuleEndpointImpl implements RuleEndpoint
         File file = this.fileUploadService.uploadFile(data, customRulesPath, fileName, true);
 
         RulesPath rulesPathEntity = new RulesPath(file.getPath(), RulesPath.RulesPathType.USER_PROVIDED, RegistrationType.UPLOADED);
+        String relativePath = customRulesPath.relativize(file.toPath()).toString();
+        rulesPathEntity.setShortPath(relativePath);
+
         this.entityManager.persist(rulesPathEntity);
 
         Configuration configuration = this.configurationService.getConfiguration();

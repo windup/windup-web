@@ -95,6 +95,15 @@ export class ConfigurationComponent implements OnInit, AfterViewInit {
         });
     }
 
+    rulesShortPath(rulePath:RulesPath): string {
+        if (rulePath.rulesPathType == "SYSTEM_PROVIDED")
+            return "<System Rules>";
+        else if (rulePath.shortPath)
+            return rulePath.shortPath;
+        else
+            return rulePath.path;
+    }
+
     areRulesLoaded(rulesPath:RulesPath) {
         return this.ruleProvidersByPath.has(rulesPath);
     }
