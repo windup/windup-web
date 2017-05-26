@@ -298,9 +298,8 @@ export class AnalysisContextFormComponent extends FormComponent
 
     onSubmit() {
         if (!this.packageTreeLoaded) {
-            this.dialog.title = 'Package identification still running';
-            this.dialog.body = `Package identification is still running. 
-                                Do you want to run analysis without selecting packages?`;
+            this.dialog.title = 'Package identification is not complete';
+            this.dialog.body = `Do you want to save the analysis without selecting packages?`;
             this.dialog.show();
         } else {
             this.saveConfiguration();
