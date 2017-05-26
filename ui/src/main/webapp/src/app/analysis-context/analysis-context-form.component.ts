@@ -148,6 +148,10 @@ export class AnalysisContextFormComponent extends FormComponent
                                     this.analysisContext = context;
                                     if (this.analysisContext.migrationPath == null)
                                         this.analysisContext.migrationPath = AnalysisContextFormComponent.DEFAULT_MIGRATION_PATH;
+
+                                    if (this.isInWizard) {
+                                        this.analysisContext.applications = apps.slice();
+                                    }
                                 });
                         }
                         this.loadPackageMetadata();
