@@ -35,7 +35,6 @@ export class AppComponent implements AfterViewInit {
     }
 
     ngAfterViewInit(): void {
-        console.log(this.confirmationDialog);
         this.dialogService.setConfirmationDialog(this.confirmationDialog);
     }
 }

@@ -1,41 +1,71 @@
-<div class="modal fade" id="addRulesPathModal" tabindex="-1" role="dialog" aria-labelledby="Add Rules Path" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                    <span class="pficon pficon-close"></span>
-                </button>
-                <h4 class="modal-title" id="myModalLabel">Add rules</h4>
-            </div>
-            <div class="modal-body">
-                <form [formGroup]="addRulesPathForm">
-                    <div *ngFor="let errorMessage of errorMessages" class="row form-errors alert alert-danger">
-                        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                        {{errorMessage}}
-                    </div>
-                    <div class="form-group" [ngClass]="{'has-error': hasError(addRulesPathForm.get('inputPathControl'))}">
-                        <label class="control-label" for="addRulesPathInput">Rules path (server-side file or directory)</label>
-                        <input
-                                [(ngModel)]="inputPath"
-                                formControlName="inputPathControl"
-                                type="text"
-                                id="addRulesPathInput"
-                                class="form-control"
-                                placeholder="/opt/rules or /opt/rules/my-rules.windup.xml"
-                        >
-                        <div>
-                            Path to the server-side file or directory containing the rules.
-                        </div>
-                        <span [class.hidden]="!hasError(addRulesPathForm.get('inputPathControl'))" class="help-block">
-                            The path must exist on the server.
-                        </span>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <button type="button" [disabled]="!addRulesPathForm.valid" class="btn btn-primary" (click)="addPath()">Add</button>
-            </div>
+<wu-modal-dialog #modalDialog>
+    <span header>Add Rules</span>
+    <form [formGroup]="addRulesPathForm" body>
+        <div *ngFor="let errorMessage of errorMessages" class="row form-errors alert alert-danger">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            {{errorMessage}}
         </div>
+        <wu-tab-container (tabSelected)="onTabSelected($event)">
+            <wu-tab [tabTitle]="'Upload'" [properties]="{mode: 'UPLOADED'}">
+                <div class="form-group upload-queue">
+                    <div class="col-md-12">
+                        <wu-uploaded-items-list
+                                [getLabel]="getRuleNameCallback"
+                                [uploadedItemsList]="uploadedRules"
+                                (deleteItem)="confirmDeleteRule($event)"
+
+                        ></wu-uploaded-items-list>
+                        <wu-alternative-upload-queue [uploader]="multipartUploader"></wu-alternative-upload-queue>
+                    </div>
+                </div>
+                <div class="form-group description">
+                    <div class="col-md-10">
+                        <div i18n="Upload Description Text">
+                            Choose rules to upload. You can select more than one file at a time.
+                            You can also drag and drop files to start uploading.
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="btn btn-primary upload-button">
+                            <input id="fileUpload" type="file" ng2FileSelect class="form-control" name="files"
+                                   [attr.multiple]="isAllowUploadMultiple ? true : null"
+                                   [uploader]="multipartUploader"
+                                   style="position: fixed; top: -10000px;">
+                            <span i18n="Choose Files Button">Choose files</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group" [ngClass]="{'has-error': hasError(addRulesPathForm.get('fileUpload'))}" style="margin-bottom: 0;">
+                    <div class="col-md-12">
+                        <div ng2FileDrop [uploader]="multipartUploader" class="well filesDropArea">
+                            <strong i18n="Drag & Drop box description">Drop files here.</strong>
+                        </div>
+                    </div>
+                </div>
+            </wu-tab>
+            <wu-tab [tabTitle]="'Server Path'" [properties]="{mode: 'PATH'}">
+                <div class="form-group" [ngClass]="{'has-error': hasError(addRulesPathForm.get('inputPathControl'))}">
+                    <label class="control-label" for="addRulesPathInput">Rules path (server-side file or directory)</label>
+                    <input
+                            [(ngModel)]="inputPath"
+                            formControlName="inputPathControl"
+                            type="text"
+                            id="addRulesPathInput"
+                            class="form-control"
+                            placeholder="/opt/rules or /opt/rules/my-rules.windup.xml"
+                    >
+                    <div>
+                        Path to the server-side file or directory containing the rules.
+                    </div>
+                    <span [class.hidden]="!hasError(addRulesPathForm.get('inputPathControl'))" class="help-block">
+                        The path must exist on the server.
+                    </span>
+                </div>
+            </wu-tab>
+        </wu-tab-container>
+    </form>
+    <div footer>
+        <button type="button" class="btn btn-default" (click)="hide()">Cancel</button>
+        <button type="button" [disabled]="!isFormValid()" class="btn btn-primary" (click)="submitForm()">Add</button>
     </div>
-</div>
+</wu-modal-dialog>

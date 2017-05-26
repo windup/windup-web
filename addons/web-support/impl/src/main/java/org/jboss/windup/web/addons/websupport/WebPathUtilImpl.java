@@ -18,6 +18,7 @@ public class WebPathUtilImpl implements WebPathUtil
     private static final String DIR_NAME = "windup";
     private static final String REPORT_DIR = "reports";
     private static final String APPS_DIR = "apps";
+    private static final String RULES_DIR = "rules";
 
     @Override
     public Path createWindupReportOutputPath(String name)
@@ -74,5 +75,11 @@ public class WebPathUtilImpl implements WebPathUtil
     public Path createMigrationProjectPath(String projectPath)
     {
         return Paths.get(this.getGlobalWindupDataPath().toString(), projectPath);
+    }
+
+    @Override
+    public Path getCustomRulesPath()
+    {
+        return this.getGlobalWindupDataPath().resolve(RULES_DIR);
     }
 }

@@ -35,11 +35,6 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = RegisteredApplication.class)
 public class RegisteredApplication implements Serializable
 {
-    public enum RegistrationType {
-        UPLOADED,
-        PATH
-    }
-
     private static final long serialVersionUID = 1L;
 
     public static final String REGISTERED_APPLICATION_ID = "registered_application_id";
