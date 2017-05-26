@@ -118,6 +118,8 @@ public class RegisteredApplicationService
         this.entityManager.merge(application);
         this.entityManager.merge(project);
 
+        this.addApplicationToConfiguration(application, project);
+
         return application;
     }
 
@@ -154,6 +156,17 @@ public class RegisteredApplicationService
         this.entityManager.merge(project);
 
         return registeredApplicationList;
+    }
+
+    protected void addApplicationToConfiguration(RegisteredApplication application, MigrationProject project)
+    {
+        AnalysisContext context = project.getDefaultAnalysisContext();
+
+        if (context != null)
+        {
+            context.getApplications().add(application);
+            this.entityManager.merge(context);
+        }
     }
 
     private File[] getFilesFromDirectory(File directory, String[] allowedExtensions)
@@ -220,6 +233,7 @@ public class RegisteredApplicationService
         entityManager.persist(application);
 
         this.enqueuePackageDiscovery(application);
+        this.addApplicationToConfiguration(application, project);
 
         return application;
     }
