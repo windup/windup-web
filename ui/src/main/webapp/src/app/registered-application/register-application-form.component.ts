@@ -245,14 +245,17 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
          * This allows us to have 'Back' step in wizard and not requiring
          * user to upload new application.
          */
-        if (this.projectHasApplications()) {
+        if  (this.isInWizard && this.projectHasApplications()) {
             return true;
         }
 
         if (this.mode === 'PATH') {
-            return this.fileInputPath && this.fileInputPath.length > 0;
+            const appPathField = this.registrationForm.get('appPathToRegister');
+
+            return this.fileInputPath && this.fileInputPath.length > 0 &&
+                !this.hasError(appPathField) && !appPathField.pending;
         } else if (this.mode === 'UPLOADED') {
-            return this.countUploadedApplications > 0;
+            return this.countUploadedApplications > 0 || this.projectHasApplications();
         }
     }
 
