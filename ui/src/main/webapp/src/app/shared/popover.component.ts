@@ -8,7 +8,7 @@ import * as $ from "jquery";
                     role="button"
                     data-toggle="popover"
                     data-trigger="focus"
-                    data-html="true"
+                    data-html="false"
                     data-placement="top"
                     [attr.data-content]="content"
                     class="fa fa-info-circle">

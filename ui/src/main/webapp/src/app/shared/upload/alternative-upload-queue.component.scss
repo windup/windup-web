@@ -10,8 +10,9 @@ li {
 }
 
 .action-button {
-  right: 35px;
-  position: absolute;
+  float: right;
+  padding-right: 10px;
+  padding-top: 3px;
 }
 
 .glyphicon-remove {
