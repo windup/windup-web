@@ -17,6 +17,8 @@ export class RuleService extends AbstractService {
     private GET_ALL_RULE_PROVIDERS_URL= "/rules/allProviders";
     private GET_RULE_PROVIDERS_BY_RULES_PATH_URL= "/rules/by-rules-path/";
     private UPLOAD_URL = RuleService.RULES_ROOT + '/upload';
+    private DELETE_RULE_URL = RuleService.RULES_ROOT + '/by-rules-path/{id}';
+
 
     private _multipartUploader: FileUploaderWrapper;
 
@@ -75,5 +77,11 @@ export class RuleService extends AbstractService {
 
             return Observable.fromPromise(promise);
         });
+    }
+
+    deleteRule(rulePath: RulesPath): Observable<any> {
+        let url = Constants.REST_BASE + this.DELETE_RULE_URL.replace('{id}', rulePath.id.toString());
+
+        return this._http.delete(url);
     }
 }

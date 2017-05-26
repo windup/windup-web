@@ -116,6 +116,14 @@ public class RuleEndpointImpl implements RuleEndpoint
             file.delete();
         }
 
+        Configuration configuration = this.configurationService.getConfiguration();
+        configuration.getRulesPaths().remove(rulesPath);
+        this.entityManager.merge(configuration);
+
+        this.entityManager.createNamedQuery(RuleProviderEntity.DELETE_BY_RULES_PATH)
+                .setParameter(RuleProviderEntity.RULES_PATH_PARAM, rulesPath)
+                .executeUpdate();
+
         this.entityManager.remove(rulesPath);
     }
 }
