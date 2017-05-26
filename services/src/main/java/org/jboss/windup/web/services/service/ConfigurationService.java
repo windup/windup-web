@@ -3,6 +3,8 @@ package org.jboss.windup.web.services.service;
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -30,6 +32,9 @@ public class ConfigurationService
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Inject
+    private Event<Configuration> configurationEvent;
+
     @PostConstruct
     public void initConfiguration()
     {
@@ -40,8 +45,12 @@ public class ConfigurationService
     /**
      * Persists the provided {@link Configuration} object.
      */
-    public Configuration saveConfiguration(Configuration configuration) {
-        return entityManager.merge(configuration);
+    public Configuration saveConfiguration(Configuration configuration)
+    {
+        configuration = entityManager.merge(configuration);
+        configurationEvent.fire(configuration);
+
+        return configuration;
     }
 
     /**
@@ -112,5 +121,13 @@ public class ConfigurationService
 
         // finally, set the new values on the configuration
         configuration.setRulesPaths(dbPaths);
+    }
+
+    public Configuration reloadConfiguration()
+    {
+        Configuration configuration = this.getConfiguration();
+        this.configurationEvent.fire(configuration);
+
+        return configuration;
     }
 }

@@ -27,7 +27,6 @@ import javax.transaction.Transactional;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotFoundException;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
@@ -40,7 +39,8 @@ import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.model.PackageMetadata;
 import org.jboss.windup.web.services.model.RegisteredApplication;
-import org.jboss.windup.web.services.rest.WindupWebException;
+import org.jboss.windup.web.services.model.RegistrationType;
+import org.jboss.windup.web.services.rest.FileAlreadyExistsException;
 
 /**
  * Manages {@link RegisteredApplication}s
@@ -110,7 +110,7 @@ public class RegisteredApplicationService
         }
 
         RegisteredApplication application = this.createApplication(project);
-        application.setRegistrationType(RegisteredApplication.RegistrationType.UPLOADED);
+        application.setRegistrationType(RegistrationType.UPLOADED);
         project.setLastModified(new GregorianCalendar());
         project.addApplication(application);
 
@@ -212,7 +212,7 @@ public class RegisteredApplicationService
         project.setLastModified(new GregorianCalendar());
         entityManager.merge(project);
 
-        application.setRegistrationType(RegisteredApplication.RegistrationType.PATH);
+        application.setRegistrationType(RegistrationType.PATH);
 
         PackageMetadata packageMetadata = new PackageMetadata();
         entityManager.persist(packageMetadata);
@@ -234,7 +234,7 @@ public class RegisteredApplicationService
             this.deleteApplicationFileIfUploaded(previousApplication);
         }
 
-        application.setRegistrationType(RegisteredApplication.RegistrationType.PATH);
+        application.setRegistrationType(RegistrationType.PATH);
         application = this.entityManager.merge(application);
         this.enqueuePackageDiscovery(application);
 
@@ -277,7 +277,7 @@ public class RegisteredApplicationService
 
         this.deleteApplicationFileIfUploaded(application);
 
-        application.setRegistrationType(RegisteredApplication.RegistrationType.UPLOADED);
+        application.setRegistrationType(RegistrationType.UPLOADED);
         this.uploadApplicationFile(inputParts.get(0), application, true);
         application.getMigrationProject().setLastModified(new GregorianCalendar());
 
@@ -326,7 +326,7 @@ public class RegisteredApplicationService
 
     private void deleteApplicationFileIfUploaded(RegisteredApplication application)
     {
-        if (application.getRegistrationType() != RegisteredApplication.RegistrationType.UPLOADED)
+        if (application.getRegistrationType() != RegistrationType.UPLOADED)
         {
             return;
         }
@@ -355,7 +355,7 @@ public class RegisteredApplicationService
         for (InputPart inputPart : inputParts)
         {
             RegisteredApplication application = this.createApplication(project);
-            application.setRegistrationType(RegisteredApplication.RegistrationType.UPLOADED);
+            application.setRegistrationType(RegistrationType.UPLOADED);
             project.addApplication(application);
 
             this.uploadApplicationFile(inputPart, application, false);
@@ -458,15 +458,5 @@ public class RegisteredApplicationService
     protected void enqueuePackageDiscovery(RegisteredApplication application)
     {
         this.messaging.createProducer().send(this.packageDiscoveryQueue, application);
-    }
-
-    public static class FileAlreadyExistsException extends WindupWebException
-    {
-        public static final int ERROR_CODE = 1;
-
-        public FileAlreadyExistsException(WebApplicationException exception)
-        {
-            super(exception, ERROR_CODE);
-        }
     }
 }

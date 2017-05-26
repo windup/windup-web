@@ -34,8 +34,8 @@ export class ConfigurationComponent implements OnInit, AfterViewInit {
 
     constructor(
         private _activatedRoute: ActivatedRoute,
-        private _configurationService:ConfigurationService,
-        private _ruleService:RuleService,
+        private _configurationService: ConfigurationService,
+        private _ruleService: RuleService,
         private _notificationService: NotificationService
     ) {
 
@@ -95,6 +95,15 @@ export class ConfigurationComponent implements OnInit, AfterViewInit {
         });
     }
 
+    rulesShortPath(rulePath:RulesPath): string {
+        if (rulePath.rulesPathType == "SYSTEM_PROVIDED")
+            return "<System Rules>";
+        else if (rulePath.shortPath)
+            return rulePath.shortPath;
+        else
+            return rulePath.path;
+    }
+
     areRulesLoaded(rulesPath:RulesPath) {
         return this.ruleProvidersByPath.has(rulesPath);
     }
@@ -132,29 +141,20 @@ export class ConfigurationComponent implements OnInit, AfterViewInit {
         this.addRulesModalComponent.show();
     }
 
-    configurationUpdated(event:ConfigurationEvent) {
+    configurationUpdated(event: ConfigurationEvent) {
         this.configuration = event.configuration;
         this.loadProviders();
     }
 
-    removeRulesPath(rulesPath:RulesPath) {
-        let newConfiguration = JSON.parse(JSON.stringify(this.configuration));
+    removeRulesPath(rulesPath: RulesPath) {
+        this._ruleService.deleteRule(rulesPath).subscribe(() => {
+            this._notificationService.success('Rule was deleted');
 
-        let index = newConfiguration.rulesPaths.findIndex(item => item.id === rulesPath.id);
-
-        if (index === -1) {
-            throw new Error('Rule path not found in configuration');
-        }
-
-        newConfiguration.rulesPaths.splice(index, 1);
-
-        this._configurationService.save(newConfiguration).subscribe(
-            configuration => {
-                this.configuration = configuration;
+            this._configurationService.get().subscribe(newConfig => {
+                this.configuration = newConfig;
                 this.loadProviders();
-            },
-            error => console.error("Error: " + error)
-        )
+            });
+        });
     }
 
     reloadConfiguration() {

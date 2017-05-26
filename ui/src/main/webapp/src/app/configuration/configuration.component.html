@@ -30,7 +30,7 @@
                        [attr.data-parent]="'#rulePathPanel_' + rulePath.id"
                        href="#collapse_{{rulePath.id}}"
                     >
-                        <span i18n>Rules:</span> {{rulePath.rulesPathType == "SYSTEM_PROVIDED" ? "&lt;System Rules&gt;" : rulePath.path}}
+                        <span i18n>Rules:</span> {{rulesShortPath(rulePath)}}
                     </a>
                 </h2>
             </div>

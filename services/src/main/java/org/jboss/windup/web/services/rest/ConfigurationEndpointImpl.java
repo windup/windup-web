@@ -19,9 +19,6 @@ public class ConfigurationEndpointImpl implements ConfigurationEndpoint
     @Inject
     private ConfigurationService configurationService;
 
-    @Inject
-    private Event<Configuration> configurationEvent;
-
     @Override
     public Configuration getConfiguration()
     {
@@ -31,9 +28,7 @@ public class ConfigurationEndpointImpl implements ConfigurationEndpoint
     @Override
     public Configuration saveConfiguration(Configuration configuration)
     {
-        Configuration saved = configurationService.saveConfiguration(configuration);
-        configurationEvent.fire(saved);
-        return saved;
+        return configurationService.saveConfiguration(configuration);
     }
 
     @Override
@@ -45,9 +40,6 @@ public class ConfigurationEndpointImpl implements ConfigurationEndpoint
     @Override
     public Configuration reloadConfiguration()
     {
-        Configuration configuration = configurationService.getConfiguration();
-        this.configurationEvent.fire(configuration);
-
-        return configuration;
+        return configurationService.reloadConfiguration();
     }
 }
