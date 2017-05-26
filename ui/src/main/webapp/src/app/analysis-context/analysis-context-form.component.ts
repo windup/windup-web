@@ -21,6 +21,8 @@ import {RegisteredApplicationService} from "../registered-application/registered
 import {MigrationProjectService} from "../project/migration-project.service";
 import {forkJoin} from "rxjs/observable/forkJoin";
 import {WINDUP_WEB} from "../app.module";
+import {DialogService} from "../shared/dialog/dialog.service";
+import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
 
 @Component({
     templateUrl: './analysis-context-form.component.html',
@@ -100,6 +102,8 @@ export class AnalysisContextFormComponent extends FormComponent
     static DEFAULT_MIGRATION_PATH: MigrationPath = <MigrationPath>{ id: 101 };
     static CLOUD_READINESS_PATH_ID: number = 90;
 
+    private dialog: ConfirmationModalComponent;
+    private dialogSubscription: Subscription;
 
     constructor(private _router: Router,
                 private _activatedRoute: ActivatedRoute,
@@ -113,13 +117,17 @@ export class AnalysisContextFormComponent extends FormComponent
                 private _routeFlattener: RouteFlattenerService,
                 private _windupExecutionService: WindupExecutionService,
                 private _notificationService: NotificationService,
-                private _registeredApplicationService: RegisteredApplicationService
+                private _registeredApplicationService: RegisteredApplicationService,
+                private _dialogService: DialogService
             ) {
         super();
         this.includePackages = [];
         this.excludePackages = [];
 
         this.initializeAnalysisContext();
+
+        this.dialog  = this._dialogService.getConfirmationDialog();
+        this.dialogSubscription = this.dialog.confirmed.subscribe(() => this.saveConfiguration());
     }
 
     ngOnInit() {
@@ -167,6 +175,7 @@ export class AnalysisContextFormComponent extends FormComponent
 
     ngOnDestroy(): void {
         this.routerSubscription.unsubscribe();
+        this.dialogSubscription.unsubscribe();
     }
 
     // Apps selection checkboxes
@@ -288,6 +297,16 @@ export class AnalysisContextFormComponent extends FormComponent
     }
 
     onSubmit() {
+        if (!this.packageTreeLoaded) {
+            this.dialog.title = 'Package identification is not complete';
+            this.dialog.body = `Do you want to save the analysis without selecting packages?`;
+            this.dialog.show();
+        } else {
+            this.saveConfiguration();
+        }
+    }
+
+    protected saveConfiguration() {
         // HACK - this readds all of the apps in case the weird bug strikes that causes some not to be selected
         if (this.isInWizard && !this.analysisContext.applications || this.analysisContext.applications.length == 0) {
             this.analysisContext.applications = this.availableApps.slice();
