@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericEntity;
@@ -69,7 +70,7 @@ public class MigrationProjectRegisteredApplicationsEndpointTest extends Abstract
     public void testRegisterAppByPath() throws Exception
     {
         Collection<RegisteredApplication> existingApps = registeredApplicationEndpoint.getAllApplications();
-        Assert.assertEquals(0, existingApps.size());
+        Assert.assertEquals(0, filterOutDeleted(existingApps).size());
 
         File tempFile1 = File.createTempFile(RegisteredApplicationEndpointTest.class.getSimpleName() + ".1", ".ear");
         File tempFile2 = File.createTempFile(RegisteredApplicationEndpointTest.class.getSimpleName() + ".2", ".ear");
@@ -80,6 +81,7 @@ public class MigrationProjectRegisteredApplicationsEndpointTest extends Abstract
         try
         {
             Collection<RegisteredApplication> apps = registeredApplicationEndpoint.getAllApplications();
+            apps = filterOutDeleted(apps);
             Assert.assertEquals(2, apps.size());
             boolean foundPath1 = false;
             boolean foundPath2 = false;
@@ -113,7 +115,7 @@ public class MigrationProjectRegisteredApplicationsEndpointTest extends Abstract
     public void testRegisterAppUpload() throws Exception
     {
         Collection<RegisteredApplication> existingApps = registeredApplicationEndpoint.getAllApplications();
-        Assert.assertEquals(0, existingApps.size());
+        Assert.assertEquals(0, filterOutDeleted(existingApps).size());
 
         try (InputStream sampleIS = getClass().getResourceAsStream(DataProvider.TINY_SAMPLE_PATH))
         {
@@ -132,6 +134,7 @@ public class MigrationProjectRegisteredApplicationsEndpointTest extends Abstract
                 response.close();
 
                 Collection<RegisteredApplication> apps = registeredApplicationEndpoint.getAllApplications();
+                apps = filterOutDeleted(apps);
                 Assert.assertEquals(1, apps.size());
 
                 Assert.assertEquals(fileName, application.getTitle());
@@ -157,6 +160,10 @@ public class MigrationProjectRegisteredApplicationsEndpointTest extends Abstract
                 }
             }
         }
+    }
+
+    private Collection<RegisteredApplication> filterOutDeleted(Collection<RegisteredApplication> apps) {
+        return apps.stream().filter(app -> !app.isDeleted()).collect(Collectors.toList());
     }
 
     public void testRegisterAppWithoutFile() throws Exception
