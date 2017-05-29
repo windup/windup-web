@@ -64,7 +64,7 @@
                         </div>
                         -->
                         <div class="list-view-pf-actions" style="margin-left: 5px;">
-                            <button class="btn btn-default" (click)="displayRules(ruleProvider, $event)" i18n="Button">Show rules</button>
+                            <button class="btn btn-default" [disabled]="ruleProvider.rules.length < 1" (click)="displayRules(ruleProvider, $event)" i18n="Button">Show rules</button>
                         </div>
                         <div class="list-view-pf-main-info">
                             <div class="list-view-pf-left">
