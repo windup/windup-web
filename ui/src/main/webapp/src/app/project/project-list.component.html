@@ -36,18 +36,24 @@
             <ng-container *ngFor="let project of projects">
                 <div class="list-group-item  project-info  tile-click" (click)="viewProject($event, project)">
                     <div class="list-view-pf-actions">
-                        <span class="fa-lg project-action-item" i18n-title="Edit project" title="Edit project">
-                            <a (click)="editProject($event, project)" class="action-button">
-                                <i class="fa fa-pencil"></i>
-                            </a>
-                        </span>
-                        <span class="fa-lg project-action-item" i18n-title="Delete project" title="Delete project">
-                            <a [attr.disabled]="project.isDeletable ? null : true" (click)="confirmDeleteProject($event, project)" class="action-button"
-                               title="{{!project.isDeletable ? 'Cannot delete while an analysis is in progress' : 'Delete project'}}"
-                            >
-                                <i class="fa fa-trash-o"></i>
-                            </a>
-                        </span>
+                        <ng-container *ngIf="isDeleting(project); else showProjectActions">
+                            <span class="spinner spinner-xs spinner-inline"></span>
+                            <ng-container i18n="deleting">Deleting...</ng-container>
+                        </ng-container>
+                        <ng-template #showProjectActions>
+                            <span class="fa-lg project-action-item" i18n-title="Edit project" title="Edit project">
+                                <a (click)="editProject($event, project)" class="action-button">
+                                    <i class="fa fa-pencil"></i>
+                                </a>
+                            </span>
+                            <span class="fa-lg project-action-item" i18n-title="Delete project" title="Delete project">
+                                <a [attr.disabled]="project.isDeletable ? null : true" (click)="confirmDeleteProject($event, project)" class="action-button"
+                                   title="{{!project.isDeletable ? 'Cannot delete while an analysis is in progress' : 'Delete project'}}"
+                                >
+                                    <i class="fa fa-trash-o"></i>
+                                </a>
+                            </span>
+                        </ng-template>
                     </div>
                     <div class="list-view-pf-main-info">
                         <div class="list-view-pf-body">

@@ -31,6 +31,8 @@ export class ApplicationListComponent extends ExecutionsMonitoringComponent impl
     @ViewChild('deleteAppDialog')
     readonly deleteAppDialog: ConfirmationModalComponent;
 
+    private deletedApplications = new Map<number, RegisteredApplication>();
+
     constructor(
         private _activatedRoute: ActivatedRoute,
         private _router: Router,
@@ -105,10 +107,15 @@ export class ApplicationListComponent extends ExecutionsMonitoringComponent impl
     }
 
     public doDeleteApplication(application: RegisteredApplication) {
-        this._registeredApplicationsService.deleteApplication(this.project, application).subscribe(
-            () => this._notificationService.success(`The application ‘${application.title}’ was deleted.`),
-            error => this._notificationService.error(utils.getErrorMessage(error))
-        );
+        this.deletedApplications.set(application.id, application);
+        this._registeredApplicationsService.deleteApplication(this.project, application)
+            .finally(() => {
+                this.deletedApplications.delete(application.id);
+            })
+            .subscribe(
+                () => this._notificationService.success(`The application ‘${application.title}’ was deleted.`),
+                error => this._notificationService.error(utils.getErrorMessage(error))
+            );
     }
 
     public confirmDeleteApplication(application: RegisteredApplication) {
@@ -128,5 +135,9 @@ export class ApplicationListComponent extends ExecutionsMonitoringComponent impl
         } else {
             this.filteredApplications = this.project.applications;
         }
+    }
+
+    public isDeleting(app: RegisteredApplication) {
+        return this.deletedApplications.has(app.id);
     }
 }
