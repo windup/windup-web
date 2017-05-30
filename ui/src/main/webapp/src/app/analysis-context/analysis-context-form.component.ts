@@ -337,7 +337,10 @@ export class AnalysisContextFormComponent extends FormComponent
         } else if (this.isInWizard) {
             this._router.navigate([`/projects/${this.project.id}`]);
         } else {
-            this.navigateBack();
+            /**
+             * As requested, saving configuration doesn't trigger navigation anymore.
+             * It also doesn't create any notification, which is IMHO inherently wrong, but also requested.
+             */
         }
     }
 
