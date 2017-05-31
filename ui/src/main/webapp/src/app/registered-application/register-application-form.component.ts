@@ -31,7 +31,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     protected application: RegisteredApplication;
     protected multipartUploader: FileUploader;
     protected mode: RegistrationType = "UPLOADED";
-    protected fileInputPath: string;
+    protected fileInputPath: string = '';
     private isDirWithApps: boolean = false;
     protected isAllowUploadMultiple: boolean = true;
 
@@ -240,12 +240,12 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     public get isValid() {
         /**
          * If project already has some applications,
-         * form is always valid, no matter of what is filled in.
+         * form is always valid for "upload" tab and also for empty path in "server path" tab.
          *
          * This allows us to have 'Back' step in wizard and not requiring
          * user to upload new application.
          */
-        if  (this.isInWizard && this.projectHasApplications()) {
+        if  (this.isInWizard && this.projectHasApplications() && this.fileInputPath.length === 0) {
             return true;
         }
 

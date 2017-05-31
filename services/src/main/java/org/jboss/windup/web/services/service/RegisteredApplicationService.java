@@ -198,6 +198,12 @@ public class RegisteredApplicationService
         }
 
         File file = new File(path);
+
+        if (!file.exists())
+        {
+            throw new BadRequestException("File does not exist");
+        }
+
         if (file.isDirectory())
         {
             try
