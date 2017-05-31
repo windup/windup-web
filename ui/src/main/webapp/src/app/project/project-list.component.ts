@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {Router} from "@angular/router";
 
 import {ExtendedMigrationProject, MigrationProjectService} from "./migration-project.service";
@@ -8,6 +8,8 @@ import {utils} from "../shared/utils";
 import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
 import {OrderDirection, SortingService} from "../shared/sort/sorting.service";
 import {WindupService} from "../services/windup.service";
+import {EventBusService} from "../core/events/event-bus.service";
+import {DeleteMigrationProjectEvent} from "../core/events/windup-event";
 
 @Component({
     templateUrl: './project-list.component.html',
@@ -18,7 +20,7 @@ import {WindupService} from "../services/windup.service";
         SortingService
     ]
 })
-export class ProjectListComponent implements OnInit, AfterViewInit {
+export class ProjectListComponent implements OnDestroy, OnInit, AfterViewInit {
     private _originalProjects: MigrationProject[] = [];
 
     loading: boolean = true;
@@ -35,6 +37,7 @@ export class ProjectListComponent implements OnInit, AfterViewInit {
     readonly deleteProjectModal: ConfirmationModalComponent;
 
     searchValue: string = '';
+    private deletedEventSubscription;
 
     sort = {
         sortOptions: [
@@ -47,19 +50,28 @@ export class ProjectListComponent implements OnInit, AfterViewInit {
         direction: OrderDirection.ASC
     };
 
-    private deletedProjects = new Map<number, MigrationProject>();
-
     constructor(
         private _router: Router,
         private _migrationProjectService: MigrationProjectService,
         private _notificationService: NotificationService,
         private _sortingService: SortingService<MigrationProject>,
-        private _windupService: WindupService
-    ) {}
+        private _windupService: WindupService,
+        private _eventBus: EventBusService
+    ) {
+        this.deletedEventSubscription = this._eventBus.onEvent
+            .filter(event => event.isTypeOf(DeleteMigrationProjectEvent))
+            .subscribe(event => {
+                this.getMigrationProjects();
+            })
+    }
 
     ngOnInit(): any {
         this.updateSort();
         this.getMigrationProjects();
+    }
+
+    ngOnDestroy(): void {
+        this.deletedEventSubscription.unsubscribe();
     }
 
     ngAfterViewInit(): void {
@@ -101,6 +113,9 @@ export class ProjectListComponent implements OnInit, AfterViewInit {
     viewProject(event: Event, project:MigrationProject) {
         event.stopPropagation();
 
+        if (this.isDeleting(project))
+            return false;
+
         this._router.navigate(['/projects', project.id]);
         return false;
     }
@@ -128,11 +143,7 @@ export class ProjectListComponent implements OnInit, AfterViewInit {
     }
 
     private doDeleteProject(project: MigrationProject) {
-        this.deletedProjects.set(project.id, project);
-
-        this._migrationProjectService.delete(project).finally(() => {
-            this.deletedProjects.delete(project.id);
-        }).subscribe(
+        this._migrationProjectService.delete(project).subscribe(
             success => {
                 this._notificationService.success(`Project '${project.title}' was deleted.`);
                 let index = this._originalProjects.indexOf(project);
@@ -145,8 +156,8 @@ export class ProjectListComponent implements OnInit, AfterViewInit {
         );
     }
 
-    public isDeleting(project: MigrationProject) {
-        return this.deletedProjects.has(project.id);
+    isDeleting(project: MigrationProject) {
+        return this._migrationProjectService.isDeleting(project);
     }
 
     confirmDeleteProject(event: Event, project: ExtendedMigrationProject) {
