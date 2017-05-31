@@ -97,7 +97,6 @@ export class ProjectExecutionsComponent extends ExecutionsMonitoringComponent im
                 execution => {
                     this.refreshExecutionList();
                     console.log('load active executions');
-                    this.loadActiveExecutions([execution]);
                 },
                 error => {
                     this._notificationService.error(utils.getErrorMessage(error));

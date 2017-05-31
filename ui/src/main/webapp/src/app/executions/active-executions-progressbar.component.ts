@@ -8,4 +8,12 @@ import {WindupExecution} from "../generated/windup-services";
 export class ActiveExecutionsProgressbarComponent {
     @Input()
     activeExecutions: WindupExecution[];
+
+    get mainExecution() {
+        let mainExecution = null;
+        if (!this.activeExecutions)
+            return null;
+
+        return this.activeExecutions.find(execution => execution.currentTask != null && execution.currentTask != "");
+    }
 }
