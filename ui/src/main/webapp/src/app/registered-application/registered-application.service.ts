@@ -14,6 +14,7 @@ import {
 import {SchedulerService} from "../shared/scheduler.service";
 import {ReplaySubject} from "rxjs";
 import {Cached} from "../shared/cache.service";
+import {isArray} from "util";
 
 @Injectable()
 export class RegisteredApplicationService extends AbstractService {
@@ -75,7 +76,22 @@ export class RegisteredApplicationService extends AbstractService {
         return this._http.post(url, body, this.JSON_OPTIONS)
             .map(res => <RegisteredApplication> res.json())
             .catch(this.handleError)
-            .do((responseApplication) => this.fireNewApplicationEvents(responseApplication, project));
+            .do((responseApplication) => {
+                let responseApplicationArray;
+
+                if (!isArray(responseApplication)) {
+                    responseApplicationArray = [ responseApplication ];
+                }
+
+                const newApplications = responseApplicationArray.filter(responseApp => {
+                    return !project.applications.some(app => app.id === responseApp.id);
+                });
+
+
+                if (newApplications.length > 0) {
+                    this.fireNewApplicationEvents(newApplications, project);
+                }
+            });
     }
 
     registerByPath(project: MigrationProject, path: string): Observable<RegisteredApplication> {
