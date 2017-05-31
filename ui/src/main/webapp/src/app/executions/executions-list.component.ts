@@ -7,6 +7,7 @@ import {SortingService, OrderDirection} from "../shared/sort/sorting.service";
 import {MigrationProjectService} from "../project/migration-project.service";
 import {WindupExecutionService} from "../services/windup-execution.service";
 import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
+import {AbstractComponent} from "../shared/AbstractComponent";
 
 @Component({
     selector: 'wu-executions-list',
@@ -14,7 +15,7 @@ import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.co
     providers: [SortingService],
     styleUrls: ['../../../css/tables.scss', 'executions-list.component.scss']
 })
-export class ExecutionsListComponent implements OnInit, OnDestroy {
+export class ExecutionsListComponent extends AbstractComponent implements OnInit {
     @Output()
     reloadRequestEvent: EventEmitter<any> = new EventEmitter();
 
@@ -45,6 +46,8 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
 
     private filteredExecutions: WindupExecution[];
 
+    private deletedExecutions: Map<number, WindupExecution> = new Map<number, WindupExecution>();
+
     constructor(
         private _elementRef: ElementRef,
         private _windupService: WindupService,
@@ -52,6 +55,7 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
         private _sortingService: SortingService<WindupExecution>,
         private _projectService: MigrationProjectService
     ) {
+        super();
         this.element = _elementRef.nativeElement;
     }
 
@@ -132,14 +136,18 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
         this.deleteExecutionDialog.show();
     }
 
-    doDeleteExecution(execution:WindupExecution) {
-        this._windupService.deleteExecution(execution).subscribe(
+    doDeleteExecution(execution: WindupExecution) {
+        this.deletedExecutions.set(execution.id, execution);
+        this._windupService.deleteExecution(execution).finally(() => {
+            this.deletedExecutions.delete(execution.id);
+        }).subscribe(
             success => {
                 this._notificationService.success(`Analysis #${execution.id} was deleted.`);
                 this.reloadRequestEvent.emit(true);
             },
             error => this._notificationService.error(utils.getErrorMessage(error))
         );
+
         return false;
     }
 
@@ -194,4 +202,8 @@ export class ExecutionsListComponent implements OnInit, OnDestroy {
     sortByNumberAnalyzedApplicationsCallback = (item: WindupExecution) => {
         return this.getNumberAnalyzedApplications(item);
     };
+
+    public isDeleting(execution: WindupExecution) {
+        return this.deletedExecutions.has(execution.id);
+    }
 }

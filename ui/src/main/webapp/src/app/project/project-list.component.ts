@@ -47,6 +47,8 @@ export class ProjectListComponent implements OnInit, AfterViewInit {
         direction: OrderDirection.ASC
     };
 
+    private deletedProjects = new Map<number, MigrationProject>();
+
     constructor(
         private _router: Router,
         private _migrationProjectService: MigrationProjectService,
@@ -126,7 +128,11 @@ export class ProjectListComponent implements OnInit, AfterViewInit {
     }
 
     private doDeleteProject(project: MigrationProject) {
-        this._migrationProjectService.delete(project).subscribe(
+        this.deletedProjects.set(project.id, project);
+
+        this._migrationProjectService.delete(project).finally(() => {
+            this.deletedProjects.delete(project.id);
+        }).subscribe(
             success => {
                 this._notificationService.success(`Project '${project.title}' was deleted.`);
                 let index = this._originalProjects.indexOf(project);
@@ -137,6 +143,10 @@ export class ProjectListComponent implements OnInit, AfterViewInit {
                 this._notificationService.error(utils.getErrorMessage(error));
             }
         );
+    }
+
+    public isDeleting(project: MigrationProject) {
+        return this.deletedProjects.has(project.id);
     }
 
     confirmDeleteProject(event: Event, project: ExtendedMigrationProject) {
