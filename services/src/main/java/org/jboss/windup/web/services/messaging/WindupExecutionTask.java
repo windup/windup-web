@@ -196,7 +196,10 @@ public class WindupExecutionTask implements Runnable
         // That makes this a per-execution option. See WindupExecutionTask for what's the workaround.
         boolean isSomePathExplodedApp = analysisContext.getApplications().stream().anyMatch(app -> app.isExploded());
         if (isSomePathExplodedApp)
+        {
+            LOG.info("This execution will treat all registered directories as exploded applications since at least one registered application has that setting.");
             result.put(ExplodedAppInputOption.NAME, true);
+        }
 
         // Process the map of advanced options stored for the analysis context (execution configuration).
         for (AdvancedOption advancedOption : analysisContext.getAdvancedOptions())

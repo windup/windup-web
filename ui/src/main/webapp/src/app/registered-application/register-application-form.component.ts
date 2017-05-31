@@ -103,7 +103,8 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
                 Validators.compose([Validators.required, Validators.minLength(4)]),
                 Validators.composeAsync([
                     FileExistsValidator.create(this._fileService),
-                    IfDirectoryThenShouldNonEmptyHaveFilesValidator.create(this._fileService),
+                    // TODO: Only validate if isDirWithExplodedApp == false.
+                    //IfDirectoryThenShouldNonEmptyHaveFilesValidator.create(this._fileService),
                 ]),
             ],
             //isDirWithAppsCheckBox: [], // TODO: Validate if appPathToRegister has a directory if this is true.
