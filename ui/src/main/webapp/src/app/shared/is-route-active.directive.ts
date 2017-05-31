@@ -26,7 +26,7 @@ export class IsRouteActiveDirective implements OnChanges, OnDestroy {
      * @type {string[]|string}
      */
     @Input()
-    public routerLink: string|string[] = [];
+    public wuRouterLink: string|string[] = [];
 
     /**
      * CSS classes to use when route is active
@@ -55,7 +55,7 @@ export class IsRouteActiveDirective implements OnChanges, OnDestroy {
     }
 
     update() {
-        if (!this._router.navigated || !this.routerLink) {
+        if (!this._router.navigated || !this.wuRouterLink) {
             return;
         }
 
@@ -76,7 +76,7 @@ export class IsRouteActiveDirective implements OnChanges, OnDestroy {
     }
 
     protected isRouteActive() {
-        const routeUrl = Array.isArray(this.routerLink) ? this.routerLink.join('') : this.routerLink;
+        const routeUrl = Array.isArray(this. wuRouterLink) ? this.wuRouterLink.join('') : this.wuRouterLink;
 
         return this._router.isActive(routeUrl, false);
     }
