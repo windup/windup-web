@@ -24,6 +24,7 @@ export class MigrationProjectService extends AbstractService {
     private GET_ID_BY_NAME_URL = '/migrationProjects/id-by-name';
 
     private monitoredProjects = new Map<number, MigrationProject>();
+    private deletedProjects = new Map<number, MigrationProject>();
 
     constructor (private _http: Http, private _eventBus: EventBusService) {
         super();
@@ -87,7 +88,13 @@ export class MigrationProjectService extends AbstractService {
             .catch(this.handleError);
     }
 
+    isDeleting(project: MigrationProject) {
+        return this.deletedProjects.has(project.id);
+    }
+
     delete(migrationProject: MigrationProject): Observable<void> {
+        this.deletedProjects.set(migrationProject.id, migrationProject);
+
         let body = JSON.stringify(migrationProject);
 
         let options = new RequestOptions({
@@ -101,7 +108,9 @@ export class MigrationProjectService extends AbstractService {
         return this._http.delete(Constants.REST_BASE + this.DELETE_MIGRATION_PROJECT_URL, options)
             .map(res => res.json())
             .do(res => this._eventBus.fireEvent(new DeleteMigrationProjectEvent(migrationProject, this)))
-            .catch(this.handleError);
+            .catch(this.handleError).finally(() => {
+                this.deletedProjects.delete(migrationProject.id);
+            });
     }
 
     @Cached('project')
