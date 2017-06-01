@@ -15,7 +15,7 @@ export class NotificationComponent implements OnInit, OnDestroy {
     protected autoCloseNotifications: boolean = true;
 
     @Input()
-    protected closeTimeout: number = 300;
+    protected closeTimeout: number = 30;
 
     protected subscription: Subscription;
 

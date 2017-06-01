@@ -16,9 +16,6 @@ import {DEFAULT_MENU_ITEMS} from "../shared/navigation/hamburger-menu.component"
 
 @Component({
     templateUrl: './project-layout.component.html',
-    styles: [
-        `:host /deep/ .row-cards-pf:first-child { padding-top: initial; }`
-    ]
 })
 export class ProjectLayoutComponent extends RoutedComponent implements OnInit, OnDestroy {
     protected allProjects: MigrationProject[];
