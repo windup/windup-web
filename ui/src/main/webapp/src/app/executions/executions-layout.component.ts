@@ -16,10 +16,6 @@ import {WindupExecutionService} from "../services/windup-execution.service";
 
 @Component({
     templateUrl: './executions-layout.component.html',
-    styles: [
-        `:host /deep/ .nav-pf-vertical { top: 61px; }`,
-        `:host /deep/ .row-cards-pf:first-child { padding-top: initial; }`
-    ]
 })
 export class ExecutionsLayoutComponent extends ProjectLayoutComponent implements OnInit, OnDestroy {
     protected execution: WindupExecution;

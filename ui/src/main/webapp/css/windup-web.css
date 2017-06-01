@@ -178,3 +178,8 @@ fieldset.fields-section-pf {
         padding-top: initial;
     }
 }
+
+/* Pushes notifications area a bit down from the horizontal navigation bar. */
+.notifications-row {
+    padding-top: 24px;
+}
