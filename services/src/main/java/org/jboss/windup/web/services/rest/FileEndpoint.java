@@ -36,11 +36,4 @@ public interface FileEndpoint
     {
         FILE, DIRECTORY
     }
-
-    /**
-     * Returns the number of non-empty files existing directly in the given server directory.
-     */
-    @POST
-    @Path("directoryFilesCount")
-    int directoryFilesCount(String path, @QueryParam("nameRegex") String nameRegex, @QueryParam("minSize") Long minSizeBytes);
 }

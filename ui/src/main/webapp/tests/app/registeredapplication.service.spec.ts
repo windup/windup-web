@@ -72,7 +72,7 @@ describe("Registered Application Service Test", () => {
             let inputPath = "src/main/java";
 
             mockBackend.connections.subscribe((connection: MockConnection) => {
-                expect(connection.request.url).toEqual(Constants.REST_BASE + '/migrationProjects/0/registeredApplications/register-path');
+                expect(connection.request.url).toEqual(Constants.REST_BASE + '/migrationProjects/0/registeredApplications/register-path?exploded=false');
                 expect(connection.request.method).toEqual(RequestMethod.Post);
                 expect(connection.request.getBody()).toEqual("src/main/java");
 

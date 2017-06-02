@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy} from "@angular/core";
-import {AsyncValidator, FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router, NavigationEnd} from "@angular/router";
 import {FileUploader} from "ng2-file-upload/ng2-file-upload";
 
@@ -12,15 +12,14 @@ import {Constants} from "../constants";
 import {Subscription} from "rxjs";
 import {RouteFlattenerService} from "../core/routing/route-flattener.service";
 import {TabComponent} from "../shared/tabs/tab.component";
-import {FileItem, FileUploaderOptions, FilterFunction} from "ng2-file-upload";
+import {FileUploaderOptions, FilterFunction} from "ng2-file-upload";
 import {EventBusService} from "../core/events/event-bus.service";
-import {ApplicationDeletedEvent, UpdateMigrationProjectEvent} from "../core/events/windup-event";
+import {UpdateMigrationProjectEvent} from "../core/events/windup-event";
 import {MigrationProjectService} from "../project/migration-project.service";
 import {NotificationService} from "../core/notification/notification.service";
 import {utils} from "../shared/utils";
 import {FileLikeObject} from "ng2-file-upload/file-upload/file-like-object.class";
 import formatString = utils.formatString;
-import {IfDirectoryThenShouldNonEmptyHaveFilesValidator} from "../shared/validators/dir-has-files.validator";
 
 @Component({
     templateUrl: "./register-application-form.component.html",
@@ -33,7 +32,6 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     protected multipartUploader: FileUploader;
     protected mode: RegistrationType = "UPLOADED";
     protected fileInputPath: string = '';
-    private isDirWithApps: boolean = false;
     private isDirWithExplodedApp: boolean = false;
     protected isAllowUploadMultiple: boolean = true;
 
@@ -103,8 +101,6 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
                 Validators.compose([Validators.required, Validators.minLength(4)]),
                 Validators.composeAsync([
                     FileExistsValidator.create(this._fileService),
-                    // TODO: Only validate if isDirWithExplodedApp == false.
-                    //IfDirectoryThenShouldNonEmptyHaveFilesValidator.create(this._fileService),
                 ]),
             ],
             //isDirWithAppsCheckBox: [], // TODO: Validate if appPathToRegister has a directory if this is true.
