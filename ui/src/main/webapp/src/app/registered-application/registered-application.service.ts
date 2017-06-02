@@ -79,13 +79,12 @@ export class RegisteredApplicationService extends AbstractService {
             .do((responseApplication) => {
                 let responseApplicationArray;
 
-                if (!isArray(responseApplication)) {
+                if (isArray(responseApplication)) {
                     responseApplicationArray = responseApplication;
                 } else {
                     responseApplicationArray = [ responseApplication ];
                 }
 
-                console.log("Response: ", responseApplicationArray);
                 const newApplications = responseApplicationArray.filter(responseApp => {
                     return !project.applications || !project.applications.some(app => app.id === responseApp.id);
                 });
