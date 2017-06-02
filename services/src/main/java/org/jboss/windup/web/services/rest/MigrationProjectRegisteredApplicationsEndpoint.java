@@ -9,6 +9,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
@@ -44,7 +45,7 @@ public interface MigrationProjectRegisteredApplicationsEndpoint
 
     @Path("register-path")
     @POST
-    RegisteredApplication registerApplicationByPath(@PathParam("projectId") long projectId, String path);
+    RegisteredApplication registerApplicationByPath(@PathParam("projectId") long projectId, @QueryParam("exploded") Boolean exploded, String path);
 
     /**
      * Registers all applications found in directory path on the server.

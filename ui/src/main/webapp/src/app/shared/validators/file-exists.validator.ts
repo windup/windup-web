@@ -10,7 +10,7 @@ export class FileExistsValidator {
                     if (result)
                         resolve(null);
                     else
-                        resolve({fileExists: false});
+                        resolve({fileExists: `File '${control.value}' does not exist.`});
                 });
             });
         };

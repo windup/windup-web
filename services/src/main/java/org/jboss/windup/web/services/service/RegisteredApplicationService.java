@@ -143,7 +143,7 @@ public class RegisteredApplicationService
 
         for (File file : this.getFilesFromDirectory(directory, allowedExtensions))
         {
-            RegisteredApplication application = this.registerApplicationByPath(project, file.getPath());
+            RegisteredApplication application = this.registerApplicationByPath(project, false, file.getPath());
             registeredApplicationList.add(application);
         }
 
@@ -185,7 +185,7 @@ public class RegisteredApplicationService
     }
 
     @Transactional
-    public RegisteredApplication registerApplicationByPath(MigrationProject project, String path)
+    public RegisteredApplication registerApplicationByPath(MigrationProject project, boolean exploded, String path)
     {
         LOG.info("Registering an application at: " + path);
 
@@ -224,6 +224,7 @@ public class RegisteredApplicationService
 
         RegisteredApplication application = this.createApplication(project);
         application.setInputPath(path);
+        application.setExploded(exploded);
         application.setTitle(file.getName());
 
         application.setMigrationProject(project);

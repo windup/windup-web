@@ -45,30 +45,47 @@
         <wu-tab [tabTitle]="'Server Path'" [properties]="{mode: 'PATH'}">
             <div class="form-group description">
                 <div class="col-md-12">
-                    <label class="required" for="appPathToRegister" i18n="Server Path Description">Server-side file system path that contains the applications</label>
+                    <label class="required" for="appPathToRegister" i18n="Server Path Description">
+                        Server-side file system path to applications
+                    </label>
                 </div>
             </div>
             <div class="form-group" [ngClass]="{'has-error': hasError(registrationForm.get('appPathToRegister'))}">
                 <div class="col-md-12">
                     <input [(ngModel)]="fileInputPath" id="appPathToRegister" formControlName="appPathToRegister"
-                           type="text"
-                           class="form-control" />
-                    <span [class.hidden]="!hasError(registrationForm.get('appPathToRegister'))" class="help-block" i18n="Path Error">
-                            The file system path must exist on the server.
+                        type="text" class="form-control" placeholder="/opt/apps/ or /opt/apps/my.ear"
+                        clas="form-control"/>
+                    <p class="help-block" i18n="hint">
+                        Path to a single application archive, a directory containing multiple applications, or a directory containing an exploded application (check the below checkbox)
+                    </p>
+
+                    <span [class.hidden]="!hasError(registrationForm.get('appPathToRegister'), 'fileExists')" class="help-block" i18n="Path Error">
+                        <!-- Changing from this text wanted by Marc so that it informs the user a dir can't be empty.
+                        The file system path must exist on the server.
+                        -->
+                        The path must be an existing file or a non-empty directory on the server.
                     </span>
                 </div>
             </div>
             <div class="form-group"  *ngIf="isAllowUploadMultiple">
                 <div class="col-md-10">
+                    <!--
                     <div class="checkbox">
                         <label>
-                            <input [(ngModel)]="isDirWithApps" formControlName="isDirWithAppsCheckBox" type="checkbox" i18n="Directory Contains Multiple Apps">
+                            <input [(ngModel)]="isDirWithApps" formControlName="isDirWithAppsCheckBox" type="checkbox" i18n="checkbox label">
                             <ng-container i18n="Directory Help Text">Directory contains multiple applications</ng-container>
                         </label>
                         <div class="description" i18n="Directory Contains Multiple Apps Help Text">
                             If checked, the given path is treated as a directory with multiple applications.
                             Otherwise, the path is treated as a single application.
                         </div>
+                    </div>
+                    -->
+                    <div class="checkbox">
+                        <label style="font-weight: 600;">
+                            <input [(ngModel)]="isDirWithExplodedApp" formControlName="isDirWithExplodedApp" type="checkbox" i18n="checkbox label">
+                            <ng-container i18n="Directory checkbox help text">Directory is an exploded Java application archive</ng-container>
+                        </label>
                     </div>
                 </div>
             </div>
@@ -79,7 +96,7 @@
         <div class="col-md-12">
             <div class="button-container">
                 <button *ngIf="isInWizard" (click)="cancelRegistration()" type="button" class="btn btn-default">{{isInWizard ? 'Back' : 'Cancel'}}</button>
-                <button [disabled]="!isValid" class="btn btn-primary" type="submit">{{isInWizard ? 'Next' : labels.uploadButton}}</button>
+                <button [disabled]="!registrationForm.pending && !isValid" class="btn btn-primary" type="submit">{{isInWizard ? 'Next' : labels.uploadButton}}</button>
             </div>
         </div>
     </div>

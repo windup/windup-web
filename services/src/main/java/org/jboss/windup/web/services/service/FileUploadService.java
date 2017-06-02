@@ -120,7 +120,7 @@ public class FileUploadService
         }
         catch (IOException ex)
         {
-            Logger.getLogger(RegisteredApplicationService.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
             throw new InternalServerErrorException("Error during file upload");
         }
     }

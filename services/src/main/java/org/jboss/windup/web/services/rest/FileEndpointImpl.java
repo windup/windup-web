@@ -1,8 +1,10 @@
 package org.jboss.windup.web.services.rest;
 
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -45,5 +47,4 @@ public class FileEndpointImpl implements FileEndpoint
 
         return null;
     }
-
 }
