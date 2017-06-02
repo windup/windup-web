@@ -161,13 +161,15 @@ fieldset.fields-section-pf {
 }
 
 .wu-horizontal-nav-content {
-    margin-top: 122px;
+/*    margin-top: 122px; */
+    padding-top: 122px;
+    margin-top: 0;
 }
-
+/*
 .wu-horizontal-nav-content.container-fluid, .wu-horizontal-nav-content .container-fluid {
     padding-top: inherit;
 }
-
+*/
 @media (max-width: 767px) {
     .wu-horizontal-nav-content, .layout-pf.layout-pf-fixed .container-pf-nav-pf-vertical {
         margin-left: 0;

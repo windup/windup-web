@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div [ngClass]="{'container-fluid': isInWizard}">
 <h1>{{labels.heading}}</h1>
 
 <form [formGroup]="registrationForm" (ngSubmit)="register()"  class="form-horizontal" ng2FileDrop [uploader]="multipartUploader">
