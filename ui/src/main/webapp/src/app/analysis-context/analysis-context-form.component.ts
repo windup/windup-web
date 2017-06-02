@@ -99,6 +99,8 @@ export class AnalysisContextFormComponent extends FormComponent
 
     disableCloudReadiness = false;
 
+    saveInProgress = false;
+
     static DEFAULT_MIGRATION_PATH: MigrationPath = <MigrationPath>{ id: 101 };
     static CLOUD_READINESS_PATH_ID: number = 90;
 
@@ -131,6 +133,8 @@ export class AnalysisContextFormComponent extends FormComponent
     }
 
     ngOnInit() {
+        this.saveInProgress = false;
+
         this._configurationOptionsService.getAll().subscribe((options: ConfigurationOption[]) => {
             this.configurationOptions = options;
         });
@@ -312,6 +316,8 @@ export class AnalysisContextFormComponent extends FormComponent
             this.analysisContext.applications = this.availableApps.slice();
         }
 
+        this.saveInProgress = true;
+
         this._analysisContextService.saveAsDefault(this.analysisContext, this.project).subscribe(
             updatedContext => {
                 this._dirty = false;
@@ -329,14 +335,17 @@ export class AnalysisContextFormComponent extends FormComponent
         if (this.action === Action.SaveAndRun) {
             this._windupExecutionService.execute(analysisContext, this.project)
                 .subscribe(execution => {
+                    this.saveInProgress = false;
                     this._router.navigate([`/projects/${this.project.id}`]);
                 },
                 error => {
                     this._notificationService.error(utils.getErrorMessage(error));
                 });
         } else if (this.isInWizard) {
+            this.saveInProgress = false;
             this._router.navigate([`/projects/${this.project.id}`]);
         } else {
+            this.saveInProgress = false;
             /**
              * As requested, saving configuration doesn't trigger navigation anymore.
              * It also doesn't create any notification, which is IMHO inherently wrong, but also requested.
