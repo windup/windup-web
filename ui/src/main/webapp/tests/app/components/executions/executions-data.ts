@@ -1,7 +1,8 @@
 import {WindupExecution} from "../../../../src/app/generated/windup-services";
 
-export const EXECUTIONS_DATA: Partial<WindupExecution>[] = [
-    {
+export const EXECUTIONS_DATA: Partial<WindupExecution>[] = [];
+
+EXECUTIONS_DATA.push({
         "id": 13,
         "version": 1,
         "timeStarted": 1477907641905,
@@ -30,6 +31,7 @@ export const EXECUTIONS_DATA: Partial<WindupExecution>[] = [
                         "registrationType": "UPLOADED",
                         "title": "jee-example-app-1.0.0.ear",
                         "inputPath": null,
+                        "exploded": false,
                         "reportIndexPath": null,
                         "created": null,
                         "lastModified": null,
@@ -43,8 +45,9 @@ export const EXECUTIONS_DATA: Partial<WindupExecution>[] = [
         "outputDirectoryName": "Default Group.ANnIuZsNxbfq.report",
         "applicationListRelativePath": "Default Group.ANnIuZsNxbfq.report/index.html",
         "projectId": 1
-    },
-    {
+});
+
+EXECUTIONS_DATA.push({
         "id": 15,
         "version": 1,
         "timeStarted": 1477907945127,
@@ -73,6 +76,7 @@ export const EXECUTIONS_DATA: Partial<WindupExecution>[] = [
                         "registrationType": "UPLOADED",
                         "title": "jee-example-app-1.0.0.ear",
                         "inputPath": null,
+                        "exploded": false,
                         "reportIndexPath": null,
                         "created": null,
                         "lastModified": null,
@@ -86,8 +90,9 @@ export const EXECUTIONS_DATA: Partial<WindupExecution>[] = [
         "outputDirectoryName": "Default Group.ANnIuZsNxbfq.report",
         "applicationListRelativePath": "Default Group.ANnIuZsNxbfq.report/index.html",
         "projectId": 1
-    },
-    {
+});
+
+EXECUTIONS_DATA.push({
         "id": 25,
         "version": 27,
         "timeStarted": 1478000242721,
@@ -116,6 +121,7 @@ export const EXECUTIONS_DATA: Partial<WindupExecution>[] = [
                         "registrationType": "UPLOADED",
                         "title": "jee-example-app-1.0.0.ear",
                         "inputPath": null,
+                        "exploded": false,
                         "reportIndexPath": null,
                         "created": null,
                         "lastModified": null,
@@ -129,8 +135,9 @@ export const EXECUTIONS_DATA: Partial<WindupExecution>[] = [
         "outputDirectoryName": "Default Group.ANnIuZsNxbfq.report",
         "applicationListRelativePath": "Default Group.ANnIuZsNxbfq.report/index.html",
         "projectId": 1
-    },
-    {
+});
+
+EXECUTIONS_DATA.push({
         "id": 30,
         "version": 30,
         "timeStarted": null,
@@ -159,6 +166,7 @@ export const EXECUTIONS_DATA: Partial<WindupExecution>[] = [
                         "registrationType": "UPLOADED",
                         "title": "jee-example-app-1.0.0.ear",
                         "inputPath": null,
+                        "exploded": false,
                         "reportIndexPath": null,
                         "created": null,
                         "lastModified": null,
@@ -172,8 +180,9 @@ export const EXECUTIONS_DATA: Partial<WindupExecution>[] = [
         "outputDirectoryName": "Default Group.ANnIuZsNxbfq.report",
         "applicationListRelativePath": "Default Group.ANnIuZsNxbfq.report/index.html",
         "projectId": 1
-    },
-    {
+});
+
+EXECUTIONS_DATA.push({
         "id": 35,
         "version": 35,
         "timeStarted": 1478000242721,
@@ -202,6 +211,7 @@ export const EXECUTIONS_DATA: Partial<WindupExecution>[] = [
                         "registrationType": "UPLOADED",
                         "title": "jee-example-app-1.0.0.ear",
                         "inputPath": null,
+                        "exploded": false,
                         "reportIndexPath": null,
                         "created": null,
                         "lastModified": null,
@@ -215,5 +225,4 @@ export const EXECUTIONS_DATA: Partial<WindupExecution>[] = [
         "outputDirectoryName": "Default Group.ANnIuZsNxbfq.report",
         "applicationListRelativePath": "Default Group.ANnIuZsNxbfq.report/index.html",
         "projectId": 1
-    },
-];
+});

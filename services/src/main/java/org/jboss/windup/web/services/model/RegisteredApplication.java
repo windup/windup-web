@@ -22,6 +22,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.Version;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.ColumnDefault;
 import org.jboss.windup.web.services.validators.FileExistsConstraint;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -60,6 +61,13 @@ public class RegisteredApplication implements Serializable
     @FileExistsConstraint(message = "The path does not exist on the server: ${validatedValue}")
     @Size(min = 1, max = 2048, message = "The application title path must be set and not longer than 2048 characters.")
     private String inputPath;
+
+    /**
+     * If it is a directory, it contains an exploded application.
+     */
+    @Column(nullable = false)
+    @ColumnDefault("FALSE")
+    private boolean exploded;
 
     @Column(length = 2048)
     private String reportIndexPath;
@@ -150,6 +158,26 @@ public class RegisteredApplication implements Serializable
     public String getInputPath()
     {
         return inputPath;
+    }
+
+    /**
+     * If true, the path should be treated as an exploded Java EE application.
+     * NOTE: Windup Core can actually only treat all dirs as exploded or not - there is only a global option for that.
+     *       That makes this a per-execution option. See WindupExecutionTask for what's the workaround.
+     */
+    public boolean isExploded()
+    {
+        return exploded;
+    }
+
+    /**
+     * If true, the path should be treated as an exploded Java EE application.
+     * NOTE: Windup Core can actually only treat all dirs as exploded or not - there is only a global option for that.
+     *       That makes this a per-execution option. See WindupExecutionTask for what's the workaround.
+     */
+    public void setExploded(boolean exploded)
+    {
+        this.exploded = exploded;
     }
 
     public String getInputFilename()

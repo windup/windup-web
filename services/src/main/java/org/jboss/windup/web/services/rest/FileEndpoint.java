@@ -4,6 +4,8 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+
 
 /**
  * Contains methods for checking if files exist and other file manipulation tasks on the server.
@@ -34,4 +36,11 @@ public interface FileEndpoint
     {
         FILE, DIRECTORY
     }
+
+    /**
+     * Returns the number of non-empty files existing directly in the given server directory.
+     */
+    @POST
+    @Path("directoryFilesCount")
+    int directoryFilesCount(String path, @QueryParam("nameRegex") String nameRegex, @QueryParam("minSize") Long minSizeBytes);
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy} from "@angular/core";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {AsyncValidator, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router, NavigationEnd} from "@angular/router";
 import {FileUploader} from "ng2-file-upload/ng2-file-upload";
 
@@ -20,6 +20,7 @@ import {NotificationService} from "../core/notification/notification.service";
 import {utils} from "../shared/utils";
 import {FileLikeObject} from "ng2-file-upload/file-upload/file-like-object.class";
 import formatString = utils.formatString;
+import {IfDirectoryThenShouldNonEmptyHaveFilesValidator} from "../shared/validators/dir-has-files.validator";
 
 @Component({
     templateUrl: "./register-application-form.component.html",
@@ -33,6 +34,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     protected mode: RegistrationType = "UPLOADED";
     protected fileInputPath: string = '';
     private isDirWithApps: boolean = false;
+    private isDirWithExplodedApp: boolean = false;
     protected isAllowUploadMultiple: boolean = true;
 
     isInWizard: boolean = false;
@@ -96,9 +98,17 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
             .subscribe((event: UpdateMigrationProjectEvent) => this.project = event.migrationProject);
 
         this.registrationForm = this._formBuilder.group({
-            // Name under which the control is registered, default value, Validator, AsyncValidator
-            appPathToRegister: ["", Validators.compose([Validators.required, Validators.minLength(4)]), FileExistsValidator.create(this._fileService)],
-            isDirWithAppsCheckBox: [] // TODO: Validate if appPathToRegister has a directory if this is true.
+            // Name under which the control is registered: [default value, Validator, AsyncValidator]
+            appPathToRegister: ["",
+                Validators.compose([Validators.required, Validators.minLength(4)]),
+                Validators.composeAsync([
+                    FileExistsValidator.create(this._fileService),
+                    // TODO: Only validate if isDirWithExplodedApp == false.
+                    //IfDirectoryThenShouldNonEmptyHaveFilesValidator.create(this._fileService),
+                ]),
+            ],
+            //isDirWithAppsCheckBox: [], // TODO: Validate if appPathToRegister has a directory if this is true.
+            isDirWithExplodedApp: [],
         });
 
         this.routerSubscription = this._router.events.filter(event => event instanceof NavigationEnd).subscribe(_ => {
@@ -152,18 +162,20 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
             return;
         }
 
-        if (this.isDirWithApps) {
-            this._registeredApplicationService.registerApplicationInDirectoryByPath(this.project, this.fileInputPath)
-                .subscribe(
+        this._fileService.queryServerPathTargetType(this.fileInputPath).subscribe((type_: string) => {
+            if (type_ === "DIRECTORY" && !this.isDirWithExplodedApp) { //this.isDirWithApps
+                this._registeredApplicationService.registerApplicationInDirectoryByPath(this.project, this.fileInputPath)
+                    .subscribe(
+                        application => this.navigateOnSuccess(),
+                        error => this.handleError(error)
+                    );
+            } else {
+                this._registeredApplicationService.registerByPath(this.project, this.fileInputPath, this.isDirWithExplodedApp).subscribe(
                     application => this.navigateOnSuccess(),
-                    error => this.handleError(error)
-                );
-        } else {
-            this._registeredApplicationService.registerByPath(this.project, this.fileInputPath).subscribe(
-                application => this.navigateOnSuccess(),
-                error => this.handleError(<any>error)
-            )
-        }
+                    error => this.handleError(<any>error)
+                )
+            }
+        });
     }
 
     private registerUploaded() {
@@ -199,7 +211,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     protected rerouteToApplicationList() {
         this.navigateAway([`/projects/${this.project.id}/applications`]);
     }
-    
+
     protected rerouteToConfigurationForm() {
         this.navigateAway([`/projects/${this.project.id}/analysis-context`]);
     }

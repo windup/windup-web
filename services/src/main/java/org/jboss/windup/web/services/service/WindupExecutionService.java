@@ -116,6 +116,7 @@ public class WindupExecutionService
         execution.setOutputPath(reportOutputPath.toString());
         entityManager.merge(execution);
 
+        // See ExecutorMDB
         messaging.createProducer().send(executorQueue, execution);
 
         return execution;

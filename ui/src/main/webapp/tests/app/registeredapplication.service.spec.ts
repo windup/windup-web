@@ -83,7 +83,7 @@ describe("Registered Application Service Test", () => {
                 })));
             });
 
-            service.registerByPath(<MigrationProject>{id: 0}, inputPath).toPromise()
+            service.registerByPath(<MigrationProject>{id: 0}, inputPath, false).toPromise()
                 .then(application => {
                     expect(application.inputFilename).toEqual("java");
                 }, error => {

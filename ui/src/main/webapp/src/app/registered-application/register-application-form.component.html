@@ -45,29 +45,64 @@
         <wu-tab [tabTitle]="'Server Path'" [properties]="{mode: 'PATH'}">
             <div class="form-group description">
                 <div class="col-md-12">
-                    <label class="required" for="appPathToRegister" i18n="Server Path Description">Server-side file system path that contains the applications</label>
+                    <label class="required" for="appPathToRegister" i18n="Server Path Description">
+                        File system path
+                    </label>
                 </div>
             </div>
             <div class="form-group" [ngClass]="{'has-error': hasError(registrationForm.get('appPathToRegister'))}">
                 <div class="col-md-12">
                     <input [(ngModel)]="fileInputPath" id="appPathToRegister" formControlName="appPathToRegister"
-                           type="text"
-                           class="form-control" />
-                    <span [class.hidden]="!hasError(registrationForm.get('appPathToRegister'))" class="help-block" i18n="Path Error">
-                            The file system path must exist on the server.
+                        type="text" class="form-control" placeholder="/opt/apps/ or /opt/apps/my.ear"/>
+                    <div>
+                        <!--
+                        Marc wanted this text 2017-05-22, which doesn't match the actual features:
+                            Server file path to an exploded application or to a directory containing several applications.
+                        I am choosing this one:
+                         -->
+                         Server file system path to one of the following:
+                         <ul>
+                             <li>an application archive</li>
+                             <li>an extracted application</li>
+                             <li>a directory containing several applications</li>
+                             <!-- Source mode is not supported for windup-web.
+                             <li>a directory containing a project's as a source code</li>
+                             -->
+                         </ul>
+                    </div>
+                    <span [class.hidden]="!hasError(registrationForm.get('appPathToRegister'), 'fileExists')" class="help-block" i18n="Path Error">
+                        <!-- Changing from this text wanted by Marc so that it informs the user a dir can't be empty.
+                        The file system path must exist on the server.
+                        -->
+                        The path must be an existing file or an non-empty directory on the server.
+                    </span>
+                    <span [class.hidden]="!hasError(registrationForm.get('appPathToRegister'), 'directoryContainsFiles')" class="help-block" i18n="Path Error">
+                        The directory must contain some application archives.
                     </span>
                 </div>
             </div>
             <div class="form-group"  *ngIf="isAllowUploadMultiple">
                 <div class="col-md-10">
+                    <!--
                     <div class="checkbox">
                         <label>
-                            <input [(ngModel)]="isDirWithApps" formControlName="isDirWithAppsCheckBox" type="checkbox" i18n="Directory Contains Multiple Apps">
+                            <input [(ngModel)]="isDirWithApps" formControlName="isDirWithAppsCheckBox" type="checkbox" i18n="checkbox label">
                             <ng-container i18n="Directory Help Text">Directory contains multiple applications</ng-container>
                         </label>
                         <div class="description" i18n="Directory Contains Multiple Apps Help Text">
                             If checked, the given path is treated as a directory with multiple applications.
                             Otherwise, the path is treated as a single application.
+                        </div>
+                    </div>
+                    -->
+                    <div class="checkbox">
+                        <label style="font-weight: 600;">
+                            <input [(ngModel)]="isDirWithExplodedApp" formControlName="isDirWithExplodedApp" type="checkbox" i18n="checkbox label">
+                            <ng-container i18n="Directory checkbox help text">Directory is an exploded Java application archive</ng-container>
+                        </label>
+                        <div class="description" i18n="Directory contains unzipped app help text">
+                            If checked, the given path is treated as a directory with an unzipped application archive.
+                            Otherwise, if the path is a directory, it is treated as a directory with multiple applications.
                         </div>
                     </div>
                 </div>
