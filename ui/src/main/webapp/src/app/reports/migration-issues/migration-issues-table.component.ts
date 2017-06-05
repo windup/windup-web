@@ -147,7 +147,7 @@ export class MigrationIssuesTableComponent extends FilterableReportComponent imp
         return (summary.effortPerIncident * summary.numberFound);
     }
 
-    sortBy(property: string) {
+    sortBy(property: string|any) {
         if (property === this.orderBy) {
             this.orderDirection = (this.orderDirection === OrderDirection.ASC) ? OrderDirection.DESC : OrderDirection.ASC;
             this._sortingService.setOrderDirection(this.orderDirection);

@@ -30,15 +30,15 @@ export class SourceReportComponent extends RoutedComponent implements OnInit, Af
     private execID: number;
     private fileID: number;
     private fileSource: string = "Loading...";
-    private fileLines: string[];
+    fileLines: string[];
 
-    private fileModel: FileModel;
+    fileModel: FileModel;
     private sourceFileModel: SourceFileModel;
-    private transformedLinks: LinkModel[];
+    transformedLinks: LinkModel[];
 
-    private classifications: ClassificationModel[];
+    classifications: ClassificationModel[];
     private classificationLinks: Map<ClassificationModel, LinkModel[]> = new Map<ClassificationModel, LinkModel[]>();
-    private hints: InlineHintModel[];
+    hints: InlineHintModel[];
     private rendered: boolean = false;
 
     constructor(route: ActivatedRoute,

@@ -5,7 +5,7 @@ import {ExecutionEvent} from "../core/events/windup-event";
 
 export abstract class ExecutionsMonitoringComponent extends AbstractComponent {
     protected activeExecutionsMap: Map<number, WindupExecution> = new Map<number, WindupExecution>();
-    protected activeExecutions: WindupExecution[];
+    activeExecutions: WindupExecution[];
     public project: MigrationProject;
 
     public constructor(protected _windupExecutionService: WindupExecutionService) {

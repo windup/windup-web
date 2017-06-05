@@ -35,6 +35,8 @@ export class ModalDialogComponent {
     @Input()
     id = `modal-${modalID++}`;
 
+    title: string;
+
     constructor() {}
 
     show(): void {

@@ -2,7 +2,7 @@
      [class.chosen-container-active]="chosenContainerActive"
      [class.chosen-with-drop]="chosenWithDrop">
 
-    <a (click)="chosenFocus(chosenInput)"  class="chosen-single"
+    <a (click)="chosenFocus()"  class="chosen-single"
        [class.chosen-single-with-deselect]="!isSelectionEmpty() && allow_single_deselect"
        [class.chosen-default]="isSelectionEmpty()">
                 <span [ngSwitch]="isSelectionEmpty()">

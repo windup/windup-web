@@ -23,7 +23,7 @@ export class AnalysisContextAdvancedOptionsModalComponent {
     @Output()
     advancedOptionsChanged: EventEmitter<AdvancedOption[]> = new EventEmitter<AdvancedOption[]>();
 
-    private newOption: AdvancedOption;
+    newOption: AdvancedOption;
     private newOptionError: string;
 
     private get currentSelectedOptionDefinition(): ConfigurationOption {

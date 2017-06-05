@@ -4,6 +4,10 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var ContextReplacementPlugin = webpack.ContextReplacementPlugin;
 var CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin;
 var helpers = require('./helpers');
+const path = require('path');
+
+const nodeModules = path.join(process.cwd(), 'node_modules');
+const genDirNodeModules = path.join(process.cwd(), 'src', '$$_gendir', 'node_modules');
 
 module.exports = {
     entry: {
@@ -74,11 +78,40 @@ module.exports = {
         // Cannot be used until this is solved: https://github.com/webpack/webpack/issues/2644
         // new DedupePlugin(),
         new CommonsChunkPlugin({
-            name: ['app', 'vendor', 'polyfills']
+            name: "vendor",
+            minChunks: function(module) {
+                return module.resource &&  (
+                    module.resource.startsWith(nodeModules) || module.resource.startsWith(genDirNodeModules)
+                );
+            },
+            chunks: [
+                "app"
+            ]
         }),
         new HtmlWebpackPlugin({
             template: 'text-loader!src/index.html.ftl',
-            filename: 'index.html.ftl'
+            filename: 'index.html.ftl',
+            /**
+             * This is workaround for bug with chunk ordering
+             * (see https://github.com/jantimon/html-webpack-plugin/issues/481)
+             *
+             * @param a
+             * @param b
+             * @returns {number}
+             */
+            chunksSortMode: function(a, b) {
+                const orders = ['polyfills', 'vendor', 'app'];
+                const order1 = orders.indexOf(a.names[0]);
+                const order2 = orders.indexOf(b.names[0]);
+
+                if (order1 > order2) {
+                    return 1;
+                } else if (order1 < order2) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            }
         }),
         // This is needed to suppress warning caused by some angular issue
         // see https://github.com/angular/angular/issues/11580

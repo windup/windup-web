@@ -14,7 +14,7 @@ export class SortComponent {
     private _selectedOption: SortOption;
     private _direction: OrderDirection = OrderDirection.ASC;
 
-    private isOpen = false;
+    isOpen = false;
 
     @Input()
     public set sortOptions(sortOptions: SortOption[]) {

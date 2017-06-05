@@ -12,7 +12,7 @@ import {ExecutionsMonitoringComponent} from "./executions-monitoring.component";
     template: '<wu-executions-list [executions]="executions" [activeExecutions]="activeExecutions"></wu-executions-list>'
 })
 export class AllExecutionsComponent extends ExecutionsMonitoringComponent implements OnInit {
-    protected executions: WindupExecution[];
+    executions: WindupExecution[];
 
     constructor(
         private _windupService: WindupService,

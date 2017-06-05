@@ -15,7 +15,7 @@ import {utils} from "../shared/utils";
     templateUrl: './project-executions.component.html'
 })
 export class ProjectExecutionsComponent extends ExecutionsMonitoringComponent implements OnInit {
-    protected executions: WindupExecution[];
+    executions: WindupExecution[];
     private doNotRefreshList: boolean;
     private analysisContext: AnalysisContext;
 

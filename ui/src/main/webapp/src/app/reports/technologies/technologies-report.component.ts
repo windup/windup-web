@@ -19,7 +19,7 @@ export class TechnologiesReportComponent implements OnInit {
 
     private execID: number;
     private technologiesStats: ProjectTechnologiesStatsModel[] = [];
-    private filteredTechnologiesStats: TechnologiesStats;
+    filteredTechnologiesStats: TechnologiesStats;
 
     constructor(
         private route: ActivatedRoute,

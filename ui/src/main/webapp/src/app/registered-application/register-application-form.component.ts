@@ -27,13 +27,13 @@ import formatString = utils.formatString;
 })
 export class RegisterApplicationFormComponent extends FormComponent implements OnInit, OnDestroy
 {
-    protected registrationForm: FormGroup;
+    registrationForm: FormGroup;
     protected application: RegisteredApplication;
-    protected multipartUploader: FileUploader;
+    multipartUploader: FileUploader;
     protected mode: RegistrationType = "UPLOADED";
-    protected fileInputPath: string = '';
-    private isDirWithExplodedApp: boolean = false;
-    protected isAllowUploadMultiple: boolean = true;
+    fileInputPath: string = '';
+    isDirWithExplodedApp: boolean = false;
+    isAllowUploadMultiple: boolean = true;
 
     isInWizard: boolean = false;
     project: MigrationProject;
@@ -41,7 +41,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
 
     countUploadedApplications: number = 0;
 
-    protected labels = {
+    labels = {
         heading: 'Add Applications',
         uploadButton: 'Upload'
     };
@@ -137,7 +137,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
         this._migrationProjectService.stopMonitoringProject(this.project);
     }
 
-    protected register() {
+    register() {
         if (this.mode == "PATH") {
             this.registerPath();
         } else {
@@ -212,7 +212,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
         this.navigateAway([`/projects/${this.project.id}/analysis-context`]);
     }
 
-    private cancelRegistration() {
+    cancelRegistration() {
         if (this.isInWizard) {
             this.navigateAway([`/wizard/project/${this.project.id}/create-project`]);
         } else {
