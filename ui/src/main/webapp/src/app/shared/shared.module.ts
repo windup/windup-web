@@ -54,6 +54,7 @@ import {ActiveFiltersListComponent} from "./filter/active-filters-list.component
 import {TextFilterComponent} from "./filter/text-filter.component";
 import {ToolbarComponent} from "./toolbar/toolbar.component";
 import {AllDataFilteredMessageComponent} from "./all-data-filtered-message.component";
+import {DropdownFilterComponent} from "./filter/dropdown-filter.component";
 
 @NgModule({
     imports: [
@@ -118,6 +119,7 @@ import {AllDataFilteredMessageComponent} from "./all-data-filtered-message.compo
         ActiveFiltersListComponent,
         ToolbarComponent,
         AllDataFilteredMessageComponent,
+        DropdownFilterComponent,
 
         ShortenPipe,
 
@@ -163,6 +165,7 @@ import {AllDataFilteredMessageComponent} from "./all-data-filtered-message.compo
         ActiveFiltersListComponent,
         ToolbarComponent,
         AllDataFilteredMessageComponent,
+        DropdownFilterComponent,
 
         ProjectNameNotExistsValidator,
         IsRouteActiveDirective,
