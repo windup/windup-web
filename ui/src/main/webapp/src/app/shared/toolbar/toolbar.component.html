@@ -1,0 +1,26 @@
+<div class="container-fluid">
+    <div class="row toolbar-pf">
+        <div class="col-sm-12">
+            <form class="toolbar-pf-actions">
+                <wu-text-filter
+                        [filterableAttributes]="filterConfiguration.filterOptions"
+                        (setFilter)="addFilter($event)"
+                >
+                </wu-text-filter>
+                <div class="form-group">
+                    <wu-sort
+                        [sortOptions]="sortConfiguration.sortOptions"
+                        [(selectedOption)]="sortConfiguration.selectedOption"
+                        [(direction)]="sortConfiguration.direction"
+                        (onChange)="updateSort($event)"
+                    ></wu-sort>
+                </div>
+            </form>
+            <wu-active-filters-list *ngIf="isFilterActive()"
+                    [(activeFilters)]="filterConfiguration.selectedFilters"
+                    [countResults]="filterConfiguration.countFilteredItems"
+                    (activeFiltersChange)="updateFilters()"
+            ></wu-active-filters-list>
+        </div><!-- /col -->
+    </div><!-- /row -->
+</div><!-- /container -->
