@@ -181,6 +181,12 @@ fieldset.fields-section-pf {
     }
 }
 
+@media (min-width: 768px) and (max-width: 1599px) {
+    .wu-horizontal-nav-content, .layout-pf.layout-pf-fixed .container-pf-nav-pf-vertical {
+        margin-left: 145px;
+    }
+}
+
 /* Pushes notifications area a bit down from the horizontal navigation bar. */
 .notifications-row {
     padding-top: 24px;
