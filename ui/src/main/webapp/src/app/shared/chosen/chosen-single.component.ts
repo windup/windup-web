@@ -1,5 +1,8 @@
 import {NgModel} from "@angular/forms";
-import {Component, Input, ViewChildren, QueryList, ElementRef, Renderer , forwardRef} from "@angular/core";
+import {
+    Component, Input, ViewChildren, QueryList, ElementRef, Renderer, forwardRef,
+    AfterViewInit
+} from "@angular/core";
 import {InternalChosenOption, ChosenOption, ChosenOptionGroup} from "./chosen-commons";
 import {AbstractChosenComponent} from "./chosen-abstract";
 import {ChosenDropComponent} from "./chosen-drop.component";
@@ -16,12 +19,9 @@ export const ChosenSingleComponent_CONTROL_VALUE_ACCESSOR: any = {
     templateUrl: './chosen-single.component.html',
     providers: [ChosenSingleComponent_CONTROL_VALUE_ACCESSOR]
 })
-export class ChosenSingleComponent extends AbstractChosenComponent<string> {
+export class ChosenSingleComponent extends AbstractChosenComponent<string> implements AfterViewInit {
 
     chosenInput: any;
-
-    @Input()
-    no_results_text = AbstractChosenComponent.NO_RESULTS_TEXT_DEFAULT;
 
     @Input() allow_single_deselect: boolean = false;
 
@@ -36,16 +36,6 @@ export class ChosenSingleComponent extends AbstractChosenComponent<string> {
 
     @Input()
     max_shown_results = null;
-
-    @Input()
-    set options(options: ChosenOption[]) {
-        super.setOptions(options);
-    }
-
-    @Input()
-    protected set groups(groups: ChosenOptionGroup[]) {
-        super.setGroups(groups);
-    }
 
     @ViewChildren(ChosenDropComponent)
     private chosenDropComponentQueryList: QueryList<ChosenDropComponent>;
