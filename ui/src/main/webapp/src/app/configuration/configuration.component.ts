@@ -36,8 +36,6 @@ export class ConfigurationComponent implements OnInit, AfterViewInit {
     sort = {
         sortOptions: [
             { name: 'Name', field: 'providerID' },
-            { name: 'Created date', field: 'dateLoaded' },
-            { name: 'Last modified date', field: 'dateModified' },
             { name: 'Number of rules', field: (provider: RuleProviderEntity) => provider.rules ? provider.rules.length : 0 },
         ],
         selectedOption: { name: 'Name', field: 'providerID' },
