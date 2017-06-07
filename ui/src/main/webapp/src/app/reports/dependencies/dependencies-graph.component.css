@@ -70,3 +70,12 @@ div.legend span.highlighted     .label { background-color: yellow; }
 :host /deep/ div#dependencyDetails                tr.noDependees { display: none; }
 :host /deep/ div#dependencyDetails.noDependees    tr.noDependees { display: table-row; }
 :host /deep/ div#dependencyDetails    tr.highlighted td { background-color: lightyellow; }
+
+.label {
+    border-radius: 4px;
+    display: block;
+    float: left;
+    font-weight: bold;
+    margin: 2px;
+    padding: 4px;
+}
