@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
 import {ConfigurationService} from "./configuration.service";
-import {Configuration, RuleProviderEntity, RulesPath} from "../generated/windup-services";
+import {Configuration, RuleProviderEntity, RulesPath, Technology} from "../generated/windup-services";
 import {RuleService} from "./rule.service";
 import {RulesModalComponent} from "./rules-modal.component";
 import {AddRulesPathModalComponent, ConfigurationEvent} from "./add-rules-path-modal.component";
@@ -8,6 +8,7 @@ import {ActivatedRoute} from "@angular/router";
 import {NotificationService} from "../core/notification/notification.service";
 import {utils} from "../shared/utils";
 import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
+import {OrderDirection, SortingService} from "../shared/sort/sorting.service";
 
 @Component({
     templateUrl: './configuration.component.html',
@@ -16,7 +17,7 @@ import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.co
 export class ConfigurationComponent implements OnInit, AfterViewInit {
 
     forceReloadAttempted: boolean = false;
-    rescanInProgress: boolean= false;
+    rescanInProgress: boolean = false;
 
     errorMessage: string;
     configuration: Configuration;
@@ -32,11 +33,31 @@ export class ConfigurationComponent implements OnInit, AfterViewInit {
     @ViewChild('removeRulesConfirmationModal')
     removeRulesConfirmationModal: ConfirmationModalComponent;
 
+    sort = {
+        sortOptions: [
+            { name: 'Name', field: 'providerID' },
+            { name: 'Number of rules', field: (provider: RuleProviderEntity) => provider.rules ? provider.rules.length : 0 },
+        ],
+        selectedOption: { name: 'Name', field: 'providerID' },
+        direction: OrderDirection.ASC
+    };
+
+    filter = {
+        filterOptions: [
+            'source',
+            'target'
+        ],
+        selectedFilters: [],
+        countFilteredItems: 0,
+        countUnfilteredItems: 0
+    };
+
     constructor(
         private _activatedRoute: ActivatedRoute,
         private _configurationService: ConfigurationService,
         private _ruleService: RuleService,
-        private _notificationService: NotificationService
+        private _notificationService: NotificationService,
+        private _sortingService: SortingService<RuleProviderEntity>
     ) {
 
     }
@@ -173,5 +194,40 @@ export class ConfigurationComponent implements OnInit, AfterViewInit {
         this.removeRulesConfirmationModal.body = `Are you sure you want to remove the rules from '${rulesPath.path}'?`;
         this.removeRulesConfirmationModal.data = rulesPath;
         this.removeRulesConfirmationModal.show();
+    }
+
+    removeFilters() {
+        this.filter.selectedFilters = [];
+        this.filter = Object.assign({}, this.filter);
+    }
+
+    updateFilters() {
+        this.filter.countFilteredItems = this.configuration.rulesPaths.map(path => this.getFilteredRuleProvidersByPath(path))
+            .reduce((sum, providers) => sum + providers.length, 0);
+    }
+
+    getRuleProvidersByPath(path: RulesPath) {
+        const ruleProviders = this.ruleProvidersByPath.get(path) || [];
+        return this._sortingService.sort(ruleProviders);
+    }
+
+    getFilteredRuleProvidersByPath(path: RulesPath) {
+        let filteredRuleProviders = this.ruleProvidersByPath.get(path) || [];
+
+        this.filter.selectedFilters.forEach(filter => {
+            filteredRuleProviders = filteredRuleProviders.filter(provider => {
+                const propertyValue = provider[filter.name + 's'];
+
+                return propertyValue.some(item => {
+                    return item.name === filter.value;
+                });
+            });
+        });
+
+        return this._sortingService.sort(filteredRuleProviders);
+    }
+
+    updateSort() {
+        this._sortingService.orderBy(this.sort.selectedOption.field, this.sort.direction);
     }
 }

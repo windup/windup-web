@@ -50,6 +50,9 @@ import {ReplacePipe} from "./replace.pipe";
 import {DialogService} from "./dialog/dialog.service";
 import {FileUploaderFactory} from "./upload/file-uploader-factory.service";
 import {UploadedItemsListComponent} from "./upload/uploaded-items-list.component";
+import {ActiveFiltersListComponent} from "./filter/active-filters-list.component";
+import {TextFilterComponent} from "./filter/text-filter.component";
+import {ToolbarComponent} from "./toolbar/toolbar.component";
 
 @NgModule({
     imports: [
@@ -110,6 +113,9 @@ import {UploadedItemsListComponent} from "./upload/uploaded-items-list.component
         WizardLayoutComponent,
         ExpandCollapseComponent,
         UploadedItemsListComponent,
+        TextFilterComponent,
+        ActiveFiltersListComponent,
+        ToolbarComponent,
 
         ShortenPipe,
 
@@ -151,6 +157,9 @@ import {UploadedItemsListComponent} from "./upload/uploaded-items-list.component
         WizardLayoutComponent,
         ExpandCollapseComponent,
         UploadedItemsListComponent,
+        TextFilterComponent,
+        ActiveFiltersListComponent,
+        ToolbarComponent,
 
         ProjectNameNotExistsValidator,
         IsRouteActiveDirective,

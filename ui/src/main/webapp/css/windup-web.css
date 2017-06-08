@@ -87,15 +87,6 @@ div.tooltipLikeMessage {
     cursor: pointer;
 }
 
-.label {
-    border-radius: 4px;
-    display: block;
-    float: left;
-    font-weight: bold;
-    margin: 2px;
-    padding: 4px;
-}
-
 .label-info {
     background-color: #696969;
 }
