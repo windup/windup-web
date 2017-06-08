@@ -113,6 +113,7 @@ public class WindupExecutorServiceImpl implements WindupExecutorService
         }
         finally
         {
+            logHandler.flush();
             globalLogger.removeHandler(logHandler);
         }
     }
