@@ -303,9 +303,9 @@
                             <goal>run</goal>
                         </goals>
                         <configuration>
-                            <tasks>
+                            <target>
                                 <move file="${project.build.directory}/${project.build.finalName}/WEB-INF/${windup.distribution.name}-${version.windup}" tofile="${project.build.directory}/${project.build.finalName}/WEB-INF/${windup.distribution.name}" />
-                            </tasks>
+                            </target>
                         </configuration>
                     </execution>
                 </executions>
