@@ -27,8 +27,7 @@ Environment setup
    >
    >        npm install -g npm
 
-3. Install yarn package manager
-    >       npm install -g yarn
+3. [Install yarn package manager](https://yarnpkg.com/en/)
 
 4. [Install Bower using NPM](http://bower.io/#install-bower)
     * `npm install -g bower`
