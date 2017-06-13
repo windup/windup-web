@@ -56,6 +56,10 @@ public class RegisteredApplication implements Serializable
     @Column(length = 256)
     @Size(min = 1, max = 256, message = "The application title must be set and not longer than 250 characters.")
     private String title;
+    
+    @Column(name = "file_size", nullable = false)
+    @ColumnDefault("0")
+    private long fileSize;
 
     @Column(length = 2048)
     @FileExistsConstraint(message = "The path does not exist on the server: ${validatedValue}")
@@ -239,6 +243,22 @@ public class RegisteredApplication implements Serializable
         this.title = title;
     }
 
+    /**
+     * @return the fileSize the real size of registered application file
+     */
+    public long getFileSize()
+    {
+        return fileSize;
+    }
+
+    /**
+     * @param fileSize the real size of registered application file
+     */
+    public void setFileSize(long fileSize)
+    {
+        this.fileSize = fileSize;
+    }
+    
     /**
      * Gets package metadata
      *

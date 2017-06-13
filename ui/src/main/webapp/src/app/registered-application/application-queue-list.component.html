@@ -7,6 +7,7 @@
                  style="width: 100%">
                 <div class="file-info">
                     <span>{{application.title}}</span>
+                    <span class="file-size">({{ application.fileSize / 1024 / 1024 | number:'.2' }} MB)</span>
                 </div>
                 <div class="action-button">
                     <span class="pointer" (click)="confirmDeleteApplication(application)">

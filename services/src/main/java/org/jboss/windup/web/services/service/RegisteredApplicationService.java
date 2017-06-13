@@ -226,6 +226,7 @@ public class RegisteredApplicationService
         application.setInputPath(path);
         application.setExploded(exploded);
         application.setTitle(file.getName());
+        application.setFileSize(file.length());
 
         application.setMigrationProject(project);
         project.addApplication(application);
@@ -420,6 +421,7 @@ public class RegisteredApplicationService
             this.saveFileTo(inputStream, filePath);
 
             application.setTitle(fileName);
+            application.setFileSize(file.length());
             this.updateApplicationInputPath(application, filePath);
 
             return application;

@@ -13,7 +13,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.http.HttpStatus;
-import org.eclipse.core.internal.resources.Project;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -92,6 +91,8 @@ public class MigrationProjectRegisteredApplicationsEndpointTest extends Abstract
                     foundPath1 = true;
                 else if (app.getInputPath().equals(tempFile2.getAbsolutePath()))
                     foundPath2 = true;
+                else if (app.getFileSize() > 0)
+                    Assert.fail("Registered application file size is not set correctly!");
             }
 
             Assert.assertTrue(foundPath1);
@@ -138,6 +139,7 @@ public class MigrationProjectRegisteredApplicationsEndpointTest extends Abstract
                 Assert.assertEquals(1, apps.size());
 
                 Assert.assertEquals(fileName, application.getTitle());
+                Assert.assertEquals(2692L, application.getFileSize());
                 ServiceTestUtil.assertFileExists(application.getInputPath());
 
                 ServiceTestUtil.assertFileContentsAreEqual(getClass().getResourceAsStream(
