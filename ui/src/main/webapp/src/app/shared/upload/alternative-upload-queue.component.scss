@@ -26,6 +26,7 @@ li {
 .progress-bar {
   padding-top: 5px;
   padding-bottom: 5px;
+  color: #363636;
 }
 // #F6F9FC - light blue
 // #E9F4FF - progressbar blue
@@ -42,8 +43,9 @@ ul {
 span.file-size {
   position: relative;
   left: 10px;
+  margin-right: 15px;
 }
 
-.app-list li:not(:last-child) {
+.app-list li {
   margin-bottom: -15px;
 }
