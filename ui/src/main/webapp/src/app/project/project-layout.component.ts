@@ -94,7 +94,7 @@ export class ProjectLayoutComponent extends RoutedComponent implements OnInit, O
     };
 
     public getProjectRoute = (project: MigrationProject): any[] => {
-        return project ? ['/projects', project.id, 'project-detail'] : null;
+        return project ? ['/projects', project.id] : null;
     };
 
     public navigateToProject = (project: MigrationProject) => {
