@@ -1,6 +1,7 @@
 import {Directive, ElementRef, Input, OnChanges, OnDestroy, Renderer, SimpleChanges} from "@angular/core";
 import {NavigationEnd, Router} from "@angular/router";
 import {Subscription} from "rxjs";
+import {ContextMenuItemInterface} from "./navigation/context-menu-item.class";
 
 /**
  * Yet another workaround for angular limitation
@@ -27,6 +28,15 @@ export class IsRouteActiveDirective implements OnChanges, OnDestroy {
      */
     @Input()
     public wuRouterLink: string|string[] = [];
+
+
+    /**
+     * Context menu item
+     *
+     * @type {ContextMenuItemInterface}
+     */
+    @Input()
+    public wuContextMenuItem: ContextMenuItemInterface;
 
     /**
      * CSS classes to use when route is active
@@ -76,8 +86,24 @@ export class IsRouteActiveDirective implements OnChanges, OnDestroy {
     }
 
     protected isRouteActive() {
+        if (!this.wuContextMenuItem) {
+            return this.isRouterLinkMatching();
+        }
+
+        return this.isRouterLinkMatching() || this.isContextMenuItemActive();
+    }
+
+    protected isRouterLinkMatching() {
         const routeUrl = Array.isArray(this. wuRouterLink) ? this.wuRouterLink.join('') : this.wuRouterLink;
 
         return this._router.isActive(routeUrl, false);
+    }
+
+    protected isContextMenuItemActive() {
+        if (!this.wuContextMenuItem.isActive) {
+            return false;
+        }
+
+        return this.wuContextMenuItem.isActive(this._router.url);
     }
 }

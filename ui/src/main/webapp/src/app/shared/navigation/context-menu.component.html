@@ -6,6 +6,7 @@
             wu-is-route-active
             [activeClasses]="['active']"
             [wuRouterLink]="item.link"
+            [wuContextMenuItem]="item"
         >
             <span class="fa" ngClass="{{item.icon}}" data-toggle="tooltip" title="" [attr.data-original-title]="item.label" router-mode></span>
             <span class="list-group-item-value" router-mode>{{item.label}}</span>
