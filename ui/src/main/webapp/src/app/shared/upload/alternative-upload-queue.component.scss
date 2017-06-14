@@ -42,8 +42,9 @@ ul {
 span.file-size {
   position: relative;
   left: 10px;
+  margin-right: 15px;
 }
 
-.app-list li:not(:last-child) {
+.app-list li {
   margin-bottom: -15px;
 }
