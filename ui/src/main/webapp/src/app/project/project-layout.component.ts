@@ -70,7 +70,8 @@ export class ProjectLayoutComponent extends RoutedComponent implements OnInit, O
                 label: 'Analysis',
                 link: this._routeLinkProviderService.getRouteForComponent(ProjectExecutionsComponent, { projectId: this.project.id }),
                 icon: 'fa-tachometer',
-                isEnabled: true
+                isEnabled: true,
+                isActive: (currentRoute: string) => currentRoute.match(/execution-details/) || currentRoute.match(/project-detail/)
             },
             {
                 label: 'Applications',
@@ -94,7 +95,7 @@ export class ProjectLayoutComponent extends RoutedComponent implements OnInit, O
     };
 
     public getProjectRoute = (project: MigrationProject): any[] => {
-        return project ? ['/projects', project.id, 'project-detail'] : null;
+        return project ? ['/projects', project.id] : null;
     };
 
     public navigateToProject = (project: MigrationProject) => {
