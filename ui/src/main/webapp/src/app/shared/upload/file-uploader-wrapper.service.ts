@@ -60,7 +60,9 @@ export class FileUploaderWrapper extends FileUploader {
          */
 
         item._onComplete(response, status, headers);
-        this.onCompleteItem(item, response, status, headers);
+        if (!item.isCancel) {
+            this.onCompleteItem(item, response, status, headers);
+        }
         let nextItem = this.getReadyItems()[0];
 
         this.isUploading = false;
