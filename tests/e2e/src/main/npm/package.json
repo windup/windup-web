@@ -4,6 +4,7 @@
   "license": "MIT",
   "scripts": {
     "e2e": "protractor",
+    "e2e-local": "protractor --params.login.username test --params.login.password test --baseUrl http://localhost:8080/rhamt-web/ --params.baseUrl http://localhost:8080/rhamt-web/",
     "e2e-live": "protractor --elementExplorer",
     "webdriver-update": "webdriver-manager update",
     "webdriver-start": "webdriver-manager start",

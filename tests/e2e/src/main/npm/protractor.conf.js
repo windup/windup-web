@@ -4,14 +4,12 @@ const JUnitXmlReporter = require('jasmine-reporters').JUnitXmlReporter;
 const baseUrl = 'http://localhost:8180/rhamt-web/';
 
 function login() {
-    // TODO: Load URL from some ENV variable or somewhere....
-    browser.driver.get(baseUrl).then(function() {
+    browser.driver.get(browser.params.baseUrl).then(function() {
         return browser.driver.getCurrentUrl();
     }).then(function(url) {
-        // TODO: parametrize these
         const pathRegex = /auth/;
-        const username = 'rhamt';
-        const password = 'password';
+        const username = browser.params.login.username;
+        const password = browser.params.login.password;
 
         if (pathRegex.test(url)) {
             console.error('Need to log in');
@@ -91,5 +89,13 @@ exports.config = {
      * `rootEl`
      *
      */
-    useAllAngular2AppRoots: true
+    useAllAngular2AppRoots: true,
+
+    params: {
+        login: {
+            username: 'rhamt',
+            password: 'password'
+        },
+        baseUrl: baseUrl
+    }
 };
