@@ -132,6 +132,14 @@ export class AlternativeUploadQueueComponent extends AbstractComponent implement
         return !item.isUploaded && !item.isCancel && !item.isError;
     }
 
+    public cancelUpload(item: FileItem) {
+        if (item.isUploading) {
+            item.cancel();
+        } else {
+            item.remove();
+        }
+    }
+
     public getUploadItemError(item: FileItem): string {
         return this.uploadErrors.get(item) || '';
     }
