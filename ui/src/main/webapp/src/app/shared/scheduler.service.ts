@@ -1,15 +1,19 @@
-import {Injectable} from "@angular/core";
+import {Injectable, NgZone} from "@angular/core";
 
 @Injectable()
 export class SchedulerService {
     protected timeoutHandles: any[] = [];
     protected intervalHandles: any[] = [];
 
-    public setTimeout(callback: Function, time: number): any {
-        let handle = setTimeout(callback, time);
-        this.timeoutHandles.push(handle);
+    public constructor(protected zone: NgZone) {}
 
-        return handle;
+    public setTimeout(callback: () => any, time: number): any {
+        return this.zone.runOutsideAngular(() => {
+            let handle = setTimeout(callback, time);
+            this.timeoutHandles.push(handle);
+
+            return handle;
+        });
     }
 
     public clearTimeout(resource: any) {
@@ -23,11 +27,13 @@ export class SchedulerService {
         this.timeoutHandles.splice(index, 1);
     }
 
-    public setInterval(callback: Function, interval: number): any {
-        let handle = setInterval(callback, interval);
-        this.intervalHandles.push(handle);
+    public setInterval(callback: () => any, interval: number): any {
+        return this.zone.runOutsideAngular(() => {
+            let handle = setInterval(callback, interval);
+            this.intervalHandles.push(handle);
 
-        return handle;
+            return handle;
+        });
     }
 
     public clearInterval(resource: any) {
