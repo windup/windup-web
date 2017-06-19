@@ -1,44 +1,31 @@
 import {ProjectPage} from "./pages/project.po";
 import {CreateProjectWorkflow} from "./workflows/create-project.wf";
 import {ConfirmDialogPage} from "./pages/confirm-dialog.po";
+import {browser} from "protractor";
 
 describe('Project List', () => {
     const projectPage = new ProjectPage();
-
-    describe('Without any projects', () => {
-        beforeAll(() => {
-            projectPage.navigateTo();
-            // TODO: Ensure no project exists
-        });
-
-        it('Should not show project list', () => {
-            expect(projectPage.projectListDiv.isPresent()).toBeFalsy();
-        });
-
-        it('Should show New project button', () => {
-            expect(projectPage.newProjectButton.isPresent()).toBeTruthy();
-        });
-
-        it('Should show welcome message', () => {
-            expect(projectPage.emptyStateDiv.isPresent()).toBeTruthy();
-        });
-    });
 
     describe('With projects', () => {
         let projectName: string;
         let projectListPromise: Promise<any[]>;
 
-        beforeAll(() => {
+        beforeAll((done) => {
             const workflow = new CreateProjectWorkflow();
 
             const date = new Date();
             projectName = 'Test ' + date.getTime().toString();
 
+            console.error('MOST UP TO DATE');
+
             workflow.createProject(projectName)
                 .then(() => projectPage.navigateTo())
+                .then(() => browser.waitForAngular())
                 .then(() => {
                     projectListPromise = projectPage.getProjectList();
-                });
+                })
+                .then(() => browser.waitForAngular())
+                .then(() => done());
         });
 
         it('Should show project list', () => {
@@ -51,11 +38,9 @@ describe('Project List', () => {
             });
         });
 
-        afterAll(() => {
-            projectListPromise.then(projects => {
+        afterAll(async () => {
+            await projectListPromise.then(projects => {
                 let project = projects.find(item => item.name === projectName);
-
-                console.log(project);
 
                 if (project != null) {
                     project.deleteButton.click().then(() => {

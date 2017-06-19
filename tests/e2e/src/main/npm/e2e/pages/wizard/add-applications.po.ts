@@ -36,10 +36,10 @@ export class AddApplicationsPage {
 
     public registerFileByServerPath(path: string) {
         return this.serverPathButton.click()
-            .then(() => {
-                this.serverPathInput.sendKeys(path);
-                return this.next.click();
-            });
+            .then(() => this.serverPathInput.sendKeys(path))
+            .then(() => browser.waitForAngular())
+            .then(() => this.next.click())
+            .then(() => browser.waitForAngular());
     }
 
 }

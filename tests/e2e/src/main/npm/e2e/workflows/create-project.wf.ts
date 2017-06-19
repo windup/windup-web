@@ -4,26 +4,25 @@ import {AddApplicationsPage} from "../pages/wizard/add-applications.po";
 import {AnalysisConfigurationPage} from "../pages/wizard/analysis-configuration.po";
 import {browser, by, element} from "protractor";
 
-
-// TODO: Parametrize this - maybe use ENV variable?
-const UPLOAD_FILE_PATH = '/home/dklingen/Downloads/mariadb-java-client-1.5.5.jar';
+const UPLOAD_FILE_PATH = browser.params.upload.filePath;
 
 export class CreateProjectWorkflow {
     public createProject(name: string) {
         const projectPage = new ProjectPage();
         return projectPage.navigateTo()
             .then(() => projectPage.newProject())
+            .then(() => browser.waitForAngular())
             .then(() => {
                 const createProjectPage = new CreateProjectPage();
-                createProjectPage.setTitle(name);
-                return createProjectPage.clickNext();
+                return createProjectPage.setTitle(name).then(() => createProjectPage.clickNext());
             })
+            .then(() => browser.waitForAngular())
             .then(() => {
                 const addApplications = new AddApplicationsPage();
                 return addApplications.registerFileByServerPath(UPLOAD_FILE_PATH);
             })
+            .then(() => browser.waitForAngular())
             .then(() => {
-                console.error('On analysis cofig page');
                 const analysisConfig = new AnalysisConfigurationPage();
                 return analysisConfig.clickSave();
             })
@@ -49,5 +48,13 @@ export class CreateProjectWorkflow {
                     }
                 });
             });
+    }
+
+    public createProjectWithTimeInName() {
+        const date = new Date();
+        const projectName = 'Test ' + date.getTime().toString();
+
+        return this.createProject(projectName)
+            .then(() => browser.waitForAngular());
     }
 }

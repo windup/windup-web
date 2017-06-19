@@ -8,11 +8,11 @@ export class CreateProjectPage {
     next = element(by.css('.btn.btn-primary'));
 
     public setTitle(title: string) {
-        this.title.sendKeys(title);
+        return this.title.sendKeys(title);
     }
 
     public setDescription(description: string) {
-        this.description.sendKeys(description);
+        return this.description.sendKeys(description);
     }
 
     public clickNext() {

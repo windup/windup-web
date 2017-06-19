@@ -96,6 +96,9 @@ exports.config = {
             username: 'rhamt',
             password: 'password'
         },
-        baseUrl: baseUrl
+        baseUrl: baseUrl,
+        upload: {
+            filePath: '/home/dklingen/Downloads/mariadb-java-client-1.5.5.jar'
+        }
     }
 };
