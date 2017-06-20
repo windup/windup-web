@@ -140,6 +140,10 @@ public class RuleDataLoader
                             .setParameter(RuleProviderEntity.RULES_PATH_PARAM, rulesPath)
                             .executeUpdate();
 
+                // do not process again failed rulesPath
+                if (rulesPath.getLoadError() != null)
+                    continue;
+                
                 rulesPath.setLoadError(null);
                 try
                 {
