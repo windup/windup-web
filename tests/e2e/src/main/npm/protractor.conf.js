@@ -98,7 +98,7 @@ exports.config = {
         },
         baseUrl: baseUrl,
         upload: {
-            filePath: '/home/dklingen/Downloads/mariadb-java-client-1.5.5.jar'
+            filePath: '/this/needs/to/be/overriden/by/cli/param'
         }
     }
 };
