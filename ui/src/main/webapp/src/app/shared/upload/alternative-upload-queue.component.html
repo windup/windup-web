@@ -1,5 +1,10 @@
 <ul *ngIf="uploader.queue.length > 0" class="app-list">
     <li *ngFor="let item of uploader.queue">
+        <div class="action-button">
+            <span (click)="isCancellable(item) ? cancelUpload(item) : null" [ngClass]="{'pointer': isCancellable(item)}">
+                <i class="glyphicon" [ngClass]="getStatusIcon(item)"></i>
+            </span>
+        </div>
         <div class="progress">
             <div class="progress-bar"
                  [ngClass]="{'progress-bar-danger': item.isError, 'progress-bar-warning': item.isCancel, 'success': item.isSuccess}"
@@ -10,11 +15,6 @@
                     <span>{{item?.file?.name}}</span>
                     <span class="file-size">({{ item?.file?.size / 1024 / 1024 | number:'.2' }} MB)</span>
                     <span>{{getProgressLabel(item)}}</span>
-                </div>
-                <div class="action-button">
-                    <span (click)="isCancellable(item) ? item.cancel() : null" [ngClass]="{'pointer': isCancellable(item)}">
-                        <i class="glyphicon" [ngClass]="getStatusIcon(item)"></i>
-                    </span>
                 </div>
             </div>
         </div>

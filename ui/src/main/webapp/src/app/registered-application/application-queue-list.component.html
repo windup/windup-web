@@ -1,5 +1,10 @@
 <ul *ngIf="registeredApplications?.length > 0" class="app-list">
     <li *ngFor="let application of registeredApplications">
+        <div class="action-button">
+            <span class="pointer" (click)="confirmDeleteApplication(application)">
+                <i class="glyphicon fa fa-trash-o"></i>
+            </span>
+        </div>
         <div class="progress">
             <div class="progress-bar success"
                  role="progressbar"
@@ -8,11 +13,6 @@
                 <div class="file-info">
                     <span>{{application.title}}</span>
                     <span class="file-size">({{ application.fileSize / 1024 / 1024 | number:'.2' }} MB)</span>
-                </div>
-                <div class="action-button">
-                    <span class="pointer" (click)="confirmDeleteApplication(application)">
-                        <i class="glyphicon fa fa-trash-o"></i>
-                    </span>
                 </div>
                 <div>100%</div>
             </div>
