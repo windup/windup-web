@@ -8,7 +8,7 @@
         <version>4.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>windup-web-ear</artifactId>
+    <artifactId>rhamt-ear</artifactId>
     <name>RHAMT Web Console</name>
     <packaging>ear</packaging>
 
@@ -33,7 +33,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-ear-plugin</artifactId>
-                <version>${version.ear.plugin}</version>
                 <configuration>
                     <defaultLibBundleDir>lib</defaultLibBundleDir>
                     <modules>
@@ -41,11 +40,13 @@
                             <groupId>org.jboss.windup.web</groupId>
                             <artifactId>windup-web-services</artifactId>
                             <contextRoot>/rhamt-web/api</contextRoot>
+                            <bundleFileName>api.war</bundleFileName>
                         </webModule>
                         <webModule>
                             <groupId>org.jboss.windup.web</groupId>
                             <artifactId>windup-web-ui</artifactId>
                             <contextRoot>/rhamt-web</contextRoot>
+                            <bundleFileName>rhamt-web.war</bundleFileName>
                         </webModule>
                     </modules>
                     <fileNameMapping>no-version</fileNameMapping>
