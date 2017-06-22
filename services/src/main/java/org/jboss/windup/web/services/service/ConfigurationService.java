@@ -84,7 +84,7 @@ public class ConfigurationService
         for (Iterator<RulesPath> iterator = rulesets.iterator(); iterator.hasNext();)
         {
             RulesPath rulesPath = (RulesPath) iterator.next();
-            if (rulesPath.getRulesPathType() == RulesPathType.USER_PROVIDED)
+            if (rulesPath.getRulesPathType() == RulesPathType.USER_PROVIDED && rulesPath.getLoadError() == null)
             {
                 customRulesPaths.add(rulesPath);
             }
@@ -116,7 +116,8 @@ public class ConfigurationService
         {
             // Otherwise, create a new one
             RulesPath newRulesPath = new RulesPath(newSystemRulesPath.toString(), RulesPath.RulesPathType.SYSTEM_PROVIDED);
-            dbPaths.add(newRulesPath);
+            if (newRulesPath.getLoadError() == null)
+                dbPaths.add(newRulesPath);
         }
 
         // finally, set the new values on the configuration

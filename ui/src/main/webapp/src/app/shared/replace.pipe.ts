@@ -9,6 +9,6 @@ export class ReplacePipe implements PipeTransform {
             return str;
         if (args.length < 2)
             return str;
-        return str.replace(args[0], args[1]);
+        return str.replace(new RegExp(args[0],"g"), args[1]);
     }
 }

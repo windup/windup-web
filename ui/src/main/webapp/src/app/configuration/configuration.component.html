@@ -59,7 +59,9 @@
                 </div>
 
                 <div *ngIf="rulePath.loadError">
-                    <h3>{{rulePath.loadError}}</h3>
+                 <p>Invalid rule files have been detected.</p>
+                 <p>Please make sure that your rule files comply to the <a href="http://windup.jboss.org/schema/windup-jboss-ruleset.xsd">XSD rule format</a>.</p>
+                 <p class="alert alert-danger" style="white-space:pre-line;" role="alert" [innerHtml]="rulePath.loadError | wuReplace:': ':': <br>'"></p>
                 </div>
 
                 <!-- List of rules. -->
