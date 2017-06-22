@@ -19,46 +19,51 @@
         </div>
     </div>
 
-    <table class="table table-bordered table-hover" *ngIf="project?.applications?.length > 0">
-        <thead wu-sortable-table
-               [(sortedData)]="sortedApplications" [data]="filteredApplications"
-               [tableHeaders]="[
+    <wu-all-data-filtered-message
+            [filteredItems]="filteredApplications"
+            [unfilteredItems]="project?.applications"
+            (clearFilter)="clearSearch()">
+        <table class="table table-bordered table-hover" *ngIf="project?.applications?.length > 0">
+            <thead wu-sortable-table
+                   [(sortedData)]="sortedApplications" [data]="filteredApplications"
+                   [tableHeaders]="[
             { title: 'Application', isSortable: true, sortBy: 'title' },
             { title: 'Date Added', isSortable: true, sortBy: 'lastModified'},
             { title: 'Actions', isSortable: false }
         ]">
-        </thead>
-        <tbody *ngIf="project">
-            <tr *ngFor="let app of sortedApplications">
-                <td>{{app.title}}</td>
-                <td>{{app.lastModified | date: 'short' }}</td>
-                <td *ngIf="isDeleting(app); else showActions">
-                    <span class="spinner spinner-xs spinner-inline"></span>
-                    <ng-container i18n="deleting">Deleting...</ng-container>
-                </td>
-                <ng-template #showActions>
-                    <td>
-                        <!--
-                        (jsight - 2017/04/25 - Editing is too complicated, remove for now :)
-
-                        span class="fa-lg action-item" i18n-title="Edit application" title="Edit">
-                            <a (click)="editApplication(app)" class="action-button">
-                                <i class="fa fa-pencil"></i>
-                            </a>
-                        </span -->
-                        <span class="fa-lg action-item" i18n-title="Delete application" title="Delete">
-                            <a (click)="confirmDeleteApplication(app)"
-                               [ngClass]="{'disabled': (this.activeExecutions?.length > 0), 'action-button': true}"
-                               title="{{(this.activeExecutions?.length > 0) ? 'Cannot delete while an analysis is in progress' : 'Delete'}}"
-                            >
-                                <i class="fa fa-trash-o"></i>
-                            </a>
-                        </span>
+            </thead>
+            <tbody *ngIf="project">
+                <tr *ngFor="let app of sortedApplications">
+                    <td>{{app.title}}</td>
+                    <td>{{app.lastModified | date: 'short' }}</td>
+                    <td *ngIf="isDeleting(app); else showActions">
+                        <span class="spinner spinner-xs spinner-inline"></span>
+                        <ng-container i18n="deleting">Deleting...</ng-container>
                     </td>
-                </ng-template>
-            </tr>
-        </tbody>
-    </table>
+                    <ng-template #showActions>
+                        <td>
+                            <!--
+                            (jsight - 2017/04/25 - Editing is too complicated, remove for now :)
+
+                            span class="fa-lg action-item" i18n-title="Edit application" title="Edit">
+                                <a (click)="editApplication(app)" class="action-button">
+                                    <i class="fa fa-pencil"></i>
+                                </a>
+                            </span -->
+                            <span class="fa-lg action-item" i18n-title="Delete application" title="Delete">
+                                <a (click)="confirmDeleteApplication(app)"
+                                   [ngClass]="{'disabled': (this.activeExecutions?.length > 0), 'action-button': true}"
+                                   title="{{(this.activeExecutions?.length > 0) ? 'Cannot delete while an analysis is in progress' : 'Delete'}}"
+                                >
+                                    <i class="fa fa-trash-o"></i>
+                                </a>
+                            </span>
+                        </td>
+                    </ng-template>
+                </tr>
+            </tbody>
+        </table>
+    </wu-all-data-filtered-message>
 
     <wu-confirmation-modal #deleteAppDialog [id]="'deleteAppDialog'"></wu-confirmation-modal>
 </div>

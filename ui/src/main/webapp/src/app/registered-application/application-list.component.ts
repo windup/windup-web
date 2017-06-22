@@ -137,6 +137,11 @@ export class ApplicationListComponent extends ExecutionsMonitoringComponent impl
         }
     }
 
+    clearSearch() {
+        this.searchText = '';
+        this.updateSearch();
+    }
+
     public isDeleting(app: RegisteredApplication) {
         return this.deletedApplications.has(app.id);
     }

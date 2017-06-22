@@ -1,0 +1,7 @@
+<div *ngIf="unfilteredItems?.length > 0 && filteredItems?.length === 0" class="no-matches">
+    <ng-container i18n>The current filter is hiding all items.</ng-container>
+    <a action (click)="clearFilter.emit()" i18n href="javascript:void(0)">Remove</a> <ng-container i18n>the filter.</ng-container>
+</div>
+<ng-container *ngIf="filteredItems?.length > 0 || unfilteredItems?.length === 0">
+    <ng-content></ng-content>
+</ng-container>
