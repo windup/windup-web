@@ -23,6 +23,7 @@ import {SearchComponent} from "../../../../src/app/shared/search/search.componen
 import {WindupExecutionService} from "../../../../src/app/services/windup-execution.service";
 import {AnalysisContextService} from "../../../../src/app/analysis-context/analysis-context.service";
 import {RouteFlattenerService} from "../../../../src/app/core/routing/route-flattener.service";
+import {AllDataFilteredMessageComponent} from "../../../../src/app/shared/all-data-filtered-message.component";
 
 let comp:    ExecutionsListComponent;
 let fixture: ComponentFixture<ExecutionsListComponent>;
@@ -59,7 +60,8 @@ describe('ExecutionsListComponent', () => {
                 StatusIconComponent,
                 PrettyExecutionStatus,
                 ConfirmationModalComponent,
-                SearchComponent
+                SearchComponent,
+                AllDataFilteredMessageComponent
             ],
             providers: [
                 SchedulerService,
@@ -106,15 +108,15 @@ describe('ExecutionsListComponent', () => {
         fixture = TestBed.createComponent(ExecutionsListComponent);
         comp = fixture.componentInstance;
 
-        de = fixture.debugElement.query(By.css('table.executions-list-table'));
-        el = de.nativeElement;
-
-        let projectServiceMock: any = de.injector.get(MigrationProjectService);
+        let projectServiceMock: any = fixture.debugElement.injector.get(MigrationProjectService);
 
         projectServiceMock.getAll.and.returnValue(Observable.of(mockProjects));
 
         comp.executions = <WindupExecution[]>SORTED_EXECUTIONS_DATA;
         fixture.detectChanges();
+
+        de = fixture.debugElement.query(By.css('table.executions-list-table'));
+        el = de.nativeElement;
     });
 
     it('should display all windup executions', () => {
