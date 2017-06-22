@@ -180,6 +180,11 @@ export class ExecutionsListComponent extends AbstractComponent implements OnInit
         return WindupExecutionService.formatStaticReportUrl(execution);
     }
 
+    clearSearch() {
+        this.searchText = '';
+        this.updateSearch();
+    }
+
     updateSearch() {
         if (this.searchText && this.searchText.length > 0) {
             this.filteredExecutions = this._executions.filter(execution => (
