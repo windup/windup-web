@@ -1,9 +1,5 @@
 :host /deep/ {
   @media (max-width: 1599px) {
-    .nav-pf-vertical, .navbar-primary li.home a {
-      width: 145px;
-    }
-
     .navbar-primary li.home a span:first-child {
         text-align: center;
     }
@@ -14,14 +10,11 @@
 
     .navbar-primary li.home a {
       display: flex;
+      display: -webkit-flex; /* Safari */
       flex: 1 0 0;
       align-items: center;
       align-content: center;
       justify-content: center;
-    }
-
-    .nav-pf-vertical .list-group-item > a .fa {
-      display: none;
     }
   }
 
