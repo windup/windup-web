@@ -43,7 +43,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
 
     labels = {
         heading: 'Add Applications',
-        uploadButton: 'Upload'
+        uploadButton: 'Done'
     };
 
     constructor(
@@ -138,36 +138,28 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     }
 
     register() {
+        if (!this.isValid) {
+            return false;
+        }
+
         if (this.mode == "PATH") {
             this.registerPath();
         } else {
-            this.navigateOnSuccess();
             return false;
         }
     }
 
-    private registerPath() {
-        /**
-         * If there are already some uploaded applications, we consider form to be valid
-         * But if user is on Register Path section, clicking submit button triggers registering app by path with invalid
-         *  path.
-         *  To avoid that, treat it as success and do the navigation right away, even when no input path is set.
-         */
-        if ((!this.fileInputPath || this.fileInputPath.length === 0) && this.isValid) {
-            this.navigateOnSuccess();
-            return;
-        }
-
+    public registerPath() {
         this._fileService.queryServerPathTargetType(this.fileInputPath).subscribe((type_: string) => {
             if (type_ === "DIRECTORY" && !this.isDirWithExplodedApp) { //this.isDirWithApps
                 this._registeredApplicationService.registerApplicationInDirectoryByPath(this.project, this.fileInputPath)
                     .subscribe(
-                        application => this.navigateOnSuccess(),
+                        () => this.fileInputPath = '',
                         error => this.handleError(error)
                     );
             } else {
                 this._registeredApplicationService.registerByPath(this.project, this.fileInputPath, this.isDirWithExplodedApp).subscribe(
-                    application => this.navigateOnSuccess(),
+                    () => this.fileInputPath = '',
                     error => this.handleError(<any>error)
                 )
             }
@@ -224,7 +216,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
         this.mode = mode;
 
         if (this.mode === 'PATH') {
-            this.labels.uploadButton = 'Upload';
+            this.labels.uploadButton = 'Done';
         } else if (this.mode === 'UPLOADED') {
             // this is not really nice, but when using UPLOADED mode, upload is done automatically
             // so no action is actually being executed, so label is 'Done'
@@ -246,17 +238,6 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     }
 
     public get isValid() {
-        /**
-         * If project already has some applications,
-         * form is always valid for "upload" tab and also for empty path in "server path" tab.
-         *
-         * This allows us to have 'Back' step in wizard and not requiring
-         * user to upload new application.
-         */
-        if  (this.isInWizard && this.projectHasApplications() && this.fileInputPath.length === 0) {
-            return true;
-        }
-
         if (this.mode === 'PATH') {
             const appPathField = this.registrationForm.get('appPathToRegister');
 
