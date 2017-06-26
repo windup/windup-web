@@ -134,9 +134,11 @@ describe('ExecutionsListComponent', () => {
         queuedExecutions.forEach(row => {
             let el = row.nativeElement;
 
-            expect(el.children[COL_ACTIONS].children.length).toBe(1);
+            expect(el.children[COL_ACTIONS].children.length).toBe(2);
             expect(el.children[COL_ACTIONS].children[0].nodeName.toLowerCase()).toEqual('a');
-            expect(el.children[COL_ACTIONS].children[0].title).toEqual('Cancel');
+            expect(el.children[COL_ACTIONS].children[0].title).toEqual('Details');
+            expect(el.children[COL_ACTIONS].children[1].nodeName.toLowerCase()).toEqual('a');
+            expect(el.children[COL_ACTIONS].children[1].title).toEqual('Cancel');
         });
     });
 
@@ -157,10 +159,10 @@ describe('ExecutionsListComponent', () => {
 
             if (stateText.startsWith("Completed")) {
                 expect(el.children[COL_ACTIONS].children.length).toBe(2);
-                expect(el.children[COL_ACTIONS].children[0].children[0].title).toEqual('Show reports');
+                expect(el.children[COL_ACTIONS].children[0].title).toEqual('Details');
                 expect(el.children[COL_ACTIONS].children[1].title).toEqual('Delete');
             } else {
-                expect(el.children[COL_ACTIONS].children.length).toBe(1);
+                expect(el.children[COL_ACTIONS].children.length).toBe(2);
                 expect(el.children[COL_ACTIONS].textContent.trim()).toEqual('');
             }
         });
