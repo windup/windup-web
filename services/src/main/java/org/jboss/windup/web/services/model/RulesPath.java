@@ -14,6 +14,7 @@ import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.ColumnDefault;
 import org.jboss.windup.web.services.validators.FileExistsConstraint;
 
 /**
@@ -45,6 +46,7 @@ public class RulesPath implements Serializable
 
     @Column
     @NotNull
+    @ColumnDefault("true")
     private boolean scanRecursively = true;
 
     @Column(length = 2048)

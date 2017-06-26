@@ -25,8 +25,6 @@ public class RuleProviderServiceImpl implements RuleProviderService
         RuleLoaderContext ruleLoaderContext = new RuleLoaderContext(rulePaths, null);
         if (fileRulesOnly)
             ruleLoaderContext.setFileBasedRulesOnly();
-        if (scanDirsRecursively)
-            ruleLoaderContext.setScanDirsRecursively(true);
         return ruleLoader.loadConfiguration(ruleLoaderContext);
     }
 }

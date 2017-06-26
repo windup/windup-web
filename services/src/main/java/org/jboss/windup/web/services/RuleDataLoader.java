@@ -1,27 +1,32 @@
 package org.jboss.windup.web.services;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.GregorianCalendar;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import javax.annotation.Resource;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
-import javax.ejb.TransactionManagement;
-import javax.ejb.TransactionManagementType;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.transaction.UserTransaction;
-
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jboss.windup.config.RuleProvider;
 import org.jboss.windup.config.loader.RuleLoaderContext;
 import org.jboss.windup.config.metadata.RuleProviderMetadata;
@@ -42,7 +47,6 @@ import org.jboss.windup.web.services.service.ConfigurationService;
 import org.jboss.windup.web.services.service.TechnologyService;
 import org.ocpsoft.rewrite.config.Rule;
 
-import static org.jboss.windup.web.services.model.RuleProviderEntity_.rulesPath;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -52,6 +56,10 @@ import static org.jboss.windup.web.services.model.RuleProviderEntity_.rulesPath;
 public class RuleDataLoader
 {
     private static Logger LOG = Logger.getLogger(RuleDataLoader.class.getName());
+
+    // Copied from XMLRuleProviderLoader.
+    private static final String XML_RULES_WINDUP_EXTENSION = "windup.xml";
+    private static final String XML_RULES_RHAMT_EXTENSION = "rhamt.xml";
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -116,15 +124,32 @@ public class RuleDataLoader
                 return;
 
             // Expand the directories which are non-recursive into individual paths.
-            /*Iterator<RulesPath> it = rulesPaths.iterator();
+            // This is kind of hack. It should rather be in individual RuleProviderLoader's.
+            // But for UI (where this class is), we only support XML rules anyway.
+            final Set<RulesPath> rulesPaths2 = new HashSet<>();
+            Iterator<RulesPath> it = rulesPaths.iterator();
             while( it.hasNext() ){
                 RulesPath rulesPath = it.next();
-                if (!rulesPath.isScanRecursively()) {
-                    it.remove();
-                    // Traverse and rulesPaths.add()
-                    // However, how to filter?
+                File file = FileUtils.getFile(rulesPath.getPath());
+                if (file.isDirectory() && !rulesPath.isScanRecursively()) {
+                    //it.remove();
+                    FileUtils.listFiles(file, new String[]{XML_RULES_WINDUP_EXTENSION, XML_RULES_RHAMT_EXTENSION}, false).stream().forEach(
+                        xmlFile -> {
+                            RulesPath replacement = new RulesPath();
+                            replacement.setScanRecursively(false);
+                            replacement.setPath(xmlFile.getPath());
+                            replacement.setShortPath(rulesPath.getShortPath());
+                            replacement.setRulesPathType(rulesPath.getRulesPathType());
+                            replacement.setRegistrationType(rulesPath.getRegistrationType());
+                            entityManager.persist(replacement);
+                            rulesPaths2.add(replacement);
+                        }
+                    );
                 }
-            }*/
+                else
+                    rulesPaths2.add(rulesPath);
+            }
+            rulesPaths = rulesPaths2;
 
             for (RulesPath rulesPath : rulesPaths)
             {
@@ -161,7 +186,8 @@ public class RuleDataLoader
 
                     RuleProviderRegistry providerRegistry =
                             ruleProviderService.loadRuleProviderRegistry(Collections.singleton(path), fileRulesOnly, rulesPath.isScanRecursively());
-                    LOG.info("Providers for: " + path + " are " + providerRegistry.getProviders());
+                    LOG.info("\nProviders for: " + path + "\n  are \n    "
+                            + StringUtils.join(providerRegistry.getProviders(), "\n    "));
 
                     for (RuleProvider provider : providerRegistry.getProviders())
                     {

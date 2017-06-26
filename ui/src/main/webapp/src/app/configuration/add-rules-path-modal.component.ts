@@ -33,7 +33,7 @@ export class AddRulesPathModalComponent extends FormComponent implements OnInit,
 
     // Form models
     inputPath = "";
-    scanRecursively = ""
+    scanRecursively = true;
 
     addRulesPathForm: FormGroup;
 
@@ -123,7 +123,8 @@ export class AddRulesPathModalComponent extends FormComponent implements OnInit,
 
     ngOnInit(): void {
         this.addRulesPathForm = this._formBuilder.group({
-            inputPathControl: ["", Validators.compose([Validators.required, Validators.minLength(4)]), FileExistsValidator.create(this._fileService)]
+            inputPathControl: ["", Validators.compose([Validators.required, Validators.minLength(4)]), FileExistsValidator.create(this._fileService)],
+            scanRecursivelyControl: [""],
         });
     }
 

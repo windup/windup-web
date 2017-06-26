@@ -52,7 +52,7 @@
                             type="text"
                             id="addRulesPathInput"
                             class="form-control"
-                            placeholder="/opt/rules or /opt/rules/my-rules.windup.xml"
+                            placeholder="/opt/rules or /opt/rules/my-rules.rhamt.xml"
                     >
                     <div i18n="Path input help">
                         Path to the server-side file or directory containing the rules.
@@ -62,8 +62,8 @@
                     </span>
                 </div>
                 <div class="form-group">
-                    <label class="control-label" for="addRulesPathInput" i18n>Scan recursively (if it is a directory)</label>
-                    <input [(ngModel)]="scanRecursively" type="checkbox" id="scanRecursively" class="form-control scanRecursively">
+                    <input [(ngModel)]="scanRecursively" formControlName="scanRecursivelyControl" type="checkbox" id="scanRecursively" class="scanRecursively">
+                    <label class="control-label" for="scanRecursively" i18n>Scan recursively (if it is a directory)</label>
                     <div i18n="Checkbox help">
                         If checked and given path is a directory, the subdirectories will also be scanned for rulesets.
                     </div>
