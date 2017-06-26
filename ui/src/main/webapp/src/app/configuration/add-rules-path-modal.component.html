@@ -45,7 +45,7 @@
             </wu-tab>
             <wu-tab [tabTitle]="'Server Path'" [properties]="{mode: 'PATH'}">
                 <div class="form-group" [ngClass]="{'has-error': hasError(addRulesPathForm.get('inputPathControl'))}">
-                    <label class="control-label" for="addRulesPathInput">Rules path (server-side file or directory)</label>
+                    <label class="control-label" for="addRulesPathInput" i18n>Rules path (server-side file or directory)</label>
                     <input
                             [(ngModel)]="inputPath"
                             formControlName="inputPathControl"
@@ -54,12 +54,19 @@
                             class="form-control"
                             placeholder="/opt/rules or /opt/rules/my-rules.windup.xml"
                     >
-                    <div>
+                    <div i18n="Path input help">
                         Path to the server-side file or directory containing the rules.
                     </div>
-                    <span [class.hidden]="!hasError(addRulesPathForm.get('inputPathControl'))" class="help-block">
+                    <span [class.hidden]="!hasError(addRulesPathForm.get('inputPathControl'))" class="help-block" i18n="Custom server-side ruleset path error">
                         The path must exist on the server.
                     </span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for="addRulesPathInput" i18n>Scan recursively (if it is a directory)</label>
+                    <input [(ngModel)]="scanRecursively" type="checkbox" id="scanRecursively" class="form-control scanRecursively">
+                    <div i18n="Checkbox help">
+                        If checked and given path is a directory, the subdirectories will also be scanned for rulesets.
+                    </div>
                 </div>
             </wu-tab>
         </wu-tab-container>

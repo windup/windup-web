@@ -133,6 +133,7 @@ public class RuleDataLoader
                     if (count > 0)
                         continue;
                 }
+
                 LOG.info("Purging existing rule data for: " + rulesPath);
                 // Delete the previous ones
                 entityManager
@@ -143,7 +144,7 @@ public class RuleDataLoader
                 // do not process again failed rulesPath
                 if (rulesPath.getLoadError() != null)
                     continue;
-                
+
                 rulesPath.setLoadError(null);
                 try
                 {
@@ -151,7 +152,8 @@ public class RuleDataLoader
                     RuleLoaderContext ruleLoaderContext = new RuleLoaderContext(Collections.singleton(path), null);
                     boolean fileRulesOnly = rulesPath.getRulesPathType() == RulesPath.RulesPathType.USER_PROVIDED;
 
-                    RuleProviderRegistry providerRegistry = ruleProviderService.loadRuleProviderRegistry(Collections.singleton(path), fileRulesOnly);
+                    RuleProviderRegistry providerRegistry =
+                            ruleProviderService.loadRuleProviderRegistry(Collections.singleton(path), fileRulesOnly, rulesPath.isScanRecursively());
                     LOG.info("Providers for: " + path + " are " + providerRegistry.getProviders());
 
                     for (RuleProvider provider : providerRegistry.getProviders())
@@ -162,7 +164,7 @@ public class RuleDataLoader
                         String origin = ruleProviderMetadata.getOrigin();
                         RuleProviderEntity.RuleProviderType ruleProviderType = getProviderType(origin);
 
-                        // Skip user provided rules that are
+                        // Skip user provided Java based rules.
                         if (rulesPath.getRulesPathType() == RulesPath.RulesPathType.USER_PROVIDED &&
                                     ruleProviderType == RuleProviderEntity.RuleProviderType.JAVA)
                             continue;

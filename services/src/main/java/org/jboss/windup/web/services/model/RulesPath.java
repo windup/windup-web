@@ -43,6 +43,10 @@ public class RulesPath implements Serializable
     @NotNull
     private String path;
 
+    @Column
+    @NotNull
+    private boolean scanRecursively = true;
+
     @Column(length = 2048)
     @Size(min = 1, max = 2048)
     private String shortPath;
@@ -106,6 +110,20 @@ public class RulesPath implements Serializable
     public void setPath(String inputPath)
     {
         this.path = inputPath;
+    }
+
+    /**
+     * If true and given path is a directory, the subdirectories will also be scanned for rulesets.
+     */
+    public boolean isScanRecursively() {
+        return scanRecursively;
+    }
+
+    /**
+     * If true and given path is a directory, the subdirectories will also be scanned for rulesets.
+     */
+    public void setScanRecursively(boolean scanRecursively) {
+        this.scanRecursively = scanRecursively;
     }
 
     /**

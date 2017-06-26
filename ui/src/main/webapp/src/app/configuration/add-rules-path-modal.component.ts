@@ -31,7 +31,9 @@ export class AddRulesPathModalComponent extends FormComponent implements OnInit,
     @Output()
     configurationSaved = new EventEmitter();
 
+    // Form models
     inputPath = "";
+    scanRecursively = ""
 
     addRulesPathForm: FormGroup;
 
@@ -163,6 +165,7 @@ export class AddRulesPathModalComponent extends FormComponent implements OnInit,
         let newPath = <RulesPath>{};
         newPath.path = this.inputPath;
         newPath.rulesPathType = "USER_PROVIDED";
+        newPath.scanRecursively = this.scanRecursively;
 
         newConfiguration.rulesPaths.push(newPath);
 
