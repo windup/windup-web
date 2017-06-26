@@ -4,14 +4,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -48,6 +41,8 @@ import org.jboss.windup.web.services.model.Technology;
 import org.jboss.windup.web.services.service.ConfigurationService;
 import org.jboss.windup.web.services.service.TechnologyService;
 import org.ocpsoft.rewrite.config.Rule;
+
+import static org.jboss.windup.web.services.model.RuleProviderEntity_.rulesPath;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -116,10 +111,22 @@ public class RuleDataLoader
         this.begin();
         try
         {
-            if (webConfiguration.getRulesPaths() == null || webConfiguration.getRulesPaths().isEmpty())
+            Set<RulesPath> rulesPaths = webConfiguration.getRulesPaths();
+            if (rulesPaths == null || rulesPaths.isEmpty())
                 return;
 
-            for (RulesPath rulesPath : webConfiguration.getRulesPaths())
+            // Expand the directories which are non-recursive into individual paths.
+            /*Iterator<RulesPath> it = rulesPaths.iterator();
+            while( it.hasNext() ){
+                RulesPath rulesPath = it.next();
+                if (!rulesPath.isScanRecursively()) {
+                    it.remove();
+                    // Traverse and rulesPaths.add()
+                    // However, how to filter?
+                }
+            }*/
+
+            for (RulesPath rulesPath : rulesPaths)
             {
                 /*
                  * Do not reload system rules if we have already loaded them
@@ -127,7 +134,7 @@ public class RuleDataLoader
                 if (rulesPath.getRulesPathType() == RulesPath.RulesPathType.SYSTEM_PROVIDED)
                 {
                     Long count = entityManager
-                            .createQuery("select count(rpe) from RuleProviderEntity rpe where rpe.rulesPath = :rulesPath", Long.class)
+                            .createQuery("SELECT COUNT(rpe) FROM RuleProviderEntity rpe WHERE rpe.rulesPath = :rulesPath", Long.class)
                             .setParameter("rulesPath", rulesPath)
                             .getSingleResult();
                     if (count > 0)
