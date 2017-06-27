@@ -8,7 +8,7 @@ import {
     ElementRef,
     Renderer,
     EventEmitter,
-    forwardRef
+    forwardRef, AfterViewInit
 } from "@angular/core";
 import {AbstractChosenComponent} from "./chosen-abstract";
 import {InternalChosenOption, ChosenOptionGroup, ChosenOption} from "./chosen-commons";
@@ -25,49 +25,12 @@ export const ChosenMultipleComponent_CONTROL_VALUE_ACCESSOR: any = {
     templateUrl: './chosen-multiple.component.html',
     providers: [ChosenMultipleComponent_CONTROL_VALUE_ACCESSOR]
 })
-export class ChosenMultipleComponent extends AbstractChosenComponent<Array<string>> {
-
-    @Input()
-    no_results_text = AbstractChosenComponent.NO_RESULTS_TEXT_DEFAULT;
-
+export class ChosenMultipleComponent extends AbstractChosenComponent<string[]> implements AfterViewInit {
     @Input()
     placeholder_text_multiple: string = "Select Some Options";
 
     @Input()
     max_shown_results = null;
-
-    @Input()
-    protected set options(options: ChosenOption[]) {
-        super.setOptions(options);
-    }
-
-    @Input()
-    protected set groups(groups: ChosenOptionGroup[]) {
-        super.setGroups(groups);
-    }
-
-    @Input()
-    set getLabel(fn: (a: any) => string) {
-        if (typeof fn !== 'function') {
-            throw new Error(`getLabel must be a function, but received ${JSON.stringify(fn)}`);
-        }
-
-        this._getLabel = fn;
-
-        // This is necessary, in case the options were set before the label function gets set
-        // (this seems to happen intermittently)
-        if (this._options)
-            super.setOptions(this._options.map(internalOption => <ChosenOption>internalOption.value));
-    }
-
-    @Input()
-    set compareWith(fn: (a: any, b: any) => boolean) {
-        if (typeof fn !== 'function') {
-            throw new Error(`compareWith must be a function, but received ${JSON.stringify(fn)}`);
-        }
-
-        this._compareWith = fn;
-    }
 
     @Input()
     single_backstroke_delete: boolean = true;

@@ -16,6 +16,21 @@ export class ActiveFiltersListComponent {
     @Input()
     countResults: number;
 
+    _getLabel = (filter: any): string => `${filter.name}: ${filter.value}`;
+
+    @Input()
+    set getLabel(fn: (item: any) => string) {
+        if (typeof fn !== 'function') {
+            throw new Error(`Expected function, got ${JSON.stringify(fn)}`);
+        }
+
+        this._getLabel = fn;
+    }
+
+    get getLabel() {
+        return this._getLabel;
+    }
+
     removeFilter(filter: FilterOption) {
         this.activeFilters = this.activeFilters.filter(item => item.name !== filter.name);
         this.updateFilters();

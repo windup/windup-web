@@ -54,9 +54,9 @@ export class TextFilterComponent implements AfterViewInit {
     }
 }
 
-export interface FilterOption {
+export interface FilterOption<T = any> {
     name: string;
-    value: string;
+    value: T;
     field?: string;
     callback?: (item: any) => boolean;
 }
