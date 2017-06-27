@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Http} from '@angular/http';
 
 import {Constants} from "../constants";
-import {RulesPath, RuleProviderEntity} from "../generated/windup-services";
+import {RulesPath, RuleProviderEntity, RulesPathType} from "../generated/windup-services";
 import {AbstractService} from "../shared/abtract.service";
 import {Observable} from "rxjs";
 import {FileUploader} from "ng2-file-upload";
@@ -16,6 +16,7 @@ export class RuleService extends AbstractService {
 
     private GET_ALL_RULE_PROVIDERS_URL= "/rules/allProviders";
     private GET_RULE_PROVIDERS_BY_RULES_PATH_URL= "/rules/by-rules-path/";
+    private IS_RULES_PATH_USED = "/rules/is-used-rules-path/{id}";
     private UPLOAD_URL = RuleService.RULES_ROOT + '/upload';
     private DELETE_RULE_URL = RuleService.RULES_ROOT + '/by-rules-path/{id}';
 
@@ -43,6 +44,15 @@ export class RuleService extends AbstractService {
         return this._http.get(url)
             .map(res => <RuleProviderEntity[]> res.json())
             .catch(this.handleError);
+    }
+
+    checkIfUsedRulesPath(rulesPath: RulesPath): Observable<boolean>
+    {
+        if (rulesPath.rulesPathType == "SYSTEM_PROVIDED")
+            return;
+
+        let url = Constants.REST_BASE + this.IS_RULES_PATH_USED.replace('{id}', rulesPath.id.toString());
+        return this._http.get(url).map(res => res.json()).catch(this.handleError);   
     }
 
     uploadRules() {

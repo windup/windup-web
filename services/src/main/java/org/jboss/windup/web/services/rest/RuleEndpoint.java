@@ -49,4 +49,8 @@ public interface RuleEndpoint
     @DELETE
     @Path("/by-rules-path/{id}")
     void deleteRuleProvider(@PathParam("id") Long rulesPathID);
+    
+    @GET
+    @Path("/is-used-rules-path/{id}")
+    Boolean isRulesPathUsed(@PathParam("id") Long rulesPathID);
 }

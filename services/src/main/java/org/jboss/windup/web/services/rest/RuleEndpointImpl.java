@@ -21,6 +21,7 @@ import org.jboss.windup.web.services.model.RegistrationType;
 import org.jboss.windup.web.services.model.RuleProviderEntity;
 import org.jboss.windup.web.services.model.RuleProviderEntity_;
 import org.jboss.windup.web.services.model.RulesPath;
+import org.jboss.windup.web.services.model.RulesPath.RulesPathType;
 import org.jboss.windup.web.services.service.ConfigurationService;
 import org.jboss.windup.web.services.service.FileUploadService;
 
@@ -116,4 +117,19 @@ public class RuleEndpointImpl implements RuleEndpoint
 
         this.entityManager.remove(rulesPath);
     }
+
+    @Override
+    public Boolean isRulesPathUsed(Long rulesPathID)
+    {
+        RulesPath rulesPath = this.getRulesPath(rulesPathID);
+        if (rulesPath.getRulesPathType() == RulesPathType.SYSTEM_PROVIDED)
+            return false;
+
+        String queryStr = "SELECT count(*)  > 0 FROM ANALYSISCONTEXT_RULESPATH  where RULESPATHS_RULES_PATH_ID=:id";
+        Boolean test = (Boolean) this.entityManager.createNativeQuery(queryStr).
+                    setParameter("id", rulesPath.getId()).
+                    getSingleResult();
+        return test;
+    }
+    
 }
