@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy} from "@angular/core";
+import {Component, OnInit, OnDestroy, ChangeDetectorRef} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router, NavigationEnd} from "@angular/router";
 import {FileUploader} from "ng2-file-upload/ng2-file-upload";
@@ -55,7 +55,8 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
         protected _routeFlattener: RouteFlattenerService,
         protected _eventBus: EventBusService,
         protected _migrationProjectService: MigrationProjectService,
-        protected _notificationService: NotificationService
+        protected _notificationService: NotificationService,
+        protected _changeDetectorRef: ChangeDetectorRef
     ) {
         super();
 
@@ -154,12 +155,20 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
             if (type_ === "DIRECTORY" && !this.isDirWithExplodedApp) { //this.isDirWithApps
                 this._registeredApplicationService.registerApplicationInDirectoryByPath(this.project, this.fileInputPath)
                     .subscribe(
-                        () => this.fileInputPath = '',
+                        () => {
+                            this.fileInputPath = '';
+                            // Make sure angular is aware of changes (avoids an angular exception in debug mode otherwise)
+                            this._changeDetectorRef.detectChanges();
+                        },
                         error => this.handleError(error)
                     );
             } else {
                 this._registeredApplicationService.registerByPath(this.project, this.fileInputPath, this.isDirWithExplodedApp).subscribe(
-                    () => this.fileInputPath = '',
+                    () => {
+                        // Make sure angular is aware of changes (avoids an angular exception in debug mode otherwise)
+                        this.fileInputPath = '';
+                        this._changeDetectorRef.detectChanges();
+                    },
                     error => this.handleError(<any>error)
                 )
             }
