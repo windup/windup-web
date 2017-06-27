@@ -2,7 +2,7 @@ import {
     AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input,
     Output
 } from "@angular/core";
-import {FilterOption} from "./filter.component";
+import {FilterOption} from "./text-filter.component";
 
 @Component({
     selector: 'wu-dropdown-filter',
