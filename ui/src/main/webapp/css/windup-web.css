@@ -190,3 +190,8 @@ fieldset.fields-section-pf {
 .notifications-row {
     padding-top: 24px;
 }
+
+.alert {
+    margin-top: 20px;
+    margin-bottom: 0px;
+}
