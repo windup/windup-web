@@ -194,10 +194,22 @@ export class ConfigurationComponent implements OnInit, AfterViewInit {
     }
 
     confirmRemoveRules(rulesPath: RulesPath) {
-        this.removeRulesConfirmationModal.body = `Are you sure you want to remove the rules from '${rulesPath.path}'?`;
-        this.removeRulesConfirmationModal.data = rulesPath;
-        this.removeRulesConfirmationModal.show();
-    }
+        console.log("Checking rules path " + rulesPath.path);
+        this._ruleService.checkIfUsedRulesPath(rulesPath).subscribe(
+            response => {
+                if (response.valueOf())
+                {
+                    this._notificationService.warning(`The rules path '${rulesPath.path}' is used in an existing Analysis Context and cannot be removed.`);
+                } 
+                else 
+                {
+                    this.removeRulesConfirmationModal.body = `Are you sure you want to remove the rules from '${rulesPath.path}'?`;
+                    this.removeRulesConfirmationModal.data = rulesPath;
+                    this.removeRulesConfirmationModal.show();
+                }
+            }
+        );
+    }        
 
     removeFilters() {
         this.filter.selectedFilters = [];

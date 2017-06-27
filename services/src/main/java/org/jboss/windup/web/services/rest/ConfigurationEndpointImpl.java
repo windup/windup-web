@@ -3,7 +3,6 @@ package org.jboss.windup.web.services.rest;
 import java.util.Set;
 
 import javax.ejb.Stateless;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.jboss.windup.web.services.model.Configuration;
