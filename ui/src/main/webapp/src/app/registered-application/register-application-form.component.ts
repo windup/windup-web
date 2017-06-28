@@ -155,24 +155,22 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
             if (type_ === "DIRECTORY" && !this.isDirWithExplodedApp) { //this.isDirWithApps
                 this._registeredApplicationService.registerApplicationInDirectoryByPath(this.project, this.fileInputPath)
                     .subscribe(
-                        () => {
-                            this.fileInputPath = '';
-                            // Make sure angular is aware of changes (avoids an angular exception in debug mode otherwise)
-                            this._changeDetectorRef.detectChanges();
-                        },
+                        () => this.clearFileInputPath(),
                         error => this.handleError(error)
                     );
             } else {
                 this._registeredApplicationService.registerByPath(this.project, this.fileInputPath, this.isDirWithExplodedApp).subscribe(
-                    () => {
-                        // Make sure angular is aware of changes (avoids an angular exception in debug mode otherwise)
-                        this.fileInputPath = '';
-                        this._changeDetectorRef.detectChanges();
-                    },
+                    () => this.clearFileInputPath(),
                     error => this.handleError(<any>error)
                 )
             }
         });
+    }
+
+    protected clearFileInputPath() {
+        this.fileInputPath = '';
+        // Make sure angular is aware of changes (avoids an angular exception in debug mode otherwise)
+        this._changeDetectorRef.detectChanges();
     }
 
     private registerUploaded() {
