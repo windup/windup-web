@@ -7,7 +7,9 @@ import org.jboss.windup.web.services.model.RegisteredApplication;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.Collection;
 
 /**
@@ -32,6 +34,11 @@ public interface RegisteredApplicationEndpoint
     @Path("{id}")
     @GET
     RegisteredApplication getApplication(@PathParam("id") long id);
+
+    @Path("{id}/download")
+    @GET
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    Response downloadApplication(@PathParam("id") long id);
 
     /**
      * Updates an existing application.

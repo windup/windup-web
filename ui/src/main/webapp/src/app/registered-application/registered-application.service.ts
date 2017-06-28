@@ -33,6 +33,7 @@ export class RegisteredApplicationService extends AbstractService {
     public static UPDATE_APPLICATION_PATH_URL = RegisteredApplicationService.SINGLE_APPLICATION_URL + '/update-path';
     public static REUPLOAD_APPLICATION_URL    = RegisteredApplicationService.SINGLE_APPLICATION_URL + '/reupload';
     public static PACKAGES_URL    = RegisteredApplicationService.SINGLE_APPLICATION_URL + '/packages';
+    public static DOWNLOAD_URL = RegisteredApplicationService.SINGLE_APPLICATION_URL + '/download';
 
     protected static PACKAGE_REQUEST_PAUSE_TIME_MS = 2000;
 
@@ -281,5 +282,9 @@ export class RegisteredApplicationService extends AbstractService {
         closure();
 
         return subject.asObservable();
+    }
+
+    public getDownloadUrl(app: RegisteredApplication): string {
+        return Constants.REST_BASE + RegisteredApplicationService.DOWNLOAD_URL.replace('{appId}', app.id.toString());
     }
 }

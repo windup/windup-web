@@ -145,4 +145,8 @@ export class ApplicationListComponent extends ExecutionsMonitoringComponent impl
     public isDeleting(app: RegisteredApplication) {
         return this.deletedApplications.has(app.id);
     }
+
+    public getDownloadUrl(app: RegisteredApplication) {
+        return this._registeredApplicationsService.getDownloadUrl(app);
+    }
 }
