@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -113,6 +114,9 @@ public class RuleProviderEntity implements Serializable
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Tag> tags;
+
+    @Lob
+    private String loadError;
 
     @Column
     private RuleProviderType ruleProviderType;
@@ -347,5 +351,21 @@ public class RuleProviderEntity implements Serializable
     public void setTags(Set<Tag> tags)
     {
         this.tags = tags;
+    }
+
+    /**
+     * Contains a load error if there were any issues loading rules from this path.
+     */
+    public String getLoadError()
+    {
+        return loadError;
+    }
+
+    /**
+     * Contains a load error if there were any issues loading rules from this path.
+     */
+    public void setLoadError(String loadError)
+    {
+        this.loadError = loadError;
     }
 }

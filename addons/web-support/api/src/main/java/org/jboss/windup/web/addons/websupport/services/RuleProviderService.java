@@ -12,6 +12,5 @@ public interface RuleProviderService
 {
     RuleProviderRegistry loadRuleProviderRegistry(
             Collection<Path> rulePaths,
-            boolean fileRulesOnly,
-            boolean scanDirsRecursively);
+            boolean fileRulesOnly);
 }

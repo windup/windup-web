@@ -10,7 +10,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,8 +24,8 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.jboss.windup.config.RuleProvider;
 import org.jboss.windup.config.loader.RuleLoaderContext;
 import org.jboss.windup.config.metadata.RuleProviderMetadata;
@@ -47,7 +46,6 @@ import org.jboss.windup.web.services.service.ConfigurationService;
 import org.jboss.windup.web.services.service.TechnologyService;
 import org.ocpsoft.rewrite.config.Rule;
 
-
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
@@ -55,17 +53,18 @@ import org.ocpsoft.rewrite.config.Rule;
 @Startup
 public class RuleDataLoader
 {
-    private static Logger LOG = Logger.getLogger(RuleDataLoader.class.getName());
-
-    // Copied from XMLRuleProviderLoader.
     private static final String XML_RULES_WINDUP_EXTENSION = "windup.xml";
     private static final String XML_RULES_RHAMT_EXTENSION = "rhamt.xml";
-
+    private static final String[] SUPPORTED_RULE_EXTENSIONS = {
+                XML_RULES_WINDUP_EXTENSION,
+                XML_RULES_RHAMT_EXTENSION
+    };
+    private static Logger LOG = Logger.getLogger(RuleDataLoader.class.getName());
     @PersistenceContext
     private EntityManager entityManager;
 
-//    @Resource
-//    private UserTransaction userTransaction;
+    // @Resource
+    // private UserTransaction userTransaction;
 
     @Inject
     private ConfigurationService configurationService;
@@ -85,10 +84,7 @@ public class RuleDataLoader
     @FromFurnace
     private RuleFormatterService ruleFormatterService;
 
-    /// =====================
-    /// TODO - enable when the PR is ready!!!
-    /// @Schedule(hour = "*", minute = "12")
-    /// =====================
+    @Schedule(hour = "*", minute = "12")
     public void loadPeriodically()
     {
         Configuration webConfiguration = configurationService.getConfiguration();
@@ -122,147 +118,12 @@ public class RuleDataLoader
         this.begin();
         try
         {
-            Set<RulesPath> rulesPaths = webConfiguration.getRulesPaths();
-            if (rulesPaths == null || rulesPaths.isEmpty())
+            if (webConfiguration.getRulesPaths() == null || webConfiguration.getRulesPaths().isEmpty())
                 return;
 
-            // Expand the directories which are non-recursive into individual paths.
-            // This is kind of hack. It should rather be in individual RuleProviderLoader's.
-            // But for UI (where this class is), we only support XML rules anyway.
-            final Set<RulesPath> rulesPaths2 = new HashSet<>();
-            Iterator<RulesPath> it = rulesPaths.iterator();
-            while( it.hasNext() ){
-                RulesPath rulesPath = it.next();
-                File file = FileUtils.getFile(rulesPath.getPath());
-                if (file.isDirectory() && !rulesPath.isScanRecursively()) {
-                    final Collection<File> filesInThisDir = FileUtils.listFiles(file, new String[]{XML_RULES_WINDUP_EXTENSION, XML_RULES_RHAMT_EXTENSION}, false);
-                    filesInThisDir.stream().forEach(
-                        xmlFile -> {
-                            // Check if there is an existing one.
-                            List<RulesPath> existing = entityManager.createQuery("FROM RulesPath rp WHERE rp.path = :path", RulesPath.class).setParameter("path", file.getAbsolutePath()).getResultList();
-                            if (existing.size() > 0)
-                            {
-                                LOG.info("RulePath already existed for: " + file.getAbsolutePath());
-                                Iterator<RulesPath> itDuplicates = existing.iterator();
-                                rulesPaths2.add(itDuplicates.next());
-                                while (itDuplicates.hasNext())
-                                    entityManager.remove(itDuplicates.next());
-                            }
-                            else
-                            {
-                                // Create if not.
-                                LOG.info("RulePath created for: " + file.getAbsolutePath());
-                                RulesPath replacement = new RulesPath();
-                                replacement.setScanRecursively(false);
-                                replacement.setPath(xmlFile.getPath());
-                                replacement.setShortPath(rulesPath.getShortPath());
-                                replacement.setRulesPathType(rulesPath.getRulesPathType());
-                                replacement.setRegistrationType(rulesPath.getRegistrationType());
-                                entityManager.persist(replacement);
-                                rulesPaths2.add(replacement);
-                            }
-                        }
-                    );
-                    entityManager.remove(rulesPath);
-                    LOG.info("Replaced path to scan non-recursively" + rulesPath.getPath() + "\n   with " + filesInThisDir.size() + " directly contained XML rule providers.");
-                }
-                else
-                    rulesPaths2.add(rulesPath);
-            }
-            rulesPaths = rulesPaths2;
-
-            for (RulesPath rulesPath : rulesPaths)
+            for (RulesPath rulesPath : webConfiguration.getRulesPaths())
             {
-                /*
-                 * Do not reload system rules if we have already loaded them
-                 */
-                if (rulesPath.getRulesPathType() == RulesPath.RulesPathType.SYSTEM_PROVIDED)
-                {
-                    Long count = entityManager
-                            .createQuery("SELECT COUNT(rpe) FROM RuleProviderEntity rpe WHERE rpe.rulesPath = :rulesPath", Long.class)
-                            .setParameter("rulesPath", rulesPath)
-                            .getSingleResult();
-                    if (count > 0)
-                        continue;
-                }
-
-                LOG.info("Purging existing rule data for: " + rulesPath);
-                // Delete the previous RuleProviderEntity's
-                deleteRuleProviderEntitiesOf(rulesPath);
-
-                // do not process again failed rulesPath
-                if (rulesPath.getLoadError() != null)
-                    continue;
-
-                rulesPath.setLoadError(null);
-                try
-                {
-                    Path path = Paths.get(rulesPath.getPath());
-                    RuleLoaderContext ruleLoaderContext = new RuleLoaderContext(Collections.singleton(path), null);
-                    boolean fileRulesOnly = rulesPath.getRulesPathType() == RulesPath.RulesPathType.USER_PROVIDED;
-
-                    RuleProviderRegistry providerRegistry =
-                            ruleProviderService.loadRuleProviderRegistry(Collections.singleton(path), fileRulesOnly, rulesPath.isScanRecursively());
-                    LOG.info("\nProviders for: " + path + "\n  are \n    "
-                            + StringUtils.join(providerRegistry.getProviders(), "\n    "));
-
-                    for (RuleProvider provider : providerRegistry.getProviders())
-                    {
-                        RuleProviderMetadata ruleProviderMetadata = provider.getMetadata();
-
-                        String providerID = ruleProviderMetadata.getID();
-                        String origin = ruleProviderMetadata.getOrigin();
-                        RuleProviderEntity.RuleProviderType ruleProviderType = getProviderType(origin);
-
-                        // Skip user provided Java based rules.
-                        if (rulesPath.getRulesPathType() == RulesPath.RulesPathType.USER_PROVIDED &&
-                                    ruleProviderType == RuleProviderEntity.RuleProviderType.JAVA)
-                            continue;
-
-                        RuleProviderEntity ruleProviderEntity = new RuleProviderEntity();
-                        ruleProviderEntity.setProviderID(providerID);
-                        ruleProviderEntity.setDateLoaded(new GregorianCalendar());
-                        ruleProviderEntity.setDescription(ruleProviderMetadata.getDescription());
-                        ruleProviderEntity.setOrigin(origin);
-                        ruleProviderEntity.setRulesPath(rulesPath);
-                        entityManager.persist(ruleProviderEntity);
-
-                        setFileMetaData(ruleProviderEntity);
-
-                        ruleProviderEntity.setSources(technologyReferencesToTechnologyList(ruleProviderMetadata.getSourceTechnologies()));
-                        ruleProviderEntity.setTargets(technologyReferencesToTechnologyList(ruleProviderMetadata.getTargetTechnologies()));
-
-                        String phase = MigrationRulesPhase.class.getSimpleName().toUpperCase();
-                        if (ruleProviderMetadata.getPhase() != null)
-                            phase = ruleProviderMetadata.getPhase().getSimpleName().toUpperCase();
-
-                        ruleProviderEntity.setPhase(phase);
-
-                        ruleProviderEntity.setRuleProviderType(ruleProviderType);
-
-                        List<RuleEntity> ruleEntities = new ArrayList<>();
-
-                        for (Rule rule : provider.getConfiguration(ruleLoaderContext).getRules())
-                        {
-                            String ruleID = rule.getId();
-                            String ruleString = this.ruleFormatterService.ruleToRuleContentsString(rule);
-
-                            RuleEntity ruleEntity = new RuleEntity();
-                            ruleEntity.setRuleID(ruleID);
-                            ruleEntity.setRuleContents(ruleString);
-                            ruleEntities.add(ruleEntity);
-                        }
-
-                        ruleProviderEntity.setRules(ruleEntities);
-
-                        entityManager.persist(ruleProviderEntity);
-                    }
-                }
-                catch (Exception e)
-                {
-                    rulesPath.setLoadError("Failed to load rules due to: " + e.getMessage());
-                    LOG.log(Level.SEVERE, "Could not load rule information due to: " + e.getMessage(), e);
-                }
+                loadRulesForRulesPath(rulesPath);
             }
         }
         finally
@@ -271,12 +132,128 @@ public class RuleDataLoader
         }
     }
 
-    private void deleteRuleProviderEntitiesOf(RulesPath rulesPath)
+    private void loadRulesForRulesPath(RulesPath rulesPath)
     {
+        /*
+         * Do not reload system rules if we have already loaded them
+         */
+        if (rulesPath.getRulesPathType() == RulesPath.RulesPathType.SYSTEM_PROVIDED)
+        {
+            Long count = entityManager
+                        .createQuery("select count(rpe) from RuleProviderEntity rpe where rpe.rulesPath = :rulesPath", Long.class)
+                        .setParameter("rulesPath", rulesPath)
+                        .getSingleResult();
+            if (count > 0)
+                return;
+        }
+        LOG.info("Purging existing rule data for: " + rulesPath);
+        // Delete the previous ones
         entityManager
-                .createNamedQuery(RuleProviderEntity.DELETE_BY_RULES_PATH)
-                .setParameter(RuleProviderEntity.RULES_PATH_PARAM, rulesPath)
-                .executeUpdate();
+                    .createNamedQuery(RuleProviderEntity.DELETE_BY_RULES_PATH)
+                    .setParameter(RuleProviderEntity.RULES_PATH_PARAM, rulesPath)
+                    .executeUpdate();
+
+        rulesPath.setLoadError(null);
+        try
+        {
+            Path initialPath = Paths.get(rulesPath.getPath());
+            boolean scanRecursively = rulesPath.getRulesPathType() == RulesPath.RulesPathType.SYSTEM_PROVIDED || rulesPath.isScanRecursively();
+
+            Set<Path> pathsToScan = FileUtils.listFiles(
+                    initialPath.toFile(),
+                    SUPPORTED_RULE_EXTENSIONS, scanRecursively)
+                    .stream()
+                    .map(File::toPath)
+                    .collect(Collectors.toSet());
+
+            for (Path path : pathsToScan)
+            {
+                loadRules(rulesPath, path);
+            }
+
+        }
+        catch (Exception e)
+        {
+            rulesPath.setLoadError("Failed to load rules due to: " + e.getMessage());
+            LOG.log(Level.SEVERE, "Could not load rule information due to: " + e.getMessage(), e);
+        }
+    }
+
+    private void loadRules(RulesPath rulesPath, Path path)
+    {
+        boolean fileRulesOnly = rulesPath.getRulesPathType() == RulesPath.RulesPathType.USER_PROVIDED;
+
+        RuleLoaderContext ruleLoaderContext = new RuleLoaderContext(Collections.singleton(path), null);
+
+        RuleProviderRegistry providerRegistry;
+        try
+        {
+            providerRegistry = ruleProviderService.loadRuleProviderRegistry(Collections.singleton(path), fileRulesOnly);
+        }
+        catch (Exception e)
+        {
+            RuleProviderEntity ruleProviderEntity = new RuleProviderEntity();
+            ruleProviderEntity.setProviderID("ERROR");
+            ruleProviderEntity.setDateLoaded(new GregorianCalendar());
+            ruleProviderEntity.setOrigin(path.toString());
+            ruleProviderEntity.setRulesPath(rulesPath);
+            ruleProviderEntity.setLoadError(e.getMessage());
+            entityManager.persist(ruleProviderEntity);
+            return;
+        }
+        LOG.info("Providers for: " + path + " are " + providerRegistry.getProviders());
+
+        for (RuleProvider provider : providerRegistry.getProviders())
+        {
+            RuleProviderMetadata ruleProviderMetadata = provider.getMetadata();
+
+            String providerID = ruleProviderMetadata.getID();
+            String origin = ruleProviderMetadata.getOrigin();
+            RuleProviderEntity.RuleProviderType ruleProviderType = getProviderType(origin);
+
+            // Skip user provided rules that are Java
+            if (rulesPath.getRulesPathType() == RulesPath.RulesPathType.USER_PROVIDED &&
+                        ruleProviderType == RuleProviderEntity.RuleProviderType.JAVA)
+                continue;
+
+            RuleProviderEntity ruleProviderEntity = new RuleProviderEntity();
+            ruleProviderEntity.setProviderID(providerID);
+            ruleProviderEntity.setDateLoaded(new GregorianCalendar());
+            ruleProviderEntity.setDescription(ruleProviderMetadata.getDescription());
+            ruleProviderEntity.setOrigin(origin);
+            ruleProviderEntity.setRulesPath(rulesPath);
+            entityManager.persist(ruleProviderEntity);
+
+            setFileMetaData(ruleProviderEntity);
+
+            ruleProviderEntity.setSources(technologyReferencesToTechnologyList(ruleProviderMetadata.getSourceTechnologies()));
+            ruleProviderEntity.setTargets(technologyReferencesToTechnologyList(ruleProviderMetadata.getTargetTechnologies()));
+
+            String phase = MigrationRulesPhase.class.getSimpleName().toUpperCase();
+            if (ruleProviderMetadata.getPhase() != null)
+                phase = ruleProviderMetadata.getPhase().getSimpleName().toUpperCase();
+
+            ruleProviderEntity.setPhase(phase);
+
+            ruleProviderEntity.setRuleProviderType(ruleProviderType);
+
+            List<RuleEntity> ruleEntities = new ArrayList<>();
+
+            for (Rule rule : provider.getConfiguration(ruleLoaderContext).getRules())
+            {
+                String ruleID = rule.getId();
+                String ruleString = this.ruleFormatterService.ruleToRuleContentsString(rule);
+
+                RuleEntity ruleEntity = new RuleEntity();
+                ruleEntity.setRuleID(ruleID);
+                ruleEntity.setRuleContents(ruleString);
+                ruleEntities.add(ruleEntity);
+            }
+
+            ruleProviderEntity.setRules(ruleEntities);
+
+            entityManager.persist(ruleProviderEntity);
+        }
     }
 
     /**
@@ -291,11 +268,10 @@ public class RuleDataLoader
             this.commit();
 
             this.begin();
-            // Remove RuleEntity's which is not contained in any RuleProviderEntity.
-            for (RuleEntity ruleEntity : this.entityManager.createQuery("SELECT re FROM RuleEntity re", RuleEntity.class).getResultList())
+            for (RuleEntity ruleEntity : this.entityManager.createQuery("select re from RuleEntity re", RuleEntity.class).getResultList())
             {
                 long ruleProviderCount = this.entityManager
-                            .createQuery("SELECT COUNT(rpe) FROM RuleProviderEntity rpe WHERE :ruleEntity MEMBER OF rpe.rules", Long.class)
+                            .createQuery("select count(rpe) from RuleProviderEntity rpe where :ruleEntity member of rpe.rules", Long.class)
                             .setParameter("ruleEntity", ruleEntity)
                             .getSingleResult();
                 if (ruleProviderCount == 0)
@@ -403,25 +379,25 @@ public class RuleDataLoader
 
     private void begin()
     {
-//        try
-//        {
-//            this.userTransaction.begin();
-//        }
-//        catch (Exception e)
-//        {
-//            throw new RuntimeException(e);
-//        }
+        // try
+        // {
+        // this.userTransaction.begin();
+        // }
+        // catch (Exception e)
+        // {
+        // throw new RuntimeException(e);
+        // }
     }
 
     private void commit()
     {
-//        try
-//        {
-//            this.userTransaction.commit();
-//        }
-//        catch (Exception e)
-//        {
-//            throw new RuntimeException(e);
-//        }
+        // try
+        // {
+        // this.userTransaction.commit();
+        // }
+        // catch (Exception e)
+        // {
+        // throw new RuntimeException(e);
+        // }
     }
 }
