@@ -1,5 +1,6 @@
 package org.jboss.windup.web.services;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -9,6 +10,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -16,19 +18,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import javax.annotation.Resource;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
-import javax.ejb.TransactionManagement;
-import javax.ejb.TransactionManagementType;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.transaction.UserTransaction;
-
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jboss.windup.config.RuleProvider;
 import org.jboss.windup.config.loader.RuleLoaderContext;
 import org.jboss.windup.config.metadata.RuleProviderMetadata;
@@ -49,6 +47,7 @@ import org.jboss.windup.web.services.service.ConfigurationService;
 import org.jboss.windup.web.services.service.TechnologyService;
 import org.ocpsoft.rewrite.config.Rule;
 
+
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
@@ -57,6 +56,10 @@ import org.ocpsoft.rewrite.config.Rule;
 public class RuleDataLoader
 {
     private static Logger LOG = Logger.getLogger(RuleDataLoader.class.getName());
+
+    // Copied from XMLRuleProviderLoader.
+    private static final String XML_RULES_WINDUP_EXTENSION = "windup.xml";
+    private static final String XML_RULES_RHAMT_EXTENSION = "rhamt.xml";
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -82,7 +85,10 @@ public class RuleDataLoader
     @FromFurnace
     private RuleFormatterService ruleFormatterService;
 
-    @Schedule(hour = "*", minute = "12")
+    /// =====================
+    /// TODO - enable when the PR is ready!!!
+    /// @Schedule(hour = "*", minute = "12")
+    /// =====================
     public void loadPeriodically()
     {
         Configuration webConfiguration = configurationService.getConfiguration();
@@ -116,10 +122,56 @@ public class RuleDataLoader
         this.begin();
         try
         {
-            if (webConfiguration.getRulesPaths() == null || webConfiguration.getRulesPaths().isEmpty())
+            Set<RulesPath> rulesPaths = webConfiguration.getRulesPaths();
+            if (rulesPaths == null || rulesPaths.isEmpty())
                 return;
 
-            for (RulesPath rulesPath : webConfiguration.getRulesPaths())
+            // Expand the directories which are non-recursive into individual paths.
+            // This is kind of hack. It should rather be in individual RuleProviderLoader's.
+            // But for UI (where this class is), we only support XML rules anyway.
+            final Set<RulesPath> rulesPaths2 = new HashSet<>();
+            Iterator<RulesPath> it = rulesPaths.iterator();
+            while( it.hasNext() ){
+                RulesPath rulesPath = it.next();
+                File file = FileUtils.getFile(rulesPath.getPath());
+                if (file.isDirectory() && !rulesPath.isScanRecursively()) {
+                    final Collection<File> filesInThisDir = FileUtils.listFiles(file, new String[]{XML_RULES_WINDUP_EXTENSION, XML_RULES_RHAMT_EXTENSION}, false);
+                    filesInThisDir.stream().forEach(
+                        xmlFile -> {
+                            // Check if there is an existing one.
+                            List<RulesPath> existing = entityManager.createQuery("FROM RulesPath rp WHERE rp.path = :path", RulesPath.class).setParameter("path", file.getAbsolutePath()).getResultList();
+                            if (existing.size() > 0)
+                            {
+                                LOG.info("RulePath already existed for: " + file.getAbsolutePath());
+                                Iterator<RulesPath> itDuplicates = existing.iterator();
+                                rulesPaths2.add(itDuplicates.next());
+                                while (itDuplicates.hasNext())
+                                    entityManager.remove(itDuplicates.next());
+                            }
+                            else
+                            {
+                                // Create if not.
+                                LOG.info("RulePath created for: " + file.getAbsolutePath());
+                                RulesPath replacement = new RulesPath();
+                                replacement.setScanRecursively(false);
+                                replacement.setPath(xmlFile.getPath());
+                                replacement.setShortPath(rulesPath.getShortPath());
+                                replacement.setRulesPathType(rulesPath.getRulesPathType());
+                                replacement.setRegistrationType(rulesPath.getRegistrationType());
+                                entityManager.persist(replacement);
+                                rulesPaths2.add(replacement);
+                            }
+                        }
+                    );
+                    entityManager.remove(rulesPath);
+                    LOG.info("Replaced path to scan non-recursively" + rulesPath.getPath() + "\n   with " + filesInThisDir.size() + " directly contained XML rule providers.");
+                }
+                else
+                    rulesPaths2.add(rulesPath);
+            }
+            rulesPaths = rulesPaths2;
+
+            for (RulesPath rulesPath : rulesPaths)
             {
                 /*
                  * Do not reload system rules if we have already loaded them
@@ -127,23 +179,21 @@ public class RuleDataLoader
                 if (rulesPath.getRulesPathType() == RulesPath.RulesPathType.SYSTEM_PROVIDED)
                 {
                     Long count = entityManager
-                            .createQuery("select count(rpe) from RuleProviderEntity rpe where rpe.rulesPath = :rulesPath", Long.class)
+                            .createQuery("SELECT COUNT(rpe) FROM RuleProviderEntity rpe WHERE rpe.rulesPath = :rulesPath", Long.class)
                             .setParameter("rulesPath", rulesPath)
                             .getSingleResult();
                     if (count > 0)
                         continue;
                 }
+
                 LOG.info("Purging existing rule data for: " + rulesPath);
-                // Delete the previous ones
-                entityManager
-                            .createNamedQuery(RuleProviderEntity.DELETE_BY_RULES_PATH)
-                            .setParameter(RuleProviderEntity.RULES_PATH_PARAM, rulesPath)
-                            .executeUpdate();
+                // Delete the previous RuleProviderEntity's
+                deleteRuleProviderEntitiesOf(rulesPath);
 
                 // do not process again failed rulesPath
                 if (rulesPath.getLoadError() != null)
                     continue;
-                
+
                 rulesPath.setLoadError(null);
                 try
                 {
@@ -151,8 +201,10 @@ public class RuleDataLoader
                     RuleLoaderContext ruleLoaderContext = new RuleLoaderContext(Collections.singleton(path), null);
                     boolean fileRulesOnly = rulesPath.getRulesPathType() == RulesPath.RulesPathType.USER_PROVIDED;
 
-                    RuleProviderRegistry providerRegistry = ruleProviderService.loadRuleProviderRegistry(Collections.singleton(path), fileRulesOnly);
-                    LOG.info("Providers for: " + path + " are " + providerRegistry.getProviders());
+                    RuleProviderRegistry providerRegistry =
+                            ruleProviderService.loadRuleProviderRegistry(Collections.singleton(path), fileRulesOnly, rulesPath.isScanRecursively());
+                    LOG.info("\nProviders for: " + path + "\n  are \n    "
+                            + StringUtils.join(providerRegistry.getProviders(), "\n    "));
 
                     for (RuleProvider provider : providerRegistry.getProviders())
                     {
@@ -162,7 +214,7 @@ public class RuleDataLoader
                         String origin = ruleProviderMetadata.getOrigin();
                         RuleProviderEntity.RuleProviderType ruleProviderType = getProviderType(origin);
 
-                        // Skip user provided rules that are
+                        // Skip user provided Java based rules.
                         if (rulesPath.getRulesPathType() == RulesPath.RulesPathType.USER_PROVIDED &&
                                     ruleProviderType == RuleProviderEntity.RuleProviderType.JAVA)
                             continue;
@@ -219,6 +271,14 @@ public class RuleDataLoader
         }
     }
 
+    private void deleteRuleProviderEntitiesOf(RulesPath rulesPath)
+    {
+        entityManager
+                .createNamedQuery(RuleProviderEntity.DELETE_BY_RULES_PATH)
+                .setParameter(RuleProviderEntity.RULES_PATH_PARAM, rulesPath)
+                .executeUpdate();
+    }
+
     /**
      * Clean up any stale rows (dangling rows from reloading rules).
      */
@@ -231,10 +291,11 @@ public class RuleDataLoader
             this.commit();
 
             this.begin();
-            for (RuleEntity ruleEntity : this.entityManager.createQuery("select re from RuleEntity re", RuleEntity.class).getResultList())
+            // Remove RuleEntity's which is not contained in any RuleProviderEntity.
+            for (RuleEntity ruleEntity : this.entityManager.createQuery("SELECT re FROM RuleEntity re", RuleEntity.class).getResultList())
             {
                 long ruleProviderCount = this.entityManager
-                            .createQuery("select count(rpe) from RuleProviderEntity rpe where :ruleEntity member of rpe.rules", Long.class)
+                            .createQuery("SELECT COUNT(rpe) FROM RuleProviderEntity rpe WHERE :ruleEntity MEMBER OF rpe.rules", Long.class)
                             .setParameter("ruleEntity", ruleEntity)
                             .getSingleResult();
                 if (ruleProviderCount == 0)

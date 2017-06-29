@@ -31,7 +31,9 @@ export class AddRulesPathModalComponent extends FormComponent implements OnInit,
     @Output()
     configurationSaved = new EventEmitter();
 
+    // Form models
     inputPath = "";
+    scanRecursively = true;
 
     addRulesPathForm: FormGroup;
 
@@ -121,7 +123,8 @@ export class AddRulesPathModalComponent extends FormComponent implements OnInit,
 
     ngOnInit(): void {
         this.addRulesPathForm = this._formBuilder.group({
-            inputPathControl: ["", Validators.compose([Validators.required, Validators.minLength(4)]), FileExistsValidator.create(this._fileService)]
+            inputPathControl: ["", Validators.compose([Validators.required, Validators.minLength(4)]), FileExistsValidator.create(this._fileService)],
+            scanRecursivelyControl: [""],
         });
     }
 
@@ -163,6 +166,7 @@ export class AddRulesPathModalComponent extends FormComponent implements OnInit,
         let newPath = <RulesPath>{};
         newPath.path = this.inputPath;
         newPath.rulesPathType = "USER_PROVIDED";
+        newPath.scanRecursively = this.scanRecursively;
 
         newConfiguration.rulesPaths.push(newPath);
 
