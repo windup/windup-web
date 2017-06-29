@@ -1,3 +1,11 @@
+.nav-pf-vertical {
+    width: 240px;
+}
+
+.nav-pf-vertical .list-group-item > a {
+    width: 240px;
+}
+
 .form-errors {
     margin-bottom: 10px;
 }
@@ -155,21 +163,6 @@ fieldset.fields-section-pf {
     margin-top: 0;
 }
 
-/* Redefining pf styles */
-.nav-pf-vertical .list-group-item .list-group-item-value {
-    padding-right: 5px;
-}
-
-.nav-pf-vertical .list-group-item > a {
-    padding-right: 5px;
-    padding-left: 5px;
-}
-
-.nav-pf-vertical .list-group-item > li > a  {
-    padding-right: 5px;
-    padding-left: 5px;
-}
-
 /*
 .wu-horizontal-nav-content.container-fluid, .wu-horizontal-nav-content .container-fluid {
     padding-top: inherit;
@@ -183,6 +176,22 @@ fieldset.fields-section-pf {
 
     .container-fluid {
         padding-top: initial;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1599px) {
+    .nav-pf-vertical .list-group-item > a {
+        width: 240px;
+    }
+
+    .wu-horizontal-nav-content, .layout-pf.layout-pf-fixed .container-pf-nav-pf-vertical {
+        margin-left: 240px;
+    }
+}
+
+@media (min-width: 1599px) {
+    .wu-horizontal-nav-content, .layout-pf.layout-pf-fixed .container-pf-nav-pf-vertical {
+        margin-left: 240px;
     }
 }
 
