@@ -49,7 +49,7 @@
                 </ng-container>
                 <ng-container *ngIf="execution.state == 'COMPLETED' && execution?.analysisContext?.generateStaticReports">
                     <dt i18n="Analysis static report">Report</dt>
-                    <dd><a class="link" target="_blank" href="{{formatStaticReportUrl(execution)}}">Static Report <i class="fa fa-external-link"></i></a></dd>
+                    <dd><a class="link" target="_blank" href="{{formatStaticReportUrl(execution)}}">Open <i class="fa fa-external-link"></i></a></dd>
                 </ng-container>
             </dl>
 
