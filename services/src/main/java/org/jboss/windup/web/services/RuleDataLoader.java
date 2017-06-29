@@ -85,7 +85,10 @@ public class RuleDataLoader
     @FromFurnace
     private RuleFormatterService ruleFormatterService;
 
-    @Schedule(hour = "*", minute = "12")
+    /// =====================
+    /// TODO - enable when the PR is ready!!!
+    /// @Schedule(hour = "*", minute = "12")
+    /// =====================
     public void loadPeriodically()
     {
         Configuration webConfiguration = configurationService.getConfiguration();
@@ -132,19 +135,36 @@ public class RuleDataLoader
                 RulesPath rulesPath = it.next();
                 File file = FileUtils.getFile(rulesPath.getPath());
                 if (file.isDirectory() && !rulesPath.isScanRecursively()) {
-                    //it.remove();
-                    FileUtils.listFiles(file, new String[]{XML_RULES_WINDUP_EXTENSION, XML_RULES_RHAMT_EXTENSION}, false).stream().forEach(
+                    final Collection<File> filesInThisDir = FileUtils.listFiles(file, new String[]{XML_RULES_WINDUP_EXTENSION, XML_RULES_RHAMT_EXTENSION}, false);
+                    filesInThisDir.stream().forEach(
                         xmlFile -> {
-                            RulesPath replacement = new RulesPath();
-                            replacement.setScanRecursively(false);
-                            replacement.setPath(xmlFile.getPath());
-                            replacement.setShortPath(rulesPath.getShortPath());
-                            replacement.setRulesPathType(rulesPath.getRulesPathType());
-                            replacement.setRegistrationType(rulesPath.getRegistrationType());
-                            entityManager.persist(replacement);
-                            rulesPaths2.add(replacement);
+                            // Check if there is an existing one.
+                            List<RulesPath> existing = entityManager.createQuery("FROM RulesPath rp WHERE rp.path = :path", RulesPath.class).setParameter("path", file.getAbsolutePath()).getResultList();
+                            if (existing.size() > 0)
+                            {
+                                LOG.info("RulePath already existed for: " + file.getAbsolutePath());
+                                Iterator<RulesPath> itDuplicates = existing.iterator();
+                                rulesPaths2.add(itDuplicates.next());
+                                while (itDuplicates.hasNext())
+                                    entityManager.remove(itDuplicates.next());
+                            }
+                            else
+                            {
+                                // Create if not.
+                                LOG.info("RulePath created for: " + file.getAbsolutePath());
+                                RulesPath replacement = new RulesPath();
+                                replacement.setScanRecursively(false);
+                                replacement.setPath(xmlFile.getPath());
+                                replacement.setShortPath(rulesPath.getShortPath());
+                                replacement.setRulesPathType(rulesPath.getRulesPathType());
+                                replacement.setRegistrationType(rulesPath.getRegistrationType());
+                                entityManager.persist(replacement);
+                                rulesPaths2.add(replacement);
+                            }
                         }
                     );
+                    entityManager.remove(rulesPath);
+                    LOG.info("Replaced path to scan non-recursively" + rulesPath.getPath() + "\n   with " + filesInThisDir.size() + " directly contained XML rule providers.");
                 }
                 else
                     rulesPaths2.add(rulesPath);
@@ -167,11 +187,8 @@ public class RuleDataLoader
                 }
 
                 LOG.info("Purging existing rule data for: " + rulesPath);
-                // Delete the previous ones
-                entityManager
-                            .createNamedQuery(RuleProviderEntity.DELETE_BY_RULES_PATH)
-                            .setParameter(RuleProviderEntity.RULES_PATH_PARAM, rulesPath)
-                            .executeUpdate();
+                // Delete the previous RuleProviderEntity's
+                deleteRuleProviderEntitiesOf(rulesPath);
 
                 // do not process again failed rulesPath
                 if (rulesPath.getLoadError() != null)
@@ -254,6 +271,14 @@ public class RuleDataLoader
         }
     }
 
+    private void deleteRuleProviderEntitiesOf(RulesPath rulesPath)
+    {
+        entityManager
+                .createNamedQuery(RuleProviderEntity.DELETE_BY_RULES_PATH)
+                .setParameter(RuleProviderEntity.RULES_PATH_PARAM, rulesPath)
+                .executeUpdate();
+    }
+
     /**
      * Clean up any stale rows (dangling rows from reloading rules).
      */
@@ -266,10 +291,11 @@ public class RuleDataLoader
             this.commit();
 
             this.begin();
-            for (RuleEntity ruleEntity : this.entityManager.createQuery("select re from RuleEntity re", RuleEntity.class).getResultList())
+            // Remove RuleEntity's which is not contained in any RuleProviderEntity.
+            for (RuleEntity ruleEntity : this.entityManager.createQuery("SELECT re FROM RuleEntity re", RuleEntity.class).getResultList())
             {
                 long ruleProviderCount = this.entityManager
-                            .createQuery("select count(rpe) from RuleProviderEntity rpe where :ruleEntity member of rpe.rules", Long.class)
+                            .createQuery("SELECT COUNT(rpe) FROM RuleProviderEntity rpe WHERE :ruleEntity MEMBER OF rpe.rules", Long.class)
                             .setParameter("ruleEntity", ruleEntity)
                             .getSingleResult();
                 if (ruleProviderCount == 0)
