@@ -7,7 +7,8 @@ import {FilterOption} from "./text-filter.component";
 @Component({
     selector: 'wu-dropdown-filter',
     templateUrl: './dropdown-filter.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    styles: [ `.dropdown-input-group { display: flex; flex-direction: row; justify-content: space-between; }` ]
 })
 export class DropdownFilterComponent implements AfterViewInit {
     private _filterableAttributes: string[] = [];

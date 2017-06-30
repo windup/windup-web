@@ -1,13 +1,25 @@
-<div class="panel-group">
-    <div>
-        <div [hidden]="rescanInProgress" class="action-button" style="float: right; margin-top: 0;">
-            <button class="btn btn-primary" (click)="displayAddRulesPathForm()">
-                <span i18="Button">Add</span>
-            </button>
+<div class="header-bar">
+    <h1 i18n="Header" style="margin-bottom: 25px">Rules Configuration</h1>
+
+    <div class="rules-options">
+        <div [hidden]="rescanInProgress" class="action-button">
+            <button class="btn btn-primary" (click)="displayAddRulesPathForm()" i18n="Add">Add</button>
         </div>
-        <h1 i18n="Header" style="margin-bottom: 25px">Rules Configuration</h1>
+        <wu-toolbar
+                [filterConfiguration]="filter"
+                [sortConfiguration]="sort"
+                (sortChange)="updateSort()"
+                (filterChange)="updateFilters()"
+        >
+        </wu-toolbar>
     </div>
 </div>
+<wu-active-filters-list *ngIf="isFilterActive()"
+                        [(activeFilters)]="filter.selectedFilters"
+                        [countResults]="filter.countFilteredItems"
+                        [getLabel]="filter.getLabel"
+                        (activeFiltersChange)="updateFilters()"
+></wu-active-filters-list>
 
 <ng-template [ngIf]="rescanInProgress">
     <h1>
@@ -16,13 +28,6 @@
     </h1>
 </ng-template>
 
-<wu-toolbar
-        [filterConfiguration]="filter"
-        [sortConfiguration]="sort"
-        (sortChange)="updateSort()"
-        (filterChange)="updateFilters()"
->
-</wu-toolbar>
 <ng-template [ngIf]="!rescanInProgress && configuration != null && configuration.rulesPaths != null && configuration.rulesPaths.length > 0">
     <div class="panel-group">
         <div *ngFor="let rulePath of sortedPaths" id="rulePathPanel_{{rulePath.id}}" class="panel panel-default">
