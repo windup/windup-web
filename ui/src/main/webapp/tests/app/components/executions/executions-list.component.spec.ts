@@ -158,9 +158,10 @@ describe('ExecutionsListComponent', () => {
             let stateText = state.textContent ? state.textContent.trim() : "";
 
             if (stateText.startsWith("Completed")) {
-                expect(el.children[COL_ACTIONS].children.length).toBe(2);
+                expect(el.children[COL_ACTIONS].children.length).toBe(3);
                 expect(el.children[COL_ACTIONS].children[0].title).toEqual('Details');
-                expect(el.children[COL_ACTIONS].children[1].title).toEqual('Delete');
+                expect(el.children[COL_ACTIONS].children[1].children[0].title).toEqual('Show reports');
+                expect(el.children[COL_ACTIONS].children[2].title).toEqual('Delete');
             } else {
                 expect(el.children[COL_ACTIONS].children.length).toBe(2);
                 expect(el.children[COL_ACTIONS].textContent.trim()).toEqual('');
