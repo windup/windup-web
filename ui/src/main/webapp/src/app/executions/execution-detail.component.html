@@ -48,6 +48,10 @@
                     <dt i18n="Analysis last modification">Last modification</dt>
                     <dd>{{execution.lastModified ? (execution.lastModified | date: 'short') : 'n/a'}}</dd>
                 </ng-container>
+                <ng-container *ngIf="execution.state == 'COMPLETED' && execution?.analysisContext?.generateStaticReports">
+                    <dt i18n="Analysis static report">Report</dt>
+                    <dd><a class="link" target="_blank" href="{{formatStaticReportUrl(execution)}}">Open <i class="fa fa-external-link"></i></a></dd>
+                </ng-container>
             </dl>
 
             <h3 i18n="Analysis configuration|Section">Configuration</h3>

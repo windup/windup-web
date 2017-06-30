@@ -30,7 +30,16 @@
         </thead>
         <tbody>
         <tr *ngFor="let execution of sortedExecutions" [class]="getClass(execution)" class="execution-row">
-            <td><a [routerLink]="['/projects', execution.projectId, execution.id, 'execution-details']">#{{execution.id}}</a></td>
+            <td>
+                <span *ngIf="execution.state == 'COMPLETED' && execution?.analysisContext?.generateStaticReports; else elseExecutionState">
+                    <a  class="pointer link" target="_blank" href="{{formatStaticReportUrl(execution)}}" title="Show reports">
+                        #{{execution.id}}
+                    </a>
+                </span>
+                <ng-template #elseExecutionState>
+                    #{{execution.id}}
+                </ng-template>
+            </td>
             <td>
                 <wu-status-icon [status]="execution.state"></wu-status-icon>
                 {{execution.state | wuPrettyExecutionStatus}}
@@ -60,6 +69,8 @@
             </td>
             <ng-template #showActions>
                 <td>
+                    <a [routerLink]="['/projects', execution.projectId, execution.id, 'execution-details']" title="Details"><i class="fa fa-info fa-fw"></i></a>
+                    &nbsp;
                     <a class="pointer link cancel" *ngIf="canCancel(execution)" (click)="cancelExecution(execution)" title="Cancel">
                         <i class="fa fa-times fa-fw"></i>
                     </a>
