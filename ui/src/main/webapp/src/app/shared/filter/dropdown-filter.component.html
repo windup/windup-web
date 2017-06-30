@@ -1,6 +1,6 @@
 <div class="form-group toolbar-pf-filter">
     <label class="sr-only" for="filter">{{selectedAttribute}}</label>
-    <div class="input-group">
+    <div class="dropdown-input-group">
         <div class="input-group-btn">
             <button type="button" class="btn btn-default dropdown-toggle"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{selectedAttribute}} <span class="caret"></span></button>
@@ -10,12 +10,14 @@
                 </li>
             </ul>
         </div><!-- /btn-group -->
-        <chosen-single
-                [options]="filterOptions"
-                [getLabel]="getOptionLabelCallback"
-                [(ngModel)]="selectedOption"
-                (ngModelChange)="selectOption($event)"
-                name="selectedApplications">
-        </chosen-single>
+        <div class="dropdowm-chosen-filter">
+            <chosen-single
+                    [options]="filterOptions"
+                    [getLabel]="getOptionLabelCallback"
+                    [(ngModel)]="selectedOption"
+                    (ngModelChange)="selectOption($event)"
+                    name="selectedApplications">
+            </chosen-single>
+        </div>
     </div><!-- /input-group -->
 </div>

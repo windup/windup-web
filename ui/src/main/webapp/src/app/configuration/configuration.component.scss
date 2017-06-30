@@ -39,7 +39,66 @@
 }
 
 .action-button {
-  margin-top: 25px;
-  float: right;
+  order: 2;
+  margin-left: 40px;
 }
 
+h3, h1 {
+  margin-top: 0;
+}
+
+.rules-options {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+:host /deep/ {
+  .toolbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .sort-label {
+    margin-right: 6px;
+    padding-top: 3px
+  }
+
+  .sort-component {
+    display: flex;
+    flex: 1 0 auto;
+
+    .form-group {
+      margin: 0;
+    }
+  }
+
+  .vertical-divider {
+    border-left: 1px solid #bbb;
+    display: inline-block;
+    height:27px; margin: 0 7px;
+    vertical-align: middle;
+    width: 1px;
+  }
+
+  .toolbar-pf-results {
+    margin-top: -10px;
+  }
+
+  .chosen-single {
+    border-radius: 0;
+    height: 26px;
+  }
+}
+
+.header-bar {
+  padding-top: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+h1 {
+  margin-bottom: 20px;
+}

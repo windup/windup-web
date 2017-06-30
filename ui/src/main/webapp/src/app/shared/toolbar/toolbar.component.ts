@@ -53,8 +53,4 @@ export class ToolbarComponent {
     updateFilters() {
         this.filterChange.next(this.filterConfiguration);
     }
-
-    isFilterActive() {
-        return this.filterConfiguration.selectedFilters.length > 0;
-    }
 }

@@ -233,4 +233,8 @@ export class ConfigurationComponent implements OnInit, AfterViewInit {
     updateSort() {
         this._sortingService.orderBy(this.sort.selectedOption.field, this.sort.direction);
     }
+
+    isFilterActive() {
+        return this.filter.selectedFilters.length > 0;
+    }
 }
