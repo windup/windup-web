@@ -41,7 +41,7 @@ public class UnhandledExceptionHandler implements ExceptionMapper<RuntimeExcepti
             errorInfo = new ErrorInfo(Response.Status.INTERNAL_SERVER_ERROR.getReasonPhrase());
 
             if (null != findFirstOccurenceInExceptionChain(org.hibernate.exception.ConstraintViolationException.class, exception))
-                errorInfo.setMessage("Something wrong happened on the server. The details are in the log.");
+                errorInfo.setMessage("Database constraints were not met.");
             else if (null != findFirstOccurenceInExceptionChain("org.h2.jdbc.JdbcSQLException", exception))
                 errorInfo.setMessage("Database error occurred.");
         }
