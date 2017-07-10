@@ -41,7 +41,7 @@ export const executionLevelRoutes: Routes = [
 
 const routes: Routes = [
     {
-        path: 'reports/:executionId',
+        path: ':executionId',
         data: {
             breadcrumbTitle: getExecutionBreadcrumbTitle,
             level: 'global'
@@ -53,7 +53,7 @@ const routes: Routes = [
         children: executionLevelRoutes
     },
     {
-        path: 'reports/:executionId/applications/:applicationId',
+        path: ':executionId/applications/:applicationId',
         data: {
             breadcrumbTitle: getExecutionBreadcrumbTitle,
             level: 'application'

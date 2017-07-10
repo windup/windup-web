@@ -113,12 +113,10 @@ export const appRoutes: Routes = [
                             { path: '', component: DefaultLayoutComponent, children: [
                                 {path: 'edit', component: MigrationProjectFormComponent, data: {displayName: 'Edit Project'}},
                             ]},
-                            /*
                             {
                                 path: 'reports',
                                 loadChildren: './reports/reports.module#ReportsModule'
-                            },
-                            */
+                            }
                         ]
                     }
                 ]
