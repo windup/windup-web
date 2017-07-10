@@ -14,6 +14,7 @@ import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.ColumnDefault;
 import org.jboss.windup.web.services.validators.FileExistsConstraint;
 
 /**
@@ -42,6 +43,11 @@ public class RulesPath implements Serializable
     @FileExistsConstraint
     @NotNull
     private String path;
+
+    @Column
+    @NotNull
+    @ColumnDefault("true")
+    private boolean scanRecursively = true;
 
     @Column(length = 2048)
     @Size(min = 1, max = 2048)
@@ -106,6 +112,20 @@ public class RulesPath implements Serializable
     public void setPath(String inputPath)
     {
         this.path = inputPath;
+    }
+
+    /**
+     * If true and given path is a directory, the subdirectories will also be scanned for rulesets.
+     */
+    public boolean isScanRecursively() {
+        return scanRecursively;
+    }
+
+    /**
+     * If true and given path is a directory, the subdirectories will also be scanned for rulesets.
+     */
+    public void setScanRecursively(boolean scanRecursively) {
+        this.scanRecursively = scanRecursively;
     }
 
     /**

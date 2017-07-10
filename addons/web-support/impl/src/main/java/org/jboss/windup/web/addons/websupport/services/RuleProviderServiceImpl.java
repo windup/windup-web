@@ -20,6 +20,7 @@ public class RuleProviderServiceImpl implements RuleProviderService
     @Inject
     private RuleLoader ruleLoader;
 
+    @Override
     public RuleProviderRegistry loadRuleProviderRegistry(Collection<Path> rulePaths, boolean fileRulesOnly)
     {
         RuleLoaderContext ruleLoaderContext = new RuleLoaderContext(rulePaths, null);

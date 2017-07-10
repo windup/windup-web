@@ -98,6 +98,10 @@
                                             </div>
                                             <div style="margin-left: 25pt; ">
                                                 <div>{{ruleProvider.origin}}</div>
+                                                <div *ngIf="ruleProvider.loadError" style="font-weight: bold">
+                                                    {{ruleProvider.loadError}}
+                                                </div>
+
                                                 <div *ngIf="ruleProvider.sources.length > 0">
                                                     Source technologies:
                                                     <wu-technology *ngFor="let source of ruleProvider.sources" [technology]="source" class="techLabel"></wu-technology>
