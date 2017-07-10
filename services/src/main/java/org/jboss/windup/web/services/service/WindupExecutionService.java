@@ -138,6 +138,15 @@ public class WindupExecutionService
     public void deleteExecution(Long executionID)
     {
         WindupExecution execution = this.get(executionID);
+        AnalysisContext analysisContext = execution.getAnalysisContext();
+
+        // without deleting it will stay in DB forever
+        if ( analysisContext != null)
+        {
+            execution.setAnalysisContext(null);
+            this.entityManager.remove(analysisContext);
+        }
+        
         if (StringUtils.isBlank(execution.getOutputPath()))
             return;
 
