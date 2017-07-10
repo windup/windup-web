@@ -20,7 +20,8 @@ public class RuleProviderServiceImpl implements RuleProviderService
     @Inject
     private RuleLoader ruleLoader;
 
-    public RuleProviderRegistry loadRuleProviderRegistry(Collection<Path> rulePaths, boolean fileRulesOnly, boolean scanDirsRecursively)
+    @Override
+    public RuleProviderRegistry loadRuleProviderRegistry(Collection<Path> rulePaths, boolean fileRulesOnly)
     {
         RuleLoaderContext ruleLoaderContext = new RuleLoaderContext(rulePaths, null);
         if (fileRulesOnly)

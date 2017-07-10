@@ -2,11 +2,14 @@
     <div class="row toolbar-pf">
         <div class="col-sm-12">
             <form class="toolbar-pf-actions">
-                <wu-text-filter
-                        [filterableAttributes]="filterConfiguration.filterOptions"
+                <wu-dropdown-filter
+                        [filterableAttributes]="filterConfiguration.filterableAttributes"
+                        [filterOptions]="filterConfiguration.filterOptions"
+                        [(selectedAttribute)]="filterConfiguration.selectedAttribute"
                         (setFilter)="addFilter($event)"
+                        (selectedAttributeChange)="updateFilters()"
                 >
-                </wu-text-filter>
+                </wu-dropdown-filter>
                 <div class="form-group">
                     <wu-sort
                         [sortOptions]="sortConfiguration.sortOptions"
@@ -19,6 +22,7 @@
             <wu-active-filters-list *ngIf="isFilterActive()"
                     [(activeFilters)]="filterConfiguration.selectedFilters"
                     [countResults]="filterConfiguration.countFilteredItems"
+                    [getLabel]="filterConfiguration.getLabel"
                     (activeFiltersChange)="updateFilters()"
             ></wu-active-filters-list>
         </div><!-- /col -->

@@ -9,6 +9,9 @@ import {NotificationService} from "../core/notification/notification.service";
 import {utils} from "../shared/utils";
 import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
 import {OrderDirection, SortingService} from "../shared/sort/sorting.service";
+import Arrays = utils.Arrays;
+import {FilterConfiguration} from "../shared/toolbar/toolbar.component";
+import {getAvailableFilters} from "./technology-filter";
 
 @Component({
     templateUrl: './configuration.component.html',
@@ -42,14 +45,13 @@ export class ConfigurationComponent implements OnInit, AfterViewInit {
         direction: OrderDirection.ASC
     };
 
-    filter = {
-        filterOptions: [
-            'source',
-            'target'
-        ],
+    filter: FilterConfiguration = {
+        filterableAttributes: ['source', 'target'],
+        selectedAttribute: 'source',
+        filterOptions: [],
         selectedFilters: [],
         countFilteredItems: 0,
-        countUnfilteredItems: 0
+        getLabel: filter => `${filter.field}: ${filter.name}`
     };
 
     constructor(
@@ -96,6 +98,7 @@ export class ConfigurationComponent implements OnInit, AfterViewInit {
                     this.ruleProvidersByPath.set(rulesPath, ruleProviders);
                     if (!this.forceReloadAttempted && rulesPath.rulesPathType == "SYSTEM_PROVIDED" && ruleProviders.length == 0) // needs to be loaded
                         this.forceReload();
+                    this.updateFilters();
                 },
                 error => this.errorMessage = <any>error
             );
@@ -202,8 +205,12 @@ export class ConfigurationComponent implements OnInit, AfterViewInit {
     }
 
     updateFilters() {
+        const allRuleProviders = Arrays.flatMap(this.configuration.rulesPaths, path => this.getRuleProvidersByPath(path));
         this.filter.countFilteredItems = this.configuration.rulesPaths.map(path => this.getFilteredRuleProvidersByPath(path))
             .reduce((sum, providers) => sum + providers.length, 0);
+
+        this.filter.filterOptions = getAvailableFilters(allRuleProviders, <any>(this.filter.selectedAttribute + 's'));
+        this.filter = Object.assign({}, this.filter);
     }
 
     getRuleProvidersByPath(path: RulesPath) {
@@ -215,12 +222,8 @@ export class ConfigurationComponent implements OnInit, AfterViewInit {
         let filteredRuleProviders = this.ruleProvidersByPath.get(path) || [];
 
         this.filter.selectedFilters.forEach(filter => {
-            filteredRuleProviders = filteredRuleProviders.filter(provider => {
-                const propertyValue = provider[filter.name + 's'];
-
-                return propertyValue.some(item => {
-                    return item.name === filter.value;
-                });
+            filteredRuleProviders = filteredRuleProviders.filter((provider) => {
+                return filter.callback(provider);
             });
         });
 

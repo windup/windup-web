@@ -1,3 +1,11 @@
+.nav-pf-vertical {
+    width: 240px;
+}
+
+.nav-pf-vertical .list-group-item > a {
+    width: 240px;
+}
+
 .form-errors {
     margin-bottom: 10px;
 }
@@ -128,8 +136,6 @@ form .wizard-form {
     padding-right: 10px;
 }
 
-label.required {
-}
 label.required:before {
     content: '*';
     position: relative;
@@ -156,6 +162,7 @@ fieldset.fields-section-pf {
     padding-top: 122px;
     margin-top: 0;
 }
+
 /*
 .wu-horizontal-nav-content.container-fluid, .wu-horizontal-nav-content .container-fluid {
     padding-top: inherit;
@@ -173,12 +180,27 @@ fieldset.fields-section-pf {
 }
 
 @media (min-width: 768px) and (max-width: 1599px) {
+    .nav-pf-vertical .list-group-item > a {
+        width: 240px;
+    }
+
     .wu-horizontal-nav-content, .layout-pf.layout-pf-fixed .container-pf-nav-pf-vertical {
-        margin-left: 145px;
+        margin-left: 240px;
+    }
+}
+
+@media (min-width: 1599px) {
+    .wu-horizontal-nav-content, .layout-pf.layout-pf-fixed .container-pf-nav-pf-vertical {
+        margin-left: 240px;
     }
 }
 
 /* Pushes notifications area a bit down from the horizontal navigation bar. */
 .notifications-row {
     padding-top: 24px;
+}
+
+.alert {
+    margin-top: 20px;
+    margin-bottom: 0px;
 }

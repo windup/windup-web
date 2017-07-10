@@ -27,6 +27,13 @@ export module utils {
         return format.replace(/{(\d+)}/g, function(match, number) {
             return typeof replacements[number] != 'undefined' ? replacements[number] : match;
         });
-    };
+    }
+
+    export class Arrays {
+        public static flatMap<T, U>(array: T[], callbackfn: (value: T, index: number, array: T[]) => U[], thisArg?: any): U[] {
+            return array.map(callbackfn, thisArg)
+                .reduce((allItems, currentItems) => [...allItems, ...currentItems ], []);
+        }
+    }
 
 }

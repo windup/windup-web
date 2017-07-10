@@ -1,5 +1,5 @@
 import {InternalChosenOption, InternalChosenOptionGroup, ChosenOption, ChosenOptionGroup} from "./chosen-commons";
-import {ElementRef, Renderer} from "@angular/core";
+import {ElementRef, Input, Renderer} from "@angular/core";
 import {ControlValueAccessor} from "@angular/forms";
 import {ChosenDropComponent} from "./chosen-drop.component";
 
@@ -24,6 +24,42 @@ export abstract class AbstractChosenComponent<T> implements ControlValueAccessor
     inputValue: string;
 
     filterMode: boolean;
+
+    @Input()
+    no_results_text = AbstractChosenComponent.NO_RESULTS_TEXT_DEFAULT;
+
+    @Input()
+    protected set options(options: ChosenOption[]) {
+        this.setOptions(options);
+    }
+
+    @Input()
+    protected set groups(groups: ChosenOptionGroup[]) {
+        this.setGroups(groups);
+    }
+
+    @Input()
+    set getLabel(fn: (a: any) => string) {
+        if (typeof fn !== 'function') {
+            throw new Error(`getLabel must be a function, but received ${JSON.stringify(fn)}`);
+        }
+
+        this._getLabel = fn;
+
+        // This is necessary, in case the options were set before the label function gets set
+        // (this seems to happen intermittently)
+        if (this._options)
+            this.setOptions(this._options.map(internalOption => <ChosenOption>internalOption.value));
+    }
+
+    @Input()
+    set compareWith(fn: (a: any, b: any) => boolean) {
+        if (typeof fn !== 'function') {
+            throw new Error(`compareWith must be a function, but received ${JSON.stringify(fn)}`);
+        }
+
+        this._compareWith = fn;
+    }
 
     onChange = (_: any) => {
     };

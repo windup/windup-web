@@ -10,9 +10,12 @@ export interface SortConfiguration {
 }
 
 export interface FilterConfiguration {
+    filterableAttributes?: string[];
+    selectedAttribute?: string;
     filterOptions: FilterOption[];
     selectedFilters: FilterOption[];
     countFilteredItems: number;
+    getLabel?: (filter: FilterOption) => string;
 }
 
 @Component({
@@ -41,14 +44,14 @@ export class ToolbarComponent {
 
     addFilter(filter: FilterOption) {
         this.filterConfiguration.selectedFilters = [
-            ...this.filterConfiguration.selectedFilters.filter(item => item.name !== filter.name),
+            ...this.filterConfiguration.selectedFilters.filter(item => item.field !== filter.field),
             filter
         ];
         this.updateFilters();
     }
 
     updateFilters() {
-        this.filterChange.next(this.filterConfiguration.selectedFilters);
+        this.filterChange.next(this.filterConfiguration);
     }
 
     isFilterActive() {
