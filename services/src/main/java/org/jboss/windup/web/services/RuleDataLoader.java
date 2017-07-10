@@ -157,18 +157,30 @@ public class RuleDataLoader
         try
         {
             Path initialPath = Paths.get(rulesPath.getPath());
-            boolean scanRecursively = rulesPath.getRulesPathType() == RulesPath.RulesPathType.SYSTEM_PROVIDED || rulesPath.isScanRecursively();
+            boolean isSystemProvided = rulesPath.getRulesPathType() == RulesPath.RulesPathType.SYSTEM_PROVIDED;
+            boolean scanRecursively = isSystemProvided || rulesPath.isScanRecursively();
 
-            Set<Path> pathsToScan = FileUtils.listFiles(
-                    initialPath.toFile(),
-                    SUPPORTED_RULE_EXTENSIONS, scanRecursively)
-                    .stream()
-                    .map(File::toPath)
-                    .collect(Collectors.toSet());
-
-            for (Path path : pathsToScan)
+            /*
+             * If it is just a single file, just scan that file instead of searching.
+             *
+             * Also, it is more efficient to scan recursively, so scan system provided rules that way in all cases.
+             */
+            if (isSystemProvided || Files.isRegularFile(initialPath))
             {
-                loadRules(rulesPath, path);
+                loadRules(rulesPath, initialPath);
+            }
+            else
+            {
+                final Set<Path> pathsToScan = FileUtils.listFiles(
+                        initialPath.toFile(),
+                        SUPPORTED_RULE_EXTENSIONS, scanRecursively)
+                        .stream()
+                        .map(File::toPath)
+                        .collect(Collectors.toSet());
+                for (Path path : pathsToScan)
+                {
+                    loadRules(rulesPath, path);
+                }
             }
 
         }
