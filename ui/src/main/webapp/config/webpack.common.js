@@ -113,14 +113,20 @@ module.exports = {
                 }
             }
         }),
+        // TODO exclude this plugin until this is fixed:
+        // https://github.com/angular/angular-cli/issues/4431
+        // https://github.com/angular/angular-cli/issues/6518
+
         // This is needed to suppress warning caused by some angular issue
         // see https://github.com/angular/angular/issues/11580
+        /*
         new ContextReplacementPlugin(
             // The (\\|\/) piece accounts for path separators in *nix and Windows
             /angular(\\|\/)core(\\|\/)@angular/,
             helpers.root('./src'), // location of your src
             {} // a map of your routes
         )
+        */
     ],
     // TODO: Find out if it helps,
     // tried this to get jquery externally loaded into global scope using <script> tag
