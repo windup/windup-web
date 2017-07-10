@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Contains the global configuration for Windup server.
@@ -27,6 +28,7 @@ import java.util.Set;
  */
 @Singleton
 @Startup
+@javax.ejb.AccessTimeout(value = 20, unit = TimeUnit.SECONDS)
 public class ConfigurationService
 {
     @PersistenceContext
