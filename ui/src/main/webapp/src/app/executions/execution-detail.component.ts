@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {WindupService} from "../services/windup.service";
 import {WindupExecution, RegisteredApplication} from "../generated/windup-services";
 import {WINDUP_WEB} from "../app.module";
@@ -10,12 +10,14 @@ import {ExecutionEvent} from "../core/events/windup-event";
 import {Observable} from "rxjs";
 import {RuleProviderExecutionsService} from "./rule-provider-executions/rule-provider-executions.service";
 import {ExecutionPhaseModel} from "../generated/tsModels/ExecutionPhaseModel";
+import {RoutedComponent} from "../shared/routed.component";
+import {RouteFlattenerService} from "../core/routing/route-flattener.service";
 
 @Component({
     templateUrl: './execution-detail.component.html',
     styleUrls: ['./execution-detail.component.scss']
 })
-export class ExecutionDetailComponent implements OnInit {
+export class ExecutionDetailComponent extends RoutedComponent implements OnInit {
 
     execution: WindupExecution;
     logLines: string[];
@@ -23,12 +25,20 @@ export class ExecutionDetailComponent implements OnInit {
 
     hideUnfinishedFeatures: boolean = WINDUP_WEB.config.hideUnfinishedFeatures;
 
-    constructor(private _activatedRoute: ActivatedRoute, private _eventBus: EventBusService, private _windupService: WindupService, private _ruleProviderExecutionsService: RuleProviderExecutionsService) {
+    constructor(
+        _router: Router,
+        _activatedRoute: ActivatedRoute,
+        _routeFlattener: RouteFlattenerService,
+        private _eventBus: EventBusService,
+        private _windupService: WindupService,
+        private _ruleProviderExecutionsService: RuleProviderExecutionsService
+    ) {
+        super(_router, _activatedRoute, _routeFlattener);
     }
 
     ngOnInit(): void {
-        this._activatedRoute.params.subscribe((params: {executionId: number}) => {
-            let executionId = +params.executionId;
+        this.subscriptions.push(this.flatRouteLoaded.subscribe(flatRouteData => {
+            let executionId = +flatRouteData.params.executionId;
 
             this._eventBus.onEvent
                 .filter(event => event.isTypeOf(ExecutionEvent))
@@ -41,12 +51,12 @@ export class ExecutionDetailComponent implements OnInit {
             this._windupService.getExecution(executionId).subscribe(execution => {
                 this.execution = execution;
                 this.loadLogData();
-                this._ruleProviderExecutionsService.getPhases(params.executionId)
+                this._ruleProviderExecutionsService.getPhases(executionId)
                     .subscribe(phases => {
                         this.phases = phases;
                     });
             });
-        });
+        }));
     }
 
     get loglines(): Observable<string[]> {
