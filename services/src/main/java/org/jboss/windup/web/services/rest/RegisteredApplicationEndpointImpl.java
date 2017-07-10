@@ -1,13 +1,21 @@
 package org.jboss.windup.web.services.rest;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.validation.Valid;
+import javax.ws.rs.ServerErrorException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
-import org.jboss.windup.web.services.model.Package;
 import org.jboss.windup.web.services.model.PackageMetadata;
 import org.jboss.windup.web.services.model.RegisteredApplication;
 import org.jboss.windup.web.services.service.RegisteredApplicationService;
@@ -18,6 +26,8 @@ import org.jboss.windup.web.services.service.RegisteredApplicationService;
 @Stateless
 public class RegisteredApplicationEndpointImpl implements RegisteredApplicationEndpoint
 {
+    private static Logger LOG = Logger.getLogger(RegisteredApplicationEndpointImpl.class.getName());
+
     @Inject
     private RegisteredApplicationService registeredApplicationService;
 
@@ -69,5 +79,28 @@ public class RegisteredApplicationEndpointImpl implements RegisteredApplicationE
         packageMetadata.getId(); // should force hibernate lazy loader to load data
 
         return packageMetadata;
+    }
+
+    @Override
+    public Response downloadApplication(long id)
+    {
+        RegisteredApplication application = this.getApplication(id);
+
+        try
+        {
+            InputStream is = new FileInputStream(application.getInputPath());
+
+            return Response
+                    .ok(is)
+                    .type(MediaType.APPLICATION_OCTET_STREAM_TYPE)
+                    .header("content-disposition","attachment; filename = " + application.getInputFilename())
+                    .build();
+        }
+        catch (IOException e)
+        {
+            LOG.warning(e.getMessage());
+
+            throw new ServerErrorException("Error reading file", Response.Status.INTERNAL_SERVER_ERROR);
+        }
     }
 }

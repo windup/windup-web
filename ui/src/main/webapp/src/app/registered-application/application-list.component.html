@@ -34,7 +34,7 @@
             </thead>
             <tbody *ngIf="project">
                 <tr *ngFor="let app of sortedApplications">
-                    <td>{{app.title}}</td>
+                    <td><a [attr.href]="getDownloadUrl(app)">{{app.title}}</a></td>
                     <td>{{app.lastModified | date: 'short' }}</td>
                     <td *ngIf="isDeleting(app); else showActions">
                         <span class="spinner spinner-xs spinner-inline"></span>
