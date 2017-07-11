@@ -42,12 +42,13 @@
                         </ng-container>
                         <ng-template #showProjectActions>
                             <span class="fa-lg project-action-item" i18n-title="Edit project" title="Edit project">
-                                <a (click)="editProject($event, project)" class="action-button">
+                                <a (click)="editProject($event, project)" class="action-button action-edit-project">
                                     <i class="fa fa-pencil"></i>
                                 </a>
                             </span>
                             <span class="fa-lg project-action-item" i18n-title="Delete project" title="Delete project">
-                                <a [attr.disabled]="project.isDeletable ? null : true" (click)="confirmDeleteProject($event, project)" class="action-button"
+                                <a [attr.disabled]="project.isDeletable ? null : true" (click)="confirmDeleteProject($event, project)"
+                                   class="action-button action-delete-project"
                                    title="{{!project.isDeletable ? 'Cannot delete while an analysis is in progress' : 'Delete project'}}"
                                 >
                                     <i class="fa fa-trash-o"></i>
@@ -66,12 +67,12 @@
                                             {project.applications.length, plural, =0 {No application} =1 {# Application} other {# Applications}}
                                         </small>
                                         -->
-                                        <small *ngIf="project.applications">
+                                        <small *ngIf="project.applications" class="count-applications">
                                             {{project.applications.length}}
                                             <ng-container i18n="project app count" *ngIf="project.applications.length === 1">application</ng-container>
                                             <ng-container i18n="project app count plural" *ngIf="project.applications.length != 1">applications</ng-container>
                                         </small>
-                                        <small>
+                                        <small class="last-updated">
                                             <ng-container *ngIf="!project.lastModified">
                                                 <ng-container i18n="project created">Created</ng-container> {{project.created | amTimeAgo}}
                                             </ng-container>

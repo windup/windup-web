@@ -1,8 +1,11 @@
 import {SchedulerService} from "../../../src/app/shared/scheduler.service";
+import {NgZone} from "@angular/core";
 
 export class SchedulerServiceMock extends SchedulerService {
     constructor() {
-        super();
+        super({
+            runOutsideAngular: (callback: () => any) => callback()
+        } as NgZone);
     }
 
     public setTimeout(callback: Function, time: number): any {
