@@ -14,6 +14,7 @@ import {ApplicationIndexComponent} from "./application-index/application-index.c
 import {ApplicationDetailsComponent} from "./application-details/application-details.component";
 import {RuleProviderExecutionsComponent} from "../executions/rule-provider-executions/rule-provider-executions.component";
 import {FullFlattenedRoute} from "../core/routing/route-flattener.service";
+import {ExecutionDetailComponent} from "../executions/execution-detail.component";
 
 export const executionLevelRoutes: Routes = [
     {path: '', component: ExecutionApplicationListComponent, data: {displayName: 'Applications'}},
@@ -36,7 +37,8 @@ export const executionLevelRoutes: Routes = [
         ]
     },
     {path: 'executed-rules', component: RuleProviderExecutionsComponent, data: {displayName: 'Executed Rules'}},
-    {path: 'dependencies', component: DependenciesReportComponent, data: {displayName: 'Dependencies Report' }}
+    {path: 'dependencies', component: DependenciesReportComponent, data: {displayName: 'Dependencies Report' }},
+    {path: 'execution-details', component: ExecutionDetailComponent, data: {displayName: 'Execution Info'}},
 ];
 
 const routes: Routes = [

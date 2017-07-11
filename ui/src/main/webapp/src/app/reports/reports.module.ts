@@ -28,13 +28,14 @@ import {ExecutionApplicationListComponent} from "./execution-application-list/ex
 import {NgxChartsModule} from "@swimlane/ngx-charts";
 import {PackageChartComponent} from "./package-chart/package-chart.component";
 import {ExecutionsModule} from "../executions/executions.module";
+import {SourceResolve} from "./source/source.resolve";
 
 @NgModule({
     imports: [
         SharedModule,
         ReportsRoutingModule,
         NgxChartsModule,
-        ExecutionsModule
+        ExecutionsModule,
     ],
     declarations: [
         ApplicationDetailsComponent,
@@ -81,6 +82,7 @@ import {ExecutionsModule} from "../executions/executions.module";
         PrettyPathPipe,
         TagDataService,
         // TagFilterService
+        SourceResolve
     ]
 })
 export class ReportsModule {
