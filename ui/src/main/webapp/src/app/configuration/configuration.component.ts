@@ -270,6 +270,7 @@ export class ConfigurationComponent implements OnInit, AfterViewInit {
     }
 
     scrollToRuleSetHeader(id:number) {
+        $(this._element.nativeElement).find("#select-" + id).val('');
         this.scrollToElement(this._element.nativeElement.querySelector(`div[id="group-item-${id}"]`));
     }
 

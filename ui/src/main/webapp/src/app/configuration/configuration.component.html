@@ -75,7 +75,7 @@
                     <a href="javascript:void(0)" (click)="removeFilters()" i18n>Remove</a> <ng-container i18n>the filter.</ng-container>
                 </div>
                 <ng-template #rulesList>
-                    <div class="rulesList list-group list-view-pf list-view-pf-view" *ngIf="hasFileBasedProviders(rulePath)" style="margin-top: 0px;">
+                    <div class="rulesList list-group list-view-pf list-view-pf-view" *ngIf="hasFileBasedProviders(rulePath)" style="margin-top: 0px; border: none;">
                         <div *ngFor="let ruleProvider of getFilteredRuleProvidersByPath(rulePath)" class="list-group-item" id="group-item-{{ruleProvider.id}}">
                             <div class="list-group-item-header" (click)="clickHeader($event, ruleProvider)">
                                 <div class="list-view-pf-expand">
@@ -135,7 +135,9 @@
                                             <ng-container *ngIf="ruleProvider.rules.length > 1">
                                                 <label>Go to rule:</label>
                                                 <select #selectedRule class="form-control" name="ruleSelect" style="width: auto; display: inline;"
-                                                        (click)="scrollToRule(selectedRule.value)">
+                                                        (change)="scrollToRule(selectedRule.value)"
+                                                        id="select-{{ruleProvider.id}}">
+                                                    <option value="" disabled selected hidden>Select a rule</option>
                                                     <option *ngFor="let ruleEntity of ruleProvider.rules; let i = index" [value]="ruleEntity.id">{{getLabelForRuleID(ruleEntity.ruleID, ruleProvider.providerID, i)}}</option>
                                                 </select>
                                             </ng-container>

@@ -103,13 +103,17 @@ h1 {
   margin-bottom: 20px;
 }
 
-.panel>.panel-collapse>.list-group .list-group-item{
-  margin-top: 3px;
+.panel>.panel-collapse>.list-group .list-group-item.selectedRuleHeader,
+.panel>.panel-collapse>.list-group:first-child .list-group-item:first-child.selectedRuleHeader {
+  border-color: #39a5dc;
+  border-width: 1px;
+  border-style: solid;
 }
 
-.panel>.panel-collapse>.list-group .list-group-item.selectedRuleHeader {
-  border-color: darkgrey;
-  border-width: 1px;
-  border-radius: 3px;
-  border-style: solid;
+.panel>.panel-collapse>.list-group .list-group-item.selectedRuleHeader .list-group-item-header {
+  background-color: #def3ff;
+}
+
+.panel>.panel-collapse>.list-group:first-child .list-group-item:first-child {
+  border-top: 1px solid transparent;
 }
