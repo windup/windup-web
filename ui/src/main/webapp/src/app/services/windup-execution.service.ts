@@ -8,17 +8,13 @@ import {
     ExecutionUpdatedEvent,
     ExecutionCompletedEvent, NewExecutionStartedEvent, DeleteMigrationProjectEvent
 } from "../core/events/windup-event";
-import {SchedulerService} from "../shared/scheduler.service";
 import {Constants} from "../constants";
-import {WebSocketSubject} from "rxjs/observable/dom/WebSocketSubject";
 import {Subject} from "rxjs";
 import {WebSocketSubjectFactory} from "../shared/websocket.factory";
 
 @Injectable()
 export class WindupExecutionService extends AbstractService {
     static EXECUTION_PROGRESS_URL = Constants.REST_BASE + "/websocket/execution-progress/{executionId}";
-
-    static CHECK_EXECUTIONS_INTERVAL = 3 * 1000; // 30 s
 
     protected executionSocket: Map<number, Subject<WindupExecution>> = new Map<number, Subject<WindupExecution>>();
     protected activeExecutions: Map<number, WindupExecution> = new Map<number, WindupExecution>();
@@ -64,6 +60,8 @@ export class WindupExecutionService extends AbstractService {
         if (!this.executionSocket.has(execution.id)) {
             const socket = this._websocketFactory.createWebSocketSubject(url);
             socket.subscribe((execution: WindupExecution) => this.onExecutionUpdate(execution));
+
+            this.executionSocket.set(execution.id, socket);
         }
 
         const previousExecution = this.activeExecutions.get(execution.id);
@@ -78,7 +76,9 @@ export class WindupExecutionService extends AbstractService {
     }
 
     protected hasExecutionChanged(oldExecution: WindupExecution, newExecution: WindupExecution) {
-        return oldExecution.id === newExecution.id && oldExecution.lastModified !== newExecution.lastModified;
+        return oldExecution.id === newExecution.id && (
+            oldExecution.lastModified !== newExecution.lastModified || oldExecution.workCompleted !== newExecution.workCompleted
+        );
     }
 
     protected keepWatchingExecution(execution: WindupExecution) {
@@ -99,8 +99,10 @@ export class WindupExecutionService extends AbstractService {
         }
 
         if (!this.keepWatchingExecution(execution)) {
-            const socket = this.executionSocket.get(execution.id);
-            socket.unsubscribe();
+            if (this.executionSocket.has(execution.id)) {
+                const socket = this.executionSocket.get(execution.id);
+                socket.unsubscribe();
+            }
 
             this.activeExecutions.delete(execution.id);
             this.executionProjects.delete(execution.id);
