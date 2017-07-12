@@ -10,9 +10,12 @@ import {
 } from "../core/events/windup-event";
 import {SchedulerService} from "../shared/scheduler.service";
 import {Constants} from "../constants";
+import {WebSocketSubject} from "rxjs/observable/dom/WebSocketSubject";
 
 @Injectable()
 export class WindupExecutionService extends AbstractService {
+    static EXECUTION_PROGRESS_URL = Constants.REST_BASE + "/websocket/execution-progress/{executionId}";
+
     static CHECK_EXECUTIONS_INTERVAL = 3 * 1000; // 30 s
 
     protected activeExecutions: Map<number, WindupExecution> = new Map<number, WindupExecution>();
@@ -20,7 +23,7 @@ export class WindupExecutionService extends AbstractService {
 
     constructor(private _windupService: WindupService, private _eventBus: EventBusService, private _scheduler: SchedulerService) {
         super();
-        this._scheduler.setInterval(() => this.checkExecutions(),  WindupExecutionService.CHECK_EXECUTIONS_INTERVAL);
+        // this._scheduler.setInterval(() => this.checkExecutions(),  WindupExecutionService.CHECK_EXECUTIONS_INTERVAL);
 
         this._eventBus.onEvent.filter(event => event.source !== this)
             .filter(event => event.isTypeOf(DeleteMigrationProjectEvent))
@@ -48,7 +51,15 @@ export class WindupExecutionService extends AbstractService {
     }
 
     public watchExecutionUpdates(execution: WindupExecution, project: MigrationProject) {
-        let previousExecution = this.activeExecutions.get(execution.id);
+        const url = WindupExecutionService.EXECUTION_PROGRESS_URL
+            .replace('https', 'wss')
+            .replace('http', 'ws')
+            .replace('{executionId}', execution.id.toString());
+
+        const socket = new WebSocketSubject(url);
+        socket.subscribe((execution: WindupExecution) => this.onExecutionUpdate(execution));
+
+        const previousExecution = this.activeExecutions.get(execution.id);
 
         if (previousExecution == null && this.keepWatchingExecution(execution)) {
             this.activeExecutions.set(execution.id, execution);
@@ -67,28 +78,29 @@ export class WindupExecutionService extends AbstractService {
         return execution.state === "STARTED" || execution.state === "QUEUED";
     }
 
+    protected onExecutionUpdate(execution: WindupExecution) {
+        const previousExecution = this.activeExecutions.get(execution.id);
+        const project = this.executionProjects.get(execution.id);
+
+        if (this.hasExecutionChanged(previousExecution, execution)) {
+            this._eventBus.fireEvent(new ExecutionUpdatedEvent(execution, project, this));
+            this.activeExecutions.set(execution.id, execution);
+        }
+
+        if (execution.state === "COMPLETED") {
+            this._eventBus.fireEvent(new ExecutionCompletedEvent(execution, project, this));
+        }
+
+        if (!this.keepWatchingExecution(execution)) {
+            this.activeExecutions.delete(execution.id);
+            this.executionProjects.delete(execution.id);
+        }
+    }
+
     // TODO: It would be great to switch from pull model to push notifications
     protected checkExecutions() {
         this.activeExecutions.forEach((previousExecution: WindupExecution) => {
-            this._windupService.getExecution(previousExecution.id).subscribe(
-                execution => {
-                    let project = this.executionProjects.get(execution.id);
-
-                    if (this.hasExecutionChanged(previousExecution, execution)) {
-                        this._eventBus.fireEvent(new ExecutionUpdatedEvent(execution, project, this));
-                        this.activeExecutions.set(execution.id, execution);
-                    }
-
-                    if (execution.state === "COMPLETED") {
-                        this._eventBus.fireEvent(new ExecutionCompletedEvent(execution, project, this));
-                    }
-
-                    if (!this.keepWatchingExecution(execution)) {
-                        this.activeExecutions.delete(execution.id);
-                        this.executionProjects.delete(execution.id);
-                    }
-                }
-            );
+            this._windupService.getExecution(previousExecution.id).subscribe(execution => this.onExecutionUpdate(execution));
         });
     }
 
