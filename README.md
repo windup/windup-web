@@ -29,6 +29,8 @@ Environment setup
 
 3. [Install yarn package manager](https://yarnpkg.com/en/)
 
+   > sudo npm install -g yarn
+
 4. [Install Bower using NPM](http://bower.io/#install-bower)
     * `sudo npm install -g bower`
     * If you run into problems with permissions (typically **EACCES** error), use [this guide](https://docs.npmjs.com/getting-started/fixing-npm-permissions)
