@@ -33,6 +33,7 @@ import {SharedModule} from "./shared/shared.module";
 import {CoreModule} from "./core/core.module";
 import {ExecutionsModule} from "./executions/executions.module";
 import {FileUploaderWrapper} from "./shared/upload/file-uploader-wrapper.service";
+import {KeycloakService} from "./core/authentication/keycloak.service";
 
 /**
  * Load all mapping data from the generated files.
@@ -81,7 +82,8 @@ initializeModelMappingData();
         WindupExecutionService,
         {
             provide: FileUploader,
-            useFactory: createFileUploader
+            useFactory: createFileUploader,
+            deps: [KeycloakService]
         },
         {
             provide: GraphJSONToModelService,
@@ -95,11 +97,11 @@ initializeModelMappingData();
 export class AppModule { }
 
 let fileUploader = null;
-export function createFileUploader() {
+export function createFileUploader(_keycloakService:KeycloakService) {
     if (fileUploader != null)
         return fileUploader;
 
-    fileUploader = new FileUploaderWrapper({});
+    fileUploader = new FileUploaderWrapper({},_keycloakService);
     return fileUploader;
 }
 

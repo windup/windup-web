@@ -6,6 +6,7 @@ import {
     ParsedResponseHeaders
 } from "ng2-file-upload/ng2-file-upload";
 import {Observable, Subject} from "rxjs";
+import {KeycloakService} from "../../core/authentication/keycloak.service";
 
 /**
  * This wrapper extends FileUpload class and adds Observables for events
@@ -15,7 +16,8 @@ export class FileUploaderWrapper extends FileUploader {
 
     public observables: FileUploadObservables;
 
-    public constructor(options: FileUploaderOptions) {
+    public constructor(options: FileUploaderOptions,
+                       private _keycloakService:KeycloakService) {
         super(options);
 
         this.subjects = {
@@ -68,7 +70,14 @@ export class FileUploaderWrapper extends FileUploader {
         this.isUploading = false;
 
         if (nextItem) {
-            nextItem.upload();
+            this._keycloakService
+                .getToken().subscribe((token) => {
+                this.setOptions({
+                    authToken: 'Bearer ' + token,
+                    method: 'POST'
+                });
+                nextItem.upload();
+            });
             return;
         }
 
