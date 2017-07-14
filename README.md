@@ -25,30 +25,30 @@ Environment setup
 
    > NOTE: If npm is version is less than 3.8.8, try the following to force an update:
    >
-   >        npm install -g npm
+   >        sudo npm install -g npm
 
 3. [Install yarn package manager](https://yarnpkg.com/en/)
 
 4. [Install Bower using NPM](http://bower.io/#install-bower)
-    * `npm install -g bower`
+    * `sudo npm install -g bower`
     * If you run into problems with permissions (typically **EACCES** error), use [this guide](https://docs.npmjs.com/getting-started/fixing-npm-permissions)
       to fix it.
-    * `npm install` command should be replaceable with `yarn add`. For global packages, use 
-        `yarn global add`. Yarn should be faster, but if there is any problem with it, use npm.
+    * `npm install` command should be replaceable with `yarn add`.
+    * For global packages, use 
+        `sudo yarn global add`. Yarn should be faster, but if there is any problem with it, use NPM.
          [Here](https://shift.infinite.red/npm-vs-yarn-cheat-sheet-8755b092e5cc#.pshfjyfo0) is nice comparison of npm and yarn commands.
-         
 
 5. Get current version of phantomjs
     
     > 
     > if phantomjs is not installed yet, run 
     >
-    >       npm install -g phantomjs-prebuilt
+    >       sudo npm install -g phantomjs-prebuilt
     
     > 
     > else run
     >
-    >       npm update -g phantomjs-prebuilt
+    >       sudo npm update -g phantomjs-prebuilt
 
 6. For development purpose and regular redeployment, raise the Metaspace limit.
     In `wildfly-10.1.0.Final/bin/standalone.conf`, change the `MaxMetaspaceSize` value to 2048:
