@@ -25,7 +25,7 @@ export class RuleService extends AbstractService {
 
     constructor (private _http: Http, private _fileUploaderFactory: FileUploaderFactory, private _keycloakService: KeycloakService) {
         super();
-        this._multipartUploader = _fileUploaderFactory.create(Constants.REST_BASE + this.UPLOAD_URL);
+        this._multipartUploader = _fileUploaderFactory.create(Constants.REST_BASE + this.UPLOAD_URL, undefined, _keycloakService);
     }
 
     getMultipartUploader(): FileUploader {
