@@ -79,7 +79,7 @@
                         <div *ngFor="let ruleProvider of getFilteredRuleProvidersByPath(rulePath)" class="list-group-item" id="group-item-{{ruleProvider.id}}">
                             <div class="list-group-item-header" (click)="clickHeader($event, ruleProvider)">
                                 <div class="list-view-pf-expand">
-                                    <span class="fa fa-angle-right" id="span-{{ruleProvider.id}}" [style]="getSpanAngleStyle(ruleProvider)"></span>
+                                    <span class="fa fa-angle-right" id="span-{{ruleProvider.id}}" [style.marginTop.px]="getRuleProviderMarginTop(ruleProvider)"></span>
                                 </div>
                                 <!-- If we need a checkbox for actions / global disabling.
                                 <div class="list-view-pf-checkbox">

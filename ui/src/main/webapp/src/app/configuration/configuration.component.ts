@@ -287,13 +287,18 @@ export class ConfigurationComponent implements OnInit, AfterViewInit {
         }
     }
 
-    getSpanAngleStyle(ruleProvider: RuleProviderEntity) {
+    getRuleProviderMarginTop(ruleProvider: RuleProviderEntity) {
         let margin = 0;
         if (ruleProvider.sources.length > 0) {
-            if (ruleProvider.targets.length > 0) margin = 14;
-            else margin = 7;
-        } else if (ruleProvider.targets.length > 0) margin = 7;
-        return this._sanitizer.bypassSecurityTrustStyle("margin-top: " + margin + "px;");
+            if (ruleProvider.targets.length > 0) {
+                margin = 14;
+            } else {
+                margin = 7;
+            }
+        } else if (ruleProvider.targets.length > 0) {
+            margin = 7;
+        }
+        return margin;
     }
 
     getLabelForRuleID(ruleID: string, providerID: string, i:number) {
