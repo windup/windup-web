@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, OnInit, ViewChild, ElementRef} from "@angular/core";
 import {ConfigurationService} from "./configuration.service";
 import {Configuration, RuleProviderEntity, RulesPath, Technology} from "../generated/windup-services";
 import {RuleService} from "./rule.service";
@@ -12,6 +12,9 @@ import {OrderDirection, SortingService} from "../shared/sort/sorting.service";
 import Arrays = utils.Arrays;
 import {FilterConfiguration} from "../shared/toolbar/toolbar.component";
 import {getAvailableFilters} from "./technology-filter";
+import {DomSanitizer} from '@angular/platform-browser';
+
+declare function prettyPrint();
 
 @Component({
     templateUrl: './configuration.component.html',
@@ -59,7 +62,9 @@ export class ConfigurationComponent implements OnInit, AfterViewInit {
         private _configurationService: ConfigurationService,
         private _ruleService: RuleService,
         private _notificationService: NotificationService,
-        private _sortingService: SortingService<RuleProviderEntity>
+        private _sortingService: SortingService<RuleProviderEntity>,
+        private _element: ElementRef,
+        private _sanitizer: DomSanitizer
     ) {
 
     }
@@ -249,4 +254,50 @@ export class ConfigurationComponent implements OnInit, AfterViewInit {
     isFilterActive() {
         return this.filter.selectedFilters.length > 0;
     }
+
+    clickHeader(event:Event, provider:RuleProviderEntity) {
+        if(!$(event.target).is("button, a, input, .fa-ellipsis-v")){
+            $(this._element.nativeElement).find("#span-" + provider.id).toggleClass("fa-angle-down")
+                .end().parent().toggleClass("list-view-pf-expand-active")
+                .find("#container-" + provider.id).toggleClass("hidden").end().parent()
+                .find("#group-item-" + provider.id).toggleClass("selectedRuleHeader");
+            prettyPrint();
+        }
+    }
+
+    scrollToRule(id:number) {
+        this.scrollToElement(this._element.nativeElement.querySelector(`h4[id="${id}"]`));
+    }
+
+    scrollToRuleSetHeader(id:number) {
+        $(this._element.nativeElement).find("#select-" + id).val('');
+        this.scrollToElement(this._element.nativeElement.querySelector(`div[id="group-item-${id}"]`));
+    }
+
+    private scrollToElement(element:Element) {
+        if (element) {
+            /*
+             * For reference on how the offset is computed:
+             * https://developer.mozilla.org/en/docs/Web/API/Element/getBoundingClientRect
+             *
+             * 60 is the height in px of the top nav bar "header-logo-wrapper"
+             * */
+            let offset = element.getBoundingClientRect().top + window.scrollY - 60;
+            window.scrollTo(0, offset);
+        }
+    }
+
+    getSpanAngleStyle(ruleProvider: RuleProviderEntity) {
+        let margin = 0;
+        if (ruleProvider.sources.length > 0) {
+            if (ruleProvider.targets.length > 0) margin = 14;
+            else margin = 7;
+        } else if (ruleProvider.targets.length > 0) margin = 7;
+        return this._sanitizer.bypassSecurityTrustStyle("margin-top: " + margin + "px;");
+    }
+
+    getLabelForRuleID(ruleID: string, providerID: string, i:number) {
+        return (ruleID.length > 0 ? ruleID : providerID + "_" + (i + 1));
+    }
+
 }
