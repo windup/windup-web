@@ -9,7 +9,7 @@
                     Rules for: {{ruleProviderEntity.providerID}}
                 </h4>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="overflow-y: auto; max-height: 80vh;">
 
                 <div *ngFor="let ruleEntity of ruleProviderEntity.rules">
                     <h4> {{ruleEntity.ruleID}} </h4>
