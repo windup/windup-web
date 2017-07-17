@@ -11,6 +11,7 @@ import {
 import {Constants} from "../constants";
 import {Subject} from "rxjs";
 import {WebSocketSubjectFactory} from "../shared/websocket.factory";
+import {KeycloakService} from "../core/authentication/keycloak.service";
 
 @Injectable()
 export class WindupExecutionService extends AbstractService {
@@ -23,7 +24,8 @@ export class WindupExecutionService extends AbstractService {
     constructor(
         private _windupService: WindupService,
         private _eventBus: EventBusService,
-        private _websocketFactory: WebSocketSubjectFactory<WindupExecution>
+        private _websocketFactory: WebSocketSubjectFactory<WindupExecution>,
+        private _keycloakService: KeycloakService
     ) {
         super();
         this._eventBus.onEvent.filter(event => event.source !== this)
@@ -62,6 +64,14 @@ export class WindupExecutionService extends AbstractService {
             socket.subscribe((execution: WindupExecution) => this.onExecutionUpdate(execution));
 
             this.executionSocket.set(execution.id, socket);
+
+            this._keycloakService.getToken().subscribe(token => {
+                socket.next(JSON.stringify({
+                    authentication: {
+                        token: token
+                    }
+                }) as any);
+            });
         }
 
         const previousExecution = this.activeExecutions.get(execution.id);

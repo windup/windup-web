@@ -16,7 +16,7 @@ import javax.jms.Message;
 import javax.jms.ObjectMessage;
 import javax.websocket.CloseReason;
 import javax.websocket.OnClose;
-import javax.websocket.OnOpen;
+import javax.websocket.OnMessage;
 import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
@@ -25,41 +25,61 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jboss.windup.web.services.messaging.AbstractMDB;
 import org.jboss.windup.web.services.model.WindupExecution;
 
+
+import javax.inject.Inject;
+import org.hawkular.accounts.websocket.Authenticator;
+import org.hawkular.accounts.websocket.WebsocketAuthenticationException;
+
+
 /**
  * @author <a href="mailto:dklingenberg@gmail.com">David Klingenberg</a>
  */
 @ServerEndpoint("/websocket/execution-progress/{executionId}")
-public class ExecutionProgressReporter extends AbstractMDB implements Serializable
-{
+public class ExecutionProgressReporter extends AbstractMDB implements Serializable {
+
+    @Inject
+    private Authenticator authenticator;
+
     // server endpoint (per JVM)
     private static final Map<Long, Set<Session>> sessions = Collections.synchronizedMap(new HashMap<Long, Set<Session>>());
 
     // private static final Set<Session> sessions = Collections.synchronizedSet(new HashSet<Session>());
     private static final Logger LOG = Logger.getLogger(ExecutionProgressReporter.class.getName());
 
-    @OnOpen
-    public void onOpen(Session session, @PathParam("executionId") Long executionId)
-    {
-        if (!sessions.containsKey(executionId))
-        {
-            sessions.put(executionId, Collections.synchronizedSet(new HashSet<Session>()));
+    @OnClose
+    public void onClose(Session session, CloseReason reason, @PathParam("executionId") Long executionId) {
+        if (sessions.containsKey(executionId)) {
+            Set<Session> executionSessions = sessions.get(executionId);
+
+            executionSessions.remove(session);
+
+            if (executionSessions.isEmpty()) {
+                sessions.remove(executionId);
+            }
+        }
+    }
+
+    @OnMessage
+    public void onMessage(Session session, String message, @PathParam("executionId") Long executionId) {
+        authenticate(session, message);
+
+        if (!sessions.containsKey(executionId)) {
+            sessions.put(executionId, Collections.synchronizedSet(new HashSet<>()));
         }
 
         sessions.get(executionId).add(session);
     }
 
-    @OnClose
-    public void onClose(Session session, CloseReason reason, @PathParam("executionId") Long executionId)
+    private void authenticate(Session session, String message)
     {
-        if (sessions.containsKey(executionId))
-        {
-            Set<Session> executionSessions = sessions.get(executionId);
 
-            executionSessions.remove(session);
-
-            if (executionSessions.isEmpty())
-            {
-                sessions.remove(executionId);
+        try {
+            authenticator.authenticateWithMessage(message, session);
+        } catch (WebsocketAuthenticationException e) {
+            try {
+                session.close(new CloseReason(CloseReason.CloseCodes.CLOSED_ABNORMALLY, e.getLocalizedMessage()));
+            } catch (IOException e1) {
+                LOG.warning(e.getMessage());
             }
         }
     }
