@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.ObjectMessage;
@@ -21,21 +22,19 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hawkular.accounts.websocket.Authenticator;
+import org.hawkular.accounts.websocket.WebsocketAuthenticationException;
 import org.jboss.windup.web.services.messaging.AbstractMDB;
 import org.jboss.windup.web.services.model.WindupExecution;
 
-
-import javax.inject.Inject;
-import org.hawkular.accounts.websocket.Authenticator;
-import org.hawkular.accounts.websocket.WebsocketAuthenticationException;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author <a href="mailto:dklingenberg@gmail.com">David Klingenberg</a>
  */
 @ServerEndpoint("/websocket/execution-progress/{executionId}")
-public class ExecutionProgressReporter extends AbstractMDB implements Serializable {
+public class ExecutionProgressReporter extends AbstractMDB implements Serializable
+{
 
     @Inject
     private Authenticator authenticator;
@@ -47,23 +46,28 @@ public class ExecutionProgressReporter extends AbstractMDB implements Serializab
     private static final Logger LOG = Logger.getLogger(ExecutionProgressReporter.class.getName());
 
     @OnClose
-    public void onClose(Session session, CloseReason reason, @PathParam("executionId") Long executionId) {
-        if (sessions.containsKey(executionId)) {
+    public void onClose(Session session, CloseReason reason, @PathParam("executionId") Long executionId)
+    {
+        if (sessions.containsKey(executionId))
+        {
             Set<Session> executionSessions = sessions.get(executionId);
 
             executionSessions.remove(session);
 
-            if (executionSessions.isEmpty()) {
+            if (executionSessions.isEmpty())
+            {
                 sessions.remove(executionId);
             }
         }
     }
 
     @OnMessage
-    public void onMessage(Session session, String message, @PathParam("executionId") Long executionId) {
+    public void onMessage(Session session, String message, @PathParam("executionId") Long executionId)
+    {
         authenticate(session, message);
 
-        if (!sessions.containsKey(executionId)) {
+        if (!sessions.containsKey(executionId))
+        {
             sessions.put(executionId, Collections.synchronizedSet(new HashSet<>()));
         }
 
@@ -73,12 +77,18 @@ public class ExecutionProgressReporter extends AbstractMDB implements Serializab
     private void authenticate(Session session, String message)
     {
 
-        try {
+        try
+        {
             authenticator.authenticateWithMessage(message, session);
-        } catch (WebsocketAuthenticationException e) {
-            try {
+        }
+        catch (WebsocketAuthenticationException e)
+        {
+            try
+            {
                 session.close(new CloseReason(CloseReason.CloseCodes.CLOSED_ABNORMALLY, e.getLocalizedMessage()));
-            } catch (IOException e1) {
+            }
+            catch (IOException e1)
+            {
                 LOG.warning(e.getMessage());
             }
         }
@@ -86,13 +96,15 @@ public class ExecutionProgressReporter extends AbstractMDB implements Serializab
 
     /**
      * Listens to JMS events from StatusUpdateMDB
+     * 
      * @see org.jboss.windup.web.services.messaging.StatusUpdateMDB
      * 
      * @param msg
      */
     public void onJMSMessage(@Observes @WSJMSMessage Message msg)
     {
-        if (!validatePayload(WindupExecution.class, msg)) {
+        if (!validatePayload(WindupExecution.class, msg))
+        {
             return;
         }
 
