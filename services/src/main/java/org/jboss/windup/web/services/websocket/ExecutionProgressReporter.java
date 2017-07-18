@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.ObjectMessage;
@@ -21,14 +22,13 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
-import org.jboss.windup.web.services.KeycloakAuthenticationException;
-import org.jboss.windup.web.services.KeycloakAuthenticator;
+import org.jboss.windup.web.accounts.websocket.Authenticator;
+import org.jboss.windup.web.accounts.websocket.WebsocketAuthenticationException;
 import org.jboss.windup.web.services.messaging.AbstractMDB;
 import org.jboss.windup.web.services.model.WindupExecution;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jboss.windup.web.services.rest.ErrorInfo;
 
 /**
  * @author <a href="mailto:dklingenberg@gmail.com">David Klingenberg</a>
@@ -36,6 +36,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @ServerEndpoint("/websocket/execution-progress/{executionId}")
 public class ExecutionProgressReporter extends AbstractMDB implements Serializable
 {
+
+    @Inject
+    private Authenticator authenticator;
 
     // server endpoint (per JVM)
     private static final Map<Long, Set<Session>> sessions = Collections.synchronizedMap(new HashMap<Long, Set<Session>>());
@@ -74,32 +77,21 @@ public class ExecutionProgressReporter extends AbstractMDB implements Serializab
 
     private void authenticate(Session session, String message)
     {
+
         try
         {
-            String token = null;
-            try
-            {
-                JSONObject jsonObject = new JSONObject(message);
-                JSONObject authenticationObject = jsonObject.getJSONObject("authentication");
-                if (authenticationObject == null)
-                    throw new KeycloakAuthenticationException("Authentication message did not contain a token");
-
-                token = authenticationObject.getString("token");
-                if (token == null)
-                    throw new KeycloakAuthenticationException("Authentication message did not contain a token");
-            }
-            catch (JSONException e)
-            {
-                throw new KeycloakAuthenticationException("Unable to parse message due to: " + e.getMessage());
-            }
-
-            KeycloakAuthenticator.validateToken(token);
+            authenticator.authenticateWithMessage(message, session);
         }
-        catch (KeycloakAuthenticationException e)
+        catch (WebsocketAuthenticationException e)
         {
-            LOG.warning("Received a request with an invalid token");
             try
             {
+                ErrorInfo error = new ErrorInfo(e.getLocalizedMessage());
+
+                ObjectMapper objectMapper = new ObjectMapper();
+                String serializedObject = objectMapper.writeValueAsString(error);
+
+                session.getBasicRemote().sendText(serializedObject);
                 session.close(new CloseReason(CloseReason.CloseCodes.CLOSED_ABNORMALLY, e.getLocalizedMessage()));
             }
             catch (IOException e1)
