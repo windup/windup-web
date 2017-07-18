@@ -30,6 +30,8 @@ Environment setup
 3. [Install yarn package manager](https://yarnpkg.com/en/)
 
    > sudo npm install -g yarn
+   
+   > Note: Check that your installed version of yarn is at least v0.22.0 (yarn --version)
 
 4. [Install Bower using NPM](http://bower.io/#install-bower)
     * `sudo npm install -g bower`
