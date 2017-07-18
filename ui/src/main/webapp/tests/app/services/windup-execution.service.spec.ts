@@ -5,8 +5,34 @@ import {EventBusService} from "../../../src/app/core/events/event-bus.service";
 import {WindupExecutionService} from "../../../src/app/services/windup-execution.service";
 import {AnalysisContext, MigrationProject, WindupExecution} from "../../../src/app/generated/windup-services";
 import {NewExecutionStartedEvent} from "../../../src/app/core/events/windup-event";
-import {Observable, Subject} from "rxjs";
+import {Observable, Subject, Subscription} from "rxjs";
 import {WebSocketSubjectFactory} from "../../../src/app/shared/websocket.factory";
+import {ISubscription} from "rxjs/Subscription";
+import {Subscribable} from "rxjs/Observable";
+
+export class WebSocketMock<T> implements Subscribable<T>, ISubscription
+{
+    closed: boolean;
+    subject: Subject<T> = new Subject<T>();
+
+    subscribe(next?: (value: T) => void, error?: (error: any) => void, complete?: () => void): Subscription {
+        return this.subject.subscribe(next, error, complete);
+    }
+
+    next(data: T) {
+        /**
+         * Do not emit data if type is string.
+         * In that case it is authorization token and it is message for server.
+         */
+        if (typeof data !== 'string') {
+            this.subject.next(data);
+        }
+    }
+
+    unsubscribe(): void {
+        this.subject.unsubscribe();
+    }
+}
 
 describe("WindupExecution service", () => {
     let project: MigrationProject = <MigrationProject>{ id: 10 };
@@ -67,8 +93,18 @@ describe("WindupExecution service", () => {
         countExecutionSubjectCalls++;
     }
 
+    function createKeycloakMock(): any {
+        const keycloakMock = jasmine.createSpyObj('KeycloakService', [
+            'getToken'
+        ]);
+
+        keycloakMock.getToken.and.callFake(() => Observable.of('token'));
+
+        return keycloakMock;
+    }
+
     beforeEach(() => {
-        executionSubject = new Subject<WindupExecution>();
+        executionSubject = new WebSocketMock<WindupExecution>() as any;
         countExecutionSubjectCalls = 0;
 
         windupServiceMock = getWindupServiceMock(executionSubject);
@@ -93,7 +129,9 @@ describe("WindupExecution service", () => {
             }
         });
 
-        windupExecutionService = new WindupExecutionService(windupServiceMock, eventBusMock, websocketFactoryMock);
+        const keyCloak = createKeycloakMock();
+
+        windupExecutionService = new WindupExecutionService(windupServiceMock, eventBusMock, websocketFactoryMock, keyCloak);
     });
 
     afterEach(() => {
