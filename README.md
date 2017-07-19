@@ -61,6 +61,72 @@ Environment setup
     JAVA_OPTS="-Xms64m -Xmx512m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=2048m -Djava.net.preferIPv4Stack=true"
     ```
 
+
+Building the Windup project
+---------------------------
+
+To build Windup, you need to clone and build several git repositories:
+
+If you want to contribute to Windup development,
+here is a script which clones the repositories, adds the upstream and sets up the remote tracking branches.
+First, you'll need to _fork_ all the repositories to your user account.
+Then, change your GitHub.com user name in the script below.
+
+```
+GITHUB_USER="OndraZizka"
+BASEDIR=$(pwd)
+for i in \
+windup \
+windup-rulesets \
+windup-quickstarts \
+windup-distribution \
+maven-indexer \
+windup-maven-plugin \
+; do 
+    cd $BASEDIR
+    git clone git@github.com:$GITHUB_USER/$i.git
+    cd $i
+    git remote add upstream https://github.com/windup/$i.git
+    git fetch upstream
+    git branch --set-upstream-to=upstream/master
+    git pull
+    mvn clean install -DskipTests
+done
+cd $BASEDIR
+
+# Install NodeJS 6+
+curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+sudo apt-get install -y nodejs
+# Install NPM
+sudo apt-get install npm
+sudo npm install -g npm
+
+#sudo apt install yarn
+sudo npm install -g yarn
+sudo npm install -g bower
+sudo npm install -g phantomjs-prebuilt
+## Then fix NPM permissions, basically by downloading and installing it just for one user…
+## https://docs.npmjs.com/getting-started/fixing-npm-permissions
+
+BASEDIR=$(pwd)
+for i in \
+windup-keycloak-tool \
+windup-web \
+windup-web-distribution \
+; do 
+    cd $BASEDIR
+    git clone git@github.com:$GITHUB_USER/$i.git
+    cd $i
+    git remote add upstream https://github.com/windup/$i.git
+    git fetch upstream
+    git branch --set-upstream-to=upstream/master
+    git pull
+    mvn clean install -DskipTests
+done
+cd $BASEDIR
+```
+
+
 Running the webapp
 ------------------
 
