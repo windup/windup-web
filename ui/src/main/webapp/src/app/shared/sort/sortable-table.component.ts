@@ -48,21 +48,7 @@ export class SortableTableComponent {
     public set data(inputData: any[]) {
         this._originalData = inputData || [];
 
-        /**
-         * This is workaround for issues with "Expression has changed after it was checked." exception.
-         *
-         * Angular runs setters during change detection phase. Apparently, setter cannot trigger any change detection.
-         * But this setter needs to update sortedData output.
-         *
-         * To avoid those issues, setTimeout with 0 timeout is used. It should be sufficient to execute the code after
-         *  angular finishes change detection.
-         *
-         * More details for example here:
-         *   https://github.com/angular/angular/issues/10131
-         *
-         *  (SchedulerService is used just to simplify mocking timeouts in tests)
-         */
-        this._schedulerService.setTimeout(() => this.sortData(), 0);
+        this.sortData();
     }
 
     @Input()
