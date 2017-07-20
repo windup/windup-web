@@ -5,8 +5,6 @@ import {RouterTestingModule} from "@angular/router/testing";
 import {SortableTableComponent, TableHeader} from "../../../../src/app/shared/sort/sortable-table.component";
 import {SortIndicatorComponent} from "../../../../src/app/shared/sort/sort-indicator.component";
 import {OrderDirection} from "../../../../src/app/shared/sort/sorting.service";
-import {SchedulerServiceMock} from "../../mocks/scheduler-service.mock";
-import {SchedulerService} from "../../../../src/app/shared/scheduler.service";
 
 let comp:    SortableTableComponent;
 let fixture: ComponentFixture<SortableTableComponent>;
@@ -18,7 +16,7 @@ let host:  ComponentFixture<SortableTableComponentHost>;
 @Component({
     template: `
     <table>
-        <thead wu-sortable-table [tableHeaders]="headers" [data]="rows" [(sortedData)]="sortedRows"></thead>
+        <thead wu-sortable-table [tableHeaders]="headers" [data]="rows" (sortedDataChange)="this.sortedRows = $event"></thead>
     </table>
 `
 })
@@ -29,23 +27,16 @@ class SortableTableComponentHost {
 
     @ViewChild(SortableTableComponent)
     public sortableTable;
+
 }
 
 describe('SortableTableComponentHost', () => {
-    let scheduler: SchedulerServiceMock = new SchedulerServiceMock();
-
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [ RouterTestingModule ],
             declarations: [
                 SortableTableComponent, SortableTableComponentHost, SortIndicatorComponent
             ],
-            providers: [
-                {
-                    provide: SchedulerService,
-                    useValue: scheduler
-                }
-            ]
         }).compileComponents();
 
         host = TestBed.createComponent(SortableTableComponentHost);
@@ -223,7 +214,6 @@ describe('SortableTableComponentHost', () => {
                 beforeEach(() => {
                     host.componentInstance.rows = newData;
                     host.detectChanges(); // change on input
-                    scheduler.timerTick(); // workaround
                     host.detectChanges(); // change on output
                 });
 
