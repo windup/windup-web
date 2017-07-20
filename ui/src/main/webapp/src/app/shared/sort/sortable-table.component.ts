@@ -1,6 +1,5 @@
-import {Input, Component, EventEmitter, Output, ChangeDetectionStrategy} from "@angular/core";
+import {Input, Component, EventEmitter, Output, ChangeDetectionStrategy, ChangeDetectorRef} from "@angular/core";
 import {SortingService, OrderDirection} from "./sorting.service";
-import {SchedulerService} from "../scheduler.service";
 
 @Component({
     selector: '[wu-sortable-table]',
@@ -20,7 +19,7 @@ export class SortableTableComponent {
     @Output()
     public sortedDataChange: EventEmitter<any[]> = new EventEmitter<any[]>();
 
-    public constructor(private _sortingService: SortingService<any>, private _schedulerService: SchedulerService) {
+    public constructor(private _sortingService: SortingService<any>, private _cd: ChangeDetectorRef) {
         this.sort = {
             direction: OrderDirection.ASC,
             property: () => 0,
@@ -49,6 +48,7 @@ export class SortableTableComponent {
         this._originalData = inputData || [];
 
         this.sortData();
+        this._cd.detectChanges();
     }
 
     @Input()
