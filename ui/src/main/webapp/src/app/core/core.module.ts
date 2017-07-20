@@ -13,6 +13,7 @@ import {appRoutes} from '../app.routing';
 import {RouteHistoryService} from "./routing/route-history.service";
 import {RouteFlattenerService} from "./routing/route-flattener.service";
 import {LogoutGuard} from "./authentication/logout.guard";
+import {UrlCleanerService} from "./routing/url-cleaner.service";
 
 /**
  * Core module is for services which should be global app level singletons
@@ -44,7 +45,8 @@ import {LogoutGuard} from "./authentication/logout.guard";
         LoggedInGuard,
         LogoutGuard,
         RouteHistoryService,
-        RouteFlattenerService
+        RouteFlattenerService,
+        UrlCleanerService
     ]
 })
 export class CoreModule {

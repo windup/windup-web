@@ -117,18 +117,20 @@ export class RouteFlattenerService {
         return routeConfig;
     }
 
-    protected mergeAllRoutes(...routes: FlattenedRouteData[]): FlattenedRouteData
-    {
+    protected mergeAllRoutes(...routes: FlattenedRouteData[]): FlattenedRouteData {
         let result = {
             data: {},
             params: {},
+            queryParams: {},
             url: [],
             routeConfigHierarchy: [],
-            snapshotsHierarchy: []
+            snapshotsHierarchy: [],
+            fragment: ''
         };
 
         Object.assign(result.data, ...(routes.map(route => route.data)));
         Object.assign(result.params, ...(routes.map(route => route.params)));
+        Object.assign(result.queryParams, ...(routes.map(route => route.queryParams)));
 
         result.routeConfigHierarchy = [].concat(
             ...routes.map(route => this.getRouteConfigHierarchy(route))
@@ -144,6 +146,7 @@ export class RouteFlattenerService {
         let result = {
             data: {},
             params: {},
+            queryParams: {},
             url: [],
             routeConfigHierarchy: [],
             snapshotsHierarchy: []
@@ -151,6 +154,7 @@ export class RouteFlattenerService {
 
         Object.assign(result.data, parent.data, child.data);
         Object.assign(result.params, parent.params, child.params);
+        Object.assign(result.queryParams, parent.queryParams, child.queryParams);
 
         result.routeConfigHierarchy = [].concat(
             this.getRouteConfigHierarchy(parent),
@@ -168,11 +172,12 @@ export class RouteFlattenerService {
 export interface FlattenedRouteData {
     params: Params;
     data: Data;
-
+    queryParams?: Params;
     url?: UrlSegment[];
     routeConfig?: Route;
     routeConfigHierarchy?: Route[];
     snapshotsHierarchy?: ActivatedRouteSnapshot[];
+    fragment?: string;
 }
 
 
