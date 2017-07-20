@@ -1,4 +1,4 @@
-import {Injectable} from "@angular/core";
+import {Inject, Injectable} from "@angular/core";
 import {
     Http, Request, ConnectionBackend, RequestOptions, RequestOptionsArgs, Response, Headers,
     RequestMethod
@@ -6,12 +6,23 @@ import {
 
 import {KeycloakService} from "./keycloak.service";
 import {Observable} from 'rxjs/Observable';
+import {EventBusService} from "../events/event-bus.service";
+import {LoadingSomethingFinishedEvent, LoadingSomethingStartedEvent} from "../events/windup-event";
 
 @Injectable()
 export class WindupHttpService extends Http {
-    constructor(_backend: ConnectionBackend, _defaultOptions: RequestOptions, private _keycloakService:KeycloakService) {
+    constructor(
+        _backend: ConnectionBackend,
+        _defaultOptions: RequestOptions,
+        private _keycloakService:KeycloakService,
+        //private _loadingBarService: LoadingIndicatorService,
+        private _eventBus: EventBusService,
+    ) {
         super(_backend, _defaultOptions);
     }
+
+    //@Inject()
+    //private _eventBus: EventBusService;
 
     private setToken(options: RequestOptionsArgs): Observable<RequestOptionsArgs> {
         return new Observable<RequestOptionsArgs>(observer => {
@@ -80,7 +91,12 @@ export class WindupHttpService extends Http {
      * Performs a request with `get` http method.
      */
     get(url: string, options?: RequestOptionsArgs): Observable<Response> {
-        return this.configureRequest(RequestMethod.Get, super.get, url, options);
+        let responseObservable: Observable<Response> = this.configureRequest(RequestMethod.Get, super.get, url, options);
+        responseObservable.do(null, null, () => {
+            this._eventBus.fireEvent(new LoadingSomethingFinishedEvent(responseObservable))
+        });
+        this._eventBus.fireEvent(new LoadingSomethingStartedEvent(responseObservable));
+        return responseObservable;
     }
 
     /**

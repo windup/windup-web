@@ -56,6 +56,7 @@ import {ToolbarComponent} from "./toolbar/toolbar.component";
 import {AllDataFilteredMessageComponent} from "./all-data-filtered-message.component";
 import {DropdownFilterComponent} from "./filter/dropdown-filter.component";
 import {WebSocketSubjectFactory} from "./websocket.factory";
+import {LoaderIndicatorService} from "./loaderIndicator.service";
 
 @NgModule({
     imports: [
@@ -67,6 +68,7 @@ import {WebSocketSubjectFactory} from "./websocket.factory";
         FileUploadModule,
         MomentModule,
         SlimLoadingBarModule.forRoot(),
+        LoaderIndicatorService,
     ],
     providers: [
         BreadCrumbsService,

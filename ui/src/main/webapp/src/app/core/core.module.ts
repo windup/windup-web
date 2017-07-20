@@ -59,8 +59,10 @@ export class CoreModule {
 
 export function windupHttpServiceFactory(backend: XHRBackend,
                                           defaultOptions: RequestOptions,
-                                          keycloakService: KeycloakService) {
-    return new WindupHttpService(backend, defaultOptions, keycloakService);
+                                          keycloakService: KeycloakService,
+                                          eventBus: EventBusService,
+) {
+    return new WindupHttpService(backend, defaultOptions, keycloakService, eventBus);
 }
 
 export function createRouteLinkProviderService() {
