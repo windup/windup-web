@@ -32,6 +32,7 @@ import {RouterModule} from "@angular/router";
 import {StatusIconComponent} from "./status-icon.component";
 import {ChosenModule} from "./chosen/chosen.module";
 import {FileUploadModule, FileUploader} from "ng2-file-upload";
+import {SlimLoadingBarModule} from "ng2-slim-loading-bar";
 import {MomentModule} from "angular2-moment";
 import {CheckboxesComponent} from "./checkboxes.component";
 import {WizardLayoutComponent} from "./layout/wizard-layout.component";
@@ -64,7 +65,8 @@ import {WebSocketSubjectFactory} from "./websocket.factory";
         RouterModule.forChild([]),
         ChosenModule,
         FileUploadModule,
-        MomentModule
+        MomentModule,
+        SlimLoadingBarModule.forRoot(),
     ],
     providers: [
         BreadCrumbsService,
