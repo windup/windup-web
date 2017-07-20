@@ -54,6 +54,7 @@ export const appRoutes: Routes = [
                         path: '',
                         component: WizardComponent,
                         data: {
+                            wizardRootUrl: 'wizard/project/:projectId',
                             steps: [
                                 { name: 'Create Project', path: 'create-project' },
                                 { name: 'Add Applications', path: 'add-applications' },
@@ -62,14 +63,14 @@ export const appRoutes: Routes = [
                             wizard: true
                         },
                         children: [
-                            { path: 'create-project', component: MigrationProjectFormComponent, data: {displayName: 'Create Project', wizard: true} },
+                            { path: 'create-project', component: MigrationProjectFormComponent, data: { displayName: 'Create Project', wizard: true, currentStep: 0 } },
                             {
                                 path: 'project/:projectId',
                                 resolve: { project: ProjectResolve },
                                 children: [
-                                    { path: 'create-project', component: MigrationProjectFormComponent },
-                                    { path: 'add-applications', component: RegisterApplicationFormComponent },
-                                    { path: 'configure-analysis', component: AnalysisContextFormComponent }
+                                    { path: 'create-project', component: MigrationProjectFormComponent, data: { currentStep: 0 }},
+                                    { path: 'add-applications', component: RegisterApplicationFormComponent, data: { currentStep: 1 }},
+                                    { path: 'configure-analysis', component: AnalysisContextFormComponent, data: { currentStep: 2 }}
                                 ]
                             },
                         ]
@@ -141,3 +142,7 @@ export const appRoutingProviders: any[] = [
 ];
 
 export const routing = RouterModule.forRoot(appRoutes);
+
+export function getWizardStepUrl() {
+
+}

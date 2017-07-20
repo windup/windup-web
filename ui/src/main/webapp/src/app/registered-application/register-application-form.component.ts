@@ -10,7 +10,7 @@ import {FileService} from "../services/file.service";
 import {FormComponent} from "../shared/form.component";
 import {Constants} from "../constants";
 import {Subscription} from "rxjs";
-import {RouteFlattenerService} from "../core/routing/route-flattener.service";
+import {FlattenedRouteData, RouteFlattenerService} from "../core/routing/route-flattener.service";
 import {TabComponent} from "../shared/tabs/tab.component";
 import {FileUploaderOptions, FilterFunction} from "ng2-file-upload";
 import {EventBusService} from "../core/events/event-bus.service";

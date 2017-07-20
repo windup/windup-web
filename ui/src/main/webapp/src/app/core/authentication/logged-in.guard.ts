@@ -5,13 +5,15 @@ import {
 } from "@angular/router";
 import {KeycloakService} from "./keycloak.service";
 import {Observable} from "rxjs";
+import {UrlCleanerService} from "../routing/url-cleaner.service";
 
 @Injectable()
 export class LoggedInGuard implements CanActivate, CanActivateChild {
     constructor(
         private _router: Router,
         private _keycloakService: KeycloakService,
-        private _activeRoute: ActivatedRoute
+        private _activeRoute: ActivatedRoute,
+        private _urlCleanerService: UrlCleanerService
     ) {
 
     }
@@ -21,6 +23,14 @@ export class LoggedInGuard implements CanActivate, CanActivateChild {
     }
 
     canActivateChild(childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
+        let cleanedUrl = state.url;
+        cleanedUrl = this._urlCleanerService.filterQueryParams(cleanedUrl, UrlCleanerService.SKIP_PARAMS);
+        cleanedUrl = this._urlCleanerService.filterFragments(cleanedUrl, UrlCleanerService.SKIP_PARAMS);
+
+        if (cleanedUrl !== state.url) {
+            this._router.navigate([cleanedUrl]);
+        }
+
         return this.canActivate();
     }
 }

@@ -13,7 +13,7 @@ import {PackageRegistryService} from "./package-registry.service";
 import {AnalysisContext, Package, MigrationPath, MigrationProject, AdvancedOption, RegisteredApplication, RulesPath, PackageMetadata} from "../generated/windup-services";
 import {RouteHistoryService} from "../core/routing/route-history.service";
 import {Subscription} from "rxjs";
-import {RouteFlattenerService} from "../core/routing/route-flattener.service";
+import {FlattenedRouteData, RouteFlattenerService} from "../core/routing/route-flattener.service";
 import {WindupExecutionService} from "../services/windup-execution.service";
 import {NotificationService} from "../core/notification/notification.service";
 import {utils} from "../shared/utils";
@@ -107,6 +107,8 @@ export class AnalysisContextFormComponent extends FormComponent
     private dialog: ConfirmationModalComponent;
     private dialogSubscription: Subscription;
 
+    private flatRouteData: FlattenedRouteData;
+
     constructor(private _router: Router,
                 private _activatedRoute: ActivatedRoute,
                 private _migrationProjectService: MigrationProjectService,
@@ -141,6 +143,8 @@ export class AnalysisContextFormComponent extends FormComponent
 
         this.routerSubscription = this._router.events.filter(event => event instanceof NavigationEnd).subscribe(_ => {
             let flatRouteData = this._routeFlattener.getFlattenedRouteData(this._activatedRoute.snapshot);
+            this.flatRouteData = flatRouteData;
+
             if (flatRouteData.data['project']) {
                 let project = flatRouteData.data['project'];
 
@@ -363,7 +367,20 @@ export class AnalysisContextFormComponent extends FormComponent
     }
 
     cancel() {
-        this.navigateBack();
+        if (this.isInWizard) {
+            let currentStep = this.flatRouteData.data.currentStep;
+
+            if (currentStep > 0 && currentStep < this.flatRouteData.data.steps.length) {
+                currentStep -= 1;
+
+                let url = this.flatRouteData.data.wizardRootUrl + '/' + this.flatRouteData.data.steps[currentStep].path;
+                url = url.replace(':projectId', this.project.id.toString());
+
+                this._router.navigate([url]);
+            }
+        } else {
+            this.navigateBack();
+        }
     }
 
     navigateBack() {
