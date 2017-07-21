@@ -114,7 +114,7 @@ public class StatusUpdateMDB extends AbstractMDB implements MessageListener
                 return;
             }
 
-            fromDB.setLastModified(new GregorianCalendar());
+            fromDB.setLastModified(execution.getLastModified());
             fromDB.setTimeStarted(execution.getTimeStarted());
 
             fromDB.setTimeCompleted(execution.getTimeCompleted());
