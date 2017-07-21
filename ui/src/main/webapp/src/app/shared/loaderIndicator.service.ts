@@ -1,7 +1,7 @@
-import {Injectable, NgZone} from "@angular/core";
+import {Injectable} from "@angular/core";
 import {SlimLoadingBarService} from 'ng2-slim-loading-bar';
 import {EventBusService} from "../core/events/event-bus.service";
-import {LoadingSomethingStartedEvent} from "../core/events/windup-event";
+import {LoadingSomethingFinishedEvent, LoadingSomethingStartedEvent} from "../core/events/windup-event";
 import {Observable} from "rxjs/Observable";
 
 @Injectable()
@@ -13,9 +13,10 @@ export class LoaderIndicatorService {
     ) {
         this._loadingBar.visible = false;
         _eventBusService.onEvent.do( event => {
-            if (event instanceof LoadingSomethingStartedEvent)
+            if (event instanceof LoadingSomethingStartedEvent) {
                 this.loadingStarted();
-            else if (event instanceof LoadingSomethingStartedEvent)
+            }
+            if (event instanceof LoadingSomethingFinishedEvent)
                 this.loadingFinished();
         });
     }

@@ -14,11 +14,12 @@ export class WindupHttpService extends Http {
     constructor(
         _backend: ConnectionBackend,
         _defaultOptions: RequestOptions,
-        private _keycloakService:KeycloakService,
+        private _keycloakService: KeycloakService,
         //private _loadingBarService: LoadingIndicatorService,
         private _eventBus: EventBusService,
     ) {
         super(_backend, _defaultOptions);
+        console.log("CONST " + _keycloakService + " | " + _eventBus);///
     }
 
     //@Inject()
@@ -91,12 +92,20 @@ export class WindupHttpService extends Http {
      * Performs a request with `get` http method.
      */
     get(url: string, options?: RequestOptionsArgs): Observable<Response> {
+        console.log("HTTP request for " + url);
         let responseObservable: Observable<Response> = this.configureRequest(RequestMethod.Get, super.get, url, options);
-        responseObservable.do(null, null, () => {
-            this._eventBus.fireEvent(new LoadingSomethingFinishedEvent(responseObservable))
+        let responseObservable2 = responseObservable.do(() => console.log("Load SUCCEEDED"), () => console.log("Load FAILED"), () => {
+            console.log("Load FINISHED");
+            if (this._eventBus) {
+                console.log("Load FINISHED, firing");
+                this._eventBus.fireEvent(new LoadingSomethingFinishedEvent(responseObservable))
+            }
         });
-        this._eventBus.fireEvent(new LoadingSomethingStartedEvent(responseObservable));
-        return responseObservable;
+        console.log("Load STARTED");
+        if (this._eventBus)
+            console.log("Load STARTED, firing");
+            this._eventBus.fireEvent(new LoadingSomethingStartedEvent(responseObservable));
+        return responseObservable2;
     }
 
     /**

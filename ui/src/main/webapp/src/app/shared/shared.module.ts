@@ -57,6 +57,7 @@ import {AllDataFilteredMessageComponent} from "./all-data-filtered-message.compo
 import {DropdownFilterComponent} from "./filter/dropdown-filter.component";
 import {WebSocketSubjectFactory} from "./websocket.factory";
 import {LoaderIndicatorService} from "./loaderIndicator.service";
+import {EventBusService} from "../core/events/event-bus.service";
 
 @NgModule({
     imports: [
@@ -68,10 +69,10 @@ import {LoaderIndicatorService} from "./loaderIndicator.service";
         FileUploadModule,
         MomentModule,
         SlimLoadingBarModule.forRoot(),
-        LoaderIndicatorService,
     ],
     providers: [
         BreadCrumbsService,
+        LoaderIndicatorService,
         ConfirmDeactivateGuard,
         SchedulerService,
         SortingService,

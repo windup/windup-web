@@ -30,12 +30,13 @@ import {UrlCleanerService} from "./routing/url-cleaner.service";
     ],
     providers: [
         KeycloakService,
-        NotificationService,
         EventBusService,
+        NotificationService,
+        // WindupHttpService's entry
         {
             provide: Http,
             useFactory: windupHttpServiceFactory,
-            deps: [XHRBackend, RequestOptions, KeycloakService]
+            deps: [XHRBackend, RequestOptions, KeycloakService, EventBusService]
         },
         {
             provide: RouteLinkProviderService,
