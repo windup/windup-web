@@ -1,19 +1,19 @@
 package org.jboss.windup.web.services.rest;
 
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.Valid;
-import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 
 import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.service.AnalysisContextService;
 import org.jboss.windup.web.services.service.MigrationProjectService;
-
-import java.util.logging.Logger;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -49,6 +49,10 @@ public class AnalysisContextEndpointImpl implements AnalysisContextEndpoint
     public AnalysisContext saveAsProjectDefault(@Valid AnalysisContext analysisContext, Long projectId)
     {
         MigrationProject project = this.migrationProjectService.getMigrationProject(projectId);
+        analysisContext.setApplications(analysisContext
+                    .getApplications().stream()
+                    .filter(application -> !application.isDeleted())
+                    .collect(Collectors.toSet()));
 
         if (project.getDefaultAnalysisContext() == null)
         {
