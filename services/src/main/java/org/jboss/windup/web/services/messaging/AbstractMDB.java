@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 public class AbstractMDB {
     private static Logger LOG = Logger.getLogger(AbstractMDB.class.getName());
 
-    boolean validatePayload(Class<?> expectedPayloadType, Message message)
+    protected boolean validatePayload(Class<?> expectedPayloadType, Message message)
     {
         if (!(message instanceof ObjectMessage))
         {

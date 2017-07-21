@@ -55,6 +55,7 @@ import {TextFilterComponent} from "./filter/text-filter.component";
 import {ToolbarComponent} from "./toolbar/toolbar.component";
 import {AllDataFilteredMessageComponent} from "./all-data-filtered-message.component";
 import {DropdownFilterComponent} from "./filter/dropdown-filter.component";
+import {WebSocketSubjectFactory} from "./websocket.factory";
 
 @NgModule({
     imports: [
@@ -81,7 +82,8 @@ import {DropdownFilterComponent} from "./filter/dropdown-filter.component";
             provide: CacheService,
             useFactory: getCacheServiceInstance
         },
-        FileUploaderFactory
+        FileUploaderFactory,
+        WebSocketSubjectFactory
     ],
     declarations: [
         CustomSelectComponent,

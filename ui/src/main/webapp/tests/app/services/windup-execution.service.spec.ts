@@ -5,18 +5,47 @@ import {EventBusService} from "../../../src/app/core/events/event-bus.service";
 import {WindupExecutionService} from "../../../src/app/services/windup-execution.service";
 import {AnalysisContext, MigrationProject, WindupExecution} from "../../../src/app/generated/windup-services";
 import {NewExecutionStartedEvent} from "../../../src/app/core/events/windup-event";
-import {Observable} from "rxjs";
-import {SchedulerServiceMock} from "../mocks/scheduler-service.mock";
+import {Observable, Subject, Subscription} from "rxjs";
+import {WebSocketSubjectFactory} from "../../../src/app/shared/websocket.factory";
+import {ISubscription} from "rxjs/Subscription";
+import {Subscribable} from "rxjs/Observable";
+
+export class WebSocketMock<T> implements Subscribable<T>, ISubscription
+{
+    closed: boolean;
+    subject: Subject<T> = new Subject<T>();
+
+    subscribe(next?: (value: T) => void, error?: (error: any) => void, complete?: () => void): Subscription {
+        return this.subject.subscribe(next, error, complete);
+    }
+
+    next(data: T) {
+        /**
+         * Do not emit data if type is string.
+         * In that case it is authorization token and it is message for server.
+         */
+        if (typeof data !== 'string') {
+            this.subject.next(data);
+        }
+    }
+
+    unsubscribe(): void {
+        this.subject.unsubscribe();
+    }
+}
 
 describe("WindupExecution service", () => {
     let project: MigrationProject = <MigrationProject>{ id: 10 };
     let analysisContext: AnalysisContext = <AnalysisContext> { id: 10 };
     let windupServiceMock;
     let eventBusMock;
-    let schedulerMock: SchedulerServiceMock;
+    let websocketFactoryMock: WebSocketSubjectFactory<WindupExecution>;
     let windupExecutionService: WindupExecutionService;
 
-    let getExecution = (id) => {
+    let executionSubject: Subject<WindupExecution>;
+    let countExecutionSubjectCalls: number;
+
+    let getExecution = (id): any => {
         return {
             "id": id,
             "version": 1,
@@ -34,24 +63,56 @@ describe("WindupExecution service", () => {
         };
     };
 
-    function getWindupServiceMock() {
+    function getWindupServiceMock(executionSubject) {
         let windupServiceMock = jasmine.createSpyObj('WindupService', [
             'executeWindupWithAnalysisContext',
             'getExecution',
         ]);
 
         windupServiceMock.getExecution.and.callFake((executionId) => {
-            return Observable.of(getExecution(executionId));
+            return executionSubject;
         });
 
         return windupServiceMock;
     }
 
+    function getWebSocketFactoryMock(executionSubject) {
+        const websocketFactoryMock = jasmine.createSpyObj('WebSocketSubjectFactory', [
+            'createWebSocketSubject'
+        ]);
+
+        websocketFactoryMock.createWebSocketSubject.and.callFake((url: string) => {
+            return executionSubject;
+        });
+
+        return websocketFactoryMock;
+    }
+
+    function callExecutionSubject(execution: WindupExecution) {
+        executionSubject.next(execution);
+        countExecutionSubjectCalls++;
+    }
+
+    function createKeycloakMock(): any {
+        const keycloakMock = jasmine.createSpyObj('KeycloakService', [
+            'getToken'
+        ]);
+
+        keycloakMock.getToken.and.callFake(() => Observable.of('token'));
+
+        return keycloakMock;
+    }
+
     beforeEach(() => {
-        windupServiceMock = getWindupServiceMock();
+        executionSubject = new WebSocketMock<WindupExecution>() as any;
+        countExecutionSubjectCalls = 0;
+
+        windupServiceMock = getWindupServiceMock(executionSubject);
         eventBusMock = jasmine.createSpyObj('EventBusService', [
             'fireEvent'
         ]);
+
+        websocketFactoryMock = getWebSocketFactoryMock(executionSubject);
 
         Object.defineProperty(eventBusMock, 'onEvent', {
             value: {
@@ -68,12 +129,13 @@ describe("WindupExecution service", () => {
             }
         });
 
-        console.log("1Mock: ", eventBusMock);
-        console.log("2Mock onEvent: " + eventBusMock.onEvent);
-        console.log("3Mock onEvent: " + eventBusMock.onEvent.subscribe);
+        const keyCloak = createKeycloakMock();
 
-        schedulerMock = new SchedulerServiceMock();
-        windupExecutionService = new WindupExecutionService(windupServiceMock, eventBusMock, schedulerMock);
+        windupExecutionService = new WindupExecutionService(windupServiceMock, eventBusMock, websocketFactoryMock, keyCloak);
+    });
+
+    afterEach(() => {
+        executionSubject.unsubscribe();
     });
 
     describe('when executing execution', () => {
@@ -117,41 +179,50 @@ describe("WindupExecution service", () => {
         });
 
         it('should listen for changes of all of them', () => {
-            schedulerMock.intervalTick();
-            expect(windupServiceMock.getExecution).toHaveBeenCalledTimes(2);
+            expect(websocketFactoryMock.createWebSocketSubject).toHaveBeenCalledTimes(2);
             // TODO: Check parameters
         });
     });
 
     describe('after registering execution in watchExecutionUpdates', () => {
         let execution: WindupExecution;
+        let onExecutionUpdateSpy;
+        let executionId;
 
         beforeEach(() => {
-            execution = <any>getExecution(1);
+            executionId = 1;
+            execution = <any>getExecution(executionId);
+            onExecutionUpdateSpy = spyOn(windupExecutionService, 'onExecutionUpdate').and.callThrough();
+            onExecutionUpdateSpy.calls.reset();
             windupExecutionService.watchExecutionUpdates(execution, project);
         });
 
         let assertIsNotListening = (state: string) => {
-            expect(windupServiceMock.getExecution).not.toHaveBeenCalled();
-            schedulerMock.intervalTick();
-            expect(windupServiceMock.getExecution).toHaveBeenCalledTimes(1);
-            expect(windupServiceMock.getExecution).toHaveBeenCalledWith(execution.id);
+            expect(onExecutionUpdateSpy).not.toHaveBeenCalled();
+            callExecutionSubject(getExecution(1) as any);
+            expect(onExecutionUpdateSpy).toHaveBeenCalledTimes(1);
+            expect(onExecutionUpdateSpy).toHaveBeenCalledWith(execution);
 
-            windupServiceMock.getExecution.and.callFake((id) => {
-                let object = Object.assign({}, execution, {state: state});
-                return Observable.of(object);
-            });
+            const getUpdatedExecution = (id): any => {
+                return Object.assign({}, execution, {state: state});
+            };
 
-            schedulerMock.intervalTick(); // now it should get data with new state
-            expect(windupServiceMock.getExecution).toHaveBeenCalledTimes(2);
+            callExecutionSubject(getUpdatedExecution(executionId));
+            expect(onExecutionUpdateSpy).toHaveBeenCalledTimes(2);
 
-            schedulerMock.intervalTick(); // now it should not call getExecution anymore
-            expect(windupServiceMock.getExecution).toHaveBeenCalledTimes(2);
+            // this call should happen after .unsubscribe is called
+            try {
+                callExecutionSubject(getUpdatedExecution(executionId));
+            } catch (e) {
+                expect(e.name).toBe('ObjectUnsubscribedError');
+                expect(onExecutionUpdateSpy).toHaveBeenCalledTimes(2);
+            }
         };
 
         it('should listen for execution changes', () => {
-            schedulerMock.intervalTick();
-            expect(windupServiceMock.getExecution).toHaveBeenCalledWith(execution.id);
+            let expectedExecution = getExecution(executionId);
+            callExecutionSubject(expectedExecution);
+            expect(onExecutionUpdateSpy).toHaveBeenCalledWith(execution);
         });
 
         it('should stop listening once execution reaches COMPLETE state', () => {
