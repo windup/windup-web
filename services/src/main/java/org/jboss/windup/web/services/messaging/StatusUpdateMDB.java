@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.jms.Message;
 import javax.jms.MessageListener;
@@ -35,6 +36,7 @@ import org.jboss.windup.web.services.model.ReportFilter;
 import org.jboss.windup.web.services.model.WindupExecution;
 import org.jboss.windup.web.services.service.DefaultGraphPathLookup;
 import org.jboss.windup.web.services.service.WindupExecutionService;
+import org.jboss.windup.web.services.websocket.WSJMSMessage;
 
 /**
  * This receives updates from the Windup execution backend processes and persists the current state to the database.
@@ -64,6 +66,13 @@ public class StatusUpdateMDB extends AbstractMDB implements MessageListener
 
     @Inject
     private WindupExecutionService windupExecutionService;
+
+    /**
+     * Event sent to WebSocket ExecutionProgressReporter
+     */
+    @Inject
+    @WSJMSMessage
+    Event<Message> informWebSocketEvent;
 
     @PostConstruct
     protected void initialize()
@@ -125,6 +134,7 @@ public class StatusUpdateMDB extends AbstractMDB implements MessageListener
                 setApplicationFilters(fromDB);
             }
 
+            informWebSocketEvent.fire(message);
         }
         catch (Throwable e)
         {
