@@ -57,9 +57,6 @@ export class MigrationProjectFormComponent extends FormComponent implements OnIn
                 this._migrationProjectService.deleteProvisionalProjects().subscribe(res => {});
 
             this.isInWizard = flatRouteData.data.hasOwnProperty('wizard') && flatRouteData.data['wizard'];
-
-            if (!this.editMode) // Creating a new project.
-                this._migrationProjectService.deleteProvisionalProjects().subscribe(res => {});
         });
     }
 
