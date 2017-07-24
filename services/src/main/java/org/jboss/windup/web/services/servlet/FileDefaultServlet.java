@@ -50,6 +50,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.RedirectionException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -498,7 +499,11 @@ public class FileDefaultServlet extends HttpServlet
             Long executionId = Long.parseLong(pathParts[1]); // {id}
             String directoryPath = result.substring(result.indexOf("/", result.indexOf("/") + 1));
 
-            WindupExecution execution = this.windupExecutionService.get(executionId);
+            WindupExecution execution = this.windupExecutionService.getNoThrow(executionId);
+
+            if (execution == null) {
+                throw new NotFoundException("Migration report not found");
+            }
 
             return Paths.get(execution.getOutputPath().replace(this.basePath, ""), directoryPath).toString();
         } catch (NumberFormatException e) {
