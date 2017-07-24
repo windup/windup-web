@@ -87,6 +87,20 @@ public class WindupExecutionService
         return execution;
     }
 
+    /**
+     * Gets an execution by ID
+     *
+     * This method is workaround for {@link org.jboss.windup.web.services.servlet.FileDefaultServlet}
+     * (exception thrown from get method cannot be caught in it, it is processed somewhere inside EJB container and
+     *  it creates default error message output and adds lots of errors to log)
+     *
+     */
+    public WindupExecution getNoThrow(Long id)
+    {
+        return this.entityManager.find(WindupExecution.class, id);
+    }
+
+
     public WindupExecution executeProjectWithContext(AnalysisContext originalContext, Long projectId)
     {
         // make clone of analysis context and use it for execution
