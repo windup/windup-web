@@ -26,13 +26,17 @@ export class AllExecutionsComponent extends ExecutionsMonitoringComponent implem
     ngOnInit(): void {
         this.loadExecutions();
 
-        this.addSubscription(this._eventBus.onEvent.filter(event => event.isTypeOf(ExecutionEvent))
-            .subscribe((event: ExecutionEvent) => this.onExecutionEvent(event)));
+        this.addSubscription(
+            this._eventBus.onEvent
+                .filter(event => event.isTypeOf(ExecutionEvent))
+                .subscribe((event: ExecutionEvent) => this.onExecutionEvent(event))
+        );
 
-        this.addSubscription(this._eventBus.onEvent.filter(event => event.isTypeOf(NewExecutionStartedEvent))
-            .subscribe((event: NewExecutionStartedEvent) => {
-                this.loadExecutions();
-            }));
+        this.addSubscription(
+            this._eventBus.onEvent
+                .filter(event => event.isTypeOf(NewExecutionStartedEvent))
+                .subscribe((event: NewExecutionStartedEvent) => { this.loadExecutions(); })
+        );
     }
 
     protected loadExecutions() {

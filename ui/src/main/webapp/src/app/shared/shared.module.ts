@@ -56,8 +56,8 @@ import {ToolbarComponent} from "./toolbar/toolbar.component";
 import {AllDataFilteredMessageComponent} from "./all-data-filtered-message.component";
 import {DropdownFilterComponent} from "./filter/dropdown-filter.component";
 import {WebSocketSubjectFactory} from "./websocket.factory";
-import {LoaderIndicatorService} from "./loaderIndicator.service";
 import {EventBusService} from "../core/events/event-bus.service";
+import {LoadingIndicatorComponent} from "./loading-indicator.component";
 
 @NgModule({
     imports: [
@@ -72,7 +72,6 @@ import {EventBusService} from "../core/events/event-bus.service";
     ],
     providers: [
         BreadCrumbsService,
-        LoaderIndicatorService,
         ConfirmDeactivateGuard,
         SchedulerService,
         SortingService,
@@ -132,7 +131,8 @@ import {EventBusService} from "../core/events/event-bus.service";
         PrettyExecutionStatus,
         ReplacePipe,
 
-        ProjectNameNotExistsValidator
+        ProjectNameNotExistsValidator,
+        LoadingIndicatorComponent, // Components are not suitable to be put in core module, see it's Javadoc.
     ],
     exports: [
         CustomSelectComponent,
@@ -171,6 +171,7 @@ import {EventBusService} from "../core/events/event-bus.service";
         ToolbarComponent,
         AllDataFilteredMessageComponent,
         DropdownFilterComponent,
+        LoadingIndicatorComponent, // Needs to be in exports too, otherwise it would be private fot the module.
 
         ProjectNameNotExistsValidator,
         IsRouteActiveDirective,

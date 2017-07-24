@@ -1,4 +1,4 @@
-import {Inject, Injectable} from "@angular/core";
+import {Injectable} from "@angular/core";
 import {
     Http, Request, ConnectionBackend, RequestOptions, RequestOptionsArgs, Response, Headers,
     RequestMethod
@@ -92,6 +92,7 @@ export class WindupHttpService extends Http {
      * Performs a request with `get` http method.
      */
     get(url: string, options?: RequestOptionsArgs): Observable<Response> {
+        /// TODO: Put the event firing to configureRequest.
         console.log("HTTP request for " + url);
         let responseObservable: Observable<Response> = this.configureRequest(RequestMethod.Get, super.get, url, options);
         let responseObservable2 = responseObservable.do(() => console.log("Load SUCCEEDED"), () => console.log("Load FAILED"), () => {

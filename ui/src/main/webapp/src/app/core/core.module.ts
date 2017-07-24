@@ -14,19 +14,23 @@ import {RouteHistoryService} from "./routing/route-history.service";
 import {RouteFlattenerService} from "./routing/route-flattener.service";
 import {LogoutGuard} from "./authentication/logout.guard";
 import {UrlCleanerService} from "./routing/url-cleaner.service";
+import {LoadingIndicatorService} from "./loading-indicator.service";
+
 
 /**
  * Core module is for services which should be global app level singletons
  *
- * It is recommended to use core module only for services and avoid having components in it.
- *
+ * It is recommended to use the core module only for services and avoid having components in it.
+ * Putting components to tje code module would need it to be imported to use the component and thus instanticated multiple times.
+ * Which would break the "contract" that the core module provides singleton services.
  */
 @NgModule({
+    // Other modules.
     imports: [
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
-        HttpModule
+        HttpModule,
     ],
     providers: [
         KeycloakService,
@@ -47,13 +51,14 @@ import {UrlCleanerService} from "./routing/url-cleaner.service";
         LogoutGuard,
         RouteHistoryService,
         RouteFlattenerService,
-        UrlCleanerService
+        UrlCleanerService,
+        LoadingIndicatorService, // Must be a singleton - contains a request counter.
     ]
 })
 export class CoreModule {
     constructor (@Optional() @SkipSelf() parentModule: CoreModule) {
         if (parentModule) {
-            throw new Error('CoreModule is already loaded. Import it in the AppModule only');
+            throw new Error('CoreModule is already loaded. It should be imported only from the AppModule.');
         }
     }
 }
