@@ -1,5 +1,10 @@
 <ul *ngIf="uploadedItemsList?.length > 0" class="app-list">
     <li *ngFor="let item of uploadedItemsList">
+        <div class="action-button">
+            <span class="pointer" (click)="delete(item)">
+                <i class="glyphicon fa fa-trash-o"></i>
+            </span>
+        </div>
         <div class="progress">
             <div class="progress-bar success"
                  role="progressbar"
@@ -7,11 +12,6 @@
                  style="width: 100%">
                 <div class="file-info">
                     <span>{{getLabel(item)}}</span>
-                </div>
-                <div class="action-button">
-                    <span class="pointer" (click)="delete(item)">
-                        <i class="glyphicon fa fa-trash-o"></i>
-                    </span>
                 </div>
                 <div>100%</div>
             </div>
