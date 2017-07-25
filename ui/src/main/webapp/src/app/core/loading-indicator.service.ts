@@ -23,10 +23,10 @@ export class LoadingIndicatorService {
         // Register the LoadingSomething event listeners.
         this._eventBusService.onEvent
             .filter(event => event.isTypeOf(LoadingSomethingStartedEvent))
-            .subscribe((event: LoadingSomethingStartedEvent) => this.loadingStarted() )
+            .subscribe((event: LoadingSomethingStartedEvent) => this.loadingStarted(event) )
         this._eventBusService.onEvent
             .filter(event => event.isTypeOf(LoadingSomethingFinishedEvent))
-            .subscribe((event: LoadingSomethingFinishedEvent) => this.loadingFinished() )
+            .subscribe((event: LoadingSomethingFinishedEvent) => this.loadingFinished(event) )
     }
 
     public getSlimService(){
@@ -36,6 +36,7 @@ export class LoadingIndicatorService {
 
     private counter: number = 0;
     private max: number = void 0;
+    private hadError: boolean = false;
 
     private reset() {
         this.counter = 0;
@@ -43,15 +44,17 @@ export class LoadingIndicatorService {
         //console.log(`reset(), counter ${this.counter}`);
     }
 
-    public loadingStarted(){
+    public loadingStarted(event: LoadingSomethingStartedEvent){
         this.counter++;
         this.max = this.counter;
         //console.log(`event received START, counter ${this.counter}, max ${this.max}`);
         this.updateProgress();
     }
 
-    public loadingFinished(){
+    public loadingFinished(event: LoadingSomethingFinishedEvent){
         this.counter--;
+        // On error, change the bar color to red.
+        event.getResponse().filter(res => res.status < 200 && res.status >= 400).subscribe(_ => { this.hadError = true; });
         //console.log(`event received FINISH, counter ${this.counter}, max ${this.max}`);
         this.updateProgress();
     }
@@ -63,6 +66,7 @@ export class LoadingIndicatorService {
             this._slimBarService.height = "2px";
             this._slimBarService.visible = true;
             this._slimBarService.progress = 95;
+            this.hadError = false;
             this.max = void 0;
             Observable.timer(700).subscribe(() => {
                 //console.log("INDI All finished, hiding timeout.");
@@ -77,7 +81,7 @@ export class LoadingIndicatorService {
             let percent = 20 + 70 * (1 - (this.max - this.counter) / this.max);
             //console.log(`INDI Setting bar to ${percent} percent.`);
             this._slimBarService.height = "3px";
-            this._slimBarService.color = "#39a5dc";
+            this._slimBarService.color = this.hadError ? "firebrick" : "#39a5dc";
             this._slimBarService.visible = true;
             this._slimBarService.progress = percent;
         }

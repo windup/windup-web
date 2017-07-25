@@ -42,10 +42,17 @@ export class MigrationProjectEvent extends WindupEvent {
 
 }
 
+
+export class LoadingEvent extends WindupEvent {
+    constructor(type: string, responseObservable: Observable<Response>){
+        super(type, responseObservable);
+    }
+    public getResponse(): Observable<Response> { return this._source; }
+}
 /**
  * Fired when the page starts loading something asynchronously. Basically, any request to the server.
  */
-export class LoadingSomethingStartedEvent extends WindupEvent {
+export class LoadingSomethingStartedEvent extends LoadingEvent {
     constructor(responseObservable: Observable<Response>){
         super("LoadingSomethingStartedEvent", responseObservable);
     }
@@ -53,9 +60,17 @@ export class LoadingSomethingStartedEvent extends WindupEvent {
 /**
  * Fired when the page finishes loading something asynchronously, or it fails with an error.
  */
-export class LoadingSomethingFinishedEvent extends WindupEvent {
+export class LoadingSomethingFinishedEvent extends LoadingEvent {
     constructor(responseObservable: Observable<Response>){
         super("LoadingSomethingFinishedEvent", responseObservable);
+    }
+}
+/**
+ * Fired if a HTTP request failed.
+ */
+export class LoadingSomethingFailedEvent extends LoadingEvent {
+    constructor(responseObservable: Observable<Response>){
+        super("LoadingSomethingFailedEvent", responseObservable);
     }
 }
 

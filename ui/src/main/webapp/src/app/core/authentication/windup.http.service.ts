@@ -7,7 +7,8 @@ import {
 import {KeycloakService} from "./keycloak.service";
 import {Observable} from 'rxjs/Observable';
 import {EventBusService} from "../events/event-bus.service";
-import {LoadingSomethingFinishedEvent, LoadingSomethingStartedEvent} from "../events/windup-event";
+import {LoadingSomethingFailedEvent, LoadingSomethingFinishedEvent, LoadingSomethingStartedEvent}
+    from "../events/windup-event";
 
 @Injectable()
 export class WindupHttpService extends Http {
@@ -73,8 +74,11 @@ export class WindupHttpService extends Http {
         });
 
         let responseObservable2 = responseObservable.do(
-            () => console.log("Request SUCCEEDED"),
-            () => console.log("Request FAILED"),
+            () => { console.log("Request SUCCEEDED"); },
+            () => {
+                console.warn("Request FAILED");
+                this._eventBus.fireEvent(new LoadingSomethingFailedEvent(responseObservable))
+            },
             () => {
                 console.log("Request FINISHED");
                 if (this._eventBus) {
