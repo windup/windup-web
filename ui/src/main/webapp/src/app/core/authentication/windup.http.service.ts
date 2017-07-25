@@ -74,23 +74,19 @@ export class WindupHttpService extends Http {
         });
 
         let responseObservable2 = responseObservable.do(
-            () => { console.log("Request SUCCEEDED"); },
+            null,
             () => {
-                console.warn("Request FAILED");
+                console.warn("HTTP request FAILED");
                 this._eventBus.fireEvent(new LoadingSomethingFailedEvent(responseObservable))
             },
             () => {
-                console.log("Request FINISHED");
                 if (this._eventBus) {
-                    console.log("Request FINISHED, firing");
                     this._eventBus.fireEvent(new LoadingSomethingFinishedEvent(responseObservable))
                 }
             }
         );
 
-        console.log("Load STARTED");
         if (this._eventBus)
-            console.log("Load STARTED, firing");
         this._eventBus.fireEvent(new LoadingSomethingStartedEvent(responseObservable));
 
 
