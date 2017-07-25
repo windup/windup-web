@@ -11,7 +11,7 @@ export class LoadingIndicatorService {
         private _slimBarService: SlimLoadingBarService,
         private _eventBusService: EventBusService,
     ) {
-        // 2nd way of registering
+        // Register the LoadingSomething event listeners.
         this._eventBusService.onEvent
             .filter(event => event.isTypeOf(LoadingSomethingStartedEvent))
             .subscribe((event: LoadingSomethingStartedEvent) => this.loadingStarted() )
@@ -31,38 +31,32 @@ export class LoadingIndicatorService {
     private reset() {
         this.counter = 0;
         this.max = void 0;
-        console.log(`reset(), counter ${this.counter}`);
+        //console.log(`reset(), counter ${this.counter}`);
     }
 
-    public loadingStarted2(){
-        this._slimBarService.start(() => {
-            console.log('SLIM END callback');
-        });
-    }
     public loadingStarted(){
         this.counter++;
         this.max = this.counter;
-        console.log(`event received START, counter ${this.counter}, max ${this.max}`);
+        //console.log(`event received START, counter ${this.counter}, max ${this.max}`);
         this.updateProgress();
     }
 
     public loadingFinished(){
         this.counter--;
-        console.log(`event received FINISH, counter ${this.counter}, max ${this.max}`);
+        //console.log(`event received FINISH, counter ${this.counter}, max ${this.max}`);
         this.updateProgress();
     }
 
     private updateProgress() {
-        console.log(`updateProgress(), counter ${this.counter}, max ${this.max}`);
+        //console.log(`updateProgress(), counter ${this.counter}, max ${this.max}`);
         if (this.counter == 0) {
-            console.log("INDI All finished, setting to complete.");
-            this._slimBarService.height = "4px";
+            //console.log("INDI All finished, setting to complete.");
+            this._slimBarService.height = "2px";
             this._slimBarService.visible = true;
             this._slimBarService.progress = 95;
             this.max = void 0;
-            Observable.timer(1000).subscribe(() => {
-                console.log("INDI All finished, hiding timeout.");
-                //this._slimBarService.visible = false;
+            Observable.timer(700).subscribe(() => {
+                //console.log("INDI All finished, hiding timeout.");
                 this._slimBarService.complete();
             });
         }
@@ -72,8 +66,8 @@ export class LoadingIndicatorService {
             // But let's rely on that loading will start fast at the beginning.
             // Start at 20, jump to 90.
             let percent = 20 + 70 * (1 - (this.max - this.counter) / this.max);
-            console.log(`INDI Setting bar to ${percent} percent.`);
-            this._slimBarService.height = "4px";
+            //console.log(`INDI Setting bar to ${percent} percent.`);
+            this._slimBarService.height = "3px";
             this._slimBarService.color = "#39a5dc";
             this._slimBarService.visible = true;
             this._slimBarService.progress = percent;
