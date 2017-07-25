@@ -4,6 +4,15 @@ import {EventBusService} from "./events/event-bus.service";
 import {LoadingSomethingFinishedEvent, LoadingSomethingStartedEvent} from "./events/windup-event";
 import {Observable} from "rxjs/Observable";
 
+/**
+ * Uses the ng2-slim-loading-bar component to indicate loading progress.
+ * See https://www.npmjs.com/package/ng2-slim-loading-bar
+ *
+ * In our HTTP service wrapper (handling OAuth), we fire an event, which is then caught by our `LoadingIndicatorService`,
+ * which wraps the `SlimLoaderBarService`, and keeps track of how many HTTP requests there are in progress.
+ * Then it counts the percent and puts it to a scale of 20 to 90 %.
+ * When all are done, it stays at 90 % for about a second, and then `complete()` is called.
+ */
 @Injectable()
 export class LoadingIndicatorService {
 
