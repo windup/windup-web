@@ -58,9 +58,9 @@ export class LoadingIndicatorService {
             console.log("INDI All finished, setting to complete.");
             this._slimBarService.height = "4px";
             this._slimBarService.visible = true;
-            this._slimBarService.progress = 85;
-            //this._slimBarService.complete();
-            Observable.timer(5000).subscribe(() => {
+            this._slimBarService.progress = 95;
+            this.max = void 0;
+            Observable.timer(1000).subscribe(() => {
                 console.log("INDI All finished, hiding timeout.");
                 //this._slimBarService.visible = false;
                 this._slimBarService.complete();

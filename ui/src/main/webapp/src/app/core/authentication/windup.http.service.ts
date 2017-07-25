@@ -15,11 +15,9 @@ export class WindupHttpService extends Http {
         _backend: ConnectionBackend,
         _defaultOptions: RequestOptions,
         private _keycloakService: KeycloakService,
-        //private _loadingBarService: LoadingIndicatorService,
         private _eventBus: EventBusService,
     ) {
         super(_backend, _defaultOptions);
-        console.log("CONST " + _keycloakService + " | " + _eventBus);///
     }
 
     private setToken(options: RequestOptionsArgs): Observable<RequestOptionsArgs> {
@@ -110,24 +108,6 @@ export class WindupHttpService extends Http {
      */
     get(url: string, options?: RequestOptionsArgs): Observable<Response> {
         return this.configureRequest(RequestMethod.Get, super.get, url, options);
-    }
-
-    get_(url: string, options?: RequestOptionsArgs): Observable<Response> {
-        /// TODO: Put the event firing to configureRequest.
-        console.log("HTTP request for " + url);
-        let responseObservable: Observable<Response> = this.configureRequest(RequestMethod.Get, super.get, url, options);
-        let responseObservable2 = responseObservable.do(() => console.log("Load SUCCEEDED"), () => console.log("Load FAILED"), () => {
-            console.log("Load FINISHED");
-            if (this._eventBus) {
-                console.log("Load FINISHED, firing");
-                this._eventBus.fireEvent(new LoadingSomethingFinishedEvent(responseObservable))
-            }
-        });
-        console.log("Load STARTED");
-        if (this._eventBus)
-            console.log("Load STARTED, firing");
-            this._eventBus.fireEvent(new LoadingSomethingStartedEvent(responseObservable));
-        return responseObservable2;
     }
 
     /**

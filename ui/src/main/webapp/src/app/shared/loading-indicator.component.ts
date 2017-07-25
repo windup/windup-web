@@ -12,9 +12,18 @@ import {SlimLoadingBarComponent, SlimLoadingBarService} from "ng2-slim-loading-b
 @Component({
     selector: "wu-loading-indicator",
     template:
-            "<h2>Test DDD wu-loading-indicator</h2>" + ///
-            "<ng2-slim-loading-bar></ng2-slim-loading-bar>",
-    styles: [":host /deep/ .slim-loading-bar { z-index: 2000; position: relative; }"],
+        "<ng2-slim-loading-bar></ng2-slim-loading-bar>",
+    styles: [`
+        :host /deep/ .slim-loading-bar { z-index: 2000; position: relative; }
+        :host /deep/ .slim-loading-bar-progress {
+            -webkit-transition: all .5s ease-in-out;
+            transition: all .5s ease-in-out;
+            /* horiz vert  blur-radius spread    color */
+            -webkit-box-shadow: 5px 2px 10px 0px rgba(204,204,204,1);
+            -moz-box-shadow:    5px 2px 10px 0px rgba(204,204,204,1);
+            box-shadow:         5px 2px 10px 0px rgba(204,204,204,1);
+        }
+    `],
 })
 export class LoadingIndicatorComponent implements OnInit, OnDestroy { /* extends SlimLoadingBarComponent */
 
@@ -26,21 +35,19 @@ export class LoadingIndicatorComponent implements OnInit, OnDestroy { /* extends
 
         // The service subscribes to EventBusService.
         private _loadingIndicatorService: LoadingIndicatorService,
-        //private _slimService: SlimLoadingBarService,
     ) {
-        //super(_slimService);
-        //super(_loadingIndicatorService.getSlimService());
     }
 
 
     ngOnInit(): void {
         /*
+         * TODO:
          * This is supposed to reset the loading bar for a new page.
          * But it seems not to be a good idea, as NavigationEnd comes while loading is already in progress,
          * so the counter would go below 0.
          */
         this._router.events.filter(event => event instanceof NavigationEnd).subscribe(_ => {
-            ///this._loadingIndicatorService.reset();
+            // this._loadingIndicatorService.reset();
         });
     }
 
