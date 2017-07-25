@@ -11,6 +11,7 @@ import {ExecutionsLayoutComponent} from "./executions-layout.component";
 import {AnalysisContextModule} from "../analysis-context/analysis-context.module";
 import {RuleProviderExecutionsComponent} from "./rule-provider-executions/rule-provider-executions.component";
 import {RuleProviderExecutionsService} from "./rule-provider-executions/rule-provider-executions.service";
+import {ExecutionResolve} from "./execution.resolve";
 
 @NgModule({
     imports: [
@@ -37,7 +38,8 @@ import {RuleProviderExecutionsService} from "./rule-provider-executions/rule-pro
         RuleProviderExecutionsComponent,
     ],
     providers: [
-        RuleProviderExecutionsService
+        RuleProviderExecutionsService,
+        ExecutionResolve
     ]
 })
 export class ExecutionsModule {

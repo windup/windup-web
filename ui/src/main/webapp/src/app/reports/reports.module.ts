@@ -27,12 +27,15 @@ import {EffortLevelPipe} from "./effort-level.enum";
 import {ExecutionApplicationListComponent} from "./execution-application-list/execution-application-list.component";
 import {NgxChartsModule} from "@swimlane/ngx-charts";
 import {PackageChartComponent} from "./package-chart/package-chart.component";
+import {ExecutionsModule} from "../executions/executions.module";
+import {SourceResolve} from "./source/source.resolve";
 
 @NgModule({
     imports: [
         SharedModule,
         ReportsRoutingModule,
-        NgxChartsModule
+        NgxChartsModule,
+        ExecutionsModule,
     ],
     declarations: [
         ApplicationDetailsComponent,
@@ -79,6 +82,7 @@ import {PackageChartComponent} from "./package-chart/package-chart.component";
         PrettyPathPipe,
         TagDataService,
         // TagFilterService
+        SourceResolve
     ]
 })
 export class ReportsModule {

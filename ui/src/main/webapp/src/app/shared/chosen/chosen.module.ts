@@ -1,9 +1,9 @@
-import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {ChosenDropComponent} from "./chosen-drop.component";
 import {ChosenSingleComponent} from "./chosen-single.component";
 import {ChosenMultipleComponent} from "./chosen-multiple.component";
+import {CommonModule} from "@angular/common";
 
 
 /**
@@ -22,7 +22,7 @@ import {ChosenMultipleComponent} from "./chosen-multiple.component";
         ChosenMultipleComponent
     ],
     imports: [
-        BrowserModule,
+        CommonModule,
         FormsModule
     ],
     providers: []
@@ -30,4 +30,3 @@ import {ChosenMultipleComponent} from "./chosen-multiple.component";
 export class ChosenModule {
 
 }
-

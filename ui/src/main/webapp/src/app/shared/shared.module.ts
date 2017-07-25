@@ -1,5 +1,4 @@
 import {NgModule} from "@angular/core";
-import {HttpModule} from "@angular/http";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import {BreadCrumbsService} from "./navigation/breadcrumbs.service";
@@ -62,7 +61,6 @@ import {WebSocketSubjectFactory} from "./websocket.factory";
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
-        HttpModule,
         RouterModule.forChild([]),
         ChosenModule,
         FileUploadModule,
@@ -179,7 +177,6 @@ import {WebSocketSubjectFactory} from "./websocket.factory";
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
-        HttpModule,
         ChosenModule,
         MomentModule,
         FileUploadModule,
