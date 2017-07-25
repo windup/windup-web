@@ -47,7 +47,7 @@ export class WindupHttpService extends Http {
     }
 
     private configureRequest(method: RequestMethod, f: Function, url: string | Request, options: RequestOptionsArgs = {}, body?: any): Observable<Response> {
-        return (this.setToken(options) as Observable<Response>).flatMap(options => {
+        let responseObservable: Observable<Response> = (this.setToken(options) as Observable<Response>).flatMap(options => {
             return new Observable<Response>((observer) => {
                 let bodyRequired = false;
                 if (method != null) {
@@ -76,6 +76,20 @@ export class WindupHttpService extends Http {
                 );
             });
         });
+
+        let responseObservable2 = responseObservable.do(
+            () => console.log("Request SUCCEEDED"),
+            () => console.log("Request FAILED"),
+            () => {
+                console.log("Request FINISHED");
+                if (this._eventBus) {
+                    console.log("Request FINISHED, firing");
+                    this._eventBus.fireEvent(new LoadingSomethingFinishedEvent(responseObservable))
+                }
+            }
+        );
+
+        return responseObservable2;
     }
 
     /**
@@ -92,6 +106,10 @@ export class WindupHttpService extends Http {
      * Performs a request with `get` http method.
      */
     get(url: string, options?: RequestOptionsArgs): Observable<Response> {
+        return this.configureRequest(RequestMethod.Get, super.get, url, options);
+    }
+
+    get_(url: string, options?: RequestOptionsArgs): Observable<Response> {
         /// TODO: Put the event firing to configureRequest.
         console.log("HTTP request for " + url);
         let responseObservable: Observable<Response> = this.configureRequest(RequestMethod.Get, super.get, url, options);
