@@ -1,5 +1,4 @@
 import {NgModule} from "@angular/core";
-import {HttpModule} from "@angular/http";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import {BreadCrumbsService} from "./navigation/breadcrumbs.service";
@@ -61,7 +60,6 @@ import {DropdownFilterComponent} from "./filter/dropdown-filter.component";
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
-        HttpModule,
         RouterModule.forChild([]),
         ChosenModule,
         FileUploadModule,
@@ -177,7 +175,6 @@ import {DropdownFilterComponent} from "./filter/dropdown-filter.component";
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
-        HttpModule,
         ChosenModule,
         MomentModule,
         FileUploadModule,
