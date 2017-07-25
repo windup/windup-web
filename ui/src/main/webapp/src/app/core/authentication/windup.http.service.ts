@@ -22,9 +22,6 @@ export class WindupHttpService extends Http {
         console.log("CONST " + _keycloakService + " | " + _eventBus);///
     }
 
-    //@Inject()
-    //private _eventBus: EventBusService;
-
     private setToken(options: RequestOptionsArgs): Observable<RequestOptionsArgs> {
         return new Observable<RequestOptionsArgs>(observer => {
             this._keycloakService.getToken().subscribe(
@@ -88,6 +85,12 @@ export class WindupHttpService extends Http {
                 }
             }
         );
+
+        console.log("Load STARTED");
+        if (this._eventBus)
+            console.log("Load STARTED, firing");
+        this._eventBus.fireEvent(new LoadingSomethingStartedEvent(responseObservable));
+
 
         return responseObservable2;
     }
