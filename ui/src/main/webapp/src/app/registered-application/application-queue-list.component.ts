@@ -1,10 +1,13 @@
-import {AfterViewInit, ChangeDetectionStrategy, Component, Input, OnInit, ViewChild} from "@angular/core";
+import {
+    AfterViewInit, ChangeDetectionStrategy, Component, Input, OnInit, ViewChild,  DoCheck, KeyValueDiffers
+} from "@angular/core";
 import {MigrationProject, RegisteredApplication} from "../generated/windup-services";
 import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
 import {FileItem} from "ng2-file-upload";
 import {RegisteredApplicationService} from "./registered-application.service";
 import {NotificationService} from "../core/notification/notification.service";
 import {utils} from "../shared/utils";
+import {DurationPipe} from "../shared/duration.pipe";
 
 /**
  * This component is quite hacky way how to show the same visuals as in alternative-upload-queue.
@@ -33,7 +36,7 @@ import {utils} from "../shared/utils";
     ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ApplicationQueueListComponent implements AfterViewInit
+export class ApplicationQueueListComponent implements AfterViewInit, DoCheck
 {
     @Input()
     public registeredApplications: RegisteredApplication[] = [];
@@ -44,10 +47,27 @@ export class ApplicationQueueListComponent implements AfterViewInit
     @ViewChild('deleteAppDialog')
     readonly deleteAppDialog: ConfirmationModalComponent;
 
+    differ: any;
+
     constructor(
         protected _registeredApplicationsService: RegisteredApplicationService,
-        protected _notificationService: NotificationService
+        protected _notificationService: NotificationService,
+        private differs: KeyValueDiffers
     ) {
+        this.differ = differs.find({}).create(null);
+    }
+
+    ngDoCheck() {
+        var changes = this.differ.diff(this.registeredApplications);
+
+        if(changes) {
+            changes.forEachAddedItem(r => {
+                let analysisExpectedDuration = this.getAnalysisExpectedDuration((<RegisteredApplication>r.currentValue).fileSize);
+                if (analysisExpectedDuration) {
+                    this._notificationService.warning("Large application uploaded '" + (<RegisteredApplication>r.currentValue).inputFilename + "': analysis may take about " + analysisExpectedDuration);
+                }
+            });
+        }
     }
 
     ngAfterViewInit(): any {
@@ -76,5 +96,16 @@ export class ApplicationQueueListComponent implements AfterViewInit
         this.deleteAppDialog.body = `Do you really want to delete application ${application.title}?`;
 
         this.deleteAppDialog.show();
+    }
+
+    private getAnalysisExpectedDuration(fileSize: number): String {
+        let message: String;
+        if (fileSize > 104857600) {
+            // using a baseline of 1 hr per 200 MB
+            // => 3600000 msec per 209715200 bytes
+            // => 0.017 msec per 1 byte
+            message = new DurationPipe().transform(fileSize * 0.017);
+        }
+        return message;
     }
 }
