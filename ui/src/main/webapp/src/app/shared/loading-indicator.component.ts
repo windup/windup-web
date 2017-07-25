@@ -14,6 +14,7 @@ import {SlimLoadingBarComponent, SlimLoadingBarService} from "ng2-slim-loading-b
     template:
             "<h2>Test DDD wu-loading-indicator</h2>" + ///
             "<ng2-slim-loading-bar></ng2-slim-loading-bar>",
+    styles: [":host /deep/ .slim-loading-bar { z-index: 2000; position: relative; }"],
 })
 export class LoadingIndicatorComponent implements OnInit, OnDestroy { /* extends SlimLoadingBarComponent */
 

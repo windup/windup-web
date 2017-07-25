@@ -11,8 +11,6 @@ export class LoadingIndicatorService {
         private _slimBarService: SlimLoadingBarService,
         private _eventBusService: EventBusService,
     ) {
-        this._slimBarService.visible = false;
-
         // One way of registering...
         /*this._eventBusService.onEvent.subscribe( event => {
             console.log("event received ANY");
@@ -43,14 +41,24 @@ export class LoadingIndicatorService {
     private reset() {
         this.counter = 0;
         this.max = void 0;
-        console.log(`xreset(), counter ${this.counter}`);
+        console.log(`reset(), counter ${this.counter}`);
     }
 
+    public loadingStarted2(){
+        /*
+        this._slimBarService.visible = true;
+        this._slimBarService.color = "yellow";
+        this._slimBarService.progress = 20;
+        this._slimBarService.height = "4px";
+        */
+        this._slimBarService.start(() => {
+            console.log('SLIM END callback');
+        });
+    }
     public loadingStarted(){
         this.counter++;
         this.max = this.counter;
         console.log(`event received START, counter ${this.counter}`);
-        //this._slimBarService.visible = true;
         this.updateProgress();
     }
 
@@ -64,17 +72,22 @@ export class LoadingIndicatorService {
         console.log(`updateProgress(), counter ${this.counter}`);
         if (this.counter == 0) {
             console.log("INDI All finished, hiding.");
-            Observable.timer(1).do(() => this._slimBarService.visible = false);
+            //this._slimBarService.visible = false;
+            Observable.timer(5000).subscribe(() => {
+                console.log("INDI All finished, hiding timeout.");
+                //this._slimBarService.visible = false;
+            });
         }
         else {
             // max - counter = finished.
             // If the things to load are added after something loaded, the progress would go back.
             // But let's rely on that loading will start fast at the beginning.
             // Start at 20, jump to 90.
-            let percent = 20 + 70 * (1 - this.max / this.counter);
+            let percent = 60; ///20 + 70 * (1 - this.max / this.counter);
             console.log(`INDI Setting bar to ${percent} percent.`);
+            this._slimBarService.color = "#39a5dc";
             this._slimBarService.visible = true;
-            this._slimBarService.progress = 60; //percent;
+            this._slimBarService.progress = percent;
         }
     }
 
