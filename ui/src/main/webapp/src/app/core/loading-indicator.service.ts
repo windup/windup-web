@@ -3,6 +3,7 @@ import {SlimLoadingBarService} from 'ng2-slim-loading-bar';
 import {EventBusService} from "./events/event-bus.service";
 import {LoadingSomethingFinishedEvent, LoadingSomethingStartedEvent} from "./events/windup-event";
 import {Observable} from "rxjs/Observable";
+import {LoadingIndicatorComponent} from "../shared/loading-indicator.component";
 
 /**
  * Uses the ng2-slim-loading-bar component to indicate loading progress.
@@ -54,35 +55,48 @@ export class LoadingIndicatorService {
     public loadingFinished(event: LoadingSomethingFinishedEvent){
         this.counter--;
         // On error, change the bar color to red.
-        event.getResponse().filter(res => res.status < 200 && res.status >= 400).subscribe(_ => { this.hadError = true; });
+        let res = event.getResponse();
+        this.hadError = res.status < 200 || res.status >= 400;
         //console.log(`event received FINISH, counter ${this.counter}, max ${this.max}`);
         this.updateProgress();
     }
 
     private updateProgress() {
         //console.log(`updateProgress(), counter ${this.counter}, max ${this.max}`);
+
+        // All requests have finished.
         if (this.counter == 0) {
             //console.log("INDI All finished, setting to complete.");
+
+            /*
             this._slimBarService.height = "2px";
             this._slimBarService.visible = true;
             this._slimBarService.progress = 95;
-            this.hadError = false;
-            this.max = void 0;
-            Observable.timer(700).subscribe(() => {
+            */
+            LoadingIndicatorComponent.visualizeFinished(this._slimBarService, this.hadError);
+            Observable.timer(500).subscribe(() => {
                 //console.log("INDI All finished, hiding timeout.");
                 this._slimBarService.complete();
             });
+
+            this.hadError = false;
+            this.max = void 0;
         }
+        // Some requests still in progress.
         else {
             // max - counter = finished.
-            // If the things to load are added after something loaded, the progress would go back.
-            // But let's rely on that loading will start fast at the beginning.
+            // If the things to load are added after something has already loaded, the progress goes back.
             // Start at 20, jump to 90.
             let percent = 20 + 70 * (1 - (this.max - this.counter) / this.max);
             //console.log(`INDI Setting bar to ${percent} percent.`);
+
+            /*
             this._slimBarService.height = "3px";
             this._slimBarService.color = this.hadError ? "firebrick" : "#39a5dc";
             this._slimBarService.visible = true;
+            */
+            LoadingIndicatorComponent.visualizeInProgress(this._slimBarService, this.hadError);
+
             this._slimBarService.progress = percent;
         }
     }

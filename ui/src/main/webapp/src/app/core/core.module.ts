@@ -58,7 +58,7 @@ import {LoadingIndicatorService} from "./loading-indicator.service";
 export class CoreModule {
     constructor (@Optional() @SkipSelf() parentModule: CoreModule) {
         if (parentModule) {
-            throw new Error('CoreModule is already loaded. It should be imported only from the AppModule.');
+            throw new Error("CoreModule is already loaded. It is imported only from the AppModule. Don't import it anywhere else.");
         }
     }
 }

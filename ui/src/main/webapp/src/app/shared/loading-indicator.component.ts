@@ -53,4 +53,16 @@ export class LoadingIndicatorComponent implements OnInit, OnDestroy { /* extends
 
     ngOnDestroy(): void {
     }
+
+    public static visualizeFinished(_slimBarService: SlimLoadingBarService, hadError: boolean) {
+        _slimBarService.visible = true;
+        _slimBarService.height = "2px";
+        _slimBarService.progress = 95;
+    }
+
+    public static visualizeInProgress(_slimBarService: SlimLoadingBarService, hadError: boolean) {
+        _slimBarService.visible = true;
+        _slimBarService.height = "3px";
+        _slimBarService.color = hadError ? "firebrick" : "#39a5dc";
+    }
 }
