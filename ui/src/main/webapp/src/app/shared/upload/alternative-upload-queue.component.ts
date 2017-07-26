@@ -31,13 +31,12 @@ export class AlternativeUploadQueueComponent extends AbstractComponent implement
         }));
 
         this.subscriptions.push(this.uploader.observables.onErrorItem.subscribe(itemError => {
-            const response = JSON.parse(itemError.response);
+            let response = utils.parseServerResponse(itemError.response);
+
             const item = itemError.item;
 
             if (this.isFileExistsError(response)) {
                 this.uploadErrors.set(item, utils.getErrorMessage(response));
-            } else {
-                this._notificationService.error(utils.getErrorMessage(response));
             }
         }));
 

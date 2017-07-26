@@ -75,7 +75,7 @@ export class AddRulesPathModalComponent extends FormComponent implements OnInit,
         }));
 
         this.subscriptions.push(this.multipartUploader.observables.onErrorItem.subscribe((result) => {
-            this.handleError(JSON.parse(result.response));
+            this.handleError(utils.parseServerResponse(result.response));
         }));
         this.subscriptions.push(this.multipartUploader.observables.onAfterAddingFile.subscribe(() => this.uploadRule()));
         this.subscriptions.push(this.multipartUploader.observables.onWhenAddingFileFailed.subscribe(result => {

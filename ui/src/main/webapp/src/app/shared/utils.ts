@@ -4,6 +4,21 @@ export function substringAfterLast(str, delimiter) {
 
 export module utils {
 
+    export function parseServerResponse(response: string) {
+        let result;
+
+        try {
+            result = JSON.parse(response);
+        } catch (e) {
+            /**
+             * If not valid json, treat it as a string
+             */
+            result = response;
+        }
+
+        return result;
+    }
+
     export function getErrorMessage(error: any): string
     {
         if (error instanceof ProgressEvent) {

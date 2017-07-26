@@ -15,6 +15,7 @@ import {SchedulerService} from "../shared/scheduler.service";
 import {ReplaySubject} from "rxjs";
 import {Cached} from "../shared/cache.service";
 import {isArray} from "util";
+import {utils} from "../shared/utils";
 
 @Injectable()
 export class RegisteredApplicationService extends AbstractService {
@@ -124,13 +125,13 @@ export class RegisteredApplicationService extends AbstractService {
 
                 let promise = new Promise((resolve, reject) => {
                     this._multipartUploader.onCompleteItem = (item, response, status, headers) => {
-                        const responseJson = JSON.parse(response);
+                        let responseMessage = utils.parseServerResponse(response);
 
                         if (status == 200) {
-                            this.fireNewApplicationEvents(responseJson, project);
-                            responses.push(responseJson);
+                            this.fireNewApplicationEvents(responseMessage, project);
+                            responses.push(responseMessage);
                         } else {
-                            errors.push(responseJson);
+                            errors.push(responseMessage);
                         }
                     };
 
@@ -139,7 +140,8 @@ export class RegisteredApplicationService extends AbstractService {
                     };
 
                     this._multipartUploader.onErrorItem = (item, response, status, headers) => {
-                        reject(JSON.parse(response));
+                        let responseMessage = utils.parseServerResponse(response);
+                        reject(utils.getErrorMessage(responseMessage));
                     };
                 });
 
@@ -206,10 +208,12 @@ export class RegisteredApplicationService extends AbstractService {
 
                 let promise = new Promise((resolve, reject) => {
                     this._multipartUploader.onCompleteItem = (item, response, status, headers) => {
+                        const parsedResponse = utils.parseServerResponse(response);
+
                         if (status == 200) {
-                            responses.push(JSON.parse(response));
+                            responses.push(parsedResponse);
                         } else {
-                            errors.push(JSON.parse(response));
+                            errors.push(parsedResponse);
                         }
                     };
 
@@ -218,7 +222,8 @@ export class RegisteredApplicationService extends AbstractService {
                     };
 
                     this._multipartUploader.onErrorItem = (item, response, status, headers) => {
-                        reject(JSON.parse(response));
+                        let responseMessage = utils.parseServerResponse(response);
+                        reject(utils.getErrorMessage(responseMessage));
                     };
                 });
 

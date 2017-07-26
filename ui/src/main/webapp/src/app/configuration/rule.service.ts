@@ -9,6 +9,7 @@ import {FileUploader} from "ng2-file-upload";
 import {KeycloakService} from "../core/authentication/keycloak.service";
 import {FileUploaderFactory} from "../shared/upload/file-uploader-factory.service";
 import {FileUploaderWrapper} from "../shared/upload/file-uploader-wrapper.service";
+import {utils} from "../shared/utils";
 
 @Injectable()
 export class RuleService extends AbstractService {
@@ -67,10 +68,12 @@ export class RuleService extends AbstractService {
 
             const promise = new Promise((resolve, reject) => {
                 this._multipartUploader.onCompleteItem = (item, response, status) => {
+                    const parsedResponse = utils.parseServerResponse(response);
+
                     if (status == 200) {
-                        responses.push(JSON.parse(response));
+                        responses.push(parsedResponse);
                     } else {
-                        errors.push(JSON.parse(response));
+                        errors.push(parsedResponse);
                     }
                 };
 
@@ -79,7 +82,7 @@ export class RuleService extends AbstractService {
                 };
 
                 this._multipartUploader.onErrorItem = (item, response) => {
-                    reject(JSON.parse(response));
+                    reject(utils.parseServerResponse(response));
                 };
             });
 
