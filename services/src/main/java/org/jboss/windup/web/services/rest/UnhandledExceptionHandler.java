@@ -62,7 +62,7 @@ public class UnhandledExceptionHandler implements ExceptionMapper<Exception>
 
     static final Throwable findFirstOccurenceInExceptionChain(Class<? extends Throwable> type, Throwable exception)
     {
-        Throwable cause = exception;
+        Throwable cause = exception.getCause();
         while (cause != null && type.isAssignableFrom(cause.getClass()))
             cause = exception.getCause();
         return cause;
@@ -70,7 +70,7 @@ public class UnhandledExceptionHandler implements ExceptionMapper<Exception>
 
     static final Throwable findFirstOccurenceInExceptionChain(String typeName, Throwable exception)
     {
-        Throwable cause = exception;
+        Throwable cause = exception.getCause();
         while (cause != null && typeName.equals(cause.getClass().getName()))
             cause = exception.getCause();
         return cause;
