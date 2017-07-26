@@ -18,13 +18,13 @@ import org.jboss.windup.web.services.ServerMode;
  * @author <a href="mailto:zizka@seznam.cz">Ondrej Zizka</a>
  */
 @Provider
-public class UnhandledExceptionHandler implements ExceptionMapper<RuntimeException>
+public class UnhandledExceptionHandler implements ExceptionMapper<Exception>
 {
     private static Logger LOG = Logger.getLogger(UnhandledExceptionHandler.class.getSimpleName());
     private final ExceptionHandler applicationExceptionHandler = new ExceptionHandler();
 
     @Override
-    public Response toResponse(RuntimeException exception)
+    public Response toResponse(Exception exception)
     {
         Throwable cause = exception.getCause();
         if (cause == null)
