@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.logging.Logger;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -20,14 +21,15 @@ public class KeycloakAuthenticator
     /**
      * Authenticate the given keycloak token with the keycloak server.
      *
+     * The host of the current server is included in the request, to cover the case where the keycloak url setting
+     * is a relative url.
+     *
      * @param token
      * @throws KeycloakAuthenticationException
      */
-    public static void validateToken(String token) throws KeycloakAuthenticationException
+    public static void validateToken(String serverHost, String token) throws KeycloakAuthenticationException
     {
-        String keycloakUrl = getKeycloakUrl();
-        if (StringUtils.isBlank(keycloakUrl))
-            throw new RuntimeException("Could not read keycloak urk from system properties... expected in: " + PROPERTY_KEYCLOAK_URL);
+        String keycloakUrl = getKeycloakUrl(serverHost);
 
         if (!keycloakUrl.endsWith("/"))
             keycloakUrl += "/";
@@ -54,8 +56,16 @@ public class KeycloakAuthenticator
         }
     }
 
-    private static String getKeycloakUrl()
+    private static String getKeycloakUrl(String serverHost)
     {
-        return System.getProperty(PROPERTY_KEYCLOAK_URL);
+
+        String keycloakUrl = System.getProperty(PROPERTY_KEYCLOAK_URL);
+        if (StringUtils.isBlank(keycloakUrl))
+            throw new RuntimeException("Could not read keycloak urk from system properties... expected in: " + PROPERTY_KEYCLOAK_URL);
+
+        if (!keycloakUrl.toLowerCase().startsWith("http"))
+            keycloakUrl = "http://" + serverHost + keycloakUrl;
+
+        return keycloakUrl;
     }
 }
