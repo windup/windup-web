@@ -1,7 +1,5 @@
 import {Component, Input, OnInit} from "@angular/core";
-import {Router, ActivatedRoute, NavigationEnd} from "@angular/router";
-import {Http} from "@angular/http";
-
+import {Router, ActivatedRoute} from "@angular/router";
 import * as showdown from "showdown";
 import "../source/prism";
 
@@ -12,37 +10,12 @@ import {FileModel} from "../../generated/tsModels/FileModel";
 import {SortingService, OrderDirection} from "../../shared/sort/sorting.service";
 import {RouteFlattenerService} from "../../core/routing/route-flattener.service";
 import {FilterableReportComponent} from "../filterable-report.component";
-import {EffortLevel, EffortLevelPipe} from "../effort-level.enum";
+import {PaginationService} from "../../shared/pagination.service";
 
 @Component({
     selector: 'wu-migration-issues-table',
     templateUrl: './migration-issues-table.component.html',
-    styles: [`
-        a { cursor: pointer; }
-        
-        table.migration-issues-table { margin-bottom: 0; }
-        table.migration-issues-table > thead > tr > th:first-child { text-align: left; }
-        table.migration-issues-table > thead > tr > th             { text-align: right; }
-        table.migration-issues-table > tbody > tr > th:first-child,
-        table.migration-issues-table > tbody > tr > td:first-child { text-align: left; }
-        table.migration-issues-table > tbody > tr > th,
-        table.migration-issues-table > tbody > tr > td             { text-align: right; }
-
-        /* Files subtable */
-        table.migration-issues-table table { margin-bottom: 0; border: 1px solid #e7e7e7; }
-        table.migration-issues-table table tbody td { background: #fffff5 !important; } /* A very subtle yellow tint. */
-        
-        table.migration-issues-table table.filesDetails > thead > tr > th.fileName { text-align: left; }
-        table.migration-issues-table table.filesDetails > thead > tr > th.hint     { text-align: left; }
-        table.migration-issues-table table.filesDetails                th          { text-align: right; }
-        table.migration-issues-table table.filesDetails > tbody > tr > td.fileName,
-        table.migration-issues-table table.filesDetails > tbody > tr > td.hint     { text-align: left; }
-        table.migration-issues-table table.filesDetails > tbody > tr > td          { text-align: right; }
-        
-        table.migration-issues-table table.filesDetails > tbody > tr > td.hint .panel-title     { font-weight: 600; line-height: 1.66; }
-        table.migration-issues-table table.filesDetails > tbody > tr > td.hint .description     { }
-        
-    `],
+    styleUrls: ['./migration-issues-table.component.scss'],
     providers: [SortingService]
 })
 export class MigrationIssuesTableComponent extends FilterableReportComponent implements OnInit
@@ -55,15 +28,23 @@ export class MigrationIssuesTableComponent extends FilterableReportComponent imp
     problemSummariesFiles: any = new Map<ProblemSummary, any>(); // Map<ProblemSummary, any>
     displayedSummariesFiles = new Map<ProblemSummary, boolean>();
 
+    summaryFiles = {
+        pagination: {
+            itemsPerPage: 5,
+            page: 1
+        }
+    };
+
+
     public constructor(
         _router: Router,
         _routeFlattener: RouteFlattenerService,
-        private _http: Http,
         _activatedRoute: ActivatedRoute,
         private _migrationIssuesService: MigrationIssuesService,
         private _notificationService: NotificationService,
         private _sortingService: SortingService<ProblemSummary>,
-        private _graphJsonToModelService: GraphJSONToModelService<any>
+        private _graphJsonToModelService: GraphJSONToModelService<any>,
+        private _paginationService: PaginationService
     ) {
         super(_router, _activatedRoute, _routeFlattener);
     }
@@ -130,6 +111,11 @@ export class MigrationIssuesTableComponent extends FilterableReportComponent imp
         }
 
         return this.problemSummariesFiles.get(issue);
+    }
+
+    getProblemSummaryFilesPage(issue: ProblemSummary, page: number, itemsPerPage: number) {
+        const allFiles = this.getProblemSummaryFiles(issue);
+        return this._paginationService.getPage(allFiles, page, itemsPerPage);
     }
 
     navigateToSource(file: any) {

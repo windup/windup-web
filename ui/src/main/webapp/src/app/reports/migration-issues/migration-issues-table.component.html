@@ -56,7 +56,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let incident of getProblemSummaryFiles(issue); let isFirst = first">
+                            <tr *ngFor="let incident of getProblemSummaryFilesPage(issue, summaryFiles.pagination.page, summaryFiles.pagination.itemsPerPage); let isFirst = first">
                                 <td class="fileName"><a (click)="navigateToSource(incident.file)">{{incident.file.fileName}}</a></td>
                                 <td class="count">{{incident.occurrences}}</td>
                                 <td class="hint" *ngIf="isFirst" [attr.rowspan]="getProblemSummaryFiles(issue)?.length">
@@ -82,6 +82,16 @@
                                         </div>
                                     </div>
                                 </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <wu-pagination
+                                            [countItems]="getProblemSummaryFiles(issue).length"
+                                            [itemsPerPage]="summaryFiles.pagination.itemsPerPage"
+                                            [(activePage)]="summaryFiles.pagination.page"
+                                    ></wu-pagination>
+                                </td>
+                                <td colspan="2"></td>
                             </tr>
                         </tbody>
                     </table>
