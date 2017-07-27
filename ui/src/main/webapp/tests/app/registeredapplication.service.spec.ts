@@ -22,6 +22,7 @@ import {SchedulerServiceMock} from "./mocks/scheduler-service.mock";
 import {Subject} from "rxjs";
 import createSpy = jasmine.createSpy;
 import {SchedulerService} from "../../src/app/shared/scheduler.service";
+import {NgZone} from "@angular/core";
 
 describe("Registered Application Service Test", () => {
     beforeEach(() => {
@@ -137,7 +138,7 @@ describe("Registered Application Service Test", () => {
 
             instance = new RegisteredApplicationService(null, null, jasmine.createSpyObj('multipartUploader', [
                 'setOptions'
-            ]), null, schedulerMock);
+            ]), null, schedulerMock, new NgZone(false));
             spyOn(RegisteredApplicationService.prototype, 'getPackageMetadata').and.callFake(getPackageMetadata);
         });
 
