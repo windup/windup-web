@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, NgZone} from '@angular/core';
 import {Http} from '@angular/http';
 import {FileUploader} from 'ng2-file-upload/ng2-file-upload';
 import {Observable} from 'rxjs/Observable';
@@ -46,7 +46,8 @@ export class RegisteredApplicationService extends AbstractService {
         private _keycloakService:KeycloakService,
         private _multipartUploader: FileUploader,
         private _eventBusService: EventBusService,
-        private _schedulerService: SchedulerService
+        private _schedulerService: SchedulerService,
+        private _ngZone: NgZone
     ) {
         super();
         this._multipartUploader.setOptions({
@@ -268,15 +269,17 @@ export class RegisteredApplicationService extends AbstractService {
         let subject = new ReplaySubject<PackageMetadata>(1);
 
         let closure = () => {
-            this.getPackageMetadata(application).subscribe(packageMetadata => {
-                if (packageMetadata.scanStatus !== "COMPLETE") {
-                    // schedule another round
-                    this._schedulerService.setTimeout(closure, RegisteredApplicationService.PACKAGE_REQUEST_PAUSE_TIME_MS);
-                } else {
-                    subject.next(packageMetadata);
-                    subject.complete();
-                }
-            });
+            this.getPackageMetadata(application).subscribe(packageMetadata =>
+                this._ngZone.run(() =>{
+                    if (packageMetadata.scanStatus !== "COMPLETE") {
+                        // schedule another round
+                        this._schedulerService.setTimeout(closure, RegisteredApplicationService.PACKAGE_REQUEST_PAUSE_TIME_MS);
+                    } else {
+                        subject.next(packageMetadata);
+                        subject.complete();
+                    }
+                })
+            );
         };
 
         closure();
