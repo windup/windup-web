@@ -6,10 +6,18 @@ import {
 
 import {KeycloakService} from "./keycloak.service";
 import {Observable} from 'rxjs/Observable';
+import {EventBusService} from "../events/event-bus.service";
+import {LoadingSomethingFailedEvent, LoadingSomethingFinishedEvent, LoadingSomethingStartedEvent}
+    from "../events/windup-event";
 
 @Injectable()
 export class WindupHttpService extends Http {
-    constructor(_backend: ConnectionBackend, _defaultOptions: RequestOptions, private _keycloakService:KeycloakService) {
+    constructor(
+        _backend: ConnectionBackend,
+        _defaultOptions: RequestOptions,
+        private _keycloakService: KeycloakService,
+        private _eventBus: EventBusService,
+    ) {
         super(_backend, _defaultOptions);
     }
 
@@ -35,7 +43,7 @@ export class WindupHttpService extends Http {
     }
 
     private configureRequest(method: RequestMethod, f: Function, url: string | Request, options: RequestOptionsArgs = {}, body?: any): Observable<Response> {
-        return (this.setToken(options) as Observable<Response>).flatMap(options => {
+        let responseObservable: Observable<Response> = (this.setToken(options) as Observable<Response>).flatMap(options => {
             return new Observable<Response>((observer) => {
                 let bodyRequired = false;
                 if (method != null) {
@@ -64,6 +72,22 @@ export class WindupHttpService extends Http {
                 );
             });
         });
+
+        let responseObservable2 = responseObservable.do(
+            (response) => {
+                this._eventBus.fireEvent(new LoadingSomethingFinishedEvent(response))
+            },
+            (response) => {
+                console.warn("HTTP request FAILED");
+                this._eventBus.fireEvent(new LoadingSomethingFailedEvent(response))
+            },
+            //() => {this._eventBus.fireEvent(new LoadingSomethingFinishedEvent())}
+        );
+
+        this._eventBus.fireEvent(new LoadingSomethingStartedEvent());
+
+
+        return responseObservable2;
     }
 
     /**

@@ -1,4 +1,7 @@
 import {MigrationProject, RegisteredApplication, WindupExecution} from "../../generated/windup-services";
+import {Observable} from "rxjs/Observable";
+import {Response} from "@angular/http";
+
 
 export abstract class WindupEvent {
     public static TYPE = 'WindupEvent';
@@ -38,6 +41,36 @@ export class MigrationProjectEvent extends WindupEvent {
     }
 
 }
+
+
+/**
+ * Fired when the page starts loading something asynchronously. Basically, any request to the server.
+ */
+export class LoadingSomethingStartedEvent extends WindupEvent {
+    constructor(){
+        super("LoadingSomethingStartedEvent", null);
+    }
+}
+/**
+ * Fired when the page finishes loading something asynchronously, or it fails with an error.
+ */
+export class LoadingSomethingFinishedEvent extends WindupEvent {
+    constructor(response: Response){
+        super("LoadingSomethingFinishedEvent", response);
+    }
+    public getResponse(): Response { return this._source; }
+}
+/**
+ * Fired if a HTTP request failed.
+ */
+export class LoadingSomethingFailedEvent extends WindupEvent {
+    constructor(response: Response){
+        super("LoadingSomethingFailedEvent", response);
+    }
+    public getResponse(): Response { return this._source; }
+}
+
+
 
 export class UpdateMigrationProjectEvent extends MigrationProjectEvent {
 
