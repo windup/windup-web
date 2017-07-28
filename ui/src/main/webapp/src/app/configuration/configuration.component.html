@@ -69,8 +69,10 @@
 
                 <div *ngIf="rulePath.loadError">
                  <p>Invalid rule files have been detected.</p>
-                 <p>Please make sure that your rule files comply to the <a href="http://windup.jboss.org/schema/windup-jboss-ruleset.xsd">XSD rule format</a>.</p>
-                 <p class="alert alert-danger" style="white-space:pre-line;" role="alert" [innerHtml]="rulePath.loadError | wuReplace:': ':': <br>'"></p>
+                    <p>Please make sure that your rule files comply to the
+                         <a href="http://windup.jboss.org/schema/windup-jboss-ruleset.xsd" target="_blank">XSD rule format <i class="fa fa-external-link"></i></a>.
+                          See more details in <a href="http://windup.jboss.org/rules-guide.html" target="_blank">Rules guide <i class="fa fa-external-link"></i></a></p>
+                 <p class="alert alert-danger" style="white-space:pre-line;" role="alert" [innerHtml]="rulePath.loadError"></p>
                 </div>
 
                 <!-- List of rules. -->
