@@ -27,6 +27,12 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.jboss.windup.web</groupId>
+            <artifactId>keycloak-websocket-api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
         <!-- Jackson -->
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
