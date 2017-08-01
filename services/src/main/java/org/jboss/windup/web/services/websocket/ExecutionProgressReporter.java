@@ -15,12 +15,15 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.ObjectMessage;
 import javax.websocket.CloseReason;
+import javax.websocket.EndpointConfig;
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jboss.windup.web.services.KeycloakAuthenticationException;
 import org.jboss.windup.web.services.KeycloakAuthenticator;
 import org.jboss.windup.web.services.messaging.AbstractMDB;
@@ -30,10 +33,13 @@ import org.json.JSONObject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.undertow.websockets.core.WebSocketChannel;
+import io.undertow.websockets.jsr.UndertowSession;
+
 /**
  * @author <a href="mailto:dklingenberg@gmail.com">David Klingenberg</a>
  */
-@ServerEndpoint("/websocket/execution-progress/{executionId}")
+@ServerEndpoint(value = "/websocket/execution-progress/{executionId}")
 public class ExecutionProgressReporter extends AbstractMDB implements Serializable
 {
 
@@ -59,10 +65,39 @@ public class ExecutionProgressReporter extends AbstractMDB implements Serializab
         }
     }
 
+    @OnOpen
+    public void open(Session session, EndpointConfig config)
+    {
+        // Get the thread local context (created by WebSocketContextConfigurator) and attach the
+        // data to the session
+
+        if (session instanceof UndertowSession)
+        {
+            UndertowSession undertowSession = (UndertowSession) session;
+            WebSocketChannel webSocketChannel = undertowSession.getWebSocketChannel();
+            String url = webSocketChannel.getUrl();
+            if (!StringUtils.isBlank(url) && url.startsWith("ws://"))
+            {
+                try
+                {
+                    String serverHost = url.substring(5);
+                    serverHost = serverHost.substring(0, serverHost.indexOf("/"));
+                    session.getUserProperties().put("Host", serverHost);
+                }
+                catch (Exception e)
+                {
+                    LOG.warning("Could not parse ws url (" + url + ") due to: " + e.getMessage());
+                }
+            }
+        }
+
+    }
+
     @OnMessage
     public void onMessage(Session session, String message, @PathParam("executionId") Long executionId)
     {
-        authenticate(session, message);
+        String serverHost = (String) session.getUserProperties().get("Host");
+        authenticate(serverHost, session, message);
 
         if (!sessions.containsKey(executionId))
         {
@@ -72,7 +107,7 @@ public class ExecutionProgressReporter extends AbstractMDB implements Serializab
         sessions.get(executionId).add(session);
     }
 
-    private void authenticate(Session session, String message)
+    private void authenticate(String serverHost, Session session, String message)
     {
         try
         {
@@ -93,7 +128,7 @@ public class ExecutionProgressReporter extends AbstractMDB implements Serializab
                 throw new KeycloakAuthenticationException("Unable to parse message due to: " + e.getMessage());
             }
 
-            KeycloakAuthenticator.validateToken(token);
+            KeycloakAuthenticator.validateToken(serverHost, token);
         }
         catch (KeycloakAuthenticationException e)
         {

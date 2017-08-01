@@ -202,6 +202,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>io.undertow</groupId>
+            <artifactId>undertow-websockets-jsr</artifactId>
+            <version>1.4.0.Final</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-jpamodelgen</artifactId>
             <version>5.2.1.Final</version>
