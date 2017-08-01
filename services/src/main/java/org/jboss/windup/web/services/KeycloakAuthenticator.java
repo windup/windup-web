@@ -61,7 +61,7 @@ public class KeycloakAuthenticator
 
         String keycloakUrl = System.getProperty(PROPERTY_KEYCLOAK_URL);
         if (StringUtils.isBlank(keycloakUrl))
-            throw new RuntimeException("Could not read keycloak urk from system properties... expected in: " + PROPERTY_KEYCLOAK_URL);
+            throw new RuntimeException("Could not read keycloak url from system properties... expected in: " + PROPERTY_KEYCLOAK_URL);
 
         if (!keycloakUrl.toLowerCase().startsWith("http"))
             keycloakUrl = "http://" + serverHost + keycloakUrl;
