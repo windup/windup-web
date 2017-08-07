@@ -178,6 +178,13 @@ export class ExecutionsLayoutComponent extends ProjectLayoutComponent implements
                 this.execution,
                 'execution-details'
             ),
+            new ReportMenuItem(
+                'JPA report',
+                'fa-database',
+                this.project,
+                this.execution,
+                'jpa-report'
+            ),
             new ContextMenuItem(
                 'Static Reports',
                 'fa-window-restore',
