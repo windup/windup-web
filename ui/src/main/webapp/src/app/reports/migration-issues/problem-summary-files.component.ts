@@ -97,8 +97,9 @@ export class ProblemSummaryFilesComponent implements OnInit {
 
 
     private delayedPrismRender() {
+        const timeout = 60 * 1000;
         // Colorize the included code snippets on the first displaying.
-        setTimeout(() => Prism.highlightAll(false), 1000);
+        setTimeout(() => Prism.highlightAll(false), timeout);
     }
 
     renderMarkdownToHtml(markdownCode: string): string {
