@@ -41,6 +41,9 @@ export class ExecutionsLayoutComponent extends ProjectLayoutComponent implements
         this.loadProjects();
 
         let executionId = +flatRoute.params.executionId;
+        if (isNaN(executionId))
+            throw new Error(ExecutionsLayoutComponent.name + ": executionId is not set.");
+
         this.addSubscription(this._eventBus.onEvent
             .filter(event => event.isTypeOf(ExecutionEvent))
             .filter((event: ExecutionEvent) => event.execution.id === executionId)
@@ -99,12 +102,6 @@ export class ExecutionsLayoutComponent extends ProjectLayoutComponent implements
                 'technology-report-ejb'
             ),
             new ContextMenuItem(
-                'JPA',
-                null,
-                false,
-                'technology-report-change-me'
-            ),
-            new ContextMenuItem(
                 'Server Resources',
                 null,
                 false,
@@ -121,6 +118,12 @@ export class ExecutionsLayoutComponent extends ProjectLayoutComponent implements
                 null,
                 false,
                 'technology-report-change-me'
+            ),
+            new ContextMenuItem(
+                'JPA', // 'fa-database',
+                null,
+                true,
+                'technology-report-jpa'
             ),
             new ContextMenuItem(
                 'Hibernate',

@@ -15,6 +15,7 @@ import {ApplicationDetailsComponent} from "./application-details/application-det
 import {RuleProviderExecutionsComponent} from "../executions/rule-provider-executions/rule-provider-executions.component";
 import {FullFlattenedRoute} from "../core/routing/route-flattener.service";
 import {ExecutionDetailComponent} from "../executions/execution-detail.component";
+import {JpaReportComponent} from "./jpa/jpa-report.component";
 import {TechnologiesEJBReportComponent} from "./technologies/technologies-report-ejb.component";
 import {HardcodedIPReportComponent} from "./hardcoded-ip/hardcoded-ip.component";
 import {TechnologiesHibernateReportComponent} from "./technologies/hibernate/hibernate-report.component";
@@ -30,6 +31,7 @@ export const executionLevelRoutes: Routes = [
     },
     {path: 'technology-report-ejb', component: TechnologiesEJBReportComponent, data: {displayName: 'EJB Report'}},
     {path: 'technology-report-hardcoded-ip', component: HardcodedIPReportComponent, data: {displayName: 'Hardcoded IP Addresses'}},
+    {path: 'technology-report-jpa', component: JpaReportComponent, data: {displayName: 'JPA Report'}},
     {path: 'technology-report-hibernate', component: TechnologiesHibernateReportComponent, data: {displayName: 'Hibernate Report'}},
     {path: 'technology-report-remote-services', component: TechnologiesRemoteServicesReportComponent, data: {displayName: 'Remote Services Report'}},
     {path: 'migration-issues',

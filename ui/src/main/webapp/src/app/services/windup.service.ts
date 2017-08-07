@@ -36,6 +36,11 @@ export class WindupService extends AbstractService {
 
     @Cached({section: 'execution', immutable: true, cacheItemCallback: WindupService.cacheExecution})
     public getExecution(executionID: number): Observable<WindupExecution> {
+        if (isNaN(executionID)){
+            console.error("The executionID is NaN");
+            throw new Error("The executionID is NaN");
+        }
+
         let url = Constants.REST_BASE + this.EXECUTIONS_PATH + '/' + executionID;
 
         return this._http.get(url)

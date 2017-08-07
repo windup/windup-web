@@ -41,6 +41,8 @@ export class ExecutionDetailComponent extends RoutedComponent implements OnInit,
     ngOnInit(): void {
         this.subscriptions.push(this.flatRouteLoaded.subscribe(flatRouteData => {
             let executionId = +flatRouteData.params.executionId;
+            if (isNaN(executionId))
+                throw new Error(ExecutionDetailComponent.name + ": executionId is not set.");
 
             this._eventBus.onEvent
                 .filter(event => event.isTypeOf(ExecutionEvent))
