@@ -14,6 +14,9 @@ import {MockBackend} from "@angular/http/testing";
 import {GraphJSONToModelService} from "../../../../../src/app/services/graph/graph-json-to-model.service";
 import {RouteFlattenerService} from "../../../../../src/app/core/routing/route-flattener.service";
 import {RouterMock} from "../../../mocks/router.mock";
+import {ProblemSummaryFilesComponent} from "../../../../../src/app/reports/migration-issues/problem-summary-files.component";
+import {PaginationComponent} from "../../../../../src/app/shared/pagination.component";
+import {PaginationService} from "../../../../../src/app/shared/pagination.service";
 
 let comp:    MigrationIssuesTableComponent;
 let fixture: ComponentFixture<MigrationIssuesTableComponent>;
@@ -31,7 +34,7 @@ describe('MigrationissuesTableComponent', () => {
 
         TestBed.configureTestingModule({
             imports: [ RouterTestingModule ],
-            declarations: [ MigrationIssuesTableComponent, EffortLevelPipe, EffortLevel ],
+            declarations: [ MigrationIssuesTableComponent, ProblemSummaryFilesComponent, PaginationComponent, EffortLevelPipe, EffortLevel ],
             providers: [
                 {
                     provide: ActivatedRoute,
@@ -62,6 +65,7 @@ describe('MigrationissuesTableComponent', () => {
                     ])
                 },
                 NotificationService,
+                PaginationService,
                 {
                     provide: GraphJSONToModelService,
                     useFactory: (http: Http) => {
