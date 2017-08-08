@@ -18,9 +18,17 @@
             <tr *ngFor="let entity of jpaInfo.entities">
                 <td>{{entity.entityName}}</td>
                 <td>
-                    <a class="" href="">{{entity.javaClass}}</a>
+                    <!--
+                    <a (click)="navigateToClassAsync(entity.javaClass)">{{(entity.javaClass|async).simpleName}}</a>
+                    -->
+                    <a [routerLink]="['../source/' + ((entity.javaClass|async)?.decompiledSource|async)?.vertexId]">
+                        {{(entity.javaClass|async).simpleName}}
+                    </a>
                 </td>
                 <td>{{entity.tableName}}</td>
+            </tr>
+            <tr *ngIf="!jpaInfo.entities.length">
+                <td colspan="3">No JPA entities found.</td>
             </tr>
         </tbody>
     </table>
@@ -36,9 +44,63 @@
         <tbody>
             <tr *ngFor="let query of jpaInfo.namedQueries">
                 <td>{{query.queryName|async}}</td>
-                <td>{{query.jpaEntity|async}}</td>
+                <td>{{(query.jpaEntity|async)}}</td>
                 <td>{{query.query}}</td>
+            </tr>
+            <tr *ngIf="!jpaInfo.namedQueries.length">
+                <td colspan="3">No JPA named queries found.</td>
             </tr>
         </tbody>
     </table>
+
+    <table class="table table-striped table-bordered" id="jpaConfigFilesTable">
+        <thead>
+            <tr>
+                <th>Location</th>
+                <th>Root tag name</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr *ngFor="let config of jpaInfo.configFiles">
+                <td>{{config.directory}}/{{config.fileName}}</td>
+                <td>{{config.rootTagName}}</td>
+            </tr>
+            <tr *ngIf="!jpaInfo.configFiles.length">
+                <td colspan="2">No JPA configuration files found.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table class="table table-striped table-bordered" id="jpaPersistenceUnitsTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Application</th>
+                <th>Datasources</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr *ngFor="let pu of jpaInfo.persistenceUnits">
+                <td>{{pu.name}}</td>
+                <td>{{(pu.application|async).name}}</td>
+                <td>
+                    TODO: Change the layout.
+                    <ul>
+                        <li *ngFor="let ds of pu.dataSources">
+                            {{ds.name}}
+                            (defined in {{ds.fileName}})
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+
+            <tr *ngIf="!jpaInfo.persistenceUnits.length">
+                <td colspan="3">No JPA persistence units found.</td>
+            </tr>
+        </tbody>
+    </table>
+
+
 </ng-container>

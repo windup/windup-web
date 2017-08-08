@@ -16,6 +16,8 @@ import {JPAEntityModel} from "../../generated/tsModels/JPAEntityModel";
 import {JPAPersistenceUnitModel} from "../../generated/tsModels/JPAPersistenceUnitModel";
 import {JPAConfigurationFileModel} from "../../generated/tsModels/JPAConfigurationFileModel";
 import {Observable} from "rxjs/Observable";
+import {JavaClassFileModel} from "../../generated/tsModels/JavaClassFileModel";
+import {JavaClassModel} from "../../generated/tsModels/JavaClassModel";
 
 @Component({
     selector: 'wu-jpa-report',
@@ -50,20 +52,14 @@ export class JpaReportComponent implements OnInit {
             this._router.navigate(['']);
         };
         this.jpaReportService.getJpaInfo(this.execID).subscribe(jpaInfo => this.jpaInfo = jpaInfo, onError);
-
-
-        //this._graph.
-        /*
-        this.jpaReportService.getStats(this.execID).subscribe(
-            jpaInfo => {
-            },
-            error => {
-                this._notificationService.error(utils.getErrorMessage(error));
-                this._router.navigate(['']);
-            }
-        );
-        */
     }
 
+    navigateToClassAsync(javaClass: Observable<JavaClassModel>) {
+        javaClass.subscribe(cls => {
+            cls.decompiledSource.subscribe( src => {
+                this._router.navigate(['../source/' + src.vertexId]);
+            })
+        } );
+    }
 }
 
