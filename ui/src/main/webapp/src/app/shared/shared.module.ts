@@ -58,6 +58,8 @@ import {DropdownFilterComponent} from "./filter/dropdown-filter.component";
 import {WebSocketSubjectFactory} from "./websocket.factory";
 import {EventBusService} from "../core/events/event-bus.service";
 import {LoadingIndicatorComponent} from "./loading-indicator.component";
+import {PaginationComponent} from "./pagination.component";
+import {PaginationService} from "./pagination.service";
 
 @NgModule({
     imports: [
@@ -85,7 +87,8 @@ import {LoadingIndicatorComponent} from "./loading-indicator.component";
             useFactory: getCacheServiceInstance
         },
         FileUploaderFactory,
-        WebSocketSubjectFactory
+        WebSocketSubjectFactory,
+        PaginationService
     ],
     declarations: [
         CustomSelectComponent,
@@ -124,6 +127,7 @@ import {LoadingIndicatorComponent} from "./loading-indicator.component";
         ToolbarComponent,
         AllDataFilteredMessageComponent,
         DropdownFilterComponent,
+        PaginationComponent,
 
         ShortenPipe,
 
@@ -172,6 +176,7 @@ import {LoadingIndicatorComponent} from "./loading-indicator.component";
         AllDataFilteredMessageComponent,
         DropdownFilterComponent,
         LoadingIndicatorComponent, // Needs to be in exports too, otherwise it would be private fot the module.
+        PaginationComponent,
 
         ProjectNameNotExistsValidator,
         IsRouteActiveDirective,

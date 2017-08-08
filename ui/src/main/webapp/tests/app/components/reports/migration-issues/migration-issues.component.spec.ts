@@ -17,6 +17,9 @@ import {WindupService} from "../../../../../src/app/services/windup.service";
 import {RouteFlattenerService} from "../../../../../src/app/core/routing/route-flattener.service";
 import {RouterMock} from "../../../mocks/router.mock";
 import {EffortLevelPipe} from "../../../../../src/app/reports/effort-level.enum";
+import {ProblemSummaryFilesComponent} from "../../../../../src/app/reports/migration-issues/problem-summary-files.component";
+import {PaginationService} from "../../../../../src/app/shared/pagination.service";
+import {PaginationComponent} from "../../../../../src/app/shared/pagination.component";
 
 let comp:    MigrationIssuesComponent;
 let fixture: ComponentFixture<MigrationIssuesComponent>;
@@ -31,7 +34,10 @@ describe('MigrationissuesComponent', () => {
 
         TestBed.configureTestingModule({
             imports: [ RouterTestingModule, HttpModule ],
-            declarations: [ MigrationIssuesComponent, MigrationIssuesTableComponent, ReportFilterIndicatorComponent, EffortLevelPipe ],
+            declarations: [
+                MigrationIssuesComponent, MigrationIssuesTableComponent, ProblemSummaryFilesComponent,
+                ReportFilterIndicatorComponent, EffortLevelPipe, PaginationComponent
+            ],
             providers: [
                 {
                     provide: Router,
@@ -41,6 +47,7 @@ describe('MigrationissuesComponent', () => {
                     provide: ActivatedRoute,
                     useValue: activatedRouteMock
                 },
+                PaginationService,
                 RouteFlattenerService,
                 MockBackend,
                 BaseRequestOptions,

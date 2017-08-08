@@ -1,0 +1,49 @@
+<table class="filesDetails table table-condensed">
+    <thead>
+    <tr>
+        <th class="fileName" style="width: 628px;">File</th>
+        <th class="count" style="width: 302px;">Incidents Found</th>
+        <th class="hint">Hint</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let incident of currentPageFiles; let isFirst = first">
+        <td class="fileName"><a (click)="navigateToSource(incident.file)">{{incident.file.fileName}}</a></td>
+        <td class="count">{{incident.occurrences}}</td>
+        <td class="hint" *ngIf="isFirst" [attr.rowspan]="currentPageFiles.length">
+            <div class="panel panel-default hint-detail-panel">
+                <div class="panel-heading">
+                    <h4 class="panel-title pull-left">Issue Detail: {{issue.issueName}}</h4>
+                    <div class="pull-right">
+                        <a class="sh_url" title="{{issue.ruleID}}"
+                           (click)="showRule(issue.ruleID)">Show Rule</a>
+                        <!--
+                            [routerLink] is currently buggy, cannot use relative navigation. Use this when it is fixed.
+                        <a class="sh_url" title="{{issue.ruleID}}"
+                           [routerLink]="['../executed-rules']"
+                           [queryParams]="{ruleID: issue.ruleID}">Show Rule</a>
+                        -->
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="panel-body">
+                    <div class="description" *ngFor="let description of issue.descriptions">
+                        <div [innerHTML]="renderMarkdownToHtml(description)"></div>
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <wu-pagination
+                    [countItems]="problemSummaryFiles.length"
+                    [itemsPerPage]="pagination.itemsPerPage"
+                    [(activePage)]="pagination.page"
+                    (activePageChange)="changePage($event)"
+            ></wu-pagination>
+        </td>
+        <td colspan="2"></td>
+    </tr>
+    </tbody>
+</table>

@@ -29,6 +29,7 @@ import {NgxChartsModule} from "@swimlane/ngx-charts";
 import {PackageChartComponent} from "./package-chart/package-chart.component";
 import {ExecutionsModule} from "../executions/executions.module";
 import {SourceResolve} from "./source/source.resolve";
+import {ProblemSummaryFilesComponent} from "./migration-issues/problem-summary-files.component";
 
 @NgModule({
     imports: [
@@ -46,6 +47,7 @@ import {SourceResolve} from "./source/source.resolve";
         ReportFilterIndicatorComponent,
         MigrationIssuesComponent,
         MigrationIssuesTableComponent,
+        ProblemSummaryFilesComponent,
         SourceReportComponent,
         TechnologiesReportComponent,
         TechnologyTagComponent,
