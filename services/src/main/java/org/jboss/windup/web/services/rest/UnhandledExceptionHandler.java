@@ -8,23 +8,24 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
+
 import org.jboss.windup.web.services.ServerMode;
 
 /**
- * This exception handler should handle all runtime exceptions.
- * It should prevent server from returning HTML Error page with stack trace and internals of error.
+ * This exception handler should handle all runtime exceptions. It should prevent server from returning HTML Error page with stack trace and internals
+ * of error.
  *
  * @author <a href="mailto:dklingenberg@gmail.com">David Klingenberg</a>
  * @author <a href="mailto:zizka@seznam.cz">Ondrej Zizka</a>
  */
 @Provider
-public class UnhandledExceptionHandler implements ExceptionMapper<RuntimeException>
+public class UnhandledExceptionHandler implements ExceptionMapper<Exception>
 {
     private static Logger LOG = Logger.getLogger(UnhandledExceptionHandler.class.getSimpleName());
     private final ExceptionHandler applicationExceptionHandler = new ExceptionHandler();
 
     @Override
-    public Response toResponse(RuntimeException exception)
+    public Response toResponse(Exception exception)
     {
         Throwable cause = exception.getCause();
         if (cause == null)
@@ -63,16 +64,34 @@ public class UnhandledExceptionHandler implements ExceptionMapper<RuntimeExcepti
     static final Throwable findFirstOccurenceInExceptionChain(Class<? extends Throwable> type, Throwable exception)
     {
         Throwable cause = exception;
-        while (cause != null && type.isAssignableFrom(cause.getClass()))
-            cause = exception.getCause();
-        return cause;
+
+        while (cause != null)
+        {
+            if (type.isAssignableFrom(cause.getClass()))
+            {
+                return cause;
+            }
+
+            cause = cause.getCause();
+        }
+
+        return null;
     }
 
     static final Throwable findFirstOccurenceInExceptionChain(String typeName, Throwable exception)
     {
         Throwable cause = exception;
-        while (cause != null && typeName.equals(cause.getClass().getName()))
-            cause = exception.getCause();
-        return cause;
+
+        while (cause != null)
+        {
+            if (typeName.equals(cause.getClass().getName()))
+            {
+                return cause;
+            }
+
+            cause = cause.getCause();
+        }
+
+        return null;
     }
 }
