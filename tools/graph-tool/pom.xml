@@ -16,14 +16,6 @@
     <properties>
         <browser>phantomjs</browser>
 
-        <!--
-            This property gives Jenkins a hint as to where to find Karma test results. This is needed since the Jenkins
-            Maven plugin does not currently automatically find this folder (as of Jenkins Maven 2.14 on November 28, 2016).
-
-
-            Documention is here: https://wiki.jenkins-ci.org/display/JENKINS/Building+a+maven2+project
-        -->
-        <jenkins.karmaTests.reportsDirectory>target/karma-reports</jenkins.karmaTests.reportsDirectory>
         <webpack.environment>development</webpack.environment>
     </properties>
 
@@ -135,36 +127,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>com.kelveden</groupId>
-                <artifactId>maven-karma-plugin</artifactId>
-                <version>1.8</version>
-                <executions>
-                    <execution>
-                        <id>karmaTests</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>start</goal>
-                        </goals>
-                        <configuration>
-                            <workingDirectory>src/main/webapp</workingDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-                <configuration>
-                    <karmaExecutable>node_modules/.bin/karma</karmaExecutable>
-                    <configFile>src/main/webapp/karma.conf.js</configFile>
-                    <junitReportFile>src/main/webapp/test-results.xml</junitReportFile>
-                    <reportsDirectory>${project.build.directory}/karma-reports</reportsDirectory>
-                    <browsers>PhantomJS</browsers>
-                    <autoWatch>false</autoWatch>
-                    <singleRun>true</singleRun>
-                    <colors>true</colors>
-                    <karmaFailureIgnore>false</karmaFailureIgnore>
-                    <reporters>progress,junit</reporters>
-                </configuration>
             </plugin>
 
         </plugins>
