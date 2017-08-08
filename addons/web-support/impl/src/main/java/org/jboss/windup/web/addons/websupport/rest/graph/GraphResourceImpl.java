@@ -4,13 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.core.Response;
 
+import com.tinkerpop.frames.modules.typedgraph.TypeValue;
 import org.jboss.windup.graph.GraphContext;
+import org.jboss.windup.graph.GraphTypeManager;
 import org.jboss.windup.graph.model.WindupVertexFrame;
 import org.jboss.windup.web.addons.websupport.rest.RestUtil;
 
@@ -20,6 +23,9 @@ import com.tinkerpop.blueprints.Query;
 import com.tinkerpop.blueprints.Vertex;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -29,6 +35,25 @@ import org.apache.commons.lang3.StringUtils;
 @Singleton
 public class GraphResourceImpl extends AbstractGraphResource implements GraphResource
 {
+    @Inject
+    private GraphTypeManager graphTypeManager;
+
+    @Override
+    public List<String> getTypes()
+    {
+        return this.graphTypeManager.getRegisteredTypes().stream()
+            .map(type -> {
+                TypeValue typeValueAnnotation = type.getAnnotation(TypeValue.class);
+                if (typeValueAnnotation == null)
+                    return null;
+
+                return typeValueAnnotation.value();
+            })
+            .filter(Objects::nonNull)
+            .sorted()
+            .collect(Collectors.toList());
+    }
+
     @Override
     public List<Map<String, Object>> getEdges(Long executionID, Integer vertexID, String edgeDirection, String edgeLabel, Boolean dedup)
     {

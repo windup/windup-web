@@ -69,6 +69,7 @@
         <module>services</module>
         <module>ui</module>
         <module>ear</module>
+        <module>tools/graph-tool</module>
     </modules>
 
     <dependencyManagement>

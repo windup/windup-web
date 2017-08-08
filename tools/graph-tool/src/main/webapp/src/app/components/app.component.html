@@ -1,0 +1,42 @@
+
+<table>
+    <tr>
+        <td>
+            Executions:
+        </td>
+        <td>
+            <select [(ngModel)]="selectedExecutionID">
+                <option *ngFor="let execution of executions" [value]="execution.execution.id">{{execution.project.title}} - {{execution.execution.id}}</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Available Types:
+        </td>
+        <td>
+            <select [(ngModel)]="selectedType">
+                <option *ngFor="let type of types" [value]="type">{{type}}</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>
+            <button (click)="search()">Run Query</button>
+        </td>
+    </tr>
+</table>
+
+<table style="width: 100%">
+    <tr>
+        <th *ngFor="let columnName of resultColumns">
+            {{columnName}}
+        </th>
+    </tr>
+    <tr *ngFor="let row of resultRows">
+        <td *ngFor="let propertyName of resultColumns">
+            {{row[propertyName]}}
+        </td>
+    </tr>
+</table>

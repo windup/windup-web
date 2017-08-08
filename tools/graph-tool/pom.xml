@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.jboss.windup.web</groupId>
+        <artifactId>windup-web-parent</artifactId>
+        <version>4.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>windup-web-graph-tool</artifactId>
+    <name>Windup Web - Graph Tool</name>
+    <packaging>war</packaging>
+
+    <properties>
+        <browser>phantomjs</browser>
+
+        <!--
+            This property gives Jenkins a hint as to where to find Karma test results. This is needed since the Jenkins
+            Maven plugin does not currently automatically find this folder (as of Jenkins Maven 2.14 on November 28, 2016).
+
+
+            Documention is here: https://wiki.jenkins-ci.org/display/JENKINS/Building+a+maven2+project
+        -->
+        <jenkins.karmaTests.reportsDirectory>target/karma-reports</jenkins.karmaTests.reportsDirectory>
+        <webpack.environment>development</webpack.environment>
+    </properties>
+
+    <dependencies>
+        <!-- Java EE -->
+        <dependency>
+            <groupId>org.jboss.spec</groupId>
+            <artifactId>jboss-javaee-7.0</artifactId>
+            <version>${version.jboss.javaee}</version>
+            <type>pom</type>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>2.3.25-incubating</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.4</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>graph-tool</finalName>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
+        <plugins>
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>src/main/webapp/typings/</directory>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                        <fileset>
+                            <directory>src/main/webapp/app/tsModels/</directory>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <warSourceExcludes>
+                        app,
+                        config/,
+                        src/,
+                        tests/,
+                        typings/,
+                        node_modules/,
+                        .gitignore,
+                        *.js,
+                        version/,
+                        *.json,
+                        *.html</warSourceExcludes>
+                    <delimiters>
+                        <delimiter>$MAVEN_TOKEN{*}</delimiter>
+                    </delimiters>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>npm-install</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+
+                        <configuration>
+                            <executable>yarn</executable>
+                            <workingDirectory>src/main/webapp</workingDirectory>
+                            <arguments>
+                                <argument>install</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>webpack-build</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+
+                        <configuration>
+                            <executable>./node_modules/.bin/webpack</executable>
+                            <workingDirectory>src/main/webapp</workingDirectory>
+                            <arguments>
+                                <argument>--progress</argument>
+                                <argument>--profile</argument>
+                                <argument>--env.environment=${webpack.environment}</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>com.kelveden</groupId>
+                <artifactId>maven-karma-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>karmaTests</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>start</goal>
+                        </goals>
+                        <configuration>
+                            <workingDirectory>src/main/webapp</workingDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <karmaExecutable>node_modules/.bin/karma</karmaExecutable>
+                    <configFile>src/main/webapp/karma.conf.js</configFile>
+                    <junitReportFile>src/main/webapp/test-results.xml</junitReportFile>
+                    <reportsDirectory>${project.build.directory}/karma-reports</reportsDirectory>
+                    <browsers>PhantomJS</browsers>
+                    <autoWatch>false</autoWatch>
+                    <singleRun>true</singleRun>
+                    <colors>true</colors>
+                    <karmaFailureIgnore>false</karmaFailureIgnore>
+                    <reporters>progress,junit</reporters>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>

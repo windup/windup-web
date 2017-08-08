@@ -6,6 +6,9 @@ import {ProjectTechnologiesStatsModel} from "../../generated/tsModels/ProjectTec
 import {GraphService} from "../../services/graph.service";
 import {GraphJSONToModelService} from "../../services/graph/graph-json-to-model.service";
 import {Cached} from "../../shared/cache.service";
+import {EjbMessageDrivenModel} from "../../generated/tsModels/EjbMessageDrivenModel";
+import {EjbEntityBeanModel} from "../../generated/tsModels/EjbEntityBeanModel";
+import {EjbSessionBeanModel} from "../../generated/tsModels/EjbSessionBeanModel";
 
 @Injectable()
 export class TechReportService extends GraphService
@@ -22,7 +25,26 @@ export class TechReportService extends GraphService
             includeInVertices: false
         });
     }
- }
+
+    getEjbMessageDrivenModel(execID: number): Observable<EjbMessageDrivenModel[]> {
+        return this.getTypeAsArray<EjbMessageDrivenModel>(EjbMessageDrivenModel.discriminator, execID, {
+            depth: 1
+        });
+    }
+
+    getEjbSessionBeanModel(execID: number, sessionType: string): Observable<EjbSessionBeanModel[]> {
+        return this.getTypeAsArray<EjbSessionBeanModel>(EjbSessionBeanModel.discriminator, execID, {
+            depth: 1
+        },'sessionType', sessionType);
+    }
+
+    getEjbEntityBeanModel(execID: number): Observable<EjbEntityBeanModel[]> {
+        return this.getTypeAsArray<EjbEntityBeanModel>(EjbEntityBeanModel.discriminator, execID, {
+            depth: 1
+        });
+    }
+
+}
 
 export class StatsItem {
     key: string;
