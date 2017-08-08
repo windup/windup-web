@@ -15,11 +15,17 @@ import {ApplicationDetailsComponent} from "./application-details/application-det
 import {RuleProviderExecutionsComponent} from "../executions/rule-provider-executions/rule-provider-executions.component";
 import {FullFlattenedRoute} from "../core/routing/route-flattener.service";
 import {ExecutionDetailComponent} from "../executions/execution-detail.component";
+import {TechnologiesEJBReportComponent} from "./technologies/technologies-report-ejb.component";
 
 export const executionLevelRoutes: Routes = [
     {path: '', component: ExecutionApplicationListComponent, data: {displayName: 'Applications'}},
     {path: 'dependencies-report', component: DependenciesReportComponent, data: {displayName: 'Dependency Report'}},
-    {path: 'technology-report', component: TechnologiesReportComponent, data: {displayName: 'Technology Report'}},
+    {path: 'technology-report', component: TechnologiesReportComponent, data: {displayName: 'Technology Report'},
+        children: [
+            {path: 'ejb', component: TechnologiesEJBReportComponent, data: {displayName: 'Technology EJB Report'}},
+        ]
+    },
+    {path: 'technology-report-ejb', component: TechnologiesEJBReportComponent, data: {displayName: 'Technology EJB Report'}},
     {path: 'migration-issues',
         children: [
             {path: '', component: MigrationIssuesComponent, data: {displayName: 'Issues'}},

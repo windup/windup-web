@@ -29,6 +29,8 @@ import {NgxChartsModule} from "@swimlane/ngx-charts";
 import {PackageChartComponent} from "./package-chart/package-chart.component";
 import {ExecutionsModule} from "../executions/executions.module";
 import {SourceResolve} from "./source/source.resolve";
+import {TechnologiesEJBReportComponent} from "./technologies/technologies-report-ejb.component";
+
 
 @NgModule({
     imports: [
@@ -55,6 +57,7 @@ import {SourceResolve} from "./source/source.resolve";
 
         EffortLevelPipe,
         PrettyPathPipe,
+        TechnologiesEJBReportComponent,
     ],
     exports: [
         ApplicationDetailsComponent,
@@ -68,6 +71,7 @@ import {SourceResolve} from "./source/source.resolve";
 
         TechnologyTagComponent,
         ExecutionApplicationListComponent,
+        TechnologiesEJBReportComponent,
 
     ],
     providers: [

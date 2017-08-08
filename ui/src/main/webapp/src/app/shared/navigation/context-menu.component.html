@@ -7,6 +7,7 @@
             [activeClasses]="['active']"
             [wuRouterLink]="item.link"
             [wuContextMenuItem]="item"
+            [ngClass]="{'secondary-nav-item-pf': (item.innerMenuItem && item.innerMenuItem.length > 0)}"
         >
             <span class="fa" ngClass="{{item.icon}}" data-toggle="tooltip" title="" [attr.data-original-title]="item.label" router-mode></span>
             <span class="list-group-item-value" router-mode>{{item.label}}</span>
