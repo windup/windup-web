@@ -157,6 +157,12 @@ export class ApplicationLevelLayoutComponent extends ExecutionsLayoutComponent {
                 this.application,
                 'migration-issues'
             ),
+            new ContextMenuItem(
+                'Hardcoded IP',
+                'fa-map-marker',
+                true,
+                'hardcoded-ip'
+            ),
         ];
 
         if (!WINDUP_WEB.config.hideUnfinishedFeatures) {

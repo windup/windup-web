@@ -111,12 +111,6 @@ export class ExecutionsLayoutComponent extends ProjectLayoutComponent implements
                 'technology-report-change-me'
             ),
             new ContextMenuItem(
-                'Hardcoded IP',
-                null,
-                false,
-                'technology-report-change-me'
-            ),
-            new ContextMenuItem(
                 'Remote Services',
                 null,
                 false,

@@ -1,0 +1,20 @@
+.header-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.button-container {
+  padding-top: 15px;
+}
+
+.search-and-create {
+  display: flex;
+  flex-direction: row;
+}
+
+:host /deep/ {
+  .search-and-create .search-component {
+    padding-top: 20px;
+  }
+}

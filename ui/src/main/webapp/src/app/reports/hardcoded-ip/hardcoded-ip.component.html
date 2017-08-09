@@ -1,0 +1,44 @@
+<div *ngIf="loading">
+    Loading...
+</div>
+
+<div class="panel-body" *ngIf="!loading">
+
+    <ng-container>
+        <div class="header-bar">
+            <h2>Hardcoded IP Addresses</h2>
+            <div class="search-and-create">
+                <div class="search-and-create">
+                    <wu-search [(searchValue)]="searchText" (searchValueChange)="updateSearch()"></wu-search>
+                </div>
+            </div>
+        </div>
+
+        <wu-all-data-filtered-message
+                [filteredItems]="filteredHardcodedIPs"
+                [unfilteredItems]="hardcodedIPs"
+                (clearFilter)="clearSearch()">
+            <table class="table table-bordered table-hover" *ngIf="filteredHardcodedIPs.length > 0; else noDataAvailable">
+                <thead wu-sortable-table
+                       (sortedDataChange)="setSortedData($event)" [data]="filteredHardcodedIPs"
+                       [tableHeaders]="[
+                    { title: 'File', isSortable: true, sortBy: 'filename' },
+                    { title: 'Location', isSortable: true, sortBy: 'row'},
+                    { title: 'IP Address', isSortable: true, sortBy: 'ipAddress'}
+                ]">
+                </thead>
+                <tbody>
+                <tr *ngFor="let hardcodedIP of sortedHardcodedIPs">
+                    <td class="col-md-4">
+                        <a [routerLink]="['source/' + hardcodedIP.sourceVertexID]">{{hardcodedIP.prettyName}}</a>
+                    </td>
+                    <td class="col-md-6">Line: {{hardcodedIP.row}}, Position: {{hardcodedIP.column}}</td>
+                    <td class="col-md-2">{{hardcodedIP.ipAddress}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </wu-all-data-filtered-message>
+
+<ng-template #noDataAvailable>
+    <span>No hardcoded IPs were detected.</span>
+</ng-template>

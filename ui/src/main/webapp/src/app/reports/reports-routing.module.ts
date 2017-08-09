@@ -16,6 +16,7 @@ import {RuleProviderExecutionsComponent} from "../executions/rule-provider-execu
 import {FullFlattenedRoute} from "../core/routing/route-flattener.service";
 import {ExecutionDetailComponent} from "../executions/execution-detail.component";
 import {TechnologiesEJBReportComponent} from "./technologies/technologies-report-ejb.component";
+import {HardcodedIPReportComponent} from "./hardcoded-ip/hardcoded-ip.component";
 
 export const executionLevelRoutes: Routes = [
     {path: '', component: ExecutionApplicationListComponent, data: {displayName: 'Applications'}},
@@ -26,6 +27,7 @@ export const executionLevelRoutes: Routes = [
         ]
     },
     {path: 'technology-report-ejb', component: TechnologiesEJBReportComponent, data: {displayName: 'EJB Report'}},
+    {path: 'technology-report-hardcoded-ip', component: HardcodedIPReportComponent, data: {displayName: 'Hardcoded IP Addresses'}},
     {path: 'migration-issues',
         children: [
             {path: '', component: MigrationIssuesComponent, data: {displayName: 'Issues'}},
@@ -40,6 +42,12 @@ export const executionLevelRoutes: Routes = [
             {path: 'source/:fileId', component: SourceReportComponent, resolve: { sourceFile: SourceResolve }, data: {
                 displayName: 'Source Report', breadcrumbTitle: getSourceReportBreadcrumbTitle
             }}
+        ]
+    },
+    {path: 'hardcoded-ip',
+        children: [
+            {path: '', component: HardcodedIPReportComponent, data: {displayName: 'Hardcoded IP Addresses'}},
+            {path: 'source/:fileId', component: SourceReportComponent, resolve: { sourceFile: SourceResolve }, data: {displayName: 'Source Report', breadcrumbTitle: getSourceReportBreadcrumbTitle}}
         ]
     },
     {path: 'executed-rules', component: RuleProviderExecutionsComponent, data: {displayName: 'Executed Rules'}},

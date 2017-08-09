@@ -1,5 +1,4 @@
 import {NgModule} from "@angular/core";
-
 import {TagDataService} from "./tag-data.service";
 import {PrettyPathPipe} from "./pretty-path.pipe";
 import {TechnologyTagComponent} from "./technology-tag/technology-tag.component";
@@ -32,6 +31,8 @@ import {ExecutionsModule} from "../executions/executions.module";
 import {SourceResolve} from "./source/source.resolve";
 import {ProblemSummaryFilesComponent} from "./migration-issues/problem-summary-files.component";
 import {TechnologiesEJBReportComponent} from "./technologies/technologies-report-ejb.component";
+import {HardcodedIPReportComponent} from "./hardcoded-ip/hardcoded-ip.component";
+import {HardcodedIPService} from "./hardcoded-ip/hardcoded-ip.service";
 
 @NgModule({
     imports: [
@@ -60,6 +61,7 @@ import {TechnologiesEJBReportComponent} from "./technologies/technologies-report
         EffortLevelPipe,
         PrettyPathPipe,
         TechnologiesEJBReportComponent,
+        HardcodedIPReportComponent
     ],
     exports: [
         ApplicationDetailsComponent,
@@ -89,7 +91,8 @@ import {TechnologiesEJBReportComponent} from "./technologies/technologies-report
         TagDataService,
         // TagFilterService
         SourceResolve,
-        EffortLevelPipe
+        EffortLevelPipe,
+        HardcodedIPService
     ]
 })
 export class ReportsModule {
