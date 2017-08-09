@@ -1,5 +1,5 @@
 import {Component, OnInit, AfterViewChecked, ViewEncapsulation} from "@angular/core";
-import {ActivatedRoute, Params, Router, NavigationEnd} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {Observable} from "rxjs";
 
 import * as showdown from "showdown";
@@ -103,10 +103,14 @@ export class SourceReportComponent extends RoutedComponent implements OnInit, Af
     get storyPoints(): number {
         let points = 0;
         if (this.hints)
-            this.hints.forEach((hint) => points += hint.effort);
+            this.hints
+                .filter(hint => hint.effort != null)
+                .forEach((hint) => points += hint.effort);
 
         if (this.classifications)
-            this.classifications.forEach((classification) => points += classification.effort);
+            this.classifications
+                .filter(classification => classification.effort != null)
+                .forEach((classification) => points += classification.effort);
 
         return points;
     }
@@ -160,6 +164,8 @@ export class SourceReportComponent extends RoutedComponent implements OnInit, Af
     markdown(input: string): string {
         return new showdown.Converter().makeHtml(input);
     }
+
+
 
     ngAfterViewChecked(): void {
         if (this.rendered)

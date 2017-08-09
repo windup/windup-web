@@ -70,8 +70,8 @@
             </div>
             <div class="inline-comment-body">
                 <span [outerHTML]="markdown(hintModel.hint)"></span>
-                <ul *ngIf="(hintModel.links | async).length > 0" class="links"
-                    ><li *ngFor="let link of (hintModel.links | async)">
+                <ul *ngIf="(hintModel?.links | async)?.length > 0" class="links"
+                    ><li *ngFor="let link of (hintModel?.links | async)">
                         <a href="{{link.link}}" target="_blank">{{link.description}}</a>
                     </li
                 ></ul>
