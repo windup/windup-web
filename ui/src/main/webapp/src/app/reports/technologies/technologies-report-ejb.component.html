@@ -23,16 +23,16 @@
                         <thead wu-sortable-table
                                [(sortedData)]="sortedEjbMessageDriven" [data]="filteredEjbMessageDriven"
                                [tableHeaders]="[
-                            { title: 'MDB Name', isSortable: true, sortBy: 'beanName' },
-                            { title: 'Class', isSortable: true, sortBy: sortByQualifiedNameCallback},
-                            { title: 'JMS Destination', isSortable: false, sortBy: '' }
+                            { title: 'MDB Name', isSortable: true, sortBy: 'name' },
+                            { title: 'Class', isSortable: true, sortBy: 'class'},
+                            { title: 'JMS Destination', isSortable: true, sortBy: 'location'}
                         ]">
                         </thead>
                         <tbody>
                         <tr *ngFor="let mdb of this.sortedEjbMessageDriven">
-                            <td class="col-md-3">{{mdb?.beanName}}</td>
-                            <td class="col-md-7"><a [routerLink]="['../source/' + ((mdb?.ejbClass | async)?.decompiledSource | async)?.vertexId]">{{(mdb?.ejbClass | async)?.qualifiedName}}</a></td>
-                            <td class="col-md-2">{{(mdb?.destination | async)?.jndiLocation}}</td>
+                            <td class="col-md-4">{{mdb.name}}</td>
+                            <td class="col-md-6"><a [routerLink]="['../source/' + mdb.sourceVertexId]">{{mdb.class}}</a></td>
+                            <td class="col-md-2">{{mdb.location}}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -98,18 +98,18 @@
                         <thead wu-sortable-table
                                [(sortedData)]="sortedEjbSessionStatelessBean" [data]="filteredEjbSessionStatelessBean"
                                [tableHeaders]="[
-                                { title: 'Bean Name', isSortable: true, sortBy: 'beanName' },
-                                { title: 'Interface', isSortable: false, sortBy: ''},
-                                { title: 'Implementation', isSortable: false, sortBy: ''},
-                                { title: 'JNDI Location', isSortable: false, sortBy: '' }
+                                { title: 'Bean Name', isSortable: true, sortBy: 'name' },
+                                { title: 'Interface', isSortable: true, sortBy: 'interface'},
+                                { title: 'Implementation', isSortable: true, sortBy: 'class'},
+                                { title: 'JNDI Location', isSortable: true, sortBy: 'location'}
                             ]">
                         </thead>
                         <tbody>
                             <tr *ngFor="let value of this.sortedEjbSessionStatelessBean">
-                                <td class="col-md-2"><a [routerLink]="['../source/' + (value?.ejbDeploymentDescriptor | async)?.vertexId]">{{value?.beanName}}</a></td>
-                                <td class="col-md-1">{{(value?.ejbLocal | async)?.qualifiedName}} {{(value?.ejbRemote | async)?.qualifiedName}}</td>
-                                <td class="col-md-7"><a [routerLink]="['../source/' + ((value?.ejbClass | async)?.decompiledSource | async)?.vertexId]">{{(value?.ejbClass | async)?.qualifiedName}}</a></td>
-                                <td class="col-md-2">{{(value?.globalJndiReference | async)?.jndiLocation}}</td>
+                                <td class="col-md-2">{{value.name}}</td>
+                                <td class="col-md-2">{{value.interface}}</td>
+                                <td class="col-md-6"><a [routerLink]="['../source/' + value.sourceVertexId]">{{value.class}}</a></td>
+                                <td class="col-md-2">{{value.location}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -130,18 +130,18 @@
                         <thead wu-sortable-table
                                [(sortedData)]="sortedEjbSessionStatefulBean" [data]="filteredEjbSessionStatefulBean"
                                [tableHeaders]="[
-                                { title: 'Bean Name', isSortable: true, sortBy: 'beanName' },
-                                { title: 'Interface', isSortable: false, sortBy: ''},
-                                { title: 'Implementation', isSortable: false, sortBy: ''},
-                                { title: 'JNDI Location', isSortable: false, sortBy: '' }
+                                { title: 'Bean Name', isSortable: true, sortBy: 'name' },
+                                { title: 'Interface', isSortable: true, sortBy: 'interface'},
+                                { title: 'Implementation', isSortable: true, sortBy: 'class'},
+                                { title: 'JNDI Location', isSortable: true, sortBy: 'location'}
                             ]">
                         </thead>
                         <tbody>
                         <tr *ngFor="let value of this.sortedEjbSessionStatefulBean">
-                            <td class="col-md-2"><a [routerLink]="['../source/' + (value?.ejbDeploymentDescriptor | async)?.vertexId]">{{value?.beanName}}</a></td>
-                            <td class="col-md-1">{{(value?.ejbLocal | async)?.qualifiedName}} {{(value?.ejbRemote | async)?.qualifiedName}}</td>
-                            <td class="col-md-7"><a [routerLink]="['../source/' + ((value?.ejbClass | async)?.decompiledSource | async)?.vertexId]">{{(value?.ejbClass | async)?.qualifiedName}}</a></td>
-                            <td class="col-md-2">{{(value?.globalJndiReference | async)?.jndiLocation}}</td>
+                            <td class="col-md-2">{{value.name}}</td>
+                            <td class="col-md-2">{{value.interface}}</td>
+                            <td class="col-md-6"><a [routerLink]="['../source/' + value.sourceVertexId]">{{value.class}}</a></td>
+                            <td class="col-md-2">{{value.location}}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -162,18 +162,18 @@
                         <thead wu-sortable-table
                                [(sortedData)]="sortedEjbEntityBean" [data]="filteredEjbEntityBean"
                                [tableHeaders]="[
-                                { title: 'Bean Name', isSortable: true, sortBy: 'beanName' },
-                                { title: 'Interface', isSortable: false, sortBy: ''},
-                                { title: 'Implementation', isSortable: false, sortBy: ''},
-                                { title: 'JNDI Location', isSortable: false, sortBy: '' }
+                                { title: 'Bean Name', isSortable: true, sortBy: 'name' },
+                                { title: 'Interface', isSortable: true, sortBy: 'interface'},
+                                { title: 'Implementation', isSortable: true, sortBy: 'class'},
+                                { title: 'JNDI Location', isSortable: true, sortBy: 'location'}
                             ]">
                         </thead>
                         <tbody>
                         <tr *ngFor="let value of this.sortedEjbEntityBean">
-                            <td class="col-md-2"><a [routerLink]="['../source/' + (value?.ejbDeploymentDescriptor | async)?.vertexId]">{{value?.beanName}}</a></td>
-                            <td class="col-md-1">{{(value?.ejbLocal | async)?.qualifiedName}} {{(value?.ejbRemote | async)?.qualifiedName}}</td>
-                            <td class="col-md-7"><a [routerLink]="['../source/' + ((value?.ejbClass | async)?.decompiledSource | async)?.vertexId]">{{(value?.ejbClass | async)?.qualifiedName}}</a></td>
-                            <td class="col-md-2">{{(value?.globalJndiReference | async)?.jndiLocation}}</td>
+                            <td class="col-md-2">{{value.name}}</td>
+                            <td class="col-md-2">{{value.interface}}</td>
+                            <td class="col-md-6"><a [routerLink]="['../source/' + value.sourceVertexId]">{{value.class}}</a></td>
+                            <td class="col-md-2">{{value.location}}</td>
                         </tr>
                         </tbody>
                     </table>

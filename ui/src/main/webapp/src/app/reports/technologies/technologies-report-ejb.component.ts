@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, OnChanges, OnInit} from "@angular/core";
 import {ActivatedRoute, Params, Router}   from '@angular/router';
 
 import {TechReportService, StatsItem} from "./tech-report.service";
@@ -16,6 +16,7 @@ import {JavaClassFileModel} from "../../generated/tsModels/JavaClassFileModel";
 import {JavaClassModel} from "../../generated/tsModels/JavaClassModel";
 import {EjbSessionBeanModel} from "../../generated/tsModels/EjbSessionBeanModel";
 import {EjbEntityBeanModel} from "../../generated/tsModels/EjbEntityBeanModel";
+import {EjbBeanBaseModel} from "../../generated/tsModels/EjbBeanBaseModel";
 
 @Component({
     selector: 'wu-technologies-report-ejb',
@@ -27,25 +28,23 @@ export class TechnologiesEJBReportComponent implements OnInit {
     private execID: number;
     private reportId: Observable<string>;
 
-    private ejbMessageDriven: EjbMessageDrivenModel[] = [];
-    private filteredEjbMessageDriven : EjbMessageDrivenModel[] = [];
-    private sortedEjbMessageDriven : EjbMessageDrivenModel[] = [];
+    public ejbMessageDriven: EJBStat[] = [];
+    public filteredEjbMessageDriven : EJBStat[] = [];
+    public sortedEjbMessageDriven : EJBStat[] = [];
 
-    private ejbSessionStatelessBean: EjbSessionBeanModel[] = [];
-    private filteredEjbSessionStatelessBean: EjbSessionBeanModel[] = [];
-    private sortedEjbSessionStatelessBean: EjbSessionBeanModel[] = [];
+    public ejbSessionStatelessBean: EJBStat[] = [];
+    public filteredEjbSessionStatelessBean: EJBStat[] = [];
+    public sortedEjbSessionStatelessBean: EJBStat[] = [];
 
-    private ejbSessionStatefulBean: EjbSessionBeanModel[] = [];
-    private filteredEjbSessionStatefulBean: EjbSessionBeanModel[] = [];
-    private sortedEjbSessionStatefulBean: EjbSessionBeanModel[] = [];
+    public ejbSessionStatefulBean: EJBStat[] = [];
+    public filteredEjbSessionStatefulBean: EJBStat[] = [];
+    public sortedEjbSessionStatefulBean: EJBStat[] = [];
 
-    private ejbEntityBean: EjbEntityBeanModel[] = [];
-    private filteredEjbEntityBean: EjbEntityBeanModel[] = [];
-    private sortedEjbEntityBean: EjbEntityBeanModel[] = [];
+    public ejbEntityBean: EJBStat[] = [];
+    public filteredEjbEntityBean: EJBStat[] = [];
+    public sortedEjbEntityBean: EJBStat[] = [];
 
     public searchText: string;
-
-    private fake: number = 0;
 
     constructor(
         private route: ActivatedRoute,
@@ -67,7 +66,7 @@ export class TechnologiesEJBReportComponent implements OnInit {
     fetchEJBData(): void {
         this.techReportService.getEjbMessageDrivenModel(this.execID).subscribe(
             value => {
-                this.ejbMessageDriven = value;
+                this.ejbMessageDriven = this.loadStats(value);
                 this.filteredEjbMessageDriven = this.ejbMessageDriven;
                 this.sortedEjbMessageDriven = this.ejbMessageDriven;
             },
@@ -79,7 +78,7 @@ export class TechnologiesEJBReportComponent implements OnInit {
 
         this.techReportService.getEjbSessionBeanModel(this.execID, 'Stateless').subscribe(
             value => {
-                this.ejbSessionStatelessBean = value;
+                this.ejbSessionStatelessBean = this.loadStats(value);
                 this.filteredEjbSessionStatelessBean = this.ejbSessionStatelessBean;
                 this.sortedEjbSessionStatelessBean = this.ejbSessionStatelessBean;
 
@@ -92,7 +91,7 @@ export class TechnologiesEJBReportComponent implements OnInit {
 
         this.techReportService.getEjbSessionBeanModel(this.execID, 'Stateful').subscribe(
             value => {
-                this.ejbSessionStatefulBean = value;
+                this.ejbSessionStatefulBean = this.loadStats(value);
                 this.filteredEjbSessionStatefulBean = this.ejbSessionStatefulBean;
                 this.sortedEjbSessionStatefulBean = this.ejbSessionStatefulBean;
             },
@@ -104,7 +103,8 @@ export class TechnologiesEJBReportComponent implements OnInit {
 
         this.techReportService.getEjbEntityBeanModel(this.execID).subscribe(
             value => {
-                this.ejbEntityBean = value;
+                // this.ejbEntityBean = value;
+                this.ejbEntityBean = this.loadStats(value);
                 this.filteredEjbEntityBean = this.ejbEntityBean;
                 this.sortedEjbEntityBean = this.ejbEntityBean;
             },
@@ -119,16 +119,16 @@ export class TechnologiesEJBReportComponent implements OnInit {
     updateSearch() {
         if (this.searchText && this.searchText.length > 0) {
             this.filteredEjbMessageDriven = this.ejbMessageDriven.filter(mdb => (
-                mdb.beanName.search(new RegExp(this.searchText, 'i')) !== -1)
+                this.filter(mdb))
             );
             this.filteredEjbSessionStatelessBean = this.ejbSessionStatelessBean.filter(ejb => (
-                ejb.beanName.search(new RegExp(this.searchText, 'i')) !== -1)
+                this.filter(ejb))
             );
             this.filteredEjbSessionStatefulBean = this.ejbSessionStatefulBean.filter(ejb => (
-                ejb.beanName.search(new RegExp(this.searchText, 'i')) !== -1)
+                this.filter(ejb))
             );
             this.filteredEjbEntityBean = this.ejbEntityBean.filter(ejb => (
-                ejb.beanName.search(new RegExp(this.searchText, 'i')) !== -1)
+                this.filter(ejb))
             );
         } else {
             this.filteredEjbMessageDriven = this.ejbMessageDriven;
@@ -143,14 +143,75 @@ export class TechnologiesEJBReportComponent implements OnInit {
         this.updateSearch();
     }
 
+    filter(item:EJBStat): boolean {
+        return (
+            item.name.search(new RegExp(this.searchText, 'i')) !== -1 ||
+            item.class.search(new RegExp(this.searchText, 'i')) !== -1 ||
+            item.location.search(new RegExp(this.searchText, 'i')) !== -1)
+    }
 
+    loadStats(values:EjbBeanBaseModel[]):EJBStat[] {
+        let result = [];
+        values.forEach( mdb => {
+            let mdbStat: EJBStat = {
+                name: '',
+                class: '',
+                location: '',
+                sourceVertexId: null,
+                interface: ''
+            };
+            mdbStat.name = mdb.beanName;
 
-    sortByQualifiedNameCallback = (item: EjbMessageDrivenModel) : string => {
-/*        item.ejbClass.subscribe( clazz => {
-            let qualifiedName = clazz.qualifiedName;
-            console.log(qualifiedName);
-            return qualifiedName;
-        });*/
-        return (this.fake++).toString();
-    };
+            mdb.ejbClass.subscribe(clazz => {
+                mdbStat.class = clazz.qualifiedName;
+                clazz.decompiledSource.subscribe(source => {
+                    if (source) {
+                        mdbStat.sourceVertexId = source.vertexId;
+                    }
+                });
+            });
+
+            if (mdb instanceof EjbMessageDrivenModel) {
+                mdb.destination.subscribe(destination => {
+                    if (destination) {
+                        mdbStat.location = destination.jndiLocation;
+                    }
+                });
+            } else if (mdb instanceof EjbSessionBeanModel) {
+                mdb.globalJndiReference.subscribe(destination => {
+                    if (destination) {
+                        mdbStat.location = destination.jndiLocation;
+                    }
+                });
+
+                mdb.ejbLocal.subscribe(interfaze => {
+                    if (interfaze) {
+                        mdbStat.interface = interfaze.qualifiedName;
+                    } else {
+                        mdb.ejbRemote.subscribe(interfaze => {
+                            if (interfaze) {
+                                mdbStat.interface = interfaze.qualifiedName;
+                            }
+                        });
+                    }
+                });
+
+                mdb.ejbDeploymentDescriptor.subscribe(deploymentDescriptor => {
+                    if (deploymentDescriptor) {
+                        mdbStat.sourceVertexId = deploymentDescriptor.vertexId;
+                    }
+                });
+            }
+            result.push(mdbStat);
+        });
+        return result;
+    }
+}
+
+interface EJBStat {
+    name: String,
+    class: String,
+    location: String,
+    sourceVertexId: number,
+    interface: String;
 }
