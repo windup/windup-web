@@ -19,7 +19,7 @@ import {utils} from "../../shared/utils";
         '../../../../css/tables.scss'
     ]
 })
-export class ExecutionApplicationListComponent extends RoutedComponent implements OnInit, OnDestroy
+export class ExecutionApplicationListComponent extends RoutedComponent implements OnInit
 {
     private projectID: number;
     private execID: number;
@@ -71,9 +71,6 @@ export class ExecutionApplicationListComponent extends RoutedComponent implement
             },
             error => this._notificationService.error(utils.getErrorMessage(error))
         );
-    }
-
-    ngOnDestroy() {
     }
 
     updateSearch() {
