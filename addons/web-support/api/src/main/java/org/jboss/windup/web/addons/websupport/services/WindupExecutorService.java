@@ -39,13 +39,4 @@ public interface WindupExecutorService
             List<String> target,
             Map<String, Object> otherOptions,
             boolean generateStaticReports);
-
-    /**
-     * Gets the filesystem path to the report for a given application.
-     *
-     * @param outputDirectory This should be the path to a directory containing the reports from a previous execution of
-     *                        Windup.
-     * @param applicationPath This is the input application to search for.
-     */
-    String getReportIndexPath(Path outputDirectory, Path applicationPath);
 }
