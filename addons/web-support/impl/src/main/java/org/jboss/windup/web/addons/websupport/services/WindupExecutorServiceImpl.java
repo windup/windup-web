@@ -23,10 +23,6 @@ import org.jboss.windup.exec.rulefilters.NotPredicate;
 import org.jboss.windup.exec.rulefilters.RuleProviderPhasePredicate;
 import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.GraphContextFactory;
-import org.jboss.windup.graph.model.resource.FileModel;
-import org.jboss.windup.graph.service.FileService;
-import org.jboss.windup.reporting.model.ApplicationReportModel;
-import org.jboss.windup.reporting.service.ApplicationReportService;
 import org.jboss.windup.rules.apps.java.config.ExcludePackagesOption;
 import org.jboss.windup.rules.apps.java.config.ScanPackagesOption;
 import org.jboss.windup.util.exception.WindupException;
@@ -118,20 +114,4 @@ public class WindupExecutorServiceImpl implements WindupExecutorService
         }
     }
 
-    @Override
-    public String getReportIndexPath(Path outputPath, Path applicationPath)
-    {
-        Path graphPath = outputPath.resolve(GraphContextFactory.DEFAULT_GRAPH_SUBDIRECTORY);
-        GraphContext context = graphCache.getGraph(graphPath, false);
-        FileModel applicationFileModel = new FileService(context).findByPath(applicationPath.toString());
-
-        ApplicationReportService service = new ApplicationReportService(context);
-        ApplicationReportModel reportModel = service.getMainApplicationReportForFile(applicationFileModel);
-
-        if (reportModel == null)
-            return null;
-
-        return reportModel.getReportFilename();
-
-    }
 }

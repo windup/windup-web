@@ -177,21 +177,5 @@ public class StatusUpdateMDB extends AbstractMDB implements MessageListener
 
         Set<RegisteredApplication> applications = context.getApplications();
         applications.removeIf((RegisteredApplication app) -> app.isDeleted());
-        for (RegisteredApplication application : applications)
-        {
-            Path applicationPath = Paths.get(application.getInputPath());
-
-            /*
-             * FIXME - This is a little bit of a hack to just get the relative path for the web client.
-             *
-             * Could potentially be moved into a service inside of the Windup Furnace API?
-             */
-            String reportDirectoryName = reportDirectory.getFileName().toString();
-            String reportIndexFilename = windupExecutorService.getReportIndexPath(reportDirectory, applicationPath);
-
-            application.setReportIndexPath(reportDirectoryName + "/reports/" + reportIndexFilename);
-            entityManager.merge(application);
-            // END FIXME
-        }
     }
 }
