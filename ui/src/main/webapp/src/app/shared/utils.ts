@@ -1,5 +1,4 @@
 import {Observable} from "rxjs/Observable";
-import {EjbMessageDrivenModel} from "../generated/tsModels/EjbMessageDrivenModel";
 
 export function substringAfterLast(str, delimiter) {
     return str.substring(str.lastIndexOf(delimiter) + 1); // +1 trick for no occurence.
@@ -45,6 +44,36 @@ export module utils {
         return format.replace(/{(\d+)}/g, function(match, number) {
             return typeof replacements[number] != 'undefined' ? replacements[number] : match;
         });
+    }
+
+    /**
+     * Returns value of nested object property, or default value
+     *
+     * (fail-safe for situation when some object of a.b.c.d path is null|undefined, similar to ?. operator)
+     *
+     * Example:
+     *
+     * @param object
+     * @param {string[]} propertiesPath
+     * @param defaultValue
+     * @returns {any}
+     */
+    export function nullCoalesce(object: any, defaultValue: any = null, ...propertiesPath: string[]): any {
+        let currentObject = object;
+
+        for (let property of propertiesPath) {
+            if (currentObject === null || currentObject === undefined /* || !currentObject.hasOwnProperty(property) */ ) {
+                return defaultValue;
+            }
+
+            currentObject = currentObject[property];
+        }
+
+        if (currentObject === null || currentObject === undefined) {
+            return defaultValue;
+        }
+
+        return currentObject;
     }
 
     export class Arrays {
