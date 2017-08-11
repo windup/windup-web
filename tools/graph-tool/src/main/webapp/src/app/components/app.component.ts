@@ -9,18 +9,20 @@ export class AppComponent implements AfterViewInit {
 
     blackListedProperties = ["vertices_in", "vertices_out"];
 
-    executions:{execution:any, project:any}[];
-    selectedExecutionID:any;
+    executions: { execution: any, project: any }[];
+    selectedExecutionID: any;
 
-    types:string[];
-    selectedType:string;
+    types: ModelTypeInformation[];
+    selectedTypeDiscriminator: string;
 
-    resultColumns:string[];
-    resultRows:any[];
+    errorText: string;
 
-    constructor(
-        private _http:Http
-    ) {
+    resultColumns: string[];
+    resultVerticesIn: string[];
+    resultVerticesOut: string[];
+    resultRows: any[];
+
+    constructor(private _http: Http) {
 
     }
 
@@ -30,35 +32,79 @@ export class AppComponent implements AfterViewInit {
     }
 
     search() {
-        if (this.selectedExecutionID == null || this.selectedType == null) {
-            console.log("No search specified");
+        if (this.selectedExecutionID == null || this.selectedTypeDiscriminator == null) {
+            this.errorText = "All Parameters are required!";
             return;
         }
 
         let selectedExecution = this.executions.find(execution => execution.execution.id == this.selectedExecutionID);
         if (selectedExecution == null) {
-            console.log("Invalid search specified");
+            this.errorText = "Invalid search specified";
             return;
         }
 
-        console.log("Selected execution ID: " + this.selectedExecutionID);
-        console.log("Selected execution: " + selectedExecution);
-        console.log("Should search execution: " + selectedExecution.execution.id + " for: " + this.selectedType);
-        this._http.get("/rhamt-web/api/furnace/graph/" + selectedExecution.execution.id + "/by-type/" + this.selectedType)
+        let selectedType = this.types.find(type => type.discriminator == this.selectedTypeDiscriminator);
+        if (selectedType == null) {
+            this.errorText = "Invalid type specified: " + this.selectedTypeDiscriminator;
+            return;
+        }
+
+        this.errorText = "";
+
+        // console.log("Selected execution ID: " + this.selectedExecutionID);
+        // console.log("Selected execution: " + selectedExecution);
+        // console.log("Should search execution: ", selectedExecution.execution.id, selectedType);
+        this.refreshGraphResults("/rhamt-web/api/furnace/graph/" + selectedExecution.execution.id + "/by-type/" + selectedType.discriminator);
+    }
+
+    browseResults(row: any[], verticeName: string, direction: string) {
+        let edgeInfo = direction == 'IN' ? row['vertices_in'] : row['vertices_out'];
+        //console.log("Should browse direction: " + direction, edgeInfo);
+        let url = edgeInfo[verticeName].link;
+        //console.log("Result url: " + url);
+        this.refreshGraphResults(url);
+    }
+
+    private refreshGraphResults(url: string) {
+        this._http.get(url)
             .map(res => res.json())
-            .subscribe((results:any[]) => {
-                console.log("Search Results: ", results);
+            .subscribe((results: any[]) => {
+                // console.log("Search Results: ", results);
                 this.resultColumns = [];
                 this.resultRows = [];
+                this.resultVerticesIn = [];
+                this.resultVerticesOut = [];
 
                 results.forEach(result => {
+                    // Get column names
                     Object.getOwnPropertyNames(result).forEach(propertyName => {
-                        if (this.blackListedProperties.includes(propertyName))
+                        if (this.blackListedProperties.includes(propertyName)) {
+                            //console.log("Blacklisted property: ", result[propertyName]);
                             return;
+                        }
 
-                         if (this.resultColumns.find(columnName => propertyName == columnName) == null)
-                             this.resultColumns.push(propertyName);
+                        if (this.resultColumns.find(columnName => propertyName == columnName) == null)
+                            this.resultColumns.push(propertyName);
                     });
+
+                    // Get vertices in
+                    let verticesIn = result["vertices_in"];
+                    Object.getOwnPropertyNames(verticesIn).forEach(propertyName => {
+                        if (this.resultVerticesIn.find(columnName => propertyName == columnName) == null)
+                            this.resultVerticesIn.push(propertyName);
+                    });
+
+                    // Get vertices out
+                    let verticesOut = result["vertices_out"];
+                    Object.getOwnPropertyNames(verticesOut).forEach(propertyName => {
+                        if (this.resultVerticesOut.find(columnName => propertyName == columnName) == null)
+                            this.resultVerticesOut.push(propertyName);
+                    });
+
+                    //console.log("Vertices in: " + this.resultVerticesIn);
+                    //console.log("Vertices out: " + this.resultVerticesOut);
+
+
                     this.resultRows.push(result);
                 });
             });
@@ -68,7 +114,6 @@ export class AppComponent implements AfterViewInit {
         this._http.get("/rhamt-web/api/furnace/graph/introspect/type-list")
             .map(res => res.json())
             .subscribe(result => {
-                console.log("All Types: ", result);
                 this.types = result;
             });
     }
@@ -76,8 +121,7 @@ export class AppComponent implements AfterViewInit {
     private getAllExecutions() {
         this._http.get("/rhamt-web/api/windup/executions")
             .map(res => res.json())
-            .subscribe((executions:any[]) => {
-                console.log("All Executions: ", executions);
+            .subscribe((executions: any[]) => {
                 this.executions = [];
                 executions.forEach((execution) => {
                     this._http.get("/rhamt-web/api/migrationProjects/get/" + execution.projectId)
@@ -86,6 +130,14 @@ export class AppComponent implements AfterViewInit {
                             this.executions.push({execution: execution, project: project});
                         });
                 });
+            },
+            error => {
+                this.errorText = error;
             });
     }
+}
+
+interface ModelTypeInformation {
+    discriminator: string;
+    className: string;
 }

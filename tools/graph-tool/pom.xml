@@ -106,6 +106,7 @@
                             <arguments>
                                 <argument>install</argument>
                             </arguments>
+                            <outputFile>${project.build.directory}/yarn-output.log</outputFile>
                         </configuration>
                     </execution>
 
@@ -124,6 +125,7 @@
                                 <argument>--profile</argument>
                                 <argument>--env.environment=${webpack.environment}</argument>
                             </arguments>
+                            <outputFile>${project.build.directory}/webpack-output.log</outputFile>
                         </configuration>
                     </execution>
                 </executions>

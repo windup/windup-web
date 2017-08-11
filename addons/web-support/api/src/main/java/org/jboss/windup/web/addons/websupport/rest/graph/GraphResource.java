@@ -42,7 +42,7 @@ public interface GraphResource extends FurnaceRESTGraphAPI
      */
     @GET
     @Path("/introspect/type-list")
-    List<String> getTypes();
+    List<ModelTypeInformation> getTypes();
 
     /**
      * Gets vertex by id

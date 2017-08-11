@@ -9,7 +9,9 @@ import {MomentModule} from "angular2-moment";
 import {SlimLoadingBarModule} from "ng2-slim-loading-bar";
 
 import {InViewport} from "./components/in-viewport.directive";
-import {HttpModule} from "@angular/http";
+import {Http, HttpModule, RequestOptions, XHRBackend} from "@angular/http";
+import {WindupHttpService} from "./components/windup.http.service";
+import {KeycloakService} from "./authentication/keycloak.service";
 
 /**
  * Load all mapping data from the generated files.
@@ -36,8 +38,23 @@ import {HttpModule} from "@angular/http";
 
     ],
     providers: [
-        DatePipe
+        DatePipe,
+        KeycloakService,
+        // WindupHttpService's entry
+        {
+            provide: Http,
+            useFactory: windupHttpServiceFactory,
+            deps: [XHRBackend, RequestOptions, KeycloakService]
+        },
     ],
     bootstrap:    [ AppComponent ]
 })
 export class AppModule { }
+
+
+export function windupHttpServiceFactory(backend: XHRBackend,
+                                         defaultOptions: RequestOptions,
+                                         keycloakService: KeycloakService,
+) {
+    return new WindupHttpService(backend, defaultOptions, keycloakService);
+}

@@ -39,7 +39,7 @@ public class GraphResourceImpl extends AbstractGraphResource implements GraphRes
     private GraphTypeManager graphTypeManager;
 
     @Override
-    public List<String> getTypes()
+    public List<ModelTypeInformation> getTypes()
     {
         return this.graphTypeManager.getRegisteredTypes().stream()
             .map(type -> {
@@ -47,10 +47,10 @@ public class GraphResourceImpl extends AbstractGraphResource implements GraphRes
                 if (typeValueAnnotation == null)
                     return null;
 
-                return typeValueAnnotation.value();
+                return new ModelTypeInformation(typeValueAnnotation.value(), type.getSimpleName());
             })
             .filter(Objects::nonNull)
-            .sorted()
+            .sorted((type1, type2) -> type1.getClassName().compareToIgnoreCase(type2.getClassName()))
             .collect(Collectors.toList());
     }
 

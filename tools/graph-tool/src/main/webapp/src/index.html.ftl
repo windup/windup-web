@@ -4,7 +4,6 @@
     <base href="${basePath}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="${keycloak.serverUrl}/js/keycloak.js"></script>
-    <script src="version/version.properties.js"></script>
 
     <script>
         // this is here so that AbstractUITest can tell we are loading the actual app

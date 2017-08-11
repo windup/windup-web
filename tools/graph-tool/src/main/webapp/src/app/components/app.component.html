@@ -15,8 +15,8 @@
             Available Types:
         </td>
         <td>
-            <select [(ngModel)]="selectedType">
-                <option *ngFor="let type of types" [value]="type">{{type}}</option>
+            <select [(ngModel)]="selectedTypeDiscriminator">
+                <option *ngFor="let type of types" [value]="type.discriminator">{{type.className}} - {{type.discriminator}}</option>
             </select>
         </td>
     </tr>
@@ -28,15 +28,35 @@
     </tr>
 </table>
 
-<table style="width: 100%">
+<h1 *ngIf="errorText" style="color: red">
+    {{errorText}}
+</h1>
+
+<table style="width: 100%" class="table table-striped table-bordered table-hover">
     <tr>
         <th *ngFor="let columnName of resultColumns">
             {{columnName}}
         </th>
+        <th>Vertices in</th>
+        <th>Vertices out</th>
     </tr>
     <tr *ngFor="let row of resultRows">
         <td *ngFor="let propertyName of resultColumns">
             {{row[propertyName]}}
+        </td>
+        <td>
+            <ul>
+                <li *ngFor="let verticeIn of resultVerticesIn">
+                    <a href="#" (click)="browseResults(row, verticeIn, 'IN')">{{verticeIn}}</a>
+                </li>
+            </ul>
+        </td>
+        <td>
+            <ul>
+                <li *ngFor="let verticeOut of resultVerticesOut">
+                    <a href="#" (click)="browseResults(row, verticeOut, 'OUT')">{{verticeOut}}</a>
+                </li>
+            </ul>
         </td>
     </tr>
 </table>
