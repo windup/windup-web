@@ -5,13 +5,16 @@ import {EJBStatDTO, TechReportService} from "./tech-report.service";
 import {NotificationService} from "../../core/notification/notification.service";
 import {utils} from '../../shared/utils';
 import {Observable} from "rxjs/Observable";
+import {FilterableReportComponent} from "../filterable-report.component";
+import {RouteFlattenerService} from "../../core/routing/route-flattener.service";
+import {ReportFilter} from "../../generated/windup-services";
 
 @Component({
     selector: 'wu-technologies-report-ejb',
     templateUrl: 'technologies-report-ejb.component.html',
     styleUrls: ['./technologies-report-ejb.component.scss']
 })
-export class TechnologiesEJBReportComponent implements OnInit {
+export class TechnologiesEJBReportComponent extends FilterableReportComponent implements OnInit {
 
     private execID: number;
     private reportId: Observable<string>;
@@ -38,8 +41,11 @@ export class TechnologiesEJBReportComponent implements OnInit {
         private route: ActivatedRoute,
         private techReportService: TechReportService,
         private _notificationService: NotificationService,
-        private _router: Router
-    ){}
+        _router: Router,
+        _routeFlattener: RouteFlattenerService
+    ){
+        super(_router, route, _routeFlattener);
+    }
 
     ngOnInit(): void {
         this.route.parent.params.forEach((params: Params) => {
@@ -53,55 +59,57 @@ export class TechnologiesEJBReportComponent implements OnInit {
 
     fetchEJBData(): void {
 
-        this.techReportService.getEjbMessageDrivenModel(this.execID).subscribe(
-            value => {
-                this.ejbMessageDriven = value;
-                this.filteredEjbMessageDriven = this.ejbMessageDriven;
-                this.sortedEjbMessageDriven = this.ejbMessageDriven;
-            },
-            error => {
-                this._notificationService.error(utils.getErrorMessage(error));
-                this._router.navigate(['']);
-            }
-        );
+        this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
+            this.loadFilterFromRouteData(flatRouteData);
+            this.techReportService.getEjbMessageDrivenModel(this.execID, this.reportFilter).subscribe(
+                value => {
+                    this.ejbMessageDriven = value;
+                    this.filteredEjbMessageDriven = this.ejbMessageDriven;
+                    this.sortedEjbMessageDriven = this.ejbMessageDriven;
+                },
+                error => {
+                    this._notificationService.error(utils.getErrorMessage(error));
+                    this._router.navigate(['']);
+                }
+            );
 
-        this.techReportService.getEjbSessionBeanModel(this.execID, 'Stateless').subscribe(
-            value => {
-                this.ejbSessionStatelessBean = value;
-                this.filteredEjbSessionStatelessBean = this.ejbSessionStatelessBean;
-                this.sortedEjbSessionStatelessBean = this.ejbSessionStatelessBean;
+            this.techReportService.getEjbSessionBeanModel(this.execID, 'Stateless', this.reportFilter).subscribe(
+                value => {
+                    this.ejbSessionStatelessBean = value;
+                    this.filteredEjbSessionStatelessBean = this.ejbSessionStatelessBean;
+                    this.sortedEjbSessionStatelessBean = this.ejbSessionStatelessBean;
 
-            },
-            error => {
-                this._notificationService.error(utils.getErrorMessage(error));
-                this._router.navigate(['']);
-            }
-        );
+                },
+                error => {
+                    this._notificationService.error(utils.getErrorMessage(error));
+                    this._router.navigate(['']);
+                }
+            );
 
-        this.techReportService.getEjbSessionBeanModel(this.execID, 'Stateful').subscribe(
-            value => {
-                this.ejbSessionStatefulBean = value;
-                this.filteredEjbSessionStatefulBean = this.ejbSessionStatefulBean;
-                this.sortedEjbSessionStatefulBean = this.ejbSessionStatefulBean;
-            },
-            error => {
-                this._notificationService.error(utils.getErrorMessage(error));
-                this._router.navigate(['']);
-            }
-        );
+            this.techReportService.getEjbSessionBeanModel(this.execID, 'Stateful', this.reportFilter).subscribe(
+                value => {
+                    this.ejbSessionStatefulBean = value;
+                    this.filteredEjbSessionStatefulBean = this.ejbSessionStatefulBean;
+                    this.sortedEjbSessionStatefulBean = this.ejbSessionStatefulBean;
+                },
+                error => {
+                    this._notificationService.error(utils.getErrorMessage(error));
+                    this._router.navigate(['']);
+                }
+            );
 
-        this.techReportService.getEjbEntityBeanModel(this.execID).subscribe(
-            value => {
-                this.ejbEntityBean = value;
-                this.filteredEjbEntityBean = this.ejbEntityBean;
-                this.sortedEjbEntityBean = this.ejbEntityBean;
-            },
-            error => {
-                this._notificationService.error(utils.getErrorMessage(error));
-                this._router.navigate(['']);
-            }
-        );
-
+            this.techReportService.getEjbEntityBeanModel(this.execID, this.reportFilter).subscribe(
+                value => {
+                    this.ejbEntityBean = value;
+                    this.filteredEjbEntityBean = this.ejbEntityBean;
+                    this.sortedEjbEntityBean = this.ejbEntityBean;
+                },
+                error => {
+                    this._notificationService.error(utils.getErrorMessage(error));
+                    this._router.navigate(['']);
+                }
+            );
+        }));
     }
 
     updateSearch() {

@@ -1,4 +1,4 @@
-import {Injectable} from "@angular/core";
+import {Injectable, Type} from "@angular/core";
 import {Http} from "@angular/http";
 import {Observable} from "rxjs/Observable";
 
@@ -10,6 +10,8 @@ import {EjbMessageDrivenModel} from "../../generated/tsModels/EjbMessageDrivenMo
 import {EjbEntityBeanModel} from "../../generated/tsModels/EjbEntityBeanModel";
 import {EjbSessionBeanModel} from "../../generated/tsModels/EjbSessionBeanModel";
 import {EjbBeanBaseModel} from "../../generated/tsModels/EjbBeanBaseModel";
+import {ReportFilter} from "../../generated/windup-services";
+import {Constants} from "../../constants";
 
 @Injectable()
 export class TechReportService extends GraphService
@@ -27,39 +29,37 @@ export class TechReportService extends GraphService
         });
     }
 
-    getEjbMessageDrivenModel(execID: number): Observable<EJBStatDTO[]> {
-        return this.getTypeAsArray<EjbMessageDrivenModel>(
-            EjbMessageDrivenModel.discriminator,
-            execID,
-            {depth: 1}
-        ).map(value => {
-            return this.loadStats(value);
-            }
-        );
+    getEjbMessageDrivenModel(execID: number, filter?: ReportFilter): Observable<EJBStatDTO[]> {
+        return this.getEJBs<EjbMessageDrivenModel>(execID, 'mdb', EjbMessageDrivenModel, filter);
     }
 
-    getEjbSessionBeanModel(execID: number, sessionType: string): Observable<EJBStatDTO[]> {
-        return this.getTypeAsArray<EjbSessionBeanModel>(
-            EjbSessionBeanModel.discriminator,
-            execID,
-            {depth: 1},
-            'sessionType',
-            sessionType
-        ).map(value => {
-                return this.loadStats(value);
-            }
-        );
+    getEjbSessionBeanModel(execID: number, sessionType: string, filter?: ReportFilter): Observable<EJBStatDTO[]> {
+        return this.getEJBs<EjbSessionBeanModel>(execID, 'ejb', EjbSessionBeanModel, filter, sessionType);
     }
 
-    getEjbEntityBeanModel(execID: number): Observable<EJBStatDTO[]> {
-        return this.getTypeAsArray<EjbEntityBeanModel>(
-            EjbEntityBeanModel.discriminator,
-            execID,
-            {depth: 1}
-            ).map(value => {
-                return this.loadStats(value);
-            }
-        );
+    getEjbEntityBeanModel(execID: number, filter?: ReportFilter): Observable<EJBStatDTO[]> {
+        return this.getEJBs<EjbEntityBeanModel>(execID, 'entity', EjbEntityBeanModel, filter);
+    }
+
+    private getEJBs<T extends EjbBeanBaseModel>(execID: number, ejbType: string, clazz?: typeof EjbBeanBaseModel,  filter?: ReportFilter, sessionType?: string): Observable<EJBStatDTO[]> {
+        let serializedFilter = this.serializeFilter(filter);
+        let url =`${Constants.GRAPH_REST_BASE}/reports/${execID}/ejb/${ejbType}`;
+        if (sessionType) {
+            url += '?sessionType=' + sessionType;
+        }
+        return this._http.post(url, serializedFilter, this.JSON_OPTIONS)
+            .map(res => res.json())
+            .map(data => {
+                if (!Array.isArray(data)) {
+                    throw new Error("No items returned");
+                }
+
+                return <T[]>this._graphJsonToModelService.fromJSONarray(data, clazz);
+            })
+            .map(value => {
+                    return this.loadStats(value);
+                }
+            );
     }
 
     private loadStats(values:EjbBeanBaseModel[]):EJBStatDTO[] {

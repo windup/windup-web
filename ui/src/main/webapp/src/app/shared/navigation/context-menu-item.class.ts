@@ -138,10 +138,12 @@ export class ApplicationReportMenuItem extends ReportMenuItem {
         project: MigrationProject,
         execution: WindupExecution,
         application: any,
-        report: string
+        report: string,
+        innerMenuItem?: ContextMenuItemInterface[]
     ) {
         super(label, icon, project, execution, report);
         this.application = application;
+        this._innerMenuItem = innerMenuItem;
     }
 
     get link(): string {

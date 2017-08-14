@@ -11,7 +11,7 @@ export class GraphService extends AbstractService {
     private static WINDUP_REST_URL = Constants.GRAPH_REST_BASE;
     private static GRAPH_ENDPOINT_URL = `${GraphService.WINDUP_REST_URL}/graph/{execID}/by-type/{type}`;
 
-    constructor(private _http: Http, private _graphJsonToModelService: GraphJSONToModelService<any>) {
+    constructor(protected _http: Http, protected _graphJsonToModelService: GraphJSONToModelService<any>) {
         super();
     }
 
