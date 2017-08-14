@@ -30,6 +30,8 @@ import {PackageChartComponent} from "./package-chart/package-chart.component";
 import {ExecutionsModule} from "../executions/executions.module";
 import {SourceResolve} from "./source/source.resolve";
 import {ProblemSummaryFilesComponent} from "./migration-issues/problem-summary-files.component";
+import {IgnoredFilesReportComponent} from "./ignoredFiles/ignoredFiles-report.component";
+import {IgnoredFilesReportService} from "./ignoredFiles/ignoredFiles-report.service";
 import {TechnologiesEJBReportComponent} from "./technologies/technologies-report-ejb.component";
 import {HardcodedIPReportComponent} from "./hardcoded-ip/hardcoded-ip.component";
 import {HardcodedIPService} from "./hardcoded-ip/hardcoded-ip.service";
@@ -53,6 +55,7 @@ import {HardcodedIPService} from "./hardcoded-ip/hardcoded-ip.service";
         ProblemSummaryFilesComponent,
         SourceReportComponent,
         TechnologiesReportComponent,
+        IgnoredFilesReportComponent,
         TechnologyTagComponent,
         ApplicationLevelLayoutComponent,
         ExecutionApplicationListComponent,
@@ -71,6 +74,7 @@ import {HardcodedIPService} from "./hardcoded-ip/hardcoded-ip.service";
         MigrationIssuesComponent,
         SourceReportComponent,
         TechnologiesReportComponent,
+        IgnoredFilesReportComponent,
         ApplicationLevelLayoutComponent,
 
         TechnologyTagComponent,
@@ -87,6 +91,7 @@ import {HardcodedIPService} from "./hardcoded-ip/hardcoded-ip.service";
         ReportFilterResolve,
         MigrationIssuesService,
         TechReportService,
+        IgnoredFilesReportService,
         PrettyPathPipe,
         TagDataService,
         // TagFilterService
