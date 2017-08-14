@@ -69,7 +69,6 @@
         <module>services</module>
         <module>ui</module>
         <module>ear</module>
-        <module>tools/graph-tool</module>
     </modules>
 
     <dependencyManagement>
@@ -235,4 +234,14 @@
         </pluginManagement>
 
     </build>
+
+    <profiles>
+        <profile>
+            <id>graph-tool</id>
+
+            <modules>
+                <module>tools/graph-tool</module>
+            </modules>
+        </profile>
+    </profiles>
 </project>
