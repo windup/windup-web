@@ -3,12 +3,10 @@ package org.jboss.windup.web.addons.websupport.rest.graph;
 import java.util.*;
 
 import org.jboss.windup.graph.GraphContext;
+import org.jboss.windup.graph.model.BelongsToProject;
 import org.jboss.windup.graph.model.ProjectModel;
 import org.jboss.windup.graph.service.GraphService;
-import org.jboss.windup.rules.apps.javaee.model.EjbBeanBaseModel;
-import org.jboss.windup.rules.apps.javaee.model.EjbEntityBeanModel;
-import org.jboss.windup.rules.apps.javaee.model.EjbMessageDrivenModel;
-import org.jboss.windup.rules.apps.javaee.model.EjbSessionBeanModel;
+import org.jboss.windup.rules.apps.javaee.model.*;
 import org.jboss.windup.web.addons.websupport.model.ReportFilterDTO;
 
 public class EJBResourceImpl extends AbstractGraphResource implements EJBResource
@@ -65,6 +63,12 @@ public class EJBResourceImpl extends AbstractGraphResource implements EJBResourc
             }
             else
             {
+                for (ProjectModel projectModel : projectModels)
+                {
+                    if (mdb.belongsToProject(projectModel))
+                        ejbMessageDrivenArrayList.add(mdb);
+                }
+/*
                 for (ProjectModel projectModel : mdb.getRootProjectModels())
                 {
                     if (projectModels.contains(projectModel))
@@ -73,6 +77,7 @@ public class EJBResourceImpl extends AbstractGraphResource implements EJBResourc
                         break;
                     }
                 }
+*/
             }
         }
 
