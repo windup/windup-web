@@ -20,6 +20,8 @@ import {NotificationService} from "../../core/notification/notification.service"
 import {RouteFlattenerService} from "../../core/routing/route-flattener.service";
 import {AbstractComponent} from "../../shared/AbstractComponent";
 import {RoutedComponent} from "../../shared/routed.component";
+import {TechnologyTagService} from "../../services/graph/technologytag.service";
+import {TechnologyTagModel} from "../../generated/tsModels/TechnologyTagModel";
 
 @Component({
     templateUrl: './source-report.component.html',
@@ -39,11 +41,14 @@ export class SourceReportComponent extends RoutedComponent implements OnInit, Af
     classifications: ClassificationModel[];
     private classificationLinks: Map<ClassificationModel, LinkModel[]> = new Map<ClassificationModel, LinkModel[]>();
     hints: InlineHintModel[];
+    technologyTags: TechnologyTagModel[];
+
     private rendered: boolean = false;
 
     constructor(route: ActivatedRoute,
                 private fileModelService: FileModelService,
                 private classificationService: ClassificationService,
+                private technologyTagService:TechnologyTagService,
                 private hintService: HintService,
                 private notificationService: NotificationService,
                 private _graphJsonToModelService: GraphJSONToModelService<any>,
@@ -83,7 +88,11 @@ export class SourceReportComponent extends RoutedComponent implements OnInit, Af
                         this.fileLines = fileSource.split(/[\r\n]/).map((line) => line + "\n");
                     },
                     error => this.notificationService.error(utils.getErrorMessage(error)));
-        }));
+
+            this.technologyTagService.getTagsForFile(this.execID, this.fileID)
+                .subscribe((technologyTags) => this.technologyTags = technologyTags,
+                    error => this.notificationService.error(utils.getErrorMessage(error)));
+        })); 
     }
 
     private getClassificationLinks(classification: ClassificationModel): Observable<LinkModel[]> {

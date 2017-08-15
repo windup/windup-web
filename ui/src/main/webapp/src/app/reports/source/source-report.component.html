@@ -9,9 +9,9 @@
         </div>
 
         <div class="info" style="margin-left: 95pt;">
-            <h4>Technologies</h4>
+            <h4 *ngIf="technologyTags?.length > 0" >Technologies</h4>
             <div class="technologies" style="overflow: auto"><!-- "auto" to contain all the tags. -->
-                <span class="label label-info" title="INFORMATIONAL">Decompiled Java File</span>
+                <wu-technology-tag *ngFor="let technologyTag of technologyTags" [tag]="technologyTag"></wu-technology-tag>
             </div>
 
             <ul class="classifications">
