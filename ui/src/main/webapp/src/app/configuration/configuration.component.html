@@ -5,6 +5,10 @@
         <div [hidden]="rescanInProgress" class="action-button">
             <button class="btn btn-primary" (click)="displayAddRulesPathForm()" i18n="Add">Add</button>
         </div>
+        <div class="show-all-checkbox">
+            <input id="show-all-rules" type="checkbox" [(ngModel)]="showAllRules"/>
+            <label for="show-all-rules">Show all rules</label>
+        </div>
         <wu-toolbar
                 [filterConfiguration]="filter"
                 [sortConfiguration]="sort"
