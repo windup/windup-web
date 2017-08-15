@@ -1,7 +1,10 @@
 <wu-report-filter-indicator *ngIf="!hideFilter" [execution]="execution"></wu-report-filter-indicator>
-
-<h1>Issues</h1>
-
+<div class="header-bar">
+    <h2>Issues</h2>
+    <div class="search-and-create">
+        <wu-search [(searchValue)]="searchValue" (searchValueChange)="reloadData()"></wu-search>
+    </div>
+</div>
 <div class="panel panel-default panel-primary wuMigrationIssues" *ngFor="let category of categories">
     <div class="panel-heading">
         <h3 class="panel-title">{{category}}</h3>
@@ -11,9 +14,13 @@
             No issues found
         </strong>
 
-        <wu-migration-issues-table *ngIf="categorizedIssues[category] && categorizedIssues[category].length !== 0"
-                                   [migrationIssues]="categorizedIssues[category]">
-        </wu-migration-issues-table>
+        <wu-all-data-filtered-message (clearFilter)="clearFilter()"
+                                      [filteredItems]="filteredIssues[category]"
+                                      [unfilteredItems]="categorizedIssues[category]">
+            <wu-migration-issues-table *ngIf="filteredIssues[category] && filteredIssues[category].length !== 0"
+                                       [migrationIssues]="filteredIssues[category]">
+            </wu-migration-issues-table>
+        </wu-all-data-filtered-message>
     </div>
 </div>
 <div *ngIf="categories && categories.length == 0" class="panel panel-default panel-primary">

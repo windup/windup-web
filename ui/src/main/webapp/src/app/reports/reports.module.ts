@@ -84,7 +84,8 @@ import {ProblemSummaryFilesComponent} from "./migration-issues/problem-summary-f
         PrettyPathPipe,
         TagDataService,
         // TagFilterService
-        SourceResolve
+        SourceResolve,
+        EffortLevelPipe
     ]
 })
 export class ReportsModule {

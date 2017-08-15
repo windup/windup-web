@@ -1,0 +1,13 @@
+.panel-primary.wuMigrationIssues { border-color: #e7e7e7; }
+.panel-primary.wuMigrationIssues .panel-heading { background-color: white; padding: 15px 15px; border-bottom: 2px solid #e7e7e7; }
+.panel-primary.wuMigrationIssues .panel-heading .panel-title { color: black; font-size: 20px; font-weight: 500; }
+
+.header-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.search-and-create .search-component {
+  padding-top: 15px;
+}

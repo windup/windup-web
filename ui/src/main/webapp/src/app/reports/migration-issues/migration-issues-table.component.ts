@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from "@angular/core";
+import {ChangeDetectionStrategy, Component, Input, OnInit} from "@angular/core";
 import {Router, ActivatedRoute} from "@angular/router";
 import "../source/prism";
 
@@ -12,16 +12,19 @@ import {FilterableReportComponent} from "../filterable-report.component";
     selector: 'wu-migration-issues-table',
     templateUrl: './migration-issues-table.component.html',
     styleUrls: ['./migration-issues-table.component.scss'],
-    providers: [SortingService]
+    providers: [SortingService],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MigrationIssuesTableComponent extends FilterableReportComponent implements OnInit
 {
-    @Input()
-    migrationIssues: ProblemSummary[] = [];
+    _migrationIssues: ProblemSummary[] = [];
 
     sortedIssues: ProblemSummary[] = [];
 
     problemSummariesFiles = new Map<ProblemSummary, ProblemSummaryFiles>();
+
+    orderDirection: OrderDirection = OrderDirection.ASC;
+    orderBy: any;
 
     public constructor(
         _router: Router,
@@ -32,6 +35,16 @@ export class MigrationIssuesTableComponent extends FilterableReportComponent imp
         private _sortingService: SortingService<ProblemSummary>
     ) {
         super(_router, _activatedRoute, _routeFlattener);
+    }
+
+    @Input()
+    public set migrationIssues(issues: ProblemSummary[]) {
+        this._migrationIssues = issues || [];
+        this.sortedIssues = this._sortingService.sort(this._migrationIssues);
+    }
+
+    public get migrationIssues() {
+        return this._migrationIssues;
     }
 
     ngOnInit(): void {
@@ -99,9 +112,6 @@ export class MigrationIssuesTableComponent extends FilterableReportComponent imp
 
         return this.problemSummariesFiles.get(issue).files;
     }
-
-    orderDirection: OrderDirection = OrderDirection.ASC;
-    orderBy: any;
 
     getTotalStoryPoints(summary: ProblemSummary) {
         return (summary.effortPerIncident * summary.numberFound);
