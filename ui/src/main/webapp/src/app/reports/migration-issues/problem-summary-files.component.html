@@ -8,7 +8,7 @@
     </thead>
     <tbody>
     <tr *ngFor="let incident of currentPageFiles; let isFirst = first">
-        <td class="fileName"><a (click)="navigateToSource(incident.file)">{{incident.file.fileName}}</a></td>
+        <td class="fileName"><a (click)="navigateToSource(incident.file)">{{getFileName(incident)}}</a></td>
         <td class="count">{{incident.occurrences}}</td>
         <td class="hint" *ngIf="isFirst" [attr.rowspan]="currentPageFiles.length">
             <div class="panel panel-default hint-detail-panel">

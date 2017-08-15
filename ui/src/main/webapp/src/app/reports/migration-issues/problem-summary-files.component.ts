@@ -118,4 +118,12 @@ export class ProblemSummaryFilesComponent implements OnInit {
     }
 
 
+    getFileName(incident: any): string {
+        if (!incident.file.cachedPrettyPath) {
+            console.error("No cachedPrettyPath data!", incident);
+            return '';
+        }
+
+        return incident.file.cachedPrettyPath;
+    }
 }
