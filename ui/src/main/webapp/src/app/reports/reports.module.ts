@@ -30,6 +30,7 @@ import {PackageChartComponent} from "./package-chart/package-chart.component";
 import {ExecutionsModule} from "../executions/executions.module";
 import {SourceResolve} from "./source/source.resolve";
 import {ProblemSummaryFilesComponent} from "./migration-issues/problem-summary-files.component";
+import {TechnologiesEJBReportComponent} from "./technologies/technologies-report-ejb.component";
 
 @NgModule({
     imports: [
@@ -57,6 +58,7 @@ import {ProblemSummaryFilesComponent} from "./migration-issues/problem-summary-f
 
         EffortLevelPipe,
         PrettyPathPipe,
+        TechnologiesEJBReportComponent,
     ],
     exports: [
         ApplicationDetailsComponent,
@@ -70,6 +72,7 @@ import {ProblemSummaryFilesComponent} from "./migration-issues/problem-summary-f
 
         TechnologyTagComponent,
         ExecutionApplicationListComponent,
+        TechnologiesEJBReportComponent,
 
     ],
     providers: [

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+
+    <!-- Redirect all requests to /index.html, except the excluded paths.
+         Keeps angular routing working since the browser paths don't necessarily match files on disk. -->
+    <filter>
+        <filter-name>PathFilter</filter-name>
+        <filter-class>org.jboss.windup.web.ui.PathFilter</filter-class>
+        <init-param>
+            <param-name>DefaultPath</param-name>
+            <param-value>/index.html</param-value>
+        </init-param>
+        <init-param>
+            <param-name>ExcludedPathPrefixes</param-name>
+            <param-value>
+                /img;
+                /assets;
+                /js;
+                /authenticated.jsp;
+                /not_loggedin.html;
+                /index.html;
+                /keycloak.json;
+                /systemjs.config.js;
+                /app/;
+                /node_modules/;
+                /tests/;
+                /css/;
+                /version/version.properties.js
+            </param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>PathFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <servlet>
+        <servlet-name>Freemarker</servlet-name>
+        <servlet-class>org.jboss.windup.web.ui.FreemarkerServlet</servlet-class>
+        <init-param>
+            <param-name>TemplatePath</param-name>
+            <param-value>/</param-value>
+        </init-param>
+        <init-param>
+            <param-name>ExceptionOnMissingTemplate</param-name>
+            <!-- true => HTTP 500 on missing template, instead of HTTP 404. -->
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>incompatible_improvements</param-name>
+            <param-value>2.3.25</param-value>
+            <!--
+              Recommended to set to a high value.
+              See: http://freemarker.org/docs/pgui_config_incompatible_improvements.html
+            -->
+        </init-param>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Freemarker</servlet-name>
+        <url-pattern>*.ftl</url-pattern>
+        <url-pattern>/index.html</url-pattern>
+        <url-pattern>/not_loggedin.html</url-pattern>
+        <url-pattern>/keycloak.json</url-pattern>
+        <url-pattern>/tests/unit-tests.html</url-pattern>
+    </servlet-mapping>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>secured</web-resource-name>
+            <url-pattern>/app/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>user</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <login-config>
+        <auth-method>KEYCLOAK</auth-method>
+    </login-config>
+
+    <security-role>
+        <role-name>user</role-name>
+    </security-role>
+</web-app>
