@@ -25,6 +25,8 @@ import {JavaClassModel} from "../../generated/tsModels/JavaClassModel";
 })
 export class JpaReportComponent implements OnInit {
     private jpaInfo: JpaReportInfo;
+    private jpaInfo_filtered: JpaReportInfo;
+    private jpaInfo_sorted: JpaReportInfo;
 
     private execID: number;
 
@@ -35,7 +37,6 @@ export class JpaReportComponent implements OnInit {
         private _router: Router,
         private route: ActivatedRoute,
     ){}
-
 
 
     ngOnInit(): void {
@@ -60,6 +61,12 @@ export class JpaReportComponent implements OnInit {
                 this._router.navigate(['../source/' + src.vertexId]);
             })
         } );
+    }
+
+    private updateSearch() {
+    }
+
+    private clearFilters() {
     }
 }
 

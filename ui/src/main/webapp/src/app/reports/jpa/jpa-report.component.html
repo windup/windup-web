@@ -1,106 +1,184 @@
 <style>
+.panel-primary.wuTechnologies { border-color: #e7e7e7; }
+.panel-primary.wuTechnologies .panel-heading { background-color: white; padding: 15px 15px; border-bottom: 2px solid #e7e7e7; }
+.panel-primary.wuTechnologies .panel-heading .panel-title { color: black; font-size: 20px; font-weight: 500; }
 </style>
 
-<div class="container-fluid">
-    <h1>
-        JPA &gt; All Projects &gt;
-    </h1>
+<div class="panel-body">
+
+
+    <!--
+    <div class="header-bar">
+        <h2>Technologies &gt; <span style="color: #39a5dc;">JPA</span> </h2>
+        <div class="search-and-create">
+            <div class="search-and-create"  *ngIf="true">
+                <wu-search [(searchValue)]="searchText" (searchValueChange)="updateSearch()"></wu-search>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default panel-primary wuTechnologies">
+        <div class="panel-heading">
+            <h3 class="panel-title">JPA Entities</h3>
+        </div>
+        <div class="panel-body">
+            <wu-all-data-filtered-message
+                    [unfilteredItems]="jpaInfo.entities"
+                    [filteredItems]="jpaInfo_filtered.entities"
+                    (clearFilter)="clearFilters()">
+                <table class="table table-bordered table-hover" *ngIf="jpaInfo_filtered.entities.length > 0; else noDataAvailable">
+                    <thead wu-sortable-table
+                           [(sortedData)]="jpaInfo_sorted.entities" [data]="jpaInfo_filtered.entities"
+                           [tableHeaders]="[
+                                { title: 'Entity Name', isSortable: true, sortBy: 'entityName' },
+                                { title: 'Entity Class', isSortable: false, sortBy: 'javaClass.resolved'},
+                                { title: 'Table', isSortable: true, sortBy: 'tableName'}
+                           ]">
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let entity of jpaInfo_sorted.entities">
+                        <td class="col-md-4">{{entity.entityName}}</td>
+                        <td class="col-md-6">
+                            <a [routerLink]="['../source/' + ((entity.javaClass|async)?.decompiledSource|async)?.vertexId]">
+                                {{(entity.javaClass|async).simpleName}}
+                            </a>
+                        </td>
+                        <td class="col-md-2">{{entity.tableName}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </wu-all-data-filtered-message>
+        </div>
+    </div>
+    -->
+
+    <div class="panel panel-default panel-primary wuTechnologies">
+        <div class="panel-heading">
+            <h3 class="panel-title">JPA Entities</h3>
+        </div>
+        <div class="panel-body">
+
+                <table class="table table-striped table-bordered" id="jpaEntityTable" *ngIf="jpaInfo">
+                    <thead>
+                        <tr>
+                            <th>Entity Name</th><th>JPA Entity</th><th>Table</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let entity of jpaInfo.entities">
+                            <td>{{entity.entityName}}</td>
+                            <td>
+                                <a [routerLink]="['../source/' + ((entity.javaClass|async)?.decompiledSource|async)?.vertexId]">
+                                    {{(entity.javaClass|async).simpleName}}
+                                </a>
+                            </td>
+                            <td>{{entity.tableName}}</td>
+                        </tr>
+                        <tr *ngIf="!jpaInfo.entities.length">
+                            <td colspan="3">No JPA entities found.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+        </div>
+    </div>
+
+    <div class="panel panel-default panel-primary wuTechnologies">
+        <div class="panel-heading">
+            <h3 class="panel-title">JPA Named Queries</h3>
+        </div>
+        <div class="panel-body">
+
+                <table class="table table-bordered table-hover" id="jpaQueryTable" *ngIf="jpaInfo">
+                    <thead>
+                        <tr>
+                            <th>Query Name</th>
+                            <th>Query</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr *ngFor="let query of jpaInfo.namedQueries">
+                            <td>{{query.queryName|async}}</td>
+                            <td>{{(query.jpaEntity|async)}}</td>
+                            <td>{{query.query}}</td>
+                        </tr>
+                        <tr *ngIf="!jpaInfo.namedQueries.length">
+                            <td colspan="3">No JPA named queries found.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+        </div>
+    </div>
+
+
+    <div class="panel panel-default panel-primary wuTechnologies">
+        <div class="panel-heading">
+            <h3 class="panel-title">JPA Entities</h3>
+        </div>
+        <div class="panel-body">
+
+                <table class="table table-bordered table-hover" id="jpaConfigFilesTable" *ngIf="jpaInfo">
+                    <thead>
+                        <tr>
+                            <th>Location</th>
+                            <th>Root tag name</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr *ngFor="let config of jpaInfo.configFiles">
+                            <td>{{config.directory}}/{{config.fileName}}</td>
+                            <td>{{config.rootTagName}}</td>
+                        </tr>
+                        <tr *ngIf="!jpaInfo.configFiles.length">
+                            <td colspan="2">No JPA configuration files found.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+        </div>
+    </div>
+
+
+    <div class="panel panel-default panel-primary wuTechnologies">
+        <div class="panel-heading">
+            <h3 class="panel-title">JPA Entities</h3>
+        </div>
+        <div class="panel-body">
+
+                <table class="table table-bordered table-hover" id="jpaPersistenceUnitsTable" *ngIf="jpaInfo">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Application</th>
+                            <th>Datasources</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr *ngFor="let pu of jpaInfo.persistenceUnits">
+                            <td>{{pu.name}}</td>
+                            <td>{{(pu.application|async).name}}</td>
+                            <td>
+                                TODO: Change the layout.
+                                <ul>
+                                    <li *ngFor="let ds of pu.dataSources">
+                                        {{ds.name}}
+                                        (defined in {{ds.fileName}})
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+
+                        <tr *ngIf="!jpaInfo.persistenceUnits.length">
+                            <td colspan="3">No JPA persistence units found.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+        </div>
+    </div>
+
 </div>
-
-<ng-container *ngIf="jpaInfo">
-    <table class="table table-striped table-bordered" id="jpaEntityTable">
-        <thead>
-            <tr>
-                <th>Entity Name</th><th>JPA Entity</th><th>Table</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let entity of jpaInfo.entities">
-                <td>{{entity.entityName}}</td>
-                <td>
-                    <!--
-                    <a (click)="navigateToClassAsync(entity.javaClass)">{{(entity.javaClass|async).simpleName}}</a>
-                    -->
-                    <a [routerLink]="['../source/' + ((entity.javaClass|async)?.decompiledSource|async)?.vertexId]">
-                        {{(entity.javaClass|async).simpleName}}
-                    </a>
-                </td>
-                <td>{{entity.tableName}}</td>
-            </tr>
-            <tr *ngIf="!jpaInfo.entities.length">
-                <td colspan="3">No JPA entities found.</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <table class="table table-striped table-bordered" id="jpaQueryTable">
-        <thead>
-            <tr>
-                <th>Query Name</th>
-                <th>Query</th>
-            </tr>
-        </thead>
-
-        <tbody>
-            <tr *ngFor="let query of jpaInfo.namedQueries">
-                <td>{{query.queryName|async}}</td>
-                <td>{{(query.jpaEntity|async)}}</td>
-                <td>{{query.query}}</td>
-            </tr>
-            <tr *ngIf="!jpaInfo.namedQueries.length">
-                <td colspan="3">No JPA named queries found.</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <table class="table table-striped table-bordered" id="jpaConfigFilesTable">
-        <thead>
-            <tr>
-                <th>Location</th>
-                <th>Root tag name</th>
-            </tr>
-        </thead>
-
-        <tbody>
-            <tr *ngFor="let config of jpaInfo.configFiles">
-                <td>{{config.directory}}/{{config.fileName}}</td>
-                <td>{{config.rootTagName}}</td>
-            </tr>
-            <tr *ngIf="!jpaInfo.configFiles.length">
-                <td colspan="2">No JPA configuration files found.</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <table class="table table-striped table-bordered" id="jpaPersistenceUnitsTable">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Application</th>
-                <th>Datasources</th>
-            </tr>
-        </thead>
-
-        <tbody>
-            <tr *ngFor="let pu of jpaInfo.persistenceUnits">
-                <td>{{pu.name}}</td>
-                <td>{{(pu.application|async).name}}</td>
-                <td>
-                    TODO: Change the layout.
-                    <ul>
-                        <li *ngFor="let ds of pu.dataSources">
-                            {{ds.name}}
-                            (defined in {{ds.fileName}})
-                        </li>
-                    </ul>
-                </td>
-            </tr>
-
-            <tr *ngIf="!jpaInfo.persistenceUnits.length">
-                <td colspan="3">No JPA persistence units found.</td>
-            </tr>
-        </tbody>
-    </table>
-
-
-</ng-container>
