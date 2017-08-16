@@ -1,6 +1,5 @@
 import {NgModule} from "@angular/core";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {NoopAnimationsModule} from "@angular/platform-browser/animations";
 
 import {BreadCrumbsService} from "./navigation/breadcrumbs.service";
 import {ConfirmDeactivateGuard} from "./confirm-deactivate.guard";
@@ -73,7 +72,6 @@ import {PaginationService} from "./pagination.service";
         FileUploadModule,
         MomentModule,
         SlimLoadingBarModule.forRoot(),
-        NoopAnimationsModule, // WINDUP-1579, needed since Angular 4
     ],
     providers: [
         BreadCrumbsService,
