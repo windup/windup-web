@@ -17,6 +17,7 @@ import {AboutPageComponent} from "./misc/about.component";
 
 import {FileService} from "./services/file.service";
 import {WindupService} from "./services/windup.service";
+import {TechnologyTagService} from "./services/graph/technologytag.service";
 import {FramesRestClientService} from "./services/graph/frames-rest-client.service";
 import {GraphJSONToModelService} from "./services/graph/graph-json-to-model.service";
 import {FileModelService} from "./services/graph/file-model.service";
@@ -74,18 +75,19 @@ initializeModelMappingData();
     ],
     providers: [
         appRoutingProviders,
-        FileService,
-        WindupService,
-        FileModelService,
         ClassificationService,
-        HintService,
+        FileModelService,
+        FileService,
         FramesRestClientService,
+        HintService,
+        TechnologyTagService, 
         WindupExecutionService,
         {
             provide: FileUploader,
             useFactory: createFileUploader,
             deps: [KeycloakService]
         },
+        WindupService,
         {
             provide: GraphJSONToModelService,
             useFactory: createGraphJSONToModelService,
