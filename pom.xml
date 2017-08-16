@@ -21,7 +21,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.target>1.8</maven.compiler.target>
-
+        <version.findbugs.plugin>3.0.5</version.findbugs.plugin>
         <version.forge>3.6.0.Final</version.forge>
         <version.furnace>2.25.4.Final</version.furnace>
         <version.windup>4.0.0-SNAPSHOT</version.windup>
@@ -243,5 +243,48 @@
                 <module>tools/graph-tool</module>
             </modules>
         </profile>
+
+        <!-- profile primary for CI, but using locally is good too -->
+        <profile>
+            <id>findbugs</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>findbugs-maven-plugin</artifactId>
+                        <version>${version.findbugs.plugin}</version>
+                        <configuration>
+                            <!--
+                                Enables analysis which takes more memory but finds more bugs.
+                                If you run out of memory, changes the value of the effort element
+                                to 'Low'.
+                            -->
+                            <effort>Max</effort>
+                            <!-- Build doesn't fail if problems are found -->
+                            <failOnError>false</failOnError>
+                            <!-- Reports all bugs (other values are medium and max) -->
+                            <threshold>Low</threshold>
+                            <!-- Produces XML report -->
+                            <xmlOutput>true</xmlOutput>
+                            <!-- Configures the directory in which the XML report is created -->
+                            <findbugsXmlOutputDirectory>${project.build.directory}/findbugs</findbugsXmlOutputDirectory>
+                            <onlyAnalyze>org.jboss.windup.*</onlyAnalyze>
+                            <maxHeap>1024</maxHeap>
+                        </configuration>
+                        <executions>
+                            <!-- Ensures that FindBugs inspects source code when project is compiled.-->
+                            <execution>
+                                <id>analyze-compile</id>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
     </profiles>
 </project>
