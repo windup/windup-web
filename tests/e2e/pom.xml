@@ -13,13 +13,11 @@
     </parent>
 
     <artifactId>windup-tests-e2e</artifactId>
-    <version>4.0.0-SNAPSHOT</version>
 
     <name>Windup Web - Tests E2E</name>
     <packaging>pom</packaging>
 
     <properties>
-        <version.wildfly.maven.plugin>1.1.0.Beta1</version.wildfly.maven.plugin>
         <wildfly.directory>wildfly-10.1.0.Final</wildfly.directory>
         <wildfly.port>10090</wildfly.port>
     </properties>
@@ -55,11 +53,6 @@
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>exec-maven-plugin</artifactId>
                     <version>1.6.0</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.wildfly.plugins</groupId>
-                    <artifactId>wildfly-maven-plugin</artifactId>
-                    <version>${version.wildfly.maven.plugin}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -159,6 +152,7 @@
                             <goal>execute-commands</goal>
                         </goals>
                         <configuration>
+                            <skip>${skipTests}</skip>
                             <jbossHome>${project.build.directory}/${wildfly.directory}</jbossHome>
                             <serverConfig>standalone-full.xml</serverConfig>
                             <stdout>${project.build.directory}/jboss.stdout</stdout>
@@ -181,6 +175,7 @@
                             <goal>shutdown</goal>
                         </goals>
                         <configuration>
+                            <skip>${skipTests}</skip>
                             <port>${wildfly.port}</port>
                             <jbossHome>${project.build.directory}/${wildfly.directory}</jbossHome>
                             <serverConfig>standalone-full.xml</serverConfig>
@@ -201,6 +196,7 @@
                         </goals>
 
                         <configuration>
+                            <skip>${skipTests}</skip>
                             <executable>yarn</executable>
                             <workingDirectory>${project.build.directory}/npm</workingDirectory>
                             <arguments>
@@ -225,6 +221,7 @@
                         </goals>
 
                         <configuration>
+                            <skip>${skipTests}</skip>
                             <executable>yarn</executable>
                             <workingDirectory>${project.build.directory/npm}</workingDirectory>
                             <arguments>
@@ -246,6 +243,7 @@
 
 
                         <configuration>
+                            <skip>${skipTests}</skip>
                             <executable>./node_modules/protractor/bin/protractor</executable>
                             <workingDirectory>${project.build.directory}/npm</workingDirectory>
                             <arguments>
