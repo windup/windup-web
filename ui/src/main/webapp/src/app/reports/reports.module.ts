@@ -1,5 +1,4 @@
 import {NgModule} from "@angular/core";
-import {NoopAnimationsModule} from "@angular/platform-browser/animations";
 
 import {TagDataService} from "./tag-data.service";
 import {PrettyPathPipe} from "./pretty-path.pipe";
@@ -39,7 +38,6 @@ import {ProblemSummaryFilesComponent} from "./migration-issues/problem-summary-f
         ReportsRoutingModule,
         NgxChartsModule,
         ExecutionsModule,
-        NoopAnimationsModule, // WINDUP-1579, needed since Angular 4
     ],
     declarations: [
         ApplicationDetailsComponent,

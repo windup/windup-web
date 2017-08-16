@@ -2,6 +2,8 @@ import {NgModule, Optional, SkipSelf} from "@angular/core";
 import {HttpModule, RequestOptions, XHRBackend, Http} from "@angular/http";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {CommonModule} from "@angular/common";
+import {NoopAnimationsModule} from "@angular/platform-browser/animations";
+
 
 import {KeycloakService} from "./authentication/keycloak.service";
 import {WindupHttpService} from "./authentication/windup.http.service";
@@ -31,6 +33,7 @@ import {LoadingIndicatorService} from "./loading-indicator.service";
         FormsModule,
         ReactiveFormsModule,
         HttpModule,
+        NoopAnimationsModule, // WINDUP-1579, needed since Angular 4
     ],
     providers: [
         KeycloakService,
