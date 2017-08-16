@@ -8,6 +8,6 @@
   justify-content: space-between;
 }
 
-.search-and-create .search-component {
+:host /deep/ .search-and-create .search-component {
   padding-top: 15px;
 }
