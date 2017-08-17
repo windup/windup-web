@@ -12,7 +12,7 @@
         <div class="row col-md-12 report-index-row">
             <div *ngIf="!reportFilter" class="panel panel-default col-md-3" style="margin-left: 20px;margin-right: 20px;">
                 <div class="panel-body">
-                    <table class="table table-condensed ">
+                    <table class="table table-condensed">
                         <caption>Summary</caption>
                         <tfoot>
                             <tr class="info">
@@ -22,15 +22,15 @@
                         </tfoot>
                         <tbody>
                             <tr>
-                                <td> <i class="fa fa-cubes"></i> Applications</td>
+                                <td><i class="fa fa-cubes"></i>Applications</td>
                                 <td><span class="highlightNumber">{{getDependencyCountByType("Application")}}</span></td>
                             </tr>
                             <tr>
-                                <td> <i class="fa fa-puzzle-piece"></i> Known Libraries</td>
+                                <td><i class="fa fa-puzzle-piece"></i>Known Libraries</td>
                                 <td><span class="highlightNumber">{{getDependencyCountByType("KnownLibrary")}}</span></td>
                             </tr>
                             <tr>
-                                <td> <i class="fa fa-cube"></i> Dependencies</td>
+                                <td><i class="fa fa-cube"></i>Dependencies</td>
                                 <td><span class="highlightNumber">{{getDependencyCountByType("Dependency")}}</span></td>
                             </tr>
         <!--                    <tr>
