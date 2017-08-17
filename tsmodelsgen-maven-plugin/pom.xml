@@ -5,6 +5,7 @@
         <groupId>org.jboss</groupId>
         <artifactId>jboss-parent</artifactId>
         <version>22</version>
+        <relativePath/>
     </parent>
 
     <groupId>org.jboss.windup.web.plugin</groupId>
