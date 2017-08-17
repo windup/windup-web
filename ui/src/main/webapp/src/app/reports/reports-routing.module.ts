@@ -22,10 +22,10 @@ export const executionLevelRoutes: Routes = [
     {path: 'dependencies-report', component: DependenciesReportComponent, data: {displayName: 'Dependency Report'}},
     {path: 'technology-report', component: TechnologiesReportComponent, data: {displayName: 'Technology Report'},
         children: [
-            {path: 'ejb', component: TechnologiesEJBReportComponent, data: {displayName: 'Technology EJB Report'}},
+            {path: 'ejb', component: TechnologiesEJBReportComponent, data: {displayName: 'EJB Report'}},
         ]
     },
-    {path: 'technology-report-ejb', component: TechnologiesEJBReportComponent, data: {displayName: 'Technology EJB Report'}},
+    {path: 'technology-report-ejb', component: TechnologiesEJBReportComponent, data: {displayName: 'EJB Report'}},
     {path: 'migration-issues',
         children: [
             {path: '', component: MigrationIssuesComponent, data: {displayName: 'Issues'}},

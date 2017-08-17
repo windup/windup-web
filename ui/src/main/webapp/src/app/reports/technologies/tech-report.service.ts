@@ -29,19 +29,19 @@ export class TechReportService extends GraphService
         });
     }
 
-    getEjbMessageDrivenModel(execID: number, filter?: ReportFilter): Observable<EJBStatDTO[]> {
+    getEjbMessageDrivenModel(execID: number, filter?: ReportFilter): Observable<EJBInformationDTO[]> {
         return this.getEJBs<EjbMessageDrivenModel>(execID, 'mdb', EjbMessageDrivenModel, filter);
     }
 
-    getEjbSessionBeanModel(execID: number, sessionType: string, filter?: ReportFilter): Observable<EJBStatDTO[]> {
+    getEjbSessionBeanModel(execID: number, sessionType: string, filter?: ReportFilter): Observable<EJBInformationDTO[]> {
         return this.getEJBs<EjbSessionBeanModel>(execID, 'ejb', EjbSessionBeanModel, filter, sessionType);
     }
 
-    getEjbEntityBeanModel(execID: number, filter?: ReportFilter): Observable<EJBStatDTO[]> {
+    getEjbEntityBeanModel(execID: number, filter?: ReportFilter): Observable<EJBInformationDTO[]> {
         return this.getEJBs<EjbEntityBeanModel>(execID, 'entity', EjbEntityBeanModel, filter);
     }
 
-    private getEJBs<T extends EjbBeanBaseModel>(execID: number, ejbType: string, clazz?: typeof EjbBeanBaseModel,  filter?: ReportFilter, sessionType?: string): Observable<EJBStatDTO[]> {
+    private getEJBs<T extends EjbBeanBaseModel>(execID: number, ejbType: string, clazz?: typeof EjbBeanBaseModel,  filter?: ReportFilter, sessionType?: string): Observable<EJBInformationDTO[]> {
         let serializedFilter = this.serializeFilter(filter);
         let url =`${Constants.GRAPH_REST_BASE}/reports/${execID}/ejb/${ejbType}`;
         if (sessionType) {
@@ -57,15 +57,15 @@ export class TechReportService extends GraphService
                 return <T[]>this._graphJsonToModelService.fromJSONarray(data, clazz);
             })
             .map(value => {
-                    return this.loadStats(value);
+                    return this.loadEJBInformation(value);
                 }
             );
     }
 
-    private loadStats(values:EjbBeanBaseModel[]):EJBStatDTO[] {
+    private loadEJBInformation(values:EjbBeanBaseModel[]):EJBInformationDTO[] {
         let result = [];
         values.forEach( mdb => {
-            let mdbStat: EJBStatDTO = {
+            let mdbStat: EJBInformationDTO = {
                 name: '',
                 class: '',
                 location: '',
@@ -127,7 +127,7 @@ export class StatsItem {
     label: string;
 }
 
-export interface EJBStatDTO {
+export interface EJBInformationDTO {
     name: String,
     class: String,
     location: String,

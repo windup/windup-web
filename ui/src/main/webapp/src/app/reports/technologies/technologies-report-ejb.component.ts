@@ -1,7 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute, Params, Router} from '@angular/router';
 
-import {EJBStatDTO, TechReportService} from "./tech-report.service";
+import {EJBInformationDTO, TechReportService} from "./tech-report.service";
 import {NotificationService} from "../../core/notification/notification.service";
 import {utils} from '../../shared/utils';
 import {Observable} from "rxjs/Observable";
@@ -19,23 +19,30 @@ export class TechnologiesEJBReportComponent extends FilterableReportComponent im
     private execID: number;
     private reportId: Observable<string>;
 
-    public ejbMessageDriven: EJBStatDTO[] = [];
-    public filteredEjbMessageDriven : EJBStatDTO[] = [];
-    public sortedEjbMessageDriven : EJBStatDTO[] = [];
+    public ejbMessageDriven: EJBInformationDTO[] = [];
+    public filteredEjbMessageDriven : EJBInformationDTO[] = [];
+    public sortedEjbMessageDriven : EJBInformationDTO[] = [];
 
-    public ejbSessionStatelessBean: EJBStatDTO[] = [];
-    public filteredEjbSessionStatelessBean: EJBStatDTO[] = [];
-    public sortedEjbSessionStatelessBean: EJBStatDTO[] = [];
+    public ejbSessionStatelessBean: EJBInformationDTO[] = [];
+    public filteredEjbSessionStatelessBean: EJBInformationDTO[] = [];
+    public sortedEjbSessionStatelessBean: EJBInformationDTO[] = [];
 
-    public ejbSessionStatefulBean: EJBStatDTO[] = [];
-    public filteredEjbSessionStatefulBean: EJBStatDTO[] = [];
-    public sortedEjbSessionStatefulBean: EJBStatDTO[] = [];
+    public ejbSessionStatefulBean: EJBInformationDTO[] = [];
+    public filteredEjbSessionStatefulBean: EJBInformationDTO[] = [];
+    public sortedEjbSessionStatefulBean: EJBInformationDTO[] = [];
 
-    public ejbEntityBean: EJBStatDTO[] = [];
-    public filteredEjbEntityBean: EJBStatDTO[] = [];
-    public sortedEjbEntityBean: EJBStatDTO[] = [];
+    public ejbEntityBean: EJBInformationDTO[] = [];
+    public filteredEjbEntityBean: EJBInformationDTO[] = [];
+    public sortedEjbEntityBean: EJBInformationDTO[] = [];
 
     public searchText: string;
+
+    public title: string;
+
+    public loadingMDB: boolean = true;
+    public loadingEJBStateless: boolean = true;
+    public loadingEJBStateful: boolean = true;
+    public loadingEntity: boolean = true;
 
     constructor(
         private route: ActivatedRoute,
@@ -55,6 +62,10 @@ export class TechnologiesEJBReportComponent extends FilterableReportComponent im
         this.route.params.forEach((params: Params) => {
             this.reportId = params['report_id'];
         });
+
+        let flatRouteData = this._routeFlattener.getFlattenedRouteData(this._activatedRoute.snapshot);
+        if (flatRouteData.data['displayName'])
+            this.title = flatRouteData.data['displayName'];
     }
 
     fetchEJBData(): void {
@@ -66,6 +77,8 @@ export class TechnologiesEJBReportComponent extends FilterableReportComponent im
                     this.ejbMessageDriven = value;
                     this.filteredEjbMessageDriven = this.ejbMessageDriven;
                     this.sortedEjbMessageDriven = this.ejbMessageDriven;
+                    this.updateSearch();
+                    this.loadingMDB  = false;
                 },
                 error => {
                     this._notificationService.error(utils.getErrorMessage(error));
@@ -78,6 +91,8 @@ export class TechnologiesEJBReportComponent extends FilterableReportComponent im
                     this.ejbSessionStatelessBean = value;
                     this.filteredEjbSessionStatelessBean = this.ejbSessionStatelessBean;
                     this.sortedEjbSessionStatelessBean = this.ejbSessionStatelessBean;
+                    this.updateSearch();
+                    this.loadingEJBStateless = false;
 
                 },
                 error => {
@@ -91,6 +106,8 @@ export class TechnologiesEJBReportComponent extends FilterableReportComponent im
                     this.ejbSessionStatefulBean = value;
                     this.filteredEjbSessionStatefulBean = this.ejbSessionStatefulBean;
                     this.sortedEjbSessionStatefulBean = this.ejbSessionStatefulBean;
+                    this.updateSearch();
+                    this.loadingEJBStateful = false;
                 },
                 error => {
                     this._notificationService.error(utils.getErrorMessage(error));
@@ -103,6 +120,8 @@ export class TechnologiesEJBReportComponent extends FilterableReportComponent im
                     this.ejbEntityBean = value;
                     this.filteredEjbEntityBean = this.ejbEntityBean;
                     this.sortedEjbEntityBean = this.ejbEntityBean;
+                    this.updateSearch();
+                    this.loadingEntity = false;
                 },
                 error => {
                     this._notificationService.error(utils.getErrorMessage(error));
@@ -139,7 +158,7 @@ export class TechnologiesEJBReportComponent extends FilterableReportComponent im
         this.updateSearch();
     }
 
-    filter(item:EJBStatDTO): boolean {
+    filter(item:EJBInformationDTO): boolean {
         return (
             item.name.search(new RegExp(this.searchText, 'i')) !== -1 ||
             item.class.search(new RegExp(this.searchText, 'i')) !== -1 ||

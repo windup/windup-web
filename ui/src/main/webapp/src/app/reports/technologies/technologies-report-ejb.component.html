@@ -2,7 +2,7 @@
 
     <ng-container>
         <div class="header-bar">
-            <h2>Technologies &gt; <span style="color: #39a5dc;">EJB Report</span> </h2>
+            <h2>Technologies &gt; {{title}}</h2>
             <div class="search-and-create">
                 <div class="search-and-create"  *ngIf="true">
                     <wu-search [(searchValue)]="searchText" (searchValueChange)="updateSearch()"></wu-search>
@@ -18,7 +18,8 @@
                 <wu-all-data-filtered-message
                         [filteredItems]="filteredEjbMessageDriven"
                         [unfilteredItems]="ejbMessageDriven"
-                        (clearFilter)="clearSearch()">
+                        (clearFilter)="clearSearch()"
+                        *ngIf="!loadingMDB; else loadingData">
                     <table class="table table-bordered table-hover" *ngIf="filteredEjbMessageDriven.length > 0; else noDataAvailable">
                         <thead wu-sortable-table
                                [(sortedData)]="sortedEjbMessageDriven" [data]="filteredEjbMessageDriven"
@@ -93,7 +94,8 @@
                 <wu-all-data-filtered-message
                         [filteredItems]="filteredEjbSessionStatelessBean"
                         [unfilteredItems]="ejbSessionStatelessBean"
-                        (clearFilter)="clearSearch()">
+                        (clearFilter)="clearSearch()"
+                        *ngIf="!loadingEJBStateless; else loadingData">
                     <table class="table table-bordered table-hover" *ngIf="filteredEjbSessionStatelessBean.length > 0; else noDataAvailable">
                         <thead wu-sortable-table
                                [(sortedData)]="sortedEjbSessionStatelessBean" [data]="filteredEjbSessionStatelessBean"
@@ -125,7 +127,8 @@
                 <wu-all-data-filtered-message
                         [filteredItems]="filteredEjbSessionStatefulBean"
                         [unfilteredItems]="ejbSessionStatefulBean"
-                        (clearFilter)="clearSearch()">
+                        (clearFilter)="clearSearch()"
+                        *ngIf="!loadingEJBStateful; else loadingData">
                     <table class="table table-bordered table-hover" *ngIf="filteredEjbSessionStatefulBean.length > 0; else noDataAvailable">
                         <thead wu-sortable-table
                                [(sortedData)]="sortedEjbSessionStatefulBean" [data]="filteredEjbSessionStatefulBean"
@@ -157,7 +160,8 @@
                 <wu-all-data-filtered-message
                         [filteredItems]="filteredEjbEntityBean"
                         [unfilteredItems]="ejbEntityBean"
-                        (clearFilter)="clearSearch()">
+                        (clearFilter)="clearSearch()"
+                        *ngIf="!loadingEntity; else loadingData">
                     <table class="table table-bordered table-hover" *ngIf="filteredEjbEntityBean.length > 0; else noDataAvailable">
                         <thead wu-sortable-table
                                [(sortedData)]="sortedEjbEntityBean" [data]="filteredEjbEntityBean"
@@ -183,6 +187,10 @@
         </div>
     </ng-container>
 </div>
+
+<ng-template #loadingData>
+    <span>Loading...</span>
+</ng-template>
 
 <ng-template #noDataAvailable>
     <span>There are no beans of this type.</span>

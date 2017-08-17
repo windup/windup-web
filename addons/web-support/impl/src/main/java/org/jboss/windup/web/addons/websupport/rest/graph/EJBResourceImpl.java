@@ -44,43 +44,33 @@ public class EJBResourceImpl extends AbstractGraphResource implements EJBResourc
             projectModels = this.getProjectModels(graphContext, filter);
         }
 
-        List<T> ejbMessageDrivenArrayList = new ArrayList<>();
-        GraphService<T> ejbMessageDrivenModelService = new GraphService<>(graphContext, clazz);
+        List<T> result = new ArrayList<>();
+        GraphService<T> ejbService = new GraphService<>(graphContext, clazz);
         Iterable<T> data;
         if (sessionType != null)
         {
-            data = ejbMessageDrivenModelService.findAllByProperties(new String[]{"sessionType"}, new String[]{sessionType});
+            data = ejbService.findAllByProperties(new String[]{EjbBeanBaseModel.SESSION_TYPE}, new String[]{sessionType});
         } else
         {
-            data = ejbMessageDrivenModelService.findAll();
+            data = ejbService.findAll();
         }
 
-        for (T mdb : data)
+        for (T ejb : data)
         {
             if (projectModels == null)
             {
-                ejbMessageDrivenArrayList.add(mdb);
+                result.add(ejb);
             }
             else
             {
                 for (ProjectModel projectModel : projectModels)
                 {
-                    if (mdb.belongsToProject(projectModel))
-                        ejbMessageDrivenArrayList.add(mdb);
+                    if (ejb.belongsToProject(projectModel))
+                        result.add(ejb);
                 }
-/*
-                for (ProjectModel projectModel : mdb.getRootProjectModels())
-                {
-                    if (projectModels.contains(projectModel))
-                    {
-                        ejbMessageDrivenArrayList.add(mdb);
-                        break;
-                    }
-                }
-*/
             }
         }
 
-        return super.frameIterableToResult(reportID, ejbMessageDrivenArrayList, 1);
+        return super.frameIterableToResult(reportID, result, 1);
     }
 }
