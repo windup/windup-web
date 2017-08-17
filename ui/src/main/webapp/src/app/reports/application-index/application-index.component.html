@@ -80,20 +80,31 @@
         <!-- categories incidents -->
         <div class="col-md-4 chartBoundary" *ngIf="categoriesMultiStats && categoriesMultiStats.length > 0">
             <h4>Incidents by Category</h4>
-            <ngx-charts-bar-vertical-2d [scheme]="getColorScheme(categoriesMultiStats.length)" [results]="categoriesMultiStats" [showGridLines]="true" [xAxis]="true"
-                [yAxis]="true" [legend]="true"> </ngx-charts-bar-vertical-2d>
+            <ngx-charts-bar-vertical-2d
+                    [scheme]="getColorScheme(categoriesMultiStats.length)" [results]="categoriesMultiStats"
+                    [showGridLines]="true"
+                    [xAxis]="true"
+                    [yAxis]="true"
+                    [legend]="true">
+            </ngx-charts-bar-vertical-2d>
         </div>
 
         <!-- mandatory incidents -->
         <div class="col-md-4 chartBoundary" *ngIf="mandatoryMultiStats?.length > 0">
             <h4>Mandatory Incidents by Type</h4>
-            <ngx-charts-bar-vertical-2d [scheme]="getColorScheme(mandatoryMultiStats.length)" [results]="mandatoryMultiStats" [showGridLines]="true" [xAxis]="true"
-                [yAxis]="true" [legend]="true"> </ngx-charts-bar-vertical-2d>
+            <ngx-charts-bar-vertical-2d
+                    [scheme]="getColorScheme(mandatoryMultiStats.length)"
+                    [results]="mandatoryMultiStats"
+                    [showGridLines]="true"
+                    [xAxis]="true"
+                    [yAxis]="true"
+                    [legend]="true">
+            </ngx-charts-bar-vertical-2d>
         </div>
     </div>
 
-    <!-- Details with tables data - showing & hiding panel -->
-    <div class="row col-md-12 report-index-row">
+        <!-- Details with tables data - showing & hiding panel -->
+        <div class="row col-md-12 report-index-row">
            <div class="panel panel-heading" style="cursor: pointer;">
                 <a (click)="showDetails = !showDetails">
                     <span *ngIf="showDetails"><i class="glyphicon glyphicon-expand"></i> Hide Details</span>
@@ -157,4 +168,6 @@
                     </tbody>
                 </table>
             </div>
+        </div>
     </div>
+</div>
