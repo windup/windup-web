@@ -1,4 +1,5 @@
 import {NgModule} from "@angular/core";
+
 import {TagDataService} from "./tag-data.service";
 import {PrettyPathPipe} from "./pretty-path.pipe";
 import {TechnologyTagComponent} from "./technology-tag/technology-tag.component";

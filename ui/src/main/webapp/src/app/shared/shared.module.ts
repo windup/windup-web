@@ -61,6 +61,7 @@ import {LoadingIndicatorComponent} from "./loading-indicator.component";
 import {PaginationComponent} from "./pagination.component";
 import {PaginationService} from "./pagination.service";
 
+
 @NgModule({
     imports: [
         CommonModule,
