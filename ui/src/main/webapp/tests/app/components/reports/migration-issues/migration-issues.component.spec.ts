@@ -20,6 +20,9 @@ import {EffortLevelPipe} from "../../../../../src/app/reports/effort-level.enum"
 import {ProblemSummaryFilesComponent} from "../../../../../src/app/reports/migration-issues/problem-summary-files.component";
 import {PaginationService} from "../../../../../src/app/shared/pagination.service";
 import {PaginationComponent} from "../../../../../src/app/shared/pagination.component";
+import {SearchComponent} from "../../../../../src/app/shared/search/search.component";
+import {AllDataFilteredMessageComponent} from "../../../../../src/app/shared/all-data-filtered-message.component";
+import {FormsModule} from "@angular/forms";
 
 let comp:    MigrationIssuesComponent;
 let fixture: ComponentFixture<MigrationIssuesComponent>;
@@ -33,10 +36,11 @@ describe('MigrationissuesComponent', () => {
         activatedRouteMock = new ActivatedRouteMock();
 
         TestBed.configureTestingModule({
-            imports: [ RouterTestingModule, HttpModule ],
+            imports: [ RouterTestingModule, HttpModule, FormsModule ],
             declarations: [
                 MigrationIssuesComponent, MigrationIssuesTableComponent, ProblemSummaryFilesComponent,
-                ReportFilterIndicatorComponent, EffortLevelPipe, PaginationComponent
+                ReportFilterIndicatorComponent, EffortLevelPipe, PaginationComponent, SearchComponent,
+                AllDataFilteredMessageComponent
             ],
             providers: [
                 {
@@ -51,6 +55,7 @@ describe('MigrationissuesComponent', () => {
                 RouteFlattenerService,
                 MockBackend,
                 BaseRequestOptions,
+                EffortLevelPipe,
                 {
                     provide: Http,
                     useFactory: (backend: ConnectionBackend, defaultOptions: BaseRequestOptions) => {

@@ -9,23 +9,23 @@ import {WindupService} from "../../services/windup.service";
 import {WindupExecution} from "../../generated/windup-services";
 import {RouteFlattenerService} from "../../core/routing/route-flattener.service";
 import {FilterableReportComponent} from "../filterable-report.component";
+import {EffortLevelPipe} from "../effort-level.enum";
 
 
 @Component({
     selector: 'wu-migration-issues',
     templateUrl: './migration-issues.component.html',
-    styles: [`
-        .panel-primary.wuMigrationIssues { border-color: #e7e7e7; }
-        .panel-primary.wuMigrationIssues .panel-heading { background-color: white; padding: 15px 15px; border-bottom: 2px solid #e7e7e7; }
-        .panel-primary.wuMigrationIssues .panel-heading .panel-title { color: black; font-size: 20px; font-weight: 500; }
-    `]
+    styleUrls: ['./migration-issues.component.scss']
 })
 export class MigrationIssuesComponent extends FilterableReportComponent implements OnInit {
     protected categorizedIssues: Dictionary<ProblemSummary[]>;
+    filteredIssues: Dictionary<ProblemSummary[]>;
     categories: string[];
 
     public hideFilter = WINDUP_WEB.config.hideUnfinishedFeatures;
     public execution: WindupExecution;
+
+    searchValue: string;
 
     public constructor(
         _router: Router,
@@ -33,7 +33,8 @@ export class MigrationIssuesComponent extends FilterableReportComponent implemen
         private _migrationIssuesService: MigrationIssuesService,
         private _notificationService: NotificationService,
         private _windupService: WindupService,
-        _routeFlattener: RouteFlattenerService
+        _routeFlattener: RouteFlattenerService,
+        private _effortLevelPipe: EffortLevelPipe
     ) {
         super(_router, _activatedRoute, _routeFlattener);
     }
@@ -46,11 +47,34 @@ export class MigrationIssuesComponent extends FilterableReportComponent implemen
                 result => {
                     this.categorizedIssues = result;
                     this.categories = Object.keys(result);
+                    this.filteredIssues = Object.assign({}, result);
+                    this.reloadData();
                 },
                 error => {
                     this._notificationService.error(utils.getErrorMessage(error));
                     this._router.navigate(['']);
                 });
         }));
+    }
+
+    reloadData() {
+        if (!this.searchValue || this.searchValue.length === 0) {
+            this.filteredIssues = Object.assign({}, this.categorizedIssues);
+            return;
+        }
+
+        const regex = new RegExp(this.searchValue, 'i');
+
+        this.categories.forEach(category => {
+            this.filteredIssues[category] = this.categorizedIssues[category].filter(issue => {
+                return issue.issueName.search(regex) !== -1
+                    || this._effortLevelPipe.transform(issue.effortPerIncident).search(regex) !== -1;
+            });
+        });
+    }
+
+    clearFilter() {
+        this.searchValue = '';
+        this.reloadData();
     }
 }

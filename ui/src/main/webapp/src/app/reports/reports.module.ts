@@ -88,7 +88,8 @@ import {TechnologiesEJBReportComponent} from "./technologies/technologies-report
         PrettyPathPipe,
         TagDataService,
         // TagFilterService
-        SourceResolve
+        SourceResolve,
+        EffortLevelPipe
     ]
 })
 export class ReportsModule {
