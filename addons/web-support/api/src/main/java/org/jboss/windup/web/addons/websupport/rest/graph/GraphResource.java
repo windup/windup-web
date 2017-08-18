@@ -38,13 +38,6 @@ public interface GraphResource extends FurnaceRESTGraphAPI
     // @formatter:off
 
     /**
-     * Returns a list of all "types" registered within the system.
-     */
-    @GET
-    @Path("/introspect/type-list")
-    List<ModelTypeInformation> getTypes();
-
-    /**
      * Gets vertex by id
      *
      * @param executionID Execution id

@@ -23,8 +23,6 @@ export class ProjectLayoutComponent extends RoutedComponent implements OnInit, O
     menuItems: ContextMenuItemInterface[];
     hamburgerMenuItems: ContextMenuItemInterface[];
 
-    submenuTechnologyItems: ContextMenuItemInterface[];
-
     // TODO: Execution progress: Project Layout must be updated when execution state changes (is completed)
 
     constructor(

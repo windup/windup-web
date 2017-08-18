@@ -77,14 +77,6 @@ export class ApplicationLevelLayoutComponent extends ExecutionsLayoutComponent {
                 'application-index'
             ),
             new ApplicationReportMenuItem(
-                'Technologies',
-                'fa-lightbulb-o',
-                this.project,
-                this.execution,
-                this.application,
-                'technology-report'
-            ),
-            new ApplicationReportMenuItem(
                 'Application Details',
                 'fa-list',
                 this.project,
@@ -115,6 +107,14 @@ export class ApplicationLevelLayoutComponent extends ExecutionsLayoutComponent {
             this.menuItems.splice(4, 0, reportFilterMenu);
 
             this.menuItems = [ ...this.menuItems,
+                new ApplicationReportMenuItem(
+                    'Technologies',
+                    'fa-cubes',
+                    this.project,
+                    this.execution,
+                    this.application,
+                    'technologies-report'
+                ),
                 new ApplicationReportMenuItem(
                     'Dependencies',
                     'fa-code-fork',
