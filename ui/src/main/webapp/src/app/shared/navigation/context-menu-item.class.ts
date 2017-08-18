@@ -11,7 +11,6 @@ export interface ContextMenuItemInterface {
     target?: string;
     absolute?: boolean;
     isActive?: any|boolean|Function;
-    innerMenuItem?: ContextMenuItemInterface[];
 }
 
 export class ContextMenuItem implements ContextMenuItemInterface {
@@ -23,7 +22,6 @@ export class ContextMenuItem implements ContextMenuItemInterface {
     protected _data?: any;
     protected _target?: string;
     protected _absolute?: boolean;
-    protected _innerMenuItem?: ContextMenuItemInterface[];
 
     constructor(label: string,
                 icon: string,
@@ -31,8 +29,7 @@ export class ContextMenuItem implements ContextMenuItemInterface {
                 link?: string, action?:Function,
                 data?: any,
                 target?: string,
-                absolute?: boolean,
-                innerMenuItem?: ContextMenuItemInterface[])
+                absolute?: boolean)
     {
         this._label = label;
         this._link = link;
@@ -42,7 +39,6 @@ export class ContextMenuItem implements ContextMenuItemInterface {
         this._data = data;
         this._target = target;
         this._absolute = (typeof absolute == "undefined") ? false : absolute;
-        this._innerMenuItem = innerMenuItem;
     }
 
     get label(): string {
@@ -83,10 +79,6 @@ export class ContextMenuItem implements ContextMenuItemInterface {
     get absolute(): boolean {
         return this._absolute;
     }
-
-    get innerMenuItem(): ContextMenuItemInterface[] {
-        return this._innerMenuItem;
-    }
 }
 
 export class ReportMenuItem extends ContextMenuItem {
@@ -94,12 +86,11 @@ export class ReportMenuItem extends ContextMenuItem {
     protected execution: WindupExecution;
     protected report: string;
 
-    constructor(label: string, icon: string, project: MigrationProject, execution: WindupExecution, report: string, innerMenuItem?: ContextMenuItemInterface[]) {
+    constructor(label: string, icon: string, project: MigrationProject, execution: WindupExecution, report: string) {
         super(label, icon);
         this.project = project;
         this.execution = execution;
         this.report = report;
-        this._innerMenuItem = innerMenuItem;
     }
 
     protected getExecutionLink(): any[] {

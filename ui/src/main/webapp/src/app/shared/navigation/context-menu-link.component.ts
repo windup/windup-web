@@ -21,32 +21,11 @@ import {ContextMenuItemInterface} from "./context-menu-item.class";
     template: `
             <a *ngIf="item.action" (click)="click(item)"><ng-content></ng-content></a>
             <a *ngIf="!item.absolute" [routerLink]="getLink(item)"><ng-content select="[router-mode]"></ng-content></a>
-            <div *ngIf="!item.absolute && item.innerMenuItem && item.innerMenuItem.length > 0" id="-secondary" class="nav-pf-secondary-nav">
-                <div class="nav-item-pf-header">
-                    <a class="secondary-collapse-toggle-pf"></a>
-                    <span>{{item.label}}</span>
-                </div>
-                <ul class="list-group">
-                    <li *ngFor="let secondLevelMenuItem of getEnabled(item.innerMenuItem)"
-                        class="list-group-item" >
-                        <a [routerLink]="[secondLevelMenuItem.link]">
-                            <span class="list-group-item-value">{{secondLevelMenuItem.label}}</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
             <a *ngIf="item.absolute" [href]="item.link" [target]="item.target"><ng-content select="[absolute-mode]"></ng-content></a>`,
     selector: '[wu-context-menu-link]',
     changeDetection: ChangeDetectionStrategy.OnPush,
     styles: [
-        `a:focus { text-decoration: none; }
-
-        /deep/ .nav-pf-vertical .list-group-item:hover .nav-pf-secondary-nav{
-            opacity: 0.97;
-            visibility: visible;
-            left: 239px;
-            top: 121px;
-        }`
+        `a:focus { text-decoration: none; }`
     ]
 })
 export class ContextMenuLinkComponent {
@@ -65,10 +44,6 @@ export class ContextMenuLinkComponent {
         } else {
             return item.link;
         }
-    }
-
-    getEnabled(items: ContextMenuItemInterface[]) : ContextMenuItemInterface[] {
-        return items.filter(item => item.isEnabled);
     }
 
 }
