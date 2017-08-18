@@ -1,0 +1,41 @@
+:host /deep/ .table {
+  font-size: 13px;
+
+  thead > tr > th {
+    font-family: "Open Sans";
+    font-style: normal;
+    font-weight: 600;
+  }
+}
+
+:host /deep/ .table-bordered {
+  border: 1px solid #d1d1d1;
+
+  & > tbody > tr > td,
+  & > thead > tr > th {
+    border-left: 0;
+    border-right: 0;
+    padding-bottom: 8px;
+    padding-top: 8px;
+    vertical-align: middle;
+  }
+}
+
+:host /deep/ .status-icon {
+  margin-right: 6px;
+  width: 13px;
+  text-align: center;
+}
+
+span.action-item {
+  cursor: pointer;
+  margin-left: 1em;
+}
+
+span.action-item a {
+  text-decoration: none;
+  color: #9c9c9c;
+  font-size: inherit;
+
+  &:hover { color: #000; }
+}
