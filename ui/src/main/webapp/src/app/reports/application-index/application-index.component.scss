@@ -13,7 +13,7 @@ table.summaryLayout > tr > td, table.summaryLayout > tbody > tr > td {
 
 .highlightNumber {
     color: #00254b;
-    font-size: 20pt;
+    font-size: 16pt;
     width: 1.5em;
 }
 
@@ -44,12 +44,10 @@ table.summaryLayout > tr > td, table.summaryLayout > tbody > tr > td {
 .chartBoundary {
     height: 250px;
 }
+
 /*
-.card-pf-body {
-
-}
-*/
-
+ * These styles move legend below the chart
+ */
 :host /deep/ {
     .ngx-charts-outer {
         display: flex;
@@ -84,4 +82,8 @@ table.summaryLayout > tr > td, table.summaryLayout > tbody > tr > td {
     .chart-wrapper {
         height: 282px;
     }
+}
+
+:host /deep/ .container-fluid {
+    padding-top: 30px;
 }

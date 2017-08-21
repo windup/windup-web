@@ -11,8 +11,8 @@
             <div class="card-pf card-pf-view card-pf-view-select card-pf-view-single-select">
                 <div class="card-pf-body">
                     <div class="card-pf-top-element">
+                        <h4>Summary</h4>
                         <table class="table table-condensed">
-                            <caption>Summary</caption>
                             <tfoot>
                             <tr class="info">
                                 <td><span class="highlightNumber">Total</span></td>
@@ -48,8 +48,8 @@
             <div class="card-pf card-pf-view card-pf-view-select card-pf-view-single-select">
                 <div class="card-pf-body">
                     <div class="card-pf-top-element">
+                        <h4>Components</h4>
                         <table class="table table-condensed">
-                            <caption>Components</caption>
                             <tbody>
                             <tr *ngFor="let statEntry of componentsStats?.entries">
                                 <td class="summaryStats">{{statEntry.name.toUpperCase()}}</td>
@@ -94,14 +94,16 @@
                 <div class="card-pf-body">
                     <h4>Incidents by category</h4>
 
-                    <div class="chartBoundary">
-                        <ngx-charts-bar-vertical-2d
-                                [scheme]="getColorScheme(categoriesMultiStats.length)" [results]="categoriesMultiStats"
-                                [showGridLines]="true"
-                                [xAxis]="true"
-                                [yAxis]="true"
-                                [legend]="true">
-                        </ngx-charts-bar-vertical-2d>
+                    <div class="chart-wrapper">
+                        <div class="chartBoundary">
+                            <ngx-charts-bar-vertical-2d
+                                    [scheme]="getColorScheme(categoriesMultiStats.length)" [results]="categoriesMultiStats"
+                                    [showGridLines]="true"
+                                    [xAxis]="true"
+                                    [yAxis]="true"
+                                    [legend]="true">
+                            </ngx-charts-bar-vertical-2d>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -113,15 +115,17 @@
                 <div class="card-pf-body">
                     <h4>Mandatory Incidents by Type</h4>
 
-                    <div class="chartBoundary">
-                        <ngx-charts-bar-vertical-2d
-                                [scheme]="getColorScheme(mandatoryMultiStats.length)"
-                                [results]="mandatoryMultiStats"
-                                [showGridLines]="true"
-                                [xAxis]="true"
-                                [yAxis]="true"
-                                [legend]="true">
-                        </ngx-charts-bar-vertical-2d>
+                    <div class="chart-wrapper">
+                        <div class="chartBoundary">
+                            <ngx-charts-bar-vertical-2d
+                                    [scheme]="getColorScheme(mandatoryMultiStats.length)"
+                                    [results]="mandatoryMultiStats"
+                                    [showGridLines]="true"
+                                    [xAxis]="true"
+                                    [yAxis]="true"
+                                    [legend]="true">
+                            </ngx-charts-bar-vertical-2d>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -139,9 +143,9 @@
         <ng-container *ngIf="showDetails">
             <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" *ngIf="globalPackageUseData && globalPackageUseData.length > 0">
                 <div class="card-pf card-pf-view card-pf-view-select card-pf-view-single-select">
-                    <div class="card-pf-body" style="height: 261px;">
+                    <div class="card-pf-body">
+                        <h4>Java Packages Usage</h4>
                         <table class="table table-condensed table-striped" >
-                            <caption>Java Packages Usage</caption>
                             <thead>
                             <tr>
                                 <th>Java Package</th>
@@ -160,9 +164,9 @@
             </div>
             <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" *ngIf="categoriesMultiStats && categoriesMultiStats.length > 0">
                 <div class="card-pf card-pf-view card-pf-view-select card-pf-view-single-select">
-                    <div class="card-pf-body" style="height: 261px;">
+                    <div class="card-pf-body">
+                        <h4>Incidents by Category</h4>
                         <table class="table table-condensed table-striped" id="categoriesMultiStats">
-                            <caption>Incidents by Category</caption>
                             <thead>
                             <tr>
                                 <th>Category</th>
@@ -183,9 +187,9 @@
             </div>
             <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" *ngIf="mandatoryMultiStats && mandatoryMultiStats.length > 0">
                 <div class="card-pf card-pf-view card-pf-view-select card-pf-view-single-select">
-                    <div class="card-pf-body" style="height: 261px;">
+                    <div class="card-pf-body">
+                        <h4>Mandatory Incidents by Type</h4>
                         <table class="table table-condensed table-striped" id="mandatoryMultiStats">
-                            <caption>Mandatory Incidents by Type</caption>
                             <thead>
                             <tr>
                                 <th>Effort Level</th>
