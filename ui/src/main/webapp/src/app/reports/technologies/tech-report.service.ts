@@ -12,6 +12,12 @@ import {EjbSessionBeanModel} from "../../generated/tsModels/EjbSessionBeanModel"
 import {EjbBeanBaseModel} from "../../generated/tsModels/EjbBeanBaseModel";
 import {ReportFilter} from "../../generated/windup-services";
 import {Constants} from "../../constants";
+import {utils} from "../../shared/utils";
+import {HibernateEntityModel} from "../../generated/tsModels/HibernateEntityModel";
+import {HibernateMappingFileModel} from "../../generated/tsModels/HibernateMappingFileModel";
+import {HibernateConfigurationFileModel} from "../../generated/tsModels/HibernateConfigurationFileModel";
+import {HibernateSessionFactoryModel} from "../../generated/tsModels/HibernateSessionFactoryModel";
+import Observables = utils.Observables;
 
 @Injectable()
 export class TechReportService extends GraphService
@@ -117,6 +123,34 @@ export class TechReportService extends GraphService
             result.push(mdbStat);
         });
         return result;
+    }
+
+    getHibernateEntityModel(execID: number): Observable<HibernateEntityModel[]> {
+        const entitiesObservable = this.getTypeAsArray<HibernateEntityModel>(HibernateEntityModel.discriminator, execID, {
+            /*
+             * TODO: THIS IS PROBLEM
+             *
+             * Endpoint expects to get label of edge, but frontend has it ONLY in @GraphAdjacency annotation
+             *  which is not accessible.
+             *
+             *  It is not straightforward that 'PersistenceEntity-jpaEntityClass' will resolve to 'javaClass'
+             */
+            out: this.getProperiesString('PersistenceEntity-jpaEntityClass')
+        });
+
+        return Observables.resolveValuesArray(entitiesObservable, ['javaClass']);
+    }
+
+    getHibernateMappingFileModel(execID: number): Observable<HibernateMappingFileModel[]> {
+        return this.getTypeAsArray<HibernateMappingFileModel>(HibernateMappingFileModel.discriminator, execID);
+    }
+
+    getHibernateConfigurationFileModel(execId: number): Observable<HibernateConfigurationFileModel[]> {
+        return this.getTypeAsArray<HibernateConfigurationFileModel>(HibernateConfigurationFileModel.discriminator, execId);
+    }
+
+    getHibernateSessionFactoryModel(execID: number): Observable<HibernateSessionFactoryModel[]> {
+        return this.getTypeAsArray<HibernateSessionFactoryModel>(HibernateSessionFactoryModel.discriminator, execID);
     }
 
 }

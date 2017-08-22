@@ -33,6 +33,7 @@ import {ProblemSummaryFilesComponent} from "./migration-issues/problem-summary-f
 import {TechnologiesEJBReportComponent} from "./technologies/technologies-report-ejb.component";
 import {HardcodedIPReportComponent} from "./hardcoded-ip/hardcoded-ip.component";
 import {HardcodedIPService} from "./hardcoded-ip/hardcoded-ip.service";
+import {TechnologiesHibernateReportComponent} from "./technologies/hibernate/hibernate-report.component";
 
 @NgModule({
     imports: [
@@ -61,7 +62,8 @@ import {HardcodedIPService} from "./hardcoded-ip/hardcoded-ip.service";
         EffortLevelPipe,
         PrettyPathPipe,
         TechnologiesEJBReportComponent,
-        HardcodedIPReportComponent
+        HardcodedIPReportComponent,
+        TechnologiesHibernateReportComponent
     ],
     exports: [
         ApplicationDetailsComponent,

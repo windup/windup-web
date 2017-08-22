@@ -125,8 +125,8 @@ export class ExecutionsLayoutComponent extends ProjectLayoutComponent implements
             new ContextMenuItem(
                 'Hibernate',
                 null,
-                false,
-                'technology-report-change-me'
+                true,
+                'technology-report-hibernate'
             ),
             new ContextMenuItem(
                 'Ignored Files',
