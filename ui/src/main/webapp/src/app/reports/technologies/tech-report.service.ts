@@ -135,10 +135,21 @@ export class TechReportService extends GraphService
              *
              *  It is not straightforward that 'PersistenceEntity-jpaEntityClass' will resolve to 'javaClass'
              */
-            out: this.getProperiesString('PersistenceEntity-jpaEntityClass')
+            out: this.getProperiesString('PersistenceEntity-jpaEntityClass', 'decompiledSource')
         });
 
-        return Observables.resolveValuesArray(entitiesObservable, ['javaClass']);
+        return Observables.resolveValuesArray(entitiesObservable, ['javaClass']).flatMap(entitiesArray => {
+            return Observable.forkJoin(entitiesArray.map(entity => Observables.resolveObjectProperties(entity.resolved.javaClass, ['decompiledSource'])))
+                .map(resolvedJavaClasses => {
+                    const updatedEntitiesArray = [ ... entitiesArray ];
+
+                    return updatedEntitiesArray.map((entity, index)  => {
+                        entity.resolved.javaClass = resolvedJavaClasses[index];
+
+                        return entity;
+                    })
+                });
+        });
     }
 
     getHibernateMappingFileModel(execID: number): Observable<HibernateMappingFileModel[]> {
@@ -150,7 +161,12 @@ export class TechReportService extends GraphService
     }
 
     getHibernateSessionFactoryModel(execID: number): Observable<HibernateSessionFactoryModel[]> {
-        return this.getTypeAsArray<HibernateSessionFactoryModel>(HibernateSessionFactoryModel.discriminator, execID);
+        const entitiesObservable = this.getTypeAsArray<HibernateSessionFactoryModel>(HibernateSessionFactoryModel.discriminator, execID, {
+            //out: this.getProperiesString('hibernateSessionFactory', 'datasource')
+        });
+
+
+        return entitiesObservable;
     }
 
 }

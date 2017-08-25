@@ -9,9 +9,11 @@ import {HibernateSessionFactoryModel} from "../../../generated/tsModels/Hibernat
 import {RouteFlattenerService} from "../../../core/routing/route-flattener.service";
 import {FilterableReportComponent} from "../../filterable-report.component";
 import {utils} from "../../../shared/utils";
+import {OrderDirection} from "../../../shared/sort/sorting.service";
 
 @Component({
-    templateUrl: './hibernate-report.component.html'
+    templateUrl: './hibernate-report.component.html',
+    styleUrls: ['../technologies-report-ejb.component.scss']
 })
 export class TechnologiesHibernateReportComponent extends FilterableReportComponent implements OnInit {
     entities: HibernateEntityModel[] = [];
@@ -27,6 +29,21 @@ export class TechnologiesHibernateReportComponent extends FilterableReportCompon
     };
 
     title: string;
+
+    sorting = {
+        getJavaClassCallback: (entity) => entity.resolved.javaClass.qualifiedName
+    };
+
+    searchText: string;
+
+    emptyFilterCallbacks = {
+        entities: (entity) => true,
+        mappingFiles: (file) => true,
+        configurationFiles: (file) => true,
+        sessionFactories: (factory) => true
+    };
+
+    filterCallbacks = Object.assign({}, this.emptyFilterCallbacks);
 
     constructor(
         activatedRoute: ActivatedRoute,
@@ -77,5 +94,42 @@ export class TechnologiesHibernateReportComponent extends FilterableReportCompon
                 this._notificationService.error(utils.getErrorMessage(error));
             });
         }));
+    }
+
+    updateSearch() {
+        const regex = new RegExp(this.searchText, 'i');
+
+        this.filterCallbacks = Object.assign({}, {
+            entities: this.filterEntities(regex),
+            mappingFiles: this.filterMappingFiles(regex),
+            configurationFiles: this.filterConfigurationFiles(regex),
+            sessionFactories: this.filterSessionFactories(regex)
+        });
+    }
+
+    clearSearch() {
+        this.searchText = '';
+        this.filterCallbacks = Object.assign({}, this.emptyFilterCallbacks);
+    }
+
+    filterEntities(regex: string|RegExp) {
+        return (entity) => {
+            return entity.resolved.javaClass.qualifiedName.search(regex) !== -1
+                || entity.tableName.search(regex) !== -1;
+        }
+    }
+
+    filterMappingFiles(regex: string|RegExp) {
+        return (file) => {
+            return file.cachedPrettyPath.search(regex) !== -1;
+        }
+    }
+
+    filterConfigurationFiles(regex: string|RegExp) {
+        return this.filterMappingFiles(regex);
+    }
+
+    filterSessionFactories(regex: string|RegExp) {
+        return (factory) => true;
     }
 }

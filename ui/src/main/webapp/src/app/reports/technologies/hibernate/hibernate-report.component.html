@@ -2,139 +2,78 @@
     <div class="header-bar">
         <h2>Technologies &gt; {{title}}</h2>
         <div class="search-and-create">
-            <div class="search-and-create"  *ngIf="true">
+            <div class="search-and-create" *ngIf="true">
                 <wu-search [(searchValue)]="searchText" (searchValueChange)="updateSearch()"></wu-search>
             </div>
         </div>
     </div>
-
-    <div class="panel panel-default panel-primary wuTechnologies">
-        <div class="panel-heading">
-            <h3 class="panel-title">Hibernate Entities</h3>
-        </div>
-        <div class="panel-body">
-            <wu-all-data-filtered-message
-                    [filteredItems]="entities"
-                    [unfilteredItems]="entities"
-                    (clearFilter)="clearSearch()"
-                    *ngIf="!loading.entities; else loadingData">
-                <table class="table table-bordered table-hover" *ngIf="entities.length > 0; else noDataAvailable">
-                    <thead wu-sortable-table
-                           [(sortedData)]="entities" [data]="entities"
-                           [tableHeaders]="[
-                        { title: 'Class', isSortable: true, sortBy: 'class'},
-                        { title: 'Table', isSortable: true, sortBy: 'name' },
-                        { title: 'Hibernate version', isSortable: true, sortBy: 'location'}
+    <wu-data-table
+            [loading]="loading.entities"
+            (clearFilter)="clearSearch()"
+            [rowTemplate]="rowTemplateEntity"
+            [title]="'Hibernate Entities'"
+            [data]="entities | wuFilter: filterCallbacks.entities"
+            [unfilteredData]="entities"
+            [tableHeaders]="[
+                        { title: 'Class', isSortable: true, sortBy: sorting.getJavaClassCallback },
+                        { title: 'Table', isSortable: true, sortBy: 'tableName' },
+                        { title: 'Hibernate version', isSortable: true, sortBy: 'specificationVersion'}
                     ]">
-                    </thead>
-                    <tbody>
-                    <tr *ngFor="let entity of entities">
-                        <td class="col-md-2">{{entity.tableName}}</td>
-                        <td class="col-md-2">{{entity.resolved.javaClass.qualifiedName}}</td>
-                        <td class="col-md-2">{{entity.specificationVersion}}</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </wu-all-data-filtered-message>
-        </div>
-    </div>
-
-    <div class="panel panel-default panel-primary wuTechnologies">
-        <div class="panel-heading">
-            <h3 class="panel-title">Hibernate Mapping Files</h3>
-        </div>
-        <div class="panel-body">
-            <wu-all-data-filtered-message
-                    [filteredItems]="mappingFiles"
-                    [unfilteredItems]="mappingFiles"
-                    (clearFilter)="clearSearch()"
-                    *ngIf="!loading.mappingFiles; else loadingData">
-                <table class="table table-bordered table-hover" *ngIf="mappingFiles.length > 0; else noDataAvailable">
-                    <thead wu-sortable-table
-                           [(sortedData)]="mappingFiles" [data]="mappingFiles"
-                           [tableHeaders]="[
-                        { title: 'File Name', isSortable: true, sortBy: 'name' },
-                        { title: 'Class', isSortable: true, sortBy: 'class'},
-                        { title: 'JMS Destination', isSortable: true, sortBy: 'location'}
+        <ng-template #rowTemplateEntity let-entity>
+            <tr>
+                <td class="col-md-2"><a [routerLink]="['../source/' + entity.resolved.javaClass.resolved.decompiledSource.vertexId]">{{entity.resolved.javaClass.qualifiedName}}</a></td>
+                <td class="col-md-2">{{entity.tableName}}</td>
+                <td class="col-md-2">{{entity.specificationVersion}}</td>
+            </tr>
+        </ng-template>
+    </wu-data-table>
+    <wu-data-table
+            [loading]="loading.mappingFiles"
+            (clearFilter)="clearSearch()"
+            [rowTemplate]="rowTemplateMapping"
+            [title]="'Hibernate Mapping Files'"
+            [data]="mappingFiles | wuFilter: filterCallbacks.mappingFiles"
+            [unfilteredData]="mappingFiles"
+            [tableHeaders]="[
+                        { title: 'File Name', isSortable: true, sortBy: 'cachedPrettyPath' }
                     ]">
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let file of mappingFiles">
-                            <td class="col-md-2">{{file.cachedPrettyPath}}</td>
-                            <td class="col-md-2"></td>
-                            <td class="col-md-2"></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </wu-all-data-filtered-message>
-        </div>
-    </div>
-
-
-    <div class="panel panel-default panel-primary wuTechnologies">
-        <div class="panel-heading">
-            <h3 class="panel-title">Hibernate Configuration Files</h3>
-        </div>
-        <div class="panel-body">
-            <wu-all-data-filtered-message
-                    [filteredItems]="configurationFiles"
-                    [unfilteredItems]="configurationFiles"
-                    (clearFilter)="clearSearch()"
-                    *ngIf="!loading.configurationFiles; else loadingData">
-                <table class="table table-bordered table-hover" *ngIf="configurationFiles.length > 0; else noDataAvailable">
-                    <thead wu-sortable-table
-                           [(sortedData)]="configurationFiles" [data]="configurationFiles"
-                           [tableHeaders]="[
-                        { title: 'File Name', isSortable: true, sortBy: 'name' }
-                        ]">
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let file of configurationFiles">
-                            <td class="col-md-2">{{file.cachedPrettyPath}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </wu-all-data-filtered-message>
-        </div>
-    </div>
-
-
-    <div class="panel panel-default panel-primary wuTechnologies">
-        <div class="panel-heading">
-            <h3 class="panel-title">Hibernate Session Factory</h3>
-        </div>
-        <div class="panel-body">
-            <wu-all-data-filtered-message
-                    [filteredItems]="sessionFactories"
-                    [unfilteredItems]="sessionFactories"
-                    (clearFilter)="clearSearch()"
-                    *ngIf="!loading.sessionFactories; else loadingData">
-                <table class="table table-bordered table-hover" *ngIf="sessionFactories.length > 0; else noDataAvailable">
-                    <thead wu-sortable-table
-                           [(sortedData)]="sessionFactories" [data]="sessionFactories"
-                           [tableHeaders]="[
-                        { title: 'File Name', isSortable: true, sortBy: 'name' },
-                        { title: 'Class', isSortable: true, sortBy: 'class'},
-                        { title: 'JMS Destination', isSortable: true, sortBy: 'location'}
+        <ng-template #rowTemplateMapping let-file>
+            <tr>
+                <td class="col-md-2"><a [routerLink]="['../source/' + file.vertexId]">{{file.cachedPrettyPath}}</a></td>
+            </tr>
+        </ng-template>
+    </wu-data-table>
+    <wu-data-table
+            [loading]="loading.configurationFiles"
+            (clearFilter)="clearSearch()"
+            [rowTemplate]="rowTemplateConfiguration"
+            [title]="'Hibernate Configuration Files'"
+            [data]="configurationFiles | wuFilter: filterCallbacks.configurationFiles"
+            [unfilteredData]="configurationFiles"
+            [tableHeaders]="[
+                        { title: 'File Name', isSortable: true, sortBy: 'cachedPrettyPath' }
                     ]">
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let factory of sessionFactories">
-                            <td class="col-md-2"></td>
-                            <td class="col-md-2"></td>
-                            <td class="col-md-2"></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </wu-all-data-filtered-message>
-        </div>
-    </div>
+        <ng-template #rowTemplateConfiguration let-file>
+            <tr>
+                <td class="col-md-2"><a [routerLink]="['../source/' + file.vertexId]">{{file.cachedPrettyPath}}</a></td>
+            </tr>
+        </ng-template>
+    </wu-data-table>
+    <wu-data-table
+            [loading]="loading.sessionFactories"
+            (clearFilter)="clearSearch()"
+            [rowTemplate]="rowTemplateSessionFactory"
+            [title]="'Hibernate Session Factories'"
+            [data]="sessionFactories | wuFilter: filterCallbacks.sessionFactories"
+            [unfilteredData]="sessionFactories"
+            [tableHeaders]="[
+                        { title: 'File Name', isSortable: true, sortBy: 'cachedPrettyPath' },
+                        { title: 'Hibernate Version', isSortable: true, sortBy: 'specificationVersion' }
+                    ]">
+        <ng-template #rowTemplateSessionFactory let-file>
+            <tr>
+                <td class="col-md-2"><a [routerLink]="['../source/' + file.vertexId]">{{file.cachedPrettyPath}}</a></td>
+            </tr>
+        </ng-template>
+    </wu-data-table>
 </div>
-
-<ng-template #loadingData>
-    <span>Loading...</span>
-</ng-template>
-
-<ng-template #noDataAvailable>
-    <span>There are no items of this type.</span>
-</ng-template>
