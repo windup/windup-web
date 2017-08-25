@@ -1,0 +1,122 @@
+<div>
+    <div class="header-bar">
+        <h2>Technologies &gt; {{title}}</h2>
+        <div class="search-and-create">
+            <div class="search-and-create" *ngIf="true">
+                <wu-search [(searchValue)]="searchText" (searchValueChange)="updateSearch()"></wu-search>
+            </div>
+        </div>
+    </div>
+    <wu-table
+            [loading]="loading.ejbRemoteServices"
+            (clearFilter)="clearSearch()"
+            [rowTemplate]="rowTemplateEjbRemote"
+            [title]="'EJB Remote Services'"
+            [items]="ejbRemoteServices"
+            [filter]="filterCallbacks.remoteServices"
+            [tableHeaders]="[
+                        { title: 'Interface', isSortable: true, sortBy: sorting.getInterfaceCallback },
+                        { title: 'Implementation Class', isSortable: true, sortBy: sorting.getJavaClassCallback }
+            ]">
+        <ng-template #rowTemplateEjbRemote let-entity>
+            <tr>
+                <td class="col-md-2">
+                    <a [routerLink]="['../source/' + entity?.resolved?.interface?.resolved?.decompiledSource?.vertexId]">{{entity?.resolved?.interface?.qualifiedName}}</a>
+                </td>
+                <td class="col-md-2">
+                    <a [routerLink]="['../source/' + entity?.resolved?.implementationClass?.resolved?.decompiledSource?.vertexId]">{{entity?.resolved?.implementationClass?.qualifiedName}}</a>
+                </td>
+            </tr>
+        </ng-template>
+    </wu-table>
+
+    <wu-table
+            [loading]="loading.jaxRpcWebServices"
+            (clearFilter)="clearSearch()"
+            [rowTemplate]="rowTemplateJaxRpc"
+            [title]="'JAX RPC Web Services'"
+            [items]="jaxRpcWebServices"
+            [filter]="filterCallbacks.remoteServices"
+            [tableHeaders]="[
+                        { title: 'Interface', isSortable: true, sortBy: sorting.getJavaClassCallback },
+                        { title: 'Implementation Class', isSortable: true, sortBy: sorting.getJavaClassCallback }
+            ]">
+        <ng-template #rowTemplateJaxRpc let-entity>
+            <tr>
+                <td class="col-md-2"><a [routerLink]="['../source/' + entity.resolved.interface.resolved.decompiledSource.vertexId]">{{entity.resolved.interface.qualifiedName}}</a></td>
+                <td class="col-md-2">{{entity.tableName}}</td>
+            </tr>
+        </ng-template>
+    </wu-table>
+
+    <wu-table
+            [loading]="loading.jaxRsWebServices"
+            (clearFilter)="clearSearch()"
+            [rowTemplate]="rowTemplateJaxRS"
+            [title]="'JAX RS Web Services'"
+            [items]="jaxRsWebServices"
+            [filter]="filterCallbacks.remoteServicesWithPath"
+            [tableHeaders]="[
+                        { title: 'Path', isSortable: true, sortBy: 'path'},
+                        { title: 'Interface', isSortable: true, sortBy: sorting.getInterfaceCallback },
+                        { title: 'Implementation Class', isSortable: true, sortBy: sorting.getJavaClassCallback }
+            ]">
+        <ng-template #rowTemplateJaxRS let-entity>
+            <tr>
+                <td class="col-md-2">{{entity.path}}</td>
+                <td class="col-md-2">
+                    <a [routerLink]="['../source/' + entity?.resolved?.interface?.resolved?.decompiledSource?.vertexId]">{{entity?.resolved?.interface?.qualifiedName}}</a>
+                </td>
+                <td class="col-md-2">
+                    <a [routerLink]="['../source/' + entity?.resolved?.implementationClass?.resolved?.decompiledSource?.vertexId]">{{entity?.resolved?.implementationClass?.qualifiedName}}</a>
+                </td>
+            </tr>
+        </ng-template>
+    </wu-table>
+
+    <wu-table
+            [loading]="loading.jaxWsWebServices"
+            (clearFilter)="clearSearch()"
+            [rowTemplate]="rowTemplateJaxWS"
+            [title]="'JAX WS Web Services'"
+            [items]="jaxWsWebServices"
+            [filter]="filterCallbacks.remoteServices"
+            [tableHeaders]="[
+                        { title: 'Interface', isSortable: true, sortBy: sorting.getJavaClassCallback },
+                        { title: 'Implementation Class', isSortable: true, sortBy: sorting.getJavaClassCallback }
+            ]">
+        <ng-template #rowTemplateJaxWS let-entity>
+            <tr>
+                <td class="col-md-2">
+                    <a [routerLink]="['../source/' + entity?.resolved?.interface?.resolved?.decompiledSource?.vertexId]">{{entity?.resolved?.interface?.qualifiedName}}</a>
+                </td>
+                <td class="col-md-2">
+                    <a [routerLink]="['../source/' + entity?.resolved?.implementationClass?.resolved?.decompiledSource?.vertexId]">{{entity?.resolved?.implementationClass?.qualifiedName}}</a>
+                </td>
+            </tr>
+        </ng-template>
+    </wu-table>
+
+    <wu-table
+            [loading]="loading.rmiServices"
+            (clearFilter)="clearSearch()"
+            [rowTemplate]="rowTemplateRmi"
+            [title]="'RMI Services'"
+            [items]="rmiServices"
+            [filter]="filterCallbacks.remoteServices"
+            [tableHeaders]="[
+                        { title: 'Interface', isSortable: true, sortBy: sorting.getJavaClassCallback },
+                        { title: 'Implementation Class', isSortable: true, sortBy: sorting.getJavaClassCallback }
+            ]">
+        <ng-template #rowTemplateRmi let-entity>
+            <tr>
+                <td class="col-md-2">
+                    <a [routerLink]="['../source/' + entity?.resolved?.interface?.resolved?.decompiledSource?.vertexId]">{{entity?.resolved?.interface?.qualifiedName}}</a>
+                </td>
+                <td class="col-md-2">
+                    <a [routerLink]="['../source/' + entity?.resolved?.implementationClass?.resolved?.decompiledSource?.vertexId]">{{entity?.resolved?.implementationClass?.qualifiedName}}</a>
+                </td>
+            </tr>
+        </ng-template>
+    </wu-table>
+</div>

@@ -18,6 +18,12 @@ import {HibernateMappingFileModel} from "../../generated/tsModels/HibernateMappi
 import {HibernateConfigurationFileModel} from "../../generated/tsModels/HibernateConfigurationFileModel";
 import {HibernateSessionFactoryModel} from "../../generated/tsModels/HibernateSessionFactoryModel";
 import Observables = utils.Observables;
+import {EjbRemoteServiceModel} from "../../generated/tsModels/EjbRemoteServiceModel";
+import {JaxRPCWebServiceModel} from "../../generated/tsModels/JaxRPCWebServiceModel";
+import {JaxRSWebServiceModel} from "../../generated/tsModels/JaxRSWebServiceModel";
+import {JaxWSWebServiceModel} from "../../generated/tsModels/JaxWSWebServiceModel";
+import {RMIServiceModel} from "../../generated/tsModels/RMIServiceModel";
+import Arrays = utils.Arrays;
 
 @Injectable()
 export class TechReportService extends GraphService
@@ -55,7 +61,10 @@ export class TechReportService extends GraphService
 
     private getEJBs<T extends EjbBeanBaseModel>(execID: number, ejbType: string, clazz?: typeof EjbBeanBaseModel,  filter?: ReportFilter, sessionType?: string): Observable<EJBInformationDTO[]> {
         let serializedFilter = this.serializeFilter(filter);
-        let url =`${Constants.GRAPH_REST_BASE}/reports/${execID}/ejb/${ejbType}`; /* ` fix for google chrome debugger */
+        let url = `${Constants.GRAPH_REST_BASE}/reports/${execID}/ejb/${ejbType}`;
+
+        /* this comment fixes Chrome debugger issues with highlighting ` */
+
         if (sessionType) {
             url += '?sessionType=' + sessionType;
         }
@@ -182,6 +191,76 @@ export class TechReportService extends GraphService
         const entitiesObservable = this.getDataFromFilteredEndpoint<HibernateSessionFactoryModel>(url, filter);
 
         return Observables.resolveValuesArray(entitiesObservable, ['hibernateConfigurationFileModel']);
+    }
+
+    getEjbRemoteServiceModel(execID: number): Observable<EjbRemoteServiceModel[]> {
+        return this.getRemoteServices(execID, EjbRemoteServiceModel.discriminator, [
+            'ejbRemoteInterface', 'ejbImplementationClass', 'decompiledSource'
+        ]);
+    }
+
+    getJaxRpcWebServices(execID: number): Observable<JaxRPCWebServiceModel[]> {
+        return this.getRemoteServices(execID, JaxRPCWebServiceModel.discriminator, [
+            'jaxrpcImplementationClass', 'jaxrpcInterface', 'decompiledSource'
+        ]);
+    }
+
+    getJaxRsWebServices(execID: number): Observable<JaxRSWebServiceModel[]>  {
+        return this.getRemoteServices(execID, JaxRSWebServiceModel.discriminator, [
+            'jaxrsInterface', 'jaxrsImplementationClass', 'decompiledSource'
+        ]);
+    }
+
+    getJaxWsWebServices(execID: number): Observable<JaxWSWebServiceModel[]>  {
+        return this.getRemoteServices(execID, JaxWSWebServiceModel.discriminator, [
+            'jaxwsInterface', 'jaxwsImplementationClass', 'decompiledSource'
+        ]);
+    }
+
+    getRmiServices(execID: number): Observable<RMIServiceModel[]>  {
+        return this.getRemoteServices(execID, RMIServiceModel.discriminator, [
+            'rmiInterface', 'rmiImplementationClass', 'decompiledSource'
+        ]);
+    }
+
+    protected getRemoteServices(execID: number, discriminator: string, preloadProperties: string[]) {
+        /*
+         * TODO: THIS IS PROBLEM
+         *
+         * Endpoint expects to get label of edge, but frontend has it ONLY in @GraphAdjacency annotation
+         *  which is not accessible. */
+        const entitiesObservable = this.getTypeAsArray<any>(discriminator, execID, {
+            out: this.getProperiesString(...preloadProperties)
+        });
+
+        return Observables.resolveValuesArray(entitiesObservable, ['interface', 'implementationClass']).flatMap(entitiesArray =>
+            Observable.forkJoin(
+                Observable.forkJoin(entitiesArray.map(entity => {
+                    const updatedData = Observables.resolveObjectProperties(entity.resolved.implementationClass, ['decompiledSource']);
+                    return updatedData;
+                })),
+                Observable.forkJoin(entitiesArray.map(entity => {
+                    if (!entity.resolved.interface) {
+                        return Observable.of(null);
+                    }
+
+                    const updatedData = Observables.resolveObjectProperties(entity.resolved.interface, ['decompiledSource']);
+                    return updatedData;
+                }))
+            ).map(resolvedData => {
+                const resolvedJavaClasses = resolvedData[0];
+                const resolvedInterfaces = resolvedData[1];
+
+                const updatedEntitiesArray = [ ... entitiesArray ];
+
+                return updatedEntitiesArray.map((entity, index)  => {
+                    entity.resolved.implementationClass = resolvedJavaClasses[index];
+                    entity.resolved.interface = resolvedInterfaces[index];
+
+                    return entity;
+                })
+            })
+        );
     }
 }
 
