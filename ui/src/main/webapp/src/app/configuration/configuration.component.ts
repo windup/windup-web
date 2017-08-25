@@ -57,6 +57,8 @@ export class ConfigurationComponent implements OnInit, AfterViewInit {
         getLabel: filter => `${filter.field}: ${filter.name}`
     };
 
+    showAllRules: false;
+
     constructor(
         private _activatedRoute: ActivatedRoute,
         private _configurationService: ConfigurationService,
@@ -230,13 +232,25 @@ export class ConfigurationComponent implements OnInit, AfterViewInit {
         this.filter = Object.assign({}, this.filter);
     }
 
-    getRuleProvidersByPath(path: RulesPath) {
+    getOnlyMigrationRules(path: RulesPath) {
         const ruleProviders = this.ruleProvidersByPath.get(path) || [];
+
+        if (this.showAllRules) {
+            return ruleProviders;
+        }
+
+        return ruleProviders.filter(provider => {
+            return provider.phase === 'MIGRATIONRULESPHASE';
+        });
+    }
+
+    getRuleProvidersByPath(path: RulesPath) {
+        const ruleProviders = this.getOnlyMigrationRules(path);
         return this._sortingService.sort(ruleProviders);
     }
 
     getFilteredRuleProvidersByPath(path: RulesPath) {
-        let filteredRuleProviders = this.ruleProvidersByPath.get(path) || [];
+        let filteredRuleProviders = this.getOnlyMigrationRules(path);
 
         this.filter.selectedFilters.forEach(filter => {
             filteredRuleProviders = filteredRuleProviders.filter((provider) => {
