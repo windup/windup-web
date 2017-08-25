@@ -74,6 +74,31 @@ export class SortingService<T> {
     public sort(array: T[]): T[] {
         return array.slice().sort(this.orderByCallback);
     }
+
+    protected createCallbackFromConfiguration(configuration: SortConfiguration): (a: any, b: any) => number {
+        if (!configuration) {
+            return (a, b) => 0;
+        }
+
+        const modifier = configuration.direction === OrderDirection.ASC ? 1 : -1;
+        let orderByCallback;
+
+        if (typeof configuration.property === 'function') {
+            orderByCallback = (a: T, b: T) => {
+                return this.comparatorCallback(configuration.property(a), configuration.property(b)) * modifier;
+            };
+        } else {
+            orderByCallback = (a: T, b: T) => {
+                return this.comparatorCallback(a[configuration.property], b[configuration.property]) * modifier;
+            };
+        }
+
+        return orderByCallback;
+    }
+
+    public sortWithConfiguration(array: T[], configuration: SortConfiguration): T[] {
+        return array.slice().sort(this.createCallbackFromConfiguration(configuration));
+    }
 }
 
 export enum OrderDirection {
@@ -91,4 +116,9 @@ export interface Comparator<T> {
 
 export interface PropertyCallback<T> {
     (item: T): any;
+}
+
+export interface SortConfiguration {
+    direction: OrderDirection;
+    property: string|any;
 }

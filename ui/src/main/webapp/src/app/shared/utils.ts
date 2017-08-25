@@ -89,7 +89,7 @@ export module utils {
          *
          * Example: [ { name: Observable.of('hello') }, { name: Observable.of('world') } ]
          * Result:  [ { name: Observable.of('hello'), resolved: { name: 'hello' } },
-         *            { nane: Observable.of('world'), resolved: { name: 'world' } } ]
+         *            { name: Observable.of('world'), resolved: { name: 'world' } } ]
          *
          * @param {Observable<T[]>} arrayObservable
          * @param {string[]} properties
