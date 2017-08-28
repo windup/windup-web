@@ -1,160 +1,213 @@
-<div class="page-header page-header-no-border">
-    <h1>
-        <div class="main">Dashboard</div>
-    </h1>
-    <div class="desc">This report provides summary information about findings from the migration analysis.</div>
-</div>
+<div>
+    <div>
+        <h2>Dashboard</h2>
+        <div class="desc">This report provides summary information about findings from the migration analysis.</div>
+    </div>
 
-<wu-report-filter-indicator *ngIf="!hideFilter" [execution]="execution"></wu-report-filter-indicator>
+    <wu-report-filter-indicator *ngIf="!hideFilter" [execution]="execution"></wu-report-filter-indicator>
 
-<div class="container-fluid summaryInfo panel panel-primary col-md-12">
-
-    <!-- Stats for archives, components, files -->
-    <div class="row col-md-12 report-index-row">
-        <div *ngIf="!reportFilter" class="panel panel-default col-md-3" style="margin-left: 20px;margin-right: 20px;">
-            <div class="panel-body">
-            <table class="table table-condensed ">
-                <caption>Summary</caption>
-                <tfoot>
-                    <tr class="info">
-                        <td><span class="highlightNumber">Total</span></td>
-                        <td><span class="highlightNumber">{{getDependencyCountByType("Application") + getDependencyCountByType("Dependency") + getDependencyCountByType("KnownLibrary")}}</span></td>
-                    </tr>
-                </tfoot>
-                <tbody>
-                    <tr>
-                        <td> <i class="fa fa-cubes"></i> Applications</td>
-                        <td><span class="highlightNumber">{{getDependencyCountByType("Application")}}</span></td>
-                    </tr>
-                    <tr>
-                        <td> <i class="fa fa-puzzle-piece"></i> Known Libraries</td>
-                        <td><span class="highlightNumber">{{getDependencyCountByType("KnownLibrary")}}</span></td>
-                    </tr>
-                    <tr>
-                        <td> <i class="fa fa-cube"></i> Dependencies</td>
-                        <td><span class="highlightNumber">{{getDependencyCountByType("Dependency")}}</span></td>
-                    </tr>
-<!--                    <tr>
-                        <td>Shared Dependencies</td>
-                        <td><span class="highlightNumber">{{dependenciesStats.Dependency}}</span></td>
-                    </tr>     -->
-                </tbody>
-                </table>
+    <div class="container-fluid">
+        <div *ngIf="!reportFilter" class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <div class="card-pf card-pf-view card-pf-view-select card-pf-view-single-select">
+                <div class="card-pf-body">
+                    <div class="card-pf-top-element">
+                        <h4>Summary</h4>
+                        <table class="table table-condensed">
+                            <tfoot>
+                            <tr class="info">
+                                <td><span class="highlightNumber">Total</span></td>
+                                <td><span class="highlightNumber">{{getDependencyCountByType("Application") + getDependencyCountByType("Dependency") + getDependencyCountByType("KnownLibrary")}}</span></td>
+                            </tr>
+                            </tfoot>
+                            <tbody>
+                            <tr>
+                                <td><i class="fa fa-cubes"></i>Applications</td>
+                                <td><span class="highlightNumber">{{getDependencyCountByType("Application")}}</span></td>
+                            </tr>
+                            <tr>
+                                <td><i class="fa fa-puzzle-piece"></i>Known Libraries</td>
+                                <td><span class="highlightNumber">{{getDependencyCountByType("KnownLibrary")}}</span></td>
+                            </tr>
+                            <tr>
+                                <td><i class="fa fa-cube"></i>Dependencies</td>
+                                <td><span class="highlightNumber">{{getDependencyCountByType("Dependency")}}</span></td>
+                            </tr>
+                            <!--
+                                <tr>
+                                    <td>Shared Dependencies</td>
+                                    <td><span class="highlightNumber">{{dependenciesStats.Dependency}}</span></td>
+                                </tr>
+                            -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
-        <div *ngIf="!reportFilter" class="panel panel-default col-md-3" style="margin-left: 20px; margin-right: 20px;">
-            <div class="panel-body">
-                <table class="table table-condensed">
-                    <caption>Components</caption>
-                    <tbody>
-                        <tr *ngFor="let statEntry of componentsStats?.entries">
-                            <td class="summaryStats">{{statEntry.name.toUpperCase()}}</td>
-                            <td><span class="highlightNumber">{{statEntry.value}}</span></td>
-                        </tr>
-                    </tbody>
-                    <tfoot>
-                        <tr class="info">
-                            <td class="summaryStats"><span class="highlightNumber">Total</span></td>
-                            <td><span class="highlightNumber">{{sumStatsList(componentsStats)}}</span></td>
-                        </tr>
-                    </tfoot>
-                </table>
+        <div *ngIf="!reportFilter" class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <div class="card-pf card-pf-view card-pf-view-select card-pf-view-single-select">
+                <div class="card-pf-body">
+                    <div class="card-pf-top-element">
+                        <h4>Components</h4>
+                        <table class="table table-condensed">
+                            <tbody>
+                            <tr *ngFor="let statEntry of componentsStats?.entries">
+                                <td class="summaryStats">{{statEntry.name.toUpperCase()}}</td>
+                                <td><span class="highlightNumber">{{statEntry.value}}</span></td>
+                            </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr class="info">
+                                <td class="summaryStats"><span class="highlightNumber">Total</span></td>
+                                <td><span class="highlightNumber">{{sumStatsList(componentsStats)}}</span></td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
 
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"></div>
+
+        <!-- Stats for archives, components, files -->
         <!-- Java packages usage -->
-        <div class="row col-md-12 report-index-row">
-
-            <div class="col-md-4 chartBoundary" *ngIf="globalPackageUseData && globalPackageUseData.length > 0">
-                <h4>Java Packages Usage Chart</h4>
-                <div id="application_pie" class="windupPieGraph">
-                    <wu-package-chart
-                            [view]="[500, 150]"
-                            [results]="globalPackageUseData"
-                            [scheme]="getColorScheme(globalPackageUseData.length)"
-                    >
-                    </wu-package-chart>
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" *ngIf="globalPackageUseData && globalPackageUseData.length > 0">
+            <div class="card-pf card-pf-view card-pf-view-select card-pf-view-single-select">
+                <div class="card-pf-body">
+                    <h4>Java Packages Usage Chart</h4>
+                    <div id="application_pie" class="windupPieGraph">
+                        <wu-package-chart
+                                [view]="[500, 150]"
+                                [results]="globalPackageUseData"
+                                [scheme]="getColorScheme(globalPackageUseData.length)"
+                        >
+                        </wu-package-chart>
+                    </div>
+                </div>
             </div>
-
         </div>
+
         <!-- categories incidents -->
-        <div class="col-md-4 chartBoundary" *ngIf="categoriesMultiStats && categoriesMultiStats.length > 0">
-            <h4>Incidents by Category</h4>
-            <ngx-charts-bar-vertical-2d [scheme]="getColorScheme(categoriesMultiStats.length)" [results]="categoriesMultiStats" [showGridLines]="true" [xAxis]="true"
-                [yAxis]="true" [legend]="true"> </ngx-charts-bar-vertical-2d>
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" *ngIf="categoriesMultiStats && categoriesMultiStats.length > 0">
+            <div class="card-pf card-pf-view">
+                <div class="card-pf-body">
+                    <h4>Incidents by category</h4>
+
+                    <div class="chart-wrapper">
+                        <div class="chartBoundary">
+                            <ngx-charts-bar-vertical-2d
+                                    [scheme]="getColorScheme(categoriesMultiStats.length)" [results]="categoriesMultiStats"
+                                    [showGridLines]="true"
+                                    [xAxis]="true"
+                                    [yAxis]="true"
+                                    [legend]="true">
+                            </ngx-charts-bar-vertical-2d>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- mandatory incidents -->
-        <div class="col-md-4 chartBoundary" *ngIf="mandatoryMultiStats?.length > 0">
-            <h4>Mandatory Incidents by Type</h4>
-            <ngx-charts-bar-vertical-2d [scheme]="getColorScheme(mandatoryMultiStats.length)" [results]="mandatoryMultiStats" [showGridLines]="true" [xAxis]="true"
-                [yAxis]="true" [legend]="true"> </ngx-charts-bar-vertical-2d>
-        </div>
-    </div>
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" *ngIf="mandatoryMultiStats?.length > 0">
+            <div class="card-pf card-pf-view">
+                <div class="card-pf-body">
+                    <h4>Mandatory Incidents by Type</h4>
 
-    <!-- Details with tables data - showing & hiding panel -->
-    <div class="row col-md-12 report-index-row">
-           <div class="panel panel-heading" style="cursor: pointer;">
+                    <div class="chart-wrapper">
+                        <div class="chartBoundary">
+                            <ngx-charts-bar-vertical-2d
+                                    [scheme]="getColorScheme(mandatoryMultiStats.length)"
+                                    [results]="mandatoryMultiStats"
+                                    [showGridLines]="true"
+                                    [xAxis]="true"
+                                    [yAxis]="true"
+                                    [legend]="true">
+                            </ngx-charts-bar-vertical-2d>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div style="cursor: pointer;">
                 <a (click)="showDetails = !showDetails">
-                    <span *ngIf="showDetails"><i class="glyphicon glyphicon-expand"></i> Hide Details</span>
-                    <span *ngIf="!showDetails"><i class="glyphicon glyphicon-collapse-down"></i> Show Details</span>
+                    <span *ngIf="showDetails"><i class="glyphicon glyphicon-expand"></i>Hide Details</span>
+                    <span *ngIf="!showDetails"><i class="glyphicon glyphicon-collapse-down"></i>Show Details</span>
                 </a>
-           </div>
-           <div class="panel-body col-md-4" *ngIf="showDetails">
-                <table class="table table-condensed table-striped" *ngIf="globalPackageUseData && globalPackageUseData.length > 0">
-                    <caption>Java Packages Usage</caption>
-                    <thead>
-                        <tr>
-                            <th>Java Package</th>
-                            <th>Incidents</th>
-                        </tr>
-                    </thead>
-                    <tbody id="javaIncidentsByPackageTBody">
-                        <tr *ngFor="let row of globalPackageUseData">
-                            <td>{{row.name}}</td>
-                            <td class="numeric-column">{{row.value}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-           </div>
-            <div class="panel-body col-md-4" *ngIf="showDetails">
-                <table class="table table-condensed table-striped" id="categoriesMultiStats"
-                *ngIf="categoriesMultiStats && categoriesMultiStats.length > 0">
-                    <caption>Incidents by Category</caption>
-                    <thead>
-                        <tr>
-                            <th>Category</th>
-                            <th>Incidents</th>
-                            <th>Story Points</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let row of categoriesMultiStats">
-                           <td>{{row.name}}</td>
-                           <td class="numeric-column">{{row.series[0].value}}</td>
-                           <td class="numeric-column">{{row.series[1].value}}</td>
-                        </tr>
-                    </tbody>
-                </table>
             </div>
-           <div class="panel-body col-md-4" *ngIf="showDetails">
-                <table class="table table-condensed table-striped" id="mandatoryMultiStats"
-                *ngIf="mandatoryMultiStats && mandatoryMultiStats.length > 0">
-                    <caption>Mandatory Incidents by Type</caption>
-                    <thead>
-                        <tr>
-                            <th>Effort Level</th>
-                            <th>Incidents</th>
-                            <th>Story Points</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let row of mandatoryMultiStats">
-                           <td>{{row.name}}</td>
-                           <td class="numeric-column">{{row.series[0].value}}</td>
-                           <td class="numeric-column">{{row.series[1].value}}</td>
-                        </tr>
-                    </tbody>
-                </table>
+        </div>
+
+        <ng-container *ngIf="showDetails">
+            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" *ngIf="globalPackageUseData && globalPackageUseData.length > 0">
+                <div class="card-pf card-pf-view card-pf-view-select card-pf-view-single-select">
+                    <div class="card-pf-body">
+                        <h4>Java Packages Usage</h4>
+                        <table class="table table-condensed table-striped" >
+                            <thead>
+                            <tr>
+                                <th>Java Package</th>
+                                <th>Incidents</th>
+                            </tr>
+                            </thead>
+                            <tbody id="javaIncidentsByPackageTBody">
+                            <tr *ngFor="let row of globalPackageUseData">
+                                <td>{{row.name}}</td>
+                                <td class="numeric-column">{{row.value}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
+            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" *ngIf="categoriesMultiStats && categoriesMultiStats.length > 0">
+                <div class="card-pf card-pf-view card-pf-view-select card-pf-view-single-select">
+                    <div class="card-pf-body">
+                        <h4>Incidents by Category</h4>
+                        <table class="table table-condensed table-striped" id="categoriesMultiStats">
+                            <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Incidents</th>
+                                <th>Story Points</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let row of categoriesMultiStats">
+                                <td>{{row.name | titlecase }}</td>
+                                <td class="numeric-column">{{row.series[0].value}}</td>
+                                <td class="numeric-column">{{row.series[1].value}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" *ngIf="mandatoryMultiStats && mandatoryMultiStats.length > 0">
+                <div class="card-pf card-pf-view card-pf-view-select card-pf-view-single-select">
+                    <div class="card-pf-body">
+                        <h4>Mandatory Incidents by Type</h4>
+                        <table class="table table-condensed table-striped" id="mandatoryMultiStats">
+                            <thead>
+                            <tr>
+                                <th>Effort Level</th>
+                                <th>Incidents</th>
+                                <th>Story Points</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let row of mandatoryMultiStats">
+                                <td>{{row.name}}</td>
+                                <td class="numeric-column">{{row.series[0].value}}</td>
+                                <td class="numeric-column">{{row.series[1].value}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
     </div>
+</div>

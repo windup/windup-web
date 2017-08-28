@@ -82,11 +82,6 @@ div.tooltipLikeMessage {
     vertical-align: top;
 }
 
-.chartBoundary h4 {
-    border-bottom: 1px solid #008cba;
-    margin-right: 10%;
-}
-
 .windupPieGraph div.legend td.legendLabel {
     padding-left: 0.6ex;
 }

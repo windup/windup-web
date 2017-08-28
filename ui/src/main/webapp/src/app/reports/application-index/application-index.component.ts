@@ -13,7 +13,7 @@ import {EffortLevel} from "../effort-level.enum";
 
 @Component({
     templateUrl: './application-index.component.html',
-    styleUrls: ['./application-index.component.css']
+    styleUrls: ['./application-index.component.scss']
 })
 export class ApplicationIndexComponent extends FilterableReportComponent implements OnInit {
 

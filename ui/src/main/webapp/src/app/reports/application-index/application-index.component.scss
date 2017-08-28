@@ -1,0 +1,89 @@
+.numeric-column {
+    text-align: right;
+}
+
+table.summaryLayout {
+    width: 100%;
+}
+
+table.summaryLayout > tr > td, table.summaryLayout > tbody > tr > td {
+    margin-bottom: 2ex;
+    vertical-align: top;
+}
+
+.highlightNumber {
+    color: #00254b;
+    font-size: 16pt;
+    width: 1.5em;
+}
+
+.legend {
+    text-align: center;
+}
+
+.analyzed-applications h4 {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    color: #9c9c9c;
+    font-size: 16px;
+}
+
+.analyzed-applications li {
+    list-style: none;
+}
+
+.analyzed-applications ul {
+    padding: 0;
+}
+
+.panel {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.chartBoundary {
+    height: 250px;
+}
+
+/*
+ * These styles move legend below the chart
+ */
+:host /deep/ {
+    .ngx-charts-outer {
+        display: flex;
+        flex-flow: column;
+    }
+
+    .legend-title {
+        display: none;
+    }
+
+    ngx-charts-legend > div {
+        width: 100% !important;
+        padding-top: 10px;
+    }
+
+    .chart-legend .legend-label-text {
+        width: initial;
+    }
+
+    .chart-legend .legend-labels {
+        overflow: hidden;
+        background: none;
+        display: flex;
+        justify-content: space-evenly;
+        flex-direction: row;
+    }
+
+    .chart-legend .legend-label {
+        color: initial;
+    }
+
+    .chart-wrapper {
+        height: 282px;
+    }
+}
+
+:host /deep/ .container-fluid {
+    padding-top: 30px;
+}
