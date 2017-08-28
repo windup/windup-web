@@ -61,7 +61,7 @@ public class ClassificationResourceTest extends AbstractGraphResourceTest
             for (Map<String, Object> classification : classifications)
             {
                 String title = (String)classification.get("ClassificationModel:classification");
-                if (title != null && title.equals("Maven POM"))
+                if (title != null && title.equals("Maven POM (pom.xml)"))
                     foundPOMClassification = true;
             }
             Assert.assertTrue(foundPOMClassification);
