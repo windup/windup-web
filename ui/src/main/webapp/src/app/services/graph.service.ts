@@ -11,7 +11,7 @@ export class GraphService extends AbstractService {
     private static WINDUP_REST_URL = Constants.GRAPH_REST_BASE;
     private static GRAPH_ENDPOINT_URL = `${GraphService.WINDUP_REST_URL}/graph/{execID}/by-type/{type}`;
 
-    constructor(private _http: Http, private _graphJsonToModelService: GraphJSONToModelService<any>) {
+    constructor(protected _http: Http, protected _graphJsonToModelService: GraphJSONToModelService<any>) {
         super();
     }
 
@@ -29,10 +29,10 @@ export class GraphService extends AbstractService {
             .catch(this.handleError);
     }
 
-    protected getTypeAsArray<T extends BaseModel>(type: string, execID: number, options?: GraphEndpointOptions): Observable<T[]> {
+    protected getTypeAsArray<T extends BaseModel>(type: string, execID: number, options?: GraphEndpointOptions, propertyName?: string, propertyValue?: string, ): Observable<T[]> {
         let service = this._graphJsonToModelService;
 
-        return this.prepareGetRequest(type,execID, options)
+        return this.prepareGetRequest(type, execID, options, propertyName, propertyValue)
             .map(data => {
                 if (!Array.isArray(data)) {
                     throw new Error("No items returned");
@@ -42,11 +42,14 @@ export class GraphService extends AbstractService {
             });
     }
 
-    protected prepareGetRequest(type: string, execID: number, options?: GraphEndpointOptions): Observable<any> {
+    protected prepareGetRequest(type: string, execID: number, options?: GraphEndpointOptions, propertyName?: string, propertyValue?: string): Observable<any> {
         let params: URLSearchParams = new URLSearchParams();
         let url = GraphService.GRAPH_ENDPOINT_URL
             .replace('{execID}', execID.toString())
             .replace('{type}', type);
+        if (propertyName) {
+            url += '/' + propertyName + '=' + propertyValue;
+        }
 
         Object.keys(options).forEach(key => {
             params.set(key, options[key]);

@@ -2,7 +2,7 @@ import {Component, OnInit, OnDestroy} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 
 import {RouteLinkProviderService} from "../core/routing/route-link-provider-service";
-import {ContextMenuItem, ReportMenuItem} from "../shared/navigation/context-menu-item.class";
+import {ContextMenuItem, ContextMenuItemInterface, ReportMenuItem} from "../shared/navigation/context-menu-item.class";
 import {WINDUP_WEB} from "../app.module";
 import {WindupExecution} from "../generated/windup-services";
 import {WindupService} from "../services/windup.service";
@@ -91,6 +91,62 @@ export class ExecutionsLayoutComponent extends ProjectLayoutComponent implements
     }
 
     protected createContextMenuItems() {
+        this.submenuTechnologyItems = [
+            new ContextMenuItem(
+                'EJB',
+                null,
+                true,
+                'technology-report-ejb'
+            ),
+            new ContextMenuItem(
+                'JPA',
+                null,
+                false,
+                'technology-report-change-me'
+            ),
+            new ContextMenuItem(
+                'Server Resources',
+                null,
+                false,
+                'technology-report-change-me'
+            ),
+            new ContextMenuItem(
+                'Hardcoded IP',
+                null,
+                false,
+                'technology-report-change-me'
+            ),
+            new ContextMenuItem(
+                'Remote Services',
+                null,
+                false,
+                'technology-report-change-me'
+            ),
+            new ContextMenuItem(
+                'Spring Resources',
+                null,
+                false,
+                'technology-report-change-me'
+            ),
+            new ContextMenuItem(
+                'Hibernate',
+                null,
+                false,
+                'technology-report-change-me'
+            ),
+            new ContextMenuItem(
+                'Ignored Files',
+                null,
+                false,
+                'technology-report-change-me'
+            ),
+            new ContextMenuItem(
+                'Unparsable Files',
+                null,
+                false,
+                'technology-report-change-me'
+            )
+        ];
         this.menuItems = [
             new ReportMenuItem(
                 'Application List',
@@ -105,6 +161,14 @@ export class ExecutionsLayoutComponent extends ProjectLayoutComponent implements
                 this.project,
                 this.execution,
                 'application-index'
+            ),
+            new ReportMenuItem(
+                'Technologies',
+                'fa-lightbulb-o',
+                this.project,
+                this.execution,
+                'technology-report',
+                this.submenuTechnologyItems
             ),
             new ReportMenuItem(
                 'Issues',
@@ -144,13 +208,6 @@ export class ExecutionsLayoutComponent extends ProjectLayoutComponent implements
             this.menuItems.splice(4, 0, reportFilterMenu);
 
             this.menuItems = [ ...this.menuItems,
-                new ReportMenuItem(
-                    'Technologies',
-                    'fa-cubes',
-                    this.project,
-                    this.execution,
-                    'technologies-report'
-                ),
                 new ReportMenuItem(
                     'Dependencies',
                     'fa-code-fork',

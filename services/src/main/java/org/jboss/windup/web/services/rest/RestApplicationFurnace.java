@@ -6,6 +6,7 @@ import org.jboss.windup.web.addons.websupport.rest.MigrationIssuesEndpoint;
 import org.jboss.windup.web.addons.websupport.rest.TagResource;
 import org.jboss.windup.web.addons.websupport.rest.graph.ClassificationResource;
 import org.jboss.windup.web.addons.websupport.rest.graph.DependenciesReportResource;
+import org.jboss.windup.web.addons.websupport.rest.graph.EJBResource;
 import org.jboss.windup.web.addons.websupport.rest.graph.HintResource;
 import org.jboss.windup.web.addons.websupport.rest.graph.LinkResource;
 import org.jboss.windup.web.addons.websupport.rest.graph.applicationDetails.ApplicationDetailsResource;
@@ -68,6 +69,9 @@ public class RestApplicationFurnace extends Application {
     @Inject @FromFurnace
     private DependenciesReportResource dependenciesReportResource;
 
+    @Inject @FromFurnace
+    private EJBResource ejbResource;
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -86,6 +90,7 @@ public class RestApplicationFurnace extends Application {
         addService(singletons, applicationDetailsResource);
         addService(singletons, tagResource);
         addService(singletons, dependenciesReportResource);
+        addService(singletons, ejbResource);
 
         return singletons;
     }

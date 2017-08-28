@@ -8,7 +8,7 @@ import {MigrationProjectService} from "../project/migration-project.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {DatePipe} from "@angular/common";
 import {FlattenedRouteData, RouteFlattenerService} from "../core/routing/route-flattener.service";
-import {ApplicationReportMenuItem, ReportMenuItem} from "../shared/navigation/context-menu-item.class";
+import {ApplicationReportMenuItem, ContextMenuItem, ReportMenuItem} from "../shared/navigation/context-menu-item.class";
 import {WINDUP_WEB} from "../app.module";
 
 type Application = any; //RegisteredApplication|FilterApplication;
@@ -60,6 +60,62 @@ export class ApplicationLevelLayoutComponent extends ExecutionsLayoutComponent {
     }
 
     protected createContextMenuItems() {
+        this.submenuTechnologyItems = [
+            new ContextMenuItem(
+                'EJB',
+                null,
+                true,
+                'technology-report-ejb'
+            ),
+            new ContextMenuItem(
+                'JPA',
+                null,
+                false,
+                'technology-report-change-me'
+            ),
+            new ContextMenuItem(
+                'Server Resources',
+                null,
+                false,
+                'technology-report-change-me'
+            ),
+            new ContextMenuItem(
+                'Hardcoded IP',
+                null,
+                false,
+                'technology-report-change-me'
+            ),
+            new ContextMenuItem(
+                'Remote Services',
+                null,
+                false,
+                'technology-report-change-me'
+            ),
+            new ContextMenuItem(
+                'Spring Resources',
+                null,
+                false,
+                'technology-report-change-me'
+            ),
+            new ContextMenuItem(
+                'Hibernate',
+                null,
+                false,
+                'technology-report-change-me'
+            ),
+            new ContextMenuItem(
+                'Ignored Files',
+                null,
+                false,
+                'technology-report-change-me'
+            ),
+            new ContextMenuItem(
+                'Unparsable Files',
+                null,
+                false,
+                'technology-report-change-me'
+            )
+        ];
         this.menuItems = [
             new ReportMenuItem(
                 'Application List',
@@ -75,6 +131,15 @@ export class ApplicationLevelLayoutComponent extends ExecutionsLayoutComponent {
                 this.execution,
                 this.application,
                 'application-index'
+            ),
+            new ApplicationReportMenuItem(
+                'Technologies',
+                'fa-lightbulb-o',
+                this.project,
+                this.execution,
+                this.application,
+                'technology-report',
+                this.submenuTechnologyItems
             ),
             new ApplicationReportMenuItem(
                 'Application Details',
@@ -107,14 +172,6 @@ export class ApplicationLevelLayoutComponent extends ExecutionsLayoutComponent {
             this.menuItems.splice(4, 0, reportFilterMenu);
 
             this.menuItems = [ ...this.menuItems,
-                new ApplicationReportMenuItem(
-                    'Technologies',
-                    'fa-cubes',
-                    this.project,
-                    this.execution,
-                    this.application,
-                    'technologies-report'
-                ),
                 new ApplicationReportMenuItem(
                     'Dependencies',
                     'fa-code-fork',
