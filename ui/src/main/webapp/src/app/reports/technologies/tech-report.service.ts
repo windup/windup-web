@@ -233,8 +233,12 @@ export class TechReportService extends GraphService
             out: this.getProperiesString(...preloadProperties)
         });
 
-        return Observables.resolveValuesArray(entitiesObservable, ['interface', 'implementationClass']).flatMap(entitiesArray =>
-            Observable.forkJoin(
+        return Observables.resolveValuesArray(entitiesObservable, ['interface', 'implementationClass']).flatMap(entitiesArray => {
+            if (entitiesArray.length === 0) {
+                return Observable.of([]);
+            }
+
+            return Observable.forkJoin(
                 Observable.forkJoin(entitiesArray.map(entity => {
                     const updatedData = Observables.resolveObjectProperties(entity.resolved.implementationClass, ['decompiledSource']);
                     return updatedData;
@@ -259,8 +263,8 @@ export class TechReportService extends GraphService
 
                     return entity;
                 })
-            })
-        );
+            });
+        });
     }
 }
 

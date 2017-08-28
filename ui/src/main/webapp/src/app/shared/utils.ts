@@ -135,7 +135,16 @@ export module utils {
                     });
                 });
 
-                return Observable.forkJoin(resolvedObjectObservables);
+                /**
+                 * @Note: This is workaround for RxJS forkJoin bug https://github.com/ReactiveX/rxjs/issues/2816
+                 *
+                 * forkJoin doesn't emit any value for empty input array.
+                 */
+                if (resolvedObjectObservables.length === 0) {
+                    return Observable.of([]);
+                } else {
+                    return Observable.forkJoin(resolvedObjectObservables);
+                }
             });
         }
 
