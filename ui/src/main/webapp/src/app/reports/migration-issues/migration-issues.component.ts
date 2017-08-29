@@ -15,7 +15,7 @@ import {EffortLevelPipe} from "../effort-level.enum";
 @Component({
     selector: 'wu-migration-issues',
     templateUrl: './migration-issues.component.html',
-    styleUrls: ['./migration-issues.component.scss']
+    styleUrls: ['../../../../css/report-tables.scss']
 })
 export class MigrationIssuesComponent extends FilterableReportComponent implements OnInit {
     protected categorizedIssues: Dictionary<ProblemSummary[]>;

@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, OnInit, ViewEncapsulation} from "@angular/core";
 import {ActivatedRoute, Router}   from '@angular/router';
 import {NotificationService} from "../../../core/notification/notification.service";
 import {TechReportService} from "../tech-report.service";
@@ -13,7 +13,7 @@ import {OrderDirection} from "../../../shared/sort/sorting.service";
 
 @Component({
     templateUrl: './hibernate-report.component.html',
-    styleUrls: ['../technologies-report-ejb.component.scss']
+    styleUrls: ['../../../../../css/report-tables.scss']
 })
 export class TechnologiesHibernateReportComponent extends FilterableReportComponent implements OnInit {
     entities: HibernateEntityModel[] = [];

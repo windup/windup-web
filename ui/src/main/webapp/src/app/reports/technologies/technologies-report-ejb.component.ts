@@ -12,7 +12,7 @@ import {ReportFilter} from "../../generated/windup-services";
 @Component({
     selector: 'wu-technologies-report-ejb',
     templateUrl: 'technologies-report-ejb.component.html',
-    styleUrls: ['./technologies-report-ejb.component.scss']
+    styleUrls: ['../../../../css/report-tables.scss']
 })
 export class TechnologiesEJBReportComponent extends FilterableReportComponent implements OnInit {
 
