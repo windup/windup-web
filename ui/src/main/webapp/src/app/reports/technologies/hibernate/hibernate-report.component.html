@@ -12,8 +12,8 @@
             (clearFilter)="clearSearch()"
             [rowTemplate]="rowTemplateEntity"
             [title]="'Hibernate Entities'"
-            [data]="entities | wuFilter: filterCallbacks.entities"
-            [unfilteredData]="entities"
+            [items]="entities"
+            [filter]="filterCallbacks.entities"
             [tableHeaders]="[
                         { title: 'Class', isSortable: true, sortBy: sorting.getJavaClassCallback },
                         { title: 'Table', isSortable: true, sortBy: 'tableName' },
@@ -32,8 +32,8 @@
             (clearFilter)="clearSearch()"
             [rowTemplate]="rowTemplateMapping"
             [title]="'Hibernate Mapping Files'"
-            [data]="mappingFiles | wuFilter: filterCallbacks.mappingFiles"
-            [unfilteredData]="mappingFiles"
+            [items]="mappingFiles"
+            [filter]="filterCallbacks.mappingFiles"
             [tableHeaders]="[
                         { title: 'File Name', isSortable: true, sortBy: 'cachedPrettyPath' }
                     ]">
@@ -48,8 +48,8 @@
             (clearFilter)="clearSearch()"
             [rowTemplate]="rowTemplateConfiguration"
             [title]="'Hibernate Configuration Files'"
-            [data]="configurationFiles | wuFilter: filterCallbacks.configurationFiles"
-            [unfilteredData]="configurationFiles"
+            [items]="configurationFiles"
+            [filter]="filterCallbacks.configurationFiles"
             [tableHeaders]="[
                         { title: 'File Name', isSortable: true, sortBy: 'cachedPrettyPath' }
                     ]">
@@ -64,15 +64,14 @@
             (clearFilter)="clearSearch()"
             [rowTemplate]="rowTemplateSessionFactory"
             [title]="'Hibernate Session Factories'"
-            [data]="sessionFactories | wuFilter: filterCallbacks.sessionFactories"
-            [unfilteredData]="sessionFactories"
+            [items]="sessionFactories"
+            [filter]="filterCallbacks.sessionFactories"
             [tableHeaders]="[
-                        { title: 'File Name', isSortable: true, sortBy: 'cachedPrettyPath' },
-                        { title: 'Hibernate Version', isSortable: true, sortBy: 'specificationVersion' }
+                        { title: 'File Name', isSortable: true, sortBy: 'cachedPrettyPath' }
                     ]">
         <ng-template #rowTemplateSessionFactory let-file>
             <tr>
-                <td class="col-md-2"><a [routerLink]="['../source/' + file.vertexId]">{{file.cachedPrettyPath}}</a></td>
+                <td class="col-md-2"><a [routerLink]="['../source/' + file.resolved.hibernateConfigurationFileModel.vertexId]">{{file.resolved.hibernateConfigurationFileModel.cachedPrettyPath}}</a></td>
             </tr>
         </ng-template>
     </wu-data-table>

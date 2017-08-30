@@ -4,17 +4,17 @@
     </div>
     <div class="panel-body">
         <wu-all-data-filtered-message
-                [filteredItems]="data"
-                [unfilteredItems]="unfilteredData"
+                [filteredItems]="filteredItems"
+                [unfilteredItems]="items"
                 (clearFilter)="clearSearch()"
                 *ngIf="!loading; else loadingData">
-            <table class="table table-bordered table-hover" *ngIf="data.length > 0; else noDataAvailable">
+            <table class="table table-bordered table-hover" *ngIf="filteredItems.length > 0; else noDataAvailable">
                 <thead wu-table-sort-header
                        [(sort)]="sort"
                        [tableHeaders]="tableHeaders">
                 </thead>
                 <tbody>
-                    <ng-container *ngFor="let item of data | wuSort: sort">
+                    <ng-container *ngFor="let item of filteredItems | wuSort: sort">
                         <ng-template [ngTemplateOutlet]="rowTemplate" [ngOutletContext]="{$implicit: item}"></ng-template>
                     </ng-container>
                 </tbody>
