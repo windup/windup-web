@@ -130,6 +130,6 @@ export class TechnologiesHibernateReportComponent extends FilterableReportCompon
     }
 
     filterSessionFactories(regex: string|RegExp) {
-        return (factory) => true;
+        return (factory) => factory.resolved.hibernateConfigurationFileModel.cachedPrettyPath.search(regex) !== -1;
     }
 }

@@ -162,13 +162,11 @@ export class TechReportService extends GraphService
 
     getHibernateSessionFactoryModel(execID: number): Observable<HibernateSessionFactoryModel[]> {
         const entitiesObservable = this.getTypeAsArray<HibernateSessionFactoryModel>(HibernateSessionFactoryModel.discriminator, execID, {
-            //out: this.getProperiesString('hibernateSessionFactory', 'datasource')
+            out: this.getProperiesString('hibernateSessionFactory')
         });
 
-
-        return entitiesObservable;
+        return Observables.resolveValuesArray(entitiesObservable, ['hibernateConfigurationFileModel']);
     }
-
 }
 
 export class StatsItem {
