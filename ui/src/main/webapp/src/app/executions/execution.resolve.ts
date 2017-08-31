@@ -19,6 +19,8 @@ export class ExecutionResolve implements Resolve<WindupExecution|boolean> {
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<WindupExecution|boolean> {
         let id = +route.params['executionId'];
+        if (isNaN(id))
+            throw new Error("executionId is not set.");
 
         return new Observable<WindupExecution|boolean>(observer => {
             this._windupService.getExecution(id).subscribe(
