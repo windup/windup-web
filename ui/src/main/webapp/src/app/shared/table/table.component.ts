@@ -24,11 +24,11 @@ import {TableHeader} from "./table-sort-header.component";
  * ```
  */
 @Component({
-    selector: 'wu-data-table',
-    templateUrl: './data-table.component.html',
+    selector: 'wu-table',
+    templateUrl: './table.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DataTableComponent implements OnChanges {
+export class TableComponent implements OnChanges {
     /**
      * TemplateRef to row template
      */

@@ -62,7 +62,7 @@ import {PaginationComponent} from "./pagination.component";
 import {PaginationService} from "./pagination.service";
 import {SortPipe} from "./sort/sort.pipe";
 import {FilterPipe} from "./filter/filter.pipe";
-import {DataTableComponent} from "./table/data-table.component";
+import {TableComponent} from "./table/table.component";
 import {TableSortHeaderComponent} from "./table/table-sort-header.component";
 
 
@@ -145,7 +145,7 @@ import {TableSortHeaderComponent} from "./table/table-sort-header.component";
         SortPipe,
         FilterPipe,
         TableSortHeaderComponent,
-        DataTableComponent
+        TableComponent
     ],
     exports: [
         CustomSelectComponent,
@@ -203,7 +203,7 @@ import {TableSortHeaderComponent} from "./table/table-sort-header.component";
         SortPipe,
         FilterPipe,
         TableSortHeaderComponent,
-        DataTableComponent
+        TableComponent
     ]
 })
 export class SharedModule {
