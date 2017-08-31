@@ -1,4 +1,4 @@
-import {Injectable, Type} from "@angular/core";
+import {Injectable} from "@angular/core";
 import {Http} from "@angular/http";
 import {Observable} from "rxjs/Observable";
 
@@ -125,7 +125,7 @@ export class TechReportService extends GraphService
         return result;
     }
 
-    getHibernateEntityModel(execID: number): Observable<HibernateEntityModel[]> {
+    getHibernateEntityModel(execID: number, filter?: ReportFilter): Observable<HibernateEntityModel[]> {
         const entitiesObservable = this.getTypeAsArray<HibernateEntityModel>(HibernateEntityModel.discriminator, execID, {
             /*
              * TODO: THIS IS PROBLEM
@@ -135,7 +135,7 @@ export class TechReportService extends GraphService
              *
              *  It is not straightforward that 'PersistenceEntity-jpaEntityClass' will resolve to 'javaClass'
              */
-            out: this.getProperiesString('PersistenceEntity-jpaEntityClass', 'decompiledSource')
+            out: this.getPropertiesString('PersistenceEntity-jpaEntityClass', 'decompiledSource')
         });
 
         return Observables.resolveValuesArray(entitiesObservable, ['javaClass']).flatMap(entitiesArray => {
@@ -152,17 +152,17 @@ export class TechReportService extends GraphService
         });
     }
 
-    getHibernateMappingFileModel(execID: number): Observable<HibernateMappingFileModel[]> {
+    getHibernateMappingFileModel(execID: number, filter?: ReportFilter): Observable<HibernateMappingFileModel[]> {
         return this.getTypeAsArray<HibernateMappingFileModel>(HibernateMappingFileModel.discriminator, execID);
     }
 
-    getHibernateConfigurationFileModel(execId: number): Observable<HibernateConfigurationFileModel[]> {
+    getHibernateConfigurationFileModel(execId: number, filter?: ReportFilter): Observable<HibernateConfigurationFileModel[]> {
         return this.getTypeAsArray<HibernateConfigurationFileModel>(HibernateConfigurationFileModel.discriminator, execId);
     }
 
-    getHibernateSessionFactoryModel(execID: number): Observable<HibernateSessionFactoryModel[]> {
+    getHibernateSessionFactoryModel(execID: number, filter?: ReportFilter): Observable<HibernateSessionFactoryModel[]> {
         const entitiesObservable = this.getTypeAsArray<HibernateSessionFactoryModel>(HibernateSessionFactoryModel.discriminator, execID, {
-            out: this.getProperiesString('hibernateSessionFactory')
+            out: this.getPropertiesString('hibernateSessionFactory')
         });
 
         return Observables.resolveValuesArray(entitiesObservable, ['hibernateConfigurationFileModel']);

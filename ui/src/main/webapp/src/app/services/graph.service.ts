@@ -60,7 +60,7 @@ export class GraphService extends AbstractService {
             .map(res => res.json());
     }
 
-    public getProperiesString(...properties: string[]): string {
+    public getPropertiesString(...properties: string[]): string {
         return properties.join(',');
     }
 }
