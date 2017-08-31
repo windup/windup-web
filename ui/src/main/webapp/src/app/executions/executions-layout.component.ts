@@ -178,6 +178,20 @@ export class ExecutionsLayoutComponent extends ProjectLayoutComponent implements
                 this.execution,
                 'execution-details'
             ),
+            new ReportMenuItem(
+                'Technologies',
+                'fa-cubes',
+                this.project,
+                this.execution,
+                'technologies-report'
+            ),
+            new ReportMenuItem(
+                'Ignored Files',
+                'fa-low-vision',
+                this.project,
+                this.execution,
+                'ignoredFiles-report'
+            ),
             new ContextMenuItem(
                 'Static Reports',
                 'fa-window-restore',
@@ -208,7 +222,7 @@ export class ExecutionsLayoutComponent extends ProjectLayoutComponent implements
                     this.project,
                     this.execution,
                     'dependencies'
-                )
+                ),
             ];
         }
     }

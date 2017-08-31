@@ -118,7 +118,7 @@ export class WINDUP_WEB {
         // TODO: Use process.env.ENV !== 'production' when AOT is fixed.
         // process is not accessible here. Supposedly the references to env vars should be replaced by WebPack but they are not.
         //hideUnfinishedFeatures: (process.env.hideUnfinishedFeatures !== (void 0)) ? process.env.hideUnfinishedFeatures : true;
-        hideUnfinishedFeatures: true
+        hideUnfinishedFeatures: true,
     };
 }
 
