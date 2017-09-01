@@ -148,6 +148,10 @@ export class TechReportService extends GraphService
         const entitiesObservable = this.getDataFromFilteredEndpoint<HibernateEntityModel>(url, filter);
 
         return Observables.resolveValuesArray(entitiesObservable, ['javaClass']).flatMap(entitiesArray => {
+            if (entitiesArray.length === 0) {
+                return Observable.of([]);
+            }
+
             return Observable.forkJoin(entitiesArray.map(entity => Observables.resolveObjectProperties(entity.resolved.javaClass, ['decompiledSource'])))
                 .map(resolvedJavaClasses => {
                     const updatedEntitiesArray = [ ... entitiesArray ];
