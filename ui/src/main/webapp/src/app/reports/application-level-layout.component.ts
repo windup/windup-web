@@ -100,8 +100,8 @@ export class ApplicationLevelLayoutComponent extends ExecutionsLayoutComponent {
             new ContextMenuItem(
                 'Hibernate',
                 null,
-                false,
-                'technology-report-change-me'
+                true,
+                'technology-report-hibernate'
             ),
             new ContextMenuItem(
                 'Ignored Files',

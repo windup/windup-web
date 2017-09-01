@@ -1,6 +1,7 @@
 package org.jboss.windup.web.services.rest;
 
 import org.jboss.windup.web.addons.websupport.rest.graph.HardcodedIPResource;
+import org.jboss.windup.web.addons.websupport.rest.graph.HibernateResource;
 import org.jboss.windup.web.addons.websupport.rest.graph.aggregatedStatistics.AggregatedStatisticsEndpoint;
 import org.jboss.windup.web.addons.websupport.rest.FurnaceRESTGraphAPI;
 import org.jboss.windup.web.addons.websupport.rest.MigrationIssuesEndpoint;
@@ -76,6 +77,9 @@ public class RestApplicationFurnace extends Application {
     @Inject @FromFurnace
     private HardcodedIPResource hardcodedIPResource;
 
+    @Inject @FromFurnace
+    private HibernateResource hibernateResource;
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -96,6 +100,7 @@ public class RestApplicationFurnace extends Application {
         addService(singletons, dependenciesReportResource);
         addService(singletons, ejbResource);
         addService(singletons, hardcodedIPResource);
+        addService(singletons, hibernateResource);
 
         return singletons;
     }

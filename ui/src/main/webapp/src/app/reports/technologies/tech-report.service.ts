@@ -22,6 +22,12 @@ import Observables = utils.Observables;
 @Injectable()
 export class TechReportService extends GraphService
 {
+    static HIBERNATE_REPORT_BASE = Constants.GRAPH_REST_BASE + '/reports/{execID}/hibernate';
+    static HIBERNATE_ENTITY_URL = TechReportService.HIBERNATE_REPORT_BASE + '/entity';
+    static HIBERNATE_MAPPING_FILE = TechReportService.HIBERNATE_REPORT_BASE + '/mappingFile';
+    static HIBERNATE_CONFIG_FILE = TechReportService.HIBERNATE_REPORT_BASE + '/configurationFile';
+    static HIBERNATE_SESSION_FACTORY = TechReportService.HIBERNATE_REPORT_BASE + '/sessionFactory';
+
     constructor(http: Http, graphJsonToModelService: GraphJSONToModelService<any>) {
         super(http, graphJsonToModelService);
     }
@@ -49,7 +55,7 @@ export class TechReportService extends GraphService
 
     private getEJBs<T extends EjbBeanBaseModel>(execID: number, ejbType: string, clazz?: typeof EjbBeanBaseModel,  filter?: ReportFilter, sessionType?: string): Observable<EJBInformationDTO[]> {
         let serializedFilter = this.serializeFilter(filter);
-        let url =`${Constants.GRAPH_REST_BASE}/reports/${execID}/ejb/${ejbType}`;
+        let url =`${Constants.GRAPH_REST_BASE}/reports/${execID}/ejb/${ejbType}`; /* ` fix for google chrome debugger */
         if (sessionType) {
             url += '?sessionType=' + sessionType;
         }
@@ -125,18 +131,21 @@ export class TechReportService extends GraphService
         return result;
     }
 
+    protected getDataFromFilteredEndpoint<T>(url: string, filter: any): Observable<T[]> {
+        const jsonFilter = this.serializeFilter(filter);
+
+        return this._http.post(url, jsonFilter, this.JSON_OPTIONS)
+            .map(response => {
+                const json = response.json();
+                const entities = this._graphJsonToModelService.fromJSONarray(json);
+                return entities;
+            });
+    }
+
     getHibernateEntityModel(execID: number, filter?: ReportFilter): Observable<HibernateEntityModel[]> {
-        const entitiesObservable = this.getTypeAsArray<HibernateEntityModel>(HibernateEntityModel.discriminator, execID, {
-            /*
-             * TODO: THIS IS PROBLEM
-             *
-             * Endpoint expects to get label of edge, but frontend has it ONLY in @GraphAdjacency annotation
-             *  which is not accessible.
-             *
-             *  It is not straightforward that 'PersistenceEntity-jpaEntityClass' will resolve to 'javaClass'
-             */
-            out: this.getPropertiesString('PersistenceEntity-jpaEntityClass', 'decompiledSource')
-        });
+        const url = TechReportService.HIBERNATE_ENTITY_URL.replace('{execID}', execID.toString());
+
+        const entitiesObservable = this.getDataFromFilteredEndpoint<HibernateEntityModel>(url, filter);
 
         return Observables.resolveValuesArray(entitiesObservable, ['javaClass']).flatMap(entitiesArray => {
             return Observable.forkJoin(entitiesArray.map(entity => Observables.resolveObjectProperties(entity.resolved.javaClass, ['decompiledSource'])))
@@ -153,17 +162,20 @@ export class TechReportService extends GraphService
     }
 
     getHibernateMappingFileModel(execID: number, filter?: ReportFilter): Observable<HibernateMappingFileModel[]> {
-        return this.getTypeAsArray<HibernateMappingFileModel>(HibernateMappingFileModel.discriminator, execID);
+        const url = TechReportService.HIBERNATE_MAPPING_FILE.replace('{execID}', execID.toString());
+
+        return this.getDataFromFilteredEndpoint(url, filter);
     }
 
-    getHibernateConfigurationFileModel(execId: number, filter?: ReportFilter): Observable<HibernateConfigurationFileModel[]> {
-        return this.getTypeAsArray<HibernateConfigurationFileModel>(HibernateConfigurationFileModel.discriminator, execId);
+    getHibernateConfigurationFileModel(execID: number, filter?: ReportFilter): Observable<HibernateConfigurationFileModel[]> {
+        const url = TechReportService.HIBERNATE_CONFIG_FILE.replace('{execID}', execID.toString());
+
+        return this.getDataFromFilteredEndpoint(url, filter);
     }
 
     getHibernateSessionFactoryModel(execID: number, filter?: ReportFilter): Observable<HibernateSessionFactoryModel[]> {
-        const entitiesObservable = this.getTypeAsArray<HibernateSessionFactoryModel>(HibernateSessionFactoryModel.discriminator, execID, {
-            out: this.getPropertiesString('hibernateSessionFactory')
-        });
+        const url = TechReportService.HIBERNATE_SESSION_FACTORY.replace('{execID}', execID.toString());
+        const entitiesObservable = this.getDataFromFilteredEndpoint<HibernateSessionFactoryModel>(url, filter);
 
         return Observables.resolveValuesArray(entitiesObservable, ['hibernateConfigurationFileModel']);
     }

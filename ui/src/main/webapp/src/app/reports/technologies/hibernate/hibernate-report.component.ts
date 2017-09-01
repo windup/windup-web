@@ -64,7 +64,7 @@ export class TechnologiesHibernateReportComponent extends FilterableReportCompon
 
             const execId = this.execution.id;
 
-            this.techReportService.getHibernateEntityModel(execId).subscribe(
+            this.techReportService.getHibernateEntityModel(execId, this.reportFilter).subscribe(
                 data => {
                     this.entities = data;
                     this.loading.entities = false;
@@ -73,21 +73,21 @@ export class TechnologiesHibernateReportComponent extends FilterableReportCompon
                     this._notificationService.error(utils.getErrorMessage(error));
                 });
 
-            this.techReportService.getHibernateConfigurationFileModel(execId).subscribe(configurations => {
+            this.techReportService.getHibernateConfigurationFileModel(execId, this.reportFilter).subscribe(configurations => {
                 this.configurationFiles = configurations;
                 this.loading.configurationFiles = false;
             }, error => {
                 this._notificationService.error(utils.getErrorMessage(error));
             });
 
-            this.techReportService.getHibernateMappingFileModel(execId).subscribe(mappings => {
+            this.techReportService.getHibernateMappingFileModel(execId, this.reportFilter).subscribe(mappings => {
                 this.mappingFiles = mappings;
                 this.loading.mappingFiles = false;
             }, error => {
                 this._notificationService.error(utils.getErrorMessage(error));
             });
 
-            this.techReportService.getHibernateSessionFactoryModel(execId).subscribe(sessionFactories => {
+            this.techReportService.getHibernateSessionFactoryModel(execId, this.reportFilter).subscribe(sessionFactories => {
                 this.sessionFactories = sessionFactories;
                 this.loading.sessionFactories = false;
             }, error => {
