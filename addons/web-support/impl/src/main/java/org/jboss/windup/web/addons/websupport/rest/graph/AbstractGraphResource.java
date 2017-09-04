@@ -13,8 +13,10 @@ import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.UriInfo;
 
 import org.jboss.windup.graph.GraphContext;
+import org.jboss.windup.graph.model.BelongsToProject;
 import org.jboss.windup.graph.model.ProjectModel;
 import org.jboss.windup.graph.model.WindupVertexFrame;
+import org.jboss.windup.graph.service.GraphService;
 import org.jboss.windup.graph.service.ProjectService;
 import org.jboss.windup.web.addons.websupport.model.ReportFilterDTO;
 import org.jboss.windup.web.addons.websupport.rest.FurnaceRESTGraphAPI;
@@ -25,6 +27,7 @@ import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
 import java.util.HashSet;
+import java.util.stream.Collectors;
 
 import org.jboss.windup.graph.GraphTypeManager;
 
@@ -217,6 +220,49 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
             return null;
 
         return projectService.getFilteredProjectModels(filter.getSelectedApplicationPaths());
+    }
+
+    protected <T extends WindupVertexFrame & BelongsToProject> Object getGraphData(Long executionID,
+                                                                                   Map<String, Object> filterAsMap,
+                                                                                   Class<T> aClass,
+                                                                                   List<String> whitelistedEdges)
+    {
+        GraphContext graphContext = this.getGraph(executionID);
+
+        ReportFilterDTO filter = this.reportFilterService.getReportFilterFromMap(filterAsMap);
+        Set<ProjectModel> projectModels = this.getProjectModels(graphContext, filter);
+
+        GraphService<T> graphService = new GraphService<>(graphContext, aClass);
+        Iterable<T> hibernateEntities = graphService.findAll();
+
+        List<T> filteredEntities = new ArrayList<>();
+
+        for (T entity : hibernateEntities)
+        {
+            if (projectModels == null)
+            {
+                filteredEntities.add(entity);
+            }
+            else
+            {
+                for (ProjectModel projectModel : projectModels)
+                {
+                    if (entity.belongsToProject(projectModel))
+                    {
+                        filteredEntities.add(entity);
+                    }
+                }
+            }
+        }
+
+        return filteredEntities.stream().map(entity -> this.convertToMap(
+                    executionID,
+                    entity.asVertex(),
+                    1,
+                    false,
+                    whitelistedEdges,
+                    new ArrayList<String>(),
+                    null)).collect(Collectors.toList());
     }
 }
 

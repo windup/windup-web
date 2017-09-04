@@ -34,6 +34,14 @@ export class TechReportService extends GraphService
     static HIBERNATE_CONFIG_FILE = TechReportService.HIBERNATE_REPORT_BASE + '/configurationFile';
     static HIBERNATE_SESSION_FACTORY = TechReportService.HIBERNATE_REPORT_BASE + '/sessionFactory';
 
+    static REMOTE_SERVICES_REPORT_BASE = Constants.GRAPH_REST_BASE + '/reports/{execID}/remote-services';
+    static REMOTE_SERVICES_EJB = TechReportService.REMOTE_SERVICES_REPORT_BASE + '/ejb-remote';
+    static REMOTE_SERVICES_JAX_RPC = TechReportService.REMOTE_SERVICES_REPORT_BASE + '/jax-rpc';
+    static REMOTE_SERVICES_JAX_RS = TechReportService.REMOTE_SERVICES_REPORT_BASE + '/jax-rs';
+    static REMOTE_SERVICES_JAX_WS = TechReportService.REMOTE_SERVICES_REPORT_BASE + '/jax-ws';
+    static REMOTE_SERVICES_RMI = TechReportService.REMOTE_SERVICES_REPORT_BASE + '/rmi';
+
+
     constructor(http: Http, graphJsonToModelService: GraphJSONToModelService<any>) {
         super(http, graphJsonToModelService);
     }
@@ -193,45 +201,39 @@ export class TechReportService extends GraphService
         return Observables.resolveValuesArray(entitiesObservable, ['hibernateConfigurationFileModel']);
     }
 
-    getEjbRemoteServiceModel(execID: number): Observable<EjbRemoteServiceModel[]> {
-        return this.getRemoteServices(execID, EjbRemoteServiceModel.discriminator, [
-            'ejbRemoteInterface', 'ejbImplementationClass', 'decompiledSource'
-        ]);
+
+    getEjbRemoteServiceModel(execID: number, filter?: ReportFilter): Observable<EjbRemoteServiceModel[]> {
+        const url = TechReportService.REMOTE_SERVICES_EJB.replace('{execID}', execID.toString());
+
+        return this.getRemoteServices<EjbRemoteServiceModel>(url, filter);
     }
 
-    getJaxRpcWebServices(execID: number): Observable<JaxRPCWebServiceModel[]> {
-        return this.getRemoteServices(execID, JaxRPCWebServiceModel.discriminator, [
-            'jaxrpcImplementationClass', 'jaxrpcInterface', 'decompiledSource'
-        ]);
+    getJaxRpcWebServices(execID: number, filter?: ReportFilter): Observable<JaxRPCWebServiceModel[]> {
+        const url = TechReportService.REMOTE_SERVICES_JAX_RPC.replace('{execID}', execID.toString());
+
+        return this.getRemoteServices<JaxRPCWebServiceModel>(url, filter);
     }
 
-    getJaxRsWebServices(execID: number): Observable<JaxRSWebServiceModel[]>  {
-        return this.getRemoteServices(execID, JaxRSWebServiceModel.discriminator, [
-            'jaxrsInterface', 'jaxrsImplementationClass', 'decompiledSource'
-        ]);
+    getJaxRsWebServices(execID: number, filter?: ReportFilter): Observable<JaxRSWebServiceModel[]>  {
+        const url = TechReportService.REMOTE_SERVICES_JAX_RS.replace('{execID}', execID.toString());
+
+        return this.getRemoteServices<EjbRemoteServiceModel>(url, filter);
     }
 
-    getJaxWsWebServices(execID: number): Observable<JaxWSWebServiceModel[]>  {
-        return this.getRemoteServices(execID, JaxWSWebServiceModel.discriminator, [
-            'jaxwsInterface', 'jaxwsImplementationClass', 'decompiledSource'
-        ]);
+    getJaxWsWebServices(execID: number, filter?: ReportFilter): Observable<JaxWSWebServiceModel[]>  {
+        const url = TechReportService.REMOTE_SERVICES_JAX_WS.replace('{execID}', execID.toString());
+
+        return this.getRemoteServices<EjbRemoteServiceModel>(url, filter);
     }
 
-    getRmiServices(execID: number): Observable<RMIServiceModel[]>  {
-        return this.getRemoteServices(execID, RMIServiceModel.discriminator, [
-            'rmiInterface', 'rmiImplementationClass', 'decompiledSource'
-        ]);
+    getRmiServices(execID: number, filter?: ReportFilter): Observable<RMIServiceModel[]>  {
+        const url = TechReportService.REMOTE_SERVICES_RMI.replace('{execID}', execID.toString());
+
+        return this.getRemoteServices<EjbRemoteServiceModel>(url, filter);
     }
 
-    protected getRemoteServices(execID: number, discriminator: string, preloadProperties: string[]) {
-        /*
-         * TODO: THIS IS PROBLEM
-         *
-         * Endpoint expects to get label of edge, but frontend has it ONLY in @GraphAdjacency annotation
-         *  which is not accessible. */
-        const entitiesObservable = this.getTypeAsArray<any>(discriminator, execID, {
-            out: this.getProperiesString(...preloadProperties)
-        });
+    protected getRemoteServices<T>(url: string, filter: any) {
+        const entitiesObservable = this.getDataFromFilteredEndpoint<any>(url, filter);
 
         return Observables.resolveValuesArray(entitiesObservable, ['interface', 'implementationClass']).flatMap(entitiesArray => {
             if (entitiesArray.length === 0) {

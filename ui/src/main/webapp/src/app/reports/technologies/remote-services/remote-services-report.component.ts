@@ -66,7 +66,7 @@ export class TechnologiesRemoteServicesReportComponent extends FilterableReportC
 
             const execId = this.execution.id;
 
-            this.techReportService.getEjbRemoteServiceModel(execId).subscribe(
+            this.techReportService.getEjbRemoteServiceModel(execId, this.reportFilter).subscribe(
                 data => {
                     this.ejbRemoteServices = data;
                     this.loading.ejbRemoteServices = false;
@@ -75,7 +75,7 @@ export class TechnologiesRemoteServicesReportComponent extends FilterableReportC
                     this._notificationService.error(utils.getErrorMessage(error));
             });
 
-            this.techReportService.getJaxRpcWebServices(execId).subscribe(
+            this.techReportService.getJaxRpcWebServices(execId, this.reportFilter).subscribe(
             data => {
                 this.jaxRpcWebServices = data;
                 this.loading.jaxRpcWebServices = false;
@@ -84,7 +84,7 @@ export class TechnologiesRemoteServicesReportComponent extends FilterableReportC
                 this._notificationService.error(utils.getErrorMessage(error));
             });
 
-            this.techReportService.getJaxRsWebServices(execId).subscribe(
+            this.techReportService.getJaxRsWebServices(execId, this.reportFilter).subscribe(
             data => {
                 this.jaxRsWebServices = data;
                 this.loading.jaxRsWebServices = false;
@@ -93,7 +93,7 @@ export class TechnologiesRemoteServicesReportComponent extends FilterableReportC
                 this._notificationService.error(utils.getErrorMessage(error));
             });
 
-            this.techReportService.getJaxWsWebServices(execId).subscribe(
+            this.techReportService.getJaxWsWebServices(execId, this.reportFilter).subscribe(
             data => {
                 this.jaxWsWebServices = data;
                 this.loading.jaxWsWebServices = false;
@@ -102,7 +102,7 @@ export class TechnologiesRemoteServicesReportComponent extends FilterableReportC
                 this._notificationService.error(utils.getErrorMessage(error));
             });
 
-            this.techReportService.getRmiServices(execId).subscribe(
+            this.techReportService.getRmiServices(execId, this.reportFilter).subscribe(
             data => {
                 this.rmiServices = data;
                 this.loading.rmiServices = false;
