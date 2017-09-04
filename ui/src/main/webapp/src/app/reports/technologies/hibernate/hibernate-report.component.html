@@ -1,0 +1,78 @@
+<div>
+    <div class="header-bar">
+        <h2>Technologies &gt; {{title}}</h2>
+        <div class="search-and-create">
+            <div class="search-and-create" *ngIf="true">
+                <wu-search [(searchValue)]="searchText" (searchValueChange)="updateSearch()"></wu-search>
+            </div>
+        </div>
+    </div>
+    <wu-table
+            [loading]="loading.entities"
+            (clearFilter)="clearSearch()"
+            [rowTemplate]="rowTemplateEntity"
+            [title]="'Hibernate Entities'"
+            [items]="entities"
+            [filter]="filterCallbacks.entities"
+            [tableHeaders]="[
+                        { title: 'Class', isSortable: true, sortBy: sorting.getJavaClassCallback },
+                        { title: 'Table', isSortable: true, sortBy: 'tableName' },
+                        { title: 'Hibernate version', isSortable: true, sortBy: 'specificationVersion'}
+                    ]">
+        <ng-template #rowTemplateEntity let-entity>
+            <tr>
+                <td class="col-md-2"><a [routerLink]="['../source/' + entity.resolved.javaClass.resolved.decompiledSource.vertexId]">{{entity.resolved.javaClass.qualifiedName}}</a></td>
+                <td class="col-md-2">{{entity.tableName}}</td>
+                <td class="col-md-2">{{entity.specificationVersion}}</td>
+            </tr>
+        </ng-template>
+    </wu-table>
+    <wu-table
+            [loading]="loading.mappingFiles"
+            (clearFilter)="clearSearch()"
+            [rowTemplate]="rowTemplateMapping"
+            [title]="'Hibernate Mapping Files'"
+            [items]="mappingFiles"
+            [filter]="filterCallbacks.mappingFiles"
+            [tableHeaders]="[
+                        { title: 'File Name', isSortable: true, sortBy: 'cachedPrettyPath' }
+                    ]">
+        <ng-template #rowTemplateMapping let-file>
+            <tr>
+                <td class="col-md-2"><a [routerLink]="['../source/' + file.vertexId]">{{file.cachedPrettyPath}}</a></td>
+            </tr>
+        </ng-template>
+    </wu-table>
+    <wu-table
+            [loading]="loading.configurationFiles"
+            (clearFilter)="clearSearch()"
+            [rowTemplate]="rowTemplateConfiguration"
+            [title]="'Hibernate Configuration Files'"
+            [items]="configurationFiles"
+            [filter]="filterCallbacks.configurationFiles"
+            [tableHeaders]="[
+                        { title: 'File Name', isSortable: true, sortBy: 'cachedPrettyPath' }
+                    ]">
+        <ng-template #rowTemplateConfiguration let-file>
+            <tr>
+                <td class="col-md-2"><a [routerLink]="['../source/' + file.vertexId]">{{file.cachedPrettyPath}}</a></td>
+            </tr>
+        </ng-template>
+    </wu-table>
+    <wu-table
+            [loading]="loading.sessionFactories"
+            (clearFilter)="clearSearch()"
+            [rowTemplate]="rowTemplateSessionFactory"
+            [title]="'Hibernate Session Factories'"
+            [items]="sessionFactories"
+            [filter]="filterCallbacks.sessionFactories"
+            [tableHeaders]="[
+                        { title: 'File Name', isSortable: true, sortBy: 'cachedPrettyPath' }
+                    ]">
+        <ng-template #rowTemplateSessionFactory let-file>
+            <tr>
+                <td class="col-md-2"><a [routerLink]="['../source/' + file.resolved.hibernateConfigurationFileModel.vertexId]">{{file.resolved.hibernateConfigurationFileModel.cachedPrettyPath}}</a></td>
+            </tr>
+        </ng-template>
+    </wu-table>
+</div>

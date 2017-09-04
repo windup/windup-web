@@ -60,6 +60,10 @@ import {EventBusService} from "../core/events/event-bus.service";
 import {LoadingIndicatorComponent} from "./loading-indicator.component";
 import {PaginationComponent} from "./pagination.component";
 import {PaginationService} from "./pagination.service";
+import {SortPipe} from "./sort/sort.pipe";
+import {FilterPipe} from "./filter/filter.pipe";
+import {TableComponent} from "./table/table.component";
+import {TableSortHeaderComponent} from "./table/table-sort-header.component";
 
 
 @NgModule({
@@ -138,6 +142,10 @@ import {PaginationService} from "./pagination.service";
 
         ProjectNameNotExistsValidator,
         LoadingIndicatorComponent, // Components are not suitable to be put in core module, see it's Javadoc.
+        SortPipe,
+        FilterPipe,
+        TableSortHeaderComponent,
+        TableComponent
     ],
     exports: [
         CustomSelectComponent,
@@ -192,6 +200,10 @@ import {PaginationService} from "./pagination.service";
         ChosenModule,
         MomentModule,
         FileUploadModule,
+        SortPipe,
+        FilterPipe,
+        TableSortHeaderComponent,
+        TableComponent
     ]
 })
 export class SharedModule {
