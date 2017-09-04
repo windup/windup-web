@@ -13,12 +13,27 @@ import {IgnoredFileModel} from "../../generated/tsModels/IgnoredFileModel";
 
 @Component({
     selector: 'wu-ignoredFiles-report',
-    templateUrl: 'ignoredFiles-report.component.html'
+    templateUrl: 'ignoredFiles-report.component.html',
+    styleUrls: ['../../../../css/report-tables.scss'],
 })
 export class IgnoredFilesReportComponent implements OnInit {
 
     private execID: number;
     private ignoredFilesInfo: IgnoredFileModel[] = [];
+
+    private searchText: string;
+
+    private loading = {
+        ignoredFiles: true
+    };
+
+    emptyFilterCallbacks = {
+        ignoredFiles: (ignoredFile) => true,
+    }
+
+    filterCallbacks = Object.assign({}, this.emptyFilterCallbacks);
+
+
 
     constructor(private route: ActivatedRoute,
                 private ignoredFilesService: IgnoredFilesReportService,
@@ -29,11 +44,11 @@ export class IgnoredFilesReportComponent implements OnInit {
     ngOnInit(): void {
         this.route.parent.params.forEach((params: Params) => {
             this.execID = +params['executionId'];
-            this.fetchIgnoredFilesStats();
+            this.fetchIgnoredFiles();
         });
     }
 
-    fetchIgnoredFilesStats(): void {
+    fetchIgnoredFiles(): void {
         this.ignoredFilesService.getIgnoredFilesInfo(this.execID).subscribe(
             info => {
                 this.ignoredFilesInfo = info;
