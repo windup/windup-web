@@ -2,6 +2,7 @@ package org.jboss.windup.web.addons.websupport.rest.graph;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -237,8 +238,58 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
 
         List<T> filteredEntities = new ArrayList<>();
 
+        List<Object> result = new ArrayList<>();
+        Map<ProjectModel, List<Object>> projectModelData = new HashMap<>();
+
         for (T entity : hibernateEntities)
         {
+            /**
+             * Mostly entity should have only 1 rootProjectModel
+             */
+            for (ProjectModel rootProjectModel : entity.getRootProjectModels())
+            {
+                List<Object> serializedEntities = projectModelData.putIfAbsent(rootProjectModel, new ArrayList<>());
+
+                serializedEntities.add(this.convertToMap(
+                        executionID,
+                        entity.asVertex(),
+                        1,
+                        false,
+                        whitelistedEdges,
+                        new ArrayList<>(),
+                        null
+                ));
+                /*
+                Map<String, Object> projectEntityMap = new HashMap<>();
+                Object serializedProjectModel = this.convertToMap(
+                        new GraphMarshallingContext(
+                                executionID,
+                                rootProjectModel.asVertex(),
+                                1,
+                                false,
+                                new ArrayList<>(Arrays.asList(ProjectModel.ROOT_FILE_MODEL)),
+                                null,
+                                null,
+                                false
+                        ), rootProjectModel.asVertex()
+                );
+
+                projectEntityMap.put("projectModel", serializedProjectModel);
+                projectEntityMap.put("data", this.convertToMap(
+                        executionID,
+                        entity.asVertex(),
+                        1,
+                        false,
+                        whitelistedEdges,
+                        new ArrayList<>(),
+                        null
+                        )
+                );
+
+                result.add(projectEntityMap);
+                */
+            }
+
             if (projectModels == null)
             {
                 filteredEntities.add(entity);
@@ -255,6 +306,8 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
             }
         }
 
+        return result;
+/*
         return filteredEntities.stream().map(entity -> this.convertToMap(
                     executionID,
                     entity.asVertex(),
@@ -263,6 +316,7 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
                     whitelistedEdges,
                     new ArrayList<String>(),
                     null)).collect(Collectors.toList());
+*/
     }
 }
 
