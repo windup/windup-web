@@ -16,7 +16,8 @@ import {utils} from "../../shared/utils";
 @Component({
     templateUrl: './execution-application-list.component.html',
     styleUrls: [
-        '../../../../css/tables.scss'
+        '../../../../css/tables.scss',
+        '../../../../css/report-tables.scss'
     ]
 })
 export class ExecutionApplicationListComponent extends RoutedComponent implements OnInit
