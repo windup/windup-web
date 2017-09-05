@@ -12,7 +12,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.windup.core>4.0.0-SNAPSHOT</version.windup.core>
-        <version.windup.web>3.0.0-SNAPSHOT</version.windup.web>
+        <version.windup.web>4.0.0-SNAPSHOT</version.windup.web>
 
         <version.forge>3.6.0.Final</version.forge>
         <inputDirectory></inputDirectory>
@@ -24,7 +24,7 @@
             <plugin>
                 <groupId>org.jboss.windup.web.plugin</groupId>
                 <artifactId>windup-tsmodelsgen-maven-plugin</artifactId>
-                <version>3.0.0-SNAPSHOT</version>
+                <version>4.0.0-SNAPSHOT</version>
                 <configuration>
                     <packages>
                         <package>org.apache</package>
@@ -34,7 +34,7 @@
                     <outputDirectory>${outputDirectory}</outputDirectory>
                     <overwrite>false</overwrite>
                     <windupCoreVersion>${version.windup.core}</windupCoreVersion>
-                    <windupWebVersion>${version.windup.core}</windupWebVersion>
+                    <windupWebVersion>${version.windup.web}</windupWebVersion>
                     <forgeVersion>${version.forge}</forgeVersion>
                 </configuration>
             </plugin>
