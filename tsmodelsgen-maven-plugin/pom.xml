@@ -9,7 +9,7 @@
 
     <groupId>org.jboss.windup.web.plugin</groupId>
     <artifactId>windup-tsmodelsgen-maven-plugin</artifactId>
-    <version>4.0.0-SNAPSHOT</version>
+    <version>4.0.0.Beta4</version>
     <packaging>maven-plugin</packaging>
 
     <name>Windup Web - TS Model Generator Maven Plugin</name>
@@ -255,4 +255,8 @@
             </build>
         </profile>
     </profiles>
+
+  <scm>
+    <tag>4.0.0.Beta4</tag>
+  </scm>
 </project>
