@@ -248,7 +248,33 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
              */
             for (ProjectModel rootProjectModel : entity.getRootProjectModels())
             {
-                List<Object> serializedEntities = projectModelData.putIfAbsent(rootProjectModel, new ArrayList<>());
+                List<Object> serializedEntities;
+
+                if (!projectModelData.containsKey(rootProjectModel)) {
+                    serializedEntities = new ArrayList<>();
+                    projectModelData.put(rootProjectModel, serializedEntities);
+
+                    Object serializedProjectModel = this.convertToMap(
+                            new GraphMarshallingContext(
+                                    executionID,
+                                    rootProjectModel.asVertex(),
+                                    1,
+                                    false,
+                                    new ArrayList<>(Arrays.asList(ProjectModel.ROOT_FILE_MODEL)),
+                                    null,
+                                    null,
+                                    false
+                            ), rootProjectModel.asVertex()
+                    );
+
+                    Map<String, Object> projectEntityMap = new HashMap<>();
+                    projectEntityMap.put("projectModel", serializedProjectModel);
+                    projectEntityMap.put("data", serializedEntities);
+
+                    result.add(projectEntityMap);
+                }
+
+                serializedEntities = projectModelData.get(rootProjectModel);
 
                 serializedEntities.add(this.convertToMap(
                         executionID,
@@ -259,35 +285,6 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
                         new ArrayList<>(),
                         null
                 ));
-                /*
-                Map<String, Object> projectEntityMap = new HashMap<>();
-                Object serializedProjectModel = this.convertToMap(
-                        new GraphMarshallingContext(
-                                executionID,
-                                rootProjectModel.asVertex(),
-                                1,
-                                false,
-                                new ArrayList<>(Arrays.asList(ProjectModel.ROOT_FILE_MODEL)),
-                                null,
-                                null,
-                                false
-                        ), rootProjectModel.asVertex()
-                );
-
-                projectEntityMap.put("projectModel", serializedProjectModel);
-                projectEntityMap.put("data", this.convertToMap(
-                        executionID,
-                        entity.asVertex(),
-                        1,
-                        false,
-                        whitelistedEdges,
-                        new ArrayList<>(),
-                        null
-                        )
-                );
-
-                result.add(projectEntityMap);
-                */
             }
 
             if (projectModels == null)
@@ -307,16 +304,6 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
         }
 
         return result;
-/*
-        return filteredEntities.stream().map(entity -> this.convertToMap(
-                    executionID,
-                    entity.asVertex(),
-                    1,
-                    false,
-                    whitelistedEdges,
-                    new ArrayList<String>(),
-                    null)).collect(Collectors.toList());
-*/
     }
 }
 
