@@ -18,13 +18,31 @@ export class WindupExecutionService extends AbstractService {
     protected activeExecutions: Map<number, WindupExecution> = new Map<number, WindupExecution>();
     protected executionProjects: Map<number, MigrationProject> = new Map<number, MigrationProject>();
 
+    protected monitoringInterval = null;
+
     constructor(private _windupService: WindupService, private _eventBus: EventBusService, private _scheduler: SchedulerService) {
         super();
-        this._scheduler.setInterval(() => this.checkExecutions(),  WindupExecutionService.CHECK_EXECUTIONS_INTERVAL);
-
+        this.startMonitoring();
         this._eventBus.onEvent.filter(event => event.source !== this)
             .filter(event => event.isTypeOf(DeleteMigrationProjectEvent))
             .subscribe((event: DeleteMigrationProjectEvent) => this.stopWatchingExecutions(event));
+    }
+
+    public startMonitoring() {
+        if (this.monitoringInterval !== null) {
+            // prevent executing multiple times
+            return;
+        }
+        this.monitoringInterval = this._scheduler.setInterval(() => this.checkExecutions(),  WindupExecutionService.CHECK_EXECUTIONS_INTERVAL);
+    }
+
+    public stopMonitoring() {
+        if (this.monitoringInterval == null) {
+            return;
+        }
+
+        this._scheduler.clearInterval(this.monitoringInterval);
+        this.monitoringInterval = null;
     }
 
     private stopWatchingExecutions(event: DeleteMigrationProjectEvent) {

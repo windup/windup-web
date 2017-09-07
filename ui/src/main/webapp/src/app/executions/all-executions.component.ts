@@ -24,6 +24,7 @@ export class AllExecutionsComponent extends ExecutionsMonitoringComponent implem
     }
 
     ngOnInit(): void {
+        super.ngOnInit();
         this.loadExecutions();
 
         this.addSubscription(this._eventBus.onEvent.filter(event => event.isTypeOf(ExecutionEvent))

@@ -2,14 +2,19 @@ import {MigrationProject, WindupExecution} from "../generated/windup-services";
 import {AbstractComponent} from "../shared/AbstractComponent";
 import {WindupExecutionService} from "../services/windup-execution.service";
 import {ExecutionEvent} from "../core/events/windup-event";
+import {OnDestroy, OnInit} from "@angular/core";
 
-export abstract class ExecutionsMonitoringComponent extends AbstractComponent {
+export abstract class ExecutionsMonitoringComponent extends AbstractComponent implements OnDestroy, OnInit {
     protected activeExecutionsMap: Map<number, WindupExecution> = new Map<number, WindupExecution>();
     activeExecutions: WindupExecution[];
     public project: MigrationProject;
 
     public constructor(protected _windupExecutionService: WindupExecutionService) {
         super();
+    }
+
+    ngOnInit(): void {
+        this._windupExecutionService.startMonitoring();
     }
 
     protected loadActiveExecutions(executions: WindupExecution[]) {
@@ -38,5 +43,10 @@ export abstract class ExecutionsMonitoringComponent extends AbstractComponent {
             this.activeExecutionsMap.delete(event.execution.id);
             this.updateActiveExecutions();
         }
+    }
+
+    ngOnDestroy(): void {
+        super.ngOnDestroy();
+        this._windupExecutionService.stopMonitoring();
     }
 }

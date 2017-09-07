@@ -10,12 +10,13 @@ import {ExecutionEvent} from "../core/events/windup-event";
 import {Observable} from "rxjs";
 import {RuleProviderExecutionsService} from "./rule-provider-executions/rule-provider-executions.service";
 import {ExecutionPhaseModel} from "../generated/tsModels/ExecutionPhaseModel";
+import {ExecutionsMonitoringComponent} from "./executions-monitoring.component";
 
 @Component({
     templateUrl: './execution-detail.component.html',
     styleUrls: ['./execution-detail.component.scss']
 })
-export class ExecutionDetailComponent implements OnInit {
+export class ExecutionDetailComponent extends ExecutionsMonitoringComponent implements OnInit {
 
     execution: WindupExecution;
     logLines: string[];
@@ -23,10 +24,18 @@ export class ExecutionDetailComponent implements OnInit {
 
     hideUnfinishedFeatures: boolean = WINDUP_WEB.config.hideUnfinishedFeatures;
 
-    constructor(private _activatedRoute: ActivatedRoute, private _eventBus: EventBusService, private _windupService: WindupService, private _ruleProviderExecutionsService: RuleProviderExecutionsService) {
+    constructor(
+        private _activatedRoute: ActivatedRoute,
+        private _eventBus: EventBusService,
+        private _windupService: WindupService,
+        private _ruleProviderExecutionsService: RuleProviderExecutionsService,
+        _windupExecutionService: WindupExecutionService) {
+        super(_windupExecutionService);
     }
 
     ngOnInit(): void {
+        super.ngOnInit();
+
         this._activatedRoute.params.subscribe((params: {executionId: number}) => {
             let executionId = +params.executionId;
 
