@@ -93,6 +93,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     ngOnInit(): any {
         this._eventBus.onEvent
             .filter(event => event.isTypeOf(UpdateMigrationProjectEvent))
+            .takeUntil(this.destroy)
             .subscribe((event: UpdateMigrationProjectEvent) => this.project = event.migrationProject);
 
         this.registrationForm = this._formBuilder.group({
@@ -107,7 +108,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
             isDirWithExplodedApp: [],
         });
 
-        this.routerSubscription = this._router.events.filter(event => event instanceof NavigationEnd).subscribe(_ => {
+        this._router.events.filter(event => event instanceof NavigationEnd).takeUntil(this.destroy).subscribe(_ => {
             let flatRouteData = this._routeFlattener.getFlattenedRouteData(this._activatedRoute.snapshot);
 
             this.isInWizard = flatRouteData.data.hasOwnProperty('wizard') && flatRouteData.data['wizard'];
@@ -132,8 +133,8 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     }
 
     ngOnDestroy(): void {
+        super.ngOnDestroy();
         this.multipartUploader.clearQueue();
-        this.routerSubscription.unsubscribe();
         this._migrationProjectService.stopMonitoringProject(this.project);
     }
 
@@ -158,18 +159,21 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
             return;
         }
 
-        this._fileService.queryServerPathTargetType(this.fileInputPath).subscribe((type_: string) => {
+        this._fileService.queryServerPathTargetType(this.fileInputPath).takeUntil(this.destroy).subscribe((type_: string) => {
             if (type_ === "DIRECTORY" && !this.isDirWithExplodedApp) { //this.isDirWithApps
                 this._registeredApplicationService.registerApplicationInDirectoryByPath(this.project, this.fileInputPath)
+                    .takeUntil(this.destroy)
                     .subscribe(
                         application => this.navigateOnSuccess(),
                         error => this.handleError(error)
                     );
             } else {
-                this._registeredApplicationService.registerByPath(this.project, this.fileInputPath, this.isDirWithExplodedApp).subscribe(
-                    application => this.navigateOnSuccess(),
-                    error => this.handleError(<any>error)
-                )
+                this._registeredApplicationService.registerByPath(this.project, this.fileInputPath, this.isDirWithExplodedApp)
+                    .takeUntil(this.destroy)
+                    .subscribe(
+                        application => this.navigateOnSuccess(),
+                        error => this.handleError(<any>error)
+                    );
             }
         });
     }
@@ -180,7 +184,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
             return;
         }
 
-        this._registeredApplicationService.uploadApplications(this.project).subscribe(
+        this._registeredApplicationService.uploadApplications(this.project).takeUntil(this.destroy).subscribe(
             () => {},
             error => {
                 if (!error.hasOwnProperty('code') || error.code !== RegisteredApplicationService.ERROR_FILE_EXISTS) {

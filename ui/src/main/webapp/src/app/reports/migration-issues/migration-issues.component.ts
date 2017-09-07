@@ -40,10 +40,10 @@ export class MigrationIssuesComponent extends FilterableReportComponent implemen
     }
 
     ngOnInit(): void {
-        this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
+        this.flatRouteLoaded.takeUntil(this.destroy).subscribe(flatRouteData => {
             this.loadFilterFromRouteData(flatRouteData);
 
-            this._migrationIssuesService.getAggregatedIssues(this.execution.id, this.reportFilter).subscribe(
+            this._migrationIssuesService.getAggregatedIssues(this.execution.id, this.reportFilter).takeUntil(this.destroy).subscribe(
                 result => {
                     this.categorizedIssues = result;
                     this.categories = Object.keys(result);
@@ -54,7 +54,7 @@ export class MigrationIssuesComponent extends FilterableReportComponent implemen
                     this._notificationService.error(utils.getErrorMessage(error));
                     this._router.navigate(['']);
                 });
-        }));
+        });
     }
 
     reloadData() {

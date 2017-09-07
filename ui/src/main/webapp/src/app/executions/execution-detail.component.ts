@@ -37,12 +37,13 @@ export class ExecutionDetailComponent extends RoutedComponent implements OnInit 
     }
 
     ngOnInit(): void {
-        this.subscriptions.push(this.flatRouteLoaded.subscribe(flatRouteData => {
+        this.flatRouteLoaded.takeUntil(this.destroy).subscribe(flatRouteData => {
             let executionId = +flatRouteData.params.executionId;
 
             this._eventBus.onEvent
                 .filter(event => event.isTypeOf(ExecutionEvent))
                 .filter((event: ExecutionEvent) => event.execution.id === executionId)
+                .takeUntil(this.destroy)
                 .subscribe((event: ExecutionEvent) => {
                     this.execution = event.execution;
                     this.loadLogData();
@@ -52,11 +53,12 @@ export class ExecutionDetailComponent extends RoutedComponent implements OnInit 
                 this.execution = execution;
                 this.loadLogData();
                 this._ruleProviderExecutionsService.getPhases(executionId)
+                    .takeUntil(this.destroy)
                     .subscribe(phases => {
                         this.phases = phases;
                     });
             });
-        }));
+        });
     }
 
     get loglines(): Observable<string[]> {
@@ -72,7 +74,9 @@ export class ExecutionDetailComponent extends RoutedComponent implements OnInit 
     }
 
     private loadLogData() {
-        this._windupService.getLogData(this.execution.id).subscribe(logLines => this.logLines = logLines);
+        this._windupService.getLogData(this.execution.id)
+            .takeUntil(this.destroy)
+            .subscribe(logLines => this.logLines = logLines);
     }
 
     getAnalyzedApplications(execution : WindupExecution) : RegisteredApplication[] {

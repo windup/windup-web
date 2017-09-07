@@ -10,6 +10,7 @@ import {OrderDirection, SortingService} from "../shared/sort/sorting.service";
 import {WindupService} from "../services/windup.service";
 import {EventBusService} from "../core/events/event-bus.service";
 import {DeleteMigrationProjectEvent} from "../core/events/windup-event";
+import {AbstractComponent} from "../shared/AbstractComponent";
 
 @Component({
     templateUrl: './project-list.component.html',
@@ -20,7 +21,7 @@ import {DeleteMigrationProjectEvent} from "../core/events/windup-event";
         SortingService
     ]
 })
-export class ProjectListComponent implements OnDestroy, OnInit, AfterViewInit {
+export class ProjectListComponent extends AbstractComponent implements OnDestroy, OnInit, AfterViewInit {
     private _originalProjects: MigrationProject[] = [];
 
     loading: boolean = true;
@@ -58,11 +59,13 @@ export class ProjectListComponent implements OnDestroy, OnInit, AfterViewInit {
         private _windupService: WindupService,
         private _eventBus: EventBusService
     ) {
+        super();
         this.deletedEventSubscription = this._eventBus.onEvent
             .filter(event => event.isTypeOf(DeleteMigrationProjectEvent))
+            .takeUntil(this.destroy)
             .subscribe(event => {
                 this.getMigrationProjects();
-            })
+            });
     }
 
     ngOnInit(): any {
@@ -70,12 +73,8 @@ export class ProjectListComponent implements OnDestroy, OnInit, AfterViewInit {
         this.getMigrationProjects();
     }
 
-    ngOnDestroy(): void {
-        this.deletedEventSubscription.unsubscribe();
-    }
-
     ngAfterViewInit(): void {
-        this.deleteProjectModal.closed.subscribe(() => {
+        this.deleteProjectModal.closed.takeUntil(this.destroy).subscribe(() => {
             this.deleteProjectModal.title = '';
             this.deleteProjectModal.body = '';
             this.deleteProjectModal.confirmPhrase = '';
@@ -83,11 +82,11 @@ export class ProjectListComponent implements OnDestroy, OnInit, AfterViewInit {
             this.deleteProjectModal.data = null;
         });
 
-        this.deleteProjectModal.confirmed.subscribe(project => this.doDeleteProject(project));
+        this.deleteProjectModal.confirmed.takeUntil(this.destroy).subscribe(project => this.doDeleteProject(project));
     }
 
     getMigrationProjects() {
-        return this._migrationProjectService.getAll().subscribe(
+        return this._migrationProjectService.getAll().takeUntil(this.destroy).subscribe(
             projects => this.projectsLoaded(projects),
             error => this._notificationService.error(utils.getErrorMessage(error))
         );
@@ -143,7 +142,7 @@ export class ProjectListComponent implements OnDestroy, OnInit, AfterViewInit {
     }
 
     private doDeleteProject(project: MigrationProject) {
-        this._migrationProjectService.delete(project).subscribe(
+        this._migrationProjectService.delete(project).takeUntil(this.destroy).subscribe(
             success => {
                 this._notificationService.success(`Project '${project.title}' was deleted.`);
                 let index = this._originalProjects.indexOf(project);
@@ -167,7 +166,7 @@ export class ProjectListComponent implements OnDestroy, OnInit, AfterViewInit {
             return false;
         }
 
-        this._windupService.getProjectExecutions(project.id).subscribe((executions) => {
+        this._windupService.getProjectExecutions(project.id).takeUntil(this.destroy).subscribe((executions) => {
             let inProgressExecution = executions.find((execution) => {
                 return execution.state == "QUEUED" || execution.state == "STARTED";
             });

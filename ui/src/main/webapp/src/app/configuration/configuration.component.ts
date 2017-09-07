@@ -13,6 +13,7 @@ import Arrays = utils.Arrays;
 import {FilterConfiguration} from "../shared/toolbar/toolbar.component";
 import {getAvailableFilters} from "./technology-filter";
 import {DomSanitizer} from '@angular/platform-browser';
+import {AbstractComponent} from "../shared/AbstractComponent";
 
 declare function prettyPrint();
 
@@ -20,7 +21,7 @@ declare function prettyPrint();
     templateUrl: './configuration.component.html',
     styleUrls: ['./configuration.component.scss']
 })
-export class ConfigurationComponent implements OnInit, AfterViewInit {
+export class ConfigurationComponent extends AbstractComponent implements OnInit, AfterViewInit {
 
     forceReloadAttempted: boolean = false;
     rescanInProgress: boolean = false;
@@ -68,18 +69,18 @@ export class ConfigurationComponent implements OnInit, AfterViewInit {
         private _element: ElementRef,
         private _sanitizer: DomSanitizer
     ) {
-
+        super();
     }
 
     ngOnInit(): void {
-        this._activatedRoute.data.subscribe((data: {configuration: Configuration}) => {
+        this._activatedRoute.data.takeUntil(this.destroy).subscribe((data: {configuration: Configuration}) => {
             this.configuration = data.configuration;
             this.loadProviders();
         });
     }
 
     ngAfterViewInit(): void {
-        this.removeRulesConfirmationModal.confirmed.subscribe(rulePath => this.removeRulesPath(rulePath));
+        this.removeRulesConfirmationModal.confirmed.takeUntil(this.destroy).subscribe(rulePath => this.removeRulesPath(rulePath));
     }
 
     loadProviders() {
@@ -92,7 +93,7 @@ export class ConfigurationComponent implements OnInit, AfterViewInit {
     forceReload() {
         this.forceReloadAttempted = true;
         this.rescanInProgress = true;
-        this._configurationService.reloadConfigration().subscribe(() => {
+        this._configurationService.reloadConfigration().takeUntil(this.destroy).subscribe(() => {
             this.rescanInProgress = false;
             this.loadRuleProviderDetails()
         });
@@ -100,7 +101,7 @@ export class ConfigurationComponent implements OnInit, AfterViewInit {
 
     loadRuleProviderDetails() {
         this.configuration.rulesPaths.forEach((rulesPath) => {
-            this._ruleService.getByRulesPath(rulesPath).subscribe(
+            this._ruleService.getByRulesPath(rulesPath).takeUntil(this.destroy).subscribe(
                 (ruleProviders:RuleProviderEntity[]) => {
                     this.ruleProvidersByPath.set(rulesPath, ruleProviders);
                     if (!this.forceReloadAttempted && rulesPath.rulesPathType == "SYSTEM_PROVIDED" && ruleProviders.length == 0) // needs to be loaded
@@ -178,7 +179,7 @@ export class ConfigurationComponent implements OnInit, AfterViewInit {
     }
 
     removeRulesPath(rulesPath: RulesPath) {
-        this._ruleService.deleteRule(rulesPath).subscribe(() => {
+        this._ruleService.deleteRule(rulesPath).takeUntil(this.destroy).subscribe(() => {
             this._notificationService.success('Rule was deleted');
 
             this._configurationService.get().subscribe(newConfig => {
@@ -189,7 +190,7 @@ export class ConfigurationComponent implements OnInit, AfterViewInit {
     }
 
     reloadConfiguration() {
-        this._configurationService.reloadConfigration().subscribe(
+        this._configurationService.reloadConfigration().takeUntil(this.destroy).subscribe(
             configuration => {
                 this.configuration = configuration;
                 this.loadProviders();
@@ -202,7 +203,7 @@ export class ConfigurationComponent implements OnInit, AfterViewInit {
 
     confirmRemoveRules(rulesPath: RulesPath) {
         console.log("Checking rules path " + rulesPath.path);
-        this._ruleService.checkIfUsedRulesPath(rulesPath).subscribe(
+        this._ruleService.checkIfUsedRulesPath(rulesPath).takeUntil(this.destroy).subscribe(
             response => {
                 if (response.valueOf())
                 {

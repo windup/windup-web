@@ -40,7 +40,7 @@ export class MigrationProjectFormComponent extends FormComponent implements OnIn
     }
 
     ngOnInit(): void {
-        this.routerSubscription = this._router.events.filter(event => event instanceof NavigationEnd).subscribe(_ => {
+        this._router.events.filter(event => event instanceof NavigationEnd).takeUntil(this.destroy).subscribe(_ => {
             let flatRouteData = this._routeFlattener.getFlattenedRouteData(this._activatedRoute.snapshot);
             if (flatRouteData.data['displayName'])
                 this.title = flatRouteData.data['displayName'];
@@ -50,18 +50,14 @@ export class MigrationProjectFormComponent extends FormComponent implements OnIn
                 let projectID = flatRouteData.data['project'].id;
 
                 // Reload it as we always need the latest data (route resolver does not guarantee this)
-                this._migrationProjectService.get(projectID).subscribe(model => this.model = model);
+                this._migrationProjectService.get(projectID).takeUntil(this.destroy).subscribe(model => this.model = model);
             }
 
             if(!this.editMode) // Creating a new project.
-                this._migrationProjectService.deleteProvisionalProjects().subscribe(res => {});
+                this._migrationProjectService.deleteProvisionalProjects().takeUntil(this.destroy).subscribe(res => {});
 
             this.isInWizard = flatRouteData.data.hasOwnProperty('wizard') && flatRouteData.data['wizard'];
         });
-    }
-
-    ngOnDestroy(): void {
-        this.routerSubscription.unsubscribe();
     }
 
     ngAfterViewInit(): void {
@@ -85,12 +81,12 @@ export class MigrationProjectFormComponent extends FormComponent implements OnIn
             this.model.description = this.model.description.trim();
 
         if (this.editMode) {
-            this._migrationProjectService.update(this.model).subscribe(
+            this._migrationProjectService.update(this.model).takeUntil(this.destroy).subscribe(
                 migrationProject => this.navigateOnSuccess(migrationProject),
                 error => this.handleError(<any> error)
             );
         } else {
-            this._migrationProjectService.create(this.model).subscribe(
+            this._migrationProjectService.create(this.model).takeUntil(this.destroy).subscribe(
                 migrationProject => this.navigateOnSuccess(migrationProject),
                 error => this.handleError(<any> error)
             );

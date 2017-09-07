@@ -56,8 +56,6 @@ export class AddRulesPathModalComponent extends FormComponent implements OnInit,
         return paths[paths.length - 1];
     };
 
-    private subscriptions: Subscription[] = [];
-
     constructor(
         private _formBuilder: FormBuilder,
         private _fileService: FileService,
@@ -68,17 +66,17 @@ export class AddRulesPathModalComponent extends FormComponent implements OnInit,
         super();
         this.multipartUploader = <FileUploaderWrapper>_ruleService.getMultipartUploader();
 
-        this.subscriptions.push(this.multipartUploader.observables.onSuccessItem.subscribe((result) => {
+        this.multipartUploader.observables.onSuccessItem.takeUntil(this.destroy).subscribe((result) => {
             this.countUploadedRules++;
             const rulesPath = JSON.parse(result.response);
             this.uploadedRules = [ ...this.uploadedRules, rulesPath ];
-        }));
+        });
 
-        this.subscriptions.push(this.multipartUploader.observables.onErrorItem.subscribe((result) => {
+        this.multipartUploader.observables.onErrorItem.takeUntil(this.destroy).subscribe((result) => {
             this.handleError(utils.parseServerResponse(result.response));
-        }));
-        this.subscriptions.push(this.multipartUploader.observables.onAfterAddingFile.subscribe(() => this.uploadRule()));
-        this.subscriptions.push(this.multipartUploader.observables.onWhenAddingFileFailed.subscribe(result => {
+        });
+        this.multipartUploader.observables.onAfterAddingFile.takeUntil(this.destroy).subscribe(() => this.uploadRule());
+        this.multipartUploader.observables.onWhenAddingFileFailed.takeUntil(this.destroy).subscribe(result => {
             const item = result.item;
             const filter = result.filter;
 
@@ -109,7 +107,7 @@ export class AddRulesPathModalComponent extends FormComponent implements OnInit,
                 }
             }
             this.handleError(msg);
-        }));
+        });
 
         let suffixes = ['.xml'];
         this.multipartUploader.options.filters.push(<FilterFunction>{
@@ -126,11 +124,6 @@ export class AddRulesPathModalComponent extends FormComponent implements OnInit,
             inputPathControl: ["", Validators.compose([Validators.required, Validators.minLength(4)]), FileExistsValidator.create(this._fileService)],
             scanRecursivelyControl: [""],
         });
-    }
-
-    ngOnDestroy(): void {
-        this.subscriptions.forEach(subscription => subscription.unsubscribe());
-        this.subscriptions = [];
     }
 
     show(): void {
@@ -153,7 +146,7 @@ export class AddRulesPathModalComponent extends FormComponent implements OnInit,
         if (this.mode === 'PATH') {
             this.addPath();
         } else {
-            this._configurationService.get().subscribe(configuration => {
+            this._configurationService.get().takeUntil(this.destroy).subscribe(configuration => {
                 this.configurationSaved.emit({ configuration });
                 this.hide();
             });
@@ -166,11 +159,11 @@ export class AddRulesPathModalComponent extends FormComponent implements OnInit,
         let newPath = <RulesPath>{};
         newPath.path = this.inputPath;
         newPath.rulesPathType = "USER_PROVIDED";
-        newPath.scanRecursively = this.scanRecursively;
+        (<any>newPath).scanRecursively = this.scanRecursively;
 
         newConfiguration.rulesPaths.push(newPath);
 
-        this._configurationService.save(newConfiguration).subscribe(
+        this._configurationService.save(newConfiguration).takeUntil(this.destroy).subscribe(
             configuration => {
                 this.configuration = configuration;
                 this.configurationSaved.emit({
@@ -188,7 +181,7 @@ export class AddRulesPathModalComponent extends FormComponent implements OnInit,
             return;
         }
 
-        this._ruleService.uploadRules().subscribe(
+        this._ruleService.uploadRules().takeUntil(this.destroy).subscribe(
             () => {},
             error => this.handleError(<any>error)
         );
@@ -204,11 +197,11 @@ export class AddRulesPathModalComponent extends FormComponent implements OnInit,
         dialog.body = `Are you sure you want to remove rule provider '${rulesPath.path}'?`;
         dialog.data = rulesPath;
         dialog.show();
-        this.dialogSubscription = dialog.confirmed.subscribe(rulePath => this.removeRulesPath(rulePath));
+        this.dialogSubscription = dialog.confirmed.takeUntil(this.destroy).subscribe(rulePath => this.removeRulesPath(rulePath));
     }
 
     removeRulesPath(rulesPath: RulesPath) {
-        this._ruleService.deleteRule(rulesPath).subscribe(() => {
+        this._ruleService.deleteRule(rulesPath).takeUntil(this.destroy).subscribe(() => {
             this.uploadedRules = this.uploadedRules.filter(item => item.id !== rulesPath.id);
         });
     }

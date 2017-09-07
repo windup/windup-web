@@ -28,8 +28,7 @@ import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.co
     templateUrl: './analysis-context-form.component.html',
     styleUrls: ['analysis-context-form.component.scss']
 })
-export class AnalysisContextFormComponent extends FormComponent
-    implements OnInit, OnDestroy, IsDirty
+export class AnalysisContextFormComponent extends FormComponent implements OnInit, IsDirty
 {
     @ViewChild(NgForm)
     private analysisContextForm: NgForm;
@@ -131,17 +130,17 @@ export class AnalysisContextFormComponent extends FormComponent
         this.initializeAnalysisContext();
 
         this.dialog  = this._dialogService.getConfirmationDialog();
-        this.dialogSubscription = this.dialog.confirmed.subscribe(() => this.saveConfiguration());
+        this.dialogSubscription = this.dialog.confirmed.takeUntil(this.destroy).subscribe(() => this.saveConfiguration());
     }
 
     ngOnInit() {
         this.saveInProgress = false;
 
-        this._configurationOptionsService.getAll().subscribe((options: ConfigurationOption[]) => {
+        this._configurationOptionsService.getAll().takeUntil(this.destroy).subscribe((options: ConfigurationOption[]) => {
             this.configurationOptions = options;
         });
 
-        this.routerSubscription = this._router.events.filter(event => event instanceof NavigationEnd).subscribe(_ => {
+        this._router.events.filter(event => event instanceof NavigationEnd).takeUntil(this.destroy).subscribe(_ => {
             let flatRouteData = this._routeFlattener.getFlattenedRouteData(this._activatedRoute.snapshot);
             this.flatRouteData = flatRouteData;
 
@@ -149,17 +148,17 @@ export class AnalysisContextFormComponent extends FormComponent
                 let project = flatRouteData.data['project'];
 
                 // Load the apps of this project.
-                this._appService.getApplicationsByProjectID(project.id).subscribe(apps => {
+                this._appService.getApplicationsByProjectID(project.id).takeUntil(this.destroy).subscribe(apps => {
                     this.availableApps = apps;
 
                     // Reload the App from the service to ensure fresh data
-                    this._migrationProjectService.get(project.id).subscribe(loadedProject => {
+                    this._migrationProjectService.get(project.id).takeUntil(this.destroy).subscribe(loadedProject => {
                         this.project = loadedProject;
                         if (project.defaultAnalysisContextId == null) {
                             this.initializeAnalysisContext();
                             this.analysisContext.applications = apps.slice();
                         } else {
-                            this._analysisContextService.get(project.defaultAnalysisContextId)
+                            this._analysisContextService.get(project.defaultAnalysisContextId).takeUntil(this.destroy)
                                 .subscribe(context => {
                                     this.analysisContext = context;
                                     if (this.analysisContext.migrationPath == null)
@@ -179,11 +178,6 @@ export class AnalysisContextFormComponent extends FormComponent
         });
 
        
-    }
-
-    ngOnDestroy(): void {
-        this.routerSubscription.unsubscribe();
-        this.dialogSubscription.unsubscribe();
     }
 
     // Apps selection checkboxes
@@ -254,7 +248,7 @@ export class AnalysisContextFormComponent extends FormComponent
         });
         */
 
-        forkJoin(registeredPackagesObservables).subscribe((packageMetadataArray: PackageMetadata[]) => {
+        forkJoin(registeredPackagesObservables).takeUntil(this.destroy).subscribe((packageMetadataArray: PackageMetadata[]) => {
             let arrayOfRoots = [].concat(...packageMetadataArray.map((singlePackageMetadata) => singlePackageMetadata.packageTree));
             let mergedRoots = this._packageRegistryService.mergePackageRoots(arrayOfRoots);
             mergedRoots.forEach(singleRoot => this._packageRegistryService.putHierarchy(singleRoot));
@@ -322,7 +316,7 @@ export class AnalysisContextFormComponent extends FormComponent
 
         this.saveInProgress = true;
 
-        this._analysisContextService.saveAsDefault(this.analysisContext, this.project).subscribe(
+        this._analysisContextService.saveAsDefault(this.analysisContext, this.project).takeUntil(this.destroy).subscribe(
             updatedContext => {
                 this._dirty = false;
                 this.onSuccess(updatedContext);
@@ -338,6 +332,7 @@ export class AnalysisContextFormComponent extends FormComponent
 
         if (this.action === Action.SaveAndRun) {
             this._windupExecutionService.execute(analysisContext, this.project)
+                .takeUntil(this.destroy)
                 .subscribe(execution => {
                     this.saveInProgress = false;
                     this._router.navigate([`/projects/${this.project.id}`]);

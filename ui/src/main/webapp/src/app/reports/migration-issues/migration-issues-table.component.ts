@@ -53,7 +53,7 @@ export class MigrationIssuesTableComponent extends FilterableReportComponent imp
         let flatRouteData = this._routeFlattener.getFlattenedRouteData(this._activatedRoute.snapshot);
         this.loadFilterFromRouteData(flatRouteData);
 
-        this.addSubscription(this._routeFlattener.OnFlatRouteLoaded.subscribe(
+        this.addSubscription(this._routeFlattener.OnFlatRouteLoaded.takeUntil(this.destroy).subscribe(
             flatRouteData => this.loadFilterFromRouteData(flatRouteData)
         ));
     }
@@ -90,15 +90,17 @@ export class MigrationIssuesTableComponent extends FilterableReportComponent imp
     }
 
     protected loadIssuesPerFile(summary: ProblemSummary) {
-        this._migrationIssuesService.getIssuesPerFile(this.execution.id, summary, this.reportFilter).subscribe(fileSummaries => {
-            this.problemSummariesFiles.set(summary, {
-                files: fileSummaries,
-                visible: true
+        this._migrationIssuesService.getIssuesPerFile(this.execution.id, summary, this.reportFilter)
+            .takeUntil(this.destroy)
+            .subscribe(fileSummaries => {
+                this.problemSummariesFiles.set(summary, {
+                    files: fileSummaries,
+                    visible: true
+                });
+            },
+            error => {
+                this._notificationService.error('Could not load file summaries due to: ' + error);
             });
-        },
-        error => {
-            this._notificationService.error('Could not load file summaries due to: ' + error);
-        });
     }
 
     filesVisible(summary: ProblemSummary): boolean {

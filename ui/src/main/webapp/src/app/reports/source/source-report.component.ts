@@ -59,40 +59,40 @@ export class SourceReportComponent extends RoutedComponent implements OnInit, Af
     }
 
     ngOnInit(): void {
-        this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
+        this.flatRouteLoaded.takeUntil(this.destroy).subscribe(flatRouteData => {
             this.execID = +flatRouteData.params['executionId'];
             this.fileID = +flatRouteData.params['fileId'];
 
-            this.fileModelService.getFileModel(this.execID, this.fileID).subscribe(
+            this.fileModelService.getFileModel(this.execID, this.fileID).takeUntil(this.destroy).subscribe(
                 (fileModel) => {
                     this.fileModel = fileModel;
 
                     // Assume this is a source file model and deserialize it as one... if it is not, this will have a lot of null
                     //   properties
                     this.sourceFileModel = <SourceFileModel>this._graphJsonToModelService.fromJSON(this.fileModel.data, SourceFileModel);
-                    this.sourceFileModel.linksToTransformedFiles.subscribe((links) => this.transformedLinks = links);
+                    this.sourceFileModel.linksToTransformedFiles.takeUntil(this.destroy).subscribe((links) => this.transformedLinks = links);
                 },
                 error => this.notificationService.error(utils.getErrorMessage(error)));
 
-            this.classificationService.getClassificationsForFile(this.execID, this.fileID)
+            this.classificationService.getClassificationsForFile(this.execID, this.fileID).takeUntil(this.destroy)
                 .subscribe((classifications) => this.classifications = classifications,
                     error => this.notificationService.error(utils.getErrorMessage(error)));
 
-            this.hintService.getHintsForFile(this.execID, this.fileID)
+            this.hintService.getHintsForFile(this.execID, this.fileID).takeUntil(this.destroy)
                 .subscribe((hints) => this.hints = hints,
                     error => this.notificationService.error(utils.getErrorMessage(error)));
 
-            this.fileModelService.getSource(this.execID, this.fileID)
+            this.fileModelService.getSource(this.execID, this.fileID).takeUntil(this.destroy)
                 .subscribe((fileSource) => {
                         this.fileSource = fileSource;
                         this.fileLines = fileSource.split(/[\r\n]/).map((line) => line + "\n");
                     },
                     error => this.notificationService.error(utils.getErrorMessage(error)));
 
-            this.technologyTagService.getTagsForFile(this.execID, this.fileID)
+            this.technologyTagService.getTagsForFile(this.execID, this.fileID).takeUntil(this.destroy)
                 .subscribe((technologyTags) => this.technologyTags = technologyTags,
                     error => this.notificationService.error(utils.getErrorMessage(error)));
-        })); 
+        });
     }
 
     private getClassificationLinks(classification: ClassificationModel): Observable<LinkModel[]> {

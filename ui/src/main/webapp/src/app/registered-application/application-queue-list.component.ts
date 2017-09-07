@@ -5,6 +5,7 @@ import {FileItem} from "ng2-file-upload";
 import {RegisteredApplicationService} from "./registered-application.service";
 import {NotificationService} from "../core/notification/notification.service";
 import {utils} from "../shared/utils";
+import {AbstractComponent} from "../shared/AbstractComponent";
 
 /**
  * This component is quite hacky way how to show the same visuals as in alternative-upload-queue.
@@ -33,7 +34,7 @@ import {utils} from "../shared/utils";
     ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ApplicationQueueListComponent implements AfterViewInit
+export class ApplicationQueueListComponent extends AbstractComponent implements AfterViewInit
 {
     @Input()
     public registeredApplications: RegisteredApplication[] = [];
@@ -48,14 +49,15 @@ export class ApplicationQueueListComponent implements AfterViewInit
         protected _registeredApplicationsService: RegisteredApplicationService,
         protected _notificationService: NotificationService
     ) {
+        super();
     }
 
     ngAfterViewInit(): any {
-        this.deleteAppDialog.confirmed.subscribe((application) => {
+        this.deleteAppDialog.confirmed.takeUntil(this.destroy).subscribe((application) => {
             this.doDeleteApplication(application);
         });
 
-        this.deleteAppDialog.cancelled.subscribe(() => {
+        this.deleteAppDialog.cancelled.takeUntil(this.destroy).subscribe(() => {
             this.deleteAppDialog.data = null;
             this.deleteAppDialog.body = '';
             this.deleteAppDialog.title = '';
@@ -63,7 +65,7 @@ export class ApplicationQueueListComponent implements AfterViewInit
     }
 
     public doDeleteApplication(application: RegisteredApplication) {
-        this._registeredApplicationsService.deleteApplication(this.project, application).subscribe(
+        this._registeredApplicationsService.deleteApplication(this.project, application).takeUntil(this.destroy).subscribe(
             //() => this._notificationService.success('Application was successfully deleted'),
             () => console.log(`Application ${application.id} was successfully deleted`),
             error => this._notificationService.error(utils.getErrorMessage(error))

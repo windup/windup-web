@@ -51,7 +51,7 @@ export class ApplicationIndexComponent extends FilterableReportComponent impleme
 
 
     ngOnInit(): void {
-        this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
+        this.flatRouteLoaded.takeUntil(this.destroy).subscribe(flatRouteData => {
             this.loadFilterFromRouteData(flatRouteData);
 
             this.analyzedApplications = this.execution.filterApplications.slice();
@@ -64,7 +64,7 @@ export class ApplicationIndexComponent extends FilterableReportComponent impleme
 
             this.projectId = +flatRouteData.params.projectId;
 
-            this._aggregatedStatsService.getAggregatedCategories(this.execution.id, this.reportFilter).subscribe(
+            this._aggregatedStatsService.getAggregatedCategories(this.execution.id, this.reportFilter).takeUntil(this.destroy).subscribe(
                 result => {
                     this.categoriesMultiStats = this.getCategoriesStats(this.calculateCategoryIncidents(result), this.calculateStoryPointsInCategories(result));
                     this.mandatoryMultiStats = this.getMandatoryMultiStats(result.categories.find(category => category.categoryID == "mandatory"));
@@ -75,7 +75,7 @@ export class ApplicationIndexComponent extends FilterableReportComponent impleme
                 }
             );
 
-            this._aggregatedStatsService.getAggregatedJavaPackages(this.execution.id, this.reportFilter).subscribe(
+            this._aggregatedStatsService.getAggregatedJavaPackages(this.execution.id, this.reportFilter).takeUntil(this.destroy).subscribe(
                 result => this.globalPackageUseData = this.convertPackagesToChartStatistic(result),
                 error => {
                     this._notificationService.error(utils.getErrorMessage(error));
@@ -83,7 +83,7 @@ export class ApplicationIndexComponent extends FilterableReportComponent impleme
                 }
             );
 
-            this._aggregatedStatsService.getAggregatedArchives(this.execution.id, this.reportFilter).subscribe(
+            this._aggregatedStatsService.getAggregatedArchives(this.execution.id, this.reportFilter).takeUntil(this.destroy).subscribe(
                 result => this.componentsStats = result,
                 error => {
                     this._notificationService.error(utils.getErrorMessage(error));
@@ -91,14 +91,14 @@ export class ApplicationIndexComponent extends FilterableReportComponent impleme
                 }
             );
 
-            this._aggregatedStatsService.getAggregatedDependencies(this.execution.id, this.reportFilter).subscribe(
+            this._aggregatedStatsService.getAggregatedDependencies(this.execution.id, this.reportFilter).takeUntil(this.destroy).subscribe(
                 result => this.dependenciesStats = result,
                 error => {
                     this._notificationService.error(utils.getErrorMessage(error));
                     this._router.navigate(['']);
                 }
             );
-        }));
+        });
     }
 
     sumStatsList(statsList:StatisticsList): number {

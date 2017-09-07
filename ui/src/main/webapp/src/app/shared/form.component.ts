@@ -1,10 +1,12 @@
 import {AbstractControl, NgControl} from "@angular/forms";
 import {utils} from "./utils";
+import {AbstractComponent} from "./AbstractComponent";
 
-export class FormComponent {
+export class FormComponent extends AbstractComponent {
     errorMessages: string[] = [];
 
     constructor() {
+        super();
     }
 
     /**

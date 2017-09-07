@@ -39,13 +39,14 @@ export class ProjectLayoutComponent extends RoutedComponent implements OnInit, O
     }
 
     ngOnInit(): void {
-        this.addSubscription(this._eventBus.onEvent.filter(event => event.isTypeOf(UpdateMigrationProjectEvent))
+        this._eventBus.onEvent.filter(event => event.isTypeOf(UpdateMigrationProjectEvent))
+            .takeUntil(this.destroy)
             .subscribe((event: MigrationProjectEvent) => {
                 this.project = event.migrationProject;
                 this.createContextMenuItems();
-        }));
+        });
 
-        this.addSubscription(this.flatRouteLoaded.subscribe(flattenedRoute => this.loadDataFromRoute(flattenedRoute)));
+        this.flatRouteLoaded.takeUntil(this.destroy).subscribe(flattenedRoute => this.loadDataFromRoute(flattenedRoute));
         this.loadProjects();
     }
 
@@ -56,7 +57,7 @@ export class ProjectLayoutComponent extends RoutedComponent implements OnInit, O
     }
 
     protected loadProjects() {
-        this._migrationProjectService.getAll().subscribe((projects: MigrationProject[]) => {
+        this._migrationProjectService.getAll().takeUntil(this.destroy).subscribe((projects: MigrationProject[]) => {
             this.allProjects = projects.sort((a,b) => a.title.localeCompare(b.title));
         });
     }

@@ -57,14 +57,14 @@ export class TechnologiesHibernateReportComponent extends FilterableReportCompon
     }
 
     ngOnInit(): void {
-        this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
+        this.flatRouteLoaded.takeUntil(this.destroy).subscribe(flatRouteData => {
             this.title = flatRouteData.data.displayName;
 
             this.loadFilterFromRouteData(flatRouteData);
 
             const execId = this.execution.id;
 
-            this.techReportService.getHibernateEntityModel(execId, this.reportFilter).subscribe(
+            this.techReportService.getHibernateEntityModel(execId, this.reportFilter).takeUntil(this.destroy).subscribe(
                 data => {
                     this.entities = data;
                     this.loading.entities = false;
@@ -73,27 +73,27 @@ export class TechnologiesHibernateReportComponent extends FilterableReportCompon
                     this._notificationService.error(utils.getErrorMessage(error));
                 });
 
-            this.techReportService.getHibernateConfigurationFileModel(execId, this.reportFilter).subscribe(configurations => {
+            this.techReportService.getHibernateConfigurationFileModel(execId, this.reportFilter).takeUntil(this.destroy).subscribe(configurations => {
                 this.configurationFiles = configurations;
                 this.loading.configurationFiles = false;
             }, error => {
                 this._notificationService.error(utils.getErrorMessage(error));
             });
 
-            this.techReportService.getHibernateMappingFileModel(execId, this.reportFilter).subscribe(mappings => {
+            this.techReportService.getHibernateMappingFileModel(execId, this.reportFilter).takeUntil(this.destroy).subscribe(mappings => {
                 this.mappingFiles = mappings;
                 this.loading.mappingFiles = false;
             }, error => {
                 this._notificationService.error(utils.getErrorMessage(error));
             });
 
-            this.techReportService.getHibernateSessionFactoryModel(execId, this.reportFilter).subscribe(sessionFactories => {
+            this.techReportService.getHibernateSessionFactoryModel(execId, this.reportFilter).takeUntil(this.destroy).subscribe(sessionFactories => {
                 this.sessionFactories = sessionFactories;
                 this.loading.sessionFactories = false;
             }, error => {
                 this._notificationService.error(utils.getErrorMessage(error));
             });
-        }));
+        });
     }
 
     updateSearch() {

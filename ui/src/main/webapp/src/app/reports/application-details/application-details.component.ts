@@ -62,13 +62,13 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
     }
 
     ngOnInit(): void {
-        this.addSubscription(this.flatRouteLoaded.subscribe(flattenedRoute => {
+        this.flatRouteLoaded.takeUntil(this.destroy).subscribe(flattenedRoute => {
             this.loadFilterFromRouteData(flattenedRoute);
 
-            this._applicationDetailsService.getApplicationDetailsData(this.execution.id, this.reportFilter).subscribe(
+            this._applicationDetailsService.getApplicationDetailsData(this.execution.id, this.reportFilter).takeUntil(this.destroy).subscribe(
                 applicationDetailsDto => {
                     // Make sure tag data is loaded first
-                    this._tagDataService.getTagData().subscribe((tagData) => {
+                    this._tagDataService.getTagData().takeUntil(this.destroy).subscribe((tagData) => {
                         this.applicationDetails = applicationDetailsDto;
                         this.rootProjects = applicationDetailsDto.traversals;
 
@@ -82,7 +82,7 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
                 },
                 error => this._notificationService.error(utils.getErrorMessage(error))
             );
-        }));
+        });
     }
 
     selectedProject(treeData:TreeData) {

@@ -41,20 +41,21 @@ export class ExecutionsLayoutComponent extends ProjectLayoutComponent implements
         this.loadProjects();
 
         let executionId = +flatRoute.params.executionId;
-        this.addSubscription(this._eventBus.onEvent
+        this._eventBus.onEvent
             .filter(event => event.isTypeOf(ExecutionEvent))
             .filter((event: ExecutionEvent) => event.execution.id === executionId)
+            .takeUntil(this.destroy)
             .subscribe((event: ExecutionEvent) => {
                 this.execution = event.execution;
                 this.createContextMenuItems();
-            }));
+            });
 
         this.loadSelectedExecution(executionId);
     }
 
     protected loadSelectedExecution(executionId: number) {
         let observable = this._windupService.getExecution(executionId);
-        observable.subscribe(execution => {
+        observable.takeUntil(this.destroy).subscribe(execution => {
             this.execution = execution;
             this.createContextMenuItems();
         });
@@ -63,9 +64,11 @@ export class ExecutionsLayoutComponent extends ProjectLayoutComponent implements
     }
 
     protected loadProjectExecutions() {
-        this._windupService.getProjectExecutions(this.project.id).subscribe((executions: WindupExecution[]) => {
-            this.allExecutions = executions.sort((a,b) => (a.id||0) - (b.id||0));
-        });
+        this._windupService.getProjectExecutions(this.project.id)
+            .takeUntil(this.destroy)
+            .subscribe((executions: WindupExecution[]) => {
+                this.allExecutions = executions.sort((a,b) => (a.id||0) - (b.id||0));
+            });
     }
 
     public getExecutionLabel = (execution: WindupExecution): string => {

@@ -29,18 +29,20 @@ export class AllExecutionsComponent extends ExecutionsMonitoringComponent implem
         this.addSubscription(
             this._eventBus.onEvent
                 .filter(event => event.isTypeOf(ExecutionEvent))
+                .takeUntil(this.destroy)
                 .subscribe((event: ExecutionEvent) => this.onExecutionEvent(event))
         );
 
         this.addSubscription(
             this._eventBus.onEvent
                 .filter(event => event.isTypeOf(NewExecutionStartedEvent))
+                .takeUntil(this.destroy)
                 .subscribe((event: NewExecutionStartedEvent) => { this.loadExecutions(); })
         );
     }
 
     protected loadExecutions() {
-        this._windupService.getAllExecutions().subscribe(
+        this._windupService.getAllExecutions().takeUntil(this.destroy).subscribe(
             executions => {
                 this.executions = executions;
                 super.loadActiveExecutions(executions);

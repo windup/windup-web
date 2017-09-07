@@ -49,33 +49,36 @@ export class ApplicationListComponent extends ExecutionsMonitoringComponent impl
         this._eventBus.onEvent
             .filter(event => event.isTypeOf(ExecutionEvent))
             .filter((event: ExecutionEvent) => event.migrationProject.id === this.project.id)
+            .takeUntil(this.destroy)
             .subscribe((event: ExecutionEvent) => {
                 this.onExecutionEvent(event);
             });
 
         this._eventBus.onEvent
             .filter(event => event.isTypeOf(ApplicationDeletedEvent))
+            .takeUntil(this.destroy)
             .subscribe((event: ApplicationDeletedEvent) => this.onApplicationDeleted(event));
 
         this._eventBus.onEvent
             .filter(event => event.isTypeOf(UpdateMigrationProjectEvent))
             .filter((event: UpdateMigrationProjectEvent) => event.migrationProject.id === this.project.id)
+            .takeUntil(this.destroy)
             .subscribe((event: UpdateMigrationProjectEvent) => this.reloadMigrationProject(event.migrationProject));
 
-        this._activatedRoute.parent.parent.data.subscribe((data: {project: MigrationProject}) => {
+        this._activatedRoute.parent.parent.data.takeUntil(this.destroy).subscribe((data: {project: MigrationProject}) => {
             this.reloadMigrationProject(data.project);
-            this._windupService.getProjectExecutions(this.project.id).subscribe(executions => {
+            this._windupService.getProjectExecutions(this.project.id).takeUntil(this.destroy).subscribe(executions => {
                 this.loadActiveExecutions(executions);
             });
         });
     }
 
     ngAfterViewInit(): any {
-        this.deleteAppDialog.confirmed.subscribe((application) => {
+        this.deleteAppDialog.confirmed.takeUntil(this.destroy).subscribe((application) => {
             this.doDeleteApplication(application);
         });
 
-        this.deleteAppDialog.cancelled.subscribe(() => {
+        this.deleteAppDialog.cancelled.takeUntil(this.destroy).subscribe(() => {
             this.deleteAppDialog.data = null;
             this.deleteAppDialog.body = '';
             this.deleteAppDialog.title = '';
@@ -112,6 +115,7 @@ export class ApplicationListComponent extends ExecutionsMonitoringComponent impl
             .finally(() => {
                 this.deletedApplications.delete(application.id);
             })
+            .takeUntil(this.destroy)
             .subscribe(
                 () => this._notificationService.success(`The application ‘${application.title}’ was deleted.`),
                 error => this._notificationService.error(utils.getErrorMessage(error))

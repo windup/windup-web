@@ -46,15 +46,15 @@ export class ExecutionApplicationListComponent extends RoutedComponent implement
     }
 
     ngOnInit(): any {
-        this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
+        this.flatRouteLoaded.takeUntil(this.destroy).subscribe(flatRouteData => {
             let executionId = parseInt(flatRouteData.params['executionId']);
             this.execID = executionId;
 
-            this._windupService.getExecution(executionId)
+            this._windupService.getExecution(executionId).takeUntil(this.destroy)
                 .subscribe(execution => {
                     this.loadExecution(execution);
                 });
-        }));
+        });
     }
 
     loadExecution(execution: WindupExecution) {
@@ -64,7 +64,7 @@ export class ExecutionApplicationListComponent extends RoutedComponent implement
         this.sortedApplications = execution.filterApplications;
         this.updateSearch();
 
-        this._applicationDetailsService.getApplicationDetailsData(this.execID).subscribe(
+        this._applicationDetailsService.getApplicationDetailsData(this.execID).takeUntil(this.destroy).subscribe(
             applicationDetailsDto => {
                 this.applicationDetailsDTO = applicationDetailsDto;
                 this.flattenReportData();

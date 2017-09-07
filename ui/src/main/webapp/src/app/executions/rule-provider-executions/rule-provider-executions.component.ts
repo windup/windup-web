@@ -2,6 +2,7 @@ import {Component, OnInit, AfterViewChecked, ElementRef} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
 import {RuleProviderExecutionsService} from "./rule-provider-executions.service";
 import {ExecutionPhaseModel} from "../../generated/tsModels/ExecutionPhaseModel";
+import {AbstractComponent} from "../../shared/AbstractComponent";
 
 @Component({
     templateUrl: './rule-provider-executions.component.html',
@@ -18,7 +19,7 @@ import {ExecutionPhaseModel} from "../../generated/tsModels/ExecutionPhaseModel"
         }`
     ]
 })
-export class RuleProviderExecutionsComponent implements OnInit, AfterViewChecked {
+export class RuleProviderExecutionsComponent extends AbstractComponent implements OnInit, AfterViewChecked {
     phases: ExecutionPhaseModel[];
     protected anchor: string;
 
@@ -27,18 +28,18 @@ export class RuleProviderExecutionsComponent implements OnInit, AfterViewChecked
         private _activatedRoute: ActivatedRoute,
         private _element: ElementRef
     ) {
-
+        super();
     }
 
     ngOnInit(): void {
-        this._activatedRoute.parent.params.subscribe((params: {executionId: number}) => {
-            this._ruleProviderExecutionsService.getPhases(params.executionId)
+        this._activatedRoute.parent.params.takeUntil(this.destroy).subscribe((params: {executionId: number}) => {
+            this._ruleProviderExecutionsService.getPhases(params.executionId).takeUntil(this.destroy)
                 .subscribe(phases => {
                     this.phases = phases;
                 });
         });
 
-        this._activatedRoute.queryParams.subscribe((queryParams) => {
+        this._activatedRoute.queryParams.takeUntil(this.destroy).subscribe((queryParams) => {
             if (queryParams.hasOwnProperty('ruleID')) {
                 this.anchor = queryParams['ruleID'];
             }

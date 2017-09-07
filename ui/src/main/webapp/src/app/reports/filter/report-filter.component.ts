@@ -9,17 +9,17 @@ import {CustomSelectConfiguration} from "../../shared/custom-select/custom-selec
 import {utils} from "../../shared/utils";
 import {Location} from "@angular/common";
 import {TagDataService} from "../tag-data.service";
+import {AbstractComponent} from "../../shared/AbstractComponent";
 
 @Component({
     templateUrl: './report-filter.component.html'
 })
-export class ReportFilterComponent implements OnInit, OnDestroy {
+export class ReportFilterComponent extends AbstractComponent implements OnInit, OnDestroy {
     project: MigrationProject = <MigrationProject>{};
     execution: WindupExecution = <WindupExecution>{};
     filter: ReportFilter;
     tags: Tag[] = [];
     categories: Category[] = [];
-    routerSubscriptions: Subscription[] = [];
     filterApplications: FilterApplication[] = [];
 
     appSelectConfig: CustomSelectConfiguration;
@@ -34,6 +34,8 @@ export class ReportFilterComponent implements OnInit, OnDestroy {
                 private _notificationService: NotificationService,
                 private _routeFlattenerService: RouteFlattenerService,
                 private _location: Location) {
+        super();
+
         this.filter = this.getDefaultFilter();
 
         this.categoryTagSelectConfig = {
@@ -66,21 +68,21 @@ export class ReportFilterComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.routerSubscriptions.push(this._router.events.filter(event => event instanceof NavigationEnd).subscribe(_ => {
+        this._router.events.filter(event => event instanceof NavigationEnd).takeUntil(this.destroy).subscribe(_ => {
             let flatData = this._routeFlattenerService.getFlattenedRouteData(this._activatedRoute.snapshot);
 
             // TODO: Fix this
             this.execution = flatData.data['applicationGroup'];
             this.filter = this.execution.reportFilter || this.getDefaultFilter();
 
-            this._filterService.getTags(this.execution).subscribe(
+            this._filterService.getTags(this.execution).takeUntil(this.destroy).subscribe(
                 tags => {
                     this.tags = this.accumulateAllTags([], tags);
                 },
                 error => this._notificationService.error(utils.getErrorMessage(error))
             );
 
-            this._filterService.getCategories(this.execution).subscribe(
+            this._filterService.getCategories(this.execution).takeUntil(this.destroy).subscribe(
                 categories => this.categories = categories,
                 error => this._notificationService.error(utils.getErrorMessage(error))
             );
@@ -88,13 +90,13 @@ export class ReportFilterComponent implements OnInit, OnDestroy {
             let lastExecution = this.getLastExecution(this.project);
 
             if (lastExecution != null) {
-                this._filterService.getFilterApplications(lastExecution)
+                this._filterService.getFilterApplications(lastExecution).takeUntil(this.destroy)
                     .subscribe(filterApplications => {
                         this.filterApplications = filterApplications;
                         this.isFilterUpToDate = this.areApplicationsInFilterUpToDate();
                     });
             }
-        }));
+        });
     }
 
     private areApplicationsInFilterUpToDate(): boolean {
@@ -145,12 +147,8 @@ export class ReportFilterComponent implements OnInit, OnDestroy {
         return accumulatedTags;
     }
 
-    ngOnDestroy(): void {
-        this.routerSubscriptions.forEach(_ => _.unsubscribe());
-    }
-
     saveFilter() {
-        this._filterService.updateFilter(this.execution, this.filter).subscribe(() => {
+        this._filterService.updateFilter(this.execution, this.filter).takeUntil(this.destroy).subscribe(() => {
                 this._notificationService.success('Filter successfully updated');
             },
             error => this._notificationService.error(utils.getErrorMessage(error))

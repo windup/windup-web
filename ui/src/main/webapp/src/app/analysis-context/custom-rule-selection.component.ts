@@ -3,13 +3,14 @@ import {Component, Input, OnInit, Output, EventEmitter} from '@angular/core';
 import {RulesPath} from "../generated/windup-services";
 
 import {ConfigurationService} from "../configuration/configuration.service";
+import {AbstractComponent} from "../shared/AbstractComponent";
 
 
 @Component({
     selector: 'wu-custom-rule-selection',
     templateUrl: './custom-rule-selection.component.html'
 })
-export class CustomRuleSelectionComponent implements OnInit {
+export class CustomRuleSelectionComponent extends AbstractComponent implements OnInit {
     private _selectedRulePaths: RulesPath[];
 
     @Output()
@@ -43,10 +44,12 @@ export class CustomRuleSelectionComponent implements OnInit {
 
     rulesPaths: RulesPath[] = [];
 
-    constructor(private _configurationService: ConfigurationService) { }
+    constructor(private _configurationService: ConfigurationService) {
+        super();
+    }
 
     ngOnInit() {
-        this._configurationService.getCustomRulesetPaths().subscribe(
+        this._configurationService.getCustomRulesetPaths().takeUntil(this.destroy).subscribe(
             rulesPaths => {
                 this.rulesPaths = rulesPaths;
             },

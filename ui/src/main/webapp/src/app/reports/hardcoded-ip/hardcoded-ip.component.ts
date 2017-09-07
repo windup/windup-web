@@ -30,11 +30,11 @@ export class HardcodedIPReportComponent extends FilterableReportComponent implem
     }
 
     ngOnInit(): void {
-        this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
+        this.flatRouteLoaded.takeUntil(this.destroy).subscribe(flatRouteData => {
             this.loadFilterFromRouteData(flatRouteData);
 
             this.loadHardcodedIPs();
-        }));
+        });
     }
 
     updateSearch(): void {
@@ -60,7 +60,7 @@ export class HardcodedIPReportComponent extends FilterableReportComponent implem
     }
 
     private loadHardcodedIPs() {
-        this._hardcodedIPService.getHardcodedIPModels(this.execution.id, this.reportFilter)
+        this._hardcodedIPService.getHardcodedIPModels(this.execution.id, this.reportFilter).takeUntil(this.destroy)
             .subscribe(
                 hardcodedIPDTOs => {
                     this.hardcodedIPs = this.filteredHardcodedIPs = this.sortedHardcodedIPs = hardcodedIPDTOs;

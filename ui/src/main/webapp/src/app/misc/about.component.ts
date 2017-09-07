@@ -1,6 +1,7 @@
 import {Component, OnInit, AfterViewInit} from "@angular/core";
 import {Constants} from "../constants";
 import {Http} from "@angular/http";
+import {AbstractComponent} from "../shared/AbstractComponent";
 
 @Component({
     templateUrl: './about.component.html',
@@ -11,7 +12,7 @@ import {Http} from "@angular/http";
         }
     `]
 })
-export class AboutPageComponent implements OnInit, AfterViewInit {
+export class AboutPageComponent extends AbstractComponent implements OnInit, AfterViewInit {
 
     private WINDUP_CORE_VERSION_URL: string = "/windup/coreVersion";
 
@@ -24,13 +25,14 @@ export class AboutPageComponent implements OnInit, AfterViewInit {
     contributors: {login: string, html_url: string; avatar_url: string }[] = [];
 
     constructor (private _http: Http) {
+        super();
     }
 
     ngOnInit(): any {
         this._http.get(Constants.REST_BASE + this.WINDUP_CORE_VERSION_URL)
             .map(res => res.json())
-            .subscribe(versionAndRevision =>
-            {
+            .takeUntil(this.destroy)
+            .subscribe(versionAndRevision => {
                 this.versionWindupCore = versionAndRevision.version;
                 this.scmRevisionWindupCore = versionAndRevision.scmRevision;
             });

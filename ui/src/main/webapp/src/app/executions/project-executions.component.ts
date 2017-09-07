@@ -33,10 +33,11 @@ export class ProjectExecutionsComponent extends ExecutionsMonitoringComponent im
     }
 
     ngOnInit(): void {
-        this._activatedRoute.parent.data.subscribe((data: {project: MigrationProject}) => {
+        this._activatedRoute.parent.data.takeUntil(this.destroy).subscribe((data: {project: MigrationProject}) => {
             this.project = data.project;
 
             this._analysisContextService.get(this.project.defaultAnalysisContextId)
+                .takeUntil(this.destroy)
                 .subscribe(context => {
                     this.analysisContext = context;
                     this.analysisContext.applications = context.applications.filter(function( app: RegisteredApplication ) {
@@ -51,13 +52,14 @@ export class ProjectExecutionsComponent extends ExecutionsMonitoringComponent im
         this.addSubscription(this._eventBus.onEvent
             .filter(event => event.isTypeOf(ExecutionEvent))
             .filter((event: ExecutionEvent) => event.migrationProject.id === this.project.id)
+            .takeUntil(this.destroy)
             .subscribe((event: ExecutionEvent) => this.onExecutionEvent(event)));
 
         this.doNotRefreshList = false;
     }
 
     refreshExecutionList() {
-        this._windupService.getProjectExecutions(this.project.id).subscribe(executions => {
+        this._windupService.getProjectExecutions(this.project.id).takeUntil(this.destroy).subscribe(executions => {
             this.executions = executions;
 
             // If there are cancelled jobs that have not yet had a cancelled date added, then refresh the list
@@ -93,7 +95,7 @@ export class ProjectExecutionsComponent extends ExecutionsMonitoringComponent im
 
     public startExecution() {
         if (this.analysisContext && this.project) {
-            this._windupExecutionService.execute(this.analysisContext, this.project).subscribe(
+            this._windupExecutionService.execute(this.analysisContext, this.project).takeUntil(this.destroy).subscribe(
                 execution => {
                     this.refreshExecutionList();
                     console.log('load active executions');

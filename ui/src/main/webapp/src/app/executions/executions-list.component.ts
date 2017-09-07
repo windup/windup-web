@@ -60,15 +60,15 @@ export class ExecutionsListComponent extends AbstractComponent implements OnInit
     }
 
     ngOnInit(): void {
-        this._projectService.getAll().subscribe(projects => {
+        this._projectService.getAll().takeUntil(this.destroy).subscribe(projects => {
             this.projectsMap.clear();
             projects.forEach(project => this.projectsMap.set(project.id, project));
         });
-        this.cancelExecutionDialog.confirmed.subscribe((execution) => {
+        this.cancelExecutionDialog.confirmed.takeUntil(this.destroy).subscribe((execution) => {
             this.doCancelExecution(execution);
         });
 
-        this.deleteExecutionDialog.confirmed.subscribe((execution) => {
+        this.deleteExecutionDialog.confirmed.takeUntil(this.destroy).subscribe((execution) => {
             this.doDeleteExecution(execution);
         });
 
@@ -119,7 +119,7 @@ export class ExecutionsListComponent extends AbstractComponent implements OnInit
     }
 
     doCancelExecution(execution: WindupExecution) {
-        this._windupService.cancelExecution(execution).subscribe(
+        this._windupService.cancelExecution(execution).takeUntil(this.destroy).subscribe(
             success => {
                 this._notificationService.success(`Analysis #${execution.id} was cancelled.`);
                 this.reloadRequestEvent.emit(true);
@@ -140,7 +140,7 @@ export class ExecutionsListComponent extends AbstractComponent implements OnInit
         this.deletedExecutions.set(execution.id, execution);
         this._windupService.deleteExecution(execution).finally(() => {
             this.deletedExecutions.delete(execution.id);
-        }).subscribe(
+        }).takeUntil(this.destroy).subscribe(
             success => {
                 this._notificationService.success(`Analysis #${execution.id} was deleted.`);
                 this.reloadRequestEvent.emit(true);
