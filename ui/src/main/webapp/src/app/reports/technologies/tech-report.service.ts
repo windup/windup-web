@@ -244,7 +244,7 @@ export class TechReportService extends GraphService
                 Observable.forkJoin(entitiesArray.map(entity => {
                     const updatedData = Observables.resolveObjectProperties(entity.resolved.implementationClass, ['decompiledSource']);
                     return updatedData;
-                })),
+                }).filter(entityObservable => entityObservable != null)),
                 Observable.forkJoin(entitiesArray.map(entity => {
                     if (!entity.resolved.interface) {
                         return Observable.of(null);

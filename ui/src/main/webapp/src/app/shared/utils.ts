@@ -96,7 +96,9 @@ export module utils {
          * @returns {Observable<T[]>}
          */
         public static resolveValuesArray<T, K extends keyof T>(arrayObservable: Observable<T[]>, properties: K[]): Observable<ResolvedObject<T, K>[]> {
+
             return arrayObservable.flatMap((array: T[]) => {
+
                 if (array.length === 0) {
                     return Observable.of([]);
                 }
@@ -120,7 +122,6 @@ export module utils {
                             return Observable.of(resolvedObject);
                         }
                     });
-
 
                     /*
                      * This part creates observable which joins all propertiesObservables and maps result into single object
@@ -153,6 +154,9 @@ export module utils {
         }
 
         public static resolveObjectProperties<T, K extends keyof T>(object: T, properties: K[]): Observable<ResolvedObject<T, K>> {
+            if (object == null)
+                return null;
+
             let resolvedObject: any = Object.assign(object, {resolved: {}});
 
             /*
