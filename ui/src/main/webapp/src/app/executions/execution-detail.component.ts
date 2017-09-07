@@ -22,6 +22,8 @@ export class ExecutionDetailComponent extends RoutedComponent implements OnInit 
     execution: WindupExecution;
     logLines: string[];
     phases: ExecutionPhaseModel[];
+    private currentTimeTimer: number;
+    currentTime: number = new Date().getTime();
 
     hideUnfinishedFeatures: boolean = WINDUP_WEB.config.hideUnfinishedFeatures;
 
@@ -57,6 +59,10 @@ export class ExecutionDetailComponent extends RoutedComponent implements OnInit 
                     });
             });
         }));
+
+        this.currentTimeTimer = <any> setInterval(() => {
+            this.currentTime = new Date().getTime();
+        }, 5000);
     }
 
     get loglines(): Observable<string[]> {
