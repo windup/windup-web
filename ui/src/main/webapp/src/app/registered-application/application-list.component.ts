@@ -22,7 +22,7 @@ import {WindupService} from "../services/windup.service";
         './application-list.component.scss'
     ]
 })
-export class ApplicationListComponent extends ExecutionsMonitoringComponent implements OnInit, OnDestroy, AfterViewInit
+export class ApplicationListComponent extends ExecutionsMonitoringComponent implements OnInit, AfterViewInit
 {
     public filteredApplications: RegisteredApplication[] = [];
     public sortedApplications: RegisteredApplication[] = [];
@@ -93,9 +93,6 @@ export class ApplicationListComponent extends ExecutionsMonitoringComponent impl
         this.project.applications = this.project.applications.filter(app => {
            return !event.applications.includes(app);
         });
-    }
-
-    ngOnDestroy() {
     }
 
     registerApplication() {

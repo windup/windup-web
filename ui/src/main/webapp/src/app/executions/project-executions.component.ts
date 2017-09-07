@@ -33,6 +33,8 @@ export class ProjectExecutionsComponent extends ExecutionsMonitoringComponent im
     }
 
     ngOnInit(): void {
+        super.ngOnInit();
+
         this._activatedRoute.parent.data.subscribe((data: {project: MigrationProject}) => {
             this.project = data.project;
 
