@@ -21,6 +21,8 @@ export class ExecutionDetailComponent extends ExecutionsMonitoringComponent impl
     execution: WindupExecution;
     logLines: string[];
     phases: ExecutionPhaseModel[];
+    private currentTimeTimer: number;
+    currentTime: number = new Date().getTime();
 
     hideUnfinishedFeatures: boolean = WINDUP_WEB.config.hideUnfinishedFeatures;
 
@@ -55,7 +57,11 @@ export class ExecutionDetailComponent extends ExecutionsMonitoringComponent impl
                         this.phases = phases;
                     });
             });
-        });
+        }));
+
+        this.currentTimeTimer = <any> setInterval(() => {
+            this.currentTime = new Date().getTime();
+        }, 5000);
     }
 
     get loglines(): Observable<string[]> {
