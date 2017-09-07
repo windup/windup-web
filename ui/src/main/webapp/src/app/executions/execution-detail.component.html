@@ -4,7 +4,7 @@
 <div *ngIf="execution">
     <h2 i18n="Heading|Analysis Page">Analysis #{{execution.id}}</h2>
 
-    <div *ngIf="execution.state === 'QUEUED' || execution.state === 'STARTED'">
+    <div *ngIf="execution.state === 'STARTED'">
         <wu-progress-bar
                 [taskName]="execution.currentTask"
                 [currentValue]="execution.workCompleted"
@@ -12,6 +12,9 @@
                 [maxValue]="execution.totalWork"
                 [activeExecutionId]="execution.id">
         </wu-progress-bar>
+    </div>
+    <div *ngIf="execution.state === 'QUEUED'">
+        The analysis is queued for {{currentTime - execution.timeStarted | wuDuration}}
     </div>
 
     <wu-tab-container>

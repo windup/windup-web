@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, OnDestroy, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {WindupService} from "../services/windup.service";
 import {WindupExecution, RegisteredApplication} from "../generated/windup-services";
@@ -17,11 +17,13 @@ import {RouteFlattenerService} from "../core/routing/route-flattener.service";
     templateUrl: './execution-detail.component.html',
     styleUrls: ['./execution-detail.component.scss']
 })
-export class ExecutionDetailComponent extends RoutedComponent implements OnInit {
+export class ExecutionDetailComponent extends RoutedComponent implements OnInit, OnDestroy {
 
     execution: WindupExecution;
     logLines: string[];
     phases: ExecutionPhaseModel[];
+    private currentTimeTimer: number;
+    currentTime: number = new Date().getTime();
 
     hideUnfinishedFeatures: boolean = WINDUP_WEB.config.hideUnfinishedFeatures;
 
@@ -57,6 +59,17 @@ export class ExecutionDetailComponent extends RoutedComponent implements OnInit 
                     });
             });
         }));
+
+        this.currentTimeTimer = <any> setInterval(() => {
+            this.currentTime = new Date().getTime();
+            console.log("Updating the current time field");
+        }, 5000);
+    }
+
+    ngOnDestroy(): void {
+        super.ngOnDestroy();
+        if (this.currentTimeTimer != null)
+            clearInterval(this.currentTimeTimer);
     }
 
     get loglines(): Observable<string[]> {
