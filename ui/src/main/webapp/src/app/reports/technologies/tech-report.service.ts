@@ -2,10 +2,8 @@ import {Injectable} from "@angular/core";
 import {Http} from "@angular/http";
 import {Observable} from "rxjs/Observable";
 
-import {ProjectTechnologiesStatsModel} from "../../generated/tsModels/ProjectTechnologiesStatsModel";
 import {GraphService} from "../../services/graph.service";
 import {GraphJSONToModelService} from "../../services/graph/graph-json-to-model.service";
-import {Cached} from "../../shared/cache.service";
 import {EjbMessageDrivenModel} from "../../generated/tsModels/EjbMessageDrivenModel";
 import {EjbEntityBeanModel} from "../../generated/tsModels/EjbEntityBeanModel";
 import {EjbSessionBeanModel} from "../../generated/tsModels/EjbSessionBeanModel";
@@ -23,7 +21,7 @@ import {JaxRPCWebServiceModel} from "../../generated/tsModels/JaxRPCWebServiceMo
 import {JaxRSWebServiceModel} from "../../generated/tsModels/JaxRSWebServiceModel";
 import {JaxWSWebServiceModel} from "../../generated/tsModels/JaxWSWebServiceModel";
 import {RMIServiceModel} from "../../generated/tsModels/RMIServiceModel";
-import Arrays = utils.Arrays;
+import {TechnologyUsageStatisticsModel} from "../../generated/tsModels/TechnologyUsageStatisticsModel";
 
 @Injectable()
 export class TechReportService extends GraphService
@@ -46,10 +44,9 @@ export class TechReportService extends GraphService
         super(http, graphJsonToModelService);
     }
 
-    @Cached('techReport', null, true)
-    getStats(execID: number): Observable<ProjectTechnologiesStatsModel[]>
+    getStats(execID: number): Observable<TechnologyUsageStatisticsModel[]>
     {
-        return this.getTypeAsArray<ProjectTechnologiesStatsModel>(ProjectTechnologiesStatsModel.discriminator, execID, {
+        return this.getTypeAsArray<TechnologyUsageStatisticsModel>(TechnologyUsageStatisticsModel.discriminator, execID, {
             depth: 2,
             includeInVertices: false
         });

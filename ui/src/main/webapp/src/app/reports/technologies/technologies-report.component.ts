@@ -4,13 +4,16 @@ import {ActivatedRoute, Params, Router}   from '@angular/router';
 import {TechReportService, StatsItem} from "./tech-report.service";
 import {NotificationService} from "../../core/notification/notification.service";
 import {utils} from '../../shared/utils';
-import {ProjectTechnologiesStatsModel} from "../../generated/tsModels/ProjectTechnologiesStatsModel";
 import {forkJoin} from "rxjs/observable/forkJoin";
 import {ProjectModel} from "../../generated/tsModels/ProjectModel";
 import {FileModel} from "../../generated/tsModels/FileModel";
-import {TechnologyKeyValuePairModel} from "../../generated/tsModels/TechnologyKeyValuePairModel";
 import {FilterApplication, RegisteredApplication} from "../../generated/windup-services";
+import {TechnologyUsageStatisticsModel} from "../../generated/tsModels/TechnologyUsageStatisticsModel";
 
+/**
+ * FIXME - NOTE: This is incomplete code and will need to be redone based upon the updated data model,
+ *  and new services.
+ */
 @Component({
     selector: 'wu-technologies-report',
     templateUrl: 'technologies-report.component.html'
@@ -18,7 +21,7 @@ import {FilterApplication, RegisteredApplication} from "../../generated/windup-s
 export class TechnologiesReportComponent implements OnInit {
 
     private execID: number;
-    private technologiesStats: ProjectTechnologiesStatsModel[] = [];
+    private technologiesStats: TechnologyUsageStatisticsModel[] = [];
     filteredTechnologiesStats: TechnologiesStats;
 
     constructor(
@@ -72,7 +75,7 @@ TODO: Fix this
 */
     }
 
-    filterTechnologiesStats(techReports: ProjectTechnologiesStatsModel[]): ProjectTechnologiesStatsModel[] {
+    filterTechnologiesStats(techReports: TechnologyUsageStatisticsModel[]): TechnologyUsageStatisticsModel[] {
         // TODO: Fix
         let filter = <any>{};// this.currentGroup.reportFilter;
 
@@ -82,7 +85,7 @@ TODO: Fix this
 
         let indices = [];
 
-        let rootFileModelObservable = techReports.map((item: ProjectTechnologiesStatsModel) => {
+        let rootFileModelObservable = techReports.map((item: TechnologyUsageStatisticsModel) => {
             return item.projectModel.flatMap((projectModel: ProjectModel) => projectModel.rootFileModel);
         });
 
@@ -113,28 +116,28 @@ TODO: Fix this
         return filteredStats;
     }
 
-    protected mergeArray(stats: ProjectTechnologiesStatsModel[], result: any, property: string) {
-        let propertiesArray = stats.map(item => {
-            return item.technologiesStatsModel.flatMap(technologiesStats => {
-                return technologiesStats[property];
-            });
-        });
-
-        forkJoin(propertiesArray)
-            .subscribe((projectTechnologiesArray: TechnologyKeyValuePairModel[][]) => {
-                projectTechnologiesArray.forEach(technologiesArray => {
-                    technologiesArray.forEach(technology => {
-                        if (!result[property].hasOwnProperty(technology.name)) {
-                            result[property][technology.name] = 0;
-                        }
-
-                        result[property][technology.name] += technology.value;
-                    });
-                });
-            });
+    protected mergeArray(stats: TechnologyUsageStatisticsModel[], result: any, property: string) {
+        // let propertiesArray = stats.map(item => {
+        //     // return item.flatMap(technologiesStats => {
+        //     //     return technologiesStats[property];
+        //     // });
+        // });
+        //
+        // forkJoin(propertiesArray)
+        //     .subscribe((projectTechnologiesArray: TechnologyUsageStatisticsModel[][]) => {
+        //         projectTechnologiesArray.forEach(technologiesArray => {
+        //             technologiesArray.forEach(technology => {
+        //                 if (!result[property].hasOwnProperty(technology.name)) {
+        //                     result[property][technology.name] = 0;
+        //                 }
+        //
+        //                 result[property][technology.name] += technology.occurrenceCount;
+        //             });
+        //         });
+        //     });
     }
 
-    mergeTechnologyStats(stats: ProjectTechnologiesStatsModel[]) {
+    mergeTechnologyStats(stats: TechnologyUsageStatisticsModel[]) {
         let result = {
             technologies: {},
             fileTypes: {}
@@ -146,7 +149,7 @@ TODO: Fix this
         return result;
     }
 
-    mergeFileTypesToOne(inputValues: TechnologyKeyValuePairModel[], mergedFileTypes: string[], outputFileType: string) {
+    mergeFileTypesToOne(inputValues: TechnologyUsageStatisticsModel[], mergedFileTypes: string[], outputFileType: string) {
         let mergedItem = {name: outputFileType, value: 0};
 
         let output: Object = Object.assign({}, inputValues); // make copy of array
