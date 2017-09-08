@@ -8,36 +8,27 @@
         </div>
     </div>
 
-    <div class="panel panel-default panel-primary wu-data-table">
-        <div class="panel-heading">
-            <h3 class="panel-title">Message Driven Beans</h3>
-        </div>
-        <div class="panel-body">
-            <wu-all-data-filtered-message
-                    [filteredItems]="filteredEjbMessageDriven"
-                    [unfilteredItems]="ejbMessageDriven"
-                    (clearFilter)="clearSearch()"
-                    *ngIf="!loadingMDB; else loadingData">
-                <table class="table table-bordered table-hover" *ngIf="filteredEjbMessageDriven.length > 0; else noDataAvailable">
-                    <thead wu-sortable-table
-                           [(sortedData)]="sortedEjbMessageDriven" [data]="filteredEjbMessageDriven"
-                           [tableHeaders]="[
-                        { title: 'MDB Name', isSortable: true, sortBy: 'name' },
-                        { title: 'Class', isSortable: true, sortBy: 'class'},
-                        { title: 'JMS Destination', isSortable: true, sortBy: 'location'}
-                    ]">
-                    </thead>
-                    <tbody>
-                    <tr *ngFor="let mdb of this.sortedEjbMessageDriven">
-                        <td class="col-md-4">{{mdb.name}}</td>
-                        <td class="col-md-6"><a [routerLink]="['../source/' + mdb.sourceVertexId]">{{mdb.class}}</a></td>
-                        <td class="col-md-2">{{mdb.location}}</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </wu-all-data-filtered-message>
-        </div>
-    </div>
+    <wu-table
+            [title]="'Message Driven Beans'"
+            [items]="ejbMessageDriven"
+            (clearFilter)="clearSearch()"
+            [filter]="filterCallback"
+            [loading]="loadingMDB"
+            [tableHeaders]="[
+                { title: 'MDB Name', isSortable: true, sortBy: 'name' },
+                { title: 'Class', isSortable: true, sortBy: 'class'},
+                { title: 'JMS Destination', isSortable: true, sortBy: 'location'}
+            ]"
+            [rowTemplate]="rowTemplateMdb"
+    >
+        <ng-template #rowTemplateMdb let-mdb>
+            <tr>
+                <td class="col-md-4">{{mdb.name}}</td>
+                <td class="col-md-6"><a [routerLink]="['../source/' + mdb.sourceVertexId]">{{mdb.class}}</a></td>
+                <td class="col-md-2">{{mdb.location}}</td>
+            </tr>
+        </ng-template>
+    </wu-table>
 
     <!-- L&F "static report" -->
     <!--            <div class="panel panel-primary">
@@ -84,112 +75,43 @@
                     </table>
                 </div>-->
 
-    <div class="panel panel-default panel-primary wu-data-table">
-        <div class="panel-heading">
-            <h3 class="panel-title">Stateless Session Beans</h3>
-        </div>
-        <div class="panel-body">
-            <wu-all-data-filtered-message
-                    [filteredItems]="filteredEjbSessionStatelessBean"
-                    [unfilteredItems]="ejbSessionStatelessBean"
-                    (clearFilter)="clearSearch()"
-                    *ngIf="!loadingEJBStateless; else loadingData">
-                <table class="table table-bordered table-hover" *ngIf="filteredEjbSessionStatelessBean.length > 0; else noDataAvailable">
-                    <thead wu-sortable-table
-                           [(sortedData)]="sortedEjbSessionStatelessBean" [data]="filteredEjbSessionStatelessBean"
-                           [tableHeaders]="[
-                            { title: 'Bean Name', isSortable: true, sortBy: 'name' },
-                            { title: 'Interface', isSortable: true, sortBy: 'interface'},
-                            { title: 'Implementation', isSortable: true, sortBy: 'class'},
-                            { title: 'JNDI Location', isSortable: true, sortBy: 'location'}
-                        ]">
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let value of this.sortedEjbSessionStatelessBean">
-                            <td class="col-md-2">{{value.name}}</td>
-                            <td class="col-md-2">{{value.interface}}</td>
-                            <td class="col-md-6"><a [routerLink]="['../source/' + value.sourceVertexId]">{{value.class}}</a></td>
-                            <td class="col-md-2">{{value.location}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </wu-all-data-filtered-message>
-        </div>
-    </div>
-
-    <div class="panel panel-default panel-primary wu-data-table">
-        <div class="panel-heading">
-            <h3 class="panel-title">Stateful Session Beans</h3>
-        </div>
-        <div class="panel-body">
-            <wu-all-data-filtered-message
-                    [filteredItems]="filteredEjbSessionStatefulBean"
-                    [unfilteredItems]="ejbSessionStatefulBean"
-                    (clearFilter)="clearSearch()"
-                    *ngIf="!loadingEJBStateful; else loadingData">
-                <table class="table table-bordered table-hover" *ngIf="filteredEjbSessionStatefulBean.length > 0; else noDataAvailable">
-                    <thead wu-sortable-table
-                           [(sortedData)]="sortedEjbSessionStatefulBean" [data]="filteredEjbSessionStatefulBean"
-                           [tableHeaders]="[
-                            { title: 'Bean Name', isSortable: true, sortBy: 'name' },
-                            { title: 'Interface', isSortable: true, sortBy: 'interface'},
-                            { title: 'Implementation', isSortable: true, sortBy: 'class'},
-                            { title: 'JNDI Location', isSortable: true, sortBy: 'location'}
-                        ]">
-                    </thead>
-                    <tbody>
-                    <tr *ngFor="let value of this.sortedEjbSessionStatefulBean">
-                        <td class="col-md-2">{{value.name}}</td>
-                        <td class="col-md-2">{{value.interface}}</td>
-                        <td class="col-md-6"><a [routerLink]="['../source/' + value.sourceVertexId]">{{value.class}}</a></td>
-                        <td class="col-md-2">{{value.location}}</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </wu-all-data-filtered-message>
-        </div>
-    </div>
-
-    <div class="panel panel-default panel-primary wu-data-table">
-        <div class="panel-heading">
-            <h3 class="panel-title">Entity Beans</h3>
-        </div>
-        <div class="panel-body">
-            <wu-all-data-filtered-message
-                    [filteredItems]="filteredEjbEntityBean"
-                    [unfilteredItems]="ejbEntityBean"
-                    (clearFilter)="clearSearch()"
-                    *ngIf="!loadingEntity; else loadingData">
-                <table class="table table-bordered table-hover" *ngIf="filteredEjbEntityBean.length > 0; else noDataAvailable">
-                    <thead wu-sortable-table
-                           [(sortedData)]="sortedEjbEntityBean" [data]="filteredEjbEntityBean"
-                           [tableHeaders]="[
-                            { title: 'Bean Name', isSortable: true, sortBy: 'name' },
-                            { title: 'Interface', isSortable: true, sortBy: 'interface'},
-                            { title: 'Implementation', isSortable: true, sortBy: 'class'},
-                            { title: 'JNDI Location', isSortable: true, sortBy: 'location'}
-                        ]">
-                    </thead>
-                    <tbody>
-                    <tr *ngFor="let value of this.sortedEjbEntityBean">
-                        <td class="col-md-2">{{value.name}}</td>
-                        <td class="col-md-2">{{value.interface}}</td>
-                        <td class="col-md-6"><a [routerLink]="['../source/' + value.sourceVertexId]">{{value.class}}</a></td>
-                        <td class="col-md-2">{{value.location}}</td>
-                    </tr>
-                    </tbody>
-                </table>
-
-            </wu-all-data-filtered-message>
-        </div>
-    </div>
+    <ng-container *ngFor="let data of [{
+            title: 'Stateless Session Beans',
+            items: ejbSessionStatelessBean,
+            loading: loadingEJBStateless
+        }, {
+            title: 'Stateful Session Beans',
+            items: ejbSessionStatefulBean,
+            loading: loadingEJBStateful
+        },
+        {
+            title: 'Entity Beans',
+            items: ejbEntityBean,
+            loading: loadingEntity
+        }
+        ]">
+        <wu-table
+                [title]="data.title"
+                [items]="data.items"
+                (clearFilter)="clearSearch()"
+                [filter]="filterCallback"
+                [loading]="data.loading"
+                [tableHeaders]="[
+                { title: 'Bean Name', isSortable: true, sortBy: 'name' },
+                { title: 'Interface', isSortable: true, sortBy: 'interface'},
+                { title: 'Implementation', isSortable: true, sortBy: 'class'},
+                { title: 'JNDI Location', isSortable: true, sortBy: 'location'}
+            ]"
+                [rowTemplate]="rowTemplateEjbBean"
+        >
+            <ng-template #rowTemplateEjbBean let-value>
+                <tr>
+                    <td class="col-md-2">{{value.name}}</td>
+                    <td class="col-md-2">{{value.interface}}</td>
+                    <td class="col-md-6"><a [routerLink]="['../source/' + value.sourceVertexId]">{{value.class}}</a></td>
+                    <td class="col-md-2">{{value.location}}</td>
+                </tr>
+            </ng-template>
+        </wu-table>
+    </ng-container>
 </ng-container>
-
-
-<ng-template #loadingData>
-    <span>Loading...</span>
-</ng-template>
-
-<ng-template #noDataAvailable>
-    <span>There are no beans of this type.</span>
-</ng-template>

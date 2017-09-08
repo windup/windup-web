@@ -8,6 +8,7 @@ import {Observable} from "rxjs/Observable";
 import {FilterableReportComponent} from "../filterable-report.component";
 import {RouteFlattenerService} from "../../core/routing/route-flattener.service";
 import {ReportFilter} from "../../generated/windup-services";
+import {FilterCallback} from "../../shared/filter/filter.pipe";
 
 @Component({
     selector: 'wu-technologies-report-ejb',
@@ -20,20 +21,9 @@ export class TechnologiesEJBReportComponent extends FilterableReportComponent im
     private reportId: Observable<string>;
 
     public ejbMessageDriven: EJBInformationDTO[] = [];
-    public filteredEjbMessageDriven : EJBInformationDTO[] = [];
-    public sortedEjbMessageDriven : EJBInformationDTO[] = [];
-
     public ejbSessionStatelessBean: EJBInformationDTO[] = [];
-    public filteredEjbSessionStatelessBean: EJBInformationDTO[] = [];
-    public sortedEjbSessionStatelessBean: EJBInformationDTO[] = [];
-
     public ejbSessionStatefulBean: EJBInformationDTO[] = [];
-    public filteredEjbSessionStatefulBean: EJBInformationDTO[] = [];
-    public sortedEjbSessionStatefulBean: EJBInformationDTO[] = [];
-
     public ejbEntityBean: EJBInformationDTO[] = [];
-    public filteredEjbEntityBean: EJBInformationDTO[] = [];
-    public sortedEjbEntityBean: EJBInformationDTO[] = [];
 
     public searchText: string;
 
@@ -43,6 +33,8 @@ export class TechnologiesEJBReportComponent extends FilterableReportComponent im
     public loadingEJBStateless: boolean = true;
     public loadingEJBStateful: boolean = true;
     public loadingEntity: boolean = true;
+
+    public filterCallback: FilterCallback = () => true;
 
     constructor(
         private route: ActivatedRoute,
@@ -75,9 +67,6 @@ export class TechnologiesEJBReportComponent extends FilterableReportComponent im
             this.techReportService.getEjbMessageDrivenModel(this.execID, this.reportFilter).subscribe(
                 value => {
                     this.ejbMessageDriven = value;
-                    this.filteredEjbMessageDriven = this.ejbMessageDriven;
-                    this.sortedEjbMessageDriven = this.ejbMessageDriven;
-                    this.updateSearch();
                     this.loadingMDB  = false;
                 },
                 error => {
@@ -89,9 +78,6 @@ export class TechnologiesEJBReportComponent extends FilterableReportComponent im
             this.techReportService.getEjbSessionBeanModel(this.execID, 'Stateless', this.reportFilter).subscribe(
                 value => {
                     this.ejbSessionStatelessBean = value;
-                    this.filteredEjbSessionStatelessBean = this.ejbSessionStatelessBean;
-                    this.sortedEjbSessionStatelessBean = this.ejbSessionStatelessBean;
-                    this.updateSearch();
                     this.loadingEJBStateless = false;
 
                 },
@@ -104,9 +90,6 @@ export class TechnologiesEJBReportComponent extends FilterableReportComponent im
             this.techReportService.getEjbSessionBeanModel(this.execID, 'Stateful', this.reportFilter).subscribe(
                 value => {
                     this.ejbSessionStatefulBean = value;
-                    this.filteredEjbSessionStatefulBean = this.ejbSessionStatefulBean;
-                    this.sortedEjbSessionStatefulBean = this.ejbSessionStatefulBean;
-                    this.updateSearch();
                     this.loadingEJBStateful = false;
                 },
                 error => {
@@ -118,9 +101,6 @@ export class TechnologiesEJBReportComponent extends FilterableReportComponent im
             this.techReportService.getEjbEntityBeanModel(this.execID, this.reportFilter).subscribe(
                 value => {
                     this.ejbEntityBean = value;
-                    this.filteredEjbEntityBean = this.ejbEntityBean;
-                    this.sortedEjbEntityBean = this.ejbEntityBean;
-                    this.updateSearch();
                     this.loadingEntity = false;
                 },
                 error => {
@@ -133,23 +113,10 @@ export class TechnologiesEJBReportComponent extends FilterableReportComponent im
 
     updateSearch() {
         if (this.searchText && this.searchText.length > 0) {
-            this.filteredEjbMessageDriven = this.ejbMessageDriven.filter(mdb => (
-                this.filter(mdb))
-            );
-            this.filteredEjbSessionStatelessBean = this.ejbSessionStatelessBean.filter(ejb => (
-                this.filter(ejb))
-            );
-            this.filteredEjbSessionStatefulBean = this.ejbSessionStatefulBean.filter(ejb => (
-                this.filter(ejb))
-            );
-            this.filteredEjbEntityBean = this.ejbEntityBean.filter(ejb => (
-                this.filter(ejb))
-            );
+            const regex = new RegExp(this.searchText, 'i');
+            this.filterCallback = this.filterEntities(regex);
         } else {
-            this.filteredEjbMessageDriven = this.ejbMessageDriven;
-            this.filteredEjbSessionStatelessBean = this.ejbSessionStatelessBean;
-            this.filteredEjbSessionStatefulBean = this.ejbSessionStatefulBean;
-            this.filteredEjbEntityBean = this.ejbEntityBean;
+            this.filterCallback = () => true;
         }
     }
 
@@ -158,11 +125,10 @@ export class TechnologiesEJBReportComponent extends FilterableReportComponent im
         this.updateSearch();
     }
 
-    filter(item:EJBInformationDTO): boolean {
-        return (
-            item.name.search(new RegExp(this.searchText, 'i')) !== -1 ||
-            item.class.search(new RegExp(this.searchText, 'i')) !== -1 ||
-            item.location.search(new RegExp(this.searchText, 'i')) !== -1)
+    filterEntities(regex: string|RegExp): (item: any) => boolean {
+        return (item) => item.name.search(regex) !== -1 ||
+            item.class.search(regex) !== -1 ||
+            item.location.search(regex) !== -1;
     }
 
 }
