@@ -29,16 +29,22 @@ export class GraphService extends AbstractService {
             .catch(this.handleError);
     }
 
-    protected getTypeAsArray<T extends BaseModel>(type: string, execID: number, options?: GraphEndpointOptions): Observable<T[]> {
+    protected getTypeAsArray<T extends BaseModel>(
+            typeDiscriminator: string,
+            execID: number,
+            options?: GraphEndpointOptions,
+    ): Observable<T[]>
+    {
         let service = this._graphJsonToModelService;
+        let clazz = service.getTypeScriptClassByDiscriminator(typeDiscriminator);
 
-        return this.prepareGetRequest(type, execID, options)
+        return this.prepareGetRequest(typeDiscriminator, execID, options)
             .map(data => {
                 if (!Array.isArray(data)) {
                     throw new Error("No items returned");
                 }
 
-                return <T[]>service.fromJSONarray(data);
+                return <T[]>service.fromJSONarray(data, clazz);
             });
     }
 
