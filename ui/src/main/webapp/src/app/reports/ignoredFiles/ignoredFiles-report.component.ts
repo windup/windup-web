@@ -10,6 +10,8 @@ import {FileModel} from "../../generated/tsModels/FileModel";
 import {TechnologyKeyValuePairModel} from "../../generated/tsModels/TechnologyKeyValuePairModel";
 import {FilterApplication, RegisteredApplication} from "../../generated/windup-services";
 import {IgnoredFileModel} from "../../generated/tsModels/IgnoredFileModel";
+import {WindupVertexFrame} from "../../generated/tsModels/WindupVertexFrame";
+import {BaseModel} from "../../services/graph/base.model";
 
 @Component({
     selector: 'wu-ignoredFiles-report',
@@ -19,7 +21,7 @@ import {IgnoredFileModel} from "../../generated/tsModels/IgnoredFileModel";
 export class IgnoredFilesReportComponent implements OnInit {
 
     private execID: number;
-    private ignoredFilesInfo: IgnoredFileModel[] = [];
+    private ignoredFiles: IgnoredFileModel[] = [];
 
     private searchText: string;
 
@@ -50,8 +52,9 @@ export class IgnoredFilesReportComponent implements OnInit {
 
     fetchIgnoredFiles(): void {
         this.ignoredFilesService.getIgnoredFilesInfo(this.execID).subscribe(
-            info => {
-                this.ignoredFilesInfo = info;
+            ignoredFiles => {
+                this.ignoredFiles = ignoredFiles.map(f => <IgnoredFileModel> f);
+                this.loading.ignoredFiles = false;
             },
             error => {
                 this._notificationService.error(utils.getErrorMessage(error));
@@ -64,4 +67,10 @@ export class IgnoredFilesReportComponent implements OnInit {
         var afterDot = str.substr(str.lastIndexOf('.') + 1);
         return ("java properties jsp jsf ftl xml css html sql mf txt c cpp".includes(afterDot.toLowerCase()))
     }
+}
+
+class WuTableState<T extends BaseModel> {
+    items: T[] = [];
+    loading: boolean = true;
+    filter: (item: T) => boolean = (item) => true;
 }

@@ -103,18 +103,6 @@ export class ApplicationLevelLayoutComponent extends ExecutionsLayoutComponent {
                 true,
                 'technology-report-hibernate'
             ),
-            new ContextMenuItem(
-                'Ignored Files',
-                null,
-                false,
-                'technology-report-change-me'
-            ),
-            new ContextMenuItem(
-                'Unparsable Files',
-                null,
-                false,
-                'technology-report-change-me'
-            )
         ];
         this.menuItems = [
             new ReportMenuItem(
@@ -157,6 +145,24 @@ export class ApplicationLevelLayoutComponent extends ExecutionsLayoutComponent {
                 this.application,
                 'migration-issues'
             ),
+            new ApplicationReportMenuItem(
+                'Ignored Files',
+                'fa-low-vision',
+                this.project,
+                this.execution,
+                this.application,
+                'ignoredFiles-report'
+            ),
+            /* TODO.  And I think Unparsable Files could be listed together with Ignored Files on the same page.
+            new ApplicationReportMenuItem(
+                'Unparsable Files',
+                'fa-low-vision',
+                this.project,
+                this.execution,
+                this.application,
+                'unparsableFiles-report'
+            ),
+            */
             new ContextMenuItem(
                 'Hardcoded IP',
                 'fa-map-marker',

@@ -51,9 +51,11 @@
 
 
     <div class="panel panel-default panel-primary wuTechnologies">
+        <!--
         <div class="panel-heading">
             <h3 class="panel-title">Ignored files</h3>
         </div>
+        -->
         <div class="panel-body">
 
 
@@ -62,7 +64,7 @@
                 (clearFilter)="clearSearch()"
                 [rowTemplate]="rowTemplateFile"
                 [title]="'Ignored Files'"
-                [items]="ignoredFilesInfo"
+                [items]="ignoredFiles"
                 [filter]="filterCallbacks.ignoredFiles"
                 [tableHeaders]="[
                     { title: 'File', isSortable: true, sortBy: 'fileName' },

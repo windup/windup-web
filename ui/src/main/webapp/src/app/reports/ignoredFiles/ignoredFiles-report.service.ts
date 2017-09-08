@@ -18,7 +18,7 @@ export class IgnoredFilesReportService extends GraphService
     getIgnoredFilesInfo(execID: number): Observable<IgnoredFileModel[]>
     {
         return this.getTypeAsArray<IgnoredFileModel>(IgnoredFileModel.discriminator, execID, {
-            depth: 2,
+            depth: 0,
             includeInVertices: false
         });
     }
