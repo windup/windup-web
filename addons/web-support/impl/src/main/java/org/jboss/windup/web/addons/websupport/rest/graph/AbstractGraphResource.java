@@ -101,13 +101,15 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
 
 
         Map<String, Object> outVertices = new HashMap<>();
-        result.put(GraphResource.VERTICES_OUT, outVertices);
         addEdges(ctx, vertex, Direction.OUT, outVertices);
+        if (!outVertices.isEmpty())
+            result.put(GraphResource.VERTICES_OUT, outVertices);
 
         if (ctx.includeInVertices) {
             Map<String, Object> inVertices = new HashMap<>();
-            result.put(GraphResource.VERTICES_IN, inVertices);
             addEdges(ctx, vertex, Direction.IN, inVertices);
+            if (!inVertices.isEmpty())
+                result.put(GraphResource.VERTICES_IN, inVertices);
         }
 
         return result;
@@ -122,6 +124,9 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
     @SuppressWarnings("unchecked")
     private void addEdges(GraphMarshallingContext ctx, Vertex vertex, Direction direction, Map<String, Object> result)
     {
+        if (ctx.remainingDepth <= 0)
+            return;
+
         List<String> whitelistedLabels = direction == Direction.OUT ? ctx.whitelistedOutEdges : ctx.whitelistedInEdges;
 
         Iterable<Edge> edges;
@@ -129,7 +134,7 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
             edges = vertex.getEdges(direction);
         else
             edges = vertex.getEdges(direction, whitelistedLabels.toArray(new String[whitelistedLabels.size()]));
-
+        
         for (Edge edge : edges)
         {
             String label = edge.getLabel();
@@ -273,7 +278,7 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
 class GraphMarshallingContext
 {
     final long executionID;
-    final Vertex startVertex;
+    Vertex startVertex;
     int remainingDepth;
     final List<String> whitelistedOutEdges;
     final List<String> whitelistedInEdges;
@@ -315,5 +320,10 @@ class GraphMarshallingContext
     boolean wasVisited(Vertex v)
     {
         return this.visitedVertices.contains(((Number)v.getId()).longValue());
+    }
+    
+    void resetStartVertex(Vertex v){
+        this.startVertex = v;
+        this.remainingDepth = 0;
     }
 }
