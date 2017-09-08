@@ -88,8 +88,8 @@ export class ApplicationLevelLayoutComponent extends ExecutionsLayoutComponent {
             new ContextMenuItem(
                 'Remote Services',
                 null,
-                false,
-                'technology-report-change-me'
+                true,
+                'technology-report-remote-services'
             ),
             new ContextMenuItem(
                 'Spring Resources',

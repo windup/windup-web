@@ -18,6 +18,12 @@ import {HibernateMappingFileModel} from "../../generated/tsModels/HibernateMappi
 import {HibernateConfigurationFileModel} from "../../generated/tsModels/HibernateConfigurationFileModel";
 import {HibernateSessionFactoryModel} from "../../generated/tsModels/HibernateSessionFactoryModel";
 import Observables = utils.Observables;
+import {EjbRemoteServiceModel} from "../../generated/tsModels/EjbRemoteServiceModel";
+import {JaxRPCWebServiceModel} from "../../generated/tsModels/JaxRPCWebServiceModel";
+import {JaxRSWebServiceModel} from "../../generated/tsModels/JaxRSWebServiceModel";
+import {JaxWSWebServiceModel} from "../../generated/tsModels/JaxWSWebServiceModel";
+import {RMIServiceModel} from "../../generated/tsModels/RMIServiceModel";
+import Arrays = utils.Arrays;
 
 @Injectable()
 export class TechReportService extends GraphService
@@ -27,6 +33,14 @@ export class TechReportService extends GraphService
     static HIBERNATE_MAPPING_FILE = TechReportService.HIBERNATE_REPORT_BASE + '/mappingFile';
     static HIBERNATE_CONFIG_FILE = TechReportService.HIBERNATE_REPORT_BASE + '/configurationFile';
     static HIBERNATE_SESSION_FACTORY = TechReportService.HIBERNATE_REPORT_BASE + '/sessionFactory';
+
+    static REMOTE_SERVICES_REPORT_BASE = Constants.GRAPH_REST_BASE + '/reports/{execID}/remote-services';
+    static REMOTE_SERVICES_EJB = TechReportService.REMOTE_SERVICES_REPORT_BASE + '/ejb-remote';
+    static REMOTE_SERVICES_JAX_RPC = TechReportService.REMOTE_SERVICES_REPORT_BASE + '/jax-rpc';
+    static REMOTE_SERVICES_JAX_RS = TechReportService.REMOTE_SERVICES_REPORT_BASE + '/jax-rs';
+    static REMOTE_SERVICES_JAX_WS = TechReportService.REMOTE_SERVICES_REPORT_BASE + '/jax-ws';
+    static REMOTE_SERVICES_RMI = TechReportService.REMOTE_SERVICES_REPORT_BASE + '/rmi';
+
 
     constructor(http: Http, graphJsonToModelService: GraphJSONToModelService<any>) {
         super(http, graphJsonToModelService);
@@ -55,7 +69,10 @@ export class TechReportService extends GraphService
 
     private getEJBs<T extends EjbBeanBaseModel>(execID: number, ejbType: string, clazz?: typeof EjbBeanBaseModel,  filter?: ReportFilter, sessionType?: string): Observable<EJBInformationDTO[]> {
         let serializedFilter = this.serializeFilter(filter);
-        let url =`${Constants.GRAPH_REST_BASE}/reports/${execID}/ejb/${ejbType}`; /* ` fix for google chrome debugger */
+        let url = `${Constants.GRAPH_REST_BASE}/reports/${execID}/ejb/${ejbType}`;
+
+        /* this comment fixes Chrome debugger issues with highlighting ` */
+
         if (sessionType) {
             url += '?sessionType=' + sessionType;
         }
@@ -182,6 +199,74 @@ export class TechReportService extends GraphService
         const entitiesObservable = this.getDataFromFilteredEndpoint<HibernateSessionFactoryModel>(url, filter);
 
         return Observables.resolveValuesArray(entitiesObservable, ['hibernateConfigurationFileModel']);
+    }
+
+
+    getEjbRemoteServiceModel(execID: number, filter?: ReportFilter): Observable<EjbRemoteServiceModel[]> {
+        const url = TechReportService.REMOTE_SERVICES_EJB.replace('{execID}', execID.toString());
+
+        return this.getRemoteServices<EjbRemoteServiceModel>(url, filter);
+    }
+
+    getJaxRpcWebServices(execID: number, filter?: ReportFilter): Observable<JaxRPCWebServiceModel[]> {
+        const url = TechReportService.REMOTE_SERVICES_JAX_RPC.replace('{execID}', execID.toString());
+
+        return this.getRemoteServices<JaxRPCWebServiceModel>(url, filter);
+    }
+
+    getJaxRsWebServices(execID: number, filter?: ReportFilter): Observable<JaxRSWebServiceModel[]>  {
+        const url = TechReportService.REMOTE_SERVICES_JAX_RS.replace('{execID}', execID.toString());
+
+        return this.getRemoteServices<EjbRemoteServiceModel>(url, filter);
+    }
+
+    getJaxWsWebServices(execID: number, filter?: ReportFilter): Observable<JaxWSWebServiceModel[]>  {
+        const url = TechReportService.REMOTE_SERVICES_JAX_WS.replace('{execID}', execID.toString());
+
+        return this.getRemoteServices<EjbRemoteServiceModel>(url, filter);
+    }
+
+    getRmiServices(execID: number, filter?: ReportFilter): Observable<RMIServiceModel[]>  {
+        const url = TechReportService.REMOTE_SERVICES_RMI.replace('{execID}', execID.toString());
+
+        return this.getRemoteServices<EjbRemoteServiceModel>(url, filter);
+    }
+
+    protected getRemoteServices<T>(url: string, filter: any) {
+        const entitiesObservable = this.getDataFromFilteredEndpoint<any>(url, filter);
+
+        return Observables.resolveValuesArray(entitiesObservable, ['interface', 'implementationClass']).flatMap(entitiesArray => {
+            if (entitiesArray.length === 0) {
+                return Observable.of([]);
+            }
+
+            return Observable.forkJoin(
+                Observable.forkJoin(entitiesArray.map(entity => {
+                    const updatedData = Observables.resolveObjectProperties(entity.resolved.implementationClass, ['decompiledSource']);
+                    return updatedData;
+                }).filter(entityObservable => entityObservable != null)),
+                Observable.forkJoin(entitiesArray.map(entity => {
+                    if (!entity.resolved.interface) {
+                        return Observable.of(null);
+                    }
+
+                    const updatedData = Observables.resolveObjectProperties(entity.resolved.interface, ['decompiledSource']);
+                    return updatedData;
+                }))
+            ).map(resolvedData => {
+                const resolvedJavaClasses = resolvedData[0];
+                const resolvedInterfaces = resolvedData[1];
+
+                const updatedEntitiesArray = [ ... entitiesArray ];
+
+                return updatedEntitiesArray.map((entity, index)  => {
+                    entity.resolved.implementationClass = resolvedJavaClasses[index];
+                    entity.resolved.interface = resolvedInterfaces[index];
+
+                    return entity;
+                })
+            });
+        });
     }
 }
 

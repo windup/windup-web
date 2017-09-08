@@ -34,6 +34,7 @@ import {TechnologiesEJBReportComponent} from "./technologies/technologies-report
 import {HardcodedIPReportComponent} from "./hardcoded-ip/hardcoded-ip.component";
 import {HardcodedIPService} from "./hardcoded-ip/hardcoded-ip.service";
 import {TechnologiesHibernateReportComponent} from "./technologies/hibernate/hibernate-report.component";
+import {TechnologiesRemoteServicesReportComponent} from "./technologies/remote-services/remote-services-report.component";
 
 @NgModule({
     imports: [
@@ -63,7 +64,8 @@ import {TechnologiesHibernateReportComponent} from "./technologies/hibernate/hib
         PrettyPathPipe,
         TechnologiesEJBReportComponent,
         HardcodedIPReportComponent,
-        TechnologiesHibernateReportComponent
+        TechnologiesHibernateReportComponent,
+        TechnologiesRemoteServicesReportComponent
     ],
     exports: [
         ApplicationDetailsComponent,

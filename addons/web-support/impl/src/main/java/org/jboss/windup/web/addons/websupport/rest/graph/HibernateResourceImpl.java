@@ -51,44 +51,4 @@ public class HibernateResourceImpl extends AbstractGraphResource implements Hibe
                     HibernateConfigurationFileModel.HIBERNATE_SESSION_FACTORY)));
     }
 
-    protected <T extends WindupVertexFrame & BelongsToProject> Object getGraphData(Long executionID, Map<String, Object> filterAsMap, Class<T> aClass,
-                List<String> whitelistedEdges)
-    {
-        GraphContext graphContext = this.getGraph(executionID);
-
-        ReportFilterDTO filter = this.reportFilterService.getReportFilterFromMap(filterAsMap);
-        Set<ProjectModel> projectModels = this.getProjectModels(graphContext, filter);
-
-        GraphService<T> graphService = new GraphService<>(graphContext, aClass);
-        Iterable<T> hibernateEntities = graphService.findAll();
-
-        List<T> filteredEntities = new ArrayList<>();
-
-        for (T entity : hibernateEntities)
-        {
-            if (projectModels == null)
-            {
-                filteredEntities.add(entity);
-            }
-            else
-            {
-                for (ProjectModel projectModel : projectModels)
-                {
-                    if (entity.belongsToProject(projectModel))
-                    {
-                        filteredEntities.add(entity);
-                    }
-                }
-            }
-        }
-
-        return filteredEntities.stream().map(entity -> this.convertToMap(
-                    executionID,
-                    entity.asVertex(),
-                    1,
-                    false,
-                    whitelistedEdges,
-                    new ArrayList<String>(),
-                    null)).collect(Collectors.toList());
-    }
 }

@@ -96,7 +96,9 @@ export module utils {
          * @returns {Observable<T[]>}
          */
         public static resolveValuesArray<T, K extends keyof T>(arrayObservable: Observable<T[]>, properties: K[]): Observable<ResolvedObject<T, K>[]> {
+
             return arrayObservable.flatMap((array: T[]) => {
+
                 if (array.length === 0) {
                     return Observable.of([]);
                 }
@@ -121,7 +123,6 @@ export module utils {
                         }
                     });
 
-
                     /*
                      * This part creates observable which joins all propertiesObservables and maps result into single object
                      *  with resolved properties
@@ -135,7 +136,16 @@ export module utils {
                     });
                 });
 
-                return Observable.forkJoin(resolvedObjectObservables);
+                /**
+                 * @Note: This is workaround for RxJS forkJoin bug https://github.com/ReactiveX/rxjs/issues/2816
+                 *
+                 * forkJoin doesn't emit any value for empty input array.
+                 */
+                if (resolvedObjectObservables.length === 0) {
+                    return Observable.of([]);
+                } else {
+                    return Observable.forkJoin(resolvedObjectObservables);
+                }
             });
         }
 
@@ -144,6 +154,9 @@ export module utils {
         }
 
         public static resolveObjectProperties<T, K extends keyof T>(object: T, properties: K[]): Observable<ResolvedObject<T, K>> {
+            if (object == null)
+                return null;
+
             let resolvedObject: any = Object.assign(object, {resolved: {}});
 
             /*
