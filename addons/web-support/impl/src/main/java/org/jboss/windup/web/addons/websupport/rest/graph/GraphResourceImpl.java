@@ -81,9 +81,12 @@ public class GraphResourceImpl extends AbstractGraphResource implements GraphRes
 
         GraphContext graphContext = getGraph(executionID);
         List<Map<String, Object>> vertices = new ArrayList<>();
+        
+        final GraphMarshallingContext marshallingContext = new GraphMarshallingContext(executionID, null, depth, dedup, outEdges_, inEdges_, null, includeInVertices);
         for (Vertex v : graphContext.getFramed().getVertices(WindupVertexFrame.TYPE_PROP, vertexType))
         {
-            vertices.add(convertToMap(new GraphMarshallingContext(executionID, v, depth, dedup, outEdges_, inEdges_, null, includeInVertices), v));
+            marshallingContext.resetStartVertex(v);
+            vertices.add(convertToMap(marshallingContext, v));
         }
         return vertices;
     }
