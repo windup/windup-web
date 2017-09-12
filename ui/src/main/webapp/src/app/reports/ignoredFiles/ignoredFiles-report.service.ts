@@ -21,13 +21,16 @@ export class IgnoredFilesReportService extends GraphService
         let filesObs: Observable<IgnoredFileModel[]> = this.getTypeAsArray<IgnoredFileModel>(IgnoredFileModel.discriminator, execID, {
             depth: 0,
             includeInVertices: false,
-            out: "parentFile"
+            out: "parentFile",
+            in:  "projectModelToFile"
         });
 
         let filesResultObservable: Observable<IgnoredFileModel[]> = filesObs.flatMap( (files: IgnoredFileModel[]) => {
 
             let resolveParentFileCallBack = (file) => {
                 // Resolve the parentPath
+                if (!file.parentFile)
+                    return Observable.of(file);
                 return file.parentFile.map((result: FileModel) => {
                     file.parentFile["resolved"] = result;
 
