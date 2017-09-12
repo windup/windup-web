@@ -7,7 +7,6 @@ import {utils} from '../../shared/utils';
 import {forkJoin} from "rxjs/observable/forkJoin";
 import {ProjectModel} from "../../generated/tsModels/ProjectModel";
 import {FileModel} from "../../generated/tsModels/FileModel";
-import {TechnologyKeyValuePairModel} from "../../generated/tsModels/TechnologyKeyValuePairModel";
 import {FilterApplication, RegisteredApplication} from "../../generated/windup-services";
 import {IgnoredFileModel} from "../../generated/tsModels/IgnoredFileModel";
 import {WindupVertexFrame} from "../../generated/tsModels/WindupVertexFrame";
@@ -53,7 +52,7 @@ export class IgnoredFilesReportComponent implements OnInit {
     fetchIgnoredFiles(): void {
         this.ignoredFilesService.getIgnoredFilesInfo(this.execID).subscribe(
             ignoredFiles => {
-                this.ignoredFiles = ignoredFiles.map(f => <IgnoredFileModel> f);
+                this.ignoredFiles = ignoredFiles; //.map(f => <IgnoredFileModel> f);
                 this.loading.ignoredFiles = false;
             },
             error => {
