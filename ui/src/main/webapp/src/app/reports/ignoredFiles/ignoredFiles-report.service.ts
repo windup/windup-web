@@ -29,7 +29,7 @@ export class IgnoredFilesReportService extends GraphService
 
             let resolveParentFileCallBack = (file) => {
                 // Resolve the parentPath
-                if (!file.parentFile)
+                if (!file || !file.parentFile)
                     return Observable.of(file);
                 return file.parentFile.map((result: FileModel) => {
                     file.parentFile["resolved"] = result;
