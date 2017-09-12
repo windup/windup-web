@@ -124,9 +124,6 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
     @SuppressWarnings("unchecked")
     private void addEdges(GraphMarshallingContext ctx, Vertex vertex, Direction direction, Map<String, Object> result)
     {
-        if (ctx.remainingDepth <= 0)
-            return;
-
         List<String> whitelistedLabels = direction == Direction.OUT ? ctx.whitelistedOutEdges : ctx.whitelistedInEdges;
 
         Iterable<Edge> edges;
