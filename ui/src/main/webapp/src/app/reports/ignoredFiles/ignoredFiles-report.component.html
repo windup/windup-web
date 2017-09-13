@@ -50,42 +50,31 @@
     </div>
 
 
-    <div class="panel panel-default panel-primary wuTechnologies">
-        <!--
-        <div class="panel-heading">
-            <h3 class="panel-title">Ignored files</h3>
-        </div>
-        -->
-        <div class="panel-body">
+    <wu-table
+        [loading]="loading.ignoredFiles"
+        (clearFilter)="clearSearch()"
+        [rowTemplate]="rowTemplateFile"
+        [title]="'Ignored Files'"
+        [items]="ignoredFiles"
+        [filter]="filterCallbacks.ignoredFiles"
+        [tableHeaders]="[
+            { title: 'File', isSortable: true, sortBy: 'fileName' },
+            { title: 'Path', isSortable: false, sortBy: 'filePath' },
+            { title: 'Reason to ignore', isSortable: true, sortBy: 'ignoredRegex'}
+        ]">
 
+        <ng-template #rowTemplateFile let-file>
+            <tr>
+                <td>
+                    <a *ngIf="hasTextFileExtension(file)" [routerLink]="['../source/' + file.vertexId]">{{file.fileName}}</a>
+                    <ng-container *ngIf="!hasTextFileExtension(file)">{{file.fileName}}</ng-container>
+                </td>
+                <td>{{file.filePath}}</td>
+                <td>{{file.ignoredRegex}}</td>
+            </tr>
+        </ng-template>
+    </wu-table>
 
-            <wu-table
-                [loading]="loading.ignoredFiles"
-                (clearFilter)="clearSearch()"
-                [rowTemplate]="rowTemplateFile"
-                [title]="'Ignored Files'"
-                [items]="ignoredFiles"
-                [filter]="filterCallbacks.ignoredFiles"
-                [tableHeaders]="[
-                    { title: 'File', isSortable: true, sortBy: 'fileName' },
-                    { title: 'Path', isSortable: false, sortBy: 'filePath' },
-                    { title: 'Reason to ignore', isSortable: true, sortBy: 'ignoredRegex'}
-                ]">
-
-                <ng-template #rowTemplateFile let-file>
-                    <tr>
-                        <td>
-                            <a *ngIf="hasTextFileExtension(file.filePath)" [routerLink]="['../source/' + file.vertexId]">{{file.fileName}}</a>
-                            <ng-container *ngIf="!hasTextFileExtension(file.filePath)">{{file.fileName}}</ng-container>
-                        </td>
-                        <td>{{file.filePath}}</td>
-                        <td>{{file.ignoredRegex}}</td>
-                    </tr>
-                </ng-template>
-            </wu-table>
-
-        </div>
-    </div>
 
 </div>
 

@@ -62,9 +62,14 @@ export class IgnoredFilesReportComponent implements OnInit {
         );
     }
 
-    hasTextFileExtension(str): boolean {
-        var afterDot = str.substr(str.lastIndexOf('.') + 1);
-        return ("java properties jsp jsf ftl xml css html sql mf txt c cpp".includes(afterDot.toLowerCase()))
+    hasTextFileExtension(file): boolean {
+        if (!file || !file.fileName) {
+            debugger;
+            return false;
+        }
+        let name = file.fileName;
+        let afterDot = name.substr(name.lastIndexOf('.') + 1);
+        return ("java properties jsp jsf ftl xml css html sql mf txt c cpp".split(" ").includes(afterDot.toLowerCase()))
     }
 }
 

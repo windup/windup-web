@@ -22,12 +22,13 @@ export class IgnoredFilesReportService extends GraphService
             depth: 0,
             includeInVertices: false,
             out: "parentFile",
-            in:  "projectModelToFile"
+            //in:  "projectModelToFile"
         });
 
         let filesResultObservable: Observable<IgnoredFileModel[]> = filesObs.flatMap( (files: IgnoredFileModel[]) => {
+            debugger;
 
-            let resolveParentFileCallBack = (file) => {
+            let resolveParentFileCallBack: (IgnoredFileModel) => Observable<IgnoredFileModel> = (file) => {
                 // Resolve the parentPath
                 if (!file || !file.parentFile)
                     return Observable.of(file);
@@ -35,11 +36,12 @@ export class IgnoredFilesReportService extends GraphService
                     file.parentFile["resolved"] = result;
 
                     // Here I want to recursively resolve the result's parentFile.
-                    let resolvedParent: Observable<FileModel> = resolveParentFileCallBack(file);
-                    return Observable.forkJoin(resolvedParent);
+                    let resolvedParent: Observable<FileModel> = resolveParentFileCallBack(result);
+                    return file;
                 });
             };
 
+            debugger;
             // On the level 0, apply this to all files from the endpoint.
             let filesResolvedObservables: Observable<IgnoredFileModel>[] = files.map(resolveParentFileCallBack);
 
