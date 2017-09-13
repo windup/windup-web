@@ -11,13 +11,19 @@ import {FilterApplication, RegisteredApplication} from "../../generated/windup-s
 import {IgnoredFileModel} from "../../generated/tsModels/IgnoredFileModel";
 import {WindupVertexFrame} from "../../generated/tsModels/WindupVertexFrame";
 import {BaseModel} from "../../services/graph/base.model";
+import {FilterableReportComponent} from "../filterable-report.component";
+import {RouteFlattenerService} from "../../core/routing/route-flattener.service";
+import {Application} from "typedoc";
+import {ApplicationModel} from "../../generated/tsModels/ApplicationModel";
+import {ApplicationArchiveModel} from "../../generated/tsModels/ApplicationArchiveModel";
+import {ArchiveModel} from "../../generated/tsModels/ArchiveModel";
 
 @Component({
     selector: 'wu-ignoredFiles-report',
     templateUrl: 'ignoredFiles-report.component.html',
     styleUrls: ['../../../../css/report-tables.scss'],
 })
-export class IgnoredFilesReportComponent implements OnInit {
+export class IgnoredFilesReportComponent extends FilterableReportComponent implements OnInit {
 
     private execID: number;
     private ignoredFiles: IgnoredFileModel[] = [];
@@ -35,32 +41,61 @@ export class IgnoredFilesReportComponent implements OnInit {
     filterCallbacks = Object.assign({}, this.emptyFilterCallbacks);
 
 
-
-    constructor(private route: ActivatedRoute,
-                private ignoredFilesService: IgnoredFilesReportService,
-                private _notificationService: NotificationService,
-                private _router: Router) {
+    constructor(
+        private activatedRoute: ActivatedRoute,
+        private router: Router,
+        routeFlattener: RouteFlattenerService,
+        private ignoredFilesService: IgnoredFilesReportService,
+        private _notificationService: NotificationService,
+    ) {
+        super(router, activatedRoute, routeFlattener);
     }
 
     ngOnInit(): void {
-        this.route.parent.params.forEach((params: Params) => {
+        this.activatedRoute.parent.params.forEach((params: Params) => {
             this.execID = +params['executionId'];
             this.fetchIgnoredFiles();
         });
     }
 
     fetchIgnoredFiles(): void {
-        this.ignoredFilesService.getIgnoredFilesInfo(this.execID).subscribe(
+        this.ignoredFilesService.getIgnoredFilesInfo(this.execID, this.reportFilter).subscribe(
             ignoredFiles => {
-                this.ignoredFiles = ignoredFiles; //.map(f => <IgnoredFileModel> f);
+                if (this.reportFilter && this.reportFilter.selectedApplications && this.reportFilter.selectedApplications.length > 0){
+                    ignoredFiles = ignoredFiles.filter((file) => {
+                        let app = this.getAppThisFileBelongsToRecursively(file);
+                        if (null == app)
+                            return false;
+                        let belongsToApp = !!this.reportFilter.selectedApplications.find((appFilter: FilterApplication) => appFilter.inputPath === app.filePath);
+                        return belongsToApp;
+                    })
+                }
+
+                this.ignoredFiles = ignoredFiles;
                 this.loading.ignoredFiles = false;
             },
             error => {
                 this._notificationService.error(utils.getErrorMessage(error));
-                this._router.navigate(['']);
+                this.router.navigate(['']);
             }
         );
     }
+
+    getAppThisFileBelongsToRecursively(file: FileModel): ArchiveModel {
+        let curFile = file;
+
+        while (curFile) {
+            if (curFile instanceof ApplicationArchiveModel)
+                return <ArchiveModel><any>curFile;
+            if (!curFile.parentFile["get"])
+                return <ArchiveModel><any>curFile;
+            curFile = curFile.parentFile["get"];
+        }
+        return null;
+    }
+
+    appSortBy = (file) => { return this.getAppThisFileBelongsToRecursively(file).fileName; }
+
 
     hasTextFileExtension(file): boolean {
         if (!file || !file.fileName) {

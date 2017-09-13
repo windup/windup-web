@@ -58,19 +58,21 @@
         [items]="ignoredFiles"
         [filter]="filterCallbacks.ignoredFiles"
         [tableHeaders]="[
+            { title: 'Reason to ignore', isSortable: true, sortBy: 'ignoredRegex'},
             { title: 'File', isSortable: true, sortBy: 'fileName' },
-            { title: 'Path', isSortable: false, sortBy: 'filePath' },
-            { title: 'Reason to ignore', isSortable: true, sortBy: 'ignoredRegex'}
+            { title: 'Application', isSortable: true, sortBy: appSortBy },
+            { title: 'Path', isSortable: false, sortBy: 'filePath' }
         ]">
 
         <ng-template #rowTemplateFile let-file>
             <tr>
+                <td>{{file.ignoredRegex}}</td>
                 <td>
                     <a *ngIf="hasTextFileExtension(file)" [routerLink]="['../source/' + file.vertexId]">{{file.fileName}}</a>
                     <ng-container *ngIf="!hasTextFileExtension(file)">{{file.fileName}}</ng-container>
                 </td>
+                <td>{{getAppThisFileBelongsToRecursively(file).fileName}}</td>
                 <td>{{file.filePath}}</td>
-                <td>{{file.ignoredRegex}}</td>
             </tr>
         </ng-template>
     </wu-table>

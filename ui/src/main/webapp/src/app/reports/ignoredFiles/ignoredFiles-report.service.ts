@@ -7,6 +7,7 @@ import {GraphJSONToModelService} from "../../services/graph/graph-json-to-model.
 import {Cached} from "../../shared/cache.service";
 import {IgnoredFileModel} from "../../generated/tsModels/IgnoredFileModel";
 import {FileModel} from "../../generated/tsModels/FileModel";
+import {ReportFilter} from "../../generated/windup-services";
 
 @Injectable()
 export class IgnoredFilesReportService extends GraphService
@@ -16,7 +17,7 @@ export class IgnoredFilesReportService extends GraphService
     }
 
     @Cached('ignoredFilesReport', null, true)
-    getIgnoredFilesInfo(execID: number): Observable<IgnoredFileModel[]>
+    getIgnoredFilesInfo(execID: number, reportFilter: ReportFilter): Observable<IgnoredFileModel[]>
     {
         let filesObs: Observable<IgnoredFileModel[]> = this.getTypeAsArray<IgnoredFileModel>(IgnoredFileModel.discriminator, execID, {
             depth: 0,
@@ -24,9 +25,9 @@ export class IgnoredFilesReportService extends GraphService
             out: "parentFile",
             //in:  "projectModelToFile"
         });
+        return filesObs;
 
-        let filesResultObservable: Observable<IgnoredFileModel[]> = filesObs.flatMap( (files: IgnoredFileModel[]) => {
-            debugger;
+        /*let filesResultObservable: Observable<IgnoredFileModel[]> = filesObs.flatMap( (files: IgnoredFileModel[]) => {
 
             let resolveParentFileCallBack: (IgnoredFileModel) => Observable<IgnoredFileModel> = (file) => {
                 // Resolve the parentPath
@@ -34,6 +35,9 @@ export class IgnoredFilesReportService extends GraphService
                     return Observable.of(file);
                 return file.parentFile.map((result: FileModel) => {
                     file.parentFile["resolved"] = result;
+                    //if (result instanceof ApplicationArchiveModel) // The type tree is not complete (single inheritance) and we stopped working on a solution.
+                    if (result == null) // Should be enough - apps are the top. Although this means this file is the app.
+                        null; // We could distribute this file to the files met above.
 
                     // Here I want to recursively resolve the result's parentFile.
                     let resolvedParent: Observable<FileModel> = resolveParentFileCallBack(result);
@@ -41,15 +45,16 @@ export class IgnoredFilesReportService extends GraphService
                 });
             };
 
-            debugger;
             // On the level 0, apply this to all files from the endpoint.
             let filesResolvedObservables: Observable<IgnoredFileModel>[] = files.map(resolveParentFileCallBack);
 
-            // And "wait" for all to be resolved.
+            // Resolve all and return as an Observable of array of results.
             let resolvedFilesObservable: Observable<IgnoredFileModel[]> = Observable.forkJoin(...filesResolvedObservables);
+
             return resolvedFilesObservable;
         });
 
         return filesResultObservable;
+        */
     }
 }
