@@ -4,17 +4,12 @@ import {ActivatedRoute, Params, Router}   from '@angular/router';
 import {IgnoredFilesReportService} from "./ignoredFiles-report.service";
 import {NotificationService} from "../../core/notification/notification.service";
 import {utils} from '../../shared/utils';
-import {forkJoin} from "rxjs/observable/forkJoin";
-import {ProjectModel} from "../../generated/tsModels/ProjectModel";
 import {FileModel} from "../../generated/tsModels/FileModel";
-import {FilterApplication, RegisteredApplication} from "../../generated/windup-services";
+import {FilterApplication} from "../../generated/windup-services";
 import {IgnoredFileModel} from "../../generated/tsModels/IgnoredFileModel";
-import {WindupVertexFrame} from "../../generated/tsModels/WindupVertexFrame";
 import {BaseModel} from "../../services/graph/base.model";
 import {FilterableReportComponent} from "../filterable-report.component";
 import {RouteFlattenerService} from "../../core/routing/route-flattener.service";
-import {Application} from "typedoc";
-import {ApplicationModel} from "../../generated/tsModels/ApplicationModel";
 import {ApplicationArchiveModel} from "../../generated/tsModels/ApplicationArchiveModel";
 import {ArchiveModel} from "../../generated/tsModels/ArchiveModel";
 
@@ -52,10 +47,12 @@ export class IgnoredFilesReportComponent extends FilterableReportComponent imple
     }
 
     ngOnInit(): void {
-        this.activatedRoute.parent.params.forEach((params: Params) => {
-            this.execID = +params['executionId'];
+        this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
+            this.execID = this.execution.id;
+            this.loadFilterFromRouteData(flatRouteData);
+
             this.fetchIgnoredFiles();
-        });
+        }));
     }
 
     fetchIgnoredFiles(): void {
