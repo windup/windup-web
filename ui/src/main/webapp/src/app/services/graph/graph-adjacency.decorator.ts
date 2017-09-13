@@ -119,6 +119,7 @@ export function GraphAdjacency (
             }
 
             relations.observable = Observable.of(models);
+            relations.observable.get = models;
             return relations.observable;
         };
     };
