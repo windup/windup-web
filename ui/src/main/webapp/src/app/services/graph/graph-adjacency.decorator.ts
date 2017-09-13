@@ -36,9 +36,12 @@ export function GraphAdjacency (
             let verticesLabel = (direction === "IN") ? "vertices_in" : "vertices_out";
 
             // Data is empty, just return null (or an empty array)
+            if (!this.data[verticesLabel])
+                return returnArray ? emptyArrayObs : nullObs;
+
             let relations;
             if (kind == "ADJACENCY" || kind == "INCIDENCE") {
-                relations = this.data![verticesLabel]![name];
+                relations = this.data[verticesLabel][name];
                 if (!relations || !(relations["vertices"] || relations["link"])){
                     return returnArray ? emptyArrayObs : nullObs;
                 }
