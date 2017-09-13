@@ -4,26 +4,20 @@ import {ActivatedRoute, Params, Router}   from '@angular/router';
 import {JpaReportInfo, JpaReportService} from "./jpa-report.service";
 import {NotificationService} from "../../core/notification/notification.service";
 import {utils} from '../../shared/utils';
-import {ProjectTechnologiesStatsModel} from "../../generated/tsModels/ProjectTechnologiesStatsModel";
-import {forkJoin} from "rxjs/observable/forkJoin";
-import {ProjectModel} from "../../generated/tsModels/ProjectModel";
 import {FileModel} from "../../generated/tsModels/FileModel";
-import {TechnologyKeyValuePairModel} from "../../generated/tsModels/TechnologyKeyValuePairModel";
-import {FilterApplication, RegisteredApplication} from "../../generated/windup-services";
-import {GraphService} from "../../services/graph.service";
-import {JPANamedQueryModel} from "../../generated/tsModels/JPANamedQueryModel";
-import {JPAEntityModel} from "../../generated/tsModels/JPAEntityModel";
-import {JPAPersistenceUnitModel} from "../../generated/tsModels/JPAPersistenceUnitModel";
-import {JPAConfigurationFileModel} from "../../generated/tsModels/JPAConfigurationFileModel";
-import {Observable} from "rxjs/Observable";
-import {JavaClassFileModel} from "../../generated/tsModels/JavaClassFileModel";
+import {FilterApplication, RegisteredApplication, ReportFilter} from "../../generated/windup-services";
 import {JavaClassModel} from "../../generated/tsModels/JavaClassModel";
+import {FilterableReportComponent} from "../filterable-report.component";
+import {RouteFlattenerService} from "../../core/routing/route-flattener.service";
+import {JavaSourceFileModel} from "../../generated/tsModels/JavaSourceFileModel";
+import {ApplicationArchiveModel} from "../../generated/tsModels/ApplicationArchiveModel";
+import {ArchiveModel} from "../../generated/tsModels/ArchiveModel";
 
 @Component({
     templateUrl: 'jpa-report.component.html',
     styleUrls: ['../../../../css/report-tables.scss'],
 })
-export class JpaReportComponent implements OnInit {
+export class JpaReportComponent extends FilterableReportComponent implements OnInit {
 
     private jpaInfo: JpaReportInfo = new JpaReportInfo();
 
@@ -42,21 +36,27 @@ export class JpaReportComponent implements OnInit {
 
     private filterCallbacks = Object.assign({}, this.emptyFilterCallbacks);
 
-
     constructor(
         private jpaReportService: JpaReportService,
         private _notificationService: NotificationService,
-        //private _graph: GraphService,
-        private _router: Router,
-        private route: ActivatedRoute,
-    ){}
+        _router: Router,
+        _activatedRoute: ActivatedRoute,
+        _routeFlattener: RouteFlattenerService
+    ) {
+        super(_router, _activatedRoute, _routeFlattener);
+    }
 
 
     ngOnInit(): void {
-        this.route.parent.params.forEach((params: Params) => {
-            this.execID = +params['executionId'];
+        this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
+            //this.title = flatRouteData.data.displayName;
+
+            this.loadFilterFromRouteData(flatRouteData);
+
+            this.execID = this.execution.id;
+
             this.fetchJpaInfo();
-        });
+        }));
     }
 
 
@@ -65,8 +65,38 @@ export class JpaReportComponent implements OnInit {
             this._notificationService.error(utils.getErrorMessage(error));
             this._router.navigate(['']);
         };
-        this.jpaReportService.getJpaInfo(this.execID).subscribe(jpaInfo => this.jpaInfo = jpaInfo, onError);
+        this.jpaReportService.getJpaInfo(this.execID).subscribe(jpaInfo => {
+            jpaInfo.entities = jpaInfo.entities.filter(entity => {
+                let javaClass: JavaClassModel = entity.javaClass["get"];
+                let sourceFile: JavaSourceFileModel = javaClass.decompiledSource["get"];
+                return this.isAppInFilter(this.reportFilter, this.getAppThisFileBelongsToRecursively(sourceFile));
+            });
+            /**/
+            this.jpaInfo = jpaInfo;
+        }, onError);
         this.loading = false;
+    }
+
+    // Filtering
+    getAppThisFileBelongsToRecursively(file: FileModel): ArchiveModel {
+        while (file) {
+            if (file instanceof ApplicationArchiveModel)
+                    return <ArchiveModel><any>file;
+            if (!file.parentFile || !file.parentFile["get"])
+                    return <ArchiveModel><any>file;
+            file = file.parentFile["get"];
+        }
+        return null;
+    }
+
+    isAppInFilter(filter: ReportFilter, app: ArchiveModel) {
+        if (null == app)
+            return false;
+        if (!filter || !filter.selectedApplications || !filter.selectedApplications.length)
+            return true;
+        // TODO: Why ReportFilter has selectedApplications: FilterApplication[]; but in reality there is a string[]?
+        let belongsToApp = !!this.reportFilter.selectedApplications.find((appPath) => (<string><any>appPath) === app.filePath);
+        return belongsToApp;
     }
 
 

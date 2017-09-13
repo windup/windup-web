@@ -2,7 +2,6 @@ import {Injectable} from "@angular/core";
 import {Http} from "@angular/http";
 import {Observable} from "rxjs/Observable";
 
-import {ProjectTechnologiesStatsModel} from "../../generated/tsModels/ProjectTechnologiesStatsModel";
 import {GraphService} from "../../services/graph.service";
 import {GraphJSONToModelService} from "../../services/graph/graph-json-to-model.service";
 import {Cached} from "../../shared/cache.service";
@@ -21,7 +20,10 @@ export class JpaReportService extends GraphService
     @Cached('jpaReport', null, true)
     getJpaInfo(execID: number): Observable<JpaReportInfo>
     {
-        let a = this.getTypeAsArray<JPAEntityModel>(JPAEntityModel.discriminator, execID, {out: "PersistenceEntity-jpaEntityClass,decompiledSource", depth: 0, includeInVertices: false});
+        let a = this.getTypeAsArray<JPAEntityModel>(JPAEntityModel.discriminator, execID, {
+            out: "PersistenceEntity-jpaEntityClass,decompiledSource,parentFile",
+            depth: 0,
+            includeInVertices: false});
         let b = this.getTypeAsArray<JPANamedQueryModel>(JPANamedQueryModel.discriminator, execID, {depth: 0, includeInVertices: false});
         let c = this.getTypeAsArray<JPAPersistenceUnitModel>(JPAPersistenceUnitModel.discriminator, execID, {depth: 0, includeInVertices: false});
         let d = this.getTypeAsArray<JPAConfigurationFileModel>(JPAConfigurationFileModel.discriminator, execID, {depth: 0, includeInVertices: false});
