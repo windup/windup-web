@@ -78,7 +78,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
             this._notificationService.error(msg);
         };
 
-        let suffixes = ".ear .har .jar .rar .sar .war".split(" ");
+        let suffixes = ".ear .har .jar .rar .sar .war .zip".split(" ");
         this.multipartUploader.options.filters.push(<FilterFunction>{
             name: "onlyJavaArchives",
             fn: (item?: FileLikeObject, options?: FileUploaderOptions) => {
