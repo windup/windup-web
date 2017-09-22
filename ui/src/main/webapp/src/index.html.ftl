@@ -2,6 +2,7 @@
 <head>
     <title>Red Hat Application Migration Toolkit Web Console (RHAMT)</title>
     <base href="${basePath}">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="${keycloak.serverUrl}/js/keycloak.js"></script>
     <script src="version/version.properties.js"></script>
