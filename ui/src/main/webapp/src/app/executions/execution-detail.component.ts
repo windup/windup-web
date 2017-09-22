@@ -57,7 +57,7 @@ export class ExecutionDetailComponent extends ExecutionsMonitoringComponent impl
                         this.phases = phases;
                     });
             });
-        }));
+        });
 
         this.currentTimeTimer = <any> setInterval(() => {
             this.currentTime = new Date().getTime();
