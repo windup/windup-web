@@ -170,7 +170,7 @@ public class FileDefaultServlet extends HttpServlet
         // Get base path (path to get all resources from) as init parameter.
         // this.basePath = getInitParameter(BASE_PATH);
         // this.basePath = webPathUtil.expandVariables(this.basePath);
-        this.basePath = webPathUtil.getGlobalWindupDataPath().toString();
+        this.basePath = webPathUtil.getGlobalWindupDataPath().normalize().toString();
 
         // Validate base path.
         if (this.basePath == null) {
