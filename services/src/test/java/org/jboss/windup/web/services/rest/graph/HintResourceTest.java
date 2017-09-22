@@ -60,7 +60,7 @@ public class HintResourceTest extends AbstractGraphResourceTest
             boolean foundPOMPropertiesHint = false;
             for (Map<String, Object> hint : hints)
             {
-                String title = (String) hint.get("Hint:title");
+                String title = (String) hint.get("InlineHintModel-title");
                 if (title != null && title.equals("POM Properties"))
                     foundPOMPropertiesHint = true;
             }
