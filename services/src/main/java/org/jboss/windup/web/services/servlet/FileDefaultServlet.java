@@ -505,7 +505,8 @@ public class FileDefaultServlet extends HttpServlet
                 throw new NotFoundException("Migration report not found");
             }
 
-            return Paths.get(execution.getOutputPath().replace(this.basePath, ""), directoryPath).toString();
+            String outputPath = Paths.get(execution.getOutputPath()).normalize().toString();
+            return Paths.get(outputPath.replace(this.basePath, ""), directoryPath).toString();
         } catch (NumberFormatException e) {
             throw new BadRequestException("Invalid executionId value: '" + pathParts[1] + "'");
         }
