@@ -16,7 +16,9 @@
                     <h4 class="panel-title pull-left">Issue Detail: {{issue.issueName}}</h4>
                     <div class="pull-right">
                         <a class="sh_url" title="{{issue.ruleID}}"
-                           (click)="showRule(issue.ruleID)">Show Rule</a>
+                           [routerLink]="executedRuleUrl"
+                           [queryParams]="{ ruleID: issue.ruleID }"
+                        >Show Rule</a>
                         <!--
                             [routerLink] is currently buggy, cannot use relative navigation. Use this when it is fixed.
                         <a class="sh_url" title="{{issue.ruleID}}"
