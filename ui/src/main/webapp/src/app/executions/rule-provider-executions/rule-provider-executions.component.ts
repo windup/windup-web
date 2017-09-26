@@ -1,7 +1,10 @@
 import {Component, OnInit, AfterViewChecked, ElementRef} from "@angular/core";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {RuleProviderExecutionsService} from "./rule-provider-executions.service";
 import {ExecutionPhaseModel} from "../../generated/tsModels/ExecutionPhaseModel";
+import {RouteFlattenerService} from "../../core/routing/route-flattener.service";
+import {AbstractComponent} from "../../shared/AbstractComponent";
+import {RoutedComponent} from "../../shared/routed.component";
 
 @Component({
     templateUrl: './rule-provider-executions.component.html',
@@ -18,31 +21,34 @@ import {ExecutionPhaseModel} from "../../generated/tsModels/ExecutionPhaseModel"
         }`
     ]
 })
-export class RuleProviderExecutionsComponent implements OnInit, AfterViewChecked {
+export class RuleProviderExecutionsComponent extends RoutedComponent implements OnInit, AfterViewChecked {
     phases: ExecutionPhaseModel[];
     protected anchor: string;
 
     constructor(
+        _router: Router,
         private _ruleProviderExecutionsService: RuleProviderExecutionsService,
-        private _activatedRoute: ActivatedRoute,
+        _activatedRoute: ActivatedRoute,
+        _routeFlattener: RouteFlattenerService,
         private _element: ElementRef
     ) {
-
+        super(_router, _activatedRoute, _routeFlattener);
     }
 
     ngOnInit(): void {
-        this._activatedRoute.parent.params.subscribe((params: {executionId: number}) => {
-            this._ruleProviderExecutionsService.getPhases(params.executionId)
+        this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
+            let executionId = +flatRouteData.params['executionId'];
+            this._ruleProviderExecutionsService.getPhases(executionId)
                 .subscribe(phases => {
                     this.phases = phases;
+                    this._activatedRoute.queryParams.subscribe((queryParams) => {
+                        console.log("rule id: " + queryParams['ruleID']);
+                        if (queryParams.hasOwnProperty('ruleID')) {
+                            this.anchor = queryParams['ruleID'];
+                        }
+                    });
                 });
-        });
-
-        this._activatedRoute.queryParams.subscribe((queryParams) => {
-            if (queryParams.hasOwnProperty('ruleID')) {
-                this.anchor = queryParams['ruleID'];
-            }
-        });
+        }));
     }
 
 

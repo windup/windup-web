@@ -166,7 +166,6 @@ export class SourceReportComponent extends RoutedComponent implements OnInit, Af
     }
 
 
-
     ngAfterViewChecked(): void {
         if (this.rendered)
             return;

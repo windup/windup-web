@@ -1,4 +1,4 @@
-import {RouterModule, Routes} from "@angular/router";
+import {Route, RouterModule, Routes} from "@angular/router";
 import {NgModule} from "@angular/core";
 
 import {ExecutionResolve} from "../executions/execution.resolve";
@@ -20,6 +20,18 @@ import {HardcodedIPReportComponent} from "./hardcoded-ip/hardcoded-ip.component"
 import {TechnologiesHibernateReportComponent} from "./technologies/hibernate/hibernate-report.component";
 import {TechnologiesRemoteServicesReportComponent} from "./technologies/remote-services/remote-services-report.component";
 
+export const executedRulesRoute: Route =
+    {path: 'executed-rules', component: RuleProviderExecutionsComponent, data: {displayName: 'Executed Rules'}};
+
+export const sourceRoute: Route =
+    {
+        path: 'source/:fileId',
+        children: [
+            {path: '', component: SourceReportComponent, resolve: { sourceFile: SourceResolve }, data: {displayName: 'Source Report', breadcrumbTitle: getSourceReportBreadcrumbTitle}},
+            executedRulesRoute
+        ]
+    };
+
 export const executionLevelRoutes: Routes = [
     {path: '', component: ExecutionApplicationListComponent, data: {displayName: 'Applications'}},
     {path: 'dependencies-report', component: DependenciesReportComponent, data: {displayName: 'Dependency Report'}},
@@ -35,17 +47,15 @@ export const executionLevelRoutes: Routes = [
     {path: 'migration-issues',
         children: [
             {path: '', component: MigrationIssuesComponent, data: {displayName: 'Issues'}},
-            {path: 'source/:fileId', component: SourceReportComponent, resolve: { sourceFile: SourceResolve }, data: {displayName: 'Source Report', breadcrumbTitle: getSourceReportBreadcrumbTitle}}
+            sourceRoute
         ]
     },
-    {path: 'source/:fileId', component: SourceReportComponent, resolve: { sourceFile: SourceResolve }, data: {displayName: 'Source Report', breadcrumbTitle: getSourceReportBreadcrumbTitle}},
+    sourceRoute,
     {path: 'application-index', component: ApplicationIndexComponent, data: { displayName: 'Dashboard'}},
     {path: 'application-details',
         children: [
             {path: '', component: ApplicationDetailsComponent, data: { displayName: 'Application Details'}},
-            {path: 'source/:fileId', component: SourceReportComponent, resolve: { sourceFile: SourceResolve }, data: {
-                displayName: 'Source Report', breadcrumbTitle: getSourceReportBreadcrumbTitle
-            }}
+            sourceRoute
         ]
     },
     {path: 'hardcoded-ip',
@@ -54,9 +64,9 @@ export const executionLevelRoutes: Routes = [
             {path: 'source/:fileId', component: SourceReportComponent, resolve: { sourceFile: SourceResolve }, data: {displayName: 'Source Report', breadcrumbTitle: getSourceReportBreadcrumbTitle}}
         ]
     },
-    {path: 'executed-rules', component: RuleProviderExecutionsComponent, data: {displayName: 'Executed Rules'}},
     {path: 'dependencies', component: DependenciesReportComponent, data: {displayName: 'Dependencies Report' }},
     {path: 'execution-details', component: ExecutionDetailComponent, data: {displayName: 'Execution Info'}},
+    executedRulesRoute
 ];
 
 const routes: Routes = [
