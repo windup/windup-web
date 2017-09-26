@@ -28,7 +28,7 @@ export class LoggedInGuard implements CanActivate, CanActivateChild {
         cleanedUrl = this._urlCleanerService.filterFragments(cleanedUrl, UrlCleanerService.SKIP_PARAMS);
 
         if (cleanedUrl !== state.url) {
-            this._router.navigate([cleanedUrl]);
+            this._router.navigateByUrl(cleanedUrl);
         }
 
         return this.canActivate();
