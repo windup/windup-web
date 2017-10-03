@@ -1,6 +1,6 @@
-import {ProjectPage} from "./pages/project.po";
-import {CreateProjectWorkflow} from "./workflows/create-project.wf";
-import {ConfirmDialogPage} from "./pages/confirm-dialog.po";
+import {ProjectPage} from "../../pages/project.po";
+import {CreateProjectWorkflow} from "../../workflows/create-project.wf";
+import {ConfirmDialogPage} from "../../pages/confirm-dialog.po";
 import {browser} from "protractor";
 
 describe('Project List', () => {
@@ -15,8 +15,6 @@ describe('Project List', () => {
 
             const date = new Date();
             projectName = 'Test ' + date.getTime().toString();
-
-            console.error('MOST UP TO DATE');
 
             workflow.createProject(projectName)
                 .then(() => projectPage.navigateTo())
@@ -44,7 +42,6 @@ describe('Project List', () => {
 
                 if (project != null) {
                     project.deleteButton.click().then(() => {
-                        console.log('delete');
                         const confirmDialog = new ConfirmDialogPage();
 
                         confirmDialog.requiresText().then(requiresText => {

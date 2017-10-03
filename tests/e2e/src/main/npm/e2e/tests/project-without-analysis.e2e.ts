@@ -1,8 +1,8 @@
-import {CreateProjectWorkflow} from "./workflows/create-project.wf";
-import {browser, by, element} from "protractor";
-import {ApplicationsListPage} from "./pages/project-level/applications-list.po";
-import {ContextMenuPage} from "./pages/project-level/context-menu.po";
-import {AnalysisListPage} from "./pages/project-level/analysis-list.po";
+import {browser} from "protractor";
+import {CreateProjectWorkflow} from "../workflows/create-project.wf";
+import {ApplicationsListPage} from "../pages/project-level/applications-list.po";
+import {ContextMenuPage} from "../pages/project-level/context-menu.po";
+import {AnalysisListPage} from "../pages/project-level/analysis-list.po";
 
 describe('For project without any analysis', () => {
     const project = {
