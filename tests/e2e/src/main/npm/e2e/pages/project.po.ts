@@ -7,12 +7,17 @@ export class ProjectPage {
     projectListDiv = element(by.css('.projects-list'));
 
     emptyStateDiv = element(by.css('.blank-slate-pf'));
+    emptyStateRemoveFilter = element(by.css('.no-matches a'));
+
+    searchInput = element(by.css('.search-pf-input-group input'));
+    searchRemoveButton = element(by.css('.pficon-close'));
 
     public navigateTo() {
         return browser.get('./');
     }
 
     public search(text: string) {
+        return this.searchInput.sendKeys(text);
     }
 
     public sort() {}
@@ -31,7 +36,7 @@ export class ProjectPage {
     public deleteProject() {
     }
 
-    public getProjectList(): Promise<any[]> {
+    public getProjectList(): Promise<Project[]> {
         return (this.projectList.then((elements: ElementFinder[]): any => {
             return Promise.all(elements.map((element, index, array) => {
                 const project = {
