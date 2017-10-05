@@ -112,6 +112,8 @@ exports.config = {
         baseUrl: baseUrl,
         upload: {
             filePath: '/this/needs/to/be/overriden/by/cli/param'
-        }
+        },
+        captureImages: false,
+        visualRegression: false
     }
 };
