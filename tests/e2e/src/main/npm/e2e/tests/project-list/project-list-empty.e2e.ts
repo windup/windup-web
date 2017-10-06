@@ -1,27 +1,31 @@
-/*
-import {ProjectPage} from "./pages/project.po";
+import {ProjectPage} from "../../pages/project.po";
+import {CleanupWorkflow} from "../../workflows/cleanup.wf";
 
-
-describe('Project List', () => {
+xdescribe('Empty project list', () => {
     const projectPage = new ProjectPage();
 
-    xdescribe('Without any projects', () => {
-        beforeAll(() => {
-            projectPage.navigateTo();
-            // TODO: Ensure no project exists
-        });
+    /*
+     * Given there are no projects
+     */
+    beforeAll((done) => {
+        projectPage.navigateTo();
 
-        it('Should not show project list', () => {
-            expect(projectPage.projectListDiv.isPresent()).toBeFalsy();
-        });
+        const cleanup = new CleanupWorkflow();
 
-        it('Should show New project button', () => {
-            expect(projectPage.newProjectButton.isPresent()).toBeTruthy();
-        });
+        projectPage.getProjectList()
+            .then(projects => projects.map(project => cleanup.deleteProject(project)))
+            .then(promises => Promise.all(promises).then(() => done()));
+    });
 
-        it('Should show welcome message', () => {
-            expect(projectPage.emptyStateDiv.isPresent()).toBeTruthy();
-        });
+    it('Should not show project list', () => {
+        expect(projectPage.projectListDiv.isPresent()).toBeFalsy();
+    });
+
+    it('Should show New project button', () => {
+        expect(projectPage.newProjectButton.isPresent()).toBeTruthy();
+    });
+
+    it('Should show welcome message', () => {
+        expect(projectPage.emptyStateDiv.isPresent()).toBeTruthy();
     });
 });
-*/
