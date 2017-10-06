@@ -1,33 +1,20 @@
-import {CreateProjectWorkflow} from "./workflows/create-project.wf";
-import {browser, by, element} from "protractor";
+import {browser} from "protractor";
 import {ApplicationsListPage} from "./pages/project-level/applications-list.po";
 import {ContextMenuPage} from "./pages/project-level/context-menu.po";
 import {AnalysisListPage} from "./pages/project-level/analysis-list.po";
+import {PROJECT_WITHOUT_ANALYSIS} from "./utils/data";
 
 describe('For project without any analysis', () => {
-    const project = {
-        id: 0,
-        name: '',
-    };
-
     const contextMenu = new ContextMenuPage();
 
-    beforeAll(() => {
+    beforeAll((done) => {
         /**
-         * Create project
+         * Navigate to project
          */
-        const workflow = new CreateProjectWorkflow();
-        workflow.createProjectWithTimeInName()
+        const analysisList = new AnalysisListPage();
+        analysisList.navigateTo(PROJECT_WITHOUT_ANALYSIS.id)
             .then(() => browser.waitForAngular())
-            .then(() => {
-                browser.getCurrentUrl().then(() => {
-
-                });
-            });
-    });
-
-    it('should get redirected to analysis list', () => {
-        expect(browser.getCurrentUrl()).toContain('project-detail');
+            .then(() => done());
     });
 
     it('should show context menu', () => {
@@ -50,7 +37,6 @@ describe('For project without any analysis', () => {
         it('should contain uploaded application', () => {
             applicationsList.getApplications().then(applications => {
                 expect(applications.length).toBe(1);
-//                expect(applications).toContain('');
             });
         });
     });
@@ -71,12 +57,12 @@ describe('For project without any analysis', () => {
     });
 
     describe('analysis configuration page', () => {
-        beforeAll(() => {
+        beforeAll((done) => {
             contextMenu.getMenuItems().then(items => {
                 items[2].link.click();
             })
             .then(() => browser.waitForAngular())
-            .then(() => {});
+            .then(() => done());
         });
 
         it('should have EAP 7 selected', () => {});

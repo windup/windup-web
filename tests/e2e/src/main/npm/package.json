@@ -4,8 +4,7 @@
   "license": "MIT",
   "scripts": {
     "e2e": "protractor",
-    "e2e-local": "protractor --params.login.username test --params.login.password test --baseUrl http://localhost:8080/rhamt-web/ --params.baseUrl http://localhost:8080/rhamt-web/ --params.upload.filePath /home/dklingen/Downloads/mariadb-java-client-1.5.5.jar",
-    "e2e-live": "protractor --elementExplorer",
+    "e2e-capture-reference": "protractor protractor.visual-regression.conf.js --params.captureImages true",
     "webdriver-update": "webdriver-manager update --gecko false",
     "webdriver-start": "webdriver-manager start",
     "postinstall": "npm run webdriver-update"
@@ -14,11 +13,16 @@
     "@types/core-js": "0.9.35",
     "@types/jasmine": "^2.2.29",
     "@types/node": "^7.0.31",
+    "@types/rimraf": "^2.0.2",
     "jasmine-core": "^2.3.4",
     "jasmine-reporters": "^2.2.1",
     "jasmine-spec-reporter": "^4.1.0",
+    "looks-same": "^3.2.1",
     "protractor": "^5.1.2",
+    "rimraf": "^2.6.2",
     "ts-node": "^3.0.6",
-    "typescript": "^2.3.2"
+    "typescript": "^2.3.2",
+    "xmldom": "^0.1.27",
+    "xpath": "0.0.24"
   }
 }
