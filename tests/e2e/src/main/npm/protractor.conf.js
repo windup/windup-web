@@ -3,8 +3,8 @@ const JUnitXmlReporter = require('jasmine-reporters').JUnitXmlReporter;
 
 const baseUrl = 'http://localhost:8180/rhamt-web/';
 
-function login() {
-    browser.driver.get(browser.params.baseUrl).then(function() {
+function login(timeout, maxAttempts, attempts) {
+    return browser.driver.get(browser.params.baseUrl).then(function() {
         return browser.driver.getCurrentUrl();
     }).then(function(url) {
         const pathRegex = /auth/;
@@ -26,6 +26,19 @@ function login() {
                     return !pathRegex.test(url);
                 });
             }, 10000);
+        } else {
+            console.error('Unexpected url: ', url);
+
+            if (maxAttempts && attempts < maxAttempts) {
+                console.error('Retry login attempt: ', attempts);
+                return browser.driver.sleep(timeout).then(function() {
+                    return login(timeout, maxAttempts, attempts + 1);
+                });
+            } else {
+                console.error('Unable to log in in defined interval');
+                process.exit(-1);
+                return false;
+            }
         }
     });
 }
@@ -77,7 +90,7 @@ exports.config = {
             filePrefix: 'test-results.xml'
         }));
 
-        return login();
+        return login(1000, 10, 0);
     },
 
 //    seleniumServerJar: "node_modules/protractor/selenium/selenium-server-standalone-2.52.0.jar",
