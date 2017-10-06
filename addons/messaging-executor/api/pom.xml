@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.jboss.windup.web.addons</groupId>
+        <artifactId>windup-web-messaging-executor-parent</artifactId>
+        <version>4.1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>windup-web-messaging-executor-api</artifactId>
+    <name>Windup Web - Messaging Executor Addon API</name>
+
+    <dependencies>
+        <!-- Local Dependencies -->
+        <dependency>
+            <groupId>org.jboss.spec</groupId>
+            <artifactId>jboss-javaee-7.0</artifactId>
+            <version>${version.jboss.javaee}</version>
+            <type>pom</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly</groupId>
+            <artifactId>wildfly-jms-client-bom</artifactId>
+            <version>10.1.0.Final</version>
+            <type>pom</type>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-collections</groupId>
+                    <artifactId>commons-collections</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jboss.logging</groupId>
+                    <artifactId>jboss-logging</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jgroups</groupId>
+                    <artifactId>jgroups</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>jcl-over-slf4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.windup.web</groupId>
+            <artifactId>windup-web-jpa-model</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.ejb3</groupId>
+            <artifactId>jboss-ejb3-ext-api</artifactId>
+            <version>2.2.0.Final</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.kamranzafar</groupId>
+            <artifactId>jtar</artifactId>
+            <version>2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.8.5</version>
+        </dependency>
+
+        <!-- Addon Dependencies -->
+        <dependency>
+            <groupId>org.jboss.windup</groupId>
+            <artifactId>windup-server-provider-spi</artifactId>
+            <version>${project.version}</version>
+            <classifier>forge-addon</classifier>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.windup.web.addons</groupId>
+            <artifactId>windup-web-support</artifactId>
+            <version>${project.version}</version>
+            <classifier>forge-addon</classifier>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.windup.graph</groupId>
+            <artifactId>windup-graph</artifactId>
+            <classifier>forge-addon</classifier>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.windup.config</groupId>
+            <artifactId>windup-config</artifactId>
+            <classifier>forge-addon</classifier>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.windup.exec</groupId>
+            <artifactId>windup-exec</artifactId>
+            <classifier>forge-addon</classifier>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.windup.reporting</groupId>
+            <artifactId>windup-reporting</artifactId>
+            <classifier>forge-addon</classifier>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.windup.rules.apps</groupId>
+            <artifactId>windup-rules-java</artifactId>
+            <classifier>forge-addon</classifier>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.windup.rules.apps</groupId>
+            <artifactId>windup-rules-java-ee</artifactId>
+            <classifier>forge-addon</classifier>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.windup.rules.apps</groupId>
+            <artifactId>windup-rules-java-archives</artifactId>
+            <classifier>forge-addon</classifier>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.windup.utils</groupId>
+            <artifactId>windup-utils</artifactId>
+            <classifier>forge-addon</classifier>
+            <scope>provided</scope>
+        </dependency>
+
+
+        <!-- Furnace Container -->
+        <dependency>
+            <groupId>org.jboss.forge.furnace.container</groupId>
+            <artifactId>cdi</artifactId>
+            <classifier>forge-addon</classifier>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Test Dependencies -->
+
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>create-forge-addon</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <classifier>forge-addon</classifier>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

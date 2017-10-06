@@ -1,9 +1,12 @@
 package org.jboss.windup.web.services.rest.graph;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
+import org.jboss.shrinkwrap.api.ArchivePath;
+import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.windup.web.addons.websupport.rest.GraphPathLookup;
 import org.jboss.windup.web.addons.websupport.rest.graph.ClassificationResource;
@@ -14,6 +17,7 @@ import org.jboss.windup.web.addons.websupport.rest.graph.LinkResource;
 import org.jboss.windup.web.addons.websupport.rest.graph.TechnologyTagResource;
 import org.jboss.windup.web.addons.websupport.services.ReportFilterService;
 import org.jboss.windup.web.services.AbstractTest;
+import org.jboss.windup.web.services.ServerCleanupOnStartup;
 import org.jboss.windup.web.services.ServiceTestUtil;
 import org.jboss.windup.web.services.data.ServiceConstants;
 import org.jboss.windup.web.services.data.WindupExecutionUtil;
@@ -56,7 +60,8 @@ public abstract class AbstractGraphResourceTest
     public static WebArchive createDeployment()
     {
         WebArchive war = AbstractTest.createDeployment();
-        war.addAsResource("META-INF/persistence-ondisk.xml", "/WEB-INF/classes/META-INF/persistence.xml");
+        war.addAsResource("META-INF/persistence-ondisk.xml", "/META-INF/persistence.xml");
+        war.deleteClass(ServerCleanupOnStartup.class);
         return war;
     }
 
@@ -88,8 +93,7 @@ public abstract class AbstractGraphResourceTest
                 .map(executions -> executions.iterator().next())
                 .findFirst();
 
-        if (existingExecution.isPresent())
-            this.execution = existingExecution.get();
+        existingExecution.ifPresent(windupExecution -> this.execution = windupExecution);
 
         if (execution == null)
         {

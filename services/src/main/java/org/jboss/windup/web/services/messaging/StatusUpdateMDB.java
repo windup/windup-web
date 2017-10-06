@@ -14,7 +14,8 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.jms.Message;
 import javax.jms.MessageListener;
-import javax.jms.ObjectMessage;
+import javax.jms.StreamMessage;
+import javax.jms.TextMessage;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -24,10 +25,15 @@ import javax.transaction.NotSupportedException;
 import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 
+import org.jboss.ejb3.annotation.DeliveryGroup;
 import org.jboss.windup.graph.model.resource.FileModel;
 import org.jboss.windup.web.addons.websupport.services.ProjectLoaderService;
 import org.jboss.windup.web.addons.websupport.services.WindupExecutorService;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
+import org.jboss.windup.web.messaging.executor.AMQConstants;
+import org.jboss.windup.web.messaging.executor.ExecutionSerializer;
+import org.jboss.windup.web.messaging.executor.ExecutionSerializerRegistry;
+import org.jboss.windup.web.services.json.WindupExecutionJSONUtil;
 import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.ExecutionState;
 import org.jboss.windup.web.services.model.FilterApplication;
@@ -47,11 +53,18 @@ import org.jboss.windup.web.services.websocket.WSJMSMessage;
             @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
             @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "AUTO_ACKNOWLEDGE"),
             @ActivationConfigProperty(propertyName = "maxSession", propertyValue = "1"),
-            @ActivationConfigProperty(propertyName = "destination", propertyValue = MessagingConstants.STATUS_UPDATE_QUEUE),
+            @ActivationConfigProperty(propertyName = "destination", propertyValue = AMQConstants.STATUS_UPDATE_QUEUE),
 })
+@DeliveryGroup(AMQConstants.DELIVERY_GROUP_SERVICES)
 public class StatusUpdateMDB extends AbstractMDB implements MessageListener
 {
     private static Logger LOG = Logger.getLogger(StatusUpdateMDB.class.getName());
+    /**
+     * Event sent to WebSocket ExecutionProgressReporter
+     */
+    @Inject
+    @WSJMSMessage
+    Event<Message> informWebSocketEvent;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -62,17 +75,14 @@ public class StatusUpdateMDB extends AbstractMDB implements MessageListener
 
     @Inject
     @FromFurnace
+    private ExecutionSerializerRegistry executionSerializerRegistry;
+
+    @Inject
+    @FromFurnace
     private ProjectLoaderService projectLoaderService;
 
     @Inject
     private WindupExecutionService windupExecutionService;
-
-    /**
-     * Event sent to WebSocket ExecutionProgressReporter
-     */
-    @Inject
-    @WSJMSMessage
-    Event<Message> informWebSocketEvent;
 
     @PostConstruct
     protected void initialize()
@@ -83,22 +93,25 @@ public class StatusUpdateMDB extends AbstractMDB implements MessageListener
     @Override
     public void onMessage(Message message)
     {
-        // Make sure that we are receiving the correct type of message
-        if (!validatePayload(WindupExecution.class, message))
-            return;
+        ExecutionSerializer executionSerializer = this.executionSerializerRegistry.getDefaultSerializer();
 
         try
         {
-            WindupExecution execution = (WindupExecution) ((ObjectMessage) message).getObject();
-            LOG.info("Received execution update event: " + execution);
-
-            // Update the DB with this information
-            WindupExecution fromDB = entityManager.find(WindupExecution.class, execution.getId());
-
+            Long executionID = message.getLongProperty("executionId");
+            // Once the run is complete, make sure that we have the correct path information in the execution.
+            WindupExecution fromDB = entityManager.find(WindupExecution.class, executionID);
             if (fromDB == null)
             {
-                LOG.warning("Received unrecognized status update for execution: " + fromDB);
+                LOG.warning("Received unrecognized status update for execution: " + fromDB.getId());
                 return;
+            }
+
+            WindupExecution execution = executionSerializer.deserializeStatusUpdate(message, fromDB);
+            LOG.info("Received execution update event: " + execution);
+            if (fromDB.getState() == ExecutionState.COMPLETED)
+            {
+                setReportIndexPath(fromDB);
+                setApplicationFilters(fromDB);
             }
 
             if (execution.getState() != ExecutionState.CANCELLED && fromDB.getState() == ExecutionState.CANCELLED)
@@ -127,18 +140,11 @@ public class StatusUpdateMDB extends AbstractMDB implements MessageListener
             fromDB.setOutputPath(execution.getOutputPath());
             fromDB.setState(execution.getState());
 
-            // Once the run is complete, make sure that we have the correct path information in the execution.
-            if (fromDB.getState() == ExecutionState.COMPLETED)
-            {
-                setReportIndexPath(fromDB);
-                setApplicationFilters(fromDB);
-            }
-
             informWebSocketEvent.fire(message);
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
-            LOG.log(Level.SEVERE, "Failed to execute windup due to: " + e.getMessage(), e);
+            LOG.log(Level.SEVERE, "Error getting status update due to: " + e.getMessage(), e);
         }
     }
 

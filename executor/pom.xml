@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.jboss.windup.web</groupId>
+        <artifactId>windup-web-parent</artifactId>
+        <version>4.1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>windup-web-executor</artifactId>
+    <name>Windup Web - Executor</name>
+
+    <dependencies>
+        <!-- Java EE -->
+        <dependency>
+            <groupId>org.jboss.spec</groupId>
+            <artifactId>jboss-javaee-7.0</artifactId>
+            <version>${version.jboss.javaee}</version>
+            <type>pom</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.ejb3</groupId>
+            <artifactId>jboss-ejb3-ext-api</artifactId>
+            <version>2.2.0.Final</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Jackson -->
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jackson2-provider</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Furnace Runtime -->
+        <dependency>
+            <groupId>org.jboss.forge.furnace</groupId>
+            <artifactId>furnace</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.forge.furnace</groupId>
+            <artifactId>furnace-se</artifactId>
+        </dependency>
+
+        <!-- Windup APIs -->
+        <dependency>
+            <groupId>org.jboss.windup.config</groupId>
+            <artifactId>windup-config-api</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.windup.graph</groupId>
+            <artifactId>windup-graph-api</artifactId>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>dom4j</groupId>
+                    <artifactId>dom4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>commons-httpclient</groupId>
+                    <artifactId>commons-httpclient</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.windup.exec</groupId>
+            <artifactId>windup-exec-api</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.windup.utils</groupId>
+            <artifactId>windup-utils</artifactId>
+            <classifier>forge-addon</classifier>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- Rules -->
+        <dependency>
+            <groupId>org.jboss.windup.rules.apps</groupId>
+            <artifactId>windup-rules-java-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Test Dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>1.10.19</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Other local dependencies -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>windup-web-jpa-model</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack-windup-dist</id>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.jboss.windup</groupId>
+                                    <artifactId>rhamt-cli</artifactId>
+                                    <version>${version.windup}</version>
+                                    <classifier>offline</classifier>
+                                    <type>zip</type>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${project.build.directory}/classes/</outputDirectory>
+                            <overWriteReleases>true</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jboss.forge.furnace</groupId>
+                <artifactId>furnace-maven-plugin</artifactId>
+                <version>${version.furnace}</version>
+                <executions>
+                    <execution>
+                        <id>deploy-addons</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>addon-install</goal>
+                        </goals>
+                        <inherited>false</inherited>
+                        <configuration>
+                            <overwrite>false</overwrite>
+                            <addonRepository>${project.build.directory}/classes/${windup.distribution.name}-${version.windup}/addons</addonRepository>
+                            <addonIds>
+                                <addonId>org.jboss.windup:windup-server-provider-spi,${project.version}</addonId>
+                                <addonId>org.jboss.windup.web.addons:windup-web-support,${project.version}</addonId>
+                                <addonId>org.jboss.windup.web.addons:windup-web-messaging-executor,${project.version}</addonId>
+                            </addonIds>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>rename-windup-dist</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <move file="${project.build.directory}/classes/${windup.distribution.name}-${version.windup}" tofile="${project.build.directory}/classes" />
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
