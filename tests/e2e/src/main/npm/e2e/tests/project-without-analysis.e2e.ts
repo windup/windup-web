@@ -3,6 +3,7 @@ import {CreateProjectWorkflow} from "../workflows/create-project.wf";
 import {ApplicationsListPage} from "../pages/project-level/applications-list.po";
 import {ContextMenuPage} from "../pages/project-level/context-menu.po";
 import {AnalysisListPage} from "../pages/project-level/analysis-list.po";
+import {AnalysisConfigurationPage} from "../pages/project-level/analysis-config.po";
 
 describe('For project without any analysis', () => {
     const project = {
@@ -71,6 +72,8 @@ describe('For project without any analysis', () => {
     });
 
     describe('analysis configuration page', () => {
+        const analysisConfig = new AnalysisConfigurationPage();
+
         beforeAll(() => {
             contextMenu.getMenuItems().then(items => {
                 items[2].link.click();
@@ -79,18 +82,40 @@ describe('For project without any analysis', () => {
             .then(() => {});
         });
 
-        it('should have EAP 7 selected', () => {});
+        it('should have EAP 7 selected', (done) => {
+            analysisConfig.targets.EAP7.isSelected().then(selected => {
+                expect(selected).toBeTruthy();
+            });
+        });
 
-        it('should not have cloud readiness selected', () => {});
+        it('should not have cloud readiness selected', () => {
+            analysisConfig.enableCloudReadinessInput.isSelected().then(selected => {
+                expect(selected).toBeFalsy();
+            });
+        });
 
-        it('should have all applications selected', () => {});
+        it('should have all applications selected', () => {
+            analysisConfig.selectedApplications.count().then(count => {
+                expect(count).toBe(1);
+            });
+        });
 
-        it('should not have any packages included', () => {});
+        it('should not have any packages included', () => {
+            analysisConfig.includedPackages.count().then(count => {
+                expect(count).toBe(1);
+            });
+        });
 
-        it('should not show exclude packages', () => {});
+        it('should not show exclude packages', () => {
 
-        it('should not show custom rules', () => {});
+        });
 
-        it('should not show advanced options', () => {});
+        it('should not show custom rules', () => {
+
+        });
+
+        it('should not show advanced options', () => {
+
+        });
     });
 });
