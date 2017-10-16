@@ -27,8 +27,11 @@ import org.jboss.windup.web.services.rest.WindupEndpointImpl;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
 import java.nio.file.Path;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -178,5 +181,27 @@ public class WindupExecutionService
             }
         }
         this.entityManager.remove(execution);
+    }
+
+    public void cleanupStaleExecutions()
+    {
+        LOG.info("Cleaning up stale executions.");
+
+        long jvmStartTimeMs = ManagementFactory.getRuntimeMXBean().getStartTime();
+        Calendar serverBootTime = GregorianCalendar.getInstance();
+        serverBootTime.setTimeInMillis(jvmStartTimeMs);
+
+        final String query = String.format("FROM %s AS exec WHERE exec.timeStarted < :serverBoot AND exec.state = :state", WindupExecution.class.getSimpleName());
+        List<WindupExecution> staleExecutions = this.entityManager.createQuery(query)
+                .setParameter("serverBoot", serverBootTime)
+                .setParameter("state", ExecutionState.STARTED).getResultList();
+
+        for (WindupExecution staleExecution : staleExecutions)
+        {
+            LOG.info("    Changing status of stale execution to CANCELLED:\n    " + staleExecution);
+            staleExecution.setState(ExecutionState.CANCELLED);
+            entityManager.merge(staleExecution);
+        }
+        entityManager.flush();
     }
 }

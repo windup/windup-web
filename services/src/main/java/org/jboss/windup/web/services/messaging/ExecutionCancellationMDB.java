@@ -18,6 +18,9 @@ import org.jboss.windup.web.services.model.WindupExecution;
 /**
  * This receives requests to run Windup and executes them.
  *
+ * The WindupExecutor is given a WindupWebProgressMonitor instance when launched in WindupExecutionTask.
+ * That monitor is later called through WindupProgressMonitor interface in DefaultRuleLifecycleListener.
+ *
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
 @MessageDriven(activationConfig = {
