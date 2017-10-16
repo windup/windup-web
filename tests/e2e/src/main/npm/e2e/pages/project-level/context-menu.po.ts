@@ -17,6 +17,18 @@ export class ContextMenuPage {
             }));
         });
     }
+
+    public openAnalysisConfig(): Promise<any> {
+        return this.getMenuItems().then(items => {
+            const analysisConfig = items.find(item => item.label.search(new RegExp('Analysis Configuration', 'i')) !== -1);
+
+            if (analysisConfig !== null) {
+                return analysisConfig.link.click();
+            } else {
+                return new Promise<any>((resolve, reject) => reject('Analysis Configuration not found'));
+            }
+        });
+    }
 }
 
 export interface ContextMenuItem {

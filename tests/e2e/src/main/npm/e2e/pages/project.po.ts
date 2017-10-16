@@ -45,7 +45,8 @@ export class ProjectPage {
                     countApplications: '',
                     lastUpdated: '',
                     editButton: element.element(by.css('.action-edit-project')),
-                    deleteButton: element.element(by.css('.action-delete-project'))
+                    deleteButton: element.element(by.css('.action-delete-project')),
+                    projectDiv: element.elementy(by.css('.project-info'))
                 };
 
                 return Promise.all([
@@ -66,4 +67,5 @@ export interface Project {
     lastUpdated: string;
     editButton;
     deleteButton;
+    projectDiv?: any;
 }

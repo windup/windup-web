@@ -250,6 +250,7 @@
                                 <argument>protractor.conf.js</argument>
                                 <argument>--params.upload.filePath</argument>
                                 <argument>${project.build.directory}/deployments/rhamt-web.war</argument>
+
                             </arguments>
 
                             <outputFile>${project.build.directory}/e2e-output.log</outputFile>

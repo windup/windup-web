@@ -11,33 +11,39 @@ export class AnalysisListPage {
 
     configureAnalysisButton = element(by.css('.btn.btn-primary'));
 
-    public getExecutions(): Promise<any[]> {
+    public getExecutions(): Promise<Execution[]> {
         return this.table.isPresent().then(isPresent => {
             if (!isPresent) {
                 return [];
             }
 
-            return this.table.all(by.css('tr')).then((tableRows: ElementFinder[]): any => Promise.all(tableRows.map(row => {
-                const tableColumns = row.all(by.css('td'));
+            return this.table.$('tbody').$$('tr').then((tableRows: ElementFinder[]): any => Promise.all(tableRows.map(row => {
+                const tableColumns = row.$$('td');
 
-                const execution = {
-                    id: '',
-                    status: '',
-                    applications: '',
-                    dateStarted: '',
-                    actions: {
-                        showAnalysisDetail: tableColumns.get(0),
-                        showReport: tableColumns.get(4).all(by.css('a')).get(0),
-                        delete: tableColumns.get(4).all(by.css('a')).get(1)
+                return tableColumns.count().then(count => {
+                    if (count == 0) {
+                        return [];
                     }
-                };
 
-                return Promise.all([
-                    tableColumns.get(0).getText().then(id => execution.id = id),
-                    tableColumns.get(1).getText().then(status => execution.status = status),
-                    tableColumns.get(2).getText().then(countApplications => execution.applications = countApplications),
-                    tableColumns.get(3).getText().then(dateStarted => execution.dateStarted = dateStarted)
-                ]).then(() => execution);
+                    const execution = {
+                        id: '',
+                        status: '',
+                        applications: '',
+                        dateStarted: '',
+                        actions: {
+                            showAnalysisDetail: tableColumns.get(0),
+                            showReport: tableColumns.get(4).all(by.css('a')).get(0),
+                            delete: tableColumns.get(4).all(by.css('a')).get(1)
+                        }
+                    };
+
+                    return Promise.all([
+                        tableColumns.get(0).getText().then(id => execution.id = id),
+                        tableColumns.get(1).getText().then(status => execution.status = status),
+                        tableColumns.get(2).getText().then(countApplications => execution.applications = countApplications),
+                        tableColumns.get(3).getText().then(dateStarted => execution.dateStarted = dateStarted)
+                    ]).then(() => execution) as any;
+                });
             })));
         });
     }
