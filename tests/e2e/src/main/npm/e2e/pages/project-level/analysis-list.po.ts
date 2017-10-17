@@ -1,4 +1,4 @@
-import {browser, by, element, ElementFinder} from "protractor";
+import {$, $$, browser, by, element, ElementFinder} from "protractor";
 
 export class AnalysisListPage {
     searchTextBox = element(by.name('searchValue'));
@@ -10,6 +10,10 @@ export class AnalysisListPage {
     emptyDiv = element(by.css('.blank-slate-pf-main-action'));
 
     configureAnalysisButton = element(by.css('.btn.btn-primary'));
+
+    progressbar = $('.progress-container');
+
+    noActiveAnalysisText = $$('.progressbar-no-active-analysis');
 
     public getExecutions(): Promise<Execution[]> {
         return this.table.isPresent().then(isPresent => {
@@ -34,7 +38,8 @@ export class AnalysisListPage {
                             showAnalysisDetail: tableColumns.get(0),
                             showReport: tableColumns.get(4).all(by.css('a')).get(0),
                             delete: tableColumns.get(4).all(by.css('a')).get(1)
-                        }
+                        },
+                        row: row
                     };
 
                     return Promise.all([
@@ -81,4 +86,5 @@ export interface Execution {
     applications: string;
     dateStarted: string;
     actions:  ExecutionActions;
+    row: ElementFinder;
 }

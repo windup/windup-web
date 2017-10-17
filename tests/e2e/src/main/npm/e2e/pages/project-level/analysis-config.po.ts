@@ -15,9 +15,9 @@ export class AnalysisConfigurationPage {
 
     packages = $$('wu-js-tree-wrapper');
 
-    includedPackages = this.packages.first().$$('.jstree-node');
+    includedPackages = this.packages.first().$$('.jstree-node[aria-selected=true]');
 
-    excludedPackages = this.packages.get(1).$$('.jstree-node');
+    excludedPackages = this.packages.get(1).$$('.jstree-node[aria-selected=true]');
 
     saveAndRunButton = $('.btn-save-run');
 

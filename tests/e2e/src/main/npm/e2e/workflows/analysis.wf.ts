@@ -19,16 +19,29 @@ export class AnalysisWorkflow {
     startAnalysisFromProjectPage(): Promise<any> {
         return this.contextMenuPage.openAnalysisConfig()
             .then(() => this.analysisConfigPage.saveAndRun())
-            .then(() => console.error('going to wait'))
-            //.then(() => browser.waitForAngular())
             .then(() => {
+                /**
+                 * TODO: Here is some issue with timeout. isPresent() behaves very non-deterministically.
+                 * Sometimes it resolves successfully, but sometimes it blocks and timeouts on 110 sec. internal protractor
+                 * (or webdriver) timeout.
+                 *
+                 * I have no idea why. waitForAngularEnabled(false) solves that issue.
+                 *
+                 * Problem might be related to some setTimeout or setInterval async code.
+                 */
+                browser.waitForAngularEnabled(false);
                 console.error('Dialog present?');
+
                 return this.confirmDialogPage.isPresent().then(isPresent => {
                     if (isPresent) {
                         console.error('Modal dialog is showed, need to click confirm button');
 
                         return this.confirmDialogPage.clickConfirm();
                     }
+                }, error => {
+                    console.error('error: ', error);
+                }).then(() => {
+                    browser.waitForAngularEnabled(true);
                 });
             });
     }

@@ -85,24 +85,28 @@ describe('For project without any analysis', () => {
         it('should have EAP 7 selected', (done) => {
             analysisConfig.targets.EAP7.isSelected().then(selected => {
                 expect(selected).toBeTruthy();
+                done();
             });
         });
 
-        it('should not have cloud readiness selected', () => {
+        it('should not have cloud readiness selected', (done) => {
             analysisConfig.enableCloudReadinessInput.isSelected().then(selected => {
                 expect(selected).toBeFalsy();
+                done();
             });
         });
 
-        it('should have all applications selected', () => {
+        it('should have all applications selected', (done) => {
             analysisConfig.selectedApplications.count().then(count => {
                 expect(count).toBe(1);
+                done();
             });
         });
 
-        it('should not have any packages included', () => {
+        it('should not have any packages included', (done) => {
             analysisConfig.includedPackages.count().then(count => {
-                expect(count).toBe(1);
+                expect(count).toBe(0);
+                done();
             });
         });
 

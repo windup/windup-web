@@ -1,8 +1,9 @@
 import {browser} from "protractor";
 import {CreateProjectWorkflow} from "../workflows/create-project.wf";
 import {ContextMenuPage} from "../pages/project-level/context-menu.po";
-import {AnalysisListPage} from "../pages/project-level/analysis-list.po";
+import {AnalysisListPage, Execution} from "../pages/project-level/analysis-list.po";
 import {AnalysisWorkflow} from "../workflows/analysis.wf";
+import {waitUntilCondition} from "../utils/async";
 
 describe('For project with analysis', () => {
     const project = {
@@ -14,7 +15,9 @@ describe('For project with analysis', () => {
     const analysisList = new AnalysisListPage();
     const analysisWorkflow = new AnalysisWorkflow();
 
-    beforeAll(() => {
+    let executions: Execution[];
+
+    beforeAll((done) => {
         console.error('Creating project with analysis.....');
         browser.waitForAngular();
         /**
@@ -24,18 +27,54 @@ describe('For project with analysis', () => {
         workflow.createProjectWithTimeInName()
             .then(() => browser.waitForAngular())
             .then(() => console.error('Starting analysis....'))
-            .then(() => analysisWorkflow.startAnalysisFromProjectPage());
+            .then(() => analysisWorkflow.startAnalysisFromProjectPage())
+            .then(() => done());
         //  .then(result => console.log(result), error => console.error(error));
     });
 
     describe('running analysis', () => {
         describe('analysis list page', () => {
-            it('should contain active analysis in table', () => {
-
+            beforeAll((done) => {
+                analysisList.getExecutions()
+                    .then(executionList => executions = executionList)
+                    .then(() => done());
             });
 
-            it('should have analysis progress bar', () => {
+            it('should contain active analysis in table', () => {
+                console.error(executions);
 
+                const isQueued = executions[0].status.search('Queued') !== -1;
+                const isInProgress = executions[0].status.search('progress') !== -1;
+
+                expect(executions.length).toBe(1);
+                expect(isQueued || isInProgress).toBeTruthy();
+            });
+
+            it('should have blue table row for active analysis', (done) => {
+                executions[0].row.getAttribute('class').then(cssClass => {
+                    expect(cssClass.search('info') !== -1).toBeTruthy();
+                    done();
+                });
+            });
+
+            it('should have analysis progress bar', (done) => {
+                console.error('Wait until analysis is queued.......');
+                waitUntilCondition(200,() => {
+                        return analysisList.getExecutions().then(executionList => {
+                            console.error(executionList);
+                            return executionList.length == 1 && executionList[0].status.search('Queued|progress') !== -1;
+                        });
+                    }, 3000)
+                .then(() => {
+                    browser.waitForAngularEnabled(true);
+                    return analysisList.getExecutions();
+                }).then(executionList => {
+                    executions = executionList;
+                }).then(() => analysisList.progressbar.isPresent())
+                  .then(isProgressbarPresent => {
+                    expect(isProgressbarPresent).toBeTruthy();
+                    done();
+                });
             });
         });
     });
@@ -60,8 +99,8 @@ describe('For project with analysis', () => {
                     });
                 }
 
-                return browser.driver.sleep(timeout).then(() => analysisList.getExecutions() as any).then(executions => {
-                    if (executions.length === 1 && executions[0].status.search('Completed') !== -1) {
+                return browser.driver.sleep(timeout).then(() => analysisList.getExecutions() as any).then(executionsList => {
+                    if (executionsList.length === 1 && executionsList[0].status.search('Completed') !== -1) {
                         isAnalysisRunning = false;
                     } else {
                         return waitForExecutionToFinish(timeout, maxTimeout, currentTimeout + timeout);
@@ -71,18 +110,32 @@ describe('For project with analysis', () => {
 
             console.error('Wait until analysis finishes.......');
             waitForExecutionToFinish(5 * 1000, 5 * 1000 * 60).then(() => {
-                done();
                 console.error('Analysis is finished, continuing.......');
                 browser.waitForAngularEnabled(true);
+                return analysisList.getExecutions();
+            }).then(executionList => {
+                executions = executionList;
+                done();
             });
         });
 
-        it('should have report link', () => {
-
+        it('should have completed status', () => {
+            expect(executions.length).toBe(1);
+            expect(executions[0].status.search('Completed') !== -1).toBeTruthy();
         });
 
-        it('should be green in table', () => {});
+        it('should have report link', (done) => {
+            executions[0].actions.showReport.isPresent().then(hasReportLink => {
+                expect(hasReportLink).toBeTruthy();
+                done();
+            });
+        });
 
-
+        it('should be green in table', (done) => {
+            executions[0].row.getAttribute('class').then(cssClass => {
+                expect(cssClass.search('success') !== -1).toBeTruthy();
+                done();
+            });
+        });
     });
 });
