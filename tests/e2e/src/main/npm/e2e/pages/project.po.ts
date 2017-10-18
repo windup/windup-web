@@ -46,7 +46,7 @@ export class ProjectPage {
                     lastUpdated: '',
                     editButton: element.element(by.css('.action-edit-project')),
                     deleteButton: element.element(by.css('.action-delete-project')),
-                    projectDiv: element.elementy(by.css('.project-info'))
+                    projectDiv: element.element(by.css('.project-info'))
                 };
 
                 return Promise.all([
