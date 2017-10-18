@@ -19,6 +19,7 @@ export class AnalysisWorkflow {
     startAnalysisFromProjectPage(): Promise<any> {
         return this.contextMenuPage.openAnalysisConfig()
             .then(() => this.analysisConfigPage.saveAndRun())
+            .then(() => browser.waitForAngular())
             .then(() => {
                 /**
                  * TODO: Here is some issue with timeout. isPresent() behaves very non-deterministically.
@@ -33,10 +34,17 @@ export class AnalysisWorkflow {
                 console.error('Dialog present?');
 
                 return this.confirmDialogPage.isPresent().then(isPresent => {
+                    console.error("Dialog present:", isPresent);
+
                     if (isPresent) {
                         console.error('Modal dialog is showed, need to click confirm button');
 
-                        return this.confirmDialogPage.clickConfirm();
+                        return browser.isElementPresent(this.confirmDialogPage.confirmButton).then(isPresent => {
+                           if (isPresent) {
+                               console.error('Clicking on confirm button');
+                               return this.confirmDialogPage.clickConfirm();
+                           }
+                        });
                     }
                 }, error => {
                     console.error('error: ', error);

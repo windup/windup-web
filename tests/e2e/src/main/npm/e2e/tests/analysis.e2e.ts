@@ -61,8 +61,7 @@ describe('For project with analysis', () => {
                 console.error('Wait until analysis is queued.......');
                 waitUntilCondition(200,() => {
                         return analysisList.getExecutions().then(executionList => {
-                            console.error(executionList);
-                            return executionList.length == 1 && executionList[0].status.search('Queued|progress') !== -1;
+                            return executionList.length == 1 && executionList[0].status.search('progress') !== -1;
                         });
                     }, 3000)
                 .then(() => {
