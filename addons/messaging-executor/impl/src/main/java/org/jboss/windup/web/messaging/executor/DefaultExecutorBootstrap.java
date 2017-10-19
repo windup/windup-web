@@ -48,6 +48,9 @@ public class DefaultExecutorBootstrap implements ExecutorBootstrap
     @Inject
     private JMSService jmsService;
 
+    @Inject
+    private JavaSEJMSServiceAdapter javaSEJMSServiceAdapter;
+
     @Override
     public String getName()
     {
@@ -74,8 +77,8 @@ public class DefaultExecutorBootstrap implements ExecutorBootstrap
             Queue executorQueue = (Queue) remotingCtx.lookup(this.executorQueue);
             Queue statusUpdateQueue = (Queue) remotingCtx.lookup(this.statusUpdateQueue);
             Topic cancellationTopic = (Topic) remotingCtx.lookup(this.cancellationTopic);
-            JavaSEJMSServiceAdapter jmsServiceAdapter = new JavaSEJMSServiceAdapter(cf, context, executorQueue, statusUpdateQueue, cancellationTopic);
-            this.jmsService.setServiceAdapter(jmsServiceAdapter);
+            this.javaSEJMSServiceAdapter.init(cf, context, executorQueue, statusUpdateQueue, cancellationTopic);
+            this.jmsService.setServiceAdapter(this.javaSEJMSServiceAdapter);
             JMSConsumer consumer = context.createConsumer(executorQueue);
             consumer.setMessageListener(this.executorMessageListener);
 

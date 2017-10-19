@@ -13,6 +13,7 @@ import org.jboss.windup.web.messaging.executor.ConfigurationOptionsService;
 import org.jboss.windup.web.services.model.AdvancedOption;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -40,10 +41,15 @@ public class ConfigurationOptionsEndpointImpl implements ConfigurationOptionsEnd
     @Override
     public List<ConfigurationOption> getAllOptions()
     {
-        return this.configurationOptionsService.getAllOptions()
-                .stream()
-                .filter((option) -> !optionsToSkip.contains(option.getName()))
-                .collect(Collectors.toList());
+        List<ConfigurationOption> result = new ArrayList<>();
+        for (ConfigurationOption option : this.configurationOptionsService.getAllOptions())
+        {
+            if (optionsToSkip.contains(option.getName()))
+                continue;
+
+            result.add(option);
+        }
+        return result;
     }
 
     @Override

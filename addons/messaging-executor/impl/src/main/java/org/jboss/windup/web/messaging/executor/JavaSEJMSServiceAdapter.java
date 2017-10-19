@@ -37,7 +37,7 @@ public class JavaSEJMSServiceAdapter implements JMSServiceAdapter
 
     }
 
-    public JavaSEJMSServiceAdapter(ConnectionFactory connectionFactory, JMSContext jmsContext, Queue executorQueue, Queue statusUpdateQueue,
+    public void init(ConnectionFactory connectionFactory, JMSContext jmsContext, Queue executorQueue, Queue statusUpdateQueue,
                 Topic cancellationTopic)
     {
         this.connectionFactory = connectionFactory;
@@ -75,11 +75,6 @@ public class JavaSEJMSServiceAdapter implements JMSServiceAdapter
         catch (Exception e)
         {
             LOG.log(Level.WARNING, "Could not send JMS update message due to: " + e.getMessage(), e);
-        }
-        finally
-        {
-            if (jmsContext != null)
-                jmsContext.close();
         }
     }
 

@@ -159,7 +159,7 @@ public class ExecutionProgressReporter extends AbstractMDB implements Serializab
     {
         if (!(msg instanceof TextMessage))
         {
-            LOG.warning("Unrecognized message type received, expected TextMessage but received: " + msg);
+            // We only care about text messages.
             return;
         }
 
