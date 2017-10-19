@@ -1,7 +1,5 @@
 package org.jboss.windup.web.messaging.executor;
 
-import org.jboss.windup.web.services.model.WindupExecution;
-
 /**
  * Maintains the status of whether or not an executor should proceed.
  *

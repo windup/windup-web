@@ -6,6 +6,9 @@ import javax.jms.JMSContext;
 import javax.jms.Message;
 
 /**
+ * Implementations of this interface will provide a means for converting between javax.jms objects
+ * and the JPA model objects.
+ *
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
 public interface ExecutionSerializer

@@ -7,8 +7,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.inject.Singleton;
 
-import org.jboss.windup.web.services.model.WindupExecution;
-
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */

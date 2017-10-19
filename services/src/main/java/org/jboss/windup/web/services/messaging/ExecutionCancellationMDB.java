@@ -11,11 +11,13 @@ import javax.inject.Inject;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
+import javax.jms.TextMessage;
 
 import org.jboss.ejb3.annotation.DeliveryGroup;
 import org.jboss.forge.furnace.Furnace;
 import org.jboss.windup.web.messaging.executor.AMQConstants;
 import org.jboss.windup.web.messaging.executor.ExecutionStateCache;
+import org.jboss.windup.web.services.json.WindupExecutionJSONUtil;
 import org.jboss.windup.web.services.model.WindupExecution;
 
 /**
@@ -41,12 +43,10 @@ public class ExecutionCancellationMDB extends AbstractMDB implements MessageList
     @Override
     public void onMessage(Message message)
     {
-        if (!validatePayload(WindupExecution.class, message))
-            return;
-
         try
         {
-            WindupExecution execution = (WindupExecution)((ObjectMessage) message).getObject();
+            TextMessage textMessage = (TextMessage) message;
+            WindupExecution execution = WindupExecutionJSONUtil.readJSON(textMessage.getText());
             LOG.info("Marking execution for cancellation: " + execution.getId());
             furnace.getAddonRegistry().getServices(ExecutionStateCache.class).get().setCancelled(execution.getId());
         }

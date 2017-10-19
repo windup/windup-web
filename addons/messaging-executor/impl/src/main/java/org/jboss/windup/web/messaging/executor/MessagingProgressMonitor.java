@@ -1,21 +1,12 @@
 package org.jboss.windup.web.messaging.executor;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
-import javax.jms.JMSContext;
-import javax.jms.StreamMessage;
 
 import org.jboss.windup.exec.WindupProgressMonitor;
-import org.jboss.windup.util.TarUtil;
-import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.services.model.ExecutionState;
 import org.jboss.windup.web.services.model.WindupExecution;
 

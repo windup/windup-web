@@ -1,6 +1,5 @@
 package org.jboss.windup.web.messaging.executor;
 
-import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

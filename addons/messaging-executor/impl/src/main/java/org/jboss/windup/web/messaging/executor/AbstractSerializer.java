@@ -6,20 +6,13 @@ import org.jboss.windup.web.services.model.WindupExecution;
 import javax.jms.JMSContext;
 import javax.jms.JMSException;
 import javax.jms.Message;
-import javax.jms.StreamMessage;
 import javax.jms.TextMessage;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
+ * Provides baseline functionality for serializing and deserializing {@link WindupExecution}
+ * information via JMS.
+ *
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
 public abstract class AbstractSerializer implements ExecutionSerializer

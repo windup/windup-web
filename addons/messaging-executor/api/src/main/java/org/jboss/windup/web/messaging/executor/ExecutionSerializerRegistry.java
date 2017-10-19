@@ -13,10 +13,25 @@ package org.jboss.windup.web.messaging.executor;
  */
 public interface ExecutionSerializerRegistry
 {
+    /**
+     * This system property can be used to control which serialization approach is used.
+     */
     String SYSTEM_PROPERTY_DEFAULT_SERIALIZER = "messaging.serializer";
+
+    /**
+     * This approach uses AMQ large messages to send files between the executor system and the services.
+     */
     String AMQ_LARGE_MESSAGE_SERIALIZER = "amq.largemessage";
+
+    /**
+     * This approach uses a shared storage volume to share data between the executors and the main system.
+     * This is the default configuration.
+     */
     String SHARED_STORAGE_SERIALIZER = "shared.storage";
 
+    /**
+     * This sets the default to the shared storage approach.
+     */
     String DEFAULT_EXECUTION_SERIALIZER = SHARED_STORAGE_SERIALIZER;
 
     /**
