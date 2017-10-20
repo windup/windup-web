@@ -107,7 +107,6 @@ public class StatusUpdateMDB extends AbstractMDB implements MessageListener
             }
 
             WindupExecution execution = executionSerializer.deserializeStatusUpdate(message, fromDB);
-            LOG.info("Received execution update event: " + execution);
             if (fromDB.getState() == ExecutionState.COMPLETED)
             {
                 setReportIndexPath(fromDB);

@@ -10,6 +10,7 @@ import org.jboss.windup.web.services.model.WindupExecution;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.TimeZone;
 
 /**
  * This contains utility methods for converting {@link WindupExecution}
@@ -42,6 +43,7 @@ public class WindupExecutionJSONUtil
     private static ObjectMapper getObjectMapper()
     {
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setTimeZone(TimeZone.getDefault());
         objectMapper.addMixIn(Object.class, MyHandlerFilterMixin.class);
         return objectMapper;
     }
