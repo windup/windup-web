@@ -94,7 +94,6 @@ public class MessagingProgressMonitor implements WindupProgressMonitor
         sendUpdate(execution);
 
         String message = String.format("[%d/%d] %s", execution.getWorkCompleted(), totalWork, name);
-        System.out.println(message);
         LOG.info(message);
     }
 
@@ -120,7 +119,6 @@ public class MessagingProgressMonitor implements WindupProgressMonitor
         sendUpdate(execution);
 
         String message = String.format("[%d/%d] %s", execution.getWorkCompleted(), execution.getTotalWork(), name);
-        System.out.println(message);
         LOG.info(message);
     }
 
@@ -131,7 +129,6 @@ public class MessagingProgressMonitor implements WindupProgressMonitor
         sendUpdate(execution);
 
         String message = String.format("[%d/%d] %s", execution.getWorkCompleted(), execution.getTotalWork(), subTask);
-        System.out.println(message);
         LOG.info(message);
     }
 

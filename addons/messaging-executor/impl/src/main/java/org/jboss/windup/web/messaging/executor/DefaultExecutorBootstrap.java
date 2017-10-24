@@ -32,7 +32,7 @@ public class DefaultExecutorBootstrap implements ExecutorBootstrap
     private static final String PING_FILE_NAME = "ping";
     private static final String PONG_FILE_NAME = "pong";
 
-    private static Logger LOG = Logger.getLogger(ExecutorBootstrap.class.getSimpleName());
+    private static Logger LOG = Logger.getLogger(ExecutorBootstrap.class.getName());
     private String user;
     private String password;
     private String hostOrIP;
@@ -60,7 +60,7 @@ public class DefaultExecutorBootstrap implements ExecutorBootstrap
     @Override
     public void runServer(String[] arguments)
     {
-        System.out.println("Starting with arguments: " + Arrays.asList(arguments));
+        LOG.info("Starting with arguments: " + Arrays.asList(arguments));
         parseArguments(arguments);
 
         final Properties env = new Properties();
@@ -83,14 +83,12 @@ public class DefaultExecutorBootstrap implements ExecutorBootstrap
             consumer.setMessageListener(this.executorMessageListener);
 
             context.start();
-            System.out.println("Execution listener started!");
+            LOG.info("Execution listener started!");
 
             this.monitorPingDirectory();
         }
         catch (Exception e)
         {
-            System.err.println("Failed to start due to: " + e.getMessage());
-            e.printStackTrace();
             LOG.log(Level.SEVERE, "Could not start messaging listener due to: " + e.getMessage(), e);
         }
     }
@@ -99,23 +97,23 @@ public class DefaultExecutorBootstrap implements ExecutorBootstrap
     {
         if (StringUtils.isBlank(this.pingDirectory))
         {
-            System.err.println("pingDir not specified... this is required.");
+            LOG.severe("pingDir not specified... this is required.");
             System.exit(1);
         }
-        System.out.println("Setting up ping directory: " + this.pingDirectory);
+        LOG.info("Setting up ping directory: " + this.pingDirectory);
 
         Path pingDirPath = Paths.get(this.pingDirectory);
         if (!Files.isDirectory(pingDirPath))
         {
-            System.out.println("Ping directory does not exist, creating!");
+            LOG.fine("Ping directory does not exist, creating!");
             try
             {
                 Files.createDirectories(pingDirPath);
-                System.out.println("Ping directory created: " + pingDirPath);
+                LOG.fine("Ping directory created: " + pingDirPath);
             }
             catch (IOException e)
             {
-                System.err.println("ping directory could not be read or created!");
+                LOG.severe("ping directory could not be read or created!");
                 System.exit(2);
             }
         }
@@ -127,28 +125,28 @@ public class DefaultExecutorBootstrap implements ExecutorBootstrap
         {
             if (Files.isRegularFile(shutdownPath))
             {
-                System.err.println("Received shutdown request... exiting!");
+                LOG.info("Received shutdown request... exiting!");
                 try
                 {
                     Files.delete(shutdownPath);
                 }
                 catch (IOException e)
                 {
-                    System.err.println("WARN: Failed to delete shutdown marker file due to: " + e.getMessage());
+                    LOG.severe("WARN: Failed to delete shutdown marker file due to: " + e.getMessage());
                 }
                 System.exit(0);
             }
 
             if (Files.isRegularFile(pingPath))
             {
-                System.err.println("Received ping request, responding with pong!");
+                LOG.info("Received ping request, responding with pong!");
                 try
                 {
                     Files.delete(pingPath);
                 }
                 catch (IOException e)
                 {
-                    System.err.println("WARN: Failed to delete ping file due to: " + e.getMessage());
+                    LOG.info("WARN: Failed to delete ping file due to: " + e.getMessage());
                 }
 
                 try (FileWriter fileWriter = new FileWriter(pongPath.toFile()))
@@ -157,7 +155,7 @@ public class DefaultExecutorBootstrap implements ExecutorBootstrap
                 }
                 catch (IOException e)
                 {
-                    System.err.println("WARN: Failed to write pong file due to: " + e.getMessage());
+                    LOG.info("WARN: Failed to write pong file due to: " + e.getMessage());
                 }
             }
 
@@ -167,7 +165,7 @@ public class DefaultExecutorBootstrap implements ExecutorBootstrap
             }
             catch (Throwable t)
             {
-                System.err.println("Sleep interrupted... exiting!");
+                LOG.severe("Sleep interrupted... exiting!");
                 System.exit(3);
             }
         }
