@@ -1,10 +1,10 @@
-import {ProjectPage} from "../../pages/project.po";
+import {ProjectListPage} from "../../pages/project-list.po";
 import {CreateProjectWorkflow} from "../../workflows/create-project.wf";
 import {browser} from "protractor";
 import {CleanupWorkflow} from "../../workflows/cleanup.wf";
 
 describe('Project List Filtering', () => {
-    const projectPage = new ProjectPage();
+    const projectPage = new ProjectListPage();
 
     let newlyCreatedProjects = [];
 

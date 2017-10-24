@@ -1,7 +1,7 @@
-import {ProjectPage} from "../../pages/project.po";
+import {ProjectListPage} from "../../pages/project-list.po";
 
 describe('Project List Sorting', () => {
-    const projectPage = new ProjectPage();
+    const projectPage = new ProjectListPage();
 
     describe('default sorting', () => {
         it('should sort by name', () => {

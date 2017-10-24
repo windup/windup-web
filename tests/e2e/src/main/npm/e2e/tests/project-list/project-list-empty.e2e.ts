@@ -1,8 +1,8 @@
-import {ProjectPage} from "../../pages/project.po";
+import {ProjectListPage} from "../../pages/project-list.po";
 import {CleanupWorkflow} from "../../workflows/cleanup.wf";
 
 xdescribe('Empty project list', () => {
-    const projectPage = new ProjectPage();
+    const projectPage = new ProjectListPage();
 
     /*
      * Given there are no projects

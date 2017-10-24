@@ -1,9 +1,10 @@
-import {Project, ProjectPage} from "../pages/project.po";
+import {Project, ProjectListPage} from "../pages/project-list.po";
 import {ConfirmDialogPage} from "../pages/confirm-dialog.po";
+import {browser} from "protractor";
 
 export class CleanupWorkflow {
     protected loadProject(name: string): Promise<Project> {
-        const projectPage = new ProjectPage();
+        const projectPage = new ProjectListPage();
 
         let projectList;
         return projectPage.navigateTo().then(() => {
@@ -37,7 +38,8 @@ export class CleanupWorkflow {
                         confirmDialog.writeText(name);
                     }
 
-                    return confirmDialog.clickConfirm();
+                    return confirmDialog.clickConfirm()
+                        .then(() => browser.waitForAngular());
                 });
             });
         } else {
