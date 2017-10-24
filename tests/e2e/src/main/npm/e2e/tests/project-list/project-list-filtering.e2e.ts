@@ -84,13 +84,13 @@ describe('Project List Filtering', () => {
     });
 
 
-    afterAll(async () => {
+    afterAll( (done) => {
         const cleanupWf = new CleanupWorkflow();
 
-        await projectPage.getProjectList().then(projects => {
+        projectPage.getProjectList().then(projects => {
             const chainedPromises = newlyCreatedProjects.map(projectName => cleanupWf.deleteProjectFromList(projectName, projects));
 
             return Promise.all(chainedPromises);
-        });
+        }).then(() => done());
     });
 });
