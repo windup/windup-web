@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, Input, OnInit} from "@angular/core";
+import {ChangeDetectionStrategy, Component, Input, NgZone, OnInit} from "@angular/core";
 import {Router, ActivatedRoute} from "@angular/router";
 import "../source/prism";
 
@@ -7,6 +7,7 @@ import {NotificationService} from "../../core/notification/notification.service"
 import {SortingService, OrderDirection} from "../../shared/sort/sorting.service";
 import {RouteFlattenerService} from "../../core/routing/route-flattener.service";
 import {FilterableReportComponent} from "../filterable-report.component";
+import {SchedulerService} from "../../shared/scheduler.service";
 
 @Component({
     selector: 'wu-migration-issues-table',
@@ -32,7 +33,8 @@ export class MigrationIssuesTableComponent extends FilterableReportComponent imp
         _activatedRoute: ActivatedRoute,
         private _migrationIssuesService: MigrationIssuesService,
         private _notificationService: NotificationService,
-        private _sortingService: SortingService<ProblemSummary>
+        private _sortingService: SortingService<ProblemSummary>,
+        private _schedulerService: SchedulerService
     ) {
         super(_router, _activatedRoute, _routeFlattener);
     }
@@ -76,7 +78,7 @@ export class MigrationIssuesTableComponent extends FilterableReportComponent imp
 
     private delayedPrismRender() {
         // Colorize the included code snippets on the first displaying.
-        setTimeout(() => Prism.highlightAll(false), 1000);
+        this._schedulerService.setTimeout(() => Prism.highlightAll(false), 1000);
     }
 
     toggleFiles(summary: ProblemSummary) {

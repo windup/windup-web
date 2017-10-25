@@ -1,17 +1,18 @@
-import {Component, Input, OnInit} from "@angular/core";
+import {Component, Input, NgZone, OnDestroy, OnInit} from "@angular/core";
 import {FileModel} from "../../generated/tsModels/FileModel";
 import {ActivatedRoute, Router} from "@angular/router";
 import {GraphJSONToModelService} from "../../services/graph/graph-json-to-model.service";
 import {PaginationService} from "../../shared/pagination.service";
 
 import * as showdown from "showdown";
+import {SchedulerService} from "../../shared/scheduler.service";
 
 @Component({
     selector: 'wu-problem-summary-files',
     templateUrl: './problem-summary-files.component.html',
     styleUrls: ['./problem-summary-files.component.scss']
 })
-export class ProblemSummaryFilesComponent implements OnInit {
+export class ProblemSummaryFilesComponent implements OnInit, OnDestroy {
     _problemSummaryFiles: any[];
 
     @Input()
@@ -29,11 +30,14 @@ export class ProblemSummaryFilesComponent implements OnInit {
 
     private markdownCache: Map<string, string> = new Map<string, string>();
 
+    private renderTimeout;
+
     public constructor(
         private _router: Router,
         private _activatedRoute: ActivatedRoute,
         private _graphJsonToModelService: GraphJSONToModelService<any>,
-        private _paginationService: PaginationService
+        private _paginationService: PaginationService,
+        private _schedulerService: SchedulerService
     ) {
     }
 
@@ -50,6 +54,13 @@ export class ProblemSummaryFilesComponent implements OnInit {
     ngOnInit(): void {
         this.delayedPrismRender();
         this.parseExecutedRulesPath();
+    }
+
+    ngOnDestroy(): void {
+        if (this.renderTimeout) {
+            this._schedulerService.clearTimeout(this.renderTimeout);
+            this.renderTimeout = null;
+        }
     }
 
     protected parseExecutedRulesPath() {
@@ -86,7 +97,7 @@ export class ProblemSummaryFilesComponent implements OnInit {
     private delayedPrismRender() {
         const timeout = 60 * 1000;
         // Colorize the included code snippets on the first displaying.
-        setTimeout(() => Prism.highlightAll(false), timeout);
+        this.renderTimeout = this._schedulerService.setTimeout(() => Prism.highlightAll(false), timeout);
     }
 
     renderMarkdownToHtml(markdownCode: string): string {
