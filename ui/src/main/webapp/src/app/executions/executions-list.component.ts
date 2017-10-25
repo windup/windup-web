@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from "@angular/core";
+import {Component, ElementRef, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewChild} from "@angular/core";
 import {WindupService} from "../services/windup.service";
 import {MigrationProject, WindupExecution} from "../generated/windup-services";
 import {NotificationService} from "../core/notification/notification.service";
@@ -8,6 +8,7 @@ import {MigrationProjectService} from "../project/migration-project.service";
 import {WindupExecutionService} from "../services/windup-execution.service";
 import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
 import {AbstractComponent} from "../shared/AbstractComponent";
+import {SchedulerService} from "../shared/scheduler.service";
 
 @Component({
     selector: 'wu-executions-list',
@@ -53,7 +54,9 @@ export class ExecutionsListComponent extends AbstractComponent implements OnInit
         private _windupService: WindupService,
         private _notificationService: NotificationService,
         private _sortingService: SortingService<WindupExecution>,
-        private _projectService: MigrationProjectService
+        private _projectService: MigrationProjectService,
+        private _schedulerService: SchedulerService,
+        private _zone: NgZone
     ) {
         super();
         this.element = _elementRef.nativeElement;
@@ -72,14 +75,17 @@ export class ExecutionsListComponent extends AbstractComponent implements OnInit
             this.doDeleteExecution(execution);
         });
 
-        this.currentTimeTimer = <any> setInterval(() => {
-            this.currentTime = new Date().getTime();
+        this.currentTimeTimer =  this._schedulerService.setInterval(() => {
+            this._zone.run(() => {
+                this.currentTime = new Date().getTime();
+            });
         }, 5000);
     }
 
     ngOnDestroy(): void {
-        if (this.currentTimeTimer)
-            clearInterval(this.currentTimeTimer);
+        if (this.currentTimeTimer) {
+            this._schedulerService.clearInterval(this.currentTimeTimer);
+        }
     }
 
     @Input()

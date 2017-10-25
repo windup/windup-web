@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from "@angular/core";
+import {Component, NgZone, OnDestroy, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {WindupService} from "../services/windup.service";
 import {WindupExecution, RegisteredApplication} from "../generated/windup-services";
@@ -12,6 +12,7 @@ import {RuleProviderExecutionsService} from "./rule-provider-executions/rule-pro
 import {ExecutionPhaseModel} from "../generated/tsModels/ExecutionPhaseModel";
 import {RoutedComponent} from "../shared/routed.component";
 import {RouteFlattenerService} from "../core/routing/route-flattener.service";
+import {SchedulerService} from "../shared/scheduler.service";
 
 @Component({
     templateUrl: './execution-detail.component.html',
@@ -33,7 +34,9 @@ export class ExecutionDetailComponent extends RoutedComponent implements OnInit,
         _routeFlattener: RouteFlattenerService,
         private _eventBus: EventBusService,
         private _windupService: WindupService,
-        private _ruleProviderExecutionsService: RuleProviderExecutionsService
+        private _ruleProviderExecutionsService: RuleProviderExecutionsService,
+        private _schedulerService: SchedulerService,
+        private _zone: NgZone
     ) {
         super(_router, _activatedRoute, _routeFlattener);
     }
@@ -60,16 +63,17 @@ export class ExecutionDetailComponent extends RoutedComponent implements OnInit,
             });
         }));
 
-        this.currentTimeTimer = <any> setInterval(() => {
+        this.currentTimeTimer = this._schedulerService.setInterval(this._zone.run(() => {
             this.currentTime = new Date().getTime();
             console.log("Updating the current time field");
-        }, 5000);
+        }), 5000);
     }
 
     ngOnDestroy(): void {
         super.ngOnDestroy();
-        if (this.currentTimeTimer != null)
-            clearInterval(this.currentTimeTimer);
+        if (this.currentTimeTimer != null) {
+            this._schedulerService.clearInterval(this.currentTimeTimer);
+        }
     }
 
     get loglines(): Observable<string[]> {

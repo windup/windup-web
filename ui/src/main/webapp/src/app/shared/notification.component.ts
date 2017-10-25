@@ -1,7 +1,8 @@
-import {Component, OnDestroy, OnInit, Input} from "@angular/core";
+import {Component, OnDestroy, OnInit, Input, NgZone} from "@angular/core";
 import {NotificationService} from "../core/notification/notification.service";
 import {Subscription} from "rxjs/Subscription";
 import {Notification, NotificationLevel} from "../core/notification/notification";
+import {SchedulerService} from "./scheduler.service";
 
 @Component({
     selector: 'wu-notification',
@@ -21,7 +22,13 @@ export class NotificationComponent implements OnInit, OnDestroy {
 
     notificationsStack: Notification[] = [];
 
-    constructor(private _notificationService: NotificationService) {
+    protected closeTimeoutHandle: any;
+
+    constructor(
+        private _notificationService: NotificationService,
+        private _schedulerService: SchedulerService,
+        private _zone: NgZone
+    ) {
 
     }
 
@@ -37,7 +44,10 @@ export class NotificationComponent implements OnInit, OnDestroy {
         this.notificationsStack.push(notification);
 
         if (this.autoCloseNotifications) {
-            setTimeout(() => this.closeNotification(notification), this.closeTimeout * 1000);
+            this.closeTimeoutHandle = this._schedulerService.setTimeout(
+                this._zone.run(() => this.closeNotification(notification)),
+                this.closeTimeout * 1000
+            );
         }
     }
 
@@ -92,5 +102,10 @@ export class NotificationComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): any {
         this.subscription.unsubscribe();
+
+        if (this.closeTimeoutHandle) {
+            this._schedulerService.clearTimeout(this.closeTimeoutHandle);
+            this.closeTimeoutHandle = null;
+        }
     }
 }
