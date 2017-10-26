@@ -1,17 +1,17 @@
-import {by, element, ElementFinder} from "protractor";
+import {$$, ElementFinder} from "protractor";
 
 export class ContextMenuPage {
-    menuItems = element.all(by.css('wu-context-menu .list-group-item'));
+    menuItems = $$('wu-context-menu .list-group-item');
 
     public getMenuItems(): Promise<ContextMenuItem[]> {
         return this.menuItems.then((menuItems: ElementFinder[]): any => {
             return Promise.all(menuItems.map(item => {
                 const menuLink = {
                     label: '',
-                    link: item.element(by.css('a'))
+                    link: item.$('a')
                 };
 
-                return item.element(by.css('span.list-group-item-value')).getText()
+                return item.$('span.list-group-item-value').getText()
                     .then(text => menuLink.label = text)
                     .then(() => menuLink);
             }));

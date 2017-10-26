@@ -1,4 +1,4 @@
-import {$, $$, browser, by, element, ElementFinder} from "protractor";
+import {$, $$, browser} from "protractor";
 
 export class AnalysisConfigurationPage {
     protected transformationPaths = $$('.radio-inline.control-label input');

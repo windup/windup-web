@@ -1,11 +1,11 @@
-import {browser, by, element, ElementFinder} from "protractor";
+import {$, browser, by, element, ElementFinder} from "protractor";
 
 export class ApplicationsListPage {
     searchTextBox = element(by.name('searchValue'));
-    searchClearButton = element(by.css('wu-search button.clear'));
+    searchClearButton = $('wu-search button.clear');
 
-    table = element(by.css('table'));
-    tableHeaders = this.table.all(by.css('th'));
+    table = $('table');
+    tableHeaders = this.table.$$('th');
 
     public getApplications(): Promise<Application[]> {
         return this.table.isPresent().then(isPresent => {
@@ -13,10 +13,10 @@ export class ApplicationsListPage {
                 return [];
             }
 
-            const tableRowsFinder = this.table.element(by.css('tbody')).all(by.css('tr'));
+            const tableRowsFinder = this.table.$('tbody').$$('tr');
 
             return tableRowsFinder.then((tableRows: ElementFinder[]): any => Promise.all(tableRows.map(row => {
-                const tableColumns = row.all(by.css('td'));
+                const tableColumns = row.$$('td');
 
                 const application = {
                     name: '',

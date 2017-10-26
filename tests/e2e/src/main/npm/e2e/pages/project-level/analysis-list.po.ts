@@ -2,14 +2,14 @@ import {$, $$, browser, by, element, ElementFinder} from "protractor";
 
 export class AnalysisListPage {
     searchTextBox = element(by.name('searchValue'));
-    searchClearButton = element(by.css('wu-search button.clear'));
+    searchClearButton = $('wu-search button.clear');
 
-    table = element(by.css('table.executions-list-table'));
-    tableHeaders = this.table.all(by.css('th'));
+    table = $('table.executions-list-table');
+    tableHeaders = this.table.$$('th');
 
-    emptyDiv = element(by.css('.blank-slate-pf-main-action'));
+    emptyDiv = $('.blank-slate-pf-main-action');
 
-    configureAnalysisButton = element(by.css('.btn.btn-primary'));
+    configureAnalysisButton = $('.btn.btn-primary');
 
     progressbar = $('.progress-container');
 
@@ -36,8 +36,8 @@ export class AnalysisListPage {
                         dateStarted: '',
                         actions: {
                             showAnalysisDetail: tableColumns.get(0),
-                            showReport: tableColumns.get(4).all(by.css('a')).get(0),
-                            delete: tableColumns.get(4).all(by.css('a')).get(1)
+                            showReport: tableColumns.get(4).$$('a').get(0),
+                            delete: tableColumns.get(4).$$('a').get(1)
                         },
                         row: row
                     };

@@ -1,8 +1,8 @@
-import {browser, by, element, ElementFinder} from "protractor";
+import {$, by, element} from "protractor";
 
 export class ConfirmDialogPage {
-    confirmButton = element(by.css('.confirm-button'));
-    modal = element(by.css('.modal'));
+    confirmButton = $('.confirm-button');
+    modal = $('.modal');
     textInput = element(by.id('resource-to-delete'));
 
     isPresent() {

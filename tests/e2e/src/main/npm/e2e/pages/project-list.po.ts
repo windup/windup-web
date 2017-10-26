@@ -1,16 +1,16 @@
-import {browser, by, element, ElementFinder} from "protractor";
+import {$, $$, browser, ElementFinder} from "protractor";
 
 export class ProjectListPage {
-    newProjectButton = element(by.css('.btn.btn-primary'));
-    projectList = element.all(by.css('.list-group-item.project-info.tile-click'));
+    newProjectButton = $('.btn.btn-primary');
+    projectList = $$('.list-group-item.project-info.tile-click');
 
-    projectListDiv = element(by.css('.projects-list'));
+    projectListDiv = $('.projects-list');
 
-    emptyStateDiv = element(by.css('.blank-slate-pf'));
-    emptyStateRemoveFilter = element(by.css('.no-matches a'));
+    emptyStateDiv = $('.blank-slate-pf');
+    emptyStateRemoveFilter = $('.no-matches a');
 
-    searchInput = element(by.css('.search-pf-input-group input'));
-    searchRemoveButton = element(by.css('.pficon-close'));
+    searchInput = $('.search-pf-input-group input');
+    searchRemoveButton = $('.pficon-close');
 
     public navigateTo() {
         return browser.get('./');
@@ -44,16 +44,16 @@ export class ProjectListPage {
                     description: '',
                     countApplications: '',
                     lastUpdated: '',
-                    editButton: element.element(by.css('.action-edit-project')),
-                    deleteButton: element.element(by.css('.action-delete-project')),
-                    projectDiv: element.element(by.css('.project-info'))
+                    editButton: element.$('.action-edit-project'),
+                    deleteButton: element.$('.action-delete-project'),
+                    projectDiv: element.$('.project-info')
                 };
 
                 return Promise.all([
-                    element.element(by.css('.project-title')).getText().then(title => project.name = title),
-                    element.element(by.css('.count-applications')).getText().then(count => project.countApplications = count),
-                    element.element(by.css('.last-updated')).getText().then(lastUpdated => project.lastUpdated = lastUpdated),
-                    element.element(by.css('.description')).getText().then(description => project.description = description),
+                    element.$('.project-title').getText().then(title => project.name = title),
+                    element.$('.count-applications').getText().then(count => project.countApplications = count),
+                    element.$('.last-updated').getText().then(lastUpdated => project.lastUpdated = lastUpdated),
+                    element.$('.description').getText().then(description => project.description = description),
                 ]).then(() => project);
             }));
         }));
