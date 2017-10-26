@@ -49,7 +49,7 @@ public class HintResourceTest extends AbstractGraphResourceTest
         Long executionID = this.execution.getId();
         List<Map<String, Object>> results = this.fileModelResource.get(executionID, "pom.xml");
 
-        Assert.assertTrue(results.size() == 1);
+        Assert.assertEquals(1, results.size());
         for (Map<String, Object> result : results)
         {
             Integer id = (Integer) result.get(GraphResource.KEY_ID);

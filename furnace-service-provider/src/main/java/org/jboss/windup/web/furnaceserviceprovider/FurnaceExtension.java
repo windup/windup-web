@@ -31,6 +31,7 @@ public class FurnaceExtension implements Extension
 {
     private static Logger LOG = Logger.getLogger(FurnaceExtension.class.getName());
 
+    public static final String WINDUP_WEB_MESSAGING = "windup-web-messaging-executor";
     public static final String WINDUP_WEB_SUPPORT = "windup-web-support";
     public static final String PACKAGE_PREFIX = "org.jboss.windup.web";
 
@@ -61,7 +62,7 @@ public class FurnaceExtension implements Extension
         HashSet<String> duplicateCheck = new HashSet<>();
         for (Addon addon : furnaceProducer.getFurnace().getAddonRegistry().getAddons())
         {
-            if (addon.getId() == null || !addon.getId().toString().contains(WINDUP_WEB_SUPPORT))
+            if (!isWindupWebAddon(addon))
                 continue;
 
             awaitAddonStart(addon);
@@ -77,6 +78,19 @@ public class FurnaceExtension implements Extension
                 }
             }
         }
+    }
+
+    private boolean isWindupWebAddon(Addon addon)
+    {
+        if (addon.getId() == null)
+            return false;
+
+        if (addon.getId().toString().contains(WINDUP_WEB_SUPPORT))
+            return true;
+        else if (addon.getId().toString().contains(WINDUP_WEB_MESSAGING))
+            return true;
+        else
+            return false;
     }
 
     private void awaitAddonStart(Addon addon) {

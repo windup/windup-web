@@ -8,10 +8,12 @@ import org.jboss.windup.exec.configuration.options.OverwriteOption;
 import org.jboss.windup.exec.configuration.options.UserRulesDirectoryOption;
 import org.jboss.windup.rules.apps.java.config.ExcludePackagesOption;
 import org.jboss.windup.rules.apps.java.config.ScanPackagesOption;
+import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
+import org.jboss.windup.web.messaging.executor.ConfigurationOptionsService;
 import org.jboss.windup.web.services.model.AdvancedOption;
-import org.jboss.windup.web.services.service.ConfigurationOptionsService;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -23,25 +25,31 @@ import java.util.stream.Collectors;
  */
 public class ConfigurationOptionsEndpointImpl implements ConfigurationOptionsEndpoint
 {
-    private static final Set<String> optionsToSkip = new HashSet<>(Arrays.asList(new String[] {
+    private static final Set<String> optionsToSkip = new HashSet<>(Arrays.asList(
             InputPathOption.NAME,
             OutputPathOption.NAME,
             OverwriteOption.NAME,
             ScanPackagesOption.NAME,
             ExcludePackagesOption.NAME,
             UserRulesDirectoryOption.NAME
-    }));
+    ));
 
     @Inject
+    @FromFurnace
     private ConfigurationOptionsService configurationOptionsService;
 
     @Override
     public List<ConfigurationOption> getAllOptions()
     {
-        return this.configurationOptionsService.getAllOptions()
-                .stream()
-                .filter((option) -> !optionsToSkip.contains(option.getName()))
-                .collect(Collectors.toList());
+        List<ConfigurationOption> result = new ArrayList<>();
+        for (ConfigurationOption option : this.configurationOptionsService.getAllOptions())
+        {
+            if (optionsToSkip.contains(option.getName()))
+                continue;
+
+            result.add(option);
+        }
+        return result;
     }
 
     @Override

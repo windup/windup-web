@@ -6,7 +6,7 @@ import javax.ws.rs.NotFoundException;
 import org.jboss.windup.web.addons.websupport.model.ReportFilterDTO;
 import org.jboss.windup.web.addons.websupport.services.ReportFilterService;
 import org.jboss.windup.web.services.model.ReportFilter;
-import org.jboss.windup.web.services.model.ReportFilterDTOImpl;
+import org.jboss.windup.web.services.ReportFilterDTOImpl;
 import org.jboss.windup.web.services.model.WindupExecution;
 
 import java.util.Map;

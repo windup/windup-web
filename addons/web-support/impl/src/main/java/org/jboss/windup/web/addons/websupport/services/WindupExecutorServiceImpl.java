@@ -109,6 +109,7 @@ public class WindupExecutorServiceImpl implements WindupExecutorService
         }
         finally
         {
+            graphCache.closeGraph(graphPath);
             logHandler.flush();
             globalLogger.removeHandler(logHandler);
         }

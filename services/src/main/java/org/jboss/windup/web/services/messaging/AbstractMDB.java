@@ -14,7 +14,7 @@ public class AbstractMDB {
     {
         if (!(message instanceof ObjectMessage))
         {
-            LOG.severe("Unrecognized message type received!");
+            LOG.severe("Unrecognized message type received: " + message + " and expected ObjectMessage!");
             return false;
         }
 

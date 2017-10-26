@@ -6,6 +6,7 @@ import javax.jms.Queue;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.transaction.UserTransaction;
+import java.util.logging.Logger;
 
 /**
  * This contains useful utility methods for the services module.
@@ -14,6 +15,7 @@ import javax.transaction.UserTransaction;
  */
 public class ServiceUtil
 {
+    private static Logger LOG = Logger.getLogger(ServiceUtil.class.getSimpleName());
 
     /**
      * Lookup a JMS Queue.
@@ -28,9 +30,23 @@ public class ServiceUtil
      */
     public static JMSContext getJMSContext()
     {
-        ConnectionFactory connectionFactory = lookup("JMSContext", ConnectionFactory.class, "java:/ConnectionFactory");
+        String localCF = "java:/ConnectionFactory";
+        LOG.info("Getting local connection factory: " + localCF);
+        ConnectionFactory connectionFactory = lookup("JMSContext", ConnectionFactory.class, localCF);
         return connectionFactory.createContext();
     }
+
+    /**
+     * Lookup the JMSContext from JNDI.
+     */
+    public static JMSContext getJMSContextRemote()
+    {
+        String remoteCF = "java:/jms/remoteCF";
+        LOG.info("Getting remote connection factory: " + remoteCF);
+        ConnectionFactory connectionFactory = lookup("JMSContext", ConnectionFactory.class, remoteCF);
+        return connectionFactory.createContext();
+    }
+
 
     /**
      * Lookup the {@link UserTransaction} manually from the container.

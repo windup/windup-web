@@ -9,11 +9,10 @@ export class ActiveExecutionsProgressbarComponent {
     @Input()
     activeExecutions: WindupExecution[];
 
-    get mainExecution() {
-        let mainExecution = null;
+    get mainExecutions() {
         if (!this.activeExecutions)
             return null;
 
-        return this.activeExecutions.find(execution => execution.currentTask != null && execution.currentTask != "");
+        return this.activeExecutions.filter(execution => execution.currentTask != null && execution.currentTask != "");
     }
 }

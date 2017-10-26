@@ -1,24 +1,15 @@
 package org.jboss.windup.web.services.rest.graph;
 
-import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.resteasy.client.jaxrs.ResteasyClient;
-import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.windup.graph.model.resource.FileModel;
 import org.jboss.windup.web.addons.websupport.rest.GraphPathLookup;
 import org.jboss.windup.web.addons.websupport.rest.graph.GraphResource;
 import org.jboss.windup.web.addons.websupport.services.ReportFilterService;
-import org.jboss.windup.web.services.AbstractTest;
-import org.jboss.windup.web.services.data.ServiceConstants;
-import org.jboss.windup.web.services.data.WindupExecutionUtil;
-import org.jboss.windup.web.services.model.WindupExecution;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

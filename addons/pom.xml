@@ -18,6 +18,7 @@
 
     <modules>
         <module>web-support</module>
+        <module>messaging-executor</module>
     </modules>
 
     <dependencies>

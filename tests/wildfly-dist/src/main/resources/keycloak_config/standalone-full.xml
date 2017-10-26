@@ -205,6 +205,10 @@
             <mdb>
                 <resource-adapter-ref resource-adapter-name="${ejb.resource-adapter-name:activemq-ra.rar}"/>
                 <bean-instance-pool-ref pool-name="mdb-strict-max-pool"/>
+                <delivery-groups>
+                    <delivery-group name="dg_services"/>
+                    <delivery-group name="dg_executors"/>
+                </delivery-groups>
             </mdb>
             <pools>
                 <bean-instance-pools>
@@ -554,21 +558,19 @@
         <subsystem xmlns="urn:jboss:domain:keycloak:1.1">
             <secure-deployment name="rhamt-web.war">
                 <realm>rhamt</realm>
+                <resource>rhamt-web</resource>
+                <public-client>true</public-client>
                 <realm-public-key>${keycloak.realm.public.key}</realm-public-key>
                 <auth-server-url>${keycloak.server.url}</auth-server-url>
-                <public-client>true</public-client>
                 <ssl-required>EXTERNAL</ssl-required>
-                <resource>rhamt-web</resource>
             </secure-deployment>
-
-
             <secure-deployment name="api.war">
                 <realm>rhamt</realm>
+                <resource>rhamt-web</resource>
+                <public-client>true</public-client>
                 <realm-public-key>${keycloak.realm.public.key}</realm-public-key>
                 <auth-server-url>${keycloak.server.url}</auth-server-url>
-                <public-client>true</public-client>
                 <ssl-required>EXTERNAL</ssl-required>
-                <resource>rhamt-web</resource>
             </secure-deployment>
         </subsystem>
     </profile>
@@ -599,4 +601,5 @@
             <remote-destination host="localhost" port="25"/>
         </outbound-socket-binding>
     </socket-binding-group>
+
 </server>

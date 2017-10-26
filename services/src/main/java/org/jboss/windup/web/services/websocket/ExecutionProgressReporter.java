@@ -13,7 +13,9 @@ import java.util.logging.Logger;
 import javax.enterprise.event.Observes;
 import javax.jms.JMSException;
 import javax.jms.Message;
-import javax.jms.ObjectMessage;
+import javax.jms.TextMessage;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.websocket.CloseReason;
 import javax.websocket.EndpointConfig;
 import javax.websocket.OnClose;
@@ -26,12 +28,11 @@ import javax.websocket.server.ServerEndpoint;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.windup.web.services.KeycloakAuthenticationException;
 import org.jboss.windup.web.services.KeycloakAuthenticator;
+import org.jboss.windup.web.services.json.WindupExecutionJSONUtil;
 import org.jboss.windup.web.services.messaging.AbstractMDB;
 import org.jboss.windup.web.services.model.WindupExecution;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.undertow.websockets.core.WebSocketChannel;
 import io.undertow.websockets.jsr.UndertowSession;
@@ -48,6 +49,9 @@ public class ExecutionProgressReporter extends AbstractMDB implements Serializab
 
     // private static final Set<Session> sessions = Collections.synchronizedSet(new HashSet<Session>());
     private static final Logger LOG = Logger.getLogger(ExecutionProgressReporter.class.getName());
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @OnClose
     public void onClose(Session session, CloseReason reason, @PathParam("executionId") Long executionId)
@@ -153,20 +157,24 @@ public class ExecutionProgressReporter extends AbstractMDB implements Serializab
      */
     public void onJMSMessage(@Observes @WSJMSMessage Message msg)
     {
-        if (!validatePayload(WindupExecution.class, msg))
+        if (!(msg instanceof TextMessage))
         {
+            // We only care about text messages.
             return;
         }
 
         try
         {
-            WindupExecution execution = (WindupExecution) ((ObjectMessage) msg).getObject();
+            TextMessage textMessage = (TextMessage)msg;
+            WindupExecution execution = WindupExecutionJSONUtil.readJSON(textMessage.getText());
+
+            // Refresh from the DB for the latest data
+            execution = this.entityManager.find(WindupExecution.class, execution.getId());
+
 
             for (Session session : sessions.getOrDefault(execution.getId(), new HashSet<>()))
             {
-                ObjectMapper objectMapper = new ObjectMapper();
-                String serializedObject = objectMapper.writeValueAsString(execution);
-
+                String serializedObject = WindupExecutionJSONUtil.serializeToString(execution);
                 session.getBasicRemote().sendText(serializedObject);
             }
         }

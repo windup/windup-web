@@ -34,7 +34,7 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.addons.websupport.services.FileNameSanitizer;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
-import org.jboss.windup.web.services.messaging.MessagingConstants;
+import org.jboss.windup.web.messaging.executor.AMQConstants;
 import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.model.PackageMetadata;
@@ -65,7 +65,7 @@ public class RegisteredApplicationService
     @Inject
     private JMSContext messaging;
 
-    @Resource(lookup = "java:/queues/" + MessagingConstants.PACKAGE_DISCOVERY_QUEUE)
+    @Resource(lookup = "java:/queues/" + AMQConstants.PACKAGE_DISCOVERY_QUEUE)
     private Queue packageDiscoveryQueue;
 
     public Collection<RegisteredApplication> getAllApplications()

@@ -13,6 +13,8 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 
+import org.jboss.ejb3.annotation.DeliveryGroup;
+import org.jboss.windup.web.messaging.executor.AMQConstants;
 import org.jboss.windup.web.services.model.RegisteredApplication;
 
 /**
@@ -22,9 +24,10 @@ import org.jboss.windup.web.services.model.RegisteredApplication;
             @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
             @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "AUTO_ACKNOWLEDGE"),
             @ActivationConfigProperty(propertyName = "maxSession", propertyValue = "1"),
-            @ActivationConfigProperty(propertyName = "destination", propertyValue = MessagingConstants.PACKAGE_DISCOVERY_QUEUE),
+            @ActivationConfigProperty(propertyName = "destination", propertyValue = AMQConstants.PACKAGE_DISCOVERY_QUEUE),
 })
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@DeliveryGroup(AMQConstants.DELIVERY_GROUP_SERVICES)
 public class PackageDiscoveryMDB extends AbstractMDB implements MessageListener
 {
     private static Logger LOG = Logger.getLogger(PackageDiscoveryMDB.class.getName());
