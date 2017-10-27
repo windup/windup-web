@@ -209,7 +209,7 @@ public class WindupExecutionService
             }
             catch (IOException e)
             {
-                LOG.log(Level.WARNING, "Unable to execution contents at " + executionDir.getAbsolutePath() + " (cause: " + e.getMessage() + ")", e);
+                LOG.log(Level.WARNING, "Unable to remove execution contents at " + executionDir.getAbsolutePath() + " (cause: " + e.getMessage() + ")", e);
             }
         }
         this.entityManager.remove(execution);
