@@ -36,6 +36,8 @@ public class ExecutorMessageListener implements MessageListener
 
         try
         {
+            message.acknowledge();
+            
             if (this.executionStateCache.isCancelled(execution.getId()))
             {
                 LOG.info("Not executing " + execution.getId() + " as it has been marked cancelled!");
