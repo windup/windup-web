@@ -102,7 +102,7 @@ public class StatusUpdateMDB extends AbstractMDB implements MessageListener
             WindupExecution fromDB = entityManager.find(WindupExecution.class, executionID);
             if (fromDB == null)
             {
-                LOG.warning("Received unrecognized status update for execution: " + fromDB.getId());
+                LOG.warning("Received unrecognized status update for execution: " + executionID);
                 return;
             }
 
