@@ -1,4 +1,4 @@
-import {Project, ProjectPage} from "../pages/project.po";
+import {Project, ProjectListPage} from "../pages/project-list.po";
 import {ConfirmDialogPage} from "../pages/confirm-dialog.po";
 import {AnalysisConfigurationPage} from "../pages/project-level/analysis-config.po";
 import {$, browser} from "protractor";
