@@ -1,6 +1,9 @@
 import {ProjectListPage} from "../../pages/project-list.po";
 import {CleanupWorkflow} from "../../workflows/cleanup.wf";
 
+/**
+ * TODO: How to test this? We need to have precondition of empty project list to test this.
+ */
 xdescribe('Empty project list', () => {
     const projectPage = new ProjectListPage();
 
