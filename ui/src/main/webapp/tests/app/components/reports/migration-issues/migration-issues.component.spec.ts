@@ -23,6 +23,7 @@ import {PaginationComponent} from "../../../../../src/app/shared/pagination.comp
 import {SearchComponent} from "../../../../../src/app/shared/search/search.component";
 import {AllDataFilteredMessageComponent} from "../../../../../src/app/shared/all-data-filtered-message.component";
 import {FormsModule} from "@angular/forms";
+import {SchedulerService} from "../../../../../src/app/shared/scheduler.service";
 
 let comp:    MigrationIssuesComponent;
 let fixture: ComponentFixture<MigrationIssuesComponent>;
@@ -51,6 +52,7 @@ describe('MigrationissuesComponent', () => {
                     provide: ActivatedRoute,
                     useValue: activatedRouteMock
                 },
+                SchedulerService,
                 PaginationService,
                 RouteFlattenerService,
                 MockBackend,
