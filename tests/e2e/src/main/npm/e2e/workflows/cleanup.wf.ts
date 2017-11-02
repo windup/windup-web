@@ -35,7 +35,7 @@ export class CleanupWorkflow {
 
                 confirmDialog.requiresText().then(requiresText => {
                     if (requiresText) {
-                        confirmDialog.writeText(name);
+                        confirmDialog.writeText(project.name);
                     }
 
                     return confirmDialog.clickConfirm()

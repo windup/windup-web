@@ -1,6 +1,7 @@
 import {ContextMenuPage} from "../../pages/project-level/context-menu.po";
 import {AnalysisListPage, Execution} from "../../pages/project-level/analysis-list.po";
 import {AnalysisWorkflow} from "../../workflows/analysis.wf";
+import {PROJECT_WITH_ANALYSIS} from "../../utils/data";
 
 describe('For project with finished analysis', () => {
     const contextMenu = new ContextMenuPage();
@@ -10,14 +11,19 @@ describe('For project with finished analysis', () => {
     let executions: Execution[];
 
     beforeAll((done) => {
-        analysisList.getExecutions().then(executionList => {
-            executions = executionList;
-            done();
-        });
+        analysisList.navigateTo(PROJECT_WITH_ANALYSIS.id)
+            .then(() => analysisList.getExecutions() as any)
+            .then(executionList => {
+                executions = executionList;
+                done();
+            });
+    });
+
+    it('should have 1 execution', () => {
+        expect(executions.length).toBe(1);
     });
 
     it('should have completed status', () => {
-        expect(executions.length).toBe(1);
         expect(executions[0].status.search('Completed') !== -1).toBeTruthy();
     });
 
