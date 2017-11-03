@@ -1,6 +1,7 @@
 import {browser, by, element, ElementFinder} from "protractor";
+import {PageObject} from "./page-object";
 
-export class ProjectPage {
+export class ProjectListPage implements PageObject {
     newProjectButton = element(by.css('.btn.btn-primary'));
     projectList = element.all(by.css('.list-group-item.project-info.tile-click'));
 

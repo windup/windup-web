@@ -1,10 +1,10 @@
-import {ProjectPage} from "./pages/project.po";
+import {ProjectListPage} from "./pages/project-list.po";
 import {CreateProjectWorkflow} from "./workflows/create-project.wf";
 import {ConfirmDialogPage} from "./pages/confirm-dialog.po";
 import {browser} from "protractor";
 
 describe('Project List', () => {
-    const projectPage = new ProjectPage();
+    const projectPage = new ProjectListPage();
 
     describe('With projects', () => {
         let projectName: string;

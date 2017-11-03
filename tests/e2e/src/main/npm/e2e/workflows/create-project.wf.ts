@@ -1,4 +1,4 @@
-import {ProjectPage} from "../pages/project.po";
+import {ProjectListPage} from "../pages/project-list.po";
 import {CreateProjectPage} from "../pages/wizard/create-project.po";
 import {AddApplicationsPage} from "../pages/wizard/add-applications.po";
 import {AnalysisConfigurationPage} from "../pages/wizard/analysis-configuration.po";
@@ -8,7 +8,7 @@ const UPLOAD_FILE_PATH = browser.params.upload.filePath;
 
 export class CreateProjectWorkflow {
     public createProject(name: string) {
-        const projectPage = new ProjectPage();
+        const projectPage = new ProjectListPage();
         return projectPage.navigateTo()
             .then(() => projectPage.newProject())
             .then(() => browser.waitForAngular())
