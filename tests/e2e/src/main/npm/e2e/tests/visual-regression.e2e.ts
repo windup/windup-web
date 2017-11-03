@@ -3,7 +3,7 @@ import {PageObject} from "../pages/page-object";
 import {assertScreenshotIsCorrectInAllResolutions, clearScreenshots, waitForPageToLoad} from "../utils/utils";
 import {AboutPage} from "../pages/about.po";
 import {RulesConfigurationPage} from "../pages/rules-configuration.po";
-import {ContextMenuPage, ReportLevelMenuItems} from "../pages/project-level/context-menu.po";
+import {ContextMenuPage} from "../pages/project-level/context-menu.po";
 import {AnalysisListPage} from "../pages/project-level/analysis-list.po";
 import {PROJECT_WITH_ANALYSIS, PROJECT_WITHOUT_ANALYSIS} from "../utils/data";
 import {ProjectListPage} from "../pages/project-list.po";
@@ -104,18 +104,6 @@ if (browser.params.visualRegression) {
             });
 
             describe('Dynamic reports', () => {
-                const navigateByMenuAndMakeScreenshot = (description: string, menuItem: ReportLevelMenuItems, filename: string) => {
-                    return describe(description, () => {
-                        beforeAll((done) => {
-                            contextMenu.openMenuItem(menuItem).then(() => done())
-                                .then(() => waitForPageToLoad())
-                                .then(() => done());
-                        });
-
-                        it('Should look consistent in all resolutions', testScreenshots(filename));
-                    });
-                };
-
                 const navigateByUrlAndMakeScreenshot = (description: string, projectId: number, analysisId: number, url: string, filename: string) => {
                     return describe(description, () => {
                         beforeAll(() => {
@@ -139,17 +127,32 @@ if (browser.params.visualRegression) {
                 navigateByUrlAndMakeScreenshot('Technologies - Migration Issues', projectId, analysisId, 'migration-issues', 'reports/migration-issues');
                 navigateByUrlAndMakeScreenshot('Execution details', projectId, analysisId, 'execution-details', 'reports/execution-details');
 //                navigateByUrlAndMakeScreenshot('Technologies (overall)', projectId, analysisId, 'technology-report', 'reports/tech-report');
+            });
 
-/*
+            xdescribe('Dynamic Reports navigate by menu', () => {
+                /*
+                const navigateByMenuAndMakeScreenshot = (description: string, menuItem: ReportLevelMenuItems, filename: string) => {
+                    return describe(description, () => {
+                        beforeAll((done) => {
+                            contextMenu.openMenuItem(menuItem).then(() => done())
+                                .then(() => waitForPageToLoad())
+                                .then(() => done());
+                        });
+
+                        it('Should look consistent in all resolutions', testScreenshots(filename));
+                    });
+                };
+                */
+                /*
                 navigateByMenuAndMakeScreenshot('2 Application List', ReportLevelMenuItems.APPLICATION_LIST, 'reports/application-list-2');
                 navigateByMenuAndMakeScreenshot('2 Dashboard', ReportLevelMenuItems.DASHBOARD, 'reports/dashboard');
-                //navigateByMenuAndMakeScreenshot('Technologies - EJB', projectId, analysisId, 'technology-report-ejb', 'reports/tech-report-ejb');
-                //navigateByMenuAndMakeScreenshot('Technologies - Remote Services', projectId, analysisId, 'technology-report-remote-services', 'reports/tech-report-remote-services');
-                //navigateByMenuAndMakeScreenshot('Technologies - Hibernate', projectId, analysisId, 'technology-report-hibernate', 'reports/tech-report-hibernate');
+                // navigateByMenuAndMakeScreenshot('Technologies - EJB', projectId, analysisId, 'technology-report-ejb', 'reports/tech-report-ejb');
+                // navigateByMenuAndMakeScreenshot('Technologies - Remote Services', projectId, analysisId, 'technology-report-remote-services', 'reports/tech-report-remote-services');
+                // navigateByMenuAndMakeScreenshot('Technologies - Hibernate', projectId, analysisId, 'technology-report-hibernate', 'reports/tech-report-hibernate');
                 navigateByMenuAndMakeScreenshot('2 Technologies - Migration Issues', ReportLevelMenuItems.MIGRATION_ISSUES, 'reports/migration-issues-2');
                 navigateByMenuAndMakeScreenshot('2 Execution details', ReportLevelMenuItems.EXECUTION_DETAILS, 'reports/execution-details-2');
-  //              navigateByMenuAndMakeScreenshot('2 Technologies (overall)', ReportLevelMenuItems.TECHNOLOGIES_OVERALL, 'reports/tech-report-2');
-*/
+                // navigateByMenuAndMakeScreenshot('2 Technologies (overall)', ReportLevelMenuItems.TECHNOLOGIES_OVERALL, 'reports/tech-report-2');
+                */
             });
         });
     });
