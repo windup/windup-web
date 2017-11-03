@@ -14,6 +14,10 @@ if (browser.params.visualRegression) {
             clearScreenshots();
         });
 
+        beforeEach((done) => {
+            browser.manage().window().setSize(1920, 1080).then(() => done());
+        });
+
         const testScreenshots = (fileName: string) => {
             return (done) => {
                 return waitForPageToLoad()
@@ -58,17 +62,12 @@ if (browser.params.visualRegression) {
                     .then(() => done());
             });
 
-            beforeEach((done) => {
-                browser.manage().window().setSize(1920, 1080).then(() => done());
-            });
-
             describe('Analysis list page', () => {
                 it('Should look consistent in all resolutions', testScreenshots('project/analysis-list-empty'));
             });
 
             describe('Application list page', () => {
                 beforeAll((done) => {
-                    browser.manage().window().setSize(1920, 1080);
                     contextMenu.getMenuItems().then(items => {
                         items[1].link.click();
                     })
@@ -80,12 +79,10 @@ if (browser.params.visualRegression) {
 
             describe('Analysis configuration page', () => {
                 beforeAll((done) => {
-                    browser.manage().window().setSize(1920, 1080)
-                        .then(() => contextMenu.getMenuItems() as any)
-                        .then(items => {
-                            items[2].link.click();
-                        })
-                        .then(() => done());
+                    contextMenu.getMenuItems().then(items => {
+                        items[2].link.click();
+                    })
+                    .then(() => done());
                 });
 
                 it('Should look consistent in all resolutions', testScreenshots('project/analysis-configuration'));
@@ -108,14 +105,14 @@ if (browser.params.visualRegression) {
             });
 
             describe('Dynamic reports', () => {
-                const navigateByUrlAndMakeScreenshot = (description: string, projectId: number, analysisId: number, url: string, filename: string) => {
+                const navigateByUrlAndMakeScreenshot = (description: string, aProjectId: number, analysisId: number, reportUrl: string, filename: string) => {
                     return describe(description, () => {
                         beforeAll((done) => {
-                            if (url && url.length > 0) {
-                                url = '/' + url;
+                            if (reportUrl && reportUrl.length > 0) {
+                                reportUrl = '/' + reportUrl;
                             }
 
-                            browser.get(`./projects/${projectId}/reports/${analysisId}${url}`)
+                            browser.get(`./projects/${aProjectId}/reports/${analysisId}${reportUrl}`)
                                 .then(() => waitForPageToLoad())
                                 .then(() => done());
                         });
