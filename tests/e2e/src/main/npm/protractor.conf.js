@@ -43,6 +43,14 @@ function login(timeout, maxAttempts, attempts) {
     });
 }
 
+exports.reporters = [
+    new SpecReporter({displayStacktrace: 'all'}),
+    new JUnitXmlReporter({
+        consolidateAll: true,
+        savePath: '.',
+        filePrefix: 'test-results.xml'
+    })
+];
 
 exports.config = {
     /**
@@ -83,18 +91,11 @@ exports.config = {
         browser.ignoreSynchronization = false;
 
         // add jasmine spec reporter
-        this.addReporters();
+        exports.reporters.forEach(function(reporter) {
+            jasmine.getEnv().addReporter(reporter);
+        });
 
         return login(1000, 10, 0);
-    },
-
-    addReporters: function() {
-        jasmine.getEnv().addReporter(new SpecReporter({displayStacktrace: 'all'}));
-        jasmine.getEnv().addReporter(new JUnitXmlReporter({
-            consolidateAll: true,
-            savePath: '.',
-            filePrefix: 'test-results.xml'
-        }));
     },
 
 //    seleniumServerJar: "node_modules/protractor/selenium/selenium-server-standalone-2.52.0.jar",

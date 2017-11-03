@@ -46,6 +46,29 @@
         </dependency>
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <skipVisualRegressionTests>true</skipVisualRegressionTests>
+            </properties>
+        </profile>
+        <profile>
+            <id>visual-regression</id>
+            <activation>
+                <property>
+                    <name>visualRegression</name>
+                </property>
+            </activation>
+            <properties>
+                <skipVisualRegressionTests>false</skipVisualRegressionTests>
+            </properties>
+        </profile>
+    </profiles>
+
     <build>
         <pluginManagement>
             <plugins>
@@ -333,6 +356,7 @@
                         <configuration>
                             <skip>${skipTests}</skip>
                             <successCodes>
+                                <code>0</code>
                                 <!-- This is a hack, 1 means test failures, but we need to handle it outside of maven-exec plugin -->
                                 <code>1</code>
                             </successCodes>
@@ -340,7 +364,7 @@
                             <workingDirectory>${project.build.directory}/npm</workingDirectory>
                             <arguments>
                                 <argument>protractor.conf.js</argument>
-                                <argument>- -params.upload.filePath</argument>
+                                <argument>--params.upload.filePath</argument>
                                 <argument>${project.build.directory}/deployments/rhamt-web.war</argument>
                             </arguments>
                             <outputFile>${project.build.directory}/e2e-output.log</outputFile>
@@ -353,8 +377,9 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
-                            <skip>${skipTests}</skip>
+                            <skip>${skipVisualRegressionTests}</skip>
                             <successCodes>
+                                <code>0</code>
                                 <!-- This is a hack, 1 means test failures, but we need to handle it outside of maven-exec plugin -->
                                 <code>1</code>
                             </successCodes>
