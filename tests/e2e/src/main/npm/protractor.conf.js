@@ -83,14 +83,18 @@ exports.config = {
         browser.ignoreSynchronization = false;
 
         // add jasmine spec reporter
+        this.addReporters();
+
+        return login(1000, 10, 0);
+    },
+
+    addReporters: function() {
         jasmine.getEnv().addReporter(new SpecReporter({displayStacktrace: 'all'}));
         jasmine.getEnv().addReporter(new JUnitXmlReporter({
             consolidateAll: true,
             savePath: '.',
             filePrefix: 'test-results.xml'
         }));
-
-        return login(1000, 10, 0);
     },
 
 //    seleniumServerJar: "node_modules/protractor/selenium/selenium-server-standalone-2.52.0.jar",

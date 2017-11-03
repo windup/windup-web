@@ -22,6 +22,8 @@ if (process.argv.length < 4) {
     process.exit(1);
 }
 
+console.error('Count of arguments: ', process.argv.length);
+
 const testResultsFile = process.argv[2];
 const failsafeResultsFile = process.argv[3];
 

@@ -5,10 +5,12 @@
   "scripts": {
     "e2e": "protractor",
     "e2e-local": "protractor --params.login.username test --params.login.password test --baseUrl http://localhost:8080/rhamt-web/ --params.baseUrl http://localhost:8080/rhamt-web/ --params.upload.filePath /home/dklingen/Downloads/mariadb-java-client-1.5.5.jar",
-    "e2e-local-capture": "protractor --params.login.username test --params.login.password test --baseUrl http://localhost:8080/rhamt-web/ --params.baseUrl http://localhost:8080/rhamt-web/ --params.upload.filePath /home/dklingen/Downloads/mariadb-java-client-1.5.5.jar --params.visualRegression true",
-    "e2e-local-capture-reference": "protractor --params.login.username test --params.login.password test --baseUrl http://localhost:8080/rhamt-web/ --params.baseUrl http://localhost:8080/rhamt-web/ --params.upload.filePath /home/dklingen/Downloads/mariadb-java-client-1.5.5.jar --params.captureImages true --params.visualRegression true",
+    "e2e-local-capture": "protractor protractor.visual-regression.conf.js --params.login.username test --params.login.password test --baseUrl http://localhost:8080/rhamt-web/ --params.baseUrl http://localhost:8080/rhamt-web/ --params.upload.filePath /home/dklingen/Downloads/mariadb-java-client-1.5.5.jar --params.visualRegression true",
+    "e2e-local-capture-reference": "protractor protractor.visual-regression.conf.js --params.login.username test --params.login.password test --baseUrl http://localhost:8080/rhamt-web/ --params.baseUrl http://localhost:8080/rhamt-web/ --params.upload.filePath /home/dklingen/Downloads/mariadb-java-client-1.5.5.jar --params.captureImages true --params.visualRegression true",
     "e2e-live": "protractor --elementExplorer",
     "e2e-local-test-server": "protractor --params.upload.filePath /home/dklingen/Downloads/das-description-ws-2.0.war",
+    "e2e-local-test-server-capture": "protractor --params.upload.filePath /home/dklingen/Downloads/das-description-ws-2.0.war --params.visualRegression true",
+    "e2e-local-test-server-capture-reference": "protractor --params.upload.filePath /home/dklingen/Downloads/das-description-ws-2.0.war --params.visualRegression true --params.captureImages true",
     "webdriver-update": "webdriver-manager update --gecko false",
     "webdriver-start": "webdriver-manager start",
     "postinstall": "npm run webdriver-update"

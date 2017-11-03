@@ -324,15 +324,18 @@
                             <outputFile>${project.build.directory/webdriver-update.log}</outputFile>
                         </configuration>
                     </execution>
-<!--
                     <execution>
                         <id>run-e2e</id>
-                        <phase>test</phase>
+                        <phase>integration-test</phase>
                         <goals>
                             <goal>exec</goal>
                         </goals>
                         <configuration>
                             <skip>${skipTests}</skip>
+                            <successCodes>
+                                <!-- This is a hack, 1 means test failures, but we need to handle it outside of maven-exec plugin -->
+                                <code>1</code>
+                            </successCodes>
                             <executable>./node_modules/protractor/bin/protractor</executable>
                             <workingDirectory>${project.build.directory}/npm</workingDirectory>
                             <arguments>
@@ -343,7 +346,6 @@
                             <outputFile>${project.build.directory}/e2e-output.log</outputFile>
                         </configuration>
                     </execution>
--->
                     <execution>
                         <id>run-e2e-visual-regression</id>
                         <phase>integration-test</phase>
@@ -352,7 +354,6 @@
                         </goals>
                         <configuration>
                             <skip>${skipTests}</skip>
-                            <!-- <executable>./run-tests</executable> -->
                             <successCodes>
                                 <!-- This is a hack, 1 means test failures, but we need to handle it outside of maven-exec plugin -->
                                 <code>1</code>
@@ -360,13 +361,9 @@
                             <executable>./node_modules/protractor/bin/protractor</executable>
                             <workingDirectory>${project.build.directory}/npm</workingDirectory>
                             <arguments>
-                                <argument>protractor.conf.js</argument>
-                                <argument>--params.upload.filePath</argument>
-                                <argument>${project.build.directory}/deployments/rhamt-web.war</argument>
-                                <argument>--params.visualRegression</argument>
-                                <argument>true</argument>
+                                <argument>protractor.visual-regression.conf.js</argument>
                             </arguments>
-                            <outputFile>${project.build.directory}/e2e-output.log</outputFile>
+                            <outputFile>${project.build.directory}/e2e-visual-regression-output.log</outputFile>
                         </configuration>
                     </execution>
                     <execution>
@@ -381,8 +378,9 @@
                             <executable>./verify-results.js</executable>
                             <workingDirectory>${project.build.directory}/npm</workingDirectory>
                             <arguments>
-                                <argument>${project.build.directory}/npm/test-results.xml</argument>
                                 <argument>${project.build.directory}/failsafe-reports/failsafe-summary.xml</argument>
+                                <argument>${project.build.directory}/npm/test-results.xml</argument>
+                                <argument>${project.build.directory}/npm/test-results-visual-regression.xml</argument>
                             </arguments>
                             <outputFile>${project.build.directory}/e2e-verify-results.log</outputFile>
                         </configuration>
