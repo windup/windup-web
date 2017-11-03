@@ -37,7 +37,7 @@ if (browser.params.visualRegression) {
          * TODO: What to do with this one?
          * Delete all projects?
          */
-        describe('Empty project list ', () => {
+        xdescribe('Empty project list ', () => {
             beforeAll(() => {
 
             });
@@ -67,22 +67,25 @@ if (browser.params.visualRegression) {
             });
 
             describe('Application list page', () => {
-                beforeAll(() => {
+                beforeAll((done) => {
                     browser.manage().window().setSize(1920, 1080);
                     contextMenu.getMenuItems().then(items => {
                         items[1].link.click();
-                    });
+                    })
+                    .then(() => done());
                 });
 
                 it('Should look consistent in all resolutions', testScreenshots('project/applications-list'));
             });
 
             describe('Analysis configuration page', () => {
-                beforeAll(() => {
-                    browser.manage().window().setSize(1920, 1080);
-                    contextMenu.getMenuItems().then(items => {
-                        items[2].link.click();
-                    });
+                beforeAll((done) => {
+                    browser.manage().window().setSize(1920, 1080)
+                        .then(() => contextMenu.getMenuItems() as any)
+                        .then(items => {
+                            items[2].link.click();
+                        })
+                        .then(() => done());
                 });
 
                 it('Should look consistent in all resolutions', testScreenshots('project/analysis-configuration'));
@@ -94,9 +97,10 @@ if (browser.params.visualRegression) {
             const analysisId = PROJECT_WITH_ANALYSIS.executions[0].id;
             const contextMenu = new ContextMenuPage();
 
-            beforeAll(() => {
+            beforeAll((done) => {
                 const analysisList = new AnalysisListPage();
-                analysisList.navigateTo(projectId);
+                analysisList.navigateTo(projectId)
+                    .then(() => done());
             });
 
             describe('Analysis list page', () => {
@@ -106,13 +110,14 @@ if (browser.params.visualRegression) {
             describe('Dynamic reports', () => {
                 const navigateByUrlAndMakeScreenshot = (description: string, projectId: number, analysisId: number, url: string, filename: string) => {
                     return describe(description, () => {
-                        beforeAll(() => {
+                        beforeAll((done) => {
                             if (url && url.length > 0) {
                                 url = '/' + url;
                             }
 
-                            browser.get(`./projects/${projectId}/reports/${analysisId}${url}`);
-                            waitForPageToLoad();
+                            browser.get(`./projects/${projectId}/reports/${analysisId}${url}`)
+                                .then(() => waitForPageToLoad())
+                                .then(() => done());
                         });
 
                         it('Should look consistent in all resolutions', testScreenshots(filename));
