@@ -9,7 +9,7 @@ const REFERENCE_SCREENSHOT_PATH = path.join(SCREENSHOT_BASE_DIR, 'reference');
 const CURRENT_SCREENSHOT_PATH = path.join(SCREENSHOT_BASE_DIR, 'current');
 const DIFF_SCREENSHOT_PATH = path.join(SCREENSHOT_BASE_DIR, 'diff');
 
-export function waitForPageToLoad() {
+export function waitForPageToLoad(): Promise<any> {
     return browser.waitForAngular()
         .then(() => browser.driver.sleep(1000));
 }
