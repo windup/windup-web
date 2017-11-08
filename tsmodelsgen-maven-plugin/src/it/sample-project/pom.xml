@@ -14,7 +14,7 @@
         <version.windup.core>4.0.0-SNAPSHOT</version.windup.core>
         <version.windup.web>4.0.0-SNAPSHOT</version.windup.web>
 
-        <version.forge>3.6.0.Final</version.forge>
+        <version.forge>3.7.2.Final</version.forge>
         <inputDirectory></inputDirectory>
         <outputDirectory>${project.build.directory}/tsModels</outputDirectory>
     </properties>
