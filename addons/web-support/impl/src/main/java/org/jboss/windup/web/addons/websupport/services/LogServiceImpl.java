@@ -5,14 +5,19 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
+import com.google.common.collect.Sets;
 import org.apache.commons.io.IOUtils;
 import org.jboss.forge.furnace.util.OperatingSystemUtils;
 import org.jboss.windup.exec.configuration.WindupConfiguration;
@@ -25,6 +30,10 @@ public class LogServiceImpl implements LogService
 {
     private static final String LOG_DIR = "logs";
     private static final String LOG_FILENAME = "analysis.log";
+    private static final Set<String> WHITELIST_SET = Sets.newHashSet(
+            "org.jboss.windup.exec.WindupProcessorImpl",
+            ""
+            );
 
     @Override
     public Handler createLogHandler(WindupConfiguration configuration) throws IOException
@@ -38,10 +47,10 @@ public class LogServiceImpl implements LogService
             {
                 try
                 {
-                    writer.write(LocalDateTime.ofInstant(Instant.ofEpochMilli(record.getMillis()), ZoneId.systemDefault()).toString());
-                    writer.write(" [");
-                    writer.write(record.getLoggerName());
-                    writer.write("] ");
+                    DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                    String dateFormatted = dateFormatter.format(new Date(record.getMillis()));
+                    writer.write(dateFormatted);
+                    writer.write(" ");
                     writer.write(record.getMessage());
                     writer.write(OperatingSystemUtils.getLineSeparator());
                 }
