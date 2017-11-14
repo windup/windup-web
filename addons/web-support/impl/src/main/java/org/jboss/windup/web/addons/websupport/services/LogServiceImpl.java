@@ -5,10 +5,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
@@ -23,9 +23,6 @@ import org.jboss.windup.util.exception.WindupException;
  */
 public class LogServiceImpl implements LogService
 {
-    private static final String LOG_DIR = "logs";
-    private static final String LOG_FILENAME = "analysis.log";
-
     @Override
     public Handler createLogHandler(WindupConfiguration configuration) throws IOException
     {
@@ -38,10 +35,10 @@ public class LogServiceImpl implements LogService
             {
                 try
                 {
-                    writer.write(LocalDateTime.ofInstant(Instant.ofEpochMilli(record.getMillis()), ZoneId.systemDefault()).toString());
-                    writer.write(" [");
-                    writer.write(record.getLoggerName());
-                    writer.write("] ");
+                    DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                    String dateFormatted = dateFormatter.format(new Date(record.getMillis()));
+                    writer.write(dateFormatted);
+                    writer.write(" ");
                     writer.write(record.getMessage());
                     writer.write(OperatingSystemUtils.getLineSeparator());
                 }
