@@ -35,14 +35,18 @@ export function GraphAdjacency (
         descriptor.get = function () {
             let verticesLabel = (direction === "IN") ? "vertices_in" : "vertices_out";
 
-            // Data is empty, just return null (or an empty array)
+
             let relations;
             if (kind == "ADJACENCY" || kind == "INCIDENCE") {
-                relations = this.data![verticesLabel]![name];
-                if (!relations || !(relations["vertices"] || relations["link"])){
+                // Data is empty, just return null (or an empty array)
+                if (!this.data[verticesLabel])
                     return returnArray ? emptyArrayObs : nullObs;
-                }
-            } else if (kind == "IN_V" || kind == "OUT_V") {
+
+                relations = this.data![verticesLabel]![name];
+                if (!relations || !(relations["vertices"] || relations["link"]))
+                    return returnArray ? emptyArrayObs : nullObs;
+            }
+            else if (kind == "IN_V" || kind == "OUT_V") {
                 relations = {};
             }
 
@@ -115,6 +119,7 @@ export function GraphAdjacency (
             }
 
             relations.observable = Observable.of(models);
+            relations.observable.get = models;
             return relations.observable;
         };
     };

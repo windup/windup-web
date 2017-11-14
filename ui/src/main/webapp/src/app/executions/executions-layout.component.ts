@@ -128,18 +128,6 @@ export class ExecutionsLayoutComponent extends ProjectLayoutComponent implements
                 true,
                 'technology-report-hibernate'
             ),
-            new ContextMenuItem(
-                'Ignored Files',
-                null,
-                false,
-                'technology-report-change-me'
-            ),
-            new ContextMenuItem(
-                'Unparsable Files',
-                null,
-                false,
-                'technology-report-change-me'
-            )
         ];
         this.menuItems = [
             new ReportMenuItem(
@@ -178,6 +166,29 @@ export class ExecutionsLayoutComponent extends ProjectLayoutComponent implements
                 this.execution,
                 'execution-details'
             ),
+            new ReportMenuItem(
+                'Technologies',
+                'fa-cubes',
+                this.project,
+                this.execution,
+                'technology-report'
+            ),
+            new ReportMenuItem(
+                'Ignored Files',
+                'fa-low-vision',
+                this.project,
+                this.execution,
+                'ignoredFiles-report'
+            ),
+            /* TODO.  And I think Unparsable Files could be listed together with Ignored Files on the same page.
+            new ReportMenuItem(
+                'Unparsable Files',
+                'fa-low-vision',
+                this.project,
+                this.execution,
+                'unparsableFiles-report'
+            ),
+            */
             new ContextMenuItem(
                 'Static Reports',
                 'fa-window-restore',
@@ -208,7 +219,7 @@ export class ExecutionsLayoutComponent extends ProjectLayoutComponent implements
                     this.project,
                     this.execution,
                     'dependencies'
-                )
+                ),
             ];
         }
     }

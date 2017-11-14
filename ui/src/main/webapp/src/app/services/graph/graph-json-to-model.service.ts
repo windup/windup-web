@@ -68,11 +68,12 @@ export class GraphJSONToModelService<T extends BaseModel>
             //return this.fromJSONarray(input, http, clazz);
             throw new TypeError("For arrays of models, use fromJSONarray(...).");
 
-        let discriminator: string[] = input[GraphJSONToModelService.DISCRIMINATOR];
         if (!clazz) {
             clazz = this.getModelClassForJsonObject(input, clazz);
         }
         let frameModel:BaseModel = Object.create(clazz.prototype);
+
+        let discriminator: string[] = input[GraphJSONToModelService.DISCRIMINATOR];
         frameModel.constructor.apply(frameModel, [discriminator, input["_id"], input]);
         frameModel.http = this._http;
         // Store this service to use when resolving Observable's in fields.

@@ -1,0 +1,85 @@
+<!-- Will be replaced by shared styles -->
+<style>
+    .panel-primary.wuTechnologies { border-color: #e7e7e7; }
+    .panel-primary.wuTechnologies .panel-heading { background-color: white; padding: 15px 15px; border-bottom: 2px solid #e7e7e7; }
+    .panel-primary.wuTechnologies .panel-heading .panel-title { color: black; font-size: 20px; font-weight: 500; }
+</style>
+
+<style>
+    .technologyItems {
+        font-size: 0;
+        width: 100%;
+        clear: both;
+    }
+
+    .technologyItem {
+        font-size: small;
+        font-weight: bold;
+        padding-left: 2em;
+        padding-right: 2em;
+        margin: auto;
+        border-top: solid 1px;
+        border-bottom: 3px solid #734d00;
+        display: inline-block;
+    }
+
+    .technologies-table {
+        margin-top: 10px;
+    }
+
+    .technologiesStats td {
+        text-transform: capitalize;
+    }
+</style>
+
+<div class="panel-body">
+
+    <div class="header-bar">
+        <h2>Ignored files</h2>
+        <div class="search-and-create">
+            <div class="search-and-create">
+                <wu-search [(searchValue)]="searchText" (searchValueChange)="updateSearch()"></wu-search>
+            </div>
+        </div>
+    </div>
+
+    <div class="desc">
+        This report lists the files which were found in the application,
+        but based on certain rules and the Red Hat Application Migration Toolkit configuration, both built-in and local,
+        they were not processed.
+    </div>
+
+
+    <wu-table
+        [loading]="loading.ignoredFiles"
+        (clearFilter)="clearSearch()"
+        [rowTemplate]="rowTemplateFile"
+        [title]="'Ignored Files'"
+        [items]="ignoredFiles"
+        [filter]="filterCallbacks.ignoredFiles"
+        [tableHeaders]="[
+            { title: 'Reason to ignore', isSortable: true, sortBy: 'ignoredRegex'},
+            { title: 'File', isSortable: true, sortBy: 'fileName' },
+            { title: 'Application', isSortable: true, sortBy: appSortBy },
+            { title: 'Path', isSortable: false, sortBy: 'filePath' }
+        ]">
+
+        <ng-template #rowTemplateFile let-file>
+            <tr>
+                <td>{{file.ignoredRegex}}</td>
+                <td>
+                    <a *ngIf="hasTextFileExtension(file)" [routerLink]="['../source/' + file.vertexId]">{{file.fileName}}</a>
+                    <ng-container *ngIf="!hasTextFileExtension(file)">{{file.fileName}}</ng-container>
+                </td>
+                <td>{{getAppThisFileBelongsToRecursively(file).fileName}}</td>
+                <td>{{file.filePath}}</td>
+            </tr>
+        </ng-template>
+    </wu-table>
+
+
+</div>
+
+
+
+

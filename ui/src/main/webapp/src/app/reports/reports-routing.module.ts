@@ -15,6 +15,7 @@ import {ApplicationDetailsComponent} from "./application-details/application-det
 import {RuleProviderExecutionsComponent} from "../executions/rule-provider-executions/rule-provider-executions.component";
 import {FullFlattenedRoute} from "../core/routing/route-flattener.service";
 import {ExecutionDetailComponent} from "../executions/execution-detail.component";
+import {IgnoredFilesReportComponent} from "./ignoredFiles/ignoredFiles-report.component";
 import {TechnologiesEJBReportComponent} from "./technologies/technologies-report-ejb.component";
 import {HardcodedIPReportComponent} from "./hardcoded-ip/hardcoded-ip.component";
 import {TechnologiesHibernateReportComponent} from "./technologies/hibernate/hibernate-report.component";
@@ -35,6 +36,7 @@ export const sourceRoute: Route =
 export const executionLevelRoutes: Routes = [
     {path: '', component: ExecutionApplicationListComponent, data: {displayName: 'Applications'}},
     {path: 'dependencies-report', component: DependenciesReportComponent, data: {displayName: 'Dependency Report'}},
+    {path: 'ignoredFiles-report', component: IgnoredFilesReportComponent, data: {displayName: 'Ignored Files Report'}},
     {path: 'technology-report', component: TechnologiesReportComponent, data: {displayName: 'Technology Report'},
         children: [
             {path: 'ejb', component: TechnologiesEJBReportComponent, data: {displayName: 'EJB Report'}},
