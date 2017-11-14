@@ -68,12 +68,6 @@ export class ApplicationLevelLayoutComponent extends ExecutionsLayoutComponent {
                 'technology-report-ejb'
             ),
             new ContextMenuItem(
-                'JPA',
-                null,
-                false,
-                'technology-report-change-me'
-            ),
-            new ContextMenuItem(
                 'Server Resources',
                 null,
                 false,
@@ -96,6 +90,12 @@ export class ApplicationLevelLayoutComponent extends ExecutionsLayoutComponent {
                 null,
                 false,
                 'technology-report-change-me'
+            ),
+            new ContextMenuItem(
+                'JPA', // 'fa-database',
+                null,
+                true,
+                'technology-report-jpa'
             ),
             new ContextMenuItem(
                 'Hibernate',

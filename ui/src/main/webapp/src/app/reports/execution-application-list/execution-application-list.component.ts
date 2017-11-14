@@ -49,6 +49,11 @@ export class ExecutionApplicationListComponent extends RoutedComponent implement
     ngOnInit(): any {
         this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
             let executionId = parseInt(flatRouteData.params['executionId']);
+            if (isNaN(executionId)) {
+                console.error("executionId is not set.", flatRouteData);
+                throw new Error(ExecutionApplicationListComponent.name + ": executionId is not set.");
+            }
+
             this.execID = executionId;
 
             this._windupService.getExecution(executionId)

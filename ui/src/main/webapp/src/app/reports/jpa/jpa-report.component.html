@@ -1,0 +1,109 @@
+<div>
+
+    <div class="header-bar">
+        <h2>Technologies &gt; JPA</h2>
+        <div class="search-and-create">
+            <div class="search-and-create"  *ngIf="true">
+                <wu-search [(searchValue)]="searchText" (searchValueChange)="updateSearch()"></wu-search>
+            </div>
+        </div>
+    </div>
+
+    <wu-table id="jpaEntityTable"
+            [loading]="loading"
+            (clearFilter)="clearSearch()"
+            [rowTemplate]="rowTemplateEntity"
+            [title]="'JPA Entities'"
+            [items]="jpaInfo.entities"
+            [filter]="filterCallbacks.entities"
+            [tableHeaders]="[
+                        { title: 'Entity Name', isSortable: true, sortBy: 'entityName' },
+                        { title: 'Entity Class', isSortable: false, sortBy: 'javaClass.resolved'},
+                        { title: 'Table', isSortable: true, sortBy: 'tableName'}
+        ]">
+
+        <ng-template #rowTemplateEntity let-entity>
+            <tr>
+                <td>{{entity.entityName}}</td>
+                <td>
+                    <a [routerLink]="['../source/' + ((entity.javaClass|async)?.decompiledSource|async)?.vertexId]">
+                        {{(entity.javaClass|async).simpleName}}
+                    </a>
+                </td>
+                <td>{{entity.tableName}}</td>
+            </tr>
+        </ng-template>
+    </wu-table>
+
+    <wu-table id="jpaQueryTable"
+              [loading]="loading"
+              (clearFilter)="clearSearch()"
+              [rowTemplate]="rowTemplateNamedQuery"
+              [title]="'JPA Named Queries'"
+              [items]="jpaInfo.namedQueries"
+              [filter]="filterCallbacks.namedQueries"
+              [tableHeaders]="[
+                        { title: 'Query Name', isSortable: true, sortBy: 'queryName' },
+                        { title: 'Entity Name', isSortable: false, sortBy: '' },
+                        { title: 'Query', isSortable: false, sortBy: 'javaClass.resolved'}
+        ]">
+
+        <ng-template #rowTemplateNamedQuery let-query>
+                <tr>
+                    <td>{{query.queryName|async}}</td>
+                    <td>{{(query.jpaEntity|async)}}</td>
+                    <td>{{query.query}}</td>
+                </tr>
+        </ng-template>
+    </wu-table>
+
+    <wu-table id="jpaConfigFilesTable"
+              [loading]="loading"
+              (clearFilter)="clearSearch()"
+              [rowTemplate]="rowTemplateConfigurationFiles"
+              [title]="'JPA Configuration Files'"
+              [items]="jpaInfo.configurationFiles"
+              [filter]="filterCallbacks.configurationFiles"
+              [tableHeaders]="[
+                        { title: 'Location', isSortable: true, sortBy: 'fileName' },
+                        { title: 'Root tag name', isSortable: false, sortBy: '' }
+        ]">
+
+        <ng-template #rowTemplateConfigurationFiles let-config>
+            <tr>
+                <td>{{config.directory}}/{{config.fileName}}</td>
+                <td>{{config.rootTagName}}</td>
+            </tr>
+        </ng-template>
+    </wu-table>
+
+    <wu-table id="jpaPersistenceUnitsTable"
+              [loading]="loading"
+              (clearFilter)="clearSearch()"
+              [rowTemplate]="rowTemplatePU"
+              [title]="'JPA PersistenceUnits'"
+              [items]="jpaInfo.persistenceUnits"
+              [filter]="filterCallbacks.persistenceUnits"
+              [tableHeaders]="[
+                        { title: 'Name', isSortable: true, sortBy: 'fileName' },
+                        { title: 'Application', isSortable: false, sortBy: '' },
+                        { title: 'Datasources', isSortable: false, sortBy: '' }
+        ]">
+
+        <ng-template #rowTemplatePU let-pu>
+            <tr>
+                <td>{{pu.name}}</td>
+                <td>{{(pu.application|async).name}}</td>
+                <td>
+                    <ul>
+                        <li *ngFor="let ds of pu.dataSources">
+                            {{ds.name}}
+                            (defined in {{ds.fileName}})
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        </ng-template>
+    </wu-table>
+
+</div>

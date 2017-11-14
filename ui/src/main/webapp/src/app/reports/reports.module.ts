@@ -4,6 +4,7 @@ import {PrettyPathPipe} from "./pretty-path.pipe";
 import {TechnologyTagComponent} from "./technology-tag/technology-tag.component";
 import {TechReportService} from "./technologies/tech-report.service";
 import {TechnologiesReportComponent} from "./technologies/technologies-report.component";
+import {JpaReportComponent} from "./jpa/jpa-report.component";
 import {SourceReportComponent} from "./source/source-report.component";
 import {MigrationIssuesComponent} from "./migration-issues/migration-issues.component";
 import {MigrationIssuesTableComponent} from "./migration-issues/migration-issues-table.component";
@@ -33,6 +34,7 @@ import {ProblemSummaryFilesComponent} from "./migration-issues/problem-summary-f
 import {TechnologiesEJBReportComponent} from "./technologies/technologies-report-ejb.component";
 import {HardcodedIPReportComponent} from "./hardcoded-ip/hardcoded-ip.component";
 import {HardcodedIPService} from "./hardcoded-ip/hardcoded-ip.service";
+import {JpaReportService} from "./jpa/jpa-report.service";
 import {TechnologiesHibernateReportComponent} from "./technologies/hibernate/hibernate-report.component";
 import {TechnologiesRemoteServicesReportComponent} from "./technologies/remote-services/remote-services-report.component";
 
@@ -55,6 +57,7 @@ import {TechnologiesRemoteServicesReportComponent} from "./technologies/remote-s
         ProblemSummaryFilesComponent,
         SourceReportComponent,
         TechnologiesReportComponent,
+        JpaReportComponent,
         TechnologyTagComponent,
         ApplicationLevelLayoutComponent,
         ExecutionApplicationListComponent,
@@ -75,6 +78,7 @@ import {TechnologiesRemoteServicesReportComponent} from "./technologies/remote-s
         MigrationIssuesComponent,
         SourceReportComponent,
         TechnologiesReportComponent,
+        JpaReportComponent,
         ApplicationLevelLayoutComponent,
 
         TechnologyTagComponent,
@@ -91,12 +95,13 @@ import {TechnologiesRemoteServicesReportComponent} from "./technologies/remote-s
         ReportFilterResolve,
         MigrationIssuesService,
         TechReportService,
+        JpaReportService,
         PrettyPathPipe,
         TagDataService,
         // TagFilterService
         SourceResolve,
         EffortLevelPipe,
-        HardcodedIPService
+        HardcodedIPService,
     ]
 })
 export class ReportsModule {
