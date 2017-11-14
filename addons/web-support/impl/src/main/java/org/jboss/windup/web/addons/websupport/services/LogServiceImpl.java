@@ -7,17 +7,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
-import com.google.common.collect.Sets;
 import org.apache.commons.io.IOUtils;
 import org.jboss.forge.furnace.util.OperatingSystemUtils;
 import org.jboss.windup.exec.configuration.WindupConfiguration;
@@ -28,13 +23,6 @@ import org.jboss.windup.util.exception.WindupException;
  */
 public class LogServiceImpl implements LogService
 {
-    private static final String LOG_DIR = "logs";
-    private static final String LOG_FILENAME = "analysis.log";
-    private static final Set<String> WHITELIST_SET = Sets.newHashSet(
-            "org.jboss.windup.exec.WindupProcessorImpl",
-            ""
-            );
-
     @Override
     public Handler createLogHandler(WindupConfiguration configuration) throws IOException
     {
