@@ -91,7 +91,7 @@ public class WindupExecutorServiceImpl implements WindupExecutorService
             configuration.setOptionValue(optionEntry.getKey(), optionEntry.getValue());
         }
         
-        Logger globalLogger = Logger.getLogger("org.jboss.windup");
+        Logger globalLogger = Logger.getLogger("org.jboss.windup.web.services.WindupWebProgressMonitor");
         Handler logHandler = null;
         try
         {
