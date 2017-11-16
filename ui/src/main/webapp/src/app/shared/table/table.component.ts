@@ -1,6 +1,7 @@
 import {OrderDirection, SortConfiguration} from "../sort/sorting.service";
 import {
-    ChangeDetectionStrategy, Component, ContentChild, EventEmitter, Input, OnChanges, Output, SimpleChanges,
+    ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChild, EventEmitter, Input, NgZone, OnChanges, Output,
+    SimpleChanges,
     TemplateRef
 } from "@angular/core";
 import {FilterCallback} from "../filter/filter.pipe";
@@ -67,6 +68,16 @@ export class TableComponent implements OnChanges {
     @Input()
     filter: FilterCallback;
 
+    /**
+     * When all data are filtered out
+     *
+     * @type {EventEmitter<boolean>}
+     */
+    @Output()
+    dataFilteredOut = new EventEmitter<boolean>();
+
+    constructor(protected _changeDetection: ChangeDetectorRef, protected _zone: NgZone) {}
+
     ngOnChanges(changes: SimpleChanges): void {
         if (changes.hasOwnProperty('filter') || changes.hasOwnProperty('items')) {
             this.applyFilter();
@@ -81,5 +92,17 @@ export class TableComponent implements OnChanges {
         } else {
             this.filteredItems = items.filter(this.filter);
         }
+
+        /**
+         * This is workaround to run this task after change detection is finished.
+         *
+         * Otherwise Angular would throw following error:
+         *  ExpressionChangedAfterItHasBeenCheckedError: Expression has changed after it was checked
+         *
+         */
+        this._zone.runOutsideAngular(() => setTimeout(() => this._zone.run(() => {
+            let filteredOut = this.filteredItems.length === 0 && items.length > 0;
+            this.dataFilteredOut.emit(filteredOut);
+        }), 0));
     }
 }

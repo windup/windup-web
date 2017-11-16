@@ -145,7 +145,8 @@ import {TablePanelComponent} from "./table/table-panel.component";
         SortPipe,
         FilterPipe,
         TableSortHeaderComponent,
-        TableComponent
+        TableComponent,
+        TablePanelComponent
     ],
     exports: [
         CustomSelectComponent,
@@ -203,7 +204,8 @@ import {TablePanelComponent} from "./table/table-panel.component";
         SortPipe,
         FilterPipe,
         TableSortHeaderComponent,
-        TableComponent
+        TableComponent,
+        TablePanelComponent
     ]
 })
 export class SharedModule {
