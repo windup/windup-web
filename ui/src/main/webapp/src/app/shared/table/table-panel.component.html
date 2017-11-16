@@ -1,0 +1,33 @@
+<div class="panel panel-default panel-primary wu-data-table">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{title}}</h3>
+    </div>
+    <div class="panel-body">
+        <wu-all-data-filtered-message
+                [filteredItems]="filteredItems"
+                [unfilteredItems]="items"
+                (clearFilter)="clearSearch()"
+                *ngIf="!loading; else loadingData">
+            <table class="table table-bordered table-hover" *ngIf="filteredItems.length > 0; else noDataAvailable">
+                <thead wu-table-sort-header
+                       [(sort)]="sort"
+                       [tableHeaders]="tableHeaders">
+                </thead>
+                <tbody>
+                <ng-container *ngFor="let item of filteredItems | wuSort: sort">
+                    <ng-template [ngTemplateOutlet]="rowTemplate" [ngOutletContext]="{$implicit: item}"></ng-template>
+                </ng-container>
+                </tbody>
+            </table>
+        </wu-all-data-filtered-message>
+    </div>
+</div>
+
+
+<ng-template #loadingData>
+    <span>Loading...</span>
+</ng-template>
+
+<ng-template #noDataAvailable>
+    <span>There are no items of this type.</span>
+</ng-template>

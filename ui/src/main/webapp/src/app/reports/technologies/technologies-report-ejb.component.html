@@ -8,7 +8,7 @@
         </div>
     </div>
 
-    <wu-table
+    <wu-table-panel
             [title]="'Message Driven Beans'"
             [items]="ejbMessageDriven"
             (clearFilter)="clearSearch()"
@@ -28,7 +28,7 @@
                 <td class="col-md-2">{{mdb.location}}</td>
             </tr>
         </ng-template>
-    </wu-table>
+    </wu-table-panel>
 
     <!-- L&F "static report" -->
     <!--            <div class="panel panel-primary">
@@ -90,7 +90,7 @@
             loading: loadingEntity
         }
         ]">
-        <wu-table
+        <wu-table-panel
                 [title]="data.title"
                 [items]="data.items"
                 (clearFilter)="clearSearch()"
@@ -112,6 +112,6 @@
                     <td class="col-md-2">{{value.location}}</td>
                 </tr>
             </ng-template>
-        </wu-table>
+        </wu-table-panel>
     </ng-container>
 </ng-container>

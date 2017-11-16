@@ -14,21 +14,21 @@ import {TableHeader} from "./table-sort-header.component";
  * Example usage:
  * @example
  * ```
- * <wu-table [items]="itemsArray" [rowTemplate]="rowTemplate">
+ * <wu-data-table [items]="itemsArray" [rowTemplate]="rowTemplate">
  *  <ng-template #rowTemplate let-item>
  *   <tr>
  *       <td class="col-md-2">{{item}}</td>
  *   </tr>
  *   </ng-template>
- * </wu-table>
+ * </wu-data-table>
  * ```
  */
 @Component({
-    selector: 'wu-table',
-    templateUrl: './table.component.html',
+    selector: 'wu-table-panel',
+    templateUrl: './table-panel.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TableComponent implements OnChanges {
+export class TablePanelComponent implements OnChanges {
     /**
      * TemplateRef to row template
      */
@@ -67,6 +67,28 @@ export class TableComponent implements OnChanges {
     @Input()
     filter: FilterCallback;
 
+    /**
+     * Title of table panel
+     */
+    @Input()
+    title: string;
+
+    /**
+     * Callback which clears the filter
+     *
+     * @type {EventEmitter<void>}
+     */
+    @Output()
+    clearFilter = new EventEmitter<void>();
+
+    /**
+     * Loading indicator.
+     *
+     * It is shown when no data are available.
+     */
+    @Input()
+    loading: boolean;
+
     ngOnChanges(changes: SimpleChanges): void {
         if (changes.hasOwnProperty('filter') || changes.hasOwnProperty('items')) {
             this.applyFilter();
@@ -81,5 +103,9 @@ export class TableComponent implements OnChanges {
         } else {
             this.filteredItems = items.filter(this.filter);
         }
+    }
+
+    clearSearch() {
+        this.clearFilter.next();
     }
 }
