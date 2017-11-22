@@ -1,10 +1,11 @@
 import {
     Component, OnInit, Input, ElementRef, SimpleChange, Output, EventEmitter, NgZone,
-    OnChanges
+    OnChanges, OnDestroy
 } from "@angular/core";
 import {Package} from "../generated/windup-services";
 import * as $ from "jquery";
 import 'jstree';
+import {SchedulerService} from "./scheduler.service";
 
 /**
  * Wrapper for jstree from: https://www.jstree.com/
@@ -14,7 +15,7 @@ import 'jstree';
     selector: 'wu-js-tree-wrapper',
     host: { 'style': 'display: block; overflow: auto;' }
 })
-export class JsTreeAngularWrapperComponent implements OnInit, OnChanges {
+export class JsTreeAngularWrapperComponent implements OnInit, OnChanges, OnDestroy {
     @Input()
     treeNodes: TreeData[];
 
@@ -39,7 +40,9 @@ export class JsTreeAngularWrapperComponent implements OnInit, OnChanges {
     protected updateSelectionCallback: Function = () => {};
     protected static EMPTY_CALLBACK = () => {};
 
-    public constructor(element: ElementRef, private _zone: NgZone) {
+    protected treeRedrawTimeout: any;
+
+    public constructor(element: ElementRef, private _zone: NgZone, private _schedulerService: SchedulerService) {
         this.element = element.nativeElement;
     }
 
@@ -60,7 +63,7 @@ export class JsTreeAngularWrapperComponent implements OnInit, OnChanges {
 
             if (changes.hasOwnProperty('selectedNodes')) {
                 // Another ugly workaround, now to give enough time to initialize jsTree first
-                setTimeout(() => this.redrawSelection(), 100);
+                this._schedulerService.setTimeout(this._zone.run(() => this.redrawSelection()), 100);
             }
         }
 
@@ -119,6 +122,13 @@ export class JsTreeAngularWrapperComponent implements OnInit, OnChanges {
         $(this.element).on('check_node.jstree uncheck_node.jstree', (event, data) => this.updateSelectionCallback(event, data));
         $(this.element).on('select_node.jstree', (event, data) => this.fireNodeClicked(event, data));
         $(this.element).on('changed.jstree loaded.jstree', (event, data) => this.redrawSelection());
+    }
+
+    ngOnDestroy(): void {
+        if (this.treeRedrawTimeout) {
+            this._schedulerService.clearTimeout(this.treeRedrawTimeout);
+            this.treeRedrawTimeout = null;
+        }
     }
 
     fireNodeClicked(event, data) {

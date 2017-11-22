@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, NgZone, OnDestroy, OnInit} from "@angular/core";
 import {AnalysisContext, MigrationProject, WindupExecution} from "../generated/windup-services";
 import {RegisteredApplication} from "../generated/windup-services";
 import {ActivatedRoute} from "@angular/router";
@@ -10,16 +10,18 @@ import {ExecutionEvent} from "../core/events/windup-event";
 import {AnalysisContextService} from "../analysis-context/analysis-context.service";
 import {NotificationService} from "../core/notification/notification.service";
 import {utils} from "../shared/utils";
+import {SchedulerService} from "../shared/scheduler.service";
 
 @Component({
     templateUrl: './project-executions.component.html'
 })
-export class ProjectExecutionsComponent extends ExecutionsMonitoringComponent implements OnInit {
+export class ProjectExecutionsComponent extends ExecutionsMonitoringComponent implements OnInit, OnDestroy {
     executions: WindupExecution[];
     private doNotRefreshList: boolean;
     private analysisContext: AnalysisContext;
 
     protected showRunAnalysisButton: boolean;
+    protected refreshTimeout: any;
 
     constructor(
         private _activatedRoute: ActivatedRoute,
@@ -27,7 +29,9 @@ export class ProjectExecutionsComponent extends ExecutionsMonitoringComponent im
         private _eventBus: EventBusService,
         private _windupService: WindupService,
         private _analysisContextService: AnalysisContextService,
-        private _notificationService: NotificationService
+        private _notificationService: NotificationService,
+        private _schedulerService: SchedulerService,
+        private _ngZone: NgZone
     ) {
         super(_windupExecutionService);
     }
@@ -56,13 +60,23 @@ export class ProjectExecutionsComponent extends ExecutionsMonitoringComponent im
         this.doNotRefreshList = false;
     }
 
+    ngOnDestroy(): void {
+        super.ngOnDestroy();
+
+        if (this.refreshTimeout) {
+            this._schedulerService.clearTimeout(this.refreshTimeout);
+            this.refreshTimeout = null;
+        }
+    }
+
     refreshExecutionList() {
         this._windupService.getProjectExecutions(this.project.id).subscribe(executions => {
             this.executions = executions;
 
             // If there are cancelled jobs that have not yet had a cancelled date added, then refresh the list
-            if (this.executions.find(execution => execution.state == "CANCELLED" && execution.timeCompleted == null) != null)
-                setTimeout(() => this.refreshExecutionList(), 1000);
+            if (this.executions.find(execution => execution.state == "CANCELLED" && execution.timeCompleted == null) != null) {
+                this.refreshTimeout = this._schedulerService.setTimeout(this._ngZone.run(() => this.refreshExecutionList()), 1000);
+            }
 
             this.loadActiveExecutions(this.executions);
         });
