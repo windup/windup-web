@@ -11,33 +11,34 @@
         </div>
     </div>
 
-    <table class="table table-bordered table-hover">
-        <thead wu-sortable-table
-               [(sortedData)]="sortedApplications" [data]="filteredApplications"
-               [initialSortBy]="initialSort"
-               [tableHeaders]="[
-                    { title: 'Application', isSortable: true, sortBy: 'fileName' },
-                    { title: 'Tags', isSortable: false, sortBy: 'fileName' },
-                    { title: 'Points', isSortable: true, sortBy: 'fileName' }
-               ]">
-        </thead>
-        <tbody>
-            <tr *ngFor="let app of sortedApplications">
-                <td>
-                    <a [routerLink]="['/projects', projectID, 'reports', execID, 'applications', app.id, 'application-index']">{{app.fileName}}</a>
-                </td>
-                <td>
-                    <span *ngIf="tagsByApplication.get(app.id) == null">
+    <wu-all-data-filtered-message [dataFilteredOut]="filtering.dataFilteredOut" (clearFilter)="clearSearch()">
+        <wu-table [items]="execution?.filterApplications"
+                  (dataFilteredOut)="filtering.dataFilteredOut = $event"
+                  [filter]="filtering.filterCallback"
+                  [rowTemplate]="rowTemplate"
+                  [tableHeaders]="[
+                { title: 'Application', isSortable: true, sortBy: 'fileName' },
+                { title: 'Tags', isSortable: false },
+                { title: 'Points', isSortable: true, sortBy: sorting.getStoryPointsCallback }
+            ]">
+            <ng-template #rowTemplate let-item>
+                <tr>
+                    <td>
+                        <a [routerLink]="['/projects', projectID, 'reports', execID, 'applications', item.id, 'application-index']">{{item.fileName}}</a>
+                    </td>
+                    <td>
+                    <span *ngIf="tagsByApplication.get(item.id) == null">
                         Loading...
                     </span>
-                    <span *ngIf="tagsByApplication.get(app.id) != null">
-                        <wu-technology-tag *ngFor="let tag of tagsByApplication.get(app.id)" [tag]="tag"></wu-technology-tag>
+                        <span *ngIf="tagsByApplication.get(item.id) != null">
+                        <wu-technology-tag *ngFor="let tag of tagsByApplication.get(item.id)" [tag]="tag"></wu-technology-tag>
                     </span>
-                </td>
-                <td>
-                    {{pointsByApplication.get(app.id) != null ? pointsByApplication.get(app.id) : 'Loading...' }}
-                </td>
-            </tr>
-        </tbody>
-    </table>
+                    </td>
+                    <td>
+                        {{pointsByApplication.get(item.id) != null ? pointsByApplication.get(item.id) : 'Loading...' }}
+                    </td>
+                </tr>
+            </ng-template>
+        </wu-table>
+    </wu-all-data-filtered-message>
 </div>

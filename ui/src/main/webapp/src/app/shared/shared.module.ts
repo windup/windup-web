@@ -64,7 +64,7 @@ import {SortPipe} from "./sort/sort.pipe";
 import {FilterPipe} from "./filter/filter.pipe";
 import {TableComponent} from "./table/table.component";
 import {TableSortHeaderComponent} from "./table/table-sort-header.component";
-
+import {TablePanelComponent} from "./table/table-panel.component";
 
 @NgModule({
     imports: [
@@ -145,7 +145,8 @@ import {TableSortHeaderComponent} from "./table/table-sort-header.component";
         SortPipe,
         FilterPipe,
         TableSortHeaderComponent,
-        TableComponent
+        TableComponent,
+        TablePanelComponent
     ],
     exports: [
         CustomSelectComponent,
@@ -203,7 +204,8 @@ import {TableSortHeaderComponent} from "./table/table-sort-header.component";
         SortPipe,
         FilterPipe,
         TableSortHeaderComponent,
-        TableComponent
+        TableComponent,
+        TablePanelComponent
     ]
 })
 export class SharedModule {

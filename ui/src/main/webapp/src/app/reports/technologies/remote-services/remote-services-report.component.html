@@ -7,7 +7,7 @@
             </div>
         </div>
     </div>
-    <wu-table
+    <wu-table-panel
             [loading]="loading.ejbRemoteServices"
             (clearFilter)="clearSearch()"
             [rowTemplate]="rowTemplateEjbRemote"
@@ -28,9 +28,9 @@
                 </td>
             </tr>
         </ng-template>
-    </wu-table>
+    </wu-table-panel>
 
-    <wu-table
+    <wu-table-panel
             [loading]="loading.jaxRpcWebServices"
             (clearFilter)="clearSearch()"
             [rowTemplate]="rowTemplateJaxRpc"
@@ -47,9 +47,9 @@
                 <td class="col-md-2">{{entity.tableName}}</td>
             </tr>
         </ng-template>
-    </wu-table>
+    </wu-table-panel>
 
-    <wu-table
+    <wu-table-panel
             [loading]="loading.jaxRsWebServices"
             (clearFilter)="clearSearch()"
             [rowTemplate]="rowTemplateJaxRS"
@@ -72,9 +72,9 @@
                 </td>
             </tr>
         </ng-template>
-    </wu-table>
+    </wu-table-panel>
 
-    <wu-table
+    <wu-table-panel
             [loading]="loading.jaxWsWebServices"
             (clearFilter)="clearSearch()"
             [rowTemplate]="rowTemplateJaxWS"
@@ -95,9 +95,9 @@
                 </td>
             </tr>
         </ng-template>
-    </wu-table>
+    </wu-table-panel>
 
-    <wu-table
+    <wu-table-panel
             [loading]="loading.rmiServices"
             (clearFilter)="clearSearch()"
             [rowTemplate]="rowTemplateRmi"
@@ -118,5 +118,5 @@
                 </td>
             </tr>
         </ng-template>
-    </wu-table>
+    </wu-table-panel>
 </div>

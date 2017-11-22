@@ -35,6 +35,15 @@ export class ExecutionApplicationListComponent extends RoutedComponent implement
     pointsByApplication: Map<number, number> = new Map<number, number>();
     tagsByApplication: Map<number, {name: string, level: string}[]> = new Map<number, {name: string, level: string}[]>();
 
+    filtering = {
+        dataFilteredOut: false,
+        filterCallback: (item: any) => true
+    };
+
+    sorting = {
+        getStoryPointsCallback: (app) => this.pointsByApplication.get(app.id)
+    };
+
     constructor(
         _activatedRoute: ActivatedRoute,
         _routeFlattener: RouteFlattenerService,
@@ -76,10 +85,20 @@ export class ExecutionApplicationListComponent extends RoutedComponent implement
 
     updateSearch() {
         if (this.searchText && this.searchText.length > 0) {
-            this.filteredApplications = this.execution.filterApplications.filter(app => app.fileName.search(new RegExp(this.searchText, 'i')) !== -1);
+            const regex = new RegExp(this.searchText, 'i');
+            this.filtering.filterCallback = this.filterEntities(regex);
         } else {
-            this.filteredApplications = this.execution.filterApplications;
+            this.filtering.filterCallback = (item: any) => true;
         }
+    }
+
+    clearSearch() {
+        this.searchText = '';
+        this.updateSearch();
+    }
+
+    filterEntities(regex: string|RegExp): (item: any) => boolean {
+        return (app: FilterApplication) => app.fileName.search(regex) !== -1 ;
     }
 
     private flattenReportData() {

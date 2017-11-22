@@ -1,7 +1,6 @@
 import {OrderDirection, SortConfiguration} from "../sort/sorting.service";
 import {
-    ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChild, EventEmitter, Input, NgZone, OnChanges, Output,
-    SimpleChanges,
+    ChangeDetectionStrategy, Component, ContentChild, EventEmitter, Input, OnChanges, Output, SimpleChanges,
     TemplateRef
 } from "@angular/core";
 import {FilterCallback} from "../filter/filter.pipe";
@@ -15,21 +14,21 @@ import {TableHeader} from "./table-sort-header.component";
  * Example usage:
  * @example
  * ```
- * <wu-table [items]="itemsArray" [rowTemplate]="rowTemplate">
+ * <wu-data-table [items]="itemsArray" [rowTemplate]="rowTemplate">
  *  <ng-template #rowTemplate let-item>
  *   <tr>
  *       <td class="col-md-2">{{item}}</td>
  *   </tr>
  *   </ng-template>
- * </wu-table>
+ * </wu-data-table>
  * ```
  */
 @Component({
-    selector: 'wu-table',
-    templateUrl: './table.component.html',
+    selector: 'wu-table-panel',
+    templateUrl: './table-panel.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TableComponent implements OnChanges {
+export class TablePanelComponent implements OnChanges {
     /**
      * TemplateRef to row template
      */
@@ -69,14 +68,26 @@ export class TableComponent implements OnChanges {
     filter: FilterCallback;
 
     /**
-     * When all data are filtered out
+     * Title of table panel
+     */
+    @Input()
+    title: string;
+
+    /**
+     * Callback which clears the filter
      *
-     * @type {EventEmitter<boolean>}
+     * @type {EventEmitter<void>}
      */
     @Output()
-    dataFilteredOut = new EventEmitter<boolean>();
+    clearFilter = new EventEmitter<void>();
 
-    constructor(protected _changeDetection: ChangeDetectorRef, protected _zone: NgZone) {}
+    /**
+     * Loading indicator.
+     *
+     * It is shown when no data are available.
+     */
+    @Input()
+    loading: boolean;
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes.hasOwnProperty('filter') || changes.hasOwnProperty('items')) {
@@ -92,17 +103,9 @@ export class TableComponent implements OnChanges {
         } else {
             this.filteredItems = items.filter(this.filter);
         }
+    }
 
-        /**
-         * This is workaround to run this task after change detection is finished.
-         *
-         * Otherwise Angular would throw following error:
-         *  ExpressionChangedAfterItHasBeenCheckedError: Expression has changed after it was checked
-         *
-         */
-        this._zone.runOutsideAngular(() => setTimeout(() => this._zone.run(() => {
-            let filteredOut = this.filteredItems.length === 0 && items.length > 0;
-            this.dataFilteredOut.emit(filteredOut);
-        }), 0));
+    clearSearch() {
+        this.clearFilter.next();
     }
 }
