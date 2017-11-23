@@ -1,5 +1,6 @@
 import {Output, Input, EventEmitter, Component, ChangeDetectionStrategy} from "@angular/core";
-import {isFunction} from "util";
+import {utils} from "../utils";
+import isFunction = utils.isFunction;
 
 type LabelCallback = (item: any) => string;
 

@@ -5,7 +5,8 @@ import {Constants} from "../constants";
 import {MigrationProject} from "../generated/windup-services";
 import {AbstractService} from "../shared/abtract.service";
 import {Observable} from "rxjs";
-import {isNumber} from "util";
+import {utils} from "../shared/utils";
+import isNumber = utils.isNumber;
 import {
     MigrationProjectEvent, NewExecutionStartedEvent, ExecutionUpdatedEvent,
     ApplicationRegisteredEvent, ApplicationDeletedEvent, UpdateMigrationProjectEvent, DeleteMigrationProjectEvent

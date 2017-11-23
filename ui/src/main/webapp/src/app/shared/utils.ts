@@ -6,6 +6,18 @@ export function substringAfterLast(str, delimiter) {
 
 export module utils {
 
+    export function isNumber(value): boolean {
+        return typeof value === 'number';
+    }
+
+    export function isString(value): boolean {
+        return typeof value === 'string';
+    }
+
+    export function isFunction(value) {
+        return typeof value === 'function';
+    }
+
     export function parseServerResponse(response: string) {
         let result;
 
@@ -186,7 +198,7 @@ export module utils {
                 } else {
                     return null;
                 }
-            });
+            }) as Observable<ResolvedObject<T, K>>;
         }
 
         /**
