@@ -17,6 +17,9 @@ import {RouteFlattenerService} from "./routing/route-flattener.service";
 import {LogoutGuard} from "./authentication/logout.guard";
 import {UrlCleanerService} from "./routing/url-cleaner.service";
 import {LoadingIndicatorService} from "./loading-indicator.service";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
+import {TokenInterceptor} from "./authentication/token.interceptor";
+import {LoadingInterceptor} from "./loading/loading.interceptor";
 
 
 /**
@@ -33,6 +36,7 @@ import {LoadingIndicatorService} from "./loading-indicator.service";
         FormsModule,
         ReactiveFormsModule,
         HttpModule,
+        HttpClientModule,
         NoopAnimationsModule, // WINDUP-1579, needed since Angular 4
     ],
     providers: [
@@ -56,6 +60,16 @@ import {LoadingIndicatorService} from "./loading-indicator.service";
         RouteFlattenerService,
         UrlCleanerService,
         LoadingIndicatorService, // Must be a singleton - contains a request counter.
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: TokenInterceptor,
+            multi: true
+        },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: LoadingInterceptor,
+            multi: true
+        }
     ]
 })
 export class CoreModule {
