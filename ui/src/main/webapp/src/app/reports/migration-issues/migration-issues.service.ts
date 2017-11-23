@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {Http} from "@angular/http";
+import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {AbstractService} from "../../shared/abtract.service";
 import {Constants} from "../../constants";
@@ -12,7 +12,7 @@ export class MigrationIssuesService extends AbstractService {
     private static AGGREGATED_ISSUES_URL = MigrationIssuesService.MIGRATION_ISSUES_BASE + '/aggregatedIssues';
     private static FILE_ISSUES_URL = MigrationIssuesService.MIGRATION_ISSUES_BASE + '/{summaryId}/files';
 
-    constructor(private _http: Http) {
+    constructor(private _http: HttpClient) {
         super();
     }
 
@@ -23,7 +23,6 @@ export class MigrationIssuesService extends AbstractService {
         let serializedFilter = this.serializeFilter(filter);
 
         return this._http.post(url, serializedFilter, this.JSON_OPTIONS)
-            .map(res => res.json())
             .catch(this.handleError);
     }
 
@@ -36,7 +35,6 @@ export class MigrationIssuesService extends AbstractService {
         let serializedFilter = this.serializeFilter(filter);
 
         return this._http.post(url, serializedFilter, this.JSON_OPTIONS)
-            .map(res => res.json())
             .catch(this.handleError);
     }
 }

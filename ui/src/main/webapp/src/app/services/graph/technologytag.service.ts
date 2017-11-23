@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http } from "@angular/http";
+import {HttpClient} from "@angular/common/http";
 import { Observable } from "rxjs";
 import { AbstractService } from "../../shared/abtract.service";
 import { Constants } from "../../constants";
@@ -10,7 +10,7 @@ import { TechnologyTagModel } from "../../generated/tsModels/TechnologyTagModel"
 @Injectable()
 export class TechnologyTagService extends AbstractService {
 
-    constructor(private _http: Http, private _graphJsonToModelService: GraphJSONToModelService<any>) {
+    constructor(private _http: HttpClient, private _graphJsonToModelService: GraphJSONToModelService<any>) {
         super();
     }
 
@@ -19,8 +19,7 @@ export class TechnologyTagService extends AbstractService {
         let service = this._graphJsonToModelService;
 
         return this._http.get(url)
-            .map(res => res.json())
-            .map(res => <TechnologyTagModel[]>res.map((json) => service.fromJSON(json)))
+            .map((res: any[]) => <TechnologyTagModel[]>res.map((json) => service.fromJSON(json)))
             .catch(this.handleError);
     }
 }

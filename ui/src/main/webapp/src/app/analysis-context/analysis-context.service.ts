@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Http} from '@angular/http';
+import {HttpClient} from "@angular/common/http";
 
 import {Constants} from "../constants";
 import {AnalysisContext, MigrationProject} from "../generated/windup-services";
@@ -20,7 +20,7 @@ export class AnalysisContextService extends AbstractService {
 
     private _cache: CacheSection;
 
-    constructor (private _http: Http, private _cacheService: CacheService) {
+    constructor (private _http: HttpClient, private _cacheService: CacheService) {
         super();
         this._cache = _cacheService.getSection('analysisContext');
     }
@@ -37,7 +37,6 @@ export class AnalysisContextService extends AbstractService {
         let url = Constants.REST_BASE + this.CREATE_URL.replace('{projectId}', project.id.toString());
 
         return this._http.put(url, body, this.JSON_OPTIONS)
-            .map(res => <AnalysisContext> res.json())
             .do((context: AnalysisContext) => {
                 // invalidate cache for just updated context
                 let key = 'get(' + context.id + ')';
@@ -49,7 +48,6 @@ export class AnalysisContextService extends AbstractService {
     @Cached('analysisContext')
     get(id: number) {
         return this._http.get(Constants.REST_BASE + this.ANALYSIS_CONTEXT_URL.replace("{id}", id.toString()))
-            .map(res => <AnalysisContext> res.json())
             .catch(this.handleError);
     }
 }

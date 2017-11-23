@@ -1,5 +1,5 @@
 import {Injectable, NgZone} from '@angular/core';
-import {Http} from '@angular/http';
+import {HttpClient} from "@angular/common/http";
 import {FileUploader} from 'ng2-file-upload/ng2-file-upload';
 import {Observable} from 'rxjs/Observable';
 
@@ -43,7 +43,7 @@ export class RegisteredApplicationService extends AbstractService {
     private UPLOAD_URL = '/file';
 
     constructor (
-        private _http: Http,
+        private _http: HttpClient,
         private _keycloakService:KeycloakService,
         private _multipartUploader: FileUploader,
         private _eventBusService: EventBusService,
@@ -77,7 +77,6 @@ export class RegisteredApplicationService extends AbstractService {
         let url = endpoint.replace("{projectId}", project.id.toString()).replace("{exploded}", ""+!!isDirWithExplodedApp);
 
         return this._http.post(url, body, this.JSON_OPTIONS)
-            .map(res => <RegisteredApplication> res.json())
             .catch(this.handleError)
             .do((responseApplication) => {
                 let responseApplicationArray;
@@ -163,14 +162,12 @@ export class RegisteredApplicationService extends AbstractService {
     @Cached('application')
     getApplications(): Observable<RegisteredApplication[]> {
         return this._http.get(Constants.REST_BASE + RegisteredApplicationService.GET_APPLICATIONS_URL)
-            .map(res => <RegisteredApplication[]> res.json())
             .catch(this.handleError);
     }
 
     @Cached('application')
     getApplicationsByProjectID(id: number): Observable<RegisteredApplication[]> {
         return this._http.get(Constants.REST_BASE + RegisteredApplicationService.BY_PROJECT_ID_URL.replace("{projectId}", id.toString()))
-            .map(res => <RegisteredApplication[]> res.json())
             .catch(this.handleError);
     }
 
@@ -179,7 +176,6 @@ export class RegisteredApplicationService extends AbstractService {
         let url = Constants.REST_BASE + RegisteredApplicationService.SINGLE_APPLICATION_URL.replace('{appId}', id.toString());
 
         return this._http.get(url)
-            .map(response => response.json())
             .catch(this.handleError);
     }
 
@@ -191,7 +187,6 @@ export class RegisteredApplicationService extends AbstractService {
         let url = Constants.REST_BASE + RegisteredApplicationService.UPDATE_APPLICATION_PATH_URL.replace('{appId}', application.id.toString());
 
         return this._http.put(url, body, this.JSON_OPTIONS)
-            .map(res => <RegisteredApplication> res.json())
             .catch(this.handleError);
     }
 

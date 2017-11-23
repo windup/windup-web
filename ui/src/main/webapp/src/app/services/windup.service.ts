@@ -1,6 +1,6 @@
 ///<reference path="../shared/cache.service.ts"/>
 import {Injectable} from '@angular/core';
-import {Http} from '@angular/http';
+import {HttpClient} from "@angular/common/http";
 import {Observable} from 'rxjs/Observable';
 
 import {Constants} from "../constants";
@@ -16,7 +16,7 @@ export class WindupService extends AbstractService {
     private LOGS_PATH = '/logs';
     private PROJECT_EXECUTIONS_PATH = '/windup/by-project/{projectId}';
 
-    constructor (private _http: Http, private _eventBus: EventBusService) {
+    constructor (private _http: HttpClient, private _eventBus: EventBusService) {
         super();
     }
 
@@ -39,7 +39,6 @@ export class WindupService extends AbstractService {
         let url = Constants.REST_BASE + this.EXECUTIONS_PATH + '/' + executionID;
 
         return this._http.get(url)
-            .map(res => <WindupExecution> res.json())
             .catch(this.handleError);
     }
 
@@ -49,7 +48,6 @@ export class WindupService extends AbstractService {
         let body = JSON.stringify(context);
 
         return this._http.post(url, body, this.JSON_OPTIONS)
-            .map(res => <WindupExecution> res.json())
             .do(res => {
                 getCacheServiceInstance().getSection('execution').clear();
             })
@@ -59,7 +57,6 @@ export class WindupService extends AbstractService {
     @Cached({section: 'execution', cacheItemCallback: WindupService.cacheExecutionList})
     public getAllExecutions(): Observable<WindupExecution[]> {
         return this._http.get(Constants.REST_BASE + this.EXECUTIONS_PATH)
-            .map(res => <WindupExecution[]> res.json())
             .catch(this.handleError);
     }
 
@@ -68,7 +65,6 @@ export class WindupService extends AbstractService {
         let url = Constants.REST_BASE + this.PROJECT_EXECUTIONS_PATH.replace('{projectId}', projectId.toString());
 
         return this._http.get(url)
-            .map(res => res.json())
             .catch(this.handleError);
     }
 
@@ -76,7 +72,6 @@ export class WindupService extends AbstractService {
         let url = Constants.REST_BASE + this.EXECUTIONS_PATH + '/' + executionID + this.LOGS_PATH;
 
         return this._http.get(url)
-            .map(res => <WindupExecution> res.json())
             .catch(this.handleError);
     }
 

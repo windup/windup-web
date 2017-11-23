@@ -1,21 +1,21 @@
 import {Injectable} from '@angular/core';
 import {Response} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
-import {Headers, RequestOptions} from '@angular/http';
+import {Headers} from '@angular/http';
 import {ReportFilter} from "../generated/windup-services";
 
 @Injectable()
 export class AbstractService {
 
     public JSON_HEADERS: Headers;
-    public JSON_OPTIONS: RequestOptions;
+    public JSON_OPTIONS: Object;
 
     constructor (){
         this.JSON_HEADERS = new Headers();
 
         this.JSON_HEADERS.append('Content-Type', 'application/json');
         this.JSON_HEADERS.append('Accept', 'application/json');
-        this.JSON_OPTIONS = new RequestOptions({ headers: this.JSON_HEADERS });
+        this.JSON_OPTIONS = { headers: this.JSON_HEADERS };
     }
 
     protected handleError(error: Response) {

@@ -1,4 +1,4 @@
-import {Http} from "@angular/http";
+import {HttpClient} from "@angular/common/http";
 import {Constants} from "../../constants";
 import {AbstractService} from "../../shared/abtract.service";
 import {Observable} from "rxjs";
@@ -12,7 +12,7 @@ export class ReportFilterService extends AbstractService {
     protected CATEGORIES_URL = '/executions/{executionId}/filter/categories';
     protected FILTER_APPLICATIONS_URL = '/executions/{executionId}/filter/applications';
 
-    public constructor(private _http: Http) {
+    public constructor(private _http: HttpClient) {
         super();
     }
 
@@ -20,7 +20,6 @@ export class ReportFilterService extends AbstractService {
         let url = Constants.REST_BASE + this.FILTER_URL.replace('{execId}', execution.id.toString());
 
         return this._http.get(url)
-            .map(res => res.json())
             .catch(this.handleError);
     }
 
@@ -28,7 +27,6 @@ export class ReportFilterService extends AbstractService {
         let url = Constants.REST_BASE + this.FILTER_URL.replace('{execId}', execution.id.toString());
 
         return this._http.delete(url)
-            .map(res => res.json())
             .catch(this.handleError);
     }
 
@@ -36,7 +34,6 @@ export class ReportFilterService extends AbstractService {
         let url = Constants.REST_BASE + this.FILTER_URL.replace('{execId}', execution.id.toString());
 
         return this._http.put(url, filter)
-            .map(res => res.json())
             .catch(this.handleError);
     }
 
@@ -44,7 +41,6 @@ export class ReportFilterService extends AbstractService {
         let url = Constants.REST_BASE + this.TAGS_URL.replace('{execId}', execution.id.toString());
 
         return this._http.get(url)
-            .map(res => res.json())
             .catch(this.handleError);
     }
 
@@ -52,7 +48,6 @@ export class ReportFilterService extends AbstractService {
         let url = Constants.REST_BASE + this.CATEGORIES_URL.replace('{execId}', execution.id.toString());
 
         return this._http.get(url)
-            .map(res => res.json())
             .catch(this.handleError);
     }
 
@@ -63,7 +58,6 @@ export class ReportFilterService extends AbstractService {
                 .replace('{executionId}', execution.id.toString());
 
         return this._http.get(url)
-            .map(res => res.json())
             .catch(this.handleError);
     }
 }

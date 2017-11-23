@@ -9,8 +9,6 @@ import {Observable} from "rxjs";
 import {MigrationIssuesComponent} from "../../../../../src/app/reports/migration-issues/migration-issues.component";
 import {MigrationIssuesTableComponent} from "../../../../../src/app/reports/migration-issues/migration-issues-table.component";
 import {By} from "@angular/platform-browser";
-import {HttpModule, BaseRequestOptions, Http, ConnectionBackend} from "@angular/http";
-import {MockBackend} from "@angular/http/testing";
 import {ReportFilterIndicatorComponent} from "../../../../../src/app/reports/filter/report-filter-indicator.component";
 import {GraphJSONToModelService} from "../../../../../src/app/services/graph/graph-json-to-model.service";
 import {WindupService} from "../../../../../src/app/services/windup.service";
@@ -24,6 +22,8 @@ import {SearchComponent} from "../../../../../src/app/shared/search/search.compo
 import {AllDataFilteredMessageComponent} from "../../../../../src/app/shared/all-data-filtered-message.component";
 import {FormsModule} from "@angular/forms";
 import {SchedulerService} from "../../../../../src/app/shared/scheduler.service";
+import {HttpClient, HttpClientModule} from "@angular/common/http";
+import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 let comp:    MigrationIssuesComponent;
 let fixture: ComponentFixture<MigrationIssuesComponent>;
@@ -37,7 +37,7 @@ describe('MigrationissuesComponent', () => {
         activatedRouteMock = new ActivatedRouteMock();
 
         TestBed.configureTestingModule({
-            imports: [ RouterTestingModule, HttpModule, FormsModule ],
+            imports: [ RouterTestingModule, HttpClientModule, HttpClientTestingModule, FormsModule ],
             declarations: [
                 MigrationIssuesComponent, MigrationIssuesTableComponent, ProblemSummaryFilesComponent,
                 ReportFilterIndicatorComponent, EffortLevelPipe, PaginationComponent, SearchComponent,
@@ -55,16 +55,7 @@ describe('MigrationissuesComponent', () => {
                 SchedulerService,
                 PaginationService,
                 RouteFlattenerService,
-                MockBackend,
-                BaseRequestOptions,
                 EffortLevelPipe,
-                {
-                    provide: Http,
-                    useFactory: (backend: ConnectionBackend, defaultOptions: BaseRequestOptions) => {
-                        return new Http(backend, defaultOptions);
-                    },
-                    deps: [MockBackend, BaseRequestOptions]
-                },
                 {
                     provide: MigrationIssuesService,
                     useValue: jasmine.createSpyObj('MigrationIssuesService', [
@@ -95,10 +86,10 @@ describe('MigrationissuesComponent', () => {
                 },
                 {
                     provide: GraphJSONToModelService,
-                    useFactory: (http: Http) => {
+                    useFactory: (http: HttpClient) => {
                         return new GraphJSONToModelService<any>(http, null);
                     },
-                    deps: [ Http ]
+                    deps: [ HttpClient ]
                 }
             ]
         }).compileComponents();

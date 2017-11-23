@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {Http} from "@angular/http";
+import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {AbstractService} from "../../shared/abtract.service";
 import {Constants} from "../../constants";
@@ -9,7 +9,7 @@ import {ClassificationModel} from "../../generated/tsModels/ClassificationModel"
 @Injectable()
 export class ClassificationService extends AbstractService {
 
-    constructor(private _http: Http, private _graphJsonToModelService: GraphJSONToModelService<any>) {
+    constructor(private _http: HttpClient, private _graphJsonToModelService: GraphJSONToModelService<any>) {
         super();
     }
 
@@ -18,8 +18,7 @@ export class ClassificationService extends AbstractService {
         let service = this._graphJsonToModelService;
 
         return this._http.get(url)
-            .map(res => res.json())
-            .map(res => <ClassificationModel[]>res.map((json) => service.fromJSON(json, ClassificationModel)))
+            .map((res: any[]) => <ClassificationModel[]>res.map((json) => service.fromJSON(json, ClassificationModel)))
             .catch(this.handleError);
     }
 }

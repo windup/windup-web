@@ -1,4 +1,5 @@
 import {Injectable} from '@angular/core';
+import {HttpClient} from "@angular/common/http";
 import {Http, Response} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import {BaseModel} from "./base.model";
@@ -13,7 +14,7 @@ export class FramesRestClientService
 {
     private endpointUrl: string;
 
-    constructor (private http: Http) {}
+    constructor (private http: HttpClient) {}
 
     /**
      * A generic query for adjacent frames.
@@ -50,7 +51,6 @@ export class FramesRestClientService
             + `/${directionOut ? 'out' : 'in'}/${query}/${idsOnly}/${limit}/${offset}`;
 
         var responseObservable = this.http.put(url, "")
-            .map(res => <QueryResults<T>> res.json())
             .catch(this.handleError);
 
         return responseObservable;
