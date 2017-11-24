@@ -3,6 +3,7 @@ import {DependenciesData, DependencyNode, DependencyEdge} from "./dependencies.s
 import * as d3 from "d3";
 import "d3-selection-multi"; // Doesn't work.
 import {substringAfterLast} from "../../shared/utils";
+import {SimulationNodeDatum} from "d3-force";
 
 
 type SvgSelection = d3.Selection<SVGElement, {}, HTMLElement, any>;
@@ -365,15 +366,17 @@ export class DependenciesGraphComponent implements OnInit, OnChanges {
 
 }
 
-class HasState {
-    state: string;
+interface HasState extends SimulationNodeDatum {
+    state?: string;
 }
+
 class Point {
     constructor(
         public x: number,
         public y: number
     ) {}
 }
+
 interface ExtendedDependencyNode extends DependencyNode {
     state: string;
     in: ExtendedDependencyNode[];
