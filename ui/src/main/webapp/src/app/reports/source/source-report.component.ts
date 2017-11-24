@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {Observable} from "rxjs";
 
 import * as showdown from "showdown";
-import "./prism";
+import * as Prism from "./prism";
 
 import {FileModelService} from "../../services/graph/file-model.service";
 import {FileModel} from "../../generated/tsModels/FileModel";
