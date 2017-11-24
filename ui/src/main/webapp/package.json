@@ -76,8 +76,6 @@
     "zone.js": "^0.8.10"
   },
   "devDependencies": {
-    "@angularclass/hmr": "^1.0.1",
-    "@angularclass/hmr-loader": "^3.0.2",
     "@ngtools/webpack": "^1.8.4",
     "@types/bootstrap": "^3.3.32",
     "@types/core-js": "^0.9.35",
