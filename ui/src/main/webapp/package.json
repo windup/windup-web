@@ -33,7 +33,7 @@
     "@angular/core": "^4.4.0",
     "@angular/forms": "^4.4.0",
     "@angular/http": "^4.4.0",
-    "@angular/language-service": "^4.1.2",
+    "@angular/language-service": "^4.4.0",
     "@angular/platform-browser": "^4.4.0",
     "@angular/platform-browser-dynamic": "^4.4.0",
     "@angular/platform-server": "^4.4.0",
