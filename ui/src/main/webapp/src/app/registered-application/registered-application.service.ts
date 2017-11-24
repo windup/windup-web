@@ -147,7 +147,7 @@ export class RegisteredApplicationService extends AbstractService {
 
                 this._multipartUploader.uploadAll();
 
-                return Observable.fromPromise(promise);
+                return Observable.fromPromise(promise) as Observable<RegisteredApplication[]>;
             });
     }
 

@@ -138,7 +138,7 @@ describe("Registered Application Service Test", () => {
 
             instance = new RegisteredApplicationService(null, null, jasmine.createSpyObj('multipartUploader', [
                 'setOptions'
-            ]), null, schedulerMock, new NgZone(false));
+            ]), null, schedulerMock, new NgZone({enableLongStackTrace: false}));
             spyOn(RegisteredApplicationService.prototype, 'getPackageMetadata').and.callFake(getPackageMetadata);
         });
 
