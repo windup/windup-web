@@ -78,7 +78,7 @@
   "devDependencies": {
     "@ngtools/webpack": "^1.8.4",
     "@types/bootstrap": "^3.3.32",
-    "@types/core-js": "^0.9.35",
+    "@types/core-js": "0.9.35",
     "@types/d3": "4.4.1",
     "@types/d3-array": "0.0.3",
     "@types/d3-brush": "0.0.3",
