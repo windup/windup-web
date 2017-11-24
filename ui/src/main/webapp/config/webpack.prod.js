@@ -19,11 +19,11 @@ module.exports = webpackMerge(commonConfig, {
     },
 
     module: {
-        loaders: [
+        rules: [
             {
                 test: /\.ts$/,
                 exclude: /jquery*\.js/,
-                loaders: '@ngtools/webpack'
+                use: [ '@ngtools/webpack' ]
             }
         ]
     },
