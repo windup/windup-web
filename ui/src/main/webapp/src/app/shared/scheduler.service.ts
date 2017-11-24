@@ -7,7 +7,7 @@ export class SchedulerService {
 
     public constructor(protected zone: NgZone) {}
 
-    public setTimeout(callback: () => any, time: number): any {
+    public setTimeout(callback: () => void, time: number): any {
         return this.zone.runOutsideAngular(() => {
             let handle = setTimeout(callback, time);
             this.timeoutHandles.push(handle);
@@ -27,7 +27,7 @@ export class SchedulerService {
         this.timeoutHandles.splice(index, 1);
     }
 
-    public setInterval(callback: () => any, interval: number): any {
+    public setInterval(callback: () => void, interval: number): any {
         return this.zone.runOutsideAngular(() => {
             let handle = setInterval(callback, interval);
             this.intervalHandles.push(handle);
