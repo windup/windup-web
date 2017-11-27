@@ -81,21 +81,6 @@
                                 <dt>Issue Tracking</dt>
                                 <dd><a target="_blank" href="https://issues.jboss.org/browse/WINDUP">https://issues.jboss.org/browse/WINDUP</a></dd>
                             </dl>
-
-
-                            <h2>Contributors</h2>
-
-                            <p class="windup-contributors small">A special <strong>thanks</strong> to our contributors!</p>
-
-                            <div id="windup-contributors">
-                                <p *ngIf="!contributors" i18n="GitHub contributors">Loading...</p>
-                                <a *ngFor="let cont of contributors" data-toggle='tooltip' title="{{cont.login}}" href="{{cont.html_url}}">
-                                    <img class='windupContributor' src="{{cont.avatar_url}}"/>
-                                </a>
-                            </div>
-                            <script type="text/javascript">
-                                $('[data-toggle="tooltip"]').tooltip({'placement': 'top'});
-                            </script>
                         </div>
                     </div>
 
