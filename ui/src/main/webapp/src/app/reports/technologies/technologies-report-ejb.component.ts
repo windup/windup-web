@@ -46,6 +46,13 @@ export class TechnologiesEJBReportComponent extends FilterableReportComponent im
         super(_router, route, _routeFlattener);
     }
 
+    initialize(): void {
+        /**
+         * This one doesn't use routeFlattener.OnFlatRouteLoaded event
+         * so init code can stay in ngOnInit()
+         */
+    }
+
     ngOnInit(): void {
         this.route.parent.params.forEach((params: Params) => {
             this.execID = +params['executionId'];

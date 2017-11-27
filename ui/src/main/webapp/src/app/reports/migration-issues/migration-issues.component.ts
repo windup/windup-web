@@ -39,22 +39,28 @@ export class MigrationIssuesComponent extends FilterableReportComponent implemen
         super(_router, _activatedRoute, _routeFlattener);
     }
 
-    ngOnInit(): void {
-        this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
-            this.loadFilterFromRouteData(flatRouteData);
+    initialize(): void {
+        this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => this.loadData(flatRouteData)));
+    }
 
-            this._migrationIssuesService.getAggregatedIssues(this.execution.id, this.reportFilter).subscribe(
-                result => {
-                    this.categorizedIssues = result;
-                    this.categories = Object.keys(result);
-                    this.filteredIssues = Object.assign({}, result);
-                    this.reloadData();
-                },
-                error => {
-                    this._notificationService.error(utils.getErrorMessage(error));
-                    this._router.navigate(['']);
-                });
-        }));
+    loadData(flatRouteData) {
+        this.loadFilterFromRouteData(flatRouteData);
+
+        this._migrationIssuesService.getAggregatedIssues(this.execution.id, this.reportFilter).subscribe(
+            result => {
+                this.categorizedIssues = result;
+                this.categories = Object.keys(result);
+                this.filteredIssues = Object.assign({}, result);
+                this.reloadData();
+            },
+            error => {
+                this._notificationService.error(utils.getErrorMessage(error));
+                this._router.navigate(['']);
+            });
+    }
+
+    ngOnInit(): void {
+
     }
 
     reloadData() {

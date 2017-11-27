@@ -38,15 +38,17 @@ export class ProjectLayoutComponent extends RoutedComponent implements OnInit, O
         super(_router, _activatedRoute, _routeFlattener);
     }
 
+    initialize(): void {
+        this.addSubscription(this.flatRouteLoaded.subscribe(flattenedRoute => this.loadDataFromRoute(flattenedRoute)));
+    }
+
     ngOnInit(): void {
         this.addSubscription(this._eventBus.onEvent.filter(event => event.isTypeOf(UpdateMigrationProjectEvent))
             .subscribe((event: MigrationProjectEvent) => {
                 this.project = event.migrationProject;
                 this.createContextMenuItems();
-        }));
+            }));
 
-        console.log('project layout subscribe called');
-        this.addSubscription(this.flatRouteLoaded.subscribe(flattenedRoute => this.loadDataFromRoute(flattenedRoute)));
         this.loadProjects();
     }
 

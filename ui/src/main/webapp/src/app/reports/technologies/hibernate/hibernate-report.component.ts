@@ -56,44 +56,50 @@ export class TechnologiesHibernateReportComponent extends FilterableReportCompon
         super(router, activatedRoute, routeFlattener);
     }
 
+    initialize(): void {
+        this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => this.loadData(flatRouteData)));
+    }
+
+    loadData(flatRouteData) {
+        this.title = flatRouteData.data.displayName;
+
+        this.loadFilterFromRouteData(flatRouteData);
+
+        const execId = this.execution.id;
+
+        this.techReportService.getHibernateEntityModel(execId, this.reportFilter).subscribe(
+            data => {
+                this.entities = data;
+                this.loading.entities = false;
+            },
+            error => {
+                this._notificationService.error(utils.getErrorMessage(error));
+            });
+
+        this.techReportService.getHibernateConfigurationFileModel(execId, this.reportFilter).subscribe(configurations => {
+            this.configurationFiles = configurations;
+            this.loading.configurationFiles = false;
+        }, error => {
+            this._notificationService.error(utils.getErrorMessage(error));
+        });
+
+        this.techReportService.getHibernateMappingFileModel(execId, this.reportFilter).subscribe(mappings => {
+            this.mappingFiles = mappings;
+            this.loading.mappingFiles = false;
+        }, error => {
+            this._notificationService.error(utils.getErrorMessage(error));
+        });
+
+        this.techReportService.getHibernateSessionFactoryModel(execId, this.reportFilter).subscribe(sessionFactories => {
+            this.sessionFactories = sessionFactories;
+            this.loading.sessionFactories = false;
+        }, error => {
+            this._notificationService.error(utils.getErrorMessage(error));
+        });
+    }
+
     ngOnInit(): void {
-        this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
-            this.title = flatRouteData.data.displayName;
 
-            this.loadFilterFromRouteData(flatRouteData);
-
-            const execId = this.execution.id;
-
-            this.techReportService.getHibernateEntityModel(execId, this.reportFilter).subscribe(
-                data => {
-                    this.entities = data;
-                    this.loading.entities = false;
-                },
-                error => {
-                    this._notificationService.error(utils.getErrorMessage(error));
-                });
-
-            this.techReportService.getHibernateConfigurationFileModel(execId, this.reportFilter).subscribe(configurations => {
-                this.configurationFiles = configurations;
-                this.loading.configurationFiles = false;
-            }, error => {
-                this._notificationService.error(utils.getErrorMessage(error));
-            });
-
-            this.techReportService.getHibernateMappingFileModel(execId, this.reportFilter).subscribe(mappings => {
-                this.mappingFiles = mappings;
-                this.loading.mappingFiles = false;
-            }, error => {
-                this._notificationService.error(utils.getErrorMessage(error));
-            });
-
-            this.techReportService.getHibernateSessionFactoryModel(execId, this.reportFilter).subscribe(sessionFactories => {
-                this.sessionFactories = sessionFactories;
-                this.loading.sessionFactories = false;
-            }, error => {
-                this._notificationService.error(utils.getErrorMessage(error));
-            });
-        }));
     }
 
     updateSearch() {

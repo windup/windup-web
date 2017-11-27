@@ -55,34 +55,41 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
         private _http:Http
     ) {
         super(_router, _activatedRoute, _routeFlattener);
+        this.initialize();
     }
 
     getColorScheme(len) {
         return calculateColorScheme(len);
     }
 
+    initialize(): void {
+        this.addSubscription(this.flatRouteLoaded.subscribe(flattenedRoute => this.loadApplicationDetails(flattenedRoute)));
+    }
+
+    protected loadApplicationDetails(flattenedRoute) {
+        this.loadFilterFromRouteData(flattenedRoute);
+
+        this._applicationDetailsService.getApplicationDetailsData(this.execution.id, this.reportFilter).subscribe(
+            applicationDetailsDto => {
+                // Make sure tag data is loaded first
+                this._tagDataService.getTagData().subscribe((tagData) => {
+                    this.applicationDetails = applicationDetailsDto;
+                    this.rootProjects = applicationDetailsDto.traversals;
+
+                    this.createProjectTreeData(null, this.rootProjects);
+                    this.flattenTraversals(this.rootProjects);
+
+                    this.globalPackageUseData = this.calculateTreeDataForHints(this.allHints);
+                    this.calculateTagFrequencies();
+                    this.storeTotalPoints();
+                });
+            },
+            error => this._notificationService.error(utils.getErrorMessage(error))
+        );
+    }
+
     ngOnInit(): void {
-        this.addSubscription(this.flatRouteLoaded.subscribe(flattenedRoute => {
-            this.loadFilterFromRouteData(flattenedRoute);
 
-            this._applicationDetailsService.getApplicationDetailsData(this.execution.id, this.reportFilter).subscribe(
-                applicationDetailsDto => {
-                    // Make sure tag data is loaded first
-                    this._tagDataService.getTagData().subscribe((tagData) => {
-                        this.applicationDetails = applicationDetailsDto;
-                        this.rootProjects = applicationDetailsDto.traversals;
-
-                        this.createProjectTreeData(null, this.rootProjects);
-                        this.flattenTraversals(this.rootProjects);
-
-                        this.globalPackageUseData = this.calculateTreeDataForHints(this.allHints);
-                        this.calculateTagFrequencies();
-                        this.storeTotalPoints();
-                    });
-                },
-                error => this._notificationService.error(utils.getErrorMessage(error))
-            );
-        }));
     }
 
     selectedProject(treeData:TreeData) {

@@ -50,55 +50,61 @@ export class ApplicationIndexComponent extends FilterableReportComponent impleme
     }
 
 
-    ngOnInit(): void {
-        this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
-            this.loadFilterFromRouteData(flatRouteData);
+    initialize(): void {
+        this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => this.loadData(flatRouteData)));
+    }
 
-            this.analyzedApplications = this.execution.filterApplications.slice();
+    protected loadData(flatRouteData) {
+        this.loadFilterFromRouteData(flatRouteData);
 
-            if (this.reportFilter) {
-                this.analyzedApplications = this.analyzedApplications.filter(app =>
-                    this.reportFilter.selectedApplications.includes(<any>app.inputPath)
-                );
+        this.analyzedApplications = this.execution.filterApplications.slice();
+
+        if (this.reportFilter) {
+            this.analyzedApplications = this.analyzedApplications.filter(app =>
+                this.reportFilter.selectedApplications.includes(<any>app.inputPath)
+            );
+        }
+
+        this.projectId = +flatRouteData.params.projectId;
+
+        this._aggregatedStatsService.getAggregatedCategories(this.execution.id, this.reportFilter).subscribe(
+            result => {
+                this.categoriesMultiStats = this.getCategoriesStats(this.calculateCategoryIncidents(result), this.calculateStoryPointsInCategories(result));
+                this.mandatoryMultiStats = this.getMandatoryMultiStats(result.categories.find(category => category.categoryID == "mandatory"));
+            },
+            error => {
+                this._notificationService.error(utils.getErrorMessage(error));
+                this._router.navigate(['']);
             }
+        );
 
-            this.projectId = +flatRouteData.params.projectId;
+        this._aggregatedStatsService.getAggregatedJavaPackages(this.execution.id, this.reportFilter).subscribe(
+            result => this.globalPackageUseData = this.convertPackagesToChartStatistic(result),
+            error => {
+                this._notificationService.error(utils.getErrorMessage(error));
+                this._router.navigate(['']);
+            }
+        );
 
-            this._aggregatedStatsService.getAggregatedCategories(this.execution.id, this.reportFilter).subscribe(
-                result => {
-                    this.categoriesMultiStats = this.getCategoriesStats(this.calculateCategoryIncidents(result), this.calculateStoryPointsInCategories(result));
-                    this.mandatoryMultiStats = this.getMandatoryMultiStats(result.categories.find(category => category.categoryID == "mandatory"));
-                },
-                error => {
-                    this._notificationService.error(utils.getErrorMessage(error));
-                    this._router.navigate(['']);
-                }
-            );
+        this._aggregatedStatsService.getAggregatedArchives(this.execution.id, this.reportFilter).subscribe(
+            result => this.componentsStats = result,
+            error => {
+                this._notificationService.error(utils.getErrorMessage(error));
+                this._router.navigate(['']);
+            }
+        );
 
-            this._aggregatedStatsService.getAggregatedJavaPackages(this.execution.id, this.reportFilter).subscribe(
-                result => this.globalPackageUseData = this.convertPackagesToChartStatistic(result),
-                error => {
-                    this._notificationService.error(utils.getErrorMessage(error));
-                    this._router.navigate(['']);
-                }
-            );
+        this._aggregatedStatsService.getAggregatedDependencies(this.execution.id, this.reportFilter).subscribe(
+            result => this.dependenciesStats = result,
+            error => {
+                this._notificationService.error(utils.getErrorMessage(error));
+                this._router.navigate(['']);
+            }
+        );
+    }
 
-            this._aggregatedStatsService.getAggregatedArchives(this.execution.id, this.reportFilter).subscribe(
-                result => this.componentsStats = result,
-                error => {
-                    this._notificationService.error(utils.getErrorMessage(error));
-                    this._router.navigate(['']);
-                }
-            );
+    ngOnInit(): void {
 
-            this._aggregatedStatsService.getAggregatedDependencies(this.execution.id, this.reportFilter).subscribe(
-                result => this.dependenciesStats = result,
-                error => {
-                    this._notificationService.error(utils.getErrorMessage(error));
-                    this._router.navigate(['']);
-                }
-            );
-        }));
     }
 
     sumStatsList(statsList:StatisticsList): number {

@@ -55,16 +55,22 @@ export class ExecutionApplicationListComponent extends RoutedComponent implement
         super(_router, _activatedRoute, _routeFlattener);
     }
 
-    ngOnInit(): any {
-        this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
-            let executionId = parseInt(flatRouteData.params['executionId']);
-            this.execID = executionId;
+    initialize(): any {
+        this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => this.loadData(flatRouteData)));
+    }
 
-            this._windupService.getExecution(executionId)
-                .subscribe(execution => {
-                    this.loadExecution(execution);
-                });
-        }));
+    loadData(flatRouteData) {
+        let executionId = parseInt(flatRouteData.params['executionId']);
+        this.execID = executionId;
+
+        this._windupService.getExecution(executionId)
+            .subscribe(execution => {
+                this.loadExecution(execution);
+            });
+    }
+
+    ngOnInit(): void {
+
     }
 
     loadExecution(execution: WindupExecution) {

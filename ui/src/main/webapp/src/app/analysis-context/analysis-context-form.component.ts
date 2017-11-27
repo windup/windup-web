@@ -132,17 +132,12 @@ export class AnalysisContextFormComponent extends FormComponent
 
         this.dialog  = this._dialogService.getConfirmationDialog();
         this.dialogSubscription = this.dialog.confirmed.subscribe(() => this.saveConfiguration());
+
+        this.initialize();
     }
 
-    ngOnInit() {
-        this.saveInProgress = false;
-
-        this._configurationOptionsService.getAll().subscribe((options: ConfigurationOption[]) => {
-            this.configurationOptions = options;
-        });
-
-        this.routerSubscription = this._router.events.filter(event => event instanceof NavigationEnd).subscribe(_ => {
-            let flatRouteData = this._routeFlattener.getFlattenedRouteData(this._activatedRoute.snapshot);
+    initialize() {
+        this.routerSubscription = this._routeFlattener.OnFlatRouteLoaded.subscribe(flatRouteData => {
             this.flatRouteData = flatRouteData;
 
             if (flatRouteData.data['project']) {
@@ -177,8 +172,18 @@ export class AnalysisContextFormComponent extends FormComponent
 
             this.isInWizard = flatRouteData.data.hasOwnProperty('wizard') && flatRouteData.data['wizard'];
         });
+    }
 
-       
+    loadData(flatRouteData) {
+
+    }
+
+    ngOnInit() {
+        this.saveInProgress = false;
+
+        this._configurationOptionsService.getAll().subscribe((options: ConfigurationOption[]) => {
+            this.configurationOptions = options;
+        });
     }
 
     ngOnDestroy(): void {
