@@ -45,6 +45,7 @@ export class ProjectLayoutComponent extends RoutedComponent implements OnInit, O
                 this.createContextMenuItems();
         }));
 
+        console.log('project layout subscribe called');
         this.addSubscription(this.flatRouteLoaded.subscribe(flattenedRoute => this.loadDataFromRoute(flattenedRoute)));
         this.loadProjects();
     }

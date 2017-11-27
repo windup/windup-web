@@ -27,6 +27,7 @@ export class AppComponent implements AfterViewInit {
         private dialogService: DialogService
     ) {
         router.events
+            .do(event => console.log('Router event: ', event))
             .filter(event => event instanceof NavigationEnd)
             .subscribe((event: NavigationEnd) => {
                 this.routeHistoryService.addNavigationEvent(event);
