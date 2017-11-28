@@ -1,13 +1,17 @@
-import {Route} from "@angular/router";
-import {Injectable} from "@angular/core";
+import {Route, Routes, ROUTES} from "@angular/router";
+import {Inject, Injectable, Optional} from "@angular/core";
 
 @Injectable()
 export class RouteLinkProviderService {
-    protected routes: Route[];
+    protected routes: Routes;
 
     protected routesByComponents = new Map<any, any>();
 
-    constructor(routes: Route[]) {
+    constructor(@Inject(ROUTES) @Optional() routes: Routes) {
+        if (!routes || routes.length === 0) {
+            throw new Error('Routes array must be provided');
+        }
+
         this.routes = routes;
         let componentRoutes = this.getComponentRoutes(routes);
         this.routesByComponents = this.getComponentRouteMap(componentRoutes);

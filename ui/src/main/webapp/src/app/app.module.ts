@@ -19,7 +19,7 @@ import {FileService} from "./services/file.service";
 import {WindupService} from "./services/windup.service";
 import {TechnologyTagService} from "./services/graph/technologytag.service";
 import {FramesRestClientService} from "./services/graph/frames-rest-client.service";
-import {GraphJSONToModelService} from "./services/graph/graph-json-to-model.service";
+import {GraphDiscriminatorMappingProviders, GraphJSONToModelService} from "./services/graph/graph-json-to-model.service";
 import {FileModelService} from "./services/graph/file-model.service";
 import {ClassificationService} from "./services/graph/classification.service";
 import {HintService} from "./services/graph/hint.service";
@@ -93,7 +93,8 @@ initializeModelMappingData();
             useFactory: createGraphJSONToModelService,
             deps: [HttpClient]
         },
-        DatePipe
+        DatePipe,
+        GraphDiscriminatorMappingProviders
     ],
     bootstrap:    [ AppComponent ]
 })
