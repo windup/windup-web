@@ -423,9 +423,9 @@ amdefine@1.0.0, amdefine@>=0.0.4:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/amdefine/-/amdefine-1.0.0.tgz#fd17474700cb5cc9c2b709f0be9d23ce3c198c33"
 
-angular-router-loader@^0.6.0:
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/angular-router-loader/-/angular-router-loader-0.6.0.tgz#6c7caf7f1ea6acc6e2bc682cef91a343e9a7f3b5"
+angular-router-loader@^0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/angular-router-loader/-/angular-router-loader-0.8.0.tgz#d73acb1c88a135823c7841c997a99375c7f54af5"
   dependencies:
     loader-utils "^1.0.2"
 
