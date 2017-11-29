@@ -20,6 +20,7 @@ import {LoadingIndicatorService} from "./loading-indicator.service";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {TokenInterceptor} from "./authentication/token.interceptor";
 import {LoadingInterceptor} from "./loading/loading.interceptor";
+import {ErrorInterceptor} from "./loading/error.interceptor";
 
 
 /**
@@ -68,6 +69,11 @@ import {LoadingInterceptor} from "./loading/loading.interceptor";
         {
             provide: HTTP_INTERCEPTORS,
             useClass: LoadingInterceptor,
+            multi: true
+        },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: ErrorInterceptor,
             multi: true
         }
     ]

@@ -29,16 +29,14 @@ export class DependenciesService extends AbstractService {
                     throw new Error("No items returned, URL: " + url);
                 }
                 return <DependenciesReportModel[]>service.fromJSONarray(data, DependenciesReportModel);
-            })
-            .catch(this.handleError);
+            });
     }
 
     @Cached('dependencies', null, true)
     public getDependencies(executionId: number): Observable<any> {
         let url = this.GET_DEPENDENCIES_URL.replace('{executionId}', executionId.toString());
 
-        return this._http.get(url)
-            .catch(this.handleError);
+        return this._http.get(url);
     }
 }
 

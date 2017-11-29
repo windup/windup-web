@@ -50,8 +50,7 @@ export class FramesRestClientService
         var url = this.endpointUrl + `/queryAdjacent/${initialIDs.join(",")}/${edgeLabel}`
             + `/${directionOut ? 'out' : 'in'}/${query}/${idsOnly}/${limit}/${offset}`;
 
-        var responseObservable = this.http.put(url, "")
-            .catch(this.handleError);
+        var responseObservable = this.http.put(url, "");
 
         return responseObservable;
 
@@ -105,8 +104,7 @@ export class FramesRestClientService
             + `/${directionOut ? 'out' : 'in'}/${id}/`
 
         return this.http.put(url, body)
-            .map(res => res)
-            .catch(this.handleError);
+            .map(res => res);
     }
 
 

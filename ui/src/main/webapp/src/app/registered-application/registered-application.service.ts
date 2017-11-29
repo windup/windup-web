@@ -161,22 +161,19 @@ export class RegisteredApplicationService extends AbstractService {
 
     @Cached('application')
     getApplications(): Observable<RegisteredApplication[]> {
-        return this._http.get(Constants.REST_BASE + RegisteredApplicationService.GET_APPLICATIONS_URL)
-            .catch(this.handleError);
+        return this._http.get(Constants.REST_BASE + RegisteredApplicationService.GET_APPLICATIONS_URL);
     }
 
     @Cached('application')
     getApplicationsByProjectID(id: number): Observable<RegisteredApplication[]> {
-        return this._http.get(Constants.REST_BASE + RegisteredApplicationService.BY_PROJECT_ID_URL.replace("{projectId}", id.toString()))
-            .catch(this.handleError);
+        return this._http.get(Constants.REST_BASE + RegisteredApplicationService.BY_PROJECT_ID_URL.replace("{projectId}", id.toString()));
     }
 
     @Cached('application')
     get(id: number): Observable<RegisteredApplication> {
         let url = Constants.REST_BASE + RegisteredApplicationService.SINGLE_APPLICATION_URL.replace('{appId}', id.toString());
 
-        return this._http.get(url)
-            .catch(this.handleError);
+        return this._http.get(url);
     }
 
     updateByPath(application: RegisteredApplication): Observable<RegisteredApplication> {
@@ -186,8 +183,7 @@ export class RegisteredApplicationService extends AbstractService {
 
         let url = Constants.REST_BASE + RegisteredApplicationService.UPDATE_APPLICATION_PATH_URL.replace('{appId}', application.id.toString());
 
-        return this._http.put(url, body, this.JSON_OPTIONS)
-            .catch(this.handleError);
+        return this._http.put(url, body, this.JSON_OPTIONS);
     }
 
     updateByUpload(application: RegisteredApplication) {
@@ -234,8 +230,7 @@ export class RegisteredApplicationService extends AbstractService {
         return this._http.delete(url)
             .do(_ => {
                 this._eventBusService.fireEvent(new ApplicationDeletedEvent(project, application, this));
-            })
-            .catch(this.handleError);
+            });
     }
 
     /**
@@ -260,8 +255,7 @@ export class RegisteredApplicationService extends AbstractService {
         let url = Constants.REST_BASE + RegisteredApplicationService.PACKAGES_URL.replace("{appId}", application.id.toString());
 
         return this._http.get(url)
-            .catch(error => this.handleError(error))
-            .map(res => res.json());
+            .catch(error => this.handleError(error));
     }
 
     waitUntilPackagesAreResolved(application: RegisteredApplication): Observable<PackageMetadata> {

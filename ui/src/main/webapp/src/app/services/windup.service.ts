@@ -38,8 +38,7 @@ export class WindupService extends AbstractService {
     public getExecution(executionID: number): Observable<WindupExecution> {
         let url = Constants.REST_BASE + this.EXECUTIONS_PATH + '/' + executionID;
 
-        return this._http.get(url)
-            .catch(this.handleError);
+        return this._http.get(url);
     }
 
     public executeWindupWithAnalysisContext(context: AnalysisContext, project: MigrationProject): Observable<WindupExecution> {
@@ -50,38 +49,32 @@ export class WindupService extends AbstractService {
         return this._http.post(url, body, this.JSON_OPTIONS)
             .do(res => {
                 getCacheServiceInstance().getSection('execution').clear();
-            })
-            .catch(this.handleError);
+            });
     }
 
     @Cached({section: 'execution', cacheItemCallback: WindupService.cacheExecutionList})
     public getAllExecutions(): Observable<WindupExecution[]> {
-        return this._http.get(Constants.REST_BASE + this.EXECUTIONS_PATH)
-            .catch(this.handleError);
+        return this._http.get(Constants.REST_BASE + this.EXECUTIONS_PATH);
     }
 
     @Cached({section: 'execution', cacheItemCallback: WindupService.cacheExecutionList})
     public getProjectExecutions(projectId: number): Observable<WindupExecution[]> {
         let url = Constants.REST_BASE + this.PROJECT_EXECUTIONS_PATH.replace('{projectId}', projectId.toString());
 
-        return this._http.get(url)
-            .catch(this.handleError);
+        return this._http.get(url);
     }
 
     public getLogData(executionID: number): Observable<string[]> {
         let url = Constants.REST_BASE + this.EXECUTIONS_PATH + '/' + executionID + this.LOGS_PATH;
 
-        return this._http.get(url)
-            .catch(this.handleError);
+        return this._http.get(url);
     }
 
     public cancelExecution(execution: WindupExecution): Observable<any> {
-        return this._http.post(Constants.REST_BASE + this.EXECUTIONS_PATH + '/' + execution.id + '/cancel' , null)
-            .catch(this.handleError);
+        return this._http.post(Constants.REST_BASE + this.EXECUTIONS_PATH + '/' + execution.id + '/cancel' , null);
     }
 
     public deleteExecution(execution: WindupExecution): Observable<any> {
-        return this._http.delete(Constants.REST_BASE + this.EXECUTIONS_PATH + '/' + execution.id, this.JSON_OPTIONS)
-            .catch(this.handleError);
+        return this._http.delete(Constants.REST_BASE + this.EXECUTIONS_PATH + '/' + execution.id, this.JSON_OPTIONS);
     }
 }

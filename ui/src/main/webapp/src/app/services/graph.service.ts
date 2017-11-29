@@ -26,8 +26,7 @@ export class GraphService extends AbstractService {
                 }
 
                 return <T>service.fromJSON(data[0]);
-            })
-            .catch(this.handleError);
+            });
     }
 
     protected getTypeAsArray<T extends BaseModel>(type: string, execID: number, options?: GraphEndpointOptions): Observable<T[]> {

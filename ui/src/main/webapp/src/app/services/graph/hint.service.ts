@@ -20,7 +20,6 @@ export class HintService extends AbstractService {
         let service = this._graphJsonToModelService;
 
         return this._http.get(url)
-            .map((res: InlineHintModel[]) => res.map((json) => service.fromJSON(json, InlineHintModel)))
-            .catch(this.handleError);
+            .map((res: InlineHintModel[]) => res.map((json) => service.fromJSON(json, InlineHintModel)));
     }
 }

@@ -18,7 +18,6 @@ export class ClassificationService extends AbstractService {
         let service = this._graphJsonToModelService;
 
         return this._http.get(url)
-            .map((res: any[]) => <ClassificationModel[]>res.map((json) => service.fromJSON(json, ClassificationModel)))
-            .catch(this.handleError);
+            .map((res: any[]) => <ClassificationModel[]>res.map((json) => service.fromJSON(json, ClassificationModel)));
     }
 }

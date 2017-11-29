@@ -76,15 +76,13 @@ export class MigrationProjectService extends AbstractService {
     create(migrationProject: MigrationProject): Observable<MigrationProject> {
         let body = JSON.stringify(migrationProject);
 
-        return this._http.put(Constants.REST_BASE + this.CREATE_MIGRATION_PROJECT_URL, body, this.JSON_OPTIONS)
-            .catch(this.handleError);
+        return this._http.put(Constants.REST_BASE + this.CREATE_MIGRATION_PROJECT_URL, body, this.JSON_OPTIONS);
     }
 
     update(migrationProject: MigrationProject): Observable<MigrationProject> {
         let body = JSON.stringify(migrationProject);
 
-        return this._http.put(Constants.REST_BASE + this.UPDATE_MIGRATION_PROJECT_URL, body, this.JSON_OPTIONS)
-            .catch(this.handleError);
+        return this._http.put(Constants.REST_BASE + this.UPDATE_MIGRATION_PROJECT_URL, body, this.JSON_OPTIONS);
     }
 
     isDeleting(project: MigrationProject) {
@@ -116,8 +114,7 @@ export class MigrationProjectService extends AbstractService {
         if (!isNumber(id)) {
             throw new Error("Not a project ID: " + id);
         }
-        return this._http.get(Constants.REST_BASE + this.GET_MIGRATION_PROJECT_URL + "/" + id)
-            .catch(this.handleError);
+        return this._http.get(Constants.REST_BASE + this.GET_MIGRATION_PROJECT_URL + "/" + id);
     }
 
     @Cached('project', {minutes: 1})
@@ -132,13 +129,11 @@ export class MigrationProjectService extends AbstractService {
                 });
 
                 return migrationProject;
-            }))
-            .catch(this.handleError);
+            }));
     }
 
     deleteProvisionalProjects(): Observable<void> {
-        return this._http.delete(Constants.REST_BASE + this.DELETE_PROVISIONAL_PROJECTS_URL)
-            .catch(this.handleError);
+        return this._http.delete(Constants.REST_BASE + this.DELETE_PROVISIONAL_PROJECTS_URL);
     }
 
     monitorProject(project: MigrationProject) {
@@ -150,8 +145,7 @@ export class MigrationProjectService extends AbstractService {
     }
 
     getIdByName(name: string): Observable<number> | null {
-        return this._http.get(Constants.REST_BASE + this.GET_ID_BY_NAME_URL + "/" + encodeURIComponent(name))
-            .catch(this.handleError);
+        return this._http.get(Constants.REST_BASE + this.GET_ID_BY_NAME_URL + "/" + encodeURIComponent(name));
     }
 }
 

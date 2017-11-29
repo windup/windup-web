@@ -33,8 +33,7 @@ export class ApplicationDetailsService extends AbstractService {
                     return this.mapTraversal(res, traversal);
                 });
                 return res;
-            })
-            .catch(this.handleError);
+            });
     }
 
     private mapTraversal(applicationDetails: ApplicationDetailsDTO, traversal: ProjectTraversalReducedDTO): ProjectTraversalFullDTO {

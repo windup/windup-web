@@ -19,36 +19,31 @@ export class ReportFilterService extends AbstractService {
     getFilter(execution: WindupExecution): Observable<ReportFilter> {
         let url = Constants.REST_BASE + this.FILTER_URL.replace('{execId}', execution.id.toString());
 
-        return this._http.get(url)
-            .catch(this.handleError);
+        return this._http.get(url);
     }
 
     clearFilter(execution: WindupExecution): Observable<ReportFilter> {
         let url = Constants.REST_BASE + this.FILTER_URL.replace('{execId}', execution.id.toString());
 
-        return this._http.delete(url)
-            .catch(this.handleError);
+        return this._http.delete(url);
     }
 
     updateFilter(execution: WindupExecution, filter: any): Observable<ReportFilter> {
         let url = Constants.REST_BASE + this.FILTER_URL.replace('{execId}', execution.id.toString());
 
-        return this._http.put(url, filter)
-            .catch(this.handleError);
+        return this._http.put(url, filter);
     }
 
     getTags(execution: WindupExecution): Observable<Tag[]> {
         let url = Constants.REST_BASE + this.TAGS_URL.replace('{execId}', execution.id.toString());
 
-        return this._http.get(url)
-            .catch(this.handleError);
+        return this._http.get(url);
     }
 
     getCategories(execution: WindupExecution): Observable<Category[]> {
         let url = Constants.REST_BASE + this.CATEGORIES_URL.replace('{execId}', execution.id.toString());
 
-        return this._http.get(url)
-            .catch(this.handleError);
+        return this._http.get(url);
     }
 
     getFilterApplications(execution: WindupExecution): Observable<FilterApplication[]>
@@ -57,7 +52,6 @@ export class ReportFilterService extends AbstractService {
                 .replace('{execId}', execution.id.toString())
                 .replace('{executionId}', execution.id.toString());
 
-        return this._http.get(url)
-            .catch(this.handleError);
+        return this._http.get(url);
     }
 }

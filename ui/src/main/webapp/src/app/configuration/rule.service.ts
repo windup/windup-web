@@ -34,15 +34,13 @@ export class RuleService extends AbstractService {
     }
 
     getAll(): Observable<RuleProviderEntity[]> {
-        return this._http.get(Constants.REST_BASE + this.GET_ALL_RULE_PROVIDERS_URL)
-            .catch(this.handleError);
+        return this._http.get(Constants.REST_BASE + this.GET_ALL_RULE_PROVIDERS_URL);
     }
 
     getByRulesPath(rulesPath: RulesPath): Observable<RuleProviderEntity[]> {
         let url = Constants.REST_BASE + this.GET_RULE_PROVIDERS_BY_RULES_PATH_URL + rulesPath.id;
 
-        return this._http.get(url)
-            .catch(this.handleError);
+        return this._http.get(url);
     }
 
     checkIfUsedRulesPath(rulesPath: RulesPath): Observable<boolean>

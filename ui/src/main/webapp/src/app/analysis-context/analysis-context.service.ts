@@ -41,13 +41,11 @@ export class AnalysisContextService extends AbstractService {
                 // invalidate cache for just updated context
                 let key = 'get(' + context.id + ')';
                 this._cache.removeItem(key);
-            })
-            .catch(this.handleError);
+            });
     }
 
     @Cached('analysisContext')
     get(id: number) {
-        return this._http.get(Constants.REST_BASE + this.ANALYSIS_CONTEXT_URL.replace("{id}", id.toString()))
-            .catch(this.handleError);
+        return this._http.get(Constants.REST_BASE + this.ANALYSIS_CONTEXT_URL.replace("{id}", id.toString()));
     }
 }

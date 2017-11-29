@@ -18,8 +18,7 @@ export class FileModelService extends AbstractService {
         let service = this._graphJsonToModelService;
 
         return this._http.get(url)
-            .map(res => <FileModel>service.fromJSON(res))
-            .catch(this.handleError);
+            .map(res => <FileModel>service.fromJSON(res));
     }
 
     getSource(executionId: number, vertexID: number): Observable<string> {
