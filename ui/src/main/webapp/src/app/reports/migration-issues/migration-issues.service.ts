@@ -22,7 +22,7 @@ export class MigrationIssuesService extends AbstractService {
 
         let serializedFilter = this.serializeFilter(filter);
 
-        return this._http.post(url, serializedFilter, this.JSON_OPTIONS);
+        return this._http.post<Dictionary<ProblemSummary[]>>(url, serializedFilter, this.JSON_OPTIONS);
     }
 
     @Cached('migrationIssues', null, true)
@@ -33,6 +33,6 @@ export class MigrationIssuesService extends AbstractService {
 
         let serializedFilter = this.serializeFilter(filter);
 
-        return this._http.post(url, serializedFilter, this.JSON_OPTIONS);
+        return this._http.post<any>(url, serializedFilter, this.JSON_OPTIONS);
     }
 }

@@ -76,8 +76,7 @@ export class RegisteredApplicationService extends AbstractService {
         let body = path;
         let url = endpoint.replace("{projectId}", project.id.toString()).replace("{exploded}", ""+!!isDirWithExplodedApp);
 
-        return this._http.post(url, body, this.JSON_OPTIONS)
-            .catch(this.handleError)
+        return this._http.post<T>(url, body, this.JSON_OPTIONS)
             .do((responseApplication) => {
                 let responseApplicationArray;
 
@@ -161,19 +160,19 @@ export class RegisteredApplicationService extends AbstractService {
 
     @Cached('application')
     getApplications(): Observable<RegisteredApplication[]> {
-        return this._http.get(Constants.REST_BASE + RegisteredApplicationService.GET_APPLICATIONS_URL);
+        return this._http.get<RegisteredApplication[]>(Constants.REST_BASE + RegisteredApplicationService.GET_APPLICATIONS_URL);
     }
 
     @Cached('application')
     getApplicationsByProjectID(id: number): Observable<RegisteredApplication[]> {
-        return this._http.get(Constants.REST_BASE + RegisteredApplicationService.BY_PROJECT_ID_URL.replace("{projectId}", id.toString()));
+        return this._http.get<RegisteredApplication[]>(Constants.REST_BASE + RegisteredApplicationService.BY_PROJECT_ID_URL.replace("{projectId}", id.toString()));
     }
 
     @Cached('application')
     get(id: number): Observable<RegisteredApplication> {
         let url = Constants.REST_BASE + RegisteredApplicationService.SINGLE_APPLICATION_URL.replace('{appId}', id.toString());
 
-        return this._http.get(url);
+        return this._http.get<RegisteredApplication>(url);
     }
 
     updateByPath(application: RegisteredApplication): Observable<RegisteredApplication> {
@@ -183,7 +182,7 @@ export class RegisteredApplicationService extends AbstractService {
 
         let url = Constants.REST_BASE + RegisteredApplicationService.UPDATE_APPLICATION_PATH_URL.replace('{appId}', application.id.toString());
 
-        return this._http.put(url, body, this.JSON_OPTIONS);
+        return this._http.put<RegisteredApplication>(url, body, this.JSON_OPTIONS);
     }
 
     updateByUpload(application: RegisteredApplication) {
@@ -225,7 +224,7 @@ export class RegisteredApplicationService extends AbstractService {
             });
     }
 
-    deleteApplication(project: MigrationProject, application: RegisteredApplication): Observable<void> {
+    deleteApplication(project: MigrationProject, application: RegisteredApplication): Observable<any> {
         let url = Constants.REST_BASE + RegisteredApplicationService.SINGLE_APPLICATION_URL.replace('{appId}', application.id.toString());
         return this._http.delete(url)
             .do(_ => {

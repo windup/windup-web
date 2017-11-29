@@ -17,7 +17,7 @@ export class FileModelService extends AbstractService {
         let url = `${Constants.GRAPH_REST_BASE}/graph/${executionId}/${vertexID}?depth=1`;
         let service = this._graphJsonToModelService;
 
-        return this._http.get(url)
+        return this._http.get<FileModel>(url)
             .map(res => <FileModel>service.fromJSON(res));
     }
 
@@ -26,7 +26,6 @@ export class FileModelService extends AbstractService {
 
         return this._http.get(url, {
             responseType: 'text'
-        })
-        .catch(this.handleError);
+        });
     }
 }

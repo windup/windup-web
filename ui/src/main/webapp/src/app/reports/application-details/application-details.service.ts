@@ -27,7 +27,7 @@ export class ApplicationDetailsService extends AbstractService {
 
         let serializedFilter = this.serializeFilter(filter);
 
-        return this._http.post(url, serializedFilter, this.JSON_OPTIONS)
+        return this._http.post<ApplicationDetailsFullDTO>(url, serializedFilter, this.JSON_OPTIONS)
             .map((res:ApplicationDetailsDTO) => {
                 res.traversals = res.traversals.map(traversal => {
                     return this.mapTraversal(res, traversal);

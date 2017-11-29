@@ -36,7 +36,7 @@ export class AnalysisContextService extends AbstractService {
         let body = JSON.stringify(analysisContext);
         let url = Constants.REST_BASE + this.CREATE_URL.replace('{projectId}', project.id.toString());
 
-        return this._http.put(url, body, this.JSON_OPTIONS)
+        return this._http.put<AnalysisContext>(url, body, this.JSON_OPTIONS)
             .do((context: AnalysisContext) => {
                 // invalidate cache for just updated context
                 let key = 'get(' + context.id + ')';
@@ -45,7 +45,7 @@ export class AnalysisContextService extends AbstractService {
     }
 
     @Cached('analysisContext')
-    get(id: number) {
-        return this._http.get(Constants.REST_BASE + this.ANALYSIS_CONTEXT_URL.replace("{id}", id.toString()));
+    get(id: number): Observable<AnalysisContext> {
+        return this._http.get<AnalysisContext>(Constants.REST_BASE + this.ANALYSIS_CONTEXT_URL.replace("{id}", id.toString()));
     }
 }

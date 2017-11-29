@@ -50,7 +50,7 @@ export class FramesRestClientService
         var url = this.endpointUrl + `/queryAdjacent/${initialIDs.join(",")}/${edgeLabel}`
             + `/${directionOut ? 'out' : 'in'}/${query}/${idsOnly}/${limit}/${offset}`;
 
-        var responseObservable = this.http.put(url, "");
+        var responseObservable = this.http.put<QueryResults<T>>(url, "");
 
         return responseObservable;
 

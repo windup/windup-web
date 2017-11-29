@@ -18,7 +18,7 @@ export class TechnologyTagService extends AbstractService {
         let url = `${Constants.GRAPH_REST_BASE}/graph/technology-tag/${executionId}/by-file/${fileModelID}`;
         let service = this._graphJsonToModelService;
 
-        return this._http.get(url)
-            .map((res: any[]) => <TechnologyTagModel[]>res.map((json) => service.fromJSON(json)));
+        return this._http.get<TechnologyTagModel[]>(url)
+            .map(res => res.map((json) => service.fromJSON(json)));
     }
 }

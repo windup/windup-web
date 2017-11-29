@@ -21,11 +21,11 @@ export class ConfigurationOptionsService extends AbstractService {
     validate(option: AdvancedOption): Observable<ValidationResult> {
         let body = JSON.stringify(option);
 
-        return this._http.post(Constants.REST_BASE + this.VALIDATE_OPTION_URL, body, this.JSON_OPTIONS);
+        return this._http.post<ValidationResult>(Constants.REST_BASE + this.VALIDATE_OPTION_URL, body, this.JSON_OPTIONS);
     }
 
     @Cached({section: 'configurationOptions', immutable: true})
     getAll(): Observable<ConfigurationOption[]> {
-        return this._http.get(Constants.REST_BASE + this.GET_CONFIGURATION_OPTIONS_URL);
+        return this._http.get<ConfigurationOption[]>(Constants.REST_BASE + this.GET_CONFIGURATION_OPTIONS_URL);
     }
 }

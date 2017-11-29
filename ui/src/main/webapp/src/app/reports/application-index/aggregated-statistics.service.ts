@@ -26,7 +26,7 @@ export class AggregatedStatisticsService extends AbstractService {
 
         let serializedFilter = this.serializeFilter(filter);
 
-        return this._http.post(url, serializedFilter, this.JSON_OPTIONS);
+        return this._http.post<EffortByCategoryDTO>(url, serializedFilter, this.JSON_OPTIONS);
     }
 
     @Cached('aggregatedStatistics', null, true)
@@ -36,7 +36,7 @@ export class AggregatedStatisticsService extends AbstractService {
 
         let serializedFilter = this.serializeFilter(filter);
 
-        return this._http.post(url, serializedFilter, this.JSON_OPTIONS);
+        return this._http.post<StatisticsList>(url, serializedFilter, this.JSON_OPTIONS);
     }
 
     @Cached('aggregatedStatistics', null, true)
@@ -46,7 +46,7 @@ export class AggregatedStatisticsService extends AbstractService {
 
         let serializedFilter = this.serializeFilter(filter);
 
-        return this._http.post(url, serializedFilter, this.JSON_OPTIONS);
+        return this._http.post<StatisticsList>(url, serializedFilter, this.JSON_OPTIONS);
     }
 
     @Cached('aggregatedStatistics', null, true)
@@ -56,6 +56,6 @@ export class AggregatedStatisticsService extends AbstractService {
 
         let serializedFilter = this.serializeFilter(filter);
 
-        return this._http.post(url, serializedFilter, this.JSON_OPTIONS);
+        return this._http.post<StatisticsList>(url, serializedFilter, this.JSON_OPTIONS);
     }
 }
