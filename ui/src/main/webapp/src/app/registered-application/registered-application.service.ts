@@ -253,8 +253,7 @@ export class RegisteredApplicationService extends AbstractService {
     getPackageMetadata(application: RegisteredApplication): Observable<PackageMetadata> {
         let url = Constants.REST_BASE + RegisteredApplicationService.PACKAGES_URL.replace("{appId}", application.id.toString());
 
-        return this._http.get(url)
-            .catch(error => this.handleError(error));
+        return this._http.get<PackageMetadata>(url);
     }
 
     waitUntilPackagesAreResolved(application: RegisteredApplication): Observable<PackageMetadata> {
