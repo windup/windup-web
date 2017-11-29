@@ -1,8 +1,9 @@
-import {Http} from "@angular/http";
+import {HttpClient} from "@angular/common/http";
 import {HintFullDTO} from "./application-details.service";
 
 export class TypeReferenceStatisticsService {
-    getPackageUseFrequencies(hints:HintFullDTO[], nameDepth: number, http:Http): Map<string, number> {
+    // TODO: Remove http
+    getPackageUseFrequencies(hints:HintFullDTO[], nameDepth: number, http: HttpClient): Map<string, number> {
         if (hints == null || hints.length == 0) {
             return new Map<string, number>();
         }
