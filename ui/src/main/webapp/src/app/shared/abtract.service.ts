@@ -18,6 +18,11 @@ export class AbstractService {
         this.JSON_OPTIONS = { headers: this.JSON_HEADERS };
     }
 
+    /**
+     * @deprecated Use {ErrorInterceptor} instead
+     * @param {Response} error
+     * @returns {ErrorObservable}
+     */
     protected handleError(error: Response) {
         // in a real world app, we may send the error to some remote logging infrastructure
         // instead of just logging it to the console
