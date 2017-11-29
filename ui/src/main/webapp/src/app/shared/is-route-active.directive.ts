@@ -1,4 +1,4 @@
-import {Directive, ElementRef, Input, OnChanges, OnDestroy, Renderer, SimpleChanges} from "@angular/core";
+import {Directive, ElementRef, Input, OnChanges, OnDestroy, Renderer2, SimpleChanges} from "@angular/core";
 import {NavigationEnd, Router} from "@angular/router";
 import {Subscription} from "rxjs";
 import {ContextMenuItemInterface} from "./navigation/context-menu-item.class";
@@ -50,7 +50,7 @@ export class IsRouteActiveDirective implements OnChanges, OnDestroy {
 
     protected wasPreviouslyActive: boolean;
 
-    constructor(protected _element: ElementRef, protected _renderer: Renderer, protected _router: Router) {
+    constructor(protected _element: ElementRef, protected _renderer: Renderer2, protected _router: Router) {
         this.routerSubscription = this._router.events.filter(event => event instanceof NavigationEnd)
             .subscribe(_ => this.update());
     }
@@ -72,9 +72,13 @@ export class IsRouteActiveDirective implements OnChanges, OnDestroy {
         const isActive = this.isRouteActive();
 
         if (this.wasPreviouslyActive !== isActive) {
-            this.activeClasses.forEach(
-                cssClass => this._renderer.setElementClass(this._element.nativeElement, cssClass, isActive)
-            );
+            this.activeClasses.forEach(cssClass => {
+                if (isActive) {
+                    this._renderer.addClass(this._element.nativeElement, cssClass);
+                } else {
+                    this._renderer.removeClass(this._element.nativeElement, cssClass);
+                }
+            });
 
             /**
              * This is taken from original Angular isRouteLinkActive code
