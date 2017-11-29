@@ -1,6 +1,5 @@
 import {AbstractService} from "../shared/abtract.service";
 import {Constants} from "../constants";
-import {Http, URLSearchParams} from "@angular/http";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";

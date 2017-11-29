@@ -3,7 +3,6 @@ import {Observable} from "rxjs/Observable";
 import 'rxjs/add/observable/of';
 import "rxjs/add/operator/map";
 import {HttpClient} from "@angular/common/http";
-import {Http, Response} from "@angular/http";
 import {StaticCache} from "./cache";
 
 

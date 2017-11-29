@@ -1,7 +1,4 @@
 import {MigrationProject, RegisteredApplication, WindupExecution} from "../../generated/windup-services";
-import {Observable} from "rxjs/Observable";
-import {Response} from "@angular/http";
-
 
 export abstract class WindupEvent {
     public static TYPE = 'WindupEvent';
