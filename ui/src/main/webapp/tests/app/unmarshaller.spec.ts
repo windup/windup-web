@@ -1,5 +1,4 @@
 import {async, inject} from '@angular/core/testing';
-import {Http} from "@angular/http";
 import 'rxjs/Rx';
 import {Observable} from "rxjs/Observable";
 import 'rxjs/add/operator/toPromise';
@@ -95,11 +94,7 @@ describe('Unmarshaller tests', () => {
     it ('unmarshaller test - fromJSON() - shuttles', async(() => {
         http.get.and.callFake((url: string) => {
                 return Observable.create(function(observer) {
-                    let value: any = {
-                        json: function () {
-                            return [{"_id": 1001, "w:winduptype": ["TestShip"], "name": "Shuttle 1"}];
-                        }
-                    };
+                    let value: any = [{"_id": 1001, "w:winduptype": ["TestShip"], "name": "Shuttle 1"}];
                     observer.next(value);
                     observer.complete();
                 });
@@ -122,11 +117,7 @@ describe('Unmarshaller tests', () => {
     it ('unmarshaller test - fromJSON() - fighter', async(() => {
         http.get.and.callFake((url: string) => {
                 return Observable.create(function(observer) {
-                    let value: any = {
-                        json: function () {
-                            return [{ "_id": 1001, "w:winduptype": ["TestShip"], "name": "Fighter"}];
-                        }
-                    };
+                    let value: any = [{ "_id": 1001, "w:winduptype": ["TestShip"], "name": "Fighter"}];
                     observer.next(value);
                     observer.complete();
                 });

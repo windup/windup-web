@@ -1,12 +1,9 @@
-import {
-    HttpModule, RequestMethod, ResponseOptions, Response, BaseRequestOptions, Http,
-    ConnectionBackend
-} from '@angular/http';
-
-import {TestBed, async, inject} from '@angular/core/testing';
-
+import {TestBed, getTestBed, async, inject} from '@angular/core/testing';
+import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing";
+import {NgZone} from "@angular/core";
 
 import 'rxjs/Rx';
+import {Subject} from "rxjs";
 
 import {Constants} from '../../src/app/constants';
 
@@ -15,22 +12,20 @@ import {RegisteredApplicationService} from "../../src/app/registered-application
 import {KeycloakService} from "../../src/app/core/authentication/keycloak.service";
 import {FileService} from "../../src/app/services/file.service";
 import {FileUploader} from "ng2-file-upload/ng2-file-upload";
-import {MockBackend, MockConnection} from "@angular/http/testing";
 import {EventBusService} from "../../src/app/core/events/event-bus.service";
 import {MigrationProject, PackageMetadata, RegisteredApplication} from "../../src/app/generated/windup-services";
 import {SchedulerServiceMock} from "./mocks/scheduler-service.mock";
-import {Subject} from "rxjs";
-import createSpy = jasmine.createSpy;
 import {SchedulerService} from "../../src/app/shared/scheduler.service";
-import {NgZone} from "@angular/core";
 
 describe("Registered Application Service Test", () => {
+    let httpMock: HttpTestingController;
+
     beforeEach(() => {
         TestBed.configureTestingModule(
             {
-                imports: [HttpModule],
+                imports: [HttpClientTestingModule],
                 providers: [
-                    Constants, FileService, RegisteredApplicationService, MockBackend, BaseRequestOptions,
+                    Constants, FileService, RegisteredApplicationService,
                     {
                         provide: SchedulerService,
                         useClass: SchedulerServiceMock
@@ -53,36 +48,20 @@ describe("Registered Application Service Test", () => {
                         useFactory: () => {
                             return new KeyCloakServiceMock();
                         }
-                    },
-                    {
-                        provide: Http,
-                        useFactory: (backend: ConnectionBackend, defaultOptions: BaseRequestOptions) => {
-                            return new Http(backend, defaultOptions);
-                        },
-                        deps: [MockBackend, BaseRequestOptions]
                     }
                 ]
             }
         );
         TestBed.compileComponents().catch(error => console.error(error));
+
+        let injector = getTestBed();
+        httpMock = injector.get(HttpTestingController);
     });
 
-    it('Should make a POST request on backend with path and title', async(inject([RegisteredApplicationService, MockBackend],
-        (service: RegisteredApplicationService, mockBackend: MockBackend) => {
+    it('Should make a POST request on backend with path and title', async(inject([RegisteredApplicationService],
+        (service: RegisteredApplicationService) => {
 
             let inputPath = "src/main/java";
-
-            mockBackend.connections.subscribe((connection: MockConnection) => {
-                expect(connection.request.url).toEqual(Constants.REST_BASE + '/migrationProjects/0/registeredApplications/register-path?exploded=false');
-                expect(connection.request.method).toEqual(RequestMethod.Post);
-                expect(connection.request.getBody()).toEqual("src/main/java");
-
-                connection.mockRespond(new Response(new ResponseOptions({
-                    body: {
-                        inputFilename: 'java'
-                    }
-                })));
-            });
 
             service.registerByPath(<MigrationProject>{id: 0}, inputPath, false).toPromise()
                 .then(application => {
@@ -90,6 +69,15 @@ describe("Registered Application Service Test", () => {
                 }, error => {
                     fail(error);
                 });
+
+            const req = httpMock.expectOne(Constants.REST_BASE + '/migrationProjects/0/registeredApplications/register-path?exploded=false');
+
+            expect(req.request.method).toBe('POST');
+            expect(req.request.body).toEqual(inputPath);
+
+            req.flush({
+                inputFilename: 'java'
+            });
         })));
 
     describe('waitUntilPackagesAreResolved', () => {
