@@ -27,13 +27,13 @@ export class ApplicationDetailsService extends AbstractService {
 
         let serializedFilter = this.serializeFilter(filter);
 
-        return this._http.post<ApplicationDetailsFullDTO>(url, serializedFilter, this.JSON_OPTIONS)
-            .map((res:ApplicationDetailsDTO) => {
+        return this._http.post<ApplicationDetailsDTO>(url, serializedFilter, this.JSON_OPTIONS)
+            .map((res: ApplicationDetailsDTO) => {
                 res.traversals = res.traversals.map(traversal => {
                     return this.mapTraversal(res, traversal);
                 });
                 return res;
-            });
+            }) as any; // TODO: Fix this;
     }
 
     private mapTraversal(applicationDetails: ApplicationDetailsDTO, traversal: ProjectTraversalReducedDTO): ProjectTraversalFullDTO {
