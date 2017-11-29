@@ -37,11 +37,6 @@ public class ProjectLoaderServiceImpl extends AbstractGraphResource implements P
             Map<String, String> fileModelMap = new HashMap<>();
 
             fileModelMap.put("fileName", fileModel.getFileName());
-
-            if (!fileModel.isWindupGenerated())
-            {
-                Logger.getLogger(this.getClass().getSimpleName()).info("TEST");
-            }
         }
 
         return inputPaths;
