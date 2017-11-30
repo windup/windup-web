@@ -1,5 +1,5 @@
 import {Pipe, PipeTransform} from "@angular/core";
-import {HumanizeDuration, HumanizeDurationLanguage} from "humanize-duration-ts";
+import {HumanizeDuration, HumanizeDurationLanguage} from "@windup/humanize-duration-ts";
 
 @Pipe({
     name: 'wuDuration'
