@@ -14,3 +14,5 @@ exports.config = require('./protractor.conf').config;
 exports.config.specs = [
     'e2e/**/*.vr.ts'
 ];
+
+exports.config.params.visualRegression = true;

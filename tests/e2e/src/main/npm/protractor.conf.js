@@ -1,7 +1,29 @@
+const fs = require('fs');
 const SpecReporter = require('jasmine-spec-reporter').SpecReporter;
 const JUnitXmlReporter = require('jasmine-reporters').JUnitXmlReporter;
 
 const baseUrl = 'http://localhost:8180/rhamt-web/';
+
+var params = {
+    login: {
+        username: 'rhamt',
+        password: 'password'
+    },
+    baseUrl: baseUrl,
+        upload: {
+        filePath: '/this/needs/to/be/overriden/by/cli/param'
+    },
+    captureImages: false,
+    visualRegression: false
+};
+
+const paramsFile = './protractor-params.js';
+
+if (fs.existsSync(paramsFile)) {
+    console.error('Load params from file: "' + paramsFile + '"');
+    const fileParams = require(paramsFile).params;
+    params = Object.assign({}, params, fileParams);
+}
 
 function login(timeout, maxAttempts, attempts) {
     return browser.driver.get(browser.params.baseUrl).then(function() {
@@ -109,16 +131,5 @@ exports.config = {
      */
     useAllAngular2AppRoots: true,
 
-    params: {
-        login: {
-            username: 'rhamt',
-            password: 'password'
-        },
-        baseUrl: baseUrl,
-        upload: {
-            filePath: '/this/needs/to/be/overriden/by/cli/param'
-        },
-        captureImages: false,
-        visualRegression: false
-    }
+    params: params
 };
