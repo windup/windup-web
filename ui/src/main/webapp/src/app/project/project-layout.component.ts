@@ -38,6 +38,7 @@ export class ProjectLayoutComponent extends RoutedComponent implements OnInit, O
 
     ngOnInit(): void {
         this.addSubscription(this._eventBus.onEvent.filter(event => event.isTypeOf(UpdateMigrationProjectEvent))
+            .filter((event: MigrationProjectEvent) => this.isCurrentProject(event.migrationProject))
             .subscribe((event: MigrationProjectEvent) => {
                 this.project = event.migrationProject;
                 this.createContextMenuItems();
@@ -45,6 +46,10 @@ export class ProjectLayoutComponent extends RoutedComponent implements OnInit, O
 
         this.addSubscription(this.flatRouteLoaded.subscribe(flattenedRoute => this.loadDataFromRoute(flattenedRoute)));
         this.loadProjects();
+    }
+
+    protected isCurrentProject(eventProject: MigrationProject) {
+        return this.project != null && this.project.id === eventProject.id;
     }
 
     protected loadDataFromRoute(flattenedRoute: FlattenedRouteData) {
