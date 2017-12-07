@@ -148,6 +148,11 @@ public class FreemarkerServlet extends freemarker.ext.servlet.FreemarkerServlet
 
         String suffix = StringUtils.removeEnd(request.getPathInfo(), ".ftl");
         suffix = StringUtils.substringAfterLast(suffix, ".");
+
+        // Just assume html if there is no other suffix.
+        if (suffix == null)
+            suffix = "html";
+
         String mimeType = suffixToMimeType.get(suffix);
         if (mimeType != null)
             response.setContentType(mimeType + ";charset=UTF-8");
