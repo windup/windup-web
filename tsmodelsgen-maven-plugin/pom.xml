@@ -28,7 +28,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
 
-        <version.windup.core>4.0.0-SNAPSHOT</version.windup.core>
+        <version.windup.core>4.0.0.Final</version.windup.core>
         <!-- this property is used in the code too, DO NOT REMOVE IT! -->
         <version.windup.web>${project.version}</version.windup.web>
         <!-- For now, we need to pass this to the Mojo explicitly (through META-INF/versions.properties),
