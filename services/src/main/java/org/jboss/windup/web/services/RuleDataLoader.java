@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.GregorianCalendar;
@@ -56,8 +57,13 @@ import org.ocpsoft.rewrite.config.Rule;
 @Startup
 public class RuleDataLoader
 {
+    private static final String XML_RULES_WINDUP_EXTENSION = "windup.xml";
+    private static final String XML_RULES_RHAMT_EXTENSION = "rhamt.xml";
+    private static final String[] SUPPORTED_RULE_EXTENSIONS = {
+            XML_RULES_WINDUP_EXTENSION,
+            XML_RULES_RHAMT_EXTENSION
+    };
     private static Logger LOG = Logger.getLogger(RuleDataLoader.class.getName());
-
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -332,7 +338,7 @@ public class RuleDataLoader
     {
         if (origin == null)
             return RuleProviderEntity.RuleProviderType.JAVA;
-        else if (origin.startsWith("file:") && origin.endsWith(".windup.xml"))
+        else if (origin.startsWith("file:") && Arrays.stream(SUPPORTED_RULE_EXTENSIONS).parallel().anyMatch(extension -> origin.endsWith(extension)))
             return RuleProviderEntity.RuleProviderType.XML;
         else if (origin.startsWith("file:") && origin.endsWith(".windup.groovy"))
             return RuleProviderEntity.RuleProviderType.GROOVY;
