@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.GregorianCalendar;
@@ -16,6 +17,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
@@ -381,7 +383,7 @@ public class RuleDataLoader
     {
         if (origin == null)
             return RuleProviderEntity.RuleProviderType.JAVA;
-        else if (origin.startsWith("file:") && origin.endsWith(".windup.xml"))
+        else if (origin.startsWith("file:") && Arrays.stream(SUPPORTED_RULE_EXTENSIONS).parallel().anyMatch(extension -> origin.endsWith(extension)))
             return RuleProviderEntity.RuleProviderType.XML;
         else if (origin.startsWith("file:") && origin.endsWith(".windup.groovy"))
             return RuleProviderEntity.RuleProviderType.GROOVY;
