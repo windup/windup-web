@@ -1,10 +1,5 @@
 package org.jboss.windup.web.addons.websupport.tsmodelgen;
 
-import com.tinkerpop.blueprints.Direction;
-import com.tinkerpop.frames.Adjacency;
-import com.tinkerpop.frames.InVertex;
-import com.tinkerpop.frames.Incidence;
-import com.tinkerpop.frames.OutVertex;
 import java.lang.annotation.Annotation;
 import static org.jboss.windup.web.addons.websupport.tsmodelgen.TsGenUtils.quoteIfNotNull;
 import static org.jboss.windup.web.addons.websupport.tsmodelgen.TsGenUtils.format;
@@ -13,8 +8,15 @@ import java.lang.reflect.Method;
 import java.util.EnumSet;
 import java.util.logging.Logger;
 
+import com.syncleus.ferma.ClassInitializer;
+import com.syncleus.ferma.annotations.InVertex;
+import com.syncleus.ferma.annotations.Incidence;
+import com.syncleus.ferma.annotations.OutVertex;
 import org.apache.commons.lang3.StringUtils;
 import static org.apache.commons.lang3.StringUtils.capitalize;
+
+import org.apache.tinkerpop.gremlin.structure.Direction;
+import org.jboss.windup.graph.Adjacency;
 import org.jboss.windup.util.exception.WindupException;
 
 /**
@@ -113,7 +115,13 @@ class ModelRelation extends ModelMember
             throw new WindupException("Setter must have 1 param: " + methodIdent);
 
         if (info.methodsPresent.contains(BeanMethodType.ADD) && method.getParameterCount() != 1)
-            throw new WindupException("Adder must have 1 param: " + methodIdent);
+        {
+            if (method.getParameterCount() == 0)
+                throw new WindupException("Adder must have >0 params: " + methodIdent);
+
+            if (method.getParameterCount() > 2 && !method.getParameterTypes()[1].isAssignableFrom(ClassInitializer.class))
+                throw new WindupException("Adder must have 1 param: " + methodIdent);
+        }
 
         if (info.methodsPresent.contains(BeanMethodType.REMOVE) && method.getParameterCount() != 1)
             throw new WindupException("Remover must have 1 param: " + methodIdent);

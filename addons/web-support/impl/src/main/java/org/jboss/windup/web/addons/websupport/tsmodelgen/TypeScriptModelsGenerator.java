@@ -22,21 +22,21 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import com.syncleus.ferma.annotations.InVertex;
+import com.syncleus.ferma.annotations.Incidence;
+import com.syncleus.ferma.annotations.OutVertex;
 import org.apache.commons.collections4.BidiMap;
 import org.apache.commons.collections4.bidimap.DualHashBidiMap;
+import org.apache.tinkerpop.gremlin.structure.Direction;
+import org.jboss.windup.graph.Adjacency;
+import org.jboss.windup.graph.Property;
 import org.jboss.windup.graph.SetInProperties;
+import org.jboss.windup.graph.model.TypeValue;
 import org.jboss.windup.graph.model.WindupFrame;
 import org.jboss.windup.graph.model.WindupVertexFrame;
 import org.jboss.windup.graph.model.resource.FileModel;
 import org.jboss.windup.web.addons.websupport.tsmodelgen.TypeScriptModelsGeneratorConfig.AdjacencyMode;
 
-import com.tinkerpop.blueprints.Direction;
-import com.tinkerpop.frames.Adjacency;
-import com.tinkerpop.frames.InVertex;
-import com.tinkerpop.frames.Incidence;
-import com.tinkerpop.frames.OutVertex;
-import com.tinkerpop.frames.Property;
-import com.tinkerpop.frames.modules.typedgraph.TypeValue;
 import java.lang.annotation.Annotation;
 import org.jboss.windup.graph.model.WindupEdgeFrame;
 import org.jboss.windup.util.exception.WindupException;
@@ -273,7 +273,7 @@ public class TypeScriptModelsGenerator
                 {
                     Adjacency adjAnn = method.getAnnotation(Adjacency.class);
                     Incidence incAnn = method.getAnnotation(Incidence.class);
-                    InVertex  inAnn = method.getAnnotation(InVertex.class);
+                    InVertex inAnn = method.getAnnotation(InVertex.class);
                     OutVertex outAnn = method.getAnnotation(OutVertex.class);
                     {
                         int check = (adjAnn == null ? 0 : 1) + (incAnn == null ? 0 : 1) + (inAnn == null ? 0 : 1) + (outAnn == null ? 0 : 1);

@@ -1,6 +1,6 @@
 package org.jboss.windup.web.addons.websupport.tsmodelgen;
 
-import com.tinkerpop.frames.modules.typedgraph.TypeValue;
+import org.jboss.windup.graph.model.TypeValue;
 import org.jboss.windup.graph.model.WindupFrame;
 
 /**

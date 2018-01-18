@@ -57,9 +57,9 @@ public class ApplicationDetailsResourceImpl extends AbstractGraphResource implem
         ProjectModel current = traversal.getCurrentProject();
         ProjectModel canonical = traversal.getCanonicalProject();
 
-        traversalDTO.setId(traversal.asVertex().getId());
-        traversalDTO.setCurrentID(current.asVertex().getId());
-        traversalDTO.setCanonicalID(canonical.asVertex().getId());
+        traversalDTO.setId(traversal.getId());
+        traversalDTO.setCurrentID(current.getId());
+        traversalDTO.setCanonicalID(canonical.getId());
 
         FileModel rootFileModel = canonical.getRootFileModel();
         if (rootFileModel != null)
@@ -86,7 +86,7 @@ public class ApplicationDetailsResourceImpl extends AbstractGraphResource implem
             FileReducedDTO fileDTO = new FileReducedDTO();
 
             FileModel fileModel = traversalFileModel.getFileModel();
-            fileDTO.setFileModelVertexID(fileModel.asVertex().getId());
+            fileDTO.setFileModelVertexID(fileModel.getId());
             fileDTO.setFilePath(traversalFileModel.getFilePath());
             if (fileModel instanceof JavaSourceFileModel)
             {
@@ -112,7 +112,7 @@ public class ApplicationDetailsResourceImpl extends AbstractGraphResource implem
 
             for (ClassificationModel classification : traversalFileModel.getClassifications())
             {
-                if (applicationDetails.getClassifications().containsKey(classification.asVertex().getId()))
+                if (applicationDetails.getClassifications().containsKey(classification.getId()))
                     continue;
 
                 ClassificationReducedDTO classificationReducedDTO = new ClassificationReducedDTO();
@@ -121,13 +121,13 @@ public class ApplicationDetailsResourceImpl extends AbstractGraphResource implem
                 for (String tag : classification.getTags())
                     classificationReducedDTO.getTags().add(new TagReducedDTO(strings.getOrAdd(tag), 0));
 
-                applicationDetails.getClassifications().put(classification.asVertex().getId(), classificationReducedDTO);
-                fileDTO.getClassificationIDs().add(classification.asVertex().getId());
+                applicationDetails.getClassifications().put(classification.getId(), classificationReducedDTO);
+                fileDTO.getClassificationIDs().add(classification.getId());
             }
 
             for (InlineHintModel hint : traversalFileModel.getHints())
             {
-                if (applicationDetails.getHints().containsKey(hint.asVertex().getId()))
+                if (applicationDetails.getHints().containsKey(hint.getId()))
                     continue;
 
                 HintReducedDTO hintReducedDTO = new HintReducedDTO();
@@ -141,8 +141,8 @@ public class ApplicationDetailsResourceImpl extends AbstractGraphResource implem
                 for (String tag : hint.getTags())
                     hintReducedDTO.getTags().add(new TagReducedDTO(strings.getOrAdd(tag), 0));
 
-                applicationDetails.getHints().put(hint.asVertex().getId(), hintReducedDTO);
-                fileDTO.getHintIDs().add(hint.asVertex().getId());
+                applicationDetails.getHints().put(hint.getId(), hintReducedDTO);
+                fileDTO.getHintIDs().add(hint.getId());
             }
 
             traversalDTO.getFiles().add(fileDTO);

@@ -11,15 +11,14 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.apache.tinkerpop.gremlin.structure.Property;
+import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.jboss.forge.furnace.Furnace;
 import org.jboss.forge.furnace.exception.ContainerException;
 import org.jboss.forge.furnace.spi.ContainerLifecycleListener;
 import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.GraphContextFactory;
-
-import com.tinkerpop.blueprints.Edge;
-import com.tinkerpop.blueprints.Vertex;
-import com.tinkerpop.blueprints.util.wrappers.event.listener.GraphChangedListener;
+import org.jboss.windup.graph.GraphListener;
 
 /**
  * Contains a cache for connecting to the graph efficiently from multiple threads. This will keep a connection open for {@link GraphCache#MAX_AGE}
@@ -193,53 +192,14 @@ public class GraphCache
         {
             this.lastUsageTime = System.currentTimeMillis();
             this.graphContext = graphContext;
-            graphContext.getGraph().addListener(new GraphChangedListener()
-            {
+            graphContext.registerGraphListener(new GraphListener() {
                 @Override
-                public void vertexAdded(Vertex vertex)
-                {
+                public void vertexAdded(Vertex vertex) {
                     updateLastUsageTime();
                 }
 
                 @Override
-                public void vertexPropertyChanged(Vertex vertex, String key, Object oldValue, Object setValue)
-                {
-                    updateLastUsageTime();
-                }
-
-                @Override
-                public void vertexPropertyRemoved(Vertex vertex, String key, Object removedValue)
-                {
-                    updateLastUsageTime();
-                }
-
-                @Override
-                public void vertexRemoved(Vertex vertex, Map<String, Object> props)
-                {
-                    updateLastUsageTime();
-                }
-
-                @Override
-                public void edgeAdded(Edge edge)
-                {
-                    updateLastUsageTime();
-                }
-
-                @Override
-                public void edgePropertyChanged(Edge edge, String key, Object oldValue, Object setValue)
-                {
-                    updateLastUsageTime();
-                }
-
-                @Override
-                public void edgePropertyRemoved(Edge edge, String key, Object removedValue)
-                {
-                    updateLastUsageTime();
-                }
-
-                @Override
-                public void edgeRemoved(Edge edge, Map<String, Object> props)
-                {
+                public void vertexPropertyChanged(Vertex element, Property oldValue, Object setValue, Object... vertexPropertyKeyValues) {
                     updateLastUsageTime();
                 }
             });

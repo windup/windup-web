@@ -25,6 +25,11 @@ public class JavaEEClasspathSpec extends AbstractModuleSpecProvider
     static
     {
         /*
+         * Used by the graph
+         */
+        paths.add("com/sun/nio/file");
+
+        /*
          *  Add the paths that we need from the Java EE server.
          */
         paths.add("javax/servlet");
