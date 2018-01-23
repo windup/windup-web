@@ -23,7 +23,7 @@
             [tableHeaders]="[
                 { title: 'Analysis', isSortable: true, sortBy: 'id' },
                 { title: 'Status', isSortable: true, sortBy: 'state' },
-                { title: 'Start Date', isSortable: true, sortBy: 'timeStarted' },
+                { title: 'Start Date', isSortable: true, sortBy: sortByStartDateCallback },
                 { title: 'Applications', isSortable: true, sortBy: sortByNumberAnalyzedApplicationsCallback },
                 { title: 'Actions', isSortable: false }
             ]">
