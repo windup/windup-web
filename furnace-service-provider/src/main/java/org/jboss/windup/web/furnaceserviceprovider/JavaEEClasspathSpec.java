@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.jboss.forge.furnace.impl.modules.providers.AbstractModuleSpecProvider;
-import org.jboss.forge.furnace.impl.modules.providers.SystemClasspathSpec;
 import org.jboss.modules.ModuleIdentifier;
 
 /**

@@ -7,4 +7,5 @@ import javax.ws.rs.core.Application;
 public class RestApplication extends Application
 {
     public static final String REST_BASE = "/";
+
 }

@@ -9,6 +9,8 @@ import org.jboss.windup.reporting.model.ClassificationModel;
 import org.jboss.windup.reporting.model.InlineHintModel;
 import org.jboss.windup.reporting.model.TechnologyTagModel;
 
+import java.util.List;
+
 /**
  * Persists some high-level information regarding a file within a traversal that might be relevant only within
  * the context of that traversal.
@@ -53,7 +55,7 @@ public interface PersistedTraversalChildFileModel extends WindupVertexFrame
      * Contains links to all classifications associated with this file.
      */
     @Adjacency(label = CLASSIFICATIONS)
-    Iterable<ClassificationModel> getClassifications();
+    List<ClassificationModel> getClassifications();
 
     /**
      * Contains links to all classifications associated with this file.
@@ -65,7 +67,7 @@ public interface PersistedTraversalChildFileModel extends WindupVertexFrame
      * Contains links to all hints associated with this file.
      */
     @Adjacency(label = HINTS)
-    Iterable<InlineHintModel> getHints();
+    List<InlineHintModel> getHints();
 
     /**
      * Contains links to all hints associated with this file.
@@ -77,7 +79,7 @@ public interface PersistedTraversalChildFileModel extends WindupVertexFrame
      * Contains links to all technology tags associated with this file.
      */
     @Adjacency(label = TECHNOLOGYTAGS)
-    Iterable<TechnologyTagModel> getTechnologyTags();
+    List<TechnologyTagModel> getTechnologyTags();
 
     /**
      * Contains links to all technology tags associated with this file.

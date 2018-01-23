@@ -12,6 +12,15 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.Provider;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.jaxrs.cfg.Annotations;
+import com.syncleus.ferma.AbstractElementFrame;
+import com.syncleus.ferma.AbstractVertexFrame;
+import com.syncleus.ferma.ElementFrame;
+import com.syncleus.ferma.FramedGraph;
+import com.syncleus.ferma.VertexFrame;
+import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
+import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.hibernate.proxy.pojo.javassist.JavassistLazyInitializer;
 import org.jboss.forge.furnace.proxy.ClassLoaderAdapterCallback;
 import org.jboss.forge.furnace.proxy.ClassLoaderInterceptor;
@@ -37,39 +46,11 @@ public class ForgeProxyMarshaller extends JacksonJsonProvider
     {
         ObjectMapper mapper = locateMapper(type, mediaType);
         // Suppress handler properties in JSON output
-        mapper.addMixIn(JavassistLazyInitializer.class, CLACMixin.class);
-        mapper.addMixIn(ClassLoaderAdapterCallback.class, CLACMixin.class);
-        mapper.addMixIn(ClassLoaderInterceptor.class, CLACMixin.class);
-
-        addMapperForProxyType(type, genericType, value, mapper);
-        if (value instanceof Iterable)
-        {
-            Iterator<?> iterator = ((Iterable) value).iterator();
-            if (iterator.hasNext())
-                addMapperForProxyType(null, genericType, iterator.next(), mapper);
-        }
+        mapper.addMixIn(Object.class, CLACMixin.class);
 
         super.writeTo(value, type, genericType, annotations, mediaType, httpHeaders, entityStream);
     }
 
-    private void addMapperForProxyType(Class<?> clazz, Type genericType, Object value, ObjectMapper mapper)
-    {
-        if (Proxies.isForgeProxy(value))
-        {
-            mapper.addMixIn(Proxies.unwrapProxyTypes(value.getClass()), CLACMixin.class);
-            if (clazz != null)
-                addMixin(mapper, clazz);
-
-            if (genericType instanceof ParameterizedType)
-            {
-                for (Type type : ((ParameterizedType) genericType).getActualTypeArguments())
-                {
-                    if (type instanceof Class)
-                        addMixin(mapper, (Class) type);
-                }
-            }
-        }
-    }
 
     private void addMixin(ObjectMapper mapper, Class<?> clazz)
     {
@@ -89,9 +70,8 @@ public class ForgeProxyMarshaller extends JacksonJsonProvider
         }
     }
 
+    @JsonIgnoreProperties({"handler", "rawTraversal", "graph", "wrappedGraph"})
     private abstract class CLACMixin
     {
-        @JsonIgnore
-        public abstract ClassLoaderAdapterCallback getHandler();
     }
 }
