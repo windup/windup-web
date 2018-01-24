@@ -6,6 +6,7 @@
     "e2e": "protractor",
     "e2e-local": "protractor --params.login.username test --params.login.password test --baseUrl http://localhost:8080/rhamt-web/ --params.baseUrl http://localhost:8080/rhamt-web/ --params.upload.filePath /home/dklingen/Downloads/mariadb-java-client-1.5.5.jar",
     "e2e-live": "protractor --elementExplorer",
+    "e2e-local-test-server": "protractor --params.upload.filePath /home/dklingen/Downloads/das-description-ws-2.0.war",
     "webdriver-update": "webdriver-manager update --gecko false",
     "webdriver-start": "webdriver-manager start",
     "postinstall": "npm run webdriver-update"
@@ -19,6 +20,8 @@
     "jasmine-spec-reporter": "^4.1.0",
     "protractor": "^5.1.2",
     "ts-node": "^3.0.6",
-    "typescript": "^2.3.2"
+    "typescript": "^2.3.2",
+    "xmldom": "^0.1.27",
+    "xpath": "0.0.24"
   }
 }

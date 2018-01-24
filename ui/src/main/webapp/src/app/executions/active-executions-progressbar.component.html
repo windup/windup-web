@@ -1,15 +1,15 @@
 <div>
     <h2 i18n="heading|Active Executions">Active Analysis</h2>
-    <div *ngFor="let execution of mainExecutions">
-        <wu-progress-bar
-             [taskName]="execution.currentTask"
-             [currentValue]="execution.workCompleted"
+    <div *ngIf="mainExecution != null">
+        <wu-progress-bar *ngIf="mainExecution.currentTask || activeExecutions.length == 1"
+             [taskName]="mainExecution.currentTask"
+             [currentValue]="mainExecution.workCompleted"
              [minValue]="0"
-             [maxValue]="execution.totalWork"
-             [activeExecutionId]="execution.id">
+             [maxValue]="mainExecution.totalWork"
+             [activeExecutionId]="mainExecution.id">
         </wu-progress-bar>
     </div>
-    <div *ngIf="mainExecutions == null || mainExecutions.length == 0">
+    <div *ngIf="mainExecutions == null || mainExecutions.length == 0" class="progressbar-no-active-analysis">
         There is no active analysis.
     </div>
 </div>

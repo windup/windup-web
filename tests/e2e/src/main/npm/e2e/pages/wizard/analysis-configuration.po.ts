@@ -1,8 +1,8 @@
-import {browser, by, element} from "protractor";
+import {$, browser, by, element} from "protractor";
 
 export class AnalysisConfigurationPage {
-    saveAndRun = null; //element(by.css('.btn.btn-primary:nth-child(3)'));
-    save = element(by.css('.btn-save')); // by.buttonText('Save')); // .css('.btn-primary')); // :nth-child(2)
+    saveAndRun = null; //$('.btn.btn-primary:nth-child(3)');
+    save = $('.btn-save'); // by.buttonText('Save')); // .css('.btn-primary'); // :nth-child(2)
 
     public clickSave() {
         return this.save.click();
