@@ -48,8 +48,8 @@ export class ApplicationsListPage {
         return this.searchClearButton.click();
     }
 
-    public navigateTo(projectId: number) {
-        return browser.get(`projects/${projectId}/applications`);
+    public navigateTo(aProjectId: number) {
+        return browser.get(`projects/${aProjectId}/applications`);
     }
 }
 

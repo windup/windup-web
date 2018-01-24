@@ -46,6 +46,29 @@
         </dependency>
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <skipVisualRegressionTests>true</skipVisualRegressionTests>
+            </properties>
+        </profile>
+        <profile>
+            <id>visual-regression</id>
+            <activation>
+                <property>
+                    <name>visualRegression</name>
+                </property>
+            </activation>
+            <properties>
+                <skipVisualRegressionTests>false</skipVisualRegressionTests>
+            </properties>
+        </profile>
+    </profiles>
+
     <build>
         <pluginManagement>
             <plugins>
@@ -57,6 +80,58 @@
             </plugins>
         </pluginManagement>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.20</version>
+                <configuration>
+                    <includes>
+                        <include>**/**IT.java</include>
+                    </includes>
+                    <systemPropertyVariables>
+                        <wildfly.remote.port>${wildfly.port}</wildfly.remote.port>
+                        <protractor.path>./node_modules/protractor/bin/protractor</protractor.path>
+                        <protractor.args>protractor.conf.js --params.upload.filePath ${project.build.directory}/deployments/rhamt-web.war --params.visualRegression true</protractor.args>
+                        <workingDirectory>${project.build.directory}/npm</workingDirectory>
+                        <args.conf>protractor.conf.js</args.conf>
+                        <args.params.uploadFile>${project.build.directory}/deployments/rhamt-web.war</args.params.uploadFile>
+                        <args.params.visualRegression>true</args.params.visualRegression>
+                        <logFile>${project.build.directory}/e2e-output.log</logFile>
+                    </systemPropertyVariables>
+                    <failIfNoTests>false</failIfNoTests>
+                    <failIfNoSpecifiedTests>false</failIfNoSpecifiedTests>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>failsafe-integration-tests</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>integration-test</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>failsafe-verify</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.6.1</version>
+                <executions>
+                    <execution>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <executions>
@@ -80,6 +155,46 @@
                                     </excludes>
                                 </resource>
                             </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-database</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/${wildfly.directory}/standalone/data/windup/h2</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/resources/h2</directory>
+                                    <filtering>false</filtering>
+                                    <includes>
+                                        <include>windup-web.h2.db</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>unzip-reports</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <echo message="Unzip reports" />
+                                <unzip src="src/main/resources/windup/1355.zip" dest="${project.build.directory}/${wildfly.directory}/standalone/data/windup" />
+                                <chmod file="${project.build.directory}/npm/verify-results.js" perm="771" />
+                            </tasks>
                         </configuration>
                     </execution>
                 </executions>
@@ -146,7 +261,7 @@
                 <executions>
                     <execution>
                         <id>start-wildfly</id>
-                        <phase>test-compile</phase>
+                        <phase>pre-integration-test</phase>
                         <goals>
                             <goal>start</goal>
                             <goal>execute-commands</goal>
@@ -170,7 +285,7 @@
                     </execution>
                     <execution>
                         <id>stop-wildfly</id>
-                        <phase>package</phase>
+                        <phase>post-integration-test</phase>
                         <goals>
                             <goal>shutdown</goal>
                         </goals>
@@ -232,18 +347,19 @@
                             <outputFile>${project.build.directory/webdriver-update.log}</outputFile>
                         </configuration>
                     </execution>
-
                     <execution>
                         <id>run-e2e</id>
-                        <phase>test</phase>
+                        <phase>integration-test</phase>
                         <goals>
                             <goal>exec</goal>
                         </goals>
-
-
-
                         <configuration>
                             <skip>${skipTests}</skip>
+                            <successCodes>
+                                <code>0</code>
+                                <!-- This is a hack, 1 means test failures, but we need to handle it outside of maven-exec plugin -->
+                                <code>1</code>
+                            </successCodes>
                             <executable>./node_modules/protractor/bin/protractor</executable>
                             <workingDirectory>${project.build.directory}/npm</workingDirectory>
                             <arguments>
@@ -251,13 +367,51 @@
                                 <argument>--params.upload.filePath</argument>
                                 <argument>${project.build.directory}/deployments/rhamt-web.war</argument>
                             </arguments>
-
                             <outputFile>${project.build.directory}/e2e-output.log</outputFile>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>run-e2e-visual-regression</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <skip>${skipVisualRegressionTests}</skip>
+                            <successCodes>
+                                <code>0</code>
+                                <!-- This is a hack, 1 means test failures, but we need to handle it outside of maven-exec plugin -->
+                                <code>1</code>
+                            </successCodes>
+                            <executable>./node_modules/protractor/bin/protractor</executable>
+                            <workingDirectory>${project.build.directory}/npm</workingDirectory>
+                            <arguments>
+                                <argument>protractor.visual-regression.conf.js</argument>
+                            </arguments>
+                            <outputFile>${project.build.directory}/e2e-visual-regression-output.log</outputFile>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>make-results-report</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <skip>${skipTests}</skip>
+                            <!-- <executable>./run-tests</executable> -->
+                            <executable>./verify-results.js</executable>
+                            <workingDirectory>${project.build.directory}/npm</workingDirectory>
+                            <arguments>
+                                <argument>${project.build.directory}/failsafe-reports/failsafe-summary.xml</argument>
+                                <argument>${project.build.directory}/npm/test-results.xml</argument>
+                                <argument>${project.build.directory}/npm/test-results-visual-regression.xml</argument>
+                            </arguments>
+                            <outputFile>${project.build.directory}/e2e-verify-results.log</outputFile>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-
         </plugins>
     </build>
 </project>
