@@ -2,6 +2,7 @@ package org.jboss.windup.web.addons.websupport.services;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -79,7 +80,8 @@ public class WindupExecutorServiceImpl implements WindupExecutorService
         if (source != null)
             configuration.setOptionValue(SourceOption.NAME, Collections.singletonList(source));
 
-        if (targets != null && targets.size() > 0) {
+        if (targets != null && targets.size() > 0)
+        {
             configuration.setOptionValue(TargetOption.NAME, targets);
         }
 
@@ -88,9 +90,24 @@ public class WindupExecutorServiceImpl implements WindupExecutorService
 
         for (Map.Entry<String, Object> optionEntry : otherOptions.entrySet())
         {
-            configuration.setOptionValue(optionEntry.getKey(), optionEntry.getValue());
+            Object existingOption = configuration.getOptionValue(optionEntry.getKey());
+            if (existingOption instanceof Collection)
+            {
+                List newOption = new ArrayList();
+                newOption.addAll((Collection) existingOption);
+
+                if (optionEntry.getValue() instanceof Collection)
+                    newOption.addAll((Collection)optionEntry.getValue());
+                else
+                    newOption.add(optionEntry.getValue());
+                configuration.setOptionValue(optionEntry.getKey(), newOption);
+            }
+            else
+            {
+                configuration.setOptionValue(optionEntry.getKey(), optionEntry.getValue());
+            }
         }
-        
+
         Logger globalLogger = Logger.getLogger("org.jboss.windup.web.messaging.executor.MessagingProgressMonitor");
         Handler logHandler = null;
         try
