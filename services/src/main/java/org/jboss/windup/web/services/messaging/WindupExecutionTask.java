@@ -228,6 +228,18 @@ public class WindupExecutionTask implements Runnable
                     List<Object> list = new ArrayList<>();
                     list.add(previousValue);
                     result.put(name, list);
+
+                    previousValue = list;
+                } else
+                {
+                    /*
+                     * Unfortunately, it may be an immutable list, so make a copy of it in this case as well
+                     */
+                    List<Object> list = new ArrayList<>();
+                    list.addAll((List)previousValue);
+                    result.put(name, list);
+
+                    previousValue = list;
                 }
 
                 /*
