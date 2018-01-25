@@ -1,12 +1,14 @@
 package org.jboss.windup.web.addons.websupport.model;
 
-import com.tinkerpop.frames.Adjacency;
-import com.tinkerpop.frames.Property;
-import com.tinkerpop.frames.modules.typedgraph.TypeValue;
+import org.jboss.windup.graph.Adjacency;
+import org.jboss.windup.graph.Property;
 import org.jboss.windup.graph.model.ProjectModel;
+import org.jboss.windup.graph.model.TypeValue;
 import org.jboss.windup.graph.model.WindupVertexFrame;
 import org.jboss.windup.graph.traversal.ProjectModelTraversal;
 import org.jboss.windup.reporting.model.OverviewReportLineMessageModel;
+
+import java.util.List;
 
 /**
  * Persists a {@link ProjectModelTraversal} to the graph.
@@ -108,7 +110,7 @@ public interface PersistedProjectModelTraversalModel extends WindupVertexFrame
      * Contains children of this traversal.
      */
     @Adjacency(label = CHILD)
-    Iterable<PersistedProjectModelTraversalModel> getChildren();
+    List<PersistedProjectModelTraversalModel> getChildren();
 
     /**
      * Contains children of this traversal.
@@ -120,7 +122,7 @@ public interface PersistedProjectModelTraversalModel extends WindupVertexFrame
      * Contains all files within the current project.
      */
     @Adjacency(label = FILES)
-    Iterable<PersistedTraversalChildFileModel> getFiles();
+    List<PersistedTraversalChildFileModel> getFiles();
 
     /**
      * Contains all files within the current project.
@@ -132,7 +134,7 @@ public interface PersistedProjectModelTraversalModel extends WindupVertexFrame
      * Contains any application level messages provided by the rules.
      */
     @Adjacency(label = APPLICATION_MESSAGES)
-    Iterable<OverviewReportLineMessageModel> getApplicationMessages();
+    List<OverviewReportLineMessageModel> getApplicationMessages();
 
     /**
      * Contains any application level messages provided by the rules.

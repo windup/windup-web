@@ -1,6 +1,7 @@
 package org.jboss.windup.web.addons.websupport.rest.graph;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -11,16 +12,16 @@ import javax.ws.rs.NotFoundException;
 import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.core.Response;
 
-import com.tinkerpop.frames.modules.typedgraph.TypeValue;
+import org.apache.tinkerpop.gremlin.process.traversal.Traversal;
+import org.apache.tinkerpop.gremlin.structure.Direction;
+import org.apache.tinkerpop.gremlin.structure.Vertex;
+import org.janusgraph.diskstorage.PermanentBackendException;
 import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.GraphTypeManager;
+import org.jboss.windup.graph.model.TypeValue;
 import org.jboss.windup.graph.model.WindupVertexFrame;
 import org.jboss.windup.web.addons.websupport.rest.RestUtil;
 
-import com.thinkaurelius.titan.diskstorage.PermanentBackendException;
-import com.tinkerpop.blueprints.Direction;
-import com.tinkerpop.blueprints.Query;
-import com.tinkerpop.blueprints.Vertex;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Objects;
@@ -61,13 +62,14 @@ public class GraphResourceImpl extends AbstractGraphResource implements GraphRes
         if (vertexID == null)
             throw new IllegalArgumentException("ID not specified");
 
-        Vertex vertex = graphContext.getFramed().getVertex(vertexID);
+        Vertex vertex = graphContext.getGraph().vertices(vertexID).next();
 
         List<Map<String, Object>> vertices = new ArrayList<>();
-        Iterable<Vertex> relatedVertices = vertex.getVertices(Direction.valueOf(edgeDirection), edgeLabel);
+        Iterator<Vertex> relatedVertices = vertex.vertices(Direction.valueOf(edgeDirection), edgeLabel);
 
-        for (Vertex v : relatedVertices)
+        while (relatedVertices.hasNext())
         {
+            Vertex v = relatedVertices.next();
             vertices.add(convertToMap(executionID, v, 0, dedup));
         }
         return vertices;
@@ -81,7 +83,7 @@ public class GraphResourceImpl extends AbstractGraphResource implements GraphRes
 
         GraphContext graphContext = getGraph(executionID);
         List<Map<String, Object>> vertices = new ArrayList<>();
-        for (Vertex v : graphContext.getFramed().getVertices(WindupVertexFrame.TYPE_PROP, vertexType))
+        for (Vertex v : graphContext.getGraph().traversal().V().has(WindupVertexFrame.TYPE_PROP, vertexType).toSet())
         {
             vertices.add(convertToMap(new GraphMarshallingContext(executionID, v, depth, dedup, outEdges_, inEdges_, null, includeInVertices), v));
         }
@@ -93,8 +95,8 @@ public class GraphResourceImpl extends AbstractGraphResource implements GraphRes
     {
         GraphContext graphContext = getGraph(executionID);
         List<Map<String, Object>> vertices = new ArrayList<>();
-        Query query = graphContext.getFramed().query().has(WindupVertexFrame.TYPE_PROP, vertexType).has(propertyName, propertyValue);
-        for (Vertex vertex : query.vertices())
+        Traversal<Vertex, Vertex> query = graphContext.getGraph().traversal().V().has(WindupVertexFrame.TYPE_PROP, vertexType).has(propertyName, propertyValue);
+        for (Vertex vertex : query.toSet())
         {
             vertices.add(convertToMap(new GraphMarshallingContext(executionID, vertex, depth, dedup, null, null, null, includeInVertices), vertex));
         }
@@ -113,7 +115,7 @@ public class GraphResourceImpl extends AbstractGraphResource implements GraphRes
         try
         {
             GraphContext graphContext = getGraph(executionID);
-            Vertex vertex = graphContext.getFramed().getVertex(id);
+            Vertex vertex = graphContext.getGraph().traversal().V(id).next();
             if (vertex == null)
             {
                 final String msg = "Non-existent vertex ID " + id + " in execution " + executionID;

@@ -54,7 +54,7 @@ public class HardcodedIPResourceImpl extends AbstractGraphResource implements Ha
             if (projectModels != null && !projectModels.contains(location.getFile().getProjectModel()))
                 continue;
 
-            Map<String, Object> serializedObject = super.convertToMap(reportID, location.asVertex(), 1, true, whitelistEdges, Collections.emptyList(), Collections.emptyList());
+            Map<String, Object> serializedObject = super.convertToMap(reportID, location.getElement(), 1, true, whitelistEdges, Collections.emptyList(), Collections.emptyList());
             serializedObject.put("prettyPathWithinProject", path);
             result.add(serializedObject);
         }

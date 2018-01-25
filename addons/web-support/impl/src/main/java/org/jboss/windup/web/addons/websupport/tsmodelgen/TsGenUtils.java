@@ -10,6 +10,7 @@ import java.util.EnumSet;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import com.syncleus.ferma.ClassInitializer;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -48,7 +49,11 @@ public class TsGenUtils
         if (method.getName().startsWith("set") || method.getName().startsWith("add") || method.getName().startsWith("remove"))
         {
             setter = true;
-            if (method.getParameterCount() != 1)
+            if (method.getParameterCount() == 2 && method.getParameterTypes()[1].isAssignableFrom(ClassInitializer.class))
+            {
+                // Ignore this case
+            }
+            else if (method.getParameterCount() != 1)
             {
                 LOG.severe("Expected setter/adder/remover to have 1 parameter: " + method.toString());
             }

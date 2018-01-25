@@ -1,14 +1,15 @@
 package org.jboss.windup.web.addons.websupport.model;
 
-import com.tinkerpop.frames.Adjacency;
-import com.tinkerpop.frames.Property;
-import com.tinkerpop.frames.modules.typedgraph.TypeValue;
-import org.jboss.windup.graph.model.TechnologyReferenceModel;
+import org.jboss.windup.graph.Adjacency;
+import org.jboss.windup.graph.Property;
+import org.jboss.windup.graph.model.TypeValue;
 import org.jboss.windup.graph.model.WindupVertexFrame;
 import org.jboss.windup.graph.model.resource.FileModel;
 import org.jboss.windup.reporting.model.ClassificationModel;
 import org.jboss.windup.reporting.model.InlineHintModel;
 import org.jboss.windup.reporting.model.TechnologyTagModel;
+
+import java.util.List;
 
 /**
  * Persists some high-level information regarding a file within a traversal that might be relevant only within
@@ -54,7 +55,7 @@ public interface PersistedTraversalChildFileModel extends WindupVertexFrame
      * Contains links to all classifications associated with this file.
      */
     @Adjacency(label = CLASSIFICATIONS)
-    Iterable<ClassificationModel> getClassifications();
+    List<ClassificationModel> getClassifications();
 
     /**
      * Contains links to all classifications associated with this file.
@@ -66,7 +67,7 @@ public interface PersistedTraversalChildFileModel extends WindupVertexFrame
      * Contains links to all hints associated with this file.
      */
     @Adjacency(label = HINTS)
-    Iterable<InlineHintModel> getHints();
+    List<InlineHintModel> getHints();
 
     /**
      * Contains links to all hints associated with this file.
@@ -78,7 +79,7 @@ public interface PersistedTraversalChildFileModel extends WindupVertexFrame
      * Contains links to all technology tags associated with this file.
      */
     @Adjacency(label = TECHNOLOGYTAGS)
-    Iterable<TechnologyTagModel> getTechnologyTags();
+    List<TechnologyTagModel> getTechnologyTags();
 
     /**
      * Contains links to all technology tags associated with this file.

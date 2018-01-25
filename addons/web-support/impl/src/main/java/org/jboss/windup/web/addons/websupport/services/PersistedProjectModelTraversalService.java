@@ -1,12 +1,14 @@
 package org.jboss.windup.web.addons.websupport.services;
 
-import com.tinkerpop.blueprints.Vertex;
-import com.tinkerpop.frames.structures.FramedVertexIterable;
-import com.tinkerpop.gremlin.java.GremlinPipeline;
+import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
+import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.jboss.windup.graph.GraphContext;
+import org.jboss.windup.graph.frames.FramedVertexIterable;
 import org.jboss.windup.graph.model.WindupVertexFrame;
 import org.jboss.windup.graph.service.GraphService;
 import org.jboss.windup.web.addons.websupport.model.PersistedProjectModelTraversalModel;
+
+import java.util.List;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -21,13 +23,12 @@ public class PersistedProjectModelTraversalService extends GraphService<Persiste
     @SuppressWarnings("unchecked")
     public Iterable<PersistedProjectModelTraversalModel> getRootTraversalsByType(PersistedProjectModelTraversalModel.PersistedTraversalType persistedTraversalType)
     {
-        GremlinPipeline<Vertex, Vertex> pipeline = new GremlinPipeline<>(getGraphContext().getGraph());
-
-        Iterable<Vertex> vertices = (Iterable<Vertex>)pipeline.V()
+        List<Vertex> vertexList = new GraphTraversalSource(getGraphContext().getGraph()).V()
                 .has(WindupVertexFrame.TYPE_PROP, PersistedProjectModelTraversalModel.TYPE)
                 .has(PersistedProjectModelTraversalModel.TRAVERSAL_TYPE, persistedTraversalType.toString())
-                .has(PersistedProjectModelTraversalModel.ROOT, true);
+                .has(PersistedProjectModelTraversalModel.ROOT, true)
+                .toList();
 
-        return new FramedVertexIterable<>(getGraphContext().getFramed(), vertices, PersistedProjectModelTraversalModel.class);
+        return new FramedVertexIterable<>(getGraphContext().getFramed(), vertexList, PersistedProjectModelTraversalModel.class);
     }
 }

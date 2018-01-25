@@ -88,6 +88,15 @@ public class RestApplicationFurnace extends Application {
     private EntityManager entityManager;
 
     @Override
+    public Set<Class<?>> getClasses() {
+        Set<Class<?>> singletons = new HashSet<>(super.getClasses());
+        singletons.add(ForgeProxyMarshaller.class);
+        singletons.add(ExceptionHandler.class);
+        singletons.add(UnhandledExceptionHandler.class);
+        return singletons;
+    }
+
+    @Override
     public Set<Object> getSingletons()
     {
         Set<Object> singletons = new HashSet<>(super.getSingletons());

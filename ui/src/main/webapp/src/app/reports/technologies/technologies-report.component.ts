@@ -86,7 +86,7 @@ TODO: Fix this
         let indices = [];
 
         let rootFileModelObservable = techReports.map((item: TechnologyUsageStatisticsModel) => {
-            return item.projectModel.flatMap((projectModel: ProjectModel) => projectModel.rootFileModel);
+            return item.projectModel.flatMap((projectModel: ProjectModel) => projectModel.rootFileModelInternal);
         });
 
         let filteredStats = [];

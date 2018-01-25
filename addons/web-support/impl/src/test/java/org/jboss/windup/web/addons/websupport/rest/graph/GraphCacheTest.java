@@ -4,7 +4,7 @@ import java.nio.file.Paths;
 
 import static org.mockito.Mockito.*;
 
-import com.tinkerpop.blueprints.util.wrappers.event.EventGraph;
+import org.janusgraph.core.JanusGraph;
 import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.GraphContextFactory;
 import org.junit.Assert;
@@ -27,7 +27,7 @@ public class GraphCacheTest
         if (graphContext1 == null)
         {
             this.graphContext1 = mock(GraphContext.class);
-            when(graphContext1.getGraph()).thenReturn(mock(EventGraph.class));
+            when(graphContext1.getGraph()).thenReturn(mock(JanusGraph.class));
         }
         return this.graphContext1;
     }
@@ -38,7 +38,7 @@ public class GraphCacheTest
         if (graphContext2 == null)
         {
             this.graphContext2 = mock(GraphContext.class);
-            when(graphContext2.getGraph()).thenReturn(mock(EventGraph.class));
+            when(graphContext2.getGraph()).thenReturn(mock(JanusGraph.class));
         }
         return this.graphContext2;
     }

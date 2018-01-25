@@ -4,6 +4,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -12,9 +13,14 @@ import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.tinkerpop.gremlin.structure.Direction;
+import org.apache.tinkerpop.gremlin.structure.Edge;
+import org.apache.tinkerpop.gremlin.structure.Vertex;
+import org.apache.tinkerpop.gremlin.structure.VertexProperty;
 import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.model.BelongsToProject;
 import org.jboss.windup.graph.model.ProjectModel;
+import org.jboss.windup.graph.model.WindupFrame;
 import org.jboss.windup.graph.model.WindupVertexFrame;
 import org.jboss.windup.graph.service.GraphService;
 import org.jboss.windup.graph.service.ProjectService;
@@ -23,9 +29,6 @@ import org.jboss.windup.web.addons.websupport.rest.FurnaceRESTGraphAPI;
 import org.jboss.windup.web.addons.websupport.rest.GraphPathLookup;
 import org.jboss.windup.web.addons.websupport.services.ReportFilterService;
 
-import com.tinkerpop.blueprints.Direction;
-import com.tinkerpop.blueprints.Edge;
-import com.tinkerpop.blueprints.Vertex;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 
@@ -66,7 +69,7 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
 
     private String getLink(long executionID, Vertex vertex, String direction, String label)
     {
-        String params = String.format("/%s/edges/%s/%s/%s", executionID, vertex.getId(), direction, label);
+        String params = String.format("/%s/edges/%s/%s/%s", executionID, vertex.id(), direction, label);
         return uri.getBaseUri() + GraphResource.GRAPH_RESOURCE_URL + params;
     }
 
@@ -85,18 +88,29 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
         Map<String, Object> result = new HashMap<>();
 
         result.put(GraphResource.TYPE, GraphResource.TYPE_VERTEX);
-        result.put(GraphResource.KEY_ID, vertex.getId());
+        result.put(GraphResource.KEY_ID, vertex.id());
 
         // Spare CPU cycles, save the planet. Visited vertices will only contain _id.
         if (ctx.deduplicateVertices && !ctx.addVisited(vertex))
             return result;
 
-        for (String key : vertex.getPropertyKeys())
-        {
+        for (String key : vertex.keys()) {
             if (ctx.blacklistProperties.contains(key))
                 continue;
 
-            result.put(key, vertex.getProperty(key));
+            if (WindupFrame.TYPE_PROP.equals(key))
+            {
+                List<String> types = new ArrayList<>();
+                Iterator<VertexProperty<String>> typeProperties = vertex.properties(key);
+                while (typeProperties.hasNext())
+                {
+                    types.add(typeProperties.next().value());
+                }
+                result.put(key, types);
+            } else
+            {
+                result.put(key, vertex.property(key).orElse(null));
+            }
         }
 
 
@@ -124,15 +138,16 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
     {
         List<String> whitelistedLabels = direction == Direction.OUT ? ctx.whitelistedOutEdges : ctx.whitelistedInEdges;
 
-        Iterable<Edge> edges;
+        Iterator<Edge> edges;
         if (whitelistedLabels == null || whitelistedLabels.isEmpty())
-            edges = vertex.getEdges(direction);
+            edges = vertex.edges(direction);
         else
-            edges = vertex.getEdges(direction, whitelistedLabels.toArray(new String[whitelistedLabels.size()]));
+            edges = vertex.edges(direction, whitelistedLabels.toArray(new String[whitelistedLabels.size()]));
 
-        for (Edge edge : edges)
+        while (edges.hasNext())
         {
-            String label = edge.getLabel();
+            Edge edge = edges.next();
+            String label = edge.label();
 
             Map<String, Object> edgeDetails = (Map<String, Object>) result.get(label);
             // If the details are already there and we aren't recursing any further, then just skip
@@ -163,7 +178,7 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
                 linkedVertices = (List<Map<String, Object>>) edgeDetails.get(GraphResource.VERTICES);
             }
 
-            Vertex otherVertex = edge.getVertex(direction == Direction.OUT ? Direction.IN : Direction.OUT);
+            Vertex otherVertex = direction == Direction.OUT ? edge.outVertex() : edge.inVertex();
 
             // Recursion
             ctx.remainingDepth--;
@@ -171,10 +186,10 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
             ctx.remainingDepth++;
 
             // Add edge properties if any
-            if (!edge.getPropertyKeys().isEmpty())
+            if (!edge.keys().isEmpty())
             {
                 Map<String, Object> edgeData = new HashMap<>();
-                edge.getPropertyKeys().forEach(key -> edgeData.put(key, edge.getProperty(key)));
+                edge.keys().forEach(key -> edgeData.put(key, edge.property(key).orElse(null)));
                 otherVertexMap.put(GraphResource.EDGE_DATA, edgeData);
 
                 /// Add the edge frame's @TypeValue.  Workaround until PR #1063.
@@ -192,7 +207,7 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
         List<Map<String, Object>> result = new ArrayList<>();
         for (WindupVertexFrame frame : frames)
         {
-            result.add(convertToMap(ctx, frame.asVertex()));
+            result.add(convertToMap(ctx, frame.getElement()));
         }
         return result;
     }
@@ -257,7 +272,7 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
 
         return filteredEntities.stream().map(entity -> this.convertToMap(
                     executionID,
-                    entity.asVertex(),
+                    entity.getElement(),
                     1,
                     false,
                     whitelistedEdges,
@@ -309,11 +324,11 @@ class GraphMarshallingContext
      */
     boolean addVisited(Vertex v)
     {
-        return this.visitedVertices.add(((Number)v.getId()).longValue());
+        return this.visitedVertices.add(((Number)v.id()).longValue());
     }
 
     boolean wasVisited(Vertex v)
     {
-        return this.visitedVertices.contains(((Number)v.getId()).longValue());
+        return this.visitedVertices.contains(((Number)v.id()).longValue());
     }
 }
