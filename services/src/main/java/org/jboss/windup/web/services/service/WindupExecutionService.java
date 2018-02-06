@@ -118,7 +118,7 @@ public class WindupExecutionService
         }
 
         WindupExecution execution = new WindupExecution(analysisContext);
-        execution.setTimeStarted(new GregorianCalendar());
+        execution.setTimeQueued(new GregorianCalendar());
         execution.setState(ExecutionState.QUEUED);
 
         entityManager.persist(execution);

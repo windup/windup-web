@@ -44,9 +44,10 @@ public class WindupWebProgressMonitor implements WindupProgressMonitor
             return;
         }
 
-        if (execution.getState() == ExecutionState.QUEUED) {
+        if (execution.getState() == ExecutionState.QUEUED)
+        {
+            execution.setTimeStarted(new GregorianCalendar());
             execution.setState(ExecutionState.STARTED);
-            //execution.setTimeStarted(new GregorianCalendar());
         }
 
         if (ExecutionStateCache.isCancelled(execution))
