@@ -23,7 +23,7 @@
             [tableHeaders]="[
                 { title: 'Analysis', isSortable: true, sortBy: 'id' },
                 { title: 'Status', isSortable: true, sortBy: 'state' },
-                { title: 'Start Date', isSortable: true, sortBy: 'timeStarted' },
+                { title: 'Start Date', isSortable: true, sortBy: sortByStartDateCallback },
                 { title: 'Applications', isSortable: true, sortBy: sortByNumberAnalyzedApplicationsCallback },
                 { title: 'Actions', isSortable: false }
             ]">
@@ -56,12 +56,17 @@
                     <span *ngIf="execution.timeCompleted">
                         {{(execution.timeCompleted - execution.timeStarted | wuDuration)}}
                     </span>
-                    <span *ngIf="!execution.timeCompleted">
+                    <span *ngIf="!execution.timeCompleted && !execution.timeStarted">
+                        {{currentTime - execution.timeQueued | wuDuration}}
+                    </span>
+                    <span *ngIf="!execution.timeCompleted && execution.timeStarted">
                         {{currentTime - execution.timeStarted | wuDuration}}
                     </span>
                 </span>
             </td>
-            <td>{{execution.timeStarted | date: 'short'}}</td>
+            <td *ngIf="execution.timeStarted">{{execution.timeStarted | date: 'short'}}</td>
+            <td *ngIf="!execution.timeStarted"></td>
+
             <td class="pad-number-application">{{getNumberAnalyzedApplications(execution)}}</td>
             <td *ngIf="isDeleting(execution); else showActions">
                 <span class="spinner spinner-xs spinner-inline"></span>

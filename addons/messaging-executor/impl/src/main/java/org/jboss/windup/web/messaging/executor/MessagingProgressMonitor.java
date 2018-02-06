@@ -51,6 +51,7 @@ public class MessagingProgressMonitor implements WindupProgressMonitor
 
         if (execution.getState() == ExecutionState.QUEUED)
         {
+            execution.setTimeStarted(new GregorianCalendar());
             execution.setState(ExecutionState.STARTED);
         }
 

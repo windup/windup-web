@@ -5,6 +5,7 @@ export const EXECUTIONS_DATA: Partial<WindupExecution>[] = [];
 EXECUTIONS_DATA.push({
         "id": 13,
         "version": 1,
+        "timeQueued": 1477907641905,
         "timeStarted": 1477907641905,
         "timeCompleted": 1477907647229,
         "outputPath": "/home/dklingen/apps/wildfly-10.1.0.Final/standalone/data/windup/reports/Default Group.ANnIuZsNxbfq.report",
@@ -51,6 +52,7 @@ EXECUTIONS_DATA.push({
 EXECUTIONS_DATA.push({
         "id": 15,
         "version": 1,
+        "timeQueued": 1477907945127,
         "timeStarted": 1477907945127,
         "timeCompleted": 1477907948439,
         "outputPath": "/home/dklingen/apps/wildfly-10.1.0.Final/standalone/data/windup/reports/Default Group.ANnIuZsNxbfq.report",
@@ -97,6 +99,7 @@ EXECUTIONS_DATA.push({
 EXECUTIONS_DATA.push({
         "id": 25,
         "version": 27,
+        "timeQueued": 1478000242721,
         "timeStarted": 1478000242721,
         "timeCompleted": null,
         "outputPath": "/home/dklingen/apps/wildfly-10.1.0.Final/standalone/data/windup/reports/Default Group.ANnIuZsNxbfq.report",
@@ -143,6 +146,7 @@ EXECUTIONS_DATA.push({
 EXECUTIONS_DATA.push({
         "id": 30,
         "version": 30,
+        "timeQueued": null,
         "timeStarted": null,
         "timeCompleted": null,
         "outputPath": null,
@@ -189,6 +193,7 @@ EXECUTIONS_DATA.push({
 EXECUTIONS_DATA.push({
         "id": 35,
         "version": 35,
+        "timeQueued": 1478000242721,
         "timeStarted": 1478000242721,
         "timeCompleted": null,
         "outputPath": null,

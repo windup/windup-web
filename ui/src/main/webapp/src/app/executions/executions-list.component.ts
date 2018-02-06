@@ -33,7 +33,19 @@ export class ExecutionsListComponent extends AbstractComponent implements OnInit
     protected projectsMap: Map<number, MigrationProject> = new Map<number, MigrationProject>();
 
     sortedExecutions: WindupExecution[] = [];
-    initialSort = {property: 'timeStarted', direction: OrderDirection.DESC};
+
+    sortByStartDateCallback = (item: WindupExecution) => {
+        if (!item.timeStarted)
+            return Number.MAX_SAFE_INTEGER;
+        else
+            return item.timeStarted;
+    };
+
+    sortByNumberAnalyzedApplicationsCallback = (item: WindupExecution) => {
+        return this.getNumberAnalyzedApplications(item);
+    };
+
+    initialSort = {property: this.sortByStartDateCallback, direction: OrderDirection.DESC};
     private currentTimeTimer: number;
     currentTime: number = new Date().getTime();
 
@@ -209,10 +221,6 @@ export class ExecutionsListComponent extends AbstractComponent implements OnInit
     getNumberAnalyzedApplications(execution : WindupExecution) : number {
         return execution.analysisContext.applications.length;
     }
-
-    sortByNumberAnalyzedApplicationsCallback = (item: WindupExecution) => {
-        return this.getNumberAnalyzedApplications(item);
-    };
 
     public isDeleting(execution: WindupExecution) {
         return this.deletedExecutions.has(execution.id);
