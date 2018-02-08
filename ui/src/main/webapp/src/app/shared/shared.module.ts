@@ -32,7 +32,6 @@ import {RouterModule} from "@angular/router";
 import {StatusIconComponent} from "./status-icon.component";
 import {ChosenModule} from "./chosen/chosen.module";
 import {FileUploadModule, FileUploader} from "ng2-file-upload";
-import {SlimLoadingBarModule} from "ng2-slim-loading-bar";
 import {MomentModule} from "angular2-moment";
 import {CheckboxesComponent} from "./checkboxes.component";
 import {WizardLayoutComponent} from "./layout/wizard-layout.component";
@@ -56,8 +55,6 @@ import {ToolbarComponent} from "./toolbar/toolbar.component";
 import {AllDataFilteredMessageComponent} from "./all-data-filtered-message.component";
 import {DropdownFilterComponent} from "./filter/dropdown-filter.component";
 import {WebSocketSubjectFactory} from "./websocket.factory";
-import {EventBusService} from "../core/events/event-bus.service";
-import {LoadingIndicatorComponent} from "./loading-indicator.component";
 import {PaginationComponent} from "./pagination.component";
 import {PaginationService} from "./pagination.service";
 import {SortPipe} from "./sort/sort.pipe";
@@ -75,7 +72,6 @@ import {TablePanelComponent} from "./table/table-panel.component";
         ChosenModule,
         FileUploadModule,
         MomentModule,
-        SlimLoadingBarModule.forRoot(),
     ],
     providers: [
         BreadCrumbsService,
@@ -141,7 +137,6 @@ import {TablePanelComponent} from "./table/table-panel.component";
         ReplacePipe,
 
         ProjectNameNotExistsValidator,
-        LoadingIndicatorComponent, // Components are not suitable to be put in core module, see it's Javadoc.
         SortPipe,
         FilterPipe,
         TableSortHeaderComponent,
@@ -185,7 +180,6 @@ import {TablePanelComponent} from "./table/table-panel.component";
         ToolbarComponent,
         AllDataFilteredMessageComponent,
         DropdownFilterComponent,
-        LoadingIndicatorComponent, // Needs to be in exports too, otherwise it would be private fot the module.
         PaginationComponent,
 
         ProjectNameNotExistsValidator,

@@ -6,7 +6,6 @@ import {DatePipe} from "@angular/common";
 import {AppComponent} from "./components/app.component";
 
 import {MomentModule} from "angular2-moment";
-import {SlimLoadingBarModule} from "ng2-slim-loading-bar";
 
 import {InViewport} from "./components/in-viewport.directive";
 import {Http, HttpModule, RequestOptions, XHRBackend} from "@angular/http";
@@ -27,7 +26,6 @@ import {KeycloakService} from "./authentication/keycloak.service";
         // Moment
         MomentModule,
 
-        SlimLoadingBarModule.forRoot(),
     ],
     declarations: [
         // Directives

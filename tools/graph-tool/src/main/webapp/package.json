@@ -64,7 +64,6 @@
     "jstree": "^3.3.2",
     "karma-junit-reporter": "^1.1.0",
     "ng2-file-upload": "^1.2.1",
-    "ng2-slim-loading-bar": "^4.0.0",
     "patternfly": "^3.16.0",
     "patternfly-bootstrap-combobox": "1.1.7",
     "prismjs": "1.5.1",

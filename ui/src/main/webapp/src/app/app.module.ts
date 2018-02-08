@@ -9,7 +9,6 @@ import {appRoutingProviders, routing} from "./app.routing";
 
 import {MomentModule} from "angular2-moment";
 import {FileUploader, FileUploadModule} from "ng2-file-upload";
-import {SlimLoadingBarModule} from "ng2-slim-loading-bar";
 
 import {InViewport} from "./components/in-viewport.directive";
 
@@ -61,7 +60,6 @@ initializeModelMappingData();
         ConfigurationModule,
         AnalysisContextModule,
         ExecutionsModule,
-        SlimLoadingBarModule.forRoot(),
     ],
     declarations: [
         // Directives
