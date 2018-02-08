@@ -27,7 +27,7 @@ import org.jboss.windup.graph.GraphListener;
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
 @Singleton
-public class GraphCache
+public class GraphCacheImpl implements GraphCache
 {
     protected static final long MAX_AGE = 1000L * 60L * 10L;
     private static Logger LOG = Logger.getLogger(GraphCache.class.getName());
@@ -71,7 +71,7 @@ public class GraphCache
             @Override
             public void beforeStop(Furnace furnace) throws ContainerException
             {
-                GraphCache.this.cleanup();
+                GraphCacheImpl.this.cleanup();
             }
 
             @Override
@@ -107,6 +107,7 @@ public class GraphCache
      * Gets the graph at the given {@link Path}. This will be from the cache if possible. If a cached entry is not available, then a new one will be
      * loaded.
      */
+    @Override
     public GraphContext getGraph(Path graphPath, boolean create)
     {
         GraphCacheEntry graphCacheEntry = graphCacheEntryMap.get(graphPath);
@@ -126,6 +127,7 @@ public class GraphCache
     /**
      * If a graph is open for this path, insure that it is closed.
      */
+    @Override
     public void closeGraph(Path graphPath)
     {
         GraphCacheEntry cacheEntry = graphCacheEntryMap.get(graphPath);

@@ -50,9 +50,9 @@ public class GraphCacheTest
         return this.graphContextFactory;
     }
 
-    private GraphCache getGraphCache()
+    private GraphCacheImpl getGraphCache()
     {
-        GraphCache graphCache = new GraphCache();
+        GraphCacheImpl graphCache = new GraphCacheImpl();
 
         GraphContextFactory graphContextFactory = getGraphContextFactory();
         graphCache.graphContextFactory = graphContextFactory;
@@ -84,14 +84,14 @@ public class GraphCacheTest
     @Test
     public void testPurgeFromCache()
     {
-        GraphCache cache = getGraphCache();
+        GraphCacheImpl cache = getGraphCache();
         GraphContext graph1 = cache.getGraph(Paths.get("/path1"), false);
         Assert.assertTrue(getGraphContext1() == graph1);
 
         GraphContext graph2 = cache.getGraph(Paths.get("/path2"), false);
         Assert.assertTrue(getGraphContext2() == graph2);
 
-        cache.graphCacheEntryMap.get(Paths.get("/path1")).lastUsageTime = System.currentTimeMillis() - (2*GraphCache.MAX_AGE);
+        cache.graphCacheEntryMap.get(Paths.get("/path1")).lastUsageTime = System.currentTimeMillis() - (2*GraphCacheImpl.MAX_AGE);
         cache.purgeOldCachedGraphs();
 
         // Confirm that this grabs the cached one
