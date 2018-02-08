@@ -53,8 +53,11 @@
                     <span *ngIf="execution.state == 'CANCELLED'">
                         after
                     </span>
-                    <span *ngIf="execution.timeCompleted">
+                    <span *ngIf="execution.timeCompleted && execution.timeStarted">
                         {{(execution.timeCompleted - execution.timeStarted | wuDuration)}}
+                    </span>
+                    <span *ngIf="execution.timeCompleted && !execution.timeStarted">
+                        {{(execution.timeCompleted - execution.timeQueued | wuDuration)}}
                     </span>
                     <span *ngIf="!execution.timeCompleted && !execution.timeStarted">
                         {{currentTime - execution.timeQueued | wuDuration}}
