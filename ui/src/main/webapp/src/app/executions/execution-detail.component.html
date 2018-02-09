@@ -14,7 +14,7 @@
         </wu-progress-bar>
     </div>
     <div *ngIf="execution.state === 'QUEUED'">
-        The analysis is queued for {{currentTime - execution.timeStarted | wuDuration}}
+        The analysis is queued for {{currentTime - execution.timeQueued | wuDuration}}
     </div>
 
     <wu-tab-container>
@@ -41,11 +41,17 @@
             <dl>
                 <dt i18n="Analysis status">Status</dt>
                 <dd><wu-status-icon [status]="execution.state"></wu-status-icon>{{execution.state | wuPrettyExecutionStatus}}</dd>
-                <dt i18n="Analysis start date">Started</dt>
-                <dd>{{execution.timeStarted | date: 'short'}}</dd>
+
+                <dt *ngIf="execution.timeStarted" i18n="Analysis start date">Started</dt>
+                <dd *ngIf="execution.timeStarted">{{execution.timeStarted | date: 'short'}}</dd>
+
+                <dt *ngIf="!execution.timeStarted" i18n="Analysis queued date">Queued</dt>
+                <dd *ngIf="!execution.timeStarted">{{execution.timeQueued | date: 'short'}}</dd>
+
                 <ng-container *ngIf="execution.timeCompleted">
                     <dt i18n="Analysis duration">Duration</dt>
-                    <dd>{{ execution.timeCompleted - execution.timeStarted | wuDuration }}</dd>
+                    <dd *ngIf="execution.timeStarted">{{ execution.timeCompleted - execution.timeStarted | wuDuration }}</dd>
+                    <dd *ngIf="!execution.timeStarted">{{ execution.timeCompleted - execution.timeQueued | wuDuration }}</dd>
                 </ng-container>
                 <ng-container *ngIf="!execution.timeCompleted">
                     <dt i18n="Analysis last modification">Last modification</dt>
