@@ -1,5 +1,4 @@
 {
   "globalDependencies": {
-    "keycloak": "https://raw.githubusercontent.com/hawtio/hawtio/master/hawtio-web/src/main/d.ts/keycloak.d.ts"
   }
 }

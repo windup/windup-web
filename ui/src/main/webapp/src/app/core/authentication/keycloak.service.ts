@@ -2,14 +2,17 @@ import {Injectable} from "@angular/core";
 import {Constants} from "../../constants";
 import {Observable} from "rxjs/Observable";
 import {Router} from "@angular/router";
-import IKeycloak = KeycloakModule.IKeycloak;
+
 import {RouteHistoryService} from "../routing/route-history.service";
+import * as Keycloak from "keycloak-js";
+
+type KeycloakClient = Keycloak.KeycloakInstance;
 
 @Injectable()
 export class KeycloakService {
 
     protected auth: any = {};
-    protected keyCloak: IKeycloak;
+    protected keyCloak: KeycloakClient;
 
     protected initObservable: Observable<boolean>;
 
@@ -20,7 +23,7 @@ export class KeycloakService {
         if (!Keycloak)
             throw new Error("Keycloak class not defined; is Keycloak service running?");
 
-        this.keyCloak = new Keycloak(KeycloakService.KEYCLOAK_FILE);
+        this.keyCloak = Keycloak(KeycloakService.KEYCLOAK_FILE);
         this.init({ onLoad: Constants.SSO_MODE, checkLoginIframe: false })
             .subscribe((isLoggedIn) => {
                 this.onLoginSuccess(isLoggedIn);
@@ -102,7 +105,7 @@ export class KeycloakService {
     login(): Observable<any> {
         this.auth.loggedIn = false;
 
-        let promise = this.keyCloak.login(<KeycloakModule.LoginOptions>{
+        let promise = this.keyCloak.login(<Keycloak.KeycloakLoginOptions>{
             redirectUri: this.getRedirectUrl()
         });
 
