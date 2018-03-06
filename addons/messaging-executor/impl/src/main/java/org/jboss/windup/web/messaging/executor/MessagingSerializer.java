@@ -153,7 +153,9 @@ public class MessagingSerializer extends AbstractSerializer implements Execution
     {
         try
         {
-            Path resultsArchivePath = this.createResultArchive(projectId, execution);
+            Path outputDirectory = this.webPathUtil.createWindupReportOutputPath(String.valueOf(projectId),
+                    String.valueOf(execution.getId()));
+            Path resultsArchivePath = this.createResultArchive(projectId, execution, outputDirectory);
 
             StreamMessage streamMessage = context.createStreamMessage();
             streamMessage.setObjectProperty(AMQConstants.AMQ_LARGE_MESSAGE_INPUTSTREAM_PROPERTY, new FileInputStream(resultsArchivePath.toFile()));
@@ -242,25 +244,6 @@ public class MessagingSerializer extends AbstractSerializer implements Execution
                 tarOutputStream.write(data, 0, count);
             }
             tarOutputStream.flush();
-        }
-    }
-
-    private Path createResultArchive(Long projectID, WindupExecution execution)
-    {
-        try
-        {
-            Path outputDirectory = this.webPathUtil.createWindupReportOutputPath(String.valueOf(projectID),
-                        String.valueOf(execution.getId()));
-
-            Files.createDirectories(outputDirectory);
-            Path tempFile = outputDirectory.resolve("report_files.tar");
-            TarUtil.tarDirectory(tempFile, Paths.get(execution.getOutputPath()));
-            return tempFile;
-        }
-        catch (IOException e)
-        {
-            System.err.println("Failed to create result archive due to: " + e.getMessage());
-            return null;
         }
     }
 }

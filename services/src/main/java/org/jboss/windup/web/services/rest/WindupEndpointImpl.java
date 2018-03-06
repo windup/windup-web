@@ -1,12 +1,19 @@
 package org.jboss.windup.web.services.rest;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.jar.Manifest;
 import java.util.logging.Logger;
@@ -20,13 +27,21 @@ import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jboss.resteasy.plugins.providers.multipart.InputPart;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.windup.config.GraphRewrite;
+import org.jboss.windup.util.TarUtil;
+import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.addons.websupport.services.LogService;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
+import org.jboss.windup.web.services.json.WindupExecutionJSONUtil;
 import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.MigrationProject;
+import org.jboss.windup.web.services.model.RegisteredApplication;
 import org.jboss.windup.web.services.model.WindupExecution;
 import org.jboss.windup.web.services.service.WindupExecutionService;
+import org.kamranzafar.jtar.TarEntry;
+import org.kamranzafar.jtar.TarOutputStream;
 
 @Stateless
 public class WindupEndpointImpl implements WindupEndpoint
@@ -44,6 +59,9 @@ public class WindupEndpointImpl implements WindupEndpoint
     @Inject
     @FromFurnace
     private LogService logService;
+    @Inject
+    @FromFurnace
+    private WebPathUtil webPathUtil;
 
     /**
      * @see org.jboss.windup.web.services.messaging.ExecutorMDB
@@ -129,6 +147,90 @@ public class WindupEndpointImpl implements WindupEndpoint
         return this.entityManager.createQuery("SELECT ex FROM WindupExecution ex WHERE ex.project = :project", WindupExecution.class)
                     .setParameter("project", project)
                     .getResultList();
+    }
+
+    @Override
+    public InputStream getExecutionRequestTar(long executionId)
+    {
+        WindupExecution execution = this.getExecution(executionId);
+
+        Path outputDirectory = this.webPathUtil.createWindupReportOutputPath(execution.getProject().getId().toString(), execution.getId().toString());
+        try
+        {
+            Files.createDirectories(outputDirectory);
+            Path tempFile = outputDirectory.resolve("execution_files.tar");
+            try (FileOutputStream tempFileOS = new FileOutputStream(tempFile.toFile()))
+            {
+                TarOutputStream tarOutputStream = new TarOutputStream(tempFileOS);
+
+                File executionJsonFile = outputDirectory.resolve("execution.json").toFile();
+                WindupExecutionJSONUtil.serializeToFile(executionJsonFile, execution);
+                addFileToTar(tarOutputStream, executionJsonFile.getAbsolutePath());
+
+                for (RegisteredApplication application : execution.getAnalysisContext().getApplications())
+                {
+                    addFileToTar(tarOutputStream, application.getInputPath());
+                }
+                tarOutputStream.flush();
+                tarOutputStream.close();
+            }
+
+            return new FileInputStream(tempFile.toFile());
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException("Error creating request data: " + e.getMessage(), e);
+        }
+    }
+
+    private void addFileToTar(TarOutputStream tarOutputStream, String path) throws IOException
+    {
+        File file = new File(path);
+        tarOutputStream.putNextEntry(new TarEntry(file, file.getName()));
+        try (BufferedInputStream origin = new BufferedInputStream(new FileInputStream(file)))
+        {
+            int count;
+            byte data[] = new byte[32768];
+
+            while ((count = origin.read(data)) != -1)
+            {
+                tarOutputStream.write(data, 0, count);
+            }
+            tarOutputStream.flush();
+        }
+    }
+
+    @Override
+    public void uploadResults(MultipartFormDataInput data, long executionId)
+    {
+        // 1. Get the existing execution
+        WindupExecution execution = this.getExecution(executionId);
+
+        // 2. Load the tar data from the request and untar it to the execution's output directory
+
+        Map<String, List<InputPart>> uploadForm = data.getFormDataMap();
+        List<InputPart> inputParts = uploadForm.get("file");
+
+        if (inputParts == null || inputParts.size() == 0)
+        {
+            throw new BadRequestException("Report file is missing");
+        }
+        else if (inputParts.size() > 1)
+        {
+            throw new BadRequestException("There can only be one report file");
+        }
+
+        InputPart inputPart = inputParts.get(0);
+        try
+        {
+            // convert the uploaded file to inputstream
+            InputStream inputStream = inputPart.getBody(InputStream.class, null);
+            TarUtil.untar(Paths.get(execution.getOutputPath()), inputStream);
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException("Failed to process file due to: " + e.getMessage(), e);
+        }
     }
 
     @Override

@@ -35,14 +35,6 @@
     </security-constraint>
 
     <security-constraint>
-        <!--
-         This is resource for Arquillian container used for testing.
-         It is workaround until we find out how to make arquillian run without needing it
-        -->
-        <web-resource-collection>
-            <web-resource-name>Public</web-resource-name>
-            <url-pattern>/ArquillianServletRunner/*</url-pattern>
-        </web-resource-collection>
         <web-resource-collection>
             <web-resource-name>Public</web-resource-name>
             <url-pattern>/websocket/*</url-pattern>
@@ -50,6 +42,22 @@
         <web-resource-collection>
             <web-resource-name>Public</web-resource-name>
             <url-pattern>/registeredApplications/download/*</url-pattern>
+        </web-resource-collection>
+        <web-resource-collection>
+            <web-resource-name>Public</web-resource-name>
+            <url-pattern>/windup/executions/post-results/*</url-pattern>
+        </web-resource-collection>
+        <web-resource-collection>
+            <web-resource-name>Public</web-resource-name>
+            <url-pattern>/windup/executions/get-execution-request-tar/*</url-pattern>
+        </web-resource-collection>
+        <!--
+         This is resource for Arquillian container used for testing.
+         It is workaround until we find out how to make arquillian run without needing it
+        -->
+        <web-resource-collection>
+            <web-resource-name>Public</web-resource-name>
+            <url-pattern>/ArquillianServletRunner/*</url-pattern>
         </web-resource-collection>
     </security-constraint>
 

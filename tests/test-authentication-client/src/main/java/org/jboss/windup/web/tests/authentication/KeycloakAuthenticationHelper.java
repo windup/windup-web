@@ -18,12 +18,12 @@ public class KeycloakAuthenticationHelper {
     }
 
     public static String getAccessToken() {
-        LOG.info("Creating authorization client...");
+        LOG.fine("Creating authorization client...");
         // create a new instance based on the configuration define at keycloak-authz.json
         AuthzClient authzClient = AuthzClient.create();
-        LOG.info("Requesting token...");
+        LOG.fine("Requesting token...");
         String token = authzClient.obtainAccessToken(DEFAULT_USER, DEFAULT_PASSWORD).getToken();
-        LOG.info("Retrieved token: " + token);
+        LOG.fine("Retrieved token: " + token);
         return token;
     }
 }
