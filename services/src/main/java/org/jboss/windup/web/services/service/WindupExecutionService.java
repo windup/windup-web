@@ -1,13 +1,9 @@
 package org.jboss.windup.web.services.service;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,10 +14,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.jms.JMSContext;
-import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Queue;
-import javax.jms.StreamMessage;
 import javax.jms.Topic;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -30,20 +24,19 @@ import javax.ws.rs.NotFoundException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.forge.furnace.proxy.Proxies;
+import org.jboss.windup.graph.GraphContextFactory;
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
+import org.jboss.windup.web.addons.websupport.rest.graph.GraphCache;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.messaging.executor.AMQConstants;
 import org.jboss.windup.web.messaging.executor.ExecutionSerializerRegistry;
 import org.jboss.windup.web.messaging.executor.ExecutionStateCache;
-import org.jboss.windup.web.services.json.WindupExecutionJSONUtil;
 import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.ExecutionState;
 import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.model.RegisteredApplication;
 import org.jboss.windup.web.services.model.WindupExecution;
 import org.jboss.windup.web.services.rest.WindupEndpointImpl;
-import org.kamranzafar.jtar.TarEntry;
-import org.kamranzafar.jtar.TarOutputStream;
 
 /**
  * @author <a href="mailto:dklingenberg@gmail.com">David Klingenberg</a>
@@ -73,6 +66,10 @@ public class WindupExecutionService
     @Inject
     @FromFurnace
     private ExecutionStateCache executionStateCache;
+
+    @Inject
+    @FromFurnace
+    private GraphCache graphCache;
 
     @Inject
     private JMSContext messaging;
@@ -167,12 +164,12 @@ public class WindupExecutionService
         execution.setState(ExecutionState.CANCELLED);
 
         Message message = this.executionSerializerRegistry.getDefaultSerializer()
-                .serializeStatusUpdate(messaging, execution.getProjectId(), execution, false);
+                    .serializeStatusUpdate(messaging, execution.getProjectId(), execution, false);
 
         messaging.createProducer().send(statusUpdateQueue, unwrap(message));
 
         message = this.executionSerializerRegistry.getDefaultSerializer()
-                .serializeStatusUpdate(messaging, execution.getProjectId(), execution, false);
+                    .serializeStatusUpdate(messaging, execution.getProjectId(), execution, false);
         messaging.createProducer().send(cancellationTopic, unwrap(message));
     }
 
@@ -199,6 +196,19 @@ public class WindupExecutionService
         if (StringUtils.isBlank(execution.getOutputPath()))
             return;
 
+        // Make sure the graph is closed
+        Path graphPath = Paths.get(execution.getOutputPath()).resolve(GraphContextFactory.DEFAULT_GRAPH_SUBDIRECTORY);
+
+        try
+        {
+            graphCache.closeGraph(graphPath);
+        }
+        catch (Throwable t)
+        {
+            // A failure to close can generally be ignored.
+            LOG.log(Level.FINE, "Could not close the graph at: " + graphPath + " due to: " + t.getMessage(), t);
+        }
+
         File executionDir = new File(execution.getOutputPath());
         if (executionDir.exists())
         {
@@ -209,7 +219,8 @@ public class WindupExecutionService
             }
             catch (IOException e)
             {
-                LOG.log(Level.WARNING, "Unable to remove execution contents at " + executionDir.getAbsolutePath() + " (cause: " + e.getMessage() + ")", e);
+                LOG.log(Level.WARNING,
+                            "Unable to remove execution contents at " + executionDir.getAbsolutePath() + " (cause: " + e.getMessage() + ")", e);
             }
         }
         this.entityManager.remove(execution);
