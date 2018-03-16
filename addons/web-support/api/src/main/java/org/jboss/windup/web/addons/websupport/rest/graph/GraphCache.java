@@ -27,4 +27,8 @@ public interface GraphCache {
      */
     void closeGraph(Path graphPath);
 
+    /**
+     * Close all open graphs.
+     */
+    void closeAll();
 }

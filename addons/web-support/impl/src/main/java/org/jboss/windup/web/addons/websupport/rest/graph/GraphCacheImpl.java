@@ -82,6 +82,11 @@ public class GraphCacheImpl implements GraphCache
         });
     }
 
+    @Override
+    public void closeAll() {
+        graphContextFactory.closeAll();
+    }
+
     private void cleanup()
     {
         LOG.info("Furnace is shutting down, closing existing graph connections.");
@@ -155,7 +160,7 @@ public class GraphCacheImpl implements GraphCache
             return;
 
         LOG.info("Creating cached graph for: " + graphPath);
-        GraphContext graphContext = create ? graphContextFactory.create(graphPath) : graphContextFactory.load(graphPath);
+        GraphContext graphContext = create ? graphContextFactory.create(graphPath, true) : graphContextFactory.load(graphPath);
         GraphCacheEntry graphCacheEntry = new GraphCacheEntry(graphContext);
         this.graphCacheEntryMap.put(graphPath, graphCacheEntry);
     }

@@ -18,6 +18,7 @@ import org.junit.runner.RunWith;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -25,6 +26,8 @@ import java.util.Map;
 @RunWith(Arquillian.class)
 public class ClassificationResourceTest extends AbstractGraphResourceTest
 {
+    private static Logger LOG = Logger.getLogger(ClassificationResourceTest.class.getCanonicalName());
+
     @ArquillianResource
     private URL contextPath;
 
@@ -53,6 +56,7 @@ public class ClassificationResourceTest extends AbstractGraphResourceTest
         for (Map<String, Object> result : results)
         {
             Integer id = (Integer)result.get(GraphResource.KEY_ID);
+            LOG.info("Getting classifications for: " + id);
             List<Map<String, Object>> classifications = this.classificationResource.getClassifications(executionID, id);
             Assert.assertNotNull(classifications);
             Assert.assertTrue(!classifications.isEmpty());

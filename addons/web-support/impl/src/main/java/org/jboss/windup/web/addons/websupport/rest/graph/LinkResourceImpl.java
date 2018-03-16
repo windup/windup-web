@@ -21,7 +21,10 @@ public class LinkResourceImpl extends AbstractGraphResource implements LinkResou
         FileModel fileModel = fileService.getById(fileModelID);
 
         if (!(fileModel instanceof SourceFileModel))
-            throw new IllegalArgumentException("File must be of type: " + SourceFileModel.class.getSimpleName());
+        {
+            String message = "File " + fileModel + " does not appear to be source code!";
+            throw new IllegalArgumentException(message);
+        }
 
         SourceFileModel sourceFileModel = (SourceFileModel) fileModel;
         return super.frameIterableToResult(executionID, sourceFileModel.getLinksToTransformedFiles(), 0);

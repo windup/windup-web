@@ -60,8 +60,8 @@ public abstract class AbstractGraphResourceTest
     public static WebArchive createDeployment()
     {
         WebArchive war = AbstractTest.createDeployment();
-        war.addAsResource("META-INF/persistence-ondisk.xml", "/META-INF/persistence.xml");
-        war.deleteClass(ServerCleanupOnStartup.class);
+        //war.addAsResource("META-INF/persistence-ondisk.xml", "/META-INF/persistence.xml");
+        //war.deleteClass(ServerCleanupOnStartup.class);
         return war;
     }
 

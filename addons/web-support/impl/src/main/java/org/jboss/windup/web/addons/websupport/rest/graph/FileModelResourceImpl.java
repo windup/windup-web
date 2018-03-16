@@ -3,6 +3,7 @@ package org.jboss.windup.web.addons.websupport.rest.graph;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.inject.Singleton;
 import javax.ws.rs.NotFoundException;
@@ -19,6 +20,8 @@ import org.jboss.windup.graph.service.FileService;
 @Singleton
 public class FileModelResourceImpl extends AbstractGraphResource implements FileModelResource
 {
+    private static Logger LOG = Logger.getLogger(FileModelResourceImpl.class.getCanonicalName());
+
     @Override
     public List<Map<String, Object>> get(Long executionID, String filename)
     {
@@ -36,12 +39,16 @@ public class FileModelResourceImpl extends AbstractGraphResource implements File
             GraphContext context = getGraph(executionID);
             FileService fileService = new FileService(context);
             FileModel fileModel = fileService.getById(vertexID);
+            LOG.info("File loaded: " + fileModel.getElement().id() + " path: " + fileModel.getFilePath());
 
             if (fileModel == null)
                 throw new NotFoundException("FileModel at " + vertexID + " could not be found!");
 
             if (!(fileModel instanceof SourceFileModel))
-                throw new IllegalArgumentException("File " + fileModel.getFileName() + " does not appear to be source code!");
+            {
+                String message = "File " + fileModel + " does not appear to be source code!";
+                throw new IllegalArgumentException(message);
+            }
 
             return IOUtils.toString(fileModel.asInputStream());
         }
