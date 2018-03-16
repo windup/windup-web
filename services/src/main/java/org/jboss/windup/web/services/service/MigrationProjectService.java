@@ -152,7 +152,11 @@ public class MigrationProjectService
         // removing all packages from packageMetadata due FK
 
         // First, clear them from the analysis contexts
-        this.getAnalysisContexts(project).forEach(context -> context.setApplications(Collections.emptySet()));
+        this.getAnalysisContexts(project).forEach(context -> {
+            context.setApplications(Collections.emptySet());
+            context.setIncludePackages(Collections.emptySet());
+            context.setExcludePackages(Collections.emptySet());
+        });
         project.getApplications().forEach( application -> {
             application.getPackageMetadata().setPackages(Collections.emptySet());
             entityManager.remove(application);
