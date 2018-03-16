@@ -5,7 +5,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
-import javax.persistence.Column;
 
 import org.jboss.windup.exec.WindupProgressMonitor;
 import org.jboss.windup.web.services.model.ExecutionState;
