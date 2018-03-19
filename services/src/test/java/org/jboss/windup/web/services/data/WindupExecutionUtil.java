@@ -53,6 +53,7 @@ public class WindupExecutionUtil
         System.out.println("Setup Graph test, registered application and ready to start Windup analysis...");
 
         WindupExecution initialExecution = this.windupEndpoint.executeProjectWithContext(context, project.getId());
+        System.out.println("Execution for project: " + project.getId() + " output: " + initialExecution.getOutputPath());
 
         WindupExecution status = this.windupEndpoint.getExecution(initialExecution.getId());
         long beginTime = System.currentTimeMillis();

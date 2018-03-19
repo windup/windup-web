@@ -14,11 +14,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
+import javax.ejb.AccessTimeout;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
@@ -65,9 +66,6 @@ public class RuleDataLoader
     @PersistenceContext
     private EntityManager entityManager;
 
-    // @Resource
-    // private UserTransaction userTransaction;
-
     @Inject
     private ConfigurationService configurationService;
 
@@ -87,19 +85,36 @@ public class RuleDataLoader
     private RuleFormatterService ruleFormatterService;
 
     @Schedule(hour = "*", minute = "12")
+    @AccessTimeout(value = 3, unit = TimeUnit.MINUTES)
     public void loadPeriodically()
     {
-        Configuration webConfiguration = configurationService.getConfiguration();
-        reloadRuleData(webConfiguration);
-        this.cleanupDanglingRows();
+        LOG.info("Periodic reload of rules data");
+        try
+        {
+            Configuration webConfiguration = configurationService.getConfiguration();
+            reloadRuleData(webConfiguration);
+            this.cleanupDanglingRows();
+        }
+        catch (Throwable t)
+        {
+            LOG.log(Level.WARNING, "Periodic reload failed due to: " + t.getMessage(), t);
+        }
     }
 
+    @AccessTimeout(value = 3, unit = TimeUnit.MINUTES)
     public void configurationUpdated(@Observes Configuration configuration)
     {
         LOG.info("Reloading rule data due to configuration update!");
         reloadRuleData(configuration);
     }
 
+    /*
+     * This prevents timeouts in the case that this is called concurrently.
+     *
+     * The value specified here should be long enough for the previous run to complete.
+     *
+     */
+    @AccessTimeout(value = 3, unit = TimeUnit.MINUTES)
     public void reloadRuleData(Configuration configuration)
     {
         LOG.info("Starting reload of rule data...");
@@ -174,11 +189,11 @@ public class RuleDataLoader
             else
             {
                 final Set<Path> pathsToScan = FileUtils.listFiles(
-                        initialPath.toFile(),
-                        SUPPORTED_RULE_EXTENSIONS, scanRecursively)
-                        .stream()
-                        .map(File::toPath)
-                        .collect(Collectors.toSet());
+                            initialPath.toFile(),
+                            SUPPORTED_RULE_EXTENSIONS, scanRecursively)
+                            .stream()
+                            .map(File::toPath)
+                            .collect(Collectors.toSet());
                 for (Path path : pathsToScan)
                 {
                     loadRules(rulesPath, path);

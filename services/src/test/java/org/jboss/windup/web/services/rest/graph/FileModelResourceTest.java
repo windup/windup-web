@@ -3,6 +3,7 @@ package org.jboss.windup.web.services.rest.graph;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -25,6 +26,7 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class FileModelResourceTest extends AbstractGraphResourceTest
 {
+    private static Logger LOG = Logger.getLogger(FileModelResourceTest.class.getCanonicalName());
 
     @ArquillianResource
     private URL contextPath;
