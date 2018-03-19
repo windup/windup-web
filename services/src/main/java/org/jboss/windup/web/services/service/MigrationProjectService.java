@@ -6,6 +6,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
@@ -40,14 +41,14 @@ public class MigrationProjectService
     private static Logger LOG = Logger.getLogger(MigrationProjectService.class.getSimpleName());
 
     @PersistenceContext
-    private EntityManager entityManager;
+    EntityManager entityManager;
 
     @Inject
     @FromFurnace
-    private WebPathUtil webPathUtil;
+    WebPathUtil webPathUtil;
 
     @Inject
-    private AnalysisContextService analysisContextService;
+    AnalysisContextService analysisContextService;
 
     /**
      * Gets migration project
@@ -68,9 +69,9 @@ public class MigrationProjectService
     {
         String query = "SELECT ctxt FROM AnalysisContext ctxt WHERE ctxt.migrationProject = :project";
 
-        return this.entityManager.createQuery(query, AnalysisContext.class)
-                .setParameter("project", project)
-                .getResultList();
+        TypedQuery q = this.entityManager.createQuery(query, AnalysisContext.class);
+        q.setParameter("project", project);
+        return q.getResultList();
     }
 
     /**
@@ -80,9 +81,9 @@ public class MigrationProjectService
     {
         String query = "SELECT proj FROM MigrationProject proj WHERE proj.title = :title and proj.provisional = FALSE";
 
-        return this.entityManager.createQuery(query, MigrationProject.class)
-                .setParameter("title", title)
-                .getResultList();
+        TypedQuery q = this.entityManager.createQuery(query, MigrationProject.class);
+        q.setParameter("title", title);
+        return q.getResultList();
     }
 
     @Transactional
