@@ -28,7 +28,7 @@ public class FurnaceProducerTest extends AbstractTest
         Assert.assertNotNull(furnace);
         Assert.assertNotNull(graphContextFactory);
 
-        try (GraphContext context = graphContextFactory.create(true))
+        try (GraphContext context = graphContextFactory.create())
         {
             Assert.assertNotNull(context);
 

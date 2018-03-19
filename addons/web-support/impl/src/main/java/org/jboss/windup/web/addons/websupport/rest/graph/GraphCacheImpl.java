@@ -155,7 +155,7 @@ public class GraphCacheImpl implements GraphCache
             return;
 
         LOG.info("Creating cached graph for: " + graphPath);
-        GraphContext graphContext = create ? graphContextFactory.create(graphPath, true) : graphContextFactory.load(graphPath);
+        GraphContext graphContext = create ? graphContextFactory.create(graphPath) : graphContextFactory.load(graphPath);
         GraphCacheEntry graphCacheEntry = new GraphCacheEntry(graphContext);
         this.graphCacheEntryMap.put(graphPath, graphCacheEntry);
     }
