@@ -24,7 +24,7 @@
 
         <version.forge>3.6.0.Final</version.forge>
         <version.furnace>2.25.4.Final</version.furnace>
-        <version.windup>4.0.1-SNAPSHOT</version.windup>
+        <version.windup>4.0.1.Final</version.windup>
         <version.keycloak>2.1.0.Final</version.keycloak>
         <version.resteasy>3.0.19.Final</version.resteasy>
         <version.jboss.javaee>1.0.3.Final</version.jboss.javaee>
