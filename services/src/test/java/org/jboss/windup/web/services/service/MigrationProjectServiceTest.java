@@ -3,6 +3,7 @@ package org.jboss.windup.web.services.service;
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.model.*;
+import org.jboss.windup.web.services.model.Package;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -13,17 +14,13 @@ import org.mockito.internal.stubbing.BaseStubbing;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaQuery;
 import javax.ws.rs.BadRequestException;
-import javax.ws.rs.NotFoundException;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
@@ -102,6 +99,47 @@ public class MigrationProjectServiceTest {
         this.migrationProjectService.deleteProject(project);
 
         assertTrue(project.getApplications().size()==0);
+
+    }
+
+    @Test
+    public void testDeleteProjectWithIncludedPackagesFromDeletedApplication()
+    {
+        MigrationProject project = new MigrationProject();
+        project.setId(new Long(1));
+        project.setTitle("testProject");
+        RegisteredApplication app = new RegisteredApplication();
+        PackageMetadata pm = new PackageMetadata();
+        app.setPackageMetadata(pm);
+        project.addApplication(app);
+        doReturn(project).when(this.migrationProjectService.entityManager).find(MigrationProject.class, project.getId());
+        AnalysisContext ac = new AnalysisContext(project);
+        HashSet<Package> includedPackages =  new HashSet<Package>();
+        HashSet<RegisteredApplication> applications =  new HashSet<RegisteredApplication>();
+        applications.add(app);
+        Package selectedPackage = new Package("org.jboss.windup.included.package");
+        includedPackages.add(selectedPackage);
+        ac.setIncludePackages(includedPackages);
+        ac.setApplications(applications);
+        ArrayList contextList = new ArrayList();
+        contextList.add(ac);
+
+        TypedQuery mockQuery = mock(TypedQuery.class);
+        doReturn(mockQuery).when(this.migrationProjectService.entityManager).createQuery("SELECT ctxt FROM AnalysisContext ctxt WHERE ctxt.migrationProject = :project",AnalysisContext.class);
+        doReturn(mockQuery).when(mockQuery).setParameter("project", "testProject");
+        doReturn(contextList).when(mockQuery).getResultList();
+
+        Path p = Paths.get("falseDir");
+        doReturn(p).when(this.migrationProjectService.webPathUtil).createMigrationProjectPath(project.getId().toString());
+
+
+        Long id = project.getId();
+        assertTrue(id.longValue() == 1);
+        assertTrue(project.getApplications().size()==1);
+        this.migrationProjectService.deleteProject(project);
+
+        assertTrue(project.getApplications().size()==0);
+        assertTrue(ac.getIncludePackages() == null);
 
     }
 
