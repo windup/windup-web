@@ -12,17 +12,20 @@ describe('For project without any analysis', () => {
          * Navigate to project
          */
         const analysisList = new AnalysisListPage();
+        browser.ignoreSynchronization = true;
         analysisList.navigateTo(PROJECT_WITHOUT_ANALYSIS.id)
             .then(() => browser.waitForAngular())
             .then(() => done());
     });
 
     it('should show context menu', () => {
+        browser.ignoreSynchronization = false;
         contextMenu.getMenuItems().then(menuItems => {
             expect(menuItems[0].label).toEqual('Analysis Results');
             expect(menuItems[1].label).toEqual('Applications');
             expect(menuItems[2].label).toEqual('Analysis Configuration');
         });
+        browser.ignoreSynchronization = true;
     });
 
     describe('application list page', () => {
