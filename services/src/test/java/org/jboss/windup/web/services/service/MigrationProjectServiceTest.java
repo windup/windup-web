@@ -139,7 +139,7 @@ public class MigrationProjectServiceTest {
         this.migrationProjectService.deleteProject(project);
 
         assertTrue(project.getApplications().size()==0);
-        assertTrue(ac.getIncludePackages() == null);
+        assertTrue(ac.getIncludePackages().size() == 0);
 
     }
 
