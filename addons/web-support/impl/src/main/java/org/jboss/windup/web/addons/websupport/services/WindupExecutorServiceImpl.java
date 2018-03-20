@@ -124,6 +124,11 @@ public class WindupExecutorServiceImpl implements WindupExecutorService
 
             processor.execute(configuration);
         }
+        catch (Exception ex)
+        {
+            progressMonitor.setTaskName("Exception during processing - " + ex.getMessage());
+            throw ex;
+        }
         finally
         {
             graphCache.closeGraph(graphPath);

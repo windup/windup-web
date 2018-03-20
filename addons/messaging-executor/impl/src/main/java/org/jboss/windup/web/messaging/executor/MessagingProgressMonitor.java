@@ -116,6 +116,7 @@ public class MessagingProgressMonitor implements WindupProgressMonitor
     @Override
     public void setTaskName(String name)
     {
+        if (name.length() > 1024) name = name.substring(0, 1024);
         execution.setCurrentTask(name);
         sendUpdate(execution);
 

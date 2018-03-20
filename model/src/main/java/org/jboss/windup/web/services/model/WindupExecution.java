@@ -80,7 +80,7 @@ public class WindupExecution implements Serializable
     @Column(name = "work_completed")
     private int workCompleted;
 
-    @Column(name = "current_task")
+    @Column(name = "current_task", length = 1024)
     private String currentTask;
 
     @Column(name = "last_modified")
