@@ -1,18 +1,13 @@
 package org.jboss.windup.web.services.service;
 
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
-import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.model.*;
 import org.jboss.windup.web.services.model.Package;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.mockito.Mock;
-import org.mockito.internal.stubbing.BaseStubbing;
 
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.BadRequestException;
@@ -25,7 +20,6 @@ import java.util.HashSet;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class MigrationProjectServiceTest {
     protected MigrationProjectService migrationProjectService;
@@ -54,7 +48,6 @@ public class MigrationProjectServiceTest {
         ArrayList projectList = new ArrayList();
 
         TypedQuery mockQuery = mock(TypedQuery.class);
-        TypedQuery mockQuery2 = mock(TypedQuery.class);
         doReturn(mockQuery).when(this.migrationProjectService.entityManager).createQuery("SELECT proj FROM MigrationProject proj WHERE proj.title = :title and proj.provisional = FALSE", MigrationProject.class);
         doReturn(mockQuery).when(mockQuery).setParameter("title", "testProject2");
         doReturn(projectList).when(mockQuery).getResultList();
