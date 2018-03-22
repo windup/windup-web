@@ -69,9 +69,9 @@ public class MigrationProjectService
     {
         String query = "SELECT ctxt FROM AnalysisContext ctxt WHERE ctxt.migrationProject = :project";
 
-        TypedQuery q = this.entityManager.createQuery(query, AnalysisContext.class);
-        q.setParameter("project", project);
-        return q.getResultList();
+        return this.entityManager.createQuery(query, AnalysisContext.class)
+            .setParameter("project", project)
+            .getResultList();
     }
 
     /**
@@ -81,9 +81,9 @@ public class MigrationProjectService
     {
         String query = "SELECT proj FROM MigrationProject proj WHERE proj.title = :title and proj.provisional = FALSE";
 
-        TypedQuery q = this.entityManager.createQuery(query, MigrationProject.class);
-        q.setParameter("title", title);
-        return q.getResultList();
+        return this.entityManager.createQuery(query, MigrationProject.class)
+            .setParameter("title", title)
+            .getResultList();
     }
 
     @Transactional

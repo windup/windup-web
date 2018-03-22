@@ -49,7 +49,7 @@ public class MigrationProjectServiceTest {
 
         TypedQuery mockQuery = mock(TypedQuery.class);
         doReturn(mockQuery).when(this.migrationProjectService.entityManager).createQuery("SELECT proj FROM MigrationProject proj WHERE proj.title = :title and proj.provisional = FALSE", MigrationProject.class);
-        doReturn(mockQuery).when(mockQuery).setParameter("title", "testProject2");
+        doReturn(mockQuery).when(mockQuery).setParameter("title", project.getTitle());
         doReturn(projectList).when(mockQuery).getResultList();
 
         Long id = project.getId();
@@ -79,7 +79,7 @@ public class MigrationProjectServiceTest {
 
         TypedQuery mockQuery = mock(TypedQuery.class);
         doReturn(mockQuery).when(this.migrationProjectService.entityManager).createQuery("SELECT ctxt FROM AnalysisContext ctxt WHERE ctxt.migrationProject = :project",AnalysisContext.class);
-        doReturn(mockQuery).when(mockQuery).setParameter("project", "testProject");
+        doReturn(mockQuery).when(mockQuery).setParameter("project", project);
         doReturn(contextList).when(mockQuery).getResultList();
 
         Path p = Paths.get("falseDir");
@@ -119,7 +119,7 @@ public class MigrationProjectServiceTest {
 
         TypedQuery mockQuery = mock(TypedQuery.class);
         doReturn(mockQuery).when(this.migrationProjectService.entityManager).createQuery("SELECT ctxt FROM AnalysisContext ctxt WHERE ctxt.migrationProject = :project",AnalysisContext.class);
-        doReturn(mockQuery).when(mockQuery).setParameter("project", "testProject");
+        doReturn(mockQuery).when(mockQuery).setParameter("project", project);
         doReturn(contextList).when(mockQuery).getResultList();
 
         Path p = Paths.get("falseDir");
@@ -147,7 +147,7 @@ public class MigrationProjectServiceTest {
 
         TypedQuery mockQuery = mock(TypedQuery.class);
         doReturn(mockQuery).when(this.migrationProjectService.entityManager).createQuery("SELECT proj FROM MigrationProject proj WHERE proj.title = :title and proj.provisional = FALSE", MigrationProject.class);
-        doReturn(mockQuery).when(mockQuery).setParameter("title", "testProject");
+        doReturn(mockQuery).when(mockQuery).setParameter("title", project.getTitle());
         doReturn(projectList).when(mockQuery).getResultList();
 
 
