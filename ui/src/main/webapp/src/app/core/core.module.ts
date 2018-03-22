@@ -16,7 +16,6 @@ import {RouteHistoryService} from "./routing/route-history.service";
 import {RouteFlattenerService} from "./routing/route-flattener.service";
 import {LogoutGuard} from "./authentication/logout.guard";
 import {UrlCleanerService} from "./routing/url-cleaner.service";
-import {LoadingIndicatorService} from "./loading-indicator.service";
 
 
 /**
@@ -55,7 +54,6 @@ import {LoadingIndicatorService} from "./loading-indicator.service";
         RouteHistoryService,
         RouteFlattenerService,
         UrlCleanerService,
-        LoadingIndicatorService, // Must be a singleton - contains a request counter.
     ]
 })
 export class CoreModule {

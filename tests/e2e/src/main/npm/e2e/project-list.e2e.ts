@@ -11,6 +11,8 @@ describe('Project List', () => {
         let projectListPromise: Promise<any[]>;
 
         beforeAll((done) => {
+            browser.ignoreSynchronization = false;
+
             projectPage.navigateTo()
                 .then(() => browser.waitForAngular())
                 .then(() => done());
