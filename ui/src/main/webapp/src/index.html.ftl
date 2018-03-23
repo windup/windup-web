@@ -4,6 +4,7 @@
     <base href="${basePath}">
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="img/rhamt-icon-128.png" rel="shortcut icon" type="image/x-icon"/>
     <script src="${keycloak.serverUrl}/js/keycloak.js"></script>
     <script src="version/version.properties.js"></script>
 
