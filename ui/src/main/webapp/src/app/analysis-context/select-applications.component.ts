@@ -7,6 +7,9 @@ import {RegisteredApplication} from "../generated/windup-services";
 })
 export class SelectApplicationsComponent {
     _availableApps: RegisteredApplication[];
+
+    private appsSelectedError: string;
+
     @Input()
     set availableApps(availableApps: RegisteredApplication[]) {
         this._availableApps = availableApps;
@@ -27,6 +30,12 @@ export class SelectApplicationsComponent {
     @Input()
     set selectedApps(apps: RegisteredApplication[]) {
         this._selectedApps = apps;
+        if (!this._selectedApps || this._selectedApps.length === 0){
+            this.appsSelectedError = "You must select an application to run the analysis with";
+        }
+        else{
+            this.appsSelectedError = null;
+        }
         this.selectedAppsChange.emit(this._selectedApps);
     }
 

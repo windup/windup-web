@@ -1,4 +1,5 @@
-<div class="select-applications">
+<div class="select-applications" >
+    <span class="text-danger" [class.bg-danger]="appsSelectedError">{{appsSelectedError}}</span>
     <chosen-multiple [getLabel]="appsLabelCallback"
                      [compareWith]="equalsCallback"
                      [(ngModel)]="selectedApps"
