@@ -301,7 +301,7 @@ export class AnalysisContextFormComponent extends FormComponent
     }
 
     advancedOptionsChanged(advancedOptions: AdvancedOption[]) {
-        this._dirty = true;
+        //do nothing - this means advanced options are only persisted when page is saved.
     }
 
     onSubmit() {
