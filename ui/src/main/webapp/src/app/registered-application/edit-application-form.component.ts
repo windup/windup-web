@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {ChangeDetectorRef, Component, OnInit} from "@angular/core";
 import {FormBuilder, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {RegisteredApplication, RegistrationType} from "../generated/windup-services";
@@ -27,10 +27,11 @@ export class EditApplicationFormComponent extends RegisterApplicationFormCompone
         _routeFlattener: RouteFlattenerService,
         _eventBus: EventBusService,
         _migrationProjectService: MigrationProjectService,
-        _notificationService: NotificationService
+        _notificationService: NotificationService,
+        _changeDetectorRef: ChangeDetectorRef
     ) {
         super(_router, _activatedRoute, _fileService, _registeredApplicationService, _formBuilder, _routeFlattener,
-            _eventBus, _migrationProjectService, _notificationService);
+            _eventBus, _migrationProjectService, _notificationService, _changeDetectorRef);
 
         this.labels.heading = 'Update application';
         this.labels.uploadButton = 'Update';
