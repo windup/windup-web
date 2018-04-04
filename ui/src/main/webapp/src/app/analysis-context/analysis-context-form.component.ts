@@ -131,7 +131,7 @@ export class AnalysisContextFormComponent extends FormComponent
         this.initializeAnalysisContext();
 
         this.dialog  = this._dialogService.getConfirmationDialog();
-        this.dialogSubscription = this.dialog.confirmed.subscribe(() => this.saveConfiguration());
+        this.dialogSubscription = this.dialog.confirmed.subscribe(() => this.cleanseAfterDialogConfirm());
     }
 
     ngOnInit() {
@@ -301,7 +301,7 @@ export class AnalysisContextFormComponent extends FormComponent
     }
 
     advancedOptionsChanged(advancedOptions: AdvancedOption[]) {
-        //do nothing - this means advanced options are only persisted when page is saved.
+        this._dirty = true;
     }
 
     onSubmit() {
@@ -387,6 +387,13 @@ export class AnalysisContextFormComponent extends FormComponent
         let projectPageRoute = `/projects/${this.project.id}`;
         this._routeHistoryService.navigateBackOrToRoute(projectPageRoute);
     }
+
+    cleanseAfterDialogConfirm()
+    {
+        this._dirty = false;
+    }
+
+
 
     rulesPathsChanged(rulesPaths: RulesPath[]) {
         this.analysisContext.rulesPaths = rulesPaths;
