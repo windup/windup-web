@@ -62,6 +62,7 @@ import {FilterPipe} from "./filter/filter.pipe";
 import {TableComponent} from "./table/table.component";
 import {TableSortHeaderComponent} from "./table/table-sort-header.component";
 import {TablePanelComponent} from "./table/table-panel.component";
+import {TreeModule} from "angular-tree-component";
 
 @NgModule({
     imports: [
@@ -72,6 +73,9 @@ import {TablePanelComponent} from "./table/table-panel.component";
         ChosenModule,
         FileUploadModule,
         MomentModule,
+
+        // Angular Tree
+        TreeModule,
     ],
     providers: [
         BreadCrumbsService,

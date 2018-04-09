@@ -263,6 +263,7 @@ export class AnalysisContextFormComponent extends FormComponent
         */
 
         forkJoin(registeredPackagesObservables).subscribe((packageMetadataArray: PackageMetadata[]) => {
+            console.log("package metadata array: ", packageMetadataArray);
             let arrayOfRoots = [].concat(...packageMetadataArray.map((singlePackageMetadata) => singlePackageMetadata.packageTree));
             let mergedRoots = this._packageRegistryService.mergePackageRoots(arrayOfRoots);
             mergedRoots.forEach(singleRoot => this._packageRegistryService.putHierarchy(singleRoot));

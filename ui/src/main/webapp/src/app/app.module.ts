@@ -35,6 +35,7 @@ import {CoreModule} from "./core/core.module";
 import {ExecutionsModule} from "./executions/executions.module";
 import {FileUploaderWrapper} from "./shared/upload/file-uploader-wrapper.service";
 import {KeycloakService} from "./core/authentication/keycloak.service";
+import {TreeModule} from "angular-tree-component";
 
 /**
  * Load all mapping data from the generated files.
@@ -52,6 +53,8 @@ initializeModelMappingData();
 
         // Moment
         MomentModule,
+
+        TreeModule,
 
         CoreModule,
         SharedModule,

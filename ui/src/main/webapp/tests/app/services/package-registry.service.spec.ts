@@ -16,7 +16,7 @@ describe("PackageRegistryService", () => {
             name: name,
             fullName: fullName,
             countClasses: 1,
-            childs: [],
+            children: [],
             level: level
         };
     };
@@ -34,7 +34,7 @@ describe("PackageRegistryService", () => {
             expect(result[0].name).toBe('root');
             expect(result[0].fullName).toBe('org.jboss.root');
             expect(result[0].level).toBe(0);
-            expect(result[0].childs.length).toBe(0);
+            expect(result[0].children.length).toBe(0);
             expect(result[0].countClasses).toBe(2);
         });
 
@@ -58,7 +58,7 @@ describe("PackageRegistryService", () => {
             let secondPackage: Package = createPackage('root', 'org.jboss.root');
 
             let packages = [ firstPackage, secondPackage ];
-            packages.forEach(aPackage => aPackage.childs = [commonChild]);
+            packages.forEach(aPackage => aPackage.children = [commonChild]);
 
             let result = instance.mergePackageRoots(packages);
 
@@ -68,24 +68,24 @@ describe("PackageRegistryService", () => {
             expect(result[0].level).toBe(0);
             expect(result[0].countClasses).toBe(2);
 
-            expect(result[0].childs.length).toBe(1);
+            expect(result[0].children.length).toBe(1);
 
-            let child = result[0].childs[0];
+            let child = result[0].children[0];
             expect(child.name).toBe(commonChild.name);
             expect(child.fullName).toBe(commonChild.fullName);
             expect(child.level).toBe(commonChild.level);
-            expect(child.childs.length).toBe(0);
+            expect(child.children.length).toBe(0);
             expect(child.countClasses).toBe(commonChild.countClasses * 2);
         });
 
         it('should add different children', () => {
             let firstPackage: Package = createPackage('root', 'org.jboss.root');
-            firstPackage.childs = [
+            firstPackage.children = [
                 createPackage('firstOneChild', 'org.jboss.root.firstOneChild', 1)
             ];
 
             let secondPackage: Package = createPackage('root', 'org.jboss.root');
-            secondPackage.childs = [
+            secondPackage.children = [
                 createPackage('secondChild', 'org.jboss.root.secondChild', 1)
             ];
 
@@ -99,9 +99,9 @@ describe("PackageRegistryService", () => {
             expect(result[0].level).toBe(0);
             expect(result[0].countClasses).toBe(2);
 
-            expect(result[0].childs.length).toBe(2);
-            expect(result[0].childs).toContain(firstPackage.childs[0]);
-            expect(result[0].childs).toContain(secondPackage.childs[0]);
+            expect(result[0].children.length).toBe(2);
+            expect(result[0].children).toContain(firstPackage.children[0]);
+            expect(result[0].children).toContain(secondPackage.children[0]);
         });
     });
 });

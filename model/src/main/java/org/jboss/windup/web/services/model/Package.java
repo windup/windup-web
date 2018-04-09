@@ -46,11 +46,11 @@ public class Package implements Serializable
     private Package parent;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "parent")
-    private Set<Package> childs;
+    private Set<Package> children;
 
     public Package()
     {
-        this.childs = new HashSet<>();
+        this.children = new HashSet<>();
     }
 
     /**
@@ -61,7 +61,7 @@ public class Package implements Serializable
     public Package(String name)
     {
         this.name = name;
-        this.childs = new HashSet<>();
+        this.children = new HashSet<>();
     }
 
     /**
@@ -74,7 +74,7 @@ public class Package implements Serializable
     {
         this.name = partialName;
         this.fullName = fullName;
-        this.childs = new HashSet<>();
+        this.children = new HashSet<>();
     }
 
     public Long getId()
@@ -163,9 +163,9 @@ public class Package implements Serializable
         this.parent = parent;
     }
 
-    public Collection<Package> getChilds()
+    public Collection<Package> getChildren()
     {
-        return childs;
+        return children;
     }
 
     /**
@@ -175,7 +175,7 @@ public class Package implements Serializable
      */
     public void addChild(Package child)
     {
-        this.childs.add(child);
+        this.children.add(child);
     }
 
     /**
@@ -185,7 +185,7 @@ public class Package implements Serializable
      */
     public void removeChild(Package child)
     {
-        this.childs.remove(child);
+        this.children.remove(child);
     }
 
 
