@@ -1,1 +1,6 @@
-<tree-root [nodes]="treeNodes" [options]="options"></tree-root>
+<tree-root
+        [nodes]="treeNodesFiltered"
+        [options]="options"
+        (select)="selected($event)"
+        (deselect)="deselected($event)"
+></tree-root>

@@ -8,16 +8,20 @@ import {
 @Component({
     templateUrl: './js-tree-angular-wrapper.component.html',
     selector: 'wu-js-tree-wrapper',
-    //host: { 'style': 'display: block; overflow: auto;' }
+    host: { 'style': 'display: block; overflow: auto;' }
 })
 export class JsTreeAngularWrapperComponent implements OnInit, OnDestroy {
+
+    treeNodesFiltered: TreeData[];
+
     @Input()
-    treeNodes: TreeData[];
+    set treeNodes(inputData:TreeData[]) {
+        this.treeNodesFiltered = inputData.filter(value => value.name != null && value.name != "");
+        console.log("Tree nodes filtered: ", this.treeNodesFiltered);
+    };
 
     @Input()
     hasCheckboxes: boolean = true;
-
-    treeNodesMap: {[id: string]: TreeData} = {};
 
     @Input()
     selectedNodes: TreeData[];
@@ -30,9 +34,10 @@ export class JsTreeAngularWrapperComponent implements OnInit, OnDestroy {
 
     options = {
         displayField: 'name',
-        isExpandedField: 'expanded',
-        hasChildrenField: 'children',
-        animateExpand: true
+        useCheckbox: true,
+        useTriState: false,
+        animateExpand: true,
+        nodeHeight: 22,
     };
 
     public constructor() {
@@ -44,7 +49,18 @@ export class JsTreeAngularWrapperComponent implements OnInit, OnDestroy {
     ngOnInit() {
     }
 
-    ngOnDestroy(): void {
+    ngOnDestroy() {
+    }
+
+    selected(event) {
+        this.selectedNodes.push(event.node.data);
+        console.log("Selected: ", this.selectedNodes);
+    }
+
+    deselected(event) {
+        console.log("Deselected event: ", event);
+        this.selectedNodes = this.selectedNodes.filter((item) => item.id != event.node.data.id);
+        console.log("De-Selected: ", this.selectedNodes);
     }
 }
 
