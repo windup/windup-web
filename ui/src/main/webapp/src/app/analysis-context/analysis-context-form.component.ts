@@ -103,9 +103,10 @@ export class AnalysisContextFormComponent extends FormComponent
 
     static DEFAULT_MIGRATION_PATH: MigrationPath = <MigrationPath>{ id: 101 };
     static CLOUD_READINESS_PATH_ID: number = 90;
-
-    private dialog: ConfirmationModalComponent;
-    private dialogSubscription: Subscription;
+    @ViewChild('cancelDialog')
+    readonly cancelDialog: ConfirmationModalComponent;
+    @ViewChild('confirmDialog')
+    readonly confirmDialog: ConfirmationModalComponent;
 
     private flatRouteData: FlattenedRouteData;
 
@@ -130,8 +131,7 @@ export class AnalysisContextFormComponent extends FormComponent
 
         this.initializeAnalysisContext();
 
-        this.dialog  = this._dialogService.getConfirmationDialog();
-        this.dialogSubscription = this.dialog.confirmed.subscribe(() => this.cleanseAfterDialogConfirm());
+
     }
 
     ngOnInit() {
@@ -178,12 +178,20 @@ export class AnalysisContextFormComponent extends FormComponent
             this.isInWizard = flatRouteData.data.hasOwnProperty('wizard') && flatRouteData.data['wizard'];
         });
 
-       
+        this.cancelDialog.confirmed.subscribe(() => {
+            this.cleanseAfterDialogConfirm();
+        });
+
+        this.confirmDialog.confirmed.subscribe(() => {
+            this.saveConfiguration();
+        });
+
     }
 
     ngOnDestroy(): void {
         this.routerSubscription.unsubscribe();
-        this.dialogSubscription.unsubscribe();
+        this.cancelDialog.confirmed.unsubscribe();
+        this.confirmDialog.confirmed.unsubscribe();
     }
 
     // Apps selection checkboxes
@@ -306,9 +314,9 @@ export class AnalysisContextFormComponent extends FormComponent
 
     onSubmit() {
         if (!this.packageTreeLoaded) {
-            this.dialog.title = 'Package identification is not complete';
-            this.dialog.body = `Do you want to save the analysis without selecting packages?`;
-            this.dialog.show();
+            this.confirmDialog.title = 'Package identification is not complete';
+            this.confirmDialog.body = `Do you want to save the analysis without selecting packages?`;
+            this.confirmDialog.show();
         } else {
             this.saveConfiguration();
         }
