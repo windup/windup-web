@@ -36,9 +36,9 @@ export class JsTreeAngularWrapperComponent implements OnInit, OnDestroy {
     };
 
     public constructor() {
-        setInterval(() => {
-            console.log("Tree data: ", this.treeNodes);
-        }, 10000);
+        // setInterval(() => {
+        //     console.log("Tree data: ", this.treeNodes);
+        // }, 10000);
     }
 
     ngOnInit() {
