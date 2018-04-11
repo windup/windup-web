@@ -1,8 +1,10 @@
-<tree-root
-        #tree
-        [nodes]="treeNodesFiltered"
-        [options]="options"
-        [(state)]="treeState"
-        (select)="selected($event)"
-        (deselect)="deselected($event)"
-></tree-root>
+<div style="height: 200px;">
+    <tree-root
+            #tree
+            [nodes]="treeNodesFiltered"
+            [options]="options"
+            [(state)]="treeState"
+            (select)="selected($event)"
+            (deselect)="deselected($event)"
+    ></tree-root>
+</div>
