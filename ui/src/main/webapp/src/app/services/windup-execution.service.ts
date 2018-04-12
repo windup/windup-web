@@ -55,8 +55,7 @@ export class WindupExecutionService extends AbstractService {
 
     public watchExecutionUpdates(execution: WindupExecution, project: MigrationProject) {
         const url = WindupExecutionService.EXECUTION_PROGRESS_URL
-            .replace('https', 'wss')
-            .replace('http', 'ws')
+            .replace(/^http/, 'ws')
             .replace('{executionId}', execution.id.toString());
 
         if (!this.executionSocket.has(execution.id)) {
