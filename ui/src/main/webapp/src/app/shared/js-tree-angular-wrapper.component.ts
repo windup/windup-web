@@ -28,7 +28,7 @@ export class JsTreeAngularWrapperComponent implements AfterViewInit, OnInit, OnD
 
     @Input()
     set treeNodes(inputData:TreeData[]) {
-        console.log("Tree nodes set:", inputData);
+        //console.log("Tree nodes set:", inputData);
         // Sort alphabetically
         let sortFunc = (item1, item2) => {
             return item1.name.localeCompare(item2.name);
@@ -64,7 +64,7 @@ export class JsTreeAngularWrapperComponent implements AfterViewInit, OnInit, OnD
     @Input()
     set selectedNodes (newSelectedNodes: TreeData[]) {
         this._selectedNodes = <TreeDataExtended[]>newSelectedNodes;
-        console.log("Reselecting nodes: ", this.treeState.selectedLeafNodeIds);
+        //console.log("Reselecting nodes: ", this.treeState.selectedLeafNodeIds);
 
         const selectedLeafNodeIds = {};
 
@@ -78,7 +78,7 @@ export class JsTreeAngularWrapperComponent implements AfterViewInit, OnInit, OnD
 
         this.treeState.selectedLeafNodeIds = selectedLeafNodeIds;
         this.treeComponent.treeModel.setState(this.treeState);
-        console.log("Reselected nodes: ", selectedLeafNodeIds);
+        //console.log("Reselected nodes: ", selectedLeafNodeIds);
 
     }
 
@@ -119,7 +119,7 @@ export class JsTreeAngularWrapperComponent implements AfterViewInit, OnInit, OnD
     }
 
     private addParentSelections(selectedLeafNodeIds:{}, nodeId:number) {
-        console.log("parent add searching for: " + nodeId);
+        //console.log("parent add searching for: " + nodeId);
         // 1. Find node from the main set of nodes by id
         let finder = (originalNodes:TreeDataExtended[]) => {
             let result = null;
@@ -143,14 +143,14 @@ export class JsTreeAngularWrapperComponent implements AfterViewInit, OnInit, OnD
         };
 
         let originalNode = finder(this.treeNodesFiltered);
-        console.log("Original node: ", originalNode);
+        //console.log("Original node: ", originalNode);
 
         while (originalNode) {
             selectedLeafNodeIds[originalNode.id] = true;
             originalNode = originalNode.parent;
         }
 
-        console.log("Add parent set them to: ", selectedLeafNodeIds);
+        //console.log("Add parent set them to: ", selectedLeafNodeIds);
     }
 
     selected(event) {
@@ -158,13 +158,13 @@ export class JsTreeAngularWrapperComponent implements AfterViewInit, OnInit, OnD
 
         // This just triggers the setter method to be called
         this.selectedNodes = this._selectedNodes;
-        console.log("Selected: ", this._selectedNodes);
+        //console.log("Selected: ", this._selectedNodes);
         this.selectedNodes = this._selectedNodes;
         this.selectedNodesChange.emit(this._selectedNodes);
     }
 
     deselected(event) {
-        console.log("Deselected event: ", event);
+        //console.log("Deselected event: ", event);
         let nodesToDeselect = [];
         let crawlNode = (data:TreeData) => {
             if (!data)
@@ -177,20 +177,20 @@ export class JsTreeAngularWrapperComponent implements AfterViewInit, OnInit, OnD
             });
         };
         crawlNode(event.node.data);
-        console.log("Should deselect: ", nodesToDeselect);
+        //console.log("Should deselect: ", nodesToDeselect);
 
-        console.log("Current: ", this._selectedNodes);
+        //console.log("Current: ", this._selectedNodes);
         this._selectedNodes = this._selectedNodes.filter((item) => {
             let index = nodesToDeselect.indexOf(item.id);
-            console.log("Item: ", item, index);
+            //console.log("Item: ", item, index);
             return index == -1;
         });
-        console.log("Then: ", this._selectedNodes);
+        //console.log("Then: ", this._selectedNodes);
 
         // This just triggers the setter method to be called
         this.selectedNodes = this._selectedNodes;
         this.selectedNodesChange.emit(this._selectedNodes);
-        console.log("De-Selected: ", this._selectedNodes);
+        //console.log("De-Selected: ", this._selectedNodes);
     }
 
 
