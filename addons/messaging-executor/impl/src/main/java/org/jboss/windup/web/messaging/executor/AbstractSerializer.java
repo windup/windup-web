@@ -1,5 +1,6 @@
 package org.jboss.windup.web.messaging.executor;
 
+import org.jboss.windup.util.TarUtil;
 import org.jboss.windup.web.services.json.WindupExecutionJSONUtil;
 import org.jboss.windup.web.services.model.WindupExecution;
 
@@ -8,6 +9,9 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.TextMessage;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Provides baseline functionality for serializing and deserializing {@link WindupExecution}
@@ -92,6 +96,21 @@ public abstract class AbstractSerializer implements ExecutionSerializer
         catch (Exception e)
         {
             throw new RuntimeException("Error deserializing message due to: " + e.getMessage(), e);
+        }
+    }
+
+    Path createResultArchive(Long projectID, WindupExecution execution, Path outputDirectory)
+    {
+        try
+        {
+            Files.createDirectories(outputDirectory);
+            Path tempFile = outputDirectory.resolve("report_files.tar");
+            TarUtil.tarDirectory(tempFile, Paths.get(execution.getOutputPath()));
+            return tempFile;
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException("Failed to create result archive due to: " + e.getMessage(), e);
         }
     }
 }

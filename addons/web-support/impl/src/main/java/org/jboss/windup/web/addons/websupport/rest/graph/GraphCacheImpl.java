@@ -205,6 +205,7 @@ public class GraphCacheImpl implements GraphCache
                     updateLastUsageTime();
                 }
 
+
                 @Override
                 public void vertexPropertyChanged(Vertex element, Property oldValue, Object setValue, Object... vertexPropertyKeyValues) {
                     updateLastUsageTime();

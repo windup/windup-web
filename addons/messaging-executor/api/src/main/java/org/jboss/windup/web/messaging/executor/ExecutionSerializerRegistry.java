@@ -24,6 +24,11 @@ public interface ExecutionSerializerRegistry
     String AMQ_LARGE_MESSAGE_SERIALIZER = "amq.largemessage";
 
     /**
+     * This approach uses http to transport the file data.
+     */
+    String HTTP_POST_SERIALIZER = "http.post.serializer";
+
+    /**
      * This approach uses a shared storage volume to share data between the executors and the main system.
      * This is the default configuration.
      */

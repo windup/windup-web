@@ -175,7 +175,6 @@ public class StatusUpdateMDB extends AbstractMDB implements MessageListener
                 NamingException, NotSupportedException, RollbackException, SystemException
     {
         AnalysisContext context = execution.getAnalysisContext();
-        Path reportDirectory = Paths.get(execution.getOutputPath());
 
         Set<RegisteredApplication> applications = context.getApplications();
         applications.removeIf((RegisteredApplication app) -> app.isDeleted());

@@ -1,5 +1,7 @@
 package org.jboss.windup.web.services.rest;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Collection;
 import java.util.List;
 
@@ -10,7 +12,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.WindupExecution;
 
@@ -49,6 +53,16 @@ public interface WindupEndpoint
     @POST
     @Path("executions/{executionId}/cancel")
     void cancelExecution(@PathParam("executionId") Long executionID);
+
+    @GET
+    @Path("executions/get-execution-request-tar/{executionId}")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    InputStream getExecutionRequestTar(@PathParam("executionId") long executionId);
+
+    @POST
+    @Path("executions/post-results/{executionId}")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    void uploadResults(MultipartFormDataInput data, @PathParam("executionId") long executionId);
 
     /**
      * Gets an array of the most recent log lines from the requested execution.

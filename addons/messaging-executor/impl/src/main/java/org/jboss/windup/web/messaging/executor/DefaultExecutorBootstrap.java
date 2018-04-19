@@ -1,19 +1,26 @@
 package org.jboss.windup.web.messaging.executor;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.jms.ConnectionFactory;
+import javax.jms.ExceptionListener;
 import javax.jms.JMSConsumer;
 import javax.jms.JMSContext;
+import javax.jms.JMSException;
 import javax.jms.Queue;
 import javax.jms.Topic;
 import javax.naming.Context;
@@ -31,6 +38,7 @@ public class DefaultExecutorBootstrap implements ExecutorBootstrap
     private static final String SHUTDOWN_FILE_NAME = "shutdown.marker";
     private static final String PING_FILE_NAME = "ping";
     private static final String PONG_FILE_NAME = "pong";
+    private static final int MAX_ERROR_COUNT = 10;
 
     private static Logger LOG = Logger.getLogger(ExecutorBootstrap.class.getName());
     private String user;
@@ -42,6 +50,8 @@ public class DefaultExecutorBootstrap implements ExecutorBootstrap
     private String statusUpdateQueue;
     private String pingDirectory;
 
+    private AtomicInteger errorCount = new AtomicInteger(0);
+
     @Inject
     private ExecutorMessageListener executorMessageListener;
 
@@ -50,6 +60,10 @@ public class DefaultExecutorBootstrap implements ExecutorBootstrap
 
     @Inject
     private JavaSEJMSServiceAdapter javaSEJMSServiceAdapter;
+
+    private InitialContext remotingCtx;
+    private ConnectionFactory cf;
+    private JMSContext context;
 
     @Override
     public String getName()
@@ -71,9 +85,18 @@ public class DefaultExecutorBootstrap implements ExecutorBootstrap
 
         try
         {
-            InitialContext remotingCtx = new InitialContext(env);
-            ConnectionFactory cf = (ConnectionFactory) remotingCtx.lookup(this.connectionFactory);
-            JMSContext context = cf.createContext(this.user, this.password);
+            remotingCtx = new InitialContext(env);
+            cf = (ConnectionFactory) remotingCtx.lookup(this.connectionFactory);
+            context = cf.createContext(this.user, this.password);
+            context.setExceptionListener(new ExceptionListener()
+            {
+                @Override
+                public void onException(JMSException exception)
+                {
+                    LOG.log(Level.SEVERE, "JMS Exception received: " + exception.getMessage(), exception);
+                    errorCount.incrementAndGet();
+                }
+            });
             Queue executorQueue = (Queue) remotingCtx.lookup(this.executorQueue);
             Queue statusUpdateQueue = (Queue) remotingCtx.lookup(this.statusUpdateQueue);
             Topic cancellationTopic = (Topic) remotingCtx.lookup(this.cancellationTopic);
@@ -119,8 +142,6 @@ public class DefaultExecutorBootstrap implements ExecutorBootstrap
         }
 
         Path shutdownPath = pingDirPath.resolve(SHUTDOWN_FILE_NAME);
-        Path pingPath = pingDirPath.resolve(PING_FILE_NAME);
-        Path pongPath = pingDirPath.resolve(PONG_FILE_NAME);
         while (true)
         {
             if (Files.isRegularFile(shutdownPath))
@@ -137,27 +158,42 @@ public class DefaultExecutorBootstrap implements ExecutorBootstrap
                 System.exit(0);
             }
 
-            if (Files.isRegularFile(pingPath))
+            List<Path> pingFiles = findPingFiles(pingDirPath);
+            if (!pingFiles.isEmpty())
             {
-                LOG.info("Received ping request, responding with pong!");
-                try
+                if (errorCount.get() > MAX_ERROR_COUNT)
                 {
-                    Files.delete(pingPath);
+                    LOG.info("Received a ping, but we have had connection errors, not responding with a pong");
                 }
-                catch (IOException e)
+                else
                 {
-                    LOG.info("WARN: Failed to delete ping file due to: " + e.getMessage());
-                }
+                    for (Path pingFile : pingFiles)
+                    {
+                        LOG.info("Received ping (" + pingFile.getFileName().toString() +  ") request, responding with pong!");
+                        try
+                        {
+                            Files.delete(pingFile);
+                        }
+                        catch (IOException e)
+                        {
+                            LOG.info("WARN: Failed to delete ping file due to: " + e.getMessage());
+                        }
 
-                try (FileWriter fileWriter = new FileWriter(pongPath.toFile()))
-                {
-                    fileWriter.write(String.valueOf(System.currentTimeMillis()));
-                }
-                catch (IOException e)
-                {
-                    LOG.info("WARN: Failed to write pong file due to: " + e.getMessage());
+                        String pingFilename = pingFile.getFileName().toString();
+                        String pongFilename = pingFilename.replace("ping", "pong");
+                        Path pongPath = pingFile.getParent().resolve(pongFilename);
+                        try (FileWriter fileWriter = new FileWriter(pongPath.toFile()))
+                        {
+                            fileWriter.write(String.valueOf(System.currentTimeMillis()));
+                        }
+                        catch (IOException e)
+                        {
+                            LOG.info("WARN: Failed to write pong file due to: " + e.getMessage());
+                        }
+                    }
                 }
             }
+            testConnection();
 
             try
             {
@@ -168,6 +204,37 @@ public class DefaultExecutorBootstrap implements ExecutorBootstrap
                 LOG.severe("Sleep interrupted... exiting!");
                 System.exit(3);
             }
+        }
+    }
+
+    private List<Path> findPingFiles(Path pingDir)
+    {
+        File[] allFiles = pingDir.toFile().listFiles();
+        if (allFiles == null)
+            return Collections.emptyList();
+
+        List<Path> result = new ArrayList<>();
+        for (int i = 0; i < allFiles.length; i++)
+        {
+            File file = allFiles[i];
+            if (file.getName().startsWith(PING_FILE_NAME))
+                result.add(file.toPath());
+        }
+        return result;
+    }
+
+    private void testConnection()
+    {
+        try
+        {
+            // Just access some JMS resources... if it fails, increment the error count.
+            // This is just a hacky way to detect connection failure.
+            Queue statusUpdateQueue = (Queue) remotingCtx.lookup(this.statusUpdateQueue);
+        }
+        catch (Throwable t)
+        {
+            LOG.log(Level.WARNING, "Received an error: " + t.getMessage(), t);
+            errorCount.incrementAndGet();
         }
     }
 
