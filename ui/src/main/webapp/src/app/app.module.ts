@@ -5,7 +5,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {DatePipe} from "@angular/common";
 
 import {AppComponent} from "./components/app.component";
-import {appRoutingProviders, routing} from "./app.routing";
+import {AppRoutingModule} from "./app-routing.module";
 
 import {MomentModule} from "angular2-moment";
 import {FileUploader, FileUploadModule} from "ng2-file-upload";
@@ -46,7 +46,7 @@ initializeModelMappingData();
         BrowserModule,
         FormsModule,
         ReactiveFormsModule,
-        routing,
+        AppRoutingModule,
 
         FileUploadModule,
 
@@ -72,7 +72,6 @@ initializeModelMappingData();
         AboutPageComponent
     ],
     providers: [
-        appRoutingProviders,
         ClassificationService,
         FileModelService,
         FileService,

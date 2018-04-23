@@ -11,7 +11,7 @@ import {NotificationService} from "./notification/notification.service";
 import {LoggedInGuard} from "./authentication/logged-in.guard";
 import {EventBusService} from "./events/event-bus.service";
 import {RouteLinkProviderService} from "./routing/route-link-provider-service";
-import {appRoutes} from '../app.routing';
+import {appRoutes} from '../app-routing.module';
 import {RouteHistoryService} from "./routing/route-history.service";
 import {RouteFlattenerService} from "./routing/route-flattener.service";
 import {LogoutGuard} from "./authentication/logout.guard";

@@ -21,6 +21,7 @@ import {ProjectExecutionsComponent} from "./executions/project-executions.compon
 import {WizardLayoutComponent} from "./shared/layout/wizard-layout.component";
 import {AboutPageComponent} from "./misc/about.component";
 import {LogoutGuard} from "./core/authentication/logout.guard";
+import {NgModule} from "@angular/core";
 
 export const appRoutes: Routes = [
     // Authenticated routes
@@ -128,6 +129,10 @@ export const appRoutes: Routes = [
         path: 'logout',
         canActivate: [LogoutGuard],
         component: DefaultLayoutComponent
+    },
+    {
+        path: '**',  // The wildcard route pushes the user to the main page if there is no match
+        redirectTo: '/project-list'
     }
 ];
 
@@ -135,12 +140,15 @@ export function getProjectBreadcrumbTitle(route: FullFlattenedRoute) {
     return `Project ${route.data['project'].title}`;
 }
 
-export const appRoutingProviders: any[] = [
-
-];
-
-export const routing = RouterModule.forRoot(appRoutes);
-
-export function getWizardStepUrl() {
-
-}
+@NgModule({
+    imports: [
+        RouterModule.forRoot(
+            appRoutes,
+            { enableTracing: false } // <-- Set to true to debug routing
+        )
+    ],
+    exports: [
+        RouterModule
+    ]
+})
+export class AppRoutingModule {}
