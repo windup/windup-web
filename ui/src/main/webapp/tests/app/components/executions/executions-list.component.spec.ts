@@ -46,9 +46,9 @@ const COL_ACTIONS = 4;
 const COUNT_COLUMNS = 5;
 
 const ACTION_DETAIL = 0;
-const ACTION_DYNAMIC_REPORT = 1;
-const ACTION_STATIC_REPORT = 2;
-const ACTION_DELETE = 3;
+// const ACTION_DYNAMIC_REPORT = 1;
+const ACTION_STATIC_REPORT = 1;
+const ACTION_DELETE = 2;
 
 let mockProjects = [
     { id: 1, title: 'Dummy project' }
@@ -169,11 +169,11 @@ describe('ExecutionsListComponent', () => {
 
             if (stateText.startsWith("Completed")) {
                 // details, view static report, view dynamic report, delete
-                expect(el.children[COL_ACTIONS].children.length).toBe(4);
+                expect(el.children[COL_ACTIONS].children.length).toBe(3);
                 expect(el.children[COL_ACTIONS].children[ACTION_DETAIL].title).toEqual('Details');
                 expect(el.children[COL_ACTIONS].children[ACTION_STATIC_REPORT].children[0].title).toEqual('Show reports');
                 expect(el.children[COL_ACTIONS].children[ACTION_DELETE].title).toEqual('Delete');
-                expect(el.children[COL_ACTIONS].children[ACTION_DYNAMIC_REPORT].text.trim()).toEqual('View Reports');
+                // expect(el.children[COL_ACTIONS].children[ACTION_DYNAMIC_REPORT].text.trim()).toEqual('View Reports');
             } else {
                 expect(el.children[COL_ACTIONS].children.length).toBe(2);
                 expect(el.children[COL_ACTIONS].textContent.trim()).toEqual('');
