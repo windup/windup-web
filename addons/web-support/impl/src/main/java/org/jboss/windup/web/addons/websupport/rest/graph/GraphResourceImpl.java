@@ -76,18 +76,19 @@ public class GraphResourceImpl extends AbstractGraphResource implements GraphRes
     }
 
     @Override
-    public List<Map<String, Object>> getByType(Long executionID, String vertexType, Integer depth, Boolean dedup, String inEdges, String outEdges, Boolean includeInVertices)
+    public Response getByType(Long executionID, String vertexType, Integer depth, Boolean dedup, String inEdges, String outEdges, Boolean includeInVertices, String blacklistProperties)
     {
         List<String> inEdges_ = inEdges == null ? Collections.emptyList() : Arrays.asList(StringUtils.split(inEdges, ','));
         List<String> outEdges_ = outEdges == null ? Collections.emptyList() : Arrays.asList(StringUtils.split(outEdges, ','));
+        List<String> blacklistProperties_ = blacklistProperties == null ? Collections.emptyList() : Arrays.asList(StringUtils.split(blacklistProperties, ','));
 
         GraphContext graphContext = getGraph(executionID);
         List<Map<String, Object>> vertices = new ArrayList<>();
         for (Vertex v : graphContext.getGraph().traversal().V().has(WindupVertexFrame.TYPE_PROP, vertexType).toSet())
         {
-            vertices.add(convertToMap(new GraphMarshallingContext(executionID, v, depth, dedup, outEdges_, inEdges_, null, includeInVertices), v));
+            vertices.add(convertToMap(new GraphMarshallingContext(executionID, v, depth, dedup, outEdges_, inEdges_, blacklistProperties_, includeInVertices), v));
         }
-        return vertices;
+        return Response.status(Response.Status.OK).entity(vertices).build();
     }
 
     @Override

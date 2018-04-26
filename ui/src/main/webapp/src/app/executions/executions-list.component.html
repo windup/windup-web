@@ -82,7 +82,7 @@
                     <a class="pointer link cancel" *ngIf="canCancel(execution)" (click)="cancelExecution(execution)" title="Cancel">
                         <i class="fa fa-times fa-fw"></i>
                     </a>
-                    <!-- Uncomment to have the link to dynamic reports backonly locallyy
+                    <!-- Uncomment to have the link to dynamic reports back
                     <a class="link" *ngIf="execution.state == 'COMPLETED'"
                        [routerLink]="['/projects', execution.projectId, 'reports', execution.id]">View Reports
                     </a>

@@ -18,7 +18,9 @@ export class RuleProviderExecutionsService extends GraphService {
     @Cached('ruleProviderExecutions', null, true)
     getPhases(execID: number): Observable<ExecutionPhaseModel[]> {
         return this.getTypeAsArray<ExecutionPhaseModel>(ExecutionPhaseModel.discriminator, execID, {
-            depth: 2
+            depth: 2,
+            includeInVertices: false,
+            blacklistProperties: ['ruleContents', 'countRemovedEdges', 'countAddedVertices', 'countAddedEdges', 'countRemovedVertices']
         });
     }
 

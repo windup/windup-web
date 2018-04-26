@@ -1,5 +1,6 @@
 package org.jboss.windup.web.services.rest.graph;
 
+import java.io.StringReader;
 import java.util.List;
 import java.util.Map;
 
@@ -13,11 +14,13 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.json.*;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 /**
@@ -53,11 +56,12 @@ public class GraphResourceTest extends AbstractGraphResourceTest
     @RunAsClient
     public void testQueryByType()
     {
-        List<Map<String, Object>> fileModels = graphResource.getByType(execution.getId(), FileModel.TYPE, 1, false, null, null, true);
-        Assert.assertNotNull(fileModels);
+        Response response = graphResource.getByType(execution.getId(), FileModel.TYPE, 1, false, null, null, true, null);
+        Assert.assertNotNull(response);
+        JsonArray fileModels = Json.createReader(new StringReader(response.readEntity(String.class))).readArray();
         Assert.assertTrue(fileModels.size() > 1);
 
-        for (Map<String, Object> fileModel : fileModels)
+        for (JsonValue fileModel : fileModels)
         {
             System.out.println("FileModel: " + fileModel);
         }
