@@ -178,7 +178,7 @@ public abstract class AbstractGraphResource implements FurnaceRESTGraphAPI
                 linkedVertices = (List<Map<String, Object>>) edgeDetails.get(GraphResource.VERTICES);
             }
 
-            Vertex otherVertex = direction == Direction.OUT ? edge.outVertex() : edge.inVertex();
+            Vertex otherVertex = direction == Direction.OUT ? edge.inVertex() : edge.outVertex();
 
             // Recursion
             ctx.remainingDepth--;

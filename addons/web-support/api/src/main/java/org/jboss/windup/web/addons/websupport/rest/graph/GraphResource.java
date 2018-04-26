@@ -12,6 +12,7 @@ import javax.ws.rs.core.MediaType;
 import java.util.List;
 import java.util.Map;
 import javax.ws.rs.DefaultValue;
+import javax.ws.rs.core.Response;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -96,14 +97,15 @@ public interface GraphResource extends FurnaceRESTGraphAPI
      */
     @GET
     @Path("/{executionID}/by-type/{vertexType}")
-    List<Map<String, Object>> getByType(
+    Response getByType(
         @PathParam("executionID") Long executionID,
         @PathParam("vertexType") String vertexType,
         @QueryParam("depth") Integer depth,
         @QueryParam("dedup") @DefaultValue("false") Boolean dedup,
         @QueryParam("in") String inEdges,
         @QueryParam("out") String outEdges,
-        @QueryParam("includeInVertices") @DefaultValue("true") Boolean includeInVertices
+        @QueryParam("includeInVertices") @DefaultValue("true") Boolean includeInVertices,
+        @QueryParam("blacklistProperties") String blacklistProperties
     );
 
 
