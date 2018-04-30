@@ -38,8 +38,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     isInWizard: boolean = false;
     project: MigrationProject;
     routerSubscription: Subscription;
-
-    countUploadedApplications: number = 0;
+    uploading: boolean = false;
 
     labels = {
         heading: 'Add Applications',
@@ -60,7 +59,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
         super();
 
         this.multipartUploader = _registeredApplicationService.getMultipartUploader();
-        this.multipartUploader.onSuccessItem = () => this.countUploadedApplications++;
+        this.multipartUploader.onSuccessItem = () => console.log("File uploaded");
         this.multipartUploader.onAfterAddingFile = () => this.registerUploaded();
         this.multipartUploader.onWhenAddingFileFailed = (item: FileLikeObject, filter: FilterFunction, options) => {
             let msg;
@@ -180,9 +179,12 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
             return;
         }
 
+        this.uploading = true;
         this._registeredApplicationService.uploadApplications(this.project).subscribe(
-            () => {},
+            () => {this.uploading = false; console.log("Uploads done")},
             error => {
+                this.uploading = false;
+                console.log("Upload error");
                 if (!error.hasOwnProperty('code') || error.code !== RegisteredApplicationService.ERROR_FILE_EXISTS) {
                     this.handleError(<any>error);
                 }
@@ -238,6 +240,9 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
      * @returns {boolean}
      */
     projectHasApplications() {
+        console.log("projectHasApplications, project: ", this.project);
+        if (this.project)
+            console.log("projectHasApplications, project.applications: ", this.project.applications);
         return (this.project && this.project.applications && this.project.applications.length > 0);
     }
 
@@ -246,6 +251,9 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     }
 
     public get isValid() {
+        if (this.uploading)
+            return false;
+
         /**
          * If project already has some applications,
          * form is always valid for "upload" tab and also for empty path in "server path" tab.
@@ -262,8 +270,8 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
 
             return this.fileInputPath && this.fileInputPath.length > 0 &&
                 !this.hasError(appPathField) && !appPathField.pending;
-        } else if (this.mode === 'UPLOADED') {
-            return this.countUploadedApplications > 0 || this.projectHasApplications();
+        } else if (this.mode === 'UPLOADED' && this.isInWizard) {
+            return this.projectHasApplications();
         }
     }
 
