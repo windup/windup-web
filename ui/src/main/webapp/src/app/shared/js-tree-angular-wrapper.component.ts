@@ -205,21 +205,20 @@ export class JsTreeAngularWrapperComponent implements AfterViewInit, OnInit, OnD
         if (indexOfExistingNode == -1)
         {
             window.alert("This cannot be unselected until all parent nodes are unselected!");
-            return;
+        } else
+        {
+            //console.log("Current: ", this._selectedNodes);
+            this._selectedNodes = this._selectedNodes.filter((item) => {
+                let index = nodesToDeselect.indexOf(item.id);
+                //console.log("Item: ", item, index);
+                return index == -1;
+            });
+            //console.log("Then: ", this._selectedNodes);
         }
-
-        //console.log("Current: ", this._selectedNodes);
-        this._selectedNodes = this._selectedNodes.filter((item) => {
-            let index = nodesToDeselect.indexOf(item.id);
-            //console.log("Item: ", item, index);
-            return index == -1;
-        });
-        //console.log("Then: ", this._selectedNodes);
 
         // This just triggers the setter method to be called
         this.selectedNodes = this._selectedNodes;
         this.selectedNodesChange.emit(this._selectedNodes);
-        this.applicationRef.tick();
         //console.log("De-Selected: ", this._selectedNodes);
     }
 
