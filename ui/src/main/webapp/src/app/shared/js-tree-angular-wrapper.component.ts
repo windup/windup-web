@@ -1,6 +1,6 @@
 import {
     Component, OnInit, Input, Output, EventEmitter, OnDestroy, ViewChild, AfterViewInit,
-    SimpleChanges
+    SimpleChanges, ApplicationRef
 } from "@angular/core";
 import {ITreeState, TreeComponent, TreeNode} from "angular-tree-component";
 
@@ -73,6 +73,7 @@ export class JsTreeAngularWrapperComponent implements AfterViewInit, OnInit, OnD
                 selectedLeafNodeIds[selectedNode.id] = true;
 
                 this.addParentSelections(selectedLeafNodeIds, selectedNode.id);
+                this.addChildSelections(selectedLeafNodeIds, selectedNode.id);
             });
         }
 
@@ -103,7 +104,7 @@ export class JsTreeAngularWrapperComponent implements AfterViewInit, OnInit, OnD
         getChildren: (node:TreeNode) => node.data.children
     };
 
-    public constructor() {
+    public constructor(public applicationRef:ApplicationRef) {
         // setInterval(() => {
         //     console.log("Tree data: ", this.treeNodes);
         // }, 10000);
@@ -118,31 +119,48 @@ export class JsTreeAngularWrapperComponent implements AfterViewInit, OnInit, OnD
     ngOnDestroy() {
     }
 
-    private addParentSelections(selectedLeafNodeIds:{}, nodeId:number) {
-        //console.log("parent add searching for: " + nodeId);
-        // 1. Find node from the main set of nodes by id
-        let finder = (originalNodes:TreeDataExtended[]) => {
-            let result = null;
+    private findNode(originalNodes:TreeDataExtended[], nodeId:number):TreeDataExtended {
+        let result = null;
 
-            if (!originalNodes)
-                return null;
+        if (!originalNodes)
+            return null;
 
-            originalNodes.forEach(originalNode => {
-                if (result)
-                    return;
+        originalNodes.forEach(originalNode => {
+            if (result)
+                return;
 
-                if (originalNode.id == nodeId) {
-                    result = originalNode;
-                    return;
-                }
+            if (originalNode.id == nodeId) {
+                result = originalNode;
+                return;
+            }
 
-                result = finder(<TreeDataExtended[]>originalNode.children);
+            result = this.findNode(<TreeDataExtended[]>originalNode.children, nodeId);
+        });
+
+        return result;
+    }
+
+    private addChildSelections(selectedLeafNodeIds:{}, nodeId:number) {
+        let originalNode = this.findNode(this.treeNodesFiltered, nodeId);
+        if (!originalNode)
+            return;
+
+
+        let selectorFunction = (node:TreeDataExtended) => {
+            selectedLeafNodeIds[node.id] = true;
+
+            if (!node.hasChildren)
+                return;
+
+            node.children.forEach(childNode => {
+                selectorFunction(<TreeDataExtended>childNode);
             });
-
-            return result;
         };
+        selectorFunction(originalNode);
+    }
 
-        let originalNode = finder(this.treeNodesFiltered);
+    private addParentSelections(selectedLeafNodeIds:{}, nodeId:number) {
+        let originalNode = this.findNode(this.treeNodesFiltered, nodeId);
         //console.log("Original node: ", originalNode);
 
         while (originalNode) {
@@ -179,6 +197,17 @@ export class JsTreeAngularWrapperComponent implements AfterViewInit, OnInit, OnD
         crawlNode(event.node.data);
         //console.log("Should deselect: ", nodesToDeselect);
 
+        let indexOfExistingNode = this._selectedNodes.findIndex(selectedNode => {
+            console.log("this selected node:", selectedNode, event);
+            return selectedNode.id == event.node.id;
+        });
+
+        if (indexOfExistingNode == -1)
+        {
+            window.alert("This cannot be unselected until all parent nodes are unselected!");
+            return;
+        }
+
         //console.log("Current: ", this._selectedNodes);
         this._selectedNodes = this._selectedNodes.filter((item) => {
             let index = nodesToDeselect.indexOf(item.id);
@@ -190,6 +219,7 @@ export class JsTreeAngularWrapperComponent implements AfterViewInit, OnInit, OnD
         // This just triggers the setter method to be called
         this.selectedNodes = this._selectedNodes;
         this.selectedNodesChange.emit(this._selectedNodes);
+        this.applicationRef.tick();
         //console.log("De-Selected: ", this._selectedNodes);
     }
 
