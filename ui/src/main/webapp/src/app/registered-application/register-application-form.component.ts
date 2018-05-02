@@ -59,7 +59,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
         super();
 
         this.multipartUploader = _registeredApplicationService.getMultipartUploader();
-        this.multipartUploader.onSuccessItem = () => console.log("File uploaded");
+        //this.multipartUploader.onSuccessItem = () => console.log("File uploaded");
         this.multipartUploader.onAfterAddingFile = () => this.registerUploaded();
         this.multipartUploader.onWhenAddingFileFailed = (item: FileLikeObject, filter: FilterFunction, options) => {
             let msg;
@@ -240,9 +240,6 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
      * @returns {boolean}
      */
     projectHasApplications() {
-        console.log("projectHasApplications, project: ", this.project);
-        if (this.project)
-            console.log("projectHasApplications, project.applications: ", this.project.applications);
         return (this.project && this.project.applications && this.project.applications.length > 0);
     }
 
