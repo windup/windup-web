@@ -267,7 +267,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
 
             return this.fileInputPath && this.fileInputPath.length > 0 &&
                 !this.hasError(appPathField) && !appPathField.pending;
-        } else if (this.mode === 'UPLOADED' && this.isInWizard) {
+        } else if (this.mode === 'UPLOADED') {
             return this.projectHasApplications();
         }
     }
