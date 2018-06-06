@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {Http} from "@angular/http";
+import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {AbstractService} from "../../shared/abtract.service";
 import {Constants} from "../../constants";
@@ -15,7 +15,7 @@ export class AggregatedStatisticsService extends AbstractService {
     private static AGGREGATED_COMPONENTS_URL = AggregatedStatisticsService.BASE_PATH + '/aggregatedArchives';
     private static AGGREGATED_DEPENDENCIES_URL = AggregatedStatisticsService.BASE_PATH + '/aggregatedDependencies';
 
-    constructor(private _http: Http) {
+    constructor(private _http: HttpClient) {
         super();
     }
 
@@ -26,9 +26,7 @@ export class AggregatedStatisticsService extends AbstractService {
 
         let serializedFilter = this.serializeFilter(filter);
 
-        return this._http.post(url, serializedFilter, this.JSON_OPTIONS)
-            .map(res => res.json())
-            .catch(this.handleError);
+        return this._http.post<EffortByCategoryDTO>(url, serializedFilter, this.JSON_OPTIONS);
     }
 
     @Cached('aggregatedStatistics', null, true)
@@ -38,9 +36,7 @@ export class AggregatedStatisticsService extends AbstractService {
 
         let serializedFilter = this.serializeFilter(filter);
 
-        return this._http.post(url, serializedFilter, this.JSON_OPTIONS)
-            .map(res => res.json())
-            .catch(this.handleError);
+        return this._http.post<StatisticsList>(url, serializedFilter, this.JSON_OPTIONS);
     }
 
     @Cached('aggregatedStatistics', null, true)
@@ -50,9 +46,7 @@ export class AggregatedStatisticsService extends AbstractService {
 
         let serializedFilter = this.serializeFilter(filter);
 
-        return this._http.post(url, serializedFilter, this.JSON_OPTIONS)
-            .map(res => res.json())
-            .catch(this.handleError);
+        return this._http.post<StatisticsList>(url, serializedFilter, this.JSON_OPTIONS);
     }
 
     @Cached('aggregatedStatistics', null, true)
@@ -62,8 +56,6 @@ export class AggregatedStatisticsService extends AbstractService {
 
         let serializedFilter = this.serializeFilter(filter);
 
-        return this._http.post(url, serializedFilter, this.JSON_OPTIONS)
-            .map(res => res.json())
-            .catch(this.handleError);
+        return this._http.post<StatisticsList>(url, serializedFilter, this.JSON_OPTIONS);
     }
 }

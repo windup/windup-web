@@ -1,5 +1,5 @@
-import {Routes, Route} from "@angular/router";
-import {Injectable} from "@angular/core";
+import {Route, Routes, ROUTES} from "@angular/router";
+import {Inject, Injectable, Optional} from "@angular/core";
 
 @Injectable()
 export class RouteLinkProviderService {
@@ -7,13 +7,17 @@ export class RouteLinkProviderService {
 
     protected routesByComponents = new Map<any, any>();
 
-    constructor(routes: Routes) {
+    constructor(@Inject(ROUTES) @Optional() routes: Routes) {
+        if (!routes || routes.length === 0) {
+            throw new Error('Routes array must be provided');
+        }
+
         this.routes = routes;
         let componentRoutes = this.getComponentRoutes(routes);
         this.routesByComponents = this.getComponentRouteMap(componentRoutes);
     }
 
-    protected getComponentRoutes(routes: Routes, predecessors: any[] = []): Route[] {
+    protected getComponentRoutes(routes: Route[], predecessors: any[] = []): Route[] {
         let finalRoutes = [];
 
         routes.forEach((route: Route) => {
@@ -40,7 +44,7 @@ export class RouteLinkProviderService {
         return routesByComponents;
     }
 
-    protected createRoutingEntry(route: Route, predecessors: Routes) {
+    protected createRoutingEntry(route: Route, predecessors: Route[]) {
         let result = {
             url: '',
             route: route,

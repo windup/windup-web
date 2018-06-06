@@ -13,11 +13,15 @@ module.exports = webpackMerge(commonConfig, {
     },
 
     module: {
-        loaders: [
+        rules: [
             {
                 test: /\.ts$/,
                 exclude: /jquery*\.js/,
-                loaders: ['awesome-typescript-loader', 'angular2-template-loader', 'angular-router-loader']
+                use: [
+                    { loader: 'awesome-typescript-loader' },
+                    { loader: 'angular2-template-loader' },
+                    { loader: 'angular-router-loader' }
+                ]
             }
         ]
     },

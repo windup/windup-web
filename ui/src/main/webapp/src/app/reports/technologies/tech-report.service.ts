@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {Http} from "@angular/http";
+import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
 
 import {GraphService} from "../../services/graph.service";
@@ -40,7 +40,7 @@ export class TechReportService extends GraphService
     static REMOTE_SERVICES_RMI = TechReportService.REMOTE_SERVICES_REPORT_BASE + '/rmi';
 
 
-    constructor(http: Http, graphJsonToModelService: GraphJSONToModelService<any>) {
+    constructor(http: HttpClient, graphJsonToModelService: GraphJSONToModelService<any>) {
         super(http, graphJsonToModelService);
     }
 
@@ -74,7 +74,6 @@ export class TechReportService extends GraphService
             url += '?sessionType=' + sessionType;
         }
         return this._http.post(url, serializedFilter, this.JSON_OPTIONS)
-            .map(res => res.json())
             .map(data => {
                 if (!Array.isArray(data)) {
                     throw new Error("No items returned");
@@ -149,8 +148,7 @@ export class TechReportService extends GraphService
         const jsonFilter = this.serializeFilter(filter);
 
         return this._http.post(url, jsonFilter, this.JSON_OPTIONS)
-            .map(response => {
-                const json = response.json();
+            .map((json: any[]) => {
                 const entities = this._graphJsonToModelService.fromJSONarray(json);
                 return entities;
             });

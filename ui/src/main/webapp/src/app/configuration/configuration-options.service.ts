@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Http} from '@angular/http';
+import {HttpClient} from "@angular/common/http";
 
 import {Constants} from "../constants";
 import {AbstractService} from "../shared/abtract.service";
@@ -14,22 +14,18 @@ export class ConfigurationOptionsService extends AbstractService {
     private GET_CONFIGURATION_OPTIONS_URL = "/configuration-options";
     private VALIDATE_OPTION_URL = this.GET_CONFIGURATION_OPTIONS_URL + "/validate-option";
 
-    constructor (private _http: Http) {
+    constructor (private _http: HttpClient) {
         super();
     }
 
     validate(option: AdvancedOption): Observable<ValidationResult> {
         let body = JSON.stringify(option);
 
-        return this._http.post(Constants.REST_BASE + this.VALIDATE_OPTION_URL, body, this.JSON_OPTIONS)
-            .map(res => <ValidationResult> res.json())
-            .catch(this.handleError);
+        return this._http.post<ValidationResult>(Constants.REST_BASE + this.VALIDATE_OPTION_URL, body, this.JSON_OPTIONS);
     }
 
     @Cached({section: 'configurationOptions', immutable: true})
     getAll(): Observable<ConfigurationOption[]> {
-        return this._http.get(Constants.REST_BASE + this.GET_CONFIGURATION_OPTIONS_URL)
-            .map(res => <ConfigurationOption[]> res.json())
-            .catch(this.handleError);
+        return this._http.get<ConfigurationOption[]>(Constants.REST_BASE + this.GET_CONFIGURATION_OPTIONS_URL);
     }
 }

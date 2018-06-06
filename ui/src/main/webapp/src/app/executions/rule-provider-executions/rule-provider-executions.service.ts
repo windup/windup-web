@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {Http} from "@angular/http";
+import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {GraphService} from "../../services/graph.service";
 import {ExecutionPhaseModel} from "../../generated/tsModels/ExecutionPhaseModel";
@@ -11,7 +11,7 @@ import {Cached} from "../../shared/cache.service";
 @Injectable()
 export class RuleProviderExecutionsService extends GraphService {
 
-    constructor(http: Http, graphJsonToModelService: GraphJSONToModelService<any>) {
+    constructor(http: HttpClient, graphJsonToModelService: GraphJSONToModelService<any>) {
         super(http, graphJsonToModelService);
     }
 

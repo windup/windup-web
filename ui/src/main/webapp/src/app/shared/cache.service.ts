@@ -139,7 +139,7 @@ export function Cached(configuration?: CacheConfiguration);
 export function Cached(section?: string, expiration?: CacheExpiration, immutable?: boolean, cacheItemCallback?: Function);
 export function Cached(section?, expiration?: CacheExpiration, immutable: boolean = false, cacheItemCallback?: Function) {
     if (typeof section === 'object') {
-        let configuration = Object.assign({}, {
+        let configuration: CacheConfiguration = Object.assign({}, {
             immutable: false
         }, section);
 

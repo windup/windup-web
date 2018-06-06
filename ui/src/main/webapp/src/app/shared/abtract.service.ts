@@ -1,23 +1,28 @@
 import {Injectable} from '@angular/core';
 import {Response} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
-import {Headers, RequestOptions} from '@angular/http';
 import {ReportFilter} from "../generated/windup-services";
+import {HttpHeaders} from "@angular/common/http";
 
 @Injectable()
 export class AbstractService {
 
-    public JSON_HEADERS: Headers;
-    public JSON_OPTIONS: RequestOptions;
+    public JSON_HEADERS: HttpHeaders;
+    public JSON_OPTIONS: Object;
 
-    constructor (){
-        this.JSON_HEADERS = new Headers();
+    constructor () {
+        this.JSON_HEADERS = new HttpHeaders()
+            .append('Content-Type', 'application/json')
+            .append('Accept', 'application/json');
 
-        this.JSON_HEADERS.append('Content-Type', 'application/json');
-        this.JSON_HEADERS.append('Accept', 'application/json');
-        this.JSON_OPTIONS = new RequestOptions({ headers: this.JSON_HEADERS });
+        this.JSON_OPTIONS = { headers: this.JSON_HEADERS };
     }
 
+    /**
+     * @deprecated Use {ErrorInterceptor} instead
+     * @param {Response} error
+     * @returns {ErrorObservable}
+     */
     protected handleError(error: Response) {
         // in a real world app, we may send the error to some remote logging infrastructure
         // instead of just logging it to the console

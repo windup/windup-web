@@ -10,6 +10,9 @@ import {EventBusService} from "../events/event-bus.service";
 import {LoadingSomethingFailedEvent, LoadingSomethingFinishedEvent, LoadingSomethingStartedEvent}
     from "../events/windup-event";
 
+/**
+ * @deprecated Use {TokenInterceptor} instead
+ */
 @Injectable()
 export class WindupHttpService extends Http {
     constructor(

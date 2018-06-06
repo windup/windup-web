@@ -58,24 +58,27 @@ export class TechnologiesRemoteServicesReportComponent extends FilterableReportC
         super(router, activatedRoute, routeFlattener);
     }
 
-    ngOnInit(): void {
-        this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
-            this.title = flatRouteData.data.displayName;
+    initialize(): void {
+        this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => this.loadData(flatRouteData)));
+    }
 
-            this.loadFilterFromRouteData(flatRouteData);
+    protected loadData(flatRouteData) {
+        this.title = flatRouteData.data.displayName;
 
-            const execId = this.execution.id;
+        this.loadFilterFromRouteData(flatRouteData);
 
-            this.techReportService.getEjbRemoteServiceModel(execId, this.reportFilter).subscribe(
-                data => {
-                    this.ejbRemoteServices = data;
-                    this.loading.ejbRemoteServices = false;
-                },
-                error => {
-                    this._notificationService.error(utils.getErrorMessage(error));
+        const execId = this.execution.id;
+
+        this.techReportService.getEjbRemoteServiceModel(execId, this.reportFilter).subscribe(
+            data => {
+                this.ejbRemoteServices = data;
+                this.loading.ejbRemoteServices = false;
+            },
+            error => {
+                this._notificationService.error(utils.getErrorMessage(error));
             });
 
-            this.techReportService.getJaxRpcWebServices(execId, this.reportFilter).subscribe(
+        this.techReportService.getJaxRpcWebServices(execId, this.reportFilter).subscribe(
             data => {
                 this.jaxRpcWebServices = data;
                 this.loading.jaxRpcWebServices = false;
@@ -84,7 +87,7 @@ export class TechnologiesRemoteServicesReportComponent extends FilterableReportC
                 this._notificationService.error(utils.getErrorMessage(error));
             });
 
-            this.techReportService.getJaxRsWebServices(execId, this.reportFilter).subscribe(
+        this.techReportService.getJaxRsWebServices(execId, this.reportFilter).subscribe(
             data => {
                 this.jaxRsWebServices = data;
                 this.loading.jaxRsWebServices = false;
@@ -93,7 +96,7 @@ export class TechnologiesRemoteServicesReportComponent extends FilterableReportC
                 this._notificationService.error(utils.getErrorMessage(error));
             });
 
-            this.techReportService.getJaxWsWebServices(execId, this.reportFilter).subscribe(
+        this.techReportService.getJaxWsWebServices(execId, this.reportFilter).subscribe(
             data => {
                 this.jaxWsWebServices = data;
                 this.loading.jaxWsWebServices = false;
@@ -102,7 +105,7 @@ export class TechnologiesRemoteServicesReportComponent extends FilterableReportC
                 this._notificationService.error(utils.getErrorMessage(error));
             });
 
-            this.techReportService.getRmiServices(execId, this.reportFilter).subscribe(
+        this.techReportService.getRmiServices(execId, this.reportFilter).subscribe(
             data => {
                 this.rmiServices = data;
                 this.loading.rmiServices = false;
@@ -110,7 +113,10 @@ export class TechnologiesRemoteServicesReportComponent extends FilterableReportC
             error => {
                 this._notificationService.error(utils.getErrorMessage(error));
             });
-        }));
+    }
+
+    ngOnInit(): void {
+
     }
 
     updateSearch() {

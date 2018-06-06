@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {Observable} from "rxjs";
 
 import * as showdown from "showdown";
-import "./prism";
+import * as Prism from "./prism";
 
 import {FileModelService} from "../../services/graph/file-model.service";
 import {FileModel} from "../../generated/tsModels/FileModel";
@@ -58,41 +58,48 @@ export class SourceReportComponent extends RoutedComponent implements OnInit, Af
         super(_router, route, _routeFlattener);
     }
 
-    ngOnInit(): void {
-        this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
-            this.execID = +flatRouteData.params['executionId'];
-            this.fileID = +flatRouteData.params['fileId'];
+    initialize(): void {
+        this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => this.loadData(flatRouteData)));
+    }
 
-            this.fileModelService.getFileModel(this.execID, this.fileID).subscribe(
-                (fileModel) => {
-                    this.fileModel = fileModel;
+    loadData(flatRouteData) {
+        this.execID = +flatRouteData.params['executionId'];
+        this.fileID = +flatRouteData.params['fileId'];
 
-                    // Assume this is a source file model and deserialize it as one... if it is not, this will have a lot of null
-                    //   properties
-                    this.sourceFileModel = <SourceFileModel>this._graphJsonToModelService.fromJSON(this.fileModel.data, SourceFileModel);
-                    this.sourceFileModel.linksToTransformedFiles.subscribe((links) => this.transformedLinks = links);
+        this.fileModelService.getFileModel(this.execID, this.fileID).subscribe(
+            (fileModel) => {
+                this.fileModel = fileModel;
+
+                // Assume this is a source file model and deserialize it as one... if it is not, this will have a lot of null
+                //   properties
+                this.sourceFileModel = <SourceFileModel>this._graphJsonToModelService.fromJSON(this.fileModel.data, SourceFileModel);
+                this.sourceFileModel.linksToTransformedFiles.subscribe((links) => this.transformedLinks = links);
+            },
+            error => this.notificationService.error(utils.getErrorMessage(error)));
+
+        this.classificationService.getClassificationsForFile(this.execID, this.fileID)
+            .subscribe((classifications) => this.classifications = classifications,
+                error => this.notificationService.error(utils.getErrorMessage(error)));
+
+        this.hintService.getHintsForFile(this.execID, this.fileID)
+            .subscribe((hints) => this.hints = hints,
+                error => this.notificationService.error(utils.getErrorMessage(error)));
+
+        this.fileModelService.getSource(this.execID, this.fileID)
+            .subscribe((fileSource) => {
+                    this.fileSource = fileSource;
+                    this.fileLines = fileSource.split(/[\r\n]/).map((line) => line + "\n");
                 },
                 error => this.notificationService.error(utils.getErrorMessage(error)));
 
-            this.classificationService.getClassificationsForFile(this.execID, this.fileID)
-                .subscribe((classifications) => this.classifications = classifications,
-                    error => this.notificationService.error(utils.getErrorMessage(error)));
+        this.technologyTagService.getTagsForFile(this.execID, this.fileID)
+            .subscribe((technologyTags) => this.technologyTags = technologyTags,
+                error => this.notificationService.error(utils.getErrorMessage(error)));
 
-            this.hintService.getHintsForFile(this.execID, this.fileID)
-                .subscribe((hints) => this.hints = hints,
-                    error => this.notificationService.error(utils.getErrorMessage(error)));
+    }
 
-            this.fileModelService.getSource(this.execID, this.fileID)
-                .subscribe((fileSource) => {
-                        this.fileSource = fileSource;
-                        this.fileLines = fileSource.split(/[\r\n]/).map((line) => line + "\n");
-                    },
-                    error => this.notificationService.error(utils.getErrorMessage(error)));
+    ngOnInit(): void {
 
-            this.technologyTagService.getTagsForFile(this.execID, this.fileID)
-                .subscribe((technologyTags) => this.technologyTags = technologyTags,
-                    error => this.notificationService.error(utils.getErrorMessage(error)));
-        })); 
     }
 
     private getClassificationLinks(classification: ClassificationModel): Observable<LinkModel[]> {

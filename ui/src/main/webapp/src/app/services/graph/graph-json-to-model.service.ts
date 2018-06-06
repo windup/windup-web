@@ -1,9 +1,15 @@
-import {Injectable} from "@angular/core";
-import {Http}       from "@angular/http";
+import {Inject, Injectable, InjectionToken, Optional} from "@angular/core";
+import {HttpClient} from "@angular/common/http";
 import * as $ from "jquery";
 
 import {DiscriminatorMapping}     from './discriminator-mapping';
 import {BaseModel} from './base.model';
+
+export const DISCRIMINATOR_MAPPING = new InjectionToken<typeof DiscriminatorMapping>('discriminatorMapping');
+
+export const GraphDiscriminatorMappingProviders = [
+    { provide: DISCRIMINATOR_MAPPING, useValue: DiscriminatorMapping }
+];
 
 /**
  * Converts the JSON Graph representation to TypeScript models.
@@ -37,7 +43,7 @@ export class GraphJSONToModelService<T extends BaseModel>
      * @param _http Http
      * @param mapping  Maps the @TypeValue strings to TS model classes.
      */
-    constructor(private _http: Http, mapping?: any) {
+    constructor(private _http: HttpClient, @Inject(DISCRIMINATOR_MAPPING) @Optional() mapping?: any) {
         if (!mapping) {
             this.mapping = DiscriminatorMapping;
         } else {

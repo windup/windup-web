@@ -36,8 +36,8 @@ export class PackageChartComponent extends BaseChartComponent implements OnChang
     legendWidth: number;
     labels: boolean;
 
-    constructor(element: ElementRef, zone: NgZone, cd: ChangeDetectorRef, location: LocationStrategy) {
-        super(element, zone, cd, location);
+    constructor(element: ElementRef, zone: NgZone, cd: ChangeDetectorRef) {
+        super(element, zone, cd);
     }
 
     label(item): string {

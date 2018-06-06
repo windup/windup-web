@@ -1,6 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {Constants} from "../constants";
-import {Http} from "@angular/http";
+import {HttpClient} from "@angular/common/http";
 
 @Component({
     templateUrl: './about.component.html'
@@ -14,14 +14,12 @@ export class AboutPageComponent implements OnInit {
     versionWindupCore: string = "(loading)";
     scmRevisionWindupCore: string = "(loading)";
 
-    constructor (private _http: Http) {
+    constructor (private _http: HttpClient) {
     }
 
     ngOnInit(): any {
         this._http.get(Constants.REST_BASE + this.WINDUP_CORE_VERSION_URL)
-            .map(res => res.json())
-            .subscribe(versionAndRevision =>
-            {
+            .subscribe((versionAndRevision: any) => {
                 this.versionWindupCore = versionAndRevision.version;
                 this.scmRevisionWindupCore = versionAndRevision.scmRevision;
             });

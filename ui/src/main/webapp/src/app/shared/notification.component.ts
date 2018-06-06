@@ -45,7 +45,7 @@ export class NotificationComponent implements OnInit, OnDestroy {
 
         if (this.autoCloseNotifications) {
             this.closeTimeoutHandle = this._schedulerService.setTimeout(
-                this._zone.run(() => this.closeNotification(notification)),
+                () => this._zone.run(() => this.closeNotification(notification)),
                 this.closeTimeout * 1000
             );
         }

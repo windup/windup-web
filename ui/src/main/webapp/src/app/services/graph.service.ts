@@ -1,6 +1,6 @@
 import {AbstractService} from "../shared/abtract.service";
 import {Constants} from "../constants";
-import {Http, URLSearchParams} from "@angular/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
 import {GraphJSONToModelService} from "./graph/graph-json-to-model.service";
@@ -11,7 +11,7 @@ export class GraphService extends AbstractService {
     private static WINDUP_REST_URL = Constants.GRAPH_REST_BASE;
     private static GRAPH_ENDPOINT_URL = `${GraphService.WINDUP_REST_URL}/graph/{execID}/by-type/{type}`;
 
-    constructor(protected _http: Http, protected _graphJsonToModelService: GraphJSONToModelService<any>) {
+    constructor(protected _http: HttpClient, protected _graphJsonToModelService: GraphJSONToModelService<any>) {
         super();
     }
 
@@ -25,8 +25,7 @@ export class GraphService extends AbstractService {
                 }
 
                 return <T>service.fromJSON(data[0]);
-            })
-            .catch(this.handleError);
+            });
     }
 
     protected getTypeAsArray<T extends BaseModel>(type: string, execID: number, options?: GraphEndpointOptions): Observable<T[]> {
@@ -43,7 +42,7 @@ export class GraphService extends AbstractService {
     }
 
     protected prepareGetRequest(type: string, execID: number, options?: GraphEndpointOptions): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
+        let params = new HttpParams();
         let url = GraphService.GRAPH_ENDPOINT_URL
             .replace('{execID}', execID.toString())
             .replace('{type}', type);
@@ -55,9 +54,8 @@ export class GraphService extends AbstractService {
         }
 
         return this._http.get(url, {
-            search: params
-        })
-            .map(res => res.json());
+            params: params
+        });
     }
 
     public getPropertiesString(...properties: string[]): string {

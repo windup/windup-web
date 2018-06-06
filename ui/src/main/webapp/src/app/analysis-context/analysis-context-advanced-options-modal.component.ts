@@ -4,7 +4,8 @@ import {AdvancedOption} from "../generated/windup-services";
 import {ModalDialogComponent} from "../shared/dialog/modal-dialog.component";
 import {ConfigurationOptionsService} from "../configuration/configuration-options.service";
 import {ValidationResult} from "../model/validation-result.model";
-import {isString} from "util";
+import {utils} from "../shared/utils";
+import isString = utils.isString;
 
 @Component({
     selector: 'wu-analysis-context-advanced-options',

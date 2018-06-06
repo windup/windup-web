@@ -5,7 +5,7 @@ var commonConfig = require('./webpack.common.js');
 var path = require('path');
 var helpers = require('./helpers');
 var ngtools = require('@ngtools/webpack');
-var AotPlugin = ngtools.AotPlugin;
+var AotPlugin = ngtools.AngularCompilerPlugin;
 
 const ENV = process.env.NODE_ENV = process.env.ENV = 'production';
 
@@ -19,11 +19,11 @@ module.exports = webpackMerge(commonConfig, {
     },
 
     module: {
-        loaders: [
+        rules: [
             {
                 test: /\.ts$/,
                 exclude: /jquery*\.js/,
-                loaders: '@ngtools/webpack'
+                use: [ '@ngtools/webpack' ]
             }
         ]
     },

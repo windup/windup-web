@@ -35,20 +35,26 @@ export class RuleProviderExecutionsComponent extends RoutedComponent implements 
         super(_router, _activatedRoute, _routeFlattener);
     }
 
-    ngOnInit(): void {
-        this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
-            let executionId = +flatRouteData.params['executionId'];
-            this._ruleProviderExecutionsService.getPhases(executionId)
-                .subscribe(phases => {
-                    this.phases = phases;
-                    this._activatedRoute.queryParams.subscribe((queryParams) => {
-                        console.log("rule id: " + queryParams['ruleID']);
-                        if (queryParams.hasOwnProperty('ruleID')) {
-                            this.anchor = queryParams['ruleID'];
-                        }
-                    });
+    initialize(): void {
+        this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => this.loadData(flatRouteData)));
+    }
+
+    loadData(flatRouteData) {
+        let executionId = +flatRouteData.params['executionId'];
+        this._ruleProviderExecutionsService.getPhases(executionId)
+            .subscribe(phases => {
+                this.phases = phases;
+                this._activatedRoute.queryParams.subscribe((queryParams) => {
+                    console.log("rule id: " + queryParams['ruleID']);
+                    if (queryParams.hasOwnProperty('ruleID')) {
+                        this.anchor = queryParams['ruleID'];
+                    }
                 });
-        }));
+            });
+    }
+
+    ngOnInit(): void {
+
     }
 
 

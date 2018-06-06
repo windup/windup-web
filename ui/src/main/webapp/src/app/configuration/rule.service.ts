@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Http} from '@angular/http';
+import {HttpClient} from "@angular/common/http";
 
 import {Constants} from "../constants";
 import {RulesPath, RuleProviderEntity, RulesPathType} from "../generated/windup-services";
@@ -24,7 +24,7 @@ export class RuleService extends AbstractService {
 
     private _multipartUploader: FileUploaderWrapper;
 
-    constructor (private _http: Http, private _fileUploaderFactory: FileUploaderFactory, private _keycloakService: KeycloakService) {
+    constructor (private _http: HttpClient, private _fileUploaderFactory: FileUploaderFactory, private _keycloakService: KeycloakService) {
         super();
         this._multipartUploader = _fileUploaderFactory.create(Constants.REST_BASE + this.UPLOAD_URL, undefined, _keycloakService);
     }
@@ -34,17 +34,13 @@ export class RuleService extends AbstractService {
     }
 
     getAll(): Observable<RuleProviderEntity[]> {
-        return this._http.get(Constants.REST_BASE + this.GET_ALL_RULE_PROVIDERS_URL)
-            .map(res => <RuleProviderEntity[]> res.json())
-            .catch(this.handleError);
+        return this._http.get<RuleProviderEntity[]>(Constants.REST_BASE + this.GET_ALL_RULE_PROVIDERS_URL);
     }
 
     getByRulesPath(rulesPath: RulesPath): Observable<RuleProviderEntity[]> {
         let url = Constants.REST_BASE + this.GET_RULE_PROVIDERS_BY_RULES_PATH_URL + rulesPath.id;
 
-        return this._http.get(url)
-            .map(res => <RuleProviderEntity[]> res.json())
-            .catch(this.handleError);
+        return this._http.get<RuleProviderEntity[]>(url);
     }
 
     checkIfUsedRulesPath(rulesPath: RulesPath): Observable<boolean>
@@ -53,7 +49,7 @@ export class RuleService extends AbstractService {
             return;
 
         let url = Constants.REST_BASE + this.IS_RULES_PATH_USED.replace('{id}', rulesPath.id.toString());
-        return this._http.get(url).map(res => res.json()).catch(this.handleError);   
+        return this._http.get<boolean>(url);
     }
 
     uploadRules() {

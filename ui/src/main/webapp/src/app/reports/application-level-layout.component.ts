@@ -43,6 +43,10 @@ export class ApplicationLevelLayoutComponent extends ExecutionsLayoutComponent {
         );
     }
 
+    initialize() {
+
+    }
+
     protected loadDataFromRoute(flattenedRoute: FlattenedRouteData) {
         this.applicationId = +flattenedRoute.params.applicationId;
         super.loadDataFromRoute(flattenedRoute);

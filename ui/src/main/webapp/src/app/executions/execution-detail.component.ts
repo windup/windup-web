@@ -41,29 +41,33 @@ export class ExecutionDetailComponent extends RoutedComponent implements OnInit,
         super(_router, _activatedRoute, _routeFlattener);
     }
 
-    ngOnInit(): void {
-        this.subscriptions.push(this.flatRouteLoaded.subscribe(flatRouteData => {
-            let executionId = +flatRouteData.params.executionId;
+    initialize(): void {
+        this.subscriptions.push(this.flatRouteLoaded.subscribe(flatRouteData => this.loadData(flatRouteData)));
+    }
 
-            this._eventBus.onEvent
-                .filter(event => event.isTypeOf(ExecutionEvent))
-                .filter((event: ExecutionEvent) => event.execution.id === executionId)
-                .subscribe((event: ExecutionEvent) => {
-                    this.execution = event.execution;
-                    this.loadLogData();
-                });
+    loadData(flatRouteData) {
+        let executionId = +flatRouteData.params.executionId;
 
-            this._windupService.getExecution(executionId).subscribe(execution => {
-                this.execution = execution;
+        this._eventBus.onEvent
+            .filter(event => event.isTypeOf(ExecutionEvent))
+            .filter((event: ExecutionEvent) => event.execution.id === executionId)
+            .subscribe((event: ExecutionEvent) => {
+                this.execution = event.execution;
                 this.loadLogData();
-                this._ruleProviderExecutionsService.getPhases(executionId)
-                    .subscribe(phases => {
-                        this.phases = phases;
-                    });
             });
-        }));
 
-        this.currentTimeTimer = this._schedulerService.setInterval(this._zone.run(() => {
+        this._windupService.getExecution(executionId).subscribe(execution => {
+            this.execution = execution;
+            this.loadLogData();
+            this._ruleProviderExecutionsService.getPhases(executionId)
+                .subscribe(phases => {
+                    this.phases = phases;
+                });
+        });
+    }
+
+    ngOnInit(): void {
+        this.currentTimeTimer = this._schedulerService.setInterval(() => this._zone.run(() => {
             this.currentTime = new Date().getTime();
             console.log("Updating the current time field");
         }), 5000);

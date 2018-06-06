@@ -1,4 +1,4 @@
-import {Http} from "@angular/http";
+import {HttpClient} from "@angular/common/http";
 import {GraphJSONToModelService} from "../../../app/services/graph/graph-json-to-model.service";
 import {Observable} from "rxjs";
 
@@ -11,7 +11,7 @@ export class BaseModel
     static discriminator: string;
 
     /* These two store the context of Observable fields resolution done by @GraphAdjacency. */
-    http: Http;
+    http: HttpClient;
     observableCache: Map<string, Observable<any>> = new Map<string, Observable<any>>();
     graphService: GraphJSONToModelService<BaseModel>;
 

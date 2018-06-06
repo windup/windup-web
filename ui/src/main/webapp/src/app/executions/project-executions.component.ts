@@ -75,7 +75,7 @@ export class ProjectExecutionsComponent extends ExecutionsMonitoringComponent im
 
             // If there are cancelled jobs that have not yet had a cancelled date added, then refresh the list
             if (this.executions.find(execution => execution.state == "CANCELLED" && execution.timeCompleted == null) != null) {
-                this.refreshTimeout = this._schedulerService.setTimeout(this._ngZone.run(() => this.refreshExecutionList()), 1000);
+                this.refreshTimeout = this._schedulerService.setTimeout(() => this._ngZone.run(() => this.refreshExecutionList()), 1000);
             }
 
             this.loadActiveExecutions(this.executions);

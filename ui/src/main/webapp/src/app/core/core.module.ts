@@ -16,6 +16,10 @@ import {RouteHistoryService} from "./routing/route-history.service";
 import {RouteFlattenerService} from "./routing/route-flattener.service";
 import {LogoutGuard} from "./authentication/logout.guard";
 import {UrlCleanerService} from "./routing/url-cleaner.service";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
+import {TokenInterceptor} from "./authentication/token.interceptor";
+import {LoadingInterceptor} from "./loading/loading.interceptor";
+import {ErrorInterceptor} from "./loading/error.interceptor";
 
 
 /**
@@ -32,6 +36,7 @@ import {UrlCleanerService} from "./routing/url-cleaner.service";
         FormsModule,
         ReactiveFormsModule,
         HttpModule,
+        HttpClientModule,
         NoopAnimationsModule, // WINDUP-1579, needed since Angular 4
     ],
     providers: [
@@ -54,6 +59,21 @@ import {UrlCleanerService} from "./routing/url-cleaner.service";
         RouteHistoryService,
         RouteFlattenerService,
         UrlCleanerService,
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: TokenInterceptor,
+            multi: true
+        },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: LoadingInterceptor,
+            multi: true
+        },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: ErrorInterceptor,
+            multi: true
+        }
     ]
 })
 export class CoreModule {

@@ -1,6 +1,6 @@
 import {GraphService} from "../../services/graph.service";
 import {Injectable} from "@angular/core";
-import {Http} from "@angular/http";
+import {HttpClient} from "@angular/common/http";
 import {GraphJSONToModelService} from "../../services/graph/graph-json-to-model.service";
 import {Observable} from "rxjs/Observable";
 import {HardcodedIPLocationModel} from "../../generated/tsModels/HardcodedIPLocationModel";
@@ -15,7 +15,7 @@ import {FileModel} from "../../generated/tsModels/FileModel";
 export class HardcodedIPService extends GraphService {
     private static HARDCODED_IP_URL = `${Constants.GRAPH_REST_BASE}/reports/{execID}/hardcodedIP`;
 
-    constructor(http: Http, graphJsonToModelService: GraphJSONToModelService<any>) {
+    constructor(http: HttpClient, graphJsonToModelService: GraphJSONToModelService<any>) {
         super(http, graphJsonToModelService);
     }
 
@@ -26,7 +26,6 @@ export class HardcodedIPService extends GraphService {
         let serializedFilter = this.serializeFilter(filter);
 
         return this._http.post(url, serializedFilter, this.JSON_OPTIONS)
-            .map(res => res.json())
             .map(data => {
                 if (!Array.isArray(data)) {
                     throw new Error("No items returned");

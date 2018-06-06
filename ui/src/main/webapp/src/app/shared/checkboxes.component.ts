@@ -1,7 +1,8 @@
 import {
     Component, Input, Output, EventEmitter, ChangeDetectionStrategy
 } from "@angular/core";
-import {isFunction} from "util";
+import {utils} from "./utils";
+import isFunction = utils.isFunction;
 
 @Component({
     templateUrl: './checkboxes.component.html',

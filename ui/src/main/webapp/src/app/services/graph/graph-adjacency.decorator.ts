@@ -1,7 +1,8 @@
 import {GraphJSONToModelService} from "./graph-json-to-model.service";
 import {Observable} from "rxjs/Observable";
 import 'rxjs/add/observable/of';
-import {Http, Response} from "@angular/http";
+import "rxjs/add/operator/map";
+import {HttpClient} from "@angular/common/http";
 import {StaticCache} from "./cache";
 
 
@@ -54,18 +55,23 @@ export function GraphAdjacency (
                 throw new Error("Http service was not stored in the unmarshalled object:\n" + JSON.stringify(this));
 
             // A callback for StaticCache.
-            let httpService: Http = this.http;
+            let httpService: HttpClient = this.http;
             let returnArray_ = returnArray; // Otherwise returnArray sticks with it's first value for all calls.
             function fetcher(url: string): Observable<any> {
-                return httpService.get(url).map((response: Response) => {
-                    if (!response)
-                        return console.error("Fetching URL returned null: " + url), null;
-                    let responseJson: any[] = response.json();
-                    if (!Array.isArray(responseJson))
+                return httpService.get(url).map((responseJson: any) => {
+                    if (!responseJson) {
+                        console.error("Fetching URL returned null: " + url);
+                        return null;
+                    }
+
+                    if (!Array.isArray(responseJson)) {
                         throw new Error("Graph REST should return an array of vertices, returned: " + JSON.stringify(responseJson));
-                    let items: any[] = graphService.fromJSONarray(responseJson);
+                    }
+
+                    const items: any[] = graphService.fromJSONarray(responseJson);
+
                     return returnArray_ ? items : items[0];
-                });
+                }) as any; // TODO: Fix this
             }
 
             // If data is a link, return a result of a service call.

@@ -29,12 +29,17 @@ export class HardcodedIPReportComponent extends FilterableReportComponent implem
         super(_router, _activatedRoute, _routeFlattener)
     }
 
-    ngOnInit(): void {
-        this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
-            this.loadFilterFromRouteData(flatRouteData);
+    initialize(): void {
+        this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => this.loadData(flatRouteData)));
+    }
 
-            this.loadHardcodedIPs();
-        }));
+    loadData(flatRouteData) {
+        this.loadFilterFromRouteData(flatRouteData);
+        this.loadHardcodedIPs();
+    }
+
+    ngOnInit(): void {
+
     }
 
     updateSearch(): void {

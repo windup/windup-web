@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Http} from '@angular/http';
+import {HttpClient} from "@angular/common/http";
 
 import {Constants} from "../constants";
 import {AbstractService} from "../shared/abtract.service";
@@ -9,20 +9,16 @@ import {Observable} from 'rxjs/Observable';
 export class FileService extends AbstractService {
     private PATH_EXISTS_URL = "/file/pathExists";
 
-    constructor (private _http: Http) {
+    constructor (private _http: HttpClient) {
         super();
     }
 
     pathExists(path: string): Observable<boolean> {
-        return this._http.post(Constants.REST_BASE + this.PATH_EXISTS_URL, path, this.JSON_OPTIONS)
-            .map(res => <boolean> res.json())
-            .catch(this.handleError);
+        return this._http.post<boolean>(Constants.REST_BASE + this.PATH_EXISTS_URL, path, this.JSON_OPTIONS);
     }
 
     queryServerPathTargetType(path: string): Observable<PathTargetType> {
-        return this._http.post(Constants.REST_BASE + "/file/pathTargetType", path, this.JSON_OPTIONS)
-            .map(res => <PathTargetType> res.json())
-            .catch(this.handleError);
+        return this._http.post<PathTargetType>(Constants.REST_BASE + "/file/pathTargetType", path, this.JSON_OPTIONS);
     }
 }
 

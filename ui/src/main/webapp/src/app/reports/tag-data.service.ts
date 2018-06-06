@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Http, Headers, RequestOptions } from "@angular/http";
+import {HttpClient} from "@angular/common/http";
 import { Observable } from "rxjs";
 import 'rxjs/add/observable/of';
 
@@ -21,7 +21,7 @@ export class TagDataService extends AbstractService {
     private cachedTagData: TagHierarchyData[];
     private allTags: Map<string, TagHierarchyData> = new Map<string, TagHierarchyData>();
 
-    constructor(private _http:Http) {
+    constructor(private _http: HttpClient) {
         super();
     }
 
@@ -85,12 +85,7 @@ export class TagDataService extends AbstractService {
         if (this.cachedTagData)
             return Observable.of(this.cachedTagData);
 
-        let headers = new Headers();
-        let options = new RequestOptions({ headers: headers });
-
-        return this._http.get(Constants.GRAPH_REST_BASE + "/tag-data", options)
-            .map(res => <TagHierarchyData[]> res.json())
-            .do(tags => this.cacheTagData(tags))
-            .catch(this.handleError);
+        return this._http.get<TagHierarchyData[]>(Constants.GRAPH_REST_BASE + "/tag-data")
+            .do(tags => this.cacheTagData(tags));
     }
 }

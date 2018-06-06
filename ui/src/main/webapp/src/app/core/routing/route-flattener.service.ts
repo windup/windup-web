@@ -20,11 +20,12 @@ import {Subject} from "rxjs";
 @Injectable()
 export class RouteFlattenerService {
     protected flatRouteLoaded = new Subject<FlattenedRouteData>();
-    public OnFlatRouteLoaded = this.flatRouteLoaded.asObservable();
+    public OnFlatRouteLoaded = this.flatRouteLoaded.asObservable().do(route => console.log('Flat route:', route));
 
     public onNewRouteActivated(route: ActivatedRouteSnapshot) {
         let flatRoute = this.getFlattenedRouteData(route);
         this.flatRouteLoaded.next(flatRoute);
+        console.log('next called');
     }
 
     public getFlattenedRouteData(route: ActivatedRouteSnapshot): FlattenedRouteData {

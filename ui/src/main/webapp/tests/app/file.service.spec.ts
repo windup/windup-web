@@ -1,61 +1,59 @@
-import {
-    HttpModule, BaseRequestOptions, Http, ConnectionBackend, RequestMethod, ResponseOptions,
-    Response
-} from '@angular/http';
-
-import {TestBed, async, inject} from '@angular/core/testing';
+import {TestBed, getTestBed, async, inject} from '@angular/core/testing';
+import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing";
 
 import 'rxjs/Rx';
 
 import {Constants} from '../../src/app/constants';
-
 import {FileService} from "../../src/app/services/file.service";
 import {KeycloakService} from "../../src/app/core/authentication/keycloak.service";
-import {MockBackend, MockConnection} from "@angular/http/testing";
-
 
 describe("File Service", () => {
+    let httpMock: HttpTestingController;
+    let injector: TestBed;
+
     beforeEach(() => {
         TestBed.configureTestingModule(
             {
-                imports: [HttpModule],
+                imports: [HttpClientTestingModule],
                 providers: [
                     Constants,
                     FileService,
-                    KeycloakService,
-                    MockBackend,
-                    BaseRequestOptions,
-                    {
-                        provide: Http,
-                        useFactory: (backend: ConnectionBackend, defaultOptions: BaseRequestOptions) => {
-                            return new Http(backend, defaultOptions);
-                        },
-                        deps: [MockBackend, BaseRequestOptions]
-                    }
+                    KeycloakService
                 ],
 
             }
         );
         TestBed.compileComponents().catch(error => console.error(error));
+
+        injector = getTestBed();
+        httpMock = injector.get(HttpTestingController);
     });
 
-    it('Should make a POST request on backend with path', async(inject([FileService, MockBackend],
-        (service: FileService, mockBackend: MockBackend) => {
+    it('Should make a POST request on backend with path', async(inject([FileService],
+        (service: FileService) => {
+            const path = 'src/main/java';
 
-            mockBackend.connections.subscribe((connection: MockConnection) => {
-                expect(connection.request.url).toEqual(Constants.REST_BASE + '/file/pathExists');
-                expect(connection.request.method).toEqual(RequestMethod.Post);
-                expect(connection.request.getBody()).toEqual('src/main/java');
-                connection.mockRespond(new Response(new ResponseOptions({
-                    body: true
-                })));
-            });
+            /**
+             * TODO: There is a bug in Angular, which prevents from using boolean value true
+             * see https://github.com/angular/angular/issues/20690
+             */
+            const responseValue: any = 'true';
 
-            service.pathExists("src/main/java").toPromise()
+            service.pathExists(path).toPromise()
                 .then(result => {
-                    expect(result).toEqual(true);
+                    expect(result).toEqual(responseValue);
                 }, error => {
                     expect(false).toBeTruthy("Service call failed due to: " + error);
                 });
-        })));
+
+            const req = httpMock.expectOne(Constants.REST_BASE + '/file/pathExists');
+            expect(req.request.method).toBe('POST');
+            expect(req.request.body).toBe(path);
+
+            req.flush(responseValue);
+    })));
+
+    afterEach(() => {
+        httpMock.verify();
+    });
 });
