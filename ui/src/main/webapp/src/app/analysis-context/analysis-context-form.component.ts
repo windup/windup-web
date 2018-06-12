@@ -23,6 +23,7 @@ import {forkJoin} from "rxjs/observable/forkJoin";
 import {WINDUP_WEB} from "../app.module";
 import {DialogService} from "../shared/dialog/dialog.service";
 import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
+import {TreeData} from "../shared/js-tree-angular-wrapper.component";
 
 @Component({
     templateUrl: './analysis-context-form.component.html',
@@ -312,6 +313,17 @@ export class AnalysisContextFormComponent extends FormComponent
         this._dirty = true;
     }
 
+    includedPackagesChanged(selectedNodes: Package[]) {
+        console.log("includedPackagesChanged: begin");
+        for (let node of selectedNodes) {
+            console.log(node.fullName);
+        }
+        this._dirty = true;
+        this.analysisContext.includePackages = selectedNodes;
+        this.includePackages = selectedNodes;
+        console.log("includedPackagesChanged: end");
+    }
+
     onSubmit() {
         if (!this.packageTreeLoaded) {
             this.confirmDialog.title = 'Package identification is not complete';
@@ -342,7 +354,14 @@ export class AnalysisContextFormComponent extends FormComponent
     }
 
     onSuccess(analysisContext: AnalysisContext) {
+
+        console.log("onSuccess");
+
         this.analysisContext = analysisContext; // update context
+
+        for (let node of this.analysisContext.includePackages) {
+            console.log(node.fullName);
+        }
 
         if (this.action === Action.SaveAndRun) {
             this._windupExecutionService.execute(analysisContext, this.project)

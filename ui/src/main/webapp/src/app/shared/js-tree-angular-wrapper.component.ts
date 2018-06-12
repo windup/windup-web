@@ -43,10 +43,18 @@ export class JsTreeAngularWrapperComponent implements OnInit, OnChanges, OnDestr
     protected treeRedrawTimeout: any;
 
     public constructor(element: ElementRef, private _zone: NgZone, private _schedulerService: SchedulerService) {
+
+        console.log("jstree:constructor");
         this.element = element.nativeElement;
     }
 
     ngOnChanges(changes: {[treeNodes: string]: SimpleChange}): any {
+
+        console.log("jstree:change begin");
+
+        for (let node of this.selectedNodes) {
+            console.log(node.name);
+        }
         let jsTree = $(this.element).jstree(true);
 
         // This is ugly workaround to prevent recursively calling ngOnChanges from change handler
@@ -54,6 +62,11 @@ export class JsTreeAngularWrapperComponent implements OnInit, OnChanges, OnDestr
 
         if (jsTree) {
             if (changes.hasOwnProperty('treeNodes')) {
+                console.log("jstree:change treeNodes");
+                for (let treenode of changes['treeNodes'].currentValue) {
+                    console.log(treenode.name);
+                    //console.log(treenode.is_checked);
+                }
                 let newTreeNodes: Package[] = changes['treeNodes'].currentValue;
                 this.jsTree = newTreeNodes.map((node) => this.transformTreeNode(node));
                 (jsTree as any).settings.core.data = this.jsTree;
@@ -62,16 +75,21 @@ export class JsTreeAngularWrapperComponent implements OnInit, OnChanges, OnDestr
             }
 
             if (changes.hasOwnProperty('selectedNodes')) {
+                console.log("jstree:change selectedNodes");
                 // Another ugly workaround, now to give enough time to initialize jsTree first
                 this._schedulerService.setTimeout(this._zone.run(() => this.redrawSelection()), 100);
             }
+
+            // This is ugly workaround to prevent recursively calling ngOnChanges from change handler
+            this.updateSelectionCallback = this.updateSelectedNodes;
         }
 
-        // This is ugly workaround to prevent recursively calling ngOnChanges from change handler
-        this.updateSelectionCallback = this.updateSelectedNodes;
+
+        console.log("jstree:change end");
     }
 
     transformTreeNode(node: any): any {
+
         let transformed = {
             id: node.id,
             text: node.name,
@@ -98,6 +116,7 @@ export class JsTreeAngularWrapperComponent implements OnInit, OnChanges, OnDestr
     }
 
     ngOnInit() {
+        console.log("jstree:init");
         let self = this;
 
         if (this.treeNodes) {
@@ -125,6 +144,8 @@ export class JsTreeAngularWrapperComponent implements OnInit, OnChanges, OnDestr
     }
 
     ngOnDestroy(): void {
+
+        console.log("jstree:destroy");
         if (this.treeRedrawTimeout) {
             this._schedulerService.clearTimeout(this.treeRedrawTimeout);
             this.treeRedrawTimeout = null;
@@ -132,10 +153,12 @@ export class JsTreeAngularWrapperComponent implements OnInit, OnChanges, OnDestr
     }
 
     fireNodeClicked(event, data) {
+        console.log("jstree:fireNodeClicked")
         this.nodeClicked.emit(this.treeNodesMap[data.node.id]);
     }
 
     updateSelectedNodes(event, data) {
+        console.log("jstree:updateSelectedNodes begin");
         let jsTree = $(this.element).jstree(true);
 
         if (jsTree) {
@@ -144,15 +167,23 @@ export class JsTreeAngularWrapperComponent implements OnInit, OnChanges, OnDestr
                 this.selectedNodesChange.emit(this.selectedNodes);
             });
         }
+        console.log("jstree:updateSelectedNodes end");
     }
 
     redrawSelection() {
-        let jsTree = $(this.element).jstree(true);
 
-        if (jsTree && this.selectedNodes) {
+        console.log("jstree:redrawSelection begin");
+        let jsTree = $(this.element).jstree(true);
+        console.log("Number of Nodes: " + this.selectedNodes.length);
+        if (jsTree && this.selectedNodes.length > 0) {
+            console.log("jstree:redrawSelection: updating");
             let selectionIds = this.selectedNodes.map(node => node.id);
+            for (let id of selectionIds) {
+                console.log(id.valueOf());
+            }
             jsTree.check_node(selectionIds, null);
         }
+        console.log("jstree:redrawSelection end");
     }
 }
 
