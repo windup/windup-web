@@ -314,14 +314,13 @@ export class AnalysisContextFormComponent extends FormComponent
     }
 
     includedPackagesChanged(selectedNodes: Package[]) {
-        console.log("includedPackagesChanged: begin");
-        for (let node of selectedNodes) {
-            console.log(node.fullName);
-        }
-        this._dirty = true;
         this.analysisContext.includePackages = selectedNodes;
         this.includePackages = selectedNodes;
-        console.log("includedPackagesChanged: end");
+    }
+
+    excludedPackagesChanged(selectedNodes: Package[]) {
+        this.analysisContext.excludePackages = selectedNodes;
+        this.excludePackages = selectedNodes;
     }
 
     onSubmit() {
@@ -354,8 +353,6 @@ export class AnalysisContextFormComponent extends FormComponent
     }
 
     onSuccess(analysisContext: AnalysisContext) {
-
-        console.log("onSuccess");
 
         this.analysisContext = analysisContext; // update context
 
