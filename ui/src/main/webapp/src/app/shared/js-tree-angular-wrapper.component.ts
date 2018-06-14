@@ -126,7 +126,6 @@ export class JsTreeAngularWrapperComponent implements OnInit, OnChanges, OnDestr
 
         $(this.element).on('check_node.jstree uncheck_node.jstree', (event, data) => this.updateSelectionCallback(event, data));
         $(this.element).on('select_node.jstree', (event, data) => this.fireNodeClicked(event, data));
-        $(this.element).on('changed.jstree loaded.jstree', (event, data) => this.redrawSelection());
     }
 
     ngOnDestroy(): void {
@@ -145,8 +144,8 @@ export class JsTreeAngularWrapperComponent implements OnInit, OnChanges, OnDestr
         let jsTree = $(this.element).jstree(true);
         if (jsTree) {
             this._zone.run(() => {
-                this.selectedNodes = jsTree.get_checked(false).map((id) => this.treeNodesMap[id]);
-                this.selectedNodesChange.emit(this.selectedNodes);
+                let nodes  = jsTree.get_checked(false).map((id) => this.treeNodesMap[id]);
+                this.selectedNodesChange.emit(nodes);
             });
         }
     }
