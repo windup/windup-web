@@ -7,7 +7,6 @@ import {ProjectListComponent} from "./project-list.component";
 import {MigrationProjectService} from "./migration-project.service";
 import {ProjectResolve} from "./project.resolve";
 import {SharedModule} from "../shared/shared.module";
-import {ExecutionsModule} from "../executions/executions.module";
 import {ProjectLayoutComponent} from "./project-layout.component";
 
 @NgModule({

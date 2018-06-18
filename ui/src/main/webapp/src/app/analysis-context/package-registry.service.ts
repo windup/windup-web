@@ -24,8 +24,8 @@ export class PackageRegistryService {
     public putHierarchy(aPackage: Package) {
         this.put(aPackage);
 
-        if (aPackage.childs) {
-            aPackage.childs.forEach(child => this.putHierarchy(child));
+        if (aPackage.children) {
+            aPackage.children.forEach(child => this.putHierarchy(child));
         }
     }
 
@@ -60,17 +60,17 @@ export class PackageRegistryService {
     protected mergePackageHierarchy(aPackage: Package, packageMap: Map<string, Package>, parentPackage: Package = null) {
         let packageInMap: Package = null;
 
-        let childPackages = aPackage.childs;
+        let childPackages = aPackage.children;
 
         if (!packageMap.has(aPackage.fullName)) {
             packageInMap = Object.assign({}, aPackage); // clone object
             packageMap.set(aPackage.fullName, packageInMap);
 
             if (parentPackage) {
-                parentPackage.childs.push(packageInMap);
+                parentPackage.children.push(packageInMap);
             }
 
-            packageInMap.childs = [];
+            packageInMap.children = [];
         } else {
             // some magic
             packageInMap = packageMap.get(aPackage.fullName);

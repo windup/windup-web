@@ -33,7 +33,14 @@ export class AnalysisContextService extends AbstractService {
      * @returns {Observable<AnalysisContext>}
      */
     saveAsDefault(analysisContext: AnalysisContext, project: MigrationProject): Observable<AnalysisContext> {
-        let body = JSON.stringify(analysisContext);
+        let body = JSON.stringify(analysisContext, (key, value) => {
+            // This works around the cases where we store the parent as part of the value.
+            // It would be a circular reference without this.
+            if (key == "parent")
+                return undefined;
+
+            return value;
+        });
         let url = Constants.REST_BASE + this.CREATE_URL.replace('{projectId}', project.id.toString());
 
         return this._http.put(url, body, this.JSON_OPTIONS)

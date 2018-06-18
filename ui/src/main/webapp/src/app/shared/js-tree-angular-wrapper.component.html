@@ -1,1 +1,34 @@
-<div></div>
+<div style="height: 200px;">
+    <tree-root
+            #tree
+            [nodes]="treeNodesFiltered"
+            [options]="options"
+            [(state)]="treeState"
+            (select)="selected($event)"
+            (deselect)="deselected($event)"
+    >
+        <ng-template #treeNodeWrapperTemplate let-node let-index="index">
+            <div class="node-wrapper" [style.padding-left]="node.getNodePadding()">
+                <tree-node-checkbox *ngIf="node.options.useCheckbox" [node]="node"></tree-node-checkbox>
+                <tree-node-expander [node]="node"></tree-node-expander>
+                <div class="node-content-wrapper"
+                     [class.node-content-wrapper-active]="node.isActive"
+                     [class.node-content-wrapper-focused]="node.isFocused"
+                     (click)="node.mouseAction('click', $event)"
+                     (dblclick)="node.mouseAction('dblClick', $event)"
+                     (contextmenu)="node.mouseAction('contextMenu', $event)"
+                     (treeDrop)="node.onDrop($event)"
+                     (treeDropDragOver)="node.mouseAction('dragOver', $event)"
+                     (treeDropDragLeave)="node.mouseAction('dragLeave', $event)"
+                     (treeDropDragEnter)="node.mouseAction('dragEnter', $event)"
+                     [treeAllowDrop]="node.allowDrop"
+                     [treeDrag]="node"
+                     [treeDragEnabled]="node.allowDrag()">
+                    <tree-node-content [node]="node" [index]="index">
+                    </tree-node-content>
+                </div>
+            </div>
+        </ng-template>
+
+    </tree-root>
+</div>

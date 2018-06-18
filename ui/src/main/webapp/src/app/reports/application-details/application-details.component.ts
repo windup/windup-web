@@ -101,13 +101,13 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
             let newTreeData:TreeData = {
                 id: traversal.id,
                 name: traversal.path,
-                childs: [],
+                children: [],
                 opened: true,
                 data: traversal.canonicalID
             };
 
             if (parentTreeData) {
-                parentTreeData.childs.push(newTreeData);
+                parentTreeData.children.push(newTreeData);
             } else {
                 this.applicationTree = this.applicationTree.concat(newTreeData);
             }
