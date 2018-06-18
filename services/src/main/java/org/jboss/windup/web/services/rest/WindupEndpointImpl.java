@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.jar.Manifest;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
@@ -203,13 +204,25 @@ public class WindupEndpointImpl implements WindupEndpoint
     @Override
     public void uploadResults(MultipartFormDataInput data, long executionId)
     {
+        LOG.info("Receiving execution results for execution: " + executionId);
         // 1. Get the existing execution
         WindupExecution execution = this.getExecution(executionId);
 
         // 2. Load the tar data from the request and untar it to the execution's output directory
+        Map<String, List<InputPart>> uploadForm = null;
+        List<InputPart> inputParts = null;
 
-        Map<String, List<InputPart>> uploadForm = data.getFormDataMap();
-        List<InputPart> inputParts = uploadForm.get("file");
+        try
+        {
+            uploadForm = data.getFormDataMap();
+            inputParts = uploadForm.get("file");
+        }
+        catch (Throwable e)
+        {
+            String message = "Failed to process uploadResults request data due to: " + e.getMessage();
+            LOG.log(Level.SEVERE, message, e);
+            throw new RuntimeException(message, e);
+        }
 
         if (inputParts == null || inputParts.size() == 0)
         {
@@ -219,17 +232,19 @@ public class WindupEndpointImpl implements WindupEndpoint
         {
             throw new BadRequestException("There can only be one report file");
         }
-
-        InputPart inputPart = inputParts.get(0);
         try
         {
+            InputPart inputPart = inputParts.get(0);
             // convert the uploaded file to inputstream
             InputStream inputStream = inputPart.getBody(InputStream.class, null);
             TarUtil.untar(Paths.get(execution.getOutputPath()), inputStream);
+            LOG.info("Completed receiving execution results for: " + executionId);
         }
-        catch (IOException e)
+        catch (Throwable e)
         {
-            throw new RuntimeException("Failed to process file due to: " + e.getMessage(), e);
+            String message = "Failed to process file due to: " + e.getMessage();
+            LOG.log(Level.SEVERE, message, e);
+            throw new RuntimeException(message, e);
         }
     }
 

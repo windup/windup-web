@@ -95,14 +95,31 @@ public class HttpPostSerializer extends AbstractSerializer implements ExecutionS
             {
                 throw new RuntimeException("Failed to post results due to: " + e.getMessage(), e);
             }
+            finally
+            {
+                try
+                {
+                    LOG.info("Cleaning up analysis directory: " + analysisDirectory.toFile());
+                    FileUtils.deleteDirectory(analysisDirectory.toFile());
+                    analysisDirectory.toFile().delete();
+                }
+                catch (IOException e)
+                {
+                    LOG.warning("Failed to purge analysis directory: " + analysisDirectory.toString());
+                }
 
-            try
-            {
-                FileUtils.deleteDirectory(analysisDirectory.toFile());
-            }
-            catch (IOException e)
-            {
-                throw new RuntimeException("Failed to post results due to: " + e.getMessage(), e);
+                try
+                {
+                    Path inputFilesDirectory = outputDirectory.getParent().resolve("input_files")
+                            .resolve(String.valueOf(execution.getId()));
+                    LOG.info("Cleaning up analysis directory: " + inputFilesDirectory.toFile());
+                    FileUtils.deleteDirectory(inputFilesDirectory.toFile());
+                    inputFilesDirectory.toFile().delete();
+                }
+                catch (IOException e)
+                {
+                    LOG.warning("Failed to purge analysis directory: " + analysisDirectory.toString());
+                }
             }
             LOG.info("Results posted, analysis is now complete!");
         }
