@@ -82,9 +82,8 @@ git commit -a -m "Preparing for release"
 git push origin
 
 cd ../windup-web-distribution
-cd src/main/resources/openshift
-sed -i -e "s/DOCKER_IMAGES_TAG=latest/DOCKER_IMAGES_TAG=$REL/g" deployment.properties
-cd -
+sed -i -e "s/DOCKER_IMAGES_TAG=latest/DOCKER_IMAGES_TAG=$REL/g" src/main/resources/openshift/deployment.properties
+
 git add -A
 git commit -a -m "Preparing for release"
 git push origin
@@ -109,9 +108,8 @@ git commit -a -m "Back to development"
 git push origin
 
 cd ../windup-web-distribution
-cd src/main/resources/openshift
-sed -i -e "s/DOCKER_IMAGES_TAG=$REL/DOCKER_IMAGES_TAG=latest/g" deployment.properties
-cd -
+sed -i -e "s/DOCKER_IMAGES_TAG=$REL/DOCKER_IMAGES_TAG=latest/g" src/main/resources/openshift/deployment.properties
+
 git add -A
 git commit -a -m "Back to development"
 git push origin
