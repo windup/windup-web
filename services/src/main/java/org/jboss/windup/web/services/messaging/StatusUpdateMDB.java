@@ -126,7 +126,11 @@ public class StatusUpdateMDB extends AbstractMDB implements MessageListener
             fromDB.setLastModified(execution.getLastModified());
             fromDB.setTimeStarted(execution.getTimeStarted());
 
-            fromDB.setTimeCompleted(execution.getTimeCompleted());
+            // Make sure to get an end time for failed executions
+            if (execution.getState() == ExecutionState.FAILED && execution.getTimeCompleted() == null && fromDB.getTimeCompleted() == null)
+                fromDB.setTimeCompleted(new GregorianCalendar());
+            else
+                fromDB.setTimeCompleted(execution.getTimeCompleted());
 
             fromDB.setTotalWork(execution.getTotalWork());
             fromDB.setWorkCompleted(execution.getWorkCompleted());
