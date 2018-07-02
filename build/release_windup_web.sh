@@ -61,7 +61,7 @@ echo "Cleaning any previous contents from $WORK_DIR"
 rm -rf $WORK_DIR
 mkdir $WORK_DIR
 cd $WORK_DIR
-git clone git@github.com:windup/windup-keycloak-tool.git
+#git clone git@github.com:windup/windup-keycloak-tool.git
 git clone git@github.com:windup/windup-web.git
 git clone git@github.com:windup/windup-openshift.git
 git clone git@github.com:windup/windup-web-distribution.git
@@ -90,7 +90,7 @@ git commit -a -m "Preparing for release"
 git push origin
 cd ../
 
-release_windup git@github.com:windup/windup-keycloak-tool.git windup-keycloak-tool
+#release_windup git@github.com:windup/windup-keycloak-tool.git windup-keycloak-tool
 release_windup git@github.com:windup/windup-web.git windup-web
 release_windup git@github.com:windup/windup-openshift.git windup-openshift
 release_windup git@github.com:windup/windup-web-distribution.git windup-web-distribution
