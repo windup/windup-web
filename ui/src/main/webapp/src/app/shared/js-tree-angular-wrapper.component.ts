@@ -47,6 +47,7 @@ export class JsTreeAngularWrapperComponent implements OnInit, OnChanges, OnDestr
     }
 
     ngOnChanges(changes: {[treeNodes: string]: SimpleChange}): any {
+
         let jsTree = $(this.element).jstree(true);
 
         // This is ugly workaround to prevent recursively calling ngOnChanges from change handler
@@ -65,13 +66,15 @@ export class JsTreeAngularWrapperComponent implements OnInit, OnChanges, OnDestr
                 // Another ugly workaround, now to give enough time to initialize jsTree first
                 this._schedulerService.setTimeout(this._zone.run(() => this.redrawSelection()), 100);
             }
+
+            // This is ugly workaround to prevent recursively calling ngOnChanges from change handler
+            this.updateSelectionCallback = this.updateSelectedNodes;
         }
 
-        // This is ugly workaround to prevent recursively calling ngOnChanges from change handler
-        this.updateSelectionCallback = this.updateSelectedNodes;
     }
 
     transformTreeNode(node: any): any {
+
         let transformed = {
             id: node.id,
             text: node.name,
@@ -107,7 +110,7 @@ export class JsTreeAngularWrapperComponent implements OnInit, OnChanges, OnDestr
         let plugins = this.hasCheckboxes ? ['checkbox'] : [];
         plugins.push('sort');
 
-        $(this.element).jstree({
+        let jsTree = $(this.element).jstree({
             'plugins': plugins,
             'core': {
                 data: this.jsTree
@@ -119,12 +122,14 @@ export class JsTreeAngularWrapperComponent implements OnInit, OnChanges, OnDestr
             }
         });
 
+        jsTree.on('uncheck_all.jstree',() => {this.openSelectedNodes()});
+
         $(this.element).on('check_node.jstree uncheck_node.jstree', (event, data) => this.updateSelectionCallback(event, data));
         $(this.element).on('select_node.jstree', (event, data) => this.fireNodeClicked(event, data));
-        $(this.element).on('changed.jstree loaded.jstree', (event, data) => this.redrawSelection());
     }
 
     ngOnDestroy(): void {
+
         if (this.treeRedrawTimeout) {
             this._schedulerService.clearTimeout(this.treeRedrawTimeout);
             this.treeRedrawTimeout = null;
@@ -137,21 +142,41 @@ export class JsTreeAngularWrapperComponent implements OnInit, OnChanges, OnDestr
 
     updateSelectedNodes(event, data) {
         let jsTree = $(this.element).jstree(true);
-
         if (jsTree) {
             this._zone.run(() => {
-                this.selectedNodes = jsTree.get_checked(false).map((id) => this.treeNodesMap[id]);
-                this.selectedNodesChange.emit(this.selectedNodes);
+                let nodes  = jsTree.get_checked(false).map((id) => this.treeNodesMap[id]);
+                this.selectedNodesChange.emit(nodes);
             });
         }
     }
 
     redrawSelection() {
         let jsTree = $(this.element).jstree(true);
-
-        if (jsTree && this.selectedNodes) {
+        if (jsTree && this.selectedNodes.length > 0) {
             let selectionIds = this.selectedNodes.map(node => node.id);
             jsTree.check_node(selectionIds, null);
+        }
+    }
+
+    openSelectedNodes() {
+        this.redrawSelection();
+        let jsTree = $(this.element).jstree(true);
+        if (jsTree && this.selectedNodes.length > 0) {
+            let selectionIds = this.selectedNodes.map(node => node.id);
+            for (let id of selectionIds) {
+                this.expandNode(id);
+            }
+        }
+
+    }
+
+    expandNode(nodeID) {
+        //Open all nodes in the tree above the one passed in
+        let jsTree = $(this.element).jstree(true);
+        while (nodeID != '#') {
+            jsTree.open_node(nodeID);
+            var thisNode = jsTree.get_node(nodeID);
+            nodeID = jsTree.get_parent(thisNode);
         }
     }
 }
