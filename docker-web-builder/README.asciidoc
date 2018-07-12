@@ -1,0 +1,41 @@
+== Windup Web Builder
+
+This Dockerfile provides a consistent environment for building Windup Web as
+well as all of its dependencies. The provided settings file enables the
+Sonatype snapshots repository, so that it isn't necessary to build all dependencies
+locally.
+
+
+=== Installation and Usage
+
+To build the docker image:
+
+`docker build --force-rm --tag web-builder .`
+
+Next checkout windup-web:
+
+`git clone https://github.com/windup/windup-web.git`
+
+Once this is available, you can build it with the build container like this:
+
+```
+docker run -it --rm -v /path/to/windup-web/parent/:/home/windup/data:Z \
+    -w /home/windup/data/windup-web/ \
+    web-builder mvn clean install -DskipTests
+```
+
+Note, the ":Z" at the end of the volume mount. This is essential on selinux enabled systems
+(for example, Fedora).
+
+Als, this will not use a shared .m2 repository. It is possible to volume mount that as well if you
+want to share the one from the host system. For example:
+
+
+```
+docker run -it --rm -v /path/to/windup-web/parent/:/home/windup/data:Z \
+    -v /home/myusername/.m2/repository:/home/windup/.m2/repository \
+    -w /home/windup/data/windup-web/ \
+    web-builder mvn clean install -DskipTests
+```
+
+In this way, the command will store downloaded artifacts in your local .m2 directory.
