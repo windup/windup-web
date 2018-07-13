@@ -27,7 +27,7 @@ docker run -it --rm -v /path/to/windup-web/parent/:/home/windup/data:Z \
 Note, the ":Z" at the end of the volume mount. This is essential on selinux enabled systems
 (for example, Fedora).
 
-Als, this will not use a shared .m2 repository. It is possible to volume mount that as well if you
+Also, this will not use a shared .m2 repository. It is possible to volume mount that as well if you
 want to share the one from the host system. For example:
 
 
@@ -38,4 +38,13 @@ docker run -it --rm -v /path/to/windup-web/parent/:/home/windup/data:Z \
     web-builder mvn clean install -DskipTests
 ```
 
-In this way, the command will store downloaded artifacts in your local .m2 directory.
+In this way, the command will store downloaded artifacts in your local .m2 directory. Alternatively,
+you may prefer to use a persistent m2 directory that is not your primary .m2 directory.
+
+To do this, simply take the following steps:
+
+1. create an empty directory wherever you want in your local filesystem, e.g. /home/<your_user>/tmp/m2_tmp/
+2. Copy inside it the settings.xml file provided in this PR
+3. Add to the run command the option -v /home/<your_user>/tmp/m2_tmp/:/home/windup/.m2/
+
+In this way, if the container gets stuck during Maven's downloads, you can stop it, restart it immediately and it will start downloading from where it stopped.
