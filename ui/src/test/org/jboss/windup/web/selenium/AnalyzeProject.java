@@ -1,5 +1,6 @@
 package org.jboss.windup.web.selenium;
 
+import org.jboss.windup.web.selenium.EditProject.Status;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -7,6 +8,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.awt.AWTException;
@@ -21,6 +24,7 @@ import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 
@@ -47,11 +51,30 @@ public class AnalyzeProject {
 
 		WebElement header = (new WebDriverWait(driver, 10))
 				.until(ExpectedConditions.presenceOfElementLocated(By.id("header-logo")));
-
+		
 		navigateProject("test 2");
-		clickAnalysisReport(1);
-		Thread.sleep(5000);
+		clickAnalysisReport(2);
+		
+//		Wait wait = new FluentWait(driver).withTimeout(30, TimeUnit.SECONDS)
+//				.pollingEvery(2, TimeUnit.SECONDS)
+//				.ignoring(IndexOutOfBoundsException.class);
+//		WebElement waitingElement = wait.until(new Function<WebDriver, WebElement>() {
+//            public WebElement apply(WebDriver driver) {
+//                return driver.findElement(By.id("Start"));
+//              }
+		
+//            });
+//        waitingElement.click();
+//		wait.until(new Function() {
+//			navigateTo(1);
+//		});
+				
+//		WebElement tab = (new WebDriverWait(driver, 5))
+//				.until(ExpectedConditions.presenceOfElementLocated(By.id("header-logo")));
+//		Thread.sleep(5000);
+		
 		navigateTo(1);
+		
 	}
 
 	/**
@@ -64,21 +87,30 @@ public class AnalyzeProject {
 		return driver.getCurrentUrl();
 	}
 
-	public String headerTitle() {
-		return driver.getTitle();
-	}
-
-	public void navigateTo(int index) {
+	/**
+	 * navigates the driver to a different tab
+	 * @param index starts at 0 (whichever tab to navigate to)
+	 * @throws InterruptedException 
+	 */
+	public void navigateTo(int index) throws InterruptedException {
 		ArrayList tabs = new ArrayList(driver.getWindowHandles());
-		driver.switchTo().window((String) tabs.get(index));
-
-		driver.switchTo().defaultContent();
+		System.out.println(tabs.toString());
+		if (tabs.size() < 2) {
+			Thread.sleep(1000);
+			navigateTo(index);
+		}
+		else {
+			driver.switchTo().window((String)tabs.get(index));
+			driver.switchTo().defaultContent();
+		}
 	}
-
-	public void goBack() {
-		driver.navigate().back();
-	}
-
+	
+	
+	/**
+	 * from the project list screen this will navigate to whichever project is given by the name
+	 * @param projName the exact string form of the project name
+	 * @return true if the project is found
+	 */
 	public boolean navigateProject(String projName) {
 		// driver.navigate().to("http://127.0.0.1:8080/rhamt-web/project-list");
 		int x = 1;
@@ -86,9 +118,7 @@ public class AnalyzeProject {
 			try {
 				WebElement proj = driver
 						.findElement(By.xpath("(//*[@class='list-group-item  project-info  tile-click'])[" + x + "]"));
-				// String xpath =
-				// "/html/body/windup-app/ng-component/div/div[2]/ng-component/div/div[2]/div["
-				// + x + "]/div[2]/div/div/div[1]/a";
+
 				WebElement title = proj.findElement(By.cssSelector(
 						"div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > a:nth-child(1)"));
 				if (title.getText().equals(projName)) {
@@ -102,39 +132,120 @@ public class AnalyzeProject {
 			}
 		}
 		return false;
-
 	}
 
-	public String pageTitle() {
-		WebElement title = driver.findElement(By.cssSelector("div.main"));
-		return title.getText();
-	}
-
+	/**
+	 * this switches the tab on the window 
+	 * @param index starts at 0
+	 */
 	public void switchTab(int index) {
 		WebElement tabs = driver.findElement(By.cssSelector("ul.nav.navbar-nav"));
 		WebElement tab = tabs.findElement(By.cssSelector("li:nth-child(" + index + ")"));
 		tab.click();
 	}
+	
+	/**
+	 * This will click on the Send Feedback tab on the top right side of the page
+	 * @throws InterruptedException
+	 */
+	public void clickSendFeedback() throws InterruptedException {
+		WebElement feedback = driver.findElement(By.cssSelector("ul.nav.navbar-nav.navbar-right"));
+		feedback.click();
+//		WebElement popup = (new WebDriverWait(driver, 30)).until(ExpectedConditions.presenceOfElementLocated(
+//				By.cssSelector("html.mozilla")));
+	}
+	
+	/**
+	 * can type in deleteAppDialog for the delete box and confirmDialog for save and
+	 * running before the packages are loaded
+	 * 
+	 * @param s
+	 *            the string for the type of dialog box
+	 * @return true if the popup is removed
+	 */
+	public boolean popupRemoved(String s) {
+		try {
+			WebElement dialog = driver.findElement(By.cssSelector("div#" + s + ".modal.fade.in"));
+		} catch (NoSuchElementException e) {
+			return true;
+		}
+		return false;
+	}
+	
+	
+	/**
+	 * this method will take the driver back to the previous page
+	 */
+	public void goBack() {
+		driver.navigate().back();
+	}
 
-	public String listApplications() {
+
+	/**
+	 * this will return the title of the tab
+	 * @return
+	 */
+	public String headerTitle() {
+		return driver.getTitle();
+	}
+	
+	/**
+	 * returns the name of the page that the driver is on
+	 * @return
+	 */
+	public String pageTitle() {
+		WebElement title = (new WebDriverWait(driver, 5)).until(ExpectedConditions.presenceOfElementLocated(
+				By.cssSelector("div.main")));
+		return title.getText();
+	}
+	
+	/**
+	 * on the Analysis Results page, this will click the reports button based on the 
+	 * index given
+	 * @param index
+	 * @return
+	 */
+	public String clickAnalysisReport(int index) {
+		String xpath = "(//*[@class='success'])[" + index + "]";
+		WebElement result = driver.findElement(By.xpath(xpath));
+		xpath = "(//*[@class='pointer link'])[2]";
+		WebElement actions = result.findElement(By.cssSelector("td:nth-child(5)"));
+		WebElement report = actions.findElement(By.cssSelector("a.pointer.link"));
+		String url = report.getAttribute("href");
+		
+		report.click();
+		
+		return url;
+	}
+	
+	
+	/*
+	 * ***************
+	 * SORTING METHODS
+	 * ***************
+	 */
+	
+	/**
+	 * this will collect an arraylist of application objects that will in turn
+	 * collect the name and story point count of each application
+	 * @return the arraylist of application objects
+	 */
+	public ArrayList<Application> listApplications() {
 		WebElement appList = driver.findElement(By.cssSelector(".real"));
-		String list = "";
-
-//		for (int x = 1; x < 3; x++) {
-//			WebElement title = appList.findElement(By.xpath("(//*[@class='fileName'])[" + x + "]"));
-//			list += title.getText() + ", ";
-//		}
-
+		ArrayList<Application> list = new ArrayList<Application>();
+		
 		int x = 1;
 		while (true) {
 			try {
 				WebElement app = appList.findElement(By.xpath("(//*[@class='appInfo pointsShared0'])[" + x + "]"));
 				WebElement title = app.findElement(By.xpath("(//*[@class='fileName'])[" + x + "]"));
+				WebElement storyPoint = app.findElement(By.cssSelector("span.points"));
 				if (title.getText().equals("Archives shared by multiple applications")) {
 					return list;
 				}
 				else if(!app.getAttribute("style").equals("display: none;")) {
-					list += title.getText() + ";";
+					Application a = new Application(title.getText(), storyPoint.getText());
+					list.add(a);
 				}
 				x++;
 			} catch (NoSuchElementException e) {
@@ -142,25 +253,133 @@ public class AnalyzeProject {
 			}
 		}
 	}
+	
+	
+	
+	/**
+	 * The Status class has a type and output, the type can be warning, success
+	 * danger, and info, which are found from the output's class name.
+	 * @author edixon
+	 *
+	 */
+	class Application {
+		
+	    String name;
+	    int storyPoints;
+	 
+	    // Constructor
+	    public Application(String name, String storyPoints){
+	        this.name = name;
+	        this.storyPoints = Integer.parseInt(storyPoints);
+	    }
+	 
+	    public String toString()
+	    {
+	        return this.name;
+	    }
+	    
+	    public boolean equals(Object o) {
+	    	if (o == this) 
+	    		return true;
+	    	if (o == null || o.getClass() != Application.class) {
+	    		return false;
+	    	}
+	    	Application other = (Application)o;
+	    	return (this.name.equals(other.name)) && (this.storyPoints == other.storyPoints);
+	    }
+	}
+	
+	/**
+	 * with a given application arraylist, this will go through the applications
+	 * and put the names into a string arraylist
+	 * @return a string arraylist of names
+	 */
+	private ArrayList<String> collectNames() {
+		ArrayList<Application> appList = listApplications();
+		ArrayList<String> list = new ArrayList<String>();
+		
+		for (Application a: appList) {
+			list.add(a.name);
+		}
+		return list;
+	}
+	
+	/**
+	 * with a given application arraylist, this will go through the applications
+	 * and put the storyPoints into an integer arraylist
+	 * @return an integer arraylist of names
+	 */
+	private ArrayList<Integer> collectStoryPoints() {
+		ArrayList<Application> appList = listApplications();
+		ArrayList<Integer> list = new ArrayList<Integer>();
+		
+		for (Application a: appList) {
+			list.add(a.storyPoints);
+		}
+		return list;
+	}
+	
+	public void projectSort() {
+		
+	}
+	
+	/**
+	 * this is the main method to call for sorting the application list by
+	 * name and story points. It automatically tests that both attributes 
+	 * sort properly by ascending and descending order.
+	 * @return true if the sort works on the page
+	 */
+	public boolean applicationSort() {
+		ArrayList<String> sortN = collectNames();
+		ArrayList<String> name = collectNames();
+		
+		sortN = sortStringDesc(sortN);
+		sortApplicationList("Name", false);
+		name = collectNames();
+		
+		//checks if sorting by name descending works
+ 		if (name.equals(sortN)) {
+ 			sortN = sortStringAsc(sortN);
+ 			sortApplicationList("Name", true);
+ 			name = collectNames();
 
+ 			//checks if sorting by name ascending works
+ 	 		if (name.equals(sortN))  {
+ 	 			ArrayList<Integer> sortS = collectStoryPoints();
+ 	 			ArrayList<Integer> storyPoint = collectStoryPoints();
+
+ 	 			sortS = sortIntDesc(sortS);
+ 	 			sortApplicationList("Story Points", false);
+ 	 			storyPoint = collectStoryPoints();
+
+ 	 			//checks if sorting by story point descending works
+ 	 			if (storyPoint.equals(sortS)) {
+ 	 				sortS = sortIntAsc(sortS);
+ 	 				sortApplicationList("Story Points", true);
+ 	 				storyPoint = collectStoryPoints();
+
+ 	 	 			//checks if sorting by story point ascending works
+ 	 				if (storyPoint.equals(sortS)) {
+ 	 					return true;
+ 	 				}	 				
+ 	 			}		
+ 	 		}
+ 		}
+		return false;
+	}
+	
+	/**
+	 * this method is used to actually interact with the page and have it
+	 * sort the application list by name/story point and toggle the ascending/descending
+	 * order.
+	 * @param sortOrder is the name of the sort (should be "Name" or "Story Points")
+	 * @param ascending is true for ascending order, false for descending
+	 * @return true if these params are properly found.
+	 */
 	public boolean sortApplicationList(String sortOrder, boolean ascending) {
 		WebElement sorts = driver.findElement(By.cssSelector("div#sort.form-group"));
-		WebElement sortDropdown = sorts.findElement(By.cssSelector("button.btn.btn-default.dropdown-toggle"));
-		sortDropdown.click();
-		WebElement menu = sorts.findElement(By.className("dropdown-menu"));
-		int x = 1;
-		while (true) {
-			try {
-				WebElement option = menu.findElement(By.cssSelector("li:nth-child(" + x + ")"));
-				if (option.getText().equals(sortOrder)) {
-					option.click();
-				}
-				x++;
-			} catch (NoSuchElementException e) {
-				break;
-			}
-		}
-
+		dropDown(sorts, sortOrder);
+		
 		try {
 			WebElement order = driver.findElement(By.cssSelector("span.fa.fa-sort-alpha-asc"));
 			if (ascending == false) {
@@ -180,61 +399,48 @@ public class AnalyzeProject {
 		return false;
 	}
 
-	public void nameFilterAppList(String name, String nameFilter) throws AWTException {
+	/**
+	 * This method is to interact with the filter selection and input. 
+	 * @param filterName should either be "Name" or "Tags"
+	 * @param searchParam is the string to search for
+	 * @throws AWTException
+	 */
+	public void filterAppList(String filterName, String searchParam) throws AWTException {
 		WebElement filter = driver.findElement(By.cssSelector("div#filter-div.form-group.toolbar-pf-filter"));
-		WebElement dropDown = filter.findElement(By.cssSelector("button.btn.btn-default.dropdown-toggle"));
-		dropDown.click();
-		WebElement menu = filter.findElement(By.className("dropdown-menu"));
-		int x = 1;
-		while (true) {
-			try {
-				WebElement option = menu.findElement(By.cssSelector("li:nth-child(" + x + ")"));
-				if (option.getText().equals(name)) {
-					option.click();
-				}
-				x++;
-			} catch (NoSuchElementException e) {
-				break;
-			}
-		}
-
+		dropDown(filter, filterName);
+		
 		WebElement search = driver.findElement(By.cssSelector("input#filter.form-control"));
-		search.sendKeys(nameFilter);
+		search.sendKeys(searchParam);
 
 		Robot r = new Robot();
 		r.keyPress(KeyEvent.VK_ENTER);
 		r.keyRelease(KeyEvent.VK_ENTER);
-
 	}
 
+	/**
+	 * Interacting with the filter mechanics of the application list page, 
+	 * this will change the relationship of the filters from "Matches all filters (AND)"
+	 * and "Matches any filter (OR)" 
+	 * @param s the exact string of the relationship to be changed to
+	 */
 	public void changeRelationship(String s) {
 		WebElement filterType = driver.findElement(By.cssSelector("div#filter-type"));
-		WebElement button = filterType.findElement(By.cssSelector("button.btn.btn-default.dropdown-toggle"));
-		button.click();
-
-		WebElement menu = filterType.findElement(By.className("dropdown-menu"));
-		int x = 1;
-		while (true) {
-			try {
-				WebElement option = menu.findElement(By.cssSelector("li:nth-child(" + x + ")"));
-				if (option.getText().equals(s)) {
-					option.click();
-				}
-				x++;
-			} catch (NoSuchElementException e) {
-				break;
-			}
-		}
-
-		// dropDown(filterType, s);
+		dropDown(filterType, s);
 	}
 
+	/**
+	 * this will clear all filters added on the application list page
+	 */
 	public void clearFilters() {
 		WebElement clear = driver.findElement(By.cssSelector("a#clear-filters"));
 		clear.click();
-
 	}
 
+	/**
+	 * with a given string, this will delete that filter, given that it is there
+	 * @param s the exact string of the filter name
+	 * @return true if the filter is found and deleted
+	 */
 	public boolean deleteFilter(String s) {
 		WebElement activeFilters = driver.findElement(By.cssSelector("ul#active-filters"));
 		int x = 1;
@@ -254,7 +460,13 @@ public class AnalyzeProject {
 		return false;
 	}
 
-	public void dropDown(WebElement f, String name) {
+	/**
+	 * helper method that interacts with the various drop-downs on whichever page
+	 * the driver is on
+	 * @param f is the web element holding the dropdown
+	 * @param name is the name to be selected in the dropdown
+	 */
+	private void dropDown(WebElement f, String name) {
 		WebElement dropDown = f.findElement(By.cssSelector("button.btn.btn-default.dropdown-toggle"));
 		dropDown.click();
 		WebElement menu = f.findElement(By.className("dropdown-menu"));
@@ -272,26 +484,37 @@ public class AnalyzeProject {
 		}
 	}
 
-	public String allIssuesReport() {
+	/**
+	 * on the all issues page, this method will print out the names of the
+	 * various tables (e.g. "Migraiton Optional", "Cloud Mandatory")
+	 * @return an string array list of the titles
+	 */
+	public ArrayList<String> allIssuesReport() {
+		ArrayList<String> list = new ArrayList<String>();
 		int x = 1;
-		String s = "";
 		while (true) {
 			try {
-				WebElement table = driver.findElement(By.xpath(
-						"(//*[@class='table table-bordered table-condensed tablesorter migration-issues-table tablesorter-default'])["
-								+ x + "]"));
-
+				WebElement table = driver.findElement(By.cssSelector("table.tablesorter:nth-child(" + x + ")"));
 				WebElement title = table.findElement(By.cssSelector("td:nth-child(1)"));
-				s += title.getText() + ", ";
+				list.add(title.getText());
 				x++;
 			} catch (NoSuchElementException e) {
 				break;
 			}
 		}
-		return s;
+		return list;
 
 	}
 
+	/**
+	 * This is the main method to go through and sort the all issues page.
+	 * It will go through each table on the page, and then each of the 4 sort
+	 * buttons on the header of that table. It will then use other helper methods
+	 * to collect the data in each table's column, sort that data, and collect that
+	 * data after the header has been clicked to sort it on the table.
+	 * If all of this data is correctly sorted, then true is returned.
+	 * @return true if the sorts in all issues work
+	 */
 	public boolean sortAllIssues() {
 
 		Boolean working = false;
@@ -299,14 +522,10 @@ public class AnalyzeProject {
 
 		while (true) {
 			try {
-				WebElement table = driver.findElement(By.xpath(
-						"(//*[@class='table table-bordered table-condensed tablesorter migration-issues-table tablesorter-default'])["
-								+ x + "]"));
+				WebElement table = driver.findElement(By.cssSelector("table.tablesorter:nth-child(" + x + ")"));
 				WebElement title = table.findElement(By.cssSelector("tr.tablesorter-ignoreRow"));
-				System.out.println(title.getText());
 				WebElement sortRow = table.findElement(By.cssSelector("tr.tablesorter-headerRow"));
 				WebElement body = table.findElement(By.cssSelector("tbody"));
-				System.out.println(body.getText());
 
 				for (int y = 1; y < 6; y++) {
 
@@ -322,7 +541,7 @@ public class AnalyzeProject {
 							// for sorting by ascending order
 							if (c.endsWith("-headerUnSorted") || c.endsWith("-headerDesc")) {
 								ArrayList<String> preSort = collectBody(body);
-								ArrayList<String> autoSort = sortBodyAsc(preSort);
+								ArrayList<String> autoSort = sortStringAsc(preSort);
 
 								sort.click();
 								ArrayList<String> postSort = collectBody(body);
@@ -335,7 +554,7 @@ public class AnalyzeProject {
 							// for sorting by descending order
 							else if (c.endsWith("-headerAsc")) {
 								ArrayList<String> preSort = collectBody(body);
-								ArrayList<String> autoSort = sortBodyDesc(preSort);
+								ArrayList<String> autoSort = sortStringDesc(preSort);
 
 								sort.click();
 								ArrayList<String> postSort = collectBody(body);
@@ -357,7 +576,7 @@ public class AnalyzeProject {
 							// for sorting by ascending order
 							if (c.endsWith("-headerUnSorted") || c.endsWith("-headerDesc")) {
 								ArrayList<Integer> preSort = collectBody(body, y);
-								ArrayList<Integer> autoSort = sortBodyAsc(preSort);
+								ArrayList<Integer> autoSort = sortIntAsc(preSort);
 
 								sort.click();
 								ArrayList<Integer> postSort = collectBody(body, y);
@@ -370,7 +589,7 @@ public class AnalyzeProject {
 							// for sorting by descending order
 							else if (c.endsWith("-headerAsc")) {
 								ArrayList<Integer> preSort = collectBody(body, y);
-								ArrayList<Integer> autoSort = sortBodyDescInt(preSort);
+								ArrayList<Integer> autoSort = sortIntDesc(preSort);
 								sort.click();
 								ArrayList<Integer> postSort = collectBody(body, y);
 								if (postSort.equals(autoSort))
@@ -390,13 +609,18 @@ public class AnalyzeProject {
 		return working;
 	}
 
-	private ArrayList<String> collectBody(WebElement body) {
-
+	/**
+	 * this collects the first column of a table on the all issues page.
+	 * It stores the elements in string form given that they should be names
+	 * @param column is the current table
+	 * @return an arrayList of strings holding all the names
+	 */
+	private ArrayList<String> collectBody(WebElement table) {
 		ArrayList<String> list = new ArrayList<String>();
 		int x = 1;
 		while (true) {
 			try {
-				WebElement file = body.findElement(By.cssSelector("tr:nth-child(" + x + ")"));
+				WebElement file = table.findElement(By.cssSelector("tr:nth-child(" + x + ")"));
 				WebElement attribute = file.findElement(By.cssSelector("td:nth-child(1)"));
 				list.add(attribute.getText());
 
@@ -409,15 +633,21 @@ public class AnalyzeProject {
 		return list;
 	}
 
-	private ArrayList<Integer> collectBody(WebElement body, int numberCompare) {
-
+	/**
+	 * This collects a column in the current table, first as a string, then changing
+	 * the elements in the table to integers and collecting them into an array.
+	 * @param table is the current table to collect elements in
+	 * @param column is the column number to search (starts at 1)
+	 * @return an arraylist of integers representing the column
+	 */
+	private ArrayList<Integer> collectBody(WebElement table, int column) {
 		ArrayList<Integer> list = new ArrayList<Integer>();
 
 		int x = 1;
 		while (true) {
 			try {
-				WebElement file = body.findElement(By.cssSelector("tr:nth-child(" + x + ")"));
-				WebElement attribute = file.findElement(By.cssSelector("td:nth-child(" + numberCompare + ")"));
+				WebElement file = table.findElement(By.cssSelector("tr:nth-child(" + x + ")"));
+				WebElement attribute = file.findElement(By.cssSelector("td:nth-child(" + column + ")"));
 				list.add(Integer.valueOf(attribute.getText()));
 
 				x += 2;
@@ -425,34 +655,70 @@ public class AnalyzeProject {
 				break;
 			}
 		}
-
 		return list;
 	}
 
-	private ArrayList sortBodyAsc(ArrayList list) {
-
-		ArrayList sorted = list;
+	/**
+	 * This method sorts a given arraylist of strings in ascending order
+	 * @param list the arraylist of strings to sort
+	 * @return an arraylsist of sorted strings
+	 */
+	private ArrayList<String> sortStringAsc(ArrayList<String> list) {
+		ArrayList<String> sorted = list;
 		Collections.sort(sorted);
 		return sorted;
 	}
 
-	private ArrayList<String> sortBodyDesc(ArrayList<String> list) {
+	/**
+	 * This method sorts a given arraylist of integers in ascending order
+	 * @param list the arraylist of integers to sort
+	 * @return an arraylsist of sorted integers
+	 */
+	private ArrayList<Integer> sortIntAsc(ArrayList<Integer> list) {
+		ArrayList<Integer> sorted = list;
+		Collections.sort(sorted);
+		return sorted;
+	}
+
+	/**
+	 * This method sorts a given arraylist of strings in descending order
+	 * @param list the arraylist of strings to sort
+	 * @return an arraylsist of sorted strings
+	 */
+	private ArrayList<String> sortStringDesc(ArrayList<String> list) {
 
 		ArrayList<String> sorted = list;
 		Collections.sort(sorted, Collections.reverseOrder());
 		return sorted;
 	}
-
-	private ArrayList<Integer> sortBodyDescInt(ArrayList<Integer> list) {
+	
+	/**
+	 * This method sorts a given arraylist of integers in descending order
+	 * @param list the arraylist of integers to sort
+	 * @return an arraylsist of sorted integers
+	 */
+	private ArrayList<Integer> sortIntDesc(ArrayList<Integer> list) {
 
 		ArrayList<Integer> sorted = list;
 		Collections.sort(sorted, Collections.reverseOrder());
 		return sorted;
 	}
+	
+	/*
+	 * **********************
+	 * END OF SORTING METHODS
+	 * **********************
+	 */
+	
 
+	/**
+	 * this will click on the first hyperlink in the first table on the all issues page. 
+	 * it then locates the new addition detailing the issue, and a yellow box to the left side.
+	 * If this addition shows up, then true is returned
+	 * @return true if the expansion of the first issue is complete
+	 */
 	public boolean clickFirstIssue() {
-		WebElement table = driver.findElement(By.xpath(
-				"(//*[@class='table table-bordered table-condensed tablesorter migration-issues-table tablesorter-default'])[1]"));
+		WebElement table = driver.findElement(By.cssSelector("table.tablesorter:nth-child(1)"));
 		WebElement body = table.findElement(By.cssSelector("tbody"));
 		WebElement issue = body.findElement(By.cssSelector("tr:nth-child(1)"));
 		WebElement link = body.findElement(By.cssSelector("a.toggle"));
@@ -493,28 +759,36 @@ public class AnalyzeProject {
 		return false;
 	}
 
+	/**
+	 * If the expanded information of an issue is there, then the method will
+	 * locate the "Show Rule" hyperlink and check it.
+	 * this should redirect to a new page.
+	 */
 	public void clickShowRule() {
-
-		WebElement table = driver.findElement(By.xpath(
-				"(//*[@class='table table-bordered table-condensed tablesorter migration-issues-table tablesorter-default'])[1]"));
+		WebElement table = driver.findElement(By.cssSelector("table.tablesorter:nth-child(1)"));
 		WebElement body = table.findElement(By.cssSelector("tbody"));
 		WebElement fileExpanded = body.findElement(By.cssSelector("tr:nth-child(2)"));
 		body = fileExpanded.findElement(By.cssSelector("tbody"));
 		WebElement showRule = body.findElement(By.cssSelector("a.sh_url"));
 		String rule = showRule.getCssValue("title");
 		showRule.click();
-
 	}
 
+	/**
+	 * This method checks if the expanded information on the issue is present
+	 * @return true if it is displayed
+	 */
 	public boolean showRuleVisible() {
-
-		WebElement table = driver.findElement(By.xpath(
-				"(//*[@class='table table-bordered table-condensed tablesorter migration-issues-table tablesorter-default'])[1]"));
+		WebElement table = driver.findElement(By.cssSelector("table.tablesorter:nth-child(1)"));
 		WebElement body = table.findElement(By.cssSelector("tbody"));
 		WebElement fileExpanded = body.findElement(By.xpath("/html/body/div[2]/div[2]/div/table[1]/tbody/tr[2]/td"));
 		return fileExpanded.isDisplayed();
 	}
 
+	/**
+	 * this checks that the applications are indeed sorted properly on the technologies page
+	 * @return true if the applications are sorted
+	 */
 	public boolean techApps() {
 		WebElement body = driver.findElement(By.cssSelector("tbody"));
 		int x = 1;
@@ -529,28 +803,41 @@ public class AnalyzeProject {
 			}
 		}
 		ArrayList<String> hold = apps;
-		ArrayList<String> sorted = sortBodyAsc(apps);
+		ArrayList<String> sorted = sortStringAsc(apps);
 		if (hold.equals(sorted))
 			return true;
 		return false;
 	}
 
+	/**
+	 * this will click on the first application on the technology page. Will redirect to
+	 * a more specfic technology page
+	 * @return true if the technology has been found
+	 * @throws InterruptedException
+	 */
 	public boolean clickTechApp() throws InterruptedException {
 
-		WebElement body = driver.findElement(By.cssSelector("tbody"));
+		WebElement body = (new WebDriverWait(driver, 5)).until(ExpectedConditions.presenceOfElementLocated(
+				By.cssSelector("tbody")));
 		WebElement app = body.findElement(By.cssSelector("tr.app:nth-child(1)"));
 		WebElement name = app.findElement(By.cssSelector("a"));
 		String asdf = name.getText();
 		name.click();
 
-		Thread.sleep(500);
-		WebElement header = driver.findElement(By.cssSelector("div.page-header.page-header-no-border"));
+		WebElement header = (new WebDriverWait(driver, 5)).until(ExpectedConditions.presenceOfElementLocated(
+				By.cssSelector("div.page-header.page-header-no-border")));
 		WebElement title = header.findElement(By.cssSelector("div.path"));
 		if (title.getText().equals(asdf))
 			return true;
 		return false;
 	}
 
+	/**
+	 * This method will click on the first maven coordinate found. It saves the coordinate
+	 * and then clicks on they hyperlink, from that page it locates the searchbox, and collects
+	 * the coordinate there, then compares the two.
+	 * @return
+	 */
 	public String clickMavenCoord() {
 		WebElement dependencies = driver.findElement(By.className("dependencies"));
 		int x = 1;
@@ -559,11 +846,8 @@ public class AnalyzeProject {
 				WebElement dep = dependencies.findElement(By.cssSelector("div.panel:nth-child(" + x + ")"));
 				WebElement firstTrait = dep.findElement(By.cssSelector("dt:nth-child(1)"));
 				if (firstTrait.getText().equals("Maven coordinates:")) {
-					WebElement hash = dep
-							.findElement(By.xpath("//*[@id='AdditionWithSecurity-Service-0.01.war-hash']"));
+					WebElement hash = dep.findElement(By.cssSelector("dd:nth-child(2)"));
 					String shaHash = hash.getText();
-
-					System.out.println(x);
 					WebElement link = dep.findElement(By.cssSelector("a"));
 					link.click();
 					return shaHash;
@@ -576,23 +860,28 @@ public class AnalyzeProject {
 		}
 		return "did not find";
 	}
-	// *[@id="AdditionWithSecurity-Service-0.01.war-hash"]
-
-	// does not currently work
+	
+	/**
+	 * once the driver has changed to the maven central repository tab, 
+	 * this will find the searchbox, and collect the information in it.
+	 * @param hash is the link found on the Dependencies page
+	 * @return true if the value in the searchbox matches the hash
+	 * @throws AWTException
+	 */
 	public boolean mavenSearch(String hash) throws AWTException {
-		WebElement search = driver.findElement(By.cssSelector("input#query"));
+		WebElement search = (new WebDriverWait(driver, 5)).until(ExpectedConditions.presenceOfElementLocated(
+				By.cssSelector("input#query")));
 		String s = search.getAttribute("value");
-
 		return s.equals(hash);
-
 	}
 
-	public void clickSendFeedback() throws InterruptedException {
-		WebElement feedback = driver.findElement(By.cssSelector("ul.nav.navbar-nav.navbar-right"));
-		feedback.click();
-		Thread.sleep(5000);
-	}
 
+	
+	/**
+	 * On the about page, this will go through the various links,
+	 * and collects them as strings in an arraylist
+	 * @return an arraylist of links
+	 */
 	public ArrayList<String> getAboutLinks() {
 		WebElement body = driver.findElement(By.cssSelector("div.panel-body"));
 		ArrayList<String> links = new ArrayList<String>();
@@ -613,38 +902,36 @@ public class AnalyzeProject {
 	}
 
 	/**
-	 * whenever a popup is shown (such as deleteing a file or submitting before
-	 * packages load) it returns the title, then text shown
-	 * 
-	 * @return
-	 */
-	public String popupInfo() {
-		WebElement modalTitle = driver.findElement(By.cssSelector("h1.modal-title"));
-		WebElement modalBody = driver.findElement(By.cssSelector("div.modal-body"));
-		return modalTitle.getText() + ";" + modalBody.getText();
-	}
-
-	/**
 	 * this finds the no or cancel button of the popup and clicks it
+	 * @throws InterruptedException 
 	 */
-	public void closeFeedback() {
+	public void closeFeedback() throws InterruptedException {
 		WebElement dialogue = driver.findElement(By.cssSelector("iframe#atlwdg-frame"));
 		driver.switchTo().frame(dialogue);
 
-		WebElement cancel = driver.findElement(By.cssSelector("a.cancel"));
+		WebElement cancel = (new WebDriverWait(driver, 5)).until(ExpectedConditions.presenceOfElementLocated(
+				By.cssSelector("a.cancel")));
 		cancel.click();
 
 		navigateTo(1);
 	}
 	
+	/**
+	 * this will have the driver switch to the send feedback frame of the page
+	 */
 	public void moveToFeedback() {
-		WebElement dialogue = driver.findElement(By.cssSelector("iframe#atlwdg-frame"));
+		WebElement dialogue = (new WebDriverWait(driver, 20)).until(ExpectedConditions.presenceOfElementLocated(
+				By.cssSelector("iframe#atlwdg-frame")));
 		driver.switchTo().frame(dialogue);
 	}
 
+	/**
+	 * This will sort through the 5 rating radio buttons and click on the one specified
+	 * @param rating is the suffix of the radiobutton's id. can either be "awesome", "good", "meh", "bad", "horrible"
+	 */
 	public void selectFeedbackButton(String rating) {
-
-		WebElement ratings = driver.findElement(By.cssSelector("div#feedback-rating"));
+		WebElement ratings = (new WebDriverWait(driver, 10)).until(ExpectedConditions.presenceOfElementLocated(
+				By.cssSelector("div#feedback-rating")));
 		for (int x = 1; x < 6; x++) {
 			try {
 				WebElement button = ratings.findElement(By.cssSelector("input#rating-" + rating));
@@ -656,8 +943,12 @@ public class AnalyzeProject {
 		}
 	}
 	
+	/**
+	 * With a given rating string, this will check if the selected button is the same as the param
+	 * @param rating is the string of the feedback radio button id
+	 * @return true if the param and the radio button match
+	 */
 	public boolean checkFeedbackButton(String rating) {
-
 		WebElement ratings = driver.findElement(By.cssSelector("div#feedback-rating"));
 		for (int x = 1; x < 6; x++) {
 			try {
@@ -670,7 +961,15 @@ public class AnalyzeProject {
 		return false;
 	}
 
+	/**
+	 * On the feedback page, when the submit button is clicked and the mandatory fields
+	 * aren't filled in, this will check if the error messages are indeed present and
+	 * makes sure that the message is correct. 
+	 * @return true if the error is present and correct
+	 */
 	public boolean submitError() {
+//		WebElement like = (new WebDriverWait(driver, 15)).until(ExpectedConditions.presenceOfElementLocated(
+//				By.cssSelector("(//*[@id='desc-group'])[1]")));
 		WebElement like = driver.findElement(By.xpath("(//*[@id='desc-group'])[1]"));
 		WebElement likeError = like.findElement(By.cssSelector("div.error"));
 		WebElement improve = driver.findElement(By.xpath("(//*[@id='desc-group'])[2]"));
@@ -685,35 +984,51 @@ public class AnalyzeProject {
 		return false;
 	}
 	
+	/**
+	 * On the Feedback popup, this will populate the two textbox's with "Lorem Ipsum"
+	 */
 	public void populateTextBox() {
 		WebElement like = driver.findElement(By.xpath("(//*[@id='desc-group'])[1]"));
-		WebElement likeTextarea = like.findElement(By.cssSelector("textarea#description-good"));
-		likeTextarea.sendKeys("Lorem Ipsum");
+		WebElement likeTextArea = like.findElement(By.cssSelector("textarea#description-good"));
+		likeTextArea.sendKeys("Lorem Ipsum");
 		
 		WebElement improve = driver.findElement(By.xpath("(//*[@id='desc-group'])[2]"));
-		WebElement improveTextarea = improve.findElement(By.cssSelector("textarea#description-bad"));
-		improveTextarea.sendKeys("Lorem Ipsum");
+		WebElement improveTextArea = improve.findElement(By.cssSelector("textarea#description-bad"));
+		improveTextArea.sendKeys("Lorem Ipsum");
 	}
 	
-	public void feedbackAttachFile() {
-		WebElement attachFile = driver.findElement(By.cssSelector("fieldset.group"));
+	/**
+	 * In the Feedback popup, this will attach a file with the given path
+	 * @param path is the path/to/file of the screenshot needed
+	 */
+	public void feedbackAttachFile(String path) {
 		WebElement browse = driver.findElement(By.cssSelector("input#screenshot.file"));
-		String path = "/home/elise/Pictures/RHAMT-WebUI_Screenshot.png";
 		browse.sendKeys(path);
 	}
 	
+	/**
+	 * in the Feedback popup, this will find the "include data about your current environment"
+	 * radiobutton and select it. 
+	 */
 	public void feedbackIncludeCheck() {
-		WebElement includeData = driver.findElement(By.cssSelector("div#record-web-info-consent-container"));
 		WebElement radioButton  = driver.findElement(By.cssSelector("input#recordWebInfoConsent"));
 		radioButton.click();
 	}
 	
+	/**
+	 * with a given name, this will populate the name field with the parameter
+	 * @param name 
+	 */
 	public void feedbackPopulateName(String name) {
 		WebElement nameDiv = driver.findElement(By.cssSelector("div#name-group"));
 		WebElement input = nameDiv.findElement(By.cssSelector("input#fullname.text"));
 		input.sendKeys(name);
 	}
 	
+	/**
+	 * with a given email, this will populate the email field with the parameter
+	 * @param email
+	 */
 	public void feedbackPopulateEmail(String email) {
 		WebElement emailDiv = driver.findElement(By.cssSelector("div#email-group"));
 		WebElement input = emailDiv.findElement(By.cssSelector("input#email.text"));
@@ -724,49 +1039,9 @@ public class AnalyzeProject {
 	 * this finds the yes or confirm button of the popup and clicks it
 	 */
 	public void submitFeedback() {
-		WebElement modalYes = driver.findElement(By.cssSelector("input.aui-button.aui-button-primary.submit-button"));
+		WebElement modalYes = (new WebDriverWait(driver, 5)).until(ExpectedConditions.presenceOfElementLocated(
+				By.cssSelector("input.aui-button.aui-button-primary.submit-button")));
 		modalYes.click();
-	}
-
-	/**
-	 * can type in deleteAppDialog for the delete box and confirmDialog for save and
-	 * running before the packages are loaded
-	 * 
-	 * @param s
-	 *            the string for the type of dialog box
-	 * @return true if the popup is removed
-	 */
-	public boolean popupRemoved(String s) {
-		try {
-			WebElement dialog = driver.findElement(By.cssSelector("div#" + s + ".modal.fade.in"));
-		} catch (NoSuchElementException e) {
-			return true;
-		}
-		return false;
-	}
-
-	public String clickAnalysisReport(int index) {
-		String xpath = "(//*[@class='success'])[" + index + "]";
-		WebElement result = driver.findElement(By.xpath(xpath));
-
-		xpath = "(//*[@class='pointer link'])[2]";
-		WebElement report = result.findElement(By.xpath(xpath));
-		String url = report.getAttribute("href");
-
-		report.click();
-
-		return url;
-	}
-
-	public void search(String searchParam) {
-		WebElement searchBox = driver
-				.findElement(By.cssSelector("input.form-control.ng-untouched.ng-pristine.ng-valid"));
-		searchBox.sendKeys(searchParam);
-	}
-
-	public void cancelSearch() {
-		WebElement clear = driver.findElement(By.cssSelector("button.clear"));
-		clear.click();
 	}
 
 	/**
