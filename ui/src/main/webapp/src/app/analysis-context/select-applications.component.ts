@@ -8,7 +8,7 @@ import {RegisteredApplication} from "../generated/windup-services";
 export class SelectApplicationsComponent {
     _availableApps: RegisteredApplication[];
 
-    private appsSelectedError: string;
+    appsSelectedError: string;
 
     @Input()
     set availableApps(availableApps: RegisteredApplication[]) {

@@ -29,3 +29,4 @@ services/lib
 /ui/src/main/webapp/src/app/generated/
 .vscode
 services/run_many.sh
+/.metadata/

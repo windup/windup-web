@@ -1,4 +1,4 @@
-    #!/bin/sh
+#!/bin/sh
  : ${1:?"Must specify release version. Ex: 2.0.1.Final"}
  : ${2:?"Must specify next development version. Ex: 2.0.2-SNAPSHOT"}
 
@@ -43,6 +43,7 @@ function release_windup {
         echo "Finished preparing release"
 
         mvn release:perform \
+                -P jboss-release,gpg-sign \
                 -DdevelopmentVersion=$DEV \
                 -DreleaseVersion=$REL \
                 -Dtag=$REL \
@@ -54,14 +55,15 @@ function release_windup {
         cd ..
 }
 
-WORK_DIR="windup_tmp_dir"
+WORK_DIR="windup_web_tmp_dir"
 echo "Working in temp directory $WORK_DIR"
 echo "Cleaning any previous contents from $WORK_DIR"
 rm -rf $WORK_DIR
 mkdir $WORK_DIR
 cd $WORK_DIR
-git clone git@github.com:windup/windup-keycloak-tool.git
+#git clone git@github.com:windup/windup-keycloak-tool.git
 git clone git@github.com:windup/windup-web.git
+git clone git@github.com:windup/windup-openshift.git
 git clone git@github.com:windup/windup-web-distribution.git
 
 cd windup-web
@@ -79,10 +81,18 @@ cd ..
 git add -A
 git commit -a -m "Preparing for release"
 git push origin
+
+cd ../windup-web-distribution
+sed -i -e "s/DOCKER_IMAGES_TAG=latest/DOCKER_IMAGES_TAG=$REL/g" src/main/resources/openshift/deployment.properties
+
+git add -A
+git commit -a -m "Preparing for release"
+git push origin
 cd ../
 
-release_windup git@github.com:windup/windup-keycloak-tool.git windup-keycloak-tool
+#release_windup git@github.com:windup/windup-keycloak-tool.git windup-keycloak-tool
 release_windup git@github.com:windup/windup-web.git windup-web
+release_windup git@github.com:windup/windup-openshift.git windup-openshift
 release_windup git@github.com:windup/windup-web-distribution.git windup-web-distribution
 
 cd windup-web
@@ -97,6 +107,13 @@ cd ..
 git add -A
 git commit -a -m "Back to development"
 git push origin
+
+cd ../windup-web-distribution
+sed -i -e "s/DOCKER_IMAGES_TAG=$REL/DOCKER_IMAGES_TAG=latest/g" src/main/resources/openshift/deployment.properties
+
+git add -A
+git commit -a -m "Back to development"
+git push origin
 cd ../
 
 #
@@ -104,4 +121,3 @@ cd ../
 # #echo "Cleaning up temp directory $WORK_DIR"
 # echo "Done"
 # #rm -rf $WORK_DIR
-

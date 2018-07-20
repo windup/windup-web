@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
@@ -30,6 +31,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
+import org.jboss.windup.web.services.model.ExecutionState;
 import org.jboss.windup.web.services.model.WindupExecution;
 import org.kamranzafar.jtar.TarEntry;
 import org.kamranzafar.jtar.TarInputStream;
@@ -86,25 +88,46 @@ public class HttpPostSerializer extends AbstractSerializer implements ExecutionS
             LOG.info("Completed generating result archive, posting results to the server...");
 
             // Send the post data to the rhamt core service
-
             try (FileInputStream fileInputStream = new FileInputStream(resultsArchivePath.toFile()))
             {
                 sendResults(execution.getId(), fileInputStream);
+                LOG.info("Results posted, analysis is now complete!");
             }
-            catch (IOException e)
+            catch (Throwable e)
             {
-                throw new RuntimeException("Failed to post results due to: " + e.getMessage(), e);
-            }
+                // Make sure to set it to failed if there was a failure posting the results.
+                execution.setState(ExecutionState.FAILED);
+                String errorMessage = "Failed to post results due to: " + e.getMessage();
+                execution.setCurrentTask(errorMessage);
 
-            try
-            {
-                FileUtils.deleteDirectory(analysisDirectory.toFile());
+                LOG.log(Level.SEVERE, errorMessage, e);
             }
-            catch (IOException e)
+            finally
             {
-                throw new RuntimeException("Failed to post results due to: " + e.getMessage(), e);
+                try
+                {
+                    LOG.info("Cleaning up analysis directory: " + analysisDirectory.toFile());
+                    FileUtils.deleteDirectory(analysisDirectory.toFile());
+                    analysisDirectory.toFile().delete();
+                }
+                catch (IOException e)
+                {
+                    LOG.warning("Failed to purge analysis directory: " + analysisDirectory.toString());
+                }
+
+                try
+                {
+                    Path inputFilesDirectory = outputDirectory.getParent().resolve("input_files")
+                            .resolve(String.valueOf(execution.getId()));
+                    LOG.info("Cleaning up analysis directory: " + inputFilesDirectory.toFile());
+                    FileUtils.deleteDirectory(inputFilesDirectory.toFile());
+                    inputFilesDirectory.toFile().delete();
+                }
+                catch (IOException e)
+                {
+                    LOG.warning("Failed to purge analysis directory: " + analysisDirectory.toString());
+                }
             }
-            LOG.info("Results posted, analysis is now complete!");
         }
 
         // Do this last, to insure that we have sent the data before sending the final status update message
