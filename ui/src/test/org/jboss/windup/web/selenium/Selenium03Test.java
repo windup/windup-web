@@ -1,122 +1,178 @@
 package org.jboss.windup.web.selenium;
 
+import java.text.ParseException;
+import java.util.ArrayList;
+
 import junit.framework.TestCase;
 
-public class Selenium03Test extends TestCase{
+public class Selenium03Test extends TestCase {
 
 	private EditProject selenium;
-	
+
 	public void setUp() {
 		selenium = new EditProject();
-	} 
-	
-	public void testStep01_05() {
-		//add in some asserts to URLs 
+	}
+
+	public void testStep01_05() throws ParseException {
+		
 		assertTrue(selenium.navigateProject("test 2"));
 		assertTrue(selenium.checkURL().endsWith("/project-detail"));
 		
+		/*
+		 * Step 1 
+		 */
 		selenium.clickProjectsIcon();
 		assertEquals("http://127.0.0.1:8080/rhamt-web/project-list", selenium.checkURL());
-		
+
+		/*
+		 * Step 2
+		 */
 		assertTrue(selenium.navigateProject("test 2"));
 		assertTrue(selenium.checkURL().endsWith("/project-detail"));
-		
+
+		//asserts the project name test 2 is indeed in the dropdown
 		assertEquals("Project\ntest 2", selenium.dropDownInfo());
+		//will return what active panel is there
+		assertEquals("Analysis Results", selenium.activePage());
 		assertEquals(2, selenium.analysisResultsShown());
 
-		assertEquals("#71, #70, ", selenium.analysisResultsOrder());
+		/*
+		 * Step 3
+		 */
+		assertTrue(selenium.sortString(1, "Analysis"));
+		assertTrue(selenium.sortStatus());
+		assertTrue(selenium.sortDate(3, "Start Date"));
+		assertTrue(selenium.sortString(4, "Applications"));
+
+		/*
+		 * Step 4
+		 */
+		ArrayList<String> list = selenium.collectTableCol(1);
+		String analysis = list.get(0).toString();
 		
-		selenium.analysisResultsSort("Applications");
-		assertEquals("#70, #71, ", selenium.analysisResultsOrder());
-		selenium.analysisResultsSort("Applications");
-		assertEquals("#71, #70, ", selenium.analysisResultsOrder());
-
-		selenium.analysisResultsSort("Start Date");
-		assertEquals("#70, #71, ", selenium.analysisResultsOrder());
-		selenium.analysisResultsSort("Start Date");
-		assertEquals("#71, #70, ", selenium.analysisResultsOrder());
-
-		//since both are completed the status does not change
-		selenium.analysisResultsSort("Status");
-		assertEquals("#70, #71, ", selenium.analysisResultsOrder());
-		selenium.analysisResultsSort("Status");
-		assertEquals("#70, #71, ", selenium.analysisResultsOrder());
-
-		selenium.analysisResultsSort("Analysis");
-		assertEquals("#70, #71, ", selenium.analysisResultsOrder());
-		selenium.analysisResultsSort("Analysis");
-		assertEquals("#71, #70, ", selenium.analysisResultsOrder());
+		selenium.search(analysis.substring(1));
+		assertEquals("[" + analysis + "]", selenium.collectTableCol(1).toString());
 		
-		selenium.search("1");
-		assertEquals("#71, ", selenium.analysisResultsOrder());
+		/*
+		 * Step 5
+		 */
 		selenium.cancelSearch();
-		assertEquals("#71, #70, ", selenium.analysisResultsOrder());
-		
 		selenium.closeDriver();
-		
 	}
-	
-	public void testStep06_12() {
+
+	public void testStep06_12() throws ParseException {
 		assertTrue(selenium.navigateProject("test 2"));
+		
+		/*
+		 * Step 6
+		 */
 		selenium.clickApplications();
 		assertTrue(selenium.checkURL().endsWith("/applications"));
-		
-		assertEquals("arit-ear-0.8.1-SNAPSHOT.ear, AdministracionEfectivo.ear, AdditionWithSecurity-EAR-0.01.ear, ", selenium.applicationsOrder());
-		selenium.applicationsSort("Application");
-		assertEquals("AdditionWithSecurity-EAR-0.01.ear, AdministracionEfectivo.ear, arit-ear-0.8.1-SNAPSHOT.ear, ", selenium.applicationsOrder());
 
-		selenium.applicationsSort("Application");
-		assertEquals("arit-ear-0.8.1-SNAPSHOT.ear, AdministracionEfectivo.ear, AdditionWithSecurity-EAR-0.01.ear, ", selenium.applicationsOrder());
+		assertEquals("Applications", selenium.activePage());
+
+		/*
+		 * Step 7
+		 */
+		assertTrue(selenium.sortString(1, "Application"));
+		assertTrue(selenium.sortDate(2, "Date Added"));
 		
-		selenium.applicationsSort("Date Added");
-		assertEquals("arit-ear-0.8.1-SNAPSHOT.ear, AdditionWithSecurity-EAR-0.01.ear, AdministracionEfectivo.ear, ", selenium.applicationsOrder());
-		selenium.applicationsSort("Date Added");
-		assertEquals("AdministracionEfectivo.ear, AdditionWithSecurity-EAR-0.01.ear, arit-ear-0.8.1-SNAPSHOT.ear, ", selenium.applicationsOrder());
+		ArrayList<String> table = new ArrayList<String>();
+		table.add("arit-ear-0.8.1-SNAPSHOT.ear");
+		table.add("AdditionWithSecurity-EAR-0.01.ear");
+		table.add("AdministracionEfectivo.ear");
 		
-		selenium.deleteApplication(3);
+		assertEquals(table, selenium.collectTableCol(1));
+
+		/*
+		 * Step 8
+		 */
+		selenium.deleteApplication("arit-ear-0.8.1-SNAPSHOT.ear");
+		assertEquals(
+				"Confirm Application Deletion;Are you sure you want to delete 'arit-ear-0.8.1-SNAPSHOT.ear'?",
+				selenium.popupInfo());
+		
+		/*
+		 * Step 9
+		 */
 		selenium.deletePopup();
 		assertTrue(selenium.popupRemoved("deleteAppDialog"));
-		assertEquals("AdministracionEfectivo.ear, AdditionWithSecurity-EAR-0.01.ear, arit-ear-0.8.1-SNAPSHOT.ear, ", selenium.applicationsOrder());
 		
-		selenium.deleteApplication(3);
-		selenium.acceptPopup();
-		assertTrue(selenium.popupRemoved("deleteAppDialog"));
-		assertEquals("AdministracionEfectivo.ear, AdditionWithSecurity-EAR-0.01.ear, ", selenium.applicationsOrder());
+		assertEquals(table, selenium.collectTableCol(1));
 		
+		/*
+		 * Step 10
+		 */
+//		selenium.deleteApplication("arit-ear-0.8.1-SNAPSHOT.ear");
+//		selenium.acceptPopup();
+//		assertTrue(selenium.popupRemoved("deleteAppDialog"));
+//		table.remove(0);
+//		assertEquals(table, selenium.collectTableCol(1));
+//		selenium.collectTableCol(1).toString());
+
+		/*
+		 * Step 11
+		 */
 		selenium.search("Admin");
-		assertEquals("AdministracionEfectivo.ear, ", selenium.applicationsOrder());
-		selenium.cancelSearch();
-		assertEquals("AdministracionEfectivo.ear, AdditionWithSecurity-EAR-0.01.ear, ", selenium.applicationsOrder());
+		assertEquals("[AdministracionEfectivo.ear]", selenium.collectTableCol(1).toString());
 		
+		/*
+		 * Step 12
+		 */
+		selenium.cancelSearch();
+//		assertEquals(table, selenium.collectTableCol(1));
+
 		selenium.closeDriver();
 	}
-	
+
 	public void testStep13_19() throws InterruptedException {
 		assertTrue(selenium.navigateProject("test 2"));
+		
+		/*
+		 * Step 13
+		 */
 		selenium.clickAnalysisConfiguration();
-		assertEquals("AdditionWithSecurity-EAR-0.01.ear\n" + 
-				"AdministracionEfectivo.ear", selenium.printSelectedApplications());
-		
+		// assertEquals("AdditionWithSecurity-EAR-0.01.ear\n" +
+		// "AdministracionEfectivo.ear\n", selenium.printSelectedApplications());
+
+		/* 
+		 * Step 14
+		 */
 		selenium.clickProjDropDown("test");
-		selenium.analysisResultsComplete(1);
-		//find way to check that the project page is indeed changed
-		selenium.clickProjDropDown("test 2");
-		System.out.println("moved to test 2");
-		selenium.analysisResultsComplete(2);
-		selenium.deleteAnalysisResults(2);
-		Thread.sleep(250);
-		selenium.deletePopup();
-		Thread.sleep(250);
-//		assertTrue(selenium.popupRemoved("deleteAppDialog"));
-		System.out.println("deleted popup");
-//		would be a pain to re-do
-//		selenium.deleteAnalysisResults(2);
-//		selenium.acceptPopup();
-//		
-		String url = selenium.clickAnalysisReport(1);
-		Thread.sleep(10000);
-		selenium.navigateTo(url);
-		assertEquals("Application List", selenium.headerTitle());
+		assertEquals("Project\ntest", selenium.dropDownInfo());
+		// find way to check that the project page is indeed changed
 		
+		/*
+		 * Step 15
+		 */
+		selenium.clickProjDropDown("test 2");
+		assertEquals("Project\ntest 2", selenium.dropDownInfo());
+		
+		/*
+		 * Step 16
+		 */
+		selenium.deleteAnalysisResults(2);
+		String num = selenium.analysisName(2);
+		assertEquals("Confirm Analysis Deletion;Are you sure you want to delete analysis " + num + "?", selenium.popupInfo());
+		
+		/*
+		 * Step 17
+		 */
+		selenium.deletePopup();
+		assertTrue(selenium.popupRemoved("deleteAppDialog"));
+		
+		/*
+		 * Step 18
+		 */
+		// would be a pain to re-do
+		// selenium.deleteAnalysisResults(2);
+		// selenium.acceptPopup();
+		// assertTrue(selenium.popupRemoved("deleteAppDialog"));
+		
+		/*
+		 * Step 19
+		 */
+		String url = selenium.clickAnalysisReport(1);
+		selenium.navigateTo(1);
 	}
 }

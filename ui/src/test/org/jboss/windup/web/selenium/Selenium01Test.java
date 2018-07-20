@@ -50,7 +50,7 @@ public class Selenium01Test extends TestCase {
 	 */
 	public void testStep03_00() {
 		assertEquals("http://127.0.0.1:8080/rhamt-web/project-list", selenium.checkURL());
-		selenium.clickProjButton();
+		selenium.clickNewProjButton();
 		assertEquals("http://127.0.0.1:8080/rhamt-web/wizard/create-project", selenium.checkURL());
 
 		//checks for next being enabled after entering in 3 characters
@@ -101,7 +101,7 @@ public class Selenium01Test extends TestCase {
 		 */
 		selenium.clickChooseFiles();
 		//AdministracionEfectivo.ear
-		String s = "/home/elise/Sample_Files/06__all_apps/01/AdministracionEfectivo.ear";
+		String s = "/home/edixon/Sample_Files/06__all_apps/01/AdministracionEfectivo.ear";
 		selenium.robotSelectFile(s);
 		//checks that the uploaded file is green and has the correct information.
 		assertEquals("AdministracionEfectivo.ear (60.161 MB):rgb(63, 156, 53)", selenium.checkFileInfo(1));
@@ -111,11 +111,12 @@ public class Selenium01Test extends TestCase {
 		 */
 		// skips the dragging and dropping because I currently do not have a solution for it
 		// uploads AdditionWithSecurity-EAR-0.01.ear
-		String a = "/home/elise/Sample_Files/06__all_apps/01/AdditionWithSecurity-EAR-0.01.ear";
+		String a = "/home/edixon/Sample_Files/06__all_apps/01/AdditionWithSecurity-EAR-0.01.ear";
 		selenium.robotSelectFile(a);
 		//checks that the uploaded file is green and has the correct information.
 		assertEquals("AdditionWithSecurity-EAR-0.01.ear (36.11 MB):rgb(63, 156, 53)", selenium.checkFileInfo(2));
 
+		selenium.robotCancel();
 	}
 
 	/**
@@ -131,7 +132,6 @@ public class Selenium01Test extends TestCase {
 		 */
 		selenium.deleteFile(2);
 		//lets the pop-up load
-		Thread.sleep(500);
 		assertEquals(
 				"Confirm application deletion;Do you really want to delete application AdditionWithSecurity-EAR-0.01.ear?",
 				selenium.popupInfo());
@@ -140,7 +140,6 @@ public class Selenium01Test extends TestCase {
 		 * Step 09
 		 */
 		selenium.deletePopup();
-		Thread.sleep(500);
 		assertTrue(selenium.popupRemoved("deleteAppDialog"));
 		assertEquals("AdministracionEfectivo.ear (60.161 MB):rgb(63, 156, 53)", selenium.checkFileInfo(1));
 		assertEquals("AdditionWithSecurity-EAR-0.01.ear (36.11 MB):rgb(63, 156, 53)", selenium.checkFileInfo(2));
@@ -151,9 +150,7 @@ public class Selenium01Test extends TestCase {
 		 * Step 10
 		 */
 		selenium.deleteFile(2);
-		Thread.sleep(250);
 		selenium.acceptPopup();
-		Thread.sleep(250);
 		assertTrue(selenium.popupRemoved("deleteAppDialog"));
 		assertEquals("AdministracionEfectivo.ear (60.161 MB):rgb(63, 156, 53)", selenium.checkFileInfo(1));
 		//checks that AdditionWithSecurity-EAR-0.01.ear is deleted
@@ -169,7 +166,6 @@ public class Selenium01Test extends TestCase {
 		 */
 		selenium.clickNext();
 
-		Thread.sleep(100);
 		assertEquals("Migration to JBoss EAP 7", selenium.transformationPath());
 		
 		//has the user click save and run before letting the packages load
@@ -182,7 +178,6 @@ public class Selenium01Test extends TestCase {
 		assertTrue(selenium.popupRemoved("confirmDialog"));
 		//waits a few seconds then checks that the packages are shown
 		//need to check that it is all tier 1
-		Thread.sleep(2000);
 		assertEquals("antlr\ncom\njavassist\njavax\nmx\nnet\noracle\norg", selenium.findPackages());
 		//checks that the three more detailed dialogue are compressed
 		assertTrue(selenium.collapesdInfo());
@@ -192,13 +187,12 @@ public class Selenium01Test extends TestCase {
 		 */
 		selenium.saveAndRun();
 		//Waits for the project to load then checks that the progress bar is visible
-		Thread.sleep(2000);
-		assertTrue(selenium.checkProgressBar(2));
+		assertTrue(selenium.checkProgressBar());
 
 		
 		//waits approx 1.3 minutes for the file to fully load, then deletes the project and closes the driver
-		Thread.sleep(100000);
-		selenium.deleteProject(1, "test");
+//		Thread.sleep(100000);
+//		selenium.deleteProject("test");
 		selenium.closeDriver();
 	}
 }

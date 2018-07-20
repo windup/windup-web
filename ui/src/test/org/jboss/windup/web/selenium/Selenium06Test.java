@@ -1,19 +1,21 @@
 package org.jboss.windup.web.selenium;
 
 import java.awt.AWTException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collections;
+
+import org.openqa.selenium.NoSuchElementException;
 
 import junit.framework.TestCase;
 
-public class Selenium02Test extends TestCase {
-
-	private CreateProject selenium;
+public class Selenium06Test extends TestCase {
 
 	public void setUp() {
-		selenium = new CreateProject();
 	}
 
-	public void testStep01_02() {
-
+	public void test() throws AWTException, InterruptedException {
+		CreateProject selenium = new CreateProject();
 		/*
 		 * Step 01
 		 */
@@ -32,11 +34,11 @@ public class Selenium02Test extends TestCase {
 		selenium.inputProjName("abc");
 		assertTrue(selenium.nextEnabled());
 		selenium.clearProjName();
-//		System.out.println(selenium.nextEnabled());
+		System.out.println(selenium.nextEnabled());
 		assertFalse(selenium.nextEnabled());
 
 		// properly inputs the project name & description
-		selenium.inputProjName("test 2");
+		selenium.inputProjName("test 3");
 		assertTrue(selenium.nextEnabled());
 		selenium.inputProjDesc("for the selenium test");
 
@@ -47,10 +49,6 @@ public class Selenium02Test extends TestCase {
 		// checks that the upload panel is active & the next button is enabled
 		assertEquals("Upload", selenium.activePanel());
 		assertFalse(selenium.nextEnabled());
-	}
-
-	public void testStep03_05() throws AWTException, InterruptedException {
-		testStep01_02();
 
 		/*
 		 * Step 03
@@ -85,64 +83,98 @@ public class Selenium02Test extends TestCase {
 
 		selenium.robotCancel();
 		assertTrue(selenium.nextEnabled());
-		
+
 		/*
-		 * Step 05 
+		 * Step 05
 		 */
 		assertTrue(selenium.nextEnabled());
 		selenium.clickNext();
 
 		assertEquals("Migration to JBoss EAP 7", selenium.transformationPath());
 
+		//looks through the first level of the include packages 
 		assertEquals(
 				"1\nantlr\ncom\njavassist\njavax\njunit\nmx\nnet\noracle\norg\nrepackage\nschemaorg_apache_xmlbeans",
 				selenium.findPackages());
 		// checks that the three more detailed dialogue are compressed
 		assertTrue(selenium.collapesdInfo());
+
+		//this will go through the packages, to the bottom level and check then uncheck it.
+		assertTrue(selenium.testPackages(1));
+		assertFalse(selenium.testEmptyPackages(1));
+
+		//opens the exclude packages section
+		assertTrue(selenium.isCollapsed("Exclude packages"));
+		selenium.clickCollapsed("Exclude packages");
+		assertFalse(selenium.isCollapsed("Exclude packages"));
+
+		//this will go through the package system under exclude packages
+		assertTrue(selenium.testPackages(2));
+		assertFalse(selenium.testEmptyPackages(2));
+
+		//opens the Advanced options section
+		selenium.clickCollapsed("Advanced options");
+
+		//uner advanced options, this adds a new option
+		selenium.addOptions();
+		selenium.optionsDropdown("enableTattletale");
+		selenium.toggleValue(1);
+		selenium.addOption(1);
+		assertTrue(selenium.value(1));
+
+		//runs the project with the above specifications
+		selenium.saveAndRun();
+		assertTrue(selenium.checkProgressBar());
+		assertTrue(selenium.analysisResultsComplete(1));
+		
+		selenium.closeDriver();
+
 	}
 
-	public void testStep06_08() throws AWTException, InterruptedException {
-		testStep03_05();
+	public void testReports() throws InterruptedException, AWTException {
+		AppLevel selenium = new AppLevel();
 
-		/*
-		 * Step 06
-		 */
-		selenium.chooseTransformationPath(3);
-		assertEquals("Cloud readiness only", selenium.transformationPath());
+		selenium.navigateProject("test 3");
 		
-		selenium.saveAndRun();
-		assertTrue(selenium.checkProgressBar());
-		
-		/*
-		 * Step 07
-		 */
-		selenium.clickAnalysisConfiguration();
-		
-		assertEquals("Cloud readiness only", selenium.transformationPath());
+		selenium.clickAnalysisReport(1);
+		selenium.navigateTo(1);
+		selenium.clickApplication("AdministracionEfectivo.ear");
 
-		assertEquals("AdditionWithSecurity-EAR-0.01.ear\n" + 
-				"AdministracionEfectivo.ear\n" + 
-				"arit-ear-0.8.1-SNAPSHOT.ear", selenium.printSelectedApplications());
-		
-		assertTrue(selenium.collapesdInfo());
-		assertEquals(
-				"1\nantlr\ncom\njavassist\njavax\njunit\nmx\nnet\noracle\norg\nrepackage\nschemaorg_apache_xmlbeans",
-				selenium.findPackages());
-		
-		/*
-		 * Step 08
-		 */
-		selenium.deleteSelectedApplication(3);
-		assertEquals("AdditionWithSecurity-EAR-0.01.ear\n" + 
-				"AdministracionEfectivo.ear", selenium.printSelectedApplications());
-		
-		selenium.saveAndRun();
-		assertTrue(selenium.checkProgressBar());
-		
-		assertTrue(selenium.analysisResultsComplete(2));
-		
-		//selenium.deleteProject(3, "test 2");
+		ArrayList<String> list = new ArrayList<String>();
+		list.add("All Applications");
+		list.add("Dashboard");
+		list.add("Issues");
+		list.add("Application Details");
+		list.add("Technologies");
+		list.add("Dependencies");
+		list.add("Unparsable");
+		list.add("EJBs");
+		list.add("JPA");
+		list.add("Server Resources");
+		list.add("Tattletale");
+		list.add("Hard-coded IP Addresses");
+		list.add("Ignored Files");
+		list.add("About");
+		list.add("Send Feedback");
 
+		ArrayList<String> collectedList = selenium.getTabs();
+		Collections.sort(collectedList);
+		Collections.sort(list);
+		
+		assertEquals(list, collectedList);
+		assertEquals("AdministracionEfectivo.ear", selenium.pageApp());
+
+		selenium.clickTab("Tattletale");
+		Exception exception = null;
+		try {
+
+			assertEquals("AdministracionEfectivo.ear", selenium.pageApp());
+		} catch (Exception e) {
+			exception = e;
+		}
+		assertTrue(exception instanceof NoSuchElementException);
+		
+		selenium.closeDriver();
 	}
 
 }
