@@ -31,7 +31,7 @@ public class Selenium07Test extends TestCase {
 		//Step 6
 		assertTrue(selenium.editProject(3, "test 4"));
 		
-		//Step 7
+		//Step 7 
 		selenium.updateProject();
 		assertTrue(selenium.checkUpdateProject(3, "test 4"));
 		

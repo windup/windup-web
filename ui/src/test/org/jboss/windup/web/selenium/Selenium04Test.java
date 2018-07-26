@@ -53,7 +53,7 @@ public class Selenium04Test extends TestCase {
 		assertEquals("[AdditionWithSecurity-EAR-0.01.ear, AdministracionEfectivo.ear]", selenium.listApplications().toString());
 
 		// Step 6
-		selenium.filterAppList("Tags", "JPA XML 2.0");
+		selenium.filterAppList("Tag", "JPA XML 2.0");
 		assertEquals("[AdministracionEfectivo.ear]", selenium.listApplications().toString());
 
 		// Step 7
@@ -66,11 +66,11 @@ public class Selenium04Test extends TestCase {
 				selenium.listApplications().toString());
 
 		// Step 9
-		selenium.filterAppList("Tags", "JPA XML 2.0");
+		selenium.filterAppList("Tag", "JPA XML 2.0");
 		assertEquals("[AdministracionEfectivo.ear]", selenium.listApplications().toString());
 		
 		// Step 10
-		assertTrue(selenium.deleteFilter("JPA XML 2.0"));
+		assertTrue(selenium.deleteFilter("Tag: ", "JPA XML 2.0"));
 		assertEquals("[AdditionWithSecurity-EAR-0.01.ear, arit-ear-0.8.1-SNAPSHOT.ear, AdministracionEfectivo.ear]",
 				selenium.listApplications().toString());
 
@@ -86,7 +86,7 @@ public class Selenium04Test extends TestCase {
 
 		// Step 12
 		assertTrue(selenium.sortAllIssues());
-		
+	
 		// Step 13
 		assertTrue(selenium.clickFirstIssue());
 		
@@ -107,9 +107,27 @@ public class Selenium04Test extends TestCase {
 
 		// Step 17
 		// should be assertTrue but does not work on the page
+
+		ArrayList<Integer> size = selenium.collectColumn(27);
+		assertEquals("[37864182, 63083396, 4170837]", size.toString());
+		
+
+		ArrayList<Integer> libraries = selenium.collectColumn(28);
+		assertEquals("[114, 100, 44]", libraries.toString());
+		
+		ArrayList<Integer> mandatory = selenium.collectColumn(29);
+		assertEquals("[0, 0, 0]", mandatory.toString());
+		
+		ArrayList<Integer> cloudMandatory = selenium.collectColumn(30);
+		assertEquals("[5, 25, 0]", cloudMandatory.toString());
+		
+		ArrayList<Integer> potential = selenium.collectColumn(31);
+		assertEquals("[0, 0, 0]", potential.toString());
+
 		assertTrue(selenium.techApps());
+		assertTrue(selenium.sortTechHeader());
+		
 		assertTrue(selenium.clickTechApp());
-		// need to add stuff to check that there is stuff on Technologies page
 
 		// Step 18
 		selenium.goBack();

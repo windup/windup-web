@@ -174,5 +174,6 @@ public class Selenium03Test extends TestCase {
 		 */
 		String url = selenium.clickAnalysisReport(1);
 		selenium.navigateTo(1);
+		selenium.closeDriver();
 	}
 }

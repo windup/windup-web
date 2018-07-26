@@ -205,7 +205,7 @@ public class Selenium05Test extends TestCase {
 
 		//Step 22
 		selenium.clickTab("Hard-coded IP Addresses");
-		assertEquals("Hard-coded IP Report", selenium.pageTitle());
+		assertEquals("Hard-coded IP Addresses", selenium.pageTitle());
 		assertEquals("AdministracionEfectivo.ear", selenium.pageApp());
 		
 		//Step 23
@@ -219,7 +219,7 @@ public class Selenium05Test extends TestCase {
 		selenium.clickTab("Ignored Files");
 		assertEquals("Ignored Files", selenium.pageTitle());
 		assertEquals("AdministracionEfectivo.ear", selenium.pageApp());
-		assertEquals(99, selenium.ignoreFile());
+		assertEquals(44, selenium.ignoreFile());
 
 		selenium.closeDriver();
 	}
