@@ -196,7 +196,7 @@ public class Selenium04Test extends TestCase {
 		
 		// Step 43
 		selenium.populateTextBox();
-		String path = "/home/edixon/Pictures/RHAMT-WebUI_Screenshot.png";
+		String path = "~/Pictures/RHAMT-WebUI_Screenshot.png";
 		selenium.feedbackAttachFile(path);
 		
 		// Step 46

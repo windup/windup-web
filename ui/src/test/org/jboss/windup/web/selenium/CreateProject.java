@@ -59,6 +59,7 @@ public class CreateProject {
 
 		FirefoxOptions options = new FirefoxOptions();
 		options.setBinary("/usr/bin/firefox"); // Location where Firefox is installed
+		//options.setHeadless(true);
 		driver = new FirefoxDriver(options);
 
 		// opens up the browser

@@ -66,18 +66,18 @@ public class Selenium06Test extends TestCase {
 		 */
 		selenium.clickChooseFiles();
 		// AdministracionEfectivo.ear
-		String s = "/home/edixon/Sample_Files/06__all_apps/01/AdministracionEfectivo.ear";
+		String s = "~/Sample_Files/06__all_apps/01/AdministracionEfectivo.ear";
 		selenium.robotSelectFile(s);
 		// checks that the uploaded file is green and has the correct information.
 		assertEquals("AdministracionEfectivo.ear (60.161 MB):rgb(63, 156, 53)", selenium.checkFileInfo(1));
 
 		// uploads AdditionWithSecurity-EAR-0.01.ear
-		String a = "/home/edixon/Sample_Files/06__all_apps/01/AdditionWithSecurity-EAR-0.01.ear";
+		String a = "~/Sample_Files/06__all_apps/01/AdditionWithSecurity-EAR-0.01.ear";
 		selenium.robotSelectFile(a);
 		// checks that the uploaded file is green and has the correct information.
 		assertEquals("AdditionWithSecurity-EAR-0.01.ear (36.11 MB):rgb(63, 156, 53)", selenium.checkFileInfo(2));
 
-		String b = "/home/edixon/Sample_Files/06__all_apps/01/arit-ear-0.8.1-SNAPSHOT.ear";
+		String b = "~/Sample_Files/06__all_apps/01/arit-ear-0.8.1-SNAPSHOT.ear";
 		selenium.robotSelectFile(b);
 		assertEquals("arit-ear-0.8.1-SNAPSHOT.ear (3.978 MB):rgb(63, 156, 53)", selenium.checkFileInfo(3));
 

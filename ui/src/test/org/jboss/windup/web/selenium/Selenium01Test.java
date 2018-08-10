@@ -101,7 +101,7 @@ public class Selenium01Test extends TestCase {
 		 */
 		selenium.clickChooseFiles();
 		//AdministracionEfectivo.ear
-		String s = "/home/edixon/Sample_Files/06__all_apps/01/AdministracionEfectivo.ear";
+		String s = "~/Sample_Files/06__all_apps/01/AdministracionEfectivo.ear";
 		selenium.robotSelectFile(s);
 		//checks that the uploaded file is green and has the correct information.
 		assertEquals("AdministracionEfectivo.ear (60.161 MB):rgb(63, 156, 53)", selenium.checkFileInfo(1));
@@ -111,7 +111,7 @@ public class Selenium01Test extends TestCase {
 		 */
 		// skips the dragging and dropping because I currently do not have a solution for it
 		// uploads AdditionWithSecurity-EAR-0.01.ear
-		String a = "/home/edixon/Sample_Files/06__all_apps/01/AdditionWithSecurity-EAR-0.01.ear";
+		String a = "~/Sample_Files/06__all_apps/01/AdditionWithSecurity-EAR-0.01.ear";
 		selenium.robotSelectFile(a);
 		//checks that the uploaded file is green and has the correct information.
 		assertEquals("AdditionWithSecurity-EAR-0.01.ear (36.11 MB):rgb(63, 156, 53)", selenium.checkFileInfo(2));
