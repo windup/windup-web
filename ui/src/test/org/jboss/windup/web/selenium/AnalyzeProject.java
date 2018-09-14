@@ -1,12 +1,12 @@
 package org.jboss.windup.web.selenium;
 
 import org.jboss.windup.web.selenium.EditProject.Status;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
@@ -41,10 +41,18 @@ public class AnalyzeProject {
 		// Notice that the remainder of the code relies on the interface,
 		// not the implementation.
 		System.setProperty("webdriver.gecko.driver", "/usr/lib/node_modules/geckodriver/bin/geckodriver");
+		System.setProperty("webdriver.chrome.driver","/usr/bin/chromedriver");
 
-		FirefoxOptions options = new FirefoxOptions();
-		options.setBinary("/usr/bin/firefox"); // Location where Firefox is installed
-		driver = new FirefoxDriver(options);
+		ChromeOptions options = new ChromeOptions();
+		options.setBinary("/usr/bin/chromium-browser"); // Location where Chrome is installed
+		options.addArguments("--headless");
+		options.addArguments("--disable-gpu");
+		options.addArguments("--no-sandbox");
+		options.addArguments("--allow-insecure-localhost");
+		options.addArguments("--networkConnectionEnabled");
+		//options.AddAdditionalCapability();
+		//options.setHeadless(true);
+		driver = new ChromeDriver(options);
 
 		// opens up the browser
 		driver.get("http://127.0.0.1:8080/");
@@ -53,6 +61,7 @@ public class AnalyzeProject {
 				.until(ExpectedConditions.presenceOfElementLocated(By.id("header-logo")));
 
 		navigateProject("test 2");
+		waitForProjectLoad();
 		clickAnalysisReport(2);
 
 		// Wait wait = new FluentWait(driver).withTimeout(30, TimeUnit.SECONDS)
@@ -147,7 +156,24 @@ public class AnalyzeProject {
 		WebElement tabs = driver.findElement(By.cssSelector("ul.nav.navbar-nav"));
 		WebElement tab = tabs.findElement(By.cssSelector("li:nth-child(" + index + ")"));
 		tab.click();
+
+		waitForTabLoad();
+
+		WebDriverWait wait = new WebDriverWait(driver,20);
+
+		tabs = driver.findElement(By.cssSelector("ul.nav.navbar-nav"));
+
+
+
+
+
+
+		wait.until(ExpectedConditions.elementToBeClickable(tabs.findElement(
+				By.cssSelector("li:nth-child(" + index + ")" +
+				".active"))));
+
 	}
+
 
 	/**
 	 * This will click on the Send Feedback tab on the top right side of the page
@@ -202,7 +228,8 @@ public class AnalyzeProject {
 	 */
 	public String pageTitle() {
 		WebElement title = (new WebDriverWait(driver, 5))
-				.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("div.main")));
+				.until(ExpectedConditions.elementToBeClickable(
+						By.cssSelector("div.main")));
 		return title.getText();
 	}
 
@@ -422,11 +449,18 @@ public class AnalyzeProject {
 		dropDown(filter, filterName);
 
 		WebElement search = driver.findElement(By.cssSelector("input#filter.form-control"));
-		search.sendKeys(searchParam);
+		Actions actions = new Actions(driver);
+		actions.moveToElement(search).click();
+		actions.sendKeys(searchParam).perform();
+
+		filter.submit();
+
+		/*search.sendKeys(searchParam);
 
 		Robot r = new Robot();
 		r.keyPress(KeyEvent.VK_ENTER);
-		r.keyRelease(KeyEvent.VK_ENTER);
+		r.keyRelease(KeyEvent.VK_ENTER);*/
+
 	}
 
 	/**
@@ -495,6 +529,7 @@ public class AnalyzeProject {
 				WebElement option = menu.findElement(By.cssSelector("li:nth-child(" + x + ")"));
 				if (option.getText().equals(name)) {
 					option.click();
+					break;
 				}
 				x++;
 			} catch (NoSuchElementException e) {
@@ -752,16 +787,40 @@ public class AnalyzeProject {
 	 * 
 	 * @return true if the expansion of the first issue is complete
 	 */
-	public boolean clickFirstIssue() {
+	public boolean
+
+	clickFirstIssue() throws InterruptedException{
 		WebElement table = driver.findElement(By.cssSelector("table.tablesorter:nth-child(1)"));
 		WebElement body = table.findElement(By.cssSelector("tbody"));
 		WebElement issue = body.findElement(By.cssSelector("tr:nth-child(1)"));
-		WebElement link = body.findElement(By.cssSelector("a.toggle"));
 
 		WebElement tIncidents = issue.findElement(By.cssSelector("td:nth-child(2)"));
 		int totalIncidents = Integer.valueOf(tIncidents.getText());
 
-		link.click();
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		wait.until(
+				//ExpectedConditions.and(
+
+				 		ExpectedConditions.elementToBeClickable(
+				 				By.cssSelector("table.tablesorter:nth-child(1) " +
+								"tbody " + "a.toggle"))//,
+						//ExpectedConditions.not(
+						//	ExpectedConditions.elementToBeClickable(By.cssSelector(".wu-navbar-header.navbar-header")
+						//))
+
+				 //)
+	);
+
+		WebElement link = driver.findElement(By.cssSelector("table.tablesorter:nth-child(1) " +
+				"tbody " + "a.toggle"));
+
+		Thread.sleep(2000);
+
+		JavascriptExecutor jse2 = (JavascriptExecutor)driver;
+		jse2.executeScript("arguments[0].click()", link);
+
+		//
+		// link.click();
 
 		WebElement fileExpanded = body.findElement(By.cssSelector("tr:nth-child(2)"));
 		body = fileExpanded.findElement(By.cssSelector("tbody"));
@@ -775,7 +834,9 @@ public class AnalyzeProject {
 
 				if (x == 1) {
 					WebElement textBox = file.findElement(By.cssSelector("div.panel.panel-default.hint-detail-panel"));
-					if (!textBox.getCssValue("background-color").equals("rgb(255, 252, 220)")) {
+
+					if (!textBox.getCssValue("background-color").equals("rgba" +
+							"(255, 252, 220, 1)")) {
 						return false;
 					}
 					WebElement showRule = file.findElement(By.cssSelector("a.sh_url"));
@@ -805,7 +866,9 @@ public class AnalyzeProject {
 		body = fileExpanded.findElement(By.cssSelector("tbody"));
 		WebElement showRule = body.findElement(By.cssSelector("a.sh_url"));
 		String rule = showRule.getCssValue("title");
-		showRule.click();
+		//showRule.click();
+		JavascriptExecutor jse2 = (JavascriptExecutor)driver;
+		jse2.executeScript("arguments[0].click()", showRule);
 	}
 
 	/**
@@ -1029,8 +1092,9 @@ public class AnalyzeProject {
 	 * @throws AWTException
 	 */
 	public boolean mavenSearch(String hash) throws AWTException {
-		WebElement search = (new WebDriverWait(driver, 5))
-				.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("input#query")));
+		WebElement search = (new WebDriverWait(driver, 20))
+				.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("input#mat-input-0")));
+		//WebElement search = driver.findElement(By.cssSelector("input#mat-input-0"));
 		String s = search.getAttribute("value");
 		return s.equals(hash);
 	}
@@ -1223,6 +1287,31 @@ public class AnalyzeProject {
 	 */
 	public void closeDriver() {
 		driver.quit();
+	}
+
+	public void waitForProjectLoad()
+	{
+
+		WebDriverWait wait = new WebDriverWait(driver, 5);
+		wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".activated-item")));
+
+
+	}
+
+	public void waitForTabLoad()
+	{
+
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("ul.nav.navbar-nav li.active")));
+
+		/*WebElement tabs = driver.findElement(By.cssSelector("ul.nav.navbar-nav"));
+		WebElement tab = tabs.findElement(By.cssSelector("li:nth-child(" + index + ")"));
+		tab.click();
+		WebDriverWait wait = new WebDriverWait(driver,5);
+		tabs = driver.findElement(By.cssSelector("ul.nav.navbar-nav"));
+		wait.until(ExpectedConditions.elementToBeClickable( tabs.findElement(By.cssSelector("li:nth-child(" + index + ")" +
+				".active"))));*/
+
 	}
 
 }

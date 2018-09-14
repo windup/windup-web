@@ -33,6 +33,7 @@ public class Selenium07Test extends TestCase {
 		
 		//Step 7 
 		selenium.updateProject();
+		Thread.sleep(4000);
 		assertTrue(selenium.checkUpdateProject(3, "test 4"));
 		
 		//Step 8

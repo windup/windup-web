@@ -101,20 +101,20 @@ public class Selenium01Test extends TestCase {
 		 */
 		selenium.clickChooseFiles();
 		//AdministracionEfectivo.ear
-		String s = "~/Sample_Files/06__all_apps/01/AdministracionEfectivo.ear";
+		String s = "/home/mbrophy/Sample_Files/06__all_apps/01/AdministracionEfectivo.ear";
 		selenium.robotSelectFile(s);
 		//checks that the uploaded file is green and has the correct information.
-		assertEquals("AdministracionEfectivo.ear (60.161 MB):rgb(63, 156, 53)", selenium.checkFileInfo(1));
+		assertEquals("AdministracionEfectivo.ear (60.161 MB):rgba(63, 156, 53, 1)", selenium.checkFileInfo(1));
 
 		/*
 		 * Step 07
 		 */
 		// skips the dragging and dropping because I currently do not have a solution for it
 		// uploads AdditionWithSecurity-EAR-0.01.ear
-		String a = "~/Sample_Files/06__all_apps/01/AdditionWithSecurity-EAR-0.01.ear";
+		String a = "/home/mbrophy/Sample_Files/06__all_apps/01/AdditionWithSecurity-EAR-0.01.ear";
 		selenium.robotSelectFile(a);
 		//checks that the uploaded file is green and has the correct information.
-		assertEquals("AdditionWithSecurity-EAR-0.01.ear (36.11 MB):rgb(63, 156, 53)", selenium.checkFileInfo(2));
+		assertEquals("AdditionWithSecurity-EAR-0.01.ear (36.11 MB):rgba(63, 156, 53, 1)", selenium.checkFileInfo(2));
 
 		selenium.robotCancel();
 	}
@@ -141,8 +141,8 @@ public class Selenium01Test extends TestCase {
 		 */
 		selenium.deletePopup();
 		assertTrue(selenium.popupRemoved("deleteAppDialog"));
-		assertEquals("AdministracionEfectivo.ear (60.161 MB):rgb(63, 156, 53)", selenium.checkFileInfo(1));
-		assertEquals("AdditionWithSecurity-EAR-0.01.ear (36.11 MB):rgb(63, 156, 53)", selenium.checkFileInfo(2));
+		assertEquals("AdministracionEfectivo.ear (60.161 MB):rgba(63, 156, 53, 1)", selenium.checkFileInfo(1));
+		assertEquals("AdditionWithSecurity-EAR-0.01.ear (36.11 MB):rgba(63, 156, 53, 1)", selenium.checkFileInfo(2));
 		//need to check that it goes back to the add applications screen
 		//also check that there are no changes to the files
 		
@@ -152,7 +152,7 @@ public class Selenium01Test extends TestCase {
 		selenium.deleteFile(2);
 		selenium.acceptPopup();
 		assertTrue(selenium.popupRemoved("deleteAppDialog"));
-		assertEquals("AdministracionEfectivo.ear (60.161 MB):rgb(63, 156, 53)", selenium.checkFileInfo(1));
+		assertEquals("AdministracionEfectivo.ear (60.161 MB):rgba(63, 156, 53, 1)", selenium.checkFileInfo(1));
 		//checks that AdditionWithSecurity-EAR-0.01.ear is deleted
 		assertTrue(selenium.checkForEmptyFile(2));
 

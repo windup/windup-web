@@ -1,10 +1,9 @@
 package org.jboss.windup.web.selenium;
 
 import org.jboss.windup.web.selenium.EditProject.Status;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -22,6 +21,7 @@ import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 
@@ -30,14 +30,23 @@ public class AppLevel {
 	private WebDriver driver;
 
 	public AppLevel() throws InterruptedException {
-		// Create a new instance of the Firefox driver
+		// Create a new instance of the driver
 		// Notice that the remainder of the code relies on the interface,
 		// not the implementation.
 		System.setProperty("webdriver.gecko.driver", "/usr/lib/node_modules/geckodriver/bin/geckodriver");
+		System.setProperty("webdriver.chrome.driver","/usr/bin/chromedriver");
 
-		FirefoxOptions options = new FirefoxOptions();
-		options.setBinary("/usr/bin/firefox"); // Location where Firefox is installed
-		driver = new FirefoxDriver(options);
+		ChromeOptions options = new ChromeOptions();
+		options.setBinary("/usr/bin/chromium-browser"); // Location where Chrome is installed
+		options.addArguments("--headless");
+		options.addArguments("--disable-gpu");
+		options.addArguments("--no-sandbox");
+		options.addArguments("--allow-insecure-localhost");
+		options.addArguments("--networkConnectionEnabled");
+		//options.AddAdditionalCapability();
+		//options.setHeadless(true);
+		driver = new ChromeDriver(options);
+
 
 		// opens up the browser
 		driver.get("http://127.0.0.1:8080/");
@@ -207,7 +216,8 @@ public class AppLevel {
 	 */
 	public String clickAnalysisReport(int index) {
 		String xpath = "(//*[@class='success'])[" + index + "]";
-		WebElement result = driver.findElement(By.xpath(xpath));
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		WebElement result = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(xpath))));
 		xpath = "(//*[@class='pointer link'])[2]";
 		WebElement actions = result.findElement(By.cssSelector("td:nth-child(5)"));
 		WebElement report = actions.findElement(By.cssSelector("a.pointer.link"));
@@ -274,7 +284,10 @@ public class AppLevel {
 		WebElement tIncidents = issue.findElement(By.cssSelector("td:nth-child(2)"));
 		int totalIncidents = Integer.valueOf(tIncidents.getText());
 
-		link.click();
+		JavascriptExecutor jse2 = (JavascriptExecutor)driver;
+		jse2.executeScript("arguments[0].click()", link);
+
+		//link.click();
 
 		WebElement fileExpanded = body.findElement(By.cssSelector("tr:nth-child(2)"));
 		body = fileExpanded.findElement(By.cssSelector("tbody"));
@@ -295,7 +308,7 @@ public class AppLevel {
 					String t = title.getText().substring(13);
 					//if the textbox is not yellow and the string i (the issue link) does not equal t (the textbox's title)
 					//then false is returned
-					if (!textBox.getCssValue("background-color").equals("rgb(255, 252, 220)") && (!t.equals(i))) {
+					if (!textBox.getCssValue("background-color").equals("rgba(255, 252, 220, 1)") && (!t.equals(i))) {
 						return false;
 					}
 					//lastly it checks that the show rule link is there
@@ -556,7 +569,8 @@ public class AppLevel {
 	 * @throws AWTException
 	 */
 	public boolean mavenSearch(String hash) throws AWTException {
-		WebElement search = driver.findElement(By.cssSelector("input#query"));
+		WebElement search = (new WebDriverWait(driver, 20))
+				.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("input#mat-input-0")));
 		String s = search.getAttribute("value");
 		return s.equals(hash);
 	}
@@ -655,6 +669,12 @@ public class AppLevel {
 		WebElement link = table.findElement(By.cssSelector("tr:nth-child(2) > td:nth-child(1) > a:nth-child(1)"));
 		link.click();
 	}
+
+	public void clickCamelLink() {
+		WebElement table = driver.findElement(By.cssSelector("tbody"));
+		WebElement link = table.findElement(By.ByLinkText.linkText("WEB-INF/camel-context.xml"));
+		link.click();
+	}
 	
 	/**
 	 * On the ignore Files page, this will go through each row in the table and return how many there are
@@ -743,6 +763,15 @@ public class AppLevel {
 	 */
 	public void closeDriver() {
 		driver.quit();
+	}
+
+	public void waitForProjectLoad()
+	{
+
+		WebDriverWait wait = new WebDriverWait(driver, 5);
+		wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".activated-item")));
+
+
 	}
 
 }

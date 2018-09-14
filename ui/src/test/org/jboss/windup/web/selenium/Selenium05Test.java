@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import junit.framework.TestCase;
+import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class Selenium05Test extends TestCase {
 
@@ -14,6 +17,7 @@ public class Selenium05Test extends TestCase {
 		selenium = new AppLevel();
 
 		selenium.navigateProject("test 2");
+		selenium.waitForProjectLoad();
 		selenium.clickAnalysisReport(2);
 		Thread.sleep(5000);
 		selenium.navigateTo(1);
@@ -162,7 +166,7 @@ public class Selenium05Test extends TestCase {
 		Thread.sleep(2000);
 		selenium.navigateTo(2);
 		selenium.mavenSearch(hash);
-		assertTrue(selenium.checkURL().startsWith("http://search.maven.org"));
+		assertTrue(selenium.checkURL().startsWith("https://search.maven.org"));
 		selenium.navigateTo(1);
 
 		selenium.closeDriver();
@@ -257,7 +261,7 @@ public class Selenium05Test extends TestCase {
 		assertEquals("AdditionWithSecurity-EAR-0.01.ear", selenium.pageApp());
 		
 		//Step 29
-		selenium.clickFirstLink();
+		selenium.clickCamelLink();
 		assertEquals(
 				"AdditionWithSecurity-EAR-0.01.ear/AdditionWithSecurity-Service-0.01.war/WEB-INF/camel-context.xml",
 				selenium.sourceReportPath());
@@ -280,4 +284,6 @@ public class Selenium05Test extends TestCase {
 
 		selenium.closeDriver();
 	}
+
+
 }

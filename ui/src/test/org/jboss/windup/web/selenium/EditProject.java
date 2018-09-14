@@ -9,6 +9,8 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 //import org.openqa.selenium.remote.DesiredCapabilities;
@@ -49,11 +51,18 @@ public class EditProject {
 		// Notice that the remainder of the code relies on the interface,
 		// not the implementation.
 		System.setProperty("webdriver.gecko.driver", "/usr/lib/node_modules/geckodriver/bin/geckodriver");
+		System.setProperty("webdriver.chrome.driver","/usr/bin/chromedriver");
 
-		FirefoxOptions options = new FirefoxOptions();
-		options.setBinary("/usr/bin/firefox"); // Location where Firefox is installed
-		driver = new FirefoxDriver(options); 
-
+		ChromeOptions options = new ChromeOptions();
+		options.setBinary("/usr/bin/chromium-browser"); // Location where Chrome is installed
+		options.addArguments("--headless");
+		options.addArguments("--disable-gpu");
+		options.addArguments("--no-sandbox");
+		options.addArguments("--allow-insecure-localhost");
+		options.addArguments("--networkConnectionEnabled");
+		//options.AddAdditionalCapability();
+		//options.setHeadless(true);
+		driver = new ChromeDriver(options);
 		// opens up the browser
 		driver.get("http://127.0.0.1:8080/");
 
@@ -67,7 +76,8 @@ public class EditProject {
 	 * 
 	 * @return the full URL
 	 */
-	public String checkURL() {
+	public String checkURL()
+	{
 		return driver.getCurrentUrl();
 	}
 
@@ -135,7 +145,7 @@ public class EditProject {
 	 */
 	public void clickAnalysisConfiguration() {
 		WebElement list = driver.findElement(By.cssSelector("ul.list-group"));
-		WebElement analysisConfig = list.findElement(By.cssSelector("li:nth-child(3)"));
+		WebElement analysisConfig =new WebDriverWait(driver,5).until(ExpectedConditions.visibilityOf( list.findElement(By.cssSelector("li:nth-child(3)"))));
 		analysisConfig.click();
 	}
 	
@@ -145,7 +155,8 @@ public class EditProject {
 	 */
 	public void clickApplications() {
 		WebElement list = driver.findElement(By.cssSelector("ul.list-group"));
-		WebElement applications = list.findElement(By.cssSelector("li:nth-child(2)"));
+		WebDriverWait wait = new WebDriverWait(driver,10);
+		WebElement applications = wait.until(ExpectedConditions.elementToBeClickable(list.findElement(By.cssSelector("li:nth-child(2)"))));
 		applications.click();
 	}
 
@@ -697,8 +708,10 @@ public class EditProject {
 	 * @return
 	 */
 	public String popupInfo() {
-		WebElement modalTitle = driver.findElement(By.cssSelector("h1.modal-title"));
-		WebElement modalBody = driver.findElement(By.cssSelector("div.modal-body"));
+		WebElement modalTitle = (new WebDriverWait(driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(
+				By.cssSelector("h1.modal-title")));
+		WebElement modalBody = (new WebDriverWait(driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(
+				By.cssSelector("div.modal-body")));
 		return modalTitle.getText() + ";" + modalBody.getText();
 	}
 
@@ -743,6 +756,14 @@ public class EditProject {
 	 */
 	public void closeDriver() {
 		driver.quit();
+	}
+
+	public void waitForProjectLoad(String projectName)
+	{
+
+		WebDriverWait wait = new WebDriverWait(driver, 5);
+		wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".activated-item")));
+
 	}
 
 }

@@ -77,7 +77,9 @@ public class Selenium04Test extends TestCase {
 		selenium.closeDriver();
 	}
 
-	public void testStep02() {
+	public void testStep02() throws InterruptedException
+	{
+
 		selenium.switchTab(2);
 		
 		// Step 11
@@ -88,6 +90,7 @@ public class Selenium04Test extends TestCase {
 		assertTrue(selenium.sortAllIssues());
 	
 		// Step 13
+
 		assertTrue(selenium.clickFirstIssue());
 		
 		// Step 14
@@ -103,6 +106,7 @@ public class Selenium04Test extends TestCase {
 	public void testStep03() throws InterruptedException {
 		// Step 16
 		selenium.switchTab(3);
+
 		assertEquals("Technologies", selenium.pageTitle());
 
 		// Step 17
@@ -138,6 +142,7 @@ public class Selenium04Test extends TestCase {
 
 	public void testStep04() throws InterruptedException, AWTException {
 		// Step 19
+
 		selenium.switchTab(4);
 		assertEquals("Dependencies", selenium.pageTitle());
 		
@@ -145,13 +150,22 @@ public class Selenium04Test extends TestCase {
 		String hash = selenium.clickMavenCoord();
 
 		Thread.sleep(1000);
-		selenium.navigateTo(2);
-		selenium.mavenSearch(hash);
-		assertTrue(selenium.checkURL().startsWith("http://search.maven.org"));
-		selenium.navigateTo(1);
 
+		selenium.navigateTo(2);
+
+		//selenium.waitForTabLoad();
+		selenium.mavenSearch(hash);
+
+
+
+		assertTrue(selenium.checkURL().startsWith("https://search.maven.org"));
+		selenium.navigateTo(1);
+		selenium.waitForTabLoad();
 		selenium.closeDriver();
 	}
+
+
+
 
 	public void testStep05() {
 		// Step 21
@@ -196,7 +210,7 @@ public class Selenium04Test extends TestCase {
 		
 		// Step 43
 		selenium.populateTextBox();
-		String path = "~/Pictures/RHAMT-WebUI_Screenshot.png";
+		String path = "/home/mbrophy/Pictures/RHAMT-WebUI_Screenshot.png";
 		selenium.feedbackAttachFile(path);
 		
 		// Step 46

@@ -8,9 +8,12 @@ import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 //import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -25,10 +28,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
+import java.util.*;
 import java.util.logging.Level;
 
 /**
@@ -56,11 +56,18 @@ public class CreateProject {
 		// Notice that the remainder of the code relies on the interface,
 		// not the implementation.
 		System.setProperty("webdriver.gecko.driver", "/usr/lib/node_modules/geckodriver/bin/geckodriver");
+		System.setProperty("webdriver.chrome.driver","/usr/bin/chromedriver");
 
-		FirefoxOptions options = new FirefoxOptions();
-		options.setBinary("/usr/bin/firefox"); // Location where Firefox is installed
+		ChromeOptions options = new ChromeOptions();
+		options.setBinary("/usr/bin/chromium-browser"); // Location where Chrome is installed
+		options.addArguments("--headless");
+		options.addArguments("--disable-gpu");
+		options.addArguments("--no-sandbox");
+		options.addArguments("--allow-insecure-localhost");
+		options.addArguments("--networkConnectionEnabled");
+		//options.AddAdditionalCapability();
 		//options.setHeadless(true);
-		driver = new FirefoxDriver(options);
+		driver = new ChromeDriver(options);
 
 		// opens up the browser
 		driver.get("http://127.0.0.1:8080/");
@@ -75,6 +82,8 @@ public class CreateProject {
 	 * http://127.0.0.1:8080/rhamt-web/wizard/create-project
 	 */
 	public void clickNewProjButton() {
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		wait.until(ExpectedConditions.elementToBeClickable(By.className("blank-slate-pf-main-action")));
 		projButton = driver.findElement(By.className("blank-slate-pf-main-action"));
 		projButton.click();
 	}
@@ -124,6 +133,11 @@ public class CreateProject {
 	 * first should redirect to the next page (can be checked by checkURL())
 	 */
 	public void clickNext() {
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		wait.until(
+				ExpectedConditions.and(
+						ExpectedConditions.elementToBeClickable(next),
+						ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".modal-backdrop"))));
 		next.click();
 	}
 
@@ -205,7 +219,8 @@ public class CreateProject {
 	 * @return the name of the current active pannel
 	 */
 	public String activePanel() {
-		WebElement addAppActive = driver.findElement(By.cssSelector("li[class^='active']"));
+		WebElement addAppActive = (new WebDriverWait(driver, 5))
+				.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("li[class^='active']")));
 		return addAppActive.getText();
 	}
 
@@ -239,7 +254,8 @@ public class CreateProject {
 	 */
 	public void robotSelectFile(String s) throws AWTException {
 		Robot r = new Robot();
-		fileUpload = driver.findElement(By.id("fileUpload"));
+		fileUpload = (new WebDriverWait(driver, 5))
+				.until(ExpectedConditions.presenceOfElementLocated(By.id("fileUpload")));
 		fileUpload.sendKeys(s);
 	}
 
@@ -298,9 +314,13 @@ public class CreateProject {
 	 */
 	public void deleteFile(int index) {
 		String xpath = "(//span[@class='pointer'])[" + index + "]";
-		WebElement delete = (new WebDriverWait(driver, 10)).until(ExpectedConditions.presenceOfElementLocated(
-				By.xpath(xpath)));
-//		WebElement delete = driver.findElement(By.xpath(xpath));
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		wait.until(
+				ExpectedConditions.and(
+						ExpectedConditions.elementToBeClickable(By.xpath(xpath)),
+						ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".modal-backdrop"))));
+		WebElement delete = driver.findElement(By.xpath(xpath));
+
 		delete.click();
 	}
 
@@ -312,9 +332,9 @@ public class CreateProject {
 	 */
 	public String popupInfo() {
 
-		WebElement modalTitle = (new WebDriverWait(driver, 5)).until(ExpectedConditions.presenceOfElementLocated(
+		WebElement modalTitle = (new WebDriverWait(driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(
 				By.cssSelector("h1.modal-title")));
-		WebElement modalBody = (new WebDriverWait(driver, 5)).until(ExpectedConditions.presenceOfElementLocated(
+		WebElement modalBody = (new WebDriverWait(driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(
 				By.cssSelector("div.modal-body")));
 		return modalTitle.getText() + ";" + modalBody.getText();
 	}
@@ -331,7 +351,7 @@ public class CreateProject {
 	 * this finds the yes or confirm button of the popup and clicks it
 	 */
 	public void acceptPopup() {
-		WebElement modalYes = (new WebDriverWait(driver, 5)).until(ExpectedConditions.presenceOfElementLocated(
+		WebElement modalYes = (new WebDriverWait(driver, 5)).until(ExpectedConditions.elementToBeClickable(
 			By.cssSelector("button.confirm-button.btn.btn-lg.btn-danger")));
 		modalYes.click();
 	}
@@ -346,8 +366,7 @@ public class CreateProject {
 	 */
 	public boolean popupRemoved(String s) {
 		try {
-//			WebElement dialog = (new WebDriverWait(driver, 10)).until(ExpectedConditions.presenceOfElementLocated(
-//					By.cssSelector("div#" + s + ".modal.fade.in")));
+
 			WebElement dialog = driver.findElement(By.cssSelector("div#" + s + ".modal.fade.in"));
 		} catch (NoSuchElementException e) {
 			return true;
@@ -483,6 +502,8 @@ public class CreateProject {
 				innerPackages = ul.findElement(By.cssSelector("li:nth-child(" + x + ")"));
 				x++;
 				carrot = innerPackages.findElement(By.cssSelector("i.jstree-icon.jstree-ocl"));
+				WebDriverWait wait = new WebDriverWait(driver, 10);
+				wait.until(ExpectedConditions.visibilityOfAllElements(carrot));
 				carrot.click();
 				
 				branch = innerPackages.findElement(By.cssSelector("ul.jstree-children"));
@@ -601,7 +622,8 @@ public class CreateProject {
 	public void toggleValue(int num) {
 		WebElement container = driver.findElement(By.cssSelector("wu-analysis-context-advanced-options"));
 		WebElement value = container.findElement(By.cssSelector("tr:nth-child(" + num + ") > td:nth-child(2)"));
-		
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		wait.until(ExpectedConditions.visibilityOfAllElements(value));
 		WebElement checkbox = value.findElement(By.cssSelector("input"));
 		checkbox.click();
 	}
@@ -775,7 +797,7 @@ public class CreateProject {
 		String xpath = "";
 		for (int x = 1; x <= numOfAnalysis; x++) {
 			xpath = "(//*[@class='success'])[" + numOfAnalysis + "]";
-			WebElement result = (new WebDriverWait(driver, 300)).until(ExpectedConditions.presenceOfElementLocated(
+			WebElement result = (new WebDriverWait(driver, 360)).until(ExpectedConditions.presenceOfElementLocated(
 					By.xpath(xpath)));
 			try {
 				xpath = "(//*[@class='pointer link'])[1]";
@@ -850,7 +872,9 @@ public class CreateProject {
 				WebElement title = project.findElement(By.cssSelector("h2.project-title"));
 				if (title.getText().equals(projName)) {
 					WebElement trash = project.findElement(By.cssSelector("a.action-button.action-delete-project"));
-					trash.click();
+					//trash.click();
+					JavascriptExecutor jse2 = (JavascriptExecutor)driver;
+					jse2.executeScript("arguments[0].click()", trash);
 					working = true;
 					break;
 				}
@@ -865,7 +889,9 @@ public class CreateProject {
 			WebElement delete = driver.findElement(By.cssSelector("button.confirm-button.btn.btn-lg.btn-danger"));
 			
 			if (cancel.isEnabled() && !delete.isEnabled()) {
-				WebElement input = driver.findElement(By.cssSelector("input#resource-to-delete"));
+				//WebElement input = driver.findElement(By.cssSelector("input#resource-to-delete"));
+				WebDriverWait  wait = new WebDriverWait(driver, 60);
+				WebElement input = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("input#resource-to-delete")));
 				input.sendKeys(projName);
 				return delete.isEnabled();
 			}

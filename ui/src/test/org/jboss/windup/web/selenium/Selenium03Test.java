@@ -16,6 +16,7 @@ public class Selenium03Test extends TestCase {
 	public void testStep01_05() throws ParseException {
 		
 		assertTrue(selenium.navigateProject("test 2"));
+		selenium.waitForProjectLoad("test 2");
 		assertTrue(selenium.checkURL().endsWith("/project-detail"));
 		
 		/*
@@ -28,6 +29,7 @@ public class Selenium03Test extends TestCase {
 		 * Step 2
 		 */
 		assertTrue(selenium.navigateProject("test 2"));
+		selenium.waitForProjectLoad("test 2");
 		assertTrue(selenium.checkURL().endsWith("/project-detail"));
 
 		//asserts the project name test 2 is indeed in the dropdown

@@ -40,12 +40,13 @@ public class Selenium02Test extends TestCase {
 		assertTrue(selenium.nextEnabled());
 		selenium.inputProjDesc("for the selenium test");
 
-		// checks that it redirects to the correct page
-		selenium.clickNext();
-		assertTrue(selenium.checkURL().endsWith("/add-applications"));
 
+		selenium.clickNext();
 		// checks that the upload panel is active & the next button is enabled
 		assertEquals("Upload", selenium.activePanel());
+		// checks that it redirects to the correct page
+		assertTrue(selenium.checkURL().endsWith("/add-applications"));
+
 		assertFalse(selenium.nextEnabled());
 	}
 
@@ -68,20 +69,20 @@ public class Selenium02Test extends TestCase {
 		 */
 		selenium.clickChooseFiles();
 		// AdministracionEfectivo.ear
-		String s = "~/Sample_Files/06__all_apps/01/AdministracionEfectivo.ear";
+		String s = "/home/mbrophy/Sample_Files/06__all_apps/01/AdministracionEfectivo.ear";
 		selenium.robotSelectFile(s);
 		// checks that the uploaded file is green and has the correct information.
-		assertEquals("AdministracionEfectivo.ear (60.161 MB):rgb(63, 156, 53)", selenium.checkFileInfo(1));
+		assertEquals("AdministracionEfectivo.ear (60.161 MB):rgba(63, 156, 53, 1)", selenium.checkFileInfo(1));
 
 		// uploads AdditionWithSecurity-EAR-0.01.ear
-		String a = "~/Sample_Files/06__all_apps/01/AdditionWithSecurity-EAR-0.01.ear";
+		String a = "/home/mbrophy/Sample_Files/06__all_apps/01/AdditionWithSecurity-EAR-0.01.ear";
 		selenium.robotSelectFile(a);
 		// checks that the uploaded file is green and has the correct information.
-		assertEquals("AdditionWithSecurity-EAR-0.01.ear (36.11 MB):rgb(63, 156, 53)", selenium.checkFileInfo(2));
+		assertEquals("AdditionWithSecurity-EAR-0.01.ear (36.11 MB):rgba(63, 156, 53, 1)", selenium.checkFileInfo(2));
 
-		String b = "~/Sample_Files/06__all_apps/01/arit-ear-0.8.1-SNAPSHOT.ear";
+		String b = "/home/mbrophy/Sample_Files/06__all_apps/01/arit-ear-0.8.1-SNAPSHOT.ear";
 		selenium.robotSelectFile(b);
-		assertEquals("arit-ear-0.8.1-SNAPSHOT.ear (3.978 MB):rgb(63, 156, 53)", selenium.checkFileInfo(3));
+		assertEquals("arit-ear-0.8.1-SNAPSHOT.ear (3.978 MB):rgba(63, 156, 53, 1)", selenium.checkFileInfo(3));
 
 		selenium.robotCancel();
 		assertTrue(selenium.nextEnabled());
