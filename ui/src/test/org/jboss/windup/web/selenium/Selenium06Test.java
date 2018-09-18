@@ -1,6 +1,7 @@
 package org.jboss.windup.web.selenium;
 
 import java.awt.AWTException;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -67,19 +68,19 @@ public class Selenium06Test extends TestCase {
 		 * Step 04
 		 */
 		selenium.clickChooseFiles();
-		String s = "/home/mbrophy/Sample_Files/06__all_apps/01/AdministracionEfectivo.ear";
-		selenium.robotSelectFile(s);
+        File file = new File("src/test/resources/test-archives/AdministracionEfectivo.ear");
+		selenium.robotSelectFile(file.getAbsolutePath());
 		// checks that the uploaded file is green and has the correct information.
 		assertEquals("AdministracionEfectivo.ear (60.161 MB):rgba(63, 156, 53, 1)", selenium.checkFileInfo(1));
 
 		// uploads AdditionWithSecurity-EAR-0.01.ear
-		String a = "/home/mbrophy/Sample_Files/06__all_apps/01/AdditionWithSecurity-EAR-0.01.ear";
-		selenium.robotSelectFile(a);
+        file = new File("src/test/resources/test-archives/AdditionWithSecurity-EAR-0.01.ear");
+		selenium.robotSelectFile(file.getAbsolutePath());
 		// checks that the uploaded file is green and has the correct information.
 		assertEquals("AdditionWithSecurity-EAR-0.01.ear (36.11 MB):rgba(63, 156, 53, 1)", selenium.checkFileInfo(2));
 
-		String b = "/home/mbrophy/Sample_Files/06__all_apps/01/arit-ear-0.8.1-SNAPSHOT.ear";
-		selenium.robotSelectFile(b);
+        file = new File("src/test/resources/test-archives/arit-ear-0.8.1-SNAPSHOT.ear");
+		selenium.robotSelectFile(file.getAbsolutePath());
 		assertEquals("arit-ear-0.8.1-SNAPSHOT.ear (3.978 MB):rgba(63, 156, 53, 1)", selenium.checkFileInfo(3));
 
 		selenium.robotCancel();

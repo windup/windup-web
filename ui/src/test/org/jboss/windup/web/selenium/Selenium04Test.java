@@ -1,6 +1,7 @@
 package org.jboss.windup.web.selenium;
 
 import java.awt.AWTException;
+import java.io.File;
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
@@ -210,8 +211,8 @@ public class Selenium04Test extends TestCase {
 		
 		// Step 43
 		selenium.populateTextBox();
-		String path = "/home/mbrophy/Pictures/RHAMT-WebUI_Screenshot.png";
-		selenium.feedbackAttachFile(path);
+		File file = new File("src/test/resources/images/RHAMT-WebUI_Screenshot.png");
+		selenium.feedbackAttachFile(file.getAbsolutePath());
 		
 		// Step 46
 		selenium.feedbackPopulateEmail("email");

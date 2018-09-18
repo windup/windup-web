@@ -1,6 +1,8 @@
 package org.jboss.windup.web.selenium;
 
 import java.awt.AWTException;
+import java.io.File;
+
 import junit.framework.TestCase;
 
 /**
@@ -101,8 +103,8 @@ public class Selenium01Test extends TestCase {
 		 */
 		selenium.clickChooseFiles();
 		//AdministracionEfectivo.ear
-		String s = "/home/mbrophy/Sample_Files/06__all_apps/01/AdministracionEfectivo.ear";
-		selenium.robotSelectFile(s);
+		File file = new File("src/test/resources/test-archives/AdministracionEfectivo.ear");
+		selenium.robotSelectFile(file.getAbsolutePath());
 		//checks that the uploaded file is green and has the correct information.
 		assertEquals("AdministracionEfectivo.ear (60.161 MB):rgba(63, 156, 53, 1)", selenium.checkFileInfo(1));
 
@@ -111,8 +113,8 @@ public class Selenium01Test extends TestCase {
 		 */
 		// skips the dragging and dropping because I currently do not have a solution for it
 		// uploads AdditionWithSecurity-EAR-0.01.ear
-		String a = "/home/mbrophy/Sample_Files/06__all_apps/01/AdditionWithSecurity-EAR-0.01.ear";
-		selenium.robotSelectFile(a);
+		File file2 = new File("src/test/resources/test-archives/AdditionWithSecurity-EAR-0.01.ear");
+		selenium.robotSelectFile(file2.getAbsolutePath());
 		//checks that the uploaded file is green and has the correct information.
 		assertEquals("AdditionWithSecurity-EAR-0.01.ear (36.11 MB):rgba(63, 156, 53, 1)", selenium.checkFileInfo(2));
 
