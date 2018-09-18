@@ -1,30 +1,11 @@
 package org.jboss.windup.web.selenium;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.By.ByClassName;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
-//import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.openqa.selenium.firefox.GeckoDriverService;
-import org.openqa.selenium.Alert;
-import com.google.common.base.Preconditions;
-
-import java.awt.AWTException;
-import java.awt.Robot;
-import java.awt.event.KeyEvent;
-import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -32,7 +13,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
 /**
  * this code is intended for a RHAMT web application that does not have any
@@ -42,29 +22,11 @@ import java.util.logging.Level;
  *
  */
 
-public class EditProject {
+public class EditProject extends CommonProject {
 
-	private WebDriver driver;
+
 
 	public EditProject() {
-		// Create a new instance of the Firefox driver
-		// Notice that the remainder of the code relies on the interface,
-		// not the implementation.
-		System.setProperty("webdriver.gecko.driver", "/usr/lib/node_modules/geckodriver/bin/geckodriver");
-		System.setProperty("webdriver.chrome.driver","/usr/bin/chromedriver");
-
-		ChromeOptions options = new ChromeOptions();
-		options.setBinary("/usr/bin/chromium-browser"); // Location where Chrome is installed
-		options.addArguments("--headless");
-		options.addArguments("--disable-gpu");
-		options.addArguments("--no-sandbox");
-		options.addArguments("--allow-insecure-localhost");
-		options.addArguments("--networkConnectionEnabled");
-		//options.AddAdditionalCapability();
-		//options.setHeadless(true);
-		driver = new ChromeDriver(options);
-		// opens up the browser
-		driver.get("http://127.0.0.1:8080/");
 
 		WebElement header = (new WebDriverWait(driver, 10))
 				.until(ExpectedConditions.presenceOfElementLocated(By.id("header-logo")));

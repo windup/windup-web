@@ -1,10 +1,6 @@
 package org.jboss.windup.web.selenium;
 
 import java.awt.AWTException;
-import java.text.ParseException;
-import java.util.ArrayList;
-
-import org.openqa.selenium.NoSuchElementException;
 
 import junit.framework.TestCase;
 

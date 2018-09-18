@@ -142,7 +142,7 @@ public class Selenium02Test extends TestCase {
 		
 		assertTrue(selenium.analysisResultsComplete(2));
 		
-		//selenium.deleteProject(3, "test 2");
+
 
 	}
 

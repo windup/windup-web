@@ -1,7 +1,6 @@
 package org.jboss.windup.web.selenium;
 
 import java.awt.AWTException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -68,7 +67,6 @@ public class Selenium06Test extends TestCase {
 		 * Step 04
 		 */
 		selenium.clickChooseFiles();
-		// AdministracionEfectivo.ear
 		String s = "/home/mbrophy/Sample_Files/06__all_apps/01/AdministracionEfectivo.ear";
 		selenium.robotSelectFile(s);
 		// checks that the uploaded file is green and has the correct information.

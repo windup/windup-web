@@ -1,30 +1,14 @@
 package org.jboss.windup.web.selenium;
 
-import org.jboss.windup.web.selenium.EditProject.Status;
+
 import org.openqa.selenium.*;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.FluentWait;
-import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.awt.AWTException;
-import java.awt.Robot;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.event.KeyEvent;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 
@@ -32,30 +16,9 @@ import java.util.concurrent.TimeUnit;
  *
  */
 
-public class AnalyzeProject {
-
-	private WebDriver driver;
+public class AnalyzeProject extends CommonProject {
 
 	public AnalyzeProject() throws InterruptedException {
-		// Create a new instance of the Firefox driver
-		// Notice that the remainder of the code relies on the interface,
-		// not the implementation.
-		System.setProperty("webdriver.gecko.driver", "/usr/lib/node_modules/geckodriver/bin/geckodriver");
-		System.setProperty("webdriver.chrome.driver","/usr/bin/chromedriver");
-
-		ChromeOptions options = new ChromeOptions();
-		options.setBinary("/usr/bin/chromium-browser"); // Location where Chrome is installed
-		options.addArguments("--headless");
-		options.addArguments("--disable-gpu");
-		options.addArguments("--no-sandbox");
-		options.addArguments("--allow-insecure-localhost");
-		options.addArguments("--networkConnectionEnabled");
-		//options.AddAdditionalCapability();
-		//options.setHeadless(true);
-		driver = new ChromeDriver(options);
-
-		// opens up the browser
-		driver.get("http://127.0.0.1:8080/");
 
 		WebElement header = (new WebDriverWait(driver, 10))
 				.until(ExpectedConditions.presenceOfElementLocated(By.id("header-logo")));
@@ -63,25 +26,6 @@ public class AnalyzeProject {
 		navigateProject("test 2");
 		waitForProjectLoad();
 		clickAnalysisReport(2);
-
-		// Wait wait = new FluentWait(driver).withTimeout(30, TimeUnit.SECONDS)
-		// .pollingEvery(2, TimeUnit.SECONDS)
-		// .ignoring(IndexOutOfBoundsException.class);
-		// WebElement waitingElement = wait.until(new Function<WebDriver, WebElement>()
-		// {
-		// public WebElement apply(WebDriver driver) {
-		// return driver.findElement(By.id("Start"));
-		// }
-
-		// });
-		// waitingElement.click();
-		// wait.until(new Function() {
-		// navigateTo(1);
-		// });
-
-		// WebElement tab = (new WebDriverWait(driver, 5))
-		// .until(ExpectedConditions.presenceOfElementLocated(By.id("header-logo")));
-		// Thread.sleep(5000);
 
 		navigateTo(1);
 

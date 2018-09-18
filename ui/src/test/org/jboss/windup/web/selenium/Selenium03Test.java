@@ -134,8 +134,6 @@ public class Selenium03Test extends TestCase {
 		 * Step 13
 		 */
 		selenium.clickAnalysisConfiguration();
-		// assertEquals("AdditionWithSecurity-EAR-0.01.ear\n" +
-		// "AdministracionEfectivo.ear\n", selenium.printSelectedApplications());
 
 		/* 
 		 * Step 14

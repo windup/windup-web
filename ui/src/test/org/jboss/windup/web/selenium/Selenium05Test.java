@@ -5,9 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import junit.framework.TestCase;
-import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class Selenium05Test extends TestCase {
 
