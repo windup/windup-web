@@ -158,6 +158,7 @@ public class Selenium06Test extends TestCase {
 		list.add("Ignored Files");
 		list.add("About");
 		list.add("Send Feedback");
+		list.add("Tattletale");
 
 		ArrayList<String> collectedList = selenium.getTabs();
 		Collections.sort(collectedList);
