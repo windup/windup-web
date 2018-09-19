@@ -3,6 +3,8 @@ package org.jboss.windup.web.selenium;
 import java.awt.AWTException;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 import junit.framework.TestCase;
 
@@ -85,7 +87,9 @@ public class Selenium04Test extends TestCase {
 		
 		// Step 11
 		assertEquals("All Issues", selenium.pageTitle());
-		assertEquals("[Migration Optional, Cloud Mandatory, Cloud Optional]", selenium.allIssuesReport().toString());
+		String[] elementData = { "Migration Optional", "Cloud Mandatory", "Cloud Optional", "Information"};
+		ArrayList<String> issueTypes = new ArrayList<>(Arrays.asList(elementData));
+		assertEquals(issueTypes, selenium.allIssuesReport());
 
 		// Step 12
 		assertTrue(selenium.sortAllIssues());
