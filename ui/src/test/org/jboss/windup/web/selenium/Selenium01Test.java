@@ -4,11 +4,14 @@ import java.awt.AWTException;
 import java.io.File;
 
 import junit.framework.TestCase;
+import org.junit.FixMethodOrder;
+import org.junit.runners.MethodSorters;
 
 /**
  * Runs the first test from the Web UI Test Script V0.1
  * @author elise
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class Selenium01Test extends TestCase {
 
 	private CreateProject selenium;

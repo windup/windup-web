@@ -6,7 +6,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import junit.framework.TestCase;
+import org.junit.FixMethodOrder;
+import org.junit.runners.MethodSorters;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class Selenium04Test extends TestCase {
 
 	private AnalyzeProject selenium;

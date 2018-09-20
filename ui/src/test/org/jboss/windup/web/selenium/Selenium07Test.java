@@ -3,7 +3,10 @@ package org.jboss.windup.web.selenium;
 import java.awt.AWTException;
 
 import junit.framework.TestCase;
+import org.junit.FixMethodOrder;
+import org.junit.runners.MethodSorters;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class Selenium07Test extends TestCase {
 
 	private CreateProject selenium;

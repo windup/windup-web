@@ -4,7 +4,10 @@ import java.awt.AWTException;
 import java.io.File;
 
 import junit.framework.TestCase;
+import org.junit.FixMethodOrder;
+import org.junit.runners.MethodSorters;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class Selenium02Test extends TestCase {
 
 	private CreateProject selenium;

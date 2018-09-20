@@ -5,10 +5,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import org.junit.FixMethodOrder;
+import org.junit.runners.MethodSorters;
 import org.openqa.selenium.NoSuchElementException;
 
 import junit.framework.TestCase;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class Selenium06Test extends TestCase {
 
 	public void setUp() {

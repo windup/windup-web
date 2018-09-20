@@ -5,7 +5,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import junit.framework.TestCase;
+import org.junit.FixMethodOrder;
+import org.junit.runners.MethodSorters;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class Selenium05Test extends TestCase {
 
 	private AppLevel selenium;
