@@ -1024,7 +1024,7 @@ public class CreateProject extends CommonProject {
 	public ArrayList<Project> listProjects() {
 		WebElement projList = (new WebDriverWait(driver, 5)).until(ExpectedConditions.presenceOfElementLocated(
 				By.cssSelector("div.list-group")));
-		ArrayList<Project> list = new ArrayList<Project>();
+		ArrayList<Project> list = new ArrayList<>();
 		
 		int x = 1;
 		while (true) {
@@ -1098,7 +1098,7 @@ public class CreateProject extends CommonProject {
 	 */
 	private ArrayList<String> collectNames() {
 		ArrayList<Project> projList = listProjects();
-		ArrayList<String> list = new ArrayList<String>();
+		ArrayList<String> list = new ArrayList<>();
 		
 		for (Project p: projList) {
 			list.add(p.name);
@@ -1114,7 +1114,7 @@ public class CreateProject extends CommonProject {
 	 */
 	private ArrayList<Calendar> collectDates() {
 		ArrayList<Project> projList = listProjects();
-		ArrayList<Calendar> list = new ArrayList<Calendar>();
+		ArrayList<Calendar> list = new ArrayList<>();
 		
 		for (Project p: projList) {
 			Calendar cal = p.lastModified;
@@ -1132,7 +1132,7 @@ public class CreateProject extends CommonProject {
 	 */
 	private ArrayList<Integer> collectApplications() {
 		ArrayList<Project> projList = listProjects();
-		ArrayList<Integer> list = new ArrayList<Integer>();
+		ArrayList<Integer> list = new ArrayList<>();
 		
 		for (Project p: projList) {
 			list.add(p.applications);

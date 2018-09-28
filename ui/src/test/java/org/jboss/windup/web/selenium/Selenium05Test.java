@@ -27,7 +27,7 @@ public class Selenium05Test extends TestCase {
 
 	public void test01() throws InterruptedException, AWTException {
 		//Step 1
-		ArrayList<String> list = new ArrayList<String>();
+		ArrayList<String> list = new ArrayList<>();
 		list.add("All Applications");
 		list.add("Dashboard");
 		list.add("Issues");
@@ -101,7 +101,7 @@ public class Selenium05Test extends TestCase {
 		selenium.clickTab("Dependencies");
 		assertEquals("Dependencies", selenium.pageTitle());
 		assertEquals("AdministracionEfectivo.ear", selenium.pageApp());
-		list = new ArrayList<String>();
+		list = new ArrayList<>();
 		list.add("jdtcore-3.1.0.jar");
 		list.add("AdministracionEfectivo-ejb-0.0.1-SNAPSHOT.jar");
 		list.add("AdministracionEfectivo-jpa-0.0.1-SNAPSHOT.jar");
@@ -233,7 +233,7 @@ public class Selenium05Test extends TestCase {
 		selenium.clickApplication("AdditionWithSecurity-EAR-0.01.ear");
 		assertEquals("AdditionWithSecurity-EAR-0.01.ear", selenium.pageApp());
 
-		ArrayList<String> list = new ArrayList<String>();
+		ArrayList<String> list = new ArrayList<>();
 		list.add("All Applications");
 		list.add("Dashboard");
 		list.add("Issues");

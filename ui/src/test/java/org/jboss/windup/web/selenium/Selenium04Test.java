@@ -170,7 +170,7 @@ public class Selenium04Test extends TestCase {
 		assertEquals("About", selenium.pageTitle());
 
 		ArrayList<String> links = selenium.getAboutLinks();
-		ArrayList<String> aboutLinks = new ArrayList<String>();
+		ArrayList<String> aboutLinks = new ArrayList<>();
 		aboutLinks.add("https://twitter.com/jbosswindup");
 		aboutLinks.add("https://developers.redhat.com/products/rhamt/overview/");
 		aboutLinks.add("https://access.redhat.com/documentation/en-us/red_hat_application_migration_toolkit/");

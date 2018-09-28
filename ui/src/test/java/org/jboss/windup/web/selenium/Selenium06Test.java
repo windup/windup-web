@@ -148,7 +148,7 @@ public class Selenium06Test extends TestCase {
 		seleniumAppLevel.navigateTo(1);
 		seleniumAppLevel.clickApplication("AdministracionEfectivo.ear");
 
-		ArrayList<String> list = new ArrayList<String>();
+		ArrayList<String> list = new ArrayList<>();
 		list.add("All Applications");
 		list.add("Dashboard");
 		list.add("Issues");

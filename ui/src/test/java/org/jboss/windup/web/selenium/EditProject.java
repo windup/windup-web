@@ -270,7 +270,7 @@ public class EditProject extends CommonProject {
 	 */
 	public ArrayList<String> collectTableCol(int index) {
 		WebElement body = driver.findElement(By.cssSelector("tbody"));
-		ArrayList<String> list = new ArrayList<String>();
+		ArrayList<String> list = new ArrayList<>();
 		int x = 1;
 		while (true) {
 			try {
@@ -335,7 +335,7 @@ public class EditProject extends CommonProject {
 	 * @throws ParseException
 	 */
 	private ArrayList<Date> collectDate(int index) throws ParseException {
-		ArrayList<Date> list = new ArrayList<Date>();
+		ArrayList<Date> list = new ArrayList<>();
 		ArrayList<String> collectedDates = collectTableCol(index);
 		
 		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy, hh:mm aa");
@@ -477,7 +477,7 @@ public class EditProject extends CommonProject {
 	 */
 	private ArrayList<Status> collectStatus() {
 		WebElement body = driver.findElement(By.cssSelector("tbody"));
-		ArrayList<Status> list = new ArrayList<Status>();
+		ArrayList<Status> list = new ArrayList<>();
 		int x = 1;
 		while (true) {
 			try {

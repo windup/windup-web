@@ -215,7 +215,7 @@ public class AppLevel extends CommonProject {
 		WebElement header = driver.findElement(By.cssSelector("ul.nav.navbar-nav"));
 		
 		int x = 1;
-		ArrayList<String> tabs = new ArrayList<String>();
+		ArrayList<String> tabs = new ArrayList<>();
 		while (true) {
 			try {
 				WebElement tab = header.findElement(By.cssSelector("li:nth-child(" + x + ")"));
@@ -476,7 +476,7 @@ public class AppLevel extends CommonProject {
 	 */
 	public ArrayList<String> dependenciesList() {
 		WebElement body = driver.findElement(By.cssSelector("div.dependencies"));
-		ArrayList<String> list = new ArrayList<String>();
+		ArrayList<String> list = new ArrayList<>();
 		
 		int x = 1;
 		while (true) {
@@ -545,7 +545,7 @@ public class AppLevel extends CommonProject {
 	public ArrayList<String> unparsableFiles() {
 		WebElement body = driver.findElement(By.cssSelector("div.row.unparsableFile"));
 		WebElement table = body.findElement(By.cssSelector("tbody"));
-		ArrayList<String> list = new ArrayList<String>();
+		ArrayList<String> list = new ArrayList<>();
 		int x = 1;
 		while (true) {
 			try {

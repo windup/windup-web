@@ -200,7 +200,7 @@ public class AnalyzeProject extends CommonProject {
 	 */
 	public ArrayList<Application> listApplications() {
 		WebElement appList = driver.findElement(By.cssSelector(".real"));
-		ArrayList<Application> list = new ArrayList<Application>();
+		ArrayList<Application> list = new ArrayList<>();
 
 		int x = 1;
 		while (true) {
@@ -262,7 +262,7 @@ public class AnalyzeProject extends CommonProject {
 	 */
 	private ArrayList<String> collectNames() {
 		ArrayList<Application> appList = listApplications();
-		ArrayList<String> list = new ArrayList<String>();
+		ArrayList<String> list = new ArrayList<>();
 
 		for (Application a : appList) {
 			list.add(a.name);
@@ -278,7 +278,7 @@ public class AnalyzeProject extends CommonProject {
 	 */
 	private ArrayList<Integer> collectStoryPoints() {
 		ArrayList<Application> appList = listApplications();
-		ArrayList<Integer> list = new ArrayList<Integer>();
+		ArrayList<Integer> list = new ArrayList<>();
 
 		for (Application a : appList) {
 			list.add(a.storyPoints);
@@ -474,7 +474,7 @@ public class AnalyzeProject extends CommonProject {
 	 * @return an string array list of the titles
 	 */
 	public ArrayList<String> allIssuesReport() {
-		ArrayList<String> list = new ArrayList<String>();
+		ArrayList<String> list = new ArrayList<>();
 		int x = 1;
 		while (true) {
 			try {
@@ -603,7 +603,7 @@ public class AnalyzeProject extends CommonProject {
 	 * @return an arrayList of strings holding all the names
 	 */
 	private ArrayList<String> collectBody(WebElement table) {
-		ArrayList<String> list = new ArrayList<String>();
+		ArrayList<String> list = new ArrayList<>();
 		int x = 1;
 		while (true) {
 			try {
@@ -631,7 +631,7 @@ public class AnalyzeProject extends CommonProject {
 	 * @return an arraylist of integers representing the column
 	 */
 	private ArrayList<Integer> collectBody(WebElement table, int column) {
-		ArrayList<Integer> list = new ArrayList<Integer>();
+		ArrayList<Integer> list = new ArrayList<>();
 
 		int x = 1;
 		while (true) {
@@ -831,7 +831,7 @@ public class AnalyzeProject extends CommonProject {
 		WebElement body = driver.findElement(By.cssSelector("tbody"));
 
 		int x = 1;
-		ArrayList<String> apps = new ArrayList<String>();
+		ArrayList<String> apps = new ArrayList<>();
 		while (true) {
 			try {
 				WebElement app = body.findElement(By.cssSelector("tr.app:nth-child(" + x + ")"));
@@ -846,7 +846,7 @@ public class AnalyzeProject extends CommonProject {
 	}
 
 	public ArrayList<Integer> collectColumn(int index) {
-		ArrayList<Integer> collectedCol = new ArrayList<Integer>();
+		ArrayList<Integer> collectedCol = new ArrayList<>();
 		int x = 1;
 		while (true) {
 			try {
@@ -871,7 +871,7 @@ public class AnalyzeProject extends CommonProject {
 	}
 
 	public ArrayList<Integer> collectApp(int index) {
-		ArrayList<Integer> appList = new ArrayList<Integer>();
+		ArrayList<Integer> appList = new ArrayList<>();
 		int x = 2;
 		while (true) {
 			try {
@@ -905,9 +905,9 @@ public class AnalyzeProject extends CommonProject {
 		WebElement header = driver.findElement(By.cssSelector("thead"));
 		WebElement body = driver.findElement(By.cssSelector("tbody"));
 
-		ArrayList<Integer> col = new ArrayList<Integer>();
-		ArrayList<Integer> sorted = new ArrayList<Integer>();
-		ArrayList<Integer> collected = new ArrayList<Integer>();
+		ArrayList<Integer> col;
+		ArrayList<Integer> sorted;
+		ArrayList<Integer> collected;
 		boolean working = false;
 		int x = 2;
 		while (true) {
@@ -1014,7 +1014,7 @@ public class AnalyzeProject extends CommonProject {
 	 */
 	public ArrayList<String> getAboutLinks() {
 		WebElement body = driver.findElement(By.cssSelector("div.panel-body"));
-		ArrayList<String> links = new ArrayList<String>();
+		ArrayList<String> links = new ArrayList<>();
 
 		for (int x = 4; x < 19; x += 2) {
 			WebElement link;

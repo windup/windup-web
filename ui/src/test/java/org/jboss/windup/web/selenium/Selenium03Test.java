@@ -82,7 +82,7 @@ public class Selenium03Test extends TestCase {
 		assertTrue(selenium.sortString(1, "Application"));
 		assertTrue(selenium.sortDate(2, "Date Added"));
 		
-		ArrayList<String> table = new ArrayList<String>();
+		ArrayList<String> table = new ArrayList<>();
 		table.add("arit-ear-0.8.1-SNAPSHOT.ear");
 		table.add("AdditionWithSecurity-EAR-0.01.ear");
 		table.add("AdministracionEfectivo.ear");
