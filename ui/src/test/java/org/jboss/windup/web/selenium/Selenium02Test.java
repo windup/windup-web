@@ -4,6 +4,7 @@ import java.awt.AWTException;
 import java.io.File;
 
 import junit.framework.TestCase;
+import org.junit.After;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
 
@@ -36,7 +37,6 @@ public class Selenium02Test extends TestCase {
 		selenium.inputProjName("abc");
 		assertTrue(selenium.nextEnabled());
 		selenium.clearProjName();
-//		System.out.println(selenium.nextEnabled());
 		assertFalse(selenium.nextEnabled());
 
 		// properly inputs the project name & description
@@ -145,9 +145,12 @@ public class Selenium02Test extends TestCase {
 		assertTrue(selenium.checkProgressBar());
 		
 		assertTrue(selenium.analysisResultsComplete(2));
-		
+	}
 
-
+	@After
+	public void tearDown()
+	{
+		selenium.closeDriver();
 	}
 
 }

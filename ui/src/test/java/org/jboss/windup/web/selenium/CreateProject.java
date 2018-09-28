@@ -6,7 +6,6 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.jboss.windup.web.selenium.AnalyzeProject.Application;
 
 import java.awt.AWTException;
 import java.awt.Robot;
@@ -35,8 +34,8 @@ public class CreateProject extends CommonProject {
 
 	public CreateProject() {
 
-		WebElement header = (new WebDriverWait(driver, 15))
-				.until(ExpectedConditions.presenceOfElementLocated(By.id("header-logo")));
+		WebDriverWait wait = new WebDriverWait(driver, 15);
+		wait.until(ExpectedConditions.presenceOfElementLocated(By.id("header-logo")));
 	}
 
 	/**
@@ -403,7 +402,6 @@ public class CreateProject extends CommonProject {
 		WebElement packageTable = (new WebDriverWait(driver, 10)).until(ExpectedConditions.presenceOfElementLocated(
 				By.cssSelector("wu-js-tree-wrapper.jstree.jstree-"+ index + ".jstree-default")));
 		WebElement firstPackage = packageTable.findElement(By.cssSelector("li:nth-child(1)"));
-//		System.out.println("First package: "+ firstPackage.getText());
 		
 		WebElement branch = null;
 		
@@ -684,10 +682,7 @@ public class CreateProject extends CommonProject {
 	/**
 	 * 
 	 */
-//	public void runAnalysis() {
-//		WebElement runAnalysis = driver.findElement(By.cssSelector("button.btn.btn-primary"));
-//		runAnalysis.click();
-//	}
+
 
 	/**
 	 * This method should be run right after redirecting to the reports/analysis
@@ -790,7 +785,6 @@ public class CreateProject extends CommonProject {
 	 * @return true if the project is found
 	 */
 	public boolean navigateProject(String projName) {
-		//driver.navigate().to("http://127.0.0.1:8080/rhamt-web/project-list");
 		int x = 1;
 		while (true) {
 			try {
@@ -835,7 +829,6 @@ public class CreateProject extends CommonProject {
 				WebElement title = project.findElement(By.cssSelector("h2.project-title"));
 				if (title.getText().equals(projName)) {
 					WebElement trash = project.findElement(By.cssSelector("a.action-button.action-delete-project"));
-					//trash.click();
 					JavascriptExecutor jse2 = (JavascriptExecutor)driver;
 					jse2.executeScript("arguments[0].click()", trash);
 					working = true;
@@ -852,7 +845,6 @@ public class CreateProject extends CommonProject {
 			WebElement delete = driver.findElement(By.cssSelector("button.confirm-button.btn.btn-lg.btn-danger"));
 			
 			if (cancel.isEnabled() && !delete.isEnabled()) {
-				//WebElement input = driver.findElement(By.cssSelector("input#resource-to-delete"));
 				WebDriverWait  wait = new WebDriverWait(driver, 60);
 				WebElement input = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("input#resource-to-delete")));
 				input.sendKeys(projName);
@@ -1091,7 +1083,7 @@ public class CreateProject extends CommonProject {
 	    public boolean equals(Object o) {
 	    	if (o == this) 
 	    		return true;
-	    	if (o == null || o.getClass() != Application.class) {
+	    	if (o == null || o.getClass() != AnalyzeProject.Application.class) {
 	    		return false;
 	    	}
 	    	Project other = (Project)o;

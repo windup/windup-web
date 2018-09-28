@@ -4,6 +4,7 @@ import java.awt.AWTException;
 import java.io.File;
 
 import junit.framework.TestCase;
+import org.junit.After;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
 
@@ -46,8 +47,6 @@ public class Selenium01Test extends TestCase {
 		selenium.clickCancel();
 		
 		assertEquals("http://127.0.0.1:8080/rhamt-web/project-list", selenium.checkURL());
-		
-		selenium.closeDriver();
 	}
 
 	/**
@@ -198,6 +197,14 @@ public class Selenium01Test extends TestCase {
 		//waits approx 1.3 minutes for the file to fully load, then deletes the project and closes the driver
 //		Thread.sleep(100000);
 //		selenium.deleteProject("test");
+
+	}
+
+	@After
+	public void tearDown()
+	{
 		selenium.closeDriver();
 	}
+
+
 }

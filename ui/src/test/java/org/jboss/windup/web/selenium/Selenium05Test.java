@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import junit.framework.TestCase;
+import org.junit.After;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
 
@@ -168,8 +169,6 @@ public class Selenium05Test extends TestCase {
 		selenium.mavenSearch(hash);
 		assertTrue(selenium.checkURL().startsWith("https://search.maven.org"));
 		selenium.navigateTo(1);
-
-		selenium.closeDriver();
 	}
 
 	public void test04() {
@@ -224,8 +223,6 @@ public class Selenium05Test extends TestCase {
 		assertEquals("Ignored Files", selenium.pageTitle());
 		assertEquals("AdministracionEfectivo.ear", selenium.pageApp());
 		assertEquals(44, selenium.ignoreFile());
-
-		selenium.closeDriver();
 	}
 
 	public void test05() throws InterruptedException {
@@ -281,9 +278,12 @@ public class Selenium05Test extends TestCase {
 		//Step 33
 		selenium.closeFeedback();
 		assertTrue(selenium.popupRemoved("atlwdg-blanket"));
-
-		selenium.closeDriver();
 	}
 
+	@After
+	public void tearDown()
+	{
+		selenium.closeDriver();
+	}
 
 }

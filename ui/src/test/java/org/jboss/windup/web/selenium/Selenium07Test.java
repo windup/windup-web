@@ -3,6 +3,7 @@ package org.jboss.windup.web.selenium;
 import java.awt.AWTException;
 
 import junit.framework.TestCase;
+import org.junit.After;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
 
@@ -64,6 +65,12 @@ public class Selenium07Test extends TestCase {
 		list = selenium.listProjects().toString();
 		assertEquals("[test, test 2]", list);
 		
+	}
+
+	@After
+	public void tearDown()
+	{
+		selenium.closeDriver();
 	}
 
 }

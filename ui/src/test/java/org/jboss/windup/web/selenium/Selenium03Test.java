@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
+import org.junit.After;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
 
@@ -62,7 +63,6 @@ public class Selenium03Test extends TestCase {
 		 * Step 5
 		 */
 		selenium.cancelSearch();
-		selenium.closeDriver();
 	}
 
 	public void testStep06_12() throws ParseException {
@@ -125,9 +125,6 @@ public class Selenium03Test extends TestCase {
 		 * Step 12
 		 */
 		selenium.cancelSearch();
-//		assertEquals(table, selenium.collectTableCol(1));
-
-		selenium.closeDriver();
 	}
 
 	public void testStep13_19() throws InterruptedException {
@@ -177,6 +174,11 @@ public class Selenium03Test extends TestCase {
 		 */
 		String url = selenium.clickAnalysisReport(1);
 		selenium.navigateTo(1);
+	}
+
+	@After
+	public void tearDown()
+	{
 		selenium.closeDriver();
 	}
 }

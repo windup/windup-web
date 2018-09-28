@@ -20,8 +20,8 @@ public class AnalyzeProject extends CommonProject {
 
 	public AnalyzeProject() throws InterruptedException {
 
-		WebElement header = (new WebDriverWait(driver, 10))
-				.until(ExpectedConditions.presenceOfElementLocated(By.id("header-logo")));
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		wait.until(ExpectedConditions.presenceOfElementLocated(By.id("header-logo")));
 
 		navigateProject("test 2");
 		waitForProjectLoad();
@@ -106,12 +106,6 @@ public class AnalyzeProject extends CommonProject {
 		WebDriverWait wait = new WebDriverWait(driver,20);
 
 		tabs = driver.findElement(By.cssSelector("ul.nav.navbar-nav"));
-
-
-
-
-
-
 		wait.until(ExpectedConditions.elementToBeClickable(tabs.findElement(
 				By.cssSelector("li:nth-child(" + index + ")" +
 				".active"))));
@@ -127,9 +121,6 @@ public class AnalyzeProject extends CommonProject {
 	public void clickSendFeedback() throws InterruptedException {
 		WebElement feedback = driver.findElement(By.cssSelector("ul.nav.navbar-nav.navbar-right"));
 		feedback.click();
-		// WebElement popup = (new WebDriverWait(driver,
-		// 30)).until(ExpectedConditions.presenceOfElementLocated(
-		// By.cssSelector("html.mozilla")));
 	}
 
 	/**
@@ -398,12 +389,6 @@ public class AnalyzeProject extends CommonProject {
 		actions.sendKeys(searchParam).perform();
 
 		filter.submit();
-
-		/*search.sendKeys(searchParam);
-
-		Robot r = new Robot();
-		r.keyPress(KeyEvent.VK_ENTER);
-		r.keyRelease(KeyEvent.VK_ENTER);*/
 
 	}
 
@@ -743,17 +728,10 @@ public class AnalyzeProject extends CommonProject {
 
 		WebDriverWait wait = new WebDriverWait(driver, 10);
 		wait.until(
-				//ExpectedConditions.and(
-
-				 		ExpectedConditions.elementToBeClickable(
-				 				By.cssSelector("table.tablesorter:nth-child(1) " +
-								"tbody " + "a.toggle"))//,
-						//ExpectedConditions.not(
-						//	ExpectedConditions.elementToBeClickable(By.cssSelector(".wu-navbar-header.navbar-header")
-						//))
-
-				 //)
-	);
+				ExpectedConditions.elementToBeClickable(
+						By.cssSelector("table.tablesorter:nth-child(1) " +
+								"tbody " + "a.toggle"))
+		);
 
 		WebElement link = driver.findElement(By.cssSelector("table.tablesorter:nth-child(1) " +
 				"tbody " + "a.toggle"));
@@ -762,9 +740,6 @@ public class AnalyzeProject extends CommonProject {
 
 		JavascriptExecutor jse2 = (JavascriptExecutor)driver;
 		jse2.executeScript("arguments[0].click()", link);
-
-		//
-		// link.click();
 
 		WebElement fileExpanded = body.findElement(By.cssSelector("tr:nth-child(2)"));
 		body = fileExpanded.findElement(By.cssSelector("tbody"));
@@ -809,8 +784,6 @@ public class AnalyzeProject extends CommonProject {
 		WebElement fileExpanded = body.findElement(By.cssSelector("tr:nth-child(2)"));
 		body = fileExpanded.findElement(By.cssSelector("tbody"));
 		WebElement showRule = body.findElement(By.cssSelector("a.sh_url"));
-		String rule = showRule.getCssValue("title");
-		//showRule.click();
 		JavascriptExecutor jse2 = (JavascriptExecutor)driver;
 		jse2.executeScript("arguments[0].click()", showRule);
 	}
@@ -924,17 +897,7 @@ public class AnalyzeProject extends CommonProject {
 		String s = "div.box.box-techbox:" + names[1];
 		WebElement mvc = driver.findElement(By.cssSelector(s));
 		System.out.println(mvc);
-		
-//		while (true) {
-//			try {
-//				WebElement box = driver.findElement(By.cssSelector("div.box:nth-child(" + x + ")"));
-//				WebElement name = box.findElement(By.cssSelector("div.content > h4"));
-//				System.out.println(name.getText());
-//				x++;
-//			} catch (NoSuchElementException e) {
-//				break;
-//			}
-//		}
+
 	}
 	
 
@@ -1239,7 +1202,6 @@ public class AnalyzeProject extends CommonProject {
 		WebDriverWait wait = new WebDriverWait(driver, 5);
 		wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".activated-item")));
 
-
 	}
 
 	public void waitForTabLoad()
@@ -1247,14 +1209,6 @@ public class AnalyzeProject extends CommonProject {
 
 		WebDriverWait wait = new WebDriverWait(driver, 10);
 		wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("ul.nav.navbar-nav li.active")));
-
-		/*WebElement tabs = driver.findElement(By.cssSelector("ul.nav.navbar-nav"));
-		WebElement tab = tabs.findElement(By.cssSelector("li:nth-child(" + index + ")"));
-		tab.click();
-		WebDriverWait wait = new WebDriverWait(driver,5);
-		tabs = driver.findElement(By.cssSelector("ul.nav.navbar-nav"));
-		wait.until(ExpectedConditions.elementToBeClickable( tabs.findElement(By.cssSelector("li:nth-child(" + index + ")" +
-				".active"))));*/
 
 	}
 

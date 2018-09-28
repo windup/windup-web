@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import junit.framework.TestCase;
+import org.junit.After;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
 
@@ -43,7 +44,6 @@ public class Selenium04Test extends TestCase {
 		 * Step 2
 		 */
 		selenium.closeFeedback();
-		selenium.closeDriver();
 	}
 
 	public void testAppList() throws AWTException {
@@ -78,8 +78,6 @@ public class Selenium04Test extends TestCase {
 		assertTrue(selenium.deleteFilter("Tag: ", "JPA XML 2.0"));
 		assertEquals("[AdditionWithSecurity-EAR-0.01.ear, arit-ear-0.8.1-SNAPSHOT.ear, AdministracionEfectivo.ear]",
 				selenium.listApplications().toString());
-
-		selenium.closeDriver();
 	}
 
 	public void testStep02() throws InterruptedException
@@ -106,8 +104,6 @@ public class Selenium04Test extends TestCase {
 		// Step 15
 		selenium.goBack();
 		assertFalse(selenium.showRuleVisible());
-
-		selenium.closeDriver();
 	}
 
 	public void testStep03() throws InterruptedException {
@@ -143,8 +139,6 @@ public class Selenium04Test extends TestCase {
 		// Step 18
 		selenium.goBack();
 		assertEquals("Technologies", selenium.pageTitle());
-
-		selenium.closeDriver();
 	}
 
 	public void testStep04() throws InterruptedException, AWTException {
@@ -160,15 +154,11 @@ public class Selenium04Test extends TestCase {
 
 		selenium.navigateTo(2);
 
-		//selenium.waitForTabLoad();
 		selenium.mavenSearch(hash);
-
-
 
 		assertTrue(selenium.checkURL().startsWith("https://search.maven.org"));
 		selenium.navigateTo(1);
 		selenium.waitForTabLoad();
-		selenium.closeDriver();
 	}
 
 
@@ -191,7 +181,6 @@ public class Selenium04Test extends TestCase {
 		aboutLinks.add("https://issues.jboss.org/browse/WINDUP");
 
 		assertTrue(links.equals(aboutLinks));
-		selenium.closeDriver();
 	}
 
 	public void testStep06() throws InterruptedException, AWTException {
@@ -224,7 +213,11 @@ public class Selenium04Test extends TestCase {
 		selenium.feedbackPopulateEmail("email");
 		selenium.feedbackPopulateName("name");
 		assertTrue(selenium.popupRemoved("atlwdg-blanket"));
-		
+	}
+
+	@After
+	public void tearDown()
+	{
 		selenium.closeDriver();
 	}
 

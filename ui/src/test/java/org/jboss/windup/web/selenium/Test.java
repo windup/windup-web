@@ -2,8 +2,6 @@ package org.jboss.windup.web.selenium;
 
 import java.awt.AWTException;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
 
 import junit.framework.TestCase;
 
