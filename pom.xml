@@ -11,7 +11,7 @@
 
     <groupId>org.jboss.windup.web</groupId>
     <artifactId>windup-web-parent</artifactId>
-    <version>4.2.0.Alpha1</version>
+    <version>4.2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Windup Web - Parent</name>
@@ -37,7 +37,7 @@
     </properties>
 
     <scm>
-        <tag>4.2.0.Alpha1</tag>
+        <tag>master</tag>
         <connection>${windup.web.scm.connection}</connection>
         <developerConnection>${windup.web.developer.connection}</developerConnection>
         <url>${windup.web.scm.url}</url>
