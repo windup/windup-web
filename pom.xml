@@ -24,7 +24,7 @@
         <version.findbugs.plugin>3.0.5</version.findbugs.plugin>
         <version.forge>3.7.2.Final</version.forge>
         <version.furnace>2.26.2.Final</version.furnace>
-        <version.windup>4.2.0.Alpha1</version.windup>
+        <version.windup>4.2.0-SNAPSHOT</version.windup>
         <version.keycloak>2.5.5.Final</version.keycloak>
         <version.resteasy>3.0.19.Final</version.resteasy>
         <version.jboss.javaee>1.0.3.Final</version.jboss.javaee>
