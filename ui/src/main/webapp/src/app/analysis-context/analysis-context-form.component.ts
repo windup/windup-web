@@ -24,6 +24,7 @@ import {WINDUP_WEB} from "../app.module";
 import {DialogService} from "../shared/dialog/dialog.service";
 import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
 import {TreeData} from "../shared/js-tree-angular-wrapper.component";
+import Arrays = utils.Arrays;
 
 @Component({
     templateUrl: './analysis-context-form.component.html',
@@ -102,6 +103,9 @@ export class AnalysisContextFormComponent extends FormComponent
 
     saveInProgress = false;
 
+    is3rdPartyPackagesVisible = false;
+    isTreeReloadComplete = true;
+
     static DEFAULT_MIGRATION_PATH: MigrationPath = <MigrationPath>{ id: 101 };
     static CLOUD_READINESS_PATH_ID: number = 90;
     @ViewChild('cancelDialog')
@@ -171,7 +175,7 @@ export class AnalysisContextFormComponent extends FormComponent
                                     }
                                 });
                         }
-                        this.loadPackageMetadata();
+                        this.loadPackageMetadata(false);
                     });
                 });
             }
@@ -229,7 +233,7 @@ export class AnalysisContextFormComponent extends FormComponent
         this.analysisContext = analysisContext;
     }
 
-    private loadPackageMetadata() {
+    private loadPackageMetadata(view3rdPartyPackages) {
         let registeredPackagesObservables = this.project.applications.map(app => {
             return this._registeredApplicationService.waitUntilPackagesAreResolved(app);
         });
@@ -265,7 +269,16 @@ export class AnalysisContextFormComponent extends FormComponent
 
         forkJoin(registeredPackagesObservables).subscribe((packageMetadataArray: PackageMetadata[]) => {
             let arrayOfRoots = [].concat(...packageMetadataArray.map((singlePackageMetadata) => singlePackageMetadata.packageTree));
-            let mergedRoots = this._packageRegistryService.mergePackageRoots(arrayOfRoots);
+            let filteredRoots = [];
+            if (!view3rdPartyPackages)
+            {
+                filteredRoots = arrayOfRoots.filter(packageTree => !packageTree.known);
+            }
+            else
+            {
+                filteredRoots = arrayOfRoots;
+            }
+            let mergedRoots = this._packageRegistryService.mergePackageRoots(filteredRoots);
             mergedRoots.forEach(singleRoot => this._packageRegistryService.putHierarchy(singleRoot));
 
             this.packageTree = mergedRoots;
@@ -287,7 +300,12 @@ export class AnalysisContextFormComponent extends FormComponent
 
             this.includePackages = this.analysisContext.includePackages;
             this.excludePackages = this.analysisContext.excludePackages;
+
+            this.is3rdPartyPackagesVisible = view3rdPartyPackages;
+            this.isTreeReloadComplete = true;
         });
+
+
     }
 
     get migrationPaths() {
@@ -331,6 +349,20 @@ export class AnalysisContextFormComponent extends FormComponent
         } else {
             this.saveConfiguration();
         }
+    }
+
+    view3rdPartyPackages()
+    {
+        this.isTreeReloadComplete = false;
+        this.loadPackageMetadata(true);
+        return false;
+    }
+
+    hide3rdPartyPackages()
+    {
+        this.isTreeReloadComplete = false;
+        this.loadPackageMetadata(false);
+        return false;
     }
 
     protected saveConfiguration() {

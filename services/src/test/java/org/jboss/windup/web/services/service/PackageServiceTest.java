@@ -92,7 +92,7 @@ public class PackageServiceTest
 
         Map<String, Package> packageMap = new TreeMap<>();
 
-        Package aPackage = service.createPackageHierarchy("org.jboss.windup.web", packageClassCnt, packageMap);
+        Package aPackage = service.createPackageHierarchy("org.jboss.windup.web", packageClassCnt, packageMap, false);
 
         Assert.assertEquals(4, packageMap.keySet().size());
 

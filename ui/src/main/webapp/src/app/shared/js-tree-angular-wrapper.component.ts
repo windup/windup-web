@@ -13,7 +13,7 @@ import {SchedulerService} from "./scheduler.service";
 @Component({
     templateUrl: './js-tree-angular-wrapper.component.html',
     selector: 'wu-js-tree-wrapper',
-    host: { 'style': 'display: block; overflow: auto;' }
+    host: { 'style': 'overflow: auto;' }
 })
 export class JsTreeAngularWrapperComponent implements OnInit, OnChanges, OnDestroy {
     @Input()

@@ -67,14 +67,24 @@ public class PackageDiscoveryServiceImpl implements PackageDiscoveryService
     private void qualifyDiscoveredPackages(Map<String, String> knownPackages, PackageFrequencyTrie discoveredPackagesFrequencyTrie,
                 Map<String, Integer> knownPackagesAndClassCount, Map<String, Integer> unknownPackagesAndClassCount)
     {
+        Map<String, Integer> rootPackageUnknownClassCount = new TreeMap<String,Integer>();
+
         discoveredPackagesFrequencyTrie.visit((trie, depth) -> {
             String packageName = trie.getPackageName();
 
             int recursiveClassCount = trie.getClassCount(true);
             int nonRecursiveClassCount = trie.getClassCount(false);
 
-            Map<String, Integer> resultingMap = null;
+            boolean isRootPackage = false;
+            String rootPackageName = null;
+            String[] packageNameHierarchy = packageName.split("[.]");
+            if (packageNameHierarchy != null && packageNameHierarchy.length > 0)
+            {
+                rootPackageName = packageNameHierarchy[0];
+                isRootPackage = rootPackageName.equals(packageName);
+            }
 
+            Map<String, Integer> resultingMap = null;
             String organization = packageNameMappingRegistry.getOrganizationForPackage(packageName);
 
             if (organization != null)
@@ -85,6 +95,27 @@ public class PackageDiscoveryServiceImpl implements PackageDiscoveryService
             else
             {
                 resultingMap = unknownPackagesAndClassCount;
+                if (!isRootPackage)
+                {
+                    if (!rootPackageUnknownClassCount.containsKey(rootPackageName))
+                    {
+                        rootPackageUnknownClassCount.put(rootPackageName,1);
+                    }
+                    else
+                    {
+                        rootPackageUnknownClassCount.replace(rootPackageName, (rootPackageUnknownClassCount.get(rootPackageName)) + 1);
+                    }
+                }
+            }
+
+            if(isRootPackage)
+            {
+                Integer unknownPackageCount = rootPackageUnknownClassCount.get(rootPackageName);
+                if (unknownPackageCount == null || unknownPackageCount < 1)
+                {
+                    resultingMap = knownPackagesAndClassCount;
+                    knownPackages.put(packageName, "ROOT_KNOWN_ORG");
+                }
             }
 
             if (depth > 0)

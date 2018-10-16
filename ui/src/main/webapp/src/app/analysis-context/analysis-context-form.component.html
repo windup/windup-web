@@ -83,7 +83,7 @@
         <!-- Packages -->
         <div class="form-group">
             <label class="control-label" i18n>Included packages</label>
-            <div class="loading-packages" *ngIf="!packageTreeLoaded">
+            <div class="loading-packages" *ngIf="!packageTreeLoaded || !isTreeReloadComplete">
                 <p>
                     <span class="spinner spinner-xs spinner-inline"></span>
                     <ng-container i18n>Identifying packages...</ng-container>
@@ -93,8 +93,11 @@
                     style="max-height: 240px;"
                     [treeNodes]="packageTree"
                     [(selectedNodes)]="analysisContext.includePackages"
-                    (selectedNodesChange)="includedPackagesChanged($event)">
+                    (selectedNodesChange)="includedPackagesChanged($event)"
+                    [hidden] = "!isTreeReloadComplete">
             </wu-js-tree-wrapper>
+            <div *ngIf="is3rdPartyPackagesVisible"><button (click)="hide3rdPartyPackages()">Hide 3rd Party Packages</button></div>
+            <div *ngIf="!is3rdPartyPackagesVisible"><button (click)="view3rdPartyPackages()">View 3rd Party Packages</button></div>
             <p class="help-block" i18n="include packages description">Select the Java packages to decompile and analyze. If no packages are selected, all will be analyzed.</p>
         </div>
 

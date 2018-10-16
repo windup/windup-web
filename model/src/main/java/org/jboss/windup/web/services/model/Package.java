@@ -41,6 +41,8 @@ public class Package implements Serializable
     @Column()
     private int countClasses;
 
+    private boolean isKnown;
+
     @ManyToOne()
     @JsonIgnore
     private Package parent;
@@ -70,11 +72,12 @@ public class Package implements Serializable
      * @param partialName Name of package
      * @param fullName Fully qualified name of package
      */
-    public Package(String partialName, String fullName)
+    public Package(String partialName, String fullName, boolean isKnown)
     {
         this.name = partialName;
         this.fullName = fullName;
         this.childs = new HashSet<>();
+        this.isKnown = isKnown;
     }
 
     public Long getId()
@@ -188,6 +191,13 @@ public class Package implements Serializable
         this.childs.remove(child);
     }
 
+    public boolean isKnown() {
+        return isKnown;
+    }
+
+    public void setKnown(boolean known) {
+        isKnown = known;
+    }
 
     public int getLevel()
     {
