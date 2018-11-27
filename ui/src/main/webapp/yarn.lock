@@ -3381,9 +3381,9 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.3.6"
 
-jstree@^3.3.2:
-  version "3.3.3"
-  resolved "https://registry.yarnpkg.com/jstree/-/jstree-3.3.3.tgz#de1222766e080e8143fcc23ef2c875e76f0773f2"
+jstree@3.3.5:
+  version "3.3.5"
+  resolved "https://registry.yarnpkg.com/jstree/-/jstree-3.3.5.tgz#9c578db32d0a643775cddd8020ad5992f4119c13"
   dependencies:
     jquery ">=1.9.1"
 
@@ -4108,10 +4108,6 @@ negotiator@0.6.1:
 ng2-file-upload@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/ng2-file-upload/-/ng2-file-upload-1.2.1.tgz#5563c5dfd6f43fbfbe815c206e343464a0a6a197"
-
-ng2-slim-loading-bar@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/ng2-slim-loading-bar/-/ng2-slim-loading-bar-4.0.0.tgz#7256fdde7c058f14955a3ef2e65afafb5b664603"
 
 no-case@^2.2.0:
   version "2.3.1"
