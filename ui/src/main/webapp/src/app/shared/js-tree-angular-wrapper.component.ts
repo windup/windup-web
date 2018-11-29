@@ -173,7 +173,7 @@ export class JsTreeAngularWrapperComponent implements OnInit, OnChanges, OnDestr
     expandNode(nodeID) {
         //Open all nodes in the tree above the one passed in
         let jsTree = $(this.element).jstree(true);
-        while (nodeID != '#') {
+        while (nodeID) {
             jsTree.open_node(nodeID);
             var thisNode = jsTree.get_node(nodeID);
             nodeID = jsTree.get_parent(thisNode);
