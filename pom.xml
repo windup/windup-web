@@ -25,7 +25,7 @@
         <version.forge>3.7.2.Final</version.forge>
         <version.furnace>2.26.2.Final</version.furnace>
         <version.windup>4.2.1-SNAPSHOT</version.windup>
-        <version.keycloak>2.5.5.Final</version.keycloak>
+        <version.keycloak>4.6.0.Final</version.keycloak>
         <version.resteasy>3.0.19.Final</version.resteasy>
         <version.jboss.javaee>1.0.3.Final</version.jboss.javaee>
 
@@ -34,6 +34,7 @@
         <windup.web.scm.url>http://github.com/windup/windup-web</windup.web.scm.url>
 
         <windup.distribution.name>rhamt-cli</windup.distribution.name>
+        <version.hibernate>5.3.6.Final</version.hibernate>
     </properties>
 
     <scm>
