@@ -1,5 +1,6 @@
 package org.jboss.windup.web.messaging.executor;
 
+import org.jboss.windup.rules.apps.java.scan.operation.UnzipArchiveToOutputFolder;
 import org.jboss.windup.util.TarUtil;
 import org.jboss.windup.web.services.json.WindupExecutionJSONUtil;
 import org.jboss.windup.web.services.model.WindupExecution;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 /**
  * Provides baseline functionality for serializing and deserializing {@link WindupExecution}
@@ -105,7 +107,7 @@ public abstract class AbstractSerializer implements ExecutionSerializer
         {
             Files.createDirectories(outputDirectory);
             Path tempFile = outputDirectory.resolve("report_files.tar");
-            TarUtil.tarDirectory(tempFile, Paths.get(execution.getOutputPath()));
+            TarUtil.tarDirectory(tempFile, Paths.get(execution.getOutputPath()), Arrays.asList(UnzipArchiveToOutputFolder.ARCHIVES));
             return tempFile;
         }
         catch (IOException e)

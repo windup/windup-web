@@ -27,6 +27,7 @@ import org.jboss.windup.graph.GraphContextFactory;
 import org.jboss.windup.rules.apps.java.config.ExcludePackagesOption;
 import org.jboss.windup.rules.apps.java.config.ScanPackagesOption;
 import org.jboss.windup.util.exception.WindupException;
+import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.addons.websupport.rest.graph.GraphCache;
 
 /**
@@ -43,12 +44,15 @@ public class WindupExecutorServiceImpl implements WindupExecutorService
     @Inject
     private GraphCache graphCache;
 
+    @Inject
+    private WebPathUtil webPathUtil;
+
     @Override
     public void execute(WindupProgressMonitor progressMonitor, Collection<Path> rulesPaths, List<Path> inputPaths, Path outputPath,
                 List<String> packages,
                 List<String> excludePackages, String source, List<String> targets, Map<String, Object> otherOptions, boolean generateStaticReports)
     {
-        Path graphPath = outputPath.resolve(GraphContextFactory.DEFAULT_GRAPH_SUBDIRECTORY);
+        Path graphPath = webPathUtil.createWindupGraphOutputPath(outputPath);
         // Close it here, since we will be deleting the old one and rewriting
         graphCache.closeGraph(graphPath);
 
