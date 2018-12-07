@@ -18,7 +18,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <wildfly.directory>wildfly-10.1.0.Final</wildfly.directory>
+        <wildfly.directory>wildfly-${version.wildfly}</wildfly.directory>
         <wildfly.port>10090</wildfly.port>
     </properties>
 
@@ -89,6 +89,7 @@
                         <include>**/**IT.java</include>
                     </includes>
                     <systemPropertyVariables>
+                        <wildfly.version>${version.wildfly}</wildfly.version>
                         <wildfly.remote.port>${wildfly.port}</wildfly.remote.port>
                         <protractor.path>./node_modules/protractor/bin/protractor</protractor.path>
                         <protractor.args>protractor.conf.js --params.upload.filePath ${project.build.directory}/deployments/rhamt-web.war --params.visualRegression true</protractor.args>
