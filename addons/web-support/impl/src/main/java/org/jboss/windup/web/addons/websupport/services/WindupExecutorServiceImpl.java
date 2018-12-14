@@ -90,7 +90,7 @@ public class WindupExecutorServiceImpl implements WindupExecutorService
         }
 
         configuration.setOptionValue(OverwriteOption.NAME, true);
-        configuration.setOptionValue(KeepWorkDirsOption.NAME, true);
+        configuration.setOptionValue(KeepWorkDirsOption.NAME, false);
 
         for (Map.Entry<String, Object> optionEntry : otherOptions.entrySet())
         {
