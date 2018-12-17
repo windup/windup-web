@@ -139,6 +139,7 @@
             <artifactId>windup-server-provider-spi</artifactId>
             <classifier>forge-addon</classifier>
         </dependency>
+
         <!-- Rules -->
 
         <dependency>
