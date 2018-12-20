@@ -87,7 +87,7 @@ public class HttpPostSerializer extends AbstractSerializer implements ExecutionS
 
             Path resultsArchivePath = this.createResultArchive(projectId, execution, outputDirectory);
             File resultsArchivePathFile = resultsArchivePath.toFile();
-            LOG.info("Completed generating result archive (" + resultsArchivePathFile.length() + " bytes), posting results to the server...");
+            LOG.info("Completed generating result archive (" + (resultsArchivePathFile.length() / 1048576) + " MB), posting results to the server...");
 
             // Send the post data to the rhamt core service
             try (FileInputStream fileInputStream = new FileInputStream(resultsArchivePathFile))

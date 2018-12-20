@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.logging.Logger;
 
 /**
  * Provides baseline functionality for serializing and deserializing {@link WindupExecution}
@@ -23,6 +24,9 @@ import java.util.Arrays;
  */
 public abstract class AbstractSerializer implements ExecutionSerializer
 {
+    private static Logger LOG = Logger.getLogger(AbstractSerializer.class.getName());
+    public final static String FULL_TAR_ARCHIVE = "FULL_TAR_ARCHIVE";
+
     @Override
     public Message serializeExecutionRequest(JMSContext context, WindupExecution execution)
     {
@@ -107,7 +111,16 @@ public abstract class AbstractSerializer implements ExecutionSerializer
         {
             Files.createDirectories(outputDirectory);
             Path tempFile = outputDirectory.resolve("report_files.tar");
-            TarUtil.tarDirectory(tempFile, Paths.get(execution.getOutputPath()), Arrays.asList(UnzipArchiveToOutputFolder.ARCHIVES));
+            boolean fullTarArchive = Boolean.valueOf(System.getenv(FULL_TAR_ARCHIVE));
+            if (fullTarArchive)
+            {
+                LOG.info("Required full archive creation");
+                TarUtil.tarDirectory(tempFile, Paths.get(execution.getOutputPath()));
+            }
+            else
+            {
+                TarUtil.tarDirectory(tempFile, Paths.get(execution.getOutputPath()), Arrays.asList(UnzipArchiveToOutputFolder.ARCHIVES));
+            }
             return tempFile;
         }
         catch (IOException e)
