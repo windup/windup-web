@@ -102,7 +102,7 @@
                 Loading rules...
             </span>
             <span *ngIf="phases != null">
-                <table class="table table-bordered table-hover table-mobile executions-list-table">
+                <table *ngIf="phases.length > 0" class="table table-bordered table-hover table-mobile executions-list-table">
                     <thead wu-sortable-table
                            [data]="phases"
                            [tableHeaders]="[
@@ -129,6 +129,9 @@
                     </ng-template>
                     <tbody>
                 </table>
+                <ng-container *ngIf="phases.length == 0">
+                    <span>Rules details available in <a class="link" target="_blank" href="{{formatStaticRuleProviderReportUrl(execution)}}">Rule Providers Execution Overview <i class="fa fa-external-link"></i></a></span>
+                </ng-container>
             </span>
         </wu-tab>
         <wu-tab [tabTitle]="'Logs'">

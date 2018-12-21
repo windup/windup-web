@@ -205,6 +205,26 @@ public class WindupExecution implements Serializable
     }
 
     /**
+     * Gets the relative path to the rule providers report in a format suitable for a URL.
+     */
+    public String getRuleProvidersExecutionOverviewRelativePath()
+    {
+        String directoryName = getOutputDirectoryName();
+        if (directoryName == null)
+            return null;
+
+        return directoryName + "/reports/windup_ruleproviders.html";
+    }
+
+    /**
+     * This should never be called directory (it is only here to aid in Jackson serialization).
+     */
+    public void setRuleProvidersExecutionOverviewRelativePath(String path)
+    {
+        // nooop
+    }
+
+    /**
      * Contains the time at which this analysis was put into the analysis queue.
      */
     public Calendar getTimeQueued()
