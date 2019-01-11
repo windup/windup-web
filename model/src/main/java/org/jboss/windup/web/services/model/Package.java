@@ -19,9 +19,13 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Table(
+        indexes = @Index(columnList = Package.PARENT_PACKAGE_ID, unique = false)
+)
 public class Package implements Serializable
 {
     public static final String PACKAGE_ID = "package_id";
+    public static final String PARENT_PACKAGE_ID = "parent_package_id";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -43,6 +47,7 @@ public class Package implements Serializable
 
     @ManyToOne()
     @JsonIgnore
+    @JoinColumn(name = PARENT_PACKAGE_ID)
     private Package parent;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "parent")
