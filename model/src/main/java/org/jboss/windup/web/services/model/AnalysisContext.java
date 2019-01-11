@@ -245,6 +245,14 @@ public class AnalysisContext implements Serializable
     }
 
     /**
+     * Add an advanced configuration options (eg, csv export).
+     */
+    public void addAdvancedOption(AdvancedOption advancedOption)
+    {
+        this.advancedOptions.add(advancedOption);
+    }
+
+    /**
      * Contains the applications associated with this group.
      */
     public Set<RegisteredApplication> getApplications()
