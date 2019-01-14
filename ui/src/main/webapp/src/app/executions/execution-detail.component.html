@@ -129,7 +129,7 @@
                     </ng-template>
                     <tbody>
                 </table>
-                <ng-container *ngIf="phases.length == 0">
+                <ng-container *ngIf="execution.state == 'COMPLETED' && phases.length == 0">
                     <span>Rules details available in <a class="link" target="_blank" href="{{formatStaticRuleProviderReportUrl(execution)}}">Rule Providers Execution Overview <i class="fa fa-external-link"></i></a></span>
                 </ng-container>
             </span>
