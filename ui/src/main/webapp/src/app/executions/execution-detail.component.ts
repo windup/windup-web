@@ -59,6 +59,8 @@ export class ExecutionDetailComponent extends RoutedComponent implements OnInit,
                 this._ruleProviderExecutionsService.getPhases(executionId)
                     .subscribe(phases => {
                         this.phases = phases;
+                    }, error => {
+                        this.phases = [];
                     });
             });
         }));
@@ -86,6 +88,10 @@ export class ExecutionDetailComponent extends RoutedComponent implements OnInit,
 
     formatStaticReportUrl(execution: WindupExecution): string {
         return WindupExecutionService.formatStaticReportUrl(execution);
+    }
+
+    formatStaticRuleProviderReportUrl(execution: WindupExecution): string {
+        return WindupExecutionService.formatStaticRuleProviderReportUrl(execution);
     }
 
     private loadLogData() {

@@ -1,6 +1,7 @@
 package org.jboss.windup.web.messaging.executor;
 
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -85,10 +86,11 @@ public class HttpPostSerializer extends AbstractSerializer implements ExecutionS
             Path analysisDirectory = outputDirectory.getParent();
 
             Path resultsArchivePath = this.createResultArchive(projectId, execution, outputDirectory);
-            LOG.info("Completed generating result archive, posting results to the server...");
+            File resultsArchivePathFile = resultsArchivePath.toFile();
+            LOG.info("Completed generating result archive (" + (resultsArchivePathFile.length() / 1048576) + " MB), posting results to the server...");
 
             // Send the post data to the rhamt core service
-            try (FileInputStream fileInputStream = new FileInputStream(resultsArchivePath.toFile()))
+            try (FileInputStream fileInputStream = new FileInputStream(resultsArchivePathFile))
             {
                 sendResults(execution.getId(), fileInputStream);
                 LOG.info("Results posted, analysis is now complete!");

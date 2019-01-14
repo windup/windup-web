@@ -125,4 +125,11 @@ export class WindupExecutionService extends AbstractService {
     public static formatStaticReportUrl(execution: WindupExecution): string {
         return Constants.STATIC_REPORTS_BASE + "/" + execution.applicationListRelativePath;
     }
+
+    /**
+     * @returns {string} An URL to the static rule provider report of the given execution.
+     */
+    public static formatStaticRuleProviderReportUrl(execution: WindupExecution): string {
+        return Constants.STATIC_REPORTS_BASE + "/" + execution.ruleProvidersExecutionOverviewRelativePath;
+    }
 }

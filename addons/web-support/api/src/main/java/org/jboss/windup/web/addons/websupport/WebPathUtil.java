@@ -20,6 +20,11 @@ public interface WebPathUtil
     Path createWindupReportOutputPath(String projectPath, String name);
 
     /**
+     * Creates an output path for the graph for the given project and group and name.
+     */
+    Path createWindupGraphOutputPath(Path outputPath);
+
+    /**
      * Creates an output path for the given project path.
      */
     Path createMigrationProjectPath(String projectPath);
