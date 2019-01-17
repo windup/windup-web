@@ -45,7 +45,7 @@ Environment setup
     > 
     > if phantomjs is not installed yet, run 
     >
-    >       sudo npm install -g phantomjs-prebuilt
+    >       sudo npm install -g phantomjs-prebuilt --unsafe-perm
     
     > 
     > else run
