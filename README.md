@@ -22,6 +22,7 @@ Environment setup
 2. [Install NodeJS Package Manager (npm)](https://nodejs.org/en/download/package-manager/)
    * _Debian/Ubuntu_: `sudo apt-get install npm`
    * _RHEL 7_: 1) Install [EPEL](https://fedoraproject.org/wiki/EPEL/FAQ#How_can_I_install_the_packages_from_the_EPEL_software_repository.3F)  2) `sudo yum install npm`
+   * _Fedora_: `sudo dnf install npm`
 
    > NOTE: If npm is version is less than 3.8.8, try the following to force an update:
    >
@@ -44,6 +45,10 @@ Environment setup
     
     > 
     > if phantomjs is not installed yet, run 
+    >    
+    >       sudo npm install -g phantomjs-prebuilt
+    >
+    > Or
     >
     >       sudo npm install -g phantomjs-prebuilt --unsafe-perm
     
