@@ -49,7 +49,7 @@ Environment setup
     >       sudo npm install -g phantomjs-prebuilt
     >
     > Or
-    >
+    > 
     >       sudo npm install -g phantomjs-prebuilt --unsafe-perm
     
     > 
