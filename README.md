@@ -167,7 +167,7 @@ Running the webapp
 
         ```xml
         <deployments>
-            <deployment name="rhamt-web/api" runtime-name="rhamt-web/api.war">
+            <deployment name="rhamt-web/api" runtime-name="api.war">
                 <fs-exploded path=".../windup-web/services/target/rhamt-web/api"/>
             </deployment>
             <deployment name="rhamt-web" runtime-name="rhamt-web.war">
