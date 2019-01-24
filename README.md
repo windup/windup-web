@@ -22,6 +22,7 @@ Environment setup
 2. [Install NodeJS Package Manager (npm)](https://nodejs.org/en/download/package-manager/)
    * _Debian/Ubuntu_: `sudo apt-get install npm`
    * _RHEL 7_: 1) Install [EPEL](https://fedoraproject.org/wiki/EPEL/FAQ#How_can_I_install_the_packages_from_the_EPEL_software_repository.3F)  2) `sudo yum install npm`
+   * _Fedora_: `sudo dnf install npm`
 
    > NOTE: If npm is version is less than 3.8.8, try the following to force an update:
    >
@@ -44,7 +45,11 @@ Environment setup
     
     > 
     > if phantomjs is not installed yet, run 
+    >    
+    >       sudo npm install -g phantomjs-prebuilt
     >
+    > Or
+    > 
     >       sudo npm install -g phantomjs-prebuilt --unsafe-perm
     
     > 
@@ -162,7 +167,7 @@ Running the webapp
 
         ```xml
         <deployments>
-            <deployment name="rhamt-web/api" runtime-name="rhamt-web/api.war">
+            <deployment name="rhamt-web/api" runtime-name="api.war">
                 <fs-exploded path=".../windup-web/services/target/rhamt-web/api"/>
             </deployment>
             <deployment name="rhamt-web" runtime-name="rhamt-web.war">
@@ -174,3 +179,11 @@ Running the webapp
 
 - Follow the steps for deploying keycloak in [Keycloak Setup](./KEYCLOAK-SETUP.md)
 - Access the webapp: <http://localhost:8080/rhamt-web>
+
+Deploy your changes while coding
+------------------
+- Follow the previous step (use the 3rd way of running the webapp: edit `standalone-full.xml`) 
+- Install webpack: `sudo npm install --global webpack@3.4.1`
+- Move to webapp folder: `cd windup-web/ui/src/main/webapp`
+- Execute `webpack -w`
+
