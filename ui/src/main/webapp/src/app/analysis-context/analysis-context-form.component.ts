@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild, OnChanges, SimpleChanges, OnDestroy} from "@angular/core";
+import {Component, OnInit, ViewChild, OnChanges, SimpleChanges, OnDestroy, ElementRef, AfterViewInit} from "@angular/core";
 import {NgForm} from "@angular/forms";
 import {ActivatedRoute, Router, NavigationEnd} from "@angular/router";
 
@@ -25,12 +25,15 @@ import {DialogService} from "../shared/dialog/dialog.service";
 import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
 import {TreeData} from "../shared/js-tree-angular-wrapper.component";
 
+import * as $ from 'jquery';
+import 'bootstrap';
+
 @Component({
     templateUrl: './analysis-context-form.component.html',
     styleUrls: ['analysis-context-form.component.scss']
 })
 export class AnalysisContextFormComponent extends FormComponent
-    implements OnInit, OnDestroy, IsDirty
+    implements OnInit, OnDestroy, IsDirty, AfterViewInit
 {
     @ViewChild(NgForm)
     private analysisContextForm: NgForm;
@@ -50,6 +53,77 @@ export class AnalysisContextFormComponent extends FormComponent
     includePackages: Package[];
     excludePackages: Package[];
     hideUnfinishedFeatures: boolean = WINDUP_WEB.config.hideUnfinishedFeatures;
+
+    private transformationPathsNew = [
+        {
+            label: 'Migration to JBoss EAP',
+            icon: 'pficon pficon-enterprise',
+            transformationPath: null,
+            children: [
+                {
+                    label: 'JBoss EAP 7',
+                    transformationPath: {
+                        "id": 100,
+                        "name": "Migration to JBoss EAP 6",
+                        "source": null,
+                        "target": {
+                            "id": 3,
+                            "version": 0,
+                            "name": "eap",
+                            "versionRange": "[6]"
+                        }
+                    },
+                },
+                {
+                    label: 'JBoss EAP 6',
+                    transformationPath: {
+                        "id": 101,
+                        "name": "Migration to JBoss EAP 7",
+                        "source": null,
+                        "target": {
+                            "id": 4,
+                            "version": 0,
+                            "name": "eap",
+                            "versionRange": "[7]"
+                        }
+                    }
+                }                
+            ],
+        },
+        {
+            label: 'Containerization',
+            icon: 'fa fa-cube',
+            transformationPath: {
+                "id": 90,
+                "name": "Cloud readiness only",
+                "source": null,
+                "target": null
+            },
+            children: []
+        },
+        {
+            label: 'Move to Linux',
+            icon: 'fa fa-linux',
+            transformationPath: {
+                "id": 80,
+                "name": "Linux",
+                "source": null,
+                "target": null
+            },
+            children: []
+        },
+        {
+            label: 'OpenJDK',
+            icon: 'fa fa-coffee',
+            transformationPath: {
+                "id": 70,
+                "name": "OpenJDK",
+                "source": null,
+                "target": null
+            },
+            children: []
+        }
+    ];
 
     private transformationPaths: MigrationPath[] = [
         {
@@ -124,7 +198,8 @@ export class AnalysisContextFormComponent extends FormComponent
                 private _windupExecutionService: WindupExecutionService,
                 private _notificationService: NotificationService,
                 private _registeredApplicationService: RegisteredApplicationService,
-                private _dialogService: DialogService
+                private _dialogService: DialogService,
+                private _element: ElementRef
             ) {
         super();
         this.includePackages = [];
@@ -189,6 +264,10 @@ export class AnalysisContextFormComponent extends FormComponent
 
     }
 
+    ngAfterViewInit(): void {
+        $(this._element.nativeElement).find('.dropdown-toggle').dropdown();
+    }
+
     ngOnDestroy(): void {
         this.routerSubscription.unsubscribe();
         this.cancelDialog.confirmed.unsubscribe();
@@ -209,7 +288,7 @@ export class AnalysisContextFormComponent extends FormComponent
         return analysisContext;
     }
 
-    private initializeAnalysisContext() {
+    private initializeAnalysisContext() {        
         let analysisContext = this.analysisContext;
 
         if (analysisContext == null) {
@@ -226,7 +305,7 @@ export class AnalysisContextFormComponent extends FormComponent
                 analysisContext.rulesPaths = [];
         }
 
-        this.analysisContext = analysisContext;
+        this.analysisContext = analysisContext;        
     }
 
     private loadPackageMetadata() {
