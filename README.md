@@ -180,7 +180,7 @@ Running the webapp
 - Follow the steps for deploying keycloak in [Keycloak Setup](./KEYCLOAK-SETUP.md)
 - Access the webapp: <http://localhost:8080/rhamt-web>
 
-Watch your changes while coding
+Deploy your changes while coding
 ------------------
 - Follow the previous step (use the 3rd way of running the webapp: edit `standalone-full.xml`) 
 - Install webpack: `sudo npm install --global webpack@3.4.1`
