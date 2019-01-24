@@ -16,6 +16,7 @@ import {KeycloakService} from "../core/authentication/keycloak.service";
 @Injectable()
 export class WindupExecutionService extends AbstractService {
     static EXECUTION_PROGRESS_URL = Constants.REST_BASE + "/websocket/execution-progress/{executionId}";
+    static MERGED_CSV_FILENAME = "AllIssues.csv";
 
     protected executionSocket: Map<number, Subject<WindupExecution>> = new Map<number, Subject<WindupExecution>>();
     protected activeExecutions: Map<number, WindupExecution> = new Map<number, WindupExecution>();
@@ -125,11 +126,32 @@ export class WindupExecutionService extends AbstractService {
     public static formatStaticReportUrl(execution: WindupExecution): string {
         return Constants.STATIC_REPORTS_BASE + "/" + execution.applicationListRelativePath;
     }
+    
+    /**
+     * @returns {string} An URL to the static csv report of the given execution.
+     */
+    public static formatStaticCsvReportUrl(execution: WindupExecution): string {        
+        return Constants.STATIC_REPORTS_BASE + "/" + execution.id + "/" + WindupExecutionService.MERGED_CSV_FILENAME;
+    }
 
     /**
      * @returns {string} An URL to the static rule provider report of the given execution.
      */
     public static formatStaticRuleProviderReportUrl(execution: WindupExecution): string {
         return Constants.STATIC_REPORTS_BASE + "/" + execution.ruleProvidersExecutionOverviewRelativePath;
+    }
+
+    /**     
+     * @returns {boolean} A boolean indicating whether or not an execution analysis context contains the specified advanced option.
+     */
+    public static containsAdvancedOption(execution: WindupExecution, optionName: string, optionValue: any): boolean {        
+        if (execution && execution.analysisContext && execution.analysisContext.advancedOptions) {
+            for (let option of execution.analysisContext.advancedOptions) {
+                if (option.name == optionName && option.value == optionValue) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
