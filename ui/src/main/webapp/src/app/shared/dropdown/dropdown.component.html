@@ -1,0 +1,16 @@
+<div class="dropdown">
+    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+        {{selectedItem?.label}}
+        <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+        <li *ngFor="let item of items" role="presentation">
+            <a (click)="changeSelection(item)" 
+                role="menuitem" 
+                tabindex="-1" 
+                href="javascript:void(0)">
+                {{item.label}}
+            </a>
+        </li>
+    </ul>
+</div>
