@@ -33,68 +33,19 @@
         <!-- Fixed Transformation paths -->
         <div class="form-group">
             <label class="control-label required" for="migrationPath" i18n>Transformation path</label>
-            
 
-
-            <!-- <div class="container-fluid container-cards-pf"> -->
-                    
-                    
+            <p class="help-block" i18n="transform path description">Select one or several transformation options in focus for the analysis.</p>
+            <!-- <div class="container-fluid container-cards-pf">-->
             <div>
-                <div class="row row-cards-pf">
-                    <div *ngFor="let transformationPath of transformationPathsNew" class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-                        <div class="card-pf card-pf-view card-pf-view-select card-pf-view-multi-select active">
-                            <div class="card-pf-body" style="height: 224px;">
-                                <div class="card-pf-top-element">
-                                    <span class="{{transformationPath.icon}} card-pf-icon-circle"></span>
-                                </div>
-                                <h2 class="card-pf-title text-center">
-                                    {{transformationPath.label}}
-                                </h2>
-                                <div *ngIf="transformationPath.children && transformationPath.children.length > 0" class="card-pf-items text-center">
-                                    <div class="card-pf-item">
-                                       
-                                        <div class="dropdown">
-                                            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
-                                                JBoss EAP 7
-                                                <span class="caret"></span>
-                                            </button>
-                                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-                                                <li *ngFor="let child of transformationPath.children" role="presentation">
-                                                    <a role="menuitem" tabindex="-1" href="#">{{child.label}}</a>
-                                                </li>
-                                            </ul>
-                                        </div>
+                <wu-transformation-paths [paths]="paths" (onPathChange)="onMigrationPathChange($event)"></wu-transformation-paths>
+            </div>            
 
-                                        <div class="dropdown">
-                                                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
-                                                    JBoss EAP 7
-                                                    <span class="caret"></span>
-                                                </button>
-                                                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-                                                    <li *ngFor="let child of transformationPath.children" role="presentation">
-                                                        <a role="menuitem" tabindex="-1" href="#">{{child.label}}</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-
-                                    </div>        
-                                </div>
-                            </div>
-                            <div class="card-pf-view-checkbox">
-                                <input type="checkbox">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <p class="help-block" i18n="transform path description">Select the transformation path for your applications.</p>
-          
-            <div>
+            <!-- <div>
                 <ng-container *ngFor="let transformationPath of transformationPaths">
                     <label class="radio-inline control-label" style="padding-left: 20px; padding-right: 40px;">
                         <input type="radio" id="migrationPath" name="migrationPath" #migrationPath="ngModel"
-                            [(ngModel)]="analysisContext.migrationPath.id" ngControl="migrationPath" [value]="transformationPath.id"
-                            (ngModelChange)="onMigrationPathChange()"
+                               [(ngModel)]="analysisContext.migrationPath.id" ngControl="migrationPath" [value]="transformationPath.id"
+                               (ngModelChange)="onMigrationPathChange()"
                         />
                         {{ transformationPath.name }}
                     </label>
@@ -103,11 +54,10 @@
             </div>
             <label class="checkbox-inline">
                 <input type="checkbox" name="cloudTargetsIncluded" ngControl="cloudTargetsIncluded" [(ngModel)]="analysisContext.cloudTargetsIncluded"
-                    [disabled]="disableCloudReadiness" />
+                       [disabled]="disableCloudReadiness" />
                 Cloud readiness analysis
             </label>
-            <p class="help-block" i18n="cloud readiness description">Check this box to also assess your applications for cloud and container readiness.</p>
-
+            <p class="help-block" i18n="cloud readiness description">Check this box to also assess your applications for cloud and container readiness.</p> -->
         </div>
 
         <!-- Advanced Transformation paths

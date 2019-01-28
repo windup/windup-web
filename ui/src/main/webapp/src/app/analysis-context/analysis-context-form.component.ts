@@ -1,29 +1,30 @@
-import {Component, OnInit, ViewChild, OnChanges, SimpleChanges, OnDestroy, ElementRef, AfterViewInit} from "@angular/core";
-import {NgForm} from "@angular/forms";
-import {ActivatedRoute, Router, NavigationEnd} from "@angular/router";
+import { Component, OnInit, ViewChild, OnChanges, SimpleChanges, OnDestroy, AfterViewChecked, ElementRef } from "@angular/core";
+import { NgForm } from "@angular/forms";
+import { ActivatedRoute, Router, NavigationEnd } from "@angular/router";
 
-import {FormComponent} from "../shared/form.component";
-import {MigrationPathService} from "./migration-path.service";
-import {AnalysisContextService} from "./analysis-context.service";
-import {ConfigurationOption} from "../model/configuration-option.model";
-import {ConfigurationOptionsService} from "../configuration/configuration-options.service";
-import {IsDirty} from "../shared/is-dirty.interface";
-import {Observable} from "rxjs/Observable";
-import {PackageRegistryService} from "./package-registry.service";
-import {AnalysisContext, Package, MigrationPath, MigrationProject, AdvancedOption, RegisteredApplication, RulesPath, PackageMetadata} from "../generated/windup-services";
-import {RouteHistoryService} from "../core/routing/route-history.service";
-import {Subscription} from "rxjs";
-import {FlattenedRouteData, RouteFlattenerService} from "../core/routing/route-flattener.service";
-import {WindupExecutionService} from "../services/windup-execution.service";
-import {NotificationService} from "../core/notification/notification.service";
-import {utils} from "../shared/utils";
-import {RegisteredApplicationService} from "../registered-application/registered-application.service";
-import {MigrationProjectService} from "../project/migration-project.service";
-import {forkJoin} from "rxjs/observable/forkJoin";
-import {WINDUP_WEB} from "../app.module";
-import {DialogService} from "../shared/dialog/dialog.service";
-import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
-import {TreeData} from "../shared/js-tree-angular-wrapper.component";
+import { FormComponent } from "../shared/form.component";
+import { MigrationPathService } from "./migration-path.service";
+import { AnalysisContextService } from "./analysis-context.service";
+import { ConfigurationOption } from "../model/configuration-option.model";
+import { ConfigurationOptionsService } from "../configuration/configuration-options.service";
+import { IsDirty } from "../shared/is-dirty.interface";
+import { Observable } from "rxjs/Observable";
+import { PackageRegistryService } from "./package-registry.service";
+import { AnalysisContext, Package, MigrationPath, MigrationProject, AdvancedOption, RegisteredApplication, RulesPath, PackageMetadata } from "../generated/windup-services";
+import { RouteHistoryService } from "../core/routing/route-history.service";
+import { Subscription } from "rxjs";
+import { FlattenedRouteData, RouteFlattenerService } from "../core/routing/route-flattener.service";
+import { WindupExecutionService } from "../services/windup-execution.service";
+import { NotificationService } from "../core/notification/notification.service";
+import { utils } from "../shared/utils";
+import { RegisteredApplicationService } from "../registered-application/registered-application.service";
+import { MigrationProjectService } from "../project/migration-project.service";
+import { forkJoin } from "rxjs/observable/forkJoin";
+import { WINDUP_WEB } from "../app.module";
+import { DialogService } from "../shared/dialog/dialog.service";
+import { ConfirmationModalComponent } from "../shared/dialog/confirmation-modal.component";
+import { TreeData } from "../shared/js-tree-angular-wrapper.component";
+import { Path } from "./transformation-paths.component";
 
 import * as $ from 'jquery';
 import 'bootstrap';
@@ -33,8 +34,7 @@ import 'bootstrap';
     styleUrls: ['analysis-context-form.component.scss']
 })
 export class AnalysisContextFormComponent extends FormComponent
-    implements OnInit, OnDestroy, IsDirty, AfterViewInit
-{
+    implements OnInit, OnDestroy, AfterViewChecked, IsDirty {
     @ViewChild(NgForm)
     private analysisContextForm: NgForm;
 
@@ -54,73 +54,50 @@ export class AnalysisContextFormComponent extends FormComponent
     excludePackages: Package[];
     hideUnfinishedFeatures: boolean = WINDUP_WEB.config.hideUnfinishedFeatures;
 
-    private transformationPathsNew = [
+    static JBOSS_EAP_7: number = 101;
+    static JBOSS_EAP_6: number = 100;
+    static CONTAINERIZATION: number = 90;
+    static LINUX: number = 90000; // Not real
+    static OPEN_JDK: number = 90000; // Not real
+
+    paths: Path[] = [
         {
-            label: 'Migration to JBoss EAP',
+            id: 10000, // Not real
+            label: 'Application server migration to EAP',
             icon: 'pficon pficon-enterprise',
-            transformationPath: null,
+            selected: true,
             children: [
                 {
+                    id: AnalysisContextFormComponent.JBOSS_EAP_7,
                     label: 'JBoss EAP 7',
-                    transformationPath: {
-                        "id": 100,
-                        "name": "Migration to JBoss EAP 6",
-                        "source": null,
-                        "target": {
-                            "id": 3,
-                            "version": 0,
-                            "name": "eap",
-                            "versionRange": "[6]"
-                        }
-                    },
+                    selected: true
                 },
                 {
+                    id: AnalysisContextFormComponent.JBOSS_EAP_6,
                     label: 'JBoss EAP 6',
-                    transformationPath: {
-                        "id": 101,
-                        "name": "Migration to JBoss EAP 7",
-                        "source": null,
-                        "target": {
-                            "id": 4,
-                            "version": 0,
-                            "name": "eap",
-                            "versionRange": "[7]"
-                        }
-                    }
-                }                
+                    selected: false,
+                }
             ],
         },
         {
+            id: AnalysisContextFormComponent.CONTAINERIZATION,
             label: 'Containerization',
             icon: 'fa fa-cube',
-            transformationPath: {
-                "id": 90,
-                "name": "Cloud readiness only",
-                "source": null,
-                "target": null
-            },
+            selected: false,
             children: []
         },
         {
+            id: AnalysisContextFormComponent.LINUX,
             label: 'Move to Linux',
             icon: 'fa fa-linux',
-            transformationPath: {
-                "id": 80,
-                "name": "Linux",
-                "source": null,
-                "target": null
-            },
-            children: []
+            selected: false,
+            children: [],
         },
         {
+            id: AnalysisContextFormComponent.OPEN_JDK,
             label: 'OpenJDK',
             icon: 'fa fa-coffee',
-            transformationPath: {
-                "id": 70,
-                "name": "OpenJDK",
-                "source": null,
-                "target": null
-            },
+            selected: false,
             children: []
         }
     ];
@@ -186,21 +163,21 @@ export class AnalysisContextFormComponent extends FormComponent
     private flatRouteData: FlattenedRouteData;
 
     constructor(private _router: Router,
-                private _activatedRoute: ActivatedRoute,
-                private _migrationProjectService: MigrationProjectService,
-                private _migrationPathService: MigrationPathService,
-                private _analysisContextService: AnalysisContextService,
-                private _appService: RegisteredApplicationService,
-                private _configurationOptionsService: ConfigurationOptionsService,
-                private _packageRegistryService: PackageRegistryService,
-                private _routeHistoryService: RouteHistoryService,
-                private _routeFlattener: RouteFlattenerService,
-                private _windupExecutionService: WindupExecutionService,
-                private _notificationService: NotificationService,
-                private _registeredApplicationService: RegisteredApplicationService,
-                private _dialogService: DialogService,
-                private _element: ElementRef
-            ) {
+        private _activatedRoute: ActivatedRoute,
+        private _migrationProjectService: MigrationProjectService,
+        private _migrationPathService: MigrationPathService,
+        private _analysisContextService: AnalysisContextService,
+        private _appService: RegisteredApplicationService,
+        private _configurationOptionsService: ConfigurationOptionsService,
+        private _packageRegistryService: PackageRegistryService,
+        private _routeHistoryService: RouteHistoryService,
+        private _routeFlattener: RouteFlattenerService,
+        private _windupExecutionService: WindupExecutionService,
+        private _notificationService: NotificationService,
+        private _registeredApplicationService: RegisteredApplicationService,
+        private _dialogService: DialogService,
+        private _element: ElementRef
+    ) {
         super();
         this.includePackages = [];
         this.excludePackages = [];
@@ -264,10 +241,6 @@ export class AnalysisContextFormComponent extends FormComponent
 
     }
 
-    ngAfterViewInit(): void {
-        $(this._element.nativeElement).find('.dropdown-toggle').dropdown();
-    }
-
     ngOnDestroy(): void {
         this.routerSubscription.unsubscribe();
         this.cancelDialog.confirmed.unsubscribe();
@@ -288,7 +261,7 @@ export class AnalysisContextFormComponent extends FormComponent
         return analysisContext;
     }
 
-    private initializeAnalysisContext() {        
+    private initializeAnalysisContext() {
         let analysisContext = this.analysisContext;
 
         if (analysisContext == null) {
@@ -305,7 +278,7 @@ export class AnalysisContextFormComponent extends FormComponent
                 analysisContext.rulesPaths = [];
         }
 
-        this.analysisContext = analysisContext;        
+        this.analysisContext = analysisContext;
     }
 
     private loadPackageMetadata() {
@@ -420,6 +393,8 @@ export class AnalysisContextFormComponent extends FormComponent
 
         this.saveInProgress = true;
 
+        console.log("saving ", this.analysisContext);
+
         this._analysisContextService.saveAsDefault(this.analysisContext, this.project).subscribe(
             updatedContext => {
                 this._dirty = false;
@@ -445,9 +420,9 @@ export class AnalysisContextFormComponent extends FormComponent
                     this.saveInProgress = false;
                     this._router.navigate([`/projects/${this.project.id}`]);
                 },
-                error => {
-                    this._notificationService.error(utils.getErrorMessage(error));
-                });
+                    error => {
+                        this._notificationService.error(utils.getErrorMessage(error));
+                    });
         } else if (this.isInWizard) {
             this.saveInProgress = false;
             this._router.navigate([`/projects/${this.project.id}`]);
@@ -491,8 +466,7 @@ export class AnalysisContextFormComponent extends FormComponent
         this._routeHistoryService.navigateBackOrToRoute(projectPageRoute);
     }
 
-    cleanseAfterDialogConfirm()
-    {
+    cleanseAfterDialogConfirm() {
         this._dirty = false;
     }
 
@@ -502,22 +476,63 @@ export class AnalysisContextFormComponent extends FormComponent
         this.analysisContext.rulesPaths = rulesPaths;
     }
 
-    isActiveRulesPaths():boolean {
+    isActiveRulesPaths(): boolean {
         return this.analysisContext.rulesPaths.filter(rulesPath => rulesPath.rulesPathType == 'USER_PROVIDED').length > 0;
     }
 
-    onMigrationPathChange() {
-        if (this.analysisContext.migrationPath.id === AnalysisContextFormComponent.CLOUD_READINESS_PATH_ID) {
-            this.analysisContext.cloudTargetsIncluded = true;
-            this.disableCloudReadiness = true;
-        } else {
-            this.disableCloudReadiness = false;
+    onMigrationPathChange(selectedPaths: Path[]) {
+        if (selectedPaths && selectedPaths.length > 0) {
+            const eap6Index = this.indexOfPathId(selectedPaths, AnalysisContextFormComponent.JBOSS_EAP_6);
+            const eap7Index = this.indexOfPathId(selectedPaths, AnalysisContextFormComponent.JBOSS_EAP_7)            
+            const containerizationIndex = this.indexOfPathId(selectedPaths, AnalysisContextFormComponent.CONTAINERIZATION)            
+            const linuxIndex = this.indexOfPathId(selectedPaths, AnalysisContextFormComponent.LINUX)            
+            const openJdkIndex = this.indexOfPathId(selectedPaths, AnalysisContextFormComponent.OPEN_JDK)            
+            
+            if (eap6Index != -1 || eap7Index != -1) {
+                this.analysisContext.migrationPath.id = selectedPaths[eap6Index != -1 ? eap6Index : eap7Index].id;                
+                if (containerizationIndex != -1) {
+                    this.analysisContext.cloudTargetsIncluded = true;
+                }
+                if (openJdkIndex != -1) {
+                    this.analysisContext.advancedOptions.push({
+                        id: 2327,
+                        name: "target",
+                        value: "openjdk",
+                        version: 0
+                    });
+                }
+                if (linuxIndex != -1) {
+                    this.analysisContext.advancedOptions.push({
+                        id: 2328,
+                        name: "target",
+                        value: "linux",
+                        version: 0,
+                    });
+                }
+            }
         }
+        
+        // if (this.analysisContext.migrationPath.id === AnalysisContextFormComponent.CLOUD_READINESS_PATH_ID) {
+        //     this.analysisContext.cloudTargetsIncluded = true;
+        //     this.disableCloudReadiness = true;
+        // } else {
+        //     this.disableCloudReadiness = false;
+        // }    
     }
+
+    private indexOfPathId(paths: Path[], id: number): number {
+        for (let index = 0; index < paths.length; index++) {
+            const path = paths[index];
+            if (path.id == id) {
+                return index;
+            }
+        }
+        return -1;
+    }
+
 }
 
 enum Action {
     Save = 0,
     SaveAndRun = 1
 }
-
