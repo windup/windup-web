@@ -15,7 +15,7 @@
         <div class="blank-slate-pf-main-action">
             <p>There are no applications in this project. You must add an application before configuring the analysis.</p>
             <a [routerLink]="['/projects', project.id, 'applications', 'register']" class="clickable btn btn-primary btn-lg" i18n="no application page Button">
-            Add Application
+                Add Application
             </a>
         </div>
     </div>
@@ -32,7 +32,7 @@
 
         <!-- Fixed Transformation paths -->
         <div class="form-group">
-            <label class="control-label required" for="migrationPath" i18n>Transformation path</label>
+            <label class="control-label required" i18n>Transformation path</label>
 
             <p class="help-block" i18n="transform path description">Select one or several transformation options in focus for the analysis.</p>
             <!-- <div class="container-fluid container-cards-pf">-->
@@ -42,10 +42,9 @@
                     [(ngModel)]="paths"
                     (onPathChange)="onMigrationPathChange($event)"
                     required>
-                </wu-transformation-paths>                
-            </div>           
+                </wu-transformation-paths>
+            </div>
             
-
             <!-- <div>
                 <ng-container *ngFor="let transformationPath of transformationPaths">
                     <label class="radio-inline control-label" style="padding-left: 20px; padding-right: 40px;">

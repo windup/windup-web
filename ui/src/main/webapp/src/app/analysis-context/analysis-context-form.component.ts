@@ -1,40 +1,38 @@
-import { Component, OnInit, ViewChild, OnChanges, SimpleChanges, OnDestroy, AfterViewChecked, ElementRef } from "@angular/core";
-import { NgForm } from "@angular/forms";
-import { ActivatedRoute, Router, NavigationEnd } from "@angular/router";
+import {Component, OnInit, ViewChild, OnChanges, SimpleChanges, OnDestroy} from "@angular/core";
+import {NgForm} from "@angular/forms";
+import {ActivatedRoute, Router, NavigationEnd} from "@angular/router";
 
-import { FormComponent } from "../shared/form.component";
-import { MigrationPathService } from "./migration-path.service";
-import { AnalysisContextService } from "./analysis-context.service";
-import { ConfigurationOption } from "../model/configuration-option.model";
-import { ConfigurationOptionsService } from "../configuration/configuration-options.service";
-import { IsDirty } from "../shared/is-dirty.interface";
-import { Observable } from "rxjs/Observable";
-import { PackageRegistryService } from "./package-registry.service";
-import { AnalysisContext, Package, MigrationPath, MigrationProject, AdvancedOption, RegisteredApplication, RulesPath, PackageMetadata } from "../generated/windup-services";
-import { RouteHistoryService } from "../core/routing/route-history.service";
-import { Subscription } from "rxjs";
-import { FlattenedRouteData, RouteFlattenerService } from "../core/routing/route-flattener.service";
-import { WindupExecutionService } from "../services/windup-execution.service";
-import { NotificationService } from "../core/notification/notification.service";
-import { utils } from "../shared/utils";
-import { RegisteredApplicationService } from "../registered-application/registered-application.service";
-import { MigrationProjectService } from "../project/migration-project.service";
-import { forkJoin } from "rxjs/observable/forkJoin";
-import { WINDUP_WEB } from "../app.module";
-import { DialogService } from "../shared/dialog/dialog.service";
-import { ConfirmationModalComponent } from "../shared/dialog/confirmation-modal.component";
-import { TreeData } from "../shared/js-tree-angular-wrapper.component";
+import {FormComponent} from "../shared/form.component";
+import {MigrationPathService} from "./migration-path.service";
+import {AnalysisContextService} from "./analysis-context.service";
+import {ConfigurationOption} from "../model/configuration-option.model";
+import {ConfigurationOptionsService} from "../configuration/configuration-options.service";
+import {IsDirty} from "../shared/is-dirty.interface";
+import {Observable} from "rxjs/Observable";
+import {PackageRegistryService} from "./package-registry.service";
+import {AnalysisContext, Package, MigrationPath, MigrationProject, AdvancedOption, RegisteredApplication, RulesPath, PackageMetadata} from "../generated/windup-services";
+import {RouteHistoryService} from "../core/routing/route-history.service";
+import {Subscription} from "rxjs";
+import {FlattenedRouteData, RouteFlattenerService} from "../core/routing/route-flattener.service";
+import {WindupExecutionService} from "../services/windup-execution.service";
+import {NotificationService} from "../core/notification/notification.service";
+import {utils} from "../shared/utils";
+import {RegisteredApplicationService} from "../registered-application/registered-application.service";
+import {MigrationProjectService} from "../project/migration-project.service";
+import {forkJoin} from "rxjs/observable/forkJoin";
+import {WINDUP_WEB} from "../app.module";
+import {DialogService} from "../shared/dialog/dialog.service";
+import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
+import {TreeData} from "../shared/js-tree-angular-wrapper.component";
 import { Path } from "./transformation-paths.component";
-
-import * as $ from 'jquery';
-import 'bootstrap';
 
 @Component({
     templateUrl: './analysis-context-form.component.html',
     styleUrls: ['analysis-context-form.component.scss']
 })
 export class AnalysisContextFormComponent extends FormComponent
-    implements OnInit, OnDestroy, IsDirty {
+    implements OnInit, OnDestroy, IsDirty
+{
     @ViewChild(NgForm)
     private analysisContextForm: NgForm;
 
@@ -54,15 +52,16 @@ export class AnalysisContextFormComponent extends FormComponent
     excludePackages: Package[];
     hideUnfinishedFeatures: boolean = WINDUP_WEB.config.hideUnfinishedFeatures;
 
+    static JBOSS_EAP: number = 9000; // Random number
     static JBOSS_EAP_7: number = 101;
     static JBOSS_EAP_6: number = 100;
     static CONTAINERIZATION: number = 90;
-    static LINUX: number = 90000; // Not real
-    static OPEN_JDK: number = 90000; // Not real
-    
+    static LINUX: number = 9001; // Random number
+    static OPEN_JDK: number = 9002; // Random number
+
     paths: Path[] = [
         {
-            id: 10000, // Not real
+            id: AnalysisContextFormComponent.JBOSS_EAP,
             label: 'Application server migration to EAP',
             icon: 'pficon pficon-enterprise',
             selected: true,
@@ -101,6 +100,37 @@ export class AnalysisContextFormComponent extends FormComponent
             children: []
         }
     ];
+    
+    // private transformationPaths: MigrationPath[] = [
+    //     {
+    //         "id": 101,
+    //         "name": "Migration to JBoss EAP 7",
+    //         "source": null,
+    //         "target": {
+    //             "id": 4,
+    //             "version": 0,
+    //             "name": "eap",
+    //             "versionRange": "[7]"
+    //         }
+    //     },
+    //     {
+    //         "id": 100,
+    //         "name": "Migration to JBoss EAP 6",
+    //         "source": null,
+    //         "target": {
+    //             "id": 3,
+    //             "version": 0,
+    //             "name": "eap",
+    //             "versionRange": "[6]"
+    //         }
+    //     },
+    //     {
+    //         "id": 90,
+    //         "name": "Cloud readiness only",
+    //         "source": null,
+    //         "target": null
+    //     }
+    // ];
 
     packageTree: Package[] = [];
 
@@ -109,6 +139,8 @@ export class AnalysisContextFormComponent extends FormComponent
     configurationOptions: ConfigurationOption[] = [];
 
     private _migrationPathsObservable: Observable<MigrationPath[]>;
+
+    // private _transformationPaths: MigrationPath[];
 
     private addCloudTargets: boolean;
     private routerSubscription: Subscription;
@@ -130,21 +162,20 @@ export class AnalysisContextFormComponent extends FormComponent
     private flatRouteData: FlattenedRouteData;
 
     constructor(private _router: Router,
-        private _activatedRoute: ActivatedRoute,
-        private _migrationProjectService: MigrationProjectService,
-        private _migrationPathService: MigrationPathService,
-        private _analysisContextService: AnalysisContextService,
-        private _appService: RegisteredApplicationService,
-        private _configurationOptionsService: ConfigurationOptionsService,
-        private _packageRegistryService: PackageRegistryService,
-        private _routeHistoryService: RouteHistoryService,
-        private _routeFlattener: RouteFlattenerService,
-        private _windupExecutionService: WindupExecutionService,
-        private _notificationService: NotificationService,
-        private _registeredApplicationService: RegisteredApplicationService,
-        private _dialogService: DialogService,
-        private _element: ElementRef
-    ) {
+                private _activatedRoute: ActivatedRoute,
+                private _migrationProjectService: MigrationProjectService,
+                private _migrationPathService: MigrationPathService,
+                private _analysisContextService: AnalysisContextService,
+                private _appService: RegisteredApplicationService,
+                private _configurationOptionsService: ConfigurationOptionsService,
+                private _packageRegistryService: PackageRegistryService,
+                private _routeHistoryService: RouteHistoryService,
+                private _routeFlattener: RouteFlattenerService,
+                private _windupExecutionService: WindupExecutionService,
+                private _notificationService: NotificationService,
+                private _registeredApplicationService: RegisteredApplicationService,
+                private _dialogService: DialogService
+            ) {
         super();
         this.includePackages = [];
         this.excludePackages = [];
@@ -360,8 +391,6 @@ export class AnalysisContextFormComponent extends FormComponent
 
         this.saveInProgress = true;
 
-        console.log("saving ", this.analysisContext);
-
         this._analysisContextService.saveAsDefault(this.analysisContext, this.project).subscribe(
             updatedContext => {
                 this._dirty = false;
@@ -387,9 +416,9 @@ export class AnalysisContextFormComponent extends FormComponent
                     this.saveInProgress = false;
                     this._router.navigate([`/projects/${this.project.id}`]);
                 },
-                    error => {
-                        this._notificationService.error(utils.getErrorMessage(error));
-                    });
+                error => {
+                    this._notificationService.error(utils.getErrorMessage(error));
+                });
         } else if (this.isInWizard) {
             this.saveInProgress = false;
             this._router.navigate([`/projects/${this.project.id}`]);
@@ -433,7 +462,8 @@ export class AnalysisContextFormComponent extends FormComponent
         this._routeHistoryService.navigateBackOrToRoute(projectPageRoute);
     }
 
-    cleanseAfterDialogConfirm() {
+    cleanseAfterDialogConfirm()
+    {
         this._dirty = false;
     }
 
@@ -443,7 +473,7 @@ export class AnalysisContextFormComponent extends FormComponent
         this.analysisContext.rulesPaths = rulesPaths;
     }
 
-    isActiveRulesPaths(): boolean {
+    isActiveRulesPaths():boolean {
         return this.analysisContext.rulesPaths.filter(rulesPath => rulesPath.rulesPathType == 'USER_PROVIDED').length > 0;
     }
 
@@ -475,7 +505,6 @@ export class AnalysisContextFormComponent extends FormComponent
         }
         return -1;
     }
-
 }
 
 enum Action {
