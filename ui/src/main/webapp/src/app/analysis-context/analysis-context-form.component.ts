@@ -34,7 +34,7 @@ import 'bootstrap';
     styleUrls: ['analysis-context-form.component.scss']
 })
 export class AnalysisContextFormComponent extends FormComponent
-    implements OnInit, OnDestroy, AfterViewChecked, IsDirty {
+    implements OnInit, OnDestroy, IsDirty {
     @ViewChild(NgForm)
     private analysisContextForm: NgForm;
 
@@ -59,7 +59,7 @@ export class AnalysisContextFormComponent extends FormComponent
     static CONTAINERIZATION: number = 90;
     static LINUX: number = 90000; // Not real
     static OPEN_JDK: number = 90000; // Not real
-
+    
     paths: Path[] = [
         {
             id: 10000, // Not real
@@ -102,37 +102,6 @@ export class AnalysisContextFormComponent extends FormComponent
         }
     ];
 
-    private transformationPaths: MigrationPath[] = [
-        {
-            "id": 101,
-            "name": "Migration to JBoss EAP 7",
-            "source": null,
-            "target": {
-                "id": 4,
-                "version": 0,
-                "name": "eap",
-                "versionRange": "[7]"
-            }
-        },
-        {
-            "id": 100,
-            "name": "Migration to JBoss EAP 6",
-            "source": null,
-            "target": {
-                "id": 3,
-                "version": 0,
-                "name": "eap",
-                "versionRange": "[6]"
-            }
-        },
-        {
-            "id": 90,
-            "name": "Cloud readiness only",
-            "source": null,
-            "target": null
-        }
-    ];
-
     packageTree: Package[] = [];
 
     packageTreeLoaded: boolean = false;
@@ -140,8 +109,6 @@ export class AnalysisContextFormComponent extends FormComponent
     configurationOptions: ConfigurationOption[] = [];
 
     private _migrationPathsObservable: Observable<MigrationPath[]>;
-
-    private _transformationPaths: MigrationPath[];
 
     private addCloudTargets: boolean;
     private routerSubscription: Subscription;
@@ -483,41 +450,20 @@ export class AnalysisContextFormComponent extends FormComponent
     onMigrationPathChange(selectedPaths: Path[]) {
         if (selectedPaths && selectedPaths.length > 0) {
             const eap6Index = this.indexOfPathId(selectedPaths, AnalysisContextFormComponent.JBOSS_EAP_6);
-            const eap7Index = this.indexOfPathId(selectedPaths, AnalysisContextFormComponent.JBOSS_EAP_7)            
-            const containerizationIndex = this.indexOfPathId(selectedPaths, AnalysisContextFormComponent.CONTAINERIZATION)            
-            const linuxIndex = this.indexOfPathId(selectedPaths, AnalysisContextFormComponent.LINUX)            
-            const openJdkIndex = this.indexOfPathId(selectedPaths, AnalysisContextFormComponent.OPEN_JDK)            
-            
+            const eap7Index = this.indexOfPathId(selectedPaths, AnalysisContextFormComponent.JBOSS_EAP_7)
+            const containerizationIndex = this.indexOfPathId(selectedPaths, AnalysisContextFormComponent.CONTAINERIZATION)
+            const linuxIndex = this.indexOfPathId(selectedPaths, AnalysisContextFormComponent.LINUX)
+            const openJdkIndex = this.indexOfPathId(selectedPaths, AnalysisContextFormComponent.OPEN_JDK)
+
             if (eap6Index != -1 || eap7Index != -1) {
-                this.analysisContext.migrationPath.id = selectedPaths[eap6Index != -1 ? eap6Index : eap7Index].id;                
-                if (containerizationIndex != -1) {
-                    this.analysisContext.cloudTargetsIncluded = true;
-                }
-                if (openJdkIndex != -1) {
-                    this.analysisContext.advancedOptions.push({
-                        id: 2327,
-                        name: "target",
-                        value: "openjdk",
-                        version: 0
-                    });
-                }
-                if (linuxIndex != -1) {
-                    this.analysisContext.advancedOptions.push({
-                        id: 2328,
-                        name: "target",
-                        value: "linux",
-                        version: 0,
-                    });
-                }
+                this.analysisContext.migrationPath.id = selectedPaths[eap6Index != -1 ? eap6Index : eap7Index].id;
+            } else {
+                this.analysisContext.migrationPath.id = 90;
             }
+            this.analysisContext.cloudTargetsIncluded = containerizationIndex != -1;
+            this.analysisContext.linuxTargetsIncluded = linuxIndex != -1;
+            this.analysisContext.openJdkTargetsIncluded = openJdkIndex != -1;
         }
-        
-        // if (this.analysisContext.migrationPath.id === AnalysisContextFormComponent.CLOUD_READINESS_PATH_ID) {
-        //     this.analysisContext.cloudTargetsIncluded = true;
-        //     this.disableCloudReadiness = true;
-        // } else {
-        //     this.disableCloudReadiness = false;
-        // }    
     }
 
     private indexOfPathId(paths: Path[], id: number): number {
