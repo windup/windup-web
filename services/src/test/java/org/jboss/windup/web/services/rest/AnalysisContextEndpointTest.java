@@ -65,6 +65,8 @@ public class AnalysisContextEndpointTest extends AbstractTest
         AnalysisContext analysisContext = this.dataProvider.getAnalysisContext(project);
         analysisContext.setMigrationPath(path);
         analysisContext.setCloudTargetsIncluded(true);
+        analysisContext.setLinuxTargetsIncluded(true);
+        analysisContext.setOpenJdkTargetsIncluded(true);
 
         analysisContext.setRulesPaths(configurationEndpoint.getConfiguration().getRulesPaths());
 
@@ -81,6 +83,8 @@ public class AnalysisContextEndpointTest extends AbstractTest
         Assert.assertEquals(analysisContext.getId(), loaded.getId());
         Assert.assertEquals(path, loaded.getMigrationPath());
         Assert.assertEquals(true, loaded.isCloudTargetsIncluded());
+        Assert.assertEquals(true, loaded.isLinuxTargetsIncluded());
+        Assert.assertEquals(true, loaded.isOpenJdkTargetsIncluded());
         Assert.assertEquals(1, loaded.getRulesPaths().size());
     }
 }
