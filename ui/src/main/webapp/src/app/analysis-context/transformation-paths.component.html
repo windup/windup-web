@@ -1,25 +1,28 @@
 <div class="cards-pf">
     <div class="container-fluid container-cards-pf">
         <div class="row row-cards-pf">
-            <div (click)="onCardClick(path)" *ngFor="let path of paths" class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-                <div style="cursor: pointer;" [ngClass]="{'active': path.selected}" class="card-pf card-pf-view card-pf-view-select card-pf-view-multi-select">
+            <div (click)="onCardClick(card)" *ngFor="let card of cardPaths" class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                <div style="cursor: pointer;" [ngClass]="{'active': card.selected}" class="card-pf card-pf-view card-pf-view-select card-pf-view-multi-select">
                     <div class="card-pf-body" style="height: 204px;">
                         <div class="card-pf-top-element">
-                            <span class="{{path.icon}} card-pf-icon-circle"></span>
+                            <span class="{{card.icon}} card-pf-icon-circle"></span>
                         </div>
                         <h2 class="card-pf-title text-center">
-                            {{path.label}}
+                            {{card.label}}
                         </h2>
-                        <div *ngIf="path.children && path.children.length > 0" class="card-pf-items text-center">
+                        <div *ngIf="card.children && card.children.length > 0" class="card-pf-items text-center">
                             <div class="card-pf-item">
-                                <select (click)="$event.stopPropagation()" class="form-control" (change)="onDropdownChange(path, $event.target.value, $event)">
-                                    <option *ngFor="let child of path.children" [value]="child.id">{{child.label}}</option>
+                                <select [(ngModel)]="card.selectedChild" (click)="$event.stopPropagation()" class="form-control"
+                                    (ngModelChange)="onDropdownChange(card)">
+                                    <option [ngValue]="child" *ngFor="let child of card.children">
+                                        {{child.label}}
+                                    </option>
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div class="card-pf-view-checkbox">
-                        <input type="checkbox" [checked]="path.selected" (change)="onCheckboxClick(path, $event)"
+                        <input type="checkbox" [checked]="card.selected" (change)="onCheckboxCardClick(card, $event)"
                             (click)="$event.stopPropagation()" />
                     </div>
                 </div>

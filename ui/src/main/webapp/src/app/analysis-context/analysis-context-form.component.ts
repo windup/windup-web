@@ -24,7 +24,7 @@ import {WINDUP_WEB} from "../app.module";
 import {DialogService} from "../shared/dialog/dialog.service";
 import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
 import {TreeData} from "../shared/js-tree-angular-wrapper.component";
-import { Path } from "./transformation-paths.component";
+import {Path, CardPath, DropdownPath} from "./transformation-paths.component";
 
 @Component({
     templateUrl: './analysis-context-form.component.html',
@@ -52,29 +52,29 @@ export class AnalysisContextFormComponent extends FormComponent
     excludePackages: Package[];
     hideUnfinishedFeatures: boolean = WINDUP_WEB.config.hideUnfinishedFeatures;
 
-    static JBOSS_EAP: number = 9000; // Random number
+    static JBOSS_EAP: number = 102; // Random number    
+
     static JBOSS_EAP_7: number = 101;
     static JBOSS_EAP_6: number = 100;
     static CONTAINERIZATION: number = 90;
-    static LINUX: number = 9001; // Random number
-    static OPEN_JDK: number = 9002; // Random number
+    static LINUX: number = 91; // Random number
+    static OPEN_JDK: number = 92; // Random number
 
-    paths: Path[] = [
+    cardPaths: CardPath[] = [
         {
             id: AnalysisContextFormComponent.JBOSS_EAP,
             label: 'Application server migration to EAP',
             icon: 'pficon pficon-enterprise',
             selected: true,
+            selectedChild: null,
             children: [
                 {
                     id: AnalysisContextFormComponent.JBOSS_EAP_7,
-                    label: 'JBoss EAP 7',
-                    selected: true
+                    label: 'JBoss EAP 7'                    
                 },
                 {
                     id: AnalysisContextFormComponent.JBOSS_EAP_6,
-                    label: 'JBoss EAP 6',
-                    selected: false,
+                    label: 'JBoss EAP 6'                    
                 }
             ],
         },
@@ -82,25 +82,22 @@ export class AnalysisContextFormComponent extends FormComponent
             id: AnalysisContextFormComponent.CONTAINERIZATION,
             label: 'Containerization',
             icon: 'fa fa-cube',
-            selected: false,
-            children: []
+            selected: false
         },
         {
             id: AnalysisContextFormComponent.LINUX,
             label: 'Move to Linux',
             icon: 'fa fa-linux',
-            selected: false,
-            children: [],
+            selected: false
         },
         {
             id: AnalysisContextFormComponent.OPEN_JDK,
             label: 'OpenJDK',
             icon: 'fa fa-coffee',
-            selected: false,
-            children: []
+            selected: false
         }
     ];
-    
+
     // private transformationPaths: MigrationPath[] = [
     //     {
     //         "id": 101,
@@ -152,7 +149,7 @@ export class AnalysisContextFormComponent extends FormComponent
 
     saveInProgress = false;
 
-    static DEFAULT_MIGRATION_PATH: MigrationPath = <MigrationPath>{ id: 101 };
+    static DEFAULT_MIGRATION_PATH: MigrationPath = <MigrationPath>{ id: AnalysisContextFormComponent.JBOSS_EAP_7 };
     static CLOUD_READINESS_PATH_ID: number = 90;
     @ViewChild('cancelDialog')
     readonly cancelDialog: ConfirmationModalComponent;
@@ -219,6 +216,38 @@ export class AnalysisContextFormComponent extends FormComponent
                                     if (this.isInWizard) {
                                         this.analysisContext.applications = apps.slice();
                                     }
+
+                                    
+                                    // Load values to card paths
+                                    if (this.analysisContext.migrationPath.id == AnalysisContextFormComponent.JBOSS_EAP_6 ||
+                                        this.analysisContext.migrationPath.id == AnalysisContextFormComponent.JBOSS_EAP_7
+                                    ) {
+                                        const jbossCardPath: CardPath = <CardPath>this.searchPathById(this.cardPaths, AnalysisContextFormComponent.JBOSS_EAP);
+                                        jbossCardPath.selected = true;
+
+                                        if (this.analysisContext.migrationPath.id == AnalysisContextFormComponent.JBOSS_EAP_6) {
+                                            jbossCardPath.selectedChild = <DropdownPath>this.searchPathById(jbossCardPath.children, AnalysisContextFormComponent.JBOSS_EAP_6);
+                                        } else if (this.analysisContext.migrationPath.id == AnalysisContextFormComponent.JBOSS_EAP_7) {
+                                            jbossCardPath.selectedChild = jbossCardPath.selectedChild = <DropdownPath>this.searchPathById(jbossCardPath.children, AnalysisContextFormComponent.JBOSS_EAP_7);
+                                        }
+                                    } else {
+                                        const jbossCardPath: CardPath = <CardPath>this.searchPathById(this.cardPaths, AnalysisContextFormComponent.JBOSS_EAP);
+                                        jbossCardPath.selected = false;
+                                    }
+
+                                    if (this.analysisContext.cloudTargetsIncluded) {
+                                        const containerizationCardPath = <CardPath>this.searchPathById(this.cardPaths, AnalysisContextFormComponent.CONTAINERIZATION);
+                                        containerizationCardPath.selected = true;
+                                    }
+                                    if (this.analysisContext.linuxTargetsIncluded) {
+                                        const linuxCardPath = <CardPath>this.searchPathById(this.cardPaths, AnalysisContextFormComponent.LINUX);
+                                        linuxCardPath.selected = true;
+                                    }
+                                    if (this.analysisContext.openJdkTargetsIncluded) {
+                                        const openJdkCardPath = <CardPath>this.searchPathById(this.cardPaths, AnalysisContextFormComponent.OPEN_JDK);
+                                        openJdkCardPath.selected = true;
+                                    }
+
                                 });
                         }
                         this.loadPackageMetadata();
@@ -488,8 +517,9 @@ export class AnalysisContextFormComponent extends FormComponent
             if (eap6Index != -1 || eap7Index != -1) {
                 this.analysisContext.migrationPath.id = selectedPaths[eap6Index != -1 ? eap6Index : eap7Index].id;
             } else {
-                this.analysisContext.migrationPath.id = 90;
+                this.analysisContext.migrationPath.id = AnalysisContextFormComponent.CLOUD_READINESS_PATH_ID;
             }
+
             this.analysisContext.cloudTargetsIncluded = containerizationIndex != -1;
             this.analysisContext.linuxTargetsIncluded = linuxIndex != -1;
             this.analysisContext.openJdkTargetsIncluded = openJdkIndex != -1;
@@ -504,6 +534,16 @@ export class AnalysisContextFormComponent extends FormComponent
             }
         }
         return -1;
+    }
+
+    private searchPathById(paths: Path[], pathId: number): Path {
+        for (let index = 0; index < paths.length; index++) {
+            const cardPath: Path = paths[index];
+            if (cardPath.id == pathId) {
+                return cardPath;
+            }
+        }
+        return null;
     }
 }
 

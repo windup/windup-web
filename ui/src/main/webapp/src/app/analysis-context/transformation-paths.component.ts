@@ -3,10 +3,18 @@ import { ControlValueAccessor, Validator, NG_VALUE_ACCESSOR, NG_VALIDATORS, Abst
 
 export interface Path {
     id: number;
-    children?: Path[];
-    icon?: string;
+}
+
+export interface CardPath extends Path {
+    icon: string;
     label: string;
     selected: boolean;
+    children?: DropdownPath[];
+    selectedChild?: DropdownPath
+}
+
+export interface DropdownPath extends Path {
+    label: string;
 }
 
 @Component({
@@ -26,7 +34,7 @@ export interface Path {
 export class TransformationPathsComponent implements ControlValueAccessor, Validator {
 
     @Input()
-    paths: Path[];
+    cardPaths: CardPath[];
 
     @Output()
     onPathChange: EventEmitter<Path[]> = new EventEmitter<Path[]>();
@@ -49,8 +57,15 @@ export class TransformationPathsComponent implements ControlValueAccessor, Valid
      * Called to write data from the model to the view
      */
     writeValue(obj: any): void {
-        this.paths = obj;
-        if (this.paths && this.paths.length > 0) {
+        this.cardPaths = <CardPath[]>obj;
+        if (this.cardPaths && this.cardPaths.length > 0) {
+            // Select first child if there is no selected child
+            this.cardPaths
+                .filter(cardPath => cardPath.children && cardPath.children)
+                .filter(cardPath => !cardPath.selectedChild)
+                .forEach(cardPath => {
+                    cardPath.selectedChild = cardPath.children[0];
+                });
             this.emitPathChangeEvent();
         }
     }
@@ -88,60 +103,49 @@ export class TransformationPathsComponent implements ControlValueAccessor, Valid
         };
     };
 
+
     // Bussiness logic
 
 
-    protected onCardClick(path: Path): void {
-        path.selected = !path.selected;
+    protected onCardClick(card: CardPath): void {
+        card.selected = !card.selected;
         this.emitPathChangeEvent();
     }
 
-    protected onCheckboxClick(path: Path): void {
-        path.selected = !path.selected;
+    protected onCheckboxCardClick(card: CardPath): void {
+        card.selected = !card.selected;
         this.emitPathChangeEvent();
     }
 
-    protected onDropdownChange(path: Path, selectedChildPath: number): void {
-        path.selected = true;
-
-        // Change the selected status of Path children
-        const pathChildren: Path[] = path.children;
-        if (pathChildren && pathChildren.length > 0) {
-            pathChildren.forEach(child => {
-                if (child.id == selectedChildPath) {
-                    child.selected = true;
-                } else {
-                    child.selected = false;
-                }
-            });
-        }
-
+    protected onDropdownChange(card: CardPath): void {
+        card.selected = true;
         this.emitPathChangeEvent();
     }
 
     private emitPathChangeEvent(): void {
-        let mappedMaps: Path[] = [];
+        let selectedPaths: Path[] = [];
 
         // Remove selected parents and replace by children
-        for (let index = 0; index < this.paths.length; index++) {
-            const path = this.paths[index];
-            if (path.selected) {
-                const pathChildren: Path[] = path.children;
-                if (pathChildren && pathChildren.length > 0) {
-                    mappedMaps = mappedMaps.concat(pathChildren);
+        for (let index = 0; index < this.cardPaths.length; index++) {
+            const cardPath = this.cardPaths[index];
+            if (cardPath.selected) {
+                if (cardPath.children && cardPath.children.length > 0) {
+                    if (cardPath.selectedChild) {
+                        selectedPaths.push(cardPath.selectedChild);
+                    }
                 } else {
-                    mappedMaps.push(path);
+                    selectedPaths.push(cardPath);
                 }
             }
         }
 
-        this.selectedPaths = mappedMaps.filter(path => path.selected);
+        this.selectedPaths = selectedPaths;
 
         // Emit event
         this.onPathChange.emit(this.selectedPaths);
 
         // Change Model (NgForm)
-        this._onChange(this.paths);
+        this._onChange(this.cardPaths);
     }
 
 }
