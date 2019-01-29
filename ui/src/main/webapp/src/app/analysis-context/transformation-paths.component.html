@@ -2,7 +2,9 @@
     <div class="container-fluid container-cards-pf">
         <div class="row row-cards-pf">
             <div (click)="onCardClick(card)" *ngFor="let card of cardPaths" class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-                <div style="cursor: pointer;" [ngClass]="{'active': card.selected}" class="card-pf card-pf-view card-pf-view-select card-pf-view-multi-select">
+                <div style="cursor: pointer;" 
+                    [ngClass]="{'active': card.selected}" 
+                    class="card-pf card-pf-view card-pf-view-select card-pf-view-multi-select">
                     <div class="card-pf-body" style="height: 204px;">
                         <div class="card-pf-top-element">
                             <span class="{{card.icon}} card-pf-icon-circle"></span>
@@ -12,8 +14,10 @@
                         </h2>
                         <div *ngIf="card.children && card.children.length > 0" class="card-pf-items text-center">
                             <div class="card-pf-item">
-                                <select [(ngModel)]="card.selectedChild" (click)="$event.stopPropagation()" class="form-control"
-                                    (ngModelChange)="onDropdownChange(card)">
+                                <select [(ngModel)]="card.selectedChild" 
+                                        (click)="$event.stopPropagation()"
+                                        (ngModelChange)="onDropdownChange(card)"
+                                        class="form-control" >
                                     <option [ngValue]="child" *ngFor="let child of card.children">
                                         {{child.label}}
                                     </option>
@@ -22,8 +26,10 @@
                         </div>
                     </div>
                     <div class="card-pf-view-checkbox">
-                        <input type="checkbox" [checked]="card.selected" (change)="onCheckboxCardClick(card, $event)"
-                            (click)="$event.stopPropagation()" />
+                        <input type="checkbox" 
+                                [checked]="card.selected" 
+                                (change)="onCheckboxCardClick(card, $event)"
+                                (click)="$event.stopPropagation()" />
                     </div>
                 </div>
             </div>

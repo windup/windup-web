@@ -8,7 +8,7 @@ export interface Path {
 export interface CardPath extends Path {
     icon: string;
     label: string;
-    selected: boolean;
+    selected?: boolean;
     children?: DropdownPath[];
     selectedChild?: DropdownPath
 }
@@ -33,13 +33,28 @@ export interface DropdownPath extends Path {
 })
 export class TransformationPathsComponent implements ControlValueAccessor, Validator {
 
+    private _cardPaths: CardPath[] = [];
+
+    get cardPaths(): CardPath[] {
+        return this._cardPaths;
+    };
+
     @Input()
-    cardPaths: CardPath[];
+    set cardPaths(cardPaths: CardPath[]) {
+        this._cardPaths = cardPaths;
+        if (this._cardPaths) {
+            // Select first child if there is no selected child
+            this.cardPaths
+                .filter(cardPath => cardPath.children && cardPath.children)
+                .filter(cardPath => !cardPath.selectedChild)
+                .forEach(cardPath => cardPath.selectedChild = cardPath.children[0]);
+        }
+    }
 
     @Output()
     onPathChange: EventEmitter<Path[]> = new EventEmitter<Path[]>();
 
-    private selectedPaths: Path[] = [];
+    value: Path[] = [];
 
     private _onChange = (_: any) => { };
     private _onTouched = () => { };
@@ -50,23 +65,32 @@ export class TransformationPathsComponent implements ControlValueAccessor, Valid
 
 
     // ControlValueAccessor methods
-
+    
 
     /**
      * 
      * Called to write data from the model to the view
      */
     writeValue(obj: any): void {
-        this.cardPaths = <CardPath[]>obj;
-        if (this.cardPaths && this.cardPaths.length > 0) {
-            // Select first child if there is no selected child
-            this.cardPaths
-                .filter(cardPath => cardPath.children && cardPath.children)
-                .filter(cardPath => !cardPath.selectedChild)
-                .forEach(cardPath => {
-                    cardPath.selectedChild = cardPath.children[0];
-                });
-            this.emitPathChangeEvent();
+        this.value = <Path[]>obj;
+        if (this.value) {
+            // Update view from model
+            for (let index = 0; index < this.cardPaths.length; index++) {
+                const cardPath = this.cardPaths[index];
+                if (cardPath.children && cardPath.children.length > 0) {
+                    for (let j = 0; j < cardPath.children.length; j++) {
+                        const dropdownPath = cardPath.children[j];
+                        if (this.searchPathIndexById(this.value, dropdownPath.id) != -1) {
+                            cardPath.selected = true;
+                            cardPath.selectedChild = dropdownPath;
+                        }
+                    }
+                } else {
+                    if (this.searchPathIndexById(this.value, cardPath.id) != -1) {
+                        cardPath.selected = true;
+                    }
+                }
+            }
         }
     }
 
@@ -96,7 +120,7 @@ export class TransformationPathsComponent implements ControlValueAccessor, Valid
 
 
     validate(control: AbstractControl): ValidationErrors | null {
-        return (this.selectedPaths && this.selectedPaths.length > 0) ? null : {
+        return (this.value && this.value.length > 0) ? null : {
             required: {
                 valid: false
             }
@@ -109,21 +133,21 @@ export class TransformationPathsComponent implements ControlValueAccessor, Valid
 
     protected onCardClick(card: CardPath): void {
         card.selected = !card.selected;
-        this.emitPathChangeEvent();
+        this.updateValue();
     }
 
     protected onCheckboxCardClick(card: CardPath): void {
         card.selected = !card.selected;
-        this.emitPathChangeEvent();
+        this.updateValue();
     }
 
     protected onDropdownChange(card: CardPath): void {
         card.selected = true;
-        this.emitPathChangeEvent();
+        this.updateValue();
     }
 
-    private emitPathChangeEvent(): void {
-        let selectedPaths: Path[] = [];
+    private updateValue(): void {
+        const selectedPaths: Path[] = [];
 
         // Remove selected parents and replace by children
         for (let index = 0; index < this.cardPaths.length; index++) {
@@ -139,13 +163,23 @@ export class TransformationPathsComponent implements ControlValueAccessor, Valid
             }
         }
 
-        this.selectedPaths = selectedPaths;
-
-        // Emit event
-        this.onPathChange.emit(this.selectedPaths);
+        this.value = selectedPaths;
 
         // Change Model (NgForm)
-        this._onChange(this.cardPaths);
+        this._onChange(this.value);
+
+        // Emit event
+        this.onPathChange.emit(this.value);
     }
 
+    private searchPathIndexById(paths: Path[], id: number): number {
+        for (let index = 0; index < paths.length; index++) {
+            const path: Path = paths[index];
+            if (path.id == id) {
+                return index;
+            }
+        }
+        return -1;
+    }
+    
 }

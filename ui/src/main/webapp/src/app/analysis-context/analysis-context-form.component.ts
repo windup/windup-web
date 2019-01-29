@@ -60,41 +60,37 @@ export class AnalysisContextFormComponent extends FormComponent
     static LINUX: number = 91; // Random number
     static OPEN_JDK: number = 92; // Random number
 
+    selectedPaths: Path[];
     cardPaths: CardPath[] = [
         {
             id: AnalysisContextFormComponent.JBOSS_EAP,
             label: 'Application server migration to EAP',
             icon: 'pficon pficon-enterprise',
-            selected: true,
-            selectedChild: null,
             children: [
                 {
                     id: AnalysisContextFormComponent.JBOSS_EAP_7,
-                    label: 'JBoss EAP 7'                    
+                    label: 'JBoss EAP 7'
                 },
                 {
                     id: AnalysisContextFormComponent.JBOSS_EAP_6,
-                    label: 'JBoss EAP 6'                    
+                    label: 'JBoss EAP 6'
                 }
             ],
         },
         {
             id: AnalysisContextFormComponent.CONTAINERIZATION,
             label: 'Containerization',
-            icon: 'fa fa-cube',
-            selected: false
+            icon: 'fa fa-cube'
         },
         {
             id: AnalysisContextFormComponent.LINUX,
             label: 'Move to Linux',
-            icon: 'fa fa-linux',
-            selected: false
+            icon: 'fa fa-linux'
         },
         {
             id: AnalysisContextFormComponent.OPEN_JDK,
             label: 'OpenJDK',
-            icon: 'fa fa-coffee',
-            selected: false
+            icon: 'fa fa-coffee'
         }
     ];
 
@@ -216,37 +212,25 @@ export class AnalysisContextFormComponent extends FormComponent
                                     if (this.isInWizard) {
                                         this.analysisContext.applications = apps.slice();
                                     }
-
                                     
                                     // Load values to card paths
-                                    if (this.analysisContext.migrationPath.id == AnalysisContextFormComponent.JBOSS_EAP_6 ||
-                                        this.analysisContext.migrationPath.id == AnalysisContextFormComponent.JBOSS_EAP_7
-                                    ) {
-                                        const jbossCardPath: CardPath = <CardPath>this.searchPathById(this.cardPaths, AnalysisContextFormComponent.JBOSS_EAP);
-                                        jbossCardPath.selected = true;
-
-                                        if (this.analysisContext.migrationPath.id == AnalysisContextFormComponent.JBOSS_EAP_6) {
-                                            jbossCardPath.selectedChild = <DropdownPath>this.searchPathById(jbossCardPath.children, AnalysisContextFormComponent.JBOSS_EAP_6);
-                                        } else if (this.analysisContext.migrationPath.id == AnalysisContextFormComponent.JBOSS_EAP_7) {
-                                            jbossCardPath.selectedChild = jbossCardPath.selectedChild = <DropdownPath>this.searchPathById(jbossCardPath.children, AnalysisContextFormComponent.JBOSS_EAP_7);
-                                        }
-                                    } else {
-                                        const jbossCardPath: CardPath = <CardPath>this.searchPathById(this.cardPaths, AnalysisContextFormComponent.JBOSS_EAP);
-                                        jbossCardPath.selected = false;
+                                    const selectedPaths: Path[] = [];
+                                    if (this.analysisContext.migrationPath.id == AnalysisContextFormComponent.JBOSS_EAP_6) {
+                                        selectedPaths.push({ id: AnalysisContextFormComponent.JBOSS_EAP_6 });
                                     }
-
+                                    if (this.analysisContext.migrationPath.id == AnalysisContextFormComponent.JBOSS_EAP_7) {
+                                        selectedPaths.push({ id: AnalysisContextFormComponent.JBOSS_EAP_7 });
+                                    }
                                     if (this.analysisContext.cloudTargetsIncluded) {
-                                        const containerizationCardPath = <CardPath>this.searchPathById(this.cardPaths, AnalysisContextFormComponent.CONTAINERIZATION);
-                                        containerizationCardPath.selected = true;
+                                        selectedPaths.push({ id: AnalysisContextFormComponent.CONTAINERIZATION });
                                     }
                                     if (this.analysisContext.linuxTargetsIncluded) {
-                                        const linuxCardPath = <CardPath>this.searchPathById(this.cardPaths, AnalysisContextFormComponent.LINUX);
-                                        linuxCardPath.selected = true;
+                                        selectedPaths.push({ id: AnalysisContextFormComponent.LINUX });
                                     }
                                     if (this.analysisContext.openJdkTargetsIncluded) {
-                                        const openJdkCardPath = <CardPath>this.searchPathById(this.cardPaths, AnalysisContextFormComponent.OPEN_JDK);
-                                        openJdkCardPath.selected = true;
+                                        selectedPaths.push({ id: AnalysisContextFormComponent.OPEN_JDK });
                                     }
+                                    this.selectedPaths = selectedPaths;
 
                                 });
                         }
@@ -506,16 +490,16 @@ export class AnalysisContextFormComponent extends FormComponent
         return this.analysisContext.rulesPaths.filter(rulesPath => rulesPath.rulesPathType == 'USER_PROVIDED').length > 0;
     }
 
-    onMigrationPathChange(selectedPaths: Path[]) {
-        if (selectedPaths && selectedPaths.length > 0) {
-            const eap6Index = this.indexOfPathId(selectedPaths, AnalysisContextFormComponent.JBOSS_EAP_6);
-            const eap7Index = this.indexOfPathId(selectedPaths, AnalysisContextFormComponent.JBOSS_EAP_7)
-            const containerizationIndex = this.indexOfPathId(selectedPaths, AnalysisContextFormComponent.CONTAINERIZATION)
-            const linuxIndex = this.indexOfPathId(selectedPaths, AnalysisContextFormComponent.LINUX)
-            const openJdkIndex = this.indexOfPathId(selectedPaths, AnalysisContextFormComponent.OPEN_JDK)
+    onMigrationPathChange() {
+        if (this.selectedPaths && this.selectedPaths.length > 0) {
+            const eap6Index = this.indexOfPathId(this.selectedPaths, AnalysisContextFormComponent.JBOSS_EAP_6);
+            const eap7Index = this.indexOfPathId(this.selectedPaths, AnalysisContextFormComponent.JBOSS_EAP_7)
+            const containerizationIndex = this.indexOfPathId(this.selectedPaths, AnalysisContextFormComponent.CONTAINERIZATION)
+            const linuxIndex = this.indexOfPathId(this.selectedPaths, AnalysisContextFormComponent.LINUX)
+            const openJdkIndex = this.indexOfPathId(this.selectedPaths, AnalysisContextFormComponent.OPEN_JDK)
 
             if (eap6Index != -1 || eap7Index != -1) {
-                this.analysisContext.migrationPath.id = selectedPaths[eap6Index != -1 ? eap6Index : eap7Index].id;
+                this.analysisContext.migrationPath.id = this.selectedPaths[eap6Index != -1 ? eap6Index : eap7Index].id;
             } else {
                 this.analysisContext.migrationPath.id = AnalysisContextFormComponent.CLOUD_READINESS_PATH_ID;
             }
@@ -534,16 +518,6 @@ export class AnalysisContextFormComponent extends FormComponent
             }
         }
         return -1;
-    }
-
-    private searchPathById(paths: Path[], pathId: number): Path {
-        for (let index = 0; index < paths.length; index++) {
-            const cardPath: Path = paths[index];
-            if (cardPath.id == pathId) {
-                return cardPath;
-            }
-        }
-        return null;
     }
 }
 

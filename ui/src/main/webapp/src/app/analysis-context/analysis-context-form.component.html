@@ -37,10 +37,11 @@
             <p class="help-block" i18n="transform path description">Select one or several transformation options in focus for the analysis.</p>
             <!-- <div class="container-fluid container-cards-pf">-->
             <div>
-                <wu-transformation-paths id="cardPaths"
-                    name="cardPaths"
-                    [(ngModel)]="cardPaths"
-                    (onPathChange)="onMigrationPathChange($event)"
+                <wu-transformation-paths id="selectedPaths"
+                    name="selectedPaths"
+                    [cardPaths]="cardPaths"
+                    [(ngModel)]="selectedPaths"
+                    (ngModelChange)="onMigrationPathChange()"
                     required>
                 </wu-transformation-paths>
             </div>
