@@ -1,7 +1,7 @@
 import {Component, Input, NgZone, OnInit} from "@angular/core";
 import {FileItem} from "ng2-file-upload";
 import {utils} from "../utils";
-import {NotificationService} from "../../core/notification/notification.service";
+import {NotificationService, NotificationType} from 'patternfly-ng/notification';
 import {FileUploaderWrapper} from "./file-uploader-wrapper.service";
 import {AbstractComponent} from "../AbstractComponent";
 import {RegisteredApplicationService} from "../../registered-application/registered-application.service";
@@ -19,12 +19,12 @@ export class AlternativeUploadQueueComponent extends AbstractComponent implement
 
     protected uploadErrors: Map<FileItem, string> = new Map<FileItem, string>();
 
-    public constructor(private _ngZone: NgZone, private _notificationService: NotificationService) {
+    public constructor(private _ngZone: NgZone, private notificationService: NotificationService) {
         super();
     }
 
     ngOnInit(): void {
-        this.subscriptions.push(this.uploader.observables.onProgressItem.subscribe(itemProgress => {
+        this.subscriptions.push(this.uploader.observables.onProgressItem.subscribe(itemProgress => {            
             const item = itemProgress.item;
             const progress = itemProgress.progress;
             this._ngZone.run(() => this.progress[item.file.name] = progress);
@@ -38,6 +38,10 @@ export class AlternativeUploadQueueComponent extends AbstractComponent implement
             if (this.isFileExistsError(response)) {
                 this.uploadErrors.set(item, utils.getErrorMessage(response));
             }
+            
+            let errorMessage = response.message ? response.message : "Error uploading file";
+            this.notificationService.message(NotificationType.DANGER, "Error", errorMessage, false, null, null);
+            item.remove();
         }));
 
         /**

@@ -62,6 +62,7 @@ import {FilterPipe} from "./filter/filter.pipe";
 import {TableComponent} from "./table/table.component";
 import {TableSortHeaderComponent} from "./table/table-sort-header.component";
 import {TablePanelComponent} from "./table/table-panel.component";
+import {NotificationModule} from 'patternfly-ng/notification';
 
 @NgModule({
     imports: [
@@ -72,6 +73,7 @@ import {TablePanelComponent} from "./table/table-panel.component";
         ChosenModule,
         FileUploadModule,
         MomentModule,
+        NotificationModule
     ],
     providers: [
         BreadCrumbsService,
@@ -199,7 +201,8 @@ import {TablePanelComponent} from "./table/table-panel.component";
         FilterPipe,
         TableSortHeaderComponent,
         TableComponent,
-        TablePanelComponent
+        TablePanelComponent,
+        NotificationModule
     ]
 })
 export class SharedModule {

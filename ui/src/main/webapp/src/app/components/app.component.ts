@@ -4,6 +4,7 @@ import {RouteHistoryService} from "../core/routing/route-history.service";
 import {RouteFlattenerService} from "../core/routing/route-flattener.service";
 import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
 import {DialogService} from "../shared/dialog/dialog.service";
+import {NotificationService, Notification} from "patternfly-ng/notification";
 
 @Component({
     selector: 'windup-app',
@@ -12,6 +13,8 @@ import {DialogService} from "../shared/dialog/dialog.service";
 export class AppComponent implements AfterViewInit {
     @ViewChild('reusableModalDialog')
     confirmationDialog: ConfirmationModalComponent;
+
+    notifications: Notification[];
 
     /*
      * This is for Augury Chrome extension to display router tree
@@ -24,7 +27,8 @@ export class AppComponent implements AfterViewInit {
         private routeHistoryService: RouteHistoryService,
         private routeFlattener: RouteFlattenerService,
         private activatedRoute: ActivatedRoute,
-        private dialogService: DialogService
+        private dialogService: DialogService,
+        private notificationService: NotificationService
     ) {
         router.events
             .filter(event => event instanceof NavigationEnd)
@@ -32,6 +36,7 @@ export class AppComponent implements AfterViewInit {
                 this.routeHistoryService.addNavigationEvent(event);
                 this.routeFlattener.onNewRouteActivated(activatedRoute.snapshot);
             });
+        this.notifications = this.notificationService.getNotifications();
     }
 
     ngAfterViewInit(): void {
