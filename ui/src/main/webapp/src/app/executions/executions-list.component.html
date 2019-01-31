@@ -92,7 +92,7 @@
                         &nbsp;
                     </span>
                     <span *ngIf="execution.state == 'COMPLETED' && execution?.analysisContext?.generateStaticReports && containsAdvancedOption(execution, 'exportCSV', 'true')">
-                        <a  class="pointer link" target="_blank" href="{{formatStaticCsvReportUrl(execution)}}" title="All Issues CSV"> <i class="pficon pficon-export"></i></a>
+                        <a  class="pointer link" target="_blank" href="{{formatStaticCsvReportUrl(execution)}}" title="Download All Issues CSV"> <i class="pficon pficon-export"></i></a>
                         &nbsp;
                     </span>
                     <a *ngIf="execution.state != 'STARTED' && execution.state != 'QUEUED'" class="pointer link" (click)="confirmDeleteExecution(execution)" title="Delete">

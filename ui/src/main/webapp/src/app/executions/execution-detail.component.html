@@ -60,8 +60,8 @@
                 <ng-container *ngIf="execution.state == 'COMPLETED' && execution?.analysisContext?.generateStaticReports">
                     <dt i18n="Analysis static report">Report</dt>
                     <dd>
-                        <a class="link" target="_blank" href="{{formatStaticReportUrl(execution)}}">Open <i class="fa fa-external-link"></i></a>
-                        <a *ngIf="containsAdvancedOption(execution, 'exportCSV', 'true')" class="link" target="_blank" href="{{formatStaticCsvReportUrl(execution)}}">All Issues CSV <i class="pficon pficon-export"></i></a>                        
+                        <a class="link" target="_blank" href="{{formatStaticReportUrl(execution)}}">Open <i class="fa fa-external-link"></i></a><br>
+                        <a *ngIf="containsAdvancedOption(execution, 'exportCSV', 'true')" class="link" target="_blank" href="{{formatStaticCsvReportUrl(execution)}}">Download All Issues CSV <i class="pficon pficon-export"></i></a>                        
                     </dd>
                 </ng-container>
             </dl>
