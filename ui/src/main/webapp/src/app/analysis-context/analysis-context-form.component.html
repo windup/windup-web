@@ -95,6 +95,8 @@
                     [(selectedNodes)]="analysisContext.includePackages"
                     (selectedNodesChange)="includedPackagesChanged($event)">
             </wu-js-tree-wrapper>
+            <wu-dual-list-selector>
+            </wu-dual-list-selector>
             <p class="help-block" i18n="include packages description">Select the Java packages to decompile and analyze. If no packages are selected, all will be analyzed.</p>
         </div>
 

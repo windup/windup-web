@@ -62,6 +62,8 @@ import {FilterPipe} from "./filter/filter.pipe";
 import {TableComponent} from "./table/table.component";
 import {TableSortHeaderComponent} from "./table/table-sort-header.component";
 import {TablePanelComponent} from "./table/table-panel.component";
+import {TreeModule} from 'ng2-tree';
+import {DualListSelectorComponent} from "./dual-list-selector/dual-list-selector.component";
 
 @NgModule({
     imports: [
@@ -72,6 +74,7 @@ import {TablePanelComponent} from "./table/table-panel.component";
         ChosenModule,
         FileUploadModule,
         MomentModule,
+        TreeModule,
     ],
     providers: [
         BreadCrumbsService,
@@ -141,7 +144,9 @@ import {TablePanelComponent} from "./table/table-panel.component";
         FilterPipe,
         TableSortHeaderComponent,
         TableComponent,
-        TablePanelComponent
+        TablePanelComponent,
+
+        DualListSelectorComponent
     ],
     exports: [
         CustomSelectComponent,
@@ -199,7 +204,10 @@ import {TablePanelComponent} from "./table/table-panel.component";
         FilterPipe,
         TableSortHeaderComponent,
         TableComponent,
-        TablePanelComponent
+        TablePanelComponent,
+
+        TreeModule,
+        DualListSelectorComponent
     ]
 })
 export class SharedModule {
