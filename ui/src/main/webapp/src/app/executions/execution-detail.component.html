@@ -67,10 +67,25 @@
             <dl>
                 <dt i18n="Migration Path">Transformation path</dt>
                 <dd>
-                    {{execution.analysisContext?.migrationPath?.name}}
+                    <!-- {{execution.analysisContext?.migrationPath?.name}}
                     <span *ngIf="execution.analysisContext?.cloudTargetsIncluded">
                         (with cloud readiness analysis)
-                    </span>
+                    </span> -->
+
+                    <ul class="list-unstyled">
+                        <li *ngIf="execution.analysisContext?.migrationPath?.source || execution.analysisContext?.migrationPath?.target">
+                            <i class="pficon pficon-enterprise"></i> {{execution.analysisContext?.migrationPath?.name}}
+                        </li>
+                        <li *ngIf="execution.analysisContext?.cloudTargetsIncluded">
+                            <i class="fa fa-cube"></i> Containerization
+                        </li>
+                        <li *ngIf="execution.analysisContext?.linuxTargetsIncluded">
+                            <i class="fa fa-linux"></i> Move to Linux
+                        </li>
+                        <li *ngIf="execution.analysisContext?.openJdkTargetsIncluded">
+                            <i class="fa fa-coffee"></i> OpenJDK
+                        </li>
+                    </ul>
                 </dd>
             </dl>
 
