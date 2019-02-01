@@ -1,0 +1,71 @@
+// // Changes to patternfly
+// .input-group-btn:first-child>.btn, .input-group-btn:first-child>.btn-group {
+//     margin-right: -2px;
+// }
+
+// .toolbar-pf-filter {
+//     width: 100%;
+//     margin-left: 0;
+//     margin-right: 0; 
+// }
+
+// Changes for middle buttons
+.list-box {
+    min-height: 200px;
+    width: 100%;
+}
+.top {
+    margin-top: 20%;
+}
+.bottom10 {
+    margin-bottom: 10px;
+}
+.vertical-spacing-5 {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+.center-block {
+    min-height: 50px;
+}
+/* Small Devices, Tablets */
+@media only screen and (max-width : 768px) {
+    .sm-spacing {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+}
+/* Tablets in portrait */
+@media only screen and (min-width : 768px) and (max-width : 992px) {
+    .sm-spacing {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+}
+/* Extra Small Devices, Phones */ 
+@media only screen and (max-width : 480px) {
+    .sm-spacing {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+}
+
+
+// Styles for search input
+
+/* enable absolute positioning */
+.inner-addon {
+    position: relative;
+}
+
+/* style glyph */
+.inner-addon .fa {
+    position: absolute;
+    padding: 5px;
+    pointer-events: none;
+}
+
+/* align glyph */
+.right-addon .fa { right: 0px;}
+
+/* add padding  */
+.right-addon input { padding-right: 30px; }
