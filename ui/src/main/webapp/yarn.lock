@@ -3595,9 +3595,9 @@ kew@~0.7.0:
   resolved "https://registry.yarnpkg.com/kew/-/kew-0.7.0.tgz#79d93d2d33363d6fdd2970b335d9141ad591d79b"
 
 keycloak-js@^4.7.0:
-  version "4.7.0"
-  resolved "https://registry.yarnpkg.com/keycloak-js/-/keycloak-js-4.7.0.tgz#b1c753186cad9d8863591b3d2ffff06e75c8277b"
-  integrity sha512-UfVX1X3A7HoRbJhSCm6g/qpU2tS6J9o8RIc6oL32xaoe6x0ZxvQiNzxZFKCOu0PF9bswaQ7tvltaGoPn9faSCg==
+  version "4.8.3"
+  resolved "https://registry.yarnpkg.com/keycloak-js/-/keycloak-js-4.8.3.tgz#e065f41d144d260afa8466b5b587a65d5f308d30"
+  integrity sha512-TXoZdoOYu2ScYs58L95/xSYjsTto9KRvZ+vt6mv4Dyf4pYhYZSgwMPnmi128qj/z8sm4mL1Z8nncR6XdWgNKMQ==
 
 keypress@0.1.x:
   version "0.1.0"
