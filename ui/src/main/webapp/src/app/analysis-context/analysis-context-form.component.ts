@@ -323,6 +323,12 @@ export class AnalysisContextFormComponent extends FormComponent
         this.excludePackages = selectedNodes;
     }
 
+    onSelectedPackagesChanged(event) {
+        // console.log(event);
+        this.analysisContext.includePackages = event.selected;
+        this.analysisContext.excludePackages = event.unselected;
+    }
+
     onSubmit() {
         if (!this.packageTreeLoaded) {
             this.confirmDialog.title = 'Package identification is not complete';

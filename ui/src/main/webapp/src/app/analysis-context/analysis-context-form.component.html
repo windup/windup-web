@@ -83,24 +83,27 @@
         <!-- Packages -->
         <div class="form-group">
             <label class="control-label" i18n>Included packages</label>
+            <p class="help-block" i18n="include packages description">Select the Java packages to decompile and analyze.</p>
             <div class="loading-packages" *ngIf="!packageTreeLoaded">
                 <p>
                     <span class="spinner spinner-xs spinner-inline"></span>
                     <ng-container i18n>Identifying packages...</ng-container>
                 </p>
             </div>
-            <wu-js-tree-wrapper
+            <!-- <wu-js-tree-wrapper
                     style="max-height: 240px;"
                     [treeNodes]="packageTree"
                     [(selectedNodes)]="analysisContext.includePackages"
                     (selectedNodesChange)="includedPackagesChanged($event)">
-            </wu-js-tree-wrapper>
-            <wu-dual-list-selector>
+            </wu-js-tree-wrapper> -->
+            <wu-dual-list-selector *ngIf="packageTreeLoaded"
+                    [treeData]="packageTree"
+                    (onSelectionChange)="onSelectedPackagesChanged($event)">
             </wu-dual-list-selector>
-            <p class="help-block" i18n="include packages description">Select the Java packages to decompile and analyze. If no packages are selected, all will be analyzed.</p>
+            <!-- <p class="help-block" i18n="include packages description">Select the Java packages to decompile and analyze. If no packages are selected, all will be analyzed.</p> -->
         </div>
 
-        <wu-expand-collapse [tabTitle]="'Exclude packages'" [isActive]="analysisContext.excludePackages?.length > 0">
+        <!-- <wu-expand-collapse [tabTitle]="'Exclude packages'" [isActive]="analysisContext.excludePackages?.length > 0">
             <div class="form-group">
                 <div>
                     <label class="control-label" i18n>Excluded packages</label>
@@ -119,7 +122,7 @@
                 </div>
                 <p class="help-block" i18n="exclude packages description">All classes in the selected packages will be ignored during analysis.</p>
             </div>
-        </wu-expand-collapse>
+        </wu-expand-collapse> -->
 
         <!-- Rulesets selection -->
         <wu-expand-collapse [tabTitle]="'Use custom rules'" [isActive]="isActiveRulesPaths()">
