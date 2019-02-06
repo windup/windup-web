@@ -32,7 +32,8 @@
 
                 <div class="card-pf-heading">
                     <h2 class="card-pf-title" style="margin: 15px 0;">
-                        <input checkbox="" type="checkbox"> Packages
+                        <input type="checkbox" [(ngModel)]="checkedAll" (ngModelChange)="onCheckedAllChange($event)" />
+                        Packages
                     </h2>
                 </div>
 

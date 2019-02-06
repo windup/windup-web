@@ -21,6 +21,11 @@
         };
     </script>
 
+    <style>
+        .cursor-pointer {    
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body class="cards-pf">

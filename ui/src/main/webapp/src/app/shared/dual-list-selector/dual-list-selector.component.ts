@@ -1,5 +1,5 @@
 import {
-    Component, Input, ViewChild, Output, EventEmitter
+    Component, Input, ViewChild, Output, EventEmitter, OnDestroy
 } from "@angular/core";
 import {
     TreeModel,
@@ -11,25 +11,22 @@ import {
     NodeUncheckedEvent,
     RenamableNode
 } from "ng2-tree";
-
-export interface TreeData {
-    id: number,
-    name: string,
-    childs: TreeData[]
-}
+import { Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
+import { Package } from "../../generated/windup-services";
 
 export interface TreeModelSelection {
     selected: TreeModel[],
     unselected: TreeModel[]
 }
 
-export interface TreeDataSelection {
-    selected: TreeData[],
-    unselected: TreeData[]
+export interface PackageSelection {
+    selected: Package[],
+    unselected: Package[]
 }
 
 export interface RenamableNodeData extends RenamableNode {
-    getData(): any;
+    getData(): Package;
 }
 
 @Component({
@@ -37,17 +34,21 @@ export interface RenamableNodeData extends RenamableNode {
     templateUrl: './dual-list-selector.component.html',
     styleUrls: ['./dual-list-selector.component.scss']
 })
-export class DualListSelectorComponent {
+export class DualListSelectorComponent implements OnDestroy {
+
+    static TREE_ROOT = "/"
 
     @ViewChild('tree')
     treeComponent: TreeComponent;
 
     @Output('onSelectionChange')
-    onSelectionChange: EventEmitter<TreeDataSelection> = new EventEmitter();
+    onSelectionChange: EventEmitter<PackageSelection> = new EventEmitter();
 
-    _treeData: TreeData[];
+    _packages: Package[];
 
-    value: TreeDataSelection;
+    value: PackageSelection;
+
+    checkedAll: boolean = true;
 
     treeModel: TreeModel;
     treeSettings: Ng2TreeSettings = {
@@ -55,20 +56,38 @@ export class DualListSelectorComponent {
         showCheckboxes: true
     } as Ng2TreeSettings;
 
-    public constructor() {
 
+    nodeEventSubject = new Subject<any>();
+
+    subscriptions: Subscription[] = [];
+
+    public constructor() {
+        // Avoid multiple updates when check or uncheck due to handleCheckedEvent() or handleUncheckedEvent()
+        this.subscriptions.push(
+            this.nodeEventSubject
+                .debounceTime(100)
+                .subscribe(() => {
+                    this.updateValue();
+                })
+        );
     }
 
-    get treeData(): TreeData[] {
-        return this._treeData;
+    ngOnDestroy() {
+        this.subscriptions.forEach(
+            (subscription) => subscription.unsubscribe()
+        );
+    }
+
+    get packages(): Package[] {
+        return this._packages;
     }
 
     @Input()
-    set treeData(treeData: TreeData[]) {
-        this._treeData = treeData;
-        if (this._treeData && this._treeData.length > 0) {
+    set packages(packages: Package[]) {
+        this._packages = packages;
+        if (this._packages && this._packages.length > 0) {
             const treeModel: TreeModel = this.buildTreeModelTemplate();
-            treeModel.children = this.toTreeModel(this._treeData);;
+            treeModel.children = this.toTreeModel(this._packages, null);
             this.treeModel = treeModel;
         }
     }
@@ -79,36 +98,54 @@ export class DualListSelectorComponent {
     /**
      * When check a node then every children change its 'checked' value in cascade     
      */
-    handleCheckedEvent(event: NodeCheckedEvent) {
-        event.node.checked = true;
-        if (event.node.hasChildren()) {
-            this.setCheckedValueOnCascade(event.node.children, true);
+    handleCheckedEvent(event: NodeCheckedEvent): void {
+        if (event.node.id != DualListSelectorComponent.TREE_ROOT) {
+            event.node.checked = true;
+            if (event.node.hasChildren() && event.node.isNodeCollapsed()) {
+                this.setCheckedChildrenOnCascade(event.node.children, true);
+            }
+            this.nodeEventSubject.next(event);
         }
-        this.updateValue();
     }
 
     /**
      * When uncheck a node then every children change its 'checked' value in cascade     
      */
-    handleUncheckedEvent(event: NodeUncheckedEvent) {
-        event.node.checked = false;
-        if (event.node.hasChildren()) {
-            this.setCheckedValueOnCascade(event.node.children, false);
+    handleUncheckedEvent(event: NodeUncheckedEvent): void {
+        if (event.node.id != DualListSelectorComponent.TREE_ROOT) {
+            event.node.checked = false;
+            if (event.node.hasChildren() && event.node.isNodeCollapsed()) {
+                this.setCheckedChildrenOnCascade(event.node.children, false);
+            }
+            this.uncheckParentOnCascade(event.node);
+            this.nodeEventSubject.next(event);
         }
-        this.updateValue();
+
+        // Uncheck principal check
+        this.checkedAll = false;
     }
 
 
     //
 
+    /**
+     * Change tree checks and fire event to update value
+     */
+    onCheckedAllChange(value: boolean): void {
+        this.setCheckedChildrenOnCascade(this.treeComponent.tree.children, value);
+        this.nodeEventSubject.next(null);
+    }
 
+    /**
+     * Updates value: Selected and Unselected nodes
+     */
     updateValue(): void {
         if (this.treeComponent) {
             let treeModelSelection: TreeModelSelection = this.getCheckedNodes(this.treeComponent.tree.children);
             this.value = {
-                selected: this.toTreeData(treeModelSelection.selected),
-                unselected: this.toTreeData(treeModelSelection.unselected) || []
-            } as TreeDataSelection;
+                selected: this.toPackage(treeModelSelection.selected) || [],
+                unselected: this.toPackage(treeModelSelection.unselected) || []
+            } as PackageSelection;
             this.onSelectionChange.emit(this.value);
         }
     }
@@ -118,16 +155,16 @@ export class DualListSelectorComponent {
      */
     private buildTreeModelTemplate(): TreeModel {
         return {
-            id: '/',
-            value: '/',
+            id: DualListSelectorComponent.TREE_ROOT,
+            value: DualListSelectorComponent.TREE_ROOT,
             settings: {
                 checked: true,
                 isCollapsedOnInit: false,
                 static: true,
                 cssClasses: {
-                    expanded: 'fa fa-angle-down',
-                    collapsed: 'fa fa-angle-right',
-                    empty: 'fa fa-caret-right disabled',
+                    expanded: 'fa fa-angle-down cursor-pointer',
+                    collapsed: 'fa fa-angle-right cursor-pointer',
+                    empty: 'fa fa-caret-right disabled cursor-pointer',
                     leaf: 'fa'
                 },
                 templates: {
@@ -148,53 +185,91 @@ export class DualListSelectorComponent {
     /**
      * Maps a TreeData[] to TreeModel[]
      */
-    private toTreeModel(treeData: TreeData[]): TreeModel[] {
-        if (!treeData || treeData.length < 1) {
+    private toTreeModel(packages: Package[], parent: Package): TreeModel[] {
+        if (!packages || packages.length < 1) {
             return null;
         }
 
-        const treeModel: TreeModel[] = [];
-        for (let index = 0; index < treeData.length; index++) {
-            const treeDataNode = treeData[index];
-            treeModel.push({
-                id: treeDataNode.id,
+        const result: TreeModel[] = [];
+        for (let index = 0; index < packages.length; index++) {
+            let element: Package = packages[index];
 
+            // Flatter if possible
+            let wasFlattered = false;
+            if (element.childs && element.childs.length == 1) {
+                while (element.childs && element.childs.length == 1) {
+                    element = element.childs[0];
+                }
+                wasFlattered = true;
+            }
+
+            // Map to TreeModel
+            const treeModelNode: TreeModel = {
+                id: element.id,
                 value: <RenamableNode>{
-                    data: treeDataNode,
-                    name: treeDataNode.name,
+                    name: element.name,
+                    data: element,
+                    isFlattered: wasFlattered,
+                    fullName: element.fullName,
+                    parentFullName: parent ? parent.fullName : null,
                     setName(name: string): void {
                         this.name = name;
                     },
                     toString(): string {
-                        return this.name;
+                        if (this.isFlattered) {
+                            // Flatter package name
+                            if (this.parentFullName) {
+                                return this.fullName.replace(this.parentFullName + '.', '');
+                            } else {
+                                return this.fullName;
+                            }
+                        } else {
+                            return this.name;
+                        }
                     },
-                    getData() {
+                    getData(): Package {
                         return this.data;
                     }
                 } as RenamableNodeData,
-
-                // Save data
-                data: treeDataNode,
-
                 settings: {
                     isCollapsedOnInit: true
-                },
-                children: this.toTreeModel(treeDataNode.childs)
-            });
+                }
+            };
+            treeModelNode.children = this.toTreeModel(element.childs, element);
+
+            // Push node to result
+            result.push(treeModelNode);
         }
 
-        return treeModel;
+        // Order alphabetically
+        result.sort((a, b) => {
+            if (a.children && a.children.length > 0) {
+                if (b.children && b.children.length > 0) {
+                    return a.value > b.value ? 1 : -1;
+                } else {
+                    return 1;
+                }
+            } else {
+                if (b.children && b.children.length > 0) {
+                    return -1;
+                } else {
+                    return a.value > b.value ? 1 : -1;
+                }
+            }
+        });
+
+        return result;
     }
 
     /**
-     * Maps a TreeModel[] to its original TreeData form
+     * Maps a TreeModel[] to its original Package form
      */
-    private toTreeData(treeModel: TreeModel[]): any[] {
+    private toPackage(treeModel: TreeModel[]): Package[] {
         if (!treeModel || treeModel.length < 1) {
             return null;
         }
 
-        const result: TreeData[] = [];
+        const result: Package[] = [];
         for (let index = 0; index < treeModel.length; index++) {
             const treeNode = treeModel[index];
             result.push((<RenamableNodeData>treeNode.value).getData());
@@ -204,20 +279,49 @@ export class DualListSelectorComponent {
     }
 
     /**
-     * Set checked value of every node and their children in cascade
+     * Uncheck parents in cascade     
      */
-    private setCheckedValueOnCascade(tree: Tree[], checked: boolean): void {
-        for (let index = 0; index < tree.length; index++) {
-            const treeNode = tree[index];
-            treeNode.checked = checked;
-            if (treeNode.hasChildren()) {
-                this.setCheckedValueOnCascade(treeNode.children, checked);
-            }
+    private uncheckParentOnCascade(tree: Tree): void {
+        while (tree.parent) {
+            tree.parent.checked = false;
+            tree = tree.parent;
         }
     }
 
     /**
-     * @returns A list of nodes with 'checked' value equ
+     * Set checked value of every node and their children in cascade
+     */
+    private setCheckedChildrenOnCascade(tree: Tree[], checked: boolean): void {
+        for (let index = 0; index < tree.length; index++) {
+            const treeNode = tree[index];
+            treeNode.checked = checked;
+            if (treeNode.hasChildren()) {
+                this.setCheckedChildrenOnCascade(treeNode.children, checked);
+            }
+        }
+    }
+
+    private atLeastOneChildIsChecked(tree: Tree[]): boolean {
+        let result: boolean = false;
+        for (let index = 0; index < tree.length; index++) {
+            const treeNode = tree[index];
+            if (treeNode.checked == true) {
+                result = true;
+            }
+            if (treeNode.hasChildren()) {
+                result = this.atLeastOneChildIsChecked(treeNode.children);
+            }
+
+            if (result == true) {
+                break;
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * @returns A list of selected and unselected nodes
      */
     private getCheckedNodes(tree: Tree[]): TreeModelSelection {
         let result: TreeModelSelection = {
@@ -228,16 +332,37 @@ export class DualListSelectorComponent {
         for (let index = 0; index < tree.length; index++) {
             const node = tree[index];
 
+            // If a node is checked, then children are checked too. No need to iterate children
             if (node.checked) {
                 result.selected.push(node);
             } else {
-                result.unselected.push(node);
-            }
+                if (node.hasChildren()) {
 
-            if (node.hasChildren()) {
-                let childResult: TreeModelSelection = this.getCheckedNodes(node.children);
-                result.selected = result.selected.concat(childResult.selected);
-                result.unselected = result.unselected.concat(childResult.unselected);
+                    let allFirstChildrenAreChecked: boolean = true;
+                    for (let index = 0; index < node.children.length; index++) {
+                        const element = node.children[index];
+                        if (element.checked == false) {
+                            allFirstChildrenAreChecked = false;
+                            break;
+                        }
+                    }
+
+                    // If all first children are checked, then no need to iterate children
+                    if (allFirstChildrenAreChecked) {
+                        result.unselected.push(node);
+                    } else {
+                        //
+                        if (this.atLeastOneChildIsChecked(node.children)) {
+                            let childResult: TreeModelSelection = this.getCheckedNodes(node.children);
+                            result.selected = result.selected.concat(childResult.selected);
+                            result.unselected = result.unselected.concat(childResult.unselected);
+                        } else {
+                            result.unselected.push(node);
+                        }
+                    }
+                } else {
+                    result.unselected.push(node);
+                }
             }
         }
 
