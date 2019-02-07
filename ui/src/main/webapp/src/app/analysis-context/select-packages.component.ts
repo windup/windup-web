@@ -5,7 +5,7 @@ import {
     ViewChild,
     EventEmitter,
     OnDestroy,
-    forwardRef    
+    forwardRef
 } from "@angular/core";
 import {
     TreeModel,
@@ -25,10 +25,9 @@ import {
     AbstractControl,
     ValidationErrors
 } from "@angular/forms";
-
+import { Package } from "../generated/windup-services";
 import { Subscription } from 'rxjs';
 import { Subject } from 'rxjs';
-import { Package } from "../../generated/windup-services";
 
 export interface TreeModelSelection {
     includeModels: TreeModel[],
@@ -50,20 +49,20 @@ export enum ExcludePackagesViewSelector {
 }
 
 @Component({
-    selector: 'wu-dual-list-selector',
-    templateUrl: './dual-list-selector.component.html',
-    styleUrls: ['./dual-list-selector.component.scss'],
+    selector: 'wu-select-packages',
+    templateUrl: './select-packages.component.html',
+    styleUrls: ['./select-packages.component.scss'],
     providers: [{
         provide: NG_VALUE_ACCESSOR,
-        useExisting: forwardRef(() => DualListSelectorComponent),
+        useExisting: forwardRef(() => SelectPackagesComponent),
         multi: true
     }, {
         provide: NG_VALIDATORS,
-        useExisting: forwardRef(() => DualListSelectorComponent),
+        useExisting: forwardRef(() => SelectPackagesComponent),
         multi: true,
     }]
 })
-export class DualListSelectorComponent implements OnDestroy, ControlValueAccessor, Validator {
+export class SelectPackagesComponent implements OnDestroy, ControlValueAccessor, Validator {
 
     static TREE_ROOT = '/'
 
@@ -206,7 +205,7 @@ export class DualListSelectorComponent implements OnDestroy, ControlValueAccesso
      * When check a node then every children change its 'checked' value in cascade     
      */
     handleCheckedEvent(event: NodeCheckedEvent): void {
-        if (event.node.id != DualListSelectorComponent.TREE_ROOT) {
+        if (event.node.id != SelectPackagesComponent.TREE_ROOT) {
             event.node.checked = true;
             if (event.node.hasChildren() && event.node.isNodeCollapsed()) {
                 this.setCheckedChildrenOnCascade(event.node.children, true);
@@ -219,7 +218,7 @@ export class DualListSelectorComponent implements OnDestroy, ControlValueAccesso
      * When uncheck a node then every children change its 'checked' value in cascade     
      */
     handleUncheckedEvent(event: NodeUncheckedEvent): void {
-        if (event.node.id != DualListSelectorComponent.TREE_ROOT) {
+        if (event.node.id != SelectPackagesComponent.TREE_ROOT) {
             event.node.checked = false;
             if (event.node.hasChildren() && event.node.isNodeCollapsed()) {
                 this.setCheckedChildrenOnCascade(event.node.children, false);
@@ -339,8 +338,8 @@ export class DualListSelectorComponent implements OnDestroy, ControlValueAccesso
      */
     private buildTreeModelTemplate(): TreeModel {
         return {
-            id: DualListSelectorComponent.TREE_ROOT,
-            value: DualListSelectorComponent.TREE_ROOT,
+            id: SelectPackagesComponent.TREE_ROOT,
+            value: SelectPackagesComponent.TREE_ROOT,
             settings: {
                 checked: true,
                 isCollapsedOnInit: false,

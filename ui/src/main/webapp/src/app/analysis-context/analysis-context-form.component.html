@@ -96,10 +96,12 @@
                     [(selectedNodes)]="analysisContext.includePackages"
                     (selectedNodesChange)="includedPackagesChanged($event)">
             </wu-js-tree-wrapper> -->
-            <wu-dual-list-selector *ngIf="packageTreeLoaded"
+            <wu-select-packages *ngIf="packageTreeLoaded"
+                    name="packageSelection"
+                    [(ngModel)]="packageSelection"
                     [packages]="packageTree"
-                    (onSelectionChange)="onSelectedPackagesChanged($event)">
-            </wu-dual-list-selector>
+                    (onSelectionChange)="onSelectedPackagesChanged($event)" required>
+            </wu-select-packages>
             <!-- <p class="help-block" i18n="include packages description">Select the Java packages to decompile and analyze. If no packages are selected, all will be analyzed.</p> -->
         </div>
 

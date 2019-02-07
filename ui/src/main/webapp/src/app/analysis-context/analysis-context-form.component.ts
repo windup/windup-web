@@ -51,6 +51,8 @@ export class AnalysisContextFormComponent extends FormComponent
     excludePackages: Package[];
     hideUnfinishedFeatures: boolean = WINDUP_WEB.config.hideUnfinishedFeatures;
 
+    packageSelection: any = {};
+    
     private transformationPaths: MigrationPath[] = [
         {
             "id": 101,
@@ -169,6 +171,9 @@ export class AnalysisContextFormComponent extends FormComponent
                                     if (this.isInWizard) {
                                         this.analysisContext.applications = apps.slice();
                                     }
+
+                                    this.packageSelection.includePackages = this.analysisContext.includePackages;
+                                    this.packageSelection.excludePackages = this.analysisContext.excludePackages;
                                 });
                         }
                         this.loadPackageMetadata();
@@ -323,10 +328,9 @@ export class AnalysisContextFormComponent extends FormComponent
         this.excludePackages = selectedNodes;
     }
 
-    onSelectedPackagesChanged(event) {
-        // console.log(event);
-        this.analysisContext.includePackages = event.selected;
-        this.analysisContext.excludePackages = event.unselected;
+    onSelectedPackagesChanged(event) {        
+        this.analysisContext.includePackages = event.includePackages;
+        this.analysisContext.excludePackages = event.excludePackages;
     }
 
     onSubmit() {
