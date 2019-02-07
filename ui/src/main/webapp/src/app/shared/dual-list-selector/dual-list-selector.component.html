@@ -37,8 +37,8 @@
                     </h2>
                 </div>
 
-                <div class="card-pf-body pre-scrollable" *ngIf="treeModel" style="height: 240px;">
-                    <tree #tree [tree]="treeModel" [settings]="treeSettings" (nodeChecked)="handleCheckedEvent($event)"
+                <div class="card-pf-body pre-scrollable" *ngIf="packageTreeModel" style="height: 240px;">
+                    <tree #packageTree [tree]="packageTreeModel" [settings]="packageTreeSettings" (nodeChecked)="handleCheckedEvent($event)"
                         (nodeUnchecked)="handleUncheckedEvent($event)">
                     </tree>
                 </div>
@@ -48,42 +48,76 @@
             </div>
         </div>
 
-        <div class="col-md-8 col-lg-8 col-sm-12">
+        <!-- <div class="col-md-4 col-lg-4 col-sm-12">
             <div class="card-pf">
                 <div class="card-pf-heading">
                     <h2 class="card-pf-title" style="margin: 15 0;">
-                        Excluded packages
+                        Included packages
                     </h2>
                 </div>
-                <div class="card-pf-body" *ngIf="value?.unselected?.length > 0" style="height: 240px; padding-top: 0;">
+                <div class="card-pf-body" *ngIf="value?.selected?.length > 0" style="height: 240px; padding-top: 0;">
                     <select class="form-control" multiple="" size="13" style="border: 0; box-shadow: none;">
-                        <option *ngFor="let item of value?.unselected" value="object" style="padding-left:25px;">{{item.fullName}}</option>
+                        <option *ngFor="let item of value?.selected" value="object" style="padding-left:25px;">{{item.fullName}}</option>
                     </select>
                 </div>
 
-                <div class="card-pf-body" *ngIf="value?.unselected?.length <= 0" style="height: 240px; padding-top: 0;">
+                <div class="card-pf-body" *ngIf="value?.selected?.length <= 0" style="height: 240px; padding-top: 0;">
+                    <div class="blank-slate-pf" style="background-color: transparent; border: transparent; padding: 60px 120px;">
+                        <div class="blank-slate-pf-icon">
+                            <span class="pficon pficon pficon-info"></span>
+                        </div>
+                        <h1>
+                            No packages included
+                        </h1>                        
+                    </div>
+                </div>                
+            </div>
+        </div> -->
+        <div class="col-md-6 col-lg-6 col-sm-12">
+            <div class="card-pf">
+                <div class="card-pf-heading toolbar-pf">
+                    <div class="dropdown card-pf-time-frame-filter">
+                        <div class="form-group toolbar-pf-view-selector">
+                            <button type="button" (click)="excludePackageViewSelection=0" [ngClass]="{'active': excludePackageViewSelection == 0}"
+                                class="btn btn-link">
+                                <i class="fa fa-list"></i>
+                            </button>
+                            <button type="button" (click)="excludePackageViewSelection=1" [ngClass]="{'active': excludePackageViewSelection == 1}"
+                                class="btn btn-link">
+                                <i class="pficon pficon-repository"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <h2 class="card-pf-title" style="margin: 16px 0;">
+                        Excluded packages
+                    </h2>
+                </div>
+
+                <div class="card-pf-body" *ngIf="value?.excludePackages?.length > 0" 
+                    [ngClass]="{'pre-scrollable': excludePackageViewSelection == 1}"
+                    [ngStyle]="{'padding-top': excludePackageViewSelection == 0 ? '0px' : '10px'}"
+                    style="height: 240px;">
+                    <select *ngIf="excludePackageViewSelection == 0" class="form-control" multiple="" size="13" style="border: 0; box-shadow: none;">
+                        <option *ngFor="let item of value?.excludePackages" value="object" style="padding-left:25px;">{{item.fullName}}</option>
+                    </select>
+
+                    <tree *ngIf="excludePackageViewSelection == 1" #excludePackageTree [tree]="excludePackageTreeModel"
+                        [settings]="excludePackageTreeSettings">
+                    </tree>
+                </div>
+
+                <div class="card-pf-body" *ngIf="value?.excludePackages?.length <= 0" style="height: 240px; padding-top: 0;">
                     <div class="blank-slate-pf" style="background-color: transparent; border: transparent; padding: 60px 120px;">
                         <div class="blank-slate-pf-icon">
                             <span class="pficon pficon pficon-info"></span>
                         </div>
                         <h1>
                             No packages excluded
-                        </h1>                        
+                        </h1>
                     </div>
-                </div>                
+                </div>
             </div>
-
         </div>
-
-
-        <!-- <div class="card-pf-footer" style="">
-                    <p>
-                        <a href="#" class="card-pf-link-with-icon">
-                            <span class="pficon pficon-add-circle-o"></span>Add New Cluster
-                        </a>
-                    </p>
-                </div> -->
-
 
     </div>
 </div>

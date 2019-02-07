@@ -1,5 +1,11 @@
 import {
-    Component, Input, ViewChild, Output, EventEmitter, OnDestroy
+    Component,
+    Input,
+    Output,
+    ViewChild,
+    EventEmitter,
+    OnDestroy,
+    forwardRef    
 } from "@angular/core";
 import {
     TreeModel,
@@ -11,57 +17,97 @@ import {
     NodeUncheckedEvent,
     RenamableNode
 } from "ng2-tree";
+import {
+    NG_VALUE_ACCESSOR,
+    NG_VALIDATORS,
+    ControlValueAccessor,
+    Validator,
+    AbstractControl,
+    ValidationErrors
+} from "@angular/forms";
+
 import { Subscription } from 'rxjs';
 import { Subject } from 'rxjs';
 import { Package } from "../../generated/windup-services";
 
 export interface TreeModelSelection {
-    selected: TreeModel[],
-    unselected: TreeModel[]
+    includeModels: TreeModel[],
+    excludeModels: TreeModel[]
 }
 
 export interface PackageSelection {
-    selected: Package[],
-    unselected: Package[]
+    includePackages: Package[],
+    excludePackages: Package[]
 }
 
 export interface RenamableNodeData extends RenamableNode {
     getData(): Package;
 }
 
+export enum ExcludePackagesViewSelector {
+    LIST,
+    TREE
+}
+
 @Component({
     selector: 'wu-dual-list-selector',
     templateUrl: './dual-list-selector.component.html',
-    styleUrls: ['./dual-list-selector.component.scss']
+    styleUrls: ['./dual-list-selector.component.scss'],
+    providers: [{
+        provide: NG_VALUE_ACCESSOR,
+        useExisting: forwardRef(() => DualListSelectorComponent),
+        multi: true
+    }, {
+        provide: NG_VALIDATORS,
+        useExisting: forwardRef(() => DualListSelectorComponent),
+        multi: true,
+    }]
 })
-export class DualListSelectorComponent implements OnDestroy {
+export class DualListSelectorComponent implements OnDestroy, ControlValueAccessor, Validator {
 
-    static TREE_ROOT = "/"
+    static TREE_ROOT = '/'
 
-    @ViewChild('tree')
-    treeComponent: TreeComponent;
+    @ViewChild('packageTree')
+    packageTreeComponent: TreeComponent;
+
+    @ViewChild('excludePackageTree')
+    excludePackageTreeComponent: TreeComponent;
 
     @Output('onSelectionChange')
     onSelectionChange: EventEmitter<PackageSelection> = new EventEmitter();
 
-    _packages: Package[];
+    private _packages: Package[];
 
     value: PackageSelection;
 
     checkedAll: boolean = true;
+    excludePackageViewSelection: ExcludePackagesViewSelector = ExcludePackagesViewSelector.LIST;
 
-    treeModel: TreeModel;
-    treeSettings: Ng2TreeSettings = {
+    packageTreeModel: TreeModel;
+    packageTreeSettings: Ng2TreeSettings = {
         rootIsVisible: false,
         showCheckboxes: true
     } as Ng2TreeSettings;
 
+    excludePackageTreeModel: TreeModel
+    excludePackageTreeSettings: Ng2TreeSettings = {
+        rootIsVisible: false,
+        showCheckboxes: false
+    } as Ng2TreeSettings;
 
-    nodeEventSubject = new Subject<any>();
+    private nodeEventSubject = new Subject<any>();
+    private subscriptions: Subscription[] = [];
 
-    subscriptions: Subscription[] = [];
+    private _onChange = (_: any) => { };
+    private _onTouched = () => { };
 
     public constructor() {
+        this.packageTreeModel = this.buildTreeModelTemplate();
+
+        let treeModelTemplate = this.buildTreeModelTemplate();
+        treeModelTemplate.settings.checked = null;
+        this.excludePackageTreeModel = treeModelTemplate;
+
         // Avoid multiple updates when check or uncheck due to handleCheckedEvent() or handleUncheckedEvent()
         this.subscriptions.push(
             this.nodeEventSubject
@@ -73,6 +119,8 @@ export class DualListSelectorComponent implements OnDestroy {
     }
 
     ngOnDestroy() {
+        this.packageTreeModel.children = [];
+        this.excludePackageTreeModel.children = [];
         this.subscriptions.forEach(
             (subscription) => subscription.unsubscribe()
         );
@@ -86,11 +134,70 @@ export class DualListSelectorComponent implements OnDestroy {
     set packages(packages: Package[]) {
         this._packages = packages;
         if (this._packages && this._packages.length > 0) {
-            const treeModel: TreeModel = this.buildTreeModelTemplate();
-            treeModel.children = this.toTreeModel(this._packages, null);
-            this.treeModel = treeModel;
+            this.packageTreeModel.children = this.toTreeModel(this._packages);
         }
     }
+
+
+    // ControlValueAccessor methods
+
+
+    /**
+     * 
+     * Called to write data from the model to the view
+     */
+    writeValue(obj: any): void {
+        if (obj) {
+            if (this._packages && this._packages.length > 0) {
+                let treeModel: TreeModel;
+                if (this.packageTreeModel) {
+                    treeModel = this.packageTreeModel
+                } else {
+                    treeModel = this.buildTreeModelTemplate();
+                }
+
+                // load nodes
+                treeModel.children = null;
+
+                if (!this.packageTreeModel) {
+                    this.packageTreeModel = treeModel;
+                }
+            }
+        }
+    }
+
+    /**
+     * Registers reaction on changing in the UI
+     */
+    registerOnChange(fn: any): void {
+        this._onChange = fn;
+    }
+
+    /**
+     * Registers reaction on receiving a blur event (is emitted when an element has lost focus)
+     */
+    registerOnTouched(fn: any): void {
+        this._onTouched = fn;
+    }
+
+    /**
+     * called on Disabled status changes
+     */
+    setDisabledState(isDisabled: boolean): void {
+        console.log("disabled not supported for this component");
+    }
+
+
+    // Validators
+
+    validate(control: AbstractControl): ValidationErrors | null {
+        return (this.value && this.value.includePackages && this.value.includePackages.length > 0) ? null : {
+            required: {
+                valid: false
+            }
+        };
+    };
+
 
     // Tree events
 
@@ -132,7 +239,7 @@ export class DualListSelectorComponent implements OnDestroy {
      * Change tree checks and fire event to update value
      */
     onCheckedAllChange(value: boolean): void {
-        this.setCheckedChildrenOnCascade(this.treeComponent.tree.children, value);
+        this.setCheckedChildrenOnCascade(this.packageTreeComponent.tree.children, value);
         this.nodeEventSubject.next(null);
     }
 
@@ -140,13 +247,90 @@ export class DualListSelectorComponent implements OnDestroy {
      * Updates value: Selected and Unselected nodes
      */
     updateValue(): void {
-        if (this.treeComponent) {
-            let treeModelSelection: TreeModelSelection = this.getCheckedNodes(this.treeComponent.tree.children);
+        if (this.packageTreeComponent) {
+            let treeModelSelection: TreeModelSelection = this.getCheckedNodes(this.packageTreeComponent.tree.children);
             this.value = {
-                selected: this.toPackage(treeModelSelection.selected) || [],
-                unselected: this.toPackage(treeModelSelection.unselected) || []
+                includePackages: this.toPackage(treeModelSelection.includeModels) || [],
+                excludePackages: this.toPackage(treeModelSelection.excludeModels) || []
             } as PackageSelection;
+
+
+            // Create excluded tree
+            const excludeTreeModel: TreeModel = this.buildTreeModelTemplate();
+            for (let i = 0; i < this.value.excludePackages.length; i++) {
+                const node: Package = this.value.excludePackages[i];
+                this.createNodesFromPackageFullName(node.fullName, excludeTreeModel);
+            }
+            this.flatternTreeModelsOnCascade(excludeTreeModel.children);
+            this.sortTreeModelOnCascade(excludeTreeModel);
+
+            this.excludePackageTreeModel.children = excludeTreeModel.children;
+            if (this.excludePackageTreeComponent) {
+                // This is need for refresh the DOM
+                this.excludePackageTreeComponent.getController().setChildren(excludeTreeModel.children);
+            }
+
+
+            // Change Model (NgForm)
+            this._onChange(this.value);
+
+            // Emit event
             this.onSelectionChange.emit(this.value);
+        }
+    }
+
+    private createNodesFromPackageFullName(packageFullName: string, tree: TreeModel): void {
+        const split: string[] = packageFullName.split('.');
+        for (let i = 0; i < split.length; i++) {
+            const packageName = split[i];
+
+            let node: TreeModel;
+            if (tree.children) {
+                for (let j = 0; j < tree.children.length; j++) {
+                    if (packageName == tree.children[j].value) {
+                        node = tree.children[j];
+                        break;
+                    }
+                }
+            } else {
+                tree.children = [];
+            }
+
+            if (!node) {
+                node = {
+                    value: packageName
+                } as TreeModel;
+                tree.children.push(node);
+            }
+
+            tree = node;
+        }
+    }
+
+    private flatternTreeModelsOnCascade(treeModel: TreeModel[]): void {
+        if (treeModel) {
+            for (let i = 0; i < treeModel.length; i++) {
+                let node = treeModel[i];
+                while (node.children && node.children.length == 1) {
+                    const parentName: string = <string>node.value;
+                    node = node.children[0];
+                    node.value = parentName + "." + node.value;
+                }
+                treeModel[i] = node;
+
+                if (node.children && node.children.length > 1) {
+                    this.flatternTreeModelsOnCascade(treeModel[i].children);
+                }
+            }
+        }
+    }
+
+    private sortTreeModelOnCascade(tree: TreeModel): void {
+        if (tree.children && tree.children.length > 0) {
+            tree.children.sort(this.treeModelComparator);
+            tree.children.forEach(child => {
+                this.sortTreeModelOnCascade(child);
+            });
         }
     }
 
@@ -185,7 +369,7 @@ export class DualListSelectorComponent implements OnDestroy {
     /**
      * Maps a TreeData[] to TreeModel[]
      */
-    private toTreeModel(packages: Package[], parent: Package): TreeModel[] {
+    private toTreeModel(packages: Package[], parent: Package = null): TreeModel[] {
         if (!packages || packages.length < 1) {
             return null;
         }
@@ -242,23 +426,25 @@ export class DualListSelectorComponent implements OnDestroy {
         }
 
         // Order alphabetically
-        result.sort((a, b) => {
-            if (a.children && a.children.length > 0) {
-                if (b.children && b.children.length > 0) {
-                    return a.value > b.value ? 1 : -1;
-                } else {
-                    return 1;
-                }
-            } else {
-                if (b.children && b.children.length > 0) {
-                    return -1;
-                } else {
-                    return a.value > b.value ? 1 : -1;
-                }
-            }
-        });
+        result.sort(this.treeModelComparator);
 
         return result;
+    }
+
+    private treeModelComparator(a: TreeModel, b: TreeModel): number {
+        if (a.children && a.children.length > 0) {
+            if (b.children && b.children.length > 0) {
+                return a.value > b.value ? 1 : -1;
+            } else {
+                return 1;
+            }
+        } else {
+            if (b.children && b.children.length > 0) {
+                return -1;
+            } else {
+                return a.value > b.value ? 1 : -1;
+            }
+        }
     }
 
     /**
@@ -325,8 +511,8 @@ export class DualListSelectorComponent implements OnDestroy {
      */
     private getCheckedNodes(tree: Tree[]): TreeModelSelection {
         let result: TreeModelSelection = {
-            selected: [],
-            unselected: []
+            includeModels: [],
+            excludeModels: []
         };
 
         for (let index = 0; index < tree.length; index++) {
@@ -334,7 +520,7 @@ export class DualListSelectorComponent implements OnDestroy {
 
             // If a node is checked, then children are checked too. No need to iterate children
             if (node.checked) {
-                result.selected.push(node);
+                result.includeModels.push(node);
             } else {
                 if (node.hasChildren()) {
 
@@ -349,19 +535,19 @@ export class DualListSelectorComponent implements OnDestroy {
 
                     // If all first children are checked, then no need to iterate children
                     if (allFirstChildrenAreChecked) {
-                        result.unselected.push(node);
+                        result.excludeModels.push(node);
                     } else {
                         //
                         if (this.atLeastOneChildIsChecked(node.children)) {
                             let childResult: TreeModelSelection = this.getCheckedNodes(node.children);
-                            result.selected = result.selected.concat(childResult.selected);
-                            result.unselected = result.unselected.concat(childResult.unselected);
+                            result.includeModels = result.includeModels.concat(childResult.includeModels);
+                            result.excludeModels = result.excludeModels.concat(childResult.excludeModels);
                         } else {
-                            result.unselected.push(node);
+                            result.excludeModels.push(node);
                         }
                     }
                 } else {
-                    result.unselected.push(node);
+                    result.excludeModels.push(node);
                 }
             }
         }
