@@ -35,7 +35,7 @@
         <windup.web.scm.url>http://github.com/windup/windup-web</windup.web.scm.url>
 
         <windup.distribution.name>rhamt-cli</windup.distribution.name>
-        <version.hibernate>5.3.6.Final</version.hibernate>
+        <version.hibernate>5.3.7.Final</version.hibernate>
     </properties>
 
     <scm>
