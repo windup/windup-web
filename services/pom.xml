@@ -11,7 +11,7 @@
     <properties>
         <!-- No additional args by default -->
         <server.jvm.args>${jvm.debug.args}</server.jvm.args>
-        <version.xnio-api>3.6.5.Final</version.xnio-api>
+        <version.xnio>3.6.5.Final</version.xnio>
     </properties>
 
     <artifactId>windup-web-services</artifactId>
@@ -219,13 +219,13 @@
         <dependency>
             <groupId>org.jboss.xnio</groupId>
             <artifactId>xnio-api</artifactId>
-            <version>${version.xnio-api}</version>
+            <version>${version.xnio}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.xnio</groupId>
             <artifactId>xnio-nio</artifactId>
-            <version>${version.xnio-api}</version>
+            <version>${version.xnio}</version>
             <scope>provided</scope>
         </dependency>
 
