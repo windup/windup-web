@@ -24,15 +24,15 @@
         <url-pattern>/static-report/*</url-pattern>
     </servlet-mapping>
 
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>secured</web-resource-name>
-            <url-pattern>/*</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <role-name>user</role-name>
-        </auth-constraint>
-    </security-constraint>
+    <!--<security-constraint>-->
+        <!--<web-resource-collection>-->
+            <!--<web-resource-name>secured</web-resource-name>-->
+            <!--<url-pattern>/*</url-pattern>-->
+        <!--</web-resource-collection>-->
+        <!--<auth-constraint>-->
+            <!--<role-name>user</role-name>-->
+        <!--</auth-constraint>-->
+    <!--</security-constraint>-->
 
     <security-constraint>
         <web-resource-collection>
@@ -61,9 +61,9 @@
         </web-resource-collection>
     </security-constraint>
 
-    <login-config>
-        <auth-method>KEYCLOAK</auth-method>
-    </login-config>
+    <!--<login-config>-->
+        <!--<auth-method>KEYCLOAK</auth-method>-->
+    <!--</login-config>-->
 
     <security-role>
         <role-name>user</role-name>
