@@ -16,7 +16,7 @@
                         <div class="spinner" style="margin-top: 50px;"></div>
                     </div>
                 </div>
-                <div *ngIf="!loading">
+                <div [hidden]="loading">
                     <div class="card-pf-body pre-scrollable" *ngIf="packageTreeModel?.children?.length > 0; else emptyPackages" style="height: 183px;">
                         <tree #packageTree
                                 [tree]="packageTreeModel"

@@ -89,7 +89,7 @@ export class SelectPackagesComponent implements OnDestroy, ControlValueAccessor,
     // NgForm value
     value: PackageSelection;
 
-    checkedAll: boolean = true;
+    checkedAll: boolean = false;
     excludePackageViewSelection: ExcludePackagesViewSelector = ExcludePackagesViewSelector.LIST;
 
     packageTreeModel: TreeModel;
@@ -273,6 +273,8 @@ export class SelectPackagesComponent implements OnDestroy, ControlValueAccessor,
             // This is needed for refresh the DOM
             this.packageTreeComponent.getController().setChildren(this.packageTreeModel.children);
         }
+
+        this.updateValue();
     }
 
     /**
@@ -510,7 +512,19 @@ export class SelectPackagesComponent implements OnDestroy, ControlValueAccessor,
     private treeModelComparator(a: TreeModel, b: TreeModel): number {
         if (a.children && a.children.length > 0) {
             if (b.children && b.children.length > 0) {
-                return a.value > b.value ? 1 : -1;
+                if (typeof a.value === 'string' && typeof b.value === 'string') {
+                    return a.value > b.value ? 1 : -1;
+                } else {
+                    const aValue = <RenamableNodeData>a.value;
+                    const bValue = <RenamableNodeData>b.value;
+                    if (aValue.getData().known && bValue.getData().known) {
+                        return a.value > b.value ? -1 : 1;
+                    } else if (aValue.getData().known) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
+                }
             } else {
                 return 1;
             }
@@ -518,7 +532,19 @@ export class SelectPackagesComponent implements OnDestroy, ControlValueAccessor,
             if (b.children && b.children.length > 0) {
                 return -1;
             } else {
-                return a.value > b.value ? 1 : -1;
+                if (typeof a.value === 'string' && typeof b.value === 'string') {
+                    return a.value > b.value ? 1 : -1;
+                } else {
+                    const aValue = <RenamableNodeData>a.value;
+                    const bValue = <RenamableNodeData>b.value;
+                    if (aValue.getData().known && bValue.getData().known) {
+                        return a.value > b.value ? -1 : 1;
+                    } else if (aValue.getData().known) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
+                }
             }
         }
     }
