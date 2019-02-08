@@ -1,6 +1,6 @@
 <div>
     <div class="row row-cards-pf">
-        <div class="col-md-4 col-lg-4 col-sm-12">
+        <div class="col-md-5 col-lg-5 col-sm-12">
             <div class="card-pf">
                 <div class="card-pf-heading">
                     <h2 class="card-pf-title" style="margin: 15px 0;">
@@ -11,17 +11,47 @@
                     </h2>
                 </div>
 
-                <div class="card-pf-body pre-scrollable" *ngIf="packageTreeModel" style="height: 240px;">
-                    <tree #packageTree
-                          [tree]="packageTreeModel"
-                          [settings]="packageTreeSettings"
-                          (nodeChecked)="handleCheckedEvent($event)"
-                          (nodeUnchecked)="handleUncheckedEvent($event)">
-                    </tree>
+                <div *ngIf="loading">
+                    <div class="card-pf-body" style="height: 183px;">
+                        <div class="spinner" style="margin-top: 50px;"></div>
+                    </div>
+                </div>
+                <div *ngIf="!loading">
+                    <div class="card-pf-body pre-scrollable" *ngIf="packageTreeModel?.children?.length > 0; else emptyPackages" style="height: 183px;">
+                        <tree #packageTree
+                                [tree]="packageTreeModel"
+                                [settings]="packageTreeSettings"
+                                (nodeChecked)="handleCheckedEvent($event)"
+                                (nodeUnchecked)="handleUncheckedEvent($event)">
+                        </tree>
+                    </div>
+                    <ng-template #emptyPackages>
+                        <div class="card-pf-body" style="height: 183px; padding-top: 0;">
+                            <div class="blank-slate-pf" style="background-color: transparent; border: transparent; padding: 35px 60px;">
+                                <div class="blank-slate-pf-icon">
+                                    <span class="pficon pficon pficon-info"></span>
+                                </div>
+                                <h1>
+                                    No packages found
+                                </h1>
+                            </div>
+                        </div>
+                    </ng-template>
+                </div>
+
+                <div class="card-pf-footer" style="padding: 15px 30px 10px;">
+                    <p>
+                        <a *ngIf="viewThirdPackages" (click)="viewHide3dPackagesEvent()" href="javascript:void();" class="card-pf-link-with-icon">
+                            <span class="fa fa-minus"></span>Hide 3rd Party Packages
+                        </a>
+                        <a *ngIf="!viewThirdPackages" (click)="viewHide3dPackagesEvent()" href="javascript:void();" class="card-pf-link-with-icon">
+                            <span class="fa fa-plus"></span>View 3rd Party Packages
+                        </a>
+                    </p>
                 </div>
             </div>
         </div>
-        <div class="col-md-8 col-lg-8 col-sm-12">
+        <div class="col-md-7 col-lg-7 col-sm-12">
             <div class="card-pf">
                 <div class="card-pf-heading toolbar-pf">
                     <div class="dropdown card-pf-time-frame-filter">
@@ -49,11 +79,11 @@
                      *ngIf="value?.excludePackages?.length > 0"
                      [ngClass]="{'pre-scrollable': excludePackageViewSelection == 1}"
                      [ngStyle]="{'padding-top': excludePackageViewSelection == 0 ? '0px' : '10px'}"
-                     style="height: 241px;">
+                     style="height: 184px;">
                     <select *ngIf="excludePackageViewSelection == 0"
                             class="form-control"
                             multiple
-                            size="13"
+                            size="10"
                             style="border: 0; box-shadow: none;">
                         <option *ngFor="let item of value?.excludePackages" style="padding-left:25px;">
                             {{item.fullName}}
@@ -68,9 +98,9 @@
                 </div>
                 <div class="card-pf-body"
                      *ngIf="value?.excludePackages?.length <= 0"
-                     style="height: 241px; padding-top: 0;">
+                     style="height: 184px; padding-top: 0;">
                     <div class="blank-slate-pf" 
-                         style="background-color: transparent; border: transparent; padding: 60px 120px;">
+                         style="background-color: transparent; border: transparent; padding: 35px 120px;">
                         <div class="blank-slate-pf-icon">
                             <span class="pficon pficon pficon-info"></span>
                         </div>
@@ -78,6 +108,11 @@
                             No packages excluded
                         </h1>
                     </div>
+                </div>
+                <div class="card-pf-footer" style="padding: 15px 30px 10px;">
+                    <p>
+                        These packages won't be part of the analysis
+                    </p>
                 </div>
             </div>
         </div>
