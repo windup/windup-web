@@ -1,6 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {Constants} from "../constants";
 import {Http} from "@angular/http";
+import { map } from 'rxjs/operators';
 
 @Component({
     templateUrl: './about.component.html'
@@ -19,7 +20,9 @@ export class AboutPageComponent implements OnInit {
 
     ngOnInit(): any {
         this._http.get(Constants.REST_BASE + this.WINDUP_CORE_VERSION_URL)
-            .map(res => res.json())
+            .pipe(
+                map(res => res.json())
+            )
             .subscribe(versionAndRevision =>
             {
                 this.versionWindupCore = versionAndRevision.version;

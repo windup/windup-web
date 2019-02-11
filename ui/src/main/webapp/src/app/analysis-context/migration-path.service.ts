@@ -6,6 +6,7 @@ import {MigrationPath} from "../generated/windup-services";
 import {AbstractService} from "../shared/abtract.service";
 import {Observable} from "rxjs";
 import {Cached} from "../shared/cache.service";
+import {map, catchError} from "rxjs/operators";
 
 @Injectable()
 export class MigrationPathService extends AbstractService {
@@ -18,7 +19,9 @@ export class MigrationPathService extends AbstractService {
     @Cached({section: 'migrationPath', immutable: true})
     getAll(): Observable<MigrationPath[]> {
         return this._http.get(Constants.REST_BASE + this.GET_ALL_URL,)
-            .map(res => <MigrationPath[]> res.json())
-            .catch(this.handleError);
+            .pipe(
+                map(res => <MigrationPath[]> res.json()),
+                catchError(this.handleError)
+            );
     }
 }

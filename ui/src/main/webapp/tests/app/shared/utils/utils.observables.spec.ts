@@ -1,6 +1,6 @@
 import {utils} from "../../../../src/app/shared/utils";
 import Observables = utils.Observables;
-import {Observable} from "rxjs/Observable";
+import {Observable} from 'rxjs';
 import {async} from "@angular/core/testing";
 
 describe('Observables', () => {

@@ -1,5 +1,5 @@
 import {GraphJSONToModelService} from "./graph-json-to-model.service";
-import {Observable} from "rxjs/Observable";
+import {Observable} from 'rxjs';
 import 'rxjs/add/observable/of';
 import {Http, Response} from "@angular/http";
 import {StaticCache} from "./cache";

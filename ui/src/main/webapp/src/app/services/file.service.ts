@@ -3,7 +3,7 @@ import {Http} from '@angular/http';
 
 import {Constants} from "../constants";
 import {AbstractService} from "../shared/abtract.service";
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs';
 
 @Injectable()
 export class FileService extends AbstractService {

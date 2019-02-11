@@ -1,6 +1,6 @@
 import {CanDeactivate, ActivatedRouteSnapshot, RouterStateSnapshot} from "@angular/router";
 import {IsDirty} from "./is-dirty.interface";
-import {Observable} from "rxjs/Observable";
+import {Observable} from 'rxjs';
 import {DialogService} from "./dialog/dialog.service";
 import {Injectable} from "@angular/core";
 

@@ -1,7 +1,7 @@
 ///<reference path="../shared/cache.service.ts"/>
 import {Injectable} from '@angular/core';
 import {Http} from '@angular/http';
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs';
 
 import {Constants} from "../constants";
 import {AnalysisContext, MigrationProject, WindupExecution} from "../generated/windup-services";

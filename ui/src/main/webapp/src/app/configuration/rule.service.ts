@@ -4,12 +4,13 @@ import {Http} from '@angular/http';
 import {Constants} from "../constants";
 import {RulesPath, RuleProviderEntity, RulesPathType} from "../generated/windup-services";
 import {AbstractService} from "../shared/abtract.service";
-import {Observable} from "rxjs";
+import {Observable, from} from "rxjs";
 import {FileUploader} from "ng2-file-upload";
 import {KeycloakService} from "../core/authentication/keycloak.service";
 import {FileUploaderFactory} from "../shared/upload/file-uploader-factory.service";
 import {FileUploaderWrapper} from "../shared/upload/file-uploader-wrapper.service";
 import {utils} from "../shared/utils";
+import { map, catchError, mergeMap } from 'rxjs/operators';
 
 @Injectable()
 export class RuleService extends AbstractService {
@@ -35,16 +36,20 @@ export class RuleService extends AbstractService {
 
     getAll(): Observable<RuleProviderEntity[]> {
         return this._http.get(Constants.REST_BASE + this.GET_ALL_RULE_PROVIDERS_URL)
-            .map(res => <RuleProviderEntity[]> res.json())
-            .catch(this.handleError);
+            .pipe(
+                map(res => <RuleProviderEntity[]> res.json()),
+                catchError(this.handleError)
+            );
     }
 
     getByRulesPath(rulesPath: RulesPath): Observable<RuleProviderEntity[]> {
         let url = Constants.REST_BASE + this.GET_RULE_PROVIDERS_BY_RULES_PATH_URL + rulesPath.id;
 
         return this._http.get(url)
-            .map(res => <RuleProviderEntity[]> res.json())
-            .catch(this.handleError);
+            .pipe(
+                map(res => <RuleProviderEntity[]> res.json()),
+                catchError(this.handleError)
+            );
     }
 
     checkIfUsedRulesPath(rulesPath: RulesPath): Observable<boolean>
@@ -53,43 +58,50 @@ export class RuleService extends AbstractService {
             return;
 
         let url = Constants.REST_BASE + this.IS_RULES_PATH_USED.replace('{id}', rulesPath.id.toString());
-        return this._http.get(url).map(res => res.json()).catch(this.handleError);   
+        return this._http.get(url)
+            .pipe(
+                map(res => res.json()),
+                catchError(this.handleError)
+            ); 
     }
 
     uploadRules() {
-        return this._keycloakService.getToken().flatMap((token: string) => {
-            this._multipartUploader.setOptions({
-                authToken: 'Bearer ' + token,
-                method: 'POST'
-            });
-
-            const responses = [];
-            const errors = [];
-
-            const promise = new Promise((resolve, reject) => {
-                this._multipartUploader.onCompleteItem = (item, response, status) => {
-                    const parsedResponse = utils.parseServerResponse(response);
-
-                    if (status == 200) {
-                        responses.push(parsedResponse);
-                    } else {
-                        errors.push(parsedResponse);
-                    }
-                };
-
-                this._multipartUploader.onCompleteAll = () => {
-                    resolve(responses);
-                };
-
-                this._multipartUploader.onErrorItem = (item, response) => {
-                    reject(utils.parseServerResponse(response));
-                };
-            });
-
-            this._multipartUploader.uploadAll();
-
-            return Observable.fromPromise(promise);
-        });
+        return this._keycloakService.getToken()
+            .pipe(
+                mergeMap((token: string) => {
+                    this._multipartUploader.setOptions({
+                        authToken: 'Bearer ' + token,
+                        method: 'POST'
+                    });
+        
+                    const responses = [];
+                    const errors = [];
+        
+                    const promise = new Promise((resolve, reject) => {
+                        this._multipartUploader.onCompleteItem = (item, response, status) => {
+                            const parsedResponse = utils.parseServerResponse(response);
+        
+                            if (status == 200) {
+                                responses.push(parsedResponse);
+                            } else {
+                                errors.push(parsedResponse);
+                            }
+                        };
+        
+                        this._multipartUploader.onCompleteAll = () => {
+                            resolve(responses);
+                        };
+        
+                        this._multipartUploader.onErrorItem = (item, response) => {
+                            reject(utils.parseServerResponse(response));
+                        };
+                    });
+        
+                    this._multipartUploader.uploadAll();
+        
+                    return from(promise);
+                })
+            );
     }
 
     deleteRule(rulePath: RulesPath): Observable<any> {

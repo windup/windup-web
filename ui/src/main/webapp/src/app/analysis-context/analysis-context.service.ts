@@ -6,6 +6,7 @@ import {AnalysisContext, MigrationProject} from "../generated/windup-services";
 import {AbstractService} from "../shared/abtract.service";
 import {Cached, CacheSection, CacheService} from "../shared/cache.service";
 import {Observable} from "rxjs";
+import { map, tap, catchError } from 'rxjs/operators';
 
 /**
  * Analysis context, AKA execution configuration, is tied 1:1 to executions.
@@ -37,19 +38,23 @@ export class AnalysisContextService extends AbstractService {
         let url = Constants.REST_BASE + this.CREATE_URL.replace('{projectId}', project.id.toString());
 
         return this._http.put(url, body, this.JSON_OPTIONS)
-            .map(res => <AnalysisContext> res.json())
-            .do((context: AnalysisContext) => {
-                // invalidate cache for just updated context
-                let key = 'get(' + context.id + ')';
-                this._cache.removeItem(key);
-            })
-            .catch(this.handleError);
+            .pipe(
+                map(res => <AnalysisContext> res.json()),
+                tap((context: AnalysisContext) => {
+                    // invalidate cache for just updated context
+                    let key = 'get(' + context.id + ')';
+                    this._cache.removeItem(key);
+                }),
+                catchError(this.handleError)
+            );
     }
 
     @Cached('analysisContext')
     get(id: number) {
         return this._http.get(Constants.REST_BASE + this.ANALYSIS_CONTEXT_URL.replace("{id}", id.toString()))
-            .map(res => <AnalysisContext> res.json())
-            .catch(this.handleError);
+            .pipe(
+                map(res => <AnalysisContext> res.json()),
+                catchError(this.handleError)
+            );
     }
 }

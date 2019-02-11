@@ -1,4 +1,4 @@
-import {Observable} from "rxjs/Observable";
+import {Observable} from 'rxjs';
 
 export function substringAfterLast(str, delimiter) {
     return str.substring(str.lastIndexOf(delimiter) + 1); // +1 trick for no occurence.

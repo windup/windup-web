@@ -1,7 +1,7 @@
 import {Injectable, NgZone} from '@angular/core';
 import {Http} from '@angular/http';
 import {FileUploader} from 'ng2-file-upload/ng2-file-upload';
-import {Observable} from 'rxjs/Observable';
+import {Observable, from} from 'rxjs';
 
 import {Constants} from "../constants";
 import {RegisteredApplication, MigrationProject, PackageMetadata} from "../generated/windup-services";
@@ -16,6 +16,7 @@ import {ReplaySubject} from "rxjs";
 import {Cached} from "../shared/cache.service";
 import {isArray} from "util";
 import {utils} from "../shared/utils";
+import { map, catchError, tap, mergeMap } from 'rxjs/operators';
 
 @Injectable()
 export class RegisteredApplicationService extends AbstractService {
@@ -77,26 +78,28 @@ export class RegisteredApplicationService extends AbstractService {
         let url = endpoint.replace("{projectId}", project.id.toString()).replace("{exploded}", ""+!!isDirWithExplodedApp);
 
         return this._http.post(url, body, this.JSON_OPTIONS)
-            .map(res => <RegisteredApplication> res.json())
-            .catch(this.handleError)
-            .do((responseApplication) => {
-                let responseApplicationArray;
-
-                if (isArray(responseApplication)) {
-                    responseApplicationArray = responseApplication;
-                } else {
-                    responseApplicationArray = [ responseApplication ];
-                }
-
-                const newApplications = responseApplicationArray.filter(responseApp => {
-                    return !project.applications || !project.applications.some(app => app.id === responseApp.id);
-                });
-
-
-                if (newApplications.length > 0) {
-                    this.fireNewApplicationEvents(newApplications, project);
-                }
-            });
+            .pipe(
+                map(res => <T> res.json()),
+                catchError(this.handleError),
+                tap((responseApplication) => {
+                    let responseApplicationArray;
+    
+                    if (isArray(responseApplication)) {
+                        responseApplicationArray = responseApplication;
+                    } else {
+                        responseApplicationArray = [ responseApplication ];
+                    }
+    
+                    const newApplications = responseApplicationArray.filter(responseApp => {
+                        return !project.applications || !project.applications.some(app => app.id === responseApp.id);
+                    });
+    
+    
+                    if (newApplications.length > 0) {
+                        this.fireNewApplicationEvents(newApplications, project);
+                    }
+                })
+            );
     }
 
     registerByPath(project: MigrationProject, path: string, isDirWithExplodedApp: boolean): Observable<RegisteredApplication> {
@@ -114,42 +117,43 @@ export class RegisteredApplicationService extends AbstractService {
     uploadApplications(project: MigrationProject): Observable<RegisteredApplication[]> {
         return this._keycloakService
             .getToken()
-            .flatMap((token: string) =>
-            {
-                this._multipartUploader.setOptions({
-                    authToken: 'Bearer ' + token,
-                    method: 'POST'
-                });
+            .pipe(
+                mergeMap((token: string) => {
+                    this._multipartUploader.setOptions({
+                        authToken: 'Bearer ' + token,
+                        method: 'POST'
+                    });
 
-                let responses = [];
-                let errors = [];
+                    let responses = [];
+                    let errors = [];
 
-                let promise = new Promise((resolve, reject) => {
-                    this._multipartUploader.onCompleteItem = (item, response, status, headers) => {
-                        let responseMessage = utils.parseServerResponse(response);
+                    let promise = new Promise((resolve, reject) => {
+                        this._multipartUploader.onCompleteItem = (item, response, status, headers) => {
+                            let responseMessage = utils.parseServerResponse(response);
 
-                        if (status == 200) {
-                            this.fireNewApplicationEvents(responseMessage, project);
-                            responses.push(responseMessage);
-                        } else {
-                            errors.push(responseMessage);
-                        }
-                    };
+                            if (status == 200) {
+                                this.fireNewApplicationEvents(responseMessage, project);
+                                responses.push(responseMessage);
+                            } else {
+                                errors.push(responseMessage);
+                            }
+                        };
 
-                    this._multipartUploader.onCompleteAll = () => {
-                        resolve(responses);
-                    };
+                        this._multipartUploader.onCompleteAll = () => {
+                            resolve(responses);
+                        };
 
-                    this._multipartUploader.onErrorItem = (item, response, status, headers) => {
-                        let responseMessage = utils.parseServerResponse(response);
-                        reject(utils.getErrorMessage(responseMessage));
-                    };
-                });
+                        this._multipartUploader.onErrorItem = (item, response, status, headers) => {
+                            let responseMessage = utils.parseServerResponse(response);
+                            reject(utils.getErrorMessage(responseMessage));
+                        };
+                    });
 
-                this._multipartUploader.uploadAll();
+                    this._multipartUploader.uploadAll();
 
-                return Observable.fromPromise(promise);
-            });
+                    return <Observable<RegisteredApplication[]>>from(promise);
+                })
+            );
     }
 
     protected fireNewApplicationEvents(applications: RegisteredApplication|RegisteredApplication[], project: MigrationProject) {
@@ -163,15 +167,19 @@ export class RegisteredApplicationService extends AbstractService {
     @Cached('application')
     getApplications(): Observable<RegisteredApplication[]> {
         return this._http.get(Constants.REST_BASE + RegisteredApplicationService.GET_APPLICATIONS_URL)
-            .map(res => <RegisteredApplication[]> res.json())
-            .catch(this.handleError);
+            .pipe(
+                map(res => <RegisteredApplication[]> res.json()),
+                catchError(this.handleError)
+            );
     }
 
     @Cached('application')
     getApplicationsByProjectID(id: number): Observable<RegisteredApplication[]> {
         return this._http.get(Constants.REST_BASE + RegisteredApplicationService.BY_PROJECT_ID_URL.replace("{projectId}", id.toString()))
-            .map(res => <RegisteredApplication[]> res.json())
-            .catch(this.handleError);
+            .pipe(
+                map(res => <RegisteredApplication[]> res.json()),
+                catchError(this.handleError)
+            );
     }
 
     @Cached('application')
@@ -179,8 +187,10 @@ export class RegisteredApplicationService extends AbstractService {
         let url = Constants.REST_BASE + RegisteredApplicationService.SINGLE_APPLICATION_URL.replace('{appId}', id.toString());
 
         return this._http.get(url)
-            .map(response => response.json())
-            .catch(this.handleError);
+            .pipe(
+                map(response => response.json()),
+                catchError(this.handleError)
+            );
     }
 
     updateByPath(application: RegisteredApplication): Observable<RegisteredApplication> {
@@ -191,56 +201,62 @@ export class RegisteredApplicationService extends AbstractService {
         let url = Constants.REST_BASE + RegisteredApplicationService.UPDATE_APPLICATION_PATH_URL.replace('{appId}', application.id.toString());
 
         return this._http.put(url, body, this.JSON_OPTIONS)
-            .map(res => <RegisteredApplication> res.json())
-            .catch(this.handleError);
+            .pipe(
+                map(res => <RegisteredApplication> res.json()),
+                catchError(this.handleError)
+            );
     }
 
     updateByUpload(application: RegisteredApplication) {
         return this._keycloakService
             .getToken()
-            .flatMap((token: string, index: number) => {
-                this._multipartUploader.setOptions({
-                    authToken: 'Bearer ' + token,
-                    method: 'PUT'
-                });
-
-                let responses = [];
-                let errors = [];
-
-                let promise = new Promise((resolve, reject) => {
-                    this._multipartUploader.onCompleteItem = (item, response, status, headers) => {
-                        const parsedResponse = utils.parseServerResponse(response);
-
-                        if (status == 200) {
-                            responses.push(parsedResponse);
-                        } else {
-                            errors.push(parsedResponse);
-                        }
-                    };
-
-                    this._multipartUploader.onCompleteAll = () => {
-                        resolve(responses);
-                    };
-
-                    this._multipartUploader.onErrorItem = (item, response, status, headers) => {
-                        let responseMessage = utils.parseServerResponse(response);
-                        reject(utils.getErrorMessage(responseMessage));
-                    };
-                });
-
-                this._multipartUploader.uploadAll();
-
-                return Observable.fromPromise(promise);
-            });
+            .pipe(
+                mergeMap((token: string, index: number) => {
+                    this._multipartUploader.setOptions({
+                        authToken: 'Bearer ' + token,
+                        method: 'PUT'
+                    });
+    
+                    let responses = [];
+                    let errors = [];
+    
+                    let promise = new Promise((resolve, reject) => {
+                        this._multipartUploader.onCompleteItem = (item, response, status, headers) => {
+                            const parsedResponse = utils.parseServerResponse(response);
+    
+                            if (status == 200) {
+                                responses.push(parsedResponse);
+                            } else {
+                                errors.push(parsedResponse);
+                            }
+                        };
+    
+                        this._multipartUploader.onCompleteAll = () => {
+                            resolve(responses);
+                        };
+    
+                        this._multipartUploader.onErrorItem = (item, response, status, headers) => {
+                            let responseMessage = utils.parseServerResponse(response);
+                            reject(utils.getErrorMessage(responseMessage));
+                        };
+                    });
+    
+                    this._multipartUploader.uploadAll();
+    
+                    return from(promise);
+                })
+            );
     }
 
-    deleteApplication(project: MigrationProject, application: RegisteredApplication): Observable<void> {
+    deleteApplication(project: MigrationProject, application: RegisteredApplication): Observable<any> {
         let url = Constants.REST_BASE + RegisteredApplicationService.SINGLE_APPLICATION_URL.replace('{appId}', application.id.toString());
         return this._http.delete(url)
-            .do(_ => {
-                this._eventBusService.fireEvent(new ApplicationDeletedEvent(project, application, this));
-            })
-            .catch(this.handleError);
+            .pipe(
+                tap(_ => {
+                    this._eventBusService.fireEvent(new ApplicationDeletedEvent(project, application, this));
+                }),
+                catchError(this.handleError)
+            );
     }
 
     /**

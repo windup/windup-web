@@ -11,6 +11,7 @@ import {AnalysisContextService} from "../analysis-context/analysis-context.servi
 import {NotificationService} from "../core/notification/notification.service";
 import {utils} from "../shared/utils";
 import {SchedulerService} from "../shared/scheduler.service";
+import { filter } from 'rxjs/operators';
 
 @Component({
     templateUrl: './project-executions.component.html'
@@ -53,8 +54,10 @@ export class ProjectExecutionsComponent extends ExecutionsMonitoringComponent im
         });
 
         this.addSubscription(this._eventBus.onEvent
-            .filter(event => event.isTypeOf(ExecutionEvent))
-            .filter((event: ExecutionEvent) => event.migrationProject.id === this.project.id)
+            .pipe(
+                filter(event => event.isTypeOf(ExecutionEvent)),
+                filter((event: ExecutionEvent) => event.migrationProject.id === this.project.id)
+            )
             .subscribe((event: ExecutionEvent) => this.onExecutionEvent(event)));
 
         this.doNotRefreshList = false;

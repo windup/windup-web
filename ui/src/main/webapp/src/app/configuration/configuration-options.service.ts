@@ -4,10 +4,11 @@ import {Http} from '@angular/http';
 import {Constants} from "../constants";
 import {AbstractService} from "../shared/abtract.service";
 import {ConfigurationOption} from "../model/configuration-option.model";
-import {Observable} from "rxjs/Observable";
+import {Observable} from 'rxjs';
 import {ValidationResult} from "../model/validation-result.model";
 import {AdvancedOption} from "../generated/windup-services";
 import {Cached} from "../shared/cache.service";
+import { map, catchError } from 'rxjs/operators';
 
 @Injectable()
 export class ConfigurationOptionsService extends AbstractService {
@@ -22,14 +23,18 @@ export class ConfigurationOptionsService extends AbstractService {
         let body = JSON.stringify(option);
 
         return this._http.post(Constants.REST_BASE + this.VALIDATE_OPTION_URL, body, this.JSON_OPTIONS)
-            .map(res => <ValidationResult> res.json())
-            .catch(this.handleError);
+            .pipe(
+                map(res => <ValidationResult> res.json()),
+                catchError(this.handleError)
+            );
     }
 
     @Cached({section: 'configurationOptions', immutable: true})
     getAll(): Observable<ConfigurationOption[]> {
         return this._http.get(Constants.REST_BASE + this.GET_CONFIGURATION_OPTIONS_URL)
-            .map(res => <ConfigurationOption[]> res.json())
-            .catch(this.handleError);
+            .pipe(
+                map(res => <ConfigurationOption[]> res.json()),
+                catchError(this.handleError)
+            );
     }
 }

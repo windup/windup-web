@@ -3,7 +3,7 @@ import {GraphProperty} from "../../../src/app/services/graph/graph-property.deco
 import {DiscriminatorMapping} from "../../../src/app/services/graph/discriminator-mapping";
 import {GraphAdjacency} from "../../../src/app/services/graph/graph-adjacency.decorator";
 
-import {Observable} from "rxjs/Observable";
+import {Observable} from 'rxjs';
 import {SetInProperties} from "../../../src/app/services/graph/set-in-properties.decorator";
 
 export class TestGeneratorModel extends BaseModel

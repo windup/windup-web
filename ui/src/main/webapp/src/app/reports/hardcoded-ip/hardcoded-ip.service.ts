@@ -2,7 +2,7 @@ import {GraphService} from "../../services/graph.service";
 import {Injectable} from "@angular/core";
 import {Http} from "@angular/http";
 import {GraphJSONToModelService} from "../../services/graph/graph-json-to-model.service";
-import {Observable} from "rxjs/Observable";
+import {Observable} from 'rxjs';
 import {HardcodedIPLocationModel} from "../../generated/tsModels/HardcodedIPLocationModel";
 import {ReportFilter} from "../../generated/windup-services";
 import {Constants} from "../../constants";

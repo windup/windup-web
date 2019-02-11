@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Response} from '@angular/http';
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs';
 import {Headers, RequestOptions} from '@angular/http';
 import {ReportFilter} from "../generated/windup-services";
 

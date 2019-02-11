@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {AnalysisContext, MigrationProject, WindupExecution} from "../generated/windup-services";
 import {AbstractService} from "../shared/abtract.service";
-import {Observable} from "rxjs/Observable";
+import {Observable} from 'rxjs';
 import {WindupService} from "./windup.service";
 import {EventBusService} from "../core/events/event-bus.service";
 import {

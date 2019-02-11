@@ -4,7 +4,7 @@ import {ActivatedRoute, Params, Router} from '@angular/router';
 import {EJBInformationDTO, TechReportService} from "./tech-report.service";
 import {NotificationService} from "../../core/notification/notification.service";
 import {utils} from '../../shared/utils';
-import {Observable} from "rxjs/Observable";
+import {Observable} from 'rxjs';
 import {FilterableReportComponent} from "../filterable-report.component";
 import {RouteFlattenerService} from "../../core/routing/route-flattener.service";
 import {ReportFilter} from "../../generated/windup-services";

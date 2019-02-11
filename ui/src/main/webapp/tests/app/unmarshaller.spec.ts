@@ -1,7 +1,7 @@
 import {async, inject} from '@angular/core/testing';
 import {Http} from "@angular/http";
 import 'rxjs/Rx';
-import {Observable} from "rxjs/Observable";
+import {Observable} from 'rxjs';
 import 'rxjs/add/operator/toPromise';
 
 import {GraphJSONToModelService, RelationInfo} from '../../src/app/services/graph/graph-json-to-model.service';

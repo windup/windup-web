@@ -7,6 +7,7 @@ import {FormComponent} from "../shared/form.component";
 import {Subscription} from "rxjs";
 import {RouteFlattenerService} from "../core/routing/route-flattener.service";
 import {FormControl} from "@angular/forms";
+import { filter } from 'rxjs/operators';
 
 @Component({
     templateUrl: './migration-project-form.component.html',
@@ -40,7 +41,11 @@ export class MigrationProjectFormComponent extends FormComponent implements OnIn
     }
 
     ngOnInit(): void {
-        this.routerSubscription = this._router.events.filter(event => event instanceof NavigationEnd).subscribe(_ => {
+        this.routerSubscription = this._router.events
+        .pipe(
+            filter(event => event instanceof NavigationEnd)
+        )
+        .subscribe(_ => {
             let flatRouteData = this._routeFlattener.getFlattenedRouteData(this._activatedRoute.snapshot);
             if (flatRouteData.data['displayName'])
                 this.title = flatRouteData.data['displayName'];

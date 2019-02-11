@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {Http} from "@angular/http";
-import {Observable} from "rxjs/Observable";
+import {Observable} from 'rxjs';
 
 import {GraphService} from "../../services/graph.service";
 import {GraphJSONToModelService} from "../../services/graph/graph-json-to-model.service";

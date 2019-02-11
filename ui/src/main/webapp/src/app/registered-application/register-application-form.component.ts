@@ -20,6 +20,7 @@ import {NotificationService} from "../core/notification/notification.service";
 import {utils} from "../shared/utils";
 import {FileLikeObject} from "ng2-file-upload/file-upload/file-like-object.class";
 import formatString = utils.formatString;
+import { filter } from 'rxjs/operators';
 
 @Component({
     templateUrl: "./register-application-form.component.html",
@@ -91,7 +92,9 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
 
     ngOnInit(): any {
         this._eventBus.onEvent
-            .filter(event => event.isTypeOf(UpdateMigrationProjectEvent))
+            .pipe(
+                filter(event => event.isTypeOf(UpdateMigrationProjectEvent))
+            )
             .subscribe((event: UpdateMigrationProjectEvent) => this.project = event.migrationProject);
 
         this.registrationForm = this._formBuilder.group({
@@ -106,7 +109,11 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
             isDirWithExplodedApp: [],
         });
 
-        this.routerSubscription = this._router.events.filter(event => event instanceof NavigationEnd).subscribe(_ => {
+        this.routerSubscription = this._router.events
+        .pipe(
+            filter(event => event instanceof NavigationEnd)
+        )
+        .subscribe(_ => {
             let flatRouteData = this._routeFlattener.getFlattenedRouteData(this._activatedRoute.snapshot);
 
             this.isInWizard = flatRouteData.data.hasOwnProperty('wizard') && flatRouteData.data['wizard'];

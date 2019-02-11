@@ -1,5 +1,5 @@
 import {MigrationProject, RegisteredApplication, WindupExecution} from "../../generated/windup-services";
-import {Observable} from "rxjs/Observable";
+import {Observable} from 'rxjs';
 import {Response} from "@angular/http";
 
 
