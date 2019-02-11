@@ -364,7 +364,7 @@ export class AnalysisContextFormComponent extends FormComponent
         this.analysisContext.excludePackages = event.excludePackages;
     }
 
-    viewThirdPackagesChange(event: boolean) {        
+    onViewThirdPackagesChange(event: boolean) {        
         if (event) {
             this.view3rdPartyPackages();
         } else {

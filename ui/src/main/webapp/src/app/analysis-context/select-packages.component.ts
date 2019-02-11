@@ -76,7 +76,7 @@ export class SelectPackagesComponent implements OnDestroy, ControlValueAccessor,
     onSelectionChange: EventEmitter<PackageSelection> = new EventEmitter();
 
     @Output()
-    viewThirdPackagesChange: EventEmitter<boolean> = new EventEmitter();
+    onViewThirdPackagesChange: EventEmitter<boolean> = new EventEmitter();
 
     // @Input
     private _packages: Package[];
@@ -144,7 +144,7 @@ export class SelectPackagesComponent implements OnDestroy, ControlValueAccessor,
     set packages(packages: Package[]) {
         this._packages = packages;
         if (this._packages) {
-            this.configTree();
+            this.initializeTreeNodes();
         }
     }
 
@@ -159,7 +159,7 @@ export class SelectPackagesComponent implements OnDestroy, ControlValueAccessor,
     writeValue(obj: any): void {
         if (obj) {
             this.value = obj;
-            this.configTree();
+            this.initializeTreeNodes();
         }
     }
 
@@ -221,7 +221,7 @@ export class SelectPackagesComponent implements OnDestroy, ControlValueAccessor,
             if (event.node.hasChildren() && event.node.isNodeCollapsed()) {
                 this.setCheckedChildrenOnCascade(event.node.children, false);
             }
-            this.uncheckParentOnCascade(event.node);
+            this.uncheckParentsOnCascade(event.node);
             this.nodeEventSubject.next(event);
         }
 
@@ -230,7 +230,7 @@ export class SelectPackagesComponent implements OnDestroy, ControlValueAccessor,
     }
 
 
-    //
+    // Component events
 
 
     /**
@@ -238,7 +238,7 @@ export class SelectPackagesComponent implements OnDestroy, ControlValueAccessor,
      */
     viewHide3dPackagesEvent(): void {
         this.viewThirdPackages = !this.viewThirdPackages;
-        this.viewThirdPackagesChange.emit(this.viewThirdPackages);
+        this.onViewThirdPackagesChange.emit(this.viewThirdPackages);
     }
 
     /**
@@ -249,12 +249,16 @@ export class SelectPackagesComponent implements OnDestroy, ControlValueAccessor,
         this.nodeEventSubject.next(null);
     }
 
+
+
     /**
      * Config the tree the first time or whenever 'NgModel' or '@Input() packages' change 
      */
-    configTree() {
+    initializeTreeNodes(): void {
         if (this._packages && this._packages.length > 0) {
             this.packageTreeModel.children = this.toTreeModel(this.value, this._packages);
+
+            // If value is passed from outside, then verify if it has Third party packages
             if (this.value) {
                 if (this.viewThirdPackages == undefined) {
                     for (let i = 0; i < this.value.includePackages.length; i++) {
@@ -269,8 +273,10 @@ export class SelectPackagesComponent implements OnDestroy, ControlValueAccessor,
             this.packageTreeModel.children = [];
         }
 
+        // 'TreeModel.children = []' should be enought but
+        // this is needed for refresh the DOM. This should be here until
+        // problem is solved in future versions
         if (this.packageTreeComponent) {
-            // This is needed for refresh the DOM
             this.packageTreeComponent.getController().setChildren(this.packageTreeModel.children);
         }
 
@@ -299,8 +305,11 @@ export class SelectPackagesComponent implements OnDestroy, ControlValueAccessor,
             this.sortTreeModelOnCascade(excludeTreeModel);
 
             this.excludePackageTreeModel.children = excludeTreeModel.children;
+
+            // 'TreeModel.children = []' should be enought but
+            // this is needed for refresh the DOM. This should be here until
+            // problem is solved in future versions
             if (this.excludePackageTreeComponent) {
-                // This is need for refresh the DOM
                 this.excludePackageTreeComponent.getController().setChildren(excludeTreeModel.children);
             }
 
@@ -312,6 +321,269 @@ export class SelectPackagesComponent implements OnDestroy, ControlValueAccessor,
             this.onSelectionChange.emit(this.value);
         }
     }
+
+
+    // Core
+
+
+    /**
+    * Create a template of a TreeModel
+    */
+    private buildTreeModelTemplate(): TreeModel {
+        return {
+            id: SelectPackagesComponent.TREE_ROOT,
+            value: SelectPackagesComponent.TREE_ROOT,
+            settings: {
+                checked: true,
+                isCollapsedOnInit: false,
+                static: true,
+                cssClasses: {
+                    expanded: 'fa fa-angle-down cursor-pointer',
+                    collapsed: 'fa fa-angle-right cursor-pointer',
+                    empty: 'fa fa-caret-right disabled cursor-pointer',
+                    leaf: 'fa'
+                },
+                templates: {
+                    node: '<i class="fa fa-folder"></i>',
+                    leaf: '<i class="fa fa-folder"></i>'
+                },
+                menuItems: [
+                    {
+                        action: NodeMenuItemAction.Custom,
+                        name: 'Select',
+                        cssClass: 'fa fa-arrow-right'
+                    }
+                ]
+            }
+        };
+    }
+
+    /**
+     * Maps a TreeData[] to TreeModel[]
+     */
+    private toTreeModel(currentValue: PackageSelection, packages: Package[], packageParent: Package = null, treeModelParent: TreeModel = null): TreeModel[] {
+        if (!packages || packages.length < 1) {
+            return null;
+        }
+
+        const result: TreeModel[] = [];
+        for (let i = 0; i < packages.length; i++) {
+            let element: Package = packages[i];
+
+            // Flatter if possible
+            let wasFlattered = false;
+            if (element.childs && element.childs.length == 1) {
+                while (element.childs && element.childs.length == 1) {
+                    element = element.childs[0];
+                }
+                wasFlattered = true;
+            }
+
+
+            // Load previous values from database
+            let checked: boolean;
+            if (currentValue &&
+                currentValue.includePackages &&
+                currentValue.excludePackages &&
+                (currentValue.includePackages.length + currentValue.excludePackages.length) > 0
+            ) {
+                checked = false;
+                if (treeModelParent && treeModelParent.settings.checked) {
+                    checked = true;
+                } else {
+                    if (this.containsNodeWithFullName(currentValue.includePackages, element.fullName)) {
+                        checked = true;
+                    }
+                }
+            } else {
+                checked = true;
+            }
+
+
+            if (treeModelParent && !element.known) {
+                let tree = treeModelParent;
+                while (tree) {
+                    tree.settings.templates = {
+                        node: '<i class="fa fa-folder"></i>',
+                        leaf: '<i class="fa fa-folder"></i>'
+                    };
+                    tree = tree.parent;
+                }
+            }
+
+            // Map to TreeModel
+            const treeModelNode: TreeModel = {
+                id: element.id,
+                value: <RenamableNode>{
+                    name: element.name,
+                    data: element,
+                    isFlattered: wasFlattered,
+                    fullName: element.fullName,
+                    parentFullName: packageParent ? packageParent.fullName : null,
+                    parent: treeModelParent,
+                    setName(name: string): void {
+                        this.name = name;
+                    },
+                    toString(): string {
+                        if (this.isFlattered) {
+                            // Flatter package name
+                            if (this.parentFullName) {
+                                return this.fullName.replace(this.parentFullName + '.', '');
+                            } else {
+                                return this.fullName;
+                            }
+                        } else {
+                            return this.name;
+                        }
+                    },
+                    getData(): Package {
+                        return this.data;
+                    }
+                } as RenamableNodeData,
+                settings: {
+                    checked: checked,
+                    isCollapsedOnInit: true,
+                    templates: {
+                        node: !element.known ? '<i class="fa fa-folder"></i>' : '<i class="fa fa-folder-o"></i>',
+                        leaf: !element.known ? '<i class="fa fa-folder"></i>' : '<i class="fa fa-folder-o"></i>'
+                    }
+                }
+            };
+            treeModelNode.children = this.toTreeModel(currentValue, element.childs, element, treeModelNode);
+
+            // Push node to result
+            result.push(treeModelNode);
+        }
+
+        // Order alphabetically
+        result.sort(this.treeModelComparator);
+
+        return result;
+    }
+
+    /**
+     * Maps a TreeModel[] to its original Package form
+     */
+    private toPackage(treeModel: TreeModel[]): Package[] {
+        if (!treeModel || treeModel.length < 1) {
+            return null;
+        }
+
+        const result: Package[] = [];
+        for (let index = 0; index < treeModel.length; index++) {
+            const treeNode = treeModel[index];
+            result.push((<RenamableNodeData>treeNode.value).getData());
+        }
+
+        return result;
+    }
+
+    /**
+     * @returns A list of selected and unselected nodes
+     */
+    private getCheckedNodes(tree: Tree[]): TreeModelSelection {
+        let result: TreeModelSelection = {
+            includeModels: [],
+            excludeModels: []
+        };
+
+        for (let index = 0; index < tree.length; index++) {
+            const node = tree[index];
+
+            // If a node is checked, then children are checked too. No need to iterate children
+            if (node.checked) {
+                result.includeModels.push(node);
+            } else {
+                if (node.hasChildren()) {
+
+                    let allFirstChildrenAreChecked: boolean = true;
+                    for (let index = 0; index < node.children.length; index++) {
+                        const element = node.children[index];
+                        if (element.checked == false) {
+                            allFirstChildrenAreChecked = false;
+                            break;
+                        }
+                    }
+
+                    // If all first children are checked, then no need to iterate children
+                    if (allFirstChildrenAreChecked) {
+                        result.excludeModels.push(node);
+                    } else {
+                        //
+                        if (this.atLeastOneChildIsCheckedOnCascade(node.children)) {
+                            let childResult: TreeModelSelection = this.getCheckedNodes(node.children);
+                            result.includeModels = result.includeModels.concat(childResult.includeModels);
+                            result.excludeModels = result.excludeModels.concat(childResult.excludeModels);
+                        } else {
+                            result.excludeModels.push(node);
+                        }
+                    }
+                } else {
+                    result.excludeModels.push(node);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private treeModelComparator(a: TreeModel, b: TreeModel): number {
+        if (a.children && a.children.length > 0) {
+            if (b.children && b.children.length > 0) {
+                return a.value > b.value ? 1 : -1;
+            } else {
+                return 1;
+            }
+        } else {
+            if (b.children && b.children.length > 0) {
+                return -1;
+            } else {
+                return a.value > b.value ? 1 : -1;
+            }
+        }
+
+        // if (a.children && a.children.length > 0) {
+        //     if (b.children && b.children.length > 0) {
+        //         if (typeof a.value === 'string' && typeof b.value === 'string') {
+        //             return a.value > b.value ? 1 : -1;
+        //         } else {
+        //             const aValue = <RenamableNodeData>a.value;
+        //             const bValue = <RenamableNodeData>b.value;
+        //             if (aValue.getData().known && bValue.getData().known) {
+        //                 return a.value > b.value ? -1 : 1;
+        //             } else if (aValue.getData().known) {
+        //                 return 1;
+        //             } else {
+        //                 return -1;
+        //             }
+        //         }
+        //     } else {
+        //         return 1;
+        //     }
+        // } else {
+        //     if (b.children && b.children.length > 0) {
+        //         return -1;
+        //     } else {
+        //         if (typeof a.value === 'string' && typeof b.value === 'string') {
+        //             return a.value > b.value ? 1 : -1;
+        //         } else {
+        //             const aValue = <RenamableNodeData>a.value;
+        //             const bValue = <RenamableNodeData>b.value;
+        //             if (aValue.getData().known && bValue.getData().known) {
+        //                 return a.value > b.value ? -1 : 1;
+        //             } else if (aValue.getData().known) {
+        //                 return 1;
+        //             } else {
+        //                 return -1;
+        //             }
+        //         }
+        //     }
+        // }
+    }
+
+
+    // Utils
+
 
     /**
      * Create nodes on tree using packageFullName
@@ -372,38 +644,6 @@ export class SelectPackagesComponent implements OnDestroy, ControlValueAccessor,
     }
 
     /**
-     * Create a template of a TreeModel
-     */
-    private buildTreeModelTemplate(): TreeModel {
-        return {
-            id: SelectPackagesComponent.TREE_ROOT,
-            value: SelectPackagesComponent.TREE_ROOT,
-            settings: {
-                checked: true,
-                isCollapsedOnInit: false,
-                static: true,
-                cssClasses: {
-                    expanded: 'fa fa-angle-down cursor-pointer',
-                    collapsed: 'fa fa-angle-right cursor-pointer',
-                    empty: 'fa fa-caret-right disabled cursor-pointer',
-                    leaf: 'fa'
-                },
-                templates: {
-                    node: '<i class="fa fa-folder"></i>',
-                    leaf: '<i class="fa fa-folder"></i>'
-                },
-                menuItems: [
-                    {
-                        action: NodeMenuItemAction.Custom,
-                        name: 'Select',
-                        cssClass: 'fa fa-arrow-right'
-                    }
-                ]
-            }
-        };
-    }
-
-    /**
      * Checks if the list of packages contain one package with 'fullName' node
      */
     private containsNodeWithFullName(packages: Package[], fullName: string): boolean {
@@ -419,157 +659,9 @@ export class SelectPackagesComponent implements OnDestroy, ControlValueAccessor,
     }
 
     /**
-     * Maps a TreeData[] to TreeModel[]
-     */
-    private toTreeModel(currentValue: PackageSelection, packages: Package[], packageParent: Package = null, treeModelParent: TreeModel = null): TreeModel[] {
-        if (!packages || packages.length < 1) {
-            return null;
-        }
-
-        const result: TreeModel[] = [];
-        for (let i = 0; i < packages.length; i++) {
-            let element: Package = packages[i];
-
-            // Flatter if possible
-            let wasFlattered = false;
-            if (element.childs && element.childs.length == 1) {
-                while (element.childs && element.childs.length == 1) {
-                    element = element.childs[0];
-                }
-                wasFlattered = true;
-            }
-
-
-            // Load previous values from database
-            let checked: boolean;
-            if (currentValue &&
-                currentValue.includePackages &&
-                currentValue.excludePackages &&
-                (currentValue.includePackages.length + currentValue.excludePackages.length) > 0
-            ) {
-                checked = false;
-                if (treeModelParent && treeModelParent.settings.checked) {
-                    checked = true;
-                } else {
-                    if (this.containsNodeWithFullName(currentValue.includePackages, element.fullName)) {
-                        checked = true;
-                    }
-                }
-            } else {
-                checked = true;
-            }
-
-
-            // Map to TreeModel
-            const treeModelNode: TreeModel = {
-                id: element.id,
-                value: <RenamableNode>{
-                    name: element.name,
-                    data: element,
-                    isFlattered: wasFlattered,
-                    fullName: element.fullName,
-                    parentFullName: packageParent ? packageParent.fullName : null,
-                    setName(name: string): void {
-                        this.name = name;
-                    },
-                    toString(): string {
-                        if (this.isFlattered) {
-                            // Flatter package name
-                            if (this.parentFullName) {
-                                return this.fullName.replace(this.parentFullName + '.', '');
-                            } else {
-                                return this.fullName;
-                            }
-                        } else {
-                            return this.name;
-                        }
-                    },
-                    getData(): Package {
-                        return this.data;
-                    }
-                } as RenamableNodeData,
-                settings: {
-                    checked: checked,
-                    isCollapsedOnInit: true,
-                    templates: {
-                        node: !element.known ? '<i class="fa fa-folder"></i>' : '<i class="fa fa-folder-open"></i>',
-                        leaf: !element.known ? '<i class="fa fa-folder"></i>' : '<i class="fa fa-folder-open"></i>'
-                    },
-                }
-            };
-            treeModelNode.children = this.toTreeModel(currentValue, element.childs, element, treeModelNode);
-
-            // Push node to result
-            result.push(treeModelNode);
-        }
-
-        // Order alphabetically
-        result.sort(this.treeModelComparator);
-
-        return result;
-    }
-
-    private treeModelComparator(a: TreeModel, b: TreeModel): number {
-        if (a.children && a.children.length > 0) {
-            if (b.children && b.children.length > 0) {
-                if (typeof a.value === 'string' && typeof b.value === 'string') {
-                    return a.value > b.value ? 1 : -1;
-                } else {
-                    const aValue = <RenamableNodeData>a.value;
-                    const bValue = <RenamableNodeData>b.value;
-                    if (aValue.getData().known && bValue.getData().known) {
-                        return a.value > b.value ? -1 : 1;
-                    } else if (aValue.getData().known) {
-                        return 1;
-                    } else {
-                        return -1;
-                    }
-                }
-            } else {
-                return 1;
-            }
-        } else {
-            if (b.children && b.children.length > 0) {
-                return -1;
-            } else {
-                if (typeof a.value === 'string' && typeof b.value === 'string') {
-                    return a.value > b.value ? 1 : -1;
-                } else {
-                    const aValue = <RenamableNodeData>a.value;
-                    const bValue = <RenamableNodeData>b.value;
-                    if (aValue.getData().known && bValue.getData().known) {
-                        return a.value > b.value ? -1 : 1;
-                    } else if (aValue.getData().known) {
-                        return 1;
-                    } else {
-                        return -1;
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Maps a TreeModel[] to its original Package form
-     */
-    private toPackage(treeModel: TreeModel[]): Package[] {
-        if (!treeModel || treeModel.length < 1) {
-            return null;
-        }
-
-        const result: Package[] = [];
-        for (let index = 0; index < treeModel.length; index++) {
-            const treeNode = treeModel[index];
-            result.push((<RenamableNodeData>treeNode.value).getData());
-        }
-
-        return result;
-    }
-
-    /**
      * Uncheck parents in cascade     
      */
-    private uncheckParentOnCascade(tree: Tree): void {
+    private uncheckParentsOnCascade(tree: Tree): void {
         while (tree.parent) {
             tree.parent.checked = false;
             tree = tree.parent;
@@ -589,7 +681,7 @@ export class SelectPackagesComponent implements OnDestroy, ControlValueAccessor,
         }
     }
 
-    private atLeastOneChildIsChecked(tree: Tree[]): boolean {
+    private atLeastOneChildIsCheckedOnCascade(tree: Tree[]): boolean {
         let result: boolean = false;
         for (let index = 0; index < tree.length; index++) {
             const treeNode = tree[index];
@@ -597,63 +689,13 @@ export class SelectPackagesComponent implements OnDestroy, ControlValueAccessor,
                 result = true;
             }
             if (treeNode.hasChildren()) {
-                result = this.atLeastOneChildIsChecked(treeNode.children);
+                result = this.atLeastOneChildIsCheckedOnCascade(treeNode.children);
             }
 
             if (result == true) {
                 break;
             }
         }
-
-        return result;
-    }
-
-    /**
-     * @returns A list of selected and unselected nodes
-     */
-    private getCheckedNodes(tree: Tree[]): TreeModelSelection {
-        let result: TreeModelSelection = {
-            includeModels: [],
-            excludeModels: []
-        };
-
-        for (let index = 0; index < tree.length; index++) {
-            const node = tree[index];
-
-            // If a node is checked, then children are checked too. No need to iterate children
-            if (node.checked) {
-                result.includeModels.push(node);
-            } else {
-                if (node.hasChildren()) {
-
-                    let allFirstChildrenAreChecked: boolean = true;
-                    for (let index = 0; index < node.children.length; index++) {
-                        const element = node.children[index];
-                        if (element.checked == false) {
-                            allFirstChildrenAreChecked = false;
-                            break;
-                        }
-                    }
-
-                    // If all first children are checked, then no need to iterate children
-                    if (allFirstChildrenAreChecked) {
-                        result.excludeModels.push(node);
-                    } else {
-                        //
-                        if (this.atLeastOneChildIsChecked(node.children)) {
-                            let childResult: TreeModelSelection = this.getCheckedNodes(node.children);
-                            result.includeModels = result.includeModels.concat(childResult.includeModels);
-                            result.excludeModels = result.excludeModels.concat(childResult.excludeModels);
-                        } else {
-                            result.excludeModels.push(node);
-                        }
-                    }
-                } else {
-                    result.excludeModels.push(node);
-                }
-            }
-        }
-
         return result;
     }
 

@@ -106,7 +106,7 @@
                                 [packages]="packageTree"
                                 [loading]="!packageTreeLoaded  || !isTreeReloadComplete"
                                 (onSelectionChange)="onSelectedPackagesChanged($event)"
-                                (viewThirdPackagesChange)="viewThirdPackagesChange($event)"
+                                (onViewThirdPackagesChange)="onViewThirdPackagesChange($event)"
                                 required>
             </wu-select-packages>
         </div>
