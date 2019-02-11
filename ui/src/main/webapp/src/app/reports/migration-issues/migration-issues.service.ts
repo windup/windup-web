@@ -5,6 +5,7 @@ import {AbstractService} from "../../shared/abtract.service";
 import {Constants} from "../../constants";
 import {Cached} from "../../shared/cache.service";
 import {ReportFilter} from "../../generated/windup-services";
+import { map, catchError } from 'rxjs/operators';
 
 @Injectable()
 export class MigrationIssuesService extends AbstractService {
@@ -23,8 +24,10 @@ export class MigrationIssuesService extends AbstractService {
         let serializedFilter = this.serializeFilter(filter);
 
         return this._http.post(url, serializedFilter, this.JSON_OPTIONS)
-            .map(res => res.json())
-            .catch(this.handleError);
+            .pipe(
+                map(res => res.json()),
+                catchError(this.handleError)
+            );
     }
 
     @Cached('migrationIssues', null, true)
@@ -36,7 +39,9 @@ export class MigrationIssuesService extends AbstractService {
         let serializedFilter = this.serializeFilter(filter);
 
         return this._http.post(url, serializedFilter, this.JSON_OPTIONS)
-            .map(res => res.json())
-            .catch(this.handleError);
+            .pipe(
+                map(res => res.json()),
+                catchError(this.handleError)
+            );
     }
 }

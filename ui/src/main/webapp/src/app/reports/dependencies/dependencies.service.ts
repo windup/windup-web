@@ -6,6 +6,7 @@ import {Constants} from "../../constants";
 import {DependenciesReportModel} from "../../generated/tsModels/DependenciesReportModel";
 import {GraphJSONToModelService} from "../../services/graph/graph-json-to-model.service";
 import {Cached} from "../../shared/cache.service";
+import { map, catchError } from 'rxjs/operators';
 
 @Injectable()
 export class DependenciesService extends AbstractService {
@@ -23,14 +24,16 @@ export class DependenciesService extends AbstractService {
         let service = this._graphJsonToModelService;
         let url = `${Constants.GRAPH_REST_BASE}/graph/${executionId}/by-type/` + DependenciesReportModel.discriminator + "?depth=2";
         return this._http.get(url)
-            .map((res:Response) => res.json())
-            .map((data: any) => {
-                if (!Array.isArray(data) || data.length == 0) {
-                    throw new Error("No items returned, URL: " + url);
-                }
-                return <DependenciesReportModel[]>service.fromJSONarray(data, DependenciesReportModel);
-            })
-            .catch(this.handleError);
+            .pipe(
+                map((res:Response) => res.json()),
+                map((data: any) => {
+                    if (!Array.isArray(data) || data.length == 0) {
+                        throw new Error("No items returned, URL: " + url);
+                    }
+                    return <DependenciesReportModel[]>service.fromJSONarray(data, DependenciesReportModel);
+                }),
+                catchError(this.handleError)
+            );
     }
 
     @Cached('dependencies', null, true)
@@ -38,8 +41,10 @@ export class DependenciesService extends AbstractService {
         let url = this.GET_DEPENDENCIES_URL.replace('{executionId}', executionId.toString());
 
         return this._http.get(url)
-            .map(res => res.json())
-            .catch(this.handleError);
+            .pipe(
+                map(res => res.json()),
+                catchError(this.handleError)
+            );
     }
 }
 

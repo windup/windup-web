@@ -9,6 +9,7 @@ import {CustomSelectConfiguration} from "../../shared/custom-select/custom-selec
 import {utils} from "../../shared/utils";
 import {Location} from "@angular/common";
 import {TagDataService} from "../tag-data.service";
+import { filter } from 'rxjs/operators';
 
 @Component({
     templateUrl: './report-filter.component.html'
@@ -66,7 +67,11 @@ export class ReportFilterComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.routerSubscriptions.push(this._router.events.filter(event => event instanceof NavigationEnd).subscribe(_ => {
+        this.routerSubscriptions.push(this._router.events
+            .pipe(
+                filter(event => event instanceof NavigationEnd)
+            )
+            .subscribe(_ => {
             let flatData = this._routeFlattenerService.getFlattenedRouteData(this._activatedRoute.snapshot);
 
             // TODO: Fix this

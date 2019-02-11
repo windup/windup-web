@@ -1,6 +1,6 @@
 import {Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Router} from "@angular/router";
-import {Observable} from "rxjs";
-import 'rxjs/add/observable/of';
+import {Observable, of} from "rxjs";
+
 import {Injectable} from "@angular/core";
 import {NotificationService} from "../../core/notification/notification.service";
 import {utils} from '../../shared/utils';
@@ -27,7 +27,7 @@ export class SourceResolve implements Resolve<SourceFileModel|boolean> {
         let execId = +routeData.params['executionId'];
         let fileId = +routeData.params['fileId'];
         if (!execId || !fileId)
-            return Observable.of(false);
+            return of(false);
 
         return new Observable<SourceFileModel|boolean>(observer => {
             this._fileModelService.getFileModel(execId, fileId).subscribe(

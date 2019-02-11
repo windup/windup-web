@@ -4,6 +4,7 @@ import {AbstractService} from "../../shared/abtract.service";
 import {Observable} from "rxjs";
 import {Category, FilterApplication, ReportFilter, Tag, WindupExecution} from "../../generated/windup-services";
 import {Injectable} from "@angular/core";
+import { map, catchError } from 'rxjs/operators';
 
 @Injectable()
 export class ReportFilterService extends AbstractService {
@@ -20,40 +21,50 @@ export class ReportFilterService extends AbstractService {
         let url = Constants.REST_BASE + this.FILTER_URL.replace('{execId}', execution.id.toString());
 
         return this._http.get(url)
-            .map(res => res.json())
-            .catch(this.handleError);
+            .pipe(
+                map(res => res.json()),
+                catchError(this.handleError)
+            );
     }
 
     clearFilter(execution: WindupExecution): Observable<ReportFilter> {
         let url = Constants.REST_BASE + this.FILTER_URL.replace('{execId}', execution.id.toString());
 
         return this._http.delete(url)
-            .map(res => res.json())
-            .catch(this.handleError);
+            .pipe(
+                map(res => res.json()),
+                catchError(this.handleError)
+            );
     }
 
     updateFilter(execution: WindupExecution, filter: any): Observable<ReportFilter> {
         let url = Constants.REST_BASE + this.FILTER_URL.replace('{execId}', execution.id.toString());
 
         return this._http.put(url, filter)
-            .map(res => res.json())
-            .catch(this.handleError);
+            .pipe(
+                map(res => res.json()),
+                catchError(this.handleError)
+            );
     }
 
     getTags(execution: WindupExecution): Observable<Tag[]> {
         let url = Constants.REST_BASE + this.TAGS_URL.replace('{execId}', execution.id.toString());
 
         return this._http.get(url)
-            .map(res => res.json())
-            .catch(this.handleError);
+            .pipe(
+                map(res => res.json()),
+                catchError(this.handleError)
+            );
     }
 
     getCategories(execution: WindupExecution): Observable<Category[]> {
         let url = Constants.REST_BASE + this.CATEGORIES_URL.replace('{execId}', execution.id.toString());
 
         return this._http.get(url)
-            .map(res => res.json())
-            .catch(this.handleError);
+            .pipe(
+                map(res => res.json()),
+                catchError(this.handleError)
+            );
     }
 
     getFilterApplications(execution: WindupExecution): Observable<FilterApplication[]>
@@ -63,7 +74,9 @@ export class ReportFilterService extends AbstractService {
                 .replace('{executionId}', execution.id.toString());
 
         return this._http.get(url)
-            .map(res => res.json())
-            .catch(this.handleError);
+            .pipe(
+                map(res => res.json()),
+                catchError(this.handleError)
+            );
     }
 }

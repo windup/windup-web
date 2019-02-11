@@ -13,6 +13,7 @@ import {
     TagReducedDTO
 } from "../../generated/windup-services";
 import {Cached} from "../../shared/cache.service";
+import { map, catchError } from 'rxjs/operators';
 
 @Injectable()
 export class ApplicationDetailsService extends AbstractService {
@@ -27,15 +28,17 @@ export class ApplicationDetailsService extends AbstractService {
 
         let serializedFilter = this.serializeFilter(filter);
 
-        return this._http.post(url, serializedFilter, this.JSON_OPTIONS)
-            .map(res => res.json())
-            .map((res:ApplicationDetailsDTO) => {
-                res.traversals = res.traversals.map(traversal => {
-                    return this.mapTraversal(res, traversal);
-                });
-                return res;
-            })
-            .catch(this.handleError);
+        return <any>this._http.post(url, serializedFilter, this.JSON_OPTIONS)
+            .pipe(
+                map(res => res.json()),
+                map((res:ApplicationDetailsDTO) => {
+                    res.traversals = res.traversals.map(traversal => {
+                        return this.mapTraversal(res, traversal);
+                    });
+                    return res;
+                }),
+                catchError(this.handleError)
+            );
     }
 
     private mapTraversal(applicationDetails: ApplicationDetailsDTO, traversal: ProjectTraversalReducedDTO): ProjectTraversalFullDTO {

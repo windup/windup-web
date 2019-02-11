@@ -5,6 +5,7 @@ import {AbstractService} from "../../shared/abtract.service";
 import {Constants} from "../../constants";
 import {EffortByCategoryDTO, ReportFilter, StatisticsList} from "../../generated/windup-services";
 import {Cached} from "../../shared/cache.service";
+import { map, catchError } from 'rxjs/operators';
 
 @Injectable()
 export class AggregatedStatisticsService extends AbstractService {
@@ -27,8 +28,10 @@ export class AggregatedStatisticsService extends AbstractService {
         let serializedFilter = this.serializeFilter(filter);
 
         return this._http.post(url, serializedFilter, this.JSON_OPTIONS)
-            .map(res => res.json())
-            .catch(this.handleError);
+            .pipe(
+                map(res => res.json()),
+                catchError(this.handleError)
+            );
     }
 
     @Cached('aggregatedStatistics', null, true)
@@ -39,8 +42,10 @@ export class AggregatedStatisticsService extends AbstractService {
         let serializedFilter = this.serializeFilter(filter);
 
         return this._http.post(url, serializedFilter, this.JSON_OPTIONS)
-            .map(res => res.json())
-            .catch(this.handleError);
+            .pipe(
+                map(res => res.json()),
+                catchError(this.handleError)
+            );
     }
 
     @Cached('aggregatedStatistics', null, true)
@@ -51,8 +56,10 @@ export class AggregatedStatisticsService extends AbstractService {
         let serializedFilter = this.serializeFilter(filter);
 
         return this._http.post(url, serializedFilter, this.JSON_OPTIONS)
-            .map(res => res.json())
-            .catch(this.handleError);
+            .pipe(
+                map(res => res.json()),
+                catchError(this.handleError)
+            );
     }
 
     @Cached('aggregatedStatistics', null, true)
@@ -63,7 +70,9 @@ export class AggregatedStatisticsService extends AbstractService {
         let serializedFilter = this.serializeFilter(filter);
 
         return this._http.post(url, serializedFilter, this.JSON_OPTIONS)
-            .map(res => res.json())
-            .catch(this.handleError);
+            .pipe(
+                map(res => res.json()),
+                catchError(this.handleError)
+            );
     }
 }
