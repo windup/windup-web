@@ -6,6 +6,7 @@ import { Constants } from "../../constants";
 import { FileModel } from "../../generated/tsModels/FileModel";
 import { GraphJSONToModelService } from "./graph-json-to-model.service";
 import { TechnologyTagModel } from "../../generated/tsModels/TechnologyTagModel";
+import { map, catchError } from 'rxjs/operators';
 
 @Injectable()
 export class TechnologyTagService extends AbstractService {
@@ -19,8 +20,10 @@ export class TechnologyTagService extends AbstractService {
         let service = this._graphJsonToModelService;
 
         return this._http.get(url)
-            .map(res => res.json())
-            .map(res => <TechnologyTagModel[]>res.map((json) => service.fromJSON(json)))
-            .catch(this.handleError);
+            .pipe(
+                map(res => res.json()),
+                map(res => <TechnologyTagModel[]>res.map((json) => service.fromJSON(json))),
+                catchError(this.handleError)
+            );
     }
 }

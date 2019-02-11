@@ -7,6 +7,7 @@ import {FileModel} from "../../generated/tsModels/FileModel";
 import {GraphJSONToModelService} from "./graph-json-to-model.service";
 import {ClassificationModel} from "../../generated/tsModels/ClassificationModel";
 import {InlineHintModel} from "../../generated/tsModels/InlineHintModel";
+import { catchError, map } from 'rxjs/operators';
 
 @Injectable()
 export class HintService extends AbstractService {
@@ -20,8 +21,10 @@ export class HintService extends AbstractService {
         let service = this._graphJsonToModelService;
 
         return this._http.get(url)
-            .map(res => res.json())
-            .map(res => <InlineHintModel[]>res.map((json) => service.fromJSON(json, InlineHintModel)))
-            .catch(this.handleError);
+            .pipe(
+                map(res => res.json()),
+                map(res => <InlineHintModel[]>res.map((json) => service.fromJSON(json, InlineHintModel))),
+                catchError(this.handleError)
+            );
     }
 }

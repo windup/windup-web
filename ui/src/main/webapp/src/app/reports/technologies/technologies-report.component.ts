@@ -4,11 +4,11 @@ import {ActivatedRoute, Params, Router}   from '@angular/router';
 import {TechReportService, StatsItem} from "./tech-report.service";
 import {NotificationService} from "../../core/notification/notification.service";
 import {utils} from '../../shared/utils';
-import {forkJoin} from "rxjs/observable/forkJoin";
 import {ProjectModel} from "../../generated/tsModels/ProjectModel";
 import {FileModel} from "../../generated/tsModels/FileModel";
 import {FilterApplication, RegisteredApplication} from "../../generated/windup-services";
 import {TechnologyUsageStatisticsModel} from "../../generated/tsModels/TechnologyUsageStatisticsModel";
+import { forkJoin } from 'rxjs';
 
 /**
  * FIXME - NOTE: This is incomplete code and will need to be redone based upon the updated data model,

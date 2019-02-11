@@ -5,6 +5,7 @@ import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
 import {GraphJSONToModelService} from "./graph/graph-json-to-model.service";
 import {BaseModel} from "./graph/base.model";
+import { map, catchError } from 'rxjs/operators';
 
 @Injectable()
 export class GraphService extends AbstractService {
@@ -19,28 +20,32 @@ export class GraphService extends AbstractService {
         let service = this._graphJsonToModelService;
 
         return this.prepareGetRequest(type, execID,  options)
-            .map(data => {
-                if (!Array.isArray(data) || data.length == 0) {
-                    throw new Error("No items returned");
-                }
-
-                return <T>service.fromJSON(data[0]);
-            })
-            .catch(this.handleError);
+            .pipe(
+                map(data => {
+                    if (!Array.isArray(data) || data.length == 0) {
+                        throw new Error("No items returned");
+                    }
+    
+                    return <T>service.fromJSON(data[0]);
+                }),
+                catchError(this.handleError)
+            );
     }
 
     protected getTypeAsArray<T extends BaseModel>(type: string, execID: number, options?: GraphEndpointOptions): Observable<T[]> {
         let service = this._graphJsonToModelService;
 
         return this.prepareGetRequest(type, execID, options)
-            .map(data => {
-                if (!Array.isArray(data)) {
-                    throw new Error("No items returned");
-                }
-
-                return <T[]>service.fromJSONarray(data);
-            })
-            .catch(this.handleError);
+            .pipe(
+                map(data => {
+                    if (!Array.isArray(data)) {
+                        throw new Error("No items returned");
+                    }
+    
+                    return <T[]>service.fromJSONarray(data);
+                }),
+                catchError(this.handleError)
+            );
     }
 
     protected prepareGetRequest(type: string, execID: number, options?: GraphEndpointOptions): Observable<any> {
@@ -58,7 +63,9 @@ export class GraphService extends AbstractService {
         return this._http.get(url, {
             search: params
         })
-            .map(res => res.json());
+        .pipe(
+            map(res => res.json())
+        );
     }
 
     public getPropertiesString(...properties: string[]): string {

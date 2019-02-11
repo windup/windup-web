@@ -12,6 +12,7 @@ import {Constants} from "../constants";
 import {Subject} from "rxjs";
 import {WebSocketSubjectFactory} from "../shared/websocket.factory";
 import {KeycloakService} from "../core/authentication/keycloak.service";
+import { filter, tap } from 'rxjs/operators';
 
 @Injectable()
 export class WindupExecutionService extends AbstractService {
@@ -28,8 +29,11 @@ export class WindupExecutionService extends AbstractService {
         private _keycloakService: KeycloakService
     ) {
         super();
-        this._eventBus.onEvent.filter(event => event.source !== this)
-            .filter(event => event.isTypeOf(DeleteMigrationProjectEvent))
+        this._eventBus.onEvent
+            .pipe(
+                filter(event => event.source !== this),
+                filter(event => event.isTypeOf(DeleteMigrationProjectEvent))
+            )
             .subscribe((event: DeleteMigrationProjectEvent) => this.stopWatchingExecutions(event));
     }
 
@@ -47,10 +51,12 @@ export class WindupExecutionService extends AbstractService {
 
     public execute(analysisContext: AnalysisContext, project: MigrationProject): Observable<WindupExecution> {
         return this._windupService.executeWindupWithAnalysisContext(analysisContext, project)
-            .do(execution => {
-                this._eventBus.fireEvent(new NewExecutionStartedEvent(execution, project, this));
-                this.watchExecutionUpdates(execution, project)
-            });
+            .pipe(
+                tap(execution => {
+                    this._eventBus.fireEvent(new NewExecutionStartedEvent(execution, project, this));
+                    this.watchExecutionUpdates(execution, project)
+                })
+            );
     }
 
     public watchExecutionUpdates(execution: WindupExecution, project: MigrationProject) {

@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {Http, Response} from '@angular/http';
 import {Observable} from 'rxjs';
 import {BaseModel} from "./base.model";
+import { map, catchError } from 'rxjs/operators';
 
 /**
  * Facilitates the data flow between a generic REST endpoint for the graph and the calling methods.
@@ -50,8 +51,10 @@ export class FramesRestClientService
             + `/${directionOut ? 'out' : 'in'}/${query}/${idsOnly}/${limit}/${offset}`;
 
         var responseObservable = this.http.put(url, "")
-            .map(res => <QueryResults<T>> res.json())
-            .catch(this.handleError);
+            .pipe(
+                map(res => <QueryResults<T>> res.json()),
+                catchError(this.handleError)
+            );
 
         return responseObservable;
 
@@ -105,8 +108,10 @@ export class FramesRestClientService
             + `/${directionOut ? 'out' : 'in'}/${id}/`
 
         return this.http.put(url, body)
-            .map(res => res)
-            .catch(this.handleError);
+            .pipe(
+                map(res => res),
+                catchError(this.handleError)
+            );
     }
 
 

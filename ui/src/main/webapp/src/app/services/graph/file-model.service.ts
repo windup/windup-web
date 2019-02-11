@@ -5,6 +5,7 @@ import {AbstractService} from "../../shared/abtract.service";
 import {Constants} from "../../constants";
 import {FileModel} from "../../generated/tsModels/FileModel";
 import {GraphJSONToModelService} from "./graph-json-to-model.service";
+import { map, catchError } from 'rxjs/operators';
 
 @Injectable()
 export class FileModelService extends AbstractService {
@@ -18,16 +19,20 @@ export class FileModelService extends AbstractService {
         let service = this._graphJsonToModelService;
 
         return this._http.get(url)
-            .map(res => res.json())
-            .map(res => <FileModel>service.fromJSON(res))
-            .catch(this.handleError);
+            .pipe(
+                map(res => res.json()),
+                map(res => <FileModel>service.fromJSON(res)),
+                catchError(this.handleError)
+            );
     }
 
     getSource(executionId: number, vertexID: number): Observable<string> {
         let url = `${Constants.GRAPH_REST_BASE}/graph/filemodel/${executionId}/source/${vertexID}`;
 
         return this._http.get(url)
-            .map(res => res.text())
-            .catch(this.handleError);
+            .pipe(
+                map(res => res.text()),
+                catchError(this.handleError)
+            );
     }
 }

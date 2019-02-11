@@ -8,6 +8,7 @@ import {AnalysisContext, MigrationProject, WindupExecution} from "../generated/w
 import {AbstractService} from "../shared/abtract.service";
 import {Cached, getCacheServiceInstance} from "../shared/cache.service";
 import {EventBusService} from "../core/events/event-bus.service";
+import { map, catchError, tap } from 'rxjs/operators';
 
 @Injectable()
 export class WindupService extends AbstractService {
@@ -39,8 +40,10 @@ export class WindupService extends AbstractService {
         let url = Constants.REST_BASE + this.EXECUTIONS_PATH + '/' + executionID;
 
         return this._http.get(url)
-            .map(res => <WindupExecution> res.json())
-            .catch(this.handleError);
+            .pipe(
+                map(res => <WindupExecution> res.json()),
+                catchError(this.handleError)
+            );
     }
 
     public executeWindupWithAnalysisContext(context: AnalysisContext, project: MigrationProject): Observable<WindupExecution> {
@@ -49,18 +52,22 @@ export class WindupService extends AbstractService {
         let body = JSON.stringify(context);
 
         return this._http.post(url, body, this.JSON_OPTIONS)
-            .map(res => <WindupExecution> res.json())
-            .do(res => {
-                getCacheServiceInstance().getSection('execution').clear();
-            })
-            .catch(this.handleError);
+            .pipe(
+                map(res => <WindupExecution> res.json()),
+                tap(res => {
+                    getCacheServiceInstance().getSection('execution').clear();
+                }),
+                catchError(this.handleError)
+            );
     }
 
     @Cached({section: 'execution', cacheItemCallback: WindupService.cacheExecutionList})
     public getAllExecutions(): Observable<WindupExecution[]> {
         return this._http.get(Constants.REST_BASE + this.EXECUTIONS_PATH)
-            .map(res => <WindupExecution[]> res.json())
-            .catch(this.handleError);
+            .pipe(
+                map(res => <WindupExecution[]> res.json()),
+                catchError(this.handleError)
+            );
     }
 
     @Cached({section: 'execution', cacheItemCallback: WindupService.cacheExecutionList})
@@ -68,25 +75,33 @@ export class WindupService extends AbstractService {
         let url = Constants.REST_BASE + this.PROJECT_EXECUTIONS_PATH.replace('{projectId}', projectId.toString());
 
         return this._http.get(url)
-            .map(res => res.json())
-            .catch(this.handleError);
+            .pipe(
+                map(res => res.json()),
+                catchError(this.handleError)
+            );
     }
 
     public getLogData(executionID: number): Observable<string[]> {
         let url = Constants.REST_BASE + this.EXECUTIONS_PATH + '/' + executionID + this.LOGS_PATH;
 
         return this._http.get(url)
-            .map(res => <WindupExecution> res.json())
-            .catch(this.handleError);
+            .pipe(
+                map(res => res.json()),
+                catchError(this.handleError)
+            );
     }
 
     public cancelExecution(execution: WindupExecution): Observable<any> {
         return this._http.post(Constants.REST_BASE + this.EXECUTIONS_PATH + '/' + execution.id + '/cancel' , null)
-            .catch(this.handleError);
+            .pipe(
+                catchError(this.handleError)
+            );
     }
 
     public deleteExecution(execution: WindupExecution): Observable<any> {
         return this._http.delete(Constants.REST_BASE + this.EXECUTIONS_PATH + '/' + execution.id, this.JSON_OPTIONS)
-            .catch(this.handleError);
+            .pipe(
+                catchError(this.handleError)
+            );
     }
 }

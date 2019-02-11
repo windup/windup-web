@@ -1,10 +1,11 @@
 import { Injectable } from "@angular/core";
 import { Http, Headers, RequestOptions } from "@angular/http";
-import { Observable } from "rxjs";
+import { Observable, of } from "rxjs";
 
 
 import { Constants } from "../constants";
 import {AbstractService} from "../shared/abtract.service";
+import { map, tap, catchError } from 'rxjs/operators';
 
 export class TagHierarchyData {
     tagName: string;
@@ -83,14 +84,16 @@ export class TagDataService extends AbstractService {
 
     getTagData(): Observable<TagHierarchyData[]> {
         if (this.cachedTagData)
-            return Observable.of(this.cachedTagData);
+            return of(this.cachedTagData);
 
         let headers = new Headers();
         let options = new RequestOptions({ headers: headers });
 
         return this._http.get(Constants.GRAPH_REST_BASE + "/tag-data", options)
-            .map(res => <TagHierarchyData[]> res.json())
-            .do(tags => this.cacheTagData(tags))
-            .catch(this.handleError);
+            .pipe(
+                map(res => <TagHierarchyData[]> res.json()),
+                tap(tags => this.cacheTagData(tags)),
+                catchError(this.handleError)
+            );
     }
 }

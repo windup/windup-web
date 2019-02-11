@@ -7,7 +7,7 @@ import {DatePipe} from "@angular/common";
 import {AppComponent} from "./components/app.component";
 import {AppRoutingModule} from "./app-routing.module";
 
-import {MomentModule} from "angular2-moment";
+import {MomentModule} from "ngx-moment";
 import {FileUploader, FileUploadModule} from "ng2-file-upload";
 
 import {InViewport} from "./components/in-viewport.directive";

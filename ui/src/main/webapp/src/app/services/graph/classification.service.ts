@@ -5,6 +5,7 @@ import {AbstractService} from "../../shared/abtract.service";
 import {Constants} from "../../constants";
 import {GraphJSONToModelService} from "./graph-json-to-model.service";
 import {ClassificationModel} from "../../generated/tsModels/ClassificationModel";
+import { map, catchError } from 'rxjs/operators';
 
 @Injectable()
 export class ClassificationService extends AbstractService {
@@ -18,8 +19,10 @@ export class ClassificationService extends AbstractService {
         let service = this._graphJsonToModelService;
 
         return this._http.get(url)
-            .map(res => res.json())
-            .map(res => <ClassificationModel[]>res.map((json) => service.fromJSON(json, ClassificationModel)))
-            .catch(this.handleError);
+            .pipe(
+                map(res => res.json()),
+                map(res => <ClassificationModel[]>res.map((json) => service.fromJSON(json, ClassificationModel))),
+                catchError(this.handleError)
+            );
     }
 }

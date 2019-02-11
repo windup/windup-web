@@ -1,12 +1,13 @@
 import {GraphJSONToModelService} from "./graph-json-to-model.service";
-import {Observable} from 'rxjs';
+import {Observable, of} from 'rxjs';
 
 import {Http, Response} from "@angular/http";
 import {StaticCache} from "./cache";
+import { map } from 'rxjs/operators';
 
 
-let emptyArrayObs = Observable.of([]);
-let nullObs = Observable.of(null);
+let emptyArrayObs = of([]);
+let nullObs = of(null);
 
 /**
  * @GraphAdjacency decorator, which handles TypeScript Frames models' property resolving.
@@ -57,15 +58,18 @@ export function GraphAdjacency (
             let httpService: Http = this.http;
             let returnArray_ = returnArray; // Otherwise returnArray sticks with it's first value for all calls.
             function fetcher(url: string): Observable<any> {
-                return httpService.get(url).map((response: Response) => {
-                    if (!response)
-                        return console.error("Fetching URL returned null: " + url), null;
-                    let responseJson: any[] = response.json();
-                    if (!Array.isArray(responseJson))
-                        throw new Error("Graph REST should return an array of vertices, returned: " + JSON.stringify(responseJson));
-                    let items: any[] = graphService.fromJSONarray(responseJson);
-                    return returnArray_ ? items : items[0];
-                });
+                return httpService.get(url)
+                .pipe(
+                    map((response: Response) => {
+                        if (!response)
+                            return console.error("Fetching URL returned null: " + url), null;
+                        let responseJson: any[] = response.json();
+                        if (!Array.isArray(responseJson))
+                            throw new Error("Graph REST should return an array of vertices, returned: " + JSON.stringify(responseJson));
+                        let items: any[] = graphService.fromJSONarray(responseJson);
+                        return returnArray_ ? items : items[0];
+                    })
+                );
             }
 
             // If data is a link, return a result of a service call.
@@ -109,12 +113,12 @@ export function GraphAdjacency (
                 break;
                 // @InVertex/@OutVertex: getter called on edge model; it only has _in and _out reference (no need for specfic name).
                 case "IN_V":
-                    return Observable.of(this._in);
+                    return of(this._in);
                 case "OUT_V":
-                    return Observable.of(this._out);
+                    return of(this._out);
             }
 
-            relations.observable = Observable.of(models);
+            relations.observable = of(models);
             return relations.observable;
         };
     };

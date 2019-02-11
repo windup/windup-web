@@ -4,6 +4,7 @@ import {Http} from '@angular/http';
 import {Constants} from "../constants";
 import {AbstractService} from "../shared/abtract.service";
 import {Observable} from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
 @Injectable()
 export class FileService extends AbstractService {
@@ -15,14 +16,18 @@ export class FileService extends AbstractService {
 
     pathExists(path: string): Observable<boolean> {
         return this._http.post(Constants.REST_BASE + this.PATH_EXISTS_URL, path, this.JSON_OPTIONS)
-            .map(res => <boolean> res.json())
-            .catch(this.handleError);
+            .pipe(
+                map(res => <boolean> res.json()),
+                catchError(this.handleError)
+            );
     }
 
     queryServerPathTargetType(path: string): Observable<PathTargetType> {
         return this._http.post(Constants.REST_BASE + "/file/pathTargetType", path, this.JSON_OPTIONS)
-            .map(res => <PathTargetType> res.json())
-            .catch(this.handleError);
+            .pipe(
+                map(res => <PathTargetType> res.json()),
+                catchError(this.handleError)
+            );
     }
 }
 
