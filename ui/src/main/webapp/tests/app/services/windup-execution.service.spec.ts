@@ -7,15 +7,14 @@ import {AnalysisContext, MigrationProject, WindupExecution} from "../../../src/a
 import {NewExecutionStartedEvent} from "../../../src/app/core/events/windup-event";
 import {Observable, Subject, Subscription, of} from "rxjs";
 import {WebSocketSubjectFactory} from "../../../src/app/shared/websocket.factory";
-import {ISubscription} from "rxjs/Subscription";
 import {Subscribable} from "rxjs";
 
-export class WebSocketMock<T> implements Subscribable<T>, ISubscription
+export class WebSocketMock<T> extends Subscription implements Subscribable<T>
 {
     closed: boolean;
     subject: Subject<T> = new Subject<T>();
 
-    subscribe(next?: (value: T) => void, error?: (error: any) => void, complete?: () => void): Subscription {
+    subscribe(next?: any, error?: (error: any) => void, complete?: () => void): Subscription {
         return this.subject.subscribe(next, error, complete);
     }
 

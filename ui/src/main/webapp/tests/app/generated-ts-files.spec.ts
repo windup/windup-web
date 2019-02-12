@@ -5,7 +5,6 @@ import {GraphJSONToModelService} from '../../src/app/services/graph/graph-json-t
 import {DiscriminatorMappingTestData} from './models/discriminator-mapping-test-data';
 import {TestGraphData} from './models/test-graph-data';
 
-import 'rxjs/Rx';
 import {Observable} from 'rxjs';
 import 'rxjs/add/operator/toPromise';
 

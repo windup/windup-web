@@ -1,6 +1,5 @@
 import {async, inject} from '@angular/core/testing';
 import {Http} from "@angular/http";
-import 'rxjs/Rx';
 import {Observable} from 'rxjs';
 import 'rxjs/add/operator/toPromise';
 

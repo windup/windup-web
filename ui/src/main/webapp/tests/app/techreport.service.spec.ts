@@ -5,8 +5,6 @@ import {
 import {MockBackend, MockConnection} from "@angular/http/testing";
 import {TestBed, async, inject} from '@angular/core/testing';
 
-import 'rxjs/Rx';
-
 import {Constants} from '../../src/app/constants';
 import {TechReportService} from "../../src/app/reports/technologies/tech-report.service";
 import {TECH_REPORT_DATA} from "./techreport-data";

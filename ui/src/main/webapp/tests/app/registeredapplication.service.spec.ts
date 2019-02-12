@@ -6,8 +6,6 @@ import {
 import {TestBed, async, inject} from '@angular/core/testing';
 
 
-import 'rxjs/Rx';
-
 import {Constants} from '../../src/app/constants';
 
 import {KeyCloakServiceMock} from "./mocks/keycloak-service.mock";
@@ -138,7 +136,7 @@ describe("Registered Application Service Test", () => {
 
             instance = new RegisteredApplicationService(null, null, jasmine.createSpyObj('multipartUploader', [
                 'setOptions'
-            ]), null, schedulerMock, new NgZone(false));
+            ]), null, schedulerMock, new NgZone({ enableLongStackTrace: false }));
             spyOn(RegisteredApplicationService.prototype, 'getPackageMetadata').and.callFake(getPackageMetadata);
         });
 

@@ -5,7 +5,6 @@ import {
 
 import {TestBed, async, inject} from '@angular/core/testing';
 
-import 'rxjs/Rx';
 
 import {Constants} from '../../src/app/constants';
 
