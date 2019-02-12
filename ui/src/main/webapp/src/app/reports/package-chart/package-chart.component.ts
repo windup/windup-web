@@ -12,7 +12,7 @@ import { BaseChartComponent, calculateViewDimensions, ViewDimensions, formatLabe
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PackageChartComponent extends BaseChartComponent implements OnChanges, OnDestroy, AfterViewInit {
+export class PackageChartComponent extends BaseChartComponent implements OnChanges, OnDestroy {
 
     @Input() view;
     @Input() results;

@@ -55,12 +55,12 @@ export class HardcodedIPService extends GraphService {
                 // Get the file information
                 mergeMap(dto => {
                     let locationInfo = <FileLocationModel>this._graphJsonToModelService.fromJSON(dto.ipModel.data, FileLocationModel);
-                    return locationInfo.file.map(file => {
+                    return locationInfo.file.pipe(map(file => {
                         dto.fileModel = file;
                         dto.filename = file.fileName;
                         dto.sourceVertexID = file.vertexId;
                         return dto;
-                    });
+                    }));
                 }),
 
                 // Get the Java Class information (if available)
@@ -71,7 +71,7 @@ export class HardcodedIPService extends GraphService {
                         return of(dto);
                     }
 
-                    return javaClassFile.javaClass.map(javaClass => {
+                    return javaClassFile.javaClass.pipe(map(javaClass => {
                         dto.javaClassModel = javaClass;
 
                         if (javaClass != null)
@@ -79,12 +79,12 @@ export class HardcodedIPService extends GraphService {
 
                         dto.prettyName = this.getPrettyName(dto.ipModel, javaClass);
                         return dto;
-                    })
+                    }))
                 }),
 
-                reduce((previousValue, currentValue, currentIndex) => {
+                reduce((previousValue: any, currentValue, currentIndex) => {                    
                     previousValue.push(currentValue);
-                    return previousValue;
+                    return previousValue;                    
                 }, [])
             );
     }
