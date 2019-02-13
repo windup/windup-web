@@ -151,11 +151,11 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
         }
     }
 
-    private getAppPathToRegisterControl(): AbstractControl {
+    protected getAppPathToRegisterControl(): AbstractControl {
         return this.registrationForm.get('appPathToRegister');
     }
 
-    private getIsDirWithExplodedAppControl(): AbstractControl {
+    protected getIsDirWithExplodedAppControl(): AbstractControl {
         return this.registrationForm.get('isDirWithExplodedApp');
     }
 
