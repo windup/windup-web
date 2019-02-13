@@ -52,21 +52,7 @@ export class ReportFilterComponent implements OnInit, OnDestroy {
                 }
             }
         };
-    }
 
-    private getDefaultFilter(): ReportFilter {
-        return {
-            id: null,
-            selectedApplications: [],
-            includeTags: [],
-            excludeTags: [],
-            includeCategories: [],
-            excludeCategories: [],
-            enabled: false
-        };
-    }
-
-    ngOnInit(): void {
         this.routerSubscriptions.push(this._router.events
             .pipe(
                 filter(event => event instanceof NavigationEnd)
@@ -100,6 +86,22 @@ export class ReportFilterComponent implements OnInit, OnDestroy {
                     });
             }
         }));
+    }
+
+    private getDefaultFilter(): ReportFilter {
+        return {
+            id: null,
+            selectedApplications: [],
+            includeTags: [],
+            excludeTags: [],
+            includeCategories: [],
+            excludeCategories: [],
+            enabled: false
+        };
+    }
+
+    ngOnInit(): void {
+        
     }
 
     private areApplicationsInFilterUpToDate(): boolean {

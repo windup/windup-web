@@ -53,9 +53,7 @@ export class ExecutionApplicationListComponent extends RoutedComponent implement
         private _applicationDetailsService:ApplicationDetailsService,
     ) {
         super(_router, _activatedRoute, _routeFlattener);
-    }
 
-    ngOnInit(): any {
         this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
             let executionId = parseInt(flatRouteData.params['executionId']);
             this.execID = executionId;
@@ -65,6 +63,10 @@ export class ExecutionApplicationListComponent extends RoutedComponent implement
                     this.loadExecution(execution);
                 });
         }));
+    }
+
+    ngOnInit(): any {
+        
     }
 
     loadExecution(execution: WindupExecution) {

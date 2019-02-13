@@ -18,9 +18,6 @@ export class BreadCrumbsComponent implements OnInit, OnDestroy {
         private _activatedRoute: ActivatedRoute,
         private _breadCrumbsService: BreadCrumbsService
     ) {
-    }
-
-    ngOnInit(): void {
         this.subscription = this._router.events
         .pipe(
             filter(event => event instanceof NavigationEnd)
@@ -28,6 +25,10 @@ export class BreadCrumbsComponent implements OnInit, OnDestroy {
         .subscribe(_ => {
             this.breadCrumbLinks = this._breadCrumbsService.getBreadCrumbLinks(this._activatedRoute.snapshot);
         });
+    }
+
+    ngOnInit(): void {
+        
     }
 
     ngOnDestroy(): void {
