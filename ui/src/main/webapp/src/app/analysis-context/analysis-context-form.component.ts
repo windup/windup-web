@@ -133,15 +133,6 @@ export class AnalysisContextFormComponent extends FormComponent
         this.initializeAnalysisContext();
 
 
-    }
-
-    ngOnInit() {
-        this.saveInProgress = false;
-
-        this._configurationOptionsService.getAll().subscribe((options: ConfigurationOption[]) => {
-            this.configurationOptions = options;
-        });
-
         this.routerSubscription = this._router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(_ => {
             let flatRouteData = this._routeFlattener.getFlattenedRouteData(this._activatedRoute.snapshot);
             this.flatRouteData = flatRouteData;
@@ -178,6 +169,14 @@ export class AnalysisContextFormComponent extends FormComponent
 
             this.isInWizard = flatRouteData.data.hasOwnProperty('wizard') && flatRouteData.data['wizard'];
         });
+    }
+
+    ngOnInit() {
+        this.saveInProgress = false;
+
+        this._configurationOptionsService.getAll().subscribe((options: ConfigurationOption[]) => {
+            this.configurationOptions = options;
+        });        
 
         this.cancelDialog.confirmed.subscribe(() => {
             this.cleanseAfterDialogConfirm();

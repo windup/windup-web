@@ -55,13 +55,7 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
         private _http:Http
     ) {
         super(_router, _activatedRoute, _routeFlattener);
-    }
 
-    getColorScheme(len) {
-        return calculateColorScheme(len);
-    }
-
-    ngOnInit(): void {
         this.addSubscription(this.flatRouteLoaded.subscribe(flattenedRoute => {
             this.loadFilterFromRouteData(flattenedRoute);
 
@@ -83,6 +77,14 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
                 error => this._notificationService.error(utils.getErrorMessage(error))
             );
         }));
+    }
+
+    getColorScheme(len) {
+        return calculateColorScheme(len);
+    }
+
+    ngOnInit(): void {
+        
     }
 
     selectedProject(treeData:TreeData) {

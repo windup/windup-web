@@ -40,9 +40,7 @@ export class ExecutionDetailComponent extends RoutedComponent implements OnInit,
         private _zone: NgZone
     ) {
         super(_router, _activatedRoute, _routeFlattener);
-    }
 
-    ngOnInit(): void {
         this.subscriptions.push(this.flatRouteLoaded.subscribe(flatRouteData => {
             let executionId = +flatRouteData.params.executionId;
 
@@ -67,7 +65,9 @@ export class ExecutionDetailComponent extends RoutedComponent implements OnInit,
                     });
             });
         }));
+    }
 
+    ngOnInit(): void {
         this.currentTimeTimer = this._schedulerService.setInterval(() => {
             this._zone.run(() => {
                 this.currentTime = new Date().getTime();

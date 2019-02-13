@@ -88,15 +88,43 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
             // JEXL would be needed for this.
             //rejectMessage: "File was rejected: '{item.name}'\nOnly Java archives are accepted {filter.suffixes.join(', ')})",
         });
-    }
 
-    ngOnInit(): any {
+
         this._eventBus.onEvent
             .pipe(
                 filter(event => event.isTypeOf(UpdateMigrationProjectEvent))
             )
             .subscribe((event: UpdateMigrationProjectEvent) => this.project = event.migrationProject);
 
+        this.routerSubscription = this._router.events
+            .pipe(
+                filter(event => event instanceof NavigationEnd)
+            )
+            .subscribe(_ => {
+                let flatRouteData = this._routeFlattener.getFlattenedRouteData(this._activatedRoute.snapshot);
+
+                this.isInWizard = flatRouteData.data.hasOwnProperty('wizard') && flatRouteData.data['wizard'];
+
+                if (!flatRouteData.data['project']) {
+                    throw new Error('Project must be specified');
+                }
+
+                this.project = flatRouteData.data['project'];
+                this._migrationProjectService.monitorProject(this.project);
+
+                let uploadUrl = Constants.REST_BASE + RegisteredApplicationService.UPLOAD_URL;
+                uploadUrl = uploadUrl.replace("{projectId}", this.project.id.toString());
+
+                this.multipartUploader.setOptions({
+                    url: uploadUrl,
+                    method: 'POST',
+                    disableMultipart: false,
+                    removeAfterUpload: false // cannot use this, there is a bug and it always removes items even for failure
+                });
+            });
+    }
+
+    ngOnInit(): any {
         this.registrationForm = this._formBuilder.group({
             // Name under which the control is registered: [default value, Validator, AsyncValidator]
             appPathToRegister: ["",
@@ -107,34 +135,7 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
             ],
             //isDirWithAppsCheckBox: [], // TODO: Validate if appPathToRegister has a directory if this is true.
             isDirWithExplodedApp: [],
-        });
-
-        this.routerSubscription = this._router.events
-        .pipe(
-            filter(event => event instanceof NavigationEnd)
-        )
-        .subscribe(_ => {
-            let flatRouteData = this._routeFlattener.getFlattenedRouteData(this._activatedRoute.snapshot);
-
-            this.isInWizard = flatRouteData.data.hasOwnProperty('wizard') && flatRouteData.data['wizard'];
-
-            if (!flatRouteData.data['project']) {
-                throw new Error('Project must be specified');
-            }
-
-            this.project = flatRouteData.data['project'];
-            this._migrationProjectService.monitorProject(this.project);
-
-            let uploadUrl = Constants.REST_BASE + RegisteredApplicationService.UPLOAD_URL;
-            uploadUrl = uploadUrl.replace("{projectId}", this.project.id.toString());
-
-            this.multipartUploader.setOptions({
-                url: uploadUrl,
-                method: 'POST',
-                disableMultipart: false,
-                removeAfterUpload: false // cannot use this, there is a bug and it always removes items even for failure
-            });
-        });
+        });        
     }
 
     ngOnDestroy(): void {

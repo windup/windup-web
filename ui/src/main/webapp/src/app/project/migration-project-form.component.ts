@@ -38,9 +38,7 @@ export class MigrationProjectFormComponent extends FormComponent implements OnIn
         private _routeFlattener: RouteFlattenerService
     ) {
         super();
-    }
-
-    ngOnInit(): void {
+        
         this.routerSubscription = this._router.events
         .pipe(
             filter(event => event instanceof NavigationEnd)
@@ -63,6 +61,10 @@ export class MigrationProjectFormComponent extends FormComponent implements OnIn
 
             this.isInWizard = flatRouteData.data.hasOwnProperty('wizard') && flatRouteData.data['wizard'];
         });
+    }
+
+    ngOnInit(): void {
+        
     }
 
     ngOnDestroy(): void {

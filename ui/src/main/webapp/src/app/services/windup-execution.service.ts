@@ -71,11 +71,13 @@ export class WindupExecutionService extends AbstractService {
             this.executionSocket.set(execution.id, socket);
 
             this._keycloakService.getToken().subscribe(token => {
-                socket.next(JSON.stringify({
-                    authentication: {
-                        token: token
-                    }
-                }) as any);
+                socket.next(JSON.parse(
+                    JSON.stringify({
+                        authentication: {
+                            token: token
+                        }
+                    })
+                ));
             });
         }
 

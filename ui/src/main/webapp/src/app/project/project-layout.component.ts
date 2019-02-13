@@ -37,9 +37,7 @@ export class ProjectLayoutComponent extends RoutedComponent implements OnInit, O
         protected _eventBus: EventBusService,
     ) {
         super(_router, _activatedRoute, _routeFlattener);
-    }
 
-    ngOnInit(): void {
         this.addSubscription(this._eventBus.onEvent
             .pipe(
                 filter(event => event.isTypeOf(UpdateMigrationProjectEvent))
@@ -51,6 +49,9 @@ export class ProjectLayoutComponent extends RoutedComponent implements OnInit, O
         );
 
         this.addSubscription(this.flatRouteLoaded.subscribe(flattenedRoute => this.loadDataFromRoute(flattenedRoute)));
+    }
+
+    ngOnInit(): void {
         this.loadProjects();
     }
 
