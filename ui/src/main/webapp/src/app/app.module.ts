@@ -1,6 +1,6 @@
 import {NgModule} from "@angular/core";
 import {BrowserModule} from "@angular/platform-browser";
-import {Http} from "@angular/http";
+import {HttpClient} from "@angular/common/http";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {DatePipe} from "@angular/common";
 
@@ -88,7 +88,7 @@ initializeModelMappingData();
         {
             provide: GraphJSONToModelService,
             useFactory: createGraphJSONToModelService,
-            deps: [Http]
+            deps: [HttpClient]
         },
         DatePipe
     ],
@@ -105,7 +105,7 @@ export function createFileUploader(_keycloakService:KeycloakService) {
     return fileUploader;
 }
 
-export function createGraphJSONToModelService(http: Http) {
+export function createGraphJSONToModelService(http: HttpClient) {
     return new GraphJSONToModelService(http, null);
 }
 

@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {Headers, Http, RequestOptions} from "@angular/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 
 import {Constants} from "../constants";
 import {MigrationProject} from "../generated/windup-services";
@@ -27,7 +27,7 @@ export class MigrationProjectService extends AbstractService {
     private monitoredProjects = new Map<number, MigrationProject>();
     private deletedProjects = new Map<number, MigrationProject>();
 
-    constructor (private _http: Http, private _eventBus: EventBusService) {
+    constructor (private _http: HttpClient, private _eventBus: EventBusService) {
         super();
 
         this._eventBus.onEvent
@@ -79,9 +79,8 @@ export class MigrationProjectService extends AbstractService {
     create(migrationProject: MigrationProject): Observable<MigrationProject> {
         let body = JSON.stringify(migrationProject);
 
-        return this._http.put(Constants.REST_BASE + this.CREATE_MIGRATION_PROJECT_URL, body, this.JSON_OPTIONS)
+        return this._http.put<MigrationProject>(Constants.REST_BASE + this.CREATE_MIGRATION_PROJECT_URL, body, this.JSON_OPTIONS)
             .pipe(
-                map(res => <MigrationProject> res.json()),
                 catchError(this.handleError)
             );
     }
@@ -89,9 +88,8 @@ export class MigrationProjectService extends AbstractService {
     update(migrationProject: MigrationProject): Observable<MigrationProject> {
         let body = JSON.stringify(migrationProject);
 
-        return this._http.put(Constants.REST_BASE + this.UPDATE_MIGRATION_PROJECT_URL, body, this.JSON_OPTIONS)
+        return this._http.put<MigrationProject>(Constants.REST_BASE + this.UPDATE_MIGRATION_PROJECT_URL, body, this.JSON_OPTIONS)
             .pipe(
-                map(res => <MigrationProject> res.json()),
                 catchError(this.handleError)
             );
     }
@@ -105,17 +103,16 @@ export class MigrationProjectService extends AbstractService {
 
         let body = JSON.stringify(migrationProject);
 
-        let options = new RequestOptions({
+        let options = {
             body: body,
-            headers: new Headers()
-        });
+            headers: new HttpHeaders()
+        };
 
         options.headers.append('Content-Type', 'application/json');
         options.headers.append('Accept', 'application/json');
 
-        return this._http.delete(Constants.REST_BASE + this.DELETE_MIGRATION_PROJECT_URL, options)
+        return this._http.delete<void>(Constants.REST_BASE + this.DELETE_MIGRATION_PROJECT_URL, options)
             .pipe(
-                map(res => res.json()),
                 tap(res => this._eventBus.fireEvent(new DeleteMigrationProjectEvent(migrationProject, this))),
                 catchError(this.handleError),
                 finalize(() => {
@@ -129,18 +126,16 @@ export class MigrationProjectService extends AbstractService {
         if (!isNumber(id)) {
             throw new Error("Not a project ID: " + id);
         }
-        return this._http.get(Constants.REST_BASE + this.GET_MIGRATION_PROJECT_URL + "/" + id)
+        return this._http.get<MigrationProject>(Constants.REST_BASE + this.GET_MIGRATION_PROJECT_URL + "/" + id)
             .pipe(
-                map(res => <MigrationProject> res.json()),
                 catchError(this.handleError)
             );
     }
 
     @Cached('project', {minutes: 1})
     getAll(): Observable<ExtendedMigrationProject[]> {
-        return this._http.get(Constants.REST_BASE + this.GET_MIGRATION_PROJECTS_URL)
+        return this._http.get<ProjectListItem[]>(Constants.REST_BASE + this.GET_MIGRATION_PROJECTS_URL)
             .pipe(
-                map(res => <ProjectListItem[]> res.json()),
                 // The consuming code still sees MigrationProject, only with .appCount added.
                 map(entries => entries.map(entry => {
                     let migrationProject = Object.assign({}, entry.migrationProject);
@@ -156,9 +151,8 @@ export class MigrationProjectService extends AbstractService {
     }
 
     deleteProvisionalProjects(): Observable<void> {
-        return this._http.delete(Constants.REST_BASE + this.DELETE_PROVISIONAL_PROJECTS_URL)
+        return this._http.delete<void>(Constants.REST_BASE + this.DELETE_PROVISIONAL_PROJECTS_URL)
             .pipe(
-                map(res => res.json()),
                 catchError(this.handleError)
             );
     }
@@ -172,9 +166,8 @@ export class MigrationProjectService extends AbstractService {
     }
 
     getIdByName(name: string): Observable<number> | null {
-        return this._http.get(Constants.REST_BASE + this.GET_ID_BY_NAME_URL + "/" + encodeURIComponent(name))
+        return this._http.get<number>(Constants.REST_BASE + this.GET_ID_BY_NAME_URL + "/" + encodeURIComponent(name))
             .pipe(
-                map(res => <number> res.json()),
                 catchError(this.handleError)
             );
     }

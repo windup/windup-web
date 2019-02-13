@@ -11,6 +11,9 @@ import {LoadingSomethingFailedEvent, LoadingSomethingFinishedEvent, LoadingSomet
     from "../events/windup-event";
 import { mergeMap, tap } from 'rxjs/operators';
 
+/**
+ * @deprecated Use {TokenInterceptor} instead
+ */
 @Injectable()
 export class WindupHttpService extends Http {
     constructor(

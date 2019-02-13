@@ -1,5 +1,5 @@
 import {AbstractService} from "../../shared/abtract.service";
-import {Http, Response} from "@angular/http";
+import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {Injectable} from "@angular/core";
 import {Constants} from "../../constants";
@@ -12,7 +12,7 @@ import { map, catchError } from 'rxjs/operators';
 export class DependenciesService extends AbstractService {
     private GET_DEPENDENCIES_URL = Constants.GRAPH_REST_BASE +  '/graph/{executionId}/dependencies';
 
-    constructor (private _http: Http, private _graphJsonToModelService: GraphJSONToModelService<any>) {
+    constructor (private _http: HttpClient, private _graphJsonToModelService: GraphJSONToModelService<any>) {
         super();
     }
 
@@ -40,9 +40,8 @@ export class DependenciesService extends AbstractService {
     public getDependencies(executionId: number): Observable<any> {
         let url = this.GET_DEPENDENCIES_URL.replace('{executionId}', executionId.toString());
 
-        return this._http.get(url)
+        return this._http.get<any>(url)
             .pipe(
-                map(res => res.json()),
                 catchError(this.handleError)
             );
     }

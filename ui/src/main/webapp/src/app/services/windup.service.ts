@@ -1,6 +1,6 @@
 ///<reference path="../shared/cache.service.ts"/>
 import {Injectable} from '@angular/core';
-import {Http} from '@angular/http';
+import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 
 import {Constants} from "../constants";
@@ -17,7 +17,7 @@ export class WindupService extends AbstractService {
     private LOGS_PATH = '/logs';
     private PROJECT_EXECUTIONS_PATH = '/windup/by-project/{projectId}';
 
-    constructor (private _http: Http, private _eventBus: EventBusService) {
+    constructor (private _http: HttpClient, private _eventBus: EventBusService) {
         super();
     }
 
@@ -39,9 +39,8 @@ export class WindupService extends AbstractService {
     public getExecution(executionID: number): Observable<WindupExecution> {
         let url = Constants.REST_BASE + this.EXECUTIONS_PATH + '/' + executionID;
 
-        return this._http.get(url)
+        return this._http.get<WindupExecution>(url)
             .pipe(
-                map(res => <WindupExecution> res.json()),
                 catchError(this.handleError)
             );
     }
@@ -51,9 +50,8 @@ export class WindupService extends AbstractService {
 
         let body = JSON.stringify(context);
 
-        return this._http.post(url, body, this.JSON_OPTIONS)
+        return this._http.post<WindupExecution>(url, body, this.JSON_OPTIONS)
             .pipe(
-                map(res => <WindupExecution> res.json()),
                 tap(res => {
                     getCacheServiceInstance().getSection('execution').clear();
                 }),
@@ -63,9 +61,8 @@ export class WindupService extends AbstractService {
 
     @Cached({section: 'execution', cacheItemCallback: WindupService.cacheExecutionList})
     public getAllExecutions(): Observable<WindupExecution[]> {
-        return this._http.get(Constants.REST_BASE + this.EXECUTIONS_PATH)
+        return this._http.get<WindupExecution[]>(Constants.REST_BASE + this.EXECUTIONS_PATH)
             .pipe(
-                map(res => <WindupExecution[]> res.json()),
                 catchError(this.handleError)
             );
     }
@@ -74,9 +71,8 @@ export class WindupService extends AbstractService {
     public getProjectExecutions(projectId: number): Observable<WindupExecution[]> {
         let url = Constants.REST_BASE + this.PROJECT_EXECUTIONS_PATH.replace('{projectId}', projectId.toString());
 
-        return this._http.get(url)
+        return this._http.get<WindupExecution[]>(url)
             .pipe(
-                map(res => res.json()),
                 catchError(this.handleError)
             );
     }
@@ -84,9 +80,8 @@ export class WindupService extends AbstractService {
     public getLogData(executionID: number): Observable<string[]> {
         let url = Constants.REST_BASE + this.EXECUTIONS_PATH + '/' + executionID + this.LOGS_PATH;
 
-        return this._http.get(url)
+        return this._http.get<string[]>(url)
             .pipe(
-                map(res => res.json()),
                 catchError(this.handleError)
             );
     }

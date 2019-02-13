@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {Http} from "@angular/http";
+import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {AbstractService} from "../../shared/abtract.service";
 import {Constants} from "../../constants";
@@ -18,7 +18,7 @@ import { map, catchError } from 'rxjs/operators';
 @Injectable()
 export class ApplicationDetailsService extends AbstractService {
 
-    constructor(private _http: Http) {
+    constructor(private _http: HttpClient) {
         super();
     }
 
@@ -28,9 +28,8 @@ export class ApplicationDetailsService extends AbstractService {
 
         let serializedFilter = this.serializeFilter(filter);
 
-        return <any>this._http.post(url, serializedFilter, this.JSON_OPTIONS)
+        return <any>this._http.post<ApplicationDetailsDTO>(url, serializedFilter, this.JSON_OPTIONS)
             .pipe(
-                map(res => res.json()),
                 map((res:ApplicationDetailsDTO) => {
                     res.traversals = res.traversals.map(traversal => {
                         return this.mapTraversal(res, traversal);

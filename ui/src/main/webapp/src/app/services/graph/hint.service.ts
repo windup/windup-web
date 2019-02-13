@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {Http} from "@angular/http";
+import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {AbstractService} from "../../shared/abtract.service";
 import {Constants} from "../../constants";
@@ -12,7 +12,7 @@ import { catchError, map } from 'rxjs/operators';
 @Injectable()
 export class HintService extends AbstractService {
 
-    constructor(private _http: Http, private _graphJsonToModelService: GraphJSONToModelService<any>) {
+    constructor(private _http: HttpClient, private _graphJsonToModelService: GraphJSONToModelService<any>) {
         super();
     }
 
@@ -20,9 +20,8 @@ export class HintService extends AbstractService {
         let url = `${Constants.GRAPH_REST_BASE}/graph/hints/${executionId}/by-file/${fileModelID}`;
         let service = this._graphJsonToModelService;
 
-        return this._http.get(url)
+        return this._http.get<InlineHintModel[]>(url)
             .pipe(
-                map(res => res.json()),
                 map(res => <InlineHintModel[]>res.map((json) => service.fromJSON(json, InlineHintModel))),
                 catchError(this.handleError)
             );

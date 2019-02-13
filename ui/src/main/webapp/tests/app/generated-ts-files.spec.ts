@@ -8,13 +8,13 @@ import {TestGraphData} from './models/test-graph-data';
 import {Observable} from 'rxjs';
 import 'rxjs/add/operator/toPromise';
 
-import {Http} from "@angular/http";
+import {HttpClient} from "@angular/common/http";
 import {FileModel} from "../../src/app/generated/tsModels/FileModel";
 
 describe('Generated TS Files', () => {
 
     it ('filemodels - fromJSON()', () => {
-        let http = <Http>{
+        let http = <HttpClient>{
             get(url: string) {
                 return Observable.create(function(observer) {
                     let value: any = [ TestGraphData.TEST_FILE_MODELS[0] ];

@@ -6,7 +6,7 @@ import {
 import {ActivatedRoute, Router} from "@angular/router";
 import {utils} from "../../shared/utils";
 import {NotificationService} from "../../core/notification/notification.service";
-import {Http} from "@angular/http";
+import {HttpClient} from "@angular/common/http";
 import {compareTraversals, compareTraversalChildFiles} from "../file-path-comparators";
 import {TagFilterService} from "../tag-filter.service";
 import {TypeReferenceStatisticsService} from "./type-reference-statistics.service";
@@ -52,7 +52,7 @@ export class ApplicationDetailsComponent extends FilterableReportComponent imple
         private _applicationDetailsService:ApplicationDetailsService,
         private _notificationService:NotificationService,
         private _tagDataService:TagDataService,
-        private _http:Http
+        private _http:HttpClient
     ) {
         super(_router, _activatedRoute, _routeFlattener);
 

@@ -1,8 +1,3 @@
-import {
-    HttpModule, RequestMethod, ResponseOptions, Response, BaseRequestOptions, Http,
-    ConnectionBackend
-} from '@angular/http';
-import {MockBackend, MockConnection} from "@angular/http/testing";
 import {TestBed, async, inject} from '@angular/core/testing';
 
 import {Constants} from '../../src/app/constants';
@@ -10,6 +5,8 @@ import {TechReportService} from "../../src/app/reports/technologies/tech-report.
 import {TECH_REPORT_DATA} from "./techreport-data";
 import {initializeModelMappingData} from "../../src/app/generated/tsModels/discriminator-mapping-data";
 import {GraphJSONToModelService} from "../../src/app/services/graph/graph-json-to-model.service";
+import {HttpClient, HttpClientModule} from "@angular/common/http";
+import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 initializeModelMappingData();
 
@@ -17,22 +14,15 @@ describe("TechReportService Test", () => {
     beforeEach(() => {
         TestBed.configureTestingModule(
             {
-                imports: [HttpModule],
+                imports: [HttpClientModule, HttpClientTestingModule ],
                 providers: [
-                    Constants, TechReportService, MockBackend, BaseRequestOptions,
-                    {
-                        provide: Http,
-                        useFactory: (backend: ConnectionBackend, defaultOptions: BaseRequestOptions) => {
-                            return new Http(backend, defaultOptions);
-                        },
-                        deps: [MockBackend, BaseRequestOptions]
-                    },
+                    Constants, TechReportService,
                     {
                         provide: GraphJSONToModelService,
-                        useFactory: (http: Http) => {
+                        useFactory: (http: HttpClient) => {
                             return new GraphJSONToModelService<any>(http, null);
                         },
-                        deps: [ Http ]
+                        deps: [ HttpClient ]
                     }
                 ]
             }

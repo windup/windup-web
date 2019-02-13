@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Http} from '@angular/http';
+import {HttpClient} from '@angular/common/http';
 
 import {Constants} from "../constants";
 import {RulesPath, RuleProviderEntity, RulesPathType} from "../generated/windup-services";
@@ -25,7 +25,7 @@ export class RuleService extends AbstractService {
 
     private _multipartUploader: FileUploaderWrapper;
 
-    constructor (private _http: Http, private _fileUploaderFactory: FileUploaderFactory, private _keycloakService: KeycloakService) {
+    constructor (private _http: HttpClient, private _fileUploaderFactory: FileUploaderFactory, private _keycloakService: KeycloakService) {
         super();
         this._multipartUploader = _fileUploaderFactory.create(Constants.REST_BASE + this.UPLOAD_URL, undefined, _keycloakService);
     }
@@ -35,9 +35,8 @@ export class RuleService extends AbstractService {
     }
 
     getAll(): Observable<RuleProviderEntity[]> {
-        return this._http.get(Constants.REST_BASE + this.GET_ALL_RULE_PROVIDERS_URL)
+        return this._http.get<RuleProviderEntity[]>(Constants.REST_BASE + this.GET_ALL_RULE_PROVIDERS_URL)
             .pipe(
-                map(res => <RuleProviderEntity[]> res.json()),
                 catchError(this.handleError)
             );
     }
@@ -45,9 +44,8 @@ export class RuleService extends AbstractService {
     getByRulesPath(rulesPath: RulesPath): Observable<RuleProviderEntity[]> {
         let url = Constants.REST_BASE + this.GET_RULE_PROVIDERS_BY_RULES_PATH_URL + rulesPath.id;
 
-        return this._http.get(url)
+        return this._http.get<RuleProviderEntity[]>(url)
             .pipe(
-                map(res => <RuleProviderEntity[]> res.json()),
                 catchError(this.handleError)
             );
     }
@@ -58,9 +56,8 @@ export class RuleService extends AbstractService {
             return;
 
         let url = Constants.REST_BASE + this.IS_RULES_PATH_USED.replace('{id}', rulesPath.id.toString());
-        return this._http.get(url)
+        return this._http.get<boolean>(url)
             .pipe(
-                map(res => res.json()),
                 catchError(this.handleError)
             ); 
     }

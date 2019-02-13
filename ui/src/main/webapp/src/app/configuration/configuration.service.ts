@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Http} from '@angular/http';
+import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 
 import {Constants} from "../constants";
@@ -14,25 +14,23 @@ export class ConfigurationService extends AbstractService {
     private SAVE_URL = "/configuration";
     private CONFIGURATION_RELOAD_URL = '/configuration/reload';
 
-    constructor (private _http: Http) {
+    constructor (private _http: HttpClient) {
         super();
     }
 
     save(configuration: Configuration): Observable<Configuration> {
         let body = JSON.stringify(configuration);
 
-        return this._http.put(Constants.REST_BASE + this.SAVE_URL, body, this.JSON_OPTIONS)
+        return this._http.put<Configuration>(Constants.REST_BASE + this.SAVE_URL, body, this.JSON_OPTIONS)
             .pipe(
-                map(res => <Configuration> res.json()),
                 catchError(this.handleError)
             );
     }
 
     @Cached({section: 'configuration', immutable: true})
     get(): Observable<Configuration> {
-        return this._http.get(Constants.REST_BASE + this.GET_URL)
+        return this._http.get<Configuration>(Constants.REST_BASE + this.GET_URL)
             .pipe(
-                map(res => <Configuration> res.json()),
                 catchError(this.handleError)
             );
     }
@@ -41,18 +39,16 @@ export class ConfigurationService extends AbstractService {
 
     @Cached({section: 'configuration', immutable: true})
     getCustomRulesetPaths(): Observable<RulesPath[]> {
-        return this._http.get(Constants.REST_BASE + this.GET_CUSTOM_RULESETS_URL)
+        return this._http.get<RulesPath[]>(Constants.REST_BASE + this.GET_CUSTOM_RULESETS_URL)
             .pipe(
-                map(res => <RulesPath[]> res.json()),
                 catchError(this.handleError)
             );
 
     }
 
     reloadConfigration(): Observable<Configuration> {
-        return this._http.post(Constants.REST_BASE + this.CONFIGURATION_RELOAD_URL, null)
-            .pipe(
-                map(res => res.json()),
+        return this._http.post<Configuration>(Constants.REST_BASE + this.CONFIGURATION_RELOAD_URL, null)
+            .pipe(                
                 catchError(this.handleError)
             );
     }
