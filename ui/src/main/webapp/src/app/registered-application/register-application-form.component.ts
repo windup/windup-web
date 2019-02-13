@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy} from "@angular/core";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup, Validators, AbstractControl} from "@angular/forms";
 import {ActivatedRoute, Router, NavigationEnd} from "@angular/router";
 import {FileUploader} from "ng2-file-upload/ng2-file-upload";
 
@@ -32,8 +32,6 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
     protected application: RegisteredApplication;
     multipartUploader: FileUploader;
     protected mode: RegistrationType = "UPLOADED";
-    fileInputPath: string = '';
-    isDirWithExplodedApp: boolean = false;
     isAllowUploadMultiple: boolean = true;
 
     isInWizard: boolean = false;
@@ -153,27 +151,38 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
         }
     }
 
+    private getAppPathToRegisterControl(): AbstractControl {
+        return this.registrationForm.get('appPathToRegister');
+    }
+
+    private getIsDirWithExplodedAppControl(): AbstractControl {
+        return this.registrationForm.get('isDirWithExplodedApp');
+    }
+
     private registerPath() {
+        let fileInputPath: string = this.getAppPathToRegisterControl().value;
+        let isDirWithExplodedApp = this.getIsDirWithExplodedAppControl().value;
+
         /**
          * If there are already some uploaded applications, we consider form to be valid
          * But if user is on Register Path section, clicking submit button triggers registering app by path with invalid
          *  path.
          *  To avoid that, treat it as success and do the navigation right away, even when no input path is set.
          */
-        if ((!this.fileInputPath || this.fileInputPath.length === 0) && this.isValid) {
+        if ((!fileInputPath || fileInputPath.length === 0) && this.isValid) {
             this.navigateOnSuccess();
             return;
         }
 
-        this._fileService.queryServerPathTargetType(this.fileInputPath).subscribe((type_: string) => {
-            if (type_ === "DIRECTORY" && !this.isDirWithExplodedApp) { //this.isDirWithApps
-                this._registeredApplicationService.registerApplicationInDirectoryByPath(this.project, this.fileInputPath)
+        this._fileService.queryServerPathTargetType(fileInputPath).subscribe((type_: string) => {
+            if (type_ === "DIRECTORY" && !isDirWithExplodedApp) { //this.isDirWithApps
+                this._registeredApplicationService.registerApplicationInDirectoryByPath(this.project, fileInputPath)
                     .subscribe(
                         application => this.navigateOnSuccess(),
                         error => this.handleError(error)
                     );
             } else {
-                this._registeredApplicationService.registerByPath(this.project, this.fileInputPath, this.isDirWithExplodedApp).subscribe(
+                this._registeredApplicationService.registerByPath(this.project, fileInputPath, isDirWithExplodedApp).subscribe(
                     application => this.navigateOnSuccess(),
                     error => this.handleError(<any>error)
                 )
@@ -259,6 +268,8 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
         if (this.uploading)
             return false;
 
+        let fileInputPath: string = this.getAppPathToRegisterControl().value;
+
         /**
          * If project already has some applications,
          * form is always valid for "upload" tab and also for empty path in "server path" tab.
@@ -266,14 +277,14 @@ export class RegisterApplicationFormComponent extends FormComponent implements O
          * This allows us to have 'Back' step in wizard and not requiring
          * user to upload new application.
          */
-        if  (this.isInWizard && this.projectHasApplications() && this.fileInputPath.length === 0) {
+        if  (this.isInWizard && this.projectHasApplications() && fileInputPath.length === 0) {
             return true;
         }
 
         if (this.mode === 'PATH') {
             const appPathField = this.registrationForm.get('appPathToRegister');
 
-            return this.fileInputPath && this.fileInputPath.length > 0 &&
+            return fileInputPath && fileInputPath.length > 0 &&
                 !this.hasError(appPathField) && !appPathField.pending;
         } else if (this.mode === 'UPLOADED') {
             return this.projectHasApplications();
