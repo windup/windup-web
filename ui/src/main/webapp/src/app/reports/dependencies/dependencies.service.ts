@@ -31,8 +31,7 @@ export class DependenciesService extends AbstractService {
                         throw new Error("No items returned, URL: " + url);
                     }
                     return <DependenciesReportModel[]>service.fromJSONarray(data, DependenciesReportModel);
-                }),
-                catchError(this.handleError)
+                })
             );
     }
 
@@ -40,10 +39,7 @@ export class DependenciesService extends AbstractService {
     public getDependencies(executionId: number): Observable<any> {
         let url = this.GET_DEPENDENCIES_URL.replace('{executionId}', executionId.toString());
 
-        return this._http.get<any>(url)
-            .pipe(
-                catchError(this.handleError)
-            );
+        return this._http.get<any>(url);
     }
 }
 

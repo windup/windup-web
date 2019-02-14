@@ -79,19 +79,13 @@ export class MigrationProjectService extends AbstractService {
     create(migrationProject: MigrationProject): Observable<MigrationProject> {
         let body = JSON.stringify(migrationProject);
 
-        return this._http.put<MigrationProject>(Constants.REST_BASE + this.CREATE_MIGRATION_PROJECT_URL, body, this.JSON_OPTIONS)
-            .pipe(
-                catchError(this.handleError)
-            );
+        return this._http.put<MigrationProject>(Constants.REST_BASE + this.CREATE_MIGRATION_PROJECT_URL, body, this.JSON_OPTIONS);
     }
 
     update(migrationProject: MigrationProject): Observable<MigrationProject> {
         let body = JSON.stringify(migrationProject);
 
-        return this._http.put<MigrationProject>(Constants.REST_BASE + this.UPDATE_MIGRATION_PROJECT_URL, body, this.JSON_OPTIONS)
-            .pipe(
-                catchError(this.handleError)
-            );
+        return this._http.put<MigrationProject>(Constants.REST_BASE + this.UPDATE_MIGRATION_PROJECT_URL, body, this.JSON_OPTIONS);
     }
 
     isDeleting(project: MigrationProject) {
@@ -103,18 +97,16 @@ export class MigrationProjectService extends AbstractService {
 
         let body = JSON.stringify(migrationProject);
 
-        let options = {
-            body: body,
-            headers: new HttpHeaders()
-        };
-
-        options.headers.append('Content-Type', 'application/json');
-        options.headers.append('Accept', 'application/json');
-
+        let headers: HttpHeaders = new HttpHeaders()
+            .append('Content-Type', 'application/json')
+            .append('Accept', 'application/json');
+        
+        let options: Object;
+        options = { body: body, headers: headers };        
+        
         return this._http.delete<void>(Constants.REST_BASE + this.DELETE_MIGRATION_PROJECT_URL, options)
             .pipe(
                 tap(res => this._eventBus.fireEvent(new DeleteMigrationProjectEvent(migrationProject, this))),
-                catchError(this.handleError),
                 finalize(() => {
                     this.deletedProjects.delete(migrationProject.id);
                 })
@@ -126,10 +118,7 @@ export class MigrationProjectService extends AbstractService {
         if (!isNumber(id)) {
             throw new Error("Not a project ID: " + id);
         }
-        return this._http.get<MigrationProject>(Constants.REST_BASE + this.GET_MIGRATION_PROJECT_URL + "/" + id)
-            .pipe(
-                catchError(this.handleError)
-            );
+        return this._http.get<MigrationProject>(Constants.REST_BASE + this.GET_MIGRATION_PROJECT_URL + "/" + id);
     }
 
     @Cached('project', {minutes: 1})
@@ -145,16 +134,12 @@ export class MigrationProjectService extends AbstractService {
                     });
     
                     return migrationProject;
-                })),
-                catchError(this.handleError)
+                }))
             );
     }
 
     deleteProvisionalProjects(): Observable<void> {
-        return this._http.delete<void>(Constants.REST_BASE + this.DELETE_PROVISIONAL_PROJECTS_URL)
-            .pipe(
-                catchError(this.handleError)
-            );
+        return this._http.delete<void>(Constants.REST_BASE + this.DELETE_PROVISIONAL_PROJECTS_URL);
     }
 
     monitorProject(project: MigrationProject) {
@@ -166,10 +151,7 @@ export class MigrationProjectService extends AbstractService {
     }
 
     getIdByName(name: string): Observable<number> | null {
-        return this._http.get<number>(Constants.REST_BASE + this.GET_ID_BY_NAME_URL + "/" + encodeURIComponent(name))
-            .pipe(
-                catchError(this.handleError)
-            );
+        return this._http.get<number>(Constants.REST_BASE + this.GET_ID_BY_NAME_URL + "/" + encodeURIComponent(name));
     }
 }
 

@@ -20,17 +20,13 @@ export class FileModelService extends AbstractService {
 
         return this._http.get<FileModel>(url)
             .pipe(
-                map(res => <FileModel>service.fromJSON(res)),
-                catchError(this.handleError)
+                map(res => <FileModel>service.fromJSON(res))
             );
     }
 
     getSource(executionId: number, vertexID: number): Observable<string> {
         let url = `${Constants.GRAPH_REST_BASE}/graph/filemodel/${executionId}/source/${vertexID}`;
 
-        return this._http.get<string>(url)
-            .pipe(
-                catchError(this.handleError)
-            );
+        return this._http.get<string>(url);
     }
 }

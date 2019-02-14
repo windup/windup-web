@@ -27,8 +27,7 @@ export class GraphService extends AbstractService {
                     }
     
                     return <T>service.fromJSON(data[0]);
-                }),
-                catchError(this.handleError)
+                })
             );
     }
 
@@ -43,8 +42,7 @@ export class GraphService extends AbstractService {
                     }
     
                     return <T[]>service.fromJSONarray(data);
-                }),
-                catchError(this.handleError)
+                })
             );
     }
 

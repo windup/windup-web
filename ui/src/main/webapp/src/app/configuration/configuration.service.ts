@@ -21,35 +21,23 @@ export class ConfigurationService extends AbstractService {
     save(configuration: Configuration): Observable<Configuration> {
         let body = JSON.stringify(configuration);
 
-        return this._http.put<Configuration>(Constants.REST_BASE + this.SAVE_URL, body, this.JSON_OPTIONS)
-            .pipe(
-                catchError(this.handleError)
-            );
+        return this._http.put<Configuration>(Constants.REST_BASE + this.SAVE_URL, body, this.JSON_OPTIONS);
     }
 
     @Cached({section: 'configuration', immutable: true})
     get(): Observable<Configuration> {
-        return this._http.get<Configuration>(Constants.REST_BASE + this.GET_URL)
-            .pipe(
-                catchError(this.handleError)
-            );
+        return this._http.get<Configuration>(Constants.REST_BASE + this.GET_URL);
     }
 
     private GET_CUSTOM_RULESETS_URL = "/configuration/custom-rulesets";
 
     @Cached({section: 'configuration', immutable: true})
     getCustomRulesetPaths(): Observable<RulesPath[]> {
-        return this._http.get<RulesPath[]>(Constants.REST_BASE + this.GET_CUSTOM_RULESETS_URL)
-            .pipe(
-                catchError(this.handleError)
-            );
+        return this._http.get<RulesPath[]>(Constants.REST_BASE + this.GET_CUSTOM_RULESETS_URL);
 
     }
 
     reloadConfigration(): Observable<Configuration> {
-        return this._http.post<Configuration>(Constants.REST_BASE + this.CONFIGURATION_RELOAD_URL, null)
-            .pipe(                
-                catchError(this.handleError)
-            );
+        return this._http.post<Configuration>(Constants.REST_BASE + this.CONFIGURATION_RELOAD_URL, null);
     }
 }

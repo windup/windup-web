@@ -18,9 +18,6 @@ export class MigrationPathService extends AbstractService {
 
     @Cached({section: 'migrationPath', immutable: true})
     getAll(): Observable<MigrationPath[]> {
-        return this._http.get<MigrationPath[]>(Constants.REST_BASE + this.GET_ALL_URL,)
-            .pipe(
-                catchError(this.handleError)
-            );
+        return this._http.get<MigrationPath[]>(Constants.REST_BASE + this.GET_ALL_URL,);
     }
 }

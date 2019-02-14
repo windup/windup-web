@@ -35,8 +35,7 @@ export class ApplicationDetailsService extends AbstractService {
                         return this.mapTraversal(res, traversal);
                     });
                     return res;
-                }),
-                catchError(this.handleError)
+                })
             );
     }
 

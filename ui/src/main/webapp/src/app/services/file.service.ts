@@ -15,17 +15,11 @@ export class FileService extends AbstractService {
     }
 
     pathExists(path: string): Observable<boolean> {
-        return this._http.post<boolean>(Constants.REST_BASE + this.PATH_EXISTS_URL, path, this.JSON_OPTIONS)
-            .pipe(
-                catchError(this.handleError)
-            );
+        return this._http.post<boolean>(Constants.REST_BASE + this.PATH_EXISTS_URL, path, this.JSON_OPTIONS);
     }
 
     queryServerPathTargetType(path: string): Observable<PathTargetType> {
-        return this._http.post<PathTargetType>(Constants.REST_BASE + "/file/pathTargetType", path, this.JSON_OPTIONS)
-            .pipe(
-                catchError(this.handleError)
-            );
+        return this._http.post<PathTargetType>(Constants.REST_BASE + "/file/pathTargetType", path, this.JSON_OPTIONS);
     }
 }
 

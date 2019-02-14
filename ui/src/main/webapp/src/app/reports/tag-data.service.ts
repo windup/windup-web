@@ -89,10 +89,6 @@ export class TagDataService extends AbstractService {
         let headers = new HttpHeaders();
         let options = { headers: headers };
 
-        return this._http.get<TagHierarchyData[]>(Constants.GRAPH_REST_BASE + "/tag-data", options)
-            .pipe(
-                tap(tags => this.cacheTagData(tags)),
-                catchError(this.handleError)
-            );
+        return this._http.get<TagHierarchyData[]>(Constants.GRAPH_REST_BASE + "/tag-data", options);
     }
 }

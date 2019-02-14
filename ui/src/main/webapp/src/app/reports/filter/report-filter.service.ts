@@ -20,46 +20,31 @@ export class ReportFilterService extends AbstractService {
     getFilter(execution: WindupExecution): Observable<ReportFilter> {
         let url = Constants.REST_BASE + this.FILTER_URL.replace('{execId}', execution.id.toString());
 
-        return this._http.get<ReportFilter>(url)
-            .pipe(
-                catchError(this.handleError)
-            );
+        return this._http.get<ReportFilter>(url);
     }
 
     clearFilter(execution: WindupExecution): Observable<ReportFilter> {
         let url = Constants.REST_BASE + this.FILTER_URL.replace('{execId}', execution.id.toString());
 
-        return this._http.delete<ReportFilter>(url)
-            .pipe(
-                catchError(this.handleError)
-            );
+        return this._http.delete<ReportFilter>(url);
     }
 
     updateFilter(execution: WindupExecution, filter: any): Observable<ReportFilter> {
         let url = Constants.REST_BASE + this.FILTER_URL.replace('{execId}', execution.id.toString());
 
-        return this._http.put<ReportFilter>(url, filter)
-            .pipe(
-                catchError(this.handleError)
-            );
+        return this._http.put<ReportFilter>(url, filter);
     }
 
     getTags(execution: WindupExecution): Observable<Tag[]> {
         let url = Constants.REST_BASE + this.TAGS_URL.replace('{execId}', execution.id.toString());
 
-        return this._http.get<Tag[]>(url)
-            .pipe(
-                catchError(this.handleError)
-            );
+        return this._http.get<Tag[]>(url);
     }
 
     getCategories(execution: WindupExecution): Observable<Category[]> {
         let url = Constants.REST_BASE + this.CATEGORIES_URL.replace('{execId}', execution.id.toString());
 
-        return this._http.get<Category[]>(url)
-            .pipe(
-                catchError(this.handleError)
-            );
+        return this._http.get<Category[]>(url);
     }
 
     getFilterApplications(execution: WindupExecution): Observable<FilterApplication[]>
@@ -68,9 +53,6 @@ export class ReportFilterService extends AbstractService {
                 .replace('{execId}', execution.id.toString())
                 .replace('{executionId}', execution.id.toString());
 
-        return this._http.get<FilterApplication[]>(url)
-            .pipe(
-                catchError(this.handleError)
-            );
+        return this._http.get<FilterApplication[]>(url);
     }
 }

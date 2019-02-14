@@ -21,8 +21,7 @@ export class TechnologyTagService extends AbstractService {
 
         return this._http.get<TechnologyTagModel[]>(url)
             .pipe(
-                map(res => <TechnologyTagModel[]>res.map((json) => service.fromJSON(json))),
-                catchError(this.handleError)
+                map(res => <TechnologyTagModel[]>res.map((json) => service.fromJSON(json)))
             );
     }
 }
