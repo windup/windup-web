@@ -6,7 +6,6 @@ import {DiscriminatorMappingTestData} from './models/discriminator-mapping-test-
 import {TestGraphData} from './models/test-graph-data';
 
 import {Observable} from 'rxjs';
-import 'rxjs/add/operator/toPromise';
 
 import {HttpClient} from "@angular/common/http";
 import {FileModel} from "../../src/app/generated/tsModels/FileModel";

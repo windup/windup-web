@@ -1,7 +1,6 @@
 import {async, inject} from '@angular/core/testing';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from 'rxjs';
-import 'rxjs/add/operator/toPromise';
 
 import {GraphJSONToModelService, RelationInfo} from '../../src/app/services/graph/graph-json-to-model.service';
 import {getParentClass} from '../../src/app/services/graph/discriminator-mapping';
