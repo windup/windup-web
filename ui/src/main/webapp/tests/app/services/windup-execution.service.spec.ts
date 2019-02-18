@@ -5,17 +5,16 @@ import {EventBusService} from "../../../src/app/core/events/event-bus.service";
 import {WindupExecutionService} from "../../../src/app/services/windup-execution.service";
 import {AnalysisContext, MigrationProject, WindupExecution} from "../../../src/app/generated/windup-services";
 import {NewExecutionStartedEvent} from "../../../src/app/core/events/windup-event";
-import {Observable, Subject, Subscription} from "rxjs";
+import {Observable, Subject, Subscription, of} from "rxjs";
 import {WebSocketSubjectFactory} from "../../../src/app/shared/websocket.factory";
-import {ISubscription} from "rxjs/Subscription";
-import {Subscribable} from "rxjs/Observable";
+import {Subscribable} from "rxjs";
 
-export class WebSocketMock<T> implements Subscribable<T>, ISubscription
+export class WebSocketMock<T> extends Subscription implements Subscribable<T>
 {
     closed: boolean;
     subject: Subject<T> = new Subject<T>();
 
-    subscribe(next?: (value: T) => void, error?: (error: any) => void, complete?: () => void): Subscription {
+    subscribe(next?: any, error?: (error: any) => void, complete?: () => void): Subscription {
         return this.subject.subscribe(next, error, complete);
     }
 
@@ -98,7 +97,7 @@ describe("WindupExecution service", () => {
             'getToken'
         ]);
 
-        keycloakMock.getToken.and.callFake(() => Observable.of('token'));
+        keycloakMock.getToken.and.callFake(() => of('token'));
 
         return keycloakMock;
     }
@@ -116,13 +115,8 @@ describe("WindupExecution service", () => {
 
         Object.defineProperty(eventBusMock, 'onEvent', {
             value: {
-                filter: () => {
+                pipe: () => {
                     return {
-                        filter: () => {
-                            return {
-                                subscribe: () => {}
-                            }
-                        },
                         subscribe: () => {}
                     }
                 }
@@ -144,7 +138,7 @@ describe("WindupExecution service", () => {
 
         beforeEach(() => {
             execution = getExecution(1);
-            windupServiceMock.executeWindupWithAnalysisContext.and.returnValue(Observable.of(execution));
+            windupServiceMock.executeWindupWithAnalysisContext.and.returnValue(of(execution));
             spy = spyOn(windupExecutionService, 'watchExecutionUpdates');
             windupExecutionService.execute(analysisContext, project).subscribe();
         });
@@ -171,7 +165,7 @@ describe("WindupExecution service", () => {
                 let execution = getExecution(registeredExecutions.length + 1);
                 registeredExecutions.push(execution);
 
-                return Observable.of(execution);
+                return of(execution);
             });
 
             windupExecutionService.execute(analysisContext, project).subscribe();
@@ -193,8 +187,8 @@ describe("WindupExecution service", () => {
             executionId = 1;
             execution = <any>getExecution(executionId);
             onExecutionUpdateSpy = spyOn(windupExecutionService, 'onExecutionUpdate').and.callThrough();
-            onExecutionUpdateSpy.calls.reset();
             windupExecutionService.watchExecutionUpdates(execution, project);
+            onExecutionUpdateSpy.calls.reset();
         });
 
         let assertIsNotListening = (state: string) => {

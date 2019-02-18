@@ -37,9 +37,7 @@ export class MigrationIssuesComponent extends FilterableReportComponent implemen
         private _effortLevelPipe: EffortLevelPipe
     ) {
         super(_router, _activatedRoute, _routeFlattener);
-    }
 
-    ngOnInit(): void {
         this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
             this.loadFilterFromRouteData(flatRouteData);
 
@@ -55,6 +53,10 @@ export class MigrationIssuesComponent extends FilterableReportComponent implemen
                     this._router.navigate(['']);
                 });
         }));
+    }
+
+    ngOnInit(): void {
+        
     }
 
     reloadData() {

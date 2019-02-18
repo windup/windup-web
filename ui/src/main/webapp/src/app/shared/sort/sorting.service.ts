@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 
 @Injectable()
 export class SortingService<T> {
-    protected orderByProperty: string;
+    protected orderByProperty: string | Function;
     protected orderByCallback: (a: any, b: any) => number;
     protected modifier: number = 1;
 
@@ -25,7 +25,7 @@ export class SortingService<T> {
     }
 
     public orderBy(propertyCallback: any, direction?: OrderDirection): this
-    public orderBy(property: string, direction: OrderDirection = OrderDirection.ASC): this {
+    public orderBy(property: string | Function, direction: OrderDirection = OrderDirection.ASC): this {
         this.setOrderDirection(direction);
 
         if (typeof property === 'function') {

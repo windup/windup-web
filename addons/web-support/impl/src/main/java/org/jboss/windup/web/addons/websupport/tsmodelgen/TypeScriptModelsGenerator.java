@@ -496,7 +496,7 @@ public class TypeScriptModelsGenerator
             tsWriter.write("import {GraphAdjacency} from '" + graphPkg.resolve("graph-adjacency.decorator") + "';\n");
             tsWriter.write("import {GraphProperty} from '" + graphPkg.resolve("graph-property.decorator") + "';\n");
             tsWriter.write("import {SetInProperties} from '" + graphPkg.resolve("set-in-properties.decorator") + "';\n\n");
-            tsWriter.write("import {Observable} from 'rxjs/Observable';\n\n");
+            tsWriter.write("import {Observable} from 'rxjs';\n\n");
 
             Set<String> imported = new HashSet<>();
             imported.add(BaseModelName);

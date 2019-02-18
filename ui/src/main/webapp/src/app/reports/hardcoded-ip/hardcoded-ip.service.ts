@@ -1,8 +1,8 @@
 import {GraphService} from "../../services/graph.service";
 import {Injectable} from "@angular/core";
-import {Http} from "@angular/http";
+import {HttpClient} from "@angular/common/http";
 import {GraphJSONToModelService} from "../../services/graph/graph-json-to-model.service";
-import {Observable} from "rxjs/Observable";
+import {Observable, of} from 'rxjs';
 import {HardcodedIPLocationModel} from "../../generated/tsModels/HardcodedIPLocationModel";
 import {ReportFilter} from "../../generated/windup-services";
 import {Constants} from "../../constants";
@@ -10,12 +10,13 @@ import {FileLocationModel} from "../../generated/tsModels/FileLocationModel";
 import {JavaClassModel} from "../../generated/tsModels/JavaClassModel";
 import {JavaClassFileModel} from "../../generated/tsModels/JavaClassFileModel";
 import {FileModel} from "../../generated/tsModels/FileModel";
+import { map, reduce, flatMap } from 'rxjs/operators';
 
 @Injectable()
 export class HardcodedIPService extends GraphService {
     private static HARDCODED_IP_URL = `${Constants.GRAPH_REST_BASE}/reports/{execID}/hardcodedIP`;
 
-    constructor(http: Http, graphJsonToModelService: GraphJSONToModelService<any>) {
+    constructor(http: HttpClient, graphJsonToModelService: GraphJSONToModelService<any>) {
         super(http, graphJsonToModelService);
     }
 
@@ -25,61 +26,66 @@ export class HardcodedIPService extends GraphService {
 
         let serializedFilter = this.serializeFilter(filter);
 
-        return this._http.post(url, serializedFilter, this.JSON_OPTIONS)
-            .map(res => res.json())
-            .map(data => {
-                if (!Array.isArray(data)) {
-                    throw new Error("No items returned");
-                }
+        return this._http.post<HardcodedIPDTO[]>(url, serializedFilter, this.JSON_OPTIONS)
+            .pipe(
+                map(data => {
+                    if (!Array.isArray(data)) {
+                        throw new Error("No items returned");
+                    }
+    
+                    return <HardcodedIPLocationModel[]>this._graphJsonToModelService.fromJSONarray(data, HardcodedIPLocationModel);
+                }),
+                
+                // split the array into individual DTO items
+                flatMap(array => {
+                    return array.map(item => {
+                        let dto = <HardcodedIPDTO>{};
+                        dto.ipModel = item;
 
-                return <HardcodedIPLocationModel[]>this._graphJsonToModelService.fromJSONarray(data, HardcodedIPLocationModel);
-            })
-            // split the array into individual DTO items
-            .flatMap(array => {
-                return array.map(item => {
-                    let dto = <HardcodedIPDTO>{};
-                    dto.ipModel = item;
+                        // The location model itself is also of type FileLocationModel, so use that
+                        let locationInfo = <FileLocationModel>this._graphJsonToModelService.fromJSON(item.data, FileLocationModel);
+                        dto.row = locationInfo.lineNumber;
+                        dto.column = locationInfo.columnNumber;
+                        dto.ipAddress = locationInfo.sourceSnippit;
+                        return dto;
+                    });
+                }),
 
-                    // The location model itself is also of type FileLocationModel, so use that
-                    let locationInfo = <FileLocationModel>this._graphJsonToModelService.fromJSON(item.data, FileLocationModel);
-                    dto.row = locationInfo.lineNumber;
-                    dto.column = locationInfo.columnNumber;
-                    dto.ipAddress = locationInfo.sourceSnippit;
-                    return dto;
-                });
-            })
-            // Get the file information
-            .flatMap(dto => {
-                let locationInfo = <FileLocationModel>this._graphJsonToModelService.fromJSON(dto.ipModel.data, FileLocationModel);
-                return locationInfo.file.map(file => {
-                    dto.fileModel = file;
-                    dto.filename = file.fileName;
-                    dto.sourceVertexID = file.vertexId;
-                    return dto;
-                });
-            })
-            // Get the Java Class information (if available)
-            .flatMap(dto => {
-                let javaClassFile = <JavaClassFileModel>this._graphJsonToModelService.fromJSON(dto.fileModel.data, JavaClassFileModel);
-                if (javaClassFile.javaClass == null) {
-                    dto.prettyName = this.getPrettyName(dto.ipModel, null);
-                    return Observable.of(dto);
-                }
+                // Get the file information
+                flatMap(dto => {
+                    let locationInfo = <FileLocationModel>this._graphJsonToModelService.fromJSON(dto.ipModel.data, FileLocationModel);
+                    return locationInfo.file.pipe(map(file => {
+                        dto.fileModel = file;
+                        dto.filename = file.fileName;
+                        dto.sourceVertexID = file.vertexId;
+                        return dto;
+                    }));
+                }),
 
-                return javaClassFile.javaClass.map(javaClass => {
-                    dto.javaClassModel = javaClass;
+                // Get the Java Class information (if available)
+                flatMap((dto: HardcodedIPDTO) => {
+                    let javaClassFile = <JavaClassFileModel>this._graphJsonToModelService.fromJSON(dto.fileModel.data, JavaClassFileModel);
+                    if (javaClassFile.javaClass == null) {
+                        dto.prettyName = this.getPrettyName(dto.ipModel, null);
+                        return of(dto);
+                    }
 
-                    if (javaClass != null)
-                        dto.javaClassName = javaClass.qualifiedName;
+                    return javaClassFile.javaClass.pipe(map(javaClass => {
+                        dto.javaClassModel = javaClass;
 
-                    dto.prettyName = this.getPrettyName(dto.ipModel, javaClass);
-                    return dto;
-                })
-            })
-            .reduce((previousValue, currentValue, currentIndex) => {
-                previousValue.push(currentValue);
-                return previousValue;
-            }, []);
+                        if (javaClass != null)
+                            dto.javaClassName = javaClass.qualifiedName;
+
+                        dto.prettyName = this.getPrettyName(dto.ipModel, javaClass);
+                        return dto;
+                    }))
+                }),
+
+                reduce((previousValue: any, currentValue, currentIndex) => {                    
+                    previousValue.push(currentValue);
+                    return previousValue;                    
+                }, [])
+            );
     }
 
     private getPrettyName(ipModel:HardcodedIPLocationModel,  javaClass:JavaClassModel):string {

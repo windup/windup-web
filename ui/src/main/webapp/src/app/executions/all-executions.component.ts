@@ -7,6 +7,7 @@ import {WindupExecutionService} from "../services/windup-execution.service";
 import {EventBusService} from "../core/events/event-bus.service";
 import {ExecutionEvent, NewExecutionStartedEvent} from "../core/events/windup-event";
 import {ExecutionsMonitoringComponent} from "./executions-monitoring.component";
+import { filter } from 'rxjs/operators';
 
 @Component({
     template: '<wu-executions-list [executions]="executions" [activeExecutions]="activeExecutions"></wu-executions-list>'
@@ -28,13 +29,17 @@ export class AllExecutionsComponent extends ExecutionsMonitoringComponent implem
 
         this.addSubscription(
             this._eventBus.onEvent
-                .filter(event => event.isTypeOf(ExecutionEvent))
+                .pipe(
+                    filter(event => event.isTypeOf(ExecutionEvent))   
+                )
                 .subscribe((event: ExecutionEvent) => this.onExecutionEvent(event))
         );
 
         this.addSubscription(
             this._eventBus.onEvent
-                .filter(event => event.isTypeOf(NewExecutionStartedEvent))
+                .pipe(
+                    filter(event => event.isTypeOf(NewExecutionStartedEvent))
+                )
                 .subscribe((event: NewExecutionStartedEvent) => { this.loadExecutions(); })
         );
     }

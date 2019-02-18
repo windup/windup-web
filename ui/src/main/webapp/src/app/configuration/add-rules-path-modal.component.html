@@ -47,7 +47,6 @@
                 <div class="form-group" [ngClass]="{'has-error': hasError(addRulesPathForm.get('inputPathControl'))}">
                     <label class="control-label" for="addRulesPathInput" i18n>Rules path (server-side file or directory)</label>
                     <input
-                            [(ngModel)]="inputPath"
                             formControlName="inputPathControl"
                             type="text"
                             id="addRulesPathInput"
@@ -62,7 +61,7 @@
                     </span>
                 </div>
                 <div class="form-group">
-                    <input [(ngModel)]="scanRecursively" formControlName="scanRecursivelyControl" type="checkbox" id="scanRecursively" class="scanRecursively">
+                    <input formControlName="scanRecursivelyControl" type="checkbox" id="scanRecursively" class="scanRecursively">
                     <label class="control-label" for="scanRecursively" i18n>Scan recursively (if it is a directory)</label>
                     <div i18n="Checkbox help">
                         If checked and given path is a directory, the subdirectories will also be scanned for rulesets.

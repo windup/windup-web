@@ -2,6 +2,7 @@ import {Component, OnInit, OnDestroy} from "@angular/core";
 import {BreadCrumbsService, BreadCrumbLink} from "./breadcrumbs.service";
 import {Router, NavigationEnd, ActivatedRoute} from "@angular/router";
 import {Subscription} from "rxjs";
+import { filter } from 'rxjs/operators';
 
 @Component({
     selector: 'wu-breadcrumbs',
@@ -17,12 +18,17 @@ export class BreadCrumbsComponent implements OnInit, OnDestroy {
         private _activatedRoute: ActivatedRoute,
         private _breadCrumbsService: BreadCrumbsService
     ) {
+        this.subscription = this._router.events
+        .pipe(
+            filter(event => event instanceof NavigationEnd)
+        )
+        .subscribe(_ => {
+            this.breadCrumbLinks = this._breadCrumbsService.getBreadCrumbLinks(this._activatedRoute.snapshot);
+        });
     }
 
     ngOnInit(): void {
-        this.subscription = this._router.events.filter(event => event instanceof NavigationEnd).subscribe(_ => {
-            this.breadCrumbLinks = this._breadCrumbsService.getBreadCrumbLinks(this._activatedRoute.snapshot);
-        });
+        
     }
 
     ngOnDestroy(): void {

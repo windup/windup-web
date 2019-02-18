@@ -13,6 +13,7 @@ import {RoutedComponent} from "../shared/routed.component";
 import {FlattenedRouteData, RouteFlattenerService} from "../core/routing/route-flattener.service";
 import {ContextMenuItemInterface} from "../shared/navigation/context-menu-item.class";
 import {DEFAULT_MENU_ITEMS} from "../shared/navigation/hamburger-menu.component";
+import { filter } from 'rxjs/operators';
 
 @Component({
     templateUrl: './project-layout.component.html',
@@ -36,16 +37,21 @@ export class ProjectLayoutComponent extends RoutedComponent implements OnInit, O
         protected _eventBus: EventBusService,
     ) {
         super(_router, _activatedRoute, _routeFlattener);
-    }
 
-    ngOnInit(): void {
-        this.addSubscription(this._eventBus.onEvent.filter(event => event.isTypeOf(UpdateMigrationProjectEvent))
+        this.addSubscription(this._eventBus.onEvent
+            .pipe(
+                filter(event => event.isTypeOf(UpdateMigrationProjectEvent))
+            )
             .subscribe((event: MigrationProjectEvent) => {
                 this.project = event.migrationProject;
                 this.createContextMenuItems();
-        }));
+            })
+        );
 
         this.addSubscription(this.flatRouteLoaded.subscribe(flattenedRoute => this.loadDataFromRoute(flattenedRoute)));
+    }
+
+    ngOnInit(): void {
         this.loadProjects();
     }
 
