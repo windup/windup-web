@@ -93,7 +93,7 @@ export class WindupExecutionService extends AbstractService {
     }
 
     protected hasExecutionChanged(oldExecution: WindupExecution, newExecution: WindupExecution) {
-        return oldExecution.id === newExecution.id && (
+        return oldExecution && newExecution && oldExecution.id === newExecution.id && (
             oldExecution.lastModified !== newExecution.lastModified || oldExecution.workCompleted !== newExecution.workCompleted
         );
     }

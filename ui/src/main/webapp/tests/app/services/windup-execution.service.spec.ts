@@ -115,13 +115,8 @@ describe("WindupExecution service", () => {
 
         Object.defineProperty(eventBusMock, 'onEvent', {
             value: {
-                filter: () => {
+                pipe: () => {
                     return {
-                        filter: () => {
-                            return {
-                                subscribe: () => {}
-                            }
-                        },
                         subscribe: () => {}
                     }
                 }
@@ -192,8 +187,8 @@ describe("WindupExecution service", () => {
             executionId = 1;
             execution = <any>getExecution(executionId);
             onExecutionUpdateSpy = spyOn(windupExecutionService, 'onExecutionUpdate').and.callThrough();
-            onExecutionUpdateSpy.calls.reset();
             windupExecutionService.watchExecutionUpdates(execution, project);
+            onExecutionUpdateSpy.calls.reset();
         });
 
         let assertIsNotListening = (state: string) => {
