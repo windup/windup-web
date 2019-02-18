@@ -9,14 +9,14 @@ import {NotificationService} from "../../../../../src/app/core/notification/noti
 import {RouterTestingModule} from "@angular/router/testing";
 import {ActivatedRouteMock} from "../../../mocks/activated-route.mock";
 import {Observable} from "rxjs";
-import {BaseRequestOptions, Http, ConnectionBackend} from "@angular/http";
-import {MockBackend} from "@angular/http/testing";
 import {GraphJSONToModelService} from "../../../../../src/app/services/graph/graph-json-to-model.service";
 import {RouteFlattenerService} from "../../../../../src/app/core/routing/route-flattener.service";
 import {RouterMock} from "../../../mocks/router.mock";
 import {ProblemSummaryFilesComponent} from "../../../../../src/app/reports/migration-issues/problem-summary-files.component";
 import {PaginationComponent} from "../../../../../src/app/shared/pagination.component";
 import {PaginationService} from "../../../../../src/app/shared/pagination.service";
+import {HttpClient, HttpClientModule} from "@angular/common/http";
+import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 let comp:    MigrationIssuesTableComponent;
 let fixture: ComponentFixture<MigrationIssuesTableComponent>;
@@ -33,7 +33,7 @@ describe('MigrationissuesTableComponent', () => {
         activatedRouteMock.testData = { execution: {id: 1} };
 
         TestBed.configureTestingModule({
-            imports: [ RouterTestingModule ],
+            imports: [ RouterTestingModule, HttpClientModule, HttpClientTestingModule ],
             declarations: [ MigrationIssuesTableComponent, ProblemSummaryFilesComponent, PaginationComponent, EffortLevelPipe, EffortLevel ],
             providers: [
                 {
@@ -48,15 +48,6 @@ describe('MigrationissuesTableComponent', () => {
                     provide: RouteFlattenerService,
                     useValue: routeFlattener
                 },
-                MockBackend,
-                BaseRequestOptions,
-                {
-                    provide: Http,
-                    useFactory: (backend: ConnectionBackend, defaultOptions: BaseRequestOptions) => {
-                        return new Http(backend, defaultOptions);
-                    },
-                    deps: [MockBackend, BaseRequestOptions]
-                },
                 {
                     provide: MigrationIssuesService,
                     useValue: jasmine.createSpyObj('MigrationIssuesService', [
@@ -68,10 +59,10 @@ describe('MigrationissuesTableComponent', () => {
                 PaginationService,
                 {
                     provide: GraphJSONToModelService,
-                    useFactory: (http: Http) => {
+                    useFactory: (http: HttpClient) => {
                         return new GraphJSONToModelService<any>(http, null);
                     },
-                    deps: [ Http ]
+                    deps: [ HttpClient ]
                 }
             ]
         });

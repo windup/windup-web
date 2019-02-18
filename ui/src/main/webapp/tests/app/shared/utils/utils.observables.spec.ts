@@ -1,6 +1,6 @@
 import {utils} from "../../../../src/app/shared/utils";
 import Observables = utils.Observables;
-import {Observable} from "rxjs/Observable";
+import {Observable, of} from 'rxjs';
 import {async} from "@angular/core/testing";
 
 describe('Observables', () => {
@@ -20,7 +20,7 @@ describe('Observables', () => {
 
     describe('resolveValuesArray', () => {
         it('should work for empty array', async(() => {
-            Observables.resolveValuesArray(Observable.of([]), ['dummy']).subscribe(data => {
+            Observables.resolveValuesArray(of([]), ['dummy']).subscribe(data => {
                 expect(data.length).toBe(0);
             });
         }));
@@ -31,7 +31,7 @@ describe('Observables', () => {
                 { name: 'world' }
             ];
 
-            Observables.resolveValuesArray(Observable.of(objects), ['name'])
+            Observables.resolveValuesArray(of(objects), ['name'])
                 .subscribe(data => {
 
                 });
@@ -41,11 +41,11 @@ describe('Observables', () => {
             const properties = [ { name: 'hello' }, { name: 'world' }];
 
             const objects = [
-                { name: Observable.of(properties[0].name) },
-                { name: Observable.of(properties[1].name) }
+                { name: of(properties[0].name) },
+                { name: of(properties[1].name) }
             ];
 
-            Observables.resolveValuesArray(Observable.of(objects), ['name'])
+            Observables.resolveValuesArray(of(objects), ['name'])
                 .subscribe(data => {
                     expect(data.length).toBe(objects.length);
                     data.forEach((object, index) => {
@@ -58,11 +58,11 @@ describe('Observables', () => {
             const properties = [ { name: 'hello', value: 1 }, { name: 'world', value: 42 }];
 
             const objects = [
-                { name: Observable.of(properties[0].name), value: properties[0].value },
-                { name: Observable.of(properties[1].name), value: properties[1].value },
+                { name: of(properties[0].name), value: properties[0].value },
+                { name: of(properties[1].name), value: properties[1].value },
             ];
 
-            Observables.resolveValuesArray(Observable.of(objects), ['name', 'value'])
+            Observables.resolveValuesArray(of(objects), ['name', 'value'])
                 .subscribe(data => {
                     expect(data.length).toBe(objects.length);
                     data.forEach((object, index) => {
@@ -76,7 +76,7 @@ describe('Observables', () => {
         it('should work for scalar values', async(() => {
             const object = { name: 'hello' };
 
-            Observables.resolveValues(Observable.of(object), ['name'])
+            Observables.resolveValues(of(object), ['name'])
                 .subscribe(resolvedObject => {
                     expect(resolvedObject.hasOwnProperty('resolved')).toBeTruthy();
                     expect(resolvedObject['resolved'].hasOwnProperty('name')).toBeTruthy();
@@ -87,9 +87,9 @@ describe('Observables', () => {
         }));
 
         it('should work for Observable values', async(() => {
-            const object = { name: Observable.of('hello') };
+            const object = { name: of('hello') };
 
-            Observables.resolveValues(Observable.of(object), ['name'])
+            Observables.resolveValues(of(object), ['name'])
                 .subscribe(resolvedObject => {
                     assertResolvedProperties(resolvedObject, {name: 'hello'})
                 });
@@ -98,9 +98,9 @@ describe('Observables', () => {
         it('should work for combined values', async(() => {
             const properties = { name: 'hello', value: 42};
 
-            const object = { name: Observable.of(properties.name), value: 42 };
+            const object = { name: of(properties.name), value: 42 };
 
-            Observables.resolveValues(Observable.of(object), ['name', 'value'])
+            Observables.resolveValues(of(object), ['name', 'value'])
                 .subscribe(resolvedObject => {
                     expect(resolvedObject.hasOwnProperty('resolved')).toBeTruthy();
                     expect(Object.keys(resolvedObject['resolved']).length).toBe(2);

@@ -1,10 +1,11 @@
 import {Injectable} from "@angular/core";
 import {Constants} from "../../constants";
-import {Observable} from "rxjs/Observable";
+import {Observable, from} from 'rxjs';
 import {Router} from "@angular/router";
 
 import {RouteHistoryService} from "../routing/route-history.service";
 import * as Keycloak from "keycloak-js";
+import { tap } from 'rxjs/operators';
 
 type KeycloakClient = Keycloak.KeycloakInstance;
 
@@ -64,7 +65,7 @@ export class KeycloakService {
         let realPromise = this.transformKeycloakPromise(keyCloakPromise);
 
         realPromise.then(success => true).catch(error => console.error("Keycloak promise error", error));
-        this.initObservable = Observable.fromPromise(realPromise);
+        this.initObservable = from(realPromise);
         return this.initObservable;
     }
 
@@ -116,16 +117,18 @@ export class KeycloakService {
                 console.warn(error);
             });
 
-        return Observable.fromPromise(realPromise);
+        return from(realPromise);
     }
 
     logout():Observable<{}> {
         let logoutPromise = this.auth.authz.logout();
         logoutPromise = this.transformKeycloakPromise(logoutPromise);
-        return Observable.fromPromise(logoutPromise).do(() => {
-            this.auth.loggedIn = false;
-            this.auth.authz = null;
-        });
+        return from(logoutPromise).pipe(
+            tap(() => {
+                this.auth.loggedIn = false;
+                this.auth.authz = null;
+            })
+        );
     }
 
     getToken(): Observable<string> {
@@ -143,6 +146,6 @@ export class KeycloakService {
             );
         });
 
-        return Observable.fromPromise(promise);
+        return from(promise);
     }
 }

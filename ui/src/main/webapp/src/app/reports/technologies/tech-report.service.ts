@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
-import {Http} from "@angular/http";
-import {Observable} from "rxjs/Observable";
+import {HttpClient} from "@angular/common/http";
+import {Observable, of, forkJoin} from 'rxjs';
 
 import {GraphService} from "../../services/graph.service";
 import {GraphJSONToModelService} from "../../services/graph/graph-json-to-model.service";
@@ -22,6 +22,7 @@ import {JaxRSWebServiceModel} from "../../generated/tsModels/JaxRSWebServiceMode
 import {JaxWSWebServiceModel} from "../../generated/tsModels/JaxWSWebServiceModel";
 import {RMIServiceModel} from "../../generated/tsModels/RMIServiceModel";
 import {TechnologyUsageStatisticsModel} from "../../generated/tsModels/TechnologyUsageStatisticsModel";
+import { map, flatMap } from 'rxjs/operators';
 
 @Injectable()
 export class TechReportService extends GraphService
@@ -40,7 +41,7 @@ export class TechReportService extends GraphService
     static REMOTE_SERVICES_RMI = TechReportService.REMOTE_SERVICES_REPORT_BASE + '/rmi';
 
 
-    constructor(http: Http, graphJsonToModelService: GraphJSONToModelService<any>) {
+    constructor(http: HttpClient, graphJsonToModelService: GraphJSONToModelService<any>) {
         super(http, graphJsonToModelService);
     }
 
@@ -73,18 +74,19 @@ export class TechReportService extends GraphService
         if (sessionType) {
             url += '?sessionType=' + sessionType;
         }
-        return this._http.post(url, serializedFilter, this.JSON_OPTIONS)
-            .map(res => res.json())
-            .map(data => {
-                if (!Array.isArray(data)) {
-                    throw new Error("No items returned");
-                }
-
-                return <T[]>this._graphJsonToModelService.fromJSONarray(data, clazz);
-            })
-            .map(value => {
-                    return this.loadEJBInformation(value);
-                }
+        return this._http.post<EJBInformationDTO[]>(url, serializedFilter, this.JSON_OPTIONS)
+            .pipe(
+                map(data => {
+                    if (!Array.isArray(data)) {
+                        throw new Error("No items returned");
+                    }
+    
+                    return <T[]>this._graphJsonToModelService.fromJSONarray(data, clazz);
+                }),
+                map(value => {
+                        return this.loadEJBInformation(value);
+                    }
+                )
             );
     }
 
@@ -148,12 +150,13 @@ export class TechReportService extends GraphService
     protected getDataFromFilteredEndpoint<T>(url: string, filter: any): Observable<T[]> {
         const jsonFilter = this.serializeFilter(filter);
 
-        return this._http.post(url, jsonFilter, this.JSON_OPTIONS)
-            .map(response => {
-                const json = response.json();
-                const entities = this._graphJsonToModelService.fromJSONarray(json);
-                return entities;
-            });
+        return this._http.post<T[]>(url, jsonFilter, this.JSON_OPTIONS)
+            .pipe(
+                map(response => {
+                    const entities = this._graphJsonToModelService.fromJSONarray(response);
+                    return entities;
+                })
+            );
     }
 
     getHibernateEntityModel(execID: number, filter?: ReportFilter): Observable<HibernateEntityModel[]> {
@@ -161,22 +164,27 @@ export class TechReportService extends GraphService
 
         const entitiesObservable = this.getDataFromFilteredEndpoint<HibernateEntityModel>(url, filter);
 
-        return Observables.resolveValuesArray(entitiesObservable, ['javaClass']).flatMap(entitiesArray => {
-            if (entitiesArray.length === 0) {
-                return Observable.of([]);
-            }
-
-            return Observable.forkJoin(entitiesArray.map(entity => Observables.resolveObjectProperties(entity.resolved.javaClass, ['decompiledSource'])))
-                .map(resolvedJavaClasses => {
-                    const updatedEntitiesArray = [ ... entitiesArray ];
-
-                    return updatedEntitiesArray.map((entity, index)  => {
-                        entity.resolved.javaClass = resolvedJavaClasses[index];
-
-                        return entity;
-                    })
-                });
-        });
+        return Observables.resolveValuesArray(entitiesObservable, ['javaClass'])
+        .pipe(
+            flatMap(entitiesArray => {
+                if (entitiesArray.length === 0) {
+                    return of([]);
+                }
+    
+                return forkJoin(entitiesArray.map(entity => Observables.resolveObjectProperties(entity.resolved.javaClass, ['decompiledSource'])))
+                    .pipe(
+                        map(resolvedJavaClasses => {
+                            const updatedEntitiesArray = [ ... entitiesArray ];
+        
+                            return updatedEntitiesArray.map((entity, index)  => {
+                                entity.resolved.javaClass = resolvedJavaClasses[index];
+        
+                                return entity;
+                            })
+                        })
+                    );
+            })
+        );
     }
 
     getHibernateMappingFileModel(execID: number, filter?: ReportFilter): Observable<HibernateMappingFileModel[]> {
@@ -232,38 +240,44 @@ export class TechReportService extends GraphService
     protected getRemoteServices<T>(url: string, filter: any) {
         const entitiesObservable = this.getDataFromFilteredEndpoint<any>(url, filter);
 
-        return Observables.resolveValuesArray(entitiesObservable, ['interface', 'implementationClass']).flatMap(entitiesArray => {
-            if (entitiesArray.length === 0) {
-                return Observable.of([]);
-            }
-
-            return Observable.forkJoin(
-                Observable.forkJoin(entitiesArray.map(entity => {
-                    const updatedData = Observables.resolveObjectProperties(entity.resolved.implementationClass, ['decompiledSource']);
-                    return updatedData;
-                }).filter(entityObservable => entityObservable != null)),
-                Observable.forkJoin(entitiesArray.map(entity => {
-                    if (!entity.resolved.interface) {
-                        return Observable.of(null);
-                    }
-
-                    const updatedData = Observables.resolveObjectProperties(entity.resolved.interface, ['decompiledSource']);
-                    return updatedData;
-                }))
-            ).map(resolvedData => {
-                const resolvedJavaClasses = resolvedData[0];
-                const resolvedInterfaces = resolvedData[1];
-
-                const updatedEntitiesArray = [ ... entitiesArray ];
-
-                return updatedEntitiesArray.map((entity, index)  => {
-                    entity.resolved.implementationClass = resolvedJavaClasses[index];
-                    entity.resolved.interface = resolvedInterfaces[index];
-
-                    return entity;
-                })
-            });
-        });
+        return Observables.resolveValuesArray(entitiesObservable, ['interface', 'implementationClass'])
+        .pipe(
+            flatMap(entitiesArray => {
+                if (entitiesArray.length === 0) {
+                    return of([]);
+                }
+    
+                return forkJoin(
+                    forkJoin(entitiesArray.map(entity => {
+                        const updatedData = Observables.resolveObjectProperties(entity.resolved.implementationClass, ['decompiledSource']);
+                        return updatedData;
+                    }).filter(entityObservable => entityObservable != null)),
+                    forkJoin(entitiesArray.map(entity => {
+                        if (!entity.resolved.interface) {
+                            return of(null);
+                        }
+    
+                        const updatedData = Observables.resolveObjectProperties(entity.resolved.interface, ['decompiledSource']);
+                        return updatedData;
+                    }))
+                )
+                .pipe(
+                    map(resolvedData => {
+                        const resolvedJavaClasses = resolvedData[0];
+                        const resolvedInterfaces = resolvedData[1];
+        
+                        const updatedEntitiesArray = [ ... entitiesArray ];
+        
+                        return updatedEntitiesArray.map((entity, index)  => {
+                            entity.resolved.implementationClass = resolvedJavaClasses[index];
+                            entity.resolved.interface = resolvedInterfaces[index];
+        
+                            return entity;
+                        })
+                    })
+                );
+            })
+        );
     }
 }
 

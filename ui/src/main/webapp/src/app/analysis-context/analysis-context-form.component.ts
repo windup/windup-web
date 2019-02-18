@@ -8,7 +8,7 @@ import {AnalysisContextService} from "./analysis-context.service";
 import {ConfigurationOption} from "../model/configuration-option.model";
 import {ConfigurationOptionsService} from "../configuration/configuration-options.service";
 import {IsDirty} from "../shared/is-dirty.interface";
-import {Observable} from "rxjs/Observable";
+import {Observable, forkJoin} from "rxjs";
 import {PackageRegistryService} from "./package-registry.service";
 import {AnalysisContext, Package, MigrationPath, MigrationProject, AdvancedOption, RegisteredApplication, RulesPath, PackageMetadata} from "../generated/windup-services";
 import {RouteHistoryService} from "../core/routing/route-history.service";
@@ -19,11 +19,11 @@ import {NotificationService} from "../core/notification/notification.service";
 import {utils} from "../shared/utils";
 import {RegisteredApplicationService} from "../registered-application/registered-application.service";
 import {MigrationProjectService} from "../project/migration-project.service";
-import {forkJoin} from "rxjs/observable/forkJoin";
 import {WINDUP_WEB} from "../app.module";
 import {DialogService} from "../shared/dialog/dialog.service";
 import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
 import {TreeData} from "../shared/js-tree-angular-wrapper.component";
+import {filter} from "rxjs/operators";
 import {Path, CardPath, DropdownPath} from "./transformation-paths.component";
 
 @Component({
@@ -52,7 +52,7 @@ export class AnalysisContextFormComponent extends FormComponent
     excludePackages: Package[];
     hideUnfinishedFeatures: boolean = WINDUP_WEB.config.hideUnfinishedFeatures;
 
-    static JBOSS_EAP: number = 102; // Random number    
+    static JBOSS_EAP: number = 102; // Random number
 
     static JBOSS_EAP_7: number = 101;
     static JBOSS_EAP_6: number = 100;
@@ -176,16 +176,7 @@ export class AnalysisContextFormComponent extends FormComponent
         this.initializeAnalysisContext();
 
 
-    }
-
-    ngOnInit() {
-        this.saveInProgress = false;
-
-        this._configurationOptionsService.getAll().subscribe((options: ConfigurationOption[]) => {
-            this.configurationOptions = options;
-        });
-
-        this.routerSubscription = this._router.events.filter(event => event instanceof NavigationEnd).subscribe(_ => {
+        this.routerSubscription = this._router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(_ => {
             let flatRouteData = this._routeFlattener.getFlattenedRouteData(this._activatedRoute.snapshot);
             this.flatRouteData = flatRouteData;
 
@@ -212,7 +203,7 @@ export class AnalysisContextFormComponent extends FormComponent
                                     if (this.isInWizard) {
                                         this.analysisContext.applications = apps.slice();
                                     }
-                                    
+
                                     // Load values to card paths
                                     const selectedPaths: Path[] = [];
                                     if (this.analysisContext.migrationPath.id == AnalysisContextFormComponent.JBOSS_EAP_6) {
@@ -240,6 +231,14 @@ export class AnalysisContextFormComponent extends FormComponent
             }
 
             this.isInWizard = flatRouteData.data.hasOwnProperty('wizard') && flatRouteData.data['wizard'];
+        });
+    }
+
+    ngOnInit() {
+        this.saveInProgress = false;
+
+        this._configurationOptionsService.getAll().subscribe((options: ConfigurationOption[]) => {
+            this.configurationOptions = options;
         });
 
         this.cancelDialog.confirmed.subscribe(() => {
@@ -525,3 +524,4 @@ enum Action {
     Save = 0,
     SaveAndRun = 1
 }
+

@@ -10,7 +10,11 @@
     "noImplicitAny": false,
     "inlineSources": false,
     "rootDir": "./",
-    "outDir": "../../../target/tscoutput"
+    "outDir": "../../../target/tscoutput",
+    "lib": [
+      "es2018",
+      "dom"
+    ]
   },
   "compileOnSave": false,
   "buildOnSave": false,

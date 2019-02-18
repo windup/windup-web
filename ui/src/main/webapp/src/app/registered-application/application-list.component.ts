@@ -14,6 +14,7 @@ import {
 import {ExecutionsMonitoringComponent} from "../executions/executions-monitoring.component";
 import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
 import {WindupService} from "../services/windup.service";
+import { filter, finalize } from 'rxjs/operators';
 
 @Component({
     templateUrl: './application-list.component.html',
@@ -47,19 +48,25 @@ export class ApplicationListComponent extends ExecutionsMonitoringComponent impl
 
     ngOnInit(): any {
         this._eventBus.onEvent
-            .filter(event => event.isTypeOf(ExecutionEvent))
-            .filter((event: ExecutionEvent) => event.migrationProject.id === this.project.id)
+            .pipe(
+                filter(event => event.isTypeOf(ExecutionEvent)),
+                filter((event: ExecutionEvent) => event.migrationProject.id === this.project.id)
+            )
             .subscribe((event: ExecutionEvent) => {
                 this.onExecutionEvent(event);
             });
 
         this._eventBus.onEvent
-            .filter(event => event.isTypeOf(ApplicationDeletedEvent))
+            .pipe(
+                filter(event => event.isTypeOf(ApplicationDeletedEvent))
+            )
             .subscribe((event: ApplicationDeletedEvent) => this.onApplicationDeleted(event));
 
         this._eventBus.onEvent
-            .filter(event => event.isTypeOf(UpdateMigrationProjectEvent))
-            .filter((event: UpdateMigrationProjectEvent) => event.migrationProject.id === this.project.id)
+            .pipe(
+                filter(event => event.isTypeOf(UpdateMigrationProjectEvent)),
+                filter((event: UpdateMigrationProjectEvent) => event.migrationProject.id === this.project.id)
+            )
             .subscribe((event: UpdateMigrationProjectEvent) => this.reloadMigrationProject(event.migrationProject));
 
         this._activatedRoute.parent.parent.data.subscribe((data: {project: MigrationProject}) => {
@@ -109,9 +116,11 @@ export class ApplicationListComponent extends ExecutionsMonitoringComponent impl
     public doDeleteApplication(application: RegisteredApplication) {
         this.deletedApplications.set(application.id, application);
         this._registeredApplicationsService.deleteApplication(this.project, application)
-            .finally(() => {
-                this.deletedApplications.delete(application.id);
-            })
+            .pipe(
+                finalize(() => {
+                    this.deletedApplications.delete(application.id);
+                })
+            )
             .subscribe(
                 () => this._notificationService.success(`The application ‘${application.title}’ was deleted.`),
                 error => this._notificationService.error(utils.getErrorMessage(error))

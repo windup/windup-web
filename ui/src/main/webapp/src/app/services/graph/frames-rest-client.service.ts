@@ -1,7 +1,8 @@
 import {Injectable} from '@angular/core';
-import {Http, Response} from '@angular/http';
-import {Observable} from 'rxjs/Observable';
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
 import {BaseModel} from "./base.model";
+import { map, catchError } from 'rxjs/operators';
 
 /**
  * Facilitates the data flow between a generic REST endpoint for the graph and the calling methods.
@@ -13,7 +14,7 @@ export class FramesRestClientService
 {
     private endpointUrl: string;
 
-    constructor (private http: Http) {}
+    constructor (private http: HttpClient) {}
 
     /**
      * A generic query for adjacent frames.
@@ -49,9 +50,7 @@ export class FramesRestClientService
         var url = this.endpointUrl + `/queryAdjacent/${initialIDs.join(",")}/${edgeLabel}`
             + `/${directionOut ? 'out' : 'in'}/${query}/${idsOnly}/${limit}/${offset}`;
 
-        var responseObservable = this.http.put(url, "")
-            .map(res => <QueryResults<T>> res.json())
-            .catch(this.handleError);
+        var responseObservable = this.http.put<QueryResults<T>>(url, "");
 
         return responseObservable;
 
@@ -105,8 +104,9 @@ export class FramesRestClientService
             + `/${directionOut ? 'out' : 'in'}/${id}/`
 
         return this.http.put(url, body)
-            .map(res => res)
-            .catch(this.handleError);
+            .pipe(
+                map(res => res)
+            );
     }
 
 
