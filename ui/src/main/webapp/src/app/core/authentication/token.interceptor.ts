@@ -2,7 +2,7 @@ import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/c
 import { Observable } from "rxjs";
 import { KeycloakService } from "./keycloak.service";
 import { Injectable } from "@angular/core";
-import { mergeMap } from "rxjs/operators";
+import { flatMap } from "rxjs/operators";
 
 /**
  * Intercepts all http requests and add auth token
@@ -15,7 +15,7 @@ export class TokenInterceptor implements HttpInterceptor {
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         return this._keycloakService.getToken()
             .pipe(
-                mergeMap((token: string) => {
+                flatMap((token: string) => {
                     request = request.clone({
                         setHeaders: {
                             Authorization: `Bearer ${token}`

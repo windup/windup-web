@@ -1,5 +1,5 @@
 import {Observable, forkJoin, of} from 'rxjs';
-import { map, mergeMap } from 'rxjs/operators';
+import { map, flatMap } from 'rxjs/operators';
 
 export function substringAfterLast(str, delimiter) {
     return str.substring(str.lastIndexOf(delimiter) + 1); // +1 trick for no occurence.
@@ -100,7 +100,7 @@ export module utils {
 
             return arrayObservable
                 .pipe(
-                    mergeMap((array: T[]) => {
+                    flatMap((array: T[]) => {
 
                         if (array.length === 0) {
                             return of([]);
@@ -116,10 +116,13 @@ export module utils {
                             */
                             const propertiesObservables = properties.map(property => {
                                 if (Observables.isObservable(object[property])) {
-                                    return resolvedObject[property].map(resolvedProperty => {
-                                        resolvedObject.resolved[property] = resolvedProperty;
-                                        return resolvedObject;
-                                    });
+                                    return resolvedObject[property]
+                                    .pipe(
+                                        map(resolvedProperty => {
+                                            resolvedObject.resolved[property] = resolvedProperty;
+                                            return resolvedObject;
+                                        })
+                                    );
                                 } else {
                                     resolvedObject.resolved[property] = resolvedObject[property];
                                     return of(resolvedObject);
@@ -159,7 +162,7 @@ export module utils {
         public static resolveValues<T, K extends keyof T>(objectObservable: Observable<T>, properties: K[]): Observable<ResolvedObject<T, K>> {
             return objectObservable
             .pipe(
-                mergeMap(object => this.resolveObjectProperties(object, properties))
+                flatMap(object => this.resolveObjectProperties(object, properties))
             );
         }
 
@@ -175,10 +178,13 @@ export module utils {
              */
             const propertiesObservables = properties.map(property => {
                 if (Observables.isObservable(object[property])) {
-                    return resolvedObject[property].map(resolvedProperty => {
-                        resolvedObject.resolved[property] = resolvedProperty;
-                        return resolvedObject;
-                    });
+                    return resolvedObject[property]
+                    .pipe(
+                        map(resolvedProperty => {
+                            resolvedObject.resolved[property] = resolvedProperty;
+                            return resolvedObject;
+                        })
+                    );
                 } else {
                     resolvedObject.resolved[property] = resolvedObject[property];
                     return of(resolvedObject);

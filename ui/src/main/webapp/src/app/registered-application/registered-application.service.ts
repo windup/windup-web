@@ -16,7 +16,7 @@ import {ReplaySubject} from "rxjs";
 import {Cached} from "../shared/cache.service";
 import {isArray} from "util";
 import {utils} from "../shared/utils";
-import { map, catchError, tap, mergeMap } from 'rxjs/operators';
+import { map, catchError, tap, flatMap } from 'rxjs/operators';
 
 @Injectable()
 export class RegisteredApplicationService extends AbstractService {
@@ -116,7 +116,7 @@ export class RegisteredApplicationService extends AbstractService {
         return this._keycloakService
             .getToken()
             .pipe(
-                mergeMap((token: string) => {
+                flatMap((token: string) => {
                     this._multipartUploader.setOptions({
                         authToken: 'Bearer ' + token,
                         method: 'POST'
@@ -193,7 +193,7 @@ export class RegisteredApplicationService extends AbstractService {
         return this._keycloakService
             .getToken()
             .pipe(
-                mergeMap((token: string, index: number) => {
+                flatMap((token: string, index: number) => {
                     this._multipartUploader.setOptions({
                         authToken: 'Bearer ' + token,
                         method: 'PUT'

@@ -10,7 +10,7 @@ import {FileLocationModel} from "../../generated/tsModels/FileLocationModel";
 import {JavaClassModel} from "../../generated/tsModels/JavaClassModel";
 import {JavaClassFileModel} from "../../generated/tsModels/JavaClassFileModel";
 import {FileModel} from "../../generated/tsModels/FileModel";
-import { map, mergeMap, reduce } from 'rxjs/operators';
+import { map, reduce, flatMap } from 'rxjs/operators';
 
 @Injectable()
 export class HardcodedIPService extends GraphService {
@@ -37,7 +37,7 @@ export class HardcodedIPService extends GraphService {
                 }),
                 
                 // split the array into individual DTO items
-                mergeMap(array => {
+                flatMap(array => {
                     return array.map(item => {
                         let dto = <HardcodedIPDTO>{};
                         dto.ipModel = item;
@@ -52,7 +52,7 @@ export class HardcodedIPService extends GraphService {
                 }),
 
                 // Get the file information
-                mergeMap(dto => {
+                flatMap(dto => {
                     let locationInfo = <FileLocationModel>this._graphJsonToModelService.fromJSON(dto.ipModel.data, FileLocationModel);
                     return locationInfo.file.pipe(map(file => {
                         dto.fileModel = file;
@@ -63,7 +63,7 @@ export class HardcodedIPService extends GraphService {
                 }),
 
                 // Get the Java Class information (if available)
-                mergeMap((dto: HardcodedIPDTO) => {
+                flatMap((dto: HardcodedIPDTO) => {
                     let javaClassFile = <JavaClassFileModel>this._graphJsonToModelService.fromJSON(dto.fileModel.data, JavaClassFileModel);
                     if (javaClassFile.javaClass == null) {
                         dto.prettyName = this.getPrettyName(dto.ipModel, null);

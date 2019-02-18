@@ -10,7 +10,7 @@ import {KeycloakService} from "../core/authentication/keycloak.service";
 import {FileUploaderFactory} from "../shared/upload/file-uploader-factory.service";
 import {FileUploaderWrapper} from "../shared/upload/file-uploader-wrapper.service";
 import {utils} from "../shared/utils";
-import { map, catchError, mergeMap } from 'rxjs/operators';
+import { map, catchError, flatMap } from 'rxjs/operators';
 
 @Injectable()
 export class RuleService extends AbstractService {
@@ -56,7 +56,7 @@ export class RuleService extends AbstractService {
     uploadRules() {
         return this._keycloakService.getToken()
             .pipe(
-                mergeMap((token: string) => {
+                flatMap((token: string) => {
                     this._multipartUploader.setOptions({
                         authToken: 'Bearer ' + token,
                         method: 'POST'

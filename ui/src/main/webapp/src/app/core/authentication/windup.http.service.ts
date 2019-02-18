@@ -9,7 +9,7 @@ import {Observable} from 'rxjs';
 import {EventBusService} from "../events/event-bus.service";
 import {LoadingSomethingFailedEvent, LoadingSomethingFinishedEvent, LoadingSomethingStartedEvent}
     from "../events/windup-event";
-import { mergeMap, tap } from 'rxjs/operators';
+import { tap, flatMap } from 'rxjs/operators';
 
 /**
  * @deprecated Use {TokenInterceptor} instead
@@ -49,7 +49,7 @@ export class WindupHttpService extends Http {
     private configureRequest(method: RequestMethod, f: Function, url: string | Request, options: RequestOptionsArgs = {}, body?: any): Observable<Response> {
         let responseObservable: Observable<Response> = (this.setToken(options) as Observable<Response>)
             .pipe(
-                mergeMap(options => {
+                flatMap(options => {
                     return new Observable<Response>((observer) => {
                         let bodyRequired = false;
                         if (method != null) {

@@ -22,7 +22,7 @@ import {JaxRSWebServiceModel} from "../../generated/tsModels/JaxRSWebServiceMode
 import {JaxWSWebServiceModel} from "../../generated/tsModels/JaxWSWebServiceModel";
 import {RMIServiceModel} from "../../generated/tsModels/RMIServiceModel";
 import {TechnologyUsageStatisticsModel} from "../../generated/tsModels/TechnologyUsageStatisticsModel";
-import { map, mergeMap } from 'rxjs/operators';
+import { map, flatMap } from 'rxjs/operators';
 
 @Injectable()
 export class TechReportService extends GraphService
@@ -166,7 +166,7 @@ export class TechReportService extends GraphService
 
         return Observables.resolveValuesArray(entitiesObservable, ['javaClass'])
         .pipe(
-            mergeMap(entitiesArray => {
+            flatMap(entitiesArray => {
                 if (entitiesArray.length === 0) {
                     return of([]);
                 }
@@ -242,7 +242,7 @@ export class TechReportService extends GraphService
 
         return Observables.resolveValuesArray(entitiesObservable, ['interface', 'implementationClass'])
         .pipe(
-            mergeMap(entitiesArray => {
+            flatMap(entitiesArray => {
                 if (entitiesArray.length === 0) {
                     return of([]);
                 }
