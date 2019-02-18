@@ -58,7 +58,7 @@ export function GraphAdjacency (
             let httpService: HttpClient = this.http;
             let returnArray_ = returnArray; // Otherwise returnArray sticks with it's first value for all calls.
             function fetcher(url: string): Observable<any> {
-                return httpService.get(url)
+                return httpService.get<any>(url)
                 .pipe(
                     map((responseJson: any) => {
                         if (!responseJson) {

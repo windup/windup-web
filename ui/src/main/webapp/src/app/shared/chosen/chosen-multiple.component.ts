@@ -6,7 +6,7 @@ import {
     ViewChildren,
     QueryList,
     ElementRef,
-    Renderer,
+    Renderer2,
     EventEmitter,
     forwardRef, AfterViewInit
 } from "@angular/core";
@@ -50,7 +50,7 @@ export class ChosenMultipleComponent extends AbstractChosenComponent<string[]> i
 
     selectionCount: number = 0;
 
-    constructor(protected el: ElementRef, protected renderer: Renderer) {
+    constructor(protected el: ElementRef, protected renderer: Renderer2) {
         super(el, renderer);
     }
 

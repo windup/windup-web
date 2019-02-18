@@ -1,6 +1,6 @@
 import {async, inject} from '@angular/core/testing';
 import {HttpClient} from "@angular/common/http";
-import {Observable} from 'rxjs';
+import {Observable} from "rxjs";
 
 import {GraphJSONToModelService, RelationInfo} from '../../src/app/services/graph/graph-json-to-model.service';
 import {getParentClass} from '../../src/app/services/graph/discriminator-mapping';
@@ -93,11 +93,7 @@ describe('Unmarshaller tests', () => {
     it ('unmarshaller test - fromJSON() - shuttles', async(() => {
         http.get.and.callFake((url: string) => {
                 return Observable.create(function(observer) {
-                    let value: any = {
-                        json: function () {
-                            return [{"_id": 1001, "w:winduptype": ["TestShip"], "name": "Shuttle 1"}];
-                        }
-                    };
+                    let value: any = [{"_id": 1001, "w:winduptype": ["TestShip"], "name": "Shuttle 1"}];
                     observer.next(value);
                     observer.complete();
                 });
@@ -120,11 +116,7 @@ describe('Unmarshaller tests', () => {
     it ('unmarshaller test - fromJSON() - fighter', async(() => {
         http.get.and.callFake((url: string) => {
                 return Observable.create(function(observer) {
-                    let value: any = {
-                        json: function () {
-                            return [{ "_id": 1001, "w:winduptype": ["TestShip"], "name": "Fighter"}];
-                        }
-                    };
+                    let value: any = [{ "_id": 1001, "w:winduptype": ["TestShip"], "name": "Fighter"}];
                     observer.next(value);
                     observer.complete();
                 });
