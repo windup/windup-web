@@ -12,7 +12,7 @@ import { BaseChartComponent, calculateViewDimensions, ViewDimensions, formatLabe
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PackageChartComponent extends BaseChartComponent implements OnChanges, OnDestroy, AfterViewInit {
+export class PackageChartComponent extends BaseChartComponent implements OnChanges, OnDestroy {
 
     @Input() view;
     @Input() results;
@@ -37,7 +37,7 @@ export class PackageChartComponent extends BaseChartComponent implements OnChang
     labels: boolean;
 
     constructor(element: ElementRef, zone: NgZone, cd: ChangeDetectorRef, location: LocationStrategy) {
-        super(element, zone, cd, location);
+        super(element, zone, cd/*, location*/);
     }
 
     label(item): string {

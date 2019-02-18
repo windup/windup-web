@@ -52,7 +52,7 @@
             </div>
             <div class="form-group" [ngClass]="{'has-error': hasError(registrationForm.get('appPathToRegister'))}">
                 <div class="col-md-12">
-                    <input [(ngModel)]="fileInputPath" id="appPathToRegister" formControlName="appPathToRegister"
+                    <input id="appPathToRegister" formControlName="appPathToRegister"
                         type="text" class="form-control" placeholder="/opt/apps/ or /opt/apps/my.ear"
                         clas="form-control"/>
                     <p class="help-block" i18n="hint">
@@ -83,7 +83,7 @@
                     -->
                     <div class="checkbox">
                         <label style="font-weight: 600;">
-                            <input [(ngModel)]="isDirWithExplodedApp" formControlName="isDirWithExplodedApp" type="checkbox" i18n="checkbox label">
+                            <input formControlName="isDirWithExplodedApp" type="checkbox" i18n="checkbox label">
                             <ng-container i18n="Directory checkbox help text">Directory is an exploded Java application archive</ng-container>
                         </label>
                     </div>

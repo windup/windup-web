@@ -1,15 +1,14 @@
 import {ComponentFixture, TestBed, inject, async} from "@angular/core/testing";
 import {DebugElement} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
+import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {RouterTestingModule} from "@angular/router/testing";
 import {AggregatedStatisticsService} from "../../../../../src/app/reports/application-index/aggregated-statistics.service";
 import {NotificationService} from "../../../../../src/app/core/notification/notification.service";
-import {RouterTestingModule} from "@angular/router/testing";
 import {ActivatedRouteMock} from "../../../mocks/activated-route.mock";
 import {Observable} from "rxjs";
 import {ApplicationIndexComponent} from "../../../../../src/app/reports/application-index/application-index.component";
 import {PackageChartComponent} from "../../../../../src/app/reports/package-chart/package-chart.component";
-import {HttpModule, BaseRequestOptions, Http, ConnectionBackend} from "@angular/http";
-import {MockBackend} from "@angular/http/testing";
 import {ReportFilterIndicatorComponent} from "../../../../../src/app/reports/filter/report-filter-indicator.component";
 import {NgxChartsModule} from "@swimlane/ngx-charts";
 import {WindupService} from "../../../../../src/app/services/windup.service";
@@ -29,7 +28,7 @@ describe('ApplicationIndexComponent', () => {
         activeRouteMock = new ActivatedRouteMock();
 
         TestBed.configureTestingModule({
-            imports: [ RouterTestingModule, HttpModule, NgxChartsModule ],
+            imports: [ RouterTestingModule, HttpClientTestingModule, NgxChartsModule ],
             declarations: [ ApplicationIndexComponent,
                             ReportFilterIndicatorComponent,
                             PackageChartComponent ],
@@ -42,16 +41,7 @@ describe('ApplicationIndexComponent', () => {
                     provide: ActivatedRoute,
                     useValue: activeRouteMock
                 },
-                RouteFlattenerService,
-                MockBackend,
-                BaseRequestOptions,
-                {
-                    provide: Http,
-                    useFactory: (backend: ConnectionBackend, defaultOptions: BaseRequestOptions) => {
-                        return new Http(backend, defaultOptions);
-                    },
-                    deps: [MockBackend, BaseRequestOptions]
-                },
+                RouteFlattenerService,                
                 {
                     provide: AggregatedStatisticsService,
                     useValue: jasmine.createSpyObj('AggregatedStatisticsService', [

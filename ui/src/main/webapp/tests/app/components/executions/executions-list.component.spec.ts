@@ -7,7 +7,7 @@ import {WindupService} from "../../../../src/app/services/windup.service";
 import {NotificationService} from "../../../../src/app/core/notification/notification.service";
 import {WindupExecution} from "../../../../src/app/generated/windup-services";
 import {EXECUTIONS_DATA} from "./executions-data";
-import {Observable} from "rxjs";
+import {Observable, of} from "rxjs";
 import {ProgressBarComponent} from "../../../../src/app/shared/progress-bar.component";
 import {ActiveExecutionsProgressbarComponent} from "../../../../src/app/executions/active-executions-progressbar.component";
 import {DurationPipe} from "../../../../src/app/shared/duration.pipe";
@@ -120,7 +120,7 @@ describe('ExecutionsListComponent', () => {
 
         let projectServiceMock: any = fixture.debugElement.injector.get(MigrationProjectService);
 
-        projectServiceMock.getAll.and.returnValue(Observable.of(mockProjects));
+        projectServiceMock.getAll.and.returnValue(of(mockProjects));
 
         comp.executions = <WindupExecution[]>SORTED_EXECUTIONS_DATA;
         fixture.detectChanges();

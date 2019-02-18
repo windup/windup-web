@@ -19,9 +19,7 @@ export class WizardComponent extends RoutedComponent implements OnInit {
         _routeFlattener: RouteFlattenerService
     ) {
         super(_router, _activatedRoute, _routeFlattener);
-    }
 
-    ngOnInit(): void {
         this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
             this.wizardSteps = flatRouteData.data['steps'];
 
@@ -31,6 +29,10 @@ export class WizardComponent extends RoutedComponent implements OnInit {
                 this.currentStep = this.wizardSteps.find(item => item.path === lastFragment.path);
             }
         }));
+    }
+
+    ngOnInit(): void {
+        
     }
 }
 

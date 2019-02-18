@@ -47,10 +47,7 @@ export class ApplicationIndexComponent extends FilterableReportComponent impleme
         _routeFlattener: RouteFlattenerService
     ) {
         super(_router, _activatedRoute, _routeFlattener);
-    }
 
-
-    ngOnInit(): void {
         this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
             this.loadFilterFromRouteData(flatRouteData);
 
@@ -99,6 +96,11 @@ export class ApplicationIndexComponent extends FilterableReportComponent impleme
                 }
             );
         }));
+    }
+
+
+    ngOnInit(): void {
+        
     }
 
     sumStatsList(statsList:StatisticsList): number {

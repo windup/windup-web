@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {AnalysisContext, MigrationProject, WindupExecution} from "../generated/windup-services";
 import {AbstractService} from "../shared/abtract.service";
-import {Observable} from "rxjs/Observable";
+import {Observable} from 'rxjs';
 import {WindupService} from "./windup.service";
 import {EventBusService} from "../core/events/event-bus.service";
 import {
@@ -12,6 +12,7 @@ import {Constants} from "../constants";
 import {Subject} from "rxjs";
 import {WebSocketSubjectFactory} from "../shared/websocket.factory";
 import {KeycloakService} from "../core/authentication/keycloak.service";
+import { filter, tap } from 'rxjs/operators';
 
 @Injectable()
 export class WindupExecutionService extends AbstractService {
@@ -28,8 +29,11 @@ export class WindupExecutionService extends AbstractService {
         private _keycloakService: KeycloakService
     ) {
         super();
-        this._eventBus.onEvent.filter(event => event.source !== this)
-            .filter(event => event.isTypeOf(DeleteMigrationProjectEvent))
+        this._eventBus.onEvent
+            .pipe(
+                filter(event => event.source !== this),
+                filter(event => event.isTypeOf(DeleteMigrationProjectEvent))
+            )
             .subscribe((event: DeleteMigrationProjectEvent) => this.stopWatchingExecutions(event));
     }
 
@@ -47,10 +51,12 @@ export class WindupExecutionService extends AbstractService {
 
     public execute(analysisContext: AnalysisContext, project: MigrationProject): Observable<WindupExecution> {
         return this._windupService.executeWindupWithAnalysisContext(analysisContext, project)
-            .do(execution => {
-                this._eventBus.fireEvent(new NewExecutionStartedEvent(execution, project, this));
-                this.watchExecutionUpdates(execution, project)
-            });
+            .pipe(
+                tap(execution => {
+                    this._eventBus.fireEvent(new NewExecutionStartedEvent(execution, project, this));
+                    this.watchExecutionUpdates(execution, project)
+                })
+            );
     }
 
     public watchExecutionUpdates(execution: WindupExecution, project: MigrationProject) {
@@ -65,11 +71,13 @@ export class WindupExecutionService extends AbstractService {
             this.executionSocket.set(execution.id, socket);
 
             this._keycloakService.getToken().subscribe(token => {
-                socket.next(JSON.stringify({
-                    authentication: {
-                        token: token
-                    }
-                }) as any);
+                socket.next(JSON.parse(
+                    JSON.stringify({
+                        authentication: {
+                            token: token
+                        }
+                    })
+                ));
             });
         }
 
@@ -85,7 +93,7 @@ export class WindupExecutionService extends AbstractService {
     }
 
     protected hasExecutionChanged(oldExecution: WindupExecution, newExecution: WindupExecution) {
-        return oldExecution.id === newExecution.id && (
+        return oldExecution && newExecution && oldExecution.id === newExecution.id && (
             oldExecution.lastModified !== newExecution.lastModified || oldExecution.workCompleted !== newExecution.workCompleted
         );
     }

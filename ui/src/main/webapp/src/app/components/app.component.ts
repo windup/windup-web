@@ -5,6 +5,7 @@ import {RouteFlattenerService} from "../core/routing/route-flattener.service";
 import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
 import {DialogService} from "../shared/dialog/dialog.service";
 import {NotificationService, Notification} from "patternfly-ng/notification";
+import {filter} from 'rxjs/operators';
 
 @Component({
     selector: 'windup-app',
@@ -31,7 +32,9 @@ export class AppComponent implements AfterViewInit {
         private notificationService: NotificationService
     ) {
         router.events
-            .filter(event => event instanceof NavigationEnd)
+            .pipe(
+                filter(event => event instanceof NavigationEnd)
+            )
             .subscribe((event: NavigationEnd) => {
                 this.routeHistoryService.addNavigationEvent(event);
                 this.routeFlattener.onNewRouteActivated(activatedRoute.snapshot);

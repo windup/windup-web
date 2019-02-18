@@ -32,7 +32,7 @@ import {RouterModule} from "@angular/router";
 import {StatusIconComponent} from "./status-icon.component";
 import {ChosenModule} from "./chosen/chosen.module";
 import {FileUploadModule, FileUploader} from "ng2-file-upload";
-import {MomentModule} from "angular2-moment";
+import {MomentModule} from "ngx-moment";
 import {CheckboxesComponent} from "./checkboxes.component";
 import {WizardLayoutComponent} from "./layout/wizard-layout.component";
 import {ContextMenuLinkComponent} from "./navigation/context-menu-link.component";
