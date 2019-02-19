@@ -5,6 +5,7 @@ import {GraphJSONToModelService} from "../../services/graph/graph-json-to-model.
 import {PaginationService} from "../../shared/pagination.service";
 
 import * as showdown from "showdown";
+import * as Prism from "../source/prism";
 import {SchedulerService} from "../../shared/scheduler.service";
 
 @Component({
