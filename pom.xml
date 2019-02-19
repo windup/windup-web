@@ -22,10 +22,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.target>1.8</maven.compiler.target>
         <version.findbugs.plugin>3.0.5</version.findbugs.plugin>
-        <version.forge>3.7.2.Final</version.forge>
-        <version.furnace>2.26.2.Final</version.furnace>
+        <version.forge>3.9.2.Final</version.forge>
+        <version.furnace>2.28.2.Final</version.furnace>
         <version.windup>4.2.1-SNAPSHOT</version.windup>
-        <version.keycloak>2.5.5.Final</version.keycloak>
+        <version.keycloak>4.8.3.Final</version.keycloak>
+        <version.wildfly>15.0.1.Final</version.wildfly>
         <version.resteasy>3.0.19.Final</version.resteasy>
         <version.jboss.javaee>1.0.3.Final</version.jboss.javaee>
 
@@ -34,6 +35,8 @@
         <windup.web.scm.url>http://github.com/windup/windup-web</windup.web.scm.url>
 
         <windup.distribution.name>rhamt-cli</windup.distribution.name>
+        <version.hibernate>5.3.7.Final</version.hibernate>
+        <version.undertow>2.0.15.Final</version.undertow>
     </properties>
 
     <scm>
@@ -103,7 +106,7 @@
             <dependency>
                 <groupId>org.jboss.arquillian</groupId>
                 <artifactId>arquillian-bom</artifactId>
-                <version>1.1.11.Final</version>
+                <version>1.4.1.Final</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -223,7 +226,7 @@
                 <plugin>
                     <groupId>org.wildfly.plugins</groupId>
                     <artifactId>wildfly-maven-plugin</artifactId>
-                    <version>1.2.2.Final</version>
+                    <version>2.0.1.Final</version>
                 </plugin>
 
                 <plugin>
@@ -241,6 +244,26 @@
                         <compilerArgs>
                             <arg>-J-Xss4m</arg>
                         </compilerArgs>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>2.22.1</version>
+                    <configuration>
+                        <systemPropertyVariables>
+                            <wildfly.version>${version.wildfly}</wildfly.version>
+                        </systemPropertyVariables>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.22.1</version>
+                    <configuration>
+                        <systemPropertyVariables>
+                            <wildfly.version>${version.wildfly}</wildfly.version>
+                        </systemPropertyVariables>
                     </configuration>
                 </plugin>
             </plugins>
