@@ -8,7 +8,7 @@ import {AnalysisContextService} from "./analysis-context.service";
 import {ConfigurationOption} from "../model/configuration-option.model";
 import {ConfigurationOptionsService} from "../configuration/configuration-options.service";
 import {IsDirty} from "../shared/is-dirty.interface";
-import {Observable} from "rxjs/Observable";
+import {Observable, forkJoin} from "rxjs";
 import {PackageRegistryService} from "./package-registry.service";
 import {AnalysisContext, Package, MigrationPath, MigrationProject, AdvancedOption, RegisteredApplication, RulesPath, PackageMetadata} from "../generated/windup-services";
 import {RouteHistoryService} from "../core/routing/route-history.service";
@@ -19,11 +19,11 @@ import {NotificationService} from "../core/notification/notification.service";
 import {utils} from "../shared/utils";
 import {RegisteredApplicationService} from "../registered-application/registered-application.service";
 import {MigrationProjectService} from "../project/migration-project.service";
-import {forkJoin} from "rxjs/observable/forkJoin";
 import {WINDUP_WEB} from "../app.module";
 import {DialogService} from "../shared/dialog/dialog.service";
 import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
 import {TreeData} from "../shared/js-tree-angular-wrapper.component";
+import {filter} from "rxjs/operators";
 import Arrays = utils.Arrays;
 
 @Component({
@@ -53,7 +53,7 @@ export class AnalysisContextFormComponent extends FormComponent
     hideUnfinishedFeatures: boolean = WINDUP_WEB.config.hideUnfinishedFeatures;
 
     packageSelection: any = {};
-    
+
     private transformationPaths: MigrationPath[] = [
         {
             "id": 101,
@@ -139,16 +139,7 @@ export class AnalysisContextFormComponent extends FormComponent
         this.initializeAnalysisContext();
 
 
-    }
-
-    ngOnInit() {
-        this.saveInProgress = false;
-
-        this._configurationOptionsService.getAll().subscribe((options: ConfigurationOption[]) => {
-            this.configurationOptions = options;
-        });
-
-        this.routerSubscription = this._router.events.filter(event => event instanceof NavigationEnd).subscribe(_ => {
+        this.routerSubscription = this._router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(_ => {
             let flatRouteData = this._routeFlattener.getFlattenedRouteData(this._activatedRoute.snapshot);
             this.flatRouteData = flatRouteData;
 
@@ -190,12 +181,20 @@ export class AnalysisContextFormComponent extends FormComponent
                                     }
                                     this.loadPackageMetadata(contains3dPartyPackagesIncludedInPreviousAnalysis);
                                 });
-                        }                       
+                        }
                     });
                 });
             }
 
             this.isInWizard = flatRouteData.data.hasOwnProperty('wizard') && flatRouteData.data['wizard'];
+        });
+    }
+
+    ngOnInit() {
+        this.saveInProgress = false;
+
+        this._configurationOptionsService.getAll().subscribe((options: ConfigurationOption[]) => {
+            this.configurationOptions = options;
         });
 
         this.cancelDialog.confirmed.subscribe(() => {
@@ -359,12 +358,12 @@ export class AnalysisContextFormComponent extends FormComponent
         this.excludePackages = selectedNodes;
     }
 
-    onSelectedPackagesChanged(event) {        
+    onSelectedPackagesChanged(event) {
         this.analysisContext.includePackages = event.includePackages;
         this.analysisContext.excludePackages = event.excludePackages;
     }
 
-    onViewThirdPackagesChange(event: boolean) {        
+    onViewThirdPackagesChange(event: boolean) {
         if (event) {
             this.view3rdPartyPackages();
         } else {

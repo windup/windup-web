@@ -1,5 +1,5 @@
 import {Pipe, PipeTransform} from "@angular/core";
-import { Http } from "@angular/http";
+import { HttpClient } from "@angular/common/http";
 
 import { PersistedTraversalChildFileModel } from "../generated/tsModels/PersistedTraversalChildFileModel";
 import { GraphJSONToModelService } from "../services/graph/graph-json-to-model.service";
@@ -14,7 +14,7 @@ import {JavaSourceFileModel} from "../generated/tsModels/JavaSourceFileModel";
 export class PrettyPathPipe implements PipeTransform {
     private prettyPath: string;
 
-    constructor(private _http: Http, private _graphJsonToModelService: GraphJSONToModelService<any>) {
+    constructor(private _http: HttpClient, private _graphJsonToModelService: GraphJSONToModelService<any>) {
     }
 
     transform(file: PersistedTraversalChildFileModel): string {

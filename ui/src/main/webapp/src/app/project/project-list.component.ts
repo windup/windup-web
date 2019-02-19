@@ -10,6 +10,7 @@ import {OrderDirection, SortingService} from "../shared/sort/sorting.service";
 import {WindupService} from "../services/windup.service";
 import {EventBusService} from "../core/events/event-bus.service";
 import {DeleteMigrationProjectEvent} from "../core/events/windup-event";
+import { filter } from 'rxjs/operators';
 
 @Component({
     templateUrl: './project-list.component.html',
@@ -59,7 +60,9 @@ export class ProjectListComponent implements OnDestroy, OnInit, AfterViewInit {
         private _eventBus: EventBusService
     ) {
         this.deletedEventSubscription = this._eventBus.onEvent
-            .filter(event => event.isTypeOf(DeleteMigrationProjectEvent))
+            .pipe(
+                filter(event => event.isTypeOf(DeleteMigrationProjectEvent))
+            )
             .subscribe(event => {
                 this.getMigrationProjects();
             })

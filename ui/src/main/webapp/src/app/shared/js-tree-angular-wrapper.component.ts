@@ -64,7 +64,9 @@ export class JsTreeAngularWrapperComponent implements OnInit, OnChanges, OnDestr
 
             if (changes.hasOwnProperty('selectedNodes')) {
                 // Another ugly workaround, now to give enough time to initialize jsTree first
-                this._schedulerService.setTimeout(this._zone.run(() => this.redrawSelection()), 100);
+                this._schedulerService.setTimeout(() => {
+                    this._zone.run(() => this.redrawSelection())
+                }, 100);
             }
 
             // This is ugly workaround to prevent recursively calling ngOnChanges from change handler

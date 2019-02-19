@@ -1,5 +1,5 @@
 import {InternalChosenOption, InternalChosenOptionGroup, ChosenOption, ChosenOptionGroup} from "./chosen-commons";
-import {ElementRef, Input, Renderer} from "@angular/core";
+import {ElementRef, Input, Renderer2} from "@angular/core";
 import {ControlValueAccessor} from "@angular/forms";
 import {ChosenDropComponent} from "./chosen-drop.component";
 
@@ -78,7 +78,7 @@ export abstract class AbstractChosenComponent<T> implements ControlValueAccessor
     protected _getLabel: (a: any) => string = this.getOptionLabel;
     protected _compareWith: (a: any, b: any) => boolean = this.compareOptions;
 
-    constructor(protected el: ElementRef, protected renderer: Renderer) {
+    constructor(protected el: ElementRef, protected renderer: Renderer2) {
 
     }
 
