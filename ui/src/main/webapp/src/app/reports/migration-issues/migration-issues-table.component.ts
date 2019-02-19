@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, Input, NgZone, OnInit} from "@angular/core";
 import {Router, ActivatedRoute} from "@angular/router";
-import "../source/prism";
+import * as Prism from "../source/prism";
 
 import {MigrationIssuesService} from "./migration-issues.service";
 import {NotificationService} from "../../core/notification/notification.service";

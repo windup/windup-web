@@ -3,4 +3,9 @@
 
 <router-outlet></router-outlet>
 <wu-confirmation-modal #reusableModalDialog [id]="'reusableModalDialog'"></wu-confirmation-modal>
-<pfng-toast-notification-list [notifications]="notifications"></pfng-toast-notification-list>
+<pfng-toast-notification-list [notifications]="notifications"
+                              (onActionSelect)="handleAction($event)"
+                              (onCloseSelect)="handleClose($event)"
+                              (onViewingChange)="handleViewingChange($event)"
+                              [showClose]="true">
+</pfng-toast-notification-list>

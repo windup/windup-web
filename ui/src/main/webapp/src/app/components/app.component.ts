@@ -4,7 +4,7 @@ import {RouteHistoryService} from "../core/routing/route-history.service";
 import {RouteFlattenerService} from "../core/routing/route-flattener.service";
 import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
 import {DialogService} from "../shared/dialog/dialog.service";
-import {NotificationService, Notification} from "patternfly-ng/notification";
+import {NotificationService, Notification, NotificationEvent} from "patternfly-ng/notification";
 import {filter} from 'rxjs/operators';
 
 @Component({
@@ -44,5 +44,17 @@ export class AppComponent implements AfterViewInit {
 
     ngAfterViewInit(): void {
         this.dialogService.setConfirmationDialog(this.confirmationDialog);
+    }
+
+    handleAction($event: NotificationEvent): void {
+        console.log($event);
+    }
+
+    handleClose($event: NotificationEvent): void {
+        this.notificationService.remove($event.notification);
+    }
+
+    handleViewingChange($event: NotificationEvent): void {
+        this.notificationService.setViewing($event.notification, $event.isViewing);
     }
 }
