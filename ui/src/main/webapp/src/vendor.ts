@@ -49,7 +49,10 @@ require('../node_modules/jstree/dist/themes/default/style.min.css');
 require('../node_modules/patternfly/dist/css/patternfly.min.css');
 require('../node_modules/patternfly/dist/css/patternfly-additions.min.css');
 require('../node_modules/patternfly-ng/dist/css/patternfly-ng.min.css');
-require('../node_modules/ng2-tree/styles.css');
+
+// Google material
+require('../node_modules/material-design-icons/iconfont/material-icons.css');
+require('../node_modules/@angular/material/prebuilt-themes/indigo-pink.css');
 
 // Google Code Prettify
 require('../node_modules/google-code-prettify/bin/prettify.min.js');

@@ -62,7 +62,8 @@ import {FilterPipe} from "./filter/filter.pipe";
 import {TableComponent} from "./table/table.component";
 import {TableSortHeaderComponent} from "./table/table-sort-header.component";
 import {TablePanelComponent} from "./table/table-panel.component";
-import {TreeModule} from 'ng2-tree';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {MatTreeModule, MatCheckboxModule, MatIconModule, MatButtonModule} from '@angular/material';
 
 @NgModule({
     imports: [
@@ -73,7 +74,12 @@ import {TreeModule} from 'ng2-tree';
         ChosenModule,
         FileUploadModule,
         MomentModule,
-        TreeModule,
+
+        BrowserAnimationsModule,
+        MatTreeModule,
+        MatCheckboxModule,
+        MatIconModule,
+        MatButtonModule
     ],
     providers: [
         BreadCrumbsService,
@@ -203,7 +209,11 @@ import {TreeModule} from 'ng2-tree';
         TableComponent,
         TablePanelComponent,
 
-        TreeModule
+        BrowserAnimationsModule,
+        MatTreeModule,
+        MatCheckboxModule,
+        MatIconModule,
+        MatButtonModule
     ]
 })
 export class SharedModule {
