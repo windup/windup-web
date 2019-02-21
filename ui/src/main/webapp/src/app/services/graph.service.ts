@@ -39,7 +39,8 @@ export class GraphService extends AbstractService {
                 }
 
                 return <T[]>service.fromJSONarray(data);
-            });
+            })
+            .catch(this.handleError);
     }
 
     protected prepareGetRequest(type: string, execID: number, options?: GraphEndpointOptions): Observable<any> {

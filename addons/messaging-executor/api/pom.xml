@@ -23,7 +23,7 @@
         <dependency>
             <groupId>org.wildfly</groupId>
             <artifactId>wildfly-jms-client-bom</artifactId>
-            <version>10.1.0.Final</version>
+            <version>${version.wildfly}</version>
             <type>pom</type>
             <exclusions>
                 <exclusion>
