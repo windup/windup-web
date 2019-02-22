@@ -62,6 +62,8 @@ import {FilterPipe} from "./filter/filter.pipe";
 import {TableComponent} from "./table/table.component";
 import {TableSortHeaderComponent} from "./table/table-sort-header.component";
 import {TablePanelComponent} from "./table/table-panel.component";
+import {ResizableHorizontalFlexDirective} from "./resizable-horizontal-flex.directive";
+import {StopPropagationNotMousedownDirective} from "./stop-propagation-if-not-mousedown.directive";
 
 @NgModule({
     imports: [
@@ -141,7 +143,10 @@ import {TablePanelComponent} from "./table/table-panel.component";
         FilterPipe,
         TableSortHeaderComponent,
         TableComponent,
-        TablePanelComponent
+        TablePanelComponent,
+
+        ResizableHorizontalFlexDirective,
+        StopPropagationNotMousedownDirective
     ],
     exports: [
         CustomSelectComponent,
@@ -199,7 +204,10 @@ import {TablePanelComponent} from "./table/table-panel.component";
         FilterPipe,
         TableSortHeaderComponent,
         TableComponent,
-        TablePanelComponent
+        TablePanelComponent,
+
+        ResizableHorizontalFlexDirective,
+        StopPropagationNotMousedownDirective
     ]
 })
 export class SharedModule {
