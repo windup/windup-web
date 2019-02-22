@@ -65,7 +65,9 @@
                                                                         [wuMediaQuery]="'(min-width: 992px)'"
                                                                         [wuMinWidthLeft]="120"
                                                                         style="flex: 0 0 calc(25% - 20px);">
-                                        <a (click)="viewProject($event, project)"><h2 class="project-title">{{project.title}}</h2></a>
+                                        <a (click)="viewProject($event, project)">
+                                            <h2 class="project-title" style="text-overflow: ellipsis; overflow: hidden;">{{project.title}}</h2>
+                                        </a>
                                         <span>
                                             <!-- FCK angular, this should work...
                                             <small *ngIf="project.applications" i18n>
