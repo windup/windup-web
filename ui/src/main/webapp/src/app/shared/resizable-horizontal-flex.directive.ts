@@ -163,10 +163,10 @@ export class ResizableHorizontalFlexDirective implements OnInit, OnDestroy, Afte
     private subscribeEvents() {
         this.draggingSub = Observable.fromEvent(document, 'mousemove', { passive: false }).subscribe(event => this.onMouseMove(event as MouseEvent));
         this.draggingSub.add(Observable.fromEvent(document, 'touchmove', { passive: false }).subscribe(event => this.onMouseMove(event as TouchEvent)));
-        this.draggingSub.add(Observable.fromEvent(document, 'mouseup', { passive: false }).subscribe(() => this.onMouseLeave(event as MouseEvent)));
-        this.draggingSub.add(Observable.fromEvent(document, 'mouseleave', { passive: false }).subscribe(() => this.onMouseLeave(event as MouseEvent)));
-        this.draggingSub.add(Observable.fromEvent(document, 'touchend', { passive: false }).subscribe(() => this.onMouseLeave(event as MouseEvent)));
-        this.draggingSub.add(Observable.fromEvent(document, 'touchcancel', { passive: false }).subscribe(() => this.onMouseLeave(event as MouseEvent)));
+        this.draggingSub.add(Observable.fromEvent(document, 'mouseup', { passive: false }).subscribe(() => this.onMouseLeave()));
+        this.draggingSub.add(Observable.fromEvent(document, 'mouseleave', { passive: false }).subscribe(() => this.onMouseLeave()));
+        this.draggingSub.add(Observable.fromEvent(document, 'touchend', { passive: false }).subscribe(() => this.onMouseLeave()));
+        this.draggingSub.add(Observable.fromEvent(document, 'touchcancel', { passive: false }).subscribe(() => this.onMouseLeave()));
     }
 
     private unsubscribeEvents() {
@@ -174,7 +174,7 @@ export class ResizableHorizontalFlexDirective implements OnInit, OnDestroy, Afte
         this.draggingSub = null;
     }
 
-    onMouseLeave(event: MouseEvent | TouchEvent) {
+    onMouseLeave() {
         if (this._handleResizing) {
             this.stopResize();
             this._origMousePos = null;
