@@ -81,7 +81,10 @@ public class PackageDiscoveryServiceImpl implements PackageDiscoveryService
             if (packageNameHierarchy != null && packageNameHierarchy.length > 0)
             {
                 rootPackageName = packageNameHierarchy[0];
-                isRootPackage = rootPackageName.equals(packageName);
+                if (!rootPackageName.equals(""))
+                {
+                    isRootPackage = rootPackageName.equals(packageName);
+                }
             }
 
             Map<String, Integer> resultingMap = null;
