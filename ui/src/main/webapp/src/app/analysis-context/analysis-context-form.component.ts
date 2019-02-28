@@ -105,9 +105,6 @@ export class AnalysisContextFormComponent extends FormComponent
 
     saveInProgress = false;
 
-    is3rdPartyPackagesVisible = false;
-    isTreeReloadComplete = true;
-
     static DEFAULT_MIGRATION_PATH: MigrationPath = <MigrationPath>{ id: 101 };
     static CLOUD_READINESS_PATH_ID: number = 90;
     @ViewChild('cancelDialog')
@@ -157,7 +154,7 @@ export class AnalysisContextFormComponent extends FormComponent
                             this.initializeAnalysisContext();
                             this.analysisContext.applications = apps.slice();
 
-                            this.loadPackageMetadata(false);
+                            this.loadPackageMetadata();
                         } else {
                             this._analysisContextService.get(project.defaultAnalysisContextId)
                                 .subscribe(context => {
@@ -172,14 +169,7 @@ export class AnalysisContextFormComponent extends FormComponent
                                     this.packageSelection.includePackages = this.analysisContext.includePackages;
                                     this.packageSelection.excludePackages = this.analysisContext.excludePackages;
 
-                                    let contains3dPartyPackagesIncludedInPreviousAnalysis = false;
-                                    for (let i = 0; i < this.analysisContext.includePackages.length; i++) {
-                                        if (this.analysisContext.includePackages[i].known) {
-                                            contains3dPartyPackagesIncludedInPreviousAnalysis = true;
-                                            break;
-                                        }
-                                    }
-                                    this.loadPackageMetadata(contains3dPartyPackagesIncludedInPreviousAnalysis);
+                                    this.loadPackageMetadata();
                                 });
                         }
                     });
@@ -247,7 +237,7 @@ export class AnalysisContextFormComponent extends FormComponent
         this.analysisContext = analysisContext;
     }
 
-    private loadPackageMetadata(view3rdPartyPackages) {
+    private loadPackageMetadata() {
         let registeredPackagesObservables = this.project.applications.map(app => {
             return this._registeredApplicationService.waitUntilPackagesAreResolved(app);
         });
@@ -283,16 +273,7 @@ export class AnalysisContextFormComponent extends FormComponent
 
         forkJoin(registeredPackagesObservables).subscribe((packageMetadataArray: PackageMetadata[]) => {
             let arrayOfRoots = [].concat(...packageMetadataArray.map((singlePackageMetadata) => singlePackageMetadata.packageTree));
-            let filteredRoots = [];
-            if (!view3rdPartyPackages)
-            {
-                filteredRoots = arrayOfRoots.filter(packageTree => !packageTree.known);
-            }
-            else
-            {
-                filteredRoots = arrayOfRoots;
-            }
-            let mergedRoots = this._packageRegistryService.mergePackageRoots(filteredRoots);
+            let mergedRoots = this._packageRegistryService.mergePackageRoots(arrayOfRoots);
             mergedRoots.forEach(singleRoot => this._packageRegistryService.putHierarchy(singleRoot));
 
             this.packageTree = mergedRoots;
@@ -317,9 +298,6 @@ export class AnalysisContextFormComponent extends FormComponent
 
             this.packageSelection.includePackages = this.analysisContext.includePackages;
             this.packageSelection.excludePackages = this.analysisContext.excludePackages;
-
-            this.is3rdPartyPackagesVisible = view3rdPartyPackages;
-            this.isTreeReloadComplete = true;
         });
 
 
@@ -358,19 +336,6 @@ export class AnalysisContextFormComponent extends FormComponent
         this.excludePackages = selectedNodes;
     }
 
-    onSelectedPackagesChanged(event) {
-        this.analysisContext.includePackages = event.includePackages;
-        this.analysisContext.excludePackages = event.excludePackages;
-    }
-
-    onViewThirdPackagesChange(event: boolean) {
-        if (event) {
-            this.view3rdPartyPackages();
-        } else {
-            this.hide3rdPartyPackages();
-        }
-    }
-
     onSubmit() {
         if (!this.packageTreeLoaded) {
             this.confirmDialog.title = 'Package identification is not complete';
@@ -379,20 +344,6 @@ export class AnalysisContextFormComponent extends FormComponent
         } else {
             this.saveConfiguration();
         }
-    }
-
-    view3rdPartyPackages()
-    {
-        this.isTreeReloadComplete = false;
-        this.loadPackageMetadata(true);
-        return false;
-    }
-
-    hide3rdPartyPackages()
-    {
-        this.isTreeReloadComplete = false;
-        this.loadPackageMetadata(false);
-        return false;
     }
 
     protected saveConfiguration() {

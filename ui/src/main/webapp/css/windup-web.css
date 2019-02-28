@@ -199,3 +199,9 @@ fieldset.fields-section-pf {
     margin-top: 20px;
     margin-bottom: 0px;
 }
+
+/* Angular material*/
+mat-checkbox > label {
+    margin-bottom: 0;
+    font-weight: 400;
+}

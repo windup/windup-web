@@ -76,6 +76,7 @@
     "rxjs": "~6.3.3",
     "showdown": "^1.5.1",
     "text-loader": "^0.0.1",
+    "typeface-roboto": "0.0.54",
     "webpack-merge": "^0.15.0",
     "zone.js": "~0.8.26"
   },

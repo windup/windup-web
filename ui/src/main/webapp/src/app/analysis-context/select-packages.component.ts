@@ -3,8 +3,7 @@ import {
     Input,
     Output,
     EventEmitter,
-    forwardRef,
-    ViewChild
+    forwardRef
 } from "@angular/core";
 import {
     NG_VALUE_ACCESSOR,
@@ -20,13 +19,8 @@ import { MatTreeFlatDataSource, MatTreeFlattener } from "@angular/material";
 import { SelectionModel } from "@angular/cdk/collections";
 
 export interface PackageSelection {
-    includePackages: Package[],
-    excludePackages: Package[]
-}
-
-export enum ExcludePackagesViewSelector {
-    LIST,
-    TREE
+    selectedPackages: Package[],
+    unselectedPackages: Package[]
 }
 
 export class PackageFlatNode implements Package {
@@ -38,7 +32,6 @@ export class PackageFlatNode implements Package {
     level: number;
     known: boolean;
 
-    icon: string;
     expandable: boolean;
     flaternName: string;
 }
@@ -46,31 +39,24 @@ export class PackageFlatNode implements Package {
 @Component({
     selector: 'wu-select-packages',
     templateUrl: './select-packages.component.html',
-    styleUrls: ['./select-packages.component.scss'],
-    providers: [{
-        provide: NG_VALUE_ACCESSOR,
-        useExisting: forwardRef(() => SelectPackagesComponent),
-        multi: true
-    }, {
-        provide: NG_VALIDATORS,
-        useExisting: forwardRef(() => SelectPackagesComponent),
-        multi: true,
-    }]
+    styleUrls: ['./select-packages.component.scss']
 })
-export class SelectPackagesComponent implements ControlValueAccessor, Validator {
+export class SelectPackagesComponent {
 
     @Output('onSelectionChange')
     onSelectionChange: EventEmitter<PackageSelection> = new EventEmitter();
 
-    @Output()
-    onViewThirdPackagesChange: EventEmitter<boolean> = new EventEmitter();
-
     // @Input
     private _packages: Package[];
 
-    @Input()
-    loading: boolean;
+    // @Input value
+    private _value: PackageSelection;
 
+    @Input()
+    icon: string = '';
+
+    @Input()
+    title: string = '';
 
     // Tree variables
 
@@ -90,45 +76,12 @@ export class SelectPackagesComponent implements ControlValueAccessor, Validator 
     /** The selection for checklist */
     checklistSelection = new SelectionModel<PackageFlatNode>(true /* multiple */);
 
-
-    @ViewChild('excludedPackageMatTree')
-    excludedPackageTree;
-
-    expandExcludePackageTree = () => {
-        if (this.excludedPackageTree) {
-            this.excludedPackageTree.treeControl.expandAll();
-        }
-    };
-    transformerExcluded = (node: Package, level: number) => {
-        return {
-            expandable: !!node.childs && node.childs.length > 0,
-            name: node.name,
-            level: level,
-        };
-    };
-    treeControlExcluded = new FlatTreeControl<PackageFlatNode>(node => node.level, node => node.expandable);
-    treeFlattenerExcluded = new MatTreeFlattener(this.transformerExcluded, node => node.level, node => node.expandable, node => node.childs);
-    dataSourceExcluded = new MatTreeFlatDataSource(this.treeControlExcluded, this.treeFlattenerExcluded);
-
-
-    // NgForm value
-    value: PackageSelection;
-    viewThirdPackages: boolean;
-
     checkedAll: boolean = false;
-    excludePackageViewSelection: ExcludePackagesViewSelector = ExcludePackagesViewSelector.LIST;
-
-    private _onChange = (_: any) => { };
-    private _onTouched = () => { };
 
     public constructor() {
         this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel, this.isExpandable, this.getChildren);
         this.treeControl = new FlatTreeControl<any>(this.getLevel, this.isExpandable);
         this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
-    }
-
-    get packages(): Package[] {
-        return this._packages;
     }
 
     @Input()
@@ -140,7 +93,14 @@ export class SelectPackagesComponent implements ControlValueAccessor, Validator 
             this.processPackagesBeforeSendingToDatasource(this._packages);
             this.dataSource.data = this._packages;
 
-            this.loadTreeFromValue();
+            this.loadTreeFromSelection(null);
+        }
+    }
+
+    @Input()
+    set selection(selection: PackageSelection) {
+        if (this.selection) {
+            this.loadTreeFromSelection(selection);
         }
     }
 
@@ -214,44 +174,18 @@ export class SelectPackagesComponent implements ControlValueAccessor, Validator 
         }
     }
 
-
-    // ControlValueAccessor interface implementations
-
-
-    /**
-     * 
-     * Called to write data from the model to the view
-     */
-    writeValue(obj: any): void {
-        if (obj) {
-            this.value = obj;
-
-            this.loadTreeFromValue();
-        }
-    }
-
-    private loadTreeFromValue(): void {
-        if (this.value) {
+    private loadTreeFromSelection(selection: PackageSelection): void {
+        if (selection) {
             // Load previous values into the tree
-            if (this.value.includePackages.length > 0) {
+            if (selection.selectedPackages.length > 0) {
                 // By default all nodes are unchecked so I just need to toggle include packages
-                this.toggleNodesUsingDetachedPackages(this.value.includePackages, false);
+                this.toggleNodesUsingDetachedPackages(selection.selectedPackages, false);
             } else {
                 // Check all nodes
                 this.toggleAllNodes(false);
 
                 // Toggle unselected nodes
-                this.toggleNodesUsingDetachedPackages(this.value.excludePackages, false);
-            }
-
-            // If value is passed from outside, then verify if it has Third party packages
-            if (this.value && this.viewThirdPackages == undefined) {
-                for (let i = 0; i < this.value.includePackages.length; i++) {
-                    if (this.value.includePackages[i].known) {
-                        this.viewThirdPackages = true;
-                        break;
-                    }
-                }
+                this.toggleNodesUsingDetachedPackages(selection.unselectedPackages, false);
             }
 
             this.updateValue();
@@ -275,38 +209,6 @@ export class SelectPackagesComponent implements ControlValueAccessor, Validator 
         });
     }
 
-    /**
-     * Registers reaction on changing in the UI
-     */
-    registerOnChange(fn: any): void {
-        this._onChange = fn;
-    }
-
-    /**
-     * Registers reaction on receiving a blur event (is emitted when an element has lost focus)
-     */
-    registerOnTouched(fn: any): void {
-        this._onTouched = fn;
-    }
-
-    /**
-     * called on Disabled status changes
-     */
-    setDisabledState(isDisabled: boolean): void {
-        console.log("disabled not supported for this component");
-    }
-
-
-    // Validators
-
-    validate(control: AbstractControl): ValidationErrors | null {
-        return (this.value && this.value.includePackages && this.value.includePackages.length > 0) ? null : {
-            required: {
-                valid: false
-            }
-        };
-    };
-
 
     // Material Tree methods
 
@@ -328,7 +230,6 @@ export class SelectPackagesComponent implements ControlValueAccessor, Validator 
         Object.assign(flatNode, node);
         flatNode.level = level;
         flatNode.expandable = node.childs && node.childs.length > 0;
-        flatNode.icon = node.known ? 'fa fa-folder-o' : 'fa fa-folder';
 
         this.flatNodeMap.set(flatNode, node);
         this.nestedNodeMap.set(node, flatNode);
@@ -424,19 +325,14 @@ export class SelectPackagesComponent implements ControlValueAccessor, Validator 
 
     // Component events
 
-
-    /**
-     * Handles 3dPackage link button
-     */
-    viewHide3dPackagesEvent(): void {
-        this.viewThirdPackages = !this.viewThirdPackages;
-        this.onViewThirdPackagesChange.emit(this.viewThirdPackages);
-    }
-
     /**
     * Change tree checks and fire event to update value
     */
     onCheckedAllChange(value: boolean): void {
+        if (!this._packages) {
+            return;
+        }
+
         const toggleNodesWithCondition = (condition: boolean) => {
             this._packages.forEach((node) => {
                 const nestedNodeMap: PackageFlatNode = this.nestedNodeMap.get(node);
@@ -453,22 +349,16 @@ export class SelectPackagesComponent implements ControlValueAccessor, Validator 
      * Updates 'NgModel' value when select or unselect events occur
      */
     updateValue(): void {
-        this.value = this.getCheckedNodes(this._packages);
-
-        this.createdExcludedTree();
-        this.expandExcludePackageTree();
-
-        // Change Model (NgForm)
-        this._onChange(this.value);
+        this._value = this.getCheckedNodes(this._packages);
 
         // Emit event
-        this.onSelectionChange.emit(this.value);
+        this.onSelectionChange.emit(this._value);
     }
 
     private getCheckedNodes(packageTree: Package[]): PackageSelection {
         let result: PackageSelection = {
-            includePackages: [],
-            excludePackages: []
+            selectedPackages: [],
+            unselectedPackages: []
         };
 
         for (let index = 0; index < packageTree.length; index++) {
@@ -476,7 +366,7 @@ export class SelectPackagesComponent implements ControlValueAccessor, Validator 
 
             // If a node is checked, then children are checked too. No need to iterate children
             if (this.isPackageChecked(node)) {
-                result.includePackages.push(node);
+                result.selectedPackages.push(node);
             } else {
                 if (node.childs) {
                     let allFirstChildrenAreChecked: boolean = true;
@@ -490,19 +380,19 @@ export class SelectPackagesComponent implements ControlValueAccessor, Validator 
 
                     // If all first children are checked, then no need to iterate children
                     if (allFirstChildrenAreChecked) {
-                        result.excludePackages.push(node);
+                        result.unselectedPackages.push(node);
                     } else {
                         //
                         if (this.atLeastOneIsCheckedOnCascade(node.childs)) {
                             let childResult: PackageSelection = this.getCheckedNodes(node.childs);
-                            result.includePackages = result.includePackages.concat(childResult.includePackages);
-                            result.excludePackages = result.excludePackages.concat(childResult.excludePackages);
+                            result.selectedPackages = result.selectedPackages.concat(childResult.selectedPackages);
+                            result.unselectedPackages = result.unselectedPackages.concat(childResult.unselectedPackages);
                         } else {
-                            result.excludePackages.push(node);
+                            result.unselectedPackages.push(node);
                         }
                     }
                 } else {
-                    result.excludePackages.push(node);
+                    result.unselectedPackages.push(node);
                 }
             }
         }
@@ -533,70 +423,6 @@ export class SelectPackagesComponent implements ControlValueAccessor, Validator 
             }
         }
         return result;
-    }
-
-
-    // Excluded tree
-
-    private createdExcludedTree() {
-        const excludedTree: Package[] = [];
-        for (let i = 0; i < this.value.excludePackages.length; i++) {
-            const node = this.value.excludePackages[i];
-            this.createNodesFromPackageFullName(node.fullName, excludedTree);
-        }
-
-        this.flatternTreeModelsOnCascade(excludedTree);
-        this.sortTreeModelOnCascade(excludedTree);
-
-        this.dataSourceExcluded.data = excludedTree;
-    }
-
-    /**
-     * Create nodes on tree using packageFullName
-     */
-    private createNodesFromPackageFullName(packageFullName: string, packages: Package[]): void {
-        const split: string[] = packageFullName.split('.');
-        for (let i = 0; i < split.length; i++) {
-            const packageName = split[i];
-
-            let node: Package;
-            if (packages.length > 0) {
-                node = packages.find((p) => packageName == p.name);
-            }
-
-            if (!node) {
-                node = {
-                    name: packageName,
-                    childs: []
-                } as Package;
-                packages.push(node);
-            }
-
-            packages = node.childs;
-        }
-    }
-
-    private flatternTreeModelsOnCascade(packages: Package[]): void {
-        for (let i = 0; i < packages.length; i++) {
-            let node = packages[i];
-            while (node.childs && node.childs.length == 1) {
-                const parentName: string = node.name;
-                node = node.childs[0];
-                node.name = parentName + "." + node.name;
-            }
-            packages[i] = node;
-
-            if (node.childs && node.childs.length > 1) {
-                this.flatternTreeModelsOnCascade(packages[i].childs);
-            }
-        }
-    }
-
-    private sortTreeModelOnCascade(packages: Package[]): void {
-        packages.sort(this.treeModelComparator);
-        packages.forEach(p => {
-            this.sortTreeModelOnCascade(p.childs);
-        });
     }
 
 }
