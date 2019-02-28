@@ -21,6 +21,8 @@ import {DeleteMigrationProjectEvent} from "../core/events/windup-event";
     ]
 })
 export class ProjectListComponent implements OnDestroy, OnInit, AfterViewInit {
+    mediaStyle1: {width: "110px"};
+
     private _originalProjects: MigrationProject[] = [];
 
     loading: boolean = true;

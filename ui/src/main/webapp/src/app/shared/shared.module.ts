@@ -64,6 +64,7 @@ import {TableSortHeaderComponent} from "./table/table-sort-header.component";
 import {TablePanelComponent} from "./table/table-panel.component";
 import {ResizableHorizontalFlexDirective} from "./resizable-horizontal-flex.directive";
 import {StopPropagationNotMousedownDirective} from "./stop-propagation-if-not-mousedown.directive";
+import {MediaQueryStyleDirective} from "./media-query-style.directive";
 
 @NgModule({
     imports: [
@@ -146,7 +147,8 @@ import {StopPropagationNotMousedownDirective} from "./stop-propagation-if-not-mo
         TablePanelComponent,
 
         ResizableHorizontalFlexDirective,
-        StopPropagationNotMousedownDirective
+        StopPropagationNotMousedownDirective,
+        MediaQueryStyleDirective
     ],
     exports: [
         CustomSelectComponent,
@@ -207,7 +209,8 @@ import {StopPropagationNotMousedownDirective} from "./stop-propagation-if-not-mo
         TablePanelComponent,
 
         ResizableHorizontalFlexDirective,
-        StopPropagationNotMousedownDirective
+        StopPropagationNotMousedownDirective,
+        MediaQueryStyleDirective
     ]
 })
 export class SharedModule {
