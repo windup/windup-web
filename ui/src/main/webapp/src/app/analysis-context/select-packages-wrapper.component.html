@@ -1,0 +1,37 @@
+<div class="row row-cards-pf">
+    <div class="col-xs-12 col-sm-12 col-md-8">
+        <div class="card-pf card-pf-utilization">
+            <div class="card-pf-heading">
+                <!-- <p class="card-pf-heading-details">Please, select packages for the analysis</p> -->
+                <h2 class="card-pf-title">
+                    Discovered packages
+                </h2>
+            </div>
+            <div class="card-pf-body">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-6">
+                        <wu-select-packages [packages]="customerPackages"
+                                            [icon]="'fa fa-folder'"
+                                            [title]="'Your packages'"
+                                            (onSelectionChange)="changeCustomerPackagesSelection($event)">
+                        </wu-select-packages>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-6">
+                        <wu-select-packages [packages]="thirdPartyPackages"
+                                            [icon]="'fa fa-folder-o'"
+                                            [title]="'3rd party packages'"
+                                            (onSelectionChange)="changeThirdPartyPackagesSelection($event)">
+                        </wu-select-packages>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xs-12 col-sm-12 col-md-4">
+        <div class="card-pf">
+            <wu-select-packages-summary [packages]="excludedPackages">
+            </wu-select-packages-summary>
+        </div>
+    </div>
+</div>
