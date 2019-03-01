@@ -25,31 +25,27 @@ export class SelectPackagesWrapperComponent implements ControlValueAccessor, Val
     onSelectionChange: EventEmitter<Package[]> = new EventEmitter();
 
     // @Input
-    private _packages: Package[];
+    _packages: Package[];
 
-    customerPackages: Package[];
+    applicationPackages: Package[];
+    applicationPackagesSelection = {
+        selectedPackages: [],
+        unselectedPackages: []
+    } as PackageSelection;
+
     thirdPartyPackages: Package[];
+    thirdPartyPackagesSelection = {
+        selectedPackages: [],
+        unselectedPackages: []
+    } as PackageSelection;
 
-    commonNodes = new Map<number, Package>();
-    commonNodesCustomer = new Map<number, Package>();
-    commonNodesThirdParty = new Map<number, Package>();
-
-    loading: boolean = false;
+    commonNodesPackages = new Map<number, Package>();
+    commonNodesApplicationPackages = new Map<number, Package>();
+    commonNodesThirdPartyPackages = new Map<number, Package>();
 
     // NgForm value
     value: Package[];
-
     excludedPackages: Package[];
-
-    private customerPackagesSelection = {
-        selectedPackages: [],
-        unselectedPackages: []
-    } as PackageSelection;
-
-    private thirdPartyPackagesSelection = {
-        selectedPackages: [],
-        unselectedPackages: []
-    } as PackageSelection;
 
     private _onChange = (_: any) => { };
     private _onTouched = () => { };
@@ -60,9 +56,7 @@ export class SelectPackagesWrapperComponent implements ControlValueAccessor, Val
     set packages(packages: Package[]) {
         this._packages = packages;
         if (this._packages) {
-            this.loading = true;
             this.processPackages();
-            this.loading = true;
         }
     }
 
@@ -104,41 +98,40 @@ export class SelectPackagesWrapperComponent implements ControlValueAccessor, Val
     // Validators
 
     validate(control: AbstractControl): ValidationErrors | null {
-        let customerValidSelection = true;
-        if (this.customerPackages && this.customerPackages.length > 0) {
-
-            const uniqueResultOne = this.customerPackages
-                .filter((obj) => {
-                    return !this.customerPackagesSelection.selectedPackages
-                        .some((obj2) => obj.fullName == obj2.fullName);
+        let isApplicationPackageSelectionValid = true;
+        if (this.applicationPackages && this.applicationPackages.length > 0) {
+            // applicationPackages - applicationPackagesSelection.selectedPackage
+            const arrayDifference = this.applicationPackages.filter((obj1) => {
+                return !this.applicationPackagesSelection.selectedPackages.some((obj2) => {
+                    return obj1.fullName == obj2.fullName;
                 });
-
-            customerValidSelection = uniqueResultOne.length > 0;
+            });
+            isApplicationPackageSelectionValid = arrayDifference.length > 0;
         }
 
-        let thirdPartyValidSelection = true;
+        let isThirdPartyPackageSelectionValid = true;
         if (this.thirdPartyPackages && this.thirdPartyPackages.length > 0) {
-            const uniqueResultOne = this.thirdPartyPackages
-                .filter((obj) => {
-                    return !this.thirdPartyPackagesSelection.selectedPackages
-                        .some((obj2) => obj.fullName == obj2.fullName);
+            // thirdPartyPackages - thirdPartyPackagesSelection.selectedPackage
+            const uniqueResultOne = this.thirdPartyPackages.filter((obj) => {
+                return !this.thirdPartyPackagesSelection.selectedPackages.some((obj2) => {
+                    return obj.fullName == obj2.fullName;
                 });
-
-            thirdPartyValidSelection = uniqueResultOne.length > 0;
+            });
+            isThirdPartyPackageSelectionValid = uniqueResultOne.length > 0;
         }
 
-        let result = false;
-        if (this.customerPackages.length > 0 && this.thirdPartyPackages.length > 0) {
-            result = customerValidSelection || thirdPartyValidSelection;
+        let valid = false;
+        if (this.applicationPackages.length > 0 && this.thirdPartyPackages.length > 0) {
+            valid = isApplicationPackageSelectionValid || isThirdPartyPackageSelectionValid;
         } else {
-            if (this.customerPackages.length > 0) {
-                result = customerValidSelection;
+            if (this.applicationPackages.length > 0) {
+                valid = isApplicationPackageSelectionValid;
             } else if (this.thirdPartyPackages.length > 0) {
-                result = thirdPartyValidSelection;
+                valid = isThirdPartyPackageSelectionValid;
             }
         }
 
-        return result ? null : {
+        return valid ? null : {
             nothingToAnalyze: {
                 valid: false
             }
@@ -149,17 +142,20 @@ export class SelectPackagesWrapperComponent implements ControlValueAccessor, Val
     //
 
 
+    /**
+     * Takes packages passed from outside and separate into 2 new arrays: applicationPackages, thirdPartyPackages
+     */
     private processPackages(): void {
-        const customerPackages = [];
+        const applicationPackages = [];
         const thirdPartyPackages = [];
 
-        this.separatePackages(this._packages, customerPackages, thirdPartyPackages);
+        this.separatePackages(this._packages, applicationPackages, thirdPartyPackages);
 
-        this.customerPackages = customerPackages;
+        this.applicationPackages = applicationPackages;
         this.thirdPartyPackages = thirdPartyPackages;
     }
 
-    private separatePackages(packages: Package[], customerPackages: Package[], thirdPartyPackages: Package[]): void {
+    private separatePackages(packages: Package[], applicationPackages: Package[], thirdPartyPackages: Package[]): void {
         for (let i = 0; i < packages.length; i++) {
             const node = packages[i];
 
@@ -167,19 +163,19 @@ export class SelectPackagesWrapperComponent implements ControlValueAccessor, Val
             const newNode2 = Object.assign({}, node, { childs: [] });
 
             if (node.known) {
-                if (this.anyChildIsUnknown(node)) {
-                    customerPackages.push(newNode1);
+                if (node.childs && node.childs.some(p => p.known == false)) {
+                    applicationPackages.push(newNode1);
                     thirdPartyPackages.push(newNode2);
 
                     // Save common nodes
-                    this.commonNodes.set(node.id, node);
-                    this.commonNodesCustomer.set(newNode1.id, newNode1);
-                    this.commonNodesThirdParty.set(newNode2.id, newNode2);
+                    this.commonNodesPackages.set(node.id, node);
+                    this.commonNodesApplicationPackages.set(newNode1.id, newNode1);
+                    this.commonNodesThirdPartyPackages.set(newNode2.id, newNode2);
                 } else {
                     thirdPartyPackages.push(newNode2);
                 }
             } else {
-                customerPackages.push(newNode1);
+                applicationPackages.push(newNode1);
             }
 
             if (node.childs) {
@@ -188,25 +184,12 @@ export class SelectPackagesWrapperComponent implements ControlValueAccessor, Val
         }
     }
 
-    private anyChildIsUnknown(singlePackage: Package): boolean {
-        if (singlePackage.childs) {
-            for (let i = 0; i < singlePackage.childs.length; i++) {
-                const node = singlePackage.childs[i];
-                if (!node.known) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
 
     //
 
 
-    changeCustomerPackagesSelection($event: PackageSelection): void {
-        $event.selectedPackages.forEach
-        this.customerPackagesSelection = $event;
+    changeApplicationPackagesSelection($event: PackageSelection): void {
+        this.applicationPackagesSelection = $event;
         this.updateValue();
     }
 
@@ -223,11 +206,11 @@ export class SelectPackagesWrapperComponent implements ControlValueAccessor, Val
 
         const commonExclutions = new Map<number, Package>();
 
-        this.customerPackagesSelection.selectedPackages.forEach(element => {
-            if (this.commonNodes.has(element.id)) {
+        this.applicationPackagesSelection.selectedPackages.forEach(element => {
+            if (this.commonNodesPackages.has(element.id)) {
 
                 if (!this.containsPackageByFullName(element, this.thirdPartyPackagesSelection.selectedPackages)) {
-                    this.getAllMapValuesWhichFullNameStartsWith(element, this.commonNodesCustomer)
+                    this.getAllMapValuesWhichFullNameStartsWith(element, this.commonNodesApplicationPackages)
                         .forEach(el => {
                             excludedPackages = excludedPackages.concat(el.childs);
                         });
@@ -240,10 +223,10 @@ export class SelectPackagesWrapperComponent implements ControlValueAccessor, Val
         });
 
         this.thirdPartyPackagesSelection.selectedPackages.forEach(element => {
-            if (this.commonNodes.has(element.id)) {
+            if (this.commonNodesPackages.has(element.id)) {
 
-                if (!this.containsPackageByFullName(element, this.customerPackagesSelection.selectedPackages)) {
-                    this.getAllMapValuesWhichFullNameStartsWith(element, this.commonNodesThirdParty)
+                if (!this.containsPackageByFullName(element, this.applicationPackagesSelection.selectedPackages)) {
+                    this.getAllMapValuesWhichFullNameStartsWith(element, this.commonNodesThirdPartyPackages)
                         .forEach(el => {
                             excludedPackages = excludedPackages.concat(el.childs);
                         });
