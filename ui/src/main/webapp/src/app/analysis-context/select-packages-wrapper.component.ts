@@ -60,185 +60,6 @@ export class SelectPackagesWrapperComponent implements ControlValueAccessor, Val
     set packages(packages: Package[]) {
         this._packages = packages;
         if (this._packages) {
-
-            this._packages = [
-                {
-                    id: 1,
-                    name: "package1",
-                    fullName: "package1",
-                    level: 1,
-                    countClasses: 10,
-                    known: false,
-                    childs: []
-                },
-                {
-                    id: 2,
-                    name: "package2",
-                    fullName: "package2",
-                    level: 1,
-                    countClasses: 10,
-                    known: false,
-                    childs: []
-                },
-                {
-                    id: 3,
-                    name: "org",
-                    fullName: "org",
-                    level: 1,
-                    countClasses: 10,
-                    known: true,
-                    childs: [
-                        {
-                            id: 4,
-                            name: "package3",
-                            fullName: "org.package3",
-                            level: 2,
-                            countClasses: 10,
-                            known: false,
-                            childs: []
-                        },
-                        {
-                            id: 5,
-                            name: "package4",
-                            fullName: "org.package4",
-                            level: 2,
-                            countClasses: 10,
-                            known: false,
-                            childs: []
-                        },
-                        {
-                            id: 6,
-                            name: "json",
-                            fullName: "org.json",
-                            level: 2,
-                            countClasses: 10,
-                            known: true,
-                            childs: [
-                                {
-                                    id: 7,
-                                    name: "package5",
-                                    fullName: "org.json.package5",
-                                    level: 3,
-                                    countClasses: 10,
-                                    known: false,
-                                    childs: []
-                                },
-                                {
-                                    id: 8,
-                                    name: "package6",
-                                    fullName: "org.json.package6",
-                                    level: 3,
-                                    countClasses: 10,
-                                    known: false,
-                                    childs: []
-                                },
-                                {
-                                    id: 9,
-                                    name: "xx",
-                                    fullName: "org.json.xx",
-                                    level: 3,
-                                    countClasses: 10,
-                                    known: true,
-                                    childs: []
-                                },
-                                {
-                                    id: 10,
-                                    name: "yy",
-                                    fullName: "org.json.yy",
-                                    level: 3,
-                                    countClasses: 10,
-                                    known: true,
-                                    childs: []
-                                },
-                                {
-                                    id: 11,
-                                    name: "sun",
-                                    fullName: "org.json.sun",
-                                    level: 3,
-                                    countClasses: 10,
-                                    known: true,
-                                    childs: [
-                                        {
-                                            id: 12,
-                                            name: "package7",
-                                            fullName: "org.json.sun.package7",
-                                            level: 4,
-                                            countClasses: 10,
-                                            known: false,
-                                            childs: []
-                                        },
-                                        {
-                                            id: 13,
-                                            name: "package8",
-                                            fullName: "org.json.sun.package8",
-                                            level: 4,
-                                            countClasses: 10,
-                                            known: false,
-                                            childs: []
-                                        },
-                                        {
-                                            id: 14,
-                                            name: "oo",
-                                            fullName: "org.json.sun.oo",
-                                            level: 4,
-                                            countClasses: 10,
-                                            known: true,
-                                            childs: []
-                                        },
-                                        {
-                                            id: 15,
-                                            name: "pp",
-                                            fullName: "org.json.sun.pp",
-                                            level: 4,
-                                            countClasses: 10,
-                                            known: true,
-                                            childs: []
-                                        },
-                                    ]
-                                },
-                            ]
-                        },
-                        {
-                            id: 16,
-                            name: "aa",
-                            fullName: "org.aa",
-                            level: 2,
-                            countClasses: 10,
-                            known: true,
-                            childs: [
-                                {
-                                    id: 17,
-                                    name: "mm",
-                                    fullName: "org.aa.mm",
-                                    level: 3,
-                                    countClasses: 10,
-                                    known: true,
-                                    childs: []
-                                },
-                                {
-                                    id: 18,
-                                    name: "nn",
-                                    fullName: "org.aa.nn",
-                                    level: 3,
-                                    countClasses: 10,
-                                    known: true,
-                                    childs: []
-                                },
-                            ]
-                        },
-                        {
-                            id: 19,
-                            name: "bb",
-                            fullName: "org.bb",
-                            level: 2,
-                            countClasses: 10,
-                            known: true,
-                            childs: []
-                        },
-                    ]
-                }
-            ];
-
             this.loading = true;
             this.processPackages();
             this.loading = true;
@@ -283,14 +104,43 @@ export class SelectPackagesWrapperComponent implements ControlValueAccessor, Val
     // Validators
 
     validate(control: AbstractControl): ValidationErrors | null {
-        // return (this.value && this.value.selectedPackages && this.value.selectedPackages.length > 0) ? null : {
-        //     required: {
-        //         valid: false
-        //     }
-        // };
-        return {
-            required: {
-                valid: true
+        let customerValidSelection = true;
+        if (this.customerPackages && this.customerPackages.length > 0) {
+
+            const uniqueResultOne = this.customerPackages
+                .filter((obj) => {
+                    return !this.customerPackagesSelection.selectedPackages
+                        .some((obj2) => obj.fullName == obj2.fullName);
+                });
+
+            customerValidSelection = uniqueResultOne.length > 0;
+        }
+
+        let thirdPartyValidSelection = true;
+        if (this.thirdPartyPackages && this.thirdPartyPackages.length > 0) {
+            const uniqueResultOne = this.thirdPartyPackages
+                .filter((obj) => {
+                    return !this.thirdPartyPackagesSelection.selectedPackages
+                        .some((obj2) => obj.fullName == obj2.fullName);
+                });
+
+            thirdPartyValidSelection = uniqueResultOne.length > 0;
+        }
+
+        let result = false;
+        if (this.customerPackages.length > 0 && this.thirdPartyPackages.length > 0) {
+            result = customerValidSelection || thirdPartyValidSelection;
+        } else {
+            if (this.customerPackages.length > 0) {
+                result = customerValidSelection;
+            } else if (this.thirdPartyPackages.length > 0) {
+                result = thirdPartyValidSelection;
+            }
+        }
+
+        return result ? null : {
+            nothingToAnalyze: {
+                valid: false
             }
         };
     };
@@ -371,13 +221,18 @@ export class SelectPackagesWrapperComponent implements ControlValueAccessor, Val
     updateValue(): void {
         let excludedPackages: Package[] = [];
 
+        const commonExclutions = new Map<number, Package>();
+
         this.customerPackagesSelection.selectedPackages.forEach(element => {
             if (this.commonNodes.has(element.id)) {
+
                 if (!this.containsPackageByFullName(element, this.thirdPartyPackagesSelection.selectedPackages)) {
                     this.getAllMapValuesWhichFullNameStartsWith(element, this.commonNodesCustomer)
                         .forEach(el => {
                             excludedPackages = excludedPackages.concat(el.childs);
                         });
+                } else {
+                    commonExclutions.set(element.id, element);
                 }
             } else {
                 excludedPackages.push(element);
@@ -386,16 +241,26 @@ export class SelectPackagesWrapperComponent implements ControlValueAccessor, Val
 
         this.thirdPartyPackagesSelection.selectedPackages.forEach(element => {
             if (this.commonNodes.has(element.id)) {
+
                 if (!this.containsPackageByFullName(element, this.customerPackagesSelection.selectedPackages)) {
                     this.getAllMapValuesWhichFullNameStartsWith(element, this.commonNodesThirdParty)
                         .forEach(el => {
                             excludedPackages = excludedPackages.concat(el.childs);
                         });
+                } else {
+                    commonExclutions.set(element.id, element);
                 }
             } else {
                 excludedPackages.push(element);
             }
         });
+
+
+        for (const v of commonExclutions.values()) {
+            excludedPackages.push(v);
+        }
+
+        excludedPackages.sort((a, b) => a.fullName.localeCompare(b.fullName));
 
         this.excludedPackages = excludedPackages;
         this.value = excludedPackages;

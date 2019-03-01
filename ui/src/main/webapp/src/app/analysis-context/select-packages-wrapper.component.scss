@@ -2,27 +2,8 @@
     padding: 0 0;
 }
 
-// .card-pf {
-//     padding: 0 0;  
-// }
-
-// .row-cards-pf:first-child {
-//     padding-top: 5px;
-// }
-
-// .card-pf-body {
-//     margin: 0 0 0;
-//     padding-top: 10px;
-//     padding-bottom: 0px;
-// }
-
-// .card-pf-heading {
-//     margin: 0 0 0;
-//     padding: 0 30px;
-// }
-
-//  .card-pf-footer {
-//      margin: 0 0px!important;
-//      padding: 20px 30px 15px;
-//  }
-
+@media (max-width: 768px) {
+    .col-margin-bottom-media {
+        margin-bottom: 20px;
+    }
+}

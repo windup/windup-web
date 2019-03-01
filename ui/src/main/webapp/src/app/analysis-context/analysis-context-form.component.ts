@@ -22,9 +22,7 @@ import {MigrationProjectService} from "../project/migration-project.service";
 import {WINDUP_WEB} from "../app.module";
 import {DialogService} from "../shared/dialog/dialog.service";
 import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
-import {TreeData} from "../shared/js-tree-angular-wrapper.component";
 import {filter} from "rxjs/operators";
-import Arrays = utils.Arrays;
 
 @Component({
     templateUrl: './analysis-context-form.component.html',
@@ -51,8 +49,6 @@ export class AnalysisContextFormComponent extends FormComponent
     includePackages: Package[];
     excludePackages: Package[];
     hideUnfinishedFeatures: boolean = WINDUP_WEB.config.hideUnfinishedFeatures;
-
-    packageSelection: any = {};
 
     private transformationPaths: MigrationPath[] = [
         {
@@ -165,10 +161,6 @@ export class AnalysisContextFormComponent extends FormComponent
                                     if (this.isInWizard) {
                                         this.analysisContext.applications = apps.slice();
                                     }
-
-                                    this.packageSelection.includePackages = this.analysisContext.includePackages;
-                                    this.packageSelection.excludePackages = this.analysisContext.excludePackages;
-
                                     this.loadPackageMetadata();
                                 });
                         }
@@ -295,9 +287,6 @@ export class AnalysisContextFormComponent extends FormComponent
 
             this.includePackages = this.analysisContext.includePackages;
             this.excludePackages = this.analysisContext.excludePackages;
-
-            this.packageSelection.includePackages = this.analysisContext.includePackages;
-            this.packageSelection.excludePackages = this.analysisContext.excludePackages;
         });
 
 
@@ -352,6 +341,7 @@ export class AnalysisContextFormComponent extends FormComponent
             this.analysisContext.applications = this.availableApps.slice();
         }
 
+        this.analysisContext.excludePackages = this.excludePackages;
         this.saveInProgress = true;
 
         this._analysisContextService.saveAsDefault(this.analysisContext, this.project).subscribe(

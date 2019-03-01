@@ -58,6 +58,9 @@ export class SelectPackagesComponent {
     @Input()
     title: string = '';
 
+    // @Input()
+    _defaultValue: boolean | Package[];
+
     // Tree variables
 
     treeControl: FlatTreeControl<PackageFlatNode>;
@@ -93,14 +96,19 @@ export class SelectPackagesComponent {
             this.processPackagesBeforeSendingToDatasource(this._packages);
             this.dataSource.data = this._packages;
 
-            this.loadTreeFromSelection(null);
+            this.loadTreeFromArrayDefaultValue(null);
         }
     }
 
     @Input()
-    set selection(selection: PackageSelection) {
-        if (this.selection) {
-            this.loadTreeFromSelection(selection);
+    set defaultValue(defaultValue: boolean | Package[]) {
+        this._defaultValue = defaultValue;
+        if (defaultValue != null && defaultValue !== undefined) {
+            if (typeof defaultValue === "boolean") {
+                this.loadTreeFromBooleanDefaultValue(defaultValue);
+            } else if (Array.isArray(defaultValue)) {
+                this.loadTreeFromArrayDefaultValue(defaultValue);
+            }
         }
     }
 
@@ -131,11 +139,6 @@ export class SelectPackagesComponent {
                 node.name = parent ? node.fullName.replace(parent.fullName + '.', '') : node.fullName;
             }
 
-            // Change know
-            if (node.known && this.atLeastOneChildIsUnknown(node.childs)) {
-                node.known = false;
-            }
-
             this.parentNestedNodeMap.set(packages[i], parent);
             this.idNestedNodeMap.set(packages[i].id, packages[i]);
 
@@ -143,19 +146,6 @@ export class SelectPackagesComponent {
         }
 
         packages.sort(this.treeModelComparator);
-    }
-
-    private atLeastOneChildIsUnknown(packages: Package[]): boolean {
-        for (let i = 0; i < packages.length; i++) {
-            const node = packages[i];
-            if (!node.known) {
-                return true;
-            }
-            if (node.childs && this.atLeastOneChildIsUnknown(node.childs)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private treeModelComparator(a: Package, b: Package): number {
@@ -174,22 +164,33 @@ export class SelectPackagesComponent {
         }
     }
 
-    private loadTreeFromSelection(selection: PackageSelection): void {
-        if (selection) {
-            // Load previous values into the tree
-            if (selection.selectedPackages.length > 0) {
-                // By default all nodes are unchecked so I just need to toggle include packages
-                this.toggleNodesUsingDetachedPackages(selection.selectedPackages, false);
-            } else {
-                // Check all nodes
-                this.toggleAllNodes(false);
-
-                // Toggle unselected nodes
-                this.toggleNodesUsingDetachedPackages(selection.unselectedPackages, false);
+    private loadTreeFromBooleanDefaultValue(defaultValue: boolean): void {
+        if (defaultValue) {
+            for (let i = 0; i < this._packages.length; i++) {
+                const node = this._packages[i];
+                const flatNode = this.nestedNodeMap.get(node);
+                this.itemSelectionToggle(flatNode, false);
+                this.updateValue();
             }
-
-            this.updateValue();
         }
+    }
+
+    private loadTreeFromArrayDefaultValue(checkedPackages: Package[]): void {
+        // if (checkedPackages) {
+        //     // Load previous values into the tree
+        //     if (checkedPackages.length > 0) {
+        //         // By default all nodes are unchecked so I just need to toggle include packages
+        //         this.toggleNodesUsingDetachedPackages(checkedPackages, false);
+        //     } else {
+        //         // Check all nodes
+        //         this.toggleAllNodes(false);
+
+        //         // Toggle unselected nodes
+        //         this.toggleNodesUsingDetachedPackages(selection.unselectedPackages, false);
+        //     }
+
+        //     this.updateValue();
+        // }
     }
 
     private toggleAllNodes(updateValue: boolean) {
