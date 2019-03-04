@@ -201,32 +201,36 @@ fieldset.fields-section-pf {
 }
 
 /* Angular material*/
-mat-checkbox > label {
-    margin-bottom: 0;
-    font-weight: 400;
+.mat-checkbox > label {
+    margin-bottom: 0 !important;
+    font-weight: 400 !important;
 }
 
-.mat-checkbox-label {
-    font-family: "Open Sans",Helvetica,Arial,sans-serif;
-    font-size: 12px;
-    line-height: 1.66666667;
-    color: #363636;
+.mat-checkbox-label, .mat-tree-node {
+    font-family: "Open Sans",Helvetica,Arial,sans-serif !important;
+    font-size: 12px !important;
+    line-height: 1.66666667 !important;
+    color: #363636 !important;
 }
 
 .mat-checkbox-checked.mat-accent .mat-checkbox-background, .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
-    background-color: #393939;
+    background-color: #393939 !important;
 }
 
 .mat-checkbox:not(.mat-checkbox-disabled).mat-accent .mat-checkbox-ripple .mat-ripple-element {
-    background-color: #d0d0d0;
+    background-color: #d0d0d0 !important;
 }
 
 .mat-tree-node {
-    min-height: 28px !important;
+    min-height: 24px !important;
 }
 
 .mat-icon-button {
-    width: 20px;
-    height: 20px;
-    line-height: 20px;
+    width: 20px !important;
+    height: 20px !important;
+    line-height: 20px !important;
+}
+
+.mat-tree > .mat-tree-node:first-child {
+    margin-top: 10px !important;
 }

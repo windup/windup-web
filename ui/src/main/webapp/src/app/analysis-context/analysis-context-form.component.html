@@ -103,7 +103,8 @@
             <wu-select-packages-wrapper *ngIf="packageTreeLoaded"
                                 name="excludePackages"
                                 [(ngModel)]="excludePackages"
-                                [packages]="packageTree">
+                                [packages]="packageTree"
+                                [useDefaultValues]="isInWizard">
             </wu-select-packages-wrapper>
         </div>
 

@@ -1,0 +1,15 @@
+.row-cards-pf {
+    padding: 0 0;
+}
+
+@media (min-width: 768px) {
+    .col-margin-bottom-media {
+        margin-bottom: 20px !important;
+    }
+}
+
+@media (min-width: 992px) {
+    .col-margin-bottom-media {
+        margin-bottom: 0px !important;
+    }
+}
