@@ -4,7 +4,7 @@ import {
     Output,
     EventEmitter
 } from "@angular/core";
-import { Package } from "../generated/windup-services";
+import { Package } from "../../generated/windup-services";
 import { FlatTreeControl } from "@angular/cdk/tree";
 import { MatTreeFlatDataSource, MatTreeFlattener } from "@angular/material";
 import { SelectionModel } from "@angular/cdk/collections";

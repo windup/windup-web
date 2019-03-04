@@ -1,7 +1,7 @@
 import {
     Component, Input, ViewChild
 } from "@angular/core";
-import { Package } from "../generated/windup-services";
+import { Package } from "../../generated/windup-services";
 import { FlatTreeControl } from "@angular/cdk/tree";
 import { MatTreeFlattener, MatTreeFlatDataSource } from "@angular/material";
 

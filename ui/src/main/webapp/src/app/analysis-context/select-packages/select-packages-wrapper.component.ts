@@ -2,7 +2,7 @@ import {
     Component, forwardRef, Output, EventEmitter, Input, ChangeDetectorRef, OnDestroy
 } from "@angular/core";
 import { NG_VALIDATORS, NG_VALUE_ACCESSOR, ControlValueAccessor, Validator, AbstractControl, ValidationErrors } from "@angular/forms";
-import { Package } from "../generated/windup-services";
+import { Package } from "../../generated/windup-services";
 import { Subscription, Subject } from "rxjs";
 import { debounceTime } from "rxjs/operators";
 
