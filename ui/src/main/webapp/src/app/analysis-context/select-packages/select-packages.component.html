@@ -4,7 +4,7 @@
     {{title}}
 </h3>
 
-<div class="card-pf-body pre-scrollable" *ngIf="dataSource?.data?.length > 0; else emptyPackages" style="height: 225px; margin-top: 0px">
+<div class="card-pf-body pre-scrollable" *ngIf="dataSource?.data?.length > 0; else emptyPackages" style="height: 306px; margin-top: 0px">
     <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" [trackBy]="trackByFn">
         <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
             <button type="button" mat-icon-button disabled></button>

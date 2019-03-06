@@ -23,6 +23,7 @@ import {WINDUP_WEB} from "../app.module";
 import {DialogService} from "../shared/dialog/dialog.service";
 import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
 import {filter} from "rxjs/operators";
+import { PackageSelection } from "./select-packages/select-packages.component";
 
 @Component({
     templateUrl: './analysis-context-form.component.html',
@@ -46,8 +47,7 @@ export class AnalysisContextFormComponent extends FormComponent
      * Workaround for JavaScript issues not able to iterate and modify a simple array of literals within a form easily.
      * See also: http://stackoverflow.com/questions/33346677/angular2-ngmodel-against-ngfor-variables
      */
-    includePackages: Package[];
-    excludePackages: Package[];
+    packageSelection: PackageSelection;
     hideUnfinishedFeatures: boolean = WINDUP_WEB.config.hideUnfinishedFeatures;
 
     private transformationPaths: MigrationPath[] = [
@@ -126,8 +126,10 @@ export class AnalysisContextFormComponent extends FormComponent
                 private _dialogService: DialogService
             ) {
         super();
-        this.includePackages = [];
-        this.excludePackages = [];
+        this.packageSelection = {
+            includePackages: [],
+            excludePackages: []
+        };
 
         this.initializeAnalysisContext();
 
@@ -273,9 +275,9 @@ export class AnalysisContextFormComponent extends FormComponent
 
             if (this.analysisContext != null) {
                 if (this.analysisContext.includePackages == null || this.analysisContext.includePackages.length == 0) {
-                    this.includePackages = [];
+                    this.analysisContext.includePackages = [];
                 } else {
-                    this.includePackages = this.analysisContext.includePackages.map(node => this._packageRegistryService.get(node.id));
+                    this.analysisContext.includePackages = this.analysisContext.includePackages.map(node => this._packageRegistryService.get(node.id));
                 }
 
                 if (this.analysisContext.excludePackages == null || this.analysisContext.excludePackages.length == 0) {
@@ -285,8 +287,8 @@ export class AnalysisContextFormComponent extends FormComponent
                 }
             }
 
-            this.includePackages = this.analysisContext.includePackages;
-            this.excludePackages = this.analysisContext.excludePackages;
+            this.packageSelection.includePackages = this.analysisContext.includePackages;
+            this.packageSelection.excludePackages = this.analysisContext.excludePackages;
         });
 
 
@@ -315,11 +317,6 @@ export class AnalysisContextFormComponent extends FormComponent
         this._dirty = true;
     }
 
-    includedPackagesChanged(selectedNodes: Package[]) {
-        this.analysisContext.includePackages = selectedNodes;
-        this.includePackages = selectedNodes;
-    }
-
     onSubmit() {
         if (!this.packageTreeLoaded) {
             this.confirmDialog.title = 'Package identification is not complete';
@@ -336,7 +333,9 @@ export class AnalysisContextFormComponent extends FormComponent
             this.analysisContext.applications = this.availableApps.slice();
         }
 
-        this.analysisContext.excludePackages = this.excludePackages;
+        this.analysisContext.includePackages = this.packageSelection.includePackages;
+        this.analysisContext.excludePackages = this.packageSelection.excludePackages;
+
         this.saveInProgress = true;
 
         this._analysisContextService.saveAsDefault(this.analysisContext, this.project).subscribe(

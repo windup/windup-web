@@ -2,12 +2,18 @@ import {
     Component,
     Input,
     Output,
-    EventEmitter
+    EventEmitter,
+    OnDestroy
 } from "@angular/core";
 import { Package } from "../../generated/windup-services";
 import { FlatTreeControl } from "@angular/cdk/tree";
 import { MatTreeFlatDataSource, MatTreeFlattener } from "@angular/material";
 import { SelectionModel } from "@angular/cdk/collections";
+
+export class PackageSelection {
+    includePackages: Package[];
+    excludePackages: Package[]
+}
 
 export class PackageFlatNode implements Package {
     id: number;
@@ -27,16 +33,16 @@ export class PackageFlatNode implements Package {
     templateUrl: './select-packages.component.html',
     styleUrls: ['./select-packages.component.scss']
 })
-export class SelectPackagesComponent {
+export class SelectPackagesComponent implements OnDestroy {
 
     @Output('onSelectionChange')
-    onSelectionChange: EventEmitter<Package[]> = new EventEmitter();
+    onSelectionChange: EventEmitter<PackageSelection> = new EventEmitter();
 
     // @Input
     private _packages: Package[];
 
     // @Input value
-    private _value: Package[];
+    private _value: PackageSelection;
 
     @Input()
     icon: string = '';
@@ -45,7 +51,7 @@ export class SelectPackagesComponent {
     title: string = '';
 
     // @Input()
-    _defaultValue: boolean | Package[];
+    _defaultValue: boolean | PackageSelection;
 
     // Tree variables
 
@@ -65,12 +71,14 @@ export class SelectPackagesComponent {
     /** The selection for checklist */
     checklistSelection = new SelectionModel<PackageFlatNode>(true /* multiple */);
 
-    checkedAll: boolean = false;
-
     public constructor() {
         this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel, this.isExpandable, this.getChildren);
         this.treeControl = new FlatTreeControl<any>(this.getLevel, this.isExpandable);
         this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+    }
+
+    ngOnDestroy() {
+        this.clearComponent();
     }
 
     @Input()
@@ -82,18 +90,18 @@ export class SelectPackagesComponent {
             this.processPackagesBeforeSendingToDatasource(this._packages);
             this.dataSource.data = this._packages;
 
-            this.loadTreeFromArrayDefaultValue(null);
+            this.loadTreeFromPreviousPackageSelection(null);
         }
     }
 
     @Input()
-    set defaultValue(defaultValue: boolean | Package[]) {
+    set defaultValue(defaultValue: boolean | PackageSelection) {
         this._defaultValue = defaultValue;
         if (defaultValue != null && defaultValue !== undefined) {
             if (typeof defaultValue === "boolean") {
                 this.loadTreeFromBooleanDefaultValue(defaultValue);
-            } else if (Array.isArray(defaultValue)) {
-                this.loadTreeFromArrayDefaultValue(defaultValue);
+            } else {
+                this.loadTreeFromPreviousPackageSelection(defaultValue);
             }
         }
     }
@@ -156,14 +164,15 @@ export class SelectPackagesComponent {
                 const node = this._packages[i];
                 const flatNode = this.nestedNodeMap.get(node);
                 this.itemSelectionToggle(flatNode, false);
-                this.updateValue();
             }
         }
+        this.updateValue();
     }
 
-    private loadTreeFromArrayDefaultValue(checkedPackages: Package[]): void {
-        if (checkedPackages && checkedPackages.length > 0) {
-            this.toggleNodesUsingDetachedPackages(checkedPackages, false);
+    private loadTreeFromPreviousPackageSelection(packageSelection: PackageSelection): void {
+        if (packageSelection && packageSelection.includePackages.length > 0) {
+            this.toggleNodesUsingDetachedPackages(packageSelection.includePackages, false);
+            this.uncheckNodesUsingDetachedPackages(packageSelection.excludePackages, false);
             this.updateValue();
         }
     }
@@ -178,6 +187,15 @@ export class SelectPackagesComponent {
         });
     }
 
+    private uncheckNodesUsingDetachedPackages(packages: Package[], updateValue: boolean) {
+        packages.forEach((node) => {
+            const packageNode: Package = this.idNestedNodeMap.get(node.id);
+            const packageFlatNode: PackageFlatNode = this.nestedNodeMap.get(packageNode);
+            if (packageFlatNode && this.checklistSelection.isSelected(packageFlatNode)) {
+                this.itemSelectionToggle(packageFlatNode, updateValue);
+            }
+        });
+    }
 
     // Material Tree methods
 
@@ -210,11 +228,6 @@ export class SelectPackagesComponent {
     leafItemSelectionToggle(node: PackageFlatNode, updateValue: boolean = true): void {
         this.checklistSelection.toggle(node);
         this.checkAllParentsSelection(node);
-
-        // All checked button
-        if (!this.checklistSelection.isSelected(node)) {
-            this.checkedAll = false;
-        }
 
         // Update value
         if (updateValue) {
@@ -280,11 +293,6 @@ export class SelectPackagesComponent {
         );
         this.checkAllParentsSelection(node);
 
-        // All checked button
-        if (!this.checklistSelection.isSelected(node)) {
-            this.checkedAll = false;
-        }
-
         // Update value
         if (updateValue) {
             this.updateValue();
@@ -324,15 +332,18 @@ export class SelectPackagesComponent {
         this.onSelectionChange.emit(this._value);
     }
 
-    private getCheckedNodes(packageTree: Package[]): Package[] {
-        let result: Package[] = [];
+    private getCheckedNodes(packageTree: Package[]): PackageSelection {
+        let result: PackageSelection = {
+            includePackages: [],
+            excludePackages: []
+        };
 
         for (let index = 0; index < packageTree.length; index++) {
             const node: Package = packageTree[index];
 
             // If a node is checked, then children are checked too. No need to iterate children
             if (this.isPackageChecked(node)) {
-                result.push(node);
+                result.includePackages.push(node);
             } else {
                 if (node.childs) {
                     let allFirstChildrenAreChecked: boolean = true;
@@ -345,63 +356,26 @@ export class SelectPackagesComponent {
                     }
 
                     // If all first children are checked, then no need to iterate children
-                    if (!allFirstChildrenAreChecked) {
+                    if (allFirstChildrenAreChecked) {
+                        result.excludePackages.push(node);
+                    } else {
+                        //
                         if (this.atLeastOneIsCheckedOnCascade(node.childs)) {
-                            let childResult: Package[] = this.getCheckedNodes(node.childs);
-                            result = result.concat(childResult);
+                            let childResult: PackageSelection = this.getCheckedNodes(node.childs);
+                            result.includePackages = result.includePackages.concat(childResult.includePackages);
+                            result.excludePackages = result.excludePackages.concat(childResult.excludePackages);
+                        } else {
+                            result.excludePackages.push(node);
                         }
                     }
+                } else {
+                    result.excludePackages.push(node);
                 }
             }
         }
 
         return result;
     }
-
-    // private getCheckedNodes(packageTree: Package[]): PackageSelection {
-    //     let result: PackageSelection = {
-    //         selectedPackages: [],
-    //         unselectedPackages: []
-    //     };
-
-    //     for (let index = 0; index < packageTree.length; index++) {
-    //         const node: Package = packageTree[index];
-
-    //         // If a node is checked, then children are checked too. No need to iterate children
-    //         if (this.isPackageChecked(node)) {
-    //             result.selectedPackages.push(node);
-    //         } else {
-    //             if (node.childs) {
-    //                 let allFirstChildrenAreChecked: boolean = true;
-    //                 for (let index = 0; index < node.childs.length; index++) {
-    //                     const child = node.childs[index];
-    //                     if (!this.isPackageChecked(child)) {
-    //                         allFirstChildrenAreChecked = false;
-    //                         break;
-    //                     }
-    //                 }
-
-    //                 // If all first children are checked, then no need to iterate children
-    //                 if (allFirstChildrenAreChecked) {
-    //                     result.unselectedPackages.push(node);
-    //                 } else {
-    //                     //
-    //                     if (this.atLeastOneIsCheckedOnCascade(node.childs)) {
-    //                         let childResult: PackageSelection = this.getCheckedNodes(node.childs);
-    //                         result.selectedPackages = result.selectedPackages.concat(childResult.selectedPackages);
-    //                         result.unselectedPackages = result.unselectedPackages.concat(childResult.unselectedPackages);
-    //                     } else {
-    //                         result.unselectedPackages.push(node);
-    //                     }
-    //                 }
-    //             } else {
-    //                 result.unselectedPackages.push(node);
-    //             }
-    //         }
-    //     }
-
-    //     return result;
-    // }
 
     private isPackageChecked(node: Package): boolean {
         const flatNode: PackageFlatNode = this.nestedNodeMap.get(node);

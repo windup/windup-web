@@ -16,20 +16,21 @@
                 </div>
             </div>
     <h2 class="card-pf-title">
-        Excluded packages
+        {{title}}
     </h2>
 </div>
 
 <div *ngIf="packages && packages.length > 0; else emptyPackages"
      class="card-pf-body"
+     style="margin-bottom: 20px;"
      [ngClass]="{'pre-scrollable': excludePackageViewSelection == 1}"
      [ngStyle]="{'padding': excludePackageViewSelection == 0 ? '0' : '0px 20px'}">
         
     <select *ngIf="excludePackageViewSelection == 0"
             class="form-control"
             multiple
-            size="15"
-            style="border: 0; box-shadow: none; height: 278px; overflow-y: auto;">
+            size="7"
+            style="border: 0; box-shadow: none; height: 129px; overflow-y: auto;">
         <option *ngFor="let item of packages" style="padding-left:25px;">
             {{item.fullName}}
         </option>

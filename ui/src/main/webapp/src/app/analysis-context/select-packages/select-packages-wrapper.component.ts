@@ -5,6 +5,7 @@ import { NG_VALIDATORS, NG_VALUE_ACCESSOR, ControlValueAccessor, Validator, Abst
 import { Package } from "../../generated/windup-services";
 import { Subscription, Subject } from "rxjs";
 import { debounceTime } from "rxjs/operators";
+import { PackageSelection } from "./select-packages.component";
 
 @Component({
     selector: 'wu-select-packages-wrapper',
@@ -23,7 +24,7 @@ import { debounceTime } from "rxjs/operators";
 export class SelectPackagesWrapperComponent implements ControlValueAccessor, Validator, OnDestroy {
 
     @Output('onSelectionChange')
-    onSelectionChange: EventEmitter<Package[]> = new EventEmitter();
+    onSelectionChange: EventEmitter<PackageSelection> = new EventEmitter();
 
     // @Input
     _packages: Package[];
@@ -32,19 +33,26 @@ export class SelectPackagesWrapperComponent implements ControlValueAccessor, Val
     useDefaultValues: Package[];
 
     applicationPackages: Package[];
-    applicationPackagesCheckedNodes: Package[] = [];
+    applicationPackagesSelection: PackageSelection = {
+        includePackages: [],
+        excludePackages: []
+    };
 
     thirdPartyPackages: Package[];
-    thirdPartyPackagesCheckedNodes: Package[] = [];
+    thirdPartyPackagesSelection: PackageSelection = {
+        includePackages: [],
+        excludePackages: []
+    };
 
     commonNodesPackages = new Map<number, Package>();
     commonNodesApplicationPackages = new Map<number, Package>();
     commonNodesThirdPartyPackages = new Map<number, Package>();
 
     // NgForm value
-    value: Package[];
-    originalValue: Package[];
-    excludedPackages: Package[];
+    value: PackageSelection;
+    originalValue: PackageSelection;
+    includePackages: Package[] = []
+    excludePackages: Package[] = []
 
     private _onChange = (_: any) => { };
     private _onTouched = () => { };
@@ -86,7 +94,8 @@ export class SelectPackagesWrapperComponent implements ControlValueAccessor, Val
         if (obj) {
             this.value = obj;
             this.originalValue = obj;
-            this.excludedPackages = obj;
+            this.includePackages = obj.includePackages;
+            this.excludePackages = obj.excludePackages;
         }
     }
 
@@ -115,36 +124,10 @@ export class SelectPackagesWrapperComponent implements ControlValueAccessor, Val
     // Validators
 
     validate(control: AbstractControl): ValidationErrors | null {
-        let isApplicationPackageSelectionValid = true;
-        if (this.applicationPackages && this.applicationPackages.length > 0) {
-            const arrayDifference = this.applicationPackages.filter((obj1) => {
-                return !this.applicationPackagesCheckedNodes.some((obj2) => {
-                    return obj1.fullName == obj2.fullName;
-                });
-            });
-            isApplicationPackageSelectionValid = arrayDifference.length > 0;
-        }
-
-        let isThirdPartyPackageSelectionValid = true;
-        if (this.thirdPartyPackages && this.thirdPartyPackages.length > 0) {
-            const uniqueResultOne = this.thirdPartyPackages.filter((obj) => {
-                return !this.thirdPartyPackagesCheckedNodes.some((obj2) => {
-                    return obj.fullName == obj2.fullName;
-                });
-            });
-            isThirdPartyPackageSelectionValid = uniqueResultOne.length > 0;
-        }
-
-        let valid = false;
-        if (this.applicationPackages.length > 0 && this.thirdPartyPackages.length > 0) {
-            valid = isApplicationPackageSelectionValid || isThirdPartyPackageSelectionValid;
-        } else {
-            if (this.applicationPackages.length > 0) {
-                valid = isApplicationPackageSelectionValid;
-            } else if (this.thirdPartyPackages.length > 0) {
-                valid = isThirdPartyPackageSelectionValid;
-            }
-        }
+        const valid: boolean =
+            this.applicationPackagesSelection &&
+            this.thirdPartyPackagesSelection &&
+            (this.applicationPackagesSelection.includePackages.length + this.thirdPartyPackagesSelection.includePackages.length) > 0
 
         return valid ? null : {
             nothingToAnalyze: {
@@ -206,18 +189,16 @@ export class SelectPackagesWrapperComponent implements ControlValueAccessor, Val
     /**
      * Manages application packages selection events
      */
-    changeApplicationPackagesSelection($event: Package[]): void {
-        this.applicationPackagesCheckedNodes = $event;
-        // this.updateValue();
+    changeApplicationPackagesSelection($event: PackageSelection): void {
+        this.applicationPackagesSelection = $event;
         this.updateValueSubject.next();
     }
 
     /**
      * Manages third party packages selection events
      */
-    changeThirdPartyPackagesSelection($event: Package[]): void {
-        this.thirdPartyPackagesCheckedNodes = $event;
-        // this.updateValue();
+    changeThirdPartyPackagesSelection($event: PackageSelection): void {
+        this.thirdPartyPackagesSelection = $event;
         this.updateValueSubject.next();
     }
 
@@ -225,55 +206,95 @@ export class SelectPackagesWrapperComponent implements ControlValueAccessor, Val
      * Updates 'NgModel' value when select or unselect events occur
      */
     updateValue(): void {
-        const applicationCheckedPackages: Package[] = this.applicationPackagesCheckedNodes;
-        const thirdPartyCheckedPackages: Package[] = this.thirdPartyPackagesCheckedNodes;
+        const applicationCheckedPackages: Package[] = this.applicationPackagesSelection.includePackages;
+        const thirdPartyCheckedPackages: Package[] = this.thirdPartyPackagesSelection.includePackages;
 
-        let excludedPackages = new Map<string, Package>();
+        const applicationUncheckedPackages: Package[] = this.applicationPackagesSelection.excludePackages;
+        const thirdPartyUncheckedPackages: Package[] = this.thirdPartyPackagesSelection.excludePackages;
+
+
+        let includePackages = new Map<string, Package>();
+        let excludePackages = new Map<string, Package>();
+
+        let commonIncludedPackages = new Set<string>();
         let commonExcludedPackages = new Set<string>();
 
-        const processCheckedPackages = (packages1: Package[], packages2: Package[], commonNodes1: Map<number, Package>) => {
+        const processCheckedPackages = (packages1: Package[], packages2: Package[], commonNodes2: Map<number, Package>) => {
+            packages1.forEach((node1: Package) => {
+                // If node exists on both trees: applicationPackages, thirdPartyPackages
+                if (this.commonNodesPackages.has(node1.id)) {
+                    // If node is already included in packages2
+                    if (this.isNodeAlreadyIncludedInArray(node1, packages2)) {
+                        // Include this node and save its reference in a map in order to remove all of its children
+                        includePackages.set(node1.fullName, node1);
+                        commonIncludedPackages.add(node1.fullName);
+                    } else {
+                        includePackages.set(node1.fullName, node1);
+                    }
+                } else {
+                    includePackages.set(node1.fullName, node1);
+                }
+            });
+        };
+
+        const processUncheckedPackages = (packages1: Package[], packages2: Package[], commonNodes2: Map<number, Package>) => {
             packages1.forEach((node1: Package) => {
                 // If node exists on both trees: applicationPackages, thirdPartyPackages
                 if (this.commonNodesPackages.has(node1.id)) {
                     // If node is already excluded in packages2
                     if (this.isNodeAlreadyIncludedInArray(node1, packages2)) {
-                        excludedPackages.set(node1.fullName, node1);
-
-                        // Just for cleaning
+                        // Exclude this node and save its reference in a map in order to remove all of its children
+                        excludePackages.set(node1.fullName, node1);
                         commonExcludedPackages.add(node1.fullName);
                     } else {
-                        this.getAllPackagesWhichFullNameStartsWithNodeFullName(node1, Array.from(commonNodes1.values()))
+                        this.getAllPackagesWhichFullNameStartsWithNodeFullName(node1, Array.from(commonNodes2.values()))
                             .map((p: Package) => p.childs)
                             .forEach((childs: Package[]) => {
-                                childs.filter((p: Package) => {
-                                    return !commonNodes1.has(p.id);
-                                }).forEach((p: Package) => {
-                                    excludedPackages.set(p.fullName, p);
-                                })
+                                childs
+                                    .filter((p: Package) => {
+                                        return !commonNodes2.has(p.id);
+                                    })
+                                    .forEach((p: Package) => {
+                                        excludePackages.set(p.fullName, p);
+                                    })
                             });
                     }
                 } else {
-                    excludedPackages.set(node1.fullName, node1);
+                    excludePackages.set(node1.fullName, node1);
                 }
             });
         };
 
-        processCheckedPackages(applicationCheckedPackages, thirdPartyCheckedPackages, this.commonNodesApplicationPackages);
-        processCheckedPackages(thirdPartyCheckedPackages, applicationCheckedPackages, this.commonNodesThirdPartyPackages);
+        processCheckedPackages(applicationCheckedPackages, thirdPartyCheckedPackages, this.commonNodesThirdPartyPackages);
+        processCheckedPackages(thirdPartyCheckedPackages, applicationCheckedPackages, this.commonNodesApplicationPackages);
+
+        processUncheckedPackages(applicationUncheckedPackages, thirdPartyUncheckedPackages, this.commonNodesApplicationPackages);
+        processUncheckedPackages(thirdPartyUncheckedPackages, applicationUncheckedPackages, this.commonNodesThirdPartyPackages);
 
         // Clean exclution under common nodes
-        for (const fullName of excludedPackages.keys()) {
-            Array.from(commonExcludedPackages.values()).forEach(commonExclutionFullName => {
+        for (const fullName of includePackages.keys()) {
+            Array.from(commonIncludedPackages.values()).forEach(commonExclutionFullName => {
                 if (fullName.startsWith(commonExclutionFullName + ".")) {
-                    excludedPackages.delete(fullName);
+                    includePackages.delete(fullName);
                 }
             });
         };
 
-        const result: Package[] = Array.from(excludedPackages.values());
+        for (const fullName of excludePackages.keys()) {
+            Array.from(commonExcludedPackages.values()).forEach(commonExclutionFullName => {
+                if (fullName.startsWith(commonExclutionFullName + ".")) {
+                    excludePackages.delete(fullName);
+                }
+            });
+        }
 
-        this.excludedPackages = result;
-        this.value = result;
+
+        this.includePackages = Array.from(includePackages.values());
+        this.excludePackages = Array.from(excludePackages.values());
+        this.value = {
+            includePackages: this.includePackages,
+            excludePackages: this.excludePackages
+        };
 
         // Change Model (NgForm)        
         this._onChange(this.value);
