@@ -170,7 +170,7 @@ export class SelectPackagesComponent implements OnDestroy {
     }
 
     private loadTreeFromPreviousPackageSelection(packageSelection: PackageSelection): void {
-        if (packageSelection && packageSelection.includePackages.length > 0) {
+        if (packageSelection) {
             this.toggleNodesUsingDetachedPackages(packageSelection.includePackages, false);
             this.uncheckNodesUsingDetachedPackages(packageSelection.excludePackages, false);
             this.updateValue();
@@ -178,23 +178,27 @@ export class SelectPackagesComponent implements OnDestroy {
     }
 
     private toggleNodesUsingDetachedPackages(packages: Package[], updateValue: boolean) {
-        packages.forEach((node) => {
-            const packageNode: Package = this.idNestedNodeMap.get(node.id);
-            const packageFlatNode: PackageFlatNode = this.nestedNodeMap.get(packageNode);
-            if (packageFlatNode) {
-                this.itemSelectionToggle(packageFlatNode, updateValue);
-            }
-        });
+        if (packages) {
+            packages.forEach((node) => {
+                const packageNode: Package = this.idNestedNodeMap.get(node.id);
+                const packageFlatNode: PackageFlatNode = this.nestedNodeMap.get(packageNode);
+                if (packageFlatNode) {
+                    this.itemSelectionToggle(packageFlatNode, updateValue);
+                }
+            });
+        }
     }
 
     private uncheckNodesUsingDetachedPackages(packages: Package[], updateValue: boolean) {
-        packages.forEach((node) => {
-            const packageNode: Package = this.idNestedNodeMap.get(node.id);
-            const packageFlatNode: PackageFlatNode = this.nestedNodeMap.get(packageNode);
-            if (packageFlatNode && this.checklistSelection.isSelected(packageFlatNode)) {
-                this.itemSelectionToggle(packageFlatNode, updateValue);
-            }
-        });
+        if (packages) {
+            packages.forEach((node) => {
+                const packageNode: Package = this.idNestedNodeMap.get(node.id);
+                const packageFlatNode: PackageFlatNode = this.nestedNodeMap.get(packageNode);
+                if (packageFlatNode && this.checklistSelection.isSelected(packageFlatNode)) {
+                    this.itemSelectionToggle(packageFlatNode, updateValue);
+                }
+            });
+        }
     }
 
     // Material Tree methods
