@@ -215,3 +215,9 @@ a[disabled] {
         }
     }    
 }
+
+@media (max-width: 992px) {
+    .hidden-sm {
+        display: none !important;
+    }
+}

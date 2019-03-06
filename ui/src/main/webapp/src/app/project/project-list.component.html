@@ -41,7 +41,7 @@
                             <ng-container i18n="deleting">Deleting...</ng-container>
                         </ng-container>
                         <ng-template #showProjectActions>
-                            <span class="fa-lg project-action-item" i18n-title="Expand project" title="Expand project">
+                            <span class="fa-lg project-action-item hidden-sm" i18n-title="Expand project" title="Expand project">
                                 <a (click)="project.expanded = !project.expanded; $event.stopPropagation()" class="action-button">
                                     <i class="fa" [ngClass]="project.expanded ? 'fa-angle-down' : 'fa-angle-right'"></i>
                                 </a>
