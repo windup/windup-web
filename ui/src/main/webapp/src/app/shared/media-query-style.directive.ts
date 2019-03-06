@@ -1,13 +1,12 @@
-import { Directive, ElementRef, Renderer2, Input } from "@angular/core";
+import { Directive, ElementRef, Renderer2, Input, OnDestroy } from "@angular/core";
 
 @Directive({
     selector: '[wuMediaQueryStyle]',
 
 })
-export class MediaQueryStyleDirective {
+export class MediaQueryStyleDirective implements OnDestroy {
 
     private _wuMediaQueryStyle: string;
-
     private _wuMediaStyle: any;
 
     // For remove on media query
@@ -17,6 +16,19 @@ export class MediaQueryStyleDirective {
 
     constructor(private el: ElementRef, private renderer: Renderer2) {
 
+    }
+
+    ngOnDestroy() {
+        this.mediaQueryList.removeListener(this.mediaQueryListener);
+        this.mediaQueryList = this.mediaQueryListener = null;
+    }
+
+    get wuMediaQueryStyle(): string {
+        return this._wuMediaQueryStyle;
+    }
+
+    get wuMediaStyle(): any {
+        return this._wuMediaStyle;
     }
 
     @Input()
@@ -36,14 +48,30 @@ export class MediaQueryStyleDirective {
         }
     }
 
+    @Input()
+    set wuMediaStyle(wuMediaStyle: any) {
+        this._wuMediaStyle = wuMediaStyle;
+        if (this._wuMediaStyle) {
+            this.updateComponent();
+        }
+    }
+
+    updateComponent(): void {
+        this.onMediaMatchChange(this.mediaQueryList.matches);
+    }
+
     private onMediaMatchChange(matches: boolean): void {
-        console.log("aca");
+        if (!this._wuMediaQueryStyle || !this._wuMediaStyle) {
+            return;
+        }
+
         if (matches && (!(this.mediaPreviousCondition) || !this.mediaPreviousCondition)) {
             this.mediaPreviousCondition = true;
 
             if (this._wuMediaQueryStyle && this._wuMediaStyle) {
-                Object.keys(this._wuMediaStyle).forEach(function (key) {
-                    const value: string = this._mediaStyle[key];
+                const styleMap = this._wuMediaStyle;
+                Object.keys(styleMap).forEach((key) => {
+                    const value: string = styleMap[key];
                     this.renderer.setStyle(this.el.nativeElement, key, value);
                 });
             }
@@ -51,22 +79,11 @@ export class MediaQueryStyleDirective {
             this.mediaPreviousCondition = false;
 
             if (this._wuMediaQueryStyle && this._wuMediaStyle) {
-                Object.keys(this._wuMediaStyle).forEach(function (key) {
-                    const value: string = this._mediaStyle[key];
-                    this.renderer.removeStyle(this.el.nativeElement, key, value);
+                Object.keys(this._wuMediaStyle).forEach((key) => {
+                    this.renderer.removeStyle(this.el.nativeElement, key);
                 });
             }
         }
-    }
-
-    @Input()
-    set wuMediaStyle(wuMediaStyle: any) {
-        this._wuMediaStyle = wuMediaStyle;
-        this.updateComponent();
-    }
-
-    updateComponent(): void {
-        this.onMediaMatchChange(this.mediaQueryList.matches);
     }
 
 }
