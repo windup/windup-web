@@ -11,6 +11,6 @@ function bell() {
 bell &
 for GIT_REPO in windup windup-rulesets windup-distribution ; do
     git clone --branch="${DEFAULT_BRANCH}" "https://github.com/${GIT_ORGANIZATION}/${GIT_REPO}.git"
-    mvn -f ${GIT_REPO}/pom.xml clean install -DskipTests
+    mvn -f ${GIT_REPO}/pom.xml clean install -DskipTests >> build.log 2>&1
 done
 exit $?
