@@ -181,7 +181,7 @@ a[disabled] {
 }
 
 // For showing the entire project name
-.wu-list-view-pf-main-info {
+.expanded-list-view-pf-main-info {
     align-items: flex-start;
 
     .list-view-pf-body {
@@ -214,10 +214,4 @@ a[disabled] {
             }            
         }
     }    
-}
-
-@media (max-width: 992px) {
-    .hidden-sm {
-        display: none !important;
-    }
 }
