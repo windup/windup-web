@@ -8,8 +8,10 @@ services:
   - docker
 
 cache:
+  yarn: true
   directories:
-    - "~/.m2/repository"
+    - $HOME/.m2
+    - $HOME/.cache/yarn
 
 before_install:
   - ".travis/install-dependencies.sh"
