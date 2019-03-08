@@ -1,10 +1,10 @@
-<h3 class="card-pf-subtitle card-pf-utilization-details" style="padding-left: 20px; margin-bottom: 0;">
+<h3 class="card-pf-subtitle card-pf-utilization-details">
     <!-- <mat-checkbox class="example-margin" [(ngModel)]="checkedAll" (ngModelChange)="onCheckedAllChange($event)">
     </mat-checkbox> -->
     {{title}}
 </h3>
 
-<div class="card-pf-body pre-scrollable" *ngIf="dataSource?.data?.length > 0; else emptyPackages" style="height: 306px; margin-top: 0px">
+<div class="card-pf-body pre-scrollable" *ngIf="dataSource?.data?.length > 0; else emptyPackages">
     <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" [trackBy]="trackByFn">
         <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
             <button type="button" mat-icon-button disabled></button>

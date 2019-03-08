@@ -1,4 +1,4 @@
-<div class="card-pf-heading toolbar-pf" style="padding-top: 0px;">
+<div class="card-pf-heading toolbar-pf">
         <div class="dropdown card-pf-time-frame-filter">
                 <div class="form-group toolbar-pf-view-selector">
                     <button type="button"
@@ -22,7 +22,6 @@
 
 <div *ngIf="packages && packages.length > 0; else emptyPackages"
      class="card-pf-body"
-     style="margin-bottom: 20px;"
      [ngClass]="{'pre-scrollable': excludePackageViewSelection == 1}"
      [ngStyle]="{'padding': excludePackageViewSelection == 0 ? '0' : '0px 20px'}">
         
