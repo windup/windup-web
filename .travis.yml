@@ -3,13 +3,9 @@ language: java
 jdk:
   - oraclejdk8
 
-before_script: ./install-dependencies.sh
+before_script: ./travis/install-dependencies.sh
 script:
   - mvn clean install -DskipTests
-before_cache:
-after_success:
-after_failure:
-before_deploy:
-deploy:
-after_deploy:
-after_script:
+after_script: ./travis/after_script.sh
+before_deploy: ./travis/before_deploy.sh
+deploy: ./travis/deploy.sh
