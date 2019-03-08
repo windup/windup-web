@@ -9,8 +9,8 @@ docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
 
 echo "Tagging using DOCKER_TAG=${DOCKER_TAG}..."
 docker tag ${DOCKER_ID}/windup-web-openshift ${DOCKER_ID}/windup-web-openshift:${DOCKER_TAG}
-docker tag ${DOCKER_ID}/windup-web-openshift-messaging-executor ${DOCKER_ID}/windup-web-openshift-messaging-executor:${DOCKER_TAG}
+docker tag ${DOCKER_ID}/windup-web-openshift-me ${DOCKER_ID}/windup-web-openshift-me:${DOCKER_TAG}
 
 echo "Pushing images..."
 docker push ${DOCKER_ID}/windup-web-openshift:${DOCKER_TAG}
-docker push ${DOCKER_ID}/windup-web-openshift-messaging-executor:${DOCKER_TAG}
+docker push ${DOCKER_ID}/windup-web-openshift-me:${DOCKER_TAG}
