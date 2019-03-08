@@ -7,5 +7,6 @@ for GIT_REPO in windup windup-rulesets windup-distribution ; do
     echo "$ mvn -f ${GIT_REPO}/pom.xml clean install -DskipTests >> install_dependencies.log 2>&1"
     mvn -f ${GIT_REPO}/pom.xml clean install -DskipTests >> install_dependencies.log 2>&1
 
+    echo "$ tail --lines=50 install_dependencies.log"
     tail --lines=50 install_dependencies.log
 done

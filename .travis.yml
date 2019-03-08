@@ -30,6 +30,7 @@ before_script:
 script:
   - mvn clean install -DskipTests >> build.log 2>&1
 after_success:
+  - tail --lines=2000 build.log
   - ".travis/install_web_distribution.sh"
 after_failure:
   - tail --lines=2000 build.log
