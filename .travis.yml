@@ -26,7 +26,7 @@ before_deploy:
   - ".travis/before_deploy.sh"
 deploy:
   provider: script
-  script: .travis//deploy.sh
+  script: .travis/deploy.sh
   on:
     all_branches: true
 
