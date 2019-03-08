@@ -7,6 +7,9 @@ jdk:
 services:
   - docker
 
+env:
+  - NODE_VERSION="10.15.0"
+
 cache:
   yarn: true
   directories:
@@ -14,9 +17,15 @@ cache:
     - $HOME/.cache/yarn
 
 before_install:
-  - ".travis/install-dependencies.sh"
+  - nvm install $NODE_VERSION
+  - echo "$ node --version"
+  - node --version
+  - echo "$ npm --version"
+  - npm --version
 install: true
 
+before_script:
+  - ".travis/install-dependencies.sh"
 script:
   - mvn clean install -DskipTests
 after_success:
