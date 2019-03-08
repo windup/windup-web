@@ -22,6 +22,7 @@ before_install:
   - npm --version
   - curl -o- -L https://yarnpkg.com/install.sh | bash
   - yarn --version
+  - npm install -g phantomjs-prebuilt --unsafe-perm
 install: true
 
 before_script:
