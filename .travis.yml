@@ -12,9 +12,9 @@ env:
 
 cache:
   yarn: true
-  directories:
-    - $HOME/.m2
-    - $HOME/.cache/yarn
+#  directories:
+#    - $HOME/.m2
+#    - $HOME/.cache/yarn
 
 before_install:
   - nvm install $NODE_VERSION
