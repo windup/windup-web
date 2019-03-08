@@ -1,3 +1,5 @@
+sudo: false
+
 language: java
 jdk:
   - oraclejdk8
@@ -10,7 +12,9 @@ cache:
     - "~/.m2/repository"
 
 before_install:
-  - ".travis/install-dependencies.sh"
+  - git clone --branch="${DEFAULT_BRANCH}" "https://github.com/${GIT_ORGANIZATION}/windup.git" && mvn -f windup/pom.xml clean install -DskipTests
+  - git clone --branch="${DEFAULT_BRANCH}" "https://github.com/${GIT_ORGANIZATION}/windup-rulesets.git" && mvn -f windup-rulesets/pom.xml clean install -DskipTests
+  - git clone --branch="${DEFAULT_BRANCH}" "https://github.com/${GIT_ORGANIZATION}/windup-distribution.git" && mvn -f windup-distribution/pom.xml clean install -DskipTests
 install:
   - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 
