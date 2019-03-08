@@ -3,7 +3,7 @@
 # For avoiding travis timeout
 function bell() {
   while true; do
-    echo -e "..."
+    echo -e "Executing..."
     sleep 60
   done
 }
@@ -15,6 +15,6 @@ for GIT_REPO in windup windup-rulesets windup-distribution ; do
     echo "$ mvn -f ${GIT_REPO}/pom.xml clean install -DskipTests >> install_dependencies.log 2>&1"
     mvn -f ${GIT_REPO}/pom.xml clean install -DskipTests >> install_dependencies.log 2>&1
 
-    tail --lines=100 install_dependencies.log
+    tail --lines=50 install_dependencies.log
 done
 exit $?
