@@ -28,9 +28,11 @@ install: true
 before_script:
   - ".travis/install-dependencies.sh"
 script:
-  - mvn clean install -DskipTests
+  - mvn clean install -DskipTests >> build.log 2>&1
 after_success:
   - ".travis/install_web_distribution.sh"
+after_failure:
+  - tail --lines=2000 build.log
 
 before_deploy:
   - ".travis/install_openshift_distribution.sh"

@@ -4,4 +4,5 @@ git clone --branch="${DEFAULT_BRANCH}" "https://github.com/${GIT_ORGANIZATION}/w
  
 mvn clean install -f windup-openshift \
 -Ddocker.name.windup.web=${DOCKER_ID}/windup-web-openshift \
--Ddocker.name.windup.web.executor=${DOCKER_ID}/windup-web-openshift-messaging-executor
+-Ddocker.name.windup.web.executor=${DOCKER_ID}/windup-web-openshift-messaging-executor \
+>> image.log 2>&1
