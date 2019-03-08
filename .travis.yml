@@ -13,8 +13,7 @@ cache:
 
 before_install:
   - ".travis/install-dependencies.sh"
-install:
-  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+install: true
 
 script:
   - mvn clean install -DskipTests
