@@ -12,7 +12,7 @@ cache:
     - "~/.m2/repository"
 
 before_install:
-  - "travis_wait 30 .travis/install-dependencies.sh"
+  - ".travis/install-dependencies.sh"
 install:
   - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 
