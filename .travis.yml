@@ -12,20 +12,20 @@ cache:
     - "~/.m2/repository"
 
 before_install:
-  - "./travis/install-dependencies.sh"
+  - "./.travis/install-dependencies.sh"
 install:
   - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 
 script:
   - mvn clean install -DskipTests
 after_success:
-  - "./travis/after_script.sh"
+  - ".travis/after_script.sh"
 
 before_deploy:
-  - "./travis/before_deploy.sh"
+  - ".travis/before_deploy.sh"
 deploy:
   provider: script
-  script: ./travis/deploy.sh
+  script: .travis//deploy.sh
   on:
     all_branches: true
 
