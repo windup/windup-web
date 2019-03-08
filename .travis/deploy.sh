@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-echo "Executing deploy created script"
 
 GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 GIT_COMMIT_ID="$(git rev-parse --short HEAD)"

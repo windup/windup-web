@@ -18,9 +18,7 @@ cache:
 
 before_install:
   - nvm install $NODE_VERSION
-  - echo "$ node --version"
   - node --version
-  - echo "$ npm --version"
   - npm --version
 install: true
 
@@ -29,10 +27,10 @@ before_script:
 script:
   - mvn clean install -DskipTests
 after_success:
-  - ".travis/after_script.sh"
+  - ".travis/install_web_distribution.sh"
 
 before_deploy:
-  - ".travis/before_deploy.sh"
+  - ".travis/install_openshift_distribution.sh"
 deploy:
   provider: script
   script: .travis/deploy.sh

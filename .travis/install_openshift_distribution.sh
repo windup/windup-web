@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-echo "Executing before deploy created script"
-
 git clone --branch="${DEFAULT_BRANCH}" "https://github.com/${GIT_ORGANIZATION}/windup-openshift.git"
  
 mvn clean install -f windup-openshift \
