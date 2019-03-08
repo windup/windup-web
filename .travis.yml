@@ -1,11 +1,28 @@
 sudo: required
+
 language: java
 jdk:
   - oraclejdk8
 
-before_script: ./travis/install-dependencies.sh
+services:
+  - docker
+
+cache:
+  directories:
+    - "~/.m2/repository"
+
+before_script:
+  - "./travis/install-dependencies.sh"
 script:
   - mvn clean install -DskipTests
-after_script: ./travis/after_script.sh
-before_deploy: ./travis/before_deploy.sh
-deploy: ./travis/deploy.sh
+after_success:
+  - "./travis/after_script.sh"
+
+before_deploy:
+  - "./travis/before_deploy.sh"
+deploy:
+  provider: script
+  script: ./travis/deploy.sh
+  on:
+    all_branches: true
+
