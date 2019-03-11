@@ -30,7 +30,6 @@ before_script:
   - ".travis/install-dependencies.sh"
 script:
   - mvn clean install -DskipTests >> build.log 2>&1
-after_success:
   - tail --lines=2000 build.log
   - ".travis/build_docker_images.sh"
 after_failure:
