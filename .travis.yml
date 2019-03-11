@@ -10,6 +10,8 @@ services:
 env:
   - NODE_VERSION="10.15.0"
 
+before_cache:
+  - rm -rf $HOME/.m2/repository/org/jboss/windup/
 cache:
   yarn: true
   directories:
@@ -30,12 +32,10 @@ script:
   - mvn clean install -DskipTests >> build.log 2>&1
 after_success:
   - tail --lines=2000 build.log
-  - ".travis/install_web_distribution.sh"
+  - ".travis/build_docker_images.sh"
 after_failure:
   - tail --lines=2000 build.log
 
-before_deploy:
-  - ".travis/install_openshift_distribution.sh"
 deploy:
   provider: script
   script: .travis/deploy.sh
