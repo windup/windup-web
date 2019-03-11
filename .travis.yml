@@ -10,12 +10,8 @@ services:
 env:
   - NODE_VERSION="10.15.0"
 
-before_cache:
-  - rm -rf $HOME/.m2/repository/org/jboss/windup/
 cache:
   yarn: true
-  directories:
-    - $HOME/.m2
 
 before_install:
   - nvm install $NODE_VERSION
@@ -30,14 +26,16 @@ before_script:
   - ".travis/install-dependencies.sh"
 script:
   - mvn clean install -DskipTests >> build.log 2>&1
+after_success:
   - tail --lines=2000 build.log
-  - ".travis/build_docker_images.sh"
 after_failure:
   - tail --lines=2000 build.log
 
+before_deploy:
+  - ".travis/build_docker_images.sh"
 deploy:
   provider: script
-  script: .travis/deploy.sh
+  script: ".travis/deploy.sh"
   on:
     all_branches: true
 
