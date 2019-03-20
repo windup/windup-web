@@ -65,6 +65,7 @@
     "jstree": "3.3.7",
     "karma-junit-reporter": "^1.1.0",
     "keycloak-js": "^4.8.3",
+    "moment": "^2.24.0",
     "material-design-icons": "^3.0.1",
     "ng2-file-upload": "^1.2.1",
     "ngx-moment": "^3.3.0",
