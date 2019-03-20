@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.jboss.windup.web.addons</groupId>
         <artifactId>windup-web-messaging-executor-parent</artifactId>
-        <version>4.2.1-SNAPSHOT</version>
+        <version>4.3.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>windup-web-messaging-executor-impl</artifactId>
@@ -28,7 +28,7 @@
         <dependency>
             <groupId>org.wildfly</groupId>
             <artifactId>wildfly-jms-client-bom</artifactId>
-            <version>10.1.0.Final</version>
+            <version>${version.wildfly}</version>
             <type>pom</type>
             <exclusions>
                 <exclusion>
