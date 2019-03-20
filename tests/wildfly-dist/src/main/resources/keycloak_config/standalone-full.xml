@@ -100,7 +100,7 @@
     <profile>
         <subsystem xmlns="urn:jboss:domain:logging:3.0">
             <console-handler name="CONSOLE">
-                <level name="INFO"/>
+                <level name="TRACE"/>
                 <formatter>
                     <named-formatter name="COLOR-PATTERN"/>
                 </formatter>
@@ -301,6 +301,10 @@
                 <local-cache name="offlineSessions"/>
                 <local-cache name="loginFailures"/>
                 <local-cache name="work"/>
+                <local-cache name="offlineClientSessions"/>
+                <local-cache name="authenticationSessions"/>
+                <local-cache name="clientSessions"/>
+                <local-cache name="actionTokens"/>
                 <local-cache name="authorization">
                     <eviction strategy="LRU" max-entries="100"/>
                 </local-cache>
@@ -554,6 +558,17 @@
                     </properties>
                 </provider>
             </spi>
+            <spi name="hostname">
+                <default-provider>request</default-provider>
+                <provider name="fixed" enabled="true">
+                    <properties>
+                        <property name="hostname" value="localhost"/>
+                        <property name="httpPort" value="-1"/>
+                        <property name="httpsPort" value="-1"/>
+                    </properties>
+                </provider>
+
+            </spi>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:keycloak:1.1">
             <secure-deployment name="rhamt-web.war">
@@ -570,7 +585,7 @@
                 <public-client>true</public-client>
                 <realm-public-key>${keycloak.realm.public.key}</realm-public-key>
                 <auth-server-url>${keycloak.server.url}</auth-server-url>
-                <ssl-required>EXTERNAL</ssl-required>
+                <ssl-required>NONE</ssl-required>
             </secure-deployment>
         </subsystem>
     </profile>
