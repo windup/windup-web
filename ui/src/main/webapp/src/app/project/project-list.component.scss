@@ -179,3 +179,39 @@ a[disabled] {
         color: $disabled-button-color;
     }
 }
+
+// For showing the entire project name
+.expanded-list-view-pf-main-info {
+    align-items: flex-start;
+
+    .list-view-pf-body {
+        align-items: center;
+        display: table-cell; //IE9 fallback
+        flex-direction: unset;
+
+        .list-view-pf-description {
+            align-items: unset;
+            display: unset;
+            float: unset; //IE9 fallback
+            width: unset; //IE9 fallback
+
+            .list-group-item-heading {
+                flex: unset;
+                float: unset; // IE9 fallback
+                font-size: 16px;
+                margin: unset;
+                overflow: unset;
+                text-overflow: unset;
+                white-space: unset;
+                width: unset; // IE9 fallback
+            }
+
+            .list-group-item-text {
+                flex: unset; // it covers whats left from the title
+                float: unset; // IE9 fallback
+                margin: unset;
+                width: unset; // IE9 fallback
+            }            
+        }
+    }    
+}
