@@ -15,7 +15,7 @@
 
     <container qualifier="jbossas-managed" default="true">
         <configuration>
-            <property name="jbossHome">target/wildfly-10.1.0.Final</property>
+            <property name="jbossHome">target/wildfly-${wildfly.version}</property>
             <property name="serverConfig">standalone-full.xml</property>
             <property name="javaVmArguments">-Xms64m -Xmx2048m -Dorg.jboss.resolver.warning=true -Djboss.socket.binding.port-offset=100</property>
             <property name="managementPort">10090</property>

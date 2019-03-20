@@ -120,4 +120,4 @@ import "prismjs/components/prism-yaml";
 
 import "prismjs/plugins/keep-markup/prism-keep-markup";
 
-export * from 'prismjs';
+export * from 'prismjs'; 
