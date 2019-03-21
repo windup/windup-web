@@ -157,3 +157,8 @@ ul.navbar-utility {
   margin-top: 11px;
   margin-right: -21px;
 }
+
+// Upgrade patternfly compatibility
+[class*=" pficon-"], [class^=pficon-] {
+  line-height: 1 !important;
+}
