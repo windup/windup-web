@@ -56,9 +56,7 @@ export class TechnologiesRemoteServicesReportComponent extends FilterableReportC
 
     ) {
         super(router, activatedRoute, routeFlattener);
-    }
 
-    ngOnInit(): void {
         this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
             this.title = flatRouteData.data.displayName;
 
@@ -111,6 +109,10 @@ export class TechnologiesRemoteServicesReportComponent extends FilterableReportC
                 this._notificationService.error(utils.getErrorMessage(error));
             });
         }));
+    }
+
+    ngOnInit(): void {
+        
     }
 
     updateSearch() {

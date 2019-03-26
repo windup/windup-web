@@ -15,7 +15,7 @@
                 </thead>
                 <tbody>
                 <ng-container *ngFor="let item of filteredItems | wuSort: sort">
-                    <ng-template [ngTemplateOutlet]="rowTemplate" [ngOutletContext]="{$implicit: item}"></ng-template>
+                    <ng-template [ngTemplateOutlet]="rowTemplate" [ngTemplateOutletContext]="{$implicit: item}"></ng-template>
                 </ng-container>
                 </tbody>
             </table>

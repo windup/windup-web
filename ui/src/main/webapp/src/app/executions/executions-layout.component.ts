@@ -13,6 +13,7 @@ import {MigrationProjectService} from "../project/migration-project.service";
 import {DatePipe} from "@angular/common";
 import {FlattenedRouteData, RouteFlattenerService} from "../core/routing/route-flattener.service";
 import {WindupExecutionService} from "../services/windup-execution.service";
+import { filter } from 'rxjs/operators';
 
 @Component({
     templateUrl: './executions-layout.component.html',
@@ -42,8 +43,10 @@ export class ExecutionsLayoutComponent extends ProjectLayoutComponent implements
 
         let executionId = +flatRoute.params.executionId;
         this.addSubscription(this._eventBus.onEvent
-            .filter(event => event.isTypeOf(ExecutionEvent))
-            .filter((event: ExecutionEvent) => event.execution.id === executionId)
+            .pipe(
+                filter(event => event.isTypeOf(ExecutionEvent)),
+                filter((event: ExecutionEvent) => event.execution.id === executionId)
+            )
             .subscribe((event: ExecutionEvent) => {
                 this.execution = event.execution;
                 this.createContextMenuItems();

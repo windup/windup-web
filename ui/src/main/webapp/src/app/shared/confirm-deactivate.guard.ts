@@ -1,8 +1,9 @@
 import {CanDeactivate, ActivatedRouteSnapshot, RouterStateSnapshot} from "@angular/router";
 import {IsDirty} from "./is-dirty.interface";
-import {Observable} from "rxjs/Observable";
+import {Observable} from 'rxjs';
 import {DialogService} from "./dialog/dialog.service";
 import {Injectable} from "@angular/core";
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class ConfirmDeactivateGuard implements CanDeactivate<IsDirty> {
@@ -17,7 +18,10 @@ export class ConfirmDeactivateGuard implements CanDeactivate<IsDirty> {
             dialog.body = 'You will lose any unsaved changes. Do you want to continue?';
             dialog.show();
 
-            return dialog.closed.map(dialogResult => dialogResult.result);
+            return dialog.closed
+            .pipe(
+                map(dialogResult => dialogResult.result)
+            );
         }
 
         return true;

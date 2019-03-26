@@ -54,9 +54,7 @@ export class TechnologiesHibernateReportComponent extends FilterableReportCompon
 
     ) {
         super(router, activatedRoute, routeFlattener);
-    }
 
-    ngOnInit(): void {
         this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
             this.title = flatRouteData.data.displayName;
 
@@ -94,6 +92,10 @@ export class TechnologiesHibernateReportComponent extends FilterableReportCompon
                 this._notificationService.error(utils.getErrorMessage(error));
             });
         }));
+    }
+
+    ngOnInit(): void {
+        
     }
 
     updateSearch() {

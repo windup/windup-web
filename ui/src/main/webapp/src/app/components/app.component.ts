@@ -4,6 +4,7 @@ import {RouteHistoryService} from "../core/routing/route-history.service";
 import {RouteFlattenerService} from "../core/routing/route-flattener.service";
 import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
 import {DialogService} from "../shared/dialog/dialog.service";
+import {filter} from 'rxjs/operators';
 
 @Component({
     selector: 'windup-app',
@@ -27,7 +28,9 @@ export class AppComponent implements AfterViewInit {
         private dialogService: DialogService
     ) {
         router.events
-            .filter(event => event instanceof NavigationEnd)
+            .pipe(
+                filter(event => event instanceof NavigationEnd)
+            )            
             .subscribe((event: NavigationEnd) => {
                 this.routeHistoryService.addNavigationEvent(event);
                 this.routeFlattener.onNewRouteActivated(activatedRoute.snapshot);
