@@ -12,7 +12,8 @@ import { ToolbarConfig } from 'patternfly-ng/toolbar/toolbar-config';
 import { SortConfig } from 'patternfly-ng/sort';
 import { FilterConfig, FilterField, FilterType, FilterEvent, Filter } from 'patternfly-ng/filter';
 import { getAvailableFilters } from '../../configuration/technology-filter';
-import { BsModalService } from 'ngx-bootstrap/modal';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
+import { SingleFileRuleContentModalComponent } from './single-file-rule-content-modal.component';
 
 @Component({
     selector: 'wu-custom-rule-selection-card',
@@ -20,6 +21,8 @@ import { BsModalService } from 'ngx-bootstrap/modal';
     styleUrls: ['./custom-rule-selection-card.component.scss']
 })
 export class CustomRuleSelectionCardComponent implements OnDestroy {
+
+    bsModalRef: BsModalRef;
 
     @ViewChild('idTemplate') idTemplate: TemplateRef<any>;
     @ViewChild('sourceTargetTemplate') sourceTargetTemplate: TemplateRef<any>;
@@ -349,6 +352,6 @@ export class CustomRuleSelectionCardComponent implements OnDestroy {
     // Modal
 
     openModal(template: TemplateRef<any>) {
-        this.modalService.show(template);
+        this.bsModalRef = this.modalService.show(SingleFileRuleContentModalComponent);
     }
 }
