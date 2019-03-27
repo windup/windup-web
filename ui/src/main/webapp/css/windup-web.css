@@ -199,3 +199,21 @@ fieldset.fields-section-pf {
     margin-top: 20px;
     margin-bottom: 0px;
 }
+
+.text-center-override {
+    text-align: center !important;
+}
+
+/**Remove botton margin on patternfly-table*/
+.content-view-pf-pagination.list-view-pf-pagination {
+    margin-top: 5px !important;
+}
+
+.content-view-pf-pagination .form-group {
+    align-items: center !important;
+}
+
+.form-horizontal .toolbar-pf-actions .form-group {
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+}

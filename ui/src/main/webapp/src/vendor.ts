@@ -48,6 +48,7 @@ require('../node_modules/jstree/dist/themes/default/style.min.css');
 // css
 require('../node_modules/patternfly/dist/css/patternfly.min.css');
 require('../node_modules/patternfly/dist/css/patternfly-additions.min.css');
+require('../node_modules/patternfly-ng/dist/css/patternfly-ng.min.css');
 
 // Google Code Prettify
 require('../node_modules/google-code-prettify/bin/prettify.min.js');

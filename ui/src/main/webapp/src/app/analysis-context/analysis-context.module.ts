@@ -8,28 +8,41 @@ import {AnalysisContextAdvancedOptionsModalComponent} from "./analysis-context-a
 import {SharedModule} from "../shared/shared.module";
 import {RouterModule} from "@angular/router";
 import {SelectApplicationsComponent} from "./select-applications.component";
+import {CustomRuleSelectionCardComponent} from "./custom-rule-selection-card/custom-rule-selection-card.component";
+import {TableModule} from "patternfly-ng/table";
+import {TechnologyTextComponent} from "./custom-rule-selection-card/technology-text.component";
+import {TabsModule, TabsetConfig} from "ngx-bootstrap/tabs";
+import {ModalModule} from "ngx-bootstrap/modal";
 
 @NgModule({
     imports: [
         SharedModule,
-        RouterModule.forChild([])
+        RouterModule.forChild([]),
+        TableModule,
+        TabsModule,
+        ModalModule
     ],
     declarations: [
         AnalysisContextFormComponent,
         AnalysisContextAdvancedOptionsModalComponent,
         CustomRuleSelectionComponent,
-        SelectApplicationsComponent
+        SelectApplicationsComponent,
+        CustomRuleSelectionCardComponent,
+        TechnologyTextComponent
     ],
     exports: [
         AnalysisContextFormComponent,
         AnalysisContextAdvancedOptionsModalComponent,
         CustomRuleSelectionComponent,
-        SelectApplicationsComponent
+        SelectApplicationsComponent,
+        CustomRuleSelectionCardComponent,
+        TechnologyTextComponent
     ],
     providers: [
         AnalysisContextService,
         MigrationPathService,
         PackageRegistryService,
+        TabsetConfig
     ]
 })
 export class AnalysisContextModule {
