@@ -9,7 +9,7 @@ if (process.env.ENV === 'production') {
     enableProdMode();
 }
 
-platformBrowserDynamic().bootstrapModule(AppModule).then(app => {
+platformBrowserDynamic().bootstrapModule(AppModule, { preserveWhitespaces: true }).then(app => {
     // this is just here to make some data easier to retrieve from tests
     window["app"] = app;
     window["MainNgZone"] = app.injector.get(NgZone);

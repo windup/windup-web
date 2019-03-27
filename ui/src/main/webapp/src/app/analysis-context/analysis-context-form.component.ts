@@ -23,7 +23,7 @@ import {WINDUP_WEB} from "../app.module";
 import {DialogService} from "../shared/dialog/dialog.service";
 import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
 import {filter} from "rxjs/operators";
-import { PackageSelection } from "./select-packages/select-packages.component";
+import {PackageSelection} from "./select-packages/select-packages.component";
 
 @Component({
     templateUrl: './analysis-context-form.component.html',
@@ -290,8 +290,6 @@ export class AnalysisContextFormComponent extends FormComponent
             this.packageSelection.includePackages = this.analysisContext.includePackages;
             this.packageSelection.excludePackages = this.analysisContext.excludePackages;
         });
-
-
     }
 
     get migrationPaths() {
