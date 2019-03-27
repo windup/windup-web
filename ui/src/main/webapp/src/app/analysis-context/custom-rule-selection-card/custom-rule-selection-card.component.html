@@ -1,55 +1,62 @@
 <div class="row">
-    <div class="col-xs-6 col-sm-8 col-md-8">
+    <div class="col-xs-12 col-sm-12 col-md-8">
         <div class="card-pf">
             <div class="card-pf-heading">
                 <h2 class="card-pf-title">
                     Custom rules
                 </h2>
             </div>
-            <div class="card-pf-body">
+            <div class="card-pf-body" style="min-height: 346px;">
                 
                 <tabset>
-                    <tab heading="Single custom rules" id="tab1">
+                    <tab heading="Uploaded" id="tab1">
+                        <pfng-table
+                            [actionTemplate]="actionTemplate"
+                            [config]="tableConfig"
+                            [columns]="columns"
+                            [rows]="rows"
+                            (onActionSelect)="handleAction($event)"
+                            (onFilterChange)="filterChanged($event)"
+                            (onFilterFieldSelect)="filterFieldSelected($event)"
+                            (onFilterTypeAhead)="filterQueries($event)"
+                            (onPageNumberChange)="handlePageNumber($event)"
+                            (onPageSizeChange)="handlePageSize($event)"
+                            (onSelectionChange)="handleSelectionChange($event)">
+                        </pfng-table>
 
+                        <!-- Column templates -->
+                        <ng-template #idTemplate let-row="row">
+                            <span>{{row.rulesPath.shortPath}}</span>
+                        </ng-template>
+                        <ng-template #sourceTargetTemplate let-row="row">                            
+                            <!-- Source: <span *ngFor="let technology of row.sources">{{technology.name}}{{versionRangeSuffix}}</span> / Target: <span *ngFor="let technology of row.targets">{{technology.name}}{{versionRangeSuffix}}</span> -->
+                            Source: <wu-technology-text *ngFor="let technology of row.sources" [technology]="technology"></wu-technology-text>&nbsp; Target: <wu-technology-text *ngFor="let technology of row.targets" [technology]="technology"></wu-technology-text>
+                            <!-- <p style="margin: 0">Source: <wu-technology-text *ngFor="let technology of row.sources" [technology]="technology"></wu-technology-text></p>
+                            <p style="margin: 0">Target: <wu-technology-text *ngFor="let technology of row.targets" [technology]="technology"></wu-technology-text></p> -->
+                        </ng-template>
+                        <ng-template #rulesTemplate let-row="row">
+                            <span><span class="fa fa-list-ol"></span> {{row.rules.length}} Rules</span>
+                        </ng-template>
+                        <ng-template #showTemplate let-row="row">
+                            <button (click)="openModal(row)" type="button" class="btn btn-default">View <i class="fa fa-eye"></i></button>
+                            <button (click)="selectRow(row)" type="button" class="btn btn-default">Select <i class="fa fa-angle-double-right"></i></button>
+                        </ng-template>
+
+                        <!-- Toolbar action template -->
+                        <ng-template #actionTemplate>
+                            <button (click)="selectAction()" class="btn btn-default primary-action" type="button">Select&nbsp;<span class="fa fa-angle-double-right"></span></button>
+                            <button class="btn btn-primary primary-action" type="button">Add</button>
+                        </ng-template>
                     </tab>
-                    <tab heading="Directory custom rules">Basic content 1</tab>                    
+                    <tab heading="Server Path">
+                        basic content
+                    </tab>                    
                 </tabset>
-
-                <pfng-table
-                    [config]="tableConfig"
-                    [columns]="columns"
-                    [rows]="rows"
-                    (onActionSelect)="handleAction($event)"
-                    (onFilterChange)="filterChanged($event)"
-                    (onFilterFieldSelect)="filterFieldSelected($event)"
-                    (onFilterTypeAhead)="filterQueries($event)"
-                    (onPageNumberChange)="handlePageNumber($event)"
-                    (onPageSizeChange)="handlePageSize($event)">
-                </pfng-table>
-
-                <!-- Column templates -->
-                <ng-template #idTemplate let-row="row">
-                    <span>{{row.providerID}}</span>
-                </ng-template>
-                <ng-template #sourceTargetTemplate let-row="row">
-                    <!-- Source: <wu-technology *ngFor="let source of row.sources" [technology]="source"></wu-technology> / Target: <wu-technology *ngFor="let target of row.targets" [technology]="target"></wu-technology> -->
-                    <!-- Source: <span *ngFor="let technology of row.sources">{{technology.name}}{{versionRangeSuffix}}</span> / Target: <span *ngFor="let technology of row.targets">{{technology.name}}{{versionRangeSuffix}}</span> -->
-                    Source: <wu-technology-text *ngFor="let technology of row.sources" [technology]="technology"></wu-technology-text> / Target: <wu-technology-text *ngFor="let technology of row.targets" [technology]="technology"></wu-technology-text>
-                </ng-template>
-                <ng-template #rulesTemplate let-row="row">
-                    <span>{{row.rules.length}}</span>
-                </ng-template>
-                <ng-template #showTemplate let-row="row">
-                    <button (click)="openModal(ruleDetailsModal)" type="button" class="btn btn-default btn-sm">View <i class="pficon pficon-edit"></i></button>
-                    <!-- <span>|</span> -->
-                    <!-- <a href="">Select <i class="fa fa-angle-double-right"></i></a> -->
-                    <button type="button" class="btn btn-default btn-sm">Select <i class="fa fa-angle-double-right"></i></button>
-                </ng-template>
 
             </div>
         </div>
     </div>
-    <div class="col-xs-6 col-sm-4 col-md-4">
+    <div class="col-xs-12 col-sm-12 col-md-4">
         <div class="card-pf">
             <div class="card-pf-body">
                 <select
@@ -57,8 +64,11 @@
                         multiple
                         size="7"
                         style="border: 0; box-shadow: none; height: 129px; overflow-y: auto;">
-                    <option *ngFor="let item of selectedRows" style="padding-left:25px;">
+                    <!-- <option *ngFor="let item of selectedRows" style="padding-left:25px;">
                         {{item.providerID}} <wu-technology-text *ngFor="let technology of item.sources" [technology]="technology"></wu-technology-text> => <wu-technology-text *ngFor="let technology of item.targets" [technology]="technology"></wu-technology-text>
+                    </option> -->
+                    <option *ngFor="let item of selectedRulesPath | keyvalue">
+                        {{item.value.shortPath}}
                     </option>
                 </select>
             </div>
@@ -70,24 +80,3 @@
         </div>
     </div>
 </div>
-
-<ng-template #ruleDetailsModal>
-    <div class="modal-header">
-        <h4 class="modal-title pull-left">Modal</h4>
-        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <div class="modal-body">
-        
-        <div *ngFor="let ruleEntity of ruleProvider.rules; let i = index">
-            <h4 id="{{ruleEntity.id}}">{{getLabelForRuleID(ruleEntity.ruleID, ruleProvider.providerID, i)}}
-                <i class="fa fa-angle-up fa-pull-right fa-border" aria-hidden="true"
-                   (click)="scrollToRuleSetHeader(ruleProvider.id)"
-                   title="Go to rules set header"></i>
-            </h4>
-            <pre (load)="prettyPrint()" class="prettyprint" style="white-space: pre-wrap">{{ruleEntity.ruleContents}}</pre>
-        </div>
-        
-    </div>
-</ng-template>

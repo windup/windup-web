@@ -13,6 +13,7 @@ import {TableModule} from "patternfly-ng/table";
 import {TechnologyTextComponent} from "./custom-rule-selection-card/technology-text.component";
 import {TabsModule, TabsetConfig} from "ngx-bootstrap/tabs";
 import {ModalModule} from "ngx-bootstrap/modal";
+import {SingleFileRuleContentModalComponent} from "./custom-rule-selection-card/single-file-rule-content-modal.component";
 
 @NgModule({
     imports: [
@@ -28,7 +29,8 @@ import {ModalModule} from "ngx-bootstrap/modal";
         CustomRuleSelectionComponent,
         SelectApplicationsComponent,
         CustomRuleSelectionCardComponent,
-        TechnologyTextComponent
+        TechnologyTextComponent,
+        SingleFileRuleContentModalComponent
     ],
     exports: [
         AnalysisContextFormComponent,
@@ -36,13 +38,17 @@ import {ModalModule} from "ngx-bootstrap/modal";
         CustomRuleSelectionComponent,
         SelectApplicationsComponent,
         CustomRuleSelectionCardComponent,
-        TechnologyTextComponent
+        TechnologyTextComponent,
+        SingleFileRuleContentModalComponent
     ],
     providers: [
         AnalysisContextService,
         MigrationPathService,
         PackageRegistryService,
         TabsetConfig
+    ],
+    entryComponents: [
+        SingleFileRuleContentModalComponent
     ]
 })
 export class AnalysisContextModule {

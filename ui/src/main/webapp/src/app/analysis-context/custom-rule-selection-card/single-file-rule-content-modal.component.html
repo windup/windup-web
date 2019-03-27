@@ -5,7 +5,10 @@
     </button>
 </div>
 <div class="modal-body">
-    body
+    <div *ngFor="let ruleEntity of ruleProvider.rules; let i = index">
+        <h4 id="{{ruleEntity.id}}">{{getLabelForRuleID(ruleEntity.ruleID, ruleProvider.providerID, i)}}</h4>
+        <pre (load)="prettyPrint()" class="prettyprint" style="white-space: pre-wrap">{{ruleEntity.ruleContents}}</pre>
+    </div>
 </div>
 <div class="modal-footer">
     <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">Close</button>
