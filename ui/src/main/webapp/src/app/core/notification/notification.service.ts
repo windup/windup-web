@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {Notification, NotificationLevel} from "./notification";
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs';
 import {ReplaySubject} from "rxjs";
 
 @Injectable()

@@ -9,6 +9,7 @@ import {WindupExecutionService} from "../services/windup-execution.service";
 import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
 import {AbstractComponent} from "../shared/AbstractComponent";
 import {SchedulerService} from "../shared/scheduler.service";
+import { finalize } from 'rxjs/operators';
 
 @Component({
     selector: 'wu-executions-list',
@@ -156,9 +157,13 @@ export class ExecutionsListComponent extends AbstractComponent implements OnInit
 
     doDeleteExecution(execution: WindupExecution) {
         this.deletedExecutions.set(execution.id, execution);
-        this._windupService.deleteExecution(execution).finally(() => {
-            this.deletedExecutions.delete(execution.id);
-        }).subscribe(
+        this._windupService.deleteExecution(execution)
+        .pipe(
+            finalize(() => {
+                this.deletedExecutions.delete(execution.id);
+            })   
+        )
+        .subscribe(
             success => {
                 this._notificationService.success(`Analysis #${execution.id} was deleted.`);
                 this.reloadRequestEvent.emit(true);
@@ -196,6 +201,14 @@ export class ExecutionsListComponent extends AbstractComponent implements OnInit
 
     formatStaticReportUrl(execution: WindupExecution): string {
         return WindupExecutionService.formatStaticReportUrl(execution);
+    }
+
+    formatStaticCsvReportUrl(execution: WindupExecution): string {        
+        return WindupExecutionService.formatStaticCsvReportUrl(execution);
+    }
+
+    containsAdvancedOption(execution: WindupExecution, optionName: string, optionValue: any): boolean {
+        return WindupExecutionService.containsAdvancedOption(execution, optionName, optionValue);
     }
 
     clearSearch() {

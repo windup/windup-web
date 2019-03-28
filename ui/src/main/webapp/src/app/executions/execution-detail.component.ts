@@ -13,6 +13,7 @@ import {ExecutionPhaseModel} from "../generated/tsModels/ExecutionPhaseModel";
 import {RoutedComponent} from "../shared/routed.component";
 import {RouteFlattenerService} from "../core/routing/route-flattener.service";
 import {SchedulerService} from "../shared/scheduler.service";
+import { filter } from 'rxjs/operators';
 
 @Component({
     templateUrl: './execution-detail.component.html',
@@ -39,15 +40,15 @@ export class ExecutionDetailComponent extends RoutedComponent implements OnInit,
         private _zone: NgZone
     ) {
         super(_router, _activatedRoute, _routeFlattener);
-    }
 
-    ngOnInit(): void {
         this.subscriptions.push(this.flatRouteLoaded.subscribe(flatRouteData => {
             let executionId = +flatRouteData.params.executionId;
 
             this._eventBus.onEvent
-                .filter(event => event.isTypeOf(ExecutionEvent))
-                .filter((event: ExecutionEvent) => event.execution.id === executionId)
+                .pipe(
+                    filter(event => event.isTypeOf(ExecutionEvent)),
+                    filter((event: ExecutionEvent) => event.execution.id === executionId)
+                )                
                 .subscribe((event: ExecutionEvent) => {
                     this.execution = event.execution;
                     this.loadLogData();
@@ -64,11 +65,15 @@ export class ExecutionDetailComponent extends RoutedComponent implements OnInit,
                     });
             });
         }));
+    }
 
-        this.currentTimeTimer = this._schedulerService.setInterval(this._zone.run(() => {
-            this.currentTime = new Date().getTime();
-            console.log("Updating the current time field");
-        }), 5000);
+    ngOnInit(): void {
+        this.currentTimeTimer = this._schedulerService.setInterval(() => {
+            this._zone.run(() => {
+                this.currentTime = new Date().getTime();
+                console.log("Updating the current time field");
+            })
+        }, 5000);
     }
 
     ngOnDestroy(): void {
@@ -88,6 +93,14 @@ export class ExecutionDetailComponent extends RoutedComponent implements OnInit,
 
     formatStaticReportUrl(execution: WindupExecution): string {
         return WindupExecutionService.formatStaticReportUrl(execution);
+    }
+
+    formatStaticCsvReportUrl(execution: WindupExecution): string {        
+        return WindupExecutionService.formatStaticCsvReportUrl(execution);
+    }    
+
+    containsAdvancedOption(execution: WindupExecution, optionName: string, optionValue: any): boolean {
+        return WindupExecutionService.containsAdvancedOption(execution, optionName, optionValue);
     }
 
     formatStaticRuleProviderReportUrl(execution: WindupExecution): string {

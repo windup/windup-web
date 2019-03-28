@@ -2,7 +2,7 @@ import {
     Cached, CacheSection,
     getCacheServiceInstance
 } from "../../../../src/app/shared/cache.service";
-import {Observable} from "rxjs";
+import {Observable, of} from "rxjs";
 
 let cacheServiceInstance = getCacheServiceInstance();
 let sectionSection = cacheServiceInstance.getSection('section');
@@ -34,7 +34,7 @@ class MockClass {
         let value = this.greetCalledTimes === 0 ? 7 : 77;
         this.greetCalledTimes++;
 
-        return Observable.of(value);
+        return of(value);
     }
 
     static CacheItemCallback = (value: number) => {

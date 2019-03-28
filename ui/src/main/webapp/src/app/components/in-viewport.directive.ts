@@ -1,5 +1,6 @@
 import {Directive, ElementRef, OnInit, OnDestroy, Output, EventEmitter} from "@angular/core";
-import {Observable, Subscription} from "rxjs";
+import {Observable, Subscription, fromEvent} from "rxjs";
+import {debounceTime} from 'rxjs/operators';
 
 @Directive({
     selector: '[wu-in-viewport]'
@@ -20,10 +21,18 @@ export class InViewport implements OnInit, OnDestroy {
         InViewport.updateViewport();
 
         if (!InViewport.scrollSubscriber)
-            InViewport.scrollSubscriber = Observable.fromEvent(window, "scroll").debounceTime(1000).subscribe(event => InViewport.updateViewport());
+            InViewport.scrollSubscriber = fromEvent(window, "scroll")
+                .pipe(
+                    debounceTime(1000)
+                )
+                .subscribe(event => InViewport.updateViewport());
 
         if (!InViewport.resizeSubscriber)
-            InViewport.resizeSubscriber = Observable.fromEvent(window, "resize").debounceTime(1000).subscribe(event => InViewport.updateViewport());
+            InViewport.resizeSubscriber = fromEvent(window, "resize")
+                .pipe(
+                    debounceTime(1000)
+                )
+                .subscribe(event => InViewport.updateViewport());
 
     }
 

@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, Input, NgZone, OnInit} from "@angular/core";
 import {Router, ActivatedRoute} from "@angular/router";
-import "../source/prism";
+import * as Prism from "../source/prism";
 
 import {MigrationIssuesService} from "./migration-issues.service";
 import {NotificationService} from "../../core/notification/notification.service";
@@ -37,6 +37,15 @@ export class MigrationIssuesTableComponent extends FilterableReportComponent imp
         private _schedulerService: SchedulerService
     ) {
         super(_router, _activatedRoute, _routeFlattener);
+
+        this.sortedIssues = this.migrationIssues;
+
+        let flatRouteData = this._routeFlattener.getFlattenedRouteData(this._activatedRoute.snapshot);
+        this.loadFilterFromRouteData(flatRouteData);
+
+        this.addSubscription(this._routeFlattener.OnFlatRouteLoaded.subscribe(
+            flatRouteData => this.loadFilterFromRouteData(flatRouteData)
+        ));
     }
 
     @Input()
@@ -50,14 +59,7 @@ export class MigrationIssuesTableComponent extends FilterableReportComponent imp
     }
 
     ngOnInit(): void {
-        this.sortedIssues = this.migrationIssues;
-
-        let flatRouteData = this._routeFlattener.getFlattenedRouteData(this._activatedRoute.snapshot);
-        this.loadFilterFromRouteData(flatRouteData);
-
-        this.addSubscription(this._routeFlattener.OnFlatRouteLoaded.subscribe(
-            flatRouteData => this.loadFilterFromRouteData(flatRouteData)
-        ));
+        
     }
 
     public getSum(field: string|Function): number {

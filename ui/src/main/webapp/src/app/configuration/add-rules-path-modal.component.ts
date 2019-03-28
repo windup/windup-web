@@ -1,6 +1,6 @@
 import {Component, OnInit, Input, Output, EventEmitter, ViewChild, OnDestroy} from "@angular/core";
 import {FormComponent} from "../shared/form.component";
-import {FormGroup, FormBuilder, Validators} from "@angular/forms";
+import {FormGroup, FormBuilder, Validators, AbstractControl} from "@angular/forms";
 import {FileExistsValidator} from "../shared/validators/file-exists.validator";
 import {FileService} from "../services/file.service";
 import {ConfigurationService} from "./configuration.service";
@@ -32,8 +32,10 @@ export class AddRulesPathModalComponent extends FormComponent implements OnInit,
     configurationSaved = new EventEmitter();
 
     // Form models
-    inputPath = "";
-    scanRecursively = true;
+    // Remove because of deprecated for more info see:
+    // https://angular.io/api/forms/FormControlName#use-with-ngmodel
+    // inputPath = "";
+    // scanRecursively = true;
 
     addRulesPathForm: FormGroup;
 
@@ -133,6 +135,14 @@ export class AddRulesPathModalComponent extends FormComponent implements OnInit,
         this.subscriptions = [];
     }
 
+    getInputPathControl(): AbstractControl {
+        return this.addRulesPathForm.get("inputPathControl");
+    }
+
+    getScanRecursivelyControl(): AbstractControl {
+        return this.addRulesPathForm.get("scanRecursivelyControl");
+    }
+
     show(): void {
         this.countUploadedRules = 0;
         this.uploadedRules = [];
@@ -164,9 +174,9 @@ export class AddRulesPathModalComponent extends FormComponent implements OnInit,
         let newConfiguration = JSON.parse(JSON.stringify(this.configuration));
 
         let newPath = <RulesPath>{};
-        newPath.path = this.inputPath;
+        newPath.path = this.getInputPathControl().value;
         newPath.rulesPathType = "USER_PROVIDED";
-        newPath.scanRecursively = this.scanRecursively;
+        newPath.scanRecursively = this.getScanRecursivelyControl().value;
 
         newConfiguration.rulesPaths.push(newPath);
 

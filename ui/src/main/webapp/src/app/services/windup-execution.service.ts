@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {AnalysisContext, MigrationProject, WindupExecution} from "../generated/windup-services";
 import {AbstractService} from "../shared/abtract.service";
-import {Observable} from "rxjs/Observable";
+import {Observable} from 'rxjs';
 import {WindupService} from "./windup.service";
 import {EventBusService} from "../core/events/event-bus.service";
 import {
@@ -12,10 +12,12 @@ import {Constants} from "../constants";
 import {Subject} from "rxjs";
 import {WebSocketSubjectFactory} from "../shared/websocket.factory";
 import {KeycloakService} from "../core/authentication/keycloak.service";
+import { filter, tap } from 'rxjs/operators';
 
 @Injectable()
 export class WindupExecutionService extends AbstractService {
     static EXECUTION_PROGRESS_URL = Constants.REST_BASE + "/websocket/execution-progress/{executionId}";
+    static MERGED_CSV_FILENAME = "AllIssues.csv";
 
     protected executionSocket: Map<number, Subject<WindupExecution>> = new Map<number, Subject<WindupExecution>>();
     protected activeExecutions: Map<number, WindupExecution> = new Map<number, WindupExecution>();
@@ -28,8 +30,11 @@ export class WindupExecutionService extends AbstractService {
         private _keycloakService: KeycloakService
     ) {
         super();
-        this._eventBus.onEvent.filter(event => event.source !== this)
-            .filter(event => event.isTypeOf(DeleteMigrationProjectEvent))
+        this._eventBus.onEvent
+            .pipe(
+                filter(event => event.source !== this),
+                filter(event => event.isTypeOf(DeleteMigrationProjectEvent))
+            )
             .subscribe((event: DeleteMigrationProjectEvent) => this.stopWatchingExecutions(event));
     }
 
@@ -47,10 +52,12 @@ export class WindupExecutionService extends AbstractService {
 
     public execute(analysisContext: AnalysisContext, project: MigrationProject): Observable<WindupExecution> {
         return this._windupService.executeWindupWithAnalysisContext(analysisContext, project)
-            .do(execution => {
-                this._eventBus.fireEvent(new NewExecutionStartedEvent(execution, project, this));
-                this.watchExecutionUpdates(execution, project)
-            });
+            .pipe(
+                tap(execution => {
+                    this._eventBus.fireEvent(new NewExecutionStartedEvent(execution, project, this));
+                    this.watchExecutionUpdates(execution, project)
+                })
+            );
     }
 
     public watchExecutionUpdates(execution: WindupExecution, project: MigrationProject) {
@@ -65,11 +72,13 @@ export class WindupExecutionService extends AbstractService {
             this.executionSocket.set(execution.id, socket);
 
             this._keycloakService.getToken().subscribe(token => {
-                socket.next(JSON.stringify({
-                    authentication: {
-                        token: token
-                    }
-                }) as any);
+                socket.next(JSON.parse(
+                    JSON.stringify({
+                        authentication: {
+                            token: token
+                        }
+                    })
+                ));
             });
         }
 
@@ -85,7 +94,7 @@ export class WindupExecutionService extends AbstractService {
     }
 
     protected hasExecutionChanged(oldExecution: WindupExecution, newExecution: WindupExecution) {
-        return oldExecution.id === newExecution.id && (
+        return oldExecution && newExecution && oldExecution.id === newExecution.id && (
             oldExecution.lastModified !== newExecution.lastModified || oldExecution.workCompleted !== newExecution.workCompleted
         );
     }
@@ -125,11 +134,32 @@ export class WindupExecutionService extends AbstractService {
     public static formatStaticReportUrl(execution: WindupExecution): string {
         return Constants.STATIC_REPORTS_BASE + "/" + execution.applicationListRelativePath;
     }
+    
+    /**
+     * @returns {string} An URL to the static csv report of the given execution.
+     */
+    public static formatStaticCsvReportUrl(execution: WindupExecution): string {        
+        return Constants.STATIC_REPORTS_BASE + "/" + execution.id + "/" + WindupExecutionService.MERGED_CSV_FILENAME;
+    }
 
     /**
      * @returns {string} An URL to the static rule provider report of the given execution.
      */
     public static formatStaticRuleProviderReportUrl(execution: WindupExecution): string {
         return Constants.STATIC_REPORTS_BASE + "/" + execution.ruleProvidersExecutionOverviewRelativePath;
+    }
+
+    /**     
+     * @returns {boolean} A boolean indicating whether or not an execution analysis context contains the specified advanced option.
+     */
+    public static containsAdvancedOption(execution: WindupExecution, optionName: string, optionValue: any): boolean {        
+        if (execution && execution.analysisContext && execution.analysisContext.advancedOptions) {
+            for (let option of execution.analysisContext.advancedOptions) {
+                if (option.name == optionName && option.value == optionValue) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

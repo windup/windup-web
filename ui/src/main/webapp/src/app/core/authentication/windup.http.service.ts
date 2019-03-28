@@ -5,11 +5,15 @@ import {
 } from "@angular/http";
 
 import {KeycloakService} from "./keycloak.service";
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs';
 import {EventBusService} from "../events/event-bus.service";
 import {LoadingSomethingFailedEvent, LoadingSomethingFinishedEvent, LoadingSomethingStartedEvent}
     from "../events/windup-event";
+import { tap, flatMap } from 'rxjs/operators';
 
+/**
+ * @deprecated Use {TokenInterceptor} instead
+ */
 @Injectable()
 export class WindupHttpService extends Http {
     constructor(
@@ -43,45 +47,50 @@ export class WindupHttpService extends Http {
     }
 
     private configureRequest(method: RequestMethod, f: Function, url: string | Request, options: RequestOptionsArgs = {}, body?: any): Observable<Response> {
-        let responseObservable: Observable<Response> = (this.setToken(options) as Observable<Response>).flatMap(options => {
-            return new Observable<Response>((observer) => {
-                let bodyRequired = false;
-                if (method != null) {
-                    switch (method) {
-                        case RequestMethod.Post:
-                        case RequestMethod.Put:
-                        case RequestMethod.Patch:
-                            bodyRequired = true;
-                            break;
-                        default:
-                            bodyRequired = false;
-                    }
-                }
-
-                let result;
-                if (bodyRequired) {
-                    result = f.apply(this, [url, body, options]);
-                } else {
-                    result = f.apply(this, [url, options]);
-                }
-
-                result.subscribe(
-                    response => observer.next(response),
-                    error => observer.error(error),
-                    complete => observer.complete()
-                );
-            });
-        });
-
-        let responseObservable2 = responseObservable.do(
-            (response) => {
-                this._eventBus.fireEvent(new LoadingSomethingFinishedEvent(response))
-            },
-            (response) => {
-                console.warn("HTTP request FAILED");
-                this._eventBus.fireEvent(new LoadingSomethingFailedEvent(response))
-            },
-            //() => {this._eventBus.fireEvent(new LoadingSomethingFinishedEvent())}
+        let responseObservable: Observable<Response> = (this.setToken(options) as Observable<Response>)
+            .pipe(
+                flatMap(options => {
+                    return new Observable<Response>((observer) => {
+                        let bodyRequired = false;
+                        if (method != null) {
+                            switch (method) {
+                                case RequestMethod.Post:
+                                case RequestMethod.Put:
+                                case RequestMethod.Patch:
+                                    bodyRequired = true;
+                                    break;
+                                default:
+                                    bodyRequired = false;
+                            }
+                        }
+        
+                        let result;
+                        if (bodyRequired) {
+                            result = f.apply(this, [url, body, options]);
+                        } else {
+                            result = f.apply(this, [url, options]);
+                        }
+        
+                        result.subscribe(
+                            response => observer.next(response),
+                            error => observer.error(error),
+                            complete => observer.complete()
+                        );
+                    });
+                })
+            );
+            
+        let responseObservable2 = responseObservable.pipe(
+            tap(
+                (response) => {
+                    this._eventBus.fireEvent(new LoadingSomethingFinishedEvent(response))
+                },
+                (response) => {
+                    console.warn("HTTP request FAILED");
+                    this._eventBus.fireEvent(new LoadingSomethingFailedEvent(response))
+                },
+                //() => {this._eventBus.fireEvent(new LoadingSomethingFinishedEvent())}
+            )
         );
 
         this._eventBus.fireEvent(new LoadingSomethingStartedEvent());

@@ -2,6 +2,7 @@ import {Directive, ElementRef, Input, OnChanges, OnDestroy, Renderer2, SimpleCha
 import {NavigationEnd, Router} from "@angular/router";
 import {Subscription} from "rxjs";
 import {ContextMenuItemInterface} from "./navigation/context-menu-item.class";
+import { filter } from 'rxjs/operators';
 
 /**
  * Yet another workaround for angular limitation
@@ -51,7 +52,10 @@ export class IsRouteActiveDirective implements OnChanges, OnDestroy {
     protected wasPreviouslyActive: boolean;
 
     constructor(protected _element: ElementRef, protected _renderer: Renderer2, protected _router: Router) {
-        this.routerSubscription = this._router.events.filter(event => event instanceof NavigationEnd)
+        this.routerSubscription = this._router.events
+            .pipe(
+                filter(event => event instanceof NavigationEnd)
+            )
             .subscribe(_ => this.update());
     }
 

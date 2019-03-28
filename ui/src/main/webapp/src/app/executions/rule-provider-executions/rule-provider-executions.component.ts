@@ -33,9 +33,7 @@ export class RuleProviderExecutionsComponent extends RoutedComponent implements 
         private _element: ElementRef
     ) {
         super(_router, _activatedRoute, _routeFlattener);
-    }
 
-    ngOnInit(): void {
         this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
             let executionId = +flatRouteData.params['executionId'];
             this._ruleProviderExecutionsService.getPhases(executionId)
@@ -49,6 +47,10 @@ export class RuleProviderExecutionsComponent extends RoutedComponent implements 
                     });
                 });
         }));
+    }
+
+    ngOnInit(): void {
+        
     }
 
 

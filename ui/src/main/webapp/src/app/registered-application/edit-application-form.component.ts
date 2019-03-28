@@ -48,7 +48,7 @@ export class EditApplicationFormComponent extends RegisterApplicationFormCompone
         this._activatedRoute.data.subscribe((data: {application: RegisteredApplication}) => {
             this.application = data.application;
             this.mode = this.application.registrationType;
-            this.fileInputPath = this.application.inputPath;
+            super.getAppPathToRegisterControl().setValue(this.application.inputPath);
             this.multipartUploader.setOptions({
                 url: Constants.REST_BASE + RegisteredApplicationService.REUPLOAD_APPLICATION_URL.replace('{appId}', this.application.id.toString()),
                 disableMultipart: false,
@@ -60,7 +60,7 @@ export class EditApplicationFormComponent extends RegisterApplicationFormCompone
     // @Override
     register() {
         if (this.mode == "PATH") {
-            this.application.inputPath = this.fileInputPath;
+            this.application.inputPath = super.getAppPathToRegisterControl().value;
             this._registeredApplicationService.updateByPath(this.application).subscribe(
               //  application => this.rerouteToApplicationList(),
                 application => this.rerouteToConfigurationForm(),

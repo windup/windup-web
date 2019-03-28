@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {Observable} from "rxjs";
 
 import * as showdown from "showdown";
-import "./prism";
+import * as Prism from "./prism";
 
 import {FileModelService} from "../../services/graph/file-model.service";
 import {FileModel} from "../../generated/tsModels/FileModel";
@@ -56,9 +56,7 @@ export class SourceReportComponent extends RoutedComponent implements OnInit, Af
                 _router: Router
     ) {
         super(_router, route, _routeFlattener);
-    }
 
-    ngOnInit(): void {
         this.addSubscription(this.flatRouteLoaded.subscribe(flatRouteData => {
             this.execID = +flatRouteData.params['executionId'];
             this.fileID = +flatRouteData.params['fileId'];
@@ -92,7 +90,11 @@ export class SourceReportComponent extends RoutedComponent implements OnInit, Af
             this.technologyTagService.getTagsForFile(this.execID, this.fileID)
                 .subscribe((technologyTags) => this.technologyTags = technologyTags,
                     error => this.notificationService.error(utils.getErrorMessage(error)));
-        })); 
+        }));
+    }
+
+    ngOnInit(): void {
+         
     }
 
     private getClassificationLinks(classification: ClassificationModel): Observable<LinkModel[]> {

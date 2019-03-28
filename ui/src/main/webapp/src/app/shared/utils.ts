@@ -1,4 +1,5 @@
-import {Observable} from "rxjs/Observable";
+import {Observable, forkJoin, of} from 'rxjs';
+import { map, flatMap } from 'rxjs/operators';
 
 export function substringAfterLast(str, delimiter) {
     return str.substring(str.lastIndexOf(delimiter) + 1); // +1 trick for no occurence.
@@ -97,60 +98,72 @@ export module utils {
          */
         public static resolveValuesArray<T, K extends keyof T>(arrayObservable: Observable<T[]>, properties: K[]): Observable<ResolvedObject<T, K>[]> {
 
-            return arrayObservable.flatMap((array: T[]) => {
+            return arrayObservable
+                .pipe(
+                    flatMap((array: T[]) => {
 
-                if (array.length === 0) {
-                    return Observable.of([]);
-                }
+                        if (array.length === 0) {
+                            return of([]);
+                        }
 
-                /* Result of this map operation is array of observables, one for each array item */
-                const resolvedObjectObservables = array.map(object => {
-                    let resolvedObject: any = Object.assign(object, {resolved: {}});
+                        /* Result of this map operation is array of observables, one for each array item */
+                        const resolvedObjectObservables = array.map(object => {
+                            let resolvedObject: any = Object.assign(object, { resolved: {} });
 
-                    /*
-                     * This part resolves all properties - creates array of observables.
-                     * Each member of array is property-resolving observable.
-                     */
-                    const propertiesObservables = properties.map(property => {
-                        if (Observables.isObservable(object[property])) {
-                            return resolvedObject[property].map(resolvedProperty => {
-                                resolvedObject.resolved[property] = resolvedProperty;
-                                return resolvedObject;
+                            /*
+                            * This part resolves all properties - creates array of observables.
+                            * Each member of array is property-resolving observable.
+                            */
+                            const propertiesObservables = properties.map(property => {
+                                if (Observables.isObservable(object[property])) {
+                                    return resolvedObject[property]
+                                    .pipe(
+                                        map(resolvedProperty => {
+                                            resolvedObject.resolved[property] = resolvedProperty;
+                                            return resolvedObject;
+                                        })
+                                    );
+                                } else {
+                                    resolvedObject.resolved[property] = resolvedObject[property];
+                                    return of(resolvedObject);
+                                }
                             });
-                        } else {
-                            resolvedObject.resolved[property] = resolvedObject[property];
-                            return Observable.of(resolvedObject);
-                        }
-                    });
 
-                    /*
-                     * This part creates observable which joins all propertiesObservables and maps result into single object
-                     *  with resolved properties
-                     */
-                    return Observable.forkJoin(propertiesObservables).map(resolvedObjects => {
-                        if (resolvedObjects.length > 0) {
-                            return resolvedObjects[0];
-                        } else {
-                            return null;
-                        }
-                    });
-                });
+                            /*
+                            * This part creates observable which joins all propertiesObservables and maps result into single object
+                            *  with resolved properties
+                            */
+                            return forkJoin(propertiesObservables)
+                            .pipe(
+                                map(resolvedObjects => {
+                                    if (resolvedObjects.length > 0) {
+                                        return resolvedObjects[0];
+                                    } else {
+                                        return null;
+                                    }
+                                })
+                            );
+                        });
 
-                /**
-                 * @Note: This is workaround for RxJS forkJoin bug https://github.com/ReactiveX/rxjs/issues/2816
-                 *
-                 * forkJoin doesn't emit any value for empty input array.
-                 */
-                if (resolvedObjectObservables.length === 0) {
-                    return Observable.of([]);
-                } else {
-                    return Observable.forkJoin(resolvedObjectObservables);
-                }
-            });
+                        /**
+                         * @Note: This is workaround for RxJS forkJoin bug https://github.com/ReactiveX/rxjs/issues/2816
+                         *
+                         * forkJoin doesn't emit any value for empty input array.
+                         */
+                        if (resolvedObjectObservables.length === 0) {
+                            return of([]);
+                        } else {
+                            return forkJoin(resolvedObjectObservables);
+                        }
+                    })
+                );
         }
 
         public static resolveValues<T, K extends keyof T>(objectObservable: Observable<T>, properties: K[]): Observable<ResolvedObject<T, K>> {
-            return objectObservable.flatMap(object => this.resolveObjectProperties(object, properties));
+            return objectObservable
+            .pipe(
+                flatMap(object => this.resolveObjectProperties(object, properties))
+            );
         }
 
         public static resolveObjectProperties<T, K extends keyof T>(object: T, properties: K[]): Observable<ResolvedObject<T, K>> {
@@ -165,13 +178,16 @@ export module utils {
              */
             const propertiesObservables = properties.map(property => {
                 if (Observables.isObservable(object[property])) {
-                    return resolvedObject[property].map(resolvedProperty => {
-                        resolvedObject.resolved[property] = resolvedProperty;
-                        return resolvedObject;
-                    });
+                    return resolvedObject[property]
+                    .pipe(
+                        map(resolvedProperty => {
+                            resolvedObject.resolved[property] = resolvedProperty;
+                            return resolvedObject;
+                        })
+                    );
                 } else {
                     resolvedObject.resolved[property] = resolvedObject[property];
-                    return Observable.of(resolvedObject);
+                    return of(resolvedObject);
                 }
             });
 
@@ -180,13 +196,16 @@ export module utils {
              * This part creates observable which joins all propertiesObservables and maps result into single object
              *  with resolved properties
              */
-            return Observable.forkJoin(propertiesObservables).map(resolvedObjects => {
-                if (resolvedObjects.length > 0) {
-                    return resolvedObjects[0];
-                } else {
-                    return null;
-                }
-            });
+            return forkJoin(propertiesObservables)
+            .pipe(
+                map(resolvedObjects => {
+                    if (resolvedObjects.length > 0) {
+                        return resolvedObjects[0];
+                    } else {
+                        return null;
+                    }
+                })
+            );
         }
 
         /**

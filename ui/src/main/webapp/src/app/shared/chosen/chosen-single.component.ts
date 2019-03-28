@@ -1,6 +1,6 @@
 import {NgModel} from "@angular/forms";
 import {
-    Component, Input, ViewChildren, QueryList, ElementRef, Renderer, forwardRef,
+    Component, Input, ViewChildren, QueryList, ElementRef, Renderer2, forwardRef,
     AfterViewInit
 } from "@angular/core";
 import {InternalChosenOption, ChosenOption, ChosenOptionGroup} from "./chosen-commons";
@@ -42,7 +42,7 @@ export class ChosenSingleComponent extends AbstractChosenComponent<string> imple
 
     private singleSelectedOption: InternalChosenOption;
 
-    constructor(protected el: ElementRef, protected renderer: Renderer) {
+    constructor(protected el: ElementRef, protected renderer: Renderer2) {
         super(el, renderer);
     }
 
