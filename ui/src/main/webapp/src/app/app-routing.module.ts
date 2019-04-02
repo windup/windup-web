@@ -71,7 +71,7 @@ export const appRoutes: Routes = [
                                 children: [
                                     { path: 'create-project', component: MigrationProjectFormComponent, data: { currentStep: 0 }},
                                     { path: 'add-applications', component: RegisterApplicationFormComponent, data: { currentStep: 1 }},
-                                    { path: 'configure-analysis', component: AnalysisContextFormComponent, data: { currentStep: 2 }}
+                                    { path: 'configure-analysis', component: AnalysisContextFormComponent, data: { currentStep: 2 }, resolve: { configuration: ConfigurationResolve }}
                                 ]
                             },
                         ]

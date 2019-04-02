@@ -12,7 +12,6 @@ import { NG_VALUE_ACCESSOR, NG_VALIDATORS, ControlValueAccessor, Validator, Abst
 @Component({
     selector: 'wu-custom-rules',
     templateUrl: './custom-rules.component.html',
-    styleUrls: ['./custom-rules.component.scss'],
     providers: [{
         provide: NG_VALUE_ACCESSOR,
         useExisting: forwardRef(() => CustomRulesComponent),
