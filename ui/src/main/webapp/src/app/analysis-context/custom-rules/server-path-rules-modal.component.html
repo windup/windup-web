@@ -4,11 +4,12 @@
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
-<div #modal class="modal-body" style="height: 390px; overflow-y: auto;">
+<div #modalBody class="modal-body" style="height: 390px; overflow-y: auto;">
     <wu-rules-list
         [rulePath]="rulePath"
         [ruleProviders]="ruleProviders"
-        [reference]="modal">
+        [container]="modalBody"
+        [offset]="80">
     </wu-rules-list>
 </div>
 <div class="modal-footer">

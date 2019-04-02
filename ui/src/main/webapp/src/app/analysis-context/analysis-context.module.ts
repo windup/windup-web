@@ -19,8 +19,8 @@ import {UploadedRulesPathComponent} from "./custom-rules/uploaded-rules-path.com
 import {ServerPathRulesComponent} from "./custom-rules/server-path-rules.component";
 import {UploadedRulePathModalComponent} from "./custom-rules/uploaded-rule-path-modal.component";
 import {ServerPathRulesModalComponent} from "./custom-rules/server-path-rules-modal.component";
-import {TechnologyTextComponent} from "./custom-rules/technology-text.component";
 import {RulesListComponent} from "./custom-rules/rules-list.component";
+import {RulesComponent} from "./custom-rules/rules.component";
 
 @NgModule({
     imports: [
@@ -42,17 +42,18 @@ import {RulesListComponent} from "./custom-rules/rules-list.component";
         CustomRulesComponent,
         UploadedRulesPathComponent,
         ServerPathRulesComponent,
-        TechnologyTextComponent,
         UploadedRulePathModalComponent,
         ServerPathRulesModalComponent,
-        RulesListComponent
+        RulesListComponent,
+        RulesComponent
     ],
     exports: [
         AnalysisContextFormComponent,
         AnalysisContextAdvancedOptionsModalComponent,
         CustomRuleSelectionComponent,
         SelectApplicationsComponent,
-        RulesListComponent
+        RulesListComponent,
+        RulesComponent
     ],
     providers: [
         AnalysisContextService,

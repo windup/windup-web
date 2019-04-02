@@ -14,8 +14,7 @@ import { UploadedRulePathModalComponent } from "./uploaded-rule-path-modal.compo
 
 @Component({
     selector: 'wu-uploaded-rules-path',
-    templateUrl: './uploaded-rules-path.component.html',
-    styleUrls: ['./uploaded-rules-path.component.scss']
+    templateUrl: './uploaded-rules-path.component.html'
 })
 export class UploadedRulesPathComponent implements OnInit, AfterViewInit {
 

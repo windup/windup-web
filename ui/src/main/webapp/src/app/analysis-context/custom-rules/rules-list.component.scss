@@ -3,3 +3,15 @@
   margin-right: auto;
 }
 
+@media (min-width: 992px) {
+  .list-view-pf-description {
+    width: 88%;
+  }
+
+  .list-view-pf-additional-info {
+    -ms-flex: 1 0 auto;
+    flex: 1 0 auto;
+    float: left;
+    width: 12%;
+  }
+}

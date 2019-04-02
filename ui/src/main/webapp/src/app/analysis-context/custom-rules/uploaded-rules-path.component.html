@@ -19,7 +19,7 @@
 </ng-template>
 <ng-template #sourceTargetTemplate let-row="row">                            
     <!-- Source: <span *ngFor="let technology of row.sources">{{technology.name}}{{versionRangeSuffix}}</span> / Target: <span *ngFor="let technology of row.targets">{{technology.name}}{{versionRangeSuffix}}</span> -->
-    <wu-technology-text *ngFor="let technology of row.sources" [technology]="technology"></wu-technology-text>&nbsp;/&nbsp;<wu-technology-text *ngFor="let technology of row.targets" [technology]="technology"></wu-technology-text>
+    <wu-technology *ngFor="let technology of row.sources" [technology]="technology"></wu-technology>&nbsp;/&nbsp;<wu-technology *ngFor="let technology of row.targets" [technology]="technology"></wu-technology>
     <!-- <p style="margin: 0">Source: <wu-technology-text *ngFor="let technology of row.sources" [technology]="technology"></wu-technology-text></p>
     <p style="margin: 0">Target: <wu-technology-text *ngFor="let technology of row.targets" [technology]="technology"></wu-technology-text></p> -->
 </ng-template>

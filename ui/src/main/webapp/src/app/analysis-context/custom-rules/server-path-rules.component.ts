@@ -1,4 +1,4 @@
-import { Component, Input, EventEmitter, Output, TemplateRef } from "@angular/core";
+import { Component, Input, EventEmitter, Output, TemplateRef, AfterContentInit, Renderer2, ElementRef } from "@angular/core";
 import { Action, ActionConfig } from "patternfly-ng/action";
 import { ListEvent, ListConfig } from "patternfly-ng/list";
 import { EmptyStateConfig } from "patternfly-ng/empty-state";
@@ -12,10 +12,9 @@ import { ServerPathRulesModalComponent } from "./server-path-rules-modal.compone
 
 @Component({
     selector: 'wu-server-path-rules',
-    templateUrl: './server-path-rules.component.html',
-    styleUrls: ['./server-path-rules.component.scss']
+    templateUrl: './server-path-rules.component.html'
 })
-export class ServerPathRulesComponent {
+export class ServerPathRulesComponent implements AfterContentInit {
 
     _rulesPath: RulesPath[];
 
@@ -50,8 +49,14 @@ export class ServerPathRulesComponent {
 
     constructor(
         private _ruleService: RuleService,
-        private modalService: BsModalService
+        private _modalService: BsModalService
     ) {
+    }
+
+    ngAfterContentInit() {
+        setTimeout(() => {
+            $('#serverPathRulesList .btn-danger').removeClass('btn-default');
+        }, 100);
     }
 
     ngOnInit(): void {
@@ -282,7 +287,7 @@ export class ServerPathRulesComponent {
                 ruleProviders: this.getRulesProvider(rulePath)
             }
         };
-        this.bsModalRef = this.modalService.show(ServerPathRulesModalComponent, config);
+        this.bsModalRef = this._modalService.show(ServerPathRulesModalComponent, config);
     }
 
     //

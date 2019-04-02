@@ -1,23 +1,24 @@
 import { Component, Input, ElementRef, AfterViewInit } from "@angular/core";
-import { RulesPath, RuleProviderEntity } from "../../generated/windup-services";
-import { SortingService } from "../../shared/sort/sorting.service";
+import { RuleProviderEntity } from "../../generated/windup-services";
 
 declare function prettyPrint();
 
 @Component({
     selector: 'wu-rules',
-    templateUrl: './rules.component.html',
-    styleUrls: ['./rules.component.scss']
+    templateUrl: './rules.component.html'
 })
 export class RulesComponent implements AfterViewInit {
 
-    @Input() ruleProvider: RuleProviderEntity;
-    @Input() reference: any = window;
+    @Input()
+    ruleProvider: RuleProviderEntity;
 
-    constructor(
-        private _sortingService: SortingService<RuleProviderEntity>,
-        private _element: ElementRef,
-    ) { }
+    @Input()
+    container: any = window;
+
+    @Input()
+    offset: number = 60;
+
+    constructor(private _element: ElementRef) { }
 
     ngAfterViewInit() {
         prettyPrint();
@@ -33,7 +34,13 @@ export class RulesComponent implements AfterViewInit {
 
     scrollToRuleSetHeader(id: number) {
         $(this._element.nativeElement).find("#select-" + id).val('');
-        this.scrollToElement(this._element.nativeElement.querySelector(`div[id="group-item-${id}"]`));
+
+        let element = this._element.nativeElement.querySelector(`div[id="group-item-${id}"]`);
+        if (!element) {
+            element = this._element.nativeElement.querySelector(`select[id="select-${id}"]`);
+        }
+
+        this.scrollToElement(element);
     }
 
     private scrollToElement(element: Element) {
@@ -44,9 +51,11 @@ export class RulesComponent implements AfterViewInit {
              *
              * 60 is the height in px of the top nav bar "header-logo-wrapper"
              * */
-            let offset = element.getBoundingClientRect().top + this.reference.scrollY - 60;
-            
-            this.reference.scrollTo(0, offset);
+
+            // let offset = element.getBoundingClientRect().top + this.container.scrollY - 60;
+            let offset = element.getBoundingClientRect().top + (this.container.scrollY || this.container.scrollTop) - this.offset;
+
+            this.container.scrollTo(0, offset);
         }
     }
 

@@ -41,6 +41,8 @@ export class CustomRulesComponent implements ControlValueAccessor, Validator, On
 
     rulesPathForUnselect: RulesPath[] = [];
 
+    loading: boolean = false;
+
     // NgForm value
     value: RulesPath[];
 
@@ -237,6 +239,8 @@ export class CustomRulesComponent implements ControlValueAccessor, Validator, On
      * Unselect RulesPath
      */
     unselect(rulesPath: RulesPath[]) {
+        this.loading = true;
+
         this.selectedUploadedRulesPath = this.selectedUploadedRulesPath.filter(p => {
             return !rulesPath.some(r => r.id == p.id);
         });
@@ -244,6 +248,11 @@ export class CustomRulesComponent implements ControlValueAccessor, Validator, On
             return !rulesPath.some(r => r.id == p.id);
         });
         this.updateValue();
+
+        // For removing 'active' class on table
+        setTimeout(() => {
+            this.loading = false;
+        });
     }
 
 
