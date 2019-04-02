@@ -1,4 +1,4 @@
-import { Component, Input, EventEmitter, Output, TemplateRef, AfterContentInit, Renderer2, ElementRef } from "@angular/core";
+import { Component, Input, EventEmitter, Output, TemplateRef, AfterContentInit, Renderer2, ElementRef, AfterViewInit, AfterViewChecked, OnInit, OnChanges, DoCheck } from "@angular/core";
 import { Action, ActionConfig } from "patternfly-ng/action";
 import { ListEvent, ListConfig } from "patternfly-ng/list";
 import { EmptyStateConfig } from "patternfly-ng/empty-state";
@@ -12,9 +12,10 @@ import { ServerPathRulesModalComponent } from "./server-path-rules-modal.compone
 
 @Component({
     selector: 'wu-server-path-rules',
-    templateUrl: './server-path-rules.component.html'
+    templateUrl: './server-path-rules.component.html',
+    styleUrls: ['./server-path-rules.component.scss']
 })
-export class ServerPathRulesComponent implements AfterContentInit {
+export class ServerPathRulesComponent implements DoCheck {
 
     _rulesPath: RulesPath[];
 
@@ -53,10 +54,8 @@ export class ServerPathRulesComponent implements AfterContentInit {
     ) {
     }
 
-    ngAfterContentInit() {
-        setTimeout(() => {
-            $('#serverPathRulesList .btn-danger').removeClass('btn-default');
-        }, 100);
+    ngDoCheck() {
+        $('#serverPathRulesList .btn-danger').removeClass('btn-default');
     }
 
     ngOnInit(): void {
