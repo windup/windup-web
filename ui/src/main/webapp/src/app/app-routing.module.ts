@@ -109,7 +109,7 @@ export const appRoutes: Routes = [
                                             data: {displayName: "Edit Application"}
                                         },
                                     ]},
-                                    { path: 'analysis-context', component: AnalysisContextFormComponent, data: {displayName: "Configure Analysis"}, canDeactivate: [ConfirmDeactivateGuard]},
+                                    { path: 'analysis-context', component: AnalysisContextFormComponent, resolve: { configuration: ConfigurationResolve }, data: {displayName: "Configure Analysis"}, canDeactivate: [ConfirmDeactivateGuard]},
                                 ]
                             },
                             { path: '', component: DefaultLayoutComponent, children: [

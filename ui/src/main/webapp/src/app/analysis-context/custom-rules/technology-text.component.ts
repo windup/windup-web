@@ -4,8 +4,7 @@ import { Technology } from "../../generated/windup-services";
 
 @Component({
     selector: 'wu-technology-text',
-    // template: `{{technology.name}}{{versionRangeSuffix}}`,
-    template: `<span class="active-filter label label-primary"> {{technology.name}}{{versionRangeSuffix}} </span>`,
+    templateUrl: './technology-text.component.html',
     styleUrls: ['./technology-text.component.scss']
 })
 export class TechnologyTextComponent {

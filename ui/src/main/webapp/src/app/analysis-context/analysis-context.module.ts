@@ -8,18 +8,28 @@ import {AnalysisContextAdvancedOptionsModalComponent} from "./analysis-context-a
 import {SharedModule} from "../shared/shared.module";
 import {RouterModule} from "@angular/router";
 import {SelectApplicationsComponent} from "./select-applications.component";
-import {CustomRuleSelectionCardComponent} from "./custom-rule-selection-card/custom-rule-selection-card.component";
 import {TableModule} from "patternfly-ng/table";
-import {TechnologyTextComponent} from "./custom-rule-selection-card/technology-text.component";
+import {ListModule} from "patternfly-ng/list";
+import {ToolbarModule} from "patternfly-ng/toolbar";
+import {ActionModule} from "patternfly-ng/action";
 import {TabsModule, TabsetConfig} from "ngx-bootstrap/tabs";
 import {ModalModule} from "ngx-bootstrap/modal";
-import {SingleFileRuleContentModalComponent} from "./custom-rule-selection-card/single-file-rule-content-modal.component";
+import {CustomRulesComponent} from "./custom-rules/custom-rules.component";
+import {UploadedRulesPathComponent} from "./custom-rules/uploaded-rules-path.component";
+import {ServerPathRulesComponent} from "./custom-rules/server-path-rules.component";
+import {UploadedRulePathModalComponent} from "./custom-rules/uploaded-rule-path-modal.component";
+import {ServerPathRulesModalComponent} from "./custom-rules/server-path-rules-modal.component";
+import {TechnologyTextComponent} from "./custom-rules/technology-text.component";
+import {RulesListComponent} from "./custom-rules/rules-list.component";
 
 @NgModule({
     imports: [
         SharedModule,
         RouterModule.forChild([]),
         TableModule,
+        ListModule,
+        ToolbarModule,
+        ActionModule,
         TabsModule,
         ModalModule
     ],
@@ -28,18 +38,21 @@ import {SingleFileRuleContentModalComponent} from "./custom-rule-selection-card/
         AnalysisContextAdvancedOptionsModalComponent,
         CustomRuleSelectionComponent,
         SelectApplicationsComponent,
-        CustomRuleSelectionCardComponent,
+
+        CustomRulesComponent,
+        UploadedRulesPathComponent,
+        ServerPathRulesComponent,
         TechnologyTextComponent,
-        SingleFileRuleContentModalComponent
+        UploadedRulePathModalComponent,
+        ServerPathRulesModalComponent,
+        RulesListComponent
     ],
     exports: [
         AnalysisContextFormComponent,
         AnalysisContextAdvancedOptionsModalComponent,
         CustomRuleSelectionComponent,
         SelectApplicationsComponent,
-        CustomRuleSelectionCardComponent,
-        TechnologyTextComponent,
-        SingleFileRuleContentModalComponent
+        RulesListComponent
     ],
     providers: [
         AnalysisContextService,
@@ -48,7 +61,8 @@ import {SingleFileRuleContentModalComponent} from "./custom-rule-selection-card/
         TabsetConfig
     ],
     entryComponents: [
-        SingleFileRuleContentModalComponent
+        UploadedRulePathModalComponent,
+        ServerPathRulesModalComponent
     ]
 })
 export class AnalysisContextModule {

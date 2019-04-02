@@ -1,0 +1,59 @@
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-8">
+        <div class="card-pf">
+            <div class="card-pf-heading">
+                <h2 class="card-pf-title">Custom rules</h2>
+            </div>
+            <div class="card-pf-body" style="min-height: 397px;">
+                <tabset>
+                    <tab heading="Uploaded">
+                        <wu-uploaded-rules-path 
+                                [rulesPath]="uploadedRulesPath"
+                                [initialSelectedRows]="selectedUploadedRulesPath"
+                                (onSelectionChange)="onUploadedRulesPathSelectionChange($event)"
+                                (onAddRulesPathRequest)="displayAddRulesPathModal($event)"
+                                (onDeleteRulesPathRequest)="displayRemoveRulesConfirmationModal($event)">
+                        </wu-uploaded-rules-path>
+                    </tab>
+                    <tab heading="Server Path">
+                        <wu-server-path-rules 
+                                [rulesPath]="serverPathRulesPath"
+                                [initialSelectedRows]="selectedServerPathRules"
+                                (onSelectionChange)="onServerPathRulesSelectionChange($event)"
+                                (onAddRulesPathRequest)="displayAddRulesPathModal($event)"
+                                (onDeleteRulesPathRequest)="displayRemoveRulesConfirmationModal($event)">
+                        </wu-server-path-rules>
+                    </tab>
+                </tabset>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-4">
+        <div class="card-pf">
+            <div class="card-pf-body">
+                <select [(ngModel)]="rulesPathForUnselect"
+                        class="form-control"
+                        multiple
+                        size="7"
+                        style="border: 0; box-shadow: none; height: 374px; overflow-y: auto;">
+                    <option *ngFor="let item of value" [value]="item">
+                        {{item.shortPath || item.path}}
+                    </option>
+                </select>
+            </div>
+            <div class="card-pf-footer">
+                <p>
+                    <a (click)="unselect(rulesPathForUnselect)" href="javascript:void(0);"><span class="fa fa-angle-double-left"></span> Unselect</a>                    
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<wu-add-rules-path-modal [configuration]="configuration" (configurationSaved)="loadCustomRules($event)"></wu-add-rules-path-modal>
+<wu-confirmation-modal
+        #removeRulesConfirmationModal
+        [id]="'deleteRulesConfirmationDialog'"
+        [title]="'Confirm Rule Removal'"
+        [body]="'Are you sure you want to remove the rules from ...?'">
+</wu-confirmation-modal>

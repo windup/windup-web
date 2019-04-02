@@ -3,7 +3,7 @@ import {ConfigurationService} from "./configuration.service";
 import {Configuration, RuleProviderEntity, RulesPath, Technology} from "../generated/windup-services";
 import {RuleService} from "./rule.service";
 import {RulesModalComponent} from "./rules-modal.component";
-import {AddRulesPathModalComponent, ConfigurationEvent} from "./add-rules-path-modal.component";
+import {AddRulesPathModalComponent, ConfigurationEvent} from "../shared/add-rules-path-modal/add-rules-path-modal.component";
 import {ActivatedRoute} from "@angular/router";
 import {NotificationService} from "../core/notification/notification.service";
 import {utils} from "../shared/utils";

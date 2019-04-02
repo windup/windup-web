@@ -42,6 +42,8 @@ export class AnalysisContextFormComponent extends FormComponent
 
     availableApps: RegisteredApplication[];
 
+    selectedCustomRulesPath: RulesPath[];
+
     /**
      * These two variables exist because we need for the item in the array not to just be a literal.
      * Workaround for JavaScript issues not able to iterate and modify a simple array of literals within a form easily.
@@ -150,6 +152,8 @@ export class AnalysisContextFormComponent extends FormComponent
                         if (project.defaultAnalysisContextId == null) {
                             this.initializeAnalysisContext();
                             this.analysisContext.applications = apps.slice();
+
+                            this.selectedCustomRulesPath = this.analysisContext.rulesPaths;
                         } else {
                             this._analysisContextService.get(project.defaultAnalysisContextId)
                                 .subscribe(context => {
@@ -160,6 +164,8 @@ export class AnalysisContextFormComponent extends FormComponent
                                     if (this.isInWizard) {
                                         this.analysisContext.applications = apps.slice();
                                     }
+
+                                    this.selectedCustomRulesPath = this.analysisContext.rulesPaths;
                                 });
                         }
                         this.loadPackageMetadata();
@@ -322,7 +328,7 @@ export class AnalysisContextFormComponent extends FormComponent
         this.excludePackages = selectedNodes;
     }
 
-    onSubmit() {
+    onSubmit() {        
         if (!this.packageTreeLoaded) {
             this.confirmDialog.title = 'Package identification is not complete';
             this.confirmDialog.body = `Do you want to save the analysis without selecting packages?`;
@@ -332,11 +338,13 @@ export class AnalysisContextFormComponent extends FormComponent
         }
     }
 
-    protected saveConfiguration() {
+    protected saveConfiguration() {        
         // HACK - this readds all of the apps in case the weird bug strikes that causes some not to be selected
         if (this.isInWizard && !this.analysisContext.applications || this.analysisContext.applications.length == 0) {
             this.analysisContext.applications = this.availableApps.slice();
         }
+
+        this.analysisContext.rulesPaths = this.selectedCustomRulesPath;
 
         this.saveInProgress = true;
 
@@ -352,7 +360,6 @@ export class AnalysisContextFormComponent extends FormComponent
     }
 
     onSuccess(analysisContext: AnalysisContext) {
-
         this.analysisContext = analysisContext; // update context
 
         for (let node of this.analysisContext.includePackages) {

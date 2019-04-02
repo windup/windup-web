@@ -1,33 +1,36 @@
-import { Component, ViewChild, TemplateRef, Input, OnDestroy, OnInit } from '@angular/core';
-import { TableConfig, TableEvent } from 'patternfly-ng/table';
-import { PaginationConfig, PaginationEvent } from 'patternfly-ng/pagination';
-import { EmptyStateConfig } from 'patternfly-ng/empty-state';
-import { ActionConfig, Action } from 'patternfly-ng/action';
-import { RulesPath, RuleProviderEntity } from '../../generated/windup-services';
-import { ConfigurationService } from '../../configuration/configuration.service';
-import { Subscription, forkJoin, Observable, Subject } from 'rxjs';
-import { map, flatMap, filter } from 'rxjs/operators';
-import { RuleService } from '../../configuration/rule.service';
-import { ToolbarConfig } from 'patternfly-ng/toolbar/toolbar-config';
-import { SortConfig } from 'patternfly-ng/sort';
-import { FilterConfig, FilterField, FilterType, FilterEvent, Filter, FilterQuery } from 'patternfly-ng/filter';
-import { getAvailableFilters } from '../../configuration/technology-filter';
-import { BsModalService, BsModalRef, ModalOptions } from 'ngx-bootstrap/modal';
-import { SingleFileRuleContentModalComponent } from './single-file-rule-content-modal.component';
+import { Component, TemplateRef, ViewChild, OnInit, AfterViewInit, Input, EventEmitter, Output, ChangeDetectorRef } from "@angular/core";
+import { PaginationEvent, PaginationConfig } from "patternfly-ng/pagination";
+import { FilterEvent, Filter, FilterConfig, FilterType, FilterField, FilterQuery } from "patternfly-ng/filter";
+import { Action, ActionConfig } from "patternfly-ng/action";
+import { RulesPath, RuleProviderEntity } from "../../generated/windup-services";
+import { EmptyStateConfig } from "patternfly-ng/empty-state";
+import { TableConfig, NgxDataTableConfig, TableEvent, TableComponent } from "patternfly-ng/table";
+import { ToolbarConfig } from "patternfly-ng/toolbar/toolbar-config";
+import { getAvailableFilters } from "../../configuration/technology-filter";
+import { BsModalRef, BsModalService, ModalOptions } from "ngx-bootstrap/modal";
+import { Observable, forkJoin } from "rxjs";
+import { RuleService } from "../../configuration/rule.service";
+import { UploadedRulePathModalComponent } from "./uploaded-rule-path-modal.component";
 
 @Component({
-    selector: 'wu-custom-rule-selection-card',
-    templateUrl: './custom-rule-selection-card.component.html',
-    styleUrls: ['./custom-rule-selection-card.component.scss']
+    selector: 'wu-uploaded-rules-path',
+    templateUrl: './uploaded-rules-path.component.html',
+    styleUrls: ['./uploaded-rules-path.component.scss']
 })
-export class CustomRuleSelectionCardComponent implements OnInit, OnDestroy {
+export class UploadedRulesPathComponent implements OnInit, AfterViewInit {
 
-    bsModalRef: BsModalRef;
+    _rulesPath: RulesPath[];
+    _rulesPathMap = new Map<number, RulesPath>();
+    _ruleProviders: RuleProviderEntity[];
 
-    @ViewChild('idTemplate') idTemplate: TemplateRef<any>;
+    @Output() onSelectionChange = new EventEmitter<RulesPath[]>();
+    @Output() onAddRulesPathRequest = new EventEmitter<boolean>();
+    @Output() onDeleteRulesPathRequest = new EventEmitter<RulesPath>();
+
+    @ViewChild('shortPathTemplate') shortPathTemplate: TemplateRef<any>;
     @ViewChild('sourceTargetTemplate') sourceTargetTemplate: TemplateRef<any>;
     @ViewChild('rulesTemplate') rulesTemplate: TemplateRef<any>;
-    @ViewChild('showTemplate') showTemplate: TemplateRef<any>;
+    @ViewChild('actionsTemplate') actionsTemplate: TemplateRef<any>;
 
     allRows: RuleProviderEntity[] = [];
     filteredRows: RuleProviderEntity[] = [];
@@ -36,105 +39,69 @@ export class CustomRuleSelectionCardComponent implements OnInit, OnDestroy {
     rows: RuleProviderEntity[];
     columns: any[];
 
-    sortConfig: SortConfig;
+    _initialSelectedRows: RulesPath[];
+    _initialSelectedRowsMap = new Map<number, RulesPath>();
+
     tableConfig: TableConfig;
     filterConfig: FilterConfig;
     actionConfig: ActionConfig;
     toolbarConfig: ToolbarConfig;
     emptyStateConfig: EmptyStateConfig;
     paginationConfig: PaginationConfig;
+    dataTableConfig: NgxDataTableConfig;
 
     isAscendingSort: boolean = true;
-
-    // 
-    selectedRulesPath = new Map<number, RulesPath>();
-
-    // RulesPath
-    private uploadedRulesPath = new Subject<RulesPath[]>();
-    private serverPathRulesPath = new Subject<RulesPath[]>();
 
     private sourceQueries: any[] = [];
     private targetQueries: any[] = [];
 
-    private subscriptions: Subscription[] = [];
+    private bsModalRef: BsModalRef;
 
     constructor(
         private _ruleService: RuleService,
-        private _configurationService: ConfigurationService,
-        private modalService: BsModalService
-    ) {
-        this.subscriptions.push(
-            this.uploadedRulesPath.subscribe((rulesPaths: RulesPath[]) => {
-                const ruleProviders: Observable<RuleProviderEntity[]>[] = rulesPaths.map((rulePath: RulesPath) => {
-                    return this._ruleService.getByRulesPath(rulePath);
-                });
-                forkJoin(ruleProviders).subscribe((ruleProviders: RuleProviderEntity[][]) => {
-                    let rules: RuleProviderEntity[] = [];
-                    for (var i = 0; i < ruleProviders.length; i++) {
-                        rules = rules.concat(ruleProviders[i]);
-                    }
+        private _modalService: BsModalService
+    ) { }
 
-                    this.allRows = rules;
-                    this.filteredRows = this.allRows;
-                    this.updateRows(false); // Reinitialize expanded rows in order to render properly with tabs
-
-                    this.loadQueryFilters();
-                });
-            })
-        );
-    }
-
-    ngAfterViewInit(): void {
+    ngAfterViewInit() {
         this.updateRows(false); // Reinitialize expanded rows in order to render properly with tabs
     }
 
     ngOnInit(): void {
-        // Load custom rules
-        this._configurationService.getCustomRulesetPaths().subscribe((rulesPath: RulesPath[]) => {
-            const uploadedRulesPath: RulesPath[] = [];
-            const serverPathRulesPath: RulesPath[] = [];
-
-            rulesPath.forEach(rulePath => rulePath.shortPath ? uploadedRulesPath.push(rulePath) : serverPathRulesPath.push(rulePath));
-
-            this.uploadedRulesPath.next(uploadedRulesPath);
-            this.serverPathRulesPath.next(serverPathRulesPath);
-        });
-
         this.columns = [{
-            cellTemplate: this.idTemplate,
+            cellTemplate: this.shortPathTemplate,
             draggable: false,
-            prop: 'providerID',
-            name: 'Provider ID',
-            resizeable: true,
+            prop: 'rulesPath',
+            name: 'Short path',
+            resizeable: false,
             sortable: false,
-            // width: 40
+            flexGrow: 3,
             cellClass: 'line-height-25'
         }, {
             cellTemplate: this.sourceTargetTemplate,
             draggable: false,
             prop: 'sources',
             name: 'Source / Target',
-            resizeable: true,
+            resizeable: false,
             sortable: false,
-            // width: 40
+            flexGrow: 2,
             cellClass: 'line-height-25'
         }, {
             cellTemplate: this.rulesTemplate,
             draggable: false,
             prop: 'rules',
             name: '# Rules',
-            resizeable: true,
+            resizeable: false,
             sortable: false,
-            // width: 30,
+            flexGrow: 1,
             cellClass: 'line-height-25'
         }, {
-            cellTemplate: this.showTemplate,
+            cellTemplate: this.actionsTemplate,
             draggable: false,
             prop: 'id',
             name: 'Actions',
-            resizeable: true,
+            resizeable: false,
             sortable: false,
-            // width: 30,
+            flexGrow: 1.5,
             cellClass: 'line-height-25 text-center-override'
         }];
 
@@ -150,11 +117,7 @@ export class CustomRuleSelectionCardComponent implements OnInit, OnDestroy {
 
         this.emptyStateConfig = {
             actions: {
-                primaryActions: [{
-                    id: 'addCustomRule',
-                    title: 'Add Rule',
-                    tooltip: 'Add custom rule'
-                }],
+                primaryActions: [],
                 moreActions: []
             } as ActionConfig,
             iconStyleClass: 'pficon-info',
@@ -186,15 +149,6 @@ export class CustomRuleSelectionCardComponent implements OnInit, OnDestroy {
             totalCount: this.allRows.length
         } as FilterConfig;
 
-        this.sortConfig = {
-            fields: [{
-                id: 'providerID',
-                title: 'ProviderID',
-                sortType: 'alpha'
-            }],
-            isAscending: this.isAscendingSort
-        } as SortConfig;
-
         this.actionConfig = {
             primaryActions: [],
             moreActions: [{
@@ -216,10 +170,76 @@ export class CustomRuleSelectionCardComponent implements OnInit, OnDestroy {
             showCheckbox: true,
             toolbarConfig: this.toolbarConfig
         } as TableConfig;
+
+        this.dataTableConfig = {
+            columnMode: 'flex'
+        } as NgxDataTableConfig;
     }
 
-    ngOnDestroy() {
-        this.subscriptions.forEach((subs) => subs.unsubscribe());
+    @Input()
+    set rulesPath(rulesPath: RulesPath[]) {
+        if (rulesPath !== undefined && rulesPath != null) {
+            this._rulesPath = rulesPath;
+            this._rulesPathMap.clear();
+
+            this.loadRuleProviders();
+        }
+    }
+
+    @Input()
+    set initialSelectedRows(initialSelectedRows: RulesPath[]) {
+        this._initialSelectedRows = initialSelectedRows;
+        this._initialSelectedRowsMap.clear();
+
+        if (initialSelectedRows !== undefined && initialSelectedRows != null) {
+            this._initialSelectedRows.forEach(row => {
+                this._initialSelectedRowsMap.set(row.id, row);
+            });
+        }
+
+        this.initTable();
+    }
+
+    loadRuleProviders() {
+        if (this._rulesPath.length == 0) {
+            this._ruleProviders = [];
+            this.initTable();
+        } else {
+            const ruleProviders: Observable<RuleProviderEntity[]>[] = this._rulesPath.map((rulePath: RulesPath) => {
+                this._rulesPathMap.set(rulePath.id, rulePath);
+                return this._ruleService.getByRulesPath(rulePath);
+            });
+            forkJoin(ruleProviders).subscribe((ruleProviders: RuleProviderEntity[][]) => {
+                let rules: RuleProviderEntity[] = [];
+                for (var i = 0; i < ruleProviders.length; i++) {
+                    rules = rules.concat(ruleProviders[i]);
+                }
+
+                this._ruleProviders = rules;
+                this.initTable();
+            });
+        }
+    }
+
+    initTable() {
+        if (this._ruleProviders !== undefined && this._ruleProviders != null) {
+            const ruleProviders = [...this._ruleProviders];
+
+            if (this._initialSelectedRows && this._initialSelectedRows.length > 0) {
+                ruleProviders.forEach(ruleProvider => {
+                    (<any>ruleProvider).selected = this._initialSelectedRowsMap.has(ruleProvider.rulesPath.id);
+                });
+            } else {
+                ruleProviders.forEach(ruleProvider => {
+                    (<any>ruleProvider).selected = false;
+                });
+            }
+
+            this.allRows = ruleProviders;
+            this.filteredRows = this.allRows;
+            this.updateRows(true); // Reinitialize expanded rows in order to render properly with tabs
+            this.loadQueryFilters();
+        }
     }
 
     // Queries
@@ -246,7 +266,16 @@ export class CustomRuleSelectionCardComponent implements OnInit, OnDestroy {
         this.filterConfig.fields[targetIndex].queries = [...this.targetQueries];
     }
 
+
     // Filter
+
+    /**
+     * Handle filter changes
+     */
+    filterChanged($event: FilterEvent): void {
+        this.applyFilters($event.appliedFilters);
+        this.filterFieldSelected($event);
+    }
 
     applyFilters(filters: Filter[]): void {
         if (filters && filters.length > 0) {
@@ -285,23 +314,9 @@ export class CustomRuleSelectionCardComponent implements OnInit, OnDestroy {
         return match;
     }
 
-    // Actions
-
-    handleAction(action: Action): void {
-        if (action.id == 'selectAll') {
-            this.allRows.map(r => r.rulesPath).forEach((rulePath: RulesPath) => {
-                this.selectedRulesPath.set(rulePath.id, rulePath);
-            });
-        }
-    }
-
-    // Handle filter changes
-    filterChanged($event: FilterEvent): void {
-        this.applyFilters($event.appliedFilters);
-        this.filterFieldSelected($event);
-    }
-
-    // Reset filtered queries
+    /**
+     * Reset filtered queries
+     */
     filterFieldSelected($event: FilterEvent): void {
         this.filterConfig.fields.forEach((field) => {
             if (field.id === 'source') {
@@ -316,7 +331,21 @@ export class CustomRuleSelectionCardComponent implements OnInit, OnDestroy {
         });
     }
 
-    // Filter queries for type ahead
+
+    // Actions
+
+    /**
+     * Handle UI actions
+     */
+    handleAction(action: Action): void {
+        if (action.id == 'selectAll') {
+            this.selectRows(this.allRows);
+        }
+    }
+
+    /**
+     * Filter queries for type ahead
+     */
     filterQueries($event: FilterEvent) {
         const index = (this.filterConfig.fields as any).findIndex((i: any) => i.id === $event.field.id);
         let val = $event.value.trim();
@@ -344,6 +373,7 @@ export class CustomRuleSelectionCardComponent implements OnInit, OnDestroy {
         }
     }
 
+
     // Pagination
 
     handlePageSize($event: PaginationEvent): void {
@@ -364,34 +394,52 @@ export class CustomRuleSelectionCardComponent implements OnInit, OnDestroy {
             .slice(0, this.paginationConfig.pageSize);
     }
 
+
     // Selection
 
+    /**
+     * This method is called everytime the selected rows change
+     */
     handleSelectionChange($event: TableEvent): void {
-        this.selectedRows = $event.selectedRows;
+        this.selectRows($event.selectedRows);
     }
 
-    //
-
-    selectAction() {
-        this.selectedRows.map(r => r.rulesPath).forEach((rulePath: RulesPath) => {
-            this.selectedRulesPath.set(rulePath.id, rulePath);
-        });
-    }
 
     // Modal
 
-    openModal(ruleProvider: RuleProviderEntity) {
+    /**
+     * Opens a modal for showing the content of a RulePath
+     */
+    openRuleProviderModal(ruleProvider: RuleProviderEntity) {
         const config: ModalOptions = {
             class: 'modal-lg',
             initialState: {
                 ruleProvider: ruleProvider
             }
         };
-        this.bsModalRef = this.modalService.show(SingleFileRuleContentModalComponent, config);
+        this.bsModalRef = this._modalService.show(UploadedRulePathModalComponent, config);
     }
 
-    selectRow(ruleProvider: RuleProviderEntity) {
-        const rulesPath: RulesPath = ruleProvider.rulesPath;
-        this.selectedRulesPath.set(rulesPath.id, rulesPath);
+
+    // 
+
+    requestDisplayAddRulesPathModal() {
+        this.onAddRulesPathRequest.emit(true);
     }
+
+    requestDisplayDeleteRulesPathConfirmationModal(ruleProvider: RuleProviderEntity) {
+        this.onDeleteRulesPathRequest.emit(ruleProvider.rulesPath);
+    }
+
+    //
+
+    selectRows(rows: RuleProviderEntity[]) {
+        this.selectedRows = rows;
+
+        const rulesPath: RulesPath[] = rows.map((ruleProvider: RuleProviderEntity) => {
+            return this._rulesPathMap.get(ruleProvider.rulesPath.id);
+        });
+        this.onSelectionChange.emit(rulesPath);
+    }
+
 }

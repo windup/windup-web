@@ -5,11 +5,11 @@ import { RuleProviderEntity } from '../../generated/windup-services';
 declare function prettyPrint();
 
 @Component({
-    selector: 'wu-single-file-rule-content-modal',
-    templateUrl: './single-file-rule-content-modal.component.html',
-    styleUrls: ['./single-file-rule-content-modal.component.scss']
+    selector: 'wu-uploaded-rule-path-modal',
+    templateUrl: './uploaded-rule-path-modal.component.html',
+    styleUrls: ['./uploaded-rule-path-modal.component.scss']
 })
-export class SingleFileRuleContentModalComponent implements AfterViewChecked {
+export class UploadedRulePathModalComponent implements AfterViewChecked {
 
     ruleProvider: RuleProviderEntity;
 

@@ -62,6 +62,9 @@ import {FilterPipe} from "./filter/filter.pipe";
 import {TableComponent} from "./table/table.component";
 import {TableSortHeaderComponent} from "./table/table-sort-header.component";
 import {TablePanelComponent} from "./table/table-panel.component";
+import {ToastNotificationListModule} from 'patternfly-ng/notification';
+import {AddRulesPathModalComponent} from "./add-rules-path-modal/add-rules-path-modal.component";
+import {TechnologyComponent} from "./technology.component";
 
 @NgModule({
     imports: [
@@ -72,6 +75,7 @@ import {TablePanelComponent} from "./table/table-panel.component";
         ChosenModule,
         FileUploadModule,
         MomentModule,
+        ToastNotificationListModule
     ],
     providers: [
         BreadCrumbsService,
@@ -141,7 +145,11 @@ import {TablePanelComponent} from "./table/table-panel.component";
         FilterPipe,
         TableSortHeaderComponent,
         TableComponent,
-        TablePanelComponent
+        TablePanelComponent,
+
+        AddRulesPathModalComponent,
+
+        TechnologyComponent
     ],
     exports: [
         CustomSelectComponent,
@@ -199,7 +207,12 @@ import {TablePanelComponent} from "./table/table-panel.component";
         FilterPipe,
         TableSortHeaderComponent,
         TableComponent,
-        TablePanelComponent
+        TablePanelComponent,
+        ToastNotificationListModule,
+
+        AddRulesPathModalComponent,
+
+        TechnologyComponent
     ]
 })
 export class SharedModule {

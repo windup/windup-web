@@ -130,8 +130,10 @@
                 <p class="help-block">
                     Adding a ruleset is possible on <a [routerLink]="['/configuration']">Rules Configuration</a>.
                 </p> -->
-                <wu-custom-rule-selection-card>
-                </wu-custom-rule-selection-card>
+                <wu-custom-rules 
+                            name="customRules"
+                            [(ngModel)]="selectedCustomRulesPath">
+                </wu-custom-rules>
             </div>
         </wu-expand-collapse>
 

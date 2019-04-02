@@ -1,13 +1,25 @@
 <div class="modal-header">
-    <h4 class="modal-title pull-left">Title</h4>
+    <h4 class="modal-title pull-left">{{ruleProvider.rulesPath.shortPath}}</h4>
     <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
-<div class="modal-body">
+<div class="modal-body" style="height: 390px; overflow-y: auto;">
     <div *ngFor="let ruleEntity of ruleProvider.rules; let i = index">
         <h4 id="{{ruleEntity.id}}">{{getLabelForRuleID(ruleEntity.ruleID, ruleProvider.providerID, i)}}</h4>
         <pre (load)="prettyPrint()" class="prettyprint" style="white-space: pre-wrap">{{ruleEntity.ruleContents}}</pre>
+    </div>
+
+    <div *ngIf="ruleProvider.rules.length == 0">
+        <div class="blank-slate-pf " id="">
+            <div class="blank-slate-pf-icon">
+                <span class="pficon pficon-info"></span>
+            </div>
+            <h1>No rules found</h1>
+            <p>You can read the <a target="_blank"
+                    href="https://access.redhat.com/documentation/en-us/red_hat_application_migration_toolkit">documentation</a>
+                for more info</p>
+        </div>
     </div>
 </div>
 <div class="modal-footer">

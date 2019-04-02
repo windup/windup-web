@@ -1,26 +1,26 @@
 import {Component, OnInit, Input, Output, EventEmitter, ViewChild, OnDestroy} from "@angular/core";
-import {FormComponent} from "../shared/form.component";
+import {FormComponent} from "../form.component";
 import {FormGroup, FormBuilder, Validators, AbstractControl} from "@angular/forms";
-import {FileExistsValidator} from "../shared/validators/file-exists.validator";
-import {FileService} from "../services/file.service";
-import {ConfigurationService} from "./configuration.service";
-import {Configuration, RulesPath} from "../generated/windup-services";
-import {ModalDialogComponent} from "../shared/dialog/modal-dialog.component";
-import {RuleService} from "./rule.service";
+import {FileExistsValidator} from "../validators/file-exists.validator";
+import {FileService} from "../../services/file.service";
+import {ConfigurationService} from "../../configuration/configuration.service";
+import {Configuration, RulesPath} from "../../generated/windup-services";
+import {ModalDialogComponent} from "../dialog/modal-dialog.component";
+import {RuleService} from "../../configuration/rule.service";
 import {FileLikeObject, FileUploaderOptions, FilterFunction} from "ng2-file-upload";
-import {utils} from "../shared/utils";
+import {utils} from "../utils";
 import {Subscription} from "rxjs";
-import {FileUploaderWrapper} from "../shared/upload/file-uploader-wrapper.service";
+import {FileUploaderWrapper} from "../upload/file-uploader-wrapper.service";
 import formatString = utils.formatString;
-import {DialogService} from "../shared/dialog/dialog.service";
-import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
-import {TabComponent} from "../shared/tabs/tab.component";
+import {DialogService} from "../dialog/dialog.service";
+import {ConfirmationModalComponent} from "../dialog/confirmation-modal.component";
+import {TabComponent} from "../tabs/tab.component";
 
 @Component({
     selector: 'wu-add-rules-path-modal',
     templateUrl: './add-rules-path-modal.component.html',
     styleUrls: [
-        '../registered-application/register-application-form.component.scss',
+        '../../registered-application/register-application-form.component.scss',
         './add-rules-path-modal.component.scss'
     ]
 })
