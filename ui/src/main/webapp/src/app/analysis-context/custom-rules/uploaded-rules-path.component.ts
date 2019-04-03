@@ -171,7 +171,10 @@ export class UploadedRulesPathComponent implements OnInit, AfterViewInit {
         } as TableConfig;
 
         this.dataTableConfig = {
-            columnMode: 'flex'
+            columnMode: 'flex',
+            rowClass: (row: RuleProviderEntity) => {
+                return row.loadError ? 'row-danger' : 'row-success';
+            }
         } as NgxDataTableConfig;
     }
 
@@ -236,7 +239,7 @@ export class UploadedRulesPathComponent implements OnInit, AfterViewInit {
 
             this.allRows = ruleProviders;
             this.filteredRows = this.allRows;
-            this.updateRows(true); // Reinitialize expanded rows in order to render properly with tabs
+            this.updateRows(false); // Reinitialize expanded rows in order to render properly with tabs
             this.loadQueryFilters();
         }
     }

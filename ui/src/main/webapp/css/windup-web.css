@@ -231,3 +231,7 @@ fieldset.fields-section-pf {
     padding: 0.1ex 0.4em;
     margin: 0.1ex 0.4ex 0;
 }
+
+.row-danger {
+    color: #cc0000 !important;
+}
