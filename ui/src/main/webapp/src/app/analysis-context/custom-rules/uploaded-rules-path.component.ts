@@ -11,16 +11,18 @@ import { BsModalRef, BsModalService, ModalOptions } from "ngx-bootstrap/modal";
 import { Observable, forkJoin } from "rxjs";
 import { RuleService } from "../../configuration/rule.service";
 import { UploadedRulePathModalComponent } from "./uploaded-rule-path-modal.component";
+import { tap, reduce, map } from "rxjs/operators";
 
 @Component({
     selector: 'wu-uploaded-rules-path',
     templateUrl: './uploaded-rules-path.component.html'
 })
-export class UploadedRulesPathComponent implements OnInit, AfterViewInit {
+export class UploadedRulesPathComponent implements OnInit {
 
     _rulesPath: RulesPath[];
-    _rulesPathMap = new Map<number, RulesPath>();
+    _selectedRulesPath: RulesPath[];
     _ruleProviders: RuleProviderEntity[];
+    _ruleProviderRulesPathMap = new Map<RuleProviderEntity, RulesPath>();
 
     @Output() onSelectionChange = new EventEmitter<RulesPath[]>();
     @Output() onAddRulesPathRequest = new EventEmitter<boolean>();
@@ -31,15 +33,12 @@ export class UploadedRulesPathComponent implements OnInit, AfterViewInit {
     @ViewChild('rulesTemplate') rulesTemplate: TemplateRef<any>;
     @ViewChild('actionsTemplate') actionsTemplate: TemplateRef<any>;
 
-    allRows: RuleProviderEntity[] = [];
-    filteredRows: RuleProviderEntity[] = [];
-    selectedRows: RuleProviderEntity[] = [];
+    rows: any[];
+    allRows: any[];
+    filteredRows: any[];
+    selectedRows: any[] = [];
 
-    rows: RuleProviderEntity[];
     columns: any[];
-
-    _initialSelectedRows: RulesPath[];
-    _initialSelectedRowsMap = new Map<number, RulesPath>();
 
     tableConfig: TableConfig;
     filterConfig: FilterConfig;
@@ -47,7 +46,12 @@ export class UploadedRulesPathComponent implements OnInit, AfterViewInit {
     toolbarConfig: ToolbarConfig;
     emptyStateConfig: EmptyStateConfig;
     paginationConfig: PaginationConfig;
-    dataTableConfig: NgxDataTableConfig;
+    dataTableConfig: NgxDataTableConfig = {
+        columnMode: 'flex',
+        rowClass: (row: RuleProviderEntity) => {
+            return row.loadError ? 'row-danger' : 'row-success';
+        }
+    } as NgxDataTableConfig;;
 
     isAscendingSort: boolean = true;
 
@@ -60,10 +64,6 @@ export class UploadedRulesPathComponent implements OnInit, AfterViewInit {
         private _ruleService: RuleService,
         private _modalService: BsModalService
     ) { }
-
-    ngAfterViewInit() {
-        this.updateRows(false); // Reinitialize expanded rows in order to render properly with tabs
-    }
 
     ngOnInit(): void {
         this.columns = [{
@@ -108,11 +108,11 @@ export class UploadedRulesPathComponent implements OnInit, AfterViewInit {
             pageNumber: 1,
             pageSize: 5,
             pageSizeIncrements: [3, 5, 10],
-            totalItems: this.filteredRows.length
+            totalItems: 0
         } as PaginationConfig;
 
         // Need to initialize for results/total counts
-        this.updateRows(false);
+        // this.updateRows(false);
 
         this.emptyStateConfig = {
             actions: {
@@ -144,8 +144,8 @@ export class UploadedRulesPathComponent implements OnInit, AfterViewInit {
                     ]
                 }] as FilterField[],
             appliedFilters: [],
-            resultsCount: this.rows.length,
-            totalCount: this.allRows.length
+            resultsCount: 0,
+            totalCount: 0
         } as FilterConfig;
 
         this.actionConfig = {
@@ -159,8 +159,7 @@ export class UploadedRulesPathComponent implements OnInit, AfterViewInit {
 
         this.toolbarConfig = {
             actionConfig: this.actionConfig,
-            filterConfig: this.filterConfig,
-            // sortConfig: this.sortConfig
+            filterConfig: this.filterConfig
         } as ToolbarConfig;
 
         this.tableConfig = {
@@ -170,78 +169,68 @@ export class UploadedRulesPathComponent implements OnInit, AfterViewInit {
             toolbarConfig: this.toolbarConfig
         } as TableConfig;
 
-        this.dataTableConfig = {
-            columnMode: 'flex',
-            rowClass: (row: RuleProviderEntity) => {
-                return row.loadError ? 'row-danger' : 'row-success';
-            }
-        } as NgxDataTableConfig;
     }
 
     @Input()
     set rulesPath(rulesPath: RulesPath[]) {
         if (rulesPath !== undefined && rulesPath != null) {
             this._rulesPath = rulesPath;
-            this._rulesPathMap.clear();
+            this._ruleProviderRulesPathMap.clear();
 
-            this.loadRuleProviders();
+            if (this._rulesPath.length == 0) {
+                this._ruleProviders = [];
+                this.initTable();
+            } else {
+                const ruleProviders: Observable<RuleProviderEntity[]>[] = this._rulesPath.map((rulePath: RulesPath) => {
+                    return this._ruleService.getByRulesPath(rulePath).pipe(
+                        tap((ruleProviders: RuleProviderEntity[]) => {
+                            ruleProviders.forEach((provider: RuleProviderEntity) => {
+                                this._ruleProviderRulesPathMap.set(provider, rulePath);
+                            });
+                        })
+                    );
+                });
+                forkJoin(ruleProviders).pipe(
+                    map((ruleProviders: RuleProviderEntity[][]) => {
+                        let result: RuleProviderEntity[] = [];
+                        for (var i = 0; i < ruleProviders.length; i++) {
+                            result = result.concat(ruleProviders[i]);
+                        }
+                        return result;
+                    })
+                ).subscribe((ruleProviders: RuleProviderEntity[]) => {
+                    this._ruleProviders = ruleProviders;
+                    this.initTable();
+                });
+            }
         }
     }
 
     @Input()
     set initialSelectedRows(initialSelectedRows: RulesPath[]) {
-        this._initialSelectedRows = initialSelectedRows;
-        this._initialSelectedRowsMap.clear();
-
         if (initialSelectedRows !== undefined && initialSelectedRows != null) {
-            this._initialSelectedRows.forEach(row => {
-                this._initialSelectedRowsMap.set(row.id, row);
-            });
-        }
-
-        this.initTable();
-    }
-
-    loadRuleProviders() {
-        if (this._rulesPath.length == 0) {
-            this._ruleProviders = [];
-            this.initTable();
-        } else {
-            const ruleProviders: Observable<RuleProviderEntity[]>[] = this._rulesPath.map((rulePath: RulesPath) => {
-                this._rulesPathMap.set(rulePath.id, rulePath);
-                return this._ruleService.getByRulesPath(rulePath);
-            });
-            forkJoin(ruleProviders).subscribe((ruleProviders: RuleProviderEntity[][]) => {
-                let rules: RuleProviderEntity[] = [];
-                for (var i = 0; i < ruleProviders.length; i++) {
-                    rules = rules.concat(ruleProviders[i]);
-                }
-
-                this._ruleProviders = rules;
-                this.initTable();
-            });
+            this._selectedRulesPath = initialSelectedRows;
         }
     }
 
     initTable() {
-        if (this._ruleProviders !== undefined && this._ruleProviders != null) {
-            const ruleProviders = [...this._ruleProviders];
+        if (this._selectedRulesPath) {
+            this._ruleProviders.forEach((ruleProvider: RuleProviderEntity) => {
+                const rulesPath: RulesPath = this._ruleProviderRulesPathMap.get(ruleProvider);
 
-            if (this._initialSelectedRows && this._initialSelectedRows.length > 0) {
-                ruleProviders.forEach(ruleProvider => {
-                    (<any>ruleProvider).selected = this._initialSelectedRowsMap.has(ruleProvider.rulesPath.id);
-                });
-            } else {
-                ruleProviders.forEach(ruleProvider => {
-                    (<any>ruleProvider).selected = false;
-                });
-            }
-
-            this.allRows = ruleProviders;
-            this.filteredRows = this.allRows;
-            this.updateRows(false); // Reinitialize expanded rows in order to render properly with tabs
-            this.loadQueryFilters();
+                var indexOfRow = this._selectedRulesPath.findIndex(r => r.id === rulesPath.id);
+                if (indexOfRow >= 0) {
+                    (<any>ruleProvider).selected = true;
+                    this.selectedRows.push(ruleProvider);
+                }
+            });
         }
+
+        this.allRows = this._ruleProviders;
+        this.filteredRows = this.allRows;
+
+        this.updateRows(false); // Reinitialize expanded rows in order to render properly with tabs
+        this.loadQueryFilters();
     }
 
     // Queries
@@ -341,6 +330,7 @@ export class UploadedRulesPathComponent implements OnInit, AfterViewInit {
      */
     handleAction(action: Action): void {
         if (action.id == 'selectAll') {
+            this.selectedRows = [];
             this.selectRows(this.allRows);
         }
     }
@@ -390,6 +380,7 @@ export class UploadedRulesPathComponent implements OnInit, AfterViewInit {
         if (reset) {
             this.paginationConfig.pageNumber = 1;
         }
+
         this.paginationConfig.totalItems = this.filteredRows.length;
         this.rows = this.filteredRows
             .slice((this.paginationConfig.pageNumber - 1) * this.paginationConfig.pageSize, this.paginationConfig.totalItems)
@@ -403,7 +394,18 @@ export class UploadedRulesPathComponent implements OnInit, AfterViewInit {
      * This method is called everytime the selected rows change
      */
     handleSelectionChange($event: TableEvent): void {
-        this.selectRows($event.selectedRows);
+        if ($event.row) {
+            this.selectRows([$event.row]);
+        } else {
+            if ($event.selectedRows.length > 0) {
+                this.selectRows($event.selectedRows);
+            } else {
+                this.selectRows(this.rows.map(r => {
+                    r.selected = false;
+                    return r;
+                }));
+            }
+        }
     }
 
 
@@ -436,10 +438,22 @@ export class UploadedRulesPathComponent implements OnInit, AfterViewInit {
     //
 
     selectRows(rows: RuleProviderEntity[]) {
-        this.selectedRows = rows;
+        rows.forEach((row: any) => {
+            var indexOfRow = this.selectedRows.findIndex(i => i.id === row.id);
+            if (row.selected) {
+                if (indexOfRow == -1) {
+                    this.selectedRows.push(row);
+                }
+            } else {
+                this.selectedRows.splice(indexOfRow, 1);
+            }
+        });
+        this.updateValue();
+    }
 
-        const rulesPath: RulesPath[] = rows.map((ruleProvider: RuleProviderEntity) => {
-            return this._rulesPathMap.get(ruleProvider.rulesPath.id);
+    updateValue() {
+        const rulesPath: RulesPath[] = this.selectedRows.map((row: RuleProviderEntity) => {
+            return this._ruleProviderRulesPathMap.get(row);
         });
         this.onSelectionChange.emit(rulesPath);
     }

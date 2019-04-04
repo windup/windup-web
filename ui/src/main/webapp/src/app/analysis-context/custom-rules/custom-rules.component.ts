@@ -75,12 +75,16 @@ export class CustomRulesComponent implements ControlValueAccessor, Validator, On
     }
 
     loadCustomRules() {
+        this.loading = true;
         this._configurationService.getCustomRulesetPaths().subscribe((rulesPath: RulesPath[]) => {
             const splitRulesPath = this.splitRulesPath(rulesPath);
 
             this.rulesPath = rulesPath;
             this.uploadedRulesPath = splitRulesPath[0];
             this.serverPathRulesPath = splitRulesPath[1];
+
+            this.loading = false;
+            this.updateValue();
         });
     }
 
