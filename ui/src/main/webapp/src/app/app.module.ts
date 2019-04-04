@@ -36,6 +36,8 @@ import {ExecutionsModule} from "./executions/executions.module";
 import {FileUploaderWrapper} from "./shared/upload/file-uploader-wrapper.service";
 import {KeycloakService} from "./core/authentication/keycloak.service";
 
+import {NotificationService} from 'patternfly-ng/notification';
+
 /**
  * Load all mapping data from the generated files.
  */
@@ -90,7 +92,9 @@ initializeModelMappingData();
             useFactory: createGraphJSONToModelService,
             deps: [HttpClient]
         },
-        DatePipe
+        DatePipe,
+
+        NotificationService
     ],
     bootstrap:    [ AppComponent ]
 })
