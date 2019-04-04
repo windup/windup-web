@@ -16,7 +16,7 @@
                         </wu-uploaded-rules-path>
                     </tab>
                     <tab heading="Server Path">
-                        <wu-server-path-rules 
+                        <wu-server-path-rules *ngIf="!loading"
                                 [rulesPath]="serverPathRulesPath"
                                 [initialSelectedRows]="selectedServerPathRules"
                                 (onSelectionChange)="onServerPathRulesSelectionChange($event)"

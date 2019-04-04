@@ -33,6 +33,9 @@ export class UploadedRulesPathComponent implements OnInit {
     @ViewChild('rulesTemplate') rulesTemplate: TemplateRef<any>;
     @ViewChild('actionsTemplate') actionsTemplate: TemplateRef<any>;
 
+    sourceQueries: any[] = [];
+    targetQueries: any[] = [];
+
     rows: any[];
     allRows: any[];
     filteredRows: any[];
@@ -41,11 +44,61 @@ export class UploadedRulesPathComponent implements OnInit {
     columns: any[];
 
     tableConfig: TableConfig;
-    filterConfig: FilterConfig;
-    actionConfig: ActionConfig;
-    toolbarConfig: ToolbarConfig;
-    emptyStateConfig: EmptyStateConfig;
-    paginationConfig: PaginationConfig;
+    filterConfig: FilterConfig = {
+        fields: [
+            {
+                id: 'source',
+                title: 'Source',
+                placeholder: 'Select an Option',
+                type: FilterType.TYPEAHEAD,
+                queries: [
+                    ...this.sourceQueries
+                ]
+            },
+            {
+                id: 'target',
+                title: 'target',
+                placeholder: 'Select an Option',
+                type: FilterType.TYPEAHEAD,
+                queries: [
+                    ...this.targetQueries
+                ]
+            }] as FilterField[],
+        appliedFilters: [],
+        resultsCount: 0,
+        totalCount: 0
+    } as FilterConfig;
+
+    actionConfig: ActionConfig = {
+        primaryActions: [],
+        moreActions: [{
+            id: 'selectAll',
+            title: 'Select all >>',
+            tooltip: 'Select all items'
+        }]
+    } as ActionConfig;
+
+    toolbarConfig: ToolbarConfig = {
+        actionConfig: this.actionConfig,
+        filterConfig: this.filterConfig
+    } as ToolbarConfig;
+
+    emptyStateConfig: EmptyStateConfig = {
+        actions: {
+            primaryActions: [],
+            moreActions: []
+        } as ActionConfig,
+        iconStyleClass: 'pficon-info',
+        title: 'No custom rules available'
+    } as EmptyStateConfig;
+
+    paginationConfig: PaginationConfig = {
+        pageNumber: 1,
+        pageSize: 5,
+        pageSizeIncrements: [3, 5, 10],
+        totalItems: 0
+    } as PaginationConfig;
+
     dataTableConfig: NgxDataTableConfig = {
         columnMode: 'flex',
         rowClass: (row: RuleProviderEntity) => {
@@ -54,9 +107,6 @@ export class UploadedRulesPathComponent implements OnInit {
     } as NgxDataTableConfig;;
 
     isAscendingSort: boolean = true;
-
-    private sourceQueries: any[] = [];
-    private targetQueries: any[] = [];
 
     private bsModalRef: BsModalRef;
 
@@ -104,71 +154,12 @@ export class UploadedRulesPathComponent implements OnInit {
             cellClass: 'line-height-25 text-center-override'
         }];
 
-        this.paginationConfig = {
-            pageNumber: 1,
-            pageSize: 5,
-            pageSizeIncrements: [3, 5, 10],
-            totalItems: 0
-        } as PaginationConfig;
-
-        // Need to initialize for results/total counts
-        // this.updateRows(false);
-
-        this.emptyStateConfig = {
-            actions: {
-                primaryActions: [],
-                moreActions: []
-            } as ActionConfig,
-            iconStyleClass: 'pficon-info',
-            title: 'No custom rules available'
-        } as EmptyStateConfig;
-
-        this.filterConfig = {
-            fields: [
-                {
-                    id: 'source',
-                    title: 'Source',
-                    placeholder: 'Select an Option',
-                    type: FilterType.TYPEAHEAD,
-                    queries: [
-                        ...this.sourceQueries
-                    ]
-                },
-                {
-                    id: 'target',
-                    title: 'target',
-                    placeholder: 'Select an Option',
-                    type: FilterType.TYPEAHEAD,
-                    queries: [
-                        ...this.targetQueries
-                    ]
-                }] as FilterField[],
-            appliedFilters: [],
-            resultsCount: 0,
-            totalCount: 0
-        } as FilterConfig;
-
-        this.actionConfig = {
-            primaryActions: [],
-            moreActions: [{
-                id: 'selectAll',
-                title: 'Select all >>',
-                tooltip: 'Select all items'
-            }]
-        } as ActionConfig;
-
-        this.toolbarConfig = {
-            actionConfig: this.actionConfig,
-            filterConfig: this.filterConfig
-        } as ToolbarConfig;
-
         this.tableConfig = {
             emptyStateConfig: this.emptyStateConfig,
             paginationConfig: this.paginationConfig,
             showCheckbox: true,
             toolbarConfig: this.toolbarConfig
         } as TableConfig;
-
     }
 
     @Input()
@@ -331,7 +322,10 @@ export class UploadedRulesPathComponent implements OnInit {
     handleAction(action: Action): void {
         if (action.id == 'selectAll') {
             this.selectedRows = [];
-            this.selectRows(this.allRows);
+            this.selectRows(this.allRows.map(r => {
+                r.selected = true;
+                return r;
+            }));
         }
     }
 
