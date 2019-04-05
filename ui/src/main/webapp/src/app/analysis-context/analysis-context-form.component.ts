@@ -84,7 +84,7 @@ export class AnalysisContextFormComponent extends FormComponent
         },
         {
             id: AnalysisContextFormComponent.LINUX,
-            label: 'Move to Linux',
+            label: 'Linux',
             icon: 'fa fa-linux'
         },
         {
