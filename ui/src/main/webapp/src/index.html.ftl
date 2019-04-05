@@ -21,6 +21,13 @@
         };
     </script>
 
+    <style>
+        @media (min-width: 992px) {
+            pfng-toast-notification .toast-pf {
+                max-width: 70%;
+            }
+        }
+    </style>
 </head>
 
 <body class="cards-pf">
