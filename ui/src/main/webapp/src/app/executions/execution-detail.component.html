@@ -70,11 +70,6 @@
             <dl>
                 <dt i18n="Migration Path">Transformation path</dt>
                 <dd>
-                    <!-- {{execution.analysisContext?.migrationPath?.name}}
-                    <span *ngIf="execution.analysisContext?.cloudTargetsIncluded">
-                        (with cloud readiness analysis)
-                    </span> -->
-
                     <ul class="list-unstyled">
                         <li *ngIf="execution.analysisContext?.migrationPath?.source || execution.analysisContext?.migrationPath?.target">
                             <i class="pficon pficon-enterprise"></i> {{execution.analysisContext?.migrationPath?.name}}

@@ -94,37 +94,6 @@ export class AnalysisContextFormComponent extends FormComponent
         }
     ];
 
-    // private transformationPaths: MigrationPath[] = [
-    //     {
-    //         "id": 101,
-    //         "name": "Migration to JBoss EAP 7",
-    //         "source": null,
-    //         "target": {
-    //             "id": 4,
-    //             "version": 0,
-    //             "name": "eap",
-    //             "versionRange": "[7]"
-    //         }
-    //     },
-    //     {
-    //         "id": 100,
-    //         "name": "Migration to JBoss EAP 6",
-    //         "source": null,
-    //         "target": {
-    //             "id": 3,
-    //             "version": 0,
-    //             "name": "eap",
-    //             "versionRange": "[6]"
-    //         }
-    //     },
-    //     {
-    //         "id": 90,
-    //         "name": "Cloud readiness only",
-    //         "source": null,
-    //         "target": null
-    //     }
-    // ];
-
     packageTree: Package[] = [];
 
     packageTreeLoaded: boolean = false;
@@ -132,8 +101,6 @@ export class AnalysisContextFormComponent extends FormComponent
     configurationOptions: ConfigurationOption[] = [];
 
     private _migrationPathsObservable: Observable<MigrationPath[]>;
-
-    // private _transformationPaths: MigrationPath[];
 
     private addCloudTargets: boolean;
     private routerSubscription: Subscription;
