@@ -1,6 +1,6 @@
-<div class="cards-pf">
-    <div class="container-fluid container-cards-pf" style="background: #ededed; box-shadow: 0 1px 1px rgba(3,3,3,.175);">
-        <div class="row row-cards-pf">
+<div class="cards-pf" style="background: transparent; border: 1px solid #d1d1d1;">
+    <div class="container-fluid container-cards-pf">
+        <div class="row row-cards-pf" style="padding-top: 0px;">
             <div (click)="onCardClick(card)" *ngFor="let card of cardPaths" class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
                 <div style="cursor: pointer;" 
                     [ngClass]="{'active': card.selected}" 
