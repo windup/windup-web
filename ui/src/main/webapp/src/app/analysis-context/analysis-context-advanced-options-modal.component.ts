@@ -6,7 +6,7 @@ import {ConfigurationOptionsService} from "../configuration/configuration-option
 import {ValidationResult} from "../model/validation-result.model";
 import {isString} from "util";
 
-const EXCLUDED_TARGET_OPTIONS = ['cloud-readiness', 'eap7', 'eap6', 'openjdk', 'linux'];
+const EXCLUDED_TARGET_OPTIONS = ['cloud-readiness', 'eap', 'eap7', 'eap6', 'openjdk', 'linux'];
 
 @Component({
     selector: 'wu-analysis-context-advanced-options',
