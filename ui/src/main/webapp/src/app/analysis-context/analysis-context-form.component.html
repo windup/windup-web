@@ -147,12 +147,12 @@
                 {{isInWizard ? 'Back' : 'Cancel'}}
             </button>
             <button (click)="save()" class="btn btn-primary btn-save"
-                    [disabled]="!analysisContextForm.form.valid || numberOfSelectedTargets()<1 || saveInProgress" i18n>
+                    [disabled]="!analysisContextForm.form.valid || analysisContext.applications.length === 0 || numberOfSelectedTargets()<1 || saveInProgress" i18n>
                 <span *ngIf="saveInProgress && action === 0" class="spinner spinner-xs spinner-inline"></span>
                 Save
             </button>
             <button (click)="saveAndRun()" class="btn btn-primary btn-save-run"
-                    [disabled]="!analysisContextForm.form.valid || numberOfSelectedTargets()<1 || saveInProgress" i18n>
+                    [disabled]="!analysisContextForm.form.valid || analysisContext.applications.length === 0 || numberOfSelectedTargets()<1 || saveInProgress" i18n>
                 <span *ngIf="saveInProgress && action === 1" class="spinner spinner-xs spinner-inline"></span>
                 Save &amp; Run
             </button>
