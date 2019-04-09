@@ -6,6 +6,8 @@ import {ConfigurationOptionsService} from "../configuration/configuration-option
 import {ValidationResult} from "../model/validation-result.model";
 import {isString} from "util";
 
+const EXCLUDED_TARGET_OPTIONS = ['cloud-readiness', 'eap7', 'eap6', 'openjdk', 'linux'];
+
 @Component({
     selector: 'wu-analysis-context-advanced-options',
     templateUrl: './analysis-context-advanced-options-modal.component.html'
@@ -141,10 +143,10 @@ export class AnalysisContextAdvancedOptionsModalComponent {
         optionValues = optionValues.sort();
         // We should rather get rid of the reviewed tags in rules. WINDUPRULE-206.
         optionValues = optionValues.filter((v: any) => (!isString(v) || !(<string>v).startsWith("reviewed-")));
-        // We also filter 'cloud-readiness' target because it can only be selected
-        // through the "Cloud readiness analysis" check-box
+        // We also filter EXCLUDED_TARGET_OPTIONS because they can only be selected
+        // through the "Transformation Path" cards
         if (this.newOption.name === "target") {
-            optionValues = optionValues.filter((v: any) => !((<string>v) === "cloud-readiness"));
+            optionValues = optionValues.filter((v: any) => EXCLUDED_TARGET_OPTIONS.indexOf(v) === -1);
         }
         return optionValues;
     }

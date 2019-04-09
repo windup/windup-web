@@ -164,20 +164,24 @@ export class AnalysisContextFormComponent extends FormComponent
                             this._analysisContextService.get(project.defaultAnalysisContextId)
                                 .subscribe(context => {
                                     this.analysisContext = context;
-                                    if (this.analysisContext.migrationPath == null)
-                                        this.analysisContext.migrationPath = AnalysisContextFormComponent.DEFAULT_MIGRATION_PATH;
 
                                     if (this.isInWizard) {
                                         this.analysisContext.applications = apps.slice();
+
+                                        if (this.analysisContext.migrationPath == null) {
+                                            this.analysisContext.migrationPath = AnalysisContextFormComponent.DEFAULT_MIGRATION_PATH;
+                                        }
                                     }
 
                                     // Load values to card paths
                                     const selectedPaths: Path[] = [];
-                                    if (this.analysisContext.migrationPath.id == AnalysisContextFormComponent.JBOSS_EAP_6) {
-                                        selectedPaths.push({ id: AnalysisContextFormComponent.JBOSS_EAP_6 });
-                                    }
-                                    if (this.analysisContext.migrationPath.id == AnalysisContextFormComponent.JBOSS_EAP_7) {
-                                        selectedPaths.push({ id: AnalysisContextFormComponent.JBOSS_EAP_7 });
+                                    if (this.analysisContext.migrationPath) {
+                                        if (this.analysisContext.migrationPath.id == AnalysisContextFormComponent.JBOSS_EAP_6) {
+                                            selectedPaths.push({ id: AnalysisContextFormComponent.JBOSS_EAP_6 });
+                                        }
+                                        if (this.analysisContext.migrationPath.id == AnalysisContextFormComponent.JBOSS_EAP_7) {
+                                            selectedPaths.push({ id: AnalysisContextFormComponent.JBOSS_EAP_7 });
+                                        }
                                     }
                                     if (this.analysisContext.cloudTargetsIncluded) {
                                         selectedPaths.push({ id: AnalysisContextFormComponent.CONTAINERIZATION });
@@ -465,14 +469,20 @@ export class AnalysisContextFormComponent extends FormComponent
             const openJdkIndex = this.indexOfPathId(this.selectedPaths, AnalysisContextFormComponent.OPEN_JDK)
 
             if (eap6Index != -1 || eap7Index != -1) {
-                this.analysisContext.migrationPath.id = this.selectedPaths[eap6Index != -1 ? eap6Index : eap7Index].id;
+                this.analysisContext.migrationPath = {
+                    id: this.selectedPaths[eap6Index != -1 ? eap6Index : eap7Index].id,
+                } as MigrationPath;
             } else {
-                this.analysisContext.migrationPath.id = AnalysisContextFormComponent.CLOUD_READINESS_PATH_ID;
+                this.analysisContext.migrationPath = {
+                    id: AnalysisContextFormComponent.CLOUD_READINESS_PATH_ID
+                } as MigrationPath;
             }
 
             this.analysisContext.cloudTargetsIncluded = containerizationIndex != -1;
             this.analysisContext.linuxTargetsIncluded = linuxIndex != -1;
             this.analysisContext.openJdkTargetsIncluded = openJdkIndex != -1;
+        } else {
+            this.analysisContext.migrationPath = null;
         }
     }
 
@@ -484,6 +494,12 @@ export class AnalysisContextFormComponent extends FormComponent
             }
         }
         return -1;
+    }
+
+    numberOfSelectedTargets() {
+        const numberOfSelectedPaths = this.selectedPaths ? this.selectedPaths.length : 0;
+        const numberOfTargetAdvancedOptions = this.analysisContext ? this.analysisContext.advancedOptions.filter(op => op.name == 'target').length : 0;
+        return numberOfSelectedPaths + numberOfTargetAdvancedOptions;
     }
 }
 

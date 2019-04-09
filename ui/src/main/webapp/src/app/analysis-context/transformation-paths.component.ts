@@ -120,11 +120,8 @@ export class TransformationPathsComponent implements ControlValueAccessor, Valid
 
 
     validate(control: AbstractControl): ValidationErrors | null {
-        return (this.value && this.value.length > 0) ? null : {
-            required: {
-                valid: false
-            }
-        };
+        // Always valid
+        return null;
     };
 
 
