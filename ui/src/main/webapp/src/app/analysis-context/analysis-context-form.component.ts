@@ -483,6 +483,9 @@ export class AnalysisContextFormComponent extends FormComponent
             this.analysisContext.openJdkTargetsIncluded = openJdkIndex != -1;
         } else {
             this.analysisContext.migrationPath = null;
+            this.analysisContext.cloudTargetsIncluded = false;
+            this.analysisContext.linuxTargetsIncluded = false;
+            this.analysisContext.openJdkTargetsIncluded = false;
         }
     }
 
