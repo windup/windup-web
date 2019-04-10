@@ -68,8 +68,8 @@
 
             <h3 i18n="Analysis configuration|Section">Configuration</h3>
             <dl>
-                <dt i18n="Migration Path">Transformation path</dt>
-                <dd>
+                <dt i18n="Migration Path" *ngIf="shouldTransformationPathBeShown()">Transformation path</dt>
+                <dd *ngIf="shouldTransformationPathBeShown()">
                     <ul class="list-unstyled">
                         <li *ngIf="execution.analysisContext?.migrationPath?.source || execution.analysisContext?.migrationPath?.target">
                             <i class="pficon pficon-enterprise"></i> {{execution.analysisContext?.migrationPath?.name}}
