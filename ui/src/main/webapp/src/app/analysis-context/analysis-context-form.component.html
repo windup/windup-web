@@ -32,25 +32,16 @@
 
         <!-- Fixed Transformation paths -->
         <div class="form-group">
-            <label class="control-label required" for="migrationPath" i18n>Transformation path</label>
+            <label class="control-label required" i18n>Transformation path</label>
+            <p class="help-block" i18n="transform path description">Select one or several transformation options in focus for the analysis.</p>
             <div>
-                <ng-container *ngFor="let transformationPath of transformationPaths">
-                    <label class="radio-inline control-label" style="padding-left: 20px; padding-right: 40px;">
-                        <input type="radio" id="migrationPath" name="migrationPath" #migrationPath="ngModel"
-                            [(ngModel)]="analysisContext.migrationPath.id" ngControl="migrationPath" [value]="transformationPath.id"
-                            (ngModelChange)="onMigrationPathChange()"
-                        />
-                        {{ transformationPath.name }}
-                    </label>
-                </ng-container>
-                <p class="help-block" i18n="transform path description">Select the transformation path for your applications.</p>
+                <wu-transformation-paths id="selectedPaths"
+                    name="selectedPaths"
+                    [cardPaths]="cardPaths"
+                    [(ngModel)]="selectedPaths"
+                    (ngModelChange)="onMigrationPathChange()">
+                </wu-transformation-paths>
             </div>
-            <label class="checkbox-inline">
-                <input type="checkbox" name="cloudTargetsIncluded" ngControl="cloudTargetsIncluded" [(ngModel)]="analysisContext.cloudTargetsIncluded"
-                    [disabled]="disableCloudReadiness" />
-                Cloud readiness analysis
-            </label>
-            <p class="help-block" i18n="cloud readiness description">Check this box to also assess your applications for cloud and container readiness.</p>
         </div>
 
         <!-- Advanced Transformation paths
@@ -166,12 +157,12 @@
                 {{isInWizard ? 'Back' : 'Cancel'}}
             </button>
             <button (click)="save()" class="btn btn-primary btn-save"
-                    [disabled]="!analysisContextForm.form.valid || analysisContext.applications.length === 0 || saveInProgress" i18n>
+                    [disabled]="!analysisContextForm.form.valid || analysisContext.applications.length === 0 || numberOfSelectedTargets()<1 || saveInProgress" i18n>
                 <span *ngIf="saveInProgress && action === 0" class="spinner spinner-xs spinner-inline"></span>
                 Save
             </button>
             <button (click)="saveAndRun()" class="btn btn-primary btn-save-run"
-                    [disabled]="!analysisContextForm.form.valid || analysisContext.applications.length === 0 || saveInProgress" i18n>
+                    [disabled]="!analysisContextForm.form.valid || analysisContext.applications.length === 0 || numberOfSelectedTargets()<1 || saveInProgress" i18n>
                 <span *ngIf="saveInProgress && action === 1" class="spinner spinner-xs spinner-inline"></span>
                 Save &amp; Run
             </button>

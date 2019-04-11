@@ -114,4 +114,16 @@ export class ExecutionDetailComponent extends RoutedComponent implements OnInit,
     getAnalyzedApplications(execution : WindupExecution) : RegisteredApplication[] {
         return execution.analysisContext.applications;
     }
+
+    shouldTransformationPathBeShown(): boolean {
+        if (this.execution) {
+            if (this.execution.analysisContext.migrationPath ||
+                this.execution.analysisContext.cloudTargetsIncluded ||
+                this.execution.analysisContext.linuxTargetsIncluded ||
+                this.execution.analysisContext.openJdkTargetsIncluded) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

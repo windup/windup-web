@@ -8,6 +8,7 @@ import {AnalysisContextAdvancedOptionsModalComponent} from "./analysis-context-a
 import {SharedModule} from "../shared/shared.module";
 import {RouterModule} from "@angular/router";
 import {SelectApplicationsComponent} from "./select-applications.component";
+import {TransformationPathsComponent} from "./transformation-paths.component";
 import {SelectPackagesComponent} from "./select-packages/select-packages.component";
 import {SelectPackagesWrapperComponent} from "./select-packages/select-packages-wrapper.component";
 import {SelectPackagesSummaryComponent} from "./select-packages/select-packages-summary.component";
@@ -22,6 +23,7 @@ import {SelectPackagesSummaryComponent} from "./select-packages/select-packages-
         AnalysisContextAdvancedOptionsModalComponent,
         CustomRuleSelectionComponent,
         SelectApplicationsComponent,
+        TransformationPathsComponent,
 
         SelectPackagesComponent,
         SelectPackagesWrapperComponent,
@@ -30,8 +32,9 @@ import {SelectPackagesSummaryComponent} from "./select-packages/select-packages-
     exports: [
         AnalysisContextFormComponent,
         AnalysisContextAdvancedOptionsModalComponent,
-        CustomRuleSelectionComponent,    
+        CustomRuleSelectionComponent,
         SelectApplicationsComponent,
+        TransformationPathsComponent,
 
         SelectPackagesComponent,
         SelectPackagesWrapperComponent,

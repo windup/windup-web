@@ -41,6 +41,8 @@ public class DefaultWindupExecutionTask implements WindupExecutionTask
     private static Logger LOG = Logger.getLogger(WindupExecutionTask.class.getName());
 
     private static String CLOUD_TARGET = "cloud-readiness";
+    private static String LINUX_TARGET = "linux";
+    private static String OPEN_JDK_TARGET = "openjdk";
 
     @Inject
     private WindupExecutorService windupExecutorService;
@@ -161,6 +163,14 @@ public class DefaultWindupExecutionTask implements WindupExecutionTask
             if (analysisContext.isCloudTargetsIncluded())
             {
                 targets.add(CLOUD_TARGET);
+            }
+            if (analysisContext.isLinuxTargetsIncluded())
+            {
+                targets.add(LINUX_TARGET);
+            }
+            if (analysisContext.isOpenJdkTargetsIncluded())
+            {
+                targets.add(OPEN_JDK_TARGET);
             }
 
             Map<String, Object> otherOptions = getOtherOptions(analysisContext);
