@@ -4,6 +4,7 @@ import {RouteHistoryService} from "../core/routing/route-history.service";
 import {RouteFlattenerService} from "../core/routing/route-flattener.service";
 import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
 import {DialogService} from "../shared/dialog/dialog.service";
+import {NotificationService, Notification, NotificationEvent} from "patternfly-ng/notification";
 import {filter} from 'rxjs/operators';
 
 @Component({
@@ -13,6 +14,8 @@ import {filter} from 'rxjs/operators';
 export class AppComponent implements AfterViewInit {
     @ViewChild('reusableModalDialog')
     confirmationDialog: ConfirmationModalComponent;
+
+    notifications: Notification[];
 
     /*
      * This is for Augury Chrome extension to display router tree
@@ -25,19 +28,33 @@ export class AppComponent implements AfterViewInit {
         private routeHistoryService: RouteHistoryService,
         private routeFlattener: RouteFlattenerService,
         private activatedRoute: ActivatedRoute,
-        private dialogService: DialogService
+        private dialogService: DialogService,
+        private notificationService: NotificationService
     ) {
         router.events
             .pipe(
                 filter(event => event instanceof NavigationEnd)
-            )            
+            )
             .subscribe((event: NavigationEnd) => {
                 this.routeHistoryService.addNavigationEvent(event);
                 this.routeFlattener.onNewRouteActivated(activatedRoute.snapshot);
             });
+        this.notifications = this.notificationService.getNotifications();
     }
 
     ngAfterViewInit(): void {
         this.dialogService.setConfirmationDialog(this.confirmationDialog);
+    }
+
+    handleAction($event: NotificationEvent): void {
+        console.log($event);
+    }
+
+    handleClose($event: NotificationEvent): void {
+        this.notificationService.remove($event.notification);
+    }
+
+    handleViewingChange($event: NotificationEvent): void {
+        this.notificationService.setViewing($event.notification, $event.isViewing);
     }
 }

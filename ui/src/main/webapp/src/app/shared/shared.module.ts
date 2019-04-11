@@ -62,6 +62,7 @@ import {FilterPipe} from "./filter/filter.pipe";
 import {TableComponent} from "./table/table.component";
 import {TableSortHeaderComponent} from "./table/table-sort-header.component";
 import {TablePanelComponent} from "./table/table-panel.component";
+import {ToastNotificationListModule} from 'patternfly-ng/notification';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatTreeModule, MatCheckboxModule, MatIconModule, MatButtonModule} from '@angular/material';
 
@@ -74,6 +75,7 @@ import {MatTreeModule, MatCheckboxModule, MatIconModule, MatButtonModule} from '
         ChosenModule,
         FileUploadModule,
         MomentModule,
+        ToastNotificationListModule,
 
         BrowserAnimationsModule,
         MatTreeModule,
@@ -207,6 +209,8 @@ import {MatTreeModule, MatCheckboxModule, MatIconModule, MatButtonModule} from '
         FilterPipe,
         TableSortHeaderComponent,
         TableComponent,
+        TablePanelComponent,
+        ToastNotificationListModule,
         TablePanelComponent,
 
         BrowserAnimationsModule,
