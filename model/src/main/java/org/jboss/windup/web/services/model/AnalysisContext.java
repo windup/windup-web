@@ -59,6 +59,12 @@ public class AnalysisContext implements Serializable
      */
     @Column(name = "cloudtargets")
     private boolean cloudTargetsIncluded;
+
+    @Column(name = "linuxtargets")
+    private boolean linuxTargetsIncluded;
+
+    @Column(name = "openjdktargets")
+    private boolean openJdkTargetsIncluded;
     
     public boolean isCloudTargetsIncluded()
     {
@@ -68,6 +74,26 @@ public class AnalysisContext implements Serializable
     public void setCloudTargetsIncluded(boolean cloudTargetsIncluded)
     {
         this.cloudTargetsIncluded = cloudTargetsIncluded;
+    }
+
+    public boolean isLinuxTargetsIncluded()
+    {
+        return linuxTargetsIncluded;
+    }
+
+    public void setLinuxTargetsIncluded(boolean linuxTargetsIncluded)
+    {
+        this.linuxTargetsIncluded = linuxTargetsIncluded;
+    }
+
+    public boolean isOpenJdkTargetsIncluded()
+    {
+        return openJdkTargetsIncluded;
+    }
+
+    public void setOpenJdkTargetsIncluded(boolean openJdkTargetsIncluded)
+    {
+        this.openJdkTargetsIncluded = openJdkTargetsIncluded;
     }
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -311,6 +337,8 @@ public class AnalysisContext implements Serializable
         clone.excludePackages.addAll(this.excludePackages);
         // temporary added for adding cloud related targets in parallel to selected main target
         clone.cloudTargetsIncluded = this.cloudTargetsIncluded;
+        clone.linuxTargetsIncluded = this.linuxTargetsIncluded;
+        clone.openJdkTargetsIncluded = this.openJdkTargetsIncluded;
 
         return clone;
     }

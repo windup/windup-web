@@ -8,6 +8,7 @@ import {AnalysisContextAdvancedOptionsModalComponent} from "./analysis-context-a
 import {SharedModule} from "../shared/shared.module";
 import {RouterModule} from "@angular/router";
 import {SelectApplicationsComponent} from "./select-applications.component";
+import {TransformationPathsComponent} from "./transformation-paths.component";
 
 @NgModule({
     imports: [
@@ -18,13 +19,15 @@ import {SelectApplicationsComponent} from "./select-applications.component";
         AnalysisContextFormComponent,
         AnalysisContextAdvancedOptionsModalComponent,
         CustomRuleSelectionComponent,
-        SelectApplicationsComponent
+        SelectApplicationsComponent,
+        TransformationPathsComponent
     ],
     exports: [
         AnalysisContextFormComponent,
         AnalysisContextAdvancedOptionsModalComponent,
         CustomRuleSelectionComponent,
-        SelectApplicationsComponent
+        SelectApplicationsComponent,
+        TransformationPathsComponent
     ],
     providers: [
         AnalysisContextService,
