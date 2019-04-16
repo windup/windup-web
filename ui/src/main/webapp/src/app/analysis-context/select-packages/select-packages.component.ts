@@ -50,6 +50,9 @@ export class SelectPackagesComponent implements OnDestroy {
     @Input()
     title: string = '';
 
+    @Input()
+    isApplicationPackages: boolean;
+
     // @Input()
     _defaultValue: boolean | PackageSelection;
 
@@ -170,9 +173,29 @@ export class SelectPackagesComponent implements OnDestroy {
     }
 
     private loadTreeFromPreviousPackageSelection(packageSelection: PackageSelection): void {
-        if (packageSelection) {
-            this.toggleNodesUsingDetachedPackages(packageSelection.includePackages, false);
-            this.uncheckNodesUsingDetachedPackages(packageSelection.excludePackages, false);
+        if (packageSelection) {            
+            let includePackages: Package[];
+            let excludePackages: Package[];
+
+            // Loading previous data depends on Aplicationpackages/3rd party packages
+            if (this.isApplicationPackages) {
+                includePackages = packageSelection.includePackages.filter((element) => {
+                    return !this.isAtLeastOneParentInTheList(packageSelection.includePackages, element.fullName);
+                });
+                excludePackages = packageSelection.excludePackages.filter((element) => {
+                    return !this.isAtLeastOneParentInTheList(packageSelection.excludePackages, element.fullName);
+                });
+            } else {
+                includePackages = packageSelection.includePackages.filter((element) => {
+                    return !this.isAtLeastOneChildInTheList(packageSelection.includePackages, element.fullName);
+                });
+                excludePackages = packageSelection.excludePackages.filter((element) => {
+                    return !this.isAtLeastOneChildInTheList(packageSelection.excludePackages, element.fullName);
+                });
+            }
+
+            this.toggleNodesUsingDetachedPackages(includePackages, false);
+            this.uncheckNodesUsingDetachedPackages(excludePackages, false);
             this.updateValue();
         }
     }
@@ -405,4 +428,20 @@ export class SelectPackagesComponent implements OnDestroy {
         return result;
     }
 
+    // Utils
+
+    private isAtLeastOneParentInTheList(packages: Package[], fullName: String): boolean {
+        const parentPackageName = fullName.substring(0, fullName.lastIndexOf("."));
+        if (!parentPackageName) {
+            return false;
+        }
+        if (packages.some(element => element.fullName == parentPackageName)) {
+            return true;
+        }
+        return this.isAtLeastOneParentInTheList(packages, parentPackageName);
+    }
+
+    private isAtLeastOneChildInTheList(packages: Package[], fullName: string): boolean {
+        return packages.some(element => element.fullName.startsWith(fullName + "."));
+    }
 }

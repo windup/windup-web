@@ -12,6 +12,7 @@
                         <wu-select-packages [packages]="applicationPackages"
                                             [icon]="'fa fa-folder'"
                                             [title]="'Application packages'"
+                                            [isApplicationPackages]="true"
                                             [defaultValue]="useDefaultValues ? true : originalValue"
                                             (onSelectionChange)="changeApplicationPackagesSelection($event)">
                         </wu-select-packages>
@@ -20,6 +21,7 @@
                         <wu-select-packages [packages]="thirdPartyPackages"
                                             [icon]="'fa fa-folder-o'"
                                             [title]="'3rd party packages'"
+                                            [isApplicationPackages]="false"
                                             [defaultValue]="useDefaultValues ? false : originalValue"
                                             (onSelectionChange)="changeThirdPartyPackagesSelection($event)">
                         </wu-select-packages>
