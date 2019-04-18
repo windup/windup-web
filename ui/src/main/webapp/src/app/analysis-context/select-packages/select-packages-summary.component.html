@@ -2,14 +2,14 @@
         <div class="dropdown card-pf-time-frame-filter">
                 <div class="form-group toolbar-pf-view-selector">
                     <button type="button"
-                            (click)="excludePackageViewSelection=0"
-                            [ngClass]="{'active': excludePackageViewSelection == 0}"
+                            (click)="viewSelected='LIST'"
+                            [ngClass]="{'active': viewSelected == 'LIST'}"
                             class="btn btn-link">
                         <i class="fa fa-list"></i>
                     </button>
                     <button type="button"
-                            (click)="excludePackageViewSelection=1"
-                            [ngClass]="{'active': excludePackageViewSelection == 1}"
+                            (click)="viewSelected='TREE'"
+                            [ngClass]="{'active': viewSelected == 'TREE'}"
                             class="btn btn-link">
                         <i class="pficon pficon-repository"></i>
                     </button>
@@ -22,10 +22,10 @@
 
 <div *ngIf="packages && packages.length > 0; else emptyPackages"
      class="card-pf-body"
-     [ngClass]="{'pre-scrollable': excludePackageViewSelection == 1}"
-     [ngStyle]="{'padding': excludePackageViewSelection == 0 ? '0' : '0px 20px'}">
+     [ngClass]="{'pre-scrollable': viewSelected == 'TREE'}"
+     [ngStyle]="{'padding': viewSelected == 'LIST' ? '0' : '0px 20px'}">
         
-    <select *ngIf="excludePackageViewSelection == 0"
+    <select *ngIf="viewSelected == 'LIST'"
             class="form-control"
             multiple
             size="7"
@@ -35,7 +35,7 @@
         </option>
     </select>
 
-    <mat-tree #tree *ngIf="excludePackageViewSelection == 1" [dataSource]="treeDataSource" [treeControl]="treeControl">
+    <mat-tree #tree *ngIf="viewSelected == 'TREE'" [dataSource]="treeDataSource" [treeControl]="treeControl">
         <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding [matTreeNodePaddingIndent]="20">
             <button type="button" mat-icon-button disabled></button>            
             <i class="fa fa-folder"></i>&nbsp;{{node.name}}

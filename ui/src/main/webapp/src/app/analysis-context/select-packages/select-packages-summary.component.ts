@@ -5,9 +5,9 @@ import { Package } from "../../generated/windup-services";
 import { FlatTreeControl } from "@angular/cdk/tree";
 import { MatTreeFlattener, MatTreeFlatDataSource } from "@angular/material";
 
-export enum ExcludePackagesViewSelector {
-    LIST,
-    TREE
+export enum ViewSelector {
+    LIST = 'LIST',
+    TREE = 'TREE'
 }
 
 export class PackageFlatNode implements Package {
@@ -30,7 +30,7 @@ export class PackageFlatNode implements Package {
     styleUrls: ['./select-packages-summary.component.scss']
 })
 export class SelectPackagesSummaryComponent {
-    excludePackageViewSelection: ExcludePackagesViewSelector = ExcludePackagesViewSelector.LIST;
+    viewSelected: ViewSelector = ViewSelector.LIST;
 
     _packages: Package[];
 
@@ -72,22 +72,22 @@ export class SelectPackagesSummaryComponent {
         if (packages) {
             packages.sort((a, b) => a.fullName.localeCompare(b.fullName));
 
-            this.createdExcludedTree();
+            this.createTree();
             this.expandTree();
         }
     }
 
-    private createdExcludedTree() {
-        const excludedTree: Package[] = [];
+    private createTree() {
+        const tree: Package[] = [];
         for (let i = 0; i < this._packages.length; i++) {
             const node = this._packages[i];
-            this.createNodesFromPackageFullName(node.fullName, excludedTree);
+            this.createNodesFromPackageFullName(node.fullName, tree);
         }
 
-        this.flatternTreeModelsOnCascade(excludedTree);
-        this.sortTreeModelOnCascade(excludedTree);
+        this.flatternTreeModelsOnCascade(tree);
+        this.sortTreeModelOnCascade(tree);
 
-        this.treeDataSource.data = excludedTree;
+        this.treeDataSource.data = tree;
     }
 
     /**
