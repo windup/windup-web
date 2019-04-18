@@ -264,3 +264,8 @@ fieldset.fields-section-pf {
     border-color: rgb(166, 166, 166) !important;
     border-width: 1px !important;
 }
+
+/* For empty folders*/
+.mat-checkbox-inner-container-no-side-margin {
+    margin-right: 8px !important;
+}
