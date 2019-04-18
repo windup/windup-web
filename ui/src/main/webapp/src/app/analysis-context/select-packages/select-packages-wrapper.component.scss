@@ -17,3 +17,7 @@
         margin-bottom: 0px !important;
     }
 }
+
+:host /deep/ .row-cards-pf:first-child { 
+    padding-top: initial; 
+}
