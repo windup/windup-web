@@ -146,19 +146,20 @@ export class SelectPackagesComponent implements OnDestroy {
     }
 
     private treeModelComparator(a: Package, b: Package): number {
-        if (a.childs && a.childs.length > 0) {
-            if (b.childs && b.childs.length > 0) {
-                return a.name > b.name ? 1 : -1;
-            } else {
-                return 1;
-            }
-        } else {
-            if (b.childs && b.childs.length > 0) {
-                return -1;
-            } else {
-                return a.name > b.name ? 1 : -1;
-            }
-        }
+        return a.name > b.name ? 1 : -1;
+        // if (a.childs && a.childs.length > 0) {
+        //     if (b.childs && b.childs.length > 0) {
+        //         return a.name > b.name ? 1 : -1;
+        //     } else {
+        //         return 1;
+        //     }
+        // } else {
+        //     if (b.childs && b.childs.length > 0) {
+        //         return -1;
+        //     } else {
+        //         return a.name > b.name ? 1 : -1;
+        //     }
+        // }
     }
 
     private loadTreeFromBooleanDefaultValue(defaultValue: boolean): void {
