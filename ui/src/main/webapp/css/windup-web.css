@@ -269,3 +269,11 @@ fieldset.fields-section-pf {
 .mat-checkbox-inner-container-no-side-margin {
     margin-right: 8px !important;
 }
+
+/**For allowing scroll on wu-select-packages-summary*/
+.mat-tree-node {
+    overflow: unset !important;
+}
+.mat-checkbox > label {
+    margin-right: 5px;
+}
