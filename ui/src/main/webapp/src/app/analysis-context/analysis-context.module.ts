@@ -8,6 +8,7 @@ import {AnalysisContextAdvancedOptionsModalComponent} from "./analysis-context-a
 import {SharedModule} from "../shared/shared.module";
 import {RouterModule} from "@angular/router";
 import {SelectApplicationsComponent} from "./select-applications.component";
+import {TransformationPathsComponent} from "./transformation-paths.component";
 import {TableModule} from "patternfly-ng/table";
 import {ListModule} from "patternfly-ng/list";
 import {ToolbarModule} from "patternfly-ng/toolbar";
@@ -38,6 +39,7 @@ import {RulesComponent} from "./custom-rules/rules.component";
         AnalysisContextAdvancedOptionsModalComponent,
         CustomRuleSelectionComponent,
         SelectApplicationsComponent,
+        TransformationPathsComponent,
 
         CustomRulesComponent,
         UploadedRulesPathComponent,
@@ -52,6 +54,7 @@ import {RulesComponent} from "./custom-rules/rules.component";
         AnalysisContextAdvancedOptionsModalComponent,
         CustomRuleSelectionComponent,
         SelectApplicationsComponent,
+        TransformationPathsComponent,
         RulesListComponent,
         RulesComponent
     ],

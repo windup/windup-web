@@ -187,3 +187,18 @@ Deploy your changes while coding
 - Move to webapp folder: `cd windup-web/ui/src/main/webapp`
 - Execute `webpack -w`
 
+Adding Swagging Core
+------------------
+[Swagger Core](https://github.com/swagger-api/swagger-core) is an open source Java implementation of Swagger/OpenAPI.  
+It resolves JAX-RS annotated resources and Java annotated POJOs into OpenAPI schemas, handles serialization/deserialization and provides an integration mechanism.
+
+To get the OpenAPI specifications file, you can compile this project enabling the `swagger` profile:
+
+- from `windup-web/services` folder execute the command `mvn clean compile -Pswagger`
+- in `windup-web/services/target/swagger` folder you'll find `openapi.json` and `openapi.yaml` files with the OpenAPI specifications
+
+If you want to create a RHAMT Web application that provides the `openapi.json` and `openapi.yaml` files at runtime:
+
+- build this project enabling the `swagger` profile, executing -from `windup-web` folder- the `mvn -DskipTests clean install -Pswagger` command  
+- the files will be available at <http://localhost:8080/rhamt-web/api/openapi.json> and <http://localhost:8080/rhamt-web/api/openapi.yaml>
+

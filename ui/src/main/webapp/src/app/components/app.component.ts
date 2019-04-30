@@ -34,7 +34,7 @@ export class AppComponent implements AfterViewInit {
         router.events
             .pipe(
                 filter(event => event instanceof NavigationEnd)
-            )            
+            )
             .subscribe((event: NavigationEnd) => {
                 this.routeHistoryService.addNavigationEvent(event);
                 this.routeFlattener.onNewRouteActivated(activatedRoute.snapshot);

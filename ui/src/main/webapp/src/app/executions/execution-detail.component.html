@@ -59,18 +59,31 @@
                 </ng-container>
                 <ng-container *ngIf="execution.state == 'COMPLETED' && execution?.analysisContext?.generateStaticReports">
                     <dt i18n="Analysis static report">Report</dt>
-                    <dd><a class="link" target="_blank" href="{{formatStaticReportUrl(execution)}}">Open <i class="fa fa-external-link"></i></a></dd>
+                    <dd>
+                        <a class="link" target="_blank" href="{{formatStaticReportUrl(execution)}}">Open <i class="fa fa-external-link"></i></a><br>
+                        <a *ngIf="containsAdvancedOption(execution, 'exportCSV', 'true')" class="link" target="_blank" href="{{formatStaticCsvReportUrl(execution)}}">Download All Issues CSV <i class="pficon pficon-export"></i></a>                        
+                    </dd>
                 </ng-container>
             </dl>
 
             <h3 i18n="Analysis configuration|Section">Configuration</h3>
             <dl>
-                <dt i18n="Migration Path">Transformation path</dt>
-                <dd>
-                    {{execution.analysisContext?.migrationPath?.name}}
-                    <span *ngIf="execution.analysisContext?.cloudTargetsIncluded">
-                        (with cloud readiness analysis)
-                    </span>
+                <dt i18n="Migration Path" *ngIf="shouldTransformationPathBeShown()">Transformation path</dt>
+                <dd *ngIf="shouldTransformationPathBeShown()">
+                    <ul class="list-unstyled">
+                        <li *ngIf="execution.analysisContext?.migrationPath?.source || execution.analysisContext?.migrationPath?.target">
+                            <i class="pficon pficon-enterprise"></i> {{execution.analysisContext?.migrationPath?.name}}
+                        </li>
+                        <li *ngIf="execution.analysisContext?.cloudTargetsIncluded">
+                            <i class="fa fa-cube"></i> Containerization
+                        </li>
+                        <li *ngIf="execution.analysisContext?.linuxTargetsIncluded">
+                            <i class="fa fa-linux"></i> Linux
+                        </li>
+                        <li *ngIf="execution.analysisContext?.openJdkTargetsIncluded">
+                            <i class="fa fa-coffee"></i> OpenJDK
+                        </li>
+                    </ul>
                 </dd>
             </dl>
 

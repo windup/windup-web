@@ -95,6 +95,14 @@ export class ExecutionDetailComponent extends RoutedComponent implements OnInit,
         return WindupExecutionService.formatStaticReportUrl(execution);
     }
 
+    formatStaticCsvReportUrl(execution: WindupExecution): string {        
+        return WindupExecutionService.formatStaticCsvReportUrl(execution);
+    }    
+
+    containsAdvancedOption(execution: WindupExecution, optionName: string, optionValue: any): boolean {
+        return WindupExecutionService.containsAdvancedOption(execution, optionName, optionValue);
+    }
+
     formatStaticRuleProviderReportUrl(execution: WindupExecution): string {
         return WindupExecutionService.formatStaticRuleProviderReportUrl(execution);
     }
@@ -105,5 +113,17 @@ export class ExecutionDetailComponent extends RoutedComponent implements OnInit,
 
     getAnalyzedApplications(execution : WindupExecution) : RegisteredApplication[] {
         return execution.analysisContext.applications;
+    }
+
+    shouldTransformationPathBeShown(): boolean {
+        if (this.execution) {
+            if (this.execution.analysisContext.migrationPath ||
+                this.execution.analysisContext.cloudTargetsIncluded ||
+                this.execution.analysisContext.linuxTargetsIncluded ||
+                this.execution.analysisContext.openJdkTargetsIncluded) {
+                return true;
+            }
+        }
+        return false;
     }
 }
