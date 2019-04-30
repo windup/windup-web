@@ -198,7 +198,6 @@ export class AnalysisContextFormComponent extends FormComponent
                                     }
                                     this.selectedPaths = selectedPaths;
 
-
                                     this.selectedCustomRulesPath = this.analysisContext.rulesPaths;
                                 });
                         }
