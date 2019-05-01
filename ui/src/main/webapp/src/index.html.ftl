@@ -1,3 +1,4 @@
+<!doctype html>
 <html class="layout-pf layout-pf-fixed transitions">
 <head>
     <title>Red Hat Application Migration Toolkit Web Console (RHAMT)</title>

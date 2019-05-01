@@ -1,0 +1,41 @@
+<h3 class="card-pf-subtitle card-pf-utilization-details">
+    <!-- <mat-checkbox class="example-margin" [(ngModel)]="checkedAll" (ngModelChange)="onCheckedAllChange($event)">
+    </mat-checkbox> -->
+    {{title}}
+</h3>
+
+<div class="card-pf-body pre-scrollable" *ngIf="dataSource?.data?.length > 0; else emptyPackages">
+    <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" [trackBy]="trackByFn">
+        <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
+            <button type="button" mat-icon-button disabled></button>
+            <mat-checkbox class="checklist-leaf-node" [checked]="checklistSelection.isSelected(node)"
+                (change)="leafItemSelectionToggle(node)">
+                <i [class]="icon"></i> {{node.name}}
+            </mat-checkbox>
+            <!-- <input type="checkbox" [checked]="checklistSelection.isSelected(node)" (change)="leafItemSelectionToggle(node)"/> &nbsp;{{node.name}} -->
+        </mat-tree-node>
+        <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
+            <button type="button" mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.fullName">
+                <!-- <mat-icon class="mat-icon-rtl-mirror">
+                    {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                </mat-icon> -->
+                <span class="icon expand-icon fa" [ngClass]="treeControl.isExpanded(node) ? 'fa-angle-down' : 'fa-angle-right'"></span>
+            </button>
+            <mat-checkbox [checked]="descendantsAllSelected(node)" [indeterminate]="descendantsPartiallySelected(node)"
+                (change)="itemSelectionToggle(node)">
+                <i [class]="icon"></i> {{node.name}}
+            </mat-checkbox>
+            <!-- <input type="checkbox" [checked]="descendantsAllSelected(node)" (change)="itemSelectionToggle(node)" [indeterminate]="descendantsPartiallySelected(node)"/>&nbsp;{{node.name}} -->
+        </mat-tree-node>
+    </mat-tree>
+</div>
+<ng-template #emptyPackages>
+    <div class="blank-slate-pf">
+        <div class="blank-slate-pf-icon">
+            <span class="pficon pficon pficon-info"></span>
+        </div>
+        <h1>
+            No packages found
+        </h1>
+    </div>
+</ng-template>

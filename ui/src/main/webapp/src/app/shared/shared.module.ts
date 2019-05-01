@@ -63,6 +63,8 @@ import {TableComponent} from "./table/table.component";
 import {TableSortHeaderComponent} from "./table/table-sort-header.component";
 import {TablePanelComponent} from "./table/table-panel.component";
 import {ToastNotificationListModule} from 'patternfly-ng/notification';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {MatTreeModule, MatCheckboxModule, MatIconModule, MatButtonModule} from '@angular/material';
 
 @NgModule({
     imports: [
@@ -73,7 +75,13 @@ import {ToastNotificationListModule} from 'patternfly-ng/notification';
         ChosenModule,
         FileUploadModule,
         MomentModule,
-        ToastNotificationListModule
+        ToastNotificationListModule,
+
+        BrowserAnimationsModule,
+        MatTreeModule,
+        MatCheckboxModule,
+        MatIconModule,
+        MatButtonModule
     ],
     providers: [
         BreadCrumbsService,
@@ -202,7 +210,14 @@ import {ToastNotificationListModule} from 'patternfly-ng/notification';
         TableSortHeaderComponent,
         TableComponent,
         TablePanelComponent,
-        ToastNotificationListModule
+        ToastNotificationListModule,
+        TablePanelComponent,
+
+        BrowserAnimationsModule,
+        MatTreeModule,
+        MatCheckboxModule,
+        MatIconModule,
+        MatButtonModule
     ]
 })
 export class SharedModule {

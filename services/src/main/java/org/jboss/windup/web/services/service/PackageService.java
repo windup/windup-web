@@ -82,8 +82,8 @@ public class PackageService
         appPackageMetadata.getPackages().forEach(aPackage -> appPackageMap.put(aPackage.getFullName(), aPackage));
 
         // TODO: Remove deleted packages
-        this.addPackagesToPackageMetadata(appPackageMetadata, result.getKnownPackages(), appPackageMap);
-        this.addPackagesToPackageMetadata(appPackageMetadata, result.getUnknownPackages(), appPackageMap);
+        this.addPackagesToPackageMetadata(appPackageMetadata, result.getKnownPackages(), appPackageMap, true);
+        this.addPackagesToPackageMetadata(appPackageMetadata, result.getUnknownPackages(), appPackageMap, false);
 
         appPackageMetadata.setScanStatus(PackageMetadata.ScanStatus.COMPLETE);
         this.entityManager.merge(appPackageMetadata);
@@ -93,11 +93,11 @@ public class PackageService
         return appPackageMetadata.getPackages();
     }
 
-    private void addPackagesToPackageMetadata(PackageMetadata metadata, Map<String, Integer> discoveredPackages, Map<String, Package> packageMap)
+    private void addPackagesToPackageMetadata(PackageMetadata metadata, Map<String, Integer> discoveredPackages, Map<String, Package> packageMap, boolean isKnown)
     {
         for (String packageName : discoveredPackages.keySet())
         {
-            Package aPackage = this.createPackageHierarchy(packageName, discoveredPackages, packageMap);
+            Package aPackage = this.createPackageHierarchy(packageName, discoveredPackages, packageMap, isKnown);
             metadata.addPackage(aPackage);
         }
     }
@@ -112,7 +112,7 @@ public class PackageService
      * @param packageMap Map with package name as key and package class as value
      * @return Package
      */
-    Package createPackageHierarchy(String fullPackageName, Map<String, Integer> packageClassCount, Map<String, Package> packageMap)
+    Package createPackageHierarchy(String fullPackageName, Map<String, Integer> packageClassCount, Map<String, Package> packageMap, boolean isKnown)
     {
         Package parent = null;
 
@@ -127,7 +127,7 @@ public class PackageService
 
             if (!packageMap.containsKey(currentPackageNameString))
             {
-                Package pkage = new Package(singlePartName, currentPackageNameString);
+                Package pkage = new Package(singlePartName, currentPackageNameString, isKnown);
 
                 if (packageClassCount.containsKey(currentPackageNameString))
                 {

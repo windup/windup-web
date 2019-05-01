@@ -9,6 +9,9 @@ import {SharedModule} from "../shared/shared.module";
 import {RouterModule} from "@angular/router";
 import {SelectApplicationsComponent} from "./select-applications.component";
 import {TransformationPathsComponent} from "./transformation-paths.component";
+import {SelectPackagesComponent} from "./select-packages/select-packages.component";
+import {SelectPackagesWrapperComponent} from "./select-packages/select-packages-wrapper.component";
+import {SelectPackagesSummaryComponent} from "./select-packages/select-packages-summary.component";
 
 @NgModule({
     imports: [
@@ -20,14 +23,22 @@ import {TransformationPathsComponent} from "./transformation-paths.component";
         AnalysisContextAdvancedOptionsModalComponent,
         CustomRuleSelectionComponent,
         SelectApplicationsComponent,
-        TransformationPathsComponent
+        TransformationPathsComponent,
+
+        SelectPackagesComponent,
+        SelectPackagesWrapperComponent,
+        SelectPackagesSummaryComponent
     ],
     exports: [
         AnalysisContextFormComponent,
         AnalysisContextAdvancedOptionsModalComponent,
         CustomRuleSelectionComponent,
         SelectApplicationsComponent,
-        TransformationPathsComponent
+        TransformationPathsComponent,
+
+        SelectPackagesComponent,
+        SelectPackagesWrapperComponent,
+        SelectPackagesSummaryComponent
     ],
     providers: [
         AnalysisContextService,
