@@ -17,7 +17,8 @@ describe("PackageRegistryService", () => {
             fullName: fullName,
             countClasses: 1,
             childs: [],
-            level: level
+            level: level,
+            known: false
         };
     };
 

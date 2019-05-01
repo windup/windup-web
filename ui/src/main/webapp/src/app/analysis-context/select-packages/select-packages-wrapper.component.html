@@ -1,0 +1,48 @@
+<div class="row row-cards-pf">
+    <div class="col-xs-12 col-sm-12 col-md-8">
+        <div class="card-pf card-pf-utilization">
+            <!-- <div class="card-pf-heading">                
+                <h2 class="card-pf-title">
+                    Discovered packages
+                </h2>
+            </div> -->
+            <div class="card-pf-body">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-6 col-margin-bottom-media">
+                        <wu-select-packages [packages]="applicationPackages"
+                                            [icon]="'fa fa-folder'"
+                                            [title]="'Application packages'"
+                                            [isApplicationPackages]="true"
+                                            [defaultValue]="useDefaultValues ? true : originalValue"
+                                            (onSelectionChange)="changeApplicationPackagesSelection($event)">
+                        </wu-select-packages>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-6">
+                        <wu-select-packages [packages]="thirdPartyPackages"
+                                            [icon]="'fa fa-folder-o'"
+                                            [title]="'3rd party packages'"
+                                            [isApplicationPackages]="false"
+                                            [defaultValue]="useDefaultValues ? false : originalValue"
+                                            (onSelectionChange)="changeThirdPartyPackagesSelection($event)">
+                        </wu-select-packages>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xs-12 col-sm-12 col-md-4">
+        <div class="card-pf">
+            <wu-select-packages-summary [packages]="includePackages"
+                                        [title]="'Include packages'">
+            </wu-select-packages-summary>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-4">
+        <div class="card-pf">
+            <wu-select-packages-summary [packages]="excludePackages"
+                                        [title]="'Exclude packages'">
+            </wu-select-packages-summary>
+        </div>
+    </div>
+</div>

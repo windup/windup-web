@@ -200,6 +200,86 @@ fieldset.fields-section-pf {
     margin-bottom: 0px;
 }
 
+/* Angular material*/
+.mat-checkbox > label {
+    margin-bottom: 0 !important;
+    font-weight: 400 !important;
+}
+
+.mat-checkbox-label, .mat-tree-node {
+    font-family: "Open Sans",Helvetica,Arial,sans-serif !important;
+    font-size: 12px !important;
+    line-height: 1.66666667 !important;
+    color: #363636 !important;
+}
+
+.mat-tree-node {
+    min-height: 24px !important;
+}
+
+.mat-icon-button {
+    width: 20px !important;
+    height: 20px !important;
+    line-height: 20px !important;
+}
+
+.mat-tree > .mat-tree-node:first-child {
+    margin-top: 10px !important;
+}
+
+.mat-checkbox-background {
+    height: 12px !important;
+    width: 12px !important;
+    top: 2px !important;
+    left: 2px !important;
+}
+
+/* Checkbox background color*/
+.mat-checkbox-checked.mat-accent .mat-checkbox-background, .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
+    background-color: #dddddd !important;
+}
+
+.mat-checkbox-inner-container {
+    background: #dddddd;
+}
+
+/** Checkbox check animation */
+.mat-checkbox:not(.mat-checkbox-disabled).mat-accent .mat-checkbox-ripple .mat-ripple-element {
+    background-color: #bbbbbb !important;
+}
+
+/* Checkbox check color*/
+.mat-checkbox-checkmark-path {
+    stroke: #292e34 !important;
+    stroke-width: 4.13333px !important;
+}
+
+/* Undeterminate checkbox color*/
+.mat-checkbox-mixedmark {
+    background-color: #292e34 !important;
+}
+
+/* Checkbox border color */
+.mat-checkbox-frame {
+    border-color: rgb(166, 166, 166) !important;
+    border-width: 1px !important;
+}
+
+/* For empty folders*/
+.mat-checkbox-inner-container-no-side-margin {
+    margin-right: 8px !important;
+}
+
+/**For allowing scroll on wu-select-packages-summary*/
+.mat-tree-node {
+    overflow: unset !important;
+}
+.mat-checkbox > label {
+    margin-right: 5px;
+}
+
+
+
 .text-center-override {
     text-align: center !important;
 }

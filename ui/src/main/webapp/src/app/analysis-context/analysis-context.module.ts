@@ -9,6 +9,9 @@ import {SharedModule} from "../shared/shared.module";
 import {RouterModule} from "@angular/router";
 import {SelectApplicationsComponent} from "./select-applications.component";
 import {TransformationPathsComponent} from "./transformation-paths.component";
+import {SelectPackagesComponent} from "./select-packages/select-packages.component";
+import {SelectPackagesWrapperComponent} from "./select-packages/select-packages-wrapper.component";
+import {SelectPackagesSummaryComponent} from "./select-packages/select-packages-summary.component";
 import {TableModule} from "patternfly-ng/table";
 import {ListModule} from "patternfly-ng/list";
 import {ToolbarModule} from "patternfly-ng/toolbar";
@@ -41,6 +44,10 @@ import {RulesComponent} from "./custom-rules/rules.component";
         SelectApplicationsComponent,
         TransformationPathsComponent,
 
+        SelectPackagesComponent,
+        SelectPackagesWrapperComponent,
+        SelectPackagesSummaryComponent,
+
         CustomRulesComponent,
         UploadedRulesPathComponent,
         ServerPathRulesComponent,
@@ -55,6 +62,11 @@ import {RulesComponent} from "./custom-rules/rules.component";
         CustomRuleSelectionComponent,
         SelectApplicationsComponent,
         TransformationPathsComponent,
+
+        SelectPackagesComponent,
+        SelectPackagesWrapperComponent,
+        SelectPackagesSummaryComponent,
+
         RulesListComponent,
         RulesComponent
     ],
