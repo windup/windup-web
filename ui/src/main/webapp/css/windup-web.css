@@ -315,3 +315,11 @@ fieldset.fields-section-pf {
 .row-danger {
     color: #cc0000 !important;
 }
+
+/** Custom Rules empty state**/
+
+@media (min-width: 992px) {
+    .blank-slate-pf {
+        padding: 80px 120px;
+    }
+}

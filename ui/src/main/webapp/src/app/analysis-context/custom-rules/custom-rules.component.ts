@@ -12,6 +12,7 @@ import { NG_VALUE_ACCESSOR, NG_VALIDATORS, ControlValueAccessor, Validator, Abst
 @Component({
     selector: 'wu-custom-rules',
     templateUrl: './custom-rules.component.html',
+    styleUrls: ['/custom-rules.component.scss'],
     providers: [{
         provide: NG_VALUE_ACCESSOR,
         useExisting: forwardRef(() => CustomRulesComponent),
@@ -80,8 +81,8 @@ export class CustomRulesComponent implements ControlValueAccessor, Validator, On
             const splitRulesPath = this.splitRulesPath(rulesPath);
 
             this.rulesPath = rulesPath;
-            this.uploadedRulesPath = splitRulesPath[0];
-            this.serverPathRulesPath = splitRulesPath[1];
+            this.uploadedRulesPath = splitRulesPath[0].sort(this.sortRulesPath);
+            this.serverPathRulesPath = splitRulesPath[1].sort(this.sortRulesPath);
 
             this.loading = false;
             this.updateValue();
@@ -227,7 +228,7 @@ export class CustomRulesComponent implements ControlValueAccessor, Validator, On
         // Delete 'selected' property 
         this.value = selectedRulesPath.map(({ selected, expanded, ...item }) => {
             return item;
-        });
+        }).sort(this.sortRulesPath);
 
         // Change Model (NgForm)        
         this._onChange(this.value);
@@ -258,5 +259,15 @@ export class CustomRulesComponent implements ControlValueAccessor, Validator, On
         });
     }
 
+
+    private sortRulesPath(a: RulesPath, b: RulesPath): number {
+        if (a.shortPath && b.shortPath) {
+            return a.shortPath.localeCompare(b.shortPath);
+        } else if (a.path && b.path) {
+            return a.path.localeCompare(b.path);
+        } else {
+            return 0;
+        }
+    }
 
 }

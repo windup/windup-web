@@ -127,7 +127,8 @@ export class ServerPathRulesComponent implements DoCheck {
             selectionMatchProp: 'name',
             showCheckbox: true,
             showRadioButton: false,
-            useExpandItems: true
+            useExpandItems: true,
+            hideClose: true
         } as ListConfig;
     }
 

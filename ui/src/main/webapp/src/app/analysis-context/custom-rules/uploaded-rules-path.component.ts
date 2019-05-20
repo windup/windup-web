@@ -20,8 +20,8 @@ import { tap, reduce, map } from "rxjs/operators";
 export class UploadedRulesPathComponent implements OnInit {
 
     _rulesPath: RulesPath[];
-    _selectedRulesPath: RulesPath[];
-    _ruleProviders: RuleProviderEntity[];
+    _selectedRulesPath: RulesPath[] = [];
+    _ruleProviders: RuleProviderEntity[] = [];
     _ruleProviderRulesPathMap = new Map<RuleProviderEntity, RulesPath>();
 
     @Output() onSelectionChange = new EventEmitter<RulesPath[]>();
@@ -201,10 +201,12 @@ export class UploadedRulesPathComponent implements OnInit {
     set initialSelectedRows(initialSelectedRows: RulesPath[]) {
         if (initialSelectedRows !== undefined && initialSelectedRows != null) {
             this._selectedRulesPath = initialSelectedRows;
+            this.initTable();
         }
     }
 
     initTable() {
+        this.selectedRows = [];
         if (this._selectedRulesPath) {
             this._ruleProviders.forEach((ruleProvider: RuleProviderEntity) => {
                 const rulesPath: RulesPath = this._ruleProviderRulesPathMap.get(ruleProvider);
@@ -213,6 +215,8 @@ export class UploadedRulesPathComponent implements OnInit {
                 if (indexOfRow >= 0) {
                     (<any>ruleProvider).selected = true;
                     this.selectedRows.push(ruleProvider);
+                } else {
+                    (<any>ruleProvider).selected = false;
                 }
             });
         }
