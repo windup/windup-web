@@ -11,8 +11,10 @@ import javax.persistence.PersistenceContext;
 
 import org.jboss.windup.web.furnaceserviceprovider.WebProperties;
 import org.jboss.windup.web.services.model.Configuration;
+import org.jboss.windup.web.services.model.LabelsPath;
 import org.jboss.windup.web.services.model.RulesPath;
 import org.jboss.windup.web.services.model.RulesPath.RulesPathType;
+import org.jboss.windup.web.services.model.LabelsPath.LabelsPathType;
 
 import java.nio.file.Path;
 import java.util.HashSet;
@@ -42,6 +44,7 @@ public class ConfigurationService
     {
         Configuration configuration = getConfiguration();
         updateSystemRulesPath(configuration);
+        updateSystemLabelsPath(configuration);
     }
 
     /**
@@ -94,6 +97,22 @@ public class ConfigurationService
         return customRulesPaths;
     }
 
+    public Set<LabelsPath> getCustomLabelsPath()
+    {
+        Set<LabelsPath> customLabelsPaths = new HashSet<>();
+        Set<LabelsPath> labelsets = getConfiguration().getLabelsPaths();
+
+        for (Iterator<LabelsPath> iterator = labelsets.iterator(); iterator.hasNext();)
+        {
+            LabelsPath labelsPath = (LabelsPath) iterator.next();
+            if (labelsPath.getLabelsPathType() == LabelsPathType.USER_PROVIDED && labelsPath.getLoadError() == null)
+            {
+                customLabelsPaths.add(labelsPath);
+            }
+        }
+        return customLabelsPaths;
+    }
+
     private void updateSystemRulesPath(Configuration configuration)
     {
         // Get the updated system rules path from the system
@@ -124,6 +143,38 @@ public class ConfigurationService
 
         // finally, set the new values on the configuration
         configuration.setRulesPaths(dbPaths);
+    }
+
+    private void updateSystemLabelsPath(Configuration configuration)
+    {
+        // Get the updated system rules path from the system
+        Path newSystemLabelsPath = WebProperties.getInstance().getRulesRepository().toAbsolutePath().normalize();
+
+        // make a list of existing rules path
+        Set<LabelsPath> dbPaths = new HashSet<>();
+        if (configuration.getLabelsPaths() != null)
+            dbPaths = configuration.getLabelsPaths();
+
+        // Find the existing system rules path
+        Optional<LabelsPath> existingSystemLabelsPath = dbPaths.stream()
+                .filter((labelsPath) -> labelsPath.getLabelsPathType() == LabelsPath.LabelsPathType.SYSTEM_PROVIDED)
+                .findFirst();
+
+        // Update it if present
+        if (existingSystemLabelsPath.isPresent())
+        {
+            existingSystemLabelsPath.get().setPath(newSystemLabelsPath.toString());
+        }
+        else
+        {
+            // Otherwise, create a new one
+            LabelsPath newLabelsPath = new LabelsPath(newSystemLabelsPath.toString(), LabelsPath.LabelsPathType.SYSTEM_PROVIDED);
+            if (newLabelsPath.getLoadError() == null)
+                dbPaths.add(newLabelsPath);
+        }
+
+        // finally, set the new values on the configuration
+        configuration.setLabelsPaths(dbPaths);
     }
 
     public Configuration reloadConfiguration()

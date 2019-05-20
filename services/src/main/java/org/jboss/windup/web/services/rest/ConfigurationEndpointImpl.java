@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.jboss.windup.web.services.model.Configuration;
+import org.jboss.windup.web.services.model.LabelsPath;
 import org.jboss.windup.web.services.model.RulesPath;
 import org.jboss.windup.web.services.service.ConfigurationService;
 
@@ -34,6 +35,12 @@ public class ConfigurationEndpointImpl implements ConfigurationEndpoint
     public Set<RulesPath> getCustomRulesetPaths()
     {
         return configurationService.getCustomRulesPath();
+    }
+
+    @Override
+    public Set<LabelsPath> getCustomLabelsetPaths()
+    {
+        return configurationService.getCustomLabelsPath();
     }
 
     @Override

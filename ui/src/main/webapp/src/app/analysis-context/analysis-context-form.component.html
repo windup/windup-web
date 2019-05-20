@@ -134,6 +134,20 @@
             </div>
         </wu-expand-collapse>
 
+        <!-- LabelSets selection -->
+        <!-- <wu-expand-collapse [tabTitle]="'Use custom labels'" [isActive]="isActiveLabelsPaths()">
+            <div class="form-group">
+                <label class="control-label" i18n>Custom rulesets</label>
+                <wu-custom-rule-selection
+                        [selectedRulePaths]="analysisContext.rulesPaths"
+                        (selectedRulePathsChanged)="rulesPathsChanged($event)">
+                </wu-custom-rule-selection>
+                <p class="help-block">
+                    Adding a ruleset is possible on <a [routerLink]="['/configuration']">Rules Configuration</a>.
+                </p>
+            </div>
+        </wu-expand-collapse> -->
+
         <!-- Advanced options -->
         <wu-expand-collapse [tabTitle]="'Advanced options'" [isActive]="analysisContext.advancedOptions?.length > 0">
             <div class="form-group">

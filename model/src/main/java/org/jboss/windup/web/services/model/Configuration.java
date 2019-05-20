@@ -39,6 +39,10 @@ public class Configuration implements Serializable
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<RulesPath> rulesPaths;
 
+    @Valid
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<LabelsPath> labelsPaths;
+
     public Long getId()
     {
         return id;
@@ -73,5 +77,13 @@ public class Configuration implements Serializable
     public void setRulesPaths(Set<RulesPath> rulesPaths)
     {
         this.rulesPaths = rulesPaths;
+    }
+
+    public Set<LabelsPath> getLabelsPaths() {
+        return labelsPaths;
+    }
+
+    public void setLabelsPaths(Set<LabelsPath> labelsPaths) {
+        this.labelsPaths = labelsPaths;
     }
 }

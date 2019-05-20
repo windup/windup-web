@@ -29,21 +29,18 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.apache.commons.io.FileUtils;
+import org.jboss.windup.config.LabelProvider;
 import org.jboss.windup.config.RuleProvider;
+import org.jboss.windup.config.loader.LabelProviderLoader;
 import org.jboss.windup.config.loader.RuleLoaderContext;
-import org.jboss.windup.config.metadata.RuleProviderMetadata;
-import org.jboss.windup.config.metadata.RuleProviderRegistry;
-import org.jboss.windup.config.metadata.TechnologyReference;
+import org.jboss.windup.config.metadata.*;
 import org.jboss.windup.config.phase.MigrationRulesPhase;
 import org.jboss.windup.web.addons.websupport.services.IssueCategoryProviderService;
+import org.jboss.windup.web.addons.websupport.services.LabelProviderService;
 import org.jboss.windup.web.addons.websupport.services.RuleFormatterService;
 import org.jboss.windup.web.addons.websupport.services.RuleProviderService;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
-import org.jboss.windup.web.services.model.Category;
-import org.jboss.windup.web.services.model.Configuration;
-import org.jboss.windup.web.services.model.RuleEntity;
-import org.jboss.windup.web.services.model.RuleProviderEntity;
-import org.jboss.windup.web.services.model.RulesPath;
+import org.jboss.windup.web.services.model.*;
 import org.jboss.windup.web.services.model.Technology;
 import org.jboss.windup.web.services.service.ConfigurationService;
 import org.jboss.windup.web.services.service.TechnologyService;
@@ -78,6 +75,10 @@ public class RuleDataLoader
 
     @Inject
     @FromFurnace
+    private LabelProviderService labelProviderService;
+
+    @Inject
+    @FromFurnace
     private IssueCategoryProviderService issueCategoryProviderService;
 
     @Inject
@@ -93,6 +94,7 @@ public class RuleDataLoader
         {
             Configuration webConfiguration = configurationService.getConfiguration();
             reloadRuleData(webConfiguration);
+            reloadLabelData(webConfiguration);
             this.cleanupDanglingRows();
         }
         catch (Throwable t)
@@ -106,6 +108,7 @@ public class RuleDataLoader
     {
         LOG.info("Reloading rule data due to configuration update!");
         reloadRuleData(configuration);
+        reloadLabelData(configuration);
     }
 
     /*
@@ -130,6 +133,28 @@ public class RuleDataLoader
         LOG.info("Rule data reload complete!");
     }
 
+    /*
+     * This prevents timeouts in the case that this is called concurrently.
+     *
+     * The value specified here should be long enough for the previous run to complete.
+     *
+     */
+    @AccessTimeout(value = 3, unit = TimeUnit.MINUTES)
+    public void reloadLabelData(Configuration configuration)
+    {
+        LOG.info("Starting reload of label data...");
+        try
+        {
+            this.loadLabels(configuration);
+        }
+        catch (Exception e)
+        {
+            LOG.log(Level.SEVERE, "Error loading labels due to: " + e.getMessage(), e);
+        }
+        this.getCategories();
+        LOG.info("Rule data reload complete!");
+    }
+
     private void loadRules(Configuration webConfiguration)
     {
         this.begin();
@@ -141,6 +166,25 @@ public class RuleDataLoader
             for (RulesPath rulesPath : webConfiguration.getRulesPaths())
             {
                 loadRulesForRulesPath(rulesPath);
+            }
+        }
+        finally
+        {
+            this.commit();
+        }
+    }
+
+    private void loadLabels(Configuration webConfiguration)
+    {
+        this.begin();
+        try
+        {
+            if (webConfiguration.getLabelsPaths() == null || webConfiguration.getLabelsPaths().isEmpty())
+                return;
+
+            for (LabelsPath labelsPath : webConfiguration.getLabelsPaths())
+            {
+                loadLabelsForLabelsPath(labelsPath);
             }
         }
         finally
@@ -205,6 +249,65 @@ public class RuleDataLoader
         {
             rulesPath.setLoadError("Failed to load rules due to: " + e.getMessage());
             LOG.log(Level.SEVERE, "Could not load rule information due to: " + e.getMessage(), e);
+        }
+    }
+
+    private void loadLabelsForLabelsPath(LabelsPath labelsPath)
+    {
+        /*
+         * Do not reload system rules if we have already loaded them
+         */
+        if (labelsPath.getLabelsPathType() == LabelsPath.LabelsPathType.SYSTEM_PROVIDED)
+        {
+            Long count = entityManager
+                    .createQuery("select count(lpe) from LabelProviderEntity lpe where lpe.labelsPath = :labelsPath", Long.class)
+                    .setParameter("labelsPath", labelsPath)
+                    .getSingleResult();
+            if (count > 0)
+                return;
+        }
+        LOG.info("Purging existing rule data for: " + labelsPath);
+        // Delete the previous ones
+        entityManager
+                .createNamedQuery(LabelProviderEntity.DELETE_BY_LABELS_PATH)
+                .setParameter(LabelProviderEntity.LABELS_PATH_PARAM, labelsPath)
+                .executeUpdate();
+
+        labelsPath.setLoadError(null);
+        try
+        {
+            Path initialPath = Paths.get(labelsPath.getPath());
+            boolean isSystemProvided = labelsPath.getLabelsPathType() == LabelsPath.LabelsPathType.SYSTEM_PROVIDED;
+            boolean scanRecursively = isSystemProvided || labelsPath.isScanRecursively();
+
+            /*
+             * If it is just a single file, just scan that file instead of searching.
+             *
+             * Also, it is more efficient to scan recursively, so scan system provided rules that way in all cases.
+             */
+            if (isSystemProvided || Files.isRegularFile(initialPath))
+            {
+                loadLabels(labelsPath, initialPath);
+            }
+            else
+            {
+                final Set<Path> pathsToScan = FileUtils.listFiles(
+                        initialPath.toFile(),
+                        SUPPORTED_RULE_EXTENSIONS, scanRecursively)
+                        .stream()
+                        .map(File::toPath)
+                        .collect(Collectors.toSet());
+                for (Path path : pathsToScan)
+                {
+                    loadLabels(labelsPath, path);
+                }
+            }
+
+        }
+        catch (Exception e)
+        {
+            labelsPath.setLoadError("Failed to load rules due to: " + e.getMessage());
+            LOG.log(Level.SEVERE, "Could not load label information due to: " + e.getMessage(), e);
         }
     }
 
@@ -282,6 +385,72 @@ public class RuleDataLoader
             ruleProviderEntity.setRules(ruleEntities);
 
             entityManager.persist(ruleProviderEntity);
+        }
+    }
+
+    private void loadLabels(LabelsPath labelsPath, Path path)
+    {
+        boolean fileRulesOnly = labelsPath.getLabelsPathType() == LabelsPath.LabelsPathType.USER_PROVIDED;
+
+        RuleLoaderContext ruleLoaderContext = new RuleLoaderContext(Collections.singleton(path), null);
+
+        LabelProviderRegistry labelProviderRegistry;
+        try
+        {
+            labelProviderRegistry = labelProviderService.loadLabelProviderRegistry(Collections.singleton(path), fileRulesOnly);
+        }
+        catch (Exception e)
+        {
+            LabelProviderEntity labelProviderEntity = new LabelProviderEntity();
+            labelProviderEntity.setProviderID("ERROR");
+            labelProviderEntity.setDateLoaded(new GregorianCalendar());
+            labelProviderEntity.setOrigin(path.toString());
+            labelProviderEntity.setLabelsPath(labelsPath);
+            labelProviderEntity.setLoadError(e.getMessage());
+            entityManager.persist(labelProviderEntity);
+            return;
+        }
+        LOG.info("Providers for: " + path + " are " + labelProviderRegistry.getProviders());
+
+        for (LabelProvider provider : labelProviderRegistry.getProviders())
+        {
+            LabelProviderMetadata labelProviderMetadata = provider.getMetadata();
+            LabelProviderData data = provider.getData();
+
+            String providerID = labelProviderMetadata.getID();
+            String origin = labelProviderMetadata.getOrigin();
+
+            LabelProviderEntity labelProviderEntity = new LabelProviderEntity();
+            labelProviderEntity.setProviderID(providerID);
+            labelProviderEntity.setDateLoaded(new GregorianCalendar());
+            labelProviderEntity.setDescription(labelProviderMetadata.getDescription());
+            labelProviderEntity.setOrigin(origin);
+            labelProviderEntity.setLabelsPath(labelsPath);
+            entityManager.persist(labelProviderEntity);
+
+            setFileMetaData(labelProviderEntity);
+
+            labelProviderEntity.setLabelProviderType(LabelProviderEntity.LabelProviderType.XML);
+
+            List<LabelEntity> labelEntities = new ArrayList<>();
+
+            String any = data.getAny();
+            List<Label> labels = data.getLabels();
+            for (Label label : labels)
+            {
+                String ruleID = label.getId();
+//              String labelString = this.ruleFormatterService.ruleToRuleContentsString(label);
+                String labelString = "label";
+
+                LabelEntity ruleEntity = new LabelEntity();
+                ruleEntity.setLabelID(ruleID);
+                ruleEntity.setLabelContents(labelString);
+                labelEntities.add(ruleEntity);
+            }
+
+            labelProviderEntity.setLabels(labelEntities);
+
+            entityManager.persist(labelProviderEntity);
         }
     }
 
@@ -386,6 +555,39 @@ public class RuleDataLoader
             {
                 filePath = Paths.get(ruleProviderEntity.getRulesPath().getPath()).relativize(Paths.get(filePathString));
                 ruleProviderEntity.setOrigin(filePath.toString());
+            }
+        }
+        catch (Exception e)
+        {
+            // not a file path... ignore
+        }
+    }
+
+    private void setFileMetaData(LabelProviderEntity labelProviderEntity)
+    {
+        if (labelProviderEntity.getOrigin() == null)
+            return;
+
+        try
+        {
+            String filePathString = labelProviderEntity.getOrigin();
+
+            if (filePathString.startsWith("file:"))
+                filePathString = filePathString.substring(5);
+
+            Path filePath = Paths.get(filePathString);
+            if (!Files.isRegularFile(filePath))
+                return;
+
+            FileTime lastModifiedTime = Files.getLastModifiedTime(Paths.get(filePathString));
+            GregorianCalendar lastModifiedCalendar = new GregorianCalendar();
+            lastModifiedCalendar.setTimeInMillis(lastModifiedTime.toMillis());
+            labelProviderEntity.setDateModified(lastModifiedCalendar);
+
+            if (labelProviderEntity.getLabelsPath() != null)
+            {
+                filePath = Paths.get(labelProviderEntity.getLabelsPath().getPath()).relativize(Paths.get(filePathString));
+                labelProviderEntity.setOrigin(filePath.toString());
             }
         }
         catch (Exception e)
