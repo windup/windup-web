@@ -171,25 +171,27 @@ export class AddRulesPathModalComponent extends FormComponent implements OnInit,
     }
 
     addPath(): void {
-        let newConfiguration = JSON.parse(JSON.stringify(this.configuration));
+        this._configurationService.get().subscribe(configuration => {
+            let newConfiguration = configuration;
 
-        let newPath = <RulesPath>{};
-        newPath.path = this.getInputPathControl().value;
-        newPath.rulesPathType = "USER_PROVIDED";
-        newPath.scanRecursively = this.getScanRecursivelyControl().value;
+            let newPath = <RulesPath>{};
+            newPath.path = this.getInputPathControl().value;
+            newPath.rulesPathType = "USER_PROVIDED";
+            newPath.scanRecursively = this.getScanRecursivelyControl().value;
 
-        newConfiguration.rulesPaths.push(newPath);
+            newConfiguration.rulesPaths.push(newPath);
 
-        this._configurationService.save(newConfiguration).subscribe(
-            configuration => {
-                this.configuration = configuration;
-                this.configurationSaved.emit({
-                    configuration: this.configuration
-                });
-                this.hide();
-            },
-            error => this.handleError(<any>error)
-        );
+            this._configurationService.save(newConfiguration).subscribe(
+                configuration => {
+                    this.configuration = configuration;
+                    this.configurationSaved.emit({
+                        configuration: this.configuration
+                    });
+                    this.hide();
+                },
+                error => this.handleError(<any>error)
+            );
+        });
     }
 
     private uploadRule() {
