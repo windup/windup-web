@@ -291,7 +291,7 @@ export class SelectPackagesComponent implements OnDestroy {
         this.nestedNodeMap.set(node, flatNode);
 
         return flatNode;
-    }
+    };
 
     /** Toggle a leaf item selection. Check all the parents to see if they changed */
     leafItemSelectionToggle(node: PackageFlatNode, updateValue: boolean = true): void {
