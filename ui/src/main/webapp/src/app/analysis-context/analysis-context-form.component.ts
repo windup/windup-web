@@ -309,20 +309,6 @@ export class AnalysisContextFormComponent extends FormComponent
             this.packageTree = mergedRoots;
             this.packageTreeLoaded = true;
 
-            if (this.analysisContext != null) {
-                if (this.analysisContext.includePackages == null || this.analysisContext.includePackages.length == 0) {
-                    this.analysisContext.includePackages = [];
-                } else {
-                    this.analysisContext.includePackages = this.analysisContext.includePackages.map(node => this._packageRegistryService.get(node.id)).filter(node => node != null && node !== undefined);
-                }
-
-                if (this.analysisContext.excludePackages == null || this.analysisContext.excludePackages.length == 0) {
-                    this.analysisContext.excludePackages = [];
-                } else {
-                    this.analysisContext.excludePackages = this.analysisContext.excludePackages.map(node => this._packageRegistryService.get(node.id)).filter(node => node != null && node !== undefined);
-                }
-            }
-
             this.packageSelection = {
                 includePackages: this.analysisContext.includePackages,
                 excludePackages: this.analysisContext.excludePackages
