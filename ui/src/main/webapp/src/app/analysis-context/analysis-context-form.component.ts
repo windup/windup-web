@@ -323,8 +323,10 @@ export class AnalysisContextFormComponent extends FormComponent
                 }
             }
 
-            this.packageSelection.includePackages = this.analysisContext.includePackages;
-            this.packageSelection.excludePackages = this.analysisContext.excludePackages;
+            this.packageSelection = {
+                includePackages: this.analysisContext.includePackages,
+                excludePackages: this.analysisContext.excludePackages
+            };
         });
     }
 
