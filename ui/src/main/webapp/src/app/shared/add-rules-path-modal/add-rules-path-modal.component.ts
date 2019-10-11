@@ -4,12 +4,12 @@ import {FormGroup, FormBuilder, Validators, AbstractControl} from "@angular/form
 import {FileExistsValidator} from "../validators/file-exists.validator";
 import {FileService} from "../../services/file.service";
 import {ConfigurationService} from "../../configuration/configuration.service";
-import {Configuration, RulesPath} from "../../generated/windup-services";
+import {Configuration, RulesPath, MigrationProject} from "../../generated/windup-services";
 import {ModalDialogComponent} from "../dialog/modal-dialog.component";
 import {RuleService} from "../../configuration/rule.service";
 import {FileLikeObject, FileUploaderOptions, FilterFunction} from "ng2-file-upload";
 import {utils} from "../utils";
-import {Subscription} from "rxjs";
+import {Subscription, Observable} from "rxjs";
 import {FileUploaderWrapper} from "../upload/file-uploader-wrapper.service";
 import formatString = utils.formatString;
 import {DialogService} from "../dialog/dialog.service";
@@ -25,6 +25,9 @@ import {TabComponent} from "../tabs/tab.component";
     ]
 })
 export class AddRulesPathModalComponent extends FormComponent implements OnInit, OnDestroy {
+    @Input()
+    project: MigrationProject;
+
     @Input()
     configuration: Configuration;
 
@@ -159,11 +162,18 @@ export class AddRulesPathModalComponent extends FormComponent implements OnInit,
         this.modalDialog.hide();
     }
 
+    reloadConfiguration() {
+        if (this.project) {
+            return this._configurationService.getByProjectId(this.project.id);
+        } 
+        return this._configurationService.get();
+    }
+
     submitForm(): void {
         if (this.mode === 'PATH') {
             this.addPath();
         } else {
-            this._configurationService.get().subscribe(configuration => {
+            this.reloadConfiguration().subscribe(configuration => {
                 this.configurationSaved.emit({ configuration });
                 this.hide();
             });
@@ -171,7 +181,7 @@ export class AddRulesPathModalComponent extends FormComponent implements OnInit,
     }
 
     addPath(): void {
-        this._configurationService.get().subscribe(configuration => {
+        this.reloadConfiguration().subscribe(configuration => {
             let newConfiguration = configuration;
 
             let newPath = <RulesPath>{};
@@ -200,10 +210,17 @@ export class AddRulesPathModalComponent extends FormComponent implements OnInit,
             return;
         }
 
-        this._ruleService.uploadRules().subscribe(
-            () => {},
-            error => this.handleError(<any>error)
-        );
+        if (!this.project) {
+            this._ruleService.uploadGlobalRules().subscribe(
+                () => {},
+                error => this.handleError(<any>error)
+            );
+        } else {
+            this._ruleService.uploadRulesToProject(this.project).subscribe(
+                () => {},
+                error => this.handleError(<any>error)
+            );
+        }
     }
 
     public confirmDeleteRule(rulesPath: RulesPath) {

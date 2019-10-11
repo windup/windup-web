@@ -172,7 +172,10 @@
 </ng-template>
 
 <wu-rules-modal></wu-rules-modal>
-<wu-add-rules-path-modal [configuration]="configuration" (configurationSaved)="configurationUpdated($event)"></wu-add-rules-path-modal>
+<wu-add-rules-path-modal
+        [configuration]="configuration"
+        (configurationSaved)="configurationUpdated($event)">
+</wu-add-rules-path-modal>
 <wu-confirmation-modal
         #removeRulesConfirmationModal
         [id]="'deleteRulesConfirmationDialog'"

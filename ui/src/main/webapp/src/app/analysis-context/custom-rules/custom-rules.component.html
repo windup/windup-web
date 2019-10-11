@@ -64,7 +64,11 @@
     </div>
 </div>
 
-<wu-add-rules-path-modal [configuration]="configuration" (configurationSaved)="loadCustomRules($event)"></wu-add-rules-path-modal>
+<wu-add-rules-path-modal
+        [project]="project"
+        [configuration]="configuration"
+        (configurationSaved)="loadCustomRules($event)">
+</wu-add-rules-path-modal>
 <wu-confirmation-modal
         #removeRulesConfirmationModal
         [id]="'deleteRulesConfirmationDialog'"
