@@ -2,6 +2,7 @@ package org.jboss.windup.web.services.service;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -11,11 +12,8 @@ import javax.persistence.PersistenceContext;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 
-import org.jboss.windup.web.services.model.AdvancedOption;
-import org.jboss.windup.web.services.model.AnalysisContext;
-import org.jboss.windup.web.services.model.MigrationProject;
+import org.jboss.windup.web.services.model.*;
 import org.jboss.windup.web.services.model.Package;
-import org.jboss.windup.web.services.model.RulesPath;
 
 /**
  * Provides tools for creating default analysis context instances, as well as providing default configuration data.
@@ -43,6 +41,11 @@ public class AnalysisContextService
         }
 
         return context;
+    }
+
+    public List<AnalysisContext> getAll()
+    {
+        return entityManager.createNamedQuery(AnalysisContext.FIND_ALL).getResultList();
     }
 
     /**
@@ -142,12 +145,12 @@ public class AnalysisContextService
         return merged;
     }
 
-    private void ensureSystemRulesPathsPresent(AnalysisContext analysisContext)
+    public void ensureSystemRulesPathsPresent(AnalysisContext analysisContext)
     {
-        this.configurationService
-                    .getConfiguration().getRulesPaths()
-                    .stream()
-                    .filter(rulesPath -> rulesPath.getRulesPathType() == RulesPath.RulesPathType.SYSTEM_PROVIDED)
+        configurationService
+                    .getGlobalConfiguration().getRulesPaths()
+//                    .stream()
+//                    .filter(rulesPath -> rulesPath.getRulesPathType() == RulesPath.RulesPathType.SYSTEM_PROVIDED)
                     .forEach(rulesPath -> {
                         if (analysisContext.getRulesPaths() == null)
                             analysisContext.setRulesPaths(new HashSet<>());

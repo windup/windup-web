@@ -6,19 +6,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Version;
-import javax.validation.Valid;
+import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -37,9 +25,16 @@ import org.hibernate.annotations.FetchMode;
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = AnalysisContext.class)
+@NamedQueries({
+        @NamedQuery(name = AnalysisContext.FIND_ALL, query = "select ac from AnalysisContext ac"),
+        @NamedQuery(name = AnalysisContext.FIND_BY_RULE_PATH_ID, query = "select a from AnalysisContext a inner join a.rulesPaths r where r.id = :rulePathId")
+})
 public class AnalysisContext implements Serializable
 {
     private static final long serialVersionUID = 1L;
+
+    public static final String FIND_ALL = "AnalysisContext.findAll";
+    public static final String FIND_BY_RULE_PATH_ID = "AnalysisContext.findByRulePath";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

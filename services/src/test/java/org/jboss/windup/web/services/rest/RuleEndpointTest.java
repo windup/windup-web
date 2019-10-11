@@ -79,7 +79,7 @@ public class RuleEndpointTest extends AbstractTest
         System.out.println("System rules path: " + systemRulesPath);
 
         configuration.getRulesPaths().add(new RulesPath(FAKE_PATH, RulesPath.RulesPathType.USER_PROVIDED));
-        configurationEndpoint.saveConfiguration(configuration);
+        configurationEndpoint.saveConfiguration(configuration.getId(), configuration);
 
         List<RuleProviderEntity> ruleProviderEntities = ruleEndpoint.getByRulesPath(systemRulesPath.getId());
 
@@ -101,7 +101,7 @@ public class RuleEndpointTest extends AbstractTest
         Configuration configuration = configurationEndpoint.getConfiguration();
         RulesPath fakeRulesPath = new RulesPath(FAKE_PATH, RulesPath.RulesPathType.USER_PROVIDED);
         configuration.getRulesPaths().add(fakeRulesPath);
-        configuration = configurationEndpoint.saveConfiguration(configuration);
+        configuration = configurationEndpoint.saveConfiguration(configuration.getId(), configuration);
 
         for (RulesPath rulesPath : configuration.getRulesPaths())
         {

@@ -37,7 +37,7 @@ public class RuleDataLoaderTest extends AbstractTest
     public void testDataLoader()
     {
 
-        Configuration configuration = this.configurationService.getConfiguration();
+        Configuration configuration = this.configurationService.getGlobalConfiguration();
         configuration.getRulesPaths().add(new RulesPath(CUSTOM_WINDUP_RULESPATH, RulesPath.RulesPathType.USER_PROVIDED));
         configuration.getRulesPaths().add(new RulesPath(CUSTOM_RHAMT_RULESPATH, RulesPath.RulesPathType.USER_PROVIDED));
         configuration = this.configurationService.saveConfiguration(configuration);

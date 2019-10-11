@@ -6,12 +6,8 @@ import org.jboss.windup.web.services.model.RulesPath;
 import java.util.Set;
 
 import javax.validation.Valid;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+
+import javax.ws.rs.*;
 
 /**
  * Contains methods for loading and configuring Windup.
@@ -30,10 +26,11 @@ public interface ConfigurationEndpoint
     Configuration getConfiguration();
 
     /**
-     * Persists the given Windup configuration.
+     * Returns the Windup configuration for a single project.
      */
-    @PUT
-    Configuration saveConfiguration(@Valid Configuration configuration);
+    @GET
+    @Path("by-project/{projectId}")
+    Configuration getConfigurationByProject(@PathParam("projectId") long projectId);
 
     /**
      * Returns only rulespath collection for custom registered ruleset paths
@@ -41,11 +38,18 @@ public interface ConfigurationEndpoint
      * @return
      */
     @GET
-    @Path("custom-rulesets")
-    Set<RulesPath> getCustomRulesetPaths();
+    @Path("/{id}/custom-rulesets")
+    Set<RulesPath> getCustomRulesetPathsByProject(@PathParam("id") long id);
 
+    /**
+     * Persists the given configuration.
+     */
+    @PUT
+    @Path("/{id}")
+    Configuration saveConfiguration(@PathParam("id") long id, @Valid Configuration configuration);
 
     @POST
-    @Path("reload")
-    Configuration reloadConfiguration();
+    @Path("/{id}/reload")
+    Configuration reloadConfiguration(@PathParam("id") long id);
+
 }

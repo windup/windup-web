@@ -54,7 +54,7 @@ public class DataProvider
     {
         Configuration configuration = this.configurationEndpoint.getConfiguration();
         configuration.getRulesPaths().add(getTestRulesPath());
-        configuration = this.configurationEndpoint.saveConfiguration(configuration);
+        configuration = this.configurationEndpoint.saveConfiguration(configuration.getId(), configuration);
         this.rulesPathSet = configuration.getRulesPaths();
     }
 

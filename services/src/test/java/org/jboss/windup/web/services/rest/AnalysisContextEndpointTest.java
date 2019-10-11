@@ -59,7 +59,7 @@ public class AnalysisContextEndpointTest extends AbstractTest
 
         Configuration configuration = configurationEndpoint.getConfiguration();
         configuration.setRulesPaths(Collections.singleton(new RulesPath(ConfigurationEndpointTest.CUSTOM_RULESPATH, RulesPathType.USER_PROVIDED)));
-        configurationEndpoint.saveConfiguration(configuration);
+        configurationEndpoint.saveConfiguration(configuration.getId(), configuration);
 
         MigrationProject project = this.dataProvider.getMigrationProject();
         AnalysisContext analysisContext = this.dataProvider.getAnalysisContext(project);
@@ -78,7 +78,7 @@ public class AnalysisContextEndpointTest extends AbstractTest
         response.bufferEntity();
         String stringResponse = response.readEntity(String.class);
         JSONObject json = new JSONObject(stringResponse);
-        
+
         Assert.assertNotNull(loaded);
         Assert.assertEquals(analysisContext.getId(), loaded.getId());
         Assert.assertEquals(path, loaded.getMigrationPath());

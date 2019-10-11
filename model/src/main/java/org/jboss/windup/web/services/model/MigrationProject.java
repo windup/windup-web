@@ -95,6 +95,9 @@ public class MigrationProject implements Serializable
     @OneToOne
     private AnalysisContext defaultAnalysisContext;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    private Configuration configuration;
+
     public MigrationProject()
     {
         this.applications = new HashSet<>();
@@ -287,6 +290,16 @@ public class MigrationProject implements Serializable
     public void setDefaultAnalysisContext(AnalysisContext defaultAnalysisContext)
     {
         this.defaultAnalysisContext = defaultAnalysisContext;
+    }
+
+    @JsonIgnore
+    public Configuration getConfiguration() {
+        return configuration;
+    }
+
+    @JsonIgnore
+    public void setConfiguration(Configuration configuration) {
+        this.configuration = configuration;
     }
 
     @Override
