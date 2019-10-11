@@ -19,7 +19,7 @@ public class ConfigurationEndpointImpl implements ConfigurationEndpoint
     private ConfigurationService configurationService;
 
     @Override
-    public Configuration getConfiguration()
+    public Configuration getGlobalConfiguration()
     {
         return configurationService.getGlobalConfiguration();
     }
@@ -38,7 +38,7 @@ public class ConfigurationEndpointImpl implements ConfigurationEndpoint
     }
 
     @Override
-    public Set<RulesPath> getCustomRulesetPathsByProject(long id)
+    public Set<RulesPath> getCustomRulesetPaths(long id)
     {
         return configurationService.getCustomRulesPath(id);
     }

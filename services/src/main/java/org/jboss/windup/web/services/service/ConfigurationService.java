@@ -1,5 +1,12 @@
 package org.jboss.windup.web.services.service;
 
+import org.jboss.windup.web.furnaceserviceprovider.WebProperties;
+import org.jboss.windup.web.services.model.AnalysisContext;
+import org.jboss.windup.web.services.model.Configuration;
+import org.jboss.windup.web.services.model.MigrationProject;
+import org.jboss.windup.web.services.model.RulesPath;
+import org.jboss.windup.web.services.model.RulesPath.RulesPathType;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
@@ -8,15 +15,6 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-
-import org.jboss.windup.web.furnaceserviceprovider.WebProperties;
-import org.jboss.windup.web.services.model.AnalysisContext;
-import org.jboss.windup.web.services.model.Configuration;
-import org.jboss.windup.web.services.model.MigrationProject;
-import org.jboss.windup.web.services.model.RulesPath;
-import org.jboss.windup.web.services.model.RulesPath.RulesPathType;
-
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -92,7 +90,6 @@ public class ConfigurationService
         {
             Configuration configuration = createDefaultConfiguration(false);
             configuration.setRulesPaths(Collections.emptySet());
-//            updateSystemRulesPath(configuration);
 
             MigrationProject migrationProject = entityManager.find(MigrationProject.class, projectId);
             migrationProject.setConfiguration(configuration);
@@ -174,8 +171,10 @@ public class ConfigurationService
         }
         else
         {
+            RulesPath.ScopeType scopeType = configuration.isGlobal() ? RulesPath.ScopeType.GLOBAL : RulesPath.ScopeType.PROJECT;
+
             // Otherwise, create a new one
-            RulesPath newRulesPath = new RulesPath(newSystemRulesPath.toString(), RulesPath.RulesPathType.SYSTEM_PROVIDED);
+            RulesPath newRulesPath = new RulesPath(newSystemRulesPath.toString(), RulesPath.RulesPathType.SYSTEM_PROVIDED, scopeType);
             if (newRulesPath.getLoadError() == null)
                 dbPaths.add(newRulesPath);
         }

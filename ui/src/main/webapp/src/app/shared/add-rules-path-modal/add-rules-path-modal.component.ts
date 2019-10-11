@@ -187,6 +187,7 @@ export class AddRulesPathModalComponent extends FormComponent implements OnInit,
             let newPath = <RulesPath>{};
             newPath.path = this.getInputPathControl().value;
             newPath.rulesPathType = "USER_PROVIDED";
+            newPath.scopeType = configuration.global ? "GLOBAL" : "PROJECT";
             newPath.scanRecursively = this.getScanRecursivelyControl().value;
 
             newConfiguration.rulesPaths.push(newPath);

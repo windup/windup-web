@@ -52,7 +52,7 @@ public class DataProvider
 
     private void updateConfiguration()
     {
-        Configuration configuration = this.configurationEndpoint.getConfiguration();
+        Configuration configuration = this.configurationEndpoint.getGlobalConfiguration();
         configuration.getRulesPaths().add(getTestRulesPath());
         configuration = this.configurationEndpoint.saveConfiguration(configuration.getId(), configuration);
         this.rulesPathSet = configuration.getRulesPaths();
@@ -102,7 +102,7 @@ public class DataProvider
         String pathString = path.toString();
         if (this.rulesPathSet == null)
         {
-            return new RulesPath(pathString, RulesPath.RulesPathType.USER_PROVIDED);
+            return new RulesPath(pathString, RulesPath.RulesPathType.USER_PROVIDED, RulesPath.ScopeType.GLOBAL);
         } else
         {
             for (RulesPath rulesPath : rulesPathSet)

@@ -57,8 +57,8 @@ public class AnalysisContextEndpointTest extends AbstractTest
         // Just grab the first one (this is completely arbitrary)
         MigrationPath path = migrationPathEndpoint.getAvailablePaths().iterator().next();
 
-        Configuration configuration = configurationEndpoint.getConfiguration();
-        configuration.setRulesPaths(Collections.singleton(new RulesPath(ConfigurationEndpointTest.CUSTOM_RULESPATH, RulesPathType.USER_PROVIDED)));
+        Configuration configuration = configurationEndpoint.getGlobalConfiguration();
+        configuration.setRulesPaths(Collections.singleton(new RulesPath(ConfigurationEndpointTest.CUSTOM_RULESPATH, RulesPathType.USER_PROVIDED, RulesPath.ScopeType.GLOBAL)));
         configurationEndpoint.saveConfiguration(configuration.getId(), configuration);
 
         MigrationProject project = this.dataProvider.getMigrationProject();
@@ -68,7 +68,7 @@ public class AnalysisContextEndpointTest extends AbstractTest
         analysisContext.setLinuxTargetsIncluded(true);
         analysisContext.setOpenJdkTargetsIncluded(true);
 
-        analysisContext.setRulesPaths(configurationEndpoint.getConfiguration().getRulesPaths());
+        analysisContext.setRulesPaths(configurationEndpoint.getGlobalConfiguration().getRulesPaths());
 
         analysisContext = analysisContextEndpoint.saveAsProjectDefault(analysisContext, project.getId());
 

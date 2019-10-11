@@ -38,8 +38,8 @@ public class RuleDataLoaderTest extends AbstractTest
     {
 
         Configuration configuration = this.configurationService.getGlobalConfiguration();
-        configuration.getRulesPaths().add(new RulesPath(CUSTOM_WINDUP_RULESPATH, RulesPath.RulesPathType.USER_PROVIDED));
-        configuration.getRulesPaths().add(new RulesPath(CUSTOM_RHAMT_RULESPATH, RulesPath.RulesPathType.USER_PROVIDED));
+        configuration.getRulesPaths().add(new RulesPath(CUSTOM_WINDUP_RULESPATH, RulesPath.RulesPathType.USER_PROVIDED, RulesPath.ScopeType.GLOBAL));
+        configuration.getRulesPaths().add(new RulesPath(CUSTOM_RHAMT_RULESPATH, RulesPath.RulesPathType.USER_PROVIDED, RulesPath.ScopeType.GLOBAL));
         configuration = this.configurationService.saveConfiguration(configuration);
         ruleDataLoader.reloadRuleData(configuration);
 

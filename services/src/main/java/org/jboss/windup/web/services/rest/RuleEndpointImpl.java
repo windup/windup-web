@@ -18,7 +18,6 @@ import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.model.*;
 import org.jboss.windup.web.services.model.RulesPath.RulesPathType;
-import org.jboss.windup.web.services.service.AnalysisContextService;
 import org.jboss.windup.web.services.service.ConfigurationService;
 import org.jboss.windup.web.services.service.FileUploadService;
 
@@ -40,9 +39,6 @@ public class RuleEndpointImpl implements RuleEndpoint
 
     @Inject
     private ConfigurationService configurationService;
-
-    @Inject
-    private AnalysisContextService analysisContextService;
 
     @Override
     public List<RuleProviderEntity> getAllProviders()
@@ -78,34 +74,31 @@ public class RuleEndpointImpl implements RuleEndpoint
     public RulesPath uploadRuleProvider(MultipartFormDataInput data)
     {
         Configuration configuration = this.configurationService.getGlobalConfiguration();
-        RulesPath rulesPathEntity = uploadRuleProviderToConfiguration(data, configuration);
-
-//        // Add the new Global rule to all AnalysisContexts
-//        analysisContextService
-//                .getAll()
-//                .forEach(analysisContext -> {
-//                    analysisContextService.ensureSystemRulesPathsPresent(analysisContext);
-//                    entityManager.merge(analysisContext);
-//                });
-
-        return rulesPathEntity;
+        return uploadRuleProviderToConfiguration(data, configuration, null);
     }
 
     @Override
     public RulesPath uploadRuleProviderByProject(Long projectId, MultipartFormDataInput data)
     {
         Configuration configuration = this.configurationService.getConfigurationByProjectId(projectId);
-        return uploadRuleProviderToConfiguration(data, configuration);
+        MigrationProject migrationProject = configuration.getMigrationProject();
+        return uploadRuleProviderToConfiguration(data, configuration, migrationProject.getId());
     }
 
-    private  RulesPath uploadRuleProviderToConfiguration(MultipartFormDataInput data, Configuration configuration)
+    private  RulesPath uploadRuleProviderToConfiguration(MultipartFormDataInput data, Configuration configuration, Long projectId)
     {
         String fileName = this.fileUploadService.getFileName(data);
         Path customRulesPath = this.webPathUtil.getCustomRulesPath();
 
+        // Save file to custom project folder
+        if (projectId != null) {
+            customRulesPath = customRulesPath.resolve(projectId.toString());
+        }
+
         File file = this.fileUploadService.uploadFile(data, customRulesPath, fileName, true);
 
-        RulesPath rulesPathEntity = new RulesPath(file.getPath(), RulesPath.RulesPathType.USER_PROVIDED, RegistrationType.UPLOADED);
+        RulesPath.ScopeType scopeType = configuration.isGlobal() ? RulesPath.ScopeType.GLOBAL : RulesPath.ScopeType.PROJECT;
+        RulesPath rulesPathEntity = new RulesPath(file.getPath(), RulesPath.RulesPathType.USER_PROVIDED, scopeType, RegistrationType.UPLOADED);
         String relativePath = customRulesPath.relativize(file.toPath()).toString();
         rulesPathEntity.setShortPath(relativePath);
 

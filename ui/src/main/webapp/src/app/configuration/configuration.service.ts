@@ -14,7 +14,7 @@ export class ConfigurationService extends AbstractService {
     private GET_URL = "/configuration";
     private GET_BY_PROJECT_URL = "/configuration/by-project/{projectId}";
     private SAVE_URL = "/configuration/{id}";
-    private CONFIGURATION_RELOAD_URL = '/configuration/{id}';
+    private CONFIGURATION_RELOAD_URL = '/configuration/{id}/reload';
     private GET_CUSTOM_RULESETS_URL = "/configuration/{id}/custom-rulesets";
 
     constructor (private _http: HttpClient) {

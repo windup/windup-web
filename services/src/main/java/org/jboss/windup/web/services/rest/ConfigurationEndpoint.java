@@ -23,7 +23,7 @@ public interface ConfigurationEndpoint
      * Returns the Windup configuration.
      */
     @GET
-    Configuration getConfiguration();
+    Configuration getGlobalConfiguration();
 
     /**
      * Returns the Windup configuration for a single project.
@@ -39,7 +39,7 @@ public interface ConfigurationEndpoint
      */
     @GET
     @Path("/{id}/custom-rulesets")
-    Set<RulesPath> getCustomRulesetPathsByProject(@PathParam("id") long id);
+    Set<RulesPath> getCustomRulesetPaths(@PathParam("id") long id);
 
     /**
      * Persists the given configuration.

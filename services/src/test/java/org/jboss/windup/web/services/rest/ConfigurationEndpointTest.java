@@ -47,7 +47,7 @@ public class ConfigurationEndpointTest extends AbstractTest
     @RunAsClient
     public void testEndpoint()
     {
-        Configuration configuration = configurationEndpoint.getConfiguration();
+        Configuration configuration = configurationEndpoint.getGlobalConfiguration();
 
         RulesPath rulesPath = new RulesPath();
         rulesPath.setPath(FAKE_PATH);
@@ -60,25 +60,25 @@ public class ConfigurationEndpointTest extends AbstractTest
         Assert.assertEquals(FAKE_PATH, configuration.getRulesPaths().iterator().next().getPath());
     }
 
-//    @Test
-//    @RunAsClient
-//    public void testCustomRulesetEndpoint()
-//    {
-//        Configuration configuration = configurationEndpoint.getConfiguration();
-//        Assert.assertNotNull(configuration);
-//
-//        RulesPath rulesPath = new RulesPath();
-//        rulesPath.setPath(CUSTOM_RULESPATH);
-//        rulesPath.setRulesPathType(RulesPathType.USER_PROVIDED);
-//        configuration.setRulesPaths(Collections.singleton(rulesPath));
-//
-//        configuration = configurationEndpoint.saveConfiguration(configuration.getId(), configuration);
-//        Set<RulesPath> rulesetPaths = configurationEndpoint.getCustomRulesetPaths();
-//
-//        Assert.assertNotNull(configuration.getRulesPaths());
-//        Assert.assertNotNull(rulesetPaths);
-//        Assert.assertEquals(1, configuration.getRulesPaths().size());
-//        Assert.assertEquals(1, rulesetPaths.size());
-//        Assert.assertEquals(CUSTOM_RULESPATH, configuration.getRulesPaths().iterator().next().getPath());
-//    }
+    @Test
+    @RunAsClient
+    public void testCustomRulesetEndpoint()
+    {
+        Configuration configuration = configurationEndpoint.getGlobalConfiguration();
+        Assert.assertNotNull(configuration);
+
+        RulesPath rulesPath = new RulesPath();
+        rulesPath.setPath(CUSTOM_RULESPATH);
+        rulesPath.setRulesPathType(RulesPathType.USER_PROVIDED);
+        configuration.setRulesPaths(Collections.singleton(rulesPath));
+
+        configuration = configurationEndpoint.saveConfiguration(configuration.getId(), configuration);
+        Set<RulesPath> rulesetPaths = configurationEndpoint.getCustomRulesetPaths(configuration.getId());
+
+        Assert.assertNotNull(configuration.getRulesPaths());
+        Assert.assertNotNull(rulesetPaths);
+        Assert.assertEquals(1, configuration.getRulesPaths().size());
+        Assert.assertEquals(1, rulesetPaths.size());
+        Assert.assertEquals(CUSTOM_RULESPATH, configuration.getRulesPaths().iterator().next().getPath());
+    }
 }

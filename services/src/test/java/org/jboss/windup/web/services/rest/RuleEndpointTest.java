@@ -74,11 +74,11 @@ public class RuleEndpointTest extends AbstractTest
     @Test
     @RunAsClient
     public void testByRulePathWithRules() {
-        Configuration configuration = configurationEndpoint.getConfiguration();
+        Configuration configuration = configurationEndpoint.getGlobalConfiguration();
         RulesPath systemRulesPath = getSystemRulesPath(configuration).get();
         System.out.println("System rules path: " + systemRulesPath);
 
-        configuration.getRulesPaths().add(new RulesPath(FAKE_PATH, RulesPath.RulesPathType.USER_PROVIDED));
+        configuration.getRulesPaths().add(new RulesPath(FAKE_PATH, RulesPath.RulesPathType.USER_PROVIDED, RulesPath.ScopeType.GLOBAL));
         configurationEndpoint.saveConfiguration(configuration.getId(), configuration);
 
         List<RuleProviderEntity> ruleProviderEntities = ruleEndpoint.getByRulesPath(systemRulesPath.getId());
@@ -98,8 +98,8 @@ public class RuleEndpointTest extends AbstractTest
     @Test
     @RunAsClient
     public void testByRulePathWithNORules() {
-        Configuration configuration = configurationEndpoint.getConfiguration();
-        RulesPath fakeRulesPath = new RulesPath(FAKE_PATH, RulesPath.RulesPathType.USER_PROVIDED);
+        Configuration configuration = configurationEndpoint.getGlobalConfiguration();
+        RulesPath fakeRulesPath = new RulesPath(FAKE_PATH, RulesPath.RulesPathType.USER_PROVIDED, RulesPath.ScopeType.GLOBAL);
         configuration.getRulesPaths().add(fakeRulesPath);
         configuration = configurationEndpoint.saveConfiguration(configuration.getId(), configuration);
 
