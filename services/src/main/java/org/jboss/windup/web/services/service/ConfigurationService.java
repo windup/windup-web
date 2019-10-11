@@ -101,7 +101,7 @@ public class ConfigurationService
 
     public List<Configuration> getAllConfigurations()
     {
-        return entityManager.createQuery("select c from Configuration c").getResultList();
+        return entityManager.createNamedQuery(Configuration.FIND_ALL).getResultList();
     }
 
     public Configuration getConfiguration(long id)
@@ -116,7 +116,7 @@ public class ConfigurationService
     {
         try
         {
-            return (Configuration)entityManager.createQuery("select configuration from Configuration configuration where configuration.isGlobal = true").getSingleResult();
+            return (Configuration)entityManager.createNamedQuery(Configuration.FIND_GLOBAL).getSingleResult();
         }
         catch (NoResultException t)
         {

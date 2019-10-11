@@ -15,13 +15,17 @@ import javax.validation.Valid;
  */
 @Entity
 @NamedQueries({
-        @NamedQuery(name = Configuration.FIND_BY_RULE_PATH_ID, query = "select c from Configuration c inner join c.rulesPaths r where r.id = :rulePathId")
+        @NamedQuery(name = Configuration.FIND_BY_RULE_PATH_ID, query = "select c from Configuration c inner join c.rulesPaths r where r.id = :rulePathId"),
+        @NamedQuery(name = Configuration.FIND_GLOBAL, query = "select configuration from Configuration configuration where configuration.global = true"),
+        @NamedQuery(name = Configuration.FIND_ALL, query = "select c from Configuration c")
 })
 public class Configuration implements Serializable
 {
     private static final long serialVersionUID = 1L;
 
     public static final String FIND_BY_RULE_PATH_ID = "Configuration.findByRulePath";
+    public static final String FIND_GLOBAL = "Configuration.findGlobal";
+    public static final String FIND_ALL = "Configuration.findAll";
 
     public static final String CONFIGURATION_ID = "configuration_id";
 
@@ -31,7 +35,7 @@ public class Configuration implements Serializable
     private Long id;
 
     @Column
-    private boolean isGlobal;
+    private boolean global;
 
     @Version
     @Column(name = "version")
@@ -55,11 +59,11 @@ public class Configuration implements Serializable
     }
 
     public boolean isGlobal() {
-        return isGlobal;
+        return global;
     }
 
     public void setGlobal(boolean global) {
-        isGlobal = global;
+        this.global = global;
     }
 
     public int getVersion()

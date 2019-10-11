@@ -15,7 +15,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.ColumnDefault;
-import org.jboss.windup.web.services.validators.FileExistsConstraint;
 
 /**
  * Contains the path to a Rules directory.
