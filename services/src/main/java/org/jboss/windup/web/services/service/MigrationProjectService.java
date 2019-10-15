@@ -12,23 +12,15 @@ import javax.ws.rs.NotFoundException;
 
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
-import org.jboss.windup.web.services.model.AnalysisContext;
-import org.jboss.windup.web.services.model.Configuration;
-import org.jboss.windup.web.services.model.MigrationProject;
-import org.jboss.windup.web.services.model.RuleProviderEntity;
+import org.jboss.windup.web.services.model.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.GregorianCalendar;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -168,14 +160,16 @@ public class MigrationProjectService
 
         // Remove project configuration
         Configuration configuration = project.getConfiguration();
-        configuration.getRulesPaths().forEach(rulesPath -> {
-            this.entityManager.createNamedQuery(RuleProviderEntity.DELETE_BY_RULES_PATH)
-                    .setParameter(RuleProviderEntity.RULES_PATH_PARAM, rulesPath)
-                    .executeUpdate();
-            entityManager.remove(rulesPath);
-        });
-        configuration.setRulesPaths(Collections.emptySet());
-        entityManager.remove(configuration);
+        if (configuration != null) {
+            configuration.getRulesPaths().forEach(rulesPath -> {
+                this.entityManager.createNamedQuery(RuleProviderEntity.DELETE_BY_RULES_PATH)
+                        .setParameter(RuleProviderEntity.RULES_PATH_PARAM, rulesPath)
+                        .executeUpdate();
+                entityManager.remove(rulesPath);
+            });
+            configuration.setRulesPaths(Collections.emptySet());
+            entityManager.remove(configuration);
+        }
 
         entityManager.remove(project);
 
