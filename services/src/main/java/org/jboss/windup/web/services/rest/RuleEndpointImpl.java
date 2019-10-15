@@ -92,7 +92,7 @@ public class RuleEndpointImpl implements RuleEndpoint
 
         // Save file to custom project folder
         if (projectId != null) {
-            customRulesPath = customRulesPath.resolve(projectId.toString());
+            customRulesPath = this.webPathUtil.getCustomRulesPath(projectId.toString());
         }
 
         File file = this.fileUploadService.uploadFile(data, customRulesPath, fileName, true);

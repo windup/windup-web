@@ -35,6 +35,11 @@ public interface WebPathUtil
     Path getGlobalWindupDataPath();
 
     /**
+     * Gets the path where custom rule providers are stored for a specific project
+     */
+    Path getCustomRulesPath(String projectPath);
+
+    /**
      * Gets the path where custom rule providers are stored
      */
     Path getCustomRulesPath();

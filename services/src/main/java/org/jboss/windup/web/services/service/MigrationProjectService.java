@@ -6,7 +6,6 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
@@ -14,7 +13,9 @@ import javax.ws.rs.NotFoundException;
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.model.AnalysisContext;
+import org.jboss.windup.web.services.model.Configuration;
 import org.jboss.windup.web.services.model.MigrationProject;
+import org.jboss.windup.web.services.model.RuleProviderEntity;
 
 import java.io.File;
 import java.io.IOException;
@@ -165,19 +166,36 @@ public class MigrationProjectService
         this.getAnalysisContexts(project).forEach(context -> entityManager.remove(context));
         project.setApplications(Collections.emptySet());
 
+        // Remove project configuration
+        Configuration configuration = project.getConfiguration();
+        configuration.getRulesPaths().forEach(rulesPath -> {
+            this.entityManager.createNamedQuery(RuleProviderEntity.DELETE_BY_RULES_PATH)
+                    .setParameter(RuleProviderEntity.RULES_PATH_PARAM, rulesPath)
+                    .executeUpdate();
+            entityManager.remove(rulesPath);
+        });
+        configuration.setRulesPaths(Collections.emptySet());
+        entityManager.remove(configuration);
+
         entityManager.remove(project);
 
+        File rulesDir = new File(this.webPathUtil.getCustomRulesPath(project.getId().toString()).toString());
         File projectDir = new File(this.webPathUtil.createMigrationProjectPath(project.getId().toString()).toString());
 
-        if (projectDir.exists()) {
-            Path rootPath = Paths.get(projectDir.getAbsolutePath());
+        deleteProjectResourceDir(rulesDir);
+        deleteProjectResourceDir(projectDir);
+    }
+
+    private void deleteProjectResourceDir(File dir) {
+        if (dir.exists()) {
+            Path rootPath = Paths.get(dir.getAbsolutePath());
             try {
                 Files.walk(rootPath, FileVisitOption.FOLLOW_LINKS)
                         .sorted(Comparator.reverseOrder())
                         .map(Path::toFile)
                         .forEach(File::delete);
             } catch (IOException e) {
-                LOG.log(Level.WARNING, "Unable to delete directory " + projectDir.getAbsolutePath() + " (" + e.getMessage() + ")");
+                LOG.log(Level.WARNING, "Unable to delete directory " + dir.getAbsolutePath() + " (" + e.getMessage() + ")");
             }
         }
     }
