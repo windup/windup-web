@@ -323,3 +323,10 @@ fieldset.fields-section-pf {
         padding: 80px 120px;
     }
 }
+
+/** general toast notifications **/
+@media (min-width: 992px) {
+    pfng-toast-notification .toast-pf {
+        max-width: 70%;
+    }
+}

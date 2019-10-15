@@ -1,15 +1,14 @@
-import { Component, ViewChild, OnDestroy, OnInit, forwardRef, Output, EventEmitter } from '@angular/core';
+import { Component, ViewChild, OnInit, forwardRef, Output, EventEmitter } from '@angular/core';
 import { RulesPath, Configuration, MigrationProject } from '../../generated/windup-services';
 import { ConfigurationService } from '../../configuration/configuration.service';
-import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationModalComponent } from '../../shared/dialog/confirmation-modal.component';
-import { NotificationService, NotificationType } from 'patternfly-ng/notification';
 import { AddRulesPathModalComponent } from '../../shared/add-rules-path-modal/add-rules-path-modal.component';
 import { RuleService } from '../../configuration/rule.service';
 import { NG_VALUE_ACCESSOR, NG_VALIDATORS, ControlValueAccessor, Validator, AbstractControl, ValidationErrors } from '@angular/forms';
-import { RouteFlattenerService, FlattenedRouteData } from '../../core/routing/route-flattener.service';
+import { RouteFlattenerService } from '../../core/routing/route-flattener.service';
 import { RoutedComponent } from '../../shared/routed.component';
+import { NotificationService } from '../../core/notification/notification.service';
 
 @Component({
     selector: 'wu-custom-rules',
@@ -185,7 +184,8 @@ export class CustomRulesComponent extends RoutedComponent implements ControlValu
 
     removeRulesPath(rulesPath: RulesPath) {
         this._ruleService.deleteRule(rulesPath).subscribe(() => {
-            this._notificationService.message(NotificationType.SUCCESS, '', 'Rule was deleted', false, null, null);
+            this._notificationService.success('Rule was deleted');
+
             this._configurationService.getByProjectId(this.project.id).subscribe(newConfig => {
                 this.configuration = newConfig;
                 this.loadCustomRules();
