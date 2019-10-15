@@ -9,6 +9,8 @@ import { Package } from "../../generated/windup-services";
 import { FlatTreeControl } from "@angular/cdk/tree";
 import { MatTreeFlatDataSource, MatTreeFlattener } from "@angular/material";
 import { SelectionModel } from "@angular/cdk/collections";
+import { Subscription, BehaviorSubject } from "rxjs";
+import { filter, debounceTime } from "rxjs/operators";
 
 export class PackageSelection {
     includePackages: Package[];
@@ -26,6 +28,12 @@ export class PackageFlatNode implements Package {
 
     expandable: boolean;
     flaternName: string;
+}
+
+interface RequiredInputs {
+    isApplicationPackages: boolean;
+    packages: boolean;
+    defaultValue: boolean;
 }
 
 @Component({
@@ -50,8 +58,9 @@ export class SelectPackagesComponent implements OnDestroy {
     @Input()
     title: string = '';
 
-    @Input()
-    isApplicationPackages: boolean;
+    // True if this component is used for application packages and not for 3rd party packages
+    // @Input()
+    _isApplicationPackages: boolean;
 
     // @Input()
     _defaultValue: boolean | PackageSelection;
@@ -74,26 +83,59 @@ export class SelectPackagesComponent implements OnDestroy {
     /** The selection for checklist */
     checklistSelection = new SelectionModel<PackageFlatNode>(true /* multiple */);
 
+    private requiredInputsSubject = new BehaviorSubject<RequiredInputs>({
+        isApplicationPackages: false,
+        packages: false,
+        defaultValue: false
+    });
+
+    private subscriptions: Subscription[] = [];
+
     public constructor() {
         this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel, this.isExpandable, this.getChildren);
         this.treeControl = new FlatTreeControl<any>(this.getLevel, this.isExpandable);
         this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+
+        this.subscriptions.push(
+            this.requiredInputsSubject
+                .pipe(
+                    filter((inputs: RequiredInputs) => {
+                        return Object.values(inputs).some((e) => e == false) ? false : true;
+                    }),
+                    debounceTime(10)
+                )
+                .subscribe(() => {
+                    this.clearComponent();
+
+                    this.processPackagesBeforeSendingToDatasource(this._packages);
+                    this.dataSource.data = this._packages;
+
+                    if (typeof this._defaultValue === "boolean") {
+                        this.loadTreeFromBooleanDefaultValue(this._defaultValue);
+                    } else {
+                        this.loadTreeFromPreviousPackageSelection(this._defaultValue);
+                    }
+                })
+        );
     }
 
     ngOnDestroy() {
         this.clearComponent();
+        this.subscriptions.forEach((subs) => {
+            subs.unsubscribe();
+        });
     }
 
     @Input()
     set packages(packages: Package[]) {
         this._packages = packages;
-        if (this._packages) {
-            this.clearComponent();
+        if (this._packages != null && this._packages !== undefined) {
 
-            this.processPackagesBeforeSendingToDatasource(this._packages);
-            this.dataSource.data = this._packages;
-
-            this.loadTreeFromPreviousPackageSelection(null);
+            // Notify that this input is ready
+            this.requiredInputsSubject.next({
+                ...this.requiredInputsSubject.getValue(),
+                packages: true,
+            });
         }
     }
 
@@ -101,11 +143,25 @@ export class SelectPackagesComponent implements OnDestroy {
     set defaultValue(defaultValue: boolean | PackageSelection) {
         this._defaultValue = defaultValue;
         if (defaultValue != null && defaultValue !== undefined) {
-            if (typeof defaultValue === "boolean") {
-                this.loadTreeFromBooleanDefaultValue(defaultValue);
-            } else {
-                this.loadTreeFromPreviousPackageSelection(defaultValue);
-            }
+
+            // Notify that this input is ready
+            this.requiredInputsSubject.next({
+                ...this.requiredInputsSubject.getValue(),
+                defaultValue: true,
+            });
+        }
+    }
+
+    @Input()
+    set isApplicationPackages(isApplicationPackages: boolean) {
+        this._isApplicationPackages = isApplicationPackages;
+        if (isApplicationPackages != null && isApplicationPackages !== undefined) {
+
+            // Notify that this input is ready
+            this.requiredInputsSubject.next({
+                ...this.requiredInputsSubject.getValue(),
+                isApplicationPackages: true,
+            });
         }
     }
 
@@ -147,26 +203,13 @@ export class SelectPackagesComponent implements OnDestroy {
 
     private treeModelComparator(a: Package, b: Package): number {
         return a.name > b.name ? 1 : -1;
-        // if (a.childs && a.childs.length > 0) {
-        //     if (b.childs && b.childs.length > 0) {
-        //         return a.name > b.name ? 1 : -1;
-        //     } else {
-        //         return 1;
-        //     }
-        // } else {
-        //     if (b.childs && b.childs.length > 0) {
-        //         return -1;
-        //     } else {
-        //         return a.name > b.name ? 1 : -1;
-        //     }
-        // }
     }
 
     private loadTreeFromBooleanDefaultValue(defaultValue: boolean): void {
-        if (defaultValue) {
-            for (let i = 0; i < this._packages.length; i++) {
-                const node = this._packages[i];
-                const flatNode = this.nestedNodeMap.get(node);
+        for (let i = 0; i < this._packages.length; i++) {
+            const node = this._packages[i];
+            const flatNode = this.nestedNodeMap.get(node);
+            if (defaultValue != this.checklistSelection.isSelected(flatNode)) {
                 this.itemSelectionToggle(flatNode, false);
             }
         }
@@ -174,39 +217,37 @@ export class SelectPackagesComponent implements OnDestroy {
     }
 
     private loadTreeFromPreviousPackageSelection(packageSelection: PackageSelection): void {
-        if (packageSelection) {            
-            let includePackages: Package[];
-            let excludePackages: Package[];
+        let includePackages: Package[];
+        let excludePackages: Package[];
 
-            // Loading previous data depends on Aplicationpackages/3rd party packages
-            if (this.isApplicationPackages) {
-                includePackages = packageSelection.includePackages.filter((element) => {
-                    return !this.isAtLeastOneParentInTheList(packageSelection.includePackages, element.fullName);
-                });
-                excludePackages = packageSelection.excludePackages.filter((element) => {
-                    return !this.isAtLeastOneParentInTheList(packageSelection.excludePackages, element.fullName);
-                });
-            } else {
-                includePackages = packageSelection.includePackages.filter((element) => {
-                    return !this.isAtLeastOneChildInTheList(packageSelection.includePackages, element.fullName);
-                });
-                excludePackages = packageSelection.excludePackages.filter((element) => {
-                    return !this.isAtLeastOneChildInTheList(packageSelection.excludePackages, element.fullName);
-                });
-            }
-
-            this.toggleNodesUsingDetachedPackages(includePackages, false);
-            this.uncheckNodesUsingDetachedPackages(excludePackages, false);
-            this.updateValue();
+        // Loading previous data depends on Aplicationpackages/3rd party packages
+        if (this._isApplicationPackages) {
+            includePackages = packageSelection.includePackages.filter((element) => {
+                return !this.isAtLeastOneParentInTheList(packageSelection.includePackages, element.fullName);
+            });
+            excludePackages = packageSelection.excludePackages.filter((element) => {
+                return !this.isAtLeastOneParentInTheList(packageSelection.excludePackages, element.fullName);
+            });
+        } else {
+            includePackages = packageSelection.includePackages.filter((element) => {
+                return !this.isAtLeastOneChildInTheList(packageSelection.includePackages, element.fullName);
+            });
+            excludePackages = packageSelection.excludePackages.filter((element) => {
+                return !this.isAtLeastOneChildInTheList(packageSelection.excludePackages, element.fullName);
+            });
         }
+
+        this.checkNodesUsingDetachedPackages(includePackages, false);
+        this.uncheckNodesUsingDetachedPackages(excludePackages, false);
+        this.updateValue();
     }
 
-    private toggleNodesUsingDetachedPackages(packages: Package[], updateValue: boolean) {
+    private checkNodesUsingDetachedPackages(packages: Package[], updateValue: boolean) {
         if (packages) {
             packages.forEach((node) => {
                 const packageNode: Package = this.idNestedNodeMap.get(node.id);
                 const packageFlatNode: PackageFlatNode = this.nestedNodeMap.get(packageNode);
-                if (packageFlatNode) {
+                if (packageFlatNode && !this.checklistSelection.isSelected(packageFlatNode)) {
                     this.itemSelectionToggle(packageFlatNode, updateValue);
                 }
             });
@@ -250,7 +291,7 @@ export class SelectPackagesComponent implements OnDestroy {
         this.nestedNodeMap.set(node, flatNode);
 
         return flatNode;
-    }
+    };
 
     /** Toggle a leaf item selection. Check all the parents to see if they changed */
     leafItemSelectionToggle(node: PackageFlatNode, updateValue: boolean = true): void {
