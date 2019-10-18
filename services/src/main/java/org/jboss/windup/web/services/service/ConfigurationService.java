@@ -1,5 +1,12 @@
 package org.jboss.windup.web.services.service;
 
+import org.jboss.windup.web.furnaceserviceprovider.WebProperties;
+import org.jboss.windup.web.services.model.AnalysisContext;
+import org.jboss.windup.web.services.model.Configuration;
+import org.jboss.windup.web.services.model.MigrationProject;
+import org.jboss.windup.web.services.model.RulesPath;
+import org.jboss.windup.web.services.model.RulesPath.RulesPathType;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
@@ -17,10 +24,7 @@ import org.jboss.windup.web.services.model.RulesPath.RulesPathType;
 import org.jboss.windup.web.services.model.LabelsPath.LabelsPathType;
 
 import java.nio.file.Path;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -39,10 +43,13 @@ public class ConfigurationService
     @Inject
     private Event<Configuration> configurationEvent;
 
+    @Inject
+    private AnalysisContextService analysisContextService;
+
     @PostConstruct
     public void initConfiguration()
     {
-        Configuration configuration = getConfiguration();
+        Configuration configuration = getGlobalConfiguration();
         updateSystemRulesPath(configuration);
         updateSystemLabelsPath(configuration);
     }
@@ -52,39 +59,93 @@ public class ConfigurationService
      */
     public Configuration saveConfiguration(Configuration configuration)
     {
-        configuration = entityManager.merge(configuration);
+        if (configuration.isGlobal()) {
+            Set<RulesPath> oldRulesPaths = new HashSet<>(getConfiguration(configuration.getId()).getRulesPaths());
+
+            configuration = entityManager.merge(configuration);
+            Set<RulesPath> newRulesPaths = new HashSet<>(configuration.getRulesPaths());
+
+            Set<RulesPath> addedRulesPath = new HashSet<>(newRulesPaths);
+            addedRulesPath.removeAll(oldRulesPaths);
+
+            Set<RulesPath> deletedRulesPaths = new HashSet<>(oldRulesPaths);
+            deletedRulesPaths.removeAll(newRulesPaths);
+
+            List<AnalysisContext> analysisContexts = analysisContextService.getAll();
+            analysisContexts.forEach(analysisContext -> {
+                analysisContext.getRulesPaths().removeAll(deletedRulesPaths);
+                analysisContext.getRulesPaths().addAll(addedRulesPath);
+                analysisContextService.ensureSystemRulesPathsPresent(analysisContext);
+                entityManager.merge(analysisContext);
+            });
+        } else {
+            configuration = entityManager.merge(configuration);
+        }
+
         configurationEvent.fire(configuration);
 
         return configuration;
     }
 
-    /**
-     * Gets the global configuration for Windup.
-     */
-    public Configuration getConfiguration()
+    public Configuration getConfigurationByProjectId(long projectId)
     {
         try
         {
-            return (Configuration)entityManager.createQuery("select configuration from Configuration configuration").getSingleResult();
+            return (Configuration) entityManager.createQuery("select c from Configuration c inner join c.migrationProject m where m.id = :projectId")
+                    .setParameter("projectId", projectId)
+                    .getSingleResult();
         }
         catch (NoResultException t)
         {
-            return createDefaultConfiguration();
+            Configuration configuration = createDefaultConfiguration(false);
+            configuration.setRulesPaths(Collections.emptySet());
+
+            MigrationProject migrationProject = entityManager.find(MigrationProject.class, projectId);
+            migrationProject.setConfiguration(configuration);
+            entityManager.merge(configuration);
+
+            return configuration;
         }
     }
 
-    private Configuration createDefaultConfiguration()
+    public List<Configuration> getAllConfigurations()
+    {
+        return entityManager.createNamedQuery(Configuration.FIND_ALL).getResultList();
+    }
+
+    public Configuration getConfiguration(long id)
+    {
+        return entityManager.find(Configuration.class, id);
+    }
+
+    /**
+     * Gets the global configuration for Windup.
+     */
+    public Configuration getGlobalConfiguration()
+    {
+        try
+        {
+            return (Configuration)entityManager.createNamedQuery(Configuration.FIND_GLOBAL).getSingleResult();
+        }
+        catch (NoResultException t)
+        {
+            return createDefaultConfiguration(true);
+        }
+    }
+
+    private Configuration createDefaultConfiguration(boolean isGlobal)
     {
         Configuration configuration = new Configuration();
+        configuration.setGlobal(isGlobal);
 
         entityManager.persist(configuration);
         return configuration;
     }
 
-    public Set<RulesPath> getCustomRulesPath()
+    public Set<RulesPath> getCustomRulesPath(long id)
     {
         Set<RulesPath> customRulesPaths = new HashSet<>();
-        Set<RulesPath> rulesets = getConfiguration().getRulesPaths();
+        Set<RulesPath> rulesets = getConfiguration(id).getRulesPaths();
 
         for (Iterator<RulesPath> iterator = rulesets.iterator(); iterator.hasNext();)
         {
@@ -97,10 +158,10 @@ public class ConfigurationService
         return customRulesPaths;
     }
 
-    public Set<LabelsPath> getCustomLabelsPath()
+    public Set<LabelsPath> getCustomLabelsPath(long id)
     {
         Set<LabelsPath> customLabelsPaths = new HashSet<>();
-        Set<LabelsPath> labelsets = getConfiguration().getLabelsPaths();
+        Set<LabelsPath> labelsets = getConfiguration(id).getLabelsPaths();
 
         for (Iterator<LabelsPath> iterator = labelsets.iterator(); iterator.hasNext();)
         {
@@ -135,8 +196,10 @@ public class ConfigurationService
         }
         else
         {
+            RulesPath.ScopeType scopeType = configuration.isGlobal() ? RulesPath.ScopeType.GLOBAL : RulesPath.ScopeType.PROJECT;
+
             // Otherwise, create a new one
-            RulesPath newRulesPath = new RulesPath(newSystemRulesPath.toString(), RulesPath.RulesPathType.SYSTEM_PROVIDED);
+            RulesPath newRulesPath = new RulesPath(newSystemRulesPath.toString(), RulesPath.RulesPathType.SYSTEM_PROVIDED, scopeType);
             if (newRulesPath.getLoadError() == null)
                 dbPaths.add(newRulesPath);
         }
@@ -177,9 +240,9 @@ public class ConfigurationService
         configuration.setLabelsPaths(dbPaths);
     }
 
-    public Configuration reloadConfiguration()
+    public Configuration reloadConfiguration(long id)
     {
-        Configuration configuration = this.getConfiguration();
+        Configuration configuration = this.entityManager.find(Configuration.class, id);
         this.configurationEvent.fire(configuration);
 
         return configuration;

@@ -97,6 +97,13 @@ public class WebPathUtilImpl implements WebPathUtil
     }
 
     @Override
+    public Path getCustomRulesPath(String projectPath)
+    {
+        return this.getCustomRulesPath().resolve(projectPath);
+    }
+
+
+    @Override
     public Path getCustomRulesPath()
     {
         return this.getGlobalWindupDataPath().resolve(RULES_DIR);

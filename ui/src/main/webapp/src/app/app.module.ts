@@ -37,6 +37,7 @@ import {FileUploaderWrapper} from "./shared/upload/file-uploader-wrapper.service
 import {KeycloakService} from "./core/authentication/keycloak.service";
 
 import {NotificationService} from 'patternfly-ng/notification';
+import {ModalModule} from "ngx-bootstrap/modal";
 
 /**
  * Load all mapping data from the generated files.
@@ -62,6 +63,9 @@ initializeModelMappingData();
         ConfigurationModule,
         AnalysisContextModule,
         ExecutionsModule,
+
+        // Ngx Bootstrap modal
+        ModalModule.forRoot()
     ],
     declarations: [
         // Directives

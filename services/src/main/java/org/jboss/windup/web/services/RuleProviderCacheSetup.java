@@ -31,15 +31,16 @@ public class RuleProviderCacheSetup
     @PostConstruct
     public void addSystemRulesPath()
     {
-        this.configurationService
-                .getConfiguration()
-                .getRulesPaths()
-                .stream()
-                .filter(rulesPath -> rulesPath.getRulesPathType() == RulesPath.RulesPathType.SYSTEM_PROVIDED)
-                .map(rulesPath -> Paths.get(rulesPath.getPath()))
-                .forEach(path -> {
-                    this.getRuleProviderRegistryCache().addUserRulesPath(path);
-                });
+        configurationService.getAllConfigurations().forEach(configuration -> {
+            configuration
+                    .getRulesPaths()
+                    .stream()
+                    .filter(rulesPath -> rulesPath.getRulesPathType() == RulesPath.RulesPathType.SYSTEM_PROVIDED)
+                    .map(rulesPath -> Paths.get(rulesPath.getPath()))
+                    .forEach(path -> {
+                        this.getRuleProviderRegistryCache().addUserRulesPath(path);
+                    });
+        });
         // This is just to make sure the cache gets loaded
         this.getRuleProviderRegistryCache().getRuleProviderRegistry();
     }

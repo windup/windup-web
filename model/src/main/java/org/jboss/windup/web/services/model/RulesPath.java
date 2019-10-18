@@ -15,7 +15,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.ColumnDefault;
-import org.jboss.windup.web.services.validators.FileExistsConstraint;
 
 /**
  * Contains the path to a Rules directory.
@@ -61,19 +60,23 @@ public class RulesPath implements Serializable
     @Column
     private RegistrationType registrationType;
 
+    @Column
+    private ScopeType scopeType;
+
     public RulesPath()
     {
     }
 
-    public RulesPath(String path, RulesPathType rulesPathType)
+    public RulesPath(String path, RulesPathType rulesPathType, ScopeType scopeType)
     {
         this.path = path;
         this.rulesPathType = rulesPathType;
+        this.scopeType = scopeType;
     }
 
-    public RulesPath(String path, RulesPathType rulesPathType, RegistrationType registrationType)
+    public RulesPath(String path, RulesPathType rulesPathType, ScopeType scopeType, RegistrationType registrationType)
     {
-        this(path, rulesPathType);
+        this(path, rulesPathType, scopeType);
         this.registrationType = registrationType;
     }
 
@@ -187,6 +190,14 @@ public class RulesPath implements Serializable
         this.registrationType = registrationType;
     }
 
+    public ScopeType getScopeType() {
+        return scopeType;
+    }
+
+    public void setScopeType(ScopeType scopeType) {
+        this.scopeType = scopeType;
+    }
+
     @Override
     public boolean equals(Object o)
     {
@@ -199,7 +210,9 @@ public class RulesPath implements Serializable
 
         if (path != null ? !path.equals(rulesPath.path) : rulesPath.path != null)
             return false;
-        return rulesPathType == rulesPath.rulesPathType;
+        if (rulesPathType != rulesPath.rulesPathType)
+            return false;
+        return scopeType == rulesPath.scopeType;
     }
 
     @Override
@@ -207,6 +220,7 @@ public class RulesPath implements Serializable
     {
         int result = path != null ? path.hashCode() : 0;
         result = 31 * result + (rulesPathType != null ? rulesPathType.hashCode() : 0);
+        result = 31 * result + (scopeType != null ? scopeType.hashCode() : 0);
         return result;
     }
 
@@ -217,6 +231,7 @@ public class RulesPath implements Serializable
                     "id=" + id +
                     ", version=" + version +
                     ", path='" + path + '\'' +
+                    ", scopeType='" + scopeType + '\'' +
                     ", rulesPathType=" + rulesPathType +
                     '}';
     }
@@ -224,5 +239,11 @@ public class RulesPath implements Serializable
     public enum RulesPathType
     {
         SYSTEM_PROVIDED, USER_PROVIDED
+    }
+
+    public enum ScopeType
+    {
+        GLOBAL,
+        PROJECT
     }
 }

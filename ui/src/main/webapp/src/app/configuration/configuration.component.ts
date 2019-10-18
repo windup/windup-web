@@ -3,7 +3,7 @@ import {ConfigurationService} from "./configuration.service";
 import {Configuration, RuleProviderEntity, RulesPath, Technology} from "../generated/windup-services";
 import {RuleService} from "./rule.service";
 import {RulesModalComponent} from "./rules-modal.component";
-import {AddRulesPathModalComponent, ConfigurationEvent} from "./add-rules-path-modal.component";
+import {AddRulesPathModalComponent, ConfigurationEvent} from "../shared/add-rules-path-modal/add-rules-path-modal.component";
 import {ActivatedRoute} from "@angular/router";
 import {NotificationService} from "../core/notification/notification.service";
 import {utils} from "../shared/utils";
@@ -92,7 +92,7 @@ export class ConfigurationComponent implements OnInit, AfterViewInit {
     forceReload() {
         this.forceReloadAttempted = true;
         this.rescanInProgress = true;
-        this._configurationService.reloadConfigration().subscribe(() => {
+        this._configurationService.reloadConfigration(this.configuration.id).subscribe(() => {
             this.rescanInProgress = false;
             this.loadRuleProviderDetails()
         });
@@ -189,7 +189,7 @@ export class ConfigurationComponent implements OnInit, AfterViewInit {
     }
 
     reloadConfiguration() {
-        this._configurationService.reloadConfigration().subscribe(
+        this._configurationService.reloadConfigration(this.configuration.id).subscribe(
             configuration => {
                 this.configuration = configuration;
                 this.loadProviders();
@@ -201,21 +201,9 @@ export class ConfigurationComponent implements OnInit, AfterViewInit {
     }
 
     confirmRemoveRules(rulesPath: RulesPath) {
-        console.log("Checking rules path " + rulesPath.path);
-        this._ruleService.checkIfUsedRulesPath(rulesPath).subscribe(
-            response => {
-                if (response.valueOf())
-                {
-                    this._notificationService.warning(`The rules path '${rulesPath.path}' is used in an existing Analysis Context and cannot be removed.`);
-                } 
-                else 
-                {
-                    this.removeRulesConfirmationModal.body = `Are you sure you want to remove the rules from '${rulesPath.path}'?`;
-                    this.removeRulesConfirmationModal.data = rulesPath;
-                    this.removeRulesConfirmationModal.show();
-                }
-            }
-        );
+        this.removeRulesConfirmationModal.body = `Are you sure you want to remove the rules from '${rulesPath.path}'?`;
+        this.removeRulesConfirmationModal.data = rulesPath;
+        this.removeRulesConfirmationModal.show();
     }        
 
     removeFilters() {

@@ -65,6 +65,8 @@ import {TablePanelComponent} from "./table/table-panel.component";
 import {ToastNotificationListModule} from 'patternfly-ng/notification';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatTreeModule, MatCheckboxModule, MatIconModule, MatButtonModule} from '@angular/material';
+import {AddRulesPathModalComponent} from "./add-rules-path-modal/add-rules-path-modal.component";
+import {TechnologyComponent} from "./technology.component";
 
 @NgModule({
     imports: [
@@ -151,7 +153,11 @@ import {MatTreeModule, MatCheckboxModule, MatIconModule, MatButtonModule} from '
         FilterPipe,
         TableSortHeaderComponent,
         TableComponent,
-        TablePanelComponent
+        TablePanelComponent,
+
+        AddRulesPathModalComponent,
+
+        TechnologyComponent
     ],
     exports: [
         CustomSelectComponent,
@@ -209,7 +215,6 @@ import {MatTreeModule, MatCheckboxModule, MatIconModule, MatButtonModule} from '
         FilterPipe,
         TableSortHeaderComponent,
         TableComponent,
-        TablePanelComponent,
         ToastNotificationListModule,
         TablePanelComponent,
 
@@ -217,7 +222,11 @@ import {MatTreeModule, MatCheckboxModule, MatIconModule, MatButtonModule} from '
         MatTreeModule,
         MatCheckboxModule,
         MatIconModule,
-        MatButtonModule
+        MatButtonModule,
+
+        AddRulesPathModalComponent,
+
+        TechnologyComponent
     ]
 })
 export class SharedModule {

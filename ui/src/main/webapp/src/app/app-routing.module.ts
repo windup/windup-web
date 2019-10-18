@@ -11,6 +11,7 @@ import {ProjectLayoutComponent} from "./project/project-layout.component";
 import {DefaultLayoutComponent} from "./shared/layout/default-layout.component";
 import {ProjectResolve} from "./project/project.resolve";
 import {ConfigurationResolve} from "./configuration/configuration.resolve";
+import {ProjectConfigurationResolve} from "./configuration/project-configuration.resolve";
 import {ApplicationResolve} from "./registered-application/application.resolve";
 import {FullFlattenedRoute} from "./core/routing/route-flattener.service";
 import {AllExecutionsComponent} from "./executions/all-executions.component";
@@ -71,7 +72,7 @@ export const appRoutes: Routes = [
                                 children: [
                                     { path: 'create-project', component: MigrationProjectFormComponent, data: { currentStep: 0 }},
                                     { path: 'add-applications', component: RegisterApplicationFormComponent, data: { currentStep: 1 }},
-                                    { path: 'configure-analysis', component: AnalysisContextFormComponent, data: { currentStep: 2 }}
+                                    { path: 'configure-analysis', component: AnalysisContextFormComponent, data: { currentStep: 2 }, resolve: { configuration: ProjectConfigurationResolve }}
                                 ]
                             },
                         ]
@@ -109,7 +110,7 @@ export const appRoutes: Routes = [
                                             data: {displayName: "Edit Application"}
                                         },
                                     ]},
-                                    { path: 'analysis-context', component: AnalysisContextFormComponent, data: {displayName: "Configure Analysis"}, canDeactivate: [ConfirmDeactivateGuard]},
+                                    { path: 'analysis-context', component: AnalysisContextFormComponent, resolve: { configuration: ProjectConfigurationResolve }, data: {displayName: "Configure Analysis"}, canDeactivate: [ConfirmDeactivateGuard]},
                                 ]
                             },
                             { path: '', component: DefaultLayoutComponent, children: [

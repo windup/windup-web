@@ -92,9 +92,10 @@ public class RuleDataLoader
         LOG.info("Periodic reload of rules data");
         try
         {
-            Configuration webConfiguration = configurationService.getConfiguration();
-            reloadRuleData(webConfiguration);
-            reloadLabelData(webConfiguration);
+            configurationService.getAllConfigurations().forEach(webConfiguration -> {
+                reloadRuleData(webConfiguration);
+                reloadLabelData(webConfiguration);
+            });
             this.cleanupDanglingRows();
         }
         catch (Throwable t)

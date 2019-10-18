@@ -16,11 +16,7 @@ import javax.ws.rs.NotFoundException;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
-import org.jboss.windup.web.services.model.Configuration;
-import org.jboss.windup.web.services.model.RegistrationType;
-import org.jboss.windup.web.services.model.RuleProviderEntity;
-import org.jboss.windup.web.services.model.RuleProviderEntity_;
-import org.jboss.windup.web.services.model.RulesPath;
+import org.jboss.windup.web.services.model.*;
 import org.jboss.windup.web.services.model.RulesPath.RulesPathType;
 import org.jboss.windup.web.services.service.ConfigurationService;
 import org.jboss.windup.web.services.service.FileUploadService;
@@ -77,18 +73,37 @@ public class RuleEndpointImpl implements RuleEndpoint
     @Override
     public RulesPath uploadRuleProvider(MultipartFormDataInput data)
     {
+        Configuration configuration = this.configurationService.getGlobalConfiguration();
+        return uploadRuleProviderToConfiguration(data, configuration, null);
+    }
+
+    @Override
+    public RulesPath uploadRuleProviderByProject(Long projectId, MultipartFormDataInput data)
+    {
+        Configuration configuration = this.configurationService.getConfigurationByProjectId(projectId);
+        MigrationProject migrationProject = configuration.getMigrationProject();
+        return uploadRuleProviderToConfiguration(data, configuration, migrationProject.getId());
+    }
+
+    private  RulesPath uploadRuleProviderToConfiguration(MultipartFormDataInput data, Configuration configuration, Long projectId)
+    {
         String fileName = this.fileUploadService.getFileName(data);
         Path customRulesPath = this.webPathUtil.getCustomRulesPath();
 
+        // Save file to custom project folder
+        if (projectId != null) {
+            customRulesPath = this.webPathUtil.getCustomRulesPath(projectId.toString());
+        }
+
         File file = this.fileUploadService.uploadFile(data, customRulesPath, fileName, true);
 
-        RulesPath rulesPathEntity = new RulesPath(file.getPath(), RulesPath.RulesPathType.USER_PROVIDED, RegistrationType.UPLOADED);
+        RulesPath.ScopeType scopeType = configuration.isGlobal() ? RulesPath.ScopeType.GLOBAL : RulesPath.ScopeType.PROJECT;
+        RulesPath rulesPathEntity = new RulesPath(file.getPath(), RulesPath.RulesPathType.USER_PROVIDED, scopeType, RegistrationType.UPLOADED);
         String relativePath = customRulesPath.relativize(file.toPath()).toString();
         rulesPathEntity.setShortPath(relativePath);
 
         this.entityManager.persist(rulesPathEntity);
 
-        Configuration configuration = this.configurationService.getConfiguration();
         configuration.getRulesPaths().add(rulesPathEntity);
         this.configurationService.saveConfiguration(configuration);
 
@@ -107,9 +122,22 @@ public class RuleEndpointImpl implements RuleEndpoint
             file.delete();
         }
 
-        Configuration configuration = this.configurationService.getConfiguration();
+        Configuration configuration = (Configuration) entityManager.createNamedQuery(Configuration.FIND_BY_RULE_PATH_ID)
+                .setParameter("rulePathId", rulesPath.getId())
+                .getSingleResult();
+
         configuration.getRulesPaths().remove(rulesPath);
         this.entityManager.merge(configuration);
+
+        // Remove rulePath from all AnalysisContexts
+        @SuppressWarnings("unchecked")
+        List<AnalysisContext> analysisContexts = entityManager.createNamedQuery(AnalysisContext.FIND_BY_RULE_PATH_ID)
+                .setParameter("rulePathId", rulesPath.getId())
+                .getResultList();
+        analysisContexts.forEach(analysisContext -> {
+            analysisContext.getRulesPaths().remove(rulesPath);
+            this.entityManager.merge(analysisContext);
+        });
 
         this.entityManager.createNamedQuery(RuleProviderEntity.DELETE_BY_RULES_PATH)
                 .setParameter(RuleProviderEntity.RULES_PATH_PARAM, rulesPath)

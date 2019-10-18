@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 
 import {Constants} from "../constants";
-import {RulesPath, RuleProviderEntity, RulesPathType} from "../generated/windup-services";
+import {RulesPath, RuleProviderEntity, RulesPathType, MigrationProject} from "../generated/windup-services";
 import {AbstractService} from "../shared/abtract.service";
 import {Observable, from} from "rxjs";
 import {FileUploader} from "ng2-file-upload";
@@ -20,6 +20,7 @@ export class RuleService extends AbstractService {
     private GET_RULE_PROVIDERS_BY_RULES_PATH_URL= "/rules/by-rules-path/";
     private IS_RULES_PATH_USED = "/rules/is-used-rules-path/{id}";
     private UPLOAD_URL = RuleService.RULES_ROOT + '/upload';
+    private UPLOAD_BY_PROJECT_URL = RuleService.RULES_ROOT + '/upload/by-project/{projectId}';
     private DELETE_RULE_URL = RuleService.RULES_ROOT + '/by-rules-path/{id}';
 
 
@@ -51,6 +52,24 @@ export class RuleService extends AbstractService {
 
         let url = Constants.REST_BASE + this.IS_RULES_PATH_USED.replace('{id}', rulesPath.id.toString());
         return this._http.get<boolean>(url); 
+    }
+
+    uploadRulesToProject(project: MigrationProject) {
+        this._multipartUploader.setOptions({
+            ...this._multipartUploader.options,
+            url: Constants.REST_BASE + this.UPLOAD_BY_PROJECT_URL.replace('{projectId}', project.id.toString())
+        });
+
+        return this.uploadRules();
+    }
+
+    uploadGlobalRules() {
+        this._multipartUploader.setOptions({
+            ...this._multipartUploader.options,
+            url: Constants.REST_BASE + this.UPLOAD_URL
+        });
+
+        return this.uploadRules();
     }
 
     uploadRules() {

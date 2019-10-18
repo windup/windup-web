@@ -43,6 +43,8 @@ export class AnalysisContextFormComponent extends FormComponent
 
     availableApps: RegisteredApplication[];
 
+    selectedCustomRulesPath: RulesPath[];
+
     /**
      * These two variables exist because we need for the item in the array not to just be a literal.
      * Workaround for JavaScript issues not able to iterate and modify a simple array of literals within a form easily.
@@ -164,6 +166,8 @@ export class AnalysisContextFormComponent extends FormComponent
 
                             // Load packages
                             this.loadPackageMetadata();
+
+                            this.selectedCustomRulesPath = this.analysisContext.rulesPaths;
                         } else {
                             this._analysisContextService.get(project.defaultAnalysisContextId)
                                 .subscribe(context => {
@@ -198,10 +202,13 @@ export class AnalysisContextFormComponent extends FormComponent
                                     }
                                     this.selectedPaths = selectedPaths;
 
+                                    this.selectedCustomRulesPath = this.analysisContext.rulesPaths;
+
                                     // Load packages
                                     this.loadPackageMetadata();
                                 });
                         }
+                        this.loadPackageMetadata();
                     });
                 });
             }
@@ -357,6 +364,8 @@ export class AnalysisContextFormComponent extends FormComponent
 
         this.analysisContext.includePackages = this.packageSelection.includePackages;
         this.analysisContext.excludePackages = this.packageSelection.excludePackages;
+
+        this.analysisContext.rulesPaths = this.selectedCustomRulesPath;
 
         this.saveInProgress = true;
 
