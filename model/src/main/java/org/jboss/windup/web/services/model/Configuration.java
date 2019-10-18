@@ -103,7 +103,7 @@ public class Configuration implements Serializable
     public void setLabelsPaths(Set<LabelsPath> labelsPaths) {
         this.labelsPaths = labelsPaths;
     }
-    
+
     @JsonIgnore
     public MigrationProject getMigrationProject() {
         return migrationProject;
