@@ -39,6 +39,13 @@ public interface LabelEndpoint
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     LabelsPath uploadLabelProvider(MultipartFormDataInput data);
 
+    /**
+     * Uploads new LabelProvider
+     */
+    @POST
+    @Path("upload/by-project/{projectId}")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    LabelsPath uploadLabelProviderByProject(@PathParam("projectId") Long projectId, MultipartFormDataInput data);
 
     @DELETE
     @Path("/by-labels-path/{id}")

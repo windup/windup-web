@@ -110,6 +110,11 @@ public class WebPathUtilImpl implements WebPathUtil
     }
 
     @Override
+    public Path getCustomLabelsPath(String projectPath) {
+        return this.getCustomLabelsPath().resolve(projectPath);
+    }
+
+    @Override
     public Path getCustomLabelsPath()
     {
         return this.getGlobalWindupDataPath().resolve(LABELS_DIR);

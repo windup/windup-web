@@ -72,18 +72,36 @@ public class LabelEndpointImpl implements LabelEndpoint
     @Override
     public LabelsPath uploadLabelProvider(MultipartFormDataInput data)
     {
+        Configuration configuration = this.configurationService.getGlobalConfiguration();
+        return uploadLabelProviderToConfiguration(data, configuration, null);
+    }
+
+    @Override
+    public LabelsPath uploadLabelProviderByProject(Long projectId, MultipartFormDataInput data) {
+        Configuration configuration = this.configurationService.getConfigurationByProjectId(projectId);
+        MigrationProject migrationProject = configuration.getMigrationProject();
+        return uploadLabelProviderToConfiguration(data, configuration, migrationProject.getId());
+    }
+
+    private LabelsPath uploadLabelProviderToConfiguration(MultipartFormDataInput data, Configuration configuration, Long projectId)
+    {
         String fileName = this.fileUploadService.getFileName(data);
         Path customLabelsPath = this.webPathUtil.getCustomLabelsPath();
 
+        // Save file to custom project folder
+        if (projectId != null) {
+            customLabelsPath = this.webPathUtil.getCustomLabelsPath(projectId.toString());
+        }
+
         File file = this.fileUploadService.uploadFile(data, customLabelsPath, fileName, true);
 
-        LabelsPath labelsPathEntity = new LabelsPath(file.getPath(), LabelsPathType.USER_PROVIDED, RegistrationType.UPLOADED);
+        LabelsPath.LabelsScopeType scopeType = configuration.isGlobal() ? LabelsPath.LabelsScopeType.GLOBAL : LabelsPath.LabelsScopeType.PROJECT;
+        LabelsPath labelsPathEntity = new LabelsPath(file.getPath(), LabelsPathType.USER_PROVIDED, scopeType, RegistrationType.UPLOADED);
         String relativePath = customLabelsPath.relativize(file.toPath()).toString();
         labelsPathEntity.setShortPath(relativePath);
 
         this.entityManager.persist(labelsPathEntity);
 
-        Configuration configuration = this.configurationService.getConfiguration();
         configuration.getLabelsPaths().add(labelsPathEntity);
         this.configurationService.saveConfiguration(configuration);
 
@@ -102,9 +120,22 @@ public class LabelEndpointImpl implements LabelEndpoint
             file.delete();
         }
 
-        Configuration configuration = this.configurationService.getConfiguration();
+        Configuration configuration = (Configuration) entityManager.createNamedQuery(Configuration.FIND_BY_LABEL_PATH_ID)
+                .setParameter("labelPathId", labelsPath.getId())
+                .getSingleResult();
+
         configuration.getLabelsPaths().remove(labelsPath);
         this.entityManager.merge(configuration);
+
+        // Remove rulePath from all AnalysisContexts
+        @SuppressWarnings("unchecked")
+        List<AnalysisContext> analysisContexts = entityManager.createNamedQuery(AnalysisContext.FIND_BY_LABEL_PATH_ID)
+                .setParameter("labelPathId", labelsPath.getId())
+                .getResultList();
+        analysisContexts.forEach(analysisContext -> {
+            analysisContext.getLabelsPaths().remove(labelsPath);
+            this.entityManager.merge(analysisContext);
+        });
 
         this.entityManager.createNamedQuery(LabelProviderEntity.DELETE_BY_LABELS_PATH)
                 .setParameter(LabelProviderEntity.LABELS_PATH_PARAM, labelsPath)
@@ -120,7 +151,7 @@ public class LabelEndpointImpl implements LabelEndpoint
         if (labelsPath.getLabelsPathType() == LabelsPathType.SYSTEM_PROVIDED)
             return false;
 
-        String queryStr = "SELECT count(*)  > 0 FROM ANALYSISCONTEXT_RULESPATH  where RULESPATHS_RULES_PATH_ID=:id";
+        String queryStr = "SELECT count(*)  > 0 FROM ANALYSISCONTEXT_LABELSPATH where LABELSPATHS_LABELS_PATH_ID=:id";
         Boolean test = (Boolean) this.entityManager.createNativeQuery(queryStr).
                     setParameter("id", labelsPath.getId()).
                     getSingleResult();

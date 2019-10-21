@@ -25,6 +25,7 @@ EXECUTIONS_DATA.push({
                 "migrationPath": null,
                 "advancedOptions": null,
                 "rulesPaths": null,
+                "labelsPaths": null,
                 "includePackages": null,
                 "excludePackages": null,
                 "applications": [
@@ -74,6 +75,7 @@ EXECUTIONS_DATA.push({
                 "migrationPath": null,
                 "advancedOptions": null,
                 "rulesPaths": null,
+                "labelsPaths": null,
                 "includePackages": null,
                 "excludePackages": null,
                 "applications": [
@@ -123,6 +125,7 @@ EXECUTIONS_DATA.push({
                 "migrationPath": null,
                 "advancedOptions": null,
                 "rulesPaths": null,
+                "labelsPaths": null,
                 "includePackages": null,
                 "excludePackages": null,
                 "applications": [
@@ -172,6 +175,7 @@ EXECUTIONS_DATA.push({
                 "migrationPath": null,
                 "advancedOptions": null,
                 "rulesPaths": null,
+                "labelsPaths": null,
                 "includePackages": null,
                 "excludePackages": null,
                 "applications": [
@@ -221,6 +225,7 @@ EXECUTIONS_DATA.push({
                 "migrationPath": null,
                 "advancedOptions": null,
                 "rulesPaths": null,
+                "labelsPaths": null,
                 "includePackages": null,
                 "excludePackages": null,
                 "applications": [

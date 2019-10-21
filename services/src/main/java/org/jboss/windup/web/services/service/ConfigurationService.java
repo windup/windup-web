@@ -230,8 +230,10 @@ public class ConfigurationService
         }
         else
         {
+            LabelsPath.LabelsScopeType scopeType = configuration.isGlobal() ? LabelsPath.LabelsScopeType.GLOBAL : LabelsPath.LabelsScopeType.PROJECT;
+
             // Otherwise, create a new one
-            LabelsPath newLabelsPath = new LabelsPath(newSystemLabelsPath.toString(), LabelsPath.LabelsPathType.SYSTEM_PROVIDED);
+            LabelsPath newLabelsPath = new LabelsPath(newSystemLabelsPath.toString(), LabelsPath.LabelsPathType.SYSTEM_PROVIDED, scopeType);
             if (newLabelsPath.getLoadError() == null)
                 dbPaths.add(newLabelsPath);
         }

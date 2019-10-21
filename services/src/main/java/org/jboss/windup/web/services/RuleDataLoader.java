@@ -59,6 +59,14 @@ public class RuleDataLoader
                 XML_RULES_WINDUP_EXTENSION,
                 XML_RULES_RHAMT_EXTENSION
     };
+
+    private static final String XML_LABELS_WINDUP_EXTENSION = "windup.label.xml";
+    private static final String XML_LABELS_RHAMT_EXTENSION = "rhamt.label.xml";
+    private static final String[] SUPPORTED_LABEL_EXTENSIONS = {
+            XML_LABELS_WINDUP_EXTENSION,
+            XML_LABELS_RHAMT_EXTENSION
+    };
+
     private static Logger LOG = Logger.getLogger(RuleDataLoader.class.getName());
     @PersistenceContext
     private EntityManager entityManager;
@@ -89,7 +97,7 @@ public class RuleDataLoader
     @AccessTimeout(value = 3, unit = TimeUnit.MINUTES)
     public void loadPeriodically()
     {
-        LOG.info("Periodic reload of rules data");
+        LOG.info("Periodic reload of rules and labels data");
         try
         {
             configurationService.getAllConfigurations().forEach(webConfiguration -> {
@@ -107,7 +115,7 @@ public class RuleDataLoader
     @AccessTimeout(value = 3, unit = TimeUnit.MINUTES)
     public void configurationUpdated(@Observes Configuration configuration)
     {
-        LOG.info("Reloading rule data due to configuration update!");
+        LOG.info("Reloading rule and label data due to configuration update!");
         reloadRuleData(configuration);
         reloadLabelData(configuration);
     }
@@ -153,7 +161,7 @@ public class RuleDataLoader
             LOG.log(Level.SEVERE, "Error loading labels due to: " + e.getMessage(), e);
         }
         this.getCategories();
-        LOG.info("Rule data reload complete!");
+        LOG.info("Label data reload complete!");
     }
 
     private void loadRules(Configuration webConfiguration)
@@ -267,7 +275,7 @@ public class RuleDataLoader
             if (count > 0)
                 return;
         }
-        LOG.info("Purging existing rule data for: " + labelsPath);
+        LOG.info("Purging existing label data for: " + labelsPath);
         // Delete the previous ones
         entityManager
                 .createNamedQuery(LabelProviderEntity.DELETE_BY_LABELS_PATH)
@@ -294,7 +302,7 @@ public class RuleDataLoader
             {
                 final Set<Path> pathsToScan = FileUtils.listFiles(
                         initialPath.toFile(),
-                        SUPPORTED_RULE_EXTENSIONS, scanRecursively)
+                        SUPPORTED_LABEL_EXTENSIONS, scanRecursively)
                         .stream()
                         .map(File::toPath)
                         .collect(Collectors.toSet());
@@ -307,7 +315,7 @@ public class RuleDataLoader
         }
         catch (Exception e)
         {
-            labelsPath.setLoadError("Failed to load rules due to: " + e.getMessage());
+            labelsPath.setLoadError("Failed to load labels due to: " + e.getMessage());
             LOG.log(Level.SEVERE, "Could not load label information due to: " + e.getMessage(), e);
         }
     }
@@ -435,18 +443,17 @@ public class RuleDataLoader
 
             List<LabelEntity> labelEntities = new ArrayList<>();
 
-            String any = data.getAny();
             List<Label> labels = data.getLabels();
             for (Label label : labels)
             {
                 String ruleID = label.getId();
-//              String labelString = this.ruleFormatterService.ruleToRuleContentsString(label);
-                String labelString = "label";
+//                String labelString = this.ruleFormatterService.ruleToRuleContentsString(label);
+                String labelString = "myLabelStringValue";
 
-                LabelEntity ruleEntity = new LabelEntity();
-                ruleEntity.setLabelID(ruleID);
-                ruleEntity.setLabelContents(labelString);
-                labelEntities.add(ruleEntity);
+                LabelEntity labelEntity = new LabelEntity();
+                labelEntity.setLabelID(ruleID);
+                labelEntity.setLabelContents(labelString);
+                labelEntities.add(labelEntity);
             }
 
             labelProviderEntity.setLabels(labelEntities);

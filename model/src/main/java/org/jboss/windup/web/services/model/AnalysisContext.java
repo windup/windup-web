@@ -27,7 +27,8 @@ import org.hibernate.annotations.FetchMode;
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = AnalysisContext.class)
 @NamedQueries({
         @NamedQuery(name = AnalysisContext.FIND_ALL, query = "select ac from AnalysisContext ac"),
-        @NamedQuery(name = AnalysisContext.FIND_BY_RULE_PATH_ID, query = "select a from AnalysisContext a inner join a.rulesPaths r where r.id = :rulePathId")
+        @NamedQuery(name = AnalysisContext.FIND_BY_RULE_PATH_ID, query = "select a from AnalysisContext a inner join a.rulesPaths r where r.id = :rulePathId"),
+        @NamedQuery(name = AnalysisContext.FIND_BY_LABEL_PATH_ID, query = "select a from AnalysisContext a inner join a.labelsPaths l where l.id = :labelPathId")
 })
 public class AnalysisContext implements Serializable
 {
@@ -35,6 +36,7 @@ public class AnalysisContext implements Serializable
 
     public static final String FIND_ALL = "AnalysisContext.findAll";
     public static final String FIND_BY_RULE_PATH_ID = "AnalysisContext.findByRulePath";
+    public static final String FIND_BY_LABEL_PATH_ID = "AnalysisContext.findByLabelPath";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -101,6 +103,9 @@ public class AnalysisContext implements Serializable
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<RulesPath> rulesPaths;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<LabelsPath> labelsPaths;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "analysis_context_include_packages")
     private Set<Package> includePackages;
@@ -123,6 +128,7 @@ public class AnalysisContext implements Serializable
         this.applications = new HashSet<>();
         this.advancedOptions = new ArrayList<>();
         this.rulesPaths = new HashSet<>();
+        this.labelsPaths = new HashSet<>();
     }
 
     public AnalysisContext(MigrationProject project)
@@ -249,6 +255,14 @@ public class AnalysisContext implements Serializable
         this.rulesPaths = rulesPaths;
     }
 
+    public Set<LabelsPath> getLabelsPaths() {
+        return labelsPaths;
+    }
+
+    public void setLabelsPaths(Set<LabelsPath> labelsPaths) {
+        this.labelsPaths = labelsPaths;
+    }
+
     /**
      * Contains advanced configuration options (eg, csv export).
      */
@@ -328,6 +342,7 @@ public class AnalysisContext implements Serializable
         clone.migrationPath = this.migrationPath;
         clone.advancedOptions.addAll(this.advancedOptions);
         clone.rulesPaths.addAll(this.rulesPaths);
+        clone.labelsPaths.addAll(this.labelsPaths);
         clone.includePackages.addAll(this.includePackages);
         clone.excludePackages.addAll(this.excludePackages);
         // temporary added for adding cloud related targets in parallel to selected main target

@@ -51,19 +51,23 @@ public class LabelsPath implements Serializable
     @Column
     private RegistrationType registrationType;
 
+    @Column
+    private LabelsScopeType scopeType;
+
     public LabelsPath()
     {
     }
 
-    public LabelsPath(String path, LabelsPathType labelsPathType)
+    public LabelsPath(String path, LabelsPathType labelsPathType, LabelsScopeType scopeType)
     {
         this.path = path;
         this.labelsPathType = labelsPathType;
+        this.scopeType = scopeType;
     }
 
-    public LabelsPath(String path, LabelsPathType labelsPathType, RegistrationType registrationType)
+    public LabelsPath(String path, LabelsPathType labelsPathType, LabelsScopeType scopeType, RegistrationType registrationType)
     {
-        this(path, labelsPathType);
+        this(path, labelsPathType, scopeType);
         this.registrationType = registrationType;
     }
 
@@ -177,6 +181,14 @@ public class LabelsPath implements Serializable
         this.registrationType = registrationType;
     }
 
+    public LabelsScopeType getScopeType() {
+        return scopeType;
+    }
+
+    public void setScopeType(LabelsScopeType scopeType) {
+        this.scopeType = scopeType;
+    }
+
     @Override
     public boolean equals(Object o)
     {
@@ -185,11 +197,13 @@ public class LabelsPath implements Serializable
         if (!(o instanceof LabelsPath))
             return false;
 
-        LabelsPath rulesPath = (LabelsPath) o;
+        LabelsPath labelsPath = (LabelsPath) o;
 
-        if (path != null ? !path.equals(rulesPath.path) : rulesPath.path != null)
+        if (path != null ? !path.equals(labelsPath.path) : labelsPath.path != null)
             return false;
-        return labelsPathType == rulesPath.labelsPathType;
+        if (labelsPathType != labelsPath.labelsPathType)
+            return false;
+        return scopeType == labelsPath.scopeType;
     }
 
     @Override
@@ -197,6 +211,7 @@ public class LabelsPath implements Serializable
     {
         int result = path != null ? path.hashCode() : 0;
         result = 31 * result + (labelsPathType != null ? labelsPathType.hashCode() : 0);
+        result = 31 * result + (scopeType != null ? scopeType.hashCode() : 0);
         return result;
     }
 
@@ -207,6 +222,7 @@ public class LabelsPath implements Serializable
                     "id=" + id +
                     ", version=" + version +
                     ", path='" + path + '\'' +
+                    ", scopeType='" + scopeType + '\'' +
                     ", labelsPathType=" + labelsPathType +
                     '}';
     }
@@ -214,5 +230,11 @@ public class LabelsPath implements Serializable
     public enum LabelsPathType
     {
         SYSTEM_PROVIDED, USER_PROVIDED
+    }
+
+    public enum LabelsScopeType
+    {
+        GLOBAL,
+        PROJECT
     }
 }

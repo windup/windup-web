@@ -43,7 +43,7 @@ public interface ConfigurationEndpoint
     Set<RulesPath> getCustomRulesetPaths(@PathParam("id") long id);
 
     /**
-     * Returns only rulespath collection for custom registered ruleset paths
+     * Returns only labelspath collection for custom registered ruleset paths
      *
      * @return
      */
