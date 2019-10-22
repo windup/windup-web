@@ -5,15 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -443,18 +435,29 @@ public class RuleDataLoader
 
             List<LabelEntity> labelEntities = new ArrayList<>();
 
-            List<Label> labels = data.getLabels();
-            for (Label label : labels)
-            {
-                String ruleID = label.getId();
+            data.getLabels().forEach((Object label) -> {
+                String labelID = UUID.randomUUID().toString();
 //                String labelString = this.ruleFormatterService.ruleToRuleContentsString(label);
                 String labelString = "myLabelStringValue";
 
                 LabelEntity labelEntity = new LabelEntity();
-                labelEntity.setLabelID(ruleID);
+                labelEntity.setLabelID(labelID);
                 labelEntity.setLabelContents(labelString);
                 labelEntities.add(labelEntity);
-            }
+            });
+
+//            List<Label> labels = data.getLabels();
+//            for (Label label : labels)
+//            {
+//                String labelID = label.getId();
+////                String labelString = this.ruleFormatterService.ruleToRuleContentsString(label);
+//                String labelString = "myLabelStringValue";
+//
+//                LabelEntity labelEntity = new LabelEntity();
+//                labelEntity.setLabelID(labelID);
+//                labelEntity.setLabelContents(labelString);
+//                labelEntities.add(labelEntity);
+//            }
 
             labelProviderEntity.setLabels(labelEntities);
 
