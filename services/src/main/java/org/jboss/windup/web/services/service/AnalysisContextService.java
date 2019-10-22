@@ -55,6 +55,7 @@ public class AnalysisContextService
     {
         AnalysisContext defaultAnalysisContext = new AnalysisContext(project);
         ensureSystemRulesPathsPresent(defaultAnalysisContext);
+        ensureSystemLabelsPathsPresent(defaultAnalysisContext);
         entityManager.persist(defaultAnalysisContext);
 
         return defaultAnalysisContext;
@@ -67,6 +68,7 @@ public class AnalysisContextService
     {
         analysisContext.setId(null); // creating new instance, should not have id
         this.ensureSystemRulesPathsPresent(analysisContext);
+        this.ensureSystemLabelsPathsPresent(analysisContext);
         this.loadPackagesToAnalysisContext(analysisContext);
         this.loadAdvancedOptionsToAnalysisContext(analysisContext);
         entityManager.persist(analysisContext);
@@ -129,6 +131,7 @@ public class AnalysisContextService
 
         analysisContext.setId(analysisContextId); // make sure user doesn't provide invalid id
         this.ensureSystemRulesPathsPresent(analysisContext);
+        this.ensureSystemLabelsPathsPresent(analysisContext);
         this.loadPackagesToAnalysisContext(analysisContext);
         analysisContext.setMigrationProject(original.getMigrationProject());
 
@@ -148,15 +151,26 @@ public class AnalysisContextService
     public void ensureSystemRulesPathsPresent(AnalysisContext analysisContext)
     {
         configurationService
-                    .getGlobalConfiguration().getRulesPaths()
-//                    .stream()
-//                    .filter(rulesPath -> rulesPath.getRulesPathType() == RulesPath.RulesPathType.SYSTEM_PROVIDED)
-                    .forEach(rulesPath -> {
-                        if (analysisContext.getRulesPaths() == null)
-                            analysisContext.setRulesPaths(new HashSet<>());
+                .getGlobalConfiguration().getRulesPaths()
+                .forEach(rulesPath -> {
+                    if (analysisContext.getRulesPaths() == null)
+                        analysisContext.setRulesPaths(new HashSet<>());
 
-                        if (!analysisContext.getRulesPaths().contains(rulesPath))
-                            analysisContext.getRulesPaths().add(rulesPath);
-                    });
+                    if (!analysisContext.getRulesPaths().contains(rulesPath))
+                        analysisContext.getRulesPaths().add(rulesPath);
+                });
+    }
+
+    public void ensureSystemLabelsPathsPresent(AnalysisContext analysisContext)
+    {
+        configurationService
+                .getGlobalConfiguration().getLabelsPaths()
+                .forEach(labelsPath -> {
+                    if (analysisContext.getLabelsPaths() == null)
+                        analysisContext.setLabelsPaths(new HashSet<>());
+
+                    if (!analysisContext.getLabelsPaths().contains(labelsPath))
+                        analysisContext.getLabelsPaths().add(labelsPath);
+                });
     }
 }

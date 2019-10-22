@@ -168,15 +168,25 @@ public class MigrationProjectService
                 entityManager.remove(rulesPath);
             });
             configuration.setRulesPaths(Collections.emptySet());
+
+            configuration.getLabelsPaths().forEach(labelsPath -> {
+                this.entityManager.createNamedQuery(LabelProviderEntity.DELETE_BY_LABELS_PATH)
+                        .setParameter(LabelProviderEntity.LABELS_PATH_PARAM, labelsPath)
+                        .executeUpdate();
+                entityManager.remove(labelsPath);
+            });
+            configuration.setLabelsPaths(Collections.emptySet());
             entityManager.remove(configuration);
         }
 
         entityManager.remove(project);
 
         File rulesDir = new File(this.webPathUtil.getCustomRulesPath(project.getId().toString()).toString());
+        File labelsDir = new File(this.webPathUtil.getCustomLabelsPath(project.getId().toString()).toString());
         File projectDir = new File(this.webPathUtil.createMigrationProjectPath(project.getId().toString()).toString());
 
         deleteProjectResourceDir(rulesDir);
+        deleteProjectResourceDir(labelsDir);
         deleteProjectResourceDir(projectDir);
     }
 

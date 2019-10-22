@@ -16,11 +16,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
-import org.jboss.windup.web.furnaceserviceprovider.WebProperties;
-import org.jboss.windup.web.services.model.Configuration;
 import org.jboss.windup.web.services.model.LabelsPath;
-import org.jboss.windup.web.services.model.RulesPath;
-import org.jboss.windup.web.services.model.RulesPath.RulesPathType;
 import org.jboss.windup.web.services.model.LabelsPath.LabelsPathType;
 
 import java.nio.file.Path;
@@ -61,8 +57,11 @@ public class ConfigurationService
     {
         if (configuration.isGlobal()) {
             Set<RulesPath> oldRulesPaths = new HashSet<>(getConfiguration(configuration.getId()).getRulesPaths());
+            Set<LabelsPath> oldLabelsPaths = new HashSet<>(getConfiguration(configuration.getId()).getLabelsPaths());
 
             configuration = entityManager.merge(configuration);
+
+            // Rules
             Set<RulesPath> newRulesPaths = new HashSet<>(configuration.getRulesPaths());
 
             Set<RulesPath> addedRulesPath = new HashSet<>(newRulesPaths);
@@ -71,11 +70,25 @@ public class ConfigurationService
             Set<RulesPath> deletedRulesPaths = new HashSet<>(oldRulesPaths);
             deletedRulesPaths.removeAll(newRulesPaths);
 
-            List<AnalysisContext> analysisContexts = analysisContextService.getAll();
-            analysisContexts.forEach(analysisContext -> {
+            // Labels
+            Set<LabelsPath> newLabelsPaths = new HashSet<>(configuration.getLabelsPaths());
+
+            Set<LabelsPath> addedLabelsPath = new HashSet<>(newLabelsPaths);
+            addedLabelsPath.removeAll(oldLabelsPaths);
+
+            Set<LabelsPath> deletedLabelsPaths = new HashSet<>(oldLabelsPaths);
+            deletedLabelsPaths.removeAll(newLabelsPaths);
+
+
+            analysisContextService.getAll().forEach(analysisContext -> {
                 analysisContext.getRulesPaths().removeAll(deletedRulesPaths);
                 analysisContext.getRulesPaths().addAll(addedRulesPath);
                 analysisContextService.ensureSystemRulesPathsPresent(analysisContext);
+
+                analysisContext.getLabelsPaths().removeAll(deletedLabelsPaths);
+                analysisContext.getLabelsPaths().addAll(addedLabelsPath);
+                analysisContextService.ensureSystemLabelsPathsPresent(analysisContext);
+
                 entityManager.merge(analysisContext);
             });
         } else {
@@ -99,6 +112,7 @@ public class ConfigurationService
         {
             Configuration configuration = createDefaultConfiguration(false);
             configuration.setRulesPaths(Collections.emptySet());
+            configuration.setLabelsPaths(Collections.emptySet());
 
             MigrationProject migrationProject = entityManager.find(MigrationProject.class, projectId);
             migrationProject.setConfiguration(configuration);
@@ -210,15 +224,15 @@ public class ConfigurationService
 
     private void updateSystemLabelsPath(Configuration configuration)
     {
-        // Get the updated system rules path from the system
-        Path newSystemLabelsPath = WebProperties.getInstance().getRulesRepository().toAbsolutePath().normalize();
+        // Get the updated system labels path from the system
+        Path newSystemLabelsPath = WebProperties.getInstance().getLabelsRepository().toAbsolutePath().normalize();
 
-        // make a list of existing rules path
+        // make a list of existing labels path
         Set<LabelsPath> dbPaths = new HashSet<>();
         if (configuration.getLabelsPaths() != null)
             dbPaths = configuration.getLabelsPaths();
 
-        // Find the existing system rules path
+        // Find the existing system labels path
         Optional<LabelsPath> existingSystemLabelsPath = dbPaths.stream()
                 .filter((labelsPath) -> labelsPath.getLabelsPathType() == LabelsPath.LabelsPathType.SYSTEM_PROVIDED)
                 .findFirst();

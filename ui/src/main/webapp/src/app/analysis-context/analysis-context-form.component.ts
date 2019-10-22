@@ -248,6 +248,8 @@ export class AnalysisContextFormComponent extends FormComponent
         analysisContext.includePackages = [];
         analysisContext.excludePackages = [];
         analysisContext.rulesPaths = [];
+        analysisContext.labelsPaths = [];
+
         analysisContext.applications = [];
         analysisContext.generateStaticReports = true;
 
@@ -453,6 +455,10 @@ export class AnalysisContextFormComponent extends FormComponent
 
     isActiveRulesPaths():boolean {
         return this.analysisContext.rulesPaths.filter(rulesPath => rulesPath.rulesPathType == 'USER_PROVIDED').length > 0;
+    }
+
+    isActiveLabelsPaths():boolean {
+        return this.analysisContext.labelsPaths.filter(labelsPath => labelsPath.labelsPathType == 'USER_PROVIDED').length > 0;
     }
 
     onMigrationPathChange() {
