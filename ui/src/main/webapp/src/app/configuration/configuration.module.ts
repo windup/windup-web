@@ -6,6 +6,7 @@ import {ProjectConfigurationResolve} from "./project-configuration.resolve";
 import {ConfigurationService} from "./configuration.service";
 import {ConfigurationOptionsService} from "./configuration-options.service";
 import {RuleService} from "./rule.service";
+import {LabelService} from "./label.service";
 import {SharedModule} from "../shared/shared.module";
 import {RouterModule} from "@angular/router";
 
@@ -27,7 +28,8 @@ import {RouterModule} from "@angular/router";
         ProjectConfigurationResolve,
         ConfigurationService,
         ConfigurationOptionsService,
-        RuleService
+        RuleService,
+        LabelService
     ]
 })
 export class ConfigurationModule {

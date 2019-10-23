@@ -1,0 +1,28 @@
+<ng-container *ngIf="labelProvider.labels.length > 0; else elseNoLabels">
+    <ng-container *ngIf="labelProvider.labels.length > 1">
+        <label>Go to label:</label>
+        <select #selectedLabel
+                class="form-control"
+                name="labelSelect"
+                style="width: auto; display: inline;"
+                (change)="scrollToLabel(selectedLabel.value)"
+                id="select-{{labelProvider.id}}">
+            <option value="" disabled selected hidden>Select a label</option>
+            <option 
+                *ngFor="let labelEntity of labelProvider.labels; let i = index"
+                [value]="labelEntity.id">{{getLabelForLabelID(labelEntity.labelID, labelProvider.providerID, i)}}</option>
+        </select>
+    </ng-container>
+    <div *ngFor="let labelEntity of labelProvider.labels; let i = index">
+        <h4 id="{{labelEntity.id}}">
+            {{getLabelForLabelID(labelEntity.labelID, labelProvider.providerID, i)}}
+            <i class="fa fa-angle-up fa-pull-right fa-border" aria-hidden="true"
+                (click)="scrollToLabelSetHeader(labelProvider.id)" title="Go to labels set header"></i>
+        </h4>
+        <pre (load)="prettyPrint()" class="prettyprint"
+            style="white-space: pre-wrap">{{labelEntity.labelContents}}</pre>
+    </div>
+</ng-container>
+<ng-template #elseNoLabels>
+    <span style="font-style: italic">No Labels Defined</span>
+</ng-template>

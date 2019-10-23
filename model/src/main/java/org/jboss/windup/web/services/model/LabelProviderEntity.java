@@ -117,7 +117,7 @@ public class LabelProviderEntity implements Serializable
     }
 
     /**
-     * Contains the ID from the Rule Provider. This should be unique across all rule providers.
+     * Contains the ID from the Label Provider. This should be unique across all label providers.
      */
     public String getProviderID()
     {
@@ -125,7 +125,7 @@ public class LabelProviderEntity implements Serializable
     }
 
     /**
-     * Contains the ID from the Rule Provider. This should be unique across all rule providers.
+     * Contains the ID from the Label Provider. This should be unique across all label providers.
      */
     public void setProviderID(String providerID)
     {
@@ -133,7 +133,7 @@ public class LabelProviderEntity implements Serializable
     }
 
     /**
-     * Contains the origin of the Rule Provider. For an XML File, this will be a full path to the file.
+     * Contains the origin of the Label Provider. For an XML File, this will be a full path to the file.
      */
     public String getOrigin()
     {
@@ -141,7 +141,7 @@ public class LabelProviderEntity implements Serializable
     }
 
     /**
-     * Contains the origin of the Rule Provider. For an XML File, this will be a full path to the file.
+     * Contains the origin of the Label Provider. For an XML File, this will be a full path to the file.
      */
     public void setOrigin(String origin)
     {
@@ -149,7 +149,7 @@ public class LabelProviderEntity implements Serializable
     }
 
     /**
-     * Contains a human readable description of this rule provider.
+     * Contains a human readable description of this label provider.
      */
     public String getDescription()
     {
@@ -157,7 +157,7 @@ public class LabelProviderEntity implements Serializable
     }
 
     /**
-     * Contains a human readable description of this rule provider.
+     * Contains a human readable description of this label provider.
      */
     public void setDescription(String description)
     {
@@ -165,7 +165,7 @@ public class LabelProviderEntity implements Serializable
     }
 
     /**
-     * Contains the time that this rule's metadata was loaded into the windup-web database.
+     * Contains the time that this label's metadata was loaded into the windup-web database.
      */
     public Calendar getDateLoaded()
     {
@@ -173,7 +173,7 @@ public class LabelProviderEntity implements Serializable
     }
 
     /**
-     * Contains the time that this rule's metadata was loaded into the windup-web database.
+     * Contains the time that this label's metadata was loaded into the windup-web database.
      */
     public void setDateLoaded(Calendar dateLoaded)
     {
@@ -181,7 +181,7 @@ public class LabelProviderEntity implements Serializable
     }
 
     /**
-     * Contains the time that this rule's metadata was last modified on disk. This may be null if no modification date could be determined.
+     * Contains the time that this label's metadata was last modified on disk. This may be null if no modification date could be determined.
      */
     public Calendar getDateModified()
     {
@@ -189,7 +189,7 @@ public class LabelProviderEntity implements Serializable
     }
 
     /**
-     * Contains the time that this rule's metadata was last modified on disk. This may be null if no modification date could be determined.
+     * Contains the time that this label's metadata was last modified on disk. This may be null if no modification date could be determined.
      */
     public void setDateModified(Calendar dateModified)
     {
@@ -197,7 +197,7 @@ public class LabelProviderEntity implements Serializable
     }
 
     /**
-     * Contains the list of rules that were loaded by this provider.
+     * Contains the list of labels that were loaded by this provider.
      */
     public List<LabelEntity> getLabels()
     {
@@ -205,11 +205,11 @@ public class LabelProviderEntity implements Serializable
     }
 
     /**
-     * Contains the list of rules that were loaded by this provider.
+     * Contains the list of labels that were loaded by this provider.
      */
-    public void setLabels(List<LabelEntity> rules)
+    public void setLabels(List<LabelEntity> labels)
     {
-        this.labels = rules;
+        this.labels = labels;
     }
 
     /**
@@ -223,9 +223,9 @@ public class LabelProviderEntity implements Serializable
     /**
      * Contains the path in which this provider was found.
      */
-    public void setLabelsPath(LabelsPath rulesPath)
+    public void setLabelsPath(LabelsPath labelsPath)
     {
-        this.labelsPath = rulesPath;
+        this.labelsPath = labelsPath;
     }
 
     /**

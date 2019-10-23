@@ -1,0 +1,16 @@
+<div class="modal-header">
+    <h4 class="modal-title pull-left">{{labelProvider.labelsPath.shortPath}}</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div #modalBody class="modal-body" style="height: 390px; overflow-y: auto;">
+    <wu-labels
+            [labelProvider]="labelProvider"
+            [container]="modalBody"
+            [offset]="80">
+    </wu-labels>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">Close</button>
+</div>

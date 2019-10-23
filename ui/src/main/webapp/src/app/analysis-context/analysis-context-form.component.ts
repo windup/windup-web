@@ -10,7 +10,7 @@ import {ConfigurationOptionsService} from "../configuration/configuration-option
 import {IsDirty} from "../shared/is-dirty.interface";
 import {Observable, forkJoin} from "rxjs";
 import {PackageRegistryService} from "./package-registry.service";
-import {AnalysisContext, Package, MigrationPath, MigrationProject, AdvancedOption, RegisteredApplication, RulesPath, PackageMetadata} from "../generated/windup-services";
+import {AnalysisContext, Package, MigrationPath, MigrationProject, AdvancedOption, RegisteredApplication, RulesPath, PackageMetadata, LabelsPath} from "../generated/windup-services";
 import {RouteHistoryService} from "../core/routing/route-history.service";
 import {Subscription} from "rxjs";
 import {FlattenedRouteData, RouteFlattenerService} from "../core/routing/route-flattener.service";
@@ -44,6 +44,7 @@ export class AnalysisContextFormComponent extends FormComponent
     availableApps: RegisteredApplication[];
 
     selectedCustomRulesPath: RulesPath[];
+    selectedCustomLabelsPath: LabelsPath[];
 
     /**
      * These two variables exist because we need for the item in the array not to just be a literal.
@@ -168,6 +169,7 @@ export class AnalysisContextFormComponent extends FormComponent
                             this.loadPackageMetadata();
 
                             this.selectedCustomRulesPath = this.analysisContext.rulesPaths;
+                            this.selectedCustomLabelsPath = this.analysisContext.labelsPaths;
                         } else {
                             this._analysisContextService.get(project.defaultAnalysisContextId)
                                 .subscribe(context => {
@@ -203,6 +205,7 @@ export class AnalysisContextFormComponent extends FormComponent
                                     this.selectedPaths = selectedPaths;
 
                                     this.selectedCustomRulesPath = this.analysisContext.rulesPaths;
+                                    this.selectedCustomLabelsPath = this.analysisContext.labelsPaths;
 
                                     // Load packages
                                     this.loadPackageMetadata();

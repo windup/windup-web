@@ -17,6 +17,7 @@ import {ToolbarModule} from "patternfly-ng/toolbar";
 import {ActionModule} from "patternfly-ng/action";
 import {TabsModule, TabsetConfig} from "ngx-bootstrap/tabs";
 import {ModalModule} from "ngx-bootstrap/modal";
+
 import {CustomRulesComponent} from "./custom-rules/custom-rules.component";
 import {UploadedRulesPathComponent} from "./custom-rules/uploaded-rules-path.component";
 import {ServerPathRulesComponent} from "./custom-rules/server-path-rules.component";
@@ -24,6 +25,14 @@ import {UploadedRulePathModalComponent} from "./custom-rules/uploaded-rule-path-
 import {ServerPathRulesModalComponent} from "./custom-rules/server-path-rules-modal.component";
 import {RulesListComponent} from "./custom-rules/rules-list.component";
 import {RulesComponent} from "./custom-rules/rules.component";
+
+import { CustomLabelsComponent } from "./custom-labels/custom-labels.component";
+import { UploadedLabelsPathComponent } from "./custom-labels/uploaded-labels-path.component";
+import { ServerPathLabelsComponent } from "./custom-labels/server-path-labels.component";
+import { UploadedLabelPathModalComponent } from "./custom-labels/uploaded-label-path-modal.component";
+import { ServerPathLabelsModalComponent } from "./custom-labels/server-path-labels-modal.component";
+import { LabelsListComponent } from "./custom-labels/labels-list.component";
+import { LabelsComponent } from "./custom-labels/labels.component";
 
 @NgModule({
     imports: [
@@ -52,7 +61,15 @@ import {RulesComponent} from "./custom-rules/rules.component";
         UploadedRulePathModalComponent,
         ServerPathRulesModalComponent,
         RulesListComponent,
-        RulesComponent
+        RulesComponent,
+
+        CustomLabelsComponent,
+        UploadedLabelsPathComponent,
+        ServerPathLabelsComponent,
+        UploadedLabelPathModalComponent,
+        ServerPathLabelsModalComponent,
+        LabelsListComponent,
+        LabelsComponent
     ],
     exports: [
         AnalysisContextFormComponent,
@@ -65,7 +82,10 @@ import {RulesComponent} from "./custom-rules/rules.component";
         SelectPackagesSummaryComponent,
 
         RulesListComponent,
-        RulesComponent
+        RulesComponent,
+
+        LabelsListComponent,
+        LabelsComponent
     ],
     providers: [
         AnalysisContextService,
@@ -75,7 +95,10 @@ import {RulesComponent} from "./custom-rules/rules.component";
     ],
     entryComponents: [
         UploadedRulePathModalComponent,
-        ServerPathRulesModalComponent
+        ServerPathRulesModalComponent,
+
+        UploadedLabelPathModalComponent,
+        ServerPathLabelsModalComponent
     ]
 })
 export class AnalysisContextModule {

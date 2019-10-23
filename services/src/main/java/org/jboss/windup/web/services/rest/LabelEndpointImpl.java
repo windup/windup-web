@@ -52,7 +52,7 @@ public class LabelEndpointImpl implements LabelEndpoint
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<LabelProviderEntity> criteriaQuery = builder.createQuery(LabelProviderEntity.class);
         Root<LabelProviderEntity> root = criteriaQuery.from(LabelProviderEntity.class);
-        criteriaQuery.where(builder.equal(root.get(LabelProviderEntity_.labels), labelsPath));
+        criteriaQuery.where(builder.equal(root.get(LabelProviderEntity_.labelsPath), labelsPath));
 
         return entityManager.createQuery(criteriaQuery).getResultList();
     }

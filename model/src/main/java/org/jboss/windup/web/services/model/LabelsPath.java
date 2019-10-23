@@ -218,7 +218,7 @@ public class LabelsPath implements Serializable
     @Override
     public String toString()
     {
-        return "RulesPath{" +
+        return "LabelsPath{" +
                     "id=" + id +
                     ", version=" + version +
                     ", path='" + path + '\'' +

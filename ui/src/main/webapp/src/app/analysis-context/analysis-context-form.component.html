@@ -133,10 +133,10 @@
         <!-- LabelSets selection -->
         <wu-expand-collapse [tabTitle]="'Use custom labels'" [isActive]="isActiveLabelsPaths()">
             <div class="form-group">
-                <!-- <wu-custom-rules 
-                            name="customRules"
-                            [(ngModel)]="selectedCustomRulesPath">
-                </wu-custom-rules> -->
+                <wu-custom-labels 
+                            name="customLabels"
+                            [(ngModel)]="selectedCustomLabelsPath">
+                </wu-custom-labels>
             </div>
         </wu-expand-collapse>
 
