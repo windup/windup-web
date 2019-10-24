@@ -182,7 +182,7 @@ export class CustomRulesComponent extends RoutedComponent implements ControlValu
             response => {
                 if (response.valueOf())
                 {
-                    this._notificationService.warning(`The rules path '${rulesPath.path}' is used in an existing Queued or Running Analysis and cannot be removed.`);
+                    this._notificationService.warningToast(`The rules path '${rulesPath.path}' is used in an existing Queued or Running Analysis and cannot be removed.`);
                 }
                 else
                 {
