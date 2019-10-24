@@ -22,9 +22,10 @@ import {MigrationProjectService} from "../project/migration-project.service";
 import {WINDUP_WEB} from "../app.module";
 import {DialogService} from "../shared/dialog/dialog.service";
 import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
-import {filter} from "rxjs/operators";
+import {filter, concatMap} from "rxjs/operators";
 import {Path, CardPath, DropdownPath} from "./transformation-paths.component";
 import {PackageSelection} from "./select-packages/select-packages.component";
+import { empty } from 'rxjs';
 
 @Component({
     templateUrl: './analysis-context-form.component.html',
@@ -374,7 +375,18 @@ export class AnalysisContextFormComponent extends FormComponent
 
         this.saveInProgress = true;
 
-        this._analysisContextService.saveAsDefault(this.analysisContext, this.project).subscribe(
+        // Before saving we need to update the analysisContext since
+        // "version" could have changed while deleting custom rules
+        const analysisContextObservable: Observable<AnalysisContext> = 
+            this.project.defaultAnalysisContextId != null ?
+            this._analysisContextService.get(this.project.defaultAnalysisContextId) : empty();
+
+        analysisContextObservable.pipe(
+            concatMap((analysisContext) => {
+                this.analysisContext.version = analysisContext.version;
+                return this._analysisContextService.saveAsDefault(this.analysisContext, this.project);
+            })
+        ).subscribe(
             updatedContext => {
                 this._dirty = false;
                 this.onSuccess(updatedContext);

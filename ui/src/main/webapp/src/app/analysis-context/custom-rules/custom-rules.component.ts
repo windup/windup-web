@@ -177,15 +177,27 @@ export class CustomRulesComponent extends RoutedComponent implements ControlValu
      * Opens a modal for confirm deletion of a RulePath
      */
     displayRemoveRulesConfirmationModal(rulesPath: RulesPath) {
-        this.removeRulesConfirmationModal.body = `Are you sure you want to remove the rules from '${rulesPath.path}'?`;
-        this.removeRulesConfirmationModal.data = rulesPath;
-        this.removeRulesConfirmationModal.show();
+        console.log("Checking rules path " + rulesPath.path);
+        this._ruleService.checkIfUsedRulesPath(rulesPath).subscribe(
+            response => {
+                if (response.valueOf())
+                {
+                    this._notificationService.warningToast(`The rules path '${rulesPath.path}' is used in an existing Queued or Running Analysis and cannot be removed.`);
+                }
+                else
+                {
+                    this.removeRulesConfirmationModal.body = `Are you sure you want to remove the rules from '${rulesPath.path}'?`;
+                    this.removeRulesConfirmationModal.data = rulesPath;
+                    this.removeRulesConfirmationModal.show();
+                }
+            }
+        );
     }
 
     removeRulesPath(rulesPath: RulesPath) {
         this._ruleService.deleteRule(rulesPath).subscribe(() => {
             this._notificationService.success('Rule was deleted');
-
+        
             this._configurationService.getByProjectId(this.project.id).subscribe(newConfig => {
                 this.configuration = newConfig;
                 this.loadCustomRules();

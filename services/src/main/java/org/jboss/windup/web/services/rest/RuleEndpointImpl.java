@@ -153,7 +153,12 @@ public class RuleEndpointImpl implements RuleEndpoint
         if (rulesPath.getRulesPathType() == RulesPathType.SYSTEM_PROVIDED)
             return false;
 
-        String queryStr = "SELECT count(*)  > 0 FROM ANALYSISCONTEXT_RULESPATH  where RULESPATHS_RULES_PATH_ID=:id";
+        // Using ordinal() instead of toString() because WindupExecution.status is using ordinal value
+        String queryStr = "SELECT count(*)  > 0 FROM ANALYSISCONTEXT_RULESPATH ACRP \n" +
+                "INNER JOIN ANALYSISCONTEXT AC ON ACRP.ANALYSISCONTEXT_ID = AC.ID \n" +
+                "INNER JOIN WINDUPEXECUTION WE ON AC.ID = WE.ANALYSISCONTEXT_ID \n" +
+                "where (WE.STATUS = "+ ExecutionState.QUEUED.ordinal() + " OR WE.STATUS = " + ExecutionState.STARTED.ordinal() + ") \n" +
+                "AND RULESPATHS_RULES_PATH_ID=:id";
         Boolean test = (Boolean) this.entityManager.createNativeQuery(queryStr).
                     setParameter("id", rulesPath.getId()).
                     getSingleResult();
