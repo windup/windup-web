@@ -6,7 +6,6 @@ import { LabelsPath, LabelProviderEntity } from "../../generated/windup-services
 import { EmptyStateConfig } from "patternfly-ng/empty-state";
 import { TableConfig, NgxDataTableConfig, TableEvent, TableComponent } from "patternfly-ng/table";
 import { ToolbarConfig } from "patternfly-ng/toolbar/toolbar-config";
-import { getAvailableFilters } from "../../configuration/technology-filter";
 import { BsModalRef, BsModalService, ModalOptions } from "ngx-bootstrap/modal";
 import { Observable, forkJoin } from "rxjs";
 import { LabelService } from "../../configuration/label.service";
@@ -32,10 +31,10 @@ export class UploadedLabelsPathComponent implements OnInit {
     @ViewChild('labelsTemplate') labelsTemplate: TemplateRef<any>;
     @ViewChild('actionsTemplate') actionsTemplate: TemplateRef<any>;
 
-    rows: any[];
-    allRows: any[];
-    filteredRows: any[];
-    selectedRows: any[] = [];
+    rows: LabelProviderEntity[];
+    allRows: LabelProviderEntity[];
+    filteredRows: LabelProviderEntity[];
+    selectedRows: LabelProviderEntity[] = [];
 
     columns: any[];
 
@@ -229,7 +228,7 @@ export class UploadedLabelsPathComponent implements OnInit {
         this.updateRows(true);
     }
 
-    matchesFilters(item: any, filters: Filter[]): boolean {
+    matchesFilters(item: LabelProviderEntity, filters: Filter[]): boolean {
         let matches = true;
         filters.forEach((filter) => {
             if (!this.matchesFilter(item, filter)) {
@@ -240,34 +239,20 @@ export class UploadedLabelsPathComponent implements OnInit {
         return matches;
     }
 
-    matchesFilter(item: any, filter: Filter): boolean {
-        console.log('matchesFilter');
-        return true;
-        // let match = true;
-        // if (filter.field.id === 'source') {
-        //     match = (<any>filter.query).filterOption.callback(item);
-        // } else if (filter.field.id === 'target') {
-        //     match = (<any>filter.query).filterOption.callback(item);
-        // }
-        // return match;
+    matchesFilter(item: LabelProviderEntity, filter: Filter): boolean {
+        let match = true;
+        if (filter.field.id === 'name') {
+            const regexp = new RegExp(filter.value, 'i');
+            match = item.labelsPath.shortPath.match(regexp) !== null;
+        }
+        return match;
     }
 
     /**
      * Reset filtered queries
      */
     filterFieldSelected($event: FilterEvent): void {
-        this.filterConfig.fields.forEach((field) => {
-            console.log("filterFieldSelected:", field);
-            // if (field.id === 'source') {
-            //     field.queries = [
-            //         ...this.sourceQueries
-            //     ];
-            // } else if (field.id === 'target') {
-            //     field.queries = [
-            //         ...this.targetQueries
-            //     ];
-            // }
-        });
+        // TODO nothing to do since we have just one filter "Name"
     }
 
 
@@ -280,7 +265,7 @@ export class UploadedLabelsPathComponent implements OnInit {
         if (action.id == 'selectAll') {
             this.selectedRows = [];
             this.selectRows(this.allRows.map(r => {
-                r.selected = true;
+                (<any>r).selected = true;
                 return r;
             }));
         }
@@ -290,30 +275,7 @@ export class UploadedLabelsPathComponent implements OnInit {
      * Filter queries for type ahead
      */
     filterQueries($event: FilterEvent) {
-        // const index = (this.filterConfig.fields as any).findIndex((i: any) => i.id === $event.field.id);
-        // let val = $event.value.trim();
-
-        // if (this.filterConfig.fields[index].id === 'source') {
-        //     this.filterConfig.fields[index].queries = [
-        //         ...this.sourceQueries.filter((item: any) => {
-        //             if (item.value) {
-        //                 return (item.value.toLowerCase().indexOf(val.toLowerCase()) > -1);
-        //             } else {
-        //                 return true;
-        //             }
-        //         })
-        //     ];
-        // } else if (this.filterConfig.fields[index].id === 'target') {
-        //     this.filterConfig.fields[index].queries = [
-        //         ...this.targetQueries.filter((item: any) => {
-        //             if (item.value) {
-        //                 return (item.value.toLowerCase().indexOf(val.toLowerCase()) > -1);
-        //             } else {
-        //                 return true;
-        //             }
-        //         })
-        //     ];
-        // }
+        // TODO nothing to do since we don't have TYPE_AHEAD filters
     }
 
 
@@ -352,7 +314,7 @@ export class UploadedLabelsPathComponent implements OnInit {
                 this.selectRows($event.selectedRows);
             } else {
                 this.selectRows(this.rows.map(r => {
-                    r.selected = false;
+                    (<any>r).selected = false;
                     return r;
                 }));
             }
@@ -389,9 +351,9 @@ export class UploadedLabelsPathComponent implements OnInit {
     //
 
     selectRows(rows: LabelProviderEntity[]) {
-        rows.forEach((row: any) => {
+        rows.forEach((row: LabelProviderEntity) => {
             var indexOfRow = this.selectedRows.findIndex(i => i.id === row.id);
-            if (row.selected) {
+            if ((<any>row).selected) {
                 if (indexOfRow == -1) {
                     this.selectedRows.push(row);
                 }

@@ -218,7 +218,7 @@ export class ServerPathLabelsComponent implements DoCheck {
         });
     }
 
-    matchesFilter(item: any, filter: Filter): boolean {
+    matchesFilter(item: LabelsPath, filter: Filter): boolean {
         let match = true;
         if (filter.field.id === 'name') {
             match = item.path.match(filter.value) !== null;
@@ -226,7 +226,7 @@ export class ServerPathLabelsComponent implements DoCheck {
         return match;
     }
 
-    matchesFilters(item: any, filters: Filter[]): boolean {
+    matchesFilters(item: LabelsPath, filters: Filter[]): boolean {
         let matches = true;
         filters.forEach((filter) => {
             if (!this.matchesFilter(item, filter)) {
