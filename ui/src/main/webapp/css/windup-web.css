@@ -325,8 +325,11 @@ fieldset.fields-section-pf {
 }
 
 /** general toast notifications **/
-@media (min-width: 992px) {
-    pfng-toast-notification .toast-pf {
-        max-width: 70%;
+@media (max-width: 767px) {
+    .toast-notifications-list-pf {
+      max-width: calc(100% - 40px);
     }
+}
+.toast-notifications-list-pf > div .toast-pf {
+    width: 100%;
 }
