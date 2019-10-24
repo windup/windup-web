@@ -151,7 +151,12 @@ public class LabelEndpointImpl implements LabelEndpoint
         if (labelsPath.getLabelsPathType() == LabelsPathType.SYSTEM_PROVIDED)
             return false;
 
-        String queryStr = "SELECT count(*)  > 0 FROM ANALYSISCONTEXT_LABELSPATH where LABELSPATHS_LABELS_PATH_ID=:id";
+        // Using ordinal() instead of toString() because WindupExecution.status is using ordinal value
+        String queryStr = "SELECT count(*) > 0 FROM ANALYSISCONTEXT_LABELSPATH ACRP \n" +
+                "INNER JOIN ANALYSISCONTEXT AC ON ACRP.ANALYSISCONTEXT_ID = AC.ID \n" +
+                "INNER JOIN WINDUPEXECUTION WE ON AC.ID = WE.ANALYSISCONTEXT_ID \n" +
+                "where (WE.STATUS = "+ ExecutionState.QUEUED.ordinal() + " OR WE.STATUS = " + ExecutionState.STARTED.ordinal() + ") \n" +
+                "AND LABELSPATHS_LABELS_PATH_ID=:id";
         Boolean test = (Boolean) this.entityManager.createNativeQuery(queryStr).
                     setParameter("id", labelsPath.getId()).
                     getSingleResult();

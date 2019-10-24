@@ -177,9 +177,21 @@ export class CustomLabelsComponent extends RoutedComponent implements ControlVal
      * Opens a modal for confirm deletion of a LabelPath
      */
     displayRemoveLabelsConfirmationModal(labelsPath: LabelsPath) {
-        this.removeLabelsConfirmationModal.body = `Are you sure you want to remove the labels from '${labelsPath.path}'?`;
-        this.removeLabelsConfirmationModal.data = labelsPath;
-        this.removeLabelsConfirmationModal.show();
+        console.log("Checking labels path " + labelsPath.path);
+        this._labelService.checkIfUsedLabelsPath(labelsPath).subscribe(
+            response => {
+                if (response.valueOf())
+                {
+                    this._notificationService.warningToast(`The labels path '${labelsPath.path}' is used in an existing Queued or Running Analysis and cannot be removed.`);
+                }
+                else
+                {
+                    this.removeLabelsConfirmationModal.body = `Are you sure you want to remove the labels from '${labelsPath.path}'?`;
+                    this.removeLabelsConfirmationModal.data = labelsPath;
+                    this.removeLabelsConfirmationModal.show();
+                }
+            }
+        );
     }
 
     removeLabelsPath(labelsPath: LabelsPath) {
