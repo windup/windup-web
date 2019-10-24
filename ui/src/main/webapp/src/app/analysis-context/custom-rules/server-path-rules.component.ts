@@ -218,7 +218,7 @@ export class ServerPathRulesComponent implements DoCheck {
         });
     }
 
-    matchesFilter(item: any, filter: Filter): boolean {
+    matchesFilter(item: RulesPath, filter: Filter): boolean {
         let match = true;
         if (filter.field.id === 'name') {
             match = item.path.match(filter.value) !== null;
@@ -226,7 +226,7 @@ export class ServerPathRulesComponent implements DoCheck {
         return match;
     }
 
-    matchesFilters(item: any, filters: Filter[]): boolean {
+    matchesFilters(item: RulesPath, filters: Filter[]): boolean {
         let matches = true;
         filters.forEach((filter) => {
             if (!this.matchesFilter(item, filter)) {
