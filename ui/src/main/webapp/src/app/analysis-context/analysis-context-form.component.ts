@@ -372,6 +372,7 @@ export class AnalysisContextFormComponent extends FormComponent
         this.analysisContext.excludePackages = this.packageSelection.excludePackages;
 
         this.analysisContext.rulesPaths = this.selectedCustomRulesPath;
+        this.analysisContext.labelsPaths = this.selectedCustomLabelsPath;
 
         this.saveInProgress = true;
 
