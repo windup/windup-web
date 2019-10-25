@@ -1,6 +1,7 @@
 package org.jboss.windup.web.services;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -435,29 +436,26 @@ public class RuleDataLoader
 
             List<LabelEntity> labelEntities = new ArrayList<>();
 
-            data.getLabels().forEach((Object label) -> {
-                String labelID = UUID.randomUUID().toString();
-//                String labelString = this.ruleFormatterService.ruleToRuleContentsString(label);
-                String labelString = "myLabelStringValue";
+            List<Label> labels = data.getLabels();
+            for (Object obj : labels)
+            {
+                String labelID;
+                String labelString;
+
+                // TODO replace this once ClassCastException is solved
+                try {
+                    Class<?> aClass = obj.getClass();
+                    labelID = (String) aClass.getMethod("getId").invoke(obj);
+                    labelString = (String) aClass.getMethod("getLabelString").invoke(obj);
+                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                    throw new IllegalStateException(e);
+                }
 
                 LabelEntity labelEntity = new LabelEntity();
                 labelEntity.setLabelID(labelID);
                 labelEntity.setLabelContents(labelString);
                 labelEntities.add(labelEntity);
-            });
-
-//            List<Label> labels = data.getLabels();
-//            for (Label label : labels)
-//            {
-//                String labelID = label.getId();
-////                String labelString = this.ruleFormatterService.ruleToRuleContentsString(label);
-//                String labelString = "myLabelStringValue";
-//
-//                LabelEntity labelEntity = new LabelEntity();
-//                labelEntity.setLabelID(labelID);
-//                labelEntity.setLabelContents(labelString);
-//                labelEntities.add(labelEntity);
-//            }
+            }
 
             labelProviderEntity.setLabels(labelEntities);
 
