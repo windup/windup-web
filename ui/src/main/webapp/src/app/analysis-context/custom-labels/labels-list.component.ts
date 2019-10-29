@@ -60,12 +60,6 @@ export class LabelsListComponent {
     getLabelProviderMarginTop(labelProvider: LabelProviderEntity) {
         let margin = 0;
         if (labelProvider.labels.length > 0) {
-            if (labelProvider.labels.length > 0) {
-                margin = 14;
-            } else {
-                margin = 7;
-            }
-        } else if (labelProvider.labels.length > 0) {
             margin = 7;
         }
         return margin;

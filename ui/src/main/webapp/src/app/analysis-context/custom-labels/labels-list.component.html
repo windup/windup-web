@@ -1,78 +1,89 @@
-<div *ngIf="hasFileBasedProviders()"
-     class="labelsList list-group list-view-pf list-view-pf-view"
-     style="margin-top: 0px; border: none;">
-    <div id="group-item-{{labelProvider.id}}"
-         *ngFor="let labelProvider of getLabelProviders()"
-         class="list-group-item">
-        <div class="list-group-item-header" (click)="clickHeader($event, labelProvider)">
-            <div class="list-view-pf-expand">
-                <span id="span-{{labelProvider.id}}"
-                      class="fa fa-angle-right"
-                      [style.marginTop.px]="getLabelProviderMarginTop(labelProvider)"></span>
-            </div>
-            
-            <div class="list-view-pf-actions" style="margin-left: 5px;">
-                <!-- I just comment this button in case we'll use it again
-                    <button class="btn btn-default" [disabled]="labelProvider.labels.length < 1" (click)="displayLabels(labelProvider, $event)" i18n="Button">Show labels</button>
-                    -->
-            </div>
-            <div class="list-view-pf-main-info">
-                <div class="list-view-pf-left">
-                    <span class="fa fa-puzzle-piece list-view-pf-icon-sm"></span>
-                </div>
-                <div class="list-view-pf-body">
-                    <div class="list-view-pf-description">
-                        <div class="list-group-item-heading"> {{labelProvider.providerID}} </div>
-                        <div class="list-group-item-text">
-                            <div style="width: 16pt; position: absolute;">
-                                <span class="fa fa-file-code-o list-view-pf-icon-md" style="font-size: 16pt;"></span>
-                            </div>
-                            <div style="margin-left: 25pt; ">
-                                <div>{{labelProvider.origin}}</div>
-                                <div *ngIf="labelProvider.loadError" style="font-weight: bold">
-                                    {{labelProvider.loadError}}
-                                </div>
+<ng-template *ngIf="hasFileBasedProviders();then showLabels; else notShowLabels">
+</ng-template>
 
-                                <div *ngIf="labelProvider.sources.length > 0">
-                                    Source technologies:
-                                    <wu-technology *ngFor="let source of labelProvider.sources"
-                                                   [technology]="source"
-                                                   class="techLabel">
-                                    </wu-technology>
+<ng-template #showLabels>
+    <div
+        class="labelsList list-group list-view-pf list-view-pf-view"
+        style="margin-top: 0px; border: none;">
+        <div id="group-item-{{labelProvider.id}}"
+            *ngFor="let labelProvider of getLabelProviders()"
+            class="list-group-item">
+            <div class="list-group-item-header" (click)="clickHeader($event, labelProvider)">
+                <div class="list-view-pf-expand">
+                    <span id="span-{{labelProvider.id}}"
+                        class="fa fa-angle-right"
+                        [style.marginTop.px]="getLabelProviderMarginTop(labelProvider)"></span>
+                </div>
+                
+                <div class="list-view-pf-actions" style="margin-left: 5px;">
+                    <!-- I just comment this button in case we'll use it again
+                        <button class="btn btn-default" [disabled]="labelProvider.labels.length < 1" (click)="displayLabels(labelProvider, $event)" i18n="Button">Show labels</button>
+                        -->
+                </div>
+                <div class="list-view-pf-main-info">
+                    <div class="list-view-pf-left">
+                        <span class="fa fa-puzzle-piece list-view-pf-icon-sm"></span>
+                    </div>
+                    <div class="list-view-pf-body">
+                        <div class="list-view-pf-description">
+                            <div class="list-group-item-heading"> {{labelProvider.providerID}} </div>
+                            <div class="list-group-item-text">
+                                <div style="width: 16pt; position: absolute;">
+                                    <span class="fa fa-file-code-o list-view-pf-icon-md" style="font-size: 16pt;"></span>
                                 </div>
-                                <div *ngIf="labelProvider.targets.length > 0">
-                                    Target technologies:
-                                    <wu-technology *ngFor="let target of labelProvider.targets"
-                                                   [technology]="target"
-                                                   class="techLabel">
-                                    </wu-technology>
+                                <div style="margin-left: 25pt; ">
+                                    <div>{{labelProvider.origin}}</div>
+                                    <div *ngIf="labelProvider.loadError" style="font-weight: bold">
+                                        {{labelProvider.loadError}}
+                                    </div>
+                                    <div *ngIf="labelProvider.labels.length > 0">
+                                        Custom labels: <div class="techLabel" *ngFor="let label of labelProvider.labels">
+                                            {{label.labelID}}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="list-view-pf-additional-info">
-                        <div class="list-view-pf-additional-info-item">
-                            <span class="fa fa-list-ol"></span>
-                            <strong>{{labelProvider.labels ? labelProvider.labels.length : 0}}</strong> <span
-                                i18n="Count, e.g. 5 Labels">Labels</span>
+                        <div class="list-view-pf-additional-info">
+                            <div class="list-view-pf-additional-info-item">
+                                <span class="fa fa-list-ol"></span>
+                                <strong>{{labelProvider.labels ? labelProvider.labels.length : 0}}</strong> <span
+                                    i18n="Count, e.g. 5 Labels">Labels</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div id="container-{{labelProvider.id}}"
-             class="list-group-item-container container-fluid hidden"
-             style="padding-top: 0px;">
-            <div class="row">
-                <div class="modal-body">
-                    <wu-labels
-                            [labelProvider]="labelProvider"
-                            [container]="container"
-                            [offset]="offset">
-                    </wu-labels>
+            <div id="container-{{labelProvider.id}}"
+                class="list-group-item-container container-fluid hidden"
+                style="padding-top: 0px;">
+                <div class="row">
+                    <div class="modal-body">
+                        <wu-labels
+                                [labelProvider]="labelProvider"
+                                [container]="container"
+                                [offset]="offset">
+                        </wu-labels>
+                    </div>
                 </div>
             </div>
         </div>
-
     </div>
-</div>
+</ng-template>
+
+<ng-template #notShowLabels>
+    <div class="blank-slate-pf" style="border: 0; background-color: transparent;">
+        <div class="blank-slate-pf-icon">
+            <span class="pficon pficon-info"></span>
+        </div>
+        <h1>
+            No Labels Paths found
+        </h1>
+        <p>
+            You can create your own custom labels and upload them here.
+        </p>
+        <p>
+            To learn more, visit the <a href="https://access.redhat.com/documentation/en-us/red_hat_application_migration_toolkit/" target="_blank">documentation</a>.
+        </p>
+    </div>
+</ng-template>

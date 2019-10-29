@@ -37,8 +37,6 @@ export class ServerPathLabelsComponent implements DoCheck {
     toolbarActionConfig: ActionConfig;
     toolbarFilterConfig: FilterConfig;
 
-    toolbarNameQueries: any[];
-
     // List view config
 
     listConfig: ListConfig;
@@ -178,8 +176,6 @@ export class ServerPathLabelsComponent implements DoCheck {
 
             this.allItems = labelsPath;
             this.items = this.allItems;
-            // this.updateRows(true); // Reinitialize expanded rows in order to render properly with tabs
-            // this.loadQueryFilters();
         }
     }
 
@@ -209,13 +205,7 @@ export class ServerPathLabelsComponent implements DoCheck {
 
     // Reset filtered queries
     filterFieldSelected($event: FilterEvent): void {
-        this.toolbarFilterConfig.fields.forEach((field) => {
-            if (field.id === 'name') {
-                field.queries = [
-                    ...this.toolbarNameQueries
-                ];
-            }
-        });
+        // TODO nothing to do since we have just one filter "Name"
     }
 
     matchesFilter(item: LabelsPath, filter: Filter): boolean {
