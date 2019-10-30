@@ -107,7 +107,9 @@ public class WebProperties
         }
         if (labelsRepository == null)
         {
-            labelsRepository = servletContextPath.resolve("WEB-INF").resolve("rhamt-cli").resolve("labels");
+            // TODO loading core labels from 'rules' directory because labels and rules are stored in the same folder
+//            labelsRepository = servletContextPath.resolve("WEB-INF").resolve("rhamt-cli").resolve("labels");
+            labelsRepository = servletContextPath.resolve("WEB-INF").resolve("rhamt-cli").resolve("rules");
             if (!Files.isDirectory(labelsRepository))
                 throw new IllegalStateException("Cannot load labels repository: " + labelsRepository);
         }

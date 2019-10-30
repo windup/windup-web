@@ -1,5 +1,6 @@
 import {NgModule} from "@angular/core";
 import {ConfigurationComponent} from "./configuration.component";
+import {GlobalLabelsComponent} from "./global-labels/global-labels.component";
 import {RulesModalComponent} from "./rules-modal.component";
 import {ConfigurationResolve} from "./configuration.resolve";
 import {ProjectConfigurationResolve} from "./project-configuration.resolve";
@@ -17,10 +18,12 @@ import {RouterModule} from "@angular/router";
     ],
     declarations: [
         ConfigurationComponent,
+        GlobalLabelsComponent,
         RulesModalComponent
     ],
     exports: [
         ConfigurationComponent,
+        GlobalLabelsComponent,
         RulesModalComponent
     ],
     providers: [

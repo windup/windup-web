@@ -1,0 +1,175 @@
+<div class="header-bar">
+    <h1 i18n="Header" style="margin-bottom: 25px">Labels Configuration</h1>
+
+    <div class="rules-options">
+        <div [hidden]="rescanInProgress" class="action-button">
+            <button class="btn btn-primary" (click)="displayAddLabelsPathForm()" i18n="Add">Add</button>
+        </div>
+        <wu-toolbar
+                [filterType]="'text'"
+                [filterConfiguration]="filter"
+                [sortConfiguration]="sort"
+                (sortChange)="updateSort()"
+                (filterChange)="updateFilters()"
+        >
+        </wu-toolbar>
+    </div>
+</div>
+
+<wu-active-filters-list *ngIf="isFilterActive()"
+                        [(activeFilters)]="filter.selectedFilters"
+                        [countResults]="filter.countFilteredItems"
+                        [getLabel]="filter.getLabel"
+                        (activeFiltersChange)="updateFilters()"
+></wu-active-filters-list>
+
+<ng-template [ngIf]="rescanInProgress">
+    <h1>
+        <span class="status-icon"><span aria-hidden="true" class="spinner spinner-xs spinner-inline"></span></span>
+        Scanning labels...
+    </h1>
+</ng-template>
+
+<ng-template [ngIf]="!rescanInProgress && configuration != null && configuration.labelsPaths != null && configuration.labelsPaths.length > 0">
+    <div class="panel-group">
+        <div *ngFor="let labelPath of sortedPaths" id="labelPathPanel_{{labelPath.id}}" class="panel panel-default">
+
+            <!-- Header for each set of labels. -->
+            <div class="panel-heading">
+                <h2 class="panel-title">
+                    <span class="pointer pull-right" (click)="confirmRemoveLabels(labelPath)" *ngIf="labelPath.labelsPathType != 'SYSTEM_PROVIDED'" title="Delete">
+                        <span class="glyphicon glyphicon-trash"></span>
+                    </span>
+                    <a data-toggle="collapse"
+                        [attr.data-parent]="'#labelPathPanel_' + labelPath.id"
+                        href="#collapse_{{labelPath.id}}"
+                    >
+                        <span i18n>Labels:</span> {{labelsShortPath(labelPath)}}
+                    </a>
+                </h2>
+            </div>
+
+            <!-- Area that collapses when the header is clicked. -->
+            <div id="collapse_{{labelPath.id}}"
+                 class="panel-body panel-collapse collapse in"
+            >
+                <!-- Angular doesn't know this attribute. Fortunately it works just with the 'in' class.
+                     aria-expanded="{{(labelPath.labelsPathType == 'SYSTEM_PROVIDED') ? 'true' : 'false'}}"
+                -->
+
+                <div *ngIf="!areLabelsLoaded(labelPath)">
+                    <h3 i18n>Loading labels...</h3>
+                </div>
+
+                <div *ngIf="areLabelsLoaded(labelPath) && !hasFileBasedProviders(labelPath)">
+                    <h3 i18n>No labels found.</h3>
+                </div>
+
+                <div *ngIf="labelPath.loadError">
+                 <p>Invalid label files have been detected.</p>
+                    <p>Please make sure that your label files comply to the
+                         <a href="http://windup.jboss.org/schema/windup-jboss-labelset.xsd" target="_blank">XSD label format <i class="fa fa-external-link"></i></a>.
+                          See more details in <a href="http://windup.jboss.org/labels-guide.html" target="_blank">Labels guide <i class="fa fa-external-link"></i></a></p>
+                 <p class="alert alert-danger" style="white-space:pre-line;" role="alert" [innerHtml]="labelPath.loadError"></p>
+                </div>
+                
+                <!-- List of labels. -->
+                <div *ngIf="getLabelProvidersByPath(labelPath).length > 0 && getFilteredLabelProvidersByPath(labelPath).length === 0; else labelsList" class="no-matches">
+                    <ng-container i18n>The current filter is hiding all labels.</ng-container>
+                    <a href="javascript:void(0)" (click)="removeFilters()" i18n>Remove</a> <ng-container i18n>the filter.</ng-container>
+                </div>
+                <ng-template #labelsList>
+                    <div class="labelsList list-group list-view-pf list-view-pf-view" *ngIf="hasFileBasedProviders(labelPath)" style="margin-top: 0px; border: none;">
+                        <div *ngFor="let labelProvider of getFilteredLabelProvidersByPath(labelPath)" class="list-group-item" id="group-item-{{labelProvider.id}}">
+                            <div class="list-group-item-header" (click)="clickHeader($event, labelProvider)">
+                                <div class="list-view-pf-expand">
+                                    <span class="fa fa-angle-right" id="span-{{labelProvider.id}}" [style.marginTop.px]="getLabelProviderMarginTop(labelProvider)"></span>
+                                </div>
+                                <!-- If we need a checkbox for actions / global disabling.
+                                <div class="list-view-pf-checkbox">
+                                    <input type="checkbox">
+                                </div>
+                                -->
+                                <div class="list-view-pf-actions" style="margin-left: 5px;">
+                                </div>
+                                <div class="list-view-pf-main-info">
+                                    <div class="list-view-pf-left">
+                                        <span class="fa fa-puzzle-piece list-view-pf-icon-sm"></span>
+                                    </div>
+                                    <div class="list-view-pf-body">
+                                        <div class="list-view-pf-description">
+                                            <div class="list-group-item-heading"> {{labelProvider.providerID}} </div>
+                                            <div class="list-group-item-text">
+                                                <div style="width: 16pt; position: absolute;">
+                                                    <span class="fa fa-file-code-o list-view-pf-icon-md" style="font-size: 16pt;"></span>
+                                                </div>
+                                                <div style="margin-left: 25pt; ">
+                                                    <div>{{labelProvider.origin}}</div>
+                                                    <div *ngIf="labelProvider.loadError" style="font-weight: bold">
+                                                        {{labelProvider.loadError}}
+                                                    </div>
+
+                                                    <div *ngIf="labelProvider.labels.length > 0">
+                                                        Custom labels: <div class="techLabel" *ngFor="let label of labelProvider.labels">
+                                                            {{label.labelID}}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="list-view-pf-additional-info">
+                                            <div class="list-view-pf-additional-info-item">
+                                                <span class="fa fa-list-ol"></span>
+                                                <strong>{{labelProvider.labels ? labelProvider.labels.length : 0}}</strong> <span i18n="Count, e.g. 5 Labels">Labels</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="list-group-item-container container-fluid hidden" id="container-{{labelProvider.id}}" style="padding-top: 0px;">
+                                <div class="row">
+                                    <div class="modal-body">
+                                        <ng-container *ngIf="labelProvider.labels.length > 0; else elseNoLabels">
+                                            <ng-container *ngIf="labelProvider.labels.length > 1">
+                                                <label>Go to label:</label>
+                                                <select #selectedLabel class="form-control" name="labelSelect" style="width: auto; display: inline;"
+                                                        (change)="scrollToLabel(selectedLabel.value)"
+                                                        id="select-{{labelProvider.id}}">
+                                                    <option value="" disabled selected hidden>Select a label</option>
+                                                    <option *ngFor="let labelEntity of labelProvider.labels; let i = index" [value]="labelEntity.id">{{getLabelForLabelID(labelEntity.labelID, labelProvider.providerID, i)}}</option>
+                                                </select>
+                                            </ng-container>
+                                            <div *ngFor="let labelEntity of labelProvider.labels; let i = index">
+                                                <h4 id="{{labelEntity.id}}">{{getLabelForLabelID(labelEntity.labelID, labelProvider.providerID, i)}}
+                                                    <i class="fa fa-angle-up fa-pull-right fa-border" aria-hidden="true"
+                                                        (click)="scrollToLabelSetHeader(labelProvider.id)"
+                                                        title="Go to labels set header"></i>
+                                                </h4>
+                                                <pre (load)="prettyPrint()" class="prettyprint" style="white-space: pre-wrap">{{labelEntity.labelContents}}</pre>
+                                            </div>
+                                        </ng-container>
+                                        <ng-template #elseNoLabels>
+                                            <span style="font-style: italic">No Labels Defined</span>
+                                        </ng-template>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<wu-add-labels-path-modal
+        [configuration]="configuration"
+        (configurationSaved)="configurationUpdated($event)">
+</wu-add-labels-path-modal>
+<wu-confirmation-modal
+        #removeLabelsConfirmationModal
+        [id]="'deleteLabelsConfirmationDialog'"
+        [title]="'Confirm Label Removal'"
+        [body]="'Are you sure you want to remove the labels from ...?'"
+>
+</wu-confirmation-modal>
