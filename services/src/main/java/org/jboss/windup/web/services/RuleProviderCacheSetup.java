@@ -7,7 +7,7 @@ import javax.inject.Inject;
 
 import org.jboss.forge.furnace.Furnace;
 import org.jboss.windup.config.metadata.RuleProviderRegistryCache;
-import org.jboss.windup.web.services.model.RulesPath;
+import org.jboss.windup.web.services.model.PathType;
 import org.jboss.windup.web.services.service.ConfigurationService;
 
 import java.nio.file.Paths;
@@ -35,7 +35,7 @@ public class RuleProviderCacheSetup
             configuration
                     .getRulesPaths()
                     .stream()
-                    .filter(rulesPath -> rulesPath.getRulesPathType() == RulesPath.RulesPathType.SYSTEM_PROVIDED)
+                    .filter(rulesPath -> rulesPath.getRulesPathType() == PathType.SYSTEM_PROVIDED)
                     .map(rulesPath -> Paths.get(rulesPath.getPath()))
                     .forEach(path -> {
                         this.getRuleProviderRegistryCache().addUserRulesPath(path);

@@ -9,8 +9,8 @@ import org.jboss.windup.web.services.AbstractTest;
 import org.jboss.windup.web.services.ServiceTestUtil;
 import org.jboss.windup.web.services.data.ServiceConstants;
 import org.jboss.windup.web.services.model.Configuration;
+import org.jboss.windup.web.services.model.PathType;
 import org.jboss.windup.web.services.model.RulesPath;
-import org.jboss.windup.web.services.model.RulesPath.RulesPathType;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -69,7 +69,7 @@ public class ConfigurationEndpointTest extends AbstractTest
 
         RulesPath rulesPath = new RulesPath();
         rulesPath.setPath(CUSTOM_RULESPATH);
-        rulesPath.setRulesPathType(RulesPathType.USER_PROVIDED);
+        rulesPath.setRulesPathType(PathType.USER_PROVIDED);
         configuration.setRulesPaths(Collections.singleton(rulesPath));
 
         configuration = configurationEndpoint.saveConfiguration(configuration.getId(), configuration);

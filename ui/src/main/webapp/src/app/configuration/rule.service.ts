@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 
 import {Constants} from "../constants";
-import {RulesPath, RuleProviderEntity, RulesPathType, MigrationProject} from "../generated/windup-services";
+import {RulesPath, RuleProviderEntity, MigrationProject} from "../generated/windup-services";
 import {AbstractService} from "../shared/abtract.service";
 import {Observable, from} from "rxjs";
 import {FileUploader} from "ng2-file-upload";

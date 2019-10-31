@@ -17,7 +17,6 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.model.*;
-import org.jboss.windup.web.services.model.RulesPath.RulesPathType;
 import org.jboss.windup.web.services.service.ConfigurationService;
 import org.jboss.windup.web.services.service.FileUploadService;
 
@@ -97,8 +96,8 @@ public class RuleEndpointImpl implements RuleEndpoint
 
         File file = this.fileUploadService.uploadFile(data, customRulesPath, fileName, true);
 
-        RulesPath.ScopeType scopeType = configuration.isGlobal() ? RulesPath.ScopeType.GLOBAL : RulesPath.ScopeType.PROJECT;
-        RulesPath rulesPathEntity = new RulesPath(file.getPath(), RulesPath.RulesPathType.USER_PROVIDED, scopeType, RegistrationType.UPLOADED);
+        ScopeType scopeType = configuration.isGlobal() ? ScopeType.GLOBAL : ScopeType.PROJECT;
+        RulesPath rulesPathEntity = new RulesPath(file.getPath(), PathType.USER_PROVIDED, scopeType, RegistrationType.UPLOADED);
         String relativePath = customRulesPath.relativize(file.toPath()).toString();
         rulesPathEntity.setShortPath(relativePath);
 
@@ -150,7 +149,7 @@ public class RuleEndpointImpl implements RuleEndpoint
     public Boolean isRulesPathUsed(Long rulesPathID)
     {
         RulesPath rulesPath = this.getRulesPath(rulesPathID);
-        if (rulesPath.getRulesPathType() == RulesPathType.SYSTEM_PROVIDED)
+        if (rulesPath.getRulesPathType() == PathType.SYSTEM_PROVIDED)
             return false;
 
         // Using ordinal() instead of toString() because WindupExecution.status is using ordinal value

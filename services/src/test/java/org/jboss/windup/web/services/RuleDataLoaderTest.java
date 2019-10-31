@@ -1,9 +1,7 @@
 package org.jboss.windup.web.services;
 
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.windup.web.services.model.Configuration;
-import org.jboss.windup.web.services.model.RuleProviderEntity;
-import org.jboss.windup.web.services.model.RulesPath;
+import org.jboss.windup.web.services.model.*;
 import org.jboss.windup.web.services.service.ConfigurationService;
 import org.junit.Assert;
 import org.junit.Test;
@@ -38,8 +36,8 @@ public class RuleDataLoaderTest extends AbstractTest
     {
 
         Configuration configuration = this.configurationService.getGlobalConfiguration();
-        configuration.getRulesPaths().add(new RulesPath(CUSTOM_WINDUP_RULESPATH, RulesPath.RulesPathType.USER_PROVIDED, RulesPath.ScopeType.GLOBAL));
-        configuration.getRulesPaths().add(new RulesPath(CUSTOM_RHAMT_RULESPATH, RulesPath.RulesPathType.USER_PROVIDED, RulesPath.ScopeType.GLOBAL));
+        configuration.getRulesPaths().add(new RulesPath(CUSTOM_WINDUP_RULESPATH, PathType.USER_PROVIDED, ScopeType.GLOBAL));
+        configuration.getRulesPaths().add(new RulesPath(CUSTOM_RHAMT_RULESPATH, PathType.USER_PROVIDED, ScopeType.GLOBAL));
         configuration = this.configurationService.saveConfiguration(configuration);
         ruleDataLoader.reloadRuleData(configuration);
 

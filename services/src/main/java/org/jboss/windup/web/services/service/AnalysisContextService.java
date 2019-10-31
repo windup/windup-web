@@ -149,8 +149,6 @@ public class AnalysisContextService
     {
         configurationService
                     .getGlobalConfiguration().getRulesPaths()
-//                    .stream()
-//                    .filter(rulesPath -> rulesPath.getRulesPathType() == RulesPath.RulesPathType.SYSTEM_PROVIDED)
                     .forEach(rulesPath -> {
                         if (analysisContext.getRulesPaths() == null)
                             analysisContext.setRulesPaths(new HashSet<>());

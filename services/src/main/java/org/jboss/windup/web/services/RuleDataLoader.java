@@ -39,12 +39,7 @@ import org.jboss.windup.web.addons.websupport.services.IssueCategoryProviderServ
 import org.jboss.windup.web.addons.websupport.services.RuleFormatterService;
 import org.jboss.windup.web.addons.websupport.services.RuleProviderService;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
-import org.jboss.windup.web.services.model.Category;
-import org.jboss.windup.web.services.model.Configuration;
-import org.jboss.windup.web.services.model.RuleEntity;
-import org.jboss.windup.web.services.model.RuleProviderEntity;
-import org.jboss.windup.web.services.model.RulesPath;
-import org.jboss.windup.web.services.model.Technology;
+import org.jboss.windup.web.services.model.*;
 import org.jboss.windup.web.services.service.ConfigurationService;
 import org.jboss.windup.web.services.service.TechnologyService;
 import org.ocpsoft.rewrite.config.Rule;
@@ -153,7 +148,7 @@ public class RuleDataLoader
         /*
          * Do not reload system rules if we have already loaded them
          */
-        if (rulesPath.getRulesPathType() == RulesPath.RulesPathType.SYSTEM_PROVIDED)
+        if (rulesPath.getRulesPathType() == PathType.SYSTEM_PROVIDED)
         {
             Long count = entityManager
                         .createQuery("select count(rpe) from RuleProviderEntity rpe where rpe.rulesPath = :rulesPath", Long.class)
@@ -173,7 +168,7 @@ public class RuleDataLoader
         try
         {
             Path initialPath = Paths.get(rulesPath.getPath());
-            boolean isSystemProvided = rulesPath.getRulesPathType() == RulesPath.RulesPathType.SYSTEM_PROVIDED;
+            boolean isSystemProvided = rulesPath.getRulesPathType() == PathType.SYSTEM_PROVIDED;
             boolean scanRecursively = isSystemProvided || rulesPath.isScanRecursively();
 
             /*
@@ -209,7 +204,7 @@ public class RuleDataLoader
 
     private void loadRules(RulesPath rulesPath, Path path)
     {
-        boolean fileRulesOnly = rulesPath.getRulesPathType() == RulesPath.RulesPathType.USER_PROVIDED;
+        boolean fileRulesOnly = rulesPath.getRulesPathType() == PathType.USER_PROVIDED;
 
         RuleLoaderContext ruleLoaderContext = new RuleLoaderContext(Collections.singleton(path), null);
 
@@ -240,7 +235,7 @@ public class RuleDataLoader
             RuleProviderEntity.RuleProviderType ruleProviderType = getProviderType(origin);
 
             // Skip user provided rules that are Java
-            if (rulesPath.getRulesPathType() == RulesPath.RulesPathType.USER_PROVIDED &&
+            if (rulesPath.getRulesPathType() == PathType.USER_PROVIDED &&
                         ruleProviderType == RuleProviderEntity.RuleProviderType.JAVA)
                 continue;
 

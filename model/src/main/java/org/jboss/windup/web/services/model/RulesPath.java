@@ -55,7 +55,7 @@ public class RulesPath implements Serializable
     private String loadError;
 
     @Column
-    private RulesPathType rulesPathType;
+    private PathType rulesPathType;
 
     @Column
     private RegistrationType registrationType;
@@ -67,14 +67,14 @@ public class RulesPath implements Serializable
     {
     }
 
-    public RulesPath(String path, RulesPathType rulesPathType, ScopeType scopeType)
+    public RulesPath(String path, PathType rulesPathType, ScopeType scopeType)
     {
         this.path = path;
         this.rulesPathType = rulesPathType;
         this.scopeType = scopeType;
     }
 
-    public RulesPath(String path, RulesPathType rulesPathType, ScopeType scopeType, RegistrationType registrationType)
+    public RulesPath(String path, PathType rulesPathType, ScopeType scopeType, RegistrationType registrationType)
     {
         this(path, rulesPathType, scopeType);
         this.registrationType = registrationType;
@@ -151,7 +151,7 @@ public class RulesPath implements Serializable
     /**
      * Contains the type of rules path (for example, system provided vs user provided).
      */
-    public RulesPathType getRulesPathType()
+    public PathType getRulesPathType()
     {
         return rulesPathType;
     }
@@ -159,7 +159,7 @@ public class RulesPath implements Serializable
     /**
      * Contains the type of rules path (for example, system provided vs user provided).
      */
-    public void setRulesPathType(RulesPathType rulesPathType)
+    public void setRulesPathType(PathType rulesPathType)
     {
         this.rulesPathType = rulesPathType;
     }
@@ -234,16 +234,5 @@ public class RulesPath implements Serializable
                     ", scopeType='" + scopeType + '\'' +
                     ", rulesPathType=" + rulesPathType +
                     '}';
-    }
-
-    public enum RulesPathType
-    {
-        SYSTEM_PROVIDED, USER_PROVIDED
-    }
-
-    public enum ScopeType
-    {
-        GLOBAL,
-        PROJECT
     }
 }
