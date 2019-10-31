@@ -2,15 +2,15 @@ import { Component, TemplateRef, ViewChild, OnInit, AfterViewInit, Input, EventE
 import { PaginationEvent, PaginationConfig } from "patternfly-ng/pagination";
 import { FilterEvent, Filter, FilterConfig, FilterType, FilterField, FilterQuery } from "patternfly-ng/filter";
 import { Action, ActionConfig } from "patternfly-ng/action";
-import { RulesPath, RuleProviderEntity } from "../../generated/windup-services";
+import { RulesPath, RuleProviderEntity } from "../../../generated/windup-services";
 import { EmptyStateConfig } from "patternfly-ng/empty-state";
 import { TableConfig, NgxDataTableConfig, TableEvent, TableComponent } from "patternfly-ng/table";
 import { ToolbarConfig } from "patternfly-ng/toolbar/toolbar-config";
-import { getAvailableFilters } from "../../configuration/technology-filter";
+import { getAvailableFilters } from "../../../configuration/technology-filter";
 import { BsModalRef, BsModalService, ModalOptions } from "ngx-bootstrap/modal";
 import { Observable, forkJoin } from "rxjs";
-import { RuleService } from "../../configuration/rule.service";
-import { UploadedRulePathModalComponent } from "./uploaded-rule-path-modal.component";
+import { RuleService } from "../../../configuration/rule.service";
+import { UploadedRulePathModalComponent } from "./modal/uploaded-rule-path-modal.component";
 import { tap, reduce, map } from "rxjs/operators";
 
 @Component({

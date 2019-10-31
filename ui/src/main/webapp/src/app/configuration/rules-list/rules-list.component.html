@@ -1,4 +1,4 @@
-<div *ngIf="hasFileBasedProviders()"
+<div
      class="rulesList list-group list-view-pf list-view-pf-view"
      style="margin-top: 0px; border: none;">
     <div id="group-item-{{ruleProvider.id}}"
@@ -53,8 +53,7 @@
                     <div class="list-view-pf-additional-info">
                         <div class="list-view-pf-additional-info-item">
                             <span class="fa fa-list-ol"></span>
-                            <strong>{{ruleProvider.rules ? ruleProvider.rules.length : 0}}</strong> <span
-                                i18n="Count, e.g. 5 Rules">Rules</span>
+                            <strong>{{ruleProvider.rules ? ruleProvider.rules.length : 0}}</strong> <span i18n="Count, e.g. 5 Rules">Rules</span>
                         </div>
                     </div>
                 </div>

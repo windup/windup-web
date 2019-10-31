@@ -13,35 +13,13 @@ export class RulesListComponent {
 
     @Input() rulePath: RulesPath;
     @Input() ruleProviders: RuleProviderEntity[];
-    @Input() container: any = window;
+    @Input() container: any;
     @Input() offset: number;
 
     constructor(
         private _sortingService: SortingService<RuleProviderEntity>,
         private _element: ElementRef,
     ) { }
-
-    hasFileBasedProviders() {
-        if (!this.ruleProviders)
-            return false;
-
-        let foundRules = false;
-        this.ruleProviders.forEach((provider) => {
-            if (this.isFileBasedProvider(provider))
-                foundRules = true;
-        });
-        return foundRules;
-    }
-
-    isFileBasedProvider(provider: RuleProviderEntity) {
-        switch (provider.ruleProviderType) {
-            case "GROOVY":
-            case "XML":
-                return true;
-            default:
-                return false;
-        }
-    }
 
     getRuleProviders() {
         return this._sortingService.sort(this.ruleProviders);

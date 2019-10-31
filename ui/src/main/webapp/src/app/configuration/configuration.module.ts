@@ -8,6 +8,8 @@ import {ConfigurationOptionsService} from "./configuration-options.service";
 import {RuleService} from "./rule.service";
 import {SharedModule} from "../shared/shared.module";
 import {RouterModule} from "@angular/router";
+import {RulesComponent} from "./rules/rules.component";
+import { RulesListComponent } from "./rules-list/rules-list.component";
 
 @NgModule({
     imports: [
@@ -16,11 +18,15 @@ import {RouterModule} from "@angular/router";
     ],
     declarations: [
         ConfigurationComponent,
-        RulesModalComponent
+        RulesModalComponent,
+        RulesComponent,
+        RulesListComponent
     ],
     exports: [
         ConfigurationComponent,
-        RulesModalComponent
+        RulesModalComponent,
+        RulesComponent,
+        RulesListComponent
     ],
     providers: [
         ConfigurationResolve,

@@ -13,10 +13,10 @@ export class RulesComponent implements AfterViewInit {
     ruleProvider: RuleProviderEntity;
 
     @Input()
-    container: any = window;
+    container: any;
 
     @Input()
-    offset: number = 60;
+    offset: number;
 
     constructor(private _element: ElementRef) { }
 
@@ -32,7 +32,7 @@ export class RulesComponent implements AfterViewInit {
         this.scrollToElement(this._element.nativeElement.querySelector(`h4[id="${id}"]`));
     }
 
-    scrollToRuleSetHeader(id: number) {
+    scrollToRuleSetHeader(id: number) {        
         $(this._element.nativeElement).find("#select-" + id).val('');
 
         let element = this._element.nativeElement.querySelector(`div[id="group-item-${id}"]`);
@@ -52,10 +52,13 @@ export class RulesComponent implements AfterViewInit {
              * 60 is the height in px of the top nav bar "header-logo-wrapper"
              * */
 
-            // let offset = element.getBoundingClientRect().top + this.container.scrollY - 60;
-            let offset = element.getBoundingClientRect().top + (this.container.scrollY || this.container.scrollTop) - this.offset;
+            const containerElement = this.container ? this.container : window;
+            const defaultOffset = this.offset ? this.offset : 60;
 
-            this.container.scrollTo(0, offset);
+            const scroll = containerElement.scrollY !== undefined ? containerElement.scrollY : containerElement.scrollTop;
+            let offset = element.getBoundingClientRect().top + scroll - defaultOffset;
+
+            containerElement.scrollTo(0, offset);
         }
     }
 
