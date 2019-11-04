@@ -130,7 +130,7 @@ public class RuleEndpointImpl implements RuleEndpoint
 
         // Remove rulePath from all AnalysisContexts
         @SuppressWarnings("unchecked")
-        List<AnalysisContext> analysisContexts = entityManager.createNamedQuery(AnalysisContext.FIND_BY_RULE_PATH_ID)
+        List<AnalysisContext> analysisContexts = entityManager.createNamedQuery(AnalysisContext.FIND_BY_RULE_PATH_ID_AND_EXECUTION_IS_NULL)
                 .setParameter("rulePathId", rulesPath.getId())
                 .getResultList();
         analysisContexts.forEach(analysisContext -> {
@@ -138,11 +138,12 @@ public class RuleEndpointImpl implements RuleEndpoint
             this.entityManager.merge(analysisContext);
         });
 
-        this.entityManager.createNamedQuery(RuleProviderEntity.DELETE_BY_RULES_PATH)
-                .setParameter(RuleProviderEntity.RULES_PATH_PARAM, rulesPath)
-                .executeUpdate();
-
-        this.entityManager.remove(rulesPath);
+        // TODO don't delete these entities since WindupExecution saves a reference of them
+//        this.entityManager.createNamedQuery(RuleProviderEntity.DELETE_BY_RULES_PATH)
+//                .setParameter(RuleProviderEntity.RULES_PATH_PARAM, rulesPath)
+//                .executeUpdate();
+//
+//        this.entityManager.remove(rulesPath);
     }
 
     @Override
