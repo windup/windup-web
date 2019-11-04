@@ -3,7 +3,7 @@ import {ProjectListComponent} from "./project/project-list.component";
 import {RegisterApplicationFormComponent} from "./registered-application/register-application-form.component";
 import {MigrationProjectFormComponent} from "./project/migration-project-form.component";
 import {AnalysisContextFormComponent} from "./analysis-context/analysis-context-form.component";
-import {ConfigurationRules} from "./configuration/configuration-rules/configuration-rules.component";
+import {ConfigurationRulesComponent} from "./configuration/configuration-rules/configuration-rules.component";
 import {EditApplicationFormComponent} from "./registered-application/edit-application-form.component";
 import {ConfirmDeactivateGuard} from "./shared/confirm-deactivate.guard";
 import {LoggedInGuard} from "./core/authentication/logged-in.guard";
@@ -40,7 +40,7 @@ export const appRoutes: Routes = [
                     {path: 'about', component: AboutPageComponent},
                     {
                         path: "configuration",
-                        component: ConfigurationRules,
+                        component: ConfigurationRulesComponent,
                         resolve: { configuration: ConfigurationResolve },
                         data: { displayName: "Global Configuration" }
                     },

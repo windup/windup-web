@@ -1,5 +1,5 @@
 import {NgModule} from "@angular/core";
-import {ConfigurationRules} from "./configuration-rules/configuration-rules.component";
+import {ConfigurationRulesComponent} from "./configuration-rules/configuration-rules.component";
 import {RulesModalComponent} from "./rules-modal.component";
 import {ConfigurationResolve} from "./configuration.resolve";
 import {ProjectConfigurationResolve} from "./project-configuration.resolve";
@@ -17,13 +17,13 @@ import { RulesListComponent } from "./configuration-rules/rules-list/rules-list.
         RouterModule.forChild([])
     ],
     declarations: [
-        ConfigurationRules,
+        ConfigurationRulesComponent,
         RulesModalComponent,
         RuleContentComponent,
         RulesListComponent
     ],
     exports: [
-        ConfigurationRules,
+        ConfigurationRulesComponent,
         RulesModalComponent,
         RuleContentComponent,
         RulesListComponent
