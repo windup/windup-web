@@ -16,6 +16,8 @@ export class RulesListComponent {
     @Input() container: any;
     @Input() offset: number;
 
+    collapseMap: Map<RuleProviderEntity, boolean> = new Map;
+
     constructor(
         private _sortingService: SortingService<RuleProviderEntity>,
         private _element: ElementRef,
@@ -27,11 +29,15 @@ export class RulesListComponent {
 
     clickHeader(event: Event, provider: RuleProviderEntity) {
         if (!$(event.target).is("button, a, input, .fa-ellipsis-v")) {
+            if (!this.collapseMap.has(provider)) {
+                this.collapseMap.set(provider, false);
+            }
+            this.collapseMap.set(provider, !this.collapseMap.get(provider));
+
             $(this._element.nativeElement).find("#span-" + provider.id).toggleClass("fa-angle-down")
                 .end().parent().toggleClass("list-view-pf-expand-active")
                 .find("#container-" + provider.id).toggleClass("hidden").end().parent()
                 .find("#group-item-" + provider.id).toggleClass("selectedRuleHeader");
-            prettyPrint();
         }
     }
 
