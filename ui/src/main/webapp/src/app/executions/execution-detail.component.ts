@@ -1,7 +1,7 @@
 import {Component, NgZone, OnDestroy, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {WindupService} from "../services/windup.service";
-import {WindupExecution, RegisteredApplication} from "../generated/windup-services";
+import {WindupExecution, RegisteredApplication, RulesPath} from "../generated/windup-services";
 import {WINDUP_WEB} from "../app.module";
 
 import {WindupExecutionService} from "../services/windup-execution.service";
@@ -50,11 +50,13 @@ export class ExecutionDetailComponent extends RoutedComponent implements OnInit,
                     filter((event: ExecutionEvent) => event.execution.id === executionId)
                 )                
                 .subscribe((event: ExecutionEvent) => {
+                    event.execution.analysisContext.rulesPaths = this.getSortedRulesPaths(event.execution.analysisContext.rulesPaths);
                     this.execution = event.execution;
                     this.loadLogData();
                 });
 
             this._windupService.getExecution(executionId).subscribe(execution => {
+                execution.analysisContext.rulesPaths = this.getSortedRulesPaths(execution.analysisContext.rulesPaths);
                 this.execution = execution;
                 this.loadLogData();
                 this._ruleProviderExecutionsService.getPhases(executionId)
@@ -125,5 +127,24 @@ export class ExecutionDetailComponent extends RoutedComponent implements OnInit,
             }
         }
         return false;
+    }
+
+    getSortedRulesPaths(rulesPath: RulesPath[]): RulesPath[] {
+        return rulesPath.sort((a: RulesPath, b: RulesPath) => {
+            const aPathType = a.rulesPathType == 'SYSTEM_PROVIDED' ? 20 : 0;
+            const aScopeType = a.scopeType == 'GLOBAL' ? 10 : 0;
+            const aRegistrationType = a.registrationType == 'PATH' ? 5 : 0;
+
+            const bPathType = b.rulesPathType == 'SYSTEM_PROVIDED' ? 20 : 0;
+            const bScopeType = b.scopeType == 'GLOBAL' ? 10 : 0;
+            const bRegistrationType = b.registrationType == 'PATH' ? 5 : 0;
+
+            const result = (aPathType + aScopeType + aRegistrationType) - (bPathType + bScopeType + bRegistrationType);
+            if (result == 0) {
+                return a.path.localeCompare(b.path);
+            }
+
+            return result;
+        });
     }
 }
