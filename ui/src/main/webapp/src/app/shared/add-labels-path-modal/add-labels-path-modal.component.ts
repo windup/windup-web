@@ -187,6 +187,7 @@ export class AddLabelsPathModalComponent extends FormComponent implements OnInit
             let newPath = <LabelsPath>{};
             newPath.path = this.getInputPathControl().value;
             newPath.labelsPathType = "USER_PROVIDED";
+            newPath.registrationType = "PATH";
             newPath.scopeType = configuration.global ? "GLOBAL" : "PROJECT";
             newPath.scanRecursively = this.getScanRecursivelyControl().value;
 

@@ -8,7 +8,6 @@ import {NotificationService} from "../../core/notification/notification.service"
 import {utils} from "../../shared/utils";
 import {ConfirmationModalComponent} from "../../shared/dialog/confirmation-modal.component";
 import {OrderDirection, SortingService} from "../../shared/sort/sorting.service";
-import Arrays = utils.Arrays;
 import {FilterConfiguration} from "../../shared/toolbar/toolbar.component";
 import {DomSanitizer} from '@angular/platform-browser';
 import { FilterOption } from "../../shared/filter/text-filter.component";

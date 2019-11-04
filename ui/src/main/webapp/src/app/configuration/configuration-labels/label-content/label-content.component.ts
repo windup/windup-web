@@ -1,5 +1,5 @@
 import { Component, Input, ElementRef, AfterViewInit } from "@angular/core";
-import { LabelProviderEntity } from "../../../generated/windup-services";
+import { LabelProviderEntity, LabelEntity } from "../../../generated/windup-services";
 
 declare function prettyPrint();
 
@@ -16,7 +16,7 @@ export class LabelContentComponent implements AfterViewInit {
     container: any = window;
 
     @Input()
-    offset: number = 60;
+    offset: number;
 
     constructor(private _element: ElementRef) { }
 
@@ -52,13 +52,19 @@ export class LabelContentComponent implements AfterViewInit {
              * 60 is the height in px of the top nav bar "header-logo-wrapper"
              * */
 
-            // let offset = element.getBoundingClientRect().top + this.container.scrollY - 60;
-            let offset = element.getBoundingClientRect().top + (this.container.scrollY || this.container.scrollTop) - this.offset;
+            const containerElement = this.container ? this.container : window;
+            const defaultOffset = this.offset ? this.offset : 60;
 
-            this.container.scrollTo(0, offset);
+            const scroll = containerElement.scrollY !== undefined ? containerElement.scrollY : containerElement.scrollTop;
+            let offset = element.getBoundingClientRect().top + scroll - defaultOffset;
+
+            containerElement.scrollTo(0, offset);
         }
     }
 
+    trackByLabelEntityFn(index: number, labelEntity: LabelEntity) {
+        return labelEntity.id;
+    }
 }
 
 

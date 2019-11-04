@@ -9,7 +9,7 @@
                 id="select-{{labelProvider.id}}">
             <option value="" disabled selected hidden>Select a label</option>
             <option 
-                *ngFor="let labelEntity of labelProvider.labels; let i = index"
+                *ngFor="let labelEntity of labelProvider.labels; let i = index; trackby: trackByLabelEntityFn"
                 [value]="labelEntity.id">{{getLabelForLabelID(labelEntity.labelID, labelProvider.providerID, i)}}</option>
         </select>
     </ng-container>

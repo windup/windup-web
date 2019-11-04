@@ -16,32 +16,12 @@ export class LabelsListComponent {
     @Input() container: any = window;
     @Input() offset: number;
 
+    collapseMap: Map<LabelProviderEntity, boolean> = new Map;
+
     constructor(
         private _sortingService: SortingService<LabelProviderEntity>,
         private _element: ElementRef,
     ) { }
-
-    hasFileBasedProviders() {
-        if (!this.labelProviders)
-            return false;
-
-        let foundLabels = false;
-        this.labelProviders.forEach((provider) => {
-            if (this.isFileBasedProvider(provider))
-                foundLabels = true;
-        });
-        return foundLabels;
-    }
-
-    isFileBasedProvider(provider: LabelProviderEntity) {
-        switch (provider.labelProviderType) {
-            // case "GROOVY":
-            case "XML":
-                return true;
-            default:
-                return false;
-        }
-    }
 
     getLabelProviders() {
         return this._sortingService.sort(this.labelProviders);
@@ -49,11 +29,15 @@ export class LabelsListComponent {
 
     clickHeader(event: Event, provider: LabelProviderEntity) {
         if (!$(event.target).is("button, a, input, .fa-ellipsis-v")) {
+            if (!this.collapseMap.has(provider)) {
+                this.collapseMap.set(provider, false);
+            }
+            this.collapseMap.set(provider, !this.collapseMap.get(provider));
+
             $(this._element.nativeElement).find("#span-" + provider.id).toggleClass("fa-angle-down")
                 .end().parent().toggleClass("list-view-pf-expand-active")
                 .find("#container-" + provider.id).toggleClass("hidden").end().parent()
                 .find("#group-item-" + provider.id).toggleClass("selectedLabelHeader");
-            prettyPrint();
         }
     }
 
@@ -63,6 +47,10 @@ export class LabelsListComponent {
             margin = 7;
         }
         return margin;
+    }
+
+    trackByLabelProviderEntityFn(index: number, item: LabelProviderEntity) {
+        return item.id;
     }
 
 }

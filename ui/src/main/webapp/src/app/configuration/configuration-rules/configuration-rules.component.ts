@@ -14,8 +14,6 @@ import {FilterConfiguration} from "../../shared/toolbar/toolbar.component";
 import {getAvailableFilters} from "../technology-filter";
 import {DomSanitizer} from '@angular/platform-browser';
 
-declare function prettyPrint();
-
 @Component({
     templateUrl: './configuration-rules.component.html',
     styleUrls: ['./configuration-rules.component.scss']

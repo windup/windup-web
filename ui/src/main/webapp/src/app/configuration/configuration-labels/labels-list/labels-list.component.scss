@@ -1,4 +1,4 @@
-.rulesList .techLabel {
+.labelsList .techLabel {
   display: inline-block;
   border: 2px ridge white /*1px solid #9ed0f1*/
 ;
@@ -7,7 +7,7 @@
   margin: 0.1ex 0.4ex 0;
 }
 
-.rulesList .list-view-pf-body {
+.labelsList .list-view-pf-body {
   flex-basis: 89%;
 }
 
@@ -27,17 +27,17 @@
 }
 
 @media (min-width: 992px) {
-  .rulesList .list-view-pf .list-group-item-heading {
+  .labelsList .list-view-pf .list-group-item-heading {
     font-size: initial;
   }
 }
 
 /* Disable this weird rule from PF. */
 @media (min-width: 992px) {
-  .rulesList .list-view-pf-additional-info {
+  .labelsList .list-view-pf-additional-info {
     width: 12%;
   }
-  .rulesList .list-view-pf-description {
+  .labelsList .list-view-pf-description {
     width: 88%;
   }
 }
