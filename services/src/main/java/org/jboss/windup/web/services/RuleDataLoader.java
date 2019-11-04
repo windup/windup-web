@@ -259,7 +259,7 @@ public class RuleDataLoader
         /*
          * Do not reload system rules if we have already loaded them
          */
-        if (labelsPath.getLabelsPathType() == LabelsPath.LabelsPathType.SYSTEM_PROVIDED)
+        if (labelsPath.getLabelsPathType() == PathType.SYSTEM_PROVIDED)
         {
             Long count = entityManager
                     .createQuery("select count(lpe) from LabelProviderEntity lpe where lpe.labelsPath = :labelsPath", Long.class)
@@ -279,7 +279,7 @@ public class RuleDataLoader
         try
         {
             Path initialPath = Paths.get(labelsPath.getPath());
-            boolean isSystemProvided = labelsPath.getLabelsPathType() == LabelsPath.LabelsPathType.SYSTEM_PROVIDED;
+            boolean isSystemProvided = labelsPath.getLabelsPathType() == PathType.SYSTEM_PROVIDED;
             boolean scanRecursively = isSystemProvided || labelsPath.isScanRecursively();
 
             /*
@@ -392,7 +392,7 @@ public class RuleDataLoader
 
     private void loadLabels(LabelsPath labelsPath, Path path)
     {
-        boolean fileRulesOnly = labelsPath.getLabelsPathType() == LabelsPath.LabelsPathType.USER_PROVIDED;
+        boolean fileRulesOnly = labelsPath.getLabelsPathType() == PathType.USER_PROVIDED;
 
         RuleLoaderContext ruleLoaderContext = new RuleLoaderContext(Collections.singleton(path), null);
 

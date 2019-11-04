@@ -101,12 +101,23 @@
 
             <wu-expand-collapse [tabTitle]="'Custom Rules'" *ngIf="execution.analysisContext.rulesPaths.length > 0">
                 <ul>
-                    <li *ngFor="let rulesPath of execution.analysisContext.rulesPaths">
+                    <li *ngFor="let rulesPath of getSortedRulesPaths(execution.analysisContext.rulesPaths); trackBy: idTrackFn">
                         <span *ngIf="rulesPath.registrationType == 'UPLOADED'"><i class="fa fa-file-code-o"></i></span>
                         <span *ngIf="rulesPath.registrationType != 'UPLOADED'"><i class="fa fa-folder"></i></span>
                         
                         <span *ngIf="rulesPath.scopeType != 'GLOBAL'">{{rulesPath.path}}</span>
                         <span *ngIf="rulesPath.scopeType == 'GLOBAL'">(Global) {{rulesPath.path}}</span>
+                    </li>
+                </ul>
+            </wu-expand-collapse>
+            <wu-expand-collapse [tabTitle]="'Custom Labels'" *ngIf="execution.analysisContext.labelsPaths.length > 0">
+                <ul>
+                    <li *ngFor="let labelsPath of getSortedLabelsPaths(execution.analysisContext.labelsPaths); trackBy: idTrackFn">
+                        <span *ngIf="labelsPath.registrationType == 'UPLOADED'"><i class="fa fa-file-code-o"></i></span>
+                        <span *ngIf="labelsPath.registrationType != 'UPLOADED'"><i class="fa fa-folder"></i></span>
+                        
+                        <span *ngIf="labelsPath.scopeType != 'GLOBAL'">{{labelsPath.path}}</span>
+                        <span *ngIf="labelsPath.scopeType == 'GLOBAL'">(Global) {{labelsPath.path}}</span>
                     </li>
                 </ul>
             </wu-expand-collapse>

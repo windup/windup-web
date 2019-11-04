@@ -46,26 +46,26 @@ public class LabelsPath implements Serializable
     private String loadError;
 
     @Column
-    private LabelsPathType labelsPathType;
+    private PathType labelsPathType;
 
     @Column
     private RegistrationType registrationType;
 
     @Column
-    private LabelsScopeType scopeType;
+    private ScopeType scopeType;
 
     public LabelsPath()
     {
     }
 
-    public LabelsPath(String path, LabelsPathType labelsPathType, LabelsScopeType scopeType)
+    public LabelsPath(String path, PathType labelsPathType, ScopeType scopeType)
     {
         this.path = path;
         this.labelsPathType = labelsPathType;
         this.scopeType = scopeType;
     }
 
-    public LabelsPath(String path, LabelsPathType labelsPathType, LabelsScopeType scopeType, RegistrationType registrationType)
+    public LabelsPath(String path, PathType labelsPathType, ScopeType scopeType, RegistrationType registrationType)
     {
         this(path, labelsPathType, scopeType);
         this.registrationType = registrationType;
@@ -142,7 +142,7 @@ public class LabelsPath implements Serializable
     /**
      * Contains the type of rules path (for example, system provided vs user provided).
      */
-    public LabelsPathType getLabelsPathType()
+    public PathType getLabelsPathType()
     {
         return labelsPathType;
     }
@@ -150,7 +150,7 @@ public class LabelsPath implements Serializable
     /**
      * Contains the type of rules path (for example, system provided vs user provided).
      */
-    public void setLabelsPathType(LabelsPathType labelsPathType)
+    public void setLabelsPathType(PathType labelsPathType)
     {
         this.labelsPathType = labelsPathType;
     }
@@ -181,11 +181,11 @@ public class LabelsPath implements Serializable
         this.registrationType = registrationType;
     }
 
-    public LabelsScopeType getScopeType() {
+    public ScopeType getScopeType() {
         return scopeType;
     }
 
-    public void setScopeType(LabelsScopeType scopeType) {
+    public void setScopeType(ScopeType scopeType) {
         this.scopeType = scopeType;
     }
 
@@ -227,14 +227,4 @@ public class LabelsPath implements Serializable
                     '}';
     }
 
-    public enum LabelsPathType
-    {
-        SYSTEM_PROVIDED, USER_PROVIDED
-    }
-
-    public enum LabelsScopeType
-    {
-        GLOBAL,
-        PROJECT
-    }
 }

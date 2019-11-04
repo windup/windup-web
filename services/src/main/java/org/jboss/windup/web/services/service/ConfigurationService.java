@@ -13,7 +13,6 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
 import org.jboss.windup.web.services.model.LabelsPath;
-import org.jboss.windup.web.services.model.LabelsPath.LabelsPathType;
 
 import java.nio.file.Path;
 import java.util.*;
@@ -178,7 +177,7 @@ public class ConfigurationService
         for (Iterator<LabelsPath> iterator = labelsets.iterator(); iterator.hasNext();)
         {
             LabelsPath labelsPath = (LabelsPath) iterator.next();
-            if (labelsPath.getLabelsPathType() == LabelsPathType.USER_PROVIDED && labelsPath.getLoadError() == null)
+            if (labelsPath.getLabelsPathType() == PathType.USER_PROVIDED && labelsPath.getLoadError() == null)
             {
                 customLabelsPaths.add(labelsPath);
             }
@@ -232,7 +231,7 @@ public class ConfigurationService
 
         // Find the existing system labels path
         Optional<LabelsPath> existingSystemLabelsPath = dbPaths.stream()
-                .filter((labelsPath) -> labelsPath.getLabelsPathType() == LabelsPath.LabelsPathType.SYSTEM_PROVIDED)
+                .filter((labelsPath) -> labelsPath.getLabelsPathType() == PathType.SYSTEM_PROVIDED)
                 .findFirst();
 
         // Update it if present
@@ -242,10 +241,10 @@ public class ConfigurationService
         }
         else
         {
-            LabelsPath.LabelsScopeType scopeType = configuration.isGlobal() ? LabelsPath.LabelsScopeType.GLOBAL : LabelsPath.LabelsScopeType.PROJECT;
+            ScopeType scopeType = configuration.isGlobal() ? ScopeType.GLOBAL : ScopeType.PROJECT;
 
             // Otherwise, create a new one
-            LabelsPath newLabelsPath = new LabelsPath(newSystemLabelsPath.toString(), LabelsPath.LabelsPathType.SYSTEM_PROVIDED, scopeType);
+            LabelsPath newLabelsPath = new LabelsPath(newSystemLabelsPath.toString(), PathType.SYSTEM_PROVIDED, scopeType);
             if (newLabelsPath.getLoadError() == null)
                 dbPaths.add(newLabelsPath);
         }

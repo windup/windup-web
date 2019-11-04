@@ -4,7 +4,6 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.model.*;
-import org.jboss.windup.web.services.model.LabelsPath.LabelsPathType;
 import org.jboss.windup.web.services.service.ConfigurationService;
 import org.jboss.windup.web.services.service.FileUploadService;
 
@@ -95,8 +94,8 @@ public class LabelEndpointImpl implements LabelEndpoint
 
         File file = this.fileUploadService.uploadFile(data, customLabelsPath, fileName, true);
 
-        LabelsPath.LabelsScopeType scopeType = configuration.isGlobal() ? LabelsPath.LabelsScopeType.GLOBAL : LabelsPath.LabelsScopeType.PROJECT;
-        LabelsPath labelsPathEntity = new LabelsPath(file.getPath(), LabelsPathType.USER_PROVIDED, scopeType, RegistrationType.UPLOADED);
+        ScopeType scopeType = configuration.isGlobal() ? ScopeType.GLOBAL : ScopeType.PROJECT;
+        LabelsPath labelsPathEntity = new LabelsPath(file.getPath(), PathType.USER_PROVIDED, scopeType, RegistrationType.UPLOADED);
         String relativePath = customLabelsPath.relativize(file.toPath()).toString();
         labelsPathEntity.setShortPath(relativePath);
 
@@ -127,7 +126,7 @@ public class LabelEndpointImpl implements LabelEndpoint
         configuration.getLabelsPaths().remove(labelsPath);
         this.entityManager.merge(configuration);
 
-        // Remove rulePath from all AnalysisContexts
+        // Remove labelPath from all AnalysisContexts
         @SuppressWarnings("unchecked")
         List<AnalysisContext> analysisContexts = entityManager.createNamedQuery(AnalysisContext.FIND_BY_LABEL_PATH_ID_AND_EXECUTION_IS_NULL)
                 .setParameter("labelPathId", labelsPath.getId())
@@ -137,18 +136,19 @@ public class LabelEndpointImpl implements LabelEndpoint
             this.entityManager.merge(analysisContext);
         });
 
-        this.entityManager.createNamedQuery(LabelProviderEntity.DELETE_BY_LABELS_PATH)
-                .setParameter(LabelProviderEntity.LABELS_PATH_PARAM, labelsPath)
-                .executeUpdate();
-
-        this.entityManager.remove(labelsPath);
+        // TODO don't delete these entities since WindupExecution saves a reference of them
+//        this.entityManager.createNamedQuery(LabelProviderEntity.DELETE_BY_LABELS_PATH)
+//                .setParameter(LabelProviderEntity.LABELS_PATH_PARAM, labelsPath)
+//                .executeUpdate();
+//
+//        this.entityManager.remove(labelsPath);
     }
 
     @Override
     public Boolean isLabelsPathUsed(Long labelsPathID)
     {
         LabelsPath labelsPath = this.getLabelsPath(labelsPathID);
-        if (labelsPath.getLabelsPathType() == LabelsPathType.SYSTEM_PROVIDED)
+        if (labelsPath.getLabelsPathType() == PathType.SYSTEM_PROVIDED)
             return false;
 
         // Using ordinal() instead of toString() because WindupExecution.status is using ordinal value

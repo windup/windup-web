@@ -474,7 +474,7 @@ export class AnalysisContextFormComponent extends FormComponent
     }
 
     isActiveLabelsPaths():boolean {
-        return this.analysisContext.labelsPaths.filter(labelsPath => labelsPath.labelsPathType == 'USER_PROVIDED').length > 0;
+        return this.analysisContext.labelsPaths.filter(labelsPath => labelsPath.labelsPathType == 'USER_PROVIDED' && labelsPath.scopeType == 'PROJECT').length > 0;
     }
 
     onMigrationPathChange() {
