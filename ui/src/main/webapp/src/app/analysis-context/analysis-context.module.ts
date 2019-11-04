@@ -26,12 +26,10 @@ import {ServerPathRulesModalComponent} from "./custom-rules/server-path/modal/se
 import {ConfigurationModule} from "../configuration/configuration.module";
 
 import { CustomLabelsComponent } from "./custom-labels/custom-labels.component";
-import { UploadedLabelsPathComponent } from "./custom-labels/uploaded-labels-path.component";
-import { ServerPathLabelsComponent } from "./custom-labels/server-path-labels.component";
-import { UploadedLabelPathModalComponent } from "./custom-labels/uploaded-label-path-modal.component";
-import { ServerPathLabelsModalComponent } from "./custom-labels/server-path-labels-modal.component";
-import { LabelsListComponent } from "./custom-labels/labels-list.component";
-import { LabelsComponent } from "./custom-labels/labels.component";
+import { UploadedLabelsPathComponent } from "./custom-labels/upload/uploaded-labels-path.component";
+import { ServerPathLabelsComponent } from "./custom-labels/server-path/server-path-labels.component";
+import { UploadedLabelPathModalComponent } from "./custom-labels/upload/modal/uploaded-label-path-modal.component";
+import { ServerPathLabelsModalComponent } from "./custom-labels/server-path/modal/server-path-labels-modal.component";
 
 @NgModule({
     imports: [
@@ -65,9 +63,7 @@ import { LabelsComponent } from "./custom-labels/labels.component";
         UploadedLabelsPathComponent,
         ServerPathLabelsComponent,
         UploadedLabelPathModalComponent,
-        ServerPathLabelsModalComponent,
-        LabelsListComponent,
-        LabelsComponent
+        ServerPathLabelsModalComponent
     ],
     exports: [
         AnalysisContextFormComponent,
@@ -78,9 +74,6 @@ import { LabelsComponent } from "./custom-labels/labels.component";
         SelectPackagesComponent,
         SelectPackagesWrapperComponent,
         SelectPackagesSummaryComponent,
-
-        LabelsListComponent,
-        LabelsComponent
     ],
     providers: [
         AnalysisContextService,

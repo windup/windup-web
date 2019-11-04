@@ -129,7 +129,7 @@ public class LabelEndpointImpl implements LabelEndpoint
 
         // Remove rulePath from all AnalysisContexts
         @SuppressWarnings("unchecked")
-        List<AnalysisContext> analysisContexts = entityManager.createNamedQuery(AnalysisContext.FIND_BY_LABEL_PATH_ID)
+        List<AnalysisContext> analysisContexts = entityManager.createNamedQuery(AnalysisContext.FIND_BY_LABEL_PATH_ID_AND_EXECUTION_IS_NULL)
                 .setParameter("labelPathId", labelsPath.getId())
                 .getResultList();
         analysisContexts.forEach(analysisContext -> {

@@ -11,7 +11,9 @@ import {LabelService} from "./label.service";
 import {SharedModule} from "../shared/shared.module";
 import {RouterModule} from "@angular/router";
 import {RulesComponent} from "./rules/rules.component";
-import { RulesListComponent } from "./rules-list/rules-list.component";
+import {RulesListComponent } from "./rules-list/rules-list.component";
+import {LabelsComponent} from "./global-labels/labels/labels.component";
+import {LabelsListComponent} from "./global-labels/labels-list/labels-list.component";
 
 @NgModule({
     imports: [
@@ -23,14 +25,18 @@ import { RulesListComponent } from "./rules-list/rules-list.component";
         GlobalLabelsComponent,
         RulesModalComponent,
         RulesComponent,
-        RulesListComponent
+        RulesListComponent,
+        LabelsComponent,
+        LabelsListComponent
     ],
     exports: [
         ConfigurationComponent,
         GlobalLabelsComponent,
         RulesModalComponent,
         RulesComponent,
-        RulesListComponent
+        RulesListComponent,
+        LabelsComponent,
+        LabelsListComponent
     ],
     providers: [
         ConfigurationResolve,

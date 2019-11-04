@@ -28,7 +28,7 @@ import org.hibernate.annotations.FetchMode;
 @NamedQueries({
         @NamedQuery(name = AnalysisContext.FIND_ALL, query = "select ac from AnalysisContext ac"),
         @NamedQuery(name = AnalysisContext.FIND_ALL_WHERE_EXECUTION_IS_NULL, query = "select a from AnalysisContext a left join a.windupExecution e where e is null"),
-        @NamedQuery(name = AnalysisContext.FIND_BY_RULE_PATH_ID_AND_EXECUTION_IS_NULL, query = "select a from AnalysisContext a inner join a.rulesPaths r left join a.windupExecution e where r.id = :rulePathId and e is null")
+        @NamedQuery(name = AnalysisContext.FIND_BY_RULE_PATH_ID_AND_EXECUTION_IS_NULL, query = "select a from AnalysisContext a inner join a.rulesPaths r left join a.windupExecution e where r.id = :rulePathId and e is null"),
         @NamedQuery(name = AnalysisContext.FIND_BY_LABEL_PATH_ID_AND_EXECUTION_IS_NULL, query = "select a from AnalysisContext a inner join a.labelsPaths r left join a.windupExecution e where r.id = :labelPathId and e is null")
 })
 public class AnalysisContext implements Serializable

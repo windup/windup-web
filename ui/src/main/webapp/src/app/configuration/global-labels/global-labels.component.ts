@@ -29,9 +29,6 @@ export class GlobalLabelsComponent implements OnInit, AfterViewInit {
 
     labelProvidersByPath: Map<LabelsPath, LabelProviderEntity[]> = new Map<LabelsPath, LabelProviderEntity[]>();
 
-    // @ViewChild(RulesModalComponent)
-    // rulesModalComponent: RulesModalComponent;
-
     @ViewChild(AddLabelsPathModalComponent)
     addLabelsModalComponent: AddLabelsPathModalComponent;
 
@@ -242,50 +239,6 @@ export class GlobalLabelsComponent implements OnInit, AfterViewInit {
 
     isFilterActive() {
         return this.filter.selectedFilters.length > 0;
-    }
-
-    clickHeader(event:Event, provider: LabelProviderEntity) {
-        if(!$(event.target).is("button, a, input, .fa-ellipsis-v")){
-            $(this._element.nativeElement).find("#span-" + provider.id).toggleClass("fa-angle-down")
-                .end().parent().toggleClass("list-view-pf-expand-active")
-                .find("#container-" + provider.id).toggleClass("hidden").end().parent()
-                .find("#group-item-" + provider.id).toggleClass("selectedLabelHeader");
-            prettyPrint();
-        }
-    }
-
-    scrollToLabel(id:number) {
-        this.scrollToElement(this._element.nativeElement.querySelector(`h4[id="${id}"]`));
-    }
-
-    scrollToLabelSetHeader(id:number) {
-        $(this._element.nativeElement).find("#select-" + id).val('');
-        this.scrollToElement(this._element.nativeElement.querySelector(`div[id="group-item-${id}"]`));
-    }
-
-    private scrollToElement(element:Element) {
-        if (element) {
-            /*
-             * For reference on how the offset is computed:
-             * https://developer.mozilla.org/en/docs/Web/API/Element/getBoundingClientRect
-             *
-             * 60 is the height in px of the top nav bar "header-logo-wrapper"
-             * */
-            let offset = element.getBoundingClientRect().top + window.scrollY - 60;
-            window.scrollTo(0, offset);
-        }
-    }
-
-    getLabelProviderMarginTop(labelProvider: LabelProviderEntity) {
-        let margin = 0;
-        if (labelProvider.origin) {
-            margin = 7;
-        }
-        return margin;
-    }
-
-    getLabelForLabelID(labelID: string, providerID: string, i:number) {
-        return (labelID.length > 0 ? labelID : providerID + "_" + (i + 1));
     }
 
 }
