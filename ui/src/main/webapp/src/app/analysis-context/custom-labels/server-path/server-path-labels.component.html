@@ -1,0 +1,50 @@
+<pfng-toolbar 
+        [config]="toolbarConfig"
+        (onActionSelect)="handleToolbarAction($event)"
+        (onFilterChange)="filterChanged($event)"
+        (onFilterFieldSelect)="filterFieldSelected($event)">
+</pfng-toolbar>
+<div style="margin-top: 3px; height: 279px; overflow-y: auto;">
+    <pfng-list id="serverPathLabelsList"
+        [actionTemplate]="listActionTemplate"
+        [config]="listConfig"
+        [expandTemplate]="expandTemplate"
+        [items]="items"
+        [itemTemplate]="itemTemplate"
+        [trackBy]="trackByIndex"
+        (onActionSelect)="handleListAction($event, null)"
+        (onSelectionChange)="handleListSelectionChange($event)">
+        <ng-template #itemTemplate let-item="item" let-index="index">
+            <div class="list-pf-content-wrapper">
+                <div class="list-pf-main-content">
+                    <!-- <div class="list-pf-title">{{item.path}}</div> -->
+                    <div class="list-pf-description text-overflow-pf">{{item.path}}</div>
+                </div>
+                <div class="list-pf-additional-content">
+                    <div>
+                        <!-- <span class="fa fa fa-file-code-o"></span> -->
+                        <!-- <strong>{{getLabelsProvider(item)?.length}}</strong> Files -->
+                        <span>{{getLabelsProvider(item)?.length}}</span> Files
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+        <ng-template #listActionTemplate let-item="item" let-index="index">
+            <pfng-action class="list-pf-actions"
+                [config]="listActionConfig"
+                (onActionSelect)="handleListAction($event, item)">
+                <ng-template #deleteButtonTemplate let-action="action">
+                    Delete
+                </ng-template>
+            </pfng-action>
+        </ng-template>
+        <ng-template #expandTemplate let-item="item" let-index="index">
+            <ul style="max-height: 130px; overflow-y: auto;">
+                <li *ngFor="let labelsProvider of getLabelsProvider(item)">
+                    <span *ngIf="!labelsProvider.loadError">{{labelsProvider.origin}}</span>
+                    <span *ngIf="labelsProvider.loadError" style="color: #cc0000">{{labelsProvider.origin}} - {{labelsProvider.loadError}}</span>
+                </li>                
+            </ul>
+        </ng-template>
+    </pfng-list>
+</div>

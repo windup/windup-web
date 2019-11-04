@@ -1,0 +1,33 @@
+<pfng-table
+        [dataTableConfig]="dataTableConfig"
+        [actionTemplate]="actionTemplate"
+        [config]="tableConfig"
+        [columns]="columns"
+        [rows]="rows"
+        (onActionSelect)="handleAction($event)"
+        (onFilterChange)="filterChanged($event)"
+        (onFilterFieldSelect)="filterFieldSelected($event)"
+        (onFilterTypeAhead)="filterQueries($event)"
+        (onPageNumberChange)="handlePageNumber($event)"
+        (onPageSizeChange)="handlePageSize($event)"
+        (onSelectionChange)="handleSelectionChange($event)"
+>
+</pfng-table>
+
+<!-- Column templates -->
+<ng-template #shortPathTemplate let-row="row">
+    <span>{{row?.labelsPath?.shortPath}}</span>
+</ng-template>
+<ng-template #labelsTemplate let-row="row">
+    <span>{{row.labels.length}} Labels</span>
+</ng-template>
+<ng-template #actionsTemplate let-row="row">
+    <button (click)="openLabelProviderModal(row)" type="button" class="btn btn-default">View</button>
+    <button (click)="requestDisplayDeleteLabelsPathConfirmationModal(row)" type="button" class="btn btn-danger">Delete</button>
+</ng-template>
+
+<!-- Toolbar action template -->
+<ng-template #actionTemplate>
+    <!-- <button (click)="selectAction()" class="btn btn-default primary-action" type="button">Select&nbsp;<span class="fa fa-angle-double-right"></span></button> -->
+    <button (click)="requestDisplayAddLabelsPathModal()" class="btn btn-primary primary-action" type="button">Add</button>
+</ng-template>
