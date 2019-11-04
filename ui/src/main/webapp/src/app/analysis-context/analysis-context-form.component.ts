@@ -464,7 +464,7 @@ export class AnalysisContextFormComponent extends FormComponent
     }
 
     isActiveRulesPaths():boolean {
-        return this.analysisContext.rulesPaths.filter(rulesPath => rulesPath.rulesPathType == 'USER_PROVIDED').length > 0;
+        return this.analysisContext.rulesPaths.filter(rulesPath => rulesPath.rulesPathType == 'USER_PROVIDED' && rulesPath.scopeType == 'PROJECT').length > 0;
     }
 
     onMigrationPathChange() {
