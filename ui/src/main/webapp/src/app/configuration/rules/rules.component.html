@@ -7,14 +7,14 @@
             style="width: auto; display: inline;"
             (change)="scrollToRule(selectedRule.value)" id="select-{{ruleProvider.id}}">
             <option value="" disabled selected hidden>Select a rule</option>
-            <option *ngFor="let ruleEntity of ruleProvider.rules; let i = index"
+            <option *ngFor="let ruleEntity of ruleProvider.rules; let i = index; trackBy: trackByRuleEntityFn"
                     [value]="ruleEntity.id"
             >
                 {{getLabelForRuleID(ruleEntity.ruleID, ruleProvider.providerID, i)}}
             </option>
         </select>
     </ng-container>
-    <div *ngFor="let ruleEntity of ruleProvider.rules; let i = index">
+    <div *ngFor="let ruleEntity of ruleProvider.rules; let i = index; trackBy: trackByRuleEntityFn">
         <h4 id="{{ruleEntity.id}}">
             {{getLabelForRuleID(ruleEntity.ruleID, ruleProvider.providerID, i)}}
             <i class="fa fa-angle-up fa-pull-right fa-border"

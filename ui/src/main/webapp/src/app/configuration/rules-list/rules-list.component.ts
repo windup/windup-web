@@ -49,6 +49,10 @@ export class RulesListComponent {
         return margin;
     }
 
+    trackByRuleProviderEntityFn(index: number, item: RuleProviderEntity) {
+        return item.id;
+    }
+
 }
 
 

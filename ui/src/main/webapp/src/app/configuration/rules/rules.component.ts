@@ -1,5 +1,5 @@
 import { Component, Input, ElementRef, AfterViewInit } from "@angular/core";
-import { RuleProviderEntity } from "../../generated/windup-services";
+import { RuleProviderEntity, RuleEntity } from "../../generated/windup-services";
 
 declare function prettyPrint();
 
@@ -62,6 +62,9 @@ export class RulesComponent implements AfterViewInit {
         }
     }
 
+    trackByRuleEntityFn(index: number, ruleEntity: RuleEntity) {
+        return ruleEntity.id;
+    }
 }
 
 
