@@ -13,35 +13,15 @@ export class RulesListComponent {
 
     @Input() rulePath: RulesPath;
     @Input() ruleProviders: RuleProviderEntity[];
-    @Input() container: any = window;
+    @Input() container: any;
     @Input() offset: number;
+
+    collapseMap: Map<RuleProviderEntity, boolean> = new Map;
 
     constructor(
         private _sortingService: SortingService<RuleProviderEntity>,
         private _element: ElementRef,
     ) { }
-
-    hasFileBasedProviders() {
-        if (!this.ruleProviders)
-            return false;
-
-        let foundRules = false;
-        this.ruleProviders.forEach((provider) => {
-            if (this.isFileBasedProvider(provider))
-                foundRules = true;
-        });
-        return foundRules;
-    }
-
-    isFileBasedProvider(provider: RuleProviderEntity) {
-        switch (provider.ruleProviderType) {
-            case "GROOVY":
-            case "XML":
-                return true;
-            default:
-                return false;
-        }
-    }
 
     getRuleProviders() {
         return this._sortingService.sort(this.ruleProviders);
@@ -49,11 +29,15 @@ export class RulesListComponent {
 
     clickHeader(event: Event, provider: RuleProviderEntity) {
         if (!$(event.target).is("button, a, input, .fa-ellipsis-v")) {
+            if (!this.collapseMap.has(provider)) {
+                this.collapseMap.set(provider, false);
+            }
+            this.collapseMap.set(provider, !this.collapseMap.get(provider));
+
             $(this._element.nativeElement).find("#span-" + provider.id).toggleClass("fa-angle-down")
                 .end().parent().toggleClass("list-view-pf-expand-active")
                 .find("#container-" + provider.id).toggleClass("hidden").end().parent()
                 .find("#group-item-" + provider.id).toggleClass("selectedRuleHeader");
-            prettyPrint();
         }
     }
 
@@ -69,6 +53,10 @@ export class RulesListComponent {
             margin = 7;
         }
         return margin;
+    }
+
+    trackByRuleProviderEntityFn(index: number, item: RuleProviderEntity) {
+        return item.id;
     }
 
 }

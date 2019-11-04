@@ -151,14 +151,14 @@ public class AnalysisContextService
     public void ensureSystemRulesPathsPresent(AnalysisContext analysisContext)
     {
         configurationService
-                .getGlobalConfiguration().getRulesPaths()
-                .forEach(rulesPath -> {
-                    if (analysisContext.getRulesPaths() == null)
-                        analysisContext.setRulesPaths(new HashSet<>());
+                    .getGlobalConfiguration().getRulesPaths()
+                    .forEach(rulesPath -> {
+                        if (analysisContext.getRulesPaths() == null)
+                            analysisContext.setRulesPaths(new HashSet<>());
 
-                    if (!analysisContext.getRulesPaths().contains(rulesPath))
-                        analysisContext.getRulesPaths().add(rulesPath);
-                });
+                        if (!analysisContext.getRulesPaths().contains(rulesPath))
+                            analysisContext.getRulesPaths().add(rulesPath);
+                    });
     }
 
     public void ensureSystemLabelsPathsPresent(AnalysisContext analysisContext)

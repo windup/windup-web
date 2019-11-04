@@ -2,15 +2,15 @@ import { Component, TemplateRef, ViewChild, OnInit, AfterViewInit, Input, EventE
 import { PaginationEvent, PaginationConfig } from "patternfly-ng/pagination";
 import { FilterEvent, Filter, FilterConfig, FilterType, FilterField, FilterQuery } from "patternfly-ng/filter";
 import { Action, ActionConfig } from "patternfly-ng/action";
-import { RulesPath, RuleProviderEntity } from "../../generated/windup-services";
+import { RulesPath, RuleProviderEntity } from "../../../generated/windup-services";
 import { EmptyStateConfig } from "patternfly-ng/empty-state";
 import { TableConfig, NgxDataTableConfig, TableEvent, TableComponent } from "patternfly-ng/table";
 import { ToolbarConfig } from "patternfly-ng/toolbar/toolbar-config";
-import { getAvailableFilters } from "../../configuration/technology-filter";
+import { getAvailableFilters } from "../../../configuration/technology-filter";
 import { BsModalRef, BsModalService, ModalOptions } from "ngx-bootstrap/modal";
 import { Observable, forkJoin } from "rxjs";
-import { RuleService } from "../../configuration/rule.service";
-import { UploadedRulePathModalComponent } from "./uploaded-rule-path-modal.component";
+import { RuleService } from "../../../configuration/rule.service";
+import { UploadedRulePathModalComponent } from "./modal/uploaded-rule-path-modal.component";
 import { tap, reduce, map } from "rxjs/operators";
 
 @Component({
@@ -33,13 +33,13 @@ export class UploadedRulesPathComponent implements OnInit {
     @ViewChild('rulesTemplate') rulesTemplate: TemplateRef<any>;
     @ViewChild('actionsTemplate') actionsTemplate: TemplateRef<any>;
 
-    sourceQueries: any[] = [];
-    targetQueries: any[] = [];
+    sourceQueries: FilterQuery[] = [];
+    targetQueries: FilterQuery[] = [];
 
-    rows: any[];
-    allRows: any[];
-    filteredRows: any[];
-    selectedRows: any[] = [];
+    rows: RuleProviderEntity[];
+    allRows: RuleProviderEntity[];
+    filteredRows: RuleProviderEntity[];
+    selectedRows: RuleProviderEntity[] = [];
 
     columns: any[];
 
@@ -245,8 +245,8 @@ export class UploadedRulesPathComponent implements OnInit {
             } as FilterQuery;
         });
 
-        const sourceIndex = (this.filterConfig.fields as any).findIndex((i: any) => i.id === 'source');
-        const targetIndex = (this.filterConfig.fields as any).findIndex((i: any) => i.id === 'target');
+        const sourceIndex = (this.filterConfig.fields).findIndex((i) => i.id === 'source');
+        const targetIndex = (this.filterConfig.fields).findIndex((i) => i.id === 'target');
 
         this.filterConfig.fields[sourceIndex].queries = [...this.sourceQueries];
         this.filterConfig.fields[targetIndex].queries = [...this.targetQueries];
@@ -279,7 +279,7 @@ export class UploadedRulesPathComponent implements OnInit {
         this.updateRows(true);
     }
 
-    matchesFilters(item: any, filters: Filter[]): boolean {
+    matchesFilters(item: RuleProviderEntity, filters: Filter[]): boolean {
         let matches = true;
         filters.forEach((filter) => {
             if (!this.matchesFilter(item, filter)) {
@@ -290,7 +290,7 @@ export class UploadedRulesPathComponent implements OnInit {
         return matches;
     }
 
-    matchesFilter(item: any, filter: Filter): boolean {
+    matchesFilter(item: RuleProviderEntity, filter: Filter): boolean {
         let match = true;
         if (filter.field.id === 'source') {
             match = (<any>filter.query).filterOption.callback(item);
@@ -327,7 +327,7 @@ export class UploadedRulesPathComponent implements OnInit {
         if (action.id == 'selectAll') {
             this.selectedRows = [];
             this.selectRows(this.allRows.map(r => {
-                r.selected = true;
+                (<any>r).selected = true;
                 return r;
             }));
         }
@@ -337,12 +337,12 @@ export class UploadedRulesPathComponent implements OnInit {
      * Filter queries for type ahead
      */
     filterQueries($event: FilterEvent) {
-        const index = (this.filterConfig.fields as any).findIndex((i: any) => i.id === $event.field.id);
+        const index = (this.filterConfig.fields).findIndex((i) => i.id === $event.field.id);
         let val = $event.value.trim();
 
         if (this.filterConfig.fields[index].id === 'source') {
             this.filterConfig.fields[index].queries = [
-                ...this.sourceQueries.filter((item: any) => {
+                ...this.sourceQueries.filter((item: FilterQuery) => {
                     if (item.value) {
                         return (item.value.toLowerCase().indexOf(val.toLowerCase()) > -1);
                     } else {
@@ -352,7 +352,7 @@ export class UploadedRulesPathComponent implements OnInit {
             ];
         } else if (this.filterConfig.fields[index].id === 'target') {
             this.filterConfig.fields[index].queries = [
-                ...this.targetQueries.filter((item: any) => {
+                ...this.targetQueries.filter((item: FilterQuery) => {
                     if (item.value) {
                         return (item.value.toLowerCase().indexOf(val.toLowerCase()) > -1);
                     } else {
@@ -399,7 +399,7 @@ export class UploadedRulesPathComponent implements OnInit {
                 this.selectRows($event.selectedRows);
             } else {
                 this.selectRows(this.rows.map(r => {
-                    r.selected = false;
+                    (<any>r).selected = false;
                     return r;
                 }));
             }
@@ -436,9 +436,9 @@ export class UploadedRulesPathComponent implements OnInit {
     //
 
     selectRows(rows: RuleProviderEntity[]) {
-        rows.forEach((row: any) => {
+        rows.forEach((row: RuleProviderEntity) => {
             var indexOfRow = this.selectedRows.findIndex(i => i.id === row.id);
-            if (row.selected) {
+            if ((<any>row).selected) {
                 if (indexOfRow == -1) {
                     this.selectedRows.push(row);
                 }

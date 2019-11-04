@@ -1,11 +1,11 @@
 import { Component, Input } from "@angular/core";
-import { RuleProviderEntity, RulesPath } from "../../generated/windup-services";
+import { RuleProviderEntity, RulesPath } from "../../../../generated/windup-services";
 import { BsModalRef } from "ngx-bootstrap/modal";
 
 @Component({
     selector: 'wu-server-path-rules-modal',
     templateUrl: './server-path-rules-modal.component.html',
-    styleUrls: ['./server-path-rules-modal.component.scss']
+    styleUrls: []
 })
 export class ServerPathRulesModalComponent {
 

@@ -3,12 +3,12 @@ import { Action, ActionConfig } from "patternfly-ng/action";
 import { ListEvent, ListConfig } from "patternfly-ng/list";
 import { EmptyStateConfig } from "patternfly-ng/empty-state";
 import { cloneDeep } from 'lodash';
-import { RulesPath, RuleProviderEntity } from "../../generated/windup-services";
+import { RulesPath, RuleProviderEntity } from "../../../generated/windup-services";
 import { ToolbarConfig } from "patternfly-ng/toolbar";
 import { FilterEvent, Filter, FilterField, FilterConfig, FilterType } from "patternfly-ng/filter";
-import { RuleService } from "../../configuration/rule.service";
+import { RuleService } from "../../../configuration/rule.service";
 import { ModalOptions, BsModalRef, BsModalService } from "ngx-bootstrap/modal";
-import { ServerPathRulesModalComponent } from "./server-path-rules-modal.component";
+import { ServerPathRulesModalComponent } from "./modal/server-path-rules-modal.component";
 
 @Component({
     selector: 'wu-server-path-rules',
@@ -210,7 +210,7 @@ export class ServerPathRulesComponent implements DoCheck {
         // TODO nothing to do since we have just one filter "Name"
     }
 
-    matchesFilter(item: any, filter: Filter): boolean {
+    matchesFilter(item: RulesPath, filter: Filter): boolean {
         let match = true;
         if (filter.field.id === 'name') {
             match = item.path.match(filter.value) !== null;
@@ -218,7 +218,7 @@ export class ServerPathRulesComponent implements DoCheck {
         return match;
     }
 
-    matchesFilters(item: any, filters: Filter[]): boolean {
+    matchesFilters(item: RulesPath, filters: Filter[]): boolean {
         let matches = true;
         filters.forEach((filter) => {
             if (!this.matchesFilter(item, filter)) {

@@ -8,9 +8,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.windup.web.services.AbstractTest;
 import org.jboss.windup.web.services.ServiceTestUtil;
 import org.jboss.windup.web.services.data.ServiceConstants;
-import org.jboss.windup.web.services.model.Configuration;
-import org.jboss.windup.web.services.model.RuleProviderEntity;
-import org.jboss.windup.web.services.model.RulesPath;
+import org.jboss.windup.web.services.model.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,7 +48,7 @@ public class RuleEndpointTest extends AbstractTest
         return configuration
                 .getRulesPaths()
                 .stream()
-                .filter((rulesPath) -> rulesPath.getRulesPathType() == RulesPath.RulesPathType.SYSTEM_PROVIDED)
+                .filter((rulesPath) -> rulesPath.getRulesPathType() == PathType.SYSTEM_PROVIDED)
                 .findFirst();
     }
 
@@ -78,7 +76,7 @@ public class RuleEndpointTest extends AbstractTest
         RulesPath systemRulesPath = getSystemRulesPath(configuration).get();
         System.out.println("System rules path: " + systemRulesPath);
 
-        configuration.getRulesPaths().add(new RulesPath(FAKE_PATH, RulesPath.RulesPathType.USER_PROVIDED, RulesPath.ScopeType.GLOBAL));
+        configuration.getRulesPaths().add(new RulesPath(FAKE_PATH, PathType.USER_PROVIDED, ScopeType.GLOBAL));
         configurationEndpoint.saveConfiguration(configuration.getId(), configuration);
 
         List<RuleProviderEntity> ruleProviderEntities = ruleEndpoint.getByRulesPath(systemRulesPath.getId());
@@ -99,7 +97,7 @@ public class RuleEndpointTest extends AbstractTest
     @RunAsClient
     public void testByRulePathWithNORules() {
         Configuration configuration = configurationEndpoint.getGlobalConfiguration();
-        RulesPath fakeRulesPath = new RulesPath(FAKE_PATH, RulesPath.RulesPathType.USER_PROVIDED, RulesPath.ScopeType.GLOBAL);
+        RulesPath fakeRulesPath = new RulesPath(FAKE_PATH, PathType.USER_PROVIDED, ScopeType.GLOBAL);
         configuration.getRulesPaths().add(fakeRulesPath);
         configuration = configurationEndpoint.saveConfiguration(configuration.getId(), configuration);
 

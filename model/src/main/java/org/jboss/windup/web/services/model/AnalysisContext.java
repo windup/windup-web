@@ -27,16 +27,18 @@ import org.hibernate.annotations.FetchMode;
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = AnalysisContext.class)
 @NamedQueries({
         @NamedQuery(name = AnalysisContext.FIND_ALL, query = "select ac from AnalysisContext ac"),
-        @NamedQuery(name = AnalysisContext.FIND_BY_RULE_PATH_ID, query = "select a from AnalysisContext a inner join a.rulesPaths r where r.id = :rulePathId"),
-        @NamedQuery(name = AnalysisContext.FIND_BY_LABEL_PATH_ID, query = "select a from AnalysisContext a inner join a.labelsPaths l where l.id = :labelPathId")
+        @NamedQuery(name = AnalysisContext.FIND_ALL_WHERE_EXECUTION_IS_NULL, query = "select a from AnalysisContext a left join a.windupExecution e where e is null"),
+        @NamedQuery(name = AnalysisContext.FIND_BY_RULE_PATH_ID_AND_EXECUTION_IS_NULL, query = "select a from AnalysisContext a inner join a.rulesPaths r left join a.windupExecution e where r.id = :rulePathId and e is null")
+        @NamedQuery(name = AnalysisContext.FIND_BY_LABEL_PATH_ID_AND_EXECUTION_IS_NULL, query = "select a from AnalysisContext a inner join a.labelsPaths r left join a.windupExecution e where r.id = :labelPathId and e is null")
 })
 public class AnalysisContext implements Serializable
 {
     private static final long serialVersionUID = 1L;
 
     public static final String FIND_ALL = "AnalysisContext.findAll";
-    public static final String FIND_BY_RULE_PATH_ID = "AnalysisContext.findByRulePath";
-    public static final String FIND_BY_LABEL_PATH_ID = "AnalysisContext.findByLabelPath";
+    public static final String FIND_ALL_WHERE_EXECUTION_IS_NULL = "AnalysisContext.findAllWhereExecutionIsNull";
+    public static final String FIND_BY_RULE_PATH_ID_AND_EXECUTION_IS_NULL = "AnalysisContext.findByRulePathAndExecutionIsNull";
+    public static final String FIND_BY_LABEL_PATH_ID_AND_EXECUTION_IS_NULL = "AnalysisContext.findByLabelPathAndExecutionIsNull";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -62,36 +64,10 @@ public class AnalysisContext implements Serializable
 
     @Column(name = "openjdktargets")
     private boolean openJdkTargetsIncluded;
-    
-    public boolean isCloudTargetsIncluded()
-    {
-        return cloudTargetsIncluded;
-    }
 
-    public void setCloudTargetsIncluded(boolean cloudTargetsIncluded)
-    {
-        this.cloudTargetsIncluded = cloudTargetsIncluded;
-    }
-
-    public boolean isLinuxTargetsIncluded()
-    {
-        return linuxTargetsIncluded;
-    }
-
-    public void setLinuxTargetsIncluded(boolean linuxTargetsIncluded)
-    {
-        this.linuxTargetsIncluded = linuxTargetsIncluded;
-    }
-
-    public boolean isOpenJdkTargetsIncluded()
-    {
-        return openJdkTargetsIncluded;
-    }
-
-    public void setOpenJdkTargetsIncluded(boolean openJdkTargetsIncluded)
-    {
-        this.openJdkTargetsIncluded = openJdkTargetsIncluded;
-    }
+    @JsonIgnore
+    @OneToOne(mappedBy = "analysisContext", fetch = FetchType.LAZY, optional = false)
+    private WindupExecution windupExecution;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private MigrationPath migrationPath;
@@ -155,6 +131,45 @@ public class AnalysisContext implements Serializable
     public void setVersion(int version)
     {
         this.version = version;
+    }
+
+    public boolean isCloudTargetsIncluded()
+    {
+        return cloudTargetsIncluded;
+    }
+
+    public void setCloudTargetsIncluded(boolean cloudTargetsIncluded)
+    {
+        this.cloudTargetsIncluded = cloudTargetsIncluded;
+    }
+
+    public boolean isLinuxTargetsIncluded()
+    {
+        return linuxTargetsIncluded;
+    }
+
+    public void setLinuxTargetsIncluded(boolean linuxTargetsIncluded)
+    {
+        this.linuxTargetsIncluded = linuxTargetsIncluded;
+    }
+
+    public boolean isOpenJdkTargetsIncluded()
+    {
+        return openJdkTargetsIncluded;
+    }
+
+    public void setOpenJdkTargetsIncluded(boolean openJdkTargetsIncluded)
+    {
+        this.openJdkTargetsIncluded = openJdkTargetsIncluded;
+    }
+
+
+    public WindupExecution getWindupExecution() {
+        return windupExecution;
+    }
+
+    public void setWindupExecution(WindupExecution windupExecution) {
+        this.windupExecution = windupExecution;
     }
 
     /**

@@ -13,7 +13,6 @@ import org.jboss.windup.web.services.ServiceTestUtil;
 import org.jboss.windup.web.services.data.DataProvider;
 import org.jboss.windup.web.services.data.ServiceConstants;
 import org.jboss.windup.web.services.model.*;
-import org.jboss.windup.web.services.model.RulesPath.RulesPathType;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
@@ -58,7 +57,7 @@ public class AnalysisContextEndpointTest extends AbstractTest
         MigrationPath path = migrationPathEndpoint.getAvailablePaths().iterator().next();
 
         Configuration configuration = configurationEndpoint.getGlobalConfiguration();
-        configuration.setRulesPaths(Collections.singleton(new RulesPath(ConfigurationEndpointTest.CUSTOM_RULESPATH, RulesPathType.USER_PROVIDED, RulesPath.ScopeType.GLOBAL)));
+        configuration.setRulesPaths(Collections.singleton(new RulesPath(ConfigurationEndpointTest.CUSTOM_RULESPATH, PathType.USER_PROVIDED, ScopeType.GLOBAL)));
         configurationEndpoint.saveConfiguration(configuration.getId(), configuration);
 
         MigrationProject project = this.dataProvider.getMigrationProject();

@@ -10,6 +10,8 @@ import {RuleService} from "./rule.service";
 import {LabelService} from "./label.service";
 import {SharedModule} from "../shared/shared.module";
 import {RouterModule} from "@angular/router";
+import {RulesComponent} from "./rules/rules.component";
+import { RulesListComponent } from "./rules-list/rules-list.component";
 
 @NgModule({
     imports: [
@@ -19,12 +21,16 @@ import {RouterModule} from "@angular/router";
     declarations: [
         ConfigurationComponent,
         GlobalLabelsComponent,
-        RulesModalComponent
+        RulesModalComponent,
+        RulesComponent,
+        RulesListComponent
     ],
     exports: [
         ConfigurationComponent,
         GlobalLabelsComponent,
-        RulesModalComponent
+        RulesModalComponent,
+        RulesComponent,
+        RulesListComponent
     ],
     providers: [
         ConfigurationResolve,

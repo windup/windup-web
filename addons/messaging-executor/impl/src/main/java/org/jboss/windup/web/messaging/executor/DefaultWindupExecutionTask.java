@@ -24,14 +24,8 @@ import org.jboss.windup.exec.configuration.options.ExplodedAppInputOption;
 import org.jboss.windup.util.PathUtil;
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.addons.websupport.services.WindupExecutorService;
-import org.jboss.windup.web.services.model.AdvancedOption;
-import org.jboss.windup.web.services.model.AnalysisContext;
-import org.jboss.windup.web.services.model.ExecutionState;
-import org.jboss.windup.web.services.model.MigrationPath;
+import org.jboss.windup.web.services.model.*;
 import org.jboss.windup.web.services.model.Package;
-import org.jboss.windup.web.services.model.RegisteredApplication;
-import org.jboss.windup.web.services.model.RulesPath;
-import org.jboss.windup.web.services.model.WindupExecution;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -104,7 +98,7 @@ public class DefaultWindupExecutionTask implements WindupExecutionTask
             List<Path> rulesPaths = new ArrayList<>();
             for (RulesPath rulesPath : analysisContext.getRulesPaths())
             {
-                if (rulesPath.getRulesPathType() != RulesPath.RulesPathType.SYSTEM_PROVIDED)
+                if (rulesPath.getRulesPathType() != PathType.SYSTEM_PROVIDED)
                 {
                     rulesPaths.add(Paths.get(rulesPath.getPath()));
                 }

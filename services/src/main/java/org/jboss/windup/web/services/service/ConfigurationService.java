@@ -1,11 +1,7 @@
 package org.jboss.windup.web.services.service;
 
 import org.jboss.windup.web.furnaceserviceprovider.WebProperties;
-import org.jboss.windup.web.services.model.AnalysisContext;
-import org.jboss.windup.web.services.model.Configuration;
-import org.jboss.windup.web.services.model.MigrationProject;
-import org.jboss.windup.web.services.model.RulesPath;
-import org.jboss.windup.web.services.model.RulesPath.RulesPathType;
+import org.jboss.windup.web.services.model.*;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
@@ -79,8 +75,10 @@ public class ConfigurationService
             Set<LabelsPath> deletedLabelsPaths = new HashSet<>(oldLabelsPaths);
             deletedLabelsPaths.removeAll(newLabelsPaths);
 
-
-            analysisContextService.getAll().forEach(analysisContext -> {
+            @SuppressWarnings("unchecked")
+            List<AnalysisContext> analysisContexts = entityManager.createNamedQuery(AnalysisContext.FIND_ALL_WHERE_EXECUTION_IS_NULL)
+                    .getResultList();
+            analysisContexts.forEach(analysisContext -> {
                 analysisContext.getRulesPaths().removeAll(deletedRulesPaths);
                 analysisContext.getRulesPaths().addAll(addedRulesPath);
                 analysisContextService.ensureSystemRulesPathsPresent(analysisContext);
@@ -164,7 +162,7 @@ public class ConfigurationService
         for (Iterator<RulesPath> iterator = rulesets.iterator(); iterator.hasNext();)
         {
             RulesPath rulesPath = (RulesPath) iterator.next();
-            if (rulesPath.getRulesPathType() == RulesPathType.USER_PROVIDED && rulesPath.getLoadError() == null)
+            if (rulesPath.getRulesPathType() == PathType.USER_PROVIDED && rulesPath.getLoadError() == null)
             {
                 customRulesPaths.add(rulesPath);
             }
@@ -200,7 +198,7 @@ public class ConfigurationService
 
         // Find the existing system rules path
         Optional<RulesPath> existingSystemRulesPath = dbPaths.stream()
-                     .filter((rulesPath) -> rulesPath.getRulesPathType() == RulesPath.RulesPathType.SYSTEM_PROVIDED)
+                     .filter((rulesPath) -> rulesPath.getRulesPathType() == PathType.SYSTEM_PROVIDED)
                      .findFirst();
 
         // Update it if present
@@ -210,10 +208,10 @@ public class ConfigurationService
         }
         else
         {
-            RulesPath.ScopeType scopeType = configuration.isGlobal() ? RulesPath.ScopeType.GLOBAL : RulesPath.ScopeType.PROJECT;
+            ScopeType scopeType = configuration.isGlobal() ? ScopeType.GLOBAL : ScopeType.PROJECT;
 
             // Otherwise, create a new one
-            RulesPath newRulesPath = new RulesPath(newSystemRulesPath.toString(), RulesPath.RulesPathType.SYSTEM_PROVIDED, scopeType);
+            RulesPath newRulesPath = new RulesPath(newSystemRulesPath.toString(), PathType.SYSTEM_PROVIDED, scopeType);
             if (newRulesPath.getLoadError() == null)
                 dbPaths.add(newRulesPath);
         }

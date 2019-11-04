@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { RuleProviderEntity } from '../../generated/windup-services';
+import { RuleProviderEntity } from '../../../../generated/windup-services';
 
 @Component({
     selector: 'wu-uploaded-rule-path-modal',
