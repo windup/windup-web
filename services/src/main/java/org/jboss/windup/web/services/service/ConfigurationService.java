@@ -58,7 +58,9 @@ public class ConfigurationService
             Set<RulesPath> deletedRulesPaths = new HashSet<>(oldRulesPaths);
             deletedRulesPaths.removeAll(newRulesPaths);
 
-            List<AnalysisContext> analysisContexts = analysisContextService.getAll();
+            @SuppressWarnings("unchecked")
+            List<AnalysisContext> analysisContexts = entityManager.createNamedQuery(AnalysisContext.FIND_ALL_WHERE_EXECUTION_IS_NULL)
+                    .getResultList();
             analysisContexts.forEach(analysisContext -> {
                 analysisContext.getRulesPaths().removeAll(deletedRulesPaths);
                 analysisContext.getRulesPaths().addAll(addedRulesPath);

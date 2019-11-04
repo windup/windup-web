@@ -27,6 +27,7 @@ import org.hibernate.annotations.FetchMode;
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = AnalysisContext.class)
 @NamedQueries({
         @NamedQuery(name = AnalysisContext.FIND_ALL, query = "select ac from AnalysisContext ac"),
+        @NamedQuery(name = AnalysisContext.FIND_ALL_WHERE_EXECUTION_IS_NULL, query = "select a from AnalysisContext a left join a.windupExecution e where e is null"),
         @NamedQuery(name = AnalysisContext.FIND_BY_RULE_PATH_ID_AND_EXECUTION_IS_NULL, query = "select a from AnalysisContext a inner join a.rulesPaths r left join a.windupExecution e where r.id = :rulePathId and e is null")
 })
 public class AnalysisContext implements Serializable
@@ -34,7 +35,8 @@ public class AnalysisContext implements Serializable
     private static final long serialVersionUID = 1L;
 
     public static final String FIND_ALL = "AnalysisContext.findAll";
-    public static final String FIND_BY_RULE_PATH_ID_AND_EXECUTION_IS_NULL = "AnalysisContext.findByRulePath";
+    public static final String FIND_ALL_WHERE_EXECUTION_IS_NULL = "AnalysisContext.findAllWhereExecutionIsNull";
+    public static final String FIND_BY_RULE_PATH_ID_AND_EXECUTION_IS_NULL = "AnalysisContext.findByRulePathAndExecutionIsNull";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
