@@ -1,26 +1,26 @@
 import {AfterViewInit, Component, OnInit, ViewChild, ElementRef} from "@angular/core";
-import {ConfigurationService} from "./configuration.service";
-import {Configuration, RuleProviderEntity, RulesPath, Technology} from "../generated/windup-services";
-import {RuleService} from "./rule.service";
-import {RulesModalComponent} from "./rules-modal.component";
-import {AddRulesPathModalComponent, ConfigurationEvent} from "../shared/add-rules-path-modal/add-rules-path-modal.component";
+import {ConfigurationService} from "../configuration.service";
+import {Configuration, RuleProviderEntity, RulesPath, Technology} from "../../generated/windup-services";
+import {RuleService} from "../rule.service";
+import {RulesModalComponent} from "../rules-modal.component";
+import {AddRulesPathModalComponent, ConfigurationEvent} from "../../shared/add-rules-path-modal/add-rules-path-modal.component";
 import {ActivatedRoute} from "@angular/router";
-import {NotificationService} from "../core/notification/notification.service";
-import {utils} from "../shared/utils";
-import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
-import {OrderDirection, SortingService} from "../shared/sort/sorting.service";
+import {NotificationService} from "../../core/notification/notification.service";
+import {utils} from "../../shared/utils";
+import {ConfirmationModalComponent} from "../../shared/dialog/confirmation-modal.component";
+import {OrderDirection, SortingService} from "../../shared/sort/sorting.service";
 import Arrays = utils.Arrays;
-import {FilterConfiguration} from "../shared/toolbar/toolbar.component";
-import {getAvailableFilters} from "./technology-filter";
+import {FilterConfiguration} from "../../shared/toolbar/toolbar.component";
+import {getAvailableFilters} from "../technology-filter";
 import {DomSanitizer} from '@angular/platform-browser';
 
 declare function prettyPrint();
 
 @Component({
-    templateUrl: './configuration.component.html',
-    styleUrls: ['./configuration.component.scss']
+    templateUrl: './configuration-rules.component.html',
+    styleUrls: ['./configuration-rules.component.scss']
 })
-export class ConfigurationComponent implements OnInit, AfterViewInit {
+export class ConfigurationRules implements OnInit, AfterViewInit {
 
     forceReloadAttempted: boolean = false;
     rescanInProgress: boolean = false;

@@ -1,8 +1,6 @@
 import { Component, Input, ElementRef } from "@angular/core";
-import { RulesPath, RuleProviderEntity } from "../../generated/windup-services";
-import { SortingService } from "../../shared/sort/sorting.service";
-
-declare function prettyPrint();
+import { RulesPath, RuleProviderEntity } from "../../../generated/windup-services";
+import { SortingService } from "../../../shared/sort/sorting.service";
 
 @Component({
     selector: 'wu-rules-list',

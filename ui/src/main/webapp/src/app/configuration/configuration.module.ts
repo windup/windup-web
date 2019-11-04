@@ -1,5 +1,5 @@
 import {NgModule} from "@angular/core";
-import {ConfigurationComponent} from "./configuration.component";
+import {ConfigurationRules} from "./configuration-rules/configuration-rules.component";
 import {GlobalLabelsComponent} from "./global-labels/global-labels.component";
 import {RulesModalComponent} from "./rules-modal.component";
 import {ConfigurationResolve} from "./configuration.resolve";
@@ -10,8 +10,8 @@ import {RuleService} from "./rule.service";
 import {LabelService} from "./label.service";
 import {SharedModule} from "../shared/shared.module";
 import {RouterModule} from "@angular/router";
-import {RulesComponent} from "./rules/rules.component";
-import {RulesListComponent } from "./rules-list/rules-list.component";
+import {RuleContentComponent} from "./configuration-rules/rule-content/rule-content.component";
+import { RulesListComponent } from "./configuration-rules/rules-list/rules-list.component";
 import {LabelsComponent} from "./global-labels/labels/labels.component";
 import {LabelsListComponent} from "./global-labels/labels-list/labels-list.component";
 
@@ -21,19 +21,19 @@ import {LabelsListComponent} from "./global-labels/labels-list/labels-list.compo
         RouterModule.forChild([])
     ],
     declarations: [
-        ConfigurationComponent,
+        ConfigurationRules,
         GlobalLabelsComponent,
         RulesModalComponent,
-        RulesComponent,
+        RuleContentComponent,
         RulesListComponent,
         LabelsComponent,
         LabelsListComponent
     ],
     exports: [
-        ConfigurationComponent,
+        ConfigurationRules,
         GlobalLabelsComponent,
         RulesModalComponent,
-        RulesComponent,
+        RuleContentComponent,
         RulesListComponent,
         LabelsComponent,
         LabelsListComponent
