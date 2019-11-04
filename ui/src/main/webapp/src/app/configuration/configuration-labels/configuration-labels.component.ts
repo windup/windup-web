@@ -16,10 +16,10 @@ import { FilterOption } from "../../shared/filter/text-filter.component";
 declare function prettyPrint();
 
 @Component({
-    templateUrl: './global-labels.component.html',
-    styleUrls: ['./global-labels.component.scss']
+    templateUrl: './configuration-labels.component.html',
+    styleUrls: ['./configuration-labels.component.scss']
 })
-export class GlobalLabelsComponent implements OnInit, AfterViewInit {
+export class ConfigurationLabelsComponent implements OnInit, AfterViewInit {
 
     forceReloadAttempted: boolean = false;
     rescanInProgress: boolean = false;

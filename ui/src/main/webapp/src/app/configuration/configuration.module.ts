@@ -1,6 +1,6 @@
 import {NgModule} from "@angular/core";
 import {ConfigurationRules} from "./configuration-rules/configuration-rules.component";
-import {GlobalLabelsComponent} from "./global-labels/global-labels.component";
+import {ConfigurationLabelsComponent} from "./configuration-labels/configuration-labels.component";
 import {RulesModalComponent} from "./rules-modal.component";
 import {ConfigurationResolve} from "./configuration.resolve";
 import {ProjectConfigurationResolve} from "./project-configuration.resolve";
@@ -12,8 +12,8 @@ import {SharedModule} from "../shared/shared.module";
 import {RouterModule} from "@angular/router";
 import {RuleContentComponent} from "./configuration-rules/rule-content/rule-content.component";
 import { RulesListComponent } from "./configuration-rules/rules-list/rules-list.component";
-import {LabelsComponent} from "./global-labels/labels/labels.component";
-import {LabelsListComponent} from "./global-labels/labels-list/labels-list.component";
+import {LabelsComponent} from "./configuration-labels/labels/labels.component";
+import {LabelsListComponent} from "./configuration-labels/labels-list/labels-list.component";
 
 @NgModule({
     imports: [
@@ -22,7 +22,7 @@ import {LabelsListComponent} from "./global-labels/labels-list/labels-list.compo
     ],
     declarations: [
         ConfigurationRules,
-        GlobalLabelsComponent,
+        ConfigurationLabelsComponent,
         RulesModalComponent,
         RuleContentComponent,
         RulesListComponent,
@@ -31,7 +31,7 @@ import {LabelsListComponent} from "./global-labels/labels-list/labels-list.compo
     ],
     exports: [
         ConfigurationRules,
-        GlobalLabelsComponent,
+        ConfigurationLabelsComponent,
         RulesModalComponent,
         RuleContentComponent,
         RulesListComponent,

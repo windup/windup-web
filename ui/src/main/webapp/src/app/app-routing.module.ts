@@ -4,7 +4,7 @@ import {RegisterApplicationFormComponent} from "./registered-application/registe
 import {MigrationProjectFormComponent} from "./project/migration-project-form.component";
 import {AnalysisContextFormComponent} from "./analysis-context/analysis-context-form.component";
 import {ConfigurationRules} from "./configuration/configuration-rules/configuration-rules.component";
-import {GlobalLabelsComponent} from "./configuration/global-labels/global-labels.component";
+import {ConfigurationLabelsComponent} from "./configuration/configuration-labels/configuration-labels.component";
 import {EditApplicationFormComponent} from "./registered-application/edit-application-form.component";
 import {ConfirmDeactivateGuard} from "./shared/confirm-deactivate.guard";
 import {LoggedInGuard} from "./core/authentication/logged-in.guard";
@@ -47,7 +47,7 @@ export const appRoutes: Routes = [
                     },
                     {
                         path: "configuration/labels",
-                        component: GlobalLabelsComponent,
+                        component: ConfigurationLabelsComponent,
                         resolve: { configuration: ConfigurationResolve },
                         data: { displayName: "Global Labels Configuration" }
                     },
