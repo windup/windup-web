@@ -1,13 +1,13 @@
 import { Component, Input, ElementRef, AfterViewInit } from "@angular/core";
-import { RuleProviderEntity, RuleEntity } from "../../generated/windup-services";
+import { RuleProviderEntity, RuleEntity } from "../../../generated/windup-services";
 
 declare function prettyPrint();
 
 @Component({
-    selector: 'wu-rules',
-    templateUrl: './rules.component.html'
+    selector: 'wu-rule-content',
+    templateUrl: './rule-content.component.html'
 })
-export class RulesComponent implements AfterViewInit {
+export class RuleContentComponent implements AfterViewInit {
 
     @Input()
     ruleProvider: RuleProviderEntity;

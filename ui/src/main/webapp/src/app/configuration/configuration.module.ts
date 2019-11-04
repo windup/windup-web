@@ -1,5 +1,5 @@
 import {NgModule} from "@angular/core";
-import {ConfigurationComponent} from "./configuration.component";
+import {ConfigurationRules} from "./configuration-rules/configuration-rules.component";
 import {RulesModalComponent} from "./rules-modal.component";
 import {ConfigurationResolve} from "./configuration.resolve";
 import {ProjectConfigurationResolve} from "./project-configuration.resolve";
@@ -8,8 +8,8 @@ import {ConfigurationOptionsService} from "./configuration-options.service";
 import {RuleService} from "./rule.service";
 import {SharedModule} from "../shared/shared.module";
 import {RouterModule} from "@angular/router";
-import {RulesComponent} from "./rules/rules.component";
-import { RulesListComponent } from "./rules-list/rules-list.component";
+import {RuleContentComponent} from "./configuration-rules/rule-content/rule-content.component";
+import { RulesListComponent } from "./configuration-rules/rules-list/rules-list.component";
 
 @NgModule({
     imports: [
@@ -17,15 +17,15 @@ import { RulesListComponent } from "./rules-list/rules-list.component";
         RouterModule.forChild([])
     ],
     declarations: [
-        ConfigurationComponent,
+        ConfigurationRules,
         RulesModalComponent,
-        RulesComponent,
+        RuleContentComponent,
         RulesListComponent
     ],
     exports: [
-        ConfigurationComponent,
+        ConfigurationRules,
         RulesModalComponent,
-        RulesComponent,
+        RuleContentComponent,
         RulesListComponent
     ],
     providers: [
