@@ -5,11 +5,11 @@
     </button>
 </div>
 <div #modalBody class="modal-body" style="height: 390px; overflow-y: auto;">
-    <wu-labels
+    <wu-label-content
             [labelProvider]="labelProvider"
             [container]="modalBody"
             [offset]="80">
-    </wu-labels>
+    </wu-label-content>
 </div>
 <div class="modal-footer">
     <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">Close</button>

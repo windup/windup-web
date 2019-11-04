@@ -13,8 +13,6 @@ import {FilterConfiguration} from "../../shared/toolbar/toolbar.component";
 import {DomSanitizer} from '@angular/platform-browser';
 import { FilterOption } from "../../shared/filter/text-filter.component";
 
-declare function prettyPrint();
-
 @Component({
     templateUrl: './configuration-labels.component.html',
     styleUrls: ['./configuration-labels.component.scss']

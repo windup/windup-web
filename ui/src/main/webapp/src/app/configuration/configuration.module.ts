@@ -12,7 +12,7 @@ import {SharedModule} from "../shared/shared.module";
 import {RouterModule} from "@angular/router";
 import {RuleContentComponent} from "./configuration-rules/rule-content/rule-content.component";
 import { RulesListComponent } from "./configuration-rules/rules-list/rules-list.component";
-import {LabelsComponent} from "./configuration-labels/labels/labels.component";
+import {LabelContentComponent} from "./configuration-labels/label-content/label-content.component";
 import {LabelsListComponent} from "./configuration-labels/labels-list/labels-list.component";
 
 @NgModule({
@@ -26,7 +26,7 @@ import {LabelsListComponent} from "./configuration-labels/labels-list/labels-lis
         RulesModalComponent,
         RuleContentComponent,
         RulesListComponent,
-        LabelsComponent,
+        LabelContentComponent,
         LabelsListComponent
     ],
     exports: [
@@ -35,7 +35,7 @@ import {LabelsListComponent} from "./configuration-labels/labels-list/labels-lis
         RulesModalComponent,
         RuleContentComponent,
         RulesListComponent,
-        LabelsComponent,
+        LabelContentComponent,
         LabelsListComponent
     ],
     providers: [

@@ -4,10 +4,10 @@ import { LabelProviderEntity } from "../../../generated/windup-services";
 declare function prettyPrint();
 
 @Component({
-    selector: 'wu-labels',
-    templateUrl: './labels.component.html'
+    selector: 'wu-label-content',
+    templateUrl: './label-content.component.html'
 })
-export class LabelsComponent implements AfterViewInit {
+export class LabelContentComponent implements AfterViewInit {
 
     @Input()
     labelProvider: LabelProviderEntity;
