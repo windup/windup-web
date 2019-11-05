@@ -231,16 +231,25 @@ export class CustomLabelsComponent extends RoutedComponent implements ControlVal
                 return this.labelsPath.some(r => r.id == labelsPath.id);
             });
 
+        const oldValue = this.value;
         // Delete 'selected' property 
-        this.value = selectedLabelsPath.map(({ selected, expanded, ...item }) => {
+        const newValue = selectedLabelsPath.map(({ selected, expanded, ...item }) => {
             return item;
         }).sort(this.sortLabelsPath);
 
-        // Change Model (NgForm)        
-        this._onChange(this.value);
+        const oldIDs = oldValue.map(elem => elem.id);
+        const newIDs = newValue.map(elem => elem.id);
+        const valueChanged: boolean = (oldIDs.length != newIDs.length) || oldIDs.some(elem => !newIDs.includes(elem));
+        
+        if (valueChanged) {
+            this.value = newValue;
 
-        // // Emit event
-        this.onSelectionChange.emit(this.value);
+            // Change Model (NgForm)
+            this._onChange(this.value);
+
+            // // Emit event
+            this.onSelectionChange.emit(this.value);
+        }
     }
 
     //
