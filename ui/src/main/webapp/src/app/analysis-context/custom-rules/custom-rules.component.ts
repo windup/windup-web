@@ -231,8 +231,9 @@ export class CustomRulesComponent extends RoutedComponent implements ControlValu
                 return this.rulesPath.some(r => r.id == rulesPath.id);
             });
 
-        // Delete 'selected' property 
         const oldValue = this.value;
+
+        // Delete 'selected' property
         const newValue = selectedRulesPath.map(({ selected, expanded, ...item }) => {
             return item;
         }).sort(this.sortRulesPath);
