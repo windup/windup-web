@@ -1,5 +1,5 @@
 import {
-    Component, forwardRef, Output, EventEmitter, Input, ChangeDetectorRef, OnDestroy
+    Component, forwardRef, Output, EventEmitter, Input, ChangeDetectorRef, OnDestroy, OnInit
 } from "@angular/core";
 import { NG_VALIDATORS, NG_VALUE_ACCESSOR, ControlValueAccessor, Validator, AbstractControl, ValidationErrors } from "@angular/forms";
 import { Package } from "../../generated/windup-services";
@@ -21,7 +21,7 @@ import { PackageSelection } from "./select-packages.component";
         multi: true,
     }]
 })
-export class SelectPackagesWrapperComponent implements ControlValueAccessor, Validator, OnDestroy {
+export class SelectPackagesWrapperComponent implements ControlValueAccessor, Validator, OnInit, OnDestroy {
 
     @Output('onSelectionChange')
     onSelectionChange: EventEmitter<PackageSelection> = new EventEmitter();
@@ -54,6 +54,7 @@ export class SelectPackagesWrapperComponent implements ControlValueAccessor, Val
     includePackages: Package[] = []
     excludePackages: Package[] = []
 
+    private isUpdateValueCalledForTheFirstTime: boolean;
     private _onChange = (_: any) => { };
     private _onTouched = () => { };
 
@@ -69,6 +70,10 @@ export class SelectPackagesWrapperComponent implements ControlValueAccessor, Val
                 this.updateValue();
             })
         );
+    }
+
+    ngOnInit() {
+        this.isUpdateValueCalledForTheFirstTime = true;
     }
 
     ngOnDestroy() {
@@ -206,6 +211,14 @@ export class SelectPackagesWrapperComponent implements ControlValueAccessor, Val
      * Updates 'NgModel' value when select or unselect events occur
      */
     updateValue(): void {
+        // https://issues.jboss.org/browse/WINDUP-2463
+        // The first time this method is call will result in: oldValue == newValue
+        // So avoid emitting the first event.
+        if (this.isUpdateValueCalledForTheFirstTime) {
+            this.isUpdateValueCalledForTheFirstTime = false;
+            return;
+        }
+
         const applicationCheckedPackages: Package[] = this.applicationPackagesSelection.includePackages;
         const thirdPartyCheckedPackages: Package[] = this.thirdPartyPackagesSelection.includePackages;
 
@@ -295,7 +308,7 @@ export class SelectPackagesWrapperComponent implements ControlValueAccessor, Val
             includePackages: this.includePackages,
             excludePackages: this.excludePackages
         };
-
+        
         // Change Model (NgForm)        
         this._onChange(this.value);
 
