@@ -1,5 +1,5 @@
 import {
-    Component, forwardRef, Output, EventEmitter, Input, ChangeDetectorRef, OnDestroy, OnInit
+    Component, forwardRef, Output, EventEmitter, Input, ChangeDetectorRef, OnDestroy
 } from "@angular/core";
 import { NG_VALIDATORS, NG_VALUE_ACCESSOR, ControlValueAccessor, Validator, AbstractControl, ValidationErrors } from "@angular/forms";
 import { Package } from "../../generated/windup-services";
@@ -21,7 +21,7 @@ import { PackageSelection } from "./select-packages.component";
         multi: true,
     }]
 })
-export class SelectPackagesWrapperComponent implements ControlValueAccessor, Validator, OnInit, OnDestroy {
+export class SelectPackagesWrapperComponent implements ControlValueAccessor, Validator, OnDestroy {
 
     @Output('onSelectionChange')
     onSelectionChange: EventEmitter<PackageSelection> = new EventEmitter();
@@ -51,10 +51,9 @@ export class SelectPackagesWrapperComponent implements ControlValueAccessor, Val
     // NgForm value
     value: PackageSelection;
     originalValue: PackageSelection;
-    includePackages: Package[] = []
-    excludePackages: Package[] = []
+    includePackages: Package[] = [];
+    excludePackages: Package[] = [];
 
-    private isUpdateValueCalledForTheFirstTime: boolean;
     private _onChange = (_: any) => { };
     private _onTouched = () => { };
 
@@ -70,10 +69,6 @@ export class SelectPackagesWrapperComponent implements ControlValueAccessor, Val
                 this.updateValue();
             })
         );
-    }
-
-    ngOnInit() {
-        this.isUpdateValueCalledForTheFirstTime = true;
     }
 
     ngOnDestroy() {
@@ -129,10 +124,20 @@ export class SelectPackagesWrapperComponent implements ControlValueAccessor, Val
     // Validators
 
     validate(control: AbstractControl): ValidationErrors | null {
-        const valid: boolean =
-            this.applicationPackagesSelection &&
-            this.thirdPartyPackagesSelection &&
-            (this.applicationPackagesSelection.includePackages.length + this.thirdPartyPackagesSelection.includePackages.length) > 0
+        const valid: boolean = this.applicationPackagesSelection && this.thirdPartyPackagesSelection && (
+            // The user should select at least one package
+            (
+                this.applicationPackagesSelection.includePackages.length +
+                this.thirdPartyPackagesSelection.includePackages.length
+            ) > 0 ||
+            // If the user did not interact with the component then length must be 0 for all:
+            (
+                this.applicationPackagesSelection.includePackages.length +
+                this.applicationPackagesSelection.excludePackages.length +
+                this.thirdPartyPackagesSelection.includePackages.length +
+                this.thirdPartyPackagesSelection.excludePackages.length
+            ) == 0
+        );
 
         return valid ? null : {
             nothingToAnalyze: {
@@ -211,14 +216,6 @@ export class SelectPackagesWrapperComponent implements ControlValueAccessor, Val
      * Updates 'NgModel' value when select or unselect events occur
      */
     updateValue(): void {
-        // https://issues.jboss.org/browse/WINDUP-2463
-        // The first time this method is call will result in: oldValue == newValue
-        // So avoid emitting the first event.
-        if (this.isUpdateValueCalledForTheFirstTime) {
-            this.isUpdateValueCalledForTheFirstTime = false;
-            return;
-        }
-
         const applicationCheckedPackages: Package[] = this.applicationPackagesSelection.includePackages;
         const thirdPartyCheckedPackages: Package[] = this.thirdPartyPackagesSelection.includePackages;
 
@@ -301,19 +298,34 @@ export class SelectPackagesWrapperComponent implements ControlValueAccessor, Val
             });
         }
 
+        // Change value only of it really changed
+        const oldValue: PackageSelection = this.value;
+        const newValue: PackageSelection = {
+            includePackages: Array.from(includePackages.values()),
+            excludePackages: Array.from(excludePackages.values())
+        }
 
-        this.includePackages = Array.from(includePackages.values());
-        this.excludePackages = Array.from(excludePackages.values());
-        this.value = {
-            includePackages: this.includePackages,
-            excludePackages: this.excludePackages
-        };
+        const oldIncludedIDs = oldValue.includePackages.map(elem => elem.id);
+        const oldExcludedIDs = oldValue.excludePackages.map(elem => elem.id);
+        const newIncludedIDs = newValue.includePackages.map(elem => elem.id);
+        const newExcludedIDs = newValue.excludePackages.map(elem => elem.id);
+
+        const valueChanged: boolean = (oldIncludedIDs.length != newIncludedIDs.length) ||
+                                      (oldExcludedIDs.length != newExcludedIDs.length) ||
+                                       oldIncludedIDs.some(elem => !newIncludedIDs.includes(elem)) ||
+                                       oldExcludedIDs.some(elem => !newExcludedIDs.includes(elem));
         
-        // Change Model (NgForm)        
-        this._onChange(this.value);
+        if (valueChanged) {
+            this.includePackages = newValue.includePackages;
+            this.excludePackages = newValue.excludePackages;
+            this.value = newValue;
 
-        // // Emit event
-        this.onSelectionChange.emit(this.value);
+            // Change Model (NgForm)        
+            this._onChange(this.value);
+
+            // // Emit event
+            this.onSelectionChange.emit(this.value);
+        }
     }
 
     private isNodeAlreadyIncludedInArray(node: Package, packages: Package[]): boolean {
