@@ -1,5 +1,5 @@
 import {NgModule} from "@angular/core";
-import {ConfigurationRules} from "./configuration-rules/configuration-rules.component";
+import {ConfigurationRulesComponent} from "./configuration-rules/configuration-rules.component";
 import {ConfigurationLabelsComponent} from "./configuration-labels/configuration-labels.component";
 import {RulesModalComponent} from "./rules-modal.component";
 import {ConfigurationResolve} from "./configuration.resolve";
@@ -21,7 +21,7 @@ import {LabelsListComponent} from "./configuration-labels/labels-list/labels-lis
         RouterModule.forChild([])
     ],
     declarations: [
-        ConfigurationRules,
+        ConfigurationRulesComponent,
         ConfigurationLabelsComponent,
         RulesModalComponent,
         RuleContentComponent,
@@ -30,7 +30,7 @@ import {LabelsListComponent} from "./configuration-labels/labels-list/labels-lis
         LabelsListComponent
     ],
     exports: [
-        ConfigurationRules,
+        ConfigurationRulesComponent,
         ConfigurationLabelsComponent,
         RulesModalComponent,
         RuleContentComponent,

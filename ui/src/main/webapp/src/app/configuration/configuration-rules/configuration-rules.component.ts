@@ -18,7 +18,7 @@ import {DomSanitizer} from '@angular/platform-browser';
     templateUrl: './configuration-rules.component.html',
     styleUrls: ['./configuration-rules.component.scss']
 })
-export class ConfigurationRules implements OnInit, AfterViewInit {
+export class ConfigurationRulesComponent implements OnInit, AfterViewInit {
 
     forceReloadAttempted: boolean = false;
     rescanInProgress: boolean = false;

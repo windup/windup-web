@@ -231,16 +231,25 @@ export class CustomRulesComponent extends RoutedComponent implements ControlValu
                 return this.rulesPath.some(r => r.id == rulesPath.id);
             });
 
-        // Delete 'selected' property 
-        this.value = selectedRulesPath.map(({ selected, expanded, ...item }) => {
+        const oldValue = this.value;
+
+        // Delete 'selected' property
+        const newValue = selectedRulesPath.map(({ selected, expanded, ...item }) => {
             return item;
         }).sort(this.sortRulesPath);
 
-        // Change Model (NgForm)        
-        this._onChange(this.value);
+        const oldIDs = oldValue.map(elem => elem.id);
+        const newIDs = newValue.map(elem => elem.id);
+        const valueChanged: boolean = (oldIDs.length != newIDs.length) || oldIDs.some(elem => !newIDs.includes(elem));
+        if (valueChanged) {
+            this.value = newValue;
 
-        // // Emit event
-        this.onSelectionChange.emit(this.value);
+            // Change Model (NgForm)        
+            this._onChange(this.value);
+
+            // // Emit event
+            this.onSelectionChange.emit(this.value);
+        }
     }
 
     //
