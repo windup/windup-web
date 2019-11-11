@@ -12,15 +12,23 @@ import javax.ws.rs.NotFoundException;
 
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
-import org.jboss.windup.web.services.model.*;
+import org.jboss.windup.web.services.model.AnalysisContext;
+import org.jboss.windup.web.services.model.Configuration;
+import org.jboss.windup.web.services.model.MigrationProject;
+import org.jboss.windup.web.services.model.RuleProviderEntity;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
-import java.util.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

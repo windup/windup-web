@@ -1,7 +1,11 @@
 package org.jboss.windup.web.services;
 
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.windup.web.services.model.*;
+import org.jboss.windup.web.services.model.Configuration;
+import org.jboss.windup.web.services.model.PathType;
+import org.jboss.windup.web.services.model.RuleProviderEntity;
+import org.jboss.windup.web.services.model.RulesPath;
+import org.jboss.windup.web.services.model.ScopeType;
 import org.jboss.windup.web.services.service.ConfigurationService;
 import org.junit.Assert;
 import org.junit.Test;

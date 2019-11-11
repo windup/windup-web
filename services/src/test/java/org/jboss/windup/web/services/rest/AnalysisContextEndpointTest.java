@@ -12,7 +12,13 @@ import org.jboss.windup.web.services.AbstractTest;
 import org.jboss.windup.web.services.ServiceTestUtil;
 import org.jboss.windup.web.services.data.DataProvider;
 import org.jboss.windup.web.services.data.ServiceConstants;
-import org.jboss.windup.web.services.model.*;
+import org.jboss.windup.web.services.model.AnalysisContext;
+import org.jboss.windup.web.services.model.Configuration;
+import org.jboss.windup.web.services.model.MigrationPath;
+import org.jboss.windup.web.services.model.MigrationProject;
+import org.jboss.windup.web.services.model.RulesPath;
+import org.jboss.windup.web.services.model.PathType;
+import org.jboss.windup.web.services.model.ScopeType;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
@@ -37,7 +43,7 @@ public class AnalysisContextEndpointTest extends AbstractTest
     private DataProvider dataProvider;
     private ResteasyClient client;
     private ResteasyWebTarget target;
-    
+
     @Before
     public void setUp()
     {

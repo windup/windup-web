@@ -39,7 +39,13 @@ import org.jboss.windup.web.addons.websupport.services.IssueCategoryProviderServ
 import org.jboss.windup.web.addons.websupport.services.RuleFormatterService;
 import org.jboss.windup.web.addons.websupport.services.RuleProviderService;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
-import org.jboss.windup.web.services.model.*;
+import org.jboss.windup.web.services.model.Category;
+import org.jboss.windup.web.services.model.Configuration;
+import org.jboss.windup.web.services.model.PathType;
+import org.jboss.windup.web.services.model.RuleEntity;
+import org.jboss.windup.web.services.model.RuleProviderEntity;
+import org.jboss.windup.web.services.model.RulesPath;
+import org.jboss.windup.web.services.model.Technology;
 import org.jboss.windup.web.services.service.ConfigurationService;
 import org.jboss.windup.web.services.service.TechnologyService;
 import org.ocpsoft.rewrite.config.Rule;

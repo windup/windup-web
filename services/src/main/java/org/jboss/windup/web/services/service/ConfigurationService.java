@@ -1,7 +1,12 @@
 package org.jboss.windup.web.services.service;
 
 import org.jboss.windup.web.furnaceserviceprovider.WebProperties;
-import org.jboss.windup.web.services.model.*;
+import org.jboss.windup.web.services.model.AnalysisContext;
+import org.jboss.windup.web.services.model.Configuration;
+import org.jboss.windup.web.services.model.MigrationProject;
+import org.jboss.windup.web.services.model.PathType;
+import org.jboss.windup.web.services.model.RulesPath;
+import org.jboss.windup.web.services.model.ScopeType;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
@@ -12,7 +17,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**

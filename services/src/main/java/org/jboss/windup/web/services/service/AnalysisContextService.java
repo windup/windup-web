@@ -1,19 +1,20 @@
 package org.jboss.windup.web.services.service;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import org.jboss.windup.web.services.model.AdvancedOption;
+import org.jboss.windup.web.services.model.AnalysisContext;
+import org.jboss.windup.web.services.model.MigrationProject;
+import org.jboss.windup.web.services.model.Package;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
-
-import org.jboss.windup.web.services.model.*;
-import org.jboss.windup.web.services.model.Package;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Provides tools for creating default analysis context instances, as well as providing default configuration data.
