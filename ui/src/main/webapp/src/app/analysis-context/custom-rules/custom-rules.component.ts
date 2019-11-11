@@ -260,6 +260,9 @@ export class CustomRulesComponent extends RoutedComponent implements ControlValu
     unselect(rulesPath: RulesPath[]) {
         this.loading = true;
 
+        // Clean selection
+        this.rulesPathForUnselect = [];
+
         this.selectedUploadedRulesPath = this.selectedUploadedRulesPath.filter(p => {
             return !rulesPath.some(r => r.id == p.id);
         });
