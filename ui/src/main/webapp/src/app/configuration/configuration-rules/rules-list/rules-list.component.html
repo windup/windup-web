@@ -1,0 +1,77 @@
+<div
+     class="rulesList list-group list-view-pf list-view-pf-view"
+     style="margin-top: 0px; border: none;">
+    <div id="group-item-{{ruleProvider.id}}"
+         *ngFor="let ruleProvider of getRuleProviders(); trackBy: trackByRuleProviderEntityFn"
+         class="list-group-item">
+        <div class="list-group-item-header" (click)="clickHeader($event, ruleProvider)">
+            <div class="list-view-pf-expand">
+                <span id="span-{{ruleProvider.id}}"
+                      class="fa fa-angle-right"
+                      [style.marginTop.px]="getRuleProviderMarginTop(ruleProvider)"></span>
+            </div>
+            
+            <div class="list-view-pf-actions" style="margin-left: 5px;">
+                <!-- I just comment this button in case we'll use it again
+                    <button class="btn btn-default" [disabled]="ruleProvider.rules.length < 1" (click)="displayRules(ruleProvider, $event)" i18n="Button">Show rules</button>
+                    -->
+            </div>
+            <div class="list-view-pf-main-info">
+                <div class="list-view-pf-left">
+                    <span class="fa fa-puzzle-piece list-view-pf-icon-sm"></span>
+                </div>
+                <div class="list-view-pf-body">
+                    <div class="list-view-pf-description">
+                        <div class="list-group-item-heading"> {{ruleProvider.providerID}} </div>
+                        <div class="list-group-item-text">
+                            <div style="width: 16pt; position: absolute;">
+                                <span class="fa fa-file-code-o list-view-pf-icon-md" style="font-size: 16pt;"></span>
+                            </div>
+                            <div style="margin-left: 25pt; ">
+                                <div>{{ruleProvider.origin}}</div>
+                                <div *ngIf="ruleProvider.loadError" style="font-weight: bold">
+                                    {{ruleProvider.loadError}}
+                                </div>
+
+                                <div *ngIf="ruleProvider.sources.length > 0">
+                                    Source technologies:
+                                    <wu-technology *ngFor="let source of ruleProvider.sources"
+                                                   [technology]="source"
+                                                   class="techLabel">
+                                    </wu-technology>
+                                </div>
+                                <div *ngIf="ruleProvider.targets.length > 0">
+                                    Target technologies:
+                                    <wu-technology *ngFor="let target of ruleProvider.targets" 
+                                                   [technology]="target"
+                                                   class="techLabel">
+                                    </wu-technology>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list-view-pf-additional-info">
+                        <div class="list-view-pf-additional-info-item">
+                            <span class="fa fa-list-ol"></span>
+                            <strong>{{ruleProvider.rules ? ruleProvider.rules.length : 0}}</strong> <span i18n="Count, e.g. 5 Rules">Rules</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="container-{{ruleProvider.id}}"
+             class="list-group-item-container container-fluid hidden"
+             style="padding-top: 0px;">
+            <div class="row">
+                <div class="modal-body">
+                    <wu-rule-content *ngIf="collapseMap.get(ruleProvider)"
+                            [ruleProvider]="ruleProvider"
+                            [container]="container"
+                            [offset]="offset">
+                    </wu-rule-content>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -22,9 +22,10 @@ import {MigrationProjectService} from "../project/migration-project.service";
 import {WINDUP_WEB} from "../app.module";
 import {DialogService} from "../shared/dialog/dialog.service";
 import {ConfirmationModalComponent} from "../shared/dialog/confirmation-modal.component";
-import {filter} from "rxjs/operators";
+import {filter, concatMap} from "rxjs/operators";
 import {Path, CardPath, DropdownPath} from "./transformation-paths.component";
 import {PackageSelection} from "./select-packages/select-packages.component";
+import { empty } from 'rxjs';
 
 @Component({
     templateUrl: './analysis-context-form.component.html',
@@ -42,6 +43,8 @@ export class AnalysisContextFormComponent extends FormComponent
     project: MigrationProject;
 
     availableApps: RegisteredApplication[];
+
+    selectedCustomRulesPath: RulesPath[];
 
     /**
      * These two variables exist because we need for the item in the array not to just be a literal.
@@ -164,6 +167,8 @@ export class AnalysisContextFormComponent extends FormComponent
 
                             // Load packages
                             this.loadPackageMetadata();
+
+                            this.selectedCustomRulesPath = this.analysisContext.rulesPaths;
                         } else {
                             this._analysisContextService.get(project.defaultAnalysisContextId)
                                 .subscribe(context => {
@@ -198,10 +203,13 @@ export class AnalysisContextFormComponent extends FormComponent
                                     }
                                     this.selectedPaths = selectedPaths;
 
+                                    this.selectedCustomRulesPath = this.analysisContext.rulesPaths;
+
                                     // Load packages
                                     this.loadPackageMetadata();
                                 });
                         }
+                        this.loadPackageMetadata();
                     });
                 });
             }
@@ -358,9 +366,22 @@ export class AnalysisContextFormComponent extends FormComponent
         this.analysisContext.includePackages = this.packageSelection.includePackages;
         this.analysisContext.excludePackages = this.packageSelection.excludePackages;
 
+        this.analysisContext.rulesPaths = this.selectedCustomRulesPath;
+
         this.saveInProgress = true;
 
-        this._analysisContextService.saveAsDefault(this.analysisContext, this.project).subscribe(
+        // Before saving we need to update the analysisContext since
+        // "version" could have changed while deleting custom rules
+        const analysisContextObservable: Observable<AnalysisContext> = 
+            this.project.defaultAnalysisContextId != null ?
+            this._analysisContextService.get(this.project.defaultAnalysisContextId) : empty();
+
+        analysisContextObservable.pipe(
+            concatMap((analysisContext) => {
+                this.analysisContext.version = analysisContext.version;
+                return this._analysisContextService.saveAsDefault(this.analysisContext, this.project);
+            })
+        ).subscribe(
             updatedContext => {
                 this._dirty = false;
                 this.onSuccess(updatedContext);
@@ -443,7 +464,7 @@ export class AnalysisContextFormComponent extends FormComponent
     }
 
     isActiveRulesPaths():boolean {
-        return this.analysisContext.rulesPaths.filter(rulesPath => rulesPath.rulesPathType == 'USER_PROVIDED').length > 0;
+        return this.analysisContext.rulesPaths.filter(rulesPath => rulesPath.rulesPathType == 'USER_PROVIDED' && rulesPath.scopeType == 'PROJECT').length > 0;
     }
 
     onMigrationPathChange() {

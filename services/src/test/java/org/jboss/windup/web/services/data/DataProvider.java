@@ -6,8 +6,10 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.Configuration;
 import org.jboss.windup.web.services.model.MigrationProject;
+import org.jboss.windup.web.services.model.PathType;
 import org.jboss.windup.web.services.model.RegisteredApplication;
 import org.jboss.windup.web.services.model.RulesPath;
+import org.jboss.windup.web.services.model.ScopeType;
 import org.jboss.windup.web.services.rest.AnalysisContextEndpoint;
 import org.jboss.windup.web.services.rest.ConfigurationEndpoint;
 import org.jboss.windup.web.services.rest.ConfigurationEndpointTest;
@@ -52,9 +54,9 @@ public class DataProvider
 
     private void updateConfiguration()
     {
-        Configuration configuration = this.configurationEndpoint.getConfiguration();
+        Configuration configuration = this.configurationEndpoint.getGlobalConfiguration();
         configuration.getRulesPaths().add(getTestRulesPath());
-        configuration = this.configurationEndpoint.saveConfiguration(configuration);
+        configuration = this.configurationEndpoint.saveConfiguration(configuration.getId(), configuration);
         this.rulesPathSet = configuration.getRulesPaths();
     }
 
@@ -102,7 +104,7 @@ public class DataProvider
         String pathString = path.toString();
         if (this.rulesPathSet == null)
         {
-            return new RulesPath(pathString, RulesPath.RulesPathType.USER_PROVIDED);
+            return new RulesPath(pathString, PathType.USER_PROVIDED, ScopeType.GLOBAL);
         } else
         {
             for (RulesPath rulesPath : rulesPathSet)

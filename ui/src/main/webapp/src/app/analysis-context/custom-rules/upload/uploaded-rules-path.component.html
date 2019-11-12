@@ -1,0 +1,38 @@
+<pfng-table
+        [dataTableConfig]="dataTableConfig"
+        [actionTemplate]="actionTemplate"
+        [config]="tableConfig"
+        [columns]="columns"
+        [rows]="rows"
+        (onActionSelect)="handleAction($event)"
+        (onFilterChange)="filterChanged($event)"
+        (onFilterFieldSelect)="filterFieldSelected($event)"
+        (onFilterTypeAhead)="filterQueries($event)"
+        (onPageNumberChange)="handlePageNumber($event)"
+        (onPageSizeChange)="handlePageSize($event)"
+        (onSelectionChange)="handleSelectionChange($event)">
+</pfng-table>
+
+<!-- Column templates -->
+<ng-template #shortPathTemplate let-row="row">
+    <span>{{row?.rulesPath?.shortPath}}</span>
+</ng-template>
+<ng-template #sourceTargetTemplate let-row="row">                            
+    <!-- Source: <span *ngFor="let technology of row.sources">{{technology.name}}{{versionRangeSuffix}}</span> / Target: <span *ngFor="let technology of row.targets">{{technology.name}}{{versionRangeSuffix}}</span> -->
+    <wu-technology *ngFor="let technology of row.sources" [technology]="technology"></wu-technology>&nbsp;/&nbsp;<wu-technology *ngFor="let technology of row.targets" [technology]="technology"></wu-technology>
+    <!-- <p style="margin: 0">Source: <wu-technology-text *ngFor="let technology of row.sources" [technology]="technology"></wu-technology-text></p>
+    <p style="margin: 0">Target: <wu-technology-text *ngFor="let technology of row.targets" [technology]="technology"></wu-technology-text></p> -->
+</ng-template>
+<ng-template #rulesTemplate let-row="row">
+    <span>{{row.rules.length}} Rules</span>
+</ng-template>
+<ng-template #actionsTemplate let-row="row">
+    <button (click)="openRuleProviderModal(row)" type="button" class="btn btn-default">View</button>
+    <button (click)="requestDisplayDeleteRulesPathConfirmationModal(row)" type="button" class="btn btn-danger">Delete</button>
+</ng-template>
+
+<!-- Toolbar action template -->
+<ng-template #actionTemplate>
+    <!-- <button (click)="selectAction()" class="btn btn-default primary-action" type="button">Select&nbsp;<span class="fa fa-angle-double-right"></span></button> -->
+    <button (click)="requestDisplayAddRulesPathModal()" class="btn btn-primary primary-action" type="button">Add</button>
+</ng-template>

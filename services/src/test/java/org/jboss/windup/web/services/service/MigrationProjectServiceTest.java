@@ -84,6 +84,7 @@ public class MigrationProjectServiceTest {
 
         Path p = Paths.get("falseDir");
         doReturn(p).when(this.migrationProjectService.webPathUtil).createMigrationProjectPath(project.getId().toString());
+        doReturn(p).when(this.migrationProjectService.webPathUtil).getCustomRulesPath(project.getId().toString());
 
 
         Long id = project.getId();
@@ -124,6 +125,7 @@ public class MigrationProjectServiceTest {
 
         Path p = Paths.get("falseDir");
         doReturn(p).when(this.migrationProjectService.webPathUtil).createMigrationProjectPath(project.getId().toString());
+        doReturn(p).when(this.migrationProjectService.webPathUtil).getCustomRulesPath(project.getId().toString());
 
 
         Long id = project.getId();

@@ -16,12 +16,16 @@ import javax.ws.rs.NotFoundException;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
+import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.Configuration;
+import org.jboss.windup.web.services.model.ExecutionState;
+import org.jboss.windup.web.services.model.MigrationProject;
+import org.jboss.windup.web.services.model.PathType;
 import org.jboss.windup.web.services.model.RegistrationType;
 import org.jboss.windup.web.services.model.RuleProviderEntity;
 import org.jboss.windup.web.services.model.RuleProviderEntity_;
 import org.jboss.windup.web.services.model.RulesPath;
-import org.jboss.windup.web.services.model.RulesPath.RulesPathType;
+import org.jboss.windup.web.services.model.ScopeType;
 import org.jboss.windup.web.services.service.ConfigurationService;
 import org.jboss.windup.web.services.service.FileUploadService;
 
@@ -77,18 +81,37 @@ public class RuleEndpointImpl implements RuleEndpoint
     @Override
     public RulesPath uploadRuleProvider(MultipartFormDataInput data)
     {
+        Configuration configuration = this.configurationService.getGlobalConfiguration();
+        return uploadRuleProviderToConfiguration(data, configuration, null);
+    }
+
+    @Override
+    public RulesPath uploadRuleProviderByProject(Long projectId, MultipartFormDataInput data)
+    {
+        Configuration configuration = this.configurationService.getConfigurationByProjectId(projectId);
+        MigrationProject migrationProject = configuration.getMigrationProject();
+        return uploadRuleProviderToConfiguration(data, configuration, migrationProject.getId());
+    }
+
+    private  RulesPath uploadRuleProviderToConfiguration(MultipartFormDataInput data, Configuration configuration, Long projectId)
+    {
         String fileName = this.fileUploadService.getFileName(data);
         Path customRulesPath = this.webPathUtil.getCustomRulesPath();
 
+        // Save file to custom project folder
+        if (projectId != null) {
+            customRulesPath = this.webPathUtil.getCustomRulesPath(projectId.toString());
+        }
+
         File file = this.fileUploadService.uploadFile(data, customRulesPath, fileName, true);
 
-        RulesPath rulesPathEntity = new RulesPath(file.getPath(), RulesPath.RulesPathType.USER_PROVIDED, RegistrationType.UPLOADED);
+        ScopeType scopeType = configuration.isGlobal() ? ScopeType.GLOBAL : ScopeType.PROJECT;
+        RulesPath rulesPathEntity = new RulesPath(file.getPath(), PathType.USER_PROVIDED, scopeType, RegistrationType.UPLOADED);
         String relativePath = customRulesPath.relativize(file.toPath()).toString();
         rulesPathEntity.setShortPath(relativePath);
 
         this.entityManager.persist(rulesPathEntity);
 
-        Configuration configuration = this.configurationService.getConfiguration();
         configuration.getRulesPaths().add(rulesPathEntity);
         this.configurationService.saveConfiguration(configuration);
 
@@ -107,25 +130,44 @@ public class RuleEndpointImpl implements RuleEndpoint
             file.delete();
         }
 
-        Configuration configuration = this.configurationService.getConfiguration();
+        Configuration configuration = (Configuration) entityManager.createNamedQuery(Configuration.FIND_BY_RULE_PATH_ID)
+                .setParameter("rulePathId", rulesPath.getId())
+                .getSingleResult();
+
         configuration.getRulesPaths().remove(rulesPath);
         this.entityManager.merge(configuration);
 
-        this.entityManager.createNamedQuery(RuleProviderEntity.DELETE_BY_RULES_PATH)
-                .setParameter(RuleProviderEntity.RULES_PATH_PARAM, rulesPath)
-                .executeUpdate();
+        // Remove rulePath from all AnalysisContexts
+        @SuppressWarnings("unchecked")
+        List<AnalysisContext> analysisContexts = entityManager.createNamedQuery(AnalysisContext.FIND_BY_RULE_PATH_ID_AND_EXECUTION_IS_NULL)
+                .setParameter("rulePathId", rulesPath.getId())
+                .getResultList();
+        analysisContexts.forEach(analysisContext -> {
+            analysisContext.getRulesPaths().remove(rulesPath);
+            this.entityManager.merge(analysisContext);
+        });
 
-        this.entityManager.remove(rulesPath);
+        // TODO don't delete these entities since WindupExecution saves a reference of them
+//        this.entityManager.createNamedQuery(RuleProviderEntity.DELETE_BY_RULES_PATH)
+//                .setParameter(RuleProviderEntity.RULES_PATH_PARAM, rulesPath)
+//                .executeUpdate();
+//
+//        this.entityManager.remove(rulesPath);
     }
 
     @Override
     public Boolean isRulesPathUsed(Long rulesPathID)
     {
         RulesPath rulesPath = this.getRulesPath(rulesPathID);
-        if (rulesPath.getRulesPathType() == RulesPathType.SYSTEM_PROVIDED)
+        if (rulesPath.getRulesPathType() == PathType.SYSTEM_PROVIDED)
             return false;
 
-        String queryStr = "SELECT count(*)  > 0 FROM ANALYSISCONTEXT_RULESPATH  where RULESPATHS_RULES_PATH_ID=:id";
+        // Using ordinal() instead of toString() because WindupExecution.status is using ordinal value
+        String queryStr = "SELECT count(*)  > 0 FROM ANALYSISCONTEXT_RULESPATH ACRP \n" +
+                "INNER JOIN ANALYSISCONTEXT AC ON ACRP.ANALYSISCONTEXT_ID = AC.ID \n" +
+                "INNER JOIN WINDUPEXECUTION WE ON AC.ID = WE.ANALYSISCONTEXT_ID \n" +
+                "where (WE.STATUS = "+ ExecutionState.QUEUED.ordinal() + " OR WE.STATUS = " + ExecutionState.STARTED.ordinal() + ") \n" +
+                "AND RULESPATHS_RULES_PATH_ID=:id";
         Boolean test = (Boolean) this.entityManager.createNativeQuery(queryStr).
                     setParameter("id", rulesPath.getId()).
                     getSingleResult();

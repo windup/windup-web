@@ -99,6 +99,18 @@
                 </ul>
             </wu-expand-collapse>
 
+            <wu-expand-collapse [tabTitle]="'Custom Rules'" *ngIf="execution.analysisContext.rulesPaths.length > 0">
+                <ul>
+                    <li *ngFor="let rulesPath of execution.analysisContext.rulesPaths">
+                        <span *ngIf="rulesPath.registrationType == 'UPLOADED'"><i class="fa fa-file-code-o"></i></span>
+                        <span *ngIf="rulesPath.registrationType != 'UPLOADED'"><i class="fa fa-folder"></i></span>
+                        
+                        <span *ngIf="rulesPath.scopeType != 'GLOBAL'">{{rulesPath.path}}</span>
+                        <span *ngIf="rulesPath.scopeType == 'GLOBAL'">(Global) {{rulesPath.path}}</span>
+                    </li>
+                </ul>
+            </wu-expand-collapse>
+
             <wu-expand-collapse [isActive]="true" [tabTitle]="'Advanced options'" *ngIf="execution.analysisContext.advancedOptions.length > 0">
                 <wu-analysis-context-advanced-options
                         [(selectedOptions)]="execution.analysisContext.advancedOptions"
