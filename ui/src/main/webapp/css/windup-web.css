@@ -277,3 +277,59 @@ fieldset.fields-section-pf {
 .mat-checkbox > label {
     margin-right: 5px;
 }
+
+
+
+.text-center-override {
+    text-align: center !important;
+}
+
+/**Remove botton margin on patternfly-table*/
+.content-view-pf-pagination.list-view-pf-pagination {
+    margin-top: 5px !important;
+}
+
+.content-view-pf-pagination .form-group {
+    align-items: center !important;
+}
+
+.form-horizontal .toolbar-pf-actions .form-group {
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+}
+
+/**Utils**/
+.line-height-25 {
+    line-height: 25px !important;
+}
+
+.rulesList .techLabel {
+    display: inline-block;
+    border: 2px ridge white /*1px solid #9ed0f1*/
+  ;
+    background-color: #e0f7ff;
+    padding: 0.1ex 0.4em;
+    margin: 0.1ex 0.4ex 0;
+}
+
+.row-danger {
+    color: #cc0000 !important;
+}
+
+/** Custom Rules empty state**/
+
+@media (min-width: 992px) {
+    .blank-slate-pf {
+        padding: 80px 120px;
+    }
+}
+
+/** general toast notifications **/
+@media (max-width: 767px) {
+    .toast-notifications-list-pf {
+      max-width: calc(100% - 40px);
+    }
+}
+.toast-notifications-list-pf > div .toast-pf {
+    width: 100%;
+}

@@ -7,7 +7,7 @@ import javax.inject.Inject;
 
 import org.jboss.forge.furnace.Furnace;
 import org.jboss.windup.config.metadata.RuleProviderRegistryCache;
-import org.jboss.windup.web.services.model.RulesPath;
+import org.jboss.windup.web.services.model.PathType;
 import org.jboss.windup.web.services.service.ConfigurationService;
 
 import java.nio.file.Paths;
@@ -31,15 +31,16 @@ public class RuleProviderCacheSetup
     @PostConstruct
     public void addSystemRulesPath()
     {
-        this.configurationService
-                .getConfiguration()
-                .getRulesPaths()
-                .stream()
-                .filter(rulesPath -> rulesPath.getRulesPathType() == RulesPath.RulesPathType.SYSTEM_PROVIDED)
-                .map(rulesPath -> Paths.get(rulesPath.getPath()))
-                .forEach(path -> {
-                    this.getRuleProviderRegistryCache().addUserRulesPath(path);
-                });
+        configurationService.getAllConfigurations().forEach(configuration -> {
+            configuration
+                    .getRulesPaths()
+                    .stream()
+                    .filter(rulesPath -> rulesPath.getRulesPathType() == PathType.SYSTEM_PROVIDED)
+                    .map(rulesPath -> Paths.get(rulesPath.getPath()))
+                    .forEach(path -> {
+                        this.getRuleProviderRegistryCache().addUserRulesPath(path);
+                    });
+        });
         // This is just to make sure the cache gets loaded
         this.getRuleProviderRegistryCache().getRuleProviderRegistry();
     }

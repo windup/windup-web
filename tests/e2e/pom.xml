@@ -171,7 +171,7 @@
                                     <directory>src/main/resources/h2</directory>
                                     <filtering>false</filtering>
                                     <includes>
-                                        <include>windup-web.h2.db</include>
+                                        <include>windup-web.mv.db</include>
                                     </includes>
                                 </resource>
                             </resources>

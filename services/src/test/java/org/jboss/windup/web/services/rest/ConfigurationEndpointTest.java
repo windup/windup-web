@@ -9,8 +9,8 @@ import org.jboss.windup.web.services.AbstractTest;
 import org.jboss.windup.web.services.ServiceTestUtil;
 import org.jboss.windup.web.services.data.ServiceConstants;
 import org.jboss.windup.web.services.model.Configuration;
+import org.jboss.windup.web.services.model.PathType;
 import org.jboss.windup.web.services.model.RulesPath;
-import org.jboss.windup.web.services.model.RulesPath.RulesPathType;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,13 +47,13 @@ public class ConfigurationEndpointTest extends AbstractTest
     @RunAsClient
     public void testEndpoint()
     {
-        Configuration configuration = configurationEndpoint.getConfiguration();
+        Configuration configuration = configurationEndpoint.getGlobalConfiguration();
 
         RulesPath rulesPath = new RulesPath();
         rulesPath.setPath(FAKE_PATH);
         configuration.setRulesPaths(Collections.singleton(rulesPath));
 
-        configuration = configurationEndpoint.saveConfiguration(configuration);
+        configuration = configurationEndpoint.saveConfiguration(configuration.getId(), configuration);
 
         Assert.assertNotNull(configuration.getRulesPaths());
         Assert.assertEquals(1, configuration.getRulesPaths().size());
@@ -64,16 +64,16 @@ public class ConfigurationEndpointTest extends AbstractTest
     @RunAsClient
     public void testCustomRulesetEndpoint()
     {
-        Configuration configuration = configurationEndpoint.getConfiguration();
+        Configuration configuration = configurationEndpoint.getGlobalConfiguration();
         Assert.assertNotNull(configuration);
 
         RulesPath rulesPath = new RulesPath();
         rulesPath.setPath(CUSTOM_RULESPATH);
-        rulesPath.setRulesPathType(RulesPathType.USER_PROVIDED);
+        rulesPath.setRulesPathType(PathType.USER_PROVIDED);
         configuration.setRulesPaths(Collections.singleton(rulesPath));
 
-        configuration = configurationEndpoint.saveConfiguration(configuration);
-        Set<RulesPath> rulesetPaths = configurationEndpoint.getCustomRulesetPaths();
+        configuration = configurationEndpoint.saveConfiguration(configuration.getId(), configuration);
+        Set<RulesPath> rulesetPaths = configurationEndpoint.getCustomRulesetPaths(configuration.getId());
 
         Assert.assertNotNull(configuration.getRulesPaths());
         Assert.assertNotNull(rulesetPaths);

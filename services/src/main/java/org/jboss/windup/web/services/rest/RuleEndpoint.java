@@ -2,7 +2,6 @@ package org.jboss.windup.web.services.rest;
 
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.windup.config.RuleProvider;
-import org.jboss.windup.web.services.model.RegisteredApplication;
 import org.jboss.windup.web.services.model.RuleProviderEntity;
 import org.jboss.windup.web.services.model.RulesPath;
 
@@ -44,6 +43,14 @@ public interface RuleEndpoint
     @Path("upload")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     RulesPath uploadRuleProvider(MultipartFormDataInput data);
+
+    /**
+     * Uploads new RuleProvider
+     */
+    @POST
+    @Path("upload/by-project/{projectId}")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    RulesPath uploadRuleProviderByProject(@PathParam("projectId") Long projectId, MultipartFormDataInput data);
 
 
     @DELETE

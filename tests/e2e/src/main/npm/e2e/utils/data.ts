@@ -3,12 +3,12 @@ export const PROJECT_WITH_ANALYSIS = {
     name: 'Project with analysis',
     executions: [
         {
-            id: 1
+            id: 2183
         }
     ]
 };
 
 export const PROJECT_WITHOUT_ANALYSIS = {
-    id: 7905,
+    id: 2217,
     name: 'Project without analysis'
 };

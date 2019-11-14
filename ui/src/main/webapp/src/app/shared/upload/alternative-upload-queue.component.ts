@@ -1,7 +1,7 @@
 import {Component, Input, NgZone, OnInit} from "@angular/core";
 import {FileItem} from "ng2-file-upload";
 import {utils} from "../utils";
-import {NotificationService, NotificationType} from 'patternfly-ng/notification';
+import {NotificationService} from "../../core/notification/notification.service";
 import {FileUploaderWrapper} from "./file-uploader-wrapper.service";
 import {AbstractComponent} from "../AbstractComponent";
 import {RegisteredApplicationService} from "../../registered-application/registered-application.service";
@@ -40,7 +40,7 @@ export class AlternativeUploadQueueComponent extends AbstractComponent implement
             }
             
             let errorMessage = response.message ? response.message : "Error uploading file";
-            this.notificationService.message(NotificationType.DANGER, "Error", errorMessage, false, null, null);
+            this.notificationService.errorToast(errorMessage, "Error");
             item.remove();
         }));
 

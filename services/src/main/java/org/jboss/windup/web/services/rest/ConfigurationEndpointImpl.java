@@ -19,26 +19,33 @@ public class ConfigurationEndpointImpl implements ConfigurationEndpoint
     private ConfigurationService configurationService;
 
     @Override
-    public Configuration getConfiguration()
+    public Configuration getGlobalConfiguration()
     {
-        return configurationService.getConfiguration();
+        return configurationService.getGlobalConfiguration();
     }
 
     @Override
-    public Configuration saveConfiguration(Configuration configuration)
+    public Configuration saveConfiguration(long id, Configuration configuration)
     {
+        configuration.setId(id);
         return configurationService.saveConfiguration(configuration);
     }
 
     @Override
-    public Set<RulesPath> getCustomRulesetPaths()
+    public Configuration getConfigurationByProject(long projectId)
     {
-        return configurationService.getCustomRulesPath();
+        return configurationService.getConfigurationByProjectId(projectId);
     }
 
     @Override
-    public Configuration reloadConfiguration()
+    public Set<RulesPath> getCustomRulesetPaths(long id)
     {
-        return configurationService.reloadConfiguration();
+        return configurationService.getCustomRulesPath(id);
+    }
+
+    @Override
+    public Configuration reloadConfiguration(long id)
+    {
+        return configurationService.reloadConfiguration(id);
     }
 }

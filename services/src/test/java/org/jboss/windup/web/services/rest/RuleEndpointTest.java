@@ -9,8 +9,10 @@ import org.jboss.windup.web.services.AbstractTest;
 import org.jboss.windup.web.services.ServiceTestUtil;
 import org.jboss.windup.web.services.data.ServiceConstants;
 import org.jboss.windup.web.services.model.Configuration;
+import org.jboss.windup.web.services.model.PathType;
 import org.jboss.windup.web.services.model.RuleProviderEntity;
 import org.jboss.windup.web.services.model.RulesPath;
+import org.jboss.windup.web.services.model.ScopeType;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,7 +52,7 @@ public class RuleEndpointTest extends AbstractTest
         return configuration
                 .getRulesPaths()
                 .stream()
-                .filter((rulesPath) -> rulesPath.getRulesPathType() == RulesPath.RulesPathType.SYSTEM_PROVIDED)
+                .filter((rulesPath) -> rulesPath.getRulesPathType() == PathType.SYSTEM_PROVIDED)
                 .findFirst();
     }
 
@@ -74,12 +76,12 @@ public class RuleEndpointTest extends AbstractTest
     @Test
     @RunAsClient
     public void testByRulePathWithRules() {
-        Configuration configuration = configurationEndpoint.getConfiguration();
+        Configuration configuration = configurationEndpoint.getGlobalConfiguration();
         RulesPath systemRulesPath = getSystemRulesPath(configuration).get();
         System.out.println("System rules path: " + systemRulesPath);
 
-        configuration.getRulesPaths().add(new RulesPath(FAKE_PATH, RulesPath.RulesPathType.USER_PROVIDED));
-        configurationEndpoint.saveConfiguration(configuration);
+        configuration.getRulesPaths().add(new RulesPath(FAKE_PATH, PathType.USER_PROVIDED, ScopeType.GLOBAL));
+        configurationEndpoint.saveConfiguration(configuration.getId(), configuration);
 
         List<RuleProviderEntity> ruleProviderEntities = ruleEndpoint.getByRulesPath(systemRulesPath.getId());
 
@@ -98,10 +100,10 @@ public class RuleEndpointTest extends AbstractTest
     @Test
     @RunAsClient
     public void testByRulePathWithNORules() {
-        Configuration configuration = configurationEndpoint.getConfiguration();
-        RulesPath fakeRulesPath = new RulesPath(FAKE_PATH, RulesPath.RulesPathType.USER_PROVIDED);
+        Configuration configuration = configurationEndpoint.getGlobalConfiguration();
+        RulesPath fakeRulesPath = new RulesPath(FAKE_PATH, PathType.USER_PROVIDED, ScopeType.GLOBAL);
         configuration.getRulesPaths().add(fakeRulesPath);
-        configuration = configurationEndpoint.saveConfiguration(configuration);
+        configuration = configurationEndpoint.saveConfiguration(configuration.getId(), configuration);
 
         for (RulesPath rulesPath : configuration.getRulesPaths())
         {
