@@ -27,6 +27,7 @@ import org.jboss.windup.web.addons.websupport.services.WindupExecutorService;
 import org.jboss.windup.web.services.model.AdvancedOption;
 import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.ExecutionState;
+import org.jboss.windup.web.services.model.LabelsPath;
 import org.jboss.windup.web.services.model.MigrationPath;
 import org.jboss.windup.web.services.model.Package;
 import org.jboss.windup.web.services.model.PathType;

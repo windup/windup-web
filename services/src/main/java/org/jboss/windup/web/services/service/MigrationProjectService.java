@@ -14,6 +14,7 @@ import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.Configuration;
+import org.jboss.windup.web.services.model.LabelProviderEntity;
 import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.model.RuleProviderEntity;
 

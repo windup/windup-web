@@ -260,6 +260,9 @@ export class CustomLabelsComponent extends RoutedComponent implements ControlVal
     unselect(labelsPath: LabelsPath[]) {
         this.loading = true;
 
+        // Clean selection
+        this.labelsPathForUnselect = [];
+
         this.selectedUploadedLabelsPath = this.selectedUploadedLabelsPath.filter(p => {
             return !labelsPath.some(r => r.id == p.id);
         });

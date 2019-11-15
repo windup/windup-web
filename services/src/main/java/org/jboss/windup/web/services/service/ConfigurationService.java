@@ -3,6 +3,7 @@ package org.jboss.windup.web.services.service;
 import org.jboss.windup.web.furnaceserviceprovider.WebProperties;
 import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.Configuration;
+import org.jboss.windup.web.services.model.LabelsPath;
 import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.model.PathType;
 import org.jboss.windup.web.services.model.RulesPath;
