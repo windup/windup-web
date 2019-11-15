@@ -378,7 +378,7 @@ export class AnalysisContextFormComponent extends FormComponent
 
         // Before saving we need to update the analysisContext since
         // "version" could have changed while deleting custom rules
-        const analysisContextObservable: Observable<AnalysisContext> = 
+        const analysisContextObservable: Observable<AnalysisContext> =
             this.project.defaultAnalysisContextId != null ?
             this._analysisContextService.get(this.project.defaultAnalysisContextId) : empty();
 

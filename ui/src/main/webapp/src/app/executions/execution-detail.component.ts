@@ -48,13 +48,15 @@ export class ExecutionDetailComponent extends RoutedComponent implements OnInit,
                 .pipe(
                     filter(event => event.isTypeOf(ExecutionEvent)),
                     filter((event: ExecutionEvent) => event.execution.id === executionId)
-                )                
+                )
                 .subscribe((event: ExecutionEvent) => {
+                    event.execution.analysisContext.rulesPaths = this.getSortedRulesPaths(event.execution.analysisContext.rulesPaths);
                     this.execution = event.execution;
                     this.loadLogData();
                 });
 
             this._windupService.getExecution(executionId).subscribe(execution => {
+                execution.analysisContext.rulesPaths = this.getSortedRulesPaths(execution.analysisContext.rulesPaths);
                 this.execution = execution;
                 this.loadLogData();
                 this._ruleProviderExecutionsService.getPhases(executionId)
@@ -95,9 +97,9 @@ export class ExecutionDetailComponent extends RoutedComponent implements OnInit,
         return WindupExecutionService.formatStaticReportUrl(execution);
     }
 
-    formatStaticCsvReportUrl(execution: WindupExecution): string {        
+    formatStaticCsvReportUrl(execution: WindupExecution): string {
         return WindupExecutionService.formatStaticCsvReportUrl(execution);
-    }    
+    }
 
     containsAdvancedOption(execution: WindupExecution, optionName: string, optionValue: any): boolean {
         return WindupExecutionService.containsAdvancedOption(execution, optionName, optionValue);

@@ -1,4 +1,4 @@
-<pfng-toolbar 
+<pfng-toolbar
         [config]="toolbarConfig"
         (onActionSelect)="handleToolbarAction($event)"
         (onFilterChange)="filterChanged($event)"
@@ -41,9 +41,9 @@
         <ng-template #expandTemplate let-item="item" let-index="index">
             <ul style="max-height: 130px; overflow-y: auto;">
                 <li *ngFor="let rulesProvider of getRulesProvider(item)">
-                    <span *ngIf="!rulesProvider.loadError">{{rulesProvider.origin}}</span>
+                    <span *ngIf="!rulesProvider.loadError">{{rulesProvider.origin || rulesProvider?.rulesPath?.path}}</span>
                     <span *ngIf="rulesProvider.loadError" style="color: #cc0000">{{rulesProvider.origin}} - {{rulesProvider.loadError}}</span>
-                </li>                
+                </li>
             </ul>
         </ng-template>
     </pfng-list>

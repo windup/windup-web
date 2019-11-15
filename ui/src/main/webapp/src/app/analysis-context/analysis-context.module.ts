@@ -17,14 +17,12 @@ import {ToolbarModule} from "patternfly-ng/toolbar";
 import {ActionModule} from "patternfly-ng/action";
 import {TabsModule, TabsetConfig} from "ngx-bootstrap/tabs";
 import {ModalModule} from "ngx-bootstrap/modal";
-
 import {CustomRulesComponent} from "./custom-rules/custom-rules.component";
 import {UploadedRulesPathComponent} from "./custom-rules/upload/uploaded-rules-path.component";
 import {ServerPathRulesComponent} from "./custom-rules/server-path/server-path-rules.component";
 import {UploadedRulePathModalComponent} from "./custom-rules/upload/modal/uploaded-rule-path-modal.component";
 import {ServerPathRulesModalComponent} from "./custom-rules/server-path/modal/server-path-rules-modal.component";
 import {ConfigurationModule} from "../configuration/configuration.module";
-
 import { CustomLabelsComponent } from "./custom-labels/custom-labels.component";
 import { UploadedLabelsPathComponent } from "./custom-labels/upload/uploaded-labels-path.component";
 import { ServerPathLabelsComponent } from "./custom-labels/server-path/server-path-labels.component";

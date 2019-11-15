@@ -119,7 +119,7 @@ export class CustomRulesComponent extends RoutedComponent implements ControlValu
 
 
     /**
-     * 
+     *
      * Called to write data from the model to the view
      */
     writeValue(obj: any): void {
@@ -197,7 +197,7 @@ export class CustomRulesComponent extends RoutedComponent implements ControlValu
     removeRulesPath(rulesPath: RulesPath) {
         this._ruleService.deleteRule(rulesPath).subscribe(() => {
             this._notificationService.success('Rule was deleted');
-        
+
             this._configurationService.getByProjectId(this.project.id).subscribe(newConfig => {
                 this.configuration = newConfig;
                 this.loadCustomRules();
@@ -244,7 +244,7 @@ export class CustomRulesComponent extends RoutedComponent implements ControlValu
         if (valueChanged) {
             this.value = newValue;
 
-            // Change Model (NgForm)        
+            // Change Model (NgForm)
             this._onChange(this.value);
 
             // // Emit event
@@ -259,6 +259,9 @@ export class CustomRulesComponent extends RoutedComponent implements ControlValu
      */
     unselect(rulesPath: RulesPath[]) {
         this.loading = true;
+
+        // Clean selection
+        this.rulesPathForUnselect = [];
 
         this.selectedUploadedRulesPath = this.selectedUploadedRulesPath.filter(p => {
             return !rulesPath.some(r => r.id == p.id);

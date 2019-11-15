@@ -37,6 +37,8 @@ export class ServerPathRulesComponent implements DoCheck {
     toolbarActionConfig: ActionConfig;
     toolbarFilterConfig: FilterConfig;
 
+    toolbarNameQueries: any[];
+
     // List view config
 
     listConfig: ListConfig;
