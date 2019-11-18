@@ -50,7 +50,7 @@ export class SelectPackagesWrapperComponent implements ControlValueAccessor, Val
 
     // NgForm value
     value: PackageSelection;
-    originalValue: PackageSelection;
+    originalValue: PackageSelection | boolean;
     includePackages: Package[] = [];
     excludePackages: Package[] = [];
 
@@ -93,7 +93,16 @@ export class SelectPackagesWrapperComponent implements ControlValueAccessor, Val
     writeValue(obj: any): void {
         if (obj) {
             this.value = obj;
-            this.originalValue = obj;
+            
+            // if includePackages and excludePackages are empty, it means
+            // that the user saved the Analysis without selecting any package; so we
+            // select all packages by default.
+            if (this.value && (this.value.includePackages.length == 0 || this.value.excludePackages.length == 0)) {
+                this.originalValue = true;
+            } else {
+                this.originalValue = obj;
+            }
+            
             this.includePackages = obj.includePackages;
             this.excludePackages = obj.excludePackages;
         }
@@ -298,26 +307,35 @@ export class SelectPackagesWrapperComponent implements ControlValueAccessor, Val
             });
         }
 
-        // Change value only of it really changed
-        const oldValue: PackageSelection = this.value;
+
         const newValue: PackageSelection = {
             includePackages: Array.from(includePackages.values()),
             excludePackages: Array.from(excludePackages.values())
         }
+        this.includePackages = newValue.includePackages;
+        this.excludePackages = newValue.excludePackages;
 
-        const oldIncludedIDs = oldValue.includePackages.map(elem => elem.id);
-        const oldExcludedIDs = oldValue.excludePackages.map(elem => elem.id);
-        const newIncludedIDs = newValue.includePackages.map(elem => elem.id);
-        const newExcludedIDs = newValue.excludePackages.map(elem => elem.id);
 
-        const valueChanged: boolean = (oldIncludedIDs.length != newIncludedIDs.length) ||
-                                      (oldExcludedIDs.length != newExcludedIDs.length) ||
-                                       oldIncludedIDs.some(elem => !newIncludedIDs.includes(elem)) ||
-                                       oldExcludedIDs.some(elem => !newExcludedIDs.includes(elem));
+        // Change value only of it really changed
+        let valueChanged: boolean;
+        if (typeof this.originalValue == "boolean") {
+            valueChanged = this.originalValue
+                ? !(newValue.includePackages.length > 0 && newValue.excludePackages.length == 0)
+                : !(newValue.includePackages.length == 0 && newValue.excludePackages.length > 0);
+        } else {
+            const oldIncludedIDs = this.originalValue.includePackages.map(elem => elem.id);
+            const oldExcludedIDs = this.originalValue.excludePackages.map(elem => elem.id);
+            
+            const newIncludedIDs = newValue.includePackages.map(elem => elem.id);
+            const newExcludedIDs = newValue.excludePackages.map(elem => elem.id);
+    
+            valueChanged = (oldIncludedIDs.length != newIncludedIDs.length) ||
+                           (oldExcludedIDs.length != newExcludedIDs.length) ||
+                           oldIncludedIDs.some(elem => !newIncludedIDs.includes(elem)) ||
+                           oldExcludedIDs.some(elem => !newExcludedIDs.includes(elem));
+        }
         
         if (valueChanged) {
-            this.includePackages = newValue.includePackages;
-            this.excludePackages = newValue.excludePackages;
             this.value = newValue;
 
             // Change Model (NgForm)        

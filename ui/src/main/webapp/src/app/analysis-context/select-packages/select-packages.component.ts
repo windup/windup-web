@@ -113,10 +113,7 @@ export class SelectPackagesComponent implements OnDestroy {
                     if (typeof this._defaultValue === "boolean") {
                         this.loadTreeFromBooleanDefaultValue(this._defaultValue);
                     } else {
-                        // Temporal validation
-                        if (this._defaultValue && (this._defaultValue.includePackages.length > 0 || this._defaultValue.excludePackages.length > 0)) {
-                            this.loadTreeFromPreviousPackageSelection(this._defaultValue);
-                        }
+                        this.loadTreeFromPreviousPackageSelection(this._defaultValue);
                     }
                 })
         );
@@ -398,11 +395,23 @@ export class SelectPackagesComponent implements OnDestroy {
      * Updates 'NgModel' value when select or unselect events occur
      */
     updateValue(): void {
-        
-        console.log("this._defaultValue", this._defaultValue);
-        console.log("updateValue1", this._value);
-        this._value = this.getCheckedNodes(this._packages);
-        console.log("updateValue2", this._value);
+        const newValue: PackageSelection = this.getCheckedNodes(this._packages);
+
+        // if (typeof this._defaultValue === "boolean") {
+        //     if (this._defaultValue) {
+        //         if (newValue.includePackages.length > 0 && newValue.excludePackages.length == 0) {
+        //             return;
+        //         }
+        //     } else {
+        //         if (newValue.includePackages.length == 0 && newValue.excludePackages.length > 0) {
+        //             return;
+        //         }
+        //     }
+        // } else {
+            
+        // }
+
+        this._value = newValue;
         // Emit event
         this.onSelectionChange.emit(this._value);
     }
