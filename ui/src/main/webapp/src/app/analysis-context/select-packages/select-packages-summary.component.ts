@@ -36,6 +36,9 @@ export class SelectPackagesSummaryComponent {
 
     @Input()
     title: string;
+
+    @Input()
+    emptyMessage: string;
     
     @ViewChild('tree')
     tree: any;
