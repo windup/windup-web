@@ -1,7 +1,7 @@
 import {Component, NgZone, OnDestroy, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {WindupService} from "../services/windup.service";
-import {WindupExecution, RegisteredApplication, RulesPath} from "../generated/windup-services";
+import {WindupExecution, RegisteredApplication, RulesPath, Package} from "../generated/windup-services";
 import {WINDUP_WEB} from "../app.module";
 
 import {WindupExecutionService} from "../services/windup-execution.service";
@@ -146,5 +146,15 @@ export class ExecutionDetailComponent extends RoutedComponent implements OnInit,
 
             return result;
         });
+    }
+
+    getSortedPackages(packages: Package[]) {
+        return packages.sort((a: Package, b: Package) => {
+            return a.fullName.localeCompare(b.fullName);
+        });
+    }
+
+    idTrackFn(index: number, item: any): number {
+        return item.id;
     }
 }

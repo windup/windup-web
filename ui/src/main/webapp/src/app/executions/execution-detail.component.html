@@ -89,19 +89,19 @@
 
             <wu-expand-collapse [tabTitle]="'Included Packages'" *ngIf="execution.analysisContext.includePackages.length > 0">
                 <ul>
-                    <li *ngFor="let package of execution.analysisContext.includePackages">{{package.fullName}}</li>
+                    <li *ngFor="let package of getSortedPackages(execution.analysisContext.includePackages); trackBy: idTrackFn">{{package.fullName}}</li>
                 </ul>
             </wu-expand-collapse>
 
             <wu-expand-collapse [tabTitle]="'Excluded Packages'" *ngIf="execution.analysisContext.excludePackages.length > 0">
                 <ul>
-                    <li *ngFor="let package of execution.analysisContext.excludePackages">{{package.fullName}}</li>
+                    <li *ngFor="let package of getSortedPackages(execution.analysisContext.excludePackages); trackBy: idTrackFn">{{package.fullName}}</li>
                 </ul>
             </wu-expand-collapse>
 
             <wu-expand-collapse [tabTitle]="'Custom Rules'" *ngIf="execution.analysisContext.rulesPaths.length > 0">
                 <ul>
-                    <li *ngFor="let rulesPath of execution.analysisContext.rulesPaths">
+                    <li *ngFor="let rulesPath of getSortedRulesPaths(execution.analysisContext.rulesPaths); trackBy: idTrackFn">
                         <span *ngIf="rulesPath.registrationType == 'UPLOADED'"><i class="fa fa-file-code-o"></i></span>
                         <span *ngIf="rulesPath.registrationType != 'UPLOADED'"><i class="fa fa-folder"></i></span>
                         
@@ -120,7 +120,7 @@
         </wu-tab>
         <wu-tab [tabTitle]="'Applications (' + getAnalyzedApplications(execution).length + ')'">
             <h3 i18n="Analysis configuration|Section">Applications</h3>
-            <span *ngFor="let application of getAnalyzedApplications(execution)">{{application.title}}<br/></span>
+            <span *ngFor="let application of getAnalyzedApplications(execution); trackBy: idTrackFn">{{application.title}}<br/></span>
         </wu-tab>
         <wu-tab [tabTitle]="'Rules'">
             <span *ngIf="phases == null">
@@ -142,7 +142,7 @@
                     <tbody>
                     <ng-template ngFor [ngForOf]="phases" let-phase>
                         <ng-template ngFor [ngForOf]="(phase?.ruleProviders | async)" let-ruleProvider>
-                            <tr *ngFor="let rule of (ruleProvider?.rules | async)" class="execution-row">
+                            <tr *ngFor="let rule of (ruleProvider?.rules | async); trackBy: idTrackFn" class="execution-row">
                                 <td>{{rule.ruleId}}</td>
                                 <td>{{phase.name}}</td>
                                 <td>{{ruleProvider.ruleProviderID}}</td>
