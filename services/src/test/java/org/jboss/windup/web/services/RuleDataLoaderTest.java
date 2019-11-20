@@ -2,6 +2,7 @@ package org.jboss.windup.web.services;
 
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.windup.web.services.model.Configuration;
+import org.jboss.windup.web.services.model.LabelsPath;
 import org.jboss.windup.web.services.model.PathType;
 import org.jboss.windup.web.services.model.RuleProviderEntity;
 import org.jboss.windup.web.services.model.RulesPath;
@@ -26,6 +27,9 @@ public class RuleDataLoaderTest extends AbstractTest
     public static final String CUSTOM_WINDUP_RULESPATH = "target/test-classes/custom-rulesets-data/custom-ruleset.windup.xml";
     public static final String CUSTOM_RHAMT_RULESPATH = "target/test-classes/custom-rulesets-data/custom-ruleset.rhamt.xml";
 
+    public static final String CUSTOM_WINDUP_LABELSPATH = "target/test-classes/custom-labelsets-data/Test1.windup.label.xml";
+    public static final String CUSTOM_RHAMT_LABELSPATH = "target/test-classes/custom-labelsets-data/Test2.rhamt.label.xml";
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -42,8 +46,11 @@ public class RuleDataLoaderTest extends AbstractTest
         Configuration configuration = this.configurationService.getGlobalConfiguration();
         configuration.getRulesPaths().add(new RulesPath(CUSTOM_WINDUP_RULESPATH, PathType.USER_PROVIDED, ScopeType.GLOBAL));
         configuration.getRulesPaths().add(new RulesPath(CUSTOM_RHAMT_RULESPATH, PathType.USER_PROVIDED, ScopeType.GLOBAL));
+        configuration.getLabelsPaths().add(new LabelsPath(CUSTOM_WINDUP_LABELSPATH, PathType.USER_PROVIDED, ScopeType.GLOBAL));
+        configuration.getLabelsPaths().add(new LabelsPath(CUSTOM_RHAMT_LABELSPATH, PathType.USER_PROVIDED, ScopeType.GLOBAL));
         configuration = this.configurationService.saveConfiguration(configuration);
         ruleDataLoader.reloadRuleData(configuration);
+        ruleDataLoader.reloadLabelData(configuration);
 
         @SuppressWarnings("unchecked")
         List<RuleProviderEntity> ruleProviderEntities = entityManager.createNamedQuery(RuleProviderEntity.FIND_ALL).getResultList();
