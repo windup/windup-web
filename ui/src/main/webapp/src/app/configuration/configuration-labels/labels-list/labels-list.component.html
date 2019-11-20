@@ -29,8 +29,10 @@
                             </div>
                             <div style="margin-left: 25pt; ">
                                 <div>{{labelProvider.origin}}</div>
-                                <div *ngIf="labelProvider.loadError" style="font-weight: bold">
-                                    {{labelProvider.loadError}}
+                                <div *ngIf="labelProvider.loadError">
+                                    <span>
+                                        <i class="pficon pficon-warning-triangle-o"></i><small> {{labelProvider.loadError}}</small>
+                                    </span>
                                 </div>
                                 <div *ngIf="labelProvider.labels.length > 0">
                                     Custom labels: <div class="techLabel" *ngFor="let label of labelProvider.labels">

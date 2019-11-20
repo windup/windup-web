@@ -61,6 +61,9 @@
                     <h3 i18n>Loading labels...</h3>
                 </div>
 
+                <div *ngIf="areLabelsLoaded(labelPath) && hasProvidersWithErrors(labelPath)">
+                    <h3 i18n><small class="error-text">* One or more Labels inside current LabelPath are invalid, it might cause an analysis to fail.</small></h3>
+                </div>
                 <div *ngIf="areLabelsLoaded(labelPath) && !hasFileBasedProviders(labelPath)">
                     <h3 i18n>No labels found.</h3>
                 </div>

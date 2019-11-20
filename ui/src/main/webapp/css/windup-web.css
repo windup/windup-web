@@ -342,3 +342,8 @@ fieldset.fields-section-pf {
 .toast-notifications-list-pf > div .toast-pf {
     width: 100%;
 }
+
+/** text clases **/
+.error-text {
+    color: #c00;
+}

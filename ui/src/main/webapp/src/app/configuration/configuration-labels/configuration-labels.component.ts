@@ -144,6 +144,14 @@ export class ConfigurationLabelsComponent implements OnInit, AfterViewInit {
         return foundLabels;
     }
 
+    hasProvidersWithErrors(labelsPath: LabelsPath): boolean {
+        let providers = this.labelProvidersByPath.get(labelsPath);
+        if (!providers)
+            return false;
+
+        return providers.filter(p => p.loadError).length > 0;
+    }
+
     isFileBasedProvider(provider: LabelProviderEntity) {
         switch (provider.labelProviderType) {
             case "XML":

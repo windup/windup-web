@@ -150,6 +150,14 @@ export class ConfigurationRulesComponent implements OnInit, AfterViewInit {
         return foundRules;
     }
 
+    hasProvidersWithErrors(rulesPath: RulesPath): boolean {
+        let providers = this.ruleProvidersByPath.get(rulesPath);
+        if (!providers)
+            return false;
+
+        return providers.filter(p => p.loadError).length > 0;
+    }
+
     isFileBasedProvider(provider:RuleProviderEntity) {
         switch (provider.ruleProviderType) {
             case "GROOVY":
