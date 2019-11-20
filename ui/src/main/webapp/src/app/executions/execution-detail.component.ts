@@ -15,6 +15,12 @@ import {RouteFlattenerService} from "../core/routing/route-flattener.service";
 import {SchedulerService} from "../shared/scheduler.service";
 import { filter } from 'rxjs/operators';
 
+export function sortPackages(packages: Package[]): Package[] {
+    return packages.sort((a: Package, b: Package) => {
+        return a.fullName.localeCompare(b.fullName);
+    });
+}
+
 @Component({
     templateUrl: './execution-detail.component.html',
     styleUrls: ['./execution-detail.component.scss']
@@ -149,9 +155,7 @@ export class ExecutionDetailComponent extends RoutedComponent implements OnInit,
     }
 
     getSortedPackages(packages: Package[]) {
-        return packages.sort((a: Package, b: Package) => {
-            return a.fullName.localeCompare(b.fullName);
-        });
+        return sortPackages(packages);
     }
 
     idTrackFn(index: number, item: any): number {
