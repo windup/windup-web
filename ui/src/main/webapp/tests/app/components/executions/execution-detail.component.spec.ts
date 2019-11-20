@@ -1,9 +1,10 @@
 
-import { sortPackages } from "../../../../src/app/executions/execution-detail.component";
-import { Package } from "../../../../src/app/generated/windup-services";
+import { sortPackagesByFullName } from "../../../../src/app/executions/execution-detail.component";
+import { sortRulesPathsByPriority } from "../../../../src/app/executions/execution-detail.component";
+import { Package, RulesPath } from "../../../../src/app/generated/windup-services";
 
 describe('ExecutionDetailComponent', () => {
-    it('should be able to add two whole numbers', () => {
+    it('should order packages by fullName', () => {
         // given
         const packages: Package[] = [{
             id: 1,
@@ -32,11 +33,77 @@ describe('ExecutionDetailComponent', () => {
         }];
 
         // when
-        sortPackages(packages);
+        sortPackagesByFullName(packages);
 
         // then
         expect(packages[0].fullName).toEqual('packageA');
         expect(packages[1].fullName).toEqual('packageA.subpackage');
         expect(packages[2].fullName).toEqual('packageB');
+    });
+
+    it('should order rulesPath by rulesPathType, scopeType, and registrationType', () => {
+        // given
+        const rulesPath: RulesPath[] = [{
+            id: 1,
+            version: null,
+            path: null,
+            scanRecursively: null,
+            shortPath: null,
+            loadError: null,
+            rulesPathType: 'SYSTEM_PROVIDED',
+            registrationType: 'PATH',
+            scopeType: 'GLOBAL'
+        },
+        {
+            id: 2,
+            version: null,
+            path: null,
+            scanRecursively: null,
+            shortPath: null,
+            loadError: null,
+            rulesPathType: 'SYSTEM_PROVIDED',
+            registrationType: 'UPLOADED',
+            scopeType: 'GLOBAL' // this value shoudl not affect the sorting since every SYSTEM_PROVIDED should be GLOBAL
+        }, {
+            id: 3,
+            version: null,
+            path: null,
+            scanRecursively: null,
+            shortPath: null,
+            loadError: null,
+            rulesPathType: 'USER_PROVIDED',
+            registrationType: 'PATH',
+            scopeType: 'GLOBAL'
+        }, {
+            id: 4,
+            version: null,
+            path: null,
+            scanRecursively: null,
+            shortPath: null,
+            loadError: null,
+            rulesPathType: 'USER_PROVIDED',
+            registrationType: 'PATH',
+            scopeType: 'PROJECT'
+        }, {
+            id: 5,
+            version: null,
+            path: null,
+            scanRecursively: null,
+            shortPath: null,
+            loadError: null,
+            rulesPathType: 'USER_PROVIDED',
+            registrationType: 'UPLOADED',
+            scopeType: 'PROJECT'
+        }];
+
+        // when
+        sortRulesPathsByPriority(rulesPath);
+
+        // then
+        expect(rulesPath[0].id).toEqual(5);
+        expect(rulesPath[1].id).toEqual(4);
+        expect(rulesPath[2].id).toEqual(3);
+        expect(rulesPath[3].id).toEqual(2);
+        expect(rulesPath[4].id).toEqual(1);
     });
 });

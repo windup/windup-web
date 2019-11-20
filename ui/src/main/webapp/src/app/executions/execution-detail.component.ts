@@ -15,9 +15,28 @@ import {RouteFlattenerService} from "../core/routing/route-flattener.service";
 import {SchedulerService} from "../shared/scheduler.service";
 import { filter } from 'rxjs/operators';
 
-export function sortPackages(packages: Package[]): Package[] {
+export const sortPackagesByFullName = (packages: Package[]): Package[] => {
     return packages.sort((a: Package, b: Package) => {
         return a.fullName.localeCompare(b.fullName);
+    });
+}
+
+export const sortRulesPathsByPriority = (rulesPath: RulesPath[]): RulesPath[] => {
+    return rulesPath.sort((a: RulesPath, b: RulesPath) => {
+        const aPathType = a.rulesPathType == 'SYSTEM_PROVIDED' ? 20 : 0;
+        const aScopeType = a.scopeType == 'GLOBAL' ? 10 : 0;
+        const aRegistrationType = a.registrationType == 'PATH' ? 5 : 0;
+
+        const bPathType = b.rulesPathType == 'SYSTEM_PROVIDED' ? 20 : 0;
+        const bScopeType = b.scopeType == 'GLOBAL' ? 10 : 0;
+        const bRegistrationType = b.registrationType == 'PATH' ? 5 : 0;
+
+        const result = (aPathType + aScopeType + aRegistrationType) - (bPathType + bScopeType + bRegistrationType);
+        if (result == 0) {
+            return a.path.localeCompare(b.path);
+        }
+
+        return result;
     });
 }
 
@@ -136,26 +155,11 @@ export class ExecutionDetailComponent extends RoutedComponent implements OnInit,
     }
 
     getSortedRulesPaths(rulesPath: RulesPath[]): RulesPath[] {
-        return rulesPath.sort((a: RulesPath, b: RulesPath) => {
-            const aPathType = a.rulesPathType == 'SYSTEM_PROVIDED' ? 20 : 0;
-            const aScopeType = a.scopeType == 'GLOBAL' ? 10 : 0;
-            const aRegistrationType = a.registrationType == 'PATH' ? 5 : 0;
-
-            const bPathType = b.rulesPathType == 'SYSTEM_PROVIDED' ? 20 : 0;
-            const bScopeType = b.scopeType == 'GLOBAL' ? 10 : 0;
-            const bRegistrationType = b.registrationType == 'PATH' ? 5 : 0;
-
-            const result = (aPathType + aScopeType + aRegistrationType) - (bPathType + bScopeType + bRegistrationType);
-            if (result == 0) {
-                return a.path.localeCompare(b.path);
-            }
-
-            return result;
-        });
+        return sortRulesPathsByPriority(rulesPath);
     }
 
     getSortedPackages(packages: Package[]) {
-        return sortPackages(packages);
+        return sortPackagesByFullName(packages);
     }
 
     idTrackFn(index: number, item: any): number {
