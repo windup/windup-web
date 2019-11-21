@@ -434,7 +434,7 @@ public class RuleDataLoader
             entityManager.persist(labelProviderEntity);
             return;
         }
-        LOG.info("Providers for: " + path + " are " + labelProviderRegistry.getProviders());
+        LOG.info("Label providers for: " + path + " are " + labelProviderRegistry.getProviders());
 
         for (LabelProvider provider : labelProviderRegistry.getProviders())
         {
