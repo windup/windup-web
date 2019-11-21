@@ -1,5 +1,5 @@
 var webpackMerge = require('webpack-merge');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 var commonConfig = require('./webpack.common.js');
 var helpers = require('./helpers');
 
@@ -13,17 +13,23 @@ module.exports = webpackMerge(commonConfig, {
     },
 
     module: {
-        loaders: [
+        rules: [
             {
                 test: /\.ts$/,
                 exclude: /jquery*\.js/,
-                loaders: ['awesome-typescript-loader', 'angular2-template-loader', 'angular-router-loader']
+                use: [
+                    { loader: 'awesome-typescript-loader' },
+                    { loader: 'angular2-template-loader' },
+                    { loader: 'angular-router-loader' }
+                ]
             }
         ]
     },
 
     plugins: [
-        new ExtractTextPlugin('css/[name].css')
+        new MiniCssExtractPlugin({
+            filename: 'css/[name].css'
+        })
     ],
 
     devServer: {
