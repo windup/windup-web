@@ -13,7 +13,7 @@ import { NotificationService } from '../../core/notification/notification.servic
 @Component({
     selector: 'wu-custom-labels',
     templateUrl: './custom-labels.component.html',
-    styleUrls: ['/custom-labels.component.scss'],
+    styleUrls: ['./custom-labels.component.scss'],
     providers: [{
         provide: NG_VALUE_ACCESSOR,
         useExisting: forwardRef(() => CustomLabelsComponent),
