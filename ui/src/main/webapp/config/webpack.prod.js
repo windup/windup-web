@@ -53,11 +53,6 @@ module.exports = webpackMerge(commonConfig, {
             mainPath: 'src/main.ts'
 //            skipCodeGeneration: true // I'm not sure what it means, but without it code would be in bundle twice
         }),
-        // new webpack.optimize.UglifyJsPlugin({ // https://github.com/angular/angular/issues/10618
-        //     mangle: {
-        //         keep_fnames: true
-        //     }
-        // }),
         new webpack.DefinePlugin({
             'process.env': {
                 'ENV': JSON.stringify(ENV)

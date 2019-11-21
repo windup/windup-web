@@ -59,12 +59,12 @@ module.exports = {
                 test: /\.css$/,
                 exclude: [helpers.root('src', 'app'), helpers.root('node_modules', '@swimlane')],
                 use: [
-                    {
-                        loader: MiniCssExtractPlugin.loader,
-                        options: {
-                          publicPath: '../'
-                        }
-                    },
+                    // {
+                    //     loader: MiniCssExtractPlugin.loader,
+                    //     options: {
+                    //       publicPath: '../'
+                    //     }
+                    // },
                     { loader: 'style-loader' },
                     { loader: 'css-loader', options: { sourceMap: true } }
                 ]
