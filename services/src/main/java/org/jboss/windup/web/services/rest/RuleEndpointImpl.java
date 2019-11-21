@@ -173,5 +173,5 @@ public class RuleEndpointImpl implements RuleEndpoint
                     getSingleResult();
         return test;
     }
-    
+
 }

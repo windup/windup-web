@@ -30,7 +30,9 @@
                             <div style="margin-left: 25pt; ">
                                 <div>{{ruleProvider.origin}}</div>
                                 <div *ngIf="ruleProvider.loadError" style="font-weight: bold">
-                                    {{ruleProvider.loadError}}
+                                    <span>
+                                        <i class="pficon pficon-warning-triangle-o"></i><small> {{ruleProvider.loadError}}</small>
+                                    </span>
                                 </div>
 
                                 <div *ngIf="ruleProvider.sources.length > 0">

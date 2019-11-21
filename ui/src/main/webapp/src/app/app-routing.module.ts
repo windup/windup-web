@@ -4,6 +4,7 @@ import {RegisterApplicationFormComponent} from "./registered-application/registe
 import {MigrationProjectFormComponent} from "./project/migration-project-form.component";
 import {AnalysisContextFormComponent} from "./analysis-context/analysis-context-form.component";
 import {ConfigurationRulesComponent} from "./configuration/configuration-rules/configuration-rules.component";
+import {ConfigurationLabelsComponent} from "./configuration/configuration-labels/configuration-labels.component";
 import {EditApplicationFormComponent} from "./registered-application/edit-application-form.component";
 import {ConfirmDeactivateGuard} from "./shared/confirm-deactivate.guard";
 import {LoggedInGuard} from "./core/authentication/logged-in.guard";
@@ -39,10 +40,16 @@ export const appRoutes: Routes = [
                     {path: '', redirectTo: "/project-list", pathMatch: "full"},
                     {path: 'about', component: AboutPageComponent},
                     {
-                        path: "configuration",
+                        path: "configuration/rules",
                         component: ConfigurationRulesComponent,
                         resolve: { configuration: ConfigurationResolve },
                         data: { displayName: "Global Configuration" }
+                    },
+                    {
+                        path: "configuration/labels",
+                        component: ConfigurationLabelsComponent,
+                        resolve: { configuration: ConfigurationResolve },
+                        data: { displayName: "Global Labels Configuration" }
                     },
                     {path: "project-list", component: ProjectListComponent,   data: {displayName: "Projects"}},
                     {path: 'executions',   component: AllExecutionsComponent, data: {displayName: 'Global Executions List'}}

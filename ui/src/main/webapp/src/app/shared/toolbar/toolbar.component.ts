@@ -12,7 +12,8 @@ export interface SortConfiguration {
 export interface FilterConfiguration {
     filterableAttributes?: string[];
     selectedAttribute?: string;
-    filterOptions: FilterOption[];
+    filterOptions?: FilterOption[]; // To use in case it is 'dropwdown'
+    filterCallback?: (filter: FilterOption, item: any) => boolean; // To use in case is 'text'
     selectedFilters: FilterOption[];
     countFilteredItems: number;
     getLabel?: (filter: FilterOption) => string;
@@ -25,6 +26,9 @@ export interface FilterConfiguration {
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ToolbarComponent {
+
+    @Input()
+    filterType: string = 'dropdown';
 
     @Input()
     sortConfiguration: SortConfiguration;
