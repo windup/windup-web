@@ -10,6 +10,8 @@ const path = require('path');
 // const genDirNodeModules = path.join(process.cwd(), 'src', '$$_gendir', 'node_modules');
 
 module.exports = {
+    mode: "development",
+    
     entry: {
         'polyfills': './src/polyfills.ts',
         'vendor': './src/vendor.ts',

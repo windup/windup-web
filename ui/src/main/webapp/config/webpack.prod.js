@@ -6,40 +6,55 @@ var path = require('path');
 var helpers = require('./helpers');
 var ngtools = require('@ngtools/webpack');
 var AotPlugin = ngtools.AngularCompilerPlugin;
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+var OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+var cssnano = require('cssnano');
 
 const ENV = process.env.NODE_ENV = process.env.ENV = 'production';
 
 module.exports = webpackMerge(commonConfig, {
+    mode: ENV,
+
     devtool: 'source-map',
 
     output: {
         path: helpers.root('../../../target/rhamt-web'),
-        filename: 'js/[name].js',
-        chunkFilename: 'js/[id].chunk.js'
+        filename: 'js/[name].[hash].js',
+        chunkFilename: 'js/[id].[hash].chunk.js'
     },
 
+    optimization: {
+        noEmitOnErrors: true,
+        splitChunks: {
+            chunks: 'all'
+        },
+        runtimeChunk: 'single',
+        minimizer: [
+            new UglifyJsPlugin({
+                cache: true,
+                parallel: true
+            }),
+            
+             new OptimizeCSSAssetsPlugin({
+                 cssProcessor: cssnano,
+                 cssProcessorOptions: {
+                     discardComments: {
+                         removeAll: true
+                     }
+                 },
+                 canPrint: false
+             })
+        ]
+    },
+    
     module: {
         rules: [
             {
-                test: /\.ts$/,
+                test: /(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/,
                 exclude: /jquery*\.js/,
                 use: [ '@ngtools/webpack' ]
             }
         ]
-    },
-
-    optimization: {
-        splitChunks: {
-            cacheGroups: {
-                commons: {
-                    // this takes care of all the vendors in your files
-                    // no need to add as an entrypoint.
-                    test: /[\\/]node_modules[\\/]/,
-                    name: 'vendors',
-                    chunks: 'all'
-                }
-            }
-        }
     },
 
     plugins: [
@@ -50,8 +65,8 @@ module.exports = webpackMerge(commonConfig, {
         new AotPlugin({
             tsConfigPath: './tsconfig-production.json',
             basePath: '.',
-            mainPath: 'src/main.ts'
-//            skipCodeGeneration: true // I'm not sure what it means, but without it code would be in bundle twice
+            mainPath: 'src/main.ts',
+            skipCodeGeneration: true // I'm not sure what it means, but without it code would be in bundle twice
         }),
         new webpack.DefinePlugin({
             'process.env': {
