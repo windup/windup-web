@@ -416,8 +416,6 @@ public class RuleDataLoader
     {
         boolean fileRulesOnly = labelsPath.getLabelsPathType() == PathType.USER_PROVIDED;
 
-        RuleLoaderContext ruleLoaderContext = new RuleLoaderContext(Collections.singleton(path), null);
-
         LabelProviderRegistry labelProviderRegistry;
         try
         {
