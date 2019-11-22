@@ -66,7 +66,7 @@ module.exports = webpackMerge(commonConfig, {
             tsConfigPath: './tsconfig-production.json',
             basePath: '.',
             mainPath: 'src/main.ts',
-            skipCodeGeneration: true // I'm not sure what it means, but without it code would be in bundle twice
+            skipCodeGeneration: true // I'm not sure what it means, but without it code would be in bundle twice and jquery won't work
         }),
         new webpack.DefinePlugin({
             'process.env': {
