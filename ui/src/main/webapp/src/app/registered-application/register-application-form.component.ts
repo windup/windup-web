@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy} from "@angular/core";
 import {FormBuilder, FormGroup, Validators, AbstractControl} from "@angular/forms";
 import {ActivatedRoute, Router, NavigationEnd} from "@angular/router";
-import {FileUploader} from "ng2-file-upload/ng2-file-upload";
+import {FileUploader} from "ng2-file-upload";
 
 import {MigrationProject, RegisteredApplication, RegistrationType} from "../generated/windup-services";
 import {RegisteredApplicationService} from "./registered-application.service";

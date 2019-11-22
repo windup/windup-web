@@ -8,7 +8,7 @@ import {KeyCloakServiceMock} from "./mocks/keycloak-service.mock";
 import {RegisteredApplicationService} from "../../src/app/registered-application/registered-application.service";
 import {KeycloakService} from "../../src/app/core/authentication/keycloak.service";
 import {FileService} from "../../src/app/services/file.service";
-import {FileUploader} from "ng2-file-upload/ng2-file-upload";
+import {FileUploader} from "ng2-file-upload";
 import {EventBusService} from "../../src/app/core/events/event-bus.service";
 import {MigrationProject, PackageMetadata, RegisteredApplication} from "../../src/app/generated/windup-services";
 import {SchedulerServiceMock} from "./mocks/scheduler-service.mock";

@@ -4,6 +4,8 @@ var ContextReplacementPlugin = webpack.ContextReplacementPlugin;
 var DefinePlugin = webpack.DefinePlugin;
 
 module.exports = {
+    mode: 'development',
+
     devtool: 'inline-source-map',
 
     resolve: {
