@@ -46,8 +46,11 @@
                 </a>
                 <ul class="dropdown-menu">
                     <li [routerLinkActive]="['active']">
-                        <a [routerLink]="['/configuration']" i18n="Rules configuration menu item">Rules Configuration</a>
+                        <a [routerLink]="['/configuration/rules']" i18n="Rules configuration menu item">Rules Configuration</a>
                     </li>
+                    <li [routerLinkActive]="['active']">
+                            <a [routerLink]="['/configuration/labels']" i18n="Labels configuration menu item">Labels Configuration</a>
+                        </li>
                     <li>
                         <a [routerLink]="['/logout']" i18n="Log out menu item">Log Out</a>
                     </li>

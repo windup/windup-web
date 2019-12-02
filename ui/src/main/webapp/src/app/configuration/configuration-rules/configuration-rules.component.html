@@ -63,6 +63,9 @@
                     <h3 i18n>Loading rules...</h3>
                 </div>
 
+                <div *ngIf="areRulesLoaded(rulePath) && hasProvidersWithErrors(rulePath)">
+                    <h3 i18n><small class="error-text">* One or more Rules inside current RulePath are invalid, it might cause the analysis to fail.</small></h3>
+                </div>
                 <div *ngIf="areRulesLoaded(rulePath) && !hasFileBasedProviders(rulePath)">
                     <h3 i18n>No rules found.</h3>
                 </div>

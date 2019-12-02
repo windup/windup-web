@@ -20,6 +20,7 @@ public class WebPathUtilImpl implements WebPathUtil
     private static final String REPORT_DIR = "reports";
     private static final String APPS_DIR = "apps";
     private static final String RULES_DIR = "rules";
+    private static final String LABELS_DIR = "labels";
     private static final String GRAPH_BASE_OUTPUT_PATH = "GRAPH_BASE_OUTPUT_PATH";
 
     @Override
@@ -106,5 +107,16 @@ public class WebPathUtilImpl implements WebPathUtil
     public Path getCustomRulesPath()
     {
         return this.getGlobalWindupDataPath().resolve(RULES_DIR);
+    }
+
+    @Override
+    public Path getCustomLabelsPath(String projectPath) {
+        return this.getCustomLabelsPath().resolve(projectPath);
+    }
+
+    @Override
+    public Path getCustomLabelsPath()
+    {
+        return this.getGlobalWindupDataPath().resolve(LABELS_DIR);
     }
 }

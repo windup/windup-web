@@ -42,7 +42,8 @@ import org.hibernate.annotations.FetchMode;
 @NamedQueries({
         @NamedQuery(name = AnalysisContext.FIND_ALL, query = "select ac from AnalysisContext ac"),
         @NamedQuery(name = AnalysisContext.FIND_ALL_WHERE_EXECUTION_IS_NULL, query = "select a from AnalysisContext a left join a.windupExecution e where e is null"),
-        @NamedQuery(name = AnalysisContext.FIND_BY_RULE_PATH_ID_AND_EXECUTION_IS_NULL, query = "select a from AnalysisContext a inner join a.rulesPaths r left join a.windupExecution e where r.id = :rulePathId and e is null")
+        @NamedQuery(name = AnalysisContext.FIND_BY_RULE_PATH_ID_AND_EXECUTION_IS_NULL, query = "select a from AnalysisContext a inner join a.rulesPaths r left join a.windupExecution e where r.id = :rulePathId and e is null"),
+        @NamedQuery(name = AnalysisContext.FIND_BY_LABEL_PATH_ID_AND_EXECUTION_IS_NULL, query = "select a from AnalysisContext a inner join a.labelsPaths r left join a.windupExecution e where r.id = :labelPathId and e is null")
 })
 public class AnalysisContext implements Serializable
 {
@@ -51,6 +52,7 @@ public class AnalysisContext implements Serializable
     public static final String FIND_ALL = "AnalysisContext.findAll";
     public static final String FIND_ALL_WHERE_EXECUTION_IS_NULL = "AnalysisContext.findAllWhereExecutionIsNull";
     public static final String FIND_BY_RULE_PATH_ID_AND_EXECUTION_IS_NULL = "AnalysisContext.findByRulePathAndExecutionIsNull";
+    public static final String FIND_BY_LABEL_PATH_ID_AND_EXECUTION_IS_NULL = "AnalysisContext.findByLabelPathAndExecutionIsNull";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -91,6 +93,9 @@ public class AnalysisContext implements Serializable
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<RulesPath> rulesPaths;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<LabelsPath> labelsPaths;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "analysis_context_include_packages")
     private Set<Package> includePackages;
@@ -113,6 +118,7 @@ public class AnalysisContext implements Serializable
         this.applications = new HashSet<>();
         this.advancedOptions = new ArrayList<>();
         this.rulesPaths = new HashSet<>();
+        this.labelsPaths = new HashSet<>();
     }
 
     public AnalysisContext(MigrationProject project)
@@ -278,6 +284,14 @@ public class AnalysisContext implements Serializable
         this.rulesPaths = rulesPaths;
     }
 
+    public Set<LabelsPath> getLabelsPaths() {
+        return labelsPaths;
+    }
+
+    public void setLabelsPaths(Set<LabelsPath> labelsPaths) {
+        this.labelsPaths = labelsPaths;
+    }
+
     /**
      * Contains advanced configuration options (eg, csv export).
      */
@@ -357,6 +371,7 @@ public class AnalysisContext implements Serializable
         clone.migrationPath = this.migrationPath;
         clone.advancedOptions.addAll(this.advancedOptions);
         clone.rulesPaths.addAll(this.rulesPaths);
+        clone.labelsPaths.addAll(this.labelsPaths);
         clone.includePackages.addAll(this.includePackages);
         clone.excludePackages.addAll(this.excludePackages);
         // temporary added for adding cloud related targets in parallel to selected main target

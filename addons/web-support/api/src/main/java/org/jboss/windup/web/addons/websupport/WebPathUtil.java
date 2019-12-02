@@ -45,6 +45,16 @@ public interface WebPathUtil
     Path getCustomRulesPath();
 
     /**
+     * Gets the path where custom label providers are stored for a specific project
+     */
+    Path getCustomLabelsPath(String projectPath);
+
+    /**
+     * Gets the path where custom label providers are stored
+     */
+    Path getCustomLabelsPath();
+
+    /**
      * Gets the path where user uploaded applications are stored
      * @return Path
      */

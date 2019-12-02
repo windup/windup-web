@@ -11,7 +11,7 @@
                                 [rulesPath]="uploadedRulesPath"
                                 [initialSelectedRows]="selectedUploadedRulesPath"
                                 (onSelectionChange)="onUploadedRulesPathSelectionChange($event)"
-                                (onAddRulesPathRequest)="displayAddRulesPathModal($event)"
+                                (onAddRulesPathRequest)="displayAddRulesPathModal()"
                                 (onDeleteRulesPathRequest)="displayRemoveRulesConfirmationModal($event)">
                         </wu-uploaded-rules-path>
                     </tab>
@@ -20,7 +20,7 @@
                                 [rulesPath]="serverPathRulesPath"
                                 [initialSelectedRows]="selectedServerPathRules"
                                 (onSelectionChange)="onServerPathRulesSelectionChange($event)"
-                                (onAddRulesPathRequest)="displayAddRulesPathModal($event)"
+                                (onAddRulesPathRequest)="displayAddRulesPathModal()"
                                 (onDeleteRulesPathRequest)="displayRemoveRulesConfirmationModal($event)">
                         </wu-server-path-rules>
                     </tab>
@@ -43,7 +43,7 @@
             </div>
             <div class="card-pf-footer" style="margin: 0 !important; min-height: 60px;">
                 <p>
-                    <a *ngIf="rulesPathForUnselect.length > 0" (click)="unselect(rulesPathForUnselect)" href="javascript:void(0);"><span class="fa fa-angle-double-left"></span> Unselect</a>                    
+                    <a *ngIf="rulesPathForUnselect.length > 0" (click)="unselect(rulesPathForUnselect)" href="javascript:void(0);"><span class="fa fa-angle-double-left"></span> Unselect</a>
                 </p>
             </div>
         </div>
@@ -67,7 +67,7 @@
 <wu-add-rules-path-modal
         [project]="project"
         [configuration]="configuration"
-        (configurationSaved)="loadCustomRules($event)">
+        (configurationSaved)="loadCustomRules()">
 </wu-add-rules-path-modal>
 <wu-confirmation-modal
         #removeRulesConfirmationModal

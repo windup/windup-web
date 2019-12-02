@@ -3,7 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 
 import {Constants} from "../constants";
-import {Configuration, RulesPath} from "../generated/windup-services";
+import {Configuration, RulesPath, LabelsPath} from "../generated/windup-services";
 import {AbstractService} from "../shared/abtract.service";
 import {Cached} from "../shared/cache.service";
 import { map, catchError } from 'rxjs/operators';
@@ -16,6 +16,7 @@ export class ConfigurationService extends AbstractService {
     private SAVE_URL = "/configuration/{id}";
     private CONFIGURATION_RELOAD_URL = '/configuration/{id}/reload';
     private GET_CUSTOM_RULESETS_URL = "/configuration/{id}/custom-rulesets";
+    private GET_CUSTOM_LABELSETS_URL = "/configuration/{id}/custom-labelsets";
 
     constructor (private _http: HttpClient) {
         super();
@@ -47,6 +48,15 @@ export class ConfigurationService extends AbstractService {
         }
 
         return this._http.get<RulesPath[]>(Constants.REST_BASE + this.GET_CUSTOM_RULESETS_URL.replace("{id}", id.toString()));
+    }
+
+    @Cached({section: 'configuration', immutable: true})
+    getCustomLabelsetPathsByConfigurationId(id: number): Observable<LabelsPath[]> {
+        if (!isNumber(id)) {
+            throw new Error("Not a configuration ID: " + id);
+        }
+
+        return this._http.get<LabelsPath[]>(Constants.REST_BASE + this.GET_CUSTOM_LABELSETS_URL.replace("{id}", id.toString()));
     }
 
     reloadConfigration(id: number): Observable<Configuration> {
