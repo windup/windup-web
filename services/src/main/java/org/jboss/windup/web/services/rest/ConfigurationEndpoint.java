@@ -1,6 +1,7 @@
 package org.jboss.windup.web.services.rest;
 
 import org.jboss.windup.web.services.model.Configuration;
+import org.jboss.windup.web.services.model.LabelsPath;
 import org.jboss.windup.web.services.model.RulesPath;
 
 import java.util.Set;
@@ -46,6 +47,15 @@ public interface ConfigurationEndpoint
     @GET
     @Path("/{id}/custom-rulesets")
     Set<RulesPath> getCustomRulesetPaths(@PathParam("id") long id);
+
+    /**
+     * Returns only labelspath collection for custom registered ruleset paths
+     *
+     * @return
+     */
+    @GET
+    @Path("/{id}/custom-labelsets")
+    Set<LabelsPath> getCustomLabelsetPaths(@PathParam("id") long id);
 
     /**
      * Persists the given configuration.

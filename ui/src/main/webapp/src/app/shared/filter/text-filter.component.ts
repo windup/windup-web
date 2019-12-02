@@ -11,6 +11,9 @@ import {
 export class TextFilterComponent implements AfterViewInit {
     _filterableAttributes: string[] = [];
 
+    @Input()
+    filterCallback: (filter: FilterOption, item: any) => boolean;
+
     @Output()
     setFilter = new EventEmitter<FilterOption>();
 
@@ -42,10 +45,15 @@ export class TextFilterComponent implements AfterViewInit {
     }
 
     public addFilter() {
-        this.setFilter.next({
+        const filter: FilterOption = {
             name: this.selectedAttribute,
             value: this.filterText
-        });
+        };
+        if (this.filterCallback) {
+            filter.callback = (item: any) => this.filterCallback(filter, item);
+        }
+
+        this.setFilter.next(filter);
         this.resetFilter();
     }
 

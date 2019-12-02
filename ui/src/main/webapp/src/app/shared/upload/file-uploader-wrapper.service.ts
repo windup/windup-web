@@ -4,7 +4,7 @@ import {
     FileUploader,
     FileUploaderOptions,
     ParsedResponseHeaders
-} from "ng2-file-upload/ng2-file-upload";
+} from "ng2-file-upload";
 import {Observable, Subject} from "rxjs";
 import {KeycloakService} from "../../core/authentication/keycloak.service";
 

@@ -66,6 +66,7 @@ import {ToastNotificationListModule} from 'patternfly-ng/notification';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatTreeModule, MatCheckboxModule, MatIconModule, MatButtonModule} from '@angular/material';
 import {AddRulesPathModalComponent} from "./add-rules-path-modal/add-rules-path-modal.component";
+import {AddLabelsPathModalComponent} from "./add-labels-path-modal/add-labels-path-modal.component";
 import {TechnologyComponent} from "./technology.component";
 
 @NgModule({
@@ -156,6 +157,7 @@ import {TechnologyComponent} from "./technology.component";
         TablePanelComponent,
 
         AddRulesPathModalComponent,
+        AddLabelsPathModalComponent,
 
         TechnologyComponent
     ],
@@ -225,6 +227,7 @@ import {TechnologyComponent} from "./technology.component";
         MatButtonModule,
 
         AddRulesPathModalComponent,
+        AddLabelsPathModalComponent,
 
         TechnologyComponent
     ]

@@ -23,6 +23,7 @@ public class WebProperties
     public static final String FURNACE_PROPERTIES = "/windupweb.properties";
     public static final String ADDON_REPOSITORY = "addon.repository";
     public static final String RULES_REPOSITORY = "rules.repository";
+    public static final String LABELS_REPOSITORY = "labels.repository";
 
     private static Logger LOG = Logger.getLogger(WebProperties.class.getName());
 
@@ -34,6 +35,7 @@ public class WebProperties
     private Properties properties = new Properties();
     private Path addonRepository;
     private Path rulesRepository;
+    private Path labelsRepository;
 
     public static WebProperties getInstance()
     {
@@ -55,6 +57,11 @@ public class WebProperties
         return rulesRepository;
     }
 
+    public Path getLabelsRepository()
+    {
+        return labelsRepository;
+    }
+
     private void init()
     {
         if (addonRepository != null)
@@ -67,6 +74,7 @@ public class WebProperties
                 this.properties.load(is);
                 addonRepository = Paths.get(properties.getProperty(ADDON_REPOSITORY).trim());
                 rulesRepository = Paths.get(properties.getProperty(RULES_REPOSITORY));
+                labelsRepository = Paths.get(properties.getProperty(LABELS_REPOSITORY));
             }
         }
         catch (IOException e)
@@ -80,6 +88,8 @@ public class WebProperties
 
         if (servletContextPath == null && rulesRepository == null)
             throw new IllegalArgumentException("Could not determine rules repository location!");
+        if (servletContextPath == null && labelsRepository == null)
+            throw new IllegalArgumentException("Could not determine labels repository location!");
 
         if (addonRepository == null)
         {
@@ -94,6 +104,14 @@ public class WebProperties
             rulesRepository = servletContextPath.resolve("WEB-INF").resolve("rhamt-cli").resolve("rules");
             if (!Files.isDirectory(rulesRepository))
                 throw new IllegalStateException("Cannot load rules repository: " + rulesRepository);
+        }
+        if (labelsRepository == null)
+        {
+            // TODO loading core labels from 'rules' directory because labels and rules are stored in the same folder
+//            labelsRepository = servletContextPath.resolve("WEB-INF").resolve("rhamt-cli").resolve("labels");
+            labelsRepository = servletContextPath.resolve("WEB-INF").resolve("rhamt-cli").resolve("rules");
+            if (!Files.isDirectory(labelsRepository))
+                throw new IllegalStateException("Cannot load labels repository: " + labelsRepository);
         }
 
         if (System.getProperty("windup.home") == null)

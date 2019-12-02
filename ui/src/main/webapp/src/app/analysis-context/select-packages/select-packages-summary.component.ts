@@ -30,7 +30,7 @@ export class PackageFlatNode implements Package {
     styleUrls: ['./select-packages-summary.component.scss']
 })
 export class SelectPackagesSummaryComponent {
-    viewSelected: ViewSelector = ViewSelector.LIST;
+    viewSelected: string = ViewSelector.LIST;
 
     _packages: Package[];
 

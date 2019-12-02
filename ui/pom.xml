@@ -221,6 +221,9 @@
                         <configuration>
                             <executable>./node_modules/.bin/webpack</executable>
                             <workingDirectory>src/main/webapp</workingDirectory>
+                            <environmentVariables>
+                                <NODE_OPTIONS>--max_old_space_size=4096</NODE_OPTIONS>
+                            </environmentVariables>
                             <arguments>
                                 <argument>--progress</argument>
                                 <argument>--profile</argument>

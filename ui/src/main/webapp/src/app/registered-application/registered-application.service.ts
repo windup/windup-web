@@ -1,6 +1,6 @@
 import {Injectable, NgZone} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {FileUploader} from 'ng2-file-upload/ng2-file-upload';
+import {FileUploader} from 'ng2-file-upload';
 import {Observable, from} from 'rxjs';
 
 import {Constants} from "../constants";
