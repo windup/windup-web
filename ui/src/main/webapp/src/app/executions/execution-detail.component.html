@@ -85,6 +85,25 @@
                         </li>
                     </ul>
                 </dd>
+
+                <dt *ngIf="execution.analysisContext.includePackages.length == 0 && execution.analysisContext.excludePackages.length == 0"
+                    i18n="Included packages">Included packages</dt>
+                <dd *ngIf="execution.analysisContext.includePackages.length == 0 && execution.analysisContext.excludePackages.length == 0">
+                    <ul class="list-unstyled">
+                        <li>
+                            All
+                        </li>
+                    </ul>
+                </dd>
+                <dt *ngIf="execution.analysisContext.includePackages.length == 0 && execution.analysisContext.excludePackages.length == 0"
+                    i18n="Excluded packages">Excluded packages</dt>
+                <dd *ngIf="execution.analysisContext.includePackages.length == 0 && execution.analysisContext.excludePackages.length == 0">
+                    <ul class="list-unstyled">
+                        <li>
+                            None
+                        </li>
+                    </ul>
+                </dd>
             </dl>
 
             <wu-expand-collapse [tabTitle]="'Included Packages'" *ngIf="execution.analysisContext.includePackages.length > 0">
