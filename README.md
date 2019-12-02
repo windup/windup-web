@@ -183,9 +183,9 @@ Running the webapp
 Deploy your changes while coding
 ------------------
 - Follow the previous step (use the 3rd way of running the webapp: edit `standalone-full.xml`) 
-- Install webpack: `sudo npm install --global webpack@3.4.1`
+- Install webpack: `sudo npm install --global webpack@3.4.1`. You can also install webpack-cli instead of webpack: `sudo npm install --global webpack-cli@3.3.10`
 - Move to webapp folder: `cd windup-web/ui/src/main/webapp`
-- Execute `webpack -w`
+- Execute `webpack -w` or `webpack-cli -w`
 
 Adding Swagging Core
 ------------------

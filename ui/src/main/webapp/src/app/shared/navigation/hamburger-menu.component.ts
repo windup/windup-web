@@ -13,7 +13,13 @@ export class HamburgerMenuComponent extends ContextMenuComponent{
 export const DEFAULT_MENU_ITEMS = [
     {
         label: 'Rules Configuration',
-        link: '/configuration',
+        link: '/configuration/rules',
+        icon: '',
+        isEnabled: true
+    },
+    {
+        label: 'Labels Configuration',
+        link: '/configuration/labels',
         icon: '',
         isEnabled: true
     },

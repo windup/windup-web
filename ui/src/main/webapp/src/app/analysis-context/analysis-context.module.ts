@@ -23,6 +23,11 @@ import {ServerPathRulesComponent} from "./custom-rules/server-path/server-path-r
 import {UploadedRulePathModalComponent} from "./custom-rules/upload/modal/uploaded-rule-path-modal.component";
 import {ServerPathRulesModalComponent} from "./custom-rules/server-path/modal/server-path-rules-modal.component";
 import {ConfigurationModule} from "../configuration/configuration.module";
+import { CustomLabelsComponent } from "./custom-labels/custom-labels.component";
+import { UploadedLabelsPathComponent } from "./custom-labels/upload/uploaded-labels-path.component";
+import { ServerPathLabelsComponent } from "./custom-labels/server-path/server-path-labels.component";
+import { UploadedLabelPathModalComponent } from "./custom-labels/upload/modal/uploaded-label-path-modal.component";
+import { ServerPathLabelsModalComponent } from "./custom-labels/server-path/modal/server-path-labels-modal.component";
 
 @NgModule({
     imports: [
@@ -50,7 +55,13 @@ import {ConfigurationModule} from "../configuration/configuration.module";
         UploadedRulesPathComponent,
         ServerPathRulesComponent,
         UploadedRulePathModalComponent,
-        ServerPathRulesModalComponent
+        ServerPathRulesModalComponent,
+
+        CustomLabelsComponent,
+        UploadedLabelsPathComponent,
+        ServerPathLabelsComponent,
+        UploadedLabelPathModalComponent,
+        ServerPathLabelsModalComponent
     ],
     exports: [
         AnalysisContextFormComponent,
@@ -60,7 +71,7 @@ import {ConfigurationModule} from "../configuration/configuration.module";
 
         SelectPackagesComponent,
         SelectPackagesWrapperComponent,
-        SelectPackagesSummaryComponent
+        SelectPackagesSummaryComponent,
     ],
     providers: [
         AnalysisContextService,
@@ -70,7 +81,10 @@ import {ConfigurationModule} from "../configuration/configuration.module";
     ],
     entryComponents: [
         UploadedRulePathModalComponent,
-        ServerPathRulesModalComponent
+        ServerPathRulesModalComponent,
+
+        UploadedLabelPathModalComponent,
+        ServerPathLabelsModalComponent
     ]
 })
 export class AnalysisContextModule {

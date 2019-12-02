@@ -31,6 +31,7 @@ public interface WindupExecutorService
     void execute(
             WindupProgressMonitor progressMonitor,
             Collection<Path> rulesPaths,
+            Collection<Path> labelsPaths,
             List<Path> inputPaths,
             Path outputPath,
             List<String> packages,

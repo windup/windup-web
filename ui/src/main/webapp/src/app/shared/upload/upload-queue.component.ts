@@ -1,5 +1,5 @@
 import {Component, Input, OnInit, NgZone} from "@angular/core";
-import {FileUploader, FileItem} from 'ng2-file-upload/ng2-file-upload';
+import {FileUploader, FileItem} from 'ng2-file-upload';
 
 @Component({
     selector: 'wu-upload-queue',

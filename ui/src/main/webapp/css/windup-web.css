@@ -312,6 +312,15 @@ fieldset.fields-section-pf {
     margin: 0.1ex 0.4ex 0;
 }
 
+.labelsList .techLabel {
+    display: inline-block;
+    border: 2px ridge white /*1px solid #9ed0f1*/
+;
+    background-color: #e0f7ff;
+    padding: 0.1ex 0.4em;
+    margin: 0.1ex 0.4ex 0;
+}
+
 .row-danger {
     color: #cc0000 !important;
 }
@@ -332,4 +341,9 @@ fieldset.fields-section-pf {
 }
 .toast-notifications-list-pf > div .toast-pf {
     width: 100%;
+}
+
+/** text clases **/
+.error-text {
+    color: #c00;
 }

@@ -4,6 +4,8 @@ var ContextReplacementPlugin = webpack.ContextReplacementPlugin;
 var DefinePlugin = webpack.DefinePlugin;
 
 module.exports = {
+    mode: 'development',
+
     devtool: 'inline-source-map',
 
     resolve: {
@@ -11,29 +13,42 @@ module.exports = {
     },
 
     module: {
-        loaders: [
+        rules: [
             {
                 test: /\.ts$/,
-                loaders: ['awesome-typescript-loader', 'angular2-template-loader']
+                use: [{
+                    loader: 'awesome-typescript-loader'
+                }, {
+                    loader: 'angular2-template-loader'
+                }]
             },
             {
                 test: /\.html$/,
-                loader: 'html-loader'
-
+                use: [{
+                    loader: 'html-loader'
+                }]
             },
             {
                 test: /\.(png|jpe?g|gif|svg|woff|woff2|ttf|eot|ico)$/,
-                loader: 'null-loader'
+                use: [{
+                    loader: 'null-loader'
+                }]
             },
             {
                 test: /\.css$/,
                 exclude: /node_modules/,
-                loader: 'raw-loader'
+                use: [{
+                    loader: 'raw-loader'
+                }]
             },
             {
                 test: /\.scss$/,
                 exclude: /node_modules/,
-                loaders: [ 'raw-loader', 'sass-loader' ]
+                use: [{
+                    loader: 'raw-loader'
+                }, {
+                    loader: 'sass-loader'
+                }]
             }
         ]
     },
