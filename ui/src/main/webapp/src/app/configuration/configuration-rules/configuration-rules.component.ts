@@ -14,8 +14,6 @@ import {FilterConfiguration} from "../../shared/toolbar/toolbar.component";
 import {getAvailableFilters} from "../technology-filter";
 import {DomSanitizer} from '@angular/platform-browser';
 
-declare function prettyPrint();
-
 @Component({
     templateUrl: './configuration-rules.component.html',
     styleUrls: ['./configuration-rules.component.scss']
@@ -150,6 +148,14 @@ export class ConfigurationRulesComponent implements OnInit, AfterViewInit {
                 foundRules = true;
         });
         return foundRules;
+    }
+
+    hasProvidersWithErrors(rulesPath: RulesPath): boolean {
+        let providers = this.ruleProvidersByPath.get(rulesPath);
+        if (!providers)
+            return false;
+
+        return providers.filter(p => p.loadError).length > 0;
     }
 
     isFileBasedProvider(provider:RuleProviderEntity) {

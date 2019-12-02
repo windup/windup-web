@@ -10,7 +10,7 @@ import {ConfigurationOptionsService} from "../configuration/configuration-option
 import {IsDirty} from "../shared/is-dirty.interface";
 import {Observable, forkJoin} from "rxjs";
 import {PackageRegistryService} from "./package-registry.service";
-import {AnalysisContext, Package, MigrationPath, MigrationProject, AdvancedOption, RegisteredApplication, RulesPath, PackageMetadata} from "../generated/windup-services";
+import {AnalysisContext, Package, MigrationPath, MigrationProject, AdvancedOption, RegisteredApplication, RulesPath, PackageMetadata, LabelsPath} from "../generated/windup-services";
 import {RouteHistoryService} from "../core/routing/route-history.service";
 import {Subscription} from "rxjs";
 import {FlattenedRouteData, RouteFlattenerService} from "../core/routing/route-flattener.service";
@@ -45,6 +45,7 @@ export class AnalysisContextFormComponent extends FormComponent
     availableApps: RegisteredApplication[];
 
     selectedCustomRulesPath: RulesPath[];
+    selectedCustomLabelsPath: LabelsPath[];
 
     /**
      * These two variables exist because we need for the item in the array not to just be a literal.
@@ -169,6 +170,7 @@ export class AnalysisContextFormComponent extends FormComponent
                             this.loadPackageMetadata();
 
                             this.selectedCustomRulesPath = this.analysisContext.rulesPaths;
+                            this.selectedCustomLabelsPath = this.analysisContext.labelsPaths;
                         } else {
                             this._analysisContextService.get(project.defaultAnalysisContextId)
                                 .subscribe(context => {
@@ -204,6 +206,7 @@ export class AnalysisContextFormComponent extends FormComponent
                                     this.selectedPaths = selectedPaths;
 
                                     this.selectedCustomRulesPath = this.analysisContext.rulesPaths;
+                                    this.selectedCustomLabelsPath = this.analysisContext.labelsPaths;
 
                                     // Load packages
                                     this.loadPackageMetadata();
@@ -249,6 +252,8 @@ export class AnalysisContextFormComponent extends FormComponent
         analysisContext.includePackages = [];
         analysisContext.excludePackages = [];
         analysisContext.rulesPaths = [];
+        analysisContext.labelsPaths = [];
+
         analysisContext.applications = [];
         analysisContext.generateStaticReports = true;
 
@@ -367,12 +372,13 @@ export class AnalysisContextFormComponent extends FormComponent
         this.analysisContext.excludePackages = this.packageSelection.excludePackages;
 
         this.analysisContext.rulesPaths = this.selectedCustomRulesPath;
+        this.analysisContext.labelsPaths = this.selectedCustomLabelsPath;
 
         this.saveInProgress = true;
 
         // Before saving we need to update the analysisContext since
         // "version" could have changed while deleting custom rules
-        const analysisContextObservable: Observable<AnalysisContext> = 
+        const analysisContextObservable: Observable<AnalysisContext> =
             this.project.defaultAnalysisContextId != null ?
             this._analysisContextService.get(this.project.defaultAnalysisContextId) : empty();
 
@@ -465,6 +471,10 @@ export class AnalysisContextFormComponent extends FormComponent
 
     isActiveRulesPaths():boolean {
         return this.analysisContext.rulesPaths.filter(rulesPath => rulesPath.rulesPathType == 'USER_PROVIDED' && rulesPath.scopeType == 'PROJECT').length > 0;
+    }
+
+    isActiveLabelsPaths():boolean {
+        return this.analysisContext.labelsPaths.filter(labelsPath => labelsPath.labelsPathType == 'USER_PROVIDED' && labelsPath.scopeType == 'PROJECT').length > 0;
     }
 
     onMigrationPathChange() {

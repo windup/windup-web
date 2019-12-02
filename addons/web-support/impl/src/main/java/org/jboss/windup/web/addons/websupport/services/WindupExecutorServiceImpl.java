@@ -48,7 +48,7 @@ public class WindupExecutorServiceImpl implements WindupExecutorService
     private WebPathUtil webPathUtil;
 
     @Override
-    public void execute(WindupProgressMonitor progressMonitor, Collection<Path> rulesPaths, List<Path> inputPaths, Path outputPath,
+    public void execute(WindupProgressMonitor progressMonitor, Collection<Path> rulesPaths, Collection<Path> labelsPaths, List<Path> inputPaths, Path outputPath,
                 List<String> packages,
                 List<String> excludePackages, String source, List<String> targets, Map<String, Object> otherOptions, boolean generateStaticReports)
     {
@@ -70,6 +70,9 @@ public class WindupExecutorServiceImpl implements WindupExecutorService
 
         for (Path rulesPath : rulesPaths)
             configuration.addDefaultUserRulesDirectory(rulesPath);
+
+        for (Path labelsPath : labelsPaths)
+            configuration.addDefaultUserLabelsDirectory(labelsPath);
 
         inputPaths.forEach(configuration::addInputPath);
 

@@ -27,6 +27,7 @@ import javax.validation.Valid;
 @Entity
 @NamedQueries({
         @NamedQuery(name = Configuration.FIND_BY_RULE_PATH_ID, query = "select c from Configuration c inner join c.rulesPaths r where r.id = :rulePathId"),
+        @NamedQuery(name = Configuration.FIND_BY_LABEL_PATH_ID, query = "select c from Configuration c inner join c.labelsPaths r where r.id = :labelPathId"),
         @NamedQuery(name = Configuration.FIND_GLOBAL, query = "select configuration from Configuration configuration where configuration.global = true"),
         @NamedQuery(name = Configuration.FIND_ALL, query = "select c from Configuration c")
 })
@@ -35,6 +36,7 @@ public class Configuration implements Serializable
     private static final long serialVersionUID = 1L;
 
     public static final String FIND_BY_RULE_PATH_ID = "Configuration.findByRulePath";
+    public static final String FIND_BY_LABEL_PATH_ID = "Configuration.findByLabelPath";
     public static final String FIND_GLOBAL = "Configuration.findGlobal";
     public static final String FIND_ALL = "Configuration.findAll";
 
@@ -55,6 +57,10 @@ public class Configuration implements Serializable
     @Valid
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<RulesPath> rulesPaths;
+
+    @Valid
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<LabelsPath> labelsPaths;
 
     @OneToOne(mappedBy = "configuration", fetch = FetchType.LAZY)
     private MigrationProject migrationProject;
@@ -101,6 +107,14 @@ public class Configuration implements Serializable
     public void setRulesPaths(Set<RulesPath> rulesPaths)
     {
         this.rulesPaths = rulesPaths;
+    }
+
+    public Set<LabelsPath> getLabelsPaths() {
+        return labelsPaths;
+    }
+
+    public void setLabelsPaths(Set<LabelsPath> labelsPaths) {
+        this.labelsPaths = labelsPaths;
     }
 
     @JsonIgnore

@@ -27,6 +27,7 @@ import org.jboss.windup.web.addons.websupport.services.WindupExecutorService;
 import org.jboss.windup.web.services.model.AdvancedOption;
 import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.ExecutionState;
+import org.jboss.windup.web.services.model.LabelsPath;
 import org.jboss.windup.web.services.model.MigrationPath;
 import org.jboss.windup.web.services.model.Package;
 import org.jboss.windup.web.services.model.PathType;
@@ -117,6 +118,21 @@ public class DefaultWindupExecutionTask implements WindupExecutionTask
                 }
             }
 
+            List<Path> labelsPaths = new ArrayList<>();
+            for (LabelsPath labelsPath : analysisContext.getLabelsPaths())
+            {
+                if (labelsPath.getLabelsPathType() != PathType.SYSTEM_PROVIDED)
+                {
+                    labelsPaths.add(Paths.get(labelsPath.getPath()));
+                }
+                else
+                {
+                    // Make sure to use the latest and local rules path... the system path doesn't
+                    // have to come from the request itself and may actually vary from node to node.
+                    labelsPaths.add(PathUtil.getWindupRulesDir());
+                }
+            }
+
             List<Path> inputPaths = new ArrayList<>();
             for (RegisteredApplication registeredApplication : this.analysisContext.getApplications())
             {
@@ -181,6 +197,7 @@ public class DefaultWindupExecutionTask implements WindupExecutionTask
             windupExecutorService.execute(
                         progressMonitor,
                         rulesPaths,
+                        labelsPaths,
                         inputPaths,
                         reportOutputPath,
                         includePackages,

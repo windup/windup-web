@@ -1,13 +1,22 @@
 <div class="toolbar">
-    <div class="dropdown-filter">
-        <wu-dropdown-filter
+    <div class="dropdown-filter" [ngSwitch]="filterType">
+        <ng-container *ngSwitchCase="'dropdown'">
+            <wu-dropdown-filter
+                    [filterableAttributes]="filterConfiguration.filterableAttributes"
+                    [filterOptions]="filterConfiguration.filterOptions"
+                    [(selectedAttribute)]="filterConfiguration.selectedAttribute"
+                    (setFilter)="addFilter($event)"
+                    (selectedAttributeChange)="updateFilters()"
+            >
+            </wu-dropdown-filter>
+        </ng-container>
+        <ng-container *ngSwitchCase="'text'">
+            <wu-text-filter
                 [filterableAttributes]="filterConfiguration.filterableAttributes"
-                [filterOptions]="filterConfiguration.filterOptions"
-                [(selectedAttribute)]="filterConfiguration.selectedAttribute"
-                (setFilter)="addFilter($event)"
-                (selectedAttributeChange)="updateFilters()"
-        >
-        </wu-dropdown-filter>
+                [filterCallback]="filterConfiguration.filterCallback"
+                (setFilter)="addFilter($event)">
+            </wu-text-filter>
+        </ng-container>
     </div>
     <span class="vertical-divider"></span>
     <wu-sort

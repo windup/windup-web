@@ -209,13 +209,7 @@ export class ServerPathRulesComponent implements DoCheck {
 
     // Reset filtered queries
     filterFieldSelected($event: FilterEvent): void {
-        this.toolbarFilterConfig.fields.forEach((field) => {
-            if (field.id === 'name') {
-                field.queries = [
-                    ...this.toolbarNameQueries
-                ];
-            }
-        });
+        // TODO nothing to do since we have just one filter "Name"
     }
 
     matchesFilter(item: RulesPath, filter: Filter): boolean {
