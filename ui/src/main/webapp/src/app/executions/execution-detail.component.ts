@@ -40,6 +40,25 @@ export const sortRulesPathsByPriority = (rulesPath: RulesPath[]): RulesPath[] =>
     });
 }
 
+export const sortLabelsPathsByPriority = (labelsPath: LabelsPath[]): LabelsPath[] => {
+    return labelsPath.sort((a: LabelsPath, b: LabelsPath) => {
+        const aPathType = a.labelsPathType == 'SYSTEM_PROVIDED' ? 20 : 0;
+        const aScopeType = a.scopeType == 'GLOBAL' ? 10 : 0;
+        const aRegistrationType = a.registrationType == 'PATH' ? 5 : 0;
+    
+        const bPathType = b.labelsPathType == 'SYSTEM_PROVIDED' ? 20 : 0;
+        const bScopeType = b.scopeType == 'GLOBAL' ? 10 : 0;
+        const bRegistrationType = b.registrationType == 'PATH' ? 5 : 0;
+    
+        const result = (aPathType + aScopeType + aRegistrationType) - (bPathType + bScopeType + bRegistrationType);
+        if (result == 0) {
+            return a.path.localeCompare(b.path);
+        }
+    
+        return result;
+    });
+}
+
 @Component({
     templateUrl: './execution-detail.component.html',
     styleUrls: ['./execution-detail.component.scss']
@@ -159,22 +178,7 @@ export class ExecutionDetailComponent extends RoutedComponent implements OnInit,
     }
 
     getSortedLabelsPaths(labelsPath: LabelsPath[]): LabelsPath[] {
-        return labelsPath.sort((a: LabelsPath, b: LabelsPath) => {
-            const aPathType = a.labelsPathType == 'SYSTEM_PROVIDED' ? 20 : 0;
-            const aScopeType = a.scopeType == 'GLOBAL' ? 10 : 0;
-            const aRegistrationType = a.registrationType == 'PATH' ? 5 : 0;
-
-            const bPathType = b.labelsPathType == 'SYSTEM_PROVIDED' ? 20 : 0;
-            const bScopeType = b.scopeType == 'GLOBAL' ? 10 : 0;
-            const bRegistrationType = b.registrationType == 'PATH' ? 5 : 0;
-
-            const result = (aPathType + aScopeType + aRegistrationType) - (bPathType + bScopeType + bRegistrationType);
-            if (result == 0) {
-                return a.path.localeCompare(b.path);
-            }
-
-            return result;
-        });
+        return sortLabelsPathsByPriority(labelsPath);
     }
 
     getSortedPackages(packages: Package[]) {

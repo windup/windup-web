@@ -1,7 +1,8 @@
 
 import { sortPackagesByFullName } from "../../../../src/app/executions/execution-detail.component";
 import { sortRulesPathsByPriority } from "../../../../src/app/executions/execution-detail.component";
-import { Package, RulesPath } from "../../../../src/app/generated/windup-services";
+import { sortLabelsPathsByPriority } from "../../../../src/app/executions/execution-detail.component";
+import { Package, RulesPath, LabelsPath } from "../../../../src/app/generated/windup-services";
 
 describe('ExecutionDetailComponent', () => {
     it('should order packages by fullName', () => {
@@ -105,5 +106,71 @@ describe('ExecutionDetailComponent', () => {
         expect(rulesPath[2].id).toEqual(3);
         expect(rulesPath[3].id).toEqual(2);
         expect(rulesPath[4].id).toEqual(1);
+    });
+
+    it('should order labelsPath by labelsPathType, scopeType, and registrationType', () => {
+        // given
+        const labelsPath: LabelsPath[] = [{
+            id: 1,
+            version: null,
+            path: null,
+            scanRecursively: null,
+            shortPath: null,
+            loadError: null,
+            labelsPathType: 'SYSTEM_PROVIDED',
+            registrationType: 'PATH',
+            scopeType: 'GLOBAL'
+        },
+        {
+            id: 2,
+            version: null,
+            path: null,
+            scanRecursively: null,
+            shortPath: null,
+            loadError: null,
+            labelsPathType: 'SYSTEM_PROVIDED',
+            registrationType: 'UPLOADED',
+            scopeType: 'GLOBAL' // this value shoudl not affect the sorting since every SYSTEM_PROVIDED should be GLOBAL
+        }, {
+            id: 3,
+            version: null,
+            path: null,
+            scanRecursively: null,
+            shortPath: null,
+            loadError: null,
+            labelsPathType: 'USER_PROVIDED',
+            registrationType: 'PATH',
+            scopeType: 'GLOBAL'
+        }, {
+            id: 4,
+            version: null,
+            path: null,
+            scanRecursively: null,
+            shortPath: null,
+            loadError: null,
+            labelsPathType: 'USER_PROVIDED',
+            registrationType: 'PATH',
+            scopeType: 'PROJECT'
+        }, {
+            id: 5,
+            version: null,
+            path: null,
+            scanRecursively: null,
+            shortPath: null,
+            loadError: null,
+            labelsPathType: 'USER_PROVIDED',
+            registrationType: 'UPLOADED',
+            scopeType: 'PROJECT'
+        }];
+
+        // when
+        sortLabelsPathsByPriority(labelsPath);
+
+        // then
+        expect(labelsPath[0].id).toEqual(5);
+        expect(labelsPath[1].id).toEqual(4);
+        expect(labelsPath[2].id).toEqual(3);
+        expect(labelsPath[3].id).toEqual(2);
+        expect(labelsPath[4].id).toEqual(1);
     });
 });
