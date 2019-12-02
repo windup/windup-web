@@ -13,7 +13,7 @@ import { NotificationService } from '../../core/notification/notification.servic
 @Component({
     selector: 'wu-custom-rules',
     templateUrl: './custom-rules.component.html',
-    styleUrls: ['/custom-rules.component.scss'],
+    styleUrls: ['./custom-rules.component.scss'],
     providers: [{
         provide: NG_VALUE_ACCESSOR,
         useExisting: forwardRef(() => CustomRulesComponent),

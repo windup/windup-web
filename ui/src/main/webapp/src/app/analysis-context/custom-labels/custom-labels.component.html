@@ -11,7 +11,7 @@
                                 [labelsPath]="uploadedLabelsPath"
                                 [initialSelectedRows]="selectedUploadedLabelsPath"
                                 (onSelectionChange)="onUploadedLabelsPathSelectionChange($event)"
-                                (onAddLabelsPathRequest)="displayAddLabelsPathModal($event)"
+                                (onAddLabelsPathRequest)="displayAddLabelsPathModal()"
                                 (onDeleteLabelsPathRequest)="displayRemoveLabelsConfirmationModal($event)">
                         </wu-uploaded-labels-path>
                     </tab>
@@ -20,7 +20,7 @@
                                 [labelsPath]="serverPathLabelsPath"
                                 [initialSelectedRows]="selectedServerPathLabels"
                                 (onSelectionChange)="onServerPathLabelsSelectionChange($event)"
-                                (onAddLabelsPathRequest)="displayAddLabelsPathModal($event)"
+                                (onAddLabelsPathRequest)="displayAddLabelsPathModal()"
                                 (onDeleteLabelsPathRequest)="displayRemoveLabelsConfirmationModal($event)">
                         </wu-server-path-labels>
                     </tab>
@@ -67,7 +67,7 @@
 <wu-add-labels-path-modal
         [project]="project"
         [configuration]="configuration"
-        (configurationSaved)="loadCustomLabels($event)">
+        (configurationSaved)="loadCustomLabels()">
 </wu-add-labels-path-modal>
 <wu-confirmation-modal
         #removeLabelsConfirmationModal
