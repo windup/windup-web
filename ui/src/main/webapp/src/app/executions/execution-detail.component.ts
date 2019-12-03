@@ -1,7 +1,7 @@
 import {Component, NgZone, OnDestroy, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {WindupService} from "../services/windup.service";
-import {WindupExecution, RegisteredApplication, RulesPath, LabelsPath} from "../generated/windup-services";
+import {WindupExecution, RegisteredApplication, RulesPath, LabelsPath, Package} from "../generated/windup-services";
 import {WINDUP_WEB} from "../app.module";
 
 import {WindupExecutionService} from "../services/windup-execution.service";
@@ -14,6 +14,50 @@ import {RoutedComponent} from "../shared/routed.component";
 import {RouteFlattenerService} from "../core/routing/route-flattener.service";
 import {SchedulerService} from "../shared/scheduler.service";
 import { filter } from 'rxjs/operators';
+
+export const sortPackagesByFullName = (packages: Package[]): Package[] => {
+    return packages.sort((a: Package, b: Package) => {
+        return a.fullName.localeCompare(b.fullName);
+    });
+}
+
+export const sortRulesPathsByPriority = (rulesPath: RulesPath[]): RulesPath[] => {
+    return rulesPath.sort((a: RulesPath, b: RulesPath) => {
+        const aPathType = a.rulesPathType == 'SYSTEM_PROVIDED' ? 20 : 0;
+        const aScopeType = a.scopeType == 'GLOBAL' ? 10 : 0;
+        const aRegistrationType = a.registrationType == 'PATH' ? 5 : 0;
+
+        const bPathType = b.rulesPathType == 'SYSTEM_PROVIDED' ? 20 : 0;
+        const bScopeType = b.scopeType == 'GLOBAL' ? 10 : 0;
+        const bRegistrationType = b.registrationType == 'PATH' ? 5 : 0;
+
+        const result = (aPathType + aScopeType + aRegistrationType) - (bPathType + bScopeType + bRegistrationType);
+        if (result == 0) {
+            return a.path.localeCompare(b.path);
+        }
+
+        return result;
+    });
+}
+
+export const sortLabelsPathsByPriority = (labelsPath: LabelsPath[]): LabelsPath[] => {
+    return labelsPath.sort((a: LabelsPath, b: LabelsPath) => {
+        const aPathType = a.labelsPathType == 'SYSTEM_PROVIDED' ? 20 : 0;
+        const aScopeType = a.scopeType == 'GLOBAL' ? 10 : 0;
+        const aRegistrationType = a.registrationType == 'PATH' ? 5 : 0;
+    
+        const bPathType = b.labelsPathType == 'SYSTEM_PROVIDED' ? 20 : 0;
+        const bScopeType = b.scopeType == 'GLOBAL' ? 10 : 0;
+        const bRegistrationType = b.registrationType == 'PATH' ? 5 : 0;
+    
+        const result = (aPathType + aScopeType + aRegistrationType) - (bPathType + bScopeType + bRegistrationType);
+        if (result == 0) {
+            return a.path.localeCompare(b.path);
+        }
+    
+        return result;
+    });
+}
 
 @Component({
     templateUrl: './execution-detail.component.html',
@@ -130,41 +174,15 @@ export class ExecutionDetailComponent extends RoutedComponent implements OnInit,
     }
 
     getSortedRulesPaths(rulesPath: RulesPath[]): RulesPath[] {
-        return rulesPath.sort((a: RulesPath, b: RulesPath) => {
-            const aPathType = a.rulesPathType == 'SYSTEM_PROVIDED' ? 20 : 0;
-            const aScopeType = a.scopeType == 'GLOBAL' ? 10 : 0;
-            const aRegistrationType = a.registrationType == 'PATH' ? 5 : 0;
-
-            const bPathType = b.rulesPathType == 'SYSTEM_PROVIDED' ? 20 : 0;
-            const bScopeType = b.scopeType == 'GLOBAL' ? 10 : 0;
-            const bRegistrationType = b.registrationType == 'PATH' ? 5 : 0;
-
-            const result = (aPathType + aScopeType + aRegistrationType) - (bPathType + bScopeType + bRegistrationType);
-            if (result == 0) {
-                return a.path.localeCompare(b.path);
-            }
-
-            return result;
-        });
+        return sortRulesPathsByPriority(rulesPath);
     }
 
     getSortedLabelsPaths(labelsPath: LabelsPath[]): LabelsPath[] {
-        return labelsPath.sort((a: LabelsPath, b: LabelsPath) => {
-            const aPathType = a.labelsPathType == 'SYSTEM_PROVIDED' ? 20 : 0;
-            const aScopeType = a.scopeType == 'GLOBAL' ? 10 : 0;
-            const aRegistrationType = a.registrationType == 'PATH' ? 5 : 0;
+        return sortLabelsPathsByPriority(labelsPath);
+    }
 
-            const bPathType = b.labelsPathType == 'SYSTEM_PROVIDED' ? 20 : 0;
-            const bScopeType = b.scopeType == 'GLOBAL' ? 10 : 0;
-            const bRegistrationType = b.registrationType == 'PATH' ? 5 : 0;
-
-            const result = (aPathType + aScopeType + aRegistrationType) - (bPathType + bScopeType + bRegistrationType);
-            if (result == 0) {
-                return a.path.localeCompare(b.path);
-            }
-
-            return result;
-        });
+    getSortedPackages(packages: Package[]) {
+        return sortPackagesByFullName(packages);
     }
 
     idTrackFn(index: number, item: any): number {
