@@ -34,14 +34,16 @@
     <div class="col-xs-12 col-sm-12 col-md-4">
         <div class="card-pf">
             <wu-select-packages-summary [packages]="includePackages"
-                                        [title]="'Include packages'">
+                                        [title]="'Include packages'"
+                                        [emptyMessage]="'No packages included'">
             </wu-select-packages-summary>
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-4">
         <div class="card-pf">
             <wu-select-packages-summary [packages]="excludePackages"
-                                        [title]="'Exclude packages'">
+                                        [title]="'Exclude packages'"
+                                        [emptyMessage]="'No packages excluded'">
             </wu-select-packages-summary>
         </div>
     </div>
