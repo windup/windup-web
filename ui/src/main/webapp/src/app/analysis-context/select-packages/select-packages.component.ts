@@ -395,25 +395,26 @@ export class SelectPackagesComponent implements OnDestroy {
      * Updates 'NgModel' value when select or unselect events occur
      */
     updateValue(): void {
+        const oldValue: PackageSelection = this._value || { includePackages:[], excludePackages: [] };
         const newValue: PackageSelection = this.getCheckedNodes(this._packages);
 
-        // if (typeof this._defaultValue === "boolean") {
-        //     if (this._defaultValue) {
-        //         if (newValue.includePackages.length > 0 && newValue.excludePackages.length == 0) {
-        //             return;
-        //         }
-        //     } else {
-        //         if (newValue.includePackages.length == 0 && newValue.excludePackages.length > 0) {
-        //             return;
-        //         }
-        //     }
-        // } else {
+        const oldIncludedIDs = oldValue.includePackages.map(elem => elem.id);
+        const oldExcludedIDs = oldValue.excludePackages.map(elem => elem.id);
             
-        // }
+        const newIncludedIDs = newValue.includePackages.map(elem => elem.id);
+        const newExcludedIDs = newValue.excludePackages.map(elem => elem.id);
+    
+        const valueChanged: boolean = (oldIncludedIDs.length != newIncludedIDs.length) ||
+                        (oldExcludedIDs.length != newExcludedIDs.length) ||
+                        oldIncludedIDs.some(elem => !newIncludedIDs.includes(elem)) ||
+                        oldExcludedIDs.some(elem => !newExcludedIDs.includes(elem));
 
-        this._value = newValue;
-        // Emit event
-        this.onSelectionChange.emit(this._value);
+        if (valueChanged) {
+            this._value = newValue;
+
+            // Emit event
+            this.onSelectionChange.emit(this._value);
+        }
     }
 
     private getCheckedNodes(packageTree: Package[]): PackageSelection {

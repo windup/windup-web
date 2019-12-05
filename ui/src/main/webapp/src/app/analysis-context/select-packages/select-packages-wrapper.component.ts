@@ -4,7 +4,7 @@ import {
 import { NG_VALIDATORS, NG_VALUE_ACCESSOR, ControlValueAccessor, Validator, AbstractControl, ValidationErrors } from "@angular/forms";
 import { Package } from "../../generated/windup-services";
 import { Subscription, Subject } from "rxjs";
-import { debounceTime } from "rxjs/operators";
+import { debounceTime, skip } from "rxjs/operators";
 import { PackageSelection } from "./select-packages.component";
 
 @Component({
@@ -64,6 +64,10 @@ export class SelectPackagesWrapperComponent implements ControlValueAccessor, Val
     constructor() {
         this.subscriptions.push(
             this.updateValueSubject.pipe(
+                // Skip the first stream since we need to wait until both
+                // changeApplicationPackagesSelection and changeThirdPartyPackagesSelection finish
+                // There will allways be 2 streams when loading page, so skip(1) to listen just the last one
+                skip(1),
                 debounceTime(10)
             ).subscribe(() => {
                 this.updateValue();
