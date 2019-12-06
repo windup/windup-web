@@ -183,8 +183,12 @@ export class SelectPackagesComponent implements OnDestroy {
             let node: Package = packages[i];
 
             // Flatter if possible
+            // 'flatternedNodes' explanation: if node is flatterned, then it should be selectable either by parent or flatterned node.
+            // E.g. given org.apache.lucene, then we should select the node either with 'org', 'org.lucene', or 'org.apache.lucene'
+            const flatternedNodes: Package[] = [];
             if (node.childs && node.childs.length == 1) {
                 while (node.childs && node.childs.length == 1) {
+                    flatternedNodes.push(node);
                     node = node.childs[0];
                 }
 
@@ -194,6 +198,9 @@ export class SelectPackagesComponent implements OnDestroy {
 
             this.parentNestedNodeMap.set(packages[i], parent);
             this.idNestedNodeMap.set(packages[i].id, packages[i]);
+            flatternedNodes.forEach(item => {
+                this.idNestedNodeMap.set(item.id, packages[i]);
+            });
 
             this.processPackagesBeforeSendingToDatasource(packages[i].childs, packages[i]);
         }

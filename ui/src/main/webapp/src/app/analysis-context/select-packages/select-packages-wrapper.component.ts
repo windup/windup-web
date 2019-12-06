@@ -64,11 +64,8 @@ export class SelectPackagesWrapperComponent implements ControlValueAccessor, Val
     constructor() {
         this.subscriptions.push(
             this.updateValueSubject.pipe(
-                // Skip the first stream since we need to wait until both
-                // changeApplicationPackagesSelection and changeThirdPartyPackagesSelection finish
-                // There will allways be 2 streams when loading page, so skip(1) to listen just the last one
-                skip(1),
-                debounceTime(10)
+                // Without debounceTime '_onChange' won't work
+                debounceTime(100)
             ).subscribe(() => {
                 this.updateValue();
             })
@@ -166,6 +163,10 @@ export class SelectPackagesWrapperComponent implements ControlValueAccessor, Val
     private processPackages(): void {
         const applicationPackages = [];
         const thirdPartyPackages = [];
+
+        this.commonNodesPackages.clear();
+        this.commonNodesApplicationPackages.clear();
+        this.commonNodesThirdPartyPackages.clear();
 
         this.disaggregatePackages(this._packages, applicationPackages, thirdPartyPackages);
 
@@ -342,7 +343,7 @@ export class SelectPackagesWrapperComponent implements ControlValueAccessor, Val
         if (valueChanged) {
             this.value = newValue;
 
-            // Change Model (NgForm)        
+            // Change Model (NgForm)
             this._onChange(this.value);
 
             // // Emit event
