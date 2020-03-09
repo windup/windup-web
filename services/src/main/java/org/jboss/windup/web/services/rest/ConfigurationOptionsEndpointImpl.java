@@ -5,6 +5,7 @@ import org.jboss.windup.config.ValidationResult;
 import org.jboss.windup.exec.configuration.options.InputPathOption;
 import org.jboss.windup.exec.configuration.options.OutputPathOption;
 import org.jboss.windup.exec.configuration.options.OverwriteOption;
+import org.jboss.windup.exec.configuration.options.UserLabelsDirectoryOption;
 import org.jboss.windup.exec.configuration.options.UserRulesDirectoryOption;
 import org.jboss.windup.rules.apps.java.config.ExcludePackagesOption;
 import org.jboss.windup.rules.apps.java.config.ScanPackagesOption;
@@ -31,7 +32,8 @@ public class ConfigurationOptionsEndpointImpl implements ConfigurationOptionsEnd
             OverwriteOption.NAME,
             ScanPackagesOption.NAME,
             ExcludePackagesOption.NAME,
-            UserRulesDirectoryOption.NAME
+            UserRulesDirectoryOption.NAME,
+            UserLabelsDirectoryOption.NAME
     ));
 
     @Inject
