@@ -1,4 +1,4 @@
-# RHAMT-WEB E2E TESTS
+# MTA-WEB E2E TESTS
 ## Parameters
 - login.username
 - login.password

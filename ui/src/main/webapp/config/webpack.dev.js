@@ -7,9 +7,9 @@ module.exports = webpackMerge(commonConfig, {
     mode: 'development',
 
     devtool: 'source-map', //devtool: 'cheap-module-eval-source-map',
- 
+
     output: {
-        path: helpers.root('../../../target/rhamt-web'),
+        path: helpers.root('../../../target/mta-web'),
         filename: 'js/[name].js',
         chunkFilename: 'js/[id].chunk.js'
     },

@@ -10,7 +10,7 @@ export class LoginPage {
     loginButton = element(by.css('#kc-login'));
 
     public navigateTo() {
-        browser.get('/rhamt-web/');
+        browser.get('/mta-web/');
     }
 
     public login(user: string, password: string) {

@@ -1,8 +1,8 @@
 {
-    "realm": "rhamt",
+    "realm": "mta",
     "realm-public-key": "${keycloak.publicKey}",
     "auth-server-url": "${keycloak.serverUrl}",
     "ssl-required": "none",
-    "resource": "rhamt-web",
+    "resource": "mta-web",
     "public-client": true
 }
