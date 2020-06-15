@@ -5,7 +5,7 @@
     <base href="${basePath}">
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="img/redhat-logo-favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+    <link href="img/mta-icon.png" rel="shortcut icon" type="image/x-icon"/>
     <script src="${keycloak.serverUrl}/js/keycloak.js"></script>
     <script src="version/version.properties.js"></script>
 
