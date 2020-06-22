@@ -93,7 +93,7 @@ public class WebProperties
 
         if (addonRepository == null)
         {
-            addonRepository = servletContextPath.resolve("WEB-INF").resolve("rhamt-cli").resolve("addons");
+            addonRepository = servletContextPath.resolve("WEB-INF").resolve("mta-cli").resolve("addons");
 
             if (!Files.isDirectory(addonRepository))
                 throw new IllegalStateException("Cannot load addon repository: " + addonRepository);
@@ -101,15 +101,15 @@ public class WebProperties
 
         if (rulesRepository == null)
         {
-            rulesRepository = servletContextPath.resolve("WEB-INF").resolve("rhamt-cli").resolve("rules");
+            rulesRepository = servletContextPath.resolve("WEB-INF").resolve("mta-cli").resolve("rules");
             if (!Files.isDirectory(rulesRepository))
                 throw new IllegalStateException("Cannot load rules repository: " + rulesRepository);
         }
         if (labelsRepository == null)
         {
             // TODO loading core labels from 'rules' directory because labels and rules are stored in the same folder
-//            labelsRepository = servletContextPath.resolve("WEB-INF").resolve("rhamt-cli").resolve("labels");
-            labelsRepository = servletContextPath.resolve("WEB-INF").resolve("rhamt-cli").resolve("rules");
+//            labelsRepository = servletContextPath.resolve("WEB-INF").resolve("mta-cli").resolve("labels");
+            labelsRepository = servletContextPath.resolve("WEB-INF").resolve("mta-cli").resolve("rules");
             if (!Files.isDirectory(labelsRepository))
                 throw new IllegalStateException("Cannot load labels repository: " + labelsRepository);
         }

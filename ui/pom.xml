@@ -118,7 +118,7 @@
     </dependencies>
 
     <build>
-        <finalName>rhamt-web</finalName>
+        <finalName>mta-web</finalName>
         <testResources>
             <testResource>
                 <directory>src/test/resources</directory>

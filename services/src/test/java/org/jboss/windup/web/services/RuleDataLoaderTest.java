@@ -26,9 +26,11 @@ public class RuleDataLoaderTest extends AbstractTest
 {
     public static final String CUSTOM_WINDUP_RULESPATH = "target/test-classes/custom-rulesets-data/custom-ruleset.windup.xml";
     public static final String CUSTOM_RHAMT_RULESPATH = "target/test-classes/custom-rulesets-data/custom-ruleset.rhamt.xml";
+    public static final String CUSTOM_MTA_RULESPATH = "target/test-classes/custom-rulesets-data/custom-ruleset.mta.xml";
 
     public static final String CUSTOM_WINDUP_LABELSPATH = "target/test-classes/custom-labelsets-data/Test1.windup.label.xml";
     public static final String CUSTOM_RHAMT_LABELSPATH = "target/test-classes/custom-labelsets-data/Test2.rhamt.label.xml";
+    public static final String CUSTOM_MTA_LABELSPATH = "target/test-classes/custom-labelsets-data/Test3.mta.label.xml";
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -46,8 +48,10 @@ public class RuleDataLoaderTest extends AbstractTest
         Configuration configuration = this.configurationService.getGlobalConfiguration();
         configuration.getRulesPaths().add(new RulesPath(CUSTOM_WINDUP_RULESPATH, PathType.USER_PROVIDED, ScopeType.GLOBAL));
         configuration.getRulesPaths().add(new RulesPath(CUSTOM_RHAMT_RULESPATH, PathType.USER_PROVIDED, ScopeType.GLOBAL));
+        configuration.getRulesPaths().add(new RulesPath(CUSTOM_MTA_RULESPATH, PathType.USER_PROVIDED, ScopeType.GLOBAL));
         configuration.getLabelsPaths().add(new LabelsPath(CUSTOM_WINDUP_LABELSPATH, PathType.USER_PROVIDED, ScopeType.GLOBAL));
         configuration.getLabelsPaths().add(new LabelsPath(CUSTOM_RHAMT_LABELSPATH, PathType.USER_PROVIDED, ScopeType.GLOBAL));
+        configuration.getLabelsPaths().add(new LabelsPath(CUSTOM_MTA_LABELSPATH, PathType.USER_PROVIDED, ScopeType.GLOBAL));
         configuration = this.configurationService.saveConfiguration(configuration);
         ruleDataLoader.reloadRuleData(configuration);
         ruleDataLoader.reloadLabelData(configuration);
@@ -61,6 +65,7 @@ public class RuleDataLoaderTest extends AbstractTest
         int pathsFound = 0;
         boolean customWindupRulesetFound = false;
         boolean customRHAMTRulesetFound = false;
+        boolean customMtaRulesetFound = false;
         for (RuleProviderEntity ruleProviderEntity : ruleProviderEntities)
         {
             rulesFound += ruleProviderEntity.getRules().size();
@@ -69,6 +74,7 @@ public class RuleDataLoaderTest extends AbstractTest
                 pathsFound++;
                 if (!customWindupRulesetFound && ruleProviderEntity.getRulesPath().getPath().equals(CUSTOM_WINDUP_RULESPATH)) customWindupRulesetFound = true;
                 if (!customRHAMTRulesetFound && ruleProviderEntity.getRulesPath().getPath().equals(CUSTOM_RHAMT_RULESPATH)) customRHAMTRulesetFound = true;
+                if (!customMtaRulesetFound && ruleProviderEntity.getRulesPath().getPath().equals(CUSTOM_MTA_RULESPATH)) customMtaRulesetFound = true;
                 System.out.println("Rule provider path: " + ruleProviderEntity.getRulesPath());
             }
         }

@@ -1,9 +1,9 @@
-Trying out RHAMT Web Console
+Trying out MTA Web Console
 =====================
 
-If you just want to run RHAMT Web Console, not build or modify it, the simplest way is to use the docker image at https://hub.docker.com/r/windup3/windup-web_nightly/.
+If you just want to run MTA Web Console, not build or modify it, the simplest way is to use the docker image at https://hub.docker.com/r/windup3/windup-web_nightly/.
 
-If you want to build RHAMT Web Console yourself and run it without setting up a WildFly server and Keycloak, you can build [windup-web-distribution](https://github.com/windup/windup-web-distribution) after building windup-web to create a self-contained distribution.
+If you want to build MTA Web Console yourself and run it without setting up a WildFly server and Keycloak, you can build [windup-web-distribution](https://github.com/windup/windup-web-distribution) after building windup-web to create a self-contained distribution.
 
 
 Setting up the development environment
@@ -139,17 +139,17 @@ Running the webapp
 
     `bin/jboss-cli.sh -c --file=scripts/eap-setup.cli`
 
-- Deploy the exploded `services/target/rhamt-web/api` and `ui/target/rhamt-web` to EAP 7.
+- Deploy the exploded `services/target/mta-web/api` and `ui/target/mta-web` to EAP 7.
 
     There are 3 possible ways how to do it.
 
     - Manual copying:
 
         ```
-        cp -r services/target/rhamt-web/api ~/apps/wildfly-10.1.0.Final/standalone/deployments/rhamt-web/api.war;
+        cp -r services/target/mta-web/api ~/apps/wildfly-10.1.0.Final/standalone/deployments/mta-web/api.war;
         touch ~/apps/wildfly-10.1.0.Final/standalone/deployments/rmaht-web/api.war.dodeploy;
-        cp -r ui/target/rhamt-web ~/apps/wildfly-10.1.0.Final/standalone/deployments/rhamt-web.war;
-        touch ~/apps/wildfly-10.1.0.Final/standalone/deployments/rhamt-web.war.dodeploy;
+        cp -r ui/target/mta-web ~/apps/wildfly-10.1.0.Final/standalone/deployments/mta-web.war;
+        touch ~/apps/wildfly-10.1.0.Final/standalone/deployments/mta-web.war.dodeploy;
         ```
 
         or
@@ -157,8 +157,8 @@ Running the webapp
     - JBoss CLI deployment, deploy the `target` directory directly - see [WildFly docs](https://docs.jboss.org/author/display/WFLY10/Application+deployment#Applicationdeployment-UnmanagedDeployments):
 
         ```
-        deploy services/target/rhamt-web/api --unmanaged;
-        deploy ui/target/rhamt-web --unmanaged;
+        deploy services/target/mta-web/api --unmanaged;
+        deploy ui/target/mta-web --unmanaged;
         ```
 
         or
@@ -167,18 +167,18 @@ Running the webapp
 
         ```xml
         <deployments>
-            <deployment name="rhamt-web/api" runtime-name="api.war">
-                <fs-exploded path=".../windup-web/services/target/rhamt-web/api"/>
+            <deployment name="mta-web/api" runtime-name="api.war">
+                <fs-exploded path=".../windup-web/services/target/mta-web/api"/>
             </deployment>
-            <deployment name="rhamt-web" runtime-name="rhamt-web.war">
-                <fs-exploded path=".../windup-web/ui/target/rhamt-web"/>
+            <deployment name="mta-web" runtime-name="mta-web.war">
+                <fs-exploded path=".../windup-web/ui/target/mta-web"/>
             </deployment>
         </deployments>
         ```
     > Note: Replace ... with real absolute path on your local environment.
 
 - Follow the steps for deploying keycloak in [Keycloak Setup](./KEYCLOAK-SETUP.md)
-- Access the webapp: <http://localhost:8080/rhamt-web>
+- Access the webapp: <http://localhost:8080/mta-web>
 
 Deploy your changes while coding
 ------------------
@@ -197,8 +197,8 @@ To get the OpenAPI specifications file, you can compile this project enabling th
 - from `windup-web/services` folder execute the command `mvn clean compile -Pswagger`
 - in `windup-web/services/target/swagger` folder you'll find `openapi.json` and `openapi.yaml` files with the OpenAPI specifications
 
-If you want to create a RHAMT Web application that provides the `openapi.json` and `openapi.yaml` files at runtime:
+If you want to create a MTA Web application that provides the `openapi.json` and `openapi.yaml` files at runtime:
 
 - build this project enabling the `swagger` profile, executing -from `windup-web` folder- the `mvn -DskipTests clean install -Pswagger` command  
-- the files will be available at <http://localhost:8080/rhamt-web/api/openapi.json> and <http://localhost:8080/rhamt-web/api/openapi.yaml>
+- the files will be available at <http://localhost:8080/mta-web/api/openapi.json> and <http://localhost:8080/mta-web/api/openapi.yaml>
 

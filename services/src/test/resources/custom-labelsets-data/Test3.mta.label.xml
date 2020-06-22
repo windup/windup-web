@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<labelset id="labelset3"
+          xmlns="http://windup.jboss.org/schema/jboss-labelset"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://windup.jboss.org/schema/jboss-labelset http://windup.jboss.org/schema/jboss-labelset/windup-jboss-labelset.xsd">
+    <labels>
+        <label id="label1">
+            <name>Label1</name>
+            <supported>
+                <tag>tag1</tag>
+                <tag>tag2</tag>
+            </supported>
+            <unsuitable>
+                <tag>tag3</tag>
+            </unsuitable>
+        </label>
+        <label id="label2">
+            <name>Label2</name>
+            <description>Label2 description</description>
+            <supported>
+                <tag>tag1</tag>
+            </supported>
+            <unsuitable>
+                <tag>tag2</tag>
+                <tag>tag3</tag>
+            </unsuitable>
+            <neutral>
+                <tag>tag4</tag>
+                <tag>tag5</tag>
+            </neutral>
+        </label>
+    </labels>
+</labelset>

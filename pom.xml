@@ -34,7 +34,7 @@
         <windup.web.developer.connection>scm:git:git@github.com:windup/windup-web.git</windup.web.developer.connection>
         <windup.web.scm.url>http://github.com/windup/windup-web</windup.web.scm.url>
 
-        <windup.distribution.name>rhamt-cli</windup.distribution.name>
+        <windup.distribution.name>mta-cli</windup.distribution.name>
         <version.hibernate>5.3.14.Final</version.hibernate>
         <version.undertow>2.0.15.Final</version.undertow>
     </properties>

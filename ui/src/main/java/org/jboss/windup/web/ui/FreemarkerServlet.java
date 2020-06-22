@@ -89,12 +89,12 @@ public class FreemarkerServlet extends freemarker.ext.servlet.FreemarkerServlet
 
             /*
              * 1) Read env. variable, if set,
-             * 2) If not, use system property rhamt.apiServer.url as fallback,
-             * 3) If system property not set, use current address + rhamt-web-services as fallback
+             * 2) If not, use system property mta.apiServer.url as fallback,
+             * 3) If system property not set, use current address + mta-web-services as fallback
              */
             String apiServerUrl = this.readEnvVariable(
-                    "RHAMT_API_SERVER_URL",
-                    System.getProperty("rhamt.apiServer.url", serverAddress + "/rhamt-web/api")
+                    "MTA_API_SERVER_URL",
+                    System.getProperty("mta.apiServer.url", serverAddress + "/mta-web/api")
             );
 
             hashModel.put("apiServerUrl", apiServerUrl);

@@ -20,9 +20,9 @@ Solution
 1. Clone [windup-web-distribution](https://github.com/windup/windup-web-distribution)
 1. Locate your command line in your cloned [windup-web-distribution](https://github.com/windup/windup-web-distribution) repository
 1. Execute `mvn clean install -DskipTests` to generate a new zip distribution
-1. unzip the file `target/rhamt-web-distribution-*-with-authentication.zip`
-1. Execute `run_rhamt.sh` from the unzipped `rhamt-web-distribution-*-with-authentication` directory
+1. unzip the file `target/mta-web-distribution-*-with-authentication.zip`
+1. Execute `run_mta.sh` from the unzipped `mta-web-distribution-*-with-authentication` directory
 1. Create the projects and analysis needed
-1. Stop `rhamt-web-distribution` using `Ctrl + C`
-1. Replace the old database by this file: `rhamt-web-distribution-*/standalone/data/h2/windup-web.mv.db`
+1. Stop `mta-web-distribution` using `Ctrl + C`
+1. Replace the old database by this file: `mta-web-distribution-*/standalone/data/h2/windup-web.mv.db`
 1. Replace the new IDs in [data.ts](src/main/npm/e2e/utils/data.ts)

@@ -18,7 +18,7 @@ module.exports = webpackMerge(commonConfig, {
     devtool: 'source-map',
 
     output: {
-        path: helpers.root('../../../target/rhamt-web'),
+        path: helpers.root('../../../target/mta-web'),
         filename: 'js/[name].[hash].js',
         chunkFilename: 'js/[id].[hash].chunk.js'
     },
@@ -34,7 +34,7 @@ module.exports = webpackMerge(commonConfig, {
                 cache: true,
                 parallel: true
             }),
-            
+
              new OptimizeCSSAssetsPlugin({
                  cssProcessor: cssnano,
                  cssProcessorOptions: {
@@ -46,7 +46,7 @@ module.exports = webpackMerge(commonConfig, {
              })
         ]
     },
-    
+
     module: {
         rules: [
             {

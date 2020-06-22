@@ -1,11 +1,11 @@
 <!doctype html>
 <html class="layout-pf layout-pf-fixed transitions">
 <head>
-    <title>Red Hat Application Migration Toolkit Web Console (RHAMT)</title>
+    <title>Migration Toolkit for Applications Web Console(MTA)</title>
     <base href="${basePath}">
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="img/rhamt-icon-128.png" rel="shortcut icon" type="image/x-icon"/>
+    <link href="img/mta-icon.png" rel="shortcut icon" type="image/x-icon"/>
     <script src="${keycloak.serverUrl}/js/keycloak.js"></script>
     <script src="version/version.properties.js"></script>
 
@@ -67,8 +67,9 @@
     <div class="navbar">
         <div class="collapse navbar-collapse navbar-collapse-1">
             <div id="header-logo-wrapper">
-                <div id="header-logo"><strong>Red Hat Application Migration Toolkit</strong>&nbsp;Web Console
-                    <!-- a class="pointer link" target="_blank" href="https://developers.redhat.com/products/rhamt/overview/" style="color: #ff0000">(Beta)</a -->
+                <div id="header-logo">
+                    <img id="header-logo" src="img/mta-logo-header.svg" height="60" />
+                    <!-- a class="pointer link" target="_blank" href="https://developers.redhat.com/products/mta/overview/" style="color: #ff0000">(Beta)</a -->
                 </div>
             </div>
         </div>

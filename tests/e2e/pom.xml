@@ -92,10 +92,10 @@
                         <wildfly.version>${version.wildfly}</wildfly.version>
                         <wildfly.remote.port>${wildfly.port}</wildfly.remote.port>
                         <protractor.path>./node_modules/protractor/bin/protractor</protractor.path>
-                        <protractor.args>protractor.conf.js --params.upload.filePath ${project.build.directory}/deployments/rhamt-web.war --params.visualRegression true</protractor.args>
+                        <protractor.args>protractor.conf.js --params.upload.filePath ${project.build.directory}/deployments/mta-web.war --params.visualRegression true</protractor.args>
                         <workingDirectory>${project.build.directory}/npm</workingDirectory>
                         <args.conf>protractor.conf.js</args.conf>
-                        <args.params.uploadFile>${project.build.directory}/deployments/rhamt-web.war</args.params.uploadFile>
+                        <args.params.uploadFile>${project.build.directory}/deployments/mta-web.war</args.params.uploadFile>
                         <args.params.visualRegression>true</args.params.visualRegression>
                         <logFile>${project.build.directory}/e2e-output.log</logFile>
                     </systemPropertyVariables>
@@ -226,7 +226,7 @@
                                     <version>${project.version}</version>
                                     <type>war</type>
                                     <overWrite>true</overWrite>
-                                    <destFileName>rhamt-web.war</destFileName>
+                                    <destFileName>mta-web.war</destFileName>
                                     <outputDirectory>${project.build.directory}/deployments/</outputDirectory>
                                 </artifactItem>
                             </artifactItems>
@@ -366,7 +366,7 @@
                             <arguments>
                                 <argument>protractor.conf.js</argument>
                                 <argument>--params.upload.filePath</argument>
-                                <argument>${project.build.directory}/deployments/rhamt-web.war</argument>
+                                <argument>${project.build.directory}/deployments/mta-web.war</argument>
                             </arguments>
                             <outputFile>${project.build.directory}/e2e-output.log</outputFile>
                         </configuration>

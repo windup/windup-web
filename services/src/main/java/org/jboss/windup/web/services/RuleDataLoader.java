@@ -70,16 +70,20 @@ public class RuleDataLoader
 {
     private static final String XML_RULES_WINDUP_EXTENSION = "windup.xml";
     private static final String XML_RULES_RHAMT_EXTENSION = "rhamt.xml";
+    private static final String XML_RULES_MTA_EXTENSION = "mta.xml";
     private static final String[] SUPPORTED_RULE_EXTENSIONS = {
                 XML_RULES_WINDUP_EXTENSION,
-                XML_RULES_RHAMT_EXTENSION
+                XML_RULES_RHAMT_EXTENSION,
+                XML_RULES_MTA_EXTENSION
     };
 
     private static final String XML_LABELS_WINDUP_EXTENSION = "windup.label.xml";
     private static final String XML_LABELS_RHAMT_EXTENSION = "rhamt.label.xml";
+    private static final String XML_LABELS_MTA_EXTENSION = "mta.label.xml";
     private static final String[] SUPPORTED_LABEL_EXTENSIONS = {
             XML_LABELS_WINDUP_EXTENSION,
-            XML_LABELS_RHAMT_EXTENSION
+            XML_LABELS_RHAMT_EXTENSION,
+            XML_LABELS_MTA_EXTENSION
     };
 
     private static Logger LOG = Logger.getLogger(RuleDataLoader.class.getName());

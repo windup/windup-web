@@ -2,11 +2,11 @@ const fs = require('fs');
 const SpecReporter = require('jasmine-spec-reporter').SpecReporter;
 const JUnitXmlReporter = require('jasmine-reporters').JUnitXmlReporter;
 
-const baseUrl = 'http://localhost:8180/rhamt-web/';
+const baseUrl = 'http://localhost:8180/mta-web/';
 
 var params = {
     login: {
-        username: 'rhamt',
+        username: 'mta',
         password: 'password'
     },
     baseUrl: baseUrl,

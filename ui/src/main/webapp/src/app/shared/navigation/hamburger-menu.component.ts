@@ -25,7 +25,7 @@ export const DEFAULT_MENU_ITEMS = [
     },
     {
         label: 'Documentation',
-        link: 'https://access.redhat.com/documentation/en-us/red_hat_application_migration_toolkit/',
+        link: 'https://access.redhat.com/documentation/en-us/migration_toolkit_for_applications/',
         absolute: true,
         icon: '',
         isEnabled: true

@@ -75,6 +75,12 @@ span.pficon-home {
   margin-left: 30px;
 }
 
+@media (max-width: 767px) {
+  #header-logo {
+    width: 300px;
+  }
+}
+
 #header-logo strong {
   text-transform: uppercase;
 }
