@@ -84,7 +84,7 @@
                 <ng-template #labelsList>
                     <wu-labels-list *ngIf="hasFileBasedProviders(labelPath)"
                         [labelPath]="labelPath"
-                        [labelProviders]="getLabelProvidersByPath(labelPath)"
+                        [labelProviders]="getFilteredLabelProvidersByPath(labelPath)"
                     >
                     </wu-labels-list>
                 </ng-template>

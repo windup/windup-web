@@ -86,7 +86,7 @@
                 <ng-template #rulesList>
                     <wu-rules-list *ngIf="hasFileBasedProviders(rulePath)"
                         [rulePath]="rulePath"
-                        [ruleProviders]="getRuleProvidersByPath(rulePath)"
+                        [ruleProviders]="getFilteredRuleProvidersByPath(rulePath)"
                     >
                     </wu-rules-list>
                 </ng-template>
