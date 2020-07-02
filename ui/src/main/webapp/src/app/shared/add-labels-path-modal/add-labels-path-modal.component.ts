@@ -116,7 +116,7 @@ export class AddLabelsPathModalComponent extends FormComponent implements OnInit
             this.handleError(msg);
         }));
 
-        let suffixes = ['.xml'];
+        let suffixes = ['.windup.label.xml', '.rhamt.label.xml', '.mta.label.xml'];
         this.multipartUploader.options.filters.push(<FilterFunction>{
             name: "invalidLabelProvider",
             fn: (item?: FileLikeObject, options?: FileUploaderOptions) => {
