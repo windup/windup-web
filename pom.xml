@@ -40,7 +40,7 @@
     </properties>
 
     <scm>
-        <tag>4.3.1-SNAPSHOT</tag>
+        <tag>master</tag>
         <connection>${windup.web.scm.connection}</connection>
         <developerConnection>${windup.web.developer.connection}</developerConnection>
         <url>${windup.web.scm.url}</url>
