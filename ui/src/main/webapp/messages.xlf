@@ -316,7 +316,7 @@
       </trans-unit>
       <trans-unit id="e8f808887b0e059a2c5c94e12612d84ec037ec50" datatype="html">
         <source>
-        Welcome to the Red Hat Application Migration Toolkit Web Console.
+        Welcome to the Migration Toolkit for Applications Web Console.
     </source>
         <target/>
         <note priority="1" from="description">Header</note>
@@ -332,7 +332,7 @@
         <note priority="1" from="description">Intro text, 1st part</note>
       </trans-unit>
       <trans-unit id="be4447ba967dd93b3fe55e4f2e58d1cbe312b2b6" datatype="html">
-        <source>Red Hat Application Migration Toolkit Web Console Documentation</source>
+        <source>Migration Toolkit for Applications Web Console Documentation</source>
         <target/>
         <note priority="1" from="description">Intro text, 2nd part</note>
       </trans-unit>
