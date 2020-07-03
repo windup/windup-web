@@ -116,7 +116,7 @@ export class AddRulesPathModalComponent extends FormComponent implements OnInit,
             this.handleError(msg);
         }));
 
-        let suffixes = ['.xml'];
+        let suffixes = ['.windup.xml', '.rhamt.xml', '.mta.xml'];
         this.multipartUploader.options.filters.push(<FilterFunction>{
             name: "invalidRuleProvider",
             fn: (item?: FileLikeObject, options?: FileUploaderOptions) => {
