@@ -13,7 +13,7 @@ export class DependenciesReportComponent {
     }
 
     ngOnInit(): void {
-        this._activatedRoute.parent.parent.params.subscribe((params: {executionId: number}) => {
+        this._activatedRoute.parent.params.subscribe((params: {executionId: number}) => {
             let executionId = params.executionId;
 
             this._dependenciesService.getDependencies(executionId)
