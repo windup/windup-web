@@ -1,23 +1,29 @@
-<div class="blank-slate-pf" style="border: none;">
-    <h1 i18n="no projects page Header" style="margin-bottom: 1.4ex;">
-        Welcome to the Web Console.
+<div class="pf-c-empty-state pf-m-sm">
+  <div class="pf-c-empty-state__content">
+    <i class="fas fa-cubes pf-c-empty-state__icon" aria-hidden="true"></i>
+    <h1 class="pf-c-title pf-m-lg">
+      Welcome to the Migration Toolkit for Applications
     </h1>
-    <div class="welcome-help-text">
-
-        <p i18n="no projects page text 1" style="margin-bottom: 0.2ex;">
-            Migration Toolkit for Applications helps you to quickly assess and perform large-scale application migrations and modernizations.
-        </p>
-        <p i18n="no projects page text 2">
-            Create a project for your applications.
-        </p>
+    <div class="pf-c-empty-state__body">
+      The Red Hat Migration Toolkit for Applications helps you quickly assess
+      and perform large-scale application migrations and modernizations. Start
+      by creating a project for your applications.
     </div>
-
-    <div class="blank-slate-pf-main-action">
-        <a (click)="newProjectClicked()" class="clickable btn btn-primary btn-lg" i18n="no projects page Button">New Project</a>
+    <button
+      class="pf-c-button pf-m-primary"
+      type="button"
+      (click)="newProjectClicked()"
+      i18n="no projects page Button"
+    >
+      New project
+    </button>
+    <div class="pf-c-empty-state__secondary">
+      To learn more, visit the
+      <a
+        target="_blank"
+        href="https://access.redhat.com/documentation/en-us/migration_toolkit_for_applications/"
+        >documentation</a
+      >
     </div>
-
-    <div class="welcome-help-text">
-        <ng-container i18n="Docs link text, 1st part">To learn more, visit the </ng-container>
-        <a target="_blank" href="https://access.redhat.com/documentation/en-us/migration_toolkit_for_applications/" i18n="Docs link text, link">documentation</a>.
-    </div>
+  </div>
 </div>

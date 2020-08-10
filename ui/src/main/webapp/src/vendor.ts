@@ -50,6 +50,8 @@ require('../node_modules/patternfly/dist/css/patternfly.min.css');
 require('../node_modules/patternfly/dist/css/patternfly-additions.min.css');
 require('../node_modules/patternfly-ng/dist/css/patternfly-ng.min.css');
 
+require('../node_modules/@patternfly/patternfly/patternfly.min.css');
+
 // Google material
 require('../node_modules/material-design-icons/iconfont/material-icons.css');
 require('../node_modules/@angular/material/prebuilt-themes/indigo-pink.css');
