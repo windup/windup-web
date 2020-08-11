@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^4.11.0",
+    "@material-ui/lab": "^4.0.0-alpha.56",
     "@patternfly/patternfly": "^4.23.3",
     "@patternfly/react-core": "^4.32.1",
     "@patternfly/react-table": "^4.12.1",
@@ -16,7 +18,10 @@
     "axios": "^0.19.2",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.3",
+    "husky": "^4.2.5",
     "jest-enzyme": "^7.1.2",
+    "lint-staged": "^10.2.11",
+    "prettier": "^2.0.5",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.1",
@@ -32,7 +37,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "storybook": "start-storybook -p 6006 -s public",
+    "build-storybook": "build-storybook -s public"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -50,12 +57,31 @@
     ]
   },
   "devDependencies": {
+    "@babel/core": "^7.11.1",
+    "@storybook/addon-actions": "^6.0.2",
+    "@storybook/addon-essentials": "^6.0.2",
+    "@storybook/addon-links": "^6.0.2",
+    "@storybook/node-logger": "^6.0.2",
+    "@storybook/preset-create-react-app": "^3.1.4",
+    "@storybook/react": "^6.0.2",
     "@types/enzyme": "^3.10.5",
     "@types/enzyme-adapter-react-16": "^1.0.6",
     "@types/react-redux": "^7.1.9",
     "@types/react-router-dom": "^5.1.5",
     "@types/redux-logger": "^3.0.8",
+    "babel-loader": "^8.1.0",
     "node-sass": "^4.14.1",
+    "react-is": "^16.13.1",
     "redux-devtools-extension": "^2.13.8"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
+      "prettier --write"
+    ]
   }
 }
