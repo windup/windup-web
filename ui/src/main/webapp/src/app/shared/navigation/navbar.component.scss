@@ -168,3 +168,14 @@ ul.navbar-utility {
 [class*=" pficon-"], [class^=pficon-] {
   line-height: 1 !important;
 }
+
+// Patternfly4
+.pf-c-dropdown__menu, .pf-m-align-right, .dropdown-menu {
+  left: auto;
+}
+
+.pf-c-dropdown__group {
+  a:hover {
+    color: #151515;
+  }
+}

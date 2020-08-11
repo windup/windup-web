@@ -1,58 +1,161 @@
-<nav class="navbar navbar-default navbar-pf" role="navigation">
-    <div class="navbar-collapse">
-        <div class="visible-xs hamburger-button">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".hamburger-menu-collapse-1">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-        </div>
-        <div *ngIf="showLogotype" id="header-logo-wrapper">
-            <a [routerLink]="['/']">
-                <img id="header-logo" src="../../../../img/mta-logo-header.svg" />
-            </a>
-            <!-- a class="pointer link" target="_blank" href="https://developers.redhat.com/products/mta/overview/" style="color: #ff0000">(Beta)</a -->
-        </div>
-        <ul class="nav navbar-nav navbar-primary hidden-xs" *ngIf="showMenuItems">
-            <li [routerLinkActive]="['active']" class="home">
-                <a [routerLink]="['/project-list']">
-                    <span class="fa-fw pficon pficon-home" aria-hidden="true"></span>
-                    <span i18n="Projects 'Home' button">Projects</span>
-                </a>
-            </li>
-            <ng-content></ng-content>
-        </ul>
-        <ul class="nav navbar-nav navbar-utility hidden-xs">
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    <span class="pficon pficon-help" aria-hidden="true"></span>
-                    <span class="sr-only">Help</span>
-                    <span class="caret" aria-hidden="true"></span>
-                </a>
-                <ul class="dropdown-menu">
-                    <li><a target="_blank" i18n-href="MTA WC documentation link" href="https://access.redhat.com/documentation/en-us/migration_toolkit_for_applications/">Documentation</a></li>
-                    <li><a [routerLink]="['/about']">About</a></li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    <span class="pficon pficon-user"></span>
-                    <span class="username">{{username}}</span>
-                    <b class="caret"></b>
-                </a>
-                <ul class="dropdown-menu">
-                    <li [routerLinkActive]="['active']">
-                        <a [routerLink]="['/configuration/rules']" i18n="Rules configuration menu item">Rules Configuration</a>
-                    </li>
-                    <li [routerLinkActive]="['active']">
-                            <a [routerLink]="['/configuration/labels']" i18n="Labels configuration menu item">Labels Configuration</a>
-                        </li>
-                    <li>
-                        <a [routerLink]="['/logout']" i18n="Log out menu item">Log Out</a>
-                    </li>
-                </ul>
-            </li>
-        </ul>
+<header class="pf-c-page__header">
+  <div class="pf-c-page__header-brand">
+    <div class="pf-c-page__header-brand-toggle">
+      <button
+        class="pf-c-button pf-m-plain"
+        type="button"
+        id="page-default-nav-example-nav-toggle"
+        aria-label="Global navigation"
+        aria-expanded="true"
+        aria-controls="page-default-nav-example-primary-nav"
+      >
+        <i class="fas fa-bars" aria-hidden="true"></i>
+      </button>
     </div>
-</nav>
+    <a *ngIf="showLogotype" class="pf-c-page__header-brand-link">
+      <img
+        class="pf-c-brand"
+        src="../../../../img/mta-logo-header.svg"
+        alt="logo"
+        [routerLink]="['/']"
+      />
+    </a>
+  </div>
+
+  <div class="pf-c-page__header-nav" *ngIf="showMenuItems">
+    <nav
+      class="pf-c-nav pf-m-horizontal pf-m-scrollable"
+      id="page-layout-horizontal-nav-horizontal-nav"
+      aria-label="Global"
+    >
+      <button class="pf-c-nav__scroll-button" disabled aria-label="Scroll left">
+        <i class="fas fa-angle-left" aria-hidden="true"></i>
+      </button>
+      <ul class="pf-c-nav__list">
+        <li class="pf-c-nav__item">
+          <a
+            class="pf-c-nav__link"
+            [routerLinkActive]="['pf-m-current']"
+            [routerLink]="['/project-list']"
+            >Projects</a
+          >
+        </li>
+        <ng-content></ng-content>
+      </ul>
+      <button class="pf-c-nav__scroll-button" aria-label="Scroll right">
+        <i class="fas fa-angle-right" aria-hidden="true"></i>
+      </button>
+    </nav>
+  </div>
+  <div class="pf-c-page__header-tools">
+    <div class="pf-c-page__header-tools-group">
+      <div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg">
+        <div class="pf-c-dropdown dropdown">
+          <button
+            class="pf-c-button pf-m-plain dropdown-toggle"
+            type="button"
+            aria-label="Help"
+            data-toggle="dropdown"
+          >
+            <i class="pf-icon pf-icon-help" aria-hidden="true"></i>
+          </button>
+          <ul class="pf-c-dropdown__menu pf-m-align-right dropdown-menu">
+            <section class="pf-c-dropdown__group">
+              <ul>
+                <li>
+                  <a
+                    class="pf-c-dropdown__menu-item"
+                    target="_blank"
+                    href="https://access.redhat.com/documentation/en-us/migration_toolkit_for_applications/"
+                    >Documentation</a
+                  >
+                </li>
+                <li>
+                  <a class="pf-c-dropdown__menu-item" [routerLink]="['/about']">
+                    About
+                  </a>
+                </li>
+              </ul>
+            </section>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="pf-c-page__header-tools-group">
+      <div class="pf-c-page__header-tools-item pf-m-hidden-on-lg">
+        <div class="pf-c-dropdown dropdown">
+          <button
+            class="pf-c-dropdown__toggle pf-m-plain dropdown-toggle"
+            type="button"
+            data-toggle="dropdown"
+          >
+            <i class="fas fa-ellipsis-v"></i>
+          </button>
+          <ul class="pf-c-dropdown__menu pf-m-align-right dropdown-menu">
+            <section class="pf-c-dropdown__group">
+              <ul>
+                <li>
+                  <a
+                    class="pf-c-dropdown__menu-item"
+                    target="_blank"
+                    href="https://access.redhat.com/documentation/en-us/migration_toolkit_for_applications/"
+                    >Documentation</a
+                  >
+                </li>
+                <li>
+                  <a class="pf-c-dropdown__menu-item" [routerLink]="['/about']">
+                    About
+                  </a>
+                </li>
+              </ul>
+            </section>
+          </ul>
+        </div>
+      </div>
+      <div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-md">
+        <div class="pf-c-dropdown dropdown">
+          <button
+            class="pf-c-dropdown__toggle pf-m-plain dropdown-toggle"
+            type="button"
+            data-toggle="dropdown"
+          >
+            <span class="pf-c-dropdown__toggle-text">{{ username }}</span>
+            <span class="pf-c-dropdown__toggle-icon">
+              <i class="fas fa-caret-down" aria-hidden="true"></i>
+            </span>
+          </button>
+          <ul class="pf-c-dropdown__menu pf-m-align-right dropdown-menu">
+            <section class="pf-c-dropdown__group">
+              <ul>
+                <li>
+                  <a
+                    class="pf-c-dropdown__menu-item"
+                    [routerLink]="['/configuration/rules']"
+                    >Rules configuration</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="pf-c-dropdown__menu-item"
+                    [routerLink]="['/configuration/labels']"
+                    >Labels configuration</a
+                  >
+                </li>
+                <li>
+                  <a class="pf-c-dropdown__menu-item" [routerLink]="['/logout']"
+                    >Logout</a
+                  >
+                </li>
+              </ul>
+            </section>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <img
+      class="pf-c-avatar"
+      src="../../../../img/img_avatar.svg"
+      alt="Avatar image"
+    />
+  </div>
+</header>

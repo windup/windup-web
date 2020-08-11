@@ -1,11 +1,15 @@
 
 <!--<wu-loading-indicator></wu-loading-indicator>-->
 
-<router-outlet></router-outlet>
-<wu-confirmation-modal #reusableModalDialog [id]="'reusableModalDialog'"></wu-confirmation-modal>
-<pfng-toast-notification-list [notifications]="notifications"
-                              (onActionSelect)="handleAction($event)"
-                              (onCloseSelect)="handleClose($event)"
-                              (onViewingChange)="handleViewingChange($event)"
-                              [showClose]="true">
-</pfng-toast-notification-list>
+<div class="pf-c-page">
+    <a class="pf-c-skip-to-content pf-c-button pf-m-primary" href="#main-content-page-default-nav-example">Skip to content</a>
+    
+    <router-outlet></router-outlet>
+    <wu-confirmation-modal #reusableModalDialog [id]="'reusableModalDialog'"></wu-confirmation-modal>
+    <pfng-toast-notification-list [notifications]="notifications"
+                                (onActionSelect)="handleAction($event)"
+                                (onCloseSelect)="handleClose($event)"
+                                (onViewingChange)="handleViewingChange($event)"
+                                [showClose]="true">
+    </pfng-toast-notification-list>
+</div>
