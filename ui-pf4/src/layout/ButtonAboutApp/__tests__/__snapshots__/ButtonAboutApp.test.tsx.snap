@@ -1,0 +1,101 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test snapshot :: open modal 1`] = `
+<Fragment>
+  <Button
+    aria-label="About button"
+    id="aboutButton"
+    onClick={[Function]}
+    variant="plain"
+  >
+    <HelpIcon
+      color="currentColor"
+      noVerticalAlign={false}
+      size="sm"
+    />
+  </Button>
+  <AboutModal
+    appendTo={null}
+    backgroundImageSrc=""
+    brandImageAlt="Logo"
+    brandImageSrc="mta-logo-header.svg"
+    className=""
+    isOpen={true}
+    noAboutModalBoxContentContainer={false}
+    onClose={[Function]}
+    productName="Project OpenUBL Web Console"
+    trademark="COPYRIGHT © 2020."
+  >
+    <TextContent>
+      <TextList
+        component="dl"
+      >
+        <TextListItem
+          component="dt"
+        >
+          Source code
+        </TextListItem>
+        <TextListItem
+          component="dd"
+        >
+          <a
+            href="https://github.com/project-openubl"
+          >
+            Github
+          </a>
+        </TextListItem>
+      </TextList>
+    </TextContent>
+  </AboutModal>
+</Fragment>
+`;
+
+exports[`Test snapshot 1`] = `
+<Fragment>
+  <Button
+    aria-label="About button"
+    id="aboutButton"
+    onClick={[Function]}
+    variant="plain"
+  >
+    <HelpIcon
+      color="currentColor"
+      noVerticalAlign={false}
+      size="sm"
+    />
+  </Button>
+  <AboutModal
+    appendTo={null}
+    backgroundImageSrc=""
+    brandImageAlt="Logo"
+    brandImageSrc="mta-logo-header.svg"
+    className=""
+    isOpen={false}
+    noAboutModalBoxContentContainer={false}
+    onClose={[Function]}
+    productName="Project OpenUBL Web Console"
+    trademark="COPYRIGHT © 2020."
+  >
+    <TextContent>
+      <TextList
+        component="dl"
+      >
+        <TextListItem
+          component="dt"
+        >
+          Source code
+        </TextListItem>
+        <TextListItem
+          component="dd"
+        >
+          <a
+            href="https://github.com/project-openubl"
+          >
+            Github
+          </a>
+        </TextListItem>
+      </TextList>
+    </TextContent>
+  </AboutModal>
+</Fragment>
+`;

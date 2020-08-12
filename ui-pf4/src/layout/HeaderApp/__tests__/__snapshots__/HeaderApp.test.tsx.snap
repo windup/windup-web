@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test snapshot 1`] = `
+<PageHeader
+  headerTools={
+    <React.Fragment>
+      <PageHeaderTools>
+        <PageHeaderToolsGroup
+          visibility={
+            Object {
+              "2xl": "visible",
+              "default": "hidden",
+              "lg": "visible",
+              "md": "hidden",
+              "sm": "hidden",
+              "xl": "visible",
+            }
+          }
+        >
+          <PageHeaderToolsItem>
+            <ButtonAboutApp />
+          </PageHeaderToolsItem>
+        </PageHeaderToolsGroup>
+        <Avatar
+          alt="Avatar image"
+          src="avatar.svg"
+        />
+      </PageHeaderTools>
+    </React.Fragment>
+  }
+  logo={
+    <Brand
+      alt="brand"
+      src="mta-logo-header.svg"
+    />
+  }
+  showNavToggle={true}
+/>
+`;
