@@ -4,6 +4,7 @@ import { AppRoutes } from "./Routes";
 
 import "./App.scss";
 
+import { SecuredComponent } from "./containers/secured-component";
 import { DefaultLayout } from "./layout";
 import { DeleteDialog } from "./containers";
 
@@ -15,13 +16,15 @@ const App: React.FC = () => {
     frontendComponentsNotifications.NotificationsPortal;
   return (
     <React.Fragment>
-      <HashRouter>
-        <DefaultLayout>
-          <AppRoutes />
-        </DefaultLayout>
-        <NotificationsPortal />
-        <DeleteDialog />
-      </HashRouter>
+      <SecuredComponent>
+        <HashRouter>
+          <DefaultLayout>
+            <AppRoutes />
+          </DefaultLayout>
+          <NotificationsPortal />
+          <DeleteDialog />
+        </HashRouter>
+      </SecuredComponent>
     </React.Fragment>
   );
 };
