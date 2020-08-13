@@ -4,6 +4,7 @@
     "adminUrl":"/mta-web/",   
     "redirectUris":[
        "/mta-web/*",
+       "/mta-web-pf4/*",
        "http://localhost:3000/*"
     ],
     "webOrigins":[

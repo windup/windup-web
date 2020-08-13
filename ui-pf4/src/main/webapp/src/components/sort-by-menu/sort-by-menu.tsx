@@ -9,11 +9,7 @@ import {
   SelectOption,
   SelectOptionObject,
 } from "@patternfly/react-core";
-import {
-  FilterIcon,
-  SortAmountUpIcon,
-  SortAmountDownIcon,
-} from "@patternfly/react-icons";
+import { FilterIcon, SortAmountDownIcon } from "@patternfly/react-icons";
 
 export interface SortByMenuProps {
   options: Array<string | SelectOptionObject>;
