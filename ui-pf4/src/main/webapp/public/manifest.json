@@ -8,12 +8,12 @@
       "type": "image/x-icon"
     },
     {
-      "src": "mta-icon.png",
+      "src": "mta-icon192.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "mta-icon.png",
+      "src": "mta-icon512.png",
       "type": "image/png",
       "sizes": "512x512"
     }

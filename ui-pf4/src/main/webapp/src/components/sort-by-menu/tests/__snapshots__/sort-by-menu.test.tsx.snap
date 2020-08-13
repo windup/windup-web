@@ -1,0 +1,112 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Welcome Renders without crashing 1`] = `
+<OverflowMenu
+  breakpoint="md"
+>
+  <OverflowMenuItem
+    isPersistent={true}
+  >
+    <Select
+      aria-label="Select sort by"
+      aria-labelledby="page-layout-table-column-management-action-toolbar-top-select-checkbox-label page-layout-table-column-management-action-toolbar-top-select-checkbox-toggle"
+      className=""
+      clearSelectionsAriaLabel="Clear all"
+      createText="Create"
+      customBadgeText={null}
+      customContent={null}
+      direction="down"
+      hasInlineFilter={false}
+      inlineFilterPlaceholderText={null}
+      inputIdPrefix=""
+      isCreatable={false}
+      isDisabled={false}
+      isGrouped={false}
+      isOpen={false}
+      isPlain={false}
+      menuAppendTo="inline"
+      noResultsFoundText="No results found"
+      onClear={[Function]}
+      onCreateOption={[Function]}
+      onFilter={null}
+      onSelect={[Function]}
+      onToggle={[Function]}
+      ouiaSafe={true}
+      placeholderText={
+        <React.Fragment>
+          <FilterIcon
+            color="currentColor"
+            noVerticalAlign={false}
+            size="sm"
+          />
+           
+          Option1
+        </React.Fragment>
+      }
+      removeSelectionAriaLabel="Remove"
+      selections="Option1"
+      toggleAriaLabel="Options menu"
+      toggleIcon={null}
+      toggleId={null}
+      typeAheadAriaLabel=""
+      variant="single"
+      width=""
+    >
+      <SelectOption
+        className=""
+        component="button"
+        index={0}
+        inputId=""
+        isChecked={false}
+        isDisabled={false}
+        isNoResultsOption={false}
+        isPlaceholder={false}
+        isSelected={false}
+        key="0"
+        keyHandler={[Function]}
+        onClick={[Function]}
+        sendRef={[Function]}
+        value="Option1"
+      />
+      <SelectOption
+        className=""
+        component="button"
+        index={0}
+        inputId=""
+        isChecked={false}
+        isDisabled={false}
+        isNoResultsOption={false}
+        isPlaceholder={false}
+        isSelected={false}
+        key="1"
+        keyHandler={[Function]}
+        onClick={[Function]}
+        sendRef={[Function]}
+        value="Option2"
+      />
+    </Select>
+  </OverflowMenuItem>
+  <OverflowMenuItem>
+    <OptionsMenu
+      id="page-layout-table-column-management-action-toolbar-top-options-menu-toggle"
+      isPlain={true}
+      menuItems={Array []}
+      toggle={
+        <OptionsMenuToggle
+          aria-label="Sort by"
+          hideCaret={true}
+          onClick={[Function]}
+          toggleTemplate={
+            <SortAmountDownIcon
+              aria-hidden="true"
+              color="currentColor"
+              noVerticalAlign={false}
+              size="sm"
+            />
+          }
+        />
+      }
+    />
+  </OverflowMenuItem>
+</OverflowMenu>
+`;
