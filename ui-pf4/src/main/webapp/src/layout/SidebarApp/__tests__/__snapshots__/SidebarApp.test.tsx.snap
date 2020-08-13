@@ -11,18 +11,28 @@ exports[`Test snapshot 1`] = `
       ouiaSafe={true}
       theme="dark"
     >
-      <NavGroup
-        title="General"
+      <NavList
+        ariaLeftScroll="Scroll left"
+        ariaRightScroll="Scroll right"
       >
         <NavItem>
           <ForwardRef
             activeClassName="pf-m-current"
-            to="/organizations"
+            to="/projects"
           >
-            Organizaciones
+            Projects
           </ForwardRef>
         </NavItem>
-      </NavGroup>
+        <NavItem>
+          Analysis results
+        </NavItem>
+        <NavItem>
+          Applications
+        </NavItem>
+        <NavItem>
+          Analysis configuration
+        </NavItem>
+      </NavList>
     </Nav>
   }
   theme="dark"

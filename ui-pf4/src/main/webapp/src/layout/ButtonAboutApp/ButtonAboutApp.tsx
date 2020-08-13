@@ -52,13 +52,13 @@ export class ButtonAboutApp extends React.Component<
           trademark="COPYRIGHT © 2020."
           brandImageSrc={brandImage}
           brandImageAlt="Logo"
-          productName="Project OpenUBL Web Console"
+          productName="Windup Web Console"
         >
           <TextContent>
             <TextList component="dl">
               <TextListItem component="dt">Source code</TextListItem>
               <TextListItem component="dd">
-                <a href="https://github.com/project-openubl">Github</a>
+                <a href="https://github.com/windup/windup-web">Github</a>
               </TextListItem>
             </TextList>
           </TextContent>

@@ -23,7 +23,7 @@ exports[`Test snapshot :: open modal 1`] = `
     isOpen={true}
     noAboutModalBoxContentContainer={false}
     onClose={[Function]}
-    productName="Project OpenUBL Web Console"
+    productName="Windup Web Console"
     trademark="COPYRIGHT © 2020."
   >
     <TextContent>
@@ -39,7 +39,7 @@ exports[`Test snapshot :: open modal 1`] = `
           component="dd"
         >
           <a
-            href="https://github.com/project-openubl"
+            href="https://github.com/windup/windup-web"
           >
             Github
           </a>
@@ -73,7 +73,7 @@ exports[`Test snapshot 1`] = `
     isOpen={false}
     noAboutModalBoxContentContainer={false}
     onClose={[Function]}
-    productName="Project OpenUBL Web Console"
+    productName="Windup Web Console"
     trademark="COPYRIGHT © 2020."
   >
     <TextContent>
@@ -89,7 +89,7 @@ exports[`Test snapshot 1`] = `
           component="dd"
         >
           <a
-            href="https://github.com/project-openubl"
+            href="https://github.com/windup/windup-web"
           >
             Github
           </a>

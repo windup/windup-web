@@ -2,12 +2,12 @@ import React from "react";
 import { PageSection } from "@patternfly/react-core";
 import { SimplePageSection } from "../../../components";
 
-export const NewOrganization: React.FC = () => {
+export const NewProject: React.FC = () => {
   return (
     <React.Fragment>
-      <SimplePageSection title="Create organization" />
+      <SimplePageSection title="Create project" />
       <PageSection>
-        <p>create org</p>
+        <p>create project</p>
       </PageSection>
     </React.Fragment>
   );

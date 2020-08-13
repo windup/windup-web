@@ -22,11 +22,16 @@ export class SecuredComponent extends React.Component<
   }
 
   componentDidMount() {
-    const keycloak = Keycloak("/keycloak.json");
-    keycloak.init({ onLoad: "login-required" }).success((authenticated) => {
-      this.setState({ keycloak: keycloak, authenticated: authenticated });
-      initInterceptors(() => keycloak.token);
-    });
+    const keycloak = Keycloak(process.env.PUBLIC_URL + "/keycloak.json");
+    keycloak
+      .init({ onLoad: "login-required" })
+      .success((authenticated) => {
+        this.setState({ keycloak: keycloak, authenticated: authenticated });
+        initInterceptors(() => keycloak.token);
+      })
+      .error((err) => {
+        console.log(err);
+      });
   }
 
   render() {

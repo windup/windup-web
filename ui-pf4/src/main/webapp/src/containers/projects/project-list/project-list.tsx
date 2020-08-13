@@ -21,7 +21,7 @@ interface DispatchToProps {
 
 interface Props extends StateToProps, DispatchToProps, RouteComponentProps {}
 
-export const OrganizationList: React.FC<Props> = ({ fetchProjects }) => {
+export const ProjectList: React.FC<Props> = ({ fetchProjects }) => {
   useEffect(() => {
     fetchProjects();
     // eslint-disable-next-line react-hooks/exhaustive-deps

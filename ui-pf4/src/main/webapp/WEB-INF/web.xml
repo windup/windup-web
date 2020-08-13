@@ -14,19 +14,14 @@
         <init-param>
             <param-name>ExcludedPathPrefixes</param-name>
             <param-value>
-                /img;
-                /assets;
-                /js;
-                /authenticated.jsp;
-                /not_loggedin.html;
+                /static/;
+                /asset.manifest.json;
+                /favicon.ico;
                 /index.html;
                 /keycloak.json;
-                /systemjs.config.js;
-                /app/;
-                /node_modules/;
-                /tests/;
-                /css/;
-                /version/version.properties.js
+                /manifest.json;
+                /robots.txt;
+                /service-worker.js;
             </param-value>
         </init-param>
     </filter>

@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { OrganizationList } from "./organization-list";
+import { ProjectList } from "./project-list";
 import { createMapStateToProps } from "../../../store/common";
 import {
   projectListSelectors,
@@ -24,5 +24,5 @@ const mapDispatchToProps = {
 };
 
 export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(OrganizationList)
+  connect(mapStateToProps, mapDispatchToProps)(ProjectList)
 );
