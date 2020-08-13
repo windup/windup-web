@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState } from "react";
 import {
   EmptyState,
   EmptyStateIcon,
@@ -16,6 +17,8 @@ import {
   ICell,
   IRow,
   IActions,
+  SortByDirection,
+  ISortBy,
 } from "@patternfly/react-table";
 import { ExclamationCircleIcon, SearchIcon } from "@patternfly/react-icons";
 import { global_danger_color_200 as globalDangerColor200 } from "@patternfly/react-tokens";
@@ -28,9 +31,10 @@ export interface FetchTableProps {
   rows?: IRow[];
   actions?: IActions;
   fetchStatus: FetchStatus;
-  loadingVariant: "skeleton" | "spinner" | "none";
+  loadingVariant?: "skeleton" | "spinner" | "none";
   fetchError?: any;
   onClearFilters?: () => void;
+  onSortChange?: (sortBy: ISortBy) => void;
 }
 
 export const FetchTable: React.FC<FetchTableProps> = ({
@@ -39,9 +43,12 @@ export const FetchTable: React.FC<FetchTableProps> = ({
   actions,
   fetchStatus,
   fetchError,
-  loadingVariant,
+  loadingVariant = "skeleton",
   onClearFilters,
+  onSortChange,
 }) => {
+  const [tableSortBy, setTableSortBy] = useState<ISortBy>({});
+
   let rowsValue: IRow[] = [];
 
   if (fetchStatus !== "complete" && loadingVariant) {
@@ -134,6 +141,19 @@ export const FetchTable: React.FC<FetchTableProps> = ({
     rowsValue = rows || [];
   }
 
+  const onSort = (
+    _: React.MouseEvent,
+    index: number,
+    direction: SortByDirection
+  ) => {
+    const newSortBy = { index, direction };
+
+    setTableSortBy(newSortBy);
+    if (onSortChange) {
+      onSortChange(newSortBy);
+    }
+  };
+
   return (
     <React.Fragment>
       <Table
@@ -141,6 +161,8 @@ export const FetchTable: React.FC<FetchTableProps> = ({
         cells={columns}
         rows={rowsValue}
         actions={rowsValue === rows ? actions : undefined}
+        sortBy={tableSortBy}
+        onSort={onSort}
       >
         <TableHeader />
         <TableBody />

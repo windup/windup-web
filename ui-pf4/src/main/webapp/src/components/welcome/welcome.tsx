@@ -1,7 +1,5 @@
 import * as React from "react";
 import {
-  Bullseye,
-  Spinner,
   EmptyState,
   EmptyStateIcon,
   Title,
@@ -36,6 +34,7 @@ export const Welcome: React.FC<WelcomeProps> = ({ onPrimaryAction }) => {
         <a
           target="_blank"
           href="https://access.redhat.com/documentation/en-us/migration_toolkit_for_applications/"
+          rel="noopener noreferrer"
         >
           documentation
         </a>

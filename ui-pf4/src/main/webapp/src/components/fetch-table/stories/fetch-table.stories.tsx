@@ -2,7 +2,7 @@ import * as React from "react";
 import { Story, Meta } from "@storybook/react/types-6-0";
 import { action } from "@storybook/addon-actions";
 import { FetchTable, FetchTableProps } from "../fetch-table";
-import { IRow, ICell, IActions } from "@patternfly/react-table";
+import { IRow, ICell, IActions, sortable } from "@patternfly/react-table";
 
 const columns: ICell[] = [
   { title: "Col1" },
@@ -32,6 +32,7 @@ export default {
   component: FetchTable,
   argTypes: {
     onClearFilters: { action: "clicked" },
+    onSortChange: { action: "sortChanged" },
   },
   args: {
     columns,
@@ -76,6 +77,13 @@ Basic.args = {
 export const Empty = Template.bind({});
 Empty.args = {
   rows: [],
+  fetchStatus: "complete",
+  loadingVariant: "spinner",
+};
+
+export const SortBy = Template.bind({});
+SortBy.args = {
+  columns: columns.map((col: ICell) => ({ ...col, transforms: [sortable] })),
   fetchStatus: "complete",
   loadingVariant: "spinner",
 };

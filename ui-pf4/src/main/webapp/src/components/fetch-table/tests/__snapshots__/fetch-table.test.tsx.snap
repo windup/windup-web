@@ -38,6 +38,7 @@ exports[`FetchTable Renders without crashing 1`] = `
     expandId="expandable-toggle"
     gridBreakPoint="grid-md"
     isStickyHeader={false}
+    onSort={[Function]}
     ouiaSafe={true}
     role="grid"
     rowLabeledBy="simple-node"
@@ -240,6 +241,7 @@ exports[`FetchTable Renders without crashing 1`] = `
         },
       ]
     }
+    sortBy={Object {}}
     variant={null}
   >
     <TableHeader />

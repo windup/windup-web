@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { RouteComponentProps, Link } from "react-router-dom";
 import { AxiosError } from "axios";
-import { cellWidth, ICell, IRow, IActions } from "@patternfly/react-table";
+import {
+  cellWidth,
+  ICell,
+  IRow,
+  IActions,
+  sortable,
+  ISortBy,
+  SortByDirection,
+} from "@patternfly/react-table";
 import {
   PageSection,
   Toolbar,
@@ -27,6 +35,7 @@ import {
   SimplePagination,
   PageSkeleton,
   Welcome,
+  FilterToolbarItem,
 } from "../../../components";
 
 interface StateToProps {
@@ -55,15 +64,16 @@ export const ProjectList: React.FC<Props> = ({
   processingDeleteDialog,
   addAlert,
 }) => {
-  // const [] = useState("name");
+  const [filterText, setFilterText] = useState("");
   const [paginationParams, setPaginationParams] = useState({
     page: 1,
     perPage: 10,
   });
+  const [sortBy, setSortBy] = useState<ISortBy>();
 
   const columns: ICell[] = [
-    { title: "Name", transforms: [cellWidth(30)] },
-    { title: "Applications", transforms: [] },
+    { title: "Name", transforms: [cellWidth(30), sortable] },
+    { title: "Applications", transforms: [sortable] },
     { title: "Status", transforms: [] },
     { title: "Description", transforms: [] },
   ];
@@ -105,7 +115,31 @@ export const ProjectList: React.FC<Props> = ({
 
   useEffect(() => {
     if (projects) {
-      let rows: IRow[] = projects.map((item: Project) => {
+      let sortedProjects: Project[];
+
+      const columnSortIndex = sortBy?.index;
+      const columnSortDirection = sortBy?.direction;
+
+      switch (columnSortIndex) {
+        case 0: // title
+          sortedProjects = projects.sort((a, b) =>
+            a.migrationProject.title.localeCompare(b.migrationProject.title)
+          );
+          break;
+        case 1: // title
+          sortedProjects = projects.sort(
+            (a, b) => a.applicationCount - b.applicationCount
+          );
+          break;
+        default:
+          sortedProjects = projects;
+      }
+
+      if (columnSortDirection === SortByDirection.desc) {
+        sortedProjects = sortedProjects.reverse();
+      }
+
+      const rows: IRow[] = sortedProjects.map((item: Project) => {
         return {
           cells: [
             {
@@ -126,7 +160,7 @@ export const ProjectList: React.FC<Props> = ({
 
       setRows(rows);
     }
-  }, [projects]);
+  }, [projects, sortBy]);
 
   useEffect(() => {
     fetchProjects();
@@ -134,6 +168,15 @@ export const ProjectList: React.FC<Props> = ({
   }, []);
 
   // HANDLERS
+
+  const handlFilterTextChange = (filterText: string) => {
+    const newParams = { page: 1, perPage: paginationParams.perPage };
+
+    // fetchOrganizations(filterText, newParams.page, newParams.perPage);
+
+    setFilterText(filterText);
+    setPaginationParams(newParams);
+  };
 
   const handlePaginationChange = ({
     page,
@@ -166,6 +209,11 @@ export const ProjectList: React.FC<Props> = ({
           <PageSection>
             <Toolbar>
               <ToolbarContent>
+                <FilterToolbarItem
+                  searchValue={filterText}
+                  onFilterChange={handlFilterTextChange}
+                  placeholder="Filter by name"
+                />
                 <ToolbarGroup variant="button-group">
                   <ToolbarItem>
                     <Link to={Paths.newProject}>
@@ -193,6 +241,9 @@ export const ProjectList: React.FC<Props> = ({
               fetchStatus={fetchStatus}
               fetchError={error}
               loadingVariant="skeleton"
+              onSortChange={(sortBy: ISortBy) => {
+                setSortBy(sortBy);
+              }}
             />
             <SimplePagination
               count={projects ? projects.length : 0}

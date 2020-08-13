@@ -25,6 +25,7 @@ exports[`Welcome Renders without crashing 1`] = `
     To learn more, visit the
     <a
       href="https://access.redhat.com/documentation/en-us/migration_toolkit_for_applications/"
+      rel="noopener noreferrer"
       target="_blank"
     >
       documentation
