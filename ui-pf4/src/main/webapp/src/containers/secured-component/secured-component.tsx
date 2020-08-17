@@ -1,6 +1,7 @@
 import * as React from "react";
 import Keycloak from "keycloak-js";
 import { initInterceptors } from "../../api/apiInit";
+import { AppPlaceholder } from "../../components";
 
 interface SecuredComponentProps {}
 
@@ -42,6 +43,6 @@ export class SecuredComponent extends React.Component<
       return <React.Fragment>{children}</React.Fragment>;
     }
 
-    return <p>Initializing...</p>;
+    return <AppPlaceholder />;
   }
 }

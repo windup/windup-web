@@ -20,15 +20,13 @@ import {
   ToolbarItemVariant,
   Bullseye,
 } from "@patternfly/react-core";
+import Moment from "react-moment";
 import { Project } from "../../../models/api";
 import { FetchStatus } from "../../../store/common";
 import { deleteDialogActions } from "../../../store/deleteDialog";
 import { deleteProject } from "../../../api/api";
-import {
-  getDeleteSuccessAlertModel,
-  getDeleteErrorAlertModel,
-} from "../../../Constants";
-import { Paths } from "../../../Paths";
+import { getDeleteErrorAlertModel } from "../../../Constants";
+import { Paths, formatPath } from "../../../Paths";
 import {
   SimplePageSection,
   FetchTable,
@@ -36,6 +34,7 @@ import {
   PageSkeleton,
   Welcome,
   FilterToolbarItem,
+  DeleteButton,
 } from "../../../components";
 
 interface StateToProps {
@@ -63,6 +62,7 @@ export const ProjectList: React.FC<Props> = ({
   closeDeleteDialog,
   processingDeleteDialog,
   addAlert,
+  history: { push },
 }) => {
   const [filterText, setFilterText] = useState("");
   const [paginationParams, setPaginationParams] = useState({
@@ -71,50 +71,52 @@ export const ProjectList: React.FC<Props> = ({
   });
   const [sortBy, setSortBy] = useState<ISortBy>();
 
+  const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
+
   const columns: ICell[] = [
-    { title: "Name", transforms: [cellWidth(30), sortable] },
+    { title: "Name", transforms: [cellWidth(20), sortable] },
     { title: "Applications", transforms: [sortable] },
-    { title: "Status", transforms: [] },
-    { title: "Description", transforms: [] },
+    { title: "Status", transforms: [sortable] },
+    { title: "Description", transforms: [cellWidth(30)] },
+    { title: "", transforms: [] },
   ];
   const [rows, setRows] = useState<IRow[]>();
   const actions: IActions = [
-    {
-      title: "Edit",
-      onClick: (_) => {
-        console.log("Edit");
-      },
-    },
-    {
-      title: "Delete",
-      onClick: (_, rowIndex: number) => {
-        const project = projects![rowIndex];
-
-        showDeleteDialog({
-          name: "project.name",
-          type: "project",
-          onDelete: () => {
-            processingDeleteDialog();
-            deleteProject(project)
-              .then(() => {
-                addAlert(getDeleteSuccessAlertModel("Project"));
-                fetchProjects();
-              })
-              .catch(() => {
-                addAlert(getDeleteErrorAlertModel("Project"));
-              })
-              .finally(() => closeDeleteDialog());
-          },
-          onCancel: () => {
-            closeDeleteDialog();
-          },
-        });
-      },
-    },
+    // {
+    //   title: "Edit",
+    //   onClick: (_) => {
+    //     console.log("Edit");
+    //   },
+    // },
+    // {
+    //   title: "Delete",
+    //   onClick: (_, rowIndex: number) => {
+    //     const project = projects![rowIndex];
+    //     showDeleteDialog({
+    //       name: project.migrationProject.title,
+    //       type: "project",
+    //       onDelete: () => {
+    //         processingDeleteDialog();
+    //         deleteProject(project.migrationProject)
+    //           .then(() => {
+    //             fetchProjects();
+    //           })
+    //           .catch(() => {
+    //             addAlert(getDeleteErrorAlertModel("Project"));
+    //           })
+    //           .finally(() => closeDeleteDialog());
+    //       },
+    //       onCancel: () => {
+    //         closeDeleteDialog();
+    //       },
+    //     });
+    //   },
+    // },
   ];
 
   useEffect(() => {
     if (projects) {
+      // Sort
       let sortedProjects: Project[];
 
       const columnSortIndex = sortBy?.index;
@@ -126,9 +128,19 @@ export const ProjectList: React.FC<Props> = ({
             a.migrationProject.title.localeCompare(b.migrationProject.title)
           );
           break;
-        case 1: // title
+        case 1: // applicationCount
           sortedProjects = projects.sort(
             (a, b) => a.applicationCount - b.applicationCount
+          );
+          break;
+        case 2: // lastModified
+          sortedProjects = projects.sort((a, b) =>
+            a.migrationProject.lastModified < b.migrationProject.lastModified
+              ? -1
+              : a.migrationProject.lastModified >
+                b.migrationProject.lastModified
+              ? 1
+              : 0
           );
           break;
         default:
@@ -139,28 +151,73 @@ export const ProjectList: React.FC<Props> = ({
         sortedProjects = sortedProjects.reverse();
       }
 
-      const rows: IRow[] = sortedProjects.map((item: Project) => {
+      // Filter
+      const filteredProjects = sortedProjects.filter(
+        (p) => p.migrationProject.title.toLowerCase().indexOf(filterText) !== -1
+      );
+
+      setFilteredProjects(filteredProjects);
+
+      const rows: IRow[] = filteredProjects.map((item: Project) => {
         return {
           cells: [
             {
-              title: item.migrationProject.title,
+              title: (
+                <Link
+                  to={formatPath(Paths.editProject, {
+                    project: item.migrationProject.id,
+                  })}
+                >
+                  {item.migrationProject.title}
+                </Link>
+              ),
             },
             {
               title: item.applicationCount,
             },
             {
-              title: item.migrationProject.lastModified,
+              title: (
+                <span>
+                  Last updated{" "}
+                  <Moment fromNow>{item.migrationProject.lastModified}</Moment>
+                </span>
+              ),
             },
             {
               title: item.migrationProject.description,
+            },
+            {
+              title: (
+                <DeleteButton
+                  objType="Project"
+                  objID={item.migrationProject.title}
+                  messageMatch={item.migrationProject.title}
+                  isDisabled={!item.isDeletable}
+                  onDelete={() => {
+                    deleteProject(item.migrationProject)
+                      .then(() => {
+                        fetchProjects();
+                      })
+                      .catch(() => {
+                        addAlert(getDeleteErrorAlertModel("Project"));
+                      });
+                  }}
+                />
+              ),
             },
           ],
         };
       });
 
-      setRows(rows);
+      // Paginate
+      const paginatedRows = rows.slice(
+        (paginationParams.page - 1) * paginationParams.perPage,
+        paginationParams.page * paginationParams.perPage
+      );
+
+      setRows(paginatedRows);
     }
-  }, [projects, sortBy]);
+  }, [projects, filterText, paginationParams, sortBy, addAlert, fetchProjects]);
 
   useEffect(() => {
     fetchProjects();
@@ -171,8 +228,6 @@ export const ProjectList: React.FC<Props> = ({
 
   const handlFilterTextChange = (filterText: string) => {
     const newParams = { page: 1, perPage: paginationParams.perPage };
-
-    // fetchOrganizations(filterText, newParams.page, newParams.perPage);
 
     setFilterText(filterText);
     setPaginationParams(newParams);
@@ -185,12 +240,11 @@ export const ProjectList: React.FC<Props> = ({
     page: number;
     perPage: number;
   }) => {
-    // fetchOrganizations(filterText, page, perPage);
     setPaginationParams({ page, perPage });
   };
 
   const handleNewProject = () => {
-    console.log("new project");
+    push(Paths.newProject);
   };
 
   if (!error && projects && projects.length === 0) {
@@ -226,7 +280,7 @@ export const ProjectList: React.FC<Props> = ({
                   alignment={{ default: "alignRight" }}
                 >
                   <SimplePagination
-                    count={projects ? projects.length : 0}
+                    count={filteredProjects.length}
                     params={paginationParams}
                     isTop={true}
                     onChange={handlePaginationChange}
@@ -246,7 +300,7 @@ export const ProjectList: React.FC<Props> = ({
               }}
             />
             <SimplePagination
-              count={projects ? projects.length : 0}
+              count={filteredProjects.length}
               params={paginationParams}
               onChange={handlePaginationChange}
             />

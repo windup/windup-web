@@ -39,8 +39,8 @@ class BackendAPIClient {
     return this.request<T>(path);
   }
 
-  public static delete(path: string, config = {}) {
-    return this.request(path, null, "delete", config);
+  public static delete(path: string, config = {}, body: any = null) {
+    return this.request(path, body, "delete", config);
   }
 }
 

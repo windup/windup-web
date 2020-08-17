@@ -1,4 +1,5 @@
 export { AppPlaceholder } from "./app-placeholder";
+export { DeleteButton } from "./delete-button";
 export { FetchTable } from "./fetch-table";
 export { FilterToolbarItem } from "./filter-toolbar-item";
 export { PageSkeleton } from "./page-skeleton";
