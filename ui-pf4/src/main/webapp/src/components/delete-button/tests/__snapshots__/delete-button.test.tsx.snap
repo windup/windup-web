@@ -31,7 +31,7 @@ exports[`DeleteButton Renders without crashing 1`] = `
         </Button>,
       ]
     }
-    appendTo={<body />}
+    appendTo={[Function]}
     aria-describedby=""
     aria-label=""
     aria-labelledby=""
