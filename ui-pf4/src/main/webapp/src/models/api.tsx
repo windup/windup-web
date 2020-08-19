@@ -14,3 +14,17 @@ export interface MigrationProject {
   created: Date;
   lastModified: Date;
 }
+
+export interface Application {
+  id: number;
+  deleted: boolean;
+  exploded: boolean;
+  fileSize: number;
+  inputFilename: string;
+  inputPath: string;
+  created: Date;
+  lastModified: Date;
+  registrationType: "PATH";
+  reportIndexPath: null;
+  title: string;
+}

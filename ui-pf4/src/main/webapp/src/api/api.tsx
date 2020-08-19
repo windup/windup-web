@@ -11,3 +11,15 @@ export const getProjects = (): AxiosPromise<Project> => {
 export const deleteProject = (project: MigrationProject) => {
   return ApiClient.delete(`${MIGRATION_PROJECTS}/delete`, {}, project);
 };
+
+export function uploadFileToProject(
+  id: number,
+  formData: FormData,
+  config = {}
+): AxiosPromise {
+  return ApiClient.post(
+    `${MIGRATION_PROJECTS}/${id}/registeredApplications/upload`,
+    formData,
+    config
+  );
+}
