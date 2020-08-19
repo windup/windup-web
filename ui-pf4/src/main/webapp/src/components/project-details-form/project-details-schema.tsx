@@ -1,33 +1,10 @@
-import * as React from "react";
 import { Schema } from "@data-driven-forms/react-form-renderer";
-import FormRenderer from "@data-driven-forms/react-form-renderer/dist/cjs/form-renderer";
-import FormTemplate from "@data-driven-forms/pf4-component-mapper/dist/cjs/form-template";
 import componentTypes from "@data-driven-forms/react-form-renderer/dist/cjs/component-types";
 import validatorTypes from "@data-driven-forms/react-form-renderer/dist/cjs/validator-types";
-import componentMapper from "@data-driven-forms/pf4-component-mapper/dist/cjs/component-mapper";
 
-interface Form {
-  name: string;
-  description?: string;
-}
-
-export interface ProjectDetailsFormProps {
-  initialValues?: Form;
-  showFormControls?: boolean;
-  searchProjectByName: (name: string) => Promise<any>;
-  onHandleChange?: (values: any, isValid: boolean) => void;
-  onSubmit: (value: any) => void;
-  onCancel?: () => void;
-}
-
-export const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
-  initialValues,
-  showFormControls,
-  searchProjectByName,
-  onHandleChange,
-  onSubmit,
-  onCancel,
-}) => {
+export const ProjectDetailsSchema = (
+  searchProjectByName: (name: string) => Promise<any>
+): Schema => {
   const asyncNameValidator = (value: string) =>
     searchProjectByName(value)
       .then((response: any) => {
@@ -50,7 +27,7 @@ export const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
         title: "Project details",
         fields: [
           {
-            name: "name",
+            name: "title",
             label: "Name",
             helperText: "A unique name for the project",
             component: componentTypes.TEXT_FIELD,
@@ -65,15 +42,6 @@ export const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
                 threshold: 3,
               },
             ],
-            resolveProps: (
-              props: any,
-              { meta, input }: any,
-              formOptions: any
-            ) => {
-              if (meta.valid) {
-              }
-              return {};
-            },
           },
           {
             name: "description",
@@ -88,21 +56,5 @@ export const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
     ],
   };
 
-  return (
-    <FormRenderer
-      schema={schema}
-      componentMapper={componentMapper}
-      FormTemplate={(props) => (
-        <FormTemplate {...props} showFormControls={showFormControls} />
-      )}
-      onSubmit={onSubmit}
-      onCancel={onCancel}
-      initialValues={initialValues}
-      debug={({ values, valid, validating }) => {
-        // if (onHandleChange) {
-        //   onHandleChange(values, valid && !validating);
-        // }
-      }}
-    />
-  );
+  return schema;
 };

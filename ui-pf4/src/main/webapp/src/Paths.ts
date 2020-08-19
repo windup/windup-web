@@ -12,6 +12,10 @@ export enum Paths {
   base = "/",
   notFound = "/not-found",
   projects = "/projects",
-  editProject = "/projects/:project",
   newProject = "/projects/~new",
+  newProject_completition = "/projects/~new/:project",
+  editProject = "/projects/:project",
+  editProject_projectDetail = "/projects/:project/project-detail",
+  editProject_applications = "/projects/:project/applications",
+  editProject_analysisContext = "/projects/:project/analysis-context",
 }

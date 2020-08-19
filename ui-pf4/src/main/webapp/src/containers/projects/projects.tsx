@@ -1,7 +1,7 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
 import ProjectList from "./project-list";
-import { NewProject } from "./new-project";
+import NewProject from "./new-project";
 import { Paths } from "../../Paths";
 
 export const Projects: React.FC = () => {
