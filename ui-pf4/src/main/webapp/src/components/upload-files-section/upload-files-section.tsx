@@ -2,8 +2,6 @@ import * as React from "react";
 import { useState } from "react";
 import {
   EmptyState,
-  EmptyStateIcon,
-  Title,
   EmptyStateBody,
   Button,
   EmptyStateVariant,
@@ -13,9 +11,8 @@ import {
   StackItem,
   ProgressVariant,
 } from "@patternfly/react-core";
-import { UploadIcon } from "@patternfly/react-icons";
 import { useDropzone } from "react-dropzone";
-import { AxiosPromise } from "axios";
+import { AxiosPromise, AxiosError } from "axios";
 
 import "./upload-files-section.scss";
 
@@ -24,20 +21,24 @@ import { UploadFile } from "../upload-file";
 
 export interface UploadFilesSectionProps {
   applications?: Application[];
-  fileFormName?: string;
-  uploadFile: (formData: FormData, config: any) => AxiosPromise;
+  fileFormName: string;
+  upload: (formData: FormData, config: any) => AxiosPromise;
+  onSuccess?: (file: File) => void;
+  onError?: (error: AxiosError, file: File) => void;
 }
 
 export const UploadFilesSection: React.FC<UploadFilesSectionProps> = ({
   applications,
-  fileFormName = "file",
-  uploadFile,
+  fileFormName,
+  upload,
+  onError,
+  onSuccess,
 }) => {
   const [files, setFiles] = useState<File[]>([]);
 
   const handleOnDrop = (acceptedFiles: File[]) => {
     // Add new files to the beginning of the array
-    setFiles((current) => [...acceptedFiles, ...current]);
+    setFiles((current) => [...current, ...acceptedFiles]);
   };
 
   const { getRootProps, getInputProps, open } = useDropzone({
@@ -56,10 +57,6 @@ export const UploadFilesSection: React.FC<UploadFilesSectionProps> = ({
               className: "upload-files-section__component__dropzone dropzone",
             })}
           >
-            <EmptyStateIcon icon={UploadIcon} />
-            <Title headingLevel="h4" size="lg">
-              Upload
-            </Title>
             <EmptyStateBody>
               Drag a file here or browse to upload
             </EmptyStateBody>
@@ -76,7 +73,18 @@ export const UploadFilesSection: React.FC<UploadFilesSectionProps> = ({
                 <UploadFile
                   file={file}
                   fileFormName={fileFormName}
-                  uploadFile={uploadFile}
+                  startUpload={true}
+                  upload={upload}
+                  onSuccess={() => {
+                    if (onSuccess) {
+                      onSuccess(file);
+                    }
+                  }}
+                  onError={(error) => {
+                    if (onError) {
+                      onError(error, file);
+                    }
+                  }}
                 />
               </StackItem>
             ))}

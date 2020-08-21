@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
-import { AxiosPromise } from "axios";
+import { AxiosPromise, AxiosError } from "axios";
 import {
   Progress,
   ProgressSize,
@@ -9,47 +9,61 @@ import {
 
 export interface UploadFileProps {
   file: File;
-  fileFormName?: string;
-  uploadFile: (formData: FormData, config: any) => AxiosPromise;
+  fileFormName: string;
+  startUpload: boolean;
+  upload: (formData: FormData, config: any) => AxiosPromise;
+  onSuccess?: () => void;
+  onError?: (error: AxiosError) => void;
 }
 
 export const UploadFile: React.FC<UploadFileProps> = ({
   file,
-  fileFormName = "file",
-  uploadFile,
+  fileFormName,
+  startUpload,
+  upload,
+  onSuccess,
+  onError,
 }) => {
   const [progress, setProgress] = useState(0);
-  const [, setUploading] = useState(false);
+  const [isUplading, setIsUploading] = useState(false);
   const [success, setSuccess] = useState<boolean>();
 
   useEffect(() => {
-    setUploading(true);
+    if (startUpload) {
+      setIsUploading(true);
 
-    //
-    const formData = new FormData();
-    formData.set(fileFormName, file);
+      //
+      const formData = new FormData();
+      formData.set(fileFormName, file);
 
-    const config = {
-      headers: {
-        "X-Requested-With": "XMLHttpRequest",
-      },
-      onUploadProgress: (progressEvent: ProgressEvent) => {
-        const p = (progressEvent.loaded / progressEvent.total) * 100;
-        setProgress(Math.round(p));
-      },
-    };
+      const config = {
+        headers: {
+          "X-Requested-With": "XMLHttpRequest",
+        },
+        onUploadProgress: (progressEvent: ProgressEvent) => {
+          const p = (progressEvent.loaded / progressEvent.total) * 100;
+          setProgress(Math.round(p));
+        },
+      };
 
-    uploadFile(formData, config)
-      .then(() => {
-        setSuccess(true);
-      })
-      .catch(() => {
-        setSuccess(false);
-      })
-      .finally(() => {
-        setUploading(false);
-      });
-  }, [fileFormName, file, uploadFile, setProgress, setUploading, setSuccess]);
+      upload(formData, config)
+        .then(() => {
+          setSuccess(true);
+          if (onSuccess) {
+            onSuccess();
+          }
+        })
+        .catch((error) => {
+          setSuccess(false);
+          if (onError) {
+            onError(error);
+          }
+        })
+        .finally(() => {
+          setIsUploading(false);
+        });
+    }
+  }, [fileFormName, file, startUpload, upload, onSuccess, onError]);
 
   return (
     <Progress
@@ -63,6 +77,7 @@ export const UploadFile: React.FC<UploadFileProps> = ({
           ? ProgressVariant.danger
           : undefined
       }
+      className={isUplading ? "inProgress" : ""}
     />
   );
 };

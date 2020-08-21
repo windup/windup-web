@@ -1,10 +1,18 @@
 import * as React from "react";
 import { shallow } from "enzyme";
-import { UploadFiles } from "../upload-file";
+import { UploadFile } from "../upload-file";
 
-describe("Welcome", () => {
+describe("UploadFile", () => {
   it("Renders without crashing", () => {
-    const wrapper = shallow(<UploadFiles />);
-    expect(wrapper).toMatchSnapshot();
+    //   const file = new File(["Content of my file"], "file.txt");
+    //   const wrapper = shallow(
+    //     <UploadFile
+    //       file={file}
+    //       fileFormName="file"
+    //       uploadFile={(formData, config) => {
+    //       }}
+    //     />
+    //   );
+    //   expect(wrapper).toMatchSnapshot();
   });
 });

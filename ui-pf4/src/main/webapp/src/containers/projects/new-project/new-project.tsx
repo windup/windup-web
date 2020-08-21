@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
-import { PageSection } from "@patternfly/react-core";
+import { PageSection, Wizard } from "@patternfly/react-core";
 
 import { Schema } from "@data-driven-forms/react-form-renderer";
 import FormRenderer from "@data-driven-forms/react-form-renderer/dist/cjs/form-renderer";
@@ -8,8 +8,8 @@ import FormTemplate from "@data-driven-forms/pf4-component-mapper/dist/cjs/form-
 import componentTypes from "@data-driven-forms/react-form-renderer/dist/cjs/component-types";
 import componentMapper from "@data-driven-forms/pf4-component-mapper/dist/cjs/component-mapper";
 
-import { SimplePageSection } from "../../../components";
-import { Paths } from "../../../Paths";
+import { SimplePageSection, LoadingStep } from "../../../components";
+import { Paths, formatPath } from "../../../Paths";
 import {
   getProjectIdByName,
   deleteProvisionalProjects,
@@ -22,6 +22,10 @@ interface NewProjectProps extends RouteComponentProps {}
 export const NewProject: React.FC<NewProjectProps> = ({
   history: { push },
 }) => {
+  const TITLE = "Create project";
+  const DESCRIPTION = "Create a project for your applications";
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
   useEffect(() => {
     deleteProvisionalProjects();
   }, []);
@@ -31,8 +35,8 @@ export const NewProject: React.FC<NewProjectProps> = ({
       {
         name: "wizard",
         component: componentTypes.WIZARD,
-        title: "Create project",
-        description: "Create a project for your applications",
+        title: TITLE,
+        description: DESCRIPTION,
         inModal: true,
         buttonLabels: {
           submit: "Next",
@@ -49,23 +53,43 @@ export const NewProject: React.FC<NewProjectProps> = ({
   };
 
   const handleSubmit = (values: any) => {
+    setIsSubmitting(true);
+
     createProject(values)
-      .then(() => {
-        push(Paths.projects);
+      .then((project) => {
+        push(
+          formatPath(Paths.newProject_completition, {
+            project: project.data.id,
+          })
+        );
       })
-      .catch(() => {});
+      .catch(() => console.log("Error while creating project"));
   };
 
   const handleCancel = () => {
     push(Paths.projects);
   };
 
+  if (isSubmitting) {
+    return (
+      <Wizard
+        isOpen={true}
+        title={TITLE}
+        description={DESCRIPTION}
+        steps={[
+          {
+            name: "Loading",
+            component: <LoadingStep customText="Loading" />,
+            isFinishedStep: true,
+          },
+        ]}
+      />
+    );
+  }
+
   return (
     <React.Fragment>
-      <SimplePageSection
-        title="Create project"
-        description="Create a project for your applications"
-      />
+      <SimplePageSection title={TITLE} description={DESCRIPTION} />
       <PageSection>
         <FormRenderer
           schema={schema}

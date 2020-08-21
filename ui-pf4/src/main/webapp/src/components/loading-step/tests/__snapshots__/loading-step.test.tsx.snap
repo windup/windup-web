@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Welcome Renders without crashing 1`] = `
+<Bullseye>
+  <EmptyState
+    className="pf-u-mt-4xl"
+    variant="full"
+  >
+    <EmptyStateIcon
+      className="pf-u-mb-0"
+      icon={[Function]}
+    />
+    <Title
+      className="pf-u-mt-xl"
+      headingLevel="h2"
+      size="xl"
+    />
+  </EmptyState>
+</Bullseye>
+`;

@@ -1,22 +1,19 @@
 import * as React from "react";
 import { Story, Meta } from "@storybook/react/types-6-0";
 import axios, { AxiosPromise } from "axios";
-// import MockAdapter from "axios-mock-adapter";
 import {
   UploadFilesSection,
   UploadFilesSectionProps,
 } from "../upload-files-section";
 import BackendAPIClient from "../../../api/apiClient";
 
-// This sets the mock adapter on the default instance
-// const UPLOAD_PATH = "/upload";
-// const mock = new MockAdapter(axios);
-// mock.onPost(UPLOAD_PATH).reply(200, {});
-
 export default {
   title: "Components / UploadFilesSection",
   component: UploadFilesSection,
-  argTypes: {},
+  argTypes: {
+    onSuccess: { action: "success" },
+    onError: { action: "error" },
+  },
   args: {
     applications: [
       {
@@ -56,7 +53,7 @@ const Template: Story<UploadFilesSectionProps> = (args) => (
 export const Basic = Template.bind({});
 Basic.args = {
   fileFormName: "file",
-  uploadFile: (formData: FormData, config: any): AxiosPromise => {
+  upload: (formData: FormData, config: any): AxiosPromise => {
     return BackendAPIClient.post(
       "http://www.mocky.io/v2/5e29b0b93000006500faf227",
       formData,

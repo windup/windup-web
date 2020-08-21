@@ -1,0 +1,52 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Welcome Renders without crashing 1`] = `
+<Fragment>
+  <Stack
+    hasGutter={true}
+  >
+    <StackItem>
+      <EmptyState
+        className="upload-files-section__component__dropzone dropzone"
+        onBlur={null}
+        onClick={[Function]}
+        onDragEnter={[Function]}
+        onDragLeave={[Function]}
+        onDragOver={[Function]}
+        onDrop={[Function]}
+        onFocus={null}
+        onKeyDown={null}
+        variant="small"
+      >
+        <EmptyStateBody>
+          Drag a file here or browse to upload
+        </EmptyStateBody>
+        <Button
+          onClick={[Function]}
+          variant="primary"
+        >
+          Browser
+        </Button>
+        <input
+          autoComplete="off"
+          multiple={true}
+          onChange={[Function]}
+          onClick={[Function]}
+          style={
+            Object {
+              "display": "none",
+            }
+          }
+          tabIndex={-1}
+          type="file"
+        />
+      </EmptyState>
+    </StackItem>
+    <StackItem>
+      <Stack
+        hasGutter={true}
+      />
+    </StackItem>
+  </Stack>
+</Fragment>
+`;

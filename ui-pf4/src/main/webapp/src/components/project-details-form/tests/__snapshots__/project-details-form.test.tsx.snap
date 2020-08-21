@@ -23,6 +23,7 @@ exports[`FetchTable Renders without crashing 1`] = `
       "wizard": [Function],
     }
   }
+  debug={[Function]}
   initialValues={Object {}}
   onCancel={[Function]}
   onSubmit={[Function]}
@@ -38,6 +39,7 @@ exports[`FetchTable Renders without crashing 1`] = `
               "isRequired": true,
               "label": "Name",
               "name": "name",
+              "resolveProps": [Function],
               "validate": Array [
                 [Function],
                 Object {
