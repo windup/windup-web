@@ -1,83 +1,93 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
-import { AxiosPromise, AxiosError } from "axios";
 import {
   Progress,
   ProgressSize,
   ProgressVariant,
+  Button,
+  Split,
+  SplitItem,
+  ButtonVariant,
 } from "@patternfly/react-core";
+import { TimesIcon, TrashIcon } from "@patternfly/react-icons";
+
+const formatNumber = (value: number, fractionDigits = 2) => {
+  return value.toLocaleString("en", {
+    style: "decimal",
+    minimumFractionDigits: fractionDigits,
+    maximumFractionDigits: fractionDigits,
+  });
+};
+
+const formatBytes = (bytes: number, decimals = 2) => {
+  if (bytes === 0) {
+    return "0 Bytes";
+  }
+
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ["Bytes", "KB", "MB", "GiB", "TB", "PB", "EB", "ZB", "YB"];
+
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+  const s = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
+  return formatNumber(s, decimals) + " " + sizes[i];
+};
 
 export interface UploadFileProps {
   file: File;
-  fileFormName: string;
-  startUpload: boolean;
-  upload: (formData: FormData, config: any) => AxiosPromise;
-  onSuccess?: () => void;
-  onError?: (error: AxiosError) => void;
+  progress: number;
+  isUploading: boolean;
+  finishedSuccessfully?: boolean;
+  uploadCancelled?: boolean;
+  onCancel?: () => void;
+  onRemove?: () => void;
 }
 
 export const UploadFile: React.FC<UploadFileProps> = ({
   file,
-  fileFormName,
-  startUpload,
-  upload,
-  onSuccess,
-  onError,
+  isUploading,
+  progress,
+  finishedSuccessfully,
+  uploadCancelled,
+  onCancel,
+  onRemove,
 }) => {
-  const [progress, setProgress] = useState(0);
-  const [isUplading, setIsUploading] = useState(false);
-  const [success, setSuccess] = useState<boolean>();
-
-  useEffect(() => {
-    if (startUpload) {
-      setIsUploading(true);
-
-      //
-      const formData = new FormData();
-      formData.set(fileFormName, file);
-
-      const config = {
-        headers: {
-          "X-Requested-With": "XMLHttpRequest",
-        },
-        onUploadProgress: (progressEvent: ProgressEvent) => {
-          const p = (progressEvent.loaded / progressEvent.total) * 100;
-          setProgress(Math.round(p));
-        },
-      };
-
-      upload(formData, config)
-        .then(() => {
-          setSuccess(true);
-          if (onSuccess) {
-            onSuccess();
-          }
-        })
-        .catch((error) => {
-          setSuccess(false);
-          if (onError) {
-            onError(error);
-          }
-        })
-        .finally(() => {
-          setIsUploading(false);
-        });
-    }
-  }, [fileFormName, file, startUpload, upload, onSuccess, onError]);
-
   return (
-    <Progress
-      title={file.name}
-      size={ProgressSize.sm}
-      value={progress}
-      variant={
-        success === true
-          ? ProgressVariant.success
-          : success === false
-          ? ProgressVariant.danger
-          : undefined
-      }
-      className={isUplading ? "inProgress" : ""}
-    />
+    <Split>
+      <SplitItem isFilled>
+        <Progress
+          title={`${file.name} (${formatBytes(file.size)})`}
+          label={uploadCancelled ? "Upload cancelled" : undefined}
+          size={ProgressSize.sm}
+          value={progress}
+          variant={
+            finishedSuccessfully === true
+              ? ProgressVariant.success
+              : finishedSuccessfully === false
+              ? ProgressVariant.danger
+              : undefined
+          }
+        />
+      </SplitItem>
+      <SplitItem>
+        {isUploading ? (
+          <Button
+            variant={ButtonVariant.plain}
+            aria-label="Action"
+            onClick={onCancel}
+          >
+            <TimesIcon />
+          </Button>
+        ) : (
+          <Button
+            variant={ButtonVariant.plain}
+            aria-label="Action"
+            onClick={onRemove}
+          >
+            <TrashIcon />
+          </Button>
+        )}
+      </SplitItem>
+    </Split>
   );
 };

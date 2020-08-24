@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useReducer } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { AxiosError } from "axios";
 import { PageSection, Wizard } from "@patternfly/react-core";
@@ -12,10 +12,38 @@ import {
   getProjectIdByName,
   getProjectById,
   uploadFileToProject,
+  deleteRegisteredApplication,
 } from "../../../api/api";
 import { ProjectDetailsSchema } from "../../../components/project-details-form/project-details-schema";
-import { MigrationProject } from "../../../models/api";
+import { MigrationProject, Application } from "../../../models/api";
 import AppFormRenderer, { AppComponentTypes } from "../../../appFormRenderer";
+
+interface Status {
+  uploads: Map<File, Application>;
+}
+interface Action {
+  type: "addApplication" | "removeApplication";
+  file: File;
+  payload?: Application;
+}
+const reducer = (state: Status, action: Action): Status => {
+  switch (action.type) {
+    case "addApplication":
+      return {
+        ...state,
+        uploads: new Map(state.uploads).set(action.file, action.payload!),
+      };
+    case "removeApplication":
+      const newMap = new Map(state.uploads);
+      newMap.delete(action.file);
+      return {
+        ...state,
+        uploads: newMap,
+      };
+    default:
+      throw new Error();
+  }
+};
 
 interface StateToProps {}
 
@@ -38,6 +66,8 @@ export const NewProjectCompletition: React.FC<NewProjectCompletitionProps> = ({
 
   const [project, setProject] = useState<MigrationProject>();
   const [isLoading, setIsLoading] = useState(true);
+
+  const [state, dispatch] = useReducer(reducer, { uploads: new Map() });
 
   useEffect(() => {
     getProjectById(match.params.project).then(({ data }) => {
@@ -79,9 +109,29 @@ export const NewProjectCompletition: React.FC<NewProjectCompletitionProps> = ({
                   component: AppComponentTypes.ADD_APPLICATIONS,
                   name: "applications",
                   label: "Add applications",
+
+                  // Custom props
                   fileFormName: "file",
                   uploadFile: (formData: FormData, config: any) => {
                     return uploadFileToProject(project.id, formData, config);
+                  },
+                  removeFile: (file: File) => {
+                    const f = state.uploads.get(file);
+                    if (f) {
+                      deleteRegisteredApplication(f.id).then(() => {
+                        dispatch({
+                          type: "removeApplication",
+                          file,
+                        });
+                      });
+                    }
+                  },
+                  onUploadFileSuccess: (response: any, file: File) => {
+                    dispatch({
+                      type: "addApplication",
+                      file,
+                      payload: response,
+                    });
                   },
                   onUploadFileError: (error: AxiosError, file: File) => {
                     addAlert({

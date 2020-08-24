@@ -35,14 +35,18 @@ export const deleteProvisionalProjects = (): AxiosPromise => {
   return ApiClient.delete(`${MIGRATION_PROJECTS}/deleteProvisional`);
 };
 
-export function uploadFileToProject(
+export const uploadFileToProject = (
   id: number,
   formData: FormData,
   config = {}
-): AxiosPromise {
+): AxiosPromise => {
   return ApiClient.post(
     `${MIGRATION_PROJECTS}/${id}/registeredApplications/upload`,
     formData,
     config
   );
-}
+};
+
+export const deleteRegisteredApplication = (applicationId: number) => {
+  return ApiClient.delete(`registeredApplications/${applicationId}`);
+};

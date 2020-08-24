@@ -8,6 +8,7 @@ export default {
   title: "Components / UploadFilesTab",
   component: UploadFilesTab,
   argTypes: {
+    removeFile: { action: "remove" },
     onUploadFileSuccess: { action: "success" },
     onUploadFileError: { action: "error" },
   },
@@ -19,6 +20,7 @@ const Template: Story<UploadFilesTabProps> = (args) => (
 
 export const Basic = Template.bind({});
 Basic.args = {
+  fileFormName: "file",
   uploadFile: (formData: FormData, config: any): AxiosPromise => {
     return BackendAPIClient.post(
       "http://www.mocky.io/v2/5e29b0b93000006500faf227",

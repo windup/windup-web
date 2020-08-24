@@ -13,37 +13,10 @@ export default {
   argTypes: {
     onSuccess: { action: "success" },
     onError: { action: "error" },
+    onCancel: { action: "cancel" },
+    onRemove: { action: "remove" },
   },
-  args: {
-    applications: [
-      {
-        id: 11108,
-        created: 1597737855615,
-        deleted: false,
-        exploded: false,
-        fileSize: 63083396,
-        inputFilename: "AdministracionEfectivo.ear",
-        inputPath: "/home/cferiavi/Documents/AdministracionEfectivo.ear",
-        lastModified: 1597737855613,
-        registrationType: "PATH",
-        reportIndexPath: null,
-        title: "AdministracionEfectivo.ear",
-      },
-      {
-        id: 11111,
-        created: 1597737855615,
-        deleted: false,
-        exploded: false,
-        fileSize: 470467,
-        inputFilename: "1111-1.0-SNAPSHOT.ear",
-        inputPath: "/home/guest/Documents/1111-1.0-SNAPSHOT.ear",
-        lastModified: 1597737855614,
-        registrationType: "PATH",
-        reportIndexPath: null,
-        title: "1111-1.0-SNAPSHOT.ear",
-      },
-    ],
-  },
+  args: {},
 } as Meta;
 
 const Template: Story<UploadFilesSectionProps> = (args) => (
