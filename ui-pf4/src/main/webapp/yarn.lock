@@ -1927,18 +1927,18 @@
   resolved "https://registry.yarnpkg.com/@csstools/normalize.css/-/normalize.css-10.1.0.tgz#f0950bba18819512d42f7197e56c518aa491cf18"
   integrity sha512-ij4wRiunFfaJxjB0BdrYHIH8FxBJpOwNPhhAcunlmPdXudL1WQV1qoP9un6JsEBAgQH+7UXyyjh0g7jTxXK6tg==
 
-"@data-driven-forms/pf4-component-mapper@^2.8.9":
-  version "2.8.9"
-  resolved "https://registry.yarnpkg.com/@data-driven-forms/pf4-component-mapper/-/pf4-component-mapper-2.8.9.tgz#b0ff4c7ec33116f30b72b9fa9f124995616d832a"
-  integrity sha512-w5MuzkErOZ9NxPbo+rhKDOMftxKOLrhkvC9RHk8Ki5OZ8XO5U+SxMlXvhCX8Y9CDVXPnbmbUHseO7rxwJT5cAg==
+"@data-driven-forms/pf4-component-mapper@2.8.10":
+  version "2.8.10"
+  resolved "https://registry.yarnpkg.com/@data-driven-forms/pf4-component-mapper/-/pf4-component-mapper-2.8.10.tgz#e5e8a4e030e0934f8d27b2a4ed2e572de6158427"
+  integrity sha512-0DgiuARzvnX4VWFk82HtbBKv7bBVfUAQXm6cHnJMD/gnsQLrY1VC11gbCp0aFZb89VL/kZuC7RD2jcYxHOdS3w==
   dependencies:
     downshift "^5.4.3"
     prop-types "^15.7.2"
 
-"@data-driven-forms/react-form-renderer@^2.8.9":
-  version "2.8.9"
-  resolved "https://registry.yarnpkg.com/@data-driven-forms/react-form-renderer/-/react-form-renderer-2.8.9.tgz#257bcdadeb8aae1f392241a41e7afc24102736a2"
-  integrity sha512-unjvuAPUueLI+R0ydzkTeYRXIXa1sisHZh5c8yACk4E/pbd7f1EnkJB65DG2Z2lSmqMy8x9YHt1ZWRPVAq8w+Q==
+"@data-driven-forms/react-form-renderer@2.8.10":
+  version "2.8.10"
+  resolved "https://registry.yarnpkg.com/@data-driven-forms/react-form-renderer/-/react-form-renderer-2.8.10.tgz#884db869eee600a1e19153c1eb069c69df64499b"
+  integrity sha512-2fYCyAhnI3IGJW59DBI0WCaNbWmnlTs+aUWegYs/CrXimimRTxilA/ibgBAt34IvDdGQ5B4STlha7h5glNCy0Q==
   dependencies:
     final-form "^4.19.1"
     final-form-arrays "^3.0.2"

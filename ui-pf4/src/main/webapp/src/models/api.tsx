@@ -24,7 +24,7 @@ export interface Application {
   inputPath: string;
   created: Date;
   lastModified: Date;
-  registrationType: "PATH";
+  registrationType: "PATH" | "UPLOADED";
   reportIndexPath: null;
   title: string;
 }

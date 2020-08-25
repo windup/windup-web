@@ -1,11 +1,9 @@
 import * as React from "react";
 import { Story, Meta } from "@storybook/react/types-6-0";
-import axios, { AxiosPromise } from "axios";
 import {
   UploadFilesSection,
   UploadFilesSectionProps,
 } from "../upload-files-section";
-import BackendAPIClient from "../../../api/apiClient";
 
 export default {
   title: "Components / UploadFilesSection",
@@ -23,14 +21,14 @@ const Template: Story<UploadFilesSectionProps> = (args) => (
   <UploadFilesSection {...args} />
 );
 
-export const Basic = Template.bind({});
-Basic.args = {
-  fileFormName: "file",
-  upload: (formData: FormData, config: any): AxiosPromise => {
-    return BackendAPIClient.post(
-      "http://www.mocky.io/v2/5e29b0b93000006500faf227",
-      formData,
-      config
-    );
-  },
-};
+// export const Basic = Template.bind({});
+// Basic.args = {
+//   fileFormName: "file",
+//   upload: (formData: FormData, config: any): AxiosPromise => {
+//     return BackendAPIClient.post(
+//       "http://www.mocky.io/v2/5e29b0b93000006500faf227",
+//       formData,
+//       config
+//     );
+//   },
+// };

@@ -9,41 +9,20 @@ import {
   ButtonVariant,
 } from "@patternfly/react-core";
 import { TimesIcon, TrashIcon } from "@patternfly/react-icons";
+import { Application } from "../../models/api";
+import { formatBytes } from "../../utils/format";
 
-const formatNumber = (value: number, fractionDigits = 2) => {
-  return value.toLocaleString("en", {
-    style: "decimal",
-    minimumFractionDigits: fractionDigits,
-    maximumFractionDigits: fractionDigits,
-  });
-};
-
-const formatBytes = (bytes: number, decimals = 2) => {
-  if (bytes === 0) {
-    return "0 Bytes";
-  }
-
-  const k = 1024;
-  const dm = decimals < 0 ? 0 : decimals;
-  const sizes = ["Bytes", "KB", "MB", "GiB", "TB", "PB", "EB", "ZB", "YB"];
-
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-
-  const s = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
-  return formatNumber(s, decimals) + " " + sizes[i];
-};
-
-export interface UploadFileProps {
+export interface ProgressFileProps {
   file: File;
   progress: number;
   isUploading: boolean;
   finishedSuccessfully?: boolean;
   uploadCancelled?: boolean;
-  onCancel?: () => void;
-  onRemove?: () => void;
+  onCancel: () => void;
+  onRemove: () => void;
 }
 
-export const UploadFile: React.FC<UploadFileProps> = ({
+export const ProgressFile: React.FC<ProgressFileProps> = ({
   file,
   isUploading,
   progress,
@@ -87,6 +66,35 @@ export const UploadFile: React.FC<UploadFileProps> = ({
             <TrashIcon />
           </Button>
         )}
+      </SplitItem>
+    </Split>
+  );
+};
+
+export const UploadApplication: React.FC<{
+  application: Application;
+  onRemove: () => void;
+}> = ({ application, onRemove }) => {
+  return (
+    <Split>
+      <SplitItem isFilled>
+        <Progress
+          title={`${application.inputFilename} (${formatBytes(
+            application.fileSize
+          )})`}
+          size={ProgressSize.sm}
+          value={100}
+          variant={ProgressVariant.success}
+        />
+      </SplitItem>
+      <SplitItem>
+        <Button
+          variant={ButtonVariant.plain}
+          aria-label="Action"
+          onClick={onRemove}
+        >
+          <TrashIcon />
+        </Button>
       </SplitItem>
     </Split>
   );

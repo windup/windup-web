@@ -1,10 +1,10 @@
 import * as React from "react";
 import { Story, Meta } from "@storybook/react/types-6-0";
-import { UploadFile, UploadFileProps } from "../upload-file";
+import { ProgressFile, ProgressFileProps } from "../progress-file";
 
 export default {
-  title: "Components / UploadFile",
-  component: UploadFile,
+  title: "Components / ProgressFile",
+  component: ProgressFile,
   argTypes: {
     onCancel: { action: "cancel" },
     onRemove: { action: "remove" },
@@ -14,7 +14,7 @@ export default {
   },
 } as Meta;
 
-const Template: Story<UploadFileProps> = (args) => <UploadFile {...args} />;
+const Template: Story<ProgressFileProps> = (args) => <ProgressFile {...args} />;
 
 export const Basic = Template.bind({});
 Basic.args = {

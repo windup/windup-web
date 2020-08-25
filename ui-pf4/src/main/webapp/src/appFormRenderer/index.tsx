@@ -25,6 +25,7 @@ const AppFormRenderer = (props: any) => (
       ...mapperExtension,
     }}
     FormTemplate={FormTemplateWrapper}
+    // debug={(a) => console.log(a)}
     {...props}
   />
 );
