@@ -3,6 +3,11 @@
   border-style: dotted;
 }
 
-.upload-files-section__component__tab-content {
-  margin-top: 5px;
+.upload-files-section__component__tab-content-upload-file {
+  margin-top: 5px !important;
+}
+
+.upload-files-section__component__tab-content-directory-path {
+  margin-top: 10px !important;
+  margin-bottom: 10px !important;
 }

@@ -19,12 +19,12 @@ const Template: Story<ProgressFileProps> = (args) => <ProgressFile {...args} />;
 export const Basic = Template.bind({});
 Basic.args = {
   progress: 33,
-  isUploading: true,
+  status: "inProgress",
 };
 
 export const Error = Template.bind({});
 Error.args = {
   progress: 80,
-  isUploading: false,
-  finishedSuccessfully: false,
+  status: "complete",
+  error: { message: "Error on backend" },
 };

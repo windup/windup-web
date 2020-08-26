@@ -15,19 +15,19 @@ import { formatBytes } from "../../utils/format";
 export interface ProgressFileProps {
   file: File;
   progress: number;
-  isUploading: boolean;
-  finishedSuccessfully?: boolean;
-  uploadCancelled?: boolean;
+  status: "none" | "inProgress" | "complete";
+  wasCancelled: boolean;
+  error?: any;
   onCancel: () => void;
   onRemove: () => void;
 }
 
 export const ProgressFile: React.FC<ProgressFileProps> = ({
   file,
-  isUploading,
   progress,
-  finishedSuccessfully,
-  uploadCancelled,
+  status,
+  wasCancelled,
+  error,
   onCancel,
   onRemove,
 }) => {
@@ -36,20 +36,20 @@ export const ProgressFile: React.FC<ProgressFileProps> = ({
       <SplitItem isFilled>
         <Progress
           title={`${file.name} (${formatBytes(file.size)})`}
-          label={uploadCancelled ? "Upload cancelled" : undefined}
+          label={wasCancelled ? "Cancelled" : undefined}
           size={ProgressSize.sm}
           value={progress}
           variant={
-            finishedSuccessfully === true
-              ? ProgressVariant.success
-              : finishedSuccessfully === false
+            status === "complete" && error
               ? ProgressVariant.danger
+              : status === "complete" && !error
+              ? ProgressVariant.success
               : undefined
           }
         />
       </SplitItem>
       <SplitItem>
-        {isUploading ? (
+        {status === "inProgress" && (
           <Button
             variant={ButtonVariant.plain}
             aria-label="Action"
@@ -57,7 +57,8 @@ export const ProgressFile: React.FC<ProgressFileProps> = ({
           >
             <TimesIcon />
           </Button>
-        ) : (
+        )}
+        {status === "complete" && (
           <Button
             variant={ButtonVariant.plain}
             aria-label="Action"

@@ -10,6 +10,9 @@ import {
   Tabs,
   Tab,
   TabTitleText,
+  FormGroup,
+  TextInput,
+  Checkbox,
 } from "@patternfly/react-core";
 import { useDropzone } from "react-dropzone";
 import axios, { CancelTokenSource } from "axios";
@@ -29,16 +32,15 @@ const CANCEL_MESSAGE = "cancelled";
 
 interface Upload {
   progress: number;
-  isUploading: boolean;
-  finishedSuccessfully?: boolean;
-  uploadCancelled: boolean;
-  cancelTokenSource?: CancelTokenSource;
+  status: "none" | "inProgress" | "complete";
+  error?: any;
+  wasCancelled: boolean;
+  cancelToken?: CancelTokenSource;
 }
 const defaultUpload: Upload = {
   progress: 0,
-  isUploading: false,
-  finishedSuccessfully: undefined,
-  uploadCancelled: false,
+  status: "none",
+  wasCancelled: false,
 };
 
 interface Status {
@@ -48,27 +50,27 @@ interface Status {
 }
 interface Action {
   type:
-    | "startUpload"
-    | "updateUploadProgress"
-    | "cancelUpload"
-    | "finishUpload"
-    | "removeUpload"
+    | "startFileUpload"
+    | "updateFileUploadProgress"
+    | "successFileUpload"
+    | "failFileUpload"
+    | "removeFileUpload"
     | "removeApplication";
   payload: any;
 }
 
 const reducer = (state: Status, action: Action): Status => {
   switch (action.type) {
-    case "startUpload":
+    case "startFileUpload":
       return {
         ...state,
         uploads: new Map(state.uploads).set(action.payload.file, {
           ...(state.uploads.get(action.payload.file) || defaultUpload),
-          isUploading: true,
-          cancelTokenSource: action.payload.cancelTokenSource,
+          status: "inProgress",
+          cancelToken: action.payload.cancelTokenSource,
         }),
       };
-    case "updateUploadProgress":
+    case "updateFileUploadProgress":
       return {
         ...state,
         uploads: new Map(state.uploads).set(action.payload.file, {
@@ -76,33 +78,39 @@ const reducer = (state: Status, action: Action): Status => {
           progress: action.payload.progress || 0,
         }),
       };
-    case "cancelUpload":
+    case "successFileUpload":
       return {
         ...state,
         uploads: new Map(state.uploads).set(action.payload.file, {
-          ...(state.uploads.get(action.payload.file) || defaultUpload),
-          uploadCancelled: true,
-        }),
-      };
-    case "finishUpload":
-      return {
-        ...state,
-        uploads: new Map(state.uploads).set(action.payload.file, {
-          ...(state.uploads.get(action.payload.file) || defaultUpload),
-          isUploading: false,
-          finishedSuccessfully: action.payload.finishedSuccessfully,
+          ...state.uploads.get(action.payload.file)!,
+          status: "complete",
         }),
         uploadsResponse: new Map(state.uploadsResponse).set(
           action.payload.file,
           action.payload.application
         ),
       };
-    case "removeUpload":
+    case "failFileUpload":
+      return {
+        ...state,
+        uploads: new Map(state.uploads).set(action.payload.file, {
+          ...state.uploads.get(action.payload.file)!,
+          status: "complete",
+          error: action.payload.error,
+          wasCancelled: action.payload.error.message === CANCEL_MESSAGE,
+        }),
+      };
+    case "removeFileUpload":
       const newUploads = new Map(state.uploads);
       newUploads.delete(action.payload.file);
+
+      const newUploadsResponse = new Map(state.uploadsResponse);
+      newUploadsResponse.delete(action.payload.file);
+
       return {
         ...state,
         uploads: newUploads,
+        uploadsResponse: newUploadsResponse,
       };
     case "removeApplication":
       return {
@@ -160,7 +168,7 @@ export const UploadFilesSection: React.FC<UploadFilesSectionProps> = ({
         onUploadProgress: (progressEvent: ProgressEvent) => {
           const progress = (progressEvent.loaded / progressEvent.total) * 100;
           dispatch({
-            type: "updateUploadProgress",
+            type: "updateFileUploadProgress",
             payload: { file, progress: Math.round(progress) },
           });
         },
@@ -168,27 +176,23 @@ export const UploadFilesSection: React.FC<UploadFilesSectionProps> = ({
       };
 
       dispatch({
-        type: "startUpload",
+        type: "startFileUpload",
         payload: { file, cancelTokenSource: source },
       });
 
       uploadFileToProject(projectId, formData, config)
         .then(({ data }) => {
           dispatch({
-            type: "finishUpload",
-            payload: { file, finishedSuccessfully: true, application: data },
+            type: "successFileUpload",
+            payload: { file, application: data },
           });
 
           if (onFileUploadSuccess) onFileUploadSuccess(file, data);
         })
         .catch((error) => {
           dispatch({
-            type: "finishUpload",
-            payload: {
-              file,
-              finishedSuccessfully: false,
-              application: undefined,
-            },
+            type: "failFileUpload",
+            payload: { file, error },
           });
 
           if (error.message !== CANCEL_MESSAGE) {
@@ -199,14 +203,10 @@ export const UploadFilesSection: React.FC<UploadFilesSectionProps> = ({
   };
 
   const handleCancelUpload = (file: File, upload: Upload) => {
-    upload.cancelTokenSource?.cancel(CANCEL_MESSAGE);
-    dispatch({
-      type: "cancelUpload",
-      payload: { file },
-    });
+    upload.cancelToken!.cancel(CANCEL_MESSAGE);
   };
 
-  const handleRemoveUpload = (file: File, upload: Upload) => {
+  const handleremoveFileUpload = (file: File, upload: Upload) => {
     const app = state.uploadsResponse.get(file);
     if (app) {
       deleteRegisteredApplication(app.id).then(() =>
@@ -217,7 +217,7 @@ export const UploadFilesSection: React.FC<UploadFilesSectionProps> = ({
     }
 
     dispatch({
-      type: "removeUpload",
+      type: "removeFileUpload",
       payload: { file },
     });
   };
@@ -246,12 +246,11 @@ export const UploadFilesSection: React.FC<UploadFilesSectionProps> = ({
         <StackItem>
           <Tabs activeKey={activeTabKey} onSelect={handleTabClick}>
             <Tab eventKey={0} title={<TabTitleText>Upload</TabTitleText>}>
-              <div className="upload-files-section__component__tab-content">
+              <div className="upload-files-section__component__tab-content-upload-file">
                 <EmptyState
                   variant={EmptyStateVariant.small}
                   {...getRootProps({
-                    className:
-                      "upload-files-section__component__dropzone dropzone",
+                    className: "upload-files-section__component__dropzone",
                   })}
                 >
                   <EmptyStateBody>
@@ -268,8 +267,30 @@ export const UploadFilesSection: React.FC<UploadFilesSectionProps> = ({
               eventKey={1}
               title={<TabTitleText>Directory path</TabTitleText>}
             >
-              <div className="upload-files-section__component__tab-content">
-                <p>Not implemented yet</p>
+              <div className="upload-files-section__component__tab-content-directory-path pf-c-form">
+                <FormGroup
+                  isRequired
+                  label="Directory path to applications"
+                  fieldId="directoryPath"
+                >
+                  <TextInput
+                    // value={value}
+                    type="text"
+                    // onChange={this.handleTextInputChange}
+                    aria-label="directory path"
+                    placeholder="/opt/apps/ or /opt/apps/my.ear"
+                  />
+                </FormGroup>
+                <FormGroup
+                  fieldId="checkbox1"
+                  label="If the directory contains an exploded application, select the check box below"
+                >
+                  <Checkbox
+                    label="Directory is an exploded Java application archive"
+                    id="checkbox1"
+                    name="checkbox1"
+                  />
+                </FormGroup>
               </div>
             </Tab>
           </Tabs>
@@ -283,11 +304,11 @@ export const UploadFilesSection: React.FC<UploadFilesSectionProps> = ({
                   <ProgressFile
                     file={file}
                     progress={upload.progress}
-                    isUploading={upload.isUploading}
-                    finishedSuccessfully={upload.finishedSuccessfully}
-                    uploadCancelled={upload.uploadCancelled}
+                    status={upload.status}
+                    error={upload.error}
+                    wasCancelled={upload.wasCancelled}
                     onCancel={() => handleCancelUpload(file, upload)}
-                    onRemove={() => handleRemoveUpload(file, upload)}
+                    onRemove={() => handleremoveFileUpload(file, upload)}
                   />
                 </StackItem>
               );
