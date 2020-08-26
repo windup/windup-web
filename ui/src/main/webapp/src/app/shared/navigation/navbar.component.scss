@@ -17,7 +17,7 @@ $navbar-os-project-menu-border: #050505;
 
 li.home a {
   width: 240px;
-//  border-bottom: 1px black solid;
+  //  border-bottom: 1px black solid;
   border-right: 1px solid $navbar-os-project-menu-border;
 
   color: $navbar-text-color;
@@ -45,11 +45,11 @@ span.pficon-home {
 }
 
 :host /deep/ {
- .navbar-pf .navbar-primary {
-   background-color: $navbar-background-color;
-   background-image: initial;
-   border-bottom: 1px solid $navbar-os-project-menu-border;
- }
+  .navbar-pf .navbar-primary {
+    background-color: $navbar-background-color;
+    background-image: initial;
+    border-bottom: 1px solid $navbar-os-project-menu-border;
+  }
 
   .navbar-primary > li {
     height: 60px;
@@ -167,15 +167,4 @@ ul.navbar-utility {
 // Upgrade patternfly compatibility
 [class*=" pficon-"], [class^=pficon-] {
   line-height: 1 !important;
-}
-
-// Patternfly4
-.pf-c-dropdown__menu, .pf-m-align-right, .dropdown-menu {
-  left: auto;
-}
-
-.pf-c-dropdown__group {
-  a:hover {
-    color: #151515;
-  }
 }

@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html class="layout-pf layout-pf-fixed transitions">
 <head>
     <title>Migration Toolkit for Applications Web Console(MTA)</title>
     <base href="${basePath}">
@@ -23,44 +23,62 @@
     </script>
 </head>
 
-<body>
-<windup-app>
-    <div class="pf-c-page">
-        <header class="pf-c-page__header">
-            <div class="pf-c-page__header-brand">
-                <div class="pf-c-page__header-brand-toggle">
-                    <button class="pf-c-button pf-m-plain"
-                            type="button"
-                            aria-label="Global navigation" aria-expanded="true"
-                            aria-controls="page-default-nav-example-primary-nav">
-                        <i class="fas fa-bars" aria-hidden="true"></i>
-                    </button>
+<body class="cards-pf">
+<windup-app> <!--  -->
+
+    <style>
+        .navbar {
+            width: 100%;
+            background-clip: border-box;
+            background-color: rgb(3, 3, 3);
+            background-origin: padding-box;
+            border-color: rgb(54, 54, 54);
+            box-sizing: border-box;
+            color: rgb(54, 54, 54);
+            display: block;
+            font-family: "Open Sans", Helvetica, Arial, sans-serif;
+            font-size: 12px;
+            height: 60px;
+            line-height: 20px;
+            position: fixed;
+            z-index: 1030;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        }
+        #header-logo-wrapper {
+            box-sizing: border-box;
+            color: rgb(209, 209, 209);
+            display: block;
+            font-family: "Open Sans", Helvetica, Arial, sans-serif;
+            font-size: 18px;
+            height: 60px;
+            line-height: 60px;
+            padding-left: 30px;
+            width: 100%;
+            vertical-align: middle;
+        }
+        #header-logo strong {
+            text-transform: uppercase;
+            color: #d1d1d1;
+        }
+
+        .blank-slate-pf { border: none !important; }
+    </style>
+
+    <div class="navbar">
+        <div class="collapse navbar-collapse navbar-collapse-1">
+            <div id="header-logo-wrapper">
+                <div id="header-logo">
+                    <img id="header-logo" src="img/mta-logo-header.svg" height="60" />
+                    <!-- a class="pointer link" target="_blank" href="https://developers.redhat.com/products/mta/overview/" style="color: #ff0000">(Beta)</a -->
                 </div>
-                <a class="pf-c-page__header-brand-link">
-                    <img class="pf-c-brand" src="img/mta-logo-header.svg" alt="Logo"/>
-                </a>
             </div>
-        </header>
-        <main class="pf-c-page__main" tabindex="-1" id="main-content-page-default-nav-example">
-            <section class="pf-c-page__main-section">
-                <div class="pf-l-bullseye">
-                    <div class="pf-l-bullseye__item">
-                        <div className="pf-u-display-flex pf-u-flex-direction-column">
-                            <div>
-                                <span class="pf-c-spinner" role="progressbar" aria-valuetext="Loading...">
-                                    <span class="pf-c-spinner__clipper"></span>
-                                    <span class="pf-c-spinner__lead-ball"></span>
-                                    <span class="pf-c-spinner__tail-ball"></span>
-                                </span>
-                            </div>
-                            <div className="pf-c-content">
-                                <h3>Loading...</h3>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
+        </div>
+    </div>
+
+    <div id="loading" class="blank-slate-pf">
+        <h1>
+            Loading...
+        </h1>
     </div>
 
 </windup-app>
