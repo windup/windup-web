@@ -100,6 +100,7 @@ export const NewProjectCompletition: React.FC<NewProjectCompletitionProps> = ({
             {
               title: "Set transformation path",
               name: "step-3",
+              substepOf: "Configure the analysis",
               fields: [
                 {
                   component: AppComponentTypes.SELECT_TRANSFORMATION_PATH,
