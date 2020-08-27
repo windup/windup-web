@@ -70,6 +70,7 @@ export const NewProjectCompletition: React.FC<NewProjectCompletitionProps> = ({
             {
               title: "Add applications",
               name: "step-2",
+              nextStep: "step-3",
               fields: [
                 {
                   component: AppComponentTypes.ADD_APPLICATIONS,
@@ -84,6 +85,26 @@ export const NewProjectCompletition: React.FC<NewProjectCompletitionProps> = ({
                     });
                   },
                   //
+                  validate: [
+                    {
+                      type: validatorTypes.REQUIRED,
+                    },
+                    {
+                      type: validatorTypes.MIN_ITEMS,
+                      threshold: 1,
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              title: "Set transformation path",
+              name: "step-3",
+              fields: [
+                {
+                  component: AppComponentTypes.SELECT_TRANSFORMATION_PATH,
+                  name: "transformationPath",
+                  label: "Set transformation Path",
                   validate: [
                     {
                       type: validatorTypes.REQUIRED,

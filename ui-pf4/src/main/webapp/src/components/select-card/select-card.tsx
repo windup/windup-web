@@ -8,39 +8,38 @@ import {
   CardBody,
   Bullseye,
   Select,
+  SelectOption,
   SelectVariant,
   SelectOptionObject,
-  SelectOption,
 } from "@patternfly/react-core";
 import { CubesIcon } from "@patternfly/react-icons";
 
 import "./select-card.scss";
 import { useState } from "react";
 
-interface Option {
+interface CardSelectOption {
   value: string;
   label: string;
 }
 
 export interface SelectCardProps {
   label: string;
-  value: string | Option[];
+  options: string | CardSelectOption[];
   icon?: React.ComponentType<any>;
+  isSelected: boolean;
+  value: string;
   onChange: (isSelected: boolean, value: string) => void;
 }
 
 export const SelectCard: React.FC<SelectCardProps> = ({
   label,
-  value,
+  options,
   icon,
+  isSelected,
+  value,
   onChange,
 }) => {
-  const [isCardSelected, setIsCardSelected] = useState(false);
-
   const [isSelectOpen, setIsSelectOpen] = useState(false);
-  const [selectValues, setSelectValues] = useState<string | SelectOptionObject>(
-    Array.isArray(value) ? value[0].value : ""
-  );
 
   const handleCardClick = (event: React.MouseEvent) => {
     // Workaround to stop 'select' event propagation
@@ -49,17 +48,11 @@ export const SelectCard: React.FC<SelectCardProps> = ({
       return;
     }
 
-    setIsCardSelected((previous) => {
-      const newValue = !previous;
-
-      if (Array.isArray(value)) {
-        onChange(newValue, selectValues as any);
-      } else {
-        onChange(newValue, value);
-      }
-
-      return newValue;
-    });
+    if (Array.isArray(options)) {
+      onChange(!isSelected, value);
+    } else {
+      onChange(!isSelected, value || options);
+    }
   };
 
   const handleSelectToggle = (isOpen: boolean) => {
@@ -68,43 +61,41 @@ export const SelectCard: React.FC<SelectCardProps> = ({
 
   const handleSelectSelection = (
     event: React.MouseEvent | React.ChangeEvent,
-    value: string | SelectOptionObject
+    selection: string | SelectOptionObject
   ) => {
     event.stopPropagation();
-
     setIsSelectOpen(false);
-    setSelectValues(value);
-    setIsCardSelected(true);
-
-    onChange(true, value as any);
+    onChange(true, selection as any);
   };
 
   return (
     <Card
       onClick={handleCardClick}
       isSelectable
-      isSelected={isCardSelected}
+      isSelected={isSelected}
       className="select-card__component__wrapper"
     >
       <CardBody>
         <Bullseye>
-          <EmptyState variant={EmptyStateVariant.small}>
+          <EmptyState
+            variant={EmptyStateVariant.small}
+            className="select-card__component__empty-state"
+          >
             <EmptyStateIcon icon={icon ? icon : CubesIcon} />
             <Title headingLevel="h4" size="md">
               {label}
             </Title>
-            {Array.isArray(value) && (
+            {Array.isArray(options) && (
               <Select
-                id="carlos"
                 variant={SelectVariant.single}
                 aria-label="Select Input"
                 onToggle={handleSelectToggle}
                 onSelect={handleSelectSelection}
-                selections={selectValues}
+                selections={value}
                 isOpen={isSelectOpen}
                 direction="down"
               >
-                {value.map((el, index) => (
+                {options.map((el, index) => (
                   <SelectOption key={index} value={el.value} />
                 ))}
               </Select>

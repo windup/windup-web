@@ -17,20 +17,22 @@ const Template: Story<SelectCardProps> = (args) => <SelectCard {...args} />;
 export const Basic = Template.bind({});
 Basic.args = {
   label: "Containerization",
-  value: "cloud-readiness",
+  options: "cloud-readiness",
+  isSelected: true,
 };
 
 export const CustomIcon = Template.bind({});
 CustomIcon.args = {
   label: "Javascript",
-  value: "javascript",
+  options: "javascript",
   icon: JsIcon,
+  isSelected: false,
 };
 
 export const Multiple = Template.bind({});
 Multiple.args = {
   label: "Application server migration to",
-  value: [
+  options: [
     {
       label: "JBoss EAP 6",
       value: "eap6",
@@ -40,4 +42,6 @@ Multiple.args = {
       value: "eap7",
     },
   ],
+  isSelected: true,
+  value: "eap7",
 };
