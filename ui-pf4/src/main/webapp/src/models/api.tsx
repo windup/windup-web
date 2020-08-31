@@ -28,3 +28,13 @@ export interface Application {
   reportIndexPath: null;
   title: string;
 }
+
+export interface Package {
+  id: number;
+  name: string;
+  fullName: string;
+  level: number;
+  known: boolean;
+  countClasses: number;
+  childs: Package[];
+}

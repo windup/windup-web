@@ -3,6 +3,7 @@ export { DeleteButton } from "./delete-button";
 export { FetchTable } from "./fetch-table";
 export { FilterToolbarItem } from "./filter-toolbar-item";
 export { LoadingStep } from "./loading-step";
+export { PackageSelection } from "./package-selection";
 export { PageSkeleton } from "./page-skeleton";
 export { ProgressApplication } from "./progress-application";
 export { ProgressFile } from "./progress-file";
