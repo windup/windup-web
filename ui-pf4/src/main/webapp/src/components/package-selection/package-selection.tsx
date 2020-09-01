@@ -1,5 +1,17 @@
 import * as React from "react";
-import { AngleRightIcon, AngleDownIcon } from "@patternfly/react-icons";
+import {
+  EmptyState,
+  EmptyStateVariant,
+  EmptyStateIcon,
+  Title,
+  EmptyStateBody,
+} from "@patternfly/react-core";
+import {
+  AngleRightIcon,
+  AngleDownIcon,
+  InfoIcon,
+  CircleNotchIcon,
+} from "@patternfly/react-icons";
 
 import TreeView from "@material-ui/lab/TreeView";
 import TreeItem from "@material-ui/lab/TreeItem";
@@ -22,11 +34,24 @@ const packageToTree = (node: Package): any => {
 
 export const PackageSelection: React.FC<PackageSelectionProps> = ({
   packages,
+  onChange,
 }) => {
-  const { toggleNodeSelected, getNodeStatus } = useTreeSelectionState<Package>({
+  const {
+    toggleNodeSelected,
+    getNodeStatus,
+    selectedNodes,
+  } = useTreeSelectionState<Package>({
     tree: packages.map((f) => packageToTree(f)),
     isEqual: (a, b) => a.id === b.id,
   });
+
+  const handleToggleNode = (event: React.MouseEvent, node: Package) => {
+    event.preventDefault();
+    toggleNodeSelected(node);
+
+    // Emit change event
+    onChange(selectedNodes);
+  };
 
   const renderTree = (nodes: Package[]) => {
     return nodes.map((element) => {
@@ -42,12 +67,12 @@ export const PackageSelection: React.FC<PackageSelectionProps> = ({
                 checked={nodeStatus === "checked" ? true : false}
                 indeterminate={nodeStatus === "indeterminate" ? true : false}
               />
+              <i>{element.known ? <CircleNotchIcon /> : null}</i>
               {element.name}
             </React.Fragment>
           }
           onLabelClick={(event) => {
-            event.preventDefault();
-            toggleNodeSelected(element);
+            handleToggleNode(event, element);
           }}
         >
           {renderTree(element.childs)}
@@ -58,12 +83,22 @@ export const PackageSelection: React.FC<PackageSelectionProps> = ({
 
   return (
     <React.Fragment>
-      <TreeView
-        defaultCollapseIcon={<AngleDownIcon />}
-        defaultExpandIcon={<AngleRightIcon />}
-      >
-        {renderTree(packages)};
-      </TreeView>
+      {packages.length > 0 ? (
+        <TreeView
+          defaultCollapseIcon={<AngleDownIcon />}
+          defaultExpandIcon={<AngleRightIcon />}
+        >
+          {renderTree(packages)}
+        </TreeView>
+      ) : (
+        <EmptyState variant={EmptyStateVariant.small}>
+          <EmptyStateIcon icon={InfoIcon} />
+          <Title headingLevel="h4" size="lg">
+            No packages
+          </Title>
+          <EmptyStateBody>There are no packages to show</EmptyStateBody>
+        </EmptyState>
+      )}
     </React.Fragment>
   );
 };
