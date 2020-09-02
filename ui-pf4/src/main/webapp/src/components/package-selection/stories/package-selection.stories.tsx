@@ -3,6 +3,8 @@ import { Story, Meta } from "@storybook/react/types-6-0";
 import { PackageSelection, PackageSelectionProps } from "../package-selection";
 import { ApiResponse } from "./application-packages-example";
 
+var manyPackages = require("./manypackages.json");
+
 export default {
   title: "Components / PackageSelection",
   component: PackageSelection,
@@ -96,4 +98,9 @@ AdministracionEfectivo.args = {
   // checked: [ApiResponse.packageTree[0], ApiResponse.packageTree[1]],
   packages: ApiResponse.packageTree,
   // sort: (a, b) => a.value.name.localeCompare(b.value.name),
+};
+
+export const ManyPackages = Template.bind({});
+ManyPackages.args = {
+  packages: manyPackages.packageTree,
 };

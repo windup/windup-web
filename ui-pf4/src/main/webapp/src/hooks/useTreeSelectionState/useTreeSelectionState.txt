@@ -1,0 +1,291 @@
+import * as React from "react";
+
+export interface ITreeNode<T> {
+  node: T;
+  children: ITreeNode<T>[];
+}
+
+export interface ITreeSelectionStateArgs<T> {
+  tree: ITreeNode<T>[];
+  initialSelected?: T[];
+  isEqual: (a: T, b: T) => boolean;
+}
+
+export interface ITreeSelectionState<T> {
+  selectedNodes: T[];
+  setSelectedNodes: (nodes: T[]) => void;
+  getNodeStatus: (node: T) => "checked" | "unchecked" | "indeterminate";
+  selectAll: (isSelecting?: boolean) => void;
+  toggleNodeSelected: (node: T, isSelecting?: boolean) => void;
+  areAllSelected: boolean;
+}
+
+const searchTreeNode = <T>(
+  tree: ITreeNode<T>[],
+  node: T,
+  isEqual: (a: T, b: T) => boolean
+) => {
+  let treeNode: ITreeNode<T> | undefined = undefined;
+  for (let i = 0; i < tree.length; i++) {
+    treeNode = getTreeNode(tree[i], node, isEqual);
+    if (treeNode) {
+      break;
+    }
+  }
+  return treeNode;
+};
+
+const getTreeNode = <T>(
+  treeNode: ITreeNode<T>,
+  matchingNode: T,
+  isEqual: (a: T, b: T) => boolean
+): ITreeNode<T> | undefined => {
+  if (isEqual(treeNode.node, matchingNode)) {
+    return treeNode;
+  } else {
+    let result = undefined;
+    for (let i = 0; i < treeNode.children.length; i++) {
+      result = getTreeNode(treeNode.children[i], matchingNode, isEqual);
+      if (result) {
+        break;
+      }
+    }
+    return result;
+  }
+};
+
+const getAllChildren = <T>(treeNode: ITreeNode<T>): T[] => {
+  return treeNode.children.reduce(
+    (previous: T[], current: ITreeNode<T>) => [
+      ...previous,
+      current.node,
+      ...getAllChildren(current),
+    ],
+    []
+  );
+};
+
+const getAllParents = <T>(
+  node: ITreeNode<T>,
+  tree: Map<ITreeNode<T>, ITreeNode<T> | undefined>
+) => {
+  const result: T[] = [];
+
+  let parent = tree.get(node);
+  while (parent) {
+    result.push(parent.node);
+    parent = tree.get(parent);
+  }
+
+  return result;
+};
+
+interface ITreeData<T> {
+  id: string;
+  parent: ITreeNode<T> | undefined;
+}
+interface Status<T> {
+  tree: ITreeNode<T>[];
+  nodes: Map<T, ITreeNode<T>>;
+  treeNodes: Map<ITreeNode<T>, ITreeData<T>>;
+  selectedNodes: ITreeNode<T>[];
+  isEqual: (a: T, b: T) => boolean;
+}
+interface Action {
+  type: "check" | "uncheck";
+  payload: any;
+}
+
+const init = <T>(args: ITreeSelectionStateArgs<T>): Status<T> => {
+  const newTree = [...args.tree];
+  const newNodes: Map<T, ITreeNode<T>> = new Map();
+  const newTreeNodes: Map<ITreeNode<T>, ITreeData<T>> = new Map();
+  const newSelectedNodes: ITreeNode<T>[] = [];
+
+  const initNodes = (
+    nodes: ITreeNode<T>[],
+    parentNode: ITreeNode<T> | undefined = undefined,
+    parentId: string | undefined = undefined
+  ) => {
+    for (let i = 0; i < nodes.length; i++) {
+      const treeNode = nodes[i];
+
+      // Add to newSelectedNodes
+      const selectedNode = args.initialSelected?.find((f) =>
+        args.isEqual(f, treeNode.node)
+      );
+      if (selectedNode) {
+        newSelectedNodes.push(treeNode);
+      }
+
+      // Add to newNodes
+      newNodes.set(treeNode.node, treeNode);
+
+      // Add to newTreeNodes
+      const nodeId = `${parentId ? parentId + '.' : ''}${i.toString()}`;
+      newTreeNodes.set(treeNode, {
+        id: nodeId,
+        parent: parentNode
+      });
+
+      // Procress children
+      if (treeNode.children && treeNode.children.length > 0) {
+        initNodes(treeNode.children, treeNode, nodeId);
+      }
+    }
+  };
+
+  initNodes(newTree);
+
+  // TODO Before settings selected nodes they should be flatterned
+
+  return {
+    tree: newTree,
+    nodes: newNodes,
+    treeNodes: newTreeNodes,
+    selectedNodes: newSelectedNodes,
+    isEqual: args.isEqual
+  };
+};
+
+const reducer = <T>(state: Status<T>, action: Action): Status<T> => {
+  // let newSelectedNodes: T[];
+
+  // if (isSelecting) {
+  //   newSelectedNodes = [...selectedNodes, node, ...getAllChildren(treeNode)];
+
+  //   // If all children checked then parent should be checked too
+  //   const addParentIfAllChildrenChecked = (treeNode: ITreeNode<T>) => {
+  //     const parent = parents.get(treeNode);
+  //     if (parent) {
+  //       const everyChildrenIsChecked = parent.children.every((i) =>
+  //         newSelectedNodes.some((j) => isEqual(i.node, j))
+  //       );
+  //       if (everyChildrenIsChecked) {
+  //         newSelectedNodes = [...newSelectedNodes, parent.node]; // remove parent
+  //         addParentIfAllChildrenChecked(parent);
+  //       }
+  //     }
+  //   };
+  //   addParentIfAllChildrenChecked(treeNode);
+  // } else {
+  //   const listToRemove = [
+  //     node,
+  //     ...getAllChildren(treeNode),
+  //     ...getAllParents(treeNode, parents),
+  //   ];
+  //   newSelectedNodes = selectedNodes.filter(
+  //     (i) => !listToRemove.some((j) => isEqual(i, j))
+  //   );
+  // }
+
+  // setSelectedNodes(newSelectedNodes);
+
+  switch (action.type) {
+    case "check":
+      const node: T = action.payload;
+      const nodeTree: ITreeNode<T> = state.nodes.get(node)!;
+      const nodeTreeData: ITreeData<T> = state.treeNodes.get(nodeTree)!;
+
+      const newSelectedNodes = state.selectedNodes
+        // Remove all children
+        .filter(f => {
+          const selectedNodeData: ITreeData<T> = state.treeNodes.get(f)!;
+          return selectedNodeData?.id.startsWith(nodeTreeData!.id + '.');
+        })
+        // Remove node itself to be sure we don't add it twice
+        .filter(f => !state.isEqual(f.node, node))
+        // Add checked node
+        .push(nodeTree);
+
+      // Flattern selected nodes
+      for (let i = newSelectedNodes.length - 1; i >= 0; i--) {
+        const selectedNode = newSelectedNodes[i];
+        // const selectedNodeData = state.treeNodes.get(selectedNode)!;
+
+        const shouldBeRemoved = selectedNode.children.every(child => {
+          const childData: ITreeData<T> = state.treeNodes.get(child)!;
+          return newSelectedNodes.some(f => {
+
+          });
+        })
+      }
+
+      // action.payload.callback(afterPushApps);
+      return {
+        ...state,
+
+      };
+    case "uncheck":
+      const afterRemoveApps = state.applications.filter(
+        (valueSelect: any) => valueSelect !== action.payload.application
+      );
+      // action.payload.callback(afterRemoveApps);
+      return {
+        ...state,
+        applications: afterRemoveApps,
+      };
+    default:
+      throw new Error();
+  }
+};
+
+export const useTreeSelectionState = <T>({
+  tree: initialTree,
+  initialSelected = [],
+  isEqual = (a, b) => a === b,
+}: ITreeSelectionStateArgs<T>): ITreeSelectionState<T> => {
+  const [state, dispatch] = React.useReducer<
+    React.Reducer<Status<T>, Action>,
+    ITreeSelectionStateArgs<T>
+  >(reducer, { tree: initialTree, initialSelected, isEqual }, init);
+
+  const getNodeStatus = (
+    node: T
+  ): "checked" | "unchecked" | "indeterminate" => {
+    // if (isNodeSelected(node)) {
+    //   return "checked";
+    // } else {
+    //   const treeNode: ITreeNode<T> | undefined = searchTreeNode(
+    //     tree,
+    //     node,
+    //     isEqual
+    //   );
+
+    //   if (treeNode) {
+    //     const allChildren = getAllChildren(treeNode);
+    //     if (allChildren.some((f) => isNodeSelected(f))) {
+    //       return "indeterminate";
+    //     }
+    //   }
+    // }
+
+    return "unchecked";
+  };
+
+  const isNodeSelected = (node: T): boolean => {
+    const nodeTree: ITreeNode<T> = state.nodes.get(node)!;
+    const nodeTreeData: ITreeData<T> = state.treeNodes.get(nodeTree)!;
+
+    return state.selectedNodes.some(i => {
+      const selectedNodeTreeData: ITreeData<T> | undefined = state.treeNodes.get(i);
+      return nodeTreeData?.id.startsWith(selectedNodeTreeData?.id + '.');
+    });
+  };
+
+  const toggleNodeSelected = (node: T, isSelecting = !isNodeSelected(node)) => {
+    dispatch({ type: isSelecting ? "check" : "uncheck", payload: node });
+  };
+
+  // const selectAll = (isSelecting = true) => setSelectedNodes(isSelecting ? tree.map((f) => f.node) : []);
+  // const areAllSelected = tree.every((f) => isNodeSelected(f.node));
+
+  return {
+    selectedNodes: [],
+    setSelectedNodes: () => { },
+    getNodeStatus: getNodeStatus,
+    selectAll: () => { },
+    toggleNodeSelected: toggleNodeSelected,
+    areAllSelected: false,
+  };
+};

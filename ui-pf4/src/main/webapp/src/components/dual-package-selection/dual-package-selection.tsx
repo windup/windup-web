@@ -34,7 +34,7 @@ const disaggregatePackages = (
 
     if (node.known) {
       // If at least one child is unknown, then the node will be part of both Arrays
-      if (node.childs && node.childs.some((p) => p.known == false)) {
+      if (node.childs && node.childs.some((p) => p.known === false)) {
         applicationPackages.push(newNode1);
         thirdPartyPackages.push(newNode2);
       } else {
@@ -86,7 +86,7 @@ export const DualPackageSelection: React.FC<DualPackageSelectionProps> = ({
     let newLefPackages: Package[] = [];
     let newRightPackages: Package[] = [];
 
-    if (includedPackages.length == 0 && excludedPackages.length === 0) {
+    if (includedPackages.length === 0 && excludedPackages.length === 0) {
       const applicationPackages: Package[] = [];
       const thirdPartyPackages: Package[] = [];
       disaggregatePackages(packages, applicationPackages, thirdPartyPackages);
@@ -116,8 +116,12 @@ export const DualPackageSelection: React.FC<DualPackageSelectionProps> = ({
     setRightPackagesSelected([]);
   };
 
-  const handleMoveToRight = () => {};
-  const handleMoveToLeft = () => {};
+  const handleMoveToRight = () => {
+    console.log("Moving to right", leftPackagesSelected);
+  };
+  const handleMoveToLeft = () => {
+    console.log("Moving to left", rightPackagesSelected);
+  };
 
   return (
     <React.Fragment>
