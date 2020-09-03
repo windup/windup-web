@@ -1,24 +1,10 @@
 import * as React from "react";
-import {
-  Grid,
-  GridItem,
-  Button,
-  ButtonVariant,
-  Bullseye,
-  Card,
-  CardTitle,
-  CardBody,
-  Flex,
-  FlexItem,
-} from "@patternfly/react-core";
-import {
-  AngleRightIcon,
-  AngleDoubleRightIcon,
-  AngleLeftIcon,
-  AngleDoubleLeftIcon,
-} from "@patternfly/react-icons";
+import { Bullseye } from "@patternfly/react-core";
+import { ThinkPeaksIcon } from "@patternfly/react-icons";
 
-import { PackageSelection } from "../package-selection";
+import { Transfer, Tree } from "antd";
+import "antd/dist/antd.css";
+
 import { Package } from "../../models/api";
 
 const disaggregatePackages = (
@@ -55,146 +41,183 @@ const sortPackages = (tree: Package[]): Package[] => {
   return tree.sort((a: Package, b: Package) => (a.name > b.name ? 1 : -1));
 };
 
+interface TreeNode {
+  key: string;
+  title: string;
+  icon?: React.ReactNode;
+  children?: TreeNode[];
+}
+
+const packageToTree = (node: Package): TreeNode => {
+  return {
+    key: node.fullName,
+    title: node.name,
+    icon: node.known ? <ThinkPeaksIcon /> : undefined,
+    children:
+      node.childs && node.childs.length > 0
+        ? node.childs.map((f) => packageToTree(f))
+        : undefined,
+  };
+};
+
 export interface DualPackageSelectionProps {
   packages: Package[];
   includedPackages: Package[];
-  excludedPackages: Package[];
-  height?: number;
-  onChange: (includedPackages: Package[], excludedPackages: Package[]) => void;
+  onChange: (includedPackages: string[]) => void;
 }
+
+const isChecked = (selectedKeys: string[], eventKey: string) => {
+  return selectedKeys.indexOf(eventKey) !== -1;
+};
+
+const generateTree = (
+  treeNodes: TreeNode[] = [],
+  checkedKeys: string[] = []
+): any => {
+  return treeNodes
+    .sort((a, b) => a.key.localeCompare(b.key))
+    .map((i: TreeNode) => ({
+      ...i,
+      disabled:
+        checkedKeys.includes(i.key) ||
+        checkedKeys.some((f) => i.key.startsWith(f + ".")),
+      children: generateTree(i.children, checkedKeys),
+    }));
+};
+
+const stringCompartor = (a: string, b: string) => a.localeCompare(b);
 
 export const DualPackageSelection: React.FC<DualPackageSelectionProps> = ({
   packages,
   includedPackages,
-  excludedPackages,
-  height = 350,
+  onChange,
 }) => {
-  // const [, setApplicationPackages] = React.useState<Package[]>();
-  // const [, setThirdPartyPackages] = React.useState<Package[]>();
+  const [processing, setProcessing] = React.useState(true);
 
-  const [lefPackages, setLeftPackages] = React.useState<Package[]>();
-  const [leftPackagesSelected, setLeftPackagesSelected] = React.useState<
-    Package[]
-  >([]);
+  const [packagesTree, setPackagesTree] = React.useState<TreeNode[]>();
+  const [packagesTreeFlattened, setPackagesTreeFlattened] = React.useState<
+    TreeNode[]
+  >();
 
-  const [rightPackages, setRightPackages] = React.useState<Package[]>();
-  const [rightPackagesSelected, setRightPackagesSelected] = React.useState<
-    Package[]
-  >([]);
+  const [targetKeys, setTargetKeys] = React.useState<string[]>([]);
 
   React.useEffect(() => {
-    let newLefPackages: Package[] = [];
-    let newRightPackages: Package[] = [];
+    let newIncludedPackages: Package[];
 
-    if (includedPackages.length === 0 && excludedPackages.length === 0) {
+    if (includedPackages.length === 0) {
+      // Set application and third party packages
       const applicationPackages: Package[] = [];
       const thirdPartyPackages: Package[] = [];
       disaggregatePackages(packages, applicationPackages, thirdPartyPackages);
 
-      newLefPackages = thirdPartyPackages;
-      newRightPackages = applicationPackages;
+      // Flattern application packages
+      const flatteredPackages: Package[] = [];
+      const flatternPackages = (nodes: Package[]) => {
+        nodes.forEach((node) => {
+          // know=false => application party package
+          if (node.known === false) {
+            flatteredPackages.push(node);
+          } else {
+            flatternPackages(node.childs);
+          }
+        });
+      };
+      flatternPackages(applicationPackages);
+
+      newIncludedPackages = [...flatteredPackages];
     } else {
+      newIncludedPackages = [...includedPackages];
     }
 
-    setLeftPackages(sortPackages(newLefPackages));
-    setRightPackages(sortPackages(newRightPackages));
-  }, [packages, includedPackages, excludedPackages]);
+    const newTargetKeys = newIncludedPackages
+      .map((f) => f.fullName)
+      .sort(stringCompartor);
 
-  const handleMoveAllToRight = () => {
-    setLeftPackages([]);
-    setLeftPackagesSelected([]);
+    setTargetKeys(newTargetKeys);
 
-    setRightPackages(packages);
-    setRightPackagesSelected([]);
-  };
+    // Create tree
+    const newPackagesTree = packages.map((f) => packageToTree(f));
+    setPackagesTree(newPackagesTree);
 
-  const handleMoveAllToLeft = () => {
-    setLeftPackages(packages);
-    setRightPackages([]);
+    // Create flattern tree
+    const newPackagesTreeFlattened: TreeNode[] = [];
+    const flatten = (list: TreeNode[] = []) => {
+      list.forEach((item) => {
+        newPackagesTreeFlattened.push(item);
+        flatten(item.children);
+      });
+    };
+    flatten(newPackagesTree);
+    setPackagesTreeFlattened(newPackagesTreeFlattened);
 
-    setRightPackagesSelected([]);
-    setRightPackagesSelected([]);
-  };
+    // Stop processing signal
+    setProcessing(false);
+  }, [packages, includedPackages]);
 
-  const handleMoveToRight = () => {
-    console.log("Moving to right", leftPackagesSelected);
-  };
-  const handleMoveToLeft = () => {
-    console.log("Moving to left", rightPackagesSelected);
+  const handleTransferChange = (keys: string[]) => {
+    const keysFlatterned = keys.filter((keyToEliminate) => {
+      return !keys.some((i) => keyToEliminate.startsWith(i + "."));
+    });
+
+    const newTargetKeys = keysFlatterned.sort(stringCompartor);
+    setTargetKeys(newTargetKeys);
+
+    // Emit event
+    onChange(newTargetKeys);
   };
 
   return (
     <React.Fragment>
-      {lefPackages && rightPackages && (
-        <Grid sm={4}>
-          <GridItem span={5}>
-            <Card>
-              <CardTitle>Excluded packages</CardTitle>
-              <CardBody style={{ height, overflowY: "auto" }}>
-                <PackageSelection
-                  packages={lefPackages}
-                  onChange={(checked: Package[]) =>
-                    setLeftPackagesSelected(checked)
-                  }
+      {processing ? (
+        <Bullseye>
+          <span>Processing...</span>
+        </Bullseye>
+      ) : (
+        <Transfer
+          titles={["Packages", "Included packages"]}
+          dataSource={packagesTreeFlattened}
+          render={(item) => item.key}
+          showSelectAll={false}
+          onChange={handleTransferChange}
+          targetKeys={targetKeys} // A set of keys of elements that are listed on the right column
+        >
+          {({ direction, onItemSelect, selectedKeys }) => {
+            if (direction === "left") {
+              const checkedKeys = [...selectedKeys, ...targetKeys];
+              return (
+                <Tree
+                  height={350}
+                  blockNode // Whether treeNode fill remaining horizontal space
+                  checkable // Add a Checkbox before the treeNodes
+                  checkStrictly // Check treeNode precisely; parent treeNode and children treeNodes are not associated
+                  defaultExpandAll={false} // Whether to expand all treeNodes by default
+                  checkedKeys={selectedKeys} // Specifies the keys of the checked treeNodes
+                  treeData={generateTree(packagesTree, targetKeys)}
+                  onCheck={(_, { node: { key } }) => {
+                    onItemSelect(
+                      key as any,
+                      !isChecked(checkedKeys, key as any)
+                    );
+                  }}
+                  onSelect={(_, { node: { key } }) => {
+                    onItemSelect(
+                      key as any,
+                      !isChecked(checkedKeys, key as any)
+                    );
+                  }}
+                  titleRender={(node) => (
+                    <span>
+                      {node.title}{" "}
+                      <small>
+                        <i>{node.icon}</i>
+                      </small>
+                    </span>
+                  )}
                 />
-              </CardBody>
-            </Card>
-          </GridItem>
-          <GridItem span={2}>
-            <Bullseye>
-              <Flex
-                direction={{ default: "column" }}
-                alignSelf={{ default: "alignSelfCenter" }}
-              >
-                <FlexItem>
-                  <Button
-                    variant={ButtonVariant.plain}
-                    onClick={handleMoveToRight}
-                  >
-                    <AngleRightIcon />
-                  </Button>
-                </FlexItem>
-                <FlexItem>
-                  <Button
-                    variant={ButtonVariant.plain}
-                    onClick={handleMoveAllToRight}
-                  >
-                    <AngleDoubleRightIcon />
-                  </Button>
-                </FlexItem>
-                <FlexItem>
-                  <Button
-                    variant={ButtonVariant.plain}
-                    onClick={handleMoveAllToLeft}
-                  >
-                    <AngleDoubleLeftIcon />
-                  </Button>
-                </FlexItem>
-                <FlexItem>
-                  <Button
-                    variant={ButtonVariant.plain}
-                    onClick={handleMoveToLeft}
-                  >
-                    <AngleLeftIcon />
-                  </Button>
-                </FlexItem>
-              </Flex>
-            </Bullseye>
-          </GridItem>
-          <GridItem span={5}>
-            <Card>
-              <CardTitle>Included packages</CardTitle>
-              <CardBody style={{ height, overflowY: "auto" }}>
-                <PackageSelection
-                  packages={rightPackages}
-                  onChange={(checked: Package[]) =>
-                    setRightPackagesSelected(checked)
-                  }
-                />
-              </CardBody>
-            </Card>
-          </GridItem>
-        </Grid>
+              );
+            }
+          }}
+        </Transfer>
       )}
     </React.Fragment>
   );

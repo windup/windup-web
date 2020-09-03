@@ -6,6 +6,8 @@ import {
 } from "../dual-package-selection";
 import { ApiResponse } from "./application-packages-example";
 
+var manyPackages = require("./manypackages.json");
+
 export default {
   title: "Components / DualPackageSelection",
   component: DualPackageSelection,
@@ -22,5 +24,10 @@ export const AdministracionEfectivo = Template.bind({});
 AdministracionEfectivo.args = {
   packages: ApiResponse.packageTree,
   includedPackages: [],
-  excludedPackages: [],
+};
+
+export const ManyPackages = Template.bind({});
+ManyPackages.args = {
+  packages: manyPackages.packageTree,
+  includedPackages: [],
 };
