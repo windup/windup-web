@@ -727,11 +727,9 @@ bootstrap-datepicker@1.6.4, bootstrap-datepicker@~1.6.4:
   dependencies:
     jquery ">=1.7.1"
 
-bootstrap-select@1.12.2:
-  version "1.12.2"
-  resolved "https://registry.yarnpkg.com/bootstrap-select/-/bootstrap-select-1.12.2.tgz#58d095b3fd584b31443866fbe39b6fdd4e4e12a4"
-  dependencies:
-    jquery ">=1.8"
+bootstrap-select@1.13.6:
+  version "1.13.6"
+  resolved "https://registry.yarnpkg.com/bootstrap-select/-/bootstrap-select-1.13.6.tgz#dc41f8a7385ab4e385562b400d4cf2422f5ef852"
 
 bootstrap-select@~1.10.0:
   version "1.10.0"
@@ -4104,10 +4102,6 @@ negotiator@0.6.1:
 ng2-file-upload@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/ng2-file-upload/-/ng2-file-upload-1.2.1.tgz#5563c5dfd6f43fbfbe815c206e343464a0a6a197"
-
-ng2-slim-loading-bar@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/ng2-slim-loading-bar/-/ng2-slim-loading-bar-4.0.0.tgz#7256fdde7c058f14955a3ef2e65afafb5b664603"
 
 no-case@^2.2.0:
   version "2.3.1"
