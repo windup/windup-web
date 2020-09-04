@@ -1,6 +1,6 @@
 import ApiClient from "./apiClient";
 import { AxiosPromise } from "axios";
-import { Project, MigrationProject } from "../models/api";
+import { Project, MigrationProject, PackageMetadata } from "models/api";
 
 const MIGRATION_PROJECTS = "/migrationProjects";
 
@@ -49,4 +49,12 @@ export const uploadFileToProject = (
 
 export const deleteRegisteredApplication = (applicationId: number) => {
   return ApiClient.delete(`registeredApplications/${applicationId}`);
+};
+
+export const getRegisteredApplicationPackages = (
+  applicationId: number
+): AxiosPromise<PackageMetadata> => {
+  return ApiClient.get<PackageMetadata>(
+    `registeredApplications/${applicationId}/packages`
+  );
 };

@@ -8,14 +8,14 @@ import FormTemplate from "@data-driven-forms/pf4-component-mapper/dist/cjs/form-
 import componentTypes from "@data-driven-forms/react-form-renderer/dist/cjs/component-types";
 import componentMapper from "@data-driven-forms/pf4-component-mapper/dist/cjs/component-mapper";
 
-import { SimplePageSection, LoadingStep } from "../../../components";
+import { SimplePageSection, LoadingStep } from "components";
 import { Paths, formatPath } from "../../../Paths";
 import {
   getProjectIdByName,
   deleteProvisionalProjects,
   createProject,
-} from "../../../api/api";
-import { ProjectDetailsSchema } from "../../../components/project-details-form/project-details-schema";
+} from "api/api";
+import { ProjectDetailsSchema } from "components/project-details-form/project-details-schema";
 
 interface NewProjectProps extends RouteComponentProps {}
 

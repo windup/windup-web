@@ -38,3 +38,10 @@ export interface Package {
   countClasses: number;
   childs: Package[];
 }
+
+export interface PackageMetadata {
+  id: number;
+  discoveredDate: Date;
+  scanStatus: "QUEUED" | "IN_PROGRESS" | "COMPLETE";
+  packageTree: Package[];
+}

@@ -1,1 +1,1 @@
-export * from "./useSelectionState";
+export { useSelectionState } from "./useSelectionState";
