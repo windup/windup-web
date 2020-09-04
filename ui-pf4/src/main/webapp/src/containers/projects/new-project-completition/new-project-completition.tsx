@@ -60,6 +60,9 @@ export const NewProjectCompletition: React.FC<NewProjectCompletitionProps> = ({
             // array of registered fields for each visited step
             // only values from registered fields will be submitted
           },
+          handlePrev: (e: any) => {
+            console.log("habdle preve", e);
+          },
           fields: [
             {
               title: "Details",
@@ -71,6 +74,9 @@ export const NewProjectCompletition: React.FC<NewProjectCompletitionProps> = ({
               title: "Add applications",
               name: "step-2",
               nextStep: "step-3",
+              handlePrev: (e: any) => {
+                console.log("habdle preve2222", e);
+              },
               fields: [
                 {
                   component: AppComponentTypes.ADD_APPLICATIONS,
