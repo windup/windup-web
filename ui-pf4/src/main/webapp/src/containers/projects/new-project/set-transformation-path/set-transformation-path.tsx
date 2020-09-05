@@ -7,7 +7,7 @@ import { Schema } from "@data-driven-forms/react-form-renderer";
 import AppFormRenderer from "appFormRenderer";
 
 import { SimplePageSection } from "components";
-import { ProjectDetailsSchema } from "components/project-details-form/project-details-schema";
+import { ProjectDetailsSchema } from "components/project-details-form-ddf/project-details-form-ddf.schema";
 import { AddApplicationsSchema } from "components/add-applications-form/schema/add-applications-form.schema";
 
 import { MigrationProject } from "models/api";
@@ -16,7 +16,7 @@ import { getProjectIdByName, getProjectById } from "api/api";
 import { Paths } from "Paths";
 
 import { TITLE, DESCRIPTION, newProjectWizardField } from "../shared/constants";
-import { LoadingWizard } from "../shared/LoadingWizard";
+import { LoadingWizard } from "../shared/WizardUtils";
 
 interface CreateProjectProps extends RouteComponentProps<{ project: string }> {}
 

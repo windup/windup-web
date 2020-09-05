@@ -9,7 +9,7 @@ import validatorTypes from "@data-driven-forms/react-form-renderer/dist/cjs/vali
 import { SimplePageSection, LoadingStep } from "../../../components";
 import { Paths } from "../../../Paths";
 import { getProjectIdByName, getProjectById } from "../../../api/api";
-import { ProjectDetailsSchema } from "../../../components/project-details-form/project-details-schema";
+import { ProjectDetailsSchema } from "../../../components/project-details-form-ddf/project-details-form-ddf.schema";
 import { MigrationProject } from "../../../models/api";
 import AppFormRenderer, { AppComponentTypes } from "../../../appFormRenderer";
 

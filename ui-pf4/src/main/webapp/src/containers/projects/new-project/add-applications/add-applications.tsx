@@ -1,94 +1,97 @@
 import React, { useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
-import { PageSection } from "@patternfly/react-core";
-
-import { Schema } from "@data-driven-forms/react-form-renderer";
-
-import AppFormRenderer from "appFormRenderer";
+import {
+  PageSection,
+  WizardStep,
+  Stack,
+  StackItem,
+  Title,
+  TitleSizes,
+} from "@patternfly/react-core";
 
 import { SimplePageSection } from "components";
-import { ProjectDetailsSchema } from "components/project-details-form/project-details-schema";
-import { AddApplicationsSchema } from "components/add-applications-form/schema/add-applications-form.schema";
 
 import { MigrationProject } from "models/api";
-import { getProjectIdByName, getProjectById } from "api/api";
+import { getProjectById } from "api/api";
 
-import { Paths } from "Paths";
+import { Paths, formatPath } from "Paths";
 
-import { TITLE, DESCRIPTION, newProjectWizardField } from "../shared/constants";
-import { LoadingWizard } from "../shared/LoadingWizard";
+import { TITLE, DESCRIPTION } from "../shared/constants";
+import {
+  LoadingWizard,
+  buildWizard,
+  WizardStepIds,
+} from "../shared/WizardUtils";
 
-interface CreateProjectProps extends RouteComponentProps<{ project: string }> {}
+interface AddApplicationsProps
+  extends RouteComponentProps<{ project: string }> {}
 
-export const CreateProject: React.FC<CreateProjectProps> = ({
+export const AddApplications: React.FC<AddApplicationsProps> = ({
   match,
   history: { push },
 }) => {
   const [project, setProject] = useState<MigrationProject>();
-  const [isProjectBeingFetch, setIsProjectBeingFetch] = useState(true);
+  const [isProjectBeingFetched, setIsProjectBeingFetched] = useState(true);
 
   useEffect(() => {
     getProjectById(match.params.project).then(({ data }) => {
       setProject(data);
-      setIsProjectBeingFetch(false);
+      setIsProjectBeingFetched(false);
     });
   }, [match]);
 
-  const createSchema = (project: MigrationProject): Schema => {
-    const schema: Schema = {
-      fields: [
-        {
-          ...newProjectWizardField,
-          initialState: {
-            activeStep: "step-2",
-            activeStepIndex: 1,
-            maxStepIndex: 2,
-            prevSteps: ["step-1"],
-            registeredFieldsHistory: { "step-1": ["title"] },
-          },
-          fields: [
-            {
-              title: "Details",
-              name: "step-1",
-              fields: [...ProjectDetailsSchema(getProjectIdByName).fields],
-            },
-            {
-              title: "Add applications",
-              name: "step-2",
-              nextStep: "step-3",
-              fields: [...AddApplicationsSchema(project?.id).fields],
-            },
-          ],
-        },
-      ],
+  const handleOnNextStep = () => {};
+
+  const handleOnClose = () => {
+    push(Paths.projects);
+  };
+
+  const handleOnGoToStep = (newStep: { id?: number }) => {
+    switch (newStep.id) {
+      case WizardStepIds.DETAILS:
+        push(
+          formatPath(Paths.newProject_details, {
+            project: project?.id,
+          })
+        );
+        break;
+      default:
+        new Error("Can not go to step id[" + newStep.id + "]");
+    }
+  };
+
+  const createWizardStep = (): WizardStep => {
+    return {
+      id: WizardStepIds.ADD_APPLICATIONS,
+      name: "Add applications",
+      component: (
+        <Stack hasGutter>
+          <StackItem>
+            <Title headingLevel="h5" size={TitleSizes["lg"]}>
+              Add applications
+            </Title>
+          </StackItem>
+          <StackItem>add application</StackItem>
+        </Stack>
+      ),
+      canJumpTo: true,
+      enableNext: false,
     };
-
-    return schema;
-  };
-
-  if (isProjectBeingFetch) {
-    return <LoadingWizard />;
-  }
-
-  const handleSubmit = () => {
-    push(Paths.projects);
-  };
-
-  const handleCancel = () => {
-    push(Paths.projects);
   };
 
   return (
     <React.Fragment>
       <SimplePageSection title={TITLE} description={DESCRIPTION} />
       <PageSection>
-        {project && (
-          <AppFormRenderer
-            schema={createSchema(project)}
-            initialValues={project}
-            onSubmit={handleSubmit}
-            onCancel={handleCancel}
-          />
+        {isProjectBeingFetched ? (
+          <LoadingWizard />
+        ) : (
+          buildWizard(WizardStepIds.ADD_APPLICATIONS, createWizardStep(), {
+            onNext: handleOnNextStep,
+            onClose: handleOnClose,
+            onGoToStep: handleOnGoToStep,
+            onBack: handleOnGoToStep,
+          })
         )}
       </PageSection>
     </React.Fragment>

@@ -1,13 +1,10 @@
 import * as React from "react";
 import { Story, Meta } from "@storybook/react/types-6-0";
-import {
-  ProjectDetailsForm,
-  ProjectDetailsFormProps,
-} from "../project-details-form";
+import { ServerPathForm, ServerPathFormProps } from "../server-path-form";
 
 export default {
-  title: "Forms / ProjectDetailsForm",
-  component: ProjectDetailsForm,
+  title: "Forms / ServerPathForm",
+  component: ServerPathForm,
   argTypes: {
     onChange: { action: "change" },
     onSubmit: { action: "submit" },
@@ -15,8 +12,8 @@ export default {
   },
 } as Meta;
 
-const Template: Story<ProjectDetailsFormProps> = (args) => (
-  <ProjectDetailsForm {...args} />
+const Template: Story<ServerPathFormProps> = (args) => (
+  <ServerPathForm {...args} />
 );
 
 export const Basic = Template.bind({});
@@ -25,8 +22,8 @@ Basic.args = {};
 export const InitialValue = Template.bind({});
 InitialValue.args = {
   initialValues: {
-    name: "my organization",
-    description: "my description",
+    serverPath: "/home/guess/folder",
+    isExploded: true,
   },
 };
 

@@ -27,6 +27,15 @@ export const createProject = (
   );
 };
 
+export const updateProject = (
+  project: MigrationProject
+): AxiosPromise<MigrationProject> => {
+  return ApiClient.put<MigrationProject>(
+    `${MIGRATION_PROJECTS}/update`,
+    project
+  );
+};
+
 export const deleteProject = (project: MigrationProject): AxiosPromise => {
   return ApiClient.delete(`${MIGRATION_PROJECTS}/delete`, {}, project);
 };
@@ -57,4 +66,8 @@ export const getRegisteredApplicationPackages = (
   return ApiClient.get<PackageMetadata>(
     `registeredApplications/${applicationId}/packages`
   );
+};
+
+export const pathExists = (path: string): AxiosPromise<boolean> => {
+  return ApiClient.post<boolean>("file/pathExists", path);
 };

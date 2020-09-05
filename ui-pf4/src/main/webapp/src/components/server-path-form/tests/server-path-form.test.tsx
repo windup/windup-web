@@ -1,6 +1,6 @@
 import * as React from "react";
 import { shallow } from "enzyme";
-import { ProjectDetailsForm } from "../project-details-form";
+import { ServerPathForm } from "../server-path-form";
 
 describe("ProjectDetailsForm", () => {
   it("Renders without crashing", () => {});

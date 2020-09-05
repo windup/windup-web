@@ -3,50 +3,47 @@ import {
   Form,
   FormGroup,
   TextInput,
-  TextArea,
   ActionGroup,
   Button,
   ButtonVariant,
+  Checkbox,
 } from "@patternfly/react-core";
 
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { getProjectIdByName } from "api/api";
+import { pathExists } from "api/api";
 import {
   getValidatedFromError,
   getValidatedFromErrorTouched,
 } from "utils/formUtils";
 
 const validationSchema = yup.object().shape({
-  name: yup
+  serverPath: yup
     .string()
     .trim()
     .required("This field is required.")
-    .min(3, "The project name must contain at least 3 characters.")
-    .max(120, "The project name must contain fewer than 120 characters.")
-    .matches(
-      /^.[a-zA-Z0-9_]+$/,
-      "The project name must contain only alphanumeric characters."
-    )
-    .test("uniqueValue", "The entered name is already in use.", (value) => {
-      return getProjectIdByName(value!)
-        .then(({ data }) => !data)
-        .catch(() => false);
-    }),
-  description: yup
-    .string()
-    .nullable()
-    .trim()
-    .max(4096, "The description must contain fewer than 4096 characters."),
+    .test(
+      "pathExists",
+      "The path must be an existing file or a non-empty directory on the server.",
+      (value) => {
+        return pathExists(value!)
+          .then(({ data }) => data)
+          .catch((error) => {
+            console.log("catchhh", error);
+            return false;
+          });
+      }
+    ),
+  isExploded: yup.boolean().nullable(),
 });
 
 export interface ProjectDetailsFormValue {
-  name?: string;
-  description?: string;
+  serverPath?: string;
+  isExploded?: boolean;
 }
 
-export interface ProjectDetailsFormProps {
+export interface ServerPathFormProps {
   initialValues?: ProjectDetailsFormValue;
   hideFormControls?: boolean;
   onChange?: (values: ProjectDetailsFormValue, isValid: boolean) => void;
@@ -54,7 +51,7 @@ export interface ProjectDetailsFormProps {
   onCancel?: () => void;
 }
 
-export const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
+export const ServerPathForm: React.FC<ServerPathFormProps> = ({
   initialValues,
   hideFormControls,
   onChange,
@@ -73,11 +70,11 @@ export const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
     handleSubmit,
   } = useFormik({
     initialValues: {
-      name: initialValues?.name || "",
-      description: initialValues?.description || "",
+      serverPath: initialValues?.serverPath || "",
+      isExploded: initialValues?.isExploded || false,
     },
     validateOnMount: true,
-    initialErrors: !initialValues?.name ? { name: "" } : undefined,
+    initialErrors: !initialValues?.serverPath ? { serverPath: "" } : undefined,
     validationSchema: validationSchema,
     onSubmit: (values) => {
       if (onSubmit) {
@@ -101,46 +98,44 @@ export const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
   return (
     <Form onSubmit={handleSubmit}>
       <FormGroup
-        label="Name"
-        fieldId="name"
-        helperText="A unique name for the project"
+        label="Directory path to applications"
+        fieldId="serverPath"
+        helperText=""
         isRequired={true}
-        validated={getValidatedFromError(errors.name)}
-        helperTextInvalid={errors.name}
+        validated={getValidatedFromError(errors.serverPath)}
+        helperTextInvalid={errors.serverPath}
       >
         <TextInput
-          id="name"
+          id="serverPath"
           type="text"
-          name="name"
-          aria-describedby="name"
+          name="serverPath"
+          aria-describedby="server path"
           isRequired={true}
           onChange={onChangeField}
           onBlur={handleBlur}
-          value={values.name}
-          validated={getValidatedFromErrorTouched(errors.name, touched.name)}
+          value={values.serverPath}
+          validated={getValidatedFromErrorTouched(
+            errors.serverPath,
+            touched.serverPath
+          )}
         />
       </FormGroup>
       <FormGroup
-        label="Description"
-        fieldId="description"
-        helperText="short description of the project"
+        label="If the directory contains an exploded application, select the check box below"
+        fieldId="isExploded"
+        helperText=""
         isRequired={false}
-        validated={getValidatedFromError(errors.description)}
-        helperTextInvalid={errors.description}
+        validated={getValidatedFromError(errors.isExploded)}
+        helperTextInvalid={errors.isExploded}
       >
-        <TextArea
-          id="description"
-          type="text"
-          name="description"
-          aria-describedby="description"
-          isRequired={false}
+        <Checkbox
+          id="isExploded"
+          name="isExploded"
+          aria-label="is exploded"
+          label="Directory is an exploded Java application archive"
           onChange={onChangeField}
           onBlur={handleBlur}
-          value={values.description}
-          validated={getValidatedFromErrorTouched(
-            errors.description,
-            touched.description
-          )}
+          isChecked={values.isExploded}
         />
       </FormGroup>
       {!hideFormControls && (

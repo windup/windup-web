@@ -1,4 +1,4 @@
-import { Schema, Field } from "@data-driven-forms/react-form-renderer";
+import { Field } from "@data-driven-forms/react-form-renderer";
 import componentTypes from "@data-driven-forms/react-form-renderer/dist/cjs/component-types";
 
 export const TITLE = "Create project";
