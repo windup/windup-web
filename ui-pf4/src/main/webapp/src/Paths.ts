@@ -17,6 +17,8 @@ export enum Paths {
   newProject_addApplications = "/projects/~new/:project/add-appplications",
   newProject_setTransformationPath = "/projects/~new/:project/set-transformation-path",
   newProject_selectPackages = "/projects/~new/:project/select-packages",
+  newProject_customRules = "/projects/~new/:project/custom-rules",
+  newProject_customLabels = "/projects/~new/:project/custom-labels",
   editProject = "/projects/:project",
   editProject_projectDetail = "/projects/:project/project-detail",
   editProject_applications = "/projects/:project/applications",

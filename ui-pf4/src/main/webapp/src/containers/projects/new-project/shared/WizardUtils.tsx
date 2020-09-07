@@ -140,7 +140,9 @@ export const buildWizard = (
         {
           id: WizardStepIds.SELECT_PACKAGES,
           name: "Select packages",
-          canJumpTo: false,
+          canJumpTo:
+            WizardStepIds.SELECT_PACKAGES <= stepId ||
+            (migrationProject && migrationProject.applications.length > 0),
           enableNext: false,
         },
       ],

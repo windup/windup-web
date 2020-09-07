@@ -11,8 +11,8 @@ import {
   Text,
 } from "@patternfly/react-core";
 
-import { SimplePageSection, SelectCardGallery } from "components";
-import { MigrationProject, AnalysisContext } from "models/api";
+import { SimplePageSection, PackageSelectionWrapper } from "components";
+import { MigrationProject, AnalysisContext, Package } from "models/api";
 import { Paths, formatPath } from "Paths";
 
 import { TITLE, DESCRIPTION } from "../shared/constants";
@@ -28,10 +28,10 @@ import {
   saveAnalysisContext,
 } from "api/api";
 
-interface SetTransformationPathProps
+interface SelectPackagesProps
   extends RouteComponentProps<{ project: string }> {}
 
-export const SetTransformationPath: React.FC<SetTransformationPathProps> = ({
+export const SelectPackages: React.FC<SelectPackagesProps> = ({
   match,
   history: { push },
 }) => {
@@ -43,11 +43,15 @@ export const SetTransformationPath: React.FC<SetTransformationPathProps> = ({
     true
   );
 
-  const [transformationPath, setTransformationPath] = React.useState<string[]>(
-    []
-  );
+  const [discoveredPackages, setDiscoveredPackages] = React.useState<
+    Package[]
+  >();
+  const [
+    includedPackagesFullName,
+    setIncludedPackagesFullName,
+  ] = React.useState<string[]>([]);
 
-  const [enableNext, setEnableNext] = React.useState(true);
+  const [enableNext] = React.useState(true);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [showWizardError, setShowWizardError] = React.useState(false);
 
@@ -59,10 +63,8 @@ export const SetTransformationPath: React.FC<SetTransformationPathProps> = ({
         getAnalysisContext(projectData.defaultAnalysisContextId)
           .then(({ data: analysisContextData }) => {
             setAnalysisContext(analysisContextData);
-            setTransformationPath(
-              analysisContextData.transformationPaths.length > 0
-                ? analysisContextData.transformationPaths
-                : ["eap7"]
+            setIncludedPackagesFullName(
+              analysisContextData.includePackages.map((f) => f.fullName)
             );
           })
           .catch(() => {
@@ -81,16 +83,44 @@ export const SetTransformationPath: React.FC<SetTransformationPathProps> = ({
   const handleOnNextStep = () => {
     setIsSubmitting(true);
 
+    const newIncludedPackages: Package[] = [];
+
+    const mapPackageFullNamesToPackageObj = (
+      fullNames: string[],
+      array: Package[]
+    ) => {
+      for (let i = 0; i < array.length; i++) {
+        const elem = array[i];
+
+        const found = fullNames.some((n) => n === elem.fullName);
+        if (found) {
+          newIncludedPackages.push(elem);
+        }
+
+        if (newIncludedPackages.length === fullNames.length) {
+          break;
+        }
+
+        if (elem.childs && elem.childs.length > 0) {
+          mapPackageFullNamesToPackageObj(fullNames, elem.childs);
+        }
+      }
+    };
+    mapPackageFullNamesToPackageObj(
+      includedPackagesFullName,
+      discoveredPackages || []
+    );
+
     const body: AnalysisContext = {
       ...analysisContext!,
-      transformationPaths: transformationPath,
+      includePackages: newIncludedPackages,
     };
 
     saveAnalysisContext(project!.id, body)
       .then(() => {
         push(
-          formatPath(Paths.newProject_selectPackages, {
-            project: project!.id,
+          formatPath(Paths.newProject_customRules, {
+            project: project?.id,
           })
         );
       })
@@ -120,44 +150,50 @@ export const SetTransformationPath: React.FC<SetTransformationPathProps> = ({
           })
         );
         break;
+      case WizardStepIds.SET_TRANSFORMATION_PATH:
+        push(
+          formatPath(Paths.newProject_setTransformationPath, {
+            project: project?.id,
+          })
+        );
+        break;
       default:
         new Error("Can not go to step id[" + newStep.id + "]");
     }
   };
 
-  const handleTransformationPathSelectGalleryChange = (values: string[]) => {
-    setTransformationPath(values);
-    setEnableNext(values.length > 0);
+  const handleOnPackageSelectionChange = (
+    includedPackages: string[],
+    packages: Package[]
+  ) => {
+    setDiscoveredPackages(packages);
+    setIncludedPackagesFullName(includedPackages);
   };
 
   const createWizardStep = (): WizardStep => {
     return {
-      id: WizardStepIds.SET_TRANSFORMATION_PATH,
-      name: "Set transformation path",
+      id: WizardStepIds.SELECT_PACKAGES,
+      name: "Select packages",
       component: (
         <Stack hasGutter>
           <StackItem>
             <TextContent>
               <Title headingLevel="h5" size={TitleSizes["lg"]}>
-                Select transformation path
+                Select packages
               </Title>
               <Text component="small">
-                Select on or more transformation options in focus for the
-                analysis
+                Select the Java packages you want to include in the analysis.
               </Text>
             </TextContent>
           </StackItem>
-          <StackItem
-            style={{
-              backgroundColor: "#f0f0f0",
-              margin: "0px -25px",
-              padding: "15px 15px",
-            }}
-          >
-            <SelectCardGallery
-              value={transformationPath}
-              onChange={handleTransformationPathSelectGalleryChange}
-            />
+          <StackItem>
+            {project && (
+              <PackageSelectionWrapper
+                applicationIds={project.applications.map((f) => f.id)}
+                includedPackages={includedPackagesFullName}
+                onChange={handleOnPackageSelectionChange}
+              />
+            )}
           </StackItem>
         </Stack>
       ),
@@ -178,7 +214,7 @@ export const SetTransformationPath: React.FC<SetTransformationPathProps> = ({
           <LoadingWizard />
         ) : (
           buildWizard(
-            WizardStepIds.SET_TRANSFORMATION_PATH,
+            WizardStepIds.SELECT_PACKAGES,
             createWizardStep(),
             {
               onNext: handleOnNextStep,

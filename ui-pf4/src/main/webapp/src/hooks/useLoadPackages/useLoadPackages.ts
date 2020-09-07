@@ -95,7 +95,7 @@ export const useLoadPackages = ({ applicationIds }: IStateArgs): IState => {
   const [loading, setLoading] = React.useState(false);
   const [packages, setPackages] = React.useState<Package[]>();
 
-  const fetchPackages = () => {
+  const fetchPackages = React.useCallback(() => {
     setLoading(true);
 
     Promise.all(applicationIds.map((appId) => createPromies(appId))).then(
@@ -113,11 +113,13 @@ export const useLoadPackages = ({ applicationIds }: IStateArgs): IState => {
         setLoading(false);
       }
     );
-  };
+  }, [applicationIds]);
+
+  const carlos = React.useRef(fetchPackages);
 
   return {
     loading,
     packages,
-    fetchPackages,
+    fetchPackages: carlos.current,
   };
 };

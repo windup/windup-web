@@ -58,7 +58,7 @@ const packageToTree = (node: Package): TreeNode => {
 
 export interface PackageSelectionProps {
   packages: Package[];
-  includedPackages: Package[];
+  includedPackages: string[];
   onChange: (includedPackages: string[]) => void;
 }
 
@@ -98,7 +98,7 @@ export const PackageSelection: React.FC<PackageSelectionProps> = ({
   const [targetKeys, setTargetKeys] = React.useState<string[]>([]);
 
   React.useEffect(() => {
-    let newIncludedPackages: Package[];
+    let newIncludedPackages: string[];
 
     if (includedPackages.length === 0) {
       // Set application and third party packages
@@ -120,14 +120,12 @@ export const PackageSelection: React.FC<PackageSelectionProps> = ({
       };
       flatternPackages(applicationPackages);
 
-      newIncludedPackages = [...flatteredPackages];
+      newIncludedPackages = [...flatteredPackages].map((f) => f.fullName);
     } else {
       newIncludedPackages = [...includedPackages];
     }
 
-    const newTargetKeys = newIncludedPackages
-      .map((f) => f.fullName)
-      .sort(stringCompartor);
+    const newTargetKeys = newIncludedPackages.sort(stringCompartor);
 
     setTargetKeys(newTargetKeys);
 

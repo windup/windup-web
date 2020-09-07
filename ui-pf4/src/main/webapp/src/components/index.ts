@@ -5,6 +5,7 @@ export { FetchTable } from "./fetch-table";
 export { FilterToolbarItem } from "./filter-toolbar-item";
 export { LoadingStep } from "./loading-step";
 export { PackageSelection } from "./package-selection";
+export { PackageSelectionWrapper } from "./package-selection-wrapper";
 export { PageSkeleton } from "./page-skeleton";
 export { ProgressApplication } from "./progress-application";
 export { ProgressFile } from "./progress-file";
