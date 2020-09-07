@@ -27,8 +27,6 @@ export class KeycloakWrapper extends React.Component<
     keycloak
       .init({ onLoad: "login-required" })
       .success((authenticated) => {
-        console.log("authenticated", authenticated);
-        console.log("keycloak", keycloak);
         this.setState({ keycloak: keycloak, authenticated: authenticated });
         initInterceptors(() => {
           return new Promise<string>((resolve, reject) => {

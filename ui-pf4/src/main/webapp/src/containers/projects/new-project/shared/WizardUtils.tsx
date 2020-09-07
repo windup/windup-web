@@ -216,6 +216,8 @@ export const buildWizard = (
       isOpen={true}
       title={TITLE}
       description={DESCRIPTION}
+      navAriaLabel={`steps`}
+      mainAriaLabel={`content`}
       steps={wizardSteps}
       startAtStep={stepId}
       {...wizardProps}

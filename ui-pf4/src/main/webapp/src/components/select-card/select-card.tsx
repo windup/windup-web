@@ -26,6 +26,7 @@ export interface SelectCardProps {
   label: string;
   options: string | CardSelectOption[];
   icon?: React.ComponentType<any>;
+  iconSrc?: string;
   isSelected: boolean;
   value: string;
   onChange: (isSelected: boolean, value: string) => void;
@@ -35,6 +36,7 @@ export const SelectCard: React.FC<SelectCardProps> = ({
   label,
   options,
   icon,
+  iconSrc,
   isSelected,
   value,
   onChange,
@@ -68,6 +70,23 @@ export const SelectCard: React.FC<SelectCardProps> = ({
     onChange(true, selection as any);
   };
 
+  const getImage = (): React.ComponentType<any> => {
+    let result: React.ComponentType<any> = CubesIcon;
+    if (icon) {
+      result = icon;
+    } else if (iconSrc) {
+      result = () => (
+        <img
+          src={iconSrc}
+          alt="Card logo"
+          style={{ height: Array.isArray(options) ? 70 : 100 }}
+        />
+      );
+    }
+
+    return result;
+  };
+
   return (
     <Card
       onClick={handleCardClick}
@@ -81,7 +100,7 @@ export const SelectCard: React.FC<SelectCardProps> = ({
             variant={EmptyStateVariant.small}
             className="select-card__component__empty-state"
           >
-            <EmptyStateIcon icon={icon ? icon : CubesIcon} />
+            <EmptyStateIcon icon={getImage()} />
             <Title headingLevel="h4" size="md">
               {label}
             </Title>

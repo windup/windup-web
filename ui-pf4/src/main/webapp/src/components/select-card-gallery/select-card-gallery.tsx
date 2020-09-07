@@ -1,18 +1,29 @@
 import * as React from "react";
 import { Gallery, GalleryItem } from "@patternfly/react-core";
-import {
-  GgIcon,
-  CloudIcon,
-  LinuxIcon,
-  JavaIcon,
-  BatteryQuarterIcon,
-  AnkhIcon,
-  ChildIcon,
-} from "@patternfly/react-icons";
 
 import { SelectCard } from "../select-card/select-card";
 
-const options = [
+import jbossLogo from "img/jboss.png";
+import openshiftLogo from "img/openshift.png";
+import linuxLogo from "img/linux.png";
+import openjdkLogo from "img/openjdk.png";
+import camelLogo from "img/camel.png";
+import quarkusLogo from "img/quarkus.png";
+import rhRuntimesLogo from "img/rh-runtimes.png";
+
+interface TransformationPathOption {
+  label: string;
+  options: string | MultipleOptions[];
+  icon?: React.ComponentType<any>;
+  iconSrc?: string;
+}
+
+interface MultipleOptions {
+  label: string;
+  value: string;
+}
+
+const options: TransformationPathOption[] = [
   {
     label: "Application server migration to",
     options: [
@@ -25,37 +36,37 @@ const options = [
         value: "eap7",
       },
     ],
-    icon: GgIcon,
+    iconSrc: jbossLogo,
   },
   {
     label: "Containerization",
     options: "cloud-readiness",
-    icon: CloudIcon,
+    iconSrc: openshiftLogo,
   },
   {
     label: "Linux",
     options: "linux",
-    icon: LinuxIcon,
+    iconSrc: linuxLogo,
   },
   {
     label: "Open JDK",
     options: "openjdk",
-    icon: JavaIcon,
+    iconSrc: openjdkLogo,
   },
   {
     label: "Camel",
     options: "camel",
-    icon: AnkhIcon,
+    iconSrc: camelLogo,
   },
   {
     label: "Quarkus",
     options: "quarkus",
-    icon: BatteryQuarterIcon,
+    iconSrc: quarkusLogo,
   },
   {
     label: "Red Hat Runtimes",
     options: "runtimes",
-    icon: ChildIcon,
+    iconSrc: rhRuntimesLogo,
   },
 ];
 
@@ -116,6 +127,7 @@ export const SelectCardGallery: React.FC<SelectCardGalleryProps> = ({
             label={elem.label}
             options={elem.options}
             icon={elem.icon}
+            iconSrc={elem.iconSrc}
             isSelected={isSelected(elem.options)}
             value={getCardValue(elem.options)}
             onChange={(isSelected, selectionValue) => {
