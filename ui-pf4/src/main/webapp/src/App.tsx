@@ -4,7 +4,7 @@ import { AppRoutes } from "./Routes";
 
 import "./App.scss";
 
-import { SecuredComponent } from "./containers/secured-component";
+import { KeycloakWrapper } from "./keycloak/KeycloakWrapper";
 import { DefaultLayout } from "./layout";
 import { DeleteDialog } from "./containers";
 
@@ -16,7 +16,7 @@ const App: React.FC = () => {
     frontendComponentsNotifications.NotificationsPortal;
   return (
     <React.Fragment>
-      <SecuredComponent>
+      <KeycloakWrapper>
         <HashRouter>
           <DefaultLayout>
             <AppRoutes />
@@ -24,7 +24,7 @@ const App: React.FC = () => {
           <NotificationsPortal />
           <DeleteDialog />
         </HashRouter>
-      </SecuredComponent>
+      </KeycloakWrapper>
     </React.Fragment>
   );
 };

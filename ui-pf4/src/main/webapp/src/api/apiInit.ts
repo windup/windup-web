@@ -6,10 +6,11 @@ export const initApi = () => {
   axios.defaults.baseURL = `${API_BASE_URL}`;
 };
 
-export const initInterceptors = (getToken: () => string | undefined) => {
+export const initInterceptors = (getToken: () => Promise<string>) => {
   axios.interceptors.request.use(
-    (config) => {
-      config.headers["Authorization"] = "Bearer " + getToken();
+    async (config) => {
+      const token = await getToken();
+      if (token) config.headers["Authorization"] = "Bearer " + token;
       return config;
     },
     (error) => {

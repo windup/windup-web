@@ -1,20 +1,20 @@
 import * as React from "react";
 import Keycloak from "keycloak-js";
-import { initInterceptors } from "../../api/apiInit";
-import { AppPlaceholder } from "../../components";
+import { initInterceptors } from "../api/apiInit";
+import { AppPlaceholder } from "../components";
 
-interface SecuredComponentProps {}
+interface KeycloakWrapperProps {}
 
 interface State {
   keycloak: any;
   authenticated: boolean;
 }
 
-export class SecuredComponent extends React.Component<
-  SecuredComponentProps,
+export class KeycloakWrapper extends React.Component<
+  KeycloakWrapperProps,
   State
 > {
-  constructor(props: SecuredComponentProps) {
+  constructor(props: KeycloakWrapperProps) {
     super(props);
     this.state = {
       keycloak: undefined,
@@ -27,8 +27,22 @@ export class SecuredComponent extends React.Component<
     keycloak
       .init({ onLoad: "login-required" })
       .success((authenticated) => {
+        console.log("authenticated", authenticated);
+        console.log("keycloak", keycloak);
         this.setState({ keycloak: keycloak, authenticated: authenticated });
-        initInterceptors(() => keycloak.token);
+        initInterceptors(() => {
+          return new Promise<string>((resolve, reject) => {
+            if (keycloak.token) {
+              keycloak
+                .updateToken(5)
+                .success(() => resolve(keycloak.token))
+                .error(() => reject("Failed to refresh token"));
+            } else {
+              keycloak.login();
+              reject("Not logged in");
+            }
+          });
+        });
       })
       .error((err) => {
         console.log(err);
