@@ -21,6 +21,7 @@ Basic.args = {};
 
 export const InitialValue = Template.bind({});
 InitialValue.args = {
+  isInitialValuesValid: true,
   initialValues: {
     serverPath: "/home/guess/folder",
     isExploded: true,

@@ -42,12 +42,13 @@ const validationSchema = yup.object().shape({
 });
 
 export interface ProjectDetailsFormValue {
-  name?: string;
-  description?: string;
+  name: string;
+  description: string;
 }
 
 export interface ProjectDetailsFormProps {
   initialValues?: ProjectDetailsFormValue;
+  isInitialValuesValid?: boolean;
   hideFormControls?: boolean;
   onChange?: (values: ProjectDetailsFormValue, isValid: boolean) => void;
   onSubmit?: (value: any) => void;
@@ -56,6 +57,7 @@ export interface ProjectDetailsFormProps {
 
 export const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
   initialValues,
+  isInitialValuesValid,
   hideFormControls,
   onChange,
   onSubmit,
@@ -72,12 +74,11 @@ export const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
     handleBlur,
     handleSubmit,
   } = useFormik({
-    initialValues: {
-      name: initialValues?.name || "",
-      description: initialValues?.description || "",
+    initialValues: initialValues || {
+      name: "",
+      description: "",
     },
-    validateOnMount: true,
-    initialErrors: !initialValues?.name ? { name: "" } : undefined,
+    initialErrors: isInitialValuesValid ? undefined : { name: "" },
     validationSchema: validationSchema,
     onSubmit: (values) => {
       if (onSubmit) {
@@ -86,7 +87,14 @@ export const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
     },
   });
 
+  // Skip first 'onChange' since the initial status is defined by 'isInitialValuesValid'
+  const firstUseEfect = React.useRef(true);
   React.useEffect(() => {
+    if (firstUseEfect.current) {
+      firstUseEfect.current = false;
+      return;
+    }
+
     // TODO onChange should include 'isValidating' but it does not
     // contains correct value see https://github.com/formium/formik/issues/1624
     if (onChange) {

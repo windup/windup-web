@@ -1,4 +1,4 @@
 import { withRouter } from "react-router-dom";
-import { CreateProject } from "./set-transformation-path";
+import { SetTransformationPath } from "./set-transformation-path";
 
-export default withRouter(CreateProject);
+export default withRouter(SetTransformationPath);

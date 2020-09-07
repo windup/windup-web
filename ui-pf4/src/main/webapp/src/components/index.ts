@@ -1,3 +1,4 @@
+export { AddApplicationsForm } from "./add-applications-form";
 export { AppPlaceholder } from "./app-placeholder";
 export { DeleteButton } from "./delete-button";
 export { FetchTable } from "./fetch-table";
@@ -15,6 +16,5 @@ export { SelectCardGallery } from "./select-card-gallery";
 export { SimplePageSection } from "./simple-page-section";
 export { SimplePagination } from "./simple-pagination";
 export { SortByMenu } from "./sort-by-menu";
-export { UploadDirectory } from "./upload-directory";
-export { UploadFilesSection } from "./upload-files-section";
+export { UploadFilesForm } from "./upload-files-form";
 export { Welcome } from "./welcome";

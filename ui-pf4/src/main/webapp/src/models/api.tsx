@@ -13,6 +13,7 @@ export interface MigrationProject {
   provisional: boolean;
   created: Date;
   lastModified: Date;
+  applications: Application[];
 }
 
 export interface Application {
@@ -44,4 +45,21 @@ export interface PackageMetadata {
   discoveredDate: Date;
   scanStatus: "QUEUED" | "IN_PROGRESS" | "COMPLETE";
   packageTree: Package[];
+}
+
+export interface AnalysisContext {
+  id: number;
+  version: number;
+  generateStaticReports: boolean;
+  cloudTargetsIncluded: boolean;
+  linuxTargetsIncluded: boolean;
+  openJdkTargetsIncluded: boolean;
+  transformationPaths: string[];
+  // migrationPath: MigrationPath;
+  // advancedOptions: AdvancedOption[];
+  // rulesPaths: RulesPath[];
+  // labelsPaths: LabelsPath[];
+  includePackages: Package[];
+  excludePackages: Package[];
+  // applications: RegisteredApplication[];
 }

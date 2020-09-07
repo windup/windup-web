@@ -46,12 +46,13 @@ export const LoadingWizard: React.FC<{}> = () => {
   );
 };
 
-export const ErrorWizard: React.FC<{}> = () => {
+export const ErrorWizard: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   return (
     <Wizard
       isOpen={true}
       title={TITLE}
       description={DESCRIPTION}
+      onClose={onClose}
       steps={[
         {
           name: "Error",
@@ -131,7 +132,9 @@ export const buildWizard = (
           id: WizardStepIds.SET_TRANSFORMATION_PATH,
           name: "Set transformation path",
           component: undefined,
-          canJumpTo: false,
+          canJumpTo:
+            WizardStepIds.SET_TRANSFORMATION_PATH <= stepId ||
+            (migrationProject && migrationProject.applications.length > 0),
           enableNext: false,
         },
         {

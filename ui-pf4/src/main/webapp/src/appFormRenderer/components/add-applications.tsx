@@ -1,8 +1,8 @@
 import React, { useReducer, useEffect } from "react";
 import { FormGroup } from "@patternfly/react-core";
 import useFieldApi from "@data-driven-forms/react-form-renderer/dist/cjs/use-field-api";
-import { UploadFilesSection } from "../../components";
-import { Application } from "../../models/api";
+// import { UploadFilesForm } from "components";
+import { Application } from "models/api";
 
 interface Status {
   applications: Application[];
@@ -81,7 +81,7 @@ export const AddApplications = (originalProps: any) => {
       helperTextInvalid={error}
       validated={showError ? "error" : "default"}
     >
-      <UploadFilesSection
+      {/* <UploadFilesForm
         projectId={originalProps.projectId}
         applications={[...input.value]}
         onFileUploadSuccess={handleOnFileUploadSuccess}
@@ -93,7 +93,7 @@ export const AddApplications = (originalProps: any) => {
           }
         }}
         onApplicationRemove={handleApplicationRemove}
-      />
+      /> */}
     </FormGroup>
   );
 };

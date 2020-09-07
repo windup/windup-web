@@ -1,6 +1,6 @@
 import * as React from "react";
 import { shallow } from "enzyme";
-import { UploadFilesSection } from "../upload-files-section";
+import { UploadFilesForm } from "../upload-files-form";
 
 describe("UploadFilesSection", () => {
   it("Renders without crashing", () => {

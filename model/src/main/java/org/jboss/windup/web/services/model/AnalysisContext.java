@@ -6,21 +6,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Version;
-import javax.persistence.OneToOne;
-import javax.persistence.NamedQueries;
+import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -78,6 +64,13 @@ public class AnalysisContext implements Serializable
 
     @Column(name = "openjdktargets")
     private boolean openJdkTargetsIncluded;
+
+    /*
+     * Created for replacing 'cloudTargetsIncluded', 'linuxTargetsIncluded', and 'openJdkTargetsIncluded'.
+     * This will be used for new MTA - Patternfly 4
+     */
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<String> transformationPaths = new HashSet<>();
 
     @JsonIgnore
     @OneToOne(mappedBy = "analysisContext", fetch = FetchType.LAZY, optional = false)
@@ -177,6 +170,13 @@ public class AnalysisContext implements Serializable
         this.openJdkTargetsIncluded = openJdkTargetsIncluded;
     }
 
+    public Set<String> getTransformationPaths() {
+        return transformationPaths;
+    }
+
+    public void setTransformationPaths(Set<String> transformationPaths) {
+        this.transformationPaths = transformationPaths;
+    }
 
     public WindupExecution getWindupExecution() {
         return windupExecution;
@@ -378,6 +378,7 @@ public class AnalysisContext implements Serializable
         clone.cloudTargetsIncluded = this.cloudTargetsIncluded;
         clone.linuxTargetsIncluded = this.linuxTargetsIncluded;
         clone.openJdkTargetsIncluded = this.openJdkTargetsIncluded;
+        clone.transformationPaths.addAll(this.transformationPaths);
 
         return clone;
     }

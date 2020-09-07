@@ -1,6 +1,12 @@
 import ApiClient from "./apiClient";
 import { AxiosPromise } from "axios";
-import { Project, MigrationProject, PackageMetadata } from "models/api";
+import {
+  Project,
+  MigrationProject,
+  PackageMetadata,
+  Application,
+  AnalysisContext,
+} from "models/api";
 
 const MIGRATION_PROJECTS = "/migrationProjects";
 
@@ -68,6 +74,69 @@ export const getRegisteredApplicationPackages = (
   );
 };
 
+export const registerApplicationByPath = (
+  projectId: number,
+  path: string,
+  isPathExploded: boolean
+): AxiosPromise<Application> => {
+  return ApiClient.post<Application>(
+    `${MIGRATION_PROJECTS}/${projectId}/registeredApplications/register-path?exploded=${isPathExploded}`,
+    path,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+};
+
+export const registerApplicationInDirectoryByPath = (
+  projectId: number,
+  path: string
+): AxiosPromise<Application> => {
+  return ApiClient.post<Application>(
+    `${MIGRATION_PROJECTS}/${projectId}/registeredApplications/register-directory-path`,
+    path,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+};
+
 export const pathExists = (path: string): AxiosPromise<boolean> => {
-  return ApiClient.post<boolean>("file/pathExists", path);
+  return ApiClient.post<boolean>("file/pathExists", path, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
+
+export const pathTargetType = (
+  path: string
+): AxiosPromise<"FILE" | "DIRECTORY"> => {
+  return ApiClient.post<"FILE" | "DIRECTORY">("file/pathTargetType", path, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
+
+export const getAnalysisContext = (
+  analysisContextId: number
+): AxiosPromise<AnalysisContext> => {
+  return ApiClient.get<AnalysisContext>(
+    `analysis-context/${analysisContextId}`
+  );
+};
+
+export const saveAnalysisContext = (
+  projectId: number,
+  analysisContext: AnalysisContext
+): AxiosPromise<AnalysisContext> => {
+  return ApiClient.put<AnalysisContext>(
+    `analysis-context/migrationProjects/${projectId}`,
+    analysisContext
+  );
 };

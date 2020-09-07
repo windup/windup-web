@@ -39,12 +39,13 @@ const validationSchema = yup.object().shape({
 });
 
 export interface ProjectDetailsFormValue {
-  serverPath?: string;
-  isExploded?: boolean;
+  serverPath: string;
+  isExploded: boolean;
 }
 
 export interface ServerPathFormProps {
   initialValues?: ProjectDetailsFormValue;
+  isInitialValuesValid?: boolean;
   hideFormControls?: boolean;
   onChange?: (values: ProjectDetailsFormValue, isValid: boolean) => void;
   onSubmit?: (value: any) => void;
@@ -53,6 +54,7 @@ export interface ServerPathFormProps {
 
 export const ServerPathForm: React.FC<ServerPathFormProps> = ({
   initialValues,
+  isInitialValuesValid,
   hideFormControls,
   onChange,
   onSubmit,
@@ -69,12 +71,11 @@ export const ServerPathForm: React.FC<ServerPathFormProps> = ({
     handleBlur,
     handleSubmit,
   } = useFormik({
-    initialValues: {
-      serverPath: initialValues?.serverPath || "",
-      isExploded: initialValues?.isExploded || false,
+    initialValues: initialValues || {
+      serverPath: "",
+      isExploded: false,
     },
-    validateOnMount: true,
-    initialErrors: !initialValues?.serverPath ? { serverPath: "" } : undefined,
+    initialErrors: isInitialValuesValid ? undefined : { serverPath: "" },
     validationSchema: validationSchema,
     onSubmit: (values) => {
       if (onSubmit) {
@@ -83,7 +84,14 @@ export const ServerPathForm: React.FC<ServerPathFormProps> = ({
     },
   });
 
+  // Skip first 'onChange' since the initial status is defined by 'isInitialValuesValid'
+  const firstUseEfect = React.useRef(true);
   React.useEffect(() => {
+    if (firstUseEfect.current) {
+      firstUseEfect.current = false;
+      return;
+    }
+
     // TODO onChange should include 'isValidating' but it does not
     // contains correct value see https://github.com/formium/formik/issues/1624
     if (onChange) {

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useReducer, useState } from "react";
+import { useReducer } from "react";
 import {
   EmptyState,
   EmptyStateBody,
@@ -7,26 +7,16 @@ import {
   EmptyStateVariant,
   Stack,
   StackItem,
-  Tabs,
-  Tab,
-  TabTitleText,
-  FormGroup,
-  TextInput,
-  Checkbox,
 } from "@patternfly/react-core";
 import { useDropzone } from "react-dropzone";
 import axios, { CancelTokenSource } from "axios";
 
-import "./upload-files-section.scss";
+import "./upload-files-form.scss";
 
-import { getMapKeys } from "../../utils/utils";
-import { Application } from "../../models/api";
-import {
-  uploadFileToProject,
-  deleteRegisteredApplication,
-} from "../../api/api";
+import { getMapKeys } from "utils/utils";
+import { Application } from "models/api";
+import { uploadFileToProject } from "api/api";
 import { ProgressFile } from "../progress-file";
-import { ProgressApplication } from "../progress-application";
 
 const CANCEL_MESSAGE = "cancelled";
 
@@ -46,7 +36,6 @@ const defaultUpload: Upload = {
 interface Status {
   uploads: Map<File, Upload>;
   uploadsResponse: Map<File, Application>;
-  applications: Application[];
 }
 interface Action {
   type:
@@ -54,8 +43,7 @@ interface Action {
     | "updateFileUploadProgress"
     | "successFileUpload"
     | "failFileUpload"
-    | "removeFileUpload"
-    | "removeApplication";
+    | "removeFileUpload";
   payload: any;
 }
 
@@ -112,43 +100,26 @@ const reducer = (state: Status, action: Action): Status => {
         uploads: newUploads,
         uploadsResponse: newUploadsResponse,
       };
-    case "removeApplication":
-      return {
-        ...state,
-        applications: state.applications.filter(
-          (f) => f !== action.payload.application
-        ),
-      };
     default:
       throw new Error();
   }
 };
 
-export interface UploadFilesSectionProps {
+export interface UploadFilesFormProps {
   projectId: number;
-  applications?: Application[];
   onFileUploadSuccess?: (file: File, application: Application) => void;
   onFileUploadError?: (file: File, error: any) => void;
-  onApplicationRemove?: (application: Application) => void;
 }
 
-export const UploadFilesSection: React.FC<UploadFilesSectionProps> = ({
+export const UploadFilesForm: React.FC<UploadFilesFormProps> = ({
   projectId,
-  applications = [],
   onFileUploadSuccess,
   onFileUploadError,
-  onApplicationRemove,
 }) => {
   const [state, dispatch] = useReducer(reducer, {
     uploads: new Map(),
     uploadsResponse: new Map(),
-    applications: applications,
   } as Status);
-
-  const [activeTabKey, setActiveTabKey] = useState<number | string>(0);
-  const handleTabClick = (_: any, tabIndex: number | string) => {
-    setActiveTabKey(tabIndex);
-  };
 
   const handleUpload = (acceptedFiles: File[]) => {
     for (let index = 0; index < acceptedFiles.length; index++) {
@@ -207,29 +178,9 @@ export const UploadFilesSection: React.FC<UploadFilesSectionProps> = ({
   };
 
   const handleremoveFileUpload = (file: File, upload: Upload) => {
-    const app = state.uploadsResponse.get(file);
-    if (app) {
-      deleteRegisteredApplication(app.id).then(() =>
-        console.log("App removed")
-      );
-
-      if (onApplicationRemove) onApplicationRemove(app);
-    }
-
     dispatch({
       type: "removeFileUpload",
       payload: { file },
-    });
-  };
-
-  const handleRemoveApplication = (app: Application) => {
-    deleteRegisteredApplication(app.id).then(() => {
-      dispatch({
-        type: "removeApplication",
-        payload: { application: app },
-      });
-
-      if (onApplicationRemove) onApplicationRemove(app);
     });
   };
 
@@ -244,83 +195,46 @@ export const UploadFilesSection: React.FC<UploadFilesSectionProps> = ({
     <React.Fragment>
       <Stack hasGutter>
         <StackItem>
-          <Tabs activeKey={activeTabKey} onSelect={handleTabClick}>
-            <Tab eventKey={0} title={<TabTitleText>Upload</TabTitleText>}>
-              <div className="upload-files-section__component__tab-content-upload-file">
-                <EmptyState
-                  variant={EmptyStateVariant.small}
-                  {...getRootProps({
-                    className: "upload-files-section__component__dropzone",
-                  })}
-                >
-                  <EmptyStateBody>
-                    Drag a file here or browse to upload
-                  </EmptyStateBody>
-                  <Button variant="primary" onClick={open}>
-                    Browser
-                  </Button>
-                  <input {...getInputProps()} />
-                </EmptyState>
-              </div>
-            </Tab>
-            <Tab
-              eventKey={1}
-              title={<TabTitleText>Directory path</TabTitleText>}
+          <div className="upload-files-section__component__tab-content-upload-file">
+            <EmptyState
+              variant={EmptyStateVariant.small}
+              {...getRootProps({
+                className: "upload-files-section__component__dropzone",
+              })}
             >
-              <div className="upload-files-section__component__tab-content-directory-path pf-c-form">
-                <FormGroup
-                  isRequired
-                  label="Directory path to applications"
-                  fieldId="directoryPath"
-                >
-                  <TextInput
-                    // value={value}
-                    type="text"
-                    // onChange={this.handleTextInputChange}
-                    aria-label="directory path"
-                    placeholder="/opt/apps/ or /opt/apps/my.ear"
-                  />
-                </FormGroup>
-                <FormGroup
-                  fieldId="checkbox1"
-                  label="If the directory contains an exploded application, select the check box below"
-                >
-                  <Checkbox
-                    label="Directory is an exploded Java application archive"
-                    id="checkbox1"
-                    name="checkbox1"
-                  />
-                </FormGroup>
-              </div>
-            </Tab>
-          </Tabs>
+              <EmptyStateBody>
+                Drag a file here or browse to upload
+              </EmptyStateBody>
+              <Button variant="primary" onClick={open}>
+                Browser
+              </Button>
+              <input {...getInputProps()} />
+            </EmptyState>
+          </div>
         </StackItem>
         <StackItem>
           <Stack hasGutter>
-            {getMapKeys(state.uploads).map((file: File, index) => {
-              const upload = state.uploads.get(file)!;
-              return (
-                <StackItem key={index}>
-                  <ProgressFile
-                    file={file}
-                    progress={upload.progress}
-                    status={upload.status}
-                    error={upload.error}
-                    wasCancelled={upload.wasCancelled}
-                    onCancel={() => handleCancelUpload(file, upload)}
-                    onRemove={() => handleremoveFileUpload(file, upload)}
-                  />
-                </StackItem>
-              );
-            })}
-            {state.applications.map((app, index) => (
-              <StackItem key={index}>
-                <ProgressApplication
-                  application={app}
-                  onRemove={() => handleRemoveApplication(app)}
-                />
-              </StackItem>
-            ))}
+            {getMapKeys(state.uploads)
+              .filter((f) => {
+                const upload = state.uploads.get(f);
+                return upload?.status !== "complete" || upload.error;
+              })
+              .map((file: File, index) => {
+                const upload = state.uploads.get(file)!;
+                return (
+                  <StackItem key={index}>
+                    <ProgressFile
+                      file={file}
+                      progress={upload.progress}
+                      status={upload.status}
+                      error={upload.error}
+                      wasCancelled={upload.wasCancelled}
+                      onCancel={() => handleCancelUpload(file, upload)}
+                      onRemove={() => handleremoveFileUpload(file, upload)}
+                    />
+                  </StackItem>
+                );
+              })}
           </Stack>
         </StackItem>
       </Stack>

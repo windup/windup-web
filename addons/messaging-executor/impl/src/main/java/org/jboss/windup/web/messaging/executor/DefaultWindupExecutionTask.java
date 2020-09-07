@@ -189,6 +189,10 @@ public class DefaultWindupExecutionTask implements WindupExecutionTask
             {
                 targets.add(OPEN_JDK_TARGET);
             }
+            if (analysisContext.getTransformationPaths() != null && !analysisContext.getTransformationPaths().isEmpty())
+            {
+                targets.addAll(analysisContext.getTransformationPaths());
+            }
 
             Map<String, Object> otherOptions = getOtherOptions(analysisContext);
 

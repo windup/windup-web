@@ -36,16 +36,16 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
   match,
   history: { push },
 }) => {
+  const [project, setProject] = useState<MigrationProject>();
+  const [isProjectBeingFetched, setIsProjectBeingFetched] = useState(true);
+
   const [enableNext, setEnableNext] = useState(false);
   const [formValue, setFormValue] = useState<{
     name?: string;
     description?: string;
-  }>({});
+  }>();
+
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const [project, setProject] = useState<MigrationProject>();
-  const [isProjectBeingFetched, setIsProjectBeingFetched] = useState(true);
-
   const [showError, setShowError] = useState(false);
 
   useEffect(() => {
@@ -58,8 +58,10 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
         .then(({ data }) => {
           setProject(data);
           setIsProjectBeingFetched(false);
+          setEnableNext(true);
         })
         .catch(() => {
+          setIsProjectBeingFetched(false);
           setShowError(true);
         });
     } else {
@@ -67,30 +69,36 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
     }
   }, [match]);
 
-  const handleOnFormChange = (
-    value: { name?: string; description?: string },
-    isValid: boolean
-  ) => {
-    if (isValid) {
-      setFormValue(value);
-    }
+  const handleOnFormChange = React.useCallback(
+    (value: { name?: string; description?: string }, isValid: boolean) => {
+      if (isValid) {
+        setFormValue(value);
+      }
 
-    setEnableNext(isValid);
-  };
+      setEnableNext(isValid);
+    },
+    []
+  );
 
   const handleOnNextStep = () => {
     setIsSubmitting(true);
 
+    const formValueAsMigrationProject = formValue
+      ? ({
+          title: formValue.name,
+          description: formValue.description,
+        } as MigrationProject)
+      : undefined;
+
     let body: MigrationProject = {
-      title: formValue.name,
-      description: formValue.description,
+      ...project,
+      ...formValueAsMigrationProject,
     } as MigrationProject;
 
     let promise: AxiosPromise<MigrationProject>;
     if (!project) {
       promise = createProject(body);
     } else {
-      body = { ...project, ...body };
       promise = updateProject(body);
     }
 
@@ -128,6 +136,7 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
   };
 
   const createWizardStep = (): WizardStep => {
+    const isInitialValuesValid = project ? true : false;
     return {
       id: WizardStepIds.DETAILS,
       name: "Details",
@@ -141,10 +150,15 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
           <StackItem>
             <ProjectDetailsForm
               hideFormControls
-              initialValues={{
-                name: project?.title,
-                description: project?.description,
-              }}
+              initialValues={
+                project
+                  ? {
+                      name: project.title,
+                      description: project.description,
+                    }
+                  : undefined
+              }
+              isInitialValuesValid={isInitialValuesValid}
               onChange={handleOnFormChange}
             />
           </StackItem>
@@ -156,7 +170,7 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
   };
 
   if (showError) {
-    return <ErrorWizard />;
+    return <ErrorWizard onClose={handleOnClose} />;
   }
 
   return (

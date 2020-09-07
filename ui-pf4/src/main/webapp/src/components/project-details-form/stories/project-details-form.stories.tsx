@@ -24,6 +24,7 @@ Basic.args = {};
 
 export const InitialValue = Template.bind({});
 InitialValue.args = {
+  isInitialValuesValid: true,
   initialValues: {
     name: "my organization",
     description: "my description",
