@@ -9,7 +9,7 @@ import {
   ButtonVariant,
 } from "@patternfly/react-core";
 
-import { useFormik } from "formik";
+import { Formik } from "formik";
 import * as yup from "yup";
 
 import { getProjectIdByName } from "api/api";
@@ -47,124 +47,117 @@ export interface ProjectDetailsFormValue {
 }
 
 export interface ProjectDetailsFormProps {
+  formRef?: any;
   initialValues?: ProjectDetailsFormValue;
-  isInitialValuesValid?: boolean;
   hideFormControls?: boolean;
-  onChange?: (values: ProjectDetailsFormValue, isValid: boolean) => void;
+  onChange?: (isValid: boolean) => void;
   onSubmit?: (value: any) => void;
   onCancel?: () => void;
 }
 
 export const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
   initialValues,
-  isInitialValuesValid,
   hideFormControls,
-  onChange,
-  onSubmit,
+  formRef,
   onCancel,
+  onSubmit,
 }) => {
-  const {
-    values,
-    errors,
-    touched,
-    isValid,
-    isValidating,
-    isSubmitting,
-    handleChange,
-    handleBlur,
-    handleSubmit,
-  } = useFormik({
-    initialValues: initialValues || {
-      name: "",
-      description: "",
-    },
-    initialErrors: isInitialValuesValid ? undefined : { name: "" },
-    validationSchema: validationSchema,
-    onSubmit: (values) => {
-      if (onSubmit) {
-        onSubmit(values);
-      }
-    },
-  });
-
-  // Skip first 'onChange' since the initial status is defined by 'isInitialValuesValid'
-  const firstUseEfect = React.useRef(true);
-  React.useEffect(() => {
-    if (firstUseEfect.current) {
-      firstUseEfect.current = false;
-      return;
-    }
-
-    // TODO onChange should include 'isValidating' but it does not
-    // contains correct value see https://github.com/formium/formik/issues/1624
-    if (onChange) {
-      onChange(values, isValid);
-    }
-  }, [values, isValid, onChange]);
-
-  const onChangeField = (_value: any, event: any) => {
-    handleChange(event);
-  };
-
   return (
-    <Form onSubmit={handleSubmit}>
-      <FormGroup
-        label="Name"
-        fieldId="name"
-        helperText="A unique name for the project"
-        isRequired={true}
-        validated={getValidatedFromError(errors.name)}
-        helperTextInvalid={errors.name}
-      >
-        <TextInput
-          id="name"
-          type="text"
-          name="name"
-          aria-describedby="name"
-          isRequired={true}
-          onChange={onChangeField}
-          onBlur={handleBlur}
-          value={values.name}
-          validated={getValidatedFromErrorTouched(errors.name, touched.name)}
-        />
-      </FormGroup>
-      <FormGroup
-        label="Description"
-        fieldId="description"
-        helperText="short description of the project"
-        isRequired={false}
-        validated={getValidatedFromError(errors.description)}
-        helperTextInvalid={errors.description}
-      >
-        <TextArea
-          id="description"
-          type="text"
-          name="description"
-          aria-describedby="description"
-          isRequired={false}
-          onChange={onChangeField}
-          onBlur={handleBlur}
-          value={values.description}
-          validated={getValidatedFromErrorTouched(
-            errors.description,
-            touched.description
-          )}
-        />
-      </FormGroup>
-      {!hideFormControls && (
-        <ActionGroup>
-          <Button
-            type="submit"
-            variant={ButtonVariant.primary}
-            isDisabled={!isValid || isSubmitting || isValidating}
-          >
-            Save
-          </Button>
-          <Button variant={ButtonVariant.link} onClick={onCancel}>
-            Cancel
-          </Button>
-        </ActionGroup>
-      )}
-    </Form>
+    <Formik
+      innerRef={formRef}
+      validateOnMount
+      validationSchema={validationSchema}
+      initialValues={{
+        name: initialValues?.name || "",
+        description: initialValues?.description || "",
+      }}
+      onSubmit={(values) => {
+        if (onSubmit) {
+          onSubmit(values);
+        }
+      }}
+    >
+      {({
+        values,
+        errors,
+        touched,
+        isValid,
+        isValidating,
+        isSubmitting,
+        handleChange,
+        handleBlur,
+        handleSubmit,
+        submitForm,
+      }) => {
+        const onChangeField = (_value: any, event: any) => {
+          handleChange(event);
+        };
+
+        return (
+          <Form onSubmit={handleSubmit}>
+            <FormGroup
+              label="Name"
+              fieldId="name"
+              helperText="A unique name for the project"
+              isRequired={true}
+              validated={getValidatedFromError(errors.name)}
+              helperTextInvalid={errors.name}
+            >
+              <TextInput
+                id="name"
+                type="text"
+                name="name"
+                aria-describedby="name"
+                isRequired={true}
+                onChange={onChangeField}
+                onBlur={handleBlur}
+                value={values.name}
+                validated={getValidatedFromErrorTouched(
+                  errors.name,
+                  touched.name
+                )}
+              />
+            </FormGroup>
+            <FormGroup
+              label="Description"
+              fieldId="description"
+              helperText="short description of the project"
+              isRequired={false}
+              validated={getValidatedFromError(errors.description)}
+              helperTextInvalid={errors.description}
+            >
+              <TextArea
+                id="description"
+                type="text"
+                name="description"
+                aria-describedby="description"
+                isRequired={false}
+                onChange={onChangeField}
+                onBlur={handleBlur}
+                value={values.description}
+                validated={getValidatedFromErrorTouched(
+                  errors.description,
+                  touched.description
+                )}
+              />
+            </FormGroup>
+            {!hideFormControls && (
+              <ActionGroup>
+                <Button
+                  type="submit"
+                  variant={ButtonVariant.primary}
+                  isDisabled={!isValid || isSubmitting || isValidating}
+                >
+                  Save
+                </Button>
+                <Button variant={ButtonVariant.link} onClick={onCancel}>
+                  Cancel
+                </Button>
+              </ActionGroup>
+            )}
+          </Form>
+        );
+      }}
+    </Formik>
   );
 };
