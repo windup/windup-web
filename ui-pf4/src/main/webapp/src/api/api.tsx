@@ -1,11 +1,17 @@
-import ApiClient from "./apiClient";
 import { AxiosPromise } from "axios";
+
+import ApiClient from "./apiClient";
 import {
   Project,
   MigrationProject,
   PackageMetadata,
   Application,
   AnalysisContext,
+  Configuration,
+  RulesPath,
+  RuleProviderEntity,
+  LabelProviderEntity,
+  LabelsPath,
 } from "models/api";
 
 const MIGRATION_PROJECTS = "/migrationProjects";
@@ -143,4 +149,52 @@ export const saveAnalysisContext = (
     `analysis-context/migrationProjects/${projectId}`,
     analysisContext
   );
+};
+
+export const getProjectConfiguration = (
+  projectId: number | string
+): AxiosPromise<Configuration> => {
+  return ApiClient.get<Configuration>(`configuration/by-project/${projectId}`);
+};
+
+export const getRulesetPathsByConfigurationId = (
+  configurationId: number
+): AxiosPromise<RulesPath[]> => {
+  return ApiClient.get<RulesPath[]>(
+    `configuration/${configurationId}/custom-rulesets`
+  );
+};
+
+export const getLabelsetPathsByConfigurationId = (
+  configurationId: number
+): AxiosPromise<LabelsPath[]> => {
+  return ApiClient.get<LabelsPath[]>(
+    `configuration/${configurationId}/custom-labelsets`
+  );
+};
+
+export const getRuleProviderByRulesPathId = (
+  rulesPathId: number
+): AxiosPromise<RuleProviderEntity[]> => {
+  return ApiClient.get<RuleProviderEntity[]>(
+    `rules/by-rules-path/${rulesPathId}`
+  );
+};
+
+export const getLabelProviderByLabelsPathId = (
+  rulesPathId: number
+): AxiosPromise<LabelProviderEntity[]> => {
+  return ApiClient.get<LabelProviderEntity[]>(
+    `rules/by-labels-path/${rulesPathId}`
+  );
+};
+
+export const isRulePathBeingUsed = (
+  rulesPathId: number
+): AxiosPromise<boolean> => {
+  return ApiClient.get<boolean>(`rules/is-used-rules-path/${rulesPathId}`);
+};
+
+export const deleteRulePathById = (rulesPathId: number): AxiosPromise => {
+  return ApiClient.delete(`rules/by-rules-path/${rulesPathId}`);
 };

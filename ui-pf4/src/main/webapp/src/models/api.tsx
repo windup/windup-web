@@ -1,3 +1,22 @@
+export type ExecutionState =
+  | "QUEUED"
+  | "STARTED"
+  | "COMPLETED"
+  | "FAILED"
+  | "CANCELLED";
+
+export type LabelProviderType = "XML";
+
+export type ScanStatus = "QUEUED" | "IN_PROGRESS" | "COMPLETE";
+
+export type PathType = "SYSTEM_PROVIDED" | "USER_PROVIDED";
+
+export type RegistrationType = "UPLOADED" | "PATH";
+
+export type RuleProviderType = "JAVA" | "XML" | "GROOVY";
+
+export type ScopeType = "GLOBAL" | "PROJECT";
+
 export interface Project {
   activeExecutionsCount: number;
   applicationCount: number;
@@ -43,7 +62,7 @@ export interface Package {
 export interface PackageMetadata {
   id: number;
   discoveredDate: Date;
-  scanStatus: "QUEUED" | "IN_PROGRESS" | "COMPLETE";
+  scanStatus: ScanStatus;
   packageTree: Package[];
 }
 
@@ -57,9 +76,103 @@ export interface AnalysisContext {
   transformationPaths: string[];
   // migrationPath: MigrationPath;
   // advancedOptions: AdvancedOption[];
-  // rulesPaths: RulesPath[];
-  // labelsPaths: LabelsPath[];
+  rulesPaths: RulesPath[];
+  labelsPaths: LabelsPath[];
   includePackages: Package[];
   excludePackages: Package[];
   // applications: RegisteredApplication[];
+}
+
+export interface Configuration {
+  id: number;
+  global: boolean;
+  version: number;
+  rulesPaths: RulesPath[];
+  labelsPaths: LabelsPath[];
+}
+
+export interface RulesPath {
+  id: number;
+  version: number;
+  path: string;
+  scanRecursively: boolean;
+  shortPath: string;
+  loadError: string;
+  rulesPathType: PathType;
+  registrationType: RegistrationType;
+  scopeType: ScopeType;
+}
+
+export interface LabelsPath {
+  id: number;
+  version: number;
+  path: string;
+  scanRecursively: boolean;
+  shortPath: string;
+  loadError: string;
+  labelsPathType: PathType;
+  registrationType: RegistrationType;
+  scopeType: ScopeType;
+}
+
+export interface RuleProviderEntity {
+  id: number;
+  version: number;
+  providerID: string;
+  origin: string;
+  description: string;
+  phase: string;
+  dateLoaded: Date;
+  dateModified: Date;
+  sources: Technology[];
+  targets: Technology[];
+  rules: RuleEntity[];
+  rulesPath: RulesPath;
+  tags: Tag[];
+  loadError: string;
+  ruleProviderType: RuleProviderType;
+}
+export interface LabelProviderEntity {
+  id: number;
+  version: number;
+  providerID: string;
+  origin: string;
+  description: string;
+  dateLoaded: Date;
+  dateModified: Date;
+  labels: LabelEntity[];
+  labelsPath: LabelsPath;
+  loadError: string;
+  labelProviderType: LabelProviderType;
+}
+
+export interface RuleEntity {
+  id: number;
+  version: number;
+  ruleID: string;
+  ruleContents: string;
+}
+
+export interface LabelEntity {
+  id: number;
+  version: number;
+  labelID: string;
+  labelContents: string;
+}
+
+export interface Technology {
+  id: number;
+  version: number;
+  name: string;
+  versionRange: string;
+}
+
+export interface Tag {
+  id: number;
+  name: string;
+  color: string;
+  title: string;
+  containedTags: Tag[];
+  root: boolean;
+  pseudo: boolean;
 }
