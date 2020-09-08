@@ -14,8 +14,12 @@ export const getProjects = (): AxiosPromise<Project> => {
   return ApiClient.get<Project>(`${MIGRATION_PROJECTS}/list`);
 };
 
-export const getProjectIdByName = (name: string): AxiosPromise<number> => {
-  return ApiClient.get<number>(`${MIGRATION_PROJECTS}/id-by-name/${name}`);
+export const getProjectIdByName = (
+  name: string
+): AxiosPromise<number | string> => {
+  return ApiClient.get<number | string>(
+    `${MIGRATION_PROJECTS}/id-by-name/${name}`
+  );
 };
 
 export const getProjectById = (

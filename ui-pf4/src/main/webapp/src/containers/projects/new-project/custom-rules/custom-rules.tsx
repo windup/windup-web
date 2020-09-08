@@ -1,40 +1,65 @@
 import React from "react";
 import { RouteComponentProps } from "react-router-dom";
 import {
-  PageSection,
   Stack,
   StackItem,
   Title,
   TitleSizes,
-  WizardStep,
   TextContent,
   Text,
 } from "@patternfly/react-core";
 
-import { SimplePageSection } from "components";
-import { Paths } from "Paths";
+import { Paths, formatPath } from "Paths";
 
-import { TITLE, DESCRIPTION } from "../shared/constants";
-import { buildWizard, WizardStepIds } from "../shared/WizardUtils";
+import { MigrationProject } from "models/api";
+
+import NewProjectWizard from "../";
+import { WizardStepIds, LoadingWizardContent } from "../new-project-wizard";
+import { getProjectById } from "api/api";
 
 interface CustomRulesProps extends RouteComponentProps<{ project: string }> {}
 
 export const CustomRules: React.FC<CustomRulesProps> = ({
+  match,
   history: { push },
 }) => {
-  const handleOnNextStep = () => {};
+  const [project, setProject] = React.useState<MigrationProject>();
 
-  const handleOnClose = () => {
-    push(Paths.projects);
+  const [processing, setProcessing] = React.useState(true);
+  const [, setError] = React.useState<string>();
+
+  React.useEffect(() => {
+    getProjectById(match.params.project)
+      .then(({ data: projectData }) => {
+        setProject(projectData);
+      })
+      .catch(() => {
+        setError("Could not fetch migrationProject data");
+      })
+      .finally(() => {
+        setProcessing(false);
+      });
+  }, [match]);
+
+  const handleOnNextStep = () => {
+    push(
+      formatPath(Paths.newProject_customLabels, {
+        project: project?.id,
+      })
+    );
   };
 
-  const handleOnGoToStep = () => {};
-
-  const createWizardStep = (): WizardStep => {
-    return {
-      id: WizardStepIds.CUSTOM_RULES,
-      name: "Custom rules",
-      component: (
+  return (
+    <NewProjectWizard
+      stepId={WizardStepIds.CUSTOM_RULES}
+      enableNext={true}
+      isDisabled={false}
+      handleOnNextStep={handleOnNextStep}
+      migrationProject={project}
+    >
+      {processing ? (
+        <LoadingWizardContent />
+      ) : (
         <Stack hasGutter>
           <StackItem>
             <TextContent>
@@ -46,25 +71,9 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
               </Text>
             </TextContent>
           </StackItem>
-          <StackItem>Not implemented yet</StackItem>
+          <StackItem>Custom rules</StackItem>
         </Stack>
-      ),
-      canJumpTo: false,
-      enableNext: false,
-    };
-  };
-
-  return (
-    <React.Fragment>
-      <SimplePageSection title={TITLE} description={DESCRIPTION} />
-      <PageSection>
-        {buildWizard(WizardStepIds.CUSTOM_RULES, createWizardStep(), {
-          onNext: handleOnNextStep,
-          onClose: handleOnClose,
-          onGoToStep: handleOnGoToStep,
-          onBack: handleOnGoToStep,
-        })}
-      </PageSection>
-    </React.Fragment>
+      )}
+    </NewProjectWizard>
   );
 };

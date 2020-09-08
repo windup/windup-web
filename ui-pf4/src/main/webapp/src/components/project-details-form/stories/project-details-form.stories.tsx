@@ -24,9 +24,15 @@ Basic.args = {};
 
 export const InitialValue = Template.bind({});
 InitialValue.args = {
-  initialValues: {
-    name: "my organization",
-    description: "my description",
+  project: {
+    id: 3802,
+    title: "title",
+    description: "description",
+    provisional: false,
+    created: new Date(1599551047711),
+    lastModified: new Date(1599551108682),
+    applications: [],
+    defaultAnalysisContextId: 3803,
   },
 };
 

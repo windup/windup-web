@@ -248,6 +248,27 @@ export const NewProjectWizard: React.FC<NewProjectWizardProps> = ({
           })
         );
         break;
+      case WizardStepIds.CUSTOM_RULES:
+        push(
+          formatPath(Paths.newProject_customRules, {
+            project: migrationProject?.id,
+          })
+        );
+        break;
+      case WizardStepIds.CUSTOM_LABELS:
+        push(
+          formatPath(Paths.newProject_customLabels, {
+            project: migrationProject?.id,
+          })
+        );
+        break;
+      case WizardStepIds.OPTIONS:
+        push(
+          formatPath(Paths.newProject_advandedOptions, {
+            project: migrationProject?.id,
+          })
+        );
+        break;
       default:
         new Error("Can not go to step id[" + newStep.id + "]");
     }

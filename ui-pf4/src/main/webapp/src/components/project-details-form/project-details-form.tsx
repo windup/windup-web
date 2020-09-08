@@ -13,33 +13,12 @@ import { Formik } from "formik";
 import * as yup from "yup";
 
 import { getProjectIdByName } from "api/api";
+import { MigrationProject } from "models/api";
+
 import {
   getValidatedFromError,
   getValidatedFromErrorTouched,
 } from "utils/formUtils";
-
-const validationSchema = yup.object().shape({
-  name: yup
-    .string()
-    .trim()
-    .required("This field is required.")
-    .min(3, "The project name must contain at least 3 characters.")
-    .max(120, "The project name must contain fewer than 120 characters.")
-    .matches(
-      /^.[a-zA-Z0-9_]+$/,
-      "The project name must contain only alphanumeric characters."
-    )
-    .test("uniqueValue", "The entered name is already in use.", (value) => {
-      return getProjectIdByName(value!)
-        .then(({ data }) => !data)
-        .catch(() => false);
-    }),
-  description: yup
-    .string()
-    .nullable()
-    .trim()
-    .max(4096, "The description must contain fewer than 4096 characters."),
-});
 
 export interface ProjectDetailsFormValue {
   name: string;
@@ -48,7 +27,7 @@ export interface ProjectDetailsFormValue {
 
 export interface ProjectDetailsFormProps {
   formRef?: any;
-  initialValues?: ProjectDetailsFormValue;
+  project?: MigrationProject; // Initial values
   hideFormControls?: boolean;
   onChange?: (isValid: boolean) => void;
   onSubmit?: (value: any) => void;
@@ -56,20 +35,50 @@ export interface ProjectDetailsFormProps {
 }
 
 export const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
-  initialValues,
+  project,
   hideFormControls,
   formRef,
   onCancel,
   onSubmit,
 }) => {
+  const validationSchema = yup.object().shape({
+    name: yup
+      .string()
+      .trim()
+      .required("This field is required.")
+      .min(3, "The project name must contain at least 3 characters.")
+      .max(120, "The project name must contain fewer than 120 characters.")
+      .matches(
+        /^.[a-zA-Z0-9_]+$/,
+        "The project name must contain only alphanumeric characters."
+      )
+      .test("uniqueValue", "The entered name is already in use.", (value) => {
+        return getProjectIdByName(value!)
+          .then(({ data }) => {
+            const isValid: boolean =
+              data === "" ||
+              data === undefined ||
+              data === null ||
+              project?.title === value;
+            return isValid;
+          })
+          .catch(() => false);
+      }),
+    description: yup
+      .string()
+      .nullable()
+      .trim()
+      .max(4096, "The description must contain fewer than 4096 characters."),
+  });
+
   return (
     <Formik
       innerRef={formRef}
       validateOnMount
       validationSchema={validationSchema}
       initialValues={{
-        name: initialValues?.name || "",
-        description: initialValues?.description || "",
+        name: project?.title || "",
+        description: project?.description || "",
       }}
       onSubmit={(values) => {
         if (onSubmit) {
@@ -87,7 +96,6 @@ export const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
         handleChange,
         handleBlur,
         handleSubmit,
-        submitForm,
       }) => {
         const onChangeField = (_value: any, event: any) => {
           handleChange(event);

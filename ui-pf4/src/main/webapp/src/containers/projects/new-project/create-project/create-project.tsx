@@ -127,10 +127,7 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
             <ProjectDetailsForm
               formRef={formRef}
               hideFormControls
-              initialValues={{
-                name: project?.title || "",
-                description: project?.description || "",
-              }}
+              project={project}
               onSubmit={handleOnSubmit}
             />
           </StackItem>

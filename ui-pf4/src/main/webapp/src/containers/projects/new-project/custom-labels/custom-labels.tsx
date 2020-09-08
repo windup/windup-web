@@ -1,35 +1,60 @@
 import React from "react";
 import { RouteComponentProps } from "react-router-dom";
 import {
-  PageSection,
   Stack,
   StackItem,
   Title,
   TitleSizes,
-  WizardStep,
   TextContent,
   Text,
 } from "@patternfly/react-core";
 
-import { SimplePageSection } from "components";
+import { MigrationProject } from "models/api";
 
-import { TITLE, DESCRIPTION } from "../shared/constants";
-import { buildWizard, WizardStepIds } from "../shared/WizardUtils";
+import NewProjectWizard from "../";
+import { WizardStepIds, LoadingWizardContent } from "../new-project-wizard";
+import { getProjectById } from "api/api";
 
 interface CustomLabelsProps extends RouteComponentProps<{ project: string }> {}
 
-export const CustomLabels: React.FC<CustomLabelsProps> = () => {
-  const handleOnNextStep = () => {};
+export const CustomLabels: React.FC<CustomLabelsProps> = ({ match }) => {
+  const [project, setProject] = React.useState<MigrationProject>();
 
-  const handleOnClose = () => {};
+  const [processing, setProcessing] = React.useState(true);
+  const [, setError] = React.useState<string>();
 
-  const handleOnGoToStep = () => {};
+  React.useEffect(() => {
+    getProjectById(match.params.project)
+      .then(({ data: projectData }) => {
+        setProject(projectData);
+      })
+      .catch(() => {
+        setError("Could not fetch migrationProject data");
+      })
+      .finally(() => {
+        setProcessing(false);
+      });
+  }, [match]);
 
-  const createWizardStep = (): WizardStep => {
-    return {
-      id: WizardStepIds.CUSTOM_LABELS,
-      name: "Custom labels",
-      component: (
+  const handleOnNextStep = () => {
+    // push(
+    //   formatPath(Paths.newProject_addApplications, {
+    //     project: project?.id,
+    //   })
+    // );
+  };
+
+  return (
+    <NewProjectWizard
+      stepId={WizardStepIds.CUSTOM_LABELS}
+      enableNext={true}
+      isDisabled={false}
+      handleOnNextStep={handleOnNextStep}
+      migrationProject={project}
+    >
+      {processing ? (
+        <LoadingWizardContent />
+      ) : (
         <Stack hasGutter>
           <StackItem>
             <TextContent>
@@ -41,25 +66,9 @@ export const CustomLabels: React.FC<CustomLabelsProps> = () => {
               </Text>
             </TextContent>
           </StackItem>
-          <StackItem>Not implemented yet</StackItem>
+          <StackItem>Custom labels</StackItem>
         </Stack>
-      ),
-      canJumpTo: true,
-      enableNext: true,
-    };
-  };
-
-  return (
-    <React.Fragment>
-      <SimplePageSection title={TITLE} description={DESCRIPTION} />
-      <PageSection>
-        {buildWizard(WizardStepIds.CUSTOM_LABELS, createWizardStep(), {
-          onNext: handleOnNextStep,
-          onClose: handleOnClose,
-          onGoToStep: handleOnGoToStep,
-          onBack: handleOnGoToStep,
-        })}
-      </PageSection>
-    </React.Fragment>
+      )}
+    </NewProjectWizard>
   );
 };
