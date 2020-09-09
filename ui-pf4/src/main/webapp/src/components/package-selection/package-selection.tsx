@@ -8,35 +8,6 @@ import "antd/lib/tree/style/index.css";
 
 import { Package } from "models/api";
 
-const disaggregatePackages = (
-  packages: Package[],
-  applicationPackages: Package[],
-  thirdPartyPackages: Package[]
-): void => {
-  for (let i = 0; i < packages.length; i++) {
-    const node = packages[i];
-
-    const newNode1 = Object.assign({}, node, { childs: [] });
-    const newNode2 = Object.assign({}, node, { childs: [] });
-
-    if (node.known) {
-      // If at least one child is unknown, then the node will be part of both Arrays
-      if (node.childs && node.childs.some((p) => p.known === false)) {
-        applicationPackages.push(newNode1);
-        thirdPartyPackages.push(newNode2);
-      } else {
-        thirdPartyPackages.push(newNode2);
-      }
-    } else {
-      applicationPackages.push(newNode1);
-    }
-
-    if (node.childs) {
-      disaggregatePackages(node.childs, newNode1.childs, newNode2.childs);
-    }
-  }
-};
-
 interface TreeNode {
   key: string;
   title: string;
@@ -98,34 +69,7 @@ export const PackageSelection: React.FC<PackageSelectionProps> = ({
   const [targetKeys, setTargetKeys] = React.useState<string[]>([]);
 
   React.useEffect(() => {
-    let newIncludedPackages: string[];
-
-    if (includedPackages.length === 0) {
-      // Set application and third party packages
-      const applicationPackages: Package[] = [];
-      const thirdPartyPackages: Package[] = [];
-      disaggregatePackages(packages, applicationPackages, thirdPartyPackages);
-
-      // Flattern application packages
-      const flatteredPackages: Package[] = [];
-      const flatternPackages = (nodes: Package[]) => {
-        nodes.forEach((node) => {
-          // know=false => application party package
-          if (node.known === false) {
-            flatteredPackages.push(node);
-          } else {
-            flatternPackages(node.childs);
-          }
-        });
-      };
-      flatternPackages(applicationPackages);
-
-      newIncludedPackages = [...flatteredPackages].map((f) => f.fullName);
-    } else {
-      newIncludedPackages = [...includedPackages];
-    }
-
-    const newTargetKeys = newIncludedPackages.sort(stringCompartor);
+    const newTargetKeys = [...includedPackages].sort(stringCompartor);
 
     setTargetKeys(newTargetKeys);
 
@@ -171,7 +115,7 @@ export const PackageSelection: React.FC<PackageSelectionProps> = ({
           titles={["Packages", "Included packages"]}
           dataSource={packagesTreeFlattened}
           render={(item) => item.key}
-          showSelectAll={false}
+          showSelectAll={true}
           onChange={handleTransferChange}
           targetKeys={targetKeys} // A set of keys of elements that are listed on the right column
         >

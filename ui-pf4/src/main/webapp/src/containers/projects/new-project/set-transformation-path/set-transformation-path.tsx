@@ -63,7 +63,6 @@ export const SetTransformationPath: React.FC<SetTransformationPathProps> = ({
       })
       .catch(() => {
         setFetchError("Error while fetching migrationProject/analysisContext");
-        setIsFetching(false);
       })
       .finally(() => {
         setIsFetching(false);

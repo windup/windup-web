@@ -1,36 +1,161 @@
 import React from "react";
 import { RouteComponentProps } from "react-router-dom";
 import {
-  PageSection,
   Stack,
   StackItem,
   Title,
   TitleSizes,
-  WizardStep,
   TextContent,
   Text,
+  AlertActionCloseButton,
+  Alert,
+  Button,
+  Level,
+  LevelItem,
+  Tooltip,
 } from "@patternfly/react-core";
+import { UndoIcon } from "@patternfly/react-icons";
 
-import { SimplePageSection, PackageSelectionWrapper } from "components";
-import { MigrationProject, AnalysisContext, Package } from "models/api";
+import { PackageSelection } from "components";
+import {
+  MigrationProject,
+  AnalysisContext,
+  Package,
+  PackageMetadata,
+} from "models/api";
 import { Paths, formatPath } from "Paths";
 
-import { TITLE, DESCRIPTION } from "../shared/constants";
-import {
-  LoadingWizard,
-  buildWizard,
-  WizardStepIds,
-  ErrorWizard,
-} from "../shared/WizardUtils";
 import {
   getProjectById,
   getAnalysisContext,
   saveAnalysisContext,
+  getRegisteredApplicationPackages,
 } from "api/api";
+
+import NewProjectWizard from "../";
+import { WizardStepIds, LoadingWizardContent } from "../new-project-wizard";
 
 interface SelectPackagesProps
   extends RouteComponentProps<{ project: string }> {}
 
+const delay = (t: number) => new Promise((resolve) => setTimeout(resolve, t));
+
+const createWatchPromises = (appId: number): Promise<PackageMetadata> => {
+  return getRegisteredApplicationPackages(appId).then(({ data }) => {
+    if (data.scanStatus !== "COMPLETE") {
+      return delay(1000).then(() => {
+        return createWatchPromises(appId);
+      });
+    } else {
+      return data;
+    }
+  });
+};
+
+const putHierarchy = (aPackage: Package) => {
+  // put(aPackage);
+
+  if (aPackage.childs) {
+    aPackage.childs.forEach((child) => putHierarchy(child));
+  }
+};
+
+const mergePackageHierarchy = (
+  aPackage: Package,
+  packageMap: Map<string, Package>,
+  parentPackage: Package | undefined = undefined
+) => {
+  let packageInMap: Package | undefined = undefined;
+
+  let childPackages = aPackage.childs;
+
+  if (!packageMap.has(aPackage.fullName)) {
+    packageInMap = Object.assign({}, aPackage); // clone object
+    packageMap.set(aPackage.fullName, packageInMap);
+
+    if (parentPackage) {
+      parentPackage.childs.push(packageInMap);
+    }
+
+    packageInMap.childs = [];
+  } else {
+    // some magic
+    packageInMap = packageMap.get(aPackage.fullName);
+    if (packageInMap) {
+      packageInMap.countClasses += aPackage.countClasses;
+    }
+  }
+
+  childPackages.forEach((childPackage) => {
+    mergePackageHierarchy(childPackage, packageMap, packageInMap);
+  });
+
+  return packageInMap;
+};
+
+const mergePackageRoots = (root: Package[]): Package[] => {
+  let packageMap = new Map<string, Package>();
+  let packageRoots = new Set<Package>();
+  let result: Package[] = [];
+
+  root.forEach((aPackage) => {
+    let rootPackage = mergePackageHierarchy(aPackage, packageMap);
+
+    if (!packageRoots.has(rootPackage!)) {
+      result.push(rootPackage!);
+      packageRoots.add(rootPackage!);
+    }
+  });
+
+  return result;
+};
+
+const disaggregatePackages = (
+  packages: Package[],
+  applicationPackages: Package[],
+  thirdPartyPackages: Package[]
+): void => {
+  for (let i = 0; i < packages.length; i++) {
+    const node = packages[i];
+
+    const newNode1 = Object.assign({}, node, { childs: [] });
+    const newNode2 = Object.assign({}, node, { childs: [] });
+
+    if (node.known) {
+      // If at least one child is unknown, then the node will be part of both Arrays
+      if (node.childs && node.childs.some((p) => p.known === false)) {
+        applicationPackages.push(newNode1);
+        thirdPartyPackages.push(newNode2);
+      } else {
+        thirdPartyPackages.push(newNode2);
+      }
+    } else {
+      applicationPackages.push(newNode1);
+    }
+
+    if (node.childs) {
+      disaggregatePackages(node.childs, newNode1.childs, newNode2.childs);
+    }
+  }
+};
+
+const getUnknownPackages = (array: Package[]) => {
+  const result: Package[] = [];
+
+  const flatternPackages = (nodes: Package[]) => {
+    nodes.forEach((node) => {
+      // know=false => application party package
+      if (node.known === false) {
+        result.push(node);
+      } else {
+        flatternPackages(node.childs);
+      }
+    });
+  };
+  flatternPackages(array);
+
+  return result;
+};
 export const SelectPackages: React.FC<SelectPackagesProps> = ({
   match,
   history: { push },
@@ -39,44 +164,72 @@ export const SelectPackages: React.FC<SelectPackagesProps> = ({
   const [analysisContext, setAnalysisContext] = React.useState<
     AnalysisContext
   >();
-  const [isProjectBeingFetched, setIsProjectBeingFetched] = React.useState(
-    true
-  );
 
-  const [discoveredPackages, setDiscoveredPackages] = React.useState<
+  const [packages, setPackages] = React.useState<Package[]>();
+  const [includedPackages, setIncludedPackages] = React.useState<string[]>([]);
+
+  const [applicationPackages, setApplicationPackages] = React.useState<
     Package[]
-  >();
-  const [
-    includedPackagesFullName,
-    setIncludedPackagesFullName,
-  ] = React.useState<string[]>([]);
+  >([]);
+  const [, setThirdPartyPackages] = React.useState<Package[]>([]);
 
-  const [enableNext] = React.useState(true);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const [showWizardError, setShowWizardError] = React.useState(false);
+  const [submitError, setSubmitError] = React.useState<string>();
+
+  const [isFetching, setIsFetching] = React.useState(true);
+  const [fetchError, setFetchError] = React.useState<string>();
 
   React.useEffect(() => {
     getProjectById(match.params.project)
       .then(({ data: projectData }) => {
         setProject(projectData);
 
-        getAnalysisContext(projectData.defaultAnalysisContextId)
-          .then(({ data: analysisContextData }) => {
-            setAnalysisContext(analysisContextData);
-            setIncludedPackagesFullName(
-              analysisContextData.includePackages.map((f) => f.fullName)
-            );
-          })
-          .catch(() => {
-            setShowWizardError(true);
-          })
-          .finally(() => {
-            setIsProjectBeingFetched(false);
-          });
+        return Promise.all([
+          getAnalysisContext(projectData.defaultAnalysisContextId),
+          Promise.all(
+            projectData.applications.map((app) => createWatchPromises(app.id))
+          ),
+        ]);
+      })
+      .then(([{ data: analysisContextData }, packageMetadataArray]) => {
+        setAnalysisContext(analysisContextData);
+
+        // Process packages
+        let arrayOfRoots = ([] as any).concat(
+          ...packageMetadataArray.map(
+            (singlePackageMetadata) => singlePackageMetadata.packageTree
+          )
+        );
+        let mergedRoots = mergePackageRoots(arrayOfRoots);
+        mergedRoots.forEach((singleRoot) => putHierarchy(singleRoot));
+
+        const packageTree: Package[] = mergedRoots;
+        setPackages(packageTree);
+
+        // Application packages and Third party packages
+        const applicationPackages: Package[] = [];
+        const thirdPartyPackages: Package[] = [];
+        disaggregatePackages(
+          packageTree,
+          applicationPackages,
+          thirdPartyPackages
+        );
+
+        setApplicationPackages(applicationPackages);
+        setThirdPartyPackages(thirdPartyPackages);
+
+        // Process included packages
+        let newIncludedPackages = analysisContextData.includePackages;
+        if (newIncludedPackages.length === 0) {
+          newIncludedPackages = getUnknownPackages(applicationPackages);
+        }
+        setIncludedPackages(newIncludedPackages.map((f) => f.fullName));
       })
       .catch(() => {
-        setIsProjectBeingFetched(false);
-        setShowWizardError(true);
+        setFetchError("Could not fetch data");
+      })
+      .finally(() => {
+        setIsFetching(false);
       });
   }, [match]);
 
@@ -106,10 +259,7 @@ export const SelectPackages: React.FC<SelectPackagesProps> = ({
         }
       }
     };
-    mapPackageFullNamesToPackageObj(
-      includedPackagesFullName,
-      discoveredPackages || []
-    );
+    mapPackageFullNamesToPackageObj(includedPackages, packages || []);
 
     const body: AnalysisContext = {
       ...analysisContext!,
@@ -126,106 +276,101 @@ export const SelectPackages: React.FC<SelectPackagesProps> = ({
       })
       .catch(() => {
         setIsSubmitting(false);
-        setShowWizardError(true);
+        setSubmitError("Error while saving package selection");
       });
   };
 
-  const handleOnClose = () => {
-    push(Paths.projects);
+  const handleOnPackageSelectionChange = (includedPackages: string[]) => {
+    setIncludedPackages(includedPackages);
   };
 
-  const handleOnGoToStep = (newStep: { id?: number }) => {
-    switch (newStep.id) {
-      case WizardStepIds.DETAILS:
-        push(
-          formatPath(Paths.newProject_details, {
-            project: project?.id,
-          })
-        );
-        break;
-      case WizardStepIds.ADD_APPLICATIONS:
-        push(
-          formatPath(Paths.newProject_addApplications, {
-            project: project?.id,
-          })
-        );
-        break;
-      case WizardStepIds.SET_TRANSFORMATION_PATH:
-        push(
-          formatPath(Paths.newProject_setTransformationPath, {
-            project: project?.id,
-          })
-        );
-        break;
-      default:
-        new Error("Can not go to step id[" + newStep.id + "]");
-    }
+  const handleUndo = () => {
+    const newIncludedPackages = getUnknownPackages(applicationPackages);
+    setIncludedPackages(newIncludedPackages.map((f) => f.fullName));
   };
 
-  const handleOnPackageSelectionChange = (
-    includedPackages: string[],
-    packages: Package[]
-  ) => {
-    setDiscoveredPackages(packages);
-    setIncludedPackagesFullName(includedPackages);
-  };
-
-  const createWizardStep = (): WizardStep => {
-    return {
-      id: WizardStepIds.SELECT_PACKAGES,
-      name: "Select packages",
-      component: (
+  return (
+    <NewProjectWizard
+      stepId={WizardStepIds.SELECT_PACKAGES}
+      enableNext={includedPackages.length > 0}
+      disableNavigation={isFetching || isSubmitting}
+      handleOnNextStep={handleOnNextStep}
+      migrationProject={project}
+      showErrorContent={fetchError}
+    >
+      {isFetching ? (
+        <LoadingWizardContent />
+      ) : (
         <Stack hasGutter>
+          {submitError && (
+            <StackItem>
+              <Alert
+                isLiveRegion
+                variant="danger"
+                title="Error"
+                actionClose={
+                  <AlertActionCloseButton onClose={() => setSubmitError("")} />
+                }
+              >
+                {submitError}
+              </Alert>
+            </StackItem>
+          )}
           <StackItem>
             <TextContent>
-              <Title headingLevel="h5" size={TitleSizes["lg"]}>
-                Select packages
-              </Title>
-              <Text component="small">
-                Select the Java packages you want to include in the analysis.
-              </Text>
+              <Level>
+                <LevelItem>
+                  <Title headingLevel="h5" size={TitleSizes["lg"]}>
+                    Select packages
+                  </Title>
+                  <Text component="small">
+                    Select the Java packages you want to include in the
+                    analysis.
+                  </Text>
+                </LevelItem>
+                <LevelItem>
+                  <Tooltip
+                    content={
+                      <div>
+                        Include only Application Packages to the analysis.
+                      </div>
+                    }
+                  >
+                    <Button
+                      variant="plain"
+                      aria-label="Undo"
+                      onClick={handleUndo}
+                    >
+                      <UndoIcon /> Undo
+                    </Button>
+                  </Tooltip>
+                </LevelItem>
+              </Level>
             </TextContent>
           </StackItem>
+          {/* <StackItem>
+            <Toolbar>
+              <ToolbarContent>
+                <ToolbarItem>
+                  <Button variant="secondary">Apply</Button>
+                </ToolbarItem>
+                <ToolbarItem>
+                  <Button variant="secondary">Undo</Button>
+                </ToolbarItem>
+              </ToolbarContent>
+            </Toolbar>
+          </StackItem> */}
           <StackItem>
-            {project && (
-              <PackageSelectionWrapper
-                applicationIds={project.applications.map((f) => f.id)}
-                includedPackages={includedPackagesFullName}
+            {packages && (
+              <PackageSelection
+                packages={packages}
+                includedPackages={includedPackages}
                 onChange={handleOnPackageSelectionChange}
               />
             )}
           </StackItem>
         </Stack>
-      ),
-      canJumpTo: true,
-      enableNext: enableNext,
-    };
-  };
-
-  if (showWizardError) {
-    return <ErrorWizard onClose={handleOnClose} />;
-  }
-
-  return (
-    <React.Fragment>
-      <SimplePageSection title={TITLE} description={DESCRIPTION} />
-      <PageSection>
-        {isSubmitting || isProjectBeingFetched ? (
-          <LoadingWizard />
-        ) : (
-          buildWizard(
-            WizardStepIds.SELECT_PACKAGES,
-            createWizardStep(),
-            {
-              onNext: handleOnNextStep,
-              onClose: handleOnClose,
-              onGoToStep: handleOnGoToStep,
-              onBack: handleOnGoToStep,
-            },
-            project
-          )
-        )}
-      </PageSection>
-    </React.Fragment>
+      )}
+    </NewProjectWizard>
   );
 };
