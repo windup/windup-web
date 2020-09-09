@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Story, Meta } from "@storybook/react/types-6-0";
 import { UploadFilesForm, UploadFilesFormProps } from "../upload-files-form";
+import { UPLOAD_APPLICATION_PATH } from "api/api";
 
 export default {
   title: "Forms / UploadFilesForm",
@@ -20,5 +21,5 @@ const Template: Story<UploadFilesFormProps> = (args) => (
 
 export const Basic = Template.bind({});
 Basic.args = {
-  projectId: 1,
+  url: UPLOAD_APPLICATION_PATH.replace(":projectId", "1"),
 };

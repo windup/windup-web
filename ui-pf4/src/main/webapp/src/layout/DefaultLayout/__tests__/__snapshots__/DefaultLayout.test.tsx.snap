@@ -2,25 +2,125 @@
 
 exports[`Test snapshot 1`] = `
 <Fragment>
-  <Page
-    defaultManagedSidebarIsOpen={true}
-    header={<HeaderApp />}
-    isBreadcrumbWidthLimited={false}
-    isManagedSidebar={true}
-    isNotificationDrawerExpanded={false}
-    mainContainerId="main-content-page-layout-horizontal-nav"
-    mainTabIndex={-1}
-    onNotificationDrawerExpand={[Function]}
-    onPageResize={[Function]}
-    sidebar={<SidebarApp />}
-    skipToContent={
-      <SkipToContent
-        href="#main-content-page-layout-horizontal-nav"
-        show={false}
-      >
-        Skip to content
-      </SkipToContent>
+  <Flex
+    direction={
+      Object {
+        "default": "column",
+      }
     }
-  />
+    flexWrap={
+      Object {
+        "default": "nowrap",
+      }
+    }
+    spaceItems={
+      Object {
+        "default": "spaceItemsNone",
+      }
+    }
+    style={
+      Object {
+        "height": "100%",
+      }
+    }
+  >
+    <FlexItem>
+      <Banner
+        isSticky={true}
+        variant="default"
+      >
+        <Flex
+          flexWrap={
+            Object {
+              "default": "nowrap",
+            }
+          }
+          justifyContent={
+            Object {
+              "default": "justifyContentCenter",
+              "lg": "justifyContentSpaceBetween",
+            }
+          }
+        >
+          <div
+            className="pf-u-display-none pf-u-display-block-on-lg"
+          />
+          <div
+            className="pf-u-display-none pf-u-display-block-on-lg"
+          >
+            Continue using MTA based on 
+            <a
+              href="http://localhost/mta-web"
+            >
+              Patternfly 3
+            </a>
+          </div>
+          <div
+            className="pf-u-display-none-on-lg"
+          >
+            Continue using MTA based on 
+            <a
+              href="http://localhost/mta-web"
+            >
+              Patternfly 3
+            </a>
+          </div>
+          <div
+            className="pf-u-display-none pf-u-display-block-on-lg"
+          >
+            <Button
+              aria-label="Action"
+              onClick={[Function]}
+              style={
+                Object {
+                  "padding": 0,
+                }
+              }
+              variant="plain"
+            >
+              <TimesIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            </Button>
+          </div>
+        </Flex>
+      </Banner>
+    </FlexItem>
+    <FlexItem
+      grow={
+        Object {
+          "default": "grow",
+        }
+      }
+      style={
+        Object {
+          "minHeight": 0,
+        }
+      }
+    >
+      <Page
+        defaultManagedSidebarIsOpen={true}
+        header={<HeaderApp />}
+        isBreadcrumbWidthLimited={false}
+        isManagedSidebar={true}
+        isNotificationDrawerExpanded={false}
+        mainContainerId="main-content-page-layout-horizontal-nav"
+        mainTabIndex={-1}
+        onNotificationDrawerExpand={[Function]}
+        onPageResize={[Function]}
+        sidebar={<SidebarApp />}
+        skipToContent={
+          <SkipToContent
+            href="#main-content-page-layout-horizontal-nav"
+            show={false}
+          >
+            Skip to content
+          </SkipToContent>
+        }
+      />
+    </FlexItem>
+  </Flex>
 </Fragment>
 `;

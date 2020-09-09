@@ -14,31 +14,35 @@ import {
   LabelsPath,
 } from "models/api";
 
-const MIGRATION_PROJECTS = "/migrationProjects";
+export const MIGRATION_PROJECTS_PATH = "/migrationProjects";
+export const UPLOAD_APPLICATION_PATH = `${MIGRATION_PROJECTS_PATH}/:projectId/registeredApplications/upload`;
+export const UPLOAD_RULE_TO_MIGRATION_PROJECT = `rules/upload/by-project/:projectId`;
 
 export const getProjects = (): AxiosPromise<Project> => {
-  return ApiClient.get<Project>(`${MIGRATION_PROJECTS}/list`);
+  return ApiClient.get<Project>(`${MIGRATION_PROJECTS_PATH}/list`);
 };
 
 export const getProjectIdByName = (
   name: string
 ): AxiosPromise<number | string> => {
   return ApiClient.get<number | string>(
-    `${MIGRATION_PROJECTS}/id-by-name/${name}`
+    `${MIGRATION_PROJECTS_PATH}/id-by-name/${name}`
   );
 };
 
 export const getProjectById = (
   id: number | string
 ): AxiosPromise<MigrationProject> => {
-  return ApiClient.get<MigrationProject>(`${MIGRATION_PROJECTS}/get/${id}`);
+  return ApiClient.get<MigrationProject>(
+    `${MIGRATION_PROJECTS_PATH}/get/${id}`
+  );
 };
 
 export const createProject = (
   project: MigrationProject
 ): AxiosPromise<MigrationProject> => {
   return ApiClient.put<MigrationProject>(
-    `${MIGRATION_PROJECTS}/create`,
+    `${MIGRATION_PROJECTS_PATH}/create`,
     project
   );
 };
@@ -47,17 +51,17 @@ export const updateProject = (
   project: MigrationProject
 ): AxiosPromise<MigrationProject> => {
   return ApiClient.put<MigrationProject>(
-    `${MIGRATION_PROJECTS}/update`,
+    `${MIGRATION_PROJECTS_PATH}/update`,
     project
   );
 };
 
 export const deleteProject = (project: MigrationProject): AxiosPromise => {
-  return ApiClient.delete(`${MIGRATION_PROJECTS}/delete`, {}, project);
+  return ApiClient.delete(`${MIGRATION_PROJECTS_PATH}/delete`, {}, project);
 };
 
 export const deleteProvisionalProjects = (): AxiosPromise => {
-  return ApiClient.delete(`${MIGRATION_PROJECTS}/deleteProvisional`);
+  return ApiClient.delete(`${MIGRATION_PROJECTS_PATH}/deleteProvisional`);
 };
 
 export const uploadFileToProject = (
@@ -66,7 +70,7 @@ export const uploadFileToProject = (
   config = {}
 ): AxiosPromise => {
   return ApiClient.post(
-    `${MIGRATION_PROJECTS}/${projectId}/registeredApplications/upload`,
+    `${MIGRATION_PROJECTS_PATH}/${projectId}/registeredApplications/upload`,
     formData,
     config
   );
@@ -90,7 +94,7 @@ export const registerApplicationByPath = (
   isPathExploded: boolean
 ): AxiosPromise<Application> => {
   return ApiClient.post<Application>(
-    `${MIGRATION_PROJECTS}/${projectId}/registeredApplications/register-path?exploded=${isPathExploded}`,
+    `${MIGRATION_PROJECTS_PATH}/${projectId}/registeredApplications/register-path?exploded=${isPathExploded}`,
     path,
     {
       headers: {
@@ -105,7 +109,7 @@ export const registerApplicationInDirectoryByPath = (
   path: string
 ): AxiosPromise<Application> => {
   return ApiClient.post<Application>(
-    `${MIGRATION_PROJECTS}/${projectId}/registeredApplications/register-directory-path`,
+    `${MIGRATION_PROJECTS_PATH}/${projectId}/registeredApplications/register-directory-path`,
     path,
     {
       headers: {

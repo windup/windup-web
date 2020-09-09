@@ -1,5 +1,5 @@
 import React from "react";
-import { RouteComponentProps, Link } from "react-router-dom";
+import { RouteComponentProps } from "react-router-dom";
 import {
   Stack,
   StackItem,
@@ -16,6 +16,13 @@ import {
   Switch,
   Alert,
   AlertActionCloseButton,
+  DrawerContent,
+  DrawerContentBody,
+  Drawer,
+  DrawerPanelContent,
+  DrawerHead,
+  DrawerActions,
+  DrawerCloseButton,
 } from "@patternfly/react-core";
 import {
   ICell,
@@ -26,7 +33,12 @@ import {
   IActions,
 } from "@patternfly/react-table";
 
-import { FilterToolbarItem, SimplePagination, FetchTable } from "components";
+import {
+  FilterToolbarItem,
+  SimplePagination,
+  FetchTable,
+  UploadFilesForm,
+} from "components";
 import { Paths, formatPath } from "Paths";
 
 import {
@@ -38,6 +50,7 @@ import {
   saveAnalysisContext,
   isRulePathBeingUsed,
   deleteRulePathById,
+  UPLOAD_RULE_TO_MIGRATION_PROJECT,
 } from "api/api";
 import {
   MigrationProject,
@@ -56,6 +69,13 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
   match,
   history: { push },
 }) => {
+  const drawerRef = React.createRef<any>();
+  const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
+  const handleOnDrawerToggle = () => {
+    setIsDrawerOpen((current) => !current);
+    refreshTable();
+  };
+
   const [tableError, setTableError] = React.useState<string>();
   const [alertError, setAlertError] = React.useState<string>();
 
@@ -116,7 +136,7 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
           .then(({ data: isRulePathBeingUsed }) => {
             if (!isRulePathBeingUsed) {
               deleteRulePathById(rulePathToDelete.id)
-                .then(() => setCount((current) => current + 1))
+                .then(() => refreshTable())
                 .catch(() =>
                   setAlertError("Internal error while deleting RulePath")
                 );
@@ -214,6 +234,10 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
         });
     }
   }, [project, count]);
+
+  const refreshTable = () => {
+    setCount((current) => current + 1);
+  };
 
   const handleRulePathToggled = React.useCallback(
     (isChecked: boolean, rulePathToggled: RulesPath) => {
@@ -403,7 +427,90 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
           </StackItem>
         )}
         <StackItem>
-          <Toolbar>
+          <Drawer
+            isExpanded={isDrawerOpen}
+            onExpand={() => drawerRef.current && drawerRef.current.focus()}
+          >
+            <DrawerContent
+              panelContent={
+                <DrawerPanelContent widths={{ default: "width_75" }}>
+                  <DrawerHead>
+                    <Title
+                      ref={drawerRef}
+                      headingLevel="h2"
+                      size="xl"
+                      tabIndex={isDrawerOpen ? 0 : -1}
+                    >
+                      Upload rule
+                    </Title>
+                    <UploadFilesForm
+                      url={UPLOAD_RULE_TO_MIGRATION_PROJECT.replace(
+                        ":projectId",
+                        project?.id ? project.id.toString() : ""
+                      )}
+                      accept=".xml"
+                      hideProgressOnSuccess={false}
+                    />
+                    <DrawerActions>
+                      <DrawerCloseButton onClick={handleOnDrawerToggle} />
+                    </DrawerActions>
+                  </DrawerHead>
+                </DrawerPanelContent>
+              }
+            >
+              <DrawerContentBody>
+                <Toolbar>
+                  <ToolbarContent>
+                    <FilterToolbarItem
+                      searchValue={filterText}
+                      onFilterChange={handlFilterTextChange}
+                      placeholder="Filter by name"
+                    />
+                    <ToolbarGroup variant="button-group">
+                      <ToolbarItem>
+                        <Button type="button" onClick={handleOnDrawerToggle}>
+                          Add rule
+                        </Button>
+                      </ToolbarItem>
+                    </ToolbarGroup>
+                    <ToolbarItem
+                      variant={ToolbarItemVariant.pagination}
+                      alignment={{ default: "alignRight" }}
+                    >
+                      <SimplePagination
+                        count={filteredRulesPath.length}
+                        params={paginationParams}
+                        isTop={true}
+                        onChange={handlePaginationChange}
+                      />
+                    </ToolbarItem>
+                  </ToolbarContent>
+                </Toolbar>
+                <FetchTable
+                  columns={columns}
+                  rows={rows}
+                  actions={actions}
+                  fetchStatus={
+                    isProjectBeingFetched || isProjectRelatedDataBeingFetched
+                      ? "inProgress"
+                      : "complete"
+                  }
+                  fetchError={tableError}
+                  loadingVariant="skeleton"
+                  onSortChange={(sortBy: ISortBy) => {
+                    setSortBy(sortBy);
+                  }}
+                />
+                <SimplePagination
+                  count={filteredRulesPath.length}
+                  params={paginationParams}
+                  onChange={handlePaginationChange}
+                />
+              </DrawerContentBody>
+            </DrawerContent>
+          </Drawer>
+
+          {/* <Toolbar>
             <ToolbarContent>
               <FilterToolbarItem
                 searchValue={filterText}
@@ -449,7 +556,7 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
             count={filteredRulesPath.length}
             params={paginationParams}
             onChange={handlePaginationChange}
-          />
+          /> */}
         </StackItem>
       </Stack>
     </NewProjectWizard>

@@ -6,16 +6,21 @@ import {
   Stack,
   StackItem,
   Divider,
+  Split,
+  SplitItem,
+  Button,
+  ProgressVariant,
+  ButtonVariant,
+  Progress,
+  ProgressSize,
 } from "@patternfly/react-core";
+import { TrashIcon } from "@patternfly/react-icons";
 
-import {
-  ProgressApplication,
-  UploadFilesForm,
-  ServerPathForm,
-} from "components";
+import { UploadFilesForm, ServerPathForm } from "components";
 
 import { Application } from "models/api";
-import { deleteRegisteredApplication } from "api/api";
+import { deleteRegisteredApplication, UPLOAD_APPLICATION_PATH } from "api/api";
+import { formatBytes } from "utils/format";
 
 export interface ProjectDetailsFormValue {
   activeTabKey?: number;
@@ -110,7 +115,7 @@ export const AddApplicationsForm: React.FC<AddApplicationsFormProps> = ({
 
   // Form handlers
   const handleUploadFilesFormChange = React.useCallback(
-    (_: File, application: Application) => {
+    (application: Application, _: File) => {
       setApplications((current) => [...current, application]);
     },
     []
@@ -136,7 +141,12 @@ export const AddApplicationsForm: React.FC<AddApplicationsFormProps> = ({
         <Tabs activeKey={activeTabKey} onSelect={handleTabClick}>
           <Tab eventKey={0} title={<TabTitleText>Upload</TabTitleText>}>
             <UploadFilesForm
-              projectId={projectId}
+              url={UPLOAD_APPLICATION_PATH.replace(
+                ":projectId",
+                projectId.toString()
+              )}
+              accept=".ear,.har,.jar,.rar,.sar,.war,.zip"
+              hideProgressOnSuccess={true}
               onFileUploadSuccess={handleUploadFilesFormChange}
             />
           </Tab>
@@ -162,10 +172,25 @@ export const AddApplicationsForm: React.FC<AddApplicationsFormProps> = ({
       </StackItem>
       {applications.map((app, index) => (
         <StackItem key={index}>
-          <ProgressApplication
-            application={app}
-            onRemove={() => handleRemoveApplication(app)}
-          />
+          <Split>
+            <SplitItem isFilled>
+              <Progress
+                title={`${app.inputFilename} (${formatBytes(app.fileSize)})`}
+                size={ProgressSize.sm}
+                value={100}
+                variant={ProgressVariant.success}
+              />
+            </SplitItem>
+            <SplitItem>
+              <Button
+                variant={ButtonVariant.plain}
+                aria-label="Action"
+                onClick={() => handleRemoveApplication(app)}
+              >
+                <TrashIcon />
+              </Button>
+            </SplitItem>
+          </Split>
         </StackItem>
       ))}
     </Stack>

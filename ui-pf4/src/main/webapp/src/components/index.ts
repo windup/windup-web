@@ -7,8 +7,6 @@ export { LoadingStep } from "./loading-step";
 export { PackageSelection } from "./package-selection";
 export { PackageSelectionWrapper } from "./package-selection-wrapper";
 export { PageSkeleton } from "./page-skeleton";
-export { ProgressApplication } from "./progress-application";
-export { ProgressFile } from "./progress-file";
 export { ProjectDetailsForm } from "./project-details-form";
 export { ProjectDetailsFormDDF } from "./project-details-form-ddf";
 export { SelectCard } from "./select-card";

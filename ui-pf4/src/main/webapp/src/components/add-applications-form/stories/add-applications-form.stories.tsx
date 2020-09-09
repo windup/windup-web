@@ -18,7 +18,9 @@ const Template: Story<AddApplicationsFormProps> = (args) => (
 );
 
 export const Basic = Template.bind({});
-Basic.args = {};
+Basic.args = {
+  projectId: 1,
+};
 
 export const InitialValue = Template.bind({});
 InitialValue.args = {

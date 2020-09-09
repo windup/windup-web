@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useReducer } from "react";
+import axios, { CancelTokenSource } from "axios";
 import {
   EmptyState,
   EmptyStateBody,
@@ -7,16 +8,22 @@ import {
   EmptyStateVariant,
   Stack,
   StackItem,
+  Split,
+  SplitItem,
+  Progress,
+  ProgressVariant,
+  ProgressSize,
+  ButtonVariant,
 } from "@patternfly/react-core";
+import { TimesIcon, TrashIcon } from "@patternfly/react-icons";
+
 import { useDropzone } from "react-dropzone";
-import axios, { CancelTokenSource } from "axios";
 
 import "./upload-files-form.scss";
 
 import { getMapKeys } from "utils/utils";
-import { Application } from "models/api";
-import { uploadFileToProject } from "api/api";
-import { ProgressFile } from "../progress-file";
+import { formatBytes } from "utils/format";
+import BackendAPIClient from "api/apiClient";
 
 const CANCEL_MESSAGE = "cancelled";
 
@@ -35,7 +42,7 @@ const defaultUpload: Upload = {
 
 interface Status {
   uploads: Map<File, Upload>;
-  uploadsResponse: Map<File, Application>;
+  uploadsResponse: Map<File, any>;
 }
 interface Action {
   type:
@@ -106,13 +113,17 @@ const reducer = (state: Status, action: Action): Status => {
 };
 
 export interface UploadFilesFormProps {
-  projectId: number;
-  onFileUploadSuccess?: (file: File, application: Application) => void;
-  onFileUploadError?: (file: File, error: any) => void;
+  url: string;
+  accept?: string | string[];
+  hideProgressOnSuccess?: boolean;
+  onFileUploadSuccess?: (data: any, file: File) => void;
+  onFileUploadError?: (error: any, file: File) => void;
 }
 
 export const UploadFilesForm: React.FC<UploadFilesFormProps> = ({
-  projectId,
+  url,
+  accept,
+  hideProgressOnSuccess,
   onFileUploadSuccess,
   onFileUploadError,
 }) => {
@@ -151,14 +162,14 @@ export const UploadFilesForm: React.FC<UploadFilesFormProps> = ({
         payload: { file, cancelTokenSource: source },
       });
 
-      uploadFileToProject(projectId, formData, config)
+      BackendAPIClient.post(url, formData, config)
         .then(({ data }) => {
           dispatch({
             type: "successFileUpload",
             payload: { file, application: data },
           });
 
-          if (onFileUploadSuccess) onFileUploadSuccess(file, data);
+          if (onFileUploadSuccess) onFileUploadSuccess(data, file);
         })
         .catch((error) => {
           dispatch({
@@ -167,7 +178,7 @@ export const UploadFilesForm: React.FC<UploadFilesFormProps> = ({
           });
 
           if (error.message !== CANCEL_MESSAGE) {
-            if (onFileUploadError) onFileUploadError(file, error);
+            if (onFileUploadError) onFileUploadError(error, file);
           }
         });
     }
@@ -188,7 +199,7 @@ export const UploadFilesForm: React.FC<UploadFilesFormProps> = ({
     noClick: true,
     noKeyboard: true,
     onDropAccepted: handleUpload,
-    accept: ".ear,.har,.jar,.rar,.sar,.war,.zip",
+    accept: accept,
   });
 
   return (
@@ -216,22 +227,56 @@ export const UploadFilesForm: React.FC<UploadFilesFormProps> = ({
           <Stack hasGutter>
             {getMapKeys(state.uploads)
               .filter((f) => {
-                const upload = state.uploads.get(f);
-                return upload?.status !== "complete" || upload.error;
+                if (hideProgressOnSuccess) {
+                  const upload = state.uploads.get(f);
+                  return upload?.status !== "complete" || upload.error;
+                }
+                return true;
               })
               .map((file: File, index) => {
                 const upload = state.uploads.get(file)!;
                 return (
                   <StackItem key={index}>
-                    <ProgressFile
-                      file={file}
-                      progress={upload.progress}
-                      status={upload.status}
-                      error={upload.error}
-                      wasCancelled={upload.wasCancelled}
-                      onCancel={() => handleCancelUpload(file, upload)}
-                      onRemove={() => handleremoveFileUpload(file, upload)}
-                    />
+                    <Split>
+                      <SplitItem isFilled>
+                        <Progress
+                          title={`${file.name} (${formatBytes(file.size)})`}
+                          label={upload.wasCancelled ? "Cancelled" : undefined}
+                          size={ProgressSize.sm}
+                          value={upload.progress}
+                          variant={
+                            upload.status === "complete" && upload.error
+                              ? ProgressVariant.danger
+                              : upload.status === "complete" && !upload.error
+                              ? ProgressVariant.success
+                              : undefined
+                          }
+                        />
+                      </SplitItem>
+                      <SplitItem>
+                        {upload.status === "inProgress" && (
+                          <Button
+                            variant={ButtonVariant.plain}
+                            aria-label="Action"
+                            onClick={() => handleCancelUpload(file, upload)}
+                          >
+                            <TimesIcon />
+                          </Button>
+                        )}
+                        {upload.status === "complete" &&
+                          !hideProgressOnSuccess && (
+                            <Button
+                              variant={ButtonVariant.plain}
+                              aria-label="Action"
+                              onClick={() =>
+                                handleremoveFileUpload(file, upload)
+                              }
+                            >
+                              <TrashIcon />
+                            </Button>
+                          )}
+                      </SplitItem>
+                    </Split>
                   </StackItem>
                 );
               })}
