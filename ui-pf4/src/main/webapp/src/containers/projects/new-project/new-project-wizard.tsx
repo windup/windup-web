@@ -38,7 +38,7 @@ export enum WizardStepIds {
   SELECT_PACKAGES = 4,
   CUSTOM_RULES = 5,
   CUSTOM_LABELS = 6,
-  OPTIONS = 7,
+  ADVANCED_OPTIONS = 7,
   REVIEW = 8,
 }
 
@@ -130,9 +130,9 @@ export const NewProjectWizard: React.FC<NewProjectWizardProps> = ({
           enableNext: false,
         },
         {
-          id: WizardStepIds.OPTIONS,
+          id: WizardStepIds.ADVANCED_OPTIONS,
           name: "Options",
-          canJumpTo: WizardStepIds.OPTIONS <= stepId,
+          canJumpTo: WizardStepIds.ADVANCED_OPTIONS <= stepId,
           enableNext: false,
         },
       ],
@@ -170,7 +170,7 @@ export const NewProjectWizard: React.FC<NewProjectWizardProps> = ({
     case WizardStepIds.CUSTOM_LABELS:
       selectedStep = wizardSteps[3].steps![1];
       break;
-    case WizardStepIds.OPTIONS:
+    case WizardStepIds.ADVANCED_OPTIONS:
       selectedStep = wizardSteps[3].steps![2];
       break;
 
@@ -262,7 +262,7 @@ export const NewProjectWizard: React.FC<NewProjectWizardProps> = ({
           })
         );
         break;
-      case WizardStepIds.OPTIONS:
+      case WizardStepIds.ADVANCED_OPTIONS:
         push(
           formatPath(Paths.newProject_advandedOptions, {
             project: migrationProject?.id,

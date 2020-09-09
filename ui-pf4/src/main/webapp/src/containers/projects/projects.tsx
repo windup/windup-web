@@ -7,6 +7,7 @@ import SetTransformationPath from "./new-project/set-transformation-path";
 import SelectPackages from "./new-project/select-packages";
 import CustomRules from "./new-project/custom-rules";
 import CustomLabels from "./new-project/custom-labels";
+import AdvancedOptions from "./new-project/advanced-options";
 import { Paths } from "../../Paths";
 
 export const Projects: React.FC = () => {
@@ -43,6 +44,11 @@ export const Projects: React.FC = () => {
         <Route
           path={Paths.newProject_customLabels}
           component={CustomLabels}
+          exact
+        />
+        <Route
+          path={Paths.newProject_advandedOptions}
+          component={AdvancedOptions}
           exact
         />
       </Switch>

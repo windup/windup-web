@@ -20,6 +20,7 @@ export enum Paths {
   newProject_customRules = "/projects/~new/:project/custom-rules",
   newProject_customLabels = "/projects/~new/:project/custom-labels",
   newProject_advandedOptions = "/projects/~new/:project/advanced-options",
+  newProject_review = "/projects/~new/:project/review",
   editProject = "/projects/:project",
   editProject_projectDetail = "/projects/:project/project-detail",
   editProject_applications = "/projects/:project/applications",
