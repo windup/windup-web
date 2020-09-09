@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { AxiosPromise } from "axios";
 import {
-  PageSection,
-  WizardStep,
   Stack,
   StackItem,
   Title,
@@ -12,7 +10,7 @@ import {
   AlertActionCloseButton,
 } from "@patternfly/react-core";
 
-import { SimplePageSection, AddApplicationsForm } from "components";
+import { AddApplicationsForm } from "components";
 
 import { MigrationProject, Application } from "models/api";
 import {
@@ -24,13 +22,8 @@ import {
 
 import { Paths, formatPath } from "Paths";
 
-import { TITLE, DESCRIPTION } from "../shared/constants";
-import {
-  LoadingWizard,
-  buildWizard,
-  WizardStepIds,
-  ErrorWizard,
-} from "../shared/WizardUtils";
+import NewProjectWizard from "../";
+import { WizardStepIds, LoadingWizardContent } from "../new-project-wizard";
 
 interface AddApplicationsProps
   extends RouteComponentProps<{ project: string }> {}
@@ -40,9 +33,7 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
   history: { push },
 }) => {
   const [project, setProject] = useState<MigrationProject>();
-  const [isProjectBeingFetched, setIsProjectBeingFetched] = useState(true);
 
-  const [enableNext, setEnableNext] = useState(false);
   const [formValue, setFormValue] = useState<{
     activeTabKey?: number;
     tab0?: {
@@ -53,25 +44,24 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
       isServerPathExploded?: boolean;
     };
   }>();
+  const [enableNext, setEnableNext] = useState(false);
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showWizardError, setShowWizardError] = useState(false);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [submitError, setSubmitError] = React.useState<string>();
 
-  const [
-    serverPathRegistrationErrorMsg,
-    setServerPathRegistrationErrorMsg,
-  ] = useState<string>();
+  const [isFetching, setIsFetching] = React.useState(true);
+  const [fetchError, setFetchError] = React.useState<string>();
 
   useEffect(() => {
     getProjectById(match.params.project)
       .then(({ data }) => {
         setProject(data);
-        setIsProjectBeingFetched(false);
-        setEnableNext(data.applications.length > 0);
       })
       .catch(() => {
-        setIsProjectBeingFetched(false);
-        setShowWizardError(true);
+        setFetchError("Error while fetching migrationProject");
+      })
+      .finally(() => {
+        setIsFetching(false);
       });
   }, [match]);
 
@@ -89,10 +79,7 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
       },
       isValid: boolean
     ) => {
-      if (isValid) {
-        setFormValue(value);
-      }
-
+      setFormValue(value);
       setEnableNext(isValid);
     },
     []
@@ -104,10 +91,10 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
       setIsSubmitting(true);
 
       pathTargetType(formValue.tab1?.serverPath!)
-        .then(({ data: data1 }) => {
+        .then(({ data }) => {
           let registerServerPathPromise: AxiosPromise<Application>;
 
-          if (data1 === "DIRECTORY" && !formValue.tab1?.isServerPathExploded) {
+          if (data === "DIRECTORY" && !formValue.tab1?.isServerPathExploded) {
             registerServerPathPromise = registerApplicationInDirectoryByPath(
               project!.id,
               formValue.tab1?.serverPath!
@@ -120,25 +107,22 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
             );
           }
 
-          registerServerPathPromise
-            .then(() => {
-              push(
-                formatPath(Paths.newProject_setTransformationPath, {
-                  project: project!.id,
-                })
-              );
-            })
-            .catch((error) => {
-              setServerPathRegistrationErrorMsg(
-                error?.response?.data?.message
-                  ? error.response.data.message
-                  : "It was not possible to register the path due to an error."
-              );
-              setIsSubmitting(false);
-            });
+          return registerServerPathPromise;
         })
-        .catch(() => {
-          setShowWizardError(true);
+        .then(() => {
+          push(
+            formatPath(Paths.newProject_setTransformationPath, {
+              project: project!.id,
+            })
+          );
+        })
+        .catch((error) => {
+          setIsSubmitting(false);
+          setSubmitError(
+            error?.response?.data?.message
+              ? error.response.data.message
+              : "It was not possible to register the path due to an error."
+          );
         });
     } else {
       push(
@@ -149,55 +133,35 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
     }
   };
 
-  const handleOnClose = () => {
-    push(Paths.projects);
-  };
-
-  const handleOnGoToStep = (newStep: { id?: number }) => {
-    switch (newStep.id) {
-      case WizardStepIds.DETAILS:
-        push(
-          formatPath(Paths.newProject_details, {
-            project: project?.id,
-          })
-        );
-        break;
-      case WizardStepIds.SET_TRANSFORMATION_PATH:
-        push(
-          formatPath(Paths.newProject_setTransformationPath, {
-            project: project?.id,
-          })
-        );
-        break;
-      default:
-        new Error("Can not go to step id[" + newStep.id + "]");
-    }
-  };
-
-  const createWizardStep = (): WizardStep => {
-    return {
-      id: WizardStepIds.ADD_APPLICATIONS,
-      name: "Add applications",
-      component: (
+  return (
+    <NewProjectWizard
+      stepId={WizardStepIds.ADD_APPLICATIONS}
+      enableNext={enableNext}
+      disableNavigation={isFetching || isSubmitting}
+      handleOnNextStep={handleOnNextStep}
+      migrationProject={project}
+      showErrorContent={fetchError}
+    >
+      {isFetching ? (
+        <LoadingWizardContent />
+      ) : (
         <Stack hasGutter>
           <StackItem>
             <Title headingLevel="h5" size={TitleSizes["lg"]}>
               Add applications
             </Title>
           </StackItem>
-          {serverPathRegistrationErrorMsg && (
+          {submitError && (
             <StackItem>
               <Alert
                 isLiveRegion
                 variant="danger"
-                title="Server path registration error"
+                title="Error"
                 actionClose={
-                  <AlertActionCloseButton
-                    onClose={() => setServerPathRegistrationErrorMsg(undefined)}
-                  />
+                  <AlertActionCloseButton onClose={() => setSubmitError("")} />
                 }
               >
-                {serverPathRegistrationErrorMsg}
+                {submitError}
               </Alert>
             </StackItem>
           )}
@@ -222,36 +186,7 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
             )}
           </StackItem>
         </Stack>
-      ),
-      canJumpTo: true,
-      enableNext: enableNext,
-    };
-  };
-
-  if (showWizardError) {
-    return <ErrorWizard onClose={handleOnClose} />;
-  }
-
-  return (
-    <React.Fragment>
-      <SimplePageSection title={TITLE} description={DESCRIPTION} />
-      <PageSection>
-        {isSubmitting || isProjectBeingFetched ? (
-          <LoadingWizard />
-        ) : (
-          buildWizard(
-            WizardStepIds.ADD_APPLICATIONS,
-            createWizardStep(),
-            {
-              onNext: handleOnNextStep,
-              onClose: handleOnClose,
-              onGoToStep: handleOnGoToStep,
-              onBack: handleOnGoToStep,
-            },
-            project
-          )
-        )}
-      </PageSection>
-    </React.Fragment>
+      )}
+    </NewProjectWizard>
   );
 };
