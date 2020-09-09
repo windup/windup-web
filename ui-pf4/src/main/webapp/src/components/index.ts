@@ -1,5 +1,7 @@
 export { AddApplicationsForm } from "./add-applications-form";
+export { AddRuleLabelTabs } from "./add-rulelabel-tabs";
 export { AppPlaceholder } from "./app-placeholder";
+export { RuleLabelServerPathForm } from "./rulelabel-server-path-form";
 export { DeleteButton } from "./delete-button";
 export { FetchTable } from "./fetch-table";
 export { FilterToolbarItem } from "./filter-toolbar-item";

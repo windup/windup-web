@@ -29,7 +29,6 @@ export interface ProjectDetailsFormProps {
   formRef?: any;
   project?: MigrationProject; // Initial values
   hideFormControls?: boolean;
-  onChange?: (isValid: boolean) => void;
   onSubmit?: (value: any) => void;
   onCancel?: () => void;
 }

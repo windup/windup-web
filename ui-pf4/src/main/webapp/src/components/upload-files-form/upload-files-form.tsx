@@ -14,6 +14,8 @@ import {
   ProgressVariant,
   ProgressSize,
   ButtonVariant,
+  Level,
+  LevelItem,
 } from "@patternfly/react-core";
 import { TimesIcon, TrashIcon } from "@patternfly/react-icons";
 
@@ -114,8 +116,10 @@ const reducer = (state: Status, action: Action): Status => {
 
 export interface UploadFilesFormProps {
   url: string;
+  template: "dropdown-box" | "minimal-inline";
   accept?: string | string[];
   hideProgressOnSuccess?: boolean;
+  allowRemove?: boolean;
   onFileUploadSuccess?: (data: any, file: File) => void;
   onFileUploadError?: (error: any, file: File) => void;
 }
@@ -124,6 +128,8 @@ export const UploadFilesForm: React.FC<UploadFilesFormProps> = ({
   url,
   accept,
   hideProgressOnSuccess,
+  allowRemove,
+  template,
   onFileUploadSuccess,
   onFileUploadError,
 }) => {
@@ -206,22 +212,41 @@ export const UploadFilesForm: React.FC<UploadFilesFormProps> = ({
     <React.Fragment>
       <Stack hasGutter>
         <StackItem>
-          <div className="upload-files-section__component__tab-content-upload-file">
-            <EmptyState
-              variant={EmptyStateVariant.small}
+          {template === "dropdown-box" && (
+            <div className="upload-files-section__component__tab-content-margin">
+              <EmptyState
+                variant={EmptyStateVariant.small}
+                {...getRootProps({
+                  className: "upload-files-section__component__dropzone",
+                })}
+              >
+                <EmptyStateBody>
+                  Drag a file here or browse to upload
+                </EmptyStateBody>
+                <Button variant="primary" onClick={open}>
+                  Browse
+                </Button>
+                <input {...getInputProps()} />
+              </EmptyState>
+            </div>
+          )}
+          {template === "minimal-inline" && (
+            <Level
+              hasGutter
               {...getRootProps({
-                className: "upload-files-section__component__dropzone",
+                className:
+                  "upload-files-section__component__tab-content-margin",
               })}
             >
-              <EmptyStateBody>
-                Drag a file here or browse to upload
-              </EmptyStateBody>
-              <Button variant="primary" onClick={open}>
-                Browser
-              </Button>
-              <input {...getInputProps()} />
-            </EmptyState>
-          </div>
+              <LevelItem>Select on or more files to upload</LevelItem>
+              <LevelItem>
+                <Button variant="primary" onClick={open}>
+                  Browse
+                </Button>
+                <input {...getInputProps()} />
+              </LevelItem>
+            </Level>
+          )}
         </StackItem>
         <StackItem>
           <Stack hasGutter>
@@ -263,18 +288,15 @@ export const UploadFilesForm: React.FC<UploadFilesFormProps> = ({
                             <TimesIcon />
                           </Button>
                         )}
-                        {upload.status === "complete" &&
-                          !hideProgressOnSuccess && (
-                            <Button
-                              variant={ButtonVariant.plain}
-                              aria-label="Action"
-                              onClick={() =>
-                                handleremoveFileUpload(file, upload)
-                              }
-                            >
-                              <TrashIcon />
-                            </Button>
-                          )}
+                        {upload.status === "complete" && allowRemove && (
+                          <Button
+                            variant={ButtonVariant.plain}
+                            aria-label="Action"
+                            onClick={() => handleremoveFileUpload(file, upload)}
+                          >
+                            <TrashIcon />
+                          </Button>
+                        )}
                       </SplitItem>
                     </Split>
                   </StackItem>

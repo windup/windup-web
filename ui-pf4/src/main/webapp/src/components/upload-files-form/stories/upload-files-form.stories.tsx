@@ -7,10 +7,8 @@ export default {
   title: "Forms / UploadFilesForm",
   component: UploadFilesForm,
   argTypes: {
-    onSuccess: { action: "success" },
-    onError: { action: "error" },
-    onCancel: { action: "cancel" },
-    onRemove: { action: "remove" },
+    onFileUploadSuccess: { action: "onFileUploadSuccess" },
+    onFileUploadError: { action: "onFileUploadError" },
   },
   args: {},
 } as Meta;
@@ -22,4 +20,5 @@ const Template: Story<UploadFilesFormProps> = (args) => (
 export const Basic = Template.bind({});
 Basic.args = {
   url: UPLOAD_APPLICATION_PATH.replace(":projectId", "1"),
+  template: "dropdown-box",
 };

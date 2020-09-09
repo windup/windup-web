@@ -15,8 +15,10 @@ import {
 } from "models/api";
 
 export const MIGRATION_PROJECTS_PATH = "/migrationProjects";
+
 export const UPLOAD_APPLICATION_PATH = `${MIGRATION_PROJECTS_PATH}/:projectId/registeredApplications/upload`;
 export const UPLOAD_RULE_TO_MIGRATION_PROJECT = `rules/upload/by-project/:projectId`;
+export const UPLOAD_LABEL_TO_MIGRATION_PROJECT = `labels/upload/by-project/:projectId`;
 
 export const getProjects = (): AxiosPromise<Project> => {
   return ApiClient.get<Project>(`${MIGRATION_PROJECTS_PATH}/list`);
@@ -161,6 +163,15 @@ export const getProjectConfiguration = (
   return ApiClient.get<Configuration>(`configuration/by-project/${projectId}`);
 };
 
+export const updateProjectConfiguration = (
+  configuration: Configuration
+): AxiosPromise<Configuration> => {
+  return ApiClient.put<Configuration>(
+    `configuration/${configuration.id}`,
+    configuration
+  );
+};
+
 export const getRulesetPathsByConfigurationId = (
   configurationId: number
 ): AxiosPromise<RulesPath[]> => {
@@ -189,7 +200,7 @@ export const getLabelProviderByLabelsPathId = (
   rulesPathId: number
 ): AxiosPromise<LabelProviderEntity[]> => {
   return ApiClient.get<LabelProviderEntity[]>(
-    `rules/by-labels-path/${rulesPathId}`
+    `labels/by-labels-path/${rulesPathId}`
   );
 };
 
@@ -199,6 +210,16 @@ export const isRulePathBeingUsed = (
   return ApiClient.get<boolean>(`rules/is-used-rules-path/${rulesPathId}`);
 };
 
+export const isLabelPathBeingUsed = (
+  labelsPathId: number
+): AxiosPromise<boolean> => {
+  return ApiClient.get<boolean>(`labels/is-used-labels-path/${labelsPathId}`);
+};
+
 export const deleteRulePathById = (rulesPathId: number): AxiosPromise => {
   return ApiClient.delete(`rules/by-rules-path/${rulesPathId}`);
+};
+
+export const deleteLabelPathById = (labelsPathId: number): AxiosPromise => {
+  return ApiClient.delete(`labels/by-labels-path/${labelsPathId}`);
 };

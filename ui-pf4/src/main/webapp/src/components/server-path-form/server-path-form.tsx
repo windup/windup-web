@@ -30,7 +30,6 @@ const validationSchema = yup.object().shape({
         return pathExists(value!)
           .then(({ data }) => data)
           .catch((error) => {
-            console.log("catchhh", error);
             return false;
           });
       }

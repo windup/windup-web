@@ -146,6 +146,7 @@ export const AddApplicationsForm: React.FC<AddApplicationsFormProps> = ({
                 projectId.toString()
               )}
               accept=".ear,.har,.jar,.rar,.sar,.war,.zip"
+              template="dropdown-box"
               hideProgressOnSuccess={true}
               onFileUploadSuccess={handleUploadFilesFormChange}
             />

@@ -37,7 +37,7 @@ import {
   FilterToolbarItem,
   SimplePagination,
   FetchTable,
-  UploadFilesForm,
+  AddRuleLabelTabs,
 } from "components";
 import { Paths, formatPath } from "Paths";
 
@@ -50,7 +50,6 @@ import {
   saveAnalysisContext,
   isRulePathBeingUsed,
   deleteRulePathById,
-  UPLOAD_RULE_TO_MIGRATION_PROJECT,
 } from "api/api";
 import {
   MigrationProject,
@@ -71,10 +70,6 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
 }) => {
   const drawerRef = React.createRef<any>();
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
-  const handleOnDrawerToggle = () => {
-    setIsDrawerOpen((current) => !current);
-    refreshTable();
-  };
 
   const [tableError, setTableError] = React.useState<string>();
   const [alertError, setAlertError] = React.useState<string>();
@@ -121,12 +116,12 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
     { title: "Enable", transforms: [] },
   ];
   const actions: IActions = [
-    {
-      title: "Edit",
-      onClick: (_) => {
-        console.log("Edit");
-      },
-    },
+    // {
+    //   title: "View details",
+    //   onClick: (_) => {
+    //     console.log("View details");
+    //   },
+    // },
     {
       title: "Delete",
       onClick: (_, rowIndex: number) => {
@@ -237,6 +232,11 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
 
   const refreshTable = () => {
     setCount((current) => current + 1);
+  };
+
+  const handleOnDrawerToggle = () => {
+    setIsDrawerOpen((current) => !current);
+    refreshTable();
   };
 
   const handleRulePathToggled = React.useCallback(
@@ -443,14 +443,14 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
                     >
                       Upload rule
                     </Title>
-                    <UploadFilesForm
-                      url={UPLOAD_RULE_TO_MIGRATION_PROJECT.replace(
-                        ":projectId",
-                        project?.id ? project.id.toString() : ""
-                      )}
-                      accept=".xml"
-                      hideProgressOnSuccess={false}
-                    />
+                    {project && (
+                      <AddRuleLabelTabs
+                        type="Rule"
+                        projectId={project.id}
+                        onSubmitFinishedServerPath={handleOnDrawerToggle}
+                        onCancelServerPath={handleOnDrawerToggle}
+                      />
+                    )}
                     <DrawerActions>
                       <DrawerCloseButton onClick={handleOnDrawerToggle} />
                     </DrawerActions>
