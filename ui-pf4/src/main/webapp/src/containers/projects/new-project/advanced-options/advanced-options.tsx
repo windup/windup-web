@@ -58,7 +58,7 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
     <NewProjectWizard
       stepId={WizardStepIds.ADVANCED_OPTIONS}
       enableNext={false}
-      isDisabled={processing}
+      disableNavigation={processing}
       handleOnNextStep={handleOnNextStep}
       migrationProject={project}
     >

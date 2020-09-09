@@ -398,7 +398,7 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
     <NewProjectWizard
       stepId={WizardStepIds.CUSTOM_LABELS}
       enableNext={true}
-      isDisabled={false}
+      disableNavigation={false}
       handleOnNextStep={handleOnNextStep}
       migrationProject={project}
     >

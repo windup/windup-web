@@ -7,7 +7,8 @@ import {
   StackItem,
   Title,
   TitleSizes,
-  AlertActionLink,
+  Alert,
+  AlertActionCloseButton,
 } from "@patternfly/react-core";
 
 import { FormikHelpers } from "formik";
@@ -36,8 +37,11 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
 
   const [project, setProject] = React.useState<MigrationProject>();
 
-  const [processing, setProcessing] = React.useState(true);
-  const [error, setError] = React.useState<string>();
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [submitError, setSubmitError] = React.useState<string>();
+
+  const [isFetching, setIsFetching] = React.useState(true);
+  const [fetchError, setFetchError] = React.useState<string>();
 
   React.useEffect(() => {
     deleteProvisionalProjects();
@@ -50,13 +54,13 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
           setProject(data);
         })
         .catch(() => {
-          setError("Could not fetch migrationProject data");
+          setFetchError("Could not fetch migrationProject data");
         })
         .finally(() => {
-          setProcessing(false);
+          setIsFetching(false);
         });
     } else {
-      setProcessing(false);
+      setIsFetching(false);
     }
   }, [match]);
 
@@ -72,7 +76,7 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
     name: string;
     description?: string;
   }) => {
-    setProcessing(true);
+    setIsSubmitting(true);
 
     const body: MigrationProject = {
       ...project,
@@ -96,7 +100,7 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
         );
       })
       .catch(() => {
-        setError("Could not create project");
+        setSubmitError("Could not create project");
       });
   };
 
@@ -104,20 +108,28 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
     <NewProjectWizard
       stepId={WizardStepIds.DETAILS}
       enableNext={true}
-      isDisabled={processing}
+      disableNavigation={isFetching || isSubmitting}
       handleOnNextStep={handleOnNextStep}
-      error={error}
-      errorLink={
-        <AlertActionLink onClick={() => window.location.reload()}>
-          Reload page
-        </AlertActionLink>
-      }
-      onErrorClose={() => setError("")}
+      showErrorContent={fetchError}
     >
-      {processing ? (
+      {isFetching ? (
         <LoadingWizardContent />
       ) : (
         <Stack hasGutter>
+          {submitError && (
+            <StackItem>
+              <Alert
+                isLiveRegion
+                variant="danger"
+                title="Error"
+                actionClose={
+                  <AlertActionCloseButton onClose={() => setSubmitError("")} />
+                }
+              >
+                {submitError}
+              </Alert>
+            </StackItem>
+          )}
           <StackItem>
             <Title headingLevel="h5" size={TitleSizes["lg"]}>
               Project details

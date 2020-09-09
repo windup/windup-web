@@ -13,10 +13,6 @@ import {
   EmptyStateBody,
   EmptyStateSecondaryActions,
   Button,
-  Stack,
-  StackItem,
-  Alert,
-  AlertActionCloseButton,
   ButtonVariant,
 } from "@patternfly/react-core";
 import { InProgressIcon, ExclamationCircleIcon } from "@patternfly/react-icons";
@@ -46,11 +42,9 @@ export interface NewProjectWizardProps extends RouteComponentProps {
   isWizard?: boolean;
   stepId: WizardStepIds;
   enableNext: boolean;
-  isDisabled?: boolean;
+  disableNavigation?: boolean;
+  showErrorContent?: string;
   migrationProject?: MigrationProject;
-  error?: string;
-  errorLink?: React.ReactNode;
-  onErrorClose?: () => void;
   handleOnNextStep: () => void;
 }
 
@@ -72,13 +66,11 @@ export const NewProjectWizard: React.FC<NewProjectWizardProps> = ({
   isWizard = true,
   stepId,
   enableNext,
-  isDisabled,
+  disableNavigation,
   migrationProject,
-  error,
-  errorLink,
+  showErrorContent,
   children,
   handleOnNextStep,
-  onErrorClose,
 }) => {
   const wizardSteps: WizardStep[] = [
     {
@@ -181,23 +173,10 @@ export const NewProjectWizard: React.FC<NewProjectWizardProps> = ({
 
   selectedStep.canJumpTo = true;
   selectedStep.enableNext = enableNext;
-  selectedStep.component = (
-    <Stack hasGutter>
-      {error && (
-        <StackItem>
-          <Alert
-            isLiveRegion
-            variant="danger"
-            title="Error"
-            actionClose={<AlertActionCloseButton onClose={onErrorClose} />}
-            actionLinks={errorLink}
-          >
-            {error}
-          </Alert>
-        </StackItem>
-      )}
-      <StackItem>{children}</StackItem>
-    </Stack>
+  selectedStep.component = !showErrorContent ? (
+    children
+  ) : (
+    <ErrorWizardContent />
   );
 
   const handleOnBack = () => {
@@ -282,7 +261,9 @@ export const NewProjectWizard: React.FC<NewProjectWizardProps> = ({
           title={isWizard ? TITLE : undefined}
           description={isWizard ? DESCRIPTION : undefined}
           isOpen={isWizard ? isWizard : undefined}
-          steps={!isDisabled ? wizardSteps : disableWizardSteps(wizardSteps)}
+          steps={
+            !disableNavigation ? wizardSteps : disableWizardSteps(wizardSteps)
+          }
           startAtStep={stepId}
           onNext={handleOnNextStep}
           onBack={handleOnGoToStep}
@@ -296,26 +277,27 @@ export const NewProjectWizard: React.FC<NewProjectWizardProps> = ({
                 variant={ButtonVariant.primary}
                 type="submit"
                 onClick={handleOnNextStep}
-                isDisabled={!enableNext}
+                isDisabled={disableNavigation ? disableNavigation : !enableNext}
               >
                 Next
               </Button>
-              {!isDisabled && (
-                <Button
-                  variant={ButtonVariant.secondary}
-                  onClick={handleOnBack}
-                  className={css(
-                    stepId === WizardStepIds.DETAILS && "pf-m-disabled"
-                  )}
-                >
-                  Back
-                </Button>
-              )}
-              {!isDisabled && (
-                <Button variant={ButtonVariant.link} onClick={handleOnClose}>
-                  Cancel
-                </Button>
-              )}
+              <Button
+                variant={ButtonVariant.secondary}
+                onClick={handleOnBack}
+                className={css(
+                  stepId === WizardStepIds.DETAILS && "pf-m-disabled"
+                )}
+                isDisabled={disableNavigation}
+              >
+                Back
+              </Button>
+              <Button
+                variant={ButtonVariant.link}
+                onClick={handleOnClose}
+                isDisabled={disableNavigation}
+              >
+                Cancel
+              </Button>
             </footer>
           }
         />

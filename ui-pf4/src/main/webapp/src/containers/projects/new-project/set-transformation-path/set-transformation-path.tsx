@@ -1,32 +1,28 @@
 import React from "react";
 import { RouteComponentProps } from "react-router-dom";
 import {
-  PageSection,
   Stack,
   StackItem,
   Title,
   TitleSizes,
-  WizardStep,
   TextContent,
   Text,
+  AlertActionCloseButton,
+  Alert,
 } from "@patternfly/react-core";
 
-import { SimplePageSection, SelectCardGallery } from "components";
-import { MigrationProject, AnalysisContext } from "models/api";
-import { Paths, formatPath } from "Paths";
+import { SelectCardGallery } from "components";
 
-import { TITLE, DESCRIPTION } from "../shared/constants";
-import {
-  LoadingWizard,
-  buildWizard,
-  WizardStepIds,
-  ErrorWizard,
-} from "../shared/WizardUtils";
+import { Paths, formatPath } from "Paths";
+import { MigrationProject, AnalysisContext } from "models/api";
 import {
   getProjectById,
   getAnalysisContext,
   saveAnalysisContext,
 } from "api/api";
+
+import NewProjectWizard from "../";
+import { WizardStepIds, LoadingWizardContent } from "../new-project-wizard";
 
 interface SetTransformationPathProps
   extends RouteComponentProps<{ project: string }> {}
@@ -39,42 +35,38 @@ export const SetTransformationPath: React.FC<SetTransformationPathProps> = ({
   const [analysisContext, setAnalysisContext] = React.useState<
     AnalysisContext
   >();
-  const [isProjectBeingFetched, setIsProjectBeingFetched] = React.useState(
-    true
-  );
 
   const [transformationPath, setTransformationPath] = React.useState<string[]>(
     []
   );
 
-  const [enableNext, setEnableNext] = React.useState(true);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const [showWizardError, setShowWizardError] = React.useState(false);
+  const [submitError, setSubmitError] = React.useState<string>();
+
+  const [isFetching, setIsFetching] = React.useState(true);
+  const [fetchError, setFetchError] = React.useState<string>();
 
   React.useEffect(() => {
     getProjectById(match.params.project)
       .then(({ data: projectData }) => {
         setProject(projectData);
 
-        getAnalysisContext(projectData.defaultAnalysisContextId)
-          .then(({ data: analysisContextData }) => {
-            setAnalysisContext(analysisContextData);
-            setTransformationPath(
-              analysisContextData.transformationPaths.length > 0
-                ? analysisContextData.transformationPaths
-                : ["eap7"]
-            );
-          })
-          .catch(() => {
-            setShowWizardError(true);
-          })
-          .finally(() => {
-            setIsProjectBeingFetched(false);
-          });
+        return getAnalysisContext(projectData.defaultAnalysisContextId);
+      })
+      .then(({ data: analysisContextData }) => {
+        setAnalysisContext(analysisContextData);
+        setTransformationPath(
+          analysisContextData.transformationPaths.length > 0
+            ? analysisContextData.transformationPaths
+            : ["eap7"]
+        );
       })
       .catch(() => {
-        setIsProjectBeingFetched(false);
-        setShowWizardError(true);
+        setFetchError("Error while fetching migrationProject/analysisContext");
+        setIsFetching(false);
+      })
+      .finally(() => {
+        setIsFetching(false);
       });
   }, [match]);
 
@@ -95,47 +87,42 @@ export const SetTransformationPath: React.FC<SetTransformationPathProps> = ({
         );
       })
       .catch(() => {
+        setSubmitError("Could not save data");
         setIsSubmitting(false);
-        setShowWizardError(true);
       });
   };
 
-  const handleOnClose = () => {
-    push(Paths.projects);
-  };
-
-  const handleOnGoToStep = (newStep: { id?: number }) => {
-    switch (newStep.id) {
-      case WizardStepIds.DETAILS:
-        push(
-          formatPath(Paths.newProject_details, {
-            project: project?.id,
-          })
-        );
-        break;
-      case WizardStepIds.ADD_APPLICATIONS:
-        push(
-          formatPath(Paths.newProject_addApplications, {
-            project: project?.id,
-          })
-        );
-        break;
-      default:
-        new Error("Can not go to step id[" + newStep.id + "]");
-    }
-  };
-
-  const handleTransformationPathSelectGalleryChange = (values: string[]) => {
+  const handleTransformationPathChange = (values: string[]) => {
     setTransformationPath(values);
-    setEnableNext(values.length > 0);
   };
 
-  const createWizardStep = (): WizardStep => {
-    return {
-      id: WizardStepIds.SET_TRANSFORMATION_PATH,
-      name: "Set transformation path",
-      component: (
+  return (
+    <NewProjectWizard
+      stepId={WizardStepIds.SET_TRANSFORMATION_PATH}
+      enableNext={transformationPath.length > 0}
+      disableNavigation={isFetching || isSubmitting}
+      handleOnNextStep={handleOnNextStep}
+      migrationProject={project}
+      showErrorContent={fetchError}
+    >
+      {isFetching ? (
+        <LoadingWizardContent />
+      ) : (
         <Stack hasGutter>
+          {submitError && (
+            <StackItem>
+              <Alert
+                isLiveRegion
+                variant="danger"
+                title="Error"
+                actionClose={
+                  <AlertActionCloseButton onClose={() => setSubmitError("")} />
+                }
+              >
+                {submitError}
+              </Alert>
+            </StackItem>
+          )}
           <StackItem>
             <TextContent>
               <Title headingLevel="h5" size={TitleSizes["lg"]}>
@@ -156,40 +143,11 @@ export const SetTransformationPath: React.FC<SetTransformationPathProps> = ({
           >
             <SelectCardGallery
               value={transformationPath}
-              onChange={handleTransformationPathSelectGalleryChange}
+              onChange={handleTransformationPathChange}
             />
           </StackItem>
         </Stack>
-      ),
-      canJumpTo: true,
-      enableNext: enableNext,
-    };
-  };
-
-  if (showWizardError) {
-    return <ErrorWizard onClose={handleOnClose} />;
-  }
-
-  return (
-    <React.Fragment>
-      <SimplePageSection title={TITLE} description={DESCRIPTION} />
-      <PageSection>
-        {isSubmitting || isProjectBeingFetched ? (
-          <LoadingWizard />
-        ) : (
-          buildWizard(
-            WizardStepIds.SET_TRANSFORMATION_PATH,
-            createWizardStep(),
-            {
-              onNext: handleOnNextStep,
-              onClose: handleOnClose,
-              onGoToStep: handleOnGoToStep,
-              onBack: handleOnGoToStep,
-            },
-            project
-          )
-        )}
-      </PageSection>
-    </React.Fragment>
+      )}
+    </NewProjectWizard>
   );
 };

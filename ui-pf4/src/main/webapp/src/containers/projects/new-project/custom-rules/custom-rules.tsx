@@ -397,7 +397,7 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
     <NewProjectWizard
       stepId={WizardStepIds.CUSTOM_RULES}
       enableNext={true}
-      isDisabled={false}
+      disableNavigation={false}
       handleOnNextStep={handleOnNextStep}
       migrationProject={project}
     >
