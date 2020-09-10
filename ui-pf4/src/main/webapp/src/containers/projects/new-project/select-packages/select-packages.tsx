@@ -13,8 +13,13 @@ import {
   Level,
   LevelItem,
   Tooltip,
+  Bullseye,
+  EmptyState,
+  EmptyStateVariant,
+  EmptyStateIcon,
+  EmptyStateBody,
 } from "@patternfly/react-core";
-import { UndoIcon } from "@patternfly/react-icons";
+import { UndoIcon, SpinnerIcon } from "@patternfly/react-icons";
 
 import { PackageSelection } from "components";
 import {
@@ -33,7 +38,7 @@ import {
 } from "api/api";
 
 import NewProjectWizard from "../";
-import { WizardStepIds, LoadingWizardContent } from "../new-project-wizard";
+import { WizardStepIds } from "../new-project-wizard";
 
 interface SelectPackagesProps
   extends RouteComponentProps<{ project: string }> {}
@@ -234,6 +239,16 @@ export const SelectPackages: React.FC<SelectPackagesProps> = ({
   }, [match]);
 
   const handleOnNextStep = () => {
+    // If packages are still being loaded no need to wait, we can jump to next step
+    if (isFetching) {
+      push(
+        formatPath(Paths.newProject_customRules, {
+          project: project?.id,
+        })
+      );
+      return;
+    }
+
     setIsSubmitting(true);
 
     const newIncludedPackages: Package[] = [];
@@ -292,85 +307,82 @@ export const SelectPackages: React.FC<SelectPackagesProps> = ({
   return (
     <NewProjectWizard
       stepId={WizardStepIds.SELECT_PACKAGES}
-      enableNext={includedPackages.length > 0}
-      disableNavigation={isFetching || isSubmitting}
+      enableNext={isFetching || includedPackages.length > 0}
+      disableNavigation={isSubmitting}
       handleOnNextStep={handleOnNextStep}
       migrationProject={project}
       showErrorContent={fetchError}
     >
-      {isFetching ? (
-        <LoadingWizardContent />
-      ) : (
-        <Stack hasGutter>
-          {submitError && (
-            <StackItem>
-              <Alert
-                isLiveRegion
-                variant="danger"
-                title="Error"
-                actionClose={
-                  <AlertActionCloseButton onClose={() => setSubmitError("")} />
-                }
-              >
-                {submitError}
-              </Alert>
-            </StackItem>
-          )}
+      <Stack hasGutter>
+        {submitError && (
           <StackItem>
-            <TextContent>
-              <Level>
-                <LevelItem>
-                  <Title headingLevel="h5" size={TitleSizes["lg"]}>
-                    Select packages
-                  </Title>
-                  <Text component="small">
-                    Select the Java packages you want to include in the
-                    analysis.
-                  </Text>
-                </LevelItem>
-                <LevelItem>
-                  <Tooltip
-                    content={
-                      <div>
-                        Include only Application Packages to the analysis.
-                      </div>
-                    }
-                  >
-                    <Button
-                      variant="plain"
-                      aria-label="Undo"
-                      onClick={handleUndo}
-                    >
-                      <UndoIcon /> Undo
-                    </Button>
-                  </Tooltip>
-                </LevelItem>
-              </Level>
-            </TextContent>
+            <Alert
+              isLiveRegion
+              variant="danger"
+              title="Error"
+              actionClose={
+                <AlertActionCloseButton onClose={() => setSubmitError("")} />
+              }
+            >
+              {submitError}
+            </Alert>
           </StackItem>
-          {/* <StackItem>
-            <Toolbar>
-              <ToolbarContent>
-                <ToolbarItem>
-                  <Button variant="secondary">Apply</Button>
-                </ToolbarItem>
-                <ToolbarItem>
-                  <Button variant="secondary">Undo</Button>
-                </ToolbarItem>
-              </ToolbarContent>
-            </Toolbar>
-          </StackItem> */}
-          <StackItem>
-            {packages && (
+        )}
+        <StackItem>
+          <TextContent>
+            <Level>
+              <LevelItem>
+                <Title headingLevel="h5" size={TitleSizes["lg"]}>
+                  Select packages
+                </Title>
+                <Text component="small">
+                  Select the Java packages you want to include in the analysis.
+                </Text>
+              </LevelItem>
+              <LevelItem>
+                <Tooltip
+                  content={
+                    <div>
+                      Include only Application Packages to the analysis.
+                    </div>
+                  }
+                >
+                  <Button
+                    variant="plain"
+                    aria-label="Undo"
+                    onClick={handleUndo}
+                  >
+                    <UndoIcon /> Undo
+                  </Button>
+                </Tooltip>
+              </LevelItem>
+            </Level>
+          </TextContent>
+        </StackItem>
+        <StackItem>
+          {isFetching ? (
+            <Bullseye>
+              <EmptyState variant={EmptyStateVariant.small}>
+                <EmptyStateIcon icon={SpinnerIcon} />
+                <Title headingLevel="h2" size="lg">
+                  Loading packages
+                </Title>
+                <EmptyStateBody>
+                  This process might take some time
+                </EmptyStateBody>
+              </EmptyState>
+            </Bullseye>
+          ) : (
+            packages && (
               <PackageSelection
                 packages={packages}
                 includedPackages={includedPackages}
                 onChange={handleOnPackageSelectionChange}
               />
-            )}
-          </StackItem>
-        </Stack>
-      )}
+            )
+          )}
+        </StackItem>
+      </Stack>
     </NewProjectWizard>
   );
 };
