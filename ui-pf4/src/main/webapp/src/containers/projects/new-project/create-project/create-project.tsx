@@ -80,7 +80,7 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
 
     const body: MigrationProject = {
       ...project,
-      title: formValue.name,
+      title: formValue.name.trim(),
       description: formValue.description,
     } as MigrationProject;
 

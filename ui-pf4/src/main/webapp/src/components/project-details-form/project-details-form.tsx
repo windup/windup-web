@@ -48,7 +48,7 @@ export const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
       .min(3, "The project name must contain at least 3 characters.")
       .max(120, "The project name must contain fewer than 120 characters.")
       .matches(
-        /^.[a-zA-Z0-9_]+$/,
+        /^(?:[A-Za-z]+)(?:[A-Za-z0-9 _]*)$/,
         "The project name must contain only alphanumeric characters."
       )
       .test("uniqueValue", "The entered name is already in use.", (value) => {

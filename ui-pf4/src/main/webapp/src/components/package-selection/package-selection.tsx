@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Bullseye } from "@patternfly/react-core";
-import { ThinkPeaksIcon } from "@patternfly/react-icons";
 
 import { Transfer, Tree } from "antd";
 import "antd/lib/transfer/style/index.css";
@@ -19,7 +18,8 @@ const packageToTree = (node: Package): TreeNode => {
   return {
     key: node.fullName,
     title: node.name,
-    icon: node.known ? <ThinkPeaksIcon /> : undefined,
+    icon: undefined,
+    // icon: node.known ? <ThinkPeaksIcon /> : undefined,
     children:
       node.childs && node.childs.length > 0
         ? node.childs.map((f) => packageToTree(f))
