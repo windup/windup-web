@@ -97,7 +97,10 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
       if (typeof value === "string" && value.trim().length > 0) {
         newAdvanceedOptions.push({ name: key, value: value } as AdvancedOption);
       } else if (typeof value === "boolean" && value === true) {
-        newAdvanceedOptions.push({ name: key, value: value } as AdvancedOption);
+        newAdvanceedOptions.push({
+          name: key,
+          value: value.toString(),
+        } as AdvancedOption);
       } else if (Array.isArray(value) && value.length > 0) {
         value.forEach((f) =>
           newAdvanceedOptions.push({ name: key, value: f } as AdvancedOption)

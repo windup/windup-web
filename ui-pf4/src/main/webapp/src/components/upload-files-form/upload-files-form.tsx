@@ -238,7 +238,7 @@ export const UploadFilesForm: React.FC<UploadFilesFormProps> = ({
                   "upload-files-section__component__tab-content-margin",
               })}
             >
-              <LevelItem>Select on or more files to upload</LevelItem>
+              <LevelItem>Select one or more files to upload</LevelItem>
               <LevelItem>
                 <Button variant="primary" onClick={open}>
                   Browse

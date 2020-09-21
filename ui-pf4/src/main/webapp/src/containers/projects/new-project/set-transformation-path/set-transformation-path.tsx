@@ -55,10 +55,12 @@ export const SetTransformationPath: React.FC<SetTransformationPathProps> = ({
       })
       .then(({ data: analysisContextData }) => {
         setAnalysisContext(analysisContextData);
+
+        const targets = analysisContextData.advancedOptions.filter(
+          (f) => f.name === "target"
+        );
         setTransformationPath(
-          analysisContextData.transformationPaths.length > 0
-            ? analysisContextData.transformationPaths
-            : ["eap7"]
+          targets.length > 0 ? targets.map((f) => f.value) : ["eap7"]
         );
       })
       .catch(() => {
@@ -74,18 +76,13 @@ export const SetTransformationPath: React.FC<SetTransformationPathProps> = ({
 
     const body: AnalysisContext = {
       ...analysisContext!,
-      transformationPaths: transformationPath,
+      advancedOptions: [
+        ...analysisContext!.advancedOptions.filter((f) => f.name !== "target"),
+        ...transformationPath.map(
+          (f) => ({ name: "target", value: f } as AdvancedOption)
+        ),
+      ],
     };
-
-    // const body: AnalysisContext = {
-    //   ...analysisContext!,
-    //   advancedOptions: [
-    //     ...analysisContext!.advancedOptions,
-    //     ...transformationPath.map(
-    //       (f) => ({ name: "target", value: f } as AdvancedOption)
-    //     ),
-    //   ],
-    // };
 
     saveAnalysisContext(project!.id, body)
       .then(() => {

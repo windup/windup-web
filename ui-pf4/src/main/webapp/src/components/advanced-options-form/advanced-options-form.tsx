@@ -354,16 +354,13 @@ export const AdvancedOptionsForm: React.FC<AdvancedOptionsFormProps> = ({
           result = {
             ...result,
             [fieldKey]: dbValues.reduce(
-              (prev, { value }) => prev || value === true || value === "true",
+              (prev, { value }) => prev || value === "true",
               false
             ),
           };
           break;
       }
     });
-
-    // TODO remove .transformationPath and use advancedOptions instead
-    result[FieldKey.TARGET] = analysisContext?.transformationPaths || [];
 
     return result;
   };

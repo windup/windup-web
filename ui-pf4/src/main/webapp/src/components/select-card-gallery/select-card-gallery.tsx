@@ -65,7 +65,7 @@ const options: TransformationPathOption[] = [
   },
   {
     label: "Red Hat Runtimes",
-    options: "runtimes",
+    options: "rhr",
     iconSrc: rhRuntimesLogo,
   },
 ];

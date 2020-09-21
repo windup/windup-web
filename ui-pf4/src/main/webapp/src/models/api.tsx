@@ -73,7 +73,6 @@ export interface AnalysisContext {
   cloudTargetsIncluded: boolean;
   linuxTargetsIncluded: boolean;
   openJdkTargetsIncluded: boolean;
-  transformationPaths: string[];
   // migrationPath: MigrationPath;
   advancedOptions: AdvancedOption[];
   rulesPaths: RulesPath[];
@@ -230,7 +229,7 @@ export interface AdvancedOption {
   id: number;
   version: number;
   name: string;
-  value: string | boolean;
+  value: string;
 }
 
 export type LevelType = "ERROR" | "PROMPT_TO_CONTINUE" | "WARNING" | "SUCCESS";
