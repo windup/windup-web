@@ -12,6 +12,9 @@ import {
   RuleProviderEntity,
   LabelProviderEntity,
   LabelsPath,
+  ConfigurationOption,
+  AdvancedOption,
+  ValidationResult,
 } from "models/api";
 
 export const MIGRATION_PROJECTS_PATH = "/migrationProjects";
@@ -222,4 +225,19 @@ export const deleteRulePathById = (rulesPathId: number): AxiosPromise => {
 
 export const deleteLabelPathById = (labelsPathId: number): AxiosPromise => {
   return ApiClient.delete(`labels/by-labels-path/${labelsPathId}`);
+};
+
+export const getAdvancedConfigurationOptions = (): AxiosPromise<
+  ConfigurationOption[]
+> => {
+  return ApiClient.get<ConfigurationOption[]>("configuration-options");
+};
+
+export const validateAdvancedOptionValue = (
+  value: AdvancedOption
+): AxiosPromise<ValidationResult> => {
+  return ApiClient.post<ValidationResult>(
+    "configuration-options/validate-option",
+    value
+  );
 };

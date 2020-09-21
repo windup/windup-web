@@ -45,6 +45,7 @@ export interface NewProjectWizardProps extends RouteComponentProps {
   disableNavigation?: boolean;
   showErrorContent?: string;
   migrationProject?: MigrationProject;
+  footer?: React.ReactNode;
   handleOnNextStep: () => void;
 }
 
@@ -70,6 +71,7 @@ export const NewProjectWizard: React.FC<NewProjectWizardProps> = ({
   migrationProject,
   showErrorContent,
   children,
+  footer,
   handleOnNextStep,
 }) => {
   const wizardSteps: WizardStep[] = [
@@ -272,33 +274,39 @@ export const NewProjectWizard: React.FC<NewProjectWizardProps> = ({
           navAriaLabel="New project steps"
           mainAriaLabel="New project content"
           footer={
-            <footer className={css(styles.wizardFooter)}>
-              <Button
-                variant={ButtonVariant.primary}
-                type="submit"
-                onClick={handleOnNextStep}
-                isDisabled={disableNavigation ? disableNavigation : !enableNext}
-              >
-                Next
-              </Button>
-              <Button
-                variant={ButtonVariant.secondary}
-                onClick={handleOnBack}
-                className={css(
-                  stepId === WizardStepIds.DETAILS && "pf-m-disabled"
-                )}
-                isDisabled={disableNavigation}
-              >
-                Back
-              </Button>
-              <Button
-                variant={ButtonVariant.link}
-                onClick={handleOnClose}
-                isDisabled={disableNavigation}
-              >
-                Cancel
-              </Button>
-            </footer>
+            footer ? (
+              footer
+            ) : (
+              <footer className={css(styles.wizardFooter)}>
+                <Button
+                  variant={ButtonVariant.primary}
+                  type="submit"
+                  onClick={handleOnNextStep}
+                  isDisabled={
+                    disableNavigation ? disableNavigation : !enableNext
+                  }
+                >
+                  Next
+                </Button>
+                <Button
+                  variant={ButtonVariant.secondary}
+                  onClick={handleOnBack}
+                  className={css(
+                    stepId === WizardStepIds.DETAILS && "pf-m-disabled"
+                  )}
+                  isDisabled={disableNavigation}
+                >
+                  Back
+                </Button>
+                <Button
+                  variant={ButtonVariant.link}
+                  onClick={handleOnClose}
+                  isDisabled={disableNavigation}
+                >
+                  Cancel
+                </Button>
+              </footer>
+            )
           }
         />
       </PageSection>
