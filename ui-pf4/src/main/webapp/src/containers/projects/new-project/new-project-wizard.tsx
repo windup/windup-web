@@ -76,8 +76,11 @@ export const NewProjectWizard: React.FC<NewProjectWizardProps> = ({
   footer,
   handleOnNextStep,
 }) => {
-  const isMinDataFilled =
-    migrationProject &&
+  const hasApplications =
+    migrationProject && migrationProject.applications.length > 0;
+
+  const hasMinData =
+    hasApplications &&
     analysisContext &&
     analysisContext.advancedOptions.filter((option) => option.name === "target")
       .length > 0;
@@ -87,20 +90,14 @@ export const NewProjectWizard: React.FC<NewProjectWizardProps> = ({
       id: WizardStepIds.DETAILS,
       name: "Details",
       component: undefined,
-      canJumpTo:
-        WizardStepIds.DETAILS <= stepId ||
-        isMinDataFilled ||
-        migrationProject !== undefined,
+      canJumpTo: WizardStepIds.DETAILS <= stepId,
       enableNext: false,
     },
     {
       id: WizardStepIds.ADD_APPLICATIONS,
       name: "Add applications",
       component: undefined,
-      canJumpTo:
-        WizardStepIds.ADD_APPLICATIONS <= stepId ||
-        isMinDataFilled ||
-        (migrationProject && migrationProject.applications.length > 0),
+      canJumpTo: WizardStepIds.ADD_APPLICATIONS <= stepId || hasApplications,
       enableNext: false,
     },
     {
@@ -111,13 +108,13 @@ export const NewProjectWizard: React.FC<NewProjectWizardProps> = ({
           name: "Set transformation path",
           component: undefined,
           canJumpTo:
-            WizardStepIds.SET_TRANSFORMATION_PATH <= stepId || isMinDataFilled,
+            WizardStepIds.SET_TRANSFORMATION_PATH <= stepId || hasMinData,
           enableNext: false,
         },
         {
           id: WizardStepIds.SELECT_PACKAGES,
           name: "Select packages",
-          canJumpTo: WizardStepIds.SELECT_PACKAGES <= stepId || isMinDataFilled,
+          canJumpTo: WizardStepIds.SELECT_PACKAGES <= stepId || hasMinData,
           enableNext: false,
         },
       ],
@@ -129,20 +126,19 @@ export const NewProjectWizard: React.FC<NewProjectWizardProps> = ({
           id: WizardStepIds.CUSTOM_RULES,
           name: "Custom rules",
           component: undefined,
-          canJumpTo: WizardStepIds.CUSTOM_RULES <= stepId || isMinDataFilled,
+          canJumpTo: WizardStepIds.CUSTOM_RULES <= stepId || hasMinData,
           enableNext: false,
         },
         {
           id: WizardStepIds.CUSTOM_LABELS,
           name: "Custom labels",
-          canJumpTo: WizardStepIds.CUSTOM_LABELS <= stepId || isMinDataFilled,
+          canJumpTo: WizardStepIds.CUSTOM_LABELS <= stepId || hasMinData,
           enableNext: false,
         },
         {
           id: WizardStepIds.ADVANCED_OPTIONS,
           name: "Options",
-          canJumpTo:
-            WizardStepIds.ADVANCED_OPTIONS <= stepId || isMinDataFilled,
+          canJumpTo: WizardStepIds.ADVANCED_OPTIONS <= stepId || hasMinData,
           enableNext: false,
         },
       ],
@@ -151,7 +147,7 @@ export const NewProjectWizard: React.FC<NewProjectWizardProps> = ({
       id: WizardStepIds.REVIEW,
       name: "Review",
       component: undefined,
-      canJumpTo: WizardStepIds.REVIEW <= stepId || isMinDataFilled,
+      canJumpTo: WizardStepIds.REVIEW <= stepId || hasMinData,
       enableNext: false,
     },
   ];

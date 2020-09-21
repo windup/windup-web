@@ -12,10 +12,13 @@ import {
   SelectVariant,
   SelectOption,
   Switch,
+  Tooltip,
 } from "@patternfly/react-core";
 
 import { Formik } from "formik";
 import * as yup from "yup";
+
+import "./advanced-options-form.scss";
 
 import { validateAdvancedOptionValue } from "api/api";
 import {
@@ -394,7 +397,7 @@ export const AdvancedOptionsForm: React.FC<AdvancedOptionsFormProps> = ({
         };
 
         return (
-          <Form isHorizontal onSubmit={handleSubmit}>
+          <Form onSubmit={handleSubmit}>
             <Grid hasGutter md={6}>
               <GridItem md={8} className="pf-c-form pf-m-horizontal">
                 {
@@ -410,7 +413,15 @@ export const AdvancedOptionsForm: React.FC<AdvancedOptionsFormProps> = ({
                       return (
                         <FormGroup
                           key={`${fieldInfo.type}-${index}`}
-                          label={fieldInfo?.label}
+                          label={
+                            <Tooltip
+                              content={
+                                <div>{fieldConfiguration.description}</div>
+                              }
+                            >
+                              <span>{fieldInfo.label}</span>
+                            </Tooltip>
+                          }
                           fieldId={fieldKey}
                           helperText=""
                           isRequired={fieldConfiguration.required}
@@ -470,7 +481,15 @@ export const AdvancedOptionsForm: React.FC<AdvancedOptionsFormProps> = ({
                       return (
                         <FormGroup
                           key={`${fieldInfo.type}-${index}`}
-                          label={fieldInfo?.label}
+                          label={
+                            <Tooltip
+                              content={
+                                <div>{fieldConfiguration.description}</div>
+                              }
+                            >
+                              <span>{fieldInfo.label}</span>
+                            </Tooltip>
+                          }
                           fieldId={fieldKey}
                           helperText=""
                           isRequired={fieldConfiguration.required}
@@ -496,7 +515,10 @@ export const AdvancedOptionsForm: React.FC<AdvancedOptionsFormProps> = ({
                     })
                 }
               </GridItem>
-              <GridItem md={4} className="pf-c-form pf-m-horizontal">
+              <GridItem
+                md={4}
+                className="pf-c-form pf-m-horizontal pf-c-form-advanced-options"
+              >
                 {getMapKeys(Fields)
                   .filter((f) => Fields.get(f)?.type === "switch")
                   .map((fieldKey: FieldKey, index) => {
@@ -508,12 +530,21 @@ export const AdvancedOptionsForm: React.FC<AdvancedOptionsFormProps> = ({
                     return (
                       <FormGroup
                         key={`${fieldInfo.type}-${index}`}
-                        label={fieldInfo.label}
+                        label={
+                          <Tooltip
+                            content={
+                              <div>{fieldConfiguration.description}</div>
+                            }
+                          >
+                            <span>{fieldInfo.label}</span>
+                          </Tooltip>
+                        }
                         fieldId={fieldKey}
                         helperText=""
                         isRequired={fieldConfiguration.required}
                         validated={getValidatedFromError(errors[fieldKey])}
                         helperTextInvalid={errors[fieldKey]}
+                        hasNoPaddingTop
                       >
                         <Switch
                           label=""
