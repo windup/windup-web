@@ -14,7 +14,7 @@ import {
 import { SelectCardGallery } from "components";
 
 import { Paths, formatPath } from "Paths";
-import { MigrationProject, AnalysisContext } from "models/api";
+import { MigrationProject, AnalysisContext, AdvancedOption } from "models/api";
 import {
   getProjectById,
   getAnalysisContext,
@@ -76,6 +76,16 @@ export const SetTransformationPath: React.FC<SetTransformationPathProps> = ({
       ...analysisContext!,
       transformationPaths: transformationPath,
     };
+
+    // const body: AnalysisContext = {
+    //   ...analysisContext!,
+    //   advancedOptions: [
+    //     ...analysisContext!.advancedOptions,
+    //     ...transformationPath.map(
+    //       (f) => ({ name: "target", value: f } as AdvancedOption)
+    //     ),
+    //   ],
+    // };
 
     saveAnalysisContext(project!.id, body)
       .then(() => {

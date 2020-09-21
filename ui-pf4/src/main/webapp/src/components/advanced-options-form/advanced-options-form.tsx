@@ -3,7 +3,6 @@ import {
   Form,
   FormGroup,
   TextInput,
-  TextArea,
   ActionGroup,
   Button,
   ButtonVariant,
@@ -18,7 +17,7 @@ import {
 import { Formik } from "formik";
 import * as yup from "yup";
 
-import { getProjectIdByName, validateAdvancedOptionValue } from "api/api";
+import { validateAdvancedOptionValue } from "api/api";
 import {
   AnalysisContext,
   ConfigurationOption,
@@ -31,7 +30,6 @@ import {
 } from "utils/formUtils";
 import { useSelectionState } from "hooks/useSelectionState";
 import { getMapKeys } from "utils/utils";
-import { ReactReduxContext } from "react-redux";
 
 export interface ProjectDetailsFormValue {
   name: string;
@@ -41,7 +39,7 @@ export interface ProjectDetailsFormValue {
 export interface AdvancedOptionsFormProps {
   formRef?: any;
   availableOptions: ConfigurationOption[];
-  analysisContext?: AnalysisContext; // initial values
+  analysisContext: AnalysisContext; // initial values
   hideFormControls?: boolean;
   onSubmit?: (value: any) => void;
   onCancel?: () => void;
@@ -243,7 +241,7 @@ export const AdvancedOptionsForm: React.FC<AdvancedOptionsFormProps> = ({
   onCancel,
   onSubmit,
 }) => {
-  const [dropdowns, setDropdowns] = React.useState<FieldKey[]>(
+  const [dropdowns] = React.useState<FieldKey[]>(
     getMapKeys(Fields).filter((f) => f.type === "dropdown")
   );
   const dropdownCollapse = useSelectionState({
@@ -290,11 +288,37 @@ export const AdvancedOptionsForm: React.FC<AdvancedOptionsFormProps> = ({
         "The entered name is invalid.",
         (value) => {
           if (!value) return true;
-          return validateAdvancedOptionValue({
-            name: fieldKey,
-            value: value,
-          } as AdvancedOption)
-            .then(({ data }) => data.level === "SUCCESS")
+
+          let values: any[];
+          if (typeof value === "string" || typeof value === "boolean") {
+            values = [value];
+          } else if (Array.isArray(value)) {
+            values = value;
+          } else {
+            throw Error("Invalid type, can not validate:" + value);
+          }
+
+          return Promise.all(
+            values.map((f) =>
+              validateAdvancedOptionValue({
+                name: fieldKey,
+                value: f,
+              } as AdvancedOption)
+            )
+          )
+            .then((responses) => {
+              const isValid = responses.every(
+                (f) => f.data.level === "SUCCESS"
+              );
+
+              return !isValid
+                ? new yup.ValidationError(
+                    responses.map((f) => f.data.message),
+                    value,
+                    fieldKey
+                  )
+                : true;
+            })
             .catch(() => false);
         }
       );
@@ -307,24 +331,38 @@ export const AdvancedOptionsForm: React.FC<AdvancedOptionsFormProps> = ({
     let result: any = {};
 
     getMapKeys(Fields).forEach((fieldKey: FieldKey) => {
-      const [fieldInfo, fieldConfiguration] = getFieldData(
-        fieldKey,
-        availableOptions
+      const [fieldInfo] = getFieldData(fieldKey, availableOptions);
+
+      const dbValues = analysisContext.advancedOptions.filter(
+        (f) => f.name === fieldKey
       );
 
       switch (fieldInfo.type) {
         case "dropdown":
-          result = { ...result, [fieldKey]: [] };
+          result = {
+            ...result,
+            [fieldKey]: dbValues.map((f) => f.value) || [],
+          };
           break;
         case "input":
-          result = { ...result, [fieldKey]: "" };
+          result = {
+            ...result,
+            [fieldKey]: dbValues.map((f) => f.value).join(" ") || "",
+          };
           break;
         case "switch":
-          result = { ...result, [fieldKey]: false };
+          result = {
+            ...result,
+            [fieldKey]: dbValues.reduce(
+              (prev, { value }) => prev || value === true || value === "true",
+              false
+            ),
+          };
           break;
       }
     });
 
+    // TODO remove .transformationPath and use advancedOptions instead
     result[FieldKey.TARGET] = analysisContext?.transformationPaths || [];
 
     return result;
@@ -361,7 +399,7 @@ export const AdvancedOptionsForm: React.FC<AdvancedOptionsFormProps> = ({
         return (
           <Form isHorizontal onSubmit={handleSubmit}>
             <Grid hasGutter md={6}>
-              <GridItem className="pf-c-form pf-m-horizontal">
+              <GridItem md={8} className="pf-c-form pf-m-horizontal">
                 {
                   // Dropdowns
                   getMapKeys(Fields)
@@ -380,7 +418,7 @@ export const AdvancedOptionsForm: React.FC<AdvancedOptionsFormProps> = ({
                           helperText=""
                           isRequired={fieldConfiguration.required}
                           validated={getValidatedFromError(errors[fieldKey])}
-                          helperTextInvalid={errors.fieldKey}
+                          helperTextInvalid={errors[fieldKey]}
                         >
                           <Select
                             variant={SelectVariant.typeaheadMulti}
@@ -440,7 +478,7 @@ export const AdvancedOptionsForm: React.FC<AdvancedOptionsFormProps> = ({
                           helperText=""
                           isRequired={fieldConfiguration.required}
                           validated={getValidatedFromError(errors[fieldKey])}
-                          helperTextInvalid={errors.fieldKey}
+                          helperTextInvalid={errors[fieldKey]}
                         >
                           <TextInput
                             id={fieldKey}
@@ -461,7 +499,7 @@ export const AdvancedOptionsForm: React.FC<AdvancedOptionsFormProps> = ({
                     })
                 }
               </GridItem>
-              <GridItem className="pf-c-form pf-m-horizontal">
+              <GridItem md={4} className="pf-c-form pf-m-horizontal">
                 {getMapKeys(Fields)
                   .filter((f) => Fields.get(f)?.type === "switch")
                   .map((fieldKey: FieldKey, index) => {

@@ -230,7 +230,7 @@ export interface AdvancedOption {
   id: number;
   version: number;
   name: string;
-  value: string;
+  value: string | boolean;
 }
 
 export type LevelType = "ERROR" | "PROMPT_TO_CONTINUE" | "WARNING" | "SUCCESS";

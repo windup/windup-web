@@ -1,6 +1,7 @@
 import React from "react";
 import { RouteComponentProps } from "react-router-dom";
 
+import { FormikHelpers } from "formik";
 import {
   Stack,
   StackItem,
@@ -10,65 +11,25 @@ import {
   Text,
   Alert,
   AlertActionCloseButton,
-  Button,
 } from "@patternfly/react-core";
-
-import { Schema } from "@data-driven-forms/react-form-renderer";
-import FormRenderer from "@data-driven-forms/react-form-renderer/dist/cjs/form-renderer";
-import FormTemplate from "@data-driven-forms/pf4-component-mapper/dist/cjs/form-template";
-import componentTypes from "@data-driven-forms/react-form-renderer/dist/cjs/component-types";
-import validatorTypes from "@data-driven-forms/react-form-renderer/dist/cjs/validator-types";
-import componentMapper from "@data-driven-forms/pf4-component-mapper/dist/cjs/component-mapper";
 
 import { Paths, formatPath } from "Paths";
 import {
   getProjectById,
   getAnalysisContext,
   getAdvancedConfigurationOptions,
+  saveAnalysisContext,
 } from "api/api";
 import {
   MigrationProject,
   AnalysisContext,
   ConfigurationOption,
+  AdvancedOption,
 } from "models/api";
 
 import NewProjectWizard from "..";
 import { WizardStepIds, LoadingWizardContent } from "../new-project-wizard";
-import { FormTemplateNewWizard } from "./new-project-wizard-ddf";
 import { AdvancedOptionsForm } from "components";
-
-export const buildSchema = (fields: ConfigurationOption[]): Schema => {
-  const schema: Schema = {
-    fields: [...fields]
-      .sort((a, b) => a.priority - b.priority)
-      .map((f) => {
-        let component;
-
-        switch (f.type) {
-          case "java.lang.String":
-            component = componentTypes.TEXT_FIELD;
-            break;
-          case "java.io.File":
-            component = componentTypes.TEXT_FIELD;
-            break;
-          case "java.lang.Boolean":
-            component = componentTypes.SWITCH;
-            break;
-          default:
-            throw Error("Unsupported type " + f.type);
-        }
-
-        return {
-          name: f.name,
-          label: f.name,
-          isRequired: f.required,
-          component: component,
-        };
-      }),
-  };
-
-  return schema;
-};
 
 interface CreateProjectProps extends RouteComponentProps<{ project: string }> {}
 
@@ -76,6 +37,8 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
   match,
   history: { push },
 }) => {
+  const formRef = React.useRef<FormikHelpers<any>>();
+
   const [project, setProject] = React.useState<MigrationProject>();
   const [analysisContext, setAnalysisContext] = React.useState<
     AnalysisContext
@@ -118,14 +81,48 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
   }, [match]);
 
   const handleOnNextStep = () => {
-    push(
-      formatPath(Paths.newProject_review, {
-        project: project?.id,
-      })
-    );
+    if (!formRef.current) {
+      throw Error("Could not find a reference to form");
+    }
+
+    formRef.current.submitForm();
   };
 
-  const fancyFormRef = React.createRef<any>();
+  const handleOnSubmit = (formValues: any) => {
+    setIsSubmitting(true);
+
+    const newAdvanceedOptions: AdvancedOption[] = [];
+    Object.keys(formValues).forEach((key) => {
+      const value = formValues[key];
+      if (typeof value === "string" && value.trim().length > 0) {
+        newAdvanceedOptions.push({ name: key, value: value } as AdvancedOption);
+      } else if (typeof value === "boolean" && value === true) {
+        newAdvanceedOptions.push({ name: key, value: value } as AdvancedOption);
+      } else if (Array.isArray(value) && value.length > 0) {
+        value.forEach((f) =>
+          newAdvanceedOptions.push({ name: key, value: f } as AdvancedOption)
+        );
+      }
+    });
+
+    const body: AnalysisContext = {
+      ...analysisContext!,
+      advancedOptions: newAdvanceedOptions,
+    };
+
+    saveAnalysisContext(project!.id, body)
+      .then(() => {
+        push(
+          formatPath(Paths.newProject_review, {
+            project: project!.id,
+          })
+        );
+      })
+      .catch(() => {
+        setSubmitError("Could not save data");
+        setIsSubmitting(false);
+      });
+  };
 
   return (
     <NewProjectWizard
@@ -162,12 +159,14 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
               <Text component="small">Specify additional options here.</Text>
             </TextContent>
           </StackItem>
-          {configurationOptions && (
+          {configurationOptions && analysisContext && (
             <StackItem>
               <AdvancedOptionsForm
+                formRef={formRef}
+                hideFormControls
                 availableOptions={configurationOptions}
                 analysisContext={analysisContext}
-                hideFormControls
+                onSubmit={handleOnSubmit}
               />
             </StackItem>
           )}

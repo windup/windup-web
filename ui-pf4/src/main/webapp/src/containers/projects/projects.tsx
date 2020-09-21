@@ -8,6 +8,7 @@ import SelectPackages from "./new-project/select-packages";
 import CustomRules from "./new-project/custom-rules";
 import CustomLabels from "./new-project/custom-labels";
 import AdvancedOptions from "./new-project/advanced-options";
+import Review from "./new-project/review";
 import { Paths } from "../../Paths";
 
 export const Projects: React.FC = () => {
@@ -51,6 +52,7 @@ export const Projects: React.FC = () => {
           component={AdvancedOptions}
           exact
         />
+        <Route path={Paths.newProject_review} component={Review} exact />
       </Switch>
     </React.Fragment>
   );
