@@ -400,6 +400,7 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
       disableNavigation={false}
       handleOnNextStep={handleOnNextStep}
       migrationProject={project}
+      analysisContext={analysisContext}
     >
       <Stack hasGutter>
         <StackItem>

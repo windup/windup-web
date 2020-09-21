@@ -401,6 +401,7 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
       disableNavigation={false}
       handleOnNextStep={handleOnNextStep}
       migrationProject={project}
+      analysisContext={analysisContext}
     >
       <Stack hasGutter>
         <StackItem>

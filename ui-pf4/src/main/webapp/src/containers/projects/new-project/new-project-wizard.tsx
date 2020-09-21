@@ -22,7 +22,7 @@ import styles from "@patternfly/react-styles/css/components/Wizard/wizard";
 
 import { SimplePageSection } from "components";
 import { formatPath, Paths } from "Paths";
-import { MigrationProject } from "models/api";
+import { MigrationProject, AnalysisContext } from "models/api";
 
 const TITLE = "Create project";
 const DESCRIPTION = "Create a project for your applications";
@@ -45,6 +45,7 @@ export interface NewProjectWizardProps extends RouteComponentProps {
   disableNavigation?: boolean;
   showErrorContent?: string;
   migrationProject?: MigrationProject;
+  analysisContext?: AnalysisContext;
   footer?: React.ReactNode;
   handleOnNextStep: () => void;
 }
@@ -69,24 +70,37 @@ export const NewProjectWizard: React.FC<NewProjectWizardProps> = ({
   enableNext,
   disableNavigation,
   migrationProject,
+  analysisContext,
   showErrorContent,
   children,
   footer,
   handleOnNextStep,
 }) => {
+  const isMinDataFilled =
+    migrationProject &&
+    analysisContext &&
+    analysisContext.advancedOptions.filter((option) => option.name === "target")
+      .length > 0;
+
   const wizardSteps: WizardStep[] = [
     {
       id: WizardStepIds.DETAILS,
       name: "Details",
       component: undefined,
-      canJumpTo: WizardStepIds.DETAILS <= stepId,
+      canJumpTo:
+        WizardStepIds.DETAILS <= stepId ||
+        isMinDataFilled ||
+        migrationProject !== undefined,
       enableNext: false,
     },
     {
       id: WizardStepIds.ADD_APPLICATIONS,
       name: "Add applications",
       component: undefined,
-      canJumpTo: WizardStepIds.ADD_APPLICATIONS <= stepId,
+      canJumpTo:
+        WizardStepIds.ADD_APPLICATIONS <= stepId ||
+        isMinDataFilled ||
+        (migrationProject && migrationProject.applications.length > 0),
       enableNext: false,
     },
     {
@@ -96,13 +110,14 @@ export const NewProjectWizard: React.FC<NewProjectWizardProps> = ({
           id: WizardStepIds.SET_TRANSFORMATION_PATH,
           name: "Set transformation path",
           component: undefined,
-          canJumpTo: WizardStepIds.SET_TRANSFORMATION_PATH <= stepId,
+          canJumpTo:
+            WizardStepIds.SET_TRANSFORMATION_PATH <= stepId || isMinDataFilled,
           enableNext: false,
         },
         {
           id: WizardStepIds.SELECT_PACKAGES,
           name: "Select packages",
-          canJumpTo: WizardStepIds.SELECT_PACKAGES <= stepId,
+          canJumpTo: WizardStepIds.SELECT_PACKAGES <= stepId || isMinDataFilled,
           enableNext: false,
         },
       ],
@@ -114,19 +129,20 @@ export const NewProjectWizard: React.FC<NewProjectWizardProps> = ({
           id: WizardStepIds.CUSTOM_RULES,
           name: "Custom rules",
           component: undefined,
-          canJumpTo: WizardStepIds.CUSTOM_RULES <= stepId,
+          canJumpTo: WizardStepIds.CUSTOM_RULES <= stepId || isMinDataFilled,
           enableNext: false,
         },
         {
           id: WizardStepIds.CUSTOM_LABELS,
           name: "Custom labels",
-          canJumpTo: WizardStepIds.CUSTOM_LABELS <= stepId,
+          canJumpTo: WizardStepIds.CUSTOM_LABELS <= stepId || isMinDataFilled,
           enableNext: false,
         },
         {
           id: WizardStepIds.ADVANCED_OPTIONS,
           name: "Options",
-          canJumpTo: WizardStepIds.ADVANCED_OPTIONS <= stepId,
+          canJumpTo:
+            WizardStepIds.ADVANCED_OPTIONS <= stepId || isMinDataFilled,
           enableNext: false,
         },
       ],
@@ -135,7 +151,7 @@ export const NewProjectWizard: React.FC<NewProjectWizardProps> = ({
       id: WizardStepIds.REVIEW,
       name: "Review",
       component: undefined,
-      canJumpTo: WizardStepIds.REVIEW <= stepId,
+      canJumpTo: WizardStepIds.REVIEW <= stepId || isMinDataFilled,
       enableNext: false,
     },
   ];
@@ -246,6 +262,13 @@ export const NewProjectWizard: React.FC<NewProjectWizardProps> = ({
       case WizardStepIds.ADVANCED_OPTIONS:
         push(
           formatPath(Paths.newProject_advandedOptions, {
+            project: migrationProject?.id,
+          })
+        );
+        break;
+      case WizardStepIds.REVIEW:
+        push(
+          formatPath(Paths.newProject_review, {
             project: migrationProject?.id,
           })
         );

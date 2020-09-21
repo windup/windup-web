@@ -12,12 +12,13 @@ import {
 
 import { AddApplicationsForm } from "components";
 
-import { MigrationProject, Application } from "models/api";
+import { MigrationProject, Application, AnalysisContext } from "models/api";
 import {
   getProjectById,
   pathTargetType,
   registerApplicationInDirectoryByPath,
   registerApplicationByPath,
+  getAnalysisContext,
 } from "api/api";
 
 import { Paths, formatPath } from "Paths";
@@ -33,6 +34,9 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
   history: { push },
 }) => {
   const [project, setProject] = useState<MigrationProject>();
+  const [analysisContext, setAnalysisContext] = React.useState<
+    AnalysisContext
+  >();
 
   const [formValue, setFormValue] = useState<{
     activeTabKey?: number;
@@ -56,6 +60,10 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
     getProjectById(match.params.project)
       .then(({ data }) => {
         setProject(data);
+        return getAnalysisContext(data.defaultAnalysisContextId);
+      })
+      .then(({ data: analysisContextData }) => {
+        setAnalysisContext(analysisContextData);
       })
       .catch(() => {
         setFetchError("Error while fetching migrationProject");
@@ -140,6 +148,7 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
       disableNavigation={isFetching || isSubmitting}
       handleOnNextStep={handleOnNextStep}
       migrationProject={project}
+      analysisContext={analysisContext}
       showErrorContent={fetchError}
     >
       {isFetching ? (

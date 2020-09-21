@@ -109,6 +109,7 @@ export const SetTransformationPath: React.FC<SetTransformationPathProps> = ({
       disableNavigation={isFetching || isSubmitting}
       handleOnNextStep={handleOnNextStep}
       migrationProject={project}
+      analysisContext={analysisContext}
       showErrorContent={fetchError}
     >
       {isFetching ? (

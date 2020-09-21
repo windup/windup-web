@@ -311,6 +311,7 @@ export const SelectPackages: React.FC<SelectPackagesProps> = ({
       disableNavigation={isSubmitting}
       handleOnNextStep={handleOnNextStep}
       migrationProject={project}
+      analysisContext={analysisContext}
       showErrorContent={fetchError}
     >
       <Stack hasGutter>

@@ -134,6 +134,7 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
       disableNavigation={isFetching || isSubmitting}
       handleOnNextStep={handleOnNextStep}
       migrationProject={project}
+      analysisContext={analysisContext}
       showErrorContent={fetchError}
     >
       {isFetching ? (

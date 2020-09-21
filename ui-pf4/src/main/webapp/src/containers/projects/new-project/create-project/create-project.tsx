@@ -20,8 +20,9 @@ import {
   createProject,
   updateProject,
   getProjectById,
+  getAnalysisContext,
 } from "api/api";
-import { MigrationProject } from "models/api";
+import { MigrationProject, AnalysisContext } from "models/api";
 
 import NewProjectWizard from "../";
 import { WizardStepIds, LoadingWizardContent } from "../new-project-wizard";
@@ -36,6 +37,9 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
   const formRef = React.useRef<FormikHelpers<any>>();
 
   const [project, setProject] = React.useState<MigrationProject>();
+  const [analysisContext, setAnalysisContext] = React.useState<
+    AnalysisContext
+  >();
 
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [submitError, setSubmitError] = React.useState<string>();
@@ -52,6 +56,10 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
       getProjectById(match.params.project)
         .then(({ data }) => {
           setProject(data);
+          return getAnalysisContext(data.defaultAnalysisContextId);
+        })
+        .then(({ data: analysisContextData }) => {
+          setAnalysisContext(analysisContextData);
         })
         .catch(() => {
           setFetchError("Could not fetch migrationProject data");
@@ -110,6 +118,8 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
       enableNext={true}
       disableNavigation={isFetching || isSubmitting}
       handleOnNextStep={handleOnNextStep}
+      migrationProject={project}
+      analysisContext={analysisContext}
       showErrorContent={fetchError}
     >
       {isFetching ? (
