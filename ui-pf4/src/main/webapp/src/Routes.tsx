@@ -4,20 +4,22 @@ import { Route, Switch, Redirect } from "react-router-dom";
 import { AppPlaceholder } from "./components";
 import { Paths } from "./Paths";
 
-const Projects = lazy(() => import("./containers/projects"));
+const NewProject = lazy(() => import("./containers/new-project"));
+const ProjectList = lazy(() => import("./containers/project-list"));
+const ProjectDetails = lazy(() => import("./containers/project-details"));
 
 export const AppRoutes = () => {
-  const routes = [{ component: Projects, path: Paths.projects }];
+  const routes = [
+    { component: ProjectList, path: Paths.projects, exact: true },
+    { component: NewProject, path: Paths.newProject, exact: false },
+    { component: ProjectDetails, path: Paths.editProject, exact: false },
+  ];
 
   return (
     <Suspense fallback={<AppPlaceholder />}>
       <Switch>
-        {routes.map((route, index) => (
-          <Route
-            key={index}
-            path={route.path}
-            component={route.component}
-          ></Route>
+        {routes.map(({ path, component, ...rest }, index) => (
+          <Route key={index} path={path} component={component} {...rest} />
         ))}
         <Redirect from={Paths.base} to={Paths.projects} exact />
       </Switch>

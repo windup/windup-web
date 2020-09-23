@@ -23,8 +23,8 @@ export const UPLOAD_APPLICATION_PATH = `${MIGRATION_PROJECTS_PATH}/:projectId/re
 export const UPLOAD_RULE_TO_MIGRATION_PROJECT = `rules/upload/by-project/:projectId`;
 export const UPLOAD_LABEL_TO_MIGRATION_PROJECT = `labels/upload/by-project/:projectId`;
 
-export const getProjects = (): AxiosPromise<Project> => {
-  return ApiClient.get<Project>(`${MIGRATION_PROJECTS_PATH}/list`);
+export const getProjects = (): AxiosPromise<Project[]> => {
+  return ApiClient.get<Project[]>(`${MIGRATION_PROJECTS_PATH}/list`);
 };
 
 export const getProjectIdByName = (

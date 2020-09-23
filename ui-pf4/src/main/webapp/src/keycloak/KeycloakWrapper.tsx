@@ -27,7 +27,6 @@ export class KeycloakWrapper extends React.Component<
     keycloak
       .init({ onLoad: "login-required" })
       .success((authenticated) => {
-        this.setState({ keycloak: keycloak, authenticated: authenticated });
         initInterceptors(() => {
           return new Promise<string>((resolve, reject) => {
             if (keycloak.token) {
@@ -41,6 +40,8 @@ export class KeycloakWrapper extends React.Component<
             }
           });
         });
+
+        this.setState({ keycloak: keycloak, authenticated: authenticated });
       })
       .error((err) => {
         console.log(err);

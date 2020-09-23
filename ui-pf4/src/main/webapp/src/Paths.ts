@@ -11,7 +11,9 @@ export const formatPath = (path: Paths, data: any) => {
 export enum Paths {
   base = "/",
   notFound = "/not-found",
+
   projects = "/projects",
+
   newProject = "/projects/~new",
   newProject_details = "/projects/~new/:project/project-details",
   newProject_addApplications = "/projects/~new/:project/add-appplications",
@@ -21,8 +23,9 @@ export enum Paths {
   newProject_customLabels = "/projects/~new/:project/custom-labels",
   newProject_advandedOptions = "/projects/~new/:project/advanced-options",
   newProject_review = "/projects/~new/:project/review",
-  editProject = "/projects/:project",
-  editProject_projectDetail = "/projects/:project/project-detail",
-  editProject_applications = "/projects/:project/applications",
-  editProject_analysisContext = "/projects/:project/analysis-context",
+
+  editProject = "/projects-details/:project",
+  editProject_analysisResults = "/projects-details/:project/analysis-results",
+  editProject_applications = "/projects-details/:project/applications",
+  editProject_analysisConfiguration = "/projects-details/:project/analysis-configuration",
 }

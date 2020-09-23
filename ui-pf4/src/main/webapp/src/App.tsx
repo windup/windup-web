@@ -6,7 +6,8 @@ import "./App.scss";
 
 import { KeycloakWrapper } from "./keycloak/KeycloakWrapper";
 import { DefaultLayout } from "./layout";
-import { DeleteDialog } from "./containers";
+
+import { DeleteDialog, ProjectContext } from "./containers";
 
 import "@redhat-cloud-services/frontend-components-notifications/index.css";
 const frontendComponentsNotifications = require("@redhat-cloud-services/frontend-components-notifications");
@@ -14,18 +15,22 @@ const frontendComponentsNotifications = require("@redhat-cloud-services/frontend
 const App: React.FC = () => {
   const NotificationsPortal =
     frontendComponentsNotifications.NotificationsPortal;
+
   return (
-    <React.Fragment>
-      <KeycloakWrapper>
-        <HashRouter>
-          <DefaultLayout>
-            <AppRoutes />
-          </DefaultLayout>
-          <NotificationsPortal />
-          <DeleteDialog />
-        </HashRouter>
-      </KeycloakWrapper>
-    </React.Fragment>
+    <KeycloakWrapper>
+      {/* ProjectContext Fetches the list of Projects for the first time*/}
+      <ProjectContext>
+        {() => (
+          <HashRouter>
+            <DefaultLayout>
+              <AppRoutes />
+            </DefaultLayout>
+            <NotificationsPortal />
+            <DeleteDialog />
+          </HashRouter>
+        )}
+      </ProjectContext>
+    </KeycloakWrapper>
   );
 };
 

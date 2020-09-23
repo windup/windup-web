@@ -1,10 +1,24 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
+
 import { Nav, NavItem, PageSidebar, NavList } from "@patternfly/react-core";
+
 import { LayoutTheme } from "../LayoutUtils";
-import { Paths } from "../../Paths";
+import { Paths, formatPath } from "Paths";
+
+import { RootState } from "store/rootReducer";
+import { projectContextSelectors } from "store/projectContext";
 
 export const SidebarApp: React.FC = () => {
+  const projects = useSelector((state: RootState) =>
+    projectContextSelectors.projects(state)
+  );
+  const selectedProject = useSelector((state: RootState) =>
+    projectContextSelectors.selectedProject(state)
+  );
+  const navProject = selectedProject ? selectedProject : projects[0];
+
   const renderPageNav = () => {
     return (
       <Nav id="nav-primary-simple" aria-label="Nav" theme={LayoutTheme}>
@@ -14,9 +28,36 @@ export const SidebarApp: React.FC = () => {
               Projects
             </NavLink>
           </NavItem>
-          <NavItem>Analysis results</NavItem>
-          <NavItem>Applications</NavItem>
-          <NavItem>Analysis configuration</NavItem>
+          <NavItem>
+            <NavLink
+              to={formatPath(Paths.editProject_analysisResults, {
+                project: navProject?.migrationProject.id,
+              })}
+              activeClassName="pf-m-current"
+            >
+              Analysis results
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink
+              to={formatPath(Paths.editProject_applications, {
+                project: navProject?.migrationProject.id,
+              })}
+              activeClassName="pf-m-current"
+            >
+              Applications
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink
+              to={formatPath(Paths.editProject_analysisConfiguration, {
+                project: navProject?.migrationProject.id,
+              })}
+              activeClassName="pf-m-current"
+            >
+              Analysis configuration
+            </NavLink>
+          </NavItem>
         </NavList>
       </Nav>
     );
