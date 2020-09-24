@@ -164,7 +164,7 @@ export const ProjectList: React.FC<Props> = ({
             {
               title: (
                 <Link
-                  to={formatPath(Paths.editProject_analysisResults, {
+                  to={formatPath(Paths.editProject_executionList, {
                     project: item.migrationProject.id,
                   })}
                 >

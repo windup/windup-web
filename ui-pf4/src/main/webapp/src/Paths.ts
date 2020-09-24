@@ -25,7 +25,11 @@ export enum Paths {
   newProject_review = "/projects/~new/:project/review",
 
   editProject = "/projects-details/:project",
+
   editProject_analysisResults = "/projects-details/:project/analysis-results",
+  editProject_executionList = "/projects-details/:project/analysis-results/executions",
+  editProject_executionDetails = "/projects-details/:project/analysis-results/executions/:execution",
+
   editProject_applications = "/projects-details/:project/applications",
   editProject_analysisConfiguration = "/projects-details/:project/analysis-configuration",
 }

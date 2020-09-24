@@ -15,6 +15,7 @@ import {
   ConfigurationOption,
   AdvancedOption,
   ValidationResult,
+  WindupExecution,
 } from "models/api";
 
 export const MIGRATION_PROJECTS_PATH = "/migrationProjects";
@@ -22,6 +23,9 @@ export const MIGRATION_PROJECTS_PATH = "/migrationProjects";
 export const UPLOAD_APPLICATION_PATH = `${MIGRATION_PROJECTS_PATH}/:projectId/registeredApplications/upload`;
 export const UPLOAD_RULE_TO_MIGRATION_PROJECT = `rules/upload/by-project/:projectId`;
 export const UPLOAD_LABEL_TO_MIGRATION_PROJECT = `labels/upload/by-project/:projectId`;
+
+export const EXECUTION_PROGRESS_URL =
+  "/websocket/execution-progress/:executionId";
 
 export const getProjects = (): AxiosPromise<Project[]> => {
   return ApiClient.get<Project[]>(`${MIGRATION_PROJECTS_PATH}/list`);
@@ -240,4 +244,10 @@ export const validateAdvancedOptionValue = (
     "configuration-options/validate-option",
     value
   );
+};
+
+export const getProjectExecutions = (
+  projectId: number | string
+): AxiosPromise<WindupExecution[]> => {
+  return ApiClient.get<WindupExecution[]>(`/windup/by-project/${projectId}`);
 };

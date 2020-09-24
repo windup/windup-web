@@ -30,7 +30,7 @@ export const SidebarApp: React.FC = () => {
           </NavItem>
           <NavItem>
             <NavLink
-              to={formatPath(Paths.editProject_analysisResults, {
+              to={formatPath(Paths.editProject_executionList, {
                 project: navProject?.migrationProject.id,
               })}
               activeClassName="pf-m-current"

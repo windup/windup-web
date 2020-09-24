@@ -79,7 +79,22 @@ export interface AnalysisContext {
   labelsPaths: LabelsPath[];
   includePackages: Package[];
   excludePackages: Package[];
-  // applications: RegisteredApplication[];
+  applications: RegisteredApplication[];
+}
+
+export interface RegisteredApplication {
+  id: number;
+  version: number;
+  registrationType: RegistrationType;
+  title: string;
+  fileSize: number;
+  inputPath: string;
+  exploded: boolean;
+  reportIndexPath: string;
+  created: number;
+  lastModified: number;
+  deleted: boolean;
+  inputFilename: string;
 }
 
 export interface Configuration {
@@ -237,4 +252,49 @@ export type LevelType = "ERROR" | "PROMPT_TO_CONTINUE" | "WARNING" | "SUCCESS";
 export interface ValidationResult {
   level: LevelType;
   message: string;
+}
+
+export interface WindupExecution {
+  id: number;
+  version: number;
+  timeQueued: number;
+  timeStarted: number;
+  timeCompleted: number;
+  outputPath: string;
+  totalWork: number;
+  workCompleted: number;
+  currentTask: string;
+  lastModified: number;
+  state: ExecutionState;
+  filterApplications: FilterApplication[];
+  analysisContext: AnalysisContext;
+  reportFilter: ReportFilter;
+  projectId: number;
+  outputDirectoryName: string;
+  applicationListRelativePath: string;
+  ruleProvidersExecutionOverviewRelativePath: string;
+}
+
+export interface FilterApplication {
+  id: number;
+  fileName: string;
+  inputPath: string;
+  md5Hash: string;
+  sha1Hash: string;
+}
+
+export interface ReportFilter {
+  id: number;
+  selectedApplications: FilterApplication[];
+  includeTags: Tag[];
+  excludeTags: Tag[];
+  includeCategories: Category[];
+  excludeCategories: Category[];
+  enabled: boolean;
+}
+
+export interface Category {
+  id: number;
+  name: string;
+  priority: number;
 }
