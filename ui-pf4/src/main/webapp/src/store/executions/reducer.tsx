@@ -11,9 +11,9 @@ import { WindupExecution } from "models/api";
 export const stateKey = "executions";
 
 export type ExecutionsState = Readonly<{
-  byId: Map<string | number, WindupExecution[]>;
-  errors: Map<string | number, AxiosError | undefined>;
-  fetchStatus: Map<string | number, FetchStatus>;
+  byId: Map<string, WindupExecution[]>;
+  errors: Map<string, AxiosError | undefined>;
+  fetchStatus: Map<string, FetchStatus>;
 }>;
 
 export const defaultState: ExecutionsState = {
@@ -37,7 +37,7 @@ export function executionsReducer(
       return {
         ...state,
         fetchStatus: new Map(state.fetchStatus).set(
-          action.payload.projectId,
+          action.payload.projectId.toString(),
           "inProgress"
         ),
       };
@@ -45,23 +45,26 @@ export function executionsReducer(
       return {
         ...state,
         fetchStatus: new Map(state.fetchStatus).set(
-          action.meta.projectId,
+          action.meta.projectId.toString(),
           "complete"
         ),
-        byId: new Map(state.byId).set(action.meta.projectId, {
+        byId: new Map(state.byId).set(action.meta.projectId.toString(), [
           ...action.payload,
-        }),
-        errors: new Map(state.errors).set(action.meta.projectId, undefined),
+        ]),
+        errors: new Map(state.errors).set(
+          action.meta.projectId.toString(),
+          undefined
+        ),
       };
     case getType(fetchExecutionFailure):
       return {
         ...state,
         fetchStatus: new Map(state.fetchStatus).set(
-          action.meta.projectId,
+          action.meta.projectId.toString(),
           "complete"
         ),
         errors: new Map(state.errors).set(
-          action.meta.projectId,
+          action.meta.projectId.toString(),
           action.payload
         ),
       };

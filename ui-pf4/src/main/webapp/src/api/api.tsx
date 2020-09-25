@@ -147,7 +147,7 @@ export const pathTargetType = (
 };
 
 export const getAnalysisContext = (
-  analysisContextId: number
+  analysisContextId: number | string
 ): AxiosPromise<AnalysisContext> => {
   return ApiClient.get<AnalysisContext>(
     `analysis-context/${analysisContextId}`
@@ -250,4 +250,14 @@ export const getProjectExecutions = (
   projectId: number | string
 ): AxiosPromise<WindupExecution[]> => {
   return ApiClient.get<WindupExecution[]>(`/windup/by-project/${projectId}`);
+};
+
+export const createProjectExecution = (
+  projectId: number | string,
+  analysisContext: AnalysisContext
+): AxiosPromise<WindupExecution> => {
+  return ApiClient.post<WindupExecution>(
+    `/windup/execute-project-with-context/${projectId}`,
+    analysisContext
+  );
 };

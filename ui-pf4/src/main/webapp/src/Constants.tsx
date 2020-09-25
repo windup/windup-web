@@ -1,3 +1,6 @@
+import { API_BASE_URL } from "api/apiInit";
+import packageJson from "../package.json";
+
 interface WindupEnv {
   SERVER: string;
   REST_SERVER: string;
@@ -10,6 +13,32 @@ interface WindupEnv {
 export const WINDUP_ENV_VARIABLES: WindupEnv = (window as any)[
   "windupConstants"
 ];
+
+export const getWindupRestBase = () => {
+  // Development
+  let base = packageJson.proxy + API_BASE_URL;
+
+  // Production
+  if (process.env.NODE_ENV === "production") {
+    base = WINDUP_ENV_VARIABLES.REST_BASE;
+  }
+
+  return base;
+};
+
+export const getWindupStaticReportsBase = () => {
+  // Development
+  let base = packageJson.proxy + API_BASE_URL + "/static-report";
+
+  // Production
+  if (process.env.NODE_ENV === "production") {
+    base = WINDUP_ENV_VARIABLES.STATIC_REPORTS_BASE;
+  }
+
+  return base;
+};
+
+//
 
 export class Constants {
   static readonly DEFAULT_PAGE_SIZE = 10;

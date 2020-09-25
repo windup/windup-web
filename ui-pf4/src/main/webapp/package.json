@@ -12,6 +12,7 @@
     "@patternfly/patternfly": "4.42.2",
     "@patternfly/react-core": "4.50.2",
     "@patternfly/react-table": "4.16.20",
+    "@react-keycloak/web": "1.0.6",
     "@redhat-cloud-services/frontend-components-notifications": "^2.1.2",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
@@ -27,7 +28,7 @@
     "formik": "^2.1.5",
     "husky": "^4.2.5",
     "jest-enzyme": "^7.1.2",
-    "keycloak-js": "8.0.1",
+    "keycloak-js": "8.0.2",
     "lint-staged": "^10.2.11",
     "moment": "^2.27.0",
     "prettier": "^2.0.5",
@@ -43,6 +44,7 @@
     "redux-thunk": "^2.3.0",
     "typesafe-actions": "^5.1.0",
     "typescript": "~3.7.2",
+    "websocket": "^1.0.32",
     "yup": "^0.29.3"
   },
   "scripts": {
@@ -82,6 +84,7 @@
     "@types/react-redux": "^7.1.9",
     "@types/react-router-dom": "^5.1.5",
     "@types/redux-logger": "^3.0.8",
+    "@types/websocket": "^1.0.1",
     "@types/yup": "^0.29.6",
     "axios-mock-adapter": "^1.18.2",
     "babel-loader": "^8.1.0",

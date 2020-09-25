@@ -26,7 +26,6 @@ export enum Paths {
 
   editProject = "/projects-details/:project",
 
-  editProject_analysisResults = "/projects-details/:project/analysis-results",
   editProject_executionList = "/projects-details/:project/analysis-results/executions",
   editProject_executionDetails = "/projects-details/:project/analysis-results/executions/:execution",
 

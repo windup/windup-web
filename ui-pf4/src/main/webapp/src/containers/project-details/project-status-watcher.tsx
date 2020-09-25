@@ -1,60 +1,63 @@
 import React from "react";
 
-import { WINDUP_ENV_VARIABLES } from "Constants";
+import { useKeycloak } from "@react-keycloak/web";
+import { w3cwebsocket as W3CWebSocket } from "websocket";
+
+import { getWindupRestBase } from "Constants";
 import { WindupExecution } from "models/api";
 import { EXECUTION_PROGRESS_URL } from "api/api";
 
 export interface ChildrenProps {
-  wachedExecution: WindupExecution;
+  execution: WindupExecution;
 }
 
 export interface ProjectStatusWatcherProps {
-  execution: WindupExecution;
-  children: (args: ChildrenProps) => React.ReactElement;
+  watch: WindupExecution;
+  children: (args: ChildrenProps) => any;
 }
 
 export const ProjectStatusWatcher: React.FC<ProjectStatusWatcherProps> = ({
-  execution,
+  watch,
   children,
 }) => {
-  if (isExecutionActive(execution)) {
-    let base = "";
+  const [messageExecution, setMessageExecution] = React.useState<
+    WindupExecution
+  >();
+  const [keycloak] = useKeycloak();
 
-    // In produccion we need to point to the server configured through ENV.
-    // The server is not always the same server where the UI is deployed
-    if (process.env.NODE_ENV === "production") {
-      base = WINDUP_ENV_VARIABLES.REST_BASE + "/";
+  React.useEffect(() => {
+    if (isExecutionActive(watch)) {
+      const baseUrl = getWindupRestBase();
+      const url = (baseUrl + EXECUTION_PROGRESS_URL)
+        .replace(/^http/, "ws")
+        .replace(":executionId", watch.id.toString());
+
+      const socketClient = new W3CWebSocket(url);
+      socketClient.onopen = () => {
+        socketClient.send(
+          JSON.stringify({
+            authentication: {
+              token: keycloak.token,
+            },
+          })
+        );
+      };
+      socketClient.onmessage = (message) => {
+        const messageData: WindupExecution = JSON.parse(message.data as string);
+        setMessageExecution(messageData);
+
+        // if (messageData.state === "COMPLETED") {
+        //   socketClient.close();
+        // }
+      };
+
+      return () => {
+        socketClient.close();
+      };
     }
+  }, [watch, keycloak.token]);
 
-    const url =
-      base +
-      EXECUTION_PROGRESS_URL.replace(/^http/, "ws").replace(
-        ":executionId",
-        execution.id.toString()
-      );
-
-    console.log(url);
-    // const socket = this._websocketFactory.createWebSocketSubject(url);
-    // socket.subscribe((execution: WindupExecution) =>
-    //   this.onExecutionUpdate(execution)
-    // );
-
-    // this.executionSocket.set(execution.id, socket);
-
-    // this._keycloakService.getToken().subscribe((token) => {
-    //   socket.next(
-    //     JSON.parse(
-    //       JSON.stringify({
-    //         authentication: {
-    //           token: token,
-    //         },
-    //       })
-    //     )
-    //   );
-    // });
-  }
-
-  return children({ wachedExecution: execution });
+  return children({ execution: messageExecution || watch });
 };
 
 const isExecutionActive = (execution: WindupExecution) => {

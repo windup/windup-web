@@ -1,1 +1,1 @@
-export { ActiveAnalysisProgressbar as PageSkeleton } from "./active-analysis-progressbar";
+export { ActiveAnalysisProgressbar } from "./active-analysis-progressbar";

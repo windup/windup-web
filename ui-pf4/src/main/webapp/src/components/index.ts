@@ -1,3 +1,4 @@
+export { ActiveAnalysisProgressbar } from "./active-analysis-progressbar";
 export { AddApplicationsForm } from "./add-applications-form";
 export { AddRuleLabelTabs } from "./add-rulelabel-tabs";
 export { AdvancedOptionsForm } from "./advanced-options-form";

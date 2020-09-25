@@ -1,5 +1,6 @@
 import React from "react";
 import { RouteComponentProps, Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import Moment from "react-moment";
 
 import {
@@ -11,7 +12,6 @@ import {
   ToolbarContent,
   ToolbarGroup,
   ToolbarItemVariant,
-  ButtonVariant,
 } from "@patternfly/react-core";
 import {
   ISortBy,
@@ -23,6 +23,9 @@ import {
 } from "@patternfly/react-table";
 import { InfoIcon, ChartBarIcon } from "@patternfly/react-icons";
 
+import { RootState } from "store/rootReducer";
+import { executionsSelectors, executionsActions } from "store/executions";
+
 import {
   SimplePageSection,
   CustomEmptyState,
@@ -32,34 +35,77 @@ import {
   ExecutionStatus,
 } from "components";
 
-import { WindupExecution } from "models/api";
-import { getProjectExecutions } from "api/api";
 import { Paths, formatPath } from "Paths";
+import { WindupExecution, MigrationProject } from "models/api";
+import {
+  createProjectExecution,
+  getAnalysisContext,
+  getProjectById,
+} from "api/api";
 
 import { ProjectStatusWatcher } from "../../project-status-watcher";
-
-const isExecutionActive = (execution: WindupExecution) => {
-  return execution.state === "STARTED" || execution.state === "QUEUED";
-};
+import { ActiveExecutionsList } from "./active-execution-list";
+import { getWindupStaticReportsBase } from "Constants";
 
 interface ExecutionListProps extends RouteComponentProps<{ project: string }> {}
 
 export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
-  // const [, setProject] = React.useState<MigrationProject>();
-  // const [, setAnalysisContext] = React.useState<AnalysisContext>();
+  const [project, setProject] = React.useState<MigrationProject>();
+  const [isCreatingExecution, setIsCreatingExecution] = React.useState(false);
 
-  // const [, setIsFetching] = React.useState(true);
-  // const [, setFetchError] = React.useState<string>();
+  // Redux
+  const executions = useSelector((state: RootState) =>
+    executionsSelectors.selectExecutions(state, match.params.project)
+  );
+  const executionsFetchStatus = useSelector((state: RootState) =>
+    executionsSelectors.selectExecutionsFetchStatus(state, match.params.project)
+  );
+  const executionsFetchError = useSelector((state: RootState) =>
+    executionsSelectors.selectExecutionsFetchError(state, match.params.project)
+  );
 
-  const [executions, setExecutions] = React.useState<WindupExecution[]>();
-  const [, setActiveExecutions] = React.useState<WindupExecution[]>();
+  const dispatch = useDispatch();
+
+  // Util function
+  const refreshExecutionList = React.useCallback(
+    (projectId: number | string) => {
+      dispatch(executionsActions.fetchExecutions(projectId));
+    },
+    [dispatch]
+  );
+
+  React.useEffect(() => {
+    getProjectById(match.params.project).then(({ data }) => {
+      setProject(data);
+    });
+  }, [match]);
+
+  // First executions fetch
+  React.useEffect(() => {
+    refreshExecutionList(match.params.project);
+  }, [match, refreshExecutionList]);
+
+  // Fetch every 1s if any execution was cancelled
+  React.useEffect(() => {
+    if (executions) {
+      const hasCancelledJobs = executions.find((execution) => {
+        return (
+          execution.state === "CANCELLED" && execution.timeCompleted == null
+        );
+      });
+      if (hasCancelledJobs) {
+        setTimeout(() => {
+          refreshExecutionList(match.params.project);
+        }, 1000);
+      }
+    }
+  }, [match, executions, refreshExecutionList]);
 
   // Table props
   const [tableData, setTableData] = React.useState<WindupExecution[]>([]);
-  const [tableDataFetchError, setTableDataFetchError] = React.useState("");
 
   const [filterText, setFilterText] = React.useState("");
-  const [paginationParams, setPaginationParams] = React.useState({
+  const [paginationmatch, setPaginationParams] = React.useState({
     page: 1,
     perPage: 10,
   });
@@ -71,7 +117,7 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
     { title: "Status", transforms: [sortable] },
     { title: "Start date", transforms: [sortable] },
     { title: "Applications", transforms: [sortable] },
-    { title: "Actions", transforms: [] },
+    { title: "", transforms: [] },
   ];
   const actions: IActions = [
     {
@@ -79,71 +125,6 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
       onClick: (_) => {},
     },
   ];
-
-  const refreshExecutionList = React.useCallback(
-    (projectId: number | string) => {
-      getProjectExecutions(projectId)
-        .then(({ data }) => {
-          setExecutions(data);
-
-          // If there are cancelled jobs that have not yet had a cancelled date added, then refresh the list
-          const hasCancelledJobs = data.find((execution) => {
-            return (
-              execution.state === "CANCELLED" && execution.timeCompleted == null
-            );
-          });
-          if (hasCancelledJobs) {
-            setTimeout(() => {
-              refreshExecutionList(projectId);
-            }, 1000);
-          }
-
-          // Load activeExecutions;
-          const activeExecutionsMap: Map<number, WindupExecution> = new Map();
-          data
-            .filter((execution) => isExecutionActive(execution))
-            .forEach((execution) => {
-              activeExecutionsMap.set(execution.id, execution);
-              // this._windupExecutionService.watchExecutionUpdates(
-              //   execution,
-              //   this.project
-              // );
-            });
-          setActiveExecutions(Array.from(activeExecutionsMap.values()));
-        })
-        .catch(() => {
-          setTableDataFetchError("Could not load executions");
-        });
-    },
-    []
-  );
-
-  React.useEffect(() => {
-    refreshExecutionList(match.params.project);
-  }, [match, refreshExecutionList]);
-
-  // React.useEffect(() => {
-  //   if (match.params.project) {
-  //     getProjectById(match.params.project)
-  //       .then(({ data }) => {
-  //         setProject(data);
-  //         return getAnalysisContext(data.defaultAnalysisContextId);
-  //       })
-  //       .then(({ data: analysisContextData }) => {
-  //         setAnalysisContext(analysisContextData);
-  //       })
-  //       .catch(() => {
-  //         setFetchError("Could not fetch migrationProject data");
-  //       })
-  //       .finally(() => {
-  //         setIsFetching(false);
-  //       });
-
-  //     refreshExecutionList(match.params.project);
-  //   } else {
-  //     setIsFetching(false);
-  //   }
-  // }, [match, refreshExecutionList]);
 
   React.useEffect(() => {
     if (executions) {
@@ -181,26 +162,45 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
             },
             {
               title: (
-                <ProjectStatusWatcher execution={item}>
-                  {({ wachedExecution }) => (
-                    <ExecutionStatus state={wachedExecution.state} />
+                <ProjectStatusWatcher watch={item}>
+                  {({ execution }) => (
+                    <ExecutionStatus state={execution.state} />
                   )}
                 </ProjectStatusWatcher>
               ),
             },
             {
-              title: <Moment fromNow>{item.timeStarted}</Moment>,
+              title: (
+                <ProjectStatusWatcher watch={item}>
+                  {({ execution }) =>
+                    execution.timeStarted ? (
+                      <Moment fromNow>{execution.timeStarted}</Moment>
+                    ) : null
+                  }
+                </ProjectStatusWatcher>
+              ),
             },
             {
               title: item.analysisContext.applications.length,
             },
             {
               title: (
-                <span>
-                  <Button variant={ButtonVariant.link} icon={<ChartBarIcon />}>
-                    Report
-                  </Button>
-                </span>
+                <ProjectStatusWatcher watch={item}>
+                  {({ execution }) =>
+                    execution.state === "COMPLETED" ? (
+                      <a
+                        title="Reports"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href={`${getWindupStaticReportsBase()}/${
+                          execution.applicationListRelativePath
+                        }`}
+                      >
+                        <ChartBarIcon />
+                      </a>
+                    ) : null
+                  }
+                </ProjectStatusWatcher>
               ),
             },
           ],
@@ -208,17 +208,17 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
       });
       // Paginate
       const paginatedRows = rows.slice(
-        (paginationParams.page - 1) * paginationParams.perPage,
-        paginationParams.page * paginationParams.perPage
+        (paginationmatch.page - 1) * paginationmatch.perPage,
+        paginationmatch.page * paginationmatch.perPage
       );
       setRows(paginatedRows);
     }
-  }, [executions, filterText, paginationParams, sortBy, match]);
+  }, [executions, filterText, paginationmatch, sortBy, match]);
 
   // Table handlers
 
   const handlFilterTextChange = (filterText: string) => {
-    const newParams = { page: 1, perPage: paginationParams.perPage };
+    const newParams = { page: 1, perPage: paginationmatch.perPage };
     setFilterText(filterText);
     setPaginationParams(newParams);
   };
@@ -233,17 +233,26 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
     setPaginationParams({ page, perPage });
   };
 
+  //
+  const handleRunAnalysis = () => {
+    setIsCreatingExecution(true);
+    if (project) {
+      getAnalysisContext(project.defaultAnalysisContextId)
+        .then(({ data }) => {
+          return createProjectExecution(project.id, data);
+        })
+        .then(() => {
+          dispatch(executionsActions.fetchExecutions(project.id));
+        })
+        .finally(() => {
+          setIsCreatingExecution(false);
+        });
+    }
+  };
+
   return (
     <React.Fragment>
-      {/* <PageSection variant={PageSectionVariants.light}>
-        <Stack hasGutter>
-          <StackItem>
-            <TextContent>
-              <Text component="h1">Active analysis</Text>
-            </TextContent>
-          </StackItem>
-        </Stack>
-      </PageSection> */}
+      <ActiveExecutionsList projectId={match.params.project} />
       <SimplePageSection title="Analysis results" />
       <PageSection>
         {executions?.length === 0 && (
@@ -252,10 +261,14 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
               icon={InfoIcon}
               title="There are no analysis results for this project"
               body="Configure the analysis settings and run an execution."
-              primaryAction={["Run analysis", () => {}]}
+              primaryAction={["Run analysis", handleRunAnalysis]}
               secondaryActions={[
-                <Button variant="link">Configure analysis</Button>,
-                <Button variant="link">Refresh page</Button>,
+                <Button key={0} variant="link">
+                  Configure analysis
+                </Button>,
+                <Button key={1} variant="link">
+                  Refresh page
+                </Button>,
               ]}
             />
           </Bullseye>
@@ -273,9 +286,8 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
                   <ToolbarItem>
                     <Button
                       type="button"
-                      onClick={() => {
-                        console.log("Run analysis");
-                      }}
+                      onClick={handleRunAnalysis}
+                      isDisabled={isCreatingExecution}
                     >
                       Run analysis
                     </Button>
@@ -287,7 +299,7 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
                 >
                   <SimplePagination
                     count={tableData.length}
-                    params={paginationParams}
+                    params={paginationmatch}
                     isTop={true}
                     onChange={handlePaginationChange}
                   />
@@ -298,16 +310,16 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
               columns={columns}
               rows={rows}
               actions={actions}
-              fetchStatus="complete" // Always 'complete' to avoid flash rendering of skeleton
-              fetchError={tableDataFetchError}
-              loadingVariant="skeleton"
+              fetchStatus={executionsFetchStatus || "none"}
+              fetchError={executionsFetchError}
+              loadingVariant="spinner"
               onSortChange={(sortBy: ISortBy) => {
                 setSortBy(sortBy);
               }}
             />
             <SimplePagination
               count={tableData.length}
-              params={paginationParams}
+              params={paginationmatch}
               onChange={handlePaginationChange}
             />
           </React.Fragment>
