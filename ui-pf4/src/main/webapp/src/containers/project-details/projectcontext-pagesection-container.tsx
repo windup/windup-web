@@ -42,6 +42,10 @@ export const ProjectContextPageSectionContainer: React.FC<ProjectContextPageSect
     }
   }, [match, projects, dispatch]);
 
+  React.useEffect(() => {
+    dispatch(projectContextActions.fetchProjectsContext());
+  }, [dispatch]);
+
   const handleOnSelectProject = (project: Project) => {
     push(
       formatPath(Paths.editProject_executionList, {

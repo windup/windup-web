@@ -12,10 +12,18 @@ import {
   DescriptionListGroup,
   DescriptionListTerm,
   DescriptionListDescription,
+  Button,
+  ButtonVariant,
 } from "@patternfly/react-core";
+import { css } from "@patternfly/react-styles";
+import styles from "@patternfly/react-styles/css/components/Wizard/wizard";
 
-import { Paths } from "Paths";
-import { getProjectById, getAnalysisContext } from "api/api";
+import { formatPath, Paths } from "Paths";
+import {
+  getProjectById,
+  getAnalysisContext,
+  createProjectExecution,
+} from "api/api";
 import { MigrationProject, AnalysisContext } from "models/api";
 
 import NewProjectWizard, {
@@ -33,6 +41,8 @@ export const Review: React.FC<ReviewProps> = ({ match, history: { push } }) => {
 
   const [isFetching, setIsFetching] = React.useState(true);
   const [fetchError, setFetchError] = React.useState<string>();
+
+  const [isCreatingExecution, setIsCreatingExecution] = React.useState(false);
 
   React.useEffect(() => {
     getProjectById(match.params.project)
@@ -52,18 +62,80 @@ export const Review: React.FC<ReviewProps> = ({ match, history: { push } }) => {
       });
   }, [match]);
 
+  const handleOnBackStep = () => {
+    push(
+      formatPath(Paths.newProject_advandedOptions, {
+        project: match.params.project,
+      })
+    );
+  };
+
   const handleOnNextStep = () => {
     push(Paths.projects);
+  };
+
+  const handleSaveAndRun = () => {
+    setIsCreatingExecution(true);
+    if (project) {
+      getAnalysisContext(project.defaultAnalysisContextId)
+        .then(({ data }) => {
+          return createProjectExecution(project.id, data);
+        })
+        .then(() => {
+          push(
+            formatPath(Paths.editProject_executionList, {
+              project: match.params.project,
+            })
+          );
+        })
+        .catch(() => {
+          setIsCreatingExecution(false);
+        });
+    }
   };
 
   return (
     <NewProjectWizard
       stepId={WizardStepIds.REVIEW}
       enableNext={true}
-      disableNavigation={isFetching}
+      disableNavigation={isFetching || isCreatingExecution}
       handleOnNextStep={handleOnNextStep}
       migrationProject={project}
       showErrorContent={fetchError}
+      footer={
+        <footer className={css(styles.wizardFooter)}>
+          <Button
+            variant={ButtonVariant.primary}
+            type="submit"
+            onClick={handleOnNextStep}
+            isDisabled={isFetching || isCreatingExecution}
+          >
+            Save
+          </Button>
+          <Button
+            variant={ButtonVariant.primary}
+            type="submit"
+            onClick={handleSaveAndRun}
+            isDisabled={isFetching || isCreatingExecution}
+          >
+            Save and run
+          </Button>
+          <Button
+            variant={ButtonVariant.secondary}
+            onClick={handleOnBackStep}
+            isDisabled={isFetching || isCreatingExecution}
+          >
+            Back
+          </Button>
+          <Button
+            variant={ButtonVariant.link}
+            onClick={handleOnNextStep}
+            isDisabled={isFetching || isCreatingExecution}
+          >
+            Cancel
+          </Button>
+        </footer>
+      }
     >
       {isFetching ? (
         <LoadingWizardContent />

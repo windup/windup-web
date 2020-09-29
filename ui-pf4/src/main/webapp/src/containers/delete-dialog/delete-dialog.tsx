@@ -41,7 +41,8 @@ class DeleteDialogBase extends React.Component<Props, State> {
             variant={ButtonVariant.danger}
             onClick={onDelete}
           >
-            Delete {`${type}`}
+            {/* Delete {`${type}`} */}
+            Delete
           </Button>,
           <Button
             key="cancel"

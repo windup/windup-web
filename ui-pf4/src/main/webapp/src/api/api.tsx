@@ -273,3 +273,11 @@ export const getExecutionLog = (
 ): AxiosPromise<string[]> => {
   return ApiClient.get<string[]>(`/windup/executions/${executionId}/logs`);
 };
+
+export const cancelExecution = (executionId: string | number): AxiosPromise => {
+  return ApiClient.post(`/windup/executions/${executionId}/cancel`, undefined);
+};
+
+export const deleteExecution = (executionId: string | number): AxiosPromise => {
+  return ApiClient.delete(`/windup/executions/${executionId}`);
+};

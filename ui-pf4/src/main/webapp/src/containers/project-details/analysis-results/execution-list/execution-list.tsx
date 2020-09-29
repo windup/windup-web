@@ -12,6 +12,8 @@ import {
   ToolbarContent,
   ToolbarGroup,
   ToolbarItemVariant,
+  Split,
+  SplitItem,
 } from "@patternfly/react-core";
 import {
   ISortBy,
@@ -21,10 +23,11 @@ import {
   IActions,
   SortByDirection,
 } from "@patternfly/react-table";
-import { InfoIcon, ChartBarIcon } from "@patternfly/react-icons";
+import { InfoIcon, ChartBarIcon, DownloadIcon } from "@patternfly/react-icons";
 
 import { RootState } from "store/rootReducer";
 import { executionsSelectors, executionsActions } from "store/executions";
+import { deleteDialogActions } from "store/deleteDialog";
 
 import {
   SimplePageSection,
@@ -39,6 +42,7 @@ import { Paths, formatPath } from "Paths";
 import { WindupExecution, MigrationProject } from "models/api";
 import {
   createProjectExecution,
+  deleteExecution,
   getAnalysisContext,
   getProjectById,
 } from "api/api";
@@ -46,7 +50,7 @@ import {
 import { ProjectStatusWatcher } from "containers/project-status-watcher";
 
 import { ActiveExecutionsList } from "./active-execution-list";
-import { getWindupStaticReportsBase } from "Constants";
+import { getWindupStaticReportsBase, MERGED_CSV_FILENAME } from "Constants";
 
 interface ExecutionListProps extends RouteComponentProps<{ project: string }> {}
 
@@ -123,7 +127,28 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
   const actions: IActions = [
     {
       title: "Delete",
-      onClick: (_) => {},
+      onClick: (_, rowIndex: number) => {
+        const row = tableData![rowIndex];
+        dispatch(
+          deleteDialogActions.openModal({
+            name: `#${row.id.toString()}`,
+            type: "analysis",
+            onDelete: () => {
+              dispatch(deleteDialogActions.processing());
+              deleteExecution(row.id)
+                .then(() => {
+                  refreshExecutionList(match.params.project);
+                })
+                .finally(() => {
+                  dispatch(deleteDialogActions.closeModal());
+                });
+            },
+            onCancel: () => {
+              dispatch(deleteDialogActions.closeModal());
+            },
+          })
+        );
+      },
     },
   ];
 
@@ -189,16 +214,40 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
                 <ProjectStatusWatcher watch={item}>
                   {({ execution }) =>
                     execution.state === "COMPLETED" ? (
-                      <a
-                        title="Reports"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        href={`${getWindupStaticReportsBase()}/${
-                          execution.applicationListRelativePath
-                        }`}
-                      >
-                        <ChartBarIcon />
-                      </a>
+                      <React.Fragment>
+                        <Split hasGutter>
+                          <SplitItem>
+                            <a
+                              title="Reports"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              href={`${getWindupStaticReportsBase()}/${
+                                execution.applicationListRelativePath
+                              }`}
+                            >
+                              <ChartBarIcon />
+                            </a>
+                          </SplitItem>
+                          {execution.analysisContext.generateStaticReports &&
+                            execution.analysisContext.advancedOptions.find(
+                              (f) =>
+                                f.name === "exportCSV" && f.value === "true"
+                            ) && (
+                              <SplitItem>
+                                <a
+                                  title="Download all issues CSV"
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  href={`${getWindupStaticReportsBase()}/${
+                                    execution.id
+                                  }/${MERGED_CSV_FILENAME}`}
+                                >
+                                  <DownloadIcon />
+                                </a>
+                              </SplitItem>
+                            )}
+                        </Split>
+                      </React.Fragment>
                     ) : null
                   }
                 </ProjectStatusWatcher>

@@ -14,6 +14,8 @@ export const WINDUP_ENV_VARIABLES: WindupEnv = (window as any)[
   "windupConstants"
 ];
 
+export const MERGED_CSV_FILENAME = "AllIssues.csv";
+
 export const getWindupRestBase = () => {
   // Development
   let base = packageJson.proxy + API_BASE_URL;

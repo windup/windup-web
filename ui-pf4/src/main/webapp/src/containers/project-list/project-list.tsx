@@ -26,7 +26,7 @@ import { FetchStatus } from "../../store/common";
 import { deleteDialogActions } from "../../store/deleteDialog";
 import { deleteProject } from "../../api/api";
 import { getDeleteErrorAlertModel } from "../../Constants";
-import { Paths, formatPath } from "../../Paths";
+import { Paths } from "../../Paths";
 import {
   SimplePageSection,
   FetchTable,
@@ -162,15 +162,7 @@ export const ProjectList: React.FC<Props> = ({
         return {
           cells: [
             {
-              title: (
-                <Link
-                  to={formatPath(Paths.editProject_executionList, {
-                    project: item.migrationProject.id,
-                  })}
-                >
-                  {item.migrationProject.title}
-                </Link>
-              ),
+              title: item.migrationProject.title,
             },
             {
               title: item.applicationCount,
