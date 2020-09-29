@@ -15,6 +15,7 @@ export {
 export { FetchTable } from "./fetch-table";
 export { FilterToolbarItem } from "./filter-toolbar-item";
 export { LoadingStep } from "./loading-step";
+export { LogView } from "./log-view";
 export { PackageSelection } from "./package-selection";
 export { PageHeader } from "./page-header";
 export { PageSkeleton } from "./page-skeleton";

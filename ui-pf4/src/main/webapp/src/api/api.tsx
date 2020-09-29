@@ -270,6 +270,6 @@ export const getExecution = (
 
 export const getExecutionLog = (
   executionId: number | string
-): AxiosPromise<string> => {
-  return ApiClient.get<string>(`/windup/executions/${executionId}/logs`);
+): AxiosPromise<string[]> => {
+  return ApiClient.get<string[]>(`/windup/executions/${executionId}/logs`);
 };

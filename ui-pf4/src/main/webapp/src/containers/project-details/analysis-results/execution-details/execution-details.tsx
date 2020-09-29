@@ -14,10 +14,9 @@ import {
   AppPlaceholder,
 } from "components";
 
-import { ProjectStatusWatcher } from "containers/project-details/project-status-watcher";
+import { ProjectStatusWatcher } from "containers/project-status-watcher";
 
 const Overview = lazy(() => import("./overview"));
-const Rules = lazy(() => import("./rules"));
 const Logs = lazy(() => import("./logs"));
 
 export interface ExecutionDetailsProps
@@ -72,23 +71,23 @@ export const ExecutionDetails: React.FC<ExecutionDetailsProps> = ({
                 execution: match.params.execution,
               }),
             },
-            {
-              title: "Applications",
-              path: formatPath(
-                Paths.editProject_executionDetails_applications,
-                {
-                  project: match.params.project,
-                  execution: match.params.execution,
-                }
-              ),
-            },
-            {
-              title: "Rules",
-              path: formatPath(Paths.editProject_executionDetails_rules, {
-                project: match.params.project,
-                execution: match.params.execution,
-              }),
-            },
+            // {
+            //   title: "Applications",
+            //   path: formatPath(
+            //     Paths.editProject_executionDetails_applications,
+            //     {
+            //       project: match.params.project,
+            //       execution: match.params.execution,
+            //     }
+            //   ),
+            // },
+            // {
+            //   title: "Rules",
+            //   path: formatPath(Paths.editProject_executionDetails_rules, {
+            //     project: match.params.project,
+            //     execution: match.params.execution,
+            //   }),
+            // },
             {
               title: "Logs",
               path: formatPath(Paths.editProject_executionDetails_logs, {
@@ -105,10 +104,6 @@ export const ExecutionDetails: React.FC<ExecutionDetailsProps> = ({
             <Route
               path={Paths.editProject_executionDetails_overview}
               component={Overview}
-            />
-            <Route
-              path={Paths.editProject_executionDetails_rules}
-              component={Rules}
             />
             <Route
               path={Paths.editProject_executionDetails_logs}

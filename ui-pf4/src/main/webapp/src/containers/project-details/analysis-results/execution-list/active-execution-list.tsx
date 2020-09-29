@@ -15,7 +15,7 @@ import { executionsSelectors, executionsActions } from "store/executions";
 
 import { ActiveAnalysisProgressbar } from "components";
 
-import { ProjectStatusWatcher } from "../../project-status-watcher";
+import { ProjectStatusWatcher } from "containers/project-status-watcher";
 
 export interface ActiveExecutionsListProps {
   projectId: string;

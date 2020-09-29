@@ -22,9 +22,10 @@ import { ExternalLinkAltIcon } from "@patternfly/react-icons";
 import { getExecution } from "api/api";
 import { WindupExecution } from "models/api";
 
-import { ProjectStatusWatcher } from "containers/project-details/project-status-watcher";
 import { getWindupStaticReportsBase } from "Constants";
 import { RulesLabelsList } from "components";
+
+import { ProjectStatusWatcher } from "containers/project-status-watcher";
 
 export interface OverviewProps
   extends RouteComponentProps<{ project: string; execution: string }> {}

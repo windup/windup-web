@@ -43,7 +43,8 @@ import {
   getProjectById,
 } from "api/api";
 
-import { ProjectStatusWatcher } from "../../project-status-watcher";
+import { ProjectStatusWatcher } from "containers/project-status-watcher";
+
 import { ActiveExecutionsList } from "./active-execution-list";
 import { getWindupStaticReportsBase } from "Constants";
 
