@@ -151,7 +151,7 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
             {
               title: (
                 <Link
-                  to={formatPath(Paths.editProject_executionDetails, {
+                  to={formatPath(Paths.editProject_executionDetails_overview, {
                     project: match.params.project,
                     execution: item.id,
                   })}

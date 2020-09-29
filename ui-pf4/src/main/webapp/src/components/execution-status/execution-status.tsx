@@ -20,12 +20,30 @@ export interface ExecutionStatusProps {
 export const ExecutionStatus: React.FC<ExecutionStatusProps> = ({ state }) => {
   return (
     <span>
-      {mapIcon(state)}&nbsp;{mapLabel(state)}
+      {mapStateToIcon(state)}&nbsp;{mapStateToLabel(state)}
     </span>
   );
 };
 
-const mapIcon = (state: State) => {
+export interface ExecutionStatusBuilderProps {
+  state: State;
+  children: (args: {
+    label: string;
+    icon: React.ReactNode;
+  }) => React.ReactElement;
+}
+
+export const ExecutionStatusBuilder: React.FC<ExecutionStatusBuilderProps> = ({
+  state,
+  children,
+}) => {
+  return children({
+    label: mapStateToLabel(state),
+    icon: mapStateToIcon(state),
+  });
+};
+
+export const mapStateToIcon = (state: State) => {
   switch (state) {
     case "QUEUED":
       return <PendingIcon />;
@@ -42,7 +60,7 @@ const mapIcon = (state: State) => {
   }
 };
 
-const mapLabel = (state: State) => {
+export const mapStateToLabel = (state: State) => {
   switch (state) {
     case "QUEUED":
       return "Pending";

@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PageHeader Renders without crashing 1`] = `
+<Fragment>
+  <PageSection
+    style={
+      Object {
+        "paddingBottom": 0,
+        "paddingTop": 5,
+      }
+    }
+    variant="light"
+  >
+    <Stack
+      hasGutter={true}
+    >
+      <StackItem>
+        <Split>
+          <SplitItem
+            isFilled={true}
+          >
+            <TextContent>
+              <Text
+                component="h1"
+              >
+                <span>
+                   
+                  complete
+                   
+                </span>
+              </Text>
+            </TextContent>
+          </SplitItem>
+          <SplitItem>
+            <MenuActions
+              actions={Array []}
+            />
+          </SplitItem>
+        </Split>
+      </StackItem>
+    </Stack>
+  </PageSection>
+</Fragment>
+`;

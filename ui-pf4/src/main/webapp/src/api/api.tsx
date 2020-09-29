@@ -261,3 +261,15 @@ export const createProjectExecution = (
     analysisContext
   );
 };
+
+export const getExecution = (
+  executionId: number | string
+): AxiosPromise<WindupExecution> => {
+  return ApiClient.get<WindupExecution>(`/windup/executions/${executionId}`);
+};
+
+export const getExecutionLog = (
+  executionId: number | string
+): AxiosPromise<string> => {
+  return ApiClient.get<string>(`/windup/executions/${executionId}/logs`);
+};

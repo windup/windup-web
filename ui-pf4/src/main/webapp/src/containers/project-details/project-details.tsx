@@ -25,6 +25,7 @@ export const ProjectsDetails: React.FC<ProjectsDetailsProps> = ({
         location={location}
       />
       <Switch>
+        {/* analysis-results */}
         <Route
           path={Paths.editProject_executionList}
           component={ExecutionList}
@@ -35,6 +36,7 @@ export const ProjectsDetails: React.FC<ProjectsDetailsProps> = ({
           component={ExecutionDetails}
         />
 
+        {/* applications */}
         <Route
           path={Paths.editProject_applications}
           component={Applications}

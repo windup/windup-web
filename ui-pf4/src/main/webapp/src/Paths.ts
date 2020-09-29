@@ -28,6 +28,10 @@ export enum Paths {
 
   editProject_executionList = "/projects-details/:project/analysis-results/executions",
   editProject_executionDetails = "/projects-details/:project/analysis-results/executions/:execution",
+  editProject_executionDetails_overview = "/projects-details/:project/analysis-results/executions/:execution/overview",
+  editProject_executionDetails_applications = "/projects-details/:project/analysis-results/executions/:execution/applications",
+  editProject_executionDetails_rules = "/projects-details/:project/analysis-results/executions/:execution/rules",
+  editProject_executionDetails_logs = "/projects-details/:project/analysis-results/executions/:execution/logs",
 
   editProject_applications = "/projects-details/:project/applications",
   editProject_analysisConfiguration = "/projects-details/:project/analysis-configuration",

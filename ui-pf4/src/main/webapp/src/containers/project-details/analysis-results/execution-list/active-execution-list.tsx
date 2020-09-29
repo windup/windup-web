@@ -45,21 +45,22 @@ export const ActiveExecutionsList: React.FC<ActiveExecutionsListProps> = ({
             {activeExecutions.map((execution) => (
               <StackItem key={execution.id}>
                 <ProjectStatusWatcher watch={execution}>
-                  {({ execution: wachedExecution }) => {
+                  {({ execution: watchedExecution }) => {
                     if (
-                      wachedExecution.state === "COMPLETED" ||
-                      wachedExecution.state === "FAILED"
+                      watchedExecution.state === "COMPLETED" ||
+                      watchedExecution.state === "FAILED"
                     ) {
                       dispatch(executionsActions.fetchExecutions(projectId));
                     }
 
                     if (
-                      wachedExecution.currentTask &&
-                      wachedExecution.workCompleted < wachedExecution.totalWork
+                      watchedExecution.currentTask &&
+                      watchedExecution.workCompleted <
+                        watchedExecution.totalWork
                     ) {
                       return (
                         <ActiveAnalysisProgressbar
-                          activeExecution={wachedExecution}
+                          activeExecution={watchedExecution}
                         />
                       );
                     }

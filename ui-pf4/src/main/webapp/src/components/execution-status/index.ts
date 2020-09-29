@@ -1,1 +1,5 @@
-export { ExecutionStatus } from "./execution-status";
+export {
+  ExecutionStatus,
+  mapStateToIcon,
+  mapStateToLabel,
+} from "./execution-status";
