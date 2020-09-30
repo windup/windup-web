@@ -50,7 +50,11 @@ import {
 import { ProjectStatusWatcher } from "containers/project-status-watcher";
 
 import { ActiveExecutionsList } from "./active-execution-list";
-import { getWindupStaticReportsBase, MERGED_CSV_FILENAME } from "Constants";
+import {
+  AdvancedOptionsFieldKey,
+  getWindupStaticReportsBase,
+  MERGED_CSV_FILENAME,
+} from "Constants";
 
 interface ExecutionListProps extends RouteComponentProps<{ project: string }> {}
 
@@ -230,8 +234,13 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
                           </SplitItem>
                           {execution.analysisContext.generateStaticReports &&
                             execution.analysisContext.advancedOptions.find(
-                              (f) =>
-                                f.name === "exportCSV" && f.value === "true"
+                              (f) => {
+                                return (
+                                  f.name ===
+                                    AdvancedOptionsFieldKey.EXPORT_CSV &&
+                                  f.value === "true"
+                                );
+                              }
                             ) && (
                               <SplitItem>
                                 <a
@@ -312,14 +321,7 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
               title="There are no analysis results for this project"
               body="Configure the analysis settings and run an execution."
               primaryAction={["Run analysis", handleRunAnalysis]}
-              secondaryActions={[
-                <Button key={0} variant="link">
-                  Configure analysis
-                </Button>,
-                <Button key={1} variant="link">
-                  Refresh page
-                </Button>,
-              ]}
+              secondaryActions={[]}
             />
           </Bullseye>
         )}

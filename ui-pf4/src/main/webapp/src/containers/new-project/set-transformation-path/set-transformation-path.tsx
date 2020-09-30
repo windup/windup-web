@@ -25,6 +25,7 @@ import NewProjectWizard, {
   WizardStepIds,
   LoadingWizardContent,
 } from "../wizard";
+import { AdvancedOptionsFieldKey } from "Constants";
 
 interface SetTransformationPathProps
   extends RouteComponentProps<{ project: string }> {}
@@ -59,7 +60,7 @@ export const SetTransformationPath: React.FC<SetTransformationPathProps> = ({
         setAnalysisContext(analysisContextData);
 
         const targets = analysisContextData.advancedOptions.filter(
-          (f) => f.name === "target"
+          (f) => f.name === AdvancedOptionsFieldKey.TARGET
         );
         setTransformationPath(
           targets.length > 0 ? targets.map((f) => f.value) : ["eap7"]

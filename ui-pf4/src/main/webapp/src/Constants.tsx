@@ -1,6 +1,8 @@
 import { API_BASE_URL } from "api/apiInit";
 import packageJson from "../package.json";
 
+// Windup ENV configuration
+
 interface WindupEnv {
   SERVER: string;
   REST_SERVER: string;
@@ -17,28 +19,48 @@ export const WINDUP_ENV_VARIABLES: WindupEnv = (window as any)[
 export const MERGED_CSV_FILENAME = "AllIssues.csv";
 
 export const getWindupRestBase = () => {
-  // Development
-  let base = packageJson.proxy + API_BASE_URL;
-
-  // Production
+  let base = packageJson.proxy + API_BASE_URL; // Development
   if (process.env.NODE_ENV === "production") {
     base = WINDUP_ENV_VARIABLES.REST_BASE;
   }
-
   return base;
 };
 
 export const getWindupStaticReportsBase = () => {
-  // Development
-  let base = packageJson.proxy + API_BASE_URL + "/static-report";
-
-  // Production
+  let base = packageJson.proxy + API_BASE_URL + "/static-report"; // Development
   if (process.env.NODE_ENV === "production") {
     base = WINDUP_ENV_VARIABLES.STATIC_REPORTS_BASE;
   }
-
   return base;
 };
+
+// Windup general variables
+
+export enum AdvancedOptionsFieldKey {
+  // Dropdowns
+  TARGET = "target",
+  SOURCE = "source",
+  INCLUDE_TAGS = "includeTags",
+  EXCLUDE_TAGS = "excludeTags",
+
+  // Input texts
+  ADDITIONAL_CLASSPATH = "additionalClasspath",
+  APPLICATION_NAME = "inputApplicationName",
+  MAVENIZE_GROUP_ID = "mavenizeGroupId",
+  IGNORE_PATH = "userIgnorePath",
+
+  // Switch
+  EXPORT_CSV = "exportCSV",
+  TATTLETALE = "enableTattletale",
+  CLASS_NOT_FOUND_ANALYSIS = "enableClassNotFoundAnalysis",
+  COMPATIBLE_FILES_REPORT = "enableCompatibleFilesReport",
+  EXPLODED_APP = "explodedApp",
+  KEEP_WORK_DIRS = "keepWorkDirs",
+  SKIP_REPORTS = "skipReports",
+  ALLOW_NETWORK_ACCESS = "online",
+  MAVENIZE = "mavenize",
+  SOURCE_MODE = "sourceMode",
+}
 
 //
 

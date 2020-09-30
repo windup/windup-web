@@ -1,10 +1,13 @@
 import React, { lazy, Suspense } from "react";
 import { Switch, Route, RouteComponentProps } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 import { PageSection, Label } from "@patternfly/react-core";
 
+import { deleteDialogActions } from "store/deleteDialog";
+
 import { Paths, formatPath } from "Paths";
-import { getExecution } from "api/api";
+import { deleteExecution, getExecution } from "api/api";
 import { WindupExecution } from "models/api";
 
 import {
@@ -24,8 +27,38 @@ export interface ExecutionDetailsProps
 
 export const ExecutionDetails: React.FC<ExecutionDetailsProps> = ({
   match,
+  history: { push },
 }) => {
   const [execution, setExecution] = React.useState<WindupExecution>();
+
+  const dispatch = useDispatch();
+
+  const handleDeleteExecution = () => {
+    if (!execution) {
+      return;
+    }
+
+    dispatch(
+      deleteDialogActions.openModal({
+        name: `#${execution.id.toString()}`,
+        type: "analysis",
+        onDelete: () => {
+          dispatch(deleteDialogActions.processing);
+          deleteExecution(execution.id).then(() => {
+            dispatch(deleteDialogActions.closeModal());
+            push(
+              formatPath(Paths.editProject_executionList, {
+                project: match.params.project,
+              })
+            );
+          });
+        },
+        onCancel: () => {
+          dispatch(deleteDialogActions.closeModal());
+        },
+      })
+    );
+  };
 
   React.useEffect(() => {
     getExecution(match.params.execution).then(({ data: executionData }) => {
@@ -62,7 +95,7 @@ export const ExecutionDetails: React.FC<ExecutionDetailsProps> = ({
               }),
             },
           ]}
-          menuActions={[{ label: "Delete", callback: () => {} }]}
+          menuActions={[{ label: "Delete", callback: handleDeleteExecution }]}
           navItems={[
             {
               title: "Details",

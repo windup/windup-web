@@ -20,6 +20,7 @@ import * as yup from "yup";
 
 import "./advanced-options-form.scss";
 
+import { AdvancedOptionsFieldKey } from "Constants";
 import { validateAdvancedOptionValue } from "api/api";
 import {
   AnalysisContext,
@@ -48,62 +49,36 @@ export interface AdvancedOptionsFormProps {
   onCancel?: () => void;
 }
 
-enum FieldKey {
-  // Dropdowns
-  TARGET = "target",
-  SOURCE = "source",
-  INCLUDE_TAGS = "includeTags",
-  EXCLUDE_TAGS = "excludeTags",
-
-  // Input texts
-  ADDITIONAL_CLASSPATH = "additionalClasspath",
-  APPLICATION_NAME = "inputApplicationName",
-  MAVENIZE_GROUP_ID = "mavenizeGroupId",
-  IGNORE_PATH = "userIgnorePath",
-
-  // Switch
-  EXPORT_CSV = "exportCSV",
-  TATTLETALE = "enableTattletale",
-  CLASS_NOT_FOUND_ANALYSIS = "enableClassNotFoundAnalysis",
-  COMPATIBLE_FILES_REPORT = "enableCompatibleFilesReport",
-  EXPLODED_APP = "explodedApp",
-  KEEP_WORK_DIRS = "keepWorkDirs",
-  SKIP_REPORTS = "skipReports",
-  ALLOW_NETWORK_ACCESS = "online",
-  MAVENIZE = "mavenize",
-  SOURCE_MODE = "sourceMode",
-}
-
 interface IFieldInfo {
   label: string;
   type: "dropdown" | "input" | "switch";
 }
 
-const Fields: Map<FieldKey, IFieldInfo> = new Map([
+const Fields: Map<AdvancedOptionsFieldKey, IFieldInfo> = new Map([
   // Dropdowns
   [
-    FieldKey.TARGET,
+    AdvancedOptionsFieldKey.TARGET,
     {
       label: "Target",
       type: "dropdown",
     },
   ],
   [
-    FieldKey.SOURCE,
+    AdvancedOptionsFieldKey.SOURCE,
     {
       label: "Source",
       type: "dropdown",
     },
   ],
   [
-    FieldKey.INCLUDE_TAGS,
+    AdvancedOptionsFieldKey.INCLUDE_TAGS,
     {
       label: "Include tags",
       type: "dropdown",
     },
   ],
   [
-    FieldKey.EXCLUDE_TAGS,
+    AdvancedOptionsFieldKey.EXCLUDE_TAGS,
     {
       label: "Exclude tags",
       type: "dropdown",
@@ -112,28 +87,28 @@ const Fields: Map<FieldKey, IFieldInfo> = new Map([
 
   // Input fields
   [
-    FieldKey.ADDITIONAL_CLASSPATH,
+    AdvancedOptionsFieldKey.ADDITIONAL_CLASSPATH,
     {
       label: "Additional classpath",
       type: "input",
     },
   ],
   [
-    FieldKey.APPLICATION_NAME,
+    AdvancedOptionsFieldKey.APPLICATION_NAME,
     {
       label: "Application name",
       type: "input",
     },
   ],
   [
-    FieldKey.MAVENIZE_GROUP_ID,
+    AdvancedOptionsFieldKey.MAVENIZE_GROUP_ID,
     {
       label: "Mavenize group ID",
       type: "input",
     },
   ],
   [
-    FieldKey.IGNORE_PATH,
+    AdvancedOptionsFieldKey.IGNORE_PATH,
     {
       label: "Ignore path",
       type: "input",
@@ -142,70 +117,70 @@ const Fields: Map<FieldKey, IFieldInfo> = new Map([
 
   // Switch
   [
-    FieldKey.EXPORT_CSV,
+    AdvancedOptionsFieldKey.EXPORT_CSV,
     {
       label: "Export CSV",
       type: "switch",
     },
   ],
   [
-    FieldKey.TATTLETALE,
+    AdvancedOptionsFieldKey.TATTLETALE,
     {
       label: "Tattletale",
       type: "switch",
     },
   ],
   [
-    FieldKey.CLASS_NOT_FOUND_ANALYSIS,
+    AdvancedOptionsFieldKey.CLASS_NOT_FOUND_ANALYSIS,
     {
       label: "'Class Not Found' analysis",
       type: "switch",
     },
   ],
   [
-    FieldKey.COMPATIBLE_FILES_REPORT,
+    AdvancedOptionsFieldKey.COMPATIBLE_FILES_REPORT,
     {
       label: "'Compatible Files' report",
       type: "switch",
     },
   ],
   [
-    FieldKey.EXPLODED_APP,
+    AdvancedOptionsFieldKey.EXPLODED_APP,
     {
       label: "Exploded app",
       type: "switch",
     },
   ],
   [
-    FieldKey.KEEP_WORK_DIRS,
+    AdvancedOptionsFieldKey.KEEP_WORK_DIRS,
     {
       label: "Keep work dirs",
       type: "switch",
     },
   ],
   [
-    FieldKey.SKIP_REPORTS,
+    AdvancedOptionsFieldKey.SKIP_REPORTS,
     {
       label: "Skip reports",
       type: "switch",
     },
   ],
   [
-    FieldKey.ALLOW_NETWORK_ACCESS,
+    AdvancedOptionsFieldKey.ALLOW_NETWORK_ACCESS,
     {
       label: "Allow network access",
       type: "switch",
     },
   ],
   [
-    FieldKey.MAVENIZE,
+    AdvancedOptionsFieldKey.MAVENIZE,
     {
       label: "Mavenize",
       type: "switch",
     },
   ],
   [
-    FieldKey.SOURCE_MODE,
+    AdvancedOptionsFieldKey.SOURCE_MODE,
     {
       label: "Source mode",
       type: "switch",
@@ -221,7 +196,7 @@ const findAdvanvedOptionById = (
 };
 
 const getFieldData = (
-  fieldKey: FieldKey,
+  fieldKey: AdvancedOptionsFieldKey,
   availableOptions: ConfigurationOption[]
 ): [IFieldInfo, ConfigurationOption] => {
   const fieldInfo = Fields.get(fieldKey);
@@ -244,7 +219,7 @@ export const AdvancedOptionsForm: React.FC<AdvancedOptionsFormProps> = ({
   onCancel,
   onSubmit,
 }) => {
-  const [dropdowns] = React.useState<FieldKey[]>(
+  const [dropdowns] = React.useState<AdvancedOptionsFieldKey[]>(
     getMapKeys(Fields).filter((f) => f.type === "dropdown")
   );
   const dropdownCollapse = useSelectionState({
@@ -252,14 +227,17 @@ export const AdvancedOptionsForm: React.FC<AdvancedOptionsFormProps> = ({
     initialSelected: [],
     isEqual: (a, b) => a === b,
   });
-  const onDropdownToggle = (key: FieldKey, isExpanded?: boolean) => {
+  const onDropdownToggle = (
+    key: AdvancedOptionsFieldKey,
+    isExpanded?: boolean
+  ) => {
     dropdownCollapse.toggleItemSelected(key, isExpanded);
   };
 
   const getValidationSchema = () => {
     const schema: any = {};
 
-    getMapKeys(Fields).forEach((fieldKey: FieldKey) => {
+    getMapKeys(Fields).forEach((fieldKey: AdvancedOptionsFieldKey) => {
       const [fieldInfo, fieldConfiguration] = getFieldData(
         fieldKey,
         availableOptions
@@ -333,7 +311,7 @@ export const AdvancedOptionsForm: React.FC<AdvancedOptionsFormProps> = ({
   const getInitialValues = () => {
     let result: any = {};
 
-    getMapKeys(Fields).forEach((fieldKey: FieldKey) => {
+    getMapKeys(Fields).forEach((fieldKey: AdvancedOptionsFieldKey) => {
       const [fieldInfo] = getFieldData(fieldKey, availableOptions);
 
       const dbValues = analysisContext.advancedOptions.filter(
@@ -404,7 +382,7 @@ export const AdvancedOptionsForm: React.FC<AdvancedOptionsFormProps> = ({
                   // Dropdowns
                   getMapKeys(Fields)
                     .filter((f) => Fields.get(f)?.type === "dropdown")
-                    .map((fieldKey: FieldKey, index) => {
+                    .map((fieldKey: AdvancedOptionsFieldKey, index) => {
                       const [fieldInfo, fieldConfiguration] = getFieldData(
                         fieldKey,
                         availableOptions
@@ -472,7 +450,7 @@ export const AdvancedOptionsForm: React.FC<AdvancedOptionsFormProps> = ({
                   // Input fields
                   getMapKeys(Fields)
                     .filter((f) => Fields.get(f)?.type === "input")
-                    .map((fieldKey: FieldKey, index) => {
+                    .map((fieldKey: AdvancedOptionsFieldKey, index) => {
                       const [fieldInfo, fieldConfiguration] = getFieldData(
                         fieldKey,
                         availableOptions
@@ -521,7 +499,7 @@ export const AdvancedOptionsForm: React.FC<AdvancedOptionsFormProps> = ({
               >
                 {getMapKeys(Fields)
                   .filter((f) => Fields.get(f)?.type === "switch")
-                  .map((fieldKey: FieldKey, index) => {
+                  .map((fieldKey: AdvancedOptionsFieldKey, index) => {
                     const [fieldInfo, fieldConfiguration] = getFieldData(
                       fieldKey,
                       availableOptions

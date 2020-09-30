@@ -12,6 +12,7 @@ export {
   mapStateToIcon,
   mapStateToLabel,
 } from "./execution-status";
+export { ExpandableCard } from "./expandable-card";
 export { FetchTable } from "./fetch-table";
 export { FilterToolbarItem } from "./filter-toolbar-item";
 export { LoadingStep } from "./loading-step";

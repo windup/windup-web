@@ -30,6 +30,7 @@ import NewProjectWizard, {
   WizardStepIds,
   LoadingWizardContent,
 } from "../wizard";
+import { AdvancedOptionsFieldKey } from "Constants";
 
 interface ReviewProps extends RouteComponentProps<{ project: string }> {}
 
@@ -177,7 +178,7 @@ export const Review: React.FC<ReviewProps> = ({ match, history: { push } }) => {
                   <DescriptionListTerm>Target(s)</DescriptionListTerm>
                   <DescriptionListDescription>
                     {analysisContext.advancedOptions
-                      .filter((f) => f.name === "target")
+                      .filter((f) => f.name === AdvancedOptionsFieldKey.TARGET)
                       .map((f) => f.value)
                       .join(", ")}
                   </DescriptionListDescription>
