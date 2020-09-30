@@ -68,10 +68,10 @@ export const ExecutionDetails: React.FC<ExecutionDetailsProps> = ({
 
   return (
     <React.Fragment>
-      {execution && (
-        <PageHeader
-          title={`Analysis #${execution.id}`}
-          resourceStatus={
+      <PageHeader
+        title={`Analysis #${execution?.id}`}
+        resourceStatus={
+          execution ? (
             <ProjectStatusWatcher watch={execution}>
               {({ execution: watchedExecution }) => (
                 <Label icon={mapStateToIcon(watchedExecution.state)}>
@@ -79,58 +79,58 @@ export const ExecutionDetails: React.FC<ExecutionDetailsProps> = ({
                 </Label>
               )}
             </ProjectStatusWatcher>
-          }
-          breadcrumbs={[
-            {
-              title: "Executions",
-              path: formatPath(Paths.editProject_executionList, {
-                project: match.params.project,
-              }),
-            },
-            {
-              title: "Details",
-              path: formatPath(Paths.editProject_executionDetails, {
-                project: match.params.project,
-                execution: match.params.execution,
-              }),
-            },
-          ]}
-          menuActions={[{ label: "Delete", callback: handleDeleteExecution }]}
-          navItems={[
-            {
-              title: "Details",
-              path: formatPath(Paths.editProject_executionDetails_overview, {
-                project: match.params.project,
-                execution: match.params.execution,
-              }),
-            },
-            // {
-            //   title: "Applications",
-            //   path: formatPath(
-            //     Paths.editProject_executionDetails_applications,
-            //     {
-            //       project: match.params.project,
-            //       execution: match.params.execution,
-            //     }
-            //   ),
-            // },
-            // {
-            //   title: "Rules",
-            //   path: formatPath(Paths.editProject_executionDetails_rules, {
-            //     project: match.params.project,
-            //     execution: match.params.execution,
-            //   }),
-            // },
-            {
-              title: "Logs",
-              path: formatPath(Paths.editProject_executionDetails_logs, {
-                project: match.params.project,
-                execution: match.params.execution,
-              }),
-            },
-          ]}
-        />
-      )}
+          ) : undefined
+        }
+        breadcrumbs={[
+          {
+            title: "Executions",
+            path: formatPath(Paths.editProject_executionList, {
+              project: match.params.project,
+            }),
+          },
+          {
+            title: "Details",
+            path: formatPath(Paths.editProject_executionDetails, {
+              project: match.params.project,
+              execution: match.params.execution,
+            }),
+          },
+        ]}
+        menuActions={[{ label: "Delete", callback: handleDeleteExecution }]}
+        navItems={[
+          {
+            title: "Details",
+            path: formatPath(Paths.editProject_executionDetails_overview, {
+              project: match.params.project,
+              execution: match.params.execution,
+            }),
+          },
+          // {
+          //   title: "Applications",
+          //   path: formatPath(
+          //     Paths.editProject_executionDetails_applications,
+          //     {
+          //       project: match.params.project,
+          //       execution: match.params.execution,
+          //     }
+          //   ),
+          // },
+          // {
+          //   title: "Rules",
+          //   path: formatPath(Paths.editProject_executionDetails_rules, {
+          //     project: match.params.project,
+          //     execution: match.params.execution,
+          //   }),
+          // },
+          {
+            title: "Logs",
+            path: formatPath(Paths.editProject_executionDetails_logs, {
+              project: match.params.project,
+              execution: match.params.execution,
+            }),
+          },
+        ]}
+      />
       <PageSection>
         <Suspense fallback={<AppPlaceholder />}>
           <Switch>

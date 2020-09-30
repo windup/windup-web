@@ -123,7 +123,7 @@ export const Overview: React.FC<OverviewProps> = ({ match }) => {
                             </DescriptionListDescription>
                           </DescriptionListGroup>
                           <DescriptionListGroup>
-                            <DescriptionListTerm>Report</DescriptionListTerm>
+                            <DescriptionListTerm>Reports</DescriptionListTerm>
                             <DescriptionListDescription>
                               {watchedExecution.state === "COMPLETED" ? (
                                 <Stack>
@@ -156,14 +156,13 @@ export const Overview: React.FC<OverviewProps> = ({ match }) => {
                                             execution.id
                                           }/${MERGED_CSV_FILENAME}`}
                                         >
-                                          <DownloadIcon /> Download all issues
-                                          CSV
+                                          <DownloadIcon /> All issues CSV
                                         </a>
                                       </StackItem>
                                     )}
                                 </Stack>
                               ) : (
-                                "Not available yet"
+                                "Not available"
                               )}
                             </DescriptionListDescription>
                           </DescriptionListGroup>
@@ -189,7 +188,7 @@ export const Overview: React.FC<OverviewProps> = ({ match }) => {
                 </ExpandableCard>
               </GridItem>
               <GridItem>
-                <ExpandableCard title="Included packages">
+                <ExpandableCard title="Included packages" maxHeight={200}>
                   {execution.analysisContext.includePackages.length > 0 && (
                     <List>
                       {execution.analysisContext.includePackages.map(

@@ -13,12 +13,14 @@ import { AngleLeftIcon, AngleDownIcon } from "@patternfly/react-icons";
 export interface ExpandableCardProps {
   title: any;
   expandByDefault?: boolean;
+  maxHeight?: number;
 }
 
 export const ExpandableCard: React.FC<ExpandableCardProps> = ({
   title,
-  children,
   expandByDefault,
+  maxHeight,
+  children,
 }) => {
   const [isExpanded, setIsExpanded] = useState(expandByDefault);
 
@@ -36,7 +38,15 @@ export const ExpandableCard: React.FC<ExpandableCardProps> = ({
         </CardActions>
         <CardTitle>{title}</CardTitle>
       </CardHeader>
-      {isExpanded && <CardBody>{children}</CardBody>}
+      {isExpanded && (
+        <CardBody
+          style={
+            maxHeight ? { overflow: "auto", maxHeight: maxHeight } : undefined
+          }
+        >
+          {children}
+        </CardBody>
+      )}
     </Card>
   );
 };

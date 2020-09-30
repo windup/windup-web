@@ -1,5 +1,17 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
+import { saveAs } from "file-saver";
+
+import {
+  Flex,
+  FlexItem,
+  Stack,
+  StackItem,
+  Button,
+  ButtonVariant,
+  Spinner,
+} from "@patternfly/react-core";
+import { DownloadIcon } from "@patternfly/react-icons";
 
 import { LogView } from "components";
 
@@ -12,9 +24,10 @@ export interface RulesProps
   extends RouteComponentProps<{ project: string; execution: string }> {}
 
 export const Logs: React.FC<RulesProps> = ({ match }) => {
-  const [execution, setExecution] = React.useState<WindupExecution>();
-  const [executionLog, setExecutionLog] = React.useState<string[]>();
+  const [execution, setExecution] = useState<WindupExecution>();
+  const [executionLog, setExecutionLog] = useState<string[]>();
 
+  // Websocket
   const watchedExecution = useProjectStatusWatcher(execution);
 
   const refreshLog = useCallback(() => {
@@ -23,19 +36,65 @@ export const Logs: React.FC<RulesProps> = ({ match }) => {
     });
   }, [match]);
 
+  // Load execution
   useEffect(() => {
     getExecution(match.params.execution).then(({ data: executionData }) => {
       setExecution(executionData);
     });
   }, [match]);
 
+  // Load log everytime the execution changes
   useEffect(() => {
     refreshLog();
-  }, [watchedExecution, refreshLog]);
+  }, [refreshLog, watchedExecution]);
+
+  const handleDownloadLog = () => {
+    const data = (executionLog || []).join("\n");
+    const blob = new Blob([data], { type: "text/plain;charset=utf-8" });
+    let filename = `execution-${execution?.id}.log`;
+    saveAs(blob, filename);
+  };
 
   return (
     <React.Fragment>
-      {executionLog && <LogView lines={executionLog} />}
+      <Stack>
+        <StackItem>
+          <Flex>
+            <FlexItem>
+              {watchedExecution?.state === "QUEUED" ||
+              watchedExecution?.state === "STARTED" ? (
+                <React.Fragment>
+                  <Spinner size="sm" />
+                  &nbsp;Loading log...
+                </React.Fragment>
+              ) : (
+                "Log loaded"
+              )}
+            </FlexItem>
+            <FlexItem align={{ default: "alignRight" }}>
+              <Button
+                type="button"
+                variant={ButtonVariant.link}
+                icon={<DownloadIcon />}
+                isInline
+                onClick={handleDownloadLog}
+              >
+                Download
+              </Button>
+            </FlexItem>
+          </Flex>
+        </StackItem>
+        <StackItem>
+          <LogView
+            headerText={`${executionLog ? executionLog.length : 0} lines`}
+            lines={executionLog || []}
+            isStreamActive={
+              watchedExecution?.state === "QUEUED" ||
+              watchedExecution?.state === "STARTED"
+            }
+          />
+        </StackItem>
+      </Stack>
     </React.Fragment>
   );
 };
