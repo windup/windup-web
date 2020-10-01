@@ -1,5 +1,7 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { Switch, Route, RouteComponentProps } from "react-router-dom";
+
+import { AppPlaceholder } from "components";
 
 import { Paths } from "Paths";
 import { ProjectContextPageSectionContainer } from "./projectcontext-pagesection-container";
@@ -7,7 +9,8 @@ import { ProjectContextPageSectionContainer } from "./projectcontext-pagesection
 import ExecutionList from "./analysis-results/execution-list";
 import ExecutionDetails from "./analysis-results/execution-details";
 
-import Applications from "./applications";
+import ApplicationList from "./applications/application-list";
+import AddApplications from "./applications/add-applications";
 
 export interface ProjectsDetailsProps
   extends RouteComponentProps<{ project: string }> {}
@@ -24,25 +27,32 @@ export const ProjectsDetails: React.FC<ProjectsDetailsProps> = ({
         history={history}
         location={location}
       />
-      <Switch>
-        {/* analysis-results */}
-        <Route
-          path={Paths.editProject_executionList}
-          component={ExecutionList}
-          exact
-        />
-        <Route
-          path={Paths.editProject_executionDetails}
-          component={ExecutionDetails}
-        />
+      <Suspense fallback={<AppPlaceholder />}>
+        <Switch>
+          {/* analysis-results */}
+          <Route
+            path={Paths.editProject_executionList}
+            component={ExecutionList}
+            exact
+          />
+          <Route
+            path={Paths.editProject_executionDetails}
+            component={ExecutionDetails}
+          />
 
-        {/* applications */}
-        <Route
-          path={Paths.editProject_applications}
-          component={Applications}
-          exact
-        />
-      </Switch>
+          {/* applications */}
+          <Route
+            path={Paths.editProject_applications}
+            component={ApplicationList}
+            exact
+          />
+          <Route
+            path={Paths.editProject_add_applications}
+            component={AddApplications}
+            exact
+          />
+        </Switch>
+      </Suspense>
     </React.Fragment>
   );
 };

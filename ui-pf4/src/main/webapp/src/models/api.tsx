@@ -42,8 +42,8 @@ export interface Application {
   fileSize: number;
   inputFilename: string;
   inputPath: string;
-  created: Date;
-  lastModified: Date;
+  created: number;
+  lastModified: number;
   registrationType: "PATH" | "UPLOADED";
   reportIndexPath: null;
   title: string;

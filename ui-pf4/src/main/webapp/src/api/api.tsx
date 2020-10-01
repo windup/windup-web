@@ -27,6 +27,8 @@ export const UPLOAD_LABEL_TO_MIGRATION_PROJECT = `labels/upload/by-project/:proj
 export const EXECUTION_PROGRESS_URL =
   "/websocket/execution-progress/:executionId";
 
+export const DOWNLOAD_REGISTERED_APPLICATION = `registeredApplications/download`;
+
 export const getProjects = (): AxiosPromise<Project[]> => {
   return ApiClient.get<Project[]>(`${MIGRATION_PROJECTS_PATH}/list`);
 };
