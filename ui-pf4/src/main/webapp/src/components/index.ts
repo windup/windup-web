@@ -18,7 +18,11 @@ export { FetchTable } from "./fetch-table";
 export { FilterToolbarItem } from "./filter-toolbar-item";
 export { LoadingStep } from "./loading-step";
 export { LogView } from "./log-view";
-export { PackageSelection } from "./package-selection";
+export { PackageDualList } from "./package-dual-list";
+export {
+  PackageSelection,
+  PackageSelectionLoadingState,
+} from "./package-selection";
 export { PageHeader } from "./page-header";
 export { ProjectContextPageSection } from "./project-context-page-section";
 export { ProjectContextSelector } from "./project-context-selector";

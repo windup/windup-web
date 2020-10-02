@@ -1,10 +1,10 @@
 import * as React from "react";
 import { shallow } from "enzyme";
-import { PackageSelection } from "../package-selection";
+import { PackageDualList } from "../package-dual-list";
 
-describe("PackageSelection", () => {
+describe("PackageDualList", () => {
   it("Renders without crashing", () => {
-    // const wrapper = shallow(<TransformationPath />);
+    // const wrapper = shallow(<PackageSelection />);
     // expect(wrapper).toMatchSnapshot();
   });
 });

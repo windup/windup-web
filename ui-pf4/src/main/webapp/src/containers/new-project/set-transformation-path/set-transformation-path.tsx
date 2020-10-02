@@ -2,8 +2,6 @@ import React, { useEffect } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
-import { Stack, StackItem } from "@patternfly/react-core";
-
 import { TransformationPath } from "components";
 import { useFetchProject } from "hooks/useFetchProject";
 
@@ -105,16 +103,12 @@ export const SetTransformationPath: React.FC<SetTransformationPathProps> = ({
       analysisContext={analysisContext}
       showErrorContent={fetchError}
     >
-      <Stack hasGutter>
-        <StackItem>
-          <TransformationPath
-            selectedTargets={selectedTargets}
-            onSelectedTargetsChange={handleTargetSelectionChange}
-            isFetching={isFetching}
-            isFetchingPlaceholder={<LoadingWizardContent />}
-          />
-        </StackItem>
-      </Stack>
+      <TransformationPath
+        selectedTargets={selectedTargets}
+        onSelectedTargetsChange={handleTargetSelectionChange}
+        isFetching={isFetching}
+        isFetchingPlaceholder={<LoadingWizardContent />}
+      />
     </NewProjectWizard>
   );
 };

@@ -28,6 +28,9 @@ export const useFetchProject = <T>(
       })
       .then(({ data }) => {
         setAnalysisContext(data);
+
+        // Clean error
+        setFetchError("");
       })
       .catch((error: AxiosError) => {
         setFetchError(error.message);

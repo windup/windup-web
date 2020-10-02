@@ -8,6 +8,7 @@ import { Paths, formatPath } from "Paths";
 import { PageHeader, AppPlaceholder } from "components";
 
 const General = lazy(() => import("./general"));
+const Packages = lazy(() => import("./packages"));
 
 export interface AnalysisConfigurationProps
   extends RouteComponentProps<{ project: string }> {}
@@ -67,6 +68,10 @@ export const AnalysisConfiguration: React.FC<AnalysisConfigurationProps> = ({
             <Route
               path={Paths.editProject_analysisConfiguration_general}
               component={General}
+            />
+            <Route
+              path={Paths.editProject_analysisConfiguration_packages}
+              component={Packages}
             />
             <Redirect
               from={formatPath(Paths.editProject_analysisConfiguration, {
