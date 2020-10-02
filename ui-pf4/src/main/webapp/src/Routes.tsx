@@ -5,11 +5,19 @@ import { AppPlaceholder } from "./components";
 import { Paths } from "./Paths";
 
 const Projects = lazy(() => import("./containers/pages/projects"));
+const AnalysisResults = lazy(() =>
+  import("./containers/pages/analysis-results")
+);
 const ProjectDetails = lazy(() => import("./containers/project-details"));
 
 export const AppRoutes = () => {
   const routes = [
     { component: Projects, path: Paths.projects, exact: false },
+    {
+      component: AnalysisResults,
+      path: Paths.editProject_executionList,
+      exact: false,
+    },
     { component: ProjectDetails, path: Paths.editProject, exact: false },
   ];
 
