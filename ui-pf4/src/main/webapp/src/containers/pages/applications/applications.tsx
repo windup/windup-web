@@ -6,12 +6,13 @@ import { AppPlaceholder } from "components";
 import { Paths } from "Paths";
 import { ProjectContextPageSectionContainer } from "containers/projectcontext-pagesection-container";
 
-const AnalysisConfiguration = lazy(() => import("./analysis-configuration"));
+const ApplicationList = lazy(() => import("./application-list"));
+const AddApplications = lazy(() => import("./add-applications"));
 
-export interface ProjectsDetailsProps
+export interface ApplicationsProps
   extends RouteComponentProps<{ project: string }> {}
 
-export const ProjectsDetails: React.FC<ProjectsDetailsProps> = ({
+export const Applications: React.FC<ApplicationsProps> = ({
   match,
   history,
   location,
@@ -25,10 +26,14 @@ export const ProjectsDetails: React.FC<ProjectsDetailsProps> = ({
       />
       <Suspense fallback={<AppPlaceholder />}>
         <Switch>
-          {/* analysis-configuration */}
           <Route
-            path={Paths.editProject_analysisConfiguration}
-            component={AnalysisConfiguration}
+            path={Paths.editProject_applications}
+            component={ApplicationList}
+            exact
+          />
+          <Route
+            path={Paths.editProject_add_applications}
+            component={AddApplications}
           />
         </Switch>
       </Suspense>

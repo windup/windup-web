@@ -8,6 +8,7 @@ const Projects = lazy(() => import("./containers/pages/projects"));
 const AnalysisResults = lazy(() =>
   import("./containers/pages/analysis-results")
 );
+const Applications = lazy(() => import("./containers/pages/applications"));
 const ProjectDetails = lazy(() => import("./containers/project-details"));
 
 export const AppRoutes = () => {
@@ -16,6 +17,11 @@ export const AppRoutes = () => {
     {
       component: AnalysisResults,
       path: Paths.editProject_executionList,
+      exact: false,
+    },
+    {
+      component: Applications,
+      path: Paths.editProject_applications,
       exact: false,
     },
     { component: ProjectDetails, path: Paths.editProject, exact: false },
