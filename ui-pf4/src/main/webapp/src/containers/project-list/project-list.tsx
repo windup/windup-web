@@ -31,11 +31,11 @@ import {
   SimplePageSection,
   FetchTable,
   SimplePagination,
-  PageSkeleton,
   Welcome,
   FilterToolbarItem,
   DeleteButton,
-} from "../../components";
+  AppPlaceholder,
+} from "components";
 
 interface StateToProps {
   projects: Project[] | undefined;
@@ -299,7 +299,7 @@ export const ProjectList: React.FC<Props> = ({
           </PageSection>
         </React.Fragment>
       ) : (
-        <PageSkeleton />
+        <AppPlaceholder />
       )}
     </React.Fragment>
   );

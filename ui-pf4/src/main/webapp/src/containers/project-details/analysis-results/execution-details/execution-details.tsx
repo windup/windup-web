@@ -105,23 +105,6 @@ export const ExecutionDetails: React.FC<ExecutionDetailsProps> = ({
               execution: match.params.execution,
             }),
           },
-          // {
-          //   title: "Applications",
-          //   path: formatPath(
-          //     Paths.editProject_executionDetails_applications,
-          //     {
-          //       project: match.params.project,
-          //       execution: match.params.execution,
-          //     }
-          //   ),
-          // },
-          // {
-          //   title: "Rules",
-          //   path: formatPath(Paths.editProject_executionDetails_rules, {
-          //     project: match.params.project,
-          //     execution: match.params.execution,
-          //   }),
-          // },
           {
             title: "Logs",
             path: formatPath(Paths.editProject_executionDetails_logs, {

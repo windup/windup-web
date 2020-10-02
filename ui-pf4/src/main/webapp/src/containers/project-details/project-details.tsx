@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { lazy, Suspense } from "react";
 import { Switch, Route, RouteComponentProps } from "react-router-dom";
 
 import { AppPlaceholder } from "components";
@@ -6,13 +6,13 @@ import { AppPlaceholder } from "components";
 import { Paths } from "Paths";
 import { ProjectContextPageSectionContainer } from "./projectcontext-pagesection-container";
 
-import ExecutionList from "./analysis-results/execution-list";
-import ExecutionDetails from "./analysis-results/execution-details";
-
-import ApplicationList from "./applications/application-list";
-import AddApplications from "./applications/add-applications";
-
-import AnalysisConfiguration from "./analysis-configuration";
+const ExecutionList = lazy(() => import("./analysis-results/execution-list"));
+const ExecutionDetails = lazy(() =>
+  import("./analysis-results/execution-details")
+);
+const ApplicationList = lazy(() => import("./applications/application-list"));
+const AddApplications = lazy(() => import("./applications/add-applications"));
+const AnalysisConfiguration = lazy(() => import("./analysis-configuration"));
 
 export interface ProjectsDetailsProps
   extends RouteComponentProps<{ project: string }> {}

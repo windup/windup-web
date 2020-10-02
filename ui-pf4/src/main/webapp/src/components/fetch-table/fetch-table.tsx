@@ -9,6 +9,7 @@ import {
   Button,
   Bullseye,
   Spinner,
+  Skeleton,
 } from "@patternfly/react-core";
 import {
   Table,
@@ -22,7 +23,6 @@ import {
 } from "@patternfly/react-table";
 import { ExclamationCircleIcon, SearchIcon } from "@patternfly/react-icons";
 import { global_danger_color_200 as globalDangerColor200 } from "@patternfly/react-tokens";
-import Skeleton from "@material-ui/lab/Skeleton";
 import { FetchStatus } from "../../store/common";
 import { Constants } from "../../Constants";
 
