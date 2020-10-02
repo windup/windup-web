@@ -23,7 +23,6 @@ export { PageHeader } from "./page-header";
 export { ProjectContextPageSection } from "./project-context-page-section";
 export { ProjectContextSelector } from "./project-context-selector";
 export { ProjectDetailsForm } from "./project-details-form";
-export { ProjectDetailsFormDDF } from "./project-details-form-ddf";
 export { SelectCard } from "./select-card";
 export { ServerPathForm } from "./server-path-form";
 export { SelectCardGallery } from "./select-card-gallery";
