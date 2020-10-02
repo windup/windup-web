@@ -157,7 +157,7 @@ export const getAnalysisContext = (
 };
 
 export const saveAnalysisContext = (
-  projectId: number,
+  projectId: number | string,
   analysisContext: AnalysisContext
 ): AxiosPromise<AnalysisContext> => {
   return ApiClient.put<AnalysisContext>(

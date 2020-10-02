@@ -1,15 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { RouteComponentProps } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 import {
-  Stack,
-  StackItem,
-  Alert,
-  AlertActionCloseButton,
-  TextContent,
-  Title,
-  TitleSizes,
-  Text,
   Card,
   CardBody,
   ActionGroup,
@@ -17,87 +10,79 @@ import {
   ButtonVariant,
 } from "@patternfly/react-core";
 
-import { AppPlaceholder, SelectCardGallery } from "components";
+import { AppPlaceholder, TransformationPath, FetchError } from "components";
+import { useFetchProject } from "hooks/useFetchProject";
+
+import { alertActions } from "store/alert";
 
 import { formatPath, Paths } from "Paths";
-import { AdvancedOptionsFieldKey } from "Constants";
+import { AdvancedOptionsFieldKey, getAlertModel } from "Constants";
+
 import {
   createProjectExecution,
   getAnalysisContext,
-  getProjectById,
   saveAnalysisContext,
 } from "api/api";
-import { AdvancedOption, AnalysisContext, MigrationProject } from "models/api";
+import { AdvancedOption, AnalysisContext } from "models/api";
 
 export interface RulesProps extends RouteComponentProps<{ project: string }> {}
 
 export const General: React.FC<RulesProps> = ({ match, history: { push } }) => {
-  const [project, setProject] = React.useState<MigrationProject>();
-  const [, setAnalysisContext] = React.useState<AnalysisContext>();
-
-  const [isFetching, setIsFetching] = React.useState(true);
-  const [, setFetchError] = React.useState<string>();
-
-  const [transformationPath, setTransformationPath] = React.useState<string[]>(
-    []
+  const dispatch = useDispatch();
+  const { project, analysisContext, isFetching, fetchError } = useFetchProject(
+    match.params.project
   );
 
+  const [selectedTargets, setSelectedTargets] = React.useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const [submitError, setSubmitError] = React.useState<string>();
 
-  React.useEffect(() => {
-    getProjectById(match.params.project)
-      .then(({ data: projectData }) => {
-        setProject(projectData);
-        return getAnalysisContext(projectData.defaultAnalysisContextId);
-      })
-      .then(({ data: analysisContextData }) => {
-        setAnalysisContext(analysisContextData);
-        const targets = analysisContextData.advancedOptions.filter(
-          (f) => f.name === AdvancedOptionsFieldKey.TARGET
-        );
-        setTransformationPath(targets.map((f) => f.value));
-      })
-      .catch(() => {
-        setFetchError("Error while fetching migrationProject/analysisContext");
-      })
-      .finally(() => {
-        setIsFetching(false);
-      });
-  }, [match]);
+  useEffect(() => {
+    if (analysisContext) {
+      const targets = analysisContext.advancedOptions.filter(
+        (f) => f.name === AdvancedOptionsFieldKey.TARGET
+      );
+      setSelectedTargets(targets.map((f) => f.value));
+    }
+  }, [analysisContext]);
 
-  const handleTransformationPathChange = (values: string[]) => {
-    setTransformationPath(values);
+  const handleTargetSelectionChange = (values: string[]) => {
+    setSelectedTargets(values);
   };
 
-  const handleOnSubmit = (runAnalysis: boolean) => {
-    setIsSubmitting(true);
+  const onSubmit = (runAnalysis: boolean) => {
+    if (!project) {
+      return;
+    }
 
-    getAnalysisContext(project!.defaultAnalysisContextId)
-      .then(({ data: analysisContextData }) => {
-        const body: AnalysisContext = {
-          ...analysisContextData!,
+    setIsSubmitting(true);
+    getAnalysisContext(project.defaultAnalysisContextId)
+      .then(({ data }) => {
+        const newAnalysisContext: AnalysisContext = {
+          ...data,
           advancedOptions: [
-            ...analysisContextData!.advancedOptions.filter(
-              (f) => f.name !== "target"
-            ),
-            ...transformationPath.map(
-              (f) => ({ name: "target", value: f } as AdvancedOption)
-            ),
+            ...data.advancedOptions.filter((f) => {
+              return f.name !== AdvancedOptionsFieldKey.TARGET;
+            }),
+            ...selectedTargets.map((f) => {
+              return {
+                name: AdvancedOptionsFieldKey.TARGET,
+                value: f,
+              } as AdvancedOption;
+            }),
           ],
         };
-        return saveAnalysisContext(project!.id, body);
+        return saveAnalysisContext(match.params.project, newAnalysisContext);
       })
-      .then(({ data: analysisContextData }) => {
+      .then(({ data }) => {
         if (runAnalysis) {
-          return createProjectExecution(project!.id, analysisContextData);
+          return createProjectExecution(match.params.project, data);
         }
       })
       .then(() => {
         if (runAnalysis) {
           push(
             formatPath(Paths.editProject_executionList, {
-              project: project!.id,
+              project: match.params.project,
             })
           );
         } else {
@@ -106,14 +91,18 @@ export const General: React.FC<RulesProps> = ({ match, history: { push } }) => {
       })
       .catch(() => {
         setIsSubmitting(false);
-        setSubmitError("Could not save data");
+        dispatch(
+          alertActions.alert(
+            getAlertModel("danger", "Error", "Could not save data")
+          )
+        );
       });
   };
 
-  const handleOnCancel = () => {
+  const onCancel = () => {
     push(
       formatPath(Paths.editProject_executionList, {
-        project: project!.id,
+        project: match.params.project,
       })
     );
   };
@@ -122,69 +111,39 @@ export const General: React.FC<RulesProps> = ({ match, history: { push } }) => {
     <div className="pf-c-form">
       <Card>
         <CardBody>
-          {isFetching ? (
-            <AppPlaceholder />
-          ) : (
-            <Stack hasGutter>
-              {submitError && (
-                <StackItem>
-                  <Alert
-                    isLiveRegion
-                    variant="danger"
-                    title="Error"
-                    actionClose={
-                      <AlertActionCloseButton
-                        onClose={() => setSubmitError("")}
-                      />
-                    }
-                  >
-                    {submitError}
-                  </Alert>
-                </StackItem>
-              )}
-              <StackItem>
-                <TextContent>
-                  <Title headingLevel="h5" size={TitleSizes["lg"]}>
-                    Select transformation path
-                  </Title>
-                  <Text component="small">
-                    Select on or more transformation options in focus for the
-                    analysis
-                  </Text>
-                </TextContent>
-              </StackItem>
-              <StackItem>
-                <SelectCardGallery
-                  value={transformationPath}
-                  onChange={handleTransformationPathChange}
-                />
-              </StackItem>
-            </Stack>
-          )}
+          <TransformationPath
+            selectedTargets={selectedTargets}
+            onSelectedTargetsChange={handleTargetSelectionChange}
+            isFetching={isFetching}
+            isFetchingPlaceholder={<AppPlaceholder />}
+            fetchError={fetchError}
+            fetchErrorPlaceholder={<FetchError />}
+          />
         </CardBody>
       </Card>
-
-      <ActionGroup>
-        <Button
-          type="button"
-          variant={ButtonVariant.primary}
-          isDisabled={transformationPath.length === 0 || isSubmitting}
-          onClick={() => handleOnSubmit(false)}
-        >
-          Save
-        </Button>
-        <Button
-          type="button"
-          variant={ButtonVariant.primary}
-          isDisabled={transformationPath.length === 0 || isSubmitting}
-          onClick={() => handleOnSubmit(true)}
-        >
-          Save and run
-        </Button>
-        <Button variant={ButtonVariant.link} onClick={handleOnCancel}>
-          Cancel
-        </Button>
-      </ActionGroup>
+      {!fetchError && (
+        <ActionGroup>
+          <Button
+            type="button"
+            variant={ButtonVariant.primary}
+            isDisabled={selectedTargets.length === 0 || isSubmitting}
+            onClick={() => onSubmit(false)}
+          >
+            Save
+          </Button>
+          <Button
+            type="button"
+            variant={ButtonVariant.primary}
+            isDisabled={selectedTargets.length === 0 || isSubmitting}
+            onClick={() => onSubmit(true)}
+          >
+            Save and run
+          </Button>
+          <Button variant={ButtonVariant.link} onClick={onCancel}>
+            Cancel
+          </Button>
+        </ActionGroup>
+      )}
     </div>
   );
 };

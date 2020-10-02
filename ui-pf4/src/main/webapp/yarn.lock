@@ -2554,10 +2554,10 @@
     hoist-non-react-statics "^3.3.2"
     prop-types "^15.7.2"
 
-"@redhat-cloud-services/frontend-components-notifications@^2.1.2":
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/@redhat-cloud-services/frontend-components-notifications/-/frontend-components-notifications-2.1.2.tgz#7d3897b5b3ea460140f2c5c35c37c3b99ee794b1"
-  integrity sha512-NnRfoWpJ67HweKbR8WGwvr5sMTyz8z4FnB7sWKaJkFhuACR+KSy+tw91cRK1DV+iFuYgOygnkXMMJEJdWxi/DA==
+"@redhat-cloud-services/frontend-components-notifications@2.2.2":
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/@redhat-cloud-services/frontend-components-notifications/-/frontend-components-notifications-2.2.2.tgz#8b3377bf6c613ea389813fb2aadd0b32ca788779"
+  integrity sha512-CTOJNgZLU18HUACc1GqD+yR4Ml4lcHEBSOLfFbVU9LVzymaXEpv62gW4CKUFUWpCO4LpBowZMtL4Vh8bda5dTg==
   dependencies:
     "@redhat-cloud-services/frontend-components-utilities" "2.1.0-beta"
 

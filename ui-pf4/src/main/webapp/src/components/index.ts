@@ -13,6 +13,7 @@ export {
   mapStateToLabel,
 } from "./execution-status";
 export { ExpandableCard } from "./expandable-card";
+export { FetchError } from "./fetch-error";
 export { FetchTable } from "./fetch-table";
 export { FilterToolbarItem } from "./filter-toolbar-item";
 export { LoadingStep } from "./loading-step";
@@ -30,5 +31,6 @@ export { SelectCardGallery } from "./select-card-gallery";
 export { SimplePageSection } from "./simple-page-section";
 export { SimplePagination } from "./simple-pagination";
 export { SortByMenu } from "./sort-by-menu";
+export { TransformationPath } from "./transformation-path";
 export { UploadFilesForm } from "./upload-files-form";
 export { Welcome } from "./welcome";

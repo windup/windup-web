@@ -1,31 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { RouteComponentProps } from "react-router-dom";
-import {
-  Stack,
-  StackItem,
-  Title,
-  TitleSizes,
-  TextContent,
-  Text,
-  AlertActionCloseButton,
-  Alert,
-} from "@patternfly/react-core";
+import { useDispatch } from "react-redux";
 
-import { SelectCardGallery } from "components";
+import { Stack, StackItem } from "@patternfly/react-core";
 
+import { TransformationPath } from "components";
+import { useFetchProject } from "hooks/useFetchProject";
+
+import { alertActions } from "store/alert";
+
+import { AdvancedOptionsFieldKey, getAlertModel, TARGET_EAP7 } from "Constants";
 import { Paths, formatPath } from "Paths";
-import { MigrationProject, AnalysisContext, AdvancedOption } from "models/api";
-import {
-  getProjectById,
-  getAnalysisContext,
-  saveAnalysisContext,
-} from "api/api";
+import { AnalysisContext, AdvancedOption } from "models/api";
+import { getAnalysisContext, saveAnalysisContext } from "api/api";
 
 import NewProjectWizard, {
   WizardStepIds,
   LoadingWizardContent,
 } from "../wizard";
-import { AdvancedOptionsFieldKey } from "Constants";
 
 interface SetTransformationPathProps
   extends RouteComponentProps<{ project: string }> {}
@@ -34,130 +26,95 @@ export const SetTransformationPath: React.FC<SetTransformationPathProps> = ({
   match,
   history: { push },
 }) => {
-  const [project, setProject] = React.useState<MigrationProject>();
-  const [analysisContext, setAnalysisContext] = React.useState<
-    AnalysisContext
-  >();
+  const dispatch = useDispatch();
 
-  const [transformationPath, setTransformationPath] = React.useState<string[]>(
-    []
+  const { project, analysisContext, isFetching, fetchError } = useFetchProject(
+    match.params.project
   );
 
+  const [selectedTargets, setSelectedTargets] = React.useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const [submitError, setSubmitError] = React.useState<string>();
 
-  const [isFetching, setIsFetching] = React.useState(true);
-  const [fetchError, setFetchError] = React.useState<string>();
-
-  React.useEffect(() => {
-    getProjectById(match.params.project)
-      .then(({ data: projectData }) => {
-        setProject(projectData);
-
-        return getAnalysisContext(projectData.defaultAnalysisContextId);
-      })
-      .then(({ data: analysisContextData }) => {
-        setAnalysisContext(analysisContextData);
-
-        const targets = analysisContextData.advancedOptions.filter(
-          (f) => f.name === AdvancedOptionsFieldKey.TARGET
-        );
-        setTransformationPath(
-          targets.length > 0 ? targets.map((f) => f.value) : ["eap7"]
-        );
-      })
-      .catch(() => {
-        setFetchError("Error while fetching migrationProject/analysisContext");
-      })
-      .finally(() => {
-        setIsFetching(false);
-      });
-  }, [match]);
+  useEffect(() => {
+    if (analysisContext) {
+      const targets = analysisContext.advancedOptions.filter(
+        (f) => f.name === AdvancedOptionsFieldKey.TARGET
+      );
+      setSelectedTargets(
+        targets.length > 0 ? targets.map((f) => f.value) : [TARGET_EAP7]
+      );
+    }
+  }, [analysisContext]);
 
   const handleOnNextStep = () => {
+    onSubmit();
+  };
+
+  const onSubmit = () => {
+    if (!project) {
+      return;
+    }
+
     setIsSubmitting(true);
-
-    const body: AnalysisContext = {
-      ...analysisContext!,
-      advancedOptions: [
-        ...analysisContext!.advancedOptions.filter((f) => f.name !== "target"),
-        ...transformationPath.map(
-          (f) => ({ name: "target", value: f } as AdvancedOption)
-        ),
-      ],
-    };
-
-    saveAnalysisContext(project!.id, body)
+    getAnalysisContext(project.defaultAnalysisContextId)
+      .then(({ data }) => {
+        const newAnalysisContext: AnalysisContext = {
+          ...data,
+          advancedOptions: [
+            ...data.advancedOptions.filter((f) => {
+              return f.name !== AdvancedOptionsFieldKey.TARGET;
+            }),
+            ...selectedTargets.map((f) => {
+              return {
+                name: AdvancedOptionsFieldKey.TARGET,
+                value: f,
+              } as AdvancedOption;
+            }),
+          ],
+        };
+        return saveAnalysisContext(match.params.project, newAnalysisContext);
+      })
       .then(() => {
         push(
           formatPath(Paths.newProject_selectPackages, {
-            project: project!.id,
+            project: project.id,
           })
         );
       })
       .catch(() => {
-        setSubmitError("Could not save data");
         setIsSubmitting(false);
+        dispatch(
+          alertActions.alert(
+            getAlertModel("danger", "Error", "Could not save data")
+          )
+        );
       });
   };
 
-  const handleTransformationPathChange = (values: string[]) => {
-    setTransformationPath(values);
+  const handleTargetSelectionChange = (values: string[]) => {
+    setSelectedTargets(values);
   };
 
   return (
     <NewProjectWizard
       stepId={WizardStepIds.SET_TRANSFORMATION_PATH}
-      enableNext={transformationPath.length > 0}
+      enableNext={selectedTargets.length > 0}
       disableNavigation={isFetching || isSubmitting}
       handleOnNextStep={handleOnNextStep}
       migrationProject={project}
       analysisContext={analysisContext}
       showErrorContent={fetchError}
     >
-      {isFetching ? (
-        <LoadingWizardContent />
-      ) : (
-        <Stack hasGutter>
-          {submitError && (
-            <StackItem>
-              <Alert
-                isLiveRegion
-                variant="danger"
-                title="Error"
-                actionClose={
-                  <AlertActionCloseButton onClose={() => setSubmitError("")} />
-                }
-              >
-                {submitError}
-              </Alert>
-            </StackItem>
-          )}
-          <StackItem>
-            <TextContent>
-              <Title headingLevel="h5" size={TitleSizes["lg"]}>
-                Select transformation path
-              </Title>
-              <Text component="small">
-                Select on or more transformation options in focus for the
-                analysis
-              </Text>
-            </TextContent>
-          </StackItem>
-          <StackItem
-            style={{
-              backgroundColor: "#f0f0f0",
-              margin: "0px -25px",
-              padding: "15px 15px",
-            }}
-          >
-            <SelectCardGallery
-              value={transformationPath}
-              onChange={handleTransformationPathChange}
-            />
-          </StackItem>
-        </Stack>
-      )}
+      <Stack hasGutter>
+        <StackItem>
+          <TransformationPath
+            selectedTargets={selectedTargets}
+            onSelectedTargetsChange={handleTargetSelectionChange}
+            isFetching={isFetching}
+            isFetchingPlaceholder={<LoadingWizardContent />}
+          />
+        </StackItem>
+      </Stack>
     </NewProjectWizard>
   );
 };

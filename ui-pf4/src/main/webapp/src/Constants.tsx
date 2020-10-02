@@ -36,6 +36,8 @@ export const getWindupStaticReportsBase = () => {
 
 // Windup general variables
 
+export const TARGET_EAP7 = "eap7";
+
 export enum AdvancedOptionsFieldKey {
   // Dropdowns
   TARGET = "target",
@@ -68,6 +70,16 @@ export class Constants {
   static readonly DEFAULT_PAGE_SIZE = 10;
   static readonly DEFAULT_PAGINATION_OPTIONS = [10, 20, 50, 100];
 }
+
+export const getAlertModel = (
+  variant: "danger",
+  title: string,
+  message: string
+) => ({
+  variant: variant,
+  title: title,
+  description: message,
+});
 
 export const getDeleteSuccessAlertModel = (type: string) => ({
   variant: "success",
