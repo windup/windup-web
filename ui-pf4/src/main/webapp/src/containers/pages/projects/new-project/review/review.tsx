@@ -84,7 +84,7 @@ export const Review: React.FC<ReviewProps> = ({ match, history: { push } }) => {
         })
         .then(() => {
           push(
-            formatPath(Paths.editProject_executionList, {
+            formatPath(Paths.executions, {
               project: match.params.project,
             })
           );

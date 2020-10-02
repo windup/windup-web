@@ -20,7 +20,7 @@ export const Applications: React.FC<ApplicationsProps> = ({
 }) => {
   const handleOnSelectProject = (project: Project) => {
     push(
-      formatPath(Paths.editProject_applications, {
+      formatPath(Paths.applications, {
         project: project.migrationProject.id,
       })
     );
@@ -34,15 +34,8 @@ export const Applications: React.FC<ApplicationsProps> = ({
       />
       <Suspense fallback={<AppPlaceholder />}>
         <Switch>
-          <Route
-            path={Paths.editProject_applications}
-            component={ApplicationList}
-            exact
-          />
-          <Route
-            path={Paths.editProject_add_applications}
-            component={AddApplications}
-          />
+          <Route path={Paths.applications} component={ApplicationList} exact />
+          <Route path={Paths.addApplications} component={AddApplications} />
         </Switch>
       </Suspense>
     </React.Fragment>

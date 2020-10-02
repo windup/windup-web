@@ -201,7 +201,7 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
 
   const handleAddApplication = () => {
     history.push(
-      formatPath(Paths.editProject_add_applications, {
+      formatPath(Paths.addApplications, {
         project: match.params.project,
       })
     );

@@ -20,7 +20,7 @@ export const AnalysisResults: React.FC<AnalysisResultsProps> = ({
 }) => {
   const handleOnSelectProject = (project: Project) => {
     push(
-      formatPath(Paths.editProject_executionList, {
+      formatPath(Paths.executions, {
         project: project.migrationProject.id,
       })
     );
@@ -34,15 +34,8 @@ export const AnalysisResults: React.FC<AnalysisResultsProps> = ({
       />
       <Suspense fallback={<AppPlaceholder />}>
         <Switch>
-          <Route
-            path={Paths.editProject_executionList}
-            component={ExecutionList}
-            exact
-          />
-          <Route
-            path={Paths.editProject_executionDetails}
-            component={ExecutionDetails}
-          />
+          <Route path={Paths.executions} component={ExecutionList} exact />
+          <Route path={Paths.editExecution} component={ExecutionDetails} />
         </Switch>
       </Suspense>
     </React.Fragment>

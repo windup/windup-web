@@ -47,7 +47,7 @@ export const ExecutionDetails: React.FC<ExecutionDetailsProps> = ({
           deleteExecution(execution.id).then(() => {
             dispatch(deleteDialogActions.closeModal());
             push(
-              formatPath(Paths.editProject_executionList, {
+              formatPath(Paths.executions, {
                 project: match.params.project,
               })
             );
@@ -84,13 +84,13 @@ export const ExecutionDetails: React.FC<ExecutionDetailsProps> = ({
         breadcrumbs={[
           {
             title: "Executions",
-            path: formatPath(Paths.editProject_executionList, {
+            path: formatPath(Paths.executions, {
               project: match.params.project,
             }),
           },
           {
             title: "Details",
-            path: formatPath(Paths.editProject_executionDetails, {
+            path: formatPath(Paths.editExecution, {
               project: match.params.project,
               execution: match.params.execution,
             }),
@@ -100,14 +100,14 @@ export const ExecutionDetails: React.FC<ExecutionDetailsProps> = ({
         navItems={[
           {
             title: "Details",
-            path: formatPath(Paths.editProject_executionDetails_overview, {
+            path: formatPath(Paths.editExecution_overview, {
               project: match.params.project,
               execution: match.params.execution,
             }),
           },
           {
             title: "Logs",
-            path: formatPath(Paths.editProject_executionDetails_logs, {
+            path: formatPath(Paths.editExecution_logs, {
               project: match.params.project,
               execution: match.params.execution,
             }),
@@ -117,14 +117,8 @@ export const ExecutionDetails: React.FC<ExecutionDetailsProps> = ({
       <PageSection>
         <Suspense fallback={<AppPlaceholder />}>
           <Switch>
-            <Route
-              path={Paths.editProject_executionDetails_overview}
-              component={Overview}
-            />
-            <Route
-              path={Paths.editProject_executionDetails_logs}
-              component={Logs}
-            />
+            <Route path={Paths.editExecution_overview} component={Overview} />
+            <Route path={Paths.editExecution_logs} component={Logs} />
           </Switch>
         </Suspense>
       </PageSection>

@@ -26,7 +26,7 @@ export const SidebarApp: React.FC = () => {
           </NavItem>
           <NavItem>
             <NavLink
-              to={formatPath(Paths.editProject_executionList, {
+              to={formatPath(Paths.executions, {
                 project: selectedProject?.migrationProject.id,
               })}
               activeClassName="pf-m-current"
@@ -36,7 +36,7 @@ export const SidebarApp: React.FC = () => {
           </NavItem>
           <NavItem>
             <NavLink
-              to={formatPath(Paths.editProject_applications, {
+              to={formatPath(Paths.applications, {
                 project: selectedProject?.migrationProject.id,
               })}
               activeClassName="pf-m-current"
@@ -46,7 +46,7 @@ export const SidebarApp: React.FC = () => {
           </NavItem>
           <NavItem>
             <NavLink
-              to={formatPath(Paths.editProject_analysisConfiguration, {
+              to={formatPath(Paths.analysisConfiguration, {
                 project: selectedProject?.migrationProject.id,
               })}
               activeClassName="pf-m-current"

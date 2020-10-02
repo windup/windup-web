@@ -117,7 +117,7 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
 
   const handleOnModalClose = () => {
     history.push(
-      formatPath(Paths.editProject_applications, {
+      formatPath(Paths.applications, {
         project: match.params.project,
       })
     );

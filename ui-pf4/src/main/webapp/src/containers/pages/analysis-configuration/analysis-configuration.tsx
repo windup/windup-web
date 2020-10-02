@@ -19,7 +19,7 @@ export const AnalysisConfiguration: React.FC<AnalysisConfigurationProps> = ({
 }) => {
   const handleOnSelectProject = (project: Project) => {
     push(
-      formatPath(Paths.editProject_analysisConfiguration_general, {
+      formatPath(Paths.analysisConfiguration_general, {
         project: project.migrationProject.id,
       })
     );
@@ -34,7 +34,7 @@ export const AnalysisConfiguration: React.FC<AnalysisConfigurationProps> = ({
       <Suspense fallback={<AppPlaceholder />}>
         <Switch>
           <Route
-            path={Paths.editProject_analysisConfiguration}
+            path={Paths.analysisConfiguration}
             component={ConfigurationDetails}
           />
         </Switch>

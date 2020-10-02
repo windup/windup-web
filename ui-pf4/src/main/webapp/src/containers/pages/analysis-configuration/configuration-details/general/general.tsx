@@ -81,7 +81,7 @@ export const General: React.FC<RulesProps> = ({ match, history: { push } }) => {
       .then(() => {
         if (runAnalysis) {
           push(
-            formatPath(Paths.editProject_executionList, {
+            formatPath(Paths.executions, {
               project: match.params.project,
             })
           );
@@ -101,7 +101,7 @@ export const General: React.FC<RulesProps> = ({ match, history: { push } }) => {
 
   const onCancel = () => {
     push(
-      formatPath(Paths.editProject_executionList, {
+      formatPath(Paths.executions, {
         project: match.params.project,
       })
     );

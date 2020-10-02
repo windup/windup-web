@@ -92,7 +92,7 @@ export const Packages: React.FC<PackagesProps> = ({
       .then(() => {
         if (runAnalysis) {
           push(
-            formatPath(Paths.editProject_executionList, {
+            formatPath(Paths.executions, {
               project: project.id,
             })
           );
@@ -112,7 +112,7 @@ export const Packages: React.FC<PackagesProps> = ({
 
   const onCancel = () => {
     push(
-      formatPath(Paths.editProject_executionList, {
+      formatPath(Paths.executions, {
         project: match.params.project,
       })
     );

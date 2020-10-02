@@ -23,42 +23,33 @@ export const ConfigurationDetails: React.FC<ConfigurationDetailsProps> = ({
         navItems={[
           {
             title: "General",
-            path: formatPath(Paths.editProject_analysisConfiguration_general, {
+            path: formatPath(Paths.analysisConfiguration_general, {
               project: match.params.project,
             }),
           },
           {
             title: "Packages",
-            path: formatPath(Paths.editProject_analysisConfiguration_packages, {
+            path: formatPath(Paths.analysisConfiguration_packages, {
               project: match.params.project,
             }),
           },
           {
             title: "Custom rules",
-            path: formatPath(
-              Paths.editProject_analysisConfiguration_customRules,
-              {
-                project: match.params.project,
-              }
-            ),
+            path: formatPath(Paths.analysisConfiguration_customRules, {
+              project: match.params.project,
+            }),
           },
           {
             title: "Custom labels",
-            path: formatPath(
-              Paths.editProject_analysisConfiguration_customLabels,
-              {
-                project: match.params.project,
-              }
-            ),
+            path: formatPath(Paths.analysisConfiguration_customLabels, {
+              project: match.params.project,
+            }),
           },
           {
             title: "Advanced options",
-            path: formatPath(
-              Paths.editProject_analysisConfiguration_advancedOptions,
-              {
-                project: match.params.project,
-              }
-            ),
+            path: formatPath(Paths.analysisConfiguration_advancedOptions, {
+              project: match.params.project,
+            }),
           },
         ]}
       />
@@ -66,18 +57,18 @@ export const ConfigurationDetails: React.FC<ConfigurationDetailsProps> = ({
         <Suspense fallback={<AppPlaceholder />}>
           <Switch>
             <Route
-              path={Paths.editProject_analysisConfiguration_general}
+              path={Paths.analysisConfiguration_general}
               component={General}
             />
             <Route
-              path={Paths.editProject_analysisConfiguration_packages}
+              path={Paths.analysisConfiguration_packages}
               component={Packages}
             />
             <Redirect
-              from={formatPath(Paths.editProject_analysisConfiguration, {
+              from={formatPath(Paths.analysisConfiguration, {
                 project: match.params.project,
               })}
-              to={formatPath(Paths.editProject_analysisConfiguration_general, {
+              to={formatPath(Paths.analysisConfiguration_general, {
                 project: match.params.project,
               })}
               exact

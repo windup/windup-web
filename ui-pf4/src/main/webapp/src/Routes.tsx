@@ -18,17 +18,17 @@ export const AppRoutes = () => {
     { component: Projects, path: Paths.projects, exact: false },
     {
       component: AnalysisResults,
-      path: Paths.editProject_executionList,
+      path: Paths.executions,
       exact: false,
     },
     {
       component: Applications,
-      path: Paths.editProject_applications,
+      path: Paths.applications,
       exact: false,
     },
     {
       component: AnalysisConfiguration,
-      path: Paths.editProject_analysisConfiguration,
+      path: Paths.analysisConfiguration,
       exact: false,
     },
   ];
