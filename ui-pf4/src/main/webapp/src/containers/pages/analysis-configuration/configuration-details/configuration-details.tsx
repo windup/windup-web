@@ -10,10 +10,10 @@ import { PageHeader, AppPlaceholder } from "components";
 const General = lazy(() => import("./general"));
 const Packages = lazy(() => import("./packages"));
 
-export interface AnalysisConfigurationProps
+export interface ConfigurationDetailsProps
   extends RouteComponentProps<{ project: string }> {}
 
-export const AnalysisConfiguration: React.FC<AnalysisConfigurationProps> = ({
+export const ConfigurationDetails: React.FC<ConfigurationDetailsProps> = ({
   match,
 }) => {
   return (
