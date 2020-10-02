@@ -38,7 +38,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
   navItems,
 }) => {
   return (
-    <React.Fragment>
+    <>
       <PageSection
         variant={PageSectionVariants.light}
         style={{ paddingBottom: 0, paddingTop: 5 }}
@@ -74,7 +74,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
           )}
         </Stack>
       </PageSection>
-    </React.Fragment>
+    </>
   );
 };
 

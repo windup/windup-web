@@ -155,7 +155,7 @@ export const FetchTable: React.FC<FetchTableProps> = ({
   };
 
   return (
-    <React.Fragment>
+    <>
       <Table
         aria-label="Table"
         cells={columns}
@@ -167,6 +167,6 @@ export const FetchTable: React.FC<FetchTableProps> = ({
         <TableHeader />
         <TableBody />
       </Table>
-    </React.Fragment>
+    </>
   );
 };

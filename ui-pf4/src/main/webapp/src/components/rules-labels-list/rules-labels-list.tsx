@@ -37,7 +37,7 @@ export const RulesLabelsList: React.FC<RulesListProps> = ({ items }) => {
   }, [items]);
 
   return (
-    <React.Fragment>
+    <>
       <DescriptionList>
         <DescriptionListGroup>
           <DescriptionListTerm>Project scope</DescriptionListTerm>
@@ -68,6 +68,6 @@ export const RulesLabelsList: React.FC<RulesListProps> = ({ items }) => {
           </DescriptionListDescription>
         </DescriptionListGroup>
       </DescriptionList>
-    </React.Fragment>
+    </>
   );
 };

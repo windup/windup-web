@@ -17,7 +17,7 @@ export const ConfigurationDetails: React.FC<ConfigurationDetailsProps> = ({
   match,
 }) => {
   return (
-    <React.Fragment>
+    <>
       <PageHeader
         title="Analysis configuration"
         navItems={[
@@ -76,6 +76,6 @@ export const ConfigurationDetails: React.FC<ConfigurationDetailsProps> = ({
           </Switch>
         </Suspense>
       </PageSection>
-    </React.Fragment>
+    </>
   );
 };

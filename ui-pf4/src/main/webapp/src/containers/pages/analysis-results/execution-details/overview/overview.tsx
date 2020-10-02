@@ -44,7 +44,7 @@ export const Overview: React.FC<OverviewProps> = ({ match }) => {
   }, [match]);
 
   return (
-    <React.Fragment>
+    <>
       {execution && (
         <Stack hasGutter>
           <StackItem>
@@ -267,6 +267,6 @@ export const Overview: React.FC<OverviewProps> = ({ match }) => {
           </StackItem>
         </Stack>
       )}
-    </React.Fragment>
+    </>
   );
 };

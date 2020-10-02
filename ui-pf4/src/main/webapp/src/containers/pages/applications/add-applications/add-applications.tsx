@@ -124,7 +124,7 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
   };
 
   return (
-    <React.Fragment>
+    <>
       <SimplePageSection title="Applications" />
       <PageSection>
         <Modal
@@ -154,6 +154,6 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
           )}
         </Modal>
       </PageSection>
-    </React.Fragment>
+    </>
   );
 };

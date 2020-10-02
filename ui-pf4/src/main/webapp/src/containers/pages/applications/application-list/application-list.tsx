@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import Moment from "react-moment";
@@ -49,23 +49,23 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
   match,
   history,
 }) => {
-  const [project, setProject] = React.useState<MigrationProject>();
-  const [projectIsFeching, setProjectIsFeching] = React.useState(true);
-  const [projectFechError, setProjectFetchError] = React.useState("");
+  const [project, setProject] = useState<MigrationProject>();
+  const [isFetching, setIsFetching] = useState(true);
+  const [fetchError, setFetchError] = useState("");
 
   // Redux
   const dispatch = useDispatch();
 
   // Table props
-  const [tableData, setTableData] = React.useState<Application[]>([]);
+  const [tableData, setTableData] = useState<Application[]>([]);
 
-  const [filterText, setFilterText] = React.useState("");
-  const [paginationmatch, setPaginationParams] = React.useState({
+  const [filterText, setFilterText] = useState("");
+  const [paginationmatch, setPaginationParams] = useState({
     page: 1,
     perPage: 10,
   });
-  const [sortBy, setSortBy] = React.useState<ISortBy>();
-  const [rows, setRows] = React.useState<IRow[]>();
+  const [sortBy, setSortBy] = useState<ISortBy>();
+  const [rows, setRows] = useState<IRow[]>();
 
   const columns: ICell[] = [
     { title: "Application", transforms: [sortable] },
@@ -99,36 +99,30 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
     },
   ];
 
-  const refreshMigrationProject = React.useCallback(() => {
-    setProjectIsFeching(true);
-
-    getProjectById(match.params.project)
-      .then(({ data }) => {
-        setProject(data);
-      })
-      .catch(() => {
-        setProjectFetchError("Error while fetching project");
-      })
-      .finally(() => {
-        setProjectIsFeching(false);
-      });
+  const refreshMigrationProject = useCallback(() => {
+    if (match.params.project) {
+      setIsFetching(true);
+      getProjectById(match.params.project)
+        .then(({ data }) => {
+          setProject(data);
+        })
+        .catch(() => {
+          setFetchError("Error while fetching project");
+        })
+        .finally(() => {
+          setIsFetching(false);
+        });
+    } else {
+      setIsFetching(false);
+      setFetchError("Undefined ProjectId, can't fetch data");
+    }
   }, [match]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     refreshMigrationProject();
-    // getProjectById(match.params.project)
-    //   .then(({ data }) => {
-    //     setProject(data);
-    //   })
-    //   .catch(() => {
-    //     setProjectFetchError("Error while fetching project");
-    //   })
-    //   .finally(() => {
-    //     setProjectIsFeching(false);
-    //   });
   }, [refreshMigrationProject]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (project) {
       // Sort
       let sortedArray = [...project.applications].sort((a, b) => b.id - a.id);
@@ -208,7 +202,7 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
   };
 
   return (
-    <React.Fragment>
+    <>
       <SimplePageSection title="Applications" />
       <PageSection>
         {project?.applications?.length === 0 && (
@@ -223,7 +217,7 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
           </Bullseye>
         )}
         {project && project.applications.length > 0 && (
-          <React.Fragment>
+          <>
             <Toolbar>
               <ToolbarContent>
                 <FilterToolbarItem
@@ -255,8 +249,8 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
               columns={columns}
               rows={rows}
               actions={actions}
-              fetchStatus={projectIsFeching ? "inProgress" : "complete"}
-              fetchError={projectFechError}
+              fetchStatus={isFetching ? "inProgress" : "complete"}
+              fetchError={fetchError}
               loadingVariant="skeleton"
               onSortChange={(sortBy: ISortBy) => {
                 setSortBy(sortBy);
@@ -267,9 +261,9 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
               params={paginationmatch}
               onChange={handlePaginationChange}
             />
-          </React.Fragment>
+          </>
         )}
       </PageSection>
-    </React.Fragment>
+    </>
   );
 };

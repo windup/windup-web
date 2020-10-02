@@ -105,7 +105,7 @@ export const PackageDualList: React.FC<PackageDualListProps> = ({
   };
 
   return (
-    <React.Fragment>
+    <>
       {processing ? (
         <Bullseye>
           <span>Processing...</span>
@@ -157,6 +157,6 @@ export const PackageDualList: React.FC<PackageDualListProps> = ({
           }}
         </Transfer>
       )}
-    </React.Fragment>
+    </>
   );
 };

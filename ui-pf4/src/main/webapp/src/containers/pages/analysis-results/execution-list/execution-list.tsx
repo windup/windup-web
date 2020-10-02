@@ -218,7 +218,7 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
                 <ProjectStatusWatcher watch={item}>
                   {({ execution }) =>
                     execution.state === "COMPLETED" ? (
-                      <React.Fragment>
+                      <>
                         <Split hasGutter>
                           <SplitItem>
                             <a
@@ -256,7 +256,7 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
                               </SplitItem>
                             )}
                         </Split>
-                      </React.Fragment>
+                      </>
                     ) : null
                   }
                 </ProjectStatusWatcher>
@@ -310,7 +310,7 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
   };
 
   return (
-    <React.Fragment>
+    <>
       <ActiveExecutionsList projectId={match.params.project} />
       <SimplePageSection title="Analysis results" />
       <PageSection>
@@ -326,7 +326,7 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
           </Bullseye>
         )}
         {executions && executions.length > 0 && (
-          <React.Fragment>
+          <>
             <Toolbar>
               <ToolbarContent>
                 <FilterToolbarItem
@@ -374,9 +374,9 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
               params={paginationmatch}
               onChange={handlePaginationChange}
             />
-          </React.Fragment>
+          </>
         )}
       </PageSection>
-    </React.Fragment>
+    </>
   );
 };

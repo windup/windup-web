@@ -27,7 +27,7 @@ export const AnalysisResults: React.FC<AnalysisResultsProps> = ({
   };
 
   return (
-    <React.Fragment>
+    <>
       <ProjectContextPageSectionContainer
         projectIdRouteParam={match.params.project}
         onProjectContextChange={handleOnSelectProject}
@@ -38,6 +38,6 @@ export const AnalysisResults: React.FC<AnalysisResultsProps> = ({
           <Route path={Paths.editExecution} component={ExecutionDetails} />
         </Switch>
       </Suspense>
-    </React.Fragment>
+    </>
   );
 };

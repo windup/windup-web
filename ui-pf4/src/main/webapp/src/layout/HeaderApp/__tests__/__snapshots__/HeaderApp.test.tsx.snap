@@ -3,30 +3,64 @@
 exports[`Test snapshot 1`] = `
 <PageHeader
   headerTools={
-    <React.Fragment>
-      <PageHeaderTools>
-        <PageHeaderToolsGroup
+    <PageHeaderTools>
+      <PageHeaderToolsGroup
+        visibility={
+          Object {
+            "2xl": "visible",
+            "default": "hidden",
+            "lg": "visible",
+            "md": "hidden",
+            "sm": "hidden",
+            "xl": "visible",
+          }
+        }
+      >
+        <PageHeaderToolsItem>
+          <ButtonAboutApp />
+        </PageHeaderToolsItem>
+      </PageHeaderToolsGroup>
+      <PageHeaderToolsGroup>
+        <PageHeaderToolsItem
           visibility={
             Object {
-              "2xl": "visible",
-              "default": "hidden",
-              "lg": "visible",
-              "md": "hidden",
-              "sm": "hidden",
-              "xl": "visible",
+              "lg": "hidden",
             }
           }
         >
-          <PageHeaderToolsItem>
-            <ButtonAboutApp />
-          </PageHeaderToolsItem>
-        </PageHeaderToolsGroup>
-        <Avatar
-          alt="Avatar image"
-          src="avatar.svg"
-        />
-      </PageHeaderTools>
-    </React.Fragment>
+          <Dropdown
+            dropdownItems={
+              Array [
+                <DropdownItem
+                  component="button"
+                  onClick={[Function]}
+                >
+                  <UserCircleIcon
+                    color="currentColor"
+                    noVerticalAlign={false}
+                    size="sm"
+                  />
+                   Logout
+                </DropdownItem>,
+              ]
+            }
+            isOpen={false}
+            isPlain={true}
+            onSelect={[Function]}
+            position="right"
+            toggle={
+              <KebabToggle
+                onToggle={[Function]}
+              />
+            }
+          />
+        </PageHeaderToolsItem>
+      </PageHeaderToolsGroup>
+      <Avatar
+        alt="Avatar image"
+        src="avatar.svg"
+      />
+    </PageHeaderTools>
   }
   logo={
     <Brand

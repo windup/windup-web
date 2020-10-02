@@ -209,7 +209,7 @@ export const UploadFilesForm: React.FC<UploadFilesFormProps> = ({
   });
 
   return (
-    <React.Fragment>
+    <>
       <Stack hasGutter>
         <StackItem>
           {template === "dropdown-box" && (
@@ -305,6 +305,6 @@ export const UploadFilesForm: React.FC<UploadFilesFormProps> = ({
           </Stack>
         </StackItem>
       </Stack>
-    </React.Fragment>
+    </>
   );
 };

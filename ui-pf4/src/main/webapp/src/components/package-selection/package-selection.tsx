@@ -45,7 +45,7 @@ export const PackageSelection: React.FC<PackageSelectionProps> = ({
   fetchErrorPlaceholder,
 }) => {
   return (
-    <React.Fragment>
+    <>
       {isFetching ? (
         isFetchingPlaceholder
       ) : fetchError ? (
@@ -89,7 +89,7 @@ export const PackageSelection: React.FC<PackageSelectionProps> = ({
           </StackItem>
         </Stack>
       )}
-    </React.Fragment>
+    </>
   );
 };
 

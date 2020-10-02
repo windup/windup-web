@@ -53,7 +53,7 @@ export class KeycloakWrapper extends React.Component<
     const { children } = this.props;
 
     if (authenticated && keycloak) {
-      return <React.Fragment>{children}</React.Fragment>;
+      return <>{children}</>;
     }
 
     return <AppPlaceholder />;

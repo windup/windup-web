@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from "react";
 import {
   PageHeader,
   Brand,
@@ -6,49 +6,132 @@ import {
   Avatar,
   PageHeaderToolsGroup,
   PageHeaderToolsItem,
+  Dropdown,
+  KebabToggle,
+  DropdownToggle,
+  DropdownGroup,
+  DropdownItem,
 } from "@patternfly/react-core";
+import { UserCircleIcon } from "@patternfly/react-icons";
 
-import navBrandImage from "../../img/mta-logo-header.svg";
-import imgAvatar from "../../img/avatar.svg";
+import { useKeycloak } from "@react-keycloak/web";
+
+import navBrandImage from "img/mta-logo-header.svg";
+import imgAvatar from "img/avatar.svg";
 
 import { ButtonAboutApp } from "../ButtonAboutApp";
 
-export interface HeaderProps {}
+export const HeaderApp: React.FC = () => {
+  const [keycloak] = useKeycloak();
 
-interface State {}
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isKebabDropdownOpen, setIsKebabDropdownOpen] = useState(false);
 
-export class HeaderApp extends React.Component<HeaderProps, State> {
-  renderPageToolbar = () => {
-    return (
-      <React.Fragment>
-        <PageHeaderTools>
-          <PageHeaderToolsGroup
-            visibility={{
-              default: "hidden",
-              "2xl": "visible",
-              xl: "visible",
-              lg: "visible",
-              md: "hidden",
-              sm: "hidden",
-            }}
-          >
-            <PageHeaderToolsItem>
-              <ButtonAboutApp />
-            </PageHeaderToolsItem>
-          </PageHeaderToolsGroup>
-          <Avatar src={imgAvatar} alt="Avatar image" />
-        </PageHeaderTools>
-      </React.Fragment>
-    );
+  const onDropdownToggle = (isOpen: boolean) => {
+    setIsDropdownOpen(isOpen);
+  };
+  const onDropdownSelect = () => {
+    setIsDropdownOpen((current) => !current);
   };
 
-  render() {
-    return (
-      <PageHeader
-        logo={<Brand src={navBrandImage} alt="brand" />}
-        headerTools={this.renderPageToolbar()}
-        showNavToggle
-      />
-    );
-  }
-}
+  const onKebabDropdownToggle = (isOpen: boolean) => {
+    setIsKebabDropdownOpen(isOpen);
+  };
+  const onKebabDropdownSelect = () => {
+    setIsKebabDropdownOpen((current) => !current);
+  };
+
+  const userDropdownItems = [
+    <DropdownGroup key="group1">
+      <DropdownItem
+        key="group1 accountManagement"
+        component="button"
+        onClick={() => keycloak.accountManagement()}
+      >
+        Account management
+      </DropdownItem>
+      <DropdownItem
+        key="group1 logout"
+        component="button"
+        onClick={() => keycloak.logout()}
+      >
+        Logout
+      </DropdownItem>
+    </DropdownGroup>,
+  ];
+
+  const kebabDropdownItems = [
+    <DropdownItem
+      key="logout"
+      component="button"
+      onClick={() => keycloak.logout()}
+    >
+      <UserCircleIcon /> Logout
+    </DropdownItem>,
+  ];
+
+  const renderPageToolbar = (
+    <PageHeaderTools>
+      <PageHeaderToolsGroup
+        visibility={{
+          default: "hidden",
+          "2xl": "visible",
+          xl: "visible",
+          lg: "visible",
+          md: "hidden",
+          sm: "hidden",
+        }}
+      >
+        <PageHeaderToolsItem>
+          <ButtonAboutApp />
+        </PageHeaderToolsItem>
+      </PageHeaderToolsGroup>
+      <PageHeaderToolsGroup>
+        <PageHeaderToolsItem
+          visibility={{
+            lg: "hidden",
+          }} /** this kebab dropdown replaces the icon buttons and is hidden for desktop sizes */
+        >
+          <Dropdown
+            isPlain
+            position="right"
+            onSelect={onKebabDropdownSelect}
+            toggle={<KebabToggle onToggle={onKebabDropdownToggle} />}
+            isOpen={isKebabDropdownOpen}
+            dropdownItems={kebabDropdownItems}
+          />
+        </PageHeaderToolsItem>
+        {keycloak && (
+          <PageHeaderToolsItem
+            visibility={{
+              default: "hidden",
+              md: "visible",
+            }} /** this user dropdown is hidden on mobile sizes */
+          >
+            <Dropdown
+              isPlain
+              position="right"
+              onSelect={onDropdownSelect}
+              isOpen={isDropdownOpen}
+              toggle={
+                <DropdownToggle onToggle={onDropdownToggle}>
+                  {(keycloak.idTokenParsed as any)["preferred_username"]}
+                </DropdownToggle>
+              }
+              dropdownItems={userDropdownItems}
+            />
+          </PageHeaderToolsItem>
+        )}
+      </PageHeaderToolsGroup>
+      <Avatar src={imgAvatar} alt="Avatar image" />
+    </PageHeaderTools>
+  );
+
+  return (
+    <PageHeader
+      logo={<Brand src={navBrandImage} alt="brand" />}
+      headerTools={renderPageToolbar}
+      showNavToggle
+    />
+  );
+};

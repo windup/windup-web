@@ -54,7 +54,7 @@ export const DeleteButton: React.FC<DeleteButtonProps> = ({
   };
 
   return (
-    <React.Fragment>
+    <>
       <Button
         variant={ButtonVariant.plain}
         aria-label="Delete"
@@ -99,6 +99,6 @@ export const DeleteButton: React.FC<DeleteButtonProps> = ({
           />
         </div>
       </Modal>
-    </React.Fragment>
+    </>
   );
 };

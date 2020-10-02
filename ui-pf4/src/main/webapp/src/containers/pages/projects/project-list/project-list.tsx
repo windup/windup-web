@@ -248,9 +248,9 @@ export const ProjectList: React.FC<Props> = ({
   }
 
   return (
-    <React.Fragment>
+    <>
       {projects || error ? (
-        <React.Fragment>
+        <>
           <SimplePageSection title="Projects" />
           <PageSection>
             <Toolbar>
@@ -297,10 +297,10 @@ export const ProjectList: React.FC<Props> = ({
               onChange={handlePaginationChange}
             />
           </PageSection>
-        </React.Fragment>
+        </>
       ) : (
         <AppPlaceholder />
       )}
-    </React.Fragment>
+    </>
   );
 };

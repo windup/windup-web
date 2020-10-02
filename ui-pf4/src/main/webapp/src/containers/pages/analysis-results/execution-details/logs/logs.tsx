@@ -56,17 +56,17 @@ export const Logs: React.FC<RulesProps> = ({ match }) => {
   };
 
   return (
-    <React.Fragment>
+    <>
       <Stack>
         <StackItem>
           <Flex>
             <FlexItem>
               {watchedExecution?.state === "QUEUED" ||
               watchedExecution?.state === "STARTED" ? (
-                <React.Fragment>
+                <>
                   <Spinner size="sm" />
                   &nbsp;Loading log...
-                </React.Fragment>
+                </>
               ) : (
                 "Log loaded"
               )}
@@ -95,6 +95,6 @@ export const Logs: React.FC<RulesProps> = ({ match }) => {
           />
         </StackItem>
       </Stack>
-    </React.Fragment>
+    </>
   );
 };

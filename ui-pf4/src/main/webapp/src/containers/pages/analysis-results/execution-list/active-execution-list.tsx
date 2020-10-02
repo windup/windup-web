@@ -33,7 +33,7 @@ export const ActiveExecutionsList: React.FC<ActiveExecutionsListProps> = ({
   });
 
   return (
-    <React.Fragment>
+    <>
       {activeExecutions.length > 0 && (
         <PageSection variant={PageSectionVariants.light}>
           <Stack>
@@ -72,6 +72,6 @@ export const ActiveExecutionsList: React.FC<ActiveExecutionsListProps> = ({
           </Stack>
         </PageSection>
       )}
-    </React.Fragment>
+    </>
   );
 };

@@ -313,7 +313,7 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
           cells: [
             {
               title: (
-                <React.Fragment>
+                <>
                   {errors.length > 0 && (
                     <Tooltip content={<div>{errors.join(",")}</div>}>
                       <span>
@@ -323,7 +323,7 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
                     </Tooltip>
                   )}
                   <span>{item.shortPath || item.path}</span>
-                </React.Fragment>
+                </>
               ),
             },
             {

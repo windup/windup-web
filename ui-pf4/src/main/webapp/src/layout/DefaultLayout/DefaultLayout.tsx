@@ -6,8 +6,6 @@ import { TimesIcon } from "@patternfly/react-icons";
 import { HeaderApp } from "../HeaderApp";
 import { SidebarApp } from "../SidebarApp";
 
-export interface HorizontalLayoutProps {}
-
 export const DefaultLayout: React.FC = ({ children }) => {
   const [showBanner, setShowBanner] = React.useState(true);
 
@@ -17,7 +15,7 @@ export const DefaultLayout: React.FC = ({ children }) => {
   );
 
   return (
-    <React.Fragment>
+    <>
       <Flex
         direction={{ default: "column" }}
         flexWrap={{ default: "nowrap" }}
@@ -69,6 +67,6 @@ export const DefaultLayout: React.FC = ({ children }) => {
           </Page>
         </FlexItem>
       </Flex>
-    </React.Fragment>
+    </>
   );
 };

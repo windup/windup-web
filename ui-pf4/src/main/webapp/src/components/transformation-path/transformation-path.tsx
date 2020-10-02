@@ -28,7 +28,7 @@ export const TransformationPath: React.FC<TransformationPathProps> = ({
   fetchErrorPlaceholder,
 }) => {
   return (
-    <React.Fragment>
+    <>
       {isFetching ? (
         isFetchingPlaceholder
       ) : fetchError ? (
@@ -59,6 +59,6 @@ export const TransformationPath: React.FC<TransformationPathProps> = ({
           </StackItem>
         </Stack>
       )}
-    </React.Fragment>
+    </>
   );
 };

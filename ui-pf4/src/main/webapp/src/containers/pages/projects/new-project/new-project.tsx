@@ -15,7 +15,7 @@ const Review = lazy(() => import("./review"));
 
 export const NewProject: React.FC = () => {
   return (
-    <React.Fragment>
+    <>
       <Suspense fallback={<AppPlaceholder />}>
         <Switch>
           <Route path={Paths.newProject} component={CreateProject} exact />
@@ -57,6 +57,6 @@ export const NewProject: React.FC = () => {
           <Route path={Paths.newProject_review} component={Review} exact />
         </Switch>
       </Suspense>
-    </React.Fragment>
+    </>
   );
 };

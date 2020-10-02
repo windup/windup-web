@@ -268,7 +268,7 @@ export const NewProjectWizard: React.FC<NewProjectWizardProps> = ({
   };
 
   return (
-    <React.Fragment>
+    <>
       <SimplePageSection title={TITLE} description={DESCRIPTION} />
       <PageSection>
         <Wizard
@@ -322,6 +322,6 @@ export const NewProjectWizard: React.FC<NewProjectWizardProps> = ({
           }
         />
       </PageSection>
-    </React.Fragment>
+    </>
   );
 };

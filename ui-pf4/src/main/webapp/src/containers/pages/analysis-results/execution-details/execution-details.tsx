@@ -67,7 +67,7 @@ export const ExecutionDetails: React.FC<ExecutionDetailsProps> = ({
   }, [match]);
 
   return (
-    <React.Fragment>
+    <>
       <PageHeader
         title={`Analysis #${execution?.id}`}
         resourceStatus={
@@ -122,6 +122,6 @@ export const ExecutionDetails: React.FC<ExecutionDetailsProps> = ({
           </Switch>
         </Suspense>
       </PageSection>
-    </React.Fragment>
+    </>
   );
 };

@@ -18,7 +18,7 @@ export const ActiveAnalysisProgressbar: React.FC<ActiveAnalysisProgressbarProps>
   activeExecution,
 }) => {
   return (
-    <React.Fragment>
+    <>
       <Split hasGutter>
         <SplitItem>
           <InProgressIcon />
@@ -76,6 +76,6 @@ export const ActiveAnalysisProgressbar: React.FC<ActiveAnalysisProgressbarProps>
           </Stack>
         </SplitItem>
       </Split>
-    </React.Fragment>
+    </>
   );
 };

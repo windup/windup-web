@@ -37,7 +37,7 @@ export class ButtonAboutApp extends React.Component<
     const { isOpen } = this.state;
 
     return (
-      <React.Fragment>
+      <>
         <Button
           id="aboutButton"
           aria-label="About button"
@@ -63,7 +63,7 @@ export class ButtonAboutApp extends React.Component<
             </TextList>
           </TextContent>
         </AboutModal>
-      </React.Fragment>
+      </>
     );
   }
 }

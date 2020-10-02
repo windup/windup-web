@@ -10,13 +10,13 @@ const NewProject = lazy(() => import("./new-project"));
 
 export const Projects: React.FC = () => {
   return (
-    <React.Fragment>
+    <>
       <Suspense fallback={<AppPlaceholder />}>
         <Switch>
           <Route path={Paths.projects} component={ProjectList} exact />
           <Route path={Paths.newProject} component={NewProject} />
         </Switch>
       </Suspense>
-    </React.Fragment>
+    </>
   );
 };

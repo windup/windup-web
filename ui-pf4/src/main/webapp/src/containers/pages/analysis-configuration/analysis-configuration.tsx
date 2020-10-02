@@ -26,7 +26,7 @@ export const AnalysisConfiguration: React.FC<AnalysisConfigurationProps> = ({
   };
 
   return (
-    <React.Fragment>
+    <>
       <ProjectContextPageSectionContainer
         projectIdRouteParam={match.params.project}
         onProjectContextChange={handleOnSelectProject}
@@ -39,6 +39,6 @@ export const AnalysisConfiguration: React.FC<AnalysisConfigurationProps> = ({
           />
         </Switch>
       </Suspense>
-    </React.Fragment>
+    </>
   );
 };

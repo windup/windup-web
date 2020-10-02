@@ -27,7 +27,7 @@ export const Applications: React.FC<ApplicationsProps> = ({
   };
 
   return (
-    <React.Fragment>
+    <>
       <ProjectContextPageSectionContainer
         projectIdRouteParam={match.params.project}
         onProjectContextChange={handleOnSelectProject}
@@ -38,6 +38,6 @@ export const Applications: React.FC<ApplicationsProps> = ({
           <Route path={Paths.addApplications} component={AddApplications} />
         </Switch>
       </Suspense>
-    </React.Fragment>
+    </>
   );
 };
