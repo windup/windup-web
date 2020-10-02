@@ -1,7 +1,6 @@
 import React from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { AxiosPromise } from "axios";
-import { useDispatch } from "react-redux";
 
 import {
   Stack,
@@ -29,7 +28,6 @@ import NewProjectWizard, {
   WizardStepIds,
   LoadingWizardContent,
 } from "../wizard";
-import { projectContextActions } from "store/projectContext";
 
 interface CreateProjectProps
   extends RouteComponentProps<{ project?: string }> {}
@@ -50,9 +48,6 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
 
   const [isFetching, setIsFetching] = React.useState(true);
   const [fetchError, setFetchError] = React.useState<string>();
-
-  // Redux
-  const dispatch = useDispatch();
 
   React.useEffect(() => {
     deleteProvisionalProjects();
@@ -108,7 +103,6 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
 
     promise
       .then((project) => {
-        dispatch(projectContextActions.fetchProjectsContext());
         push(
           formatPath(Paths.newProject_addApplications, {
             project: project.data.id,

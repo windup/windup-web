@@ -31,11 +31,6 @@ exports[`PageHeader Renders without crashing 1`] = `
               </Text>
             </TextContent>
           </SplitItem>
-          <SplitItem>
-            <MenuActions
-              actions={Array []}
-            />
-          </SplitItem>
         </Split>
       </StackItem>
     </Stack>

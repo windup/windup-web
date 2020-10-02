@@ -58,7 +58,7 @@ const disableWizardSteps = (array: WizardStep[]): WizardStep[] => {
 
 export const NewProjectWizard: React.FC<NewProjectWizardProps> = ({
   history: { push },
-  isWizard = true,
+  isWizard = false,
   stepId,
   enableNext,
   disableNavigation,

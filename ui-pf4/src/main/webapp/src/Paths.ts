@@ -35,5 +35,11 @@ export enum Paths {
 
   editProject_applications = "/projects-details/:project/applications",
   editProject_add_applications = "/projects-details/:project/applications/~new",
+
   editProject_analysisConfiguration = "/projects-details/:project/analysis-configuration",
+  editProject_analysisConfiguration_general = "/projects-details/:project/analysis-configuration/general",
+  editProject_analysisConfiguration_packages = "/projects-details/:project/analysis-configuration/packages",
+  editProject_analysisConfiguration_customRules = "/projects-details/:project/analysis-configuration/custom-rules",
+  editProject_analysisConfiguration_customLabels = "/projects-details/:project/analysis-configuration/custom-labels",
+  editProject_analysisConfiguration_advancedOptions = "/projects-details/:project/analysis-configuration/advanced-options",
 }

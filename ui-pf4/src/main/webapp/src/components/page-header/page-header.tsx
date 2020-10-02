@@ -60,9 +60,11 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
                   </Text>
                 </TextContent>
               </SplitItem>
-              <SplitItem>
-                <MenuActions actions={menuActions || []} />
-              </SplitItem>
+              {menuActions && (
+                <SplitItem>
+                  <MenuActions actions={menuActions} />
+                </SplitItem>
+              )}
             </Split>
           </StackItem>
           {navItems && (
