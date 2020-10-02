@@ -3,7 +3,9 @@ import { Switch, Route, RouteComponentProps } from "react-router-dom";
 
 import { AppPlaceholder } from "components";
 
-import { Paths } from "Paths";
+import { formatPath, Paths } from "Paths";
+import { Project } from "models/api";
+
 import { ProjectContextPageSectionContainer } from "containers/projectcontext-pagesection-container";
 
 const ConfigurationDetails = lazy(() => import("./configuration-details"));
@@ -13,15 +15,21 @@ export interface AnalysisConfigurationProps
 
 export const AnalysisConfiguration: React.FC<AnalysisConfigurationProps> = ({
   match,
-  history,
-  location,
+  history: { push },
 }) => {
+  const handleOnSelectProject = (project: Project) => {
+    push(
+      formatPath(Paths.editProject_analysisConfiguration_general, {
+        project: project.migrationProject.id,
+      })
+    );
+  };
+
   return (
     <React.Fragment>
       <ProjectContextPageSectionContainer
-        match={match}
-        history={history}
-        location={location}
+        projectIdRouteParam={match.params.project}
+        onProjectContextChange={handleOnSelectProject}
       />
       <Suspense fallback={<AppPlaceholder />}>
         <Switch>

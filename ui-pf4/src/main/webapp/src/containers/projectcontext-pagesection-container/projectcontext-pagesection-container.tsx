@@ -1,12 +1,10 @@
 import React from "react";
-import { RouteComponentProps } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
 import { Form, FormGroup } from "@patternfly/react-core";
 
 import "./projectcontext-pagesection-container.scss";
 
-import { Paths, formatPath } from "Paths";
 import { ProjectContextSelector, ProjectContextPageSection } from "components";
 
 import { Project } from "models/api";
@@ -17,12 +15,14 @@ import {
   projectContextActions,
 } from "store/projectContext";
 
-export interface ProjectContextPageSectionContainer
-  extends RouteComponentProps<{ project: string }> {}
+export interface ProjectContextPageSectionContainer {
+  projectIdRouteParam: string;
+  onProjectContextChange: (project: Project) => void;
+}
 
 export const ProjectContextPageSectionContainer: React.FC<ProjectContextPageSectionContainer> = ({
-  match,
-  history: { push },
+  projectIdRouteParam,
+  onProjectContextChange,
 }) => {
   const dispatch = useDispatch();
 
@@ -35,24 +35,16 @@ export const ProjectContextPageSectionContainer: React.FC<ProjectContextPageSect
 
   React.useEffect(() => {
     const newSelectedProject = projects.find(
-      (f) => f.migrationProject.id.toString() === match.params.project
+      (f) => f.migrationProject.id.toString() === projectIdRouteParam
     );
     if (newSelectedProject) {
       dispatch(projectContextActions.selectProjectContext(newSelectedProject));
     }
-  }, [match, projects, dispatch]);
+  }, [projectIdRouteParam, projects, dispatch]);
 
   React.useEffect(() => {
     dispatch(projectContextActions.fetchProjectsContext());
   }, [dispatch]);
-
-  const handleOnSelectProject = (project: Project) => {
-    push(
-      formatPath(Paths.editProject_executionList, {
-        project: project.migrationProject.id,
-      })
-    );
-  };
 
   return (
     <ProjectContextPageSection>
@@ -64,7 +56,7 @@ export const ProjectContextPageSectionContainer: React.FC<ProjectContextPageSect
           <ProjectContextSelector
             projects={projects}
             selectedProject={selectedProject}
-            onSelectProject={handleOnSelectProject}
+            onSelectProject={onProjectContextChange}
           />
         </FormGroup>
       </Form>
