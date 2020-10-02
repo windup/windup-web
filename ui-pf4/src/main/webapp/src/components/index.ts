@@ -20,7 +20,6 @@ export { LoadingStep } from "./loading-step";
 export { LogView } from "./log-view";
 export { PackageSelection } from "./package-selection";
 export { PageHeader } from "./page-header";
-export { PageSkeleton } from "./page-skeleton";
 export { ProjectContextPageSection } from "./project-context-page-section";
 export { ProjectContextSelector } from "./project-context-selector";
 export { ProjectDetailsForm } from "./project-details-form";
