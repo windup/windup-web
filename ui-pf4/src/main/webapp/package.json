@@ -39,12 +39,14 @@
     "redux": "^4.0.5",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
+    "source-map-explorer": "^2.5.0",
     "typesafe-actions": "^5.1.0",
     "typescript": "~3.7.2",
     "websocket": "^1.0.32",
     "yup": "^0.29.3"
   },
   "scripts": {
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "build:freemarker": "cp build/index.html build/index.html.ftl",
