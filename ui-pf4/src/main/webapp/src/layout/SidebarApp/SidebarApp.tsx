@@ -11,13 +11,9 @@ import { RootState } from "store/rootReducer";
 import { projectContextSelectors } from "store/projectContext";
 
 export const SidebarApp: React.FC = () => {
-  const projects = useSelector((state: RootState) =>
-    projectContextSelectors.projects(state)
-  );
   const selectedProject = useSelector((state: RootState) =>
     projectContextSelectors.selectedProject(state)
   );
-  const navProject = selectedProject ? selectedProject : projects[0];
 
   const renderPageNav = () => {
     return (
@@ -31,7 +27,7 @@ export const SidebarApp: React.FC = () => {
           <NavItem>
             <NavLink
               to={formatPath(Paths.editProject_executionList, {
-                project: navProject?.migrationProject.id,
+                project: selectedProject?.migrationProject.id,
               })}
               activeClassName="pf-m-current"
             >
@@ -41,7 +37,7 @@ export const SidebarApp: React.FC = () => {
           <NavItem>
             <NavLink
               to={formatPath(Paths.editProject_applications, {
-                project: navProject?.migrationProject.id,
+                project: selectedProject?.migrationProject.id,
               })}
               activeClassName="pf-m-current"
             >
@@ -51,7 +47,7 @@ export const SidebarApp: React.FC = () => {
           <NavItem>
             <NavLink
               to={formatPath(Paths.editProject_analysisConfiguration, {
-                project: navProject?.migrationProject.id,
+                project: selectedProject?.migrationProject.id,
               })}
               activeClassName="pf-m-current"
             >

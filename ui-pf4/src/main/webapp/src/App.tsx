@@ -7,7 +7,7 @@ import "./App.scss";
 
 import { DefaultLayout } from "./layout";
 
-import { DeleteDialog } from "./containers";
+import DeleteDialog from "./containers/delete-dialog";
 
 import "@redhat-cloud-services/frontend-components-notifications/index.css";
 const frontendComponentsNotifications = require("@redhat-cloud-services/frontend-components-notifications");

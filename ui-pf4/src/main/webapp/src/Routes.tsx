@@ -4,14 +4,12 @@ import { Route, Switch, Redirect } from "react-router-dom";
 import { AppPlaceholder } from "./components";
 import { Paths } from "./Paths";
 
-const NewProject = lazy(() => import("./containers/new-project"));
-const ProjectList = lazy(() => import("./containers/project-list"));
+const Projects = lazy(() => import("./containers/pages/projects"));
 const ProjectDetails = lazy(() => import("./containers/project-details"));
 
 export const AppRoutes = () => {
   const routes = [
-    { component: ProjectList, path: Paths.projects, exact: true },
-    { component: NewProject, path: Paths.newProject, exact: false },
+    { component: Projects, path: Paths.projects, exact: false },
     { component: ProjectDetails, path: Paths.editProject, exact: false },
   ];
 

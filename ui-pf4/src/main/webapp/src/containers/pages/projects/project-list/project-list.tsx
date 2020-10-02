@@ -21,12 +21,12 @@ import {
   Bullseye,
 } from "@patternfly/react-core";
 import Moment from "react-moment";
-import { Project } from "../../models/api";
-import { FetchStatus } from "../../store/common";
-import { deleteDialogActions } from "../../store/deleteDialog";
-import { deleteProject } from "../../api/api";
-import { getDeleteErrorAlertModel } from "../../Constants";
-import { Paths } from "../../Paths";
+import { Project } from "models/api";
+import { FetchStatus } from "store/common";
+import { deleteDialogActions } from "store/deleteDialog";
+import { deleteProject } from "api/api";
+import { getDeleteErrorAlertModel } from "Constants";
+import { Paths } from "Paths";
 import {
   SimplePageSection,
   FetchTable,
