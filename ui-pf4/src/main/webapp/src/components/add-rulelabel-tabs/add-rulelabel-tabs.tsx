@@ -19,7 +19,7 @@ import { Configuration, RulesPath, LabelsPath } from "models/api";
 
 export interface AddRuleLabelTabsProps {
   type: "Rule" | "Label";
-  projectId: number;
+  projectId: number | string;
   onSubmitFinishedServerPath: () => void;
   onCancelServerPath: () => void;
 }
@@ -91,7 +91,7 @@ export const AddRuleLabelTabs: React.FC<AddRuleLabelTabsProps> = ({
                 : UPLOAD_LABEL_TO_MIGRATION_PROJECT
               ).replace(":projectId", projectId.toString())}
               accept=".xml"
-              template="minimal-inline"
+              template="dropdown-box"
               hideProgressOnSuccess={false}
             />
           </Tab>

@@ -9,6 +9,7 @@ import { PageHeader, AppPlaceholder } from "components";
 
 const General = lazy(() => import("./general"));
 const Packages = lazy(() => import("./packages"));
+const Rules = lazy(() => import("./rules"));
 
 export interface ConfigurationDetailsProps
   extends RouteComponentProps<{ project: string }> {}
@@ -64,6 +65,11 @@ export const ConfigurationDetails: React.FC<ConfigurationDetailsProps> = ({
               path={Paths.analysisConfiguration_packages}
               component={Packages}
             />
+            <Route
+              path={Paths.analysisConfiguration_customRules}
+              component={Rules}
+            />
+
             <Redirect
               from={formatPath(Paths.analysisConfiguration, {
                 project: match.params.project,

@@ -1,26 +1,27 @@
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { AxiosError } from "axios";
 
 import { getAnalysisContext, getProjectById } from "api/api";
 import { AnalysisContext, MigrationProject } from "models/api";
 
-export interface ISelectionState<T> {
+export interface IState {
   project?: MigrationProject;
   analysisContext?: AnalysisContext;
   isFetching: boolean;
   fetchError?: string;
+  loadProject: (projectId: string | number) => void;
 }
 
-export const useFetchProject = <T>(
-  projectId: number | string
-): ISelectionState<T> => {
+export const useFetchProject = (): IState => {
   const [project, setProject] = useState<MigrationProject>();
   const [analysisContext, setAnalysisContext] = useState<AnalysisContext>();
 
-  const [isFetching, setIsFetching] = useState(true);
+  const [isFetching, setIsFetching] = useState(false);
   const [fetchError, setFetchError] = useState("");
 
-  useEffect(() => {
+  const loadProject = useCallback((projectId: string | number) => {
+    setIsFetching(true);
+
     getProjectById(projectId)
       .then(({ data }) => {
         setProject(data);
@@ -38,12 +39,13 @@ export const useFetchProject = <T>(
       .finally(() => {
         setIsFetching(false);
       });
-  }, [projectId]);
+  }, []);
 
   return {
     project,
     analysisContext,
     isFetching,
     fetchError,
+    loadProject,
   };
 };

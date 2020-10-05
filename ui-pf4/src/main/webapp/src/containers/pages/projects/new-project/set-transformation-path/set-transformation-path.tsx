@@ -26,12 +26,20 @@ export const SetTransformationPath: React.FC<SetTransformationPathProps> = ({
 }) => {
   const dispatch = useDispatch();
 
-  const { project, analysisContext, isFetching, fetchError } = useFetchProject(
-    match.params.project
-  );
+  const {
+    project,
+    analysisContext,
+    isFetching,
+    fetchError,
+    loadProject,
+  } = useFetchProject();
 
   const [selectedTargets, setSelectedTargets] = React.useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+
+  useEffect(() => {
+    loadProject(match.params.project);
+  }, [match, loadProject]);
 
   useEffect(() => {
     if (analysisContext) {
