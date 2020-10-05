@@ -36,11 +36,11 @@ export interface NewProjectWizardProps extends RouteComponentProps {
   stepId: WizardStepIds;
   enableNext: boolean;
   disableNavigation?: boolean;
-  showErrorContent?: string;
+  showErrorContent?: any;
   migrationProject?: MigrationProject;
   analysisContext?: AnalysisContext;
   footer?: React.ReactNode;
-  handleOnNextStep: () => void;
+  handleOnNextStep?: () => void;
 }
 
 const disableWizardSteps = (array: WizardStep[]): WizardStep[] => {

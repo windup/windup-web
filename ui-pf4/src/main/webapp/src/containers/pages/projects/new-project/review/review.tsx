@@ -75,6 +75,10 @@ export const Review: React.FC<ReviewProps> = ({ match, history: { push } }) => {
     push(Paths.projects);
   };
 
+  const handleOnCancel = () => {
+    push(Paths.projects);
+  };
+
   const handleSaveAndRun = () => {
     setIsCreatingExecution(true);
     if (project) {
@@ -130,7 +134,7 @@ export const Review: React.FC<ReviewProps> = ({ match, history: { push } }) => {
           </Button>
           <Button
             variant={ButtonVariant.link}
-            onClick={handleOnNextStep}
+            onClick={handleOnCancel}
             isDisabled={isFetching || isCreatingExecution}
           >
             Cancel

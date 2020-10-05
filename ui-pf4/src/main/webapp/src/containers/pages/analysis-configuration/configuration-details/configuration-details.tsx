@@ -11,6 +11,7 @@ const General = lazy(() => import("./general"));
 const Packages = lazy(() => import("./packages"));
 const Rules = lazy(() => import("./rules"));
 const Labels = lazy(() => import("./labels"));
+const AdvancedOptions = lazy(() => import("./advanced-options"));
 
 export interface ConfigurationDetailsProps
   extends RouteComponentProps<{ project: string }> {}
@@ -73,6 +74,10 @@ export const ConfigurationDetails: React.FC<ConfigurationDetailsProps> = ({
             <Route
               path={Paths.analysisConfiguration_customLabels}
               component={Labels}
+            />
+            <Route
+              path={Paths.analysisConfiguration_advancedOptions}
+              component={AdvancedOptions}
             />
 
             <Redirect

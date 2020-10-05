@@ -10,7 +10,7 @@ const SetTransformationPath = lazy(() => import("./set-transformation-path"));
 const SelectPackages = lazy(() => import("./select-packages"));
 const SetCustomRules = lazy(() => import("./set-custom-rules"));
 const SetCustomLabels = lazy(() => import("./set-custom-labels"));
-const AdvancedOptions = lazy(() => import("./advanced-options"));
+const SetAdvancedOptions = lazy(() => import("./set-advanced-options"));
 const Review = lazy(() => import("./review"));
 
 export const NewProject: React.FC = () => {
@@ -51,7 +51,7 @@ export const NewProject: React.FC = () => {
           />
           <Route
             path={Paths.newProject_advandedOptions}
-            component={AdvancedOptions}
+            component={SetAdvancedOptions}
             exact
           />
           <Route path={Paths.newProject_review} component={Review} exact />

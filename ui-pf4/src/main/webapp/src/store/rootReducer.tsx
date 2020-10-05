@@ -1,6 +1,10 @@
 import { combineReducers } from "redux";
 import { StateType } from "typesafe-actions";
 
+import {
+  configurationOptionStateKey,
+  configurationOptionReducer,
+} from "./configurationOptions";
 import { deleteDialogStateKey, deleteDialogReducer } from "./deleteDialog";
 import { executionsStateKey, executionsReducer } from "./executions";
 import {
@@ -14,6 +18,7 @@ const frontendComponentsNotifications = require("@redhat-cloud-services/frontend
 export type RootState = StateType<typeof rootReducer>;
 
 export const rootReducer = combineReducers({
+  [configurationOptionStateKey]: configurationOptionReducer,
   [deleteDialogStateKey]: deleteDialogReducer,
   [executionsStateKey]: executionsReducer,
   [projectContextStateKey]: projectContextReducer,

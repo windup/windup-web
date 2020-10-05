@@ -21,16 +21,3 @@ const Template: Story<AdvancedOptionsFormProps> = (args) => (
 );
 
 export const Basic = Template.bind({});
-Basic.args = {
-  availableOptions: avaiableOptions,
-};
-
-// export const InitialValue = Template.bind({});
-// InitialValue.args = {
-//   availableOptions: avaiableOptions,
-// };
-
-export const HideFormControls = Template.bind({});
-HideFormControls.args = {
-  hideFormControls: true,
-};
