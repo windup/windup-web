@@ -10,6 +10,7 @@ import { PageHeader, AppPlaceholder } from "components";
 const General = lazy(() => import("./general"));
 const Packages = lazy(() => import("./packages"));
 const Rules = lazy(() => import("./rules"));
+const Labels = lazy(() => import("./labels"));
 
 export interface ConfigurationDetailsProps
   extends RouteComponentProps<{ project: string }> {}
@@ -68,6 +69,10 @@ export const ConfigurationDetails: React.FC<ConfigurationDetailsProps> = ({
             <Route
               path={Paths.analysisConfiguration_customRules}
               component={Rules}
+            />
+            <Route
+              path={Paths.analysisConfiguration_customLabels}
+              component={Labels}
             />
 
             <Redirect

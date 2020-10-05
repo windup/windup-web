@@ -8,8 +8,8 @@ const CreateProject = lazy(() => import("./create-project"));
 const AddApplications = lazy(() => import("./add-applications"));
 const SetTransformationPath = lazy(() => import("./set-transformation-path"));
 const SelectPackages = lazy(() => import("./select-packages"));
-const CustomRules = lazy(() => import("./custom-rules"));
-const CustomLabels = lazy(() => import("./custom-labels"));
+const SetCustomRules = lazy(() => import("./set-custom-rules"));
+const SetCustomLabels = lazy(() => import("./set-custom-labels"));
 const AdvancedOptions = lazy(() => import("./advanced-options"));
 const Review = lazy(() => import("./review"));
 
@@ -41,12 +41,12 @@ export const NewProject: React.FC = () => {
           />
           <Route
             path={Paths.newProject_customRules}
-            component={CustomRules}
+            component={SetCustomRules}
             exact
           />
           <Route
             path={Paths.newProject_customLabels}
-            component={CustomLabels}
+            component={SetCustomLabels}
             exact
           />
           <Route

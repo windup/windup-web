@@ -1,1 +1,1 @@
-export { useFetchRules as useFetchProject } from "./useFetchRules";
+export { useFetchRules } from "./useFetchRules";
