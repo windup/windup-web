@@ -1,5 +1,6 @@
 import { AxiosPromise } from "axios";
 
+import { getWindupRestBase } from "Constants";
 import ApiClient from "./apiClient";
 import {
   Project,
@@ -28,6 +29,12 @@ export const EXECUTION_PROGRESS_URL =
   "/websocket/execution-progress/:executionId";
 
 export const DOWNLOAD_REGISTERED_APPLICATION = `registeredApplications/download`;
+
+export const getDownloadRegisteredApplicationURL = (
+  applicationId: string | number
+) => {
+  return `${getWindupRestBase()}/${DOWNLOAD_REGISTERED_APPLICATION}/${applicationId}`;
+};
 
 export const getProjects = (): AxiosPromise<Project[]> => {
   return ApiClient.get<Project[]>(`${MIGRATION_PROJECTS_PATH}/list`);

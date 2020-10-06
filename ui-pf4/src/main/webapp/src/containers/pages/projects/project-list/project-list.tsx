@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { RouteComponentProps, Link } from "react-router-dom";
+import React, { useCallback, useEffect } from "react";
+import { RouteComponentProps } from "react-router-dom";
 
 import { AxiosError } from "axios";
 import Moment from "react-moment";
@@ -10,29 +10,22 @@ import {
   IRow,
   IActions,
   sortable,
-  ISortBy,
-  SortByDirection,
 } from "@patternfly/react-table";
 import {
   PageSection,
-  Toolbar,
-  ToolbarContent,
   ToolbarGroup,
   ToolbarItem,
   Button,
-  ToolbarItemVariant,
   Bullseye,
 } from "@patternfly/react-core";
 
 import {
   SimplePageSection,
-  FetchTable,
-  SimplePagination,
   Welcome,
-  FilterToolbarItem,
   DeleteButton,
   AppPlaceholder,
   ConditionalRender,
+  TableSectionOffline,
 } from "components";
 
 import { Paths } from "Paths";
@@ -42,6 +35,39 @@ import { deleteProject } from "api/api";
 
 import { FetchStatus } from "store/common";
 import { deleteDialogActions } from "store/deleteDialog";
+
+const columns: ICell[] = [
+  { title: "Name", transforms: [cellWidth(20), sortable] },
+  { title: "Applications", transforms: [sortable] },
+  { title: "Status", transforms: [sortable] },
+  { title: "Description", transforms: [cellWidth(30)] },
+  { title: "", transforms: [] },
+];
+
+const compareProject = (a: Project, b: Project, columnIndex?: number) => {
+  switch (columnIndex) {
+    case 0: // title
+      return a.migrationProject.title.localeCompare(b.migrationProject.title);
+    case 1: // applicationCount
+      return a.applicationCount - b.applicationCount;
+    case 2: // lastModified
+      return a.migrationProject.lastModified < b.migrationProject.lastModified
+        ? -1
+        : a.migrationProject.lastModified > b.migrationProject.lastModified
+        ? 1
+        : 0;
+    default:
+      return 0;
+  }
+};
+
+const filterProject = (filterText: string, project: Project) => {
+  return (
+    project.migrationProject.title
+      .toLowerCase()
+      .indexOf(filterText.toLowerCase()) !== -1
+  );
+};
 
 interface StateToProps {
   projects: Project[] | undefined;
@@ -64,181 +90,60 @@ export const ProjectList: React.FC<Props> = ({
   fetchStatus,
   error,
   fetchProjects,
-  showDeleteDialog,
-  closeDeleteDialog,
-  processingDeleteDialog,
   addAlert,
   history: { push },
 }) => {
-  const [filterText, setFilterText] = useState("");
-  const [paginationParams, setPaginationParams] = useState({
-    page: 1,
-    perPage: 10,
-  });
-  const [sortBy, setSortBy] = useState<ISortBy>();
-
-  const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
-
-  const columns: ICell[] = [
-    { title: "Name", transforms: [cellWidth(20), sortable] },
-    { title: "Applications", transforms: [sortable] },
-    { title: "Status", transforms: [sortable] },
-    { title: "Description", transforms: [cellWidth(30)] },
-    { title: "", transforms: [] },
-  ];
-  const [rows, setRows] = useState<IRow[]>();
-  const actions: IActions = [
-    // {
-    //   title: "Edit",
-    //   onClick: (_) => {
-    //     console.log("Edit");
-    //   },
-    // },
-    // {
-    //   title: "Delete",
-    //   onClick: (_, rowIndex: number) => {
-    //     const project = projects![rowIndex];
-    //     showDeleteDialog({
-    //       name: project.migrationProject.title,
-    //       type: "project",
-    //       onDelete: () => {
-    //         processingDeleteDialog();
-    //         deleteProject(project.migrationProject)
-    //           .then(() => {
-    //             fetchProjects();
-    //           })
-    //           .catch(() => {
-    //             addAlert(getDeleteErrorAlertModel("Project"));
-    //           })
-    //           .finally(() => closeDeleteDialog());
-    //       },
-    //       onCancel: () => {
-    //         closeDeleteDialog();
-    //       },
-    //     });
-    //   },
-    // },
-  ];
-
-  useEffect(() => {
-    if (projects) {
-      // Sort
-      let sortedProjects: Project[];
-
-      const columnSortIndex = sortBy?.index;
-      const columnSortDirection = sortBy?.direction;
-
-      switch (columnSortIndex) {
-        case 0: // title
-          sortedProjects = projects.sort((a, b) =>
-            a.migrationProject.title.localeCompare(b.migrationProject.title)
-          );
-          break;
-        case 1: // applicationCount
-          sortedProjects = projects.sort(
-            (a, b) => a.applicationCount - b.applicationCount
-          );
-          break;
-        case 2: // lastModified
-          sortedProjects = projects.sort((a, b) =>
-            a.migrationProject.lastModified < b.migrationProject.lastModified
-              ? -1
-              : a.migrationProject.lastModified >
-                b.migrationProject.lastModified
-              ? 1
-              : 0
-          );
-          break;
-        default:
-          sortedProjects = projects;
-      }
-
-      if (columnSortDirection === SortByDirection.desc) {
-        sortedProjects = sortedProjects.reverse();
-      }
-
-      // Filter
-      const filteredProjects = sortedProjects.filter(
-        (p) => p.migrationProject.title.toLowerCase().indexOf(filterText) !== -1
-      );
-
-      setFilteredProjects(filteredProjects);
-
-      const rows: IRow[] = filteredProjects.map((item: Project) => {
-        return {
-          cells: [
-            {
-              title: item.migrationProject.title,
-            },
-            {
-              title: item.applicationCount,
-            },
-            {
-              title: (
-                <span>
-                  Last updated{" "}
-                  <Moment fromNow>{item.migrationProject.lastModified}</Moment>
-                </span>
-              ),
-            },
-            {
-              title: item.migrationProject.description,
-            },
-            {
-              title: (
-                <DeleteButton
-                  objType="Project"
-                  objID={item.migrationProject.title}
-                  messageMatch={item.migrationProject.title}
-                  isDisabled={!item.isDeletable}
-                  onDelete={() => {
-                    deleteProject(item.migrationProject)
-                      .then(() => {
-                        fetchProjects();
-                      })
-                      .catch(() => {
-                        addAlert(getDeleteErrorAlertModel("Project"));
-                      });
-                  }}
-                />
-              ),
-            },
-          ],
-        };
-      });
-
-      // Paginate
-      const paginatedRows = rows.slice(
-        (paginationParams.page - 1) * paginationParams.perPage,
-        paginationParams.page * paginationParams.perPage
-      );
-
-      setRows(paginatedRows);
-    }
-  }, [projects, filterText, paginationParams, sortBy, addAlert, fetchProjects]);
-
   useEffect(() => {
     fetchProjects();
   }, [fetchProjects]);
 
-  // HANDLERS
+  const actions: IActions = [];
 
-  const handlFilterTextChange = (filterText: string) => {
-    const newParams = { page: 1, perPage: paginationParams.perPage };
-
-    setFilterText(filterText);
-    setPaginationParams(newParams);
-  };
-
-  const handlePaginationChange = ({
-    page,
-    perPage,
-  }: {
-    page: number;
-    perPage: number;
-  }) => {
-    setPaginationParams({ page, perPage });
-  };
+  const projectToIRow = useCallback(
+    (projects: Project[]): IRow[] => {
+      return projects.map((item) => ({
+        cells: [
+          {
+            title: item.migrationProject.title,
+          },
+          {
+            title: item.applicationCount,
+          },
+          {
+            title: (
+              <span>
+                Last updated{" "}
+                <Moment fromNow>{item.migrationProject.lastModified}</Moment>
+              </span>
+            ),
+          },
+          {
+            title: item.migrationProject.description,
+          },
+          {
+            title: (
+              <DeleteButton
+                objType="Project"
+                objID={item.migrationProject.title}
+                messageMatch={item.migrationProject.title}
+                isDisabled={!item.isDeletable}
+                onDelete={() => {
+                  deleteProject(item.migrationProject)
+                    .then(() => {
+                      fetchProjects();
+                    })
+                    .catch(() => {
+                      addAlert(getDeleteErrorAlertModel("Project"));
+                    });
+                }}
+              />
+            ),
+          },
+        ],
+      }));
+    },
+    [fetchProjects, addAlert]
+  );
 
   const handleNewProject = () => {
     push(Paths.newProject);
@@ -256,48 +161,25 @@ export const ProjectList: React.FC<Props> = ({
     <ConditionalRender when={!(projects || error)} then={<AppPlaceholder />}>
       <SimplePageSection title="Projects" />
       <PageSection>
-        <Toolbar>
-          <ToolbarContent>
-            <FilterToolbarItem
-              searchValue={filterText}
-              onFilterChange={handlFilterTextChange}
-              placeholder="Filter by name"
-            />
+        <TableSectionOffline
+          items={projects || []}
+          columns={columns}
+          actions={actions}
+          loadingVariant="skeleton"
+          isLoadingData={fetchStatus === "inProgress"}
+          loadingDataError={error}
+          compareItem={compareProject}
+          filterItem={filterProject}
+          mapToIRow={projectToIRow}
+          toolbar={
             <ToolbarGroup variant="button-group">
               <ToolbarItem>
-                <Link to={Paths.newProject}>
-                  <Button>Create new</Button>
-                </Link>
+                <Button type="button" onClick={handleNewProject}>
+                  Create new
+                </Button>
               </ToolbarItem>
             </ToolbarGroup>
-            <ToolbarItem
-              variant={ToolbarItemVariant.pagination}
-              alignment={{ default: "alignRight" }}
-            >
-              <SimplePagination
-                count={filteredProjects.length}
-                params={paginationParams}
-                isTop={true}
-                onChange={handlePaginationChange}
-              />
-            </ToolbarItem>
-          </ToolbarContent>
-        </Toolbar>
-        <FetchTable
-          columns={columns}
-          rows={rows}
-          actions={actions}
-          fetchStatus={fetchStatus}
-          fetchError={error}
-          loadingVariant="skeleton"
-          onSortChange={(sortBy: ISortBy) => {
-            setSortBy(sortBy);
-          }}
-        />
-        <SimplePagination
-          count={filteredProjects.length}
-          params={paginationParams}
-          onChange={handlePaginationChange}
+          }
         />
       </PageSection>
     </ConditionalRender>

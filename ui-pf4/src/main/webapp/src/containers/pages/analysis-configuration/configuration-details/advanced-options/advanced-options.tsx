@@ -176,9 +176,9 @@ export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({
         }}
       >
         {({ isValid, submitForm, handleSubmit, setFieldValue, ...formik }) => (
-          <Form onSubmit={handleSubmit}>
-            <Card>
-              <CardBody>
+          <Card>
+            <CardBody>
+              <Form onSubmit={handleSubmit}>
                 <AdvancedOptionsForm
                   configurationOptions={configurationOptions}
                   handleSubmit={handleSubmit}
@@ -211,9 +211,9 @@ export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({
                     </Button>
                   </ActionGroup>
                 )}
-              </CardBody>
-            </Card>
-          </Form>
+              </Form>
+            </CardBody>
+          </Card>
         )}
       </Formik>
     </>

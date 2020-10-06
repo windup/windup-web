@@ -16,6 +16,7 @@ export {
 export { ExpandableCard } from "./expandable-card";
 export { FetchError } from "./fetch-error";
 export { FetchTable } from "./fetch-table";
+export { TableSectionOffline } from "./table-section-offline";
 export { FilterToolbarItem } from "./filter-toolbar-item";
 export { LoadingStep } from "./loading-step";
 export { LogView } from "./log-view";

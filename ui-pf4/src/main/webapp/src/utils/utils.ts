@@ -9,3 +9,7 @@ export const getMapValues = (map: Map<any, any>) => {
   map.forEach((value: any) => values.push(value));
   return values;
 };
+
+export const isNullOrUndefined = (value: any): boolean => {
+  return value === undefined || value === null || value === "undefined";
+};

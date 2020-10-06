@@ -43,3 +43,7 @@ export enum Paths {
   analysisConfiguration_customLabels = "/projects-details/:project/analysis-configuration/custom-labels",
   analysisConfiguration_advancedOptions = "/projects-details/:project/analysis-configuration/advanced-options",
 }
+
+export interface ProjectRoute {
+  project: string;
+}
