@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { shallow } from "enzyme";
 import { FetchTable } from "../fetch-table";
 import { ICell, IRow, IActions } from "@patternfly/react-table";

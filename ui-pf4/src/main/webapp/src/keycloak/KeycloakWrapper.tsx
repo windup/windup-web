@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import Keycloak from "keycloak-js";
 import { initInterceptors } from "../api/apiInit";
 import { AppPlaceholder } from "../components";

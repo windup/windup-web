@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { useReducer } from "react";
 import axios, { CancelTokenSource } from "axios";
 import {

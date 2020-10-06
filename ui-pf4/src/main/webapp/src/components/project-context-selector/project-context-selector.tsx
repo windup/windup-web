@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 
 import { ContextSelector, ContextSelectorItem } from "@patternfly/react-core";
 import { Project } from "models/api";

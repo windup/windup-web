@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { Story, Meta } from "@storybook/react/types-6-0";
 import { UploadFilesForm, UploadFilesFormProps } from "../upload-files-form";
 import { UPLOAD_APPLICATION_PATH } from "api/api";

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { useState, useRef, useEffect, useCallback } from "react";
 
 import "./log-view.scss";

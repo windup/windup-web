@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { Pagination, PaginationVariant } from "@patternfly/react-core";
 import { Constants } from "../../Constants";
 

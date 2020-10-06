@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { ToolbarGroup, ToolbarItem, TextInput } from "@patternfly/react-core";
 import { SearchIcon } from "@patternfly/react-icons";
 

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import {
   EmptyState,
   EmptyStateIcon,
@@ -11,7 +11,7 @@ import {
 import { CubesIcon } from "@patternfly/react-icons";
 
 export interface WelcomeProps {
-  onPrimaryAction?: () => void;
+  onPrimaryAction: () => void;
 }
 
 export const Welcome: React.FC<WelcomeProps> = ({ onPrimaryAction }) => {

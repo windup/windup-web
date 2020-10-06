@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { Page, SkipToContent, Button } from "@patternfly/react-core";
 import { Flex, FlexItem, Banner } from "@patternfly/react-core";
 import { TimesIcon } from "@patternfly/react-icons";

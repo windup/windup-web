@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { RouteComponentProps, Link } from "react-router-dom";
+
 import { AxiosError } from "axios";
+import Moment from "react-moment";
+
 import {
   cellWidth,
   ICell,
@@ -20,13 +23,7 @@ import {
   ToolbarItemVariant,
   Bullseye,
 } from "@patternfly/react-core";
-import Moment from "react-moment";
-import { Project } from "models/api";
-import { FetchStatus } from "store/common";
-import { deleteDialogActions } from "store/deleteDialog";
-import { deleteProject } from "api/api";
-import { getDeleteErrorAlertModel } from "Constants";
-import { Paths } from "Paths";
+
 import {
   SimplePageSection,
   FetchTable,
@@ -36,6 +33,14 @@ import {
   DeleteButton,
   AppPlaceholder,
 } from "components";
+
+import { Paths } from "Paths";
+import { getDeleteErrorAlertModel } from "Constants";
+import { Project } from "models/api";
+import { deleteProject } from "api/api";
+
+import { FetchStatus } from "store/common";
+import { deleteDialogActions } from "store/deleteDialog";
 
 interface StateToProps {
   projects: Project[] | undefined;
@@ -213,8 +218,7 @@ export const ProjectList: React.FC<Props> = ({
 
   useEffect(() => {
     fetchProjects();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [fetchProjects]);
 
   // HANDLERS
 

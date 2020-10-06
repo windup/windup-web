@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { Gallery, GalleryItem } from "@patternfly/react-core";
 
 import { SelectCard } from "../select-card/select-card";

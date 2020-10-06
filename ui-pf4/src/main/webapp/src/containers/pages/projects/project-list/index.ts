@@ -1,10 +1,11 @@
 import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import { ProjectList } from "./project-list";
+
 import { createMapStateToProps } from "store/common";
 import { projectListSelectors, projectListActions } from "store/projectList";
 import { deleteDialogActions } from "store/deleteDialog";
 import { alertActions } from "store/alert";
+
+import { ProjectList } from "./project-list";
 
 const mapStateToProps = createMapStateToProps((state) => ({
   projects: projectListSelectors.projects(state),
@@ -20,6 +21,4 @@ const mapDispatchToProps = {
   addAlert: alertActions.alert,
 };
 
-export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(ProjectList)
-);
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectList);

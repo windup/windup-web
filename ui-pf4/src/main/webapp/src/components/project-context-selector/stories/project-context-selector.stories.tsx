@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { JsIcon } from "@patternfly/react-icons";
 
 import { Story, Meta } from "@storybook/react/types-6-0";

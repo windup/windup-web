@@ -17,6 +17,7 @@ exports[`Welcome Renders without crashing 1`] = `
     The Red Hat Migration Toolkit for Applications helps you quickly assess and perform large-scale application migrations and modernizations. Start by creating a project for your applications.
   </EmptyStateBody>
   <Button
+    onClick={[Function]}
     variant="primary"
   >
     New project

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { Bullseye } from "@patternfly/react-core";
 
 import { Transfer, Tree } from "antd";
