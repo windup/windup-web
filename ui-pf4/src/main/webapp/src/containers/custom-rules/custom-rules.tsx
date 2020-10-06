@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Stack,
   StackItem,
@@ -105,7 +105,7 @@ export const CustomRules: React.FC<CustomRulesProps> = ({ projectId }) => {
 
   //
 
-  const handleRulePathToggled = React.useCallback(
+  const handleRulePathToggled = useCallback(
     (isChecked: boolean, rulePathToggled: RulesPath) => {
       if (!project) {
         return;

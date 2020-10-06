@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import {
   Form,
   FormGroup,
@@ -84,8 +84,8 @@ export const ServerPathForm: React.FC<ServerPathFormProps> = ({
   });
 
   // Skip first 'onChange' since the initial status is defined by 'isInitialValuesValid'
-  const firstUseEfect = React.useRef(true);
-  React.useEffect(() => {
+  const firstUseEfect = useRef(true);
+  useEffect(() => {
     if (firstUseEfect.current) {
       firstUseEfect.current = false;
       return;

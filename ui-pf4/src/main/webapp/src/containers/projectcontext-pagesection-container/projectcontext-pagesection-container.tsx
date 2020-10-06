@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import { Form, FormGroup } from "@patternfly/react-core";
@@ -33,7 +33,7 @@ export const ProjectContextPageSectionContainer: React.FC<ProjectContextPageSect
     projectContextSelectors.selectedProject(state)
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     const newSelectedProject = projects.find(
       (f) => f.migrationProject.id.toString() === projectIdRouteParam
     );
@@ -42,7 +42,7 @@ export const ProjectContextPageSectionContainer: React.FC<ProjectContextPageSect
     }
   }, [projectIdRouteParam, projects, dispatch]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     dispatch(projectContextActions.fetchProjectsContext());
   }, [dispatch]);
 

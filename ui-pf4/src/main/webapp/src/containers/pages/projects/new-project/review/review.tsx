@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 
 import {
@@ -35,17 +35,15 @@ import { AdvancedOptionsFieldKey } from "Constants";
 interface ReviewProps extends RouteComponentProps<{ project: string }> {}
 
 export const Review: React.FC<ReviewProps> = ({ match, history: { push } }) => {
-  const [project, setProject] = React.useState<MigrationProject>();
-  const [analysisContext, setAnalysisContext] = React.useState<
-    AnalysisContext
-  >();
+  const [project, setProject] = useState<MigrationProject>();
+  const [analysisContext, setAnalysisContext] = useState<AnalysisContext>();
 
-  const [isFetching, setIsFetching] = React.useState(true);
-  const [fetchError, setFetchError] = React.useState<string>();
+  const [isFetching, setIsFetching] = useState(true);
+  const [fetchError, setFetchError] = useState<string>();
 
-  const [isCreatingExecution, setIsCreatingExecution] = React.useState(false);
+  const [isCreatingExecution, setIsCreatingExecution] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     getProjectById(match.params.project)
       .then(({ data: projectData }) => {
         setProject(projectData);

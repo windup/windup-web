@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Tabs,
   Tab,
@@ -30,7 +30,7 @@ export const AddRuleLabelTabs: React.FC<AddRuleLabelTabsProps> = ({
   onSubmitFinishedServerPath,
   onCancelServerPath,
 }) => {
-  const [activeTabKey, setActiveTabKey] = React.useState<number>(0);
+  const [activeTabKey, setActiveTabKey] = useState<number>(0);
 
   const handleTabClick = (_: any, tabIndex: number | string) => {
     setActiveTabKey(tabIndex as any);

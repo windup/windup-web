@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 
 import {
@@ -108,7 +108,7 @@ export interface MenuActionsProps {
 }
 
 export const MenuActions: React.FC<MenuActionsProps> = ({ actions }) => {
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <Dropdown

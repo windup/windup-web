@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   OverflowMenu,
   OverflowMenuItem,
@@ -20,8 +20,8 @@ export const SortByMenu: React.FC<SortByMenuProps> = ({
   options,
   onChange,
 }) => {
-  const [isOpen, setIsOpen] = React.useState(false);
-  const [selected, setSelected] = React.useState<string | SelectOptionObject>(
+  const [isOpen, setIsOpen] = useState(false);
+  const [selected, setSelected] = useState<string | SelectOptionObject>(
     options[0]
   );
 

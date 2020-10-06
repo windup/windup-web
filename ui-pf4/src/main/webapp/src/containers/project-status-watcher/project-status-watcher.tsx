@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { useKeycloak } from "@react-keycloak/web";
 import { w3cwebsocket as W3CWebSocket } from "websocket";
@@ -20,12 +20,10 @@ export const ProjectStatusWatcher: React.FC<ProjectStatusWatcherProps> = ({
   watch,
   children,
 }) => {
-  const [messageExecution, setMessageExecution] = React.useState<
-    WindupExecution
-  >();
+  const [messageExecution, setMessageExecution] = useState<WindupExecution>();
   const [keycloak] = useKeycloak();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isExecutionActive(watch)) {
       const baseUrl = getWindupRestBase();
       const url = (baseUrl + EXECUTION_PROGRESS_URL)

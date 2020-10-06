@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect, useState } from "react";
 
 import { useKeycloak } from "@react-keycloak/web";
 import { w3cwebsocket as W3CWebSocket } from "websocket";
@@ -15,11 +15,11 @@ export const useProjectStatusWatcher = (
   execution?: WindupExecution
 ): WindupExecution | undefined => {
   const [keycloak] = useKeycloak();
-  const [messageExecution, setMessageExecution] = React.useState<
+  const [messageExecution, setMessageExecution] = useState<
     WindupExecution | undefined
   >(execution);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (execution && isExecutionActive(execution)) {
       const url = (getWindupRestBase() + EXECUTION_PROGRESS_URL)
         .replace(/^http/, "ws")

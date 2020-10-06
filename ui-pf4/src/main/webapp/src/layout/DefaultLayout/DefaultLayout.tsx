@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Page, SkipToContent, Button } from "@patternfly/react-core";
 import { Flex, FlexItem, Banner } from "@patternfly/react-core";
 import { TimesIcon } from "@patternfly/react-icons";
@@ -7,7 +7,7 @@ import { HeaderApp } from "../HeaderApp";
 import { SidebarApp } from "../SidebarApp";
 
 export const DefaultLayout: React.FC = ({ children }) => {
-  const [showBanner, setShowBanner] = React.useState(true);
+  const [showBanner, setShowBanner] = useState(true);
 
   const pageId = "main-content-page-layout-horizontal-nav";
   const PageSkipToContent = (

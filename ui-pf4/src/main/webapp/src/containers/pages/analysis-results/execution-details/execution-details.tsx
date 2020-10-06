@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useEffect, useState } from "react";
 import { Switch, Route, RouteComponentProps } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
@@ -29,7 +29,7 @@ export const ExecutionDetails: React.FC<ExecutionDetailsProps> = ({
   match,
   history: { push },
 }) => {
-  const [execution, setExecution] = React.useState<WindupExecution>();
+  const [execution, setExecution] = useState<WindupExecution>();
 
   const dispatch = useDispatch();
 
@@ -60,7 +60,7 @@ export const ExecutionDetails: React.FC<ExecutionDetailsProps> = ({
     );
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     getExecution(match.params.execution).then(({ data: executionData }) => {
       setExecution(executionData);
     });

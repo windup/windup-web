@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
@@ -37,8 +37,8 @@ export const General: React.FC<RulesProps> = ({ match, history: { push } }) => {
     loadProject,
   } = useFetchProject();
 
-  const [selectedTargets, setSelectedTargets] = React.useState<string[]>([]);
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [selectedTargets, setSelectedTargets] = useState<string[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     loadProject(match.params.project);

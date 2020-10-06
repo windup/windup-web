@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { AxiosPromise } from "axios";
 import {
@@ -34,9 +34,7 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
   history: { push },
 }) => {
   const [project, setProject] = useState<MigrationProject>();
-  const [analysisContext, setAnalysisContext] = React.useState<
-    AnalysisContext
-  >();
+  const [analysisContext, setAnalysisContext] = useState<AnalysisContext>();
 
   const [formValue, setFormValue] = useState<{
     activeTabKey?: number;
@@ -50,11 +48,11 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
   }>();
   const [enableNext, setEnableNext] = useState(false);
 
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const [submitError, setSubmitError] = React.useState<string>();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string>();
 
-  const [isFetching, setIsFetching] = React.useState(true);
-  const [fetchError, setFetchError] = React.useState<string>();
+  const [isFetching, setIsFetching] = useState(true);
+  const [fetchError, setFetchError] = useState<string>();
 
   useEffect(() => {
     getProjectById(match.params.project)
@@ -73,7 +71,7 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
       });
   }, [match]);
 
-  const handleOnFormChange = React.useCallback(
+  const handleOnFormChange = useCallback(
     (
       value: {
         activeTabKey?: number;

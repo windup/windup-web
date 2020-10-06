@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   Stack,
   StackItem,
@@ -106,7 +106,7 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({ projectId }) => {
 
   //
 
-  const handleLabelPathToggled = React.useCallback(
+  const handleLabelPathToggled = useCallback(
     (isChecked: boolean, labelPathToggled: LabelsPath) => {
       if (!project) {
         return;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { ContextSelector, ContextSelectorItem } from "@patternfly/react-core";
 import { Project } from "models/api";
@@ -14,11 +14,11 @@ export const ProjectContextSelector: React.FC<ProjectContextSelectorProps> = ({
   selectedProject,
   onSelectProject,
 }) => {
-  const [isOpen, setIsOpen] = React.useState(false);
-  const [searchValue, setSearchValue] = React.useState("");
-  const [filteredItems, setFilteredItems] = React.useState<Project[]>(projects);
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+  const [filteredItems, setFilteredItems] = useState<Project[]>(projects);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setFilteredItems(projects);
   }, [projects]);
 

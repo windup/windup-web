@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 export interface ITreeNode<T> {
   node: T;
@@ -103,9 +103,7 @@ export const useTreeSelectionState = <T>({
   };
   initMaps(tree);
 
-  const [selectedNodes, setSelectedNodes] = React.useState<T[]>(
-    initialSelected
-  );
+  const [selectedNodes, setSelectedNodes] = useState<T[]>(initialSelected);
 
   const isNodeSelected = (node: T) =>
     selectedNodes.some((i) => isEqual(node, i));

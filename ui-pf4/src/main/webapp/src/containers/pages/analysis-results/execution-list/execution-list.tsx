@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { RouteComponentProps, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import Moment from "react-moment";
@@ -59,8 +59,8 @@ import {
 interface ExecutionListProps extends RouteComponentProps<{ project: string }> {}
 
 export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
-  const [project, setProject] = React.useState<MigrationProject>();
-  const [isCreatingExecution, setIsCreatingExecution] = React.useState(false);
+  const [project, setProject] = useState<MigrationProject>();
+  const [isCreatingExecution, setIsCreatingExecution] = useState(false);
 
   // Redux
   const executions = useSelector((state: RootState) =>
@@ -76,26 +76,26 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
   const dispatch = useDispatch();
 
   // Util function
-  const refreshExecutionList = React.useCallback(
+  const refreshExecutionList = useCallback(
     (projectId: number | string) => {
       dispatch(executionsActions.fetchExecutions(projectId));
     },
     [dispatch]
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     getProjectById(match.params.project).then(({ data }) => {
       setProject(data);
     });
   }, [match]);
 
   // First executions fetch
-  React.useEffect(() => {
+  useEffect(() => {
     refreshExecutionList(match.params.project);
   }, [match, refreshExecutionList]);
 
   // Fetch every 1s if any execution was cancelled
-  React.useEffect(() => {
+  useEffect(() => {
     if (executions) {
       const hasCancelledJobs = executions.find((execution) => {
         return (
@@ -111,15 +111,15 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
   }, [match, executions, refreshExecutionList]);
 
   // Table props
-  const [tableData, setTableData] = React.useState<WindupExecution[]>([]);
+  const [tableData, setTableData] = useState<WindupExecution[]>([]);
 
-  const [filterText, setFilterText] = React.useState("");
-  const [paginationmatch, setPaginationParams] = React.useState({
+  const [filterText, setFilterText] = useState("");
+  const [paginationmatch, setPaginationParams] = useState({
     page: 1,
     perPage: 10,
   });
-  const [sortBy, setSortBy] = React.useState<ISortBy>();
-  const [rows, setRows] = React.useState<IRow[]>();
+  const [sortBy, setSortBy] = useState<ISortBy>();
+  const [rows, setRows] = useState<IRow[]>();
 
   const columns: ICell[] = [
     { title: "Analysis", transforms: [sortable] },
@@ -156,7 +156,7 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
     },
   ];
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (executions) {
       // Sort
       let sortedArray = [...executions].sort((a, b) => b.id - a.id);

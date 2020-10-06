@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 
 export interface ISelectionStateArgs<T> {
   items: T[];
@@ -20,9 +20,7 @@ export const useSelectionState = <T>({
   initialSelected = [],
   isEqual = (a, b) => a === b,
 }: ISelectionStateArgs<T>): ISelectionState<T> => {
-  const [selectedItems, setSelectedItems] = React.useState<T[]>(
-    initialSelected
-  );
+  const [selectedItems, setSelectedItems] = useState<T[]>(initialSelected);
 
   const isItemSelected = (item: T) =>
     selectedItems.some((i) => isEqual(item, i));

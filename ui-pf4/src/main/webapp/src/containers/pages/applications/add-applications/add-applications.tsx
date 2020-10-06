@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 
 import {
@@ -27,14 +27,14 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
   match,
   history,
 }) => {
-  const [project, setProject] = React.useState<MigrationProject>();
-  const [, setProjectIsFeching] = React.useState(true);
-  const [, setProjectFetchError] = React.useState("");
+  const [project, setProject] = useState<MigrationProject>();
+  const [, setProjectIsFeching] = useState(true);
+  const [, setProjectFetchError] = useState("");
 
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const [, setSubmitError] = React.useState<string>();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [, setSubmitError] = useState<string>();
 
-  const [formValue, setFormValue] = React.useState<{
+  const [formValue, setFormValue] = useState<{
     activeTabKey?: number;
     tab0?: {
       applications: Application[];
@@ -45,7 +45,7 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
     };
   }>();
 
-  React.useEffect(() => {
+  useEffect(() => {
     getProjectById(match.params.project)
       .then(({ data }) => {
         setProject(data);
@@ -58,7 +58,7 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
       });
   }, [match]);
 
-  const handleOnFormChange = React.useCallback(
+  const handleOnFormChange = useCallback(
     (value: {
       activeTabKey?: number;
       tab0?: {

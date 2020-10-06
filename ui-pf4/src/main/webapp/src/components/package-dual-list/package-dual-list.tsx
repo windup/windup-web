@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Bullseye } from "@patternfly/react-core";
 
 import { Transfer, Tree } from "antd";
@@ -59,16 +59,16 @@ export const PackageDualList: React.FC<PackageDualListProps> = ({
   includedPackages,
   onChange,
 }) => {
-  const [processing, setProcessing] = React.useState(true);
+  const [processing, setProcessing] = useState(true);
 
-  const [packagesTree, setPackagesTree] = React.useState<TreeNode[]>();
-  const [packagesTreeFlattened, setPackagesTreeFlattened] = React.useState<
+  const [packagesTree, setPackagesTree] = useState<TreeNode[]>();
+  const [packagesTreeFlattened, setPackagesTreeFlattened] = useState<
     TreeNode[]
   >();
 
-  const [targetKeys, setTargetKeys] = React.useState<string[]>([]);
+  const [targetKeys, setTargetKeys] = useState<string[]>([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const newTargetKeys = [...includedPackages].sort(stringCompartor);
 
     setTargetKeys(newTargetKeys);

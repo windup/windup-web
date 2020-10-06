@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { AxiosPromise } from "axios";
 
@@ -36,24 +36,22 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
   match,
   history: { push },
 }) => {
-  const formRef = React.useRef<FormikHelpers<any>>();
+  const formRef = useRef<FormikHelpers<any>>();
 
-  const [project, setProject] = React.useState<MigrationProject>();
-  const [analysisContext, setAnalysisContext] = React.useState<
-    AnalysisContext
-  >();
+  const [project, setProject] = useState<MigrationProject>();
+  const [analysisContext, setAnalysisContext] = useState<AnalysisContext>();
 
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const [submitError, setSubmitError] = React.useState<string>();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string>();
 
-  const [isFetching, setIsFetching] = React.useState(true);
-  const [fetchError, setFetchError] = React.useState<string>();
+  const [isFetching, setIsFetching] = useState(true);
+  const [fetchError, setFetchError] = useState<string>();
 
-  React.useEffect(() => {
+  useEffect(() => {
     deleteProvisionalProjects();
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (match.params.project) {
       getProjectById(match.params.project)
         .then(({ data }) => {

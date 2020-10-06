@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   List,
   ListItem,
@@ -26,12 +26,10 @@ const filterByScope = (items: Item[], scope: ScopeType) => {
 };
 
 export const RulesLabelsList: React.FC<RulesListProps> = ({ items }) => {
-  const [projectScopedItems, setProjectScopedItems] = React.useState<Item[]>(
-    []
-  );
-  const [globalScopedItems, setGlobalScopedItems] = React.useState<Item[]>([]);
+  const [projectScopedItems, setProjectScopedItems] = useState<Item[]>([]);
+  const [globalScopedItems, setGlobalScopedItems] = useState<Item[]>([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setProjectScopedItems(filterByScope(items, "PROJECT"));
     setGlobalScopedItems(filterByScope(items, "GLOBAL"));
   }, [items]);

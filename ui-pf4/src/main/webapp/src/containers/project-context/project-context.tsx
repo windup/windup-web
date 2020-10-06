@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Project } from "models/api";
 
 interface StateToProps {
@@ -18,7 +18,7 @@ export const ProjectContext: React.FC<ProjectContextProps> = ({
   projects,
   fetchProjects,
 }) => {
-  React.useEffect(() => {
+  useEffect(() => {
     fetchProjects();
   }, [fetchProjects]);
 

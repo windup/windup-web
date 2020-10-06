@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import Moment from "react-moment";
 
@@ -35,9 +35,9 @@ export interface OverviewProps
   extends RouteComponentProps<{ project: string; execution: string }> {}
 
 export const Overview: React.FC<OverviewProps> = ({ match }) => {
-  const [execution, setExecution] = React.useState<WindupExecution>();
+  const [execution, setExecution] = useState<WindupExecution>();
 
-  React.useEffect(() => {
+  useEffect(() => {
     getExecution(match.params.execution).then(({ data: executionData }) => {
       setExecution(executionData);
     });

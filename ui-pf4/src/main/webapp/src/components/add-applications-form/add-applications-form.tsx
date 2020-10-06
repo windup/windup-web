@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Tabs,
   Tab,
@@ -44,14 +44,14 @@ export const AddApplicationsForm: React.FC<AddApplicationsFormProps> = ({
   initialValues,
   onChange,
 }) => {
-  const [applications, setApplications] = React.useState<Application[]>(
+  const [applications, setApplications] = useState<Application[]>(
     initialValues?.tab0?.applications || []
   );
-  const [activeTabKey, setActiveTabKey] = React.useState<number>(
+  const [activeTabKey, setActiveTabKey] = useState<number>(
     initialValues?.activeTabKey || 0
   );
 
-  const [serverPathFormValue, setServerPathFormValue] = React.useState<
+  const [serverPathFormValue, setServerPathFormValue] = useState<
     | {
         serverPath?: string;
         isExploded?: boolean;
@@ -65,11 +65,9 @@ export const AddApplicationsForm: React.FC<AddApplicationsFormProps> = ({
         }
       : undefined
   );
-  const [isServerPathFormValid, setIsServerPathFormValid] = React.useState(
-    false
-  );
+  const [isServerPathFormValid, setIsServerPathFormValid] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (onChange) {
       const formValue: ProjectDetailsFormValue = {
         activeTabKey: activeTabKey,
@@ -114,14 +112,14 @@ export const AddApplicationsForm: React.FC<AddApplicationsFormProps> = ({
   };
 
   // Form handlers
-  const handleUploadFilesFormChange = React.useCallback(
+  const handleUploadFilesFormChange = useCallback(
     (application: Application, _: File) => {
       setApplications((current) => [...current, application]);
     },
     []
   );
 
-  const handleServerPathFormChange = React.useCallback(
+  const handleServerPathFormChange = useCallback(
     (
       formValue: {
         serverPath?: string;
