@@ -47,6 +47,7 @@
   },
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
+    "cypress:open": "cypress open",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "build:freemarker": "cp build/index.html build/index.html.ftl",
@@ -88,6 +89,8 @@
     "@types/yup": "^0.29.6",
     "axios-mock-adapter": "^1.18.2",
     "babel-loader": "^8.1.0",
+    "cypress": "^5.3.0",
+    "cypress-file-upload": "^4.1.1",
     "node-sass": "^4.14.1",
     "react-is": "^16.13.1",
     "redux-devtools-extension": "^2.13.8"
