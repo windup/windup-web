@@ -44,6 +44,14 @@ export enum Paths {
   analysisConfiguration_advancedOptions = "/projects-details/:project/analysis-configuration/advanced-options",
 }
 
+export interface OptionalProjectRoute {
+  project?: string;
+}
+
 export interface ProjectRoute {
   project: string;
+}
+
+export interface ProjectExecutionRoute extends ProjectRoute {
+  execution: string;
 }

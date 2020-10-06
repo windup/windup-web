@@ -10,7 +10,7 @@ import {
 
 import { AddApplicationsForm, SimplePageSection } from "components";
 
-import { formatPath, Paths } from "Paths";
+import { formatPath, Paths, ProjectRoute } from "Paths";
 import { Application, MigrationProject } from "models/api";
 import {
   getProjectById,
@@ -21,7 +21,7 @@ import {
 import { AxiosPromise } from "axios";
 
 export interface AddApplicationsProps
-  extends RouteComponentProps<{ project: string }> {}
+  extends RouteComponentProps<ProjectRoute> {}
 
 export const AddApplications: React.FC<AddApplicationsProps> = ({
   match,

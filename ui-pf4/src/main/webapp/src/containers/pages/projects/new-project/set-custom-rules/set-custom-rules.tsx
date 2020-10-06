@@ -1,14 +1,13 @@
 import React, { useEffect } from "react";
 import { RouteComponentProps } from "react-router-dom";
 
-import { Paths, formatPath } from "Paths";
+import { Paths, formatPath, ProjectRoute } from "Paths";
 import { CustomRules } from "containers/custom-rules";
 import { useFetchProject } from "hooks/useFetchProject";
 
 import NewProjectWizard, { WizardStepIds } from "../wizard";
 
-interface SetCustomRulesProps
-  extends RouteComponentProps<{ project: string }> {}
+interface SetCustomRulesProps extends RouteComponentProps<ProjectRoute> {}
 
 export const SetCustomRules: React.FC<SetCustomRulesProps> = ({
   match,

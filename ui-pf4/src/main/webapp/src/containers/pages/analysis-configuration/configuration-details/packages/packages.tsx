@@ -19,7 +19,7 @@ import { useFetchProjectPackages } from "hooks/useFetchProjectPackages";
 
 import { alertActions } from "store/alert";
 
-import { formatPath, Paths } from "Paths";
+import { formatPath, Paths, ProjectRoute } from "Paths";
 import { getAlertModel } from "Constants";
 import { getUnknownPackages, fullNameToPackage } from "utils/packageUtils";
 
@@ -30,8 +30,7 @@ import {
 } from "api/api";
 import { AnalysisContext } from "models/api";
 
-export interface PackagesProps
-  extends RouteComponentProps<{ project: string }> {}
+export interface PackagesProps extends RouteComponentProps<ProjectRoute> {}
 
 export const Packages: React.FC<PackagesProps> = ({
   match,

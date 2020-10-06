@@ -3,7 +3,7 @@ import { Switch, Route, RouteComponentProps } from "react-router-dom";
 
 import { AppPlaceholder } from "components";
 
-import { formatPath, Paths } from "Paths";
+import { formatPath, Paths, ProjectRoute } from "Paths";
 import { Project } from "models/api";
 
 import { ProjectContextPageSectionContainer } from "containers/projectcontext-pagesection-container";
@@ -12,7 +12,7 @@ const ExecutionList = lazy(() => import("./execution-list"));
 const ExecutionDetails = lazy(() => import("./execution-details"));
 
 export interface AnalysisResultsProps
-  extends RouteComponentProps<{ project: string }> {}
+  extends RouteComponentProps<ProjectRoute> {}
 
 export const AnalysisResults: React.FC<AnalysisResultsProps> = ({
   match,

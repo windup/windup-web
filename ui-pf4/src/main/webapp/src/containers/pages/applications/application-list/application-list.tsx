@@ -28,7 +28,7 @@ import {
   FetchError,
 } from "components";
 
-import { formatPath, Paths } from "Paths";
+import { formatPath, Paths, ProjectRoute } from "Paths";
 import { isNullOrUndefined } from "utils/utils";
 
 import { Application, MigrationProject } from "models/api";
@@ -67,7 +67,7 @@ const filterProject = (filterText: string, application: Application) => {
 };
 
 export interface ApplicationListProps
-  extends RouteComponentProps<{ project: string }> {}
+  extends RouteComponentProps<ProjectRoute> {}
 
 export const ApplicationList: React.FC<ApplicationListProps> = ({
   match,

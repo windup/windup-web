@@ -15,13 +15,14 @@ import { DownloadIcon } from "@patternfly/react-icons";
 
 import { LogView } from "components";
 
+import { ProjectExecutionRoute } from "Paths";
 import { WindupExecution } from "models/api";
 import { getExecution, getExecutionLog } from "api/api";
 
 import { useProjectStatusWatcher } from "containers/project-status-watcher/useProjectStatusWatcher";
 
 export interface RulesProps
-  extends RouteComponentProps<{ project: string; execution: string }> {}
+  extends RouteComponentProps<ProjectExecutionRoute> {}
 
 export const Logs: React.FC<RulesProps> = ({ match }) => {
   const [execution, setExecution] = useState<WindupExecution>();

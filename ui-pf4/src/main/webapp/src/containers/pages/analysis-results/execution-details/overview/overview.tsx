@@ -30,9 +30,10 @@ import {
 import { ExpandableCard, mapStateToLabel, RulesLabelsList } from "components";
 
 import { ProjectStatusWatcher } from "containers/project-status-watcher";
+import { ProjectExecutionRoute } from "Paths";
 
 export interface OverviewProps
-  extends RouteComponentProps<{ project: string; execution: string }> {}
+  extends RouteComponentProps<ProjectExecutionRoute> {}
 
 export const Overview: React.FC<OverviewProps> = ({ match }) => {
   const [execution, setExecution] = useState<WindupExecution>();

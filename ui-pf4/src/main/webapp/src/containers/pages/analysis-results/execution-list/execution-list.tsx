@@ -38,7 +38,7 @@ import {
   ExecutionStatus,
 } from "components";
 
-import { Paths, formatPath } from "Paths";
+import { Paths, formatPath, ProjectRoute } from "Paths";
 import { WindupExecution, MigrationProject } from "models/api";
 import {
   createProjectExecution,
@@ -56,7 +56,7 @@ import {
   MERGED_CSV_FILENAME,
 } from "Constants";
 
-interface ExecutionListProps extends RouteComponentProps<{ project: string }> {}
+interface ExecutionListProps extends RouteComponentProps<ProjectRoute> {}
 
 export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
   const [project, setProject] = useState<MigrationProject>();

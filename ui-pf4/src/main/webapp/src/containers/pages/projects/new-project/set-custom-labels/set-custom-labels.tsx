@@ -1,14 +1,13 @@
 import React, { useEffect } from "react";
 import { RouteComponentProps } from "react-router-dom";
 
-import { Paths, formatPath } from "Paths";
+import { Paths, formatPath, ProjectRoute } from "Paths";
 import { CustomLabels } from "containers/custom-labels";
 import { useFetchProject } from "hooks/useFetchProject";
 
 import NewProjectWizard, { WizardStepIds } from "../wizard";
 
-interface SetCustomLabelsProps
-  extends RouteComponentProps<{ project: string }> {}
+interface SetCustomLabelsProps extends RouteComponentProps<ProjectRoute> {}
 
 export const SetCustomLabels: React.FC<SetCustomLabelsProps> = ({
   match,

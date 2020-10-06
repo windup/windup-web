@@ -21,13 +21,12 @@ import {
   getAnalysisContext,
 } from "api/api";
 
-import { Paths, formatPath } from "Paths";
+import { Paths, formatPath, ProjectRoute } from "Paths";
 
 import NewProjectWizard from "../wizard";
 import { WizardStepIds, LoadingWizardContent } from "../wizard";
 
-interface AddApplicationsProps
-  extends RouteComponentProps<{ project: string }> {}
+interface AddApplicationsProps extends RouteComponentProps<ProjectRoute> {}
 
 export const AddApplications: React.FC<AddApplicationsProps> = ({
   match,

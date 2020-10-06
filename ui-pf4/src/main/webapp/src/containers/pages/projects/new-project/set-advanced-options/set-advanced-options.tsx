@@ -22,7 +22,7 @@ import {
 import { alertActions } from "store/alert";
 
 import { getAlertModel } from "Constants";
-import { formatPath, Paths } from "Paths";
+import { formatPath, Paths, ProjectRoute } from "Paths";
 import { AdvancedOption, AnalysisContext } from "models/api";
 import { saveAnalysisContext, getAnalysisContext } from "api/api";
 
@@ -31,8 +31,7 @@ import NewProjectWizard, {
   LoadingWizardContent,
 } from "../wizard";
 
-interface SetAdvancedOptionsProps
-  extends RouteComponentProps<{ project: string }> {}
+interface SetAdvancedOptionsProps extends RouteComponentProps<ProjectRoute> {}
 
 export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
   match,

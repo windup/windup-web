@@ -13,7 +13,7 @@ import {
 
 import { FormikHelpers } from "formik";
 
-import { Paths, formatPath } from "Paths";
+import { Paths, formatPath, OptionalProjectRoute } from "Paths";
 import { ProjectDetailsForm } from "components";
 import {
   deleteProvisionalProjects,
@@ -30,7 +30,7 @@ import NewProjectWizard, {
 } from "../wizard";
 
 interface CreateProjectProps
-  extends RouteComponentProps<{ project?: string }> {}
+  extends RouteComponentProps<OptionalProjectRoute> {}
 
 export const CreateProject: React.FC<CreateProjectProps> = ({
   match,

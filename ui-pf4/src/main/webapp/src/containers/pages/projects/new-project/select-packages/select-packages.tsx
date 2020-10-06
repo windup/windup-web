@@ -9,7 +9,7 @@ import { PackageSelection, PackageSelectionLoadingState } from "components";
 import { useFetchProjectPackages } from "hooks/useFetchProjectPackages";
 
 import { getAlertModel } from "Constants";
-import { Paths, formatPath } from "Paths";
+import { Paths, formatPath, ProjectRoute } from "Paths";
 import { AnalysisContext } from "models/api";
 import { getAnalysisContext, saveAnalysisContext } from "api/api";
 import {
@@ -19,8 +19,7 @@ import {
 
 import NewProjectWizard, { WizardStepIds } from "../wizard";
 
-interface SelectPackagesProps
-  extends RouteComponentProps<{ project: string }> {}
+interface SelectPackagesProps extends RouteComponentProps<ProjectRoute> {}
 
 export const SelectPackages: React.FC<SelectPackagesProps> = ({
   match,

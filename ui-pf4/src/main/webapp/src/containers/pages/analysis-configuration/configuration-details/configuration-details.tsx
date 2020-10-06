@@ -3,7 +3,7 @@ import { Switch, Route, RouteComponentProps, Redirect } from "react-router-dom";
 
 import { PageSection } from "@patternfly/react-core";
 
-import { Paths, formatPath } from "Paths";
+import { Paths, formatPath, ProjectRoute } from "Paths";
 
 import { PageHeader, AppPlaceholder } from "components";
 
@@ -14,7 +14,7 @@ const Labels = lazy(() => import("./labels"));
 const AdvancedOptions = lazy(() => import("./advanced-options"));
 
 export interface ConfigurationDetailsProps
-  extends RouteComponentProps<{ project: string }> {}
+  extends RouteComponentProps<ProjectRoute> {}
 
 export const ConfigurationDetails: React.FC<ConfigurationDetailsProps> = ({
   match,

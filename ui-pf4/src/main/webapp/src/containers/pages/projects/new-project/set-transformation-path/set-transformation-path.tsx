@@ -8,7 +8,7 @@ import { useFetchProject } from "hooks/useFetchProject";
 import { alertActions } from "store/alert";
 
 import { AdvancedOptionsFieldKey, getAlertModel, TARGET_EAP7 } from "Constants";
-import { Paths, formatPath } from "Paths";
+import { Paths, formatPath, ProjectRoute } from "Paths";
 import { AnalysisContext, AdvancedOption } from "models/api";
 import { getAnalysisContext, saveAnalysisContext } from "api/api";
 
@@ -18,7 +18,7 @@ import NewProjectWizard, {
 } from "../wizard";
 
 interface SetTransformationPathProps
-  extends RouteComponentProps<{ project: string }> {}
+  extends RouteComponentProps<ProjectRoute> {}
 
 export const SetTransformationPath: React.FC<SetTransformationPathProps> = ({
   match,

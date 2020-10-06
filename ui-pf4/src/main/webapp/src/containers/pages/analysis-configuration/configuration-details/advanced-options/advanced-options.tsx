@@ -19,7 +19,7 @@ import {
   buildInitialValues,
 } from "components/advanced-options-form/schema";
 
-import { formatPath, Paths } from "Paths";
+import { formatPath, Paths, ProjectRoute } from "Paths";
 
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store/rootReducer";
@@ -41,7 +41,7 @@ const SAVE = "save";
 const SAVE_AND_EXECUTE = "save and execute";
 
 export interface AdvancedOptionsProps
-  extends RouteComponentProps<{ project: string }> {}
+  extends RouteComponentProps<ProjectRoute> {}
 
 export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({
   match,

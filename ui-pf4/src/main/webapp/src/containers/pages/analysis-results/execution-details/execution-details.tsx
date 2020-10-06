@@ -6,7 +6,7 @@ import { PageSection, Label } from "@patternfly/react-core";
 
 import { deleteDialogActions } from "store/deleteDialog";
 
-import { Paths, formatPath } from "Paths";
+import { Paths, formatPath, ProjectExecutionRoute } from "Paths";
 import { deleteExecution, getExecution } from "api/api";
 import { WindupExecution } from "models/api";
 
@@ -23,7 +23,7 @@ const Overview = lazy(() => import("./overview"));
 const Logs = lazy(() => import("./logs"));
 
 export interface ExecutionDetailsProps
-  extends RouteComponentProps<{ project: string; execution: string }> {}
+  extends RouteComponentProps<ProjectExecutionRoute> {}
 
 export const ExecutionDetails: React.FC<ExecutionDetailsProps> = ({
   match,

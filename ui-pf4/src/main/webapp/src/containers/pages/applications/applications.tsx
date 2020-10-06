@@ -3,7 +3,7 @@ import { Switch, Route, RouteComponentProps } from "react-router-dom";
 
 import { AppPlaceholder } from "components";
 
-import { formatPath, Paths } from "Paths";
+import { formatPath, Paths, ProjectRoute } from "Paths";
 import { Project } from "models/api";
 
 import { ProjectContextPageSectionContainer } from "containers/projectcontext-pagesection-container";
@@ -11,8 +11,7 @@ import { ProjectContextPageSectionContainer } from "containers/projectcontext-pa
 const ApplicationList = lazy(() => import("./application-list"));
 const AddApplications = lazy(() => import("./add-applications"));
 
-export interface ApplicationsProps
-  extends RouteComponentProps<{ project: string }> {}
+export interface ApplicationsProps extends RouteComponentProps<ProjectRoute> {}
 
 export const Applications: React.FC<ApplicationsProps> = ({
   match,

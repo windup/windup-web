@@ -18,7 +18,7 @@ import {
 import { css } from "@patternfly/react-styles";
 import styles from "@patternfly/react-styles/css/components/Wizard/wizard";
 
-import { formatPath, Paths } from "Paths";
+import { formatPath, Paths, ProjectRoute } from "Paths";
 import {
   getProjectById,
   getAnalysisContext,
@@ -32,7 +32,7 @@ import NewProjectWizard, {
 } from "../wizard";
 import { AdvancedOptionsFieldKey } from "Constants";
 
-interface ReviewProps extends RouteComponentProps<{ project: string }> {}
+interface ReviewProps extends RouteComponentProps<ProjectRoute> {}
 
 export const Review: React.FC<ReviewProps> = ({ match, history: { push } }) => {
   const [project, setProject] = useState<MigrationProject>();

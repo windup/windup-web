@@ -15,7 +15,7 @@ import { useFetchProject } from "hooks/useFetchProject";
 
 import { alertActions } from "store/alert";
 
-import { formatPath, Paths } from "Paths";
+import { formatPath, Paths, ProjectRoute } from "Paths";
 import { AdvancedOptionsFieldKey, getAlertModel } from "Constants";
 
 import {
@@ -25,7 +25,7 @@ import {
 } from "api/api";
 import { AdvancedOption, AnalysisContext } from "models/api";
 
-export interface RulesProps extends RouteComponentProps<{ project: string }> {}
+export interface RulesProps extends RouteComponentProps<ProjectRoute> {}
 
 export const General: React.FC<RulesProps> = ({ match, history: { push } }) => {
   const dispatch = useDispatch();
