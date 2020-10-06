@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`FetchTable Renders without crashing 1`] = `
+exports[`AppPlaceholder Renders without crashing 1`] = `
 <Bullseye>
   <div
     className="pf-u-display-flex pf-u-flex-direction-column"

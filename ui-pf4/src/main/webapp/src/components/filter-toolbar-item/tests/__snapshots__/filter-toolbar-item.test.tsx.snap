@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<FilterToolbarItem /> should render correctly 1`] = `
+exports[`FilterToolbarItem should render correctly 1`] = `
 <FilterToolbarItem
   onFilterChange={[MockFunction]}
   placeholder="Foo"

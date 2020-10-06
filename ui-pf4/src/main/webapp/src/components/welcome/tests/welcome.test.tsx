@@ -1,5 +1,5 @@
 import React from "react";
-import { shallow } from "enzyme";
+import { shallow, mount } from "enzyme";
 import { Button } from "@patternfly/react-core";
 import { Welcome } from "../welcome";
 
@@ -12,7 +12,7 @@ describe("Welcome", () => {
   it("onPrimaryAction should call callback", () => {
     const mockCallback = jest.fn();
 
-    const wrapper = shallow(<Welcome onPrimaryAction={mockCallback} />);
+    const wrapper = mount(<Welcome onPrimaryAction={mockCallback} />);
     wrapper.find(Button).simulate("click");
     expect(mockCallback.mock.calls.length).toEqual(1);
   });

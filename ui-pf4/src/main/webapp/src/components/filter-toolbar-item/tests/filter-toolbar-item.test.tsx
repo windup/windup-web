@@ -6,7 +6,7 @@ import {
   FilterToolbarItemProps,
 } from "../filter-toolbar-item";
 
-describe("<FilterToolbarItem />", () => {
+describe("FilterToolbarItem", () => {
   let intialProps: FilterToolbarItemProps;
   beforeEach(() => {
     intialProps = {

@@ -32,6 +32,7 @@ import {
   FilterToolbarItem,
   DeleteButton,
   AppPlaceholder,
+  ConditionalRender,
 } from "components";
 
 import { Paths } from "Paths";
@@ -243,7 +244,7 @@ export const ProjectList: React.FC<Props> = ({
     push(Paths.newProject);
   };
 
-  if (!error && projects && projects.length === 0) {
+  if (projects && projects.length === 0 && !error) {
     return (
       <Bullseye>
         <Welcome onPrimaryAction={handleNewProject} />
@@ -252,59 +253,53 @@ export const ProjectList: React.FC<Props> = ({
   }
 
   return (
-    <>
-      {projects || error ? (
-        <>
-          <SimplePageSection title="Projects" />
-          <PageSection>
-            <Toolbar>
-              <ToolbarContent>
-                <FilterToolbarItem
-                  searchValue={filterText}
-                  onFilterChange={handlFilterTextChange}
-                  placeholder="Filter by name"
-                />
-                <ToolbarGroup variant="button-group">
-                  <ToolbarItem>
-                    <Link to={Paths.newProject}>
-                      <Button>Create new</Button>
-                    </Link>
-                  </ToolbarItem>
-                </ToolbarGroup>
-                <ToolbarItem
-                  variant={ToolbarItemVariant.pagination}
-                  alignment={{ default: "alignRight" }}
-                >
-                  <SimplePagination
-                    count={filteredProjects.length}
-                    params={paginationParams}
-                    isTop={true}
-                    onChange={handlePaginationChange}
-                  />
-                </ToolbarItem>
-              </ToolbarContent>
-            </Toolbar>
-            <FetchTable
-              columns={columns}
-              rows={rows}
-              actions={actions}
-              fetchStatus={fetchStatus}
-              fetchError={error}
-              loadingVariant="skeleton"
-              onSortChange={(sortBy: ISortBy) => {
-                setSortBy(sortBy);
-              }}
+    <ConditionalRender when={!(projects || error)} then={<AppPlaceholder />}>
+      <SimplePageSection title="Projects" />
+      <PageSection>
+        <Toolbar>
+          <ToolbarContent>
+            <FilterToolbarItem
+              searchValue={filterText}
+              onFilterChange={handlFilterTextChange}
+              placeholder="Filter by name"
             />
-            <SimplePagination
-              count={filteredProjects.length}
-              params={paginationParams}
-              onChange={handlePaginationChange}
-            />
-          </PageSection>
-        </>
-      ) : (
-        <AppPlaceholder />
-      )}
-    </>
+            <ToolbarGroup variant="button-group">
+              <ToolbarItem>
+                <Link to={Paths.newProject}>
+                  <Button>Create new</Button>
+                </Link>
+              </ToolbarItem>
+            </ToolbarGroup>
+            <ToolbarItem
+              variant={ToolbarItemVariant.pagination}
+              alignment={{ default: "alignRight" }}
+            >
+              <SimplePagination
+                count={filteredProjects.length}
+                params={paginationParams}
+                isTop={true}
+                onChange={handlePaginationChange}
+              />
+            </ToolbarItem>
+          </ToolbarContent>
+        </Toolbar>
+        <FetchTable
+          columns={columns}
+          rows={rows}
+          actions={actions}
+          fetchStatus={fetchStatus}
+          fetchError={error}
+          loadingVariant="skeleton"
+          onSortChange={(sortBy: ISortBy) => {
+            setSortBy(sortBy);
+          }}
+        />
+        <SimplePagination
+          count={filteredProjects.length}
+          params={paginationParams}
+          onChange={handlePaginationChange}
+        />
+      </PageSection>
+    </ConditionalRender>
   );
 };

@@ -14,7 +14,13 @@ const Template: Story<SimplePageSectionProps> = (args) => (
   <SimplePageSection {...args} />
 );
 
-export const Basic = Template.bind({});
-Basic.args = {
+export const OnlyTitle = Template.bind({});
+OnlyTitle.args = {
   title: "my title",
+};
+
+export const WithDescription = Template.bind({});
+WithDescription.args = {
+  title: "my title",
+  description: "my description",
 };

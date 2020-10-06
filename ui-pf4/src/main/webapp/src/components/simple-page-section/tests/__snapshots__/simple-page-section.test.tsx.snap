@@ -8,7 +8,7 @@ exports[`SimplePageSection Renders without crashing 1`] = `
     <Text
       component="h1"
     >
-      complete
+      myTitle
     </Text>
   </TextContent>
 </PageSection>

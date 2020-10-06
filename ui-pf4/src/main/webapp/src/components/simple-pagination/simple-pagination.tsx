@@ -1,6 +1,6 @@
 import React from "react";
 import { Pagination, PaginationVariant } from "@patternfly/react-core";
-import { Constants } from "../../Constants";
+import { Constants } from "Constants";
 
 export interface SimplePaginationProps {
   count: number;
