@@ -13,7 +13,7 @@ export interface CustomEmptyStateProps {
   icon?: React.ComponentType<any>;
   title: string;
   body?: string;
-  primaryAction?: [string, () => void];
+  primaryAction?: [string, () => void, boolean?];
   secondaryActions?: React.ReactNodeArray;
 }
 
@@ -32,7 +32,11 @@ export const CustomEmptyState: React.FC<CustomEmptyStateProps> = ({
       </Title>
       {body && <EmptyStateBody>{body}</EmptyStateBody>}
       {primaryAction && (
-        <Button variant="primary" onClick={primaryAction[1]}>
+        <Button
+          variant="primary"
+          onClick={primaryAction[1]}
+          isDisabled={primaryAction[2] || false}
+        >
           {primaryAction[0]}
         </Button>
       )}

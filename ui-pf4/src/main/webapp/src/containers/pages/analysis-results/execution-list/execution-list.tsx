@@ -7,23 +7,19 @@ import {
   PageSection,
   Button,
   Bullseye,
-  Toolbar,
   ToolbarItem,
-  ToolbarContent,
   ToolbarGroup,
-  ToolbarItemVariant,
   Split,
   SplitItem,
 } from "@patternfly/react-core";
 import {
-  ISortBy,
   IRow,
   ICell,
   sortable,
   IActions,
-  SortByDirection,
+  IRowData,
 } from "@patternfly/react-table";
-import { InfoIcon, ChartBarIcon, DownloadIcon } from "@patternfly/react-icons";
+import { ChartBarIcon, DownloadIcon, CubesIcon } from "@patternfly/react-icons";
 
 import { RootState } from "store/rootReducer";
 import { executionsSelectors, executionsActions } from "store/executions";
@@ -32,10 +28,10 @@ import { deleteDialogActions } from "store/deleteDialog";
 import {
   SimplePageSection,
   CustomEmptyState,
-  SimplePagination,
-  FilterToolbarItem,
-  FetchTable,
   ExecutionStatus,
+  ConditionalRender,
+  SelectProjectEmptyMessage,
+  TableSectionOffline,
 } from "components";
 
 import { Paths, formatPath, ProjectRoute } from "Paths";
@@ -55,6 +51,46 @@ import {
   getWindupStaticReportsBase,
   MERGED_CSV_FILENAME,
 } from "Constants";
+import { isNullOrUndefined } from "utils/utils";
+
+const EXECUTION_FIELD = "execution";
+
+const columns: ICell[] = [
+  { title: "Analysis", transforms: [sortable] },
+  { title: "Status", transforms: [sortable] },
+  { title: "Start date", transforms: [sortable] },
+  { title: "Applications", transforms: [sortable] },
+  { title: "", transforms: [] },
+];
+
+const compareExecution = (
+  a: WindupExecution,
+  b: WindupExecution,
+  columnIndex?: number
+) => {
+  switch (columnIndex) {
+    case 0: // Analysis
+      return a.id - b.id;
+    case 1: // Status
+      return a.state.localeCompare(b.state);
+    case 2: // Start date
+      return (a.timeStarted || 0) - (b.timeStarted || 0);
+    case 3:
+      return (
+        a.analysisContext.applications.length -
+        b.analysisContext.applications.length
+      );
+    default:
+      return 0;
+  }
+};
+
+const filterExecution = (filterText: string, execution: WindupExecution) => {
+  return (
+    execution.id.toString().toLowerCase().indexOf(filterText.toLowerCase()) !==
+    -1
+  );
+};
 
 interface ExecutionListProps extends RouteComponentProps<ProjectRoute> {}
 
@@ -83,15 +119,18 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
     [dispatch]
   );
 
-  useEffect(() => {
-    getProjectById(match.params.project).then(({ data }) => {
-      setProject(data);
-    });
-  }, [match]);
-
   // First executions fetch
   useEffect(() => {
-    refreshExecutionList(match.params.project);
+    if (!isNullOrUndefined(match.params.project)) {
+      getProjectById(match.params.project).then(({ data }) => {
+        setProject(data);
+      });
+    }
+  }, [match]);
+  useEffect(() => {
+    if (!isNullOrUndefined(match.params.project)) {
+      refreshExecutionList(match.params.project);
+    }
   }, [match, refreshExecutionList]);
 
   // Fetch every 1s if any execution was cancelled
@@ -110,29 +149,12 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
     }
   }, [match, executions, refreshExecutionList]);
 
-  // Table props
-  const [tableData, setTableData] = useState<WindupExecution[]>([]);
-
-  const [filterText, setFilterText] = useState("");
-  const [paginationmatch, setPaginationParams] = useState({
-    page: 1,
-    perPage: 10,
-  });
-  const [sortBy, setSortBy] = useState<ISortBy>();
-  const [rows, setRows] = useState<IRow[]>();
-
-  const columns: ICell[] = [
-    { title: "Analysis", transforms: [sortable] },
-    { title: "Status", transforms: [sortable] },
-    { title: "Start date", transforms: [sortable] },
-    { title: "Applications", transforms: [sortable] },
-    { title: "", transforms: [] },
-  ];
   const actions: IActions = [
     {
       title: "Delete",
-      onClick: (_, rowIndex: number) => {
-        const row = tableData![rowIndex];
+      onClick: (_, rowIndex: number, rowData: IRowData) => {
+        const row: WindupExecution = rowData.props[EXECUTION_FIELD];
+
         dispatch(
           deleteDialogActions.openModal({
             name: `#${row.id.toString()}`,
@@ -156,143 +178,100 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
     },
   ];
 
-  useEffect(() => {
-    if (executions) {
-      // Sort
-      let sortedArray = [...executions].sort((a, b) => b.id - a.id);
-      const columnSortIndex = sortBy?.index;
-      const columnSortDirection = sortBy?.direction;
-      switch (columnSortIndex) {
-        case 0: // title
-          sortedArray.sort((a, b) => a.id - b.id);
-          break;
-      }
-      if (columnSortDirection === SortByDirection.desc) {
-        sortedArray = sortedArray.reverse();
-      }
-      // Filter
-      const filteredArray = sortedArray.filter(
-        (p) => p.id.toString().indexOf(filterText) !== -1
-      );
-      setTableData(filteredArray);
-      const rows: IRow[] = filteredArray.map((item) => {
-        return {
-          cells: [
-            {
-              title: (
-                <Link
-                  to={formatPath(Paths.editExecution_overview, {
-                    project: match.params.project,
-                    execution: item.id,
-                  })}
-                >
-                  #{item.id}
-                </Link>
-              ),
-            },
-            {
-              title: (
-                <ProjectStatusWatcher watch={item}>
-                  {({ execution }) => (
-                    <ExecutionStatus state={execution.state} />
-                  )}
-                </ProjectStatusWatcher>
-              ),
-            },
-            {
-              title: (
-                <ProjectStatusWatcher watch={item}>
-                  {({ execution }) =>
-                    execution.timeStarted ? (
-                      <Moment fromNow>{execution.timeStarted}</Moment>
-                    ) : null
-                  }
-                </ProjectStatusWatcher>
-              ),
-            },
-            {
-              title: item.analysisContext.applications.length,
-            },
-            {
-              title: (
-                <ProjectStatusWatcher watch={item}>
-                  {({ execution }) =>
-                    execution.state === "COMPLETED" ? (
-                      <>
-                        <Split hasGutter>
-                          <SplitItem>
-                            <a
-                              title="Reports"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              href={`${getWindupStaticReportsBase()}/${
-                                execution.applicationListRelativePath
-                              }`}
-                            >
-                              <ChartBarIcon />
-                            </a>
-                          </SplitItem>
-                          {execution.analysisContext.generateStaticReports &&
-                            execution.analysisContext.advancedOptions.find(
-                              (f) => {
-                                return (
-                                  f.name ===
-                                    AdvancedOptionsFieldKey.EXPORT_CSV &&
-                                  f.value === "true"
-                                );
-                              }
-                            ) && (
-                              <SplitItem>
-                                <a
-                                  title="Download all issues CSV"
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  href={`${getWindupStaticReportsBase()}/${
-                                    execution.id
-                                  }/${MERGED_CSV_FILENAME}`}
-                                >
-                                  <DownloadIcon />
-                                </a>
-                              </SplitItem>
-                            )}
-                        </Split>
-                      </>
-                    ) : null
-                  }
-                </ProjectStatusWatcher>
-              ),
-            },
-          ],
-        };
-      });
-      // Paginate
-      const paginatedRows = rows.slice(
-        (paginationmatch.page - 1) * paginationmatch.perPage,
-        paginationmatch.page * paginationmatch.perPage
-      );
-      setRows(paginatedRows);
-    }
-  }, [executions, filterText, paginationmatch, sortBy, match]);
+  const executionToIRow = useCallback(
+    (executions: WindupExecution[]): IRow[] => {
+      return executions.map((item) => ({
+        props: {
+          [EXECUTION_FIELD]: item,
+        },
+        cells: [
+          {
+            title: (
+              <Link
+                to={formatPath(Paths.editExecution_overview, {
+                  project: match.params.project,
+                  execution: item.id,
+                })}
+              >
+                #{item.id}
+              </Link>
+            ),
+          },
+          {
+            title: (
+              <ProjectStatusWatcher watch={item}>
+                {({ execution }) => <ExecutionStatus state={execution.state} />}
+              </ProjectStatusWatcher>
+            ),
+          },
+          {
+            title: (
+              <ProjectStatusWatcher watch={item}>
+                {({ execution }) =>
+                  execution.timeStarted ? (
+                    <Moment fromNow>{execution.timeStarted}</Moment>
+                  ) : null
+                }
+              </ProjectStatusWatcher>
+            ),
+          },
+          {
+            title: item.analysisContext.applications.length,
+          },
+          {
+            title: (
+              <ProjectStatusWatcher watch={item}>
+                {({ execution }) =>
+                  execution.state === "COMPLETED" ? (
+                    <>
+                      <Split hasGutter>
+                        <SplitItem>
+                          <a
+                            title="Reports"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            href={`${getWindupStaticReportsBase()}/${
+                              execution.applicationListRelativePath
+                            }`}
+                          >
+                            <ChartBarIcon />
+                          </a>
+                        </SplitItem>
+                        {execution.analysisContext.generateStaticReports &&
+                          execution.analysisContext.advancedOptions.find(
+                            (f) => {
+                              return (
+                                f.name === AdvancedOptionsFieldKey.EXPORT_CSV &&
+                                f.value === "true"
+                              );
+                            }
+                          ) && (
+                            <SplitItem>
+                              <a
+                                title="Download all issues CSV"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                href={`${getWindupStaticReportsBase()}/${
+                                  execution.id
+                                }/${MERGED_CSV_FILENAME}`}
+                              >
+                                <DownloadIcon />
+                              </a>
+                            </SplitItem>
+                          )}
+                      </Split>
+                    </>
+                  ) : null
+                }
+              </ProjectStatusWatcher>
+            ),
+          },
+        ],
+      }));
+    },
+    [match]
+  );
 
-  // Table handlers
-
-  const handlFilterTextChange = (filterText: string) => {
-    const newParams = { page: 1, perPage: paginationmatch.perPage };
-    setFilterText(filterText);
-    setPaginationParams(newParams);
-  };
-
-  const handlePaginationChange = ({
-    page,
-    perPage,
-  }: {
-    page: number;
-    perPage: number;
-  }) => {
-    setPaginationParams({ page, perPage });
-  };
-
-  //
   const handleRunAnalysis = () => {
     setIsCreatingExecution(true);
     if (project) {
@@ -311,71 +290,57 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
 
   return (
     <>
-      <ActiveExecutionsList projectId={match.params.project} />
+      {!isNullOrUndefined(match.params.project) && (
+        <ActiveExecutionsList projectId={match.params.project} />
+      )}
       <SimplePageSection title="Analysis results" />
       <PageSection>
-        {executions?.length === 0 && (
-          <Bullseye>
-            <CustomEmptyState
-              icon={InfoIcon}
-              title="There are no analysis results for this project"
-              body="Configure the analysis settings and run an execution."
-              primaryAction={["Run analysis", handleRunAnalysis]}
-              secondaryActions={[]}
-            />
-          </Bullseye>
-        )}
-        {executions && executions.length > 0 && (
-          <>
-            <Toolbar>
-              <ToolbarContent>
-                <FilterToolbarItem
-                  searchValue={filterText}
-                  onFilterChange={handlFilterTextChange}
-                  placeholder="Filter by name"
-                />
-                <ToolbarGroup variant="button-group">
-                  <ToolbarItem>
-                    <Button
-                      type="button"
-                      onClick={handleRunAnalysis}
-                      isDisabled={isCreatingExecution}
-                    >
-                      Run analysis
-                    </Button>
-                  </ToolbarItem>
-                </ToolbarGroup>
-                <ToolbarItem
-                  variant={ToolbarItemVariant.pagination}
-                  alignment={{ default: "alignRight" }}
-                >
-                  <SimplePagination
-                    count={tableData.length}
-                    params={paginationmatch}
-                    isTop={true}
-                    onChange={handlePaginationChange}
-                  />
+        <ConditionalRender
+          when={isNullOrUndefined(match.params.project)}
+          then={<SelectProjectEmptyMessage />}
+        >
+          <TableSectionOffline
+            items={executions || []}
+            columns={columns}
+            actions={actions}
+            loadingVariant={
+              executions && executions.length > 0 ? "none" : "skeleton"
+            }
+            isLoadingData={executionsFetchStatus === "inProgress"}
+            loadingDataError={executionsFetchError}
+            compareItem={compareExecution}
+            filterItem={filterExecution}
+            mapToIRow={executionToIRow}
+            toolbar={
+              <ToolbarGroup variant="button-group">
+                <ToolbarItem>
+                  <Button
+                    type="button"
+                    onClick={handleRunAnalysis}
+                    isDisabled={isCreatingExecution}
+                  >
+                    Run analysis
+                  </Button>
                 </ToolbarItem>
-              </ToolbarContent>
-            </Toolbar>
-            <FetchTable
-              columns={columns}
-              rows={rows}
-              actions={actions}
-              fetchStatus={executionsFetchStatus || "none"}
-              fetchError={executionsFetchError}
-              loadingVariant="spinner"
-              onSortChange={(sortBy: ISortBy) => {
-                setSortBy(sortBy);
-              }}
-            />
-            <SimplePagination
-              count={tableData.length}
-              params={paginationmatch}
-              onChange={handlePaginationChange}
-            />
-          </>
-        )}
+              </ToolbarGroup>
+            }
+            emptyState={
+              <Bullseye>
+                <CustomEmptyState
+                  icon={CubesIcon}
+                  title="There are no analysis results for this project"
+                  body="Configure the analysis settings and run an execution."
+                  primaryAction={[
+                    "Run analysis",
+                    handleRunAnalysis,
+                    isCreatingExecution,
+                  ]}
+                  secondaryActions={[]}
+                />
+              </Bullseye>
+            }
+          />
+        </ConditionalRender>
       </PageSection>
     </>
   );

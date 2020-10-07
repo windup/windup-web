@@ -131,25 +131,28 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
     },
   ];
 
-  const projectToIRow = useCallback((applications: Application[]): IRow[] => {
-    return applications.map((item) => ({
-      props: {
-        [APPLICATION_FIELD]: item,
-      },
-      cells: [
-        {
-          title: (
-            <a href={getDownloadRegisteredApplicationURL(item.id)}>
-              {item.title}
-            </a>
-          ),
+  const applicationToIRow = useCallback(
+    (applications: Application[]): IRow[] => {
+      return applications.map((item) => ({
+        props: {
+          [APPLICATION_FIELD]: item,
         },
-        {
-          title: <Moment fromNow>{item.lastModified}</Moment>,
-        },
-      ],
-    }));
-  }, []);
+        cells: [
+          {
+            title: (
+              <a href={getDownloadRegisteredApplicationURL(item.id)}>
+                {item.title}
+              </a>
+            ),
+          },
+          {
+            title: <Moment fromNow>{item.lastModified}</Moment>,
+          },
+        ],
+      }));
+    },
+    []
+  );
 
   const handleAddApplication = () => {
     history.push(
@@ -176,7 +179,7 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
             loadingDataError={fetchError}
             compareItem={compareProject}
             filterItem={filterProject}
-            mapToIRow={projectToIRow}
+            mapToIRow={applicationToIRow}
             toolbar={
               <ToolbarGroup variant="button-group">
                 <ToolbarItem>
