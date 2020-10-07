@@ -270,7 +270,7 @@ export const NewProjectWizard: React.FC<NewProjectWizardProps> = ({
   return (
     <>
       <SimplePageSection title={TITLE} description={DESCRIPTION} />
-      <PageSection>
+      <PageSection style={!isWizard ? { padding: "1px 0 0 0" } : undefined}>
         <Wizard
           title={isWizard ? TITLE : undefined}
           description={isWizard ? DESCRIPTION : undefined}

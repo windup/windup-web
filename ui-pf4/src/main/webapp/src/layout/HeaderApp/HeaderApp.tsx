@@ -43,13 +43,13 @@ export const HeaderApp: React.FC = () => {
 
   const userDropdownItems = [
     <DropdownGroup key="group1">
-      <DropdownItem
+      {/* <DropdownItem
         key="group1 accountManagement"
         component="button"
         onClick={() => keycloak.accountManagement()}
       >
         Account management
-      </DropdownItem>
+      </DropdownItem> */}
       <DropdownItem
         key="group1 logout"
         component="button"

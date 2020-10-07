@@ -11,6 +11,7 @@ import {
   SelectOption,
   SelectVariant,
   SelectOptionObject,
+  EmptyStateBody,
 } from "@patternfly/react-core";
 import { CubesIcon } from "@patternfly/react-icons";
 
@@ -24,6 +25,7 @@ interface CardSelectOption {
 
 export interface SelectCardProps {
   label: string;
+  description?: string;
   options: string | CardSelectOption[];
   icon?: React.ComponentType<any>;
   iconSrc?: string;
@@ -34,6 +36,7 @@ export interface SelectCardProps {
 
 export const SelectCard: React.FC<SelectCardProps> = ({
   label,
+  description,
   options,
   icon,
   iconSrc,
@@ -92,7 +95,7 @@ export const SelectCard: React.FC<SelectCardProps> = ({
       onClick={handleCardClick}
       isSelectable
       isSelected={isSelected}
-      className="select-card__component__wrapper"
+      className="select-card__component__wrapper pf-l-stack pf-l-stack__item pf-m-fill"
     >
       <CardBody>
         <Bullseye>
@@ -119,6 +122,7 @@ export const SelectCard: React.FC<SelectCardProps> = ({
                 ))}
               </Select>
             )}
+            {description && <EmptyStateBody>{description}</EmptyStateBody>}
           </EmptyState>
         </Bullseye>
       </CardBody>

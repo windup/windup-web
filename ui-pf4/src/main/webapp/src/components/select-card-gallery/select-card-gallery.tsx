@@ -3,16 +3,17 @@ import { Gallery, GalleryItem } from "@patternfly/react-core";
 
 import { SelectCard } from "../select-card/select-card";
 
-import jbossLogo from "img/jboss.png";
-import openshiftLogo from "img/openshift.png";
-import linuxLogo from "img/linux.png";
-import openjdkLogo from "img/openjdk.png";
-import camelLogo from "img/camel.png";
+import jbossLogo from "img/jboss.svg";
+import openshiftLogo from "img/openshift.svg";
+import linuxLogo from "img/linux.svg";
+import openjdkLogo from "img/openjdk.svg";
+import camelLogo from "img/camel.svg";
 import quarkusLogo from "img/quarkus.png";
 import rhRuntimesLogo from "img/rh-runtimes.png";
 
 interface TransformationPathOption {
   label: string;
+  description?: string;
   options: string | MultipleOptions[];
   icon?: React.ComponentType<any>;
   iconSrc?: string;
@@ -26,6 +27,8 @@ interface MultipleOptions {
 const options: TransformationPathOption[] = [
   {
     label: "Application server migration to",
+    description:
+      "Upgrade to the latest Release of JBoss EAP or migrate your applications to JBoss EAP from competitors' Enterprise Application Server (e.g. Oracle WebLogic Server)",
     options: [
       {
         label: "JBoss EAP 6",
@@ -40,31 +43,42 @@ const options: TransformationPathOption[] = [
   },
   {
     label: "Containerization",
+    description:
+      "A comprehensive set of cloud and container readiness rules to assess applications for suitability for deployment on Openshift",
     options: "cloud-readiness",
     iconSrc: openshiftLogo,
   },
   {
     label: "Linux",
+    description:
+      "Ensure there are no Microsoft Windows paths hard coded into your applications",
     options: "linux",
     iconSrc: linuxLogo,
   },
   {
     label: "Open JDK",
+    description: "Rules to support the migration to OpenJDK from OracleJDK",
     options: "openjdk",
     iconSrc: openjdkLogo,
   },
   {
     label: "Camel",
+    description:
+      "A comprehensive set of rules for migration from Apache Camel 2 to Apache Camel 3",
     options: "camel",
     iconSrc: camelLogo,
   },
   {
     label: "Quarkus",
+    description:
+      "Rules to support the migration of SpringBoot applications to Quarkus",
     options: "quarkus",
     iconSrc: quarkusLogo,
   },
   {
     label: "Red Hat Runtimes",
+    description:
+      "A set of rules for assessing the compatibility of applications against the versions of Spring Boot libraries supported by Red Hat Runtimes",
     options: "rhr",
     iconSrc: rhRuntimesLogo,
   },
@@ -125,6 +139,7 @@ export const SelectCardGallery: React.FC<SelectCardGalleryProps> = ({
         <GalleryItem key={index}>
           <SelectCard
             label={elem.label}
+            description={elem.description}
             options={elem.options}
             icon={elem.icon}
             iconSrc={elem.iconSrc}

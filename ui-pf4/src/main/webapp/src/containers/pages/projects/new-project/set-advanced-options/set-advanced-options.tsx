@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 
 import { Formik } from "formik";
-import { Button, ButtonVariant, Form } from "@patternfly/react-core";
+import { Button, ButtonVariant } from "@patternfly/react-core";
 import { css } from "@patternfly/react-styles";
 import styles from "@patternfly/react-styles/css/components/Wizard/wizard";
 
@@ -182,7 +182,10 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
         const disableNavigation = loading || isSubmitting;
 
         return (
-          <Form onSubmit={handleSubmit}>
+          <form
+            onSubmit={handleSubmit}
+            className="pf-l-stack pf-l-stack__item pf-m-fill"
+          >
             <NewProjectWizard
               stepId={stepId}
               enableNext={true}
@@ -232,7 +235,7 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
                 </>
               )}
             </NewProjectWizard>
-          </Form>
+          </form>
         );
       }}
     </Formik>
