@@ -170,13 +170,15 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
   return (
     <Formik
       validateOnMount
+      validateOnChange={false}
+      validateOnBlur={false}
       initialValues={buildInitialValues(analysisContext, configurationOptions)}
       validationSchema={buildSchema(configurationOptions)}
       onSubmit={(values) => {
         handleOnNextStep(values);
       }}
     >
-      {({ handleSubmit, ...formik }) => {
+      {({ isValidating, handleSubmit, ...formik }) => {
         const loading = isFetchingProject || isFetchingConfigurationOptions;
         const disableNavigation = loading || isSubmitting;
 
@@ -199,21 +201,21 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
                   <Button
                     variant={ButtonVariant.primary}
                     type="submit"
-                    isDisabled={disableNavigation}
+                    isDisabled={disableNavigation || isValidating}
                   >
                     Next
                   </Button>
                   <Button
                     variant={ButtonVariant.secondary}
                     onClick={handleOnBackStep}
-                    isDisabled={disableNavigation}
+                    isDisabled={disableNavigation || isValidating}
                   >
                     Back
                   </Button>
                   <Button
                     variant={ButtonVariant.link}
                     onClick={handleOnCancel}
-                    isDisabled={disableNavigation}
+                    isDisabled={disableNavigation || isValidating}
                   >
                     Cancel
                   </Button>
@@ -226,6 +228,7 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
                 <>
                   {configurationOptions && (
                     <AdvancedOptionsForm
+                      isValidating={isValidating}
                       configurationOptions={configurationOptions}
                       handleSubmit={handleSubmit}
                       {...formik}

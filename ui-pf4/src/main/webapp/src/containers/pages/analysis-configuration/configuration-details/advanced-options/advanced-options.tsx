@@ -189,6 +189,8 @@ export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({
           {analysisContext && configurationOptions && (
             <Formik
               validateOnMount
+              validateOnChange={false}
+              validateOnBlur={false}
               initialValues={{
                 [SUBMIT_BUTTON]: "",
                 ...buildInitialValues(analysisContext, configurationOptions),
@@ -200,7 +202,7 @@ export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({
               }}
             >
               {({
-                isValid,
+                isValidating,
                 submitForm,
                 handleSubmit,
                 setFieldValue,
@@ -211,6 +213,7 @@ export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({
                     <Form onSubmit={handleSubmit}>
                       <AdvancedOptionsForm
                         configurationOptions={configurationOptions}
+                        isValidating={isValidating}
                         handleSubmit={handleSubmit}
                         submitForm={submitForm}
                         setFieldValue={setFieldValue}
@@ -222,7 +225,7 @@ export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({
                             type="submit"
                             onClick={() => setFieldValue(SUBMIT_BUTTON, SAVE)}
                             variant={ButtonVariant.primary}
-                            isDisabled={!isValid || isSubmitting}
+                            isDisabled={isSubmitting || isValidating}
                           >
                             Save
                           </Button>
@@ -232,7 +235,7 @@ export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({
                               setFieldValue(SUBMIT_BUTTON, SAVE_AND_EXECUTE)
                             }
                             variant={ButtonVariant.primary}
-                            isDisabled={!isValid || isSubmitting}
+                            isDisabled={isSubmitting || isValidating}
                           >
                             Save and run
                           </Button>
