@@ -14,7 +14,7 @@ export {
   mapStateToLabel,
 } from "./execution-status";
 export { ExpandableCard } from "./expandable-card";
-export { FetchError } from "./fetch-error";
+export { SelectProjectEmptyMessage } from "./select-project-empty-message";
 export { FetchTable } from "./fetch-table";
 export { TableSectionOffline } from "./table-section-offline";
 export { FilterToolbarItem } from "./filter-toolbar-item";

@@ -25,7 +25,7 @@ import {
   CustomEmptyState,
   SimplePageSection,
   TableSectionOffline,
-  FetchError,
+  SelectProjectEmptyMessage,
 } from "components";
 
 import { formatPath, Paths, ProjectRoute } from "Paths";
@@ -39,6 +39,8 @@ import {
 } from "api/api";
 
 import { deleteDialogActions } from "store/deleteDialog";
+
+const APPLICATION_FIELD = "application";
 
 const columns: ICell[] = [
   { title: "Application", transforms: [sortable] },
@@ -104,7 +106,7 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
     {
       title: "Delete",
       onClick: (_, rowIndex: number, rowData: IRowData) => {
-        const row = rowData.props.application;
+        const row: Application = rowData.props[APPLICATION_FIELD];
 
         dispatch(
           deleteDialogActions.openModal({
@@ -132,7 +134,7 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
   const projectToIRow = useCallback((applications: Application[]): IRow[] => {
     return applications.map((item) => ({
       props: {
-        application: item,
+        [APPLICATION_FIELD]: item,
       },
       cells: [
         {
@@ -163,7 +165,7 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
       <PageSection>
         <ConditionalRender
           when={isNullOrUndefined(match.params.project)}
-          then={<FetchError />}
+          then={<SelectProjectEmptyMessage />}
         >
           <TableSectionOffline
             items={project?.applications || []}
@@ -186,13 +188,11 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
             }
             emptyState={
               <Bullseye>
-                <Bullseye>
-                  <CustomEmptyState
-                    icon={CubesIcon}
-                    title="There are no applications in this project."
-                    body="Upload an application by clicking on 'Add application'"
-                  />
-                </Bullseye>
+                <CustomEmptyState
+                  icon={CubesIcon}
+                  title="There are no applications in this project"
+                  body="Upload an application by clicking on 'Add application'"
+                />
               </Bullseye>
             }
           />

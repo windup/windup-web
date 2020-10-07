@@ -11,7 +11,7 @@ import {
 } from "@patternfly/react-core";
 
 import {
-  FetchError,
+  SelectProjectEmptyMessage,
   PackageSelection,
   PackageSelectionLoadingState,
 } from "components";
@@ -129,7 +129,7 @@ export const Packages: React.FC<PackagesProps> = ({
             isFetching={isFetching}
             isFetchingPlaceholder={<PackageSelectionLoadingState />}
             fetchError={fetchError}
-            fetchErrorPlaceholder={<FetchError />}
+            fetchErrorPlaceholder={<SelectProjectEmptyMessage />}
           />
         </CardBody>
       </Card>

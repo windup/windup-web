@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Stack,
   StackItem,
@@ -7,31 +7,27 @@ import {
   TextContent,
   Text,
   Button,
-  Toolbar,
-  ToolbarContent,
   ToolbarGroup,
   ToolbarItem,
-  ToolbarItemVariant,
   Switch,
   Modal,
   ModalVariant,
+  Bullseye,
   Tooltip,
 } from "@patternfly/react-core";
 import {
   ICell,
   sortable,
   IRow,
-  ISortBy,
-  SortByDirection,
   IActions,
+  IRowData,
 } from "@patternfly/react-table";
-import { WarningTriangleIcon } from "@patternfly/react-icons";
+import { CubesIcon, WarningTriangleIcon } from "@patternfly/react-icons";
 
 import {
-  FilterToolbarItem,
-  SimplePagination,
-  FetchTable,
   AddRuleLabelTabs,
+  TableSectionOffline,
+  CustomEmptyState,
 } from "components";
 
 import { useFetchProject } from "hooks/useFetchProject";
@@ -45,13 +41,44 @@ import { getAlertModel } from "Constants";
 import { getAnalysisContext, saveAnalysisContext } from "api/api";
 import { LabelsPath, LabelProviderEntity } from "models/api";
 
+const LABELPATH_FIELD = "labelPath";
+
+const columns: ICell[] = [
+  { title: "Short path", transforms: [sortable] },
+  { title: "Source/Target", transforms: [] },
+  { title: "Number of labels", transforms: [] },
+  { title: "Enable", transforms: [] },
+];
+
+const compareLabelPath = (
+  a: LabelsPath,
+  b: LabelsPath,
+  columnIndex?: number
+) => {
+  switch (columnIndex) {
+    case 0: // Short path
+      return (a.shortPath || a.path).localeCompare(b.shortPath || b.path);
+    default:
+      return 0;
+  }
+};
+
+const filterLabelPath = (filterText: string, labelPath: LabelsPath) => {
+  return (
+    (labelPath.shortPath || labelPath.path)
+      .toLowerCase()
+      .indexOf(filterText.toLowerCase()) !== -1
+  );
+};
+
 interface CustomLabelsProps {
   projectId: string | number;
 }
 
 export const CustomLabels: React.FC<CustomLabelsProps> = ({ projectId }) => {
-  const dispatch = useDispatch();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const dispatch = useDispatch();
   const deleteLabel = useDeleteLabel();
 
   const {
@@ -74,37 +101,6 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({ projectId }) => {
     loadProject(projectId);
     loadLabels(projectId);
   }, [projectId, loadProject, loadLabels]);
-
-  // Modal data
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // Table data
-  const [tableData, setTableData] = useState<LabelsPath[]>([]);
-
-  const [filterText, setFilterText] = useState("");
-  const [paginationParams, setPaginationParams] = useState({
-    page: 1,
-    perPage: 10,
-  });
-  const [sortBy, setSortBy] = useState<ISortBy>();
-  const [rows, setRows] = useState<IRow[]>();
-
-  const columns: ICell[] = [
-    { title: "Short path", transforms: [sortable] },
-    { title: "Number of labels", transforms: [] },
-    { title: "Enable", transforms: [] },
-  ];
-  const actions: IActions = [
-    {
-      title: "Delete",
-      onClick: (_, rowIndex: number) => {
-        const row: LabelsPath = tableData[rowIndex];
-        deleteLabel(row, () => loadLabels(projectId));
-      },
-    },
-  ];
-
-  //
 
   const handleLabelPathToggled = useCallback(
     (isChecked: boolean, labelPathToggled: LabelsPath) => {
@@ -143,36 +139,21 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({ projectId }) => {
     [project, loadProject, dispatch]
   );
 
-  useEffect(() => {
-    if (labelsPath && labelProviders) {
-      // Sort
-      let sortedArray: LabelsPath[] = [...labelsPath];
+  const actions: IActions = [
+    {
+      title: "Delete",
+      onClick: (_, rowIndex: number, rowData: IRowData) => {
+        const row: LabelsPath = rowData.props[LABELPATH_FIELD];
+        deleteLabel(row, () => loadLabels(projectId));
+      },
+    },
+  ];
 
-      const columnSortIndex = sortBy?.index;
-      const columnSortDirection = sortBy?.direction;
-
-      switch (columnSortIndex) {
-        case 0: // title
-          sortedArray.sort((a, b) =>
-            (a.shortPath || a.path).localeCompare(b.shortPath || b.path)
-          );
-          break;
-      }
-
-      if (columnSortDirection === SortByDirection.desc) {
-        sortedArray = sortedArray.reverse();
-      }
-
-      // Filter
-      const filteredArray = sortedArray.filter(
-        (p) => (p.shortPath || p.path).toLowerCase().indexOf(filterText) !== -1
-      );
-
-      setTableData(filteredArray);
-
-      const rows: IRow[] = filteredArray.map((item: LabelsPath) => {
+  const labelPathToIRow = useCallback(
+    (labelPaths: LabelsPath[]): IRow[] => {
+      return labelPaths.map((item) => {
         const labelProviderEntity: LabelProviderEntity[] =
-          labelProviders.get(item) || [];
+          labelProviders?.get(item) || [];
 
         const numberOfLabels: number = labelProviderEntity.reduce(
           (counter, element) => counter + element.labels.length,
@@ -186,6 +167,9 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({ projectId }) => {
         );
 
         return {
+          props: {
+            [LABELPATH_FIELD]: item,
+          },
           cells: [
             {
               title: (
@@ -221,57 +205,20 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({ projectId }) => {
           ],
         };
       });
-
-      // Paginate
-      const paginatedRows = rows.slice(
-        (paginationParams.page - 1) * paginationParams.perPage,
-        paginationParams.page * paginationParams.perPage
-      );
-
-      setRows(paginatedRows);
-    }
-  }, [
-    analysisContext,
-    labelsPath,
-    labelProviders,
-    filterText,
-    paginationParams,
-    sortBy,
-    handleLabelPathToggled,
-  ]);
-
-  // Table handlers
-
-  const handlFilterTextChange = (filterText: string) => {
-    const newParams = { page: 1, perPage: paginationParams.perPage };
-
-    setFilterText(filterText);
-    setPaginationParams(newParams);
-  };
-
-  const handlePaginationChange = ({
-    page,
-    perPage,
-  }: {
-    page: number;
-    perPage: number;
-  }) => {
-    setPaginationParams({ page, perPage });
-  };
-
-  // Modal handlers
+    },
+    [analysisContext, labelProviders, handleLabelPathToggled]
+  );
 
   const handleModalToggle = () => {
     setIsModalOpen((current) => {
       if (current) {
         loadLabels(projectId);
       }
-
       return !current;
     });
   };
 
-  const handleOnDrawerToggle = () => {
+  const handleOnLabelLabelClose = () => {
     setIsModalOpen((current) => !current);
     loadLabels(projectId);
   };
@@ -287,8 +234,8 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({ projectId }) => {
         <AddRuleLabelTabs
           type="Label"
           projectId={projectId}
-          onSubmitFinishedServerPath={handleOnDrawerToggle}
-          onCancelServerPath={handleOnDrawerToggle}
+          onSubmitFinishedServerPath={handleOnLabelLabelClose}
+          onCancelServerPath={handleOnLabelLabelClose}
         />
       </Modal>
 
@@ -304,13 +251,17 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({ projectId }) => {
           </TextContent>
         </StackItem>
         <StackItem>
-          <Toolbar>
-            <ToolbarContent>
-              <FilterToolbarItem
-                searchValue={filterText}
-                onFilterChange={handlFilterTextChange}
-                placeholder="Filter by name"
-              />
+          <TableSectionOffline
+            items={labelsPath || []}
+            columns={columns}
+            actions={actions}
+            loadingVariant="skeleton"
+            isLoadingData={isFetchingProject || isFetchingLabels}
+            loadingDataError={fetchProjectError || fetchLabelsError}
+            compareItem={compareLabelPath}
+            filterItem={filterLabelPath}
+            mapToIRow={labelPathToIRow}
+            toolbar={
               <ToolbarGroup variant="button-group">
                 <ToolbarItem>
                   <Button type="button" onClick={handleModalToggle}>
@@ -318,36 +269,16 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({ projectId }) => {
                   </Button>
                 </ToolbarItem>
               </ToolbarGroup>
-              <ToolbarItem
-                variant={ToolbarItemVariant.pagination}
-                alignment={{ default: "alignRight" }}
-              >
-                <SimplePagination
-                  count={tableData.length}
-                  params={paginationParams}
-                  isTop={true}
-                  onChange={handlePaginationChange}
-                />
-              </ToolbarItem>
-            </ToolbarContent>
-          </Toolbar>
-          <FetchTable
-            columns={columns}
-            rows={rows}
-            actions={actions}
-            fetchStatus={
-              isFetchingProject || isFetchingLabels ? "inProgress" : "complete"
             }
-            fetchError={fetchProjectError || fetchLabelsError}
-            loadingVariant="skeleton"
-            onSortChange={(sortBy: ISortBy) => {
-              setSortBy(sortBy);
-            }}
-          />
-          <SimplePagination
-            count={tableData.length}
-            params={paginationParams}
-            onChange={handlePaginationChange}
+            emptyState={
+              <Bullseye>
+                <CustomEmptyState
+                  icon={CubesIcon}
+                  title="No custom labels available"
+                  body="Upload a custom label by clicking on 'Add label'"
+                />
+              </Bullseye>
+            }
           />
         </StackItem>
       </Stack>

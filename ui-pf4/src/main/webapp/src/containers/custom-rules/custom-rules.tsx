@@ -7,29 +7,26 @@ import {
   TextContent,
   Text,
   Button,
-  Toolbar,
-  ToolbarContent,
   ToolbarGroup,
   ToolbarItem,
-  ToolbarItemVariant,
   Switch,
   Modal,
   ModalVariant,
+  Bullseye,
 } from "@patternfly/react-core";
 import {
   ICell,
   sortable,
   IRow,
-  ISortBy,
-  SortByDirection,
   IActions,
+  IRowData,
 } from "@patternfly/react-table";
+import { CubesIcon } from "@patternfly/react-icons";
 
 import {
-  FilterToolbarItem,
-  SimplePagination,
-  FetchTable,
   AddRuleLabelTabs,
+  TableSectionOffline,
+  CustomEmptyState,
 } from "components";
 
 import { useFetchProject } from "hooks/useFetchProject";
@@ -43,13 +40,40 @@ import { getAlertModel } from "Constants";
 import { getAnalysisContext, saveAnalysisContext } from "api/api";
 import { RulesPath, RuleProviderEntity } from "models/api";
 
+const RULEPATH_FIELD = "rulePath";
+
+const columns: ICell[] = [
+  { title: "Short path", transforms: [sortable] },
+  { title: "Source/Target", transforms: [] },
+  { title: "Number of rules", transforms: [] },
+  { title: "Enable", transforms: [] },
+];
+
+const compareRulePath = (a: RulesPath, b: RulesPath, columnIndex?: number) => {
+  switch (columnIndex) {
+    case 0: // Short path
+      return (a.shortPath || a.path).localeCompare(b.shortPath || b.path);
+    default:
+      return 0;
+  }
+};
+
+const filterRulePath = (filterText: string, rulePath: RulesPath) => {
+  return (
+    (rulePath.shortPath || rulePath.path)
+      .toLowerCase()
+      .indexOf(filterText.toLowerCase()) !== -1
+  );
+};
+
 interface CustomRulesProps {
   projectId: string | number;
 }
 
 export const CustomRules: React.FC<CustomRulesProps> = ({ projectId }) => {
-  const dispatch = useDispatch();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const dispatch = useDispatch();
   const deleteRule = useDeleteRule();
 
   const {
@@ -72,38 +96,6 @@ export const CustomRules: React.FC<CustomRulesProps> = ({ projectId }) => {
     loadProject(projectId);
     loadRules(projectId);
   }, [projectId, loadProject, loadRules]);
-
-  // Modal data
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // Table data
-  const [tableData, setTableData] = useState<RulesPath[]>([]);
-
-  const [filterText, setFilterText] = useState("");
-  const [paginationParams, setPaginationParams] = useState({
-    page: 1,
-    perPage: 10,
-  });
-  const [sortBy, setSortBy] = useState<ISortBy>();
-  const [rows, setRows] = useState<IRow[]>();
-
-  const columns: ICell[] = [
-    { title: "Short path", transforms: [sortable] },
-    { title: "Source/Target", transforms: [] },
-    { title: "Number of rules", transforms: [] },
-    { title: "Enable", transforms: [] },
-  ];
-  const actions: IActions = [
-    {
-      title: "Delete",
-      onClick: (_, rowIndex: number) => {
-        const row: RulesPath = tableData[rowIndex];
-        deleteRule(row, () => loadRules(projectId));
-      },
-    },
-  ];
-
-  //
 
   const handleRulePathToggled = useCallback(
     (isChecked: boolean, rulePathToggled: RulesPath) => {
@@ -142,36 +134,21 @@ export const CustomRules: React.FC<CustomRulesProps> = ({ projectId }) => {
     [project, loadProject, dispatch]
   );
 
-  useEffect(() => {
-    if (rulesPath && ruleProviders) {
-      // Sort
-      let sortedArray: RulesPath[] = [...rulesPath];
+  const actions: IActions = [
+    {
+      title: "Delete",
+      onClick: (_, rowIndex: number, rowData: IRowData) => {
+        const row: RulesPath = rowData.props[RULEPATH_FIELD];
+        deleteRule(row, () => loadRules(projectId));
+      },
+    },
+  ];
 
-      const columnSortIndex = sortBy?.index;
-      const columnSortDirection = sortBy?.direction;
-
-      switch (columnSortIndex) {
-        case 0: // title
-          sortedArray.sort((a, b) =>
-            (a.shortPath || a.path).localeCompare(b.shortPath || b.path)
-          );
-          break;
-      }
-
-      if (columnSortDirection === SortByDirection.desc) {
-        sortedArray = sortedArray.reverse();
-      }
-
-      // Filter
-      const filteredArray = sortedArray.filter(
-        (p) => (p.shortPath || p.path).toLowerCase().indexOf(filterText) !== -1
-      );
-
-      setTableData(filteredArray);
-
-      const rows: IRow[] = filteredArray.map((item: RulesPath) => {
+  const rulePathToIRow = useCallback(
+    (rulePaths: RulesPath[]): IRow[] => {
+      return rulePaths.map((item) => {
         const ruleProviderEntity: RuleProviderEntity[] =
-          ruleProviders.get(item) || [];
+          ruleProviders?.get(item) || [];
 
         const sources = ruleProviderEntity.reduce((collection, element) => {
           element.sources.forEach((f) => {
@@ -192,6 +169,9 @@ export const CustomRules: React.FC<CustomRulesProps> = ({ projectId }) => {
         );
 
         return {
+          props: {
+            [RULEPATH_FIELD]: item,
+          },
           cells: [
             {
               title: item.shortPath || item.path,
@@ -220,57 +200,20 @@ export const CustomRules: React.FC<CustomRulesProps> = ({ projectId }) => {
           ],
         };
       });
-
-      // Paginate
-      const paginatedRows = rows.slice(
-        (paginationParams.page - 1) * paginationParams.perPage,
-        paginationParams.page * paginationParams.perPage
-      );
-
-      setRows(paginatedRows);
-    }
-  }, [
-    analysisContext,
-    rulesPath,
-    ruleProviders,
-    filterText,
-    paginationParams,
-    sortBy,
-    handleRulePathToggled,
-  ]);
-
-  // Table handlers
-
-  const handlFilterTextChange = (filterText: string) => {
-    const newParams = { page: 1, perPage: paginationParams.perPage };
-
-    setFilterText(filterText);
-    setPaginationParams(newParams);
-  };
-
-  const handlePaginationChange = ({
-    page,
-    perPage,
-  }: {
-    page: number;
-    perPage: number;
-  }) => {
-    setPaginationParams({ page, perPage });
-  };
-
-  // Modal handlers
+    },
+    [analysisContext, ruleProviders, handleRulePathToggled]
+  );
 
   const handleModalToggle = () => {
     setIsModalOpen((current) => {
       if (current) {
         loadRules(projectId);
       }
-
       return !current;
     });
   };
 
-  const handleOnDrawerToggle = () => {
+  const handleOnRuleLabelClose = () => {
     setIsModalOpen((current) => !current);
     loadRules(projectId);
   };
@@ -286,8 +229,8 @@ export const CustomRules: React.FC<CustomRulesProps> = ({ projectId }) => {
         <AddRuleLabelTabs
           type="Rule"
           projectId={projectId}
-          onSubmitFinishedServerPath={handleOnDrawerToggle}
-          onCancelServerPath={handleOnDrawerToggle}
+          onSubmitFinishedServerPath={handleOnRuleLabelClose}
+          onCancelServerPath={handleOnRuleLabelClose}
         />
       </Modal>
 
@@ -303,13 +246,17 @@ export const CustomRules: React.FC<CustomRulesProps> = ({ projectId }) => {
           </TextContent>
         </StackItem>
         <StackItem>
-          <Toolbar>
-            <ToolbarContent>
-              <FilterToolbarItem
-                searchValue={filterText}
-                onFilterChange={handlFilterTextChange}
-                placeholder="Filter by name"
-              />
+          <TableSectionOffline
+            items={rulesPath || []}
+            columns={columns}
+            actions={actions}
+            loadingVariant="skeleton"
+            isLoadingData={isFetchingProject || isFetchingRules}
+            loadingDataError={fetchProjectError || fetchRulesError}
+            compareItem={compareRulePath}
+            filterItem={filterRulePath}
+            mapToIRow={rulePathToIRow}
+            toolbar={
               <ToolbarGroup variant="button-group">
                 <ToolbarItem>
                   <Button type="button" onClick={handleModalToggle}>
@@ -317,36 +264,16 @@ export const CustomRules: React.FC<CustomRulesProps> = ({ projectId }) => {
                   </Button>
                 </ToolbarItem>
               </ToolbarGroup>
-              <ToolbarItem
-                variant={ToolbarItemVariant.pagination}
-                alignment={{ default: "alignRight" }}
-              >
-                <SimplePagination
-                  count={tableData.length}
-                  params={paginationParams}
-                  isTop={true}
-                  onChange={handlePaginationChange}
-                />
-              </ToolbarItem>
-            </ToolbarContent>
-          </Toolbar>
-          <FetchTable
-            columns={columns}
-            rows={rows}
-            actions={actions}
-            fetchStatus={
-              isFetchingProject || isFetchingRules ? "inProgress" : "complete"
             }
-            fetchError={fetchProjectError || fetchRulesError}
-            loadingVariant="skeleton"
-            onSortChange={(sortBy: ISortBy) => {
-              setSortBy(sortBy);
-            }}
-          />
-          <SimplePagination
-            count={tableData.length}
-            params={paginationParams}
-            onChange={handlePaginationChange}
+            emptyState={
+              <Bullseye>
+                <CustomEmptyState
+                  icon={CubesIcon}
+                  title="No custom rules available"
+                  body="Upload a custom rule by clicking on 'Add rule'"
+                />
+              </Bullseye>
+            }
           />
         </StackItem>
       </Stack>

@@ -10,7 +10,11 @@ import {
   ButtonVariant,
 } from "@patternfly/react-core";
 
-import { AppPlaceholder, TransformationPath, FetchError } from "components";
+import {
+  AppPlaceholder,
+  TransformationPath,
+  SelectProjectEmptyMessage,
+} from "components";
 import { useFetchProject } from "hooks/useFetchProject";
 
 import { alertActions } from "store/alert";
@@ -125,7 +129,7 @@ export const General: React.FC<RulesProps> = ({ match, history: { push } }) => {
             isFetching={isFetching}
             isFetchingPlaceholder={<AppPlaceholder />}
             fetchError={fetchError}
-            fetchErrorPlaceholder={<FetchError />}
+            fetchErrorPlaceholder={<SelectProjectEmptyMessage />}
           />
         </CardBody>
       </Card>
