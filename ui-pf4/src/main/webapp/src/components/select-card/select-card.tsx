@@ -6,7 +6,6 @@ import {
   EmptyStateVariant,
   Card,
   CardBody,
-  Bullseye,
   Select,
   SelectOption,
   SelectVariant,
@@ -79,11 +78,7 @@ export const SelectCard: React.FC<SelectCardProps> = ({
       result = icon;
     } else if (iconSrc) {
       result = () => (
-        <img
-          src={iconSrc}
-          alt="Card logo"
-          style={{ height: Array.isArray(options) ? 70 : 100 }}
-        />
+        <img src={iconSrc} alt="Card logo" style={{ height: 80 }} />
       );
     }
 
@@ -95,36 +90,34 @@ export const SelectCard: React.FC<SelectCardProps> = ({
       onClick={handleCardClick}
       isSelectable
       isSelected={isSelected}
-      className="select-card__component__wrapper pf-l-stack pf-l-stack__item pf-m-fill"
+      className="pf-l-stack pf-l-stack__item pf-m-fill"
     >
       <CardBody>
-        <Bullseye>
-          <EmptyState
-            variant={EmptyStateVariant.small}
-            className="select-card__component__empty-state"
-          >
-            <EmptyStateIcon icon={getImage()} />
-            <Title headingLevel="h4" size="md">
-              {label}
-            </Title>
-            {Array.isArray(options) && (
-              <Select
-                variant={SelectVariant.single}
-                aria-label="Select Input"
-                onToggle={handleSelectToggle}
-                onSelect={handleSelectSelection}
-                selections={value}
-                isOpen={isSelectOpen}
-                direction="down"
-              >
-                {options.map((el, index) => (
-                  <SelectOption key={index} value={el.value} />
-                ))}
-              </Select>
-            )}
-            {description && <EmptyStateBody>{description}</EmptyStateBody>}
-          </EmptyState>
-        </Bullseye>
+        <EmptyState
+          variant={EmptyStateVariant.small}
+          className="select-card__component__empty-state"
+        >
+          <EmptyStateIcon icon={getImage()} />
+          <Title headingLevel="h4" size="md">
+            {label}
+          </Title>
+          {Array.isArray(options) && (
+            <Select
+              variant={SelectVariant.single}
+              aria-label="Select Input"
+              onToggle={handleSelectToggle}
+              onSelect={handleSelectSelection}
+              selections={value}
+              isOpen={isSelectOpen}
+              direction="down"
+            >
+              {options.map((el, index) => (
+                <SelectOption key={index} value={el.value} />
+              ))}
+            </Select>
+          )}
+          {description && <EmptyStateBody>{description}</EmptyStateBody>}
+        </EmptyState>
       </CardBody>
     </Card>
   );
