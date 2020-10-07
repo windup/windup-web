@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { AxiosError } from "axios";
 
 import {
   Card,
@@ -8,12 +9,16 @@ import {
   ActionGroup,
   Button,
   ButtonVariant,
+  Stack,
+  StackItem,
 } from "@patternfly/react-core";
 
 import {
   AppPlaceholder,
   TransformationPath,
   SelectProjectEmptyMessage,
+  ConditionalRender,
+  FetchErrorEmptyState,
 } from "components";
 import { useFetchProject } from "hooks/useFetchProject";
 
@@ -28,6 +33,7 @@ import {
   saveAnalysisContext,
 } from "api/api";
 import { AdvancedOption, AnalysisContext } from "models/api";
+import { isNullOrUndefined } from "utils/utils";
 
 export interface RulesProps extends RouteComponentProps<ProjectRoute> {}
 
@@ -45,7 +51,9 @@ export const General: React.FC<RulesProps> = ({ match, history: { push } }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    loadProject(match.params.project);
+    if (!isNullOrUndefined(match.params.project)) {
+      loadProject(match.params.project);
+    }
   }, [match, loadProject]);
 
   useEffect(() => {
@@ -101,12 +109,10 @@ export const General: React.FC<RulesProps> = ({ match, history: { push } }) => {
           setIsSubmitting(false);
         }
       })
-      .catch(() => {
+      .catch((error: AxiosError) => {
         setIsSubmitting(false);
         dispatch(
-          alertActions.alert(
-            getAlertModel("danger", "Error", "Could not save data")
-          )
+          alertActions.alert(getAlertModel("danger", "Error", error.message))
         );
       });
   };
@@ -120,42 +126,51 @@ export const General: React.FC<RulesProps> = ({ match, history: { push } }) => {
   };
 
   return (
-    <div className="pf-c-form">
-      <Card>
-        <CardBody>
-          <TransformationPath
-            selectedTargets={selectedTargets}
-            onSelectedTargetsChange={handleTargetSelectionChange}
-            isFetching={isFetching}
-            isFetchingPlaceholder={<AppPlaceholder />}
-            fetchError={fetchError}
-            fetchErrorPlaceholder={<SelectProjectEmptyMessage />}
-          />
-        </CardBody>
-      </Card>
-      {!fetchError && (
-        <ActionGroup>
-          <Button
-            type="button"
-            variant={ButtonVariant.primary}
-            isDisabled={selectedTargets.length === 0 || isSubmitting}
-            onClick={() => onSubmit(false)}
-          >
-            Save
-          </Button>
-          <Button
-            type="button"
-            variant={ButtonVariant.primary}
-            isDisabled={selectedTargets.length === 0 || isSubmitting}
-            onClick={() => onSubmit(true)}
-          >
-            Save and run
-          </Button>
-          <Button variant={ButtonVariant.link} onClick={onCancel}>
-            Cancel
-          </Button>
-        </ActionGroup>
-      )}
-    </div>
+    <ConditionalRender
+      when={isNullOrUndefined(match.params.project)}
+      then={<SelectProjectEmptyMessage />}
+    >
+      <Stack>
+        <StackItem>
+          <Card>
+            <CardBody>
+              <TransformationPath
+                selectedTargets={selectedTargets}
+                onSelectedTargetsChange={handleTargetSelectionChange}
+                isFetching={isFetching}
+                isFetchingPlaceholder={<AppPlaceholder />}
+                fetchError={fetchError}
+                fetchErrorPlaceholder={<FetchErrorEmptyState />}
+              />
+            </CardBody>
+          </Card>
+        </StackItem>
+        <StackItem className="pf-c-form">
+          {!fetchError && (
+            <ActionGroup>
+              <Button
+                type="button"
+                variant={ButtonVariant.primary}
+                isDisabled={selectedTargets.length === 0 || isSubmitting}
+                onClick={() => onSubmit(false)}
+              >
+                Save
+              </Button>
+              <Button
+                type="button"
+                variant={ButtonVariant.primary}
+                isDisabled={selectedTargets.length === 0 || isSubmitting}
+                onClick={() => onSubmit(true)}
+              >
+                Save and run
+              </Button>
+              <Button variant={ButtonVariant.link} onClick={onCancel}>
+                Cancel
+              </Button>
+            </ActionGroup>
+          )}
+        </StackItem>
+      </Stack>
+    </ConditionalRender>
   );
 };

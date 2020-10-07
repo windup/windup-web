@@ -1,4 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
+import { AxiosError } from "axios";
+
 import {
   Stack,
   StackItem,
@@ -128,11 +130,9 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({ projectId }) => {
         .then(() => {
           loadProject(project.id);
         })
-        .catch(() => {
+        .catch((error: AxiosError) => {
           dispatch(
-            alertActions.alert(
-              getAlertModel("danger", "Error", "Could not save data")
-            )
+            alertActions.alert(getAlertModel("danger", "Error", error.message))
           );
         });
     },

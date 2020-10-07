@@ -21,10 +21,12 @@ import {
   SortByDirection,
   ISortBy,
 } from "@patternfly/react-table";
-import { ExclamationCircleIcon, SearchIcon } from "@patternfly/react-icons";
-import { global_danger_color_200 as globalDangerColor200 } from "@patternfly/react-tokens";
-import { FetchStatus } from "../../store/common";
-import { Constants } from "../../Constants";
+import { SearchIcon } from "@patternfly/react-icons";
+
+import { FetchErrorEmptyState } from "components";
+
+import { FetchStatus } from "store/common";
+import { Constants } from "Constants";
 
 export interface FetchTableProps {
   columns: ICell[];
@@ -86,21 +88,7 @@ export const FetchTable: React.FC<FetchTableProps> = ({
         cells: [
           {
             props: { colSpan: columns.length },
-            title: (
-              <EmptyState variant={EmptyStateVariant.small}>
-                <EmptyStateIcon
-                  icon={ExclamationCircleIcon}
-                  color={globalDangerColor200.value}
-                />
-                <Title headingLevel="h2" size="lg">
-                  Unable to connect
-                </Title>
-                <EmptyStateBody>
-                  There was an error retrieving data. Check your connection and
-                  try again.
-                </EmptyStateBody>
-              </EmptyState>
-            ),
+            title: <FetchErrorEmptyState />,
           },
         ],
       },

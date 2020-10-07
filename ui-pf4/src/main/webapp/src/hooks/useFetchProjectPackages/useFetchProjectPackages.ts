@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { AxiosError } from "axios";
 
 import {
@@ -122,11 +122,10 @@ export interface ISelectionState<T> {
   thirdPartyPackages?: Package[];
   isFetching: boolean;
   fetchError?: string;
+  loadPackages: (projectId: string | number) => void;
 }
 
-export const useFetchProjectPackages = <T>(
-  projectId: number | string
-): ISelectionState<T> => {
+export const useFetchProjectPackages = <T>(): ISelectionState<T> => {
   const [project, setProject] = useState<MigrationProject>();
   const [analysisContext, setAnalysisContext] = useState<AnalysisContext>();
 
@@ -138,7 +137,7 @@ export const useFetchProjectPackages = <T>(
   const [isFetching, setIsFetching] = useState(true);
   const [fetchError, setFetchError] = useState("");
 
-  useEffect(() => {
+  const loadPackages = useCallback((projectId: string | number) => {
     getProjectById(projectId)
       .then(({ data }) => {
         setProject(data);
@@ -186,7 +185,7 @@ export const useFetchProjectPackages = <T>(
       .finally(() => {
         setIsFetching(false);
       });
-  }, [projectId]);
+  }, []);
 
   return {
     project,
@@ -196,5 +195,6 @@ export const useFetchProjectPackages = <T>(
     thirdPartyPackages,
     isFetching,
     fetchError,
+    loadPackages,
   };
 };

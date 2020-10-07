@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { AxiosError } from "axios";
 
 import { TransformationPath } from "components";
 import { useFetchProject } from "hooks/useFetchProject";
@@ -87,12 +88,10 @@ export const SetTransformationPath: React.FC<SetTransformationPathProps> = ({
           })
         );
       })
-      .catch(() => {
+      .catch((error: AxiosError) => {
         setIsSubmitting(false);
         dispatch(
-          alertActions.alert(
-            getAlertModel("danger", "Error", "Could not save data")
-          )
+          alertActions.alert(getAlertModel("danger", "Error", error.message))
         );
       });
   };

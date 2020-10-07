@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
+import { AxiosError } from "axios";
 
 import { Formik } from "formik";
 import { Button, ButtonVariant } from "@patternfly/react-core";
@@ -144,12 +145,10 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
           })
         );
       })
-      .catch(() => {
+      .catch((error: AxiosError) => {
         setIsSubmitting(false);
         dispatch(
-          alertActions.alert(
-            getAlertModel("danger", "Error", "Could not save data")
-          )
+          alertActions.alert(getAlertModel("danger", "Error", error.message))
         );
       });
   };
