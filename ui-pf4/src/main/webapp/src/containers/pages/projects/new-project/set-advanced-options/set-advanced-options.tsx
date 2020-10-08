@@ -180,7 +180,7 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
     >
       {({ isValidating, handleSubmit, ...formik }) => {
         const loading = isFetchingProject || isFetchingConfigurationOptions;
-        const disableNavigation = loading || isSubmitting;
+        const disableNavigation = loading || isSubmitting || isValidating;
 
         return (
           <form
@@ -201,21 +201,21 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
                   <Button
                     variant={ButtonVariant.primary}
                     type="submit"
-                    isDisabled={disableNavigation || isValidating}
+                    isDisabled={disableNavigation}
                   >
                     Next
                   </Button>
                   <Button
                     variant={ButtonVariant.secondary}
                     onClick={handleOnBackStep}
-                    isDisabled={disableNavigation || isValidating}
+                    isDisabled={disableNavigation}
                   >
                     Back
                   </Button>
                   <Button
                     variant={ButtonVariant.link}
                     onClick={handleOnCancel}
-                    isDisabled={disableNavigation || isValidating}
+                    isDisabled={disableNavigation}
                   >
                     Cancel
                   </Button>
