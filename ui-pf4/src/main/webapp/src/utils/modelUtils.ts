@@ -1,4 +1,8 @@
-import { Package } from "models/api";
+import { Package, Technology } from "models/api";
+
+export const getTechnologyAsString = (f: Technology) => {
+  return `${f.name}${f.versionRange ? ":" + f.versionRange : ""}`;
+};
 
 export const getUnknownPackages = (array: Package[]) => {
   const result: Package[] = [];

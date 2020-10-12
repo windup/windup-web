@@ -16,7 +16,7 @@ import { getAnalysisContext, saveAnalysisContext } from "api/api";
 import {
   fullNameToPackage as mapFullNamesToPackages,
   getUnknownPackages,
-} from "utils/packageUtils";
+} from "utils/modelUtils";
 
 import NewProjectWizard, { WizardStepIds } from "../wizard";
 
