@@ -2,15 +2,23 @@ import React, { useCallback, useEffect, useState } from "react";
 
 import {
   Bullseye,
+  Button,
+  ButtonVariant,
   Checkbox,
+  Chip,
+  ChipGroup,
   Select,
   SelectOption,
   SelectVariant,
+  Split,
+  SplitItem,
   ToolbarGroup,
   ToolbarItem,
 } from "@patternfly/react-core";
 import { IActions, ICell, IRow, sortable } from "@patternfly/react-table";
-import { CubesIcon } from "@patternfly/react-icons";
+import { CubesIcon, FilterIcon } from "@patternfly/react-icons";
+
+import "./system-provided.scss";
 
 import { CustomEmptyState, TableSectionOffline } from "components";
 import { useFetchRules } from "hooks/useFetchRules";
@@ -19,6 +27,8 @@ import { RuleProviderEntity, RulesPath } from "models/api";
 import { getTechnologyAsString } from "utils/modelUtils";
 
 const RULE_PROVIDER_ENTITY_FIELD = "rulePath";
+
+type TargetSource = "target" | "source";
 
 const columns: ICell[] = [
   { title: "Provider ID", transforms: [sortable] },
@@ -42,11 +52,11 @@ const compareRulePath = (
   }
 };
 
-const filterRulePath = () => {
-  return true;
+const filterRulePath = (filterText: string, item: RuleProviderEntity) => {
+  return item.providerID.toLowerCase().includes(filterText.toLowerCase());
 };
 
-const getRuleProviderEntities = (
+const getSystemProvidedRuleProviderEntities = (
   rulesPath?: RulesPath[],
   ruleProviders?: Map<RulesPath, RuleProviderEntity[]>
 ) => {
@@ -60,7 +70,7 @@ const getRuleProviderEntities = (
 
 const getAllTechnologyVersions = (
   ruleProviderEntities: RuleProviderEntity[],
-  type: "target" | "source"
+  type: TargetSource
 ) => {
   return ruleProviderEntities.reduce((map, item) => {
     let technologies = item.targets;
@@ -94,7 +104,13 @@ const getAllTechnologyVersions = (
 
 export const SystemProvided: React.FC = () => {
   const [tableData, setTableData] = useState<RuleProviderEntity[]>();
+  const [allSystemProviders, setAllSystemProviders] = useState<
+    RuleProviderEntity[]
+  >();
   const [showAllRules, setShowAllRules] = useState(false);
+
+  const [selectedSources, setSelectedSources] = useState<string[]>([]);
+  const [selectedTargets, setSelectedTargets] = useState<string[]>([]);
 
   const {
     rulesPath,
@@ -109,10 +125,52 @@ export const SystemProvided: React.FC = () => {
   }, [loadGlobalRules]);
 
   useEffect(() => {
+    const systemProviders = getSystemProvidedRuleProviderEntities(
+      rulesPath,
+      ruleProviders
+    );
+    setAllSystemProviders(systemProviders);
+  }, [rulesPath, ruleProviders]);
+
+  useEffect(() => {
     if (rulesPath && ruleProviders) {
-      const newTableData = getRuleProviderEntities(rulesPath, ruleProviders)
+      const newTableData = getSystemProvidedRuleProviderEntities(
+        rulesPath,
+        ruleProviders
+      )
+        //showAllRules
         ?.filter((f) => {
           return showAllRules ? true : f.phase === "MIGRATIONRULESPHASE";
+        })
+        // Source filter
+        .filter((f) => {
+          if (selectedSources.length === 0) {
+            return true;
+          }
+
+          const allTechnologies = getAllTechnologyVersions([f], "source");
+          const technologyVersionArray = technologyVersionToSelecValues(
+            allTechnologies
+          );
+
+          return selectedSources.some((source) =>
+            technologyVersionArray.includes(source)
+          );
+        })
+        // Target filter
+        .filter((f) => {
+          if (selectedTargets.length === 0) {
+            return true;
+          }
+
+          const allTechnologies = getAllTechnologyVersions([f], "target");
+          const technologyVersionArray = technologyVersionToSelecValues(
+            allTechnologies
+          );
+
+          return selectedTargets.some((source) =>
+            technologyVersionArray.includes(source)
+          );
         })
         .slice()
         .sort((a, b) => {
@@ -121,7 +179,13 @@ export const SystemProvided: React.FC = () => {
 
       setTableData(newTableData);
     }
-  }, [rulesPath, ruleProviders, showAllRules]);
+  }, [
+    rulesPath,
+    ruleProviders,
+    showAllRules,
+    selectedSources,
+    selectedTargets,
+  ]);
 
   const actions: IActions = [];
 
@@ -160,6 +224,39 @@ export const SystemProvided: React.FC = () => {
     setShowAllRules(selected);
   };
 
+  const handleOnSourcesChange = (values: string[]) => {
+    setSelectedSources(values);
+  };
+
+  const handleOnTargetsChange = (values: string[]) => {
+    setSelectedTargets(values);
+  };
+
+  const removeSource = (selection: string) => {
+    if (selectedSources.includes(selection)) {
+      setSelectedSources((current) => current.filter((f) => f !== selection));
+    } else {
+      setSelectedSources((current) => [...current, selection]);
+    }
+  };
+  const removeTarget = (selection: string) => {
+    if (selectedTargets.includes(selection)) {
+      setSelectedTargets((current) => current.filter((f) => f !== selection));
+    } else {
+      setSelectedTargets((current) => [...current, selection]);
+    }
+  };
+  const clearAllSources = () => {
+    setSelectedSources([]);
+  };
+  const clearAllTargets = () => {
+    setSelectedTargets([]);
+  };
+  const clearAllFilters = () => {
+    clearAllSources();
+    clearAllTargets();
+  };
+
   return (
     <TableSectionOffline
       items={tableData || []}
@@ -171,10 +268,18 @@ export const SystemProvided: React.FC = () => {
       compareItem={compareRulePath}
       filterItem={filterRulePath}
       mapToIRow={rulePathToIRow}
+      hideFilterText={true}
+      filterTextPlaceholder="Filter by provider ID"
       toolbar={
         <>
-          {tableData && (
-            <SourceTargetFilterToolbarGroup ruleProviders={tableData} />
+          {allSystemProviders && (
+            <SourceTargetFilterToolbarGroup
+              ruleProviders={allSystemProviders}
+              selectedSources={selectedSources}
+              selectedTargets={selectedTargets}
+              onSelectedSourcesChange={handleOnSourcesChange}
+              onSelectedTargetsChange={handleOnTargetsChange}
+            />
           )}
           <ToolbarGroup variant="icon-button-group">
             <ToolbarItem>
@@ -190,6 +295,53 @@ export const SystemProvided: React.FC = () => {
           </ToolbarGroup>
         </>
       }
+      filters={
+        selectedSources.length + selectedTargets.length > 0 && (
+          <>
+            <ToolbarGroup>
+              <Split hasGutter>
+                <SplitItem>
+                  <ChipGroup
+                    categoryName="Source"
+                    isClosable
+                    onClick={clearAllSources}
+                  >
+                    {selectedSources.map((currentChip) => (
+                      <Chip
+                        key={currentChip}
+                        onClick={() => removeSource(currentChip)}
+                      >
+                        {currentChip}
+                      </Chip>
+                    ))}
+                  </ChipGroup>
+                </SplitItem>
+                <SplitItem>
+                  <ChipGroup
+                    categoryName="Target"
+                    isClosable
+                    onClick={clearAllTargets}
+                  >
+                    {selectedTargets.map((currentChip) => (
+                      <Chip
+                        key={currentChip}
+                        onClick={() => removeTarget(currentChip)}
+                      >
+                        {currentChip}
+                      </Chip>
+                    ))}
+                  </ChipGroup>
+                </SplitItem>
+              </Split>
+            </ToolbarGroup>
+            <ToolbarItem>
+              <Button variant={ButtonVariant.link} onClick={clearAllFilters}>
+                Clear all filters
+              </Button>
+            </ToolbarItem>
+          </>
+        )
+      }
       emptyState={
         <Bullseye>
           <CustomEmptyState
@@ -203,21 +355,41 @@ export const SystemProvided: React.FC = () => {
   );
 };
 
+const technologyVersionToSelecValues = (map: Map<string, Set<string>>) => {
+  const result: string[] = [];
+  map.forEach((versions, technology) => {
+    result.push(technology);
+    versions.forEach((version) => {
+      result.push(`${technology} ${version}`);
+    });
+  });
+  return result;
+};
+
+const buildSecondSelectOption = (technologyVersion: string) => {
+  return <SelectOption key={technologyVersion} value={technologyVersion} />;
+};
+
 export interface SourceTargetFilterToolbarGroupProps {
   ruleProviders: RuleProviderEntity[];
+  selectedSources: string[];
+  selectedTargets: string[];
+  onSelectedSourcesChange: (values: string[]) => void;
+  onSelectedTargetsChange: (values: string[]) => void;
 }
 
 export const SourceTargetFilterToolbarGroup: React.FC<SourceTargetFilterToolbarGroupProps> = ({
   ruleProviders,
+  selectedSources,
+  selectedTargets,
+  onSelectedSourcesChange,
+  onSelectedTargetsChange,
 }) => {
-  const [targets] = useState(getAllTechnologyVersions(ruleProviders, "target"));
-  const [sources] = useState(getAllTechnologyVersions(ruleProviders, "source"));
+  // First filter
 
-  console.log(targets);
-  console.log(sources);
-  //
-
-  const [firstFilterValue, setFirstFilterValue] = useState("target");
+  const [firstFilterValue, setFirstFilterValue] = useState<TargetSource>(
+    "source"
+  );
   const [isFirstFilterOpen, setIsFirstFilterOpen] = useState(false);
 
   const onFirstFilterToggle = (isExpanded: boolean) => {
@@ -226,46 +398,63 @@ export const SourceTargetFilterToolbarGroup: React.FC<SourceTargetFilterToolbarG
   const onFirstFilterSelect = (_: any, selection: any) => {
     setFirstFilterValue(selection);
     setIsFirstFilterOpen(false);
+
+    setSecondFilter_filterText("");
   };
 
-  //
+  // Second Filter
 
-  const [secondFilterValue, setSecondFilterValue] = useState<string[]>([]);
+  const [secondFilter_filterText, setSecondFilter_filterText] = useState("");
+  const [secondFilterOptions, setSecondFilterOptions] = useState<string[]>([]);
+  useEffect(() => {
+    const technologyVersionMap = getAllTechnologyVersions(
+      ruleProviders,
+      firstFilterValue
+    );
+    const technologyVersionArray = technologyVersionToSelecValues(
+      technologyVersionMap
+    )
+      .slice()
+      .sort((a, b) => a.localeCompare(b));
+    const technologyVersionArrayFiltered = technologyVersionArray.filter((f) =>
+      f.toLocaleLowerCase().includes(secondFilter_filterText.toLowerCase())
+    );
+
+    setSecondFilterOptions(technologyVersionArrayFiltered);
+  }, [firstFilterValue, secondFilter_filterText, ruleProviders]);
+
   const [isSecondFilterOpen, setIsSecondFilterOpen] = useState(false);
 
   const onSecondFilterToggle = (isExpanded: boolean) => {
     setIsSecondFilterOpen(isExpanded);
+
+    if (isExpanded) {
+      setSecondFilter_filterText("");
+    }
   };
   const onSecondFilterSelect = (_: any, selection: any) => {
-    if (secondFilterValue.includes(selection)) {
-      setSecondFilterValue((current) => current.filter((f) => f !== selection));
+    let values: string[];
+    let callbackFn: (values: string[]) => void;
+
+    if (firstFilterValue === "source") {
+      values = selectedSources;
+      callbackFn = onSelectedSourcesChange;
+    } else if (firstFilterValue === "target") {
+      values = selectedTargets;
+      callbackFn = onSelectedTargetsChange;
     } else {
-      setSecondFilterValue((current) => [...current, selection]);
+      throw Error("firstFilterValue must be 'source' or 'target'");
+    }
+
+    if (values.includes(selection)) {
+      callbackFn(values.filter((f) => f !== selection));
+    } else {
+      callbackFn([...values, selection]);
     }
   };
   const onSecondFilter_Filter = (evt: any) => {
-    // if (textInput === "") {
-    //   return this.options;
-    // } else {
-    //   let filteredGroups = this.options
-    //     .map((group) => {
-    //       let filteredGroup = React.cloneElement(group, {
-    //         children: group.props.children.filter((item) => {
-    //           return item.props.value
-    //             .toLowerCase()
-    //             .includes(textInput.toLowerCase());
-    //         }),
-    //       });
-    //       if (filteredGroup.props.children.length > 0) return filteredGroup;
-    //     })
-    //     .filter((newGroup) => newGroup);
-    //   return filteredGroups;
-    // }
-
-    return [];
-  };
-  const onSecondFilterClearSelection = () => {
-    setSecondFilterValue([]);
+    setSecondFilter_filterText(evt.target.value);
+    return secondFilterOptions.map(buildSecondSelectOption);
   };
 
   return (
@@ -278,6 +467,7 @@ export const SourceTargetFilterToolbarGroup: React.FC<SourceTargetFilterToolbarG
           onSelect={onFirstFilterSelect}
           selections={firstFilterValue}
           isOpen={isFirstFilterOpen}
+          toggleIcon={<FilterIcon />}
         >
           {[
             <SelectOption key="source" value="source" />,
@@ -290,17 +480,19 @@ export const SourceTargetFilterToolbarGroup: React.FC<SourceTargetFilterToolbarG
           variant={SelectVariant.checkbox}
           onToggle={onSecondFilterToggle}
           onSelect={onSecondFilterSelect}
-          selections={secondFilterValue}
+          selections={
+            firstFilterValue === "source" ? selectedSources : selectedTargets
+          }
           isOpen={isSecondFilterOpen}
-          placeholderText="Filter by status"
-          aria-labelledby="Filter by status"
+          placeholderText={`Filter by ${firstFilterValue}`}
+          aria-labelledby={`Filter by ${firstFilterValue}`}
           onFilter={onSecondFilter_Filter}
-          onClear={onSecondFilterClearSelection}
-          isGrouped
           hasInlineFilter
-          customBadgeText="carlos feria"
+          className="SourceTargetFilterToolbarGroup"
         >
-          {[]}
+          {secondFilterOptions.map((technologyVersion) => (
+            <SelectOption key={technologyVersion} value={technologyVersion} />
+          ))}
         </Select>
       </ToolbarItem>
     </ToolbarGroup>

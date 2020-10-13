@@ -26,7 +26,10 @@ import {
 } from "components";
 
 export interface TableSectionOfflineProps {
+  hideFilterText?: boolean;
+  filterTextPlaceholder?: string;
   toolbar?: any;
+  filters?: any;
   emptyState?: any;
 
   columns: ICell[];
@@ -46,7 +49,10 @@ export const TableSectionOffline: React.FC<TableSectionOfflineProps> = ({
   items,
   columns,
   actions,
+  hideFilterText,
+  filterTextPlaceholder,
   toolbar,
+  filters,
   emptyState,
   isLoadingData,
   loadingVariant,
@@ -126,11 +132,15 @@ export const TableSectionOffline: React.FC<TableSectionOfflineProps> = ({
     <>
       <Toolbar>
         <ToolbarContent>
-          <FilterToolbarItem
-            searchValue={filterText}
-            onFilterChange={handlFilterTextChange}
-            placeholder="Filter by name"
-          />
+          {!hideFilterText && (
+            <FilterToolbarItem
+              searchValue={filterText}
+              onFilterChange={handlFilterTextChange}
+              placeholder={
+                filterTextPlaceholder ? filterTextPlaceholder : "Filter by name"
+              }
+            />
+          )}
           {toolbar}
           <ToolbarItem
             variant={ToolbarItemVariant.pagination}
@@ -144,6 +154,7 @@ export const TableSectionOffline: React.FC<TableSectionOfflineProps> = ({
             />
           </ToolbarItem>
         </ToolbarContent>
+        {filters && <ToolbarContent>{filters}</ToolbarContent>}
       </Toolbar>
       <ConditionalRender
         when={items.length === 0 && !isLoadingData && !loadingDataError}
