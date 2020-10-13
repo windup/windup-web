@@ -7,7 +7,7 @@ export { ConditionalRender } from "./conditional-render";
 export { CustomEmptyState } from "./custom-empty-state";
 export { RuleLabelServerPathForm } from "./rulelabel-server-path-form";
 export { RulesLabelsList } from "./rules-labels-list";
-export { DeleteButton } from "./delete-button";
+export { DeleteProjectModal } from "./delete-project-modal";
 export {
   ExecutionStatus,
   mapStateToIcon,

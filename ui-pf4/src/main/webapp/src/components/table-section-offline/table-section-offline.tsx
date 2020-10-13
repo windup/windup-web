@@ -10,6 +10,8 @@ import {
 } from "@patternfly/react-core";
 import {
   IActions,
+  IActionsResolver,
+  IAreActionsDisabled,
   ICell,
   IRow,
   ISortBy,
@@ -34,6 +36,8 @@ export interface TableSectionOfflineProps {
 
   columns: ICell[];
   actions?: IActions;
+  actionResolver?: IActionsResolver;
+  areActionsDisabled?: IAreActionsDisabled;
 
   isLoadingData: boolean;
   loadingVariant?: "skeleton" | "spinner" | "none";
@@ -49,6 +53,8 @@ export const TableSectionOffline: React.FC<TableSectionOfflineProps> = ({
   items,
   columns,
   actions,
+  actionResolver,
+  areActionsDisabled,
   hideFilterText,
   filterTextPlaceholder,
   toolbar,
@@ -173,6 +179,8 @@ export const TableSectionOffline: React.FC<TableSectionOfflineProps> = ({
           rows={rows}
           columns={columns}
           actions={actions}
+          actionResolver={actionResolver}
+          areActionsDisabled={areActionsDisabled}
           fetchStatus={isLoadingData ? "inProgress" : "complete"}
           fetchError={loadingDataError}
           loadingVariant={loadingVariant}

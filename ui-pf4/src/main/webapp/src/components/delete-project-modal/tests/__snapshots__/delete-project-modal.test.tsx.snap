@@ -1,0 +1,58 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DeleteProjectModal Renders without crashing 1`] = `
+<Modal
+  actions={
+    Array [
+      <Button
+        isDisabled={true}
+        onClick={[Function]}
+        variant="danger"
+      >
+        Delete
+      </Button>,
+      <Button
+        onClick={[Function]}
+        variant="link"
+      >
+        Cancel
+      </Button>,
+    ]
+  }
+  appendTo={[Function]}
+  aria-describedby=""
+  aria-label=""
+  aria-labelledby=""
+  className=""
+  hasNoBodyWrapper={false}
+  isOpen={true}
+  onClose={[Function]}
+  ouiaSafe={true}
+  showClose={true}
+  title="Confirm project deletion"
+  variant="small"
+>
+  <div
+    className="pf-c-content"
+  >
+    <p>
+      Are you sure you want to delete the project '
+      master
+      '? This will delete all resources associated with '
+      master
+      ' and cannot be undone. Make sure this is something you really want to do!
+    </p>
+    <p>
+      Type '
+      delete
+      ' to confirm.
+    </p>
+    <ForwardRef
+      aria-label="Text input match"
+      onChange={[Function]}
+      type="text"
+      value=""
+    />
+  </div>
+</Modal>
+`;

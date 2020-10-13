@@ -273,26 +273,28 @@ export const SystemProvided: React.FC = () => {
       toolbar={
         <>
           {allSystemProviders && (
-            <SourceTargetFilterToolbarGroup
-              ruleProviders={allSystemProviders}
-              selectedSources={selectedSources}
-              selectedTargets={selectedTargets}
-              onSelectedSourcesChange={handleOnSourcesChange}
-              onSelectedTargetsChange={handleOnTargetsChange}
-            />
-          )}
-          <ToolbarGroup variant="icon-button-group">
-            <ToolbarItem>
-              <Checkbox
-                id="showAllRules"
-                name="showAllRules"
-                label="Show all rules"
-                isChecked={showAllRules}
-                onChange={toggleShowAllRules}
-                aria-label="show all rules"
+            <>
+              <SourceTargetFilterToolbarGroup
+                ruleProviders={allSystemProviders}
+                selectedSources={selectedSources}
+                selectedTargets={selectedTargets}
+                onSelectedSourcesChange={handleOnSourcesChange}
+                onSelectedTargetsChange={handleOnTargetsChange}
               />
-            </ToolbarItem>
-          </ToolbarGroup>
+              <ToolbarGroup variant="icon-button-group">
+                <ToolbarItem>
+                  <Checkbox
+                    id="showAllRules"
+                    name="showAllRules"
+                    label="Show all rules"
+                    isChecked={showAllRules}
+                    onChange={toggleShowAllRules}
+                    aria-label="show all rules"
+                  />
+                </ToolbarItem>
+              </ToolbarGroup>
+            </>
+          )}
         </>
       }
       filters={

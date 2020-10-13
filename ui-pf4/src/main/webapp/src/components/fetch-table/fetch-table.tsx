@@ -20,6 +20,8 @@ import {
   IActions,
   SortByDirection,
   ISortBy,
+  IActionsResolver,
+  IAreActionsDisabled,
 } from "@patternfly/react-table";
 import { SearchIcon } from "@patternfly/react-icons";
 
@@ -32,6 +34,8 @@ export interface FetchTableProps {
   columns: ICell[];
   rows?: IRow[];
   actions?: IActions;
+  actionResolver?: IActionsResolver;
+  areActionsDisabled?: IAreActionsDisabled;
   fetchStatus: FetchStatus;
   loadingVariant?: "skeleton" | "spinner" | "none";
   fetchError?: any;
@@ -43,6 +47,8 @@ export const FetchTable: React.FC<FetchTableProps> = ({
   columns,
   rows,
   actions,
+  actionResolver,
+  areActionsDisabled,
   fetchStatus,
   fetchError,
   loadingVariant = "skeleton",
@@ -51,11 +57,31 @@ export const FetchTable: React.FC<FetchTableProps> = ({
 }) => {
   const [tableSortBy, setTableSortBy] = useState<ISortBy>({});
 
-  let rowsValue: IRow[] = [];
+  if (fetchError) {
+    const rows: IRow[] = [
+      {
+        heightAuto: true,
+        cells: [
+          {
+            props: { colSpan: columns.length },
+            title: <FetchErrorEmptyState />,
+          },
+        ],
+      },
+    ];
 
-  if (fetchStatus !== "complete" && loadingVariant) {
+    return (
+      <Table aria-label="Table - error" cells={columns} rows={rows}>
+        <TableHeader />
+        <TableBody />
+      </Table>
+    );
+  }
+
+  if (fetchStatus !== "complete" && loadingVariant !== "none") {
+    let rows: IRow[] = [];
     if (loadingVariant === "skeleton") {
-      rowsValue = [...Array(Constants.DEFAULT_PAGE_SIZE)].map(() => {
+      rows = [...Array(Constants.DEFAULT_PAGE_SIZE)].map(() => {
         return {
           cells: [...Array(columns.length)].map(() => ({
             title: <Skeleton />,
@@ -63,7 +89,7 @@ export const FetchTable: React.FC<FetchTableProps> = ({
         };
       });
     } else if (loadingVariant === "spinner") {
-      rowsValue = [
+      rows = [
         {
           heightAuto: true,
           cells: [
@@ -79,24 +105,17 @@ export const FetchTable: React.FC<FetchTableProps> = ({
         },
       ];
     }
+
+    return (
+      <Table aria-label="Table - loading" cells={columns} rows={rows}>
+        <TableHeader />
+        <TableBody />
+      </Table>
+    );
   }
 
-  if (fetchError) {
-    rowsValue = [
-      {
-        heightAuto: true,
-        cells: [
-          {
-            props: { colSpan: columns.length },
-            title: <FetchErrorEmptyState />,
-          },
-        ],
-      },
-    ];
-  }
-
-  if (rowsValue.length === 0 && rows && rows.length === 0) {
-    rowsValue = [
+  if (rows && rows.length === 0) {
+    const rows: IRow[] = [
       {
         heightAuto: true,
         cells: [
@@ -123,10 +142,13 @@ export const FetchTable: React.FC<FetchTableProps> = ({
         ],
       },
     ];
-  }
 
-  if (rowsValue.length === 0) {
-    rowsValue = rows || [];
+    return (
+      <Table aria-label="Table - empty" cells={columns} rows={rows}>
+        <TableHeader />
+        <TableBody />
+      </Table>
+    );
   }
 
   const onSort = (
@@ -147,8 +169,10 @@ export const FetchTable: React.FC<FetchTableProps> = ({
       <Table
         aria-label="Table"
         cells={columns}
-        rows={rowsValue}
-        actions={rowsValue === rows ? actions : undefined}
+        rows={rows}
+        actions={actions}
+        actionResolver={actionResolver}
+        areActionsDisabled={areActionsDisabled}
         sortBy={tableSortBy}
         onSort={onSort}
       >
