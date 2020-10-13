@@ -27,6 +27,7 @@ export {
   PackageSelectionLoadingState,
 } from "./package-selection";
 export { PageHeader } from "./page-header";
+export { ProcessImprovementIcon } from "./process-improvement-icon";
 export { ProjectContextPageSection } from "./project-context-page-section";
 export { ProjectContextSelector } from "./project-context-selector";
 export { ProjectDetailsForm } from "./project-details-form";

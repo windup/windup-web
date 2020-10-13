@@ -2,11 +2,19 @@
 
 exports[`Welcome Renders without crashing 1`] = `
 <EmptyState
-  variant="small"
+  variant="large"
 >
-  <EmptyStateIcon
-    icon={[Function]}
-  />
+  <div>
+    <ProcessImprovementIcon
+      className="pf-c-empty-state__icon"
+      height="54px"
+      style={
+        Object {
+          "opacity": 0.6,
+        }
+      }
+    />
+  </div>
   <Title
     headingLevel="h4"
     size="lg"
@@ -14,7 +22,7 @@ exports[`Welcome Renders without crashing 1`] = `
     Welcome to the Migration Toolkit for Applications
   </Title>
   <EmptyStateBody>
-    The Red Hat Migration Toolkit for Applications helps you quickly assess and perform large-scale application migrations and modernizations. Start by creating a project for your applications.
+    The Migration Toolkit for Applications helps you assess and perform large-scale application migrations and modernizations. Start by creating a project for your applications.
   </EmptyStateBody>
   <Button
     onClick={[Function]}
