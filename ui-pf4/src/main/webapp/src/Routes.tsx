@@ -12,6 +12,7 @@ const Applications = lazy(() => import("./containers/pages/applications"));
 const AnalysisConfiguration = lazy(() =>
   import("./containers/pages/analysis-configuration")
 );
+const GlobalRules = lazy(() => import("./containers/pages/global-rules"));
 
 export const AppRoutes = () => {
   const routes = [
@@ -29,6 +30,11 @@ export const AppRoutes = () => {
     {
       component: AnalysisConfiguration,
       path: Paths.analysisConfiguration,
+      exact: false,
+    },
+    {
+      component: GlobalRules,
+      path: Paths.globalRules,
       exact: false,
     },
   ];

@@ -41,6 +41,7 @@ import { alertActions } from "store/alert";
 import { getAlertModel } from "Constants";
 import { getAnalysisContext, saveAnalysisContext } from "api/api";
 import { RulesPath, RuleProviderEntity } from "models/api";
+import { getTechnologyAsString } from "utils/modelUtils";
 
 const RULEPATH_FIELD = "rulePath";
 
@@ -152,13 +153,13 @@ export const CustomRules: React.FC<CustomRulesProps> = ({ projectId }) => {
 
         const sources = ruleProviderEntity.reduce((collection, element) => {
           element.sources.forEach((f) => {
-            collection.add(`${f.name}:${f.versionRange}`);
+            collection.add(getTechnologyAsString(f));
           });
           return collection;
         }, new Set<string>());
         const targets = ruleProviderEntity.reduce((collection, element) => {
           element.targets.forEach((f) => {
-            collection.add(`${f.name}:${f.versionRange}`);
+            collection.add(getTechnologyAsString(f));
           });
           return collection;
         }, new Set<string>());

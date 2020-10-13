@@ -27,6 +27,7 @@ export interface PageHeaderProps {
   menuActions?: { label: string; callback: () => void }[];
   resourceStatus?: React.ReactNode;
   navItems?: { title: string; path: string }[];
+  applyDefaultTopMargin?: boolean;
 }
 
 export const PageHeader: React.FC<PageHeaderProps> = ({
@@ -36,12 +37,17 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
   menuActions,
   resourceStatus,
   navItems,
+  applyDefaultTopMargin,
 }) => {
   return (
     <>
       <PageSection
         variant={PageSectionVariants.light}
-        style={{ paddingBottom: 0, paddingTop: 5 }}
+        style={
+          applyDefaultTopMargin
+            ? { paddingBottom: 0 }
+            : { paddingBottom: 0, paddingTop: 5 }
+        }
       >
         <Stack hasGutter>
           {breadcrumbs && (

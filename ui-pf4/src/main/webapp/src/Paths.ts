@@ -12,6 +12,14 @@ export enum Paths {
   base = "/",
   notFound = "/not-found",
 
+  globalRules = "/global/rules",
+  globalRules_systemProvided = "/global/rules/system-provided",
+  globalRules_userProvided = "/global/rules/user-provided",
+
+  globalLabels = "/global/labels",
+  globalLabels_systemProvided = "/global/labels/system-provided",
+  globalLabels_userProvided = "/global/labels/user-provided",
+
   projects = "/projects",
 
   newProject = "/projects/~new",

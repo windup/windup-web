@@ -173,6 +173,10 @@ export const saveAnalysisContext = (
   );
 };
 
+export const getGlobalConfiguration = (): AxiosPromise<Configuration> => {
+  return ApiClient.get<Configuration>("configuration");
+};
+
 export const getProjectConfiguration = (
   projectId: number | string
 ): AxiosPromise<Configuration> => {

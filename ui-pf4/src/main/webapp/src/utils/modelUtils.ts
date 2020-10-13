@@ -1,4 +1,4 @@
-import { Package, WindupExecution } from "models/api";
+import { Package, Technology, WindupExecution } from "models/api";
 
 export const getUnknownPackages = (array: Package[]) => {
   const result: Package[] = [];
@@ -48,6 +48,12 @@ export const fullNameToPackage = (
   mapPackageFullNamesToPackageObj(selectedPackages, packages);
 
   return result;
+};
+
+// Technology
+
+export const getTechnologyAsString = (f: Technology) => {
+  return `${f.name}${f.versionRange ? ":" + f.versionRange : ""}`;
 };
 
 // WindupExecution

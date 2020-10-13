@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import { AxiosError } from "axios";
 
 import {
+  getGlobalConfiguration,
   getProjectConfiguration,
   getRuleProviderByRulesPathId,
   getRulesetPathsByConfigurationId,
@@ -15,6 +16,7 @@ export interface IState {
   isFetching: boolean;
   fetchError?: string;
   loadRules: (projectId: string | number) => void;
+  loadGlobalRules: () => void;
 }
 
 export const useFetchRules = (): IState => {
@@ -64,6 +66,42 @@ export const useFetchRules = (): IState => {
       });
   }, []);
 
+  const loadGlobalRules = useCallback(() => {
+    setIsFetching(true);
+
+    getGlobalConfiguration()
+      .then(({ data }) => {
+        setConfiguration(data);
+
+        const newRulesPath = [...data.rulesPaths];
+        setRulesPath(newRulesPath);
+
+        return Promise.all(
+          newRulesPath.map((rulePathElement) =>
+            getRuleProviderByRulesPathId(rulePathElement.id).then(
+              ({ data: ruleProviderEntities }) => ({
+                rulePath: rulePathElement,
+                ruleProviders: ruleProviderEntities,
+              })
+            )
+          )
+        );
+      })
+      .then((responses) => {
+        const map: Map<RulesPath, RuleProviderEntity[]> = new Map();
+        responses.forEach((element) =>
+          map.set(element.rulePath, element.ruleProviders)
+        );
+        setRuleProviders(map);
+      })
+      .catch((error: AxiosError) => {
+        setFetchError(error.message);
+      })
+      .finally(() => {
+        setIsFetching(false);
+      });
+  }, []);
+
   return {
     configuration,
     rulesPath,
@@ -71,5 +109,6 @@ export const useFetchRules = (): IState => {
     isFetching,
     fetchError,
     loadRules,
+    loadGlobalRules,
   };
 };
