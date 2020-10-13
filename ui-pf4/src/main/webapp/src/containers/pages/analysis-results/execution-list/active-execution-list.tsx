@@ -14,6 +14,7 @@ import { RootState } from "store/rootReducer";
 import { executionsSelectors, executionsActions } from "store/executions";
 
 import { ActiveAnalysisProgressbar } from "components";
+import { isExecutionActive } from "utils/modelUtils";
 
 import { ProjectStatusWatcher } from "containers/project-status-watcher";
 
@@ -29,7 +30,7 @@ export const ActiveExecutionsList: React.FC<ActiveExecutionsListProps> = ({
     executionsSelectors.selectExecutions(state, projectId)
   );
   const activeExecutions = (executions || []).filter((execution) => {
-    return execution.state === "STARTED" || execution.state === "QUEUED";
+    return isExecutionActive(execution);
   });
 
   return (

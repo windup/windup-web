@@ -99,7 +99,7 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
   const [isCreatingExecution, setIsCreatingExecution] = useState(false);
 
   // Redux
-  const executions = useSelector((state: RootState) =>
+  const baseExecutions = useSelector((state: RootState) =>
     executionsSelectors.selectExecutions(state, match.params.project)
   );
   const executionsFetchStatus = useSelector((state: RootState) =>
@@ -108,6 +108,10 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
   const executionsFetchError = useSelector((state: RootState) =>
     executionsSelectors.selectExecutionsFetchError(state, match.params.project)
   );
+
+  const executions = baseExecutions
+    ? baseExecutions.slice().sort((a, b) => b.id - a.id) // By Default inverse order
+    : undefined;
 
   const dispatch = useDispatch();
 

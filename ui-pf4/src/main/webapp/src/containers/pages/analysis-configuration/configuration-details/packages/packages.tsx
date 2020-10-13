@@ -26,7 +26,7 @@ import { alertActions } from "store/alert";
 
 import { formatPath, Paths, ProjectRoute } from "Paths";
 import { getAlertModel } from "Constants";
-import { getUnknownPackages, fullNameToPackage } from "utils/packageUtils";
+import { getUnknownPackages, fullNameToPackage } from "utils/modelUtils";
 
 import {
   createProjectExecution,

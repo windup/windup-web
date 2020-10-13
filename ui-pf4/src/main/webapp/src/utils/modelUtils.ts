@@ -1,4 +1,4 @@
-import { Package } from "models/api";
+import { Package, WindupExecution } from "models/api";
 
 export const getUnknownPackages = (array: Package[]) => {
   const result: Package[] = [];
@@ -48,4 +48,10 @@ export const fullNameToPackage = (
   mapPackageFullNamesToPackageObj(selectedPackages, packages);
 
   return result;
+};
+
+// WindupExecution
+
+export const isExecutionActive = (execution: WindupExecution) => {
+  return execution.state === "STARTED" || execution.state === "QUEUED";
 };

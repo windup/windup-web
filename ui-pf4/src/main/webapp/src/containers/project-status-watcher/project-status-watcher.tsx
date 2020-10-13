@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
-import { useKeycloak } from "@react-keycloak/web";
-import { w3cwebsocket as W3CWebSocket } from "websocket";
-
-import { getWindupRestBase } from "Constants";
 import { WindupExecution } from "models/api";
-import { EXECUTION_PROGRESS_URL } from "api/api";
+
+import { useSubscribeToExecutionWs } from "hooks/useSubscribeToExecutionWs";
+
+import { useSelector } from "react-redux";
+import { RootState } from "store/rootReducer";
+import { executionsWsSelectors } from "store/executions-ws";
 
 export interface ChildrenProps {
   execution: WindupExecution;
@@ -20,44 +21,11 @@ export const ProjectStatusWatcher: React.FC<ProjectStatusWatcherProps> = ({
   watch,
   children,
 }) => {
-  const [messageExecution, setMessageExecution] = useState<WindupExecution>();
-  const [keycloak] = useKeycloak();
+  useSubscribeToExecutionWs(watch);
 
-  useEffect(() => {
-    if (isExecutionActive(watch)) {
-      const baseUrl = getWindupRestBase();
-      const url = (baseUrl + EXECUTION_PROGRESS_URL)
-        .replace(/^http/, "ws")
-        .replace(":executionId", watch.id.toString());
+  const executionWs = useSelector((state: RootState) =>
+    executionsWsSelectors.selectMessage(state, watch.id)
+  );
 
-      const socketClient = new W3CWebSocket(url);
-      socketClient.onopen = () => {
-        socketClient.send(
-          JSON.stringify({
-            authentication: {
-              token: keycloak.token,
-            },
-          })
-        );
-      };
-      socketClient.onmessage = (message) => {
-        const messageData: WindupExecution = JSON.parse(message.data as string);
-        setMessageExecution(messageData);
-
-        // if (messageData.state === "COMPLETED") {
-        //   socketClient.close();
-        // }
-      };
-
-      return () => {
-        socketClient.close();
-      };
-    }
-  }, [watch, keycloak.token]);
-
-  return children({ execution: messageExecution || watch });
-};
-
-const isExecutionActive = (execution: WindupExecution) => {
-  return execution.state === "STARTED" || execution.state === "QUEUED";
+  return children({ execution: executionWs || watch });
 };
