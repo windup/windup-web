@@ -47,7 +47,6 @@ const LABELPATH_FIELD = "labelPath";
 
 const columns: ICell[] = [
   { title: "Short path", transforms: [sortable] },
-  { title: "Source/Target", transforms: [] },
   { title: "Number of labels", transforms: [] },
   { title: "Enable", transforms: [] },
 ];

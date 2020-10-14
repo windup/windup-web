@@ -5,6 +5,7 @@ import {
   getProjectConfiguration,
   getLabelProviderByLabelsPathId,
   getLabelsetPathsByConfigurationId,
+  getGlobalConfiguration,
 } from "api/api";
 import { Configuration, LabelProviderEntity, LabelsPath } from "models/api";
 
@@ -15,6 +16,7 @@ export interface IState {
   isFetching: boolean;
   fetchError?: string;
   loadLabels: (projectId: string | number) => void;
+  loadGlobalLabels: () => void;
 }
 
 export const useFetchLabels = (): IState => {
@@ -64,6 +66,42 @@ export const useFetchLabels = (): IState => {
       });
   }, []);
 
+  const loadGlobalLabels = useCallback(() => {
+    setIsFetching(true);
+
+    getGlobalConfiguration()
+      .then(({ data }) => {
+        setConfiguration(data);
+
+        const newLabelsPath = [...data.labelsPaths];
+        setLabelsPath(newLabelsPath);
+
+        return Promise.all(
+          newLabelsPath.map((rulePathElement) =>
+            getLabelProviderByLabelsPathId(rulePathElement.id).then(
+              ({ data: ruleProviderEntities }) => ({
+                rulePath: rulePathElement,
+                ruleProviders: ruleProviderEntities,
+              })
+            )
+          )
+        );
+      })
+      .then((responses) => {
+        const map: Map<LabelsPath, LabelProviderEntity[]> = new Map();
+        responses.forEach((element) =>
+          map.set(element.rulePath, element.ruleProviders)
+        );
+        setLabelProviders(map);
+      })
+      .catch((error: AxiosError) => {
+        setFetchError(error.message);
+      })
+      .finally(() => {
+        setIsFetching(false);
+      });
+  }, []);
+
   return {
     configuration,
     labelsPath,
@@ -71,5 +109,6 @@ export const useFetchLabels = (): IState => {
     isFetching,
     fetchError,
     loadLabels,
+    loadGlobalLabels,
   };
 };

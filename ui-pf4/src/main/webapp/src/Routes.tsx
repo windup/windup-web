@@ -13,6 +13,7 @@ const AnalysisConfiguration = lazy(() =>
   import("./containers/pages/analysis-configuration")
 );
 const GlobalRules = lazy(() => import("./containers/pages/global-rules"));
+const GlobalLabels = lazy(() => import("./containers/pages/global-labels"));
 
 export const AppRoutes = () => {
   const routes = [
@@ -35,6 +36,11 @@ export const AppRoutes = () => {
     {
       component: GlobalRules,
       path: Paths.globalRules,
+      exact: false,
+    },
+    {
+      component: GlobalLabels,
+      path: Paths.globalLabels,
       exact: false,
     },
   ];
