@@ -32,10 +32,14 @@ export const Logs: React.FC<RulesProps> = ({ match }) => {
   const [execution, setExecution] = useState<WindupExecution>();
   const [executionLog, setExecutionLog] = useState<string[]>([]);
 
-  // Load execution
+  // Load execution and log for the first time
   useEffect(() => {
     getExecution(match.params.execution).then(({ data: executionData }) => {
       setExecution(executionData);
+    });
+
+    getExecutionLog(match.params.execution).then(({ data: logData }) => {
+      setExecutionLog(logData);
     });
   }, [match]);
 
