@@ -12,8 +12,8 @@ import { LabelProviderEntity, LabelsPath } from "models/api";
 const LABEL_PROVIDER_ENTITY_FIELD = "labelPath";
 
 const columns: ICell[] = [
-  { title: "Number of labels", transforms: [] },
   { title: "Provider ID", transforms: [sortable] },
+  { title: "Number of labels", transforms: [] },
 ];
 
 const compareLabelPath = (

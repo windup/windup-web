@@ -42,6 +42,7 @@ export const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
           <TextInput
             type="text"
             name="name"
+            aria-label="name"
             aria-describedby="name"
             isRequired={true}
             onChange={onChangeField}
@@ -61,6 +62,7 @@ export const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
           <TextArea
             type="text"
             name="description"
+            aria-label="description"
             aria-describedby="description"
             isRequired={false}
             onChange={onChangeField}

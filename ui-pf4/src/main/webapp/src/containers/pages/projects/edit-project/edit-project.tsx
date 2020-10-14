@@ -1,14 +1,15 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
-import { Formik } from "formik";
+import { Formik, FormikHelpers } from "formik";
 
 import {
   ActionGroup,
+  Bullseye,
   Button,
   ButtonVariant,
   Form,
-  Modal,
-  ModalVariant,
+  Grid,
+  GridItem,
   PageSection,
 } from "@patternfly/react-core";
 
@@ -19,6 +20,7 @@ import {
   projectDetailsFormInitialValue,
   projectDetailsFormSchema,
   SimplePageSection,
+  FetchErrorEmptyState,
 } from "components";
 
 import { Paths, ProjectRoute } from "Paths";
@@ -40,11 +42,10 @@ export const EditProject: React.FC<ApplicationListProps> = ({
   const dispatch = useDispatch();
 
   const [project, setProject] = useState<MigrationProject>();
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
+  const [fetchError, setFetchError] = useState("");
 
-  const handleCloseModal = useCallback(() => {
+  const redirectToProjectsPage = useCallback(() => {
     push(Paths.projects);
   }, [push]);
 
@@ -53,22 +54,23 @@ export const EditProject: React.FC<ApplicationListProps> = ({
       getProjectById(match.params.project)
         .then(({ data }) => {
           setProject(data);
+
           setIsFetching(false);
+          setFetchError("");
         })
         .catch((error: AxiosError) => {
-          dispatch(
-            alertActions.alert(getAlertModel("danger", "Error", error.message))
-          );
-          handleCloseModal();
+          setIsFetching(false);
+          setFetchError(error.message);
         });
     } else {
-      handleCloseModal();
+      redirectToProjectsPage();
     }
-  }, [match, dispatch, handleCloseModal]);
+  }, [match, dispatch, redirectToProjectsPage]);
 
-  const handleOnSubmit = (formValue: ProjectDetailsFormValues) => {
-    setIsSubmitting(true);
-
+  const handleOnSubmit = (
+    formValue: ProjectDetailsFormValues,
+    { setSubmitting }: FormikHelpers<ProjectDetailsFormValues>
+  ) => {
     getProjectById(match.params.project)
       .then(({ data }) => {
         const body: MigrationProject = {
@@ -79,66 +81,79 @@ export const EditProject: React.FC<ApplicationListProps> = ({
         return updateProject(body);
       })
       .then(() => {
-        handleCloseModal();
+        setSubmitting(false);
+        redirectToProjectsPage();
       })
       .catch((error: AxiosError) => {
+        setSubmitting(false);
+
         dispatch(
           alertActions.alert(getAlertModel("danger", "Error", error.message))
         );
-        handleCloseModal();
       });
   };
 
   return (
     <>
-      <SimplePageSection title="Projects" />
-      <PageSection>
-        <Modal
-          variant={ModalVariant.medium}
-          title="Edit project"
-          isOpen={true}
-          onClose={handleCloseModal}
-        >
-          <ConditionalRender when={isFetching} then={<AppPlaceholder />}>
-            <Formik
-              initialValues={projectDetailsFormInitialValue(project)}
-              validationSchema={projectDetailsFormSchema(project)}
-              onSubmit={handleOnSubmit}
-            >
-              {({ isValidating, handleSubmit, ...formik }) => {
-                return (
-                  <Form
-                    onSubmit={handleSubmit}
-                    className="pf-l-stack pf-l-stack__item pf-m-fill"
-                  >
-                    <ProjectDetailsForm
-                      isValidating={isValidating}
-                      handleSubmit={handleSubmit}
-                      {...formik}
-                    />
-
-                    <ActionGroup>
-                      <Button
-                        type="submit"
-                        variant={ButtonVariant.primary}
-                        isDisabled={isSubmitting || isValidating}
-                      >
-                        Save
-                      </Button>
-                      <Button
-                        variant={ButtonVariant.link}
-                        onClick={handleCloseModal}
-                        isDisabled={isSubmitting || isValidating}
-                      >
-                        Cancel
-                      </Button>
-                    </ActionGroup>
-                  </Form>
-                );
-              }}
-            </Formik>
-          </ConditionalRender>
-        </Modal>
+      <SimplePageSection title="Project details" />
+      <PageSection variant="light">
+        <ConditionalRender when={isFetching} then={<AppPlaceholder />}>
+          {fetchError ? (
+            <Bullseye>
+              <FetchErrorEmptyState />
+            </Bullseye>
+          ) : (
+            <Grid lg={12}>
+              <GridItem lg={8}>
+                <Formik
+                  initialValues={projectDetailsFormInitialValue(project)}
+                  validationSchema={projectDetailsFormSchema(project)}
+                  onSubmit={handleOnSubmit}
+                  initialErrors={{ name: "" }}
+                >
+                  {({
+                    isValid,
+                    isValidating,
+                    isSubmitting,
+                    handleSubmit,
+                    ...formik
+                  }) => {
+                    return (
+                      <Form onSubmit={handleSubmit}>
+                        <ProjectDetailsForm
+                          {...{
+                            ...formik,
+                            isValidating,
+                            isSubmitting,
+                            handleSubmit,
+                          }}
+                        />
+                        <ActionGroup>
+                          <Button
+                            type="submit"
+                            variant={ButtonVariant.primary}
+                            isDisabled={
+                              isSubmitting || isValidating || !isValid
+                            }
+                          >
+                            Save
+                          </Button>
+                          <Button
+                            variant={ButtonVariant.link}
+                            onClick={redirectToProjectsPage}
+                            isDisabled={isSubmitting || isValidating}
+                          >
+                            Cancel
+                          </Button>
+                        </ActionGroup>
+                      </Form>
+                    );
+                  }}
+                </Formik>
+              </GridItem>
+            </Grid>
+          )}
+        </ConditionalRender>
       </PageSection>
     </>
   );

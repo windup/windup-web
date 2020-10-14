@@ -1,3 +1,4 @@
 {
-    "baseUrl": "http://localhost:8080/mta-web-pf4"
+    "baseUrl": "http://localhost:3000",
+    "chromeWebSecurity": false
 }

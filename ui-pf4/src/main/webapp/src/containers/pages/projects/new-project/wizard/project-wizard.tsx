@@ -2,7 +2,6 @@ import React from "react";
 import { RouteComponentProps } from "react-router-dom";
 
 import {
-  PageSection,
   Wizard,
   WizardStep,
   Button,
@@ -11,14 +10,10 @@ import {
 import { css } from "@patternfly/react-styles";
 import styles from "@patternfly/react-styles/css/components/Wizard/wizard";
 
-import { SimplePageSection } from "components";
 import { formatPath, Paths } from "Paths";
 import { MigrationProject, AnalysisContext } from "models/api";
 
 import { ErrorWizardContent } from "./error-content";
-
-const TITLE = "Create project";
-const DESCRIPTION = "Create a project for your applications";
 
 export enum WizardStepIds {
   DETAILS = 1,
@@ -34,7 +29,7 @@ export enum WizardStepIds {
 export interface NewProjectWizardProps extends RouteComponentProps {
   isWizard?: boolean;
   stepId: WizardStepIds;
-  enableNext: boolean;
+  enableNext?: boolean;
   disableNavigation?: boolean;
   showErrorContent?: any;
   migrationProject?: MigrationProject;
@@ -268,60 +263,53 @@ export const NewProjectWizard: React.FC<NewProjectWizardProps> = ({
   };
 
   return (
-    <>
-      <SimplePageSection title={TITLE} description={DESCRIPTION} />
-      <PageSection style={!isWizard ? { padding: "1px 0 0 0" } : undefined}>
-        <Wizard
-          title={isWizard ? TITLE : undefined}
-          description={isWizard ? DESCRIPTION : undefined}
-          isOpen={isWizard ? isWizard : undefined}
-          steps={
-            !disableNavigation ? wizardSteps : disableWizardSteps(wizardSteps)
-          }
-          startAtStep={stepId}
-          onNext={handleOnNextStep}
-          onBack={handleOnGoToStep}
-          onGoToStep={handleOnGoToStep}
-          onClose={handleOnClose}
-          navAriaLabel="New project steps"
-          mainAriaLabel="New project content"
-          footer={
-            footer ? (
-              footer
-            ) : (
-              <footer className={css(styles.wizardFooter)}>
-                <Button
-                  variant={ButtonVariant.primary}
-                  type="submit"
-                  onClick={handleOnNextStep}
-                  isDisabled={
-                    disableNavigation ? disableNavigation : !enableNext
-                  }
-                >
-                  Next
-                </Button>
-                <Button
-                  variant={ButtonVariant.secondary}
-                  onClick={handleOnBack}
-                  className={css(
-                    stepId === WizardStepIds.DETAILS && "pf-m-disabled"
-                  )}
-                  isDisabled={disableNavigation}
-                >
-                  Back
-                </Button>
-                <Button
-                  variant={ButtonVariant.link}
-                  onClick={handleOnClose}
-                  isDisabled={disableNavigation}
-                >
-                  Cancel
-                </Button>
-              </footer>
-            )
-          }
-        />
-      </PageSection>
-    </>
+    <Wizard
+      title={isWizard ? "Create project" : undefined}
+      description={
+        isWizard ? "Create a project for your applications" : undefined
+      }
+      isOpen={isWizard ? isWizard : undefined}
+      steps={!disableNavigation ? wizardSteps : disableWizardSteps(wizardSteps)}
+      startAtStep={stepId}
+      onNext={handleOnNextStep}
+      onBack={handleOnGoToStep}
+      onGoToStep={handleOnGoToStep}
+      onClose={handleOnClose}
+      navAriaLabel="New project steps"
+      mainAriaLabel="New project content"
+      footer={
+        footer ? (
+          footer
+        ) : (
+          <footer className={css(styles.wizardFooter)}>
+            <Button
+              variant={ButtonVariant.primary}
+              type="submit"
+              onClick={handleOnNextStep}
+              isDisabled={disableNavigation ? disableNavigation : !enableNext}
+            >
+              Next
+            </Button>
+            <Button
+              variant={ButtonVariant.secondary}
+              onClick={handleOnBack}
+              className={css(
+                stepId === WizardStepIds.DETAILS && "pf-m-disabled"
+              )}
+              isDisabled={disableNavigation}
+            >
+              Back
+            </Button>
+            <Button
+              variant={ButtonVariant.link}
+              onClick={handleOnClose}
+              isDisabled={disableNavigation}
+            >
+              Cancel
+            </Button>
+          </footer>
+        )
+      }
+    />
   );
 };

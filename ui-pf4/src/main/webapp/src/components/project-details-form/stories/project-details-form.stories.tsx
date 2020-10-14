@@ -1,5 +1,17 @@
 import React from "react";
 import { Story, Meta } from "@storybook/react/types-6-0";
+import { Formik } from "formik";
+import {
+  ActionGroup,
+  Button,
+  ButtonVariant,
+  Form,
+} from "@patternfly/react-core";
+
+import {
+  projectDetailsFormInitialValue,
+  projectDetailsFormSchema,
+} from "../schema";
 import {
   ProjectDetailsForm,
   ProjectDetailsFormProps,
@@ -8,35 +20,77 @@ import {
 export default {
   title: "Forms / ProjectDetailsForm",
   component: ProjectDetailsForm,
-  argTypes: {
-    onChange: { action: "change" },
-    onSubmit: { action: "submit" },
-    onCancel: { action: "cancel" },
-  },
+  argTypes: {},
 } as Meta;
 
-const Template: Story<ProjectDetailsFormProps> = (args) => (
-  <ProjectDetailsForm {...args} />
+const BasicTemplate: Story<ProjectDetailsFormProps> = (args) => (
+  <Formik
+    initialValues={projectDetailsFormInitialValue()}
+    validationSchema={projectDetailsFormSchema()}
+    onSubmit={() => {}}
+    initialErrors={{ name: "" }}
+  >
+    {({ isValid, handleSubmit, ...formik }) => {
+      return (
+        <Form onSubmit={handleSubmit}>
+          <ProjectDetailsForm {...args} {...{ ...formik, handleSubmit }} />
+          <ActionGroup>
+            <Button
+              type="submit"
+              variant={ButtonVariant.primary}
+              isDisabled={!isValid}
+            >
+              Save
+            </Button>
+            <Button variant={ButtonVariant.link}>Cancel</Button>
+          </ActionGroup>
+        </Form>
+      );
+    }}
+  </Formik>
 );
 
-// export const Basic = Template.bind({});
-// Basic.args = {};
+export const Basic = BasicTemplate.bind({});
+Basic.args = {};
 
-// export const InitialValue = Template.bind({});
-// InitialValue.args = {
-//   project: {
-//     id: 3802,
-//     title: "title",
-//     description: "description",
-//     provisional: false,
-//     created: new Date(1599551047711),
-//     lastModified: new Date(1599551108682),
-//     applications: [],
-//     defaultAnalysisContextId: 3803,
-//   },
-// };
+//
 
-// export const HideFormControls = Template.bind({});
-// HideFormControls.args = {
-//   hideFormControls: true,
-// };
+const project = {
+  id: 1,
+  title: "title",
+  description: "description",
+  provisional: false,
+  created: new Date(1599551047711),
+  lastModified: new Date(1599551108682),
+  applications: [],
+  defaultAnalysisContextId: 3803,
+};
+
+const InitialValueTemplate: Story<ProjectDetailsFormProps> = (args) => (
+  <Formik
+    initialValues={projectDetailsFormInitialValue(project)}
+    validationSchema={projectDetailsFormSchema(project)}
+    onSubmit={() => {}}
+  >
+    {({ isValid, handleSubmit, ...formik }) => {
+      return (
+        <Form onSubmit={handleSubmit}>
+          <ProjectDetailsForm {...args} {...{ ...formik, handleSubmit }} />
+          <ActionGroup>
+            <Button
+              type="submit"
+              variant={ButtonVariant.primary}
+              isDisabled={!isValid}
+            >
+              Save
+            </Button>
+            <Button variant={ButtonVariant.link}>Cancel</Button>
+          </ActionGroup>
+        </Form>
+      );
+    }}
+  </Formik>
+);
+
+export const InitialValue = InitialValueTemplate.bind({});
+InitialValueTemplate.args = {};
