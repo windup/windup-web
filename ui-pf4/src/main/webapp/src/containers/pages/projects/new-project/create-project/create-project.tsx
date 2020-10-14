@@ -1,20 +1,31 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
-import { AxiosPromise } from "axios";
+import { AxiosError, AxiosPromise } from "axios";
+import { Formik } from "formik";
 
 import {
   Stack,
   StackItem,
   Title,
   TitleSizes,
-  Alert,
-  AlertActionCloseButton,
+  Button,
+  ButtonVariant,
 } from "@patternfly/react-core";
+import { css } from "@patternfly/react-styles";
+import styles from "@patternfly/react-styles/css/components/Wizard/wizard";
 
-import { FormikHelpers } from "formik";
+import { useDispatch } from "react-redux";
+import { alertActions } from "store/alert";
+import {
+  ProjectDetailsForm,
+  projectDetailsFormInitialValue,
+  projectDetailsFormSchema,
+} from "components";
+import { ProjectDetailsFormValues } from "components/project-details-form/project-details-form";
 
+import { getAlertModel } from "Constants";
 import { Paths, formatPath, OptionalProjectRoute } from "Paths";
-import { ProjectDetailsForm } from "components";
+
 import {
   deleteProvisionalProjects,
   createProject,
@@ -36,13 +47,12 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
   match,
   history: { push },
 }) => {
-  const formRef = useRef<FormikHelpers<any>>();
+  const dispatch = useDispatch();
 
   const [project, setProject] = useState<MigrationProject>();
   const [analysisContext, setAnalysisContext] = useState<AnalysisContext>();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string>();
 
   const [isFetching, setIsFetching] = useState(true);
   const [fetchError, setFetchError] = useState<string>();
@@ -61,8 +71,8 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
         .then(({ data: analysisContextData }) => {
           setAnalysisContext(analysisContextData);
         })
-        .catch(() => {
-          setFetchError("Could not fetch migrationProject data");
+        .catch((error: AxiosError) => {
+          setFetchError(error.message);
         })
         .finally(() => {
           setIsFetching(false);
@@ -72,18 +82,11 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
     }
   }, [match]);
 
-  const handleOnNextStep = () => {
-    if (!formRef.current) {
-      throw Error("Could not find a reference to form");
-    }
-
-    formRef.current.submitForm();
+  const handleOnNextStep = (values: ProjectDetailsFormValues) => {
+    handleOnSubmit(values);
   };
 
-  const handleOnSubmit = (formValue: {
-    name: string;
-    description?: string;
-  }) => {
+  const handleOnSubmit = (formValue: ProjectDetailsFormValues) => {
     setIsSubmitting(true);
 
     const body: MigrationProject = {
@@ -107,54 +110,92 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
           })
         );
       })
-      .catch(() => {
-        setSubmitError("Could not create project");
+      .catch((error: AxiosError) => {
+        dispatch(
+          alertActions.alert(getAlertModel("danger", "Error", error.message))
+        );
       });
   };
 
-  return (
-    <NewProjectWizard
-      stepId={WizardStepIds.DETAILS}
-      enableNext={true}
-      disableNavigation={isFetching || isSubmitting}
-      handleOnNextStep={handleOnNextStep}
-      migrationProject={project}
-      analysisContext={analysisContext}
-      showErrorContent={fetchError}
-    >
-      {isFetching ? (
+  const handleOnCancel = () => {
+    push(Paths.projects);
+  };
+
+  const stepId = WizardStepIds.DETAILS;
+
+  if (isFetching) {
+    return (
+      <NewProjectWizard
+        stepId={stepId}
+        enableNext={false}
+        disableNavigation={true}
+      >
         <LoadingWizardContent />
-      ) : (
-        <Stack hasGutter>
-          {submitError && (
-            <StackItem>
-              <Alert
-                isLiveRegion
-                variant="danger"
-                title="Error"
-                actionClose={
-                  <AlertActionCloseButton onClose={() => setSubmitError("")} />
+      </NewProjectWizard>
+    );
+  }
+
+  return (
+    <>
+      <Formik
+        initialValues={projectDetailsFormInitialValue(project)}
+        validationSchema={projectDetailsFormSchema(project)}
+        onSubmit={handleOnNextStep}
+      >
+        {({ isValidating, handleSubmit, ...formik }) => {
+          const disableNavigation = isSubmitting || isValidating;
+
+          return (
+            <form
+              noValidate
+              onSubmit={handleSubmit}
+              className="pf-l-stack pf-l-stack__item pf-m-fill"
+            >
+              <NewProjectWizard
+                stepId={stepId}
+                enableNext={true}
+                disableNavigation={disableNavigation}
+                showErrorContent={fetchError}
+                migrationProject={project}
+                analysisContext={analysisContext}
+                footer={
+                  <footer className={css(styles.wizardFooter)}>
+                    <Button
+                      variant={ButtonVariant.primary}
+                      type="submit"
+                      isDisabled={disableNavigation}
+                    >
+                      Next
+                    </Button>
+                    <Button
+                      variant={ButtonVariant.link}
+                      onClick={handleOnCancel}
+                      isDisabled={disableNavigation}
+                    >
+                      Cancel
+                    </Button>
+                  </footer>
                 }
               >
-                {submitError}
-              </Alert>
-            </StackItem>
-          )}
-          <StackItem>
-            <Title headingLevel="h5" size={TitleSizes["lg"]}>
-              Project details
-            </Title>
-          </StackItem>
-          <StackItem>
-            <ProjectDetailsForm
-              formRef={formRef}
-              hideFormControls
-              project={project}
-              onSubmit={handleOnSubmit}
-            />
-          </StackItem>
-        </Stack>
-      )}
-    </NewProjectWizard>
+                <Stack hasGutter>
+                  <StackItem>
+                    <Title headingLevel="h5" size={TitleSizes["lg"]}>
+                      Project details
+                    </Title>
+                  </StackItem>
+                  <StackItem>
+                    <ProjectDetailsForm
+                      isValidating={isValidating}
+                      handleSubmit={handleSubmit}
+                      {...formik}
+                    />
+                  </StackItem>
+                </Stack>
+              </NewProjectWizard>
+            </form>
+          );
+        }}
+      </Formik>
+    </>
   );
 };

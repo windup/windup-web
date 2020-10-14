@@ -21,6 +21,7 @@ export enum Paths {
   globalLabels_userProvided = "/global/labels/user-provided",
 
   projects = "/projects",
+  editProject = "/projects/~edit/:project",
 
   newProject = "/projects/~new",
   newProject_details = "/projects/~new/:project/project-details",
@@ -32,7 +33,7 @@ export enum Paths {
   newProject_advandedOptions = "/projects/~new/:project/advanced-options",
   newProject_review = "/projects/~new/:project/review",
 
-  editProject = "/projects-details/:project",
+  projectDetails = "/projects-details/:project",
 
   executions = "/projects-details/:project/analysis-results/executions",
   editExecution = "/projects-details/:project/analysis-results/executions/:execution",

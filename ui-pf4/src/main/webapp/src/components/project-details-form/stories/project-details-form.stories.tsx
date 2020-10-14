@@ -19,24 +19,24 @@ const Template: Story<ProjectDetailsFormProps> = (args) => (
   <ProjectDetailsForm {...args} />
 );
 
-export const Basic = Template.bind({});
-Basic.args = {};
+// export const Basic = Template.bind({});
+// Basic.args = {};
 
-export const InitialValue = Template.bind({});
-InitialValue.args = {
-  project: {
-    id: 3802,
-    title: "title",
-    description: "description",
-    provisional: false,
-    created: new Date(1599551047711),
-    lastModified: new Date(1599551108682),
-    applications: [],
-    defaultAnalysisContextId: 3803,
-  },
-};
+// export const InitialValue = Template.bind({});
+// InitialValue.args = {
+//   project: {
+//     id: 3802,
+//     title: "title",
+//     description: "description",
+//     provisional: false,
+//     created: new Date(1599551047711),
+//     lastModified: new Date(1599551108682),
+//     applications: [],
+//     defaultAnalysisContextId: 3803,
+//   },
+// };
 
-export const HideFormControls = Template.bind({});
-HideFormControls.args = {
-  hideFormControls: true,
-};
+// export const HideFormControls = Template.bind({});
+// HideFormControls.args = {
+//   hideFormControls: true,
+// };

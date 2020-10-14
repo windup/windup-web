@@ -30,7 +30,7 @@ import {
   TableSectionOffline,
 } from "components";
 
-import { Paths } from "Paths";
+import { formatPath, Paths } from "Paths";
 import { getAlertModel, getDeleteErrorAlertModel } from "Constants";
 import { Project } from "models/api";
 import { deleteProject, getProjectExecutions } from "api/api";
@@ -106,37 +106,21 @@ export const ProjectList: React.FC<Props> = ({
   const actionResolver = (): (IAction | ISeparator)[] => {
     return [
       {
-        title: "Delete",
-        onClick: (
-          event: React.MouseEvent,
-          rowIndex: number,
-          rowData: IRowData
-        ) => {
+        title: "Edit",
+        onClick: (_, rowIndex: number, rowData: IRowData) => {
           const project: Project = rowData[PROJECT_FIELD_NAME];
-
-          getProjectExecutions(project.migrationProject.id)
-            .then(({ data: executions }) => {
-              const inProgressExecution = executions.find((execution) => {
-                return (
-                  execution.state === "QUEUED" || execution.state === "STARTED"
-                );
-              });
-
-              if (inProgressExecution) {
-                addAlert(
-                  getAlertModel(
-                    "danger",
-                    "Error",
-                    `Cannot delete project '${project.migrationProject.title}' while an analysis is in progress.`
-                  )
-                );
-              } else {
-                setProjectToDelete(project);
-              }
+          push(
+            formatPath(Paths.editProject, {
+              project: project.migrationProject.id,
             })
-            .catch((error: AxiosError) => {
-              addAlert(getAlertModel("danger", "Error", error.message));
-            });
+          );
+        },
+      },
+      {
+        title: "Delete",
+        onClick: (_, rowIndex: number, rowData: IRowData) => {
+          const project: Project = rowData[PROJECT_FIELD_NAME];
+          changeProjectToDelete(project);
         },
       },
     ];
@@ -175,6 +159,30 @@ export const ProjectList: React.FC<Props> = ({
 
   const handleNewProject = () => {
     push(Paths.newProject);
+  };
+
+  const changeProjectToDelete = (project: Project) => {
+    getProjectExecutions(project.migrationProject.id)
+      .then(({ data: executions }) => {
+        const inProgressExecution = executions.find((execution) => {
+          return execution.state === "QUEUED" || execution.state === "STARTED";
+        });
+
+        if (inProgressExecution) {
+          addAlert(
+            getAlertModel(
+              "danger",
+              "Error",
+              `Cannot delete project '${project.migrationProject.title}' while an analysis is in progress.`
+            )
+          );
+        } else {
+          setProjectToDelete(project);
+        }
+      })
+      .catch((error: AxiosError) => {
+        addAlert(getAlertModel("danger", "Error", error.message));
+      });
   };
 
   const handleDeleteProject = () => {

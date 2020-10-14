@@ -30,7 +30,11 @@ export { PageHeader } from "./page-header";
 export { ProcessImprovementIcon } from "./process-improvement-icon";
 export { ProjectContextPageSection } from "./project-context-page-section";
 export { ProjectContextSelector } from "./project-context-selector";
-export { ProjectDetailsForm } from "./project-details-form";
+export {
+  ProjectDetailsForm,
+  projectDetailsFormSchema,
+  projectDetailsFormInitialValue,
+} from "./project-details-form";
 export { SelectCard } from "./select-card";
 export { ServerPathForm } from "./server-path-form";
 export { SelectCardGallery } from "./select-card-gallery";
