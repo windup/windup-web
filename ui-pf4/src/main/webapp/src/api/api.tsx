@@ -25,6 +25,9 @@ export const UPLOAD_APPLICATION_PATH = `${MIGRATION_PROJECTS_PATH}/:projectId/re
 export const UPLOAD_RULE_TO_MIGRATION_PROJECT = `rules/upload/by-project/:projectId`;
 export const UPLOAD_LABEL_TO_MIGRATION_PROJECT = `labels/upload/by-project/:projectId`;
 
+export const UPLOAD_RULE_GLOBALLY = "rules/upload";
+export const UPLOAD_LABEL_GLOBALLY = "labels/upload";
+
 export const EXECUTION_PROGRESS_URL =
   "/websocket/execution-progress/:executionId";
 
@@ -183,7 +186,7 @@ export const getProjectConfiguration = (
   return ApiClient.get<Configuration>(`configuration/by-project/${projectId}`);
 };
 
-export const updateProjectConfiguration = (
+export const updateConfiguration = (
   configuration: Configuration
 ): AxiosPromise<Configuration> => {
   return ApiClient.put<Configuration>(

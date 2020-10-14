@@ -13,13 +13,16 @@ import {
   UPLOAD_RULE_TO_MIGRATION_PROJECT,
   UPLOAD_LABEL_TO_MIGRATION_PROJECT,
   getProjectConfiguration,
-  updateProjectConfiguration,
+  updateConfiguration,
+  getGlobalConfiguration,
+  UPLOAD_RULE_GLOBALLY,
+  UPLOAD_LABEL_GLOBALLY,
 } from "api/api";
 import { Configuration, RulesPath, LabelsPath } from "models/api";
 
 export interface AddRuleLabelTabsProps {
   type: "Rule" | "Label";
-  projectId: number | string;
+  projectId?: number | string;
   onSubmitFinishedServerPath: () => void;
   onCancelServerPath: () => void;
 }
@@ -40,43 +43,44 @@ export const AddRuleLabelTabs: React.FC<AddRuleLabelTabsProps> = ({
     serverPath: string;
     isChecked: boolean;
   }) => {
-    getProjectConfiguration(projectId)
-      .then(({ data }) => data)
-      .then((configuration) => {
-        const newConfiguration: Configuration = {
-          ...configuration,
-        };
+    (projectId
+      ? getProjectConfiguration(projectId)
+      : getGlobalConfiguration()
+    ).then(({ data: configuration }) => {
+      const newConfiguration: Configuration = {
+        ...configuration,
+      };
 
-        if (type === "Rule") {
-          newConfiguration.rulesPaths = [
-            ...newConfiguration.rulesPaths,
-            {
-              path: values.serverPath,
-              scanRecursively: values.isChecked,
-              rulesPathType: "USER_PROVIDED",
-              registrationType: "PATH",
-              scopeType: "PROJECT",
-            } as RulesPath,
-          ];
-        } else if (type === "Label") {
-          newConfiguration.labelsPaths = [
-            ...newConfiguration.labelsPaths,
-            {
-              path: values.serverPath,
-              scanRecursively: values.isChecked,
-              labelsPathType: "USER_PROVIDED",
-              registrationType: "PATH",
-              scopeType: "PROJECT",
-            } as LabelsPath,
-          ];
-        } else {
-          throw Error("Unsupported type");
-        }
+      if (type === "Rule") {
+        newConfiguration.rulesPaths = [
+          ...newConfiguration.rulesPaths,
+          {
+            path: values.serverPath,
+            scanRecursively: values.isChecked,
+            rulesPathType: "USER_PROVIDED",
+            registrationType: "PATH",
+            scopeType: "PROJECT",
+          } as RulesPath,
+        ];
+      } else if (type === "Label") {
+        newConfiguration.labelsPaths = [
+          ...newConfiguration.labelsPaths,
+          {
+            path: values.serverPath,
+            scanRecursively: values.isChecked,
+            labelsPathType: "USER_PROVIDED",
+            registrationType: "PATH",
+            scopeType: "PROJECT",
+          } as LabelsPath,
+        ];
+      } else {
+        throw Error("Unsupported type");
+      }
 
-        updateProjectConfiguration(newConfiguration).then(() =>
-          onSubmitFinishedServerPath()
-        );
-      });
+      updateConfiguration(newConfiguration).then(() =>
+        onSubmitFinishedServerPath()
+      );
+    });
   };
 
   return (
@@ -85,15 +89,27 @@ export const AddRuleLabelTabs: React.FC<AddRuleLabelTabsProps> = ({
         <Tabs activeKey={activeTabKey} onSelect={handleTabClick}>
           <Tab eventKey={0} title={<TabTitleText>Upload</TabTitleText>}>
             <br />
-            <UploadFilesForm
-              url={(type === "Rule"
-                ? UPLOAD_RULE_TO_MIGRATION_PROJECT
-                : UPLOAD_LABEL_TO_MIGRATION_PROJECT
-              ).replace(":projectId", projectId.toString())}
-              accept=".xml"
-              template="dropdown-box"
-              hideProgressOnSuccess={false}
-            />
+            {projectId && (
+              <UploadFilesForm
+                url={(type === "Rule"
+                  ? UPLOAD_RULE_TO_MIGRATION_PROJECT
+                  : UPLOAD_LABEL_TO_MIGRATION_PROJECT
+                ).replace(":projectId", projectId.toString())}
+                accept=".xml"
+                template="dropdown-box"
+                hideProgressOnSuccess={false}
+              />
+            )}
+            {!projectId && (
+              <UploadFilesForm
+                url={
+                  type === "Rule" ? UPLOAD_RULE_GLOBALLY : UPLOAD_LABEL_GLOBALLY
+                }
+                accept=".xml"
+                template="dropdown-box"
+                hideProgressOnSuccess={false}
+              />
+            )}
           </Tab>
           <Tab eventKey={1} title={<TabTitleText>Server path</TabTitleText>}>
             <RuleLabelServerPathForm
