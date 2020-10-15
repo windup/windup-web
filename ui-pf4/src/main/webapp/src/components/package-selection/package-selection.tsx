@@ -96,7 +96,10 @@ export const PackageSelection: React.FC<PackageSelectionProps> = ({
 export const PackageSelectionLoadingState: React.FC = () => {
   return (
     <Bullseye>
-      <EmptyState variant={EmptyStateVariant.small}>
+      <EmptyState
+        variant={EmptyStateVariant.small}
+        aria-label="package-loading-empty-state"
+      >
         <EmptyStateIcon icon={SpinnerIcon} />
         <Title headingLevel="h2" size="lg">
           Discovering and fetching packages

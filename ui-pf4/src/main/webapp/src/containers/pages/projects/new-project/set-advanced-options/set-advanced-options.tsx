@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { AxiosError } from "axios";
 
-import { Formik } from "formik";
+import { Formik, FormikHelpers } from "formik";
 import { Button, ButtonVariant } from "@patternfly/react-core";
 import { css } from "@patternfly/react-styles";
 import styles from "@patternfly/react-styles/css/components/Wizard/wizard";
 
-import { AdvancedOptionsForm } from "components";
+import { AdvancedOptionsForm, ConditionalRender } from "components";
 import {
   buildSchema,
   buildInitialValues,
@@ -40,7 +40,6 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
   history: { push },
 }) => {
   const dispatch = useDispatch();
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   /**
    * Fetch organization and analysisContext
@@ -83,8 +82,11 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
    * Handlers
    */
 
-  const handleOnNextStep = (formValues: any) => {
-    handleOnSubmit(formValues);
+  const handleOnNextStep = (
+    formValues: any,
+    formikHelpers: FormikHelpers<any>
+  ) => {
+    handleOnSubmit(formValues, formikHelpers);
   };
 
   const handleOnBackStep = () => {
@@ -101,12 +103,14 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
 
   //
 
-  const handleOnSubmit = (formValues: any) => {
+  const handleOnSubmit = (
+    formValues: any,
+    { setSubmitting }: FormikHelpers<any>
+  ) => {
     if (!project) {
       return;
     }
 
-    setIsSubmitting(true);
     getAnalysisContext(project.defaultAnalysisContextId)
       .then(({ data }) => {
         const newAdvanceedOptions: AdvancedOption[] = [];
@@ -147,7 +151,7 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
         );
       })
       .catch((error: AxiosError) => {
-        setIsSubmitting(false);
+        setSubmitting(false);
         dispatch(
           alertActions.alert(
             getAlertModel("danger", "Error", getAxiosErrorMessage(error))
@@ -177,11 +181,9 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
       validateOnBlur={false}
       initialValues={buildInitialValues(analysisContext, configurationOptions)}
       validationSchema={buildSchema(configurationOptions)}
-      onSubmit={(values) => {
-        handleOnNextStep(values);
-      }}
+      onSubmit={handleOnNextStep}
     >
-      {({ isValidating, handleSubmit, ...formik }) => {
+      {({ isValid, isValidating, isSubmitting, handleSubmit, ...formik }) => {
         const loading = isFetchingProject || isFetchingConfigurationOptions;
         const disableNavigation = loading || isSubmitting || isValidating;
 
@@ -204,7 +206,7 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
                   <Button
                     variant={ButtonVariant.primary}
                     type="submit"
-                    isDisabled={disableNavigation}
+                    isDisabled={disableNavigation || !isValid}
                   >
                     Next
                   </Button>
@@ -225,20 +227,21 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
                 </footer>
               }
             >
-              {loading ? (
-                <LoadingWizardContent />
-              ) : (
+              <ConditionalRender when={loading} then={<LoadingWizardContent />}>
                 <>
                   {configurationOptions && (
                     <AdvancedOptionsForm
-                      isValidating={isValidating}
                       configurationOptions={configurationOptions}
-                      handleSubmit={handleSubmit}
-                      {...formik}
+                      {...{
+                        ...formik,
+                        isValidating,
+                        isSubmitting,
+                        handleSubmit,
+                      }}
                     />
                   )}
                 </>
-              )}
+              </ConditionalRender>
             </NewProjectWizard>
           </form>
         );

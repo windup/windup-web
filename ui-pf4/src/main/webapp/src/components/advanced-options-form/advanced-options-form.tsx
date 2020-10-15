@@ -167,7 +167,9 @@ export const AdvancedOptionsForm: React.FC<AdvancedOptionsFormProps> = ({
                       selections={values[field]}
                       isOpen={dropdownCollapse.isItemSelected(field)}
                       aria-labelledby="Select"
-                      placeholderText="Select a state"
+                      placeholderText={
+                        fieldInfo.placeholder ? fieldInfo.placeholder : ""
+                      }
                       isCreatable={false}
                     >
                       {fieldConfiguration.availableValues.map((option, i) => (

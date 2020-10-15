@@ -15,6 +15,7 @@ type FieldType = "dropdown" | "input" | "switch";
 export interface IFieldInfo {
   label: string;
   type: FieldType;
+  placeholder?: string;
 }
 
 export const Fields: Map<AdvancedOptionsFieldKey, IFieldInfo> = new Map([
@@ -24,6 +25,7 @@ export const Fields: Map<AdvancedOptionsFieldKey, IFieldInfo> = new Map([
     {
       label: "Target",
       type: "dropdown",
+      placeholder: "Select targets",
     },
   ],
   [
@@ -31,6 +33,7 @@ export const Fields: Map<AdvancedOptionsFieldKey, IFieldInfo> = new Map([
     {
       label: "Source",
       type: "dropdown",
+      placeholder: "Select sources",
     },
   ],
   [
@@ -38,6 +41,7 @@ export const Fields: Map<AdvancedOptionsFieldKey, IFieldInfo> = new Map([
     {
       label: "Include tags",
       type: "dropdown",
+      placeholder: "Select tags",
     },
   ],
   [
@@ -45,6 +49,7 @@ export const Fields: Map<AdvancedOptionsFieldKey, IFieldInfo> = new Map([
     {
       label: "Exclude tags",
       type: "dropdown",
+      placeholder: "Select tags",
     },
   ],
 
@@ -96,14 +101,14 @@ export const Fields: Map<AdvancedOptionsFieldKey, IFieldInfo> = new Map([
   [
     AdvancedOptionsFieldKey.CLASS_NOT_FOUND_ANALYSIS,
     {
-      label: "'Class Not Found' analysis",
+      label: "Class Not Found analysis",
       type: "switch",
     },
   ],
   [
     AdvancedOptionsFieldKey.COMPATIBLE_FILES_REPORT,
     {
-      label: "'Compatible Files' report",
+      label: "Compatible Files report",
       type: "switch",
     },
   ],

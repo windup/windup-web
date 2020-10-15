@@ -40,3 +40,10 @@
     fill: #72767b;
   }
 }
+
+// Force patternfly to have scroll on Long Select
+
+.pf-c-select__menu {
+  max-height: 400px;
+  overflow: auto;
+}

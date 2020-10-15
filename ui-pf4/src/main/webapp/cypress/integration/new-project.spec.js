@@ -63,16 +63,72 @@ context("New Project", () => {
     /**
      * Step 3: Transformation path
      */
-    //
-    // cy.contains("Select transformation path");
-    // verifyActionButtonsEnabled();
+    cy.contains("Select transformation path");
+    verifyActionButtonsEnabled();
 
-    // cy.get(".pf-c-card.pf-m-selectable > .pf-c-card__body > .pf-c-empty-state").first().click();
-    // verifyActionButtonsDisabled();
+    cy.get(".pf-c-card.pf-m-selectable").first().click({ force: true });
+    verifyActionButtonsDisabled();
 
-    // cy.get(".pf-c-card.pf-m-selectable > .pf-c-card__body ").last().click();
-    // verifyActionButtonsEnabled();
+    cy.get(".pf-c-card.pf-m-selectable").last().click();
+    verifyActionButtonsEnabled();
 
-    // cy.contains("Next").click();
+    cy.contains("Next").click();
+
+    /**
+     * Step 4: Select packages
+     */
+    cy.get(".pf-c-empty-state[aria-label=package-loading-empty-state]", {
+      timeout: 10000,
+    }).contains("Discovering and fetching packages");
+    verifyActionButtonsEnabled();
+
+    cy.get(".ant-transfer.ant-transfer-customize-list");
+    verifyActionButtonsDisabled();
+
+    cy.get(".ant-tree-treenode", { timeout: 10000 }).contains("javax").click();
+    cy.get(".ant-transfer-operation .ant-btn").first().click();
+    verifyActionButtonsEnabled();
+
+    cy.contains("Next").click();
+
+    /**
+     * Step 5: Custom rules
+     */
+    cy.contains("Custom rules");
+    cy.contains("Upload the rules you want yo include in the analysis");
+
+    verifyActionButtonsEnabled();
+    cy.contains("Next").click();
+
+    /**
+     * Step 6: Custom labels
+     */
+    cy.contains("Custom labels");
+    cy.contains("Upload the labels you want yo include in the analysis");
+
+    verifyActionButtonsEnabled();
+    cy.contains("Next").click();
+
+    /**
+     * Step 6: Advanced options
+     */
+    cy.get(".pf-c-form", { timeout: 10000 });
+    cy.contains("Advanced options");
+    cy.contains("Specify additional options here.");
+
+    verifyActionButtonsEnabled();
+    cy.contains("Next").click();
+
+    /**
+     * Step 7: Review
+     */
+    cy.get(".pf-c-description-list", { timeout: 10000 });
+    cy.contains("Review project details");
+    cy.contains(
+      "Review the information below, then save your project or save your project and run the analysis."
+    );
+
+    verifyActionButtonsEnabled();
+    cy.contains("Save").click();
   });
 });
