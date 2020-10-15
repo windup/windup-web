@@ -12,6 +12,7 @@ import { AdvancedOptionsFieldKey, getAlertModel, TARGET_EAP7 } from "Constants";
 import { Paths, formatPath, ProjectRoute } from "Paths";
 import { AnalysisContext, AdvancedOption } from "models/api";
 import { getAnalysisContext, saveAnalysisContext } from "api/api";
+import { getAxiosErrorMessage } from "utils/modelUtils";
 
 import NewProjectWizard, {
   WizardStepIds,
@@ -91,7 +92,9 @@ export const SetTransformationPath: React.FC<SetTransformationPathProps> = ({
       .catch((error: AxiosError) => {
         setIsSubmitting(false);
         dispatch(
-          alertActions.alert(getAlertModel("danger", "Error", error.message))
+          alertActions.alert(
+            getAlertModel("danger", "Error", getAxiosErrorMessage(error))
+          )
         );
       });
   };

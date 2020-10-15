@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { Formik, FormikHelpers } from "formik";
+import { AxiosError } from "axios";
 
 import {
   ActionGroup,
@@ -13,6 +14,9 @@ import {
   PageSection,
 } from "@patternfly/react-core";
 
+import { useDispatch } from "react-redux";
+import { alertActions } from "store/alert";
+
 import {
   AppPlaceholder,
   ConditionalRender,
@@ -22,15 +26,13 @@ import {
   SimplePageSection,
   FetchErrorEmptyState,
 } from "components";
+import { ProjectDetailsFormValues } from "components/project-details-form/project-details-form";
 
+import { getAlertModel } from "Constants";
 import { Paths, ProjectRoute } from "Paths";
-import { useDispatch } from "react-redux";
 import { MigrationProject } from "models/api";
 import { getProjectById, updateProject } from "api/api";
-import { AxiosError } from "axios";
-import { alertActions } from "store/alert";
-import { getAlertModel } from "Constants";
-import { ProjectDetailsFormValues } from "components/project-details-form/project-details-form";
+import { getAxiosErrorMessage } from "utils/modelUtils";
 
 export interface ApplicationListProps
   extends RouteComponentProps<ProjectRoute> {}
@@ -88,7 +90,9 @@ export const EditProject: React.FC<ApplicationListProps> = ({
         setSubmitting(false);
 
         dispatch(
-          alertActions.alert(getAlertModel("danger", "Error", error.message))
+          alertActions.alert(
+            getAlertModel("danger", "Error", getAxiosErrorMessage(error))
+          )
         );
       });
   };

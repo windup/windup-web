@@ -10,6 +10,7 @@ import { DeleteMatchModal } from "components";
 import { getAlertModel } from "Constants";
 import { MigrationProject } from "models/api";
 import { deleteProject } from "api/api";
+import { getAxiosErrorMessage } from "utils/modelUtils";
 
 export interface DeleteProjectModalProps {
   project: MigrationProject;
@@ -35,7 +36,9 @@ export const DeleteProjectModal: React.FC<DeleteProjectModalProps> = ({
         setIsDeleting(false);
         onClose(false);
         dispatch(
-          alertActions.alert(getAlertModel("danger", "Error", error.message))
+          alertActions.alert(
+            getAlertModel("danger", "Error", getAxiosErrorMessage(error))
+          )
         );
       });
   };

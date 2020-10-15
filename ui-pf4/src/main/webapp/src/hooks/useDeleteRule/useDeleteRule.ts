@@ -7,6 +7,7 @@ import { deleteDialogActions } from "store/deleteDialog";
 import { getAlertModel } from "Constants";
 import { RulesPath } from "models/api";
 import { deleteRulePathById, isRulePathBeingUsed } from "api/api";
+import { getAxiosErrorMessage } from "utils/modelUtils";
 
 export const useDeleteRule = () => {
   const dispatch = useDispatch();
@@ -36,7 +37,11 @@ export const useDeleteRule = () => {
                   })
                   .catch((error: AxiosError) => {
                     alertActions.alert(
-                      getAlertModel("danger", "Error", error.message)
+                      getAlertModel(
+                        "danger",
+                        "Error",
+                        getAxiosErrorMessage(error)
+                      )
                     );
                   });
               } else {
@@ -53,7 +58,7 @@ export const useDeleteRule = () => {
             })
             .catch((error: AxiosError) => {
               alertActions.alert(
-                getAlertModel("danger", "Error", error.message)
+                getAlertModel("danger", "Error", getAxiosErrorMessage(error))
               );
             })
             .finally(() => {

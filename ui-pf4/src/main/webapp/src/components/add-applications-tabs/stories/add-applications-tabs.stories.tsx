@@ -1,20 +1,20 @@
 import React from "react";
 import { Story, Meta } from "@storybook/react/types-6-0";
 import {
-  AddApplicationsForm,
-  AddApplicationsFormProps,
-} from "../add-applications-form";
+  AddApplicationsTabs,
+  AddApplicationsTabsProps,
+} from "../add-applications-tabs";
 
 export default {
-  title: "Forms / AddApplicationsForm",
-  component: AddApplicationsForm,
+  title: "Forms / AddApplicationsTabs",
+  component: AddApplicationsTabs,
   argTypes: {
     onChange: { action: "change" },
   },
 } as Meta;
 
-const Template: Story<AddApplicationsFormProps> = (args) => (
-  <AddApplicationsForm {...args} />
+const Template: Story<AddApplicationsTabsProps> = (args) => (
+  <AddApplicationsTabs {...args} />
 );
 
 export const Basic = Template.bind({});
@@ -26,7 +26,7 @@ export const InitialValue = Template.bind({});
 InitialValue.args = {
   projectId: 1,
   initialValues: {
-    tab0: {
+    tabUploadFile: {
       applications: [
         {
           id: 81227,

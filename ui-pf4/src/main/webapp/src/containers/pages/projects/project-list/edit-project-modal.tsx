@@ -26,6 +26,7 @@ import {
 import { getAlertModel } from "Constants";
 import { MigrationProject } from "models/api";
 import { getProjectById, updateProject } from "api/api";
+import { getAxiosErrorMessage } from "utils/modelUtils";
 
 interface EditProjectModalProps {
   project: MigrationProject;
@@ -59,7 +60,9 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
         setSubmitting(false);
         onClose(false);
         dispatch(
-          alertActions.alert(getAlertModel("danger", "Error", error.message))
+          alertActions.alert(
+            getAlertModel("danger", "Error", getAxiosErrorMessage(error))
+          )
         );
       });
   };

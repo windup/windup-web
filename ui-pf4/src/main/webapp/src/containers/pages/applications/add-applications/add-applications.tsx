@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
+import { AxiosError, AxiosPromise } from "axios";
 
 import {
   Button,
@@ -8,8 +9,20 @@ import {
   Modal,
 } from "@patternfly/react-core";
 
-import { AddApplicationsForm, SimplePageSection } from "components";
+import { useDispatch } from "react-redux";
+import { alertActions } from "store/alert";
 
+import {
+  AddApplicationsTabs,
+  SimplePageSection,
+  AddApplicationsTabKey,
+  ConditionalRender,
+  AppPlaceholder,
+  FetchErrorEmptyState,
+} from "components";
+import { AddApplicationsFormValue } from "components/add-applications-tabs/add-applications-tabs";
+
+import { getAlertModel } from "Constants";
 import { formatPath, Paths, ProjectRoute } from "Paths";
 import { Application, MigrationProject } from "models/api";
 import {
@@ -18,7 +31,7 @@ import {
   registerApplicationByPath,
   registerApplicationInDirectoryByPath,
 } from "api/api";
-import { AxiosPromise } from "axios";
+import { getAxiosErrorMessage } from "utils/modelUtils";
 
 export interface AddApplicationsProps
   extends RouteComponentProps<ProjectRoute> {}
@@ -27,23 +40,15 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
   match,
   history,
 }) => {
+  const dispatch = useDispatch();
+
   const [project, setProject] = useState<MigrationProject>();
-  const [, setProjectIsFeching] = useState(true);
-  const [, setProjectFetchError] = useState("");
+  const [isFetching, setIsFetching] = useState(true);
+  const [fetchError, setFetchError] = useState("");
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [, setSubmitError] = useState<string>();
 
-  const [formValue, setFormValue] = useState<{
-    activeTabKey?: number;
-    tab0?: {
-      applications: Application[];
-    };
-    tab1?: {
-      serverPath?: string;
-      isServerPathExploded?: boolean;
-    };
-  }>();
+  const [formValue, setFormValue] = useState<AddApplicationsFormValue>();
 
   useEffect(() => {
     getProjectById(match.params.project)
@@ -51,51 +56,45 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
         setProject(data);
       })
       .catch(() => {
-        setProjectFetchError("Error while fetching project");
+        setFetchError("Error while fetching project");
       })
       .finally(() => {
-        setProjectIsFeching(false);
+        setIsFetching(false);
       });
   }, [match]);
 
-  const handleOnFormChange = useCallback(
-    (value: {
-      activeTabKey?: number;
-      tab0?: {
-        applications: Application[];
-      };
-      tab1?: {
-        serverPath?: string;
-        isServerPathExploded?: boolean;
-      };
-    }) => {
-      setFormValue(value);
-    },
-    []
-  );
+  const handleOnFormChange = useCallback((value: AddApplicationsFormValue) => {
+    setFormValue(value);
+  }, []);
 
   const handleOnSave = () => {
-    if (!formValue || formValue.activeTabKey === 0) {
+    if (
+      !formValue ||
+      formValue.activeTabKey === AddApplicationsTabKey.UPLOAD_FILE
+    ) {
       handleOnModalClose();
     }
 
-    if (formValue && formValue.activeTabKey === 1) {
+    if (
+      formValue &&
+      formValue.activeTabKey === AddApplicationsTabKey.SERVER_PATH
+    ) {
       setIsSubmitting(true);
 
-      pathTargetType(formValue.tab1?.serverPath!)
+      pathTargetType(formValue.tabServerPath?.serverPath!)
         .then(({ data }) => {
           let registerServerPathPromise: AxiosPromise<Application>;
 
-          if (data === "DIRECTORY" && !formValue.tab1?.isServerPathExploded) {
+          if (data === "DIRECTORY" && !formValue.tabServerPath?.isExploded) {
             registerServerPathPromise = registerApplicationInDirectoryByPath(
               project!.id,
-              formValue.tab1?.serverPath!
+              formValue.tabServerPath?.serverPath!
             );
           } else {
             registerServerPathPromise = registerApplicationByPath(
               project!.id,
-              formValue.tab1?.serverPath!,
-              formValue.tab1?.isServerPathExploded!
+              formValue.tabServerPath?.serverPath!,
+              formValue.tabServerPath?.isExploded!
             );
           }
 
@@ -104,13 +103,13 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
         .then(() => {
           handleOnModalClose();
         })
-        .catch((error) => {
-          setIsSubmitting(false);
-          setSubmitError(
-            error?.response?.data?.message
-              ? error.response.data.message
-              : "It was not possible to register the path due to an error."
+        .catch((error: AxiosError) => {
+          dispatch(
+            alertActions.alert(
+              getAlertModel("danger", "Error", getAxiosErrorMessage(error))
+            )
           );
+          handleOnModalClose();
         });
     }
   };
@@ -132,26 +131,42 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
           title="Add applications"
           isOpen={true}
           onClose={handleOnModalClose}
-          actions={[
-            <Button
-              key="save"
-              variant="primary"
-              onClick={handleOnSave}
-              isDisabled={isSubmitting}
-            >
-              Save
-            </Button>,
-            <Button key="close" variant="link" onClick={handleOnModalClose}>
-              Close
-            </Button>,
-          ]}
+          actions={
+            isFetching || fetchError
+              ? []
+              : [
+                  <Button
+                    key="save"
+                    variant="primary"
+                    onClick={handleOnSave}
+                    isDisabled={isSubmitting}
+                  >
+                    Save
+                  </Button>,
+                  <Button
+                    key="close"
+                    variant="link"
+                    onClick={handleOnModalClose}
+                  >
+                    Close
+                  </Button>,
+                ]
+          }
         >
-          {project && (
-            <AddApplicationsForm
-              projectId={project.id}
-              onChange={handleOnFormChange}
-            />
-          )}
+          <ConditionalRender when={isFetching} then={<AppPlaceholder />}>
+            {fetchError ? (
+              <FetchErrorEmptyState />
+            ) : (
+              <>
+                {project && (
+                  <AddApplicationsTabs
+                    projectId={project.id}
+                    onChange={handleOnFormChange}
+                  />
+                )}
+              </>
+            )}
+          </ConditionalRender>
         </Modal>
       </PageSection>
     </>

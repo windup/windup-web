@@ -26,6 +26,7 @@ import { getAlertModel } from "Constants";
 import { formatPath, Paths, ProjectRoute } from "Paths";
 import { AdvancedOption, AnalysisContext } from "models/api";
 import { saveAnalysisContext, getAnalysisContext } from "api/api";
+import { getAxiosErrorMessage } from "utils/modelUtils";
 
 import NewProjectWizard, {
   WizardStepIds,
@@ -148,7 +149,9 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
       .catch((error: AxiosError) => {
         setIsSubmitting(false);
         dispatch(
-          alertActions.alert(getAlertModel("danger", "Error", error.message))
+          alertActions.alert(
+            getAlertModel("danger", "Error", getAxiosErrorMessage(error))
+          )
         );
       });
   };

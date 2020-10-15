@@ -17,75 +17,83 @@ import {
 import { TrashIcon } from "@patternfly/react-icons";
 
 import { UploadFilesForm, ServerPathForm } from "components";
+import { ServerPathFormValue } from "components/server-path-form/server-path-form";
 
 import { Application } from "models/api";
 import { deleteRegisteredApplication, UPLOAD_APPLICATION_PATH } from "api/api";
 import { formatBytes } from "utils/format";
 
-export interface ProjectDetailsFormValue {
-  activeTabKey?: number;
-  tab0?: {
-    applications: Application[];
-  };
-  tab1?: {
-    serverPath?: string;
-    isServerPathExploded?: boolean;
-  };
+export enum AddApplicationsTabKey {
+  UPLOAD_FILE = "UploadFile",
+  SERVER_PATH = "ServerPath",
 }
 
-export interface AddApplicationsFormProps {
+interface TabUploadFileValue {
+  applications: Application[];
+}
+
+interface TabServerPathValue {
+  serverPath: string;
+  isExploded: boolean;
+}
+
+export interface AddApplicationsFormValue {
+  activeTabKey?: AddApplicationsTabKey;
+  tabUploadFile?: TabUploadFileValue;
+  tabServerPath?: TabServerPathValue;
+}
+
+export interface AddApplicationsTabsProps {
   projectId: number;
-  initialValues?: ProjectDetailsFormValue;
-  onChange?: (values: ProjectDetailsFormValue, isValid: boolean) => void;
+  initialValues?: AddApplicationsFormValue;
+  onChange?: (values: AddApplicationsFormValue, isValid: boolean) => void;
 }
 
-export const AddApplicationsForm: React.FC<AddApplicationsFormProps> = ({
+export const AddApplicationsTabs: React.FC<AddApplicationsTabsProps> = ({
   projectId,
   initialValues,
   onChange,
 }) => {
+  const [activeTabKey, setActiveTabKey] = useState<AddApplicationsTabKey>(
+    initialValues?.activeTabKey || AddApplicationsTabKey.UPLOAD_FILE
+  );
   const [applications, setApplications] = useState<Application[]>(
-    initialValues?.tab0?.applications || []
+    initialValues?.tabUploadFile?.applications || []
   );
-  const [activeTabKey, setActiveTabKey] = useState<number>(
-    initialValues?.activeTabKey || 0
-  );
-
   const [serverPathFormValue, setServerPathFormValue] = useState<
-    | {
-        serverPath?: string;
-        isExploded?: boolean;
-      }
-    | undefined
+    TabServerPathValue
   >(
-    initialValues?.tab1
+    initialValues?.tabServerPath
       ? {
-          serverPath: initialValues.tab1.serverPath,
-          isExploded: initialValues.tab1.isServerPathExploded,
+          serverPath: initialValues.tabServerPath.serverPath,
+          isExploded: initialValues.tabServerPath.isExploded,
         }
-      : undefined
+      : {
+          serverPath: "",
+          isExploded: false,
+        }
   );
   const [isServerPathFormValid, setIsServerPathFormValid] = useState(false);
 
   useEffect(() => {
     if (onChange) {
-      const formValue: ProjectDetailsFormValue = {
+      const formValue: AddApplicationsFormValue = {
         activeTabKey: activeTabKey,
-        tab0: {
+        tabUploadFile: {
           applications: applications,
         },
-        tab1: {
+        tabServerPath: {
           serverPath: serverPathFormValue?.serverPath,
-          isServerPathExploded: serverPathFormValue?.isExploded,
+          isExploded: serverPathFormValue?.isExploded,
         },
       };
 
       let isFormValid = false;
-      if (formValue.activeTabKey === 0) {
-        isFormValid = (formValue.tab0?.applications || []).length > 0;
-      } else if (formValue.activeTabKey === 1) {
+      if (formValue.activeTabKey === AddApplicationsTabKey.UPLOAD_FILE) {
+        isFormValid = (formValue.tabUploadFile?.applications || []).length > 0;
+      } else if (formValue.activeTabKey === AddApplicationsTabKey.SERVER_PATH) {
         isFormValid =
-          ((formValue.tab1?.serverPath || "").length || -1) > 0 &&
+          ((formValue.tabServerPath?.serverPath || "").length || -1) > 0 &&
           isServerPathFormValid === true;
       } else {
         throw Error("Tab id not supported");
@@ -120,13 +128,7 @@ export const AddApplicationsForm: React.FC<AddApplicationsFormProps> = ({
   );
 
   const handleServerPathFormChange = useCallback(
-    (
-      formValue: {
-        serverPath?: string;
-        isExploded?: boolean;
-      },
-      isValid: boolean
-    ) => {
+    (formValue: ServerPathFormValue, isValid: boolean) => {
       setServerPathFormValue(formValue);
       setIsServerPathFormValid(isValid);
     },
@@ -137,7 +139,10 @@ export const AddApplicationsForm: React.FC<AddApplicationsFormProps> = ({
     <Stack hasGutter>
       <StackItem>
         <Tabs activeKey={activeTabKey} onSelect={handleTabClick}>
-          <Tab eventKey={0} title={<TabTitleText>Upload</TabTitleText>}>
+          <Tab
+            eventKey={AddApplicationsTabKey.UPLOAD_FILE}
+            title={<TabTitleText>Upload</TabTitleText>}
+          >
             <UploadFilesForm
               url={UPLOAD_APPLICATION_PATH.replace(
                 ":projectId",
@@ -149,19 +154,14 @@ export const AddApplicationsForm: React.FC<AddApplicationsFormProps> = ({
               onFileUploadSuccess={handleUploadFilesFormChange}
             />
           </Tab>
-          <Tab eventKey={1} title={<TabTitleText>Directory path</TabTitleText>}>
+          <Tab
+            eventKey={AddApplicationsTabKey.SERVER_PATH}
+            title={<TabTitleText>Directory path</TabTitleText>}
+          >
             <ServerPathForm
               hideFormControls={true}
               onChange={handleServerPathFormChange}
-              initialValues={
-                initialValues?.tab1
-                  ? {
-                      serverPath: initialValues.tab1.serverPath || "",
-                      isExploded:
-                        initialValues.tab1.isServerPathExploded || false,
-                    }
-                  : undefined
-              }
+              initialValues={serverPathFormValue}
             />
           </Tab>
         </Tabs>
@@ -183,7 +183,7 @@ export const AddApplicationsForm: React.FC<AddApplicationsFormProps> = ({
             <SplitItem>
               <Button
                 variant={ButtonVariant.plain}
-                aria-label="Action"
+                aria-label="delete-application"
                 onClick={() => handleRemoveApplication(app)}
               >
                 <TrashIcon />

@@ -1,7 +1,7 @@
 import React from "react";
 import { shallow } from "enzyme";
-import { AddApplicationsForm } from "../add-applications-form";
+import { AddApplicationsTabs } from "../add-applications-tabs";
 
-describe("ProjectDetailsForm", () => {
+describe("AddApplicationsTabs", () => {
   it("Renders without crashing", () => {});
 });

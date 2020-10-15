@@ -35,6 +35,7 @@ import {
   updateProject,
 } from "api/api";
 import { MigrationProject } from "models/api";
+import { getAxiosErrorMessage } from "utils/modelUtils";
 
 import NewProjectWizard, {
   WizardStepIds,
@@ -101,7 +102,9 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
       .catch((error: AxiosError) => {
         setSubmitting(false);
         dispatch(
-          alertActions.alert(getAlertModel("danger", "Error", error.message))
+          alertActions.alert(
+            getAlertModel("danger", "Error", getAxiosErrorMessage(error))
+          )
         );
       });
   };

@@ -1,27 +1,27 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
-import { AxiosPromise } from "axios";
-import {
-  Stack,
-  StackItem,
-  Title,
-  TitleSizes,
-  Alert,
-  AlertActionCloseButton,
-} from "@patternfly/react-core";
+import { AxiosError, AxiosPromise } from "axios";
+import { Stack, StackItem, Title, TitleSizes } from "@patternfly/react-core";
 
-import { AddApplicationsForm } from "components";
+import { useDispatch } from "react-redux";
+import { alertActions } from "store/alert";
 
-import { MigrationProject, Application, AnalysisContext } from "models/api";
+import { AddApplicationsTabs, ConditionalRender } from "components";
 import {
-  getProjectById,
+  AddApplicationsFormValue,
+  AddApplicationsTabKey,
+} from "components/add-applications-tabs/add-applications-tabs";
+import { useFetchProject } from "hooks/useFetchProject";
+
+import { getAlertModel } from "Constants";
+import { Paths, formatPath, ProjectRoute } from "Paths";
+import { Application } from "models/api";
+import {
   pathTargetType,
   registerApplicationInDirectoryByPath,
   registerApplicationByPath,
-  getAnalysisContext,
 } from "api/api";
-
-import { Paths, formatPath, ProjectRoute } from "Paths";
+import { getAxiosErrorMessage } from "utils/modelUtils";
 
 import NewProjectWizard from "../wizard";
 import { WizardStepIds, LoadingWizardContent } from "../wizard";
@@ -32,110 +32,89 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
   match,
   history: { push },
 }) => {
-  const [project, setProject] = useState<MigrationProject>();
-  const [analysisContext, setAnalysisContext] = useState<AnalysisContext>();
+  const dispatch = useDispatch();
 
-  const [formValue, setFormValue] = useState<{
-    activeTabKey?: number;
-    tab0?: {
-      applications: Application[];
-    };
-    tab1?: {
-      serverPath?: string;
-      isServerPathExploded?: boolean;
-    };
-  }>();
+  const {
+    project,
+    analysisContext,
+    isFetching,
+    fetchError,
+    loadProject,
+  } = useFetchProject();
+
+  const [formValue, setFormValue] = useState<AddApplicationsFormValue>();
+
   const [enableNext, setEnableNext] = useState(false);
-
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string>();
-
-  const [isFetching, setIsFetching] = useState(true);
-  const [fetchError, setFetchError] = useState<string>();
 
   useEffect(() => {
-    getProjectById(match.params.project)
-      .then(({ data }) => {
-        setProject(data);
-        return getAnalysisContext(data.defaultAnalysisContextId);
-      })
-      .then(({ data: analysisContextData }) => {
-        setAnalysisContext(analysisContextData);
-      })
-      .catch(() => {
-        setFetchError("Error while fetching migrationProject");
-      })
-      .finally(() => {
-        setIsFetching(false);
-      });
-  }, [match]);
+    loadProject(match.params.project);
+  }, [match, loadProject]);
 
   const handleOnFormChange = useCallback(
-    (
-      value: {
-        activeTabKey?: number;
-        tab0?: {
-          applications: Application[];
-        };
-        tab1?: {
-          serverPath?: string;
-          isServerPathExploded?: boolean;
-        };
-      },
-      isValid: boolean
-    ) => {
+    (value: AddApplicationsFormValue, isValid: boolean) => {
       setFormValue(value);
       setEnableNext(isValid);
     },
     []
   );
 
+  const redirectToNextStep = () => {
+    push(
+      formatPath(Paths.newProject_setTransformationPath, {
+        project: match.params.project,
+      })
+    );
+  };
+
   const handleOnNextStep = () => {
     // Execute serverPath registration only of second tab is selected
-    if (formValue && formValue.activeTabKey === 1) {
-      setIsSubmitting(true);
-
-      pathTargetType(formValue.tab1?.serverPath!)
-        .then(({ data }) => {
-          let registerServerPathPromise: AxiosPromise<Application>;
-
-          if (data === "DIRECTORY" && !formValue.tab1?.isServerPathExploded) {
-            registerServerPathPromise = registerApplicationInDirectoryByPath(
-              project!.id,
-              formValue.tab1?.serverPath!
-            );
-          } else {
-            registerServerPathPromise = registerApplicationByPath(
-              project!.id,
-              formValue.tab1?.serverPath!,
-              formValue.tab1?.isServerPathExploded!
-            );
-          }
-
-          return registerServerPathPromise;
-        })
-        .then(() => {
-          push(
-            formatPath(Paths.newProject_setTransformationPath, {
-              project: project!.id,
-            })
-          );
-        })
-        .catch((error) => {
-          setIsSubmitting(false);
-          setSubmitError(
-            error?.response?.data?.message
-              ? error.response.data.message
-              : "It was not possible to register the path due to an error."
-          );
-        });
+    if (
+      formValue &&
+      formValue.activeTabKey === AddApplicationsTabKey.SERVER_PATH
+    ) {
+      onSubmit();
     } else {
-      push(
-        formatPath(Paths.newProject_setTransformationPath, {
-          project: project!.id,
-        })
-      );
+      redirectToNextStep();
     }
+  };
+
+  const onSubmit = () => {
+    if (!formValue || !project) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    pathTargetType(formValue.tabServerPath?.serverPath!)
+      .then(({ data }) => {
+        let registerServerPathPromise: AxiosPromise<Application>;
+
+        if (data === "DIRECTORY" && !formValue.tabServerPath?.isExploded) {
+          registerServerPathPromise = registerApplicationInDirectoryByPath(
+            project.id,
+            formValue.tabServerPath?.serverPath!
+          );
+        } else {
+          registerServerPathPromise = registerApplicationByPath(
+            project.id,
+            formValue.tabServerPath?.serverPath!,
+            formValue.tabServerPath?.isExploded!
+          );
+        }
+
+        return registerServerPathPromise;
+      })
+      .then(() => {
+        redirectToNextStep();
+      })
+      .catch((error: AxiosError) => {
+        setIsSubmitting(false);
+        dispatch(
+          alertActions.alert(
+            getAlertModel("danger", "Error", getAxiosErrorMessage(error))
+          )
+        );
+      });
   };
 
   return (
@@ -143,56 +122,44 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
       stepId={WizardStepIds.ADD_APPLICATIONS}
       enableNext={enableNext}
       disableNavigation={isFetching || isSubmitting}
+      showErrorContent={fetchError}
       handleOnNextStep={handleOnNextStep}
       migrationProject={project}
       analysisContext={analysisContext}
-      showErrorContent={fetchError}
     >
-      {isFetching ? (
-        <LoadingWizardContent />
-      ) : (
+      <ConditionalRender when={isFetching} then={<LoadingWizardContent />}>
         <Stack hasGutter>
           <StackItem>
             <Title headingLevel="h5" size={TitleSizes["lg"]}>
               Add applications
             </Title>
           </StackItem>
-          {submitError && (
-            <StackItem>
-              <Alert
-                isLiveRegion
-                variant="danger"
-                title="Error"
-                actionClose={
-                  <AlertActionCloseButton onClose={() => setSubmitError("")} />
-                }
-              >
-                {submitError}
-              </Alert>
-            </StackItem>
-          )}
           <StackItem>
             {project && (
-              <AddApplicationsForm
+              <AddApplicationsTabs
                 projectId={project.id}
                 initialValues={{
-                  activeTabKey: formValue?.activeTabKey,
-                  tab0: {
-                    applications: formValue?.tab0?.applications
-                      ? formValue.tab0.applications
-                      : project.applications,
+                  tabUploadFile: {
+                    applications: project.applications,
                   },
-                  tab1: {
-                    serverPath: formValue?.tab1?.serverPath,
-                    isServerPathExploded: formValue?.tab1?.isServerPathExploded,
-                  },
+                  // activeTabKey: formValue?.activeTabKey,
+                  // tabUploadFile: {
+                  //   applications: formValue?.tabUploadFile?.applications
+                  //     ? formValue.tabUploadFile.applications
+                  //     : project.applications,
+                  // },
+                  // tabServerPath: {
+                  //   serverPath: formValue?.tabServerPath?.serverPath,
+                  //   isServerPathExploded:
+                  //     formValue?.tabServerPath?.isServerPathExploded,
+                  // },
                 }}
                 onChange={handleOnFormChange}
               />
             )}
           </StackItem>
         </Stack>
-      )}
+      </ConditionalRender>
     </NewProjectWizard>
   );
 };

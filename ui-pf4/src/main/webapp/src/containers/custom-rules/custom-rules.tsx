@@ -41,7 +41,7 @@ import { alertActions } from "store/alert";
 import { getAlertModel } from "Constants";
 import { getAnalysisContext, saveAnalysisContext } from "api/api";
 import { RulesPath, RuleProviderEntity } from "models/api";
-import { getTechnologyAsString } from "utils/modelUtils";
+import { getAxiosErrorMessage, getTechnologyAsString } from "utils/modelUtils";
 
 const RULEPATH_FIELD = "rulePath";
 
@@ -128,7 +128,9 @@ export const CustomRules: React.FC<CustomRulesProps> = ({ projectId }) => {
         })
         .catch((error: AxiosError) => {
           dispatch(
-            alertActions.alert(getAlertModel("danger", "Error", error.message))
+            alertActions.alert(
+              getAlertModel("danger", "Error", getAxiosErrorMessage(error))
+            )
           );
         });
     },

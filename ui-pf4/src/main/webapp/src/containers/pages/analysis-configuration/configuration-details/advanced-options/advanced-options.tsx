@@ -45,6 +45,7 @@ import { AdvancedOption, AnalysisContext } from "models/api";
 
 import { getAlertModel } from "Constants";
 import { isNullOrUndefined } from "utils/utils";
+import { getAxiosErrorMessage } from "utils/modelUtils";
 
 const SUBMIT_BUTTON = "submitButton";
 const SAVE = "save";
@@ -166,7 +167,9 @@ export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({
       .catch((error: AxiosError) => {
         setIsSubmitting(false);
         dispatch(
-          alertActions.alert(getAlertModel("danger", "Error", error.message))
+          alertActions.alert(
+            getAlertModel("danger", "Error", getAxiosErrorMessage(error))
+          )
         );
       });
   };

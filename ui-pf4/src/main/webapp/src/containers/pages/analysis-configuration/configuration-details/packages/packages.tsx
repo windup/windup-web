@@ -26,7 +26,11 @@ import { alertActions } from "store/alert";
 
 import { formatPath, Paths, ProjectRoute } from "Paths";
 import { getAlertModel } from "Constants";
-import { getUnknownPackages, fullNameToPackage } from "utils/modelUtils";
+import {
+  getUnknownPackages,
+  fullNameToPackage,
+  getAxiosErrorMessage,
+} from "utils/modelUtils";
 
 import {
   createProjectExecution,
@@ -115,7 +119,9 @@ export const Packages: React.FC<PackagesProps> = ({
       .catch((error: AxiosError) => {
         setIsSubmitting(false);
         dispatch(
-          alertActions.alert(getAlertModel("danger", "Error", error.message))
+          alertActions.alert(
+            getAlertModel("danger", "Error", getAxiosErrorMessage(error))
+          )
         );
       });
   };

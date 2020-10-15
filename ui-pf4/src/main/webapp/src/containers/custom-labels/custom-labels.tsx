@@ -42,6 +42,7 @@ import { alertActions } from "store/alert";
 import { getAlertModel } from "Constants";
 import { getAnalysisContext, saveAnalysisContext } from "api/api";
 import { LabelsPath, LabelProviderEntity } from "models/api";
+import { getAxiosErrorMessage } from "utils/modelUtils";
 
 const LABELPATH_FIELD = "labelPath";
 
@@ -131,7 +132,9 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({ projectId }) => {
         })
         .catch((error: AxiosError) => {
           dispatch(
-            alertActions.alert(getAlertModel("danger", "Error", error.message))
+            alertActions.alert(
+              getAlertModel("danger", "Error", getAxiosErrorMessage(error))
+            )
           );
         });
     },

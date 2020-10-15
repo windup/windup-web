@@ -15,6 +15,7 @@ import { AnalysisContext } from "models/api";
 import { getAnalysisContext, saveAnalysisContext } from "api/api";
 import {
   fullNameToPackage as mapFullNamesToPackages,
+  getAxiosErrorMessage,
   getUnknownPackages,
 } from "utils/modelUtils";
 
@@ -101,7 +102,9 @@ export const SelectPackages: React.FC<SelectPackagesProps> = ({
       .catch((error: AxiosError) => {
         setIsSubmitting(false);
         dispatch(
-          alertActions.alert(getAlertModel("danger", "Error", error.message))
+          alertActions.alert(
+            getAlertModel("danger", "Error", getAxiosErrorMessage(error))
+          )
         );
       });
   };

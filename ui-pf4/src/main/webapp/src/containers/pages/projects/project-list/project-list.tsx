@@ -33,6 +33,7 @@ import { Paths } from "Paths";
 import { getAlertModel } from "Constants";
 import { Project } from "models/api";
 import { getProjectExecutions } from "api/api";
+import { getAxiosErrorMessage } from "utils/modelUtils";
 
 import { FetchStatus } from "store/common";
 
@@ -187,7 +188,7 @@ export const ProjectList: React.FC<Props> = ({
         }
       })
       .catch((error: AxiosError) => {
-        addAlert(getAlertModel("danger", "Error", error.message));
+        addAlert(getAlertModel("danger", "Error", getAxiosErrorMessage(error)));
       });
   };
 

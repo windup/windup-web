@@ -282,7 +282,7 @@ export const UploadFilesForm: React.FC<UploadFilesFormProps> = ({
                         {upload.status === "inProgress" && (
                           <Button
                             variant={ButtonVariant.plain}
-                            aria-label="Action"
+                            aria-label="cancel-upload"
                             onClick={() => handleCancelUpload(file, upload)}
                           >
                             <TimesIcon />
@@ -291,7 +291,7 @@ export const UploadFilesForm: React.FC<UploadFilesFormProps> = ({
                         {upload.status === "complete" && allowRemove && (
                           <Button
                             variant={ButtonVariant.plain}
-                            aria-label="Action"
+                            aria-label="delete-upload"
                             onClick={() => handleremoveFileUpload(file, upload)}
                           >
                             <TrashIcon />

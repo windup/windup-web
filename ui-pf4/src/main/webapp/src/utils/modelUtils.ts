@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import { Package, Technology, WindupExecution } from "models/api";
 
 export const getUnknownPackages = (array: Package[]) => {
@@ -60,4 +61,12 @@ export const getTechnologyAsString = (f: Technology) => {
 
 export const isExecutionActive = (execution: WindupExecution) => {
   return execution.state === "STARTED" || execution.state === "QUEUED";
+};
+
+// Axios error
+export const getAxiosErrorMessage = (axiosError: AxiosError) => {
+  if (axiosError.response?.data.message) {
+    return axiosError.response?.data.message;
+  }
+  return axiosError.message;
 };

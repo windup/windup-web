@@ -37,16 +37,16 @@ const validationSchema = yup.object().shape({
   isExploded: yup.boolean().nullable(),
 });
 
-export interface ProjectDetailsFormValue {
+export interface ServerPathFormValue {
   serverPath: string;
   isExploded: boolean;
 }
 
 export interface ServerPathFormProps {
-  initialValues?: ProjectDetailsFormValue;
+  initialValues?: ServerPathFormValue;
   isInitialValuesValid?: boolean;
   hideFormControls?: boolean;
-  onChange?: (values: ProjectDetailsFormValue, isValid: boolean) => void;
+  onChange?: (values: ServerPathFormValue, isValid: boolean) => void;
   onSubmit?: (value: any) => void;
   onCancel?: () => void;
 }

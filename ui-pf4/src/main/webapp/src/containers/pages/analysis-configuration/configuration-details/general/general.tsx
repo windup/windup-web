@@ -34,6 +34,7 @@ import {
 } from "api/api";
 import { AdvancedOption, AnalysisContext } from "models/api";
 import { isNullOrUndefined } from "utils/utils";
+import { getAxiosErrorMessage } from "utils/modelUtils";
 
 export interface RulesProps extends RouteComponentProps<ProjectRoute> {}
 
@@ -112,7 +113,9 @@ export const General: React.FC<RulesProps> = ({ match, history: { push } }) => {
       .catch((error: AxiosError) => {
         setIsSubmitting(false);
         dispatch(
-          alertActions.alert(getAlertModel("danger", "Error", error.message))
+          alertActions.alert(
+            getAlertModel("danger", "Error", getAxiosErrorMessage(error))
+          )
         );
       });
   };
