@@ -241,6 +241,7 @@ exports[`FetchTable Renders without crashing 1`] = `
         },
       ]
     }
+    selectVariant="checkbox"
     sortBy={Object {}}
     variant={null}
   >
