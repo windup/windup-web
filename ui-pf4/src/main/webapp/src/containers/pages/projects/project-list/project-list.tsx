@@ -24,19 +24,20 @@ import {
 import {
   SimplePageSection,
   Welcome,
-  DeleteProjectModal,
   AppPlaceholder,
   ConditionalRender,
   TableSectionOffline,
 } from "components";
 
-import { formatPath, Paths } from "Paths";
-import { getAlertModel, getDeleteErrorAlertModel } from "Constants";
+import { Paths } from "Paths";
+import { getAlertModel } from "Constants";
 import { Project } from "models/api";
-import { deleteProject, getProjectExecutions } from "api/api";
+import { getProjectExecutions } from "api/api";
 
 import { FetchStatus } from "store/common";
-import { deleteDialogActions } from "store/deleteDialog";
+
+import { EditProjectModal } from "./edit-project-modal";
+import { DeleteProjectModal } from "./delete-project-modal";
 
 const PROJECT_FIELD_NAME = "project";
 
@@ -80,9 +81,6 @@ interface StateToProps {
 
 interface DispatchToProps {
   fetchProjects: () => Promise<void>;
-  showDeleteDialog: typeof deleteDialogActions.openModal;
-  closeDeleteDialog: typeof deleteDialogActions.closeModal;
-  processingDeleteDialog: typeof deleteDialogActions.processing;
   addAlert: (alert: any) => void;
 }
 
@@ -96,8 +94,8 @@ export const ProjectList: React.FC<Props> = ({
   addAlert,
   history: { push },
 }) => {
+  const [projectToEdit, setProjectToEdit] = useState<Project>();
   const [projectToDelete, setProjectToDelete] = useState<Project>();
-  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     fetchProjects();
@@ -109,13 +107,23 @@ export const ProjectList: React.FC<Props> = ({
         title: "Edit",
         onClick: (_, rowIndex: number, rowData: IRowData) => {
           const project: Project = rowData[PROJECT_FIELD_NAME];
-          push(
-            formatPath(Paths.editProject, {
-              project: project.migrationProject.id,
-            })
-          );
+          setProjectToEdit(project);
         },
       },
+      /**
+       * Keep this in case we want to edit in a separate page
+       */
+      // {
+      //   title: "Edit",
+      //   onClick: (_, rowIndex: number, rowData: IRowData) => {
+      //     const project: Project = rowData[PROJECT_FIELD_NAME];
+      //     push(
+      //       formatPath(Paths.editProject, {
+      //         project: project.migrationProject.id,
+      //       })
+      //     );
+      //   },
+      // },
       {
         title: "Delete",
         onClick: (_, rowIndex: number, rowData: IRowData) => {
@@ -126,9 +134,7 @@ export const ProjectList: React.FC<Props> = ({
     ];
   };
 
-  const areActionsDisabled = (rowData: IRowData): boolean => {
-    // const project: Project = rowData[PROJECT_FIELD_NAME];
-    // return !project.isDeletable;
+  const areActionsDisabled = (): boolean => {
     return false;
   };
 
@@ -185,25 +191,18 @@ export const ProjectList: React.FC<Props> = ({
       });
   };
 
-  const handleDeleteProject = () => {
-    if (!projectToDelete) return;
-
-    setIsDeleting(true);
-    deleteProject(projectToDelete.migrationProject)
-      .then(() => {
-        fetchProjects();
-        handleDeleteModalClose();
-      })
-      .catch(() => {
-        addAlert(getDeleteErrorAlertModel("Project"));
-      })
-      .finally(() => {
-        setIsDeleting(false);
-      });
+  const handleEditModalClose = (refresh: boolean) => {
+    setProjectToEdit(undefined);
+    if (refresh) {
+      fetchProjects();
+    }
   };
 
-  const handleDeleteModalClose = () => {
+  const handleDeleteModalClose = (refresh: boolean) => {
     setProjectToDelete(undefined);
+    if (refresh) {
+      fetchProjects();
+    }
   };
 
   if (projects && projects.length === 0 && !error) {
@@ -244,12 +243,14 @@ export const ProjectList: React.FC<Props> = ({
       </ConditionalRender>
       {projectToDelete && (
         <DeleteProjectModal
-          projectTitle={projectToDelete.migrationProject.title}
-          matchText={projectToDelete.migrationProject.title}
-          isModalOpen={true}
-          inProgress={isDeleting}
-          onDelete={handleDeleteProject}
-          onCancel={handleDeleteModalClose}
+          project={projectToDelete.migrationProject}
+          onClose={handleDeleteModalClose}
+        />
+      )}
+      {projectToEdit && (
+        <EditProjectModal
+          project={projectToEdit.migrationProject}
+          onClose={handleEditModalClose}
         />
       )}
     </>

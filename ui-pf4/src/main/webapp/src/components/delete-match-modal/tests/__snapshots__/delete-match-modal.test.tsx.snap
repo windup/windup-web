@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`DeleteProjectModal Renders without crashing 1`] = `
+exports[`DeleteMatchModal Renders without crashing 1`] = `
 <Modal
   actions={
     Array [
@@ -29,18 +29,14 @@ exports[`DeleteProjectModal Renders without crashing 1`] = `
   onClose={[Function]}
   ouiaSafe={true}
   showClose={true}
-  title="Confirm project deletion"
+  title="Delete modal title"
   variant="small"
 >
   <div
     className="pf-c-content"
   >
     <p>
-      Are you sure you want to delete the project '
-      master
-      '? This will delete all resources associated with '
-      master
-      ' and cannot be undone. Make sure this is something you really want to do!
+      Are you sure you want to delete this?
     </p>
     <p>
       Type '
@@ -49,6 +45,8 @@ exports[`DeleteProjectModal Renders without crashing 1`] = `
     </p>
     <ForwardRef
       aria-label="Text input match"
+      id="matchText"
+      name="matchText"
       onChange={[Function]}
       type="text"
       value=""

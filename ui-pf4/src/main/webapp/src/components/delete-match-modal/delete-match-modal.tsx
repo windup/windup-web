@@ -8,10 +8,12 @@ import {
   TextInput,
 } from "@patternfly/react-core";
 
-export interface DeleteProjectModalProps {
+export interface DeleteMatchModalProps {
   isModalOpen: boolean;
 
-  projectTitle: string;
+  title: string;
+  message: string;
+
   matchText: string;
 
   inProgress?: boolean;
@@ -19,9 +21,10 @@ export interface DeleteProjectModalProps {
   onCancel: () => void;
 }
 
-export const DeleteProjectModal: React.FC<DeleteProjectModalProps> = ({
+export const DeleteMatchModal: React.FC<DeleteMatchModalProps> = ({
   isModalOpen,
-  projectTitle,
+  title,
+  message,
   matchText,
   inProgress,
   onDelete,
@@ -45,7 +48,7 @@ export const DeleteProjectModal: React.FC<DeleteProjectModalProps> = ({
   return (
     <Modal
       variant={ModalVariant.small}
-      title={`Confirm project deletion`}
+      title={title}
       isOpen={isModalOpen}
       onClose={handleCancel}
       actions={[
@@ -68,17 +71,15 @@ export const DeleteProjectModal: React.FC<DeleteProjectModalProps> = ({
       ]}
     >
       <div className="pf-c-content">
-        <p>
-          Are you sure you want to delete the project '{projectTitle}'? This
-          will delete all resources associated with '{projectTitle}' and cannot
-          be undone. Make sure this is something you really want to do!
-        </p>
+        <p>{message}</p>
 
         <p>Type '{matchText}' to confirm.</p>
 
         <TextInput
-          value={inputMatchValue}
           type="text"
+          id="matchText"
+          name="matchText"
+          value={inputMatchValue}
           onChange={(value) => setInputMatchValue(value)}
           aria-label="Text input match"
         />

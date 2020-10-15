@@ -52,6 +52,7 @@
     "build": "react-scripts build",
     "build:freemarker": "cp build/index.html build/index.html.ftl",
     "test": "react-scripts test",
+    "test:debug": "react-scripts --inspect-brk test --runInBand --no-cache",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public"
