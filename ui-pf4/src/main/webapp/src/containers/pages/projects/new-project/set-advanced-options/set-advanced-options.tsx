@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { AxiosError } from "axios";
 
@@ -31,6 +31,7 @@ import { getAxiosErrorMessage } from "utils/modelUtils";
 import NewProjectWizard, {
   WizardStepIds,
   LoadingWizardContent,
+  useWizardCancelRedirect,
 } from "../wizard";
 
 interface SetAdvancedOptionsProps extends RouteComponentProps<ProjectRoute> {}
@@ -40,6 +41,8 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
   history: { push },
 }) => {
   const dispatch = useDispatch();
+
+  const redirectOnCancel = useWizardCancelRedirect();
 
   /**
    * Fetch organization and analysisContext
@@ -97,9 +100,9 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
     );
   };
 
-  const handleOnCancel = () => {
-    push(Paths.projects);
-  };
+  const handleOnCancel = useCallback(() => {
+    redirectOnCancel(push, project);
+  }, [project, push, redirectOnCancel]);
 
   //
 

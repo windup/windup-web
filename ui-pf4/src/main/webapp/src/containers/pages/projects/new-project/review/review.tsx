@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 
 import {
@@ -18,6 +18,7 @@ import {
 import { css } from "@patternfly/react-styles";
 import styles from "@patternfly/react-styles/css/components/Wizard/wizard";
 
+import { AdvancedOptionsFieldKey } from "Constants";
 import { formatPath, Paths, ProjectRoute } from "Paths";
 import {
   getProjectById,
@@ -29,8 +30,8 @@ import { MigrationProject, AnalysisContext } from "models/api";
 import NewProjectWizard, {
   WizardStepIds,
   LoadingWizardContent,
+  useWizardCancelRedirect,
 } from "../wizard";
-import { AdvancedOptionsFieldKey } from "Constants";
 
 interface ReviewProps extends RouteComponentProps<ProjectRoute> {}
 
@@ -42,6 +43,8 @@ export const Review: React.FC<ReviewProps> = ({ match, history: { push } }) => {
   const [fetchError, setFetchError] = useState<string>();
 
   const [isCreatingExecution, setIsCreatingExecution] = useState(false);
+
+  const redirectOnCancel = useWizardCancelRedirect();
 
   useEffect(() => {
     getProjectById(match.params.project)
@@ -73,9 +76,9 @@ export const Review: React.FC<ReviewProps> = ({ match, history: { push } }) => {
     push(Paths.projects);
   };
 
-  const handleOnCancel = () => {
-    push(Paths.projects);
-  };
+  const handleOnCancel = useCallback(() => {
+    redirectOnCancel(push, project);
+  }, [project, push, redirectOnCancel]);
 
   const handleSaveAndRun = () => {
     setIsCreatingExecution(true);

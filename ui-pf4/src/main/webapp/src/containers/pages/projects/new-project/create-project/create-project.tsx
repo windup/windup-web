@@ -40,6 +40,7 @@ import { getAxiosErrorMessage } from "utils/modelUtils";
 import NewProjectWizard, {
   WizardStepIds,
   LoadingWizardContent,
+  useWizardCancelRedirect,
 } from "../wizard";
 
 interface CreateProjectProps
@@ -50,6 +51,9 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
   history: { push },
 }) => {
   const dispatch = useDispatch();
+
+  const redirectOnCancel = useWizardCancelRedirect();
+
   const {
     project,
     analysisContext,
@@ -110,8 +114,8 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
   };
 
   const handleOnCancel = useCallback(() => {
-    push(Paths.projects);
-  }, [push]);
+    redirectOnCancel(push, project);
+  }, [project, push, redirectOnCancel]);
 
   const stepId = WizardStepIds.DETAILS;
 
