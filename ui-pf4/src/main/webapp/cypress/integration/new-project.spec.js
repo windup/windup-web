@@ -82,7 +82,9 @@ context("New Project", () => {
     }).contains("Discovering and fetching packages");
     verifyActionButtonsEnabled();
 
-    cy.get(".ant-transfer.ant-transfer-customize-list");
+    cy.get(".ant-transfer.ant-transfer-customize-list", {
+      timeout: 20000,
+    });
     verifyActionButtonsDisabled();
 
     cy.get(".ant-tree-treenode", { timeout: 10000 }).contains("javax").click();
