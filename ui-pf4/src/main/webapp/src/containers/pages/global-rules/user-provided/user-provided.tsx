@@ -158,7 +158,7 @@ export const UserProvided: React.FC = () => {
   return (
     <>
       <TableSectionOffline
-        items={userProvidedRulesPath || []}
+        items={userProvidedRulesPath}
         columns={columns}
         actions={actions}
         loadingVariant="skeleton"

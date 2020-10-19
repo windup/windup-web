@@ -258,7 +258,7 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
         </StackItem>
         <StackItem>
           <TableSectionOffline
-            items={rulesPath || []}
+            items={rulesPath}
             columns={columns}
             actions={actions}
             loadingVariant="skeleton"

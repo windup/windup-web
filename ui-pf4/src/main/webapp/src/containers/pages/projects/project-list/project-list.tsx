@@ -220,7 +220,7 @@ export const ProjectList: React.FC<Props> = ({
         <SimplePageSection title="Projects" />
         <PageSection>
           <TableSectionOffline
-            items={projects || []}
+            items={projects}
             columns={columns}
             actionResolver={actionResolver}
             areActionsDisabled={areActionsDisabled}

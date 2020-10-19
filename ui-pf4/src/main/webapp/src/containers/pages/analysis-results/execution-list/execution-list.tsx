@@ -304,7 +304,7 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
           then={<SelectProjectEmptyMessage />}
         >
           <TableSectionOffline
-            items={executions || []}
+            items={executions}
             columns={columns}
             actions={actions}
             loadingVariant={

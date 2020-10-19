@@ -262,7 +262,7 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
         </StackItem>
         <StackItem>
           <TableSectionOffline
-            items={labelsPath || []}
+            items={labelsPath}
             columns={columns}
             actions={actions}
             loadingVariant="skeleton"

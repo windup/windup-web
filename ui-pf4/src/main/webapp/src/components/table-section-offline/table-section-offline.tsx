@@ -41,7 +41,7 @@ export interface TableSectionOfflineProps {
   loadingVariant?: "skeleton" | "spinner" | "none";
   loadingDataError: any;
 
-  items: any[];
+  items?: any[];
   mapToIRow: (items: any[]) => IRow[];
   filterItem: (filterText: string, value: any) => boolean;
   compareItem: (a: any, b: any, columnIndex?: number) => number;
@@ -76,6 +76,10 @@ export const TableSectionOffline: React.FC<TableSectionOfflineProps> = ({
   const [sortBy, setSortBy] = useState<ISortBy>();
 
   useEffect(() => {
+    if (!items) {
+      return;
+    }
+
     //  Sort
     let sortedItems: any[];
     const columnSortIndex = sortBy?.index;
@@ -161,7 +165,7 @@ export const TableSectionOffline: React.FC<TableSectionOfflineProps> = ({
         {filters && <ToolbarContent>{filters}</ToolbarContent>}
       </Toolbar>
       <ConditionalRender
-        when={items.length === 0 && !isLoadingData && !loadingDataError}
+        when={items?.length === 0 && !isLoadingData && !loadingDataError}
         then={
           <>
             <Table aria-label="Table" cells={columns}>

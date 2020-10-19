@@ -102,7 +102,7 @@ export const SystemProvided: React.FC = () => {
 
   return (
     <TableSectionOffline
-      items={tableData || []}
+      items={tableData}
       columns={columns}
       actions={actions}
       loadingVariant="skeleton"

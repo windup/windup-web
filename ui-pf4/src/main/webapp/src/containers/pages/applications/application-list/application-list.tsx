@@ -171,7 +171,7 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
           then={<SelectProjectEmptyMessage />}
         >
           <TableSectionOffline
-            items={project?.applications || []}
+            items={project?.applications}
             columns={columns}
             actions={actions}
             loadingVariant="skeleton"
