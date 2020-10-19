@@ -1,6 +1,6 @@
 import React from "react";
 import { useReducer } from "react";
-import axios, { CancelTokenSource } from "axios";
+import axios, { AxiosError, AxiosResponse, CancelTokenSource } from "axios";
 import {
   EmptyState,
   EmptyStateBody,
@@ -29,17 +29,27 @@ import BackendAPIClient from "api/apiClient";
 
 const CANCEL_MESSAGE = "cancelled";
 
+interface PromiseConfig {
+  formData: FormData;
+  config: any;
+
+  thenFn: (response: AxiosResponse) => void;
+  catchFn: (error: AxiosError) => void;
+}
+
 interface Upload {
   progress: number;
-  status: "none" | "inProgress" | "complete";
+  status: "queued" | "inProgress" | "complete";
   error?: any;
   wasCancelled: boolean;
-  cancelToken?: CancelTokenSource;
+  cancelFn?: CancelTokenSource;
 }
 const defaultUpload: Upload = {
   progress: 0,
-  status: "none",
+  status: "queued",
+  error: undefined,
   wasCancelled: false,
+  cancelFn: undefined,
 };
 
 interface Status {
@@ -48,56 +58,56 @@ interface Status {
 }
 interface Action {
   type:
-    | "startFileUpload"
-    | "updateFileUploadProgress"
-    | "successFileUpload"
-    | "failFileUpload"
-    | "removeFileUpload";
+    | "queueUpload"
+    | "updateUploadProgress"
+    | "finishUpload"
+    | "removeUpload";
   payload: any;
 }
 
 const reducer = (state: Status, action: Action): Status => {
   switch (action.type) {
-    case "startFileUpload":
+    case "queueUpload":
       return {
         ...state,
         uploads: new Map(state.uploads).set(action.payload.file, {
           ...(state.uploads.get(action.payload.file) || defaultUpload),
-          status: "inProgress",
-          cancelToken: action.payload.cancelTokenSource,
+          status: "queued",
+          cancelFn: action.payload.cancelFn,
         }),
       };
-    case "updateFileUploadProgress":
+    // case "startUpload":
+    //   return {
+    //     ...state,
+    //     uploads: new Map(state.uploads).set(action.payload.file, {
+    //       ...(state.uploads.get(action.payload.file) || defaultUpload),
+    //       status: "inProgress",
+    //     }),
+    //   };
+    case "updateUploadProgress":
       return {
         ...state,
         uploads: new Map(state.uploads).set(action.payload.file, {
           ...(state.uploads.get(action.payload.file) || defaultUpload),
           progress: action.payload.progress || 0,
+          status: "inProgress",
         }),
       };
-    case "successFileUpload":
-      return {
-        ...state,
-        uploads: new Map(state.uploads).set(action.payload.file, {
-          ...state.uploads.get(action.payload.file)!,
-          status: "complete",
-        }),
-        uploadsResponse: new Map(state.uploadsResponse).set(
-          action.payload.file,
-          action.payload.application
-        ),
-      };
-    case "failFileUpload":
+    case "finishUpload":
       return {
         ...state,
         uploads: new Map(state.uploads).set(action.payload.file, {
           ...state.uploads.get(action.payload.file)!,
           status: "complete",
           error: action.payload.error,
-          wasCancelled: action.payload.error.message === CANCEL_MESSAGE,
+          wasCancelled: action.payload.error?.message === CANCEL_MESSAGE,
         }),
+        uploadsResponse: new Map(state.uploadsResponse).set(
+          action.payload.file,
+          action.payload.application
+        ),
       };
-    case "removeFileUpload":
+    case "removeUpload":
       const newUploads = new Map(state.uploads);
       newUploads.delete(action.payload.file);
 
@@ -139,6 +149,8 @@ export const UploadFilesForm: React.FC<UploadFilesFormProps> = ({
   } as Status);
 
   const handleUpload = (acceptedFiles: File[]) => {
+    const promisesQueue: PromiseConfig[] = [];
+
     for (let index = 0; index < acceptedFiles.length; index++) {
       const file = acceptedFiles[index];
 
@@ -146,8 +158,7 @@ export const UploadFilesForm: React.FC<UploadFilesFormProps> = ({
       const formData = new FormData();
       formData.set("file", file);
 
-      const CancelToken = axios.CancelToken;
-      const source = CancelToken.source();
+      const cancelFn = axios.CancelToken.source();
 
       const config = {
         headers: {
@@ -156,47 +167,65 @@ export const UploadFilesForm: React.FC<UploadFilesFormProps> = ({
         onUploadProgress: (progressEvent: ProgressEvent) => {
           const progress = (progressEvent.loaded / progressEvent.total) * 100;
           dispatch({
-            type: "updateFileUploadProgress",
+            type: "updateUploadProgress",
             payload: { file, progress: Math.round(progress) },
           });
         },
-        cancelToken: source.token,
+        cancelToken: cancelFn.token,
       };
 
       dispatch({
-        type: "startFileUpload",
-        payload: { file, cancelTokenSource: source },
+        type: "queueUpload",
+        payload: {
+          file,
+          cancelFn,
+        },
       });
 
-      BackendAPIClient.post(url, formData, config)
-        .then(({ data }) => {
-          dispatch({
-            type: "successFileUpload",
-            payload: { file, application: data },
-          });
-
-          if (onFileUploadSuccess) onFileUploadSuccess(data, file);
-        })
-        .catch((error) => {
-          dispatch({
-            type: "failFileUpload",
-            payload: { file, error },
-          });
-
-          if (error.message !== CANCEL_MESSAGE) {
-            if (onFileUploadError) onFileUploadError(error, file);
-          }
+      const thenFn = (response: AxiosResponse) => {
+        dispatch({
+          type: "finishUpload",
+          payload: { file, application: response.data, error: undefined },
         });
+
+        if (onFileUploadSuccess) onFileUploadSuccess(response.data, file);
+      };
+
+      const catchFn = (error: AxiosError) => {
+        dispatch({
+          type: "finishUpload",
+          payload: { file, application: undefined, error },
+        });
+
+        if (error.message !== CANCEL_MESSAGE) {
+          if (onFileUploadError) onFileUploadError(error, file);
+        }
+      };
+
+      promisesQueue.push({ formData, config, thenFn, catchFn });
     }
+
+    // Use reduce and await for sequential upload
+    // Note: Parallel upload generates errors in the backend.
+    promisesQueue.reduce(async (previousPromise, nextPromise) => {
+      await previousPromise;
+      return BackendAPIClient.post(
+        url,
+        nextPromise.formData,
+        nextPromise.config
+      )
+        .then(nextPromise.thenFn)
+        .catch(nextPromise.catchFn);
+    }, Promise.resolve());
   };
 
   const handleCancelUpload = (file: File, upload: Upload) => {
-    upload.cancelToken!.cancel(CANCEL_MESSAGE);
+    upload.cancelFn!.cancel(CANCEL_MESSAGE);
   };
 
-  const handleremoveFileUpload = (file: File, upload: Upload) => {
+  const handleRemoveUpload = (file: File, upload: Upload) => {
     dispatch({
-      type: "removeFileUpload",
+      type: "removeUpload",
       payload: { file },
     });
   };
@@ -292,7 +321,7 @@ export const UploadFilesForm: React.FC<UploadFilesFormProps> = ({
                           <Button
                             variant={ButtonVariant.plain}
                             aria-label="delete-upload"
-                            onClick={() => handleremoveFileUpload(file, upload)}
+                            onClick={() => handleRemoveUpload(file, upload)}
                           >
                             <TrashIcon />
                           </Button>
