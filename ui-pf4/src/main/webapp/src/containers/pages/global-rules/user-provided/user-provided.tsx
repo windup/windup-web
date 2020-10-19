@@ -20,6 +20,7 @@ import { CubesIcon } from "@patternfly/react-icons";
 import {
   AddRuleLabelTabs,
   CustomEmptyState,
+  RulelabelTitle,
   TableSectionOffline,
 } from "components";
 import { useDeleteRule } from "hooks/useDeleteRule";
@@ -119,11 +120,21 @@ export const UserProvided: React.FC = () => {
           0
         );
 
+        const errors = ruleProviderEntity.reduce((errors, element) => {
+          return element.loadError ? [...errors, element.loadError] : [];
+        }, [] as string[]);
+
         return {
           [RULEPATH_FIELD]: item,
           cells: [
             {
-              title: item.shortPath || item.path,
+              title: (
+                <RulelabelTitle
+                  name={item.shortPath || item.path}
+                  errors={errors}
+                  numberOfRulesLabels={numberOfRules}
+                />
+              ),
             },
             {
               title: Array.from(sources.values()),

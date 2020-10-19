@@ -29,6 +29,7 @@ import {
   AddRuleLabelTabs,
   TableSectionOffline,
   CustomEmptyState,
+  RulelabelTitle,
 } from "components";
 
 import { useFetchProject } from "hooks/useFetchProject";
@@ -179,13 +180,23 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
           0
         );
 
+        const errors = ruleProviderEntity.reduce((errors, element) => {
+          return element.loadError ? [...errors, element.loadError] : [];
+        }, [] as string[]);
+
         return {
           props: {
             [RULEPATH_FIELD]: item,
           },
           cells: [
             {
-              title: item.shortPath || item.path,
+              title: (
+                <RulelabelTitle
+                  name={item.shortPath || item.path}
+                  errors={errors}
+                  numberOfRulesLabels={numberOfRules}
+                />
+              ),
             },
             {
               title: `${Array.from(sources.values())}/${Array.from(
@@ -205,6 +216,7 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
                   onChange={(isChecked) =>
                     handleRulePathToggled(isChecked, item)
                   }
+                  isDisabled={errors.length > 0}
                 />
               ),
             },

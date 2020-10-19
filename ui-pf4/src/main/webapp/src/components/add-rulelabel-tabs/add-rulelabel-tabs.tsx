@@ -83,6 +83,12 @@ export const AddRuleLabelTabs: React.FC<AddRuleLabelTabsProps> = ({
     });
   };
 
+  const allowedFiles = ".xml";
+  // const allowedFiles =
+  //   type === "Rule"
+  //     ? [".windup.xml", ".rhamt.xml", ".mta.xml"].join(",")
+  //     : [".windup.label.xml", ".rhamt.label.xml", ".mta.labe.xml"].join(",");
+
   return (
     <Stack hasGutter>
       <StackItem>
@@ -95,7 +101,7 @@ export const AddRuleLabelTabs: React.FC<AddRuleLabelTabsProps> = ({
                   ? UPLOAD_RULE_TO_MIGRATION_PROJECT
                   : UPLOAD_LABEL_TO_MIGRATION_PROJECT
                 ).replace(":projectId", projectId.toString())}
-                accept=".xml"
+                accept={allowedFiles}
                 template="dropdown-box"
                 hideProgressOnSuccess={false}
               />
@@ -105,7 +111,7 @@ export const AddRuleLabelTabs: React.FC<AddRuleLabelTabsProps> = ({
                 url={
                   type === "Rule" ? UPLOAD_RULE_GLOBALLY : UPLOAD_LABEL_GLOBALLY
                 }
-                accept=".xml"
+                accept={allowedFiles}
                 template="dropdown-box"
                 hideProgressOnSuccess={false}
               />

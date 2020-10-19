@@ -8,6 +8,7 @@ export { AdvancedOptionsForm } from "./advanced-options-form";
 export { AppPlaceholder } from "./app-placeholder";
 export { ConditionalRender } from "./conditional-render";
 export { CustomEmptyState } from "./custom-empty-state";
+export { RulelabelTitle } from "./rule-label-title";
 export { RuleLabelServerPathForm } from "./rulelabel-server-path-form";
 export { RulesLabelsList } from "./rules-labels-list";
 export { DeleteMatchModal } from "./delete-match-modal";

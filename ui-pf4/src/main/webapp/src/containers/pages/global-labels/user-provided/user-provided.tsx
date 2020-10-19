@@ -7,7 +7,6 @@ import {
   ModalVariant,
   ToolbarGroup,
   ToolbarItem,
-  Tooltip,
 } from "@patternfly/react-core";
 import {
   IActions,
@@ -16,11 +15,12 @@ import {
   IRowData,
   sortable,
 } from "@patternfly/react-table";
-import { CubesIcon, WarningTriangleIcon } from "@patternfly/react-icons";
+import { CubesIcon } from "@patternfly/react-icons";
 
 import {
   AddRuleLabelTabs,
   CustomEmptyState,
+  RulelabelTitle,
   TableSectionOffline,
 } from "components";
 import { useDeleteLabel } from "hooks/useDeleteLabel";
@@ -104,28 +104,20 @@ export const UserProvided: React.FC = () => {
           0
         );
 
-        const errors: string[] = labelProviderEntity.reduce(
-          (array, element) =>
-            element.loadError ? [...array, element.loadError] : array,
-          [] as string[]
-        );
+        const errors = labelProviderEntity.reduce((errors, element) => {
+          return element.loadError ? [...errors, element.loadError] : [];
+        }, [] as string[]);
 
         return {
           [LABELPATH_FIELD]: item,
           cells: [
             {
               title: (
-                <>
-                  {errors.length > 0 && (
-                    <Tooltip content={<div>{errors.join(",")}</div>}>
-                      <span>
-                        <WarningTriangleIcon />
-                        &nbsp;
-                      </span>
-                    </Tooltip>
-                  )}
-                  <span>{item.shortPath || item.path}</span>
-                </>
+                <RulelabelTitle
+                  name={item.shortPath || item.path}
+                  errors={errors}
+                  numberOfRulesLabels={numberOfLabels}
+                />
               ),
             },
             {

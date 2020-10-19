@@ -15,7 +15,6 @@ import {
   Modal,
   ModalVariant,
   Bullseye,
-  Tooltip,
 } from "@patternfly/react-core";
 import {
   ICell,
@@ -24,12 +23,13 @@ import {
   IActions,
   IRowData,
 } from "@patternfly/react-table";
-import { CubesIcon, WarningTriangleIcon } from "@patternfly/react-icons";
+import { CubesIcon } from "@patternfly/react-icons";
 
 import {
   AddRuleLabelTabs,
   TableSectionOffline,
   CustomEmptyState,
+  RulelabelTitle,
 } from "components";
 
 import { useFetchProject } from "hooks/useFetchProject";
@@ -170,11 +170,9 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
           0
         );
 
-        const errors: string[] = labelProviderEntity.reduce(
-          (array, element) =>
-            element.loadError ? [...array, element.loadError] : array,
-          [] as string[]
-        );
+        const errors = labelProviderEntity.reduce((errors, element) => {
+          return element.loadError ? [...errors, element.loadError] : [];
+        }, [] as string[]);
 
         return {
           props: {
@@ -183,17 +181,11 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
           cells: [
             {
               title: (
-                <>
-                  {errors.length > 0 && (
-                    <Tooltip content={<div>{errors.join(",")}</div>}>
-                      <span>
-                        <WarningTriangleIcon />
-                        &nbsp;
-                      </span>
-                    </Tooltip>
-                  )}
-                  <span>{item.shortPath || item.path}</span>
-                </>
+                <RulelabelTitle
+                  name={item.shortPath || item.path}
+                  errors={errors}
+                  numberOfRulesLabels={numberOfLabels}
+                />
               ),
             },
             {
@@ -209,6 +201,7 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
                   onChange={(isChecked) =>
                     handleLabelPathToggled(isChecked, item)
                   }
+                  isDisabled={errors.length > 0 || numberOfLabels === 0}
                 />
               ),
             },

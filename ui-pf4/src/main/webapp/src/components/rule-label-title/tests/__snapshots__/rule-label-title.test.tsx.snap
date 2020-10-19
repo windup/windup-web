@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RulelabelTitle Renders without crashing 1`] = `
+<span>
+  <span>
+    My rule
+  </span>
+  <Tooltip
+    content="Could not identify any rule inside this file/folder"
+  >
+    <i>
+       
+      <WarningTriangleIcon
+        color="#f0ab00"
+        noVerticalAlign={false}
+        size="sm"
+      />
+    </i>
+  </Tooltip>
+</span>
+`;
