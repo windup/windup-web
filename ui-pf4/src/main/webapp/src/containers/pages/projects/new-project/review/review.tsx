@@ -18,51 +18,48 @@ import {
 import { css } from "@patternfly/react-styles";
 import styles from "@patternfly/react-styles/css/components/Wizard/wizard";
 
-import { AdvancedOptionsFieldKey } from "Constants";
+import { useDispatch } from "react-redux";
+import { alertActions } from "store/alert";
+
+import { useFetchProject } from "hooks/useFetchProject";
+
+import { AdvancedOptionsFieldKey, getAlertModel } from "Constants";
 import { formatPath, Paths, ProjectRoute } from "Paths";
 import {
-  getProjectById,
   getAnalysisContext,
   createProjectExecution,
+  saveAnalysisContext,
 } from "api/api";
-import { MigrationProject, AnalysisContext } from "models/api";
 
 import NewProjectWizard, {
   WizardStepIds,
   LoadingWizardContent,
   useWizardCancelRedirect,
 } from "../wizard";
+import { AxiosError } from "axios";
+import { getAxiosErrorMessage } from "utils/modelUtils";
+import { ConditionalRender } from "components";
 
 interface ReviewProps extends RouteComponentProps<ProjectRoute> {}
 
 export const Review: React.FC<ReviewProps> = ({ match, history: { push } }) => {
-  const [project, setProject] = useState<MigrationProject>();
-  const [analysisContext, setAnalysisContext] = useState<AnalysisContext>();
+  const dispatch = useDispatch();
 
-  const [isFetching, setIsFetching] = useState(true);
-  const [fetchError, setFetchError] = useState<string>();
+  const {
+    project,
+    analysisContext,
+    isFetching,
+    fetchError,
+    loadProject,
+  } = useFetchProject();
 
   const [isCreatingExecution, setIsCreatingExecution] = useState(false);
 
   const redirectOnCancel = useWizardCancelRedirect();
 
   useEffect(() => {
-    getProjectById(match.params.project)
-      .then(({ data: projectData }) => {
-        setProject(projectData);
-
-        return getAnalysisContext(projectData.defaultAnalysisContextId);
-      })
-      .then(({ data: analysisContextData }) => {
-        setAnalysisContext(analysisContextData);
-      })
-      .catch(() => {
-        setFetchError("Error while fetching migrationProject/analysisContext");
-      })
-      .finally(() => {
-        setIsFetching(false);
-      });
-  }, [match]);
+    loadProject(match.params.project);
+  }, [match, loadProject]);
 
   const handleOnBackStep = () => {
     push(
@@ -72,30 +69,40 @@ export const Review: React.FC<ReviewProps> = ({ match, history: { push } }) => {
     );
   };
 
-  const handleOnNextStep = () => {
-    push(Paths.projects);
-  };
-
   const handleOnCancel = useCallback(() => {
     redirectOnCancel(push, project);
   }, [project, push, redirectOnCancel]);
 
-  const handleSaveAndRun = () => {
+  const handleSaveAndRun = (createExecution: boolean) => {
     setIsCreatingExecution(true);
     if (project) {
       getAnalysisContext(project.defaultAnalysisContextId)
         .then(({ data }) => {
-          return createProjectExecution(project.id, data);
+          return saveAnalysisContext(project.id, data, false);
+        })
+        .then(({ data }) => {
+          if (createExecution) {
+            return createProjectExecution(project.id, data);
+          }
         })
         .then(() => {
-          push(
-            formatPath(Paths.executions, {
-              project: match.params.project,
-            })
-          );
+          if (createExecution) {
+            push(
+              formatPath(Paths.executions, {
+                project: project.id,
+              })
+            );
+          } else {
+            push(Paths.projects);
+          }
         })
-        .catch(() => {
+        .catch((error: AxiosError) => {
           setIsCreatingExecution(false);
+          dispatch(
+            alertActions.alert(
+              getAlertModel("danger", "Error", getAxiosErrorMessage(error))
+            )
+          );
         });
     }
   };
@@ -105,7 +112,6 @@ export const Review: React.FC<ReviewProps> = ({ match, history: { push } }) => {
       stepId={WizardStepIds.REVIEW}
       enableNext={true}
       disableNavigation={isFetching || isCreatingExecution}
-      handleOnNextStep={handleOnNextStep}
       migrationProject={project}
       showErrorContent={fetchError}
       footer={
@@ -113,7 +119,7 @@ export const Review: React.FC<ReviewProps> = ({ match, history: { push } }) => {
           <Button
             variant={ButtonVariant.primary}
             type="submit"
-            onClick={handleOnNextStep}
+            onClick={() => handleSaveAndRun(false)}
             isDisabled={isFetching || isCreatingExecution}
           >
             Save
@@ -121,7 +127,7 @@ export const Review: React.FC<ReviewProps> = ({ match, history: { push } }) => {
           <Button
             variant={ButtonVariant.primary}
             type="submit"
-            onClick={handleSaveAndRun}
+            onClick={() => handleSaveAndRun(true)}
             isDisabled={isFetching || isCreatingExecution}
           >
             Save and run
@@ -143,9 +149,7 @@ export const Review: React.FC<ReviewProps> = ({ match, history: { push } }) => {
         </footer>
       }
     >
-      {isFetching ? (
-        <LoadingWizardContent />
-      ) : (
+      <ConditionalRender when={isFetching} then={<LoadingWizardContent />}>
         <Stack hasGutter>
           <StackItem>
             <TextContent>
@@ -198,7 +202,7 @@ export const Review: React.FC<ReviewProps> = ({ match, history: { push } }) => {
             </StackItem>
           )}
         </Stack>
-      )}
+      </ConditionalRender>
     </NewProjectWizard>
   );
 };

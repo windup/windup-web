@@ -42,7 +42,10 @@ export const SetCustomLabels: React.FC<SetCustomLabelsProps> = ({
       analysisContext={analysisContext}
       showErrorContent={fetchError}
     >
-      <CustomLabels projectId={match.params.project} />
+      <CustomLabels
+        projectId={match.params.project}
+        skipChangeToProvisional={true}
+      />
     </NewProjectWizard>
   );
 };

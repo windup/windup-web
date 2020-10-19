@@ -98,7 +98,7 @@ export const Packages: React.FC<PackagesProps> = ({
           ...data,
           includePackages: fullNameToPackage(selectedPackages, packages),
         };
-        return saveAnalysisContext(project.id, newAnalysisContext);
+        return saveAnalysisContext(project.id, newAnalysisContext, false);
       })
       .then(({ data }) => {
         if (runAnalysis) {

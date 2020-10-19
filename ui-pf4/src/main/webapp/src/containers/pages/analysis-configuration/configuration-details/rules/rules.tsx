@@ -21,7 +21,10 @@ export const Rules: React.FC<RulesProps> = ({ match }) => {
       <div className="pf-c-form">
         <Card>
           <CardBody>
-            <CustomRules projectId={match.params.project} />
+            <CustomRules
+              projectId={match.params.project}
+              skipChangeToProvisional={false}
+            />
           </CardBody>
         </Card>
       </div>

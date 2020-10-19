@@ -121,7 +121,7 @@ public class AnalysisContextService
     /**
      * Updates an existing instance.
      */
-    public AnalysisContext update(Long analysisContextId, AnalysisContext analysisContext)
+    public AnalysisContext update(Long analysisContextId, AnalysisContext analysisContext, boolean skipChangeToProvisional)
     {
         AnalysisContext original = this.get(analysisContextId);
 
@@ -143,7 +143,9 @@ public class AnalysisContextService
          * It seems a little out of place here, but this is the only place that projects are
          * currently finalized. (jsight - 2017/04/28)
          */
-        analysisContext.getMigrationProject().setProvisional(Boolean.FALSE);
+        if (!skipChangeToProvisional) {
+            analysisContext.getMigrationProject().setProvisional(Boolean.FALSE);
+        }
 
         AnalysisContext merged = entityManager.merge(analysisContext);
         return merged;

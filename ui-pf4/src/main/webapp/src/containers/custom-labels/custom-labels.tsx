@@ -75,9 +75,13 @@ const filterLabelPath = (filterText: string, labelPath: LabelsPath) => {
 
 interface CustomLabelsProps {
   projectId: string | number;
+  skipChangeToProvisional: boolean;
 }
 
-export const CustomLabels: React.FC<CustomLabelsProps> = ({ projectId }) => {
+export const CustomLabels: React.FC<CustomLabelsProps> = ({
+  projectId,
+  skipChangeToProvisional,
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const dispatch = useDispatch();
@@ -125,7 +129,11 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({ projectId }) => {
             );
           }
 
-          return saveAnalysisContext(project.id, newAnalysisContext);
+          return saveAnalysisContext(
+            project.id,
+            newAnalysisContext,
+            skipChangeToProvisional
+          );
         })
         .then(() => {
           loadProject(project.id);
@@ -138,7 +146,7 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({ projectId }) => {
           );
         });
     },
-    [project, loadProject, dispatch]
+    [project, skipChangeToProvisional, loadProject, dispatch]
   );
 
   const actions: IActions = [

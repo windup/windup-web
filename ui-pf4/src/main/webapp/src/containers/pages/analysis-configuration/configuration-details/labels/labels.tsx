@@ -21,7 +21,10 @@ export const Labels: React.FC<LabelsProps> = ({ match }) => {
       <div className="pf-c-form">
         <Card>
           <CardBody>
-            <CustomLabels projectId={match.params.project} />
+            <CustomLabels
+              projectId={match.params.project}
+              skipChangeToProvisional={false}
+            />
           </CardBody>
         </Card>
       </div>

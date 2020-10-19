@@ -90,7 +90,7 @@ export const SelectPackages: React.FC<SelectPackagesProps> = ({
           ...data,
           includePackages: mapFullNamesToPackages(selectedPackages, packages),
         };
-        return saveAnalysisContext(project.id, newAnalysisContext);
+        return saveAnalysisContext(project.id, newAnalysisContext, true);
       })
       .then(() => {
         push(

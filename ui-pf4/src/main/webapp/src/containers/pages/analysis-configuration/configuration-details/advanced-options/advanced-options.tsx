@@ -146,7 +146,7 @@ export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({
           advancedOptions: newAdvanceedOptions,
         };
 
-        return saveAnalysisContext(project.id, body);
+        return saveAnalysisContext(project.id, body, false);
       })
       .then(({ data }) => {
         if (runAnalysis) {

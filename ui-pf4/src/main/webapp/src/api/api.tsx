@@ -168,10 +168,11 @@ export const getAnalysisContext = (
 
 export const saveAnalysisContext = (
   projectId: number | string,
-  analysisContext: AnalysisContext
+  analysisContext: AnalysisContext,
+  skipChangeToProvisional: boolean
 ): AxiosPromise<AnalysisContext> => {
   return ApiClient.put<AnalysisContext>(
-    `analysis-context/migrationProjects/${projectId}`,
+    `analysis-context/migrationProjects/${projectId}?skipChangeToProvisional=${skipChangeToProvisional}`,
     analysisContext
   );
 };

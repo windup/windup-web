@@ -42,7 +42,10 @@ export const SetCustomRules: React.FC<SetCustomRulesProps> = ({
       analysisContext={analysisContext}
       showErrorContent={fetchError}
     >
-      <CustomRules projectId={match.params.project} />
+      <CustomRules
+        projectId={match.params.project}
+        skipChangeToProvisional={true}
+      />
     </NewProjectWizard>
   );
 };

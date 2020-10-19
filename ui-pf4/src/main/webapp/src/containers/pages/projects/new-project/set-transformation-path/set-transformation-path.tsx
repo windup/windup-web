@@ -80,7 +80,11 @@ export const SetTransformationPath: React.FC<SetTransformationPathProps> = ({
             }),
           ],
         };
-        return saveAnalysisContext(match.params.project, newAnalysisContext);
+        return saveAnalysisContext(
+          match.params.project,
+          newAnalysisContext,
+          true
+        );
       })
       .then(() => {
         push(

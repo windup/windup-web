@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 
 import {
-  Card,
-  CardBody,
   Toolbar,
   ToolbarContent,
   ToolbarItem,
@@ -135,7 +133,7 @@ export const TableSectionOffline: React.FC<TableSectionOfflineProps> = ({
   };
 
   return (
-    <>
+    <div style={{ backgroundColor: "var(--pf-global--BackgroundColor--100)" }}>
       <Toolbar>
         <ToolbarContent>
           {!hideFilterText && (
@@ -169,9 +167,7 @@ export const TableSectionOffline: React.FC<TableSectionOfflineProps> = ({
             <Table aria-label="Table" cells={columns}>
               <TableHeader />
             </Table>
-            <Card>
-              <CardBody>{emptyState}</CardBody>
-            </Card>
+            {emptyState}
           </>
         }
       >
@@ -192,6 +188,6 @@ export const TableSectionOffline: React.FC<TableSectionOfflineProps> = ({
         params={paginationParams}
         onChange={handlePaginationChange}
       />
-    </>
+    </div>
   );
 };

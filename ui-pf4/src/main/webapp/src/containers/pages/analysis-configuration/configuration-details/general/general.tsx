@@ -92,7 +92,11 @@ export const General: React.FC<RulesProps> = ({ match, history: { push } }) => {
             }),
           ],
         };
-        return saveAnalysisContext(match.params.project, newAnalysisContext);
+        return saveAnalysisContext(
+          match.params.project,
+          newAnalysisContext,
+          false
+        );
       })
       .then(({ data }) => {
         if (runAnalysis) {

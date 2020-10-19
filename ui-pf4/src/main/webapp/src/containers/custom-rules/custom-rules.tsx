@@ -71,9 +71,13 @@ const filterRulePath = (filterText: string, rulePath: RulesPath) => {
 
 interface CustomRulesProps {
   projectId: string | number;
+  skipChangeToProvisional: boolean;
 }
 
-export const CustomRules: React.FC<CustomRulesProps> = ({ projectId }) => {
+export const CustomRules: React.FC<CustomRulesProps> = ({
+  projectId,
+  skipChangeToProvisional,
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const dispatch = useDispatch();
@@ -121,7 +125,11 @@ export const CustomRules: React.FC<CustomRulesProps> = ({ projectId }) => {
             );
           }
 
-          return saveAnalysisContext(project.id, newAnalysisContext);
+          return saveAnalysisContext(
+            project.id,
+            newAnalysisContext,
+            skipChangeToProvisional
+          );
         })
         .then(() => {
           loadProject(project.id);
@@ -134,7 +142,7 @@ export const CustomRules: React.FC<CustomRulesProps> = ({ projectId }) => {
           );
         });
     },
-    [project, loadProject, dispatch]
+    [project, skipChangeToProvisional, loadProject, dispatch]
   );
 
   const actions: IActions = [

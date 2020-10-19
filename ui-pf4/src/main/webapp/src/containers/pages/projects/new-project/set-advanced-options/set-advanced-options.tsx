@@ -144,7 +144,7 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
           advancedOptions: newAdvanceedOptions,
         };
 
-        return saveAnalysisContext(project.id, body);
+        return saveAnalysisContext(project.id, body, true);
       })
       .then(() => {
         push(
