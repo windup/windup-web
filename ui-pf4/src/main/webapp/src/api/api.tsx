@@ -196,6 +196,20 @@ export const updateConfiguration = (
   );
 };
 
+export const reloadConfiguration = (
+  configuration: Configuration
+): AxiosPromise<Configuration> => {
+  return ApiClient.post<Configuration>(
+    `configuration/${configuration.id}/reload`,
+    configuration.id,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+};
+
 export const getRulesetPathsByConfigurationId = (
   configurationId: number
 ): AxiosPromise<RulesPath[]> => {

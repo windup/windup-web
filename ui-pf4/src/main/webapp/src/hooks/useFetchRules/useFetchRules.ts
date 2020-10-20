@@ -6,6 +6,7 @@ import {
   getProjectConfiguration,
   getRuleProviderByRulesPathId,
   getRulesetPathsByConfigurationId,
+  reloadConfiguration,
 } from "api/api";
 import { Configuration, RuleProviderEntity, RulesPath } from "models/api";
 
@@ -18,6 +19,15 @@ export interface IState {
   loadRules: (projectId: string | number) => void;
   loadGlobalRules: () => void;
 }
+
+const mapRulePathToRulePathProviderPromise = (rulePath: RulesPath) => {
+  return getRuleProviderByRulesPathId(rulePath.id).then(
+    ({ data: ruleProviders }) => ({
+      rulePath: rulePath,
+      ruleProviders: ruleProviders,
+    })
+  );
+};
 
 export const useFetchRules = (): IState => {
   const [configuration, setConfiguration] = useState<Configuration>();
@@ -40,16 +50,7 @@ export const useFetchRules = (): IState => {
       .then(({ data }) => {
         setRulesPath(data);
 
-        return Promise.all(
-          data.map((rulePathElement) =>
-            getRuleProviderByRulesPathId(rulePathElement.id).then(
-              ({ data: ruleProviderEntities }) => ({
-                rulePath: rulePathElement,
-                ruleProviders: ruleProviderEntities,
-              })
-            )
-          )
-        );
+        return Promise.all(data.map(mapRulePathToRulePathProviderPromise));
       })
       .then((responses) => {
         const map: Map<RulesPath, RuleProviderEntity[]> = new Map();
@@ -71,28 +72,59 @@ export const useFetchRules = (): IState => {
 
     getGlobalConfiguration()
       .then(({ data }) => {
-        setConfiguration(data);
-
-        const newRulesPath = [...data.rulesPaths];
-        setRulesPath(newRulesPath);
-
-        return Promise.all(
-          newRulesPath.map((rulePathElement) =>
-            getRuleProviderByRulesPathId(rulePathElement.id).then(
-              ({ data: ruleProviderEntities }) => ({
-                rulePath: rulePathElement,
-                ruleProviders: ruleProviderEntities,
-              })
-            )
-          )
-        );
+        return Promise.all([
+          data,
+          Promise.all(
+            data.rulesPaths.map(mapRulePathToRulePathProviderPromise)
+          ),
+        ]);
       })
-      .then((responses) => {
-        const map: Map<RulesPath, RuleProviderEntity[]> = new Map();
-        responses.forEach((element) =>
-          map.set(element.rulePath, element.ruleProviders)
-        );
-        setRuleProviders(map);
+      .then(([configuration, ruleProvidersByRulePath]) => {
+        const shouldForceReload = ruleProvidersByRulePath.some((elem) => {
+          return (
+            elem.rulePath.rulesPathType === "SYSTEM_PROVIDED" &&
+            elem.ruleProviders.length === 0
+          );
+        });
+
+        return Promise.all([
+          configuration,
+          ruleProvidersByRulePath,
+          shouldForceReload,
+        ]);
+      })
+      .then(([configuration, ruleProvidersByRulePath, shouldForceReload]) => {
+        const configurationPromise = shouldForceReload
+          ? Promise.resolve(reloadConfiguration(configuration))
+              .then(({ data }) => data)
+              .catch((error) => {
+                throw error;
+              })
+          : Promise.resolve(configuration);
+
+        return Promise.all([
+          configurationPromise,
+          ruleProvidersByRulePath,
+          shouldForceReload,
+        ]);
+      })
+      .then(([configuration, ruleProvidersByRulePath, shouldForceReload]) => {
+        const ruleProvidersByRulePathPromise = shouldForceReload
+          ? Promise.all(
+              configuration.rulesPaths.map(mapRulePathToRulePathProviderPromise)
+            )
+          : Promise.resolve(ruleProvidersByRulePath);
+
+        return Promise.all([configuration, ruleProvidersByRulePathPromise]);
+      })
+      .then(([configuration, ruleProvidersByRulePath]) => {
+        const rulesMap = ruleProvidersByRulePath.reduce((map, elem) => {
+          return map.set(elem.rulePath, elem.ruleProviders);
+        }, new Map<RulesPath, RuleProviderEntity[]>());
+
+        setConfiguration(configuration);
+        setRulesPath([...configuration.rulesPaths]);
+        setRuleProviders(rulesMap);
       })
       .catch((error: AxiosError) => {
         setFetchError(error.message);

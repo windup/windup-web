@@ -6,6 +6,7 @@ import {
   getLabelProviderByLabelsPathId,
   getLabelsetPathsByConfigurationId,
   getGlobalConfiguration,
+  reloadConfiguration,
 } from "api/api";
 import { Configuration, LabelProviderEntity, LabelsPath } from "models/api";
 
@@ -18,6 +19,15 @@ export interface IState {
   loadLabels: (projectId: string | number) => void;
   loadGlobalLabels: () => void;
 }
+
+const mapLabelPathToLabelPathProviderPromise = (labelPath: LabelsPath) => {
+  return getLabelProviderByLabelsPathId(labelPath.id).then(
+    ({ data: labelProviders }) => ({
+      labelPath: labelPath,
+      labelProviders: labelProviders,
+    })
+  );
+};
 
 export const useFetchLabels = (): IState => {
   const [configuration, setConfiguration] = useState<Configuration>();
@@ -40,16 +50,7 @@ export const useFetchLabels = (): IState => {
       .then(({ data }) => {
         setLabelsPath(data);
 
-        return Promise.all(
-          data.map((labelPathElement) =>
-            getLabelProviderByLabelsPathId(labelPathElement.id).then(
-              ({ data: labelProviderEntities }) => ({
-                labelPath: labelPathElement,
-                labelProviders: labelProviderEntities,
-              })
-            )
-          )
-        );
+        return Promise.all(data.map(mapLabelPathToLabelPathProviderPromise));
       })
       .then((responses) => {
         const map: Map<LabelsPath, LabelProviderEntity[]> = new Map();
@@ -71,28 +72,61 @@ export const useFetchLabels = (): IState => {
 
     getGlobalConfiguration()
       .then(({ data }) => {
-        setConfiguration(data);
-
-        const newLabelsPath = [...data.labelsPaths];
-        setLabelsPath(newLabelsPath);
-
-        return Promise.all(
-          newLabelsPath.map((rulePathElement) =>
-            getLabelProviderByLabelsPathId(rulePathElement.id).then(
-              ({ data: ruleProviderEntities }) => ({
-                rulePath: rulePathElement,
-                ruleProviders: ruleProviderEntities,
-              })
-            )
-          )
-        );
+        return Promise.all([
+          data,
+          Promise.all(
+            data.labelsPaths.map(mapLabelPathToLabelPathProviderPromise)
+          ),
+        ]);
       })
-      .then((responses) => {
-        const map: Map<LabelsPath, LabelProviderEntity[]> = new Map();
-        responses.forEach((element) =>
-          map.set(element.rulePath, element.ruleProviders)
-        );
-        setLabelProviders(map);
+      .then(([configuration, labelProvidersByLabelPath]) => {
+        const shouldForceReload = labelProvidersByLabelPath.some((elem) => {
+          return (
+            elem.labelPath.labelsPathType === "SYSTEM_PROVIDED" &&
+            elem.labelProviders.length === 0
+          );
+        });
+
+        return Promise.all([
+          configuration,
+          labelProvidersByLabelPath,
+          shouldForceReload,
+        ]);
+      })
+      .then(([configuration, labelProvidersByLabelPath, shouldForceReload]) => {
+        const configurationPromise = shouldForceReload
+          ? Promise.resolve(reloadConfiguration(configuration))
+              .then(({ data }) => data)
+              .catch((error) => {
+                throw error;
+              })
+          : Promise.resolve(configuration);
+
+        return Promise.all([
+          configurationPromise,
+          labelProvidersByLabelPath,
+          shouldForceReload,
+        ]);
+      })
+      .then(([configuration, labelProvidersByLabelPath, shouldForceReload]) => {
+        const labelProvidersByLabelPathPromise = shouldForceReload
+          ? Promise.all(
+              configuration.labelsPaths.map(
+                mapLabelPathToLabelPathProviderPromise
+              )
+            )
+          : Promise.resolve(labelProvidersByLabelPath);
+
+        return Promise.all([configuration, labelProvidersByLabelPathPromise]);
+      })
+      .then(([configuration, labelProvidersByLabelPath]) => {
+        const labelsMap = labelProvidersByLabelPath.reduce((map, elem) => {
+          return map.set(elem.labelPath, elem.labelProviders);
+        }, new Map<LabelsPath, LabelProviderEntity[]>());
+
+        setConfiguration(configuration);
+        setLabelsPath([...configuration.labelsPaths]);
+        setLabelProviders(labelsMap);
       })
       .catch((error: AxiosError) => {
         setFetchError(error.message);
