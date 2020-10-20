@@ -202,7 +202,9 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
               title: `${[
                 Array.from(sources.values()).join(", "),
                 Array.from(targets.values()).join(", "),
-              ].join("/")}`,
+              ]
+                .filter((f) => f.length > 0)
+                .join("/")}`,
             },
             {
               title: numberOfRules,
