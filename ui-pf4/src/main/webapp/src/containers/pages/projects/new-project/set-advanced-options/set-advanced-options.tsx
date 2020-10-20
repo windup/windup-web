@@ -186,7 +186,7 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
       validationSchema={buildSchema(configurationOptions)}
       onSubmit={handleOnNextStep}
     >
-      {({ isValid, isValidating, isSubmitting, handleSubmit, ...formik }) => {
+      {({ isValidating, isSubmitting, handleSubmit, ...formik }) => {
         const loading = isFetchingProject || isFetchingConfigurationOptions;
         const disableNavigation = loading || isSubmitting || isValidating;
 
@@ -209,7 +209,7 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
                   <Button
                     variant={ButtonVariant.primary}
                     type="submit"
-                    isDisabled={disableNavigation || !isValid}
+                    isDisabled={disableNavigation}
                   >
                     Next
                   </Button>

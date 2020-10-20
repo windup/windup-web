@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { RouteComponentProps } from "react-router-dom";
-import { Formik } from "formik";
+import { Formik, FormikHelpers } from "formik";
 import { AxiosError } from "axios";
 
 import {
@@ -59,7 +59,6 @@ export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({
   history: { push },
 }) => {
   const dispatch = useDispatch();
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   /**
    * Fetch organization and analysisContext
@@ -110,12 +109,15 @@ export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({
   };
 
   //
-  const handleOnSubmit = (formValues: any, runAnalysis: boolean) => {
+  const handleOnSubmit = (
+    formValues: any,
+    { setSubmitting }: FormikHelpers<any>,
+    runAnalysis: boolean
+  ) => {
     if (!project) {
       return;
     }
 
-    setIsSubmitting(true);
     getAnalysisContext(project.defaultAnalysisContextId)
       .then(({ data }) => {
         const newAdvanceedOptions: AdvancedOption[] = [];
@@ -161,11 +163,11 @@ export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({
             })
           );
         } else {
-          setIsSubmitting(false);
+          setSubmitting(false);
         }
       })
       .catch((error: AxiosError) => {
-        setIsSubmitting(false);
+        setSubmitting(false);
         dispatch(
           alertActions.alert(
             getAlertModel("danger", "Error", getAxiosErrorMessage(error))
@@ -199,13 +201,18 @@ export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({
                 ...buildInitialValues(analysisContext, configurationOptions),
               }}
               validationSchema={buildSchema(configurationOptions)}
-              onSubmit={(values) => {
+              onSubmit={(values, formikHelpers) => {
                 const { submitButton, ...formValues } = values;
-                handleOnSubmit(formValues, submitButton === SAVE_AND_EXECUTE);
+                handleOnSubmit(
+                  formValues,
+                  formikHelpers,
+                  submitButton === SAVE_AND_EXECUTE
+                );
               }}
             >
               {({
                 isValidating,
+                isSubmitting,
                 submitForm,
                 handleSubmit,
                 setFieldValue,
@@ -216,11 +223,14 @@ export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({
                     <Form onSubmit={handleSubmit}>
                       <AdvancedOptionsForm
                         configurationOptions={configurationOptions}
-                        isValidating={isValidating}
-                        handleSubmit={handleSubmit}
-                        submitForm={submitForm}
-                        setFieldValue={setFieldValue}
-                        {...formik}
+                        {...{
+                          ...formik,
+                          isValidating,
+                          isSubmitting,
+                          submitForm,
+                          handleSubmit,
+                          setFieldValue,
+                        }}
                       />
                       {!fetchProjectError && !fetchConfigurationOptionsError && (
                         <ActionGroup>
