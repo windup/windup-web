@@ -137,10 +137,10 @@ export const UserProvided: React.FC = () => {
               ),
             },
             {
-              title: Array.from(sources.values()),
+              title: Array.from(sources.values()).join(", "),
             },
             {
-              title: Array.from(targets.values()),
+              title: Array.from(targets.values()).join(", "),
             },
             {
               title: numberOfRules,
