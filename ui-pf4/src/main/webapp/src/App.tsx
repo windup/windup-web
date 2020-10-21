@@ -8,6 +8,7 @@ import "./App.scss";
 import { DefaultLayout } from "./layout";
 
 import DeleteDialog from "./containers/delete-dialog";
+import { RuleLabelDetailsModal } from "./containers/rule-label-details-modal";
 
 import "@redhat-cloud-services/frontend-components-notifications/index.css";
 const frontendComponentsNotifications = require("@redhat-cloud-services/frontend-components-notifications");
@@ -23,6 +24,7 @@ const App: React.FC = () => {
       </DefaultLayout>
       <NotificationsPortal />
       <DeleteDialog />
+      <RuleLabelDetailsModal />
     </HashRouter>
   );
 };

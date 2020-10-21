@@ -9,10 +9,11 @@ import {
   ToolbarItem,
 } from "@patternfly/react-core";
 import {
-  IActions,
+  IAction,
   ICell,
   IRow,
   IRowData,
+  ISeparator,
   sortable,
 } from "@patternfly/react-table";
 import { CubesIcon } from "@patternfly/react-icons";
@@ -25,9 +26,15 @@ import {
 } from "components";
 import { useDeleteRule } from "hooks/useDeleteRule";
 import { useFetchRules } from "hooks/useFetchRules";
+import { useShowRuleLabelDetails } from "hooks/useShowRuleLabelDetails";
 
 import { RuleProviderEntity, RulesPath } from "models/api";
-import { getTechnologyAsString } from "utils/modelUtils";
+import {
+  getErrorsFromRuleProviderEntity,
+  getNumberOfRulesFromRuleProviderEntity,
+  getSourcesFromRuleProviderEntity,
+  getTargetsFromRuleProviderEntity,
+} from "utils/modelUtils";
 
 const RULEPATH_FIELD = "rulePath";
 
@@ -62,6 +69,7 @@ export const UserProvided: React.FC = () => {
   >();
 
   const deleteRule = useDeleteRule();
+  const showRuleLabelDetails = useShowRuleLabelDetails();
 
   const {
     rulesPath,
@@ -86,43 +94,56 @@ export const UserProvided: React.FC = () => {
     loadGlobalRules();
   }, [loadGlobalRules]);
 
-  const actions: IActions = [
-    {
-      title: "Delete",
+  const actionResolver = (rowData: IRowData): (IAction | ISeparator)[] => {
+    const row: RulesPath = getRowRulePathField(rowData);
+    const ruleProviderEntity = ruleProviders?.get(row.id) || [];
+    const numberOfRules = getNumberOfRulesFromRuleProviderEntity(
+      ruleProviderEntity
+    );
+
+    const viewDetailsAction: IAction = {
+      title: "View details",
       onClick: (_, rowIndex: number, rowData: IRowData) => {
-        const row: RulesPath = rowData[RULEPATH_FIELD];
-        deleteRule(row, () => loadGlobalRules());
+        const row: RulesPath = getRowRulePathField(rowData);
+        const providerEntity = ruleProviders?.get(row.id) || [];
+
+        showRuleLabelDetails("Rule", row, providerEntity);
       },
-    },
-  ];
+    };
+
+    return [
+      ...(numberOfRules > 0 ? [viewDetailsAction] : []),
+      {
+        title: "Delete",
+        onClick: (_, rowIndex: number, rowData: IRowData) => {
+          const row: RulesPath = getRowRulePathField(rowData);
+          deleteRule(row, () => loadGlobalRules());
+        },
+      },
+    ];
+  };
+
+  const areActionsDisabled = (): boolean => {
+    return false;
+  };
+
+  const getRowRulePathField = (rowData: IRowData): RulesPath => {
+    return rowData[RULEPATH_FIELD];
+  };
 
   const toIRowFn = useCallback(
     (rulePaths: RulesPath[]): IRow[] => {
       return rulePaths.map((item) => {
         const ruleProviderEntity: RuleProviderEntity[] =
-          ruleProviders?.get(item) || [];
+          ruleProviders?.get(item.id) || [];
 
-        const sources = ruleProviderEntity.reduce((collection, element) => {
-          element.sources.forEach((f) => {
-            collection.add(getTechnologyAsString(f));
-          });
-          return collection;
-        }, new Set<string>());
-        const targets = ruleProviderEntity.reduce((collection, element) => {
-          element.targets.forEach((f) => {
-            collection.add(getTechnologyAsString(f));
-          });
-          return collection;
-        }, new Set<string>());
+        const sources = getSourcesFromRuleProviderEntity(ruleProviderEntity);
+        const targets = getTargetsFromRuleProviderEntity(ruleProviderEntity);
 
-        const numberOfRules: number = ruleProviderEntity.reduce(
-          (counter, element) => counter + element.rules.length,
-          0
+        const numberOfRules = getNumberOfRulesFromRuleProviderEntity(
+          ruleProviderEntity
         );
-
-        const errors = ruleProviderEntity.reduce((errors, element) => {
-          return element.loadError ? [...errors, element.loadError] : [];
-        }, [] as string[]);
+        const errors = getErrorsFromRuleProviderEntity(ruleProviderEntity);
 
         return {
           [RULEPATH_FIELD]: item,
@@ -171,7 +192,8 @@ export const UserProvided: React.FC = () => {
       <TableSectionOffline
         items={userProvidedRulesPath}
         columns={columns}
-        actions={actions}
+        actionResolver={actionResolver}
+        areActionsDisabled={areActionsDisabled}
         loadingVariant="skeleton"
         isLoadingData={isFetchingRules}
         loadingDataError={fetchRulesError}

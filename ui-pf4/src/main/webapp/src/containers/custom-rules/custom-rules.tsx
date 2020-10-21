@@ -20,8 +20,9 @@ import {
   ICell,
   sortable,
   IRow,
-  IActions,
   IRowData,
+  IAction,
+  ISeparator,
 } from "@patternfly/react-table";
 import { CubesIcon } from "@patternfly/react-icons";
 
@@ -35,6 +36,7 @@ import {
 import { useFetchProject } from "hooks/useFetchProject";
 import { useFetchRules } from "hooks/useFetchRules/useFetchRules";
 import { useDeleteRule } from "hooks/useDeleteRule";
+import { useShowRuleLabelDetails } from "hooks/useShowRuleLabelDetails";
 
 import { useDispatch } from "react-redux";
 import { alertActions } from "store/alert";
@@ -42,7 +44,13 @@ import { alertActions } from "store/alert";
 import { getAlertModel } from "Constants";
 import { getAnalysisContext, saveAnalysisContext } from "api/api";
 import { RulesPath, RuleProviderEntity } from "models/api";
-import { getAxiosErrorMessage, getTechnologyAsString } from "utils/modelUtils";
+import {
+  getAxiosErrorMessage,
+  getSourcesFromRuleProviderEntity,
+  getTargetsFromRuleProviderEntity,
+  getNumberOfRulesFromRuleProviderEntity,
+  getErrorsFromRuleProviderEntity,
+} from "utils/modelUtils";
 
 const RULEPATH_FIELD = "rulePath";
 
@@ -83,6 +91,7 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
 
   const dispatch = useDispatch();
   const deleteRule = useDeleteRule();
+  const showRuleLabelDetails = useShowRuleLabelDetails();
 
   const {
     project,
@@ -146,48 +155,59 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
     [project, skipChangeToProvisional, loadProject, dispatch]
   );
 
-  const actions: IActions = [
-    {
-      title: "Delete",
+  const actionResolver = (rowData: IRowData): (IAction | ISeparator)[] => {
+    const row: RulesPath = getRowRulePathField(rowData);
+    const ruleProviderEntity = ruleProviders?.get(row.id) || [];
+    const numberOfRules = getNumberOfRulesFromRuleProviderEntity(
+      ruleProviderEntity
+    );
+
+    const viewDetailsAction: IAction = {
+      title: "View details",
       onClick: (_, rowIndex: number, rowData: IRowData) => {
-        const row: RulesPath = rowData.props[RULEPATH_FIELD];
-        deleteRule(row, () => loadRules(projectId));
+        const row: RulesPath = getRowRulePathField(rowData);
+        const ruleProviderEntity = ruleProviders?.get(row.id) || [];
+
+        showRuleLabelDetails("Rule", row, ruleProviderEntity);
       },
-    },
-  ];
+    };
+
+    return [
+      ...(numberOfRules > 0 ? [viewDetailsAction] : []),
+      {
+        title: "Delete",
+        onClick: (_, rowIndex: number, rowData: IRowData) => {
+          const row: RulesPath = getRowRulePathField(rowData);
+          deleteRule(row, () => loadRules(projectId));
+        },
+      },
+    ];
+  };
+
+  const areActionsDisabled = (): boolean => {
+    return false;
+  };
+
+  const getRowRulePathField = (rowData: IRowData): RulesPath => {
+    return rowData[RULEPATH_FIELD];
+  };
 
   const rulePathToIRow = useCallback(
     (rulePaths: RulesPath[]): IRow[] => {
       return rulePaths.map((item) => {
         const ruleProviderEntity: RuleProviderEntity[] =
-          ruleProviders?.get(item) || [];
+          ruleProviders?.get(item.id) || [];
 
-        const sources = ruleProviderEntity.reduce((collection, element) => {
-          element.sources.forEach((f) => {
-            collection.add(getTechnologyAsString(f));
-          });
-          return collection;
-        }, new Set<string>());
-        const targets = ruleProviderEntity.reduce((collection, element) => {
-          element.targets.forEach((f) => {
-            collection.add(getTechnologyAsString(f));
-          });
-          return collection;
-        }, new Set<string>());
+        const sources = getSourcesFromRuleProviderEntity(ruleProviderEntity);
+        const targets = getTargetsFromRuleProviderEntity(ruleProviderEntity);
 
-        const numberOfRules: number = ruleProviderEntity.reduce(
-          (counter, element) => counter + element.rules.length,
-          0
+        const numberOfRules = getNumberOfRulesFromRuleProviderEntity(
+          ruleProviderEntity
         );
-
-        const errors = ruleProviderEntity.reduce((errors, element) => {
-          return element.loadError ? [...errors, element.loadError] : [];
-        }, [] as string[]);
+        const errors = getErrorsFromRuleProviderEntity(ruleProviderEntity);
 
         return {
-          props: {
-            [RULEPATH_FIELD]: item,
-          },
+          [RULEPATH_FIELD]: item,
           cells: [
             {
               title: (
@@ -275,7 +295,8 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
           <TableSectionOffline
             items={rulesPath}
             columns={columns}
-            actions={actions}
+            actionResolver={actionResolver}
+            areActionsDisabled={areActionsDisabled}
             loadingVariant="skeleton"
             isLoadingData={isFetchingProject || isFetchingRules}
             loadingDataError={fetchProjectError || fetchRulesError}

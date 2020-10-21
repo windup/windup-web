@@ -13,7 +13,7 @@ import { Configuration, RuleProviderEntity, RulesPath } from "models/api";
 export interface IState {
   configuration?: Configuration;
   rulesPath?: RulesPath[];
-  ruleProviders?: Map<RulesPath, RuleProviderEntity[]>;
+  ruleProviders?: Map<number, RuleProviderEntity[]>;
   isFetching: boolean;
   fetchError?: string;
   loadRules: (projectId: string | number) => void;
@@ -33,7 +33,7 @@ export const useFetchRules = (): IState => {
   const [configuration, setConfiguration] = useState<Configuration>();
   const [rulesPath, setRulesPath] = useState<RulesPath[]>();
   const [ruleProviders, setRuleProviders] = useState<
-    Map<RulesPath, RuleProviderEntity[]>
+    Map<number, RuleProviderEntity[]>
   >(new Map());
 
   const [isFetching, setIsFetching] = useState(false);
@@ -53,9 +53,9 @@ export const useFetchRules = (): IState => {
         return Promise.all(data.map(mapRulePathToRulePathProviderPromise));
       })
       .then((responses) => {
-        const map: Map<RulesPath, RuleProviderEntity[]> = new Map();
+        const map: Map<number, RuleProviderEntity[]> = new Map();
         responses.forEach((element) =>
-          map.set(element.rulePath, element.ruleProviders)
+          map.set(element.rulePath.id, element.ruleProviders)
         );
         setRuleProviders(map);
       })
@@ -119,8 +119,8 @@ export const useFetchRules = (): IState => {
       })
       .then(([configuration, ruleProvidersByRulePath]) => {
         const rulesMap = ruleProvidersByRulePath.reduce((map, elem) => {
-          return map.set(elem.rulePath, elem.ruleProviders);
-        }, new Map<RulesPath, RuleProviderEntity[]>());
+          return map.set(elem.rulePath.id, elem.ruleProviders);
+        }, new Map<number, RuleProviderEntity[]>());
 
         setConfiguration(configuration);
         setRulesPath([...configuration.rulesPaths]);

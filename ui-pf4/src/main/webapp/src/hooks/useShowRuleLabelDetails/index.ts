@@ -1,0 +1,1 @@
+export { useShowRuleLabelDetails } from "./useShowRuleLabelDetails";

@@ -1,11 +1,19 @@
 import React, { useCallback, useEffect, useState } from "react";
 
 import { Bullseye } from "@patternfly/react-core";
-import { IActions, ICell, IRow, sortable } from "@patternfly/react-table";
+import {
+  IAction,
+  ICell,
+  IRow,
+  IRowData,
+  ISeparator,
+  sortable,
+} from "@patternfly/react-table";
 import { CubesIcon } from "@patternfly/react-icons";
 
 import { CustomEmptyState, TableSectionOffline } from "components";
 import { useFetchLabels } from "hooks/useFetchLabels";
+import { useShowRuleLabelDetails } from "hooks/useShowRuleLabelDetails";
 
 import { LabelProviderEntity, LabelsPath } from "models/api";
 
@@ -34,19 +42,25 @@ const filterLabelPath = (filterText: string, item: LabelProviderEntity) => {
 };
 
 const getSystemProvidedLabelProviderEntities = (
-  labelsPath?: LabelsPath[],
-  labelProviders?: Map<LabelsPath, LabelProviderEntity[]>
+  labelsPath: LabelsPath[],
+  labelProviders: Map<number, LabelProviderEntity[]>
 ) => {
   const systemProvidedLabelsPath = labelsPath?.find(
     (f) => f.labelsPathType === "SYSTEM_PROVIDED"
   );
-  if (systemProvidedLabelsPath) {
-    return labelProviders?.get(systemProvidedLabelsPath);
-  }
+
+  return {
+    systemLabelPath: systemProvidedLabelsPath,
+    systemLabelProviders: systemProvidedLabelsPath
+      ? labelProviders.get(systemProvidedLabelsPath.id)
+      : [],
+  };
 };
 
 export const SystemProvided: React.FC = () => {
   const [tableData, setTableData] = useState<LabelProviderEntity[]>();
+
+  const showRuleLabelDetails = useShowRuleLabelDetails();
 
   const {
     labelsPath,
@@ -62,28 +76,44 @@ export const SystemProvided: React.FC = () => {
 
   useEffect(() => {
     if (labelsPath && labelProviders) {
-      const newTableData = getSystemProvidedLabelProviderEntities(
+      const { systemLabelProviders } = getSystemProvidedLabelProviderEntities(
         labelsPath,
         labelProviders
-      )
-        ?.slice()
-        .sort((a, b) => {
-          return a.providerID.localeCompare(b.providerID);
-        });
+      );
+      const newTableData = systemLabelProviders?.slice().sort((a, b) => {
+        return a.providerID.localeCompare(b.providerID);
+      });
 
       setTableData(newTableData);
     }
   }, [labelsPath, labelProviders]);
 
-  const actions: IActions = [];
+  const actionResolver = (rowData: IRowData): (IAction | ISeparator)[] => {
+    const row: LabelProviderEntity = getRowValue(rowData);
+
+    const viewDetailsAction: IAction = {
+      title: "View details",
+      onClick: (_, rowIndex: number, rowData: IRowData) => {
+        const row: LabelProviderEntity = getRowValue(rowData);
+
+        showRuleLabelDetails("Label", undefined, [row]);
+      },
+    };
+
+    return [...(row.labels.length > 0 ? [viewDetailsAction] : [])];
+  };
+
+  const areActionsDisabled = (): boolean => {
+    return false;
+  };
+
+  const getRowValue = (rowData: IRowData): LabelProviderEntity => {
+    return rowData[LABEL_PROVIDER_ENTITY_FIELD];
+  };
 
   const labelPathToIRow = useCallback(
     (labelProviderEntity: LabelProviderEntity[]): IRow[] => {
       return labelProviderEntity.map((item) => {
-        const numberOfLabels: number = labelProviderEntity.reduce(
-          (counter, element) => counter + element.labels.length,
-          0
-        );
         return {
           [LABEL_PROVIDER_ENTITY_FIELD]: item,
           cells: [
@@ -91,7 +121,7 @@ export const SystemProvided: React.FC = () => {
               title: item.providerID,
             },
             {
-              title: numberOfLabels,
+              title: item.labels.length,
             },
           ],
         };
@@ -104,7 +134,8 @@ export const SystemProvided: React.FC = () => {
     <TableSectionOffline
       items={tableData}
       columns={columns}
-      actions={actions}
+      actionResolver={actionResolver}
+      areActionsDisabled={areActionsDisabled}
       loadingVariant="skeleton"
       isLoadingData={isFetching || !tableData}
       loadingDataError={fetchError}

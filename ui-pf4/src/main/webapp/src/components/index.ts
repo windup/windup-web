@@ -10,6 +10,7 @@ export { ConditionalRender } from "./conditional-render";
 export { CustomEmptyState } from "./custom-empty-state";
 export { RulelabelTitle } from "./rule-label-title";
 export { RuleLabelServerPathForm } from "./rulelabel-server-path-form";
+export { RulePathViewDetails } from "./rulepath-view-details";
 export { RulesLabelsList } from "./rules-labels-list";
 export { DeleteMatchModal } from "./delete-match-modal";
 export {

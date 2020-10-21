@@ -20,8 +20,9 @@ import {
   ICell,
   sortable,
   IRow,
-  IActions,
   IRowData,
+  IAction,
+  ISeparator,
 } from "@patternfly/react-table";
 import { CubesIcon } from "@patternfly/react-icons";
 
@@ -35,6 +36,7 @@ import {
 import { useFetchProject } from "hooks/useFetchProject";
 import { useFetchLabels } from "hooks/useFetchLabels/useFetchLabels";
 import { useDeleteLabel } from "hooks/useDeleteLabel";
+import { useShowRuleLabelDetails } from "hooks/useShowRuleLabelDetails";
 
 import { useDispatch } from "react-redux";
 import { alertActions } from "store/alert";
@@ -42,7 +44,11 @@ import { alertActions } from "store/alert";
 import { getAlertModel } from "Constants";
 import { getAnalysisContext, saveAnalysisContext } from "api/api";
 import { LabelsPath, LabelProviderEntity } from "models/api";
-import { getAxiosErrorMessage } from "utils/modelUtils";
+import {
+  getAxiosErrorMessage,
+  getErrorsFromLabelProviderEntity,
+  getNumberOfLabelsFromLabelProviderEntity,
+} from "utils/modelUtils";
 
 const LABELPATH_FIELD = "labelPath";
 
@@ -86,6 +92,7 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
 
   const dispatch = useDispatch();
   const deleteLabel = useDeleteLabel();
+  const showRuleLabelDetails = useShowRuleLabelDetails();
 
   const {
     project,
@@ -149,35 +156,57 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
     [project, skipChangeToProvisional, loadProject, dispatch]
   );
 
-  const actions: IActions = [
-    {
-      title: "Delete",
+  const actionResolver = (rowData: IRowData): (IAction | ISeparator)[] => {
+    const row: LabelsPath = getRowLabelPathField(rowData);
+    const labelProviderEntity = labelProviders?.get(row.id) || [];
+    const numberOfRules = getNumberOfLabelsFromLabelProviderEntity(
+      labelProviderEntity
+    );
+
+    const viewDetailsAction: IAction = {
+      title: "View details",
       onClick: (_, rowIndex: number, rowData: IRowData) => {
-        const row: LabelsPath = rowData.props[LABELPATH_FIELD];
-        deleteLabel(row, () => loadLabels(projectId));
+        const row: LabelsPath = getRowLabelPathField(rowData);
+        const labelProviderEntity = labelProviders?.get(row.id) || [];
+
+        showRuleLabelDetails("Label", row, labelProviderEntity);
       },
-    },
-  ];
+    };
+
+    return [
+      ...(numberOfRules > 0 ? [viewDetailsAction] : []),
+      {
+        title: "Delete",
+        onClick: (_, rowIndex: number, rowData: IRowData) => {
+          const row: LabelsPath = getRowLabelPathField(rowData);
+          deleteLabel(row, () => loadLabels(projectId));
+        },
+      },
+    ];
+  };
+
+  const areActionsDisabled = (): boolean => {
+    return false;
+  };
+
+  const getRowLabelPathField = (rowData: IRowData): LabelsPath => {
+    return rowData[LABELPATH_FIELD];
+  };
 
   const labelPathToIRow = useCallback(
     (labelPaths: LabelsPath[]): IRow[] => {
       return labelPaths.map((item) => {
         const labelProviderEntity: LabelProviderEntity[] =
-          labelProviders?.get(item) || [];
+          labelProviders?.get(item.id) || [];
 
-        const numberOfLabels: number = labelProviderEntity.reduce(
-          (counter, element) => counter + element.labels.length,
-          0
+        const numberOfLabels = getNumberOfLabelsFromLabelProviderEntity(
+          labelProviderEntity
         );
 
-        const errors = labelProviderEntity.reduce((errors, element) => {
-          return element.loadError ? [...errors, element.loadError] : [];
-        }, [] as string[]);
+        const errors = getErrorsFromLabelProviderEntity(labelProviderEntity);
 
         return {
-          props: {
-            [LABELPATH_FIELD]: item,
-          },
+          [LABELPATH_FIELD]: item,
           cells: [
             {
               title: (
@@ -257,7 +286,8 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
           <TableSectionOffline
             items={labelsPath}
             columns={columns}
-            actions={actions}
+            actionResolver={actionResolver}
+            areActionsDisabled={areActionsDisabled}
             loadingVariant="skeleton"
             isLoadingData={isFetchingProject || isFetchingLabels}
             loadingDataError={fetchProjectError || fetchLabelsError}

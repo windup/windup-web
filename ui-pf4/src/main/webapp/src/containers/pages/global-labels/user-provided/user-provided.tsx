@@ -9,10 +9,11 @@ import {
   ToolbarItem,
 } from "@patternfly/react-core";
 import {
-  IActions,
+  IAction,
   ICell,
   IRow,
   IRowData,
+  ISeparator,
   sortable,
 } from "@patternfly/react-table";
 import { CubesIcon } from "@patternfly/react-icons";
@@ -25,8 +26,13 @@ import {
 } from "components";
 import { useDeleteLabel } from "hooks/useDeleteLabel";
 import { useFetchLabels } from "hooks/useFetchLabels";
+import { useShowRuleLabelDetails } from "hooks/useShowRuleLabelDetails";
 
 import { LabelProviderEntity, LabelsPath } from "models/api";
+import {
+  getErrorsFromLabelProviderEntity,
+  getNumberOfLabelsFromLabelProviderEntity,
+} from "utils/modelUtils";
 
 const LABELPATH_FIELD = "labelPath";
 
@@ -59,6 +65,7 @@ export const UserProvided: React.FC = () => {
   >();
 
   const deleteLabel = useDeleteLabel();
+  const showRuleLabelDetails = useShowRuleLabelDetails();
 
   const {
     labelsPath,
@@ -83,30 +90,54 @@ export const UserProvided: React.FC = () => {
     loadGlobalLabels();
   }, [loadGlobalLabels]);
 
-  const actions: IActions = [
-    {
-      title: "Delete",
+  const actionResolver = (rowData: IRowData): (IAction | ISeparator)[] => {
+    const row: LabelsPath = getRowLabelPathField(rowData);
+    const labelProviderEntity = labelProviders?.get(row.id) || [];
+    const numberOfRules = getNumberOfLabelsFromLabelProviderEntity(
+      labelProviderEntity
+    );
+
+    const viewDetailsAction: IAction = {
+      title: "View details",
       onClick: (_, rowIndex: number, rowData: IRowData) => {
-        const row: LabelsPath = rowData[LABELPATH_FIELD];
-        deleteLabel(row, () => loadGlobalLabels());
+        const row: LabelsPath = getRowLabelPathField(rowData);
+        const labelProviderEntity = labelProviders?.get(row.id) || [];
+
+        showRuleLabelDetails("Label", row, labelProviderEntity);
       },
-    },
-  ];
+    };
+
+    return [
+      ...(numberOfRules > 0 ? [viewDetailsAction] : []),
+      {
+        title: "Delete",
+        onClick: (_, rowIndex: number, rowData: IRowData) => {
+          const row: LabelsPath = getRowLabelPathField(rowData);
+          deleteLabel(row, () => loadGlobalLabels());
+        },
+      },
+    ];
+  };
+
+  const areActionsDisabled = (): boolean => {
+    return false;
+  };
+
+  const getRowLabelPathField = (rowData: IRowData): LabelsPath => {
+    return rowData[LABELPATH_FIELD];
+  };
 
   const toIRowFn = useCallback(
     (labelPaths: LabelsPath[]): IRow[] => {
       return labelPaths.map((item) => {
         const labelProviderEntity: LabelProviderEntity[] =
-          labelProviders?.get(item) || [];
+          labelProviders?.get(item.id) || [];
 
-        const numberOfLabels: number = labelProviderEntity.reduce(
-          (counter, element) => counter + element.labels.length,
-          0
+        const numberOfLabels = getNumberOfLabelsFromLabelProviderEntity(
+          labelProviderEntity
         );
 
-        const errors = labelProviderEntity.reduce((errors, element) => {
-          return element.loadError ? [...errors, element.loadError] : [];
-        }, [] as string[]);
+        const errors = getErrorsFromLabelProviderEntity(labelProviderEntity);
 
         return {
           [LABELPATH_FIELD]: item,
@@ -149,7 +180,8 @@ export const UserProvided: React.FC = () => {
       <TableSectionOffline
         items={userProvidedLabelsPath}
         columns={columns}
-        actions={actions}
+        actionResolver={actionResolver}
+        areActionsDisabled={areActionsDisabled}
         loadingVariant="skeleton"
         isLoadingData={isFetchingLabels}
         loadingDataError={fetchLabelsError}

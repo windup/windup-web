@@ -13,6 +13,10 @@ import {
   projectContextReducer,
 } from "./projectContext";
 import { projectListStateKey, projectListReducer } from "./projectList";
+import {
+  ruleLabelDetailsModalStateKey,
+  ruleLabelDetailsModalReducer,
+} from "./ruleLabelDetailsModal";
 
 const frontendComponentsNotifications = require("@redhat-cloud-services/frontend-components-notifications");
 
@@ -25,5 +29,6 @@ export const rootReducer = combineReducers({
   [executionsWsStateKey]: executionsWsReducer,
   [projectContextStateKey]: projectContextReducer,
   [projectListStateKey]: projectListReducer,
+  [ruleLabelDetailsModalStateKey]: ruleLabelDetailsModalReducer,
   notifications: frontendComponentsNotifications.notifications,
 });

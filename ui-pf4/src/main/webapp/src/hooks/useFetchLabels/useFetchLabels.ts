@@ -13,7 +13,7 @@ import { Configuration, LabelProviderEntity, LabelsPath } from "models/api";
 export interface IState {
   configuration?: Configuration;
   labelsPath?: LabelsPath[];
-  labelProviders?: Map<LabelsPath, LabelProviderEntity[]>;
+  labelProviders?: Map<number, LabelProviderEntity[]>;
   isFetching: boolean;
   fetchError?: string;
   loadLabels: (projectId: string | number) => void;
@@ -33,7 +33,7 @@ export const useFetchLabels = (): IState => {
   const [configuration, setConfiguration] = useState<Configuration>();
   const [labelsPath, setLabelsPath] = useState<LabelsPath[]>();
   const [labelProviders, setLabelProviders] = useState<
-    Map<LabelsPath, LabelProviderEntity[]>
+    Map<number, LabelProviderEntity[]>
   >(new Map());
 
   const [isFetching, setIsFetching] = useState(false);
@@ -53,9 +53,9 @@ export const useFetchLabels = (): IState => {
         return Promise.all(data.map(mapLabelPathToLabelPathProviderPromise));
       })
       .then((responses) => {
-        const map: Map<LabelsPath, LabelProviderEntity[]> = new Map();
+        const map: Map<number, LabelProviderEntity[]> = new Map();
         responses.forEach((element) =>
-          map.set(element.labelPath, element.labelProviders)
+          map.set(element.labelPath.id, element.labelProviders)
         );
         setLabelProviders(map);
       })
@@ -121,8 +121,8 @@ export const useFetchLabels = (): IState => {
       })
       .then(([configuration, labelProvidersByLabelPath]) => {
         const labelsMap = labelProvidersByLabelPath.reduce((map, elem) => {
-          return map.set(elem.labelPath, elem.labelProviders);
-        }, new Map<LabelsPath, LabelProviderEntity[]>());
+          return map.set(elem.labelPath.id, elem.labelProviders);
+        }, new Map<number, LabelProviderEntity[]>());
 
         setConfiguration(configuration);
         setLabelsPath([...configuration.labelsPaths]);

@@ -15,13 +15,21 @@ import {
   ToolbarGroup,
   ToolbarItem,
 } from "@patternfly/react-core";
-import { IActions, ICell, IRow, sortable } from "@patternfly/react-table";
+import {
+  IAction,
+  ICell,
+  IRow,
+  IRowData,
+  ISeparator,
+  sortable,
+} from "@patternfly/react-table";
 import { CubesIcon, FilterIcon } from "@patternfly/react-icons";
 
 import "./system-provided.scss";
 
 import { CustomEmptyState, TableSectionOffline } from "components";
 import { useFetchRules } from "hooks/useFetchRules";
+import { useShowRuleLabelDetails } from "hooks/useShowRuleLabelDetails";
 
 import { RuleProviderEntity, RulesPath } from "models/api";
 import { getTechnologyAsString } from "utils/modelUtils";
@@ -57,15 +65,19 @@ const filterRulePath = (filterText: string, item: RuleProviderEntity) => {
 };
 
 const getSystemProvidedRuleProviderEntities = (
-  rulesPath?: RulesPath[],
-  ruleProviders?: Map<RulesPath, RuleProviderEntity[]>
+  rulesPath: RulesPath[],
+  ruleProviders: Map<number, RuleProviderEntity[]>
 ) => {
-  const systemProvidedRulesPath = rulesPath?.find(
+  const systemProvidedRulesPath = rulesPath.find(
     (f) => f.rulesPathType === "SYSTEM_PROVIDED"
   );
-  if (systemProvidedRulesPath) {
-    return ruleProviders?.get(systemProvidedRulesPath);
-  }
+
+  return {
+    systemRulePath: systemProvidedRulesPath,
+    systemRuleProviders: systemProvidedRulesPath
+      ? ruleProviders.get(systemProvidedRulesPath.id)
+      : [],
+  };
 };
 
 const getAllTechnologyVersions = (
@@ -112,6 +124,8 @@ export const SystemProvided: React.FC = () => {
   const [selectedSources, setSelectedSources] = useState<string[]>([]);
   const [selectedTargets, setSelectedTargets] = useState<string[]>([]);
 
+  const showRuleLabelDetails = useShowRuleLabelDetails();
+
   const {
     rulesPath,
     ruleProviders,
@@ -125,19 +139,23 @@ export const SystemProvided: React.FC = () => {
   }, [loadGlobalRules]);
 
   useEffect(() => {
-    const systemProviders = getSystemProvidedRuleProviderEntities(
-      rulesPath,
-      ruleProviders
-    );
-    setAllSystemProviders(systemProviders);
+    if (rulesPath && ruleProviders) {
+      const { systemRuleProviders } = getSystemProvidedRuleProviderEntities(
+        rulesPath,
+        ruleProviders
+      );
+      setAllSystemProviders(systemRuleProviders);
+    }
   }, [rulesPath, ruleProviders]);
 
   useEffect(() => {
     if (rulesPath && ruleProviders) {
-      const newTableData = getSystemProvidedRuleProviderEntities(
+      const { systemRuleProviders } = getSystemProvidedRuleProviderEntities(
         rulesPath,
         ruleProviders
-      )
+      );
+
+      const newTableData = systemRuleProviders
         //showAllRules
         ?.filter((f) => {
           return showAllRules ? true : f.phase === "MIGRATIONRULESPHASE";
@@ -187,15 +205,34 @@ export const SystemProvided: React.FC = () => {
     selectedTargets,
   ]);
 
-  const actions: IActions = [];
+  const actionResolver = (rowData: IRowData): (IAction | ISeparator)[] => {
+    const row: RuleProviderEntity = getRowValue(rowData);
+
+    const viewDetailsAction: IAction = {
+      title: "View details",
+      onClick: (_, rowIndex: number, rowData: IRowData) => {
+        const row: RuleProviderEntity = getRowValue(rowData);
+
+        showRuleLabelDetails("Rule", undefined, [row]);
+      },
+    };
+
+    return [...(row.rules.length > 0 ? [viewDetailsAction] : [])];
+  };
+
+  const areActionsDisabled = (): boolean => {
+    return false;
+  };
+
+  const getRowValue = (rowData: IRowData): RuleProviderEntity => {
+    return rowData[RULE_PROVIDER_ENTITY_FIELD];
+  };
 
   const rulePathToIRow = useCallback(
     (ruleProviderEntity: RuleProviderEntity[]): IRow[] => {
       return ruleProviderEntity.map((item) => {
         return {
-          props: {
-            [RULE_PROVIDER_ENTITY_FIELD]: item,
-          },
+          [RULE_PROVIDER_ENTITY_FIELD]: item,
           cells: [
             {
               title: item.providerID,
@@ -261,7 +298,8 @@ export const SystemProvided: React.FC = () => {
     <TableSectionOffline
       items={tableData}
       columns={columns}
-      actions={actions}
+      actionResolver={actionResolver}
+      areActionsDisabled={areActionsDisabled}
       loadingVariant="skeleton"
       isLoadingData={isFetching || !tableData}
       loadingDataError={fetchError}

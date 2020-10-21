@@ -1,5 +1,11 @@
 import { AxiosError } from "axios";
-import { Package, Technology, WindupExecution } from "models/api";
+import {
+  LabelProviderEntity,
+  Package,
+  RuleProviderEntity,
+  Technology,
+  WindupExecution,
+} from "models/api";
 
 export const getUnknownPackages = (array: Package[]) => {
   const result: Package[] = [];
@@ -61,6 +67,65 @@ export const getTechnologyAsString = (f: Technology) => {
 
 export const isExecutionActive = (execution: WindupExecution) => {
   return execution.state === "STARTED" || execution.state === "QUEUED";
+};
+
+// RuleProviderEntity
+export const getSourcesFromRuleProviderEntity = (
+  ruleProviderEntities: RuleProviderEntity[]
+) => {
+  return ruleProviderEntities.reduce((collection, element) => {
+    element.sources.forEach((f) => {
+      collection.add(getTechnologyAsString(f));
+    });
+    return collection;
+  }, new Set<string>());
+};
+
+export const getTargetsFromRuleProviderEntity = (
+  ruleProviderEntities: RuleProviderEntity[]
+) => {
+  return ruleProviderEntities.reduce((collection, element) => {
+    element.targets.forEach((f) => {
+      collection.add(getTechnologyAsString(f));
+    });
+    return collection;
+  }, new Set<string>());
+};
+
+export const getNumberOfRulesFromRuleProviderEntity = (
+  ruleProviderEntities: RuleProviderEntity[]
+) => {
+  return ruleProviderEntities.reduce(
+    (counter, element) => counter + element.rules.length,
+    0
+  );
+};
+
+export const getErrorsFromRuleProviderEntity = (
+  ruleProviderEntities: RuleProviderEntity[]
+) => {
+  return ruleProviderEntities.reduce((errors, element) => {
+    return element.loadError ? [...errors, element.loadError] : [...errors];
+  }, [] as string[]);
+};
+
+// LabelProviderEntity
+
+export const getNumberOfLabelsFromLabelProviderEntity = (
+  labelProviderEntities: LabelProviderEntity[]
+) => {
+  return labelProviderEntities.reduce(
+    (counter, element) => counter + element.labels.length,
+    0
+  );
+};
+
+export const getErrorsFromLabelProviderEntity = (
+  labelProviderEntities: LabelProviderEntity[]
+) => {
+  return labelProviderEntities.reduce((errors, element) => {
+    return element.loadError ? [...errors, element.loadError] : [...errors];
+  }, [] as string[]);
 };
 
 // Axios error
