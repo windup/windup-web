@@ -13,3 +13,17 @@ export default {
 const Template: Story<RulesListProps> = (args) => <RulesLabelsList {...args} />;
 
 export const Basic = Template.bind({});
+Basic.args = {
+  items: [
+    {
+      label: "my name1",
+      type: "SYSTEM_PROVIDED",
+      scope: "GLOBAL",
+    },
+    {
+      label: "my name2",
+      type: "USER_PROVIDED",
+      scope: "PROJECT",
+    },
+  ],
+};

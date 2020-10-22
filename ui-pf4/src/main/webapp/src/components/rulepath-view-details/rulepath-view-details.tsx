@@ -38,7 +38,7 @@ const labelIdGenerator = (
   return `${index1}-${index2}-${provider.providerID}-${label.labelID}`;
 };
 
-interface Provider {
+export interface Provider {
   providerID: string;
   loadError?: string;
   origin?: string;

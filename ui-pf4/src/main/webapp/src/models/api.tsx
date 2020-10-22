@@ -138,8 +138,8 @@ export interface RuleProviderEntity {
   origin: string;
   description: string;
   phase: string;
-  dateLoaded: Date;
-  dateModified: Date;
+  dateLoaded: number;
+  dateModified: number;
   sources: Technology[];
   targets: Technology[];
   rules: RuleEntity[];
@@ -154,8 +154,8 @@ export interface LabelProviderEntity {
   providerID: string;
   origin: string;
   description: string;
-  dateLoaded: Date;
-  dateModified: Date;
+  dateLoaded: number;
+  dateModified: number;
   labels: LabelEntity[];
   labelsPath: LabelsPath;
   loadError: string;

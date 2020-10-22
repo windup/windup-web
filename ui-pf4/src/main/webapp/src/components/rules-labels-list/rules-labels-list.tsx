@@ -7,9 +7,7 @@ import {
   DescriptionListTerm,
   DescriptionListDescription,
 } from "@patternfly/react-core";
-
-export type PathType = "SYSTEM_PROVIDED" | "USER_PROVIDED";
-export type ScopeType = "GLOBAL" | "PROJECT";
+import { PathType, ScopeType } from "models/api";
 
 interface Item {
   label: string;
