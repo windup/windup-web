@@ -5,6 +5,7 @@ import { ruleLabelDetailsModalActions } from "store/ruleLabelDetailsModal";
 import {
   LabelProviderEntity,
   LabelsPath,
+  RuleLabel,
   RuleProviderEntity,
   RulesPath,
 } from "models/api";
@@ -13,7 +14,7 @@ export const useShowRuleLabelDetails = () => {
   const dispatch = useDispatch();
 
   const showModal = (
-    type: "Rule" | "Label",
+    type: RuleLabel,
     path: RulesPath | LabelsPath | undefined,
     providers: RuleProviderEntity[] | LabelProviderEntity[],
     onClose?: () => void

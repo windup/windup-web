@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import { AxiosError } from "axios";
 
 import {
@@ -8,12 +8,9 @@ import {
   TitleSizes,
   TextContent,
   Text,
-  Button,
   ToolbarGroup,
   ToolbarItem,
   Switch,
-  Modal,
-  ModalVariant,
   Bullseye,
 } from "@patternfly/react-core";
 import {
@@ -27,7 +24,6 @@ import {
 import { CubesIcon } from "@patternfly/react-icons";
 
 import {
-  AddRuleLabelTabs,
   TableSectionOffline,
   CustomEmptyState,
   RulelabelTitle,
@@ -49,6 +45,8 @@ import {
   getErrorsFromLabelProviderEntity,
   getNumberOfLabelsFromLabelProviderEntity,
 } from "utils/modelUtils";
+
+import { AddRuleLabelButton } from "containers/add-rule-label-button";
 
 const LABELPATH_FIELD = "labelPath";
 
@@ -88,8 +86,6 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
   projectId,
   skipChangeToProvisional,
 }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   const dispatch = useDispatch();
   const deleteLabel = useDeleteLabel();
   const showRuleLabelDetails = useShowRuleLabelDetails();
@@ -241,36 +237,12 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
     [analysisContext, labelProviders, handleLabelPathToggled]
   );
 
-  const handleModalToggle = () => {
-    setIsModalOpen((current) => {
-      if (current) {
-        loadLabels(projectId);
-      }
-      return !current;
-    });
-  };
-
   const handleOnLabelLabelClose = () => {
-    setIsModalOpen((current) => !current);
     loadLabels(projectId);
   };
 
   return (
     <>
-      <Modal
-        variant={ModalVariant.medium}
-        title="Add labels"
-        isOpen={isModalOpen}
-        onClose={handleModalToggle}
-      >
-        <AddRuleLabelTabs
-          type="Label"
-          projectId={projectId}
-          onSubmitFinishedServerPath={handleOnLabelLabelClose}
-          onCancelServerPath={handleOnLabelLabelClose}
-        />
-      </Modal>
-
       <Stack hasGutter>
         <StackItem>
           <TextContent>
@@ -297,9 +269,12 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
             toolbar={
               <ToolbarGroup variant="button-group">
                 <ToolbarItem>
-                  <Button type="button" onClick={handleModalToggle}>
-                    Add label
-                  </Button>
+                  <AddRuleLabelButton
+                    type="Label"
+                    projectId={projectId}
+                    uploadToGlobal={false}
+                    onModalClose={handleOnLabelLabelClose}
+                  />
                 </ToolbarItem>
               </ToolbarGroup>
             }

@@ -1,17 +1,18 @@
 import {
   LabelProviderEntity,
   LabelsPath,
+  RuleLabel,
   RuleProviderEntity,
   RulesPath,
 } from "models/api";
 import { ActionType, getType } from "typesafe-actions";
-import { closeModal, ModalType, openModal } from "./actions";
+import { closeModal, openModal } from "./actions";
 
 export const stateKey = "ruleLabelDetailsModal";
 
 export type RuleLabelDetailsModalState = Readonly<{
   isOpen: boolean;
-  type: ModalType;
+  type: RuleLabel;
   path?: RulesPath | LabelsPath;
   providers: RuleProviderEntity[] | LabelProviderEntity[];
   onClose: () => void;

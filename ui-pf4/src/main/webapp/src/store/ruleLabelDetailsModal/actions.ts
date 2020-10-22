@@ -2,14 +2,13 @@ import { createAction } from "typesafe-actions";
 import {
   LabelProviderEntity,
   LabelsPath,
+  RuleLabel,
   RuleProviderEntity,
   RulesPath,
 } from "models/api";
 
-export type ModalType = "Rule" | "Label";
-
 interface Item {
-  type: ModalType;
+  type: RuleLabel;
   path: RulesPath | LabelsPath | undefined;
   providers: RuleProviderEntity[] | LabelProviderEntity[];
   onClose: () => void;

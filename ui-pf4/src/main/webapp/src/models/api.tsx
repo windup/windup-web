@@ -1,3 +1,5 @@
+export type RuleLabel = "Rule" | "Label";
+
 export type ExecutionState =
   | "QUEUED"
   | "STARTED"

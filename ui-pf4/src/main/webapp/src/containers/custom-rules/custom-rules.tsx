@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import { AxiosError } from "axios";
 
 import {
@@ -8,12 +8,9 @@ import {
   TitleSizes,
   TextContent,
   Text,
-  Button,
   ToolbarGroup,
   ToolbarItem,
   Switch,
-  Modal,
-  ModalVariant,
   Bullseye,
 } from "@patternfly/react-core";
 import {
@@ -27,7 +24,6 @@ import {
 import { CubesIcon } from "@patternfly/react-icons";
 
 import {
-  AddRuleLabelTabs,
   TableSectionOffline,
   CustomEmptyState,
   RulelabelTitle,
@@ -51,6 +47,8 @@ import {
   getNumberOfRulesFromRuleProviderEntity,
   getErrorsFromRuleProviderEntity,
 } from "utils/modelUtils";
+
+import { AddRuleLabelButton } from "containers/add-rule-label-button";
 
 const RULEPATH_FIELD = "rulePath";
 
@@ -87,8 +85,6 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
   projectId,
   skipChangeToProvisional,
 }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   const dispatch = useDispatch();
   const deleteRule = useDeleteRule();
   const showRuleLabelDetails = useShowRuleLabelDetails();
@@ -250,36 +246,12 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
     [analysisContext, ruleProviders, handleRulePathToggled]
   );
 
-  const handleModalToggle = () => {
-    setIsModalOpen((current) => {
-      if (current) {
-        loadRules(projectId);
-      }
-      return !current;
-    });
-  };
-
   const handleOnRuleLabelClose = () => {
-    setIsModalOpen((current) => !current);
     loadRules(projectId);
   };
 
   return (
     <>
-      <Modal
-        variant={ModalVariant.medium}
-        title="Add rules"
-        isOpen={isModalOpen}
-        onClose={handleModalToggle}
-      >
-        <AddRuleLabelTabs
-          type="Rule"
-          projectId={projectId}
-          onSubmitFinishedServerPath={handleOnRuleLabelClose}
-          onCancelServerPath={handleOnRuleLabelClose}
-        />
-      </Modal>
-
       <Stack hasGutter>
         <StackItem>
           <TextContent>
@@ -306,9 +278,12 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
             toolbar={
               <ToolbarGroup variant="button-group">
                 <ToolbarItem>
-                  <Button type="button" onClick={handleModalToggle}>
-                    Add rule
-                  </Button>
+                  <AddRuleLabelButton
+                    type="Rule"
+                    projectId={projectId}
+                    uploadToGlobal={false}
+                    onModalClose={handleOnRuleLabelClose}
+                  />
                 </ToolbarItem>
               </ToolbarGroup>
             }

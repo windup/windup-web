@@ -1,13 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 
-import {
-  Bullseye,
-  Button,
-  Modal,
-  ModalVariant,
-  ToolbarGroup,
-  ToolbarItem,
-} from "@patternfly/react-core";
+import { Bullseye, ToolbarGroup, ToolbarItem } from "@patternfly/react-core";
 import {
   IAction,
   ICell,
@@ -19,7 +12,6 @@ import {
 import { CubesIcon } from "@patternfly/react-icons";
 
 import {
-  AddRuleLabelTabs,
   CustomEmptyState,
   RulelabelTitle,
   TableSectionOffline,
@@ -33,6 +25,8 @@ import {
   getErrorsFromLabelProviderEntity,
   getNumberOfLabelsFromLabelProviderEntity,
 } from "utils/modelUtils";
+
+import { AddRuleLabelButton } from "containers/add-rule-label-button";
 
 const LABELPATH_FIELD = "labelPath";
 
@@ -59,7 +53,6 @@ const filterFn = (filterText: string, labelPath: LabelsPath) => {
 };
 
 export const UserProvided: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [userProvidedLabelsPath, setUserProvidedLabelsPath] = useState<
     LabelsPath[]
   >();
@@ -161,17 +154,7 @@ export const UserProvided: React.FC = () => {
     [labelProviders]
   );
 
-  const handleModalToggle = () => {
-    setIsModalOpen((current) => {
-      if (current) {
-        loadGlobalLabels();
-      }
-      return !current;
-    });
-  };
-
   const handleOnLabelLabelClose = () => {
-    setIsModalOpen((current) => !current);
     loadGlobalLabels();
   };
 
@@ -191,9 +174,11 @@ export const UserProvided: React.FC = () => {
         toolbar={
           <ToolbarGroup variant="button-group">
             <ToolbarItem>
-              <Button type="button" onClick={handleModalToggle}>
-                Add label
-              </Button>
+              <AddRuleLabelButton
+                type="Label"
+                uploadToGlobal={true}
+                onModalClose={handleOnLabelLabelClose}
+              />
             </ToolbarItem>
           </ToolbarGroup>
         }
@@ -207,18 +192,6 @@ export const UserProvided: React.FC = () => {
           </Bullseye>
         }
       />
-      <Modal
-        variant={ModalVariant.medium}
-        title="Add labels"
-        isOpen={isModalOpen}
-        onClose={handleModalToggle}
-      >
-        <AddRuleLabelTabs
-          type="Label"
-          onSubmitFinishedServerPath={handleOnLabelLabelClose}
-          onCancelServerPath={handleOnLabelLabelClose}
-        />
-      </Modal>
     </>
   );
 };
