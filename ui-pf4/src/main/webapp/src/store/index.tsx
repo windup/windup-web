@@ -7,6 +7,10 @@ import { rootReducer } from "./rootReducer";
 export default function configureStore() {
   return createStore(
     rootReducer,
-    composeWithDevTools(applyMiddleware(logger, thunk))
+    composeWithDevTools(
+      process.env.NODE_ENV === "production"
+        ? applyMiddleware(thunk)
+        : applyMiddleware(logger, thunk)
+    )
   );
 }
