@@ -1,4 +1,5 @@
 import { AxiosError } from "axios";
+import { AdvancedOptionsFieldKey } from "Constants";
 import {
   LabelProviderEntity,
   Package,
@@ -67,6 +68,17 @@ export const getTechnologyAsString = (f: Technology) => {
 
 export const isExecutionActive = (execution: WindupExecution) => {
   return execution.state === "STARTED" || execution.state === "QUEUED";
+};
+
+export const isOptionEnabledInExecution = (
+  execution: WindupExecution,
+  option: AdvancedOptionsFieldKey
+) => {
+  return (
+    execution.analysisContext.advancedOptions.findIndex(
+      (f) => f.name === option && f.value === "true"
+    ) !== -1
+  );
 };
 
 // RuleProviderEntity

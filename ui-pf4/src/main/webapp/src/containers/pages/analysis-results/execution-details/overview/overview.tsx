@@ -31,6 +31,7 @@ import { ExpandableCard, mapStateToLabel, RulesLabelsList } from "components";
 
 import { ProjectStatusWatcher } from "containers/project-status-watcher";
 import { ProjectExecutionRoute } from "Paths";
+import { isOptionEnabledInExecution } from "utils/modelUtils";
 
 export interface OverviewProps
   extends RouteComponentProps<ProjectExecutionRoute> {}
@@ -128,39 +129,40 @@ export const Overview: React.FC<OverviewProps> = ({ match }) => {
                             <DescriptionListDescription>
                               {watchedExecution.state === "COMPLETED" ? (
                                 <Stack>
-                                  <StackItem>
-                                    <a
-                                      title="Reports"
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      href={`${getWindupStaticReportsBase()}/${
-                                        execution.applicationListRelativePath
-                                      }`}
-                                    >
-                                      <ChartBarIcon /> Reports
-                                    </a>
-                                  </StackItem>
-                                  {execution.analysisContext
-                                    .generateStaticReports &&
-                                    execution.analysisContext.advancedOptions.find(
-                                      (f) =>
-                                        f.name ===
-                                          AdvancedOptionsFieldKey.EXPORT_CSV &&
-                                        f.value === "true"
-                                    ) && (
-                                      <StackItem>
-                                        <a
-                                          title="Download all issues CSV"
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                          href={`${getWindupStaticReportsBase()}/${
-                                            execution.id
-                                          }/${MERGED_CSV_FILENAME}`}
-                                        >
-                                          <DownloadIcon /> All issues CSV
-                                        </a>
-                                      </StackItem>
-                                    )}
+                                  {!isOptionEnabledInExecution(
+                                    execution,
+                                    AdvancedOptionsFieldKey.SKIP_REPORTS
+                                  ) && (
+                                    <StackItem>
+                                      <a
+                                        title="Reports"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        href={`${getWindupStaticReportsBase()}/${
+                                          execution.applicationListRelativePath
+                                        }`}
+                                      >
+                                        <ChartBarIcon /> Reports
+                                      </a>
+                                    </StackItem>
+                                  )}
+                                  {isOptionEnabledInExecution(
+                                    execution,
+                                    AdvancedOptionsFieldKey.EXPORT_CSV
+                                  ) && (
+                                    <StackItem>
+                                      <a
+                                        title="Download all issues CSV"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        href={`${getWindupStaticReportsBase()}/${
+                                          execution.id
+                                        }/${MERGED_CSV_FILENAME}`}
+                                      >
+                                        <DownloadIcon /> All issues CSV
+                                      </a>
+                                    </StackItem>
+                                  )}
                                 </Stack>
                               ) : (
                                 "Not available"

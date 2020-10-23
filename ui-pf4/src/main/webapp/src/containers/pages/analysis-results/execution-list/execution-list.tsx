@@ -52,6 +52,7 @@ import {
   MERGED_CSV_FILENAME,
 } from "Constants";
 import { isNullOrUndefined } from "utils/utils";
+import { isOptionEnabledInExecution } from "utils/modelUtils";
 
 const EXECUTION_FIELD = "execution";
 
@@ -229,40 +230,40 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
                   execution.state === "COMPLETED" ? (
                     <>
                       <Split hasGutter>
-                        <SplitItem>
-                          <a
-                            title="Reports"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            href={`${getWindupStaticReportsBase()}/${
-                              execution.applicationListRelativePath
-                            }`}
-                          >
-                            <ChartBarIcon />
-                          </a>
-                        </SplitItem>
-                        {execution.analysisContext.generateStaticReports &&
-                          execution.analysisContext.advancedOptions.find(
-                            (f) => {
-                              return (
-                                f.name === AdvancedOptionsFieldKey.EXPORT_CSV &&
-                                f.value === "true"
-                              );
-                            }
-                          ) && (
-                            <SplitItem>
-                              <a
-                                title="Download all issues CSV"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                href={`${getWindupStaticReportsBase()}/${
-                                  execution.id
-                                }/${MERGED_CSV_FILENAME}`}
-                              >
-                                <DownloadIcon />
-                              </a>
-                            </SplitItem>
-                          )}
+                        {!isOptionEnabledInExecution(
+                          execution,
+                          AdvancedOptionsFieldKey.SKIP_REPORTS
+                        ) && (
+                          <SplitItem>
+                            <a
+                              title="Reports"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              href={`${getWindupStaticReportsBase()}/${
+                                execution.applicationListRelativePath
+                              }`}
+                            >
+                              <ChartBarIcon />
+                            </a>
+                          </SplitItem>
+                        )}
+                        {isOptionEnabledInExecution(
+                          execution,
+                          AdvancedOptionsFieldKey.EXPORT_CSV
+                        ) && (
+                          <SplitItem>
+                            <a
+                              title="Download all issues CSV"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              href={`${getWindupStaticReportsBase()}/${
+                                execution.id
+                              }/${MERGED_CSV_FILENAME}`}
+                            >
+                              <DownloadIcon />
+                            </a>
+                          </SplitItem>
+                        )}
                       </Split>
                     </>
                   ) : null
