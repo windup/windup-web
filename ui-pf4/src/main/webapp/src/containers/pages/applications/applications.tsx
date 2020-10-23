@@ -9,7 +9,6 @@ import { Project } from "models/api";
 import { ProjectContextPageSectionContainer } from "containers/projectcontext-pagesection-container";
 
 const ApplicationList = lazy(() => import("./application-list"));
-const AddApplications = lazy(() => import("./add-applications"));
 
 export interface ApplicationsProps extends RouteComponentProps<ProjectRoute> {}
 
@@ -34,7 +33,6 @@ export const Applications: React.FC<ApplicationsProps> = ({
       <Suspense fallback={<AppPlaceholder />}>
         <Switch>
           <Route path={Paths.applications} component={ApplicationList} exact />
-          <Route path={Paths.addApplications} component={AddApplications} />
         </Switch>
       </Suspense>
     </>

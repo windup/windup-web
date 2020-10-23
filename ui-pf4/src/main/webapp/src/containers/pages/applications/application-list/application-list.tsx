@@ -6,7 +6,6 @@ import { AxiosError } from "axios";
 
 import {
   Bullseye,
-  Button,
   PageSection,
   ToolbarGroup,
   ToolbarItem,
@@ -28,7 +27,7 @@ import {
   SelectProjectEmptyMessage,
 } from "components";
 
-import { formatPath, Paths, ProjectRoute } from "Paths";
+import { ProjectRoute } from "Paths";
 import { isNullOrUndefined } from "utils/utils";
 
 import { Application, MigrationProject } from "models/api";
@@ -39,6 +38,7 @@ import {
 } from "api/api";
 
 import { deleteDialogActions } from "store/deleteDialog";
+import { AddApplicationButton } from "containers/add-application-button";
 
 const APPLICATION_FIELD = "application";
 
@@ -71,10 +71,7 @@ const filterProject = (filterText: string, application: Application) => {
 export interface ApplicationListProps
   extends RouteComponentProps<ProjectRoute> {}
 
-export const ApplicationList: React.FC<ApplicationListProps> = ({
-  match,
-  history,
-}) => {
+export const ApplicationList: React.FC<ApplicationListProps> = ({ match }) => {
   const dispatch = useDispatch();
 
   const [project, setProject] = useState<MigrationProject>();
@@ -154,12 +151,8 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
     []
   );
 
-  const handleAddApplication = () => {
-    history.push(
-      formatPath(Paths.addApplications, {
-        project: match.params.project,
-      })
-    );
+  const handleOnAddApplicationModalClose = () => {
+    fetchMigrationProject(match.params.project);
   };
 
   return (
@@ -183,9 +176,10 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
             toolbar={
               <ToolbarGroup variant="button-group">
                 <ToolbarItem>
-                  <Button type="button" onClick={handleAddApplication}>
-                    Add application
-                  </Button>
+                  <AddApplicationButton
+                    projectId={match.params.project}
+                    onModalClose={handleOnAddApplicationModalClose}
+                  />
                 </ToolbarItem>
               </ToolbarGroup>
             }

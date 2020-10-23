@@ -11,18 +11,6 @@ export const useWizardCancelRedirect = () => {
   const deleteProjectFn = useCallback(
     (push: (path: string) => void, migrationProject?: MigrationProject) => {
       redirect(push);
-      // if (migrationProject) {
-      //   deleteProject(migrationProject)
-      //     .then(() => {
-      //       redirect(push);
-      //     })
-      //     .catch((error: AxiosError) => {
-      //       console.log("Could not clear project", error.response);
-      //       redirect(push);
-      //     });
-      // } else {
-      //   redirect(push);
-      // }
     },
     [redirect]
   );

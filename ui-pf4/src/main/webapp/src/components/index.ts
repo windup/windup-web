@@ -1,7 +1,7 @@
 export { ActiveAnalysisProgressbar } from "./active-analysis-progressbar";
 export {
   AddApplicationsTabs,
-  AddApplicationsTabKey,
+  AddApplicationsTabsType,
 } from "./add-applications-tabs";
 export { AddRuleLabelTabs } from "./add-rulelabel-tabs";
 export { AdvancedOptionsForm } from "./advanced-options-form";
@@ -44,11 +44,22 @@ export {
   projectDetailsFormInitialValue,
 } from "./project-details-form";
 export { SelectCard } from "./select-card";
-export { ServerPathForm } from "./server-path-form";
+export {
+  AddApplicationsServerPathForm,
+  AddApplicationsUploadFilesForm,
+  AddApplicationsServerPathFormSchema,
+  AddApplicationsUploadFilesFormSchema,
+  AddApplicationsServerPathFormSchemaInitialValues,
+  AddApplicationsUploadFilesFormInitialValues,
+} from "./add-applications-form";
+export { AddApplicationsList } from "./add-applications-list";
 export { SelectCardGallery } from "./select-card-gallery";
 export { SimplePageSection } from "./simple-page-section";
 export { SimplePagination } from "./simple-pagination";
 export { SortByMenu } from "./sort-by-menu";
 export { TransformationPath } from "./transformation-path";
-export { UploadFilesForm } from "./upload-files-form";
+export {
+  UploadFilesDropzone,
+  UploadFilesDropzoneWrapper,
+} from "./upload-files-dropzone";
 export { Welcome } from "./welcome";

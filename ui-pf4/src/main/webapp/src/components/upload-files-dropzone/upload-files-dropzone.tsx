@@ -21,7 +21,7 @@ import { TimesIcon, TrashIcon } from "@patternfly/react-icons";
 
 import { useDropzone } from "react-dropzone";
 
-import "./upload-files-form.scss";
+import "./upload-files-dropzone.scss";
 
 import { getMapKeys } from "utils/utils";
 import { formatBytes } from "utils/format";
@@ -124,17 +124,17 @@ const reducer = (state: Status, action: Action): Status => {
   }
 };
 
-export interface UploadFilesFormProps {
+export interface UploadFilesDropzoneProps {
   url: string;
   template: "dropdown-box" | "minimal-inline";
   accept?: string | string[];
   hideProgressOnSuccess?: boolean;
   allowRemove?: boolean;
   onFileUploadSuccess?: (data: any, file: File) => void;
-  onFileUploadError?: (error: any, file: File) => void;
+  onFileUploadError?: (error: AxiosError, file: File) => void;
 }
 
-export const UploadFilesForm: React.FC<UploadFilesFormProps> = ({
+export const UploadFilesDropzone: React.FC<UploadFilesDropzoneProps> = ({
   url,
   accept,
   hideProgressOnSuccess,

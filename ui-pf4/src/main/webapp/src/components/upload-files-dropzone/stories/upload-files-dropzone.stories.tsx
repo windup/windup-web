@@ -1,11 +1,14 @@
 import React from "react";
 import { Story, Meta } from "@storybook/react/types-6-0";
-import { UploadFilesForm, UploadFilesFormProps } from "../upload-files-form";
+import {
+  UploadFilesDropzone,
+  UploadFilesDropzoneProps,
+} from "../upload-files-dropzone";
 import { UPLOAD_APPLICATION_PATH } from "api/api";
 
 export default {
-  title: "Forms / UploadFilesForm",
-  component: UploadFilesForm,
+  title: "UploadFilesDropzone",
+  component: UploadFilesDropzone,
   argTypes: {
     onFileUploadSuccess: { action: "onFileUploadSuccess" },
     onFileUploadError: { action: "onFileUploadError" },
@@ -13,8 +16,8 @@ export default {
   args: {},
 } as Meta;
 
-const Template: Story<UploadFilesFormProps> = (args) => (
-  <UploadFilesForm {...args} />
+const Template: Story<UploadFilesDropzoneProps> = (args) => (
+  <UploadFilesDropzone {...args} />
 );
 
 export const Basic = Template.bind({});

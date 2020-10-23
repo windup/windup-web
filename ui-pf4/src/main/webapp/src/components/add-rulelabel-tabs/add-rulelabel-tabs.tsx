@@ -15,7 +15,7 @@ import {
 } from "@patternfly/react-core";
 
 import {
-  UploadFilesForm,
+  UploadFilesDropzone,
   RuleLabelServerPathForm,
   RuleLabelServerPathFormSchema,
 } from "components";
@@ -133,7 +133,7 @@ export const AddRuleLabelTabs: React.FC<AddRuleLabelTabsProps> = ({
           <Tab eventKey={0} title={<TabTitleText>Upload</TabTitleText>}>
             <br />
             <Form>
-              <UploadFilesForm
+              <UploadFilesDropzone
                 url={
                   uploadToGlobal
                     ? getGlobalUploadUrl(type)

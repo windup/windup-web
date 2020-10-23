@@ -22,6 +22,7 @@ import {
 export const MIGRATION_PROJECTS_PATH = "/migrationProjects";
 
 export const UPLOAD_APPLICATION_PATH = `${MIGRATION_PROJECTS_PATH}/:projectId/registeredApplications/upload`;
+
 export const UPLOAD_RULE_TO_MIGRATION_PROJECT = `rules/upload/by-project/:projectId`;
 export const UPLOAD_LABEL_TO_MIGRATION_PROJECT = `labels/upload/by-project/:projectId`;
 
@@ -110,7 +111,7 @@ export const getRegisteredApplicationPackages = (
 };
 
 export const registerApplicationByPath = (
-  projectId: number,
+  projectId: number | string,
   path: string,
   isPathExploded: boolean
 ): AxiosPromise<Application> => {
@@ -126,7 +127,7 @@ export const registerApplicationByPath = (
 };
 
 export const registerApplicationInDirectoryByPath = (
-  projectId: number,
+  projectId: number | string,
   path: string
 ): AxiosPromise<Application> => {
   return ApiClient.post<Application>(

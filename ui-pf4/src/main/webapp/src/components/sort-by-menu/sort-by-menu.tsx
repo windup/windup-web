@@ -70,8 +70,7 @@ export const SortByMenu: React.FC<SortByMenuProps> = ({
             <OptionsMenuToggle
               toggleTemplate={<SortAmountDownIcon aria-hidden="true" />}
               aria-label="Sort by"
-              // onToggle={(a: boolean) => console.log(a)}
-              onClick={() => console.log("a")}
+              onClick={() => {}}
               hideCaret
             />
           }

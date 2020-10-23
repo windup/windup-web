@@ -43,7 +43,6 @@ export enum Paths {
   editExecution_logs = "/projects-details/:project/analysis-results/executions/:execution/logs",
 
   applications = "/projects-details/:project/applications",
-  addApplications = "/projects-details/:project/applications/~new",
 
   analysisConfiguration = "/projects-details/:project/analysis-configuration",
   analysisConfiguration_general = "/projects-details/:project/analysis-configuration/general",

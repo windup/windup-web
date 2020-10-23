@@ -1,8 +1,8 @@
 import React from "react";
 import { shallow } from "enzyme";
-import { UploadFilesForm } from "../upload-files-form";
+import { UploadFilesDropzone } from "../upload-files-dropzone";
 
-describe("UploadFilesSection", () => {
+describe("UploadFilesDropzone", () => {
   it("Renders without crashing", () => {
     // const wrapper = shallow(<UploadFilesSection />);
     // expect(wrapper).toMatchSnapshot();

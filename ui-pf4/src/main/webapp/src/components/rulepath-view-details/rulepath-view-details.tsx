@@ -58,7 +58,6 @@ export const RulePathViewDetails: React.FC<RulePathViewDetailsProps> = ({
   containerChildSelector,
   providers,
 }) => {
-  console.log("ArchiveIdentificationConfigLoadingRuleProvider", providers);
   const [containerElement, setContainerElement] = useState<HTMLElement>(
     container || window.document.documentElement
   );

@@ -1,4 +1,4 @@
 export {
   AddApplicationsTabs,
-  AddApplicationsTabKey,
+  AddApplicationsTabsType,
 } from "./add-applications-tabs";
