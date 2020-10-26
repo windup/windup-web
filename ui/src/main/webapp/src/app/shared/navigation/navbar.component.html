@@ -1,58 +1,67 @@
 <nav class="navbar navbar-default navbar-pf" role="navigation">
-  <div class="navbar-collapse">
-    <div class="visible-xs hamburger-button">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".hamburger-menu-collapse-1">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
+  <div class="experimental-pf">
+    <div class="experimental-pf-bar">
+      <span id="experimentalBar" class="experimental-pf-text">
+        Use MTA based on
+        <a id="acceptMessage" href="javascript:void(0)" (click)="redirectToPF4()">Patternfly 4</a>
+      </span>
     </div>
-    <div *ngIf="showLogotype" id="header-logo-wrapper">
-      <a [routerLink]="['/']">
-        <img id="header-logo" src="../../../../img/mta-logo-header.svg" />
-      </a>
-      <!-- a class="pointer link" target="_blank" href="https://developers.redhat.com/products/mta/overview/" style="color: #ff0000">(Beta)</a -->
+
+    <div class="navbar-collapse" style="margin: -2px;">
+      <div class="visible-xs hamburger-button">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".hamburger-menu-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <div *ngIf="showLogotype" id="header-logo-wrapper">
+        <a [routerLink]="['/']">
+          <img id="header-logo" src="../../../../img/mta-logo-header.svg" />
+        </a>
+        <!-- a class="pointer link" target="_blank" href="https://developers.redhat.com/products/mta/overview/" style="color: #ff0000">(Beta)</a -->
+      </div>
+      <ul class="nav navbar-nav navbar-primary hidden-xs" *ngIf="showMenuItems">
+        <li [routerLinkActive]="['active']" class="home">
+          <a [routerLink]="['/project-list']">
+            <span class="fa-fw pficon pficon-home" aria-hidden="true"></span>
+            <span i18n="Projects 'Home' button">Projects</span>
+          </a>
+        </li>
+        <ng-content></ng-content>
+      </ul>
+      <ul class="nav navbar-nav navbar-utility hidden-xs">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <span class="pficon pficon-help" aria-hidden="true"></span>
+            <span class="sr-only">Help</span>
+            <span class="caret" aria-hidden="true"></span>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a target="_blank" i18n-href="MTA WC documentation link" href="https://access.redhat.com/documentation/en-us/migration_toolkit_for_applications/">Documentation</a></li>
+            <li><a [routerLink]="['/about']">About</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <span class="pficon pficon-user"></span>
+            <span class="username">{{username}}</span>
+            <b class="caret"></b>
+          </a>
+          <ul class="dropdown-menu">
+            <li [routerLinkActive]="['active']">
+              <a [routerLink]="['/configuration/rules']" i18n="Rules configuration menu item">Rules Configuration</a>
+            </li>
+            <li [routerLinkActive]="['active']">
+              <a [routerLink]="['/configuration/labels']" i18n="Labels configuration menu item">Labels Configuration</a>
+            </li>
+            <li>
+              <a [routerLink]="['/logout']" i18n="Log out menu item">Log Out</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
     </div>
-    <ul class="nav navbar-nav navbar-primary hidden-xs" *ngIf="showMenuItems">
-      <li [routerLinkActive]="['active']" class="home">
-        <a [routerLink]="['/project-list']">
-          <span class="fa-fw pficon pficon-home" aria-hidden="true"></span>
-          <span i18n="Projects 'Home' button">Projects</span>
-        </a>
-      </li>
-      <ng-content></ng-content>
-    </ul>
-    <ul class="nav navbar-nav navbar-utility hidden-xs">
-      <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-          <span class="pficon pficon-help" aria-hidden="true"></span>
-          <span class="sr-only">Help</span>
-          <span class="caret" aria-hidden="true"></span>
-        </a>
-        <ul class="dropdown-menu">
-          <li><a target="_blank" i18n-href="MTA WC documentation link" href="https://access.redhat.com/documentation/en-us/migration_toolkit_for_applications/">Documentation</a></li>
-          <li><a [routerLink]="['/about']">About</a></li>
-        </ul>
-      </li>
-      <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-          <span class="pficon pficon-user"></span>
-          <span class="username">{{username}}</span>
-          <b class="caret"></b>
-        </a>
-        <ul class="dropdown-menu">
-          <li [routerLinkActive]="['active']">
-            <a [routerLink]="['/configuration/rules']" i18n="Rules configuration menu item">Rules Configuration</a>
-          </li>
-          <li [routerLinkActive]="['active']">
-            <a [routerLink]="['/configuration/labels']" i18n="Labels configuration menu item">Labels Configuration</a>
-          </li>
-          <li>
-            <a [routerLink]="['/logout']" i18n="Log out menu item">Log Out</a>
-          </li>
-        </ul>
-      </li>
-    </ul>
   </div>
 </nav>

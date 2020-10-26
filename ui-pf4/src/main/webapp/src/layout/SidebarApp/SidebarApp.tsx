@@ -2,7 +2,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-import { Nav, NavItem, PageSidebar, NavList } from "@patternfly/react-core";
+import { Nav, NavItem, PageSidebar, NavGroup } from "@patternfly/react-core";
 
 import { LayoutTheme } from "../LayoutUtils";
 import { Paths, formatPath } from "Paths";
@@ -18,7 +18,7 @@ export const SidebarApp: React.FC = () => {
   const renderPageNav = () => {
     return (
       <Nav id="nav-primary-simple" aria-label="Nav" theme={LayoutTheme}>
-        <NavList>
+        <NavGroup title="Project">
           <NavItem>
             <NavLink to={Paths.projects} activeClassName="pf-m-current">
               Projects
@@ -54,8 +54,8 @@ export const SidebarApp: React.FC = () => {
               Analysis configuration
             </NavLink>
           </NavItem>
-        </NavList>
-        <NavList style={{ paddingTop: 20 }}>
+        </NavGroup>
+        <NavGroup title="Global">
           <NavItem>
             <NavLink to={Paths.globalRules} activeClassName="pf-m-current">
               Rules configuration
@@ -66,7 +66,7 @@ export const SidebarApp: React.FC = () => {
               Labels configuration
             </NavLink>
           </NavItem>
-        </NavList>
+        </NavGroup>
       </Nav>
     );
   };

@@ -168,3 +168,12 @@ ul.navbar-utility {
 [class*=" pficon-"], [class^=pficon-] {
   line-height: 1 !important;
 }
+
+/*
+* Add experimental header
+*/
+@media (min-width: 768px) {
+  .navbar-pf .navbar-utility {
+    top: 20px !important;
+  }
+}
