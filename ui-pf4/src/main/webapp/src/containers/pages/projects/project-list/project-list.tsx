@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { RouteComponentProps } from "react-router-dom";
+import { Link, RouteComponentProps } from "react-router-dom";
 
 import { AxiosError } from "axios";
 import Moment from "react-moment";
@@ -29,7 +29,7 @@ import {
   TableSectionOffline,
 } from "components";
 
-import { Paths } from "Paths";
+import { formatPath, Paths } from "Paths";
 import { getAlertModel } from "Constants";
 import { Project } from "models/api";
 import { getProjectExecutions } from "api/api";
@@ -144,7 +144,15 @@ export const ProjectList: React.FC<Props> = ({
       [PROJECT_FIELD_NAME]: item,
       cells: [
         {
-          title: item.migrationProject.title,
+          title: (
+            <Link
+              to={formatPath(Paths.executions, {
+                project: item.migrationProject.id,
+              })}
+            >
+              {item.migrationProject.title}
+            </Link>
+          ),
         },
         {
           title: item.applicationCount,
