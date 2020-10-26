@@ -259,7 +259,7 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
               Custom rules
             </Title>
             <Text component="small">
-              Upload the rules you want yo include in the analysis
+              Upload the rules you want to include in the analysis
             </Text>
           </TextContent>
         </StackItem>

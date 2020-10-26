@@ -250,7 +250,7 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
               Custom labels
             </Title>
             <Text component="small">
-              Upload the labels you want yo include in the analysis
+              Upload the labels you want to include in the analysis
             </Text>
           </TextContent>
         </StackItem>

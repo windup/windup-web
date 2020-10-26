@@ -97,7 +97,7 @@ context("New Project", () => {
      * Step 5: Custom rules
      */
     cy.contains("Custom rules");
-    cy.contains("Upload the rules you want yo include in the analysis");
+    cy.contains("Upload the rules you want to include in the analysis");
 
     verifyActionButtonsEnabled();
     cy.contains("Next").click();
@@ -106,7 +106,7 @@ context("New Project", () => {
      * Step 6: Custom labels
      */
     cy.contains("Custom labels");
-    cy.contains("Upload the labels you want yo include in the analysis");
+    cy.contains("Upload the labels you want to include in the analysis");
 
     verifyActionButtonsEnabled();
     cy.contains("Next").click();
