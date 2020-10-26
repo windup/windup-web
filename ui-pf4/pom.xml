@@ -141,15 +141,28 @@
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                     <warSourceExcludes>
                         .storybook/,
+                        .vscode/,
                         build/,
                         node_modules/,
+                        coverage/,
+                        cypress/,
                         public/,
                         src/,
+                        cypress.json,
                         package.json,
                         README.md,
                         tsconfig.json,
                         yarn.lock
                     </warSourceExcludes>
+                    <nonFilteredFileExtensions>
+                        <!-- default value contains jpg,jpeg,gif,bmp,png -->
+                        <nonFilteredFileExtension>ico</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>ttf</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>woff</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>woff2</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>eot</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>svg</nonFilteredFileExtension>
+                    </nonFilteredFileExtensions>
                     <webResources>
                         <resource>
                             <directory>src/main/webapp/build/</directory>

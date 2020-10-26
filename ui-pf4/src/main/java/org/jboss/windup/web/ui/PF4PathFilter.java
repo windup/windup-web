@@ -17,11 +17,11 @@ import org.apache.commons.lang3.StringUtils;
  *
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
-public class PathFilter implements Filter
+public class PF4PathFilter implements Filter
 {
     public static final String DEFAULT_PATH = "DefaultPath";
     public static final String EXCLUDED_PATHS = "ExcludedPathPrefixes";
-    private static Logger LOG = Logger.getLogger(PathFilter.class.getSimpleName());
+    private static Logger LOG = Logger.getLogger(PF4PathFilter.class.getSimpleName());
 
     private String defaultPath = "/";
     private String[] excludePrefixes = new String[0];

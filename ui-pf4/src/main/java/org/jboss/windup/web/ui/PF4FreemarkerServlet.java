@@ -24,13 +24,13 @@ import org.apache.commons.lang3.StringUtils;
  *
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
-public class FreemarkerServlet extends freemarker.ext.servlet.FreemarkerServlet
+public class PF4FreemarkerServlet extends freemarker.ext.servlet.FreemarkerServlet
 {
     public static final String USER_PRINCIPAL = "userPrincipal";
     public static final String KEYCLOAK = "keycloak";
     public static final String PUBLIC_KEY = "publicKey";
     public static final String SERVER_URL = "serverUrl";
-    private static Logger LOG = Logger.getLogger(FreemarkerServlet.class.getName());
+    private static Logger LOG = Logger.getLogger(PF4FreemarkerServlet.class.getName());
 
     @Override
     protected TemplateModel createModel(ObjectWrapper objectWrapper, ServletContext servletContext, HttpServletRequest request,
