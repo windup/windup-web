@@ -579,6 +579,14 @@
                 <auth-server-url>${keycloak.server.url}</auth-server-url>
                 <ssl-required>EXTERNAL</ssl-required>
             </secure-deployment>
+            <secure-deployment name="mta-web-pf4.war">
+                <realm>mta</realm>
+                <resource>mta-web</resource>
+                <public-client>true</public-client>
+                <realm-public-key>${keycloak.realm.public.key}</realm-public-key>
+                <auth-server-url>${keycloak.server.url}</auth-server-url>
+                <ssl-required>EXTERNAL</ssl-required>
+            </secure-deployment>
             <secure-deployment name="api.war">
                 <realm>mta</realm>
                 <resource>mta-web</resource>
