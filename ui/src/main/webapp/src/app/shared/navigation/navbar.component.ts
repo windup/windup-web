@@ -28,6 +28,6 @@ export class NavbarComponent implements AfterViewInit {
     }
     
     redirectToPF4(): void {
-        window.location.replace(`${window.location.origin}/mta-web-pf4`);
+        window.location.replace(`${window.location.origin}/mta-ui`);
     }
 }

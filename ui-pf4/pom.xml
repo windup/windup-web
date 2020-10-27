@@ -108,7 +108,7 @@
     </dependencies>
 
     <build>
-        <finalName>mta-web-pf4</finalName>
+        <finalName>mta-ui</finalName>
         <testResources>
             <testResource>
                 <directory>src/test/resources</directory>
@@ -154,6 +154,9 @@
                         tsconfig.json,
                         yarn.lock
                     </warSourceExcludes>
+                    <delimiters>
+                        <delimiter>$MAVEN_TOKEN{*}</delimiter>
+                    </delimiters>
                     <nonFilteredFileExtensions>
                         <!-- default value contains jpg,jpeg,gif,bmp,png -->
                         <nonFilteredFileExtension>ico</nonFilteredFileExtension>
@@ -167,6 +170,13 @@
                         <resource>
                             <directory>src/main/webapp/build/</directory>
                             <filtering>true</filtering>
+                        </resource>
+                        <resource>
+                            <directory>src/main/webapp/build/</directory>
+                            <filtering>true</filtering>
+                            <includes>
+                                <include>version.properties.js</include>
+                            </includes>
                         </resource>
                     </webResources>
                 </configuration>

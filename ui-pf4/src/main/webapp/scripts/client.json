@@ -1,10 +1,10 @@
 {
     "id":"739a78cd-ab8d-427a-93f7-4af38f0eab31",
     "clientId":"mta-web",
-    "adminUrl":"/mta-web/",   
+    "adminUrl":"/mta-web/",
     "redirectUris":[
        "/mta-web/*",
-       "/mta-web-pf4/*",
+       "/mta-ui/*",
        "http://localhost:3000/*"
     ],
     "webOrigins":[

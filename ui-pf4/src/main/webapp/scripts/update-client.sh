@@ -10,7 +10,7 @@
 -s id="739a78cd-ab8d-427a-93f7-4af38f0eab31" \
 -s clientId="mta-web" \
 -s adminUrl="/mta-web" \
--s "redirectUris=[\"http://localhost:3000/*\", \"/mta-web/*\", \"/mta-web-pf4/*\"]" \
+-s "redirectUris=[\"http://localhost:3000/*\", \"/mta-web/*\", \"/mta-ui/*\"]" \
 -s "webOrigins=[\"http://localhost:3000\", \"/\"]"
 
 ## Update Keycloak

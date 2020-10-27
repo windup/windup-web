@@ -57,8 +57,8 @@
                         <webModule>
                             <groupId>org.jboss.windup.web</groupId>
                             <artifactId>windup-web-ui-pf4</artifactId>
-                            <contextRoot>/mta-web-pf4</contextRoot>
-                            <bundleFileName>mta-web-pf4.war</bundleFileName>
+                            <contextRoot>/mta-ui</contextRoot>
+                            <bundleFileName>mta-ui.war</bundleFileName>
                         </webModule>
                     </modules>
                     <fileNameMapping>no-version</fileNameMapping>
