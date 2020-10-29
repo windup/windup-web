@@ -27,7 +27,12 @@ import {
   getWindupStaticReportsBase,
   MERGED_CSV_FILENAME,
 } from "Constants";
-import { ExpandableCard, mapStateToLabel, RulesLabelsList } from "components";
+import {
+  ExecutionStatusWithTime,
+  ExpandableCard,
+  mapStateToLabel,
+  RulesLabelsList,
+} from "components";
 
 import { ProjectStatusWatcher } from "containers/project-status-watcher";
 import { ProjectExecutionRoute } from "Paths";
@@ -115,12 +120,12 @@ export const Overview: React.FC<OverviewProps> = ({ match }) => {
                             <DescriptionListTerm>Duration</DescriptionListTerm>
                             <DescriptionListDescription>
                               {watchedExecution.timeStarted ? (
-                                <Moment
-                                  date={watchedExecution.timeCompleted}
-                                  duration={watchedExecution.timeStarted}
+                                <ExecutionStatusWithTime
+                                  execution={watchedExecution}
+                                  showPrefix={false}
                                 />
                               ) : (
-                                "Waiting to finish"
+                                "Waiting"
                               )}
                             </DescriptionListDescription>
                           </DescriptionListGroup>

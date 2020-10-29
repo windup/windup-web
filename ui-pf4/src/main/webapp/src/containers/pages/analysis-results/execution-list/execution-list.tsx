@@ -28,10 +28,11 @@ import { deleteDialogActions } from "store/deleteDialog";
 import {
   SimplePageSection,
   CustomEmptyState,
-  ExecutionStatus,
   ConditionalRender,
   SelectProjectEmptyMessage,
   TableSectionOffline,
+  ExecutionStatus,
+  ExecutionStatusWithTime,
 } from "components";
 
 import { Paths, formatPath, ProjectRoute } from "Paths";
@@ -205,7 +206,15 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
           {
             title: (
               <ProjectStatusWatcher watch={item}>
-                {({ execution }) => <ExecutionStatus state={execution.state} />}
+                {({ execution }) => (
+                  <>
+                    <ExecutionStatus state={execution.state} />
+                    <ExecutionStatusWithTime
+                      execution={execution}
+                      showPrefix={true}
+                    />
+                  </>
+                )}
               </ProjectStatusWatcher>
             ),
           },

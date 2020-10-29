@@ -21,6 +21,7 @@ export {
   mapStateToIcon,
   mapStateToLabel,
 } from "./execution-status";
+export { ExecutionStatusWithTime } from "./execution-status-with-time";
 export { ExpandableCard } from "./expandable-card";
 export { FetchErrorEmptyState } from "./fetch-error-empty-state";
 export { SelectProjectEmptyMessage } from "./select-project-empty-message";

@@ -23,6 +23,7 @@
     "enzyme-adapter-react-16": "^1.15.3",
     "file-saver": "^2.0.2",
     "formik": "^2.1.5",
+    "humanize-duration-ts": "^2.1.1",
     "husky": "^4.2.5",
     "jest-enzyme": "^7.1.2",
     "keycloak-js": "8.0.2",
