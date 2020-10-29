@@ -1,6 +1,5 @@
 import React from "react";
-import { mount, shallow } from "enzyme";
-import { Button, TextInput } from "@patternfly/react-core";
+import { shallow } from "enzyme";
 import { DeleteMatchModal } from "../delete-match-modal";
 
 describe("DeleteMatchModal", () => {
