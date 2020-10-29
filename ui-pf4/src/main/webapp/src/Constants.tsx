@@ -12,10 +12,10 @@ interface WindupEnv {
   SSO_MODE: string;
 }
 
-export const WINDUP_WEB_VERSION: string = (window as any)["windupWebVersion"];
-export const WINDUP_WEB_SCM_REVISION: string = (window as any)[
-  "windupWebScmRevision"
-];
+export const WINDUP_WEB_VERSION: string =
+  (window as any)["windupWebVersion"] || "";
+export const WINDUP_WEB_SCM_REVISION: string =
+  (window as any)["windupWebScmRevision"] || "";
 
 export const WINDUP_ENV_VARIABLES: WindupEnv = (window as any)[
   "windupConstants"

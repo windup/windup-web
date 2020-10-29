@@ -19,6 +19,11 @@ export type RuleProviderType = "JAVA" | "XML" | "GROOVY";
 
 export type ScopeType = "GLOBAL" | "PROJECT";
 
+export interface WindupVersion {
+  version: string;
+  scmRevision: string;
+}
+
 export interface Project {
   activeExecutionsCount: number;
   applicationCount: number;

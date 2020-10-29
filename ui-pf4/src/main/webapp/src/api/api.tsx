@@ -17,7 +17,10 @@ import {
   AdvancedOption,
   ValidationResult,
   WindupExecution,
+  WindupVersion,
 } from "models/api";
+
+export const WINDUP_CORE_VERSION_URL = "/windup/coreVersion";
 
 export const MIGRATION_PROJECTS_PATH = "/migrationProjects";
 
@@ -33,6 +36,10 @@ export const EXECUTION_PROGRESS_URL =
   "/websocket/execution-progress/:executionId";
 
 export const DOWNLOAD_REGISTERED_APPLICATION = `registeredApplications/download`;
+
+export const getWindupVersion = (): AxiosPromise<WindupVersion> => {
+  return ApiClient.get(WINDUP_CORE_VERSION_URL);
+};
 
 export const getDownloadRegisteredApplicationURL = (
   applicationId: string | number

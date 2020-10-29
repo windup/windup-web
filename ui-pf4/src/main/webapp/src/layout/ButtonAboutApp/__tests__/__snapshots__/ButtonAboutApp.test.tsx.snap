@@ -17,34 +17,83 @@ exports[`Test snapshot :: open modal 1`] = `
   <AboutModal
     appendTo={null}
     backgroundImageSrc=""
-    brandImageAlt="Logo"
-    brandImageSrc="mta-logo-header.svg"
+    brandImageAlt="Red Hat"
+    brandImageSrc="red-hat-horizontal-reverse.svg"
     className=""
     isOpen={true}
     noAboutModalBoxContentContainer={false}
     onClose={[Function]}
-    productName="Windup Web Console"
-    trademark="COPYRIGHT © 2020."
+    productName="Migration Toolkit for Applications"
+    trademark=""
   >
-    <TextContent>
+    <TextContent
+      className="pf-u-py-xl"
+    >
+      <h4>
+        About
+      </h4>
+      <p>
+        <a
+          href="https://developers.redhat.com/products/mta/overview/"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Migration Toolkit for Applications
+        </a>
+         
+        allows application architects and developers to quickly decompile, analyze, assess and modernize large scale application portfolios and migrate them to Red Hat Middleware, cloud and containers.
+      </p>
+    </TextContent>
+    <TextContent
+      className="pf-u-py-xl"
+    >
       <TextList
         component="dl"
       >
         <TextListItem
           component="dt"
         >
-          Source code
+          Migration Toolkit for Applications Core
         </TextListItem>
         <TextListItem
           component="dd"
         >
-          <a
-            href="https://github.com/windup/windup-web"
-          >
-            Github
-          </a>
+          (loading)
         </TextListItem>
+        <TextListItem
+          component="dt"
+        >
+          Migration Toolkit for Applications Web Console
+        </TextListItem>
+        <TextListItem
+          component="dd"
+        />
       </TextList>
+    </TextContent>
+    <TextContent>
+      <h4>
+        Links
+      </h4>
+      <List>
+        <ListItem>
+          <a
+            href="https://developers.redhat.com/products/mta/overview/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Website
+          </a>
+        </ListItem>
+        <ListItem>
+          <a
+            href="https://access.redhat.com/documentation/en-us/migration_toolkit_for_applications/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Documentation
+          </a>
+        </ListItem>
+      </List>
     </TextContent>
   </AboutModal>
 </Fragment>
@@ -67,34 +116,83 @@ exports[`Test snapshot 1`] = `
   <AboutModal
     appendTo={null}
     backgroundImageSrc=""
-    brandImageAlt="Logo"
-    brandImageSrc="mta-logo-header.svg"
+    brandImageAlt="Red Hat"
+    brandImageSrc="red-hat-horizontal-reverse.svg"
     className=""
     isOpen={false}
     noAboutModalBoxContentContainer={false}
     onClose={[Function]}
-    productName="Windup Web Console"
-    trademark="COPYRIGHT © 2020."
+    productName="Migration Toolkit for Applications"
+    trademark=""
   >
-    <TextContent>
+    <TextContent
+      className="pf-u-py-xl"
+    >
+      <h4>
+        About
+      </h4>
+      <p>
+        <a
+          href="https://developers.redhat.com/products/mta/overview/"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Migration Toolkit for Applications
+        </a>
+         
+        allows application architects and developers to quickly decompile, analyze, assess and modernize large scale application portfolios and migrate them to Red Hat Middleware, cloud and containers.
+      </p>
+    </TextContent>
+    <TextContent
+      className="pf-u-py-xl"
+    >
       <TextList
         component="dl"
       >
         <TextListItem
           component="dt"
         >
-          Source code
+          Migration Toolkit for Applications Core
         </TextListItem>
         <TextListItem
           component="dd"
         >
-          <a
-            href="https://github.com/windup/windup-web"
-          >
-            Github
-          </a>
+          (loading)
         </TextListItem>
+        <TextListItem
+          component="dt"
+        >
+          Migration Toolkit for Applications Web Console
+        </TextListItem>
+        <TextListItem
+          component="dd"
+        />
       </TextList>
+    </TextContent>
+    <TextContent>
+      <h4>
+        Links
+      </h4>
+      <List>
+        <ListItem>
+          <a
+            href="https://developers.redhat.com/products/mta/overview/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Website
+          </a>
+        </ListItem>
+        <ListItem>
+          <a
+            href="https://access.redhat.com/documentation/en-us/migration_toolkit_for_applications/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Documentation
+          </a>
+        </ListItem>
+      </List>
     </TextContent>
   </AboutModal>
 </Fragment>

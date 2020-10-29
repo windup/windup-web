@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   AboutModal,
   TextContent,
@@ -11,105 +11,127 @@ import {
 } from "@patternfly/react-core";
 import { HelpIcon } from "@patternfly/react-icons";
 
+import { WINDUP_WEB_VERSION, WINDUP_WEB_SCM_REVISION } from "Constants";
+import { getWindupVersion } from "api/api";
+
 import brandImage from "img/red-hat-horizontal-reverse.svg";
-import { WINDUP_WEB_SCM_REVISION, WINDUP_WEB_VERSION } from "Constants";
+import { WindupVersion } from "models/api";
 
-export interface ButtonAboutProjectProps {}
+export const ButtonAboutApp: React.FC = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [windupVersion, setWindupVersion] = useState<WindupVersion>({
+    version: "(loading)",
+    scmRevision: "(loading)",
+  });
 
-interface State {
-  isOpen: boolean;
-}
+  useEffect(() => {
+    getWindupVersion().then(({ data }) => {
+      setWindupVersion(data);
+    });
+  }, []);
 
-export class ButtonAboutApp extends React.Component<
-  ButtonAboutProjectProps,
-  State
-> {
-  constructor(props: ButtonAboutProjectProps) {
-    super(props);
-    this.state = {
-      isOpen: false,
-    };
-  }
-
-  toggleButton = () => {
-    this.setState(({ isOpen }) => ({
-      isOpen: !isOpen,
-    }));
+  const toggleButton = () => {
+    setIsOpen((current) => !current);
   };
 
-  render() {
-    const { isOpen } = this.state;
-    return (
-      <>
-        <Button
-          id="aboutButton"
-          aria-label="About button"
-          variant={ButtonVariant.plain}
-          onClick={this.toggleButton}
-        >
-          <HelpIcon />
-        </Button>
-        <AboutModal
-          isOpen={isOpen}
-          onClose={this.toggleButton}
-          brandImageAlt="Red Hat"
-          brandImageSrc={brandImage}
-          productName="Migration Toolkit for Applications"
-        >
-          <TextContent className="pf-u-py-xl">
-            <h4>About</h4>
-            <p>
+  return (
+    <>
+      <Button
+        id="aboutButton"
+        aria-label="About button"
+        variant={ButtonVariant.plain}
+        onClick={toggleButton}
+      >
+        <HelpIcon />
+      </Button>
+      <AboutModal
+        isOpen={isOpen}
+        onClose={toggleButton}
+        brandImageAlt="Red Hat"
+        brandImageSrc={brandImage}
+        productName="Migration Toolkit for Applications"
+      >
+        <TextContent className="pf-u-py-xl">
+          <h4>About</h4>
+          <p>
+            <a
+              href="https://developers.redhat.com/products/mta/overview/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Migration Toolkit for Applications
+            </a>{" "}
+            allows application architects and developers to quickly decompile,
+            analyze, assess and modernize large scale application portfolios and
+            migrate them to Red Hat Middleware, cloud and containers.
+          </p>
+        </TextContent>
+        <TextContent className="pf-u-py-xl">
+          <TextList component="dl">
+            <TextListItem component="dt">
+              Migration Toolkit for Applications Core
+            </TextListItem>
+            <TextListItem component="dd">
+              {windupVersion.version}
+              {windupVersion.version.indexOf("SNAPSHOT") !== -1 && (
+                <>
+                  {"("}
+                  <a
+                    target="_blank"
+                    href={`https://github.com/windup/windup/tree/${windupVersion.scmRevision}/`}
+                    rel="noopener noreferrer"
+                  >
+                    git revision
+                  </a>
+                  {")"}
+                </>
+              )}
+            </TextListItem>
+            <TextListItem component="dt">
+              Migration Toolkit for Applications Web Console
+            </TextListItem>
+            <TextListItem component="dd">
+              {WINDUP_WEB_VERSION}
+              {WINDUP_WEB_VERSION.indexOf("SNAPSHOT") !== -1 && (
+                <>
+                  {"("}
+                  <a
+                    target="_blank"
+                    href={`https://github.com/windup/windup-web/tree/${WINDUP_WEB_SCM_REVISION}/`}
+                    rel="noopener noreferrer"
+                  >
+                    git revision
+                  </a>
+                  {")"}
+                </>
+              )}
+            </TextListItem>
+          </TextList>
+        </TextContent>
+        <TextContent>
+          <h4>Links</h4>
+          <List>
+            <ListItem>
               <a
                 href="https://developers.redhat.com/products/mta/overview/"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Migration Toolkit for Applications
-              </a>{" "}
-              allows application architects and developers to quickly decompile,
-              analyze, assess and modernize large scale application portfolios
-              and migrate them to Red Hat Middleware, cloud and containers.
-            </p>
-          </TextContent>
-          <TextContent className="pf-u-py-xl">
-            <TextList component="dl">
-              <TextListItem component="dt">
-                Migration Toolkit for Applications Core
-              </TextListItem>
-              <TextListItem component="dd">{WINDUP_WEB_VERSION}</TextListItem>
-              <TextListItem component="dt">
-                Migration Toolkit for Applications Web Console
-              </TextListItem>
-              <TextListItem component="dd">
-                {WINDUP_WEB_SCM_REVISION}
-              </TextListItem>
-            </TextList>
-          </TextContent>
-          <TextContent>
-            <h4>Links</h4>
-            <List>
-              <ListItem>
-                <a
-                  href="https://developers.redhat.com/products/mta/overview/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Website
-                </a>
-              </ListItem>
-              <ListItem>
-                <a
-                  href="https://access.redhat.com/documentation/en-us/migration_toolkit_for_applications/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Documentation
-                </a>
-              </ListItem>
-            </List>
-          </TextContent>
-        </AboutModal>
-      </>
-    );
-  }
-}
+                Website
+              </a>
+            </ListItem>
+            <ListItem>
+              <a
+                href="https://access.redhat.com/documentation/en-us/migration_toolkit_for_applications/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Documentation
+              </a>
+            </ListItem>
+          </List>
+        </TextContent>
+      </AboutModal>
+    </>
+  );
+};
