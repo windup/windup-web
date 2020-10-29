@@ -10,6 +10,8 @@ import { Paths, formatPath } from "Paths";
 import { RootState } from "store/rootReducer";
 import { projectContextSelectors } from "store/projectContext";
 
+import redHatLogo from "img/red-hat-horizontal-reverse.svg";
+
 export const SidebarApp: React.FC = () => {
   const selectedProject = useSelector((state: RootState) =>
     projectContextSelectors.selectedProject(state)
@@ -80,6 +82,16 @@ export const SidebarApp: React.FC = () => {
               </NavLink>
             </NavItem>
           </ul>
+        </section>
+        <section
+          style={{
+            padding: "20px 100px 20px 20px",
+            position: "fixed",
+            bottom: 0,
+            width: "100%",
+          }}
+        >
+          <img src={redHatLogo} alt="Red Hat" />
         </section>
       </Nav>
     );
