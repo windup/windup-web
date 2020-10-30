@@ -1,13 +1,12 @@
-import * as yup from "yup";
+import { object, string, boolean } from "yup";
 
 import { pathExists } from "api/api";
 
 import { RuleLabelServerPathFormValues } from "./rulelabel-server-path-form";
 
 export const RuleLabelServerPathFormSchema = () => {
-  const validationSchema = yup.object<RuleLabelServerPathFormValues>().shape({
-    serverPath: yup
-      .string()
+  const validationSchema = object<RuleLabelServerPathFormValues>().shape({
+    serverPath: string()
       .trim()
       .required("This field is required.")
       .test("pathExists", "The path must exist on the server.", (value) => {
@@ -15,7 +14,7 @@ export const RuleLabelServerPathFormSchema = () => {
           .then(({ data }) => data)
           .catch(() => false);
       }),
-    isChecked: yup.boolean().nullable(),
+    isChecked: boolean().nullable(),
   });
 
   return validationSchema;

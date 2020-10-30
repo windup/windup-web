@@ -1,4 +1,13 @@
-import * as yup from "yup";
+import {
+  object,
+  string,
+  boolean,
+  array,
+  ValidationError,
+  ArraySchema,
+  BooleanSchema,
+  StringSchema,
+} from "yup";
 
 import { AdvancedOptionsFieldKey } from "Constants";
 import { getMapKeys } from "utils/utils";
@@ -170,20 +179,18 @@ export const buildSchema = (availableOptions: ConfigurationOption[]) => {
 
     switch (fieldInfo.type) {
       case "dropdown":
-        schema[fieldKey] = yup.array().nullable();
+        schema[fieldKey] = array().nullable();
         break;
       case "input":
-        schema[fieldKey] = yup.string().nullable().trim();
+        schema[fieldKey] = string().nullable().trim();
         break;
       case "switch":
-        schema[fieldKey] = yup.boolean().nullable();
+        schema[fieldKey] = boolean().nullable();
         break;
     }
 
-    let fieldSchema:
-      | yup.ArraySchema<any>
-      | yup.StringSchema<any>
-      | yup.BooleanSchema<any> = schema[fieldKey];
+    let fieldSchema: ArraySchema<any> | StringSchema<any> | BooleanSchema<any> =
+      schema[fieldKey];
     if (fieldConfiguration.required) {
       schema[fieldKey] = fieldSchema.required();
     }
@@ -216,7 +223,7 @@ export const buildSchema = (availableOptions: ConfigurationOption[]) => {
             const isValid = responses.every((f) => f.data.level === "SUCCESS");
 
             return !isValid
-              ? new yup.ValidationError(
+              ? new ValidationError(
                   responses.map((f) => f.data.message),
                   value,
                   fieldKey
@@ -228,7 +235,7 @@ export const buildSchema = (availableOptions: ConfigurationOption[]) => {
     );
   });
 
-  return yup.object().shape(schema);
+  return object().shape(schema);
 };
 
 // Initial values

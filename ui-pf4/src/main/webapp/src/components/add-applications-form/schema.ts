@@ -1,4 +1,4 @@
-import * as yup from "yup";
+import { object, string, boolean, array } from "yup";
 
 import { pathExists } from "api/api";
 import { MigrationProject } from "models/api";
@@ -17,38 +17,35 @@ export const AddApplicationsUploadFilesFormInitialValues = (
 };
 
 export const AddApplicationsServerPathFormSchema = () => {
-  const validationSchema = yup
-    .object<AddApplicationsServerPathFormValues>()
-    .shape({
-      serverPath: yup
-        .string()
-        .trim()
-        .required("This field is required.")
-        .test(
-          "pathExists",
-          "The path must be an existing file or a non-empty directory on the server.",
-          (value) => {
-            return pathExists(value!)
-              .then(({ data }) => data)
-              .catch((error) => {
-                return false;
-              });
-          }
-        ),
-      isExploded: yup.boolean(),
-    });
+  const validationSchema = object<AddApplicationsServerPathFormValues>().shape({
+    serverPath: string()
+      .trim()
+      .required("This field is required.")
+      .test(
+        "pathExists",
+        "The path must be an existing file or a non-empty directory on the server.",
+        (value) => {
+          return pathExists(value!)
+            .then(({ data }) => data)
+            .catch((error) => {
+              return false;
+            });
+        }
+      ),
+    isExploded: boolean(),
+  });
 
   return validationSchema;
 };
 
 export const AddApplicationsUploadFilesFormSchema = (isRequired: boolean) => {
   if (isRequired) {
-    return yup.object<AddApplicationsUploadFilesFormValues>().shape({
-      applications: yup.array().required("This field is required.").min(1),
+    return object<AddApplicationsUploadFilesFormValues>().shape({
+      applications: array().required("This field is required.").min(1),
     });
   } else {
-    return yup.object<AddApplicationsUploadFilesFormValues>().shape({
-      applications: yup.array(),
+    return object<AddApplicationsUploadFilesFormValues>().shape({
+      applications: array(),
     });
   }
 };

@@ -1,4 +1,4 @@
-import * as yup from "yup";
+import { object, string } from "yup";
 
 import { MigrationProject } from "models/api";
 import { getProjectIdByName } from "api/api";
@@ -15,9 +15,8 @@ export const projectDetailsFormInitialValue = (
 };
 
 export const projectDetailsFormSchema = (project?: MigrationProject) => {
-  const validationSchema = yup.object<ProjectDetailsFormValues>().shape({
-    name: yup
-      .string()
+  const validationSchema = object<ProjectDetailsFormValues>().shape({
+    name: string()
       .trim()
       .required("This field is required.")
       .min(3, "The project name must contain at least 3 characters.")
@@ -38,8 +37,7 @@ export const projectDetailsFormSchema = (project?: MigrationProject) => {
           })
           .catch(() => false);
       }),
-    description: yup
-      .string()
+    description: string()
       .trim()
       .max(4096, "The description must contain fewer than 4096 characters."),
   });
