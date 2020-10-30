@@ -48,21 +48,21 @@ exports[`Test snapshot 1`] = `
           <div
             className="pf-u-display-none pf-u-display-block-on-lg"
           >
-            Continue using MTA based on 
+            Continue using 
             <a
               href="http://localhost/mta-web"
             >
-              Patternfly 3
+              old UI
             </a>
           </div>
           <div
             className="pf-u-display-none-on-lg"
           >
-            Continue using MTA based on 
+            Continue using 
             <a
               href="http://localhost/mta-web"
             >
-              Patternfly 3
+              old UI
             </a>
           </div>
           <div

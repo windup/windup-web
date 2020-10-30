@@ -34,12 +34,12 @@ export const DefaultLayout: React.FC = ({ children }) => {
               >
                 <div className="pf-u-display-none pf-u-display-block-on-lg"></div>
                 <div className="pf-u-display-none pf-u-display-block-on-lg">
-                  Continue using MTA based on&nbsp;
-                  <a href={`${window.location.origin}/mta-web`}>Patternfly 3</a>
+                  Continue using&nbsp;
+                  <a href={`${window.location.origin}/mta-web`}>old UI</a>
                 </div>
                 <div className="pf-u-display-none-on-lg">
-                  Continue using MTA based on&nbsp;
-                  <a href={`${window.location.origin}/mta-web`}>Patternfly 3</a>
+                  Continue using&nbsp;
+                  <a href={`${window.location.origin}/mta-web`}>old UI</a>
                 </div>
                 <div className="pf-u-display-none pf-u-display-block-on-lg">
                   <Button
