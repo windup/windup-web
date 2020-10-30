@@ -88,7 +88,6 @@ export const SidebarApp: React.FC = () => {
             padding: 20,
             position: "fixed",
             bottom: 0,
-            width: "100%",
           }}
         >
           <img src={redHatLogo} alt="Red Hat" style={{ height: 34 }} />

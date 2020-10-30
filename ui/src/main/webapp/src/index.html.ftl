@@ -68,7 +68,7 @@
         <div class="collapse navbar-collapse navbar-collapse-1">
             <div id="header-logo-wrapper">
                 <div id="header-logo">
-                    <img id="header-logo" src="img/mta-logo-header.svg" height="60" />
+                    <img id="header-logo" src="img/mta-logo-header.svg" height="40" style="margin-top: 10px; margin-bottom: 10px;" />
                     <!-- a class="pointer link" target="_blank" href="https://developers.redhat.com/products/mta/overview/" style="color: #ff0000">(Beta)</a -->
                 </div>
             </div>
