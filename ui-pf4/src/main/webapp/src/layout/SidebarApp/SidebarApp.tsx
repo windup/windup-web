@@ -85,13 +85,13 @@ export const SidebarApp: React.FC = () => {
         </section>
         <section
           style={{
-            padding: "20px 100px 20px 20px",
+            padding: 20,
             position: "fixed",
             bottom: 0,
             width: "100%",
           }}
         >
-          <img src={redHatLogo} alt="Red Hat" />
+          <img src={redHatLogo} alt="Red Hat" style={{ height: 34 }} />
         </section>
       </Nav>
     );
