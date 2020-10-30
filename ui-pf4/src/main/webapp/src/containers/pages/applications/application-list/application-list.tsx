@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { RouteComponentProps } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Moment from "react-moment";
 import { AxiosError } from "axios";
 
@@ -11,10 +11,11 @@ import {
   ToolbarItem,
 } from "@patternfly/react-core";
 import {
-  IActions,
+  IAction,
   ICell,
   IRow,
   IRowData,
+  ISeparator,
   sortable,
 } from "@patternfly/react-table";
 import { CubesIcon } from "@patternfly/react-icons";
@@ -30,15 +31,19 @@ import {
 import { ProjectRoute } from "Paths";
 import { isNullOrUndefined } from "utils/utils";
 
-import { Application, MigrationProject } from "models/api";
+import { Application, MigrationProject, WindupExecution } from "models/api";
 import {
   deleteRegisteredApplication,
   getDownloadRegisteredApplicationURL,
   getProjectById,
+  getProjectExecutions,
 } from "api/api";
 
 import { deleteDialogActions } from "store/deleteDialog";
 import { AddApplicationButton } from "containers/add-application-button";
+import { RootState } from "store/rootReducer";
+import { executionsWsSelectors } from "store/executions-ws";
+import { isExecutionActive } from "utils/modelUtils";
 
 const APPLICATION_FIELD = "application";
 
@@ -75,6 +80,7 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({ match }) => {
   const dispatch = useDispatch();
 
   const [project, setProject] = useState<MigrationProject>();
+  const [executions, setExecutions] = useState<WindupExecution[]>();
   const [isFetching, setIsFetching] = useState(true);
   const [fetchError, setFetchError] = useState("");
 
@@ -83,6 +89,10 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({ match }) => {
     getProjectById(projectId)
       .then(({ data }) => {
         setProject(data);
+        return getProjectExecutions(data.id);
+      })
+      .then(({ data }) => {
+        setExecutions(data);
         setFetchError("");
       })
       .catch((error: AxiosError) => {
@@ -99,34 +109,63 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({ match }) => {
     }
   }, [match, fetchMigrationProject]);
 
-  const actions: IActions = [
-    {
-      title: "Delete",
-      onClick: (_, rowIndex: number, rowData: IRowData) => {
-        const row: Application = rowData.props[APPLICATION_FIELD];
+  const activeExecutions = useSelector((state: RootState) =>
+    executionsWsSelectors.selectMessagesByProjectId(
+      state,
+      parseInt(match.params.project)
+    )
+  );
 
-        dispatch(
-          deleteDialogActions.openModal({
-            name: `#${row.title}`,
-            type: "application",
-            onDelete: () => {
-              dispatch(deleteDialogActions.processing());
-              deleteRegisteredApplication(row.id)
-                .then(() => {
-                  fetchMigrationProject(match.params.project);
-                })
-                .finally(() => {
-                  dispatch(deleteDialogActions.closeModal());
-                });
-            },
-            onCancel: () => {
-              dispatch(deleteDialogActions.closeModal());
-            },
-          })
-        );
+  const actionResolver = (): (IAction | ISeparator)[] => {
+    return [
+      {
+        title: "Delete",
+        onClick: (_, rowIndex: number, rowData: IRowData) => {
+          const row: Application = rowData.props[APPLICATION_FIELD];
+
+          dispatch(
+            deleteDialogActions.openModal({
+              name: `#${row.title}`,
+              type: "application",
+              onDelete: () => {
+                dispatch(deleteDialogActions.processing());
+                deleteRegisteredApplication(row.id)
+                  .then(() => {
+                    fetchMigrationProject(match.params.project);
+                  })
+                  .finally(() => {
+                    dispatch(deleteDialogActions.closeModal());
+                  });
+              },
+              onCancel: () => {
+                dispatch(deleteDialogActions.closeModal());
+              },
+            })
+          );
+        },
       },
-    },
-  ];
+    ];
+  };
+
+  const areActionsDisabled = (): boolean => {
+    const allIds: Set<number> = new Set();
+
+    executions?.forEach((e) => allIds.add(e.id));
+    activeExecutions.forEach((e) => allIds.add(e.id));
+
+    const currentExecutions = Array.from(allIds.keys())
+      .map((id) => {
+        const wsExecution = activeExecutions.find((e) => e.id === id);
+        if (wsExecution) {
+          return wsExecution;
+        } else {
+          return executions?.find((e) => e.id === id);
+        }
+      })
+      .filter((f) => isExecutionActive(f!));
+
+    return currentExecutions.length > 0;
+  };
 
   const applicationToIRow = useCallback(
     (applications: Application[]): IRow[] => {
@@ -166,7 +205,8 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({ match }) => {
           <TableSectionOffline
             items={project?.applications}
             columns={columns}
-            actions={actions}
+            actionResolver={actionResolver}
+            areActionsDisabled={areActionsDisabled}
             loadingVariant="skeleton"
             isLoadingData={isFetching}
             loadingDataError={fetchError}
