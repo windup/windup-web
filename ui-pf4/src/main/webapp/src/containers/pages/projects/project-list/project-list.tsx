@@ -242,7 +242,7 @@ export const ProjectList: React.FC<Props> = ({
               <ToolbarGroup variant="button-group">
                 <ToolbarItem>
                   <Button type="button" onClick={handleNewProject}>
-                    Create new
+                    Create project
                   </Button>
                 </ToolbarItem>
               </ToolbarGroup>
