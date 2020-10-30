@@ -6,6 +6,7 @@ import {
 } from "humanize-duration-ts";
 
 import { WindupExecution } from "models/api";
+import { isExecutionActive } from "utils/modelUtils";
 
 export const timePrefix = (execution: WindupExecution) => {
   if (execution.state === "STARTED" || execution.state === "QUEUED") {
@@ -58,7 +59,9 @@ export const ExecutionStatusWithTime: React.FC<ExecutionStatusWithTimeProps> = (
   }, []);
 
   useEffect(() => {
-    setCurrentTime(new Date().getTime());
+    if (isExecutionActive(execution)) {
+      setCurrentTime(new Date().getTime());
+    }
   }, [execution]);
 
   return (

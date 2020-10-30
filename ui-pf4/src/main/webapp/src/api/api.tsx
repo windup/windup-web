@@ -37,6 +37,12 @@ export const EXECUTION_PROGRESS_URL =
 
 export const DOWNLOAD_REGISTERED_APPLICATION = `registeredApplications/download`;
 
+const defaultConfig = {
+  headers: {
+    "Content-Type": "application/json",
+  },
+};
+
 export const getWindupVersion = (): AxiosPromise<WindupVersion> => {
   return ApiClient.get(WINDUP_CORE_VERSION_URL);
 };
@@ -125,11 +131,7 @@ export const registerApplicationByPath = (
   return ApiClient.post<Application>(
     `${MIGRATION_PROJECTS_PATH}/${projectId}/registeredApplications/register-path?exploded=${isPathExploded}`,
     path,
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
+    defaultConfig
   );
 };
 
@@ -140,30 +142,22 @@ export const registerApplicationInDirectoryByPath = (
   return ApiClient.post<Application>(
     `${MIGRATION_PROJECTS_PATH}/${projectId}/registeredApplications/register-directory-path`,
     path,
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
+    defaultConfig
   );
 };
 
 export const pathExists = (path: string): AxiosPromise<boolean> => {
-  return ApiClient.post<boolean>("file/pathExists", path, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  return ApiClient.post<boolean>("file/pathExists", path, defaultConfig);
 };
 
 export const pathTargetType = (
   path: string
 ): AxiosPromise<"FILE" | "DIRECTORY"> => {
-  return ApiClient.post<"FILE" | "DIRECTORY">("file/pathTargetType", path, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  return ApiClient.post<"FILE" | "DIRECTORY">(
+    "file/pathTargetType",
+    path,
+    defaultConfig
+  );
 };
 
 export const getAnalysisContext = (
@@ -210,11 +204,7 @@ export const reloadConfiguration = (
   return ApiClient.post<Configuration>(
     `configuration/${configuration.id}/reload`,
     configuration.id,
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
+    defaultConfig
   );
 };
 
@@ -314,7 +304,11 @@ export const getExecutionLog = (
 };
 
 export const cancelExecution = (executionId: string | number): AxiosPromise => {
-  return ApiClient.post(`/windup/executions/${executionId}/cancel`, undefined);
+  return ApiClient.post(
+    `/windup/executions/${executionId}/cancel`,
+    undefined,
+    defaultConfig
+  );
 };
 
 export const deleteExecution = (executionId: string | number): AxiosPromise => {

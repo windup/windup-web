@@ -14,6 +14,7 @@ export default connect(
     isError: deleteDialogSelectors.isError(state),
     name: deleteDialogSelectors.name(state),
     type: deleteDialogSelectors.type(state),
+    config: deleteDialogSelectors.config(state),
   })),
   {
     onCancel: deleteDialogActions.closeModal,

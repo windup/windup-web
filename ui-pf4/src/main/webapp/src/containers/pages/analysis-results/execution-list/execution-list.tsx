@@ -16,8 +16,9 @@ import {
   IRow,
   ICell,
   sortable,
-  IActions,
   IRowData,
+  IAction,
+  ISeparator,
 } from "@patternfly/react-table";
 import { ChartBarIcon, DownloadIcon, CubesIcon } from "@patternfly/react-icons";
 
@@ -38,6 +39,7 @@ import {
 import { Paths, formatPath, ProjectRoute } from "Paths";
 import { WindupExecution, MigrationProject } from "models/api";
 import {
+  cancelExecution,
   createProjectExecution,
   deleteExecution,
   getAnalysisContext,
@@ -53,7 +55,10 @@ import {
   MERGED_CSV_FILENAME,
 } from "Constants";
 import { isNullOrUndefined } from "utils/utils";
-import { isOptionEnabledInExecution } from "utils/modelUtils";
+import {
+  isExecutionActive,
+  isOptionEnabledInExecution,
+} from "utils/modelUtils";
 
 const EXECUTION_FIELD = "execution";
 
@@ -155,41 +160,87 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
     }
   }, [match, executions, refreshExecutionList]);
 
-  const actions: IActions = [
-    {
-      title: "Delete",
-      onClick: (_, rowIndex: number, rowData: IRowData) => {
-        const row: WindupExecution = rowData.props[EXECUTION_FIELD];
+  const actionResolver = (rowData: IRowData): (IAction | ISeparator)[] => {
+    const row: WindupExecution = getRow(rowData);
 
-        dispatch(
-          deleteDialogActions.openModal({
-            name: `#${row.id.toString()}`,
-            type: "analysis",
-            onDelete: () => {
-              dispatch(deleteDialogActions.processing());
-              deleteExecution(row.id)
-                .then(() => {
-                  refreshExecutionList(match.params.project);
-                })
-                .finally(() => {
-                  dispatch(deleteDialogActions.closeModal());
-                });
-            },
-            onCancel: () => {
-              dispatch(deleteDialogActions.closeModal());
-            },
-          })
-        );
-      },
-    },
-  ];
+    const actions: (IAction | ISeparator)[] = [];
+    if (isExecutionActive(row)) {
+      actions.push({
+        title: "Cancel",
+        onClick: (_, rowIndex: number, rowData: IRowData) => {
+          const row: WindupExecution = getRow(rowData);
+
+          dispatch(
+            deleteDialogActions.openModal({
+              name: `#${row.id.toString()}`,
+              type: "analysis",
+              config: {
+                title: `Cancel #${row.id.toString()}`,
+                message: "Are you sure you want to cancel the analysis",
+                deleteBtnLabel: "Yes",
+                cancelBtnLabel: "No",
+              },
+              onDelete: () => {
+                dispatch(deleteDialogActions.processing());
+                cancelExecution(row.id)
+                  .then(() => {
+                    refreshExecutionList(match.params.project);
+                  })
+                  .finally(() => {
+                    dispatch(deleteDialogActions.closeModal());
+                  });
+              },
+              onCancel: () => {
+                dispatch(deleteDialogActions.closeModal());
+              },
+            })
+          );
+        },
+      });
+    } else {
+      actions.push({
+        title: "Delete",
+        onClick: (_, rowIndex: number, rowData: IRowData) => {
+          const row: WindupExecution = getRow(rowData);
+
+          dispatch(
+            deleteDialogActions.openModal({
+              name: `#${row.id.toString()}`,
+              type: "analysis",
+              onDelete: () => {
+                dispatch(deleteDialogActions.processing());
+                deleteExecution(row.id)
+                  .then(() => {
+                    refreshExecutionList(match.params.project);
+                  })
+                  .finally(() => {
+                    dispatch(deleteDialogActions.closeModal());
+                  });
+              },
+              onCancel: () => {
+                dispatch(deleteDialogActions.closeModal());
+              },
+            })
+          );
+        },
+      });
+    }
+
+    return actions;
+  };
+
+  const areActionsDisabled = (): boolean => {
+    return false;
+  };
+
+  const getRow = (rowData: IRowData): WindupExecution => {
+    return rowData[EXECUTION_FIELD];
+  };
 
   const executionToIRow = useCallback(
     (executions: WindupExecution[]): IRow[] => {
       return executions.map((item) => ({
-        props: {
-          [EXECUTION_FIELD]: item,
-        },
+        [EXECUTION_FIELD]: item,
         cells: [
           {
             title: (
@@ -316,7 +367,8 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
           <TableSectionOffline
             items={executions}
             columns={columns}
-            actions={actions}
+            actionResolver={actionResolver}
+            areActionsDisabled={areActionsDisabled}
             loadingVariant={
               executions && executions.length > 0 ? "none" : "skeleton"
             }

@@ -5,6 +5,12 @@ interface Item {
   type: string;
   onDelete: () => void;
   onCancel: () => void;
+  config?: {
+    title: string;
+    message: string;
+    deleteBtnLabel?: string;
+    cancelBtnLabel?: string;
+  };
 }
 
 export const openModal = createAction("dialog/delete/open")<Item>();

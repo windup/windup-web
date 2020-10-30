@@ -10,6 +10,7 @@ interface Props {
   isError: boolean;
   name: string;
   type: string;
+  config: any;
 }
 
 interface State {}
@@ -24,12 +25,13 @@ class DeleteDialogBase extends React.Component<Props, State> {
       isOpen,
       isProcessing,
       isError,
+      config,
     } = this.props;
 
     return (
       <Modal
         variant={"small"}
-        title={`Delete ${name}?`}
+        title={config.title ? config.title : `Delete ${name}?`}
         onClose={() => {
           onCancel();
         }}
@@ -41,8 +43,7 @@ class DeleteDialogBase extends React.Component<Props, State> {
             variant={ButtonVariant.danger}
             onClick={onDelete}
           >
-            {/* Delete {`${type}`} */}
-            Delete
+            {config.deleteBtnLabel ? config.deleteBtnLabel : "Delete"}
           </Button>,
           <Button
             key="cancel"
@@ -52,12 +53,14 @@ class DeleteDialogBase extends React.Component<Props, State> {
               onCancel();
             }}
           >
-            Cancel
+            {config.cancelBtnLabel ? config.cancelBtnLabel : "Cancel"}
           </Button>,
         ]}
       >
         {isError
-          ? `Ops! There was a problem while deleting the ${type}.`
+          ? `Ops! There was a problem while executing your action.`
+          : config.message
+          ? config.message
           : `Are you sure you want to delete this ${type}? This action will remove any data related to this source permanently.`}
       </Modal>
     );

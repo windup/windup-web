@@ -19,7 +19,7 @@ exports[`Test snapshot :: open modal 1`] = `
     backgroundImageSrc=""
     brandImageAlt="Red Hat"
     brandImageSrc="red-hat-horizontal-reverse.svg"
-    className=""
+    className="about-app__component"
     isOpen={true}
     noAboutModalBoxContentContainer={false}
     onClose={[Function]}
@@ -95,6 +95,97 @@ exports[`Test snapshot :: open modal 1`] = `
         </ListItem>
       </List>
     </TextContent>
+    <div
+      className="pf-c-about-modal-box__strapline"
+    >
+      <Flex>
+        <FlexItem>
+          <a
+            href="https://github.com/windup/windup"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <i>
+              <GithubIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            </i>
+             
+            Source
+          </a>
+        </FlexItem>
+        <FlexItem>
+          <a
+            href="https://github.com/windup/windup/wiki"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <i>
+              <BookOpenIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            </i>
+             
+            Wiki
+          </a>
+        </FlexItem>
+        <FlexItem>
+          <a
+            href="https://developer.jboss.org/en/windup?view=discussions"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <i>
+              <GlobeIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            </i>
+             
+            Discussion forum
+          </a>
+        </FlexItem>
+        <FlexItem>
+          <a
+            href="https://lists.jboss.org/mailman/listinfo/windup-dev"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <i>
+              <EnvelopeIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            </i>
+             
+            Mailing list
+          </a>
+        </FlexItem>
+        <FlexItem>
+          <a
+            href="https://issues.jboss.org/browse/WINDUP"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <i>
+              <InfoAltIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            </i>
+             
+            Issue tracking
+          </a>
+        </FlexItem>
+      </Flex>
+    </div>
   </AboutModal>
 </Fragment>
 `;
@@ -118,7 +209,7 @@ exports[`Test snapshot 1`] = `
     backgroundImageSrc=""
     brandImageAlt="Red Hat"
     brandImageSrc="red-hat-horizontal-reverse.svg"
-    className=""
+    className="about-app__component"
     isOpen={false}
     noAboutModalBoxContentContainer={false}
     onClose={[Function]}
@@ -194,6 +285,97 @@ exports[`Test snapshot 1`] = `
         </ListItem>
       </List>
     </TextContent>
+    <div
+      className="pf-c-about-modal-box__strapline"
+    >
+      <Flex>
+        <FlexItem>
+          <a
+            href="https://github.com/windup/windup"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <i>
+              <GithubIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            </i>
+             
+            Source
+          </a>
+        </FlexItem>
+        <FlexItem>
+          <a
+            href="https://github.com/windup/windup/wiki"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <i>
+              <BookOpenIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            </i>
+             
+            Wiki
+          </a>
+        </FlexItem>
+        <FlexItem>
+          <a
+            href="https://developer.jboss.org/en/windup?view=discussions"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <i>
+              <GlobeIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            </i>
+             
+            Discussion forum
+          </a>
+        </FlexItem>
+        <FlexItem>
+          <a
+            href="https://lists.jboss.org/mailman/listinfo/windup-dev"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <i>
+              <EnvelopeIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            </i>
+             
+            Mailing list
+          </a>
+        </FlexItem>
+        <FlexItem>
+          <a
+            href="https://issues.jboss.org/browse/WINDUP"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <i>
+              <InfoAltIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            </i>
+             
+            Issue tracking
+          </a>
+        </FlexItem>
+      </Flex>
+    </div>
   </AboutModal>
 </Fragment>
 `;

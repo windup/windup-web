@@ -7,6 +7,7 @@ import { useSubscribeToExecutionWs } from "hooks/useSubscribeToExecutionWs";
 import { useSelector } from "react-redux";
 import { RootState } from "store/rootReducer";
 import { executionsWsSelectors } from "store/executions-ws";
+import { isExecutionActive } from "utils/modelUtils";
 
 export interface ChildrenProps {
   execution: WindupExecution;
@@ -27,5 +28,7 @@ export const ProjectStatusWatcher: React.FC<ProjectStatusWatcherProps> = ({
     executionsWsSelectors.selectMessage(state, watch.id)
   );
 
-  return children({ execution: executionWs || watch });
+  return children({
+    execution: isExecutionActive(watch) ? executionWs || watch : watch,
+  });
 };

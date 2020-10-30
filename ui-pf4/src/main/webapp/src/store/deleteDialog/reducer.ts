@@ -10,6 +10,7 @@ export type DeleteDialogState = Readonly<{
   name: string;
   type: string;
   onDelete: () => void;
+  config: any;
 }>;
 
 export const defaultState: DeleteDialogState = {
@@ -19,6 +20,7 @@ export const defaultState: DeleteDialogState = {
   name: "",
   type: "",
   onDelete: () => {},
+  config: {},
 };
 
 export type DeleteDialogAction = ActionType<

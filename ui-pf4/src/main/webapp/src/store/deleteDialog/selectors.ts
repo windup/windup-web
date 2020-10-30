@@ -15,3 +15,5 @@ export const name = (state: RootState) => deleteDialogState(state).name;
 export const type = (state: RootState) => deleteDialogState(state).type;
 
 export const onDelete = (state: RootState) => deleteDialogState(state).onDelete;
+
+export const config = (state: RootState) => deleteDialogState(state).config;
