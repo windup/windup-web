@@ -8,8 +8,19 @@ import {
   ButtonVariant,
   List,
   ListItem,
+  Flex,
+  FlexItem,
 } from "@patternfly/react-core";
-import { HelpIcon } from "@patternfly/react-icons";
+import {
+  HelpIcon,
+  GithubIcon,
+  BookOpenIcon,
+  GlobeIcon,
+  EnvelopeIcon,
+  InfoAltIcon,
+} from "@patternfly/react-icons";
+
+import "./ButtonAboutApp.scss";
 
 import { WINDUP_WEB_VERSION, WINDUP_WEB_SCM_REVISION } from "Constants";
 import { getWindupVersion } from "api/api";
@@ -50,6 +61,7 @@ export const ButtonAboutApp: React.FC = () => {
         brandImageAlt="Red Hat"
         brandImageSrc={brandImage}
         productName="Migration Toolkit for Applications"
+        className="about-app__component"
       >
         <TextContent className="pf-u-py-xl">
           <h4>About</h4>
@@ -131,6 +143,70 @@ export const ButtonAboutApp: React.FC = () => {
             </ListItem>
           </List>
         </TextContent>
+        <div className="pf-c-about-modal-box__strapline">
+          <Flex>
+            <FlexItem>
+              <a
+                href="https://github.com/windup/windup"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <i>
+                  <GithubIcon />
+                </i>{" "}
+                Source
+              </a>
+            </FlexItem>
+            <FlexItem>
+              <a
+                href="https://github.com/windup/windup/wiki"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <i>
+                  <BookOpenIcon />
+                </i>{" "}
+                Wiki
+              </a>
+            </FlexItem>
+            <FlexItem>
+              <a
+                href="https://developer.jboss.org/en/windup?view=discussions"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <i>
+                  <GlobeIcon />
+                </i>{" "}
+                Discussion forum
+              </a>
+            </FlexItem>
+            <FlexItem>
+              <a
+                href="https://lists.jboss.org/mailman/listinfo/windup-dev"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <i>
+                  <EnvelopeIcon />
+                </i>{" "}
+                Mailing list
+              </a>
+            </FlexItem>
+            <FlexItem>
+              <a
+                href="https://issues.jboss.org/browse/WINDUP"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <i>
+                  <InfoAltIcon />
+                </i>{" "}
+                Issue tracking
+              </a>
+            </FlexItem>
+          </Flex>
+        </div>
       </AboutModal>
     </>
   );
