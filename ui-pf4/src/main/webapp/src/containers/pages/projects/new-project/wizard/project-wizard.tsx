@@ -267,7 +267,7 @@ export const NewProjectWizard: React.FC<NewProjectWizardProps> = ({
 
   return (
     <Wizard
-      title={isWizard ? "Create project" : undefined}
+      title={isWizard ? "Create Project" : undefined}
       description={
         isWizard ? "Create a project for your applications" : undefined
       }
@@ -278,8 +278,8 @@ export const NewProjectWizard: React.FC<NewProjectWizardProps> = ({
       onBack={handleOnGoToStep}
       onGoToStep={handleOnGoToStep}
       onClose={handleOnClose}
-      navAriaLabel="New project steps"
-      mainAriaLabel="New project content"
+      navAriaLabel="Create Project steps"
+      mainAriaLabel="Create Project content"
       footer={
         footer ? (
           footer

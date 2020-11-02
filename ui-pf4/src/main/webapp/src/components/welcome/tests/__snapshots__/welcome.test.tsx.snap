@@ -28,7 +28,7 @@ exports[`Welcome Renders without crashing 1`] = `
     onClick={[Function]}
     variant="primary"
   >
-    New project
+    Create Project
   </Button>
   <EmptyStateSecondaryActions>
     To learn more, visit the
