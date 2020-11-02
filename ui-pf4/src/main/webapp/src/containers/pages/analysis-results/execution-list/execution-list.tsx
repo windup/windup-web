@@ -67,7 +67,7 @@ const columns: ICell[] = [
   { title: "Status", transforms: [sortable] },
   { title: "Start date", transforms: [sortable] },
   { title: "Applications", transforms: [sortable] },
-  { title: "", transforms: [] },
+  { title: "Actions", transforms: [] },
 ];
 
 const compareExecution = (
@@ -97,6 +97,18 @@ const filterExecution = (filterText: string, execution: WindupExecution) => {
     execution.id.toString().toLowerCase().indexOf(filterText.toLowerCase()) !==
     -1
   );
+};
+
+const getStaticReportURL = (execution: WindupExecution) => {
+  return `${getWindupStaticReportsBase()}/${
+    execution.applicationListRelativePath
+  }`;
+};
+
+const getCSVReportURL = (execution: WindupExecution) => {
+  return `${getWindupStaticReportsBase()}/${
+    execution.id
+  }/${MERGED_CSV_FILENAME}`;
 };
 
 interface ExecutionListProps extends RouteComponentProps<ProjectRoute> {}
@@ -164,6 +176,31 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
     const row: WindupExecution = getRow(rowData);
 
     const actions: (IAction | ISeparator)[] = [];
+
+    if (row.state === "COMPLETED") {
+      if (
+        !isOptionEnabledInExecution(row, AdvancedOptionsFieldKey.SKIP_REPORTS)
+      ) {
+        actions.push({
+          title: "Reports",
+          onClick: (_, rowIndex: number, rowData: IRowData) => {
+            const row: WindupExecution = getRow(rowData);
+            window.open(getStaticReportURL(row), "_blank");
+          },
+        });
+      }
+
+      if (isOptionEnabledInExecution(row, AdvancedOptionsFieldKey.EXPORT_CSV)) {
+        actions.push({
+          title: "All Issues CSV",
+          onClick: (_, rowIndex: number, rowData: IRowData) => {
+            const row: WindupExecution = getRow(rowData);
+            window.open(getCSVReportURL(row), "_blank");
+          },
+        });
+      }
+    }
+
     if (isExecutionActive(row)) {
       actions.push({
         title: "Cancel",
@@ -299,9 +336,7 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
                               title="Reports"
                               target="_blank"
                               rel="noopener noreferrer"
-                              href={`${getWindupStaticReportsBase()}/${
-                                execution.applicationListRelativePath
-                              }`}
+                              href={`${getStaticReportURL(execution)}`}
                             >
                               <ChartBarIcon />
                             </a>
@@ -316,9 +351,7 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
                               title="Download all issues CSV"
                               target="_blank"
                               rel="noopener noreferrer"
-                              href={`${getWindupStaticReportsBase()}/${
-                                execution.id
-                              }/${MERGED_CSV_FILENAME}`}
+                              href={`${getCSVReportURL(execution)}`}
                             >
                               <DownloadIcon />
                             </a>
