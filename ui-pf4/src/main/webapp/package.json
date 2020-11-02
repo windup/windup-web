@@ -43,6 +43,7 @@
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "build:freemarker": "cp build/index.html build/index.html.ftl",
