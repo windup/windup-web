@@ -4,16 +4,14 @@ import { Route, Switch, Redirect } from "react-router-dom";
 import { AppPlaceholder } from "./components";
 import { Paths } from "./Paths";
 
-const Projects = lazy(() => import("./containers/pages/projects"));
-const AnalysisResults = lazy(() =>
-  import("./containers/pages/analysis-results")
+const Projects = lazy(() => import("./pages/projects"));
+const AnalysisResults = lazy(() => import("./pages/analysis-results"));
+const Applications = lazy(() => import("./pages/applications"));
+const AnalysisConfiguration = lazy(
+  () => import("./pages/analysis-configuration")
 );
-const Applications = lazy(() => import("./containers/pages/applications"));
-const AnalysisConfiguration = lazy(() =>
-  import("./containers/pages/analysis-configuration")
-);
-const GlobalRules = lazy(() => import("./containers/pages/global-rules"));
-const GlobalLabels = lazy(() => import("./containers/pages/global-labels"));
+const GlobalRules = lazy(() => import("./pages/global-rules"));
+const GlobalLabels = lazy(() => import("./pages/global-labels"));
 
 export const AppRoutes = () => {
   const routes = [
