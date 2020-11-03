@@ -16,8 +16,8 @@ import { UserCircleIcon } from "@patternfly/react-icons";
 
 import { useKeycloak } from "@react-keycloak/web";
 
-import navBrandImage from "img/mta-logo-header.svg";
-import imgAvatar from "img/avatar.svg";
+import navBrandImage from "images/mta-logo-header.svg";
+import imgAvatar from "images/avatar.svg";
 
 import { ButtonAboutApp } from "../ButtonAboutApp";
 

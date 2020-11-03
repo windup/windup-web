@@ -10,7 +10,7 @@ import { Paths, formatPath } from "Paths";
 import { RootState } from "store/rootReducer";
 import { projectContextSelectors } from "store/projectContext";
 
-import redHatLogo from "img/red-hat-horizontal-reverse.svg";
+import redHatLogo from "images/red-hat-horizontal-reverse.svg";
 
 export const SidebarApp: React.FC = () => {
   const selectedProject = useSelector((state: RootState) =>

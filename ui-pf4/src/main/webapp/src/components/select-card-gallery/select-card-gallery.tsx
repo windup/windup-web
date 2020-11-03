@@ -3,13 +3,13 @@ import { Gallery, GalleryItem } from "@patternfly/react-core";
 
 import { SelectCard } from "../select-card/select-card";
 
-import jbossLogo from "img/jboss.svg";
-import openshiftLogo from "img/openshift.svg";
-import linuxLogo from "img/linux.svg";
-import openjdkLogo from "img/openjdk.svg";
-import camelLogo from "img/camel.svg";
-import quarkusLogo from "img/quarkus.png";
-import rhRuntimesLogo from "img/rh-runtimes.png";
+import jbossLogo from "images/jboss.svg";
+import openshiftLogo from "images/openshift.svg";
+import linuxLogo from "images/linux.svg";
+import openjdkLogo from "images/openjdk.svg";
+import camelLogo from "images/camel.svg";
+import quarkusLogo from "images/quarkus.png";
+import rhRuntimesLogo from "images/rh-runtimes.png";
 
 interface TransformationPathOption {
   label: string;
