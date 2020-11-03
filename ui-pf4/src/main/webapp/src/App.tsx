@@ -10,13 +10,10 @@ import { DefaultLayout } from "./layout";
 import DeleteDialog from "./containers/delete-dialog";
 import { RuleLabelDetailsModal } from "./containers/rule-label-details-modal";
 
+import NotificationsPortal from "@redhat-cloud-services/frontend-components-notifications/cjs/NotificationPortal";
 import "@redhat-cloud-services/frontend-components-notifications/index.css";
-const frontendComponentsNotifications = require("@redhat-cloud-services/frontend-components-notifications");
 
 const App: React.FC = () => {
-  const NotificationsPortal =
-    frontendComponentsNotifications.NotificationsPortal;
-
   return (
     <HashRouter>
       <DefaultLayout>

@@ -1,7 +1,6 @@
 import { Dispatch } from "redux";
 import { AxiosError } from "axios";
-const frontendComponentsNotifications = require("@redhat-cloud-services/frontend-components-notifications/cjs/actions");
-const addNotification = frontendComponentsNotifications.addNotification;
+import { addNotification } from "@redhat-cloud-services/frontend-components-notifications/cjs/actions";
 
 export const alert = (alert: any) => {
   return (dispatch: Dispatch) => {

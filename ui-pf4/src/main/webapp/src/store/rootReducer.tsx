@@ -18,7 +18,7 @@ import {
   ruleLabelDetailsModalReducer,
 } from "./ruleLabelDetailsModal";
 
-const frontendComponentsNotifications = require("@redhat-cloud-services/frontend-components-notifications");
+import notifications from "@redhat-cloud-services/frontend-components-notifications/cjs/notifications";
 
 export type RootState = StateType<typeof rootReducer>;
 
@@ -30,5 +30,5 @@ export const rootReducer = combineReducers({
   [projectContextStateKey]: projectContextReducer,
   [projectListStateKey]: projectListReducer,
   [ruleLabelDetailsModalStateKey]: ruleLabelDetailsModalReducer,
-  notifications: frontendComponentsNotifications.notifications,
+  notifications: notifications,
 });
