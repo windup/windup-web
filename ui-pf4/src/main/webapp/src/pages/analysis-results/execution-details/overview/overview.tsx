@@ -108,9 +108,7 @@ export const Overview: React.FC<OverviewProps> = ({ match }) => {
                             <DescriptionListTerm>Started</DescriptionListTerm>
                             <DescriptionListDescription>
                               {watchedExecution.timeStarted ? (
-                                <Moment>
-                                  {watchedExecution.timeCompleted}
-                                </Moment>
+                                <Moment>{watchedExecution.timeStarted}</Moment>
                               ) : (
                                 "Not yet"
                               )}
