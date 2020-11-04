@@ -1,16 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import {
-  EmptyState,
-  EmptyStateIcon,
-  EmptyStateVariant,
-  Title,
-  EmptyStateBody,
-  Button,
-  Bullseye,
-  Spinner,
-  Skeleton,
-} from "@patternfly/react-core";
+import { Bullseye, Spinner, Skeleton } from "@patternfly/react-core";
 import {
   Table,
   TableHeader,
