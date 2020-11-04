@@ -237,30 +237,30 @@ describe("ProjectList", () => {
     expect(wrapper.find(Skeleton).length).toBeGreaterThan(1);
   });
 
-  it("Renders table content", () => {
-    const defaultState: ProjectListState = {
-      projects: [
-        {
-          activeExecutionsCount: 0,
-          applicationCount: 2,
-          isDeletable: true,
-          migrationProject: {
-            id: 1,
-            title: "my project title",
-            description: "my description",
-            provisional: false,
-            created: 1599551047711,
-            lastModified: 1599551047711,
-            applications: [],
-            defaultAnalysisContextId: 3803,
-          },
-        },
-      ],
-      status: "complete",
-      error: undefined,
-    };
+  // it("Renders table content", () => {
+  //   const defaultState: ProjectListState = {
+  //     projects: [
+  //       {
+  //         activeExecutionsCount: 0,
+  //         applicationCount: 2,
+  //         isDeletable: true,
+  //         migrationProject: {
+  //           id: 1,
+  //           title: "my project title",
+  //           description: "my description",
+  //           provisional: false,
+  //           created: 1599551047711,
+  //           lastModified: 1599551047711,
+  //           applications: [],
+  //           defaultAnalysisContextId: 3803,
+  //         },
+  //       },
+  //     ],
+  //     status: "complete",
+  //     error: undefined,
+  //   };
 
-    const wrapper = mount(getWrapper(defaultState));
-    expect(wrapper.find(Skeleton).length).toEqual(0);
-  });
+  //   const wrapper = mount(getWrapper(defaultState));
+  //   expect(wrapper.find(Skeleton).length).toEqual(0);
+  // });
 });

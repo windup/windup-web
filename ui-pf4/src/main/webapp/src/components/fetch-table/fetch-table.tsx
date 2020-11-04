@@ -23,12 +23,13 @@ import {
   IActionsResolver,
   IAreActionsDisabled,
 } from "@patternfly/react-table";
-import { SearchIcon } from "@patternfly/react-icons";
 
 import { FetchErrorEmptyState } from "components";
 
 import { FetchStatus } from "store/common";
 import { Constants } from "Constants";
+
+import { NoResultsFound } from "./no-results-found";
 
 export interface FetchTableProps {
   columns: ICell[];
@@ -121,23 +122,7 @@ export const FetchTable: React.FC<FetchTableProps> = ({
         cells: [
           {
             props: { colSpan: columns.length },
-            title: (
-              <EmptyState variant={EmptyStateVariant.small}>
-                <EmptyStateIcon icon={SearchIcon} />
-                <Title headingLevel="h2" size="lg">
-                  No results found
-                </Title>
-                <EmptyStateBody>
-                  No results match the filter criteria. Remove all filters or
-                  clear all filters to show results.
-                </EmptyStateBody>
-                {onClearFilters && (
-                  <Button variant="link" onClick={onClearFilters}>
-                    Clear all filters
-                  </Button>
-                )}
-              </EmptyState>
-            ),
+            title: <NoResultsFound onClearFilters={onClearFilters} />,
           },
         ],
       },

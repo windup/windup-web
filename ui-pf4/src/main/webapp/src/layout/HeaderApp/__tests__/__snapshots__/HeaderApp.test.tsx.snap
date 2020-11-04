@@ -2,6 +2,7 @@
 
 exports[`Test snapshot 1`] = `
 <PageHeader
+  className="header-app__component"
   headerTools={
     <PageHeaderTools>
       <PageHeaderToolsGroup
