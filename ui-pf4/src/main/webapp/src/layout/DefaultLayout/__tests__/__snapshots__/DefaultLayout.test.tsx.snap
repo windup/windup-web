@@ -52,7 +52,7 @@ exports[`Test snapshot 1`] = `
             <a
               href="http://localhost/mta-web"
             >
-              old UI
+              previous UI
             </a>
           </div>
           <div
@@ -62,7 +62,7 @@ exports[`Test snapshot 1`] = `
             <a
               href="http://localhost/mta-web"
             >
-              old UI
+              previous UI
             </a>
           </div>
           <div
