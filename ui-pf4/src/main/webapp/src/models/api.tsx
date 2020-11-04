@@ -37,8 +37,8 @@ export interface MigrationProject {
   description: string;
   defaultAnalysisContextId: number;
   provisional: boolean;
-  created: Date;
-  lastModified: Date;
+  created: number;
+  lastModified: number;
   applications: Application[];
 }
 

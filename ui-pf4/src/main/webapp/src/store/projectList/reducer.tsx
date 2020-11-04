@@ -12,13 +12,13 @@ export const stateKey = "projectList";
 
 export type ProjectListState = Readonly<{
   projects: Project[] | undefined;
-  error: AxiosError<any> | null;
+  error: AxiosError | undefined;
   status: FetchStatus;
 }>;
 
 export const defaultState: ProjectListState = {
   projects: undefined,
-  error: null,
+  error: undefined,
   status: "none",
 };
 
@@ -42,7 +42,7 @@ export function projectListReducer(
       return {
         ...state,
         status: "complete",
-        error: null,
+        error: undefined,
         projects: action.payload,
       };
     case getType(fetchProjectListFailure):

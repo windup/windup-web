@@ -4,6 +4,11 @@ import { Link, RouteComponentProps } from "react-router-dom";
 import { AxiosError } from "axios";
 import Moment from "react-moment";
 
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "store/rootReducer";
+import { projectListActions, projectListSelectors } from "store/projectList";
+import { alertActions } from "store/alert";
+
 import {
   cellWidth,
   ICell,
@@ -35,10 +40,8 @@ import { Project } from "models/api";
 import { getProjectExecutions } from "api/api";
 import { getAxiosErrorMessage } from "utils/modelUtils";
 
-import { FetchStatus } from "store/common";
-
-import { EditProjectModal } from "./edit-project-modal";
-import { DeleteProjectModal } from "./delete-project-modal";
+import { EditProjectModal } from "./components/edit-project-modal";
+import { DeleteProjectModal } from "./components/delete-project-modal";
 
 const PROJECT_FIELD_NAME = "project";
 
@@ -49,7 +52,11 @@ const columns: ICell[] = [
   { title: "Description", transforms: [cellWidth(30)] },
 ];
 
-const compareProject = (a: Project, b: Project, columnIndex?: number) => {
+export const compareProject = (
+  a: Project,
+  b: Project,
+  columnIndex?: number
+) => {
   switch (columnIndex) {
     case 0: // title
       return a.migrationProject.title.localeCompare(b.migrationProject.title);
@@ -66,7 +73,7 @@ const compareProject = (a: Project, b: Project, columnIndex?: number) => {
   }
 };
 
-const filterProject = (filterText: string, project: Project) => {
+export const filterProject = (filterText: string, project: Project) => {
   return (
     project.migrationProject.title
       .toLowerCase()
@@ -74,33 +81,27 @@ const filterProject = (filterText: string, project: Project) => {
   );
 };
 
-interface StateToProps {
-  projects: Project[] | undefined;
-  error: AxiosError<any> | null;
-  fetchStatus: FetchStatus;
-}
+interface Props extends RouteComponentProps {}
 
-interface DispatchToProps {
-  fetchProjects: () => Promise<void>;
-  addAlert: (alert: any) => void;
-}
+export const ProjectList: React.FC<Props> = ({ history: { push } }) => {
+  const dispatch = useDispatch();
 
-interface Props extends StateToProps, DispatchToProps, RouteComponentProps {}
-
-export const ProjectList: React.FC<Props> = ({
-  projects,
-  fetchStatus,
-  error,
-  fetchProjects,
-  addAlert,
-  history: { push },
-}) => {
   const [projectToEdit, setProjectToEdit] = useState<Project>();
   const [projectToDelete, setProjectToDelete] = useState<Project>();
 
+  const projects = useSelector((state: RootState) =>
+    projectListSelectors.projects(state)
+  );
+  const fetchStatus = useSelector((state: RootState) =>
+    projectListSelectors.status(state)
+  );
+  const error = useSelector((state: RootState) =>
+    projectListSelectors.error(state)
+  );
+
   useEffect(() => {
-    fetchProjects();
-  }, [fetchProjects]);
+    dispatch(projectListActions.fetchProjects());
+  }, [dispatch]);
 
   const actionResolver = (): (IAction | ISeparator)[] => {
     return [
@@ -184,11 +185,13 @@ export const ProjectList: React.FC<Props> = ({
         });
 
         if (inProgressExecution) {
-          addAlert(
-            getAlertModel(
-              "danger",
-              "Error",
-              `Cannot delete project '${project.migrationProject.title}' while an analysis is in progress.`
+          dispatch(
+            alertActions.alert(
+              getAlertModel(
+                "danger",
+                "Error",
+                `Cannot delete project '${project.migrationProject.title}' while an analysis is in progress.`
+              )
             )
           );
         } else {
@@ -196,21 +199,25 @@ export const ProjectList: React.FC<Props> = ({
         }
       })
       .catch((error: AxiosError) => {
-        addAlert(getAlertModel("danger", "Error", getAxiosErrorMessage(error)));
+        dispatch(
+          alertActions.alert(
+            getAlertModel("danger", "Error", getAxiosErrorMessage(error))
+          )
+        );
       });
   };
 
   const handleEditModalClose = (refresh: boolean) => {
     setProjectToEdit(undefined);
     if (refresh) {
-      fetchProjects();
+      dispatch(projectListActions.fetchProjects());
     }
   };
 
   const handleDeleteModalClose = (refresh: boolean) => {
     setProjectToDelete(undefined);
     if (refresh) {
-      fetchProjects();
+      dispatch(projectListActions.fetchProjects());
     }
   };
 

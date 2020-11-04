@@ -60,8 +60,8 @@ const project = {
   title: "title",
   description: "description",
   provisional: false,
-  created: new Date(1599551047711),
-  lastModified: new Date(1599551108682),
+  created: 1599551047711,
+  lastModified: 1599551108682,
   applications: [],
   defaultAnalysisContextId: 3803,
 };
