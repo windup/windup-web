@@ -16,6 +16,8 @@ import { UserCircleIcon } from "@patternfly/react-icons";
 
 import { useKeycloak } from "@react-keycloak/web";
 
+import "./HeaderApp.scss";
+
 import navBrandImage from "images/mta-logo-header.svg";
 import imgAvatar from "images/avatar.svg";
 
@@ -129,6 +131,7 @@ export const HeaderApp: React.FC = () => {
 
   return (
     <PageHeader
+      className="header-app__component"
       logo={<Brand src={navBrandImage} alt="brand" />}
       headerTools={renderPageToolbar}
       showNavToggle
