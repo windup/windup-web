@@ -5,8 +5,14 @@ import Moment from "react-moment";
 import { AxiosError } from "axios";
 
 import {
+  Alert,
   Bullseye,
   PageSection,
+  PageSectionVariants,
+  Stack,
+  StackItem,
+  Text,
+  TextContent,
   ToolbarGroup,
   ToolbarItem,
 } from "@patternfly/react-core";
@@ -23,13 +29,14 @@ import { CubesIcon } from "@patternfly/react-icons";
 import {
   ConditionalRender,
   CustomEmptyState,
-  SimplePageSection,
   TableSectionOffline,
   SelectProjectEmptyMessage,
 } from "components";
+import { useSubscribeToExecutionWs } from "hooks/useSubscribeToExecutionWs";
 
 import { ProjectRoute } from "Paths";
 import { isNullOrUndefined } from "utils/utils";
+import { isExecutionActive } from "utils/modelUtils";
 
 import { Application, MigrationProject, WindupExecution } from "models/api";
 import {
@@ -43,7 +50,6 @@ import { deleteDialogActions } from "store/deleteDialog";
 import { AddApplicationButton } from "containers/add-application-button";
 import { RootState } from "store/rootReducer";
 import { executionsWsSelectors } from "store/executions-ws";
-import { isExecutionActive } from "utils/modelUtils";
 
 const APPLICATION_FIELD = "application";
 
@@ -109,12 +115,21 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({ match }) => {
     }
   }, [match, fetchMigrationProject]);
 
-  const activeExecutions = useSelector((state: RootState) =>
+  useSubscribeToExecutionWs(executions || []);
+  const wsExecutions = useSelector((state: RootState) =>
     executionsWsSelectors.selectMessagesByProjectId(
       state,
       parseInt(match.params.project)
     )
   );
+
+  const activeExecutions = (executions || [])
+    .map((f) => {
+      const wsExecution = wsExecutions.find((element) => element.id === f.id);
+      return wsExecution || f;
+    })
+    .filter((f) => f.projectId === parseInt(match.params.project))
+    .filter((f) => isExecutionActive(f));
 
   const actionResolver = (): (IAction | ISeparator)[] => {
     return [
@@ -148,23 +163,7 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({ match }) => {
   };
 
   const areActionsDisabled = (): boolean => {
-    const allIds: Set<number> = new Set();
-
-    executions?.forEach((e) => allIds.add(e.id));
-    activeExecutions.forEach((e) => allIds.add(e.id));
-
-    const currentExecutions = Array.from(allIds.keys())
-      .map((id) => {
-        const wsExecution = activeExecutions.find((e) => e.id === id);
-        if (wsExecution) {
-          return wsExecution;
-        } else {
-          return executions?.find((e) => e.id === id);
-        }
-      })
-      .filter((f) => isExecutionActive(f!));
-
-    return currentExecutions.length > 0;
+    return activeExecutions.length > 0;
   };
 
   const applicationToIRow = useCallback(
@@ -196,7 +195,24 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({ match }) => {
 
   return (
     <>
-      <SimplePageSection title="Applications" />
+      <PageSection variant={PageSectionVariants.light}>
+        <Stack hasGutter>
+          <StackItem>
+            <TextContent>
+              <Text component="h1">Applications</Text>
+            </TextContent>
+          </StackItem>
+          {activeExecutions.length > 0 && (
+            <StackItem>
+              <Alert
+                variant="info"
+                isInline
+                title="Cannot delete applications when analysis is in progress"
+              />
+            </StackItem>
+          )}
+        </Stack>
+      </PageSection>
       <PageSection>
         <ConditionalRender
           when={isNullOrUndefined(match.params.project)}
