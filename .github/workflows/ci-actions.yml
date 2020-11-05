@@ -29,6 +29,7 @@ jobs:
       - uses: s4u/maven-settings-action@v2.2.0
         with:
           sonatypeSnapshots: true
+          properties: '["repository":{"id":"jboss-public-repository-group","name":"JBoss Public Maven Repository Group","url":"https://repository.jboss.org/nexus/content/groups/public-jboss/","layout":"default"}]'
       - name: Compute cache restore key
         # Always recompute on a push so that the maven repo doesnt grow indefinitely with old versions
         run: |
