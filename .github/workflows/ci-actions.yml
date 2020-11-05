@@ -1,0 +1,163 @@
+name: CI
+
+on:
+  push:
+    paths-ignore:
+      - "README.md"
+  pull_request:
+    types: [assigned, opened, synchronize, reopened, ready_for_review, edited]
+    paths-ignore:
+      - "README.md"
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  build-jdk8:
+    name: JDK 8 Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: n1hility/cancel-previous-runs@v2
+        if: github.event_name == 'pull_request'
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up JDK
+        # Uses sha for added security since tags can be updated
+        uses: joschi/setup-jdk@b9cc6eabf7e7e3889766b5cee486f874c9e1bd2d
+        with:
+          java-version: 8
+      - name: Compute cache restore key
+        # Always recompute on a push so that the maven repo doesnt grow indefinitely with old versions
+        run: |
+          if ${{ github.event_name == 'pull_request' }}; then echo "::set-env name=COMPUTED_RESTORE_KEY::q2maven-"; fi
+      - name: Cache Maven Repository
+        id: cache-maven
+        uses: n1hility/cache@v2
+        with:
+          path: ~/.m2/repository
+          # Improves the reusability of the cache to limit key changes
+          key: q2maven-${{ hashFiles('pom.xml') }}
+          restore-keys: ${{ env.COMPUTED_RESTORE_KEY }}
+          restore-only: ${{ github.event_name == 'pull_request' }}
+      - name: Build
+        run: |
+          mvn install -s settings.xml -e -B -DskipTests=true -DskipDocs
+      - name: Tar Maven Repo
+        shell: bash
+        run: tar -czvf maven-repo.tgz -C ~ .m2/repository
+      - name: Persist Maven Repo
+        uses: actions/upload-artifact@v1
+        with:
+          name: maven-repo
+          path: maven-repo.tgz
+
+  linux-jdk8-tests:
+    name: JDK 8 Tests
+    needs: build-jdk8
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 8
+        # Uses sha for added security since tags can be updated
+        uses: joschi/setup-jdk@b9cc6eabf7e7e3889766b5cee486f874c9e1bd2d
+        with:
+          java-version: 8
+      - name: Download Maven Repo
+        uses: actions/download-artifact@v1
+        with:
+          name: maven-repo
+          path: .
+      - name: Extract Maven Repo
+        shell: bash
+        run: tar -xzvf maven-repo.tgz -C ~
+
+      - name: Tests
+        run: mvn install -s settings.xml -B -U -Pfindbugs -e -X
+
+      - name: Prepare failure archive (if tests failed)
+        if: failure()
+        shell: bash
+        run: find . -wholename '**/target/surefire-reports/**/*' -o -wholename '**/target/e2e*' -o -wholename '**/target/findbugs/*' -type d | tar -czvf test-reports.tgz -T -
+      - name: Upload failure Archive (if maven failed)
+        uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: linux-jdk8-tests
+          path: "test-reports.tgz"
+
+  linux-jdk8-tests-production:
+    name: JDK 8 Tests Production
+    needs: build-jdk8
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 8
+        # Uses sha for added security since tags can be updated
+        uses: joschi/setup-jdk@b9cc6eabf7e7e3889766b5cee486f874c9e1bd2d
+        with:
+          java-version: 8
+      - name: Download Maven Repo
+        uses: actions/download-artifact@v1
+        with:
+          name: maven-repo
+          path: .
+      - name: Extract Maven Repo
+        shell: bash
+        run: tar -xzvf maven-repo.tgz -C ~
+
+      - name: Tests
+        run: mvn install -s settings.xml -B -U -DskipTests -Dwebpack.environment=production -e -X
+
+      - name: Prepare failure archive (if tests failed)
+        if: failure()
+        shell: bash
+        run: find . -wholename '**/target/surefire-reports/**/*' -o -wholename '**/target/e2e*' -o -wholename '**/target/findbugs/*' -type d | tar -czvf test-reports.tgz -T -
+      - name: Upload failure Archive (if maven failed)
+        uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: linux-jdk8-tests-production
+          path: "test-reports.tgz"
+
+  linux-jdk11-tests:
+    name: Java Artifacts
+    needs: build-jdk8
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 11
+        # Uses sha for added security since tags can be updated
+        uses: joschi/setup-jdk@b9cc6eabf7e7e3889766b5cee486f874c9e1bd2d
+        with:
+          java-version: 11
+      - name: Download Maven Repo
+        uses: actions/download-artifact@v1
+        with:
+          name: maven-repo
+          path: .
+      - name: Extract Maven Repo
+        shell: bash
+        run: tar -xzvf maven-repo.tgz -C ~
+
+      - name: Preliminary setup
+        run: |
+          mvn -s settings.xml -f services/pom.xml org.jboss.forge.furnace:furnace-maven-plugin:2.28.2.Final:addon-install@deploy-addons
+          mvn -s settings.xml -f services/pom.xml org.apache.maven.plugins:maven-dependency-plugin:unpack@unpack
+          mvn -s settings.xml -f tests/wildfly-dist/pom.xml org.apache.maven.plugins:maven-dependency-plugin:unpack@unpack
+      - name: Unit tests
+        run: mvn -s settings.xml -Dsurefire.server.jvm.args='--add-modules java.se' surefire:test -B -U -Pfindbugs -e -X
+      - name: Integration tests
+        run: mvn resources:copy-resources@copy-npm-config resources:copy-resources@copy-database antrun:run@unzip-reports dependency:copy@copy-wars dependency:unpack@unpack exec:exec@yarn-install exec:exec@webdriver-manager-update source:jar-no-fork@attach-sources wildfly:start@start-wildfly wildfly:execute-commands@start-wildfly failsafe:integration-test@failsafe-integration-tests exec:exec@run-e2e exec:exec@make-results-report wildfly:shutdown@stop-wildfly -f tests/e2e/pom.xml
+      - name: Karma tests
+        run: mvn com.kelveden:maven-karma-plugin:start@karmaTests -f ui/pom.xml -s settings.xml
+
+      - name: Prepare failure archive (if tests failed)
+        if: failure()
+        shell: bash
+        run: find . -wholename '**/target/surefire-reports/TEST-*.xml' -o -wholename '**/target/failsafe-reports/TEST-*.xml' -o -wholename '**/target/karma-reports/test-results.xml' -type d | tar -czvf test-reports.tgz -T -
+      - name: Upload failure Archive (if maven failed)
+        uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: linux-jdk8-tests
+          path: "test-reports.tgz"
