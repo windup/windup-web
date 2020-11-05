@@ -44,7 +44,7 @@ jobs:
           restore-only: ${{ github.event_name == 'pull_request' }}
       - name: Build
         run: |
-          mvn install -s settings.xml -e -B -DskipTests=true -DskipDocs
+          mvn install -e -B -DskipTests=true -DskipDocs
       - name: Tar Maven Repo
         shell: bash
         run: tar -czvf maven-repo.tgz -C ~ .m2/repository
@@ -75,7 +75,7 @@ jobs:
         run: tar -xzvf maven-repo.tgz -C ~
 
       - name: Tests
-        run: mvn install -s settings.xml -B -U -Pfindbugs -e -X
+        run: mvn install -B -U -Pfindbugs -e -X
 
       - name: Prepare failure archive (if tests failed)
         if: failure()
@@ -109,7 +109,7 @@ jobs:
         run: tar -xzvf maven-repo.tgz -C ~
 
       - name: Tests
-        run: mvn install -s settings.xml -B -U -DskipTests -Dwebpack.environment=production -e -X
+        run: mvn install -B -U -DskipTests -Dwebpack.environment=production -e -X
 
       - name: Prepare failure archive (if tests failed)
         if: failure()
@@ -144,15 +144,15 @@ jobs:
 
       - name: Preliminary setup
         run: |
-          mvn -s settings.xml -f services/pom.xml org.jboss.forge.furnace:furnace-maven-plugin:2.28.2.Final:addon-install@deploy-addons
-          mvn -s settings.xml -f services/pom.xml org.apache.maven.plugins:maven-dependency-plugin:unpack@unpack
-          mvn -s settings.xml -f tests/wildfly-dist/pom.xml org.apache.maven.plugins:maven-dependency-plugin:unpack@unpack
+          mvn -f services/pom.xml org.jboss.forge.furnace:furnace-maven-plugin:2.28.2.Final:addon-install@deploy-addons
+          mvn -f services/pom.xml org.apache.maven.plugins:maven-dependency-plugin:unpack@unpack
+          mvn -f tests/wildfly-dist/pom.xml org.apache.maven.plugins:maven-dependency-plugin:unpack@unpack
       - name: Unit tests
-        run: mvn -s settings.xml -Dsurefire.server.jvm.args='--add-modules java.se' surefire:test -B -U -Pfindbugs -e -X
+        run: mvn -Dsurefire.server.jvm.args='--add-modules java.se' surefire:test -B -U -Pfindbugs -e -X
       - name: Integration tests
         run: mvn resources:copy-resources@copy-npm-config resources:copy-resources@copy-database antrun:run@unzip-reports dependency:copy@copy-wars dependency:unpack@unpack exec:exec@yarn-install exec:exec@webdriver-manager-update source:jar-no-fork@attach-sources wildfly:start@start-wildfly wildfly:execute-commands@start-wildfly failsafe:integration-test@failsafe-integration-tests exec:exec@run-e2e exec:exec@make-results-report wildfly:shutdown@stop-wildfly -f tests/e2e/pom.xml
       - name: Karma tests
-        run: mvn com.kelveden:maven-karma-plugin:start@karmaTests -f ui/pom.xml -s settings.xml
+        run: mvn com.kelveden:maven-karma-plugin:start@karmaTests -f ui/pom.xml
 
       - name: Prepare failure archive (if tests failed)
         if: failure()
