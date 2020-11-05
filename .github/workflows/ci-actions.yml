@@ -14,7 +14,6 @@ on:
 jobs:
   linux-jdk8-tests:
     name: JDK 8 Tests
-    needs: build-jdk8
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -51,7 +50,6 @@ jobs:
 
   linux-jdk8-tests-production:
     name: JDK 8 Tests Production
-    needs: build-jdk8
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -88,7 +86,6 @@ jobs:
 
   linux-jdk11-tests:
     name: Java Artifacts
-    needs: build-jdk8
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
