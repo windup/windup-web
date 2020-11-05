@@ -11,6 +11,10 @@ on:
   schedule:
     - cron: "0 0 * * *"
 
+env:
+  REPOSITORIES: '[{"id":"sonatype-snapshots","url":"https://oss.sonatype.org/content/repositories/snapshots/"}, {"id":"jboss-releases", "url":"https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/"}, {"id":"redhat-ga-repository", "url":"https://maven.repository.redhat.com/ga/"}, {"id":"central", "url":"https://repo.maven.apache.org/maven2"}]'
+  PLUGING_REPOSITORIES: '[{"id":"redhat-ga-repository", "url":"https://maven.repository.redhat.com/ga/"}, {"id":"central", "url":"https://repo.maven.apache.org/maven2"}]'
+
 jobs:
   linux-jdk8-tests:
     name: JDK 8 Tests
@@ -23,11 +27,12 @@ jobs:
         with:
           java-version: 8
 
+      - uses: nanasess/setup-chromedriver@master
       - name: maven-settings-xml-action
         uses: whelk-io/maven-settings-xml-action@v13
         with:
-          repositories: '[{"id":"sonatype-snapshots", "url":"https://oss.sonatype.org/content/repositories/snapshots/"}, {"id":"jboss-public-repository-group", "url":"https://repository.jboss.org/nexus/content/groups/public-jboss/"}]'
-          plugin_repositories: '[{"id":"jboss-public-repository-group", "url":"https://repository.jboss.org/nexus/content/groups/public-jboss/"}]'
+          repositories: $REPOSITORIES
+          plugin_repositories: $PLUGING_REPOSITORIES
       - name: Use Node.js 12
         uses: actions/setup-node@v1
         with:
@@ -62,8 +67,8 @@ jobs:
       - name: maven-settings-xml-action
         uses: whelk-io/maven-settings-xml-action@v13
         with:
-          repositories: '[{"id":"sonatype-snapshots", "url":"https://oss.sonatype.org/content/repositories/snapshots/"}, {"id":"jboss-public-repository-group", "url":"https://repository.jboss.org/nexus/content/groups/public-jboss/"}]'
-          plugin_repositories: '[{"id":"jboss-public-repository-group", "url":"https://repository.jboss.org/nexus/content/groups/public-jboss/"}]'
+          repositories: $REPOSITORIES
+          plugin_repositories: $PLUGING_REPOSITORIES
       - name: Use Node.js 12
         uses: actions/setup-node@v1
         with:
@@ -85,7 +90,7 @@ jobs:
           path: "test-reports.tgz"
 
   linux-jdk11-tests:
-    name: Java Artifacts
+    name: JDK 11 Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -98,8 +103,8 @@ jobs:
       - name: maven-settings-xml-action
         uses: whelk-io/maven-settings-xml-action@v13
         with:
-          repositories: '[{"id":"sonatype-snapshots", "url":"https://oss.sonatype.org/content/repositories/snapshots/"}, {"id":"jboss-public-repository-group", "url":"https://repository.jboss.org/nexus/content/groups/public-jboss/"}]'
-          plugin_repositories: '[{"id":"jboss-public-repository-group", "url":"https://repository.jboss.org/nexus/content/groups/public-jboss/"}]'
+          repositories: $REPOSITORIES
+          plugin_repositories: $PLUGING_REPOSITORIES
       - name: Use Node.js 12
         uses: actions/setup-node@v1
         with:
@@ -130,30 +135,39 @@ jobs:
           name: linux-jdk8-tests
           path: "test-reports.tgz"
 
-#  build-artifacts:
-#    name: Create web distribution
-#    needs: build-jdk8
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v2
-#      - name: Set up JDK 11
-#        # Uses sha for added security since tags can be updated
-#        uses: joschi/setup-jdk@b9cc6eabf7e7e3889766b5cee486f874c9e1bd2d
-#        with:
-#          java-version: 11
-#      - name: Download Maven Repo
-#        uses: actions/download-artifact@v1
-#        with:
-#          name: maven-repo
-#          path: .
-#      - name: Extract Maven Repo
-#        shell: bash
-#        run: tar -xzvf maven-repo.tgz -C ~
-#
-#      - name: maven-settings-xml-action
-#        uses: whelk-io/maven-settings-xml-action@v13
-#        with:
-#          repositories: '[{"id":"sonatype-snapshots", "url":"https://oss.sonatype.org/content/repositories/snapshots/"}, {"id":"jboss-public-repository-group", "url":"https://repository.jboss.org/nexus/content/groups/public-jboss/"}]'
-#          plugin_repositories: '[{"id":"jboss-public-repository-group", "url":"https://repository.jboss.org/nexus/content/groups/public-jboss/"}]'
+  build-artifacts:
+    name: Create web distribution
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 8
+        # Uses sha for added security since tags can be updated
+        uses: joschi/setup-jdk@b9cc6eabf7e7e3889766b5cee486f874c9e1bd2d
+        with:
+          java-version: 8
 
+      - uses: nanasess/setup-chromedriver@master
+      - name: maven-settings-xml-action
+        uses: whelk-io/maven-settings-xml-action@v13
+        with:
+          repositories: $REPOSITORIES
+          plugin_repositories: $PLUGING_REPOSITORIES
+      - name: Use Node.js 12
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - name: Install Bower and PhantomJS
+        run: npm install -g bower phantomjs-prebuilt
 
+      - uses: actions/checkout@v2
+        with:
+          repository: 'windup/windup-web-distribution'
+      - name: Build distribution
+        run: mvn install -DskipTests=true -f windup-web-distribution
+      - name: Move distribution
+        run: mv windup-web-distribution/target/mta-web-distribution-*-with-authentication.zip windup-web-distribution/target/mta-web-distribution.zip
+      - name: Upload distribution
+        uses: actions/upload-artifact@v1
+        with:
+          name: windup-web-distribution
+          path: 'windup-web-distribution/target/mta-web-distribution.zip'
