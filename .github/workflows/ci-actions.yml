@@ -44,6 +44,12 @@ jobs:
           key: q2maven-${{ hashFiles('pom.xml') }}
           restore-keys: ${{ env.COMPUTED_RESTORE_KEY }}
           restore-only: ${{ github.event_name == 'pull_request' }}
+      - name: Use Node.js 12
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - name: Install PhantomJS
+        run: npm install -g phantomjs-prebuilt
       - name: Build
         run: |
           mvn install -e -B -DskipTests=true -DskipDocs
