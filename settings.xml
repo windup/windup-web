@@ -23,6 +23,16 @@
             <enabled>true</enabled>
           </snapshots>
         </repository>
+        <repository>
+          <id>sonatype-snapshots2</id>
+          <url>https://oss.sonatype.org/content/groups/public</url>
+          <releases>
+            <enabled>false</enabled>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </repository>
       </repositories>
       <pluginRepositories>
         <pluginRepository>
@@ -32,16 +42,6 @@
           <layout>default</layout>
           <releases>
             <enabled>true</enabled>
-          </releases>
-          <snapshots>
-            <enabled>true</enabled>
-          </snapshots>
-        </pluginRepository>
-        <pluginRepository>
-          <id>sonatype-snapshots</id>
-          <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-          <releases>
-            <enabled>false</enabled>
           </releases>
           <snapshots>
             <enabled>true</enabled>
