@@ -12,197 +12,197 @@ on:
     - cron: "0 0 * * *"
 
 jobs:
-  linux-jdk8-tests:
-    name: JDK 8 Tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK 8
-        # Uses sha for added security since tags can be updated
-        uses: joschi/setup-jdk@b9cc6eabf7e7e3889766b5cee486f874c9e1bd2d
-        with:
-          java-version: 8
-
-      - uses: nanasess/setup-chromedriver@master
-      - name: maven-settings-xml-action
-        uses: whelk-io/maven-settings-xml-action@v13
-        with:
-          repositories: '[{"id":"sonatype-snapshots","url":"https://oss.sonatype.org/content/repositories/snapshots/"}, {"id":"jboss-releases", "url":"https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/"}, {"id":"redhat-ga-repository", "url":"https://maven.repository.redhat.com/ga/"}, {"id":"central", "url":"https://repo.maven.apache.org/maven2"}]'
-          plugin_repositories: '[{"id":"redhat-ga-repository", "url":"https://maven.repository.redhat.com/ga/"}, {"id":"central", "url":"https://repo.maven.apache.org/maven2"}]'
-      - name: Use Node.js 12
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12
-      - name: Install Bower and PhantomJS
-        run: npm install -g bower phantomjs-prebuilt
-
-      - name: Tests
-        run: mvn install -B -U -Pfindbugs -e -X
-      - name: Prepare failure archive (if tests failed)
-        if: failure()
-        shell: bash
-        run: find . -wholename '**/target/surefire-reports/**/*' -o -wholename '**/target/e2e*' -o -wholename '**/target/findbugs/*' -type d | tar -czvf test-reports.tgz -T -
-      - name: Upload failure Archive (if maven failed)
-        uses: actions/upload-artifact@v1
-        if: failure()
-        with:
-          name: linux-jdk8-tests
-          path: "test-reports.tgz"
-
-  linux-jdk8-tests-production:
-    name: JDK 8 Tests Production
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK 8
-        # Uses sha for added security since tags can be updated
-        uses: joschi/setup-jdk@b9cc6eabf7e7e3889766b5cee486f874c9e1bd2d
-        with:
-          java-version: 8
-
-      - name: maven-settings-xml-action
-        uses: whelk-io/maven-settings-xml-action@v13
-        with:
-          repositories: '[{"id":"sonatype-snapshots","url":"https://oss.sonatype.org/content/repositories/snapshots/"}, {"id":"jboss-releases", "url":"https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/"}, {"id":"redhat-ga-repository", "url":"https://maven.repository.redhat.com/ga/"}, {"id":"central", "url":"https://repo.maven.apache.org/maven2"}]'
-          plugin_repositories: '[{"id":"redhat-ga-repository", "url":"https://maven.repository.redhat.com/ga/"}, {"id":"central", "url":"https://repo.maven.apache.org/maven2"}]'
-      - name: Use Node.js 12
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12
-      - name: Install Bower and PhantomJS
-        run: npm install -g bower phantomjs-prebuilt
-
-      - name: Tests
-        run: mvn install -B -U -DskipTests -Dwebpack.environment=production -e -X
-      - name: Prepare failure archive (if tests failed)
-        if: failure()
-        shell: bash
-        run: find . -wholename '**/target/surefire-reports/**/*' -o -wholename '**/target/e2e*' -o -wholename '**/target/findbugs/*' -type d | tar -czvf test-reports.tgz -T -
-      - name: Upload failure Archive (if maven failed)
-        uses: actions/upload-artifact@v1
-        if: failure()
-        with:
-          name: linux-jdk8-tests-production
-          path: "test-reports.tgz"
-
-  linux-jdk11-tests:
-    name: JDK 11 Tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK 11
-        # Uses sha for added security since tags can be updated
-        uses: joschi/setup-jdk@b9cc6eabf7e7e3889766b5cee486f874c9e1bd2d
-        with:
-          java-version: 11
-
-      - name: maven-settings-xml-action
-        uses: whelk-io/maven-settings-xml-action@v13
-        with:
-          repositories: '[{"id":"sonatype-snapshots","url":"https://oss.sonatype.org/content/repositories/snapshots/"}, {"id":"jboss-releases", "url":"https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/"}, {"id":"redhat-ga-repository", "url":"https://maven.repository.redhat.com/ga/"}, {"id":"central", "url":"https://repo.maven.apache.org/maven2"}]'
-          plugin_repositories: '[{"id":"redhat-ga-repository", "url":"https://maven.repository.redhat.com/ga/"}, {"id":"central", "url":"https://repo.maven.apache.org/maven2"}]'
-      - name: Use Node.js 12
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12
-      - name: Install Bower and PhantomJS
-        run: npm install -g bower phantomjs-prebuilt
-
-      - name: Preliminary setup
-        run: |
-          mvn -f services/pom.xml org.jboss.forge.furnace:furnace-maven-plugin:2.28.2.Final:addon-install@deploy-addons &&
-          mvn -f services/pom.xml org.apache.maven.plugins:maven-dependency-plugin:unpack@unpack &&
-          mvn -f tests/wildfly-dist/pom.xml org.apache.maven.plugins:maven-dependency-plugin:unpack@unpack
-      - name: Unit tests
-        run: mvn -Dsurefire.server.jvm.args='--add-modules java.se' surefire:test -B -U -Pfindbugs -e -X
-      - name: Integration tests
-        run: mvn resources:copy-resources@copy-npm-config resources:copy-resources@copy-database antrun:run@unzip-reports dependency:copy@copy-wars dependency:unpack@unpack exec:exec@yarn-install exec:exec@webdriver-manager-update source:jar-no-fork@attach-sources wildfly:start@start-wildfly wildfly:execute-commands@start-wildfly failsafe:integration-test@failsafe-integration-tests exec:exec@run-e2e exec:exec@make-results-report wildfly:shutdown@stop-wildfly -f tests/e2e/pom.xml
-      - name: Karma tests
-        run: mvn com.kelveden:maven-karma-plugin:start@karmaTests -f ui/pom.xml
-
-      - name: Prepare failure archive (if tests failed)
-        if: failure()
-        shell: bash
-        run: find . -wholename '**/target/surefire-reports/TEST-*.xml' -o -wholename '**/target/failsafe-reports/TEST-*.xml' -o -wholename '**/target/karma-reports/test-results.xml' -type d | tar -czvf test-reports.tgz -T -
-      - name: Upload failure Archive (if maven failed)
-        uses: actions/upload-artifact@v1
-        if: failure()
-        with:
-          name: linux-jdk8-tests
-          path: "test-reports.tgz"
-
-  build-artifacts:
-    name: Create web distribution
-    runs-on: ubuntu-latest
-    steps:
-      - name: Clone current windup-web
-        uses: actions/checkout@v2
-        with:
-          path: 'windup-web'
-      - name: Clone windup-web-distribution
-        uses: actions/checkout@v2
-        with:
-          repository: 'windup/windup-web-distribution'
-          path: 'windup-web-distribution'
-      - name: Set up JDK 8
-        # Uses sha for added security since tags can be updated
-        uses: joschi/setup-jdk@b9cc6eabf7e7e3889766b5cee486f874c9e1bd2d
-        with:
-          java-version: 8
-
-      - uses: nanasess/setup-chromedriver@master
-      - name: maven-settings-xml-action
-        uses: whelk-io/maven-settings-xml-action@v13
-        with:
-          repositories: '[{"id":"sonatype-snapshots","url":"https://oss.sonatype.org/content/repositories/snapshots/"}, {"id":"jboss-releases", "url":"https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/"}, {"id":"redhat-ga-repository", "url":"https://maven.repository.redhat.com/ga/"}, {"id":"central", "url":"https://repo.maven.apache.org/maven2"}]'
-          plugin_repositories: '[{"id":"redhat-ga-repository", "url":"https://maven.repository.redhat.com/ga/"}, {"id":"central", "url":"https://repo.maven.apache.org/maven2"}]'
-      - name: Use Node.js 12
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12
-      - name: Install Bower and PhantomJS
-        run: npm install -g bower phantomjs-prebuilt
-
-      - name: Build windup-web
-        run: mvn install -DskipTests=true -f windup-web
-      - name: Build windup-web-distribution
-        run: mvn install -DskipTests=true -f windup-web-distribution
-      - name: Rename distribution
-        run: mv windup-web-distribution/target/mta-web-distribution-*-with-authentication.zip mta-server.zip
-      - name: Upload distribution
-        uses: actions/upload-artifact@v1
-        with:
-          name: mta-server
-          path: 'mta-server.zip'
-
-  ui-unit-test:
-    name: UI tests
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [10.x, 12.x, 14.x]
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-      - run: yarn --cwd ui-pf4/src/main/webapp/ install
-      - run: yarn --cwd ui-pf4/src/main/webapp/ build
-      - run: yarn --cwd ui-pf4/src/main/webapp/ test
-
-  ui-unit-test-coverage:
-    name: UI test coverage
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js 12.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12.x
-      - run: yarn --cwd ui-pf4/src/main/webapp/ install
-      - run: yarn --cwd ui-pf4/src/main/webapp/ test --coverage --watchAll=false
-      - uses: codecov/codecov-action@v1
+#  linux-jdk8-tests:
+#    name: JDK 8 Tests
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v2
+#      - name: Set up JDK 8
+#        # Uses sha for added security since tags can be updated
+#        uses: joschi/setup-jdk@b9cc6eabf7e7e3889766b5cee486f874c9e1bd2d
+#        with:
+#          java-version: 8
+#
+#      - uses: nanasess/setup-chromedriver@master
+#      - name: maven-settings-xml-action
+#        uses: whelk-io/maven-settings-xml-action@v13
+#        with:
+#          repositories: '[{"id":"sonatype-snapshots","url":"https://oss.sonatype.org/content/repositories/snapshots/"}, {"id":"jboss-releases", "url":"https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/"}, {"id":"redhat-ga-repository", "url":"https://maven.repository.redhat.com/ga/"}, {"id":"central", "url":"https://repo.maven.apache.org/maven2"}]'
+#          plugin_repositories: '[{"id":"redhat-ga-repository", "url":"https://maven.repository.redhat.com/ga/"}, {"id":"central", "url":"https://repo.maven.apache.org/maven2"}]'
+#      - name: Use Node.js 12
+#        uses: actions/setup-node@v1
+#        with:
+#          node-version: 12
+#      - name: Install Bower and PhantomJS
+#        run: npm install -g bower phantomjs-prebuilt
+#
+#      - name: Tests
+#        run: mvn install -B -U -Pfindbugs -e -X
+#      - name: Prepare failure archive (if tests failed)
+#        if: failure()
+#        shell: bash
+#        run: find . -wholename '**/target/surefire-reports/**/*' -o -wholename '**/target/e2e*' -o -wholename '**/target/findbugs/*' -type d | tar -czvf test-reports.tgz -T -
+#      - name: Upload failure Archive (if maven failed)
+#        uses: actions/upload-artifact@v1
+#        if: failure()
+#        with:
+#          name: linux-jdk8-tests
+#          path: "test-reports.tgz"
+#
+#  linux-jdk8-tests-production:
+#    name: JDK 8 Tests Production
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v2
+#      - name: Set up JDK 8
+#        # Uses sha for added security since tags can be updated
+#        uses: joschi/setup-jdk@b9cc6eabf7e7e3889766b5cee486f874c9e1bd2d
+#        with:
+#          java-version: 8
+#
+#      - name: maven-settings-xml-action
+#        uses: whelk-io/maven-settings-xml-action@v13
+#        with:
+#          repositories: '[{"id":"sonatype-snapshots","url":"https://oss.sonatype.org/content/repositories/snapshots/"}, {"id":"jboss-releases", "url":"https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/"}, {"id":"redhat-ga-repository", "url":"https://maven.repository.redhat.com/ga/"}, {"id":"central", "url":"https://repo.maven.apache.org/maven2"}]'
+#          plugin_repositories: '[{"id":"redhat-ga-repository", "url":"https://maven.repository.redhat.com/ga/"}, {"id":"central", "url":"https://repo.maven.apache.org/maven2"}]'
+#      - name: Use Node.js 12
+#        uses: actions/setup-node@v1
+#        with:
+#          node-version: 12
+#      - name: Install Bower and PhantomJS
+#        run: npm install -g bower phantomjs-prebuilt
+#
+#      - name: Tests
+#        run: mvn install -B -U -DskipTests -Dwebpack.environment=production -e -X
+#      - name: Prepare failure archive (if tests failed)
+#        if: failure()
+#        shell: bash
+#        run: find . -wholename '**/target/surefire-reports/**/*' -o -wholename '**/target/e2e*' -o -wholename '**/target/findbugs/*' -type d | tar -czvf test-reports.tgz -T -
+#      - name: Upload failure Archive (if maven failed)
+#        uses: actions/upload-artifact@v1
+#        if: failure()
+#        with:
+#          name: linux-jdk8-tests-production
+#          path: "test-reports.tgz"
+#
+#  linux-jdk11-tests:
+#    name: JDK 11 Tests
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v2
+#      - name: Set up JDK 11
+#        # Uses sha for added security since tags can be updated
+#        uses: joschi/setup-jdk@b9cc6eabf7e7e3889766b5cee486f874c9e1bd2d
+#        with:
+#          java-version: 11
+#
+#      - name: maven-settings-xml-action
+#        uses: whelk-io/maven-settings-xml-action@v13
+#        with:
+#          repositories: '[{"id":"sonatype-snapshots","url":"https://oss.sonatype.org/content/repositories/snapshots/"}, {"id":"jboss-releases", "url":"https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/"}, {"id":"redhat-ga-repository", "url":"https://maven.repository.redhat.com/ga/"}, {"id":"central", "url":"https://repo.maven.apache.org/maven2"}]'
+#          plugin_repositories: '[{"id":"redhat-ga-repository", "url":"https://maven.repository.redhat.com/ga/"}, {"id":"central", "url":"https://repo.maven.apache.org/maven2"}]'
+#      - name: Use Node.js 12
+#        uses: actions/setup-node@v1
+#        with:
+#          node-version: 12
+#      - name: Install Bower and PhantomJS
+#        run: npm install -g bower phantomjs-prebuilt
+#
+#      - name: Preliminary setup
+#        run: |
+#          mvn -f services/pom.xml org.jboss.forge.furnace:furnace-maven-plugin:2.28.2.Final:addon-install@deploy-addons &&
+#          mvn -f services/pom.xml org.apache.maven.plugins:maven-dependency-plugin:unpack@unpack &&
+#          mvn -f tests/wildfly-dist/pom.xml org.apache.maven.plugins:maven-dependency-plugin:unpack@unpack
+#      - name: Unit tests
+#        run: mvn -Dsurefire.server.jvm.args='--add-modules java.se' surefire:test -B -U -Pfindbugs -e -X
+#      - name: Integration tests
+#        run: mvn resources:copy-resources@copy-npm-config resources:copy-resources@copy-database antrun:run@unzip-reports dependency:copy@copy-wars dependency:unpack@unpack exec:exec@yarn-install exec:exec@webdriver-manager-update source:jar-no-fork@attach-sources wildfly:start@start-wildfly wildfly:execute-commands@start-wildfly failsafe:integration-test@failsafe-integration-tests exec:exec@run-e2e exec:exec@make-results-report wildfly:shutdown@stop-wildfly -f tests/e2e/pom.xml
+#      - name: Karma tests
+#        run: mvn com.kelveden:maven-karma-plugin:start@karmaTests -f ui/pom.xml
+#
+#      - name: Prepare failure archive (if tests failed)
+#        if: failure()
+#        shell: bash
+#        run: find . -wholename '**/target/surefire-reports/TEST-*.xml' -o -wholename '**/target/failsafe-reports/TEST-*.xml' -o -wholename '**/target/karma-reports/test-results.xml' -type d | tar -czvf test-reports.tgz -T -
+#      - name: Upload failure Archive (if maven failed)
+#        uses: actions/upload-artifact@v1
+#        if: failure()
+#        with:
+#          name: linux-jdk8-tests
+#          path: "test-reports.tgz"
+#
+#  build-artifacts:
+#    name: Create web distribution
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Clone current windup-web
+#        uses: actions/checkout@v2
+#        with:
+#          path: 'windup-web'
+#      - name: Clone windup-web-distribution
+#        uses: actions/checkout@v2
+#        with:
+#          repository: 'windup/windup-web-distribution'
+#          path: 'windup-web-distribution'
+#      - name: Set up JDK 8
+#        # Uses sha for added security since tags can be updated
+#        uses: joschi/setup-jdk@b9cc6eabf7e7e3889766b5cee486f874c9e1bd2d
+#        with:
+#          java-version: 8
+#
+#      - uses: nanasess/setup-chromedriver@master
+#      - name: maven-settings-xml-action
+#        uses: whelk-io/maven-settings-xml-action@v13
+#        with:
+#          repositories: '[{"id":"sonatype-snapshots","url":"https://oss.sonatype.org/content/repositories/snapshots/"}, {"id":"jboss-releases", "url":"https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/"}, {"id":"redhat-ga-repository", "url":"https://maven.repository.redhat.com/ga/"}, {"id":"central", "url":"https://repo.maven.apache.org/maven2"}]'
+#          plugin_repositories: '[{"id":"redhat-ga-repository", "url":"https://maven.repository.redhat.com/ga/"}, {"id":"central", "url":"https://repo.maven.apache.org/maven2"}]'
+#      - name: Use Node.js 12
+#        uses: actions/setup-node@v1
+#        with:
+#          node-version: 12
+#      - name: Install Bower and PhantomJS
+#        run: npm install -g bower phantomjs-prebuilt
+#
+#      - name: Build windup-web
+#        run: mvn install -DskipTests=true -f windup-web
+#      - name: Build windup-web-distribution
+#        run: mvn install -DskipTests=true -f windup-web-distribution
+#      - name: Rename distribution
+#        run: mv windup-web-distribution/target/mta-web-distribution-*-with-authentication.zip mta-server.zip
+#      - name: Upload distribution
+#        uses: actions/upload-artifact@v1
+#        with:
+#          name: mta-server
+#          path: 'mta-server.zip'
+#
+#  ui-unit-test:
+#    name: UI tests
+#    runs-on: ubuntu-latest
+#    strategy:
+#      matrix:
+#        node-version: [10.x, 12.x, 14.x]
+#    steps:
+#      - uses: actions/checkout@v2
+#      - name: Use Node.js ${{ matrix.node-version }}
+#        uses: actions/setup-node@v1
+#        with:
+#          node-version: ${{ matrix.node-version }}
+#      - run: yarn --cwd ui-pf4/src/main/webapp/ install
+#      - run: yarn --cwd ui-pf4/src/main/webapp/ build
+#      - run: yarn --cwd ui-pf4/src/main/webapp/ test
+#
+#  ui-unit-test-coverage:
+#    name: UI test coverage
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v2
+#      - name: Use Node.js 12.x
+#        uses: actions/setup-node@v1
+#        with:
+#          node-version: 12.x
+#      - run: yarn --cwd ui-pf4/src/main/webapp/ install
+#      - run: yarn --cwd ui-pf4/src/main/webapp/ test --coverage --watchAll=false
+#      - uses: codecov/codecov-action@v1
 
   e2e:
     runs-on: ubuntu-latest
@@ -213,24 +213,25 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Download distribution
-        uses: actions/download-artifact@v1
-        with:
-          name: mta-server
-          path: .
-      - name: Extract distribution
-        shell: bash
-        run: unzip mta-server.zip -d mta-server
-      - name: Install yarn dependencies
-        run: yarn --cwd ui-pf4/src/main/webapp/ install
+#      - name: Download distribution
+#        uses: actions/download-artifact@v1
+#        with:
+#          name: mta-server
+#          path: .
+#      - name: Extract distribution
+#        shell: bash
+#        run: unzip mta-server.zip -d mta-server
+#      - name: Install yarn dependencies
+#        run: yarn --cwd ui-pf4/src/main/webapp/ install
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
-          project: ui-pf4/src/main/webapp/
-          start: ./mta-server/mta-web-distribution-*/run_mta.sh
-          wait-on: 'http://localhost:8080'
-          wait-on-timeout: 240
-          config: pageLoadTimeout=100000,baseUrl=http://localhost:8080
+#          project: ui-pf4/src/main/webapp/
+          working-directory: ui-pf4/src/main/webapp/
+#          start: ./mta-server/mta-web-distribution-*/run_mta.sh
+#          wait-on: 'http://localhost:8080'
+#          wait-on-timeout: 240
+#          config: pageLoadTimeout=100000,baseUrl=http://localhost:8080
           browser: ${{ matrix.browser }}
           tag: browser-${{ matrix.browser }}
         env:
