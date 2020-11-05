@@ -217,7 +217,7 @@ jobs:
           path: .
       - name: Extract distribution
         shell: bash
-        run: unzip windup-web-distribution -d windup-web-distribution
+        run: unzip windup-web/windup-web-distribution.zip -d windup-web-distribution
       - run: yarn --cwd ui-pf4/src/main/webapp/ install
       # Install NPM dependencies, cache them correctly
       # and run all Cypress tests
