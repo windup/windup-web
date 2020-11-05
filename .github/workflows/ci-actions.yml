@@ -11,10 +11,6 @@ on:
   schedule:
     - cron: "0 0 * * *"
 
-env:
-  REPOSITORIES: '[{"id":"sonatype-snapshots","url":"https://oss.sonatype.org/content/repositories/snapshots/"}, {"id":"jboss-releases", "url":"https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/"}, {"id":"redhat-ga-repository", "url":"https://maven.repository.redhat.com/ga/"}, {"id":"central", "url":"https://repo.maven.apache.org/maven2"}]'
-  PLUGING_REPOSITORIES: '[{"id":"redhat-ga-repository", "url":"https://maven.repository.redhat.com/ga/"}, {"id":"central", "url":"https://repo.maven.apache.org/maven2"}]'
-
 jobs:
   linux-jdk8-tests:
     name: JDK 8 Tests
@@ -31,8 +27,8 @@ jobs:
       - name: maven-settings-xml-action
         uses: whelk-io/maven-settings-xml-action@v13
         with:
-          repositories: $REPOSITORIES
-          plugin_repositories: $PLUGING_REPOSITORIES
+          repositories: '[{"id":"sonatype-snapshots","url":"https://oss.sonatype.org/content/repositories/snapshots/"}, {"id":"jboss-releases", "url":"https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/"}, {"id":"redhat-ga-repository", "url":"https://maven.repository.redhat.com/ga/"}, {"id":"central", "url":"https://repo.maven.apache.org/maven2"}]'
+          plugin_repositories: '[{"id":"redhat-ga-repository", "url":"https://maven.repository.redhat.com/ga/"}, {"id":"central", "url":"https://repo.maven.apache.org/maven2"}]'
       - name: Use Node.js 12
         uses: actions/setup-node@v1
         with:
@@ -67,8 +63,8 @@ jobs:
       - name: maven-settings-xml-action
         uses: whelk-io/maven-settings-xml-action@v13
         with:
-          repositories: $REPOSITORIES
-          plugin_repositories: $PLUGING_REPOSITORIES
+          repositories: '[{"id":"sonatype-snapshots","url":"https://oss.sonatype.org/content/repositories/snapshots/"}, {"id":"jboss-releases", "url":"https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/"}, {"id":"redhat-ga-repository", "url":"https://maven.repository.redhat.com/ga/"}, {"id":"central", "url":"https://repo.maven.apache.org/maven2"}]'
+          plugin_repositories: '[{"id":"redhat-ga-repository", "url":"https://maven.repository.redhat.com/ga/"}, {"id":"central", "url":"https://repo.maven.apache.org/maven2"}]'
       - name: Use Node.js 12
         uses: actions/setup-node@v1
         with:
@@ -103,8 +99,8 @@ jobs:
       - name: maven-settings-xml-action
         uses: whelk-io/maven-settings-xml-action@v13
         with:
-          repositories: $REPOSITORIES
-          plugin_repositories: $PLUGING_REPOSITORIES
+          repositories: '[{"id":"sonatype-snapshots","url":"https://oss.sonatype.org/content/repositories/snapshots/"}, {"id":"jboss-releases", "url":"https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/"}, {"id":"redhat-ga-repository", "url":"https://maven.repository.redhat.com/ga/"}, {"id":"central", "url":"https://repo.maven.apache.org/maven2"}]'
+          plugin_repositories: '[{"id":"redhat-ga-repository", "url":"https://maven.repository.redhat.com/ga/"}, {"id":"central", "url":"https://repo.maven.apache.org/maven2"}]'
       - name: Use Node.js 12
         uses: actions/setup-node@v1
         with:
@@ -150,8 +146,8 @@ jobs:
       - name: maven-settings-xml-action
         uses: whelk-io/maven-settings-xml-action@v13
         with:
-          repositories: $REPOSITORIES
-          plugin_repositories: $PLUGING_REPOSITORIES
+          repositories: '[{"id":"sonatype-snapshots","url":"https://oss.sonatype.org/content/repositories/snapshots/"}, {"id":"jboss-releases", "url":"https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/"}, {"id":"redhat-ga-repository", "url":"https://maven.repository.redhat.com/ga/"}, {"id":"central", "url":"https://repo.maven.apache.org/maven2"}]'
+          plugin_repositories: '[{"id":"redhat-ga-repository", "url":"https://maven.repository.redhat.com/ga/"}, {"id":"central", "url":"https://repo.maven.apache.org/maven2"}]'
       - name: Use Node.js 12
         uses: actions/setup-node@v1
         with:
