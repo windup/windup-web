@@ -110,8 +110,8 @@ jobs:
 
       - name: Preliminary setup
         run: |
-          mvn -f services/pom.xml org.jboss.forge.furnace:furnace-maven-plugin:2.28.2.Final:addon-install@deploy-addons
-          mvn -f services/pom.xml org.apache.maven.plugins:maven-dependency-plugin:unpack@unpack
+          mvn -f services/pom.xml org.jboss.forge.furnace:furnace-maven-plugin:2.28.2.Final:addon-install@deploy-addons &&
+          mvn -f services/pom.xml org.apache.maven.plugins:maven-dependency-plugin:unpack@unpack &&
           mvn -f tests/wildfly-dist/pom.xml org.apache.maven.plugins:maven-dependency-plugin:unpack@unpack
       - name: Unit tests
         run: mvn -Dsurefire.server.jvm.args='--add-modules java.se' surefire:test -B -U -Pfindbugs -e -X
@@ -192,6 +192,7 @@ jobs:
       - run: yarn --cwd ui-pf4/src/main/webapp/ test
 
   ui-unit-test-coverage:
+    name: UI test coverage
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -225,11 +226,22 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
-          tag: browser-${{ matrix.browser }}
+          project: ui-pf4/src/main/webapp/
           start: ./mta-server/mta-web-distribution-*/run_mta.sh
           wait-on: 'http://localhost:8080'
           wait-on-timeout: 240
           config: pageLoadTimeout=100000,baseUrl=http://localhost:8080
           browser: ${{ matrix.browser }}
+          tag: browser-${{ matrix.browser }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: ui-pf4/src/main/webapp/cypress/screenshots
+      - uses: actions/upload-artifact@v1
+        if: always()
+        with:
+          name: cypress-videos
+          path: ui-pf4/src/main/webapp/cypress/videos
