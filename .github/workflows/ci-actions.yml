@@ -48,8 +48,8 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 12
-      - name: Install PhantomJS
-        run: npm install -g phantomjs-prebuilt
+      - name: Install Bower and PhantomJS
+        run: npm install -g bower phantomjs-prebuilt
       - name: Build
         run: |
           mvn install -e -B -DskipTests=true -DskipDocs
