@@ -50,7 +50,7 @@ public class WindupExecutionUtil
             context = this.analysisContextEndpoint.get(context.getId());
             context.addAdvancedOption(new AdvancedOption(KeepWorkDirsOption.NAME, "true"));
 
-            context = this.analysisContextEndpoint.saveAsProjectDefault(context, project.getId());
+            context = this.analysisContextEndpoint.saveAsProjectDefault(context, project.getId(), false);
         }
 
         System.out.println("Setup Graph test, registered application and ready to start Windup analysis...");

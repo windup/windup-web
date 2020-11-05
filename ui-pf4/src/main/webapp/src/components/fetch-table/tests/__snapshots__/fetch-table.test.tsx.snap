@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FetchTable Renders without crashing 1`] = `
+<Fragment>
+  <Table
+    aria-label="Table"
+    borders={true}
+    canSelectAll={true}
+    cells={
+      Array [
+        Object {
+          "title": "Col1",
+          "transforms": Array [
+            [Function],
+          ],
+        },
+        Object {
+          "title": "Col2",
+        },
+        Object {
+          "title": "Col3",
+        },
+      ]
+    }
+    className=""
+    contentId="expanded-content"
+    dropdownDirection="down"
+    dropdownPosition="right"
+    expandId="expandable-toggle"
+    gridBreakPoint="grid-md"
+    isStickyHeader={false}
+    onSort={[Function]}
+    ouiaSafe={true}
+    role="grid"
+    rowLabeledBy="simple-node"
+    selectVariant="checkbox"
+    sortBy={Object {}}
+    variant={null}
+  >
+    <TableHeader />
+    <Component />
+  </Table>
+</Fragment>
+`;

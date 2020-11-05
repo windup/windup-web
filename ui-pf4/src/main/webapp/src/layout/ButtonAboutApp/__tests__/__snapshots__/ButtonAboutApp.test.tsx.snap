@@ -1,0 +1,381 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test snapshot :: open modal 1`] = `
+<Fragment>
+  <Button
+    aria-label="About button"
+    id="aboutButton"
+    onClick={[Function]}
+    variant="plain"
+  >
+    <HelpIcon
+      color="currentColor"
+      noVerticalAlign={false}
+      size="sm"
+    />
+  </Button>
+  <AboutModal
+    appendTo={null}
+    backgroundImageSrc=""
+    brandImageAlt="Red Hat"
+    brandImageSrc="red-hat-horizontal-reverse.svg"
+    className="about-app__component"
+    isOpen={true}
+    noAboutModalBoxContentContainer={false}
+    onClose={[Function]}
+    productName="Migration Toolkit for Applications"
+    trademark=""
+  >
+    <TextContent
+      className="pf-u-py-xl"
+    >
+      <h4>
+        About
+      </h4>
+      <p>
+        <a
+          href="https://developers.redhat.com/products/mta/overview/"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Migration Toolkit for Applications
+        </a>
+         
+        allows application architects and developers to quickly decompile, analyze, assess and modernize large scale application portfolios and migrate them to Red Hat Middleware, cloud and containers.
+      </p>
+    </TextContent>
+    <TextContent
+      className="pf-u-py-xl"
+    >
+      <TextList
+        component="dl"
+      >
+        <TextListItem
+          component="dt"
+        >
+          Migration Toolkit for Applications Core
+        </TextListItem>
+        <TextListItem
+          component="dd"
+        >
+          (loading)
+        </TextListItem>
+        <TextListItem
+          component="dt"
+        >
+          Migration Toolkit for Applications Web Console
+        </TextListItem>
+        <TextListItem
+          component="dd"
+        />
+      </TextList>
+    </TextContent>
+    <TextContent>
+      <h4>
+        Links
+      </h4>
+      <List>
+        <ListItem>
+          <a
+            href="https://developers.redhat.com/products/mta/overview/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Website
+          </a>
+        </ListItem>
+        <ListItem>
+          <a
+            href="https://access.redhat.com/documentation/en-us/migration_toolkit_for_applications/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Documentation
+          </a>
+        </ListItem>
+      </List>
+    </TextContent>
+    <div
+      className="pf-c-about-modal-box__strapline"
+    >
+      <Flex>
+        <FlexItem>
+          <a
+            href="https://github.com/windup/windup"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <i>
+              <GithubIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            </i>
+             
+            Source
+          </a>
+        </FlexItem>
+        <FlexItem>
+          <a
+            href="https://github.com/windup/windup/wiki"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <i>
+              <BookOpenIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            </i>
+             
+            Wiki
+          </a>
+        </FlexItem>
+        <FlexItem>
+          <a
+            href="https://developer.jboss.org/en/windup?view=discussions"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <i>
+              <GlobeIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            </i>
+             
+            Discussion forum
+          </a>
+        </FlexItem>
+        <FlexItem>
+          <a
+            href="https://lists.jboss.org/mailman/listinfo/windup-dev"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <i>
+              <EnvelopeIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            </i>
+             
+            Mailing list
+          </a>
+        </FlexItem>
+        <FlexItem>
+          <a
+            href="https://issues.jboss.org/browse/WINDUP"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <i>
+              <InfoAltIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            </i>
+             
+            Issue tracking
+          </a>
+        </FlexItem>
+      </Flex>
+    </div>
+  </AboutModal>
+</Fragment>
+`;
+
+exports[`Test snapshot 1`] = `
+<Fragment>
+  <Button
+    aria-label="About button"
+    id="aboutButton"
+    onClick={[Function]}
+    variant="plain"
+  >
+    <HelpIcon
+      color="currentColor"
+      noVerticalAlign={false}
+      size="sm"
+    />
+  </Button>
+  <AboutModal
+    appendTo={null}
+    backgroundImageSrc=""
+    brandImageAlt="Red Hat"
+    brandImageSrc="red-hat-horizontal-reverse.svg"
+    className="about-app__component"
+    isOpen={false}
+    noAboutModalBoxContentContainer={false}
+    onClose={[Function]}
+    productName="Migration Toolkit for Applications"
+    trademark=""
+  >
+    <TextContent
+      className="pf-u-py-xl"
+    >
+      <h4>
+        About
+      </h4>
+      <p>
+        <a
+          href="https://developers.redhat.com/products/mta/overview/"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Migration Toolkit for Applications
+        </a>
+         
+        allows application architects and developers to quickly decompile, analyze, assess and modernize large scale application portfolios and migrate them to Red Hat Middleware, cloud and containers.
+      </p>
+    </TextContent>
+    <TextContent
+      className="pf-u-py-xl"
+    >
+      <TextList
+        component="dl"
+      >
+        <TextListItem
+          component="dt"
+        >
+          Migration Toolkit for Applications Core
+        </TextListItem>
+        <TextListItem
+          component="dd"
+        >
+          (loading)
+        </TextListItem>
+        <TextListItem
+          component="dt"
+        >
+          Migration Toolkit for Applications Web Console
+        </TextListItem>
+        <TextListItem
+          component="dd"
+        />
+      </TextList>
+    </TextContent>
+    <TextContent>
+      <h4>
+        Links
+      </h4>
+      <List>
+        <ListItem>
+          <a
+            href="https://developers.redhat.com/products/mta/overview/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Website
+          </a>
+        </ListItem>
+        <ListItem>
+          <a
+            href="https://access.redhat.com/documentation/en-us/migration_toolkit_for_applications/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Documentation
+          </a>
+        </ListItem>
+      </List>
+    </TextContent>
+    <div
+      className="pf-c-about-modal-box__strapline"
+    >
+      <Flex>
+        <FlexItem>
+          <a
+            href="https://github.com/windup/windup"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <i>
+              <GithubIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            </i>
+             
+            Source
+          </a>
+        </FlexItem>
+        <FlexItem>
+          <a
+            href="https://github.com/windup/windup/wiki"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <i>
+              <BookOpenIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            </i>
+             
+            Wiki
+          </a>
+        </FlexItem>
+        <FlexItem>
+          <a
+            href="https://developer.jboss.org/en/windup?view=discussions"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <i>
+              <GlobeIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            </i>
+             
+            Discussion forum
+          </a>
+        </FlexItem>
+        <FlexItem>
+          <a
+            href="https://lists.jboss.org/mailman/listinfo/windup-dev"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <i>
+              <EnvelopeIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            </i>
+             
+            Mailing list
+          </a>
+        </FlexItem>
+        <FlexItem>
+          <a
+            href="https://issues.jboss.org/browse/WINDUP"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <i>
+              <InfoAltIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            </i>
+             
+            Issue tracking
+          </a>
+        </FlexItem>
+      </Flex>
+    </div>
+  </AboutModal>
+</Fragment>
+`;

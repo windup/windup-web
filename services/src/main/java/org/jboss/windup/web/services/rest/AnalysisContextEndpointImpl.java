@@ -46,7 +46,7 @@ public class AnalysisContextEndpointImpl implements AnalysisContextEndpoint
     }
 
     @Override
-    public AnalysisContext saveAsProjectDefault(@Valid AnalysisContext analysisContext, Long projectId)
+    public AnalysisContext saveAsProjectDefault(@Valid AnalysisContext analysisContext, Long projectId, boolean skipChangeToProvisional)
     {
         MigrationProject project = this.migrationProjectService.getMigrationProject(projectId);
         analysisContext.setApplications(analysisContext
@@ -67,7 +67,7 @@ public class AnalysisContextEndpointImpl implements AnalysisContextEndpoint
         else
         {
             AnalysisContext defaultAnalysisContext = project.getDefaultAnalysisContext();
-            analysisContext = analysisContextService.update(defaultAnalysisContext.getId(), analysisContext);
+            analysisContext = analysisContextService.update(defaultAnalysisContext.getId(), analysisContext, skipChangeToProvisional);
         }
 
         return analysisContext;

@@ -1,0 +1,7 @@
+{
+  "realm": "mta",
+  "auth-server-url": "http://localhost:8080/auth/",
+  "ssl-required": "none",
+  "resource": "mta-web",
+  "public-client": true
+}

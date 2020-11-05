@@ -4,12 +4,13 @@ import org.jboss.windup.web.services.model.AnalysisContext;
 
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
 /**
  * Provides methods for retrieving and updating {@link AnalysisContext}s.
@@ -37,5 +38,9 @@ public interface AnalysisContextEndpoint
      */
     @PUT
     @Path("migrationProjects/{projectId}")
-    AnalysisContext saveAsProjectDefault(@Valid AnalysisContext analysisContext, @PathParam("projectId") Long projectId);
+    AnalysisContext saveAsProjectDefault(
+            @Valid AnalysisContext analysisContext,
+            @PathParam("projectId") Long projectId,
+            @QueryParam("skipChangeToProvisional") @DefaultValue("false") boolean skipChangeToProvisional
+    );
 }

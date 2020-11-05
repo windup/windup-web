@@ -26,4 +26,8 @@ export class NavbarComponent implements AfterViewInit {
     get username(): String {
         return this._keycloak.username;
     }
+    
+    redirectToPF4(): void {
+        window.location.replace(`${window.location.origin}/mta-ui`);
+    }
 }

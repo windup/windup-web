@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SelectProjectEmptyMessage Renders without crashing 1`] = `
+<Bullseye>
+  <EmptyState
+    variant="small"
+  >
+    <EmptyStateIcon
+      icon={[Function]}
+    />
+    <Title
+      headingLevel="h4"
+      size="lg"
+    >
+      Select a Project
+    </Title>
+    <EmptyStateBody>
+      Please select the project you want to see data from.
+    </EmptyStateBody>
+  </EmptyState>
+</Bullseye>
+`;

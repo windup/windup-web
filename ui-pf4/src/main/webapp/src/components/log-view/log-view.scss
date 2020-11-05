@@ -1,0 +1,54 @@
+.log-view__component {
+  color: var(--pf-global--palette--black-150);
+  background-color: var(--pf-global--palette--black-1000);
+
+  .log-window__header {
+    background-color: #292e34;
+    padding: 8px 10px 5px 10px;
+  }
+
+  .log-window__body {
+    background-color: var(--pf-global--palette--black-1000);
+    font-family: Menlo, Monaco, Consolas, monospace;
+  }
+
+  .log-window__scroll-pane {
+    overflow: auto;
+    padding-top: 10px;
+  }
+
+  .log-window__contents__text {
+    padding-left: 10px;
+    padding-right: 10px;
+    white-space: pre;
+    width: 0;
+  }
+
+  //
+
+  .log-line:hover {
+    background-color: #22262b;
+    color: #ededed;
+  }
+  .log-line-number:before {
+    content: attr(data-line-number);
+  }
+  .log-line-number {
+    -ms-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    border-right: 1px #272b30 solid;
+    padding-right: 10px;
+    vertical-align: top;
+    white-space: nowrap;
+    width: 60px;
+    color: #72767b;
+    text-align: right;
+  }
+  .log-line-text {
+    padding: 0 10px;
+    // white-space: pre-wrap;
+    width: 100%;
+    overflow-wrap: break-word;
+  }
+}

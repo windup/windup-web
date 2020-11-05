@@ -1,0 +1,1 @@
+export { useDeleteRule } from "./useDeleteRule";

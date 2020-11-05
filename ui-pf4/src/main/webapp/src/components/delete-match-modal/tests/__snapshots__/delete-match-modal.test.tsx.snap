@@ -1,0 +1,56 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DeleteMatchModal Renders without crashing 1`] = `
+<Modal
+  actions={
+    Array [
+      <Button
+        isDisabled={true}
+        onClick={[Function]}
+        variant="danger"
+      >
+        Delete
+      </Button>,
+      <Button
+        onClick={[Function]}
+        variant="link"
+      >
+        Cancel
+      </Button>,
+    ]
+  }
+  appendTo={[Function]}
+  aria-describedby=""
+  aria-label=""
+  aria-labelledby=""
+  className=""
+  hasNoBodyWrapper={false}
+  isOpen={true}
+  onClose={[Function]}
+  ouiaSafe={true}
+  showClose={true}
+  title="Delete modal title"
+  variant="small"
+>
+  <div
+    className="pf-c-content"
+  >
+    <p>
+      Are you sure you want to delete this?
+    </p>
+    <p>
+      Type '
+      delete
+      ' to confirm.
+    </p>
+    <ForwardRef
+      aria-label="Text input match"
+      id="matchText"
+      name="matchText"
+      onChange={[Function]}
+      type="text"
+      value=""
+    />
+  </div>
+</Modal>
+`;

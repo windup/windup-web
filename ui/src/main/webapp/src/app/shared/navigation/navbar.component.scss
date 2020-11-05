@@ -17,7 +17,7 @@ $navbar-os-project-menu-border: #050505;
 
 li.home a {
   width: 240px;
-//  border-bottom: 1px black solid;
+  //  border-bottom: 1px black solid;
   border-right: 1px solid $navbar-os-project-menu-border;
 
   color: $navbar-text-color;
@@ -45,11 +45,11 @@ span.pficon-home {
 }
 
 :host /deep/ {
- .navbar-pf .navbar-primary {
-   background-color: $navbar-background-color;
-   background-image: initial;
-   border-bottom: 1px solid $navbar-os-project-menu-border;
- }
+  .navbar-pf .navbar-primary {
+    background-color: $navbar-background-color;
+    background-image: initial;
+    border-bottom: 1px solid $navbar-os-project-menu-border;
+  }
 
   .navbar-primary > li {
     height: 60px;
@@ -71,8 +71,10 @@ span.pficon-home {
 
 #header-logo {
   /* background-image: url('../../../../img/Logotype_RH_AMT_RGB_White.svg'); */
-  height: 60px;
-  margin-left: 30px;
+  height: 40px;
+  margin-left: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 @media (max-width: 767px) {
@@ -167,4 +169,13 @@ ul.navbar-utility {
 // Upgrade patternfly compatibility
 [class*=" pficon-"], [class^=pficon-] {
   line-height: 1 !important;
+}
+
+/*
+* Add experimental header
+*/
+@media (min-width: 768px) {
+  .navbar-pf .navbar-utility {
+    top: 20px !important;
+  }
 }

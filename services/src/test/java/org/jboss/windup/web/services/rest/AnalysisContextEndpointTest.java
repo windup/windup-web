@@ -3,6 +3,7 @@ package org.jboss.windup.web.services.rest;
 import java.net.URL;
 import java.util.Collections;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -75,7 +76,7 @@ public class AnalysisContextEndpointTest extends AbstractTest
 
         analysisContext.setRulesPaths(configurationEndpoint.getGlobalConfiguration().getRulesPaths());
 
-        analysisContext = analysisContextEndpoint.saveAsProjectDefault(analysisContext, project.getId());
+        analysisContext = analysisContextEndpoint.saveAsProjectDefault(analysisContext, project.getId(), false);
 
         AnalysisContext loaded = analysisContextEndpoint.get(analysisContext.getId());
 
@@ -91,5 +92,14 @@ public class AnalysisContextEndpointTest extends AbstractTest
         Assert.assertEquals(true, loaded.isLinuxTargetsIncluded());
         Assert.assertEquals(true, loaded.isOpenJdkTargetsIncluded());
         Assert.assertEquals(1, loaded.getRulesPaths().size());
+    }
+
+    @Test
+    @RunAsClient
+    public void testEndpointWithSkippingChangeToProvisional() throws JSONException {
+        MigrationProject project = this.dataProvider.getProvisionalMigrationProject();
+
+        Assert.assertNotNull(project);
+        Assert.assertTrue(project.isProvisional());
     }
 }
