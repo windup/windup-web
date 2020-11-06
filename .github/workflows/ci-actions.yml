@@ -222,7 +222,7 @@ jobs:
           wait-on-timeout: 240
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: ls
+      - run: ls ui-pf4/src/main/webapp/
       - uses: actions/upload-artifact@v1
         if: failure()
         with:
