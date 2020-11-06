@@ -279,6 +279,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Use Node.js 12
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
       - name: Download distribution
         uses: actions/download-artifact@v1
         with:
@@ -287,7 +291,7 @@ jobs:
       - name: Extract distribution
         shell: bash
         run: unzip -o mta-server.zip -d ui-pf4/src/main/webapp/mta-server
-      - run: yarn --cwd ui-pf4/src/main/webapp/ install --network-timeout 1000000
+      - run: yarn --cwd ui-pf4/src/main/webapp/ install --network-timeout 100000
       - name: Cypress run
         uses: cypress-io/github-action@v2
         continue-on-error: true
