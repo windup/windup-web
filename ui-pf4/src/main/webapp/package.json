@@ -45,7 +45,6 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "start": "react-scripts start",
-    "start:mta": "mta-server/mta-web-distribution-*/run_mta.sh",
     "build": "react-scripts build",
     "build:freemarker": "cp build/index.html build/index.html.ftl",
     "test": "react-scripts test",
