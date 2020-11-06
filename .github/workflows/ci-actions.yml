@@ -200,7 +200,7 @@ jobs:
     needs: build-artifacts
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
         browser: [chrome, firefox]
     steps:
       - name: Checkout
@@ -221,6 +221,7 @@ jobs:
           config: pageLoadTimeout=100000,baseUrl=http://localhost:8080/mta-ui
           browser: ${{ matrix.browser }}
           start: yarn run mta:start
+          start-windows: yarn run mta:start-windows
           wait-on: 'http://localhost:8080'
           wait-on-timeout: 240
         env:
