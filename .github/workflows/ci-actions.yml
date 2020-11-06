@@ -212,7 +212,7 @@ jobs:
           path: .
       - name: Extract distribution
         shell: bash
-        run: unzip mta-server.zip -d ui-pf4/src/main/webapp/mta-server
+        run: unzip -o mta-server.zip -d ui-pf4/src/main/webapp/mta-server
       - name: Cypress run
         uses: cypress-io/github-action@v2
         continue-on-error: true
