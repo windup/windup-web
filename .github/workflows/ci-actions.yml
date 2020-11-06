@@ -283,6 +283,7 @@ jobs:
       - name: Extract distribution
         shell: bash
         run: unzip -o mta-server.zip -d ui-pf4/src/main/webapp/mta-server
+      - run: yarn --cwd ui-pf4/src/main/webapp/ install --network-timeout 1000000
       - name: Cypress run
         uses: cypress-io/github-action@v2
         continue-on-error: true
