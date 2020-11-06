@@ -83,7 +83,7 @@ context("New Project", () => {
     verifyActionButtonsEnabled();
 
     cy.get(".ant-transfer.ant-transfer-customize-list", {
-      timeout: 20000,
+      timeout: 60000,
     });
     verifyActionButtonsDisabled();
 
