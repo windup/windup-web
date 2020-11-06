@@ -231,7 +231,7 @@ jobs:
           config: pageLoadTimeout=100000,baseUrl=http://localhost:8080
           browser: ${{ matrix.browser }}
           tag: browser-${{ matrix.browser }}
-          start: mta-server/mta-web-distribution-*/run_mta.sh
+          start: yarn run start:mta
           wait-on: 'http://localhost:8080'
           wait-on-timeout: 240
         env:
