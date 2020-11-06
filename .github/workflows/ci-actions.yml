@@ -256,7 +256,7 @@ jobs:
         continue-on-error: true
         with:
           working-directory: ui-pf4/src/main/webapp/
-          config: pageLoadTimeout=100000,baseUrl=http://localhost:3000,chromeWebSecurity:false
+          config: pageLoadTimeout=100000,baseUrl=http://localhost:3000,chromeWebSecurity=false
           browser: chrome
           start: yarn run start:mta
           wait-on: 'http://localhost:8080'
