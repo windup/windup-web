@@ -220,7 +220,7 @@ jobs:
           path: .
       - name: Extract distribution
         shell: bash
-        run: unzip mta-server.zip -d mta-server
+        run: unzip mta-server.zip -d ui-pf4/src/main/webapp/mta-server
       - run: pwd
       - run: ls .
       - run: ls mta-server
@@ -231,7 +231,7 @@ jobs:
           config: pageLoadTimeout=100000,baseUrl=http://localhost:8080
           browser: ${{ matrix.browser }}
           tag: browser-${{ matrix.browser }}
-          start: ../../../../mta-server/mta-web-distribution-*/run_mta.sh
+          start: mta-server/mta-web-distribution-*/run_mta.sh
           wait-on: 'http://localhost:8080'
           wait-on-timeout: 240
         env:
