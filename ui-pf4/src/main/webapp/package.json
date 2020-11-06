@@ -48,7 +48,6 @@
     "build": "react-scripts build",
     "build:freemarker": "cp build/index.html build/index.html.ftl",
     "mta:start": "mta-server/mta-web-distribution-*/run_mta.sh",
-    "mta:start-windows": "mta-server/mta-web-distribution-*/run_mta.bat",
     "test": "react-scripts test",
     "test:debug": "react-scripts --inspect-brk test --runInBand --no-cache",
     "eject": "react-scripts eject",
