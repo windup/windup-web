@@ -195,10 +195,12 @@ jobs:
           flags: unittests
 
   e2e-linux:
-    runs-on: ubuntu-latest
+#    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     needs: build-artifacts
     strategy:
       matrix:
+        os: [ubuntu-latest, macos-latest]
         browser: [chrome, firefox]
     steps:
       - name: Checkout
