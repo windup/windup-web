@@ -222,7 +222,6 @@ jobs:
           wait-on-timeout: 240
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: ls ui-pf4/src/main/webapp/
       - uses: actions/upload-artifact@v1
         if: failure()
         with:
@@ -235,11 +234,8 @@ jobs:
           path: ui-pf4/src/main/webapp/cypress/videos
 
   e2e-firefox:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     needs: build-artifacts
-    container:
-      image: cypress/browsers:node12.16.1-chrome80-ff73
-      options: --user 1001
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -291,10 +287,8 @@ jobs:
       - name: Extract distribution
         shell: bash
         run: unzip -o mta-server.zip -d ui-pf4/src/main/webapp/mta-server
-      - run: yarn --cwd ui-pf4/src/main/webapp/ install --network-timeout 100000
       - name: Cypress run
         uses: cypress-io/github-action@v2
-        continue-on-error: true
         with:
           working-directory: ui-pf4/src/main/webapp/
           config: pageLoadTimeout=100000,baseUrl=http://localhost:8080/mta-ui
@@ -332,16 +326,16 @@ jobs:
         run: unzip -o mta-server.zip -d ui-pf4/src/main/webapp/mta-server
       - name: Cypress run
         uses: cypress-io/github-action@v2
-        continue-on-error: true
         with:
           working-directory: ui-pf4/src/main/webapp/
           config: pageLoadTimeout=100000,baseUrl=http://localhost:3000,chromeWebSecurity=false
           browser: chrome
           start: yarn run start:mta
-          wait-on: 'http://localhost:3000'
-          wait-on-timeout: 240
+#          wait-on: 'http://localhost:3000'
+          wait-on-timeout: 960
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: ls ui-pf4/src/main/webapp/
       - run: cd ui-pf4/src/main/webapp && npx nyc report --reporter=lcov
       - run: pwd
       - run: ls
