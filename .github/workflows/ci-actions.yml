@@ -345,7 +345,7 @@ jobs:
           config: pageLoadTimeout=100000,baseUrl=http://localhost:3000,chromeWebSecurity=false
           browser: chrome
           start: yarn run start:cra-mta
-          wait-on: 'http://localhost:3000'
+#          wait-on: 'http://localhost:3000'
           wait-on-timeout: 480
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
