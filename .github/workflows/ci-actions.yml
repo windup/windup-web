@@ -144,10 +144,6 @@ jobs:
         with:
           repository: 'windup/windup-web-distribution'
           path: 'windup-web-distribution'
-      - name: Set
-        run: echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-6)" >> $GITHUB_ENV
-      - name: Test
-        run: echo $GITHUB_SHA_SHORT
       - name: Set up JDK 8
         # Uses sha for added security since tags can be updated
         uses: joschi/setup-jdk@68381f2c0646f942f70b69f8e81fe10e1ed5d293
@@ -215,6 +211,8 @@ jobs:
       - name: Extract distribution
         shell: bash
         run: unzip -o mta-server.zip -d mta-server
+      - name: Set MTA_HOME
+        run: echo "MTA_HOME=$(readlink -f mta-server/mta-web-distribution-*/run_mta.sh)" >> $GITHUB_ENV
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
@@ -251,6 +249,8 @@ jobs:
       - name: Extract distribution
         shell: bash
         run: unzip -o mta-server.zip -d mta-server
+      - name: Set MTA_HOME
+        run: echo "MTA_HOME=$(readlink -f mta-server/mta-web-distribution-*/run_mta.sh)" >> $GITHUB_ENV
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
@@ -291,6 +291,8 @@ jobs:
       - name: Extract distribution
         shell: bash
         run: unzip -o mta-server.zip -d mta-server
+      - name: Set MTA_HOME
+        run: echo "MTA_HOME=$(readlink -f mta-server/mta-web-distribution-*/run_mta.sh)" >> $GITHUB_ENV
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
@@ -327,6 +329,8 @@ jobs:
       - name: Extract distribution
         shell: bash
         run: unzip -o mta-server.zip -d mta-server
+      - name: Set MTA_HOME
+        run: echo "MTA_HOME=$(readlink -f mta-server/mta-web-distribution-*/run_mta.sh)" >> $GITHUB_ENV
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
