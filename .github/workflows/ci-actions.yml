@@ -210,7 +210,9 @@ jobs:
           path: .
       - name: Extract distribution
         shell: bash
-        run: unzip -o mta-server.zip -d ui-pf4/src/main/webapp/mta-server
+        run: unzip -o mta-server.zip -d mta-server
+      - name: MTA_HOME
+        run: export MTA_HOME=$(readlink -f mta-server/mta-web-distribution-*/run_mta.sh)
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
@@ -225,12 +227,12 @@ jobs:
       - uses: actions/upload-artifact@v1
         if: failure()
         with:
-          name: cypress-screenshots-chrome-${{ matrix.os }}
+          name: e2e-screenshots-chrome-${{ matrix.os }}
           path: ui-pf4/src/main/webapp/cypress/screenshots
       - uses: actions/upload-artifact@v1
         if: always()
         with:
-          name: cypress-videos-chrome-${{ matrix.os }}
+          name: e2e-videos-chrome-${{ matrix.os }}
           path: ui-pf4/src/main/webapp/cypress/videos
 
   e2e-firefox:
@@ -246,7 +248,9 @@ jobs:
           path: .
       - name: Extract distribution
         shell: bash
-        run: unzip -o mta-server.zip -d ui-pf4/src/main/webapp/mta-server
+        run: unzip -o mta-server.zip -d mta-server
+      - name: MTA_HOME
+        run: export MTA_HOME=$(readlink -f mta-server/mta-web-distribution-*/run_mta.sh)
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
@@ -261,12 +265,12 @@ jobs:
       - uses: actions/upload-artifact@v1
         if: failure()
         with:
-          name: cypress-screenshots-firefox
+          name: e2e-screenshots-firefox
           path: ui-pf4/src/main/webapp/cypress/screenshots
       - uses: actions/upload-artifact@v1
         if: always()
         with:
-          name: cypress-videos-firefox
+          name: e2e-videos-firefox
           path: ui-pf4/src/main/webapp/cypress/videos
 
   e2e-edge:
@@ -286,7 +290,9 @@ jobs:
           path: .
       - name: Extract distribution
         shell: bash
-        run: unzip -o mta-server.zip -d ui-pf4/src/main/webapp/mta-server
+        run: unzip -o mta-server.zip -d mta-server
+      - name: MTA_HOME
+        run: export MTA_HOME=$(readlink -f mta-server/mta-web-distribution-*/run_mta.sh)
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
@@ -301,12 +307,12 @@ jobs:
       - uses: actions/upload-artifact@v1
         if: failure()
         with:
-          name: cypress-screenshots-coverage-edge
+          name: e2e-screenshots-edge
           path: ui-pf4/src/main/webapp/cypress/screenshots
       - uses: actions/upload-artifact@v1
         if: always()
         with:
-          name: cypress-videos-coverage-edge
+          name: e2e-videos-edge
           path: ui-pf4/src/main/webapp/cypress/videos
 
   e2e-coverage:
@@ -322,16 +328,18 @@ jobs:
           path: .
       - name: Extract distribution
         shell: bash
-        run: unzip -o mta-server.zip -d ui-pf4/src/main/webapp/mta-server
+        run: unzip -o mta-server.zip -d mta-server
+      - name: MTA_HOME
+        run: export MTA_HOME=$(readlink -f mta-server/mta-web-distribution-*/run_mta.sh)
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
           working-directory: ui-pf4/src/main/webapp/
           config: pageLoadTimeout=100000,baseUrl=http://localhost:3000,chromeWebSecurity=false
           browser: chrome
-          start: yarn run start:mta
-#          wait-on: 'http://localhost:3000'
-          wait-on-timeout: 960
+          start: yarn run start:cra-mta
+          wait-on: 'http://localhost:3000'
+          wait-on-timeout: 240
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: ls ui-pf4/src/main/webapp/

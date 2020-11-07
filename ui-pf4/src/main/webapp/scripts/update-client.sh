@@ -1,5 +1,10 @@
+until $(curl --output /dev/null --silent --head --fail http://localhost:8080); do
+    printf '.'
+    sleep 3
+done
+
 ## Login in MTA-WEB
-./bin/kcadm.sh config credentials \
+$MTA_HOME/bin/kcadm.sh config credentials \
 --server http://localhost:8080/auth \
 --realm master \
 --user admin \
@@ -7,7 +12,7 @@
 --client admin-cli
 
 ## Change Keycloak's client configuration
-./bin/kcadm.sh update realms/mta/clients/739a78cd-ab8d-427a-93f7-4af38f0eab31 \
+$MTA_HOME/bin/kcadm.sh update realms/mta/clients/739a78cd-ab8d-427a-93f7-4af38f0eab31 \
 -s id="739a78cd-ab8d-427a-93f7-4af38f0eab31" \
 -s clientId="mta-web" \
 -s adminUrl="/mta-web" \
