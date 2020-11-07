@@ -41,7 +41,7 @@ jobs:
 #      - name: Prepare failure archive (if tests failed)
 #        if: failure()
 #        shell: bash
-#        run: find . -wholename '**/target/surefire-reports/**/*' -o -wholename '**/target/e2e*' -o -wholename '**/target/findbugs/*' -type d | tar -czvf test-reports.tgz -T -
+#        run: find . -wholename '**/mta-server/surefire-reports/**/*' -o -wholename '**/mta-server/e2e*' -o -wholename '**/mta-server/findbugs/*' -type d | tar -czvf test-reports.tgz -T -
 #      - name: Upload failure Archive (if maven failed)
 #        uses: actions/upload-artifact@v1
 #        if: failure()
@@ -77,7 +77,7 @@ jobs:
 #      - name: Prepare failure archive (if tests failed)
 #        if: failure()
 #        shell: bash
-#        run: find . -wholename '**/target/surefire-reports/**/*' -o -wholename '**/target/e2e*' -o -wholename '**/target/findbugs/*' -type d | tar -czvf test-reports.tgz -T -
+#        run: find . -wholename '**/mta-server/surefire-reports/**/*' -o -wholename '**/mta-server/e2e*' -o -wholename '**/mta-server/findbugs/*' -type d | tar -czvf test-reports.tgz -T -
 #      - name: Upload failure Archive (if maven failed)
 #        uses: actions/upload-artifact@v1
 #        if: failure()
@@ -123,7 +123,7 @@ jobs:
 #      - name: Prepare failure archive (if tests failed)
 #        if: failure()
 #        shell: bash
-#        run: find . -wholename '**/target/surefire-reports/TEST-*.xml' -o -wholename '**/target/failsafe-reports/TEST-*.xml' -o -wholename '**/target/karma-reports/test-results.xml' -type d | tar -czvf test-reports.tgz -T -
+#        run: find . -wholename '**/mta-server/surefire-reports/TEST-*.xml' -o -wholename '**/mta-server/failsafe-reports/TEST-*.xml' -o -wholename '**/mta-server/karma-reports/test-results.xml' -type d | tar -czvf test-reports.tgz -T -
 #      - name: Upload failure Archive (if maven failed)
 #        uses: actions/upload-artifact@v1
 #        if: failure()
@@ -168,7 +168,7 @@ jobs:
       - name: Build windup-web-distribution
         run: mvn install -DskipTests=true -f windup-web-distribution
       - name: Rename distribution
-        run: mv windup-web-distribution/target/mta-web-distribution-*-with-authentication.zip mta-server.zip
+        run: mv windup-web-distribution/mta-server/mta-web-distribution-*-with-authentication.zip mta-server.zip
       - name: Upload distribution
         uses: actions/upload-artifact@v1
         with:
@@ -212,7 +212,7 @@ jobs:
         shell: bash
         run: unzip -o mta-server.zip -d mta-server
       - name: Set MTA_HOME
-        run: echo "MTA_HOME=$(readlink -f mta-server/mta-web-distribution-*/run_mta.sh)" >> $GITHUB_ENV
+        run: echo "MTA_HOME=$(dirname $(readlink -f mta-server/mta-web-distribution-*/run_mta.sh))" >> $GITHUB_ENV
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
@@ -250,7 +250,7 @@ jobs:
         shell: bash
         run: unzip -o mta-server.zip -d mta-server
       - name: Set MTA_HOME
-        run: echo "MTA_HOME=$(readlink -f mta-server/mta-web-distribution-*/run_mta.sh)" >> $GITHUB_ENV
+        run: echo "MTA_HOME=$(dirname $(readlink -f mta-server/mta-web-distribution-*/run_mta.sh))" >> $GITHUB_ENV
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
@@ -292,7 +292,7 @@ jobs:
         shell: bash
         run: unzip -o mta-server.zip -d mta-server
       - name: Set MTA_HOME
-        run: echo "MTA_HOME=$(readlink -f mta-server/mta-web-distribution-*/run_mta.sh)" >> $GITHUB_ENV
+        run: echo "MTA_HOME=$(dirname $(readlink -f mta-server/mta-web-distribution-*/run_mta.sh))" >> $GITHUB_ENV
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
@@ -330,7 +330,7 @@ jobs:
         shell: bash
         run: unzip -o mta-server.zip -d mta-server
       - name: Set MTA_HOME
-        run: echo "MTA_HOME=$(readlink -f mta-server/mta-web-distribution-*/run_mta.sh)" >> $GITHUB_ENV
+        run: echo "MTA_HOME=$(dirname $(readlink -f mta-server/mta-web-distribution-*/run_mta.sh))" >> $GITHUB_ENV
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
