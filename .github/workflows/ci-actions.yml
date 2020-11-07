@@ -227,7 +227,7 @@ jobs:
           wait-on-timeout: 240
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          MTA_HOME: $(readlink -f mta-server/mta-web-distribution-*/run_mta.sh)
+          MTA_HOME: ${{ readlink -f mta-server/mta-web-distribution-*/run_mta.sh }}
       - uses: actions/upload-artifact@v1
         if: failure()
         with:
@@ -264,7 +264,7 @@ jobs:
           wait-on-timeout: 240
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          MTA_HOME: $(readlink -f mta-server/mta-web-distribution-*/run_mta.sh)
+          MTA_HOME: ${{ readlink -f mta-server/mta-web-distribution-*/run_mta.sh }}
       - uses: actions/upload-artifact@v1
         if: failure()
         with:
@@ -305,7 +305,7 @@ jobs:
           wait-on-timeout: 240
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          MTA_HOME: $(readlink -f mta-server/mta-web-distribution-*/run_mta.sh)
+          MTA_HOME: ${{ readlink -f mta-server/mta-web-distribution-*/run_mta.sh }}
       - uses: actions/upload-artifact@v1
         if: failure()
         with:
@@ -342,7 +342,7 @@ jobs:
           wait-on-timeout: 240
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          MTA_HOME: $(readlink -f mta-server/mta-web-distribution-*/run_mta.sh)
+          MTA_HOME: ${{ readlink -f mta-server/mta-web-distribution-*/run_mta.sh }}
       - run: ls ui-pf4/src/main/webapp/
       - run: cd ui-pf4/src/main/webapp && npx nyc report --reporter=lcov
       - run: pwd
