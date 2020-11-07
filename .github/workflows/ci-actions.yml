@@ -270,7 +270,7 @@ jobs:
           path: ui-pf4/src/main/webapp/cypress/videos
 
   e2e-edge:
-    runs-on: windows-latest
+    runs-on: macos-latest
     needs: build-artifacts
     steps:
       - name: Checkout
@@ -293,8 +293,7 @@ jobs:
           working-directory: ui-pf4/src/main/webapp/
           config: pageLoadTimeout=100000,baseUrl=http://localhost:8080/mta-ui
           browser: edge
-          start: yarn run mta:start-windows
-          start-windows: yarn run mta:start-windows
+          start: yarn run mta:start
           wait-on: 'http://localhost:8080'
           wait-on-timeout: 240
         env:
