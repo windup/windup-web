@@ -131,15 +131,6 @@ jobs:
 #          name: linux-jdk8-tests
 #          path: "test-reports.tgz"
 #
-  prueba:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - run: brew install coreutils
 
   build-artifacts:
     name: Create web distribution
@@ -221,7 +212,8 @@ jobs:
       - name: Extract distribution
         shell: bash
         run: unzip -o mta-server.zip -d mta-server
-      - run: brew install coreutils
+      - name: MacOS utils
+        run: brew install coreutils
       - name: Set MTA_HOME
         run: echo "MTA_HOME=$(dirname $(realpath mta-server/mta-web-distribution-*/run_mta.sh))" >> $GITHUB_ENV
       - name: Cypress run
@@ -260,6 +252,8 @@ jobs:
       - name: Extract distribution
         shell: bash
         run: unzip -o mta-server.zip -d mta-server
+      - name: MacOS utils
+        run: brew install coreutils
       - name: Set MTA_HOME
         run: echo "MTA_HOME=$(dirname $(realpath mta-server/mta-web-distribution-*/run_mta.sh))" >> $GITHUB_ENV
       - name: Cypress run
@@ -302,6 +296,8 @@ jobs:
       - name: Extract distribution
         shell: bash
         run: unzip -o mta-server.zip -d mta-server
+      - name: MacOS utils
+        run: brew install coreutils
       - name: Set MTA_HOME
         run: echo "MTA_HOME=$(dirname $(realpath mta-server/mta-web-distribution-*/run_mta.sh))" >> $GITHUB_ENV
       - name: Cypress run
@@ -349,7 +345,7 @@ jobs:
           config: pageLoadTimeout=100000,baseUrl=http://localhost:3000,chromeWebSecurity=false
           browser: chrome
           start: yarn run start:cra-mta
-#          wait-on: 'http://localhost:3000'
+          wait-on: 'http://localhost:8080'
           wait-on-timeout: 480
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
