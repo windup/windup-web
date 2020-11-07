@@ -212,7 +212,7 @@ jobs:
         shell: bash
         run: unzip -o mta-server.zip -d mta-server
       - name: Set MTA_HOME
-        run: echo "MTA_HOME=$(dirname $(readlink -f mta-server/mta-web-distribution-*/run_mta.sh))" >> $GITHUB_ENV
+        run: echo "MTA_HOME=$(dirname $(realpath mta-server/mta-web-distribution-*/run_mta.sh))" >> $GITHUB_ENV
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
@@ -250,7 +250,7 @@ jobs:
         shell: bash
         run: unzip -o mta-server.zip -d mta-server
       - name: Set MTA_HOME
-        run: echo "MTA_HOME=$(dirname $(readlink -f mta-server/mta-web-distribution-*/run_mta.sh))" >> $GITHUB_ENV
+        run: echo "MTA_HOME=$(dirname $(realpath mta-server/mta-web-distribution-*/run_mta.sh))" >> $GITHUB_ENV
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
@@ -292,7 +292,7 @@ jobs:
         shell: bash
         run: unzip -o mta-server.zip -d mta-server
       - name: Set MTA_HOME
-        run: echo "MTA_HOME=$(dirname $(readlink -f mta-server/mta-web-distribution-*/run_mta.sh))" >> $GITHUB_ENV
+        run: echo "MTA_HOME=$(dirname $(realpath mta-server/mta-web-distribution-*/run_mta.sh))" >> $GITHUB_ENV
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
@@ -330,7 +330,7 @@ jobs:
         shell: bash
         run: unzip -o mta-server.zip -d mta-server
       - name: Set MTA_HOME
-        run: echo "MTA_HOME=$(dirname $(readlink -f mta-server/mta-web-distribution-*/run_mta.sh))" >> $GITHUB_ENV
+        run: echo "MTA_HOME=$(dirname $(realpath mta-server/mta-web-distribution-*/run_mta.sh))" >> $GITHUB_ENV
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
@@ -338,8 +338,8 @@ jobs:
           config: pageLoadTimeout=100000,baseUrl=http://localhost:3000,chromeWebSecurity=false
           browser: chrome
           start: yarn run start:cra-mta
-          wait-on: 'http://localhost:3000'
-          wait-on-timeout: 240
+#          wait-on: 'http://localhost:3000'
+          wait-on-timeout: 480
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: ls ui-pf4/src/main/webapp/
