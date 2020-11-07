@@ -168,7 +168,7 @@ jobs:
       - name: Build windup-web-distribution
         run: mvn install -DskipTests=true -f windup-web-distribution
       - name: Rename distribution
-        run: mv windup-web-distribution/mta-server/mta-web-distribution-*-with-authentication.zip mta-server.zip
+        run: mv windup-web-distribution/target/mta-web-distribution-*-with-authentication.zip mta-server.zip
       - name: Upload distribution
         uses: actions/upload-artifact@v1
         with:
