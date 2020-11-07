@@ -144,6 +144,9 @@ jobs:
         with:
           repository: 'windup/windup-web-distribution'
           path: 'windup-web-distribution'
+      - run: echo $MTA_HOME
+        env:
+          MTA_HOME: $(readlink -f **/KEYCLOAK-SETUP.md)
       - name: Set up JDK 8
         # Uses sha for added security since tags can be updated
         uses: joschi/setup-jdk@b9cc6eabf7e7e3889766b5cee486f874c9e1bd2d
@@ -211,8 +214,6 @@ jobs:
       - name: Extract distribution
         shell: bash
         run: unzip -o mta-server.zip -d mta-server
-      - name: MTA_HOME
-        run: export MTA_HOME=$(readlink -f mta-server/mta-web-distribution-*/run_mta.sh)
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
@@ -224,6 +225,7 @@ jobs:
           wait-on-timeout: 240
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MTA_HOME: $(readlink -f mta-server/mta-web-distribution-*/run_mta.sh)
       - uses: actions/upload-artifact@v1
         if: failure()
         with:
@@ -249,8 +251,6 @@ jobs:
       - name: Extract distribution
         shell: bash
         run: unzip -o mta-server.zip -d mta-server
-      - name: MTA_HOME
-        run: export MTA_HOME=$(readlink -f mta-server/mta-web-distribution-*/run_mta.sh)
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
@@ -262,6 +262,7 @@ jobs:
           wait-on-timeout: 240
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MTA_HOME: $(readlink -f mta-server/mta-web-distribution-*/run_mta.sh)
       - uses: actions/upload-artifact@v1
         if: failure()
         with:
@@ -291,8 +292,6 @@ jobs:
       - name: Extract distribution
         shell: bash
         run: unzip -o mta-server.zip -d mta-server
-      - name: MTA_HOME
-        run: export MTA_HOME=$(readlink -f mta-server/mta-web-distribution-*/run_mta.sh)
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
@@ -304,6 +303,7 @@ jobs:
           wait-on-timeout: 240
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MTA_HOME: $(readlink -f mta-server/mta-web-distribution-*/run_mta.sh)
       - uses: actions/upload-artifact@v1
         if: failure()
         with:
@@ -329,8 +329,6 @@ jobs:
       - name: Extract distribution
         shell: bash
         run: unzip -o mta-server.zip -d mta-server
-      - name: MTA_HOME
-        run: export MTA_HOME=$(readlink -f mta-server/mta-web-distribution-*/run_mta.sh)
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
@@ -342,6 +340,7 @@ jobs:
           wait-on-timeout: 240
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MTA_HOME: $(readlink -f mta-server/mta-web-distribution-*/run_mta.sh)
       - run: ls ui-pf4/src/main/webapp/
       - run: cd ui-pf4/src/main/webapp && npx nyc report --reporter=lcov
       - run: pwd
