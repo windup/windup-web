@@ -336,6 +336,8 @@ jobs:
       - name: Extract distribution
         shell: bash
         run: unzip -o mta-server.zip -d mta-server
+      - name: Build instrumented UI
+        run: yarn run build:instrumentation
       - name: Set MTA_HOME
         run: echo "MTA_HOME=$(dirname $(realpath mta-server/mta-web-distribution-*/run_mta.sh))" >> $GITHUB_ENV
       - name: Cypress run

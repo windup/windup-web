@@ -3,4 +3,4 @@ until $(curl --output /dev/null --silent --head --fail http://localhost:8080); d
     sleep 3
 done
 
-yarn start
+node server.js
