@@ -43,7 +43,7 @@ context("New Project", () => {
     cy.get(".pf-c-tabs__item").eq(1).click();
     verifyActionButtonsDisabled();
     cy.get(".pf-c-tabs__item").eq(0).click();
-    verifyActionButtonsDisabled();   
+    verifyActionButtonsDisabled();
 
     cy.get(dropzoneSelector).attachFile(application, {
       subjectType: "drag-n-drop",

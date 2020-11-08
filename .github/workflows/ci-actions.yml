@@ -222,7 +222,7 @@ jobs:
           working-directory: ui-pf4/src/main/webapp/
           config: pageLoadTimeout=100000,baseUrl=http://localhost:8080/mta-ui,chromeWebSecurity=false
           browser: chrome
-          start: yarn run mta:start
+          start: yarn run mta:run
           wait-on: 'http://localhost:8080'
           wait-on-timeout: 240
         env:
@@ -262,7 +262,7 @@ jobs:
           working-directory: ui-pf4/src/main/webapp/
           config: pageLoadTimeout=100000,baseUrl=http://localhost:8080/mta-ui
           browser: firefox
-          start: yarn run mta:start
+          start: yarn run mta:run
           wait-on: 'http://localhost:8080'
           wait-on-timeout: 240
         env:
@@ -306,7 +306,7 @@ jobs:
           working-directory: ui-pf4/src/main/webapp/
           config: pageLoadTimeout=100000,baseUrl=http://localhost:8080/mta-ui
           browser: edge
-          start: yarn run mta:start
+          start: yarn run mta:run
           wait-on: 'http://localhost:8080'
           wait-on-timeout: 240
         env:
@@ -345,21 +345,21 @@ jobs:
           working-directory: ui-pf4/src/main/webapp/
           config: pageLoadTimeout=100000,baseUrl=http://localhost:3000,chromeWebSecurity=false
           browser: chrome
-          start: yarn run start:cra-mta
+          start: yarn run mta
           wait-on: 'http://localhost:3000'
-          wait-on-timeout: 480
+          wait-on-timeout: 240
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/upload-artifact@v1
-        if: always()
-        with:
-          name: e2e-videos-coverage
-          path: ui-pf4/src/main/webapp/cypress/videos
       - uses: actions/upload-artifact@v1
         if: failure()
         with:
           name: e2e-screenshots-coverage
           path: ui-pf4/src/main/webapp/cypress/screenshots
+      - uses: actions/upload-artifact@v1
+        if: always()
+        with:
+          name: e2e-videos-coverage
+          path: ui-pf4/src/main/webapp/cypress/videos
       - uses: codecov/codecov-action@v1
         with:
           flags: e2etests

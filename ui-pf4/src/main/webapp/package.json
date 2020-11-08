@@ -45,17 +45,18 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "start": "react-scripts -r @cypress/instrument-cra start",
-    "start:cra-mta": "npm-run-all --parallel start mta:config mta:start",
     "build": "react-scripts build",
-    "build:freemarker": "cp build/index.html build/index.html.ftl",
-    "mta:config": "scripts/update-client.sh",
-    "mta:start": "$MTA_HOME/run_mta.sh",
-    "mta:start-windows": "$MTA_HOME/run_mta.bat",
+    "build:freemarker": "cp build/index.html build/index.html.ftl",    
     "test": "react-scripts test",
     "test:debug": "react-scripts --inspect-brk test --runInBand --no-cache",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006 -s public",
-    "build-storybook": "build-storybook -s public"
+    "build-storybook": "build-storybook -s public",
+    "mta": "npm-run-all --parallel mta:run mta:config-kc mta:start-ui",
+    "mta:start-ui": "scripts/start-ui.sh",
+    "mta:config-kc": "scripts/config-keycloak.sh",
+    "mta:run": "$MTA_HOME/run_mta.sh",
+    "mta:run-windows": "$MTA_HOME/run_mta.bat"
   },
   "eslintConfig": {
     "extends": "react-app"
