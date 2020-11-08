@@ -33,8 +33,7 @@ context("New Project", () => {
     cy.contains("Add applications");
 
     const dropzoneSelector = ".upload-files-section__component__dropzone";
-    const application1 = "dwr.zip";
-    const application2 = "1111-1.0-SNAPSHOT.zip";
+    const application = "1111-1.0-SNAPSHOT.zip";
 
     verifyActionButtonsDisabled();
 
@@ -44,17 +43,9 @@ context("New Project", () => {
     cy.get(".pf-c-tabs__item").eq(1).click();
     verifyActionButtonsDisabled();
     cy.get(".pf-c-tabs__item").eq(0).click();
-    verifyActionButtonsDisabled();
+    verifyActionButtonsDisabled();   
 
-    cy.get(dropzoneSelector).attachFile(application1, {
-      subjectType: "drag-n-drop",
-    });
-    verifyActionButtonsEnabled();
-
-    cy.get("button.pf-c-button[aria-label=delete-application]").click();
-    verifyActionButtonsDisabled();
-
-    cy.get(dropzoneSelector).attachFile(application2, {
+    cy.get(dropzoneSelector).attachFile(application, {
       subjectType: "drag-n-drop",
     });
     verifyActionButtonsEnabled();
