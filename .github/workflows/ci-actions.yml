@@ -342,8 +342,6 @@ jobs:
         run: yarn --cwd ui-pf4/src/main/webapp/ install
       - name: Yarn instrument
         run: yarn --cwd ui-pf4/src/main/webapp/ run build:instrumentation
-      - name: Clean node_modules
-        run: rm -rf node_modules
       - name: Set MTA_HOME
         run: echo "MTA_HOME=$(dirname $(realpath mta-server/mta-web-distribution-*/run_mta.sh))" >> $GITHUB_ENV
       - name: Cypress run
