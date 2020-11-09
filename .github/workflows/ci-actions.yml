@@ -1,15 +1,12 @@
-name: CI
+name: UI CI
 
 on:
   push:
     paths-ignore:
       - "README.md"
   pull_request:
-    types: [assigned, opened, synchronize, reopened, ready_for_review, edited]
     paths-ignore:
       - "README.md"
-  schedule:
-    - cron: "0 0 * * *"
 
 jobs:
 
