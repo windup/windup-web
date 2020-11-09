@@ -37,6 +37,18 @@ export const ProjectContextSelector: React.FC<ProjectContextSelectorProps> = ({
 
   const onSearchInputChange = (value: string) => {
     setSearchValue(value);
+
+    const filtered =
+      value === ""
+        ? projects
+        : projects.filter(
+            (str) =>
+              str.migrationProject.title
+                .toLowerCase()
+                .indexOf(value.toLowerCase()) !== -1
+          );
+
+    setFilteredItems(filtered || []);
   };
 
   const onSearchButtonClick = () => {

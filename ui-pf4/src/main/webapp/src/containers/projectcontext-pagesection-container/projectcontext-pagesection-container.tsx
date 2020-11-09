@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
-import { Form, FormGroup } from "@patternfly/react-core";
+import { FormGroup } from "@patternfly/react-core";
 
 import "./projectcontext-pagesection-container.scss";
 
@@ -48,10 +48,7 @@ export const ProjectContextPageSectionContainer: React.FC<ProjectContextPageSect
 
   return (
     <ProjectContextPageSection>
-      <Form
-        isHorizontal
-        className="pf-c-form_projectcontext-pagesection-container"
-      >
+      <div className="pf-c-form pf-m-horizontal pf-c-form_projectcontext-pagesection-container">
         <FormGroup label="Project:" fieldId="project">
           <ProjectContextSelector
             projects={projects}
@@ -59,7 +56,7 @@ export const ProjectContextPageSectionContainer: React.FC<ProjectContextPageSect
             onSelectProject={onProjectContextChange}
           />
         </FormGroup>
-      </Form>
+      </div>
     </ProjectContextPageSection>
   );
 };
