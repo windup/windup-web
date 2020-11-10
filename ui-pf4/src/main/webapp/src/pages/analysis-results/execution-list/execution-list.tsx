@@ -73,7 +73,13 @@ const columns: ICell[] = [
   { title: "Status", transforms: [sortable] },
   { title: "Start date", transforms: [sortable] },
   { title: "Applications", transforms: [sortable] },
-  { title: "Actions", transforms: [] },
+  {
+    title: "Actions",
+    transforms: [],
+    props: {
+      className: "pf-u-text-align-right",
+    },
+  },
 ];
 
 const compareExecution = (
