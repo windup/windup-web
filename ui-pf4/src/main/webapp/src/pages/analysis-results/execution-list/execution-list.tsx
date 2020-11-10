@@ -9,8 +9,9 @@ import {
   Bullseye,
   ToolbarItem,
   ToolbarGroup,
-  Split,
-  SplitItem,
+  ButtonVariant,
+  Flex,
+  FlexItem,
 } from "@patternfly/react-core";
 import {
   IRow,
@@ -20,7 +21,12 @@ import {
   IAction,
   ISeparator,
 } from "@patternfly/react-table";
-import { ChartBarIcon, DownloadIcon, CubesIcon } from "@patternfly/react-icons";
+import {
+  ChartBarIcon,
+  DownloadIcon,
+  CubesIcon,
+  TrashIcon,
+} from "@patternfly/react-icons";
 
 import { RootState } from "store/rootReducer";
 import { executionsSelectors, executionsActions } from "store/executions";
@@ -67,7 +73,13 @@ const columns: ICell[] = [
   { title: "Status", transforms: [sortable] },
   { title: "Start date", transforms: [sortable] },
   { title: "Applications", transforms: [sortable] },
-  { title: "Actions", transforms: [] },
+  {
+    title: "Actions",
+    transforms: [],
+    props: {
+      className: "pf-u-text-align-right",
+    },
+  },
 ];
 
 const compareExecution = (
@@ -172,6 +184,62 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
     }
   }, [match, executions, refreshExecutionList]);
 
+  const handleDeleteAnalysis = useCallback(
+    (row: WindupExecution) => {
+      dispatch(
+        deleteDialogActions.openModal({
+          name: `#${row.id.toString()}`,
+          type: "analysis",
+          onDelete: () => {
+            dispatch(deleteDialogActions.processing());
+            deleteExecution(row.id)
+              .then(() => {
+                refreshExecutionList(match.params.project);
+              })
+              .finally(() => {
+                dispatch(deleteDialogActions.closeModal());
+              });
+          },
+          onCancel: () => {
+            dispatch(deleteDialogActions.closeModal());
+          },
+        })
+      );
+    },
+    [match, dispatch, refreshExecutionList]
+  );
+
+  const handleCancelAnalysis = useCallback(
+    (row: WindupExecution) => {
+      dispatch(
+        deleteDialogActions.openModal({
+          name: `#${row.id.toString()}`,
+          type: "analysis",
+          config: {
+            title: `Cancel #${row.id.toString()}`,
+            message: "Are you sure you want to cancel the analysis?",
+            deleteBtnLabel: "Yes",
+            cancelBtnLabel: "No",
+          },
+          onDelete: () => {
+            dispatch(deleteDialogActions.processing());
+            cancelExecution(row.id)
+              .then(() => {
+                refreshExecutionList(match.params.project);
+              })
+              .finally(() => {
+                dispatch(deleteDialogActions.closeModal());
+              });
+          },
+          onCancel: () => {
+            dispatch(deleteDialogActions.closeModal());
+          },
+        })
+      );
+    },
+    [match, dispatch, refreshExecutionList]
+  );
+
   const actionResolver = (rowData: IRowData): (IAction | ISeparator)[] => {
     const row: WindupExecution = getRow(rowData);
 
@@ -206,32 +274,7 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
         title: "Cancel",
         onClick: (_, rowIndex: number, rowData: IRowData) => {
           const row: WindupExecution = getRow(rowData);
-
-          dispatch(
-            deleteDialogActions.openModal({
-              name: `#${row.id.toString()}`,
-              type: "analysis",
-              config: {
-                title: `Cancel #${row.id.toString()}`,
-                message: "Are you sure you want to cancel the analysis?",
-                deleteBtnLabel: "Yes",
-                cancelBtnLabel: "No",
-              },
-              onDelete: () => {
-                dispatch(deleteDialogActions.processing());
-                cancelExecution(row.id)
-                  .then(() => {
-                    refreshExecutionList(match.params.project);
-                  })
-                  .finally(() => {
-                    dispatch(deleteDialogActions.closeModal());
-                  });
-              },
-              onCancel: () => {
-                dispatch(deleteDialogActions.closeModal());
-              },
-            })
-          );
+          handleCancelAnalysis(row);
         },
       });
     } else {
@@ -239,26 +282,7 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
         title: "Delete",
         onClick: (_, rowIndex: number, rowData: IRowData) => {
           const row: WindupExecution = getRow(rowData);
-
-          dispatch(
-            deleteDialogActions.openModal({
-              name: `#${row.id.toString()}`,
-              type: "analysis",
-              onDelete: () => {
-                dispatch(deleteDialogActions.processing());
-                deleteExecution(row.id)
-                  .then(() => {
-                    refreshExecutionList(match.params.project);
-                  })
-                  .finally(() => {
-                    dispatch(deleteDialogActions.closeModal());
-                  });
-              },
-              onCancel: () => {
-                dispatch(deleteDialogActions.closeModal());
-              },
-            })
-          );
+          handleDeleteAnalysis(row);
         },
       });
     }
@@ -321,53 +345,69 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
             title: item.analysisContext.applications.length,
           },
           {
+            props: { textCenter: false },
             title: (
               <ProjectStatusWatcher watch={item}>
-                {({ execution }) =>
-                  execution.state === "COMPLETED" ? (
-                    <>
-                      <Split hasGutter>
+                {({ execution }) => (
+                  <Flex
+                    justifyContent={{ default: "justifyContentFlexEnd" }}
+                    spaceItems={{ default: "spaceItemsNone" }}
+                  >
+                    {execution.state === "COMPLETED" && (
+                      <>
                         {!isOptionEnabledInExecution(
                           execution,
                           AdvancedOptionsFieldKey.SKIP_REPORTS
                         ) && (
-                          <SplitItem>
+                          <FlexItem>
                             <a
                               title="Reports"
                               target="_blank"
                               rel="noopener noreferrer"
                               href={`${getStaticReportURL(execution)}`}
+                              className="pf-c-button pf-m-link"
                             >
                               <ChartBarIcon />
                             </a>
-                          </SplitItem>
+                          </FlexItem>
                         )}
                         {isOptionEnabledInExecution(
                           execution,
                           AdvancedOptionsFieldKey.EXPORT_CSV
                         ) && (
-                          <SplitItem>
+                          <FlexItem>
                             <a
                               title="Download all issues CSV"
                               target="_blank"
                               rel="noopener noreferrer"
                               href={`${getCSVReportURL(execution)}`}
+                              className="pf-c-button pf-m-link"
                             >
                               <DownloadIcon />
                             </a>
-                          </SplitItem>
+                          </FlexItem>
                         )}
-                      </Split>
-                    </>
-                  ) : null
-                }
+                      </>
+                    )}
+                    {!isExecutionActive(execution) && (
+                      <FlexItem>
+                        <Button
+                          variant={ButtonVariant.link}
+                          onClick={() => handleDeleteAnalysis(execution)}
+                        >
+                          <TrashIcon />
+                        </Button>
+                      </FlexItem>
+                    )}
+                  </Flex>
+                )}
               </ProjectStatusWatcher>
             ),
           },
         ],
       }));
     },
-    [match]
+    [match, handleDeleteAnalysis]
   );
 
   const handleRunAnalysis = () => {
