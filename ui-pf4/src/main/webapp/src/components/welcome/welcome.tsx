@@ -33,7 +33,7 @@ export const Welcome: React.FC<WelcomeProps> = ({ onPrimaryAction }) => {
         a project for your applications.
       </EmptyStateBody>
       <Button variant="primary" onClick={onPrimaryAction}>
-        Create Project
+        Create project
       </Button>
       <EmptyStateSecondaryActions>
         To learn more, visit the
