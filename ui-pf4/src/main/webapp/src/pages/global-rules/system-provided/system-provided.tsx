@@ -9,6 +9,7 @@ import {
   ChipGroup,
   Select,
   SelectOption,
+  SelectOptionObject,
   SelectVariant,
   Split,
   SplitItem,
@@ -395,6 +396,21 @@ export const SystemProvided: React.FC = () => {
   );
 };
 
+//
+
+interface SourceTargetSelectOption extends SelectOptionObject {
+  value: TargetSource;
+}
+
+const sourceOption: SourceTargetSelectOption = {
+  value: "source",
+  toString: () => "Source",
+};
+const targetOption: SourceTargetSelectOption = {
+  value: "target",
+  toString: () => "Target",
+};
+
 const technologyVersionToSelecValues = (map: Map<string, Set<string>>) => {
   const result: string[] = [];
   map.forEach((versions, technology) => {
@@ -427,9 +443,9 @@ export const SourceTargetFilterToolbarGroup: React.FC<SourceTargetFilterToolbarG
 }) => {
   // First filter
 
-  const [firstFilterValue, setFirstFilterValue] = useState<TargetSource>(
-    "source"
-  );
+  const [firstFilterValue, setFirstFilterValue] = useState<
+    SourceTargetSelectOption
+  >(sourceOption);
   const [isFirstFilterOpen, setIsFirstFilterOpen] = useState(false);
 
   const onFirstFilterToggle = (isExpanded: boolean) => {
@@ -449,7 +465,7 @@ export const SourceTargetFilterToolbarGroup: React.FC<SourceTargetFilterToolbarG
   useEffect(() => {
     const technologyVersionMap = getAllTechnologyVersions(
       ruleProviders,
-      firstFilterValue
+      firstFilterValue.value
     );
     const technologyVersionArray = technologyVersionToSelecValues(
       technologyVersionMap
@@ -476,10 +492,10 @@ export const SourceTargetFilterToolbarGroup: React.FC<SourceTargetFilterToolbarG
     let values: string[];
     let callbackFn: (values: string[]) => void;
 
-    if (firstFilterValue === "source") {
+    if (firstFilterValue.value === sourceOption.value) {
       values = selectedSources;
       callbackFn = onSelectedSourcesChange;
-    } else if (firstFilterValue === "target") {
+    } else if (firstFilterValue.value === targetOption.value) {
       values = selectedTargets;
       callbackFn = onSelectedTargetsChange;
     } else {
@@ -510,8 +526,8 @@ export const SourceTargetFilterToolbarGroup: React.FC<SourceTargetFilterToolbarG
           toggleIcon={<FilterIcon />}
         >
           {[
-            <SelectOption key="source" value="source" />,
-            <SelectOption key="target" value="target" />,
+            <SelectOption key={sourceOption.value} value={sourceOption} />,
+            <SelectOption key={targetOption.value} value={targetOption} />,
           ]}
         </Select>
       </ToolbarItem>
@@ -521,7 +537,9 @@ export const SourceTargetFilterToolbarGroup: React.FC<SourceTargetFilterToolbarG
           onToggle={onSecondFilterToggle}
           onSelect={onSecondFilterSelect}
           selections={
-            firstFilterValue === "source" ? selectedSources : selectedTargets
+            firstFilterValue.value === sourceOption.value
+              ? selectedSources
+              : selectedTargets
           }
           isOpen={isSecondFilterOpen}
           placeholderText={`Filter by ${firstFilterValue}`}
