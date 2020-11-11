@@ -17,6 +17,7 @@ import {
   IRowData,
   IAction,
   ISeparator,
+  truncate,
 } from "@patternfly/react-table";
 import {
   PageSection,
@@ -49,7 +50,11 @@ const columns: ICell[] = [
   { title: "Name", transforms: [cellWidth(20), sortable] },
   { title: "Applications", transforms: [sortable] },
   { title: "Status", transforms: [sortable] },
-  { title: "Description", transforms: [cellWidth(30)] },
+  {
+    title: "Description",
+    transforms: [cellWidth(30)],
+    cellTransforms: [truncate],
+  },
 ];
 
 export const compareProject = (
