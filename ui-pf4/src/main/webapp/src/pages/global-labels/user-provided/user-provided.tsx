@@ -187,7 +187,12 @@ export const UserProvided: React.FC = () => {
             <CustomEmptyState
               icon={CubesIcon}
               title="No custom labels available"
-              body="Upload a custom label by clicking on 'Add label'"
+              body={
+                <p>
+                  Upload a custom label by clicking on{" "}
+                  <strong>Add label</strong>.
+                </p>
+              }
             />
           </Bullseye>
         }

@@ -250,7 +250,7 @@ export const UploadFilesDropzone: React.FC<UploadFilesDropzoneProps> = ({
                 })}
               >
                 <EmptyStateBody>
-                  Drag a file here or browse to upload
+                  Drag a file here or browse to upload.
                 </EmptyStateBody>
                 <Button variant="primary" onClick={open}>
                   Browse

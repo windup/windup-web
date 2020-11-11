@@ -106,7 +106,7 @@ export const PackageSelectionLoadingState: React.FC = () => {
         </Title>
         <EmptyStateBody>
           This process might take some time depending of the size of your
-          applications
+          applications.
         </EmptyStateBody>
       </EmptyState>
     </Bullseye>

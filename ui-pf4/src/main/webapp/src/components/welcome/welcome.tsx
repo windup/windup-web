@@ -44,6 +44,7 @@ export const Welcome: React.FC<WelcomeProps> = ({ onPrimaryAction }) => {
         >
           documentation
         </a>
+        .
       </EmptyStateSecondaryActions>
     </EmptyState>
   );

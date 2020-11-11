@@ -387,7 +387,7 @@ export const SystemProvided: React.FC = () => {
           <CustomEmptyState
             icon={CubesIcon}
             title="No sytem provided rules available"
-            body="Make sure your server contains system provided rules"
+            body="Make sure your server contains system provided rules."
           />
         </Bullseye>
       }

@@ -30,7 +30,11 @@ import {
   getValidatedFromErrorTouched,
 } from "utils/formUtils";
 
-import { filterFieldsByType, getFieldData, Fields } from "./schema";
+import { filterFieldsByType, getFieldData, Fields, IFieldInfo } from "./schema";
+
+const tooltipTextFrom = (info: IFieldInfo, config: ConfigurationOption) => {
+  return info.description ? info.description : config.description;
+};
 
 interface FormValues {
   [AdvancedOptionsFieldKey.TARGET]: string[];
@@ -143,7 +147,7 @@ export const AdvancedOptionsForm: React.FC<AdvancedOptionsFormProps> = ({
                     key={`${fieldInfo.type}-${index}`}
                     label={
                       <Tooltip
-                        content={<div>{fieldConfiguration.description}</div>}
+                        content={tooltipTextFrom(fieldInfo, fieldConfiguration)}
                       >
                         <span>{fieldInfo.label}</span>
                       </Tooltip>
@@ -194,7 +198,7 @@ export const AdvancedOptionsForm: React.FC<AdvancedOptionsFormProps> = ({
                     key={`${fieldInfo.type}-${index}`}
                     label={
                       <Tooltip
-                        content={<div>{fieldConfiguration.description}</div>}
+                        content={tooltipTextFrom(fieldInfo, fieldConfiguration)}
                       >
                         <span>{fieldInfo.label}</span>
                       </Tooltip>
@@ -240,7 +244,7 @@ export const AdvancedOptionsForm: React.FC<AdvancedOptionsFormProps> = ({
                   key={`${fieldInfo.type}-${index}`}
                   label={
                     <Tooltip
-                      content={<div>{fieldConfiguration.description}</div>}
+                      content={tooltipTextFrom(fieldInfo, fieldConfiguration)}
                     >
                       <span>{fieldInfo.label}</span>
                     </Tooltip>
