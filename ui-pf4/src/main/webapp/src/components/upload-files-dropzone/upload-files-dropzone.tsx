@@ -26,6 +26,7 @@ import "./upload-files-dropzone.scss";
 import { getMapKeys } from "utils/utils";
 import { formatBytes } from "utils/format";
 import BackendAPIClient from "api/apiClient";
+import { getAxiosErrorMessage } from "utils/modelUtils";
 
 const CANCEL_MESSAGE = "cancelled";
 
@@ -295,7 +296,13 @@ export const UploadFilesDropzone: React.FC<UploadFilesDropzoneProps> = ({
                       <SplitItem isFilled>
                         <Progress
                           title={`${file.name} (${formatBytes(file.size)})`}
-                          label={upload.wasCancelled ? "Cancelled" : undefined}
+                          label={
+                            upload.wasCancelled
+                              ? "Cancelled"
+                              : upload.error
+                              ? getAxiosErrorMessage(upload.error)
+                              : undefined
+                          }
                           size={ProgressSize.sm}
                           value={upload.progress}
                           variant={
