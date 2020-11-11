@@ -198,7 +198,7 @@ describe("ProjectList", () => {
     expect(wrapper.find(FetchErrorEmptyState).length).toEqual(1);
   });
 
-  it("Test click 'Create Project'", () => {
+  it("Test click 'Create project'", () => {
     const defaultState: ProjectListState = {
       projects: [],
       status: "complete",

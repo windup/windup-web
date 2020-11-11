@@ -254,7 +254,7 @@ export const ProjectList: React.FC<Props> = ({ history: { push } }) => {
               <ToolbarGroup variant="button-group">
                 <ToolbarItem>
                   <Button type="button" onClick={handleNewProject}>
-                    Create Project
+                    Create project
                   </Button>
                 </ToolbarItem>
               </ToolbarGroup>
