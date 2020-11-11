@@ -1,6 +1,33 @@
 /// <reference types="cypress" />
 
 context("New Project", () => {
+  beforeEach(() => {
+    cy.kcToken().as("kcToken");
+
+    cy.get("@kcToken").then((tokens) => {
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + tokens.access_token,
+      };
+
+      cy.request({
+        method: "GET",
+        headers: headers,
+        url: "/mta-web/api/migrationProjects/list",
+      }).then((result) => {
+        result.body.forEach((e) => {
+          console.log(e.migrationProject);
+          cy.request({
+            method: "DELETE",
+            headers: headers,
+            body: JSON.stringify(e.migrationProject),
+            url: "/mta-web/api/migrationProjects/delete",
+          });
+        });
+      });
+    });
+  });
+
   const verifyActionButtonsDisabled = () => {
     cy.get("button.pf-c-button.pf-m-primary").should("be.disabled");
     cy.get("button.pf-c-button.pf-m-link").should("not.be.disabled");
@@ -22,7 +49,7 @@ context("New Project", () => {
 
     verifyActionButtonsDisabled();
 
-    cy.get("input[name=name]").type(`project${new Date().getTime()}`);
+    cy.get("input[name=name]").type("project");
     verifyActionButtonsEnabled();
 
     cy.get(".pf-c-button.pf-m-primary").contains("Next").click();
