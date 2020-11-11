@@ -217,7 +217,7 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
           type: "analysis",
           config: {
             title: `Cancel #${row.id.toString()}`,
-            message: "Are you sure you want to cancel the analysis",
+            message: "Are you sure you want to cancel the analysis?",
             deleteBtnLabel: "Yes",
             cancelBtnLabel: "No",
           },
