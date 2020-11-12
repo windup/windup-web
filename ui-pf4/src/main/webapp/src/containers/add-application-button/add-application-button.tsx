@@ -29,7 +29,7 @@ import {
 } from "components";
 import { AddApplicationsServerPathFormValues } from "components/add-applications-form/add-applications-serverpath-form";
 
-import { getAlertModel } from "Constants";
+import { Constants, getAlertModel } from "Constants";
 import { getAxiosErrorMessage } from "utils/modelUtils";
 import { Application } from "models/api";
 import {
@@ -119,7 +119,9 @@ export const AddApplicationButton: React.FC<AddApplicationButtonProps> = ({
 
   const serverPathFormik = useFormik({
     initialValues: AddApplicationsServerPathFormSchemaInitialValues(),
-    validationSchema: AddApplicationsServerPathFormSchema(),
+    validationSchema: AddApplicationsServerPathFormSchema(
+      Constants.ALLOWED_APPLICATION_EXTENSIONS
+    ),
     onSubmit: handleServerPathFormikSubmit,
     initialErrors: { serverPath: "" },
   });

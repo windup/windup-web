@@ -74,6 +74,8 @@ export enum AdvancedOptionsFieldKey {
 export class Constants {
   static readonly DEFAULT_PAGE_SIZE = 10;
   static readonly DEFAULT_PAGINATION_OPTIONS = [10, 20, 50, 100];
+  static readonly ALLOWED_APPLICATION_EXTENSIONS =
+    ".ear, .har, .jar, .rar, .sar, .war, .zip";
 }
 
 export const getAlertModel = (

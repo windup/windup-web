@@ -5,6 +5,7 @@ import { UploadFilesDropzoneWrapper } from "components";
 
 import { UPLOAD_APPLICATION_PATH } from "api/api";
 import { Application } from "models/api";
+import { Constants } from "Constants";
 
 export interface AddApplicationsUploadFilesFormValues {
   applications: Application[];
@@ -38,7 +39,7 @@ export const AddApplicationsUploadFilesForm: React.FC<AddApplicationsUploadFiles
       value={values.applications}
       onChange={handleOnUploadChange}
       url={getUploadUrl(projectId)}
-      accept=".ear,.har,.jar,.rar,.sar,.war,.zip"
+      accept={Constants.ALLOWED_APPLICATION_EXTENSIONS}
       template="dropdown-box"
       hideProgressOnSuccess={true}
     />
