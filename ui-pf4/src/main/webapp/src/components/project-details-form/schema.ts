@@ -25,7 +25,7 @@ export const projectDetailsFormSchema = (project?: MigrationProject) => {
       .max(120, "The project name must contain fewer than 120 characters.")
       .matches(
         PROJECT_NAME_REGEX,
-        "The project name must contain only alphanumeric characters."
+        "The project name must contain only alphanumeric characters including underscore."
       )
       .test("uniqueValue", "The entered name is already in use.", (value) => {
         return getProjectIdByName(value!)
