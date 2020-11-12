@@ -13,7 +13,7 @@ context("New Project", () => {
       cy.request({
         method: "GET",
         headers: headers,
-        url: "/mta-web/api/migrationProjects/list",
+        url: `${Cypress.env("MTA_API")}/migrationProjects/list`,
       }).then((result) => {
         result.body.forEach((e) => {
           console.log(e.migrationProject);
@@ -21,7 +21,7 @@ context("New Project", () => {
             method: "DELETE",
             headers: headers,
             body: JSON.stringify(e.migrationProject),
-            url: "/mta-web/api/migrationProjects/delete",
+            url: `${Cypress.env("MTA_API")}/migrationProjects/delete`,
           });
         });
       });
@@ -39,7 +39,7 @@ context("New Project", () => {
   };
 
   it("Action buttons disabled when form is invalid", () => {
-    cy.visit("/#/projects/~new");
+    cy.visit("/projects/~new");
 
     /**
      * Step 1: Project details

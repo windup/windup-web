@@ -1,8 +1,8 @@
 Cypress.Commands.add("kcToken", () => {
   Cypress.log({ name: "Keycloak token" });
 
-  const kcServer = "http://localhost:8080/auth";
-  const kcUrl = `${kcServer}/realms/mta/protocol/openid-connect/token`;
+  const kcServer = Cypress.env("KEYCLOAK_URL");
+  const kcUrl = `${kcServer}/realms/${Cypress.env("KEYCLOAK_REALM")}/protocol/openid-connect/token`;
 
   const kcHeaders = {
     "Content-Type": "application/x-www-form-urlencoded",
@@ -12,10 +12,10 @@ Cypress.Commands.add("kcToken", () => {
     method: "POST",
     headers: kcHeaders,
     body: {
-      client_id: "mta-web",
-      client_secret: "password",
-      username: "mta",
-      password: "password",
+      client_id: Cypress.env("KEYCLOAK_CLIENT_ID"),
+      client_secret: Cypress.env("KEYCLOAK_CLIENT_SECRET"),
+      username: Cypress.env("KEYCLOAK_USERNAME"),
+      password: Cypress.env("KEYCLOAK_PASSWORD"),
       grant_type: "password",
       scope: "openid info offline_access",
     },
@@ -26,8 +26,8 @@ Cypress.Commands.add("kcToken", () => {
         method: "POST",
         headers: kcHeaders,
         body: {
-          client_id: "mta-web",
-          client_secret: "password",
+          client_id: Cypress.env("KEYCLOAK_CLIENT_ID"),
+          client_secret: Cypress.env("KEYCLOAK_CLIENT_SECRET"),
           grant_type: "refresh_token",
           refresh_token: response.body.refresh_token,
         },
