@@ -118,4 +118,29 @@ context("Project list", () => {
     cy.contains("Project1_changed", { timeout: 10000 });
     cy.contains("my changed description", { timeout: 10000 });
   });
+
+  it("Project list - delete", () => {
+    cy.visit("/projects");
+
+    // Open delete modal
+    cy.get(".pf-c-table__action", { timeout: 5000 }).last().click();
+    cy.get(".pf-c-dropdown__menu-item").contains("Delete").click();
+
+    cy.get(".pf-c-modal-box").should("have.length", 1);
+    cy.get(".pf-m-danger").contains("Delete").should("be.disabled");
+    cy.get(".pf-m-link").contains("Cancel").should("not.be.disabled");
+
+    // Edit data and save
+    cy.get("input[name='matchText']").type("project");
+    cy.get(".pf-m-danger").contains("Delete").should("be.disabled");
+
+    cy.get("input[name='matchText']").clear().type("project10");
+    cy.get(".pf-m-danger").contains("Delete").should("not.be.disabled");
+
+    cy.get(".pf-m-danger").contains("Delete").click();
+    cy.get(".pf-c-modal-box", { timeout: 5000 }).should("have.length", 0);
+
+    // Verify project has deleted
+    cy.get(".pf-c-options-menu__toggle-text").contains(11);
+  });
 });
