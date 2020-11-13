@@ -196,6 +196,15 @@ export const Review: React.FC<ReviewProps> = ({ match, history: { push } }) => {
                   </DescriptionListDescription>
                 </DescriptionListGroup>
                 <DescriptionListGroup>
+                  <DescriptionListTerm>Target(s)</DescriptionListTerm>
+                  <DescriptionListDescription>
+                    {analysisContext.advancedOptions
+                      .filter((f) => f.name === AdvancedOptionsFieldKey.TARGET)
+                      .map((f) => f.value)
+                      .join(", ")}
+                  </DescriptionListDescription>
+                </DescriptionListGroup>
+                <DescriptionListGroup>
                   <DescriptionListTerm>Source(s)</DescriptionListTerm>
                   <DescriptionListDescription>
                     {nullabeContent(
@@ -206,15 +215,6 @@ export const Review: React.FC<ReviewProps> = ({ match, history: { push } }) => {
                         .map((f) => f.value)
                         .join(", ")
                     )}
-                  </DescriptionListDescription>
-                </DescriptionListGroup>
-                <DescriptionListGroup>
-                  <DescriptionListTerm>Target(s)</DescriptionListTerm>
-                  <DescriptionListDescription>
-                    {analysisContext.advancedOptions
-                      .filter((f) => f.name === AdvancedOptionsFieldKey.TARGET)
-                      .map((f) => f.value)
-                      .join(", ")}
                   </DescriptionListDescription>
                 </DescriptionListGroup>
               </DescriptionList>
