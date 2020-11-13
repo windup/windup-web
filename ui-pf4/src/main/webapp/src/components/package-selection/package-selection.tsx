@@ -105,7 +105,7 @@ export const PackageSelectionLoadingState: React.FC = () => {
           Discovering and fetching packages
         </Title>
         <EmptyStateBody>
-          This process might take some time depending of the size of your
+          This process might take some time depending on the size of your
           applications
         </EmptyStateBody>
       </EmptyState>
