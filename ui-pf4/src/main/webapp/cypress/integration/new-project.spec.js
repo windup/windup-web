@@ -1,9 +1,10 @@
 /// <reference types="cypress" />
 
 context("New Project", () => {
-  beforeEach(() => {
+  before(() => {
     cy.kcToken().as("kcToken");
 
+    // Delete all projects
     cy.get("@kcToken").then((tokens) => {
       const headers = {
         "Content-Type": "application/json",
@@ -16,7 +17,6 @@ context("New Project", () => {
         url: `${Cypress.env("MTA_API")}/migrationProjects/list`,
       }).then((result) => {
         result.body.forEach((e) => {
-          console.log(e.migrationProject);
           cy.request({
             method: "DELETE",
             headers: headers,
@@ -160,5 +160,7 @@ context("New Project", () => {
 
     verifyActionButtonsEnabled();
     cy.contains("Save").click();
+
+    cy.url().should("eq", Cypress.config().baseUrl + "/projects");
   });
 });
