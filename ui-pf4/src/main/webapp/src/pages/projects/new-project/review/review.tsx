@@ -40,6 +40,18 @@ import { AxiosError } from "axios";
 import { getAxiosErrorMessage } from "utils/modelUtils";
 import { ConditionalRender } from "components";
 
+const nullabeContent = (value: any) => {
+  return value ? (
+    value
+  ) : (
+    <span className="pf-c-content">
+      <i>
+        <small>none</small>
+      </i>
+    </span>
+  );
+};
+
 interface ReviewProps extends RouteComponentProps<ProjectRoute> {}
 
 export const Review: React.FC<ReviewProps> = ({ match, history: { push } }) => {
@@ -174,7 +186,7 @@ export const Review: React.FC<ReviewProps> = ({ match, history: { push } }) => {
                 <DescriptionListGroup>
                   <DescriptionListTerm>Description</DescriptionListTerm>
                   <DescriptionListDescription>
-                    {project.description}
+                    {nullabeContent(project.description)}
                   </DescriptionListDescription>
                 </DescriptionListGroup>
                 <DescriptionListGroup>
@@ -192,12 +204,19 @@ export const Review: React.FC<ReviewProps> = ({ match, history: { push } }) => {
                       .join(", ")}
                   </DescriptionListDescription>
                 </DescriptionListGroup>
-                {/* <DescriptionListGroup>
-                  <DescriptionListTerm>Annotation</DescriptionListTerm>
+                <DescriptionListGroup>
+                  <DescriptionListTerm>Source(s)</DescriptionListTerm>
                   <DescriptionListDescription>
-                    2 Annotations
+                    {nullabeContent(
+                      analysisContext.advancedOptions
+                        .filter(
+                          (f) => f.name === AdvancedOptionsFieldKey.SOURCE
+                        )
+                        .map((f) => f.value)
+                        .join(", ")
+                    )}
                   </DescriptionListDescription>
-                </DescriptionListGroup> */}
+                </DescriptionListGroup>
               </DescriptionList>
             </StackItem>
           )}

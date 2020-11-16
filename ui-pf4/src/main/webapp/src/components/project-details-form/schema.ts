@@ -5,6 +5,8 @@ import { getProjectIdByName } from "api/api";
 
 import { ProjectDetailsFormValues } from "./project-details-form";
 
+export const PROJECT_NAME_REGEX = /^[- \w]+$/;
+
 export const projectDetailsFormInitialValue = (
   project?: MigrationProject
 ): ProjectDetailsFormValues => {
@@ -22,8 +24,8 @@ export const projectDetailsFormSchema = (project?: MigrationProject) => {
       .min(3, "The project name must contain at least 3 characters.")
       .max(120, "The project name must contain fewer than 120 characters.")
       .matches(
-        /\s*[- \w]+\s*/,
-        "The project name must contain only alphanumeric characters."
+        PROJECT_NAME_REGEX,
+        "The project name must contain only alphanumeric characters including underscore."
       )
       .test("uniqueValue", "The entered name is already in use.", (value) => {
         return getProjectIdByName(value!)
