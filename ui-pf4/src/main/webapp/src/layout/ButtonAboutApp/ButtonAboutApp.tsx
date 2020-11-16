@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import {
   AboutModal,
   TextContent,
-  TextList,
-  TextListItem,
   Button,
   ButtonVariant,
   List,
   ListItem,
   Flex,
   FlexItem,
+  Grid,
+  GridItem,
 } from "@patternfly/react-core";
 import {
   HelpIcon,
@@ -79,11 +79,13 @@ export const ButtonAboutApp: React.FC = () => {
           </p>
         </TextContent>
         <TextContent className="pf-u-py-xl">
-          <TextList component="dl">
-            <TextListItem component="dt">
-              Migration Toolkit for Applications Core
-            </TextListItem>
-            <TextListItem component="dd">
+          <Grid hasGutter>
+            <GridItem lg={7}>
+              <span className="dt">
+                Migration Toolkit for Applications Core
+              </span>
+            </GridItem>
+            <GridItem lg={5}>
               {windupVersion.version}
               {windupVersion.version.indexOf("SNAPSHOT") !== -1 && (
                 <>
@@ -98,11 +100,13 @@ export const ButtonAboutApp: React.FC = () => {
                   {")"}
                 </>
               )}
-            </TextListItem>
-            <TextListItem component="dt">
-              Migration Toolkit for Applications Web Console
-            </TextListItem>
-            <TextListItem component="dd">
+            </GridItem>
+            <GridItem lg={7}>
+              <span className="dt">
+                Migration Toolkit for Applications Web Console
+              </span>
+            </GridItem>
+            <GridItem lg={5}>
               {WINDUP_WEB_VERSION}
               {WINDUP_WEB_VERSION.indexOf("SNAPSHOT") !== -1 && (
                 <>
@@ -117,8 +121,8 @@ export const ButtonAboutApp: React.FC = () => {
                   {")"}
                 </>
               )}
-            </TextListItem>
-          </TextList>
+            </GridItem>
+          </Grid>
         </TextContent>
         <TextContent>
           <h4>Links</h4>
