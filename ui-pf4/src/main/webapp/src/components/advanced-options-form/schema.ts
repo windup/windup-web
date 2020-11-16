@@ -47,7 +47,7 @@ export const Fields: Map<AdvancedOptionsFieldKey, IFieldInfo> = new Map([
       type: "dropdown",
       placeholder: "Select sources",
       description:
-        'The source server/technology/framework to migrate from. This could include multiple items (eg, "eap" and "spring") separated by a space.',
+        'The source server/technology/framework to migrate from. This could include multiple items (e.g., "eap" and "spring") separated by a space.',
     },
   ],
   [
