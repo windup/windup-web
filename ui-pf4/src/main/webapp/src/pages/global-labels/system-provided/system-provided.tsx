@@ -149,7 +149,7 @@ export const SystemProvided: React.FC = () => {
           <CustomEmptyState
             icon={CubesIcon}
             title="No sytem provided labels available"
-            body="Make sure your server contains system provided labels"
+            body="Make sure your server contains system provided labels."
           />
         </Bullseye>
       }

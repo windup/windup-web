@@ -269,7 +269,7 @@ export const NewProjectWizard: React.FC<NewProjectWizardProps> = ({
     <Wizard
       title={isWizard ? "Create project" : undefined}
       description={
-        isWizard ? "Create a project for your applications" : undefined
+        isWizard ? "Create a project for your applications." : undefined
       }
       isOpen={isWizard ? isWizard : undefined}
       steps={!disableNavigation ? wizardSteps : disableWizardSteps(wizardSteps)}

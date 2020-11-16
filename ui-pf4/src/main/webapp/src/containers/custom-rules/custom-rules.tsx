@@ -259,7 +259,7 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
               Custom rules
             </Title>
             <Text component="small">
-              Upload the rules you want to include in the analysis
+              Upload the rules you want to include in the analysis.
             </Text>
           </TextContent>
         </StackItem>
@@ -292,7 +292,12 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
                 <CustomEmptyState
                   icon={CubesIcon}
                   title="No custom rules available"
-                  body="Upload a custom rule by clicking on 'Add rule'"
+                  body={
+                    <p>
+                      Upload a custom rule by clicking on{" "}
+                      <strong>Add rule</strong>.
+                    </p>
+                  }
                 />
               </Bullseye>
             }

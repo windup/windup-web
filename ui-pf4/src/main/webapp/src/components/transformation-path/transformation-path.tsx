@@ -41,8 +41,7 @@ export const TransformationPath: React.FC<TransformationPathProps> = ({
                 Select transformation path
               </Title>
               <Text component="small">
-                Select on or more transformation options in focus for the
-                analysis
+                Select one or more targets by clicking on the icons below.
               </Text>
             </TextContent>
           </StackItem>

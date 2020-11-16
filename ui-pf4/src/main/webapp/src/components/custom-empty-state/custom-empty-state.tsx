@@ -12,7 +12,7 @@ import {
 export interface CustomEmptyStateProps {
   icon?: React.ComponentType<any>;
   title: string;
-  body?: string;
+  body?: any;
   primaryAction?: [string, () => void, boolean?];
   secondaryActions?: React.ReactNodeArray;
 }

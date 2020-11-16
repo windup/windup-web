@@ -34,7 +34,7 @@ export const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
         <FormGroup
           label="Name"
           fieldId="name"
-          helperText="A unique name for the project"
+          helperText="Unique project name."
           isRequired={true}
           validated={getValidatedFromError(errors.name)}
           helperTextInvalid={errors.name}
@@ -54,7 +54,7 @@ export const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
         <FormGroup
           label="Description"
           fieldId="description"
-          helperText="short description of the project"
+          helperText="Brief description of the project."
           isRequired={false}
           validated={getValidatedFromError(errors.description)}
           helperTextInvalid={errors.description}
