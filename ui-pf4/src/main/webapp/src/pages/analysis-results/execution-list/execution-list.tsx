@@ -29,8 +29,10 @@ import {
 } from "@patternfly/react-icons";
 
 import { RootState } from "store/rootReducer";
-import { executionsSelectors, executionsActions } from "store/executions";
-import { deleteDialogActions } from "store/deleteDialog";
+import {
+  projectExecutionsSelectors,
+  projectExecutionsActions,
+} from "store/projectExecutions";
 
 import {
   SimplePageSection,
@@ -41,13 +43,13 @@ import {
   ExecutionStatus,
   ExecutionStatusWithTime,
 } from "components";
+import { useDeleteExecution } from "hooks/useDeleteExecution";
+import { useCancelExecution } from "hooks/useCancelExecution";
 
 import { Paths, formatPath, ProjectRoute } from "Paths";
 import { WindupExecution, MigrationProject } from "models/api";
 import {
-  cancelExecution,
   createProjectExecution,
-  deleteExecution,
   getAnalysisContext,
   getProjectById,
 } from "api/api";
@@ -131,13 +133,22 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
 
   // Redux
   const baseExecutions = useSelector((state: RootState) =>
-    executionsSelectors.selectExecutions(state, match.params.project)
+    projectExecutionsSelectors.selectProjectExecutions(
+      state,
+      match.params.project
+    )
   );
   const executionsFetchStatus = useSelector((state: RootState) =>
-    executionsSelectors.selectExecutionsFetchStatus(state, match.params.project)
+    projectExecutionsSelectors.selectProjectExecutionsFetchStatus(
+      state,
+      match.params.project
+    )
   );
   const executionsFetchError = useSelector((state: RootState) =>
-    executionsSelectors.selectExecutionsFetchError(state, match.params.project)
+    projectExecutionsSelectors.selectProjectExecutionsFetchError(
+      state,
+      match.params.project
+    )
   );
 
   const executions = baseExecutions
@@ -146,10 +157,13 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
 
   const dispatch = useDispatch();
 
+  const deleteExecution = useDeleteExecution();
+  const cancelExecution = useCancelExecution();
+
   // Util function
   const refreshExecutionList = useCallback(
     (projectId: number | string) => {
-      dispatch(executionsActions.fetchExecutions(projectId));
+      dispatch(projectExecutionsActions.fetchProjectExecutions(projectId));
     },
     [dispatch]
   );
@@ -186,58 +200,20 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
 
   const handleDeleteAnalysis = useCallback(
     (row: WindupExecution) => {
-      dispatch(
-        deleteDialogActions.openModal({
-          name: `#${row.id.toString()}`,
-          type: "analysis",
-          onDelete: () => {
-            dispatch(deleteDialogActions.processing());
-            deleteExecution(row.id)
-              .then(() => {
-                refreshExecutionList(match.params.project);
-              })
-              .finally(() => {
-                dispatch(deleteDialogActions.closeModal());
-              });
-          },
-          onCancel: () => {
-            dispatch(deleteDialogActions.closeModal());
-          },
-        })
-      );
+      deleteExecution(row, () => {
+        refreshExecutionList(match.params.project);
+      });
     },
-    [match, dispatch, refreshExecutionList]
+    [match, deleteExecution, refreshExecutionList]
   );
 
   const handleCancelAnalysis = useCallback(
     (row: WindupExecution) => {
-      dispatch(
-        deleteDialogActions.openModal({
-          name: `#${row.id.toString()}`,
-          type: "analysis",
-          config: {
-            title: `Cancel #${row.id.toString()}`,
-            message: "Are you sure you want to cancel the analysis?",
-            deleteBtnLabel: "Yes",
-            cancelBtnLabel: "No",
-          },
-          onDelete: () => {
-            dispatch(deleteDialogActions.processing());
-            cancelExecution(row.id)
-              .then(() => {
-                refreshExecutionList(match.params.project);
-              })
-              .finally(() => {
-                dispatch(deleteDialogActions.closeModal());
-              });
-          },
-          onCancel: () => {
-            dispatch(deleteDialogActions.closeModal());
-          },
-        })
-      );
+      cancelExecution(row, () => {
+        refreshExecutionList(match.params.project);
+      });
     },
-    [match, dispatch, refreshExecutionList]
+    [match, cancelExecution, refreshExecutionList]
   );
 
   const actionResolver = (rowData: IRowData): (IAction | ISeparator)[] => {
@@ -418,7 +394,7 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
           return createProjectExecution(project.id, data);
         })
         .then(() => {
-          dispatch(executionsActions.fetchExecutions(project.id));
+          dispatch(projectExecutionsActions.fetchProjectExecutions(project.id));
         })
         .finally(() => {
           setIsCreatingExecution(false);

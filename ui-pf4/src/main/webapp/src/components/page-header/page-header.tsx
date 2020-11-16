@@ -66,7 +66,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
                   </Text>
                 </TextContent>
               </SplitItem>
-              {menuActions && (
+              {menuActions && menuActions.length > 0 && (
                 <SplitItem>
                   <MenuActions actions={menuActions} />
                 </SplitItem>
