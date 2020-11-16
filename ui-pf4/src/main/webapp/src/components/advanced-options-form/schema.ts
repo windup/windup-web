@@ -37,7 +37,7 @@ export const Fields: Map<AdvancedOptionsFieldKey, IFieldInfo> = new Map([
       type: "dropdown",
       placeholder: "Select targets",
       description:
-        'The target server/technology/framework to migrate to. This could include multiple items (eg, "eap7" and "cloud-readiness") separated by a space.',
+        'The target server/technology/framework to migrate to. This could include multiple items (e.g., "eap7" and "cloud-readiness") separated by a space.',
     },
   ],
   [
