@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { RouteComponentProps } from "react-router-dom";
+import { Link, RouteComponentProps } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Moment from "react-moment";
 import { AxiosError } from "axios";
@@ -9,6 +9,7 @@ import {
   Bullseye,
   PageSection,
   PageSectionVariants,
+  Spinner,
   Stack,
   StackItem,
   Text,
@@ -34,7 +35,7 @@ import {
 } from "components";
 import { useSubscribeToExecutionWs } from "hooks/useSubscribeToExecutionWs";
 
-import { ProjectRoute } from "Paths";
+import { formatPath, Paths, ProjectRoute } from "Paths";
 import { isNullOrUndefined } from "utils/utils";
 import { isExecutionActive } from "utils/modelUtils";
 
@@ -208,7 +209,18 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({ match }) => {
                 variant="info"
                 isInline
                 title="Cannot delete applications when analysis is in progress"
-              />
+              >
+                <p>
+                  <Spinner size="md" /> Analysing applications.{" "}
+                  <Link
+                    to={formatPath(Paths.executions, {
+                      project: match.params.project,
+                    })}
+                  >
+                    See active analysis.
+                  </Link>
+                </p>
+              </Alert>
             </StackItem>
           )}
         </Stack>
