@@ -141,7 +141,7 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({ match }) => {
 
           dispatch(
             deleteDialogActions.openModal({
-              name: `#${row.title}`,
+              name: `${row.title}`,
               type: "application",
               onDelete: () => {
                 dispatch(deleteDialogActions.processing());
