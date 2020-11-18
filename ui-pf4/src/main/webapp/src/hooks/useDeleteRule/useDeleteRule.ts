@@ -22,7 +22,7 @@ export const useDeleteRule = () => {
         name: rulePath.shortPath || rulePath.path,
         type: "rulePath",
         onDelete: () => {
-          dispatch(deleteDialogActions.processing);
+          dispatch(deleteDialogActions.processing());
 
           isRulePathBeingUsed(rulePath.id)
             .then(({ data: isRulePathBeingUsed }) => {
@@ -31,8 +31,6 @@ export const useDeleteRule = () => {
                   .then(() => {
                     if (onSuccess) {
                       onSuccess(rulePath);
-                    }
-                    if (onSuccess) {
                     }
                   })
                   .catch((error: AxiosError) => {

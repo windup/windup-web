@@ -11,7 +11,10 @@ import {
 } from "@patternfly/react-core";
 
 import { RootState } from "store/rootReducer";
-import { executionsSelectors, executionsActions } from "store/executions";
+import {
+  projectExecutionsSelectors,
+  projectExecutionsActions,
+} from "store/projectExecutions";
 
 import { ActiveAnalysisProgressbar } from "components";
 import { isExecutionActive } from "utils/modelUtils";
@@ -27,7 +30,7 @@ export const ActiveExecutionsList: React.FC<ActiveExecutionsListProps> = ({
 }) => {
   const dispatch = useDispatch();
   const executions = useSelector((state: RootState) =>
-    executionsSelectors.selectExecutions(state, projectId)
+    projectExecutionsSelectors.selectProjectExecutions(state, projectId)
   );
   const activeExecutions = (executions || []).filter((execution) => {
     return isExecutionActive(execution);
@@ -51,7 +54,11 @@ export const ActiveExecutionsList: React.FC<ActiveExecutionsListProps> = ({
                       watchedExecution.state === "COMPLETED" ||
                       watchedExecution.state === "FAILED"
                     ) {
-                      dispatch(executionsActions.fetchExecutions(projectId));
+                      dispatch(
+                        projectExecutionsActions.fetchProjectExecutions(
+                          projectId
+                        )
+                      );
                     }
 
                     if (

@@ -6,8 +6,12 @@ import {
   configurationOptionReducer,
 } from "./configurationOptions";
 import { deleteDialogStateKey, deleteDialogReducer } from "./deleteDialog";
-import { executionsStateKey, executionsReducer } from "./executions";
+import {
+  projectExecutionsStateKey,
+  projectExecutionsReducer,
+} from "./projectExecutions";
 import { executionsWsStateKey, executionsWsReducer } from "./executions-ws";
+import { executionsStateKey, executionReducer } from "./execution";
 import {
   projectContextStateKey,
   projectContextReducer,
@@ -25,8 +29,9 @@ export type RootState = StateType<typeof rootReducer>;
 export const rootReducer = combineReducers({
   [configurationOptionStateKey]: configurationOptionReducer,
   [deleteDialogStateKey]: deleteDialogReducer,
-  [executionsStateKey]: executionsReducer,
+  [projectExecutionsStateKey]: projectExecutionsReducer,
   [executionsWsStateKey]: executionsWsReducer,
+  [executionsStateKey]: executionReducer,
   [projectContextStateKey]: projectContextReducer,
   [projectListStateKey]: projectListReducer,
   [ruleLabelDetailsModalStateKey]: ruleLabelDetailsModalReducer,

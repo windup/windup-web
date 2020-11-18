@@ -1,13 +1,14 @@
-import React, { lazy, Suspense, useEffect, useState } from "react";
+import React, { lazy, Suspense, useCallback, useEffect } from "react";
 import { Switch, Route, RouteComponentProps } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { PageSection, Label } from "@patternfly/react-core";
 
-import { deleteDialogActions } from "store/deleteDialog";
+import { RootState } from "store/rootReducer";
+import { executionActions, executionSelectors } from "store/execution";
+import { projectExecutionsActions } from "store/projectExecutions";
 
 import { Paths, formatPath, ProjectExecutionRoute } from "Paths";
-import { deleteExecution, getExecution } from "api/api";
 import { WindupExecution } from "models/api";
 
 import {
@@ -16,8 +17,11 @@ import {
   mapStateToIcon,
   AppPlaceholder,
 } from "components";
+import { useDeleteExecution } from "hooks/useDeleteExecution";
+import { useCancelExecution } from "hooks/useCancelExecution";
 
 import { ProjectStatusWatcher } from "containers/project-status-watcher";
+import { isExecutionActive } from "utils/modelUtils";
 
 const Overview = lazy(() => import("./overview"));
 const Logs = lazy(() => import("./logs"));
@@ -29,7 +33,7 @@ export const ExecutionDetails: React.FC<ExecutionDetailsProps> = ({
   match,
   history: { push },
 }) => {
-  const handleOnPostDelete = (execution: WindupExecution) => {
+  const handleOnPostDelete = () => {
     push(
       formatPath(Paths.executions, {
         project: match.params.project,
@@ -41,7 +45,7 @@ export const ExecutionDetails: React.FC<ExecutionDetailsProps> = ({
     <>
       <ExecutionDetailsHeader
         projectId={match.params.project}
-        executionId={match.params.execution}
+        executionId={Number(match.params.execution)}
         onPostDelete={handleOnPostDelete}
       />
       <PageSection>
@@ -58,7 +62,7 @@ export const ExecutionDetails: React.FC<ExecutionDetailsProps> = ({
 
 interface ExecutionDetailsHeaderProps {
   projectId: string;
-  executionId: string;
+  executionId: number;
   onPostDelete: (execution: WindupExecution) => void;
 }
 
@@ -69,83 +73,102 @@ export const ExecutionDetailsHeader: React.FC<ExecutionDetailsHeaderProps> = ({
 }) => {
   const dispatch = useDispatch();
 
-  const [execution, setExecution] = useState<WindupExecution>();
+  const deleteExecution = useDeleteExecution();
+  const cancelExecution = useCancelExecution();
+
+  const execution = useSelector((state: RootState) =>
+    executionSelectors.selectExecution(state, executionId)
+  );
+  const executionFetchStatus = useSelector((state: RootState) =>
+    executionSelectors.selectExecutionFetchStatus(state, executionId)
+  );
+
+  const refreshExecution = useCallback(
+    (id: number) => {
+      dispatch(executionActions.fetchExecution(id));
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
-    getExecution(executionId).then(({ data: executionData }) => {
-      setExecution(executionData);
+    refreshExecution(executionId);
+  }, [executionId, refreshExecution]);
+
+  const handleCancelExecution = () => {
+    if (!execution) {
+      return;
+    }
+
+    cancelExecution(execution, () => {
+      refreshExecution(executionId);
+      dispatch(projectExecutionsActions.fetchProjectExecutions(projectId));
     });
-  }, [executionId]);
+  };
 
   const handleDeleteExecution = () => {
     if (!execution) {
       return;
     }
 
-    dispatch(
-      deleteDialogActions.openModal({
-        name: `analysis #${execution.id.toString()}`,
-        type: "analysis",
-        onDelete: () => {
-          dispatch(deleteDialogActions.processing);
-          deleteExecution(execution.id).then(() => {
-            dispatch(deleteDialogActions.closeModal());
-            onPostDelete(execution);
-          });
-        },
-        onCancel: () => {
-          dispatch(deleteDialogActions.closeModal());
-        },
-      })
-    );
+    deleteExecution(execution, () => {
+      onPostDelete(execution);
+    });
   };
 
   return (
-    <PageHeader
-      title={`Analysis #${execution?.id}`}
-      resourceStatus={
-        execution ? (
-          <ProjectStatusWatcher watch={execution}>
-            {({ execution: watchedExecution }) => (
-              <Label icon={mapStateToIcon(watchedExecution.state)}>
-                {mapStateToLabel(watchedExecution.state)}
-              </Label>
-            )}
-          </ProjectStatusWatcher>
-        ) : undefined
-      }
-      breadcrumbs={[
-        {
-          title: "Executions",
-          path: formatPath(Paths.executions, {
-            project: projectId,
-          }),
-        },
-        {
-          title: "Details",
-          path: formatPath(Paths.editExecution, {
-            project: projectId,
-            execution: executionId,
-          }),
-        },
-      ]}
-      menuActions={[{ label: "Delete", callback: handleDeleteExecution }]}
-      navItems={[
-        {
-          title: "Details",
-          path: formatPath(Paths.editExecution_overview, {
-            project: projectId,
-            execution: executionId,
-          }),
-        },
-        {
-          title: "Logs",
-          path: formatPath(Paths.editExecution_logs, {
-            project: projectId,
-            execution: executionId,
-          }),
-        },
-      ]}
-    />
+    <>
+      {execution && (
+        <ProjectStatusWatcher watch={execution}>
+          {({ execution: watchedExecution }) => (
+            <PageHeader
+              title={`Analysis #${execution?.id}`}
+              resourceStatus={
+                <Label icon={mapStateToIcon(watchedExecution.state)}>
+                  {mapStateToLabel(watchedExecution.state)}
+                </Label>
+              }
+              breadcrumbs={[
+                {
+                  title: "Executions",
+                  path: formatPath(Paths.executions, {
+                    project: projectId,
+                  }),
+                },
+                {
+                  title: "Details",
+                  path: formatPath(Paths.editExecution, {
+                    project: projectId,
+                    execution: executionId,
+                  }),
+                },
+              ]}
+              menuActions={
+                executionFetchStatus === "inProgress"
+                  ? []
+                  : isExecutionActive(watchedExecution)
+                  ? [{ label: "Cancel", callback: handleCancelExecution }]
+                  : [{ label: "Delete", callback: handleDeleteExecution }]
+              }
+              navItems={[
+                {
+                  title: "Details",
+                  path: formatPath(Paths.editExecution_overview, {
+                    project: projectId,
+                    execution: executionId,
+                  }),
+                },
+                {
+                  title: "Logs",
+                  path: formatPath(Paths.editExecution_logs, {
+                    project: projectId,
+                    execution: executionId,
+                  }),
+                },
+              ]}
+            />
+          )}
+        </ProjectStatusWatcher>
+      )}
+    </>
   );
 };
