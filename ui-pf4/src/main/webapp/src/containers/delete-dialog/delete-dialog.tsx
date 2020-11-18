@@ -61,7 +61,7 @@ class DeleteDialogBase extends React.Component<Props, State> {
           ? `Ops! There was a problem while executing your action.`
           : config.message
           ? config.message
-          : `Are you sure you want to delete this ${type}? This action will remove any data related to this source permanently.`}
+          : `Are you sure you want to delete this ${type}? This action will remove ${name} permanently.`}
       </Modal>
     );
   }

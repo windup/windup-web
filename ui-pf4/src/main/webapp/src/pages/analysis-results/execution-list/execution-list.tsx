@@ -188,7 +188,7 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
     (row: WindupExecution) => {
       dispatch(
         deleteDialogActions.openModal({
-          name: `#${row.id.toString()}`,
+          name: `analysis #${row.id.toString()}`,
           type: "analysis",
           onDelete: () => {
             dispatch(deleteDialogActions.processing());
@@ -213,7 +213,7 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
     (row: WindupExecution) => {
       dispatch(
         deleteDialogActions.openModal({
-          name: `#${row.id.toString()}`,
+          name: `analysis #${row.id.toString()}`,
           type: "analysis",
           config: {
             title: `Cancel #${row.id.toString()}`,
