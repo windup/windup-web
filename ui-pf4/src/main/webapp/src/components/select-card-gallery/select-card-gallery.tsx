@@ -8,8 +8,8 @@ import openshiftLogo from "images/openshift.svg";
 import linuxLogo from "images/linux.svg";
 import openjdkLogo from "images/openjdk.svg";
 import camelLogo from "images/camel.svg";
-import quarkusLogo from "images/quarkus.png";
-import rhRuntimesLogo from "images/rh-runtimes.png";
+import quarkusLogo from "images/quarkus.svg";
+import rhRuntimesLogo from "images/rh-runtimes.svg";
 
 interface TransformationPathOption {
   label: string;
