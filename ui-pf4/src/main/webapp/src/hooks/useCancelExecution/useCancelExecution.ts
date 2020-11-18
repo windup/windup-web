@@ -19,7 +19,7 @@ export const useCancelExecution = () => {
   ) => {
     dispatch(
       deleteDialogActions.openModal({
-        name: `#${execution.id.toString()}`,
+        name: `analysis #${execution.id.toString()}`,
         type: "analysis",
         config: {
           title: `Cancel #${execution.id.toString()}`,

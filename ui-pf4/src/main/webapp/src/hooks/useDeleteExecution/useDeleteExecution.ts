@@ -19,7 +19,7 @@ export const useDeleteExecution = () => {
   ) => {
     dispatch(
       deleteDialogActions.openModal({
-        name: `#${execution.id.toString()}`,
+        name: `analysis #${execution.id.toString()}`,
         type: "analysis",
         onDelete: () => {
           dispatch(deleteDialogActions.processing());
