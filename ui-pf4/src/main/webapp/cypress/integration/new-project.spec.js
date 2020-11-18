@@ -45,7 +45,7 @@ context("New Project", () => {
      * Step 1: Project details
      */
     cy.get(".pf-c-title").contains("Project details");
-    cy.get(".pf-c-form__helper-text").contains("A unique name for the project");
+    cy.get(".pf-c-form__helper-text").contains("Unique project name.");
 
     verifyActionButtonsDisabled();
 
