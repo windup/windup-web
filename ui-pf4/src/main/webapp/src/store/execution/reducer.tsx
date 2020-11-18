@@ -2,18 +2,18 @@ import { AxiosError } from "axios";
 import { ActionType, getType } from "typesafe-actions";
 import { FetchStatus } from "store/common";
 import {
-  fetchExecutionsRequest,
-  fetchExecutionsSuccess,
+  fetchExecutionRequest,
+  fetchExecutionSuccess,
   fetchExecutionFailure,
 } from "./actions";
 import { WindupExecution } from "models/api";
 
-export const stateKey = "executions";
+export const stateKey = "execution";
 
 export type ExecutionsState = Readonly<{
-  byId: Map<string, WindupExecution[]>;
-  errors: Map<string, AxiosError | undefined>;
-  fetchStatus: Map<string, FetchStatus>;
+  byId: Map<number, WindupExecution>;
+  errors: Map<number, AxiosError | undefined>;
+  fetchStatus: Map<number, FetchStatus>;
 }>;
 
 export const defaultState: ExecutionsState = {
@@ -23,48 +23,45 @@ export const defaultState: ExecutionsState = {
 };
 
 export type ExecutionsAction = ActionType<
-  | typeof fetchExecutionsRequest
-  | typeof fetchExecutionsSuccess
+  | typeof fetchExecutionRequest
+  | typeof fetchExecutionSuccess
   | typeof fetchExecutionFailure
 >;
 
-export function executionsReducer(
+export function executionReducer(
   state = defaultState,
   action: ExecutionsAction
 ): ExecutionsState {
   switch (action.type) {
-    case getType(fetchExecutionsRequest):
+    case getType(fetchExecutionRequest):
       return {
         ...state,
         fetchStatus: new Map(state.fetchStatus).set(
-          action.payload.projectId.toString(),
+          action.payload.executionId,
           "inProgress"
         ),
       };
-    case getType(fetchExecutionsSuccess):
+    case getType(fetchExecutionSuccess):
       return {
         ...state,
         fetchStatus: new Map(state.fetchStatus).set(
-          action.meta.projectId.toString(),
+          action.meta.executionId,
           "complete"
         ),
-        byId: new Map(state.byId).set(action.meta.projectId.toString(), [
+        byId: new Map(state.byId).set(action.meta.executionId, {
           ...action.payload,
-        ]),
-        errors: new Map(state.errors).set(
-          action.meta.projectId.toString(),
-          undefined
-        ),
+        }),
+        errors: new Map(state.errors).set(action.meta.executionId, undefined),
       };
     case getType(fetchExecutionFailure):
       return {
         ...state,
         fetchStatus: new Map(state.fetchStatus).set(
-          action.meta.projectId.toString(),
+          action.meta.executionId,
           "complete"
         ),
         errors: new Map(state.errors).set(
-          action.meta.projectId.toString(),
+          action.meta.executionId,
           action.payload
         ),
       };

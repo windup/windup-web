@@ -22,7 +22,7 @@ export const useDeleteLabel = () => {
         name: labelPath.shortPath || labelPath.path,
         type: "labelPath",
         onDelete: () => {
-          dispatch(deleteDialogActions.processing);
+          dispatch(deleteDialogActions.processing());
 
           isLabelPathBeingUsed(labelPath.id)
             .then(({ data: isLabelPathBeingUsed }) => {
@@ -31,8 +31,6 @@ export const useDeleteLabel = () => {
                   .then(() => {
                     if (onSuccess) {
                       onSuccess(labelPath);
-                    }
-                    if (onSuccess) {
                     }
                   })
                   .catch((error: AxiosError) => {
