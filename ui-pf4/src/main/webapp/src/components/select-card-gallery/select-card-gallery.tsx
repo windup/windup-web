@@ -28,7 +28,7 @@ const options: TransformationPathOption[] = [
   {
     label: "Application server migration to",
     description:
-      "Upgrade to the latest Release of JBoss EAP or migrate your applications to JBoss EAP from competitors' Enterprise Application Server (e.g. Oracle WebLogic Server)",
+      "Upgrade to the latest Release of JBoss EAP or migrate your applications to JBoss EAP from competitors' Enterprise Application Server (e.g. Oracle WebLogic Server).",
     options: [
       {
         label: "JBoss EAP 6",
@@ -44,41 +44,41 @@ const options: TransformationPathOption[] = [
   {
     label: "Containerization",
     description:
-      "A comprehensive set of cloud and container readiness rules to assess applications for suitability for deployment on Openshift",
+      "A comprehensive set of cloud and container readiness rules to assess applications for suitability for deployment on OpenShift Container Platform.",
     options: "cloud-readiness",
     iconSrc: openshiftLogo,
   },
   {
     label: "Linux",
     description:
-      "Ensure there are no Microsoft Windows paths hard coded into your applications",
+      "Ensure there are no Microsoft Windows paths hard coded into your applications.",
     options: "linux",
     iconSrc: linuxLogo,
   },
   {
-    label: "Open JDK",
-    description: "Rules to support the migration to OpenJDK from OracleJDK",
+    label: "OpenJDK",
+    description: "Rules to support the migration to OpenJDK from OracleJDK.",
     options: "openjdk",
     iconSrc: openjdkLogo,
   },
   {
     label: "Camel",
     description:
-      "A comprehensive set of rules for migration from Apache Camel 2 to Apache Camel 3",
+      "A comprehensive set of rules for migration from Apache Camel 2 to Apache Camel 3.",
     options: "camel",
     iconSrc: camelLogo,
   },
   {
     label: "Quarkus",
     description:
-      "Rules to support the migration of SpringBoot applications to Quarkus",
+      "Rules to support the migration of Spring Boot applications to Quarkus.",
     options: "quarkus",
     iconSrc: quarkusLogo,
   },
   {
     label: "Red Hat Runtimes",
     description:
-      "A set of rules for assessing the compatibility of applications against the versions of Spring Boot libraries supported by Red Hat Runtimes",
+      "A set of rules for assessing the compatibility of applications against the versions of Spring Boot libraries supported by Red Hat Runtimes.",
     options: "rhr",
     iconSrc: rhRuntimesLogo,
   },
