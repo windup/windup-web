@@ -22,7 +22,7 @@ export const useCancelExecution = () => {
         name: `analysis #${execution.id.toString()}`,
         type: "analysis",
         config: {
-          title: `Cancel #${execution.id.toString()}`,
+          title: `Cancel analysis #${execution.id.toString()}`,
           message: "Are you sure you want to cancel the analysis?",
           deleteBtnLabel: "Yes",
           cancelBtnLabel: "No",
