@@ -141,7 +141,7 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({ match }) => {
 
           dispatch(
             deleteDialogActions.openModal({
-              name: `#${row.title}`,
+              name: `${row.title}`,
               type: "application",
               onDelete: () => {
                 dispatch(deleteDialogActions.processing());
@@ -256,7 +256,12 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({ match }) => {
                 <CustomEmptyState
                   icon={CubesIcon}
                   title="There are no applications in this project"
-                  body="Upload an application by clicking on 'Add application'"
+                  body={
+                    <p>
+                      Upload an application by clicking on{" "}
+                      <strong>Add application</strong>.
+                    </p>
+                  }
                 />
               </Bullseye>
             }

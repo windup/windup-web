@@ -37,7 +37,7 @@ export const RuleLabelServerPathForm: React.FC<RuleLabelServerPathFormProps> = (
       <FormGroup
         label={`${type}s path (server-side file or directory)`}
         fieldId="serverPath"
-        helperText="Path to the server-side file or directory containing the rules"
+        helperText={`Path to the file or directory containing the ${type.toLocaleLowerCase()}s.`}
         isRequired={true}
         validated={getValidatedFromError(errors.serverPath)}
         helperTextInvalid={errors.serverPath}

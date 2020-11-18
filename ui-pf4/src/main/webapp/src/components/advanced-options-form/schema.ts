@@ -25,6 +25,7 @@ export interface IFieldInfo {
   label: string;
   type: FieldType;
   placeholder?: string;
+  description?: string;
 }
 
 export const Fields: Map<AdvancedOptionsFieldKey, IFieldInfo> = new Map([
@@ -35,6 +36,8 @@ export const Fields: Map<AdvancedOptionsFieldKey, IFieldInfo> = new Map([
       label: "Target",
       type: "dropdown",
       placeholder: "Select targets",
+      description:
+        'The target server/technology/framework to migrate to. This could include multiple items (e.g., "eap7" and "cloud-readiness") separated by a space.',
     },
   ],
   [
@@ -43,6 +46,8 @@ export const Fields: Map<AdvancedOptionsFieldKey, IFieldInfo> = new Map([
       label: "Source",
       type: "dropdown",
       placeholder: "Select sources",
+      description:
+        'The source server/technology/framework to migrate from. This could include multiple items (e.g., "eap" and "spring") separated by a space.',
     },
   ],
   [

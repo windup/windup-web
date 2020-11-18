@@ -19,7 +19,7 @@ export const NewProject: React.FC = () => {
     <>
       <SimplePageSection
         title="Create project"
-        description="Create a project for your applications"
+        description="Create a project for your applications."
       />
       <PageSection style={{ padding: "1px 0 0 0" }}>
         <Suspense fallback={<AppPlaceholder />}>
