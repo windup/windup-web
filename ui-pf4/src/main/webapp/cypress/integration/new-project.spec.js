@@ -38,7 +38,7 @@ context("New Project", () => {
     verifyActionButtonsDisabled();
 
     cy.get(".pf-c-tabs__item").eq(0).contains("Upload");
-    cy.get(".pf-c-tabs__item").eq(1).contains("Directory path");
+    cy.get(".pf-c-tabs__item").eq(1).contains("Server path");
 
     cy.get(".pf-c-tabs__item").eq(1).click();
     verifyActionButtonsDisabled();
