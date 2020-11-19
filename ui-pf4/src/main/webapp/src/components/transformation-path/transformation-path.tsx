@@ -38,7 +38,7 @@ export const TransformationPath: React.FC<TransformationPathProps> = ({
           <StackItem>
             <TextContent>
               <Title headingLevel="h5" size={TitleSizes["lg"]}>
-                Select transformation path
+                Select transformation target
               </Title>
               <Text component="small">
                 Select one or more targets by clicking on the icons below.
