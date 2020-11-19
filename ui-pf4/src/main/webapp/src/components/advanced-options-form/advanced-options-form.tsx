@@ -131,8 +131,8 @@ export const AdvancedOptionsForm: React.FC<AdvancedOptionsFormProps> = ({
         </TextContent>
       </StackItem>
       <StackItem>
-        <Grid hasGutter md={6}>
-          <GridItem md={8} className="pf-c-form pf-m-horizontal">
+        <Grid hasGutter>
+          <GridItem md={7} className="pf-c-form pf-m-horizontal">
             {
               // Dropdowns
               filterFieldsByType("dropdown", Fields).map((field, index) => {
@@ -230,6 +230,7 @@ export const AdvancedOptionsForm: React.FC<AdvancedOptionsFormProps> = ({
           </GridItem>
           <GridItem
             md={4}
+            mdOffset={8}
             className="pf-c-form pf-m-horizontal pf-c-form-advanced-options"
           >
             {filterFieldsByType("switch", Fields).map((field, index) => {
