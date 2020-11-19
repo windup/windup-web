@@ -50,14 +50,14 @@ export const Fields: Map<AdvancedOptionsFieldKey, IFieldInfo> = new Map([
         'The source server/technology/framework to migrate from. This could include multiple items (e.g., "eap" and "spring") separated by a space.',
     },
   ],
-  [
-    AdvancedOptionsFieldKey.INCLUDE_TAGS,
-    {
-      label: "Include tags",
-      type: "dropdown",
-      placeholder: "Select tags",
-    },
-  ],
+  // [
+  //   AdvancedOptionsFieldKey.INCLUDE_TAGS,
+  //   {
+  //     label: "Include tags",
+  //     type: "dropdown",
+  //     placeholder: "Select tags",
+  //   },
+  // ],
   [
     AdvancedOptionsFieldKey.EXCLUDE_TAGS,
     {
