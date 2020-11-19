@@ -108,8 +108,10 @@ export const Fields: Map<AdvancedOptionsFieldKey, IFieldInfo> = new Map([
   [
     AdvancedOptionsFieldKey.TATTLETALE,
     {
-      label: "Tattletale",
+      label: "Disable tattletale",
       type: "switch",
+      description:
+        "Use this option to disable the Tattle reports, which are enabled by default.",
     },
   ],
   [
