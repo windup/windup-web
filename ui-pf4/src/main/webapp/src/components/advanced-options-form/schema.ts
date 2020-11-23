@@ -47,7 +47,7 @@ export const Fields: Map<AdvancedOptionsFieldKey, IFieldInfo> = new Map([
       type: "dropdown",
       placeholder: "Select sources",
       description:
-        'The source server/technology/framework to migrate from. This could include multiple items (e.g., "eap" and "spring") separated by a space.',
+        'The source server/technology/framework to migrate from. This could include multiple items (e.g., "eap" and "springboot") separated by a space.',
     },
   ],
   // [
@@ -73,6 +73,7 @@ export const Fields: Map<AdvancedOptionsFieldKey, IFieldInfo> = new Map([
     {
       label: "Additional classpath",
       type: "input",
+      description: "Adds additional files or directories to the classpath.",
     },
   ],
   [
@@ -168,6 +169,8 @@ export const Fields: Map<AdvancedOptionsFieldKey, IFieldInfo> = new Map([
     {
       label: "Source mode",
       type: "switch",
+      description:
+        "Indicates whether the input file or directory is a source code or compiled binaries (default).",
     },
   ],
 ]);
