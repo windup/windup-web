@@ -63,7 +63,7 @@ context("New Project", () => {
     /**
      * Step 3: Transformation path
      */
-    cy.contains("Select transformation path");
+    cy.contains("Select transformation target");
     verifyActionButtonsEnabled();
 
     cy.get(".pf-c-card.pf-m-selectable").first().click({ force: true });
