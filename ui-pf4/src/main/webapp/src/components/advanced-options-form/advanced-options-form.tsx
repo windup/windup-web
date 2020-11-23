@@ -39,7 +39,7 @@ const tooltipTextFrom = (info: IFieldInfo, config: ConfigurationOption) => {
 interface FormValues {
   [AdvancedOptionsFieldKey.TARGET]: string[];
   [AdvancedOptionsFieldKey.SOURCE]?: string[];
-  [AdvancedOptionsFieldKey.INCLUDE_TAGS]?: string[];
+  // [AdvancedOptionsFieldKey.INCLUDE_TAGS]?: string[];
   [AdvancedOptionsFieldKey.EXCLUDE_TAGS]?: string[];
 
   [AdvancedOptionsFieldKey.ADDITIONAL_CLASSPATH]?: string;
