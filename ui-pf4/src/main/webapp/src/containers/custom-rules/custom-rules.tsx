@@ -265,6 +265,7 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
         </StackItem>
         <StackItem>
           <TableSectionOffline
+            filterTextPlaceholder="Filter by short path"
             items={rulesPath}
             columns={columns}
             actionResolver={actionResolver}

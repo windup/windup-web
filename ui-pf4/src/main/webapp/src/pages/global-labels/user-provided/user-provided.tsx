@@ -161,6 +161,7 @@ export const UserProvided: React.FC = () => {
   return (
     <>
       <TableSectionOffline
+        filterTextPlaceholder="Filter by short path"
         items={userProvidedLabelsPath}
         columns={columns}
         actionResolver={actionResolver}
