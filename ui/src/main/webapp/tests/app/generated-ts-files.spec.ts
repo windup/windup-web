@@ -29,6 +29,11 @@ describe('Generated TS Files', () => {
         let model = <FileModel> modelObject;
 
         expect(model.fileName).toEqual("NonXAResource.class");
+
+        console.log(model)
+        console.log("Console debugging:", JSON.stringify(model))
+        console.log("Console parentFileInternal:", model.parentFileInternal)
+
         model.parentFileInternal.toPromise()
             .then((parentFile:FileModel) => {
                 expect(parentFile.fileName).toEqual("nonxa");
