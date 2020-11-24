@@ -10,6 +10,8 @@ import {
   Card,
   CardBody,
   Form,
+  Stack,
+  StackItem,
 } from "@patternfly/react-core";
 
 import {
@@ -218,21 +220,27 @@ export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({
                 setFieldValue,
                 ...formik
               }) => (
-                <Card>
-                  <CardBody>
-                    <Form onSubmit={handleSubmit}>
-                      <AdvancedOptionsForm
-                        configurationOptions={configurationOptions}
-                        {...{
-                          ...formik,
-                          isValidating,
-                          isSubmitting,
-                          submitForm,
-                          handleSubmit,
-                          setFieldValue,
-                        }}
-                      />
-                      {!fetchProjectError && !fetchConfigurationOptionsError && (
+                <Form onSubmit={handleSubmit}>
+                  <Stack>
+                    <StackItem>
+                      <Card>
+                        <CardBody>
+                          <AdvancedOptionsForm
+                            configurationOptions={configurationOptions}
+                            {...{
+                              ...formik,
+                              isValidating,
+                              isSubmitting,
+                              submitForm,
+                              handleSubmit,
+                              setFieldValue,
+                            }}
+                          />
+                        </CardBody>
+                      </Card>
+                    </StackItem>
+                    {!fetchProjectError && !fetchConfigurationOptionsError && (
+                      <StackItem>
                         <ActionGroup>
                           <Button
                             type="submit"
@@ -259,10 +267,10 @@ export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({
                             Cancel
                           </Button>
                         </ActionGroup>
-                      )}
-                    </Form>
-                  </CardBody>
-                </Card>
+                      </StackItem>
+                    )}
+                  </Stack>
+                </Form>
               )}
             </Formik>
           )}
