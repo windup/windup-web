@@ -96,7 +96,7 @@ export const NewProjectWizard: React.FC<NewProjectWizardProps> = ({
       steps: [
         {
           id: WizardStepIds.SET_TRANSFORMATION_PATH,
-          name: "Set transformation path",
+          name: "Set transformation target",
           component: undefined,
           canJumpTo:
             WizardStepIds.SET_TRANSFORMATION_PATH <= stepId || hasMinData,

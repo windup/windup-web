@@ -59,11 +59,7 @@ const columns: ICell[] = [
   { title: "Date added", transforms: [sortable] },
 ];
 
-const compareProject = (
-  a: Application,
-  b: Application,
-  columnIndex?: number
-) => {
+const compareFn = (a: Application, b: Application, columnIndex?: number) => {
   switch (columnIndex) {
     case 0: // Application
       return a.title.localeCompare(b.title);
@@ -74,7 +70,7 @@ const compareProject = (
   }
 };
 
-const filterProject = (filterText: string, application: Application) => {
+const filterFn = (filterText: string, application: Application) => {
   return (
     application.title.toLowerCase().indexOf(filterText.toLowerCase()) !== -1
   );
@@ -125,12 +121,9 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({ match }) => {
   );
 
   const activeExecutions = (executions || [])
-    .map((f) => {
-      const wsExecution = wsExecutions.find((element) => element.id === f.id);
-      return wsExecution || f;
-    })
-    .filter((f) => f.projectId === parseInt(match.params.project))
-    .filter((f) => isExecutionActive(f));
+    .filter((e) => isExecutionActive(e))
+    .map((e) => wsExecutions.find((w) => w.id === e.id) || e)
+    .filter((e) => isExecutionActive(e));
 
   const actionResolver = (): (IAction | ISeparator)[] => {
     return [
@@ -238,8 +231,8 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({ match }) => {
             loadingVariant="skeleton"
             isLoadingData={isFetching}
             loadingDataError={fetchError}
-            compareItem={compareProject}
-            filterItem={filterProject}
+            compareItem={compareFn}
+            filterItem={filterFn}
             mapToIRow={applicationToIRow}
             toolbar={
               <ToolbarGroup variant="button-group">

@@ -76,7 +76,7 @@ const options: TransformationPathOption[] = [
     iconSrc: quarkusLogo,
   },
   {
-    label: "Red Hat Runtimes",
+    label: "Spring Boot on Red Hat Runtimes",
     description:
       "A set of rules for assessing the compatibility of applications against the versions of Spring Boot libraries supported by Red Hat Runtimes.",
     options: "rhr",

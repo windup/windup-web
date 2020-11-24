@@ -66,7 +66,7 @@ context("New Project", () => {
     verifyActionButtonsDisabled();
 
     cy.get(".pf-c-tabs__item").eq(0).contains("Upload");
-    cy.get(".pf-c-tabs__item").eq(1).contains("Directory path");
+    cy.get(".pf-c-tabs__item").eq(1).contains("Server path");
 
     cy.get(".pf-c-tabs__item").eq(1).click();
     verifyActionButtonsDisabled();
@@ -91,7 +91,7 @@ context("New Project", () => {
     /**
      * Step 3: Transformation path
      */
-    cy.contains("Select transformation path");
+    cy.contains("Select transformation target");
     verifyActionButtonsEnabled();
 
     cy.get(".pf-c-card.pf-m-selectable").first().click({ force: true });

@@ -236,7 +236,7 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
 
       if (isOptionEnabledInExecution(row, AdvancedOptionsFieldKey.EXPORT_CSV)) {
         actions.push({
-          title: "All Issues CSV",
+          title: "All issues CSV",
           onClick: (_, rowIndex: number, rowData: IRowData) => {
             const row: WindupExecution = getRow(rowData);
             window.open(getCSVReportURL(row), "_blank");

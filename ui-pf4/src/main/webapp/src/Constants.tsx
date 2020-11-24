@@ -51,7 +51,7 @@ export enum AdvancedOptionsFieldKey {
   // Dropdowns
   TARGET = "target",
   SOURCE = "source",
-  INCLUDE_TAGS = "includeTags",
+  // INCLUDE_TAGS = "includeTags",
   EXCLUDE_TAGS = "excludeTags",
 
   // Input texts
@@ -62,7 +62,7 @@ export enum AdvancedOptionsFieldKey {
 
   // Switch
   EXPORT_CSV = "exportCSV",
-  TATTLETALE = "enableTattletale",
+  TATTLETALE = "disableTattletale",
   CLASS_NOT_FOUND_ANALYSIS = "enableClassNotFoundAnalysis",
   COMPATIBLE_FILES_REPORT = "enableCompatibleFilesReport",
   EXPLODED_APP = "explodedApp",

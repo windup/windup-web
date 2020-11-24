@@ -32,7 +32,7 @@ export const AddApplicationsServerPathForm: React.FC<AddApplicationsServerPathFo
   return (
     <>
       <FormGroup
-        label="Directory path to applications"
+        label="Server-side path to applications"
         fieldId="serverPath"
         helperText=""
         isRequired={true}

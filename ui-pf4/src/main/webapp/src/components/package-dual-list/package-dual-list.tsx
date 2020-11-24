@@ -7,6 +7,8 @@ import "antd/lib/tree/style/index.css";
 
 import { Package } from "models/api";
 
+const TRANSFER_TREE_HEIGHT = 400;
+
 interface TreeNode {
   key: string;
   title: string;
@@ -118,13 +120,17 @@ export const PackageDualList: React.FC<PackageDualListProps> = ({
           showSelectAll={true}
           onChange={handleTransferChange}
           targetKeys={targetKeys} // A set of keys of elements that are listed on the right column
+          listStyle={{
+            height: TRANSFER_TREE_HEIGHT + 40, // We need to add the size of the header
+          }}
         >
           {({ direction, onItemSelect, selectedKeys }) => {
             if (direction === "left") {
               const checkedKeys = [...selectedKeys, ...targetKeys];
               return (
                 <Tree
-                  height={350}
+                  virtual={false}
+                  height={TRANSFER_TREE_HEIGHT}
                   blockNode // Whether treeNode fill remaining horizontal space
                   checkable // Add a Checkbox before the treeNodes
                   checkStrictly // Check treeNode precisely; parent treeNode and children treeNodes are not associated

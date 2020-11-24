@@ -35,7 +35,7 @@ export const AddApplicationsTabs: React.FC<AddApplicationsTabsProps> = ({
         {uploadTabContent}
       </Tab>
       <Tab
-        title={<TabTitleText>Directory path</TabTitleText>}
+        title={<TabTitleText>Server path</TabTitleText>}
         eventKey={AddApplicationsTabsType.SERVER_PATH}
       >
         {serverPathTabContent}
