@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { RouteComponentProps, Link } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import Moment from "react-moment";
 
 import {
@@ -33,6 +33,7 @@ import {
   projectExecutionsSelectors,
   projectExecutionsActions,
 } from "store/projectExecutions";
+import { executionsWsSelectors } from "store/executions-ws";
 
 import {
   SimplePageSection,
@@ -46,6 +47,7 @@ import {
 } from "components";
 import { useDeleteExecution } from "hooks/useDeleteExecution";
 import { useCancelExecution } from "hooks/useCancelExecution";
+import { useSubscribeToExecutionWs } from "hooks/useSubscribeToExecutionWs";
 
 import { Paths, formatPath, ProjectRoute } from "Paths";
 import { WindupExecution, MigrationProject } from "models/api";
@@ -54,8 +56,6 @@ import {
   getAnalysisContext,
   getProjectById,
 } from "api/api";
-
-import { ProjectStatusWatcher } from "containers/project-status-watcher";
 
 import { ActiveExecutionsList } from "./active-execution-list";
 import {
@@ -155,8 +155,26 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
     )
   );
 
+  useSubscribeToExecutionWs(baseExecutions || []);
+  const wsExecutions = useSelector(
+    (state: RootState) =>
+      executionsWsSelectors.selectMessagesByProjectId(
+        state,
+        parseInt(match.params.project)
+      ),
+    shallowEqual
+  );
+
   const executions = baseExecutions
-    ? baseExecutions.slice().sort((a, b) => b.id - a.id) // By Default inverse order
+    ? baseExecutions
+        .map((e) => {
+          if (isExecutionActive(e)) {
+            return wsExecutions.find((w) => w.id === e.id) || e;
+          }
+          return e;
+        })
+        .slice()
+        .sort((a, b) => b.id - a.id) // By Default inverse order
     : undefined;
 
   const dispatch = useDispatch();
@@ -297,29 +315,16 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
           },
           {
             title: (
-              <ProjectStatusWatcher watch={item}>
-                {({ execution }) => (
-                  <>
-                    <ExecutionStatus state={execution.state} />
-                    <ExecutionStatusWithTime
-                      execution={execution}
-                      showPrefix={true}
-                    />
-                  </>
-                )}
-              </ProjectStatusWatcher>
+              <>
+                <ExecutionStatus state={item.state} />
+                <ExecutionStatusWithTime execution={item} showPrefix={true} />
+              </>
             ),
           },
           {
-            title: (
-              <ProjectStatusWatcher watch={item}>
-                {({ execution }) =>
-                  execution.timeStarted ? (
-                    <Moment fromNow>{execution.timeStarted}</Moment>
-                  ) : null
-                }
-              </ProjectStatusWatcher>
-            ),
+            title: item.timeStarted ? (
+              <Moment fromNow>{item.timeStarted}</Moment>
+            ) : null,
           },
           {
             title: item.analysisContext.applications.length,
@@ -327,61 +332,57 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
           {
             props: { textCenter: false },
             title: (
-              <ProjectStatusWatcher watch={item}>
-                {({ execution }) => (
-                  <Flex
-                    justifyContent={{ default: "justifyContentFlexEnd" }}
-                    spaceItems={{ default: "spaceItemsNone" }}
-                  >
-                    {execution.state === "COMPLETED" && (
-                      <>
-                        {!isOptionEnabledInExecution(
-                          execution,
-                          AdvancedOptionsFieldKey.SKIP_REPORTS
-                        ) && (
-                          <FlexItem>
-                            <a
-                              title="Reports"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              href={`${getStaticReportURL(execution)}`}
-                              className="pf-c-button pf-m-link"
-                            >
-                              <ChartBarIcon />
-                            </a>
-                          </FlexItem>
-                        )}
-                        {isOptionEnabledInExecution(
-                          execution,
-                          AdvancedOptionsFieldKey.EXPORT_CSV
-                        ) && (
-                          <FlexItem>
-                            <a
-                              title="Download all issues CSV"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              href={`${getCSVReportURL(execution)}`}
-                              className="pf-c-button pf-m-link"
-                            >
-                              <DownloadIcon />
-                            </a>
-                          </FlexItem>
-                        )}
-                      </>
-                    )}
-                    {!isExecutionActive(execution) && (
+              <Flex
+                justifyContent={{ default: "justifyContentFlexEnd" }}
+                spaceItems={{ default: "spaceItemsNone" }}
+              >
+                {item.state === "COMPLETED" && (
+                  <>
+                    {!isOptionEnabledInExecution(
+                      item,
+                      AdvancedOptionsFieldKey.SKIP_REPORTS
+                    ) && (
                       <FlexItem>
-                        <Button
-                          variant={ButtonVariant.link}
-                          onClick={() => handleDeleteAnalysis(execution)}
+                        <a
+                          title="Reports"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          href={`${getStaticReportURL(item)}`}
+                          className="pf-c-button pf-m-link"
                         >
-                          <TrashIcon />
-                        </Button>
+                          <ChartBarIcon />
+                        </a>
                       </FlexItem>
                     )}
-                  </Flex>
+                    {isOptionEnabledInExecution(
+                      item,
+                      AdvancedOptionsFieldKey.EXPORT_CSV
+                    ) && (
+                      <FlexItem>
+                        <a
+                          title="Download all issues CSV"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          href={`${getCSVReportURL(item)}`}
+                          className="pf-c-button pf-m-link"
+                        >
+                          <DownloadIcon />
+                        </a>
+                      </FlexItem>
+                    )}
+                  </>
                 )}
-              </ProjectStatusWatcher>
+                {!isExecutionActive(item) && (
+                  <FlexItem>
+                    <Button
+                      variant={ButtonVariant.link}
+                      onClick={() => handleDeleteAnalysis(item)}
+                    >
+                      <TrashIcon />
+                    </Button>
+                  </FlexItem>
+                )}
+              </Flex>
             ),
           },
         ],

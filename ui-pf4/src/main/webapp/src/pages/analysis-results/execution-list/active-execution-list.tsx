@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector, shallowEqual } from "react-redux";
 
 import {
   Stack,
@@ -10,16 +10,14 @@ import {
   PageSectionVariants,
 } from "@patternfly/react-core";
 
+import { useSubscribeToExecutionWs } from "hooks/useSubscribeToExecutionWs";
+
 import { RootState } from "store/rootReducer";
-import {
-  projectExecutionsSelectors,
-  projectExecutionsActions,
-} from "store/projectExecutions";
+import { projectExecutionsSelectors } from "store/projectExecutions";
+import { executionsWsSelectors } from "store/executions-ws";
 
 import { ActiveAnalysisProgressbar } from "components";
 import { isExecutionActive } from "utils/modelUtils";
-
-import { ProjectStatusWatcher } from "containers/project-status-watcher";
 
 export interface ActiveExecutionsListProps {
   projectId: string;
@@ -28,13 +26,24 @@ export interface ActiveExecutionsListProps {
 export const ActiveExecutionsList: React.FC<ActiveExecutionsListProps> = ({
   projectId,
 }) => {
-  const dispatch = useDispatch();
   const executions = useSelector((state: RootState) =>
     projectExecutionsSelectors.selectProjectExecutions(state, projectId)
   );
-  const activeExecutions = (executions || []).filter((execution) => {
-    return isExecutionActive(execution);
-  });
+
+  useSubscribeToExecutionWs(executions || []);
+  const wsExecutions = useSelector(
+    (state: RootState) =>
+      executionsWsSelectors.selectMessagesByProjectId(
+        state,
+        parseInt(projectId)
+      ),
+    shallowEqual
+  );
+
+  const activeExecutions = (executions || [])
+    .filter((e) => isExecutionActive(e))
+    .map((e) => wsExecutions.find((w) => w.id === e.id) || e)
+    .filter((e) => isExecutionActive(e));
 
   return (
     <>
@@ -46,35 +55,11 @@ export const ActiveExecutionsList: React.FC<ActiveExecutionsListProps> = ({
                 <Text component="h1">Active analysis</Text>
               </TextContent>
             </StackItem>
-            {activeExecutions.map((execution) => (
-              <StackItem key={execution.id}>
-                <ProjectStatusWatcher watch={execution}>
-                  {({ execution: watchedExecution }) => {
-                    if (
-                      watchedExecution.state === "COMPLETED" ||
-                      watchedExecution.state === "FAILED"
-                    ) {
-                      dispatch(
-                        projectExecutionsActions.fetchProjectExecutions(
-                          projectId
-                        )
-                      );
-                    }
-
-                    if (
-                      watchedExecution.currentTask &&
-                      watchedExecution.workCompleted <
-                        watchedExecution.totalWork
-                    ) {
-                      return (
-                        <ActiveAnalysisProgressbar
-                          activeExecution={watchedExecution}
-                        />
-                      );
-                    }
-                    return null;
-                  }}
-                </ProjectStatusWatcher>
+            {activeExecutions.map((e) => (
+              <StackItem key={e.id}>
+                {e.currentTask && e.workCompleted < e.totalWork && (
+                  <ActiveAnalysisProgressbar activeExecution={e} />
+                )}
               </StackItem>
             ))}
           </Stack>
