@@ -42,6 +42,7 @@ import {
   TableSectionOffline,
   ExecutionStatus,
   ExecutionStatusWithTime,
+  mapStateToLabel,
 } from "components";
 import { useDeleteExecution } from "hooks/useDeleteExecution";
 import { useCancelExecution } from "hooks/useCancelExecution";
@@ -109,7 +110,10 @@ const compareExecution = (
 const filterExecution = (filterText: string, execution: WindupExecution) => {
   return (
     execution.id.toString().toLowerCase().indexOf(filterText.toLowerCase()) !==
-    -1
+      -1 ||
+    mapStateToLabel(execution.state)
+      .toLocaleLowerCase()
+      .indexOf(filterText.toLowerCase()) !== -1
   );
 };
 
@@ -414,6 +418,7 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
           then={<SelectProjectEmptyMessage />}
         >
           <TableSectionOffline
+            filterTextPlaceholder="Filter by analysis id or status"
             items={executions}
             columns={columns}
             actionResolver={actionResolver}

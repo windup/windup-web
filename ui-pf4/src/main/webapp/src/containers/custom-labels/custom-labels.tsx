@@ -256,6 +256,7 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
         </StackItem>
         <StackItem>
           <TableSectionOffline
+            filterTextPlaceholder="Filter by short path"
             items={labelsPath}
             columns={columns}
             actionResolver={actionResolver}
