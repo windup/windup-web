@@ -55,7 +55,7 @@ export const AddApplicationsServerPathForm: React.FC<AddApplicationsServerPathFo
         />
       </FormGroup>
       <FormGroup
-        label="If the directory contains an exploded application, select the check box below"
+        label="If the directory contains Java source code or an exploded application, select the check box below"
         fieldId="isExploded"
         helperText=""
         isRequired={false}
