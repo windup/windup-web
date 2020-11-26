@@ -66,7 +66,7 @@ export const AddApplicationsServerPathForm: React.FC<AddApplicationsServerPathFo
           id="isExploded"
           name="isExploded"
           aria-label="is exploded"
-          label="Directory is an exploded Java application archive"
+          label="Directory contains an exploded Java application archive or the application's source code"
           onChange={onChangeField}
           onBlur={handleBlur}
           isChecked={values.isExploded}
