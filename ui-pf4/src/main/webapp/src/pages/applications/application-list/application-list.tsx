@@ -168,7 +168,9 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({ match }) => {
         },
         cells: [
           {
-            title: (
+            title: item.exploded ? (
+              item.title
+            ) : (
               <a href={getDownloadRegisteredApplicationURL(item.id)}>
                 {item.title}
               </a>
