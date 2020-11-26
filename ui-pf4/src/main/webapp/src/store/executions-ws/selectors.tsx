@@ -9,6 +9,8 @@ export const selectWebsocket = (state: RootState, executionId: number) =>
 export const selectMessage = (state: RootState, executionId: number) =>
   executionsState(state).messageById.get(executionId);
 
+// If used in redux hook 'useSelector' then use 'shallowEqual'
+// to avoid multiple renders
 export const selectMessagesByProjectId = (
   state: RootState,
   projectId: number

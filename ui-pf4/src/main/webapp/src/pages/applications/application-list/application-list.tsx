@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import Moment from "react-moment";
 import { AxiosError } from "axios";
 
@@ -113,11 +113,13 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({ match }) => {
   }, [match, fetchMigrationProject]);
 
   useSubscribeToExecutionWs(executions || []);
-  const wsExecutions = useSelector((state: RootState) =>
-    executionsWsSelectors.selectMessagesByProjectId(
-      state,
-      parseInt(match.params.project)
-    )
+  const wsExecutions = useSelector(
+    (state: RootState) =>
+      executionsWsSelectors.selectMessagesByProjectId(
+        state,
+        parseInt(match.params.project)
+      ),
+    shallowEqual
   );
 
   const activeExecutions = (executions || [])
