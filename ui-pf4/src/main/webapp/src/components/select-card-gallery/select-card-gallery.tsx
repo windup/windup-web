@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Gallery, GalleryItem } from "@patternfly/react-core";
 
 import { SelectCard } from "../select-card/select-card";
@@ -22,6 +22,7 @@ interface TransformationPathOption {
 interface MultipleOptions {
   label: string;
   value: string;
+  default: boolean;
 }
 
 const options: TransformationPathOption[] = [
@@ -33,10 +34,12 @@ const options: TransformationPathOption[] = [
       {
         label: "JBoss EAP 6",
         value: "eap6",
+        default: false,
       },
       {
         label: "JBoss EAP 7",
         value: "eap7",
+        default: true,
       },
     ],
     iconSrc: jbossLogo,
@@ -93,7 +96,13 @@ export const SelectCardGallery: React.FC<SelectCardGalleryProps> = ({
   value,
   onChange,
 }) => {
-  const isSelected = (
+  // When Option is an array e.g. EAP Card then it has a default value
+  // However the default value changes after the user selects the dropdown.
+  // 'selected' will keep the last selected dropdown value so it doesn't go back to
+  // the original 'default' value. Map<'card.label', 'last card's selected dropdown value'>()
+  const [selected, setSelected] = useState<Map<string, string>>(new Map());
+
+  const isCardSelected = (
     cardOptions: string | { label: string; value: string }[]
   ): boolean => {
     if (typeof cardOptions === "string") {
@@ -104,26 +113,28 @@ export const SelectCardGallery: React.FC<SelectCardGalleryProps> = ({
     }
   };
 
-  const getCardValue = (
-    cardOptions: string | { label: string; value: string }[]
-  ): string => {
-    if (typeof cardOptions === "string") {
-      return cardOptions;
+  const getCardValue = (card: TransformationPathOption): string => {
+    if (typeof card.options === "string") {
+      return card.options;
     } else {
-      const keyValues = cardOptions.map((k) => k.value);
+      const keyValues = card.options.map((k) => k.value);
       const intersection = value.filter((f) => keyValues.includes(f));
-      return intersection.length > 0 ? intersection[0] : cardOptions[0].value;
+      return intersection.length > 0
+        ? intersection[0]
+        : selected.get(card.label) ||
+            card.options.find((f) => f.default)?.value ||
+            card.options[0].value;
     }
   };
 
   const handleOnCardChange = (
     isSelected: boolean,
     selectionValue: string,
-    cardOptions: string | { label: string; value: string }[]
+    card: TransformationPathOption
   ) => {
-    const optionsValue: string[] = Array.isArray(cardOptions)
-      ? cardOptions.map((f) => f.value)
-      : [cardOptions];
+    const optionsValue: string[] = Array.isArray(card.options)
+      ? card.options.map((f) => f.value)
+      : [card.options];
 
     const newValue = value.filter((f) => !optionsValue.includes(f));
     if (isSelected) {
@@ -131,6 +142,10 @@ export const SelectCardGallery: React.FC<SelectCardGalleryProps> = ({
     } else {
       onChange(newValue);
     }
+
+    setSelected((previous) =>
+      new Map(previous).set(card.label, selectionValue)
+    );
   };
 
   return (
@@ -143,10 +158,10 @@ export const SelectCardGallery: React.FC<SelectCardGalleryProps> = ({
             options={elem.options}
             icon={elem.icon}
             iconSrc={elem.iconSrc}
-            isSelected={isSelected(elem.options)}
-            value={getCardValue(elem.options)}
+            isSelected={isCardSelected(elem.options)}
+            value={getCardValue(elem)}
             onChange={(isSelected, selectionValue) => {
-              handleOnCardChange(isSelected, selectionValue, elem.options);
+              handleOnCardChange(isSelected, selectionValue, elem);
             }}
           />
         </GalleryItem>
