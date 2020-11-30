@@ -98,11 +98,11 @@ export const SelectCardGallery: React.FC<SelectCardGalleryProps> = ({
 }) => {
   // When Option is an array e.g. EAP Card then it has a default value
   // However the default value changes after the user selects the dropdown.
-  // 'tempDefault' will keep the last selected dropdown so doesn't go back to
-  // the original 'default' value. KEY=card.label, value='last card's dropdown selected value'
-  const [tempDefault, setTmpDefault] = useState<Map<string, string>>(new Map());
+  // 'selected' will keep the last selected dropdown value so it doesn't go back to
+  // the original 'default' value. Map<'card.label', 'last card's selected dropdown value'>()
+  const [selected, setSelected] = useState<Map<string, string>>(new Map());
 
-  const isSelected = (
+  const isCardSelected = (
     cardOptions: string | { label: string; value: string }[]
   ): boolean => {
     if (typeof cardOptions === "string") {
@@ -121,7 +121,7 @@ export const SelectCardGallery: React.FC<SelectCardGalleryProps> = ({
       const intersection = value.filter((f) => keyValues.includes(f));
       return intersection.length > 0
         ? intersection[0]
-        : tempDefault.get(card.label) ||
+        : selected.get(card.label) ||
             card.options.find((f) => f.default)?.value ||
             card.options[0].value;
     }
@@ -143,7 +143,7 @@ export const SelectCardGallery: React.FC<SelectCardGalleryProps> = ({
       onChange(newValue);
     }
 
-    setTmpDefault((previous) =>
+    setSelected((previous) =>
       new Map(previous).set(card.label, selectionValue)
     );
   };
@@ -158,7 +158,7 @@ export const SelectCardGallery: React.FC<SelectCardGalleryProps> = ({
             options={elem.options}
             icon={elem.icon}
             iconSrc={elem.iconSrc}
-            isSelected={isSelected(elem.options)}
+            isSelected={isCardSelected(elem.options)}
             value={getCardValue(elem)}
             onChange={(isSelected, selectionValue) => {
               handleOnCardChange(isSelected, selectionValue, elem);
