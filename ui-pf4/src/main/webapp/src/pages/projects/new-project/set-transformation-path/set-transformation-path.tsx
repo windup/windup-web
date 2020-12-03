@@ -33,7 +33,7 @@ export const SetTransformationPath: React.FC<SetTransformationPathProps> = ({
     analysisContext,
     isFetching,
     fetchError,
-    loadProject,
+    fetchProject: loadProject,
   } = useFetchProject();
 
   const [selectedTargets, setSelectedTargets] = useState<string[]>([]);

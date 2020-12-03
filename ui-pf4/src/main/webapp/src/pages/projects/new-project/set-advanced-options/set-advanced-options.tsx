@@ -31,7 +31,7 @@ import { getAxiosErrorMessage } from "utils/modelUtils";
 import NewProjectWizard, {
   WizardStepIds,
   LoadingWizardContent,
-  useWizardCancelRedirect,
+  useCancelWizard,
 } from "../wizard";
 
 interface SetAdvancedOptionsProps extends RouteComponentProps<ProjectRoute> {}
@@ -42,7 +42,7 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
 }) => {
   const dispatch = useDispatch();
 
-  const redirectOnCancel = useWizardCancelRedirect();
+  const redirectOnCancel = useCancelWizard();
 
   /**
    * Fetch organization and analysisContext
@@ -53,7 +53,7 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
     analysisContext,
     isFetching: isFetchingProject,
     fetchError: fetchProjectError,
-    loadProject,
+    fetchProject: loadProject,
   } = useFetchProject();
 
   useEffect(() => {

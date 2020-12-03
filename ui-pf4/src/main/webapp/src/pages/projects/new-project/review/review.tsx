@@ -34,7 +34,7 @@ import {
 import NewProjectWizard, {
   WizardStepIds,
   LoadingWizardContent,
-  useWizardCancelRedirect,
+  useCancelWizard,
 } from "../wizard";
 import { AxiosError } from "axios";
 import { getAxiosErrorMessage } from "utils/modelUtils";
@@ -62,12 +62,12 @@ export const Review: React.FC<ReviewProps> = ({ match, history: { push } }) => {
     analysisContext,
     isFetching,
     fetchError,
-    loadProject,
+    fetchProject: loadProject,
   } = useFetchProject();
 
   const [isCreatingExecution, setIsCreatingExecution] = useState(false);
 
-  const redirectOnCancel = useWizardCancelRedirect();
+  const redirectOnCancel = useCancelWizard();
 
   useEffect(() => {
     loadProject(match.params.project);

@@ -14,7 +14,7 @@ import { formatPath, Paths } from "Paths";
 import { MigrationProject, AnalysisContext } from "models/api";
 
 import { ErrorWizardContent } from "./error-content";
-import { useWizardCancelRedirect } from "./useWizardCancelRedirect";
+import { useCancelWizard } from "./useCancelWizard";
 
 export enum WizardStepIds {
   DETAILS = 1,
@@ -65,7 +65,7 @@ export const NewProjectWizard: React.FC<NewProjectWizardProps> = ({
   footer,
   handleOnNextStep,
 }) => {
-  const redirectOnCancel = useWizardCancelRedirect();
+  const redirectOnCancel = useCancelWizard();
 
   const hasApplications =
     migrationProject && migrationProject.applications.length > 0;

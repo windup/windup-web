@@ -17,7 +17,7 @@ export const SetCustomLabels: React.FC<SetCustomLabelsProps> = ({
     project,
     analysisContext,
     fetchError,
-    loadProject,
+    fetchProject: loadProject,
   } = useFetchProject();
 
   useEffect(() => {

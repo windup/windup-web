@@ -17,7 +17,7 @@ export const SetCustomRules: React.FC<SetCustomRulesProps> = ({
     project,
     analysisContext,
     fetchError,
-    loadProject,
+    fetchProject: loadProject,
   } = useFetchProject();
 
   useEffect(() => {

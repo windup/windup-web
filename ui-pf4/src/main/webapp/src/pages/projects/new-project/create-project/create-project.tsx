@@ -40,7 +40,7 @@ import { getAxiosErrorMessage } from "utils/modelUtils";
 import NewProjectWizard, {
   WizardStepIds,
   LoadingWizardContent,
-  useWizardCancelRedirect,
+  useCancelWizard,
 } from "../wizard";
 
 interface CreateProjectProps
@@ -51,24 +51,23 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
   history: { push },
 }) => {
   const dispatch = useDispatch();
-
-  const redirectOnCancel = useWizardCancelRedirect();
+  const cancelWizard = useCancelWizard();
 
   const {
     project,
     analysisContext,
     isFetching,
     fetchError,
-    loadProject,
+    fetchProject,
   } = useFetchProject();
 
   useEffect(() => {
     deleteProvisionalProjects();
 
     if (match.params.project) {
-      loadProject(match.params.project);
+      fetchProject(match.params.project);
     }
-  }, [match, loadProject]);
+  }, [match, fetchProject]);
 
   const handleOnNextStep = (
     values: ProjectDetailsFormValues,
@@ -114,8 +113,8 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
   };
 
   const handleOnCancel = useCallback(() => {
-    redirectOnCancel(push, project);
-  }, [project, push, redirectOnCancel]);
+    cancelWizard(push, project);
+  }, [project, push, cancelWizard]);
 
   const stepId = WizardStepIds.DETAILS;
 

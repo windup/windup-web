@@ -48,7 +48,7 @@ import { getAxiosErrorMessage } from "utils/modelUtils";
 import NewProjectWizard, {
   WizardStepIds,
   LoadingWizardContent,
-  useWizardCancelRedirect,
+  useCancelWizard,
 } from "../wizard";
 
 interface AddApplicationsProps extends RouteComponentProps<ProjectRoute> {}
@@ -62,14 +62,14 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
   );
 
   const dispatch = useDispatch();
-  const redirectOnCancel = useWizardCancelRedirect();
+  const cancelWizard = useCancelWizard();
 
   const {
     project,
     analysisContext,
     isFetching,
     fetchError,
-    loadProject,
+    fetchProject: loadProject,
   } = useFetchProject();
 
   useEffect(() => {
@@ -169,8 +169,8 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
   };
 
   const handleOnCancel = useCallback(() => {
-    redirectOnCancel(push, project);
-  }, [project, push, redirectOnCancel]);
+    cancelWizard(push, project);
+  }, [project, push, cancelWizard]);
 
   const buildFooter = (formikConfig: any) => {
     return (
