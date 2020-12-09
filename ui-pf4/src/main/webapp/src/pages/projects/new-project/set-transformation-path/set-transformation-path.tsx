@@ -14,19 +14,27 @@ import { AnalysisContext, AdvancedOption } from "models/api";
 import { getAnalysisContext, saveAnalysisContext } from "api/api";
 import { getAxiosErrorMessage } from "utils/modelUtils";
 
-import NewProjectWizard, {
-  WizardStepIds,
-  LoadingWizardContent,
-} from "../wizard";
+import {
+  NewProjectWizard,
+  NewProjectWizardStepIds,
+} from "../wizard/project-wizard";
+import { useCancelWizard } from "../wizard/useCancelWizard";
+import { WizardFooter } from "../wizard/project-wizard-footer";
+import { LoadingWizardContent } from "../wizard/loading-content";
+import {
+  getMaxAllowedStepToJumpTo,
+  getPathFromStep,
+} from "../wizard/wizard-utils";
 
 interface SetTransformationPathProps
   extends RouteComponentProps<ProjectRoute> {}
 
 export const SetTransformationPath: React.FC<SetTransformationPathProps> = ({
   match,
-  history: { push },
+  history,
 }) => {
   const dispatch = useDispatch();
+  const cancelWizard = useCancelWizard();
 
   const {
     project,
@@ -38,6 +46,8 @@ export const SetTransformationPath: React.FC<SetTransformationPathProps> = ({
 
   const [selectedTargets, setSelectedTargets] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [dirty, setDirty] = useState(false);
 
   useEffect(() => {
     loadProject(match.params.project);
@@ -54,13 +64,9 @@ export const SetTransformationPath: React.FC<SetTransformationPathProps> = ({
     }
   }, [analysisContext]);
 
-  const handleOnNextStep = () => {
-    onSubmit();
-  };
-
-  const onSubmit = () => {
+  const handleOnSubmit = (onSuccess: () => void) => {
     if (!project) {
-      return;
+      throw new Error("Undefined project, can not handle submit");
     }
 
     setIsSubmitting(true);
@@ -87,11 +93,7 @@ export const SetTransformationPath: React.FC<SetTransformationPathProps> = ({
         );
       })
       .then(() => {
-        push(
-          formatPath(Paths.newProject_selectPackages, {
-            project: project.id,
-          })
-        );
+        onSuccess();
       })
       .catch((error: AxiosError) => {
         setIsSubmitting(false);
@@ -104,18 +106,78 @@ export const SetTransformationPath: React.FC<SetTransformationPathProps> = ({
   };
 
   const handleTargetSelectionChange = (values: string[]) => {
+    setDirty(true);
     setSelectedTargets(values);
   };
 
+  const handleOnGoToStep = (newStep: NewProjectWizardStepIds) => {
+    const goToStep = () =>
+      history.push(
+        formatPath(getPathFromStep(newStep), {
+          project: match.params.project,
+        })
+      );
+
+    if (dirty) {
+      handleOnSubmit(goToStep);
+    } else {
+      goToStep();
+    }
+  };
+
+  const handleOnNext = () => {
+    const goToSelectPackages = () =>
+      history.push(
+        formatPath(Paths.newProject_selectPackages, {
+          project: match.params.project,
+        })
+      );
+
+    handleOnSubmit(goToSelectPackages);
+  };
+
+  const handleOnBack = () => {
+    const goToBack = () =>
+      history.push(
+        formatPath(Paths.newProject_addApplications, {
+          project: match.params.project,
+        })
+      );
+
+    if (dirty) {
+      handleOnSubmit(goToBack);
+    } else {
+      goToBack();
+    }
+  };
+
+  const handleOnCancel = () => cancelWizard(history.push);
+
+  const isValid = selectedTargets.length > 0;
+  const currentStep = NewProjectWizardStepIds.SET_TRANSFORMATION_PATH;
+  const disableNav = isFetching || isSubmitting;
+  const canJumpUpto = isValid
+    ? getMaxAllowedStepToJumpTo(project, analysisContext)
+    : currentStep;
+
+  const footer = (
+    <WizardFooter
+      isDisabled={disableNav}
+      isNextDisabled={disableNav || !isValid}
+      onBack={handleOnBack}
+      onNext={handleOnNext}
+      onCancel={handleOnCancel}
+    />
+  );
+
   return (
     <NewProjectWizard
-      stepId={WizardStepIds.SET_TRANSFORMATION_PATH}
-      enableNext={selectedTargets.length > 0}
-      disableNavigation={isFetching || isSubmitting}
-      handleOnNextStep={handleOnNextStep}
-      migrationProject={project}
-      analysisContext={analysisContext}
+      disableNav={disableNav}
+      stepId={currentStep}
+      canJumpUpTo={canJumpUpto}
+      footer={footer}
       showErrorContent={fetchError}
+      onGoToStep={handleOnGoToStep}
     >
       <TransformationPath
         selectedTargets={selectedTargets}

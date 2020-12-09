@@ -4,13 +4,12 @@ import { useDispatch } from "react-redux";
 import { deleteDialogActions } from "store/deleteDialog";
 
 import { Paths } from "Paths";
-import { MigrationProject } from "models/api";
 
 export const useCancelWizard = () => {
   const dispatch = useDispatch();
 
   const redirectFn = useCallback(
-    (push: (path: string) => void, migrationProject?: MigrationProject) => {
+    (push: (path: string) => void) => {
       dispatch(
         deleteDialogActions.openModal({
           name: "",

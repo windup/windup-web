@@ -218,7 +218,7 @@ export const buildSchema = (availableOptions: ConfigurationOption[]) => {
         } else if (Array.isArray(value)) {
           values = value;
         } else {
-          throw Error("Invalid type, can not validate:" + value);
+          throw new Error("Invalid type, can not validate:" + value);
         }
 
         return Promise.all(
@@ -307,7 +307,7 @@ export const getFieldData = (
   const fieldConfiguration = availableOptions.find((f) => f.name === key);
 
   if (!fieldConfiguration || !fieldInfo) {
-    throw Error("FieldKey=" + key + " doesn't match available option");
+    throw new Error("FieldKey=" + key + " doesn't match available option");
   }
 
   return [fieldInfo, fieldConfiguration];

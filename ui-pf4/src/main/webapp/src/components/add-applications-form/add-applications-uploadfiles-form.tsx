@@ -12,7 +12,7 @@ export interface AddApplicationsUploadFilesFormValues {
 
 export interface AddApplicationsUploadFilesFormProps
   extends FormikState<AddApplicationsUploadFilesFormValues>,
-    FormikHelpers<AddApplicationsUploadFilesFormValues>,
+    FormikHelpers<any>,
     FormikHandlers {
   projectId: string | number;
 }
