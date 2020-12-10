@@ -21,7 +21,7 @@ import {
 import { alertActions } from "store/alert";
 
 import { getAlertModel } from "Constants";
-import { formatPath, ProjectRoute } from "Paths";
+import { formatPath, Paths, ProjectRoute } from "Paths";
 import { AdvancedOption, AnalysisContext } from "models/api";
 import { saveAnalysisContext, getAnalysisContext } from "api/api";
 import { getAxiosErrorMessage } from "utils/modelUtils";
@@ -85,11 +85,6 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
 
   //
 
-  const fireOnSubmit = (nextStep: NewProjectWizardStepIds) => {
-    formik.setFieldValue("nextStep", nextStep);
-    formik.submitForm();
-  };
-
   const handleOnSubmit = (
     formValues: any,
     formikHelpers: FormikHelpers<any>
@@ -101,29 +96,27 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
     getAnalysisContext(project.defaultAnalysisContextId)
       .then(({ data }) => {
         const newAdvanceedOptions: AdvancedOption[] = [];
-        Object.keys(formValues)
-          .filter((k) => k !== "nextStep")
-          .forEach((key) => {
-            const value = formValues[key];
-            if (typeof value === "string" && value.trim().length > 0) {
+        Object.keys(formValues).forEach((key) => {
+          const value = formValues[key];
+          if (typeof value === "string" && value.trim().length > 0) {
+            newAdvanceedOptions.push({
+              name: key,
+              value: value,
+            } as AdvancedOption);
+          } else if (typeof value === "boolean" && value === true) {
+            newAdvanceedOptions.push({
+              name: key,
+              value: value.toString(),
+            } as AdvancedOption);
+          } else if (Array.isArray(value) && value.length > 0) {
+            value.forEach((f) =>
               newAdvanceedOptions.push({
                 name: key,
-                value: value,
-              } as AdvancedOption);
-            } else if (typeof value === "boolean" && value === true) {
-              newAdvanceedOptions.push({
-                name: key,
-                value: value.toString(),
-              } as AdvancedOption);
-            } else if (Array.isArray(value) && value.length > 0) {
-              value.forEach((f) =>
-                newAdvanceedOptions.push({
-                  name: key,
-                  value: f,
-                } as AdvancedOption)
-              );
-            }
-          });
+                value: f,
+              } as AdvancedOption)
+            );
+          }
+        });
 
         const body: AnalysisContext = {
           ...data,
@@ -134,7 +127,7 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
       })
       .then(() => {
         history.push(
-          formatPath(getPathFromStep(formValues.nextStep), {
+          formatPath(Paths.newProject_review, {
             project: project.id,
           })
         );
@@ -157,7 +150,7 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
     initialValues:
       analysisContext && configurationOptions
         ? buildInitialValues(analysisContext, configurationOptions)
-        : {},
+        : undefined,
     validationSchema: configurationOptions
       ? buildSchema(configurationOptions)
       : undefined,
@@ -166,31 +159,23 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
   });
 
   const handleOnGoToStep = (newStep: NewProjectWizardStepIds) => {
-    if (formik.dirty) {
-      fireOnSubmit(newStep);
-    } else {
-      history.push(
-        formatPath(getPathFromStep(newStep), {
-          project: match.params.project,
-        })
-      );
-    }
+    history.push(
+      formatPath(getPathFromStep(newStep), {
+        project: match.params.project,
+      })
+    );
   };
 
   const handleOnNext = () => {
-    fireOnSubmit(NewProjectWizardStepIds.REVIEW);
+    formik.submitForm();
   };
 
   const handleOnBack = () => {
-    if (formik.dirty) {
-      fireOnSubmit(NewProjectWizardStepIds.CUSTOM_LABELS);
-    } else {
-      history.push(
-        formatPath(getPathFromStep(NewProjectWizardStepIds.CUSTOM_LABELS), {
-          project: match.params.project,
-        })
-      );
-    }
+    history.push(
+      formatPath(getPathFromStep(NewProjectWizardStepIds.CUSTOM_LABELS), {
+        project: match.params.project,
+      })
+    );
   };
 
   const handleOnCancel = () => cancelWizard(history.push);
@@ -201,9 +186,10 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
     configurationOptionsFetchStatus === "inProgress" ||
     formik.isSubmitting ||
     formik.isValidating;
-  const canJumpUpto = formik.isValid
-    ? getMaxAllowedStepToJumpTo(project, analysisContext)
-    : currentStep;
+  const canJumpUpto =
+    !formik.isValid || formik.dirty
+      ? currentStep
+      : getMaxAllowedStepToJumpTo(project, analysisContext);
 
   const footer = (
     <WizardFooter
@@ -229,7 +215,7 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
         then={<LoadingWizardContent />}
       >
         <Form onSubmit={formik.handleSubmit}>
-          {configurationOptions && (
+          {formik.initialValues && configurationOptions && (
             <AdvancedOptionsForm
               configurationOptions={configurationOptions}
               {...formik}

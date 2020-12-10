@@ -54,14 +54,6 @@ import {
   getPathFromStep,
 } from "../wizard/wizard-utils";
 
-interface UploadFormValues extends AddApplicationsUploadFilesFormValues {
-  nextStep: NewProjectWizardStepIds;
-}
-
-interface ServerPathFormValues extends AddApplicationsServerPathFormValues {
-  nextStep: NewProjectWizardStepIds;
-}
-
 interface AddApplicationsProps extends RouteComponentProps<ProjectRoute> {}
 
 export const AddApplications: React.FC<AddApplicationsProps> = ({
@@ -87,25 +79,20 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
     loadProject(match.params.project);
   }, [match, loadProject]);
 
-  const fireOnSubmit = (formik: any, nextStep: NewProjectWizardStepIds) => {
-    formik.setFieldValue("nextStep", nextStep);
-    formik.submitForm();
-  };
-
   const handleUploadFilesFormikSubmit = (
-    values: UploadFormValues,
-    formikHelpers: FormikHelpers<UploadFormValues>
+    values: AddApplicationsUploadFilesFormValues,
+    formikHelpers: FormikHelpers<AddApplicationsUploadFilesFormValues>
   ) => {
     history.push(
-      formatPath(getPathFromStep(values.nextStep), {
+      formatPath(Paths.newProject_setTransformationPath, {
         project: match.params.project,
       })
     );
   };
 
   const handleServerPathFormikSubmit = (
-    values: ServerPathFormValues,
-    formikHelpers: FormikHelpers<ServerPathFormValues>
+    values: AddApplicationsServerPathFormValues,
+    formikHelpers: FormikHelpers<AddApplicationsServerPathFormValues>
   ) => {
     pathTargetType(values.serverPath)
       .then(({ data }) => {
@@ -129,7 +116,7 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
       .then(() => {
         formikHelpers.setSubmitting(false);
         history.push(
-          formatPath(getPathFromStep(values.nextStep), {
+          formatPath(Paths.newProject_setTransformationPath, {
             project: match.params.project,
           })
         );
@@ -146,10 +133,7 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
 
   const uploadFilesFormik = useFormik({
     enableReinitialize: true,
-    initialValues: {
-      ...AddApplicationsUploadFilesFormInitialValues(project),
-      nextStep: NewProjectWizardStepIds.SET_TRANSFORMATION_PATH,
-    },
+    initialValues: AddApplicationsUploadFilesFormInitialValues(project),
     validationSchema: AddApplicationsUploadFilesFormSchema(true),
     onSubmit: handleUploadFilesFormikSubmit,
     initialErrors:
@@ -157,10 +141,7 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
   });
 
   const serverPathFormik = useFormik({
-    initialValues: {
-      ...AddApplicationsServerPathFormSchemaInitialValues(),
-      nextStep: NewProjectWizardStepIds.SET_TRANSFORMATION_PATH,
-    },
+    initialValues: AddApplicationsServerPathFormSchemaInitialValues(),
     validationSchema: AddApplicationsServerPathFormSchema(),
     onSubmit: handleServerPathFormikSubmit,
     initialErrors: { serverPath: "" },
@@ -178,36 +159,18 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
   };
 
   const handleOnGoToStep = (newStep: NewProjectWizardStepIds) => {
-    if (
-      selectedTab === AddApplicationsTabsType.UPLOAD_FILE &&
-      uploadFilesFormik.dirty
-    ) {
-      fireOnSubmit(uploadFilesFormik, newStep);
-    } else if (
-      selectedTab === AddApplicationsTabsType.SERVER_PATH &&
-      serverPathFormik.dirty
-    ) {
-      fireOnSubmit(serverPathFormik, newStep);
-    } else {
-      history.push(
-        formatPath(getPathFromStep(newStep), {
-          project: match.params.project,
-        })
-      );
-    }
+    history.push(
+      formatPath(getPathFromStep(newStep), {
+        project: match.params.project,
+      })
+    );
   };
 
   const handleOnNext = () => {
     if (selectedTab === AddApplicationsTabsType.UPLOAD_FILE) {
-      fireOnSubmit(
-        uploadFilesFormik,
-        NewProjectWizardStepIds.SET_TRANSFORMATION_PATH
-      );
+      uploadFilesFormik.submitForm();
     } else if (selectedTab === AddApplicationsTabsType.SERVER_PATH) {
-      fireOnSubmit(
-        serverPathFormik,
-        NewProjectWizardStepIds.SET_TRANSFORMATION_PATH
-      );
+      serverPathFormik.submitForm();
     } else {
       throw new Error("Invalid selected tab:" + selectedTab);
     }
@@ -229,9 +192,10 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
       ? uploadFilesFormik
       : serverPathFormik;
   const disableNav = isFetching || formik.isSubmitting || formik.isValidating;
-  const canJumpUpto = formik.isValid
-    ? getMaxAllowedStepToJumpTo(project, analysisContext)
-    : currentStep;
+  const canJumpUpto =
+    !formik.isValid || formik.dirty
+      ? currentStep
+      : getMaxAllowedStepToJumpTo(project, analysisContext);
 
   const footer = (
     <WizardFooter

@@ -64,7 +64,7 @@ export const SetTransformationPath: React.FC<SetTransformationPathProps> = ({
     }
   }, [analysisContext]);
 
-  const handleOnSubmit = (onSuccess: () => void) => {
+  const handleOnSubmit = () => {
     if (!project) {
       throw new Error("Undefined project, can not handle submit");
     }
@@ -93,7 +93,11 @@ export const SetTransformationPath: React.FC<SetTransformationPathProps> = ({
         );
       })
       .then(() => {
-        onSuccess();
+        history.push(
+          formatPath(Paths.newProject_selectPackages, {
+            project: match.params.project,
+          })
+        );
       })
       .catch((error: AxiosError) => {
         setIsSubmitting(false);
@@ -111,44 +115,23 @@ export const SetTransformationPath: React.FC<SetTransformationPathProps> = ({
   };
 
   const handleOnGoToStep = (newStep: NewProjectWizardStepIds) => {
-    const goToStep = () =>
-      history.push(
-        formatPath(getPathFromStep(newStep), {
-          project: match.params.project,
-        })
-      );
-
-    if (dirty) {
-      handleOnSubmit(goToStep);
-    } else {
-      goToStep();
-    }
+    history.push(
+      formatPath(getPathFromStep(newStep), {
+        project: match.params.project,
+      })
+    );
   };
 
   const handleOnNext = () => {
-    const goToSelectPackages = () =>
-      history.push(
-        formatPath(Paths.newProject_selectPackages, {
-          project: match.params.project,
-        })
-      );
-
-    handleOnSubmit(goToSelectPackages);
+    handleOnSubmit();
   };
 
   const handleOnBack = () => {
-    const goToBack = () =>
-      history.push(
-        formatPath(Paths.newProject_addApplications, {
-          project: match.params.project,
-        })
-      );
-
-    if (dirty) {
-      handleOnSubmit(goToBack);
-    } else {
-      goToBack();
-    }
+    history.push(
+      formatPath(Paths.newProject_addApplications, {
+        project: match.params.project,
+      })
+    );
   };
 
   const handleOnCancel = () => cancelWizard(history.push);
@@ -156,9 +139,10 @@ export const SetTransformationPath: React.FC<SetTransformationPathProps> = ({
   const isValid = selectedTargets.length > 0;
   const currentStep = NewProjectWizardStepIds.SET_TRANSFORMATION_PATH;
   const disableNav = isFetching || isSubmitting;
-  const canJumpUpto = isValid
-    ? getMaxAllowedStepToJumpTo(project, analysisContext)
-    : currentStep;
+  const canJumpUpto =
+    !isValid || dirty
+      ? currentStep
+      : getMaxAllowedStepToJumpTo(project, analysisContext);
 
   const footer = (
     <WizardFooter

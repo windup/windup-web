@@ -91,7 +91,7 @@ export const SelectPackages: React.FC<SelectPackagesProps> = ({
     setSelectedPackages(newSelectedPackages.map((f) => f.fullName));
   };
 
-  const handleOnSubmit = (onSuccess: () => void) => {
+  const handleOnSubmit = () => {
     if (!project || !packages) {
       throw new Error("Undefined project or packages, can not handle submit");
     }
@@ -106,7 +106,11 @@ export const SelectPackages: React.FC<SelectPackagesProps> = ({
         return saveAnalysisContext(project.id, newAnalysisContext, true);
       })
       .then(() => {
-        onSuccess();
+        history.push(
+          formatPath(Paths.newProject_customRules, {
+            project: match.params.project,
+          })
+        );
       })
       .catch((error: AxiosError) => {
         setIsSubmitting(false);
@@ -119,44 +123,23 @@ export const SelectPackages: React.FC<SelectPackagesProps> = ({
   };
 
   const handleOnGoToStep = (newStep: NewProjectWizardStepIds) => {
-    const goToStep = () =>
-      history.push(
-        formatPath(getPathFromStep(newStep), {
-          project: match.params.project,
-        })
-      );
-
-    if (dirty) {
-      handleOnSubmit(goToStep);
-    } else {
-      goToStep();
-    }
+    history.push(
+      formatPath(getPathFromStep(newStep), {
+        project: match.params.project,
+      })
+    );
   };
 
   const handleOnNext = () => {
-    const goToNext = () =>
-      history.push(
-        formatPath(Paths.newProject_customRules, {
-          project: match.params.project,
-        })
-      );
-
-    handleOnSubmit(goToNext);
+    handleOnSubmit();
   };
 
   const handleOnBack = () => {
-    const goToBack = () =>
-      history.push(
-        formatPath(Paths.newProject_setTransformationPath, {
-          project: match.params.project,
-        })
-      );
-
-    if (dirty) {
-      handleOnSubmit(goToBack);
-    } else {
-      goToBack();
-    }
+    history.push(
+      formatPath(Paths.newProject_setTransformationPath, {
+        project: match.params.project,
+      })
+    );
   };
 
   const handleOnCancel = () => cancelWizard(history.push);
@@ -164,9 +147,10 @@ export const SelectPackages: React.FC<SelectPackagesProps> = ({
   const isValid = selectedPackages.length > 0;
   const currentStep = NewProjectWizardStepIds.SELECT_PACKAGES;
   const disableNav = isFetching || isSubmitting;
-  const canJumpUpto = isValid
-    ? getMaxAllowedStepToJumpTo(project, analysisContext)
-    : currentStep;
+  const canJumpUpto =
+    !isValid || dirty
+      ? currentStep
+      : getMaxAllowedStepToJumpTo(project, analysisContext);
 
   const footer = (
     <WizardFooter

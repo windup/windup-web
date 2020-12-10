@@ -75,16 +75,6 @@ export const Review: React.FC<ReviewProps> = ({ match, history }) => {
     loadProject(match.params.project);
   }, [match, loadProject]);
 
-  const handleOnBackStep = () => {
-    history.push(
-      formatPath(Paths.newProject_advandedOptions, {
-        project: match.params.project,
-      })
-    );
-  };
-
-  const handleOnCancel = () => redirectOnCancel(history.push);
-
   const handleSaveAndRun = (createExecution: boolean) => {
     setIsCreatingExecution(true);
     if (project) {
@@ -126,6 +116,16 @@ export const Review: React.FC<ReviewProps> = ({ match, history }) => {
       })
     );
   };
+
+  const handleOnBackStep = () => {
+    history.push(
+      formatPath(Paths.newProject_advandedOptions, {
+        project: match.params.project,
+      })
+    );
+  };
+
+  const handleOnCancel = () => redirectOnCancel(history.push);
 
   const currentStep = NewProjectWizardStepIds.REVIEW;
   const disableNav = isFetching || isCreatingExecution;

@@ -23,7 +23,7 @@ import { ProjectDetailsFormValues } from "components/project-details-form/projec
 import { useFetchProject } from "hooks/useFetchProject";
 
 import { getAlertModel } from "Constants";
-import { formatPath, OptionalProjectRoute } from "Paths";
+import { formatPath, OptionalProjectRoute, Paths } from "Paths";
 
 import {
   deleteProvisionalProjects,
@@ -44,10 +44,6 @@ import {
   getMaxAllowedStepToJumpTo,
   getPathFromStep,
 } from "../wizard/wizard-utils";
-
-interface FormValues extends ProjectDetailsFormValues {
-  nextStep: NewProjectWizardStepIds;
-}
 
 interface CreateProjectProps
   extends RouteComponentProps<OptionalProjectRoute> {}
@@ -75,14 +71,9 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
     }
   }, [match, fetchProject]);
 
-  const fireOnSubmit = (nextStep: NewProjectWizardStepIds) => {
-    formik.setFieldValue("nextStep", nextStep);
-    formik.submitForm();
-  };
-
   const handleOnSubmit = (
-    formValue: FormValues,
-    formikHelpers: FormikHelpers<FormValues>
+    formValue: ProjectDetailsFormValues,
+    formikHelpers: FormikHelpers<ProjectDetailsFormValues>
   ) => {
     const body: MigrationProject = {
       ...project,
@@ -101,7 +92,7 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
       .then(({ data }) => {
         formikHelpers.setSubmitting(false);
         history.push(
-          formatPath(getPathFromStep(formValue.nextStep), {
+          formatPath(Paths.newProject_addApplications, {
             project: data.id,
           })
         );
@@ -118,38 +109,32 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
 
   const formik = useFormik({
     enableReinitialize: true,
-    initialValues: {
-      ...projectDetailsFormInitialValue(project),
-      nextStep: NewProjectWizardStepIds.DETAILS,
-    },
+    initialValues: projectDetailsFormInitialValue(project),
     validationSchema: projectDetailsFormSchema(project),
     onSubmit: handleOnSubmit,
     initialErrors: !project ? { name: "" } : {},
   });
 
   const handleOnGoToStep = (newStep: NewProjectWizardStepIds) => {
-    if (formik.dirty) {
-      fireOnSubmit(newStep);
-    } else {
-      history.push(
-        formatPath(getPathFromStep(newStep), {
-          project: match.params.project,
-        })
-      );
-    }
+    history.push(
+      formatPath(getPathFromStep(newStep), {
+        project: match.params.project,
+      })
+    );
   };
 
   const handleOnNext = () => {
-    fireOnSubmit(NewProjectWizardStepIds.ADD_APPLICATIONS);
+    formik.submitForm();
   };
 
   const handleOnCancel = () => cancelWizard(history.push);
 
   const currentStep = NewProjectWizardStepIds.DETAILS;
   const disableNav = isFetching || formik.isSubmitting || formik.isValidating;
-  const canJumpUpto = formik.isValid
-    ? getMaxAllowedStepToJumpTo(project, analysisContext)
-    : currentStep;
+  const canJumpUpto =
+    !formik.isValid || formik.dirty
+      ? currentStep
+      : getMaxAllowedStepToJumpTo(project, analysisContext);
 
   const footer = (
     <WizardFooter
