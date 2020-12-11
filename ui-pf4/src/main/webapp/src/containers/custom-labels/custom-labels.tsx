@@ -250,12 +250,13 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
               Custom labels
             </Title>
             <Text component="small">
-              Upload the labels you want to include in the analysis
+              Upload the labels you want to include in the analysis.
             </Text>
           </TextContent>
         </StackItem>
         <StackItem>
           <TableSectionOffline
+            filterTextPlaceholder="Filter by short path"
             items={labelsPath}
             columns={columns}
             actionResolver={actionResolver}
@@ -283,7 +284,12 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
                 <CustomEmptyState
                   icon={CubesIcon}
                   title="No custom labels available"
-                  body="Upload a custom label by clicking on 'Add label'"
+                  body={
+                    <p>
+                      Upload a custom label by clicking on{" "}
+                      <strong>Add label</strong>.
+                    </p>
+                  }
                 />
               </Bullseye>
             }

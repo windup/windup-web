@@ -25,6 +25,7 @@ export interface IFieldInfo {
   label: string;
   type: FieldType;
   placeholder?: string;
+  description?: string;
 }
 
 export const Fields: Map<AdvancedOptionsFieldKey, IFieldInfo> = new Map([
@@ -35,6 +36,8 @@ export const Fields: Map<AdvancedOptionsFieldKey, IFieldInfo> = new Map([
       label: "Target",
       type: "dropdown",
       placeholder: "Select targets",
+      description:
+        'The target server/technology/framework to migrate to. This could include multiple items (e.g., "eap7" and "cloud-readiness") separated by a space.',
     },
   ],
   [
@@ -43,16 +46,18 @@ export const Fields: Map<AdvancedOptionsFieldKey, IFieldInfo> = new Map([
       label: "Source",
       type: "dropdown",
       placeholder: "Select sources",
+      description:
+        'The source server/technology/framework to migrate from. This could include multiple items (e.g., "eap" and "springboot") separated by a space.',
     },
   ],
-  [
-    AdvancedOptionsFieldKey.INCLUDE_TAGS,
-    {
-      label: "Include tags",
-      type: "dropdown",
-      placeholder: "Select tags",
-    },
-  ],
+  // [
+  //   AdvancedOptionsFieldKey.INCLUDE_TAGS,
+  //   {
+  //     label: "Include tags",
+  //     type: "dropdown",
+  //     placeholder: "Select tags",
+  //   },
+  // ],
   [
     AdvancedOptionsFieldKey.EXCLUDE_TAGS,
     {
@@ -68,6 +73,7 @@ export const Fields: Map<AdvancedOptionsFieldKey, IFieldInfo> = new Map([
     {
       label: "Additional classpath",
       type: "input",
+      description: "Adds additional files or directories to the classpath.",
     },
   ],
   [
@@ -103,8 +109,10 @@ export const Fields: Map<AdvancedOptionsFieldKey, IFieldInfo> = new Map([
   [
     AdvancedOptionsFieldKey.TATTLETALE,
     {
-      label: "Tattletale",
+      label: "Disable Tattletale",
       type: "switch",
+      description:
+        "Use this option to disable the Tattletale reports, which are enabled by default.",
     },
   ],
   [
@@ -161,6 +169,8 @@ export const Fields: Map<AdvancedOptionsFieldKey, IFieldInfo> = new Map([
     {
       label: "Source mode",
       type: "switch",
+      description:
+        "Indicates whether the input file or directory is a source code or compiled binaries (default).",
     },
   ],
 ]);

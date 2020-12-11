@@ -37,7 +37,7 @@ export const RuleLabelServerPathForm: React.FC<RuleLabelServerPathFormProps> = (
       <FormGroup
         label={`${type}s path (server-side file or directory)`}
         fieldId="serverPath"
-        helperText="Path to the server-side file or directory containing the rules"
+        helperText={`Path to the file or directory containing the ${type.toLocaleLowerCase()}s.`}
         isRequired={true}
         validated={getValidatedFromError(errors.serverPath)}
         helperTextInvalid={errors.serverPath}
@@ -69,7 +69,7 @@ export const RuleLabelServerPathForm: React.FC<RuleLabelServerPathFormProps> = (
           id="isChecked"
           name="isChecked"
           aria-label="is checked"
-          label={`If checked and given path is a directory, the subdirectories will also be scanned for ${type.toLocaleLowerCase()}sets`}
+          label={`If checked and the given path is a directory, the subdirectories will also be scanned for ${type.toLocaleLowerCase()}sets`}
           onChange={onChangeField}
           onBlur={handleBlur}
           isChecked={values.isChecked}

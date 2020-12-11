@@ -39,6 +39,7 @@ exports[`Welcome Renders without crashing 1`] = `
     >
       documentation
     </a>
+    .
   </EmptyStateSecondaryActions>
 </EmptyState>
 `;

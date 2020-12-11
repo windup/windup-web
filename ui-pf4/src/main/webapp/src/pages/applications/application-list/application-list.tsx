@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { RouteComponentProps } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { Link, RouteComponentProps } from "react-router-dom";
+import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import Moment from "react-moment";
 import { AxiosError } from "axios";
 
@@ -9,6 +9,7 @@ import {
   Bullseye,
   PageSection,
   PageSectionVariants,
+  Spinner,
   Stack,
   StackItem,
   Text,
@@ -34,7 +35,7 @@ import {
 } from "components";
 import { useSubscribeToExecutionWs } from "hooks/useSubscribeToExecutionWs";
 
-import { ProjectRoute } from "Paths";
+import { formatPath, Paths, ProjectRoute } from "Paths";
 import { isNullOrUndefined } from "utils/utils";
 import { isExecutionActive } from "utils/modelUtils";
 
@@ -58,11 +59,7 @@ const columns: ICell[] = [
   { title: "Date added", transforms: [sortable] },
 ];
 
-const compareProject = (
-  a: Application,
-  b: Application,
-  columnIndex?: number
-) => {
+const compareFn = (a: Application, b: Application, columnIndex?: number) => {
   switch (columnIndex) {
     case 0: // Application
       return a.title.localeCompare(b.title);
@@ -73,7 +70,7 @@ const compareProject = (
   }
 };
 
-const filterProject = (filterText: string, application: Application) => {
+const filterFn = (filterText: string, application: Application) => {
   return (
     application.title.toLowerCase().indexOf(filterText.toLowerCase()) !== -1
   );
@@ -116,20 +113,19 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({ match }) => {
   }, [match, fetchMigrationProject]);
 
   useSubscribeToExecutionWs(executions || []);
-  const wsExecutions = useSelector((state: RootState) =>
-    executionsWsSelectors.selectMessagesByProjectId(
-      state,
-      parseInt(match.params.project)
-    )
+  const wsExecutions = useSelector(
+    (state: RootState) =>
+      executionsWsSelectors.selectMessagesByProjectId(
+        state,
+        parseInt(match.params.project)
+      ),
+    shallowEqual
   );
 
   const activeExecutions = (executions || [])
-    .map((f) => {
-      const wsExecution = wsExecutions.find((element) => element.id === f.id);
-      return wsExecution || f;
-    })
-    .filter((f) => f.projectId === parseInt(match.params.project))
-    .filter((f) => isExecutionActive(f));
+    .filter((e) => isExecutionActive(e))
+    .map((e) => wsExecutions.find((w) => w.id === e.id) || e)
+    .filter((e) => isExecutionActive(e));
 
   const actionResolver = (): (IAction | ISeparator)[] => {
     return [
@@ -140,7 +136,7 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({ match }) => {
 
           dispatch(
             deleteDialogActions.openModal({
-              name: `#${row.title}`,
+              name: `${row.title}`,
               type: "application",
               onDelete: () => {
                 dispatch(deleteDialogActions.processing());
@@ -174,7 +170,9 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({ match }) => {
         },
         cells: [
           {
-            title: (
+            title: item.exploded ? (
+              item.title
+            ) : (
               <a href={getDownloadRegisteredApplicationURL(item.id)}>
                 {item.title}
               </a>
@@ -208,7 +206,18 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({ match }) => {
                 variant="info"
                 isInline
                 title="Cannot delete applications when analysis is in progress"
-              />
+              >
+                <p>
+                  <Spinner size="md" /> Analysing applications.{" "}
+                  <Link
+                    to={formatPath(Paths.executions, {
+                      project: match.params.project,
+                    })}
+                  >
+                    See active analysis.
+                  </Link>
+                </p>
+              </Alert>
             </StackItem>
           )}
         </Stack>
@@ -226,8 +235,8 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({ match }) => {
             loadingVariant="skeleton"
             isLoadingData={isFetching}
             loadingDataError={fetchError}
-            compareItem={compareProject}
-            filterItem={filterProject}
+            compareItem={compareFn}
+            filterItem={filterFn}
             mapToIRow={applicationToIRow}
             toolbar={
               <ToolbarGroup variant="button-group">
@@ -244,7 +253,12 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({ match }) => {
                 <CustomEmptyState
                   icon={CubesIcon}
                   title="There are no applications in this project"
-                  body="Upload an application by clicking on 'Add application'"
+                  body={
+                    <p>
+                      Upload an application by clicking on{" "}
+                      <strong>Add application</strong>.
+                    </p>
+                  }
                 />
               </Bullseye>
             }

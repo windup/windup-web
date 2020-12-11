@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { RouteComponentProps } from "react-router-dom";
 import Moment from "react-moment";
 
@@ -19,9 +19,6 @@ import {
 } from "@patternfly/react-core";
 import { ChartBarIcon, DownloadIcon } from "@patternfly/react-icons";
 
-import { getExecution } from "api/api";
-import { WindupExecution } from "models/api";
-
 import {
   AdvancedOptionsFieldKey,
   getWindupStaticReportsBase,
@@ -37,18 +34,17 @@ import {
 import { ProjectStatusWatcher } from "containers/project-status-watcher";
 import { ProjectExecutionRoute } from "Paths";
 import { isOptionEnabledInExecution } from "utils/modelUtils";
+import { useSelector } from "react-redux";
+import { RootState } from "store/rootReducer";
+import { executionSelectors } from "store/execution";
 
 export interface OverviewProps
   extends RouteComponentProps<ProjectExecutionRoute> {}
 
 export const Overview: React.FC<OverviewProps> = ({ match }) => {
-  const [execution, setExecution] = useState<WindupExecution>();
-
-  useEffect(() => {
-    getExecution(match.params.execution).then(({ data: executionData }) => {
-      setExecution(executionData);
-    });
-  }, [match]);
+  const execution = useSelector((state: RootState) =>
+    executionSelectors.selectExecution(state, Number(match.params.execution))
+  );
 
   return (
     <>

@@ -96,7 +96,7 @@ export const NewProjectWizard: React.FC<NewProjectWizardProps> = ({
       steps: [
         {
           id: WizardStepIds.SET_TRANSFORMATION_PATH,
-          name: "Set transformation path",
+          name: "Set transformation target",
           component: undefined,
           canJumpTo:
             WizardStepIds.SET_TRANSFORMATION_PATH <= stepId || hasMinData,
@@ -269,7 +269,7 @@ export const NewProjectWizard: React.FC<NewProjectWizardProps> = ({
     <Wizard
       title={isWizard ? "Create project" : undefined}
       description={
-        isWizard ? "Create a project for your applications" : undefined
+        isWizard ? "Create a project for your applications." : undefined
       }
       isOpen={isWizard ? isWizard : undefined}
       steps={!disableNavigation ? wizardSteps : disableWizardSteps(wizardSteps)}

@@ -56,7 +56,7 @@ export const RuleLabelDetailsModal: React.FC<RuleLabelDetailsModalProps> = () =>
             <CustomEmptyState
               icon={CubesIcon}
               title={`Empty ${type}`}
-              body={`No content found`}
+              body="No content found."
             />
           }
         >

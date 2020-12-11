@@ -30,12 +30,16 @@ import {
   getValidatedFromErrorTouched,
 } from "utils/formUtils";
 
-import { filterFieldsByType, getFieldData, Fields } from "./schema";
+import { filterFieldsByType, getFieldData, Fields, IFieldInfo } from "./schema";
+
+const tooltipTextFrom = (info: IFieldInfo, config: ConfigurationOption) => {
+  return info.description ? info.description : config.description;
+};
 
 interface FormValues {
   [AdvancedOptionsFieldKey.TARGET]: string[];
   [AdvancedOptionsFieldKey.SOURCE]?: string[];
-  [AdvancedOptionsFieldKey.INCLUDE_TAGS]?: string[];
+  // [AdvancedOptionsFieldKey.INCLUDE_TAGS]?: string[];
   [AdvancedOptionsFieldKey.EXCLUDE_TAGS]?: string[];
 
   [AdvancedOptionsFieldKey.ADDITIONAL_CLASSPATH]?: string;
@@ -127,8 +131,8 @@ export const AdvancedOptionsForm: React.FC<AdvancedOptionsFormProps> = ({
         </TextContent>
       </StackItem>
       <StackItem>
-        <Grid hasGutter md={6}>
-          <GridItem md={8} className="pf-c-form pf-m-horizontal">
+        <Grid hasGutter>
+          <GridItem md={7} className="pf-c-form pf-m-horizontal">
             {
               // Dropdowns
               filterFieldsByType("dropdown", Fields).map((field, index) => {
@@ -143,7 +147,7 @@ export const AdvancedOptionsForm: React.FC<AdvancedOptionsFormProps> = ({
                     key={`${fieldInfo.type}-${index}`}
                     label={
                       <Tooltip
-                        content={<div>{fieldConfiguration.description}</div>}
+                        content={tooltipTextFrom(fieldInfo, fieldConfiguration)}
                       >
                         <span>{fieldInfo.label}</span>
                       </Tooltip>
@@ -194,7 +198,7 @@ export const AdvancedOptionsForm: React.FC<AdvancedOptionsFormProps> = ({
                     key={`${fieldInfo.type}-${index}`}
                     label={
                       <Tooltip
-                        content={<div>{fieldConfiguration.description}</div>}
+                        content={tooltipTextFrom(fieldInfo, fieldConfiguration)}
                       >
                         <span>{fieldInfo.label}</span>
                       </Tooltip>
@@ -226,6 +230,7 @@ export const AdvancedOptionsForm: React.FC<AdvancedOptionsFormProps> = ({
           </GridItem>
           <GridItem
             md={4}
+            mdOffset={8}
             className="pf-c-form pf-m-horizontal pf-c-form-advanced-options"
           >
             {filterFieldsByType("switch", Fields).map((field, index) => {
@@ -240,7 +245,7 @@ export const AdvancedOptionsForm: React.FC<AdvancedOptionsFormProps> = ({
                   key={`${fieldInfo.type}-${index}`}
                   label={
                     <Tooltip
-                      content={<div>{fieldConfiguration.description}</div>}
+                      content={tooltipTextFrom(fieldInfo, fieldConfiguration)}
                     >
                       <span>{fieldInfo.label}</span>
                     </Tooltip>

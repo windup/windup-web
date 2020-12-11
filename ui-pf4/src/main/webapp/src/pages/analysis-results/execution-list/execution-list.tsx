@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { RouteComponentProps, Link } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import Moment from "react-moment";
 
 import {
@@ -29,8 +29,11 @@ import {
 } from "@patternfly/react-icons";
 
 import { RootState } from "store/rootReducer";
-import { executionsSelectors, executionsActions } from "store/executions";
-import { deleteDialogActions } from "store/deleteDialog";
+import {
+  projectExecutionsSelectors,
+  projectExecutionsActions,
+} from "store/projectExecutions";
+import { executionsWsSelectors } from "store/executions-ws";
 
 import {
   SimplePageSection,
@@ -40,19 +43,19 @@ import {
   TableSectionOffline,
   ExecutionStatus,
   ExecutionStatusWithTime,
+  mapStateToLabel,
 } from "components";
+import { useDeleteExecution } from "hooks/useDeleteExecution";
+import { useCancelExecution } from "hooks/useCancelExecution";
+import { useSubscribeToExecutionWs } from "hooks/useSubscribeToExecutionWs";
 
 import { Paths, formatPath, ProjectRoute } from "Paths";
 import { WindupExecution, MigrationProject } from "models/api";
 import {
-  cancelExecution,
   createProjectExecution,
-  deleteExecution,
   getAnalysisContext,
   getProjectById,
 } from "api/api";
-
-import { ProjectStatusWatcher } from "containers/project-status-watcher";
 
 import { ActiveExecutionsList } from "./active-execution-list";
 import {
@@ -107,7 +110,10 @@ const compareExecution = (
 const filterExecution = (filterText: string, execution: WindupExecution) => {
   return (
     execution.id.toString().toLowerCase().indexOf(filterText.toLowerCase()) !==
-    -1
+      -1 ||
+    mapStateToLabel(execution.state)
+      .toLocaleLowerCase()
+      .indexOf(filterText.toLowerCase()) !== -1
   );
 };
 
@@ -131,25 +137,55 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
 
   // Redux
   const baseExecutions = useSelector((state: RootState) =>
-    executionsSelectors.selectExecutions(state, match.params.project)
+    projectExecutionsSelectors.selectProjectExecutions(
+      state,
+      match.params.project
+    )
   );
   const executionsFetchStatus = useSelector((state: RootState) =>
-    executionsSelectors.selectExecutionsFetchStatus(state, match.params.project)
+    projectExecutionsSelectors.selectProjectExecutionsFetchStatus(
+      state,
+      match.params.project
+    )
   );
   const executionsFetchError = useSelector((state: RootState) =>
-    executionsSelectors.selectExecutionsFetchError(state, match.params.project)
+    projectExecutionsSelectors.selectProjectExecutionsFetchError(
+      state,
+      match.params.project
+    )
+  );
+
+  useSubscribeToExecutionWs(baseExecutions || []);
+  const wsExecutions = useSelector(
+    (state: RootState) =>
+      executionsWsSelectors.selectMessagesByProjectId(
+        state,
+        parseInt(match.params.project)
+      ),
+    shallowEqual
   );
 
   const executions = baseExecutions
-    ? baseExecutions.slice().sort((a, b) => b.id - a.id) // By Default inverse order
+    ? baseExecutions
+        .map((e) => {
+          if (isExecutionActive(e)) {
+            return wsExecutions.find((w) => w.id === e.id) || e;
+          }
+          return e;
+        })
+        .slice()
+        .sort((a, b) => b.id - a.id) // By Default inverse order
     : undefined;
 
   const dispatch = useDispatch();
 
+  const deleteExecution = useDeleteExecution();
+  const cancelExecution = useCancelExecution();
+
   // Util function
   const refreshExecutionList = useCallback(
     (projectId: number | string) => {
-      dispatch(executionsActions.fetchExecutions(projectId));
+      dispatch(projectExecutionsActions.fetchProjectExecutions(projectId));
     },
     [dispatch]
   );
@@ -186,58 +222,20 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
 
   const handleDeleteAnalysis = useCallback(
     (row: WindupExecution) => {
-      dispatch(
-        deleteDialogActions.openModal({
-          name: `#${row.id.toString()}`,
-          type: "analysis",
-          onDelete: () => {
-            dispatch(deleteDialogActions.processing());
-            deleteExecution(row.id)
-              .then(() => {
-                refreshExecutionList(match.params.project);
-              })
-              .finally(() => {
-                dispatch(deleteDialogActions.closeModal());
-              });
-          },
-          onCancel: () => {
-            dispatch(deleteDialogActions.closeModal());
-          },
-        })
-      );
+      deleteExecution(row, () => {
+        refreshExecutionList(match.params.project);
+      });
     },
-    [match, dispatch, refreshExecutionList]
+    [match, deleteExecution, refreshExecutionList]
   );
 
   const handleCancelAnalysis = useCallback(
     (row: WindupExecution) => {
-      dispatch(
-        deleteDialogActions.openModal({
-          name: `#${row.id.toString()}`,
-          type: "analysis",
-          config: {
-            title: `Cancel #${row.id.toString()}`,
-            message: "Are you sure you want to cancel the analysis?",
-            deleteBtnLabel: "Yes",
-            cancelBtnLabel: "No",
-          },
-          onDelete: () => {
-            dispatch(deleteDialogActions.processing());
-            cancelExecution(row.id)
-              .then(() => {
-                refreshExecutionList(match.params.project);
-              })
-              .finally(() => {
-                dispatch(deleteDialogActions.closeModal());
-              });
-          },
-          onCancel: () => {
-            dispatch(deleteDialogActions.closeModal());
-          },
-        })
-      );
+      cancelExecution(row, () => {
+        refreshExecutionList(match.params.project);
+      });
     },
-    [match, dispatch, refreshExecutionList]
+    [match, cancelExecution, refreshExecutionList]
   );
 
   const actionResolver = (rowData: IRowData): (IAction | ISeparator)[] => {
@@ -260,7 +258,7 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
 
       if (isOptionEnabledInExecution(row, AdvancedOptionsFieldKey.EXPORT_CSV)) {
         actions.push({
-          title: "All Issues CSV",
+          title: "All issues CSV",
           onClick: (_, rowIndex: number, rowData: IRowData) => {
             const row: WindupExecution = getRow(rowData);
             window.open(getCSVReportURL(row), "_blank");
@@ -317,29 +315,16 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
           },
           {
             title: (
-              <ProjectStatusWatcher watch={item}>
-                {({ execution }) => (
-                  <>
-                    <ExecutionStatus state={execution.state} />
-                    <ExecutionStatusWithTime
-                      execution={execution}
-                      showPrefix={true}
-                    />
-                  </>
-                )}
-              </ProjectStatusWatcher>
+              <>
+                <ExecutionStatus state={item.state} />
+                <ExecutionStatusWithTime execution={item} showPrefix={true} />
+              </>
             ),
           },
           {
-            title: (
-              <ProjectStatusWatcher watch={item}>
-                {({ execution }) =>
-                  execution.timeStarted ? (
-                    <Moment fromNow>{execution.timeStarted}</Moment>
-                  ) : null
-                }
-              </ProjectStatusWatcher>
-            ),
+            title: item.timeStarted ? (
+              <Moment fromNow>{item.timeStarted}</Moment>
+            ) : null,
           },
           {
             title: item.analysisContext.applications.length,
@@ -347,61 +332,57 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
           {
             props: { textCenter: false },
             title: (
-              <ProjectStatusWatcher watch={item}>
-                {({ execution }) => (
-                  <Flex
-                    justifyContent={{ default: "justifyContentFlexEnd" }}
-                    spaceItems={{ default: "spaceItemsNone" }}
-                  >
-                    {execution.state === "COMPLETED" && (
-                      <>
-                        {!isOptionEnabledInExecution(
-                          execution,
-                          AdvancedOptionsFieldKey.SKIP_REPORTS
-                        ) && (
-                          <FlexItem>
-                            <a
-                              title="Reports"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              href={`${getStaticReportURL(execution)}`}
-                              className="pf-c-button pf-m-link"
-                            >
-                              <ChartBarIcon />
-                            </a>
-                          </FlexItem>
-                        )}
-                        {isOptionEnabledInExecution(
-                          execution,
-                          AdvancedOptionsFieldKey.EXPORT_CSV
-                        ) && (
-                          <FlexItem>
-                            <a
-                              title="Download all issues CSV"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              href={`${getCSVReportURL(execution)}`}
-                              className="pf-c-button pf-m-link"
-                            >
-                              <DownloadIcon />
-                            </a>
-                          </FlexItem>
-                        )}
-                      </>
-                    )}
-                    {!isExecutionActive(execution) && (
+              <Flex
+                justifyContent={{ default: "justifyContentFlexEnd" }}
+                spaceItems={{ default: "spaceItemsNone" }}
+              >
+                {item.state === "COMPLETED" && (
+                  <>
+                    {!isOptionEnabledInExecution(
+                      item,
+                      AdvancedOptionsFieldKey.SKIP_REPORTS
+                    ) && (
                       <FlexItem>
-                        <Button
-                          variant={ButtonVariant.link}
-                          onClick={() => handleDeleteAnalysis(execution)}
+                        <a
+                          title="Reports"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          href={`${getStaticReportURL(item)}`}
+                          className="pf-c-button pf-m-link"
                         >
-                          <TrashIcon />
-                        </Button>
+                          <ChartBarIcon />
+                        </a>
                       </FlexItem>
                     )}
-                  </Flex>
+                    {isOptionEnabledInExecution(
+                      item,
+                      AdvancedOptionsFieldKey.EXPORT_CSV
+                    ) && (
+                      <FlexItem>
+                        <a
+                          title="Download all issues CSV"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          href={`${getCSVReportURL(item)}`}
+                          className="pf-c-button pf-m-link"
+                        >
+                          <DownloadIcon />
+                        </a>
+                      </FlexItem>
+                    )}
+                  </>
                 )}
-              </ProjectStatusWatcher>
+                {!isExecutionActive(item) && (
+                  <FlexItem>
+                    <Button
+                      variant={ButtonVariant.link}
+                      onClick={() => handleDeleteAnalysis(item)}
+                    >
+                      <TrashIcon />
+                    </Button>
+                  </FlexItem>
+                )}
+              </Flex>
             ),
           },
         ],
@@ -418,7 +399,7 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
           return createProjectExecution(project.id, data);
         })
         .then(() => {
-          dispatch(executionsActions.fetchExecutions(project.id));
+          dispatch(projectExecutionsActions.fetchProjectExecutions(project.id));
         })
         .finally(() => {
           setIsCreatingExecution(false);
@@ -438,6 +419,7 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
           then={<SelectProjectEmptyMessage />}
         >
           <TableSectionOffline
+            filterTextPlaceholder="Filter by analysis id or status"
             items={executions}
             columns={columns}
             actionResolver={actionResolver}

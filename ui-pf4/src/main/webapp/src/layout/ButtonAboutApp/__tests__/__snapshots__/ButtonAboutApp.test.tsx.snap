@@ -47,28 +47,36 @@ exports[`Test snapshot :: open modal 1`] = `
     <TextContent
       className="pf-u-py-xl"
     >
-      <TextList
-        component="dl"
+      <Grid
+        hasGutter={true}
       >
-        <TextListItem
-          component="dt"
+        <GridItem
+          lg={7}
         >
-          Migration Toolkit for Applications Core
-        </TextListItem>
-        <TextListItem
-          component="dd"
+          <span
+            className="dt"
+          >
+            Migration Toolkit for Applications Core
+          </span>
+        </GridItem>
+        <GridItem
+          lg={5}
         >
           (loading)
-        </TextListItem>
-        <TextListItem
-          component="dt"
+        </GridItem>
+        <GridItem
+          lg={7}
         >
-          Migration Toolkit for Applications Web Console
-        </TextListItem>
-        <TextListItem
-          component="dd"
+          <span
+            className="dt"
+          >
+            Migration Toolkit for Applications Web Console
+          </span>
+        </GridItem>
+        <GridItem
+          lg={5}
         />
-      </TextList>
+      </Grid>
     </TextContent>
     <TextContent>
       <h4>
@@ -237,28 +245,36 @@ exports[`Test snapshot 1`] = `
     <TextContent
       className="pf-u-py-xl"
     >
-      <TextList
-        component="dl"
+      <Grid
+        hasGutter={true}
       >
-        <TextListItem
-          component="dt"
+        <GridItem
+          lg={7}
         >
-          Migration Toolkit for Applications Core
-        </TextListItem>
-        <TextListItem
-          component="dd"
+          <span
+            className="dt"
+          >
+            Migration Toolkit for Applications Core
+          </span>
+        </GridItem>
+        <GridItem
+          lg={5}
         >
           (loading)
-        </TextListItem>
-        <TextListItem
-          component="dt"
+        </GridItem>
+        <GridItem
+          lg={7}
         >
-          Migration Toolkit for Applications Web Console
-        </TextListItem>
-        <TextListItem
-          component="dd"
+          <span
+            className="dt"
+          >
+            Migration Toolkit for Applications Web Console
+          </span>
+        </GridItem>
+        <GridItem
+          lg={5}
         />
-      </TextList>
+      </Grid>
     </TextContent>
     <TextContent>
       <h4>

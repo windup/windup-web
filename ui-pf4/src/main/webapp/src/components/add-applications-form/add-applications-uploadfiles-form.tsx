@@ -42,6 +42,7 @@ export const AddApplicationsUploadFilesForm: React.FC<AddApplicationsUploadFiles
       accept={Constants.ALLOWED_APPLICATION_EXTENSIONS}
       template="dropdown-box"
       hideProgressOnSuccess={true}
+      allowRemove={true}
     />
   );
 };

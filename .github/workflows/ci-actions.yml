@@ -1,0 +1,27 @@
+name: UI CI
+
+on:
+  push:
+    paths-ignore:
+      - "README.md"
+  pull_request:
+    paths-ignore:
+      - "README.md"
+
+jobs:
+
+  ui-unit-test:
+    name: UI tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: yarn --cwd ui-pf4/src/main/webapp/ install
+      - run: yarn --cwd ui-pf4/src/main/webapp/ build
+      - run: yarn --cwd ui-pf4/src/main/webapp/ test --coverage --watchAll=false

@@ -173,6 +173,7 @@ export const UserProvided: React.FC = () => {
   return (
     <>
       <TableSectionOffline
+        filterTextPlaceholder="Filter by short path"
         items={userProvidedRulesPath}
         columns={columns}
         actionResolver={actionResolver}
@@ -199,7 +200,11 @@ export const UserProvided: React.FC = () => {
             <CustomEmptyState
               icon={CubesIcon}
               title="No custom rules available"
-              body="Upload a custom rule by clicking on 'Add rule'"
+              body={
+                <p>
+                  Upload a custom rule by clicking on <strong>Add rule</strong>.
+                </p>
+              }
             />
           </Bullseye>
         }
