@@ -14,8 +14,7 @@ export const useDeleteLabel = () => {
 
   const deleteLabel = (
     labelPath: LabelsPath,
-    onSuccess?: (labelPath: LabelsPath) => void,
-    onCancel?: () => void
+    onSuccess?: (labelPath: LabelsPath) => void
   ) => {
     dispatch(
       deleteDialogActions.openModal({
@@ -62,12 +61,6 @@ export const useDeleteLabel = () => {
             .finally(() => {
               dispatch(deleteDialogActions.closeModal());
             });
-        },
-        onCancel: () => {
-          dispatch(deleteDialogActions.closeModal());
-          if (onCancel) {
-            onCancel();
-          }
         },
       })
     );

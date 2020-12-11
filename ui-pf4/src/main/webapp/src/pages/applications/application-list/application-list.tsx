@@ -148,9 +148,6 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({ match }) => {
                     dispatch(deleteDialogActions.closeModal());
                   });
               },
-              onCancel: () => {
-                dispatch(deleteDialogActions.closeModal());
-              },
             })
           );
         },
