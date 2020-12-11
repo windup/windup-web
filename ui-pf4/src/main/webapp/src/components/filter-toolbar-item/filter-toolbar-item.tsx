@@ -23,6 +23,7 @@ export const FilterToolbarItem: React.FC<FilterToolbarItemProps> = ({
       <ToolbarItem>
         <div className={`toolbar-filter-input-group${isCompact ? "-c" : ""}`}>
           <TextInput
+            name="filterText"
             placeholder={placeholder}
             value={searchValue}
             type="text"

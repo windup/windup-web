@@ -25,7 +25,9 @@ export const MERGED_CSV_FILENAME = "AllIssues.csv";
 
 export const getWindupRestBase = () => {
   let base = packageJson.proxy + API_BASE_URL; // Development
-  if (process.env.NODE_ENV === "production") {
+  if (process.env.REACT_APP_SERVER_URL) {
+    base = process.env.REACT_APP_SERVER_URL + "/mta-web/api";
+  } else if (process.env.NODE_ENV === "production") {
     base = WINDUP_ENV_VARIABLES.REST_BASE;
   }
   return base;
@@ -33,7 +35,9 @@ export const getWindupRestBase = () => {
 
 export const getWindupStaticReportsBase = () => {
   let base = packageJson.proxy + API_BASE_URL + "/static-report"; // Development
-  if (process.env.NODE_ENV === "production") {
+  if (process.env.REACT_APP_SERVER_URL) {
+    base = process.env.REACT_APP_SERVER_URL + "/mta-web/api/static-report";
+  } else if (process.env.NODE_ENV === "production") {
     base = WINDUP_ENV_VARIABLES.STATIC_REPORTS_BASE;
   }
   return base;

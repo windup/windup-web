@@ -1,4 +1,13 @@
 {
-    "baseUrl": "http://localhost:3000",
-    "chromeWebSecurity": false
+    "baseUrl": "http://localhost:3000/#",
+    "chromeWebSecurity": false,
+    "env": {
+        "MTA_API": "http://localhost:8080/mta-web/api",
+        "KEYCLOAK_URL": "http://localhost:8080/auth",
+        "KEYCLOAK_REALM": "mta",
+        "KEYCLOAK_CLIENT_ID": "mta-web",
+        "KEYCLOAK_CLIENT_SECRET": "password",
+        "KEYCLOAK_USERNAME": "mta",
+        "KEYCLOAK_PASSWORD": "password"
+    }
 }

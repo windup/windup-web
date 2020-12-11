@@ -1,6 +1,33 @@
 /// <reference types="cypress" />
 
 context("New Project", () => {
+  before(() => {
+    cy.kcToken().as("kcToken");
+
+    // Delete all projects
+    cy.get("@kcToken").then((tokens) => {
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + tokens.access_token,
+      };
+
+      cy.request({
+        method: "GET",
+        headers: headers,
+        url: `${Cypress.env("MTA_API")}/migrationProjects/list`,
+      }).then((result) => {
+        result.body.forEach((e) => {
+          cy.request({
+            method: "DELETE",
+            headers: headers,
+            body: JSON.stringify(e.migrationProject),
+            url: `${Cypress.env("MTA_API")}/migrationProjects/delete`,
+          });
+        });
+      });
+    });
+  });
+
   const verifyActionButtonsDisabled = () => {
     cy.get("button.pf-c-button.pf-m-primary").should("be.disabled");
     cy.get("button.pf-c-button.pf-m-link").should("not.be.disabled");
@@ -12,17 +39,17 @@ context("New Project", () => {
   };
 
   it("Action buttons disabled when form is invalid", () => {
-    cy.visit("/#/projects/~new");
+    cy.visit("/projects/~new");
 
     /**
      * Step 1: Project details
      */
     cy.get(".pf-c-title").contains("Project details");
-    cy.get(".pf-c-form__helper-text").contains("A unique name for the project");
+    cy.get(".pf-c-form__helper-text").contains("Unique project name.");
 
     verifyActionButtonsDisabled();
 
-    cy.get("input[name=name]").type(`project${new Date().getTime()}`);
+    cy.get("input[name=name]").type("project");
     verifyActionButtonsEnabled();
 
     cy.get(".pf-c-button.pf-m-primary").contains("Next").click();
@@ -33,7 +60,8 @@ context("New Project", () => {
     cy.contains("Add applications");
 
     const dropzoneSelector = ".upload-files-section__component__dropzone";
-    const applicationName = "1111-1.0-SNAPSHOT.zip";
+    const applicationName1 = "dwr.zip";
+    const applicationName2 = "1111-1.0-SNAPSHOT.zip";
 
     verifyActionButtonsDisabled();
 
@@ -45,7 +73,7 @@ context("New Project", () => {
     cy.get(".pf-c-tabs__item").eq(0).click();
     verifyActionButtonsDisabled();
 
-    cy.get(dropzoneSelector).attachFile(applicationName, {
+    cy.get(dropzoneSelector).attachFile(applicationName1, {
       subjectType: "drag-n-drop",
     });
     verifyActionButtonsEnabled();
@@ -53,7 +81,7 @@ context("New Project", () => {
     cy.get("button.pf-c-button[aria-label=delete-application]").click();
     verifyActionButtonsDisabled();
 
-    cy.get(dropzoneSelector).attachFile(applicationName, {
+    cy.get(dropzoneSelector).attachFile(applicationName2, {
       subjectType: "drag-n-drop",
     });
     verifyActionButtonsEnabled();
@@ -83,7 +111,7 @@ context("New Project", () => {
     verifyActionButtonsEnabled();
 
     cy.get(".ant-transfer.ant-transfer-customize-list", {
-      timeout: 20000,
+      timeout: 300000,
     });
     verifyActionButtonsDisabled();
 
@@ -132,5 +160,7 @@ context("New Project", () => {
 
     verifyActionButtonsEnabled();
     cy.contains("Save").click();
+
+    cy.url().should("eq", Cypress.config().baseUrl + "/projects");
   });
 });

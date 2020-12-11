@@ -21,6 +21,7 @@ exports[`FilterToolbarItem should render correctly 1`] = `
             >
               <ForwardRef
                 aria-label="Foo"
+                name="filterText"
                 onChange={[MockFunction]}
                 placeholder="Foo"
                 type="text"
@@ -33,6 +34,7 @@ exports[`FilterToolbarItem should render correctly 1`] = `
                   isLeftTruncated={false}
                   isReadOnly={false}
                   isRequired={false}
+                  name="filterText"
                   onChange={[MockFunction]}
                   placeholder="Foo"
                   type="text"
@@ -43,6 +45,7 @@ exports[`FilterToolbarItem should render correctly 1`] = `
                     aria-label="Foo"
                     className="pf-c-form-control"
                     disabled={false}
+                    name="filterText"
                     onBlur={[Function]}
                     onChange={[Function]}
                     onFocus={[Function]}
