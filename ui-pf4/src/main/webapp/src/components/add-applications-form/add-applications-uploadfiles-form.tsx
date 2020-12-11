@@ -41,6 +41,7 @@ export const AddApplicationsUploadFilesForm: React.FC<AddApplicationsUploadFiles
       accept=".ear,.har,.jar,.rar,.sar,.war,.zip"
       template="dropdown-box"
       hideProgressOnSuccess={true}
+      allowRemove={true}
     />
   );
 };
