@@ -1,5 +1,6 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
+import { AxiosError } from "axios";
 
 import {
   Stack,
@@ -21,6 +22,7 @@ import styles from "@patternfly/react-styles/css/components/Wizard/wizard";
 import { useDispatch } from "react-redux";
 import { alertActions } from "store/alert";
 
+import { ConditionalRender } from "components";
 import { useFetchProject } from "hooks/useFetchProject";
 
 import { AdvancedOptionsFieldKey, getAlertModel } from "Constants";
@@ -30,15 +32,15 @@ import {
   createProjectExecution,
   saveAnalysisContext,
 } from "api/api";
-
-import NewProjectWizard, {
-  WizardStepIds,
-  LoadingWizardContent,
-  useWizardCancelRedirect,
-} from "../wizard";
-import { AxiosError } from "axios";
 import { getAxiosErrorMessage } from "utils/modelUtils";
-import { ConditionalRender } from "components";
+
+import { useCancelWizard } from "../wizard/useCancelWizard";
+import {
+  NewProjectWizard,
+  NewProjectWizardStepIds,
+} from "../wizard/project-wizard";
+import { getPathFromStep } from "../wizard/wizard-utils";
+import { LoadingWizardContent } from "../wizard/loading-content";
 
 const nullabeContent = (value: any) => {
   return value ? (
@@ -54,7 +56,7 @@ const nullabeContent = (value: any) => {
 
 interface ReviewProps extends RouteComponentProps<ProjectRoute> {}
 
-export const Review: React.FC<ReviewProps> = ({ match, history: { push } }) => {
+export const Review: React.FC<ReviewProps> = ({ match, history }) => {
   const dispatch = useDispatch();
 
   const {
@@ -62,28 +64,16 @@ export const Review: React.FC<ReviewProps> = ({ match, history: { push } }) => {
     analysisContext,
     isFetching,
     fetchError,
-    loadProject,
+    fetchProject: loadProject,
   } = useFetchProject();
 
   const [isCreatingExecution, setIsCreatingExecution] = useState(false);
 
-  const redirectOnCancel = useWizardCancelRedirect();
+  const redirectOnCancel = useCancelWizard();
 
   useEffect(() => {
     loadProject(match.params.project);
   }, [match, loadProject]);
-
-  const handleOnBackStep = () => {
-    push(
-      formatPath(Paths.newProject_advandedOptions, {
-        project: match.params.project,
-      })
-    );
-  };
-
-  const handleOnCancel = useCallback(() => {
-    redirectOnCancel(push, project);
-  }, [project, push, redirectOnCancel]);
 
   const handleSaveAndRun = (createExecution: boolean) => {
     setIsCreatingExecution(true);
@@ -99,13 +89,13 @@ export const Review: React.FC<ReviewProps> = ({ match, history: { push } }) => {
         })
         .then(() => {
           if (createExecution) {
-            push(
+            history.push(
               formatPath(Paths.executions, {
                 project: project.id,
               })
             );
           } else {
-            push(Paths.projects);
+            history.push(Paths.projects);
           }
         })
         .catch((error: AxiosError) => {
@@ -119,20 +109,41 @@ export const Review: React.FC<ReviewProps> = ({ match, history: { push } }) => {
     }
   };
 
+  const handleOnGoToStep = (newStep: NewProjectWizardStepIds) => {
+    history.push(
+      formatPath(getPathFromStep(newStep), {
+        project: match.params.project,
+      })
+    );
+  };
+
+  const handleOnBackStep = () => {
+    history.push(
+      formatPath(Paths.newProject_advandedOptions, {
+        project: match.params.project,
+      })
+    );
+  };
+
+  const handleOnCancel = () => redirectOnCancel(history.push);
+
+  const currentStep = NewProjectWizardStepIds.REVIEW;
+  const disableNav = isFetching || isCreatingExecution;
+  const canJumpUpto = currentStep;
+
   return (
     <NewProjectWizard
-      stepId={WizardStepIds.REVIEW}
-      enableNext={true}
-      disableNavigation={isFetching || isCreatingExecution}
-      migrationProject={project}
+      disableNav={disableNav}
+      stepId={currentStep}
+      canJumpUpTo={canJumpUpto}
       showErrorContent={fetchError}
+      onGoToStep={handleOnGoToStep}
       footer={
         <footer className={css(styles.wizardFooter)}>
           <Button
             variant={ButtonVariant.primary}
-            type="submit"
             onClick={() => handleSaveAndRun(false)}
-            isDisabled={isFetching || isCreatingExecution}
+            isDisabled={disableNav}
           >
             Save
           </Button>
@@ -140,21 +151,21 @@ export const Review: React.FC<ReviewProps> = ({ match, history: { push } }) => {
             variant={ButtonVariant.primary}
             type="submit"
             onClick={() => handleSaveAndRun(true)}
-            isDisabled={isFetching || isCreatingExecution}
+            isDisabled={disableNav}
           >
             Save and run
           </Button>
           <Button
             variant={ButtonVariant.secondary}
             onClick={handleOnBackStep}
-            isDisabled={isFetching || isCreatingExecution}
+            isDisabled={disableNav}
           >
             Back
           </Button>
           <Button
             variant={ButtonVariant.link}
             onClick={handleOnCancel}
-            isDisabled={isFetching || isCreatingExecution}
+            isDisabled={disableNav}
           >
             Cancel
           </Button>

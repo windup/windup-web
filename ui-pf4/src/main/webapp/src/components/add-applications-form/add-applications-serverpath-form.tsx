@@ -1,7 +1,7 @@
 import React from "react";
 import { FormGroup, TextInput, Checkbox } from "@patternfly/react-core";
 
-import { FormikHandlers, FormikState, FormikHelpers } from "formik";
+import { FormikHandlers, FormikState } from "formik";
 
 import {
   getValidatedFromError,
@@ -15,7 +15,6 @@ export interface AddApplicationsServerPathFormValues {
 
 export interface AddApplicationsServerPathFormProps
   extends FormikState<AddApplicationsServerPathFormValues>,
-    FormikHelpers<AddApplicationsServerPathFormValues>,
     FormikHandlers {}
 
 export const AddApplicationsServerPathForm: React.FC<AddApplicationsServerPathFormProps> = ({
