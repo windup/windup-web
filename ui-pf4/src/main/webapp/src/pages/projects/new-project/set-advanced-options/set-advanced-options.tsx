@@ -1,11 +1,9 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useEffect } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { AxiosError } from "axios";
+import { FormikHelpers, useFormik } from "formik";
 
-import { Formik, FormikHelpers } from "formik";
-import { Button, ButtonVariant } from "@patternfly/react-core";
-import { css } from "@patternfly/react-styles";
-import styles from "@patternfly/react-styles/css/components/Wizard/wizard";
+import { Form } from "@patternfly/react-core";
 
 import { AdvancedOptionsForm, ConditionalRender } from "components";
 import {
@@ -28,21 +26,26 @@ import { AdvancedOption, AnalysisContext } from "models/api";
 import { saveAnalysisContext, getAnalysisContext } from "api/api";
 import { getAxiosErrorMessage } from "utils/modelUtils";
 
-import NewProjectWizard, {
-  WizardStepIds,
-  LoadingWizardContent,
-  useWizardCancelRedirect,
-} from "../wizard";
+import { useCancelWizard } from "../wizard/useCancelWizard";
+import {
+  NewProjectWizard,
+  NewProjectWizardStepIds,
+} from "../wizard/project-wizard";
+import {
+  getMaxAllowedStepToJumpTo,
+  getPathFromStep,
+} from "../wizard/wizard-utils";
+import { WizardFooter } from "../wizard/project-wizard-footer";
+import { LoadingWizardContent } from "../wizard/loading-content";
 
 interface SetAdvancedOptionsProps extends RouteComponentProps<ProjectRoute> {}
 
 export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
   match,
-  history: { push },
+  history,
 }) => {
   const dispatch = useDispatch();
-
-  const redirectOnCancel = useWizardCancelRedirect();
+  const cancelWizard = useCancelWizard();
 
   /**
    * Fetch organization and analysisContext
@@ -51,9 +54,9 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
   const {
     project,
     analysisContext,
-    isFetching: isFetchingProject,
-    fetchError: fetchProjectError,
-    loadProject,
+    isFetching,
+    fetchError,
+    fetchProject: loadProject,
   } = useFetchProject();
 
   useEffect(() => {
@@ -67,11 +70,10 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
   const configurationOptions = useSelector((state: RootState) =>
     configurationOptionSelector.configurationOptions(state)
   );
-  const isFetchingConfigurationOptions =
-    useSelector((state: RootState) => {
-      return configurationOptionSelector.status(state);
-    }) === "inProgress";
-  const fetchConfigurationOptionsError = useSelector((state: RootState) =>
+  const configurationOptionsFetchStatus = useSelector((state: RootState) =>
+    configurationOptionSelector.status(state)
+  );
+  const configurationOptionsFetchError = useSelector((state: RootState) =>
     configurationOptionSelector.error(state)
   );
 
@@ -81,34 +83,11 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
     }
   }, [configurationOptions, dispatch]);
 
-  /**
-   * Handlers
-   */
-
-  const handleOnNextStep = (
-    formValues: any,
-    formikHelpers: FormikHelpers<any>
-  ) => {
-    handleOnSubmit(formValues, formikHelpers);
-  };
-
-  const handleOnBackStep = () => {
-    push(
-      formatPath(Paths.newProject_customLabels, {
-        project: match.params.project,
-      })
-    );
-  };
-
-  const handleOnCancel = useCallback(() => {
-    redirectOnCancel(push, project);
-  }, [project, push, redirectOnCancel]);
-
   //
 
   const handleOnSubmit = (
     formValues: any,
-    { setSubmitting }: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>
   ) => {
     if (!project) {
       return;
@@ -147,14 +126,14 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
         return saveAnalysisContext(project.id, body, true);
       })
       .then(() => {
-        push(
+        history.push(
           formatPath(Paths.newProject_review, {
             project: project.id,
           })
         );
       })
       .catch((error: AxiosError) => {
-        setSubmitting(false);
+        formikHelpers.setSubmitting(false);
         dispatch(
           alertActions.alert(
             getAlertModel("danger", "Error", getAxiosErrorMessage(error))
@@ -163,92 +142,87 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
       });
   };
 
-  const stepId = WizardStepIds.ADVANCED_OPTIONS;
+  const formik = useFormik({
+    enableReinitialize: true,
+    validateOnMount: true,
+    validateOnChange: false,
+    validateOnBlur: false,
+    initialValues:
+      analysisContext && configurationOptions
+        ? buildInitialValues(analysisContext, configurationOptions)
+        : undefined,
+    validationSchema: configurationOptions
+      ? buildSchema(configurationOptions)
+      : undefined,
+    onSubmit: handleOnSubmit,
+    initialErrors: !project ? { name: "" } : {},
+  });
 
-  if (!analysisContext || !configurationOptions) {
-    return (
-      <NewProjectWizard
-        stepId={stepId}
-        enableNext={true}
-        disableNavigation={true}
-      >
-        <LoadingWizardContent />
-      </NewProjectWizard>
+  const handleOnGoToStep = (newStep: NewProjectWizardStepIds) => {
+    history.push(
+      formatPath(getPathFromStep(newStep), {
+        project: match.params.project,
+      })
     );
-  }
+  };
+
+  const handleOnNext = () => {
+    formik.submitForm();
+  };
+
+  const handleOnBack = () => {
+    history.push(
+      formatPath(getPathFromStep(NewProjectWizardStepIds.CUSTOM_LABELS), {
+        project: match.params.project,
+      })
+    );
+  };
+
+  const handleOnCancel = () => cancelWizard(history.push);
+
+  const currentStep = NewProjectWizardStepIds.ADVANCED_OPTIONS;
+  const disableNav =
+    isFetching ||
+    configurationOptionsFetchStatus === "inProgress" ||
+    formik.isSubmitting ||
+    formik.isValidating;
+  const canJumpUpto =
+    !formik.isValid || formik.dirty
+      ? currentStep
+      : getMaxAllowedStepToJumpTo(project, analysisContext);
+
+  const footer = (
+    <WizardFooter
+      isDisabled={disableNav}
+      isNextDisabled={disableNav}
+      onBack={handleOnBack}
+      onNext={handleOnNext}
+      onCancel={handleOnCancel}
+    />
+  );
 
   return (
-    <Formik
-      validateOnMount
-      validateOnChange={false}
-      validateOnBlur={false}
-      initialValues={buildInitialValues(analysisContext, configurationOptions)}
-      validationSchema={buildSchema(configurationOptions)}
-      onSubmit={handleOnNextStep}
+    <NewProjectWizard
+      disableNav={disableNav}
+      stepId={currentStep}
+      canJumpUpTo={canJumpUpto}
+      footer={footer}
+      showErrorContent={fetchError || configurationOptionsFetchError}
+      onGoToStep={handleOnGoToStep}
     >
-      {({ isValidating, isSubmitting, handleSubmit, ...formik }) => {
-        const loading = isFetchingProject || isFetchingConfigurationOptions;
-        const disableNavigation = loading || isSubmitting || isValidating;
-
-        return (
-          <form
-            onSubmit={handleSubmit}
-            className="pf-l-stack pf-l-stack__item pf-m-fill"
-          >
-            <NewProjectWizard
-              stepId={stepId}
-              enableNext={true}
-              disableNavigation={disableNavigation}
-              showErrorContent={
-                fetchProjectError || fetchConfigurationOptionsError
-              }
-              migrationProject={project}
-              analysisContext={analysisContext}
-              footer={
-                <footer className={css(styles.wizardFooter)}>
-                  <Button
-                    variant={ButtonVariant.primary}
-                    type="submit"
-                    isDisabled={disableNavigation}
-                  >
-                    Next
-                  </Button>
-                  <Button
-                    variant={ButtonVariant.secondary}
-                    onClick={handleOnBackStep}
-                    isDisabled={disableNavigation}
-                  >
-                    Back
-                  </Button>
-                  <Button
-                    variant={ButtonVariant.link}
-                    onClick={handleOnCancel}
-                    isDisabled={disableNavigation}
-                  >
-                    Cancel
-                  </Button>
-                </footer>
-              }
-            >
-              <ConditionalRender when={loading} then={<LoadingWizardContent />}>
-                <>
-                  {configurationOptions && (
-                    <AdvancedOptionsForm
-                      configurationOptions={configurationOptions}
-                      {...{
-                        ...formik,
-                        isValidating,
-                        isSubmitting,
-                        handleSubmit,
-                      }}
-                    />
-                  )}
-                </>
-              </ConditionalRender>
-            </NewProjectWizard>
-          </form>
-        );
-      }}
-    </Formik>
+      <ConditionalRender
+        when={isFetching || configurationOptionsFetchStatus === "inProgress"}
+        then={<LoadingWizardContent />}
+      >
+        <Form onSubmit={formik.handleSubmit}>
+          {formik.initialValues && configurationOptions && (
+            <AdvancedOptionsForm
+              configurationOptions={configurationOptions}
+              {...formik}
+            />
+          )}
+        </Form>
+      </ConditionalRender>
+    </NewProjectWizard>
   );
 };

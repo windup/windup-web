@@ -5,42 +5,85 @@ import { Paths, formatPath, ProjectRoute } from "Paths";
 import { CustomLabels } from "containers/custom-labels";
 import { useFetchProject } from "hooks/useFetchProject";
 
-import NewProjectWizard, { WizardStepIds } from "../wizard";
+import { useCancelWizard } from "../wizard/useCancelWizard";
+import {
+  NewProjectWizard,
+  NewProjectWizardStepIds,
+} from "../wizard/project-wizard";
+import {
+  getMaxAllowedStepToJumpTo,
+  getPathFromStep,
+} from "../wizard/wizard-utils";
+import { WizardFooter } from "../wizard/project-wizard-footer";
 
 interface SetCustomLabelsProps extends RouteComponentProps<ProjectRoute> {}
 
 export const SetCustomLabels: React.FC<SetCustomLabelsProps> = ({
   match,
-  history: { push },
+  history,
 }) => {
+  const cancelWizard = useCancelWizard();
+
   const {
     project,
     analysisContext,
+    isFetching,
     fetchError,
-    loadProject,
+    fetchProject: loadProject,
   } = useFetchProject();
 
   useEffect(() => {
     loadProject(match.params.project);
   }, [match, loadProject]);
 
-  const handleOnNextStep = () => {
-    push(
+  const onGoToStep = (newStep: NewProjectWizardStepIds) => {
+    history.push(
+      formatPath(getPathFromStep(newStep), {
+        project: project?.id,
+      })
+    );
+  };
+
+  const handleOnBack = () => {
+    history.push(
+      formatPath(Paths.newProject_customRules, {
+        project: match.params.project,
+      })
+    );
+  };
+
+  const handleOnNext = () => {
+    history.push(
       formatPath(Paths.newProject_advandedOptions, {
         project: match.params.project,
       })
     );
   };
 
+  const handleOnCancel = () => cancelWizard(history.push);
+
+  const currentStep = NewProjectWizardStepIds.CUSTOM_LABELS;
+  const disableNav = isFetching;
+  const canJumpUpto = getMaxAllowedStepToJumpTo(project, analysisContext);
+
+  const footer = (
+    <WizardFooter
+      isDisabled={disableNav}
+      isNextDisabled={disableNav}
+      onBack={handleOnBack}
+      onNext={handleOnNext}
+      onCancel={handleOnCancel}
+    />
+  );
+
   return (
     <NewProjectWizard
-      stepId={WizardStepIds.CUSTOM_LABELS}
-      enableNext={true}
-      disableNavigation={false}
-      handleOnNextStep={handleOnNextStep}
-      migrationProject={project}
-      analysisContext={analysisContext}
+      disableNav={disableNav}
+      stepId={currentStep}
+      canJumpUpTo={canJumpUpto}
+      footer={footer}
       showErrorContent={fetchError}
+      onGoToStep={onGoToStep}
     >
       <CustomLabels
         projectId={match.params.project}

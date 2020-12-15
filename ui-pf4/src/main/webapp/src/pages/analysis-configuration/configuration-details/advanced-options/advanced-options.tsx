@@ -71,7 +71,7 @@ export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({
     analysisContext,
     isFetching: isFetchingProject,
     fetchError: fetchProjectError,
-    loadProject,
+    fetchProject: loadProject,
   } = useFetchProject();
 
   useEffect(() => {

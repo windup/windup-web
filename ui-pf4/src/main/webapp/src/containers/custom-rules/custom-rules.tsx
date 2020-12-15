@@ -94,7 +94,7 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
     analysisContext,
     isFetching: isFetchingProject,
     fetchError: fetchProjectError,
-    loadProject,
+    fetchProject: loadProject,
   } = useFetchProject();
 
   const {

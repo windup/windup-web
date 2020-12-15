@@ -136,7 +136,7 @@ export const useTreeSelectionState = <T>({
       isEqual
     );
     if (!treeNode) {
-      throw Error("Tree node not found");
+      throw new Error("Tree node not found");
     }
 
     let newSelectedNodes: T[];
