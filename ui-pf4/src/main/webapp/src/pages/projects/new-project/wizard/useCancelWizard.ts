@@ -25,9 +25,6 @@ export const useCancelWizard = () => {
             dispatch(deleteDialogActions.closeModal());
             push(Paths.projects);
           },
-          onCancel: () => {
-            dispatch(deleteDialogActions.closeModal());
-          },
         })
       );
     },
