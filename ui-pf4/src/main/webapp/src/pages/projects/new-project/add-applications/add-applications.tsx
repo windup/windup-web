@@ -1,11 +1,9 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { FormikHelpers, useFormik } from "formik";
 import { AxiosError, AxiosPromise } from "axios";
 
 import {
-  Button,
-  ButtonVariant,
   Divider,
   Form,
   Stack,
@@ -13,8 +11,6 @@ import {
   Title,
   TitleSizes,
 } from "@patternfly/react-core";
-import { css } from "@patternfly/react-styles";
-import styles from "@patternfly/react-styles/css/components/Wizard/wizard";
 
 import { useDispatch } from "react-redux";
 import { alertActions } from "store/alert";
@@ -31,6 +27,7 @@ import {
   AddApplicationsTabsType,
   AddApplicationsList,
 } from "components";
+import { AddApplicationsUploadFilesFormValues } from "components/add-applications-form/add-applications-uploadfiles-form";
 import { AddApplicationsServerPathFormValues } from "components/add-applications-form/add-applications-serverpath-form";
 
 import { useFetchProject } from "hooks/useFetchProject";
@@ -45,44 +42,57 @@ import {
 } from "api/api";
 import { getAxiosErrorMessage } from "utils/modelUtils";
 
-import NewProjectWizard, {
-  WizardStepIds,
-  LoadingWizardContent,
-  useWizardCancelRedirect,
-} from "../wizard";
+import {
+  NewProjectWizard,
+  NewProjectWizardStepIds,
+} from "../wizard/project-wizard";
+import { useCancelWizard } from "../wizard/useCancelWizard";
+import { WizardFooter } from "../wizard/project-wizard-footer";
+import { LoadingWizardContent } from "../wizard/loading-content";
+import {
+  getMaxAllowedStepToJumpTo,
+  getPathFromStep,
+} from "../wizard/wizard-utils";
 
 interface AddApplicationsProps extends RouteComponentProps<ProjectRoute> {}
 
 export const AddApplications: React.FC<AddApplicationsProps> = ({
   match,
-  history: { push },
+  history,
 }) => {
   const [selectedTab, setSelectedTab] = useState(
     AddApplicationsTabsType.UPLOAD_FILE
   );
 
   const dispatch = useDispatch();
-  const redirectOnCancel = useWizardCancelRedirect();
+  const cancelWizard = useCancelWizard();
 
   const {
     project,
     analysisContext,
     isFetching,
     fetchError,
-    loadProject,
+    fetchProject: loadProject,
   } = useFetchProject();
 
   useEffect(() => {
     loadProject(match.params.project);
   }, [match, loadProject]);
 
-  const handleUploadFilesFormikSubmit = () => {
-    redirectToNextStep();
+  const handleUploadFilesFormikSubmit = (
+    values: AddApplicationsUploadFilesFormValues,
+    formikHelpers: FormikHelpers<AddApplicationsUploadFilesFormValues>
+  ) => {
+    history.push(
+      formatPath(Paths.newProject_setTransformationPath, {
+        project: match.params.project,
+      })
+    );
   };
 
   const handleServerPathFormikSubmit = (
     values: AddApplicationsServerPathFormValues,
-    { setSubmitting }: FormikHelpers<AddApplicationsServerPathFormValues>
+    formikHelpers: FormikHelpers<AddApplicationsServerPathFormValues>
   ) => {
     pathTargetType(values.serverPath)
       .then(({ data }) => {
@@ -104,10 +114,15 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
         return registerServerPathPromise;
       })
       .then(() => {
-        redirectToNextStep();
+        formikHelpers.setSubmitting(false);
+        history.push(
+          formatPath(Paths.newProject_setTransformationPath, {
+            project: match.params.project,
+          })
+        );
       })
       .catch((error: AxiosError) => {
-        setSubmitting(false);
+        formikHelpers.setSubmitting(false);
         dispatch(
           alertActions.alert(
             getAlertModel("danger", "Error", getAxiosErrorMessage(error))
@@ -137,88 +152,69 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
     if (selected === AddApplicationsTabsType.SERVER_PATH) {
       serverPathFormik.resetForm();
     }
-    // Do not resest uploadPathFormik since it holds the list of applications
   };
 
   const handleOnDeleteApplication = (applications: Application[]) => {
     uploadFilesFormik.setFieldValue("applications", applications);
   };
 
-  const handleOnNextStep = () => {
-    if (selectedTab === AddApplicationsTabsType.UPLOAD_FILE) {
-      uploadFilesFormik.submitForm();
-    } else {
-      serverPathFormik.submitForm();
-    }
-  };
-
-  const redirectToNextStep = () => {
-    push(
-      formatPath(Paths.newProject_setTransformationPath, {
+  const handleOnGoToStep = (newStep: NewProjectWizardStepIds) => {
+    history.push(
+      formatPath(getPathFromStep(newStep), {
         project: match.params.project,
       })
     );
   };
 
+  const handleOnNext = () => {
+    if (selectedTab === AddApplicationsTabsType.UPLOAD_FILE) {
+      uploadFilesFormik.submitForm();
+    } else if (selectedTab === AddApplicationsTabsType.SERVER_PATH) {
+      serverPathFormik.submitForm();
+    } else {
+      throw new Error("Invalid selected tab:" + selectedTab);
+    }
+  };
+
   const handleOnBack = () => {
-    push(
+    history.push(
       formatPath(Paths.newProject_details, {
         project: match.params.project,
       })
     );
   };
 
-  const handleOnCancel = useCallback(() => {
-    redirectOnCancel(push, project);
-  }, [project, push, redirectOnCancel]);
+  const handleOnCancel = () => cancelWizard(history.push);
 
-  const buildFooter = (formikConfig: any) => {
-    return (
-      <footer className={css(styles.wizardFooter)}>
-        <Button
-          type="button"
-          variant={ButtonVariant.primary}
-          isDisabled={
-            formikConfig.isSubmitting ||
-            formikConfig.isValidating ||
-            !formikConfig.isValid
-          }
-          onClick={handleOnNextStep}
-        >
-          Next
-        </Button>
-        <Button
-          type="button"
-          variant={ButtonVariant.secondary}
-          isDisabled={formikConfig.isSubmitting || formikConfig.isValidating}
-          onClick={handleOnBack}
-        >
-          Back
-        </Button>
-        <Button
-          type="button"
-          variant={ButtonVariant.link}
-          isDisabled={formikConfig.isSubmitting || formikConfig.isValidating}
-          onClick={handleOnCancel}
-        >
-          Cancel
-        </Button>
-      </footer>
-    );
-  };
+  const currentStep = NewProjectWizardStepIds.ADD_APPLICATIONS;
+  const formik =
+    selectedTab === AddApplicationsTabsType.UPLOAD_FILE
+      ? uploadFilesFormik
+      : serverPathFormik;
+  const disableNav = isFetching || formik.isSubmitting || formik.isValidating;
+  const canJumpUpto =
+    !formik.isValid || formik.dirty
+      ? currentStep
+      : getMaxAllowedStepToJumpTo(project, analysisContext);
+
+  const footer = (
+    <WizardFooter
+      isDisabled={disableNav}
+      isNextDisabled={disableNav || !formik.isValid}
+      onNext={handleOnNext}
+      onBack={handleOnBack}
+      onCancel={handleOnCancel}
+    />
+  );
 
   return (
     <NewProjectWizard
-      stepId={WizardStepIds.ADD_APPLICATIONS}
-      disableNavigation={false}
+      disableNav={disableNav}
+      stepId={currentStep}
+      canJumpUpTo={canJumpUpto}
+      footer={footer}
       showErrorContent={fetchError}
-      migrationProject={project}
-      analysisContext={analysisContext}
-      footer={
-        selectedTab === AddApplicationsTabsType.UPLOAD_FILE
-          ? buildFooter(uploadFilesFormik)
-          : buildFooter(serverPathFormik)
-      }
+      onGoToStep={handleOnGoToStep}
     >
       <ConditionalRender when={isFetching} then={<LoadingWizardContent />}>
         <Stack hasGutter>

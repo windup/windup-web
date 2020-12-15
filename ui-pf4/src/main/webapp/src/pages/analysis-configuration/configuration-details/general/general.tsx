@@ -45,7 +45,7 @@ export const General: React.FC<RulesProps> = ({ match, history: { push } }) => {
     analysisContext,
     isFetching,
     fetchError,
-    loadProject,
+    fetchProject: loadProject,
   } = useFetchProject();
 
   const [selectedTargets, setSelectedTargets] = useState<string[]>([]);

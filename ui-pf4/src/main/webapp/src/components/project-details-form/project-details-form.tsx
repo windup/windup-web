@@ -49,6 +49,7 @@ export const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
             onBlur={handleBlur}
             value={values.name}
             validated={getValidatedFromErrorTouched(errors.name, touched.name)}
+            autoComplete="off"
           />
         </FormGroup>
         <FormGroup

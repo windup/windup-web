@@ -19,15 +19,25 @@ import {
   getUnknownPackages,
 } from "utils/modelUtils";
 
-import NewProjectWizard, { WizardStepIds } from "../wizard";
+import {
+  NewProjectWizard,
+  NewProjectWizardStepIds,
+} from "../wizard/project-wizard";
+import { useCancelWizard } from "../wizard/useCancelWizard";
+import { WizardFooter } from "../wizard/project-wizard-footer";
+import {
+  getMaxAllowedStepToJumpTo,
+  getPathFromStep,
+} from "../wizard/wizard-utils";
 
 interface SelectPackagesProps extends RouteComponentProps<ProjectRoute> {}
 
 export const SelectPackages: React.FC<SelectPackagesProps> = ({
   match,
-  history: { push },
+  history,
 }) => {
   const dispatch = useDispatch();
+  const cancelWizard = useCancelWizard();
 
   const {
     project,
@@ -41,6 +51,8 @@ export const SelectPackages: React.FC<SelectPackagesProps> = ({
 
   const [selectedPackages, setSelectedPackages] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [dirty, setDirty] = useState(false);
 
   useEffect(() => {
     loadPackages(match.params.project);
@@ -57,30 +69,31 @@ export const SelectPackages: React.FC<SelectPackagesProps> = ({
   }, [analysisContext, applicationPackages]);
 
   const handleOnSelectedPackagesChange = (value: string[]) => {
+    setDirty(true);
     setSelectedPackages(value);
   };
 
   const handleOnUndo = () => {
     const newSelectedPackages = getUnknownPackages(applicationPackages || []);
+
+    const packagesChanged =
+      newSelectedPackages.length !== analysisContext?.includePackages.length ||
+      !newSelectedPackages.every((elem1) =>
+        analysisContext.includePackages.some(
+          (elem2) => elem2.fullName === elem1.fullName
+        )
+      );
+
+    if (packagesChanged) {
+      setDirty(true);
+    }
+
     setSelectedPackages(newSelectedPackages.map((f) => f.fullName));
   };
 
-  const handleOnNextStep = () => {
-    // If packages are still being loaded no need to wait, we can jump to next step
-    if (isFetching) {
-      push(
-        formatPath(Paths.newProject_customRules, {
-          project: project?.id,
-        })
-      );
-    } else {
-      onSubmit();
-    }
-  };
-
-  const onSubmit = () => {
+  const handleOnSubmit = () => {
     if (!project || !packages) {
-      return;
+      throw new Error("Undefined project or packages, can not handle submit");
     }
 
     setIsSubmitting(true);
@@ -93,9 +106,9 @@ export const SelectPackages: React.FC<SelectPackagesProps> = ({
         return saveAnalysisContext(project.id, newAnalysisContext, true);
       })
       .then(() => {
-        push(
+        history.push(
           formatPath(Paths.newProject_customRules, {
-            project: project.id,
+            project: match.params.project,
           })
         );
       })
@@ -109,15 +122,54 @@ export const SelectPackages: React.FC<SelectPackagesProps> = ({
       });
   };
 
+  const handleOnGoToStep = (newStep: NewProjectWizardStepIds) => {
+    history.push(
+      formatPath(getPathFromStep(newStep), {
+        project: match.params.project,
+      })
+    );
+  };
+
+  const handleOnNext = () => {
+    handleOnSubmit();
+  };
+
+  const handleOnBack = () => {
+    history.push(
+      formatPath(Paths.newProject_setTransformationPath, {
+        project: match.params.project,
+      })
+    );
+  };
+
+  const handleOnCancel = () => cancelWizard(history.push);
+
+  const isValid = selectedPackages.length > 0;
+  const currentStep = NewProjectWizardStepIds.SELECT_PACKAGES;
+  const disableNav = isFetching || isSubmitting;
+  const canJumpUpto =
+    !isValid || dirty
+      ? currentStep
+      : getMaxAllowedStepToJumpTo(project, analysisContext);
+
+  const footer = (
+    <WizardFooter
+      isDisabled={disableNav}
+      isNextDisabled={disableNav || !isValid}
+      onBack={handleOnBack}
+      onNext={handleOnNext}
+      onCancel={handleOnCancel}
+    />
+  );
+
   return (
     <NewProjectWizard
-      stepId={WizardStepIds.SELECT_PACKAGES}
-      enableNext={isFetching || selectedPackages.length > 0}
-      disableNavigation={isSubmitting}
-      handleOnNextStep={handleOnNextStep}
-      migrationProject={project}
-      analysisContext={analysisContext}
+      disableNav={disableNav}
+      stepId={currentStep}
+      canJumpUpTo={canJumpUpto}
+      footer={footer}
       showErrorContent={fetchError}
+      onGoToStep={handleOnGoToStep}
     >
       <PackageSelection
         packages={packages || []}

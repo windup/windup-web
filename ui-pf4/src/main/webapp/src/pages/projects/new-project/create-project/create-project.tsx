@@ -1,33 +1,29 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useEffect } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { AxiosError, AxiosPromise } from "axios";
-import { Formik, FormikHelpers } from "formik";
+import { FormikHelpers, useFormik } from "formik";
 
 import {
   Stack,
   StackItem,
   Title,
   TitleSizes,
-  Button,
-  ButtonVariant,
   Form,
 } from "@patternfly/react-core";
-import { css } from "@patternfly/react-styles";
-import styles from "@patternfly/react-styles/css/components/Wizard/wizard";
 
 import { useDispatch } from "react-redux";
 import { alertActions } from "store/alert";
 import {
+  ConditionalRender,
   ProjectDetailsForm,
   projectDetailsFormInitialValue,
   projectDetailsFormSchema,
 } from "components";
 import { ProjectDetailsFormValues } from "components/project-details-form/project-details-form";
-
 import { useFetchProject } from "hooks/useFetchProject";
 
 import { getAlertModel } from "Constants";
-import { Paths, formatPath, OptionalProjectRoute } from "Paths";
+import { formatPath, OptionalProjectRoute, Paths } from "Paths";
 
 import {
   deleteProvisionalProjects,
@@ -37,49 +33,47 @@ import {
 import { MigrationProject } from "models/api";
 import { getAxiosErrorMessage } from "utils/modelUtils";
 
-import NewProjectWizard, {
-  WizardStepIds,
-  LoadingWizardContent,
-  useWizardCancelRedirect,
-} from "../wizard";
+import {
+  NewProjectWizard,
+  NewProjectWizardStepIds,
+} from "../wizard/project-wizard";
+import { useCancelWizard } from "../wizard/useCancelWizard";
+import { WizardFooter } from "../wizard/project-wizard-footer";
+import { LoadingWizardContent } from "../wizard/loading-content";
+import {
+  getMaxAllowedStepToJumpTo,
+  getPathFromStep,
+} from "../wizard/wizard-utils";
 
 interface CreateProjectProps
   extends RouteComponentProps<OptionalProjectRoute> {}
 
 export const CreateProject: React.FC<CreateProjectProps> = ({
   match,
-  history: { push },
+  history,
 }) => {
   const dispatch = useDispatch();
-
-  const redirectOnCancel = useWizardCancelRedirect();
+  const cancelWizard = useCancelWizard();
 
   const {
     project,
     analysisContext,
     isFetching,
     fetchError,
-    loadProject,
+    fetchProject,
   } = useFetchProject();
 
   useEffect(() => {
     deleteProvisionalProjects();
 
     if (match.params.project) {
-      loadProject(match.params.project);
+      fetchProject(match.params.project);
     }
-  }, [match, loadProject]);
-
-  const handleOnNextStep = (
-    values: ProjectDetailsFormValues,
-    formikHelpers: FormikHelpers<ProjectDetailsFormValues>
-  ) => {
-    handleOnSubmit(values, formikHelpers);
-  };
+  }, [match, fetchProject]);
 
   const handleOnSubmit = (
     formValue: ProjectDetailsFormValues,
-    { setSubmitting }: FormikHelpers<ProjectDetailsFormValues>
+    formikHelpers: FormikHelpers<ProjectDetailsFormValues>
   ) => {
     const body: MigrationProject = {
       ...project,
@@ -96,15 +90,15 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
 
     promise
       .then(({ data }) => {
-        setSubmitting(false);
-        push(
+        formikHelpers.setSubmitting(false);
+        history.push(
           formatPath(Paths.newProject_addApplications, {
             project: data.id,
           })
         );
       })
       .catch((error: AxiosError) => {
-        setSubmitting(false);
+        formikHelpers.setSubmitting(false);
         dispatch(
           alertActions.alert(
             getAlertModel("danger", "Error", getAxiosErrorMessage(error))
@@ -113,80 +107,68 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
       });
   };
 
-  const handleOnCancel = useCallback(() => {
-    redirectOnCancel(push, project);
-  }, [project, push, redirectOnCancel]);
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: projectDetailsFormInitialValue(project),
+    validationSchema: projectDetailsFormSchema(project),
+    onSubmit: handleOnSubmit,
+    initialErrors: !project ? { name: "" } : {},
+  });
 
-  const stepId = WizardStepIds.DETAILS;
-
-  if (isFetching) {
-    return (
-      <NewProjectWizard
-        stepId={stepId}
-        enableNext={false}
-        disableNavigation={true}
-      >
-        <LoadingWizardContent />
-      </NewProjectWizard>
+  const handleOnGoToStep = (newStep: NewProjectWizardStepIds) => {
+    history.push(
+      formatPath(getPathFromStep(newStep), {
+        project: match.params.project,
+      })
     );
-  }
+  };
+
+  const handleOnNext = () => {
+    formik.submitForm();
+  };
+
+  const handleOnCancel = () => cancelWizard(history.push);
+
+  const currentStep = NewProjectWizardStepIds.DETAILS;
+  const disableNav = isFetching || formik.isSubmitting || formik.isValidating;
+  const canJumpUpto =
+    !formik.isValid || formik.dirty
+      ? currentStep
+      : getMaxAllowedStepToJumpTo(project, analysisContext);
+
+  const footer = (
+    <WizardFooter
+      hideBackButton
+      isDisabled={disableNav}
+      isNextDisabled={disableNav || !formik.isValid}
+      onNext={handleOnNext}
+      onCancel={handleOnCancel}
+    />
+  );
 
   return (
-    <Formik
-      initialValues={projectDetailsFormInitialValue(project)}
-      validationSchema={projectDetailsFormSchema(project)}
-      onSubmit={handleOnNextStep}
-      initialErrors={!project ? { name: "" } : {}} // Form initial isValid value
+    <NewProjectWizard
+      disableNav={disableNav}
+      stepId={currentStep}
+      canJumpUpTo={canJumpUpto}
+      footer={footer}
+      showErrorContent={fetchError}
+      onGoToStep={handleOnGoToStep}
     >
-      {({ isValid, isValidating, isSubmitting, handleSubmit, ...formik }) => {
-        const disableNavigation = isSubmitting || isValidating;
-
-        return (
-          <Form
-            onSubmit={handleSubmit}
-            className="pf-l-stack pf-l-stack__item pf-m-fill"
-          >
-            <NewProjectWizard
-              stepId={stepId}
-              disableNavigation={disableNavigation}
-              showErrorContent={fetchError}
-              migrationProject={project}
-              analysisContext={analysisContext}
-              footer={
-                <footer className={css(styles.wizardFooter)}>
-                  <Button
-                    variant={ButtonVariant.primary}
-                    type="submit"
-                    isDisabled={disableNavigation || !isValid}
-                  >
-                    Next
-                  </Button>
-                  <Button
-                    variant={ButtonVariant.link}
-                    onClick={handleOnCancel}
-                    isDisabled={disableNavigation}
-                  >
-                    Cancel
-                  </Button>
-                </footer>
-              }
-            >
-              <Stack hasGutter>
-                <StackItem>
-                  <Title headingLevel="h5" size={TitleSizes["lg"]}>
-                    Project details
-                  </Title>
-                </StackItem>
-                <StackItem>
-                  <ProjectDetailsForm
-                    {...{ ...formik, isValidating, isSubmitting, handleSubmit }}
-                  />
-                </StackItem>
-              </Stack>
-            </NewProjectWizard>
-          </Form>
-        );
-      }}
-    </Formik>
+      <ConditionalRender when={isFetching} then={<LoadingWizardContent />}>
+        <Form onSubmit={formik.handleSubmit}>
+          <Stack hasGutter>
+            <StackItem>
+              <Title headingLevel="h5" size={TitleSizes["lg"]}>
+                Project details
+              </Title>
+            </StackItem>
+            <StackItem>
+              <ProjectDetailsForm {...formik} />
+            </StackItem>
+          </Stack>
+        </Form>
+      </ConditionalRender>
+    </NewProjectWizard>
   );
 };
