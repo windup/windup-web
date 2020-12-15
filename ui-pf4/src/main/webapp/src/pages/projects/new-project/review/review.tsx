@@ -27,6 +27,7 @@ import { alertActions } from "store/alert";
 import { ConditionalRender } from "components";
 import { useFetchProject } from "hooks/useFetchProject";
 import { useFetchRules } from "hooks/useFetchRules";
+import { useFetchLabels } from "hooks/useFetchLabels";
 
 import { AdvancedOptionsFieldKey, getAlertModel } from "Constants";
 import { formatPath, Paths, ProjectRoute } from "Paths";
@@ -36,6 +37,7 @@ import {
   saveAnalysisContext,
 } from "api/api";
 import { getAxiosErrorMessage } from "utils/modelUtils";
+import { AnalysisContext } from "models/api";
 
 import { useCancelWizard } from "../wizard/useCancelWizard";
 import {
@@ -164,7 +166,7 @@ export const Review: React.FC<ReviewProps> = ({ match, history }) => {
       disableNav={disableNav}
       stepId={currentStep}
       canJumpUpTo={canJumpUpto}
-      showErrorContent={fetchError}
+      showErrorContent={fetchError || fetchRulesError || fetchLabelsError}
       onGoToStep={handleOnGoToStep}
       footer={
         <footer className={css(styles.wizardFooter)}>
