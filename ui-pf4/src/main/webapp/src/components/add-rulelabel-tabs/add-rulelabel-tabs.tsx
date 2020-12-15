@@ -111,7 +111,7 @@ export const AddRuleLabelTabs: React.FC<AddRuleLabelTabsProps> = ({
             } as LabelsPath,
           ];
         } else {
-          throw Error("Unsupported type");
+          throw new Error("Unsupported type");
         }
 
         return updateConfiguration(newConfiguration);

@@ -499,7 +499,7 @@ export const SourceTargetFilterToolbarGroup: React.FC<SourceTargetFilterToolbarG
       values = selectedTargets;
       callbackFn = onSelectedTargetsChange;
     } else {
-      throw Error("firstFilterValue must be 'source' or 'target'");
+      throw new Error("firstFilterValue must be 'source' or 'target'");
     }
 
     if (values.includes(selection)) {

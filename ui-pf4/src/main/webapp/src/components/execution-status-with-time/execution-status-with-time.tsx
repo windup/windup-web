@@ -35,7 +35,7 @@ export const getTime = (execution: WindupExecution, currentTime: number) => {
   } else if (!execution.timeCompleted && execution.timeStarted) {
     return currentTime - execution.timeStarted;
   }
-  throw Error("Could not determine time for execution");
+  throw new Error("Could not determine time for execution");
 };
 
 export interface ExecutionStatusWithTimeProps {

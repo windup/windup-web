@@ -95,7 +95,7 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
     analysisContext,
     isFetching: isFetchingProject,
     fetchError: fetchProjectError,
-    loadProject,
+    fetchProject: loadProject,
   } = useFetchProject();
 
   const {
