@@ -80,7 +80,14 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
         onSubmit={handleOnSubmit}
         initialErrors={{ name: "" }}
       >
-        {({ isValid, isValidating, isSubmitting, handleSubmit, ...formik }) => {
+        {({
+          isValid,
+          isValidating,
+          isSubmitting,
+          dirty,
+          handleSubmit,
+          ...formik
+        }) => {
           return (
             <Form onSubmit={handleSubmit}>
               <ProjectDetailsForm
@@ -95,7 +102,9 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
                 <Button
                   type="submit"
                   variant={ButtonVariant.primary}
-                  isDisabled={isSubmitting || isValidating || !isValid}
+                  isDisabled={
+                    isSubmitting || isValidating || !isValid || !dirty
+                  }
                 >
                   Save
                 </Button>
