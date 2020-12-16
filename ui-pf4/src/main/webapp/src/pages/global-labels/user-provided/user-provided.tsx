@@ -138,6 +138,7 @@ export const UserProvided: React.FC = () => {
             {
               title: (
                 <RulelabelTitle
+                  type="Label"
                   name={item.shortPath || item.path}
                   errors={errors}
                   numberOfRulesLabels={numberOfLabels}

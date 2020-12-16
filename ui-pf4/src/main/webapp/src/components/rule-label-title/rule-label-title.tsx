@@ -9,13 +9,17 @@ import {
   global_danger_color_100 as dangerColor,
 } from "@patternfly/react-tokens";
 
+import { RuleLabel } from "models/api";
+
 export interface RulelabelTitleProps {
+  type: RuleLabel;
   name: string;
   errors: string[];
   numberOfRulesLabels: number;
 }
 
 export const RulelabelTitle: React.FC<RulelabelTitleProps> = ({
+  type,
   name,
   errors,
   numberOfRulesLabels,
@@ -33,7 +37,9 @@ export const RulelabelTitle: React.FC<RulelabelTitleProps> = ({
   }
   if (numberOfRulesLabels === 0) {
     info = (
-      <Tooltip content="Could not identify any rule inside this file/folder">
+      <Tooltip
+        content={`Could not identify any ${type.toLocaleLowerCase()} inside this file/folder`}
+      >
         <i>
           {" "}
           <WarningTriangleIcon color={warningColor.value} />

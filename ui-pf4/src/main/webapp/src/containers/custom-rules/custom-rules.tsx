@@ -208,6 +208,7 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
             {
               title: (
                 <RulelabelTitle
+                  type="Rule"
                   name={item.shortPath || item.path}
                   errors={errors}
                   numberOfRulesLabels={numberOfRules}
