@@ -202,7 +202,7 @@ export const Overview: React.FC<OverviewProps> = ({ match }) => {
                   )}
                   {execution.analysisContext.includePackages.length === 0 && (
                     <span>
-                      No packages defined. Default MTA configuration will be
+                      No packages defined. Default configuration will be
                       applied.
                     </span>
                   )}
