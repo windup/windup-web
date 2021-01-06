@@ -94,7 +94,7 @@ public class PF4FreemarkerServlet extends freemarker.ext.servlet.FreemarkerServl
              */
             String apiServerUrl = this.readEnvVariable(
                     "MTA_API_SERVER_URL",
-                    System.getProperty("mta.apiServer.url", serverAddress + "/mta-web/api")
+                    System.getProperty("mta.apiServer.url", serverAddress + "/mta-ui/api")
             );
 
             hashModel.put("apiServerUrl", apiServerUrl);
