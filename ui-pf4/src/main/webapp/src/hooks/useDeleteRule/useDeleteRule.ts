@@ -14,8 +14,7 @@ export const useDeleteRule = () => {
 
   const deleteRule = (
     rulePath: RulesPath,
-    onSuccess?: (rulePath: RulesPath) => void,
-    onCancel?: () => void
+    onSuccess?: (rulePath: RulesPath) => void
   ) => {
     dispatch(
       deleteDialogActions.openModal({
@@ -62,12 +61,6 @@ export const useDeleteRule = () => {
             .finally(() => {
               dispatch(deleteDialogActions.closeModal());
             });
-        },
-        onCancel: () => {
-          dispatch(deleteDialogActions.closeModal());
-          if (onCancel) {
-            onCancel();
-          }
         },
       })
     );
