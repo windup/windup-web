@@ -207,6 +207,7 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
             {
               title: (
                 <RulelabelTitle
+                  type="Label"
                   name={item.shortPath || item.path}
                   errors={errors}
                   numberOfRulesLabels={numberOfLabels}
