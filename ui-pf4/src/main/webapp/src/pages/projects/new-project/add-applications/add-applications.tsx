@@ -32,7 +32,7 @@ import { AddApplicationsServerPathFormValues } from "components/add-applications
 
 import { useFetchProject } from "hooks/useFetchProject";
 
-import { getAlertModel } from "Constants";
+import { Constants, getAlertModel } from "Constants";
 import { formatPath, Paths, ProjectRoute } from "Paths";
 import { Application } from "models/api";
 import {
@@ -142,7 +142,9 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
 
   const serverPathFormik = useFormik({
     initialValues: AddApplicationsServerPathFormSchemaInitialValues(),
-    validationSchema: AddApplicationsServerPathFormSchema(),
+    validationSchema: AddApplicationsServerPathFormSchema(
+      Constants.ALLOWED_APPLICATION_EXTENSIONS
+    ),
     onSubmit: handleServerPathFormikSubmit,
     initialErrors: { serverPath: "" },
   });

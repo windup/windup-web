@@ -1,6 +1,6 @@
 import { object, string, boolean, array } from "yup";
 
-import { pathExists } from "api/api";
+import { pathExists, pathTargetType } from "api/api";
 import { MigrationProject } from "models/api";
 
 import { AddApplicationsServerPathFormValues } from "./add-applications-serverpath-form";
@@ -16,7 +16,9 @@ export const AddApplicationsUploadFilesFormInitialValues = (
   return { applications: project ? project.applications : [] };
 };
 
-export const AddApplicationsServerPathFormSchema = () => {
+export const AddApplicationsServerPathFormSchema = (accept: string) => {
+  const validFileExtensions = accept.split(",").map((f) => f.trim());
+
   const validationSchema = object<AddApplicationsServerPathFormValues>().shape({
     serverPath: string()
       .trim()
@@ -27,9 +29,21 @@ export const AddApplicationsServerPathFormSchema = () => {
         (value) => {
           return pathExists(value!)
             .then(({ data }) => data)
-            .catch((error) => {
-              return false;
-            });
+            .catch(() => false);
+        }
+      )
+      .test(
+        "invalidFileExtension",
+        `The path is a file, filename must has a valid extension. Valid extensions: ${accept}.`,
+        (value) => {
+          return pathTargetType(value!)
+            .then(({ data }) => {
+              if (data === "FILE") {
+                return validFileExtensions.some((f) => value?.endsWith(f));
+              }
+              return true;
+            })
+            .catch(() => false);
         }
       ),
     isExploded: boolean(),

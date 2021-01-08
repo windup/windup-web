@@ -4,7 +4,6 @@ interface Item {
   name: string;
   type: string;
   onDelete: () => void;
-  onCancel: () => void;
   config?: {
     title: string;
     message: string;

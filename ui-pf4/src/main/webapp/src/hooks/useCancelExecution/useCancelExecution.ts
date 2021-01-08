@@ -14,8 +14,7 @@ export const useCancelExecution = () => {
 
   const cancelExecutionFn = (
     execution: WindupExecution,
-    onSuccess?: (execution: WindupExecution) => void,
-    onCancel?: () => void
+    onSuccess?: (execution: WindupExecution) => void
   ) => {
     dispatch(
       deleteDialogActions.openModal({
@@ -43,12 +42,6 @@ export const useCancelExecution = () => {
             .finally(() => {
               dispatch(deleteDialogActions.closeModal());
             });
-        },
-        onCancel: () => {
-          dispatch(deleteDialogActions.closeModal());
-          if (onCancel) {
-            onCancel();
-          }
         },
       })
     );
