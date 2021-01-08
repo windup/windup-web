@@ -61,6 +61,8 @@ export const Packages: React.FC<PackagesProps> = ({
   const [selectedPackages, setSelectedPackages] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [dirty, setDirty] = useState(false);
+
   useEffect(() => {
     if (!isNullOrUndefined(match.params.project)) {
       loadPackages(match.params.project);
@@ -78,11 +80,24 @@ export const Packages: React.FC<PackagesProps> = ({
   }, [analysisContext, applicationPackages]);
 
   const handleOnSelectedPackagesChange = (value: string[]) => {
+    setDirty(true);
     setSelectedPackages(value);
   };
 
   const handleOnUndo = () => {
     const newSelectedPackages = getUnknownPackages(applicationPackages || []);
+
+    const packagesChanged =
+      newSelectedPackages.length !== analysisContext?.includePackages.length ||
+      !newSelectedPackages.every((elem1) =>
+        analysisContext.includePackages.some(
+          (elem2) => elem2.fullName === elem1.fullName
+        )
+      );
+    if (packagesChanged) {
+      setDirty(true);
+    }
+
     setSelectedPackages(newSelectedPackages.map((f) => f.fullName));
   };
 
@@ -134,6 +149,10 @@ export const Packages: React.FC<PackagesProps> = ({
     );
   };
 
+  const isValid = selectedPackages.length > 0;
+  const arePrimaryButtonsDisabled =
+    !isValid || !dirty || isFetching || isSubmitting;
+
   return (
     <ConditionalRender
       when={isNullOrUndefined(match.params.project)}
@@ -162,7 +181,7 @@ export const Packages: React.FC<PackagesProps> = ({
               <Button
                 type="button"
                 variant={ButtonVariant.primary}
-                isDisabled={selectedPackages.length === 0 || isSubmitting}
+                isDisabled={arePrimaryButtonsDisabled}
                 onClick={() => onSubmit(false)}
               >
                 Save
@@ -170,7 +189,7 @@ export const Packages: React.FC<PackagesProps> = ({
               <Button
                 type="button"
                 variant={ButtonVariant.primary}
-                isDisabled={selectedPackages.length === 0 || isSubmitting}
+                isDisabled={arePrimaryButtonsDisabled}
                 onClick={() => onSubmit(true)}
               >
                 Save and run

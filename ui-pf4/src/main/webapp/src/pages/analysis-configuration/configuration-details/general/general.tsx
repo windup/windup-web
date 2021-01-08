@@ -51,6 +51,8 @@ export const General: React.FC<RulesProps> = ({ match, history: { push } }) => {
   const [selectedTargets, setSelectedTargets] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [dirty, setDirty] = useState(false);
+
   useEffect(() => {
     if (!isNullOrUndefined(match.params.project)) {
       loadProject(match.params.project);
@@ -65,10 +67,6 @@ export const General: React.FC<RulesProps> = ({ match, history: { push } }) => {
       setSelectedTargets(targets.map((f) => f.value));
     }
   }, [analysisContext]);
-
-  const handleTargetSelectionChange = (values: string[]) => {
-    setSelectedTargets(values);
-  };
 
   const onSubmit = (runAnalysis: boolean) => {
     if (!project) {
@@ -124,6 +122,11 @@ export const General: React.FC<RulesProps> = ({ match, history: { push } }) => {
       });
   };
 
+  const handleTargetSelectionChange = (values: string[]) => {
+    setDirty(true);
+    setSelectedTargets(values);
+  };
+
   const onCancel = () => {
     push(
       formatPath(Paths.executions, {
@@ -131,6 +134,10 @@ export const General: React.FC<RulesProps> = ({ match, history: { push } }) => {
       })
     );
   };
+
+  const isValid = selectedTargets.length > 0;
+  const arePrimaryButtonsDisabled =
+    !isValid || !dirty || isFetching || isSubmitting;
 
   return (
     <ConditionalRender
@@ -158,7 +165,7 @@ export const General: React.FC<RulesProps> = ({ match, history: { push } }) => {
               <Button
                 type="button"
                 variant={ButtonVariant.primary}
-                isDisabled={selectedTargets.length === 0 || isSubmitting}
+                isDisabled={arePrimaryButtonsDisabled}
                 onClick={() => onSubmit(false)}
               >
                 Save
@@ -166,7 +173,7 @@ export const General: React.FC<RulesProps> = ({ match, history: { push } }) => {
               <Button
                 type="button"
                 variant={ButtonVariant.primary}
-                isDisabled={selectedTargets.length === 0 || isSubmitting}
+                isDisabled={arePrimaryButtonsDisabled}
                 onClick={() => onSubmit(true)}
               >
                 Save and run

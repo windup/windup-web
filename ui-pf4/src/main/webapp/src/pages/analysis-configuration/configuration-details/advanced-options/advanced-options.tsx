@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { RouteComponentProps } from "react-router-dom";
-import { Formik, FormikHelpers } from "formik";
+import { FormikHelpers, useFormik } from "formik";
 import { AxiosError } from "axios";
 
 import {
@@ -178,104 +178,103 @@ export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({
       });
   };
 
+  const formik = useFormik({
+    enableReinitialize: true,
+    validateOnMount: true,
+    validateOnChange: false,
+    validateOnBlur: false,
+    initialValues:
+      analysisContext && configurationOptions
+        ? {
+            [SUBMIT_BUTTON]: "",
+            ...buildInitialValues(analysisContext, configurationOptions),
+          }
+        : undefined,
+    validationSchema: configurationOptions
+      ? buildSchema(configurationOptions)
+      : undefined,
+    onSubmit: (values, formikHelpers) => {
+      const { submitButton, ...formValues } = values;
+      handleOnSubmit(
+        formValues,
+        formikHelpers,
+        submitButton === SAVE_AND_EXECUTE
+      );
+    },
+    initialErrors: !project ? { name: "" } : {},
+  });
+
+  const isFetching =
+    isFetchingProject || fetchConfigurationOptionsStatus === "inProgress";
+  const fetchError = fetchProjectError || fetchConfigurationOptionsError;
+
+  const arePrimaryButtonsDisabled =
+    isFetching ||
+    !formik.isValid ||
+    !formik.dirty ||
+    formik.isValidating ||
+    formik.isSubmitting;
+
+  if (fetchError) {
+    return (
+      <Card>
+        <CardBody>
+          <FetchErrorEmptyState />
+        </CardBody>
+      </Card>
+    );
+  }
+
   return (
     <ConditionalRender
       when={isNullOrUndefined(match.params.project)}
       then={<SelectProjectEmptyMessage />}
     >
-      {isFetchingProject || fetchConfigurationOptionsStatus === "inProgress" ? (
-        <AppPlaceholder />
-      ) : fetchProjectError || fetchConfigurationOptionsError ? (
-        <Card>
-          <CardBody>
-            <FetchErrorEmptyState />
-          </CardBody>
-        </Card>
-      ) : (
-        <>
-          {analysisContext && configurationOptions && (
-            <Formik
-              validateOnMount
-              validateOnChange={false}
-              validateOnBlur={false}
-              initialValues={{
-                [SUBMIT_BUTTON]: "",
-                ...buildInitialValues(analysisContext, configurationOptions),
-              }}
-              validationSchema={buildSchema(configurationOptions)}
-              onSubmit={(values, formikHelpers) => {
-                const { submitButton, ...formValues } = values;
-                handleOnSubmit(
-                  formValues,
-                  formikHelpers,
-                  submitButton === SAVE_AND_EXECUTE
-                );
-              }}
-            >
-              {({
-                isValidating,
-                isSubmitting,
-                submitForm,
-                handleSubmit,
-                setFieldValue,
-                ...formik
-              }) => (
-                <Form onSubmit={handleSubmit}>
-                  <Stack>
-                    <StackItem>
-                      <Card>
-                        <CardBody>
-                          <AdvancedOptionsForm
-                            configurationOptions={configurationOptions}
-                            {...{
-                              ...formik,
-                              isValidating,
-                              isSubmitting,
-                              submitForm,
-                              handleSubmit,
-                              setFieldValue,
-                            }}
-                          />
-                        </CardBody>
-                      </Card>
-                    </StackItem>
-                    {!fetchProjectError && !fetchConfigurationOptionsError && (
-                      <StackItem>
-                        <ActionGroup>
-                          <Button
-                            type="submit"
-                            onClick={() => setFieldValue(SUBMIT_BUTTON, SAVE)}
-                            variant={ButtonVariant.primary}
-                            isDisabled={isSubmitting || isValidating}
-                          >
-                            Save
-                          </Button>
-                          <Button
-                            type="submit"
-                            onClick={() =>
-                              setFieldValue(SUBMIT_BUTTON, SAVE_AND_EXECUTE)
-                            }
-                            variant={ButtonVariant.primary}
-                            isDisabled={isSubmitting || isValidating}
-                          >
-                            Save and run
-                          </Button>
-                          <Button
-                            variant={ButtonVariant.link}
-                            onClick={onCancel}
-                          >
-                            Cancel
-                          </Button>
-                        </ActionGroup>
-                      </StackItem>
-                    )}
-                  </Stack>
-                </Form>
-              )}
-            </Formik>
-          )}
-        </>
-      )}
+      <ConditionalRender when={isFetching} then={<AppPlaceholder />}>
+        <Form onSubmit={formik.handleSubmit}>
+          <Stack>
+            {formik.initialValues && configurationOptions && (
+              <StackItem>
+                <Card>
+                  <CardBody>
+                    <AdvancedOptionsForm
+                      configurationOptions={configurationOptions}
+                      {...formik}
+                    />
+                  </CardBody>
+                </Card>
+              </StackItem>
+            )}
+            {!fetchError && (
+              <StackItem>
+                <ActionGroup>
+                  <Button
+                    type="submit"
+                    onClick={() => formik.setFieldValue(SUBMIT_BUTTON, SAVE)}
+                    variant={ButtonVariant.primary}
+                    isDisabled={arePrimaryButtonsDisabled}
+                  >
+                    Save
+                  </Button>
+                  <Button
+                    type="submit"
+                    onClick={() =>
+                      formik.setFieldValue(SUBMIT_BUTTON, SAVE_AND_EXECUTE)
+                    }
+                    variant={ButtonVariant.primary}
+                    isDisabled={arePrimaryButtonsDisabled}
+                  >
+                    Save and run
+                  </Button>
+                  <Button variant={ButtonVariant.link} onClick={onCancel}>
+                    Cancel
+                  </Button>
+                </ActionGroup>
+              </StackItem>
+            )}
+          </Stack>
+        </Form>
+      </ConditionalRender>
     </ConditionalRender>
   );
 };
