@@ -236,7 +236,7 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
                   onChange={(isChecked) =>
                     handleRulePathToggled(isChecked, item)
                   }
-                  isDisabled={errors.length > 0}
+                  isDisabled={errors.length > 0 || numberOfRules === 0}
                 />
               ),
             },
