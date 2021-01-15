@@ -244,7 +244,7 @@ export const Review: React.FC<ReviewProps> = ({ match, history }) => {
                   </DescriptionListDescription>
                 </DescriptionListGroup>
                 <DescriptionListGroup>
-                  <DescriptionListTerm>Target</DescriptionListTerm>
+                  <DescriptionListTerm>Targets</DescriptionListTerm>
                   <DescriptionListDescription>
                     {analysisContext.advancedOptions
                       .filter((f) => f.name === AdvancedOptionsFieldKey.TARGET)
