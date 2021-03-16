@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.jboss.windup.web</groupId>
         <artifactId>windup-web-tests-parent</artifactId>
-        <version>5.1.3-SNAPSHOT</version>
+        <version>5.1.3.Final</version>
     </parent>
 
     <artifactId>windup-tests-e2e</artifactId>
