@@ -183,8 +183,12 @@ export class SelectPackagesComponent implements OnDestroy {
             let node: Package = packages[i];
 
             // Flatter if possible
+            // 'flatternedNodes' explanation: if node is flatterned, then it should be selectable either by parent or flatterned node.
+            // E.g. given org.apache.lucene, then we should select the node either with 'org', 'org.lucene', or 'org.apache.lucene'
+            const flatternedNodes: Package[] = [];
             if (node.childs && node.childs.length == 1) {
                 while (node.childs && node.childs.length == 1) {
+                    flatternedNodes.push(node);
                     node = node.childs[0];
                 }
 
@@ -194,6 +198,9 @@ export class SelectPackagesComponent implements OnDestroy {
 
             this.parentNestedNodeMap.set(packages[i], parent);
             this.idNestedNodeMap.set(packages[i].id, packages[i]);
+            flatternedNodes.forEach(item => {
+                this.idNestedNodeMap.set(item.id, packages[i]);
+            });
 
             this.processPackagesBeforeSendingToDatasource(packages[i].childs, packages[i]);
         }
@@ -395,10 +402,26 @@ export class SelectPackagesComponent implements OnDestroy {
      * Updates 'NgModel' value when select or unselect events occur
      */
     updateValue(): void {
-        this._value = this.getCheckedNodes(this._packages);
+        const oldValue: PackageSelection = this._value || { includePackages:[], excludePackages: [] };
+        const newValue: PackageSelection = this.getCheckedNodes(this._packages);
 
-        // Emit event
-        this.onSelectionChange.emit(this._value);
+        const oldIncludedIDs = oldValue.includePackages.map(elem => elem.id);
+        const oldExcludedIDs = oldValue.excludePackages.map(elem => elem.id);
+            
+        const newIncludedIDs = newValue.includePackages.map(elem => elem.id);
+        const newExcludedIDs = newValue.excludePackages.map(elem => elem.id);
+    
+        const valueChanged: boolean = (oldIncludedIDs.length != newIncludedIDs.length) ||
+                        (oldExcludedIDs.length != newExcludedIDs.length) ||
+                        oldIncludedIDs.some(elem => !newIncludedIDs.includes(elem)) ||
+                        oldExcludedIDs.some(elem => !newExcludedIDs.includes(elem));
+
+        if (valueChanged) {
+            this._value = newValue;
+
+            // Emit event
+            this.onSelectionChange.emit(this._value);
+        }
     }
 
     private getCheckedNodes(packageTree: Package[]): PackageSelection {

@@ -237,8 +237,8 @@ export class CustomLabelsComponent extends RoutedComponent implements ControlVal
             return item;
         }).sort(this.sortLabelsPath);
 
-        const oldIDs = oldValue.map(elem => elem.id);
-        const newIDs = newValue.map(elem => elem.id);
+        const oldIDs = (oldValue || []).map(elem => elem.id);
+        const newIDs = (newValue || []).map(elem => elem.id);
         const valueChanged: boolean = (oldIDs.length != newIDs.length) || oldIDs.some(elem => !newIDs.includes(elem));
         
         if (valueChanged) {

@@ -212,7 +212,6 @@ export class AnalysisContextFormComponent extends FormComponent
                                     this.loadPackageMetadata();
                                 });
                         }
-                        this.loadPackageMetadata();
                     });
                 });
             }

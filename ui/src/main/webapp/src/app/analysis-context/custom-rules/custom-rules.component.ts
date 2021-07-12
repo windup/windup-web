@@ -238,8 +238,8 @@ export class CustomRulesComponent extends RoutedComponent implements ControlValu
             return item;
         }).sort(this.sortRulesPath);
 
-        const oldIDs = oldValue.map(elem => elem.id);
-        const newIDs = newValue.map(elem => elem.id);
+        const oldIDs = (oldValue || []).map(elem => elem.id);
+        const newIDs = (newValue || []).map(elem => elem.id);
         const valueChanged: boolean = (oldIDs.length != newIDs.length) || oldIDs.some(elem => !newIDs.includes(elem));
         if (valueChanged) {
             this.value = newValue;
