@@ -3291,9 +3291,9 @@ jquery-match-height@0.7.0, jquery-match-height@~0.7.0:
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/jquery-match-height/-/jquery-match-height-0.7.0.tgz#351e51f161ccef7de08ae64ada8c8dc5c1890cca"
 
-"jquery@>= 2.1.x", jquery@>=1.7, jquery@>=1.7.0, jquery@>=1.7.1, jquery@>=1.8, jquery@>=1.9.1, jquery@^3.1.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.1.1.tgz#347c1c21c7e004115e0a4da32cece041fad3c8a3"
+"jquery@>= 2.1.x", jquery@>=1.7, jquery@>=1.7.0, jquery@>=1.7.1, jquery@>=1.8, jquery@>=1.9.1, jquery@^3.5.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.5.0.tgz#9980b97d9e4194611c36530e7dc46a58d7340fc9"
 
 "jquery@>=1.8.3 <2.2.0", jquery@~2.1.4:
   version "2.1.4"
@@ -4104,10 +4104,6 @@ negotiator@0.6.1:
 ng2-file-upload@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/ng2-file-upload/-/ng2-file-upload-1.2.1.tgz#5563c5dfd6f43fbfbe815c206e343464a0a6a197"
-
-ng2-slim-loading-bar@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/ng2-slim-loading-bar/-/ng2-slim-loading-bar-4.0.0.tgz#7256fdde7c058f14955a3ef2e65afafb5b664603"
 
 no-case@^2.2.0:
   version "2.3.1"
