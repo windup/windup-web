@@ -13,7 +13,7 @@
 
     <groupId>org.jboss.windup.web.ui</groupId>
     <artifactId>windup-web-ui-tsmodels</artifactId>
-    <version>5.2.0-SNAPSHOT</version>
+    <version>5.2.0.Final</version>
 
     <name>Windup Web - Generate TS Models</name>
 
@@ -137,4 +137,8 @@
         </profile>
 
     </profiles>
+
+  <scm>
+    <tag>5.2.0.Final</tag>
+  </scm>
 </project>
