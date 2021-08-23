@@ -25,7 +25,7 @@ import "./ButtonAboutApp.scss";
 import { WINDUP_WEB_VERSION, WINDUP_WEB_SCM_REVISION } from "Constants";
 import { getWindupVersion } from "api/api";
 
-import brandImage from "images/red-hat-horizontal-reverse.svg";
+import brandImage from "images/tackle-horizontal-reverse.png";
 import { WindupVersion } from "models/api";
 
 export const ButtonAboutApp: React.FC = () => {

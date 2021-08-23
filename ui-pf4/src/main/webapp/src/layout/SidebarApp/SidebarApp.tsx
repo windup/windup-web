@@ -10,7 +10,7 @@ import { Paths, formatPath } from "Paths";
 import { RootState } from "store/rootReducer";
 import { projectContextSelectors } from "store/projectContext";
 
-import redHatLogo from "images/red-hat-horizontal-reverse.svg";
+import logo from "images/tackle-horizontal-reverse.png";
 
 export const SidebarApp: React.FC = () => {
   const selectedProject = useSelector((state: RootState) =>
@@ -90,7 +90,7 @@ export const SidebarApp: React.FC = () => {
             bottom: 0,
           }}
         >
-          <img src={redHatLogo} alt="Red Hat" style={{ height: 34 }} />
+          <img src={logo} alt="Tackle" style={{ height: 54 }} />
         </section>
       </Nav>
     );
