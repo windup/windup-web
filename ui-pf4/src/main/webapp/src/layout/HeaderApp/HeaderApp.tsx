@@ -18,7 +18,7 @@ import { useKeycloak } from "@react-keycloak/web";
 
 import "./HeaderApp.scss";
 
-import navBrandImage from "images/mta-logo-header.svg";
+import navBrandImage from "images/tackle.png";
 import imgAvatar from "images/avatar.svg";
 
 import { ButtonAboutApp } from "../ButtonAboutApp";

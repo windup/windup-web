@@ -18,12 +18,12 @@ exports[`Test snapshot :: open modal 1`] = `
     appendTo={null}
     backgroundImageSrc=""
     brandImageAlt="Red Hat"
-    brandImageSrc="tackle-horizontal-reverse.png"
+    brandImageSrc="tackle.png"
     className="about-app__component"
     isOpen={true}
     noAboutModalBoxContentContainer={false}
     onClose={[Function]}
-    productName="Migration Toolkit for Applications"
+    productName="Tackle Analysis"
     trademark=""
   >
     <TextContent
@@ -38,7 +38,7 @@ exports[`Test snapshot :: open modal 1`] = `
           rel="noopener noreferrer"
           target="_blank"
         >
-          Migration Toolkit for Applications
+          Tackle Analysis
         </a>
          
         allows application architects and developers to quickly decompile, analyze, assess and modernize large scale application portfolios and migrate them to Red Hat Middleware, cloud and containers.
@@ -56,7 +56,7 @@ exports[`Test snapshot :: open modal 1`] = `
           <span
             className="dt"
           >
-            Migration Toolkit for Applications Core
+            Tackle Analysis Core
           </span>
         </GridItem>
         <GridItem
@@ -70,7 +70,7 @@ exports[`Test snapshot :: open modal 1`] = `
           <span
             className="dt"
           >
-            Migration Toolkit for Applications Web Console
+            Tackle Analysis Web Console
           </span>
         </GridItem>
         <GridItem
@@ -216,12 +216,12 @@ exports[`Test snapshot 1`] = `
     appendTo={null}
     backgroundImageSrc=""
     brandImageAlt="Red Hat"
-    brandImageSrc="tackle-horizontal-reverse.png"
+    brandImageSrc="tackle.png"
     className="about-app__component"
     isOpen={false}
     noAboutModalBoxContentContainer={false}
     onClose={[Function]}
-    productName="Migration Toolkit for Applications"
+    productName="Tackle Analysis"
     trademark=""
   >
     <TextContent
@@ -236,7 +236,7 @@ exports[`Test snapshot 1`] = `
           rel="noopener noreferrer"
           target="_blank"
         >
-          Migration Toolkit for Applications
+          Tackle Analysis
         </a>
          
         allows application architects and developers to quickly decompile, analyze, assess and modernize large scale application portfolios and migrate them to Red Hat Middleware, cloud and containers.
@@ -254,7 +254,7 @@ exports[`Test snapshot 1`] = `
           <span
             className="dt"
           >
-            Migration Toolkit for Applications Core
+            Tackle Analysis Core
           </span>
         </GridItem>
         <GridItem
@@ -268,7 +268,7 @@ exports[`Test snapshot 1`] = `
           <span
             className="dt"
           >
-            Migration Toolkit for Applications Web Console
+            Tackle Analysis Web Console
           </span>
         </GridItem>
         <GridItem

@@ -25,12 +25,12 @@ export const Welcome: React.FC<WelcomeProps> = ({ onPrimaryAction }) => {
         />
       </div>
       <Title headingLevel="h4" size="lg">
-        Welcome to the Migration Toolkit for Applications
+        Welcome to Tackle Analysis
       </Title>
       <EmptyStateBody>
-        The Migration Toolkit for Applications helps you assess and perform
-        large-scale application migrations and modernizations. Start by creating
-        a project for your applications.
+        Tackle Analysis helps you assess and perform large-scale application
+        migrations and modernizations. Start by creating a project for your
+        applications.
       </EmptyStateBody>
       <Button variant="primary" onClick={onPrimaryAction}>
         Create project
