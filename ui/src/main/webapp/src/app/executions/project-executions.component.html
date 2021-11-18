@@ -16,7 +16,7 @@
 
 </div>
 <wu-executions-list *ngIf="executions?.length > 0"
-        (reloadRequestEvent)="refreshExecutionList()"
+        (reloadRequestEvent)="refreshExecutionFromRequestEvent()"
         (runExecution)="startExecution()"
         [executions]="executions"
         [activeExecutions]="activeExecutions"

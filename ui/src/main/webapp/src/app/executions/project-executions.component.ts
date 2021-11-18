@@ -72,6 +72,11 @@ export class ProjectExecutionsComponent extends ExecutionsMonitoringComponent im
         }
     }
 
+    refreshExecutionFromRequestEvent() {
+        this.doNotRefreshList = false;
+        this.refreshExecutionList();
+    }
+
     refreshExecutionList() {
         this._windupService.getProjectExecutions(this.project.id).subscribe(executions => {
             this.executions = executions;
