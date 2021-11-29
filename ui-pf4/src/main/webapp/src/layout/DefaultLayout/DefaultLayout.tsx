@@ -7,7 +7,7 @@ import { HeaderApp } from "../HeaderApp";
 import { SidebarApp } from "../SidebarApp";
 
 export const DefaultLayout: React.FC = ({ children }) => {
-  const [showBanner, setShowBanner] = useState(true);
+  const [showBanner, setShowBanner] = useState(false);
 
   const pageId = "main-content-page-layout-horizontal-nav";
   const PageSkipToContent = (
