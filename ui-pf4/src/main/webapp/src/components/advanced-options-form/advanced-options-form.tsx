@@ -174,11 +174,16 @@ export const AdvancedOptionsForm: React.FC<AdvancedOptionsFormProps> = ({
                       placeholderText={
                         fieldInfo.placeholder ? fieldInfo.placeholder : ""
                       }
-                      isCreatable={false}
+                      isCreatable={true}
+                      onCreateOption={(newOptionVal) => {
+                        handleOnDropdownSelect(field, newOptionVal);
+                      }}
                     >
-                      {fieldConfiguration.availableValues.map((option, i) => (
-                        <SelectOption key={i} value={option} />
-                      ))}
+                      {[...fieldConfiguration.availableValues]
+                        .sort()
+                        .map((option, i) => (
+                          <SelectOption key={i} value={option} />
+                        ))}
                     </Select>
                   </FormGroup>
                 );

@@ -208,9 +208,11 @@ export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({
     isFetchingProject || fetchConfigurationOptionsStatus === "inProgress";
   const fetchError = fetchProjectError || fetchConfigurationOptionsError;
 
+  // "Save" and "Save and Run" should be enable even though form is invalid because
+  // Form is validated not on every change but just on Submit time.
   const arePrimaryButtonsDisabled =
     isFetching ||
-    !formik.isValid ||
+    // !formik.isValid ||
     !formik.dirty ||
     formik.isValidating ||
     formik.isSubmitting;

@@ -234,7 +234,10 @@ export const buildSchema = (availableOptions: ConfigurationOption[]) => {
 
             return !isValid
               ? new ValidationError(
-                  responses.map((f) => f.data.message),
+                  responses
+                    .filter((f) => f.data.level === "ERROR")
+                    .map((f) => f.data.message)
+                    .join(" | "),
                   value,
                   fieldKey
                 )
