@@ -213,6 +213,7 @@
         <dependency>
             <groupId>org.jboss.shrinkwrap.resolver</groupId>
             <artifactId>shrinkwrap-resolver-depchain</artifactId>
+            <version>3.1.4</version>
             <scope>test</scope>
             <type>pom</type>
         </dependency>
@@ -412,7 +413,7 @@
             <plugin>
                 <groupId>org.bsc.maven</groupId>
                 <artifactId>maven-processor-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>4.5</version>
                 <executions>
                     <execution>
                         <id>process</id>

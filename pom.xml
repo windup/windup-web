@@ -18,9 +18,9 @@
     <description>Migration Tools Web Interface</description>
 
     <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.target>1.8</maven.compiler.target>
         <version.findbugs.plugin>3.0.5</version.findbugs.plugin>
         <version.forge>3.9.2.Final</version.forge>
         <version.furnace>2.28.4.Final</version.furnace>
@@ -62,6 +62,7 @@
             <archive>http://lists.jboss.org/pipermail/windup-dev/</archive>
         </mailingList>
     </mailingLists>
+
 
     <distributionManagement>
         <snapshotRepository>
@@ -233,7 +234,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.2</version>
+                    <version>3.8.1</version>
                     <configuration>
                         <compilerVersion>${maven.compiler.target}</compilerVersion>
                         <source>${maven.compiler.target}</source>

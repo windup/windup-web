@@ -25,7 +25,7 @@ public class Deployments
     public static WebArchive createDeploymentInMemory()
     {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "api.war");
-        PomEquippedResolveStage pom = Maven.resolver().loadPomFromFile("pom.xml");
+        PomEquippedResolveStage pom = Maven.configureResolver().fromFile("../settings.xml").loadPomFromFile("pom.xml");
         List<JavaArchive> archives = pom.importRuntimeDependencies().resolve().withTransitivity().asList(JavaArchive.class);
 
         // Make a mutable copy of the list
