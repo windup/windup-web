@@ -128,7 +128,7 @@
     "remap-istanbul": "^0.6.4",
     "rimraf": "^2.5.1",
     "sass-loader": "6.0.7",
-    "shelljs": "^0.7.0",
+    "shelljs": "^0.8.5",
     "style-loader": "0.21.0",
     "text-loader": "^0.0.1",
     "ts-helpers": "^1.1.1",
