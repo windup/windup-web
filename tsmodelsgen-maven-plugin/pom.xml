@@ -26,8 +26,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
 
         <version.windup.core>5.2.2-SNAPSHOT</version.windup.core>
         <!-- this property is used in the code too, DO NOT REMOVE IT! -->
@@ -108,10 +108,28 @@
             <artifactId>windup-tooling</artifactId>
             <classifier>forge-addon</classifier>
         </dependency>
+        <!-- Temporary trick to get around addon dependencies issues -->
+        <dependency>
+            <groupId>org.jboss.windup</groupId>
+            <artifactId>windup-tooling</artifactId>
+            <version>${version.windup.core}</version>
+        </dependency>
         <!-- But it isn't. The needed rest is referenced as deps in bootstrap. -->
         <dependency>
             <groupId>org.jboss.windup</groupId>
             <artifactId>windup-bootstrap</artifactId>
+        </dependency>
+
+        <!-- Temporary trick to get around addon dependencies issues -->
+        <dependency>
+            <groupId>org.jboss.windup.graph</groupId>
+            <artifactId>windup-graph-impl</artifactId>
+            <version>${version.windup.core}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.windup.rules.apps</groupId>
+            <artifactId>windup-rules-java-project</artifactId>
+            <version>${version.windup.core}</version>
         </dependency>
 
         <!-- TypescriptModelsGeneratingService -->

@@ -31,8 +31,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
 
         <version.windup.core>5.2.2-SNAPSHOT</version.windup.core>
         <!-- For now, we need to pass this to the Mojo explicitly (through META-INF/versions.properties),
@@ -64,6 +64,11 @@
             <dependency>
                 <groupId>org.jboss.windup.rules</groupId>
                 <artifactId>windup-rulesets</artifactId>
+                <version>${version.windup.core}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.windup.config</groupId>
+                <artifactId>windup-config-impl</artifactId>
                 <version>${version.windup.core}</version>
             </dependency>
         </dependencies>
