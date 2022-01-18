@@ -38,6 +38,9 @@ jobs:
           distribution: 'adopt'
           java-package: jdk
           cache: 'maven'
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '12'
       - name: Build
         run: mvn clean install -U -s settings.xml
 

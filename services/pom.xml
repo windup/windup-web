@@ -18,8 +18,6 @@
     <name>Windup Web - Services</name>
     <packaging>war</packaging>
 
-    
-    
     <dependencies>
         <!-- Java EE -->
         <dependency>
