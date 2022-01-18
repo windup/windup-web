@@ -1,5 +1,0 @@
-<tr>
-    <th *ngFor="let header of tableHeaders" (click)="header.isSortable ? sortBy(header.sortBy) : null">{{header.title}}
-        <wu-sort-indicator *ngIf="header.isSortable" [isActive]="sort.property === header.sortBy" [direction]="sort.direction"></wu-sort-indicator>
-    </th>
-</tr>

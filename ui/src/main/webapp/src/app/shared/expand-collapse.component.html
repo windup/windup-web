@@ -1,7 +1,0 @@
-<fieldset class="fields-section-pf">
-    <legend (click)="toggle()" class="fields-section-header-pf">
-        <span class="fa field-selection-toggle-pf fa-angle-right" [ngClass]="{'fa-angle-down': isActive}"></span>
-        <a class="field-section-toggle-pf pointer">{{tabTitle}}</a>
-    </legend>
-    <ng-content *ngIf="isActive"></ng-content>
-</fieldset>
