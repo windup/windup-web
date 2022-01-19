@@ -84,7 +84,6 @@
         <module>tsmodelsgen-invocation</module>
         <module>tests</module>
         <module>services</module>
-        <module>ui</module>
         <module>ui-pf4</module>
         <module>ear</module>
     </modules>

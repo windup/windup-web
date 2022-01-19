@@ -15,12 +15,6 @@
     <dependencies>
         <dependency>
             <groupId>org.jboss.windup.web</groupId>
-            <artifactId>windup-web-ui</artifactId>
-            <type>war</type>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.windup.web</groupId>
             <artifactId>windup-web-ui-pf4</artifactId>
             <type>war</type>
             <version>${project.version}</version>
@@ -47,12 +41,6 @@
                             <artifactId>windup-web-services</artifactId>
                             <contextRoot>/mta-web/api</contextRoot>
                             <bundleFileName>api.war</bundleFileName>
-                        </webModule>
-                        <webModule>
-                            <groupId>org.jboss.windup.web</groupId>
-                            <artifactId>windup-web-ui</artifactId>
-                            <contextRoot>/mta-web</contextRoot>
-                            <bundleFileName>mta-web.war</bundleFileName>
                         </webModule>
                         <webModule>
                             <groupId>org.jboss.windup.web</groupId>
