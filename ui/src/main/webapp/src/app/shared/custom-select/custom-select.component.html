@@ -1,7 +1,0 @@
-<select multiple class="form-control" [name]="name"
-        [ngModel]="selection"
-        (ngModelChange)="updateSelectedValue($event)">
-    <option *ngFor="let item of options" [ngValue]="item">
-        {{getLabel(item)}}
-    </option>
-</select>

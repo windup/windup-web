@@ -1,7 +1,0 @@
-<div *ngIf="showFilteredOutMessage" class="no-matches">
-    <ng-container i18n>The current filter is hiding all items.</ng-container>
-    <a action (click)="clearFilter.emit()" i18n href="javascript:void(0)">Remove</a> <ng-container i18n>the filter.</ng-container>
-</div>
-<ng-container *ngIf="!showFilteredOutMessage">
-    <ng-content></ng-content>
-</ng-container>
