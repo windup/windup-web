@@ -181,6 +181,7 @@
         <dependency>
             <groupId>org.jboss.arquillian.extension</groupId>
             <artifactId>arquillian-warp</artifactId>
+            <version>1.0.0</version>
             <scope>test</scope>
             <type>pom</type>
             <exclusions>
@@ -188,7 +189,23 @@
                     <groupId>org.apache.httpcomponents</groupId>
                     <artifactId>httpcore</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-1.2-api</artifactId>
+            <version>2.17.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.17.1</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.arquillian.extension</groupId>
