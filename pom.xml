@@ -37,6 +37,7 @@
         <windup.distribution.name>mta-cli</windup.distribution.name>
         <version.hibernate>5.3.14.Final</version.hibernate>
         <version.undertow>2.0.15.Final</version.undertow>
+        <version.jackson.databind>2.9.10.8</version.jackson.databind>
     </properties>
 
     <scm>
