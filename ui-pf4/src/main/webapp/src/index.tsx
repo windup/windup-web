@@ -10,16 +10,16 @@ import { initApi, initInterceptors } from "./api/apiInit";
 
 import { AppPlaceholder } from "components";
 
-import { KeycloakProvider } from "@react-keycloak/web";
+import { ReactKeycloakProvider } from "@react-keycloak/web";
 import keycloak from "./keycloak";
 
 initApi();
 
 ReactDOM.render(
   <React.StrictMode>
-    <KeycloakProvider
-      keycloak={keycloak}
-      initConfig={{ onLoad: "login-required" }}
+    <ReactKeycloakProvider
+      authClient={keycloak}
+      initOptions={{ onLoad: "login-required" }}
       LoadingComponent={<AppPlaceholder />}
       isLoadingCheck={(keycloak) => {
         if (keycloak.authenticated) {
@@ -44,7 +44,7 @@ ReactDOM.render(
       <Provider store={configureStore()}>
         <App />
       </Provider>
-    </KeycloakProvider>
+    </ReactKeycloakProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );
