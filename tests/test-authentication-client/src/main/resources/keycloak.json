@@ -5,7 +5,7 @@
   "credentials": {
     "client-id": "mta-web",
     "secret": "public",
-    "realm-public-key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwYo69uB9aD28Eg/UUfsMaQDRnEbKfUTnfe6H/yS0IQQ29nzV0w3054kaKrKpoyF/oGvcLOnRMoWLl/kyLrhJES9YJbZjpsPquUSzFjb/t1bVwBgU93mulQWW/vnVhZk0hRyS2j+Ito/z54sHViJuaaBf8RNkCUCkN7ly+eBUYpZROcEta6GkPBqKptTNQR+EtKIGzFx9Qsig6lJk4PCSUwtCdrYtHwlToeW3N9QJoILIj3UlXCdqnO2nVJKfQgE37WwA8xtLHsrMiUDCzvZVPH5aw9wD+UR7nXodPOZP44+r1WRLYpyXIEFEsEiq7ucoXUs0qatdiTe60Aiv4UYk1wIDAQAB",
+    "realm-public-key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhzGkMexMJ/stKe4ApsQM725i5pqnNlc5M8CB2uj8Lc77juFRKIjYwCJ7Zc1Zy2w0uaOHYBWuRnJ+9uQX6WtYmq4+FH09LyAH2rN4pi/nvdP8f9rU/vEKLpeMwcSbPgp2xKY+G2Ow5Uxh+CEZ5+3ZkNnwn99b9MP2Wad/l1UN7ObepRCy7zZNxxbB6qV4uqCbE02ZV8AXzgVia22D4yo6qpTVzULsNCdXuMwDkMvqPYylZlxq6L6pXxDyNJSwPZ9mDQW5adpS+CC4Rs1A32rU432IWw45qloIMAzJbpjdAD8aNmfXw0V89qj2SKbRisrDDKAWblyxewlmj3DqNPfBWQIDAQAB",
     "ssl-required": "external",
     "public-client": true
   }

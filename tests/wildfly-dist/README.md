@@ -5,7 +5,7 @@ Password: password
 
 Windup User:
 
-User: admin
+User: windup
 Password: password
 
 

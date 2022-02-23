@@ -146,7 +146,7 @@
             <dependency>
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-multipart-provider</artifactId>
-                <version>3.0.19.Final</version>
+                <version>${version.resteasy}</version>
                 <scope>provided</scope>
                 <exclusions>
                     <exclusion>
