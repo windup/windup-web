@@ -38,6 +38,7 @@
         <version.hibernate>5.3.14.Final</version.hibernate>
         <version.undertow>2.0.15.Final</version.undertow>
         <version.jackson.databind>2.9.10.8</version.jackson.databind>
+        <version.httpcomponents>4.5.13</version.httpcomponents>
     </properties>
 
     <scm>
@@ -196,6 +197,12 @@
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-jackson2-provider</artifactId>
                 <version>${version.resteasy}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-databind</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.jboss.arquillian.extension</groupId>
@@ -216,6 +223,21 @@
                 <version>2.52.0</version>
                 <scope>import</scope>
                 <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-core</artifactId>
+                <version>3.8.4</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>${version.httpcomponents}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpmime</artifactId>
+                <version>${version.httpcomponents}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
