@@ -67,6 +67,7 @@ export enum AdvancedOptionsFieldKey {
   ALLOW_NETWORK_ACCESS = "online",
   MAVENIZE = "mavenize",
   SOURCE_MODE = "sourceMode",
+  ANALYZE_KNOWN_LIBRARIES = "analyzeKnownLibraries",
 }
 
 //

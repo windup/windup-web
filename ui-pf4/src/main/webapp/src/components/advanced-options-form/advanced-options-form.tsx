@@ -57,6 +57,7 @@ interface FormValues {
   [AdvancedOptionsFieldKey.ALLOW_NETWORK_ACCESS]?: boolean;
   [AdvancedOptionsFieldKey.MAVENIZE]?: boolean;
   [AdvancedOptionsFieldKey.SOURCE_MODE]?: boolean;
+  [AdvancedOptionsFieldKey.ANALYZE_KNOWN_LIBRARIES]?: boolean;
 }
 
 export interface AdvancedOptionsFormProps
