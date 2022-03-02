@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.jboss</groupId>
         <artifactId>jboss-parent</artifactId>
-        <version>22</version>
+        <version>37</version>
         <relativePath />
     </parent>
 
@@ -28,7 +28,7 @@
         <version.keycloak>15.1.1</version.keycloak>
         <version.wildfly>23.0.2.Final</version.wildfly>
         <version.resteasy>3.15.1.Final</version.resteasy>
-        <version.jboss.javaee>1.0.3.Final</version.jboss.javaee>
+        <version.jboss.javaee>1.0.1.Final</version.jboss.javaee>
 
         <windup.web.scm.connection>scm:git:https://github.com/windup/windup-web.git</windup.web.scm.connection>
         <windup.web.developer.connection>scm:git:git@github.com:windup/windup-web.git</windup.web.developer.connection>
@@ -100,7 +100,7 @@
             </dependency>
             <dependency>
                 <groupId>org.jboss.spec</groupId>
-                <artifactId>jboss-javaee-7.0</artifactId>
+                <artifactId>jboss-jakartaee-8.0</artifactId>
                 <version>${version.jboss.javaee}</version>
                 <type>pom</type>
                 <scope>import</scope>

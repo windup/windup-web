@@ -15,7 +15,7 @@
         <!-- Java EE -->
         <dependency>
             <groupId>org.jboss.spec</groupId>
-            <artifactId>jboss-javaee-7.0</artifactId>
+            <artifactId>jboss-jakartaee-8.0</artifactId>
             <version>${version.jboss.javaee}</version>
             <type>pom</type>
             <scope>provided</scope>
