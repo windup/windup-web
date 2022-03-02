@@ -49,7 +49,7 @@
                             <bundleFileName>mta-ui.war</bundleFileName>
                         </webModule>
                     </modules>
-                    <fileNameMapping>no-version</fileNameMapping>
+                    <outputFileNameMapping>no-version</outputFileNameMapping>
                 </configuration>
             </plugin>
         </plugins>
