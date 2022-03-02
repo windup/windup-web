@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.jboss</groupId>
         <artifactId>jboss-parent</artifactId>
-        <version>22</version>
+        <version>37</version>
         <relativePath />
     </parent>
 
@@ -25,18 +25,18 @@
         <version.forge>3.9.2.Final</version.forge>
         <version.furnace>2.28.4.Final</version.furnace>
         <version.windup>5.3.0-SNAPSHOT</version.windup>
-        <version.keycloak>8.0.1</version.keycloak>
-        <version.wildfly>18.0.1.Final</version.wildfly>
-        <version.resteasy>3.0.19.Final</version.resteasy>
-        <version.jboss.javaee>1.0.3.Final</version.jboss.javaee>
+        <version.keycloak>15.1.1</version.keycloak>
+        <version.wildfly>23.0.2.Final</version.wildfly>
+        <version.resteasy>3.15.1.Final</version.resteasy>
+        <version.jboss.javaee>1.0.1.Final</version.jboss.javaee>
 
         <windup.web.scm.connection>scm:git:https://github.com/windup/windup-web.git</windup.web.scm.connection>
         <windup.web.developer.connection>scm:git:git@github.com:windup/windup-web.git</windup.web.developer.connection>
         <windup.web.scm.url>http://github.com/windup/windup-web</windup.web.scm.url>
 
         <windup.distribution.name>mta-cli</windup.distribution.name>
-        <version.hibernate>5.3.14.Final</version.hibernate>
-        <version.undertow>2.0.15.Final</version.undertow>
+        <version.hibernate>5.3.20.Final</version.hibernate>
+        <version.undertow>2.2.5.Final</version.undertow>
         <version.jackson.databind>2.9.10.8</version.jackson.databind>
     </properties>
 
@@ -100,7 +100,7 @@
             </dependency>
             <dependency>
                 <groupId>org.jboss.spec</groupId>
-                <artifactId>jboss-javaee-7.0</artifactId>
+                <artifactId>jboss-jakartaee-8.0</artifactId>
                 <version>${version.jboss.javaee}</version>
                 <type>pom</type>
                 <scope>import</scope>
@@ -146,7 +146,7 @@
             <dependency>
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-multipart-provider</artifactId>
-                <version>3.0.19.Final</version>
+                <version>${version.resteasy}</version>
                 <scope>provided</scope>
                 <exclusions>
                     <exclusion>
