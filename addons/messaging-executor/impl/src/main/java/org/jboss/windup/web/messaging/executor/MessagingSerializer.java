@@ -11,9 +11,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.jms.JMSContext;
@@ -25,8 +27,7 @@ import javax.jms.TextMessage;
 import org.jboss.windup.util.TarUtil;
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.services.json.WindupExecutionJSONUtil;
-import org.jboss.windup.web.services.model.RegisteredApplication;
-import org.jboss.windup.web.services.model.WindupExecution;
+import org.jboss.windup.web.services.model.*;
 import org.kamranzafar.jtar.TarEntry;
 import org.kamranzafar.jtar.TarInputStream;
 import org.kamranzafar.jtar.TarOutputStream;
@@ -223,6 +224,23 @@ public class MessagingSerializer extends AbstractSerializer implements Execution
             {
                 addFileToTar(tarOutputStream, application.getInputPath());
             }
+
+            List<RulesPath> userProvidedRulesPath = execution.getAnalysisContext().getRulesPaths().stream()
+                    .filter(rulePath -> rulePath.getRulesPathType().equals(PathType.USER_PROVIDED))
+                    .collect(Collectors.toList());
+            List<LabelsPath> userProvidedLabelsPath = execution.getAnalysisContext().getLabelsPaths().stream()
+                    .filter(rulePath -> rulePath.getLabelsPathType().equals(PathType.USER_PROVIDED))
+                    .collect(Collectors.toList());
+
+            for (RulesPath rulePath : userProvidedRulesPath)
+            {
+                addFileToTar(tarOutputStream, rulePath.getPath());
+            }
+            for (LabelsPath labelPath : userProvidedLabelsPath)
+            {
+                addFileToTar(tarOutputStream, labelPath.getPath());
+            }
+
             tarOutputStream.flush();
             tarOutputStream.close();
         }
