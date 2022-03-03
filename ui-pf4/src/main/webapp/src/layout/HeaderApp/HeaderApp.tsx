@@ -24,7 +24,7 @@ import imgAvatar from "images/avatar.svg";
 import { ButtonAboutApp } from "../ButtonAboutApp";
 
 export const HeaderApp: React.FC = () => {
-  const [keycloak] = useKeycloak();
+  const { keycloak } = useKeycloak();
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isKebabDropdownOpen, setIsKebabDropdownOpen] = useState(false);

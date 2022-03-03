@@ -14,7 +14,7 @@ import { isExecutionActive } from "utils/modelUtils";
 export const useSubscribeToExecutionWs = (
   execution: WindupExecution | WindupExecution[]
 ) => {
-  const [keycloak] = useKeycloak();
+  const { keycloak } = useKeycloak();
 
   const dispatch = useDispatch();
 
