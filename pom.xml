@@ -270,7 +270,7 @@
                                     <color>blue</color>
                                 </log>
                                 <user>root</user>
-                                <cmd>mvn --settings /${project.artifactId}/settings.xml -Dmaven.repo.local=${user.home}/.m2/repository ${build.args} -f /${project.artifactId}</cmd>
+                                <cmd>mvn --settings /${project.artifactId}/settings.xml -Dorg.apache.maven.user-settings=/${project.artifactId}/settings.xml -Dmaven.repo.local=${user.home}/.m2/repository ${build.args} -f /${project.artifactId}</cmd>
                                 <wait>
                                     <log>Finished at:</log>
                                     <time>7200000</time>
