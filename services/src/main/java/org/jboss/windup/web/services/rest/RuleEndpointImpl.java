@@ -2,6 +2,7 @@ package org.jboss.windup.web.services.rest;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -16,6 +17,7 @@ import javax.ws.rs.NotFoundException;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
+import org.jboss.windup.web.services.RuleProviderRegistryCache_UserProvidedGlobal;
 import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.Configuration;
 import org.jboss.windup.web.services.model.ExecutionState;
@@ -47,6 +49,9 @@ public class RuleEndpointImpl implements RuleEndpoint
 
     @Inject
     private ConfigurationService configurationService;
+
+    @Inject
+    private RuleProviderRegistryCache_UserProvidedGlobal ruleProviderRegistryCache_userProvidedGlobal;
 
     @Override
     public List<RuleProviderEntity> getAllProviders()
@@ -82,7 +87,15 @@ public class RuleEndpointImpl implements RuleEndpoint
     public RulesPath uploadRuleProvider(MultipartFormDataInput data)
     {
         Configuration configuration = this.configurationService.getGlobalConfiguration();
-        return uploadRuleProviderToConfiguration(data, configuration, null);
+        RulesPath rulesPath = uploadRuleProviderToConfiguration(data, configuration, null);
+
+        Path path = Paths.get(rulesPath.getPath());
+        ruleProviderRegistryCache_userProvidedGlobal.addUserRulesPath(path);
+
+        // This is just to make sure the cache gets reloaded
+        ruleProviderRegistryCache_userProvidedGlobal.getRuleProviderRegistry();
+
+        return rulesPath;
     }
 
     @Override
@@ -153,6 +166,12 @@ public class RuleEndpointImpl implements RuleEndpoint
 //                .executeUpdate();
 //
 //        this.entityManager.remove(rulesPath);
+
+        Path path = Paths.get(rulesPath.getPath());
+        ruleProviderRegistryCache_userProvidedGlobal.removeUserRulesPath(path);
+
+        // This is just to make sure the cache gets reloaded
+        ruleProviderRegistryCache_userProvidedGlobal.getRuleProviderRegistry();
     }
 
     @Override

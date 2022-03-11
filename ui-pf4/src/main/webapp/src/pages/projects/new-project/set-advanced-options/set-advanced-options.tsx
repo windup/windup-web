@@ -78,10 +78,12 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
   );
 
   useEffect(() => {
-    if (!configurationOptions) {
-      dispatch(configurationOptionActions.fetchConfigurationOptions());
+    if (analysisContext && !configurationOptions) {
+      dispatch(
+        configurationOptionActions.fetchConfigurationOptions(analysisContext)
+      );
     }
-  }, [configurationOptions, dispatch]);
+  }, [analysisContext, configurationOptions, dispatch]);
 
   //
 

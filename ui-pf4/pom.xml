@@ -208,57 +208,57 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <executions>
-                    <execution>
-                        <id>npm-install</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
+<!--                    <execution>-->
+<!--                        <id>npm-install</id>-->
+<!--                        <phase>compile</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>exec</goal>-->
+<!--                        </goals>-->
 
-                        <configuration>
-                            <executable>yarn</executable>
-                            <workingDirectory>src/main/webapp</workingDirectory>
-                            <arguments>
-                                <argument>install</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
+<!--                        <configuration>-->
+<!--                            <executable>yarn</executable>-->
+<!--                            <workingDirectory>src/main/webapp</workingDirectory>-->
+<!--                            <arguments>-->
+<!--                                <argument>install</argument>-->
+<!--                            </arguments>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
 
-                    <execution>
-                        <id>webpack-build</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
+<!--                    <execution>-->
+<!--                        <id>webpack-build</id>-->
+<!--                        <phase>compile</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>exec</goal>-->
+<!--                        </goals>-->
 
-                        <configuration>
-                            <executable>yarn</executable>
-                            <workingDirectory>src/main/webapp</workingDirectory>
-                            <environmentVariables>
-                                <NODE_ENV>production</NODE_ENV>
-                            </environmentVariables>
-                            <arguments>
-                                <argument>build</argument>
-                                <argument>--profile</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
+<!--                        <configuration>-->
+<!--                            <executable>yarn</executable>-->
+<!--                            <workingDirectory>src/main/webapp</workingDirectory>-->
+<!--                            <environmentVariables>-->
+<!--                                <NODE_ENV>production</NODE_ENV>-->
+<!--                            </environmentVariables>-->
+<!--                            <arguments>-->
+<!--                                <argument>build</argument>-->
+<!--                                <argument>&#45;&#45;profile</argument>-->
+<!--                            </arguments>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
 
-                    <execution>
-                        <id>webpack-build-freemarker</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
+<!--                    <execution>-->
+<!--                        <id>webpack-build-freemarker</id>-->
+<!--                        <phase>compile</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>exec</goal>-->
+<!--                        </goals>-->
 
-                        <configuration>
-                            <executable>yarn</executable>
-                            <workingDirectory>src/main/webapp</workingDirectory>
-                            <arguments>
-                                <argument>build:freemarker</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
+<!--                        <configuration>-->
+<!--                            <executable>yarn</executable>-->
+<!--                            <workingDirectory>src/main/webapp</workingDirectory>-->
+<!--                            <arguments>-->
+<!--                                <argument>build:freemarker</argument>-->
+<!--                            </arguments>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
                 </executions>
             </plugin>
         </plugins>

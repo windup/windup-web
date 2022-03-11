@@ -177,7 +177,10 @@ export const Fields: Map<AdvancedOptionsFieldKey, IFieldInfo> = new Map([
 
 // Schema
 
-export const buildSchema = (availableOptions: ConfigurationOption[]) => {
+export const buildSchema = (
+  availableOptions: ConfigurationOption[],
+  analysisContext?: AnalysisContext
+) => {
   const schema: any = {};
 
   getMapKeys(Fields).forEach((fieldKey: AdvancedOptionsFieldKey) => {
@@ -223,10 +226,13 @@ export const buildSchema = (availableOptions: ConfigurationOption[]) => {
 
         return Promise.all(
           values.map((f) =>
-            validateAdvancedOptionValue({
-              name: fieldKey,
-              value: f,
-            } as AdvancedOption)
+            validateAdvancedOptionValue(
+              {
+                name: fieldKey,
+                value: f,
+              } as AdvancedOption,
+              analysisContext
+            )
           )
         )
           .then((responses) => {
@@ -234,7 +240,10 @@ export const buildSchema = (availableOptions: ConfigurationOption[]) => {
 
             return !isValid
               ? new ValidationError(
-                  responses.map((f) => f.data.message),
+                  responses
+                    .filter((f) => f.data.level === "ERROR")
+                    .map((f) => f.data.message)
+                    .join(" | "),
                   value,
                   fieldKey
                 )

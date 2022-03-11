@@ -4,12 +4,9 @@ import org.jboss.windup.config.ConfigurationOption;
 import org.jboss.windup.config.ValidationResult;
 import org.jboss.windup.web.services.model.AdvancedOption;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Contains endpoints for getting available options and validating option values.
@@ -28,12 +25,12 @@ public interface ConfigurationOptionsEndpoint
      * Gets a list of options available from the server.
      */
     @GET
-    List<ConfigurationOption> getAllOptions();
+    List<ConfigurationOption> getAllOptions(@QueryParam("analysisContextId") Long analysisContextId);
 
     /**
      * Validates the provided option and returns the result.
      */
     @POST
     @Path(VALIDATE_OPTION)
-    ValidationResult validateOption(AdvancedOption advancedOption);
+    ValidationResult validateOption(@QueryParam("analysisContextId") Long analysisContextId, AdvancedOption advancedOption);
 }

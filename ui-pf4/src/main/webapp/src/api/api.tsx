@@ -260,17 +260,20 @@ export const deleteLabelPathById = (labelsPathId: number): AxiosPromise => {
   return ApiClient.delete(`labels/by-labels-path/${labelsPathId}`);
 };
 
-export const getAdvancedConfigurationOptions = (): AxiosPromise<
-  ConfigurationOption[]
-> => {
-  return ApiClient.get<ConfigurationOption[]>("configuration-options");
+export const getAdvancedConfigurationOptions = (
+  analysisContext?: AnalysisContext
+): AxiosPromise<ConfigurationOption[]> => {
+  return ApiClient.get<ConfigurationOption[]>(
+    `configuration-options?analysisContextId=${analysisContext?.id}`
+  );
 };
 
 export const validateAdvancedOptionValue = (
-  value: AdvancedOption
+  value: AdvancedOption,
+  analysisContext?: AnalysisContext
 ): AxiosPromise<ValidationResult> => {
   return ApiClient.post<ValidationResult>(
-    "configuration-options/validate-option",
+    `configuration-options/validate-option?analysisContextId=${analysisContext?.id}`,
     value
   );
 };

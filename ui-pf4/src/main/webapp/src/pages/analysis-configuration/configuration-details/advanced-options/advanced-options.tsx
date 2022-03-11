@@ -95,10 +95,12 @@ export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({
   );
 
   useEffect(() => {
-    if (!configurationOptions) {
-      dispatch(configurationOptionActions.fetchConfigurationOptions());
+    if (analysisContext && !configurationOptions) {
+      dispatch(
+        configurationOptionActions.fetchConfigurationOptions(analysisContext)
+      );
     }
-  }, [configurationOptions, dispatch]);
+  }, [analysisContext, configurationOptions, dispatch]);
 
   //
 
@@ -191,7 +193,7 @@ export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({
           }
         : undefined,
     validationSchema: configurationOptions
-      ? buildSchema(configurationOptions)
+      ? buildSchema(configurationOptions, analysisContext)
       : undefined,
     onSubmit: (values, formikHelpers) => {
       const { submitButton, ...formValues } = values;
