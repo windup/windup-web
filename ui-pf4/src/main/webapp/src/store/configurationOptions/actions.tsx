@@ -22,7 +22,6 @@ export const fetchConfigurationOptions = (
 
     return getAdvancedConfigurationOptions(analysisContext)
       .then((res: AxiosResponse) => {
-        console.log(res.data);
         dispatch(fetchConfigurationOptionsSuccess(res.data));
       })
       .catch((err: AxiosError) => {
