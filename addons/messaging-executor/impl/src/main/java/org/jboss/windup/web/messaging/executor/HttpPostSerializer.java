@@ -188,6 +188,29 @@ public class HttpPostSerializer extends AbstractSerializer implements ExecutionS
                             }
                         }
                     });
+
+        request.getExecution().getAnalysisContext().getRulesPaths()
+                .forEach(rulesPath -> {
+                    for (String newInputFile : newInputFiles)
+                    {
+                        if (Paths.get(newInputFile).getFileName().toString()
+                                .equals(Paths.get(rulesPath.getPath()).getFileName().toString()))
+                        {
+                            rulesPath.setPath(newInputFile);
+                        }
+                    }
+                });
+        request.getExecution().getAnalysisContext().getLabelsPaths()
+                .forEach(labelsPath -> {
+                    for (String newInputFile : newInputFiles)
+                    {
+                        if (Paths.get(newInputFile).getFileName().toString()
+                                .equals(Paths.get(labelsPath.getPath()).getFileName().toString()))
+                        {
+                            labelsPath.setPath(newInputFile);
+                        }
+                    }
+                });
     }
 
     private void sendResults(long executionId, InputStream inputStream) throws IOException

@@ -173,6 +173,13 @@ export const Fields: Map<AdvancedOptionsFieldKey, IFieldInfo> = new Map([
         "Indicates whether the input file or directory is a source code or compiled binaries (default).",
     },
   ],
+  [
+    AdvancedOptionsFieldKey.ANALYZE_KNOWN_LIBRARIES,
+    {
+      label: "Analyze known libraries",
+      type: "switch",
+    },
+  ],
 ]);
 
 // Schema
