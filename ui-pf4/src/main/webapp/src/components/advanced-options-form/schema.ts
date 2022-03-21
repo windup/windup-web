@@ -184,7 +184,11 @@ export const Fields: Map<AdvancedOptionsFieldKey, IFieldInfo> = new Map([
 
 // Schema
 
-export const buildSchema = (availableOptions: ConfigurationOption[]) => {
+export const buildSchema = (
+  availableOptions: ConfigurationOption[],
+  allowedSources: Set<string | boolean>,
+  allowedTargets: Set<string | boolean>
+) => {
   const schema: any = {};
 
   getMapKeys(Fields).forEach((fieldKey: AdvancedOptionsFieldKey) => {
@@ -219,7 +223,7 @@ export const buildSchema = (availableOptions: ConfigurationOption[]) => {
       (value) => {
         if (!value) return true;
 
-        let values: any[];
+        let values: (string | boolean)[];
         if (typeof value === "string" || typeof value === "boolean") {
           values = [value];
         } else if (Array.isArray(value)) {
@@ -228,8 +232,20 @@ export const buildSchema = (availableOptions: ConfigurationOption[]) => {
           throw new Error("Invalid type, can not validate:" + value);
         }
 
+        let valuesForAPIValidation = values;
+        if (AdvancedOptionsFieldKey.SOURCE === fieldConfiguration.name) {
+          valuesForAPIValidation = values.filter(
+            (item) => !allowedSources.has(item)
+          );
+        }
+        if (AdvancedOptionsFieldKey.TARGET === fieldConfiguration.name) {
+          valuesForAPIValidation = values.filter(
+            (item) => !allowedTargets.has(item)
+          );
+        }
+
         return Promise.all(
-          values.map((f) =>
+          valuesForAPIValidation.map((f) =>
             validateAdvancedOptionValue({
               name: fieldKey,
               value: f,
@@ -241,7 +257,10 @@ export const buildSchema = (availableOptions: ConfigurationOption[]) => {
 
             return !isValid
               ? new ValidationError(
-                  responses.map((f) => f.data.message),
+                  responses
+                    .filter((f) => f.data.level === "ERROR")
+                    .map((f) => f.data.message)
+                    .join(" | "),
                   value,
                   fieldKey
                 )

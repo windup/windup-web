@@ -65,9 +65,14 @@ export interface AdvancedOptionsFormProps
     FormikHandlers,
     FormikHelpers<FormValues> {
   configurationOptions: ConfigurationOption[];
+  customSources?: Set<String>;
+  customTargets?: Set<String>;
 }
 
 export const AdvancedOptionsForm: React.FC<AdvancedOptionsFormProps> = ({
+  customSources,
+  customTargets,
+
   configurationOptions,
 
   values,
@@ -143,6 +148,28 @@ export const AdvancedOptionsForm: React.FC<AdvancedOptionsFormProps> = ({
                   configurationOptions
                 );
 
+                let dropdownAvailableValues = new Set([
+                  ...fieldConfiguration.availableValues,
+                ]);
+
+                // Source/Target dropdowns should contain values comming from SystemProvided rules + enabled custom rules
+                if (
+                  AdvancedOptionsFieldKey.SOURCE === fieldConfiguration.name
+                ) {
+                  dropdownAvailableValues = new Set([
+                    ...fieldConfiguration.availableValues,
+                    ...Array.from(customSources ? customSources.values() : []),
+                  ]);
+                }
+                if (
+                  AdvancedOptionsFieldKey.TARGET === fieldConfiguration.name
+                ) {
+                  dropdownAvailableValues = new Set([
+                    ...fieldConfiguration.availableValues,
+                    ...Array.from(customTargets ? customTargets.values() : []),
+                  ]);
+                }
+
                 return (
                   <FormGroup
                     key={`${fieldInfo.type}-${index}`}
@@ -177,9 +204,11 @@ export const AdvancedOptionsForm: React.FC<AdvancedOptionsFormProps> = ({
                       }
                       isCreatable={false}
                     >
-                      {fieldConfiguration.availableValues.map((option, i) => (
-                        <SelectOption key={i} value={option} />
-                      ))}
+                      {[...Array.from(dropdownAvailableValues.values())]
+                        .sort()
+                        .map((option, i) => (
+                          <SelectOption key={i} value={option} />
+                        ))}
                     </Select>
                   </FormGroup>
                 );

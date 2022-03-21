@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { AxiosError } from "axios";
 
 import {
@@ -34,18 +34,29 @@ import { useFetchRules } from "hooks/useFetchRules/useFetchRules";
 import { useDeleteRule } from "hooks/useDeleteRule";
 import { useShowRuleLabelDetails } from "hooks/useShowRuleLabelDetails";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "store/rootReducer";
 import { alertActions } from "store/alert";
+import {
+  configurationOptionActions,
+  configurationOptionSelector,
+} from "store/configurationOptions";
 
-import { getAlertModel } from "Constants";
+import { AdvancedOptionsFieldKey, getAlertModel } from "Constants";
 import { getAnalysisContext, saveAnalysisContext } from "api/api";
-import { RulesPath, RuleProviderEntity } from "models/api";
+import {
+  RulesPath,
+  RuleProviderEntity,
+  AdvancedOption,
+  AnalysisContext,
+} from "models/api";
 import {
   getAxiosErrorMessage,
   getSourcesFromRuleProviderEntity,
   getTargetsFromRuleProviderEntity,
   getNumberOfRulesFromRuleProviderEntity,
   getErrorsFromRuleProviderEntity,
+  getEnabledCustomSourcesAndTargets,
 } from "utils/modelUtils";
 
 import { AddRuleLabelButton } from "containers/add-rule-label-button";
@@ -79,11 +90,13 @@ const filterRulePath = (filterText: string, rulePath: RulesPath) => {
 interface CustomRulesProps {
   projectId: string | number;
   skipChangeToProvisional: boolean;
+  onChange?: () => void;
 }
 
 export const CustomRules: React.FC<CustomRulesProps> = ({
   projectId,
   skipChangeToProvisional,
+  onChange,
 }) => {
   const dispatch = useDispatch();
   const deleteRule = useDeleteRule();
@@ -110,15 +123,111 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
     loadRules(projectId);
   }, [projectId, loadProject, loadRules]);
 
+  /**
+   * Fetch windup configurationOptions
+   */
+
+  const configurationOptions = useSelector((state: RootState) =>
+    configurationOptionSelector.configurationOptions(state)
+  );
+  const configurationOptionsFetchStatus = useSelector((state: RootState) =>
+    configurationOptionSelector.status(state)
+  );
+  const configurationOptionsFetchError = useSelector((state: RootState) =>
+    configurationOptionSelector.error(state)
+  );
+
+  const systemProvidedSourcesAndTargets = useMemo(() => {
+    const sources = configurationOptions
+      ?.filter((f) => f.name === AdvancedOptionsFieldKey.SOURCE)
+      .flatMap((f) => f.availableValues as string[]);
+    const targets = configurationOptions
+      ?.filter((f) => f.name === AdvancedOptionsFieldKey.TARGET)
+      .flatMap((f) => f.availableValues as string[]);
+    return sources && targets ? { sources, targets } : undefined;
+  }, [configurationOptions]);
+
+  useEffect(() => {
+    if (!configurationOptions) {
+      dispatch(configurationOptionActions.fetchConfigurationOptions());
+    }
+  }, [configurationOptions, dispatch]);
+
+  useEffect(() => {
+    if (!configurationOptions) {
+      dispatch(configurationOptionActions.fetchConfigurationOptions());
+    }
+  }, [configurationOptions, dispatch]);
+
+  //
+
+  const removeNotValidSourcesAndTargetsFromAnalysisContext = useCallback(
+    (
+      analysisContext: AnalysisContext,
+      rulesPath: RulesPath[],
+      ruleProviders: Map<number, RuleProviderEntity[]>
+    ): AnalysisContext => {
+      const userProvidedSourcesAndTargets = getEnabledCustomSourcesAndTargets(
+        analysisContext,
+        rulesPath,
+        ruleProviders
+      );
+
+      return {
+        ...analysisContext,
+        advancedOptions: [
+          ...analysisContext.advancedOptions
+            .filter((f) => {
+              return f.name !== AdvancedOptionsFieldKey.SOURCE;
+            })
+            .filter((f) => {
+              return f.name !== AdvancedOptionsFieldKey.TARGET;
+            }),
+
+          ...analysisContext.advancedOptions
+            .filter((f) => f.name === AdvancedOptionsFieldKey.SOURCE)
+            .filter((f) => {
+              return (
+                systemProvidedSourcesAndTargets?.sources.indexOf(f.value) !==
+                  -1 || userProvidedSourcesAndTargets.sources.has(f.value)
+              );
+            })
+            .map((f) => {
+              return {
+                name: AdvancedOptionsFieldKey.SOURCE,
+                value: f.value,
+              } as AdvancedOption;
+            }),
+
+          ...analysisContext.advancedOptions
+            .filter((f) => f.name === AdvancedOptionsFieldKey.TARGET)
+            .filter((f) => {
+              return (
+                systemProvidedSourcesAndTargets?.targets.indexOf(f.value) !==
+                  -1 || userProvidedSourcesAndTargets.targets.has(f.value)
+              );
+            })
+            .map((f) => {
+              return {
+                name: AdvancedOptionsFieldKey.TARGET,
+                value: f.value,
+              } as AdvancedOption;
+            }),
+        ],
+      };
+    },
+    [systemProvidedSourcesAndTargets]
+  );
+
   const handleRulePathToggled = useCallback(
     (isChecked: boolean, rulePathToggled: RulesPath) => {
-      if (!project) {
+      if (!project || !rulesPath || !ruleProviders) {
         return;
       }
 
       getAnalysisContext(project.defaultAnalysisContextId)
         .then(({ data }) => {
-          const newAnalysisContext = { ...data };
+          let newAnalysisContext = { ...data };
 
           if (isChecked) {
             newAnalysisContext.rulesPaths = [
@@ -131,6 +240,13 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
             );
           }
 
+          // Remove disabled custom sources/targets from advancedOptions
+          newAnalysisContext = removeNotValidSourcesAndTargetsFromAnalysisContext(
+            newAnalysisContext,
+            rulesPath,
+            ruleProviders
+          );
+
           return saveAnalysisContext(
             project.id,
             newAnalysisContext,
@@ -138,6 +254,7 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
           );
         })
         .then(() => {
+          onChange && onChange();
           loadProject(project.id);
         })
         .catch((error: AxiosError) => {
@@ -148,7 +265,16 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
           );
         });
     },
-    [project, skipChangeToProvisional, loadProject, dispatch]
+    [
+      project,
+      ruleProviders,
+      rulesPath,
+      skipChangeToProvisional,
+      dispatch,
+      loadProject,
+      removeNotValidSourcesAndTargetsFromAnalysisContext,
+      onChange,
+    ]
   );
 
   const actionResolver = (rowData: IRowData): (IAction | ISeparator)[] => {
@@ -174,7 +300,25 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
         title: "Delete",
         onClick: (_, rowIndex: number, rowData: IRowData) => {
           const row: RulesPath = getRowRulePathField(rowData);
-          deleteRule(row, () => loadRules(projectId));
+          deleteRule(row, () => {
+            // Remove deleted custom sources/targets from advancedOptions
+            if (analysisContext && rulesPath && ruleProviders) {
+              const newAnalysisContext = removeNotValidSourcesAndTargetsFromAnalysisContext(
+                analysisContext,
+                rulesPath,
+                ruleProviders
+              );
+
+              saveAnalysisContext(
+                projectId,
+                newAnalysisContext,
+                skipChangeToProvisional
+              ).then(() => {
+                onChange && onChange();
+                loadRules(projectId);
+              });
+            }
+          });
         },
       },
     ];
@@ -272,8 +416,16 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
             actionResolver={actionResolver}
             areActionsDisabled={areActionsDisabled}
             loadingVariant="skeleton"
-            isLoadingData={isFetchingProject || isFetchingRules}
-            loadingDataError={fetchProjectError || fetchRulesError}
+            isLoadingData={
+              isFetchingProject ||
+              isFetchingRules ||
+              configurationOptionsFetchStatus === "inProgress"
+            }
+            loadingDataError={
+              fetchProjectError ||
+              fetchRulesError ||
+              configurationOptionsFetchError
+            }
             compareItem={compareRulePath}
             filterItem={filterRulePath}
             mapToIRow={rulePathToIRow}

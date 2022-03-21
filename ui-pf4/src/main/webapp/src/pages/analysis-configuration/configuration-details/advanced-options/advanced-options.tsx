@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { FormikHelpers, useFormik } from "formik";
 import { AxiosError } from "axios";
@@ -47,7 +47,11 @@ import { AdvancedOption, AnalysisContext } from "models/api";
 
 import { getAlertModel } from "Constants";
 import { isNullOrUndefined } from "utils/utils";
-import { getAxiosErrorMessage } from "utils/modelUtils";
+import {
+  getAxiosErrorMessage,
+  getEnabledCustomSourcesAndTargets,
+} from "utils/modelUtils";
+import { useFetchRules } from "hooks/useFetchRules";
 
 const SUBMIT_BUTTON = "submitButton";
 const SAVE = "save";
@@ -74,11 +78,30 @@ export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({
     fetchProject: loadProject,
   } = useFetchProject();
 
+  const {
+    rulesPath: rulesPathGlobalScope,
+    ruleProviders: ruleProvidersGlobalScope,
+    isFetching: isFetchingRulesGlobalScope,
+    fetchError: fetchRulesErrorGlobalScope,
+    loadGlobalRules: loadRulesGlobalScope,
+  } = useFetchRules();
+
+  const {
+    rulesPath: rulesPathProjectScope,
+    ruleProviders: ruleProvidersProjectScope,
+    isFetching: isFetchingRulesProjectScope,
+    fetchError: fetchRulesErrorProjectScope,
+    loadRules: loadRulesProjectScope,
+  } = useFetchRules();
+
   useEffect(() => {
     if (!isNullOrUndefined(match.params.project)) {
       loadProject(match.params.project);
+
+      loadRulesGlobalScope();
+      loadRulesProjectScope(match.params.project);
     }
-  }, [match, loadProject]);
+  }, [match, loadProject, loadRulesGlobalScope, loadRulesProjectScope]);
 
   /**
    * Fetch windup configurationOptions
@@ -99,6 +122,53 @@ export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({
       dispatch(configurationOptionActions.fetchConfigurationOptions());
     }
   }, [configurationOptions, dispatch]);
+
+  /**
+   * Process custom rules
+   */
+  const userProvidedSourcesAndTargets = useMemo(() => {
+    if (
+      analysisContext &&
+      rulesPathGlobalScope &&
+      ruleProvidersGlobalScope &&
+      rulesPathProjectScope &&
+      ruleProvidersProjectScope &&
+      !isFetchingProject &&
+      !isFetchingRulesProjectScope &&
+      !isFetchingRulesGlobalScope
+    ) {
+      const projectScopedSourceAndTargets = getEnabledCustomSourcesAndTargets(
+        analysisContext,
+        rulesPathProjectScope,
+        ruleProvidersProjectScope
+      );
+      const globalScopedSourceAndTargets = getEnabledCustomSourcesAndTargets(
+        analysisContext,
+        rulesPathGlobalScope.filter((f) => f.rulesPathType === "USER_PROVIDED"),
+        ruleProvidersGlobalScope
+      );
+
+      return {
+        sources: new Set([
+          ...Array.from(projectScopedSourceAndTargets.sources.values()),
+          ...Array.from(globalScopedSourceAndTargets.sources.values()),
+        ]),
+        targets: new Set([
+          ...Array.from(projectScopedSourceAndTargets.targets.values()),
+          ...Array.from(globalScopedSourceAndTargets.targets.values()),
+        ]),
+      };
+    }
+  }, [
+    isFetchingProject,
+    isFetchingRulesGlobalScope,
+    isFetchingRulesProjectScope,
+    analysisContext,
+    rulesPathGlobalScope,
+    ruleProvidersGlobalScope,
+    rulesPathProjectScope,
+    ruleProvidersProjectScope,
+  ]);
 
   //
 
@@ -190,9 +260,14 @@ export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({
             ...buildInitialValues(analysisContext, configurationOptions),
           }
         : undefined,
-    validationSchema: configurationOptions
-      ? buildSchema(configurationOptions)
-      : undefined,
+    validationSchema:
+      configurationOptions && userProvidedSourcesAndTargets
+        ? buildSchema(
+            configurationOptions,
+            userProvidedSourcesAndTargets.sources,
+            userProvidedSourcesAndTargets.targets
+          )
+        : undefined,
     onSubmit: (values, formikHelpers) => {
       const { submitButton, ...formValues } = values;
       handleOnSubmit(
@@ -205,8 +280,15 @@ export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({
   });
 
   const isFetching =
-    isFetchingProject || fetchConfigurationOptionsStatus === "inProgress";
-  const fetchError = fetchProjectError || fetchConfigurationOptionsError;
+    isFetchingProject ||
+    isFetchingRulesProjectScope ||
+    isFetchingRulesGlobalScope ||
+    fetchConfigurationOptionsStatus === "inProgress";
+  const fetchError =
+    fetchProjectError ||
+    fetchRulesErrorProjectScope ||
+    fetchRulesErrorGlobalScope ||
+    fetchConfigurationOptionsError;
 
   const arePrimaryButtonsDisabled =
     isFetching ||
@@ -239,6 +321,8 @@ export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({
                   <CardBody>
                     <AdvancedOptionsForm
                       configurationOptions={configurationOptions}
+                      customSources={userProvidedSourcesAndTargets?.sources}
+                      customTargets={userProvidedSourcesAndTargets?.targets}
                       {...formik}
                     />
                   </CardBody>

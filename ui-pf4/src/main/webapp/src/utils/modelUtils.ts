@@ -1,9 +1,11 @@
 import { AxiosError } from "axios";
 import { AdvancedOptionsFieldKey } from "Constants";
 import {
+  AnalysisContext,
   LabelProviderEntity,
   Package,
   RuleProviderEntity,
+  RulesPath,
   Technology,
   WindupExecution,
 } from "models/api";
@@ -83,22 +85,24 @@ export const isOptionEnabledInExecution = (
 
 // RuleProviderEntity
 export const getSourcesFromRuleProviderEntity = (
-  ruleProviderEntities: RuleProviderEntity[]
+  ruleProviderEntities: RuleProviderEntity[],
+  onlyTechnologyNames: boolean = false
 ) => {
   return ruleProviderEntities.reduce((collection, element) => {
     element.sources.forEach((f) => {
-      collection.add(getTechnologyAsString(f));
+      collection.add(!onlyTechnologyNames ? getTechnologyAsString(f) : f.name);
     });
     return collection;
   }, new Set<string>());
 };
 
 export const getTargetsFromRuleProviderEntity = (
-  ruleProviderEntities: RuleProviderEntity[]
+  ruleProviderEntities: RuleProviderEntity[],
+  onlyTechnologyNames: boolean = false
 ) => {
   return ruleProviderEntities.reduce((collection, element) => {
     element.targets.forEach((f) => {
-      collection.add(getTechnologyAsString(f));
+      collection.add(!onlyTechnologyNames ? getTechnologyAsString(f) : f.name);
     });
     return collection;
   }, new Set<string>());
@@ -119,6 +123,42 @@ export const getErrorsFromRuleProviderEntity = (
   return ruleProviderEntities.reduce((errors, element) => {
     return element.loadError ? [...errors, element.loadError] : [...errors];
   }, [] as string[]);
+};
+
+export const getEnabledCustomSourcesAndTargets = (
+  analysisContext: AnalysisContext,
+  rulesPath: RulesPath[],
+  ruleProviders: Map<number, RuleProviderEntity[]>
+) => {
+  const enabledRuleProviderEntities = rulesPath
+    .filter((rulePath) => {
+      return !!analysisContext?.rulesPaths.find((f) => f.id === rulePath.id);
+    })
+    .map((f) => (ruleProviders ? ruleProviders.get(f.id) || [] : []));
+
+  const customSources = enabledRuleProviderEntities
+    .map((ruleProviderEntity) => {
+      return getSourcesFromRuleProviderEntity(ruleProviderEntity, true);
+    })
+    .reduce((accumulator, current) => {
+      return new Set([
+        ...Array.from(accumulator.values()),
+        ...Array.from(current.values()),
+      ]);
+    }, new Set<string>());
+
+  const customTargets = enabledRuleProviderEntities
+    ?.map((ruleProviderEntity) =>
+      getTargetsFromRuleProviderEntity(ruleProviderEntity, true)
+    )
+    .reduce((accumulator, current) => {
+      return new Set([
+        ...Array.from(accumulator.values()),
+        ...Array.from(current.values()),
+      ]);
+    }, new Set<string>());
+
+  return { sources: customSources, targets: customTargets };
 };
 
 // LabelProviderEntity

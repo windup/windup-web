@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { AxiosError } from "axios";
 import { FormikHelpers, useFormik } from "formik";
@@ -24,7 +24,10 @@ import { getAlertModel } from "Constants";
 import { formatPath, Paths, ProjectRoute } from "Paths";
 import { AdvancedOption, AnalysisContext } from "models/api";
 import { saveAnalysisContext, getAnalysisContext } from "api/api";
-import { getAxiosErrorMessage } from "utils/modelUtils";
+import {
+  getAxiosErrorMessage,
+  getEnabledCustomSourcesAndTargets,
+} from "utils/modelUtils";
 
 import { useCancelWizard } from "../wizard/useCancelWizard";
 import {
@@ -37,6 +40,7 @@ import {
 } from "../wizard/wizard-utils";
 import { WizardFooter } from "../wizard/project-wizard-footer";
 import { LoadingWizardContent } from "../wizard/loading-content";
+import { useFetchRules } from "hooks/useFetchRules";
 
 interface SetAdvancedOptionsProps extends RouteComponentProps<ProjectRoute> {}
 
@@ -54,14 +58,33 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
   const {
     project,
     analysisContext,
-    isFetching,
-    fetchError,
+    isFetching: isFetchingProject,
+    fetchError: fetchProjectError,
     fetchProject: loadProject,
   } = useFetchProject();
 
+  const {
+    rulesPath: rulesPathGlobalScope,
+    ruleProviders: ruleProvidersGlobalScope,
+    isFetching: isFetchingRulesGlobalScope,
+    fetchError: fetchRulesErrorGlobalScope,
+    loadGlobalRules: loadRulesGlobalScope,
+  } = useFetchRules();
+
+  const {
+    rulesPath: rulesPathProjectScope,
+    ruleProviders: ruleProvidersProjectScope,
+    isFetching: isFetchingRulesProjectScope,
+    fetchError: fetchRulesErrorProjectScope,
+    loadRules: loadRulesProjectScope,
+  } = useFetchRules();
+
   useEffect(() => {
     loadProject(match.params.project);
-  }, [match, loadProject]);
+
+    loadRulesGlobalScope();
+    loadRulesProjectScope(match.params.project);
+  }, [match, loadProject, loadRulesGlobalScope, loadRulesProjectScope]);
 
   /**
    * Fetch windup configurationOptions
@@ -82,6 +105,53 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
       dispatch(configurationOptionActions.fetchConfigurationOptions());
     }
   }, [configurationOptions, dispatch]);
+
+  /**
+   * Process custom rules
+   */
+  const userProvidedSourcesAndTargets = useMemo(() => {
+    if (
+      analysisContext &&
+      rulesPathGlobalScope &&
+      ruleProvidersGlobalScope &&
+      rulesPathProjectScope &&
+      ruleProvidersProjectScope &&
+      !isFetchingProject &&
+      !isFetchingRulesProjectScope &&
+      !isFetchingRulesGlobalScope
+    ) {
+      const projectScopedSourceAndTargets = getEnabledCustomSourcesAndTargets(
+        analysisContext,
+        rulesPathProjectScope,
+        ruleProvidersProjectScope
+      );
+      const globalScopedSourceAndTargets = getEnabledCustomSourcesAndTargets(
+        analysisContext,
+        rulesPathGlobalScope.filter((f) => f.rulesPathType === "USER_PROVIDED"),
+        ruleProvidersGlobalScope
+      );
+
+      return {
+        sources: new Set([
+          ...Array.from(projectScopedSourceAndTargets.sources.values()),
+          ...Array.from(globalScopedSourceAndTargets.sources.values()),
+        ]),
+        targets: new Set([
+          ...Array.from(projectScopedSourceAndTargets.targets.values()),
+          ...Array.from(globalScopedSourceAndTargets.targets.values()),
+        ]),
+      };
+    }
+  }, [
+    isFetchingProject,
+    isFetchingRulesGlobalScope,
+    isFetchingRulesProjectScope,
+    analysisContext,
+    rulesPathGlobalScope,
+    ruleProvidersGlobalScope,
+    rulesPathProjectScope,
+    ruleProvidersProjectScope,
+  ]);
 
   //
 
@@ -151,9 +221,14 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
       analysisContext && configurationOptions
         ? buildInitialValues(analysisContext, configurationOptions)
         : undefined,
-    validationSchema: configurationOptions
-      ? buildSchema(configurationOptions)
-      : undefined,
+    validationSchema:
+      configurationOptions && userProvidedSourcesAndTargets
+        ? buildSchema(
+            configurationOptions,
+            userProvidedSourcesAndTargets.sources,
+            userProvidedSourcesAndTargets.targets
+          )
+        : undefined,
     onSubmit: handleOnSubmit,
     initialErrors: !project ? { name: "" } : {},
   });
@@ -182,7 +257,9 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
 
   const currentStep = NewProjectWizardStepIds.ADVANCED_OPTIONS;
   const disableNav =
-    isFetching ||
+    isFetchingProject ||
+    isFetchingRulesProjectScope ||
+    isFetchingRulesGlobalScope ||
     configurationOptionsFetchStatus === "inProgress" ||
     formik.isSubmitting ||
     formik.isValidating;
@@ -207,17 +284,29 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
       stepId={currentStep}
       canJumpUpTo={canJumpUpto}
       footer={footer}
-      showErrorContent={fetchError || configurationOptionsFetchError}
+      showErrorContent={
+        fetchProjectError ||
+        fetchRulesErrorProjectScope ||
+        fetchRulesErrorGlobalScope ||
+        configurationOptionsFetchError
+      }
       onGoToStep={handleOnGoToStep}
     >
       <ConditionalRender
-        when={isFetching || configurationOptionsFetchStatus === "inProgress"}
+        when={
+          isFetchingProject ||
+          isFetchingRulesProjectScope ||
+          isFetchingRulesGlobalScope ||
+          configurationOptionsFetchStatus === "inProgress"
+        }
         then={<LoadingWizardContent />}
       >
         <Form onSubmit={formik.handleSubmit}>
           {formik.initialValues && configurationOptions && (
             <AdvancedOptionsForm
               configurationOptions={configurationOptions}
+              customSources={userProvidedSourcesAndTargets?.sources}
+              customTargets={userProvidedSourcesAndTargets?.targets}
               {...formik}
             />
           )}
