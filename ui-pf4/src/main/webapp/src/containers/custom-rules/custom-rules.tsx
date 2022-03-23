@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { AxiosError } from "axios";
 
 import {
@@ -90,13 +90,11 @@ const filterRulePath = (filterText: string, rulePath: RulesPath) => {
 interface CustomRulesProps {
   projectId: string | number;
   skipChangeToProvisional: boolean;
-  onChange?: () => void;
 }
 
 export const CustomRules: React.FC<CustomRulesProps> = ({
   projectId,
   skipChangeToProvisional,
-  onChange,
 }) => {
   const dispatch = useDispatch();
   const deleteRule = useDeleteRule();
@@ -107,6 +105,7 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
     analysisContext,
     isFetching: isFetchingProject,
     fetchError: fetchProjectError,
+    count: projectFechCount,
     fetchProject: loadProject,
   } = useFetchProject();
 
@@ -137,6 +136,13 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
     configurationOptionSelector.error(state)
   );
 
+  useEffect(() => {
+    if (!configurationOptions) {
+      dispatch(configurationOptionActions.fetchConfigurationOptions());
+    }
+  }, [configurationOptions, dispatch]);
+
+  // System provided sources and targets
   const systemProvidedSourcesAndTargets = useMemo(() => {
     const sources = configurationOptions
       ?.filter((f) => f.name === AdvancedOptionsFieldKey.SOURCE)
@@ -147,30 +153,37 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
     return sources && targets ? { sources, targets } : undefined;
   }, [configurationOptions]);
 
-  useEffect(() => {
-    if (!configurationOptions) {
-      dispatch(configurationOptionActions.fetchConfigurationOptions());
-    }
-  }, [configurationOptions, dispatch]);
+  // Switch checked state
+  const [
+    isAnalysisContextBeingSaved,
+    setIsAnalysisContextBeingSaved,
+  ] = useState(false);
+
+  const [isRulePathChecked, setIsRulePathChecked] = useState(
+    new Map<number, boolean>()
+  );
 
   useEffect(() => {
-    if (!configurationOptions) {
-      dispatch(configurationOptionActions.fetchConfigurationOptions());
+    if (analysisContext && rulesPath) {
+      const newCheckedValue = new Map<number, boolean>();
+      rulesPath.forEach((item) => {
+        newCheckedValue.set(
+          item.id,
+          !!analysisContext.rulesPaths.find((f) => f.id === item.id)
+        );
+      });
+      setIsRulePathChecked(newCheckedValue);
     }
-  }, [configurationOptions, dispatch]);
+  }, [analysisContext, rulesPath]);
 
   //
 
   const removeNotValidSourcesAndTargetsFromAnalysisContext = useCallback(
-    (
-      analysisContext: AnalysisContext,
-      rulesPath: RulesPath[],
-      ruleProviders: Map<number, RuleProviderEntity[]>
-    ): AnalysisContext => {
+    (analysisContext: AnalysisContext): AnalysisContext => {
       const userProvidedSourcesAndTargets = getEnabledCustomSourcesAndTargets(
         analysisContext,
-        rulesPath,
-        ruleProviders
+        rulesPath!,
+        ruleProviders!
       );
 
       return {
@@ -216,18 +229,23 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
         ],
       };
     },
-    [systemProvidedSourcesAndTargets]
+    [systemProvidedSourcesAndTargets, rulesPath, ruleProviders]
   );
 
   const handleRulePathToggled = useCallback(
     (isChecked: boolean, rulePathToggled: RulesPath) => {
-      if (!project || !rulesPath || !ruleProviders) {
+      if (!project || !analysisContext || !rulesPath || !ruleProviders) {
         return;
       }
 
+      setIsRulePathChecked(
+        new Map(isRulePathChecked).set(rulePathToggled.id, isChecked)
+      );
+      setIsAnalysisContextBeingSaved(true);
+
       getAnalysisContext(project.defaultAnalysisContextId)
         .then(({ data }) => {
-          let newAnalysisContext = { ...data };
+          let newAnalysisContext: AnalysisContext = { ...data };
 
           if (isChecked) {
             newAnalysisContext.rulesPaths = [
@@ -240,12 +258,52 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
             );
           }
 
-          // Remove disabled custom sources/targets from advancedOptions
-          newAnalysisContext = removeNotValidSourcesAndTargetsFromAnalysisContext(
-            newAnalysisContext,
-            rulesPath,
-            ruleProviders
-          );
+          if (isChecked) {
+            const ruleProviderEntities =
+              ruleProviders.get(rulePathToggled.id) || [];
+
+            const sources = getSourcesFromRuleProviderEntity(
+              ruleProviderEntities,
+              true
+            );
+            const targets = getTargetsFromRuleProviderEntity(
+              ruleProviderEntities,
+              true
+            );
+
+            newAnalysisContext.advancedOptions
+              .filter((f) => f.name === AdvancedOptionsFieldKey.SOURCE)
+              .forEach((f) => sources.add(f.value));
+            newAnalysisContext.advancedOptions
+              .filter((f) => f.name === AdvancedOptionsFieldKey.TARGET)
+              .forEach((f) => targets.add(f.value));
+
+            newAnalysisContext = {
+              ...newAnalysisContext,
+              advancedOptions: [
+                ...newAnalysisContext.advancedOptions
+                  .filter((f) => f.name !== AdvancedOptionsFieldKey.SOURCE)
+                  .filter((f) => f.name !== AdvancedOptionsFieldKey.TARGET),
+
+                ...Array.from(sources.values()).map((f) => {
+                  return {
+                    name: AdvancedOptionsFieldKey.SOURCE,
+                    value: f,
+                  } as AdvancedOption;
+                }),
+                ...Array.from(targets.values()).map((f) => {
+                  return {
+                    name: AdvancedOptionsFieldKey.TARGET,
+                    value: f,
+                  } as AdvancedOption;
+                }),
+              ],
+            };
+          } else {
+            newAnalysisContext = removeNotValidSourcesAndTargetsFromAnalysisContext(
+              { ...newAnalysisContext }
+            );
+          }
 
           return saveAnalysisContext(
             project.id,
@@ -254,7 +312,6 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
           );
         })
         .then(() => {
-          onChange && onChange();
           loadProject(project.id);
         })
         .catch((error: AxiosError) => {
@@ -263,17 +320,21 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
               getAlertModel("danger", "Error", getAxiosErrorMessage(error))
             )
           );
+        })
+        .finally(() => {
+          setIsAnalysisContextBeingSaved(false);
         });
     },
     [
       project,
+      analysisContext,
       ruleProviders,
       rulesPath,
+      isRulePathChecked,
       skipChangeToProvisional,
       dispatch,
       loadProject,
       removeNotValidSourcesAndTargetsFromAnalysisContext,
-      onChange,
     ]
   );
 
@@ -301,23 +362,29 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
         onClick: (_, rowIndex: number, rowData: IRowData) => {
           const row: RulesPath = getRowRulePathField(rowData);
           deleteRule(row, () => {
-            // Remove deleted custom sources/targets from advancedOptions
-            if (analysisContext && rulesPath && ruleProviders) {
-              const newAnalysisContext = removeNotValidSourcesAndTargetsFromAnalysisContext(
-                analysisContext,
-                rulesPath,
-                ruleProviders
-              );
+            loadRules(projectId);
 
-              saveAnalysisContext(
-                projectId,
-                newAnalysisContext,
-                skipChangeToProvisional
-              ).then(() => {
-                onChange && onChange();
-                loadRules(projectId);
-              });
+            // Remove deleted custom sources/targets from advancedOptions
+            if (!project || !analysisContext || !rulesPath || !ruleProviders) {
+              return;
             }
+
+            setIsAnalysisContextBeingSaved(true);
+            getAnalysisContext(project.defaultAnalysisContextId)
+              .then(({ data }) => {
+                const newAnalysisContext = removeNotValidSourcesAndTargetsFromAnalysisContext(
+                  data
+                );
+
+                return saveAnalysisContext(
+                  projectId,
+                  newAnalysisContext,
+                  skipChangeToProvisional
+                );
+              })
+              .finally(() => {
+                setIsAnalysisContextBeingSaved(false);
+              });
           });
         },
       },
@@ -325,7 +392,7 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
   };
 
   const areActionsDisabled = (): boolean => {
-    return false;
+    return isFetchingProject || isFetchingRules || isAnalysisContextBeingSaved;
   };
 
   const getRowRulePathField = (rowData: IRowData): RulesPath => {
@@ -373,14 +440,19 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
             {
               title: (
                 <Switch
-                  aria-label="Enabled"
-                  isChecked={
-                    !!analysisContext?.rulesPaths.find((f) => f.id === item.id)
+                  aria-label={
+                    isRulePathChecked.get(item.id) ? "Enabled" : "Disabled"
                   }
-                  onChange={(isChecked) =>
-                    handleRulePathToggled(isChecked, item)
+                  isChecked={isRulePathChecked.get(item.id)}
+                  onChange={(isChecked) => {
+                    handleRulePathToggled(isChecked, item);
+                  }}
+                  isDisabled={
+                    isFetchingProject ||
+                    isFetchingRules ||
+                    isAnalysisContextBeingSaved ||
+                    errors.length > 0
                   }
-                  isDisabled={errors.length > 0}
                 />
               ),
             },
@@ -388,7 +460,14 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
         };
       });
     },
-    [analysisContext, ruleProviders, handleRulePathToggled]
+    [
+      ruleProviders,
+      isRulePathChecked,
+      isFetchingRules,
+      isFetchingProject,
+      isAnalysisContextBeingSaved,
+      handleRulePathToggled,
+    ]
   );
 
   const handleOnRuleLabelClose = () => {
@@ -415,7 +494,9 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
             columns={columns}
             actionResolver={actionResolver}
             areActionsDisabled={areActionsDisabled}
-            loadingVariant="skeleton"
+            loadingVariant={
+              projectFechCount <= 1 || isFetchingRules ? "skeleton" : "none"
+            }
             isLoadingData={
               isFetchingProject ||
               isFetchingRules ||
