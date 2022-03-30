@@ -27,9 +27,8 @@ public class RuleProviderRegistryCache_UserProvidedProject {
     @Inject
     private Furnace furnace;
 
-//    @Inject
-//    @FromFurnace
-//    private RuleLoader ruleLoader;
+    @Inject
+    private TechnologyReferenceAliasTranslatorLoader loader;
 
     private final Map<AnalysisContext, List<TechnologyReferenceAliasTranslator>> cachedTranslators = new ConcurrentHashMap<>();
     private final Map<AnalysisContext, RuleProviderRegistry> cachedRegistry = new ConcurrentHashMap<>();
@@ -91,9 +90,7 @@ public class RuleProviderRegistryCache_UserProvidedProject {
     private void initCaches(AnalysisContext analysisContext, RuleLoaderContext ruleLoaderContext) {
         RuleLoader ruleLoader = furnace.getAddonRegistry().getServices(RuleLoader.class).get();
 
-        List<TechnologyReferenceAliasTranslator> transformerList = new ArrayList<>();
-        Iterable<TechnologyReferenceAliasTranslatorLoader> loaders = furnace.getAddonRegistry().getServices(TechnologyReferenceAliasTranslatorLoader.class);
-        loaders.forEach((loader) -> transformerList.addAll(loader.loadTranslators(ruleLoaderContext)));
+        List<TechnologyReferenceAliasTranslator> transformerList = new ArrayList<>(loader.loadTranslators(ruleLoaderContext));
 
         this.cachedRegistry.put(analysisContext, ruleLoader.loadConfiguration(ruleLoaderContext));
         this.cachedTranslators.put(analysisContext, transformerList);

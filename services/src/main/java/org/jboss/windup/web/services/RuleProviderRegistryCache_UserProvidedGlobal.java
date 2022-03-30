@@ -25,9 +25,8 @@ public class RuleProviderRegistryCache_UserProvidedGlobal {
     @Inject
     private Furnace furnace;
 
-//    @Inject
-//    @FromFurnace
-//    private RuleLoader ruleLoader;
+    @Inject
+    private TechnologyReferenceAliasTranslatorLoader loader;
 
     private List<TechnologyReferenceAliasTranslator> cachedTranslators;
     private RuleProviderRegistry cachedRegistry;
@@ -96,9 +95,7 @@ public class RuleProviderRegistryCache_UserProvidedGlobal {
     private void initCaches(RuleLoaderContext ruleLoaderContext) {
         RuleLoader ruleLoader = furnace.getAddonRegistry().getServices(RuleLoader.class).get();
 
-        List<TechnologyReferenceAliasTranslator> transformerList = new ArrayList<>();
-        Iterable<TechnologyReferenceAliasTranslatorLoader> loaders = furnace.getAddonRegistry().getServices(TechnologyReferenceAliasTranslatorLoader.class);
-        loaders.forEach((loader) -> transformerList.addAll(loader.loadTranslators(ruleLoaderContext)));
+        List<TechnologyReferenceAliasTranslator> transformerList = new ArrayList<>(loader.loadTranslators(ruleLoaderContext));
 
         this.cachedRegistry = ruleLoader.loadConfiguration(ruleLoaderContext);
         this.cachedTranslators = transformerList;
