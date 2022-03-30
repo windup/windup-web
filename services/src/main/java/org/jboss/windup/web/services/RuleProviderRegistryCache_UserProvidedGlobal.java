@@ -4,11 +4,9 @@ import org.jboss.forge.furnace.Furnace;
 import org.jboss.windup.config.RuleProvider;
 import org.jboss.windup.config.loader.RuleLoader;
 import org.jboss.windup.config.loader.RuleLoaderContext;
-import org.jboss.windup.config.metadata.RuleProviderRegistry;
-import org.jboss.windup.config.metadata.TechnologyReference;
-import org.jboss.windup.config.metadata.TechnologyReferenceAliasTranslator;
-import org.jboss.windup.config.metadata.TechnologyReferenceAliasTranslatorLoader;
+import org.jboss.windup.config.metadata.*;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.inject.Inject;
 import java.nio.file.Path;
@@ -28,42 +26,45 @@ public class RuleProviderRegistryCache_UserProvidedGlobal {
     @Inject
     private TechnologyReferenceAliasTranslatorLoader loader;
 
-    private List<TechnologyReferenceAliasTranslator> cachedTranslators;
-    private RuleProviderRegistry cachedRegistry;
+    private RuleLoader ruleLoader;
     private Set<Path> userRulesPaths = new LinkedHashSet<>();
 
+    private volatile RuleProviderRegistry cachedRegistry;
+    private volatile List<TechnologyReferenceAliasTranslator> cachedTranslators;
+
+    @PostConstruct
+    public void init() {
+        ruleLoader = furnace.getAddonRegistry().getServices(RuleLoader.class).get();
+    }
+
+    public void setUserRulesPath(Set<Path> paths) {
+        clearCache();
+        userRulesPaths = paths;
+    }
+
     public void addUserRulesPath(Path path) {
-        this.cachedRegistry = null;
-        this.cachedTranslators = null;
+        clearCache();
         userRulesPaths.add(path);
     }
 
     public void removeUserRulesPath(Path path) {
-        this.cachedRegistry = null;
-        this.cachedTranslators = null;
+        clearCache();
         userRulesPaths = userRulesPaths.stream()
                 .filter(p -> !p.normalize().toString().equals(path.normalize().toString()))
                 .collect(Collectors.toSet());
     }
 
-    public RuleProviderRegistry getRuleProviderRegistry() {
-        this.cachedRegistry = null;
-        try {
-            Set<Path> defaultRulePaths = new HashSet<>(this.userRulesPaths);
-
-            RuleLoaderContext ruleLoaderContext = new RuleLoaderContext(defaultRulePaths, null);
-            getRuleProviderRegistry(ruleLoaderContext);
-        } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Failed to load rule information due to: " + e.getMessage(), e);
-        }
-        return cachedRegistry;
+    private void clearCache() {
+        cachedRegistry = null;
+        cachedTranslators = null;
     }
 
     public Set<String> getAvailableSourceTechnologies() {
         Set<TechnologyReference> sourceOptions = new HashSet<>();
         RuleProviderRegistry registry = getRuleProviderRegistry();
-        if (registry == null)
+        if (registry == null) {
             return Collections.emptySet();
+        }
 
         for (RuleProvider provider : registry.getProviders()) {
             sourceOptions.addAll(provider.getMetadata().getSourceTechnologies());
@@ -76,8 +77,9 @@ public class RuleProviderRegistryCache_UserProvidedGlobal {
     public Set<String> getAvailableTargetTechnologies() {
         Set<TechnologyReference> targetOptions = new HashSet<>();
         RuleProviderRegistry registry = getRuleProviderRegistry();
-        if (registry == null)
+        if (registry == null) {
             return Collections.emptySet();
+        }
 
         for (RuleProvider provider : registry.getProviders()) {
             targetOptions.addAll(provider.getMetadata().getTargetTechnologies());
@@ -87,22 +89,10 @@ public class RuleProviderRegistryCache_UserProvidedGlobal {
         return targetOptions.stream().map(TechnologyReference::getId).collect(Collectors.toSet());
     }
 
-    private RuleProviderRegistry getRuleProviderRegistry(RuleLoaderContext ruleLoaderContext) {
-        initCaches(ruleLoaderContext);
-        return this.cachedRegistry;
-    }
-
-    private void initCaches(RuleLoaderContext ruleLoaderContext) {
-        RuleLoader ruleLoader = furnace.getAddonRegistry().getServices(RuleLoader.class).get();
-
-        List<TechnologyReferenceAliasTranslator> transformerList = new ArrayList<>(loader.loadTranslators(ruleLoaderContext));
-
-        this.cachedRegistry = ruleLoader.loadConfiguration(ruleLoaderContext);
-        this.cachedTranslators = transformerList;
-    }
-
     private void addTransformers(Set<TechnologyReference> techs) {
-        techs.addAll(getTechnologyAliasTranslators()
+        List<TechnologyReferenceAliasTranslator> transformerList = getTranslators();
+
+        techs.addAll(transformerList
                 .stream()
 
                 // Only include it if the target of the transformation will match one of the items
@@ -120,7 +110,35 @@ public class RuleProviderRegistryCache_UserProvidedGlobal {
                 .collect(Collectors.toList()));
     }
 
-    private List<TechnologyReferenceAliasTranslator> getTechnologyAliasTranslators() {
-        return this.cachedTranslators;
+    private RuleProviderRegistry getRuleProviderRegistry() {
+        if (cachedRegistry == null) {
+            synchronized (this) {
+                if (cachedRegistry == null) {
+                    try {
+                        RuleLoaderContext ruleLoaderContext = new RuleLoaderContext(userRulesPaths, null);
+                        cachedRegistry = ruleLoader.loadConfiguration(ruleLoaderContext);
+                    } catch (Exception e) {
+                        LOG.log(Level.WARNING, "Failed to load rule information due to: " + e.getMessage(), e);
+                    }
+                }
+            }
+        }
+
+        return cachedRegistry;
     }
+
+    private List<TechnologyReferenceAliasTranslator> getTranslators() {
+        if (cachedTranslators == null) {
+            synchronized (this) {
+                if (cachedTranslators == null) {
+                    RuleLoaderContext ruleLoaderContext = new RuleLoaderContext(userRulesPaths, null);
+                    Collection<TechnologyReferenceAliasTranslator> technologyReferenceAliasTranslators = loader.loadTranslators(ruleLoaderContext);
+                    cachedTranslators = new ArrayList<>(technologyReferenceAliasTranslators);
+                }
+            }
+        }
+
+        return cachedTranslators;
+    }
+
 }

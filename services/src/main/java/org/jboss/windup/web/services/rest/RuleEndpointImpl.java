@@ -1,35 +1,22 @@
 package org.jboss.windup.web.services.rest;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+import org.jboss.windup.web.addons.websupport.WebPathUtil;
+import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
+import org.jboss.windup.web.services.model.*;
+import org.jboss.windup.web.services.service.AnalysisContextService;
+import org.jboss.windup.web.services.service.ConfigurationService;
+import org.jboss.windup.web.services.service.FileUploadService;
+import org.jboss.windup.web.services.service.RulesPathService;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import javax.ws.rs.NotFoundException;
-
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
-import org.jboss.windup.web.addons.websupport.WebPathUtil;
-import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
-import org.jboss.windup.web.services.RuleProviderRegistryCache_UserProvidedGlobal;
-import org.jboss.windup.web.services.model.AnalysisContext;
-import org.jboss.windup.web.services.model.Configuration;
-import org.jboss.windup.web.services.model.ExecutionState;
-import org.jboss.windup.web.services.model.MigrationProject;
-import org.jboss.windup.web.services.model.PathType;
-import org.jboss.windup.web.services.model.RegistrationType;
-import org.jboss.windup.web.services.model.RuleProviderEntity;
-import org.jboss.windup.web.services.model.RuleProviderEntity_;
-import org.jboss.windup.web.services.model.RulesPath;
-import org.jboss.windup.web.services.model.ScopeType;
-import org.jboss.windup.web.services.service.ConfigurationService;
-import org.jboss.windup.web.services.service.FileUploadService;
+import java.io.File;
+import java.nio.file.Path;
+import java.util.List;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -51,7 +38,16 @@ public class RuleEndpointImpl implements RuleEndpoint
     private ConfigurationService configurationService;
 
     @Inject
-    private RuleProviderRegistryCache_UserProvidedGlobal ruleProviderRegistryCache_userProvidedGlobal;
+    private RulesPathService rulesPathService;
+
+    @Inject
+    private AnalysisContextService analysisContextService;
+
+//    @Inject
+//    private RuleProviderRegistryCache_UserProvidedGlobal ruleProviderRegistryCache_userProvidedGlobal;
+//
+//    @Inject
+//    private RuleProviderRegistryCache_UserProvidedProject ruleProviderRegistryCache_userProvidedProject;
 
     @Override
     public List<RuleProviderEntity> getAllProviders()
@@ -63,12 +59,7 @@ public class RuleEndpointImpl implements RuleEndpoint
     public List<RuleProviderEntity> getByRulesPath(Long rulesPathID)
     {
         RulesPath rulesPath = getRulesPath(rulesPathID);
-        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<RuleProviderEntity> criteriaQuery = builder.createQuery(RuleProviderEntity.class);
-        Root<RuleProviderEntity> root = criteriaQuery.from(RuleProviderEntity.class);
-        criteriaQuery.where(builder.equal(root.get(RuleProviderEntity_.rulesPath), rulesPath));
-
-        return entityManager.createQuery(criteriaQuery).getResultList();
+        return rulesPathService.getRuleProviderEntitiesByRulesPath(rulesPath);
     }
 
     private RulesPath getRulesPath(Long rulesPathID)
@@ -89,11 +80,8 @@ public class RuleEndpointImpl implements RuleEndpoint
         Configuration configuration = this.configurationService.getGlobalConfiguration();
         RulesPath rulesPath = uploadRuleProviderToConfiguration(data, configuration, null);
 
-        Path path = Paths.get(rulesPath.getPath());
-        ruleProviderRegistryCache_userProvidedGlobal.addUserRulesPath(path);
-
-        // This is just to make sure the cache gets reloaded
-        ruleProviderRegistryCache_userProvidedGlobal.getRuleProviderRegistry();
+        // Add uploaded rule to cache
+//        ruleProviderRegistryCache_userProvidedGlobal.addUserRulesPath(Paths.get(rulesPath.getPath()));
 
         return rulesPath;
     }
@@ -103,7 +91,18 @@ public class RuleEndpointImpl implements RuleEndpoint
     {
         Configuration configuration = this.configurationService.getConfigurationByProjectId(projectId);
         MigrationProject migrationProject = configuration.getMigrationProject();
-        return uploadRuleProviderToConfiguration(data, configuration, migrationProject.getId());
+        RulesPath rulesPath = uploadRuleProviderToConfiguration(data, configuration, migrationProject.getId());
+
+        // Add uploaded rule to cache
+//        AnalysisContext analysisContext = migrationProject.getDefaultAnalysisContext();
+//        Set<Path> newRulesPath = analysisContext.getRulesPaths().stream()
+//                .filter(item -> item.getScopeType().equals(ScopeType.PROJECT) && item.getRulesPathType().equals(PathType.USER_PROVIDED))
+//                .map(item -> Paths.get(item.getPath()))
+//                .collect(Collectors.toSet());
+//        newRulesPath.add(Paths.get(rulesPath.getPath()));
+//        ruleProviderRegistryCache_userProvidedProject.setUserRulesPath(analysisContext, newRulesPath);
+
+        return rulesPath;
     }
 
     private  RulesPath uploadRuleProviderToConfiguration(MultipartFormDataInput data, Configuration configuration, Long projectId)
@@ -150,28 +149,82 @@ public class RuleEndpointImpl implements RuleEndpoint
         configuration.getRulesPaths().remove(rulesPath);
         this.entityManager.merge(configuration);
 
+        // Remove deleted rule from cache
+//        Path path = Paths.get(rulesPath.getPath());
+//        if (rulesPath.getScopeType().equals(ScopeType.GLOBAL)) {
+//            ruleProviderRegistryCache_userProvidedGlobal.removeUserRulesPath(path);
+//        } else if (rulesPath.getScopeType().equals(ScopeType.PROJECT)) {
+//            MigrationProject migrationProject = configuration.getMigrationProject();
+//            AnalysisContext analysisContext = migrationProject.getDefaultAnalysisContext();
+//            Set<Path> newRulesPath = analysisContext.getRulesPaths().stream()
+//                    .filter(item -> item.getScopeType().equals(ScopeType.PROJECT) && item.getRulesPathType().equals(PathType.USER_PROVIDED))
+//                    .map(item -> Paths.get(item.getPath()))
+//                    .collect(Collectors.toSet());
+//            newRulesPath.remove(Paths.get(rulesPath.getPath()));
+//            ruleProviderRegistryCache_userProvidedProject.setUserRulesPath(analysisContext, newRulesPath);
+//        }
+
         // Remove rulePath from all AnalysisContexts
         @SuppressWarnings("unchecked")
-        List<AnalysisContext> analysisContexts = entityManager.createNamedQuery(AnalysisContext.FIND_BY_RULE_PATH_ID_AND_EXECUTION_IS_NULL)
+        List<AnalysisContext> analysisContexts = entityManager
+                .createNamedQuery(AnalysisContext.FIND_BY_RULE_PATH_ID_AND_EXECUTION_IS_NULL)
                 .setParameter("rulePathId", rulesPath.getId())
                 .getResultList();
+
         analysisContexts.forEach(analysisContext -> {
             analysisContext.getRulesPaths().remove(rulesPath);
+
+//            Set<String> availableSources = Stream.concat(ruleProviderRegistryCache.getAvailableSourceTechnologies().stream(), ruleProviderRegistryCache_userProvidedProject.getAvailableSourceTechnologies(analysisContext).stream()).collect(Collectors.toSet());
+//            Set<String> availableTargets = Stream.concat(ruleProviderRegistryCache.getAvailableTargetTechnologies().stream(), ruleProviderRegistryCache_userProvidedProject.getAvailableSourceTechnologies(analysisContext).stream()).collect(Collectors.toSet());
+//
+//            List<AdvancedOption> advancedOptions = analysisContext.getAdvancedOptions().stream()
+//                    .filter(advancedOption -> !advancedOption.getName().equals(SourceOption.NAME) || availableSources.contains(advancedOption.getValue()))
+//                    .filter(advancedOption -> !advancedOption.getName().equals(TargetOption.NAME) || availableTargets.contains(advancedOption.getValue()))
+//                    .collect(Collectors.toList());
+//
+//            analysisContext.setAdvancedOptions(advancedOptions);
+//            analysisContext.getRulesPaths().remove(rulesPath);
+//
+//            this.entityManager.merge(analysisContext);
+
+            // Remove no longer available sources/targets
+            analysisContextService.pruneAdvancedOptions(analysisContext);
+
             this.entityManager.merge(analysisContext);
         });
 
-        // TODO don't delete these entities since WindupExecution saves a reference of them
-//        this.entityManager.createNamedQuery(RuleProviderEntity.DELETE_BY_RULES_PATH)
-//                .setParameter(RuleProviderEntity.RULES_PATH_PARAM, rulesPath)
-//                .executeUpdate();
+//        // Remove sources/targets that belonged to rule
+//        if (rulesPath.getScopeType().equals(ScopeType.GLOBAL)) {
+//            // TODO
+//            analysisContexts.forEach(analysisContext -> {
+//                Set<String> validTargets = Stream.concat(
+//                        ruleProviderRegistryCache_systemProvided.getAvailableTargetTechnologies().stream(),
+//                        ruleProviderRegistryCache_userProvidedProject.getAvailableSourceTechnologies(analysisContext).stream()
+//                ).collect(Collectors.toSet());
 //
-//        this.entityManager.remove(rulesPath);
-
-        Path path = Paths.get(rulesPath.getPath());
-        ruleProviderRegistryCache_userProvidedGlobal.removeUserRulesPath(path);
-
-        // This is just to make sure the cache gets reloaded
-        ruleProviderRegistryCache_userProvidedGlobal.getRuleProviderRegistry();
+//                List<AdvancedOption> advancedOptions = analysisContext.getAdvancedOptions().stream()
+//                        .filter(advancedOption -> !advancedOption.getName().equals(TargetOption.NAME) || validTargets.contains(advancedOption.getValue()))
+//                        .collect(Collectors.toList());
+//                analysisContext.setAdvancedOptions(advancedOptions);
+//
+//                this.entityManager.merge(analysisContext);
+//            });
+//        } else if (rulesPath.getScopeType().equals(ScopeType.PROJECT)) {
+//            MigrationProject migrationProject = configuration.getMigrationProject();
+//            AnalysisContext analysisContext = migrationProject.getDefaultAnalysisContext();
+//
+//            Set<String> validTargets = Stream.concat(
+//                    ruleProviderRegistryCache_systemProvided.getAvailableTargetTechnologies().stream(),
+//                    ruleProviderRegistryCache_userProvidedProject.getAvailableSourceTechnologies(analysisContext).stream()
+//            ).collect(Collectors.toSet());
+//
+//            List<AdvancedOption> advancedOptions = analysisContext.getAdvancedOptions().stream()
+//                    .filter(advancedOption -> !advancedOption.getName().equals(TargetOption.NAME) || validTargets.contains(advancedOption.getValue()))
+//                    .collect(Collectors.toList());
+//            analysisContext.setAdvancedOptions(advancedOptions);
+//
+//            this.entityManager.merge(analysisContext);
+//        }
     }
 
     @Override

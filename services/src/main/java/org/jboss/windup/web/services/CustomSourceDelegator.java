@@ -7,8 +7,6 @@ import org.jboss.windup.exec.configuration.options.TargetOption;
 
 import java.util.Collection;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class CustomSourceDelegator extends TargetOption {
 
@@ -22,9 +20,9 @@ public class CustomSourceDelegator extends TargetOption {
 
     @Override
     public Collection<?> getAvailableValues() {
-        Collection<?> systemAvailableValues = sourceOption.getAvailableValues();
-        return Stream.concat(systemAvailableValues.stream(), additionalSourceTechnologies.stream())
-                .collect(Collectors.toSet());
+        Set<String> systemAvailableValues = (Set<String>) sourceOption.getAvailableValues();
+        systemAvailableValues.addAll(additionalSourceTechnologies);
+        return systemAvailableValues;
     }
 
     @Override

@@ -27,8 +27,10 @@ public class RuleProviderRegistryCache_UserProvidedGlobalTest extends AbstractTe
         Set<String> targets = ruleProviderRegistryCache.getAvailableTargetTechnologies();
 
         Assert.assertEquals(1, sources.size());
-        Assert.assertEquals(1, targets.size());
         Assert.assertTrue(sources.contains("myCustomSource1"));
+
+        Assert.assertEquals(2, targets.size());
         Assert.assertTrue(targets.contains("myCustomTarget1"));
+        Assert.assertTrue(targets.contains("cloud-readiness"));
     }
 }

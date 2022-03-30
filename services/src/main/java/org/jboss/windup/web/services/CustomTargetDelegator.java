@@ -6,8 +6,6 @@ import org.jboss.windup.exec.configuration.options.TargetOption;
 
 import java.util.Collection;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class CustomTargetDelegator extends TargetOption {
 
@@ -21,9 +19,9 @@ public class CustomTargetDelegator extends TargetOption {
 
     @Override
     public Collection<?> getAvailableValues() {
-        Collection<?> systemAvailableValues = targetOption.getAvailableValues();
-        return Stream.concat(systemAvailableValues.stream(), additionalTargetTechnologies.stream())
-                .collect(Collectors.toSet());
+        Set<String> systemAvailableValues = (Set<String>) targetOption.getAvailableValues();
+        systemAvailableValues.addAll(additionalTargetTechnologies);
+        return systemAvailableValues;
     }
 
     @Override
@@ -58,6 +56,6 @@ public class CustomTargetDelegator extends TargetOption {
 
     @Override
     public ValidationResult validate(Object values) {
-        return super.validate(values);
+        return targetOption.validate(values);
     }
 }

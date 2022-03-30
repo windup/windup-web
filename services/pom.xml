@@ -505,7 +505,7 @@
             <id>debug</id>
             <activation> <property> <name>debug</name> </property> </activation>
             <properties>
-                <jvm.debug.argsx>-agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=y</jvm.debug.argsx>
+                <jvm.debug.args>-agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=y</jvm.debug.args>
             </properties>
         </profile>
 
@@ -513,6 +513,9 @@
             <id>arquillian-wildfly-10-managed</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>debug</name>
+                </property>
             </activation>
             <dependencies>
                 <dependency>
@@ -567,7 +570,7 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
                             <systemPropertyVariables>
-                                <server.jvm.args>${surefire.server.jvm.args}</server.jvm.args>
+                                <server.jvm.args>${jvm.debug.args}</server.jvm.args>
                                 <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
                             </systemPropertyVariables>
                         </configuration>

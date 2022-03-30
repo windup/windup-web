@@ -1,5 +1,6 @@
 package org.jboss.windup.web.services.rest;
 
+import org.jboss.windup.web.services.SourceTargetTechnologies;
 import org.jboss.windup.web.services.model.AnalysisContext;
 
 import javax.validation.Valid;
@@ -25,6 +26,10 @@ public interface AnalysisContextEndpoint
     @GET
     @Path("{id}")
     AnalysisContext get(@PathParam("id") Long id);
+
+    @GET
+    @Path("{id}/custom-technologies")
+    SourceTargetTechnologies getCustomTechnologies(@PathParam("id") Long id);
 
     /**
      * Saves default analysis context for project

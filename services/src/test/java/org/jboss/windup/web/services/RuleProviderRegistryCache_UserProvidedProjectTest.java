@@ -42,8 +42,9 @@ public class RuleProviderRegistryCache_UserProvidedProjectTest extends AbstractT
         Set<String> targets1 = ruleProviderRegistryCache.getAvailableTargetTechnologies(analysisContext1);
 
         Assert.assertEquals(1, sources1.size());
-        Assert.assertEquals(1, targets1.size());
         Assert.assertTrue(sources1.contains("myCustomSource1"));
+
+        Assert.assertEquals(2, targets1.size());
         Assert.assertTrue(targets1.contains("myCustomTarget1"));
 
         // Verify Context2 has only targets/sources that belongs to it "myCustomSource2" and "myCustomTarget2"
@@ -51,8 +52,9 @@ public class RuleProviderRegistryCache_UserProvidedProjectTest extends AbstractT
         Set<String> targets2 = ruleProviderRegistryCache.getAvailableTargetTechnologies(analysisContext2);
 
         Assert.assertEquals(1, sources2.size());
-        Assert.assertEquals(1, targets2.size());
         Assert.assertTrue(sources2.contains("myCustomSource2"));
+
+        Assert.assertEquals(2, targets2.size());
         Assert.assertTrue(targets2.contains("myCustomTarget2"));
     }
 }

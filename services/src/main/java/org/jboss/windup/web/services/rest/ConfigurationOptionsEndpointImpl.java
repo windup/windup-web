@@ -53,13 +53,13 @@ public class ConfigurationOptionsEndpointImpl implements ConfigurationOptionsEnd
     @Override
     public List<ConfigurationOption> getAllOptions(Long analysisContextId)
     {
-        AnalysisContext analysisContext = null;
-        if (analysisContextId != null) {
-            analysisContext = entityManager.find(AnalysisContext.class, analysisContextId);
-            if (analysisContext == null) {
-                throw new NotFoundException("AnalysisContext with id" + analysisContextId + "not found");
-            }
-        }
+//        AnalysisContext analysisContext = null;
+//        if (analysisContextId != null) {
+//            analysisContext = entityManager.find(AnalysisContext.class, analysisContextId);
+//            if (analysisContext == null) {
+//                throw new NotFoundException("AnalysisContext with id" + analysisContextId + "not found");
+//            }
+//        }
 
         List<ConfigurationOption> result = new ArrayList<>();
         for (ConfigurationOption option : this.configurationOptionsService.getAllOptions())
@@ -68,14 +68,16 @@ public class ConfigurationOptionsEndpointImpl implements ConfigurationOptionsEnd
                 continue;
             }
 
-            // Use custom Target and Source option
-            if (analysisContext != null && option.getName().equals(SourceOption.NAME)) {
-                result.add(getCustomSourceDelegator(analysisContext, (SourceOption) option));
-            } else if (analysisContext != null && option.getName().equals(TargetOption.NAME)) {
-                result.add(getCustomTargetDelegator(analysisContext, (TargetOption) option));
-            } else {
-                result.add(option);
-            }
+            result.add(option);
+//
+//            // Use custom Target and Source option
+//            if (analysisContext != null && option.getName().equals(SourceOption.NAME)) {
+//                result.add(getCustomSourceDelegator(analysisContext, (SourceOption) option));
+//            } else if (analysisContext != null && option.getName().equals(TargetOption.NAME)) {
+//                result.add(getCustomTargetDelegator(analysisContext, (TargetOption) option));
+//            } else {
+//                result.add(option);
+//            }
         }
 
         return result;
@@ -84,13 +86,13 @@ public class ConfigurationOptionsEndpointImpl implements ConfigurationOptionsEnd
     @Override
     public ValidationResult validateOption(Long analysisContextId, AdvancedOption advancedOption)
     {
-        AnalysisContext analysisContext = null;
-        if (analysisContextId != null) {
-            analysisContext = entityManager.find(AnalysisContext.class, analysisContextId);
-            if (analysisContext == null) {
-                throw new NotFoundException("AnalysisContext with id" + analysisContextId + "not found");
-            }
-        }
+//        AnalysisContext analysisContext = null;
+//        if (analysisContextId != null) {
+//            analysisContext = entityManager.find(AnalysisContext.class, analysisContextId);
+//            if (analysisContext == null) {
+//                throw new NotFoundException("AnalysisContext with id" + analysisContextId + "not found");
+//            }
+//        }
 
         if (advancedOption == null)
             return new ValidationResult(ValidationResult.Level.ERROR, "No option specified");
@@ -102,12 +104,12 @@ public class ConfigurationOptionsEndpointImpl implements ConfigurationOptionsEnd
         if (configurationOption == null)
             return new ValidationResult(ValidationResult.Level.ERROR, "Option not recognized");
 
-        // Use custom Target and Source option
-        if (configurationOption.getName().equals(SourceOption.NAME)) {
-            configurationOption = getCustomSourceDelegator(analysisContext, (SourceOption) configurationOption);
-        } else if (configurationOption.getName().equals(TargetOption.NAME)) {
-            configurationOption = getCustomTargetDelegator(analysisContext, (TargetOption) configurationOption);
-        }
+//        // Use custom Target and Source option
+//        if (configurationOption.getName().equals(SourceOption.NAME)) {
+//            configurationOption = getCustomSourceDelegator(analysisContext, (SourceOption) configurationOption);
+//        } else if (configurationOption.getName().equals(TargetOption.NAME)) {
+//            configurationOption = getCustomTargetDelegator(analysisContext, (TargetOption) configurationOption);
+//        }
 
         Object converted = this.configurationOptionsService.convertType(configurationOption, advancedOption.getValue());
         try

@@ -1,10 +1,15 @@
 package org.jboss.windup.web.services.service;
 
-import org.jboss.windup.web.services.model.AdvancedOption;
-import org.jboss.windup.web.services.model.AnalysisContext;
-import org.jboss.windup.web.services.model.MigrationProject;
+import org.jboss.forge.furnace.Furnace;
+import org.jboss.windup.config.metadata.RuleProviderRegistryCache;
+import org.jboss.windup.exec.configuration.options.SourceOption;
+import org.jboss.windup.exec.configuration.options.TargetOption;
+import org.jboss.windup.web.services.SourceTargetTechnologies;
+import org.jboss.windup.web.services.model.*;
 import org.jboss.windup.web.services.model.Package;
 
+import javax.annotation.PostConstruct;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -15,12 +20,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Provides tools for creating default analysis context instances, as well as providing default configuration data.
  *
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
+@Stateless
 public class AnalysisContextService
 {
     @PersistenceContext
@@ -28,6 +35,19 @@ public class AnalysisContextService
 
     @Inject
     private ConfigurationService configurationService;
+
+    @Inject
+    private RulesPathService rulesPathService;
+
+    @Inject
+    private Furnace furnace;
+
+    private RuleProviderRegistryCache ruleProviderRegistryCache;
+
+    @PostConstruct
+    public void init() {
+        ruleProviderRegistryCache = furnace.getAddonRegistry().getServices(RuleProviderRegistryCache.class).get();
+    }
 
     /**
      * Gets analysis context
@@ -175,5 +195,31 @@ public class AnalysisContextService
                     if (!analysisContext.getLabelsPaths().contains(labelsPath))
                         analysisContext.getLabelsPaths().add(labelsPath);
                 });
+    }
+
+    public void pruneAdvancedOptions(AnalysisContext analysisContext) {
+        List<RulesPath> userProvidedRulesPaths = analysisContext.getRulesPaths().stream()
+                .filter(f -> f.getRulesPathType().equals(PathType.USER_PROVIDED))
+                .collect(Collectors.toList());
+
+        SourceTargetTechnologies userTechnologies = rulesPathService.getSourceTargetTechnologies(userProvidedRulesPaths);
+
+        Set<String> availableSources = new HashSet<>();
+        ruleProviderRegistryCache.getAvailableSourceTechnologies().forEach(s -> availableSources.add(s));
+        userTechnologies.getSources().forEach(s -> availableSources.add(s));
+
+        Set<String> availableTargets = new HashSet<>();
+        ruleProviderRegistryCache.getAvailableTargetTechnologies().forEach(s -> availableTargets.add(s));
+        userTechnologies.getTargets().forEach(s -> availableTargets.add(s));
+
+//        Set<String> availableSources = Stream.concat(ruleProviderRegistryCache.getAvailableSourceTechnologies().stream(), userTechnologies.getSources().stream()).collect(Collectors.toSet());
+//        Set<String> availableTargets = Stream.concat(ruleProviderRegistryCache.getAvailableTargetTechnologies().stream(), userTechnologies.getTargets().stream()).collect(Collectors.toSet());
+
+        List<AdvancedOption> advancedOptions = analysisContext.getAdvancedOptions().stream()
+                .filter(advancedOption -> !advancedOption.getName().equals(SourceOption.NAME) || availableSources.contains(advancedOption.getValue()))
+                .filter(advancedOption -> !advancedOption.getName().equals(TargetOption.NAME) || availableTargets.contains(advancedOption.getValue()))
+                .collect(Collectors.toList());
+
+        analysisContext.setAdvancedOptions(advancedOptions);
     }
 }

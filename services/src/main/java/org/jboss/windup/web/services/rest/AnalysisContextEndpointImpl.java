@@ -1,10 +1,11 @@
 package org.jboss.windup.web.services.rest;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
+import org.jboss.windup.web.services.SourceTargetTechnologies;
+import org.jboss.windup.web.services.model.AnalysisContext;
+import org.jboss.windup.web.services.model.MigrationProject;
+import org.jboss.windup.web.services.service.AnalysisContextService;
+import org.jboss.windup.web.services.service.MigrationProjectService;
+import org.jboss.windup.web.services.service.RulesPathService;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -12,13 +13,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.Valid;
 import javax.ws.rs.NotFoundException;
-
-import org.jboss.windup.web.services.RuleProviderRegistryCache_UserProvidedProject;
-import org.jboss.windup.web.services.model.AnalysisContext;
-import org.jboss.windup.web.services.model.MigrationProject;
-import org.jboss.windup.web.services.model.ScopeType;
-import org.jboss.windup.web.services.service.AnalysisContextService;
-import org.jboss.windup.web.services.service.MigrationProjectService;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -35,10 +31,13 @@ public class AnalysisContextEndpointImpl implements AnalysisContextEndpoint
     private AnalysisContextService analysisContextService;
 
     @Inject
-    private MigrationProjectService migrationProjectService;
+    private RulesPathService rulesPathService;
 
     @Inject
-    private RuleProviderRegistryCache_UserProvidedProject ruleProviderRegistryCache_userProvidedProject;
+    private MigrationProjectService migrationProjectService;
+
+//    @Inject
+//    private RuleProviderRegistryCache_UserProvidedProject ruleProviderRegistryCache_userProvidedProject;
 
     @Override
     public AnalysisContext get(Long id)
@@ -51,6 +50,18 @@ public class AnalysisContextEndpointImpl implements AnalysisContextEndpoint
         }
 
         return context;
+    }
+
+    @Override
+    public SourceTargetTechnologies getCustomTechnologies(Long id) {
+        AnalysisContext context = entityManager.find(AnalysisContext.class, id);
+
+        if (context == null)
+        {
+            throw new NotFoundException("AnalysisContext with id" + id + "not found");
+        }
+
+        return rulesPathService.getSourceTargetTechnologies(context.getRulesPaths());
     }
 
     @Override
@@ -78,14 +89,16 @@ public class AnalysisContextEndpointImpl implements AnalysisContextEndpoint
             analysisContext = analysisContextService.update(defaultAnalysisContext.getId(), analysisContext, skipChangeToProvisional);
         }
 
-        //
-        List<Path> userRulesPaths = analysisContext.getRulesPaths().stream()
-                .filter(rulesPath -> rulesPath.getScopeType().equals(ScopeType.PROJECT))
-                .map(rulesPath -> Paths.get(rulesPath.getPath()))
-                .collect(Collectors.toList());
-        ruleProviderRegistryCache_userProvidedProject.setUserRulesPath(analysisContext, userRulesPaths);
-        ruleProviderRegistryCache_userProvidedProject.getRuleProviderRegistry(analysisContext);
+        // Remove no longer available sources/targets
+        analysisContextService.pruneAdvancedOptions(analysisContext);
 
+//        List<Path> userRulesPaths = analysisContext.getRulesPaths().stream()
+//                .filter(rulesPath -> rulesPath.getScopeType().equals(ScopeType.PROJECT))
+//                .map(rulesPath -> Paths.get(rulesPath.getPath()))
+//                .collect(Collectors.toList());
+//        ruleProviderRegistryCache_userProvidedProject.setUserRulesPath(analysisContext, userRulesPaths);
+
+        this.entityManager.merge(analysisContext);
         return analysisContext;
     }
 }
