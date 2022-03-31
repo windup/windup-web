@@ -3,6 +3,8 @@ package org.jboss.windup.web.services.rest;
 import org.jboss.windup.web.services.SourceTargetTechnologies;
 import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.MigrationProject;
+import org.jboss.windup.web.services.model.PathType;
+import org.jboss.windup.web.services.model.RulesPath;
 import org.jboss.windup.web.services.service.AnalysisContextService;
 import org.jboss.windup.web.services.service.MigrationProjectService;
 import org.jboss.windup.web.services.service.RulesPathService;
@@ -13,6 +15,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.Valid;
 import javax.ws.rs.NotFoundException;
+import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -58,7 +61,10 @@ public class AnalysisContextEndpointImpl implements AnalysisContextEndpoint
             throw new NotFoundException("AnalysisContext with id" + id + "not found");
         }
 
-        return rulesPathService.getSourceTargetTechnologies(context.getRulesPaths());
+        List<RulesPath> userProvidedRulesPaths = context.getRulesPaths().stream()
+                .filter(rulesPath -> rulesPath.getRulesPathType().equals(PathType.USER_PROVIDED))
+                .collect(Collectors.toList());
+        return rulesPathService.getSourceTargetTechnologies(userProvidedRulesPaths);
     }
 
     @Override
