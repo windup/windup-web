@@ -129,15 +129,13 @@ public class RuleEndpointImpl implements RuleEndpoint
 
         // Remove rulePath from all AnalysisContexts
         @SuppressWarnings("unchecked")
-        List<AnalysisContext> analysisContexts = entityManager
-                .createNamedQuery(AnalysisContext.FIND_BY_RULE_PATH_ID_AND_EXECUTION_IS_NULL)
+        List<AnalysisContext> analysisContexts = entityManager.createNamedQuery(AnalysisContext.FIND_BY_RULE_PATH_ID_AND_EXECUTION_IS_NULL)
                 .setParameter("rulePathId", rulesPath.getId())
                 .getResultList();
-
         analysisContexts.forEach(analysisContext -> {
             analysisContext.getRulesPaths().remove(rulesPath);
             // Remove no longer available sources/targets
-            analysisContextService.pruneAdvancedOptions(analysisContext);
+            analysisContextService.addAndPruneTechnologiesToAdvancedOptions(analysisContext);
 
             this.entityManager.merge(analysisContext);
         });

@@ -17,7 +17,6 @@ import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Provides tools for creating default analysis context instances, as well as providing default configuration data.
@@ -25,7 +24,8 @@ import java.util.stream.Stream;
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
 @Stateless
-public class AnalysisContextService {
+public class AnalysisContextService
+{
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -48,24 +48,28 @@ public class AnalysisContextService {
     /**
      * Gets analysis context
      */
-    public AnalysisContext get(Long id) {
+    public AnalysisContext get(Long id)
+    {
         AnalysisContext context = entityManager.find(AnalysisContext.class, id);
 
-        if (context == null) {
+        if (context == null)
+        {
             throw new NotFoundException("AnalysisContext with id" + id + "not found");
         }
 
         return context;
     }
 
-    public List<AnalysisContext> getAll() {
+    public List<AnalysisContext> getAll()
+    {
         return entityManager.createNamedQuery(AnalysisContext.FIND_ALL).getResultList();
     }
 
     /**
      * Creates a default instance.
      */
-    public AnalysisContext createDefaultAnalysisContext(MigrationProject project) {
+    public AnalysisContext createDefaultAnalysisContext(MigrationProject project)
+    {
         AnalysisContext defaultAnalysisContext = new AnalysisContext(project);
         ensureSystemRulesPathsPresent(defaultAnalysisContext);
         ensureSystemLabelsPathsPresent(defaultAnalysisContext);
@@ -77,7 +81,8 @@ public class AnalysisContextService {
     /**
      * Creates a new instance.
      */
-    public AnalysisContext create(AnalysisContext analysisContext) {
+    public AnalysisContext create(AnalysisContext analysisContext)
+    {
         analysisContext.setId(null); // creating new instance, should not have id
         this.ensureSystemRulesPathsPresent(analysisContext);
         this.ensureSystemLabelsPathsPresent(analysisContext);
@@ -88,38 +93,43 @@ public class AnalysisContextService {
         return analysisContext;
     }
 
-    protected void loadAdvancedOptionsToAnalysisContext(AnalysisContext analysisContext) {
+    protected void loadAdvancedOptionsToAnalysisContext(AnalysisContext analysisContext)
+    {
         analysisContext.setAdvancedOptions(this.loadAdvancedOptionsFromPersistenceContext(analysisContext.getAdvancedOptions()));
     }
 
-    protected Collection<AdvancedOption> loadAdvancedOptionsFromPersistenceContext(Collection<AdvancedOption> advancedOptions) {
+    protected Collection<AdvancedOption> loadAdvancedOptionsFromPersistenceContext(Collection<AdvancedOption> advancedOptions)
+    {
         return advancedOptions.stream()
-                .filter(anOption -> anOption.getId() != null && anOption.getId() != 0)
-                .map(anOption -> this.entityManager.find(AdvancedOption.class, anOption.getId()))
-                .filter(anOption -> anOption != null)
-                .map(anOption -> new AdvancedOption(anOption.getName(), anOption.getValue()))
-                .collect(Collectors.toList());
+                    .filter(anOption -> anOption.getId() != null && anOption.getId() != 0)
+                    .map(anOption -> this.entityManager.find(AdvancedOption.class, anOption.getId()))
+                    .filter(anOption -> anOption != null)
+                    .map(anOption -> new AdvancedOption(anOption.getName(), anOption.getValue()))
+                    .collect(Collectors.toList());
     }
 
-    protected void loadPackagesToAnalysisContext(AnalysisContext analysisContext) {
+    protected void loadPackagesToAnalysisContext(AnalysisContext analysisContext)
+    {
         analysisContext.setIncludePackages(this.loadPackagesFromPersistenceContext(analysisContext.getIncludePackages()));
         analysisContext.setExcludePackages(this.loadPackagesFromPersistenceContext(analysisContext.getExcludePackages()));
     }
 
-    protected Set<Package> loadPackagesFromPersistenceContext(Collection<Package> detachedPackages) {
+    protected Set<Package> loadPackagesFromPersistenceContext(Collection<Package> detachedPackages)
+    {
         return detachedPackages.stream()
-                .filter(aPackage -> aPackage.getId() != null && aPackage.getId() != 0)
-                .map(aPackage -> this.entityManager.find(Package.class, aPackage.getId()))
-                .filter(aPackage -> aPackage != null)
-                .collect(Collectors.toSet());
+                    .filter(aPackage -> aPackage.getId() != null && aPackage.getId() != 0)
+                    .map(aPackage -> this.entityManager.find(Package.class, aPackage.getId()))
+                    .filter(aPackage -> aPackage != null)
+                    .collect(Collectors.toSet());
     }
 
-    protected boolean contextHasExecutions(AnalysisContext context) {
+    protected boolean contextHasExecutions(AnalysisContext context)
+    {
         String query = "SELECT COUNT(ex) FROM WindupExecution ex WHERE ex.analysisContext = :ctxt";
 
         Long count = this.entityManager.createQuery(query, Long.class)
-                .setParameter("ctxt", context)
-                .getSingleResult();
+                    .setParameter("ctxt", context)
+                    .getSingleResult();
 
         return count > 0;
     }
@@ -127,10 +137,12 @@ public class AnalysisContextService {
     /**
      * Updates an existing instance.
      */
-    public AnalysisContext update(Long analysisContextId, AnalysisContext analysisContext, boolean skipChangeToProvisional) {
+    public AnalysisContext update(Long analysisContextId, AnalysisContext analysisContext, boolean skipChangeToProvisional)
+    {
         AnalysisContext original = this.get(analysisContextId);
 
-        if (this.contextHasExecutions(original)) {
+        if (this.contextHasExecutions(original))
+        {
             throw new BadRequestException("Cannot update context used for executions");
         }
 
@@ -155,19 +167,21 @@ public class AnalysisContextService {
         return merged;
     }
 
-    public void ensureSystemRulesPathsPresent(AnalysisContext analysisContext) {
+    public void ensureSystemRulesPathsPresent(AnalysisContext analysisContext)
+    {
         configurationService
-                .getGlobalConfiguration().getRulesPaths()
-                .forEach(rulesPath -> {
-                    if (analysisContext.getRulesPaths() == null)
-                        analysisContext.setRulesPaths(new HashSet<>());
+                    .getGlobalConfiguration().getRulesPaths()
+                    .forEach(rulesPath -> {
+                        if (analysisContext.getRulesPaths() == null)
+                            analysisContext.setRulesPaths(new HashSet<>());
 
-                    if (!analysisContext.getRulesPaths().contains(rulesPath))
-                        analysisContext.getRulesPaths().add(rulesPath);
-                });
+                        if (!analysisContext.getRulesPaths().contains(rulesPath))
+                            analysisContext.getRulesPaths().add(rulesPath);
+                    });
     }
 
-    public void ensureSystemLabelsPathsPresent(AnalysisContext analysisContext) {
+    public void ensureSystemLabelsPathsPresent(AnalysisContext analysisContext)
+    {
         configurationService
                 .getGlobalConfiguration().getLabelsPaths()
                 .forEach(labelsPath -> {
@@ -179,14 +193,14 @@ public class AnalysisContextService {
                 });
     }
 
-    public void pruneAdvancedOptions(AnalysisContext analysisContext) {
+    public void addAndPruneTechnologiesToAdvancedOptions(AnalysisContext analysisContext) {
         List<RulesPath> userProvidedRulesPaths = analysisContext.getRulesPaths().stream()
                 .filter(f -> f.getRulesPathType().equals(PathType.USER_PROVIDED))
                 .collect(Collectors.toList());
 
         SourceTargetTechnologies userTechnologies = rulesPathService.getSourceTargetTechnologies(userProvidedRulesPaths);
 
-        // Add
+        // Add custom source/targets to Advanced Options
         List<AdvancedOption> newSources = userTechnologies.getSources().stream()
                 .filter(source -> analysisContext.getAdvancedOptions().stream()
                         .filter(advancedOption -> advancedOption.getName().equals(SourceOption.NAME))
@@ -223,7 +237,7 @@ public class AnalysisContextService {
 
         analysisContext.setAdvancedOptions(advancedOptionsWithCustomTechnologies);
 
-        // Prune
+        // Prune no longer available source/targets from Advanced Options
         Set<String> availableSources = new HashSet<>();
         ruleProviderRegistryCache.getAvailableSourceTechnologies().forEach(s -> availableSources.add(s));
         userTechnologies.getSources().forEach(s -> availableSources.add(s));
