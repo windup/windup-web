@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { FormikHelpers, useFormik } from "formik";
 import { AxiosError } from "axios";
@@ -41,9 +41,14 @@ import { alertActions } from "store/alert";
 import {
   createProjectExecution,
   getAnalysisContext,
+  getAnalysisContextCustomTechnologies,
   saveAnalysisContext,
 } from "api/api";
-import { AdvancedOption, AnalysisContext } from "models/api";
+import {
+  AdvancedOption,
+  AnalysisContext,
+  SourceTargetTechnologies,
+} from "models/api";
 
 import { getAlertModel } from "Constants";
 import { isNullOrUndefined } from "utils/utils";
@@ -95,12 +100,35 @@ export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({
   );
 
   useEffect(() => {
-    if (analysisContext && !configurationOptions) {
-      dispatch(
-        configurationOptionActions.fetchConfigurationOptions(analysisContext)
-      );
+    if (!configurationOptions) {
+      dispatch(configurationOptionActions.fetchConfigurationOptions());
     }
-  }, [analysisContext, configurationOptions, dispatch]);
+  }, [configurationOptions, dispatch]);
+
+  /**
+   * Fetch Analysis Context custom technologies
+   */
+  const [customTechnologies, setCustomTechnologies] = useState<
+    SourceTargetTechnologies
+  >();
+
+  const [
+    isFechingCustomTechnologies,
+    setIsFechingCustomTechnologies,
+  ] = useState(false);
+
+  useEffect(() => {
+    if (analysisContext) {
+      setIsFechingCustomTechnologies(true);
+      getAnalysisContextCustomTechnologies(analysisContext.id)
+        .then(({ data }) => {
+          setCustomTechnologies(data);
+        })
+        .finally(() => {
+          setIsFechingCustomTechnologies(false);
+        });
+    }
+  }, [analysisContext]);
 
   //
 
@@ -192,9 +220,10 @@ export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({
             ...buildInitialValues(analysisContext, configurationOptions),
           }
         : undefined,
-    validationSchema: configurationOptions
-      ? buildSchema(configurationOptions, analysisContext)
-      : undefined,
+    validationSchema:
+      configurationOptions && customTechnologies
+        ? buildSchema(configurationOptions, customTechnologies)
+        : undefined,
     onSubmit: (values, formikHelpers) => {
       const { submitButton, ...formValues } = values;
       handleOnSubmit(
@@ -207,7 +236,9 @@ export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({
   });
 
   const isFetching =
-    isFetchingProject || fetchConfigurationOptionsStatus === "inProgress";
+    isFetchingProject ||
+    fetchConfigurationOptionsStatus === "inProgress" ||
+    isFechingCustomTechnologies;
   const fetchError = fetchProjectError || fetchConfigurationOptionsError;
 
   const arePrimaryButtonsDisabled =
@@ -235,18 +266,21 @@ export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({
       <ConditionalRender when={isFetching} then={<AppPlaceholder />}>
         <Form onSubmit={formik.handleSubmit}>
           <Stack>
-            {formik.initialValues && configurationOptions && (
-              <StackItem>
-                <Card>
-                  <CardBody>
-                    <AdvancedOptionsForm
-                      configurationOptions={configurationOptions}
-                      {...formik}
-                    />
-                  </CardBody>
-                </Card>
-              </StackItem>
-            )}
+            {formik.initialValues &&
+              configurationOptions &&
+              customTechnologies && (
+                <StackItem>
+                  <Card>
+                    <CardBody>
+                      <AdvancedOptionsForm
+                        configurationOptions={configurationOptions}
+                        customTechnologies={customTechnologies}
+                        {...formik}
+                      />
+                    </CardBody>
+                  </Card>
+                </StackItem>
+              )}
             {!fetchError && (
               <StackItem>
                 <ActionGroup>

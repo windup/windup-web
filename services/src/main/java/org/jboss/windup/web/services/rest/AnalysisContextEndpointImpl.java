@@ -36,9 +36,6 @@ public class AnalysisContextEndpointImpl implements AnalysisContextEndpoint
     @Inject
     private MigrationProjectService migrationProjectService;
 
-//    @Inject
-//    private RuleProviderRegistryCache_UserProvidedProject ruleProviderRegistryCache_userProvidedProject;
-
     @Override
     public AnalysisContext get(Long id)
     {
@@ -91,12 +88,6 @@ public class AnalysisContextEndpointImpl implements AnalysisContextEndpoint
 
         // Remove no longer available sources/targets
         analysisContextService.pruneAdvancedOptions(analysisContext);
-
-//        List<Path> userRulesPaths = analysisContext.getRulesPaths().stream()
-//                .filter(rulesPath -> rulesPath.getScopeType().equals(ScopeType.PROJECT))
-//                .map(rulesPath -> Paths.get(rulesPath.getPath()))
-//                .collect(Collectors.toList());
-//        ruleProviderRegistryCache_userProvidedProject.setUserRulesPath(analysisContext, userRulesPaths);
 
         this.entityManager.merge(analysisContext);
         return analysisContext;

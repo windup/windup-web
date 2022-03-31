@@ -40,6 +40,9 @@ export const useDeleteRule = () => {
                         getAxiosErrorMessage(error)
                       )
                     );
+                  })
+                  .finally(() => {
+                    dispatch(deleteDialogActions.closeModal());
                   });
               } else {
                 dispatch(
@@ -57,9 +60,6 @@ export const useDeleteRule = () => {
               alertActions.alert(
                 getAlertModel("danger", "Error", getAxiosErrorMessage(error))
               );
-            })
-            .finally(() => {
-              dispatch(deleteDialogActions.closeModal());
             });
         },
       })

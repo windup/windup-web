@@ -16,6 +16,7 @@ import {
   AdvancedOption,
   AnalysisContext,
   ConfigurationOption,
+  SourceTargetTechnologies,
 } from "models/api";
 import { validateAdvancedOptionValue } from "api/api";
 
@@ -186,7 +187,7 @@ export const Fields: Map<AdvancedOptionsFieldKey, IFieldInfo> = new Map([
 
 export const buildSchema = (
   availableOptions: ConfigurationOption[],
-  analysisContext?: AnalysisContext
+  customTechnologies: SourceTargetTechnologies
 ) => {
   const schema: any = {};
 
@@ -222,7 +223,7 @@ export const buildSchema = (
       (value) => {
         if (!value) return true;
 
-        let values: any[];
+        let values: (string | boolean)[];
         if (typeof value === "string" || typeof value === "boolean") {
           values = [value];
         } else if (Array.isArray(value)) {
@@ -231,15 +232,26 @@ export const buildSchema = (
           throw new Error("Invalid type, can not validate:" + value);
         }
 
+        let valuesForAPIValidation = values;
+        if (AdvancedOptionsFieldKey.SOURCE === fieldConfiguration.name) {
+          valuesForAPIValidation = values.filter(
+            (item) =>
+              customTechnologies.sources.filter((f) => f === item).length === 0
+          );
+        }
+        if (AdvancedOptionsFieldKey.TARGET === fieldConfiguration.name) {
+          valuesForAPIValidation = values.filter(
+            (item) =>
+              customTechnologies.targets.filter((f) => f === item).length === 0
+          );
+        }
+
         return Promise.all(
-          values.map((f) =>
-            validateAdvancedOptionValue(
-              {
-                name: fieldKey,
-                value: f,
-              } as AdvancedOption,
-              analysisContext
-            )
+          valuesForAPIValidation.map((f) =>
+            validateAdvancedOptionValue({
+              name: fieldKey,
+              value: f,
+            } as AdvancedOption)
           )
         )
           .then((responses) => {

@@ -18,6 +18,7 @@ import {
   ValidationResult,
   WindupExecution,
   WindupVersion,
+  SourceTargetTechnologies,
 } from "models/api";
 
 export const WINDUP_CORE_VERSION_URL = "/windup/coreVersion";
@@ -179,6 +180,14 @@ export const saveAnalysisContext = (
   );
 };
 
+export const getAnalysisContextCustomTechnologies = (
+  analysisContextId: number | string
+): AxiosPromise<SourceTargetTechnologies> => {
+  return ApiClient.get<SourceTargetTechnologies>(
+    `analysis-context/${analysisContextId}/custom-technologies`
+  );
+};
+
 export const getGlobalConfiguration = (): AxiosPromise<Configuration> => {
   return ApiClient.get<Configuration>("configuration");
 };
@@ -260,20 +269,17 @@ export const deleteLabelPathById = (labelsPathId: number): AxiosPromise => {
   return ApiClient.delete(`labels/by-labels-path/${labelsPathId}`);
 };
 
-export const getAdvancedConfigurationOptions = (
-  analysisContext?: AnalysisContext
-): AxiosPromise<ConfigurationOption[]> => {
-  return ApiClient.get<ConfigurationOption[]>(
-    `configuration-options?analysisContextId=${analysisContext?.id}`
-  );
+export const getAdvancedConfigurationOptions = (): AxiosPromise<
+  ConfigurationOption[]
+> => {
+  return ApiClient.get<ConfigurationOption[]>("configuration-options");
 };
 
 export const validateAdvancedOptionValue = (
-  value: AdvancedOption,
-  analysisContext?: AnalysisContext
+  value: AdvancedOption
 ): AxiosPromise<ValidationResult> => {
   return ApiClient.post<ValidationResult>(
-    `configuration-options/validate-option?analysisContextId=${analysisContext?.id}`,
+    "configuration-options/validate-option",
     value
   );
 };

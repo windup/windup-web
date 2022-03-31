@@ -24,7 +24,7 @@ import "./advanced-options-form.scss";
 import { useSelectionState } from "hooks/useSelectionState";
 
 import { AdvancedOptionsFieldKey } from "Constants";
-import { ConfigurationOption } from "models/api";
+import { ConfigurationOption, SourceTargetTechnologies } from "models/api";
 import {
   getValidatedFromError,
   getValidatedFromErrorTouched,
@@ -65,10 +65,12 @@ export interface AdvancedOptionsFormProps
     FormikHandlers,
     FormikHelpers<FormValues> {
   configurationOptions: ConfigurationOption[];
+  customTechnologies: SourceTargetTechnologies;
 }
 
 export const AdvancedOptionsForm: React.FC<AdvancedOptionsFormProps> = ({
   configurationOptions,
+  customTechnologies,
 
   values,
   errors,
@@ -143,6 +145,28 @@ export const AdvancedOptionsForm: React.FC<AdvancedOptionsFormProps> = ({
                   configurationOptions
                 );
 
+                let dropdownAvailableValues = new Set([
+                  ...fieldConfiguration.availableValues,
+                ]);
+
+                // Source/Target dropdowns should contain values comming from SystemProvided rules + enabled custom rules
+                if (
+                  AdvancedOptionsFieldKey.SOURCE === fieldConfiguration.name
+                ) {
+                  dropdownAvailableValues = new Set([
+                    ...fieldConfiguration.availableValues,
+                    ...customTechnologies.sources,
+                  ]);
+                }
+                if (
+                  AdvancedOptionsFieldKey.TARGET === fieldConfiguration.name
+                ) {
+                  dropdownAvailableValues = new Set([
+                    ...fieldConfiguration.availableValues,
+                    ...customTechnologies.targets,
+                  ]);
+                }
+
                 return (
                   <FormGroup
                     key={`${fieldInfo.type}-${index}`}
@@ -175,12 +199,12 @@ export const AdvancedOptionsForm: React.FC<AdvancedOptionsFormProps> = ({
                       placeholderText={
                         fieldInfo.placeholder ? fieldInfo.placeholder : ""
                       }
-                      isCreatable={true}
+                      isCreatable={false}
                       onCreateOption={(newOptionVal) => {
                         handleOnDropdownSelect(field, newOptionVal);
                       }}
                     >
-                      {[...fieldConfiguration.availableValues]
+                      {[...Array.from(dropdownAvailableValues.values())]
                         .sort()
                         .map((option, i) => (
                           <SelectOption key={i} value={option} />

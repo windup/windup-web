@@ -1,7 +1,7 @@
 import { AxiosError, AxiosResponse } from "axios";
 import { Dispatch } from "redux";
 import { createAsyncAction } from "typesafe-actions";
-import { AnalysisContext, ConfigurationOption } from "models/api";
+import { ConfigurationOption } from "models/api";
 import { getAdvancedConfigurationOptions } from "api/api";
 
 export const {
@@ -14,13 +14,11 @@ export const {
   "configurationOptions/fetch/failure"
 )<void, ConfigurationOption[], AxiosError>();
 
-export const fetchConfigurationOptions = (
-  analysisContext?: AnalysisContext
-) => {
+export const fetchConfigurationOptions = () => {
   return (dispatch: Dispatch) => {
     dispatch(fetchConfigurationOptionsRequest());
 
-    return getAdvancedConfigurationOptions(analysisContext)
+    return getAdvancedConfigurationOptions()
       .then((res: AxiosResponse) => {
         dispatch(fetchConfigurationOptionsSuccess(res.data));
       })

@@ -43,12 +43,6 @@ public class RuleEndpointImpl implements RuleEndpoint
     @Inject
     private AnalysisContextService analysisContextService;
 
-//    @Inject
-//    private RuleProviderRegistryCache_UserProvidedGlobal ruleProviderRegistryCache_userProvidedGlobal;
-//
-//    @Inject
-//    private RuleProviderRegistryCache_UserProvidedProject ruleProviderRegistryCache_userProvidedProject;
-
     @Override
     public List<RuleProviderEntity> getAllProviders()
     {
@@ -78,12 +72,7 @@ public class RuleEndpointImpl implements RuleEndpoint
     public RulesPath uploadRuleProvider(MultipartFormDataInput data)
     {
         Configuration configuration = this.configurationService.getGlobalConfiguration();
-        RulesPath rulesPath = uploadRuleProviderToConfiguration(data, configuration, null);
-
-        // Add uploaded rule to cache
-//        ruleProviderRegistryCache_userProvidedGlobal.addUserRulesPath(Paths.get(rulesPath.getPath()));
-
-        return rulesPath;
+        return uploadRuleProviderToConfiguration(data, configuration, null);
     }
 
     @Override
@@ -91,18 +80,7 @@ public class RuleEndpointImpl implements RuleEndpoint
     {
         Configuration configuration = this.configurationService.getConfigurationByProjectId(projectId);
         MigrationProject migrationProject = configuration.getMigrationProject();
-        RulesPath rulesPath = uploadRuleProviderToConfiguration(data, configuration, migrationProject.getId());
-
-        // Add uploaded rule to cache
-//        AnalysisContext analysisContext = migrationProject.getDefaultAnalysisContext();
-//        Set<Path> newRulesPath = analysisContext.getRulesPaths().stream()
-//                .filter(item -> item.getScopeType().equals(ScopeType.PROJECT) && item.getRulesPathType().equals(PathType.USER_PROVIDED))
-//                .map(item -> Paths.get(item.getPath()))
-//                .collect(Collectors.toSet());
-//        newRulesPath.add(Paths.get(rulesPath.getPath()));
-//        ruleProviderRegistryCache_userProvidedProject.setUserRulesPath(analysisContext, newRulesPath);
-
-        return rulesPath;
+        return uploadRuleProviderToConfiguration(data, configuration, migrationProject.getId());
     }
 
     private  RulesPath uploadRuleProviderToConfiguration(MultipartFormDataInput data, Configuration configuration, Long projectId)
@@ -149,21 +127,6 @@ public class RuleEndpointImpl implements RuleEndpoint
         configuration.getRulesPaths().remove(rulesPath);
         this.entityManager.merge(configuration);
 
-        // Remove deleted rule from cache
-//        Path path = Paths.get(rulesPath.getPath());
-//        if (rulesPath.getScopeType().equals(ScopeType.GLOBAL)) {
-//            ruleProviderRegistryCache_userProvidedGlobal.removeUserRulesPath(path);
-//        } else if (rulesPath.getScopeType().equals(ScopeType.PROJECT)) {
-//            MigrationProject migrationProject = configuration.getMigrationProject();
-//            AnalysisContext analysisContext = migrationProject.getDefaultAnalysisContext();
-//            Set<Path> newRulesPath = analysisContext.getRulesPaths().stream()
-//                    .filter(item -> item.getScopeType().equals(ScopeType.PROJECT) && item.getRulesPathType().equals(PathType.USER_PROVIDED))
-//                    .map(item -> Paths.get(item.getPath()))
-//                    .collect(Collectors.toSet());
-//            newRulesPath.remove(Paths.get(rulesPath.getPath()));
-//            ruleProviderRegistryCache_userProvidedProject.setUserRulesPath(analysisContext, newRulesPath);
-//        }
-
         // Remove rulePath from all AnalysisContexts
         @SuppressWarnings("unchecked")
         List<AnalysisContext> analysisContexts = entityManager
@@ -173,58 +136,18 @@ public class RuleEndpointImpl implements RuleEndpoint
 
         analysisContexts.forEach(analysisContext -> {
             analysisContext.getRulesPaths().remove(rulesPath);
-
-//            Set<String> availableSources = Stream.concat(ruleProviderRegistryCache.getAvailableSourceTechnologies().stream(), ruleProviderRegistryCache_userProvidedProject.getAvailableSourceTechnologies(analysisContext).stream()).collect(Collectors.toSet());
-//            Set<String> availableTargets = Stream.concat(ruleProviderRegistryCache.getAvailableTargetTechnologies().stream(), ruleProviderRegistryCache_userProvidedProject.getAvailableSourceTechnologies(analysisContext).stream()).collect(Collectors.toSet());
-//
-//            List<AdvancedOption> advancedOptions = analysisContext.getAdvancedOptions().stream()
-//                    .filter(advancedOption -> !advancedOption.getName().equals(SourceOption.NAME) || availableSources.contains(advancedOption.getValue()))
-//                    .filter(advancedOption -> !advancedOption.getName().equals(TargetOption.NAME) || availableTargets.contains(advancedOption.getValue()))
-//                    .collect(Collectors.toList());
-//
-//            analysisContext.setAdvancedOptions(advancedOptions);
-//            analysisContext.getRulesPaths().remove(rulesPath);
-//
-//            this.entityManager.merge(analysisContext);
-
             // Remove no longer available sources/targets
             analysisContextService.pruneAdvancedOptions(analysisContext);
 
             this.entityManager.merge(analysisContext);
         });
 
-//        // Remove sources/targets that belonged to rule
-//        if (rulesPath.getScopeType().equals(ScopeType.GLOBAL)) {
-//            // TODO
-//            analysisContexts.forEach(analysisContext -> {
-//                Set<String> validTargets = Stream.concat(
-//                        ruleProviderRegistryCache_systemProvided.getAvailableTargetTechnologies().stream(),
-//                        ruleProviderRegistryCache_userProvidedProject.getAvailableSourceTechnologies(analysisContext).stream()
-//                ).collect(Collectors.toSet());
+        // TODO don't delete these entities since WindupExecution saves a reference of them
+//        this.entityManager.createNamedQuery(RuleProviderEntity.DELETE_BY_RULES_PATH)
+//                .setParameter(RuleProviderEntity.RULES_PATH_PARAM, rulesPath)
+//                .executeUpdate();
 //
-//                List<AdvancedOption> advancedOptions = analysisContext.getAdvancedOptions().stream()
-//                        .filter(advancedOption -> !advancedOption.getName().equals(TargetOption.NAME) || validTargets.contains(advancedOption.getValue()))
-//                        .collect(Collectors.toList());
-//                analysisContext.setAdvancedOptions(advancedOptions);
-//
-//                this.entityManager.merge(analysisContext);
-//            });
-//        } else if (rulesPath.getScopeType().equals(ScopeType.PROJECT)) {
-//            MigrationProject migrationProject = configuration.getMigrationProject();
-//            AnalysisContext analysisContext = migrationProject.getDefaultAnalysisContext();
-//
-//            Set<String> validTargets = Stream.concat(
-//                    ruleProviderRegistryCache_systemProvided.getAvailableTargetTechnologies().stream(),
-//                    ruleProviderRegistryCache_userProvidedProject.getAvailableSourceTechnologies(analysisContext).stream()
-//            ).collect(Collectors.toSet());
-//
-//            List<AdvancedOption> advancedOptions = analysisContext.getAdvancedOptions().stream()
-//                    .filter(advancedOption -> !advancedOption.getName().equals(TargetOption.NAME) || validTargets.contains(advancedOption.getValue()))
-//                    .collect(Collectors.toList());
-//            analysisContext.setAdvancedOptions(advancedOptions);
-//
-//            this.entityManager.merge(analysisContext);
-//        }
+//        this.entityManager.remove(rulesPath);
     }
 
     @Override

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { AxiosError } from "axios";
 
 import {
@@ -95,6 +95,7 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
     isFetching: isFetchingProject,
     fetchError: fetchProjectError,
     fetchProject: loadProject,
+    count: projectFechCount,
   } = useFetchProject();
 
   const {
@@ -110,11 +111,41 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
     loadRules(projectId);
   }, [projectId, loadProject, loadRules]);
 
+  // Switch checked state
+  const [
+    isAnalysisContextBeingSaved,
+    setIsAnalysisContextBeingSaved,
+  ] = useState(false);
+
+  const [isRulePathChecked, setIsRulePathChecked] = useState(
+    new Map<number, boolean>()
+  );
+
+  useEffect(() => {
+    if (analysisContext && rulesPath) {
+      const newCheckedValue = new Map<number, boolean>();
+      rulesPath.forEach((item) => {
+        newCheckedValue.set(
+          item.id,
+          !!analysisContext.rulesPaths.find((f) => f.id === item.id)
+        );
+      });
+      setIsRulePathChecked(newCheckedValue);
+    }
+  }, [analysisContext, rulesPath]);
+
+  //
+
   const handleRulePathToggled = useCallback(
     (isChecked: boolean, rulePathToggled: RulesPath) => {
       if (!project) {
         return;
       }
+
+      setIsRulePathChecked(
+        new Map(isRulePathChecked).set(rulePathToggled.id, isChecked)
+      );
+      setIsAnalysisContextBeingSaved(true);
 
       getAnalysisContext(project.defaultAnalysisContextId)
         .then(({ data }) => {
@@ -146,9 +177,12 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
               getAlertModel("danger", "Error", getAxiosErrorMessage(error))
             )
           );
+        })
+        .finally(() => {
+          setIsAnalysisContextBeingSaved(false);
         });
     },
-    [project, skipChangeToProvisional, loadProject, dispatch]
+    [project, isRulePathChecked, skipChangeToProvisional, loadProject, dispatch]
   );
 
   const actionResolver = (rowData: IRowData): (IAction | ISeparator)[] => {
@@ -181,7 +215,7 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
   };
 
   const areActionsDisabled = (): boolean => {
-    return false;
+    return isFetchingProject || isFetchingRules || isAnalysisContextBeingSaved;
   };
 
   const getRowRulePathField = (rowData: IRowData): RulesPath => {
@@ -229,14 +263,19 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
             {
               title: (
                 <Switch
-                  aria-label="Enabled"
-                  isChecked={
-                    !!analysisContext?.rulesPaths.find((f) => f.id === item.id)
+                  aria-label={
+                    isRulePathChecked.get(item.id) ? "Enabled" : "Disabled"
                   }
-                  onChange={(isChecked) =>
-                    handleRulePathToggled(isChecked, item)
+                  isChecked={isRulePathChecked.get(item.id)}
+                  onChange={(isChecked) => {
+                    handleRulePathToggled(isChecked, item);
+                  }}
+                  isDisabled={
+                    isFetchingProject ||
+                    isFetchingRules ||
+                    isAnalysisContextBeingSaved ||
+                    errors.length > 0
                   }
-                  isDisabled={errors.length > 0}
                 />
               ),
             },
@@ -244,7 +283,14 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
         };
       });
     },
-    [analysisContext, ruleProviders, handleRulePathToggled]
+    [
+      ruleProviders,
+      isAnalysisContextBeingSaved,
+      isFetchingProject,
+      isFetchingRules,
+      isRulePathChecked,
+      handleRulePathToggled,
+    ]
   );
 
   const handleOnRuleLabelClose = () => {
@@ -271,7 +317,9 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
             columns={columns}
             actionResolver={actionResolver}
             areActionsDisabled={areActionsDisabled}
-            loadingVariant="skeleton"
+            loadingVariant={
+              projectFechCount <= 1 || isFetchingRules ? "skeleton" : "none"
+            }
             isLoadingData={isFetchingProject || isFetchingRules}
             loadingDataError={fetchProjectError || fetchRulesError}
             compareItem={compareRulePath}
