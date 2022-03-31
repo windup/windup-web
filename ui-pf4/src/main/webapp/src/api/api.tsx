@@ -276,10 +276,13 @@ export const getAdvancedConfigurationOptions = (): AxiosPromise<
 };
 
 export const validateAdvancedOptionValue = (
-  value: AdvancedOption
+  value: AdvancedOption,
+  analysisContext?: AnalysisContext
 ): AxiosPromise<ValidationResult> => {
   return ApiClient.post<ValidationResult>(
-    "configuration-options/validate-option",
+    `configuration-options/validate-option${
+      analysisContext ? "?analysisContextId=" + analysisContext.id : ""
+    }`,
     value
   );
 };

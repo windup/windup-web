@@ -221,8 +221,8 @@ export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({
           }
         : undefined,
     validationSchema:
-      configurationOptions && customTechnologies
-        ? buildSchema(configurationOptions, customTechnologies)
+      configurationOptions && analysisContext
+        ? buildSchema(configurationOptions, analysisContext)
         : undefined,
     onSubmit: (values, formikHelpers) => {
       const { submitButton, ...formValues } = values;

@@ -185,8 +185,8 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
         ? buildInitialValues(analysisContext, configurationOptions)
         : undefined,
     validationSchema:
-      configurationOptions && customTechnologies
-        ? buildSchema(configurationOptions, customTechnologies)
+      configurationOptions && analysisContext
+        ? buildSchema(configurationOptions, analysisContext)
         : undefined,
     onSubmit: handleOnSubmit,
     initialErrors: !project ? { name: "" } : {},
