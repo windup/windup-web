@@ -5,8 +5,13 @@ import org.jboss.windup.config.metadata.RuleProviderRegistryCache;
 import org.jboss.windup.exec.configuration.options.SourceOption;
 import org.jboss.windup.exec.configuration.options.TargetOption;
 import org.jboss.windup.web.services.SourceTargetTechnologies;
+import org.jboss.windup.web.services.model.AdvancedOption;
+import org.jboss.windup.web.services.model.AnalysisContext;
+import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.model.Package;
-import org.jboss.windup.web.services.model.*;
+import org.jboss.windup.web.services.model.PathType;
+import org.jboss.windup.web.services.model.RulesPath;
+import org.jboss.windup.web.services.model.ScopeType;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
@@ -15,7 +20,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**

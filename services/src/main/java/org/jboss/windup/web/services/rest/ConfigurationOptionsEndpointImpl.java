@@ -2,7 +2,13 @@ package org.jboss.windup.web.services.rest;
 
 import org.jboss.windup.config.ConfigurationOption;
 import org.jboss.windup.config.ValidationResult;
-import org.jboss.windup.exec.configuration.options.*;
+import org.jboss.windup.exec.configuration.options.InputPathOption;
+import org.jboss.windup.exec.configuration.options.OutputPathOption;
+import org.jboss.windup.exec.configuration.options.OverwriteOption;
+import org.jboss.windup.exec.configuration.options.SourceOption;
+import org.jboss.windup.exec.configuration.options.TargetOption;
+import org.jboss.windup.exec.configuration.options.UserLabelsDirectoryOption;
+import org.jboss.windup.exec.configuration.options.UserRulesDirectoryOption;
 import org.jboss.windup.rules.apps.java.config.ExcludePackagesOption;
 import org.jboss.windup.rules.apps.java.config.ScanPackagesOption;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
@@ -16,7 +22,11 @@ import org.jboss.windup.web.services.service.AnalysisContextService;
 import org.jboss.windup.web.services.service.RulesPathService;
 
 import javax.inject.Inject;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**

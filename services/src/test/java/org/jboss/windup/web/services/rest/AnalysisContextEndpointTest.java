@@ -1,10 +1,5 @@
 package org.jboss.windup.web.services.rest;
 
-import java.net.URL;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.RandomStringUtils;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -17,7 +12,14 @@ import org.jboss.windup.web.services.ServiceTestUtil;
 import org.jboss.windup.web.services.SourceTargetTechnologies;
 import org.jboss.windup.web.services.data.DataProvider;
 import org.jboss.windup.web.services.data.ServiceConstants;
-import org.jboss.windup.web.services.model.*;
+import org.jboss.windup.web.services.model.AdvancedOption;
+import org.jboss.windup.web.services.model.AnalysisContext;
+import org.jboss.windup.web.services.model.Configuration;
+import org.jboss.windup.web.services.model.MigrationPath;
+import org.jboss.windup.web.services.model.MigrationProject;
+import org.jboss.windup.web.services.model.PathType;
+import org.jboss.windup.web.services.model.RulesPath;
+import org.jboss.windup.web.services.model.ScopeType;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
@@ -26,6 +28,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.ws.rs.core.Response;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
