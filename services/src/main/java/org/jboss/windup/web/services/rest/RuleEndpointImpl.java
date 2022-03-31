@@ -134,9 +134,8 @@ public class RuleEndpointImpl implements RuleEndpoint
                 .getResultList();
         analysisContexts.forEach(analysisContext -> {
             analysisContext.getRulesPaths().remove(rulesPath);
-            // Remove no longer available sources/targets
-            analysisContextService.addAndPruneTechnologies(analysisContext);
 
+            analysisContextService.pruneTechnologies(analysisContext);
             this.entityManager.merge(analysisContext);
         });
 

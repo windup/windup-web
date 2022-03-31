@@ -194,17 +194,15 @@ public class AnalysisContextService
     }
 
     /**
-     * Adds custom sources/targets to the advanced options and
-     * Removes no longer available sources/targets from the advanced options
+     * Adds, to the advanced options, custom sources/targets coming from Project Scoped custom rules
      */
-    public void addAndPruneTechnologies(AnalysisContext analysisContext) {
+    public void addProjectScopedCustomTechnologies(AnalysisContext analysisContext) {
         List<RulesPath> userProvidedRulesPaths = analysisContext.getRulesPaths().stream()
-                .filter(f -> f.getRulesPathType().equals(PathType.USER_PROVIDED))
+                .filter(f -> f.getRulesPathType().equals(PathType.USER_PROVIDED) && f.getScopeType().equals(ScopeType.PROJECT))
                 .collect(Collectors.toList());
 
         SourceTargetTechnologies userTechnologies = rulesPathService.getSourceTargetTechnologies(userProvidedRulesPaths);
 
-        // Add custom source/targets to Advanced Options
         List<AdvancedOption> newSources = userTechnologies.getSources().stream()
                 .filter(source -> analysisContext.getAdvancedOptions().stream()
                         .filter(advancedOption -> advancedOption.getName().equals(SourceOption.NAME))
@@ -240,8 +238,18 @@ public class AnalysisContextService
         advancedOptionsWithCustomTechnologies.addAll(newTargets);
 
         analysisContext.setAdvancedOptions(advancedOptionsWithCustomTechnologies);
+    }
 
-        // Prune no longer available source/targets from Advanced Options
+    /**
+     * Removes no longer available sources/targets from the advanced options
+     */
+    public void pruneTechnologies(AnalysisContext analysisContext) {
+        List<RulesPath> userProvidedRulesPaths = analysisContext.getRulesPaths().stream()
+                .filter(f -> f.getRulesPathType().equals(PathType.USER_PROVIDED))
+                .collect(Collectors.toList());
+
+        SourceTargetTechnologies userTechnologies = rulesPathService.getSourceTargetTechnologies(userProvidedRulesPaths);
+
         Set<String> availableSources = new HashSet<>();
         ruleProviderRegistryCache.getAvailableSourceTechnologies().forEach(s -> availableSources.add(s));
         userTechnologies.getSources().forEach(s -> availableSources.add(s));

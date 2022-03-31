@@ -16,14 +16,8 @@ import org.jboss.windup.web.services.service.AnalysisContextService;
 import org.jboss.windup.web.services.service.RulesPathService;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
-
-import static org.jboss.windup.web.services.model.WindupExecution_.analysisContext;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>

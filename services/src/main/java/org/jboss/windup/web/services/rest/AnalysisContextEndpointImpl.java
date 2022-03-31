@@ -86,8 +86,9 @@ public class AnalysisContextEndpointImpl implements AnalysisContextEndpoint
             analysisContext = analysisContextService.update(defaultAnalysisContext.getId(), analysisContext, skipChangeToProvisional);
         }
 
-        // Remove no longer available sources/targets
-        analysisContextService.addAndPruneTechnologies(analysisContext);
+        // Update custom sources/targets
+        analysisContextService.addProjectScopedCustomTechnologies(analysisContext);
+        analysisContextService.pruneTechnologies(analysisContext);
 
         this.entityManager.merge(analysisContext);
         return analysisContext;
