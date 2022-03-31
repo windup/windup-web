@@ -193,7 +193,11 @@ public class AnalysisContextService
                 });
     }
 
-    public void addAndPruneTechnologiesToAdvancedOptions(AnalysisContext analysisContext) {
+    /**
+     * Adds custom sources/targets to the advanced options and
+     * Removes no longer available sources/targets from the advanced options
+     */
+    public void addAndPruneTechnologies(AnalysisContext analysisContext) {
         List<RulesPath> userProvidedRulesPaths = analysisContext.getRulesPaths().stream()
                 .filter(f -> f.getRulesPathType().equals(PathType.USER_PROVIDED))
                 .collect(Collectors.toList());

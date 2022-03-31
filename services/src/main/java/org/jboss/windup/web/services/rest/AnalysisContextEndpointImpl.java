@@ -87,7 +87,7 @@ public class AnalysisContextEndpointImpl implements AnalysisContextEndpoint
         }
 
         // Remove no longer available sources/targets
-        analysisContextService.addAndPruneTechnologiesToAdvancedOptions(analysisContext);
+        analysisContextService.addAndPruneTechnologies(analysisContext);
 
         this.entityManager.merge(analysisContext);
         return analysisContext;
