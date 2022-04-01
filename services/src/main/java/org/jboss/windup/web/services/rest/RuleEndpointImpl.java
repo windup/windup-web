@@ -1,18 +1,5 @@
 package org.jboss.windup.web.services.rest;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.util.List;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-import javax.ws.rs.NotFoundException;
-
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
@@ -23,11 +10,21 @@ import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.model.PathType;
 import org.jboss.windup.web.services.model.RegistrationType;
 import org.jboss.windup.web.services.model.RuleProviderEntity;
-import org.jboss.windup.web.services.model.RuleProviderEntity_;
 import org.jboss.windup.web.services.model.RulesPath;
 import org.jboss.windup.web.services.model.ScopeType;
+import org.jboss.windup.web.services.service.AnalysisContextService;
 import org.jboss.windup.web.services.service.ConfigurationService;
 import org.jboss.windup.web.services.service.FileUploadService;
+import org.jboss.windup.web.services.service.RulesPathService;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.ws.rs.NotFoundException;
+import java.io.File;
+import java.nio.file.Path;
+import java.util.List;
 
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
@@ -48,6 +45,12 @@ public class RuleEndpointImpl implements RuleEndpoint
     @Inject
     private ConfigurationService configurationService;
 
+    @Inject
+    private RulesPathService rulesPathService;
+
+    @Inject
+    private AnalysisContextService analysisContextService;
+
     @Override
     public List<RuleProviderEntity> getAllProviders()
     {
@@ -58,12 +61,7 @@ public class RuleEndpointImpl implements RuleEndpoint
     public List<RuleProviderEntity> getByRulesPath(Long rulesPathID)
     {
         RulesPath rulesPath = getRulesPath(rulesPathID);
-        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<RuleProviderEntity> criteriaQuery = builder.createQuery(RuleProviderEntity.class);
-        Root<RuleProviderEntity> root = criteriaQuery.from(RuleProviderEntity.class);
-        criteriaQuery.where(builder.equal(root.get(RuleProviderEntity_.rulesPath), rulesPath));
-
-        return entityManager.createQuery(criteriaQuery).getResultList();
+        return rulesPathService.getRuleProviderEntitiesByRulesPath(rulesPath);
     }
 
     private RulesPath getRulesPath(Long rulesPathID)
@@ -144,6 +142,8 @@ public class RuleEndpointImpl implements RuleEndpoint
                 .getResultList();
         analysisContexts.forEach(analysisContext -> {
             analysisContext.getRulesPaths().remove(rulesPath);
+
+            analysisContextService.pruneTechnologies(analysisContext);
             this.entityManager.merge(analysisContext);
         });
 

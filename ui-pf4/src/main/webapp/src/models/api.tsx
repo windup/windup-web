@@ -305,3 +305,8 @@ export interface Category {
   name: string;
   priority: number;
 }
+
+export interface SourceTargetTechnologies {
+  sources: string[];
+  targets: string[];
+}

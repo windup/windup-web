@@ -28,6 +28,8 @@ public class ConfigurationEndpointTest extends AbstractTest
 {
     public static final String FAKE_PATH = "./target/classes/";
     public static final String CUSTOM_RULESPATH = "target/test-classes/custom-rulesets-data/custom-ruleset.windup.xml";
+    public static final String CUSTOM_RULESPATH_WITH_CUSTOM_TECHNOLOGIES1 = "target/test-classes/custom-rulesets-data/custom-target1-ruleset.windup.xml";
+    public static final String CUSTOM_RULESPATH_WITH_CUSTOM_TECHNOLOGIES2 = "target/test-classes/custom-rulesets-data/custom-target2-ruleset.windup.xml";
 
     @ArquillianResource
     private URL contextPath;

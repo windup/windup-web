@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { AxiosError } from "axios";
 import { FormikHelpers, useFormik } from "formik";
@@ -22,8 +22,16 @@ import { alertActions } from "store/alert";
 
 import { getAlertModel } from "Constants";
 import { formatPath, Paths, ProjectRoute } from "Paths";
-import { AdvancedOption, AnalysisContext } from "models/api";
-import { saveAnalysisContext, getAnalysisContext } from "api/api";
+import {
+  AdvancedOption,
+  AnalysisContext,
+  SourceTargetTechnologies,
+} from "models/api";
+import {
+  saveAnalysisContext,
+  getAnalysisContext,
+  getAnalysisContextCustomTechnologies,
+} from "api/api";
 import { getAxiosErrorMessage } from "utils/modelUtils";
 
 import { useCancelWizard } from "../wizard/useCancelWizard";
@@ -54,8 +62,8 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
   const {
     project,
     analysisContext,
-    isFetching,
-    fetchError,
+    isFetching: isFetchingProject,
+    fetchError: fetchProjectError,
     fetchProject: loadProject,
   } = useFetchProject();
 
@@ -82,6 +90,31 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
       dispatch(configurationOptionActions.fetchConfigurationOptions());
     }
   }, [configurationOptions, dispatch]);
+
+  /**
+   * Fetch Analysis Context custom technologies
+   */
+  const [customTechnologies, setCustomTechnologies] = useState<
+    SourceTargetTechnologies
+  >();
+
+  const [
+    isFechingCustomTechnologies,
+    setIsFechingCustomTechnologies,
+  ] = useState(false);
+
+  useEffect(() => {
+    if (analysisContext) {
+      setIsFechingCustomTechnologies(true);
+      getAnalysisContextCustomTechnologies(analysisContext.id)
+        .then(({ data }) => {
+          setCustomTechnologies(data);
+        })
+        .finally(() => {
+          setIsFechingCustomTechnologies(false);
+        });
+    }
+  }, [analysisContext]);
 
   //
 
@@ -151,9 +184,10 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
       analysisContext && configurationOptions
         ? buildInitialValues(analysisContext, configurationOptions)
         : undefined,
-    validationSchema: configurationOptions
-      ? buildSchema(configurationOptions)
-      : undefined,
+    validationSchema:
+      configurationOptions && analysisContext
+        ? buildSchema(configurationOptions, analysisContext)
+        : undefined,
     onSubmit: handleOnSubmit,
     initialErrors: !project ? { name: "" } : {},
   });
@@ -182,8 +216,9 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
 
   const currentStep = NewProjectWizardStepIds.ADVANCED_OPTIONS;
   const disableNav =
-    isFetching ||
+    isFetchingProject ||
     configurationOptionsFetchStatus === "inProgress" ||
+    isFechingCustomTechnologies ||
     formik.isSubmitting ||
     formik.isValidating;
   const canJumpUpto =
@@ -207,20 +242,27 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
       stepId={currentStep}
       canJumpUpTo={canJumpUpto}
       footer={footer}
-      showErrorContent={fetchError || configurationOptionsFetchError}
+      showErrorContent={fetchProjectError || configurationOptionsFetchError}
       onGoToStep={handleOnGoToStep}
     >
       <ConditionalRender
-        when={isFetching || configurationOptionsFetchStatus === "inProgress"}
+        when={
+          isFetchingProject ||
+          isFechingCustomTechnologies ||
+          configurationOptionsFetchStatus === "inProgress"
+        }
         then={<LoadingWizardContent />}
       >
         <Form onSubmit={formik.handleSubmit}>
-          {formik.initialValues && configurationOptions && (
-            <AdvancedOptionsForm
-              configurationOptions={configurationOptions}
-              {...formik}
-            />
-          )}
+          {formik.initialValues &&
+            configurationOptions &&
+            customTechnologies && (
+              <AdvancedOptionsForm
+                configurationOptions={configurationOptions}
+                customTechnologies={customTechnologies}
+                {...formik}
+              />
+            )}
         </Form>
       </ConditionalRender>
     </NewProjectWizard>

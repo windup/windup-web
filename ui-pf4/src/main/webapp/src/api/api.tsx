@@ -18,6 +18,7 @@ import {
   ValidationResult,
   WindupExecution,
   WindupVersion,
+  SourceTargetTechnologies,
 } from "models/api";
 
 export const WINDUP_CORE_VERSION_URL = "/windup/coreVersion";
@@ -179,6 +180,14 @@ export const saveAnalysisContext = (
   );
 };
 
+export const getAnalysisContextCustomTechnologies = (
+  analysisContextId: number | string
+): AxiosPromise<SourceTargetTechnologies> => {
+  return ApiClient.get<SourceTargetTechnologies>(
+    `analysis-context/${analysisContextId}/custom-technologies`
+  );
+};
+
 export const getGlobalConfiguration = (): AxiosPromise<Configuration> => {
   return ApiClient.get<Configuration>("configuration");
 };
@@ -267,10 +276,13 @@ export const getAdvancedConfigurationOptions = (): AxiosPromise<
 };
 
 export const validateAdvancedOptionValue = (
-  value: AdvancedOption
+  value: AdvancedOption,
+  analysisContext?: AnalysisContext
 ): AxiosPromise<ValidationResult> => {
   return ApiClient.post<ValidationResult>(
-    "configuration-options/validate-option",
+    `configuration-options/validate-option${
+      analysisContext ? "?analysisContextId=" + analysisContext.id : ""
+    }`,
     value
   );
 };

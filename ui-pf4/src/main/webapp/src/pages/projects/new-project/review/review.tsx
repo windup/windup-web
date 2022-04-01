@@ -17,6 +17,7 @@ import {
   ButtonVariant,
   List,
   ListItem,
+  Alert,
 } from "@patternfly/react-core";
 import { css } from "@patternfly/react-styles";
 import styles from "@patternfly/react-styles/css/components/Wizard/wizard";
@@ -104,6 +105,24 @@ export const Review: React.FC<ReviewProps> = ({ match, history }) => {
     loadLabels(match.params.project);
   }, [match, loadProject, loadRules, loadLabels]);
 
+  // Verify AnalysisContext has valid configuration
+  const [isAnalysisContextValid, setIsAnalysisContextValidhownError] = useState(
+    true
+  );
+
+  useEffect(() => {
+    if (
+      analysisContext &&
+      analysisContext.advancedOptions.filter(
+        (f) => f.name === AdvancedOptionsFieldKey.TARGET
+      ).length === 0
+    ) {
+      setIsAnalysisContextValidhownError(false);
+    }
+  }, [analysisContext]);
+
+  // Event Handlers
+
   const handleSaveAndRun = (createExecution: boolean) => {
     setIsCreatingExecution(true);
     if (project) {
@@ -173,7 +192,7 @@ export const Review: React.FC<ReviewProps> = ({ match, history }) => {
           <Button
             variant={ButtonVariant.primary}
             onClick={() => handleSaveAndRun(false)}
-            isDisabled={disableNav}
+            isDisabled={disableNav || !isAnalysisContextValid}
           >
             Save
           </Button>
@@ -181,7 +200,7 @@ export const Review: React.FC<ReviewProps> = ({ match, history }) => {
             variant={ButtonVariant.primary}
             type="submit"
             onClick={() => handleSaveAndRun(true)}
-            isDisabled={disableNav}
+            isDisabled={disableNav || !isAnalysisContextValid}
           >
             Save and run
           </Button>
@@ -207,6 +226,13 @@ export const Review: React.FC<ReviewProps> = ({ match, history }) => {
         then={<LoadingWizardContent />}
       >
         <Stack hasGutter>
+          {!isAnalysisContextValid && (
+            <StackItem>
+              <Alert isInline variant="danger" title="Invalid configuration">
+                You have no Targets selected.
+              </Alert>
+            </StackItem>
+          )}
           <StackItem>
             <TextContent>
               <Title headingLevel="h5" size={TitleSizes["lg"]}>

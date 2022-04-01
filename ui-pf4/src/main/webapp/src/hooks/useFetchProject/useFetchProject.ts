@@ -24,6 +24,7 @@ type State = Readonly<{
   project?: MigrationProject;
   analysisContext?: AnalysisContext;
   fetchError?: AxiosError;
+  count: number;
 }>;
 
 const defaultState: State = {
@@ -31,6 +32,7 @@ const defaultState: State = {
   project: undefined,
   analysisContext: undefined,
   fetchError: undefined,
+  count: 0,
 };
 
 type Action = ActionType<
@@ -47,6 +49,7 @@ const reducer = (state: State, action: Action): State => {
       return {
         ...state,
         isFetching: true,
+        count: state.count + 1,
       };
     case getType(fetchSuccess):
       return {
@@ -72,6 +75,7 @@ export interface IState {
   analysisContext?: AnalysisContext;
   isFetching: boolean;
   fetchError?: AxiosError;
+  count: number;
   fetchProject: (projectId: string | number) => void;
 }
 
@@ -106,6 +110,7 @@ export const useFetchProject = (initialState: State = defaultState): IState => {
     analysisContext: state.analysisContext,
     isFetching: state.isFetching,
     fetchError: state.fetchError,
+    count: state.count,
     fetchProject,
   };
 };
