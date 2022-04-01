@@ -279,6 +279,19 @@ export const Review: React.FC<ReviewProps> = ({ match, history }) => {
                   </DescriptionListDescription>
                 </DescriptionListGroup>
                 <DescriptionListGroup>
+                  <DescriptionListTerm>Sources</DescriptionListTerm>
+                  <DescriptionListDescription>
+                    {nullabeContent(
+                      analysisContext.advancedOptions
+                        .filter(
+                          (f) => f.name === AdvancedOptionsFieldKey.SOURCE
+                        )
+                        .map((f) => f.value)
+                        .join(", ")
+                    )}
+                  </DescriptionListDescription>
+                </DescriptionListGroup>
+                <DescriptionListGroup>
                   <DescriptionListTerm>Included packages</DescriptionListTerm>
                   <DescriptionListDescription>
                     {analysisContext.includePackages.length === 0 ? (
@@ -338,6 +351,7 @@ export const Review: React.FC<ReviewProps> = ({ match, history }) => {
                   <DescriptionListTerm>Advanced options</DescriptionListTerm>
                   <DescriptionListDescription>
                     {getAdvancedOptionsWithExclusion(analysisContext, [
+                      AdvancedOptionsFieldKey.SOURCE,
                       AdvancedOptionsFieldKey.TARGET,
                     ]).length > 0 ? (
                       <table
