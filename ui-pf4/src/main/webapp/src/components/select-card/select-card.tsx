@@ -12,7 +12,6 @@ import {
   SelectOptionObject,
   EmptyStateBody,
 } from "@patternfly/react-core";
-import { CubesIcon } from "@patternfly/react-icons";
 
 import "./select-card.scss";
 import { useState } from "react";
@@ -72,8 +71,8 @@ export const SelectCard: React.FC<SelectCardProps> = ({
     onChange(true, selection as any);
   };
 
-  const getImage = (): React.ComponentType<any> => {
-    let result: React.ComponentType<any> = CubesIcon;
+  const getImage = (): React.ComponentType<any> | undefined => {
+    let result: React.ComponentType<any> | undefined = undefined;
     if (icon) {
       result = icon;
     } else if (iconSrc) {
@@ -97,7 +96,7 @@ export const SelectCard: React.FC<SelectCardProps> = ({
           variant={EmptyStateVariant.small}
           className="select-card__component__empty-state"
         >
-          <EmptyStateIcon icon={getImage()} />
+          {getImage() && <EmptyStateIcon icon={getImage()} />}
           <Title headingLevel="h4" size="md">
             {label}
           </Title>
