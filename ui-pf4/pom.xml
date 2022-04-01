@@ -14,6 +14,9 @@
 
     <properties>
         <webpack.environment>development</webpack.environment>
+        <node.version>v12.22.9</node.version>
+        <yarn.version>v1.22.17</yarn.version>
+        <frontend-maven-plugin.version>1.12.1</frontend-maven-plugin.version>
     </properties>
 
     <dependencies>
@@ -205,62 +208,79 @@
             </plugin>
 
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>${frontend-maven-plugin.version}</version>
+                <configuration>
+                    <workingDirectory>src/main/webapp</workingDirectory>
+                    <installDirectory>${project.build.directory}</installDirectory>
+                </configuration>
                 <executions>
                     <execution>
-                        <id>npm-install</id>
-                        <phase>compile</phase>
+                        <id>install node and npm</id>
                         <goals>
-                            <goal>exec</goal>
+                            <goal>install-node-and-yarn</goal>
                         </goals>
-
                         <configuration>
-                            <executable>yarn</executable>
-                            <workingDirectory>src/main/webapp</workingDirectory>
-                            <arguments>
-                                <argument>install</argument>
-                            </arguments>
+                            <nodeVersion>${node.version}</nodeVersion>
+                            <yarnVersion>${yarn.version}</yarnVersion>
                         </configuration>
                     </execution>
-
+                    <execution>
+                        <id>yarn install</id>
+                        <goals>
+                            <goal>yarn</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>install</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>yarn-install</id>
+                        <goals>
+                            <goal>yarn</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>install</arguments>
+                        </configuration>
+                    </execution>
                     <execution>
                         <id>webpack-build</id>
-                        <phase>compile</phase>
                         <goals>
-                            <goal>exec</goal>
+                            <goal>yarn</goal>
                         </goals>
-
                         <configuration>
-                            <executable>yarn</executable>
-                            <workingDirectory>src/main/webapp</workingDirectory>
                             <environmentVariables>
                                 <NODE_ENV>production</NODE_ENV>
                             </environmentVariables>
-                            <arguments>
-                                <argument>build</argument>
-                                <argument>--profile</argument>
-                            </arguments>
+                            <arguments>build --profile</arguments>
                         </configuration>
                     </execution>
-
                     <execution>
                         <id>webpack-build-freemarker</id>
-                        <phase>compile</phase>
                         <goals>
-                            <goal>exec</goal>
+                            <goal>yarn</goal>
                         </goals>
-
                         <configuration>
-                            <executable>yarn</executable>
-                            <workingDirectory>src/main/webapp</workingDirectory>
-                            <arguments>
-                                <argument>build:freemarker</argument>
-                            </arguments>
+                            <arguments>build:freemarker</arguments>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>nodejs10</id>
+            <properties>
+                <node.version>v10.24.1</node.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>nodejs14</id>
+            <properties>
+                <node.version>v14.19.0</node.version>
+            </properties>
+        </profile>
+    </profiles>
 </project>

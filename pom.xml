@@ -38,6 +38,7 @@
         <version.hibernate>5.3.20.Final</version.hibernate>
         <version.undertow>2.2.5.Final</version.undertow>
         <version.httpcomponents>4.5.13</version.httpcomponents>
+        <build.args>clean install -DskipTests</build.args>
     </properties>
 
     <scm>
@@ -247,6 +248,38 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.39.1</version>
+                <inherited>false</inherited>
+                <configuration>
+<!--                    <dockerHost>unix:///run/user/1000/podman/podman.sock</dockerHost>-->
+                    <images>
+                        <image>
+                            <name>quay.io/mrizzi/windup-builder:20220307182148CET</name>
+                            <run>
+                                <volumes>
+                                    <bind>
+                                        <volume>./:/${project.artifactId}:Z</volume>
+                                        <volume>${user.home}/.m2:${user.home}/.m2:Z</volume>
+                                    </bind>
+                                </volumes>
+                                <log>
+                                    <prefix>Container build::</prefix>
+                                    <color>blue</color>
+                                </log>
+                                <user>root</user>
+                                <cmd>mvn --settings /${project.artifactId}/settings.xml -Dorg.apache.maven.user-settings=/${project.artifactId}/settings.xml -Dmaven.repo.local=${user.home}/.m2/repository ${build.args} -f /${project.artifactId}</cmd>
+                                <wait>
+                                    <log>Finished at:</log>
+                                    <time>28800000</time>
+                                </wait>
+                            </run>
+                        </image>
+                    </images>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
