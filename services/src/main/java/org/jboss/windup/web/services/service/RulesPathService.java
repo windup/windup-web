@@ -13,8 +13,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -34,23 +34,16 @@ public class RulesPathService {
     }
 
     public SourceTargetTechnologies getSourceTargetTechnologies(Collection<RulesPath> rulesPaths) {
-        List<RuleProviderEntity> ruleProviderEntities = rulesPaths.stream()
-                .flatMap(rulesPath -> getRuleProviderEntitiesByRulesPath(rulesPath).stream())
-                .collect(Collectors.toList());
-
-        Set<String> sources = ruleProviderEntities.stream()
-                .flatMap(ruleProviderEntity -> ruleProviderEntity.getSources().stream())
-                .map(Technology::getName)
-                .collect(Collectors.toSet());
-        Set<String> targets = ruleProviderEntities.stream()
-                .flatMap(ruleProviderEntity -> ruleProviderEntity.getTargets().stream())
-                .map(Technology::getName)
-                .collect(Collectors.toSet());
-
         SourceTargetTechnologies result = new SourceTargetTechnologies();
-        result.setSources(sources);
-        result.setTargets(targets);
+        result.setSources(new HashSet<>());
+        result.setTargets(new HashSet<>());
 
+        rulesPaths.stream()
+                .flatMap(rulesPath -> getRuleProviderEntitiesByRulesPath(rulesPath).stream())
+                .forEach(ruleProviderEntity -> {
+                    result.getSources().addAll(ruleProviderEntity.getSources().stream().map(Technology::getName).collect(Collectors.toSet()));
+                    result.getTargets().addAll(ruleProviderEntity.getTargets().stream().map(Technology::getName).collect(Collectors.toSet()));
+                });
         return result;
     }
 

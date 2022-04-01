@@ -1,6 +1,5 @@
 package org.jboss.windup.web.services.service;
 
-import org.jboss.forge.furnace.Furnace;
 import org.jboss.windup.config.metadata.RuleProviderRegistryCache;
 import org.jboss.windup.exec.configuration.options.SourceOption;
 import org.jboss.windup.exec.configuration.options.TargetOption;
@@ -13,7 +12,6 @@ import org.jboss.windup.web.services.model.PathType;
 import org.jboss.windup.web.services.model.RulesPath;
 import org.jboss.windup.web.services.model.ScopeType;
 
-import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -45,14 +43,7 @@ public class AnalysisContextService
     private RulesPathService rulesPathService;
 
     @Inject
-    private Furnace furnace;
-
     private RuleProviderRegistryCache ruleProviderRegistryCache;
-
-    @PostConstruct
-    public void init() {
-        ruleProviderRegistryCache = furnace.getAddonRegistry().getServices(RuleProviderRegistryCache.class).get();
-    }
 
     /**
      * Gets analysis context
@@ -234,10 +225,10 @@ public class AnalysisContextService
                         .findAny()
                         .isEmpty()
                 )
-                .map(source -> {
+                .map(target -> {
                     AdvancedOption advancedOption = new AdvancedOption();
                     advancedOption.setName(TargetOption.NAME);
-                    advancedOption.setValue(source);
+                    advancedOption.setValue(target);
                     return advancedOption;
                 })
                 .collect(Collectors.toList());
@@ -259,13 +250,11 @@ public class AnalysisContextService
 
         SourceTargetTechnologies userTechnologies = rulesPathService.getSourceTargetTechnologies(userProvidedRulesPaths);
 
-        Set<String> availableSources = new HashSet<>();
-        ruleProviderRegistryCache.getAvailableSourceTechnologies().forEach(s -> availableSources.add(s));
-        userTechnologies.getSources().forEach(s -> availableSources.add(s));
+        Set<String> availableSources = ruleProviderRegistryCache.getAvailableSourceTechnologies();
+        availableSources.addAll(userTechnologies.getSources());
 
-        Set<String> availableTargets = new HashSet<>();
-        ruleProviderRegistryCache.getAvailableTargetTechnologies().forEach(s -> availableTargets.add(s));
-        userTechnologies.getTargets().forEach(s -> availableTargets.add(s));
+        Set<String> availableTargets = ruleProviderRegistryCache.getAvailableTargetTechnologies();
+        availableTargets.addAll(userTechnologies.getTargets());
 
         List<AdvancedOption> advancedOptionsPruned = analysisContext.getAdvancedOptions().stream()
                 .filter(advancedOption -> !advancedOption.getName().equals(SourceOption.NAME) || availableSources.contains(advancedOption.getValue()))
