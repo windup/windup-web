@@ -508,8 +508,8 @@ export const SourceTargetFilterToolbarGroup: React.FC<SourceTargetFilterToolbarG
       callbackFn([...values, selection]);
     }
   };
-  const onSecondFilter_Filter = (evt: any) => {
-    setSecondFilter_filterText(evt.target.value);
+  const onSecondFilter_Filter = (evt: any, value: string) => {
+    setSecondFilter_filterText(value);
     return secondFilterOptions.map(buildSecondSelectOption);
   };
 

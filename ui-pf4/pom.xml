@@ -13,6 +13,8 @@
     <packaging>war</packaging>
 
     <properties>
+        <node.version>v16.14.0</node.version>
+        <yarn.version>v1.22.17</yarn.version>
         <webpack.environment>development</webpack.environment>
     </properties>
 
@@ -205,58 +207,56 @@
             </plugin>
 
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.12.1</version>
+                <configuration>
+                    <workingDirectory>${project.basedir}/src/main/webapp</workingDirectory>
+                    <installDirectory>${project.build.directory}</installDirectory>
+                </configuration>
                 <executions>
                     <execution>
-                        <id>npm-install</id>
-                        <phase>compile</phase>
+                        <id>install node and yarn</id>
                         <goals>
-                            <goal>exec</goal>
+                            <goal>install-node-and-yarn</goal>
                         </goals>
-
                         <configuration>
-                            <executable>yarn</executable>
-                            <workingDirectory>src/main/webapp</workingDirectory>
-                            <arguments>
-                                <argument>install</argument>
-                            </arguments>
+                            <nodeVersion>${node.version}</nodeVersion>
+                            <yarnVersion>${yarn.version}</yarnVersion>
                         </configuration>
                     </execution>
-
                     <execution>
-                        <id>webpack-build</id>
-                        <phase>compile</phase>
+                        <id>yarn install</id>
                         <goals>
-                            <goal>exec</goal>
+                            <goal>yarn</goal>
                         </goals>
-
                         <configuration>
-                            <executable>yarn</executable>
-                            <workingDirectory>src/main/webapp</workingDirectory>
+                            <!-- Adding network-timeout for Windows OS where fetching NPM dependencies takes more than usual -->
+                            <arguments>install --network-timeout 600000</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>yarn run build</id>
+                        <goals>
+                            <goal>yarn</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>build --profile</arguments>
                             <environmentVariables>
                                 <NODE_ENV>production</NODE_ENV>
                             </environmentVariables>
-                            <arguments>
-                                <argument>build</argument>
-                                <argument>--profile</argument>
-                            </arguments>
                         </configuration>
                     </execution>
-
                     <execution>
-                        <id>webpack-build-freemarker</id>
-                        <phase>compile</phase>
+                        <id>yarn run build:freemarker</id>
                         <goals>
-                            <goal>exec</goal>
+                            <goal>yarn</goal>
                         </goals>
-
                         <configuration>
-                            <executable>yarn</executable>
-                            <workingDirectory>src/main/webapp</workingDirectory>
-                            <arguments>
-                                <argument>build:freemarker</argument>
-                            </arguments>
+                            <environmentVariables>
+                                <NODE_ENV>production</NODE_ENV>
+                            </environmentVariables>
+                            <arguments>build:freemarker</arguments>
                         </configuration>
                     </execution>
                 </executions>
