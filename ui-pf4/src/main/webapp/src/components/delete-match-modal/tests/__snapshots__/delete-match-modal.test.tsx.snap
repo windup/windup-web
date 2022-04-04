@@ -4,19 +4,19 @@ exports[`DeleteMatchModal Renders without crashing 1`] = `
 <Modal
   actions={
     Array [
-      <Button
+      <ForwardRef
         isDisabled={true}
         onClick={[Function]}
         variant="danger"
       >
         Delete
-      </Button>,
-      <Button
+      </ForwardRef>,
+      <ForwardRef
         onClick={[Function]}
         variant="link"
       >
         Cancel
-      </Button>,
+      </ForwardRef>,
     ]
   }
   appendTo={[Function]}
@@ -30,6 +30,8 @@ exports[`DeleteMatchModal Renders without crashing 1`] = `
   ouiaSafe={true}
   showClose={true}
   title="Delete modal title"
+  titleIconVariant={null}
+  titleLabel=""
   variant="small"
 >
   <div
@@ -43,7 +45,7 @@ exports[`DeleteMatchModal Renders without crashing 1`] = `
       delete
       ' to confirm.
     </p>
-    <ForwardRef
+    <TextInput
       aria-label="Text input match"
       id="matchText"
       name="matchText"
