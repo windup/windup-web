@@ -7,6 +7,7 @@ exports[`SimplePagination Renders without crashing 1`] = `
   firstPage={1}
   isCompact={false}
   isDisabled={false}
+  isSticky={false}
   itemCount={15}
   itemsEnd={null}
   itemsStart={null}
@@ -46,8 +47,10 @@ exports[`SimplePagination Renders without crashing 1`] = `
       "currPage": "Current page",
       "items": "",
       "itemsPerPage": "Items per page",
+      "ofWord": "of",
       "optionsToggle": "Items per page",
       "page": "",
+      "pages": "",
       "paginationTitle": "Pagination",
       "perPageSuffix": "per page",
       "toFirstPage": "Go to first page",
@@ -56,7 +59,6 @@ exports[`SimplePagination Renders without crashing 1`] = `
       "toPreviousPage": "Go to previous page",
     }
   }
-  toggleTemplate={[Function]}
   variant="bottom"
   widgetId="pagination-options-menu"
 />
