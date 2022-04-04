@@ -10,6 +10,14 @@ import { SelectCard } from "../select-card/select-card";
 // import camelLogo from "images/camel.svg";
 // import quarkusLogo from "images/quarkus.svg";
 // import rhRuntimesLogo from "images/rh-runtimes.svg";
+import {
+  OpenshiftIcon,
+  IntegrationIcon,
+  JavaIcon,
+  LinuxIcon,
+  MigrationIcon,
+  RedhatIcon,
+} from "@patternfly/react-icons";
 
 interface TransformationPathOption {
   label: string;
@@ -44,6 +52,7 @@ const options: TransformationPathOption[] = [
     // ],
     options: "eap7",
     // iconSrc: jbossLogo,
+    icon: RedhatIcon,
   },
   {
     label: "Containerization",
@@ -51,6 +60,7 @@ const options: TransformationPathOption[] = [
       "A comprehensive set of cloud and container readiness rules to assess applications for suitability for deployment on OpenShift Container Platform.",
     options: "cloud-readiness",
     // iconSrc: openshiftLogo,
+    icon: OpenshiftIcon,
   },
   {
     label: "Quarkus",
@@ -58,18 +68,21 @@ const options: TransformationPathOption[] = [
       "Rules to support the migration of Spring Boot applications to Quarkus. The rules also identify other, non-Spring Boot,  technologies embedded within applications for which there are equivalent Quarkus extensions.",
     options: "quarkus",
     // iconSrc: quarkusLogo,
+    icon: MigrationIcon,
   },
   {
     label: "OracleJDK to OpenJDK",
     description: "Rules to support the migration to OpenJDK from OracleJDK.",
     options: "openjdk",
     // iconSrc: openjdkLogo,
+    icon: JavaIcon,
   },
   {
     label: "OpenJDK 11",
     description: "Rules to support the migration to OpenJDK 11 from OpenJDK 8.",
     options: "openjdk11",
     // iconSrc: openjdkLogo,
+    icon: JavaIcon,
   },
   {
     label: "Linux",
@@ -77,6 +90,7 @@ const options: TransformationPathOption[] = [
       "Ensure that there are no Microsoft Windows paths hard coded and no Dynamic-Link Library (DLL) into your applications.",
     options: "linux",
     // iconSrc: linuxLogo,
+    icon: LinuxIcon,
   },
   {
     label: "Jakarta EE 9",
@@ -84,6 +98,7 @@ const options: TransformationPathOption[] = [
       "A collection of rules to support migrating applications from Java EE 8 to Jakarta EE 9. The rules cover project dependencies, package renaming, updating XML Schema namespaces, the renaming of application configuration properties and bootstrapping files.",
     options: "jakarta-ee",
     // iconSrc: linuxLogo,
+    icon: MigrationIcon,
   },
   {
     label: "Spring Boot on Red Hat Runtimes",
@@ -91,6 +106,7 @@ const options: TransformationPathOption[] = [
       "A set of rules for assessing the compatibility of applications against versions of Spring Boot libraries suported by Red Hat Runtimes.",
     options: "rhr",
     // iconSrc: rhRuntimesLogo,
+    icon: MigrationIcon,
   },
   {
     label: "Open Liberty",
@@ -98,6 +114,7 @@ const options: TransformationPathOption[] = [
       "A comprehensive set of rules for migrating traditional WebSphere applications to Open Liberty.",
     options: "openliberty",
     // iconSrc: rhRuntimesLogo,
+    icon: MigrationIcon,
   },
   {
     label: "Camel",
@@ -105,6 +122,7 @@ const options: TransformationPathOption[] = [
       "Rules for the migration from Apache Camel 2 to Apache Camel 3.",
     options: "camel",
     // iconSrc: camelLogo,
+    icon: IntegrationIcon,
   },
 ];
 
