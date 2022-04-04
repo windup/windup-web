@@ -85,7 +85,7 @@ public class AnalysisContextEndpointTest extends AbstractTest
 
         analysisContext.setRulesPaths(configurationEndpoint.getGlobalConfiguration().getRulesPaths());
 
-        analysisContext = analysisContextEndpoint.saveAsProjectDefault(analysisContext, project.getId(), false);
+        analysisContext = analysisContextEndpoint.saveAsProjectDefault(analysisContext, project.getId(), false, true);
 
         AnalysisContext loaded = analysisContextEndpoint.get(analysisContext.getId());
 
@@ -132,7 +132,7 @@ public class AnalysisContextEndpointTest extends AbstractTest
         AnalysisContext analysisContext = this.dataProvider.getAnalysisContext(project);
         analysisContext.setMigrationPath(path);
         analysisContext.setRulesPaths(configurationEndpoint.getConfigurationByProject(project.getId()).getRulesPaths());
-        analysisContext = analysisContextEndpoint.saveAsProjectDefault(analysisContext, project.getId(), false);
+        analysisContext = analysisContextEndpoint.saveAsProjectDefault(analysisContext, project.getId(), false, true);
 
         // Fetch custom technologies
         SourceTargetTechnologies customTechnologies = analysisContextEndpoint.getCustomTechnologies(analysisContext.getId());
@@ -171,7 +171,7 @@ public class AnalysisContextEndpointTest extends AbstractTest
                 new AdvancedOption(TargetOption.NAME, "anySourceThatWillBePrunedAndDisappear")
         ));
         analysisContext.setRulesPaths(configurationEndpoint.getConfigurationByProject(project.getId()).getRulesPaths());
-        analysisContext = analysisContextEndpoint.saveAsProjectDefault(analysisContext, project.getId(), false);
+        analysisContext = analysisContextEndpoint.saveAsProjectDefault(analysisContext, project.getId(), false, true);
 
         // Fetch Analysis Context for verifying its content
         analysisContext = analysisContextEndpoint.get(analysisContext.getId());
@@ -218,7 +218,7 @@ public class AnalysisContextEndpointTest extends AbstractTest
                 new AdvancedOption(TargetOption.NAME, "eap")
         ));
         analysisContext.setRulesPaths(configurationEndpoint.getConfigurationByProject(project.getId()).getRulesPaths());
-        analysisContext = analysisContextEndpoint.saveAsProjectDefault(analysisContext, project.getId(), false);
+        analysisContext = analysisContextEndpoint.saveAsProjectDefault(analysisContext, project.getId(), false, true);
 
         // Fetch Analysis Context for verifying its content
         analysisContext = analysisContextEndpoint.get(analysisContext.getId());
@@ -248,6 +248,78 @@ public class AnalysisContextEndpointTest extends AbstractTest
         Assert.assertTrue(customProjectScopedRulePath.isPresent());
         ruleEndpoint.deleteRuleProvider(customProjectScopedRulePath.get().getId());
 
+        analysisContext = analysisContextEndpoint.get(analysisContext.getId());
+        Assert.assertNotNull(analysisContext);
+
+        sources = analysisContext.getAdvancedOptions().stream()
+                .filter(advancedOption -> advancedOption.getName().equals(SourceOption.NAME))
+                .map(AdvancedOption::getValue)
+                .collect(Collectors.toList());
+        targets = analysisContext.getAdvancedOptions().stream()
+                .filter(advancedOption -> advancedOption.getName().equals(TargetOption.NAME))
+                .map(AdvancedOption::getValue)
+                .collect(Collectors.toList());
+
+        Assert.assertEquals(1, sources.size());
+        Assert.assertTrue(sources.contains("weblogic"));
+
+        Assert.assertEquals(1, targets.size());
+        Assert.assertTrue(targets.contains("eap"));
+    }
+
+    @Test
+    @RunAsClient
+    public void testAnalysisContextDeletesTechnologiesComingFromCustomRules() throws JSONException {
+        // Just grab the first one (this is completely arbitrary)
+        MigrationPath path = migrationPathEndpoint.getAvailablePaths().iterator().next();
+
+        // Project configuration
+        MigrationProject project = this.dataProvider.getMigrationProject();
+
+        Configuration projectConfiguration = configurationEndpoint.getConfigurationByProject(project.getId());
+        projectConfiguration.setRulesPaths(new HashSet<>(List.of(
+                new RulesPath(ConfigurationEndpointTest.CUSTOM_RULESPATH_WITH_CUSTOM_TECHNOLOGIES1, PathType.USER_PROVIDED, ScopeType.PROJECT)
+        )));
+        configurationEndpoint.saveConfiguration(projectConfiguration.getId(), projectConfiguration);
+
+        // Create Analysis Context with predefined data
+        AnalysisContext analysisContext = this.dataProvider.getAnalysisContext(project);
+        analysisContext.setMigrationPath(path);
+        analysisContext.setAdvancedOptions(Arrays.asList(
+                new AdvancedOption(SourceOption.NAME, "weblogic"),
+                new AdvancedOption(TargetOption.NAME, "eap")
+        ));
+        analysisContext.setRulesPaths(configurationEndpoint.getConfigurationByProject(project.getId()).getRulesPaths());
+        analysisContext = analysisContextEndpoint.saveAsProjectDefault(analysisContext, project.getId(), false, true);
+
+        // Fetch Analysis Context for verifying its content
+        analysisContext = analysisContextEndpoint.get(analysisContext.getId());
+        Assert.assertNotNull(analysisContext);
+
+        List<String> sources = analysisContext.getAdvancedOptions().stream()
+                .filter(advancedOption -> advancedOption.getName().equals(SourceOption.NAME))
+                .map(AdvancedOption::getValue)
+                .collect(Collectors.toList());
+        List<String> targets = analysisContext.getAdvancedOptions().stream()
+                .filter(advancedOption -> advancedOption.getName().equals(TargetOption.NAME))
+                .map(AdvancedOption::getValue)
+                .collect(Collectors.toList());
+
+        Assert.assertEquals(2, sources.size());
+        Assert.assertTrue(sources.contains("weblogic"));
+        Assert.assertTrue(sources.contains("myCustomSource1"));
+
+        Assert.assertEquals(2, targets.size());
+        Assert.assertTrue(targets.contains("eap"));
+        Assert.assertTrue(targets.contains("myCustomTarget1"));
+
+        // Now we delete the custom source/target and see if the change is persisted
+        List<AdvancedOption> advancedOptionsWithoutCustomTechnologies = analysisContext.getAdvancedOptions().stream()
+                .filter(advancedOption -> !advancedOption.getValue().equals("myCustomSource1") && !advancedOption.getValue().equals("myCustomTarget1"))
+                .collect(Collectors.toList());
+        analysisContext.setAdvancedOptions(advancedOptionsWithoutCustomTechnologies);
+
+        analysisContext = analysisContextEndpoint.saveAsProjectDefault(analysisContext, project.getId(), false, false);
         analysisContext = analysisContextEndpoint.get(analysisContext.getId());
         Assert.assertNotNull(analysisContext);
 

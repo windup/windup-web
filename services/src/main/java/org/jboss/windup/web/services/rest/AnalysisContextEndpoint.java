@@ -46,6 +46,7 @@ public interface AnalysisContextEndpoint
     AnalysisContext saveAsProjectDefault(
             @Valid AnalysisContext analysisContext,
             @PathParam("projectId") Long projectId,
-            @QueryParam("skipChangeToProvisional") @DefaultValue("false") boolean skipChangeToProvisional
+            @QueryParam("skipChangeToProvisional") @DefaultValue("false") boolean skipChangeToProvisional,
+            @QueryParam("synchronizeTechnologiesWithCustomRules") @DefaultValue("false") boolean synchronizeTechnologiesWithCustomRules
     );
 }
