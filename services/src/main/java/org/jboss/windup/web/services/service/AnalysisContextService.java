@@ -1,15 +1,24 @@
 package org.jboss.windup.web.services.service;
 
+import org.jboss.windup.config.metadata.RuleProviderRegistryCache;
+import org.jboss.windup.exec.configuration.options.SourceOption;
+import org.jboss.windup.exec.configuration.options.TargetOption;
+import org.jboss.windup.web.services.SourceTargetTechnologies;
 import org.jboss.windup.web.services.model.AdvancedOption;
 import org.jboss.windup.web.services.model.AnalysisContext;
 import org.jboss.windup.web.services.model.MigrationProject;
 import org.jboss.windup.web.services.model.Package;
+import org.jboss.windup.web.services.model.PathType;
+import org.jboss.windup.web.services.model.RulesPath;
+import org.jboss.windup.web.services.model.ScopeType;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -21,6 +30,7 @@ import java.util.stream.Collectors;
  *
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
+@Stateless
 public class AnalysisContextService
 {
     @PersistenceContext
@@ -28,6 +38,12 @@ public class AnalysisContextService
 
     @Inject
     private ConfigurationService configurationService;
+
+    @Inject
+    private RulesPathService rulesPathService;
+
+    @Inject
+    private RuleProviderRegistryCache ruleProviderRegistryCache;
 
     /**
      * Gets analysis context
@@ -175,5 +191,76 @@ public class AnalysisContextService
                     if (!analysisContext.getLabelsPaths().contains(labelsPath))
                         analysisContext.getLabelsPaths().add(labelsPath);
                 });
+    }
+
+    /**
+     * Adds, to the advanced options, custom sources/targets coming from Project Scoped custom rules
+     */
+    public void addProjectScopedCustomTechnologies(AnalysisContext analysisContext) {
+        List<RulesPath> userProvidedRulesPaths = analysisContext.getRulesPaths().stream()
+                .filter(f -> f.getRulesPathType().equals(PathType.USER_PROVIDED) && f.getScopeType().equals(ScopeType.PROJECT))
+                .collect(Collectors.toList());
+
+        SourceTargetTechnologies userTechnologies = rulesPathService.getSourceTargetTechnologies(userProvidedRulesPaths);
+
+        List<AdvancedOption> newSources = userTechnologies.getSources().stream()
+                .filter(source -> analysisContext.getAdvancedOptions().stream()
+                        .filter(advancedOption -> advancedOption.getName().equals(SourceOption.NAME))
+                        .filter(advancedOption -> advancedOption.getValue().equals(source))
+                        .findAny()
+                        .isEmpty()
+                )
+                .map(source -> {
+                    AdvancedOption advancedOption = new AdvancedOption();
+                    advancedOption.setName(SourceOption.NAME);
+                    advancedOption.setValue(source);
+                    return advancedOption;
+                })
+                .collect(Collectors.toList());
+
+        List<AdvancedOption> newTargets = userTechnologies.getTargets().stream()
+                .filter(target -> analysisContext.getAdvancedOptions().stream()
+                        .filter(advancedOption -> advancedOption.getName().equals(TargetOption.NAME))
+                        .filter(advancedOption -> advancedOption.getValue().equals(target))
+                        .findAny()
+                        .isEmpty()
+                )
+                .map(target -> {
+                    AdvancedOption advancedOption = new AdvancedOption();
+                    advancedOption.setName(TargetOption.NAME);
+                    advancedOption.setValue(target);
+                    return advancedOption;
+                })
+                .collect(Collectors.toList());
+
+        ArrayList<AdvancedOption> advancedOptionsWithCustomTechnologies = new ArrayList<>(analysisContext.getAdvancedOptions());
+        advancedOptionsWithCustomTechnologies.addAll(newSources);
+        advancedOptionsWithCustomTechnologies.addAll(newTargets);
+
+        analysisContext.setAdvancedOptions(advancedOptionsWithCustomTechnologies);
+    }
+
+    /**
+     * Removes no longer available sources/targets from the advanced options
+     */
+    public void pruneTechnologies(AnalysisContext analysisContext) {
+        List<RulesPath> userProvidedRulesPaths = analysisContext.getRulesPaths().stream()
+                .filter(f -> f.getRulesPathType().equals(PathType.USER_PROVIDED))
+                .collect(Collectors.toList());
+
+        SourceTargetTechnologies userTechnologies = rulesPathService.getSourceTargetTechnologies(userProvidedRulesPaths);
+
+        Set<String> availableSources = ruleProviderRegistryCache.getAvailableSourceTechnologies();
+        availableSources.addAll(userTechnologies.getSources());
+
+        Set<String> availableTargets = ruleProviderRegistryCache.getAvailableTargetTechnologies();
+        availableTargets.addAll(userTechnologies.getTargets());
+
+        List<AdvancedOption> advancedOptionsPruned = analysisContext.getAdvancedOptions().stream()
+                .filter(advancedOption -> !advancedOption.getName().equals(SourceOption.NAME) || availableSources.contains(advancedOption.getValue()))
+                .filter(advancedOption -> !advancedOption.getName().equals(TargetOption.NAME) || availableTargets.contains(advancedOption.getValue()))
+                .collect(Collectors.toList());
+
+        analysisContext.setAdvancedOptions(advancedOptionsPruned);
     }
 }
