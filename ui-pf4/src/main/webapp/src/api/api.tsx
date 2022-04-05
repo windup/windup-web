@@ -172,10 +172,11 @@ export const getAnalysisContext = (
 export const saveAnalysisContext = (
   projectId: number | string,
   analysisContext: AnalysisContext,
-  skipChangeToProvisional: boolean
+  skipChangeToProvisional: boolean,
+  synchronizeTechnologiesWithCustomRules: boolean = false
 ): AxiosPromise<AnalysisContext> => {
   return ApiClient.put<AnalysisContext>(
-    `analysis-context/migrationProjects/${projectId}?skipChangeToProvisional=${skipChangeToProvisional}`,
+    `analysis-context/migrationProjects/${projectId}?skipChangeToProvisional=${skipChangeToProvisional}&synchronizeTechnologiesWithCustomRules=${synchronizeTechnologiesWithCustomRules}`,
     analysisContext
   );
 };

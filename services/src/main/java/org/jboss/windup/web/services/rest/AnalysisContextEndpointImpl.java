@@ -68,7 +68,7 @@ public class AnalysisContextEndpointImpl implements AnalysisContextEndpoint
     }
 
     @Override
-    public AnalysisContext saveAsProjectDefault(@Valid AnalysisContext analysisContext, Long projectId, boolean skipChangeToProvisional)
+    public AnalysisContext saveAsProjectDefault(@Valid AnalysisContext analysisContext, Long projectId, boolean skipChangeToProvisional, boolean synchronizeTechnologiesWithCustomRules)
     {
         MigrationProject project = this.migrationProjectService.getMigrationProject(projectId);
         analysisContext.setApplications(analysisContext
@@ -92,9 +92,10 @@ public class AnalysisContextEndpointImpl implements AnalysisContextEndpoint
             analysisContext = analysisContextService.update(defaultAnalysisContext.getId(), analysisContext, skipChangeToProvisional);
         }
 
-        // Update custom sources/targets
-        analysisContextService.addProjectScopedCustomTechnologies(analysisContext);
-        analysisContextService.pruneTechnologies(analysisContext);
+        if (synchronizeTechnologiesWithCustomRules) {
+            analysisContextService.addProjectScopedCustomTechnologies(analysisContext);
+            analysisContextService.pruneTechnologies(analysisContext);
+        }
 
         this.entityManager.merge(analysisContext);
         return analysisContext;

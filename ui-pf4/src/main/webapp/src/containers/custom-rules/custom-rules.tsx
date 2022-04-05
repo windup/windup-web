@@ -165,7 +165,8 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
           return saveAnalysisContext(
             project.id,
             newAnalysisContext,
-            skipChangeToProvisional
+            skipChangeToProvisional,
+            true
           );
         })
         .then(() => {

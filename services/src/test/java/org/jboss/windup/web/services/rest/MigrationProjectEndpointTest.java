@@ -63,7 +63,7 @@ public class MigrationProjectEndpointTest extends AbstractTest
         migrationProject.setTitle(title);
 
         MigrationProject createdProject = this.migrationProjectEndpoint.createMigrationProject(migrationProject);
-        this.analysisContextEndpoint.saveAsProjectDefault(new AnalysisContext(createdProject), createdProject.getId(), false);
+        this.analysisContextEndpoint.saveAsProjectDefault(new AnalysisContext(createdProject), createdProject.getId(), false, false);
 
         Collection<MigrationProjectEndpoint.ExtendedMigrationProject> apps = migrationProjectEndpoint.getMigrationProjects();
         Assert.assertEquals(1, apps.size());

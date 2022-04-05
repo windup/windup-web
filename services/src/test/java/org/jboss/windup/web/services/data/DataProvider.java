@@ -68,7 +68,7 @@ public class DataProvider
         migrationProject.setTitle(projectTitle);
 
         migrationProject = this.migrationProjectEndpoint.createMigrationProject(migrationProject);
-        this.analysisContextEndpoint.saveAsProjectDefault(new AnalysisContext(migrationProject), migrationProject.getId(), false);
+        this.analysisContextEndpoint.saveAsProjectDefault(new AnalysisContext(migrationProject), migrationProject.getId(), false, false);
         migrationProject = this.migrationProjectEndpoint.getMigrationProject(migrationProject.getId());
         return migrationProject;
     }
@@ -81,7 +81,7 @@ public class DataProvider
         migrationProject.setTitle(projectTitle);
 
         migrationProject = this.migrationProjectEndpoint.createMigrationProject(migrationProject);
-        this.analysisContextEndpoint.saveAsProjectDefault(new AnalysisContext(migrationProject), migrationProject.getId(), true);
+        this.analysisContextEndpoint.saveAsProjectDefault(new AnalysisContext(migrationProject), migrationProject.getId(), true, false);
         migrationProject = this.migrationProjectEndpoint.getMigrationProject(migrationProject.getId());
         return migrationProject;
     }
@@ -108,7 +108,7 @@ public class DataProvider
 
         analysisContext.getRulesPaths().add(getTestRulesPath());
 
-        return this.analysisContextEndpoint.saveAsProjectDefault(analysisContext, project.getId(), false);
+        return this.analysisContextEndpoint.saveAsProjectDefault(analysisContext, project.getId(), false, false);
     }
 
     private RulesPath getTestRulesPath()
