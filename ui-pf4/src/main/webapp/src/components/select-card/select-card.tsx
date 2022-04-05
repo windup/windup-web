@@ -29,6 +29,7 @@ export interface SelectCardProps {
   iconSrc?: string;
   isSelected: boolean;
   value: string;
+  isNew?: boolean;
   onChange: (isSelected: boolean, value: string) => void;
 }
 
@@ -40,6 +41,7 @@ export const SelectCard: React.FC<SelectCardProps> = ({
   iconSrc,
   isSelected,
   value,
+  isNew,
   onChange,
 }) => {
   const [isSelectOpen, setIsSelectOpen] = useState(false);
@@ -100,6 +102,21 @@ export const SelectCard: React.FC<SelectCardProps> = ({
           <Title headingLevel="h4" size="md">
             {label}
           </Title>
+          {isNew && (
+            <Title headingLevel="h4" size="md">
+              <b>
+                <i
+                  style={{
+                    background: "rgb(255, 207, 0)",
+                    color: "black",
+                    padding: "0.19rem 0.625rem",
+                  }}
+                >
+                  New
+                </i>
+              </b>
+            </Title>
+          )}
           {Array.isArray(options) && (
             <Select
               variant={SelectVariant.single}

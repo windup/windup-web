@@ -16,6 +16,7 @@ interface TransformationPathOption {
   options: string | MultipleOptions[];
   icon?: React.ComponentType<any>;
   iconSrc?: string;
+  isNew?: boolean;
 }
 
 interface MultipleOptions {
@@ -69,6 +70,7 @@ const options: TransformationPathOption[] = [
     description: "Rules to support the migration to OpenJDK 11 from OpenJDK 8.",
     options: "openjdk11",
     iconSrc: mug,
+    isNew: true,
   },
   {
     label: "Linux",
@@ -83,6 +85,7 @@ const options: TransformationPathOption[] = [
       "A collection of rules to support migrating applications from Java EE 8 to Jakarta EE 9. The rules cover project dependencies, package renaming, updating XML Schema namespaces, the renaming of application configuration properties and bootstrapping files.",
     options: "jakarta-ee",
     iconSrc: migration,
+    isNew: true,
   },
   {
     label: "Spring Boot on Red Hat Runtimes",
@@ -97,6 +100,7 @@ const options: TransformationPathOption[] = [
       "A comprehensive set of rules for migrating traditional WebSphere applications to Open Liberty.",
     options: "openliberty",
     iconSrc: migration,
+    isNew: true,
   },
   {
     label: "Camel",
@@ -183,6 +187,7 @@ export const SelectCardGallery: React.FC<SelectCardGalleryProps> = ({
             onChange={(isSelected, selectionValue) => {
               handleOnCardChange(isSelected, selectionValue, elem);
             }}
+            isNew={elem.isNew}
           />
         </GalleryItem>
       ))}
