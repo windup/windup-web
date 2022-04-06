@@ -371,6 +371,7 @@ export const Review: React.FC<ReviewProps> = ({ match, history }) => {
                         </thead>
                         <tbody>
                           {getAdvancedOptionsWithExclusion(analysisContext, [
+                            AdvancedOptionsFieldKey.SOURCE,
                             AdvancedOptionsFieldKey.TARGET,
                           ]).map((option, index) => (
                             <tr key={index} role="row">
