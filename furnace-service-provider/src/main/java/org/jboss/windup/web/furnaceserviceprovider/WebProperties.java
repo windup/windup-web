@@ -6,6 +6,7 @@ import org.jboss.vfs.VirtualFile;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -126,6 +127,14 @@ public class WebProperties
             String pathString;
             if (pathUrl.toString().startsWith("vfs:"))
             {
+                // In Windows OS the pathUrl points to the full path. E.g.
+                // vfs:/C:/Users/myUsername/Downloads/mta-web/temp 1/content/api.war/WEB-INF/lib/furnace-service-provider-5.3.0-SNAPSHOT.jar
+                // This full path might contain blank spaces which will generate an exception.
+                // The following code will avoid the exception in Windows OS
+                if (pathUrl.toString().contains(" ")) {
+                    pathUrl = new URL(pathUrl.toString().replace(" ", "%20"));
+                }
+
                 VirtualFile virtualFile = VFS.getChild(pathUrl.toURI());
                 pathString = virtualFile.getParent().getParent().getParent().getPhysicalFile().getCanonicalPath();
                 LOG.info("From VFS - Path String: " + pathString);
