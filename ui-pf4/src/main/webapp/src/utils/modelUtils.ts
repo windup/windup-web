@@ -1,7 +1,6 @@
 import { AxiosError } from "axios";
 import { AdvancedOptionsFieldKey } from "Constants";
 import {
-  AnalysisContext,
   LabelProviderEntity,
   Package,
   RuleProviderEntity,
@@ -55,24 +54,6 @@ export const fullNameToPackage = (
     }
   };
   mapPackageFullNamesToPackageObj(selectedPackages, packages);
-
-  return result;
-};
-
-export const getDefaultSelectedPackages = (
-  analysisContext: AnalysisContext,
-  applicationPackages: Package[]
-) => {
-  let result: Package[];
-  if (analysisContext.useCustomizedPackageSelection) {
-    result = analysisContext.includePackages;
-  } else {
-    if (analysisContext.applications.some((f) => f.exploded)) {
-      result = [];
-    } else {
-      result = getUnknownPackages(applicationPackages);
-    }
-  }
 
   return result;
 };

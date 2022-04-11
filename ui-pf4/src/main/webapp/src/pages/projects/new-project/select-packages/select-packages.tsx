@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { AxiosError } from "axios";
@@ -11,13 +11,13 @@ import { useFetchProjectPackages } from "hooks/useFetchProjectPackages";
 
 import { getAlertModel } from "Constants";
 import { Paths, formatPath, ProjectRoute } from "Paths";
-import { AnalysisContext } from "models/api";
+import { AnalysisContext, Package } from "models/api";
 import { getAnalysisContext, saveAnalysisContext } from "api/api";
 import {
   arePackagesEquals,
   fullNameToPackage,
   getAxiosErrorMessage,
-  getDefaultSelectedPackages,
+  getUnknownPackages,
 } from "utils/modelUtils";
 
 import {
@@ -31,11 +31,14 @@ import {
   getPathFromStep,
 } from "../wizard/wizard-utils";
 
+const PACKAGES_QUERYPARAM_NAME = "packagesEstablished";
+
 interface SelectPackagesProps extends RouteComponentProps<ProjectRoute> {}
 
 export const SelectPackages: React.FC<SelectPackagesProps> = ({
   match,
   history,
+  location,
 }) => {
   const dispatch = useDispatch();
   const cancelWizard = useCancelWizard();
@@ -55,6 +58,26 @@ export const SelectPackages: React.FC<SelectPackagesProps> = ({
 
   const [dirty, setDirty] = useState(false);
 
+  const getDefaultSelectedPackages = useCallback(
+    (analysisContext: AnalysisContext, applicationPackages: Package[]) => {
+      const params = new URLSearchParams(location.search);
+
+      let result: Package[];
+      if (params.get(PACKAGES_QUERYPARAM_NAME) === "true") {
+        result = analysisContext.includePackages;
+      } else {
+        if (analysisContext.applications.some((f) => f.exploded)) {
+          result = [];
+        } else {
+          result = getUnknownPackages(applicationPackages);
+        }
+      }
+
+      return result;
+    },
+    [location.search]
+  );
+
   useEffect(() => {
     loadPackages(match.params.project);
   }, [match, loadPackages]);
@@ -67,7 +90,7 @@ export const SelectPackages: React.FC<SelectPackagesProps> = ({
       );
       setSelectedPackages(newSelectedPackages.map((f) => f.fullName));
     }
-  }, [analysisContext, applicationPackages]);
+  }, [analysisContext, applicationPackages, getDefaultSelectedPackages]);
 
   const handleOnSelectedPackagesChange = (value: string[]) => {
     if (!analysisContext || !packages) {
@@ -109,20 +132,23 @@ export const SelectPackages: React.FC<SelectPackagesProps> = ({
     setIsSubmitting(true);
     getAnalysisContext(project.defaultAnalysisContextId)
       .then(({ data }) => {
-        const usingCustomPackages = data.useCustomizedPackageSelection || dirty;
         const newAnalysisContext: AnalysisContext = {
           ...data,
-          useCustomizedPackageSelection: usingCustomPackages,
           includePackages: fullNameToPackage(selectedPackages, packages),
         };
         return saveAnalysisContext(project.id, newAnalysisContext, true);
       })
       .then(() => {
-        history.push(
-          formatPath(Paths.newProject_customRules, {
+        const params = new URLSearchParams(location.search);
+        const werePackagesEsblishedByUser =
+          params.get(PACKAGES_QUERYPARAM_NAME) === "true" || dirty;
+
+        history.push({
+          pathname: formatPath(Paths.newProject_customRules, {
             project: match.params.project,
-          })
-        );
+          }),
+          search: `${PACKAGES_QUERYPARAM_NAME}=${werePackagesEsblishedByUser}`,
+        });
       })
       .catch((error: AxiosError) => {
         setIsSubmitting(false);
@@ -135,11 +161,12 @@ export const SelectPackages: React.FC<SelectPackagesProps> = ({
   };
 
   const handleOnGoToStep = (newStep: NewProjectWizardStepIds) => {
-    history.push(
-      formatPath(getPathFromStep(newStep), {
+    history.push({
+      pathname: formatPath(getPathFromStep(newStep), {
         project: match.params.project,
-      })
-    );
+      }),
+      search: location.search,
+    });
   };
 
   const handleOnNext = () => {
@@ -147,11 +174,12 @@ export const SelectPackages: React.FC<SelectPackagesProps> = ({
   };
 
   const handleOnBack = () => {
-    history.push(
-      formatPath(Paths.newProject_setTransformationPath, {
+    history.push({
+      pathname: formatPath(Paths.newProject_setTransformationPath, {
         project: match.params.project,
-      })
-    );
+      }),
+      search: location.search,
+    });
   };
 
   const handleOnCancel = () => cancelWizard(history.push);

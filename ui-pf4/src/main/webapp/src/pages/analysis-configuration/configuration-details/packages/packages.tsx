@@ -30,7 +30,6 @@ import {
   arePackagesEquals,
   fullNameToPackage,
   getAxiosErrorMessage,
-  getDefaultSelectedPackages,
 } from "utils/modelUtils";
 
 import {
@@ -72,11 +71,9 @@ export const Packages: React.FC<PackagesProps> = ({
 
   useEffect(() => {
     if (analysisContext && applicationPackages) {
-      const newSelectedPackages = getDefaultSelectedPackages(
-        analysisContext,
-        applicationPackages
+      setSelectedPackages(
+        analysisContext.includePackages.map((f) => f.fullName)
       );
-      setSelectedPackages(newSelectedPackages.map((f) => f.fullName));
     }
   }, [analysisContext, applicationPackages]);
 
@@ -85,12 +82,8 @@ export const Packages: React.FC<PackagesProps> = ({
       return;
     }
 
-    const defaultSelectedPackages = getDefaultSelectedPackages(
-      analysisContext,
-      applicationPackages || []
-    );
     const packagesChanged = !arePackagesEquals(
-      defaultSelectedPackages,
+      analysisContext.includePackages,
       fullNameToPackage(value, packages)
     );
 
@@ -103,13 +96,8 @@ export const Packages: React.FC<PackagesProps> = ({
       return;
     }
 
-    const defaultSelectedPackages = getDefaultSelectedPackages(
-      analysisContext,
-      applicationPackages || []
-    );
-
     setDirty(false);
-    setSelectedPackages(defaultSelectedPackages.map((f) => f.fullName));
+    setSelectedPackages(analysisContext.includePackages.map((f) => f.fullName));
   };
 
   const onSubmit = (runAnalysis: boolean) => {
@@ -120,10 +108,8 @@ export const Packages: React.FC<PackagesProps> = ({
     setIsSubmitting(true);
     getAnalysisContext(project.defaultAnalysisContextId)
       .then(({ data }) => {
-        const usingCustomPackages = data.useCustomizedPackageSelection || dirty;
         const newAnalysisContext: AnalysisContext = {
           ...data,
-          useCustomizedPackageSelection: usingCustomPackages,
           includePackages: fullNameToPackage(selectedPackages, packages),
         };
         return saveAnalysisContext(project.id, newAnalysisContext, false);

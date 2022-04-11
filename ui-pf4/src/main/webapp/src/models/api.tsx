@@ -80,7 +80,6 @@ export interface AnalysisContext {
   cloudTargetsIncluded: boolean;
   linuxTargetsIncluded: boolean;
   openJdkTargetsIncluded: boolean;
-  useCustomizedPackageSelection: boolean;
   // migrationPath: MigrationPath;
   advancedOptions: AdvancedOption[];
   rulesPaths: RulesPath[];

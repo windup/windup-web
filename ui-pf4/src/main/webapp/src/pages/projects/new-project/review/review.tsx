@@ -71,7 +71,7 @@ const getAdvancedOptionsWithExclusion = (
 
 interface ReviewProps extends RouteComponentProps<ProjectRoute> {}
 
-export const Review: React.FC<ReviewProps> = ({ match, history }) => {
+export const Review: React.FC<ReviewProps> = ({ match, history, location }) => {
   const dispatch = useDispatch();
 
   const {
@@ -158,19 +158,21 @@ export const Review: React.FC<ReviewProps> = ({ match, history }) => {
   };
 
   const handleOnGoToStep = (newStep: NewProjectWizardStepIds) => {
-    history.push(
-      formatPath(getPathFromStep(newStep), {
+    history.push({
+      pathname: formatPath(getPathFromStep(newStep), {
         project: match.params.project,
-      })
-    );
+      }),
+      search: location.search,
+    });
   };
 
   const handleOnBackStep = () => {
-    history.push(
-      formatPath(Paths.newProject_advandedOptions, {
+    history.push({
+      pathname: formatPath(Paths.newProject_advandedOptions, {
         project: match.params.project,
-      })
-    );
+      }),
+      search: location.search,
+    });
   };
 
   const handleOnCancel = () => redirectOnCancel(history.push);

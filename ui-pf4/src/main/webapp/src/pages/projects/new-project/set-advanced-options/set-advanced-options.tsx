@@ -51,6 +51,7 @@ interface SetAdvancedOptionsProps extends RouteComponentProps<ProjectRoute> {}
 export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
   match,
   history,
+  location,
 }) => {
   const dispatch = useDispatch();
   const cancelWizard = useCancelWizard();
@@ -159,11 +160,12 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
         return saveAnalysisContext(project.id, body, true);
       })
       .then(() => {
-        history.push(
-          formatPath(Paths.newProject_review, {
+        history.push({
+          pathname: formatPath(Paths.newProject_review, {
             project: project.id,
-          })
-        );
+          }),
+          search: location.search,
+        });
       })
       .catch((error: AxiosError) => {
         formikHelpers.setSubmitting(false);
@@ -193,11 +195,12 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
   });
 
   const handleOnGoToStep = (newStep: NewProjectWizardStepIds) => {
-    history.push(
-      formatPath(getPathFromStep(newStep), {
+    history.push({
+      pathname: formatPath(getPathFromStep(newStep), {
         project: match.params.project,
-      })
-    );
+      }),
+      search: location.search,
+    });
   };
 
   const handleOnNext = () => {
@@ -205,11 +208,15 @@ export const SetAdvancedOptions: React.FC<SetAdvancedOptionsProps> = ({
   };
 
   const handleOnBack = () => {
-    history.push(
-      formatPath(getPathFromStep(NewProjectWizardStepIds.CUSTOM_LABELS), {
-        project: match.params.project,
-      })
-    );
+    history.push({
+      pathname: formatPath(
+        getPathFromStep(NewProjectWizardStepIds.CUSTOM_LABELS),
+        {
+          project: match.params.project,
+        }
+      ),
+      search: location.search,
+    });
   };
 
   const handleOnCancel = () => cancelWizard(history.push);

@@ -32,6 +32,7 @@ interface SetTransformationPathProps
 export const SetTransformationPath: React.FC<SetTransformationPathProps> = ({
   match,
   history,
+  location,
 }) => {
   const dispatch = useDispatch();
   const cancelWizard = useCancelWizard();
@@ -93,11 +94,12 @@ export const SetTransformationPath: React.FC<SetTransformationPathProps> = ({
         );
       })
       .then(() => {
-        history.push(
-          formatPath(Paths.newProject_selectPackages, {
+        history.push({
+          pathname: formatPath(Paths.newProject_selectPackages, {
             project: match.params.project,
-          })
-        );
+          }),
+          search: location.search,
+        });
       })
       .catch((error: AxiosError) => {
         setIsSubmitting(false);
@@ -115,11 +117,12 @@ export const SetTransformationPath: React.FC<SetTransformationPathProps> = ({
   };
 
   const handleOnGoToStep = (newStep: NewProjectWizardStepIds) => {
-    history.push(
-      formatPath(getPathFromStep(newStep), {
+    history.push({
+      pathname: formatPath(getPathFromStep(newStep), {
         project: match.params.project,
-      })
-    );
+      }),
+      search: location.search,
+    });
   };
 
   const handleOnNext = () => {
@@ -127,11 +130,12 @@ export const SetTransformationPath: React.FC<SetTransformationPathProps> = ({
   };
 
   const handleOnBack = () => {
-    history.push(
-      formatPath(Paths.newProject_addApplications, {
+    history.push({
+      pathname: formatPath(Paths.newProject_addApplications, {
         project: match.params.project,
-      })
-    );
+      }),
+      search: location.search,
+    });
   };
 
   const handleOnCancel = () => cancelWizard(history.push);

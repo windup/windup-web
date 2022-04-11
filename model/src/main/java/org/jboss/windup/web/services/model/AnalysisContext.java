@@ -79,9 +79,6 @@ public class AnalysisContext implements Serializable
     @Column(name = "openjdktargets")
     private boolean openJdkTargetsIncluded;
 
-    @Column(name = "useCustomizedPackageSelection")
-    private boolean useCustomizedPackageSelection;
-
     @JsonIgnore
     @OneToOne(mappedBy = "analysisContext", fetch = FetchType.LAZY, optional = false)
     private WindupExecution windupExecution;
@@ -180,15 +177,6 @@ public class AnalysisContext implements Serializable
         this.openJdkTargetsIncluded = openJdkTargetsIncluded;
     }
 
-    public boolean isUseCustomizedPackageSelection()
-    {
-        return useCustomizedPackageSelection;
-    }
-
-    public void setUseCustomizedPackageSelection(boolean useCustomizedPackageSelection)
-    {
-        this.useCustomizedPackageSelection = useCustomizedPackageSelection;
-    }
 
     public WindupExecution getWindupExecution() {
         return windupExecution;
@@ -390,7 +378,6 @@ public class AnalysisContext implements Serializable
         clone.cloudTargetsIncluded = this.cloudTargetsIncluded;
         clone.linuxTargetsIncluded = this.linuxTargetsIncluded;
         clone.openJdkTargetsIncluded = this.openJdkTargetsIncluded;
-        clone.useCustomizedPackageSelection = this.useCustomizedPackageSelection;
 
         return clone;
     }
@@ -414,5 +401,4 @@ public class AnalysisContext implements Serializable
     {
         return id != null ? id.hashCode() : 0;
     }
-
 }
