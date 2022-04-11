@@ -59,10 +59,10 @@ export const fullNameToPackage = (
 };
 
 export const arePackagesEquals = (a: Package[], b: Package[]) => {
-  const packagesChanged =
+  const foundDiff =
     a.length !== b.length ||
     !a.every((elem1) => b.some((elem2) => elem2.fullName === elem1.fullName));
-  return !packagesChanged;
+  return !foundDiff;
 };
 
 // Technology
