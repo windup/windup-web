@@ -65,13 +65,7 @@ export const PackageSelection: React.FC<PackageSelectionProps> = ({
                   </Text>
                 </LevelItem>
                 <LevelItem>
-                  <Tooltip
-                    content={
-                      <div>
-                        Include only Application Packages to the analysis.
-                      </div>
-                    }
-                  >
+                  <Tooltip content={<div>Restore initial values.</div>}>
                     <Button variant="plain" aria-label="Undo" onClick={onUndo}>
                       <UndoIcon /> Undo
                     </Button>
