@@ -36,6 +36,7 @@ Basic.args = {
       cloudTargetsIncluded: false,
       linuxTargetsIncluded: false,
       openJdkTargetsIncluded: false,
+      useCustomizedPackageSelection: false,
       advancedOptions: [
         { id: 19924, version: 0, name: "target", value: "eap7" },
       ],

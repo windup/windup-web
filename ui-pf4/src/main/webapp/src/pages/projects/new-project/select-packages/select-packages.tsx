@@ -14,9 +14,10 @@ import { Paths, formatPath, ProjectRoute } from "Paths";
 import { AnalysisContext } from "models/api";
 import { getAnalysisContext, saveAnalysisContext } from "api/api";
 import {
-  fullNameToPackage as mapFullNamesToPackages,
+  arePackagesEquals,
+  fullNameToPackage,
   getAxiosErrorMessage,
-  getUnknownPackages,
+  getDefaultSelectedPackages,
 } from "utils/modelUtils";
 
 import {
@@ -60,35 +61,44 @@ export const SelectPackages: React.FC<SelectPackagesProps> = ({
 
   useEffect(() => {
     if (analysisContext && applicationPackages) {
-      let newSelectedPackages = analysisContext.includePackages;
-      if (newSelectedPackages.length === 0) {
-        newSelectedPackages = getUnknownPackages(applicationPackages);
-      }
+      const newSelectedPackages = getDefaultSelectedPackages(
+        analysisContext,
+        applicationPackages
+      );
       setSelectedPackages(newSelectedPackages.map((f) => f.fullName));
     }
   }, [analysisContext, applicationPackages]);
 
   const handleOnSelectedPackagesChange = (value: string[]) => {
-    setDirty(true);
+    if (!analysisContext || !packages) {
+      return;
+    }
+
+    const defaultSelectedPackages = getDefaultSelectedPackages(
+      analysisContext,
+      applicationPackages || []
+    );
+    const packagesChanged = !arePackagesEquals(
+      defaultSelectedPackages,
+      fullNameToPackage(value, packages)
+    );
+
+    setDirty(packagesChanged);
     setSelectedPackages(value);
   };
 
   const handleOnUndo = () => {
-    const newSelectedPackages = getUnknownPackages(applicationPackages || []);
-
-    const packagesChanged =
-      newSelectedPackages.length !== analysisContext?.includePackages.length ||
-      !newSelectedPackages.every((elem1) =>
-        analysisContext.includePackages.some(
-          (elem2) => elem2.fullName === elem1.fullName
-        )
-      );
-
-    if (packagesChanged) {
-      setDirty(true);
+    if (!analysisContext) {
+      return;
     }
 
-    setSelectedPackages(newSelectedPackages.map((f) => f.fullName));
+    const defaultSelectedPackages = getDefaultSelectedPackages(
+      analysisContext,
+      applicationPackages || []
+    );
+
+    setDirty(false);
+    setSelectedPackages(defaultSelectedPackages.map((f) => f.fullName));
   };
 
   const handleOnSubmit = () => {
@@ -99,9 +109,11 @@ export const SelectPackages: React.FC<SelectPackagesProps> = ({
     setIsSubmitting(true);
     getAnalysisContext(project.defaultAnalysisContextId)
       .then(({ data }) => {
+        const usingCustomPackages = data.useCustomizedPackageSelection || dirty;
         const newAnalysisContext: AnalysisContext = {
           ...data,
-          includePackages: mapFullNamesToPackages(selectedPackages, packages),
+          useCustomizedPackageSelection: usingCustomPackages,
+          includePackages: fullNameToPackage(selectedPackages, packages),
         };
         return saveAnalysisContext(project.id, newAnalysisContext, true);
       })
@@ -144,13 +156,12 @@ export const SelectPackages: React.FC<SelectPackagesProps> = ({
 
   const handleOnCancel = () => cancelWizard(history.push);
 
-  const isValid = selectedPackages.length > 0;
+  const isValid = true;
   const currentStep = NewProjectWizardStepIds.SELECT_PACKAGES;
   const disableNav = isFetching || isSubmitting;
-  const canJumpUpto =
-    !isValid || dirty
-      ? currentStep
-      : getMaxAllowedStepToJumpTo(project, analysisContext);
+  const canJumpUpto = !isValid
+    ? currentStep
+    : getMaxAllowedStepToJumpTo(project, analysisContext);
 
   const footer = (
     <WizardFooter

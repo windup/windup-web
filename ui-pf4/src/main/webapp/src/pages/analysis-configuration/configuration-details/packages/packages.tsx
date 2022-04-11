@@ -27,9 +27,10 @@ import { alertActions } from "store/alert";
 import { formatPath, Paths, ProjectRoute } from "Paths";
 import { getAlertModel } from "Constants";
 import {
-  getUnknownPackages,
+  arePackagesEquals,
   fullNameToPackage,
   getAxiosErrorMessage,
+  getDefaultSelectedPackages,
 } from "utils/modelUtils";
 
 import {
@@ -71,34 +72,44 @@ export const Packages: React.FC<PackagesProps> = ({
 
   useEffect(() => {
     if (analysisContext && applicationPackages) {
-      let newSelectedPackages = analysisContext.includePackages;
-      if (newSelectedPackages.length === 0) {
-        newSelectedPackages = getUnknownPackages(applicationPackages);
-      }
+      const newSelectedPackages = getDefaultSelectedPackages(
+        analysisContext,
+        applicationPackages
+      );
       setSelectedPackages(newSelectedPackages.map((f) => f.fullName));
     }
   }, [analysisContext, applicationPackages]);
 
   const handleOnSelectedPackagesChange = (value: string[]) => {
-    setDirty(true);
+    if (!analysisContext || !packages) {
+      return;
+    }
+
+    const defaultSelectedPackages = getDefaultSelectedPackages(
+      analysisContext,
+      applicationPackages || []
+    );
+    const packagesChanged = !arePackagesEquals(
+      defaultSelectedPackages,
+      fullNameToPackage(value, packages)
+    );
+
+    setDirty(packagesChanged);
     setSelectedPackages(value);
   };
 
   const handleOnUndo = () => {
-    const newSelectedPackages = getUnknownPackages(applicationPackages || []);
-
-    const packagesChanged =
-      newSelectedPackages.length !== analysisContext?.includePackages.length ||
-      !newSelectedPackages.every((elem1) =>
-        analysisContext.includePackages.some(
-          (elem2) => elem2.fullName === elem1.fullName
-        )
-      );
-    if (packagesChanged) {
-      setDirty(true);
+    if (!analysisContext) {
+      return;
     }
 
-    setSelectedPackages(newSelectedPackages.map((f) => f.fullName));
+    const defaultSelectedPackages = getDefaultSelectedPackages(
+      analysisContext,
+      applicationPackages || []
+    );
+
+    setDirty(false);
+    setSelectedPackages(defaultSelectedPackages.map((f) => f.fullName));
   };
 
   const onSubmit = (runAnalysis: boolean) => {
@@ -109,8 +120,10 @@ export const Packages: React.FC<PackagesProps> = ({
     setIsSubmitting(true);
     getAnalysisContext(project.defaultAnalysisContextId)
       .then(({ data }) => {
+        const usingCustomPackages = data.useCustomizedPackageSelection || dirty;
         const newAnalysisContext: AnalysisContext = {
           ...data,
+          useCustomizedPackageSelection: usingCustomPackages,
           includePackages: fullNameToPackage(selectedPackages, packages),
         };
         return saveAnalysisContext(project.id, newAnalysisContext, false);
@@ -129,6 +142,8 @@ export const Packages: React.FC<PackagesProps> = ({
           );
         } else {
           setIsSubmitting(false);
+          setDirty(false);
+          loadPackages(match.params.project);
         }
       })
       .catch((error: AxiosError) => {
@@ -149,7 +164,7 @@ export const Packages: React.FC<PackagesProps> = ({
     );
   };
 
-  const isValid = selectedPackages.length > 0;
+  const isValid = true;
   const arePrimaryButtonsDisabled =
     !isValid || !dirty || isFetching || isSubmitting;
 
@@ -183,6 +198,7 @@ export const Packages: React.FC<PackagesProps> = ({
                 variant={ButtonVariant.primary}
                 isDisabled={arePrimaryButtonsDisabled}
                 onClick={() => onSubmit(false)}
+                isLoading={isSubmitting ? true : undefined}
               >
                 Save
               </Button>

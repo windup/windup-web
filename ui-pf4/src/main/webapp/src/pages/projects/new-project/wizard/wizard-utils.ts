@@ -14,17 +14,12 @@ export const getMaxAllowedStepToJumpTo = (
     analysisContext.advancedOptions.filter(
       (option) => option.name === AdvancedOptionsFieldKey.TARGET
     ).length > 0;
-  const projectHasIncludedPackages =
-    analysisContext && analysisContext.includePackages.length > 0;
 
   let canJumpTo: NewProjectWizardStepIds = NewProjectWizardStepIds.DETAILS;
   if (projectHasApplications) {
     canJumpTo = NewProjectWizardStepIds.ADD_APPLICATIONS;
   }
   if (projectHasTargetDefined) {
-    canJumpTo = NewProjectWizardStepIds.SET_TRANSFORMATION_PATH;
-  }
-  if (projectHasIncludedPackages) {
     canJumpTo = NewProjectWizardStepIds.REVIEW;
   }
 
