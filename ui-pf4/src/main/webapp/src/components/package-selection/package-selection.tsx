@@ -61,7 +61,8 @@ export const PackageSelection: React.FC<PackageSelectionProps> = ({
                   </Title>
                   <Text component="small">
                     Select the Java packages you want to include in the
-                    analysis.
+                    analysis. If no packages are explicitly included then all
+                    packages will be analyzed.
                   </Text>
                 </LevelItem>
                 <LevelItem>
