@@ -1,5 +1,6 @@
 package org.jboss.windup.web.furnaceserviceprovider;
 
+import org.jboss.forge.furnace.util.OperatingSystemUtils;
 import org.jboss.vfs.VFS;
 import org.jboss.vfs.VirtualFile;
 
@@ -127,11 +128,12 @@ public class WebProperties
             String pathString;
             if (pathUrl.toString().startsWith("vfs:"))
             {
-                // In Windows OS the pathUrl points to the full path. E.g.
-                // vfs:/C:/Users/myUsername/Downloads/mta-web/temp 1/content/api.war/WEB-INF/lib/furnace-service-provider-5.3.0-SNAPSHOT.jar
-                // This full path might contain blank spaces which will generate an exception.
-                // The following code will avoid the exception in Windows OS
-                if (pathUrl.toString().contains(" ")) {
+                // Below there are examples of different the values for "pathUrl" depending on the OS where MTA Web is running:
+                // In Linux: pathUrl=vfs:/content/api.war/WEB-INF/lib/furnace-service-provider-5.3.0.Final.jar
+                // In Windows pathUrl=vfs:/C:/Users/myUsername/Downloads/mta-web/temp 1/content/api.war/WEB-INF/lib/furnace-service-provider-5.3.0.Final.jar
+                // In Windows: due to the fact that "pathUrl" contains the full path, there is the possibility that
+                // "pathUrl" might contain blank spaces which will generate an exception on "pathUrl.toURI()".
+                if (OperatingSystemUtils.isWindows() && pathUrl.toString().contains(" ")) {
                     pathUrl = new URL(pathUrl.toString().replace(" ", "%20"));
                 }
 
