@@ -61,17 +61,12 @@ export const PackageSelection: React.FC<PackageSelectionProps> = ({
                   </Title>
                   <Text component="small">
                     Select the Java packages you want to include in the
-                    analysis.
+                    analysis. If no packages are explicitly included then all
+                    packages will be analyzed.
                   </Text>
                 </LevelItem>
                 <LevelItem>
-                  <Tooltip
-                    content={
-                      <div>
-                        Include only Application Packages to the analysis.
-                      </div>
-                    }
-                  >
+                  <Tooltip content={<div>Restore initial values.</div>}>
                     <Button variant="plain" aria-label="Undo" onClick={onUndo}>
                       <UndoIcon /> Undo
                     </Button>

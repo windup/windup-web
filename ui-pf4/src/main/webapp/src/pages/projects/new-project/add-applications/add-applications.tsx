@@ -59,6 +59,7 @@ interface AddApplicationsProps extends RouteComponentProps<ProjectRoute> {}
 export const AddApplications: React.FC<AddApplicationsProps> = ({
   match,
   history,
+  location,
 }) => {
   const [selectedTab, setSelectedTab] = useState(
     AddApplicationsTabsType.UPLOAD_FILE
@@ -83,11 +84,12 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
     values: AddApplicationsUploadFilesFormValues,
     formikHelpers: FormikHelpers<AddApplicationsUploadFilesFormValues>
   ) => {
-    history.push(
-      formatPath(Paths.newProject_setTransformationPath, {
+    history.push({
+      pathname: formatPath(Paths.newProject_setTransformationPath, {
         project: match.params.project,
-      })
-    );
+      }),
+      search: location.search,
+    });
   };
 
   const handleServerPathFormikSubmit = (
@@ -115,11 +117,12 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
       })
       .then(() => {
         formikHelpers.setSubmitting(false);
-        history.push(
-          formatPath(Paths.newProject_setTransformationPath, {
+        history.push({
+          pathname: formatPath(Paths.newProject_setTransformationPath, {
             project: match.params.project,
-          })
-        );
+          }),
+          search: location.search,
+        });
       })
       .catch((error: AxiosError) => {
         formikHelpers.setSubmitting(false);
@@ -161,11 +164,12 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
   };
 
   const handleOnGoToStep = (newStep: NewProjectWizardStepIds) => {
-    history.push(
-      formatPath(getPathFromStep(newStep), {
+    history.push({
+      pathname: formatPath(getPathFromStep(newStep), {
         project: match.params.project,
-      })
-    );
+      }),
+      search: location.search,
+    });
   };
 
   const handleOnNext = () => {
@@ -179,11 +183,12 @@ export const AddApplications: React.FC<AddApplicationsProps> = ({
   };
 
   const handleOnBack = () => {
-    history.push(
-      formatPath(Paths.newProject_details, {
+    history.push({
+      pathname: formatPath(Paths.newProject_details, {
         project: match.params.project,
-      })
-    );
+      }),
+      search: location.search,
+    });
   };
 
   const handleOnCancel = () => cancelWizard(history.push);
