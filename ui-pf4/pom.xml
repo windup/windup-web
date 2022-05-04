@@ -244,6 +244,7 @@
                             <arguments>build --profile</arguments>
                             <environmentVariables>
                                 <NODE_ENV>production</NODE_ENV>
+                                <REACT_APP_THEME>${product-name}</REACT_APP_THEME>
                             </environmentVariables>
                         </configuration>
                     </execution>

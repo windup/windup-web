@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { HashRouter } from "react-router-dom";
 
 import { AppRoutes } from "./Routes";
@@ -12,8 +12,13 @@ import { RuleLabelDetailsModal } from "./containers/rule-label-details-modal";
 
 import NotificationsPortal from "@redhat-cloud-services/frontend-components-notifications/cjs/NotificationPortal";
 import "@redhat-cloud-services/frontend-components-notifications/index.css";
+import { Theme } from "layout/ThemeUtils";
 
 const App: React.FC = () => {
+  useEffect(() => {
+    document.title = Theme.name;
+  }, []);
+
   return (
     <HashRouter>
       <DefaultLayout>

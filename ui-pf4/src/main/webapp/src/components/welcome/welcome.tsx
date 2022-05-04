@@ -8,6 +8,7 @@ import {
   EmptyStateSecondaryActions,
 } from "@patternfly/react-core";
 import { ProcessImprovementIcon } from "components";
+import { Theme } from "layout/ThemeUtils";
 
 export interface WelcomeProps {
   onPrimaryAction: () => void;
@@ -25,12 +26,12 @@ export const Welcome: React.FC<WelcomeProps> = ({ onPrimaryAction }) => {
         />
       </div>
       <Title headingLevel="h4" size="lg">
-        Welcome to the Migration Toolkit for Applications
+        Welcome to {Theme.name}
       </Title>
       <EmptyStateBody>
-        The Migration Toolkit for Applications helps you assess and perform
-        large-scale application migrations and modernizations. Start by creating
-        a project for your applications.
+        {Theme.name} helps you assess and perform large-scale application
+        migrations and modernizations. Start by creating a project for your
+        applications.
       </EmptyStateBody>
       <Button variant="primary" onClick={onPrimaryAction}>
         Create project

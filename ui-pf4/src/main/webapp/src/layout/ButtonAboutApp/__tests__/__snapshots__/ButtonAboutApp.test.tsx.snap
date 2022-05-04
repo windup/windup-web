@@ -17,8 +17,8 @@ exports[`Test snapshot :: open modal 1`] = `
   <AboutModal
     appendTo={null}
     backgroundImageSrc=""
-    brandImageAlt="Red Hat"
-    brandImageSrc="brand-image.svg"
+    brandImageAlt="Brand Image"
+    brandImageSrc="mta-logo.svg"
     className="about-app__component"
     isOpen={true}
     noAboutModalBoxContentContainer={false}
@@ -56,7 +56,8 @@ exports[`Test snapshot :: open modal 1`] = `
           <span
             className="dt"
           >
-            Migration Toolkit for Applications Core
+            Migration Toolkit for Applications
+             Core
           </span>
         </GridItem>
         <GridItem
@@ -70,7 +71,8 @@ exports[`Test snapshot :: open modal 1`] = `
           <span
             className="dt"
           >
-            Migration Toolkit for Applications Web Console
+            Migration Toolkit for Applications
+             Web Console
           </span>
         </GridItem>
         <GridItem
@@ -215,8 +217,8 @@ exports[`Test snapshot 1`] = `
   <AboutModal
     appendTo={null}
     backgroundImageSrc=""
-    brandImageAlt="Red Hat"
-    brandImageSrc="brand-image.svg"
+    brandImageAlt="Brand Image"
+    brandImageSrc="mta-logo.svg"
     className="about-app__component"
     isOpen={false}
     noAboutModalBoxContentContainer={false}
@@ -254,7 +256,8 @@ exports[`Test snapshot 1`] = `
           <span
             className="dt"
           >
-            Migration Toolkit for Applications Core
+            Migration Toolkit for Applications
+             Core
           </span>
         </GridItem>
         <GridItem
@@ -268,7 +271,8 @@ exports[`Test snapshot 1`] = `
           <span
             className="dt"
           >
-            Migration Toolkit for Applications Web Console
+            Migration Toolkit for Applications
+             Web Console
           </span>
         </GridItem>
         <GridItem

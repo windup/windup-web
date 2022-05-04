@@ -4,13 +4,11 @@ import { useSelector } from "react-redux";
 
 import { Nav, NavItem, PageSidebar } from "@patternfly/react-core";
 
-import { LayoutTheme } from "../LayoutUtils";
 import { Paths, formatPath } from "Paths";
+import { PFTheme, Theme } from "../ThemeUtils";
 
 import { RootState } from "store/rootReducer";
 import { projectContextSelectors } from "store/projectContext";
-
-import brandImage from "images/brand-image.svg";
 
 export const SidebarApp: React.FC = () => {
   const selectedProject = useSelector((state: RootState) =>
@@ -19,7 +17,7 @@ export const SidebarApp: React.FC = () => {
 
   const renderPageNav = () => {
     return (
-      <Nav id="nav-primary-simple" aria-label="Nav" theme={LayoutTheme}>
+      <Nav id="nav-primary-simple" aria-label="Nav" theme={PFTheme}>
         <section
           className="pf-c-nav__section"
           aria-labelledby="project-group-menu"
@@ -90,11 +88,11 @@ export const SidebarApp: React.FC = () => {
             bottom: 0,
           }}
         >
-          <img src={brandImage} alt="Red Hat" style={{ height: 34 }} />
+          <img src={Theme.logoSrc} alt="Logo" style={{ height: 34 }} />
         </section>
       </Nav>
     );
   };
 
-  return <PageSidebar nav={renderPageNav()} theme={LayoutTheme} />;
+  return <PageSidebar nav={renderPageNav()} theme={PFTheme} />;
 };
