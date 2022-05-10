@@ -386,7 +386,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>rename-windup-dist11</id>
+                        <id>rename-windup-distribution</id>
                         <phase>test-compile</phase>
                         <goals>
                             <goal>run</goal>
