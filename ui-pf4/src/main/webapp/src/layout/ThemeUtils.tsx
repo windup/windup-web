@@ -3,6 +3,7 @@ import tackleLogo from "images/tackle-logo.png";
 
 import mtaNavBrandImage from "images/mta-logo-header.svg";
 import tackleNavBrandImage from "images/tackle-logo-header.svg";
+import tackleFavicon from "images/tackle-favicon.png";
 
 export const PFTheme: "light" | "dark" = "dark";
 
@@ -12,6 +13,7 @@ type ThemeListType = {
     name: string;
     logoSrc: string;
     logoNavbarSrc: string;
+    faviconSrc?: string;
   };
 };
 
@@ -25,6 +27,7 @@ const themeList: ThemeListType = {
     name: "Tackle Analysis",
     logoSrc: tackleLogo,
     logoNavbarSrc: tackleNavBrandImage,
+    faviconSrc: tackleFavicon,
   },
 };
 

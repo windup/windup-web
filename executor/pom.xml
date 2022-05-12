@@ -122,7 +122,7 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.jboss.windup</groupId>
-                                    <artifactId>mta-cli</artifactId>
+                                    <artifactId>${product-name}-cli</artifactId>
                                     <version>${version.windup}</version>
                                     <classifier>offline</classifier>
                                     <type>zip</type>

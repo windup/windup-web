@@ -17,6 +17,11 @@ import { Theme } from "layout/ThemeUtils";
 const App: React.FC = () => {
   useEffect(() => {
     document.title = Theme.name;
+
+    const favicon: any = document.querySelector("link[name='favicon']");
+    if (favicon && Theme.faviconSrc) {
+      favicon.href = Theme.faviconSrc;
+    }
   }, []);
 
   return (
