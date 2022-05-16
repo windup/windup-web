@@ -1,11 +1,13 @@
 package org.jboss.windup.web.addons.websupport.services;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
@@ -179,6 +181,11 @@ public class PackageDiscoveryServiceImpl implements PackageDiscoveryService
     private static List<String> findPaths(Path path, boolean relativeOnly)
     {
         List<String> results = new ArrayList<>();
+
+        if (isTargetDir(path)) {
+            return results;
+        }
+
         results.add(path.normalize().toAbsolutePath().toString());
 
         if (Files.isDirectory(path))
@@ -201,5 +208,13 @@ public class PackageDiscoveryServiceImpl implements PackageDiscoveryService
         }
 
         return results;
+    }
+
+    private static boolean isTargetDir(final Path path)
+    {
+        if (!path.getFileName().toString().equals("target")) return false;
+
+        return Stream.of(Optional.ofNullable(path.toFile().getParentFile().listFiles()).orElse(new File[0]))
+                .anyMatch(f -> f.toPath().getFileName().toString().equals("pom.xml"));
     }
 }
