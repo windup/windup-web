@@ -16,7 +16,7 @@
             <param-value>
                 /static/;
                 /asset.manifest.json;
-                /favicon.ico;
+                /favicon.png;
                 /index.html;
                 /keycloak.json;
                 /logo192.png;
