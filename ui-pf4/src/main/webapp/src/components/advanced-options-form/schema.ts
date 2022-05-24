@@ -180,6 +180,13 @@ export const Fields: Map<AdvancedOptionsFieldKey, IFieldInfo> = new Map([
       type: "switch",
     },
   ],
+  [
+    AdvancedOptionsFieldKey.TRANSTRACTION_ANALYSIS,
+    {
+      label: "Transaction analysis",
+      type: "switch",
+    },
+  ],
 ]);
 
 // Schema

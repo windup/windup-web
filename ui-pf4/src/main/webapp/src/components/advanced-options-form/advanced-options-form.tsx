@@ -58,6 +58,7 @@ interface FormValues {
   [AdvancedOptionsFieldKey.MAVENIZE]?: boolean;
   [AdvancedOptionsFieldKey.SOURCE_MODE]?: boolean;
   [AdvancedOptionsFieldKey.ANALYZE_KNOWN_LIBRARIES]?: boolean;
+  [AdvancedOptionsFieldKey.TRANSTRACTION_ANALYSIS]?: boolean;
 }
 
 export interface AdvancedOptionsFormProps
