@@ -9,7 +9,7 @@ import migration from "images/Icon-Red_Hat-Migration-A-Red-RGB.svg";
 import mug from "images/Icon-Red_Hat-Mug-A-Red-RGB.svg";
 import multiply from "images/Icon-Red_Hat-Multiply-A-Red-RGB.svg";
 import server from "images/Icon-Red_Hat-Server-A-Red-RGB.svg";
-import azure from "images/Icon-Microsoft-Azure-Blue-RGB.svg";
+import azure from "images/Icon-Red_Hat-Virtual_server_stack-A-Red-RGB.png";
 
 interface TransformationPathOption {
   label: string;
