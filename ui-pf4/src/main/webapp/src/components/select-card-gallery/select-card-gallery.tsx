@@ -9,7 +9,7 @@ import migration from "images/Icon-Red_Hat-Migration-A-Red-RGB.svg";
 import mug from "images/Icon-Red_Hat-Mug-A-Red-RGB.svg";
 import multiply from "images/Icon-Red_Hat-Multiply-A-Red-RGB.svg";
 import server from "images/Icon-Red_Hat-Server-A-Red-RGB.svg";
-import azure from "images/Icon-Red_Hat-Virtual_server_stack-A-Red-RGB.png";
+import virtualServer from "images/Icon-Red_Hat-Virtual_server_stack-A-Red-RGB.png";
 
 interface TransformationPathOption {
   label: string;
@@ -126,7 +126,7 @@ const options: TransformationPathOption[] = [
         default: false,
       },
     ],
-    iconSrc: azure,
+    iconSrc: virtualServer,
     isNew: true,
   },
 ];
