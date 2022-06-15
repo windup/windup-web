@@ -9,6 +9,7 @@ import migration from "images/Icon-Red_Hat-Migration-A-Red-RGB.svg";
 import mug from "images/Icon-Red_Hat-Mug-A-Red-RGB.svg";
 import multiply from "images/Icon-Red_Hat-Multiply-A-Red-RGB.svg";
 import server from "images/Icon-Red_Hat-Server-A-Red-RGB.svg";
+import azure from "images/Icon-Red_Hat-Virtual_server_stack-A-Red-RGB.png";
 
 interface TransformationPathOption {
   label: string;
@@ -108,6 +109,25 @@ const options: TransformationPathOption[] = [
       "Rules for the migration from Apache Camel 2 to Apache Camel 3.",
     options: "camel",
     iconSrc: multiply,
+  },
+  {
+    label: "Azure",
+    description:
+      "Upgrade your Java application so it can be deployed in different flavors of Azure.",
+    options: [
+      {
+        label: "azure-appservice",
+        value: "azure-appservice",
+        default: true,
+      },
+      {
+        label: "azure-aks",
+        value: "azure-aks",
+        default: false,
+      },
+    ],
+    iconSrc: azure,
+    isNew: true,
   },
 ];
 
