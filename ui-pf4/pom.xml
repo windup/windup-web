@@ -226,13 +226,23 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>yarn config strict-ssl</id>
+                        <goals>
+                            <goal>yarn</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>config set "strict-ssl" false -g</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>yarn install</id>
                         <goals>
                             <goal>yarn</goal>
                         </goals>
                         <configuration>
                             <!-- Adding network-timeout for Windows OS where fetching NPM dependencies takes more than usual -->
-                            <arguments>install --network-timeout 600000</arguments>
+                            <arguments>install --network-timeout 600000 ${npmArgs}</arguments>
+                            <npmRegistryURL>${npmRegistryURL}</npmRegistryURL>
                         </configuration>
                     </execution>
                     <execution>
