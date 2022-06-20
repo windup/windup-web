@@ -16,6 +16,7 @@
         <node.version>v16.14.0</node.version>
         <yarn.version>v1.22.17</yarn.version>
         <webpack.environment>development</webpack.environment>
+        <npmArgs/>
     </properties>
 
     <dependencies>
@@ -231,7 +232,7 @@
                             <goal>yarn</goal>
                         </goals>
                         <configuration>
-                            <arguments>config set "strict-ssl" false -g</arguments>
+                            <arguments>config set strict-ssl false -g</arguments>
                         </configuration>
                     </execution>
                     <execution>
@@ -242,7 +243,6 @@
                         <configuration>
                             <!-- Adding network-timeout for Windows OS where fetching NPM dependencies takes more than usual -->
                             <arguments>install --network-timeout 600000 ${npmArgs}</arguments>
-                            <npmRegistryURL>${npmRegistryURL}</npmRegistryURL>
                         </configuration>
                     </execution>
                     <execution>
@@ -251,7 +251,7 @@
                             <goal>yarn</goal>
                         </goals>
                         <configuration>
-                            <arguments>build --profile</arguments>
+                            <arguments>build ${npmArgs} --profile</arguments>
                             <environmentVariables>
                                 <NODE_ENV>production</NODE_ENV>
                             </environmentVariables>
@@ -267,6 +267,7 @@
                                 <NODE_ENV>production</NODE_ENV>
                             </environmentVariables>
                             <arguments>build:freemarker</arguments>
+                            <yarnInheritsProxyConfigFromMaven>false</yarnInheritsProxyConfigFromMaven>
                         </configuration>
                     </execution>
                 </executions>
