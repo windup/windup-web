@@ -251,7 +251,7 @@
                             <goal>yarn</goal>
                         </goals>
                         <configuration>
-                            <arguments>build ${npmArgs} --profile</arguments>
+                            <arguments>build --maxWorkers 2 ${npmArgs} --profile</arguments>
                             <environmentVariables>
                                 <NODE_ENV>production</NODE_ENV>
                             </environmentVariables>
