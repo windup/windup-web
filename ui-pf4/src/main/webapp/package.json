@@ -45,7 +45,7 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts --max_old_space_size=2048 build",
     "build:freemarker": "cp build/index.html build/index.html.ftl",
     "test": "react-scripts test",
     "test:debug": "react-scripts --inspect-brk test --runInBand --no-cache",

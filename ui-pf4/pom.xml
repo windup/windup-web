@@ -233,6 +233,7 @@
                         </goals>
                         <configuration>
                             <arguments>config set strict-ssl false -g</arguments>
+                            <yarnInheritsProxyConfigFromMaven>false</yarnInheritsProxyConfigFromMaven>
                         </configuration>
                     </execution>
                     <execution>
@@ -251,10 +252,11 @@
                             <goal>yarn</goal>
                         </goals>
                         <configuration>
-                            <arguments>build --maxWorkers 2 ${npmArgs} --profile</arguments>
+                            <arguments>build ${npmArgs} --profile</arguments>
                             <environmentVariables>
                                 <NODE_ENV>production</NODE_ENV>
                             </environmentVariables>
+                            <yarnInheritsProxyConfigFromMaven>false</yarnInheritsProxyConfigFromMaven>
                         </configuration>
                     </execution>
                     <execution>
