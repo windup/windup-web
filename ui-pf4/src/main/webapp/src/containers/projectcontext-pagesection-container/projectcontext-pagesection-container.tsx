@@ -15,12 +15,12 @@ import {
   projectContextActions,
 } from "store/projectContext";
 
-export interface ProjectContextPageSectionContainerProps {
+export interface ProjectContextPageSectionContainer {
   projectIdRouteParam: string;
   onProjectContextChange: (project: Project) => void;
 }
 
-export const ProjectContextPageSectionContainer: React.FC<ProjectContextPageSectionContainerProps> = ({
+export const ProjectContextPageSectionContainer: React.FC<ProjectContextPageSectionContainer> = ({
   projectIdRouteParam,
   onProjectContextChange,
 }) => {
