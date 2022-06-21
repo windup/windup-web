@@ -4,19 +4,19 @@ exports[`DeleteMatchModal Renders without crashing 1`] = `
 <Modal
   actions={
     Array [
-      <ForwardRef
+      <Button
         isDisabled={true}
         onClick={[Function]}
         variant="danger"
       >
         Delete
-      </ForwardRef>,
-      <ForwardRef
+      </Button>,
+      <Button
         onClick={[Function]}
         variant="link"
       >
         Cancel
-      </ForwardRef>,
+      </Button>,
     ]
   }
   appendTo={[Function]}
