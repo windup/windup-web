@@ -16,6 +16,7 @@
         <node.version>v16.14.0</node.version>
         <yarn.version>v1.22.17</yarn.version>
         <webpack.environment>development</webpack.environment>
+        <npmArgs/>
     </properties>
 
     <dependencies>
@@ -226,13 +227,23 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>yarn config strict-ssl</id>
+                        <goals>
+                            <goal>yarn</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>config set strict-ssl false -g</arguments>
+                            <yarnInheritsProxyConfigFromMaven>false</yarnInheritsProxyConfigFromMaven>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>yarn install</id>
                         <goals>
                             <goal>yarn</goal>
                         </goals>
                         <configuration>
                             <!-- Adding network-timeout for Windows OS where fetching NPM dependencies takes more than usual -->
-                            <arguments>install --network-timeout 600000</arguments>
+                            <arguments>install --network-timeout 600000 ${npmArgs}</arguments>
                         </configuration>
                     </execution>
                     <execution>
@@ -241,11 +252,12 @@
                             <goal>yarn</goal>
                         </goals>
                         <configuration>
-                            <arguments>build --profile</arguments>
+                            <arguments>build ${npmArgs} --profile</arguments>
                             <environmentVariables>
                                 <NODE_ENV>production</NODE_ENV>
                                 <REACT_APP_THEME>${product-name}</REACT_APP_THEME>
                             </environmentVariables>
+                            <yarnInheritsProxyConfigFromMaven>false</yarnInheritsProxyConfigFromMaven>
                         </configuration>
                     </execution>
                     <execution>
@@ -258,6 +270,7 @@
                                 <NODE_ENV>production</NODE_ENV>
                             </environmentVariables>
                             <arguments>build:freemarker</arguments>
+                            <yarnInheritsProxyConfigFromMaven>false</yarnInheritsProxyConfigFromMaven>
                         </configuration>
                     </execution>
                 </executions>
