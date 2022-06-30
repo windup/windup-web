@@ -334,7 +334,7 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.jboss.windup</groupId>
-                                    <artifactId>mta-cli</artifactId>
+                                    <artifactId>${windup.distribution.name}</artifactId>
                                     <version>${version.windup.cli}</version>
                                     <classifier>offline</classifier>
                                     <type>zip</type>
@@ -470,7 +470,7 @@
                         <version>${version.hibernate}</version>
                     </dependency>
                 </dependencies>
-                </plugin>
+            </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
