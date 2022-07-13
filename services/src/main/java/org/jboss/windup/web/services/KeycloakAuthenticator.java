@@ -50,7 +50,7 @@ public class KeycloakAuthenticator
         if (!keycloakUrl.endsWith("/"))
             keycloakUrl += "/";
 
-        String fullUrl = keycloakUrl + "realms/mta/protocol/openid-connect/userinfo";
+        String fullUrl = keycloakUrl + "realms/windup/protocol/openid-connect/userinfo";
         try
         {
             URLConnection urlConnection = new URL(fullUrl).openConnection();
