@@ -334,7 +334,7 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.jboss.windup</groupId>
-                                    <artifactId>mta-cli</artifactId>
+                                    <artifactId>${windup.distribution.name}</artifactId>
                                     <version>${version.windup.cli}</version>
                                     <classifier>offline</classifier>
                                     <type>zip</type>
@@ -382,6 +382,18 @@
                         <configuration>
                             <target>
                                 <move file="${project.build.directory}/${project.build.finalName}/WEB-INF/${windup.distribution.name}-${version.windup}" tofile="${project.build.directory}/${project.build.finalName}/WEB-INF/${windup.distribution.name}" />
+                            </target>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>rename-windup-distribution</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <move file="${project.build.directory}/${project.build.finalName}/WEB-INF/${windup.distribution.name}" tofile="${project.build.directory}/${project.build.finalName}/WEB-INF/mta-cli" />
                             </target>
                         </configuration>
                     </execution>
@@ -458,7 +470,7 @@
                         <version>${version.hibernate}</version>
                     </dependency>
                 </dependencies>
-                </plugin>
+            </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>

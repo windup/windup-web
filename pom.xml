@@ -358,5 +358,31 @@
             </build>
         </profile>
 
+        <profile>
+            <id>mta</id>
+            <activation>
+                <property>
+                    <name>!downstream</name>
+                </property>
+            </activation>
+            <properties>
+                <product-name>mta</product-name>
+                <windup.distribution.name>mta-cli</windup.distribution.name>
+            </properties>
+        </profile>
+        <profile>
+            <id>tackle</id>
+            <activation>
+                <property>
+                    <name>downstream</name>
+                    <value>tackle</value>
+                </property>
+            </activation>
+            <properties>
+                <product-name>tackle</product-name>
+                <windup.distribution.name>tackle-cli</windup.distribution.name>
+            </properties>
+        </profile>
+
     </profiles>
 </project>

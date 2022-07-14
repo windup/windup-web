@@ -25,8 +25,8 @@ import "./ButtonAboutApp.scss";
 import { WINDUP_WEB_VERSION, WINDUP_WEB_SCM_REVISION } from "Constants";
 import { getWindupVersion } from "api/api";
 
-import brandImage from "images/brand-image.svg";
 import { WindupVersion } from "models/api";
+import { Theme } from "layout/ThemeUtils";
 
 export const ButtonAboutApp: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -58,9 +58,9 @@ export const ButtonAboutApp: React.FC = () => {
       <AboutModal
         isOpen={isOpen}
         onClose={toggleButton}
-        brandImageAlt="Red Hat"
-        brandImageSrc={brandImage}
-        productName="Migration Toolkit for Applications"
+        brandImageAlt="Brand Image"
+        brandImageSrc={Theme.logoSrc}
+        productName={Theme.name}
         className="about-app__component"
       >
         <TextContent className="pf-u-py-xl">
@@ -71,7 +71,7 @@ export const ButtonAboutApp: React.FC = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Migration Toolkit for Applications
+              {Theme.name}
             </a>{" "}
             allows application architects and developers to quickly decompile,
             analyze, assess and modernize large scale application portfolios and
@@ -81,9 +81,7 @@ export const ButtonAboutApp: React.FC = () => {
         <TextContent className="pf-u-py-xl">
           <Grid hasGutter>
             <GridItem lg={7}>
-              <span className="dt">
-                Migration Toolkit for Applications Core
-              </span>
+              <span className="dt">{Theme.name} Core</span>
             </GridItem>
             <GridItem lg={5}>
               {windupVersion.version}
@@ -102,9 +100,7 @@ export const ButtonAboutApp: React.FC = () => {
               )}
             </GridItem>
             <GridItem lg={7}>
-              <span className="dt">
-                Migration Toolkit for Applications Web Console
-              </span>
+              <span className="dt">{Theme.name} Web Console</span>
             </GridItem>
             <GridItem lg={5}>
               {WINDUP_WEB_VERSION}

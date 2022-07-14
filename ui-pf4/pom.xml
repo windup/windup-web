@@ -255,6 +255,7 @@
                             <arguments>build ${npmArgs} --profile</arguments>
                             <environmentVariables>
                                 <NODE_ENV>production</NODE_ENV>
+                                <REACT_APP_THEME>${product-name}</REACT_APP_THEME>
                             </environmentVariables>
                             <yarnInheritsProxyConfigFromMaven>false</yarnInheritsProxyConfigFromMaven>
                         </configuration>

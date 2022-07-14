@@ -19,10 +19,12 @@ exports[`Welcome Renders without crashing 1`] = `
     headingLevel="h4"
     size="lg"
   >
-    Welcome to the Migration Toolkit for Applications
+    Welcome to 
+    Migration Toolkit for Applications
   </Title>
   <EmptyStateBody>
-    The Migration Toolkit for Applications helps you assess and perform large-scale application migrations and modernizations. Start by creating a project for your applications.
+    Migration Toolkit for Applications
+     helps you assess and perform large-scale application migrations and modernizations. Start by creating a project for your applications.
   </EmptyStateBody>
   <Button
     onClick={[Function]}

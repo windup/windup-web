@@ -18,10 +18,10 @@ import { useKeycloak } from "@react-keycloak/web";
 
 import "./HeaderApp.scss";
 
-import navBrandImage from "images/mta-logo-header.svg";
 import imgAvatar from "images/avatar.svg";
 
 import { ButtonAboutApp } from "../ButtonAboutApp";
+import { Theme } from "layout/ThemeUtils";
 
 export const HeaderApp: React.FC = () => {
   const { keycloak } = useKeycloak();
@@ -132,7 +132,7 @@ export const HeaderApp: React.FC = () => {
   return (
     <PageHeader
       className="header-app__component"
-      logo={<Brand src={navBrandImage} alt="brand" />}
+      logo={<Brand src={Theme.logoNavbarSrc} alt="brand" />}
       headerTools={renderPageToolbar}
       showNavToggle
     />
