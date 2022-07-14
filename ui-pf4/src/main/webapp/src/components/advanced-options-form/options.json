@@ -124,15 +124,15 @@
   },
   {
     "availableValues": [],
-    "description": "If set, MTA will not generate reports.",
+    "description": "If set, WINDUP will not generate reports.",
     "delegate": {
       "availableValues": [],
-      "description": "If set, MTA will not generate reports.",
+      "description": "If set, WINDUP will not generate reports.",
       "delegate": {
         "availableValues": [],
-        "description": "If set, MTA will not generate reports.",
+        "description": "If set, WINDUP will not generate reports.",
         "required": false,
-        "label": "Should MTA generate HTML reports?",
+        "label": "Should WINDUP generate HTML reports?",
         "uitype": "SINGLE",
         "name": "skipReports",
         "type": "java.lang.Boolean",
@@ -140,7 +140,7 @@
         "defaultValue": false
       },
       "required": false,
-      "label": "Should MTA generate HTML reports?",
+      "label": "Should WINDUP generate HTML reports?",
       "uitype": "SINGLE",
       "name": "skipReports",
       "priority": 0,
@@ -148,7 +148,7 @@
       "defaultValue": false
     },
     "required": false,
-    "label": "Should MTA generate HTML reports?",
+    "label": "Should WINDUP generate HTML reports?",
     "uitype": "SINGLE",
     "name": "skipReports",
     "priority": 0,
@@ -189,13 +189,13 @@
     "defaultValue": false
   },
   {
-    "description": "All pom.xml files will use this value as their <groupId>. If the parameter is omitted, MTA tries to guess some value based on the application, but this guess may be wrong. Last resort default value is 'com.mycompany.mavenized'.",
+    "description": "All pom.xml files will use this value as their <groupId>. If the parameter is omitted, WINDUP tries to guess some value based on the application, but this guess may be wrong. Last resort default value is 'com.mycompany.mavenized'.",
     "delegate": {
       "availableValues": [],
-      "description": "All pom.xml files will use this value as their <groupId>. If the parameter is omitted, MTA tries to guess some value based on the application, but this guess may be wrong. Last resort default value is 'com.mycompany.mavenized'.",
+      "description": "All pom.xml files will use this value as their <groupId>. If the parameter is omitted, WINDUP tries to guess some value based on the application, but this guess may be wrong. Last resort default value is 'com.mycompany.mavenized'.",
       "delegate": {
         "availableValues": [],
-        "description": "All pom.xml files will use this value as their <groupId>. If the parameter is omitted, MTA tries to guess some value based on the application, but this guess may be wrong. Last resort default value is 'com.mycompany.mavenized'.",
+        "description": "All pom.xml files will use this value as their <groupId>. If the parameter is omitted, WINDUP tries to guess some value based on the application, but this guess may be wrong. Last resort default value is 'com.mycompany.mavenized'.",
         "required": false,
         "label": "The <groupId> to use for Maven project stub pom.xml's.",
         "uitype": "SINGLE",
@@ -696,15 +696,15 @@
     "defaultValue": null
   },
   {
-    "description": "If set, MTA will generate a report of 'Compatible Files'. Keep in mind that generating this report may take a long time for large applications.",
+    "description": "If set, WINDUP will generate a report of 'Compatible Files'. Keep in mind that generating this report may take a long time for large applications.",
     "delegate": {
       "availableValues": [],
-      "description": "If set, MTA will generate a report of 'Compatible Files'. Keep in mind that generating this report may take a long time for large applications.",
+      "description": "If set, WINDUP will generate a report of 'Compatible Files'. Keep in mind that generating this report may take a long time for large applications.",
       "delegate": {
         "availableValues": [],
-        "description": "If set, MTA will generate a report of 'Compatible Files'. Keep in mind that generating this report may take a long time for large applications.",
+        "description": "If set, WINDUP will generate a report of 'Compatible Files'. Keep in mind that generating this report may take a long time for large applications.",
         "required": false,
-        "label": "Should MTA generate the 'Compatible Files Report'?",
+        "label": "Should WINDUP generate the 'Compatible Files Report'?",
         "uitype": "SINGLE",
         "name": "enableCompatibleFilesReport",
         "type": "java.lang.Boolean",
@@ -712,7 +712,7 @@
         "defaultValue": false
       },
       "required": false,
-      "label": "Should MTA generate the 'Compatible Files Report'?",
+      "label": "Should WINDUP generate the 'Compatible Files Report'?",
       "uitype": "SINGLE",
       "name": "enableCompatibleFilesReport",
       "priority": 0,
@@ -720,7 +720,7 @@
       "defaultValue": false
     },
     "required": false,
-    "label": "Should MTA generate the 'Compatible Files Report'?",
+    "label": "Should WINDUP generate the 'Compatible Files Report'?",
     "uitype": "SINGLE",
     "availableValues": [],
     "name": "enableCompatibleFilesReport",
@@ -862,15 +862,15 @@
   },
   {
     "availableValues": [],
-    "description": "If set, MTA will not delete the temporary working files, like graph database and unzipped archives. Debugging purposes.",
+    "description": "If set, WINDUP will not delete the temporary working files, like graph database and unzipped archives. Debugging purposes.",
     "delegate": {
       "availableValues": [],
-      "description": "If set, MTA will not delete the temporary working files, like graph database and unzipped archives. Debugging purposes.",
+      "description": "If set, WINDUP will not delete the temporary working files, like graph database and unzipped archives. Debugging purposes.",
       "delegate": {
         "availableValues": [],
-        "description": "If set, MTA will not delete the temporary working files, like graph database and unzipped archives. Debugging purposes.",
+        "description": "If set, WINDUP will not delete the temporary working files, like graph database and unzipped archives. Debugging purposes.",
         "required": false,
-        "label": "Should MTA keep temporary working directories?",
+        "label": "Should WINDUP keep temporary working directories?",
         "uitype": "SINGLE",
         "name": "keepWorkDirs",
         "type": "java.lang.Boolean",
@@ -878,7 +878,7 @@
         "defaultValue": false
       },
       "required": false,
-      "label": "Should MTA keep temporary working directories?",
+      "label": "Should WINDUP keep temporary working directories?",
       "uitype": "SINGLE",
       "name": "keepWorkDirs",
       "priority": 0,
@@ -886,7 +886,7 @@
       "defaultValue": false
     },
     "required": false,
-    "label": "Should MTA keep temporary working directories?",
+    "label": "Should WINDUP keep temporary working directories?",
     "uitype": "SINGLE",
     "name": "keepWorkDirs",
     "priority": 0,
