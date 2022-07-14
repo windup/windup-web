@@ -19,7 +19,7 @@ exports[`Welcome Renders without crashing 1`] = `
     headingLevel="h4"
     size="lg"
   >
-    Welcome to
+    Welcome to 
     Windup Migration Toolkit for Applications
   </Title>
   <EmptyStateBody>
@@ -35,7 +35,7 @@ exports[`Welcome Renders without crashing 1`] = `
   <EmptyStateSecondaryActions>
     To learn more, visit the
     <a
-      href="https://access.redhat.com/documentation/en-us/migration_toolkit_for_applications/"
+      href="https://windup.github.io/"
       rel="noopener noreferrer"
       target="_blank"
     >
