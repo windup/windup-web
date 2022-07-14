@@ -22,7 +22,7 @@
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.findbugs.plugin>3.0.5</version.findbugs.plugin>
-        <version.forge>3.9.8.Final</version.forge>
+        <version.forge>3.10.0.Final</version.forge>
         <version.furnace>2.29.1.Final</version.furnace>
         <version.windup>5.3.1-SNAPSHOT</version.windup>
         <version.windup.cli>5.3.1-SNAPSHOT</version.windup.cli>

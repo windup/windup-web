@@ -35,7 +35,7 @@
         <version.windup.web>${project.version}</version.windup.web>
         <!-- For now, we need to pass this to the Mojo explicitly (through META-INF/versions.properties),
              but it should be possible to figure that out from the Windup POM. -->
-        <version.forge>3.9.8.Final</version.forge>
+        <version.forge>3.10.0.Final</version.forge>
         <version.furnace>2.29.1.Final</version.furnace>
     </properties>
 
