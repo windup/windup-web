@@ -110,7 +110,7 @@ export const HeaderApp: React.FC = () => {
               md: "visible",
             }} /** this user dropdown is hidden on mobile sizes */
           >
-            <Dropdown
+            {/* <Dropdown
               isPlain
               position="right"
               onSelect={onDropdownSelect}
@@ -121,7 +121,7 @@ export const HeaderApp: React.FC = () => {
                 </DropdownToggle>
               }
               dropdownItems={userDropdownItems}
-            />
+            /> */}
           </PageHeaderToolsItem>
         )}
       </PageHeaderToolsGroup>
