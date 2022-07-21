@@ -9,7 +9,7 @@ interface WindupEnv {
   REST_BASE: string;
   GRAPH_REST_BASE: string;
   STATIC_REPORTS_BASE: string;
-  SSO_ENABLED: boolean;
+  SSO_ENABLED: string;
 }
 
 export const WINDUP_WEB_VERSION: string =
@@ -40,7 +40,7 @@ export const getWindupStaticReportsBase = () => {
 };
 
 export const isSSOEnabled = () => {
-  return WINDUP_ENV_VARIABLES.SSO_ENABLED === true;
+  return WINDUP_ENV_VARIABLES.SSO_ENABLED === "true";
 };
 
 // Windup general variables

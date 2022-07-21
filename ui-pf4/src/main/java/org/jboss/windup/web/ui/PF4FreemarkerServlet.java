@@ -3,6 +3,7 @@ package org.jboss.windup.web.ui;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
@@ -74,9 +75,15 @@ public class PF4FreemarkerServlet extends freemarker.ext.servlet.FreemarkerServl
                 }
             });
 
+            boolean ssoEnabled = Optional.ofNullable(System.getenv("SSO_ENABLED"))
+                    .orElse("false")
+                    .equals("true");
+
+            hashModel.put("ssoEnabled", String.valueOf(ssoEnabled));
+
             Map<String, String> keycloakProperties = new HashMap<>();
-            keycloakProperties.put(PUBLIC_KEY, System.getProperty("keycloak.realm.public.key"));
-            keycloakProperties.put(SERVER_URL, System.getProperty("keycloak.server.url"));
+            keycloakProperties.put(PUBLIC_KEY, ssoEnabled ? System.getProperty("keycloak.realm.public.key") : "***");
+            keycloakProperties.put(SERVER_URL, ssoEnabled ? System.getProperty("keycloak.server.url") : "***");
 
             hashModel.put(KEYCLOAK, keycloakProperties);
 

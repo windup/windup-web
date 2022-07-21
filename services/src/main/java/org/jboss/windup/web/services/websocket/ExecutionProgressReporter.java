@@ -2,11 +2,7 @@ package org.jboss.windup.web.services.websocket;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -120,7 +116,13 @@ public class ExecutionProgressReporter extends AbstractMDB implements Serializab
         LOG.fine("Execution id: " + executionId + " message received: " + message);
         Boolean isSSL = (Boolean) session.getUserProperties().get("isSSL");
         String serverHost = (String) session.getUserProperties().get("Host");
-        authenticate(isSSL, serverHost, session, message);
+
+        boolean ssoEnabled = Optional.ofNullable(System.getenv("SSO_ENABLED"))
+                .orElse("false")
+                .equals("true");
+        if (ssoEnabled) {
+            authenticate(isSSL, serverHost, session, message);
+        }
 
         if (!sessions.containsKey(executionId))
         {
