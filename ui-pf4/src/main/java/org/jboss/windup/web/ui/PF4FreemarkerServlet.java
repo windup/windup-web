@@ -75,15 +75,12 @@ public class PF4FreemarkerServlet extends freemarker.ext.servlet.FreemarkerServl
                 }
             });
 
-            boolean ssoEnabled = Optional.ofNullable(System.getenv("SSO_ENABLED"))
-                    .orElse("false")
-                    .equals("true");
-
-            hashModel.put("ssoEnabled", String.valueOf(ssoEnabled));
+            String keycloakEnabled = System.getProperty("windup.sso.enabled", "false");
+            hashModel.put("ssoEnabled", keycloakEnabled);
 
             Map<String, String> keycloakProperties = new HashMap<>();
-            keycloakProperties.put(PUBLIC_KEY, ssoEnabled ? System.getProperty("keycloak.realm.public.key") : "***");
-            keycloakProperties.put(SERVER_URL, ssoEnabled ? System.getProperty("keycloak.server.url") : "***");
+            keycloakProperties.put(PUBLIC_KEY, System.getProperty("keycloak.realm.public.key", "***"));
+            keycloakProperties.put(SERVER_URL, System.getProperty("keycloak.server.url", "***"));
 
             hashModel.put(KEYCLOAK, keycloakProperties);
 

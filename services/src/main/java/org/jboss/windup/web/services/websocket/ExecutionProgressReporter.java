@@ -117,10 +117,8 @@ public class ExecutionProgressReporter extends AbstractMDB implements Serializab
         Boolean isSSL = (Boolean) session.getUserProperties().get("isSSL");
         String serverHost = (String) session.getUserProperties().get("Host");
 
-        boolean ssoEnabled = Optional.ofNullable(System.getenv("SSO_ENABLED"))
-                .orElse("false")
-                .equals("true");
-        if (ssoEnabled) {
+        String keycloakEnabled = System.getProperty("windup.sso.enabled", "false");
+        if (keycloakEnabled.equals("true")) {
             authenticate(isSSL, serverHost, session, message);
         }
 
