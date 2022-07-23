@@ -3,7 +3,6 @@ package org.jboss.windup.web.ui;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
@@ -31,6 +30,13 @@ public class PF4FreemarkerServlet extends freemarker.ext.servlet.FreemarkerServl
     public static final String KEYCLOAK = "keycloak";
     public static final String PUBLIC_KEY = "publicKey";
     public static final String SERVER_URL = "serverUrl";
+    public static final String REALM = "realm";
+    public static final String SSL_REQUIRED = "sslRequired";
+    public static final String CLIENT_ID = "clientId";
+
+    // Property to pass to the UI indicating SSO is enabled
+    public static final String UI_SSO_ENABLED = "ssoEnabled";
+
     private static Logger LOG = Logger.getLogger(PF4FreemarkerServlet.class.getName());
 
     @Override
@@ -75,12 +81,14 @@ public class PF4FreemarkerServlet extends freemarker.ext.servlet.FreemarkerServl
                 }
             });
 
-            String keycloakEnabled = System.getProperty("windup.sso.enabled", "false");
-            hashModel.put("ssoEnabled", keycloakEnabled);
+            hashModel.put(UI_SSO_ENABLED, String.valueOf(System.getProperty("keycloak.server.url") != null));
 
             Map<String, String> keycloakProperties = new HashMap<>();
             keycloakProperties.put(PUBLIC_KEY, System.getProperty("keycloak.realm.public.key", "***"));
             keycloakProperties.put(SERVER_URL, System.getProperty("keycloak.server.url", "***"));
+            keycloakProperties.put(REALM, System.getProperty("keycloak.realm", "***"));
+            keycloakProperties.put(SSL_REQUIRED, System.getProperty("keycloak.sslRequired", "***").toLowerCase());
+            keycloakProperties.put(CLIENT_ID, System.getProperty("keycloak.clientId", "***"));
 
             hashModel.put(KEYCLOAK, keycloakProperties);
 

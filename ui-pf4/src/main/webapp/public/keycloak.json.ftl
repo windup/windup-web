@@ -1,8 +1,8 @@
 {
-    "realm": "mta",
+    "realm": "${keycloak.realm}",
     "realm-public-key": "${keycloak.publicKey}",
     "auth-server-url": "${keycloak.serverUrl}",
-    "ssl-required": "none",
-    "resource": "mta-web",
+    "ssl-required": "${keycloak.sslRequired}",
+    "resource": "${keycloak.clientId}",
     "public-client": true
 }

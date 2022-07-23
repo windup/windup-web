@@ -2,7 +2,11 @@ package org.jboss.windup.web.services.websocket;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -117,8 +121,7 @@ public class ExecutionProgressReporter extends AbstractMDB implements Serializab
         Boolean isSSL = (Boolean) session.getUserProperties().get("isSSL");
         String serverHost = (String) session.getUserProperties().get("Host");
 
-        String keycloakEnabled = System.getProperty("windup.sso.enabled", "false");
-        if (keycloakEnabled.equals("true")) {
+        if (System.getProperty("keycloak.server.url") != null) {
             authenticate(isSSL, serverHost, session, message);
         }
 
